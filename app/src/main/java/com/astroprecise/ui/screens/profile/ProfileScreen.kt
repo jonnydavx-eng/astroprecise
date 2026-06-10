@@ -1,5 +1,9 @@
 package com.astroprecise.ui.screens.profile
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,11 +24,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -131,6 +138,10 @@ private fun ProfileContent(uiState: ProfileUiState, viewModel: ProfileViewModel)
         } else {
             ProfileDisplay(uiState)
         }
+
+        Spacer(Modifier.height(32.dp))
+
+        NotificationsSection(uiState, viewModel)
 
         Spacer(Modifier.height(32.dp))
     }
@@ -284,6 +295,95 @@ private fun EditForm(uiState: ProfileUiState, viewModel: ProfileViewModel) {
             } else {
                 Icon(Icons.Default.Save, contentDescription = null, modifier = Modifier.size(16.dp))
                 Text(" Save Profile")
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotificationsSection(uiState: ProfileUiState, viewModel: ProfileViewModel) {
+    val permLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) viewModel.setNotificationsEnabled(true)
+    }
+
+    SectionHeader("Notifications")
+    Spacer(Modifier.height(12.dp))
+
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Daily Horoscope",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = "Get your cosmic guidance each morning",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(
+                    checked = uiState.notifEnabled,
+                    onCheckedChange = { enabled ->
+                        if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            permLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            viewModel.setNotificationsEnabled(enabled)
+                        }
+                    },
+                )
+            }
+
+            if (uiState.notifEnabled) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "Notification Time (24h)",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    OutlinedTextField(
+                        value = uiState.notifHour.toString().padStart(2, '0'),
+                        onValueChange = { it.toIntOrNull()?.let(viewModel::updateNotifHour) },
+                        label = { Text("Hour") },
+                        modifier = Modifier.weight(1f),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    Text(
+                        text = ":",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    OutlinedTextField(
+                        value = uiState.notifMinute.toString().padStart(2, '0'),
+                        onValueChange = { it.toIntOrNull()?.let(viewModel::updateNotifMinute) },
+                        label = { Text("Minute") },
+                        modifier = Modifier.weight(1f),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                        shape = RoundedCornerShape(12.dp),
+                    )
+                    FilledTonalButton(onClick = viewModel::saveNotificationTime) {
+                        Text("Set")
+                    }
+                }
             }
         }
     }

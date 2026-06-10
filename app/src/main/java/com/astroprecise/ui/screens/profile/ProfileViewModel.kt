@@ -1,10 +1,14 @@
 package com.astroprecise.ui.screens.profile
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astroprecise.data.model.UserProfile
 import com.astroprecise.data.repository.UserRepository
+import com.astroprecise.work.cancelHoroscopeNotification
+import com.astroprecise.work.scheduleHoroscopeNotification
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -26,11 +30,15 @@ data class ProfileUiState(
     val editLongitude: Double = 0.0,
     val isSaving: Boolean = false,
     val saveSuccess: Boolean = false,
+    val notifEnabled: Boolean = false,
+    val notifHour: Int = 8,
+    val notifMinute: Int = 0,
 )
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -54,6 +62,21 @@ class ProfileViewModel @Inject constructor(
                         editLongitude = if (!state.isEditing) profile.birthLongitude else state.editLongitude,
                     )
                 }
+            }
+        }
+        viewModelScope.launch {
+            userRepository.notificationsEnabled.collect { enabled ->
+                _uiState.update { it.copy(notifEnabled = enabled) }
+            }
+        }
+        viewModelScope.launch {
+            userRepository.notificationHour.collect { hour ->
+                _uiState.update { it.copy(notifHour = hour) }
+            }
+        }
+        viewModelScope.launch {
+            userRepository.notificationMinute.collect { minute ->
+                _uiState.update { it.copy(notifMinute = minute) }
             }
         }
     }
@@ -105,6 +128,31 @@ class ProfileViewModel @Inject constructor(
             )
             userRepository.saveProfile(newProfile)
             _uiState.update { it.copy(isSaving = false, isEditing = false, saveSuccess = true) }
+        }
+    }
+
+    fun setNotificationsEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            val s = _uiState.value
+            userRepository.saveNotificationSettings(enabled, s.notifHour, s.notifMinute)
+            if (enabled) {
+                scheduleHoroscopeNotification(context, s.notifHour, s.notifMinute)
+            } else {
+                cancelHoroscopeNotification(context)
+            }
+        }
+    }
+
+    fun updateNotifHour(hour: Int) = _uiState.update { it.copy(notifHour = hour.coerceIn(0, 23)) }
+    fun updateNotifMinute(minute: Int) = _uiState.update { it.copy(notifMinute = minute.coerceIn(0, 59)) }
+
+    fun saveNotificationTime() {
+        viewModelScope.launch {
+            val s = _uiState.value
+            userRepository.saveNotificationSettings(s.notifEnabled, s.notifHour, s.notifMinute)
+            if (s.notifEnabled) {
+                scheduleHoroscopeNotification(context, s.notifHour, s.notifMinute)
+            }
         }
     }
 }

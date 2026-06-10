@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Stars
@@ -37,6 +38,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.astroprecise.data.local.UserPreferences
 import com.astroprecise.ui.screens.birthchart.BirthChartScreen
+import com.astroprecise.ui.screens.compatibility.CompatibilityScreen
 import com.astroprecise.ui.screens.home.HomeScreen
 import com.astroprecise.ui.screens.horoscope.HoroscopeScreen
 import com.astroprecise.ui.screens.onboarding.OnboardingScreen
@@ -53,10 +55,17 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     data object Home : Screen("home", "Home", Icons.Default.Home)
     data object BirthChart : Screen("birth_chart", "Chart", Icons.Default.AutoAwesome)
     data object Horoscope : Screen("horoscope", "Horoscope", Icons.Default.Stars)
+    data object Compatibility : Screen("compatibility", "Compat.", Icons.Default.Favorite)
     data object Profile : Screen("profile", "Profile", Icons.Default.Person)
 }
 
-private val bottomNavItems = listOf(Screen.Home, Screen.BirthChart, Screen.Horoscope, Screen.Profile)
+private val bottomNavItems = listOf(
+    Screen.Home,
+    Screen.BirthChart,
+    Screen.Horoscope,
+    Screen.Compatibility,
+    Screen.Profile,
+)
 
 @HiltViewModel
 class AppNavigationViewModel @Inject constructor(
@@ -141,6 +150,11 @@ fun AppNavigation(viewModel: AppNavigationViewModel = hiltViewModel()) {
                 enterTransition = { fadeIn() + slideInHorizontally { -40 } },
                 exitTransition = { fadeOut() + slideOutHorizontally { -40 } },
             ) { HoroscopeScreen() }
+            composable(
+                route = Screen.Compatibility.route,
+                enterTransition = { fadeIn() + slideInHorizontally { -40 } },
+                exitTransition = { fadeOut() + slideOutHorizontally { -40 } },
+            ) { CompatibilityScreen() }
             composable(
                 route = Screen.Profile.route,
                 enterTransition = { fadeIn() + slideInHorizontally { -40 } },

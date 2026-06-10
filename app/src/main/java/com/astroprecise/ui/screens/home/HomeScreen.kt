@@ -17,8 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,11 +30,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.astroprecise.data.model.CurrentSkyData
 import com.astroprecise.data.model.Horoscope
 import com.astroprecise.data.model.UserProfile
 import com.astroprecise.ui.components.HomeScreenSkeleton
@@ -40,6 +46,8 @@ import com.astroprecise.ui.components.ZodiacWheel
 import com.astroprecise.ui.theme.CosmicViolet
 import com.astroprecise.ui.theme.GlassOverlay
 import com.astroprecise.ui.theme.GlowGold
+import com.astroprecise.ui.util.shareText
+import com.astroprecise.ui.util.toShareText
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -57,13 +65,13 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             HomeScreenSkeleton()
         }
         AnimatedVisibility(visible = !uiState.isLoading, enter = fadeIn(), exit = fadeOut()) {
-            HomeContent(uiState.userProfile, uiState.dailyHoroscope)
+            HomeContent(uiState.userProfile, uiState.dailyHoroscope, uiState.currentSky)
         }
     }
 }
 
 @Composable
-private fun HomeContent(profile: UserProfile, horoscope: Horoscope?) {
+private fun HomeContent(profile: UserProfile, horoscope: Horoscope?, currentSky: CurrentSkyData?) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,6 +104,11 @@ private fun HomeContent(profile: UserProfile, horoscope: Horoscope?) {
 
         if (profile.isComplete) {
             SunMoonRisingRow(profile)
+            Spacer(Modifier.height(24.dp))
+        }
+
+        if (currentSky != null) {
+            CurrentSkyCard(currentSky)
             Spacer(Modifier.height(24.dp))
         }
 
@@ -135,7 +148,77 @@ private fun SignBadge(label: String, sign: String) {
 }
 
 @Composable
+private fun CurrentSkyCard(sky: CurrentSkyData) {
+    SectionHeader("Current Sky")
+    Spacer(Modifier.height(12.dp))
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                Column {
+                    Text(
+                        text = "Moon",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = "${sky.moonPhase.emoji} ${sky.moonPhase.displayName}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = "${sky.moonIllumination}% illuminated · in ${sky.moonSign}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = "Sun",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = "☉ ${sky.sunSign}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = GlowGold,
+                    )
+                }
+            }
+
+            if (sky.retrogradeplanets.isNotEmpty()) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = "Retrograde",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = sky.retrogradeplanets.joinToString("  ·  ") { "$it ℞" },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun DailyHoroscopeCard(horoscope: Horoscope) {
+    val context = LocalContext.current
+
     SectionHeader("Today's Horoscope")
     Spacer(Modifier.height(12.dp))
     Card(
@@ -155,7 +238,20 @@ private fun DailyHoroscopeCard(horoscope: Horoscope) {
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                StarRatingBar(rating = horoscope.rating)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    StarRatingBar(rating = horoscope.rating)
+                    IconButton(
+                        onClick = { context.shareText(horoscope.toShareText()) },
+                        modifier = Modifier.size(36.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share horoscope",
+                            tint = GlowGold,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                }
             }
             Spacer(Modifier.height(12.dp))
             Text(

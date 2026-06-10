@@ -33,6 +33,9 @@ class UserPreferences @Inject constructor(
         val BIRTH_CITY = stringPreferencesKey("birth_city")
         val BIRTH_LAT = doublePreferencesKey("birth_lat")
         val BIRTH_LON = doublePreferencesKey("birth_lon")
+        val NOTIF_ENABLED = booleanPreferencesKey("notif_enabled")
+        val NOTIF_HOUR = intPreferencesKey("notif_hour")
+        val NOTIF_MINUTE = intPreferencesKey("notif_minute")
     }
 
     val hasCompletedOnboarding: Flow<Boolean> = context.dataStore.data.map { prefs ->
@@ -68,6 +71,26 @@ class UserPreferences @Inject constructor(
             prefs[Keys.BIRTH_CITY] = profile.birthCity
             prefs[Keys.BIRTH_LAT] = profile.birthLatitude
             prefs[Keys.BIRTH_LON] = profile.birthLongitude
+        }
+    }
+
+    val notificationsEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[Keys.NOTIF_ENABLED] ?: false
+    }
+
+    val notificationHour: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[Keys.NOTIF_HOUR] ?: 8
+    }
+
+    val notificationMinute: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[Keys.NOTIF_MINUTE] ?: 0
+    }
+
+    suspend fun saveNotificationSettings(enabled: Boolean, hour: Int, minute: Int) {
+        context.dataStore.edit { prefs ->
+            prefs[Keys.NOTIF_ENABLED] = enabled
+            prefs[Keys.NOTIF_HOUR] = hour
+            prefs[Keys.NOTIF_MINUTE] = minute
         }
     }
 }

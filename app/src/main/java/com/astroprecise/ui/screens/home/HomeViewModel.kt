@@ -2,6 +2,7 @@ package com.astroprecise.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.astroprecise.data.model.CurrentSkyData
 import com.astroprecise.data.model.Horoscope
 import com.astroprecise.data.model.UserProfile
 import com.astroprecise.data.repository.AstrologyRepository
@@ -19,6 +20,7 @@ data class HomeUiState(
     val isLoading: Boolean = true,
     val userProfile: UserProfile = UserProfile(),
     val dailyHoroscope: Horoscope? = null,
+    val currentSky: CurrentSkyData? = null,
 )
 
 @HiltViewModel
@@ -34,6 +36,10 @@ class HomeViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserProfile())
 
     init {
+        viewModelScope.launch {
+            val sky = astrologyRepository.getCurrentSky()
+            _uiState.update { it.copy(currentSky = sky) }
+        }
         viewModelScope.launch {
             userRepository.userProfile.collect { profile ->
                 _uiState.update { it.copy(userProfile = profile, isLoading = false) }
