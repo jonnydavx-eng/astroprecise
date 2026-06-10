@@ -3,6 +3,7 @@ package com.astroprecise.data.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -22,6 +23,7 @@ class UserPreferences @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     private object Keys {
+        val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
         val NAME = stringPreferencesKey("name")
         val BIRTH_DAY = intPreferencesKey("birth_day")
         val BIRTH_MONTH = intPreferencesKey("birth_month")
@@ -31,6 +33,14 @@ class UserPreferences @Inject constructor(
         val BIRTH_CITY = stringPreferencesKey("birth_city")
         val BIRTH_LAT = doublePreferencesKey("birth_lat")
         val BIRTH_LON = doublePreferencesKey("birth_lon")
+    }
+
+    val hasCompletedOnboarding: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[Keys.ONBOARDING_COMPLETE] ?: false
+    }
+
+    suspend fun markOnboardingComplete() {
+        context.dataStore.edit { it[Keys.ONBOARDING_COMPLETE] = true }
     }
 
     val userProfile: Flow<UserProfile> = context.dataStore.data.map { prefs ->

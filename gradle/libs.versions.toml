@@ -12,6 +12,7 @@ datastorePreferences = "1.1.1"
 kotlinxCoroutines = "1.8.1"
 kotlinxSerializationJson = "1.7.1"
 room = "2.6.1"
+coreSplashscreen = "1.0.1"
 ksp = "2.0.0-1.0.22"
 
 [libraries]
@@ -37,6 +38,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

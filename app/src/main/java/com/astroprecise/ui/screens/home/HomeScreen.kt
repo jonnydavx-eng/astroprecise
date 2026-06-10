@@ -1,5 +1,8 @@
 package com.astroprecise.ui.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.astroprecise.data.model.Horoscope
 import com.astroprecise.data.model.UserProfile
+import com.astroprecise.ui.components.HomeScreenSkeleton
 import com.astroprecise.ui.components.SectionHeader
 import com.astroprecise.ui.components.StarRatingBar
 import com.astroprecise.ui.components.ZodiacWheel
@@ -50,9 +53,10 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
     ) {
-        if (uiState.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        } else {
+        AnimatedVisibility(visible = uiState.isLoading, enter = fadeIn(), exit = fadeOut()) {
+            HomeScreenSkeleton()
+        }
+        AnimatedVisibility(visible = !uiState.isLoading, enter = fadeIn(), exit = fadeOut()) {
             HomeContent(uiState.userProfile, uiState.dailyHoroscope)
         }
     }

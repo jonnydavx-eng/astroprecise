@@ -1,5 +1,11 @@
 package com.astroprecise.ui.screens.birthchart
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,9 +40,9 @@ import com.astroprecise.data.model.Aspect
 import com.astroprecise.data.model.AspectType
 import com.astroprecise.data.model.BirthChart
 import com.astroprecise.data.model.House
+import com.astroprecise.ui.components.NatalChartWheel
 import com.astroprecise.ui.components.PlanetCard
 import com.astroprecise.ui.components.SectionHeader
-import com.astroprecise.ui.components.ZodiacWheel
 import com.astroprecise.ui.theme.GlassOverlay
 import com.astroprecise.ui.theme.GlowGold
 
@@ -84,11 +90,23 @@ private fun BirthChartContent(
             }
         }
 
-        when (selectedTab) {
-            0 -> OverviewTab(chart)
-            1 -> PlanetsTab(chart)
-            2 -> HousesTab(chart)
-            3 -> AspectsTab(chart)
+        AnimatedContent(
+            targetState = selectedTab,
+            transitionSpec = {
+                if (targetState > initialState) {
+                    (fadeIn() + slideInHorizontally { it / 4 }) togetherWith (fadeOut() + slideOutHorizontally { -it / 4 })
+                } else {
+                    (fadeIn() + slideInHorizontally { -it / 4 }) togetherWith (fadeOut() + slideOutHorizontally { it / 4 })
+                }
+            },
+            label = "tab_content",
+        ) { tab ->
+            when (tab) {
+                0 -> OverviewTab(chart)
+                1 -> PlanetsTab(chart)
+                2 -> HousesTab(chart)
+                3 -> AspectsTab(chart)
+            }
         }
     }
 }
@@ -100,7 +118,7 @@ private fun OverviewTab(chart: BirthChart) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            ZodiacWheel(size = 240.dp, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
+            NatalChartWheel(chart = chart, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
         }
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {

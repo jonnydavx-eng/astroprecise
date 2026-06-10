@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.AstroPrecise" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.AstroPrecise.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_icon_bg</item>
+        <item name="postSplashScreenTheme">@style/Theme.AstroPrecise</item>
+    </style>
 </resources>

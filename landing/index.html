@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstroPrecise — Your Cosmic Blueprint</title>
+  <style>
+    :root {
+      --deep-space: #0a0a1a;
+      --space-blue: #0d1b3e;
+      --nebula-purple: #1a0a2e;
+      --cosmic-violet: #6b21a8;
+      --star-gold: #ffd700;
+      --glow-gold: #fbbf24;
+      --moon-silver: #e2e8f0;
+      --dim-star: #64748b;
+      --fire: #e53935;
+      --earth: #43a047;
+      --air: #1e88e5;
+      --water: #00897b;
+      --glass: rgba(255,255,255,0.05);
+      --glass-border: rgba(255,255,255,0.1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--deep-space);
+      color: var(--moon-silver);
+      overflow-x: hidden;
+    }
+
+    /* ── STARS BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 50% 40%, rgba(255,200,0,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 20% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 55%, rgba(180,180,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.3) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(10,10,26,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--star-gold);
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      color: var(--moon-silver);
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--star-gold); }
+
+    .nav-cta {
+      background: var(--cosmic-violet);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(107,33,168,0.4);
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 120px 48px 80px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(107,33,168,0.25);
+      border: 1px solid rgba(107,33,168,0.5);
+      color: var(--glow-gold);
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 30%, var(--star-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--dim-star);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cosmic-violet), #9333ea);
+      color: white;
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(107,33,168,0.45);
+    }
+
+    .btn-secondary {
+      background: var(--glass);
+      color: var(--moon-silver);
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--glass-border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── ZODIAC WHEEL SVG ── */
+    .hero-wheel {
+      width: 280px;
+      height: 280px;
+      margin: 60px auto 0;
+      position: relative;
+    }
+
+    .wheel-svg {
+      width: 100%;
+      height: 100%;
+      animation: spin 90s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 48px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      margin: 0;
+      max-width: 100%;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-family: Georgia, serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--star-gold);
+    }
+    .stat-label { color: var(--dim-star); font-size: 0.9rem; }
+
+    /* ── FEATURES ── */
+    .section-label {
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 0.75rem;
+      color: var(--glow-gold);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: Georgia, serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: white;
+    }
+
+    .section-subtitle {
+      color: var(--dim-star);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .features-header { margin-bottom: 56px; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(107,33,168,0.5);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      color: var(--dim-star);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .feature-tag {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 3px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .tag-fire { background: rgba(229,57,53,0.15); color: var(--fire); }
+    .tag-earth { background: rgba(67,160,71,0.15); color: var(--earth); }
+    .tag-air { background: rgba(30,136,229,0.15); color: var(--air); }
+    .tag-water { background: rgba(0,137,122,0.15); color: var(--water); }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: rgba(13,27,62,0.4); border-radius: 32px; padding: 64px; }
+
+    .steps { display: flex; flex-direction: column; gap: 40px; margin-top: 48px; }
+
+    .step {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--cosmic-violet), #9333ea);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: white;
+    }
+
+    .step-content h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 6px;
+    }
+
+    .step-content p {
+      color: var(--dim-star);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* ── SIGNS GRID ── */
+    .signs-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-top: 48px;
+    }
+
+    @media (max-width: 768px) {
+      .signs-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .signs-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .sign-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 16px 8px;
+      text-align: center;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .sign-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.08); }
+
+    .sign-symbol { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+    .sign-name { font-size: 0.75rem; color: var(--dim-star); }
+
+    /* ── CTA ── */
+    .cta-section {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(107,33,168,0.2), rgba(9,113,178,0.1));
+      border: 1px solid rgba(107,33,168,0.3);
+      border-radius: 32px;
+      padding: 80px 48px;
+    }
+
+    .cta-section h2 {
+      font-family: Georgia, serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      color: var(--dim-star);
+      font-size: 1.05rem;
+      margin-bottom: 40px;
+    }
+
+    .platform-badges {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .platform-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px 24px;
+      text-decoration: none;
+      color: var(--moon-silver);
+      font-size: 0.9rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .platform-badge:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+    .platform-badge span { font-size: 1.4rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 48px;
+      border-top: 1px solid var(--glass-border);
+      color: var(--dim-star);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--dim-star); text-decoration: none; }
+    footer a:hover { color: var(--moon-silver); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      section { padding: 60px 24px; }
+      .hero { padding: 80px 24px 60px; }
+      .how-section { padding: 40px 24px; }
+      .cta-section { padding: 60px 24px; }
+      .stats { padding: 40px 24px; gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">✦ AstroPrecise</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#signs">Signs</a>
+      <a href="#how">How It Works</a>
+    </div>
+    <a href="#download" class="nav-cta">Download Free</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" style="max-width:100%; padding-left:48px; padding-right:48px;">
+    <div class="hero-badge">✦ OFFLINE · PRIVATE · PRECISE</div>
+    <h1>Discover Your<br />Cosmic Blueprint</h1>
+    <p>Personalized birth charts, daily horoscopes, and precise planetary positions — all calculated on your device with no internet required.</p>
+    <div class="hero-buttons">
+      <a href="#download" class="btn-primary">Download for Android</a>
+      <a href="#features" class="btn-secondary">Explore Features</a>
+    </div>
+
+    <!-- Zodiac Wheel SVG -->
+    <div class="hero-wheel">
+      <svg class="wheel-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="94" fill="none" stroke="rgba(255,215,0,0.3)" stroke-width="0.8"/>
+        <circle cx="100" cy="100" r="74" fill="none" stroke="rgba(255,215,0,0.2)" stroke-width="0.6"/>
+        <circle cx="100" cy="100" r="50" fill="rgba(13,27,62,0.6)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        <!-- 12 division lines -->
+        <g stroke="rgba(255,215,0,0.4)" stroke-width="0.6">
+          <line x1="100" y1="6" x2="100" y2="26"/>
+          <line x1="147" y1="19" x2="135" y2="35"/>
+          <line x1="181" y1="53" x2="165" y2="61"/>
+          <line x1="194" y1="100" x2="174" y2="100"/>
+          <line x1="181" y1="147" x2="165" y2="139"/>
+          <line x1="147" y1="181" x2="135" y2="165"/>
+          <line x1="100" y1="194" x2="100" y2="174"/>
+          <line x1="53" y1="181" x2="65" y2="165"/>
+          <line x1="19" y1="147" x2="35" y2="139"/>
+          <line x1="6" y1="100" x2="26" y2="100"/>
+          <line x1="19" y1="53" x2="35" y2="61"/>
+          <line x1="53" y1="19" x2="65" y2="35"/>
+        </g>
+        <!-- Sign symbols in outer ring -->
+        <text x="100" y="16" text-anchor="middle" fill="#E53935" font-size="10" font-family="serif">♈</text>
+        <text x="147" y="27" text-anchor="middle" fill="#43A047" font-size="10" font-family="serif">♉</text>
+        <text x="181" y="60" text-anchor="middle" fill="#1E88E5" font-size="10" font-family="serif">♊</text>
+        <text x="187" y="105" text-anchor="middle" fill="#00897B" font-size="10" font-family="serif">♋</text>
+        <text x="181" y="150" text-anchor="middle" fill="#E53935" font-size="10" font-family="serif">♌</text>
+        <text x="147" y="181" text-anchor="middle" fill="#43A047" font-size="10" font-family="serif">♍</text>
+        <text x="100" y="193" text-anchor="middle" fill="#1E88E5" font-size="10" font-family="serif">♎</text>
+        <text x="53" y="181" text-anchor="middle" fill="#00897B" font-size="10" font-family="serif">♏</text>
+        <text x="19" y="150" text-anchor="middle" fill="#E53935" font-size="10" font-family="serif">♐</text>
+        <text x="13" y="105" text-anchor="middle" fill="#43A047" font-size="10" font-family="serif">♑</text>
+        <text x="19" y="60" text-anchor="middle" fill="#1E88E5" font-size="10" font-family="serif">♒</text>
+        <text x="53" y="27" text-anchor="middle" fill="#00897B" font-size="10" font-family="serif">♓</text>
+        <!-- Center star -->
+        <circle cx="100" cy="100" r="5" fill="#FFD700"/>
+        <circle cx="100" cy="100" r="16" fill="none" stroke="rgba(255,215,0,0.5)" stroke-width="0.8"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-number">12</div>
+      <div class="stat-label">Zodiac Signs</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">10</div>
+      <div class="stat-label">Planets Tracked</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">12</div>
+      <div class="stat-label">Astrological Houses</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Ptolemaic Aspects</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">Offline & Private</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="features-header">
+      <div class="section-label">What's Inside</div>
+      <h2 class="section-title">Everything You Need<br />to Read the Stars</h2>
+      <p class="section-subtitle">AstroPrecise combines ancient astrological wisdom with precise modern calculations — all running locally on your device.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🌟</span>
+        <div class="feature-title">Natal Birth Chart</div>
+        <div class="feature-desc">Your complete natal chart with all 10 planets, 12 houses, and Ptolemaic aspects. Calculated from your exact birth date, time, and location.</div>
+        <span class="feature-tag tag-fire">Chart Calculation</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📅</span>
+        <div class="feature-title">Daily Horoscopes</div>
+        <div class="feature-desc">Personalised daily readings for your Sun sign covering love, career, and wellness — with a lucky number and colour for the day.</div>
+        <span class="feature-tag tag-air">Daily Readings</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔮</span>
+        <div class="feature-title">Sign Explorer</div>
+        <div class="feature-desc">Browse all 12 zodiac signs. Discover elements, modalities, ruling planets, traits, and detailed personality descriptions.</div>
+        <span class="feature-tag tag-water">Astrology Guide</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🪐</span>
+        <div class="feature-title">Planetary Positions</div>
+        <div class="feature-desc">See exactly where each planet sits in your chart — sign, degree, house, and whether it's retrograde. Complete with meaning and keywords.</div>
+        <span class="feature-tag tag-earth">Planet Tracking</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🏠</span>
+        <div class="feature-title">12 Houses</div>
+        <div class="feature-desc">Whole-Sign house system showing which sign governs each area of your life, from identity to career to relationships.</div>
+        <span class="feature-tag tag-air">House System</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✦</span>
+        <div class="feature-title">Aspect Analysis</div>
+        <div class="feature-desc">All major Ptolemaic aspects — conjunctions, trines, squares, sextiles, and oppositions — with orbs and applying/separating status.</div>
+        <span class="feature-tag tag-fire">Aspect Grid</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="padding-top:0;">
+    <div class="how-section">
+      <div class="section-label">Getting Started</div>
+      <h2 class="section-title">Up and Running<br />in Three Steps</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Enter Your Birth Details</h3>
+            <p>Complete the onboarding with your name, birth date, time, and city. The more precise your time and location, the more accurate your rising sign and house placements will be.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Receive Your Natal Chart</h3>
+            <p>AstroPrecise instantly calculates your personalised birth chart using VSOP87-derived planetary algorithms. No server required — everything runs on your phone.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Explore Daily & Deeper</h3>
+            <p>Check your daily horoscope each morning, explore all 12 signs in the Horoscope tab, or dive into your planets, houses, and aspects for deeper self-understanding.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNS -->
+  <section id="signs">
+    <div class="section-label">The Zodiac</div>
+    <h2 class="section-title">All 12 Signs Covered</h2>
+    <div class="signs-grid">
+      <div class="sign-card"><span class="sign-symbol">♈</span><span class="sign-name">Aries</span></div>
+      <div class="sign-card"><span class="sign-symbol">♉</span><span class="sign-name">Taurus</span></div>
+      <div class="sign-card"><span class="sign-symbol">♊</span><span class="sign-name">Gemini</span></div>
+      <div class="sign-card"><span class="sign-symbol">♋</span><span class="sign-name">Cancer</span></div>
+      <div class="sign-card"><span class="sign-symbol">♌</span><span class="sign-name">Leo</span></div>
+      <div class="sign-card"><span class="sign-symbol">♍</span><span class="sign-name">Virgo</span></div>
+      <div class="sign-card"><span class="sign-symbol">♎</span><span class="sign-name">Libra</span></div>
+      <div class="sign-card"><span class="sign-symbol">♏</span><span class="sign-name">Scorpio</span></div>
+      <div class="sign-card"><span class="sign-symbol">♐</span><span class="sign-name">Sagittarius</span></div>
+      <div class="sign-card"><span class="sign-symbol">♑</span><span class="sign-name">Capricorn</span></div>
+      <div class="sign-card"><span class="sign-symbol">♒</span><span class="sign-name">Aquarius</span></div>
+      <div class="sign-card"><span class="sign-symbol">♓</span><span class="sign-name">Pisces</span></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="download" style="padding-top:0;">
+    <div class="cta-section">
+      <h2>Ready to Meet Your Stars?</h2>
+      <p>Download AstroPrecise free for Android. No account. No ads. No internet required.</p>
+      <div class="platform-badges">
+        <a href="#" class="platform-badge">
+          <span>🤖</span>
+          <div>
+            <div style="font-size:0.7rem;opacity:0.7;text-transform:uppercase;letter-spacing:0.05em;">Get it on</div>
+            <div style="font-weight:700;">Google Play</div>
+          </div>
+        </a>
+        <a href="#" class="platform-badge">
+          <span>📦</span>
+          <div>
+            <div style="font-size:0.7rem;opacity:0.7;text-transform:uppercase;letter-spacing:0.05em;">Direct Download</div>
+            <div style="font-weight:700;">APK File</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p style="margin-bottom:8px;">
+      <strong style="color:var(--star-gold);">✦ AstroPrecise</strong>
+    </p>
+    <p>Built with Kotlin · Jetpack Compose · Material 3 &nbsp;·&nbsp; Fully offline, no API keys required</p>
+    <p style="margin-top:8px;">
+      <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+      <a href="#">GitHub</a> &nbsp;·&nbsp;
+      <a href="#">Contact</a>
+    </p>
+  </footer>
+
+</body>
+</html>
