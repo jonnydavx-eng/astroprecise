@@ -512,62 +512,62 @@
         <div class="sign-grid" id="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
           <!-- JS populates via AstroApp.renderHoroscopeGrid -->
           <!-- Static fallbacks for no-JS / initial paint -->
-          <button class="sign-card" role="listitem" data-sign="aries" aria-label="Aries horoscope">
+          <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♈</span>
             <span class="sign-card__name">Aries</span>
             <span class="sign-card__dates">Mar 21 – Apr 19</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="taurus" aria-label="Taurus horoscope">
+          <button class="sign-card" role="listitem" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♉</span>
             <span class="sign-card__name">Taurus</span>
             <span class="sign-card__dates">Apr 20 – May 20</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="gemini" aria-label="Gemini horoscope">
+          <button class="sign-card" role="listitem" data-sign="gemini" data-element="air" aria-label="Gemini horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♊</span>
             <span class="sign-card__name">Gemini</span>
             <span class="sign-card__dates">May 21 – Jun 20</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="cancer" aria-label="Cancer horoscope">
+          <button class="sign-card" role="listitem" data-sign="cancer" data-element="water" aria-label="Cancer horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♋</span>
             <span class="sign-card__name">Cancer</span>
             <span class="sign-card__dates">Jun 21 – Jul 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="leo" aria-label="Leo horoscope">
+          <button class="sign-card" role="listitem" data-sign="leo" data-element="fire" aria-label="Leo horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♌</span>
             <span class="sign-card__name">Leo</span>
             <span class="sign-card__dates">Jul 23 – Aug 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="virgo" aria-label="Virgo horoscope">
+          <button class="sign-card" role="listitem" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♍</span>
             <span class="sign-card__name">Virgo</span>
             <span class="sign-card__dates">Aug 23 – Sep 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="libra" aria-label="Libra horoscope">
+          <button class="sign-card" role="listitem" data-sign="libra" data-element="air" aria-label="Libra horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♎</span>
             <span class="sign-card__name">Libra</span>
             <span class="sign-card__dates">Sep 23 – Oct 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="scorpio" aria-label="Scorpio horoscope">
+          <button class="sign-card" role="listitem" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♏</span>
             <span class="sign-card__name">Scorpio</span>
             <span class="sign-card__dates">Oct 23 – Nov 21</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="sagittarius" aria-label="Sagittarius horoscope">
+          <button class="sign-card" role="listitem" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♐</span>
             <span class="sign-card__name">Sagittarius</span>
             <span class="sign-card__dates">Nov 22 – Dec 21</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="capricorn" aria-label="Capricorn horoscope">
+          <button class="sign-card" role="listitem" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♑</span>
             <span class="sign-card__name">Capricorn</span>
             <span class="sign-card__dates">Dec 22 – Jan 19</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="aquarius" aria-label="Aquarius horoscope">
+          <button class="sign-card" role="listitem" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♒</span>
             <span class="sign-card__name">Aquarius</span>
             <span class="sign-card__dates">Jan 20 – Feb 18</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="pisces" aria-label="Pisces horoscope">
+          <button class="sign-card" role="listitem" data-sign="pisces" data-element="water" aria-label="Pisces horoscope">
             <span class="sign-card__glyph" aria-hidden="true">♓</span>
             <span class="sign-card__name">Pisces</span>
             <span class="sign-card__dates">Feb 19 – Mar 20</span>
@@ -583,6 +583,7 @@
                 <div>
                   <h2 class="sign-reading-panel__sign-name" id="srp-sign-name"></h2>
                   <p class="sign-reading-panel__date" id="srp-date"></p>
+                  <span class="srp-element-text" id="srp-element-text"></span>
                 </div>
               </div>
               <div class="sign-reading-panel__actions">
@@ -591,6 +592,13 @@
               </div>
             </div>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
+            <div class="srp-energy" id="srp-energy-wrap">
+              <div class="srp-energy__label">
+                <span>Cosmic Energy Today</span>
+                <span class="srp-energy__value" id="srp-energy-pct">—</span>
+              </div>
+              <div class="srp-energy__track"><div class="srp-energy__fill" id="srp-energy-fill"></div></div>
+            </div>
             <div class="sign-reading-panel__grid">
               <div class="reading-card">
                 <span class="reading-card__icon">♥</span>
@@ -890,18 +898,18 @@
     'use strict';
 
     var SIGNS = {
-      aries:       { glyph:'♈', name:'Aries',       dates:'Mar 21 – Apr 19' },
-      taurus:      { glyph:'♉', name:'Taurus',      dates:'Apr 20 – May 20' },
-      gemini:      { glyph:'♊', name:'Gemini',      dates:'May 21 – Jun 20' },
-      cancer:      { glyph:'♋', name:'Cancer',      dates:'Jun 21 – Jul 22' },
-      leo:         { glyph:'♌', name:'Leo',         dates:'Jul 23 – Aug 22' },
-      virgo:       { glyph:'♍', name:'Virgo',       dates:'Aug 23 – Sep 22' },
-      libra:       { glyph:'♎', name:'Libra',       dates:'Sep 23 – Oct 22' },
-      scorpio:     { glyph:'♏', name:'Scorpio',     dates:'Oct 23 – Nov 21' },
-      sagittarius: { glyph:'♐', name:'Sagittarius', dates:'Nov 22 – Dec 21' },
-      capricorn:   { glyph:'♑', name:'Capricorn',   dates:'Dec 22 – Jan 19' },
-      aquarius:    { glyph:'♒', name:'Aquarius',    dates:'Jan 20 – Feb 18' },
-      pisces:      { glyph:'♓', name:'Pisces',      dates:'Feb 19 – Mar 20' },
+      aries:       { glyph:'♈', name:'Aries',       dates:'Mar 21 – Apr 19', element:'fire'  },
+      taurus:      { glyph:'♉', name:'Taurus',      dates:'Apr 20 – May 20', element:'earth' },
+      gemini:      { glyph:'♊', name:'Gemini',      dates:'May 21 – Jun 20', element:'air'   },
+      cancer:      { glyph:'♋', name:'Cancer',      dates:'Jun 21 – Jul 22', element:'water' },
+      leo:         { glyph:'♌', name:'Leo',         dates:'Jul 23 – Aug 22', element:'fire'  },
+      virgo:       { glyph:'♍', name:'Virgo',       dates:'Aug 23 – Sep 22', element:'earth' },
+      libra:       { glyph:'♎', name:'Libra',       dates:'Sep 23 – Oct 22', element:'air'   },
+      scorpio:     { glyph:'♏', name:'Scorpio',     dates:'Oct 23 – Nov 21', element:'water' },
+      sagittarius: { glyph:'♐', name:'Sagittarius', dates:'Nov 22 – Dec 21', element:'fire'  },
+      capricorn:   { glyph:'♑', name:'Capricorn',   dates:'Dec 22 – Jan 19', element:'earth' },
+      aquarius:    { glyph:'♒', name:'Aquarius',    dates:'Jan 20 – Feb 18', element:'air'   },
+      pisces:      { glyph:'♓', name:'Pisces',      dates:'Feb 19 – Mar 20', element:'water' },
     };
 
     var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -919,6 +927,9 @@
       return null;
     }
 
+    var ELEMENT_LABELS = { fire:'Fire Sign ✦', earth:'Earth Sign ⬡', air:'Air Sign ◈', water:'Water Sign ◉' };
+    var SIGN_KEYS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+
     function openPanel(signKey) {
       var info = SIGNS[signKey];
       if (!info) return;
@@ -927,6 +938,11 @@
 
       var data = Interp.getDailyHoroscope(info.name, new Date());
       var panel = document.getElementById('sign-reading-panel');
+
+      // Element theming
+      panel.dataset.element = info.element || '';
+      var elText = document.getElementById('srp-element-text');
+      if (elText) elText.textContent = ELEMENT_LABELS[info.element] || '';
 
       document.getElementById('srp-glyph').textContent = info.glyph;
       document.getElementById('srp-sign-name').textContent = info.name;
@@ -939,6 +955,15 @@
       document.getElementById('srp-lucky-color').textContent = data.luckyColor || '—';
       document.getElementById('srp-best-day').textContent = data.bestDay || DAYS[(new Date().getDay() + 1) % 7];
 
+      // Energy bar — deterministic score from sign + date
+      var epochDay = Math.floor(Date.now() / 86400000);
+      var signIdx = SIGN_KEYS.indexOf(signKey);
+      var energyPct = 55 + ((signIdx * 7 + epochDay * 3) % 40);
+      var pctEl = document.getElementById('srp-energy-pct');
+      var fillEl = document.getElementById('srp-energy-fill');
+      if (pctEl) pctEl.textContent = energyPct + '%';
+      if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
+
       panel.classList.add('is-open');
       setTimeout(function () {
         panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -948,6 +973,9 @@
     function closePanel() {
       var panel = document.getElementById('sign-reading-panel');
       panel.classList.remove('is-open');
+      panel.removeAttribute('data-element');
+      var fillEl = document.getElementById('srp-energy-fill');
+      if (fillEl) fillEl.style.width = '0';
       document.querySelectorAll('.sign-card.is-active').forEach(function(c) {
         c.classList.remove('is-active');
       });

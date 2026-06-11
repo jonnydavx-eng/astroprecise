@@ -5013,3 +5013,147 @@ body::before {
   flex-shrink: 0;
   opacity: 0.85;
 }
+
+/* ── Element-Tinted Reading Panel ──────────────────────────── */
+.sign-reading-panel[data-element="fire"]  { --el-color:#fb923c; --el-glow:rgba(251,146,60,0.5);   --el-bg:rgba(251,146,60,0.06);   --el-border:rgba(251,146,60,0.38); }
+.sign-reading-panel[data-element="earth"] { --el-color:#34d399; --el-glow:rgba(52,211,153,0.45);  --el-bg:rgba(52,211,153,0.05);   --el-border:rgba(52,211,153,0.32); }
+.sign-reading-panel[data-element="air"]   { --el-color:#38bdf8; --el-glow:rgba(56,189,248,0.45);  --el-bg:rgba(56,189,248,0.05);   --el-border:rgba(56,189,248,0.32); }
+.sign-reading-panel[data-element="water"] { --el-color:#818cf8; --el-glow:rgba(129,140,248,0.45); --el-bg:rgba(129,140,248,0.06);  --el-border:rgba(129,140,248,0.32); }
+
+.sign-reading-panel[data-element] .sign-reading-panel__inner {
+  border-color: var(--el-border, rgba(196,146,10,0.28));
+  background: linear-gradient(160deg, var(--el-bg, transparent) 0%, rgba(9,11,22,0.96) 55%);
+}
+
+.sign-reading-panel[data-element] .reading-card {
+  border-color: var(--el-border, rgba(91,127,199,0.2));
+  background: var(--el-bg, rgba(42,74,148,0.08));
+}
+
+.sign-reading-panel[data-element] .reading-card__label {
+  color: var(--el-color, var(--lapis-light));
+}
+
+/* Animated sign glyph when panel opens */
+@keyframes glyph-pulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 7px  var(--el-glow, rgba(196,146,10,0.45))); }
+  50%      { transform: scale(1.11); filter: drop-shadow(0 0 18px var(--el-glow, rgba(196,146,10,0.8)));  }
+}
+.sign-reading-panel.is-open .sign-reading-panel__glyph {
+  display: inline-block;
+  animation: glyph-pulse 4s ease-in-out infinite;
+}
+
+/* Element badge text under sign name */
+.srp-element-text {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--el-color, var(--gold-pale));
+  opacity: 0.85;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Energy bar below overview */
+.srp-energy {
+  margin: 0 0 var(--space-5);
+}
+.srp-energy__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+  margin-bottom: 6px;
+}
+.srp-energy__value {
+  color: var(--el-color, var(--gold));
+  font-weight: 700;
+}
+.srp-energy__track {
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.srp-energy__fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--lapis-light), var(--el-color, var(--gold)));
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Sign card element tints ──────────────────────────────── */
+.sign-card[data-element="fire"]  .sign-card__glyph { color: #fb923c; }
+.sign-card[data-element="earth"] .sign-card__glyph { color: #34d399; }
+.sign-card[data-element="air"]   .sign-card__glyph { color: #38bdf8; }
+.sign-card[data-element="water"] .sign-card__glyph { color: #818cf8; }
+
+/* Active state with element glow (overrides generic gold glow) */
+.sign-card[data-element="fire"].is-active  { border-color:rgba(251,146,60,0.65);  box-shadow:0 0 24px rgba(251,146,60,0.2),  0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="earth"].is-active { border-color:rgba(52,211,153,0.55);  box-shadow:0 0 24px rgba(52,211,153,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="air"].is-active   { border-color:rgba(56,189,248,0.6);   box-shadow:0 0 24px rgba(56,189,248,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="water"].is-active { border-color:rgba(129,140,248,0.6);  box-shadow:0 0 24px rgba(129,140,248,0.18),0 4px 20px rgba(0,0,0,0.3); }
+
+/* ── Planet weather card hover ────────────────────────────── */
+.planet-weather-card {
+  transition: border-color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+}
+.planet-weather-card:hover {
+  border-color: rgba(196,146,10,0.32);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(42,74,148,0.16);
+}
+
+/* ── Hero stat separators ────────────────────────────────── */
+.hero-stat + .hero-stat {
+  padding-left: var(--space-8);
+  border-left: 1px solid rgba(196,146,10,0.22);
+}
+
+/* ── Section title gold underline ───────────────────────── */
+.section__title {
+  position: relative;
+}
+.section__title::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-light), rgba(196,146,10,0.3));
+  border-radius: 1px;
+  margin: var(--space-3) auto 0;
+}
+
+/* ── Reading panel overview font polish ─────────────────── */
+.sign-reading-panel__overview {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  font-style: italic;
+}
+
+/* ── Weekly forecast item improvements ─────────────────── */
+.transit-item--major {
+  border-color: rgba(196,146,10,0.35) !important;
+  background: rgba(196,146,10,0.05) !important;
+}
+.transit-item--major .transit-item__title {
+  color: var(--gold-light);
+}
+
+/* ── Retrograde badge polish ────────────────────────────── */
+.retrograde-badge {
+  background: rgba(176,74,82,0.15);
+  border-color: rgba(176,74,82,0.4);
+  color: var(--crimson-light);
+}
+
+/* ── Sign reading panel header accent line ─────────────── */
+.sign-reading-panel__header {
+  border-bottom: 1px solid var(--el-border, rgba(196,146,10,0.15));
+}
