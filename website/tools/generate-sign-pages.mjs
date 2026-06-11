@@ -164,6 +164,28 @@ function page(s) {
     about: { '@type': 'Thing', name: `${s.name} (astrology)` },
   };
 
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `What are the ${s.name} zodiac dates?`,
+        acceptedAnswer: { '@type': 'Answer', text: `${s.name} season runs ${s.dates}. People born in this window have their Sun in ${s.name}.` },
+      },
+      {
+        '@type': 'Question',
+        name: `What element and ruling planet is ${s.name}?`,
+        acceptedAnswer: { '@type': 'Answer', text: `${s.name} is a ${s.element} sign of the ${s.modality} modality, ruled by ${s.ruler}. Its symbol is ${s.symbol}.` },
+      },
+      {
+        '@type': 'Question',
+        name: `Which signs are most compatible with ${s.name}?`,
+        acceptedAnswer: { '@type': 'Answer', text: `${s.name} is traditionally most compatible with ${s.matches.join(', ')}. Full synastry depends on the complete birth charts of both people, not Sun signs alone.` },
+      },
+    ],
+  };
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -190,6 +212,7 @@ function page(s) {
   <meta name="theme-color" content="#090b16" />
   <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+  <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
   <style>
     .sign-hero { text-align: center; padding: var(--space-16) var(--space-4) var(--space-10); position: relative; z-index: 1; }
     .sign-hero__glyph { font-size: 4.5rem; line-height: 1; display: block; margin-bottom: var(--space-4);
@@ -218,7 +241,7 @@ function page(s) {
     .other-signs a:hover { border-color: var(--color-gold); color: var(--color-gold-pale); }
   </style>
 </head>
-<body>
+<body data-element="${s.element.toLowerCase()}">
   <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.5;"></canvas>
 
   <header class="site-header" role="banner">

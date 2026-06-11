@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AstroPrecise Cosmic Compatibility — synastry birth chart comparison and full compatibility report. Discover your astrological dynamics." />
-  <title>Cosmic Compatibility | AstroPrecise</title>
+  <title>Zodiac Compatibility Calculator — Free Synastry Report | AstroPrecise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -442,9 +442,13 @@
             <button type="submit" class="btn btn--primary btn--lg" id="compat-submit-btn">
               Calculate Compatibility ✨
             </button>
+            <button type="button" class="btn btn--outline btn--lg" id="compat-invite-btn" style="margin-left:var(--space-3);">
+              ♡ Invite Someone
+            </button>
           </div>
           <p class="form-hint" style="text-align:center;margin-top:var(--space-3);">
-            All calculations run in your browser. No birth data is sent to any server.
+            All calculations run in your browser. No birth data is sent to any server.<br/>
+            <span style="opacity:0.8;">"Invite Someone" copies a link with your half pre-filled — they add theirs.</span>
           </p>
         </form>
 
@@ -1020,9 +1024,39 @@
       history.replaceState(null, '', '?' + params.toString());
     }
 
+    var inviteBtn = document.getElementById('compat-invite-btn');
+    if (inviteBtn) {
+      inviteBtn.addEventListener('click', function() {
+        var p1 = readPerson('person1');
+        if (!p1) {
+          inviteBtn.textContent = 'Fill in your details first';
+          setTimeout(function() { inviteBtn.innerHTML = '♡ Invite Someone'; }, 2200);
+          return;
+        }
+        var params = new URLSearchParams();
+        params.set('p1d', p1.y + '-' + String(p1.m).padStart(2,'0') + '-' + String(p1.d).padStart(2,'0'));
+        params.set('p1t', String(p1.hh).padStart(2,'0') + ':' + String(p1.mm).padStart(2,'0'));
+        params.set('p1n', p1.name || '');
+        params.set('p1la', p1.lat.toFixed(4));
+        params.set('p1lo', p1.lon.toFixed(4));
+        params.set('p1tz', p1.tz);
+        var link = location.origin + location.pathname + '?' + params.toString();
+        var inviteText = (p1.name ? p1.name + ' wants' : 'Someone wants') +
+          ' to check your cosmic compatibility ♡ Their half of the chart is already filled in — add yours: ' + link;
+        if (navigator.share) {
+          navigator.share({ title: 'Cosmic Compatibility', text: inviteText, url: link }).catch(function(){});
+        } else {
+          navigator.clipboard.writeText(inviteText).then(function() {
+            inviteBtn.textContent = '✓ Invite link copied';
+            setTimeout(function() { inviteBtn.innerHTML = '♡ Invite Someone'; }, 2400);
+          }).catch(function(){});
+        }
+      });
+    }
+
     function fillFromURL() {
       var params = new URLSearchParams(window.location.search);
-      if (!params.has('p1d') || !params.has('p2d')) return false;
+      if (!params.has('p1d')) return false;
 
       function fillPerson(prefix, pfx) {
         var dateEl = document.getElementById(prefix + '-date');
@@ -1045,6 +1079,23 @@
       }
 
       fillPerson('person1', 'p1');
+
+      // Invite link: only Person 1 present — welcome the invitee, focus their half
+      if (!params.has('p2d')) {
+        var p1name = decodeURIComponent(params.get('p1n') || '');
+        var formHeading = document.getElementById('form-heading');
+        if (formHeading && p1name) {
+          formHeading.innerHTML = '<div class="chart-form-panel__title-icon" aria-hidden="true">♡</div>' +
+            p1name + ' invited you — add your details';
+        }
+        var p2date = document.getElementById('person2-date');
+        if (p2date) setTimeout(function() {
+          p2date.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          p2date.focus();
+        }, 600);
+        return false;
+      }
+
       fillPerson('person2', 'p2');
       return true;
     }
