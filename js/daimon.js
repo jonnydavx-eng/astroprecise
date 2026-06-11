@@ -348,7 +348,9 @@
       .replace('{planet}', dominantPlanet)
       .replace('{element}', element.toLowerCase());
     if (natalPhase) {
-      temperament += ' You were born under a ' + natalPhase.toLowerCase() +
+      let phaseText = natalPhase.toLowerCase();
+      if (phaseText.indexOf('moon') === -1) phaseText += ' moon';
+      temperament += ' You were born under a ' + phaseText +
         ', and I keep that light behind everything I tell you.';
     }
     if (isEphemeral) temperament += EPHEMERAL_LINE[element];
@@ -1048,7 +1050,8 @@
     const fill = function (tpl, slots) {
       let out = tpl;
       for (const k in slots) out = out.split('{' + k + '}').join(slots[k]);
-      return out;
+      // Truncated quotes end in an ellipsis; drop punctuation doubled after it.
+      return out.replace(/…([.,])/g, '…');
     };
     const slots = { planet: planet, moonSign: moonSign, sunSign: sunSign, element: element };
 
