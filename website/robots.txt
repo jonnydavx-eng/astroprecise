@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jonnydavx-eng.github.io/astroprecise/sitemap.xml

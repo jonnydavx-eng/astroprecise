@@ -813,5 +813,338 @@
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
+
+  <script>
+  /* ── Compatibility Calculator ─────────────────────────────────────────── */
+  (function () {
+    'use strict';
+
+    var ASPECT_GLYPHS = { conjunction:'☌', trine:'△', sextile:'✶', square:'□', opposition:'☍' };
+
+    function waitFor(cond, ms) {
+      return new Promise(function(res, rej) {
+        var t = setTimeout(function() { rej('timeout'); }, ms || 8000);
+        (function check() {
+          if (cond()) { clearTimeout(t); res(); } else setTimeout(check, 100);
+        })();
+      });
+    }
+
+    function tzOffsetMinutes(tz, utcDate) {
+      try {
+        var f = new Intl.DateTimeFormat('en-GB', { timeZone: tz, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12: false });
+        var p = {};
+        f.formatToParts(utcDate).forEach(function(x) { if (x.type !== 'literal') p[x.type] = parseInt(x.value, 10); });
+        var local = Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute, p.second);
+        return (local - utcDate.getTime()) / 60000;
+      } catch(e) { return 0; }
+    }
+
+    function localToUT(y, m, d, hh, mm, tz) {
+      var utc = new Date(Date.UTC(y, m-1, d, hh, mm, 0));
+      for (var i = 0; i < 2; i++) {
+        var off = tzOffsetMinutes(tz, utc);
+        utc = new Date(Date.UTC(y, m-1, d, hh, mm, 0) - off * 60000);
+      }
+      return { y: utc.getUTCFullYear(), m: utc.getUTCMonth()+1, d: utc.getUTCDate(), hh: utc.getUTCHours(), mm: utc.getUTCMinutes() };
+    }
+
+    function buildChart(E, year, month, day, hour, min, lat, lon, tz) {
+      var ut = localToUT(year, month, day, hour, min, tz || 'UTC');
+      var raw = E.calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, lat, lon);
+      var p = raw.positions;
+      return {
+        sunSign:     p.sun.sign,
+        moonSign:    p.moon.sign,
+        venusSign:   p.venus ? p.venus.sign : p.sun.sign,
+        marsSign:    p.mars  ? p.mars.sign  : p.sun.sign,
+        mercurySign: p.mercury ? p.mercury.sign : p.sun.sign,
+        rising:      p.asc  ? p.asc.sign   : p.sun.sign,
+        positions: {
+          Sun:     { lon: p.sun.longitude },
+          Moon:    { lon: p.moon.longitude },
+          Venus:   { lon: p.venus ? p.venus.longitude : p.sun.longitude },
+          Mars:    { lon: p.mars  ? p.mars.longitude  : p.sun.longitude },
+          Jupiter: { lon: p.jupiter ? p.jupiter.longitude : 0 },
+          Saturn:  { lon: p.saturn  ? p.saturn.longitude  : 0 },
+        }
+      };
+    }
+
+    function showResult(result, name1, name2) {
+      var loadEl = document.getElementById('compat-loading');
+      var resEl  = document.getElementById('compat-result');
+      if (loadEl) loadEl.classList.add('hidden');
+      if (!resEl) return;
+      resEl.classList.remove('hidden');
+
+      var titleEl = document.getElementById('compat-result-title');
+      var subEl   = document.getElementById('compat-result-subtitle');
+      var score   = result.overall;
+      var label   = score >= 80 ? 'A Profound Match' : score >= 65 ? 'Genuine Potential' : score >= 50 ? 'Growth Dynamic' : 'Challenging Beauty';
+      if (titleEl) titleEl.textContent = (name1 || 'Person 1') + ' & ' + (name2 || 'Person 2') + ' — ' + label;
+      if (subEl) subEl.textContent = 'Overall compatibility: ' + score + '% · Based on full synastry analysis';
+
+      // Score ring
+      var ring = document.getElementById('score-ring');
+      var numEl = document.getElementById('overall-score');
+      if (ring) {
+        var circ = 2 * Math.PI * 54;
+        ring.style.strokeDasharray = ((score / 100) * circ).toFixed(1) + ' ' + circ.toFixed(1);
+      }
+      if (numEl) numEl.textContent = score + '%';
+
+      // Category bars
+      var cats = [
+        { label:'Romantic Attraction', key:'love' },
+        { label:'Emotional Depth',     key:'values' },
+        { label:'Communication',       key:'communication' },
+        { label:'Long-Term Potential', key:'longTerm' },
+        { label:'Shared Vision',       key:'passion' },
+      ];
+      var catEl = document.getElementById('category-scores');
+      if (catEl) {
+        var items = catEl.querySelectorAll('.category-score-item');
+        cats.forEach(function(cat, i) {
+          if (!items[i]) return;
+          var v = result[cat.key] || 0;
+          items[i].querySelector('.category-score-item__value').textContent = v + '%';
+          items[i].querySelector('.score-bar__fill').style.width = v + '%';
+        });
+      }
+
+      // Synastry aspects
+      var aspEl = document.getElementById('synastry-aspects');
+      if (aspEl && result.synastryAspects && result.synastryAspects.length) {
+        var rows = result.synastryAspects.slice(0,8).map(function(a) {
+          return '<tr><td>' + a.p1 + '</td><td style="text-align:center;font-size:1.2rem;color:var(--color-gold)">' +
+            (ASPECT_GLYPHS[a.aspect] || a.aspect) + '</td><td>' + a.p2 + '</td>' +
+            '<td style="color:var(--color-silver-dim);font-size:var(--text-xs);">' + (a.orb||'—') + '°</td>' +
+            '<td style="color:var(--color-silver);font-size:var(--text-xs);">' + (a.interpretation||'') + '</td></tr>';
+        }).join('');
+        aspEl.innerHTML = '<h3 style="font-family:var(--font-display);color:var(--color-gold-pale);margin-bottom:var(--space-4);">Cross-Chart Aspects</h3>' +
+          '<div style="overflow-x:auto;"><table class="synastry-aspects-table" role="grid">' +
+          '<thead><tr><th>Person 1</th><th>Aspect</th><th>Person 2</th><th>Orb</th><th>Meaning</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody></table></div>';
+      }
+
+      // Overview narrative
+      var overviewEl = document.getElementById('compat-overview');
+      if (overviewEl && result.overview) {
+        overviewEl.innerHTML = '<div class="card" style="padding:var(--space-6);"><p style="color:var(--color-silver);line-height:1.8;">' + result.overview + '</p></div>';
+      }
+
+      // Share button
+      if (!document.getElementById('compat-share-btn')) {
+        var shareWrap = document.createElement('div');
+        shareWrap.style.cssText = 'text-align:center;margin-top:var(--space-6);';
+        var shareBtn = document.createElement('button');
+        shareBtn.id = 'compat-share-btn';
+        shareBtn.className = 'btn btn--outline';
+        shareBtn.textContent = 'Share This Reading ↗';
+        shareBtn.addEventListener('click', function() {
+          var url = window.location.href;
+          if (navigator.share) {
+            navigator.share({ title: 'Our Compatibility Report', url: url }).catch(function(){});
+          } else {
+            navigator.clipboard.writeText(url).then(function() {
+              shareBtn.textContent = 'Link Copied!';
+              setTimeout(function() { shareBtn.textContent = 'Share This Reading ↗'; }, 2000);
+            });
+          }
+        });
+        shareWrap.appendChild(shareBtn);
+        resEl.appendChild(shareWrap);
+      }
+
+      // Scroll to result
+      setTimeout(function() { resEl.scrollIntoView({ behavior:'smooth', block:'start' }); }, 100);
+    }
+
+    function readPerson(prefix) {
+      var date = (document.getElementById(prefix + '-date') || {}).value || '';
+      var time = (document.getElementById(prefix + '-time') || {}).value || '12:00';
+      var name = (document.getElementById(prefix + '-name') || {}).value || '';
+      var lat  = parseFloat((document.getElementById(prefix + '-lat') || {}).value);
+      var lon  = parseFloat((document.getElementById(prefix + '-lon') || {}).value);
+      var tz   = (document.getElementById(prefix + '-tz') || {}).value || 'UTC';
+      if (!date || isNaN(lat) || isNaN(lon)) return null;
+      var parts = date.split('-').map(Number);
+      var timeParts = time.split(':').map(Number);
+      return { name, y: parts[0], m: parts[1], d: parts[2], hh: timeParts[0]||12, mm: timeParts[1]||0, lat, lon, tz };
+    }
+
+    function encodeToURL(p1, p2) {
+      var params = new URLSearchParams();
+      if (p1) {
+        params.set('p1d', p1.y + '-' + String(p1.m).padStart(2,'0') + '-' + String(p1.d).padStart(2,'0'));
+        params.set('p1t', String(p1.hh).padStart(2,'0') + ':' + String(p1.mm).padStart(2,'0'));
+        params.set('p1n', p1.name);
+        params.set('p1la', p1.lat.toFixed(4));
+        params.set('p1lo', p1.lon.toFixed(4));
+        params.set('p1tz', p1.tz);
+      }
+      if (p2) {
+        params.set('p2d', p2.y + '-' + String(p2.m).padStart(2,'0') + '-' + String(p2.d).padStart(2,'0'));
+        params.set('p2t', String(p2.hh).padStart(2,'0') + ':' + String(p2.mm).padStart(2,'0'));
+        params.set('p2n', p2.name);
+        params.set('p2la', p2.lat.toFixed(4));
+        params.set('p2lo', p2.lon.toFixed(4));
+        params.set('p2tz', p2.tz);
+      }
+      history.replaceState(null, '', '?' + params.toString());
+    }
+
+    function fillFromURL() {
+      var params = new URLSearchParams(window.location.search);
+      if (!params.has('p1d') || !params.has('p2d')) return false;
+
+      function fillPerson(prefix, pfx) {
+        var dateEl = document.getElementById(prefix + '-date');
+        var timeEl = document.getElementById(prefix + '-time');
+        var nameEl = document.getElementById(prefix + '-name');
+        var latEl  = document.getElementById(prefix + '-lat');
+        var lonEl  = document.getElementById(prefix + '-lon');
+        var tzEl   = document.getElementById(prefix + '-tz');
+        if (dateEl) dateEl.value = params.get(pfx + 'd') || '';
+        if (timeEl) timeEl.value = params.get(pfx + 't') || '12:00';
+        if (nameEl) nameEl.value = decodeURIComponent(params.get(pfx + 'n') || '');
+        if (latEl)  latEl.value  = params.get(pfx + 'la') || '';
+        if (lonEl)  lonEl.value  = params.get(pfx + 'lo') || '';
+        if (tzEl)   tzEl.value   = params.get(pfx + 'tz') || 'UTC';
+        // Show lat/lon in city field as a hint
+        var cityEl = document.getElementById(prefix + '-city');
+        if (cityEl && params.get(pfx + 'la')) {
+          cityEl.value = '(' + parseFloat(params.get(pfx + 'la')).toFixed(2) + '°, ' + parseFloat(params.get(pfx + 'lo')).toFixed(2) + '°)';
+        }
+      }
+
+      fillPerson('person1', 'p1');
+      fillPerson('person2', 'p2');
+      return true;
+    }
+
+    function initCompatAutocomplete(inputId, latId, lonId, tzId, dropId) {
+      var input    = document.getElementById(inputId);
+      var latEl    = document.getElementById(latId);
+      var lonEl    = document.getElementById(lonId);
+      var tzEl     = document.getElementById(tzId);
+      var dropdown = document.getElementById(dropId);
+      if (!input || !dropdown) return;
+
+      function search(q) {
+        q = q.toLowerCase().trim();
+        dropdown.innerHTML = '';
+        if (q.length < 2) { dropdown.classList.remove('open'); return; }
+        var cities = (window.AstroEphemeris && AstroEphemeris.CITIES) || [];
+        var results = cities.filter(function(c) {
+          return c.name.toLowerCase().startsWith(q) || c.name.toLowerCase().includes(q);
+        }).slice(0, 8);
+        if (!results.length) { dropdown.classList.remove('open'); return; }
+        results.forEach(function(city) {
+          var item = document.createElement('div');
+          item.className = 'autocomplete-item';
+          item.innerHTML = city.name + ' <span class="city-country">' + city.country + '</span>';
+          item.addEventListener('click', function() {
+            input.value = city.name;
+            if (latEl) latEl.value = city.lat;
+            if (lonEl) lonEl.value = city.lon;
+            if (tzEl)  tzEl.value  = city.tz || 'UTC';
+            dropdown.classList.remove('open');
+          });
+          dropdown.appendChild(item);
+        });
+        dropdown.classList.add('open');
+      }
+
+      input.addEventListener('input', function() { search(input.value); });
+      input.addEventListener('blur', function() { setTimeout(function() { dropdown.classList.remove('open'); }, 200); });
+      input.addEventListener('keydown', function(e) {
+        var items = dropdown.querySelectorAll('.autocomplete-item');
+        var hi = dropdown.querySelector('.highlighted');
+        var idx = hi ? Array.from(items).indexOf(hi) : -1;
+        if (e.key === 'ArrowDown') { e.preventDefault(); if (hi) hi.classList.remove('highlighted'); var next = items[Math.min(idx+1, items.length-1)]; if (next) next.classList.add('highlighted'); }
+        if (e.key === 'ArrowUp')   { e.preventDefault(); if (hi) hi.classList.remove('highlighted'); var prev = items[Math.max(idx-1, 0)]; if (prev) prev.classList.add('highlighted'); }
+        if (e.key === 'Enter') { var h = dropdown.querySelector('.highlighted'); if (h) { e.preventDefault(); h.click(); } }
+        if (e.key === 'Escape') dropdown.classList.remove('open');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wire up city autocomplete with timezone support
+      function tryInitAutocomplete() {
+        if (window.AstroEphemeris && AstroEphemeris.CITIES) {
+          initCompatAutocomplete('person1-city','person1-lat','person1-lon','person1-tz','p1-city-dropdown');
+          initCompatAutocomplete('person2-city','person2-lat','person2-lon','person2-tz','p2-city-dropdown');
+        } else {
+          setTimeout(tryInitAutocomplete, 200);
+        }
+      }
+      tryInitAutocomplete();
+
+      // Auto-fill "My Chart" for person 1 if profile exists
+      try {
+        if (window.AstroProfile) {
+          var charts = AstroProfile.getCharts();
+          if (charts.length) {
+            var c = charts[0];
+            var meta = c.meta || c;
+            var n1 = document.getElementById('person1-name');
+            if (n1 && !n1.value) n1.value = meta.name || '';
+            var d1 = document.getElementById('person1-date');
+            if (d1 && !d1.value && meta.birthDate) d1.value = meta.birthDate.split('T')[0];
+            var t1 = document.getElementById('person1-time');
+            if (t1 && !t1.value && meta.birthTime) t1.value = meta.birthTime;
+          }
+        }
+      } catch(e) {}
+
+      var preloaded = fillFromURL();
+
+      var form = document.getElementById('compat-form');
+      if (!form) return;
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        var p1 = readPerson('person1');
+        var p2 = readPerson('person2');
+
+        if (!p1) { alert('Please enter complete birth data for Person 1 (including selecting a city from the dropdown).'); return; }
+        if (!p2) { alert('Please enter complete birth data for Person 2 (including selecting a city from the dropdown).'); return; }
+
+        var loadEl = document.getElementById('compat-loading');
+        var resEl  = document.getElementById('compat-result');
+        var submitBtn = document.getElementById('compat-submit-btn');
+        if (loadEl) loadEl.classList.remove('hidden');
+        if (resEl)  resEl.classList.add('hidden');
+        if (submitBtn) submitBtn.disabled = true;
+
+        try {
+          await waitFor(function() { return window.AstroEphemeris && window.Interpretations; }, 12000);
+          var E = window.AstroEphemeris;
+          var chart1 = buildChart(E, p1.y, p1.m, p1.d, p1.hh, p1.mm, p1.lat, p1.lon, p1.tz);
+          var chart2 = buildChart(E, p2.y, p2.m, p2.d, p2.hh, p2.mm, p2.lat, p2.lon, p2.tz);
+          var result = window.Interpretations.calculateCompatibility(chart1, chart2);
+          encodeToURL(p1, p2);
+          showResult(result, p1.name, p2.name);
+        } catch(err) {
+          if (loadEl) loadEl.classList.add('hidden');
+          alert('Calculation error: ' + err);
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+        }
+      });
+
+      // Auto-trigger if URL has complete data
+      if (preloaded) {
+        setTimeout(function() {
+          var btn = document.getElementById('compat-submit-btn');
+          if (btn) btn.click();
+        }, 600);
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
