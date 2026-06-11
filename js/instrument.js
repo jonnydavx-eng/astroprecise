@@ -158,6 +158,127 @@
           `<span title="${(s.fact || '').replace(/"/g, '&quot;')}" style="font-size:0.7rem;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(196,146,10,0.3);border-radius:999px;color:var(--gold-pale);cursor:help;">
             ${s.name} · ${s.ly} ly</span>`).join('') + '</div>';
     }
+
+    const cardBtn = document.getElementById('lc-card-btn');
+    if (cardBtn && !cardBtn.dataset.wired) {
+      cardBtn.dataset.wired = '1';
+      cardBtn.addEventListener('click', () => {
+        const cv = drawLightConeCard(birth);
+        if (!cv) return;
+        const a = document.createElement('a');
+        a.download = 'my-light-cone.png';
+        a.href = cv.toDataURL('image/png');
+        a.click();
+      });
+    }
+  }
+
+  // 1080×1080 shareable card: the wavefront among real stars + the headline fact
+  function drawLightConeCard(birth) {
+    const m = window.LightCone.milestones(birth);
+    const S = window.StarCatalog;
+    if (!m || !S) return null;
+
+    const W = 1080, H = 1080;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const x = cv.getContext('2d');
+
+    x.fillStyle = '#06060f';
+    x.fillRect(0, 0, W, H);
+    const neb = x.createRadialGradient(W / 2, 430, 0, W / 2, 430, 520);
+    neb.addColorStop(0, 'rgba(42, 74, 148, 0.22)');
+    neb.addColorStop(1, 'transparent');
+    x.fillStyle = neb; x.fillRect(0, 0, W, H);
+
+    let seed = 137;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 160; i++) {
+      x.fillStyle = `rgba(240,232,216,${0.1 + rnd() * 0.5})`;
+      x.beginPath();
+      x.arc(rnd() * W, rnd() * H, rnd() * 1.6 + 0.3, 0, Math.PI * 2);
+      x.fill();
+    }
+
+    x.strokeStyle = 'rgba(196,146,10,0.55)';
+    x.lineWidth = 2;
+    x.strokeRect(46, 46, W - 92, H - 92);
+    x.strokeStyle = 'rgba(196,146,10,0.22)';
+    x.strokeRect(58, 58, W - 116, H - 116);
+
+    // ── wavefront map (same log-radial mapping as the live canvas) ──
+    const cx = W / 2, cy = 430, maxR = 330;
+    const rOf = ly => 12 + (Math.log10(Math.max(ly, 0.1) / 0.1) / 4) * (maxR - 12);
+    const waveR = rOf(m.radiusLy);
+
+    [1, 10, 100, 1000].forEach(ly => {
+      x.beginPath();
+      x.arc(cx, cy, rOf(ly), 0, Math.PI * 2);
+      x.strokeStyle = 'rgba(154,166,200,0.13)';
+      x.lineWidth = 1;
+      x.setLineDash([3, 7]);
+      x.stroke();
+      x.setLineDash([]);
+    });
+
+    const fill = x.createRadialGradient(cx, cy, 0, cx, cy, waveR);
+    fill.addColorStop(0, 'rgba(196,146,10,0.14)');
+    fill.addColorStop(1, 'rgba(91,127,199,0.03)');
+    x.beginPath(); x.arc(cx, cy, waveR, 0, Math.PI * 2);
+    x.fillStyle = fill; x.fill();
+
+    for (const star of S.STARS) {
+      if (star.ly > 1100) continue;
+      const r = rOf(star.ly);
+      const a = (star.ra - 90) * Math.PI / 180;
+      const sx = cx + Math.cos(a) * r, sy = cy + Math.sin(a) * r;
+      const reached = star.ly <= m.radiusLy;
+      x.beginPath();
+      x.arc(sx, sy, reached ? 3 : 1.8, 0, Math.PI * 2);
+      x.fillStyle = reached ? 'rgba(232,201,106,0.95)' : 'rgba(154,166,200,0.3)';
+      x.fill();
+    }
+
+    x.beginPath();
+    x.arc(cx, cy, waveR, 0, Math.PI * 2);
+    x.strokeStyle = 'rgba(232,201,106,0.9)';
+    x.lineWidth = 2.4;
+    x.shadowColor = 'rgba(196,146,10,0.9)';
+    x.shadowBlur = 18;
+    x.stroke();
+    x.shadowBlur = 0;
+
+    x.beginPath();
+    x.arc(cx, cy, 4, 0, Math.PI * 2);
+    x.fillStyle = '#f0e8d8';
+    x.shadowColor = 'rgba(240,232,216,0.9)';
+    x.shadowBlur = 12;
+    x.fill();
+    x.shadowBlur = 0;
+
+    // ── text ──
+    x.textAlign = 'center';
+    x.fillStyle = '#c4920a';
+    x.font = '26px Georgia, serif';
+    x.fillText('✦  T H E   L I G H T - C O N E  ✦', W / 2, 130);
+
+    x.fillStyle = '#9aa6c8';
+    x.font = '30px Georgia, serif';
+    x.fillText('The light of my first breath has reached', W / 2, 830);
+
+    x.fillStyle = '#f0e8d8';
+    x.font = 'bold 76px Georgia, serif';
+    x.fillText(`${m.reached.length} star systems`, W / 2, 920);
+
+    x.fillStyle = '#9aa6c8';
+    x.font = '28px Georgia, serif';
+    x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, W / 2, 975);
+
+    x.fillStyle = '#c4920a';
+    x.font = '22px Georgia, serif';
+    x.fillText('astroprecise · the instrument', W / 2, 1010);
+
+    return cv;
   }
 
   // ── Section 2: Zenith star ────────────────────────────────────────────────

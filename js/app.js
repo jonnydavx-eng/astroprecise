@@ -474,5 +474,5 @@ const AstroApp = (() => {
 document.addEventListener('DOMContentLoaded', () => AstroApp.init());
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/astroprecise/sw.js').catch(() => {});
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
