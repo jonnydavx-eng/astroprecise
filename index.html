@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
@@ -16,11 +22,11 @@
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
   <div class="cosmos-solar-system" aria-hidden="true">
     <div class="css-sun"></div>
-    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:rgba(160,155,170,0.95);--s:5px"></div></div>
-    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:rgba(225,185,130,0.95);--s:9px"></div></div>
-    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:rgba(70,140,210,0.95);--s:10px"></div></div>
-    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:rgba(205,85,65,0.95);--s:8px"></div></div>
-    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:rgba(205,165,105,0.95);--s:17px"></div></div>
+    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
+    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
+    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
+    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
+    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
   </div>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
@@ -31,23 +37,31 @@
   ============================================================ -->
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
-      <a href="index.html" class="nav-logo" aria-label="AstroPrecise home">
-        <span class="logo-star" aria-hidden="true">✦</span>
-        <span class="logo-text">AstroPrecise</span>
-      </a>
-      <button class="nav-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-      <ul class="nav-links" id="nav-links" role="list">
-        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
-        <li><a href="chart.html" class="nav-link">Chart</a></li>
-        <li><a href="horoscope.html" class="nav-link">Horoscope</a></li>
-        <li><a href="compatibility.html" class="nav-link">Compatibility</a></li>
-        <li><a href="transits.html" class="nav-link">Transits</a></li>
-        <li><a href="profile.html" class="nav-link nav-link--cta">Profile</a></li>
-      </ul>
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true">✦</div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link active" aria-current="page">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="profile.html" class="navbar__link">Profile</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <a href="index.html" class="navbar__link active">Home</a>
+        <a href="chart.html" class="navbar__link">Chart</a>
+        <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="profile.html" class="navbar__link">Profile</a>
+      </div>
     </nav>
   </header>
 
@@ -57,16 +71,15 @@
          HERO
     ============================================================ -->
     <section class="hero" aria-label="Hero section">
-      <canvas id="starfield" aria-hidden="true"></canvas>
-      <div class="hero-content">
-        <p class="hero-eyebrow">Professional Astrology Tools</p>
-        <h1 class="hero-headline gradient-text">Discover Your<br /><em>Cosmic Blueprint</em></h1>
-        <p class="hero-subtitle">
+      <div class="hero__inner">
+        <p class="hero__eyebrow">Professional Astrology Tools</p>
+        <h1 class="gradient-text">Discover Your<br /><em>Cosmic Blueprint</em></h1>
+        <p>
           Professional birth chart analysis powered by precise astronomical calculations
           — accurate to arcminutes. Uncover the celestial map that was drawn at the moment
           you entered the world.
         </p>
-        <div class="hero-ctas">
+        <div class="hero__actions">
           <a href="chart.html" class="btn btn--primary btn--lg" aria-label="Calculate your birth chart">
             Calculate Your Birth Chart
           </a>
