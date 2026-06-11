@@ -114,6 +114,21 @@
     activate();
   });
 
+  // Example event so first-time visitors see the instrument working immediately.
+  // Sagan's birth: 9 Nov 1934, Brooklyn, New York — fitting for a page about real astronomy.
+  const exampleBtn = document.getElementById('ev-example');
+  if (exampleBtn) exampleBtn.addEventListener('click', () => {
+    event_ = {
+      dt: '1934-11-09T17:05', lat: 40.6782, lon: -73.9442,
+      tz: 'America/New_York', city: 'Brooklyn, New York', example: true,
+    };
+    // persist only if the visitor has no real event saved
+    if (!localStorage.getItem(STORE_KEY)) saveEvent(event_);
+    activate();
+    document.getElementById('ev-status').textContent =
+      'Example — Carl Sagan, 9 Nov 1934, Brooklyn. Set your own event any time.';
+  });
+
   // ── Section 1: Light-cone ─────────────────────────────────────────────────
 
   let lcTimer = null;
@@ -330,6 +345,33 @@
 
   // ── Section 3: Echo dates ─────────────────────────────────────────────────
 
+  // The scan is deterministic per birth event + scan-start month, so cache it.
+  const ECHO_CACHE_KEY = 'ap_echo_cache';
+
+  function echoCacheId() {
+    const monthStamp = new Date().toISOString().slice(0, 7);
+    return `${event_.dt}|${event_.lat}|${event_.lon}|${monthStamp}`;
+  }
+
+  function loadEchoCache() {
+    try {
+      const c = JSON.parse(localStorage.getItem(ECHO_CACHE_KEY));
+      if (c && c.id === echoCacheId()) {
+        return c.echoes.map(e2 => ({ ...e2, date: new Date(e2.date) }));
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function saveEchoCache(echoes) {
+    try {
+      localStorage.setItem(ECHO_CACHE_KEY, JSON.stringify({
+        id: echoCacheId(),
+        echoes: echoes.map(e2 => ({ ...e2, date: e2.date.toISOString() })),
+      }));
+    } catch (e) {}
+  }
+
   document.getElementById('echo-scan').addEventListener('click', async () => {
     const btn = document.getElementById('echo-scan');
     const prog = document.getElementById('echo-progress');
@@ -337,11 +379,15 @@
     const out = document.getElementById('echo-out');
     btn.disabled = true; prog.hidden = false; out.innerHTML = '';
 
-    const natal = natalFor(event_);
-    const echoes = await window.EchoDates.scan(natal, {
-      years: 5, count: 5,
-      onProgress: p => { pct.textContent = Math.round(p * 100) + '%'; },
-    });
+    let echoes = loadEchoCache();
+    if (!echoes) {
+      const natal = natalFor(event_);
+      echoes = await window.EchoDates.scan(natal, {
+        years: 5, count: 5,
+        onProgress: p => { pct.textContent = Math.round(p * 100) + '%'; },
+      });
+      saveEchoCache(echoes);
+    }
     prog.hidden = true; btn.disabled = false;
 
     if (!echoes.length) { out.innerHTML = '<p class="grimoire">The scan found no clean resonances — rare, but the sky owes us nothing.</p>'; return; }
