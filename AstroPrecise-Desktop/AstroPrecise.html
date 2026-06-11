@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstroPrecise — Desktop Launcher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:     #090b16;
+      --void-2:   #0d1124;
+      --surface:  rgba(17, 26, 54, 0.72);
+      --border:   rgba(150, 175, 230, 0.13);
+      --gold:     #c4920a;
+      --gold-lt:  #d4a820;
+      --gold-pal: #e8c96a;
+      --lapis:    #2a4a94;
+      --lapis-lt: #5b7fc7;
+      --parch:    #f0e8d8;
+      --silver:   #9aa6c8;
+      --silver-d: #6a7390;
+      --font-d:   'Cinzel', serif;
+      --font-b:   'Playfair Display', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--parch);
+      font-family: var(--font-b);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 15% 20%, rgba(42, 74, 148, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 85% 75%, rgba(110, 26, 38, 0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(196, 146, 10, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Starfield ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .stars::before,
+    .stars::after,
+    .stars__mid {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(240,232,216,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 42%, rgba(240,232,216,0.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 8%, rgba(240,232,216,0.8) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 60%, rgba(240,232,216,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 30%, rgba(240,232,216,0.6) 0%, transparent 100%),
+        radial-gradient(2px 2px at 85% 50%, rgba(240,232,216,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 78%, rgba(240,232,216,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 88%, rgba(240,232,216,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 33% 72%, rgba(196,146,10,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 90%, rgba(240,232,216,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 18% 55%, rgba(240,232,216,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 47% 35%, rgba(240,232,216,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 78% 12%, rgba(240,232,216,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 95%, rgba(240,232,216,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 63% 18%, rgba(91,127,199,0.5) 0%, transparent 100%);
+      animation: drift 90s linear infinite;
+    }
+    .stars::after {
+      animation-delay: -45s;
+      animation-duration: 120s;
+      background-image:
+        radial-gradient(1px 1px at 7% 22%, rgba(240,232,216,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 38% 65%, rgba(240,232,216,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 62% 47%, rgba(240,232,216,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 8%, rgba(240,232,216,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 93% 38%, rgba(240,232,216,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 15% 80%, rgba(196,146,10,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 95%, rgba(240,232,216,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 27% 12%, rgba(240,232,216,0.5) 0%, transparent 100%),
+        radial-gradient(2px 2px at 72% 68%, rgba(240,232,216,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 44% 28%, rgba(91,127,199,0.4) 0%, transparent 100%);
+    }
+    .stars__mid {
+      animation: drift 70s linear infinite reverse;
+      animation-delay: -20s;
+      background-image:
+        radial-gradient(1px 1px at 20% 45%, rgba(240,232,216,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 55% 20%, rgba(240,232,216,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 82%, rgba(240,232,216,0.4) 0%, transparent 100%),
+        radial-gradient(2px 2px at 35% 88%, rgba(196,146,10,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 25%, rgba(240,232,216,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 8% 62%, rgba(240,232,216,0.3) 0%, transparent 100%);
+    }
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to   { transform: translateY(50%); }
+    }
+
+    /* ── Layout ── */
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      padding: 5rem 1rem 3rem;
+    }
+    .header__eyebrow {
+      font-family: var(--font-d);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--silver-d);
+      margin-bottom: 1.25rem;
+    }
+    .logo-text {
+      font-family: var(--font-d);
+      font-size: clamp(2.6rem, 6vw, 4rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #f2dfa7 0%, #c4920a 45%, #e8c96a 75%, #c4920a 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 24px rgba(196,146,10,0.35));
+      line-height: 1.1;
+      display: block;
+    }
+    .header__symbol {
+      font-size: 2.2rem;
+      opacity: 0.55;
+      display: block;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #f2dfa7, #c4920a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tagline {
+      font-family: var(--font-b);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--silver);
+      margin-top: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.35), transparent);
+      margin: 0 auto 3rem;
+      max-width: 400px;
+    }
+
+    /* ── Primary action row ── */
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-d);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 100px;
+      padding: 0.85rem 2rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn--gold {
+      background: linear-gradient(135deg, #d4a820, #c4920a);
+      color: #090b16;
+      box-shadow: 0 0 28px rgba(196,146,10,0.35);
+    }
+    .btn--gold:hover { box-shadow: 0 0 40px rgba(196,146,10,0.55); }
+    .btn--outline {
+      background: transparent;
+      color: var(--parch);
+      border: 1px solid rgba(150,175,230,0.3);
+    }
+    .btn--outline:hover {
+      border-color: rgba(196,146,10,0.5);
+      color: var(--gold-pal);
+      background: rgba(196,146,10,0.06);
+    }
+    .btn__note {
+      display: block;
+      font-family: var(--font-b);
+      font-style: italic;
+      font-size: 0.65rem;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      opacity: 0.6;
+      margin-top: 0.2rem;
+    }
+
+    /* ── Page tiles grid ── */
+    .section-label {
+      font-family: var(--font-d);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--silver-d);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 4rem;
+    }
+    .tile {
+      display: block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 1.75rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+      backdrop-filter: blur(12px);
+    }
+    .tile:hover {
+      border-color: rgba(196,146,10,0.45);
+      background: rgba(24, 36, 76, 0.82);
+      transform: translateY(-3px);
+    }
+    .tile__glyph {
+      font-size: 2rem;
+      line-height: 1;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+    .tile__name {
+      font-family: var(--font-d);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--lapis-lt);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+    .tile__desc {
+      font-size: 0.82rem;
+      color: var(--silver);
+      line-height: 1.6;
+    }
+
+    /* ── Local Setup box ── */
+    .setup-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(12px);
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .setup-box h2 {
+      font-family: var(--font-d);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold-pal);
+      letter-spacing: 0.06em;
+      margin-bottom: 1.25rem;
+    }
+    .setup-steps {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .setup-steps li {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      font-size: 0.88rem;
+      color: var(--silver);
+      line-height: 1.6;
+    }
+    .setup-steps li::before {
+      content: attr(data-n);
+      font-family: var(--font-d);
+      font-size: 0.65rem;
+      color: var(--gold);
+      background: rgba(196,146,10,0.12);
+      border: 1px solid rgba(196,146,10,0.25);
+      border-radius: 50%;
+      width: 1.6rem;
+      height: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.82em;
+      color: var(--gold-pal);
+      background: rgba(196,146,10,0.1);
+      border: 1px solid rgba(196,146,10,0.18);
+      border-radius: 4px;
+      padding: 0.1em 0.35em;
+    }
+    .setup-note {
+      margin-top: 1.25rem;
+      font-size: 0.78rem;
+      color: var(--silver-d);
+      line-height: 1.7;
+      font-style: italic;
+      border-top: 1px solid rgba(150,175,230,0.1);
+      padding-top: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 0 1rem 4rem; }
+      .header { padding: 3rem 1rem 2rem; }
+      .setup-box { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true">
+    <span class="stars__mid"></span>
+  </div>
+
+  <div class="wrap">
+    <header class="header">
+      <p class="header__eyebrow">Desktop Launcher</p>
+      <span class="header__symbol" aria-hidden="true">✦</span>
+      <span class="logo-text">AstroPrecise</span>
+      <p class="tagline">Your sky, calculated precisely.</p>
+    </header>
+
+    <hr class="divider" />
+
+    <div class="actions">
+      <a href="https://jonnydavx-eng.github.io/astroprecise/" class="btn btn--gold" target="_blank" rel="noopener">
+        Open Live Site ↗
+      </a>
+      <a href="http://localhost:8420/" class="btn btn--outline">
+        Start Local Preview
+        <span class="btn__note">launch.bat / launch.sh must be running</span>
+      </a>
+    </div>
+
+    <p class="section-label">Pages</p>
+    <div class="tiles">
+      <a href="https://jonnydavx-eng.github.io/astroprecise/index.html" class="tile" target="_blank" rel="noopener">
+        <span class="tile__glyph" aria-hidden="true">🏠</span>
+        <p class="tile__name">Home</p>
+        <p class="tile__desc">3D orrery, live sky snapshot, oracle daily reading, and The Instrument teaser.</p>
+      </a>
+      <a href="https://jonnydavx-eng.github.io/astroprecise/chart.html" class="tile" target="_blank" rel="noopener">
+        <span class="tile__glyph" aria-hidden="true">☿</span>
+        <p class="tile__name">Birth Chart</p>
+        <p class="tile__desc">Enter date, time, and city to generate your full natal wheel with planets, houses, and aspects.</p>
+      </a>
+      <a href="https://jonnydavx-eng.github.io/astroprecise/horoscope.html" class="tile" target="_blank" rel="noopener">
+        <span class="tile__glyph" aria-hidden="true">♈</span>
+        <p class="tile__name">Horoscope</p>
+        <p class="tile__desc">Daily readings for all 12 signs with live planetary weather and in-depth interpretation.</p>
+      </a>
+      <a href="https://jonnydavx-eng.github.io/astroprecise/compatibility.html" class="tile" target="_blank" rel="noopener">
+        <span class="tile__glyph" aria-hidden="true">♡</span>
+        <p class="tile__name">Compatibility</p>
+        <p class="tile__desc">Two-chart synastry analysis with aspect overlay and shareable URL-encoded results.</p>
+      </a>
+      <a href="https://jonnydavx-eng.github.io/astroprecise/transits.html" class="tile" target="_blank" rel="noopener">
+        <span class="tile__glyph" aria-hidden="true">🌌</span>
+        <p class="tile__name">Transits</p>
+        <p class="tile__desc">Current planetary positions, personal transit forecast, retrograde calendar, and eclipse dates.</p>
+      </a>
+      <a href="https://jonnydavx-eng.github.io/astroprecise/ephemeris.html" class="tile" target="_blank" rel="noopener">
+        <span class="tile__glyph" aria-hidden="true">⚗</span>
+        <p class="tile__name">The Instrument</p>
+        <p class="tile__desc">Light cone, zenith star, echo dates, daimon, quantum draw, field weather, and precession clock.</p>
+      </a>
+      <a href="https://jonnydavx-eng.github.io/astroprecise/profile.html" class="tile" target="_blank" rel="noopener">
+        <span class="tile__glyph" aria-hidden="true">✦</span>
+        <p class="tile__name">My Profile</p>
+        <p class="tile__desc">Save birth charts locally on your device, export JSON, and sync with the Android app.</p>
+      </a>
+    </div>
+
+    <p class="section-label">Local Setup</p>
+    <div class="setup-box">
+      <h2>Running a Local Preview</h2>
+      <ol class="setup-steps">
+        <li data-n="1">Ensure Python 3 is installed — open a terminal and type <code>python --version</code> to verify.</li>
+        <li data-n="2"><strong>Windows:</strong> double-click <code>launch.bat</code> in this folder. It starts a local server and opens your browser automatically.</li>
+        <li data-n="3"><strong>Mac / Linux:</strong> open a terminal here and run <code>./launch.sh</code>. The site will open at <code>http://localhost:8420</code>.</li>
+        <li data-n="4">Keep the terminal or command window open while you browse. Close it to stop the server.</li>
+      </ol>
+      <p class="setup-note">
+        The local preview serves the <code>website/</code> folder from the repo root. All features
+        including the offline service worker, live SWPC feeds, and ephemeris calculations work the same
+        way as the live GitHub Pages site. No internet required once the page has loaded.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
