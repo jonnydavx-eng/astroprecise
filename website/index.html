@@ -1157,5 +1157,46 @@
   })();
   </script>
 
+  <script>
+  /* Horizon: hero stat count-up on scroll into view */
+  (function () {
+    var stats = document.querySelectorAll('.hero-stat__number');
+    if (!stats.length || !window.IntersectionObserver) return;
+    stats.forEach(function(el) {
+      var raw = el.textContent.trim();
+      // store original for reset
+      el.dataset.original = raw;
+      // parse numeric target
+      var num = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+      if (!isNaN(num) && num > 0) el.dataset.target = num;
+    });
+    function runCount(el) {
+      var target = parseInt(el.dataset.target, 10);
+      if (isNaN(target)) return;
+      var dur = Math.min(1600, 600 + target * 2);
+      var start = performance.now();
+      function step(now) {
+        var p = Math.min((now - start) / dur, 1);
+        var ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(ease * target);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = el.dataset.original;
+      }
+      requestAnimationFrame(step);
+    }
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        e.target.querySelectorAll('.hero-stat__number[data-target]').forEach(function(el) {
+          setTimeout(function() { runCount(el); }, 120);
+        });
+      });
+    }, { threshold: 0.6 });
+    var row = document.querySelector('.hero-stats');
+    if (row) obs.observe(row);
+  })();
+  </script>
+
 </body>
 </html>

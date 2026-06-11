@@ -512,62 +512,62 @@
         <div class="sign-grid" id="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
           <!-- JS populates via AstroApp.renderHoroscopeGrid -->
           <!-- Static fallbacks for no-JS / initial paint -->
-          <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope">
+          <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♈</span>
             <span class="sign-card__name">Aries</span>
             <span class="sign-card__dates">Mar 21 – Apr 19</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope">
+          <button class="sign-card" role="listitem" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♉</span>
             <span class="sign-card__name">Taurus</span>
             <span class="sign-card__dates">Apr 20 – May 20</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="gemini" data-element="air" aria-label="Gemini horoscope">
+          <button class="sign-card" role="listitem" data-sign="gemini" data-element="air" aria-label="Gemini horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♊</span>
             <span class="sign-card__name">Gemini</span>
             <span class="sign-card__dates">May 21 – Jun 20</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="cancer" data-element="water" aria-label="Cancer horoscope">
+          <button class="sign-card" role="listitem" data-sign="cancer" data-element="water" aria-label="Cancer horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♋</span>
             <span class="sign-card__name">Cancer</span>
             <span class="sign-card__dates">Jun 21 – Jul 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="leo" data-element="fire" aria-label="Leo horoscope">
+          <button class="sign-card" role="listitem" data-sign="leo" data-element="fire" aria-label="Leo horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♌</span>
             <span class="sign-card__name">Leo</span>
             <span class="sign-card__dates">Jul 23 – Aug 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope">
+          <button class="sign-card" role="listitem" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♍</span>
             <span class="sign-card__name">Virgo</span>
             <span class="sign-card__dates">Aug 23 – Sep 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="libra" data-element="air" aria-label="Libra horoscope">
+          <button class="sign-card" role="listitem" data-sign="libra" data-element="air" aria-label="Libra horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♎</span>
             <span class="sign-card__name">Libra</span>
             <span class="sign-card__dates">Sep 23 – Oct 22</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope">
+          <button class="sign-card" role="listitem" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♏</span>
             <span class="sign-card__name">Scorpio</span>
             <span class="sign-card__dates">Oct 23 – Nov 21</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope">
+          <button class="sign-card" role="listitem" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♐</span>
             <span class="sign-card__name">Sagittarius</span>
             <span class="sign-card__dates">Nov 22 – Dec 21</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope">
+          <button class="sign-card" role="listitem" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♑</span>
             <span class="sign-card__name">Capricorn</span>
             <span class="sign-card__dates">Dec 22 – Jan 19</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope">
+          <button class="sign-card" role="listitem" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♒</span>
             <span class="sign-card__name">Aquarius</span>
             <span class="sign-card__dates">Jan 20 – Feb 18</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="pisces" data-element="water" aria-label="Pisces horoscope">
+          <button class="sign-card" role="listitem" data-sign="pisces" data-element="water" aria-label="Pisces horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♓</span>
             <span class="sign-card__name">Pisces</span>
             <span class="sign-card__dates">Feb 19 – Mar 20</span>
@@ -621,6 +621,7 @@
               <span class="lucky-item">Lucky Color <strong id="srp-lucky-color"></strong></span>
               <span class="lucky-item">Best Day <strong id="srp-best-day"></strong></span>
             </div>
+            <p class="srp-personal-note" id="srp-personal-note" hidden></p>
           </div>
         </div>
 
@@ -964,6 +965,19 @@
       if (pctEl) pctEl.textContent = energyPct + '%';
       if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
 
+      // Personal transit note when user has a saved chart for a different sign
+      var noteEl = document.getElementById('srp-personal-note');
+      if (noteEl) {
+        var userSun = getUserSign();
+        if (userSun && userSun !== signKey && window.AstroOracle && typeof AstroOracle.getDailyInsight === 'function') {
+          var oracle = AstroOracle.getDailyInsight(null, new Date());
+          noteEl.textContent = '✦ Your sky today: ' + oracle.headline;
+          noteEl.removeAttribute('hidden');
+        } else {
+          noteEl.setAttribute('hidden', '');
+        }
+      }
+
       panel.classList.add('is-open');
       setTimeout(function () {
         panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1033,6 +1047,18 @@
           selectSign(sign);
         });
       });
+
+      // Sync aria-pressed on all sign cards
+      function syncPressed(activeKey) {
+        document.querySelectorAll('.sign-card').forEach(function(c) {
+          c.setAttribute('aria-pressed', c.dataset.sign === activeKey ? 'true' : 'false');
+        });
+      }
+      // Patch selectSign to also sync pressed state
+      var _origSelect = selectSign;
+      selectSign = function(key) { _origSelect(key); syncPressed(key); };
+      var _origClose = closePanel;
+      closePanel = function() { _origClose(); syncPressed(null); };
 
       // Close button
       var closeBtn = document.getElementById('srp-close-btn');

@@ -5157,3 +5157,208 @@ body::before {
 .sign-reading-panel__header {
   border-bottom: 1px solid var(--el-border, rgba(196,146,10,0.15));
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   HORIZON UNIVERSAL UI FRAMEWORK — 2026 Upgrade
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Spring easing tokens */
+:root {
+  --ease-spring:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth:  cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Global focus-visible ring */
+:focus-visible {
+  outline: 2px solid rgba(196,146,10,0.72);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Sign card glassmorphism (Horizon depth layer) ─────────── */
+.sign-card {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(145deg, rgba(17,26,54,0.72) 0%, rgba(13,17,36,0.88) 100%);
+  transition:
+    border-color var(--transition-base),
+    background   var(--transition-base),
+    transform    0.18s var(--ease-spring),
+    box-shadow   0.2s ease;
+}
+.sign-card:hover {
+  background: linear-gradient(145deg, rgba(24,36,76,0.88) 0%, rgba(17,26,54,0.95) 100%);
+  transform: translateY(-3px) scale(1.01);
+}
+.sign-card:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.08s;
+}
+
+/* ── Compatibility orbs — two luminous people circles ───────── */
+.compat-orbs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0 auto var(--space-10);
+  max-width: 460px;
+  position: relative;
+}
+.compat-orb {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.compat-orb__core {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.compat-orb--1 .compat-orb__core {
+  background: radial-gradient(circle at 35% 32%, rgba(91,127,199,0.3) 0%, rgba(42,74,148,0.55) 55%, rgba(9,11,22,0.8) 100%);
+  border: 1px solid rgba(91,127,199,0.55);
+  box-shadow:
+    0 0 0 8px rgba(42,74,148,0.08),
+    0 0 30px rgba(91,127,199,0.25),
+    inset 0 1px 2px rgba(255,255,255,0.14);
+  animation: orb-breathe-1 5s ease-in-out infinite;
+}
+.compat-orb--2 .compat-orb__core {
+  background: radial-gradient(circle at 35% 32%, rgba(212,168,32,0.3) 0%, rgba(196,146,10,0.45) 55%, rgba(9,11,22,0.8) 100%);
+  border: 1px solid rgba(196,146,10,0.55);
+  box-shadow:
+    0 0 0 8px rgba(196,146,10,0.07),
+    0 0 30px rgba(196,146,10,0.2),
+    inset 0 1px 2px rgba(255,255,255,0.14);
+  animation: orb-breathe-2 5s ease-in-out infinite;
+  animation-delay: -2.5s;
+}
+@keyframes orb-breathe-1 {
+  0%,100% { box-shadow: 0 0 0 8px rgba(42,74,148,0.08), 0 0 24px rgba(91,127,199,0.2), inset 0 1px 2px rgba(255,255,255,0.14); }
+  50%     { box-shadow: 0 0 0 12px rgba(42,74,148,0.12), 0 0 44px rgba(91,127,199,0.35), inset 0 1px 2px rgba(255,255,255,0.18); }
+}
+@keyframes orb-breathe-2 {
+  0%,100% { box-shadow: 0 0 0 8px rgba(196,146,10,0.07), 0 0 24px rgba(196,146,10,0.18), inset 0 1px 2px rgba(255,255,255,0.14); }
+  50%     { box-shadow: 0 0 0 12px rgba(196,146,10,0.10), 0 0 44px rgba(196,146,10,0.32), inset 0 1px 2px rgba(255,255,255,0.18); }
+}
+.compat-orbs__arc {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-width: 80px;
+}
+.compat-orbs__arc svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.compat-orbs__arc-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  color: var(--gold);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.compat-person-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: var(--space-2);
+  display: block;
+}
+.compat-orb--1 .compat-person-label { color: var(--lapis-bright); }
+.compat-orb--2 .compat-person-label { color: var(--gold-pale); }
+
+/* Compat form column header accents */
+.compat-person:first-of-type h3 { color: var(--lapis-bright); }
+.compat-person:last-of-type  h3 { color: var(--gold-light); }
+.compat-person:first-of-type .form-label { color: rgba(146,180,238,0.75); }
+.compat-person:last-of-type  .form-label { color: rgba(212,168,32,0.75); }
+
+/* Compat form divider glow */
+.compat-form__divider {
+  font-size: 2.8rem;
+  background: linear-gradient(180deg, var(--lapis-light), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px rgba(196,146,10,0.25));
+  opacity: 1 !important;
+}
+
+/* ── Category score bars — spring fill ─────────────────────── */
+.score-bar__fill {
+  transition: width 1s var(--ease-spring);
+}
+.srp-energy__fill {
+  transition: width 0.9s var(--ease-spring);
+}
+
+/* ── Hero stats — count-up visual ──────────────────────────── */
+.hero-stat__number {
+  transition: opacity 0.4s ease;
+}
+.hero-stat__number.counting {
+  display: inline-block;
+  animation: none;
+}
+
+/* ── Moon illumination bar spring ──────────────────────────── */
+.moon-illumination-bar__fill {
+  transition: width 1.2s var(--ease-spring);
+}
+
+/* ── Navbar link spring hover ───────────────────────────────── */
+.navbar__link {
+  transition: color var(--transition-base), background 0.2s var(--ease-spring);
+}
+
+/* ── Feature card spring lift ───────────────────────────────── */
+.feature-card {
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ── Reading panel — personal transit note ─────────────────── */
+.srp-personal-note {
+  font-size: 0.8rem;
+  color: var(--gold-pale);
+  opacity: 0.82;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(196,146,10,0.12);
+  font-style: italic;
+  line-height: 1.7;
+}
+
+/* ── Reduce motion: disable all keyframe animations ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
