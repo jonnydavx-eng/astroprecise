@@ -15,6 +15,311 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* ── Index-page specific ── */
+
+    /* Two-column hero */
+    .hero {
+      min-height: 100vh;
+      padding-top: var(--nav-height);
+      display: flex;
+      align-items: center;
+    }
+    .hero__split {
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      gap: var(--space-12);
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-16) var(--space-6);
+    }
+    .hero__text { text-align: left; }
+    .hero__text h1 { text-align: left; }
+    .hero__text .hero__eyebrow { text-align: left; }
+    .hero__text .hero__actions { justify-content: flex-start; }
+    .hero__text p { margin-left: 0; max-width: 520px; }
+    .hero__text .hero-stats { justify-content: flex-start; }
+
+    .hero__orrery-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-4);
+      position: relative;
+    }
+    #orrery-canvas {
+      display: block;
+      width: 100%;
+      max-width: 460px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, rgba(107,33,168,0.12) 0%, transparent 70%);
+    }
+    .orrery-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.6;
+      text-align: center;
+    }
+
+    /* Planet list rows (Live Sky) */
+    .planet-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .planet-row {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-5);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition-fast);
+      cursor: default;
+    }
+    .planet-row:first-child { border-top: 1px solid var(--border); }
+    .planet-row:hover { background: var(--surface); }
+    .planet-row__glyph {
+      font-size: 1.4rem;
+      text-align: center;
+      line-height: 1;
+    }
+    .planet-row__info { display: flex; flex-direction: column; gap: 2px; }
+    .planet-row__name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+    .planet-row__sign {
+      font-size: 0.95rem;
+      color: var(--white);
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+    }
+    .planet-row__degree {
+      font-size: 0.72rem;
+      font-family: 'Courier New', monospace;
+      color: var(--gold);
+      opacity: 0.75;
+      letter-spacing: 0.04em;
+      text-align: right;
+    }
+    .planet-row__retro {
+      display: none;
+      font-size: 0.65rem;
+      color: var(--crimson-light);
+      margin-left: var(--space-2);
+      vertical-align: super;
+    }
+    .planet-row--retro .planet-row__retro { display: inline; }
+
+    /* Live sky section */
+    .live-sky {
+      background: linear-gradient(180deg, transparent 0%, rgba(107,33,168,0.04) 50%, transparent 100%);
+    }
+    .live-sky__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    .live-sky__panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      position: relative;
+    }
+    .live-sky__panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: var(--space-6); right: var(--space-6);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.5), rgba(107,33,168,0.4), transparent);
+    }
+    .live-sky__panel-header {
+      padding: var(--space-5) var(--space-5) var(--space-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .live-sky__panel-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .live-sky__panel-date {
+      font-size: 0.65rem;
+      color: var(--silver-dim);
+      letter-spacing: 0.05em;
+    }
+
+    /* Moon phase widget */
+    .moon-widget {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+      padding: var(--space-5);
+    }
+    .moon-phase-visual {
+      font-size: 3.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .moon-phase-info { display: flex; flex-direction: column; gap: var(--space-2); }
+    .moon-phase-name {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--white);
+      letter-spacing: 0.03em;
+    }
+    .moon-phase-sign {
+      font-size: var(--text-sm);
+      color: var(--silver);
+    }
+    .moon-phase-pct {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .moon-illumination-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: var(--space-2);
+      overflow: hidden;
+    }
+    .moon-illumination-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--amethyst-light), var(--gold));
+      border-radius: 2px;
+      transition: width 1s ease;
+    }
+
+    /* Sign grid */
+    .sign-grid-v2 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-2);
+    }
+    .sign-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-3) var(--space-2);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .sign-tile:hover {
+      border-color: rgba(196,146,10,0.4);
+      background: var(--surface-2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(107,33,168,0.15);
+    }
+    .sign-tile__glyph {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .sign-tile__name {
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      font-weight: 600;
+    }
+    .sign-tile--fire  { border-color: rgba(180,66,50,0.2); }
+    .sign-tile--earth { border-color: rgba(14,92,58,0.2); }
+    .sign-tile--air   { border-color: rgba(107,33,168,0.2); }
+    .sign-tile--water { border-color: rgba(27,95,170,0.2); }
+
+    /* Feature strip */
+    .feature-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+    }
+    .feature-strip__item {
+      text-align: center;
+      padding: var(--space-8);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      transition: all var(--transition-base);
+    }
+    .feature-strip__item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.5), transparent);
+    }
+    .feature-strip__item:hover {
+      border-color: rgba(196,146,10,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(107,33,168,0.15);
+    }
+    .feature-strip__icon {
+      font-size: 2.2rem;
+      display: block;
+      margin-bottom: var(--space-4);
+      line-height: 1;
+    }
+    .feature-strip__title {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      letter-spacing: 0.05em;
+      color: var(--gold-pale);
+      margin-bottom: var(--space-3);
+    }
+    .feature-strip__text {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.65;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero__split {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .hero__text { order: 1; text-align: center; }
+      .hero__text h1, .hero__text .hero__eyebrow { text-align: center; }
+      .hero__text .hero__actions { justify-content: center; }
+      .hero__text .hero-stats { justify-content: center; }
+      .hero__text p { margin: 0 auto var(--space-10); }
+      .hero__orrery-wrap { order: 0; }
+      #orrery-canvas { max-width: 300px; }
+      .live-sky__grid { grid-template-columns: 1fr; }
+      .feature-strip { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .sign-grid-v2 { grid-template-columns: repeat(4, 1fr); }
+      #orrery-canvas { max-width: 260px; }
+    }
+    @media (max-width: 400px) {
+      .sign-grid-v2 { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
 </head>
 <body>
 
@@ -32,9 +337,7 @@
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
-  <!-- ============================================================
-       NAVIGATION
-  ============================================================ -->
+  <!-- NAV -->
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
@@ -67,394 +370,338 @@
 
   <main id="main-content">
 
-    <!-- ============================================================
-         HERO
-    ============================================================ -->
+    <!-- ═══════════════════════════════════════════════
+         HERO — two-column with live orrery
+    ═══════════════════════════════════════════════ -->
     <section class="hero" aria-label="Hero section">
-      <div class="hero__inner">
-        <div class="moon-badge" aria-label="Esoteric astrology platform">
-          <span class="moon-badge__symbol" aria-hidden="true">☽</span>
-          Ancient Wisdom · Modern Precision
+      <div class="hero__split">
+
+        <!-- Left: text -->
+        <div class="hero__text">
+          <div class="moon-badge" aria-label="Live planetary calculations">
+            <span class="moon-badge__symbol" aria-hidden="true">☽</span>
+            <span id="hero-moon-phase">Ancient Wisdom · Modern Precision</span>
+          </div>
+
+          <h1 class="gradient-text" style="margin-top:var(--space-5);">
+            Discover Your<br /><em>Cosmic Blueprint</em>
+          </h1>
+
+          <p style="margin-top:var(--space-5);">
+            Professional birth chart analysis powered by precise astronomical
+            calculations — accurate to arcminutes. The stars held a specific
+            configuration the moment you arrived. Let's map it.
+          </p>
+
+          <div class="hero__actions" style="margin-top:var(--space-8);">
+            <a href="chart.html" class="btn btn--primary btn--lg">
+              ✦ &nbsp;Calculate Your Chart
+            </a>
+            <a href="#live-sky" class="btn btn--outline btn--lg">
+              View Live Sky
+            </a>
+          </div>
+
+          <ul class="hero-stats" aria-label="Statistics" style="margin-top:var(--space-8);">
+            <li class="hero-stat">
+              <span class="hero-stat__number">2.4M+</span>
+              <span class="hero-stat__label">Charts Calculated</span>
+            </li>
+            <li class="hero-stat">
+              <span class="hero-stat__number">1′</span>
+              <span class="hero-stat__label">Precision</span>
+            </li>
+            <li class="hero-stat">
+              <span class="hero-stat__number">10</span>
+              <span class="hero-stat__label">Planets Tracked</span>
+            </li>
+          </ul>
         </div>
-        <h1 class="gradient-text">Discover Your<br /><em>Cosmic Blueprint</em></h1>
-        <p>
-          Professional birth chart analysis powered by precise astronomical calculations
-          — accurate to arcminutes. Uncover the celestial map that was drawn at the moment
-          you entered the world.
-        </p>
-        <div class="hero__actions">
-          <a href="chart.html" class="btn btn--primary btn--lg" aria-label="Calculate your birth chart">
-            ✦ Calculate Your Birth Chart
-          </a>
-          <a href="#app-download" class="btn btn--outline btn--lg" aria-label="Download the AstroPrecise app">
-            Download the App
-          </a>
+
+        <!-- Right: orrery -->
+        <div class="hero__orrery-wrap" aria-hidden="true">
+          <canvas id="orrery-canvas"></canvas>
+          <p class="orrery-label">Live Geocentric Sky Map</p>
         </div>
-        <ul class="hero-stats" aria-label="Service statistics">
-          <li class="hero-stat">
-            <span class="hero-stat__number" id="charts-calculated">2.4M+</span>
-            <span class="hero-stat__label">Charts Calculated</span>
-          </li>
-          <li class="hero-stat">
-            <span class="hero-stat__number">Arcminute</span>
-            <span class="hero-stat__label">Precision</span>
-          </li>
-          <li class="hero-stat">
-            <span class="hero-stat__number">100%</span>
-            <span class="hero-stat__label">Free &amp; Private</span>
-          </li>
-        </ul>
-      </div>
-      <div class="hero-zodiac-wheel" aria-hidden="true">
-        <svg class="wheel-decoration" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="200" cy="200" r="190" stroke="#9b5fd0" stroke-width="1" stroke-dasharray="4 8" opacity="0.5"/>
-          <circle cx="200" cy="200" r="150" stroke="#c4920a" stroke-width="0.5" opacity="0.3"/>
-          <circle cx="200" cy="200" r="100" stroke="#9b5fd0" stroke-width="1" opacity="0.4"/>
-          <circle cx="200" cy="200" r="50" stroke="#c4920a" stroke-width="0.5" opacity="0.5"/>
-          <text x="200" y="35" text-anchor="middle" fill="#c4920a" font-size="14" opacity="0.8">♈</text>
-          <text x="310" y="80" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♉</text>
-          <text x="370" y="185" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♊</text>
-          <text x="325" y="300" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♋</text>
-          <text x="210" y="368" text-anchor="middle" fill="#c4920a" font-size="14" opacity="0.8">♌</text>
-          <text x="95" y="310" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♍</text>
-          <text x="30" y="200" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♎</text>
-          <text x="80" y="90" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♏</text>
-          <text x="155" y="40" text-anchor="middle" fill="#c4920a" font-size="14" opacity="0.7">♐</text>
-          <text x="250" y="55" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♑</text>
-          <text x="360" y="130" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♒</text>
-          <text x="360" y="270" text-anchor="middle" fill="#f0e8d8" font-size="14" opacity="0.6">♓</text>
-        </svg>
+
       </div>
     </section>
 
-    <!-- ============================================================
-         FEATURES
-    ============================================================ -->
-    <section class="features-section section" id="features" aria-labelledby="features-heading">
+    <!-- ═══════════════════════════════════════════════
+         LIVE SKY — planets + moon phase
+    ═══════════════════════════════════════════════ -->
+    <section class="live-sky section" id="live-sky" aria-labelledby="live-sky-heading">
       <div class="container">
         <header class="section-header">
-          <h2 class="section-title" id="features-heading">Why Choose AstroPrecise?</h2>
+          <p class="eyebrow">Real-time Ephemeris</p>
+          <h2 class="section-title" id="live-sky-heading">The Sky Right Now</h2>
           <p class="section-subtitle">
-            We don't guess at the stars. Every calculation uses rigorously verified
-            astronomical algorithms to place planets exactly where they were.
+            Current planetary positions calculated for <span id="sky-date-display" style="color:var(--gold-pale)">today</span>
           </p>
         </header>
-        <div class="features-grid" role="list">
-          <article class="feature-card" role="listitem">
-            <div class="feature-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
-                <circle cx="24" cy="24" r="20" stroke="#c4920a" stroke-width="2"/>
-                <circle cx="24" cy="24" r="4" fill="#c4920a"/>
-                <line x1="24" y1="4" x2="24" y2="10" stroke="#c4920a" stroke-width="2"/>
-                <line x1="24" y1="38" x2="24" y2="44" stroke="#c4920a" stroke-width="2"/>
-                <line x1="4" y1="24" x2="10" y2="24" stroke="#c4920a" stroke-width="2"/>
-                <line x1="38" y1="24" x2="44" y2="24" stroke="#c4920a" stroke-width="2"/>
-              </svg>
-            </div>
-            <h3 class="feature-card__title">Swiss Ephemeris Precision</h3>
-            <p class="feature-card__text">
-              Planetary positions accurate to arcminutes, not just degrees. We use the same
-              astronomical algorithms trusted by professional astrologers worldwide — derived
-              from NASA's DE431 planetary ephemeris.
-            </p>
-          </article>
-          <article class="feature-card feature-card--highlighted" role="listitem">
-            <div class="feature-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
-                <path d="M24 4L28.5 17H42L31 25.5L35.5 38.5L24 30L12.5 38.5L17 25.5L6 17H19.5L24 4Z" stroke="#9b5fd0" stroke-width="2" fill="none"/>
-                <path d="M24 10L27.5 19H36.5L29.5 24L32.5 33L24 27.5L15.5 33L18.5 24L11.5 19H20.5L24 10Z" fill="#6B21A8" opacity="0.4"/>
-              </svg>
-            </div>
-            <h3 class="feature-card__title">Expert Analysis</h3>
-            <p class="feature-card__text">
-              Each chart comes with in-depth interpretations of your Sun, Moon, and Rising
-              signs, all planetary placements, house positions, and major aspects — written
-              by professional astrologers.
-            </p>
-          </article>
-          <article class="feature-card" role="listitem">
-            <div class="feature-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
-                <rect x="8" y="28" width="14" height="16" rx="2" stroke="#c4920a" stroke-width="2"/>
-                <rect x="26" y="20" width="14" height="24" rx="2" stroke="#c4920a" stroke-width="2"/>
-                <path d="M15 28V14M15 14L11 18M15 14L19 18" stroke="#c4920a" stroke-width="2"/>
-                <circle cx="15" cy="10" r="4" stroke="#9b5fd0" stroke-width="2"/>
-                <circle cx="33" cy="10" r="4" stroke="#9b5fd0" stroke-width="2"/>
-                <path d="M33 20V10" stroke="#c4920a" stroke-width="2"/>
-              </svg>
-            </div>
-            <h3 class="feature-card__title">Sync with Mobile App</h3>
-            <p class="feature-card__text">
-              Save your charts to your profile and access them anywhere with the AstroPrecise
-              Android app. Your cosmic data travels with you, always in your pocket.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
 
-    <!-- ============================================================
-         TODAY'S SKY
-    ============================================================ -->
-    <section class="sky-section section" id="todays-sky-section" aria-labelledby="todays-sky-heading">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="section-title" id="todays-sky-heading">Today's Planetary Positions</h2>
-          <p class="section-subtitle" id="todays-sky-date">
-            Current celestial snapshot — <span id="sky-date-display">loading...</span>
-          </p>
-        </header>
-        <div id="todays-sky" class="todays-sky-grid" role="region" aria-live="polite" aria-label="Today's planetary positions">
-          <!-- JS populates this -->
-          <div class="sky-loading">
-            <span class="loading-spinner" aria-hidden="true"></span>
-            <span>Calculating planetary positions…</span>
+        <div class="live-sky__grid">
+          <!-- Planet list panel -->
+          <div class="live-sky__panel">
+            <div class="live-sky__panel-header">
+              <span class="live-sky__panel-title">☉ Planetary Positions</span>
+              <span class="live-sky__panel-date" id="sky-panel-date"></span>
+            </div>
+            <div id="planet-list" class="planet-list" role="list" aria-label="Current planetary positions" aria-live="polite">
+              <!-- JS populates -->
+              <div class="sky-loading" style="padding:var(--space-8) var(--space-5);">
+                <span class="loading-spinner" aria-hidden="true"></span>
+                <span style="font-size:var(--text-sm);color:var(--silver-dim);">Calculating…</span>
+              </div>
+            </div>
+            <div style="padding:var(--space-4) var(--space-5);border-top:1px solid var(--border);">
+              <a href="transits.html" style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;opacity:0.75;">
+                Full Transit Forecast →
+              </a>
+            </div>
+          </div>
+
+          <!-- Moon phase panel -->
+          <div class="live-sky__panel">
+            <div class="live-sky__panel-header">
+              <span class="live-sky__panel-title">☽ Moon Phase</span>
+              <span class="live-sky__panel-date" id="moon-panel-date"></span>
+            </div>
+            <div class="moon-widget">
+              <div class="moon-phase-visual" id="moon-phase-emoji" aria-hidden="true">🌑</div>
+              <div class="moon-phase-info">
+                <span class="moon-phase-name" id="moon-phase-name">Calculating…</span>
+                <span class="moon-phase-sign" id="moon-phase-sign"></span>
+                <span class="moon-phase-pct" id="moon-phase-pct"></span>
+                <div class="moon-illumination-bar">
+                  <div class="moon-illumination-bar__fill" id="moon-illum-fill" style="width:0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick chart CTA -->
+            <div style="margin:0 var(--space-5) var(--space-5);padding:var(--space-5);background:var(--surface-2);border-radius:var(--radius-lg);border:1px solid var(--border);">
+              <p style="font-size:var(--text-sm);color:var(--silver);margin-bottom:var(--space-4);line-height:1.6;">
+                The Moon moves through all 12 signs in 28 days. Its placement at your birth reveals your emotional nature and inner world.
+              </p>
+              <a href="chart.html" class="btn btn--gold btn--sm" style="width:100%;justify-content:center;">
+                Find Your Moon Sign
+              </a>
+            </div>
           </div>
         </div>
-        <div class="sky-footer">
-          <a href="transits.html" class="btn btn--ghost">View Full Forecast →</a>
-        </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         SIGN GRID (horoscope cards)
-    ============================================================ -->
-    <section class="horoscope-section section" id="horoscope-section" aria-labelledby="horoscope-heading">
+    <!-- ═══════════════════════════════════════════════
+         ZODIAC SIGNS
+    ═══════════════════════════════════════════════ -->
+    <section class="section" id="signs" aria-labelledby="signs-heading">
       <div class="container">
         <header class="section-header">
-          <h2 class="section-title" id="horoscope-heading">Today's Horoscopes</h2>
-          <p class="section-subtitle">Select your sign for your daily cosmic guidance</p>
+          <p class="eyebrow">Daily Guidance</p>
+          <h2 class="section-title" id="signs-heading">Today's Horoscopes</h2>
+          <p class="section-subtitle">Choose your sign for cosmic insight</p>
         </header>
-        <div id="sign-grid" class="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
-          <!-- JS populates this -->
+
+        <div class="sign-grid-v2" role="list" aria-label="Zodiac signs">
+          <a href="horoscope.html?sign=aries"       class="sign-tile sign-tile--fire"  role="listitem" aria-label="Aries horoscope"><span class="sign-tile__glyph">♈</span><span class="sign-tile__name">Aries</span></a>
+          <a href="horoscope.html?sign=taurus"      class="sign-tile sign-tile--earth" role="listitem" aria-label="Taurus horoscope"><span class="sign-tile__glyph">♉</span><span class="sign-tile__name">Taurus</span></a>
+          <a href="horoscope.html?sign=gemini"      class="sign-tile sign-tile--air"   role="listitem" aria-label="Gemini horoscope"><span class="sign-tile__glyph">♊</span><span class="sign-tile__name">Gemini</span></a>
+          <a href="horoscope.html?sign=cancer"      class="sign-tile sign-tile--water" role="listitem" aria-label="Cancer horoscope"><span class="sign-tile__glyph">♋</span><span class="sign-tile__name">Cancer</span></a>
+          <a href="horoscope.html?sign=leo"         class="sign-tile sign-tile--fire"  role="listitem" aria-label="Leo horoscope"><span class="sign-tile__glyph">♌</span><span class="sign-tile__name">Leo</span></a>
+          <a href="horoscope.html?sign=virgo"       class="sign-tile sign-tile--earth" role="listitem" aria-label="Virgo horoscope"><span class="sign-tile__glyph">♍</span><span class="sign-tile__name">Virgo</span></a>
+          <a href="horoscope.html?sign=libra"       class="sign-tile sign-tile--air"   role="listitem" aria-label="Libra horoscope"><span class="sign-tile__glyph">♎</span><span class="sign-tile__name">Libra</span></a>
+          <a href="horoscope.html?sign=scorpio"     class="sign-tile sign-tile--water" role="listitem" aria-label="Scorpio horoscope"><span class="sign-tile__glyph">♏</span><span class="sign-tile__name">Scorpio</span></a>
+          <a href="horoscope.html?sign=sagittarius" class="sign-tile sign-tile--fire"  role="listitem" aria-label="Sagittarius horoscope"><span class="sign-tile__glyph">♐</span><span class="sign-tile__name">Sagitt.</span></a>
+          <a href="horoscope.html?sign=capricorn"   class="sign-tile sign-tile--earth" role="listitem" aria-label="Capricorn horoscope"><span class="sign-tile__glyph">♑</span><span class="sign-tile__name">Capric.</span></a>
+          <a href="horoscope.html?sign=aquarius"    class="sign-tile sign-tile--air"   role="listitem" aria-label="Aquarius horoscope"><span class="sign-tile__glyph">♒</span><span class="sign-tile__name">Aquar.</span></a>
+          <a href="horoscope.html?sign=pisces"      class="sign-tile sign-tile--water" role="listitem" aria-label="Pisces horoscope"><span class="sign-tile__glyph">♓</span><span class="sign-tile__name">Pisces</span></a>
         </div>
-        <div class="sign-grid-footer">
+
+        <div style="text-align:center;margin-top:var(--space-8);">
           <a href="horoscope.html" class="btn btn--outline">Read All Horoscopes →</a>
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         HOW IT WORKS
-    ============================================================ -->
-    <section class="how-section section" id="how-it-works" aria-labelledby="how-heading">
+    <!-- ═══════════════════════════════════════════════
+         FEATURES
+    ═══════════════════════════════════════════════ -->
+    <section class="section" id="features" aria-labelledby="features-heading" style="background:linear-gradient(180deg,transparent 0%,rgba(107,33,168,0.04) 50%,transparent 100%);">
       <div class="container">
         <header class="section-header">
-          <h2 class="section-title" id="how-heading">How It Works</h2>
-          <p class="section-subtitle">Your personalised birth chart in three simple steps</p>
+          <p class="eyebrow">Why AstroPrecise</p>
+          <h2 class="section-title" id="features-heading">Precision Meets Mystery</h2>
+          <p class="section-subtitle">
+            Not all astrology software is equal. Every calculation here is derived
+            from verified astronomical algorithms — the same precision used by
+            professional observatories.
+          </p>
+        </header>
+
+        <div class="feature-strip" role="list">
+          <div class="feature-strip__item" role="listitem">
+            <span class="feature-strip__icon" aria-hidden="true">⊙</span>
+            <h3 class="feature-strip__title">Arcminute Precision</h3>
+            <p class="feature-strip__text">
+              Planetary positions accurate to arcminutes using VSOP87 & ELP2000
+              algorithms — the same ephemeris trusted by NASA and professional astrologers worldwide.
+            </p>
+          </div>
+          <div class="feature-strip__item" role="listitem">
+            <span class="feature-strip__icon" aria-hidden="true">⚷</span>
+            <h3 class="feature-strip__title">Deep Interpretations</h3>
+            <p class="feature-strip__text">
+              Every chart includes nuanced readings of Sun, Moon, Rising, all planetary
+              placements, house positions, aspects, and dominant elements.
+            </p>
+          </div>
+          <div class="feature-strip__item" role="listitem">
+            <span class="feature-strip__icon" aria-hidden="true">☽</span>
+            <h3 class="feature-strip__title">Fully Private</h3>
+            <p class="feature-strip__text">
+              All calculations run in your browser. No data leaves your device.
+              No accounts required. Your cosmic map belongs to you alone.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         HOW IT WORKS
+    ═══════════════════════════════════════════════ -->
+    <section class="section" id="how-it-works" aria-labelledby="how-heading">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">Getting Started</p>
+          <h2 class="section-title" id="how-heading">Your Chart in Three Steps</h2>
         </header>
         <ol class="steps-list" aria-label="How to get your birth chart">
           <li class="step-item">
-            <div class="step-number" aria-hidden="true">1</div>
+            <div class="step-number" aria-hidden="true">I</div>
             <div class="step-content">
               <h3 class="step-title">Enter Your Birth Data</h3>
               <p class="step-text">
-                Provide your date, time, and place of birth. The more precise the
-                birth time, the more accurate your houses and rising sign will be.
+                Date, time, and place of birth. The more precise your birth time,
+                the more accurate your Ascendant and house placements will be.
+                Accuracy to the minute gives the fullest reading.
               </p>
             </div>
           </li>
           <li class="step-item">
-            <div class="step-number" aria-hidden="true">2</div>
+            <div class="step-number" aria-hidden="true">II</div>
             <div class="step-content">
-              <h3 class="step-title">We Calculate the Sky</h3>
+              <h3 class="step-title">The Sky is Calculated</h3>
               <p class="step-text">
-                Our engine computes the precise position of every planet, the
-                Ascendant, Midheaven, and twelve houses for the exact moment and
-                location of your birth.
+                Our astronomical engine computes every planet, the Ascendant,
+                Midheaven, and all twelve house cusps for the exact moment
+                and coordinates of your birth — instantly, in your browser.
               </p>
             </div>
           </li>
           <li class="step-item">
-            <div class="step-number" aria-hidden="true">3</div>
+            <div class="step-number" aria-hidden="true">III</div>
             <div class="step-content">
               <h3 class="step-title">Receive Your Blueprint</h3>
               <p class="step-text">
-                Explore detailed interpretations of every placement, discover your
-                dominant elements and modalities, and unlock the story the cosmos
-                tells about you.
+                Explore your natal chart with detailed interpretations for every
+                placement, aspect, and house. Discover your dominant elements,
+                modalities, and the hidden architecture of your psyche.
               </p>
             </div>
           </li>
         </ol>
         <div class="how-cta">
-          <a href="chart.html" class="btn btn--primary btn--lg">Get Your Chart Now</a>
+          <a href="chart.html" class="btn btn--primary btn--lg">✦ &nbsp;Begin Your Reading</a>
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         TESTIMONIALS
-    ============================================================ -->
-    <section class="testimonials-section section" id="testimonials" aria-labelledby="testimonials-heading">
-      <div class="container">
-        <header class="section-header">
-          <h2 class="section-title" id="testimonials-heading">What Our Users Say</h2>
-        </header>
-        <div class="testimonials-grid" role="list">
-
-          <blockquote class="testimonial-card" role="listitem">
-            <div class="testimonial-stars" aria-label="5 out of 5 stars">
-              <span aria-hidden="true">★★★★★</span>
-            </div>
-            <p class="testimonial-text">
-              "The most accurate birth chart I've ever seen online. Even the minor
-              aspects were spot-on. I've been studying astrology for 15 years and
-              this is the tool I recommend to all my clients."
-            </p>
-            <footer class="testimonial-author">
-              <div class="testimonial-avatar" aria-hidden="true">SM</div>
-              <div class="testimonial-meta">
-                <cite class="testimonial-name">Sarah M.</cite>
-                <span class="testimonial-sign">Scorpio Rising</span>
-              </div>
-            </footer>
-          </blockquote>
-
-          <blockquote class="testimonial-card testimonial-card--featured" role="listitem">
-            <div class="testimonial-stars" aria-label="5 out of 5 stars">
-              <span aria-hidden="true">★★★★★</span>
-            </div>
-            <p class="testimonial-text">
-              "I was skeptical of web-based astrology tools until I tried AstroPrecise.
-              The interpretations are thoughtful, nuanced, and genuinely insightful.
-              The compatibility report brought tears to my eyes."
-            </p>
-            <footer class="testimonial-author">
-              <div class="testimonial-avatar" aria-hidden="true">JL</div>
-              <div class="testimonial-meta">
-                <cite class="testimonial-name">James L.</cite>
-                <span class="testimonial-sign">Leo Sun, Aquarius Moon</span>
-              </div>
-            </footer>
-          </blockquote>
-
-          <blockquote class="testimonial-card" role="listitem">
-            <div class="testimonial-stars" aria-label="5 out of 5 stars">
-              <span aria-hidden="true">★★★★★</span>
-            </div>
-            <p class="testimonial-text">
-              "The mobile app syncing feature is a game-changer. I calculated my whole
-              family's charts on the website and now I have them all in my pocket.
-              Absolutely beautiful interface too."
-            </p>
-            <footer class="testimonial-author">
-              <div class="testimonial-avatar" aria-hidden="true">RP</div>
-              <div class="testimonial-meta">
-                <cite class="testimonial-name">Rhea P.</cite>
-                <span class="testimonial-sign">Pisces Sun</span>
-              </div>
-            </footer>
-          </blockquote>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
+    <!-- ═══════════════════════════════════════════════
          APP DOWNLOAD
-    ============================================================ -->
+    ═══════════════════════════════════════════════ -->
     <section class="app-download-section section" id="app-download" aria-labelledby="app-download-heading">
       <div class="container">
         <div class="app-download-inner">
           <div class="app-download-content">
-            <h2 class="section-title" id="app-download-heading">Take the Cosmos With You</h2>
+            <p class="eyebrow" style="text-align:left;">Android App</p>
+            <h2 class="section-title" id="app-download-heading" style="text-align:left;-webkit-text-fill-color:unset;background:none;color:var(--white);">
+              The Cosmos in Your Pocket
+            </h2>
             <p class="app-download-text">
               Sync your charts between web and mobile. The AstroPrecise Android app gives
-              you birth charts, daily horoscopes, and live sky updates — all offline, all
-              private, no subscription required.
+              you birth charts, daily horoscopes, and live sky updates — all offline,
+              all private, no subscription required.
             </p>
-            <ul class="app-features-list" aria-label="App features">
-              <li>Birth charts saved to your device</li>
-              <li>Daily push notifications for transits</li>
-              <li>Offline calculations — no internet needed</li>
-              <li>Widget for today's planetary positions</li>
+            <ul class="app-features-list">
+              <li>Birth charts saved locally to your device</li>
+              <li>Daily transit notifications</li>
+              <li>Offline — no internet connection needed</li>
+              <li>Home screen widget for live planetary positions</li>
             </ul>
             <div class="app-badges">
               <a href="https://play.google.com/store" class="app-badge" aria-label="Get it on Google Play" rel="noopener noreferrer" target="_blank">
-                <!-- Google Play badge SVG placeholder -->
-                <svg class="play-badge-svg" viewBox="0 0 135 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google Play badge">
-                  <rect width="135" height="40" rx="5" fill="#1A1A2E" stroke="#9b5fd0" stroke-width="1.5"/>
-                  <text x="44" y="13" fill="#f0e8d8" font-family="Inter,sans-serif" font-size="7" font-weight="400">GET IT ON</text>
-                  <text x="44" y="28" fill="#FFFFFF" font-family="Inter,sans-serif" font-size="14" font-weight="600">Google Play</text>
-                  <text x="14" y="26" fill="#c4920a" font-size="20">▶</text>
+                <svg class="play-badge-svg" viewBox="0 0 145 44" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google Play badge">
+                  <rect width="145" height="44" rx="6" fill="rgba(30,18,58,0.9)" stroke="rgba(196,146,10,0.5)" stroke-width="1"/>
+                  <text x="48" y="15" fill="rgba(240,232,216,0.6)" font-family="Inter,sans-serif" font-size="7.5" font-weight="500" letter-spacing="0.05em">GET IT ON</text>
+                  <text x="48" y="32" fill="#f0e8d8" font-family="Inter,sans-serif" font-size="15" font-weight="600">Google Play</text>
+                  <text x="16" y="29" fill="#c4920a" font-size="22">▶</text>
                 </svg>
               </a>
             </div>
           </div>
           <div class="app-download-visual">
-            <div class="qr-placeholder" role="img" aria-label="QR code to download AstroPrecise app">
-              <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
-                <rect width="120" height="120" rx="8" fill="#1A1A2E" stroke="#9b5fd0" stroke-width="2"/>
-                <!-- QR corner markers -->
-                <rect x="10" y="10" width="30" height="30" rx="2" fill="none" stroke="#c4920a" stroke-width="3"/>
-                <rect x="15" y="15" width="20" height="20" rx="1" fill="#c4920a" opacity="0.8"/>
-                <rect x="80" y="10" width="30" height="30" rx="2" fill="none" stroke="#c4920a" stroke-width="3"/>
-                <rect x="85" y="15" width="20" height="20" rx="1" fill="#c4920a" opacity="0.8"/>
-                <rect x="10" y="80" width="30" height="30" rx="2" fill="none" stroke="#c4920a" stroke-width="3"/>
-                <rect x="15" y="85" width="20" height="20" rx="1" fill="#c4920a" opacity="0.8"/>
-                <!-- QR data dots (simplified) -->
-                <rect x="48" y="10" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="56" y="10" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="64" y="10" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="48" y="18" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="64" y="18" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="10" y="48" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="18" y="48" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="10" y="56" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="18" y="64" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="48" y="48" width="28" height="5" fill="#6B21A8" opacity="0.9"/>
-                <rect x="48" y="56" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="56" y="56" width="5" height="5" fill="#6B21A8" opacity="0.9"/>
-                <rect x="64" y="56" width="12" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="48" y="64" width="12" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="64" y="64" width="5" height="5" fill="#6B21A8" opacity="0.9"/>
-                <rect x="80" y="48" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="95" y="56" width="5" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <rect x="80" y="64" width="18" height="5" fill="#f0e8d8" opacity="0.7"/>
-                <text x="60" y="112" text-anchor="middle" fill="#f0e8d8" font-family="Inter,sans-serif" font-size="8" opacity="0.6">Scan to download</text>
-              </svg>
+            <!-- Stylised phone mockup -->
+            <div style="
+              width:160px;height:280px;
+              background:linear-gradient(180deg,rgba(30,18,58,0.95),rgba(13,9,24,0.95));
+              border:1.5px solid rgba(196,146,10,0.35);
+              border-radius:24px;
+              display:flex;flex-direction:column;align-items:center;justify-content:center;
+              gap:var(--space-4);
+              box-shadow:0 0 40px rgba(107,33,168,0.2),0 0 80px rgba(196,146,10,0.08);
+              position:relative;overflow:hidden;
+            " aria-hidden="true">
+              <div style="position:absolute;top:12px;width:40px;height:4px;background:rgba(196,146,10,0.3);border-radius:2px;"></div>
+              <span style="font-size:2.8rem;">✦</span>
+              <span style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;color:var(--gold);opacity:0.8;">ASTROPRECISE</span>
+              <div style="display:flex;flex-direction:column;gap:4px;width:80%;">
+                <div style="height:3px;background:linear-gradient(90deg,var(--amethyst),var(--gold));border-radius:2px;opacity:0.7;"></div>
+                <div style="height:3px;background:rgba(196,146,10,0.3);border-radius:2px;width:70%;"></div>
+                <div style="height:3px;background:rgba(107,33,168,0.4);border-radius:2px;width:85%;"></div>
+              </div>
+              <div style="position:absolute;bottom:12px;width:60px;height:4px;background:rgba(196,146,10,0.25);border-radius:2px;"></div>
             </div>
-            <p class="qr-label">Scan to download the Android app</p>
+            <p class="qr-label" style="margin-top:var(--space-4);">AstroPrecise for Android</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
+    <!-- ═══════════════════════════════════════════════
          NEWSLETTER
-    ============================================================ -->
+    ═══════════════════════════════════════════════ -->
     <section class="newsletter-section section" id="newsletter" aria-labelledby="newsletter-heading">
       <div class="container">
         <div class="newsletter-inner">
           <div class="newsletter-content">
-            <h2 class="newsletter-title" id="newsletter-heading">Get Weekly Cosmic Updates</h2>
+            <p class="eyebrow" style="text-align:left;">Weekly Dispatch</p>
+            <h2 class="newsletter-title" id="newsletter-heading">Celestial Forecasts</h2>
             <p class="newsletter-text">
-              Planetary forecasts, eclipse guides, and retrograde alerts delivered to
-              your inbox every Sunday. No spam — only the stars.
+              Planetary transits, eclipse guides, and retrograde alerts delivered
+              every Sunday. No noise — only the stars.
             </p>
           </div>
           <form class="newsletter-form" id="newsletter-form" novalidate aria-label="Newsletter signup form">
             <div class="newsletter-input-group">
               <label for="newsletter-email" class="sr-only">Email address</label>
-              <input
-                type="email"
-                id="newsletter-email"
-                name="newsletter-email"
-                class="newsletter-input"
-                placeholder="your@email.com"
-                autocomplete="email"
-                aria-required="true"
-                aria-describedby="newsletter-hint"
-              />
-              <button type="submit" class="btn btn--primary newsletter-submit">
-                Get Weekly Cosmic Updates
-              </button>
+              <input type="email" id="newsletter-email" name="newsletter-email" class="newsletter-input"
+                placeholder="your@email.com" autocomplete="email" aria-required="true" aria-describedby="newsletter-hint" />
+              <button type="submit" class="btn btn--primary newsletter-submit">Subscribe</button>
             </div>
-            <p class="newsletter-hint" id="newsletter-hint">
-              We respect your privacy. Unsubscribe any time.
-            </p>
+            <p class="newsletter-hint" id="newsletter-hint">We respect your privacy. Unsubscribe any time.</p>
             <div class="newsletter-feedback" id="newsletter-feedback" role="alert" aria-live="polite"></div>
           </form>
         </div>
@@ -463,24 +710,25 @@
 
   </main>
 
-  <!-- ============================================================
-       FOOTER
-  ============================================================ -->
+  <!-- FOOTER -->
   <footer class="site-footer" role="contentinfo">
     <div class="container">
       <div class="footer-inner">
         <div class="footer-brand">
-          <a href="index.html" class="nav-logo footer-logo">
-            <span class="logo-star" aria-hidden="true">✦</span>
-            <span class="logo-text">AstroPrecise</span>
+          <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
+            <span aria-hidden="true">✦</span>
+            <span>AstroPrecise</span>
           </a>
           <p class="footer-tagline">
             Professional astrology powered by precise astronomical calculations.
           </p>
+          <p style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--silver-dark);margin-top:var(--space-2);">
+            ♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓
+          </p>
         </div>
         <nav class="footer-nav" aria-label="Footer navigation">
-          <h3 class="footer-nav__heading">Pages</h3>
-          <ul role="list">
+          <h3 class="footer-nav__heading">Navigate</h3>
+          <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="chart.html">Birth Chart</a></li>
             <li><a href="horoscope.html">Horoscope</a></li>
@@ -489,21 +737,171 @@
             <li><a href="profile.html">Profile</a></li>
           </ul>
         </nav>
-        <div class="footer-legal">
-          <p class="footer-copyright">
-            &copy; 2025 AstroPrecise. Powered by accurate astronomical calculations.
-          </p>
+        <div class="footer-nav">
+          <h3 class="footer-nav__heading">The Planets</h3>
+          <ul>
+            <li><a href="chart.html">☉ Sun</a></li>
+            <li><a href="chart.html">☽ Moon</a></li>
+            <li><a href="chart.html">☿ Mercury</a></li>
+            <li><a href="chart.html">♀ Venus</a></li>
+            <li><a href="chart.html">♂ Mars</a></li>
+            <li><a href="chart.html">♃ Jupiter</a></li>
+          </ul>
         </div>
+      </div>
+      <div class="footer-legal">
+        <p class="footer-copyright">
+          &copy; 2025 AstroPrecise · All calculations run locally in your browser · No data collected
+        </p>
       </div>
     </div>
   </footer>
 
-  <!-- JS -->
+  <!-- Scripts -->
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
+  <script src="js/planet-orrery.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/interpretations.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
+
+  <script>
+  /* ── Homepage live data ─────────────────────────────────────────── */
+  (function() {
+    'use strict';
+
+    const SIGN_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+                        'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    const SIGN_GLYPHS= ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+    const MOON_PHASES = [
+      { min:0,   max:1,    emoji:'🌑', name:'New Moon' },
+      { min:1,   max:49,   emoji:'🌒', name:'Waxing Crescent' },
+      { min:49,  max:51,   emoji:'🌓', name:'First Quarter' },
+      { min:51,  max:99,   emoji:'🌔', name:'Waxing Gibbous' },
+      { min:99,  max:101,  emoji:'🌕', name:'Full Moon' },
+      { min:101, max:149,  emoji:'🌖', name:'Waning Gibbous' },
+      { min:149, max:151,  emoji:'🌗', name:'Last Quarter' },
+      { min:151, max:360,  emoji:'🌘', name:'Waning Crescent' },
+    ];
+
+    const PLANET_DEF = [
+      { id:'sun',     label:'Sun',     glyph:'☉', color:'#f0c040' },
+      { id:'moon',    label:'Moon',    glyph:'☽', color:'#d0d8e8' },
+      { id:'mercury', label:'Mercury', glyph:'☿', color:'#9a9090' },
+      { id:'venus',   label:'Venus',   glyph:'♀', color:'#c8b07a' },
+      { id:'mars',    label:'Mars',    glyph:'♂', color:'#b84232' },
+      { id:'jupiter', label:'Jupiter', glyph:'♃', color:'#c08858' },
+      { id:'saturn',  label:'Saturn',  glyph:'♄', color:'#c8b48a' },
+      { id:'uranus',  label:'Uranus',  glyph:'♅', color:'#7de8e8' },
+      { id:'neptune', label:'Neptune', glyph:'♆', color:'#4469f5' },
+    ];
+
+    function ready(fn) {
+      if (document.readyState !== 'loading') fn();
+      else document.addEventListener('DOMContentLoaded', fn);
+    }
+
+    function waitFor(condition, timeout, interval) {
+      return new Promise((resolve, reject) => {
+        const t = setTimeout(() => reject('timeout'), timeout || 8000);
+        const i = setInterval(() => {
+          if (condition()) { clearTimeout(t); clearInterval(i); resolve(); }
+        }, interval || 100);
+      });
+    }
+
+    ready(async function() {
+      // Date labels
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      const els = document.querySelectorAll('#sky-date-display,#sky-panel-date,#moon-panel-date');
+      els.forEach(el => el && (el.textContent = dateStr));
+
+      // Wait for ephemeris
+      try {
+        await waitFor(() => window.AstroEphemeris && window.AstroEphemeris.julianDay, 10000);
+      } catch(e) {
+        document.getElementById('planet-list').innerHTML =
+          '<p style="padding:var(--space-5);font-size:var(--text-sm);color:var(--silver-dim);">Ephemeris unavailable</p>';
+        return;
+      }
+
+      const E = window.AstroEphemeris;
+      const jd = E.julianDay(now.getFullYear(), now.getMonth()+1, now.getDate(),
+                              now.getHours(), now.getMinutes(), 0);
+
+      /* ── Planet list ── */
+      const listEl = document.getElementById('planet-list');
+      if (listEl) {
+        let html = '';
+        for (const p of PLANET_DEF) {
+          let lon = 0, retro = false;
+          try {
+            switch(p.id) {
+              case 'sun':     lon = E.sunPosition(jd).lon; break;
+              case 'moon':    lon = E.moonPosition(jd).lon; break;
+              case 'mercury': lon = E.mercuryPosition(jd).lon; retro = E.isRetrograde('mercury',jd); break;
+              case 'venus':   lon = E.venusPosition(jd).lon;   retro = E.isRetrograde('venus',jd);   break;
+              case 'mars':    lon = E.marsPosition(jd).lon;    retro = E.isRetrograde('mars',jd);    break;
+              case 'jupiter': lon = E.jupiterPosition(jd).lon; retro = E.isRetrograde('jupiter',jd); break;
+              case 'saturn':  lon = E.saturnPosition(jd).lon;  retro = E.isRetrograde('saturn',jd);  break;
+              case 'uranus':  lon = E.uranusPosition(jd).lon;  retro = E.isRetrograde('uranus',jd);  break;
+              case 'neptune': lon = E.neptunePosition(jd).lon; retro = E.isRetrograde('neptune',jd); break;
+            }
+          } catch(err) {}
+          lon = ((lon%360)+360)%360;
+          const signIdx = Math.floor(lon/30);
+          const deg = lon - signIdx*30;
+          const degStr = `${Math.floor(deg)}°${Math.floor((deg%1)*60).toString().padStart(2,'0')}′`;
+
+          html += `<div class="planet-row${retro?' planet-row--retro':''}" role="listitem">
+            <span class="planet-row__glyph" style="color:${p.color}" aria-hidden="true">${p.glyph}</span>
+            <div class="planet-row__info">
+              <span class="planet-row__name">${p.label}<span class="planet-row__retro"> ℞</span></span>
+              <span class="planet-row__sign">${SIGN_GLYPHS[signIdx]} ${SIGN_NAMES[signIdx]}</span>
+            </div>
+            <span class="planet-row__degree">${degStr}</span>
+          </div>`;
+        }
+        listEl.innerHTML = html;
+      }
+
+      /* ── Moon phase ── */
+      try {
+        const moonLon  = E.moonPosition(jd).lon;
+        const sunLon   = E.sunPosition(jd).lon;
+        const elongation = ((moonLon - sunLon) % 360 + 360) % 360;
+        const illumPct = (1 - Math.cos(elongation * Math.PI / 180)) / 2 * 100;
+
+        const phase = MOON_PHASES.find(ph => elongation >= ph.min && elongation < ph.max)
+          || MOON_PHASES[0];
+
+        const moonSignIdx = Math.floor(((moonLon%360)+360)%360 / 30);
+
+        const moonEmoji = document.getElementById('moon-phase-emoji');
+        const moonName  = document.getElementById('moon-phase-name');
+        const moonSign  = document.getElementById('moon-phase-sign');
+        const moonPct   = document.getElementById('moon-phase-pct');
+        const moonFill  = document.getElementById('moon-illum-fill');
+        const heroBadge = document.getElementById('hero-moon-phase');
+
+        if (moonEmoji) moonEmoji.textContent = phase.emoji;
+        if (moonName)  moonName.textContent  = phase.name;
+        if (moonSign)  moonSign.textContent  = `Moon in ${SIGN_NAMES[moonSignIdx]}`;
+        if (moonPct)   moonPct.textContent   = `${Math.round(illumPct)}% illuminated`;
+        if (moonFill)  moonFill.style.width  = illumPct + '%';
+        if (heroBadge) heroBadge.textContent = `${phase.emoji} ${phase.name} · ${SIGN_NAMES[moonSignIdx]}`;
+      } catch(e) {}
+
+      /* ── Orrery ── */
+      try {
+        await waitFor(() => window.PlanetOrrery, 5000);
+        window.PlanetOrrery.init(document.getElementById('orrery-canvas'));
+      } catch(e) {}
+    });
+  })();
+  </script>
+
 </body>
 </html>
