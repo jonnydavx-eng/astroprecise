@@ -432,3 +432,344 @@ window.Interpretations = (() => {
 // Expose under both names
 window.AstroInterpretations = window.Interpretations;
 
+
+// ── SECTION 4: calculateCompatibility function ────────────────────────────
+function calculateCompatibility(chart1, chart2) {
+  // Returns: {overall, love, communication, values, longTerm, passion, synastryAspects[], overview}
+  // All scores 0-100
+  if (!chart1 || !chart2) {
+    return { overall:50, love:50, communication:50, values:50, longTerm:50, passion:50, synastryAspects:[], overview:'Insufficient chart data.' };
+  }
+
+  const ELEMENT_MAP = {
+    Aries:'fire', Leo:'fire', Sagittarius:'fire',
+    Taurus:'earth', Virgo:'earth', Capricorn:'earth',
+    Gemini:'air', Libra:'air', Aquarius:'air',
+    Cancer:'water', Scorpio:'water', Pisces:'water'
+  };
+
+  const MODALITY_MAP = {
+    Aries:'cardinal', Cancer:'cardinal', Libra:'cardinal', Capricorn:'cardinal',
+    Taurus:'fixed', Leo:'fixed', Scorpio:'fixed', Aquarius:'fixed',
+    Gemini:'mutable', Virgo:'mutable', Sagittarius:'mutable', Pisces:'mutable'
+  };
+
+  // Element compatibility base scores
+  const ELEMENT_COMPAT = {
+    'fire_air':88, 'air_fire':88,
+    'earth_water':87, 'water_earth':87,
+    'fire_fire':75, 'earth_earth':78,
+    'air_air':74, 'water_water':76,
+    'fire_earth':57, 'earth_fire':57,
+    'fire_water':52, 'water_fire':52,
+    'air_water':58, 'water_air':58,
+    'earth_air':62, 'air_earth':62
+  };
+
+  function getElementScore(sign1, sign2) {
+    const e1 = ELEMENT_MAP[sign1] || 'fire';
+    const e2 = ELEMENT_MAP[sign2] || 'fire';
+    return ELEMENT_COMPAT[`${e1}_${e2}`] || 65;
+  }
+
+  function getModalityBonus(sign1, sign2) {
+    const m1 = MODALITY_MAP[sign1];
+    const m2 = MODALITY_MAP[sign2];
+    if (m1 === m2) return -3;  // same modality can be competitive
+    if ((m1 === 'cardinal' && m2 === 'mutable') || (m1 === 'mutable' && m2 === 'cardinal')) return 4;
+    if ((m1 === 'fixed' && m2 === 'mutable') || (m1 === 'mutable' && m2 === 'fixed')) return 5;
+    return 2;
+  }
+
+  const sign1 = chart1.sunSign || 'Aries';
+  const sign2 = chart2.sunSign || 'Aries';
+  const moon1 = chart1.moonSign || sign1;
+  const moon2 = chart2.moonSign || sign2;
+  const venus1 = chart1.venusSign || sign1;
+  const venus2 = chart2.venusSign || sign2;
+  const mars1 = chart1.marsSign || sign1;
+  const mars2 = chart2.marsSign || sign2;
+  const mercury1 = chart1.mercurySign || sign1;
+  const mercury2 = chart2.mercurySign || sign2;
+  const rising1 = chart1.rising || sign1;
+  const rising2 = chart2.rising || sign2;
+
+  // Sun-Sun compatibility (35% weight)
+  const sunScore = getElementScore(sign1, sign2) + getModalityBonus(sign1, sign2);
+
+  // Moon-Moon compatibility (30% weight)
+  let moonScore = getElementScore(moon1, moon2);
+  if (moon1 === moon2) moonScore += 15;
+  else if (ELEMENT_MAP[moon1] === ELEMENT_MAP[moon2]) moonScore += 10;
+  else moonScore += getModalityBonus(moon1, moon2);
+
+  // Venus compatibility (20% weight)
+  let venusScore = getElementScore(venus1, venus2);
+  if (venus1 === venus2) venusScore += 12;
+  // Venus-Mars cross-compatibility bonus
+  const venusMars12 = getElementScore(venus1, mars2);
+  const venusMars21 = getElementScore(venus2, mars1);
+  const passionBase = Math.round((venusMars12 + venusMars21) / 2);
+
+  // Communication (Mercury)
+  const mercuryScore = getElementScore(mercury1, mercury2) + getModalityBonus(mercury1, mercury2);
+
+  // Rising compatibility
+  const risingScore = getElementScore(rising1, rising2);
+
+  // Weighted overall
+  const rawOverall = (sunScore * 0.35) + (moonScore * 0.30) + (venusScore * 0.20) + (mercuryScore * 0.15);
+
+  // Deterministic variance based on sign combination
+  const seedStr = sign1 + sign2 + moon1 + moon2;
+  let hashSeed = 0;
+  for (let i = 0; i < seedStr.length; i++) hashSeed = (hashSeed * 31 + seedStr.charCodeAt(i)) >>> 0;
+  const variance = ((hashSeed % 11) - 5);
+
+  function clamp(v) { return Math.min(97, Math.max(20, Math.round(v))); }
+
+  const overall      = clamp(rawOverall + variance);
+  const love         = clamp((venusScore + getElementScore(venus1, mars2) + getElementScore(venus2, mars1)) / 3 + variance * 0.8);
+  const communication= clamp(mercuryScore + getElementScore(sign1, sign2) * 0.3 + variance);
+  const values       = clamp((moonScore + getElementScore(sign1, sign2)) / 2 + variance * 0.5);
+  const longTerm     = clamp((sunScore * 0.4 + moonScore * 0.4 + risingScore * 0.2) + variance * 0.7);
+  const passion      = clamp(passionBase + venusScore * 0.3 + variance * 1.2);
+
+  // Synastry aspects
+  const synastryAspects = [];
+  const ASPECT_DEFS = [
+    {name:'conjunction', angle:0, orb:8},
+    {name:'sextile', angle:60, orb:4},
+    {name:'square', angle:90, orb:6},
+    {name:'trine', angle:120, orb:6},
+    {name:'opposition', angle:180, orb:8}
+  ];
+
+  const SIGN_DEGREES = {
+    Aries:0, Taurus:30, Gemini:60, Cancer:90, Leo:120, Virgo:150,
+    Libra:180, Scorpio:210, Sagittarius:240, Capricorn:270, Aquarius:300, Pisces:330
+  };
+
+  const p1Placements = {
+    Sun: chart1.sunSign, Moon: chart1.moonSign, Venus: chart1.venusSign,
+    Mars: chart1.marsSign, Mercury: chart1.mercurySign
+  };
+  const p2Placements = {
+    Sun: chart2.sunSign, Moon: chart2.moonSign, Venus: chart2.venusSign,
+    Mars: chart2.marsSign, Mercury: chart2.mercurySign
+  };
+
+  const SYNASTRY_INTERPS = {
+    'Sun_trine_Sun': 'Your solar energies harmonize naturally — you share a fundamental orientation toward life that makes cooperation feel effortless.',
+    'Sun_opposition_Sun': 'Your solar energies are opposite but complementary — you can balance and complete each other when you recognize the polarity as a gift.',
+    'Sun_square_Sun': 'Your solar energies create productive friction — you challenge each other to grow beyond your individual comfort zones.',
+    'Sun_conjunction_Sun': 'Identical solar energies create strong recognition and shared purpose, though you may lack the polarity that keeps relationships dynamic.',
+    'Moon_trine_Moon': 'Your emotional natures harmonize beautifully — you instinctively understand each other\'s feelings and needs.',
+    'Moon_conjunction_Moon': 'Your emotional natures are almost identical — deep mutual understanding and extraordinary emotional attunement characterize your bond.',
+    'Moon_opposition_Moon': 'Your emotional needs are complementary opposites — each of you provides what the other instinctively seeks.',
+    'Moon_square_Moon': 'Your emotional needs create tension that requires conscious work — but this work deepens both of you significantly.',
+    'Venus_trine_Venus': 'Your aesthetic sensibilities and love natures harmonize naturally — shared pleasures, beauty, and affectionate styles align beautifully.',
+    'Venus_conjunction_Venus': 'Your values and love natures are closely aligned — you want the same things from love and express affection in similar ways.',
+    'Venus_trine_Mars': 'Attraction and love flow easily between you — the spark between your Venus and Mars creates natural romantic chemistry.',
+    'Venus_opposition_Mars': 'Powerful magnetic attraction characterizes your bond — the polarity between your Venus and Mars creates intense romantic and sexual energy.',
+    'Venus_square_Mars': 'Passionate tension and creative conflict characterize your romantic connection — the square produces heat that can be either productive or consuming.',
+    'Sun_trine_Moon': 'A harmonious connection between will and feeling — one person\'s solar confidence supports the other\'s emotional needs naturally.',
+    'Sun_conjunction_Moon': 'A deeply personal connection — one person\'s solar identity resonates profoundly with the other\'s emotional nature.',
+    'Mercury_trine_Mercury': 'Effortless communication and intellectual understanding — you think similarly and find each other\'s minds naturally engaging.',
+    'Mercury_sextile_Mercury': 'Good communication and complementary thinking styles create productive intellectual exchange.',
+    'Mercury_square_Mercury': 'Your communication styles create friction that, when worked through, produces much clearer and more honest exchange.',
+    'default': 'This planetary connection between your charts adds a layer of interaction that both challenges and enriches your connection.'
+  };
+
+  for (const [p1name, p1sign] of Object.entries(p1Placements)) {
+    for (const [p2name, p2sign] of Object.entries(p2Placements)) {
+      if (!p1sign || !p2sign) continue;
+      const deg1 = SIGN_DEGREES[p1sign] + 15;  // use midpoint of sign
+      const deg2 = SIGN_DEGREES[p2sign] + 15;
+      const rawDiff = Math.abs(deg1 - deg2);
+      const diff = rawDiff > 180 ? 360 - rawDiff : rawDiff;
+
+      for (const {name, angle, orb} of ASPECT_DEFS) {
+        const orbActual = Math.abs(diff - angle);
+        if (orbActual <= orb) {
+          const key = `${p1name}_${name}_${p2name}`;
+          const reverseKey = `${p2name}_${name}_${p1name}`;
+          const interp = SYNASTRY_INTERPS[key] || SYNASTRY_INTERPS[reverseKey] || SYNASTRY_INTERPS['default'];
+          synastryAspects.push({
+            planet1: p1name, planet2: p2name, aspect: name,
+            orb: orbActual.toFixed(1),
+            harmony: name === 'trine' || name === 'sextile' || name === 'conjunction' ? 'harmonious' : 'dynamic',
+            interpretation: `${p1name} ${name} ${p2name}: ${interp}`
+          });
+          break;
+        }
+      }
+    }
+  }
+
+  const COMPAT_NARRATIVES = {
+    'fire_air': 'Your fire-air combination creates natural inspiration and excitement — you fan each other\'s flames and keep the energy intellectually alive.',
+    'earth_water': 'Your earth-water bond creates natural nourishment — you provide practical grounding for each other\'s emotional depth.',
+    'fire_fire': 'Two fire signs create passionate intensity and mutual inspiration, but you must ensure you don\'t compete for the spotlight.',
+    'earth_earth': 'Two earth signs create lasting stability and shared practical values — your bond is built to endure through consistent, quiet loyalty.',
+    'air_air': 'Two air signs create a richly intellectual bond full of stimulating conversation, though you may both need help staying emotionally grounded.',
+    'water_water': 'Two water signs create profound emotional attunement and deep intuitive understanding — your bond runs beneath the surface.',
+    'fire_earth': 'Fire and earth create a complementary tension — one provides spark, the other provides substance, and learning each other\'s pace is the key.',
+    'fire_water': 'Fire and water create passionate but challenging chemistry — your natures are fundamentally different in ways that both attract and frustrate.',
+    'air_water': 'Air and water create an interesting tension between thought and feeling — you each offer what the other sometimes lacks.',
+    'earth_air': 'Earth and air combine practical intelligence with conceptual insight — you work well together when you respect each other\'s different orientations.'
+  };
+
+  const elem1 = ELEMENT_MAP[sign1] || 'fire';
+  const elem2 = ELEMENT_MAP[sign2] || 'fire';
+  const narrativeKey = `${elem1}_${elem2}`;
+  const baseNarrative = COMPAT_NARRATIVES[narrativeKey] || COMPAT_NARRATIVES[`${elem2}_${elem1}`] || 'Your combination creates a unique dynamic with both complementary gifts and growth-inducing challenges.';
+
+  const moonNarrative = moon1 === moon2
+    ? `Your Moon signs are identical — you share an almost telepathic emotional understanding.`
+    : ELEMENT_MAP[moon1] === ELEMENT_MAP[moon2]
+    ? `Your Moon signs share the same element, giving you natural emotional attunement despite individual differences.`
+    : `Your Moon signs come from different elements, meaning you will need to learn each other\'s emotional languages — a rewarding journey.`;
+
+  const overview = `${sign1} and ${sign2} — ${baseNarrative} ${moonNarrative} Overall compatibility of ${overall}% reflects both your natural resonance and the specific growth opportunities this pairing offers. ${overall >= 80 ? 'This is a highly compatible combination with natural ease and mutual understanding.' : overall >= 65 ? 'This combination has genuine potential that develops through mutual understanding and respect.' : 'This combination requires conscious effort and genuine appreciation of your differences, but these differences can be your greatest teachers.'}`;
+
+  return { overall, love, communication, values, longTerm, passion, synastryAspects, overview };
+}
+
+// ── SECTION 5: getTransitAspects function ────────────────────────────────
+function getTransitAspects(natalChart, transitPositions) {
+  if (!natalChart || !transitPositions) return [];
+
+  const TRANSIT_INTERPRETATIONS = {
+    // JUPITER TRANSITS
+    'Jupiter_Sun': "Jupiter transiting your natal Sun activates a significant period of growth, opportunity, and expanding confidence. Your sense of identity expands, and you tend to attract recognition, opportunity, and good fortune almost effortlessly during this period. Use this window to take bold steps toward your most meaningful goals — Jupiter's benefic energy amplifies whatever you put genuine effort into.",
+    'Jupiter_Moon': "Jupiter transiting your natal Moon brings emotional expansion, increased warmth, and a period of genuine contentment. Family relationships tend to improve, domestic life flourishes, and your emotional generosity attracts people and situations that nourish you. This is an excellent time for anything related to home, family, or emotional healing.",
+    'Jupiter_Mercury': "Jupiter transiting your natal Mercury expands your mental horizons significantly — thinking becomes more philosophical, communications are persuasive and well-received, and learning opportunities arrive in abundance. This is an excellent time for writing, publishing, study, travel, and any communication-heavy professional endeavors.",
+    'Jupiter_Venus': "Jupiter transiting your natal Venus is one of the most fortunate love and financial transits available — your charm and magnetism expand, romantic opportunities multiply, and financial abundance tends to follow your increased confidence. Relationships deepen and new connections form with unusual ease and genuine warmth.",
+    'Jupiter_Mars': "Jupiter transiting your natal Mars amplifies your energy, courage, and drive to an exceptional degree. Ambitious projects receive the sustained energy they require, physical vitality is high, and the confidence to act boldly on your best instincts is readily available. This is an excellent time for launching new initiatives and pursuing long-deferred goals.",
+    'Jupiter_Jupiter': "Jupiter returning to its natal position — the Jupiter Return — marks a significant milestone of approximately twelve years. This is a major period of life expansion, philosophical renewal, and the beginning of a new twelve-year cycle of growth. Review what you have learned and accomplished, and set intentions for the new cycle with genuine ambition.",
+    'Jupiter_Saturn': "Jupiter transiting your natal Saturn brings a welcome period of optimism and opportunity to areas where you have been working hard with discipline and patience. Long-standing efforts begin to pay off, and the structures you have been building receive the recognition and expansion that your sustained effort deserves. Balance expansion with the Saturnian wisdom of sustainable growth.",
+
+    // SATURN TRANSITS
+    'Saturn_Sun': "Saturn transiting your natal Sun is a significant period of testing, restructuring, and the building of genuine authority. You may feel that the world demands more from you than usual, that obstacles are more numerous, and that your usual confidence requires more effort to sustain. This transit, however difficult, builds the specific capabilities that your next level of development requires — what you construct now will last.",
+    'Saturn_Moon': "Saturn transiting your natal Moon creates a period of emotional sobriety, increased responsibility, and the challenge of balancing your own needs with the demands of others. Emotional patterns from the past surface for examination and revision. This transit builds emotional maturity and the capacity for deeply committed, responsible relationships — the work is real, and so are the results.",
+    'Saturn_Mercury': "Saturn transiting your natal Mercury demands precision, sustained mental focus, and the discipline to develop genuine expertise rather than broad knowledge. Communication slows down, but what you do communicate carries more weight and authority. This is an excellent transit for writing a book, mastering a technical skill, or developing an area of genuine intellectual depth.",
+    'Saturn_Venus': "Saturn transiting your natal Venus brings a period of testing in relationships and finances — you may experience greater seriousness, responsibility, or limitation in these areas. The relationships that survive this transit are the ones built on genuine mutual respect and shared values rather than convenience or attraction alone. Financial discipline practiced now produces excellent long-term results.",
+    'Saturn_Mars': "Saturn transiting your natal Mars creates a period of significant friction between your drive to act and the demands for patience, preparation, and strategic delay. Your energy may feel blocked or frustrating, but this restraint is building the capacity for disciplined, precisely timed action that impulsive Mars energy alone cannot achieve. Mastery of this transit is the difference between force and power.",
+    'Saturn_Jupiter': "Saturn transiting your natal Jupiter brings your optimistic visions into contact with practical reality — this is the transit that separates workable ideas from wish-fulfillment. Projects that have real substance are refined and strengthened; those built on unrealistic assumptions require honest revision. The result of this disciplined engagement with your vision is a more achievable, more durable version of your dreams.",
+    'Saturn_Saturn': "The Saturn opposition (around age 44) and Saturn Return (around ages 29 and 58) are among the most significant transits in the astrological calendar. These are periods of major life reassessment, restructuring of identity and purpose, and the confrontation with questions about whether your current life reflects your genuine values and authentic ambitions. What you build now — in integrity and genuine commitment — is what lasts.",
+
+    // URANUS TRANSITS
+    'Uranus_Sun': "Uranus transiting your natal Sun brings a period of radical change in your sense of identity and life direction — the authentic self that has been compressed or unexpressed in your current life structure now demands freedom and genuine expression. Disruptions to your established path are not disasters but liberations, even when they feel destabilizing. Flexibility, openness, and genuine self-honesty are your best navigational tools.",
+    'Uranus_Moon': "Uranus transiting your natal Moon creates sudden and often unexpected shifts in your emotional landscape, domestic situation, or relationship to family. What you feel, what you need, and how you define home and belonging may shift dramatically. Your emotional independence and the freedom to be authentically yourself in your most intimate relationships becomes a non-negotiable priority.",
+    'Uranus_Mercury': "Uranus transiting your natal Mercury produces sudden intellectual breakthroughs, radical shifts in how you think, and the arrival of unconventional ideas that disrupt your previous mental frameworks. Genius-level insights are available, but so is mental erraticism — ground your most inspired thinking before acting on it. Technology, science, and innovative communication are especially activated.",
+    'Uranus_Venus': "Uranus transiting your natal Venus brings sudden and unexpected changes in your love life, financial situation, or aesthetic values. Relationships that no longer serve your authentic freedom may end abruptly; new connections form with electric suddenness and genuine originality. Your values are undergoing a radical update, and this process is ultimately liberating even when it feels destabilizing.",
+    'Uranus_Mars': "Uranus transiting your natal Mars creates explosive bursts of energy, sudden changes in direction, and the restless need for freedom and originality in how you pursue your goals. You may feel an urgent need to break free from any situation that feels confining or inauthentic. Channel this revolutionary energy into genuine innovation rather than mere disruption.",
+    'Uranus_Jupiter': "Uranus transiting your natal Jupiter brings sudden, unexpected opportunities for major expansion — breakthroughs in business, education, philosophical understanding, or geographical movement arrive with surprising speed. This is an exceptionally inventive period where your most original ideas receive genuine support. Stay alert and agile, as the opportunities may not announce themselves in advance.",
+    'Uranus_Saturn': "Uranus transiting your natal Saturn creates a fundamental tension between your established structures and the revolutionary forces of change. Rigid systems, outdated rules, and structures maintained by habit rather than genuine value come under pressure. This transit invites you to distinguish between structures worth preserving and those that have outlived their purpose — liberating in the long run, though potentially disruptive in the process.",
+
+    // NEPTUNE TRANSITS
+    'Neptune_Sun': "Neptune transiting your natal Sun is one of the most spiritually significant and potentially confusing transits in the astrological lexicon. Your sense of ego and personal identity becomes more fluid, permeable, and spiritually open — which can be experienced as profound inspiration and heightened compassion, or as confusion, disillusionment, and loss of direction. Spiritual practice, creative work, and honest self-examination are essential navigational tools.",
+    'Neptune_Moon': "Neptune transiting your natal Moon heightens your intuition, empathy, and psychic sensitivity to extraordinary levels, while also creating vulnerability to emotional confusion, boundary dissolution, and the projection of your own feelings onto others. Dreams are vivid and often prophetically relevant. Spiritual and creative work flourish under this influence, while practical matters may feel unusually difficult to navigate clearly.",
+    'Neptune_Mercury': "Neptune transiting your natal Mercury creates a period of heightened creative and intuitive thinking alongside potential confusion about facts, schedules, and practical details. Your imagination is exceptional and your poetic, symbolic, and spiritual thinking is at its most productive. Poetry, music, visionary writing, and any work requiring access to the unconscious mind is strongly supported. Ground yourself in practical details to avoid significant errors.",
+    'Neptune_Venus': "Neptune transiting your natal Venus brings a period of idealized, spiritualized, and sometimes confused love experiences. Romantic relationships may seem magical and otherworldly, or may involve illusion, deception, or the painful collision of an ideal with reality. Creative and artistic work, however, is genuinely inspired. The transit's gift is expanded compassion, spiritual love, and the dissolution of barriers between self and other.",
+    'Neptune_Mars': "Neptune transiting your natal Mars gradually dissolves the clarity and directness of your drive — you may find that your usual confidence in action gives way to confusion about what you want, passive-aggressive patterns, or the spiritual aspiration to act from selfless motives rather than ego-driven desire. This transit produces spiritual warriors and inspired artists when its subtler gifts are engaged consciously.",
+    'Neptune_Jupiter': "Neptune transiting your natal Jupiter creates a period of spiritual expansion, mystical seeking, and the desire for transcendence and ultimate meaning. This can be a profoundly inspiring period of religious or spiritual development, creative vision, and compassionate service. The shadow of this transit is spiritual grandiosity, impractical idealism, or the flight into fantasy as a substitute for genuine development.",
+    'Neptune_Saturn': "Neptune transiting your natal Saturn gently dissolves the rigid structures and limiting beliefs that Saturn has solidified in your life. Responsibilities that no longer serve your genuine purpose fade away, rigid self-definitions become more fluid, and the spiritual dimensions of your practical life become increasingly visible. This transit invites you to rebuild your structures on genuinely spiritual and compassionate foundations.",
+
+    // PLUTO TRANSITS
+    'Pluto_Sun': "Pluto transiting your natal Sun is one of the most profound transformations available to a human life — the entire structure of your identity is dismantled at a level deeper than ego, rebuilt, and ultimately regenerated into something more authentic, more powerful, and more aligned with your soul's genuine purpose. This transit is intense, often feels like a death of the self you were, and is among the most significant of the major life events astrology maps.",
+    'Pluto_Moon': "Pluto transiting your natal Moon brings the most profound emotional transformation available — unconscious patterns, ancestral wounds, deeply buried emotional material, and the foundations of your psychological security all come into the light of Plutonian truth. The process is intense, sometimes overwhelming, but ultimately regenerative — you emerge with an emotional depth, resilience, and authenticity that cannot be acquired any other way.",
+    'Pluto_Mercury': "Pluto transiting your natal Mercury transforms your thinking at the most fundamental level — you begin to perceive the hidden structures beneath surface realities, to think in terms of power and depth rather than surface information, and to communicate with a penetrating intensity that others find both illuminating and occasionally uncomfortable. This transit produces profound researchers, investigative journalists, depth psychologists, and transformative writers.",
+    'Pluto_Venus': "Pluto transiting your natal Venus brings profound transformation to your experience of love, beauty, money, and your fundamental values. Relationships that were maintained by comfort, habit, or fear rather than genuine love do not survive this transit. What remains — or what is created new within this window — is deeply authentic, soulfully connected, and more truly aligned with who you are becoming.",
+    'Pluto_Mars': "Pluto transiting your natal Mars creates the most intense transformation of your drive, your relationship to power, and your relationship to desire. You may experience this as overwhelming compulsion, as the confrontation with your own shadow aggression, or as the gradual emergence of a deeper, more sustainable form of personal power than the reactive, ego-driven Mars energy that preceded it. Athletes, transformers, and regenerators are made in this crucible.",
+    'Pluto_Jupiter': "Pluto transiting your natal Jupiter brings profound transformation to your beliefs, your philosophy, your relationship to abundance, and your understanding of what constitutes genuine growth and expansion. Religious or philosophical convictions are tested to their core; what survives is genuine wisdom rather than inherited assumption. The philosophical framework you build through this process is genuinely transformative for everyone it touches.",
+    'Pluto_Saturn': "Pluto transiting your natal Saturn is a generational transit that dismantles and rebuilds the fundamental structures of your life — the systems of authority, discipline, and long-term commitment that Saturn governs are subjected to Plutonian transformation at the deepest level. What is genuinely essential in your life structures survives and is strengthened; what is maintained by fear, habit, or outdated authority dissolves to make room for structures of genuine power and integrity."
+  };
+
+  const ASPECT_DEFS = [
+    {name:'conjunction', angle:0, orb:8},
+    {name:'sextile', angle:60, orb:4},
+    {name:'square', angle:90, orb:6},
+    {name:'trine', angle:120, orb:6},
+    {name:'opposition', angle:180, orb:8}
+  ];
+
+  const PLANET_DEGREES = {
+    Aries:0, Taurus:30, Gemini:60, Cancer:90, Leo:120, Virgo:150,
+    Libra:180, Scorpio:210, Sagittarius:240, Capricorn:270, Aquarius:300, Pisces:330
+  };
+
+  const transitPlanets = ['Jupiter','Saturn','Uranus','Neptune','Pluto'];
+  const natalPlanets   = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+
+  function getSignDeg(sign) {
+    return (PLANET_DEGREES[sign] || 0) + 15;
+  }
+
+  function getTransitDeg(tPlanet) {
+    if (transitPositions[tPlanet]) {
+      if (typeof transitPositions[tPlanet] === 'number') return transitPositions[tPlanet];
+      if (transitPositions[tPlanet].lon !== undefined) return transitPositions[tPlanet].lon;
+      if (transitPositions[tPlanet].sign) return getSignDeg(transitPositions[tPlanet].sign);
+    }
+    return null;
+  }
+
+  function getNatalDeg(nPlanet) {
+    if (natalChart.positions && natalChart.positions[nPlanet]) {
+      const p = natalChart.positions[nPlanet];
+      if (typeof p === 'number') return p;
+      if (p.lon !== undefined) return p.lon;
+    }
+    // Fallback to sign-based
+    const signKey = nPlanet.toLowerCase() + 'Sign';
+    const fallbackSign = natalChart[signKey] || natalChart.sunSign;
+    return fallbackSign ? getSignDeg(fallbackSign) : null;
+  }
+
+  const aspects = [];
+
+  for (const tp of transitPlanets) {
+    const tDeg = getTransitDeg(tp);
+    if (tDeg === null) continue;
+
+    for (const np of natalPlanets) {
+      const nDeg = getNatalDeg(np);
+      if (nDeg === null) continue;
+
+      const rawDiff = Math.abs(tDeg - nDeg) % 360;
+      const diff = rawDiff > 180 ? 360 - rawDiff : rawDiff;
+
+      for (const {name, angle, orb} of ASPECT_DEFS) {
+        const orbActual = Math.abs(diff - angle);
+        if (orbActual <= orb) {
+          const interpKey = `${tp}_${np}`;
+          const baseInterp = TRANSIT_INTERPRETATIONS[interpKey] ||
+            `Transiting ${tp} forms a ${name} to your natal ${np}, activating themes of ${np}-related life areas with ${tp}'s particular quality of transformation. This ${orbActual < 2 ? 'exact' : orbActual < 4 ? 'close' : 'applying'} aspect carries ${name === 'conjunction' ? 'intensified focus and new beginnings' : name === 'trine' ? 'harmonious flow and natural opportunity' : name === 'sextile' ? 'cooperative potential awaiting your engagement' : name === 'square' ? 'productive friction demanding growth and adjustment' : 'awareness through polarity and the integration of opposites'} in its energy.`;
+
+          const aspectQuality = name === 'trine' || name === 'sextile' ? 'harmonious' : name === 'conjunction' ? 'intensifying' : 'dynamic';
+
+          aspects.push({
+            transitPlanet: tp,
+            natalPlanet: np,
+            aspect: name,
+            orb: orbActual,
+            strength: orbActual < 2 ? 'exact' : orbActual < 5 ? 'close' : 'wide',
+            quality: aspectQuality,
+            interpretation: baseInterp
+          });
+          break;
+        }
+      }
+    }
+  }
+
+  return aspects.sort((a, b) => a.orb - b.orb);
+}
+
+// Merge global helpers into the main export (overriding IIFE versions with fuller implementations)
+window.AstroInterpretations = Object.assign({}, window.Interpretations, {
+  calculateCompatibility,
+  getTransitAspects,
+});
