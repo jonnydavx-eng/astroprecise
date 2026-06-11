@@ -587,6 +587,7 @@
                 </div>
               </div>
               <div class="sign-reading-panel__actions">
+                <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">✦ Card</button>
                 <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
                 <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
               </div>
@@ -1066,6 +1067,122 @@
       // Close button
       var closeBtn = document.getElementById('srp-close-btn');
       if (closeBtn) closeBtn.addEventListener('click', closePanel);
+
+      // Shareable cosmic card — 1080×1080 PNG in the light-cone card style
+      var ELEMENT_CARD_TINTS = {
+        fire:  ['#fb923c', 'rgba(251,146,60,0.16)'],
+        earth: ['#34d399', 'rgba(52,211,153,0.13)'],
+        air:   ['#38bdf8', 'rgba(56,189,248,0.13)'],
+        water: ['#818cf8', 'rgba(129,140,248,0.15)'],
+      };
+
+      function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+        var words = text.split(' ');
+        var line = '', lines = 0;
+        for (var i = 0; i < words.length; i++) {
+          var test = line + words[i] + ' ';
+          if (ctx.measureText(test).width > maxWidth && line) {
+            if (lines === maxLines - 1) {
+              ctx.fillText(line.trim() + '…', x, y);
+              return y + lineHeight;
+            }
+            ctx.fillText(line.trim(), x, y);
+            line = words[i] + ' ';
+            y += lineHeight;
+            lines++;
+          } else {
+            line = test;
+          }
+        }
+        if (line.trim()) ctx.fillText(line.trim(), x, y);
+        return y + lineHeight;
+      }
+
+      function drawHoroscopeCard(signKey) {
+        var info = SIGNS[signKey];
+        var data = Interpretations.getDailyHoroscope(info.name, new Date());
+        var tint = ELEMENT_CARD_TINTS[info.element] || ['#c4920a', 'rgba(196,146,10,0.13)'];
+
+        var cv = document.createElement('canvas');
+        cv.width = 1080; cv.height = 1080;
+        var ctx = cv.getContext('2d');
+
+        ctx.fillStyle = '#090b16';
+        ctx.fillRect(0, 0, 1080, 1080);
+
+        var neb1 = ctx.createRadialGradient(220, 200, 0, 220, 200, 600);
+        neb1.addColorStop(0, 'rgba(42,74,148,0.32)');
+        neb1.addColorStop(1, 'transparent');
+        ctx.fillStyle = neb1; ctx.fillRect(0, 0, 1080, 1080);
+
+        var neb2 = ctx.createRadialGradient(880, 900, 0, 880, 900, 520);
+        neb2.addColorStop(0, tint[1]);
+        neb2.addColorStop(1, 'transparent');
+        ctx.fillStyle = neb2; ctx.fillRect(0, 0, 1080, 1080);
+
+        var epochDay = Math.floor(Date.now() / 86400000);
+        var seed = epochDay * 7 + SIGN_KEYS.indexOf(signKey);
+        function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+        for (var i = 0; i < 150; i++) {
+          var sx = rnd() * 1080, sy = rnd() * 1080, sr = rnd() * 1.4 + 0.3;
+          ctx.fillStyle = 'rgba(240,232,216,' + (rnd() * 0.5 + 0.15) + ')';
+          ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+        }
+
+        ctx.strokeStyle = 'rgba(196,146,10,0.55)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(42, 42, 996, 996);
+        ctx.strokeStyle = 'rgba(196,146,10,0.22)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(56, 56, 968, 968);
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = tint[0];
+        ctx.font = '170px serif';
+        ctx.fillText(info.glyph, 540, 320);
+
+        ctx.fillStyle = '#f0e8d8';
+        ctx.font = '700 84px Georgia, serif';
+        ctx.fillText(info.name, 540, 452);
+
+        ctx.fillStyle = '#c4920a';
+        ctx.font = '26px Georgia, serif';
+        var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        ctx.fillText(dateStr.toUpperCase(), 540, 505);
+
+        ctx.fillStyle = '#9aa6c8';
+        ctx.font = 'italic 31px Georgia, serif';
+        wrapText(ctx, data.overview || '', 540, 590, 840, 46, 7);
+
+        ctx.fillStyle = 'rgba(196,146,10,0.4)';
+        ctx.fillRect(390, 920, 300, 1);
+
+        ctx.fillStyle = '#8891aa';
+        ctx.font = '24px Georgia, serif';
+        ctx.fillText('Lucky ' + data.luckyNumber + '  ·  ' + data.luckyColor, 540, 962);
+
+        ctx.fillStyle = '#c4920a';
+        ctx.font = '600 22px Georgia, serif';
+        ctx.fillText('✦ ASTROPRECISE — computed from the real sky ✦', 540, 1006);
+
+        return cv;
+      }
+
+      var cardBtn = document.getElementById('srp-card-btn');
+      if (cardBtn) {
+        cardBtn.addEventListener('click', function() {
+          var active = document.querySelector('.sign-card.is-active');
+          var key = active ? active.dataset.sign : null;
+          if (!key || !window.Interpretations) return;
+          var cv = drawHoroscopeCard(key);
+          var a = document.createElement('a');
+          a.download = key + '-horoscope-' + new Date().toISOString().slice(0,10) + '.png';
+          a.href = cv.toDataURL('image/png');
+          a.click();
+          cardBtn.textContent = '✓ Saved';
+          setTimeout(function() { cardBtn.textContent = '✦ Card'; }, 2000);
+        });
+      }
 
       // Share button
       var shareBtn = document.getElementById('srp-share-btn');

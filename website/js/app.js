@@ -518,3 +518,58 @@ if ('serviceWorker' in navigator) {
     showOfflinePill();
   }
 })();
+
+/* Horizon: scroll-reveal entrances + mobile bottom nav */
+(function () {
+  function initReveal() {
+    if (!window.IntersectionObserver) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const candidates = document.querySelectorAll(
+      '.feature-card, .planet-weather-card, .sign-card, .reading-card, ' +
+      '.transit-item, .element-compat-card, .category-score-item, .moon-card, .manifesto'
+    );
+    if (!candidates.length) return;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('revealed');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+    candidates.forEach((el, i) => {
+      if (el.getBoundingClientRect().top < window.innerHeight) return;
+      el.classList.add('reveal-init');
+      el.style.transitionDelay = (i % 4) * 60 + 'ms';
+      obs.observe(el);
+    });
+  }
+
+  function initBottomNav() {
+    if (document.querySelector('.bottom-nav')) return;
+    const here = (location.pathname.split('/').pop() || 'index.html');
+    const items = [
+      { href: 'index.html',         icon: '✦', label: 'Home' },
+      { href: 'chart.html',         icon: '◉', label: 'Chart' },
+      { href: 'horoscope.html',     icon: '☽', label: 'Daily' },
+      { href: 'compatibility.html', icon: '♡', label: 'Match' },
+      { href: 'ephemeris.html',     icon: '⬡', label: 'Instrument' },
+    ];
+    const nav = document.createElement('nav');
+    nav.className = 'bottom-nav';
+    nav.setAttribute('aria-label', 'Mobile navigation');
+    nav.innerHTML = '<div class="bottom-nav__inner">' + items.map(it =>
+      '<a href="' + it.href + '" class="bottom-nav__item' + (here === it.href ? ' is-active' : '') + '"' +
+      (here === it.href ? ' aria-current="page"' : '') + '>' +
+      '<span class="bottom-nav__icon" aria-hidden="true">' + it.icon + '</span>' +
+      '<span class="bottom-nav__label">' + it.label + '</span></a>'
+    ).join('') + '</div>';
+    document.body.appendChild(nav);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { initReveal(); initBottomNav(); });
+  } else {
+    initReveal();
+    initBottomNav();
+  }
+})();
