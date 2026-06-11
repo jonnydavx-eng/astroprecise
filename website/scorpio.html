@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free Scorpio horoscope for today, calculated from real planetary positions. Plus the complete Scorpio guide: element, ruling planet, love, career, and compatibility." />
+  <title>Scorpio Horoscope Today — Daily Reading & Sign Guide | AstroPrecise</title>
+  <link rel="canonical" href="https://jonnydavx-eng.github.io/astroprecise/scorpio.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Scorpio Horoscope Today | AstroPrecise" />
+  <meta property="og:description" content="Free Scorpio horoscope for today, calculated from real planetary positions. Plus the complete Scorpio guide: element, ruling planet, love, career, and compatibility." />
+  <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/scorpio.html" />
+  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Scorpio Horoscope Today | AstroPrecise" />
+  <meta name="twitter:description" content="Free Scorpio horoscope for today, calculated from real planetary positions. Plus the complete Scorpio guide: element, ruling planet, love, career, and compatibility." />
+  <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
+  <meta name="theme-color" content="#090b16" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Scorpio Horoscope Today","description":"Free Scorpio horoscope for today, calculated from real planetary positions. Plus the complete Scorpio guide: element, ruling planet, love, career, and compatibility.","url":"https://jonnydavx-eng.github.io/astroprecise/scorpio.html","publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://jonnydavx-eng.github.io/astroprecise"},"about":{"@type":"Thing","name":"Scorpio (astrology)"}}</script>
+  <style>
+    .sign-hero { text-align: center; padding: var(--space-16) var(--space-4) var(--space-10); position: relative; z-index: 1; }
+    .sign-hero__glyph { font-size: 4.5rem; line-height: 1; display: block; margin-bottom: var(--space-4);
+      background: linear-gradient(180deg, #f2dfa7 0%, #c4920a 60%, #8c6a2f 100%);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 18px rgba(196,146,10,0.4)); }
+    .sign-hero h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.6rem); color: var(--color-white); margin-bottom: var(--space-2); }
+    .sign-hero__dates { color: var(--color-gold); font-size: var(--text-sm); letter-spacing: 0.14em; text-transform: uppercase; }
+    .sign-facts { display: flex; justify-content: center; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-6); }
+    .sign-fact { text-align: center; }
+    .sign-fact__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 4px; }
+    .sign-fact__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: var(--text-base); }
+    .today-reading { max-width: 760px; margin: 0 auto; }
+    .trait-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); max-width: 760px; margin: 0 auto; }
+    @media (max-width: 640px) { .trait-cols { grid-template-columns: 1fr; } }
+    .trait-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+    .trait-list li { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.6; padding-left: var(--space-5); position: relative; }
+    .trait-list li::before { position: absolute; left: 0; }
+    .trait-list--plus li::before { content: '✦'; color: var(--color-gold); }
+    .trait-list--minus li::before { content: '◆'; color: var(--crimson-light, #b04a52); }
+    .prose-block { max-width: 760px; margin: 0 auto; color: var(--color-silver); line-height: 1.85; font-size: var(--text-base); }
+    .match-chips { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-top: var(--space-5); }
+    .other-signs { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; }
+    .other-signs a { font-size: var(--text-xs); letter-spacing: 0.08em; padding: 6px 14px; border: 1px solid var(--color-border); border-radius: 999px;
+      color: var(--color-silver-dim); text-decoration: none; transition: border-color .2s, color .2s; }
+    .other-signs a:hover { border-color: var(--color-gold); color: var(--color-gold-pale); }
+  </style>
+</head>
+<body>
+  <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.5;"></canvas>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="profile.html" class="navbar__link">Profile</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="profile.html" class="navbar__link">Profile</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <section class="sign-hero" aria-labelledby="page-title">
+      <span class="sign-hero__glyph" aria-hidden="true">♏</span>
+      <h1 id="page-title">Scorpio</h1>
+      <p class="sign-hero__dates">October 23 – November 21</p>
+      <div class="sign-facts">
+        <div class="sign-fact"><span class="sign-fact__label">Element</span><span class="sign-fact__value">Water</span></div>
+        <div class="sign-fact"><span class="sign-fact__label">Modality</span><span class="sign-fact__value">Fixed</span></div>
+        <div class="sign-fact"><span class="sign-fact__label">Ruler</span><span class="sign-fact__value">Pluto & Mars</span></div>
+        <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">The Scorpion</span></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="today-heading">
+      <div class="container">
+        <h2 class="section__title" id="today-heading">Scorpio Horoscope Today</h2>
+        <p class="section__subtitle" id="today-date" aria-live="polite"></p>
+        <div class="today-reading" id="today-reading" aria-live="polite">
+          <div class="card" style="padding:var(--space-8);">
+            <p style="color:var(--color-silver);line-height:1.85;">
+              Today's Scorpio reading is calculated in your browser from real planetary positions.
+              If this text remains, enable JavaScript to see your personalised daily guidance —
+              or read the complete Scorpio profile below.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" aria-labelledby="about-heading">
+      <div class="container">
+        <h2 class="section__title" id="about-heading">About Scorpio</h2>
+        <p class="prose-block">Scorpio is the zodiac's depth — the sign that refuses the surface of anything. Ruled by Pluto, planet of transformation, Scorpio is drawn to what is hidden: motives, mysteries, the truth under the polite version. This is the most intense sign of the twelve, possessed of a will that does not bend and an instinct for the real that cannot be deceived.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="traits-heading">
+      <div class="container">
+        <h2 class="section__title" id="traits-heading">Scorpio Strengths &amp; Challenges</h2>
+        <div class="trait-cols">
+          <div>
+            <h3 style="font-family:var(--font-display);color:var(--color-gold-pale);margin-bottom:var(--space-4);">Strengths</h3>
+            <ul class="trait-list trait-list--plus">
+              <li>Penetrating perception</li>
+              <li>Loyalty unto death</li>
+              <li>Willpower that regenerates from ruin</li>
+              <li>Fearlessness about the dark</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="font-family:var(--font-display);color:var(--color-gold-pale);margin-bottom:var(--space-4);">Challenges</h3>
+            <ul class="trait-list trait-list--minus">
+              <li>Suspicion as a default setting</li>
+              <li>The long memory of the wounded</li>
+              <li>Control disguised as protection</li>
+              <li>All-or-nothing in everything</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" aria-labelledby="love-heading">
+      <div class="container">
+        <h2 class="section__title" id="love-heading">Scorpio in Love</h2>
+        <p class="prose-block">Scorpio loves totally or not at all — there is no casual setting on this instrument. Intimacy for this sign means the removal of every mask, and it offers the same: to be loved by a Scorpio is to be seen completely. Trust builds slowly and shatters once. What it asks is everything; what it gives is everything.</p>
+        <div class="match-chips">
+          <a class="btn btn--outline btn--sm" href="compatibility.html">Best match: Cancer →</a>
+          <a class="btn btn--outline btn--sm" href="compatibility.html">Best match: Pisces →</a>
+          <a class="btn btn--outline btn--sm" href="compatibility.html">Best match: Virgo →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="career-heading">
+      <div class="container">
+        <h2 class="section__title" id="career-heading">Scorpio Career &amp; Purpose</h2>
+        <p class="prose-block">Scorpio excels where depth and nerve are required: psychology, surgery, investigation, finance, crisis management, research. This sign does its best work underground — on problems others find too dark, too complex, or too dangerous. Power suits Scorpio; it should be earned honestly.</p>
+      </div>
+    </section>
+
+    <section class="section section--alt" aria-labelledby="cta-heading">
+      <div class="container" style="text-align:center;">
+        <h2 class="section__title" id="cta-heading">Your Sun sign is one of dozens of placements</h2>
+        <p class="section__subtitle">Your Moon, Rising, and every planet shape who you are. Calculate your complete birth chart — free, private, in your browser.</p>
+        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);">✦ &nbsp;Calculate My Birth Chart</a>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Other zodiac signs">
+      <div class="container">
+        <h2 class="section__title" style="font-size:var(--text-lg);">All Zodiac Signs</h2>
+        <div class="other-signs">
+          <a href="aries.html">♈ Aries</a>
+          <a href="taurus.html">♉ Taurus</a>
+          <a href="gemini.html">♊ Gemini</a>
+          <a href="cancer.html">♋ Cancer</a>
+          <a href="leo.html">♌ Leo</a>
+          <a href="virgo.html">♍ Virgo</a>
+          <a href="libra.html">♎ Libra</a>
+          <a href="sagittarius.html">♐ Sagittarius</a>
+          <a href="capricorn.html">♑ Capricorn</a>
+          <a href="aquarius.html">♒ Aquarius</a>
+          <a href="pisces.html">♓ Pisces</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__bottom">
+        <p>&copy; 2025 AstroPrecise · All calculations run locally in your browser · No data collected</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/interpretations.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+  <script>
+  (function() {
+    'use strict';
+    var dateEl = document.getElementById('today-date');
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+    function render() {
+      if (!window.Interpretations || typeof Interpretations.getDailyHoroscope !== 'function') {
+        setTimeout(render, 200); return;
+      }
+      var d = Interpretations.getDailyHoroscope('Scorpio', new Date());
+      var el = document.getElementById('today-reading');
+      if (!el || !d) return;
+      el.innerHTML =
+        '<div class="card" style="padding:var(--space-8);">' +
+        '<p style="color:var(--color-silver);line-height:1.85;font-size:1.05rem;margin-bottom:var(--space-6);">' + d.overview + '</p>' +
+        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4);margin-bottom:var(--space-5);">' +
+        '<div style="padding:var(--space-4);background:rgba(42,74,148,0.08);border:1px solid rgba(91,127,199,0.2);border-radius:var(--radius-lg);">' +
+        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">♥ Love</p>' +
+        '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.love + '</p></div>' +
+        '<div style="padding:var(--space-4);background:rgba(42,74,148,0.08);border:1px solid rgba(91,127,199,0.2);border-radius:var(--radius-lg);">' +
+        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">⬡ Career</p>' +
+        '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.career + '</p></div>' +
+        '<div style="padding:var(--space-4);background:rgba(42,74,148,0.08);border:1px solid rgba(91,127,199,0.2);border-radius:var(--radius-lg);">' +
+        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">✦ Wellness</p>' +
+        '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.health + '</p></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:var(--space-6);flex-wrap:wrap;font-size:var(--text-sm);color:var(--color-silver-dim);">' +
+        '<span>Lucky Number <strong style="color:var(--color-gold);">' + d.luckyNumber + '</strong></span>' +
+        '<span>Lucky Color <strong style="color:var(--color-gold);">' + d.luckyColor + '</strong></span>' +
+        '</div></div>';
+    }
+    render();
+  })();
+  </script>
+</body>
+</html>
