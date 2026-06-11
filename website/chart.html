@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AstroPrecise Birth Chart Calculator — enter your birth date, time, and location for a precise natal chart accurate to arcminutes." />
+  <title>Birth Chart Calculator | AstroPrecise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true">✦</div>
+          <span>AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link active" aria-current="page">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="profile.html" class="navbar__link">Profile</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="chart.html" class="navbar__link active" aria-current="page">Chart</a>
+        <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="profile.html" class="navbar__link">Profile</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         PAGE HEADER
+    ============================================================ -->
+    <section class="page-header" aria-labelledby="page-title">
+      <div class="orb orb--purple" style="top:-100px;left:-100px;" aria-hidden="true"></div>
+      <div class="orb orb--gold" style="top:50px;right:-80px;" aria-hidden="true"></div>
+      <div class="container">
+        <div class="page-header__content text-center">
+          <p class="hero__eyebrow">Natal Chart Engine</p>
+          <h1 class="page-header__title" id="page-title">Birth Chart Calculator</h1>
+          <p class="page-header__subtitle" style="margin:0 auto;">
+            Enter your birth details below for a precise natal chart calculated using
+            astronomical algorithms accurate to arcminutes. Your Ascendant, houses, and
+            every planetary position are computed for the exact moment and place you were born.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CHART FORM
+    ============================================================ -->
+    <section class="section" aria-labelledby="form-heading" style="padding-top:var(--space-8);">
+      <div class="container">
+        <div class="chart-form-panel animate-in">
+          <h2 class="chart-form-panel__title" id="form-heading">
+            <div class="chart-form-panel__title-icon" aria-hidden="true">✦</div>
+            Your Birth Details
+          </h2>
+
+          <form id="chart-form" novalidate aria-label="Birth chart calculation form">
+
+            <!-- Name -->
+            <div class="form-group">
+              <label for="name-input" class="form-label">
+                Your Name <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="name-input"
+                name="name"
+                class="form-input"
+                placeholder="e.g. Jane Doe"
+                autocomplete="name"
+                required
+                aria-required="true"
+                aria-describedby="name-hint"
+              />
+              <p class="form-hint" id="name-hint">Used to label your saved chart.</p>
+            </div>
+
+            <div class="form-row">
+              <!-- Birth Date -->
+              <div class="form-group">
+                <label for="date-input" class="form-label">
+                  Birth Date <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="date-input"
+                  name="birth-date"
+                  class="form-input"
+                  required
+                  aria-required="true"
+                  aria-describedby="date-hint"
+                />
+                <p class="form-hint" id="date-hint">Format: YYYY-MM-DD</p>
+              </div>
+
+              <!-- Birth Time -->
+              <div class="form-group">
+                <label for="time-input" class="form-label">
+                  Birth Time
+                </label>
+                <input
+                  type="time"
+                  id="time-input"
+                  name="birth-time"
+                  class="form-input"
+                  aria-describedby="time-hint"
+                />
+                <p class="form-hint" id="time-hint">
+                  Time affects houses and rising sign. Use local birth time.
+                </p>
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div class="form-group" style="position:relative;">
+              <label for="city-input" class="form-label">
+                Birth City <span class="required" aria-hidden="true">*</span>
+              </label>
+              <div class="input-with-icon">
+                <span class="input-icon" aria-hidden="true">📍</span>
+                <input
+                  type="text"
+                  id="city-input"
+                  name="birth-city"
+                  class="form-input"
+                  placeholder="Start typing city name..."
+                  autocomplete="off"
+                  required
+                  aria-required="true"
+                  aria-autocomplete="list"
+                  aria-controls="city-autocomplete"
+                  aria-describedby="city-hint"
+                />
+              </div>
+              <div
+                class="autocomplete-dropdown"
+                id="city-autocomplete"
+                role="listbox"
+                aria-label="City suggestions"
+              ></div>
+              <p class="form-hint" id="city-hint">
+                Select from the dropdown for precise coordinates.
+              </p>
+            </div>
+
+            <!-- Hidden coordinate / tz fields -->
+            <input type="hidden" id="lat-input" name="latitude" />
+            <input type="hidden" id="lon-input" name="longitude" />
+            <input type="hidden" id="tz-input" name="timezone" />
+
+            <!-- House System -->
+            <div class="form-group">
+              <label for="house-system" class="form-label">House System</label>
+              <select id="house-system" name="house-system" class="form-select" aria-describedby="house-hint">
+                <option value="equal" selected>Equal Houses (recommended)</option>
+                <option value="placidus">Placidus</option>
+                <option value="whole">Whole Sign</option>
+              </select>
+              <p class="form-hint" id="house-hint">
+                Equal houses: simplest and most widely used.
+                Placidus: popular in Western astrology. Whole Sign: ancient method.
+              </p>
+            </div>
+
+            <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;margin-top:var(--space-8);">
+              <button type="submit" class="btn btn--primary btn--lg" id="calculate-btn" aria-describedby="submit-hint">
+                Calculate My Birth Chart ✨
+              </button>
+              <button type="button" class="btn btn--outline btn--lg" id="sample-btn">
+                Try a Sample Chart
+              </button>
+            </div>
+            <p class="form-hint" id="submit-hint" style="margin-top:var(--space-3);">
+              Calculation is instant and runs entirely in your browser. No data is sent to any server.
+            </p>
+
+          </form>
+        </div><!-- /.chart-form-panel -->
+
+        <!-- ============================================================
+             CHART RESULTS (hidden until calculated)
+        ============================================================ -->
+        <div id="chart-result" class="hidden" aria-live="polite" aria-label="Birth chart results">
+
+          <!-- Result Header -->
+          <div class="card animate-in" style="margin-bottom:var(--space-6);">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-4);">
+              <div>
+                <h2 id="result-name" class="section-header__title" style="margin-bottom:var(--space-2);text-align:left;"></h2>
+                <p id="result-date" style="color:var(--color-silver-dim);font-size:var(--text-sm);"></p>
+              </div>
+              <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
+                <button id="share-btn" class="btn btn--outline btn--sm" aria-label="Share this chart">
+                  Share Chart
+                </button>
+                <button id="app-btn" class="btn btn--outline btn--sm" aria-label="Open chart in the AstroPrecise app">
+                  Open in App
+                </button>
+                <button id="save-btn" class="btn btn--primary btn--sm" aria-label="Save chart to your profile">
+                  Save to Profile
+                </button>
+                <button id="print-btn" class="btn btn--outline btn--sm" aria-label="Download chart as PDF">
+                  Download PDF
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Big Three Summary -->
+          <div id="big-three" class="grid-3 animate-in animate-in--delay-1" style="margin-bottom:var(--space-8);" aria-label="Sun, Moon and Rising signs">
+            <!-- JS populates three .card elements -->
+          </div>
+
+          <!-- Chart Wheel + Tabs Layout -->
+          <div class="chart-container animate-in animate-in--delay-2">
+
+            <!-- Natal Wheel -->
+            <div class="chart-wheel-wrapper" aria-label="Natal chart wheel diagram">
+              <div id="natal-wheel" role="img" aria-label="Natal chart wheel"></div>
+            </div>
+
+            <!-- Sidebar: Tabs -->
+            <div class="chart-sidebar">
+              <div class="tabs" role="region" aria-label="Chart data tabs">
+                <div class="tabs__list" role="tablist" aria-label="Chart detail sections">
+                  <button
+                    class="tabs__trigger"
+                    role="tab"
+                    id="tab-overview-btn"
+                    aria-selected="true"
+                    aria-controls="tab-overview"
+                  >Overview</button>
+                  <button
+                    class="tabs__trigger"
+                    role="tab"
+                    id="tab-planets-btn"
+                    aria-selected="false"
+                    aria-controls="tab-planets"
+                  >Planets</button>
+                  <button
+                    class="tabs__trigger"
+                    role="tab"
+                    id="tab-houses-btn"
+                    aria-selected="false"
+                    aria-controls="tab-houses"
+                  >Houses</button>
+                  <button
+                    class="tabs__trigger"
+                    role="tab"
+                    id="tab-aspects-btn"
+                    aria-selected="false"
+                    aria-controls="tab-aspects"
+                  >Aspects</button>
+                </div>
+
+                <!-- Overview Tab -->
+                <div
+                  id="tab-overview"
+                  class="tabs__panel tab-panel"
+                  role="tabpanel"
+                  aria-labelledby="tab-overview-btn"
+                  aria-hidden="false"
+                >
+                  <div id="analysis-content">
+                    <!-- JS populates: sun/moon/rising descriptions, dominant element, modality, etc. -->
+                  </div>
+                </div>
+
+                <!-- Planets Tab -->
+                <div
+                  id="tab-planets"
+                  class="tabs__panel tab-panel"
+                  role="tabpanel"
+                  aria-labelledby="tab-planets-btn"
+                  aria-hidden="true"
+                >
+                  <div id="planets-table">
+                    <!-- JS populates planet position table -->
+                  </div>
+                </div>
+
+                <!-- Houses Tab -->
+                <div
+                  id="tab-houses"
+                  class="tabs__panel tab-panel"
+                  role="tabpanel"
+                  aria-labelledby="tab-houses-btn"
+                  aria-hidden="true"
+                >
+                  <div id="houses-table">
+                    <!-- JS populates house cusps table -->
+                  </div>
+                </div>
+
+                <!-- Aspects Tab -->
+                <div
+                  id="tab-aspects"
+                  class="tabs__panel tab-panel"
+                  role="tabpanel"
+                  aria-labelledby="tab-aspects-btn"
+                  aria-hidden="true"
+                >
+                  <div id="aspects-table">
+                    <!-- JS populates aspect grid table -->
+                  </div>
+                </div>
+
+              </div><!-- /.tabs -->
+            </div><!-- /.chart-sidebar -->
+          </div><!-- /.chart-container -->
+
+        </div><!-- /#chart-result -->
+
+        <!-- Loading state -->
+        <div id="chart-loading" class="hidden" aria-live="polite" style="text-align:center;padding:var(--space-20) 0;">
+          <div class="spinner" role="status" aria-label="Calculating your birth chart">
+            <div class="spinner__ring spinner__ring--outer"></div>
+            <div class="spinner__ring spinner__ring--mid"></div>
+            <div class="spinner__ring spinner__ring--inner"></div>
+            <div class="spinner__center"></div>
+          </div>
+          <p style="margin-top:var(--space-6);color:var(--color-silver-dim);">
+            Calculating planetary positions…
+          </p>
+        </div>
+
+      </div><!-- /.container -->
+    </section>
+
+    <!-- ============================================================
+         EDUCATIONAL INFO
+    ============================================================ -->
+    <section class="section section--alt" aria-labelledby="edu-heading">
+      <div class="container">
+        <header class="section-header">
+          <p class="section-header__label">What You'll Discover</p>
+          <h2 class="section-header__title" id="edu-heading">What Is a Natal Chart?</h2>
+          <p class="section-header__subtitle">
+            A natal chart is a snapshot of the sky at the exact moment of your birth.
+            It maps every planet's position in the zodiac and shows which astrological
+            house it occupied from your birthplace.
+          </p>
+        </header>
+        <div class="grid-3">
+          <article class="card card--glow">
+            <div class="card__icon" aria-hidden="true">☀️</div>
+            <h3 class="card__title">Sun, Moon &amp; Rising</h3>
+            <p class="card__text">
+              The "big three" describe your core identity (Sun), emotional inner world (Moon),
+              and the mask you present to the world (Ascendant / Rising sign).
+            </p>
+          </article>
+          <article class="card card--glow">
+            <div class="card__icon" aria-hidden="true">🪐</div>
+            <h3 class="card__title">10 Planetary Placements</h3>
+            <p class="card__text">
+              Mercury governs communication, Venus love, Mars drive, Jupiter growth, Saturn
+              discipline, Uranus innovation, Neptune dreams, and Pluto transformation.
+            </p>
+          </article>
+          <article class="card card--glow">
+            <div class="card__icon" aria-hidden="true">🏠</div>
+            <h3 class="card__title">12 Houses</h3>
+            <p class="card__text">
+              Houses represent life areas: identity, money, communication, home, creativity,
+              health, relationships, transformation, philosophy, career, community, and the unconscious.
+            </p>
+          </article>
+        </div>
+        <div class="card" style="margin-top:var(--space-8);">
+          <h3 class="card__title" style="margin-bottom:var(--space-3);">Calculation Accuracy</h3>
+          <p class="card__text">
+            AstroPrecise uses VSOP87-derived mean orbital elements for the outer planets and
+            a full perturbation series for the Sun and Moon, giving positional accuracy within
+            ~1 arcminute for dates between 1800–2200 CE. The Ascendant is computed from Local
+            Sidereal Time derived from your exact latitude, longitude, and birth time. House
+            cusps follow the selected system (Equal, Placidus, or Whole Sign).
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">✦ AstroPrecise</p>
+          <p class="footer__tagline">
+            Professional astrology powered by precise astronomical calculations.
+          </p>
+        </div>
+        <nav aria-label="Footer navigation">
+          <p class="footer__heading">Pages</p>
+          <ul class="footer__links">
+            <li><a href="index.html" class="footer__link">Home</a></li>
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+            <li><a href="profile.html" class="footer__link">Profile</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="compatibility.html" class="footer__link">Synastry</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2025 AstroPrecise. Powered by accurate astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- JS -->
+  <script src="js/ephemeris.js"></script>
+  <script src="js/chart-render.js"></script>
+  <script src="js/interpretations.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
