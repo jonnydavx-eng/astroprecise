@@ -361,16 +361,43 @@ window.Interpretations = (() => {
       "Venus smiles on your relationships today. Open your heart to both giving and receiving affection. A meaningful conversation deepens an existing bond.",
       "Romantic energy is electric today. Single? A chance meeting could be significant. Partnered? Plan something special and spontaneous.",
       "Emotional honesty in your closest relationship creates unexpected closeness. What you've been afraid to say is exactly what's needed.",
+      "An old pattern in how you love becomes visible today — and visible patterns can be changed. Choose the response, not the reflex.",
+      "Someone has been speaking their affection in a language you haven't been listening for. Watch what they do, not only what they say.",
+      "Today rewards the small gesture over the grand one. The text you almost don't send, the door held, the question asked twice — these land deepest.",
+      "A relationship needs air, not analysis. Take the walk, share the meal, leave the difficult conversation for a softer hour.",
+      "The Moon stirs old waters. If a memory of someone surfaces today, let it pass through without rebuilding the house around it.",
+      "Attraction sharpens where honesty lives. Say the true thing, kindly — charm fades by evening but candour holds.",
+      "Your standards are not too high; your signals may be too quiet. Let interest be legible today and notice who reads it.",
+      "Partnership thrives on parallel motion today — two people facing the same direction rather than only each other. Share a task, not just a feeling.",
+      "Tenderness is strategy today. The softest available response to friction will be the strongest one you can make.",
     ];
     const careerTexts = [
       "Your professional instincts are sharp today. Trust your read of the situation and act decisively on the opportunity in front of you.",
       "Collaboration is highly favored. A team effort produces results that surpass what you could achieve individually. Delegate with confidence.",
       "A long-term career move you've been considering becomes clearer. The timing aligns — preparation meets opportunity right now.",
+      "Finish the unglamorous thing first today. The cleared backlog releases more energy than any new beginning could.",
+      "Someone senior is paying closer attention than you realise. Today's ordinary competence is tomorrow's reputation.",
+      "Say less in the meeting and more in the follow-through. Quiet delivery outranks loud intention all day.",
+      "A skill you treat as trivial is rare in your circle. Notice what people keep asking you for — that is the market speaking.",
+      "Resist the urge to redo what is already good enough. Perfection past the point of usefulness is procrastination wearing a crown.",
+      "The blocked path is information, not verdict. Route around the obstacle today and the detour becomes the better road.",
+      "Write the idea down before noon. What feels obvious now will be genuinely valuable when the moment for it arrives.",
+      "Negotiate today — for time, scope, or worth. The stars favour those who name their terms calmly and once.",
+      "Your work benefits from one honest question asked early. Clarify now what everyone else is pretending to understand.",
     ];
     const healthTexts = [
       "Movement and vitality are highlighted. Honor your body's signals — both its energy and its need for rest. A new wellness habit takes root today.",
       "Mental clarity follows physical activity today. A walk, swim, or yoga session unlocks insights that no amount of desk-thinking could produce.",
       "Sleep quality significantly affects your energy this week. Protect your evening routine; what you do before bed shapes tomorrow's performance.",
+      "Hydration and daylight are the two cheapest medicines available to you today. Take both in larger doses than feel necessary.",
+      "Your shoulders are holding a conversation you haven't had yet. Stretch, breathe, and then consider having it.",
+      "Eat something that grew in the ground today. The body keeps honest accounts and pays attention to deposits.",
+      "Energy follows attention. One hour without the feed — phone face-down, eyes on the middle distance — restores more than caffeine.",
+      "The tiredness you feel may be decision fatigue, not body fatigue. Simplify one recurring choice permanently today.",
+      "A gentle start beats a heroic one. Five unforced minutes of movement today outweigh the imaginary hour you keep postponing.",
+      "Your breath is shallower than you think. Three slow exhales before each task today recalibrates the whole nervous system.",
+      "Tend the small ache before it becomes a loud one. The body whispers long before it shouts.",
+      "Rest is not a reward for finishing — it is part of the work. Schedule the pause with the same seriousness as the push.",
     ];
 
     return {

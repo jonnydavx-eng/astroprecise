@@ -507,6 +507,187 @@
 
   document.getElementById('print-btn')?.addEventListener('click', () => window.print());
 
+  // ── Chart poster (1600×2000 PNG with natal wheel) ─────────────────────────
+
+  function drawChartPoster(chart) {
+    const W = 1600, H = 2000;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const x = cv.getContext('2d');
+
+    x.fillStyle = '#090b16';
+    x.fillRect(0, 0, W, H);
+    const neb = x.createRadialGradient(W * 0.3, H * 0.2, 0, W * 0.3, H * 0.2, W * 0.8);
+    neb.addColorStop(0, 'rgba(42,74,148,0.28)');
+    neb.addColorStop(1, 'transparent');
+    x.fillStyle = neb; x.fillRect(0, 0, W, H);
+    const neb2 = x.createRadialGradient(W * 0.8, H * 0.85, 0, W * 0.8, H * 0.85, W * 0.7);
+    neb2.addColorStop(0, 'rgba(110,26,38,0.16)');
+    neb2.addColorStop(1, 'transparent');
+    x.fillStyle = neb2; x.fillRect(0, 0, W, H);
+
+    let seed = 1907;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 260; i++) {
+      x.fillStyle = `rgba(240,232,216,${0.12 + rnd() * 0.5})`;
+      x.beginPath();
+      x.arc(rnd() * W, rnd() * H, rnd() * 1.7 + 0.3, 0, Math.PI * 2);
+      x.fill();
+    }
+
+    x.strokeStyle = 'rgba(196,146,10,0.6)';
+    x.lineWidth = 3;
+    x.strokeRect(56, 56, W - 112, H - 112);
+    x.strokeStyle = 'rgba(196,146,10,0.25)';
+    x.lineWidth = 1.5;
+    x.strokeRect(74, 74, W - 148, H - 148);
+
+    x.textAlign = 'center';
+    x.fillStyle = '#c4920a';
+    x.font = '30px Georgia, serif';
+    x.fillText('✦  N A T A L   C H A R T  ✦', W / 2, 175);
+
+    x.fillStyle = '#f0e8d8';
+    x.font = 'bold 76px Georgia, serif';
+    x.fillText(chart.name || 'Birth Chart', W / 2, 280);
+    x.fillStyle = '#9aa6c8';
+    x.font = '32px Georgia, serif';
+    x.fillText(`${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''} · ${(chart.city || '').split(',')[0]}`, W / 2, 340);
+
+    // ── Natal wheel: Ascendant fixed at 9 o'clock, zodiac runs CCW ──
+    const cx = W / 2, cy = 870, rOuter = 410, rSigns = 365, rPlanets = 280, rInner = 215;
+    const ascLon = chart.asc || 0;
+    // screen angle for an ecliptic longitude (canvas y grows downward)
+    const ang = lon => Math.PI - ((lon - ascLon) * Math.PI / 180);
+
+    x.strokeStyle = 'rgba(196,146,10,0.7)';
+    x.lineWidth = 2.5;
+    x.beginPath(); x.arc(cx, cy, rOuter, 0, Math.PI * 2); x.stroke();
+    x.strokeStyle = 'rgba(196,146,10,0.4)';
+    x.lineWidth = 1.5;
+    x.beginPath(); x.arc(cx, cy, rSigns - 42, 0, Math.PI * 2); x.stroke();
+    x.beginPath(); x.arc(cx, cy, rInner, 0, Math.PI * 2); x.stroke();
+
+    // sign sector lines + glyphs
+    const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    for (let i = 0; i < 12; i++) {
+      const a = ang(i * 30);
+      x.strokeStyle = 'rgba(196,146,10,0.3)';
+      x.lineWidth = 1;
+      x.beginPath();
+      x.moveTo(cx + Math.cos(a) * (rSigns - 42), cy - Math.sin(a) * (rSigns - 42));
+      x.lineTo(cx + Math.cos(a) * rOuter, cy - Math.sin(a) * rOuter);
+      x.stroke();
+      const mid = ang(i * 30 + 15);
+      x.fillStyle = '#c4920a';
+      x.font = '40px Georgia, serif';
+      x.textBaseline = 'middle';
+      x.fillText(SIGN_GLYPHS[SIGNS_ORDER[i]] || '', cx + Math.cos(mid) * rSigns, cy - Math.sin(mid) * rSigns);
+    }
+
+    // degree ticks every 10°
+    x.strokeStyle = 'rgba(196,146,10,0.35)';
+    for (let d = 0; d < 360; d += 10) {
+      const a = ang(d);
+      const len = d % 30 === 0 ? 0 : 10;
+      if (!len) continue;
+      x.lineWidth = 1;
+      x.beginPath();
+      x.moveTo(cx + Math.cos(a) * (rSigns - 42), cy - Math.sin(a) * (rSigns - 42));
+      x.lineTo(cx + Math.cos(a) * (rSigns - 42 + len), cy - Math.sin(a) * (rSigns - 42 + len));
+      x.stroke();
+    }
+
+    // Ascendant axis
+    const aAsc = ang(ascLon);
+    x.strokeStyle = 'rgba(176,74,82,0.8)';
+    x.lineWidth = 2;
+    x.beginPath();
+    x.moveTo(cx + Math.cos(aAsc) * rInner, cy - Math.sin(aAsc) * rInner);
+    x.lineTo(cx + Math.cos(aAsc) * (rSigns - 42), cy - Math.sin(aAsc) * (rSigns - 42));
+    x.stroke();
+    x.fillStyle = '#b04a52';
+    x.font = 'bold 22px Georgia, serif';
+    x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 28), cy - Math.sin(aAsc) * (rInner - 28));
+
+    // planets at true longitudes (offset collisions slightly)
+    const PLANET_ORDER = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+    const placed = [];
+    PLANET_ORDER.forEach(k => {
+      const p = chart.positions[k];
+      if (!p) return;
+      let lon = p.lon;
+      while (placed.some(q => Math.abs(((q - lon) + 540) % 360 - 180) < 7)) lon += 7;
+      placed.push(lon);
+      const a = ang(lon);
+      const px = cx + Math.cos(a) * rPlanets, py = cy - Math.sin(a) * rPlanets;
+      // pointer tick at the true degree
+      const at = ang(p.lon);
+      x.strokeStyle = 'rgba(240,232,216,0.45)';
+      x.lineWidth = 1;
+      x.beginPath();
+      x.moveTo(cx + Math.cos(at) * (rSigns - 42), cy - Math.sin(at) * (rSigns - 42));
+      x.lineTo(cx + Math.cos(at) * (rSigns - 52), cy - Math.sin(at) * (rSigns - 52));
+      x.stroke();
+      x.fillStyle = '#f0e8d8';
+      x.font = '44px Georgia, serif';
+      x.textBaseline = 'middle';
+      x.fillText(PLANET_GLYPHS[k] || '', px, py);
+    });
+    x.textBaseline = 'alphabetic';
+
+    // centre glyph
+    x.fillStyle = 'rgba(196,146,10,0.85)';
+    x.font = '54px Georgia, serif';
+    x.textBaseline = 'middle';
+    x.fillText('✦', cx, cy);
+    x.textBaseline = 'alphabetic';
+
+    // ── Placements table, two columns ──
+    const tableTop = 1400;
+    x.fillStyle = '#c4920a';
+    x.font = '26px Georgia, serif';
+    x.fillText('— P L A C E M E N T S —', W / 2, tableTop - 40);
+    const cols = [[], []];
+    PLANET_ORDER.forEach((k, i) => {
+      const p = chart.positions[k];
+      if (p) cols[i % 2].push({ k, p });
+    });
+    cols.forEach((col, c) => {
+      const colX = c === 0 ? 330 : 900;
+      col.forEach((row, r) => {
+        const y = tableTop + 20 + r * 64;
+        x.textAlign = 'left';
+        x.fillStyle = '#c4920a';
+        x.font = '34px Georgia, serif';
+        x.fillText(PLANET_GLYPHS[row.k] || '', colX, y);
+        x.fillStyle = '#f0e8d8';
+        x.font = '28px Georgia, serif';
+        x.fillText(row.k, colX + 56, y);
+        x.fillStyle = '#9aa6c8';
+        x.fillText(`${SIGN_GLYPHS[row.p.sign] || ''} ${row.p.sign} ${Math.floor(row.p.degree)}°${row.p.retrograde ? ' ℞' : ''}`, colX + 240, y);
+      });
+    });
+
+    x.textAlign = 'center';
+    x.fillStyle = '#c4920a';
+    x.font = '24px Georgia, serif';
+    x.fillText('✦ ASTROPRECISE — computed locally from VSOP87 + ELP2000 ✦', W / 2, H - 110);
+
+    return cv;
+  }
+
+  document.getElementById('poster-btn')?.addEventListener('click', () => {
+    if (!currentChart) return;
+    const cv = drawChartPoster(currentChart);
+    const a = document.createElement('a');
+    const slug = (currentChart.name || 'chart').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    a.download = slug + '-natal-poster.png';
+    a.href = cv.toDataURL('image/png');
+    a.click();
+    if (window.AstroApp) AstroApp.showToast('Poster saved', 'Your natal chart poster has been downloaded.', 'success');
+  });
+
   document.getElementById('app-btn')?.addEventListener('click', () => {
     location.href = 'index.html#app-download';
   });

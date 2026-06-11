@@ -573,3 +573,76 @@ if ('serviceWorker' in navigator) {
     initBottomNav();
   }
 })();
+
+/* Horizon: corner solar system reflects real planetary positions.
+   Heliocentric longitudes set each orbit's phase; periods are
+   real-proportional (Mercury 88d → 14s, Jupiter 4333d → 689s). */
+(function () {
+  const PLANETS = [
+    { id: 'mercury', period: 87.969 },
+    { id: 'venus',   period: 224.701 },
+    { id: 'earth',   period: 365.256 },
+    { id: 'mars',    period: 686.980 },
+    { id: 'jupiter', period: 4332.589 },
+  ];
+  const SECONDS_PER_DAY = 14 / 87.969; // Mercury = 14s baseline
+
+  function helioLon(E, id, jd) {
+    const sun = E.sunPosition(jd);
+    const sx = sun.distance * Math.cos(sun.lon * Math.PI / 180);
+    const sy = sun.distance * Math.sin(sun.lon * Math.PI / 180);
+    let hx, hy;
+    if (id === 'earth') {
+      hx = -sx; hy = -sy;
+    } else {
+      const g = E[id + 'Position'](jd);
+      hx = g.distance * Math.cos(g.lon * Math.PI / 180) - sx;
+      hy = g.distance * Math.sin(g.lon * Math.PI / 180) - sy;
+    }
+    return ((Math.atan2(hy, hx) * 180 / Math.PI) + 360) % 360;
+  }
+
+  function init() {
+    const E = window.AstroEphemeris;
+    if (!E || typeof E.julianDay !== 'function' || typeof E.sunPosition !== 'function') {
+      setTimeout(init, 400);
+      return;
+    }
+    const systems = document.querySelectorAll('.cosmos-solar-system');
+    if (!systems.length) return;
+    const now = new Date();
+    const jd = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+                           now.getUTCHours(), now.getUTCMinutes(), 0);
+    systems.forEach(sys => {
+      const orbits = sys.querySelectorAll('.css-orbit');
+      orbits.forEach((orbit, i) => {
+        const p = PLANETS[i];
+        if (!p) return;
+        let lon;
+        try { lon = helioLon(E, p.id, jd); } catch (e) { return; }
+        const dur = p.period * SECONDS_PER_DAY;
+        orbit.style.animationDuration = dur + 's';
+        orbit.style.animationDirection = 'reverse';
+        orbit.style.animationDelay = -(((360 - lon) / 360) * dur) + 's';
+      });
+      if (!sys.querySelector('.css-orbit--saturn-live')) {
+        let lon;
+        try { lon = helioLon(E, 'saturn', jd); } catch (e) { return; }
+        const dur = 10759.22 * SECONDS_PER_DAY;
+        const orbit = document.createElement('div');
+        orbit.className = 'css-orbit css-orbit--saturn-live';
+        orbit.style.cssText = '--r:345px;width:690px;height:690px;' +
+          'animation-duration:' + dur + 's;animation-direction:reverse;' +
+          'animation-delay:' + (-(((360 - lon) / 360) * dur)) + 's;';
+        orbit.innerHTML = '<div class="css-planet css-planet--saturn"></div>';
+        sys.appendChild(orbit);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
