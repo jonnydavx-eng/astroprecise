@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AstroPrecise — Professional birth chart analysis powered by precise astronomical calculations, accurate to arcminutes. Free online birth chart, daily horoscopes, and compatibility reports." />
+  <title>AstroPrecise — Discover Your Cosmic Blueprint</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <a href="index.html" class="nav-logo" aria-label="AstroPrecise home">
+        <span class="logo-star" aria-hidden="true">✦</span>
+        <span class="logo-text">AstroPrecise</span>
+      </a>
+      <button class="nav-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+        <li><a href="chart.html" class="nav-link">Chart</a></li>
+        <li><a href="horoscope.html" class="nav-link">Horoscope</a></li>
+        <li><a href="compatibility.html" class="nav-link">Compatibility</a></li>
+        <li><a href="transits.html" class="nav-link">Transits</a></li>
+        <li><a href="profile.html" class="nav-link nav-link--cta">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="hero" aria-label="Hero section">
+      <canvas id="starfield" aria-hidden="true"></canvas>
+      <div class="hero-content">
+        <p class="hero-eyebrow">Professional Astrology Tools</p>
+        <h1 class="hero-headline">Discover Your<br /><em>Cosmic Blueprint</em></h1>
+        <p class="hero-subtitle">
+          Professional birth chart analysis powered by precise astronomical calculations
+          — accurate to arcminutes. Uncover the celestial map that was drawn at the moment
+          you entered the world.
+        </p>
+        <div class="hero-ctas">
+          <a href="chart.html" class="btn btn--primary btn--lg" aria-label="Calculate your birth chart">
+            Calculate Your Birth Chart
+          </a>
+          <a href="#app-download" class="btn btn--outline btn--lg" aria-label="Download the AstroPrecise app">
+            Download the App
+          </a>
+        </div>
+        <ul class="hero-stats" aria-label="Service statistics">
+          <li class="hero-stat">
+            <span class="hero-stat__number" id="charts-calculated">2.4M+</span>
+            <span class="hero-stat__label">Charts Calculated</span>
+          </li>
+          <li class="hero-stat">
+            <span class="hero-stat__number">Arcminute</span>
+            <span class="hero-stat__label">Precision</span>
+          </li>
+          <li class="hero-stat">
+            <span class="hero-stat__number">100%</span>
+            <span class="hero-stat__label">Free &amp; Private</span>
+          </li>
+        </ul>
+      </div>
+      <div class="hero-zodiac-wheel" aria-hidden="true">
+        <svg class="wheel-decoration" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="200" cy="200" r="190" stroke="#6B21A8" stroke-width="1" stroke-dasharray="4 8" opacity="0.5"/>
+          <circle cx="200" cy="200" r="150" stroke="#FFD700" stroke-width="0.5" opacity="0.3"/>
+          <circle cx="200" cy="200" r="100" stroke="#6B21A8" stroke-width="1" opacity="0.4"/>
+          <circle cx="200" cy="200" r="50" stroke="#FFD700" stroke-width="0.5" opacity="0.5"/>
+          <text x="200" y="35" text-anchor="middle" fill="#FFD700" font-size="14" opacity="0.8">♈</text>
+          <text x="310" y="80" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♉</text>
+          <text x="370" y="185" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♊</text>
+          <text x="325" y="300" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♋</text>
+          <text x="210" y="368" text-anchor="middle" fill="#FFD700" font-size="14" opacity="0.8">♌</text>
+          <text x="95" y="310" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♍</text>
+          <text x="30" y="200" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♎</text>
+          <text x="80" y="90" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♏</text>
+          <text x="155" y="40" text-anchor="middle" fill="#FFD700" font-size="14" opacity="0.7">♐</text>
+          <text x="250" y="55" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♑</text>
+          <text x="360" y="130" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♒</text>
+          <text x="360" y="270" text-anchor="middle" fill="#E2E8F0" font-size="14" opacity="0.6">♓</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FEATURES
+    ============================================================ -->
+    <section class="features-section section" id="features" aria-labelledby="features-heading">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title" id="features-heading">Why Choose AstroPrecise?</h2>
+          <p class="section-subtitle">
+            We don't guess at the stars. Every calculation uses rigorously verified
+            astronomical algorithms to place planets exactly where they were.
+          </p>
+        </header>
+        <div class="features-grid" role="list">
+          <article class="feature-card" role="listitem">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+                <circle cx="24" cy="24" r="20" stroke="#FFD700" stroke-width="2"/>
+                <circle cx="24" cy="24" r="4" fill="#FFD700"/>
+                <line x1="24" y1="4" x2="24" y2="10" stroke="#FFD700" stroke-width="2"/>
+                <line x1="24" y1="38" x2="24" y2="44" stroke="#FFD700" stroke-width="2"/>
+                <line x1="4" y1="24" x2="10" y2="24" stroke="#FFD700" stroke-width="2"/>
+                <line x1="38" y1="24" x2="44" y2="24" stroke="#FFD700" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="feature-card__title">Swiss Ephemeris Precision</h3>
+            <p class="feature-card__text">
+              Planetary positions accurate to arcminutes, not just degrees. We use the same
+              astronomical algorithms trusted by professional astrologers worldwide — derived
+              from NASA's DE431 planetary ephemeris.
+            </p>
+          </article>
+          <article class="feature-card feature-card--highlighted" role="listitem">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+                <path d="M24 4L28.5 17H42L31 25.5L35.5 38.5L24 30L12.5 38.5L17 25.5L6 17H19.5L24 4Z" stroke="#6B21A8" stroke-width="2" fill="none"/>
+                <path d="M24 10L27.5 19H36.5L29.5 24L32.5 33L24 27.5L15.5 33L18.5 24L11.5 19H20.5L24 10Z" fill="#6B21A8" opacity="0.4"/>
+              </svg>
+            </div>
+            <h3 class="feature-card__title">Expert Analysis</h3>
+            <p class="feature-card__text">
+              Each chart comes with in-depth interpretations of your Sun, Moon, and Rising
+              signs, all planetary placements, house positions, and major aspects — written
+              by professional astrologers.
+            </p>
+          </article>
+          <article class="feature-card" role="listitem">
+            <div class="feature-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+                <rect x="8" y="28" width="14" height="16" rx="2" stroke="#FFD700" stroke-width="2"/>
+                <rect x="26" y="20" width="14" height="24" rx="2" stroke="#FFD700" stroke-width="2"/>
+                <path d="M15 28V14M15 14L11 18M15 14L19 18" stroke="#FFD700" stroke-width="2"/>
+                <circle cx="15" cy="10" r="4" stroke="#6B21A8" stroke-width="2"/>
+                <circle cx="33" cy="10" r="4" stroke="#6B21A8" stroke-width="2"/>
+                <path d="M33 20V10" stroke="#FFD700" stroke-width="2"/>
+              </svg>
+            </div>
+            <h3 class="feature-card__title">Sync with Mobile App</h3>
+            <p class="feature-card__text">
+              Save your charts to your profile and access them anywhere with the AstroPrecise
+              Android app. Your cosmic data travels with you, always in your pocket.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TODAY'S SKY
+    ============================================================ -->
+    <section class="sky-section section" id="todays-sky-section" aria-labelledby="todays-sky-heading">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title" id="todays-sky-heading">Today's Planetary Positions</h2>
+          <p class="section-subtitle" id="todays-sky-date">
+            Current celestial snapshot — <span id="sky-date-display">loading...</span>
+          </p>
+        </header>
+        <div id="todays-sky" class="todays-sky-grid" role="region" aria-live="polite" aria-label="Today's planetary positions">
+          <!-- JS populates this -->
+          <div class="sky-loading">
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <span>Calculating planetary positions…</span>
+          </div>
+        </div>
+        <div class="sky-footer">
+          <a href="transits.html" class="btn btn--ghost">View Full Forecast →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SIGN GRID (horoscope cards)
+    ============================================================ -->
+    <section class="horoscope-section section" id="horoscope-section" aria-labelledby="horoscope-heading">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title" id="horoscope-heading">Today's Horoscopes</h2>
+          <p class="section-subtitle">Select your sign for your daily cosmic guidance</p>
+        </header>
+        <div id="sign-grid" class="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
+          <!-- JS populates this -->
+        </div>
+        <div class="sign-grid-footer">
+          <a href="horoscope.html" class="btn btn--outline">Read All Horoscopes →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         HOW IT WORKS
+    ============================================================ -->
+    <section class="how-section section" id="how-it-works" aria-labelledby="how-heading">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title" id="how-heading">How It Works</h2>
+          <p class="section-subtitle">Your personalised birth chart in three simple steps</p>
+        </header>
+        <ol class="steps-list" aria-label="How to get your birth chart">
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">1</div>
+            <div class="step-content">
+              <h3 class="step-title">Enter Your Birth Data</h3>
+              <p class="step-text">
+                Provide your date, time, and place of birth. The more precise the
+                birth time, the more accurate your houses and rising sign will be.
+              </p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">2</div>
+            <div class="step-content">
+              <h3 class="step-title">We Calculate the Sky</h3>
+              <p class="step-text">
+                Our engine computes the precise position of every planet, the
+                Ascendant, Midheaven, and twelve houses for the exact moment and
+                location of your birth.
+              </p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">3</div>
+            <div class="step-content">
+              <h3 class="step-title">Receive Your Blueprint</h3>
+              <p class="step-text">
+                Explore detailed interpretations of every placement, discover your
+                dominant elements and modalities, and unlock the story the cosmos
+                tells about you.
+              </p>
+            </div>
+          </li>
+        </ol>
+        <div class="how-cta">
+          <a href="chart.html" class="btn btn--primary btn--lg">Get Your Chart Now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TESTIMONIALS
+    ============================================================ -->
+    <section class="testimonials-section section" id="testimonials" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <header class="section-header">
+          <h2 class="section-title" id="testimonials-heading">What Our Users Say</h2>
+        </header>
+        <div class="testimonials-grid" role="list">
+
+          <blockquote class="testimonial-card" role="listitem">
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <p class="testimonial-text">
+              "The most accurate birth chart I've ever seen online. Even the minor
+              aspects were spot-on. I've been studying astrology for 15 years and
+              this is the tool I recommend to all my clients."
+            </p>
+            <footer class="testimonial-author">
+              <div class="testimonial-avatar" aria-hidden="true">SM</div>
+              <div class="testimonial-meta">
+                <cite class="testimonial-name">Sarah M.</cite>
+                <span class="testimonial-sign">Scorpio Rising</span>
+              </div>
+            </footer>
+          </blockquote>
+
+          <blockquote class="testimonial-card testimonial-card--featured" role="listitem">
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <p class="testimonial-text">
+              "I was skeptical of web-based astrology tools until I tried AstroPrecise.
+              The interpretations are thoughtful, nuanced, and genuinely insightful.
+              The compatibility report brought tears to my eyes."
+            </p>
+            <footer class="testimonial-author">
+              <div class="testimonial-avatar" aria-hidden="true">JL</div>
+              <div class="testimonial-meta">
+                <cite class="testimonial-name">James L.</cite>
+                <span class="testimonial-sign">Leo Sun, Aquarius Moon</span>
+              </div>
+            </footer>
+          </blockquote>
+
+          <blockquote class="testimonial-card" role="listitem">
+            <div class="testimonial-stars" aria-label="5 out of 5 stars">
+              <span aria-hidden="true">★★★★★</span>
+            </div>
+            <p class="testimonial-text">
+              "The mobile app syncing feature is a game-changer. I calculated my whole
+              family's charts on the website and now I have them all in my pocket.
+              Absolutely beautiful interface too."
+            </p>
+            <footer class="testimonial-author">
+              <div class="testimonial-avatar" aria-hidden="true">RP</div>
+              <div class="testimonial-meta">
+                <cite class="testimonial-name">Rhea P.</cite>
+                <span class="testimonial-sign">Pisces Sun</span>
+              </div>
+            </footer>
+          </blockquote>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         APP DOWNLOAD
+    ============================================================ -->
+    <section class="app-download-section section" id="app-download" aria-labelledby="app-download-heading">
+      <div class="container">
+        <div class="app-download-inner">
+          <div class="app-download-content">
+            <h2 class="section-title" id="app-download-heading">Take the Cosmos With You</h2>
+            <p class="app-download-text">
+              Sync your charts between web and mobile. The AstroPrecise Android app gives
+              you birth charts, daily horoscopes, and live sky updates — all offline, all
+              private, no subscription required.
+            </p>
+            <ul class="app-features-list" aria-label="App features">
+              <li>Birth charts saved to your device</li>
+              <li>Daily push notifications for transits</li>
+              <li>Offline calculations — no internet needed</li>
+              <li>Widget for today's planetary positions</li>
+            </ul>
+            <div class="app-badges">
+              <a href="https://play.google.com/store" class="app-badge" aria-label="Get it on Google Play" rel="noopener noreferrer" target="_blank">
+                <!-- Google Play badge SVG placeholder -->
+                <svg class="play-badge-svg" viewBox="0 0 135 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google Play badge">
+                  <rect width="135" height="40" rx="5" fill="#1A1A2E" stroke="#6B21A8" stroke-width="1.5"/>
+                  <text x="44" y="13" fill="#E2E8F0" font-family="Inter,sans-serif" font-size="7" font-weight="400">GET IT ON</text>
+                  <text x="44" y="28" fill="#FFFFFF" font-family="Inter,sans-serif" font-size="14" font-weight="600">Google Play</text>
+                  <text x="14" y="26" fill="#FFD700" font-size="20">▶</text>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="app-download-visual">
+            <div class="qr-placeholder" role="img" aria-label="QR code to download AstroPrecise app">
+              <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+                <rect width="120" height="120" rx="8" fill="#1A1A2E" stroke="#6B21A8" stroke-width="2"/>
+                <!-- QR corner markers -->
+                <rect x="10" y="10" width="30" height="30" rx="2" fill="none" stroke="#FFD700" stroke-width="3"/>
+                <rect x="15" y="15" width="20" height="20" rx="1" fill="#FFD700" opacity="0.8"/>
+                <rect x="80" y="10" width="30" height="30" rx="2" fill="none" stroke="#FFD700" stroke-width="3"/>
+                <rect x="85" y="15" width="20" height="20" rx="1" fill="#FFD700" opacity="0.8"/>
+                <rect x="10" y="80" width="30" height="30" rx="2" fill="none" stroke="#FFD700" stroke-width="3"/>
+                <rect x="15" y="85" width="20" height="20" rx="1" fill="#FFD700" opacity="0.8"/>
+                <!-- QR data dots (simplified) -->
+                <rect x="48" y="10" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="56" y="10" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="64" y="10" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="48" y="18" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="64" y="18" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="10" y="48" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="18" y="48" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="10" y="56" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="18" y="64" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="48" y="48" width="28" height="5" fill="#6B21A8" opacity="0.9"/>
+                <rect x="48" y="56" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="56" y="56" width="5" height="5" fill="#6B21A8" opacity="0.9"/>
+                <rect x="64" y="56" width="12" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="48" y="64" width="12" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="64" y="64" width="5" height="5" fill="#6B21A8" opacity="0.9"/>
+                <rect x="80" y="48" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="95" y="56" width="5" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <rect x="80" y="64" width="18" height="5" fill="#E2E8F0" opacity="0.7"/>
+                <text x="60" y="112" text-anchor="middle" fill="#E2E8F0" font-family="Inter,sans-serif" font-size="8" opacity="0.6">Scan to download</text>
+              </svg>
+            </div>
+            <p class="qr-label">Scan to download the Android app</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         NEWSLETTER
+    ============================================================ -->
+    <section class="newsletter-section section" id="newsletter" aria-labelledby="newsletter-heading">
+      <div class="container">
+        <div class="newsletter-inner">
+          <div class="newsletter-content">
+            <h2 class="newsletter-title" id="newsletter-heading">Get Weekly Cosmic Updates</h2>
+            <p class="newsletter-text">
+              Planetary forecasts, eclipse guides, and retrograde alerts delivered to
+              your inbox every Sunday. No spam — only the stars.
+            </p>
+          </div>
+          <form class="newsletter-form" id="newsletter-form" novalidate aria-label="Newsletter signup form">
+            <div class="newsletter-input-group">
+              <label for="newsletter-email" class="sr-only">Email address</label>
+              <input
+                type="email"
+                id="newsletter-email"
+                name="newsletter-email"
+                class="newsletter-input"
+                placeholder="your@email.com"
+                autocomplete="email"
+                aria-required="true"
+                aria-describedby="newsletter-hint"
+              />
+              <button type="submit" class="btn btn--primary newsletter-submit">
+                Get Weekly Cosmic Updates
+              </button>
+            </div>
+            <p class="newsletter-hint" id="newsletter-hint">
+              We respect your privacy. Unsubscribe any time.
+            </p>
+            <div class="newsletter-feedback" id="newsletter-feedback" role="alert" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo footer-logo">
+            <span class="logo-star" aria-hidden="true">✦</span>
+            <span class="logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-tagline">
+            Professional astrology powered by precise astronomical calculations.
+          </p>
+        </div>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <h3 class="footer-nav__heading">Pages</h3>
+          <ul role="list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="chart.html">Birth Chart</a></li>
+            <li><a href="horoscope.html">Horoscope</a></li>
+            <li><a href="compatibility.html">Compatibility</a></li>
+            <li><a href="transits.html">Transits</a></li>
+            <li><a href="profile.html">Profile</a></li>
+          </ul>
+        </nav>
+        <div class="footer-legal">
+          <p class="footer-copyright">
+            &copy; 2025 AstroPrecise. Powered by accurate astronomical calculations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="js/ephemeris.js"></script>
+  <script src="js/chart-render.js"></script>
+  <script src="js/interpretations.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

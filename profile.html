@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AstroPrecise Profile — save your birth charts, manage your cosmic data, and sync with the AstroPrecise Android app. No account or internet required." />
+  <title>My Profile | AstroPrecise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* ---- Profile-page overrides ---- */
+    .hero--small {
+      padding: var(--space-16) 0 var(--space-12);
+      text-align: center;
+    }
+    .hero--small h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-5xl);
+      font-weight: 900;
+      color: var(--color-white);
+      margin-bottom: var(--space-4);
+      line-height: 1.1;
+    }
+    .hero--small p {
+      font-size: var(--text-lg);
+      color: var(--color-silver-dim);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .section { padding: var(--space-16) 0; }
+    .section--alt { background: var(--color-bg-2); }
+    .hidden { display: none !important; }
+    /* Auth card */
+    .auth-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-12) var(--space-10);
+      max-width: 480px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    @media (max-width: 600px) { .auth-card { padding: var(--space-8) var(--space-5); } }
+    .auth-card h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: var(--space-4);
+    }
+    .auth-note {
+      background: rgba(107, 33, 168, 0.12);
+      border: 1px solid rgba(107, 33, 168, 0.3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-5);
+      font-size: var(--text-sm);
+      color: var(--color-silver-dim);
+      line-height: 1.6;
+      margin-bottom: var(--space-6);
+      text-align: left;
+    }
+    .auth-form { text-align: left; }
+    /* Dashboard */
+    .dashboard {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+    .dashboard__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-6) var(--space-8);
+      flex-wrap: wrap;
+    }
+    @media (max-width: 600px) { .dashboard__header { padding: var(--space-5); } }
+    .dashboard__avatar {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      flex-shrink: 0;
+    }
+    .dashboard__header h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--color-white);
+      margin: 0 0 var(--space-1);
+    }
+    .dashboard__subtitle { font-size: var(--text-sm); color: var(--color-silver-dim); margin: 0; }
+    .dashboard__header .btn { margin-left: auto; }
+    .dashboard__section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+    }
+    @media (max-width: 600px) { .dashboard__section { padding: var(--space-5); } }
+    .dashboard__section h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: var(--space-5);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .add-chart-form { display: flex; flex-direction: column; gap: var(--space-4); }
+    .saved-charts { display: flex; flex-direction: column; gap: var(--space-3); }
+    .saved-charts-empty {
+      text-align: center;
+      color: var(--color-silver-dark);
+      font-size: var(--text-sm);
+      padding: var(--space-8);
+      font-style: italic;
+    }
+    .backup-row { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+    .app-sync-row { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true">✦</div>
+          <span>AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="profile.html" class="navbar__link active" aria-current="page">Profile</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="chart.html" class="navbar__link">Chart</a>
+        <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="profile.html" class="navbar__link active" aria-current="page">Profile</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="hero hero--small" aria-labelledby="page-title">
+      <div class="orb orb--purple" style="top:-80px;left:-60px;" aria-hidden="true"></div>
+      <div class="orb orb--gold" style="top:60px;right:-80px;" aria-hidden="true"></div>
+      <div class="container">
+        <p class="hero__eyebrow">Your Cosmic Data</p>
+        <h1 id="page-title">My Cosmic Profile</h1>
+        <p>Save and manage your birth charts</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         AUTH SECTION — shown when no user profile exists
+    ============================================================ -->
+    <section id="auth-section" class="section" aria-labelledby="auth-heading" style="padding-top:var(--space-8);">
+      <div class="container">
+        <div class="auth-card">
+          <h2 id="auth-heading">Create Your Profile</h2>
+          <p class="auth-note">
+            💾 Your data is stored locally on your device. No account, no password, no tracking.
+          </p>
+          <form id="create-profile-form" class="auth-form" novalidate aria-label="Create profile form">
+            <div class="form-group">
+              <label for="new-name" class="form-label">Your Name <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="new-name" name="new-name" class="form-input" placeholder="Enter your name" required aria-required="true" autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="new-email" class="form-label">Email (optional)</label>
+              <input type="email" id="new-email" name="new-email" class="form-input" placeholder="For your reference only" autocomplete="email" aria-describedby="auth-email-hint" />
+              <p class="form-hint" id="auth-email-hint">Stored only on your device. Never sent anywhere.</p>
+            </div>
+            <button type="submit" class="btn btn--primary btn--lg" style="width:100%;margin-top:var(--space-4);">Create Profile ✨</button>
+          </form>
+          <hr class="divider" style="margin:var(--space-6) 0;" />
+          <p style="font-size:var(--text-sm);color:var(--color-silver-dim);margin-bottom:var(--space-3);">Already have an exported profile?</p>
+          <label for="import-input-auth" class="btn btn--outline" style="cursor:pointer;width:100%;justify-content:center;">
+            📂 Import from File
+            <input type="file" id="import-input-auth" accept=".json" class="sr-only" aria-label="Import profile from JSON file" />
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DASHBOARD SECTION — hidden initially, shown once profile exists
+    ============================================================ -->
+    <section id="dashboard-section" class="section hidden" aria-labelledby="dashboard-heading" style="padding-top:var(--space-8);">
+      <div class="container">
+        <div class="dashboard">
+
+          <!-- Profile header -->
+          <div class="dashboard__header" role="banner">
+            <div class="dashboard__avatar" aria-hidden="true">✦</div>
+            <div>
+              <h2 id="profile-name" id="dashboard-heading">Your Name</h2>
+              <p class="dashboard__subtitle">Your Cosmic Profile</p>
+            </div>
+            <button class="btn btn--ghost" id="logout-btn" aria-label="Clear all profile data from this device">Clear Profile</button>
+          </div>
+
+          <!-- Add new birth chart -->
+          <div class="dashboard__section">
+            <h3>Add New Birth Chart</h3>
+            <form id="add-chart-form" class="add-chart-form" novalidate aria-label="Add new birth chart to profile">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="chart-name" class="form-label">Chart Name</label>
+                  <input type="text" id="chart-name" name="chart-name" class="form-input" placeholder="e.g. My Chart, Mom, Friend" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                  <label for="profile-date" class="form-label">Birth Date <span class="required" aria-hidden="true">*</span></label>
+                  <input type="date" id="profile-date" name="profile-date" class="form-input" required aria-required="true" />
+                </div>
+                <div class="form-group">
+                  <label for="profile-time" class="form-label">Birth Time</label>
+                  <input type="time" id="profile-time" name="profile-time" class="form-input" value="12:00" aria-describedby="profile-time-hint" />
+                  <p class="form-hint" id="profile-time-hint">Affects Rising sign and house positions.</p>
+                </div>
+              </div>
+              <div class="form-group" style="position:relative;">
+                <label for="profile-city" class="form-label">Birth City <span class="required" aria-hidden="true">*</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon" aria-hidden="true">📍</span>
+                  <input type="text" id="profile-city" name="profile-city" class="form-input" placeholder="Start typing..." autocomplete="off"
+                         required aria-required="true" aria-autocomplete="list" aria-controls="profile-city-dropdown" />
+                </div>
+                <div class="autocomplete-dropdown" id="profile-city-dropdown" role="listbox" aria-label="City suggestions"></div>
+                <input type="hidden" id="profile-lat" name="profile-lat" />
+                <input type="hidden" id="profile-lon" name="profile-lon" />
+                <input type="hidden" id="profile-tz" name="profile-tz" />
+              </div>
+              <div>
+                <button type="submit" class="btn btn--primary">Save Chart ✦</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Saved charts -->
+          <div class="dashboard__section">
+            <h3>Saved Charts</h3>
+            <div id="saved-charts-list" class="saved-charts" aria-live="polite" aria-label="Saved birth charts">
+              <!-- JS populates saved chart items here -->
+              <div class="saved-charts-empty">No charts saved yet. Add your first chart above.</div>
+            </div>
+          </div>
+
+          <!-- Backup &amp; Restore -->
+          <div class="dashboard__section">
+            <h3>Backup &amp; Restore</h3>
+            <p style="color:var(--color-silver-dim);font-size:var(--text-sm);line-height:1.6;margin-bottom:var(--space-5);">
+              Export a JSON backup of all your saved charts and preferences. Import it on any device
+              to restore your data or transfer it to the Android app.
+            </p>
+            <div class="backup-row">
+              <button id="export-btn" class="btn btn--secondary">⬇ Export My Data</button>
+              <label class="btn btn--ghost" for="import-input" style="cursor:pointer;">⬆ Import Data</label>
+              <input type="file" id="import-input" accept=".json" style="display:none;" aria-label="Import profile data JSON file" />
+            </div>
+            <p class="form-hint" style="margin-top:var(--space-3);">
+              Export files are standard JSON — inspect them, back them up, or import into the AstroPrecise Android app.
+            </p>
+          </div>
+
+          <!-- Mobile App Sync -->
+          <div class="dashboard__section">
+            <h3>📱 Mobile App Sync</h3>
+            <p style="color:var(--color-silver-dim);font-size:var(--text-sm);line-height:1.7;">
+              Open any saved chart in the AstroPrecise Android app with one tap.
+              Available on Google Play — no subscription required. Export your data from this page,
+              then import it in the app to access your charts offline with push notifications for upcoming transits.
+            </p>
+            <div class="app-sync-row">
+              <a href="https://play.google.com/store/apps/details?id=com.astroprecise"
+                 class="btn btn--primary" target="_blank" rel="noopener noreferrer"
+                 aria-label="Get AstroPrecise on Google Play">
+                Get AstroPrecise App
+              </a>
+            </div>
+          </div>
+
+          <!-- Preferences -->
+          <div class="dashboard__section">
+            <h3>Preferences</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pref-house" class="form-label">House System</label>
+                <select id="pref-house" name="pref-house" class="form-select"
+                        onchange="window.AstroProfile && AstroProfile.setPrefs && AstroProfile.setPrefs({houseSystem: this.value})"
+                        aria-describedby="pref-house-hint">
+                  <option value="equal">Equal House</option>
+                  <option value="placidus">Placidus</option>
+                  <option value="whole">Whole Sign</option>
+                </select>
+                <p class="form-hint" id="pref-house-hint">Equal: widely used. Placidus: traditional Western. Whole Sign: ancient method.</p>
+              </div>
+              <div class="form-group">
+                <label for="pref-orbs" class="form-label">Aspect Orbs</label>
+                <select id="pref-orbs" name="pref-orbs" class="form-select"
+                        onchange="window.AstroProfile && AstroProfile.setPrefs && AstroProfile.setPrefs({orbStyle: this.value})">
+                  <option value="standard">Standard (8° / 4°)</option>
+                  <option value="tight">Tight (6° / 3°)</option>
+                  <option value="wide">Wide (10° / 5°)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.dashboard -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHY LOCAL-FIRST — Educational
+    ============================================================ -->
+    <section class="section section--alt" aria-labelledby="local-first-heading">
+      <div class="container">
+        <header class="section-header">
+          <p class="section-header__label">Privacy by Design</p>
+          <h2 class="section-header__title" id="local-first-heading">Why Local-First?</h2>
+          <p class="section-header__subtitle">
+            We believe your personal data — especially something as intimate as a birth chart — should belong entirely to you.
+          </p>
+        </header>
+        <div class="grid-3">
+          <article class="card card--glow">
+            <div class="card__icon" aria-hidden="true">🔒</div>
+            <h3 class="card__title">No Account Required</h3>
+            <p class="card__text">
+              There is no login, no password, and no user account. Your profile exists
+              entirely in your browser's local storage — invisible and inaccessible to us.
+            </p>
+          </article>
+          <article class="card card--glow">
+            <div class="card__icon" aria-hidden="true">🌐</div>
+            <h3 class="card__title">Works Offline</h3>
+            <p class="card__text">
+              Once the page has loaded, all calculations and chart rendering happen
+              entirely in your browser — no network requests are needed.
+            </p>
+          </article>
+          <article class="card card--glow">
+            <div class="card__icon" aria-hidden="true">📦</div>
+            <h3 class="card__title">Portable JSON Format</h3>
+            <p class="card__text">
+              The export format is open and human-readable. Inspect, modify, or migrate
+              your chart data freely — there is no vendor lock-in, ever.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">✦ AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <nav aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Account navigation">
+          <p class="footer__heading">Account</p>
+          <ul class="footer__links">
+            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2025 AstroPrecise. Powered by accurate astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Inline profile init script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var logoutBtn = document.getElementById('logout-btn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function () {
+          if (confirm('Clear your profile? This cannot be undone.')) {
+            localStorage.removeItem('astroprecise_profile');
+            location.reload();
+          }
+        });
+      }
+      // Pre-fill preference selectors from stored prefs
+      if (window.AstroProfile) {
+        var prefs = typeof AstroProfile.getPrefs === 'function' ? AstroProfile.getPrefs() : {};
+        var sel = document.getElementById('pref-house');
+        if (sel && prefs.houseSystem) sel.value = prefs.houseSystem;
+        var orbSel = document.getElementById('pref-orbs');
+        if (orbSel && prefs.orbStyle) orbSel.value = prefs.orbStyle;
+      }
+    });
+  </script>
+
+  <!-- JS -->
+  <script src="js/ephemeris.js"></script>
+  <script src="js/chart-render.js"></script>
+  <script src="js/interpretations.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
