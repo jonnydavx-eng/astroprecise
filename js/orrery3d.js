@@ -46,6 +46,7 @@ window.Orrery3D = (() => {
   let orbits = {};                    // id -> [{x,y,z} display coords]
   let bodies = [];                    // current frame positions
   let ui = {};
+  const trails = new Map();           // id -> [{x,y}] recent screen positions (light-trails)
 
   // ── Astronomy ─────────────────────────────────────────────────────────────
 
@@ -217,8 +218,24 @@ window.Orrery3D = (() => {
   function setSpeed(s) {
     if (s > 0) ui._lastSpeed = s;
     speed = s;
-    ui.play.textContent = s === 0 ? '▶' : '⏸';
-    ui.speedBtns.forEach(b => b.classList.toggle('active', +b.dataset.speed === s && s !== 0));
+    if (s === 0) trails.clear();
+    if (ui.play) ui.play.textContent = s === 0 ? '▶' : '⏸';
+    if (ui.speedBtns) ui.speedBtns.forEach(b => b.classList.toggle('active', +b.dataset.speed === s && s !== 0));
+  }
+
+  // Fly to an arbitrary moment (time travel)
+  function goTo(date) {
+    const E = window.AstroEphemeris;
+    const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(),
+                           date.getHours(), date.getMinutes(), 0);
+    dayOffset = jd - baseJd;
+    setSpeed(0);
+    trails.clear();
+    computeBodies();
+  }
+
+  function getDate() {
+    return new Date(Date.now() + dayOffset * 86400000);
   }
 
   // ── Loop ──────────────────────────────────────────────────────────────────
@@ -250,6 +267,33 @@ window.Orrery3D = (() => {
     const items = bodies.map(b => ({ kind: 'planet', b, pr: project(b.pos) }));
     items.push({ kind: 'sun', pr: project({ x: 0, y: 0, z: 0 }) });
     items.sort((a, b) => b.pr.depth - a.pr.depth);
+
+    // light-trails: when time flows, planets streak
+    if (speed !== 0) {
+      items.forEach(it => {
+        if (it.kind !== 'planet' || it.b.id === 'moon') return;
+        let t = trails.get(it.b.id);
+        if (!t) { t = []; trails.set(it.b.id, t); }
+        t.push({ x: it.pr.x, y: it.pr.y });
+        if (t.length > 26) t.shift();
+      });
+    }
+    trails.forEach((t, id) => {
+      if (t.length < 2) return;
+      const b = bodies.find(x => x.id === id);
+      if (!b) return;
+      for (let i = 1; i < t.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(t[i - 1].x, t[i - 1].y);
+        ctx.lineTo(t[i].x, t[i].y);
+        ctx.strokeStyle = b.color;
+        ctx.globalAlpha = (i / t.length) * 0.4;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    });
+
     items.forEach(it => it.kind === 'sun' ? drawSun(it.pr) : drawPlanet(it.b, it.pr));
 
     updateDate();
@@ -392,6 +436,6 @@ window.Orrery3D = (() => {
     window.removeEventListener('resize', resize);
   }
 
-  return { init, destroy };
+  return { init, destroy, goTo, getDate, setSpeed };
 
 })();
