@@ -9,6 +9,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="AstroPrecise — Discover Your Cosmic Blueprint" />
+  <meta property="og:description" content="Free professional birth chart analysis, daily horoscopes and a live 3D solar system — powered by astronomical calculations accurate to arcminutes." />
+  <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/" />
+  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/icon-512.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="AstroPrecise — Discover Your Cosmic Blueprint" />
+  <meta name="twitter:description" content="Free professional birth chart analysis, daily horoscopes and a live 3D solar system — powered by astronomical calculations accurate to arcminutes." />
+  <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/icon-512.png" />
   <meta name="theme-color" content="#0d0918" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -64,6 +76,53 @@
       opacity: 0.6;
       text-align: center;
     }
+    .orrery-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .orrery-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--silver-dim);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: var(--font-sans);
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      line-height: 1;
+    }
+    .orrery-btn:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
+    .orrery-btn.active {
+      border-color: var(--gold);
+      color: var(--gold-pale);
+      background: rgba(196,146,10,0.1);
+    }
+    .orrery-date {
+      font-size: 0.62rem;
+      font-family: 'Courier New', monospace;
+      color: var(--gold);
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+      margin-left: var(--space-2);
+    }
+    /* Retrograde countdown strip */
+    .retro-strip {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-5);
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--silver);
+    }
+    .retro-strip__glyph { color: var(--crimson-light); font-size: 1rem; }
+    .retro-strip strong { color: var(--gold-pale); font-weight: 600; }
 
     /* Planet list rows (Live Sky) */
     .planet-list {
@@ -342,7 +401,7 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true">✦</div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
         <div class="navbar__nav">
@@ -418,10 +477,10 @@
           </ul>
         </div>
 
-        <!-- Right: orrery -->
-        <div class="hero__orrery-wrap" aria-hidden="true">
-          <canvas id="orrery-canvas"></canvas>
-          <p class="orrery-label">Live Geocentric Sky Map</p>
+        <!-- Right: 3D orrery -->
+        <div class="hero__orrery-wrap">
+          <canvas id="orrery-canvas" aria-label="Interactive 3D solar system showing live planetary positions. Drag to rotate." role="img"></canvas>
+          <p class="orrery-label">Live 3D Solar System · Drag to Rotate</p>
         </div>
 
       </div>
@@ -453,6 +512,10 @@
                 <span class="loading-spinner" aria-hidden="true"></span>
                 <span style="font-size:var(--text-sm);color:var(--silver-dim);">Calculating…</span>
               </div>
+            </div>
+            <div class="retro-strip" id="retro-strip" hidden>
+              <span class="retro-strip__glyph" aria-hidden="true">℞</span>
+              <span id="retro-text"></span>
             </div>
             <div style="padding:var(--space-4) var(--space-5);border-top:1px solid var(--border);">
               <a href="transits.html" style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;opacity:0.75;">
@@ -487,6 +550,61 @@
               <a href="chart.html" class="btn btn--gold btn--sm" style="width:100%;justify-content:center;">
                 Find Your Moon Sign
               </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         THE ORACLE — daily insight + ask
+    ═══════════════════════════════════════════════ -->
+    <section class="section" id="oracle" aria-labelledby="oracle-heading">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">AstroPrecise Intelligence</p>
+          <h2 class="section-title" id="oracle-heading">The Oracle</h2>
+          <p class="section-subtitle">
+            Daily guidance computed from real planetary motion — personalized to your
+            saved chart, or read from today's sky.
+          </p>
+        </header>
+
+        <div class="live-sky__grid">
+          <!-- Day at a glance -->
+          <div class="live-sky__panel">
+            <div class="live-sky__panel-header">
+              <span class="live-sky__panel-title">✦ Your Day at a Glance</span>
+              <span class="live-sky__panel-date" id="oracle-mode"></span>
+            </div>
+            <div style="padding:var(--space-5);" id="oracle-daily">
+              <p style="color:var(--silver-dim);font-size:var(--text-sm);">Consulting the sky…</p>
+            </div>
+          </div>
+
+          <!-- Ask the oracle -->
+          <div class="live-sky__panel">
+            <div class="live-sky__panel-header">
+              <span class="live-sky__panel-title">☽ Ask the Oracle</span>
+              <span class="live-sky__panel-date">one question · one day · one answer</span>
+            </div>
+            <div style="padding:var(--space-5);">
+              <p style="font-size:var(--text-sm);color:var(--silver);line-height:1.65;margin-bottom:var(--space-4);">
+                Hold a question in your mind, then ask. The Oracle answers each question
+                once per day — the same question returns the same truth until the sky turns.
+              </p>
+              <form id="oracle-form" style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
+                <label for="oracle-q" class="sr-only">Your question</label>
+                <input type="text" id="oracle-q" class="form-input" placeholder="Should I…?"
+                       style="flex:1;min-width:200px;" maxlength="200" />
+                <button type="submit" class="btn btn--gold">Ask</button>
+              </form>
+              <div id="oracle-answer" style="margin-top:var(--space-5);display:none;">
+                <div style="padding:var(--space-5);background:var(--surface-2);border-radius:var(--radius-lg);border:1px solid rgba(196,146,10,0.25);position:relative;">
+                  <span style="position:absolute;top:-10px;left:var(--space-5);background:var(--bg);padding:0 var(--space-2);color:var(--gold);font-size:0.7rem;letter-spacing:0.2em;">✦ THE ORACLE SPEAKS</span>
+                  <p id="oracle-answer-text" style="font-family:var(--font-display);font-size:var(--text-base);color:var(--white);line-height:1.7;font-style:italic;"></p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -760,9 +878,10 @@
   <!-- Scripts -->
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
-  <script src="js/planet-orrery.js"></script>
+  <script src="js/orrery3d.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/interpretations.js"></script>
+  <script src="js/oracle.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
 
@@ -894,10 +1013,88 @@
         if (heroBadge) heroBadge.textContent = `${phase.emoji} ${phase.name} · ${SIGN_NAMES[moonSignIdx]}`;
       } catch(e) {}
 
-      /* ── Orrery ── */
+      /* ── Mercury retrograde countdown ── */
       try {
-        await waitFor(() => window.PlanetOrrery, 5000);
-        window.PlanetOrrery.init(document.getElementById('orrery-canvas'));
+        const strip = document.getElementById('retro-strip');
+        const text  = document.getElementById('retro-text');
+        if (strip && text && E.isRetrograde) {
+          const nowRx = E.isRetrograde('mercury', jd);
+          let flipDay = null;
+          for (let d = 1; d <= 150; d++) {
+            if (E.isRetrograde('mercury', jd + d) !== nowRx) { flipDay = d; break; }
+          }
+          if (flipDay !== null) {
+            text.innerHTML = nowRx
+              ? `Mercury is retrograde — <strong>${flipDay} day${flipDay===1?'':'s'}</strong> until it stations direct`
+              : `Mercury is direct — next retrograde begins in <strong>${flipDay} day${flipDay===1?'':'s'}</strong>`;
+            strip.hidden = false;
+          }
+        }
+      } catch(e) {}
+
+      /* ── 3D Orrery ── */
+      try {
+        await waitFor(() => window.Orrery3D, 5000);
+        window.Orrery3D.init(document.getElementById('orrery-canvas'));
+      } catch(e) {}
+
+      /* ── Oracle: day at a glance ── */
+      try {
+        await waitFor(() => window.AstroOracle, 5000);
+        const O = window.AstroOracle;
+        let natal = null;
+        try {
+          const charts = window.AstroProfile ? AstroProfile.getCharts() : [];
+          if (charts.length) natal = charts[0];
+        } catch(e) {}
+
+        const insight = O.getDailyInsight(natal, new Date());
+        const modeEl = document.getElementById('oracle-mode');
+        if (modeEl) modeEl.textContent = insight.meta.mode === 'natal'
+          ? 'personalized · your chart' : 'sky weather · save a chart to personalize';
+
+        const el = document.getElementById('oracle-daily');
+        if (el && insight) {
+          el.innerHTML = `
+            <h3 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--gold-pale);margin-bottom:var(--space-3);line-height:1.4;">${insight.headline}</h3>
+            <p style="font-size:var(--text-sm);color:var(--silver);line-height:1.7;margin-bottom:var(--space-4);">${insight.body}</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-bottom:var(--space-4);">
+              <div style="padding:var(--space-3);background:rgba(14,92,58,0.12);border-radius:var(--radius-md);border:1px solid rgba(14,140,80,0.25);">
+                <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:#3fae7a;margin-bottom:4px;">⊕ Power · ${insight.power.area}</p>
+                <p style="font-size:0.78rem;color:var(--silver);line-height:1.55;">${insight.power.text}</p>
+              </div>
+              <div style="padding:var(--space-3);background:rgba(138,26,56,0.12);border-radius:var(--radius-md);border:1px solid rgba(192,53,101,0.25);">
+                <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:4px;">⚠ Caution · ${insight.caution.area}</p>
+                <p style="font-size:0.78rem;color:var(--silver);line-height:1.55;">${insight.caution.text}</p>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;">
+              <div style="flex:1;min-width:140px;">
+                <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--silver-dim);margin-bottom:4px;">Cosmic Mood · ${insight.moodScore}/100</p>
+                <div class="moon-illumination-bar" style="margin-top:0;"><div class="moon-illumination-bar__fill" style="width:${insight.moodScore}%"></div></div>
+              </div>
+              <div style="display:flex;gap:var(--space-2);">
+                ${insight.keywords.map(k => `<span style="font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);border-radius:999px;color:var(--gold-pale);">${k}</span>`).join('')}
+              </div>
+            </div>`;
+        }
+
+        /* Ask the oracle */
+        const oForm = document.getElementById('oracle-form');
+        if (oForm) {
+          oForm.addEventListener('submit', ev => {
+            ev.preventDefault();
+            const q = document.getElementById('oracle-q').value.trim();
+            if (!q) return;
+            const ans = O.askOracle(q);
+            const box = document.getElementById('oracle-answer');
+            const txt = document.getElementById('oracle-answer-text');
+            if (box && txt) {
+              txt.textContent = ans.answer || `${ans.opening} ${ans.insight} ${ans.guidance}`;
+              box.style.display = 'block';
+            }
+          });
+        }
       } catch(e) {}
     });
   })();

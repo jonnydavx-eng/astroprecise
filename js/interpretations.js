@@ -2376,3 +2376,253 @@ window.AstroInterpretations = Object.assign({}, window.Interpretations, {
   analyzeChartDetailed,
   ASPECTS,
 });
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ── SECTION 7: Planets in Houses, Natal Retrogrades & Decans ───────────────
+// Appended module — adds PLANET_IN_HOUSE, RETROGRADE_MEANINGS, DECAN_MEANINGS
+// and the getters getPlanetInHouse / getRetrogradeMeaning / getDecan to
+// window.AstroInterpretations (mirrored onto window.Interpretations).
+// ═══════════════════════════════════════════════════════════════════════════
+
+(function () {
+
+  // ── Planets in Houses (10 planets × 12 houses) ────────────────────────────
+  const PLANET_IN_HOUSE = {
+    sun: {
+      1: "The Sun in the first house puts identity front and center: you are here to be seen becoming yourself. Vitality rises when you lead with your own face rather than a borrowed one.",
+      2: "The Sun in the second house anchors identity to what you build, earn, and value. Self-worth and net worth feel entangled until you learn that you are the asset.",
+      3: "The Sun in the third house shines through language, learning, and the local world. You become yourself by asking questions out loud and connecting what others keep separate.",
+      4: "The Sun in the fourth house roots purpose in home, family, and private foundations. Your light burns brightest at the hearth — public success only satisfies if the base is warm.",
+      5: "The Sun in the fifth house is in its joy: creation, romance, play, and performance feed the core. You are most yourself when making something only you could make.",
+      6: "The Sun in the sixth house finds identity through craft, service, and daily refinement. Mastery of the routine is your quiet glory; health and work are mirrors of self-respect.",
+      7: "The Sun in the seventh house discovers itself through partnership. Others act as mirrors for your becoming — the task is to shine with someone, not through them.",
+      8: "The Sun in the eighth house seeks identity in depth: intimacy, shared resources, and transformation. You are built for the descents others avoid, and you return with the goods.",
+      9: "The Sun in the ninth house aims the self at the horizon — philosophy, travel, teaching, belief. Meaning is your fuel; a life without a quest dims you fast.",
+      10: "The Sun in the tenth house climbs: vocation, reputation, and public contribution define the arc. You are meant to be visible at altitude — choose the mountain carefully.",
+      11: "The Sun in the eleventh house radiates through groups, causes, and the future. Your individuality paradoxically strengthens in collective work — shine for something larger.",
+      12: "The Sun in the twelfth house glows behind the veil: solitude, imagination, and hidden service. Your vitality replenishes off-stage, and your gift is light carried into unseen places.",
+    },
+    moon: {
+      1: "The Moon in the first house wears the heart on the face — feelings arrive visibly and immediately. Your moods are weather everyone can read; honesty about them becomes your charm.",
+      2: "The Moon in the second house ties security to the tangible: savings, food, soft blankets, owned things. Emotional steadiness grows when resources do — build the cushion, then trust it.",
+      3: "The Moon in the third house feels through words and needs to talk things into clarity. Siblings, neighbors, and daily conversation shape the inner climate more than you admit.",
+      4: "The Moon in the fourth house is at home in itself: deeply rooted, ancestral, tidal. Home is not a place you have but a thing you generate — and others come to warm themselves at it.",
+      5: "The Moon in the fifth house needs to make and play in order to feel. Creativity is emotional digestion; romance and children pull on the deepest tides.",
+      6: "The Moon in the sixth house feels best when useful: routines, rituals, and well-tended bodies stabilize the heart. Anxiety is the signal that care has skipped its schedule.",
+      7: "The Moon in the seventh house feels itself through the other. Relationship is your emotional habitat — the work is learning that you remain whole between partners too.",
+      8: "The Moon in the eighth house feels at full depth or not at all. Intimacy, loss, and renewal are home waters; you nourish others through crises that would capsize most.",
+      9: "The Moon in the ninth house is fed by distance — travel, study, and big-sky beliefs soothe it. Restlessness is your heart asking for a wider room.",
+      10: "The Moon in the tenth house needs its care to be public: a calling that tends people. Your reputation carries feeling; the world watches your weather and trusts it.",
+      11: "The Moon in the eleventh house nests inside friendship and shared dreams. Belonging is a nutrient; build the circle that lets your oddness rest.",
+      12: "The Moon in the twelfth house feels everything, including what is not yours. Solitude is not loneliness for you — it is where the sediment settles and the water clears.",
+    },
+    mercury: {
+      1: "Mercury in the first house thinks out loud and leads with the question. Your identity is made of language; people meet your mind before they meet anything else.",
+      2: "Mercury in the second house thinks in values and resources — a pragmatic, appraising intelligence. You talk yourself into prosperity; words literally become assets.",
+      3: "Mercury in the third house is in its own territory: quick, plural, endlessly curious. You are built to gather, translate, and distribute — boredom is your only real hazard.",
+      4: "Mercury in the fourth house thinks in memory and roots. The family story shaped your syntax; writing or speaking about origins becomes a healing instrument.",
+      5: "Mercury in the fifth house plays with ideas until they shine. Wit is your love language and your art form; you think best when the stakes feel like a game.",
+      6: "Mercury in the sixth house refines: systems, schedules, diagnostics, craft. Your mind serves through precision — and frets when the details go untended.",
+      7: "Mercury in the seventh house thinks in dialogue. You discover your own opinion by hearing it answered; partnership is your laboratory of ideas.",
+      8: "Mercury in the eighth house investigates. Surfaces bore you; secrets, motives, and mechanisms call. You can say the unsayable cleanly — a rare and useful blade.",
+      9: "Mercury in the ninth house thinks in maps and meanings. You translate the far into the near — teacher, traveler, perpetual student of the big pattern.",
+      10: "Mercury in the tenth house speaks for the work. Your words carry professional weight; communication itself may be the career.",
+      11: "Mercury in the eleventh house networks ideas through people. You think in systems and futures, and the group's conversation upgrades when you join it.",
+      12: "Mercury in the twelfth house thinks beneath language — images, intuitions, half-heard signals. Your best ideas surface in solitude and arrive whole, unexplaining themselves.",
+    },
+    venus: {
+      1: "Venus in the first house leads with grace; beauty and warmth are the opening sentence of your presence. People relax when you arrive — learn to use that responsibly.",
+      2: "Venus in the second house loves the tangible: comfort, quality, and beauty you can hold. You attract resources naturally; pleasure and prosperity share a root in your chart.",
+      3: "Venus in the third house charms in language — the well-turned phrase, the easy banter, the love letter. Affection travels on words; you make connection sound effortless.",
+      4: "Venus in the fourth house makes beauty domestic: the lovely home, the warm table, the kept tradition. You love most deeply where you live.",
+      5: "Venus in the fifth house romances the world: art, play, pleasure, and courtship are your natural register. You are built for the golden hour — just create as much as you consume.",
+      6: "Venus in the sixth house loves through service: the perfected detail, the daily kindness, the well-run life. Devotion shows up in deeds, and you read others by theirs.",
+      7: "Venus in the seventh house is in its temple — partnership is the artwork. You harmonize instinctively; the lesson is choosing peers, not projects.",
+      8: "Venus in the eighth house loves at depth and full cost. Intimacy is transformation for you; merging — emotional and material — is where beauty turns serious.",
+      9: "Venus in the ninth house falls in love with horizons: foreign places, big ideas, people who enlarge the map. Love and learning are the same appetite in you.",
+      10: "Venus in the tenth house brings grace to ambition; your charm is professional-grade. The public life prospers through relationships and aesthetic judgment.",
+      11: "Venus in the eleventh house loves the many: friendship is romance at scale. Your circle is curated like a gallery, and your ideals are genuinely beautiful.",
+      12: "Venus in the twelfth house loves quietly, deeply, and sometimes secretly. Compassion is your highest aesthetic — just make sure your tenderness is not only ever subsidizing others.",
+    },
+    mars: {
+      1: "Mars in the first house arrives already moving: direct, competitive, impossible to overlook. Your courage is constitutional — the discipline is choosing when not to charge.",
+      2: "Mars in the second house fights for security and earns by force of effort. You defend what is yours fiercely; the skill is building wealth without making it a battlefield.",
+      3: "Mars in the third house puts an edge on words and wins the morning argument. Mental speed is your blade — aim it at problems, not people.",
+      4: "Mars in the fourth house guards the gate of home. Old family heat lives in you; channeled, it makes you the fierce protector of everything rooted.",
+      5: "Mars in the fifth house creates competitively and loves boldly. Passion is your art supply; games, romance, and performance all get the full engine.",
+      6: "Mars in the sixth house works like a campaign: efficient, tireless, exacting. You are the one who actually finishes — guard against burning the crew, including yourself.",
+      7: "Mars in the seventh house meets itself in others: attraction and friction share a doorway. Partnership is where your fire learns fencing instead of arson.",
+      8: "Mars in the eighth house wields will in the deep end — crisis, intimacy, shared stakes. You are strongest where others flinch; power handled cleanly is your life's craft.",
+      9: "Mars in the ninth house crusades: beliefs are worth fighting for and distances are worth crossing. Your conviction inspires — when it remembers to ask questions.",
+      10: "Mars in the tenth house climbs with intent; ambition is muscular and visible. You are built to lead campaigns — pick summits worth the wear on the boots.",
+      11: "Mars in the eleventh house fights for the group and energizes the cause. You turn ideals into mobilization; friction with friends is the tax on leading them.",
+      12: "Mars in the twelfth house acts behind the curtain — strategy, stamina, and battles others never see. Your strength works best unadvertised; resentment is the leak to watch.",
+    },
+    jupiter: {
+      1: "Jupiter in the first house meets the world with appetite and the benefit of the doubt. Luck follows your visibility; generosity of presence is the engine of it.",
+      2: "Jupiter in the second house expands the storehouse: earning capacity, abundance instinct, faith in enough. The risk is that more is never enough — wealth lands once value gets defined.",
+      3: "Jupiter in the third house enlarges the mind's neighborhood: ideas multiply, words carry far. You teach in casual sentences; curiosity is your luckiest habit.",
+      4: "Jupiter in the fourth house blesses the roots: a generous home, an expanding family story, an inner ground that holds. Your sanctuary is also other people's shelter.",
+      5: "Jupiter in the fifth house bets on joy and usually wins. Creativity, romance, and play scale up under this placement — your delight is contagious and productive.",
+      6: "Jupiter in the sixth house finds meaning inside the routine: work as practice, health as philosophy. Service expands you; the trap is volunteering for everything.",
+      7: "Jupiter in the seventh house grows through partners — generous ones, wise ones, occasionally excessive ones. Relationships are your universities.",
+      8: "Jupiter in the eighth house finds treasure in the depths: inheritance, intimacy, regeneration. You profit — materially and spiritually — from what others fear to touch.",
+      9: "Jupiter in the ninth house is home: faith, travel, study, the long quest. Your worldview is a cathedral under permanent, joyful construction.",
+      10: "Jupiter in the tenth house aims expansion at the public summit. Reputation grows almost on its own; stewardship of success becomes the real assignment.",
+      11: "Jupiter in the eleventh house wins through networks: friends open doors, causes return dividends. Your hope is infrastructural — communities organize around it.",
+      12: "Jupiter in the twelfth house keeps a guardian in the unseen: rescue arrives oddly on time. Solitude, service, and the inner life are where your abundance compounds.",
+    },
+    saturn: {
+      1: "Saturn in the first house builds the self brick by brick: serious early, durable late. Your presence carries authority you had to earn — and it shows.",
+      2: "Saturn in the second house teaches worth the slow way: scarcity early, mastery later. What you finally build holds; your security is engineered, not inherited.",
+      3: "Saturn in the third house disciplines the voice: words weighed, learning earned. You speak less and land more — the late bloom of a careful mind.",
+      4: "Saturn in the fourth house carries the weight of the foundation: family duty, old walls, deep time. You become the structure you needed — that is the whole assignment.",
+      5: "Saturn in the fifth house takes joy seriously: creativity under deadline, romance with terms. Permission to play is the discipline — practice it like scales.",
+      6: "Saturn in the sixth house is the craftsman's placement: rigorous routines, exacting standards, real skill. Guard the body that does the work; it is the only tool you cannot replace.",
+      7: "Saturn in the seventh house contracts seriously: partnership as commitment, love with structure. You choose late and well — fear of the wrong door is the toll.",
+      8: "Saturn in the eighth house sets terms with the deep: control around intimacy, caution around merging. Trust is built in beams here — slow, tested, permanent.",
+      9: "Saturn in the ninth house demands proof from belief: a tested philosophy, a load-bearing faith. Your wisdom is structural because you refused the shortcut.",
+      10: "Saturn in the tenth house is in command: the long climb, the earned summit, the lasting name. Authority is your destination — integrity is the toll road.",
+      11: "Saturn in the eleventh house chooses few friends and keeps them for decades. Your contribution to the collective is architecture, not applause.",
+      12: "Saturn in the twelfth house works on invisible foundations: private discipline, solitary strength, debts of the psyche paid quietly. Your spine was built in rooms no one saw.",
+    },
+    uranus: {
+      1: "Uranus in the first house arrives as the exception: an unmistakable original whose presence rearranges rooms. Your freedom is identity-level — domestication never took.",
+      2: "Uranus in the second house electrifies the ledger: income in lightning bolts, values nobody assigned you. Security through flexibility is your paradoxical genius.",
+      3: "Uranus in the third house thinks in jump-cuts: sudden insight, sideways logic, a voice unlike any sibling's. Your sentences carry voltage — insulate accordingly.",
+      4: "Uranus in the fourth house grew up on shifting ground and learned to make freedom feel like home. Your roots are portable; your true family is found, not issued.",
+      5: "Uranus in the fifth house creates the unprecedented: experimental art, unconventional romance, play with the rules themselves. Your joy refuses templates.",
+      6: "Uranus in the sixth house revolts against the timesheet: work must be free-range or it sickens. You modernize every system you touch — start with your own.",
+      7: "Uranus in the seventh house needs space inside togetherness: partnership as an alliance of free agents. The right bond feels like liberation, never enclosure.",
+      8: "Uranus in the eighth house breaks taboos cleanly: sudden depths, abrupt endings, transformation by lightning. You are wired to survive metamorphosis and explain it afterward.",
+      9: "Uranus in the ninth house rewrites the doctrine: beliefs self-assembled, horizons chosen by intuition. Your philosophy updates — that is its strength.",
+      10: "Uranus in the tenth house refuses the standard career: zigzag path, invented role, authority questioned by default. Your work is to institutionalize the breakthrough.",
+      11: "Uranus in the eleventh house is the natural futurist: tribes of outliers, causes ahead of schedule. You organize tomorrow's consensus from today's fringe.",
+      12: "Uranus in the twelfth house hides the revolution in the basement: intuitive flashes, anonymous genius, freedom won internally first. Your breakthroughs incubate in silence.",
+    },
+    neptune: {
+      1: "Neptune in the first house wears a shifting outline: people project freely onto your presence. Your permeability is a gift — keep a firm inner address.",
+      2: "Neptune in the second house dissolves the spreadsheet: money behaves like tide, value behaves like meaning. Anchor the practical so the visionary can sail.",
+      3: "Neptune in the third house speaks in watercolor: a poetic mind, porous attention, truth carried by image. You communicate what facts cannot hold.",
+      4: "Neptune in the fourth house remembers home as myth — idealized, blurred, longed for. Building a real sanctuary that matches the dream is the life's quiet art.",
+      5: "Neptune in the fifth house romances the sublime: art as devotion, love as transcendence. Your creations carry oceans; just date humans, not auras.",
+      6: "Neptune in the sixth house serves invisibly and absorbs what the room is carrying. Gentle routines and clean boundaries are medical equipment for you.",
+      7: "Neptune in the seventh house loves the soul before the person arrives. Compassionate partnership is possible — after the projector is turned down.",
+      8: "Neptune in the eighth house dissolves into union: mystical intimacy, boundary-less depths. Discernment is the safeguard that lets the mysticism stay real.",
+      9: "Neptune in the ninth house goes on pilgrimage: faith as ocean, belief as longing for the infinite. Your spirituality needs practice, not just weather.",
+      10: "Neptune in the tenth house is called rather than employed: vocation as service to something diffuse and vast. Let the mission clarify slowly; it will.",
+      11: "Neptune in the eleventh house dreams collectively: utopian circles, idealized friends, causes as communion. Choose collaborators whose halos survive daylight.",
+      12: "Neptune in the twelfth house is the mystic at home: boundless interiority, compassion without edges, art from the source. Structure your solitude and it becomes a temple.",
+    },
+    pluto: {
+      1: "Pluto in the first house emits gravity: people sense the depth before you speak. Your presence transforms rooms — consent to the power instead of apologizing for it.",
+      2: "Pluto in the second house ties survival to resources: losses and resurrections teach that worth is internal. You rebuild fortunes the way others rebuild habits.",
+      3: "Pluto in the third house speaks with the voice that changes minds permanently. Your words excavate; use the depth deliberately, not defensively.",
+      4: "Pluto in the fourth house descends from intense roots: family secrets, buried power, ancestral pressure. You are the generation that brings the basement into daylight.",
+      5: "Pluto in the fifth house creates from the magma: art, romance, and play all run at transformational intensity. What you make remakes you.",
+      6: "Pluto in the sixth house works obsessively well: total commitment to craft and routine. The practice transforms you — just let it stay a practice, not a possession.",
+      7: "Pluto in the seventh house meets power in the mirror of partnership. Relationships go deep or go nowhere; the curriculum is intimacy without control.",
+      8: "Pluto in the eighth house is in its own underworld: full-contact intimacy, repeated regeneration, mastery of endings. You are the phoenix's biographer and its body.",
+      9: "Pluto in the ninth house holds beliefs at conviction-depth; your worldview, once formed, moves tectonically. Keep the search alive — dogma is depth that stopped digging.",
+      10: "Pluto in the tenth house carries public power and its scrutiny. Your career transforms institutions — wield it transparently and the suspicion starves.",
+      11: "Pluto in the eleventh house transforms the collective from within: deep alliances, regenerated communities, power redistributed. Your friendships are few and tectonic.",
+      12: "Pluto in the twelfth house keeps power offstage: hidden strength, ancestral undertow, transformation conducted in dreams. Your work is making the unconscious a colleague.",
+    },
+  };
+
+  // ── Natal Retrograde Meanings ─────────────────────────────────────────────
+  const RETROGRADE_MEANINGS = {
+    mercury: "Mercury retrograde in the natal chart turns the mind inward: you process before you speak and understand more than you say. Your intelligence works on its own clock — trust the delay; it is digestion, not deficiency.",
+    venus: "Venus retrograde natally internalizes the love function: affection runs deep but resists conventional display. You re-evaluate what beauty and worth mean until you author your own definitions — and love accordingly.",
+    mars: "Mars retrograde natally redirects the will inward: your power compounds before it acts. Direct confrontation feels foreign; strategy, timing, and slow-burning resolve are your native weapons.",
+    jupiter: "Jupiter retrograde natally grows the inner philosopher: faith must be personally verified rather than inherited. Your luck operates internally first — conviction precedes opportunity.",
+    saturn: "Saturn retrograde natally internalizes authority: external rules ring hollow until you build your own. Self-discipline arrives late but absolute, and your integrity ends up self-certified.",
+    uranus: "Uranus retrograde natally turns the revolution inward: your rebellion is psychological before it is visible. You liberate yourself in private increments, then surprise everyone at once.",
+    neptune: "Neptune retrograde natally sharpens the mystic's eye: you see through glamour rather than being swept up by it. Your spirituality is private, tested, and immune to packaging.",
+    pluto: "Pluto retrograde natally conducts transformation underground: power is examined, distrusted, and finally rebuilt from first principles. Your metamorphoses are thorough precisely because they are internal first.",
+  };
+
+  // ── 36 Decans (each sign × 3, triplicity rulers, modern rulerships) ───────
+  // Indexed in zodiac order: DECAN_MEANINGS[Math.floor(longitude / 10)]
+  const DECAN_MEANINGS = [
+    { sign: 'Aries', decan: 1, ruler: 'Mars', meaning: "Pure cardinal fire — the pioneer's pioneer, all ignition and first strike, born to begin." },
+    { sign: 'Aries', decan: 2, ruler: 'Sun', meaning: "Fire with a crown — courage matures into leadership and the need to be magnificent in action." },
+    { sign: 'Aries', decan: 3, ruler: 'Jupiter', meaning: "Fire seeking horizon — the warrior becomes crusader, fighting best for a belief bigger than the battle." },
+    { sign: 'Taurus', decan: 1, ruler: 'Venus', meaning: "Pure earth fertility — sensual, settled, and devoted to making life beautiful and permanent." },
+    { sign: 'Taurus', decan: 2, ruler: 'Mercury', meaning: "Earth that calculates — practical intelligence applied to building, valuing, and patiently improving." },
+    { sign: 'Taurus', decan: 3, ruler: 'Saturn', meaning: "Earth as bedrock — endurance perfected, wealth and worth built to outlast their builder." },
+    { sign: 'Gemini', decan: 1, ruler: 'Mercury', meaning: "Pure air in motion — the messenger undiluted, curious about everything and bored by nothing new." },
+    { sign: 'Gemini', decan: 2, ruler: 'Venus', meaning: "Air with charm — the storyteller and diplomat, connecting people as gracefully as ideas." },
+    { sign: 'Gemini', decan: 3, ruler: 'Uranus', meaning: "Air gone electric — the inventor's mind, where wit accelerates into genuine originality." },
+    { sign: 'Cancer', decan: 1, ruler: 'Moon', meaning: "Pure water at the source — instinct, memory, and care in their most concentrated form." },
+    { sign: 'Cancer', decan: 2, ruler: 'Pluto', meaning: "Water at depth — fierce protectiveness and emotional power that regenerates whatever it shelters." },
+    { sign: 'Cancer', decan: 3, ruler: 'Neptune', meaning: "Water without walls — compassion widened to the collective, the caretaker of everyone's tide." },
+    { sign: 'Leo', decan: 1, ruler: 'Sun', meaning: "Pure fixed fire — sovereignty itself, radiant, central, and unapologetically alive." },
+    { sign: 'Leo', decan: 2, ruler: 'Jupiter', meaning: "Fire with largesse — the generous monarch whose warmth expands every room it rules." },
+    { sign: 'Leo', decan: 3, ruler: 'Mars', meaning: "Fire as champion — courage on display, the performer-warrior who defends the spotlight's purpose." },
+    { sign: 'Virgo', decan: 1, ruler: 'Mercury', meaning: "Pure mutable earth — analysis in service of life, the craftsman's eye at native resolution." },
+    { sign: 'Virgo', decan: 2, ruler: 'Saturn', meaning: "Earth with rigor — discipline refines skill into mastery and duty into quiet authority." },
+    { sign: 'Virgo', decan: 3, ruler: 'Venus', meaning: "Earth made graceful — precision warms into healing, and service becomes an art of devotion." },
+    { sign: 'Libra', decan: 1, ruler: 'Venus', meaning: "Pure cardinal air — harmony as initiative, beauty and fairness pursued as first principles." },
+    { sign: 'Libra', decan: 2, ruler: 'Uranus', meaning: "Air that reforms — justice gets inventive, balancing the scales by redesigning them." },
+    { sign: 'Libra', decan: 3, ruler: 'Mercury', meaning: "Air in counsel — the negotiator's decan, where eloquence finishes what charm begins." },
+    { sign: 'Scorpio', decan: 1, ruler: 'Pluto', meaning: "Pure fixed water — intensity undiluted, the will to truth at any depth and any cost." },
+    { sign: 'Scorpio', decan: 2, ruler: 'Neptune', meaning: "Water as solvent — passion turns mystical, dissolving defenses to reach the soul beneath." },
+    { sign: 'Scorpio', decan: 3, ruler: 'Moon', meaning: "Water remembering — emotional depth gains tenderness, and power learns to protect what it once gripped." },
+    { sign: 'Sagittarius', decan: 1, ruler: 'Jupiter', meaning: "Pure mutable fire — faith in motion, the arrow loosed at the widest possible sky." },
+    { sign: 'Sagittarius', decan: 2, ruler: 'Mars', meaning: "Fire as crusade — conviction militant, adventure pursued with a warrior's commitment." },
+    { sign: 'Sagittarius', decan: 3, ruler: 'Sun', meaning: "Fire as beacon — the teacher's decan, where the journey itself becomes the light others steer by." },
+    { sign: 'Capricorn', decan: 1, ruler: 'Saturn', meaning: "Pure cardinal earth — ambition in its structural form, the architect of the long game." },
+    { sign: 'Capricorn', decan: 2, ruler: 'Venus', meaning: "Earth that rewards — mastery acquires taste, and achievement learns to be enjoyed." },
+    { sign: 'Capricorn', decan: 3, ruler: 'Mercury', meaning: "Earth with strategy — executive intelligence, where planning becomes an exact science." },
+    { sign: 'Aquarius', decan: 1, ruler: 'Uranus', meaning: "Pure fixed air — the original original, principle-driven and allergic to precedent." },
+    { sign: 'Aquarius', decan: 2, ruler: 'Mercury', meaning: "Air as signal — ideas networked into systems, the engineer of collective intelligence." },
+    { sign: 'Aquarius', decan: 3, ruler: 'Venus', meaning: "Air with heart — ideals warm into fellowship, and the future is designed to be loved in." },
+    { sign: 'Pisces', decan: 1, ruler: 'Neptune', meaning: "Pure mutable water — the open ocean of feeling, imagination at its most permeable." },
+    { sign: 'Pisces', decan: 2, ruler: 'Moon', meaning: "Water with a shoreline — empathy gains instinct and the dream learns to nurture." },
+    { sign: 'Pisces', decan: 3, ruler: 'Pluto', meaning: "Water at the abyss — compassion descends to transform, surfacing with the drowned made whole." },
+  ];
+
+  // ── Getters ───────────────────────────────────────────────────────────────
+
+  function getPlanetInHouse(planet, house) {
+    const p = String(planet || '').toLowerCase();
+    const h = parseInt(house, 10);
+    return (PLANET_IN_HOUSE[p] && PLANET_IN_HOUSE[p][h]) || '';
+  }
+
+  function getRetrogradeMeaning(planet) {
+    return RETROGRADE_MEANINGS[String(planet || '').toLowerCase()] || '';
+  }
+
+  // getDecan(lon): computes the decan from an ecliptic longitude (0–360°).
+  function getDecan(lon) {
+    const n = Number(lon);
+    const L = isFinite(n) ? ((n % 360) + 360) % 360 : 0;
+    const idx = Math.floor(L / 10) % 36;
+    const entry = DECAN_MEANINGS[idx];
+    const startDeg = (idx % 3) * 10;
+    return {
+      index: idx + 1,
+      sign: entry.sign,
+      decan: entry.decan,
+      ruler: entry.ruler,
+      meaning: entry.meaning,
+      degreeRange: startDeg + '–' + (startDeg + 10) + '°',
+    };
+  }
+
+  const additions = {
+    PLANET_IN_HOUSE,
+    RETROGRADE_MEANINGS,
+    DECAN_MEANINGS,
+    getPlanetInHouse,
+    getRetrogradeMeaning,
+    getDecan,
+  };
+
+  window.AstroInterpretations = Object.assign(window.AstroInterpretations || {}, additions);
+  if (window.Interpretations) Object.assign(window.Interpretations, additions);
+
+})();

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AstroPrecise logo">
+  <defs>
+    <linearGradient id="ap-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e8c96a"/>
+      <stop offset="0.55" stop-color="#d4a820"/>
+      <stop offset="1" stop-color="#c4920a"/>
+    </linearGradient>
+    <linearGradient id="ap-amethyst" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c48aff"/>
+      <stop offset="1" stop-color="#6b21a8"/>
+    </linearGradient>
+    <radialGradient id="ap-planet" cx="0.35" cy="0.35" r="1">
+      <stop offset="0" stop-color="#d8b8ff"/>
+      <stop offset="1" stop-color="#7a3bbf"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Celestial ring -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="url(#ap-gold)" stroke-width="1.4" opacity="0.85"/>
+
+  <!-- Precision degree ticks (every 30°, longer at cardinal points) -->
+  <g stroke="url(#ap-gold)" stroke-width="1" opacity="0.75">
+    <line x1="32" y1="2"  x2="32" y2="6.5"/>
+    <line x1="32" y1="62" x2="32" y2="57.5"/>
+    <line x1="2"  y1="32" x2="6.5" y2="32"/>
+    <line x1="62" y1="32" x2="57.5" y2="32"/>
+  </g>
+  <g stroke="#c4920a" stroke-width="0.7" opacity="0.45">
+    <line x1="47" y1="6.02"  x2="45.5" y2="8.62"/>
+    <line x1="57.98" y1="17" x2="55.38" y2="18.5"/>
+    <line x1="57.98" y1="47" x2="55.38" y2="45.5"/>
+    <line x1="47" y1="57.98" x2="45.5" y2="55.38"/>
+    <line x1="17" y1="57.98" x2="18.5" y2="55.38"/>
+    <line x1="6.02" y1="47"  x2="8.62" y2="45.5"/>
+    <line x1="6.02" y1="17"  x2="8.62" y2="18.5"/>
+    <line x1="17" y1="6.02"  x2="18.5" y2="8.62"/>
+  </g>
+
+  <!-- Inner dashed meridian -->
+  <circle cx="32" cy="32" r="24.5" fill="none" stroke="#c4920a" stroke-width="0.5" opacity="0.3" stroke-dasharray="1.2 3.4"/>
+
+  <!-- Orbit ellipse with planet -->
+  <ellipse cx="32" cy="32" rx="27" ry="9.5" fill="none" stroke="url(#ap-amethyst)" stroke-width="1.1" opacity="0.8" transform="rotate(-28 32 32)"/>
+  <circle cx="55.9" cy="23" r="2.8" fill="url(#ap-planet)"/>
+  <circle cx="55.9" cy="23" r="2.8" fill="none" stroke="#c48aff" stroke-width="0.5" opacity="0.5"/>
+
+  <!-- Eight-point compass star -->
+  <path d="M32 12 L34.6 29.4 L52 32 L34.6 34.6 L32 52 L29.4 34.6 L12 32 L29.4 29.4 Z" fill="url(#ap-gold)"/>
+  <path d="M32 21 L36.2 27.8 L43 32 L36.2 36.2 L32 43 L27.8 36.2 L21 32 L27.8 27.8 Z"
+        fill="url(#ap-gold)" opacity="0.55" transform="rotate(45 32 32)"/>
+
+  <!-- Center jewel -->
+  <circle cx="32" cy="32" r="2.2" fill="#f0e8d8"/>
+  <circle cx="32" cy="32" r="3.4" fill="none" stroke="#e8c96a" stroke-width="0.6" opacity="0.7"/>
+</svg>
