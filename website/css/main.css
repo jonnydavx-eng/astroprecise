@@ -5472,3 +5472,162 @@ body[data-element="water"]::before {
 .saved-charts-empty .btn--sm {
   margin-top: 0.25rem;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   HORIZON ASTROLOGY EDITION — instrument badges, privacy banner,
+   manifesto voice section
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Engraved-brass instrument badge */
+.ap-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  background: linear-gradient(145deg, rgba(196,146,10,0.1) 0%, rgba(9,11,22,0.6) 100%);
+  border: 1px solid rgba(196,146,10,0.3);
+  border-radius: 999px;
+  padding: 4px 12px;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.07);
+}
+.ap-badge::before {
+  content: '⚙';
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+.ap-badge--deterministic::before { content: '✦'; }
+
+/* Privacy banner — first visit only */
+.privacy-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  background: rgba(9, 11, 22, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(196,146,10,0.35);
+  transform: translateY(0);
+  transition: transform 0.45s var(--ease-spring, ease);
+}
+.privacy-banner.is-hidden { transform: translateY(110%); }
+.privacy-banner__text {
+  font-size: 0.78rem;
+  color: var(--silver);
+  letter-spacing: 0.02em;
+}
+.privacy-banner__text strong { color: var(--gold-pale); font-weight: 600; }
+.privacy-banner__close {
+  background: none;
+  border: 1px solid rgba(196,146,10,0.4);
+  border-radius: 999px;
+  color: var(--gold-pale);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 4px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.privacy-banner__close:hover {
+  background: rgba(196,146,10,0.12);
+  border-color: var(--gold);
+}
+@media (max-width: 600px) {
+  .privacy-banner { flex-direction: column; gap: var(--space-2); text-align: center; }
+}
+
+/* Offline-ready pill (appears once SW is controlling the page) */
+.offline-ready-pill {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 8999;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--emerald-light);
+  background: rgba(9, 11, 22, 0.9);
+  border: 1px solid rgba(26, 138, 86, 0.4);
+  border-radius: 999px;
+  padding: 5px 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s var(--ease-spring, ease);
+  pointer-events: none;
+}
+.offline-ready-pill.is-visible { opacity: 0.92; transform: translateY(0); }
+.offline-ready-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  box-shadow: 0 0 6px rgba(26,138,86,0.8);
+}
+
+/* Manifesto — the voice of the instrument */
+.manifesto {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-6);
+  text-align: center;
+  position: relative;
+}
+.manifesto::before {
+  content: '✦';
+  display: block;
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-6);
+  opacity: 0.8;
+}
+.manifesto p {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  line-height: 1.95;
+  color: var(--silver);
+  margin-bottom: var(--space-6);
+}
+.manifesto p strong {
+  color: var(--gold-pale);
+  font-weight: 600;
+}
+.manifesto__beats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+  margin-top: var(--space-8);
+}
+.manifesto__beat {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.manifesto__beat::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+}

@@ -476,3 +476,45 @@ document.addEventListener('DOMContentLoaded', () => AstroApp.init());
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
+
+/* Horizon: privacy banner (first visit) + offline-ready pill */
+(function () {
+  const ACK_KEY = 'ap_privacy_ack';
+
+  function showPrivacyBanner() {
+    if (localStorage.getItem(ACK_KEY)) return;
+    const b = document.createElement('div');
+    b.className = 'privacy-banner';
+    b.setAttribute('role', 'status');
+    b.innerHTML =
+      '<span class="privacy-banner__text"><strong>Everything happens in your hands.</strong> ' +
+      'Charts and readings compute in your browser — nothing is sent anywhere, ever.</span>' +
+      '<button class="privacy-banner__close" aria-label="Dismiss privacy notice">Understood</button>';
+    document.body.appendChild(b);
+    b.querySelector('.privacy-banner__close').addEventListener('click', () => {
+      b.classList.add('is-hidden');
+      try { localStorage.setItem(ACK_KEY, '1'); } catch (e) {}
+      setTimeout(() => b.remove(), 600);
+    });
+  }
+
+  function showOfflinePill() {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.ready.then(() => {
+      if (!navigator.serviceWorker.controller) return;
+      const p = document.createElement('div');
+      p.className = 'offline-ready-pill';
+      p.textContent = 'Works offline';
+      document.body.appendChild(p);
+      requestAnimationFrame(() => p.classList.add('is-visible'));
+      setTimeout(() => { p.classList.remove('is-visible'); setTimeout(() => p.remove(), 600); }, 5000);
+    }).catch(() => {});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { showPrivacyBanner(); showOfflinePill(); });
+  } else {
+    showPrivacyBanner();
+    showOfflinePill();
+  }
+})();
