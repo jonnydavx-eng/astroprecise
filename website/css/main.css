@@ -5362,3 +5362,113 @@ body::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Element-specific background accents for sign landing pages
+   Layered on top of the base nebula via ::before override
+   -------------------------------------------------------------------------- */
+body[data-element="fire"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(220, 80, 20, 0.22)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(196, 100, 10, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(196, 146, 10, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(180, 50, 10, 0.10)  0%, transparent 50%);
+}
+
+body[data-element="earth"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(20, 110, 60, 0.22)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(30, 140, 80, 0.16)  0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(80, 160, 60, 0.10)  0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(14, 92, 40, 0.12)   0%, transparent 50%);
+}
+
+body[data-element="air"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(40, 130, 220, 0.20)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(60, 160, 240, 0.14)  0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(100, 180, 250, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(30, 110, 200, 0.12)  0%, transparent 50%);
+}
+
+body[data-element="water"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(30, 30, 140, 0.28)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(60, 20, 160, 0.20)  0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(40, 40, 180, 0.12)  0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(20, 20, 120, 0.14)  0%, transparent 50%);
+}
+
+/* --------------------------------------------------------------------------
+   Transit page — live ticker strip
+   -------------------------------------------------------------------------- */
+.transit-ticker {
+  overflow: hidden;
+  position: relative;
+  padding: 0.6rem 0;
+  margin: 1.25rem auto 0;
+  max-width: 860px;
+  mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.transit-ticker__track {
+  display: flex;
+  gap: 0.6rem;
+  width: max-content;
+  animation: ticker-scroll 38s linear infinite;
+}
+
+.transit-ticker__track:hover { animation-play-state: paused; }
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.transit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(150, 175, 230, 0.18);
+  background: rgba(17, 26, 54, 0.65);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  color: var(--silver);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(6px);
+}
+
+.transit-pill__symbol {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.transit-pill__name {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--lapis-light, #5b7fc7);
+}
+
+.transit-pill__pos {
+  font-weight: 600;
+  color: var(--gold-pale);
+  font-size: 0.78rem;
+}
+
+.transit-pill--retrograde {
+  border-color: rgba(176, 74, 82, 0.35);
+  background: rgba(110, 26, 38, 0.18);
+}
+
+.transit-pill--retrograde .transit-pill__pos {
+  color: #b04a52;
+}
+
+/* Profile page empty state CTA sizing */
+.saved-charts-empty .btn--sm {
+  margin-top: 0.25rem;
+}

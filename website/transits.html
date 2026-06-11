@@ -249,6 +249,21 @@
         <p class="hero__eyebrow">Live Cosmic Weather</p>
         <h1 id="page-title">🌌 Planetary Transits</h1>
         <p>Understand current cosmic influences on your birth chart</p>
+
+        <div class="transit-ticker" role="marquee" aria-label="Current planetary positions ticker" id="transit-ticker">
+          <div class="transit-ticker__track" id="transit-ticker-track">
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">☀</span><span class="transit-pill__name">Sun</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">☽</span><span class="transit-pill__name">Moon</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">☿</span><span class="transit-pill__name">Mercury</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">♀</span><span class="transit-pill__name">Venus</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">♂</span><span class="transit-pill__name">Mars</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">♃</span><span class="transit-pill__name">Jupiter</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">♄</span><span class="transit-pill__name">Saturn</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">♅</span><span class="transit-pill__name">Uranus</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">♆</span><span class="transit-pill__name">Neptune</span><span class="transit-pill__pos">—°</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">♇</span><span class="transit-pill__name">Pluto</span><span class="transit-pill__pos">—°</span></span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -608,6 +623,81 @@
           ' at ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
       }
     });
+  </script>
+
+  <script>
+  (function () {
+    var PLANETS = [
+      { sym: '☀', name: 'Sun',     key: 'sun' },
+      { sym: '☽', name: 'Moon',    key: 'moon' },
+      { sym: '☿', name: 'Mercury', key: 'mercury' },
+      { sym: '♀', name: 'Venus',   key: 'venus' },
+      { sym: '♂', name: 'Mars',    key: 'mars' },
+      { sym: '♃', name: 'Jupiter', key: 'jupiter' },
+      { sym: '♄', name: 'Saturn',  key: 'saturn' },
+      { sym: '♅', name: 'Uranus',  key: 'uranus' },
+      { sym: '♆', name: 'Neptune', key: 'neptune' },
+      { sym: '♇', name: 'Pluto',   key: 'pluto' }
+    ];
+
+    var SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+                 'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+
+    var RETRO_KEYS = { saturn: true };
+
+    function degToSignPos(deg) {
+      var d = ((deg % 360) + 360) % 360;
+      var idx = Math.floor(d / 30);
+      var within = Math.round(d % 30);
+      return SIGNS[idx] + ' ' + within + '°';
+    }
+
+    function buildPills(positions) {
+      return PLANETS.map(function (p) {
+        var lon = positions && positions[p.key] != null ? positions[p.key] : null;
+        var posText = lon != null ? degToSignPos(lon) : '—°';
+        var isRetro = RETRO_KEYS[p.key] || false;
+        return '<span class="transit-pill' + (isRetro ? ' transit-pill--retrograde' : '') + '">' +
+          '<span class="transit-pill__symbol" aria-hidden="true">' + p.sym + '</span>' +
+          '<span class="transit-pill__name">' + p.name + '</span>' +
+          '<span class="transit-pill__pos">' + posText + (isRetro ? ' Rx' : '') + '</span>' +
+          '</span>';
+      }).join('');
+    }
+
+    function populateTicker(positions) {
+      var track = document.getElementById('transit-ticker-track');
+      if (!track) return;
+      var pills = buildPills(positions);
+      track.innerHTML = pills + pills;
+    }
+
+    function tryPopulate() {
+      if (!window.AstroEphemeris || typeof AstroEphemeris.calculateNatalChart !== 'function') {
+        setTimeout(tryPopulate, 300);
+        return;
+      }
+      try {
+        var now = new Date();
+        var chart = AstroEphemeris.calculateNatalChart(
+          now.getFullYear(), now.getMonth() + 1, now.getDate(),
+          now.getHours() + now.getMinutes() / 60,
+          0, 0
+        );
+        var pos = {};
+        if (chart && chart.planets) {
+          chart.planets.forEach(function (p) {
+            pos[p.name ? p.name.toLowerCase() : ''] = p.longitude;
+          });
+        }
+        populateTicker(Object.keys(pos).length ? pos : null);
+      } catch (e) {
+        populateTicker(null);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', tryPopulate);
+  })();
   </script>
 
   <!-- JS -->
