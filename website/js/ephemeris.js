@@ -1510,6 +1510,7 @@ window.AstroEphemeris = {
   toRad,
   toDeg,
   signOf,
+  signName: signOf,
   degreeInSign,
   lunarNode,
   chironPosition,
@@ -1713,6 +1714,8 @@ window.AstroEphemeris.moonDistance = moonDistance;
 function vsop87(terms, tau) {
     return terms.reduce((sum, [A, B, C]) => sum + A * Math.cos(B + C * tau), 0);
 }
+
+const normalizeAngle = mod360;
 
 // Convert heliocentric to geocentric ecliptic longitude
 function helioToGeo(lon_h, lat_h, r, sun_lon, sun_lat, sun_r) {

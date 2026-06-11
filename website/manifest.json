@@ -1,24 +1,30 @@
 {
-  "name": "AstroPrecise",
+  "name": "AstroPrecise — Birth Charts & Horoscopes",
   "short_name": "AstroPrecise",
   "description": "Professional birth chart analysis powered by precise astronomical calculations",
   "start_url": "/astroprecise/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#0d0918",
+  "theme_color": "#0d0918",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%23000'/%3E%3Ctext x='96' y='120' text-anchor='middle' font-size='100' fill='%23f59e0b'%3E✦%3C/text%3E%3C/svg%3E",
+      "src": "img/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23000'/%3E%3Ctext x='256' y='320' text-anchor='middle' font-size='280' fill='%23f59e0b'%3E✦%3C/text%3E%3C/svg%3E",
+      "src": "img/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["lifestyle", "entertainment"],
