@@ -8,16 +8,13 @@
 const AstroApp = (() => {
 
   // ── State ─────────────────────────────────────────────────────────────────
-  let _currentChart  = null;
-  let _toast_queue   = [];
-  let _starfield_ctx = null;
-  let _stars         = [];
+  let _currentChart = null;
+  let _toast_queue  = [];
 
   // ── Init ──────────────────────────────────────────────────────────────────
 
   function init() {
     initNavbar();
-    initStarfieldCanvas();
     initToastContainer();
     initScrollAnimations();
     initModalHandlers();
@@ -68,97 +65,6 @@ const AstroApp = (() => {
         a.classList.add('active');
       }
     });
-  }
-
-  // ── Canvas Starfield ──────────────────────────────────────────────────────
-
-  function initStarfieldCanvas() {
-    const canvas = document.getElementById('starfield-canvas');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    _starfield_ctx = ctx;
-
-    let mouse = { x: 0, y: 0 };
-    let W, H;
-
-    function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      generateStars();
-    }
-
-    function generateStars() {
-      _stars = [];
-      const count = Math.floor((W * H) / 4000);
-      for (let i = 0; i < count; i++) {
-        _stars.push({
-          x:    Math.random() * W,
-          y:    Math.random() * H,
-          r:    Math.random() * 1.8 + 0.2,
-          a:    Math.random(),
-          da:   (Math.random() - 0.5) * 0.005,
-          vx:   (Math.random() - 0.5) * 0.1,
-          vy:   (Math.random() - 0.5) * 0.1,
-          layer: Math.floor(Math.random() * 3), // 0=far, 1=mid, 2=near
-          hue:  Math.floor(Math.random() * 60) - 30, // -30 to +30 hue shift
-        });
-      }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-
-      const mx = (mouse.x / W - 0.5) * 2;
-      const my = (mouse.y / H - 0.5) * 2;
-
-      _stars.forEach(s => {
-        // Parallax offset based on layer
-        const parallax = (s.layer + 1) * 0.3;
-        const px = s.x + mx * parallax * 6;
-        const py = s.y + my * parallax * 6;
-
-        // Twinkle
-        s.a += s.da;
-        if (s.a > 1 || s.a < 0.1) s.da *= -1;
-
-        // Gentle drift
-        s.x += s.vx;
-        s.y += s.vy;
-        if (s.x < 0) s.x = W;
-        if (s.x > W) s.x = 0;
-        if (s.y < 0) s.y = H;
-        if (s.y > H) s.y = 0;
-
-        ctx.beginPath();
-        const hue = 220 + s.hue; // Cool blue-white range
-        const sat = s.layer === 2 ? 40 : 10;
-        ctx.fillStyle = `hsla(${hue}, ${sat}%, 95%, ${s.a})`;
-
-        if (s.r > 1.2) {
-          // Larger star with cross-hair glow
-          const grd = ctx.createRadialGradient(px, py, 0, px, py, s.r * 4);
-          grd.addColorStop(0, `hsla(${hue}, ${sat}%, 95%, ${s.a})`);
-          grd.addColorStop(1, `hsla(${hue}, ${sat}%, 95%, 0)`);
-          ctx.fillStyle = grd;
-          ctx.fillRect(px - s.r * 4, py - s.r * 4, s.r * 8, s.r * 8);
-        }
-
-        ctx.arc(px, py, s.r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      requestAnimationFrame(draw);
-    }
-
-    window.addEventListener('mousemove', e => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    }, { passive: true });
-
-    window.addEventListener('resize', resize, { passive: true });
-    resize();
-    draw();
   }
 
   // ── Toast Notifications ───────────────────────────────────────────────────

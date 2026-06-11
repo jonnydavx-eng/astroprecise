@@ -7,7 +7,7 @@
   <title>Birth Chart Calculator | AstroPrecise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/main.css" />
 </head>
 <body>
@@ -20,7 +20,7 @@
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
           <div class="navbar__logo-icon" aria-hidden="true">✦</div>
-          <span>AstroPrecise</span>
+          <span class="logo-text">AstroPrecise</span>
         </a>
         <div class="navbar__nav">
           <a href="index.html" class="navbar__link">Home</a>
@@ -56,7 +56,7 @@
       <div class="container">
         <div class="page-header__content text-center">
           <p class="hero__eyebrow">Natal Chart Engine</p>
-          <h1 class="page-header__title" id="page-title">Birth Chart Calculator</h1>
+          <h1 class="page-header__title gradient-text" id="page-title">Birth Chart Calculator</h1>
           <p class="page-header__subtitle" style="margin:0 auto;">
             Enter your birth details below for a precise natal chart calculated using
             astronomical algorithms accurate to arcminutes. Your Ascendant, houses, and
@@ -447,6 +447,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS -->
+  <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/interpretations.js"></script>
