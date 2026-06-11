@@ -5,8 +5,8 @@
   "start_url": "/astroprecise/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0d0918",
-  "theme_color": "#0d0918",
+  "background_color": "#090b16",
+  "theme_color": "#090b16",
   "icons": [
     {
       "src": "img/icon-192.png",

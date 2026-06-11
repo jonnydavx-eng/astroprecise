@@ -21,7 +21,7 @@
   <meta name="twitter:title" content="AstroPrecise — Discover Your Cosmic Blueprint" />
   <meta name="twitter:description" content="Free professional birth chart analysis, daily horoscopes and a live 3D solar system — powered by astronomical calculations accurate to arcminutes." />
   <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/icon-512.png" />
-  <meta name="theme-color" content="#0d0918" />
+  <meta name="theme-color" content="#090b16" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -66,7 +66,7 @@
       width: 100%;
       max-width: 460px;
       border-radius: 50%;
-      background: radial-gradient(circle at 50% 50%, rgba(107,33,168,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle at 50% 50%, rgba(42, 74, 148,0.12) 0%, transparent 70%);
     }
     .orrery-label {
       font-size: 0.65rem;
@@ -180,7 +180,7 @@
 
     /* Live sky section */
     .live-sky {
-      background: linear-gradient(180deg, transparent 0%, rgba(107,33,168,0.04) 50%, transparent 100%);
+      background: linear-gradient(180deg, transparent 0%, rgba(42, 74, 148,0.04) 50%, transparent 100%);
     }
     .live-sky__grid {
       display: grid;
@@ -200,7 +200,7 @@
       position: absolute;
       top: 0; left: var(--space-6); right: var(--space-6);
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.5), rgba(107,33,168,0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.5), rgba(42, 74, 148,0.4), transparent);
     }
     .live-sky__panel-header {
       padding: var(--space-5) var(--space-5) var(--space-3);
@@ -289,12 +289,9 @@
       border-color: rgba(196,146,10,0.4);
       background: var(--surface-2);
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(107,33,168,0.15);
+      box-shadow: 0 8px 24px rgba(42, 74, 148,0.15);
     }
-    .sign-tile__glyph {
-      font-size: 1.5rem;
-      line-height: 1;
-    }
+    .sign-tile { padding: var(--space-4) var(--space-2); gap: var(--space-3); }
     .sign-tile__name {
       font-size: 0.55rem;
       letter-spacing: 0.12em;
@@ -304,7 +301,7 @@
     }
     .sign-tile--fire  { border-color: rgba(180,66,50,0.2); }
     .sign-tile--earth { border-color: rgba(14,92,58,0.2); }
-    .sign-tile--air   { border-color: rgba(107,33,168,0.2); }
+    .sign-tile--air   { border-color: rgba(42, 74, 148,0.2); }
     .sign-tile--water { border-color: rgba(27,95,170,0.2); }
 
     /* Feature strip */
@@ -334,7 +331,7 @@
     .feature-strip__item:hover {
       border-color: rgba(196,146,10,0.35);
       transform: translateY(-4px);
-      box-shadow: 0 16px 40px rgba(107,33,168,0.15);
+      box-shadow: 0 16px 40px rgba(42, 74, 148,0.15);
     }
     .feature-strip__icon {
       font-size: 2.2rem;
@@ -623,18 +620,18 @@
         </header>
 
         <div class="sign-grid-v2" role="list" aria-label="Zodiac signs">
-          <a href="horoscope.html?sign=aries"       class="sign-tile sign-tile--fire"  role="listitem" aria-label="Aries horoscope"><span class="sign-tile__glyph">♈</span><span class="sign-tile__name">Aries</span></a>
-          <a href="horoscope.html?sign=taurus"      class="sign-tile sign-tile--earth" role="listitem" aria-label="Taurus horoscope"><span class="sign-tile__glyph">♉</span><span class="sign-tile__name">Taurus</span></a>
-          <a href="horoscope.html?sign=gemini"      class="sign-tile sign-tile--air"   role="listitem" aria-label="Gemini horoscope"><span class="sign-tile__glyph">♊</span><span class="sign-tile__name">Gemini</span></a>
-          <a href="horoscope.html?sign=cancer"      class="sign-tile sign-tile--water" role="listitem" aria-label="Cancer horoscope"><span class="sign-tile__glyph">♋</span><span class="sign-tile__name">Cancer</span></a>
-          <a href="horoscope.html?sign=leo"         class="sign-tile sign-tile--fire"  role="listitem" aria-label="Leo horoscope"><span class="sign-tile__glyph">♌</span><span class="sign-tile__name">Leo</span></a>
-          <a href="horoscope.html?sign=virgo"       class="sign-tile sign-tile--earth" role="listitem" aria-label="Virgo horoscope"><span class="sign-tile__glyph">♍</span><span class="sign-tile__name">Virgo</span></a>
-          <a href="horoscope.html?sign=libra"       class="sign-tile sign-tile--air"   role="listitem" aria-label="Libra horoscope"><span class="sign-tile__glyph">♎</span><span class="sign-tile__name">Libra</span></a>
-          <a href="horoscope.html?sign=scorpio"     class="sign-tile sign-tile--water" role="listitem" aria-label="Scorpio horoscope"><span class="sign-tile__glyph">♏</span><span class="sign-tile__name">Scorpio</span></a>
-          <a href="horoscope.html?sign=sagittarius" class="sign-tile sign-tile--fire"  role="listitem" aria-label="Sagittarius horoscope"><span class="sign-tile__glyph">♐</span><span class="sign-tile__name">Sagitt.</span></a>
-          <a href="horoscope.html?sign=capricorn"   class="sign-tile sign-tile--earth" role="listitem" aria-label="Capricorn horoscope"><span class="sign-tile__glyph">♑</span><span class="sign-tile__name">Capric.</span></a>
-          <a href="horoscope.html?sign=aquarius"    class="sign-tile sign-tile--air"   role="listitem" aria-label="Aquarius horoscope"><span class="sign-tile__glyph">♒</span><span class="sign-tile__name">Aquar.</span></a>
-          <a href="horoscope.html?sign=pisces"      class="sign-tile sign-tile--water" role="listitem" aria-label="Pisces horoscope"><span class="sign-tile__glyph">♓</span><span class="sign-tile__name">Pisces</span></a>
+          <a href="horoscope.html?sign=aries" class="sign-tile sign-tile--fire" role="listitem" aria-label="Aries horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♈&#xFE0E;</span></span><span class="sign-tile__name">Aries</span></a>
+          <a href="horoscope.html?sign=taurus" class="sign-tile sign-tile--earth" role="listitem" aria-label="Taurus horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♉&#xFE0E;</span></span><span class="sign-tile__name">Taurus</span></a>
+          <a href="horoscope.html?sign=gemini" class="sign-tile sign-tile--air" role="listitem" aria-label="Gemini horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♊&#xFE0E;</span></span><span class="sign-tile__name">Gemini</span></a>
+          <a href="horoscope.html?sign=cancer" class="sign-tile sign-tile--water" role="listitem" aria-label="Cancer horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♋&#xFE0E;</span></span><span class="sign-tile__name">Cancer</span></a>
+          <a href="horoscope.html?sign=leo" class="sign-tile sign-tile--fire" role="listitem" aria-label="Leo horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♌&#xFE0E;</span></span><span class="sign-tile__name">Leo</span></a>
+          <a href="horoscope.html?sign=virgo" class="sign-tile sign-tile--earth" role="listitem" aria-label="Virgo horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♍&#xFE0E;</span></span><span class="sign-tile__name">Virgo</span></a>
+          <a href="horoscope.html?sign=libra" class="sign-tile sign-tile--air" role="listitem" aria-label="Libra horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♎&#xFE0E;</span></span><span class="sign-tile__name">Libra</span></a>
+          <a href="horoscope.html?sign=scorpio" class="sign-tile sign-tile--water" role="listitem" aria-label="Scorpio horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♏&#xFE0E;</span></span><span class="sign-tile__name">Scorpio</span></a>
+          <a href="horoscope.html?sign=sagittarius" class="sign-tile sign-tile--fire" role="listitem" aria-label="Sagittarius horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♐&#xFE0E;</span></span><span class="sign-tile__name">Sagitt.</span></a>
+          <a href="horoscope.html?sign=capricorn" class="sign-tile sign-tile--earth" role="listitem" aria-label="Capricorn horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♑&#xFE0E;</span></span><span class="sign-tile__name">Capric.</span></a>
+          <a href="horoscope.html?sign=aquarius" class="sign-tile sign-tile--air" role="listitem" aria-label="Aquarius horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♒&#xFE0E;</span></span><span class="sign-tile__name">Aquar.</span></a>
+          <a href="horoscope.html?sign=pisces" class="sign-tile sign-tile--water" role="listitem" aria-label="Pisces horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♓&#xFE0E;</span></span><span class="sign-tile__name">Pisces</span></a>
         </div>
 
         <div style="text-align:center;margin-top:var(--space-8);">
@@ -646,7 +643,7 @@
     <!-- ═══════════════════════════════════════════════
          FEATURES
     ═══════════════════════════════════════════════ -->
-    <section class="section" id="features" aria-labelledby="features-heading" style="background:linear-gradient(180deg,transparent 0%,rgba(107,33,168,0.04) 50%,transparent 100%);">
+    <section class="section" id="features" aria-labelledby="features-heading" style="background:linear-gradient(180deg,transparent 0%,rgba(42, 74, 148,0.04) 50%,transparent 100%);">
       <div class="container">
         <header class="section-header">
           <p class="eyebrow">Why AstroPrecise</p>
@@ -762,7 +759,7 @@
             <div class="app-badges">
               <a href="https://play.google.com/store" class="app-badge" aria-label="Get it on Google Play" rel="noopener noreferrer" target="_blank">
                 <svg class="play-badge-svg" viewBox="0 0 145 44" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google Play badge">
-                  <rect width="145" height="44" rx="6" fill="rgba(30,18,58,0.9)" stroke="rgba(196,146,10,0.5)" stroke-width="1"/>
+                  <rect width="145" height="44" rx="6" fill="rgba(17, 26, 54,0.9)" stroke="rgba(196,146,10,0.5)" stroke-width="1"/>
                   <text x="48" y="15" fill="rgba(240,232,216,0.6)" font-family="Inter,sans-serif" font-size="7.5" font-weight="500" letter-spacing="0.05em">GET IT ON</text>
                   <text x="48" y="32" fill="#f0e8d8" font-family="Inter,sans-serif" font-size="15" font-weight="600">Google Play</text>
                   <text x="16" y="29" fill="#c4920a" font-size="22">▶</text>
@@ -774,12 +771,12 @@
             <!-- Stylised phone mockup -->
             <div style="
               width:160px;height:280px;
-              background:linear-gradient(180deg,rgba(30,18,58,0.95),rgba(13,9,24,0.95));
+              background:linear-gradient(180deg,rgba(17, 26, 54,0.95),rgba(13,9,24,0.95));
               border:1.5px solid rgba(196,146,10,0.35);
               border-radius:24px;
               display:flex;flex-direction:column;align-items:center;justify-content:center;
               gap:var(--space-4);
-              box-shadow:0 0 40px rgba(107,33,168,0.2),0 0 80px rgba(196,146,10,0.08);
+              box-shadow:0 0 40px rgba(42, 74, 148,0.2),0 0 80px rgba(196,146,10,0.08);
               position:relative;overflow:hidden;
             " aria-hidden="true">
               <div style="position:absolute;top:12px;width:40px;height:4px;background:rgba(196,146,10,0.3);border-radius:2px;"></div>
@@ -788,7 +785,7 @@
               <div style="display:flex;flex-direction:column;gap:4px;width:80%;">
                 <div style="height:3px;background:linear-gradient(90deg,var(--amethyst),var(--gold));border-radius:2px;opacity:0.7;"></div>
                 <div style="height:3px;background:rgba(196,146,10,0.3);border-radius:2px;width:70%;"></div>
-                <div style="height:3px;background:rgba(107,33,168,0.4);border-radius:2px;width:85%;"></div>
+                <div style="height:3px;background:rgba(42, 74, 148,0.4);border-radius:2px;width:85%;"></div>
               </div>
               <div style="position:absolute;bottom:12px;width:60px;height:4px;background:rgba(196,146,10,0.25);border-radius:2px;"></div>
             </div>
@@ -884,6 +881,7 @@
   <script src="js/oracle.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
 
   <script>
   /* ── Homepage live data ─────────────────────────────────────────── */
@@ -892,7 +890,7 @@
 
     const SIGN_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                         'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-    const SIGN_GLYPHS= ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+    const SIGN_GLYPHS= ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(g => g + '\uFE0E');
     const MOON_PHASES = [
       { min:0,   max:1,    emoji:'🌑', name:'New Moon' },
       { min:1,   max:49,   emoji:'🌒', name:'Waxing Crescent' },
@@ -1063,7 +1061,7 @@
                 <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:#3fae7a;margin-bottom:4px;">⊕ Power · ${insight.power.area}</p>
                 <p style="font-size:0.78rem;color:var(--silver);line-height:1.55;">${insight.power.text}</p>
               </div>
-              <div style="padding:var(--space-3);background:rgba(138,26,56,0.12);border-radius:var(--radius-md);border:1px solid rgba(192,53,101,0.25);">
+              <div style="padding:var(--space-3);background:rgba(110, 26, 38,0.12);border-radius:var(--radius-md);border:1px solid rgba(176, 74, 82,0.25);">
                 <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:4px;">⚠ Caution · ${insight.caution.area}</p>
                 <p style="font-size:0.78rem;color:var(--silver);line-height:1.55;">${insight.caution.text}</p>
               </div>

@@ -6,12 +6,12 @@
       <stop offset="1" stop-color="#c4920a"/>
     </linearGradient>
     <linearGradient id="ap-amethyst" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#c48aff"/>
-      <stop offset="1" stop-color="#6b21a8"/>
+      <stop offset="0" stop-color="#92b4ee"/>
+      <stop offset="1" stop-color="#2a4a94"/>
     </linearGradient>
     <radialGradient id="ap-planet" cx="0.35" cy="0.35" r="1">
-      <stop offset="0" stop-color="#d8b8ff"/>
-      <stop offset="1" stop-color="#7a3bbf"/>
+      <stop offset="0" stop-color="#b8ccf4"/>
+      <stop offset="1" stop-color="#3b5fae"/>
     </radialGradient>
   </defs>
 
@@ -42,7 +42,7 @@
   <!-- Orbit ellipse with planet -->
   <ellipse cx="32" cy="32" rx="27" ry="9.5" fill="none" stroke="url(#ap-amethyst)" stroke-width="1.1" opacity="0.8" transform="rotate(-28 32 32)"/>
   <circle cx="55.9" cy="23" r="2.8" fill="url(#ap-planet)"/>
-  <circle cx="55.9" cy="23" r="2.8" fill="none" stroke="#c48aff" stroke-width="0.5" opacity="0.5"/>
+  <circle cx="55.9" cy="23" r="2.8" fill="none" stroke="#92b4ee" stroke-width="0.5" opacity="0.5"/>
 
   <!-- Eight-point compass star -->
   <path d="M32 12 L34.6 29.4 L52 32 L34.6 34.6 L32 52 L29.4 34.6 L12 32 L29.4 29.4 Z" fill="url(#ap-gold)"/>

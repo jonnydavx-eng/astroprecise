@@ -7,21 +7,21 @@
    1. CSS Custom Properties
    -------------------------------------------------------------------------- */
 :root {
-  /* Core backgrounds — deep midnight void with warm purple undertone */
-  --bg:   #0d0918;
-  --bg-2: #120d22;
-  --bg-3: #180f2e;
+  /* Core backgrounds — midnight void with deep indigo undertone */
+  --bg:   #090b16;
+  --bg-2: #0d1124;
+  --bg-3: #111631;
 
-  /* Glass surfaces — amethyst-tinted */
-  --surface:       rgba(30, 18, 58, 0.68);
-  --surface-2:     rgba(42, 26, 82, 0.78);
-  --surface-hover: rgba(55, 35, 105, 0.85);
+  /* Glass surfaces — lapis-tinted */
+  --surface:       rgba(17, 26, 54, 0.68);
+  --surface-2:     rgba(24, 36, 76, 0.78);
+  --surface-hover: rgba(32, 48, 98, 0.85);
 
   /* Borders */
-  --border:      rgba(180, 150, 240, 0.12);
-  --border-2:    rgba(180, 150, 240, 0.22);
+  --border:      rgba(150, 175, 230, 0.12);
+  --border-2:    rgba(150, 175, 230, 0.22);
   --border-glow: rgba(196, 146, 10, 0.5);      /* antique gold glow */
-  --border-ritual: rgba(138, 26, 56, 0.4);     /* crimson glow */
+  --border-ritual: rgba(110, 26, 38, 0.4);     /* crimson glow */
 
   /* Esoteric colour palette */
   --gold:           #c4920a;     /* antique gold */
@@ -29,12 +29,16 @@
   --gold-pale:      #e8c96a;     /* pale moon-gold */
   --gold-dim:       rgba(196, 146, 10, 0.18);
 
-  --amethyst:       #6b21a8;     /* deep amethyst */
-  --amethyst-light: #9b5fd0;     /* luminous amethyst */
-  --amethyst-bright: #c48aff;    /* pale amethyst haze */
+  /* Lapis lazuli — the pigment of illuminated manuscripts */
+  --lapis:        #2a4a94;       /* deep lapis */
+  --lapis-light:  #5b7fc7;       /* luminous lapis */
+  --lapis-bright: #92b4ee;       /* pale lapis haze */
+  --amethyst:        var(--lapis);        /* legacy alias */
+  --amethyst-light:  var(--lapis-light);
+  --amethyst-bright: var(--lapis-bright);
 
-  --crimson:        #8a1a38;     /* ritual crimson */
-  --crimson-light:  #c03565;     /* rose-crimson */
+  --crimson:        #6e1a26;     /* oxblood — aged carmine */
+  --crimson-light:  #b04a52;     /* faded carmine */
 
   --emerald:        #0e5c3a;     /* forest emerald */
   --emerald-light:  #1a8a56;     /* bright emerald */
@@ -43,23 +47,24 @@
   --purple:        var(--amethyst);
   --purple-light:  var(--amethyst-light);
   --purple-bright: var(--amethyst-bright);
-  --indigo:        #5545a8;
+  --indigo:        #34508c;
   --blue:          #3a7ad4;
   --danger:        var(--crimson-light);
   --success:       var(--emerald-light);
 
   /* Text — aged parchment warmth */
   --white:       #f0e8d8;        /* parchment ivory */
-  --silver:      #a898c0;        /* moonstone silver */
-  --silver-dim:  #706888;        /* dim moonstone */
-  --silver-dark: #3c3050;        /* shadow amethyst */
+  --silver:      #9aa6c8;        /* moonlit silver-blue */
+  --silver-dim:  #6a7390;        /* dim moonstone */
+  --silver-dark: #2c3450;        /* shadow indigo */
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #6b21a8 0%, #8a1a38 55%, #c4920a 100%);
+  --gradient-primary: linear-gradient(135deg, #2a4a94 0%, #6e1a26 55%, #c4920a 100%);
   --gradient-gold:    linear-gradient(135deg, #d4a820, #c4920a);
-  --gradient-amethyst: linear-gradient(135deg, #6b21a8, #9b5fd0);
-  --gradient-ritual:  linear-gradient(135deg, #8a1a38, #c03565);
-  --gradient-cosmic:  linear-gradient(180deg, #0d0918 0%, #120d22 100%);
+  --gradient-amethyst: linear-gradient(135deg, #2a4a94, #5b7fc7);
+  --gradient-lapis:    linear-gradient(135deg, #2a4a94, #5b7fc7);
+  --gradient-ritual:  linear-gradient(135deg, #6e1a26, #b04a52);
+  --gradient-cosmic:  linear-gradient(180deg, #090b16 0%, #0d1124 100%);
 
   /* Typography */
   --font-display: 'Cinzel', 'Playfair Display', serif;
@@ -159,8 +164,8 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 75% 55% at 10% 15%, rgba(107, 33, 168, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 45% at 90% 75%, rgba(138, 26, 56, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 75% 55% at 10% 15%, rgba(42, 74, 148, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 90% 75%, rgba(110, 26, 38, 0.14) 0%, transparent 55%),
     radial-gradient(ellipse 45% 35% at 55% 95%, rgba(196, 146, 10, 0.08) 0%, transparent 50%),
     radial-gradient(ellipse 50% 40% at 75% 20%, rgba(14, 92, 58, 0.08) 0%, transparent 50%);
   animation: nebula-drift 32s ease-in-out infinite alternate;
@@ -186,16 +191,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::selection {
-  background: rgba(107, 33, 168, 0.45);
+  background: rgba(42, 74, 148, 0.45);
   color: var(--gold-pale);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar              { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track        { background: var(--bg-2); }
-::-webkit-scrollbar-thumb        { background: rgba(107, 33, 168, 0.55); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb        { background: rgba(42, 74, 148, 0.55); border-radius: var(--radius-full); }
 ::-webkit-scrollbar-thumb:hover  { background: rgba(196, 146, 10, 0.65); }
-* { scrollbar-width: thin; scrollbar-color: rgba(107,33,168,0.5) var(--bg-2); }
+* { scrollbar-width: thin; scrollbar-color: rgba(42, 74, 148,0.5) var(--bg-2); }
 
 /* --------------------------------------------------------------------------
    3. Starfield Canvas
@@ -227,7 +232,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 640px;
   top: -220px;
   left: -180px;
-  background: radial-gradient(circle, rgba(107, 33, 168, 0.22) 0%, rgba(138, 26, 56, 0.08) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(42, 74, 148, 0.22) 0%, rgba(110, 26, 38, 0.08) 40%, transparent 70%);
   animation-delay: 0s;
   animation-duration: 24s;
 }
@@ -237,7 +242,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 520px;
   top: 38%;
   right: -140px;
-  background: radial-gradient(circle, rgba(138, 26, 56, 0.18) 0%, rgba(196, 146, 10, 0.06) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(110, 26, 38, 0.18) 0%, rgba(196, 146, 10, 0.06) 40%, transparent 70%);
   animation-delay: -8s;
   animation-duration: 28s;
 }
@@ -718,19 +723,19 @@ h1, h2, h3, h4, h5, h6 {
 .btn--primary {
   background: var(--gradient-primary);
   color: var(--gold-pale);
-  box-shadow: 0 0 18px rgba(107, 33, 168, 0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: 0 0 18px rgba(42, 74, 148, 0.45), inset 0 1px 0 rgba(255,255,255,0.08);
   letter-spacing: 0.05em;
 }
 
 .btn--primary:hover {
-  box-shadow: 0 0 36px rgba(196, 146, 10, 0.5), 0 0 18px rgba(107, 33, 168, 0.4);
+  box-shadow: 0 0 36px rgba(196, 146, 10, 0.5), 0 0 18px rgba(42, 74, 148, 0.4);
   transform: translateY(-2px);
   color: var(--gold-pale);
 }
 
 .btn--primary:active {
   transform: translateY(0);
-  box-shadow: 0 0 18px rgba(107, 33, 168, 0.45);
+  box-shadow: 0 0 18px rgba(42, 74, 148, 0.45);
 }
 
 .btn--outline {
@@ -750,7 +755,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn--gold {
   background: var(--gradient-gold);
-  color: #0d0918;
+  color: #090b16;
   font-weight: 700;
   box-shadow: 0 0 20px rgba(196, 146, 10, 0.45);
 }
@@ -758,7 +763,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn--gold:hover {
   box-shadow: 0 0 36px rgba(196, 146, 10, 0.65);
   transform: translateY(-2px);
-  color: #0d0918;
+  color: #090b16;
 }
 
 .btn--ghost {
@@ -966,7 +971,7 @@ h1, h2, h3, h4, h5, h6 {
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(107, 33, 168, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(42, 74, 148, 0.45), transparent);
   pointer-events: none;
 }
 
@@ -987,7 +992,7 @@ h1, h2, h3, h4, h5, h6 {
 .card:hover,
 .glass-card:hover {
   border-color: rgba(196, 146, 10, 0.35);
-  box-shadow: 0 0 40px rgba(107, 33, 168, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
+  box-shadow: 0 0 40px rgba(42, 74, 148, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
   transform: translateY(-3px);
 }
 
@@ -997,7 +1002,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card--glow {
-  box-shadow: 0 0 30px rgba(107, 33, 168, 0.14), 0 0 15px rgba(196, 146, 10, 0.08);
+  box-shadow: 0 0 30px rgba(42, 74, 148, 0.14), 0 0 15px rgba(196, 146, 10, 0.08);
 }
 
 .card--gold {
@@ -1150,12 +1155,12 @@ h1, h2, h3, h4, h5, h6 {
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(107, 33, 168, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(42, 74, 148, 0.4), transparent);
 }
 
 .feature-card:hover {
   border-color: rgba(196, 146, 10, 0.38);
-  box-shadow: 0 0 40px rgba(107, 33, 168, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
+  box-shadow: 0 0 40px rgba(42, 74, 148, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1246,7 +1251,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .sign-card:hover {
   border-color: rgba(196, 146, 10, 0.35);
-  box-shadow: 0 0 28px rgba(107, 33, 168, 0.14), 0 0 14px rgba(196, 146, 10, 0.1);
+  box-shadow: 0 0 28px rgba(42, 74, 148, 0.14), 0 0 14px rgba(196, 146, 10, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1318,7 +1323,7 @@ h1, h2, h3, h4, h5, h6 {
 .sign-card.is-active,
 .sign-card--active {
   border-color: rgba(196, 146, 10, 0.6);
-  box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(107, 33, 168, 0.12);
+  box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(42, 74, 148, 0.12);
 }
 
 .sign-card.is-active .sign-card__name,
@@ -1376,7 +1381,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-select:focus,
 .form-textarea:focus {
   border-color: rgba(196, 146, 10, 0.55);
-  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(107, 33, 168, 0.1);
+  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(42, 74, 148, 0.1);
   background: rgba(25, 16, 50, 0.85);
 }
 
@@ -1480,12 +1485,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .autocomplete-option:hover,
 .autocomplete-option.is-selected {
-  background: rgba(124, 58, 237, 0.15);
+  background: rgba(58, 94, 170, 0.15);
   color: var(--white);
 }
 
 .autocomplete-option:active {
-  background: rgba(124, 58, 237, 0.25);
+  background: rgba(58, 94, 170, 0.25);
 }
 
 /* Checkbox & Radio */
@@ -1541,8 +1546,8 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
   border-radius: 50%;
   box-shadow:
-    0 0 60px rgba(124, 58, 237, 0.3),
-    0 0 120px rgba(124, 58, 237, 0.1);
+    0 0 60px rgba(58, 94, 170, 0.3),
+    0 0 120px rgba(58, 94, 170, 0.1);
 }
 
 #natal-wheel svg,
@@ -1583,7 +1588,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--gradient-primary);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 0 16px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 16px rgba(58, 94, 170, 0.4);
 }
 
 .chart-panel {
@@ -1682,7 +1687,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .data-table tr:hover td {
-  background: rgba(124, 58, 237, 0.06);
+  background: rgba(58, 94, 170, 0.06);
   color: var(--white);
 }
 
@@ -1704,9 +1709,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table-badge--purple {
-  background: rgba(124, 58, 237, 0.2);
+  background: rgba(58, 94, 170, 0.2);
   color: var(--purple-bright);
-  border: 1px solid rgba(124, 58, 237, 0.3);
+  border: 1px solid rgba(58, 94, 170, 0.3);
 }
 
 .table-badge--gold {
@@ -1756,7 +1761,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .transit-item:hover {
   border-color: var(--border-glow);
-  box-shadow: 0 0 24px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 0 24px rgba(58, 94, 170, 0.12);
 }
 
 .transit-item::before {
@@ -1768,7 +1773,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 10px;
   border-radius: 50%;
   background: var(--gradient-primary);
-  box-shadow: 0 0 8px rgba(124, 58, 237, 0.6);
+  box-shadow: 0 0 8px rgba(58, 94, 170, 0.6);
 }
 
 .transit-item__date {
@@ -1914,7 +1919,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 50%;
   background: var(--gradient-primary);
   border: 2px solid var(--border-glow);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 20px rgba(58, 94, 170, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1974,7 +1979,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .profile-nav__link.active {
-  background: rgba(124, 58, 237, 0.12);
+  background: rgba(58, 94, 170, 0.12);
   color: var(--white);
   border-left-color: var(--purple-light);
 }
@@ -2040,7 +2045,7 @@ h1, h2, h3, h4, h5, h6 {
 .horoscope-period-tab.is-active {
   background: var(--gradient-primary);
   color: #fff;
-  box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 12px rgba(58, 94, 170, 0.4);
 }
 
 .horoscope-reading {
@@ -2065,7 +2070,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.06em;
 }
 
-.aspect-tag--conjunction  { background: rgba(124, 58, 237, 0.2); color: var(--purple-bright); border: 1px solid rgba(124, 58, 237, 0.3); }
+.aspect-tag--conjunction  { background: rgba(58, 94, 170, 0.2); color: var(--purple-bright); border: 1px solid rgba(58, 94, 170, 0.3); }
 .aspect-tag--sextile      { background: rgba(96, 165, 250, 0.15); color: var(--blue); border: 1px solid rgba(96, 165, 250, 0.25); }
 .aspect-tag--trine        { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.25); }
 .aspect-tag--square       { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
@@ -2305,7 +2310,7 @@ h1, h2, h3, h4, h5, h6 {
   vertical-align: middle;
 }
 
-.badge--purple   { background: rgba(124, 58, 237, 0.2);  color: var(--purple-bright); }
+.badge--purple   { background: rgba(58, 94, 170, 0.2);  color: var(--purple-bright); }
 .badge--gold     { background: var(--gold-dim);           color: var(--gold-light); }
 .badge--blue     { background: rgba(96, 165, 250, 0.15); color: var(--blue); }
 .badge--green    { background: rgba(34, 197, 94, 0.15);  color: #4ade80; }
@@ -2332,14 +2337,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chip--interactive:hover {
-  background: rgba(124, 58, 237, 0.15);
+  background: rgba(58, 94, 170, 0.15);
   border-color: var(--border-glow);
   color: var(--white);
 }
 
 .chip--active {
-  background: rgba(124, 58, 237, 0.2);
-  border-color: rgba(124, 58, 237, 0.4);
+  background: rgba(58, 94, 170, 0.2);
+  border-color: rgba(58, 94, 170, 0.4);
   color: var(--purple-bright);
 }
 
@@ -2441,8 +2446,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .divider--glow {
-  border-top-color: rgba(124, 58, 237, 0.25);
-  box-shadow: 0 1px 8px rgba(124, 58, 237, 0.1);
+  border-top-color: rgba(58, 94, 170, 0.25);
+  box-shadow: 0 1px 8px rgba(58, 94, 170, 0.1);
 }
 
 .divider--with-text {
@@ -2495,7 +2500,7 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 560px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(58, 94, 170, 0.12);
   animation: modal-enter var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -2617,7 +2622,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--gradient-primary);
   color: #fff;
   border-bottom-color: transparent;
-  box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 12px rgba(58, 94, 170, 0.4);
 }
 
 /* --------------------------------------------------------------------------
@@ -2970,8 +2975,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Sun sign highlight card */
 .sun-sign-card {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
-  border: 1px solid rgba(124, 58, 237, 0.3);
+  background: linear-gradient(135deg, rgba(58, 94, 170, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1px solid rgba(58, 94, 170, 0.3);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
   display: flex;
@@ -3093,8 +3098,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .sign-picker-item.is-active {
-  background: rgba(124, 58, 237, 0.2);
-  border-color: rgba(124, 58, 237, 0.5);
+  background: rgba(58, 94, 170, 0.2);
+  border-color: rgba(58, 94, 170, 0.5);
 }
 
 .sign-picker-item__glyph {
@@ -3705,7 +3710,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .feature-card--highlighted {
   border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 0 40px rgba(58, 94, 170, 0.12);
 }
 
 .feature-card__text {
@@ -3914,7 +3919,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .testimonial-card--featured {
   border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 40px rgba(58, 94, 170, 0.1);
 }
 
 .testimonial-card:hover {
@@ -3981,7 +3986,7 @@ h1, h2, h3, h4, h5, h6 {
    51. App Download Section
    ========================================================================== */
 .app-download-section {
-  background: linear-gradient(180deg, transparent 0%, rgba(124, 58, 237, 0.06) 50%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(58, 94, 170, 0.06) 50%, transparent 100%);
 }
 
 .app-download-inner {
@@ -4085,7 +4090,7 @@ h1, h2, h3, h4, h5, h6 {
    52. Newsletter
    ========================================================================== */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(58, 94, 170, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -4150,7 +4155,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .newsletter-input:focus {
   border-color: var(--border-glow);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 0 3px rgba(58, 94, 170, 0.15);
 }
 
 .newsletter-submit {
@@ -4313,7 +4318,7 @@ h1, h2, h3, h4, h5, h6 {
 .orb--purple {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(58, 94, 170, 0.25) 0%, transparent 70%);
 }
 
 .orb--gold {
@@ -4501,7 +4506,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card--ritual::before {
-  background: linear-gradient(90deg, transparent, rgba(138, 26, 56, 0.5), rgba(196, 146, 10, 0.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(110, 26, 38, 0.5), rgba(196, 146, 10, 0.35), transparent);
 }
 
 /* Moon phase badge */
@@ -4531,7 +4536,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(107, 33, 168, 0.5);
+  background: rgba(42, 74, 148, 0.5);
   border: 2px solid var(--bg-2);
 }
 
@@ -4554,7 +4559,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-select:focus,
 .form-textarea:focus {
   border-color: rgba(196, 146, 10, 0.55);
-  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(107, 33, 168, 0.1);
+  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(42, 74, 148, 0.1);
   outline: none;
 }
 
@@ -4596,7 +4601,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .testimonial-card--featured {
   border-color: rgba(196, 146, 10, 0.35);
-  box-shadow: 0 0 40px rgba(107, 33, 168, 0.12), 0 0 20px rgba(196, 146, 10, 0.08);
+  box-shadow: 0 0 40px rgba(42, 74, 148, 0.12), 0 0 20px rgba(196, 146, 10, 0.08);
 }
 
 /* ==========================================================================
@@ -4611,7 +4616,7 @@ h1, h2, h3, h4, h5, h6 {
    64. Newsletter section — gold accent border
    ========================================================================== */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(107, 33, 168, 0.08) 0%, rgba(196, 146, 10, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(42, 74, 148, 0.08) 0%, rgba(196, 146, 10, 0.06) 100%);
   border-top: 1px solid rgba(196, 146, 10, 0.15);
   border-bottom: 1px solid rgba(196, 146, 10, 0.15);
 }
@@ -4628,14 +4633,14 @@ h1, h2, h3, h4, h5, h6 {
    65. App download section — crimson/gold gradient
    ========================================================================== */
 .app-download-section {
-  background: linear-gradient(180deg, transparent 0%, rgba(138, 26, 56, 0.06) 50%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(110, 26, 38, 0.06) 50%, transparent 100%);
 }
 
 /* ==========================================================================
    66. Loading state — amethyst spinner
    ========================================================================== */
 .loading-spinner {
-  border-color: rgba(180, 150, 240, 0.15);
+  border-color: rgba(150, 175, 230, 0.15);
   border-top-color: var(--gold);
 }
 
@@ -4654,7 +4659,7 @@ h1, h2, h3, h4, h5, h6 {
    68. Data table — gold header
    ========================================================================== */
 .data-table th {
-  background: rgba(107, 33, 168, 0.2);
+  background: rgba(42, 74, 148, 0.2);
   color: var(--gold-pale);
   letter-spacing: 0.06em;
 }
@@ -4742,4 +4747,165 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 900px) {
   .chart-container { grid-template-columns: 1fr; }
   .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Modern interaction layer — grain, spotlight, reveals,
+   view transitions, foil shimmer, sign medallions
+═══════════════════════════════════════════════════════════ */
+
+/* Cross-document view transitions (progressive enhancement) */
+@view-transition { navigation: auto; }
+.navbar__logo-icon img { view-transition-name: site-sigil; }
+
+/* Film grain — aged parchment texture over everything */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Candlelit vignette */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(2, 3, 8, 0.45) 100%);
+}
+
+/* Scroll progress — thin gold meter */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 10000;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--gold), var(--gold-pale), var(--gold));
+  box-shadow: 0 0 8px rgba(196, 146, 10, 0.5);
+}
+
+/* Spotlight hover — candlelight follows the cursor */
+.has-spotlight { position: relative; }
+.spotlight-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    380px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(212, 168, 32, 0.08),
+    rgba(91, 127, 199, 0.05) 35%,
+    transparent 65%);
+}
+.has-spotlight:hover .spotlight-layer { opacity: 1; }
+
+/* Scroll reveal */
+.reveal-init {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-init.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Foil shimmer — gold leaf catching candlelight */
+.gradient-text {
+  background-image: linear-gradient(
+    110deg,
+    #8c6a2f 0%, #c4920a 22%, #f2dfa7 42%, #c4920a 58%, #92b4ee 85%, #5b7fc7 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gradient-text {
+    animation: foil-drift 9s ease-in-out infinite alternate;
+  }
+  @keyframes foil-drift {
+    from { background-position: 0% 50%; }
+    to   { background-position: 100% 50%; }
+  }
+}
+
+/* ── Zodiac sign medallions — engraved talisman coins ── */
+
+.sign-medallion {
+  --m-tint: #1c2848;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background:
+    radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.16), transparent 42%),
+    radial-gradient(circle at 72% 80%, rgba(0, 0, 0, 0.55), transparent 55%),
+    radial-gradient(circle at 50% 50%, var(--m-tint) 0%, #10162c 68%, #090d1c 100%);
+  border: 1px solid rgba(196, 146, 10, 0.4);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.14),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.6),
+    0 5px 14px rgba(0, 0, 0, 0.55),
+    0 0 0 3px rgba(196, 146, 10, 0.06);
+  transform: translateZ(18px);
+}
+.sign-medallion::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 146, 10, 0.28);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.55);
+}
+.sign-medallion::after {
+  /* engraved degree ticks */
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    rgba(196, 146, 10, 0.22) 0deg 1.2deg,
+    transparent 1.2deg 30deg);
+  -webkit-mask: radial-gradient(circle, transparent 64%, #000 66%, #000 78%, transparent 80%);
+  mask: radial-gradient(circle, transparent 64%, #000 66%, #000 78%, transparent 80%);
+}
+.sign-medallion__glyph {
+  font-size: 1.65rem;
+  line-height: 1;
+  font-family: serif;
+  background: linear-gradient(180deg, #f2dfa7 0%, #c4920a 55%, #8c6a2f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 1px 1px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 -1px 0 rgba(255, 240, 200, 0.12));
+  transform: translateZ(8px);
+}
+
+/* element patinas */
+.sign-tile--fire  .sign-medallion { --m-tint: #4a1c22; border-color: rgba(176, 74, 82, 0.45); }
+.sign-tile--earth .sign-medallion { --m-tint: #1e3a32; border-color: rgba(94, 139, 126, 0.45); }
+.sign-tile--air   .sign-medallion { --m-tint: #243a6a; border-color: rgba(146, 180, 238, 0.4); }
+.sign-tile--water .sign-medallion { --m-tint: #14283e; border-color: rgba(91, 127, 199, 0.45); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress { display: none; }
 }

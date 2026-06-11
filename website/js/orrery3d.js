@@ -29,7 +29,7 @@ window.Orrery3D = (() => {
       color: '#c8b48a', hi: '#ecdcb8', lo: '#6e6248' },
   ];
 
-  const SIGN_GLYPHS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+  const SIGN_GLYPHS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(g => g + '\uFE0E');
   const RADIAL_COMP = 0.5;            // r' = r^COMP (AU), angles untouched
   const ORBIT_SAMPLES = 160;
 
@@ -279,7 +279,7 @@ window.Orrery3D = (() => {
 
       const am = ((i * 30 + 15)) * Math.PI / 180;
       const g = project({ x: Math.cos(am) * (R + 0.28), y: Math.sin(am) * (R + 0.28), z: 0 });
-      ctx.font = `${Math.max(9, 12 * g.f)}px serif`;
+      ctx.font = `${Math.max(10, 13 * g.f)}px serif`;
       ctx.fillStyle = `rgba(196,146,10,${0.35 + 0.35 * g.f})`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -296,7 +296,7 @@ window.Orrery3D = (() => {
         const pr = project(pts[i % pts.length]);
         i === 0 ? ctx.moveTo(pr.x, pr.y) : ctx.lineTo(pr.x, pr.y);
       }
-      ctx.strokeStyle = 'rgba(155,95,208,0.16)';
+      ctx.strokeStyle = 'rgba(91, 127, 199,0.16)';
       ctx.lineWidth = 0.8;
       ctx.stroke();
     });
