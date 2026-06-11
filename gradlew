@@ -9,7 +9,7 @@ APP_HOME=$(cd "$(dirname "$0")" && pwd)
 MAX_FD="maximum"
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+DEFAULT_JVM_OPTS="-Xmx512m -Xms64m"
 
 die() {
   echo
@@ -82,4 +82,4 @@ if [ "$cygwin" = "true" ] || [ "$msys" = "true" ] ; then
   CLASSPATH=$( cygpath --path --mixed "$CLASSPATH" )
 fi
 
-exec "$JAVACMD" "${DEFAULT_JVM_OPTS}" $JAVA_OPTS $GRADLE_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
+exec "$JAVACMD" $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
