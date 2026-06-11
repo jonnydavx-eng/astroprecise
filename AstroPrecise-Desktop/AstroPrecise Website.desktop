@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AstroPrecise
+GenericName=Astrology Web App
+Comment=Launch AstroPrecise — birth charts, horoscopes & live sky
+Exec=bash -c 'cd "/home/user/astroprecise/website" && python3 -m http.server 8420 & sleep 2 && xdg-open http://localhost:8420'
+Icon=/home/user/astroprecise/website/img/icon-512.png
+Terminal=false
+Categories=Science;Education;
+Keywords=astrology;horoscope;birth chart;planets;zodiac;
+StartupNotify=true
