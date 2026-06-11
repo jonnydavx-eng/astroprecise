@@ -1,49 +1,65 @@
 /* ==========================================================================
-   AstroPrecise — Premium Space Aesthetic Stylesheet
-   Dark glassmorphism + aurora nebula + CSS solar system
+   AstroPrecise — Esoteric Alchemical Void Stylesheet
+   Deep midnight void + antique gold + amethyst + ritual crimson
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
    1. CSS Custom Properties
    -------------------------------------------------------------------------- */
 :root {
-  /* Core backgrounds — Co-Star-inspired pure black palette */
-  --bg:   #000000;
-  --bg-2: #06060f;
-  --bg-3: #0b0b1a;
+  /* Core backgrounds — deep midnight void with warm purple undertone */
+  --bg:   #0d0918;
+  --bg-2: #120d22;
+  --bg-3: #180f2e;
 
-  /* Glass surfaces */
-  --surface:       rgba(255, 255, 255, 0.035);
-  --surface-2:     rgba(255, 255, 255, 0.06);
-  --surface-hover: rgba(255, 255, 255, 0.08);
+  /* Glass surfaces — amethyst-tinted */
+  --surface:       rgba(30, 18, 58, 0.68);
+  --surface-2:     rgba(42, 26, 82, 0.78);
+  --surface-hover: rgba(55, 35, 105, 0.85);
 
   /* Borders */
-  --border:      rgba(255, 255, 255, 0.07);
-  --border-2:    rgba(255, 255, 255, 0.12);
-  --border-glow: rgba(139, 92, 246, 0.35);
+  --border:      rgba(180, 150, 240, 0.12);
+  --border-2:    rgba(180, 150, 240, 0.22);
+  --border-glow: rgba(196, 146, 10, 0.5);      /* antique gold glow */
+  --border-ritual: rgba(138, 26, 56, 0.4);     /* crimson glow */
 
-  /* Brand palette */
-  --purple:       #7c3aed;
-  --purple-light: #a855f7;
-  --purple-bright: #c084fc;
-  --indigo:       #6366f1;
-  --blue:         #60a5fa;
-  --gold:         #f59e0b;
-  --gold-light:   #fbbf24;
-  --gold-dim:     rgba(245, 158, 11, 0.15);
-  --danger:       #ef4444;
-  --success:      #22c55e;
+  /* Esoteric colour palette */
+  --gold:           #c4920a;     /* antique gold */
+  --gold-light:     #d4a820;     /* bright antique gold */
+  --gold-pale:      #e8c96a;     /* pale moon-gold */
+  --gold-dim:       rgba(196, 146, 10, 0.18);
 
-  /* Text colors */
-  --white:       #f0f0ff;
-  --silver:      #9898b8;
-  --silver-dim:  #606080;
-  --silver-dark: #404060;
+  --amethyst:       #6b21a8;     /* deep amethyst */
+  --amethyst-light: #9b5fd0;     /* luminous amethyst */
+  --amethyst-bright: #c48aff;    /* pale amethyst haze */
+
+  --crimson:        #8a1a38;     /* ritual crimson */
+  --crimson-light:  #c03565;     /* rose-crimson */
+
+  --emerald:        #0e5c3a;     /* forest emerald */
+  --emerald-light:  #1a8a56;     /* bright emerald */
+
+  /* Legacy colour aliases (keep compatibility) */
+  --purple:        var(--amethyst);
+  --purple-light:  var(--amethyst-light);
+  --purple-bright: var(--amethyst-bright);
+  --indigo:        #5545a8;
+  --blue:          #3a7ad4;
+  --danger:        var(--crimson-light);
+  --success:       var(--emerald-light);
+
+  /* Text — aged parchment warmth */
+  --white:       #f0e8d8;        /* parchment ivory */
+  --silver:      #a898c0;        /* moonstone silver */
+  --silver-dim:  #706888;        /* dim moonstone */
+  --silver-dark: #3c3050;        /* shadow amethyst */
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #3b82f6 100%);
-  --gradient-gold:    linear-gradient(135deg, #f59e0b, #ef8c0b);
-  --gradient-cosmic:  linear-gradient(180deg, #02020e 0%, #0a0520 50%, #020210 100%);
+  --gradient-primary: linear-gradient(135deg, #6b21a8 0%, #8a1a38 55%, #c4920a 100%);
+  --gradient-gold:    linear-gradient(135deg, #d4a820, #c4920a);
+  --gradient-amethyst: linear-gradient(135deg, #6b21a8, #9b5fd0);
+  --gradient-ritual:  linear-gradient(135deg, #8a1a38, #c03565);
+  --gradient-cosmic:  linear-gradient(180deg, #0d0918 0%, #120d22 100%);
 
   /* Typography */
   --font-display: 'Cinzel', 'Playfair Display', serif;
@@ -135,7 +151,7 @@ body {
   position: relative;
 }
 
-/* Nebula background — layer 1: large purple/blue orb top-left */
+/* Nebula background — alchemical void with amethyst + crimson + gold haze */
 body::before {
   content: '';
   position: fixed;
@@ -143,10 +159,11 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(124, 58, 237, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 85% 70%, rgba(99, 102, 241, 0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(96, 165, 250, 0.07) 0%, transparent 50%);
-  animation: nebula-drift 28s ease-in-out infinite alternate;
+    radial-gradient(ellipse 75% 55% at 10% 15%, rgba(107, 33, 168, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 90% 75%, rgba(138, 26, 56, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 55% 95%, rgba(196, 146, 10, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 75% 20%, rgba(14, 92, 58, 0.08) 0%, transparent 50%);
+  animation: nebula-drift 32s ease-in-out infinite alternate;
 }
 
 @keyframes nebula-drift {
@@ -156,7 +173,7 @@ body::before {
 }
 
 img, svg  { display: block; max-width: 100%; }
-a         { color: var(--purple-light); text-decoration: none; transition: color var(--transition-fast); }
+a         { color: var(--amethyst-light); text-decoration: none; transition: color var(--transition-fast); }
 a:hover   { color: var(--gold-light); }
 button    { cursor: pointer; font-family: inherit; }
 input, select, textarea { font-family: inherit; }
@@ -169,16 +186,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::selection {
-  background: rgba(124, 58, 237, 0.4);
-  color: var(--white);
+  background: rgba(107, 33, 168, 0.45);
+  color: var(--gold-pale);
 }
 
 /* Scrollbar */
-::-webkit-scrollbar              { width: 6px; height: 6px; }
+::-webkit-scrollbar              { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track        { background: var(--bg-2); }
-::-webkit-scrollbar-thumb        { background: var(--purple); border-radius: var(--radius-full); }
-::-webkit-scrollbar-thumb:hover  { background: var(--purple-light); }
-* { scrollbar-width: thin; scrollbar-color: var(--purple) var(--bg-2); }
+::-webkit-scrollbar-thumb        { background: rgba(107, 33, 168, 0.55); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover  { background: rgba(196, 146, 10, 0.65); }
+* { scrollbar-width: thin; scrollbar-color: rgba(107,33,168,0.5) var(--bg-2); }
 
 /* --------------------------------------------------------------------------
    3. Starfield Canvas
@@ -206,33 +223,33 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .aurora-orb:nth-child(1) {
-  width: 600px;
-  height: 600px;
-  top: -200px;
-  left: -150px;
-  background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, transparent 70%);
+  width: 640px;
+  height: 640px;
+  top: -220px;
+  left: -180px;
+  background: radial-gradient(circle, rgba(107, 33, 168, 0.22) 0%, rgba(138, 26, 56, 0.08) 40%, transparent 70%);
   animation-delay: 0s;
-  animation-duration: 22s;
+  animation-duration: 24s;
 }
 
 .aurora-orb:nth-child(2) {
-  width: 500px;
-  height: 500px;
-  top: 40%;
-  right: -120px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.14) 0%, transparent 70%);
-  animation-delay: -7s;
-  animation-duration: 26s;
+  width: 520px;
+  height: 520px;
+  top: 38%;
+  right: -140px;
+  background: radial-gradient(circle, rgba(138, 26, 56, 0.18) 0%, rgba(196, 146, 10, 0.06) 40%, transparent 70%);
+  animation-delay: -8s;
+  animation-duration: 28s;
 }
 
 .aurora-orb:nth-child(3) {
-  width: 400px;
-  height: 400px;
-  bottom: 10%;
-  left: 30%;
-  background: radial-gradient(circle, rgba(96, 165, 250, 0.11) 0%, transparent 70%);
-  animation-delay: -14s;
-  animation-duration: 30s;
+  width: 420px;
+  height: 420px;
+  bottom: 8%;
+  left: 28%;
+  background: radial-gradient(circle, rgba(196, 146, 10, 0.12) 0%, rgba(14, 92, 58, 0.07) 40%, transparent 70%);
+  animation-delay: -16s;
+  animation-duration: 34s;
 }
 
 @keyframes aurora-float {
@@ -644,9 +661,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .navbar__mobile-link:hover,
 .navbar__mobile-link.active {
-  color: var(--white);
+  color: var(--gold-pale);
   background: var(--surface-2);
-  border-left-color: var(--purple-light);
+  border-left-color: var(--gold);
+}
+
+/* Navbar mobile links (using .navbar__link in mobile-menu) */
+.navbar__mobile-menu .navbar__link:hover,
+.navbar__mobile-menu .navbar__link.active {
+  color: var(--gold-pale);
+  background: var(--surface-2);
+  border-left: 2px solid var(--gold);
+  padding-left: calc(var(--space-4) - 2px);
 }
 
 @keyframes slide-down {
@@ -691,44 +717,48 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn--primary {
   background: var(--gradient-primary);
-  color: #fff;
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+  color: var(--gold-pale);
+  box-shadow: 0 0 18px rgba(107, 33, 168, 0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+  letter-spacing: 0.05em;
 }
 
 .btn--primary:hover {
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.7);
+  box-shadow: 0 0 36px rgba(196, 146, 10, 0.5), 0 0 18px rgba(107, 33, 168, 0.4);
   transform: translateY(-2px);
-  color: #fff;
+  color: var(--gold-pale);
 }
 
 .btn--primary:active {
   transform: translateY(0);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 18px rgba(107, 33, 168, 0.45);
 }
 
 .btn--outline {
   background: transparent;
-  border: 1px solid var(--border-2);
-  color: var(--silver);
+  border: 1px solid rgba(196, 146, 10, 0.4);
+  color: var(--gold);
+  letter-spacing: 0.04em;
 }
 
 .btn--outline:hover {
-  border-color: var(--purple-light);
-  color: var(--white);
-  background: rgba(124, 58, 237, 0.1);
+  border-color: var(--gold);
+  color: var(--gold-pale);
+  background: rgba(196, 146, 10, 0.08);
   transform: translateY(-1px);
+  box-shadow: 0 0 16px rgba(196, 146, 10, 0.2);
 }
 
 .btn--gold {
   background: var(--gradient-gold);
-  color: #fff;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+  color: #0d0918;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(196, 146, 10, 0.45);
 }
 
 .btn--gold:hover {
-  box-shadow: 0 0 32px rgba(245, 158, 11, 0.55);
+  box-shadow: 0 0 36px rgba(196, 146, 10, 0.65);
   transform: translateY(-2px);
-  color: #fff;
+  color: #0d0918;
 }
 
 .btn--ghost {
@@ -814,15 +844,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero__eyebrow {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  background: linear-gradient(135deg, var(--purple-bright), var(--blue));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
+  color: var(--gold);
+  opacity: 0.85;
   margin-bottom: var(--space-4);
   display: block;
 }
@@ -832,8 +859,8 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 4.5rem;
   font-weight: 700;
   line-height: 1.1;
-  letter-spacing: 0.02em;
-  background: linear-gradient(135deg, var(--purple-bright) 0%, var(--indigo) 45%, var(--blue) 100%);
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 35%, var(--amethyst-light) 70%, var(--amethyst-bright) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -923,13 +950,14 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
   position: relative;
   overflow: hidden;
 }
 
+/* Mystical top-edge shimmer line */
 .card::before,
 .glass-card::before {
   content: '';
@@ -938,14 +966,28 @@ h1, h2, h3, h4, h5, h6 {
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(107, 33, 168, 0.45), transparent);
+  pointer-events: none;
+}
+
+/* Ritual corner ornaments via box-shadow on ::after */
+.card::after,
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(196, 146, 10, 0.06);
   pointer-events: none;
 }
 
 .card:hover,
 .glass-card:hover {
-  border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.15);
+  border-color: rgba(196, 146, 10, 0.35);
+  box-shadow: 0 0 40px rgba(107, 33, 168, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
   transform: translateY(-3px);
 }
 
@@ -955,20 +997,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card--glow {
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 0 30px rgba(107, 33, 168, 0.14), 0 0 15px rgba(196, 146, 10, 0.08);
 }
 
 .card--gold {
-  border-color: rgba(245, 158, 11, 0.25);
+  border-color: rgba(196, 146, 10, 0.28);
 }
 
 .card--gold::before {
-  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.5), transparent);
 }
 
 .card--gold:hover {
-  border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 0 0 40px rgba(245, 158, 11, 0.12);
+  border-color: rgba(196, 146, 10, 0.55);
+  box-shadow: 0 0 40px rgba(196, 146, 10, 0.14);
 }
 
 /* Card inner layout helpers */
@@ -1061,8 +1103,8 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-size: 2.2rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  background: linear-gradient(135deg, var(--white) 0%, var(--purple-bright) 100%);
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 50%, var(--amethyst-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1108,12 +1150,12 @@ h1, h2, h3, h4, h5, h6 {
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(107, 33, 168, 0.4), transparent);
 }
 
 .feature-card:hover {
-  border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.15);
+  border-color: rgba(196, 146, 10, 0.38);
+  box-shadow: 0 0 40px rgba(107, 33, 168, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1126,7 +1168,8 @@ h1, h2, h3, h4, h5, h6 {
 .feature-card__title {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  color: var(--white);
+  letter-spacing: 0.04em;
+  color: var(--gold-pale);
   margin-bottom: var(--space-2);
 }
 
@@ -1198,12 +1241,12 @@ h1, h2, h3, h4, h5, h6 {
   left: 20%;
   right: 20%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.5), transparent);
 }
 
 .sign-card:hover {
-  border-color: var(--border-glow);
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.15);
+  border-color: rgba(196, 146, 10, 0.35);
+  box-shadow: 0 0 28px rgba(107, 33, 168, 0.14), 0 0 14px rgba(196, 146, 10, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1274,8 +1317,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .sign-card.is-active,
 .sign-card--active {
-  border-color: rgba(245, 158, 11, 0.55);
-  box-shadow: 0 0 28px var(--gold-dim);
+  border-color: rgba(196, 146, 10, 0.6);
+  box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(107, 33, 168, 0.12);
 }
 
 .sign-card.is-active .sign-card__name,
@@ -1310,7 +1353,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-select,
 .form-textarea {
   width: 100%;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(20, 12, 40, 0.75);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-3) var(--space-4);
@@ -1326,21 +1369,22 @@ h1, h2, h3, h4, h5, h6 {
 .form-input::placeholder,
 .form-textarea::placeholder {
   color: var(--silver-dark);
+  opacity: 0.7;
 }
 
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: var(--purple-light);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(196, 146, 10, 0.55);
+  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(107, 33, 168, 0.1);
+  background: rgba(25, 16, 50, 0.85);
 }
 
 .form-input:hover,
 .form-select:hover,
 .form-textarea:hover {
   border-color: var(--border-2);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(22, 14, 44, 0.8);
 }
 
 .form-select {
@@ -3573,7 +3617,7 @@ h1, h2, h3, h4, h5, h6 {
    44. Utility — gradient-text
    ========================================================================== */
 .gradient-text {
-  background: linear-gradient(135deg, var(--purple-bright) 0%, var(--indigo) 45%, var(--blue) 100%);
+  background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 35%, var(--amethyst-light) 70%, var(--amethyst-bright) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -3612,7 +3656,8 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-size: 1.6rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  letter-spacing: 0.04em;
+  background: linear-gradient(135deg, var(--gold-pale), var(--gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -4379,4 +4424,237 @@ h1, h2, h3, h4, h5, h6 {
   .hero-zodiac-wheel {
     display: none;
   }
+}
+
+/* ==========================================================================
+   58. Esoteric Design Patterns — Sacred Geometry & Ritual Elements
+   ========================================================================== */
+
+/* Constellation-dot section divider */
+.divider-stars {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  justify-content: center;
+  margin: var(--space-8) 0;
+  color: var(--gold);
+  opacity: 0.55;
+}
+
+.divider-stars::before,
+.divider-stars::after {
+  content: '';
+  flex: 1;
+  max-width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.5));
+}
+
+.divider-stars::after {
+  background: linear-gradient(90deg, rgba(196, 146, 10, 0.5), transparent);
+}
+
+/* Gold separator line */
+.section-divider {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: var(--space-4) auto 0;
+  opacity: 0.6;
+}
+
+/* Mystical eyebrow label — used on section headers */
+.section-header__eyebrow,
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+  display: block;
+  margin-bottom: var(--space-3);
+  text-align: center;
+}
+
+/* Alchemical ornament — ✦ symbol decoration */
+.orn {
+  color: var(--gold);
+  opacity: 0.6;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+}
+
+/* Sacred geometry background pattern on cards */
+.card--sacred::after {
+  background-image:
+    radial-gradient(circle at 8px 8px, rgba(196, 146, 10, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 24px 24px, rgba(196, 146, 10, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  border: none;
+}
+
+/* Ritual glow border variant */
+.card--ritual {
+  border-color: var(--border-ritual);
+}
+
+.card--ritual::before {
+  background: linear-gradient(90deg, transparent, rgba(138, 26, 56, 0.5), rgba(196, 146, 10, 0.35), transparent);
+}
+
+/* Moon phase badge */
+.moon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(196, 146, 10, 0.1);
+  border: 1px solid rgba(196, 146, 10, 0.3);
+  border-radius: var(--radius-full);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.moon-badge__symbol {
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   59. Scrollbar — gold tinted
+   ========================================================================== */
+::-webkit-scrollbar-track {
+  background: var(--bg-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(107, 33, 168, 0.5);
+  border: 2px solid var(--bg-2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(196, 146, 10, 0.5);
+}
+
+/* ==========================================================================
+   60. Form Elements — Esoteric Style
+   ========================================================================== */
+.form-input,
+.form-select,
+.form-textarea {
+  border-color: var(--border);
+  background: rgba(18, 12, 35, 0.8);
+  color: var(--white);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: rgba(196, 146, 10, 0.55);
+  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(107, 33, 168, 0.1);
+  outline: none;
+}
+
+/* ==========================================================================
+   61. Navbar Logo — Gold
+   ========================================================================== */
+.navbar__logo,
+.navbar__logo .logo-text,
+.footer-logo {
+  background: linear-gradient(135deg, var(--gold-pale), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.navbar__logo-icon {
+  color: var(--gold);
+  -webkit-text-fill-color: var(--gold);
+}
+
+/* Active navbar link */
+.navbar__link.active {
+  color: var(--gold-pale) !important;
+  -webkit-text-fill-color: var(--gold-pale) !important;
+}
+
+.navbar__link.active::after {
+  background: var(--gradient-gold) !important;
+}
+
+/* ==========================================================================
+   62. Testimonial card update — gold stars
+   ========================================================================== */
+.testimonial-stars {
+  color: var(--gold);
+  letter-spacing: 3px;
+}
+
+.testimonial-card--featured {
+  border-color: rgba(196, 146, 10, 0.35);
+  box-shadow: 0 0 40px rgba(107, 33, 168, 0.12), 0 0 20px rgba(196, 146, 10, 0.08);
+}
+
+/* ==========================================================================
+   63. Step numbers — gold amethyst gradient
+   ========================================================================== */
+.step-number {
+  border-color: rgba(196, 146, 10, 0.4) !important;
+  background: linear-gradient(135deg, var(--gold), var(--amethyst-light)) !important;
+}
+
+/* ==========================================================================
+   64. Newsletter section — gold accent border
+   ========================================================================== */
+.newsletter-section {
+  background: linear-gradient(135deg, rgba(107, 33, 168, 0.08) 0%, rgba(196, 146, 10, 0.06) 100%);
+  border-top: 1px solid rgba(196, 146, 10, 0.15);
+  border-bottom: 1px solid rgba(196, 146, 10, 0.15);
+}
+
+.newsletter-title {
+  background: linear-gradient(135deg, var(--gold-pale), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ==========================================================================
+   65. App download section — crimson/gold gradient
+   ========================================================================== */
+.app-download-section {
+  background: linear-gradient(180deg, transparent 0%, rgba(138, 26, 56, 0.06) 50%, transparent 100%);
+}
+
+/* ==========================================================================
+   66. Loading state — amethyst spinner
+   ========================================================================== */
+.loading-spinner {
+  border-color: rgba(180, 150, 240, 0.15);
+  border-top-color: var(--gold);
+}
+
+/* ==========================================================================
+   67. Page header title gradient
+   ========================================================================== */
+.page-header__title {
+  background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 40%, var(--amethyst-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ==========================================================================
+   68. Data table — gold header
+   ========================================================================== */
+.data-table th {
+  background: rgba(107, 33, 168, 0.2);
+  color: var(--gold-pale);
+  letter-spacing: 0.06em;
 }

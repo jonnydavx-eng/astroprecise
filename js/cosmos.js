@@ -14,13 +14,13 @@ window.CosmosEngine = (() => {
   const BRIGHT_COUNT = 120;
 
   const NEBULA_COLORS = [
-    [120,  40, 200],
-    [ 40,  70, 210],
-    [ 80,  20, 160],
-    [ 20, 110, 160],
-    [160,  30, 110],
-    [ 60,  20, 190],
-    [100,  60, 180],
+    [107,  33, 168],   /* amethyst */
+    [138,  26,  56],   /* ritual crimson */
+    [ 80,  15, 140],   /* deep amethyst */
+    [196, 146,  10],   /* antique gold */
+    [ 55,  15, 110],   /* void violet */
+    [ 14,  92,  58],   /* emerald shadow */
+    [160,  40,  80],   /* rose crimson */
   ];
 
   // Parallax speed as fraction of screen offset per layer (deep/mid/bright)
@@ -76,20 +76,23 @@ window.CosmosEngine = (() => {
 
   function starColor() {
     const r = Math.random();
-    if (r < 0.75) {
-      return 'white';           // plain white, resolved per-draw
-    } else if (r < 0.95) {
-      return 'bluewhite';       // hsla(220,40%,95%)
+    if (r < 0.60) {
+      return 'white';            /* warm parchment white */
+    } else if (r < 0.78) {
+      return 'gold';             /* antique gold star */
+    } else if (r < 0.90) {
+      return 'amethyst';         /* pale amethyst haze */
     } else {
-      return 'gold';            // hsla(45,60%,90%)
+      return 'crimson';          /* faint rose-crimson */
     }
   }
 
   function colorString(colorType, alpha) {
     switch (colorType) {
-      case 'bluewhite': return `hsla(220,40%,95%,${alpha})`;
-      case 'gold':      return `hsla(45,60%,90%,${alpha})`;
-      default:          return `rgba(255,255,255,${alpha})`;
+      case 'gold':      return `hsla(40,70%,75%,${alpha})`;
+      case 'amethyst':  return `hsla(270,60%,80%,${alpha})`;
+      case 'crimson':   return `hsla(340,55%,70%,${alpha})`;
+      default:          return `rgba(240,232,216,${alpha})`;   /* warm parchment */
     }
   }
 
