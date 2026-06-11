@@ -15,8 +15,8 @@
   const E = () => window.AstroEphemeris;
 
   const SIGN_GLYPHS = {
-    Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋', Leo:'♌', Virgo:'♍',
-    Libra:'♎', Scorpio:'♏', Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓',
+    Aries:'♈\uFE0E', Taurus:'♉\uFE0E', Gemini:'♊\uFE0E', Cancer:'♋\uFE0E', Leo:'♌\uFE0E', Virgo:'♍\uFE0E',
+    Libra:'♎\uFE0E', Scorpio:'♏\uFE0E', Sagittarius:'♐\uFE0E', Capricorn:'♑\uFE0E', Aquarius:'♒\uFE0E', Pisces:'♓\uFE0E',
   };
   const PLANET_GLYPHS = {
     Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃',
@@ -25,15 +25,15 @@
   };
   const ASPECT_DISPLAY = {
     conjunction:    { name:'Conjunction',    glyph:'☌', color:'#e8c96a' },
-    opposition:     { name:'Opposition',     glyph:'☍', color:'#c03565' },
+    opposition:     { name:'Opposition',     glyph:'☍', color:'#b04a52' },
     trine:          { name:'Trine',          glyph:'△', color:'#3fae7a' },
-    square:         { name:'Square',         glyph:'□', color:'#c03565' },
-    sextile:        { name:'Sextile',        glyph:'⚹', color:'#9b5fd0' },
-    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#a898c0' },
-    semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#a898c0' },
-    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#a898c0' },
-    semisextile:    { name:'Semisextile',    glyph:'⚺', color:'#a898c0' },
-    quintile:       { name:'Quintile',       glyph:'Q', color:'#a898c0' },
+    square:         { name:'Square',         glyph:'□', color:'#b04a52' },
+    sextile:        { name:'Sextile',        glyph:'⚹', color:'#5b7fc7' },
+    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#9aa6c8' },
+    semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#9aa6c8' },
+    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#9aa6c8' },
+    semisextile:    { name:'Semisextile',    glyph:'⚺', color:'#9aa6c8' },
+    quintile:       { name:'Quintile',       glyph:'Q', color:'#9aa6c8' },
   };
   const HOUSE_THEMES = [
     'Self & Identity', 'Money & Values', 'Mind & Communication', 'Home & Roots',
@@ -520,14 +520,14 @@
     const x = cv.getContext('2d');
 
     // void background with subtle nebula
-    x.fillStyle = '#0d0918';
+    x.fillStyle = '#090b16';
     x.fillRect(0, 0, W, H);
     const neb = x.createRadialGradient(W * 0.7, H * 0.25, 0, W * 0.7, H * 0.25, W * 0.7);
-    neb.addColorStop(0, 'rgba(107,33,168,0.25)');
+    neb.addColorStop(0, 'rgba(42, 74, 148,0.25)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, W, H);
     const neb2 = x.createRadialGradient(W * 0.2, H * 0.8, 0, W * 0.2, H * 0.8, W * 0.6);
-    neb2.addColorStop(0, 'rgba(138,26,56,0.18)');
+    neb2.addColorStop(0, 'rgba(110, 26, 38,0.18)');
     neb2.addColorStop(1, 'transparent');
     x.fillStyle = neb2; x.fillRect(0, 0, W, H);
 
@@ -556,7 +556,7 @@
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 64px Georgia, serif';
     x.fillText(chart.name, W / 2, 250);
-    x.fillStyle = '#a898c0';
+    x.fillStyle = '#9aa6c8';
     x.font = '30px Georgia, serif';
     x.fillText(`${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''} · ${chart.city.split(',')[0]}`, W / 2, 305);
 
@@ -567,7 +567,7 @@
     ];
     rows.forEach((r2, i) => {
       const y = 440 + i * 175;
-      x.fillStyle = 'rgba(30,18,58,0.6)';
+      x.fillStyle = 'rgba(17, 26, 54,0.6)';
       x.beginPath();
       x.roundRect(120, y - 78, W - 240, 150, 18);
       x.fill();
@@ -579,7 +579,7 @@
       x.fillStyle = '#c4920a';
       x.font = '64px Georgia, serif';
       x.fillText(r2.glyph, 160, y + 18);
-      x.fillStyle = '#a898c0';
+      x.fillStyle = '#9aa6c8';
       x.font = '24px Georgia, serif';
       x.fillText(`${r2.label} · ${r2.desc}`, 260, y - 18);
       x.fillStyle = '#f0e8d8';

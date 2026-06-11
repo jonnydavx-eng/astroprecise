@@ -14,13 +14,13 @@ window.CosmosEngine = (() => {
   const BRIGHT_COUNT = 120;
 
   const NEBULA_COLORS = [
-    [107,  33, 168],   /* amethyst */
-    [138,  26,  56],   /* ritual crimson */
-    [ 80,  15, 140],   /* deep amethyst */
+    [42, 74, 148],   /* amethyst */
+    [110, 26, 38],   /* ritual crimson */
+    [ 26, 44, 100],   /* deep amethyst */
     [196, 146,  10],   /* antique gold */
-    [ 55,  15, 110],   /* void violet */
+    [ 20, 34, 86],   /* void violet */
     [ 14,  92,  58],   /* emerald shadow */
-    [160,  40,  80],   /* rose crimson */
+    [128, 52, 64],   /* rose crimson */
   ];
 
   // Parallax speed as fraction of screen offset per layer (deep/mid/bright)
