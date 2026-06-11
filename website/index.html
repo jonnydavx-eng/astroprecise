@@ -462,16 +462,16 @@
 
           <ul class="hero-stats" aria-label="Statistics" style="margin-top:var(--space-8);">
             <li class="hero-stat">
-              <span class="hero-stat__number">2.4M+</span>
-              <span class="hero-stat__label">Charts Calculated</span>
+              <span class="hero-stat__number">253</span>
+              <span class="hero-stat__label">Stars Catalogued</span>
             </li>
             <li class="hero-stat">
               <span class="hero-stat__number">1′</span>
-              <span class="hero-stat__label">Precision</span>
+              <span class="hero-stat__label">Arcminute Precision</span>
             </li>
             <li class="hero-stat">
-              <span class="hero-stat__number">10</span>
-              <span class="hero-stat__label">Planets Tracked</span>
+              <span class="hero-stat__number">0</span>
+              <span class="hero-stat__label">Data Sent to Servers</span>
             </li>
           </ul>
         </div>
@@ -737,6 +737,36 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════
+         THE INSTRUMENT — teaser
+    ═══════════════════════════════════════════════ -->
+    <section class="section instrument-teaser" id="instrument-teaser" aria-labelledby="instrument-teaser-heading">
+      <div class="container">
+        <div class="instrument-teaser__inner" data-tilt>
+          <div class="instrument-teaser__badge">✦ Signature Feature</div>
+          <h2 class="instrument-teaser__title" id="instrument-teaser-heading">The Instrument</h2>
+          <p class="instrument-teaser__subtitle">
+            Your birth as an event in spacetime.
+          </p>
+          <p class="instrument-teaser__body">
+            At the moment you were born, light left that place at the speed of light
+            and has been expanding outward ever since. That wavefront is now
+            <strong id="instr-radius" style="color:var(--gold-pale);">calculating…</strong> light-years across —
+            and it has already reached <strong id="instr-stars" style="color:var(--gold-pale);">—</strong> star systems.
+          </p>
+          <ul class="instrument-teaser__features">
+            <li><span class="itf-dot" style="background:var(--gold);"></span>Light-cone wavefront · your signal still travelling at <em>c</em></li>
+            <li><span class="itf-dot" style="background:#5b7fc7;"></span>Zenith Star · the star directly overhead when you were born</li>
+            <li><span class="itf-dot" style="background:#8b4a8b;"></span>Echo Dates · when today's sky mirrors your natal chart</li>
+            <li><span class="itf-dot" style="background:#2a7a4a;"></span>Consciousness Weather · live solar &amp; cosmic field data</li>
+          </ul>
+          <a href="ephemeris.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-6);">
+            Open The Instrument →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
          APP DOWNLOAD
     ═══════════════════════════════════════════════ -->
     <section class="app-download-section section" id="app-download" aria-labelledby="app-download-heading">
@@ -881,6 +911,8 @@
   <script src="js/chart-render.js"></script>
   <script src="js/interpretations.js"></script>
   <script src="js/oracle.js"></script>
+  <script src="js/starcatalog.js"></script>
+  <script src="js/lightcone.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
@@ -1037,6 +1069,31 @@
         await waitFor(() => window.Orrery3D, 5000);
         window.Orrery3D.init(document.getElementById('orrery-canvas'));
       } catch(e) {}
+
+      /* ── Instrument teaser: live light-cone stats ── */
+      try {
+        await waitFor(() => window.LightCone && window.StarCatalog, 4000);
+        const charts = window.AstroProfile ? AstroProfile.getCharts() : [];
+        if (charts.length) {
+          const birth = new Date(charts[0].birthDate || charts[0].meta?.birthDate);
+          if (!isNaN(birth)) {
+            const st = LightCone.state(birth);
+            const r = document.getElementById('instr-radius');
+            const s = document.getElementById('instr-stars');
+            if (r && st) r.textContent = st.radiusLy.toFixed(2) + ' light-years';
+            if (s && st) {
+              const reached = StarCatalog.reachedBy(st.radiusLy);
+              s.textContent = reached.length + (reached.length === 1 ? ' star system' : ' star systems');
+            }
+          }
+        } else {
+          const r = document.getElementById('instr-radius');
+          if (r) r.textContent = 'age-in-light-years';
+        }
+      } catch(e) {
+        const r = document.getElementById('instr-radius');
+        if (r) r.textContent = 'age-in-light-years';
+      }
 
       /* ── Oracle: day at a glance ── */
       try {

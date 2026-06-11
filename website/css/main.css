@@ -4909,3 +4909,107 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .scroll-progress { display: none; }
 }
+
+/* ── Instrument Teaser Section ────────────────────────────────── */
+.instrument-teaser {
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(42, 74, 148, 0.06) 30%,
+    rgba(196, 146, 10, 0.04) 70%,
+    transparent 100%);
+}
+
+.instrument-teaser__inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  border: 1px solid rgba(196, 146, 10, 0.18);
+  border-radius: var(--radius-xl);
+  background: rgba(9, 11, 22, 0.6);
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+
+.instrument-teaser__inner::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(196, 146, 10, 0.15) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(42, 74, 148, 0.12) 100%);
+  pointer-events: none;
+}
+
+.instrument-teaser__badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(196, 146, 10, 0.4);
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: var(--space-5);
+}
+
+.instrument-teaser__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: var(--gold-pale);
+  margin-bottom: var(--space-2);
+  line-height: 1.1;
+  background: linear-gradient(135deg, #f2dfa7, var(--gold), #c4920a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.instrument-teaser__subtitle {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--silver);
+  font-style: italic;
+  margin-bottom: var(--space-5);
+}
+
+.instrument-teaser__body {
+  font-size: var(--text-sm);
+  color: var(--silver);
+  line-height: 1.75;
+  margin-bottom: var(--space-6);
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.instrument-teaser__features {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto var(--space-2);
+  max-width: 460px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.instrument-teaser__features li {
+  font-size: 0.8rem;
+  color: var(--silver-dim);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  line-height: 1.5;
+}
+
+.itf-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
