@@ -361,16 +361,43 @@ window.Interpretations = (() => {
       "Venus smiles on your relationships today. Open your heart to both giving and receiving affection. A meaningful conversation deepens an existing bond.",
       "Romantic energy is electric today. Single? A chance meeting could be significant. Partnered? Plan something special and spontaneous.",
       "Emotional honesty in your closest relationship creates unexpected closeness. What you've been afraid to say is exactly what's needed.",
+      "An old pattern in how you love becomes visible today — and visible patterns can be changed. Choose the response, not the reflex.",
+      "Someone has been speaking their affection in a language you haven't been listening for. Watch what they do, not only what they say.",
+      "Today rewards the small gesture over the grand one. The text you almost don't send, the door held, the question asked twice — these land deepest.",
+      "A relationship needs air, not analysis. Take the walk, share the meal, leave the difficult conversation for a softer hour.",
+      "The Moon stirs old waters. If a memory of someone surfaces today, let it pass through without rebuilding the house around it.",
+      "Attraction sharpens where honesty lives. Say the true thing, kindly — charm fades by evening but candour holds.",
+      "Your standards are not too high; your signals may be too quiet. Let interest be legible today and notice who reads it.",
+      "Partnership thrives on parallel motion today — two people facing the same direction rather than only each other. Share a task, not just a feeling.",
+      "Tenderness is strategy today. The softest available response to friction will be the strongest one you can make.",
     ];
     const careerTexts = [
       "Your professional instincts are sharp today. Trust your read of the situation and act decisively on the opportunity in front of you.",
       "Collaboration is highly favored. A team effort produces results that surpass what you could achieve individually. Delegate with confidence.",
       "A long-term career move you've been considering becomes clearer. The timing aligns — preparation meets opportunity right now.",
+      "Finish the unglamorous thing first today. The cleared backlog releases more energy than any new beginning could.",
+      "Someone senior is paying closer attention than you realise. Today's ordinary competence is tomorrow's reputation.",
+      "Say less in the meeting and more in the follow-through. Quiet delivery outranks loud intention all day.",
+      "A skill you treat as trivial is rare in your circle. Notice what people keep asking you for — that is the market speaking.",
+      "Resist the urge to redo what is already good enough. Perfection past the point of usefulness is procrastination wearing a crown.",
+      "The blocked path is information, not verdict. Route around the obstacle today and the detour becomes the better road.",
+      "Write the idea down before noon. What feels obvious now will be genuinely valuable when the moment for it arrives.",
+      "Negotiate today — for time, scope, or worth. The stars favour those who name their terms calmly and once.",
+      "Your work benefits from one honest question asked early. Clarify now what everyone else is pretending to understand.",
     ];
     const healthTexts = [
       "Movement and vitality are highlighted. Honor your body's signals — both its energy and its need for rest. A new wellness habit takes root today.",
       "Mental clarity follows physical activity today. A walk, swim, or yoga session unlocks insights that no amount of desk-thinking could produce.",
       "Sleep quality significantly affects your energy this week. Protect your evening routine; what you do before bed shapes tomorrow's performance.",
+      "Hydration and daylight are the two cheapest medicines available to you today. Take both in larger doses than feel necessary.",
+      "Your shoulders are holding a conversation you haven't had yet. Stretch, breathe, and then consider having it.",
+      "Eat something that grew in the ground today. The body keeps honest accounts and pays attention to deposits.",
+      "Energy follows attention. One hour without the feed — phone face-down, eyes on the middle distance — restores more than caffeine.",
+      "The tiredness you feel may be decision fatigue, not body fatigue. Simplify one recurring choice permanently today.",
+      "A gentle start beats a heroic one. Five unforced minutes of movement today outweigh the imaginary hour you keep postponing.",
+      "Your breath is shallower than you think. Three slow exhales before each task today recalibrates the whole nervous system.",
+      "Tend the small ache before it becomes a loud one. The body whispers long before it shouts.",
+      "Rest is not a reward for finishing — it is part of the work. Schedule the pause with the same seriousness as the push.",
     ];
 
     return {
@@ -2619,6 +2646,455 @@ window.AstroInterpretations = Object.assign({}, window.Interpretations, {
     DECAN_MEANINGS,
     getPlanetInHouse,
     getRetrogradeMeaning,
+    getDecan,
+  };
+
+  window.AstroInterpretations = Object.assign(window.AstroInterpretations || {}, additions);
+  if (window.Interpretations) Object.assign(window.Interpretations, additions);
+
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ── SECTION 8: Planetary Dignities, Chart Patterns & Additional Numerology ──
+// Essential classical astrology — dignities, chart patterns, Expression/Soul
+// ═══════════════════════════════════════════════════════════════════════════
+
+(function () {
+
+  // ── Planetary Dignities ──────────────────────────────────────────────────
+  // Based on traditional and modern rulerships
+  const DIGNITIES = {
+    sun:     { domicile:['leo'],             exaltation:'aries',      detriment:['aquarius'],      fall:'libra' },
+    moon:    { domicile:['cancer'],          exaltation:'taurus',     detriment:['capricorn'],     fall:'scorpio' },
+    mercury: { domicile:['gemini','virgo'],  exaltation:'virgo',      detriment:['sagittarius','pisces'], fall:'pisces' },
+    venus:   { domicile:['taurus','libra'],  exaltation:'pisces',     detriment:['aries','scorpio'],       fall:'virgo' },
+    mars:    { domicile:['aries','scorpio'], exaltation:'capricorn',  detriment:['libra','taurus'],        fall:'cancer' },
+    jupiter: { domicile:['sagittarius','pisces'], exaltation:'cancer',detriment:['gemini','virgo'],        fall:'capricorn' },
+    saturn:  { domicile:['capricorn','aquarius'], exaltation:'libra', detriment:['cancer','leo'],          fall:'aries' },
+    uranus:  { domicile:['aquarius'],        exaltation:'scorpio',    detriment:['leo'],           fall:'taurus' },
+    neptune: { domicile:['pisces'],          exaltation:'cancer',     detriment:['virgo'],         fall:'capricorn' },
+    pluto:   { domicile:['scorpio'],         exaltation:'aries',      detriment:['taurus'],        fall:'libra' },
+    chiron:  { domicile:['virgo'],           exaltation:'sagittarius',detriment:['pisces'],        fall:'gemini' },
+    'north node': { domicile:[], exaltation:'gemini', detriment:[], fall:'sagittarius' },
+  };
+
+  const DIGNITY_LABEL = {
+    domicile:  { label:'Domicile',   glyph:'⌂', note:'Planet is in its own sign — strongest, most natural expression.' },
+    exaltation:{ label:'Exaltation', glyph:'↑', note:'Planet is honored and elevated — heightened, refined power.' },
+    detriment: { label:'Detriment',  glyph:'⊗', note:'Planet is in the sign opposite its home — challenged, needs effort.' },
+    fall:      { label:'Fall',       glyph:'↓', note:'Planet is in the sign opposite its exaltation — subdued, seeks humility.' },
+    peregrine: { label:'Peregrine',  glyph:'◦', note:'Planet has no special dignity here — neutral, adaptable.' },
+  };
+
+  function getDignity(planet, sign) {
+    const p = (planet || '').toLowerCase().replace(' ', ' ');
+    const s = (sign  || '').toLowerCase();
+    const d = DIGNITIES[p];
+    if (!d) return { status:'peregrine', ...DIGNITY_LABEL.peregrine };
+    if (d.domicile.includes(s))          return { status:'domicile',   ...DIGNITY_LABEL.domicile };
+    if (d.exaltation === s)              return { status:'exaltation', ...DIGNITY_LABEL.exaltation };
+    if ((d.detriment || []).includes(s)) return { status:'detriment',  ...DIGNITY_LABEL.detriment };
+    if (d.fall === s)                    return { status:'fall',        ...DIGNITY_LABEL.fall };
+    return { status:'peregrine', ...DIGNITY_LABEL.peregrine };
+  }
+
+  // ── Chart Pattern Detection ──────────────────────────────────────────────
+
+  function detectChartPatterns(positions, aspects) {
+    const patterns = [];
+    const planetNames = Object.keys(positions || {}).filter(p => positions[p] && positions[p].lon != null);
+
+    // Stellium — 3+ planets within same 30° sign
+    const bySigns = {};
+    planetNames.forEach(p => {
+      const s = positions[p].sign;
+      if (s) { bySigns[s] = bySigns[s] || []; bySigns[s].push(p); }
+    });
+    Object.entries(bySigns).forEach(([sign, planets]) => {
+      if (planets.length >= 3) {
+        patterns.push({
+          name: 'Stellium',
+          glyph: '✦',
+          description: `${planets.map(cap).join(', ')} are all concentrated in ${cap(sign)} — this is your chart's power centre. Themes of ${sign} permeate your core identity, purpose, and expression.`,
+          planets: planets,
+          type: 'stellium',
+          strength: planets.length >= 4 ? 'major' : 'notable',
+        });
+      }
+    });
+
+    // Grand Trine — 3 planets mutually trine (within 8°)
+    const trines = (aspects || []).filter(a => a.aspect === 'trine');
+    const trineMap = {};
+    trines.forEach(a => {
+      const key = [a.planet1, a.planet2].sort().join('|');
+      trineMap[key] = a;
+    });
+    for (let i = 0; i < planetNames.length; i++) {
+      for (let j = i+1; j < planetNames.length; j++) {
+        for (let k = j+1; k < planetNames.length; k++) {
+          const [a,b,c] = [planetNames[i], planetNames[j], planetNames[k]];
+          const ab = trineMap[[a,b].sort().join('|')];
+          const bc = trineMap[[b,c].sort().join('|')];
+          const ac = trineMap[[a,c].sort().join('|')];
+          if (ab && bc && ac && ab.orb < 6 && bc.orb < 6 && ac.orb < 6) {
+            const el = getTrineElement(positions[a].sign);
+            patterns.push({
+              name: 'Grand Trine',
+              glyph: '△',
+              description: `${cap(a)}, ${cap(b)}, and ${cap(c)} form a Grand Trine in ${el ? cap(el) + ' signs' : 'your chart'} — a reservoir of natural talent and flowing ease. This aspect triangle indicates areas where gifts come naturally, though they may need conscious activation.`,
+              planets: [a,b,c],
+              type: 'grand-trine',
+              strength: 'major',
+            });
+          }
+        }
+      }
+    }
+
+    // T-Square — 2 planets in opposition, both square a third (focal planet)
+    const oppositions = (aspects || []).filter(a => a.aspect === 'opposition');
+    const squares = (aspects || []).filter(a => a.aspect === 'square');
+    oppositions.forEach(opp => {
+      const [p1, p2] = [opp.planet1, opp.planet2];
+      planetNames.forEach(focal => {
+        if (focal === p1 || focal === p2) return;
+        const sq1 = squares.find(s => (s.planet1===p1&&s.planet2===focal)||(s.planet1===focal&&s.planet2===p1));
+        const sq2 = squares.find(s => (s.planet1===p2&&s.planet2===focal)||(s.planet1===focal&&s.planet2===p2));
+        if (sq1 && sq2 && sq1.orb < 7 && sq2.orb < 7) {
+          patterns.push({
+            name: 'T-Square',
+            glyph: '⊤',
+            description: `${cap(p1)}–${cap(p2)} opposition drives tension into ${cap(focal)} as the focal planet — a dynamic source of ambition, frustration, and eventual mastery. The tension seeks resolution through the sign and house opposite ${cap(focal)}.`,
+            planets: [p1, p2, focal],
+            focal: focal,
+            type: 't-square',
+            strength: 'major',
+          });
+        }
+      });
+    });
+
+    // Grand Cross — 4 planets forming 2 oppositions and 4 squares
+    if (oppositions.length >= 2) {
+      for (let i = 0; i < oppositions.length - 1; i++) {
+        for (let j = i+1; j < oppositions.length; j++) {
+          const opp1 = oppositions[i], opp2 = oppositions[j];
+          const fourPlanets = [opp1.planet1, opp1.planet2, opp2.planet1, opp2.planet2];
+          if (new Set(fourPlanets).size !== 4) continue;
+          const allSquare = squares.filter(s =>
+            fourPlanets.includes(s.planet1) && fourPlanets.includes(s.planet2)
+          );
+          if (allSquare.length >= 4 && allSquare.every(s => s.orb < 8)) {
+            patterns.push({
+              name: 'Grand Cross',
+              glyph: '⊕',
+              description: `${fourPlanets.map(cap).join(', ')} form a Grand Cross — four points of persistent challenge and extraordinary drive. This is a chart that builds remarkable resilience and real-world capability through repeated, structured effort.`,
+              planets: fourPlanets,
+              type: 'grand-cross',
+              strength: 'major',
+            });
+          }
+        }
+      }
+    }
+
+    // Yod — 2 planets in sextile, both quincunx a third ("Finger of God")
+    const sextiles = (aspects || []).filter(a => a.aspect === 'sextile');
+    const quincunxes = (aspects || []).filter(a => a.aspect === 'quincunx');
+    sextiles.forEach(sxt => {
+      const [s1, s2] = [sxt.planet1, sxt.planet2];
+      planetNames.forEach(apex => {
+        if (apex === s1 || apex === s2) return;
+        const q1 = quincunxes.find(q => (q.planet1===s1&&q.planet2===apex)||(q.planet1===apex&&q.planet2===s1));
+        const q2 = quincunxes.find(q => (q.planet1===s2&&q.planet2===apex)||(q.planet1===apex&&q.planet2===s2));
+        if (q1 && q2 && q1.orb < 3 && q2.orb < 3 && sxt.orb < 3) {
+          patterns.push({
+            name: 'Yod',
+            glyph: '⚶',
+            description: `${cap(s1)} and ${cap(s2)} sextile each other and both point to ${cap(apex)} — the Finger of God. ${cap(apex)} carries a fated, highly-specific life mission that cannot easily be refused or explained; it must be lived into through repeated adjustment.`,
+            planets: [s1, s2, apex],
+            apex: apex,
+            type: 'yod',
+            strength: 'major',
+          });
+        }
+      });
+    });
+
+    // Kite — Grand Trine with an opposition to one of the trine planets
+    // (built from already-detected grand trines)
+    patterns.filter(p => p.type === 'grand-trine').forEach(gt => {
+      gt.planets.forEach(p => {
+        const opp = oppositions.find(o =>
+          (o.planet1 === p || o.planet2 === p) &&
+          !gt.planets.includes(o.planet1 === p ? o.planet2 : o.planet1) === false
+        );
+        if (opp) {
+          const kiteApex = opp.planet1 === p ? opp.planet2 : opp.planet1;
+          if (!gt.planets.includes(kiteApex)) {
+            patterns.push({
+              name: 'Kite',
+              glyph: '◇',
+              description: `A Kite pattern: the Grand Trine's gifts are given a point of productive release through ${cap(kiteApex)} — making this one of the most constructive configurations, combining talent with purposeful drive.`,
+              planets: [...gt.planets, kiteApex],
+              type: 'kite',
+              strength: 'major',
+            });
+          }
+        }
+      });
+    });
+
+    // Deduplicate by type + sorted planet set
+    const seen = new Set();
+    return patterns.filter(p => {
+      const key = p.type + '|' + [...p.planets].sort().join(',');
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+  }
+
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+  function getTrineElement(sign) {
+    const FIRE  = ['aries','leo','sagittarius'];
+    const EARTH = ['taurus','virgo','capricorn'];
+    const AIR   = ['gemini','libra','aquarius'];
+    const WATER = ['cancer','scorpio','pisces'];
+    const s = (sign||'').toLowerCase();
+    if (FIRE.includes(s))  return 'fire';
+    if (EARTH.includes(s)) return 'earth';
+    if (AIR.includes(s))   return 'air';
+    if (WATER.includes(s)) return 'water';
+    return null;
+  }
+
+  // ── Element / Modality Balance ───────────────────────────────────────────
+
+  function getElementBalance(positions) {
+    const ELEMENT = { aries:'fire',leo:'fire',sagittarius:'fire', taurus:'earth',virgo:'earth',capricorn:'earth', gemini:'air',libra:'air',aquarius:'air', cancer:'water',scorpio:'water',pisces:'water' };
+    const MODALITY = { aries:'cardinal',cancer:'cardinal',libra:'cardinal',capricorn:'cardinal', taurus:'fixed',leo:'fixed',scorpio:'fixed',aquarius:'fixed', gemini:'mutable',virgo:'mutable',sagittarius:'mutable',pisces:'mutable' };
+    const elCount = {fire:0,earth:0,air:0,water:0};
+    const modCount = {cardinal:0,fixed:0,mutable:0};
+    const WEIGHTED = ['sun','moon','mercury','venus','mars','jupiter','saturn','ascendant'];
+    Object.entries(positions || {}).forEach(([planet, pos]) => {
+      const s = (pos.sign || '').toLowerCase();
+      const weight = WEIGHTED.includes(planet.toLowerCase()) ? 1 : 0.5;
+      if (ELEMENT[s])  elCount[ELEMENT[s]] += weight;
+      if (MODALITY[s]) modCount[MODALITY[s]] += weight;
+    });
+    const dominant = obj => Object.entries(obj).sort((a,b)=>b[1]-a[1])[0][0];
+    return {
+      elements: elCount,
+      modalities: modCount,
+      dominantElement: dominant(elCount),
+      dominantModality: dominant(modCount),
+    };
+  }
+
+  // ── Expression & Soul Urge Numbers ──────────────────────────────────────
+  // Pythagorean letter values
+
+  const LETTER_VALUES = {
+    a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,
+    j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,
+    s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8
+  };
+  const VOWELS = new Set(['a','e','i','o','u','y']);
+
+  function pythagoreanReduce(n) {
+    while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
+      n = String(n).split('').reduce((s,d) => s + Number(d), 0);
+    }
+    return n;
+  }
+
+  function getExpressionNumber(fullName) {
+    const letters = (fullName || '').toLowerCase().replace(/[^a-z]/g, '');
+    if (!letters.length) return null;
+    const sum = letters.split('').reduce((s,c) => s + (LETTER_VALUES[c] || 0), 0);
+    return pythagoreanReduce(sum);
+  }
+
+  function getSoulUrgeNumber(fullName) {
+    const letters = (fullName || '').toLowerCase().replace(/[^a-z]/g, '');
+    if (!letters.length) return null;
+    const sum = letters.split('').filter(c => VOWELS.has(c)).reduce((s,c) => s + (LETTER_VALUES[c] || 0), 0);
+    return pythagoreanReduce(sum || 9);
+  }
+
+  function getPersonalityNumber(fullName) {
+    const letters = (fullName || '').toLowerCase().replace(/[^a-z]/g, '');
+    if (!letters.length) return null;
+    const sum = letters.split('').filter(c => !VOWELS.has(c)).reduce((s,c) => s + (LETTER_VALUES[c] || 0), 0);
+    return pythagoreanReduce(sum || 9);
+  }
+
+  const EXPRESSION_MEANINGS = {
+    1: { title:'The Pioneer', summary:'Your life purpose is to forge new paths. You are here to develop independence, courage, and the will to lead. Expression 1 people excel when they trust their own vision and resist the temptation to lead by following.', shadow:'Guard against egotism, impatience with others, and the need to always be first.' },
+    2: { title:'The Diplomat', summary:'Your life purpose is to unite, harmonize, and bring people together. You have exceptional sensitivity to others and a gift for partnership. Expression 2 people thrive when they allow their natural cooperativeness to serve meaningful causes.', shadow:'Guard against excessive dependency, people-pleasing, and difficulty making independent decisions.' },
+    3: { title:'The Creator', summary:'Your life purpose is to express, inspire, and bring joy. You are here to communicate beauty, truth, and enthusiasm in whatever form calls to you — art, writing, speech, or performance.', shadow:'Guard against scattered energy, superficiality, and using wit to avoid deeper engagement.' },
+    4: { title:'The Builder', summary:'Your life purpose is to create enduring foundations. You are here to master patience, discipline, and the long work of building systems that outlast the self. Expression 4 people succeed by honoring process over shortcut.', shadow:'Guard against rigidity, work addiction, and resistance to necessary change.' },
+    5: { title:'The Explorer', summary:'Your life purpose is to experience freedom, variety, and the full spectrum of human possibility. You are here to learn through change, travel, and the willingness to embrace the unknown.', shadow:'Guard against restlessness, overindulgence, and commitment avoidance.' },
+    6: { title:'The Nurturer', summary:'Your life purpose is to serve, protect, and create beauty in the world. You are deeply attuned to the needs of family, community, and art. Expression 6 people are at their best when their love is grounded in healthy boundaries.', shadow:'Guard against martyrdom, control through helpfulness, and taking on others\' responsibilities.' },
+    7: { title:'The Seeker', summary:'Your life purpose is to seek truth, develop wisdom, and penetrate below the surface of things. You are a natural analyst, researcher, or spiritual explorer who brings uncommon depth to whatever you study.', shadow:'Guard against isolation, cynicism, and the substitution of analysis for lived experience.' },
+    8: { title:'The Achiever', summary:'Your life purpose is to master the material world — business, leadership, and the ethical use of power and resources. Expression 8 people are natural strategists with an innate understanding of cause and effect in the world of form.', shadow:'Guard against the worship of status, ruthlessness in pursuit of goals, and neglect of the inner life.' },
+    9: { title:'The Humanitarian', summary:'Your life purpose is to serve humanity with compassion, wisdom, and the willingness to let go of the personal in service of the collective. Expression 9 people are natural teachers, healers, and artists who give their gifts freely.', shadow:'Guard against over-sacrifice, emotional withdrawal, and idealism that refuses the reality of imperfection.' },
+    11: { title:'The Illuminator', summary:'Master Number 11: Your life purpose is to inspire, uplift, and demonstrate the reality of spiritual vision within daily life. You carry exceptional intuition and a rare capacity to bridge the visible and invisible.', shadow:'Manage the nervous tension that comes with heightened sensitivity; ground the vision in consistent practice.' },
+    22: { title:'The Master Builder', summary:'Master Number 22: Your life purpose is to construct something of lasting benefit to humanity — an institution, a system, a movement. You have the dreams of an 11 and the pragmatic power of a 4.', shadow:'The weight of potential can become a burden; commit to one great work rather than many grand intentions.' },
+    33: { title:'The Master Teacher', summary:'Master Number 33: Your life purpose is unconditional love and compassionate service expressed at the highest level. You are here to give without expectation, to teach by example, and to hold space for others\' transformation.', shadow:'Guard against martyrdom, spiritual bypassing of personal needs, and the weight of others\' expectations.' },
+  };
+
+  const SOUL_URGE_MEANINGS = {
+    1: 'You are driven deep within by the need for independence, achievement, and being first or singular. Your inner life is oriented around proving the uniqueness of your vision.',
+    2: 'Your deepest desire is for harmony, love, and belonging. You are inwardly motivated by the quality of your relationships and the feeling of true partnership.',
+    3: 'Your soul urges expression — creativity, joy, and the freedom to communicate what you feel. Inner fulfillment comes through making something beautiful.',
+    4: 'Your soul wants order, security, and the satisfaction of solid achievement. Inner peace comes through methodical effort and the building of trustworthy structures.',
+    5: 'Your soul thirsts for freedom, variety, and experience. The inner life is restless and hungry for stimulation, change, and the feeling of aliveness.',
+    6: 'Your deepest desire is to love and be loved. The soul urge is toward harmony in home and family, and toward being genuinely useful to those you care about.',
+    7: 'Your soul seeks truth, depth, and solitude in which to understand. Inner fulfillment comes through knowledge, spiritual development, and genuine understanding.',
+    8: 'Your soul desires mastery — of the material world, of power, of the ability to make things happen at scale. Inner satisfaction requires tangible achievement.',
+    9: 'Your soul desires to serve humanity and give your gifts without keeping score. Inner peace comes through compassion, artistic expression, and genuine release of the personal.',
+    11: 'Master Soul Urge: you are inwardly driven by an almost urgent need to inspire and uplift. The soul is attuned to spiritual frequencies that others cannot always perceive.',
+    22: 'Master Soul Urge: you are driven by the need to build something that genuinely transforms the world. The desire is not for personal glory but for lasting collective impact.',
+    33: 'Master Soul Urge: your deepest desire is to love unconditionally and serve without boundary. The soul urge is toward becoming a vessel for something greater than personal will.',
+  };
+
+  // ── Part of Fortune ──────────────────────────────────────────────────────
+  // Lot of Fortune = Ascendant + Moon longitude − Sun longitude (day chart)
+  // (Night chart: reverse Sun and Moon roles)
+  function getPartOfFortune(ascLon, sunLon, moonLon, isDayChart) {
+    const lot = isDayChart
+      ? ((ascLon + moonLon - sunLon) % 360 + 360) % 360
+      : ((ascLon + sunLon - moonLon) % 360 + 360) % 360;
+    const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    const signIdx = Math.floor(lot / 30);
+    const degree  = lot % 30;
+    return { lon: lot, sign: signs[signIdx], degree: Math.floor(degree), isDayChart };
+  }
+
+  // ── Expose ───────────────────────────────────────────────────────────────
+  const additions = {
+    getDignity,
+    detectChartPatterns,
+    getElementBalance,
+    getExpressionNumber,
+    getSoulUrgeNumber,
+    getPersonalityNumber,
+    getPartOfFortune,
+    EXPRESSION_MEANINGS,
+    SOUL_URGE_MEANINGS,
+    DIGNITIES,
+    DIGNITY_LABEL,
+  };
+
+  window.AstroInterpretations = Object.assign(window.AstroInterpretations || {}, additions);
+  if (window.Interpretations) Object.assign(window.Interpretations, additions);
+
+})();
+
+// =============================================================================
+// SECTION 9 — Fixed Stars & Decans
+// =============================================================================
+
+(function () {
+  'use strict';
+
+  // ── Fixed stars ──────────────────────────────────────────────────────────
+  // Tropical ecliptic longitudes at epoch J2000.0 (standard values used in
+  // fixed-star astrology). Precession moves them ~50.3″/yr; adjusted at query
+  // time. The four "royal stars" are the Persian Watchers of the sky.
+  const FIXED_STARS = [
+    { name: 'Algol',        lon2000:  56.17, con: 'Perseus',          meaning: 'The most intense star in the canon — confronting what others turn away from; power reclaimed from crisis and the courage to face the shadow directly.' },
+    { name: 'Alcyone',      lon2000:  60.00, con: 'Taurus (Pleiades)', meaning: 'Heart of the Pleiades — vision and inner sight, sometimes at the cost of seeing what is painful; mystical perception and ancestral memory.' },
+    { name: 'Aldebaran',    lon2000:  69.79, con: 'Taurus', royal: 'Watcher of the East', meaning: 'Success through unwavering integrity. Honors and achievement are promised, but only while the native stays true to their own moral line.' },
+    { name: 'Rigel',        lon2000:  76.83, con: 'Orion',            meaning: 'The teacher and the builder — ambition channeled into educating and elevating others; technical brilliance and rapid rises.' },
+    { name: 'Capella',      lon2000:  81.86, con: 'Auriga',           meaning: 'Restless curiosity and the love of freedom — a need for movement, learning, and independence that resists every harness.' },
+    { name: 'Betelgeuse',   lon2000:  88.75, con: 'Orion',            meaning: 'Unqualified success — ease of accomplishment and natural luck in worldly affairs, the strong right shoulder of the Hunter.' },
+    { name: 'Sirius',       lon2000: 104.08, con: 'Canis Major',      meaning: 'The brightest star in the sky — the mundane made sacred; fame, ambition, and deeds that burn brighter and reach further than intended.' },
+    { name: 'Castor',       lon2000: 110.24, con: 'Gemini',           meaning: 'The mortal twin — the writer and storyteller; intelligence expressed through ideas, language, and sudden shifts of fortune.' },
+    { name: 'Pollux',       lon2000: 113.22, con: 'Gemini',           meaning: 'The immortal twin — the fighter and craftsman; strength forged through contest and the willingness to struggle for what matters.' },
+    { name: 'Procyon',      lon2000: 115.79, con: 'Canis Minor',      meaning: 'The star that rises before Sirius — quick rewards that demand quick action; opportunities that must be seized before they pass.' },
+    { name: 'Alphard',      lon2000: 147.28, con: 'Hydra',            meaning: 'The solitary one — intensity of feeling and appetite; transformative passage through the strong emotions others suppress.' },
+    { name: 'Regulus',      lon2000: 149.83, con: 'Leo', royal: 'Watcher of the North', meaning: 'The heart of the Lion — leadership, honors, and royal success, granted on one condition: never take revenge. Magnanimity is the contract.' },
+    { name: 'Algorab',      lon2000: 193.45, con: 'Corvus',           meaning: 'The Crow — the scavenger\'s gift of finding value where others see none; tests of character around opportunism and honesty.' },
+    { name: 'Spica',        lon2000: 203.84, con: 'Virgo',            meaning: 'The gift of the goddess — pure talent, protection, and brilliance; a marker of exceptional skill that seems given rather than earned.' },
+    { name: 'Arcturus',     lon2000: 204.23, con: 'Boötes',           meaning: 'The pathfinder — prosperity through pioneering a new way; the guardian who leads others into unmapped territory.' },
+    { name: 'Antares',      lon2000: 249.76, con: 'Scorpius', royal: 'Watcher of the West', meaning: 'The rival of Mars — obsessive courage and the drive toward intensity; success through entering the heat rather than avoiding it.' },
+    { name: 'Vega',         lon2000: 285.32, con: 'Lyra',             meaning: 'The falling eagle, the harp of Orpheus — charisma, artistry, and a magical, otherworldly quality to the voice or creative gift.' },
+    { name: 'Altair',       lon2000: 301.78, con: 'Aquila',           meaning: 'The eagle in flight — boldness, swiftness, and the confidence to act decisively from great heights; daring rewarded.' },
+    { name: 'Deneb Algedi', lon2000: 323.55, con: 'Capricornus',      meaning: 'The benefic ruler — wisdom applied to practical life; the law-giver who protects through structure and fair judgment.' },
+    { name: 'Fomalhaut',    lon2000: 333.87, con: 'Piscis Austrinus', royal: 'Watcher of the South', meaning: 'The loneliest royal star — idealism and mysticism; success through ideals kept uncorrupted, and the falls that follow compromise.' },
+  ];
+
+  const PRECESSION_DEG_PER_YEAR = 50.29 / 3600;
+
+  function starLonAtYear(star, year) {
+    const y = (typeof year === 'number' && isFinite(year)) ? year : 2000;
+    return ((star.lon2000 + (y - 2000) * PRECESSION_DEG_PER_YEAR) % 360 + 360) % 360;
+  }
+
+  // Conjunctions of natal points to the major fixed stars.
+  // `points`: { Label: lonDeg, ... } — pass planets plus Ascendant/Midheaven.
+  // `year`: birth year for precession correction. Orb: 1° (the traditional
+  // fixed-star orb; only conjunctions count — fixed stars take no aspects).
+  function getFixedStarConjunctions(points, year, orbDeg) {
+    const orb = orbDeg || 1.0;
+    const hits = [];
+    for (const label in points) {
+      const lon = points[label];
+      if (typeof lon !== 'number' || !isFinite(lon)) continue;
+      for (let i = 0; i < FIXED_STARS.length; i++) {
+        const star = FIXED_STARS[i];
+        const sLon = starLonAtYear(star, year);
+        let d = Math.abs(((lon - sLon) % 360 + 360) % 360);
+        if (d > 180) d = 360 - d;
+        if (d <= orb) {
+          hits.push({ point: label, star: star.name, constellation: star.con,
+                      royal: star.royal || null, orb: d, meaning: star.meaning });
+        }
+      }
+    }
+    return hits.sort((a, b) => a.orb - b.orb);
+  }
+
+  // ── Decans ───────────────────────────────────────────────────────────────
+  // Triplicity system: each 10° decan is sub-ruled by the traditional rulers
+  // of the three signs of the same element, in zodiacal order.
+  const DECAN_RULERS = {
+    aries:       ['Mars', 'Sun', 'Jupiter'],
+    taurus:      ['Venus', 'Mercury', 'Saturn'],
+    gemini:      ['Mercury', 'Venus', 'Saturn'],
+    cancer:      ['Moon', 'Mars', 'Jupiter'],
+    leo:         ['Sun', 'Jupiter', 'Mars'],
+    virgo:       ['Mercury', 'Saturn', 'Venus'],
+    libra:       ['Venus', 'Saturn', 'Mercury'],
+    scorpio:     ['Mars', 'Jupiter', 'Moon'],
+    sagittarius: ['Jupiter', 'Mars', 'Sun'],
+    capricorn:   ['Saturn', 'Venus', 'Mercury'],
+    aquarius:    ['Saturn', 'Mercury', 'Venus'],
+    pisces:      ['Jupiter', 'Moon', 'Mars'],
+  };
+
+  const DECAN_GLYPHS = { Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃', Saturn:'♄' };
+
+  // Decan from an absolute ecliptic longitude (0–360).
+  function getDecan(lonDeg) {
+    const lon = ((lonDeg % 360) + 360) % 360;
+    const signs = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+    const sign = signs[Math.floor(lon / 30)];
+    const index = Math.floor((lon % 30) / 10) + 1;  // 1, 2, 3
+    const ruler = DECAN_RULERS[sign][index - 1];
+    return { sign, index, ruler, glyph: DECAN_GLYPHS[ruler] || '',
+             label: 'Decan ' + index + ' — ' + ruler };
+  }
+
+  const additions = {
+    FIXED_STARS,
+    getFixedStarConjunctions,
+    starLonAtYear,
+    DECAN_RULERS,
     getDecan,
   };
 

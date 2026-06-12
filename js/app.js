@@ -476,3 +476,185 @@ document.addEventListener('DOMContentLoaded', () => AstroApp.init());
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
+
+/* Horizon: privacy banner (first visit) + offline-ready pill */
+(function () {
+  const ACK_KEY = 'ap_privacy_ack';
+
+  function showPrivacyBanner() {
+    if (localStorage.getItem(ACK_KEY)) return;
+    const b = document.createElement('div');
+    b.className = 'privacy-banner';
+    b.setAttribute('role', 'status');
+    b.innerHTML =
+      '<span class="privacy-banner__text"><strong>Everything happens in your hands.</strong> ' +
+      'Charts and readings compute in your browser — nothing is sent anywhere, ever.</span>' +
+      '<button class="privacy-banner__close" aria-label="Dismiss privacy notice">Understood</button>';
+    document.body.appendChild(b);
+    b.querySelector('.privacy-banner__close').addEventListener('click', () => {
+      b.classList.add('is-hidden');
+      try { localStorage.setItem(ACK_KEY, '1'); } catch (e) {}
+      setTimeout(() => b.remove(), 600);
+    });
+  }
+
+  function showOfflinePill() {
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.ready.then(() => {
+      if (!navigator.serviceWorker.controller) return;
+      const p = document.createElement('div');
+      p.className = 'offline-ready-pill';
+      p.textContent = 'Works offline';
+      document.body.appendChild(p);
+      requestAnimationFrame(() => p.classList.add('is-visible'));
+      setTimeout(() => { p.classList.remove('is-visible'); setTimeout(() => p.remove(), 600); }, 5000);
+    }).catch(() => {});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { showPrivacyBanner(); showOfflinePill(); });
+  } else {
+    showPrivacyBanner();
+    showOfflinePill();
+  }
+})();
+
+/* Horizon: scroll-reveal entrances + mobile bottom nav */
+(function () {
+  function initReveal() {
+    if (!window.IntersectionObserver) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const candidates = document.querySelectorAll(
+      '.feature-card, .planet-weather-card, .sign-card, .reading-card, ' +
+      '.transit-item, .element-compat-card, .category-score-item, .moon-card, .manifesto'
+    );
+    if (!candidates.length) return;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('revealed');
+        obs.unobserve(e.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+    candidates.forEach((el, i) => {
+      if (el.getBoundingClientRect().top < window.innerHeight) return;
+      el.classList.add('reveal-init');
+      el.style.transitionDelay = (i % 4) * 60 + 'ms';
+      obs.observe(el);
+    });
+  }
+
+  function initBottomNav() {
+    if (document.querySelector('.bottom-nav')) return;
+    const here = (location.pathname.split('/').pop() || 'index.html');
+    const items = [
+      { href: 'index.html',         icon: '✦', label: 'Home' },
+      { href: 'chart.html',         icon: '◉', label: 'Chart' },
+      { href: 'horoscope.html',     icon: '☽', label: 'Daily' },
+      { href: 'lifepath.html',      icon: '✩', label: 'Life Path' },
+      { href: 'compatibility.html', icon: '♡', label: 'Match' },
+    ];
+    const nav = document.createElement('nav');
+    nav.className = 'bottom-nav';
+    nav.setAttribute('aria-label', 'Mobile navigation');
+    nav.innerHTML = '<div class="bottom-nav__inner">' + items.map(it =>
+      '<a href="' + it.href + '" class="bottom-nav__item' + (here === it.href ? ' is-active' : '') + '"' +
+      (here === it.href ? ' aria-current="page"' : '') + '>' +
+      '<span class="bottom-nav__icon" aria-hidden="true">' + it.icon + '</span>' +
+      '<span class="bottom-nav__label">' + it.label + '</span></a>'
+    ).join('') + '</div>';
+    document.body.appendChild(nav);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => { initReveal(); initBottomNav(); });
+  } else {
+    initReveal();
+    initBottomNav();
+  }
+})();
+
+/* Corner solar system: real heliocentric longitudes via VSOP87.
+   Orbital periods scaled so Mercury = 14 s CSS animation.
+   Saturn, Uranus and Neptune appended dynamically with proper radii. */
+(function () {
+  const PLANETS = [
+    { id: 'mercury', period: 87.969 },
+    { id: 'venus',   period: 224.701 },
+    { id: 'earth',   period: 365.256 },
+    { id: 'mars',    period: 686.980 },
+    { id: 'jupiter', period: 4332.589 },
+  ];
+  const OUTER = [
+    { id: 'saturn',  period: 10759.22,  r: 360,  cls: 'css-planet--saturn' },
+    { id: 'uranus',  period: 30688.5,   r: 415,  cls: 'css-planet--uranus' },
+    { id: 'neptune', period: 60182.0,   r: 460,  cls: 'css-planet--neptune' },
+  ];
+  const S = 14 / 87.969; // seconds-per-day scale: Mercury = 14 s
+
+  function helioLon(E, id, jd) {
+    const sun = E.sunPosition(jd);
+    const sx = sun.distance * Math.cos(sun.lon * Math.PI / 180);
+    const sy = sun.distance * Math.sin(sun.lon * Math.PI / 180);
+    let hx, hy;
+    if (id === 'earth') {
+      hx = -sx; hy = -sy;
+    } else {
+      const g = E[id + 'Position'](jd);
+      hx = g.distance * Math.cos(g.lon * Math.PI / 180) - sx;
+      hy = g.distance * Math.sin(g.lon * Math.PI / 180) - sy;
+    }
+    return ((Math.atan2(hy, hx) * 180 / Math.PI) + 360) % 360;
+  }
+
+  function applyPhase(orbit, lon, dur) {
+    orbit.style.animationDuration  = dur + 's';
+    orbit.style.animationDirection = 'reverse';
+    orbit.style.animationDelay     = -(((360 - lon) / 360) * dur) + 's';
+  }
+
+  function init() {
+    const E = window.AstroEphemeris;
+    if (!E || typeof E.julianDay !== 'function' || typeof E.sunPosition !== 'function') {
+      setTimeout(init, 400);
+      return;
+    }
+    const systems = document.querySelectorAll('.cosmos-solar-system');
+    if (!systems.length) return;
+
+    const now = new Date();
+    const jd  = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+                             now.getUTCHours(), now.getUTCMinutes(), 0);
+
+    systems.forEach(sys => {
+      // Update inner planets already in the HTML
+      sys.querySelectorAll('.css-orbit').forEach((orbit, i) => {
+        const p = PLANETS[i];
+        if (!p) return;
+        try { applyPhase(orbit, helioLon(E, p.id, jd), p.period * S); } catch (_) {}
+      });
+
+      // Append outer planets if not already done
+      OUTER.forEach(op => {
+        const marker = 'css-orbit--' + op.id + '-live';
+        if (sys.querySelector('.' + marker)) return;
+        let lon;
+        try { lon = helioLon(E, op.id, jd); } catch (_) { return; }
+        const dur    = op.period * S;
+        const d      = op.r * 2;
+        const orbit  = document.createElement('div');
+        orbit.className = 'css-orbit ' + marker;
+        orbit.style.cssText = `--r:${op.r}px;width:${d}px;height:${d}px;`;
+        applyPhase(orbit, lon, dur);
+        orbit.innerHTML = `<div class="css-planet ${op.cls}"></div>`;
+        sys.appendChild(orbit);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

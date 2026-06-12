@@ -23,95 +23,131 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="stylesheet" href="css/main.css" />
   <style>
-    /* ── Deep Time aesthetic — this page runs darker and slower ── */
-    body { background: #06060f; }
-    .instrument-section {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: var(--space-16) var(--space-6);
-      border-bottom: 1px solid rgba(150, 175, 230, 0.08);
+    /* ── Deep Time aesthetic — darker, slower ── */
+    :root {
+      --void: #0A0B1F;
+      --gold: #D4AF37;
+      --gold-light: #E8C872;
+      --gold-pale: #e8c872;
+      --purple: #7B2CBF;
+      --white: #F8F4EE;
+      --silver: #C8D0E8;
+      --silver-dim: #8891AA;
+      --surface: rgba(15,18,50,0.55);
+      --border: rgba(255,255,255,0.08);
+      --radius-xl: 20px;
+      --radius-2xl: 28px;
+      --lapis-light: #92b4ee;
+      --lapis-bright: #92b4ee;
+      --crimson-light: #f87171;
     }
+    body { background: #06060f; }
+
+    /* ── Instrument shell ── */
+    .instrument-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Section layout ── */
+    .instrument-section {
+      padding: 4rem 0;
+      border-bottom: 1px solid rgba(150,175,230,0.07);
+    }
+    .instrument-section:last-of-type { border-bottom: none; }
+
+    /* ── Typography ── */
     .instrument-eyebrow {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--gold);
       opacity: 0.75;
-      margin-bottom: var(--space-3);
+      margin-bottom: 0.75rem;
+      display: block;
     }
     .instrument-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
       color: var(--white);
       letter-spacing: 0.04em;
-      margin-bottom: var(--space-4);
+      margin-bottom: 1rem;
+      line-height: 1.2;
     }
     .instrument-lede {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.18rem;
-      line-height: 1.75;
+      font-size: 1.12rem;
+      line-height: 1.8;
       color: var(--silver);
-      max-width: 620px;
+      max-width: 640px;
     }
     .grimoire {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.16rem;
-      line-height: 1.85;
+      font-size: 1.12rem;
+      line-height: 1.9;
       color: #e6ddc8;
     }
     .grimoire h4 {
-      font-family: var(--font-display);
-      font-size: 0.78rem;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.72rem;
       letter-spacing: 0.24em;
       text-transform: uppercase;
       color: var(--gold);
-      margin: var(--space-8) 0 var(--space-4);
+      margin: 2rem 0 1rem;
     }
-    .grimoire p { margin-bottom: var(--space-4); }
+    .grimoire p { margin-bottom: 1rem; }
     .grimoire p:first-of-type::first-letter {
       font-size: 2.6em;
       line-height: 0.85;
       float: left;
       padding-right: 8px;
       color: var(--gold-pale);
-      font-family: var(--font-display);
+      font-family: var(--font-display, 'Cinzel', serif);
     }
     .data-mono {
       font-family: 'Courier New', monospace;
       color: var(--gold-pale);
       letter-spacing: 0.04em;
     }
+
+    /* ── Glow button ── */
     .glow-btn {
       background: transparent;
-      border: 1px solid rgba(196, 146, 10, 0.45);
+      border: 1px solid rgba(212,175,55,0.4);
       color: var(--gold-pale);
-      padding: var(--space-3) var(--space-6);
+      padding: 0.65rem 1.4rem;
       border-radius: 999px;
       font-size: 0.72rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      font-family: var(--font-sans);
+      font-family: var(--font-sans, 'Inter', sans-serif);
       cursor: pointer;
-      transition: all 0.5s ease;
-      box-shadow: 0 0 0 rgba(196, 146, 10, 0);
+      transition: all 0.4s ease;
+      box-shadow: 0 0 0 rgba(212,175,55,0);
     }
     .glow-btn:hover {
-      box-shadow: 0 0 24px rgba(196, 146, 10, 0.25), inset 0 0 12px rgba(196, 146, 10, 0.08);
+      box-shadow: 0 0 24px rgba(212,175,55,0.22), inset 0 0 12px rgba(212,175,55,0.07);
       border-color: var(--gold);
+      background: rgba(212,175,55,0.05);
     }
     .glow-btn:disabled { opacity: 0.4; cursor: wait; }
+    .glow-btn.active {
+      background: rgba(212,175,55,0.12);
+      border-color: var(--gold);
+    }
 
-    /* concentric-ring loader — the light-cone motif */
+    /* ── Ring loader ── */
     .ring-loader {
       width: 54px; height: 54px;
       position: relative;
-      margin: var(--space-6) auto;
+      margin: 1.5rem auto;
     }
     .ring-loader span {
       position: absolute; inset: 0;
       border-radius: 50%;
-      border: 1px solid rgba(232, 201, 106, 0.7);
-      animation: ring-expand 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+      border: 1px solid rgba(232,201,106,0.65);
+      animation: ring-expand 2.4s cubic-bezier(0.2,0.6,0.4,1) infinite;
       opacity: 0;
     }
     .ring-loader span:nth-child(2) { animation-delay: 0.8s; }
@@ -121,61 +157,131 @@
       100% { transform: scale(1.4); opacity: 0; }
     }
 
+    /* ── Field-weather data rows ── */
     .field-row {
       display: grid;
-      grid-template-columns: 130px 1fr auto;
-      gap: var(--space-4);
+      grid-template-columns: 140px 1fr auto;
+      gap: 1rem;
       align-items: baseline;
-      padding: var(--space-3) 0;
-      border-bottom: 1px solid rgba(150, 175, 230, 0.07);
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(150,175,230,0.07);
       font-size: 0.85rem;
     }
-    .field-row__label { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--silver-dim); }
+    .field-row__label {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
     .field-row__value { color: var(--white); }
-    .field-row__src { font-size: 0.6rem; color: var(--silver-dim); letter-spacing: 0.05em; text-align: right; }
+    .field-row__src {
+      font-size: 0.6rem;
+      color: var(--silver-dim);
+      letter-spacing: 0.05em;
+      text-align: right;
+    }
     .src-measured { color: #3fae7a; }
     .src-computed { color: var(--lapis-light); }
     .src-unavailable { color: var(--crimson-light); }
 
+    /* ── Echo windows ── */
     .echo-window {
       display: grid;
       grid-template-columns: auto 1fr auto;
-      gap: var(--space-4);
+      gap: 1rem;
       align-items: center;
-      padding: var(--space-4);
-      border: 1px solid rgba(196, 146, 10, 0.18);
-      border-radius: var(--radius-lg);
-      margin-bottom: var(--space-3);
-      background: rgba(17, 26, 54, 0.4);
+      padding: 1rem 1.25rem;
+      border: 1px solid rgba(212,175,55,0.16);
+      border-radius: var(--radius-xl);
+      margin-bottom: 0.75rem;
+      background: rgba(17,26,54,0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: border-color 0.2s;
     }
+    .echo-window:hover { border-color: rgba(212,175,55,0.3); }
     .resonance-meter {
       height: 3px; width: 110px;
-      background: rgba(150, 175, 230, 0.12);
+      background: rgba(150,175,230,0.12);
       border-radius: 2px; overflow: hidden;
     }
-    .resonance-meter span { display: block; height: 100%; background: linear-gradient(90deg, var(--lapis-light), var(--gold)); }
+    .resonance-meter span {
+      display: block; height: 100%;
+      background: linear-gradient(90deg, var(--lapis-light), var(--gold));
+    }
 
+    /* ── Glassmorphism card ── */
+    .glass-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: 2rem;
+    }
+    .glass-card--gold-rim {
+      border-color: rgba(212,175,55,0.22);
+    }
+
+    /* ── Event form ── */
     .event-form {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--space-4);
+      gap: 1rem;
       max-width: 560px;
-      margin-top: var(--space-6);
+      margin-top: 1.5rem;
     }
     .event-form .full { grid-column: 1 / -1; position: relative; }
     @media (max-width: 560px) { .event-form { grid-template-columns: 1fr; } }
 
-    .daimon-card {
-      border: 1px solid rgba(196, 146, 10, 0.3);
+    /* ── Natal signature grid ── */
+    #natal-sig-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .sig-cell {
+      background: rgba(17,26,54,0.7);
+      border: 1px solid rgba(150,175,230,0.12);
       border-radius: var(--radius-xl);
-      padding: var(--space-8);
+      padding: 1.1rem 1.25rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .sig-cell:hover {
+      border-color: rgba(212,175,55,0.25);
+      background: rgba(17,26,54,0.85);
+    }
+    .sig-cell__glyph { font-size: 1.5rem; display: block; margin-bottom: 0.35rem; color: var(--gold-pale); }
+    .sig-cell__label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .sig-cell__value {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.9rem;
+      color: var(--white);
+      display: block;
+    }
+
+    /* ── Daimon card ── */
+    .daimon-card {
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
       background:
-        radial-gradient(circle at 20% 0%, rgba(42, 74, 148, 0.15), transparent 60%),
-        rgba(10, 14, 30, 0.7);
-      margin: var(--space-6) 0;
+        radial-gradient(circle at 20% 0%, rgba(42,74,148,0.15), transparent 60%),
+        rgba(10,14,30,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin: 1.5rem 0;
     }
     .daimon-name {
-      font-family: var(--font-display);
+      font-family: var(--font-display, 'Cinzel', serif);
       font-size: 1.7rem;
       color: var(--gold-pale);
       letter-spacing: 0.08em;
@@ -187,24 +293,101 @@
       font-size: 1.05rem;
       margin-top: 2px;
     }
+
+    /* ── Quantum draw ── */
     .quantum-sigil {
       font-size: 3.6rem;
       text-align: center;
       color: var(--gold-pale);
       line-height: 1;
-      filter: drop-shadow(0 0 18px rgba(196, 146, 10, 0.5));
+      filter: drop-shadow(0 0 18px rgba(212,175,55,0.5));
     }
     .provenance {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       text-align: center;
-      margin-top: var(--space-3);
+      margin-top: 0.75rem;
+      color: var(--silver-dim);
     }
-    .precession-toggle { display: flex; gap: var(--space-2); margin: var(--space-5) 0; }
-    .precession-toggle .glow-btn.active { background: rgba(196,146,10,0.12); border-color: var(--gold); }
-    textarea.form-input { min-height: 84px; resize: vertical; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; }
+
+    /* ── Precession toggle ── */
+    .precession-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+      flex-wrap: wrap;
+    }
+
+    textarea.form-input {
+      min-height: 84px;
+      resize: vertical;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+    }
     #lightcone-canvas, #tt-canvas { display: block; margin: 0 auto; }
+
+    /* ── Section number badge ── */
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(212,175,55,0.35);
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-family: var(--font-display, 'Cinzel', serif);
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      margin-right: 0.6rem;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    /* ── Hero ── */
+    .instrument-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 3.5rem;
+      border-bottom: 1px solid rgba(150,175,230,0.07);
+      position: relative;
+    }
+    .instrument-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 40% at 30% 0%, rgba(123,44,191,0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(212,175,55,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-caps {
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-caps span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .hero-caps span::before {
+      content: '·';
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    .hero-caps span:first-child::before { display: none; }
+
+    .badge-row {
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body>
@@ -213,6 +396,9 @@
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
@@ -226,7 +412,9 @@
           <a href="ephemeris.html" class="navbar__link active" aria-current="page">Instrument</a>
           <a href="horoscope.html" class="navbar__link">Horoscope</a>
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
           <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
           <a href="profile.html" class="navbar__link">Profile</a>
         </div>
         <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -239,7 +427,9 @@
         <a href="ephemeris.html" class="navbar__link active">Instrument</a>
         <a href="horoscope.html" class="navbar__link">Horoscope</a>
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
         <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="shop.html" class="navbar__link">Shop</a>
         <a href="profile.html" class="navbar__link">Profile</a>
       </div>
     </nav>
@@ -247,194 +437,283 @@
 
   <main id="main-content">
 
-    <!-- ═══ HERO / THE EVENT ═══ -->
-    <section class="instrument-section" style="padding-top:calc(var(--nav-height) + var(--space-16));border-bottom:none;">
-      <p class="instrument-eyebrow">The Instrument</p>
-      <h1 class="instrument-title gradient-text">You are an event in spacetime.</h1>
-      <p class="instrument-lede">
-        A unique coordinate of matter, light, and consciousness that occurred exactly once
-        and will never repeat. This page is not prediction — it is orientation. Everything
-        below is computed from the real sky; where live measurements are used they are
-        labelled, and where they are unavailable we say so.
-      </p>
+    <!-- ═══ HERO ═══ -->
+    <section class="instrument-hero" aria-labelledby="instrument-heading">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow">The Instrument</p>
+        <h1 class="instrument-title gradient-text" id="instrument-heading">The Instrument</h1>
 
-      <!-- Birth event input -->
-      <div id="event-setup">
-        <div class="event-form">
-          <div class="full">
-            <label class="form-label" for="ev-datetime">The moment <span class="required">*</span></label>
-            <input type="datetime-local" id="ev-datetime" class="form-input" />
-          </div>
-          <div class="full">
-            <label class="form-label" for="ev-city">The place <span class="required">*</span></label>
-            <input type="text" id="ev-city" class="form-input" placeholder="Start typing a city…" autocomplete="off" />
-            <div class="autocomplete-dropdown" id="ev-city-dd" role="listbox" hidden></div>
-          </div>
-          <div class="full" style="display:flex;gap:var(--space-4);align-items:center;flex-wrap:wrap;">
-            <button type="button" class="glow-btn" id="ev-set">Set the Event</button>
-            <button type="button" class="glow-btn" id="ev-example" style="border-color:rgba(91,127,199,0.4);color:var(--lapis-bright,#92b4ee);">Try an example — Carl Sagan</button>
-            <span id="ev-status" style="font-size:0.75rem;color:var(--silver-dim);"></span>
+        <p class="instrument-lede">
+          You arrived under a particular sky &mdash; a unique coordinate of matter, light, and
+          consciousness that occurred exactly once and will never repeat. I keep the actual
+          mathematics of that sky: planetary theory to an arcminute, 253 real stars, the
+          geometry of light itself. This page is not prediction &mdash; it is orientation.
+        </p>
+
+        <div class="hero-caps" aria-label="Capabilities">
+          <span>VSOP87 precision</span>
+          <span>Light-cone</span>
+          <span>Zenith star</span>
+          <span>Echo dates</span>
+          <span>Daimon</span>
+          <span>Field Weather</span>
+        </div>
+
+        <div class="badge-row">
+          <span class="ap-badge">Computed locally &middot; VSOP87 + ELP2000</span>
+          <span class="ap-badge ap-badge--deterministic">Same input &middot; same output &middot; always</span>
+        </div>
+
+        <!-- ── Birth event input ── -->
+        <div id="event-setup" style="margin-top:2.5rem;">
+          <div class="glass-card glass-card--gold-rim" style="max-width:580px;">
+            <p style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);opacity:0.8;margin-bottom:1rem;">Set Your Birth Event</p>
+            <div class="event-form">
+              <div class="full">
+                <label class="form-label" for="ev-datetime">The moment <span class="required">*</span></label>
+                <input type="datetime-local" id="ev-datetime" class="form-input" />
+              </div>
+              <div class="full">
+                <label class="form-label" for="ev-city">The place <span class="required">*</span></label>
+                <input type="text" id="ev-city" class="form-input" placeholder="Start typing a city&hellip;" autocomplete="off" />
+                <div class="autocomplete-dropdown" id="ev-city-dd" role="listbox" hidden></div>
+              </div>
+              <div class="full" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+                <button type="button" class="glow-btn" id="ev-set">Set the Event</button>
+                <button type="button" class="glow-btn" id="ev-example" style="border-color:rgba(91,127,199,0.4);color:var(--lapis-bright);">Try an example &mdash; Carl Sagan</button>
+                <span id="ev-status" style="font-size:0.75rem;color:var(--silver-dim);"></span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ═══ 1. LIGHT-CONE ═══ -->
+    <!-- ═══ NATAL SIGNATURE (appears after event is set) ═══ -->
+    <section class="instrument-section" id="sec-natal-signature" hidden style="padding-top:2.5rem;padding-bottom:2.5rem;">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow">Your Natal Signature</p>
+        <h2 class="instrument-title" style="font-size:1.4rem;">Key frequencies at your moment of birth.</h2>
+
+        <div id="natal-sig-grid">
+          <!-- JS populates -->
+        </div>
+
+        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.6rem;max-width:320px;">
+          <a id="natal-lifepath-link" href="lifepath.html" class="glow-btn" style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;justify-content:center;">
+            &#10022; Your Numerology Blueprint &rarr;
+          </a>
+          <p style="font-size:0.65rem;color:var(--silver-dim);line-height:1.6;">
+            Life Path, Expression, and Personal Year numbers computed from your birth date.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ I. LIGHT-CONE ═══ -->
     <section class="instrument-section" id="sec-lightcone" hidden>
-      <p class="instrument-eyebrow">I · The Light-Cone</p>
-      <h2 class="instrument-title">The light of your first breath is still travelling.</h2>
-      <p class="instrument-lede">
-        At the moment you were born, light left your birthplace and began moving outward at
-        299,792 kilometres per second. It has never stopped. This is not a metaphor.
-      </p>
-      <div style="margin:var(--space-8) 0;">
-        <canvas id="lightcone-canvas" aria-label="Expanding sphere of your birth light among real stars" role="img"></canvas>
-      </div>
-      <div id="lc-readout" class="grimoire"></div>
-      <div id="lc-stars" style="margin-top:var(--space-6);"></div>
-      <div style="text-align:center;margin-top:var(--space-8);">
-        <button class="glow-btn" id="lc-card-btn" aria-label="Download a shareable light-cone image card">
-          ✦ &nbsp;Download My Light-Cone Card
-        </button>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">I</span> The Light-Cone</p>
+        <h2 class="instrument-title">The light of your first breath is still travelling.</h2>
+        <p class="instrument-lede">
+          At the moment you were born, light left your birthplace and began moving outward at
+          299,792 kilometres per second. It has never stopped. This is not a metaphor.
+        </p>
+
+        <div class="glass-card" style="margin:2rem 0;text-align:center;">
+          <canvas id="lightcone-canvas" aria-label="Expanding sphere of your birth light among real stars" role="img"></canvas>
+        </div>
+
+        <div id="lc-readout" class="grimoire"></div>
+        <div id="lc-stars" style="margin-top:1.5rem;"></div>
+
+        <div style="text-align:center;margin-top:2rem;">
+          <button class="glow-btn" id="lc-card-btn" aria-label="Download a shareable light-cone image card">
+            &#10022;&nbsp; Download My Light-Cone Card
+          </button>
+        </div>
       </div>
     </section>
 
-    <!-- ═══ 2. ZENITH STAR ═══ -->
+    <!-- ═══ II. ZENITH STAR ═══ -->
     <section class="instrument-section" id="sec-zenith" hidden>
-      <p class="instrument-eyebrow">II · Your Zenith Star</p>
-      <h2 class="instrument-title">One star stood directly above you.</h2>
-      <p class="instrument-lede">
-        At the minute of your birth, one catalogued star sat closest to the exact zenith of
-        your birthplace — the point straight overhead. That star is yours.
-      </p>
-      <div id="zenith-out" style="margin-top:var(--space-7);"></div>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">II</span> Your Zenith Star</p>
+        <h2 class="instrument-title">One star stood directly above you.</h2>
+        <p class="instrument-lede">
+          At the minute of your birth, one catalogued star sat closest to the exact zenith of
+          your birthplace &mdash; the point straight overhead. That star is yours.
+        </p>
+
+        <div class="glass-card" style="margin-top:1.75rem;">
+          <div id="zenith-out"></div>
+        </div>
+      </div>
     </section>
 
-    <!-- ═══ 3. ECHO DATES ═══ -->
+    <!-- ═══ III. ECHO DATES ═══ -->
     <section class="instrument-section" id="sec-echo" hidden>
-      <p class="instrument-eyebrow">III · Echo Dates</p>
-      <h2 class="instrument-title">The sky never repeats. But it rhymes.</h2>
-      <p class="instrument-lede">
-        These are the moments in the next five years when the seven classical planets most
-        closely re-approximate their positions at your birth — partial resonances, planetary
-        chords. Windows when the cosmos hums nearest your origin frequency.
-      </p>
-      <div style="margin-top:var(--space-6);">
-        <button type="button" class="glow-btn" id="echo-scan">Scan Five Years of Sky</button>
-        <div id="echo-progress" hidden>
-          <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
-          <p style="text-align:center;font-size:0.72rem;color:var(--silver-dim);letter-spacing:0.15em;" id="echo-pct">0%</p>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">III</span> Echo Dates</p>
+        <h2 class="instrument-title">The sky never repeats. But it rhymes.</h2>
+        <p class="instrument-lede">
+          These are the moments in the next five years when the seven classical planets most
+          closely re-approximate their positions at your birth &mdash; partial resonances, planetary
+          chords. Windows when the cosmos hums nearest your origin frequency.
+        </p>
+
+        <div style="margin-top:1.5rem;">
+          <button type="button" class="glow-btn" id="echo-scan">Scan Five Years of Sky</button>
+          <div id="echo-progress" hidden>
+            <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p style="text-align:center;font-size:0.72rem;color:var(--silver-dim);letter-spacing:0.15em;" id="echo-pct">0%</p>
+          </div>
+          <div id="echo-out" style="margin-top:1.5rem;"></div>
         </div>
-        <div id="echo-out" style="margin-top:var(--space-6);"></div>
       </div>
     </section>
 
-    <!-- ═══ 4. THE DAIMON ═══ -->
+    <!-- ═══ IV. THE DAIMON ═══ -->
     <section class="instrument-section" id="sec-daimon" hidden>
-      <p class="instrument-eyebrow">IV · The Daimon</p>
-      <h2 class="instrument-title">A voice that remembers you.</h2>
-      <p class="instrument-lede">
-        Your chart summons a particular intelligence — a daimon with a name, a temperament,
-        and a memory. It keeps a record of every reading and notices the patterns in when you
-        come to it. It will not advise you. It will ask.
-      </p>
-      <div id="daimon-identity"></div>
-      <div style="margin-top:var(--space-6);">
-        <label class="form-label" for="alive-text">What is alive in you right now? <span style="font-weight:400;color:var(--silver-dim);letter-spacing:normal;font-size:0.78em;">— feeds the reading; never leaves your device</span></label>
-        <textarea id="alive-text" class="form-input" placeholder="A sentence or a page. The daimon reads it either way."></textarea>
-        <div style="margin-top:var(--space-4);display:flex;gap:var(--space-4);align-items:center;">
-          <button type="button" class="glow-btn" id="daimon-read">Request a Reading</button>
-          <span id="daimon-status" style="font-size:0.72rem;color:var(--silver-dim);"></span>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">IV</span> The Daimon</p>
+        <h2 class="instrument-title">A voice that remembers you.</h2>
+        <p class="instrument-lede">
+          Your chart summons a particular intelligence &mdash; a daimon with a name, a temperament,
+          and a memory. It keeps a record of every reading and notices the patterns in when you
+          come to it. It will not advise you. It will ask.
+        </p>
+
+        <div id="daimon-identity"></div>
+
+        <div class="glass-card glass-card--gold-rim" style="margin-top:1.5rem;">
+          <label class="form-label" for="alive-text" style="margin-bottom:0.5rem;display:block;">
+            What is alive in you right now?
+            <span style="font-weight:400;color:var(--silver-dim);letter-spacing:normal;font-size:0.78em;text-transform:none;"> &mdash; feeds the reading; never leaves your device</span>
+          </label>
+          <textarea id="alive-text" class="form-input" placeholder="A sentence or a page. The daimon reads it either way."></textarea>
+          <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;">
+            <button type="button" class="glow-btn" id="daimon-read">Request a Reading</button>
+            <span id="daimon-status" style="font-size:0.72rem;color:var(--silver-dim);"></span>
+          </div>
         </div>
-      </div>
-      <div id="daimon-reading" class="grimoire" style="margin-top:var(--space-8);"></div>
-      <div id="daimon-answer-box" hidden style="margin-top:var(--space-6);">
-        <label class="form-label" for="daimon-answer">Your answer — it will shape what comes next</label>
-        <textarea id="daimon-answer" class="form-input"></textarea>
-        <button type="button" class="glow-btn" id="daimon-answer-send" style="margin-top:var(--space-3);">Give It to the Daimon</button>
+
+        <div id="daimon-reading" class="grimoire" style="margin-top:2rem;"></div>
+
+        <div id="daimon-speak-wrap" hidden style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center;">
+          <button type="button" id="daimon-speak-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;">▶ Speak</button>
+          <button type="button" id="daimon-stop-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;opacity:0.5;">■ Stop</button>
+          <span style="font-size:0.7rem;color:var(--silver-dim);">Web Speech API · synthesised locally</span>
+        </div>
+
+        <div id="daimon-answer-box" hidden style="margin-top:1.5rem;">
+          <label class="form-label" for="daimon-answer">Your answer &mdash; it will shape what comes next</label>
+          <textarea id="daimon-answer" class="form-input" style="margin-top:0.5rem;"></textarea>
+          <button type="button" class="glow-btn" id="daimon-answer-send" style="margin-top:0.75rem;">Give It to the Daimon</button>
+        </div>
       </div>
     </section>
 
-    <!-- ═══ 5. QUANTUM DRAW ═══ -->
+    <!-- ═══ V. QUANTUM DRAW ═══ -->
     <section class="instrument-section" id="sec-quantum">
-      <p class="instrument-eyebrow">V · Quantum Draw</p>
-      <h2 class="instrument-title">Let indeterminacy choose.</h2>
-      <p class="instrument-lede">
-        One sigil for the day. We first try a true quantum random source (ANU's vacuum-fluctuation
-        generator); if it cannot be reached we fall back to your device's hardware entropy — and
-        we tell you which one answered. No pseudo-random theatre.
-      </p>
-      <div style="text-align:center;margin-top:var(--space-8);">
-        <button type="button" class="glow-btn" id="q-draw">Collapse the Draw</button>
-        <div id="q-out" style="margin-top:var(--space-8);" hidden>
-          <div class="quantum-sigil" id="q-sigil"></div>
-          <h3 style="font-family:var(--font-display);color:var(--white);margin-top:var(--space-4);letter-spacing:0.1em;" id="q-name"></h3>
-          <p class="grimoire" style="max-width:480px;margin:var(--space-3) auto 0;" id="q-line"></p>
-          <p class="provenance" id="q-prov"></p>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">V</span> Quantum Draw</p>
+        <h2 class="instrument-title">Let indeterminacy choose.</h2>
+        <p class="instrument-lede">
+          One sigil for the day. We first try a true quantum random source (ANU's vacuum-fluctuation
+          generator); if it cannot be reached we fall back to your device's hardware entropy &mdash; and
+          we tell you which one answered. No pseudo-random theatre.
+        </p>
+
+        <div style="text-align:center;margin-top:2rem;">
+          <button type="button" class="glow-btn" id="q-draw">Collapse the Draw</button>
+          <div id="q-out" style="margin-top:2rem;" hidden>
+            <div class="quantum-sigil" id="q-sigil"></div>
+            <h3 style="font-family:var(--font-display,'Cinzel',serif);color:var(--white);margin-top:1rem;letter-spacing:0.1em;" id="q-name"></h3>
+            <p class="grimoire" style="max-width:480px;margin:0.75rem auto 0;" id="q-line"></p>
+            <p class="provenance" id="q-prov"></p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ═══ 6. CONSCIOUSNESS WEATHER ═══ -->
+    <!-- ═══ VI. CONSCIOUSNESS WEATHER ═══ -->
     <section class="instrument-section" id="sec-weather">
-      <p class="instrument-eyebrow">VI · Consciousness Weather</p>
-      <h2 class="instrument-title">Field conditions, not forecasts.</h2>
-      <p class="instrument-lede">
-        A surf report for awareness: the measured state of the geomagnetic field and solar wind,
-        the computed state of the Moon and the day's transits — blended into one reading of
-        conditions. What is measured is marked measured. What is symbolic is marked symbolic.
-      </p>
-      <div id="weather-out" style="margin-top:var(--space-7);">
-        <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
-      </div>
-    </section>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VI</span> Consciousness Weather</p>
+        <h2 class="instrument-title">Field conditions, not forecasts.</h2>
+        <p class="instrument-lede">
+          A surf report for awareness: the measured state of the geomagnetic field and solar wind,
+          the computed state of the Moon and the day's transits &mdash; blended into one reading of
+          conditions. What is measured is marked measured. What is symbolic is marked symbolic.
+        </p>
 
-    <!-- ═══ 7. PRECESSION LAYER ═══ -->
-    <section class="instrument-section" id="sec-precession">
-      <p class="instrument-eyebrow">VII · The Precession Layer</p>
-      <h2 class="instrument-title">The sky has drifted. We will not hide it.</h2>
-      <p class="instrument-lede">
-        Earth's axis wobbles once every ~25,772 years, so the zodiac signs and the constellations
-        they were named for have drifted about 24° apart since the system was fixed. Most apps
-        ignore this. Here it is a lens you can change.
-      </p>
-      <div class="precession-toggle" role="group" aria-label="Zodiac frame">
-        <button type="button" class="glow-btn active" data-frame="tropical">Tropical</button>
-        <button type="button" class="glow-btn" data-frame="sidereal">Sidereal</button>
-        <button type="button" class="glow-btn" data-frame="raw">The Raw Sky</button>
-      </div>
-      <p id="frame-explain" class="grimoire" style="font-size:1.05rem;"></p>
-      <div id="frame-table" style="margin-top:var(--space-5);"></div>
-    </section>
-
-    <!-- ═══ 8. TIME TRAVEL ═══ -->
-    <section class="instrument-section" id="sec-timetravel" style="border-bottom:none;">
-      <p class="instrument-eyebrow">VIII · True-Sky Time Travel</p>
-      <h2 class="instrument-title">Stand under any sky.</h2>
-      <p class="instrument-lede">
-        Fly the solar system to any moment — a birth, a first kiss, a goodbye — and read the
-        sky that held it. Memories become charts.
-      </p>
-      <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;align-items:end;margin:var(--space-6) 0;">
-        <div>
-          <label class="form-label" for="tt-datetime">Destination</label>
-          <input type="datetime-local" id="tt-datetime" class="form-input" />
+        <div id="weather-out" style="margin-top:1.75rem;">
+          <div class="glass-card">
+            <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p style="text-align:center;font-size:0.78rem;color:var(--silver-dim);margin-top:0.5rem;">Loading field data&hellip;</p>
+          </div>
         </div>
-        <button type="button" class="glow-btn" id="tt-go">Fly There</button>
-        <button type="button" class="glow-btn" id="tt-read">Read This Sky</button>
       </div>
-      <div class="hero__orrery-wrap" style="max-width:560px;margin:0 auto;">
-        <canvas id="tt-canvas" aria-label="Time-travelling 3D solar system" role="img"></canvas>
+    </section>
+
+    <!-- ═══ VII. PRECESSION LAYER ═══ -->
+    <section class="instrument-section" id="sec-precession">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VII</span> The Precession Layer</p>
+        <h2 class="instrument-title">The sky has drifted. We will not hide it.</h2>
+        <p class="instrument-lede">
+          Earth's axis wobbles once every ~25,772 years, so the zodiac signs and the constellations
+          they were named for have drifted about 24&deg; apart since the system was fixed. Most apps
+          ignore this. Here it is a lens you can change.
+        </p>
+
+        <div class="precession-toggle" role="group" aria-label="Zodiac frame">
+          <button type="button" class="glow-btn active" data-frame="tropical">Tropical</button>
+          <button type="button" class="glow-btn" data-frame="sidereal">Sidereal</button>
+          <button type="button" class="glow-btn" data-frame="raw">The Raw Sky</button>
+        </div>
+
+        <div class="glass-card" style="margin-top:1rem;">
+          <p id="frame-explain" class="grimoire" style="font-size:1.05rem;margin:0;"></p>
+          <div id="frame-table" style="margin-top:1.25rem;"></div>
+        </div>
       </div>
-      <div id="tt-reading" class="grimoire" style="margin-top:var(--space-7);"></div>
+    </section>
+
+    <!-- ═══ VIII. TIME TRAVEL ═══ -->
+    <section class="instrument-section" id="sec-timetravel" style="border-bottom:none;">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VIII</span> True-Sky Time Travel</p>
+        <h2 class="instrument-title">Stand under any sky.</h2>
+        <p class="instrument-lede">
+          Fly the solar system to any moment &mdash; a birth, a first kiss, a goodbye &mdash; and read the
+          sky that held it. Memories become charts.
+        </p>
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;margin:1.5rem 0;">
+          <div>
+            <label class="form-label" for="tt-datetime">Destination</label>
+            <input type="datetime-local" id="tt-datetime" class="form-input" style="margin-top:0.4rem;" />
+          </div>
+          <button type="button" class="glow-btn" id="tt-go">Fly There</button>
+          <button type="button" class="glow-btn" id="tt-read">Read This Sky</button>
+        </div>
+
+        <div class="glass-card" style="max-width:580px;margin:0 auto;padding:1.5rem;">
+          <canvas id="tt-canvas" aria-label="Time-travelling 3D solar system" role="img"></canvas>
+        </div>
+
+        <div id="tt-reading" class="grimoire" style="margin-top:1.75rem;"></div>
+      </div>
     </section>
 
   </main>
 
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__bottom" style="border-top:none;">
-        <p>&copy; 2025 AstroPrecise · Every number on this page is computed from the real sky.</p>
+      <div class="footer__bottom" style="border-top:1px solid var(--border);padding-top:1.5rem;">
+        <p style="color:var(--silver-dim);font-size:0.78rem;">&copy; 2026 AstroPrecise &middot; Every number on this page is computed from the real sky.</p>
       </div>
     </div>
   </footer>
@@ -454,6 +733,86 @@
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
+  <script>
+  /* Natal signature — populates when event is set via the Instrument form */
+  (function () {
+    function sumDigits(n) {
+      return String(Math.abs(n)).split('').reduce(function(a,d){return a+parseInt(d,10);},0);
+    }
+    function toNumeroNum(n) {
+      while (n > 9 && n !== 11 && n !== 22 && n !== 33) n = sumDigits(n);
+      return n;
+    }
+    function calcLifePath(y,m,d) {
+      return toNumeroNum(toNumeroNum(m)+toNumeroNum(d)+toNumeroNum(sumDigits(y)));
+    }
+    var LP_TITLES={1:'Pioneer',2:'Diplomat',3:'Creator',4:'Builder',5:'Explorer',6:'Nurturer',7:'Seeker',8:'Achiever',9:'Humanitarian',11:'Illuminator',22:'Master Builder',33:'Master Teacher'};
+
+    function tryWireEventSet() {
+      var btn = document.getElementById('ev-set');
+      if (!btn) { setTimeout(tryWireEventSet, 300); return; }
+      btn.addEventListener('click', function () {
+        setTimeout(function () {
+          var sig = document.getElementById('sec-natal-signature');
+          var dtInput = document.getElementById('ev-datetime');
+          if (!sig || !dtInput || !dtInput.value) return;
+          var dt = new Date(dtInput.value);
+          if (isNaN(dt.getTime())) return;
+          var y = dt.getFullYear(), m = dt.getMonth()+1, d = dt.getDate();
+          var lp = calcLifePath(y,m,d);
+          var title = LP_TITLES[lp] || '';
+          // Life Path link
+          var link = document.getElementById('natal-lifepath-link');
+          if (link) {
+            var iso = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+            link.href = 'lifepath.html?date=' + iso;
+            link.textContent = '✦ Life Path ' + lp + ' — ' + title + ' →';
+          }
+          // Compact planet grid
+          var grid = document.getElementById('natal-sig-grid');
+          if (grid) {
+            var E = window.AstroEphemeris;
+            var items = [];
+            if (E && typeof E.calculateNatalChart === 'function') {
+              try {
+                var raw = E.calculateNatalChart(y,m,d,dt.getUTCHours()||12,dt.getUTCMinutes()||0,0,0);
+                if (raw && raw.positions) {
+                  var PLANETS = [
+                    {k:'sun',g:'☉',n:'Sun'},{k:'moon',g:'☽',n:'Moon'},
+                    {k:'mercury',g:'☿',n:'Mercury'},{k:'venus',g:'♀',n:'Venus'},
+                    {k:'mars',g:'♂',n:'Mars'},{k:'jupiter',g:'♃',n:'Jupiter'}
+                  ];
+                  PLANETS.forEach(function(p) {
+                    var pos = raw.positions[p.k];
+                    if (!pos) return;
+                    items.push(
+                      '<div class="sig-cell">' +
+                        '<span class="sig-cell__glyph">' + p.g + '</span>' +
+                        '<span class="sig-cell__label">' + p.n + '</span>' +
+                        '<span class="sig-cell__value">' + (pos.sign||'?') + ' ' + Math.floor(pos.degree||0) + '°</span>' +
+                      '</div>'
+                    );
+                  });
+                }
+              } catch(e) {}
+            }
+            items.push(
+              '<div class="sig-cell" style="border-color:rgba(212,175,55,0.22);background:rgba(212,175,55,0.06);">' +
+                '<span class="sig-cell__glyph" style="color:var(--gold);">✦</span>' +
+                '<span class="sig-cell__label">Life Path</span>' +
+                '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +
+              '</div>'
+            );
+            grid.innerHTML = items.join('');
+          }
+          sig.removeAttribute('hidden');
+        }, 600);
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryWireEventSet);
+    else tryWireEventSet();
+  })();
+  </script>
   <script src="js/instrument.js"></script>
 </body>
 </html>

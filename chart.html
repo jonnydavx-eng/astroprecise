@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AstroPrecise Birth Chart Calculator — enter your birth date, time, and location for a precise natal chart accurate to arcminutes." />
-  <title>Birth Chart Calculator | AstroPrecise</title>
+  <title>Free Birth Chart Calculator — Natal Chart, Rising Sign &amp; Houses | AstroPrecise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -21,94 +21,201 @@
   <meta name="twitter:title" content="Birth Chart Calculator | AstroPrecise" />
   <meta name="twitter:description" content="Free natal chart calculator — enter your birth date, time and place for a precise birth chart with Sun, Moon, Rising, houses and aspects." />
   <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
-  <meta name="theme-color" content="#090b16" />
+  <meta name="theme-color" content="#0A0B1F" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <link rel="stylesheet" href="css/main.css" />
   <style>
-    /* ── Chart-page specific enhancements ── */
+    /* ═══════════════════════════════════════════════════════════════
+       CHART PAGE — PREMIUM REDESIGN
+       Glassmorphism · Gold accents · Deep-void palette
+    ═══════════════════════════════════════════════════════════════ */
 
-    /* Form progress indicator */
-    .form-progress {
-      display: flex;
+    /* ── Hero: compact ──────────────────────────────────────────── */
+    .chart-hero {
+      position: relative;
+      padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-12);
+      text-align: center;
+      overflow: hidden;
+    }
+    .chart-hero__eyebrow {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 0;
+      gap: var(--space-3);
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: var(--space-5);
+    }
+    .chart-hero__eyebrow::before,
+    .chart-hero__eyebrow::after {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .chart-hero__eyebrow::after { background: linear-gradient(90deg, var(--gold), transparent); }
+    .chart-hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, var(--gold-pale) 0%, var(--white) 45%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0 auto var(--space-5);
+      line-height: 1.1;
+    }
+    .chart-hero__subtitle {
+      max-width: 580px;
+      margin: 0 auto;
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.75;
+    }
+    .chart-hero__orb-a {
+      position: absolute;
+      top: -80px; left: -120px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(42,74,148,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .chart-hero__orb-b {
+      position: absolute;
+      top: 0; right: -80px;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110,26,38,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Main layout: form + results ───────────────────────────── */
+    .chart-layout {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 var(--space-6) var(--space-24);
+    }
+
+    /* ── Premium glassmorphism form card ───────────────────────── */
+    .form-glass {
+      background: rgba(13, 17, 36, 0.72);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(150, 175, 230, 0.12);
+      border-top: 1px solid rgba(200, 208, 232, 0.18);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-12) var(--space-12);
+      box-shadow:
+        0 32px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(150,175,230,0.05) inset,
+        0 1px 0 rgba(200,208,232,0.12) inset;
+      position: relative;
+      overflow: hidden;
+    }
+    .form-glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(42,74,148,0.06) 0%,
+        transparent 50%,
+        rgba(110,26,38,0.04) 100%);
+      pointer-events: none;
+    }
+    @media (max-width: 640px) {
+      .form-glass { padding: var(--space-8) var(--space-6); border-radius: var(--radius-xl); }
+    }
+
+    /* ── Form header ────────────────────────────────────────────── */
+    .form-glass__header {
+      text-align: center;
       margin-bottom: var(--space-10);
     }
-    .form-step {
-      display: flex;
-      flex-direction: column;
+    .form-glass__icon {
+      display: inline-flex;
       align-items: center;
-      gap: var(--space-2);
-      position: relative;
-      flex: 1;
-      max-width: 120px;
-    }
-    .form-step__dot {
-      width: 32px;
-      height: 32px;
+      justify-content: center;
+      width: 52px; height: 52px;
       border-radius: 50%;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(196,146,10,0.2), rgba(42,74,148,0.15));
+      border: 1px solid rgba(196,146,10,0.35);
+      font-size: 1.4rem;
+      color: var(--gold);
+      margin-bottom: var(--space-4);
+      box-shadow: 0 0 24px rgba(196,146,10,0.15);
+    }
+    .form-glass__title {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-2);
+    }
+    .form-glass__sub {
+      font-size: 0.8rem;
+      color: var(--silver-dim);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Section labels inside form ─────────────────────────────── */
+    .form-section-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin: var(--space-10) 0 var(--space-6);
+    }
+    .form-section-label:first-of-type { margin-top: 0; }
+    .form-section-label__num {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: rgba(196,146,10,0.15);
+      border: 1px solid rgba(196,146,10,0.35);
+      font-size: 0.6rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--silver-dim);
-      transition: all var(--transition-base);
-      position: relative;
-      z-index: 1;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      flex-shrink: 0;
     }
-    .form-step--active .form-step__dot {
-      background: linear-gradient(135deg, var(--amethyst) 0%, var(--crimson) 100%);
-      border-color: transparent;
-      color: var(--white);
-      box-shadow: 0 0 16px rgba(42, 74, 148,0.5);
-    }
-    .form-step--done .form-step__dot {
-      background: var(--gold);
-      border-color: transparent;
-      color: var(--bg);
-    }
-    .form-step__label {
-      font-size: 0.58rem;
-      letter-spacing: 0.14em;
+    .form-section-label__text {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--silver-dim);
-      text-align: center;
+      color: var(--gold);
       white-space: nowrap;
     }
-    .form-step--active .form-step__label { color: var(--amethyst-bright); }
-    .form-step--done .form-step__label { color: var(--gold); }
-    .form-step__line {
+    .form-section-label::after {
+      content: '';
       flex: 1;
       height: 1px;
-      background: var(--border);
-      margin-top: -18px;
-      max-width: 80px;
+      background: linear-gradient(90deg, rgba(196,146,10,0.3), transparent);
     }
-    .form-step__line--done { background: var(--gold); opacity: 0.5; }
 
-    /* Field validation states */
-    .form-group { position: relative; }
+    /* ── Form groups ────────────────────────────────────────────── */
+    .form-group { position: relative; margin-bottom: var(--space-5); }
     .form-group.is-valid .form-input,
-    .form-group.is-valid .form-select { border-color: rgba(14,140,80,0.45); }
-    .form-group.is-valid .form-input:focus,
-    .form-group.is-valid .form-select:focus { box-shadow: 0 0 0 2px rgba(14,140,80,0.18); }
+    .form-group.is-valid .form-select { border-color: rgba(14,140,80,0.4); }
+    .form-group.is-valid .form-input:focus { box-shadow: 0 0 0 2px rgba(14,140,80,0.15); }
     .form-group.is-error .form-input,
-    .form-group.is-error .form-select { border-color: rgba(176, 74, 82,0.5); }
-    .form-group.is-error .form-input:focus { box-shadow: 0 0 0 2px rgba(176, 74, 82,0.18); }
+    .form-group.is-error .form-select { border-color: rgba(176,74,82,0.5); }
+    .form-group.is-error .form-input:focus { box-shadow: 0 0 0 2px rgba(176,74,82,0.18); }
     .form-group__check {
       position: absolute;
       right: 14px;
-      top: 50%;
+      top: calc(50% + 10px);
       transform: translateY(-50%);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #0e9c52;
       opacity: 0;
       transition: opacity var(--transition-fast);
@@ -116,7 +223,7 @@
     }
     .form-group.is-valid .form-group__check { opacity: 1; }
     .form-error-msg {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: var(--crimson-light);
       margin-top: var(--space-1);
       display: none;
@@ -124,12 +231,12 @@
     }
     .form-group.is-error .form-error-msg { display: block; }
 
-    /* Time-of-day selector */
+    /* ── Time-of-day selector ───────────────────────────────────── */
     .time-selector {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: var(--space-2);
-      margin-bottom: var(--space-3);
+      margin-bottom: var(--space-4);
     }
     .time-btn {
       display: flex;
@@ -137,56 +244,139 @@
       align-items: center;
       gap: 4px;
       padding: var(--space-3) var(--space-2);
-      background: var(--surface);
+      background: rgba(13,17,36,0.6);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       cursor: pointer;
       transition: all var(--transition-fast);
       color: var(--silver-dim);
-      font-size: 0.58rem;
+      font-size: 0.55rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      font-family: var(--font-sans);
+      font-family: var(--font-body);
       font-weight: 600;
       line-height: 1;
     }
-    .time-btn__icon { font-size: 1.3rem; line-height: 1; }
+    .time-btn__icon { font-size: 1.2rem; line-height: 1; }
     .time-btn:hover {
-      border-color: rgba(196,146,10,0.3);
-      background: var(--surface-2);
+      border-color: rgba(196,146,10,0.35);
+      background: rgba(24,36,76,0.7);
       color: var(--gold-pale);
     }
     .time-btn.active {
       border-color: var(--gold);
-      background: linear-gradient(135deg,rgba(196,146,10,0.12),rgba(42, 74, 148,0.1));
+      background: linear-gradient(135deg, rgba(196,146,10,0.14), rgba(42,74,148,0.1));
       color: var(--gold-pale);
-      box-shadow: 0 0 12px rgba(196,146,10,0.15);
+      box-shadow: 0 0 14px rgba(196,146,10,0.18);
     }
     @media (max-width: 480px) {
       .time-selector { grid-template-columns: repeat(3, 1fr); }
     }
 
-    /* Divider rule with glyph */
+    /* ── House system cards ─────────────────────────────────────── */
+    .house-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+    }
+    .house-card {
+      padding: var(--space-5) var(--space-4);
+      background: rgba(13,17,36,0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+    .house-card:hover {
+      border-color: rgba(196,146,10,0.3);
+      background: rgba(24,36,76,0.65);
+    }
+    .house-card.active {
+      border-color: rgba(196,146,10,0.6);
+      background: linear-gradient(135deg, rgba(196,146,10,0.1), rgba(42,74,148,0.08));
+      box-shadow: 0 0 20px rgba(196,146,10,0.1);
+    }
+    .house-card.active::after {
+      content: '✓';
+      position: absolute;
+      top: var(--space-2);
+      right: var(--space-3);
+      color: var(--gold);
+      font-size: 0.7rem;
+    }
+    .house-card__name {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: var(--space-2);
+    }
+    .house-card__desc {
+      font-size: 0.65rem;
+      color: var(--silver-dim);
+      line-height: 1.55;
+    }
+    @media (max-width: 500px) { .house-cards { grid-template-columns: 1fr; } }
+
+    /* ── Form divider ───────────────────────────────────────────── */
     .form-divider {
       display: flex;
       align-items: center;
       gap: var(--space-4);
-      margin: var(--space-6) 0;
-      color: var(--gold);
-      opacity: 0.35;
-      font-size: 0.85rem;
+      margin: var(--space-8) 0;
+      color: rgba(196,146,10,0.4);
+      font-size: 0.9rem;
     }
     .form-divider::before, .form-divider::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: var(--border);
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.2), transparent);
     }
 
-    /* Animated submit button */
-    #calculate-btn { position: relative; overflow: hidden; }
-    #calculate-btn .btn-idle { transition: opacity var(--transition-fast); }
-    #calculate-btn .btn-loading {
+    /* ── CTA buttons row ────────────────────────────────────────── */
+    .form-cta {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .btn--calculate {
+      flex: 1;
+      min-width: 220px;
+      background: linear-gradient(135deg, #c4920a 0%, #8a5f00 100%);
+      color: #0A0B1F;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: var(--space-5) var(--space-8);
+      border: none;
+      border-radius: var(--radius-xl);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-base);
+      box-shadow: 0 8px 32px rgba(196,146,10,0.35), 0 0 0 1px rgba(196,146,10,0.4);
+    }
+    .btn--calculate::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    .btn--calculate:hover::before { opacity: 1; }
+    .btn--calculate:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 40px rgba(196,146,10,0.45), 0 0 0 1px rgba(196,146,10,0.5);
+    }
+    .btn--calculate:active { transform: translateY(0); }
+    .btn--calculate .btn-idle { display: flex; align-items: center; gap: var(--space-2); }
+    .btn--calculate .btn-loading {
       position: absolute;
       inset: 0;
       display: flex;
@@ -196,108 +386,356 @@
       opacity: 0;
       transition: opacity var(--transition-fast);
     }
-    #calculate-btn.is-loading .btn-idle { opacity: 0; }
-    #calculate-btn.is-loading .btn-loading { opacity: 1; }
+    .btn--calculate.is-loading .btn-idle { opacity: 0; }
+    .btn--calculate.is-loading .btn-loading { opacity: 1; }
     .btn-spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(9,11,22,0.3);
+      border-top-color: #0A0B1F;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* House system cards instead of select */
-    .house-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-3);
-    }
-    .house-card {
-      padding: var(--space-4);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+    .btn--sample {
+      padding: var(--space-5) var(--space-6);
+      background: transparent;
+      color: var(--silver);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-xl);
       cursor: pointer;
       transition: all var(--transition-fast);
-      position: relative;
+      white-space: nowrap;
     }
-    .house-card:hover { border-color: rgba(196,146,10,0.3); background: var(--surface-2); }
-    .house-card.active {
-      border-color: var(--gold);
-      background: linear-gradient(135deg,rgba(196,146,10,0.1),rgba(42, 74, 148,0.08));
+    .btn--sample:hover {
+      border-color: rgba(196,146,10,0.4);
+      color: var(--gold-pale);
+      background: rgba(196,146,10,0.06);
     }
-    .house-card.active::after {
-      content: '✓';
-      position: absolute;
-      top: var(--space-2);
-      right: var(--space-3);
-      color: var(--gold);
-      font-size: 0.75rem;
+
+    /* ── Results section ────────────────────────────────────────── */
+    #chart-result { margin-top: var(--space-10); }
+
+    /* Result header card */
+    .result-header-card {
+      background: rgba(13,17,36,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(150,175,230,0.12);
+      border-top-color: rgba(200,208,232,0.18);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8) var(--space-8);
+      margin-bottom: var(--space-8);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
     }
-    .house-card__name {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    .result-header-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+    }
+    .result-header-meta {}
+    .result-header-meta h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
       color: var(--white);
       margin-bottom: var(--space-1);
+      letter-spacing: 0.03em;
     }
-    .house-card__desc {
-      font-size: 0.68rem;
+    .result-header-meta p {
+      font-size: var(--text-sm);
       color: var(--silver-dim);
-      line-height: 1.5;
+      margin-bottom: var(--space-3);
     }
-    @media (max-width: 500px) { .house-cards { grid-template-columns: 1fr; } }
+    .result-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 3px var(--space-3);
+      background: rgba(42,74,148,0.2);
+      border: 1px solid rgba(42,74,148,0.3);
+      border-radius: var(--radius-full);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--lapis-bright);
+    }
 
-    /* Result tab data rows */
+    /* Action buttons row */
+    .result-actions {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg);
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .action-btn--gold {
+      background: linear-gradient(135deg, rgba(196,146,10,0.2), rgba(196,146,10,0.1));
+      border-color: rgba(196,146,10,0.5);
+      color: var(--gold-pale);
+    }
+    .action-btn--gold:hover {
+      background: linear-gradient(135deg, rgba(196,146,10,0.3), rgba(196,146,10,0.18));
+      border-color: var(--gold);
+      box-shadow: 0 0 16px rgba(196,146,10,0.2);
+    }
+    .action-btn--ghost {
+      background: rgba(150,175,230,0.06);
+      border-color: var(--border-2);
+      color: var(--silver);
+    }
+    .action-btn--ghost:hover {
+      border-color: rgba(150,175,230,0.35);
+      color: var(--white);
+      background: rgba(150,175,230,0.1);
+    }
+    .action-btn--primary {
+      background: linear-gradient(135deg, rgba(42,74,148,0.35), rgba(42,74,148,0.2));
+      border-color: rgba(42,74,148,0.5);
+      color: var(--lapis-bright);
+    }
+    .action-btn--primary:hover {
+      background: linear-gradient(135deg, rgba(42,74,148,0.5), rgba(42,74,148,0.3));
+      border-color: var(--lapis-light);
+      box-shadow: 0 0 16px rgba(42,74,148,0.2);
+    }
+
+    /* ── Big Three premium cards ─────────────────────────────────── */
+    .big-three-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
+    @media (max-width: 560px) {
+      .big-three-grid { grid-template-columns: 1fr; }
+    }
+    .big-three-card {
+      background: rgba(13,17,36,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(150,175,230,0.1);
+      border-top-color: rgba(200,208,232,0.16);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8) var(--space-6);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all var(--transition-base);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .big-three-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.4), transparent);
+    }
+    .big-three-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(196,146,10,0.2);
+      box-shadow: 0 24px 56px rgba(0,0,0,0.5), 0 0 0 1px rgba(196,146,10,0.1);
+    }
+    .big-three-card__planet {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      margin-bottom: var(--space-3);
+    }
+    .big-three-card__glyph {
+      font-size: 2.4rem;
+      line-height: 1;
+      color: var(--gold);
+      margin-bottom: var(--space-3);
+      text-shadow: 0 0 20px rgba(196,146,10,0.4);
+      display: block;
+    }
+    .big-three-card__sign {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-2);
+    }
+    .big-three-card__desc {
+      font-size: 0.65rem;
+      color: var(--silver-dim);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Chart wheel + tabs container ────────────────────────────── */
+    .chart-results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+      margin-bottom: var(--space-8);
+      align-items: start;
+    }
+    @media (max-width: 800px) {
+      .chart-results-grid { grid-template-columns: 1fr; }
+    }
+
+    .chart-wheel-card {
+      background: rgba(13,17,36,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(150,175,230,0.1);
+      border-top-color: rgba(200,208,232,0.16);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .chart-wheel-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: var(--space-4);
+    }
+
+    .tabs-card {
+      background: rgba(13,17,36,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(150,175,230,0.1);
+      border-top-color: rgba(200,208,232,0.16);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    /* ── Premium tabs ────────────────────────────────────────────── */
+    .tabs-nav {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+      background: rgba(9,11,22,0.4);
+    }
+    .tab-trigger {
+      padding: var(--space-4) var(--space-3);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--silver-dim);
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+    .tab-trigger:hover { color: var(--silver); background: rgba(150,175,230,0.04); }
+    .tab-trigger[aria-selected="true"] {
+      color: var(--gold-pale);
+      border-bottom-color: var(--gold);
+      background: rgba(196,146,10,0.06);
+    }
+    .tab-panel {
+      padding: var(--space-5);
+      max-height: 520px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(196,146,10,0.2) transparent;
+    }
+    .tab-panel[aria-hidden="true"] { display: none; }
+    .tab-panel[aria-hidden="false"] { display: block; }
+
+    /* ── Planet data rows ────────────────────────────────────────── */
     .planet-data-row {
       display: grid;
       grid-template-columns: 32px 1fr auto;
       align-items: center;
       gap: var(--space-3);
       padding: var(--space-3) var(--space-4);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(150,175,230,0.06);
+      transition: background var(--transition-fast);
     }
     .planet-data-row:last-child { border-bottom: none; }
+    .planet-data-row:hover { background: rgba(196,146,10,0.04); }
     .planet-data-row__glyph { font-size: 1.2rem; text-align: center; color: var(--gold-pale); }
     .planet-data-row__name {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--white);
     }
-    .planet-data-row__sign { font-size: 0.8rem; color: var(--silver-dim); }
+    .planet-data-row__sign { font-size: 0.78rem; color: var(--silver-dim); margin-top: 2px; }
     .planet-data-row__deg {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-family: 'Courier New', monospace;
       color: var(--gold);
       opacity: 0.8;
     }
 
-    /* Esoteric section divider in form */
-    .chart-form-panel__section-label {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
+    /* ── Overview analysis sections ──────────────────────────────── */
+    .analysis-section {
       margin-bottom: var(--space-5);
-      margin-top: var(--space-8);
     }
-    .chart-form-panel__section-label span {
+    .analysis-section__title {
       font-size: 0.6rem;
+      font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gold);
-      font-weight: 700;
-      white-space: nowrap;
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
     }
-    .chart-form-panel__section-label::after {
+    .analysis-section__title::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, rgba(196,146,10,0.3), transparent);
+      background: linear-gradient(90deg, rgba(196,146,10,0.2), transparent);
+    }
+    .analysis-section p {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.75;
+    }
+
+    /* ── Loading spinner ─────────────────────────────────────────── */
+    #chart-loading { text-align: center; padding: var(--space-20) 0; }
+
+    /* ── Educational section ─────────────────────────────────────── */
+    .edu-section {
+      background: rgba(13,17,36,0.45);
+      border-top: 1px solid var(--border);
+      padding: var(--space-24) 0;
+    }
+
+    /* ── Responsive tweaks ───────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .result-header-inner { flex-direction: column; }
+      .result-actions { width: 100%; }
+      .action-btn { font-size: 0.65rem; padding: var(--space-3); }
     }
   </style>
 </head>
@@ -318,7 +756,7 @@
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
   <!-- ============================================================
-       NAVIGATION
+       NAVIGATION — Premium
   ============================================================ -->
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
@@ -330,10 +768,11 @@
         <div class="navbar__nav">
           <a href="index.html" class="navbar__link">Home</a>
           <a href="chart.html" class="navbar__link active" aria-current="page">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">Instrument</a>
           <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
-          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
           <a href="profile.html" class="navbar__link">Profile</a>
         </div>
         <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -343,10 +782,11 @@
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
         <a href="index.html" class="navbar__link">Home</a>
         <a href="chart.html" class="navbar__link active" aria-current="page">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">Instrument</a>
         <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
-        <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="ephemeris.html" class="navbar__link">Instrument</a>
+        <a href="shop.html" class="navbar__link">Shop</a>
         <a href="profile.html" class="navbar__link">Profile</a>
       </div>
     </nav>
@@ -355,398 +795,370 @@
   <main id="main-content">
 
     <!-- ============================================================
-         PAGE HEADER
+         HERO — Compact
     ============================================================ -->
-    <section class="page-header" aria-labelledby="page-title">
-      <div class="orb orb--purple" style="top:-100px;left:-100px;" aria-hidden="true"></div>
-      <div class="orb orb--gold" style="top:50px;right:-80px;" aria-hidden="true"></div>
+    <section class="chart-hero" aria-labelledby="page-title">
+      <div class="chart-hero__orb-a" aria-hidden="true"></div>
+      <div class="chart-hero__orb-b" aria-hidden="true"></div>
       <div class="container">
-        <div class="page-header__content text-center">
-          <p class="hero__eyebrow">Natal Chart Engine</p>
-          <h1 class="page-header__title gradient-text" id="page-title">Birth Chart Calculator</h1>
-          <p class="page-header__subtitle" style="margin:0 auto;">
-            Enter your birth details below for a precise natal chart calculated using
-            astronomical algorithms accurate to arcminutes. Your Ascendant, houses, and
-            every planetary position are computed for the exact moment and place you were born.
-          </p>
-        </div>
+        <p class="chart-hero__eyebrow" aria-hidden="true">Natal Chart Engine</p>
+        <h1 class="chart-hero__title" id="page-title">Your Natal Blueprint</h1>
+        <p class="chart-hero__subtitle">
+          Precision astronomy for the moment of your birth — VSOP87 planetary
+          algorithms accurate to arcminutes, with your Ascendant, twelve houses,
+          and every aspect computed privately in your browser.
+        </p>
       </div>
     </section>
 
     <!-- ============================================================
-         CHART FORM
+         MAIN CONTENT
     ============================================================ -->
-    <section class="section" aria-labelledby="form-heading" style="padding-top:var(--space-8);">
-      <div class="container">
-        <div class="chart-form-panel animate-in">
-          <h2 class="chart-form-panel__title" id="form-heading">
-            <div class="chart-form-panel__title-icon" aria-hidden="true">✦</div>
-            Your Birth Details
-          </h2>
+    <div class="chart-layout">
 
-          <!-- Form progress steps -->
-          <div class="form-progress" aria-label="Form completion progress" role="progressbar">
-            <div class="form-step form-step--active" id="step-identity">
-              <div class="form-step__dot">I</div>
-              <span class="form-step__label">Identity</span>
-            </div>
-            <div class="form-step__line" id="line-1"></div>
-            <div class="form-step" id="step-moment">
-              <div class="form-step__dot">II</div>
-              <span class="form-step__label">Moment</span>
-            </div>
-            <div class="form-step__line" id="line-2"></div>
-            <div class="form-step" id="step-place">
-              <div class="form-step__dot">III</div>
-              <span class="form-step__label">Place</span>
-            </div>
-            <div class="form-step__line" id="line-3"></div>
-            <div class="form-step" id="step-reveal">
-              <div class="form-step__dot">✦</div>
-              <span class="form-step__label">Reveal</span>
-            </div>
-          </div>
+      <!-- ── CHART FORM ───────────────────────────────────────────── -->
+      <div class="form-glass animate-in" id="chart-form-wrapper">
 
-          <form id="chart-form" novalidate aria-label="Birth chart calculation form">
-
-            <!-- ── Step I: Identity ─────────────────── -->
-            <div class="chart-form-panel__section-label">
-              <span>I — Identity</span>
-            </div>
-
-            <div class="form-group" id="group-name">
-              <label for="name-input" class="form-label">
-                Your Name <span class="required" aria-hidden="true">*</span>
-              </label>
-              <input
-                type="text"
-                id="name-input"
-                name="name"
-                class="form-input"
-                placeholder="e.g. Jane Doe"
-                autocomplete="name"
-                required
-                aria-required="true"
-                aria-describedby="name-hint"
-              />
-              <span class="form-group__check" aria-hidden="true">✓</span>
-              <p class="form-error-msg">Please enter your name.</p>
-              <p class="form-hint" id="name-hint">Used to label your saved chart.</p>
-            </div>
-
-            <!-- ── Step II: Moment ──────────────────── -->
-            <div class="chart-form-panel__section-label">
-              <span>II — Moment</span>
-            </div>
-
-            <div class="form-row">
-              <!-- Birth Date -->
-              <div class="form-group" id="group-date">
-                <label for="date-input" class="form-label">
-                  Birth Date <span class="required" aria-hidden="true">*</span>
-                </label>
-                <input
-                  type="date"
-                  id="date-input"
-                  name="birth-date"
-                  class="form-input"
-                  required
-                  aria-required="true"
-                  aria-describedby="date-hint"
-                />
-                <span class="form-group__check" aria-hidden="true">✓</span>
-                <p class="form-error-msg">Please enter your birth date.</p>
-                <p class="form-hint" id="date-hint">Your date of birth.</p>
-              </div>
-
-              <!-- Birth Time -->
-              <div class="form-group" id="group-time">
-                <label for="time-input" class="form-label">
-                  Birth Time
-                  <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — optional</span>
-                </label>
-                <input
-                  type="time"
-                  id="time-input"
-                  name="birth-time"
-                  class="form-input"
-                  aria-describedby="time-hint"
-                />
-                <p class="form-hint" id="time-hint">
-                  Needed for your Ascendant &amp; houses.
-                </p>
-              </div>
-            </div>
-
-            <!-- Time-of-day selector -->
-            <div style="margin-bottom:var(--space-5);">
-              <p class="form-label" style="margin-bottom:var(--space-3);">
-                Time of Day
-                <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — tap to approximate if exact time is unknown</span>
-              </p>
-              <div class="time-selector" role="group" aria-label="Time of day selector">
-                <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM">
-                  <span class="time-btn__icon" aria-hidden="true">🌄</span>Dawn
-                </button>
-                <button type="button" class="time-btn" data-time="09:00" aria-label="Morning, around 9:00 AM">
-                  <span class="time-btn__icon" aria-hidden="true">🌅</span>Morning
-                </button>
-                <button type="button" class="time-btn" data-time="12:00" aria-label="Noon, 12:00 PM">
-                  <span class="time-btn__icon" aria-hidden="true">☀️</span>Noon
-                </button>
-                <button type="button" class="time-btn" data-time="15:30" aria-label="Afternoon, around 3:30 PM">
-                  <span class="time-btn__icon" aria-hidden="true">🌤️</span>Afternoon
-                </button>
-                <button type="button" class="time-btn" data-time="20:00" aria-label="Evening, around 8:00 PM">
-                  <span class="time-btn__icon" aria-hidden="true">🌇</span>Evening
-                </button>
-                <button type="button" class="time-btn" data-time="23:30" aria-label="Night, around 11:30 PM">
-                  <span class="time-btn__icon" aria-hidden="true">🌙</span>Night
-                </button>
-              </div>
-            </div>
-
-            <!-- ── Step III: Place ──────────────────── -->
-            <div class="chart-form-panel__section-label">
-              <span>III — Place</span>
-            </div>
-
-            <!-- Location -->
-            <div class="form-group" id="group-city" style="position:relative;">
-              <label for="city-input" class="form-label">
-                Birth City <span class="required" aria-hidden="true">*</span>
-              </label>
-              <div class="input-with-icon">
-                <span class="input-icon" aria-hidden="true">📍</span>
-                <input
-                  type="text"
-                  id="city-input"
-                  name="birth-city"
-                  class="form-input"
-                  placeholder="e.g. London, England or New York, USA"
-                  autocomplete="off"
-                  required
-                  aria-required="true"
-                  aria-autocomplete="list"
-                  aria-controls="city-autocomplete"
-                  aria-describedby="city-hint"
-                />
-              </div>
-              <span class="form-group__check" aria-hidden="true" style="right:14px;top:calc(50% + 12px);">✓</span>
-              <div
-                class="autocomplete-dropdown"
-                id="city-autocomplete"
-                role="listbox"
-                aria-label="City suggestions"
-                hidden
-              ></div>
-              <p class="form-error-msg">Please select a city from the dropdown.</p>
-              <p class="form-hint" id="city-hint">
-                Select a result from the dropdown for precise coordinates.
-              </p>
-            </div>
-
-            <!-- Hidden coordinate / tz fields -->
-            <input type="hidden" id="lat-input" name="latitude" />
-            <input type="hidden" id="lon-input" name="longitude" />
-            <input type="hidden" id="tz-input" name="timezone" />
-
-            <!-- ── House System ─────────────────────── -->
-            <div class="chart-form-panel__section-label" style="margin-top:var(--space-8);">
-              <span>House System</span>
-            </div>
-
-            <div class="house-cards" role="group" aria-label="House system selection">
-              <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
-                <div class="house-card__name">Equal</div>
-                <div class="house-card__desc">Each house spans exactly 30°. Simplest and most widely recommended.</div>
-              </div>
-              <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
-                <div class="house-card__name">Placidus</div>
-                <div class="house-card__desc">Time-based divisions. Most popular in Western astrology today.</div>
-              </div>
-              <div class="house-card" data-value="whole" tabindex="0" role="radio" aria-checked="false">
-                <div class="house-card__name">Whole Sign</div>
-                <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
-              </div>
-            </div>
-            <input type="hidden" id="house-system" name="house-system" value="equal" />
-
-            <!-- Submit -->
-            <div class="form-divider" aria-hidden="true">✦</div>
-
-            <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;">
-              <button type="submit" class="btn btn--primary btn--lg" id="calculate-btn" aria-describedby="submit-hint" style="flex:1;min-width:220px;">
-                <span class="btn-idle">✦ &nbsp;Cast My Natal Chart</span>
-                <span class="btn-loading" aria-hidden="true">
-                  <span class="btn-spinner"></span>Calculating…
-                </span>
-              </button>
-              <button type="button" class="btn btn--outline btn--lg" id="sample-btn" style="white-space:nowrap;">
-                Try a Sample
-              </button>
-            </div>
-            <p class="form-hint" id="submit-hint" style="margin-top:var(--space-3);">
-              Instant calculation — all within your browser. No data is ever sent to a server.
-            </p>
-
-          </form>
-        </div><!-- /.chart-form-panel -->
-
-        <!-- ============================================================
-             CHART RESULTS (hidden until calculated)
-        ============================================================ -->
-        <div id="chart-result" class="hidden" aria-live="polite" aria-label="Birth chart results">
-
-          <!-- Result Header -->
-          <div class="card animate-in" style="margin-bottom:var(--space-6);">
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-4);">
-              <div>
-                <h2 id="result-name" class="section-header__title" style="margin-bottom:var(--space-2);text-align:left;"></h2>
-                <p id="result-date" style="color:var(--color-silver-dim);font-size:var(--text-sm);"></p>
-              </div>
-              <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
-                <button id="share-btn" class="btn btn--outline btn--sm" aria-label="Share this chart">
-                  Share Chart
-                </button>
-                <button id="app-btn" class="btn btn--outline btn--sm" aria-label="Open chart in the AstroPrecise app">
-                  Open in App
-                </button>
-                <button id="save-btn" class="btn btn--primary btn--sm" aria-label="Save chart to your profile">
-                  Save to Profile
-                </button>
-                <button id="print-btn" class="btn btn--outline btn--sm" aria-label="Download chart as PDF">
-                  Download PDF
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Big Three Summary -->
-          <div id="big-three" class="grid-3 animate-in animate-in--delay-1" style="margin-bottom:var(--space-8);" aria-label="Sun, Moon and Rising signs">
-            <!-- JS populates three .card elements -->
-          </div>
-
-          <!-- Chart Wheel + Tabs Layout -->
-          <div class="chart-container animate-in animate-in--delay-2">
-
-            <!-- Natal Wheel -->
-            <div class="chart-wheel-wrapper" aria-label="Natal chart wheel diagram">
-              <div id="natal-wheel" role="img" aria-label="Natal chart wheel"></div>
-            </div>
-
-            <!-- Sidebar: Tabs -->
-            <div class="chart-sidebar">
-              <div class="tabs" role="region" aria-label="Chart data tabs">
-                <div class="tabs__list" role="tablist" aria-label="Chart detail sections">
-                  <button
-                    class="tabs__trigger"
-                    role="tab"
-                    id="tab-overview-btn"
-                    aria-selected="true"
-                    aria-controls="tab-overview"
-                  >Overview</button>
-                  <button
-                    class="tabs__trigger"
-                    role="tab"
-                    id="tab-planets-btn"
-                    aria-selected="false"
-                    aria-controls="tab-planets"
-                  >Planets</button>
-                  <button
-                    class="tabs__trigger"
-                    role="tab"
-                    id="tab-houses-btn"
-                    aria-selected="false"
-                    aria-controls="tab-houses"
-                  >Houses</button>
-                  <button
-                    class="tabs__trigger"
-                    role="tab"
-                    id="tab-aspects-btn"
-                    aria-selected="false"
-                    aria-controls="tab-aspects"
-                  >Aspects</button>
-                </div>
-
-                <!-- Overview Tab -->
-                <div
-                  id="tab-overview"
-                  class="tabs__panel tab-panel"
-                  role="tabpanel"
-                  aria-labelledby="tab-overview-btn"
-                  aria-hidden="false"
-                >
-                  <div id="analysis-content">
-                    <!-- JS populates: sun/moon/rising descriptions, dominant element, modality, etc. -->
-                  </div>
-                </div>
-
-                <!-- Planets Tab -->
-                <div
-                  id="tab-planets"
-                  class="tabs__panel tab-panel"
-                  role="tabpanel"
-                  aria-labelledby="tab-planets-btn"
-                  aria-hidden="true"
-                >
-                  <div id="planets-table">
-                    <!-- JS populates planet position table -->
-                  </div>
-                </div>
-
-                <!-- Houses Tab -->
-                <div
-                  id="tab-houses"
-                  class="tabs__panel tab-panel"
-                  role="tabpanel"
-                  aria-labelledby="tab-houses-btn"
-                  aria-hidden="true"
-                >
-                  <div id="houses-table">
-                    <!-- JS populates house cusps table -->
-                  </div>
-                </div>
-
-                <!-- Aspects Tab -->
-                <div
-                  id="tab-aspects"
-                  class="tabs__panel tab-panel"
-                  role="tabpanel"
-                  aria-labelledby="tab-aspects-btn"
-                  aria-hidden="true"
-                >
-                  <div id="aspects-table">
-                    <!-- JS populates aspect grid table -->
-                  </div>
-                </div>
-
-              </div><!-- /.tabs -->
-            </div><!-- /.chart-sidebar -->
-          </div><!-- /.chart-container -->
-
-        </div><!-- /#chart-result -->
-
-        <!-- Loading state -->
-        <div id="chart-loading" class="hidden" aria-live="polite" style="text-align:center;padding:var(--space-20) 0;">
-          <div class="spinner" role="status" aria-label="Calculating your birth chart">
-            <div class="spinner__ring spinner__ring--outer"></div>
-            <div class="spinner__ring spinner__ring--mid"></div>
-            <div class="spinner__ring spinner__ring--inner"></div>
-            <div class="spinner__center"></div>
-          </div>
-          <p style="margin-top:var(--space-6);color:var(--color-silver-dim);">
-            Calculating planetary positions…
-          </p>
+        <div class="form-glass__header">
+          <div class="form-glass__icon" aria-hidden="true">✦</div>
+          <h2 class="form-glass__title">Your Birth Details</h2>
+          <p class="form-glass__sub">All calculations happen instantly in your browser — nothing is sent to any server.</p>
         </div>
 
-      </div><!-- /.container -->
-    </section>
+        <form id="chart-form" novalidate aria-label="Birth chart calculation form">
+
+          <!-- ── I · Identity ─────────────────────────────────────── -->
+          <div class="form-section-label">
+            <div class="form-section-label__num">I</div>
+            <span class="form-section-label__text">Identity</span>
+          </div>
+
+          <div class="form-group" id="group-name">
+            <label for="name-input" class="form-label">
+              Your Name <span class="required" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="name-input"
+              name="name"
+              class="form-input"
+              placeholder="e.g. Jane Doe"
+              autocomplete="name"
+              required
+              aria-required="true"
+              aria-describedby="name-hint"
+            />
+            <span class="form-group__check" aria-hidden="true">✓</span>
+            <p class="form-error-msg" role="alert">Please enter your name.</p>
+            <p class="form-hint" id="name-hint">Used to label your saved chart.</p>
+          </div>
+
+          <!-- ── II · Moment ──────────────────────────────────────── -->
+          <div class="form-section-label">
+            <div class="form-section-label__num">II</div>
+            <span class="form-section-label__text">Moment of Birth</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" id="group-date">
+              <label for="date-input" class="form-label">
+                Birth Date <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="date"
+                id="date-input"
+                name="birth-date"
+                class="form-input"
+                required
+                aria-required="true"
+                aria-describedby="date-hint"
+              />
+              <span class="form-group__check" aria-hidden="true">✓</span>
+              <p class="form-error-msg" role="alert">Please enter your birth date.</p>
+              <p class="form-hint" id="date-hint">Your date of birth.</p>
+            </div>
+
+            <div class="form-group" id="group-time">
+              <label for="time-input" class="form-label">
+                Birth Time
+                <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — optional</span>
+              </label>
+              <input
+                type="time"
+                id="time-input"
+                name="birth-time"
+                class="form-input"
+                aria-describedby="time-hint"
+              />
+              <p class="form-hint" id="time-hint">Needed for your Ascendant &amp; houses.</p>
+            </div>
+          </div>
+
+          <!-- Time-of-day quick picks -->
+          <div style="margin-bottom:var(--space-6);">
+            <p class="form-label" style="margin-bottom:var(--space-3);">
+              Time of Day
+              <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — tap to approximate if exact time is unknown</span>
+            </p>
+            <div class="time-selector" role="group" aria-label="Time of day selector">
+              <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM">
+                <span class="time-btn__icon" aria-hidden="true">🌄</span>Dawn
+              </button>
+              <button type="button" class="time-btn" data-time="09:00" aria-label="Morning, around 9:00 AM">
+                <span class="time-btn__icon" aria-hidden="true">🌅</span>Morning
+              </button>
+              <button type="button" class="time-btn" data-time="12:00" aria-label="Noon, 12:00 PM">
+                <span class="time-btn__icon" aria-hidden="true">☀️</span>Noon
+              </button>
+              <button type="button" class="time-btn" data-time="15:30" aria-label="Afternoon, around 3:30 PM">
+                <span class="time-btn__icon" aria-hidden="true">🌤️</span>Afternoon
+              </button>
+              <button type="button" class="time-btn" data-time="20:00" aria-label="Evening, around 8:00 PM">
+                <span class="time-btn__icon" aria-hidden="true">🌇</span>Evening
+              </button>
+              <button type="button" class="time-btn" data-time="23:30" aria-label="Night, around 11:30 PM">
+                <span class="time-btn__icon" aria-hidden="true">🌙</span>Night
+              </button>
+            </div>
+          </div>
+
+          <!-- ── III · Place ──────────────────────────────────────── -->
+          <div class="form-section-label">
+            <div class="form-section-label__num">III</div>
+            <span class="form-section-label__text">Place of Birth</span>
+          </div>
+
+          <div class="form-group" id="group-city" style="position:relative;">
+            <label for="city-input" class="form-label">
+              Birth City <span class="required" aria-hidden="true">*</span>
+            </label>
+            <div class="input-with-icon">
+              <span class="input-icon" aria-hidden="true">📍</span>
+              <input
+                type="text"
+                id="city-input"
+                name="birth-city"
+                class="form-input"
+                placeholder="e.g. London, England or New York, USA"
+                autocomplete="off"
+                required
+                aria-required="true"
+                aria-autocomplete="list"
+                aria-controls="city-autocomplete"
+                aria-describedby="city-hint"
+              />
+            </div>
+            <span class="form-group__check" aria-hidden="true" style="right:14px;top:calc(50% + 12px);">✓</span>
+            <div
+              class="autocomplete-dropdown"
+              id="city-autocomplete"
+              role="listbox"
+              aria-label="City suggestions"
+              hidden
+            ></div>
+            <p class="form-error-msg" role="alert">Please select a city from the dropdown.</p>
+            <p class="form-hint" id="city-hint">Select a result from the dropdown for precise coordinates.</p>
+          </div>
+
+          <!-- Hidden coordinate / tz fields -->
+          <input type="hidden" id="lat-input" name="latitude" />
+          <input type="hidden" id="lon-input" name="longitude" />
+          <input type="hidden" id="tz-input" name="timezone" />
+
+          <!-- ── House System ─────────────────────────────────────── -->
+          <div class="form-section-label" style="margin-top:var(--space-8);">
+            <div class="form-section-label__num" aria-hidden="true">☏</div>
+            <span class="form-section-label__text">House System</span>
+          </div>
+
+          <div class="house-cards" role="group" aria-label="House system selection">
+            <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
+              <div class="house-card__name">Equal</div>
+              <div class="house-card__desc">Each house spans exactly 30°. Simplest and most widely recommended for beginners.</div>
+            </div>
+            <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
+              <div class="house-card__name">Placidus</div>
+              <div class="house-card__desc">Time-based divisions. The most popular system in Western astrology today.</div>
+            </div>
+            <div class="house-card" data-value="whole" tabindex="0" role="radio" aria-checked="false">
+              <div class="house-card__name">Whole Sign</div>
+              <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
+            </div>
+          </div>
+          <input type="hidden" id="house-system" name="house-system" value="equal" />
+
+          <!-- Submit CTA -->
+          <div class="form-divider" aria-hidden="true">✦</div>
+
+          <div class="form-cta">
+            <button type="submit" class="btn--calculate" id="calculate-btn" aria-describedby="submit-hint">
+              <span class="btn-idle">✦ &nbsp;Calculate My Chart</span>
+              <span class="btn-loading" aria-hidden="true">
+                <span class="btn-spinner"></span>Calculating…
+              </span>
+            </button>
+            <button type="button" class="btn--sample" id="sample-btn" aria-label="Load Frida Kahlo sample chart">
+              Sample Chart (Frida Kahlo)
+            </button>
+          </div>
+          <p class="form-hint" id="submit-hint" style="margin-top:var(--space-3);text-align:center;">
+            Instant, private calculation — no data ever leaves your device.
+          </p>
+
+        </form>
+      </div><!-- /.form-glass -->
+
+      <!-- ============================================================
+           CHART RESULTS (hidden until calculated)
+      ============================================================ -->
+      <div id="chart-result" class="hidden" aria-live="polite" aria-label="Birth chart results">
+
+        <!-- Result Header -->
+        <div class="result-header-card animate-in">
+          <div class="result-header-inner">
+            <div class="result-header-meta">
+              <h2 id="result-name"></h2>
+              <p id="result-date"></p>
+              <span class="result-badge">✦ Computed locally · VSOP87 + ELP2000</span>
+            </div>
+            <div class="result-actions" id="result-actions-row">
+              <button id="poster-btn" class="action-btn action-btn--gold" aria-label="Download natal chart poster image">
+                ✦ Download Poster
+              </button>
+              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
+                ↗ Share Chart
+              </button>
+              <button id="save-btn" class="action-btn action-btn--primary" aria-label="Save chart to your profile">
+                ⊕ Save to Profile
+              </button>
+              <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">
+                ◈ Big Three Card
+              </button>
+              <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">
+                ⤓ Export JSON
+              </button>
+              <button id="app-btn" class="action-btn action-btn--ghost" aria-label="Open chart in the AstroPrecise app">
+                ⬡ Open in App
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Big Three -->
+        <div id="big-three" class="big-three-grid animate-in animate-in--delay-1" aria-label="Sun, Moon and Rising signs">
+          <!-- JS populates three .big-three-card elements -->
+        </div>
+
+        <!-- Wheel + Tabs -->
+        <div class="chart-results-grid animate-in animate-in--delay-2">
+
+          <!-- Natal Wheel -->
+          <div class="chart-wheel-card" aria-label="Natal chart wheel diagram">
+            <p class="chart-wheel-label" aria-hidden="true">✦ Natal Wheel</p>
+            <div id="natal-wheel" role="img" aria-label="Natal chart wheel"></div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs-card">
+            <div class="tabs-nav" role="tablist" aria-label="Chart detail sections">
+              <button
+                class="tab-trigger"
+                role="tab"
+                id="tab-overview-btn"
+                aria-selected="true"
+                aria-controls="tab-overview"
+              >Overview</button>
+              <button
+                class="tab-trigger"
+                role="tab"
+                id="tab-planets-btn"
+                aria-selected="false"
+                aria-controls="tab-planets"
+              >Planets</button>
+              <button
+                class="tab-trigger"
+                role="tab"
+                id="tab-houses-btn"
+                aria-selected="false"
+                aria-controls="tab-houses"
+              >Houses</button>
+              <button
+                class="tab-trigger"
+                role="tab"
+                id="tab-aspects-btn"
+                aria-selected="false"
+                aria-controls="tab-aspects"
+              >Aspects</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div
+              id="tab-overview"
+              class="tab-panel tabs__panel"
+              role="tabpanel"
+              aria-labelledby="tab-overview-btn"
+              aria-hidden="false"
+            >
+              <div id="analysis-content"></div>
+            </div>
+
+            <!-- Planets Tab -->
+            <div
+              id="tab-planets"
+              class="tab-panel tabs__panel"
+              role="tabpanel"
+              aria-labelledby="tab-planets-btn"
+              aria-hidden="true"
+            >
+              <div id="planets-table"></div>
+            </div>
+
+            <!-- Houses Tab -->
+            <div
+              id="tab-houses"
+              class="tab-panel tabs__panel"
+              role="tabpanel"
+              aria-labelledby="tab-houses-btn"
+              aria-hidden="true"
+            >
+              <div id="houses-table"></div>
+            </div>
+
+            <!-- Aspects Tab -->
+            <div
+              id="tab-aspects"
+              class="tab-panel tabs__panel"
+              role="tabpanel"
+              aria-labelledby="tab-aspects-btn"
+              aria-hidden="true"
+            >
+              <div id="aspects-table"></div>
+            </div>
+
+          </div><!-- /.tabs-card -->
+        </div><!-- /.chart-results-grid -->
+
+      </div><!-- /#chart-result -->
+
+      <!-- Loading -->
+      <div id="chart-loading" class="hidden" aria-live="polite">
+        <div class="spinner" role="status" aria-label="Calculating your birth chart">
+          <div class="spinner__ring spinner__ring--outer"></div>
+          <div class="spinner__ring spinner__ring--mid"></div>
+          <div class="spinner__ring spinner__ring--inner"></div>
+          <div class="spinner__center"></div>
+        </div>
+        <p style="margin-top:var(--space-6);color:var(--silver-dim);text-align:center;">
+          Calculating planetary positions…
+        </p>
+      </div>
+
+    </div><!-- /.chart-layout -->
 
     <!-- ============================================================
-         EDUCATIONAL INFO
+         EDUCATIONAL SECTION
     ============================================================ -->
-    <section class="section section--alt" aria-labelledby="edu-heading">
+    <section class="edu-section" aria-labelledby="edu-heading">
       <div class="container">
         <header class="section-header">
           <p class="section-header__label">What You'll Discover</p>
@@ -827,11 +1239,12 @@
             <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
             <li><a href="compatibility.html" class="footer__link">Synastry</a></li>
             <li><a href="transits.html" class="footer__link">Transits</a></li>
+            <li><a href="ephemeris.html" class="footer__link">Instrument</a></li>
           </ul>
         </nav>
       </div>
       <div class="footer__bottom">
-        <p>&copy; 2025 AstroPrecise. Powered by accurate astronomical calculations.</p>
+        <p>&copy; 2026 AstroPrecise. Powered by precise astronomical calculations.</p>
       </div>
     </div>
   </footer>
@@ -849,8 +1262,8 @@
   <script src="js/effects.js"></script>
   <script src="js/chart-page.js"></script>
   <script>
-  /* ── Chart form enhancements ── */
-  (function() {
+  /* ── Chart page interaction enhancements ── */
+  (function () {
 
     // Time-of-day selector
     document.querySelectorAll('.time-btn').forEach(btn => {
@@ -865,11 +1278,10 @@
       });
     });
 
-    // Clear active time-btn when user types directly in the time input
+    // Clear active time-btn when user types directly
     const timeInput = document.getElementById('time-input');
     if (timeInput) {
       timeInput.addEventListener('input', () => {
-        // Only clear if the value doesn't match any preset
         const val = timeInput.value;
         const matched = [...document.querySelectorAll('.time-btn')].some(b => b.dataset.time === val);
         if (!matched) document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
@@ -894,16 +1306,15 @@
       if (houseInput) houseInput.value = card.dataset.value;
     }
 
-    // Inline validation — mark field valid/done when it has a value
+    // Inline validation
     function watchField(inputId, groupId) {
-      const input  = document.getElementById(inputId);
-      const group  = document.getElementById(groupId);
+      const input = document.getElementById(inputId);
+      const group = document.getElementById(groupId);
       if (!input || !group) return;
       function check() {
         const filled = input.value.trim() !== '';
         group.classList.toggle('is-valid', filled);
         group.classList.remove('is-error');
-        updateProgress();
       }
       input.addEventListener('input', check);
       input.addEventListener('change', check);
@@ -911,58 +1322,30 @@
         if (input.required && input.value.trim() === '') group.classList.add('is-error');
       });
     }
-    watchField('name-input',  'group-name');
-    watchField('date-input',  'group-date');
-    watchField('time-input',  'group-time');
+    watchField('name-input', 'group-name');
+    watchField('date-input', 'group-date');
+    watchField('time-input', 'group-time');
 
-    // City validation — chart-page.js fires astro:city-selected after a
-    // dropdown pick fills the hidden coordinate fields
-    const cityInput = document.getElementById('city-input');
-    const latInput  = document.getElementById('lat-input');
+    // City validation via custom event
     document.addEventListener('astro:city-selected', () => {
-      const groupCity = document.getElementById('group-city');
-      if (groupCity) {
-        groupCity.classList.add('is-valid');
-        groupCity.classList.remove('is-error');
-      }
-      updateProgress();
+      const g = document.getElementById('group-city');
+      if (g) { g.classList.add('is-valid'); g.classList.remove('is-error'); }
     });
-    if (cityInput && latInput) {
+    const cityInput = document.getElementById('city-input');
+    if (cityInput) {
       cityInput.addEventListener('input', () => {
         const g = document.getElementById('group-city');
         if (g) { g.classList.remove('is-valid'); g.classList.remove('is-error'); }
-        updateProgress();
       });
     }
 
-    // Progress steps
-    function updateProgress() {
-      const nameOk = document.getElementById('name-input')?.value.trim() !== '';
-      const dateOk = document.getElementById('date-input')?.value.trim() !== '';
-      const cityOk = document.getElementById('lat-input')?.value.trim() !== '';
-
-      setStep('step-identity', 'line-1', nameOk, nameOk);
-      setStep('step-moment',   'line-2', nameOk, dateOk);
-      setStep('step-place',    'line-3', nameOk && dateOk, cityOk);
-      setStep('step-reveal',   null,     nameOk && dateOk && cityOk, false);
-    }
-    function setStep(stepId, lineId, isActive, isDone) {
-      const step = document.getElementById(stepId);
-      const line = lineId ? document.getElementById(lineId) : null;
-      if (!step) return;
-      step.classList.toggle('form-step--active', isActive && !isDone);
-      step.classList.toggle('form-step--done', isDone);
-      if (line) line.classList.toggle('form-step__line--done', isDone);
-    }
-
-    // Show spinner on calculate button
+    // Calculate button loading state
     const calcBtn = document.getElementById('calculate-btn');
     const form    = document.getElementById('chart-form');
     if (form && calcBtn) {
       form.addEventListener('submit', () => {
         calcBtn.classList.add('is-loading');
         calcBtn.disabled = true;
-        // Reset after result renders (app.js will re-enable or page re-loads)
         setTimeout(() => {
           calcBtn.classList.remove('is-loading');
           calcBtn.disabled = false;
@@ -970,7 +1353,6 @@
       });
     }
 
-    updateProgress();
   })();
   </script>
 </body>

@@ -1,91 +1,118 @@
 /* ==========================================================================
-   AstroPrecise — Esoteric Alchemical Void Stylesheet
-   Deep midnight void + antique gold + amethyst + ritual crimson
+   AstroPrecise — Premium Cosmic Design System v2
+   Void black + luminous gold + electric violet + cosmic cyan
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
    1. CSS Custom Properties
    -------------------------------------------------------------------------- */
 :root {
-  /* Core backgrounds — midnight void with deep indigo undertone */
-  --bg:   #090b16;
-  --bg-2: #0d1124;
-  --bg-3: #111631;
+  /* ── Core backgrounds ── */
+  --void:  #0A0B1F;          /* deepest void */
+  --bg:    #0A0B1F;
+  --bg-2:  #0D0F26;
+  --bg-3:  #131740;
 
-  /* Glass surfaces — lapis-tinted */
-  --surface:       rgba(17, 26, 54, 0.68);
-  --surface-2:     rgba(24, 36, 76, 0.78);
-  --surface-hover: rgba(32, 48, 98, 0.85);
+  /* ── Glass surfaces ── */
+  --glass:         rgba(15, 18, 50, 0.55);
+  --glass-2:       rgba(20, 24, 64, 0.72);
+  --glass-3:       rgba(10, 12, 36, 0.88);
+  --glass-bg:      rgba(15, 18, 50, 0.55);  /* alias */
+  --surface:       rgba(15, 18, 50, 0.55);  /* legacy alias */
+  --surface-2:     rgba(20, 24, 64, 0.72);
+  --surface-hover: rgba(28, 34, 88, 0.82);
 
-  /* Borders */
-  --border:      rgba(150, 175, 230, 0.12);
-  --border-2:    rgba(150, 175, 230, 0.22);
-  --border-glow: rgba(196, 146, 10, 0.5);      /* antique gold glow */
-  --border-ritual: rgba(110, 26, 38, 0.4);     /* crimson glow */
+  /* ── Borders ── */
+  --border:         rgba(200, 210, 255, 0.10);
+  --border-2:       rgba(200, 210, 255, 0.20);
+  --border-glow:    rgba(212, 175, 55, 0.48);   /* gold glow */
+  --border-ritual:  rgba(123, 44, 191, 0.35);   /* violet glow */
+  --glass-border:       rgba(200, 210, 255, 0.10);
+  --glass-border-glow:  rgba(212, 175, 55, 0.48);
 
-  /* Esoteric colour palette */
-  --gold:           #c4920a;     /* antique gold */
-  --gold-light:     #d4a820;     /* bright antique gold */
-  --gold-pale:      #e8c96a;     /* pale moon-gold */
-  --gold-dim:       rgba(196, 146, 10, 0.18);
+  /* ── Luminous gold (primary accent) ── */
+  --gold:        #D4AF37;
+  --gold-light:  #E8C872;
+  --gold-pale:   #F4E4A8;
+  --gold-dim:    rgba(212, 175, 55, 0.15);
+  --gold-hero:   #E8C872;
+  --gold-hero-light: #F4E4A8;
 
-  /* Lapis lazuli — the pigment of illuminated manuscripts */
-  --lapis:        #2a4a94;       /* deep lapis */
-  --lapis-light:  #5b7fc7;       /* luminous lapis */
-  --lapis-bright: #92b4ee;       /* pale lapis haze */
-  --amethyst:        var(--lapis);        /* legacy alias */
-  --amethyst-light:  var(--lapis-light);
-  --amethyst-bright: var(--lapis-bright);
+  /* ── Electric violet ── */
+  --violet:        #7B2CBF;
+  --violet-light:  #9B59B6;
+  --violet-bright: #C77DFF;
 
-  --crimson:        #6e1a26;     /* oxblood — aged carmine */
-  --crimson-light:  #b04a52;     /* faded carmine */
+  /* ── Lapis (kept as deep variant of violet for backwards compat) ── */
+  --lapis:        #5B3FA0;
+  --lapis-light:  #8B6FD4;
+  --lapis-bright: #BEA8F0;
 
-  --emerald:        #0e5c3a;     /* forest emerald */
-  --emerald-light:  #1a8a56;     /* bright emerald */
+  /* ── Legacy amethyst aliases → now map to violet ── */
+  --amethyst:        var(--violet);
+  --amethyst-light:  var(--violet-light);
+  --amethyst-bright: var(--violet-bright);
 
-  /* Legacy colour aliases (keep compatibility) */
-  --purple:        var(--amethyst);
-  --purple-light:  var(--amethyst-light);
-  --purple-bright: var(--amethyst-bright);
-  --indigo:        #34508c;
+  /* ── Cosmic cyan ── */
+  --cyan:     #00D4FF;
+  --cyan-dim: rgba(0, 212, 255, 0.15);
+
+  /* ── Crimson (ritual accent) ── */
+  --crimson:        #6e1a26;
+  --crimson-light:  #b04a52;
+
+  /* ── Emerald ── */
+  --emerald:        #0e5c3a;
+  --emerald-light:  #1a8a56;
+
+  /* ── Legacy colour aliases ── */
+  --purple:        var(--violet);
+  --purple-light:  var(--violet-light);
+  --purple-bright: var(--violet-bright);
+  --indigo:        #4a3a8c;
   --blue:          #3a7ad4;
   --danger:        var(--crimson-light);
   --success:       var(--emerald-light);
 
-  /* Text — aged parchment warmth */
-  --white:       #f0e8d8;        /* parchment ivory */
-  --silver:      #9aa6c8;        /* moonlit silver-blue */
-  --silver-dim:  #6a7390;        /* dim moonstone */
-  --silver-dark: #2c3450;        /* shadow indigo */
+  /* ── Text ── */
+  --white:       #F8F4EE;
+  --silver:      #C8D0E8;
+  --silver-dim:  #8891AA;
+  --silver-dark: #5a648a;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #2a4a94 0%, #6e1a26 55%, #c4920a 100%);
-  --gradient-gold:    linear-gradient(135deg, #d4a820, #c4920a);
-  --gradient-amethyst: linear-gradient(135deg, #2a4a94, #5b7fc7);
-  --gradient-lapis:    linear-gradient(135deg, #2a4a94, #5b7fc7);
-  --gradient-ritual:  linear-gradient(135deg, #6e1a26, #b04a52);
-  --gradient-cosmic:  linear-gradient(180deg, #090b16 0%, #0d1124 100%);
+  /* ── Gradients ── */
+  --gradient-primary:  linear-gradient(135deg, #7B2CBF 0%, #5B3FA0 50%, #D4AF37 100%);
+  --gradient-gold:     linear-gradient(135deg, #E8C872, #D4AF37);
+  --gradient-violet:   linear-gradient(135deg, #7B2CBF, #9B59B6);
+  --gradient-amethyst: linear-gradient(135deg, #7B2CBF, #9B59B6);
+  --gradient-lapis:    linear-gradient(135deg, #5B3FA0, #8B6FD4);
+  --gradient-ritual:   linear-gradient(135deg, #6e1a26, #b04a52);
+  --gradient-cosmic:   linear-gradient(180deg, #0A0B1F 0%, #0D0F26 100%);
+  --gradient-hero:     linear-gradient(135deg, #7B2CBF 0%, #0D0F26 45%, #D4AF37 100%);
 
-  /* Typography */
+  /* ── Typography ── */
   --font-display: 'Cinzel', 'Playfair Display', serif;
   --font-heading: 'Playfair Display', serif;
   --font-body:    'Inter', sans-serif;
+  --font-sans:    'Inter', sans-serif;   /* alias */
 
-  /* Spacing scale */
+  /* ── Spacing scale ── */
   --space-1:  0.25rem;
   --space-2:  0.5rem;
   --space-3:  0.75rem;
   --space-4:  1rem;
   --space-5:  1.25rem;
   --space-6:  1.5rem;
+  --space-7:  1.75rem;
   --space-8:  2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
+  --space-14: 3.5rem;
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
 
-  /* Border radii */
+  /* ── Border radii ── */
   --radius-sm:   6px;
   --radius-md:   10px;
   --radius-lg:   14px;
@@ -93,12 +120,12 @@
   --radius-2xl:  28px;
   --radius-full: 9999px;
 
-  /* Layout */
+  /* ── Layout ── */
   --nav-height:    72px;
   --max-width:     1200px;
   --sidebar-width: 280px;
 
-  /* Text scale */
+  /* ── Text scale ── */
   --text-xs:   0.75rem;
   --text-sm:   0.875rem;
   --text-base: 1rem;
@@ -109,25 +136,41 @@
   --text-4xl:  2.25rem;
   --text-5xl:  3rem;
 
-  /* Transitions */
+  /* ── Transitions ── */
   --transition-fast: 0.15s ease;
   --transition-base: 0.25s ease;
   --transition-slow: 0.4s ease;
 
-  /* --color-* aliases used in page-level <style> blocks */
+  /* ── --color-* aliases used in page-level <style> blocks ── */
   --color-bg:            var(--bg);
   --color-bg-2:          var(--bg-2);
+  --color-bg-3:          var(--bg-3);
   --color-surface:       var(--surface);
+  --color-surface-2:     var(--surface-2);
   --color-border:        var(--border);
+  --color-border-2:      var(--border-2);
   --color-white:         var(--white);
   --color-silver:        var(--silver);
   --color-silver-dim:    var(--silver-dim);
+  --color-silver-dark:   var(--silver-dark);
   --color-gold:          var(--gold);
   --color-gold-light:    var(--gold-light);
+  --color-gold-pale:     var(--gold-pale);
   --color-purple:        var(--purple);
   --color-primary-light: var(--purple-light);
   --color-success:       var(--success);
   --color-danger:        var(--danger);
+
+  /* ── --lp-* aliases for Life Path page ── */
+  --lp-surface:    var(--glass);
+  --lp-border:     var(--border);
+  --lp-gold:       var(--gold);
+  --lp-gold-pale:  var(--gold-pale);
+  --lp-silver:     var(--silver);
+  --lp-silver-dim: var(--silver-dim);
+  --lp-white:      var(--white);
+  --lp-radius-xl:  var(--radius-xl);
+  --lp-radius-2xl: var(--radius-2xl);
 }
 
 /* --------------------------------------------------------------------------
@@ -156,7 +199,7 @@ body {
   position: relative;
 }
 
-/* Nebula background — alchemical void with amethyst + crimson + gold haze */
+/* Nebula background — premium void with violet + cyan + gold haze */
 body::before {
   content: '';
   position: fixed;
@@ -164,10 +207,10 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 75% 55% at 10% 15%, rgba(42, 74, 148, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 45% at 90% 75%, rgba(110, 26, 38, 0.14) 0%, transparent 55%),
-    radial-gradient(ellipse 45% 35% at 55% 95%, rgba(196, 146, 10, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 40% at 75% 20%, rgba(14, 92, 58, 0.08) 0%, transparent 50%);
+    radial-gradient(ellipse 75% 55% at 10% 15%, rgba(123, 44, 191, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 45% at 90% 75%, rgba(0, 212, 255, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 55% 95%, rgba(212, 175, 55, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 75% 20%, rgba(91, 63, 160, 0.12) 0%, transparent 50%);
   animation: nebula-drift 32s ease-in-out infinite alternate;
 }
 
@@ -191,16 +234,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::selection {
-  background: rgba(42, 74, 148, 0.45);
+  background: rgba(123, 44, 191, 0.45);
   color: var(--gold-pale);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar              { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track        { background: var(--bg-2); }
-::-webkit-scrollbar-thumb        { background: rgba(42, 74, 148, 0.55); border-radius: var(--radius-full); }
-::-webkit-scrollbar-thumb:hover  { background: rgba(196, 146, 10, 0.65); }
-* { scrollbar-width: thin; scrollbar-color: rgba(42, 74, 148,0.5) var(--bg-2); }
+::-webkit-scrollbar-thumb        { background: rgba(123, 44, 191, 0.55); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover  { background: rgba(212, 175, 55, 0.65); }
+* { scrollbar-width: thin; scrollbar-color: rgba(123, 44, 191,0.5) var(--bg-2); }
 
 /* --------------------------------------------------------------------------
    3. Starfield Canvas
@@ -232,7 +275,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 640px;
   top: -220px;
   left: -180px;
-  background: radial-gradient(circle, rgba(42, 74, 148, 0.22) 0%, rgba(110, 26, 38, 0.08) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(123, 44, 191, 0.22) 0%, rgba(110, 26, 38, 0.08) 40%, transparent 70%);
   animation-delay: 0s;
   animation-duration: 24s;
 }
@@ -242,7 +285,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 520px;
   top: 38%;
   right: -140px;
-  background: radial-gradient(circle, rgba(110, 26, 38, 0.18) 0%, rgba(196, 146, 10, 0.06) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(110, 26, 38, 0.18) 0%, rgba(212, 175, 55, 0.06) 40%, transparent 70%);
   animation-delay: -8s;
   animation-duration: 28s;
 }
@@ -252,7 +295,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 420px;
   bottom: 8%;
   left: 28%;
-  background: radial-gradient(circle, rgba(196, 146, 10, 0.12) 0%, rgba(14, 92, 58, 0.07) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, rgba(14, 92, 58, 0.07) 40%, transparent 70%);
   animation-delay: -16s;
   animation-duration: 34s;
 }
@@ -269,11 +312,11 @@ h1, h2, h3, h4, h5, h6 {
    -------------------------------------------------------------------------- */
 .cosmos-solar-system {
   position: fixed;
-  right: -100px;
-  bottom: -100px;
-  width: 700px;
-  height: 700px;
-  opacity: 0.28;
+  right: -200px;
+  bottom: -200px;
+  width: 1000px;
+  height: 1000px;
+  opacity: 0.25;
   pointer-events: none;
   z-index: 1;
 }
@@ -361,6 +404,20 @@ h1, h2, h3, h4, h5, h6 {
   --dur: 130s;
   width:  calc(var(--r) * 2);
   height: calc(var(--r) * 2);
+}
+
+/* Asteroid belt — sparse dashed ring between Mars and Jupiter */
+.css-orbit--asteroid-belt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 534px;
+  height: 534px;
+  border-radius: 50%;
+  border: 1px dashed rgba(180, 160, 120, 0.12);
+  transform: translate(-50%, -50%);
+  animation: orbit-spin 240s linear infinite;
+  pointer-events: none;
 }
 
 @keyframes orbit-spin {
@@ -723,24 +780,24 @@ h1, h2, h3, h4, h5, h6 {
 .btn--primary {
   background: var(--gradient-primary);
   color: var(--gold-pale);
-  box-shadow: 0 0 18px rgba(42, 74, 148, 0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: 0 0 18px rgba(123, 44, 191, 0.45), inset 0 1px 0 rgba(255,255,255,0.08);
   letter-spacing: 0.05em;
 }
 
 .btn--primary:hover {
-  box-shadow: 0 0 36px rgba(196, 146, 10, 0.5), 0 0 18px rgba(42, 74, 148, 0.4);
+  box-shadow: 0 0 36px rgba(212, 175, 55, 0.5), 0 0 18px rgba(123, 44, 191, 0.4);
   transform: translateY(-2px);
   color: var(--gold-pale);
 }
 
 .btn--primary:active {
   transform: translateY(0);
-  box-shadow: 0 0 18px rgba(42, 74, 148, 0.45);
+  box-shadow: 0 0 18px rgba(123, 44, 191, 0.45);
 }
 
 .btn--outline {
   background: transparent;
-  border: 1px solid rgba(196, 146, 10, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   color: var(--gold);
   letter-spacing: 0.04em;
 }
@@ -748,20 +805,20 @@ h1, h2, h3, h4, h5, h6 {
 .btn--outline:hover {
   border-color: var(--gold);
   color: var(--gold-pale);
-  background: rgba(196, 146, 10, 0.08);
+  background: rgba(212, 175, 55, 0.08);
   transform: translateY(-1px);
-  box-shadow: 0 0 16px rgba(196, 146, 10, 0.2);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
 }
 
 .btn--gold {
   background: var(--gradient-gold);
   color: #090b16;
   font-weight: 700;
-  box-shadow: 0 0 20px rgba(196, 146, 10, 0.45);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.45);
 }
 
 .btn--gold:hover {
-  box-shadow: 0 0 36px rgba(196, 146, 10, 0.65);
+  box-shadow: 0 0 36px rgba(212, 175, 55, 0.65);
   transform: translateY(-2px);
   color: #090b16;
 }
@@ -971,7 +1028,7 @@ h1, h2, h3, h4, h5, h6 {
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(42, 74, 148, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55), rgba(123, 44, 191, 0.45), transparent);
   pointer-events: none;
 }
 
@@ -985,14 +1042,14 @@ h1, h2, h3, h4, h5, h6 {
   right: 8px;
   bottom: 8px;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(196, 146, 10, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.06);
   pointer-events: none;
 }
 
 .card:hover,
 .glass-card:hover {
-  border-color: rgba(196, 146, 10, 0.35);
-  box-shadow: 0 0 40px rgba(42, 74, 148, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 40px rgba(123, 44, 191, 0.14), 0 0 20px rgba(212, 175, 55, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1002,20 +1059,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card--glow {
-  box-shadow: 0 0 30px rgba(42, 74, 148, 0.14), 0 0 15px rgba(196, 146, 10, 0.08);
+  box-shadow: 0 0 30px rgba(123, 44, 191, 0.14), 0 0 15px rgba(212, 175, 55, 0.08);
 }
 
 .card--gold {
-  border-color: rgba(196, 146, 10, 0.28);
+  border-color: rgba(212, 175, 55, 0.28);
 }
 
 .card--gold::before {
-  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
 }
 
 .card--gold:hover {
-  border-color: rgba(196, 146, 10, 0.55);
-  box-shadow: 0 0 40px rgba(196, 146, 10, 0.14);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.14);
 }
 
 /* Card inner layout helpers */
@@ -1155,12 +1212,12 @@ h1, h2, h3, h4, h5, h6 {
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.55), rgba(42, 74, 148, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55), rgba(123, 44, 191, 0.4), transparent);
 }
 
 .feature-card:hover {
-  border-color: rgba(196, 146, 10, 0.38);
-  box-shadow: 0 0 40px rgba(42, 74, 148, 0.14), 0 0 20px rgba(196, 146, 10, 0.1);
+  border-color: rgba(212, 175, 55, 0.38);
+  box-shadow: 0 0 40px rgba(123, 44, 191, 0.14), 0 0 20px rgba(212, 175, 55, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1246,12 +1303,12 @@ h1, h2, h3, h4, h5, h6 {
   left: 20%;
   right: 20%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
 }
 
 .sign-card:hover {
-  border-color: rgba(196, 146, 10, 0.35);
-  box-shadow: 0 0 28px rgba(42, 74, 148, 0.14), 0 0 14px rgba(196, 146, 10, 0.1);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 28px rgba(123, 44, 191, 0.14), 0 0 14px rgba(212, 175, 55, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1322,8 +1379,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .sign-card.is-active,
 .sign-card--active {
-  border-color: rgba(196, 146, 10, 0.6);
-  box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(42, 74, 148, 0.12);
+  border-color: rgba(212, 175, 55, 0.6);
+  box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(123, 44, 191, 0.12);
 }
 
 .sign-card.is-active .sign-card__name,
@@ -1380,8 +1437,8 @@ h1, h2, h3, h4, h5, h6 {
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: rgba(196, 146, 10, 0.55);
-  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(42, 74, 148, 0.1);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12), 0 0 16px rgba(123, 44, 191, 0.1);
   background: rgba(25, 16, 50, 0.85);
 }
 
@@ -4452,11 +4509,11 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
   max-width: 200px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(196, 146, 10, 0.5));
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5));
 }
 
 .divider-stars::after {
-  background: linear-gradient(90deg, rgba(196, 146, 10, 0.5), transparent);
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), transparent);
 }
 
 /* Gold separator line */
@@ -4494,8 +4551,8 @@ h1, h2, h3, h4, h5, h6 {
 /* Sacred geometry background pattern on cards */
 .card--sacred::after {
   background-image:
-    radial-gradient(circle at 8px 8px, rgba(196, 146, 10, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 24px 24px, rgba(196, 146, 10, 0.05) 1px, transparent 1px);
+    radial-gradient(circle at 8px 8px, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 24px 24px, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
   border: none;
 }
@@ -4506,7 +4563,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card--ritual::before {
-  background: linear-gradient(90deg, transparent, rgba(110, 26, 38, 0.5), rgba(196, 146, 10, 0.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(110, 26, 38, 0.5), rgba(212, 175, 55, 0.35), transparent);
 }
 
 /* Moon phase badge */
@@ -4514,8 +4571,8 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  background: rgba(196, 146, 10, 0.1);
-  border: 1px solid rgba(196, 146, 10, 0.3);
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: var(--radius-full);
   padding: var(--space-1) var(--space-3);
   font-size: var(--text-xs);
@@ -4536,12 +4593,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(42, 74, 148, 0.5);
+  background: rgba(123, 44, 191, 0.5);
   border: 2px solid var(--bg-2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(196, 146, 10, 0.5);
+  background: rgba(212, 175, 55, 0.5);
 }
 
 /* ==========================================================================
@@ -4558,8 +4615,8 @@ h1, h2, h3, h4, h5, h6 {
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: rgba(196, 146, 10, 0.55);
-  box-shadow: 0 0 0 3px rgba(196, 146, 10, 0.12), 0 0 16px rgba(42, 74, 148, 0.1);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12), 0 0 16px rgba(123, 44, 191, 0.1);
   outline: none;
 }
 
@@ -4600,15 +4657,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .testimonial-card--featured {
-  border-color: rgba(196, 146, 10, 0.35);
-  box-shadow: 0 0 40px rgba(42, 74, 148, 0.12), 0 0 20px rgba(196, 146, 10, 0.08);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 40px rgba(123, 44, 191, 0.12), 0 0 20px rgba(212, 175, 55, 0.08);
 }
 
 /* ==========================================================================
    63. Step numbers — gold amethyst gradient
    ========================================================================== */
 .step-number {
-  border-color: rgba(196, 146, 10, 0.4) !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
   background: linear-gradient(135deg, var(--gold), var(--amethyst-light)) !important;
 }
 
@@ -4616,9 +4673,9 @@ h1, h2, h3, h4, h5, h6 {
    64. Newsletter section — gold accent border
    ========================================================================== */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(42, 74, 148, 0.08) 0%, rgba(196, 146, 10, 0.06) 100%);
-  border-top: 1px solid rgba(196, 146, 10, 0.15);
-  border-bottom: 1px solid rgba(196, 146, 10, 0.15);
+  background: linear-gradient(135deg, rgba(123, 44, 191, 0.08) 0%, rgba(212, 175, 55, 0.06) 100%);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
 }
 
 .newsletter-title {
@@ -4659,7 +4716,7 @@ h1, h2, h3, h4, h5, h6 {
    68. Data table — gold header
    ========================================================================== */
 .data-table th {
-  background: rgba(42, 74, 148, 0.2);
+  background: rgba(123, 44, 191, 0.2);
   color: var(--gold-pale);
   letter-spacing: 0.06em;
 }
@@ -4728,12 +4785,12 @@ h1, h2, h3, h4, h5, h6 {
   transition: all var(--transition-fast);
 }
 
-.tabs__trigger:hover { color: var(--gold-pale); background: rgba(196, 146, 10, 0.05); }
+.tabs__trigger:hover { color: var(--gold-pale); background: rgba(212, 175, 55, 0.05); }
 
 .tabs__trigger[aria-selected="true"] {
   color: var(--gold-pale);
   border-bottom-color: var(--gold);
-  background: rgba(196, 146, 10, 0.07);
+  background: rgba(212, 175, 55, 0.07);
 }
 
 .tabs__panel {
@@ -4792,7 +4849,7 @@ body::before {
   transform-origin: left;
   transform: scaleX(0);
   background: linear-gradient(90deg, var(--gold), var(--gold-pale), var(--gold));
-  box-shadow: 0 0 8px rgba(196, 146, 10, 0.5);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
 }
 
 /* Spotlight hover — candlelight follows the cursor */
@@ -4858,12 +4915,12 @@ body::before {
     radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.16), transparent 42%),
     radial-gradient(circle at 72% 80%, rgba(0, 0, 0, 0.55), transparent 55%),
     radial-gradient(circle at 50% 50%, var(--m-tint) 0%, #10162c 68%, #090d1c 100%);
-  border: 1px solid rgba(196, 146, 10, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.14),
     inset 0 -3px 6px rgba(0, 0, 0, 0.6),
     0 5px 14px rgba(0, 0, 0, 0.55),
-    0 0 0 3px rgba(196, 146, 10, 0.06);
+    0 0 0 3px rgba(212, 175, 55, 0.06);
   transform: translateZ(18px);
 }
 .sign-medallion::before {
@@ -4871,7 +4928,7 @@ body::before {
   position: absolute;
   inset: 5px;
   border-radius: 50%;
-  border: 1px solid rgba(196, 146, 10, 0.28);
+  border: 1px solid rgba(212, 175, 55, 0.28);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.55);
 }
 .sign-medallion::after {
@@ -4881,7 +4938,7 @@ body::before {
   inset: 1px;
   border-radius: 50%;
   background: repeating-conic-gradient(
-    rgba(196, 146, 10, 0.22) 0deg 1.2deg,
+    rgba(212, 175, 55, 0.22) 0deg 1.2deg,
     transparent 1.2deg 30deg);
   -webkit-mask: radial-gradient(circle, transparent 64%, #000 66%, #000 78%, transparent 80%);
   mask: radial-gradient(circle, transparent 64%, #000 66%, #000 78%, transparent 80%);
@@ -4914,8 +4971,8 @@ body::before {
 .instrument-teaser {
   background: linear-gradient(180deg,
     transparent 0%,
-    rgba(42, 74, 148, 0.06) 30%,
-    rgba(196, 146, 10, 0.04) 70%,
+    rgba(123, 44, 191, 0.06) 30%,
+    rgba(212, 175, 55, 0.04) 70%,
     transparent 100%);
 }
 
@@ -4924,7 +4981,7 @@ body::before {
   margin: 0 auto;
   text-align: center;
   padding: var(--space-12) var(--space-6);
-  border: 1px solid rgba(196, 146, 10, 0.18);
+  border: 1px solid rgba(212, 175, 55, 0.18);
   border-radius: var(--radius-xl);
   background: rgba(9, 11, 22, 0.6);
   backdrop-filter: blur(8px);
@@ -4937,10 +4994,10 @@ body::before {
   inset: -1px;
   border-radius: inherit;
   background: linear-gradient(135deg,
-    rgba(196, 146, 10, 0.15) 0%,
+    rgba(212, 175, 55, 0.15) 0%,
     transparent 40%,
     transparent 60%,
-    rgba(42, 74, 148, 0.12) 100%);
+    rgba(123, 44, 191, 0.12) 100%);
   pointer-events: none;
 }
 
@@ -4950,7 +5007,7 @@ body::before {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
-  border: 1px solid rgba(196, 146, 10, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.4);
   padding: 4px 14px;
   border-radius: 999px;
   margin-bottom: var(--space-5);
@@ -5013,3 +5070,956 @@ body::before {
   flex-shrink: 0;
   opacity: 0.85;
 }
+
+/* ── Element-Tinted Reading Panel ──────────────────────────── */
+.sign-reading-panel[data-element="fire"]  { --el-color:#fb923c; --el-glow:rgba(251,146,60,0.5);   --el-bg:rgba(251,146,60,0.06);   --el-border:rgba(251,146,60,0.38); }
+.sign-reading-panel[data-element="earth"] { --el-color:#34d399; --el-glow:rgba(52,211,153,0.45);  --el-bg:rgba(52,211,153,0.05);   --el-border:rgba(52,211,153,0.32); }
+.sign-reading-panel[data-element="air"]   { --el-color:#38bdf8; --el-glow:rgba(56,189,248,0.45);  --el-bg:rgba(56,189,248,0.05);   --el-border:rgba(56,189,248,0.32); }
+.sign-reading-panel[data-element="water"] { --el-color:#818cf8; --el-glow:rgba(129,140,248,0.45); --el-bg:rgba(129,140,248,0.06);  --el-border:rgba(129,140,248,0.32); }
+
+.sign-reading-panel[data-element] .sign-reading-panel__inner {
+  border-color: var(--el-border, rgba(212,175,55,0.28));
+  background: linear-gradient(160deg, var(--el-bg, transparent) 0%, rgba(9,11,22,0.96) 55%);
+}
+
+.sign-reading-panel[data-element] .reading-card {
+  border-color: var(--el-border, rgba(91,127,199,0.2));
+  background: var(--el-bg, rgba(123,44,191,0.08));
+}
+
+.sign-reading-panel[data-element] .reading-card__label {
+  color: var(--el-color, var(--lapis-light));
+}
+
+/* Animated sign glyph when panel opens */
+@keyframes glyph-pulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 7px  var(--el-glow, rgba(212,175,55,0.45))); }
+  50%      { transform: scale(1.11); filter: drop-shadow(0 0 18px var(--el-glow, rgba(212,175,55,0.8)));  }
+}
+.sign-reading-panel.is-open .sign-reading-panel__glyph {
+  display: inline-block;
+  animation: glyph-pulse 4s ease-in-out infinite;
+}
+
+/* Element badge text under sign name */
+.srp-element-text {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--el-color, var(--gold-pale));
+  opacity: 0.85;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Energy bar below overview */
+.srp-energy {
+  margin: 0 0 var(--space-5);
+}
+.srp-energy__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+  margin-bottom: 6px;
+}
+.srp-energy__value {
+  color: var(--el-color, var(--gold));
+  font-weight: 700;
+}
+.srp-energy__track {
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.srp-energy__fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--lapis-light), var(--el-color, var(--gold)));
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Sign card element tints ──────────────────────────────── */
+.sign-card[data-element="fire"]  .sign-card__glyph { color: #fb923c; }
+.sign-card[data-element="earth"] .sign-card__glyph { color: #34d399; }
+.sign-card[data-element="air"]   .sign-card__glyph { color: #38bdf8; }
+.sign-card[data-element="water"] .sign-card__glyph { color: #818cf8; }
+
+/* Active state with element glow (overrides generic gold glow) */
+.sign-card[data-element="fire"].is-active  { border-color:rgba(251,146,60,0.65);  box-shadow:0 0 24px rgba(251,146,60,0.2),  0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="earth"].is-active { border-color:rgba(52,211,153,0.55);  box-shadow:0 0 24px rgba(52,211,153,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="air"].is-active   { border-color:rgba(56,189,248,0.6);   box-shadow:0 0 24px rgba(56,189,248,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="water"].is-active { border-color:rgba(129,140,248,0.6);  box-shadow:0 0 24px rgba(129,140,248,0.18),0 4px 20px rgba(0,0,0,0.3); }
+
+/* ── Planet weather card hover ────────────────────────────── */
+.planet-weather-card {
+  transition: border-color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+}
+.planet-weather-card:hover {
+  border-color: rgba(212,175,55,0.32);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(123,44,191,0.16);
+}
+
+/* ── Hero stat separators ────────────────────────────────── */
+.hero-stat + .hero-stat {
+  padding-left: var(--space-8);
+  border-left: 1px solid rgba(212,175,55,0.22);
+}
+
+/* ── Section title gold underline ───────────────────────── */
+.section__title {
+  position: relative;
+}
+.section__title::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-light), rgba(212,175,55,0.3));
+  border-radius: 1px;
+  margin: var(--space-3) auto 0;
+}
+
+/* ── Reading panel overview font polish ─────────────────── */
+.sign-reading-panel__overview {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  font-style: italic;
+}
+
+/* ── Weekly forecast item improvements ─────────────────── */
+.transit-item--major {
+  border-color: rgba(212,175,55,0.35) !important;
+  background: rgba(212,175,55,0.05) !important;
+}
+.transit-item--major .transit-item__title {
+  color: var(--gold-light);
+}
+
+/* ── Retrograde badge polish ────────────────────────────── */
+.retrograde-badge {
+  background: rgba(176,74,82,0.15);
+  border-color: rgba(176,74,82,0.4);
+  color: var(--crimson-light);
+}
+
+/* ── Sign reading panel header accent line ─────────────── */
+.sign-reading-panel__header {
+  border-bottom: 1px solid var(--el-border, rgba(212,175,55,0.15));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HORIZON UNIVERSAL UI FRAMEWORK — 2026 Upgrade
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Spring easing tokens */
+:root {
+  --ease-spring:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth:  cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce:  cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Global focus-visible ring */
+:focus-visible {
+  outline: 2px solid rgba(212,175,55,0.72);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Sign card glassmorphism (Horizon depth layer) ─────────── */
+.sign-card {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(145deg, rgba(17,26,54,0.72) 0%, rgba(13,17,36,0.88) 100%);
+  transition:
+    border-color var(--transition-base),
+    background   var(--transition-base),
+    transform    0.18s var(--ease-spring),
+    box-shadow   0.2s ease;
+}
+.sign-card:hover {
+  background: linear-gradient(145deg, rgba(24,36,76,0.88) 0%, rgba(17,26,54,0.95) 100%);
+  transform: translateY(-3px) scale(1.01);
+}
+.sign-card:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.08s;
+}
+
+/* ── Compatibility orbs — two luminous people circles ───────── */
+.compat-orbs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0 auto var(--space-10);
+  max-width: 460px;
+  position: relative;
+}
+.compat-orb {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.compat-orb__core {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.compat-orb--1 .compat-orb__core {
+  background: radial-gradient(circle at 35% 32%, rgba(91,127,199,0.3) 0%, rgba(123,44,191,0.55) 55%, rgba(9,11,22,0.8) 100%);
+  border: 1px solid rgba(91,127,199,0.55);
+  box-shadow:
+    0 0 0 8px rgba(123,44,191,0.08),
+    0 0 30px rgba(91,127,199,0.25),
+    inset 0 1px 2px rgba(255,255,255,0.14);
+  animation: orb-breathe-1 5s ease-in-out infinite;
+}
+.compat-orb--2 .compat-orb__core {
+  background: radial-gradient(circle at 35% 32%, rgba(212,168,32,0.3) 0%, rgba(212,175,55,0.45) 55%, rgba(9,11,22,0.8) 100%);
+  border: 1px solid rgba(212,175,55,0.55);
+  box-shadow:
+    0 0 0 8px rgba(212,175,55,0.07),
+    0 0 30px rgba(212,175,55,0.2),
+    inset 0 1px 2px rgba(255,255,255,0.14);
+  animation: orb-breathe-2 5s ease-in-out infinite;
+  animation-delay: -2.5s;
+}
+@keyframes orb-breathe-1 {
+  0%,100% { box-shadow: 0 0 0 8px rgba(123,44,191,0.08), 0 0 24px rgba(91,127,199,0.2), inset 0 1px 2px rgba(255,255,255,0.14); }
+  50%     { box-shadow: 0 0 0 12px rgba(123,44,191,0.12), 0 0 44px rgba(91,127,199,0.35), inset 0 1px 2px rgba(255,255,255,0.18); }
+}
+@keyframes orb-breathe-2 {
+  0%,100% { box-shadow: 0 0 0 8px rgba(212,175,55,0.07), 0 0 24px rgba(212,175,55,0.18), inset 0 1px 2px rgba(255,255,255,0.14); }
+  50%     { box-shadow: 0 0 0 12px rgba(212,175,55,0.10), 0 0 44px rgba(212,175,55,0.32), inset 0 1px 2px rgba(255,255,255,0.18); }
+}
+.compat-orbs__arc {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-width: 80px;
+}
+.compat-orbs__arc svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.compat-orbs__arc-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  color: var(--gold);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.compat-person-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: var(--space-2);
+  display: block;
+}
+.compat-orb--1 .compat-person-label { color: var(--lapis-bright); }
+.compat-orb--2 .compat-person-label { color: var(--gold-pale); }
+
+/* Compat form column header accents */
+.compat-person:first-of-type h3 { color: var(--lapis-bright); }
+.compat-person:last-of-type  h3 { color: var(--gold-light); }
+.compat-person:first-of-type .form-label { color: rgba(146,180,238,0.75); }
+.compat-person:last-of-type  .form-label { color: rgba(212,168,32,0.75); }
+
+/* Compat form divider glow */
+.compat-form__divider {
+  font-size: 2.8rem;
+  background: linear-gradient(180deg, var(--lapis-light), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px rgba(212,175,55,0.25));
+  opacity: 1 !important;
+}
+
+/* ── Category score bars — spring fill ─────────────────────── */
+.score-bar__fill {
+  transition: width 1s var(--ease-spring);
+}
+.srp-energy__fill {
+  transition: width 0.9s var(--ease-spring);
+}
+
+/* ── Hero stats — count-up visual ──────────────────────────── */
+.hero-stat__number {
+  transition: opacity 0.4s ease;
+}
+.hero-stat__number.counting {
+  display: inline-block;
+  animation: none;
+}
+
+/* ── Moon illumination bar spring ──────────────────────────── */
+.moon-illumination-bar__fill {
+  transition: width 1.2s var(--ease-spring);
+}
+
+/* ── Navbar link spring hover ───────────────────────────────── */
+.navbar__link {
+  transition: color var(--transition-base), background 0.2s var(--ease-spring);
+}
+
+/* ── Feature card spring lift ───────────────────────────────── */
+.feature-card {
+  transition: transform 0.2s var(--ease-spring), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ── Reading panel — personal transit note ─────────────────── */
+.srp-personal-note {
+  font-size: 0.8rem;
+  color: var(--gold-pale);
+  opacity: 0.82;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(212,175,55,0.12);
+  font-style: italic;
+  line-height: 1.7;
+}
+
+/* ── Reduce motion: disable all keyframe animations ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Element-specific background accents for sign landing pages
+   Layered on top of the base nebula via ::before override
+   -------------------------------------------------------------------------- */
+body[data-element="fire"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(220, 80, 20, 0.22)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(196, 100, 10, 0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(212, 175, 55, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(180, 50, 10, 0.10)  0%, transparent 50%);
+}
+
+body[data-element="earth"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(20, 110, 60, 0.22)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(30, 140, 80, 0.16)  0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(80, 160, 60, 0.10)  0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(14, 92, 40, 0.12)   0%, transparent 50%);
+}
+
+body[data-element="air"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(40, 130, 220, 0.20)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(60, 160, 240, 0.14)  0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(100, 180, 250, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(30, 110, 200, 0.12)  0%, transparent 50%);
+}
+
+body[data-element="water"]::before {
+  background:
+    radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(30, 30, 140, 0.28)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(60, 20, 160, 0.20)  0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(40, 40, 180, 0.12)  0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(20, 20, 120, 0.14)  0%, transparent 50%);
+}
+
+/* --------------------------------------------------------------------------
+   Transit page — live ticker strip
+   -------------------------------------------------------------------------- */
+.transit-ticker {
+  overflow: hidden;
+  position: relative;
+  padding: 0.6rem 0;
+  margin: 1.25rem auto 0;
+  max-width: 860px;
+  mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.transit-ticker__track {
+  display: flex;
+  gap: 0.6rem;
+  width: max-content;
+  animation: ticker-scroll 38s linear infinite;
+}
+
+.transit-ticker__track:hover { animation-play-state: paused; }
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.transit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(150, 175, 230, 0.18);
+  background: rgba(17, 26, 54, 0.65);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  color: var(--silver);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(6px);
+}
+
+.transit-pill__symbol {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.transit-pill__name {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--lapis-light, #5b7fc7);
+}
+
+.transit-pill__pos {
+  font-weight: 600;
+  color: var(--gold-pale);
+  font-size: 0.78rem;
+}
+
+.transit-pill--retrograde {
+  border-color: rgba(176, 74, 82, 0.35);
+  background: rgba(110, 26, 38, 0.18);
+}
+
+.transit-pill--retrograde .transit-pill__pos {
+  color: #b04a52;
+}
+
+/* Profile page empty state CTA sizing */
+.saved-charts-empty .btn--sm {
+  margin-top: 0.25rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HORIZON ASTROLOGY EDITION — instrument badges, privacy banner,
+   manifesto voice section
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Engraved-brass instrument badge */
+.ap-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  background: linear-gradient(145deg, rgba(212,175,55,0.1) 0%, rgba(9,11,22,0.6) 100%);
+  border: 1px solid rgba(212,175,55,0.3);
+  border-radius: 999px;
+  padding: 4px 12px;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.07);
+}
+.ap-badge::before {
+  content: '⚙';
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+.ap-badge--deterministic::before { content: '✦'; }
+
+/* Privacy banner — first visit only */
+.privacy-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  background: rgba(9, 11, 22, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(212,175,55,0.35);
+  transform: translateY(0);
+  transition: transform 0.45s var(--ease-spring, ease);
+}
+.privacy-banner.is-hidden { transform: translateY(110%); }
+.privacy-banner__text {
+  font-size: 0.78rem;
+  color: var(--silver);
+  letter-spacing: 0.02em;
+}
+.privacy-banner__text strong { color: var(--gold-pale); font-weight: 600; }
+.privacy-banner__close {
+  background: none;
+  border: 1px solid rgba(212,175,55,0.4);
+  border-radius: 999px;
+  color: var(--gold-pale);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 4px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.privacy-banner__close:hover {
+  background: rgba(212,175,55,0.12);
+  border-color: var(--gold);
+}
+@media (max-width: 600px) {
+  .privacy-banner { flex-direction: column; gap: var(--space-2); text-align: center; }
+}
+
+/* Offline-ready pill (appears once SW is controlling the page) */
+.offline-ready-pill {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  z-index: 8999;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--emerald-light);
+  background: rgba(9, 11, 22, 0.9);
+  border: 1px solid rgba(26, 138, 86, 0.4);
+  border-radius: 999px;
+  padding: 5px 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s var(--ease-spring, ease);
+  pointer-events: none;
+}
+.offline-ready-pill.is-visible { opacity: 0.92; transform: translateY(0); }
+.offline-ready-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  box-shadow: 0 0 6px rgba(26,138,86,0.8);
+}
+
+/* Manifesto — the voice of the instrument */
+.manifesto {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-6);
+  text-align: center;
+  position: relative;
+}
+.manifesto::before {
+  content: '✦';
+  display: block;
+  color: var(--gold);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-6);
+  opacity: 0.8;
+}
+.manifesto p {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  line-height: 1.95;
+  color: var(--silver);
+  margin-bottom: var(--space-6);
+}
+.manifesto p strong {
+  color: var(--gold-pale);
+  font-weight: 600;
+}
+.manifesto__beats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+  margin-top: var(--space-8);
+}
+.manifesto__beat {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.manifesto__beat::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* ── Mobile bottom navigation ──────────────────────────────── */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 8990;
+  background: rgba(9, 11, 22, 0.96);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(212,175,55,0.22);
+  padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+}
+.bottom-nav__inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  text-decoration: none;
+  color: var(--silver-dim);
+  border-radius: var(--radius-md);
+  transition: color 0.2s ease;
+  min-width: 56px;
+}
+.bottom-nav__icon { font-size: 1.15rem; line-height: 1; }
+.bottom-nav__label {
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.bottom-nav__item.is-active {
+  color: var(--gold-pale);
+}
+.bottom-nav__item.is-active .bottom-nav__icon {
+  filter: drop-shadow(0 0 6px rgba(212,175,55,0.6));
+}
+@media (max-width: 768px) {
+  .bottom-nav { display: block; }
+  body { padding-bottom: 64px; }
+  .privacy-banner { bottom: 64px; }
+  .offline-ready-pill { bottom: 76px; }
+}
+
+/* Saturn with ring — appended live by app.js */
+.css-planet--saturn {
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 35% 35%, #d8c294 0%, #b89b62 55%, #8a7141 100%);
+  box-shadow: 0 0 10px 3px rgba(196, 168, 100, 0.4);
+  position: relative;
+}
+.css-planet--saturn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  height: 8px;
+  border: 1.5px solid rgba(216, 194, 148, 0.65);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(68deg) rotate(-12deg);
+  box-shadow: 0 0 4px rgba(216, 194, 148, 0.3);
+}
+
+/* Uranus — pale teal, faint outer body */
+.css-planet--uranus {
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle at 38% 38%, #7de8e8 0%, #4ab8c0 55%, #2a8a94 100%);
+  box-shadow: 0 0 6px 2px rgba(125, 232, 232, 0.25);
+  opacity: 0.7;
+}
+
+/* Neptune — deep blue, barely visible at horizon */
+.css-planet--neptune {
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle at 38% 38%, #6686ff 0%, #3a55d4 55%, #1a2ea0 100%);
+  box-shadow: 0 0 6px 2px rgba(68, 105, 245, 0.2);
+  opacity: 0.55;
+}
+
+/* ==========================================================================
+   Enhancement Layer — v5 additions
+   ========================================================================== */
+
+/* ── Cosmic shimmer keyframe ─────────────────────────────────────────────── */
+@keyframes cosmic-shimmer {
+  0%, 100% { opacity: 0.6; transform: translateX(-100%) rotate(25deg); }
+  100%      { opacity: 0; transform: translateX(300%) rotate(25deg); }
+}
+@keyframes cosmic-shimmer {
+  from { transform: translateX(-100%) rotate(25deg); opacity: 0; }
+  15%  { opacity: 0.4; }
+  85%  { opacity: 0.4; }
+  to   { transform: translateX(300%) rotate(25deg); opacity: 0; }
+}
+
+/* ── Enhanced reading panel glass effect ─────────────────────────────────── */
+.sign-reading-panel__inner {
+  position: relative;
+  overflow: hidden;
+}
+.sign-reading-panel__inner::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 60%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(240,232,216,0.03), transparent);
+  pointer-events: none;
+  animation: cosmic-shimmer 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* ── Enhanced feature card hover depth ───────────────────────────────────── */
+.feature-strip__item:hover {
+  box-shadow: 0 20px 50px rgba(123, 44, 191, 0.2), 0 0 1px rgba(212, 175, 55, 0.3);
+}
+.feature-strip__item::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, transparent 50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+}
+.feature-strip__item:hover::after { opacity: 1; }
+
+/* ── Improved section panel with deeper glass ────────────────────────────── */
+.live-sky__panel {
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
+}
+.live-sky__panel:hover {
+  border-color: rgba(212,175,55,0.2);
+  box-shadow: 0 8px 40px rgba(123,44,191,0.12);
+}
+
+/* ── Planet weather card hover ───────────────────────────────────────────── */
+.planet-weather-card {
+  transition: all var(--transition-base);
+}
+.planet-weather-card:hover {
+  border-color: rgba(212,175,55,0.3);
+  background: var(--surface-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(123,44,191,0.15);
+}
+
+/* ── Ticker strip for live planetary positions ───────────────────────────── */
+.planet-ticker-strip {
+  background: rgba(17,26,54,0.75);
+  border-top: 1px solid rgba(150,175,230,0.1);
+  border-bottom: 1px solid rgba(150,175,230,0.1);
+  overflow: hidden;
+  padding: var(--space-2) 0;
+  backdrop-filter: blur(8px);
+}
+.planet-ticker-inner {
+  display: flex;
+  gap: var(--space-6);
+  animation: ticker-scroll 30s linear infinite;
+  white-space: nowrap;
+  width: max-content;
+}
+.planet-ticker-inner:hover { animation-play-state: paused; }
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.planet-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--silver);
+}
+.planet-ticker-item__glyph {
+  font-size: 1rem;
+  color: var(--gold);
+}
+.planet-ticker-item__sign { color: var(--white); }
+.planet-ticker-item__deg {
+  font-family: 'Courier New', monospace;
+  color: var(--gold);
+  font-size: 0.62rem;
+  opacity: 0.7;
+}
+.planet-ticker-item--retro .planet-ticker-item__sign { color: var(--crimson-light); }
+
+/* ── Life path panel theme ───────────────────────────────────────────────── */
+.lp-panel { transition: box-shadow var(--transition-base); }
+.lp-panel:hover { box-shadow: 0 8px 28px rgba(123,44,191,0.12); }
+
+/* ── Shop card image shimmer ─────────────────────────────────────────────── */
+.shop-card__img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0) 60%);
+  pointer-events: none;
+}
+
+/* ── Improved navbar scrolled state ─────────────────────────────────────── */
+.navbar.scrolled {
+  box-shadow: 0 4px 24px rgba(9,11,22,0.7), 0 0 0 1px rgba(212,175,55,0.08);
+}
+
+/* ── Gradient text utility ───────────────────────────────────────────────── */
+.gradient-text-gold {
+  background: linear-gradient(135deg, var(--gold-pale), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Improved aurora orbs ────────────────────────────────────────────────── */
+.aurora-orb {
+  animation-duration: 28s;
+}
+.aurora-orb--1 { animation-duration: 32s; }
+.aurora-orb--2 { animation-duration: 24s; }
+.aurora-orb--3 { animation-duration: 38s; }
+
+/* ── Moon phase canvas in horoscope panel ────────────────────────────────── */
+#srp-moon-canvas {
+  display: block;
+  background: transparent;
+  image-rendering: crisp-edges;
+}
+
+/* ── Weekly reading accordion ────────────────────────────────────────────── */
+#srp-weekly-body {
+  border-left: 2px solid rgba(212,175,55,0.2);
+  padding-left: var(--space-4);
+}
+
+/* ── Natal signature grid cards ─────────────────────────────────────────── */
+#natal-sig-grid > div {
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+#natal-sig-grid > div:hover {
+  border-color: rgba(212,175,55,0.3) !important;
+  background: rgba(17,26,54,0.9) !important;
+}
+
+/* ── Horoscope page section separator ───────────────────────────────────── */
+.section--alt {
+  background: linear-gradient(180deg, transparent 0%, rgba(17,26,54,0.4) 50%, transparent 100%);
+}
+
+/* ==========================================================================
+   Planetary Dignity Badges — Section 8 additions
+   ========================================================================== */
+.dignity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: help;
+}
+.dignity-badge--domicile   { background: rgba(212,175,55,0.15); color: var(--gold-light);     border: 1px solid rgba(212,175,55,0.4); }
+.dignity-badge--exaltation { background: rgba(52,211,153,0.12); color: #34d399;               border: 1px solid rgba(52,211,153,0.35); }
+.dignity-badge--detriment  { background: rgba(176,74,82,0.12);  color: var(--crimson-light);  border: 1px solid rgba(176,74,82,0.3); }
+.dignity-badge--fall       { background: rgba(123,44,191,0.12); color: var(--violet-bright);  border: 1px solid rgba(123,44,191,0.3); }
+
+/* Chart pattern cards */
+.pattern-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+.pattern-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: var(--space-4); right: var(--space-4); height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent);
+}
+.pattern-card--major { border-color: rgba(212,175,55,0.3); }
+.pattern-card__glyph { font-size: 1.8rem; line-height: 1; margin-bottom: var(--space-2); }
+.pattern-card__name  { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-pale); margin-bottom: var(--space-2); }
+.pattern-card__desc  { font-size: var(--text-sm); color: var(--silver); line-height: 1.7; }
+.pattern-card__planets { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-3); }
+.pattern-card__planet-tag { font-size: 0.62rem; letter-spacing: 0.08em; padding: 2px 8px; border-radius: var(--radius-full); background: rgba(123,44,191,0.12); border: 1px solid rgba(123,44,191,0.2); color: var(--violet-bright); }
+.patterns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); }
+
+/* Expression / Soul Urge number card (Life Path page) */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+.num-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+}
+.num-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.45), transparent);
+}
+.num-card__label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--silver-dim); margin-bottom: var(--space-2); }
+.num-card__number { font-family: var(--font-display); font-size: 2.8rem; font-weight: 700; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: var(--space-2); }
+.num-card__title  { font-family: var(--font-display); font-size: var(--text-sm); color: var(--white); margin-bottom: var(--space-3); }
+.num-card__desc   { font-size: var(--text-sm); color: var(--silver); line-height: 1.7; }
