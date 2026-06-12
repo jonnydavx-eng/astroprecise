@@ -1013,15 +1013,20 @@ function geocentricPlanetLongitude(planet, jd) {
 // ---------------------------------------------------------------------------
 
 function ascendant(lst, lat, eps) {
-  // ARMC-based oblique ascension formula (Meeus Ch 14)
+  // ARMC-based oblique ascension formula (Meeus Ch 14):
+  //   ASC = atan2( cos(RAMC), -( sin(RAMC)·cosε + tanφ·sinε ) )
+  // The previous version negated BOTH atan2 arguments, which is an exact
+  // 180° flip — every rising sign it ever produced was the Descendant.
+  // (Caught 2026-06-12: pre-dawn birth, Sun ~50 min below the eastern
+  // horizon at 83° λ, yet ASC came back 247°. True ASC must sit just
+  // behind a rising Sun.)
   const lstR = toRad(lst);
   const latR = toRad(lat);
   const epsR = toRad(eps);
 
-  const y = -Math.cos(lstR);
-  const x = Math.sin(epsR) * Math.tan(latR) + Math.cos(epsR) * Math.sin(lstR);
-  let asc = toDeg(Math.atan2(y, x));
-  return mod360(asc);
+  const y = Math.cos(lstR);
+  const x = -(Math.sin(lstR) * Math.cos(epsR) + Math.tan(latR) * Math.sin(epsR));
+  return mod360(toDeg(Math.atan2(y, x)));
 }
 
 // ---------------------------------------------------------------------------

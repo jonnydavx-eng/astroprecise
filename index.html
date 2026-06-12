@@ -14,7 +14,7 @@
   <meta property="og:title" content="AstroPrecise — Your Cosmic Blueprint" />
   <meta property="og:description" content="Free professional birth chart analysis powered by VSOP87 astronomical precision. Precise natal charts, daily horoscopes, and live planetary positions — all computed privately in your browser." />
   <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/" />
-  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
+  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
@@ -22,7 +22,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AstroPrecise — Your Cosmic Blueprint" />
   <meta name="twitter:description" content="Free professional birth chart analysis powered by VSOP87 astronomical precision. Everything computes in your browser — no data sent anywhere." />
-  <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
+  <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
 
   <!-- App / PWA -->
   <meta name="theme-color" content="#0A0B1F" />
@@ -49,23 +49,19 @@
 
     /* ── Color overrides / extensions for this page ── */
     :root {
-      --void: #0A0B1F;
-      --purple: #7B2CBF;
-      --purple-glow: rgba(123, 44, 191, 0.35);
-      --cyan: #00D4FF;
-      --cyan-glow: rgba(0, 212, 255, 0.25);
-      --gold-hero: #D4AF37;
-      --gold-hero-light: #E8C872;
-      --glass-bg: rgba(15, 18, 50, 0.55);
-      --glass-border: rgba(200, 208, 232, 0.12);
-      --glass-border-glow: rgba(212, 175, 55, 0.35);
+      /* Warm ancient gold/black from preloader for consistency */
+      --void: #050406;
+      --gold-hero: #C9A227;
+      --gold-hero-light: #EFE3C0;
+      --glass-bg: rgba(20, 16, 10, 0.72);
+      --glass-border: rgba(201, 162, 39, 0.16);
+      --glass-border-glow: rgba(201, 162, 39, 0.55);
+      --cyan: #4A7A8A; /* desaturated */
     }
 
-    /* ── Glassmorphism base ── */
+    /* ── Engraved plate base (mystical ancient over cool glass) ── */
     .glass {
       background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
     }
 
@@ -107,21 +103,39 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 65% 45%, rgba(123, 44, 191, 0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 20% 60%, rgba(0, 212, 255, 0.06) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
+        radial-gradient(ellipse 80% 60% at 65% 45%, rgba(201, 162, 39, 0.08) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 50% at 20% 60%, rgba(176, 74, 82, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(201, 162, 39, 0.05) 0%, transparent 55%);
       pointer-events: none;
     }
 
     .hero__split {
       display: grid;
-      grid-template-columns: 1fr 500px;
-      gap: var(--space-12);
+      grid-template-columns: 1fr 680px;
+      gap: var(--space-8);
       align-items: center;
       width: 100%;
-      max-width: 1280px;
+      max-width: 1360px;
       margin: 0 auto;
-      padding: var(--space-16) var(--space-8);
+      padding: var(--space-12) var(--space-8);
+    }
+
+    /* Responsive hero graphics & layout */
+    @media (max-width: 900px) {
+      .hero__split {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+        text-align: center;
+      }
+      .hero__text { text-align: center; }
+      .hero__subtitle { margin-left: auto; margin-right: auto; }
+      .hero__orrery-wrap { order: 2; margin-top: var(--space-6); }
+      #orrery-canvas { width: 420px; height: 420px; }
+      .hero__orrery-ring { padding: 1px; background: rgba(10,11,31,0.04); border-color: rgba(212,175,55,0.04); }
+    }
+    @media (max-width: 520px) {
+      #orrery-canvas { width: 320px; height: 320px; }
+      .hero__cast-btn { width: 100%; justify-content: center; }
     }
 
     .hero__text { text-align: left; }
@@ -157,7 +171,7 @@
 
     .hero__h1 em {
       font-style: italic;
-      background: linear-gradient(135deg, var(--gold-hero-light) 0%, var(--gold-hero) 40%, var(--cyan) 100%);
+      background: linear-gradient(135deg, var(--gold-hero-light) 0%, var(--gold-hero) 40%, var(--gold-hero) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -271,94 +285,159 @@
       color: var(--silver-dim);
     }
 
-    /* Orrery wrap */
+    /* The Living Orrery – premium, understandable, Earth-first */
     .hero__orrery-wrap {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--space-4);
+      gap: var(--space-3);
       position: relative;
     }
 
     .hero__orrery-ring {
       position: relative;
-      padding: 3px;
+      padding: 0;
       border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        rgba(212, 175, 55, 0.5),
-        rgba(0, 212, 255, 0.3),
-        rgba(123, 44, 191, 0.4),
-        rgba(212, 175, 55, 0.5)
-      );
-      animation: ring-spin 20s linear infinite;
-    }
-    @keyframes ring-spin {
-      to { transform: rotate(360deg); }
-    }
-    .hero__orrery-ring::after {
-      content: '';
-      position: absolute;
-      inset: 3px;
-      border-radius: 50%;
-      background: var(--void);
+      /* fully dissolved frame – the orbital graphic lives inside the cosmic-hermetic nebula */
+      background: transparent;
+      box-shadow: 0 0 120px rgba(10, 11, 31, 0.45), inset 0 0 90px rgba(10,11,31,0.35);
+      border: 1px solid rgba(212,175,55,0.035);
     }
 
     #orrery-canvas {
       display: block;
-      width: 460px;
-      height: 460px;
+      width: 580px;
+      height: 580px;
       border-radius: 50%;
       position: relative;
       z-index: 1;
-      background: radial-gradient(circle at 50% 50%, rgba(15,18,50,0.9) 0%, rgba(10,11,31,0.98) 70%);
+      background: transparent; /* fully blended into cosmic nebula background */
+      /* deep cosmic atmosphere + strong blend for immersive integration */
+      box-shadow: inset 0 0 140px rgba(10,11,31,0.55), 0 0 80px rgba(212,175,55,0.06);
+      mix-blend-mode: screen; /* helps planets and glows blend with background nebula/aurora */
     }
 
-    .orrery-label {
-      font-size: 0.63rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold-hero);
-      opacity: 0.55;
+    .orrery-instrument {
       text-align: center;
+      max-width: 300px;
+      position: relative;
+      margin-top: -4px;
+    }
+
+    /* Masterpiece engraved hermetic glyphs — replace emoji-like unicode with carved gold presence */
+    .engraved-glyph {
+      font-family: 'Cinzel Decorative', 'Playfair Display', serif;
+      color: #C9A227;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.08), 0 -1px 1px rgba(0,0,0,0.6), 0 0 9px rgba(201,162,39,0.55);
+      letter-spacing: 0.02em;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    .engraved-glyph.sun { font-size: 1.35em; }
+    .engraved-glyph.moon { font-size: 1.25em; color: #E8E0D0; }
+    .engraved-glyph.planet { font-size: 1.1em; }
+    .orrery-instrument__header {
+      margin-bottom: var(--space-2);
+    }
+    .orrery-instrument__eyebrow {
+      font-size: 0.56rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--hermetic-gold);
+      opacity: 0.6;
+      display: block;
+      margin-bottom: 2px;
+      font-family: var(--font-display);
+    }
+    .orrery-instrument__title {
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      color: var(--gold-pale);
+      letter-spacing: 0.01em;
+      margin: 0;
+      text-shadow: 0 0 12px rgba(212,175,55,0.2);
+    }
+    .orrery-instrument__desc {
+      font-size: 0.76rem;
+      line-height: 1.42;
+      color: var(--silver);
+      margin: 4px 0 0;
+      font-family: var(--font-body);
+    }
+    .orrery-instrument__desc strong {
+      color: var(--gold-light);
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(212,175,55,0.15);
+    }
+    /* subtle hermetic synchronicity glow on the instrument */
+    .orrery-instrument::before {
+      content: '';
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,162,39,0.06) 20%, transparent 70%);
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: -1;
     }
 
     .orrery-controls {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: var(--space-2);
-      flex-wrap: wrap;
+      gap: var(--space-1);
     }
 
     .orrery-btn {
-      background: rgba(15, 18, 50, 0.7);
+      background: rgba(15, 18, 50, 0.65);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
       color: var(--silver-dim);
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       font-family: var(--font-body);
-      padding: 5px 11px;
+      padding: 4px 9px;
       cursor: pointer;
       transition: all var(--transition-fast);
       line-height: 1;
     }
-    .orrery-btn:hover { border-color: rgba(212, 175, 55, 0.4); color: var(--gold-hero-light); }
+    .orrery-btn:hover { border-color: rgba(212, 175, 55, 0.35); color: var(--gold-hero-light); }
     .orrery-btn.active {
       border-color: var(--gold-hero);
       color: var(--gold-hero-light);
-      background: rgba(212, 175, 55, 0.1);
+      background: rgba(212, 175, 55, 0.08);
     }
 
     .orrery-date {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-family: 'Courier New', monospace;
       color: var(--gold-hero);
-      opacity: 0.7;
-      letter-spacing: 0.05em;
+      opacity: 0.75;
+      letter-spacing: 0.04em;
       margin-left: var(--space-2);
+    }
+
+    .orrery-timeline {
+      width: 100%;
+      max-width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Hide competing decorative corner solar system — the real orrery is the hero */
+    .hero .cosmos-solar-system,
+    body > .cosmos-solar-system { display: none !important; }
+    .orrery-timeline__label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      padding: 0 2px;
     }
 
     /* Planet info panel */
@@ -368,8 +447,8 @@
       left: 50%;
       transform: translateX(-50%);
       background: var(--glass-bg);
-      backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(24px);
       border: 1px solid var(--glass-border-glow);
       border-radius: var(--radius-xl);
       padding: var(--space-5) var(--space-6);
@@ -463,6 +542,7 @@
       gap: var(--space-2);
       padding: var(--space-2) var(--space-4);
       background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(16px);
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-full);
@@ -522,10 +602,19 @@
       gap: var(--space-4);
     }
 
+    @media (max-width: 1100px) {
+      .bento-grid { grid-template-columns: repeat(2, 1fr); }
+      .bento-card--featured { grid-column: span 2; }
+    }
+    @media (max-width: 640px) {
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-card--featured { grid-column: span 1; }
+    }
+
     .bento-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-2xl);
       padding: var(--space-8);
@@ -539,6 +628,9 @@
         transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
         box-shadow 0.3s ease;
     }
+    /* stronger hermetic engraved cosmic on feature bento for site-wide mystical vibe */
+    .bento-grid .bento-card { border-color: var(--border-ritual); }
+    .bento-grid .bento-card::after { box-shadow: 4px 4px 0 rgba(212,175,55,0.04), -4px -4px 0 rgba(201,162,39,0.04); }
 
     .bento-card::before {
       content: '';
@@ -565,10 +657,10 @@
       background: linear-gradient(145deg, rgba(15,18,50,0.7) 0%, rgba(20,10,40,0.75) 100%);
     }
     .bento-card--featured:hover {
-      border-color: rgba(123, 44, 191, 0.5);
+      border-color: rgba(201, 162, 39, 0.5);
       box-shadow:
         0 20px 60px rgba(0,0,0,0.4),
-        0 0 60px rgba(123, 44, 191, 0.12);
+        0 0 60px rgba(201, 162, 39, 0.12);
     }
 
     .bento-card__symbol {
@@ -645,7 +737,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 70% 80% at 90% 50%, rgba(123, 44, 191, 0.07) 0%, transparent 60%);
+      background: radial-gradient(ellipse 70% 80% at 90% 50%, rgba(201, 162, 39, 0.07) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -669,7 +761,7 @@
 
     .cosmic-story__text h2 em {
       font-style: italic;
-      background: linear-gradient(135deg, var(--gold-hero-light), var(--cyan));
+      background: linear-gradient(135deg, var(--gold-hero-light), var(--gold-hero));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -777,6 +869,7 @@
       text-align: center;
       padding: var(--space-8);
       background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-2xl);
@@ -844,8 +937,8 @@
 
     .tool-card {
       background: var(--glass-bg);
-      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
       padding: var(--space-7);
@@ -929,8 +1022,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 70% at 10% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 60% at 90% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 55%);
+        radial-gradient(ellipse 60% 70% at 10% 50%, rgba(201, 162, 39, 0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 60% at 90% 50%, rgba(201, 162, 39, 0.05) 0%, transparent 55%);
       pointer-events: none;
     }
 
@@ -944,6 +1037,7 @@
     .philosophy-card {
       padding: var(--space-8);
       background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-2xl);
@@ -979,13 +1073,9 @@
       background: rgba(212, 175, 55, 0.12);
       border: 1px solid rgba(212, 175, 55, 0.3);
     }
-    .philosophy-card__accent--cyan {
-      background: rgba(0, 212, 255, 0.1);
-      border: 1px solid rgba(0, 212, 255, 0.25);
-    }
-    .philosophy-card__accent--purple {
-      background: rgba(123, 44, 191, 0.12);
-      border: 1px solid rgba(123, 44, 191, 0.3);
+    .philosophy-card__accent--gold {
+      background: rgba(201, 162, 39, 0.12);
+      border: 1px solid rgba(201, 162, 39, 0.3);
     }
 
     .philosophy-card__title {
@@ -1014,6 +1104,7 @@
       margin: 0 auto;
       padding: var(--space-12) var(--space-12);
       background: var(--glass-bg);
+      -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border-glow);
       border-radius: var(--radius-2xl);
@@ -1026,7 +1117,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(123, 44, 191, 0.06) 0%, transparent 65%);
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(201, 162, 39, 0.06) 0%, transparent 65%);
       pointer-events: none;
     }
 
@@ -1217,8 +1308,8 @@
        RESPONSIVE
        ===================================================================== */
     @media (max-width: 1100px) {
-      .hero__split { grid-template-columns: 1fr 420px; gap: var(--space-8); }
-      #orrery-canvas { width: 380px; height: 380px; }
+      .hero__split { grid-template-columns: 1fr 520px; gap: var(--space-8); }
+      #orrery-canvas { width: 460px; height: 460px; }
       .cosmic-story__grid { grid-template-columns: 1fr 340px; gap: var(--space-10); }
     }
 
@@ -1235,7 +1326,7 @@
       .hero__stats { justify-content: center; }
       .hero__subtitle { margin-left: auto; margin-right: auto; }
       .hero__cta-form { justify-content: center; }
-      #orrery-canvas { width: 300px; height: 300px; }
+      #orrery-canvas { width: 340px; height: 340px; }
       .bento-grid { grid-template-columns: 1fr 1fr; }
       .bento-card--featured { grid-column: span 2; }
       .cosmic-story__grid { grid-template-columns: 1fr; }
@@ -1249,7 +1340,7 @@
     }
 
     @media (max-width: 640px) {
-      #orrery-canvas { width: 260px; height: 260px; }
+      #orrery-canvas { width: 300px; height: 300px; }
       .bento-grid { grid-template-columns: 1fr; }
       .bento-card--featured { grid-column: span 1; }
       .tools-bento { grid-template-columns: 1fr; }
@@ -1276,25 +1367,182 @@
 
     /* font-sans alias */
     .font-sans { font-family: var(--font-body); }
+
+    @keyframes seal-pulse {
+      0%,100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.06); opacity: 1; }
+    }
   </style>
 </head>
 <body>
 
+  <!-- ═════════════════════════════════════════════════════════════════════
+       CINEMATIC PRELOADER — "The Spheres Align"
+       Hermetic orrery + sacred geometry awakening. Celestia-inspired engraved observatory meets AstroPrecise cosmic precision.
+       Masterpiece entry: never seen before immersive threshold.
+  ═════════════════════════════════════════════════════════════════════ -->
+  <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true" style="position:fixed; inset:0; z-index:99999; background:#050406; display:flex; align-items:center; justify-content:center; overflow:hidden; pointer-events:all;">
+    <canvas id="preloader-canvas" width="800" height="800" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; opacity:0.95;"></canvas>
+    <div class="preloader-content" style="position:relative; z-index:2; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Playfair Display', serif; pointer-events:auto;">
+      <div class="preloader-seal" style="font-size:2.8rem; color:#C9A227; margin-bottom:12px; opacity:0.9; text-shadow:0 0 40px rgba(201,162,39,0.6); animation:seal-pulse 3.2s ease-in-out infinite;">✧</div>
+      <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#E8E0D0 20%,#C9A227 50%,#E8E0D0 80%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:6px;">The Spheres Align</div>
+      <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.95rem; letter-spacing:0.12em; opacity:0.75; margin-bottom:32px; font-style:italic;">Consulting the Hermetic Record • Sky as Eternal Clock</div>
+      <div class="preloader-progress" id="preloader-progress" style="width:220px; margin:0 auto 28px;">
+        <div class="preloader-bar" style="height:1px; background:rgba(201,162,39,0.2); border-radius:1px; overflow:hidden;">
+          <div id="preloader-fill" style="height:100%; width:0%; background:linear-gradient(to right, #C9A227, #E8E0D0); transition:width 1.8s cubic-bezier(0.22,1,0.36,1);"></div>
+        </div>
+      </div>
+      <button id="preloader-enter" class="preloader-skip" aria-label="Click to enter after alignment" style="display:none; font-size:0.82rem; padding:11px 28px; background:none; border:1px solid rgba(201,162,39,0.35); color:#A89E88; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; transition:all 0.3s;">✧ Click to Enter the Record</button>
+    </div>
+  </div>
+
+  <!-- Preloader script moved early for immediate execution -->
+  <script>
+  (function preloaderMasterpiece() {
+    const pre = document.getElementById('preloader');
+    const cvs = document.getElementById('preloader-canvas');
+    if (!pre || !cvs) return;
+    const ctx = cvs.getContext('2d', { alpha: true });
+    let t = 0, raf = null;
+    const W = 800, H = 800, cx = W/2, cy = H/2;
+
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      ctx.fillStyle = 'rgba(232,224,208,0.035)';
+      for (let i = 0; i < 48; i++) {
+        const a = (i * 7.3 + t * 0.02) % (Math.PI * 2);
+        const r = 80 + (i % 7) * 38;
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * r * 0.92, Math.sin(a) * r * 0.7, 0.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = 'rgba(201,162,39,0.55)';
+      ctx.lineWidth = 1.1;
+      const rot = t * 0.018;
+
+      for (let k = 5; k >= 1; k--) {
+        ctx.beginPath();
+        ctx.arc(0, 0, 92 + k * 19, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.save();
+      ctx.rotate(rot * 0.6);
+      for (let v = 0; v < 2; v++) {
+        ctx.beginPath();
+        ctx.arc(v === 0 ? -32 : 32, 0, 92, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = 'rgba(201,162,39,0.38)';
+      for (let s = 0; s < 12; s++) {
+        const a = (s / 12) * Math.PI * 2 + rot * 0.3;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * 110, Math.sin(a) * 110);
+        ctx.lineTo(Math.cos(a) * 248, Math.sin(a) * 248);
+        ctx.stroke();
+      }
+
+      const planets = [
+        { r: 48, size: 3.8, speed: 0.9, col: '#C9A227' },
+        { r: 68, size: 5.2, speed: 0.55, col: '#E8E0D0' },
+        { r: 92, size: 5.8, speed: 0.31, col: '#C9A227' },
+        { r: 118, size: 4.2, speed: 0.18, col: '#b04a52' },
+        { r: 148, size: 7.8, speed: 0.07, col: '#C9A227' },
+        { r: 178, size: 6.4, speed: 0.022, col: '#a89e88' }
+      ];
+
+      ctx.fillStyle = '#C9A227';
+      ctx.beginPath(); ctx.arc(0,0,11,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle = 'rgba(201,162,39,0.7)'; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(0,0,14.5,0,Math.PI*2); ctx.stroke();
+
+      planets.forEach((p, i) => {
+        const ang = (t * p.speed * 0.6) + (i * 1.1);
+        const x = Math.cos(ang) * p.r;
+        const y = Math.sin(ang) * p.r * 0.94;
+        ctx.strokeStyle = 'rgba(201,162,39,0.15)'; ctx.lineWidth = 0.8;
+        ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.stroke();
+        ctx.fillStyle = p.col;
+        ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = 'rgba(232,224,208,0.45)'; ctx.lineWidth = 0.9;
+        ctx.beginPath(); ctx.arc(x, y, p.size + 1.8, 0, Math.PI*2); ctx.stroke();
+      });
+
+      const prog = Math.min(1, (t % 7.5) / 5.8);
+      ctx.strokeStyle = `rgba(201,162,39,${0.12 + prog * 0.28})`;
+      ctx.lineWidth = 1.4;
+      for (let ray = 0; ray < 7; ray++) {
+        const a = (ray / 7) * Math.PI * 2 + rot * 0.9;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(a) * (92 + prog * 160), Math.sin(a) * (92 + prog * 160));
+        ctx.stroke();
+      }
+
+      ctx.restore();
+      t += 1;
+      raf = requestAnimationFrame(draw);
+    }
+
+    draw();
+    const fill = document.getElementById('preloader-fill');
+    if (fill) fill.style.width = '100%';
+
+    const progress = document.getElementById('preloader-progress');
+    const enterBtn = document.getElementById('preloader-enter');
+
+    const startTime = Date.now();
+
+    function hidePre() {
+      if (raf) cancelAnimationFrame(raf);
+      pre.classList.add('fade-out');
+      setTimeout(() => { pre.style.display = 'none'; }, 620);
+      const heroO = document.getElementById('orrery-canvas');
+      if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';
+    }
+
+    // After loading sequence, hide progress and require click to enter (mystical threshold)
+    setTimeout(() => {
+      if (progress) progress.style.display = 'none';
+      if (enterBtn) {
+        enterBtn.style.display = 'inline-block';
+        enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
+      }
+    }, 2200);
+
+    // Fallback: allow click anywhere on preloader after short time (ancient "touch the seal")
+    pre.addEventListener('click', function onFirstClick(e) {
+      if (enterBtn && enterBtn.style.display !== 'none') {
+        return;
+      }
+      if (Date.now() - startTime > 1800) {
+        pre.removeEventListener('click', onFirstClick);
+        hidePre();
+      }
+    });
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTimeout(() => {
+        if (progress) progress.style.display = 'none';
+        if (enterBtn) {
+          enterBtn.style.display = 'inline-block';
+          enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
+        }
+      }, 600);
+    }
+  })();
+  </script>
+
   <!-- Cosmic starfield canvas -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
 
-  <!-- CSS decorative solar system (corner element) -->
-  <div class="cosmos-solar-system" aria-hidden="true">
-    <div class="css-sun"></div>
-    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
-    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
-    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
-    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
-    <div class="css-orbit--asteroid-belt" aria-hidden="true"></div>
-    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
-  </div>
-
-  <!-- Aurora orbs -->
+  <!-- Aurora orbs (subtle background, behind content) -->
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
@@ -1419,15 +1667,15 @@
           </div>
         </div>
 
-        <!-- Right: 3D Orrery -->
-        <div class="hero__orrery-wrap">
+        <!-- Right: The Living Orrery – blended glass-cosmic with hermetic synchronicity -->
+        <div class="hero__orrery-wrap cosmic-hermetic-bg sacred-geo hermetic-grain">
           <div class="hero__orrery-ring" style="position:relative;">
             <canvas
               id="orrery-canvas"
-              width="460"
-              height="460"
+              width="580"
+              height="580"
               role="img"
-              aria-label="Interactive 3D solar system showing live heliocentric planetary positions. Drag to rotate, click planets for details."
+              aria-label="The Living Orrery – real solar system positions starting from Earth. Drag to explore, scrub time to watch the sky move. These exact positions power every chart on AstroPrecise."
               style="position:relative;z-index:1;"
             ></canvas>
           </div>
@@ -1441,16 +1689,35 @@
             <p class="planet-info-panel__degree" id="pip-degree">21°34′</p>
           </div>
 
-          <p class="orrery-label" aria-label="Live heliocentric positions — drag to orbit — click planets">
-            Live heliocentric positions &middot; drag to orbit &middot; click planets
-          </p>
+          <!-- The Living Orrery – Earth-first, instantly understandable, high-value instrument -->
+          <div class="orrery-instrument">
+            <div class="orrery-instrument__header">
+              <span class="orrery-instrument__eyebrow">LIVE SOLAR SYSTEM MODEL</span>
+              <h3 class="orrery-instrument__title">From Your Home Outward</h3>
+            </div>
+            <p class="orrery-instrument__desc">
+              Start with Earth as a detailed spinning globe.<br>
+              Zoom out to reveal the full solar system, then watch it orbit.<br>
+              <strong>These are the real positions that power every chart on AstroPrecise.</strong><br>
+              <span class="engraved-glyph" style="font-size:0.82em;opacity:0.75;">☉</span> The Sky Is Your Eternal Hermetic Clock
+            </p>
+          </div>
 
-          <div class="orrery-controls" role="group" aria-label="Orrery time speed controls">
-            <button class="orrery-btn active" data-speed="0" id="orrery-pause" aria-label="Pause orrery">Pause</button>
-            <button class="orrery-btn" data-speed="1" id="orrery-1x" aria-label="Play at 1x speed">1&times;</button>
-            <button class="orrery-btn" data-speed="30" id="orrery-30x" aria-label="Play at 30x speed">30&times;</button>
-            <button class="orrery-btn" data-speed="365" id="orrery-365x" aria-label="Play at 365x speed">365&times;</button>
-            <span class="orrery-date" id="orrery-date-display" aria-live="polite" aria-label="Current orrery date"></span>
+          <div class="orrery-controls" role="group" aria-label="Time controls for the living orrery">
+            <button class="orrery-btn active" data-speed="0" id="orrery-pause" aria-label="Pause">Pause</button>
+            <button class="orrery-btn" data-speed="1" id="orrery-1x" aria-label="Real time">1×</button>
+            <button class="orrery-btn" data-speed="30" id="orrery-30x" aria-label="30× speed">30×</button>
+            <button class="orrery-btn" data-speed="365" id="orrery-365x" aria-label="1 year per second">Year</button>
+            <span class="orrery-date" id="orrery-date-display" aria-live="polite" aria-label="Current date in the orrery"></span>
+          </div>
+
+          <!-- Prominent, beautiful timeline scrubber – the primary way users interact with time -->
+          <div class="orrery-timeline">
+            <div class="orrery-timeline__label">
+              <span>TIMELINE</span>
+              <button class="orrery-btn" id="orrery-reset" style="padding:1px 6px; font-size:0.58rem;">Now</button>
+            </div>
+            <input type="range" id="orrery-scrub" min="-2000" max="2000" step="1" value="0" style="flex:1; accent-color:#D4AF37;" aria-label="Scrub through time – watch the planets move in their real paths">
           </div>
         </div>
 
@@ -1488,7 +1755,7 @@
           </p>
         </header>
 
-        <div class="bento-grid" role="list">
+        <div class="bento-grid sacred-geo" role="list">
           <!-- Birth Chart — featured, spans 2 cols -->
           <a href="chart.html" class="bento-card bento-card--featured reveal" role="listitem" aria-label="Birth Chart calculator">
             <span class="bento-card__symbol" aria-hidden="true">⊙</span>
@@ -1667,7 +1934,7 @@
           <p class="section-subtitle">From birth data to complete blueprint in seconds. No account, no waiting, nothing sent anywhere.</p>
         </header>
 
-        <div class="steps-grid">
+        <div class="steps-grid sacred-geo">
           <div class="step-card reveal">
             <div class="step-card__number" aria-hidden="true">I</div>
             <span class="step-card__icon" aria-hidden="true">📅</span>
@@ -1723,7 +1990,7 @@
           </p>
         </header>
 
-        <div class="tools-bento" role="list">
+        <div class="tools-bento sacred-geo" role="list">
           <!-- Birth Chart — wide -->
           <a href="chart.html" class="tool-card tool-card--wide reveal" role="listitem" aria-label="Birth Chart — full natal chart">
             <span class="tool-card__icon" aria-hidden="true">⊙</span>
@@ -1812,7 +2079,7 @@
           </p>
         </header>
 
-        <div class="philosophy-grid">
+        <div class="philosophy-grid sacred-geo">
           <div class="philosophy-card reveal">
             <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
               <span style="font-size:1.2rem;">⊕</span>
@@ -1827,7 +2094,7 @@
           </div>
 
           <div class="philosophy-card reveal reveal-delay-2">
-            <div class="philosophy-card__accent philosophy-card__accent--cyan" aria-hidden="true">
+            <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
               <span style="font-size:1.2rem;">🔒</span>
             </div>
             <h3 class="philosophy-card__title">Privacy-First</h3>
@@ -1840,7 +2107,7 @@
           </div>
 
           <div class="philosophy-card reveal reveal-delay-4">
-            <div class="philosophy-card__accent philosophy-card__accent--purple" aria-hidden="true">
+            <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
               <span style="font-size:1.2rem;">✦</span>
             </div>
             <h3 class="philosophy-card__title">Honest</h3>
@@ -2115,11 +2382,90 @@
             dateEl.textContent = d.toLocaleDateString('en-GB', {
               year: 'numeric', month: 'short', day: 'numeric'
             });
+            // Masterpiece sync: share live sky time with other instruments (e.g. ephemeris Clock of the Spheres)
+            try { localStorage.setItem('astro_current_demo_time', d.toISOString()); } catch(e){}
           }
           requestAnimationFrame(updateOrreryDate);
         }
         requestAnimationFrame(updateOrreryDate);
       }
+
+      // Time scrubber — direct control of the 3D solar system rotation / offset
+      (function () {
+        var scrub = document.getElementById('orrery-scrub');
+        var reset = document.getElementById('orrery-reset');
+        if (!scrub) return;
+
+        var lastVal = 0;
+        scrub.addEventListener('input', function () {
+          var val = parseInt(scrub.value, 10) || 0;
+          if (window.Orrery3D && typeof Orrery3D.jumpTo === 'function') {
+            // jumpTo expects JD offset; we approximate days since we use dayOffset internally
+            // Use a small nudge via setDate or by calculating rough JD delta
+            var current = (window.Orrery3D.getDate && window.Orrery3D.getDate()) || new Date();
+            current = new Date(current.getTime() + (val - lastVal) * 86400000);
+            if (typeof Orrery3D.setDate === 'function') Orrery3D.setDate(current);
+            else if (typeof Orrery3D.jumpTo === 'function') {
+              // fallback approximate
+              var E = window.AstroEphemeris;
+              if (E && E.julianDay) {
+                var jd = E.julianDay(current.getFullYear(), current.getMonth()+1, current.getDate(), current.getHours(), current.getMinutes(), 0);
+                Orrery3D.jumpTo(jd);
+              }
+            }
+          }
+          lastVal = val;
+        });
+
+        if (reset) reset.addEventListener('click', function () {
+          scrub.value = 0;
+          lastVal = 0;
+          if (window.Orrery3D) {
+            if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
+            if (typeof Orrery3D.setDate === 'function') Orrery3D.setDate(new Date());
+            else if (typeof Orrery3D.jumpTo === 'function' && window.AstroEphemeris) {
+              var now = new Date();
+              var E = window.AstroEphemeris;
+              var jd = E.julianDay(now.getFullYear(), now.getMonth()+1, now.getDate(), now.getHours(), now.getMinutes(), 0);
+              Orrery3D.jumpTo(jd);
+            }
+          }
+        });
+      })();
+
+      // Layer toggles for the hero 3D solar system (orbits, labels, asteroids) – asteroids off for clean view
+      (function () {
+        var toggles = document.querySelectorAll('.orrery-toggle');
+        if (!toggles.length || !window.Orrery3D) return;
+
+        // defaults for clean hero view (no clutter: asteroids/particles off)
+        var state = { orbits: false, labels: true, asteroids: false };
+
+        toggles.forEach(function (btn) {
+          var layer = btn.dataset.layer;
+          btn.classList.toggle('active', !!state[layer]);
+          btn.addEventListener('click', function () {
+            state[layer] = !state[layer];
+            btn.classList.toggle('active', state[layer]);
+
+            if (layer === 'orbits' && typeof Orrery3D.setShowOrbits === 'function') {
+              Orrery3D.setShowOrbits(state[layer]);
+            }
+            if (layer === 'labels' && typeof Orrery3D.setShowLabels === 'function') {
+              Orrery3D.setShowLabels(state[layer]);
+            }
+            if (layer === 'asteroids' && typeof Orrery3D.setShowAsteroids === 'function') {
+              Orrery3D.setShowAsteroids(state[layer]);
+            }
+          });
+        });
+
+        // initial sync for clean hero
+        if (typeof Orrery3D.setShowOrbits === 'function') Orrery3D.setShowOrbits(state.orbits);
+        if (typeof Orrery3D.setShowLabels === 'function') Orrery3D.setShowLabels(state.labels);
+        if (typeof Orrery3D.setShowAsteroids === 'function') Orrery3D.setShowAsteroids(state.asteroids);
+        if (typeof Orrery3D.setShowParticles === 'function') Orrery3D.setShowParticles(false);
+      })();
     })();
 
     /* ── 6. Orrery planet click → info panel ───────────────────────────── */

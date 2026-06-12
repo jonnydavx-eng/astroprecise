@@ -213,8 +213,8 @@
     /* ── Glassmorphism card ── */
     .glass-card {
       background: var(--surface);
-      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: var(--radius-2xl);
       padding: 2rem;
@@ -276,8 +276,8 @@
       background:
         radial-gradient(circle at 20% 0%, rgba(42,74,148,0.15), transparent 60%),
         rgba(10,14,30,0.7);
-      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
       margin: 1.5rem 0;
     }
     .daimon-name {
@@ -435,6 +435,11 @@
     </nav>
   </header>
 
+  <!-- Preloader for Instrument page too (lightweight version) -->
+  <div id="inst-preloader" style="position:fixed;inset:0;z-index:9998;background:#050406;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .5s;">
+    <div style="text-align:center;color:#C9A227;font-family:'Cinzel',serif;letter-spacing:0.2em;font-size:0.9rem;">Aligning the Spheres…</div>
+  </div>
+
   <main id="main-content">
 
     <!-- ═══ HERO ═══ -->
@@ -506,6 +511,41 @@
           <p style="font-size:0.65rem;color:var(--silver-dim);line-height:1.6;">
             Life Path, Expression, and Personal Year numbers computed from your birth date.
           </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VI. THE CLOCK OF THE SPHERES — Planetary Hours Masterpiece (Celestia "Sky Is a Clock" + engraved hermetic + Astro precision)
+         Award-level SVG wheel. Sectors for the 12 hours, current ruler highlighted, sun arc, deep correspondences. Interactive. Never experienced before on an astrology site.
+    ═══ -->
+    <section class="instrument-section" id="sec-clock">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VI</span> The Clock of the Spheres</p>
+        <h2 class="instrument-title">The sky tells time in gold and shadow.</h2>
+        <p class="instrument-lede">
+          Planetary hours are the living unequal divisions the ancients used — from sunrise the sequence of classical rulers repeats. This engraved wheel is both instrument and icon.
+        </p>
+
+        <div class="glass-card glass-card--gold-rim engraved-plate" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
+          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(212,175,55,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
+            <defs>
+              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C9A227"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
+            </defs>
+            <!-- Rim -->
+            <circle cx="230" cy="230" r="215" fill="none" stroke="#C9A227" stroke-width="2.5" opacity="0.4"/>
+            <!-- Sectors + labels drawn/enhanced by JS below for live current-hour + click lore -->
+          </svg>
+          <div id="ph-readout" style="margin-top:8px;font-family:'Cormorant Garamond',serif;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
+          <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
+            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(201,162,39,0.35);color:#C9A227;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
+            <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
+          </div>
+          <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore • Sunrise-based unequal hours</div>
+        </div>
+
+        <div style="max-width:620px;margin:0 auto;font-family:'Cormorant Garamond',serif;font-size:0.97rem;color:#d4c9a8;line-height:1.7;">
+          <p><strong>Hermetic law:</strong> The hour of a planet is its throne. Work of that nature (Venus for love and art, Mars for severance and courage) is said to find the most willing ear of the cosmos.</p>
+          <p><strong>Modern synthesis:</strong> Chronobiology and seasonal affective research echo the old observation that different times of day carry qualitatively different energies. Use the wheel as a beautiful, precise reminder to align intention with the actual sky.</p>
         </div>
       </div>
     </section>
@@ -811,6 +851,133 @@
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryWireEventSet);
     else tryWireEventSet();
+  })();
+  </script>
+  <script>
+  // ═══ THE CLOCK OF THE SPHERES — planetary hours wheel ═══
+  // True unequal hours (sunrise→sunset twelfths) when the Instrument's saved
+  // event provides a location; otherwise an equal-hour approximation, said so.
+  (function clockOfSpheres() {
+    const svg = document.getElementById('ph-wheel'), readout = document.getElementById('ph-readout');
+    const alignBtn = document.getElementById('ph-align'), nowBtn = document.getElementById('ph-now');
+    const note = document.getElementById('ph-note');
+    if (!svg || !readout) return;
+    const CX = 230, CY = 230, R1 = 206, R2 = 142, RG = 174;
+    const CHALD = ['saturn', 'jupiter', 'mars', 'sun', 'venus', 'mercury', 'moon'];
+    const DAY_RULER = [3, 6, 2, 5, 1, 4, 0]; // Sun..Sat → index into CHALD
+    const P = {
+      saturn:  { g: '♄', n: 'Saturn',  c: '#9b8b6a', lore: 'Lead, boundaries, the long account. The old books give Saturn’s hour to endings, debts honoured, vows and foundations. Modern reading: do the disciplined thing — it compounds.' },
+      jupiter: { g: '♃', n: 'Jupiter', c: '#c9a05a', lore: 'Tin and increase. The hour of judges, oaths and fortune asked for openly. Modern reading: negotiate, apply, publish — generosity moves.' },
+      mars:    { g: '♂', n: 'Mars',    c: '#b0563a', lore: 'Iron severs. Courage, surgery, contest — the blade’s hour, for cutting what must be cut. Modern reading: confrontations scheduled here end cleaner than ones that ambush you.' },
+      sun:     { g: '☉', n: 'the Sun', c: '#E8C872', lore: 'Gold and sovereignty. Audiences with power, the work that bears your name. Modern reading: visibility — present, launch, be seen.' },
+      venus:   { g: '♀', n: 'Venus',   c: '#d4a0a0', lore: 'Copper binds. Love, art, alliance, the sweetening of things. Modern reading: reconcile, design, court — the social grain runs smooth.' },
+      mercury: { g: '☿', n: 'Mercury', c: '#b8bcc4', lore: 'Quicksilver runs. Letters, trade, travel, the crossroads god. Modern reading: write, send, sign, learn — the channels are open.' },
+      moon:    { g: '☽', n: 'the Moon',c: '#cfc8b8', lore: 'Silver remembers. The tide’s hour — home, water, dreams, the public mood. Modern reading: rest, nourish, listen; begin nothing loud.' },
+    };
+    function eventLoc() {
+      try { const ev = JSON.parse(localStorage.getItem('ap_instrument_event') || 'null');
+        if (ev && isFinite(ev.lat) && isFinite(ev.lon)) return { lat: +ev.lat, lon: +ev.lon, city: ev.city || '' };
+      } catch (e) {}
+      return null;
+    }
+    function sunTimes(d, lat, lon) {
+      const rad = Math.PI / 180;
+      const n = Math.floor((d - new Date(Date.UTC(d.getUTCFullYear(), 0, 0))) / 864e5);
+      const B = rad * (360 / 365) * (n - 81);
+      const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+      const decl = -23.44 * Math.cos(rad * (360 / 365) * (n + 10));
+      const cosH = (Math.sin(-0.833 * rad) - Math.sin(lat * rad) * Math.sin(decl * rad)) / (Math.cos(lat * rad) * Math.cos(decl * rad));
+      if (cosH < -1 || cosH > 1) return null;
+      const H = Math.acos(cosH) / rad;
+      const noonMin = 720 - 4 * lon - eot;
+      const mk = min => { const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); x.setUTCMinutes(Math.round(min)); return x; };
+      return { rise: mk(noonMin - 4 * H), set: mk(noonMin + 4 * H) };
+    }
+    // Build the 24 slot boundaries + rulers for the planetary day containing t
+    function daySlots(t, loc) {
+      if (loc) {
+        const st0 = sunTimes(t, loc.lat, loc.lon);
+        const stY = sunTimes(new Date(t.getTime() - 864e5), loc.lat, loc.lon);
+        const stT = sunTimes(new Date(t.getTime() + 864e5), loc.lat, loc.lon);
+        if (st0 && stY && stT) {
+          let rise, set, nextRise;
+          if (t < st0.rise) { rise = stY.rise; set = stY.set; nextRise = st0.rise; }
+          else { rise = st0.rise; set = st0.set; nextRise = stT.rise; }
+          const dow = new Date(rise).getDay(), slots = [];
+          const dl = (set - rise) / 12, nl = (nextRise - set) / 12;
+          for (let i = 0; i < 12; i++) slots.push({ start: new Date(+rise + i * dl), end: new Date(+rise + (i + 1) * dl), rulerKey: CHALD[(DAY_RULER[dow] + i) % 7], kind: 'day' });
+          for (let i = 0; i < 12; i++) slots.push({ start: new Date(+set + i * nl), end: new Date(+set + (i + 1) * nl), rulerKey: CHALD[(DAY_RULER[dow] + 12 + i) % 7], kind: 'night' });
+          return { slots, dow, approx: false, rise, set };
+        }
+      }
+      const base = new Date(t); base.setHours(6, 0, 0, 0);
+      if (t < base) base.setDate(base.getDate() - 1);
+      const dow = base.getDay(), slots = [];
+      for (let i = 0; i < 24; i++) slots.push({ start: new Date(+base + i * 36e5), end: new Date(+base + (i + 1) * 36e5), rulerKey: CHALD[(DAY_RULER[dow] + i) % 7], kind: i < 12 ? 'day' : 'night' });
+      return { slots, dow, approx: true };
+    }
+    const pt = (aDeg, r) => { const a = aDeg * Math.PI / 180; return [CX + r * Math.cos(a), CY - r * Math.sin(a)]; };
+    const fmt = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let aligned = null, current = null;
+    function defaultReadout() {
+      if (!current) return;
+      const { slot } = current, p = P[slot.rulerKey];
+      readout.innerHTML = `Hour of <strong style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(slot.start)} – ${fmt(slot.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
+    }
+    function render(t) {
+      const loc = eventLoc();
+      const { slots, dow, approx } = daySlots(t, loc);
+      const nowIdx = slots.findIndex(s => t >= s.start && t < s.end);
+      current = nowIdx >= 0 ? { slot: slots[nowIdx], idx: nowIdx } : null;
+      let s = `<defs><linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C9A227"/><stop offset="100%" stop-color="#A8841E"/></linearGradient></defs>`;
+      s += `<circle cx="${CX}" cy="${CY}" r="${R1 + 9}" fill="none" stroke="#C9A227" stroke-width="2.5" opacity="0.4"/>`;
+      s += `<circle cx="${CX}" cy="${CY}" r="${R2 - 8}" fill="none" stroke="#C9A227" stroke-width="0.8" opacity="0.3"/>`;
+      slots.forEach((sl, i) => {
+        const a0 = 180 - i * 15, a1 = 180 - (i + 1) * 15;
+        const [x1, y1] = pt(a0, R1), [x2, y2] = pt(a1, R1), [x3, y3] = pt(a1, R2), [x4, y4] = pt(a0, R2);
+        const isNow = i === nowIdx, p = P[sl.rulerKey];
+        const fill = isNow ? 'rgba(201,162,39,0.22)' : sl.kind === 'day' ? 'rgba(201,162,39,0.055)' : 'rgba(40,36,52,0.45)';
+        s += `<g class="ph-sec" data-i="${i}" style="cursor:pointer">
+          <path d="M${x1},${y1} A${R1},${R1} 0 0 1 ${x2},${y2} L${x3},${y3} A${R2},${R2} 0 0 0 ${x4},${y4} Z"
+            fill="${fill}" stroke="rgba(201,162,39,${isNow ? '0.8' : '0.22'})" stroke-width="${isNow ? 1.6 : 0.6}"/>
+          <text x="${pt(a0 - 7.5, RG)[0]}" y="${pt(a0 - 7.5, RG)[1]}" text-anchor="middle" dominant-baseline="central"
+            font-size="${isNow ? 17 : 13}" fill="${isNow ? '#EFE3C0' : p.c}" font-family="serif" ${isNow ? 'filter="drop-shadow(0 0 5px rgba(201,162,39,.9))"' : ''}>${p.g}</text>
+        </g>`;
+      });
+      if (current) {
+        const i = current.idx, fr = (t - current.slot.start) / (current.slot.end - current.slot.start);
+        const [mx, my] = pt(180 - (i + fr) * 15, R1 + 9);
+        s += `<circle cx="${mx}" cy="${my}" r="5" fill="#EFE3C0" opacity="0.95"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite"/></circle>`;
+      }
+      const cp = current ? P[current.slot.rulerKey] : P.sun;
+      s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="serif" filter="drop-shadow(0 0 10px rgba(201,162,39,.45))">${cp.g}</text>
+        <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#E8E0D0" font-family="Cinzel,serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
+        <text x="${CX}" y="${CY + 28}" text-anchor="middle" font-size="10" fill="#A89E88" font-family="Cormorant Garamond,serif" font-style="italic">${current ? fmt(current.slot.start) + ' – ' + fmt(current.slot.end) : ''}</text>
+        <text x="${CX}" y="${CY + 46}" text-anchor="middle" font-size="9" letter-spacing="2" fill="#A89E88" font-family="Cinzel,serif">DAY OF ${P[CHALD[DAY_RULER[dow]]].n.replace('the ', '').toUpperCase()}</text>`;
+      svg.innerHTML = s;
+      svg.querySelectorAll('.ph-sec').forEach(g => {
+        g.addEventListener('click', () => {
+          const sl = slots[+g.dataset.i], p = P[sl.rulerKey];
+          readout.innerHTML = `${sl.kind === 'day' ? 'Day' : 'Night'} hour ${(+g.dataset.i % 12) + 1} — <strong style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(sl.start)} – ${fmt(sl.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
+        });
+      });
+      defaultReadout();
+      note.textContent = approx
+        ? 'Tap a sector for hermetic lore • equal-hour approximation — set your event below for true sunrise hours'
+        : `Tap a sector for hermetic lore • true unequal hours${loc && loc.city ? ' for ' + loc.city : ''} (sunrise-based)`;
+    }
+    alignBtn.addEventListener('click', () => {
+      const t = localStorage.getItem('astro_current_demo_time');
+      if (!t) { readout.innerHTML = 'The home orrery has not set a shared time yet — visit the homepage and move the time scrubber first.'; return; }
+      aligned = new Date(t);
+      if (isNaN(aligned)) { aligned = null; return; }
+      render(aligned);
+      nowBtn.style.display = '';
+      readout.innerHTML += `<br><span style="color:#C9A227;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
+    });
+    nowBtn.addEventListener('click', () => { aligned = null; nowBtn.style.display = 'none'; render(new Date()); });
+    render(new Date());
+    setInterval(() => { if (!aligned) render(new Date()); }, 60000);
   })();
   </script>
   <script src="js/instrument.js"></script>
