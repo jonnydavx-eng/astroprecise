@@ -28,7 +28,22 @@
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <link rel="stylesheet" href="css/main.css" />
   <style>
-    /* ---- Compatibility-page overrides ---- */
+    /* ---- Compatibility-page design variables ---- */
+    :root {
+      --bg: #090b16;
+      --gold: #c4920a;
+      --gold-pale: #e8c96a;
+      --white: #f0e8d8;
+      --silver: #9aa6c8;
+      --silver-dim: #8891aa;
+      --surface: rgba(17,26,54,0.68);
+      --border: rgba(150,175,230,0.12);
+      --radius-xl: 20px;
+      --radius-2xl: 28px;
+      --lapis: #5b7fc7;
+    }
+
+    /* ---- Hero ---- */
     .hero--small {
       padding: var(--space-16) 0 var(--space-12);
       text-align: center;
@@ -47,6 +62,8 @@
       max-width: 560px;
       margin: 0 auto;
     }
+
+    /* ---- Sections ---- */
     .section { padding: var(--space-16) 0; }
     .section--alt { background: var(--color-bg-2); }
     .section__title {
@@ -62,14 +79,20 @@
       color: var(--color-silver-dim);
       margin-bottom: var(--space-10);
     }
-    /* Two-person compat form */
+
+    /* ---- Compat form outer wrapper ---- */
     .compat-form {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
+      background: rgba(12,18,42,0.72);
+      border: 1px solid var(--border);
       border-radius: var(--radius-2xl);
-      padding: var(--space-10) var(--space-10);
+      padding: var(--space-10);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 8px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(150,175,230,0.06);
     }
     @media (max-width: 700px) { .compat-form { padding: var(--space-6) var(--space-4); } }
+
+    /* ---- Two-person grid ---- */
     .compat-form__grid {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
@@ -80,40 +103,132 @@
       .compat-form__grid { grid-template-columns: 1fr; }
       .compat-form__divider { font-size: 2rem; }
     }
-    .compat-person h3 {
+
+    /* ---- Person cards ---- */
+    .compat-person-card {
+      border-radius: var(--radius-xl);
+      padding: var(--space-7) var(--space-7);
+      background: rgba(15,22,50,0.60);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .compat-person-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+    .compat-person-card--p1::before {
+      background: linear-gradient(90deg, #3a5fa8 0%, #5b7fc7 60%, transparent 100%);
+    }
+    .compat-person-card--p2::before {
+      background: linear-gradient(90deg, #c4920a 0%, #e8c96a 60%, transparent 100%);
+    }
+    @media (max-width: 700px) { .compat-person-card { padding: var(--space-5) var(--space-4); } }
+
+    .compat-person-card h3 {
       font-family: var(--font-display);
       font-size: var(--text-xl);
       font-weight: 700;
       margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
     }
-    .compat-person:first-child h3 { color: var(--color-primary-light); }
-    .compat-person:last-child h3 { color: var(--color-gold); }
+    .compat-person-card--p1 h3 { color: #5b7fc7; }
+    .compat-person-card--p2 h3 { color: var(--gold); }
+
+    .person-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .person-icon--p1 { background: rgba(91,127,199,0.2); border: 1px solid rgba(91,127,199,0.35); }
+    .person-icon--p2 { background: rgba(196,146,10,0.2); border: 1px solid rgba(196,146,10,0.35); }
+
+    /* ---- Form inputs ---- */
+    .form-input:focus {
+      border-color: rgba(196,146,10,0.55) !important;
+      box-shadow: 0 0 0 3px rgba(196,146,10,0.12) !important;
+      outline: none;
+    }
+
+    /* ---- Desktop divider ---- */
     .compat-form__divider {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding-top: 3rem;
-      font-size: 2.5rem;
-      color: var(--color-gold);
-      opacity: 0.7;
+      gap: var(--space-2);
     }
+    .compat-form__divider-line {
+      width: 1px;
+      flex: 1;
+      max-height: 80px;
+      background: linear-gradient(180deg, transparent, rgba(196,146,10,0.35), transparent);
+    }
+    .compat-form__divider-heart {
+      font-size: 2rem;
+      color: var(--gold);
+      opacity: 0.75;
+      line-height: 1;
+    }
+    @media (max-width: 768px) {
+      .compat-form__divider-line { display: none; }
+      .compat-form__divider { flex-direction: row; padding-top: 0; }
+      .compat-form__divider-heart { font-size: 2rem; }
+    }
+
+    /* ---- Submit row ---- */
     .form-submit { text-align: center; margin-top: var(--space-10); }
-    /* Results */
+
+    /* ---- Utility ---- */
     .hidden { display: none !important; }
+
+    /* ============================================================
+       RESULTS
+    ============================================================ */
+
+    /* --- Result header card --- */
+    .compat-result-header {
+      text-align: center;
+      margin-bottom: var(--space-8);
+      padding: var(--space-8) var(--space-6);
+      background: rgba(17,26,54,0.72);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    /* --- Score ring (larger) --- */
     .compat-score {
       display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
       margin-bottom: var(--space-10);
+      gap: var(--space-3);
     }
     .score-ring-wrapper {
       position: relative;
-      width: 160px;
-      height: 160px;
+      width: 200px;
+      height: 200px;
       flex-shrink: 0;
     }
     .score-ring-svg {
-      width: 160px;
-      height: 160px;
+      width: 200px;
+      height: 200px;
       transform: rotate(-90deg);
     }
     .score-ring-label {
@@ -123,22 +238,32 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: var(--space-1);
+      gap: 2px;
     }
     .score-number {
       font-family: var(--font-display);
-      font-size: var(--text-4xl);
+      font-size: 3rem;
       font-weight: 900;
       color: var(--color-white);
       line-height: 1;
+      letter-spacing: -0.02em;
     }
-    .score-ring-label span:last-child {
-      font-size: var(--text-xs);
+    .score-ring-label .score-label-text {
+      font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--color-silver-dim);
+      letter-spacing: 0.12em;
+      color: var(--silver-dim);
+      margin-top: 2px;
     }
-    /* Category scores */
+    .score-connection-label {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--gold-pale);
+      letter-spacing: 0.04em;
+    }
+
+    /* --- Category scores --- */
     .category-scores {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -146,72 +271,153 @@
       margin-bottom: var(--space-8);
     }
     .category-score-item {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4) var(--space-5);
+      background: rgba(17,26,54,0.62);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5) var(--space-5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .category-score-item:hover {
+      border-color: rgba(196,146,10,0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3);
     }
     .category-score-item__header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-3);
     }
     .category-score-item__label {
       font-size: var(--text-sm);
       font-weight: 600;
-      color: var(--color-silver);
+      color: var(--silver);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .category-icon {
+      font-size: 1rem;
+      opacity: 0.85;
     }
     .category-score-item__value {
       font-size: var(--text-sm);
       font-weight: 700;
-      color: var(--color-primary-light);
+      color: var(--gold-pale);
     }
     .score-bar__track {
-      height: 6px;
-      background: var(--color-surface-2);
-      border-radius: var(--radius-full);
+      height: 10px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
       overflow: hidden;
     }
     .score-bar__fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-      border-radius: var(--radius-full);
-      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      background: linear-gradient(90deg, #2a4a94 0%, #c4920a 100%);
+      border-radius: 999px;
+      transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    /* Synastry aspects */
+
+    /* --- Synastry aspects (card-style) --- */
     .synastry-aspects {
       margin-bottom: var(--space-8);
     }
-    .synastry-aspects-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .synastry-aspects-table th,
-    .synastry-aspects-table td {
-      padding: var(--space-3) var(--space-4);
-      border-bottom: 1px solid var(--color-border);
-      font-size: var(--text-sm);
-      text-align: left;
-    }
-    .synastry-aspects-table th {
-      color: var(--color-silver-dim);
+    .synastry-aspects-header {
+      font-family: var(--font-display);
+      color: var(--gold-pale);
+      margin-bottom: var(--space-5);
+      font-size: var(--text-xl);
       font-weight: 600;
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: var(--color-surface);
     }
-    .synastry-aspects-table td { color: var(--color-silver); }
-    .aspect--harmony { color: var(--color-success); }
-    .aspect--tension { color: var(--color-danger); }
-    .aspect--neutral { color: var(--color-gold); }
-    /* Compat overview */
+    .aspect-card-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .aspect-card {
+      background: rgba(17,26,54,0.60);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4) var(--space-5);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto;
+      align-items: center;
+      gap: var(--space-3);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-left-width: 3px;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .aspect-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.28);
+    }
+    .aspect-card--harmony { border-left-color: #22c55e; }
+    .aspect-card--tension { border-left-color: #ef4444; }
+    .aspect-card--neutral { border-left-color: var(--gold); }
+
+    .aspect-card__planet {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      font-weight: 500;
+    }
+    .aspect-card__planet span {
+      font-size: 1.25rem;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .aspect-card__symbol {
+      font-size: 1.5rem;
+      text-align: center;
+      font-weight: 700;
+    }
+    .aspect-card__symbol--harmony { color: #22c55e; }
+    .aspect-card__symbol--tension { color: #ef4444; }
+    .aspect-card__symbol--neutral { color: var(--gold); }
+    .aspect-card__orb {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: rgba(154,166,200,0.7);
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      padding: 2px 8px;
+      white-space: nowrap;
+    }
+    .aspect-card__meaning {
+      grid-column: 1 / -1;
+      font-size: var(--text-xs);
+      color: var(--silver-dim);
+      border-top: 1px solid rgba(150,175,230,0.08);
+      padding-top: var(--space-2);
+      margin-top: var(--space-1);
+    }
+
+    .aspect-show-all-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--silver);
+      font-size: var(--text-sm);
+      padding: var(--space-2) var(--space-5);
+      cursor: pointer;
+      margin-top: var(--space-4);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .aspect-show-all-btn:hover { border-color: var(--gold); color: var(--gold-pale); }
+
+    /* --- Overview ---- */
     .compat-overview {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
+      background: rgba(17,26,54,0.68);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     .compat-overview p {
       color: var(--color-silver-dim);
@@ -219,36 +425,70 @@
       margin-bottom: var(--space-4);
     }
     .compat-overview p:last-child { margin-bottom: 0; }
-    /* Element compat grid */
+
+    /* --- Download button row --- */
+    .compat-download-row {
+      text-align: center;
+      margin-top: var(--space-6);
+    }
+
+    /* ---- Element compat grid ---- */
     .element-compat-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-4);
+      gap: var(--space-5);
     }
     @media (max-width: 600px) { .element-compat-grid { grid-template-columns: 1fr; } }
+
     .element-compat-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
+      background: rgba(17,26,54,0.62);
+      border: 1px solid var(--border);
       border-radius: var(--radius-xl);
-      padding: var(--space-5) var(--space-6);
+      padding: var(--space-6) var(--space-6);
+      border-left-width: 3px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
+    .element-compat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+    .element-compat-card--fire {
+      border-left-color: #e05a3a;
+    }
+    .element-compat-card--fire:hover { box-shadow: 0 8px 32px rgba(224,90,58,0.15); }
+    .element-compat-card--earth {
+      border-left-color: #2a8a5a;
+    }
+    .element-compat-card--earth:hover { box-shadow: 0 8px 32px rgba(42,138,90,0.15); }
+    .element-compat-card--air {
+      border-left-color: #5b7fc7;
+    }
+    .element-compat-card--air:hover { box-shadow: 0 8px 32px rgba(91,127,199,0.15); }
+    .element-compat-card--water {
+      border-left-color: #3a7ad4;
+    }
+    .element-compat-card--water:hover { box-shadow: 0 8px 32px rgba(58,122,212,0.15); }
+
     .element-compat-card h4 {
       font-family: var(--font-display);
       font-size: var(--text-lg);
       font-weight: 700;
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-3);
     }
+    .element-compat-card--fire h4  { color: #e05a3a; }
+    .element-compat-card--earth h4 { color: #2a8a5a; }
+    .element-compat-card--air h4   { color: #5b7fc7; }
+    .element-compat-card--water h4 { color: #3a7ad4; }
     .element-compat-card p {
       font-size: var(--text-sm);
       color: var(--color-silver-dim);
-      line-height: 1.7;
+      line-height: 1.75;
       margin: 0;
     }
-    .element-compat-card--fire h4 { color: var(--color-fire); }
-    .element-compat-card--earth h4 { color: var(--color-earth); }
-    .element-compat-card--air h4 { color: var(--color-air); }
-    .element-compat-card--water h4 { color: var(--color-water); }
-    /* Compat matrix */
+
+    /* ---- Compat matrix ---- */
     .compat-matrix {
       width: 100%;
       border-collapse: collapse;
@@ -271,6 +511,57 @@
     .compat-cell--medium  { background: rgba(251, 191, 36, 0.15); color: var(--color-gold); }
     .compat-cell--low     { background: rgba(239, 68, 68, 0.12);  color: var(--color-danger); }
     .compat-cell--neutral { background: transparent; color: var(--color-silver-dark); }
+
+    /* ---- Synastry sidebar premium ---- */
+    .synastry-sidebar-card {
+      background: rgba(17,26,54,0.68);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .synastry-aspect-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .synastry-aspect-table th {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--silver-dim);
+      font-weight: 600;
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .synastry-aspect-table td {
+      padding: var(--space-3) var(--space-3);
+      border-bottom: 1px solid rgba(150,175,230,0.06);
+      font-size: var(--text-sm);
+      color: var(--silver);
+      vertical-align: middle;
+    }
+    .sat-glyph {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .sat-glyph--conjunction { color: var(--gold); }
+    .sat-glyph--trine       { color: #22c55e; }
+    .sat-glyph--sextile     { color: #6cd47e; }
+    .sat-glyph--square      { color: #ef4444; }
+    .sat-glyph--opposition  { color: #f97316; }
+    .sat-nature {
+      font-size: var(--text-xs);
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 600;
+    }
+    .sat-nature--intense   { background: rgba(196,146,10,0.18); color: var(--gold-pale); }
+    .sat-nature--harmonic  { background: rgba(34,197,94,0.15);  color: #6cd47e; }
+    .sat-nature--dynamic   { background: rgba(239,68,68,0.14);  color: #f87171; }
+    .sat-nature--polarity  { background: rgba(249,115,22,0.14); color: #fdba74; }
   </style>
 </head>
 <body>
@@ -317,7 +608,7 @@
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
         <a href="index.html" class="navbar__link">Home</a>
         <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+        <a href="ephemeris.html" class="navbar__link">Instrument</a>
         <a href="horoscope.html" class="navbar__link">Horoscope</a>
         <a href="compatibility.html" class="navbar__link active" aria-current="page">Compatibility</a>
         <a href="transits.html" class="navbar__link">Transits</a>
@@ -380,9 +671,13 @@
           </h2>
 
           <div class="compat-form__grid">
-            <!-- Person One -->
-            <fieldset class="compat-person" style="border:none;padding:0;margin:0;">
-              <legend><h3>Person One</h3></legend>
+            <!-- Person One card -->
+            <fieldset class="compat-person-card compat-person-card--p1" style="border:none;padding:var(--space-7);margin:0;">
+              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person One birth details</legend>
+              <h3>
+                <span class="person-icon person-icon--p1" aria-hidden="true">✦</span>
+                Person One
+              </h3>
               <div class="form-group">
                 <label for="person1-name" class="form-label">Name</label>
                 <input type="text" id="person1-name" name="person1-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
@@ -400,21 +695,29 @@
                 <label for="person1-city" class="form-label">Birth City <span class="required" aria-hidden="true">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon" aria-hidden="true">📍</span>
-                  <input type="text" id="person1-city" name="person1-city" class="form-input" placeholder="Start typing..." autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p1-city-dropdown" />
+                  <input type="text" id="person1-city" name="person1-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p1-city-dropdown" />
                 </div>
                 <div class="autocomplete-dropdown" id="p1-city-dropdown" role="listbox" aria-label="City suggestions for person one"></div>
                 <input type="hidden" id="person1-lat" name="person1-lat" />
                 <input type="hidden" id="person1-lon" name="person1-lon" />
-                <input type="hidden" id="person1-tz" name="person1-tz" />
+                <input type="hidden" id="person1-tz"  name="person1-tz" />
               </div>
             </fieldset>
 
-            <!-- Divider -->
-            <div class="compat-form__divider" aria-hidden="true">♡</div>
+            <!-- Desktop divider -->
+            <div class="compat-form__divider" aria-hidden="true">
+              <div class="compat-form__divider-line"></div>
+              <span class="compat-form__divider-heart">♡</span>
+              <div class="compat-form__divider-line"></div>
+            </div>
 
-            <!-- Person Two -->
-            <fieldset class="compat-person" style="border:none;padding:0;margin:0;">
-              <legend><h3>Person Two</h3></legend>
+            <!-- Person Two card -->
+            <fieldset class="compat-person-card compat-person-card--p2" style="border:none;padding:var(--space-7);margin:0;">
+              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person Two birth details</legend>
+              <h3>
+                <span class="person-icon person-icon--p2" aria-hidden="true">✦</span>
+                Person Two
+              </h3>
               <div class="form-group">
                 <label for="person2-name" class="form-label">Name</label>
                 <input type="text" id="person2-name" name="person2-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
@@ -432,12 +735,12 @@
                 <label for="person2-city" class="form-label">Birth City <span class="required" aria-hidden="true">*</span></label>
                 <div class="input-with-icon">
                   <span class="input-icon" aria-hidden="true">📍</span>
-                  <input type="text" id="person2-city" name="person2-city" class="form-input" placeholder="Start typing..." autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p2-city-dropdown" />
+                  <input type="text" id="person2-city" name="person2-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p2-city-dropdown" />
                 </div>
                 <div class="autocomplete-dropdown" id="p2-city-dropdown" role="listbox" aria-label="City suggestions for person two"></div>
                 <input type="hidden" id="person2-lat" name="person2-lat" />
                 <input type="hidden" id="person2-lon" name="person2-lon" />
-                <input type="hidden" id="person2-tz" name="person2-tz" />
+                <input type="hidden" id="person2-tz"  name="person2-tz" />
               </div>
             </fieldset>
           </div><!-- /.compat-form__grid -->
@@ -474,86 +777,96 @@
         ============================================================ -->
         <section id="compat-result" class="hidden" aria-live="polite" aria-label="Compatibility report results">
 
-          <!-- Headline -->
-          <div class="card animate-in" style="text-align:center;margin-bottom:var(--space-6);">
-            <h2 id="compat-result-title" class="section-header__title" style="margin-bottom:var(--space-2);"></h2>
+          <!-- Headline card -->
+          <div class="compat-result-header animate-in" style="margin-bottom:var(--space-6);">
+            <h2 id="compat-result-title" class="section-header__title" style="margin-bottom:var(--space-2);font-size:var(--text-2xl);"></h2>
             <p id="compat-result-subtitle" style="color:var(--color-silver-dim);font-size:var(--text-sm);"></p>
           </div>
 
-          <!-- Score ring -->
+          <!-- Score ring (200px, gradient stroke) -->
           <div class="compat-score animate-in animate-in--delay-1">
             <div class="score-ring-wrapper" role="img" aria-label="Overall compatibility score">
-              <svg viewBox="0 0 120 120" class="score-ring-svg" aria-hidden="true">
-                <circle cx="60" cy="60" r="54" fill="none" stroke="#1A1A35" stroke-width="8"/>
-                <circle id="score-ring" cx="60" cy="60" r="54" fill="none"
-                        stroke="url(#compat-grad)" stroke-width="8"
-                        stroke-linecap="round" stroke-dasharray="0 339.3"
-                        style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s cubic-bezier(0.22,1,0.36,1);" />
+              <svg viewBox="0 0 160 160" class="score-ring-svg" aria-hidden="true">
                 <defs>
                   <linearGradient id="compat-grad" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stop-color="#2a4a94" />
-                    <stop offset="100%" stop-color="#FFD700" />
+                    <stop offset="100%" stop-color="#c4920a" />
                   </linearGradient>
                 </defs>
+                <!-- Track -->
+                <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+                <!-- Progress arc -->
+                <circle id="score-ring" cx="80" cy="80" r="70" fill="none"
+                        stroke="url(#compat-grad)" stroke-width="10"
+                        stroke-linecap="round" stroke-dasharray="0 439.8"
+                        style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1.1s cubic-bezier(0.22,1,0.36,1);" />
               </svg>
               <div class="score-ring-label">
                 <span id="overall-score" class="score-number">—</span>
-                <span>Overall</span>
+                <span class="score-label-text">Compatibility</span>
               </div>
             </div>
+            <!-- Connection label below ring -->
+            <div id="compat-connection-label" class="score-connection-label"></div>
           </div>
 
-          <!-- Category scores -->
+          <!-- Category score bars -->
           <div id="category-scores" class="category-scores animate-in animate-in--delay-2">
-            <!-- JS populates category score bars -->
             <div class="category-score-item">
               <div class="category-score-item__header">
-                <span class="category-score-item__label">Romantic Attraction</span>
+                <span class="category-score-item__label"><span class="category-icon">♡</span> Romantic Attraction</span>
                 <span class="category-score-item__value">—</span>
               </div>
               <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
             </div>
             <div class="category-score-item">
               <div class="category-score-item__header">
-                <span class="category-score-item__label">Emotional Depth</span>
+                <span class="category-score-item__label"><span class="category-icon">⭐</span> Emotional Depth</span>
                 <span class="category-score-item__value">—</span>
               </div>
               <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
             </div>
             <div class="category-score-item">
               <div class="category-score-item__header">
-                <span class="category-score-item__label">Communication</span>
+                <span class="category-score-item__label"><span class="category-icon">💬</span> Communication</span>
                 <span class="category-score-item__value">—</span>
               </div>
               <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
             </div>
             <div class="category-score-item">
               <div class="category-score-item__header">
-                <span class="category-score-item__label">Long-Term Potential</span>
+                <span class="category-score-item__label"><span class="category-icon">🌟</span> Long-Term Potential</span>
                 <span class="category-score-item__value">—</span>
               </div>
               <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
             </div>
             <div class="category-score-item">
               <div class="category-score-item__header">
-                <span class="category-score-item__label">Shared Vision</span>
+                <span class="category-score-item__label"><span class="category-icon">👁</span> Shared Vision</span>
                 <span class="category-score-item__value">—</span>
               </div>
               <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
             </div>
           </div>
 
-          <!-- Synastry aspects -->
+          <!-- Synastry aspects (card-style, JS populates) -->
           <div id="synastry-aspects" class="synastry-aspects animate-in animate-in--delay-3">
-            <!-- JS populates synastry aspect table -->
           </div>
 
-          <!-- Overview text -->
+          <!-- Overview narrative -->
           <div id="compat-overview" class="compat-overview animate-in animate-in--delay-4">
-            <!-- JS populates narrative overview -->
+          </div>
+
+          <!-- Download card row -->
+          <div class="compat-download-row">
+            <button id="compat-download-btn" class="btn btn--gold" style="display:none;">&#8659; Download Compatibility Card</button>
           </div>
 
         </section><!-- /#compat-result -->
+
+        <!-- Hidden canvas for card export -->
+        <canvas id="compat-card-canvas" width="1080" height="1080" style="display:none;" aria-hidden="true"></canvas>
+
       </div><!-- /.container -->
     </section>
 
@@ -766,11 +1079,13 @@
             </p>
           </div>
           <div>
-            <div class="card" style="padding:var(--space-8);margin-bottom:var(--space-6);">
-              <h3 class="card__title" style="margin-bottom:var(--space-5);">Key Synastry Aspects</h3>
-              <table class="data-table" aria-label="Key synastry aspects and their meaning">
+            <!-- Premium aspect reference card -->
+            <div class="synastry-sidebar-card" style="margin-bottom:var(--space-6);">
+              <h3 style="font-family:var(--font-display);color:var(--gold-pale);font-size:var(--text-lg);font-weight:600;margin-bottom:var(--space-5);">Key Synastry Aspects</h3>
+              <table class="synastry-aspect-table" aria-label="Key synastry aspects and their meaning">
                 <thead>
                   <tr>
+                    <th scope="col">Symbol</th>
                     <th scope="col">Aspect</th>
                     <th scope="col">Angle</th>
                     <th scope="col">Nature</th>
@@ -778,22 +1093,52 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td><span class="aspect-symbol aspect--conjunction">☌</span></td><td>0°</td><td>Intense</td><td>Deep merger of energies</td></tr>
-                  <tr><td><span class="aspect-symbol aspect--trine">△</span></td><td>120°</td><td>Harmonious</td><td>Natural flow &amp; ease</td></tr>
-                  <tr><td><span class="aspect-symbol aspect--sextile">✶</span></td><td>60°</td><td>Supportive</td><td>Opportunity &amp; cooperation</td></tr>
-                  <tr><td><span class="aspect-symbol aspect--square">□</span></td><td>90°</td><td>Dynamic</td><td>Tension that drives growth</td></tr>
-                  <tr><td><span class="aspect-symbol aspect--opposition">☍</span></td><td>180°</td><td>Polarising</td><td>Attraction &amp; friction</td></tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--conjunction">☌</span></td>
+                    <td style="color:var(--white);font-weight:500;">Conjunction</td>
+                    <td>0°</td>
+                    <td><span class="sat-nature sat-nature--intense">Intense</span></td>
+                    <td>Deep merger of energies</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--trine">△</span></td>
+                    <td style="color:var(--white);font-weight:500;">Trine</td>
+                    <td>120°</td>
+                    <td><span class="sat-nature sat-nature--harmonic">Harmonic</span></td>
+                    <td>Natural flow &amp; ease</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--sextile">✶</span></td>
+                    <td style="color:var(--white);font-weight:500;">Sextile</td>
+                    <td>60°</td>
+                    <td><span class="sat-nature sat-nature--harmonic">Supportive</span></td>
+                    <td>Opportunity &amp; cooperation</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--square">□</span></td>
+                    <td style="color:var(--white);font-weight:500;">Square</td>
+                    <td>90°</td>
+                    <td><span class="sat-nature sat-nature--dynamic">Dynamic</span></td>
+                    <td>Tension that drives growth</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--opposition">☍</span></td>
+                    <td style="color:var(--white);font-weight:500;">Opposition</td>
+                    <td>180°</td>
+                    <td><span class="sat-nature sat-nature--polarity">Polarising</span></td>
+                    <td>Attraction &amp; friction</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-            <div class="card card--glow" style="padding:var(--space-6);">
-              <h4 class="card__title" style="margin-bottom:var(--space-3);">Most Significant Synastry Connections</h4>
-              <ul style="color:var(--color-silver-dim);font-size:var(--text-sm);line-height:2;padding-left:var(--space-5);">
-                <li><strong style="color:var(--color-white);">Sun–Moon contacts</strong> — core identity meets emotional need</li>
-                <li><strong style="color:var(--color-white);">Venus–Mars contacts</strong> — romantic and physical attraction</li>
-                <li><strong style="color:var(--color-white);">Moon–Moon contacts</strong> — emotional resonance and intuitive bond</li>
-                <li><strong style="color:var(--color-white);">Saturn contacts</strong> — long-term commitment and karmic lessons</li>
-                <li><strong style="color:var(--color-white);">Jupiter contacts</strong> — mutual growth and shared optimism</li>
+            <div class="synastry-sidebar-card">
+              <h4 style="font-family:var(--font-display);color:var(--gold-pale);font-size:var(--text-base);font-weight:600;margin-bottom:var(--space-4);">Most Significant Synastry Connections</h4>
+              <ul style="color:var(--color-silver-dim);font-size:var(--text-sm);line-height:2.1;padding-left:var(--space-5);margin:0;">
+                <li><strong style="color:var(--white);">Sun–Moon contacts</strong> — core identity meets emotional need</li>
+                <li><strong style="color:var(--white);">Venus–Mars contacts</strong> — romantic and physical attraction</li>
+                <li><strong style="color:var(--white);">Moon–Moon contacts</strong> — emotional resonance and intuitive bond</li>
+                <li><strong style="color:var(--white);">Saturn contacts</strong> — long-term commitment and karmic lessons</li>
+                <li><strong style="color:var(--white);">Jupiter contacts</strong> — mutual growth and shared optimism</li>
               </ul>
             </div>
           </div>
@@ -854,6 +1199,13 @@
 
     var ASPECT_GLYPHS = { conjunction:'☌', trine:'△', sextile:'✶', square:'□', opposition:'☍' };
 
+    /* Aspect type classifier — harmony / tension / neutral */
+    function aspectType(aspect) {
+      if (aspect === 'trine' || aspect === 'sextile') return 'harmony';
+      if (aspect === 'square' || aspect === 'opposition') return 'tension';
+      return 'neutral';
+    }
+
     function waitFor(cond, ms) {
       return new Promise(function(res, rej) {
         var t = setTimeout(function() { rej('timeout'); }, ms || 8000);
@@ -904,6 +1256,111 @@
       };
     }
 
+    /* Planet glyph map for aspect cards */
+    var PLANET_GLYPHS = {
+      Sun:'☉', Moon:'☽', Venus:'♀', Mars:'♂', Mercury:'☿',
+      Jupiter:'♃', Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇'
+    };
+
+    function drawCompatCard(name1, name2, sign1, sign2, score, overview) {
+      var cv = document.getElementById('compat-card-canvas');
+      if (!cv) return;
+      var ctx = cv.getContext('2d');
+      var W = 1080, H = 1080;
+
+      // Background
+      var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
+      bg.addColorStop(0, '#0d1124');
+      bg.addColorStop(0.5, '#090b16');
+      bg.addColorStop(1, '#06070f');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+      // Nebula glows
+      var neb1 = ctx.createRadialGradient(220, 400, 0, 220, 400, 400);
+      neb1.addColorStop(0, 'rgba(42,74,148,0.25)'); neb1.addColorStop(1, 'transparent');
+      ctx.fillStyle = neb1; ctx.fillRect(0, 0, W, H);
+      var neb2 = ctx.createRadialGradient(860, 400, 0, 860, 400, 400);
+      neb2.addColorStop(0, 'rgba(196,146,10,0.18)'); neb2.addColorStop(1, 'transparent');
+      ctx.fillStyle = neb2; ctx.fillRect(0, 0, W, H);
+
+      // Stars
+      var seed = (score || 50) * 137;
+      function rnd() { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0)/4294967296; }
+      for (var i = 0; i < 180; i++) {
+        ctx.beginPath(); ctx.arc(rnd()*W, rnd()*H, rnd()*1.3+0.2, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(240,232,216,'+(rnd()*0.5+0.1)+')'; ctx.fill();
+      }
+
+      // Double border
+      ctx.strokeStyle = 'rgba(196,146,10,0.55)'; ctx.lineWidth = 2;
+      ctx.strokeRect(40, 40, W-80, H-80);
+      ctx.strokeStyle = 'rgba(196,146,10,0.18)'; ctx.lineWidth = 1;
+      ctx.strokeRect(54, 54, W-108, H-108);
+
+      // Corner ornaments
+      [[68,68],[W-68,68],[68,H-68],[W-68,H-68]].forEach(function(c) {
+        ctx.font = '22px serif'; ctx.fillStyle = 'rgba(196,146,10,0.5)';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('✦', c[0], c[1]);
+      });
+
+      // Eyebrow
+      ctx.font = '700 24px Inter,sans-serif'; ctx.fillStyle = 'rgba(196,146,10,0.8)';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('COSMIC COMPATIBILITY READING', W/2, 140);
+
+      // Sign glyphs
+      var SIGN_GLYPHS = {Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
+      var g1 = SIGN_GLYPHS[sign1] || '✦', g2 = SIGN_GLYPHS[sign2] || '✦';
+      ctx.font = '220px serif';
+      ctx.fillStyle = '#5b7fc7'; ctx.fillText(g1, W/2 - 220, 340);
+      ctx.fillStyle = 'rgba(196,146,10,0.9)'; ctx.font = '100px serif'; ctx.fillText('♡', W/2, 320);
+      ctx.fillStyle = '#c4920a'; ctx.font = '220px serif'; ctx.fillText(g2, W/2 + 220, 340);
+
+      // Names
+      ctx.font = 'italic 400 42px Playfair Display,serif';
+      ctx.fillStyle = 'rgba(240,232,216,0.75)';
+      if (name1 && name2) ctx.fillText(name1 + ' & ' + name2, W/2, 480);
+      else if (name1 || name2) ctx.fillText((name1||'Person 1') + ' & ' + (name2||'Person 2'), W/2, 480);
+
+      // Score
+      ctx.font = '900 200px Cinzel,serif'; ctx.fillStyle = 'rgba(232,201,106,0.9)';
+      ctx.shadowColor = 'rgba(196,146,10,0.4)'; ctx.shadowBlur = 50;
+      ctx.fillText((score||0)+'%', W/2, 680);
+      ctx.shadowBlur = 0;
+
+      // Score label
+      var scoreLabel = score >= 80 ? 'A Profound Match' : score >= 65 ? 'Genuine Potential' : score >= 50 ? 'Growth Dynamic' : 'Challenging Beauty';
+      ctx.font = '600 52px Cinzel,serif'; ctx.fillStyle = '#f0e8d8';
+      ctx.fillText(scoreLabel, W/2, 760);
+
+      // Divider
+      ctx.strokeStyle = 'rgba(196,146,10,0.3)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(W/2-200, 790); ctx.lineTo(W/2+200, 790); ctx.stroke();
+
+      // Overview (wrapped)
+      if (overview) {
+        ctx.font = 'italic 400 26px Playfair Display,serif';
+        ctx.fillStyle = 'rgba(154,166,200,0.8)';
+        var words = overview.split(' '), line = '', yy = 830, maxW = 860;
+        var lineCount = 0, maxLines = 3;
+        for (var w = 0; w < words.length; w++) {
+          var test = line ? line + ' ' + words[w] : words[w];
+          if (ctx.measureText(test).width > maxW && line) {
+            if (lineCount < maxLines) { ctx.fillText(lineCount === maxLines-1 ? line+'...' : line, W/2, yy); yy += 38; lineCount++; }
+            line = words[w];
+          } else line = test;
+        }
+        if (line && lineCount < maxLines) ctx.fillText(line, W/2, yy);
+      }
+
+      // Branding
+      ctx.font = '700 22px Cinzel,serif'; ctx.fillStyle = 'rgba(196,146,10,0.55)';
+      ctx.fillText('astroprecise · synastry calculated locally · deterministic', W/2, H-80);
+
+      return cv;
+    }
+
     function showResult(result, name1, name2) {
       var loadEl = document.getElementById('compat-loading');
       var resEl  = document.getElementById('compat-result');
@@ -918,11 +1375,19 @@
       if (titleEl) titleEl.textContent = (name1 || 'Person 1') + ' & ' + (name2 || 'Person 2') + ' — ' + label;
       if (subEl) subEl.textContent = 'Overall compatibility: ' + score + '% · Based on full synastry analysis';
 
-      // Score ring
-      var ring = document.getElementById('score-ring');
+      // Store sign data for download card
+      window._p1SunSign = result.chart1SunSign || '';
+      window._p2SunSign = result.chart2SunSign || '';
+
+      // Connection label beneath ring
+      var connLabel = document.getElementById('compat-connection-label');
+      if (connLabel) connLabel.textContent = label;
+
+      // Score ring — radius 70, circumference = 2π×70 ≈ 439.8
+      var ring  = document.getElementById('score-ring');
       var numEl = document.getElementById('overall-score');
       if (ring) {
-        var circ = 2 * Math.PI * 54;
+        var circ = 2 * Math.PI * 70;
         ring.style.strokeDasharray = ((score / 100) * circ).toFixed(1) + ' ' + circ.toFixed(1);
       }
       if (numEl) numEl.textContent = score + '%';
@@ -946,28 +1411,68 @@
         });
       }
 
-      // Synastry aspects
+      // Synastry aspects — premium card-style list, top 8 shown, rest toggled
       var aspEl = document.getElementById('synastry-aspects');
       if (aspEl && result.synastryAspects && result.synastryAspects.length) {
-        var rows = result.synastryAspects.slice(0,8).map(function(a) {
-          return '<tr><td>' + a.p1 + '</td><td style="text-align:center;font-size:1.2rem;color:var(--color-gold)">' +
-            (ASPECT_GLYPHS[a.aspect] || a.aspect) + '</td><td>' + a.p2 + '</td>' +
-            '<td style="color:var(--color-silver-dim);font-size:var(--text-xs);">' + (a.orb||'—') + '°</td>' +
-            '<td style="color:var(--color-silver);font-size:var(--text-xs);">' + (a.interpretation||'') + '</td></tr>';
-        }).join('');
-        aspEl.innerHTML = '<h3 style="font-family:var(--font-display);color:var(--color-gold-pale);margin-bottom:var(--space-4);">Cross-Chart Aspects</h3>' +
-          '<div style="overflow-x:auto;"><table class="synastry-aspects-table" role="grid">' +
-          '<thead><tr><th>Person 1</th><th>Aspect</th><th>Person 2</th><th>Orb</th><th>Meaning</th></tr></thead>' +
-          '<tbody>' + rows + '</tbody></table></div>';
+        var allAspects = result.synastryAspects;
+        var visibleCount = 8;
+
+        function renderAspectCards(list) {
+          return list.map(function(a) {
+            var type = aspectType(a.aspect);
+            var glyph = ASPECT_GLYPHS[a.aspect] || a.aspect;
+            var p1glyph = PLANET_GLYPHS[a.p1] || '';
+            var p2glyph = PLANET_GLYPHS[a.p2] || '';
+            var borderCls = type === 'harmony' ? 'aspect-card--harmony' : type === 'tension' ? 'aspect-card--tension' : 'aspect-card--neutral';
+            var symCls    = type === 'harmony' ? 'aspect-card__symbol--harmony' : type === 'tension' ? 'aspect-card__symbol--tension' : 'aspect-card__symbol--neutral';
+            return '<div class="aspect-card ' + borderCls + '">' +
+              '<div class="aspect-card__planet"><span>' + p1glyph + '</span>' + a.p1 + '</div>' +
+              '<div class="aspect-card__symbol ' + symCls + '">' + glyph + '</div>' +
+              '<div class="aspect-card__planet"><span>' + p2glyph + '</span>' + a.p2 + '</div>' +
+              '<div class="aspect-card__orb">' + (a.orb !== undefined ? a.orb + '°' : '—') + '</div>' +
+              (a.interpretation ? '<div class="aspect-card__meaning">' + a.interpretation + '</div>' : '') +
+            '</div>';
+          }).join('');
+        }
+
+        var visibleAspects = allAspects.slice(0, visibleCount);
+        var hiddenAspects  = allAspects.slice(visibleCount);
+
+        var showAllBtn = hiddenAspects.length > 0
+          ? '<button class="aspect-show-all-btn" id="aspect-show-all-btn">Show all ' + allAspects.length + ' aspects ↓</button>'
+          : '';
+
+        aspEl.innerHTML =
+          '<h3 class="synastry-aspects-header">Cross-Chart Aspects</h3>' +
+          '<div class="aspect-card-list" id="aspect-card-list-visible">' + renderAspectCards(visibleAspects) + '</div>' +
+          (hiddenAspects.length > 0
+            ? '<div class="aspect-card-list" id="aspect-card-list-hidden" style="display:none;">' + renderAspectCards(hiddenAspects) + '</div>'
+            : '') +
+          showAllBtn;
+
+        var showAllBtnEl = document.getElementById('aspect-show-all-btn');
+        if (showAllBtnEl) {
+          showAllBtnEl.addEventListener('click', function() {
+            var hidden = document.getElementById('aspect-card-list-hidden');
+            if (hidden) {
+              hidden.style.display = '';
+              showAllBtnEl.style.display = 'none';
+            }
+          });
+        }
       }
 
       // Overview narrative
       var overviewEl = document.getElementById('compat-overview');
       if (overviewEl && result.overview) {
-        overviewEl.innerHTML = '<div class="card" style="padding:var(--space-6);"><p style="color:var(--color-silver);line-height:1.8;">' + result.overview + '</p></div>';
+        overviewEl.innerHTML = '<p style="color:var(--color-silver);line-height:1.8;">' + result.overview + '</p>';
       }
 
-      // Share button
+      // Show download button
+      var dlBtn = document.getElementById('compat-download-btn');
+      if (dlBtn) { dlBtn.style.display = 'inline-block'; dlBtn.dataset.ready = '1'; }
+
+      // Share button (created once)
       if (!document.getElementById('compat-share-btn')) {
         var shareWrap = document.createElement('div');
         shareWrap.style.cssText = 'text-align:center;margin-top:var(--space-6);';
@@ -1222,6 +1727,26 @@
           var btn = document.getElementById('compat-submit-btn');
           if (btn) btn.click();
         }, 600);
+      }
+
+      // Download card button
+      var dlBtn = document.getElementById('compat-download-btn');
+      if (dlBtn) {
+        dlBtn.addEventListener('click', function() {
+          if (!dlBtn.dataset.ready) return;
+          var cv = drawCompatCard(
+            (document.getElementById('person1-name')||{}).value||'',
+            (document.getElementById('person2-name')||{}).value||'',
+            window._p1SunSign||'', window._p2SunSign||'',
+            parseInt((document.getElementById('overall-score')||{}).textContent)||0,
+            document.querySelector('#compat-overview p') ? document.querySelector('#compat-overview p').textContent : ''
+          );
+          if (!cv) return;
+          var a = document.createElement('a');
+          a.download = 'compatibility-reading.png';
+          a.href = cv.toDataURL('image/png');
+          a.click();
+        });
       }
     });
   })();
