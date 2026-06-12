@@ -308,6 +308,23 @@
         currentChart = calculate(input);
         renderResults(currentChart);
         updateShareURL(input);
+        // Pin this sky onto the home orrery (Celestia's payoff, ported):
+        // the hero instrument stops being "the sky today" and becomes yours.
+        try {
+          const pts = {
+            sun:  currentChart.positions.Sun?.lon,
+            moon: currentChart.positions.Moon?.lon,
+          };
+          if (input.timeKnown) pts.asc = currentChart.positions.Ascendant?.lon;
+          localStorage.setItem('ap_natal_pins', JSON.stringify({
+            name: input.name.split(/\s+/)[0],
+            sunSign: currentChart.positions.Sun?.sign,
+            points: pts,
+            savedAt: Date.now(),
+          }));
+          if (window.AstroApp) AstroApp.showToast('Pinned to the heavens',
+            'Your Sun, Moon' + (input.timeKnown ? ' & Ascendant' : '') + ' now mark the home orrery’s zodiac ring.', 'success');
+        } catch (e) {}
       } catch (err) {
         if (window.AstroApp) AstroApp.showToast('Calculation failed', String(err.message || err), 'error');
       }
@@ -330,6 +347,48 @@
     ['name-input', 'date-input', 'time-input'].forEach(id =>
       document.getElementById(id).dispatchEvent(new Event('input')));
     form.requestSubmit();
+  });
+
+  // ── Spacetime summary + geolocation (ported from the Celestia prototype) ──
+
+  const stSum = document.getElementById('spacetime-summary');
+  const stTxt = document.getElementById('spacetime-summary-txt');
+  function updateSpacetime() {
+    if (!stSum) return;
+    const lat = parseFloat(latInput.value), lon = parseFloat(lonInput.value);
+    const date = document.getElementById('date-input').value;
+    if (isNaN(lat) || isNaN(lon) || !date) { stSum.hidden = true; return; }
+    const [y, m, d] = date.split('-').map(Number);
+    const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const time = document.getElementById('time-input').value;
+    let s = `${Math.abs(lat).toFixed(2)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(2)}°${lon >= 0 ? 'E' : 'W'} · ${d} ${MON[m - 1]} ${y}`;
+    if (time) s += ` · ${time}`;
+    if (tzInput.value) s += ` (${tzInput.value})`;
+    else if (time) s += ' (local solar time approximation)';
+    stTxt.textContent = s;
+    stSum.hidden = false;
+  }
+  ['date-input', 'time-input'].forEach(id =>
+    document.getElementById(id)?.addEventListener('input', updateSpacetime));
+  document.addEventListener('astro:city-selected', updateSpacetime);
+
+  document.getElementById('geo-btn')?.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      window.AstroApp?.showToast('Unavailable', 'Geolocation is not supported in this browser.', 'warning');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(async pos => {
+      latInput.value = pos.coords.latitude.toFixed(4);
+      lonInput.value = pos.coords.longitude.toFixed(4);
+      cityInput.value = 'My current location';
+      try {
+        const r2 = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latInput.value}&longitude=${lonInput.value}&timezone=auto&forecast_days=1`);
+        const j = await r2.json();
+        if (j.timezone) tzInput.value = j.timezone;
+      } catch (e) {}
+      document.dispatchEvent(new CustomEvent('astro:city-selected'));
+      window.AstroApp?.showToast('Location set', 'Using your current position — fine for "born near where you live now".', 'success');
+    }, () => window.AstroApp?.showToast('Declined', 'Location permission declined — search by name instead.', 'warning'));
   });
 
   // ── Shareable URL state ───────────────────────────────────────────────────

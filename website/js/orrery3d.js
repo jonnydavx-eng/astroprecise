@@ -90,6 +90,19 @@ window.Orrery3D = (() => {
   let lastFrame = 0;
   let orbits = {};
   let bodies = [];
+
+  // ── Your sky, pinned (ported from the Celestia prototype) ──
+  // chart.html stores natal Sun/Moon/ASC longitudes after a cast; the home
+  // orrery wears them as medallions on the zodiac ring ever after.
+  let natalPins = null;
+  function loadNatalPins() {
+    try {
+      const np = JSON.parse(localStorage.getItem('ap_natal_pins') || 'null');
+      natalPins = (np && np.points) ? np : null;
+    } catch (e) { natalPins = null; }
+  }
+  loadNatalPins();
+  window.addEventListener('storage', e => { if (e.key === 'ap_natal_pins') loadNatalPins(); });
   let ui = {};
   const trails = new Map();
 
@@ -841,6 +854,44 @@ window.Orrery3D = (() => {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(SIGN_GLYPHS[i], g.x, g.y);
+    }
+
+    // Natal medallions — the visitor's own Sun, Moon and Ascendant riding the band
+    if (natalPins && ringVisible) {
+      const PIN = { sun: ['☉', 12], moon: ['☽', 12], asc: ['ASC', 6.5] };
+      for (const [k, lonDeg] of Object.entries(natalPins.points)) {
+        if (!isFinite(lonDeg) || !PIN[k]) continue;
+        const a = lonDeg * Math.PI / 180;
+        const tip  = project({ x: Math.cos(a) * (R + 0.52), y: Math.sin(a) * (R + 0.52), z: 0 });
+        const base = project({ x: Math.cos(a) * (R + 0.07), y: Math.sin(a) * (R + 0.07), z: 0 });
+        const depthFade = Math.max(0.15, 0.5 + 0.5 * (1 - Math.min(1, (tip.depth + 3.5) / 7)));
+        const al = depthFade * baseAlpha;
+        if (al < 0.06) continue;
+        ctx.beginPath();
+        ctx.moveTo(base.x, base.y); ctx.lineTo(tip.x, tip.y);
+        ctx.strokeStyle = `rgba(232,201,106,${0.5 * al})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        const r2 = Math.max(7, 9.5 * tip.f);
+        ctx.beginPath();
+        ctx.arc(tip.x, tip.y, r2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(10,8,6,${0.85 * al})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(232,201,106,${0.9 * al})`;
+        ctx.lineWidth = 1.1;
+        ctx.stroke();
+        const [glyph, fs] = PIN[k];
+        ctx.font = `${Math.max(fs * 0.8, fs * tip.f)}px ${k === 'asc' ? 'Inter, sans-serif' : 'serif'}`;
+        ctx.fillStyle = `rgba(239,227,192,${Math.min(1, 1.05 * al)})`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(glyph, tip.x, tip.y);
+      }
+      // quiet legend — this is no longer the sky today; it is also YOUR sky
+      ctx.font = '10px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = `rgba(232,201,106,${0.45 * baseAlpha})`;
+      ctx.fillText(`✦ ${natalPins.name ? natalPins.name + '’s' : 'your'} sky pinned`, 14, H - 14);
     }
   }
 
