@@ -96,7 +96,7 @@ window.AstroJourney = (function () {
       planet: 'Chiron',
       glyph: '⚷',
       icon: '🌀',
-      narrative: 'The wound you have carried longest — the one you thought disqualified you — is now revealed as your deepest credential. Chiron's return asks you to stop managing the wound and begin transforming it. The alchemical process is neither painless nor overnight, but what is forged here can heal others.',
+      narrative: 'The wound you have carried longest — the one you thought disqualified you — is now revealed as your deepest credential. Chiron’s return asks you to stop managing the wound and begin transforming it. The alchemical process is neither painless nor overnight, but what is forged here can heal others.',
       invitation: 'How might the thing you have hidden become the thing that sets you free?',
     },
     {
@@ -381,7 +381,7 @@ window.AstroJourney = (function () {
     },
     {
       label: 'Third Saturn Return',
-      meaning: 'The third Saturn Return arrives around 88 and is the seal on a life's work. Few experience it consciously, which makes those who do among the rarest of human testimonies. Saturn here completes its threefold initiation — child, adult, elder — and the quality of presence available is genuinely luminous.',
+      meaning: 'The third Saturn Return arrives around 88 and is the seal on a life’s work. Few experience it consciously, which makes those who do among the rarest of human testimonies. Saturn here completes its threefold initiation — child, adult, elder — and the quality of presence available is genuinely luminous.',
       challenge: 'What remains to be forgiven, expressed, or released before the circle completes?',
       gift: 'Completion. The ineffable quiet of a full life integrated.',
     },
