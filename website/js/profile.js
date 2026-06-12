@@ -94,6 +94,7 @@ window.AstroProfile = (() => {
         id:        crypto.randomUUID ? crypto.randomUUID() : now.toString(36),
         createdAt: now,
         updatedAt: now,
+        engineV:   2,
         ...chartData,
       });
     }
@@ -107,50 +108,91 @@ window.AstroProfile = (() => {
     localStorage.setItem(STORAGE_KEY_CHARTS, JSON.stringify(charts));
   }
 
-  // Build chart data from birth information
-  function buildChartData(birthInfo) {
-    const Eph = window.AstroEphemeris || window.Ephemeris;
-    if (!Eph) return null;
-
-    const { name, date, time, lat, lon, city, houseSystem } = birthInfo;
-    const d    = new Date(`${date}T${time || '12:00'}:00`);
-    const jd   = Eph.julianDay
-      ? Eph.julianDay(d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes())
-      : (window.Ephemeris ? window.Ephemeris.dateToJulian(d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes()) : 0);
-
-    let positions, ascendant, houses, aspects;
+  // ── Civil time → UT (historical tz rules via Intl, two-iteration) ────────
+  function tzOffsetMin(zone, utcDate) {
     try {
-      if (window.AstroEphemeris) {
-        positions = window.AstroEphemeris.planetPositions(jd);
-        ascendant = window.AstroEphemeris.ascendant(jd, parseFloat(lat), parseFloat(lon));
-        houses    = window.AstroEphemeris.houseCusps(jd, parseFloat(lat), parseFloat(lon), houseSystem);
-        aspects   = window.AstroEphemeris.aspects(positions);
-      } else if (window.Ephemeris) {
-        const E = window.Ephemeris;
-        positions = E.getPlanetPositions(jd);
-        ascendant = E.calcAscendant(jd, parseFloat(lat), parseFloat(lon));
-        houses    = E.getHouseCusps(ascendant, houseSystem);
-        aspects   = E.calcAspects(positions);
-      }
-    } catch (e) {
-      console.error('Chart calculation error:', e);
-    }
+      const p = {};
+      new Intl.DateTimeFormat('en-GB', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
+        .formatToParts(utcDate).forEach(x => { p[x.type] = x.value; });
+      return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - utcDate.getTime()) / 60000;
+    } catch (e) { return 0; }
+  }
+  function civilToUT(y, m, d, hh, mm, zone) {
+    let u = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
+    for (let i = 0; i < 2; i++) u = new Date(Date.UTC(y, m - 1, d, hh, mm, 0) - tzOffsetMin(zone, u) * 60000);
+    return u;
+  }
 
+  // Build chart data from birth information.
+  // Rewritten 2026-06-12: the old version called engine functions that never
+  // existed (planetPositions/houseCusps/aspects, and ascendant with the wrong
+  // signature), so its try/catch silently produced charts with no positions.
+  function buildChartData(birthInfo) {
+    const E = window.AstroEphemeris;
+    if (!E || !E.calculateNatalChart) return null;
+    const { name, date, time, lat, lon, city, tz, houseSystem } = birthInfo;
+    if (!date || !isFinite(parseFloat(lat)) || !isFinite(parseFloat(lon))) return null;
+    const [y, m, d] = date.split('-').map(Number);
+    const [hh, mm]  = (time || '12:00').split(':').map(Number);
+    let utY = y, utM = m, utD = d, utH = hh, utMin = mm;
+    if (tz) {
+      const u = civilToUT(y, m, d, hh, mm, tz);
+      utY = u.getUTCFullYear(); utM = u.getUTCMonth() + 1; utD = u.getUTCDate();
+      utH = u.getUTCHours(); utMin = u.getUTCMinutes();
+    }
+    let raw;
+    try { raw = E.calculateNatalChart(utY, utM, utD, utH, utMin, parseFloat(lat), parseFloat(lon)); }
+    catch (e) { console.error('Chart calculation error:', e); return null; }
     return {
       name,
       birthDate:   date,
-      birthTime:   time,
+      birthTime:   time || null,
       birthCity:   city,
       lat:         parseFloat(lat),
       lon:         parseFloat(lon),
-      houseSystem: houseSystem || 'Whole Sign',
-      jd,
-      positions,
-      ascendant,
-      houses,
-      aspects,
+      tz:          tz || '',
+      houseSystem: houseSystem || 'placidus',
+      jd:          raw.jd,
+      positions:   raw.positions,
+      ascendant:   raw.ascendant,
+      mc:          raw.midheaven,
+      houses:      raw.houses,
+      aspects:     raw.aspects,
+      sunSign:     E.signOf(raw.positions.sun.longitude),
+      moonSign:    E.signOf(raw.positions.moon.longitude),
+      risingSign:  E.signOf(raw.ascendant),
+      engineV:     2,
     };
   }
+
+  // One-time re-derivation after the 2026-06-12 ascendant fix: charts saved
+  // before it carry the DESCENDANT as risingSign. Birth data is stored, so we
+  // recompute quietly instead of asking anyone to re-enter anything.
+  const ENGINE_V = 2;
+  function migrateCharts() {
+    const E = window.AstroEphemeris;
+    if (!E || !E.calculateNatalChart) { setTimeout(migrateCharts, 300); return; }
+    const charts = getCharts();
+    let changed = false;
+    charts.forEach(c => {
+      if (c.engineV >= ENGINE_V) return;
+      const rebuilt = buildChartData({
+        name: c.name, date: c.birthDate, time: c.birthTime,
+        lat: c.lat, lon: c.lon, city: c.birthCity || c.city, tz: c.tz, houseSystem: c.houseSystem,
+      });
+      if (rebuilt) {
+        c.risingSign = rebuilt.risingSign;
+        c.sunSign    = rebuilt.sunSign  || c.sunSign;
+        c.moonSign   = rebuilt.moonSign || c.moonSign;
+        if (c.ascendant != null) c.ascendant = rebuilt.ascendant;
+        if (c.houses) c.houses = rebuilt.houses;
+      }
+      c.engineV = ENGINE_V;
+      changed = true;
+    });
+    if (changed) localStorage.setItem(STORAGE_KEY_CHARTS, JSON.stringify(charts));
+  }
+  migrateCharts();
 
   // ── Comparisons ───────────────────────────────────────────────────────────
 

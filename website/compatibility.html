@@ -16,6 +16,7 @@
   <meta property="og:title" content="Zodiac Compatibility | AstroPrecise" />
   <meta property="og:description" content="Free synastry and compatibility reports — compare two birth charts and discover your cosmic connection." />
   <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/compatibility.html" />
+  <link rel="canonical" href="https://jonnydavx-eng.github.io/astroprecise/compatibility.html" />
   <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Zodiac Compatibility | AstroPrecise" />
@@ -1617,29 +1618,50 @@
       var dropdown = document.getElementById(dropId);
       if (!input || !dropdown) return;
 
-      function search(q) {
-        q = q.toLowerCase().trim();
+      // Worldwide search via AstroApp.searchPlaces (Open-Meteo geocoder with
+      // offline CITIES fallback) — the old version filtered the 165-city
+      // built-in list, the same "can't enter my birth town" bug the chart
+      // page was cured of.
+      var seq = 0, debTimer = null;
+      function renderResults(results, source) {
         dropdown.innerHTML = '';
-        if (q.length < 2) { dropdown.classList.remove('open'); return; }
-        var cities = (window.AstroEphemeris && AstroEphemeris.CITIES) || [];
-        var results = cities.filter(function(c) {
-          return c.name.toLowerCase().startsWith(q) || c.name.toLowerCase().includes(q);
-        }).slice(0, 8);
         if (!results.length) { dropdown.classList.remove('open'); return; }
         results.forEach(function(city) {
           var item = document.createElement('div');
           item.className = 'autocomplete-item';
-          item.innerHTML = city.name + ' <span class="city-country">' + city.country + '</span>';
+          item.textContent = city.name + ' ';
+          var span = document.createElement('span');
+          span.className = 'city-country';
+          span.textContent = city.admin ? city.admin + ', ' + city.country : city.country;
+          item.appendChild(span);
           item.addEventListener('click', function() {
-            input.value = city.name;
-            if (latEl) latEl.value = city.lat;
-            if (lonEl) lonEl.value = city.lon;
+            input.value = city.name + (city.admin ? ', ' + city.admin : '');
+            if (latEl) latEl.value = (+city.lat).toFixed(4);
+            if (lonEl) lonEl.value = (+city.lon).toFixed(4);
             if (tzEl)  tzEl.value  = city.tz || 'UTC';
             dropdown.classList.remove('open');
           });
           dropdown.appendChild(item);
         });
+        if (source === 'offline') {
+          var note = document.createElement('div');
+          note.style.cssText = 'padding:8px 14px;font-size:0.62rem;color:var(--silver-dim,#9aa6c8);font-style:italic;';
+          note.textContent = 'Offline — built-in city list only';
+          dropdown.appendChild(note);
+        }
         dropdown.classList.add('open');
+      }
+      function search(q) {
+        q = q.trim();
+        if (q.length < 2) { dropdown.innerHTML = ''; dropdown.classList.remove('open'); return; }
+        clearTimeout(debTimer);
+        debTimer = setTimeout(function() {
+          var mySeq = ++seq;
+          window.AstroApp.searchPlaces(q).then(function(res) {
+            if (mySeq !== seq) return;
+            renderResults(res.results, res.source);
+          });
+        }, 250);
       }
 
       input.addEventListener('input', function() { search(input.value); });
@@ -1658,7 +1680,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Wire up city autocomplete with timezone support
       function tryInitAutocomplete() {
-        if (window.AstroEphemeris && AstroEphemeris.CITIES) {
+        if (window.AstroApp && AstroApp.searchPlaces) {
           initCompatAutocomplete('person1-city','person1-lat','person1-lon','person1-tz','p1-city-dropdown');
           initCompatAutocomplete('person2-city','person2-lat','person2-lon','person2-tz','p2-city-dropdown');
         } else {
