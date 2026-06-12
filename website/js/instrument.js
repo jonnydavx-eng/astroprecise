@@ -443,8 +443,36 @@
             <p style="font-style:italic;font-size:1.25rem;">${r.question}</p>
           </div>`;
         document.getElementById('daimon-answer-box').hidden = false;
-        status.textContent = r.wordCount + ' words · composed from today’s sky and your history';
+        status.textContent = r.wordCount + ' words · composed from today\'s sky and your history';
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Web Speech API — speak button if supported
+        const speakWrap = document.getElementById('daimon-speak-wrap');
+        if (speakWrap && window.speechSynthesis) {
+          const plainText = [r.title,
+            ...r.sections.flatMap(s => [s.heading, ...s.paragraphs]),
+            r.question
+          ].join('.\n');
+          speakWrap.hidden = false;
+          const speakBtn = document.getElementById('daimon-speak-btn');
+          const stopBtn  = document.getElementById('daimon-stop-btn');
+          speakBtn.onclick = () => {
+            window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(plainText);
+            utt.rate = 0.88; utt.pitch = 0.95;
+            const voices = window.speechSynthesis.getVoices();
+            const pref = voices.find(v => /female|samantha|serena|moira|tessa|fiona/i.test(v.name));
+            if (pref) utt.voice = pref;
+            utt.onend = () => { speakBtn.disabled = false; stopBtn.disabled = true; };
+            speakBtn.disabled = true; stopBtn.disabled = false;
+            window.speechSynthesis.speak(utt);
+          };
+          stopBtn.onclick = () => {
+            window.speechSynthesis.cancel();
+            speakBtn.disabled = false; stopBtn.disabled = true;
+          };
+          stopBtn.disabled = true;
+        }
       } catch (err) {
         status.textContent = 'The daimon could not be reached: ' + (err.message || err);
       }
@@ -518,7 +546,7 @@
     if (quantum) {
       prov.innerHTML = '<span class="src-measured">Collapsed from quantum vacuum fluctuation · ANU QRNG</span><br/><span style="color:var(--silver-dim)">The value did not exist until the moment you asked.</span>';
     } else {
-      prov.innerHTML = '<span class="src-computed">Drawn from your device’s hardware entropy</span><br/><span style="color:var(--silver-dim)">The quantum feed was unreachable — we tell you rather than pretend.</span>';
+      prov.innerHTML = '<span class="src-computed">Drawn from your device\'s hardware entropy</span><br/><span style="color:var(--silver-dim)">The quantum feed was unreachable — we tell you rather than pretend.</span>';
     }
     document.getElementById('q-out').hidden = false;
     btn.disabled = false;
@@ -566,9 +594,9 @@
   // ── Section 7: Precession layer ───────────────────────────────────────────
 
   const FRAME_TEXT = {
-    tropical: 'The tropical zodiac is anchored to the seasons, not the stars: 0° Aries is defined as the northern spring equinox, wherever the constellations have drifted. It measures Earth’s relationship to the Sun — a calendar of light. This is the frame Western astrology uses, and the frame everything else on this site uses by default.',
-    sidereal: 'The sidereal zodiac stays with the stars. Because Earth’s axis wobbles (one full circle every ~25,772 years), the two zodiacs have drifted about 24° apart since they agreed around 285 CE. Vedic astrology uses this frame. Notice: your Sun sign probably changes. Neither frame is wrong — they measure different things.',
-    raw: 'The raw astronomical sky ignores zodiac bookkeeping entirely. The Sun’s path crosses thirteen constellations of wildly unequal size — including Ophiuchus, which no zodiac admits — and the constellation boundaries are administrative lines drawn by the IAU in 1928. Astrology is a coordinate system laid over this sky, not a property of it. We think you can be trusted with that.',
+    tropical: 'The tropical zodiac is anchored to the seasons, not the stars: 0° Aries is defined as the northern spring equinox, wherever the constellations have drifted. It measures Earth\'s relationship to the Sun — a calendar of light. This is the frame Western astrology uses, and the frame everything else on this site uses by default.',
+    sidereal: 'The sidereal zodiac stays with the stars. Because Earth\'s axis wobbles (one full circle every ~25,772 years), the two zodiacs have drifted about 24° apart since they agreed around 285 CE. Vedic astrology uses this frame. Notice: your Sun sign probably changes. Neither frame is wrong — they measure different things.',
+    raw: 'The raw astronomical sky ignores zodiac bookkeeping entirely. The Sun\'s path crosses thirteen constellations of wildly unequal size — including Ophiuchus, which no zodiac admits — and the constellation boundaries are administrative lines drawn by the IAU in 1928. Astrology is a coordinate system laid over this sky, not a property of it. We think you can be trusted with that.',
   };
 
   function renderFrame(frame) {

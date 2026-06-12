@@ -600,6 +600,12 @@
 
         <div id="daimon-reading" class="grimoire" style="margin-top:2rem;"></div>
 
+        <div id="daimon-speak-wrap" hidden style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center;">
+          <button type="button" id="daimon-speak-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;">▶ Speak</button>
+          <button type="button" id="daimon-stop-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;opacity:0.5;">■ Stop</button>
+          <span style="font-size:0.7rem;color:var(--silver-dim);">Web Speech API · synthesised locally</span>
+        </div>
+
         <div id="daimon-answer-box" hidden style="margin-top:1.5rem;">
           <label class="form-label" for="daimon-answer">Your answer &mdash; it will shape what comes next</label>
           <textarea id="daimon-answer" class="form-input" style="margin-top:0.5rem;"></textarea>

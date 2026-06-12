@@ -976,7 +976,7 @@
     var SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                  'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 
-    var RETRO_KEYS = { saturn: true };
+    var RETRO_KEYS = {};  // filled live from AstroEphemeris.isRetrograde
 
     function degToSignPos(deg) {
       var d = ((deg % 360) + 360) % 360;
@@ -1006,22 +1006,31 @@
     }
 
     function tryPopulate() {
-      if (!window.AstroEphemeris || typeof AstroEphemeris.calculateNatalChart !== 'function') {
+      if (!window.AstroEphemeris || typeof AstroEphemeris.julianDay !== 'function') {
         setTimeout(tryPopulate, 300);
         return;
       }
       try {
         var now = new Date();
+        var jd = AstroEphemeris.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
+                                           now.getHours(), now.getMinutes(), 0);
         var chart = AstroEphemeris.calculateNatalChart(
           now.getFullYear(), now.getMonth() + 1, now.getDate(),
-          now.getHours() + now.getMinutes() / 60,
-          0, 0
+          now.getHours(), now.getMinutes(), 0, 0
         );
         var pos = {};
-        if (chart && chart.planets) {
-          chart.planets.forEach(function (p) {
-            pos[p.name ? p.name.toLowerCase() : ''] = p.longitude;
-          });
+        if (chart && chart.positions) {
+          for (var k in chart.positions) {
+            if (Object.prototype.hasOwnProperty.call(chart.positions, k)) {
+              var p = chart.positions[k];
+              pos[k] = (typeof p === 'object' && p !== null)
+                ? (p.longitude != null ? p.longitude : (p.lon || 0)) : p;
+            }
+          }
+        }
+        if (typeof AstroEphemeris.isRetrograde === 'function') {
+          ['mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']
+            .forEach(function (pk) { RETRO_KEYS[pk] = AstroEphemeris.isRetrograde(pk, jd); });
         }
         populateTicker(Object.keys(pos).length ? pos : null);
       } catch (e) {
