@@ -30,18 +30,26 @@ window.FieldWeather = (() => {
   }
 
   async function getKp() {
-    // rows: [time_tag, Kp, a_running, station_count]; first row is header
+    // NOAA has served this both as array-of-arrays (header row first) and as
+    // an array of {time_tag, Kp, …} objects — accept either, newest finite wins
     const rows = await fetchJson(KP_URL);
-    const last = rows[rows.length - 1];
-    return { kp: parseFloat(last[1]), time: last[0], source: 'NOAA SWPC (measured)' };
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const r = rows[i];
+      const kp = parseFloat(Array.isArray(r) ? r[1] : (r.Kp ?? r.kp_index));
+      const time = Array.isArray(r) ? r[0] : r.time_tag;
+      if (isFinite(kp)) return { kp, time, source: 'NOAA SWPC (measured)' };
+    }
+    throw new Error('no parsable Kp data');
   }
 
   async function getSolarWind() {
-    // rows: [time_tag, density, speed, temperature]; first row is header
+    // same dual-format tolerance: [time_tag, density, speed, …] or {speed, …}
     const rows = await fetchJson(WIND_URL);
-    for (let i = rows.length - 1; i > 0; i--) {
-      const speed = parseFloat(rows[i][2]);
-      if (!isNaN(speed)) return { speedKmS: speed, time: rows[i][0], source: 'NOAA SWPC / DSCOVR (measured)' };
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const r = rows[i];
+      const speed = parseFloat(Array.isArray(r) ? r[2] : r.speed);
+      const time = Array.isArray(r) ? r[0] : r.time_tag;
+      if (isFinite(speed)) return { speedKmS: speed, time, source: 'NOAA SWPC / DSCOVR (measured)' };
     }
     throw new Error('no plasma data');
   }
@@ -74,7 +82,7 @@ window.FieldWeather = (() => {
   // ── Composite ─────────────────────────────────────────────────────────────
 
   function kpBand(kp) {
-    if (kp == null) return null;
+    if (kp == null || !isFinite(kp)) return null;
     if (kp < 3)  return { label: 'Quiet field',       note: 'Geomagnetic conditions calm.' };
     if (kp < 5)  return { label: 'Unsettled field',   note: 'Mild geomagnetic activity.' };
     if (kp < 7)  return { label: 'Storm conditions',  note: 'Geomagnetic storm in progress — aurora possible at high latitudes.' };
@@ -99,8 +107,8 @@ window.FieldWeather = (() => {
 
     // composite: start at 100 (clear), subtract weighted disturbances
     let score = 100, parts = 0;
-    if (kp) { score -= (Math.min(kp.kp, 9) / 9) * 30; parts++; }
-    if (wind) { score -= Math.max(0, Math.min(1, (wind.speedKmS - 350) / 450)) * 15; parts++; }
+    if (kp && isFinite(kp.kp)) { score -= (Math.min(kp.kp, 9) / 9) * 30; parts++; }
+    if (wind && isFinite(wind.speedKmS)) { score -= Math.max(0, Math.min(1, (wind.speedKmS - 350) / 450)) * 15; parts++; }
     // full & new moons are "spring tides" of the field — not bad, but loud
     score -= Math.pow(Math.abs(lunar.illumination - 0.5) * 2, 2) * 15;
     score -= transits.pressure * 30;
