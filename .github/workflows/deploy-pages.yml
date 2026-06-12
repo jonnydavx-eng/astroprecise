@@ -2,14 +2,12 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [claude/claude-md-docs-e8m58, main]
+    branches: [main]
     paths: [website/**]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
@@ -18,20 +16,14 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+      # Pages is configured to serve the gh-pages branch from its root,
+      # so publish website/ there instead of using actions/deploy-pages.
+      - name: Publish website/ to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: website/
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./website
+          exclude_assets: 'tools'
