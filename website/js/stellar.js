@@ -232,7 +232,7 @@ window.StellarBackground = (function () {
   // ── Drawing routines ─────────────────────────────────────────────────────────
 
   function drawBackground() {
-    ctx.fillStyle = '#090b16';
+    ctx.fillStyle = '#0A0B1F';
     ctx.fillRect(0, 0, W, H);
   }
 

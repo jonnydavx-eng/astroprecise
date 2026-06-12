@@ -417,6 +417,24 @@
         if (a.challenges)  blocks.push(analysisSection('Growth Edges', a.challenges));
         if (a.lifePurpose) blocks.push(analysisSection('Life Purpose', a.lifePurpose));
       }
+      const patterns = I && I.detectChartPatterns
+        ? I.detectChartPatterns(chart.positions, chart.aspects)
+        : [];
+      if (patterns.length) {
+        const patternCards = patterns.map(patt => `
+          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(255,255,255,0.04);border-radius:8px;border-left:3px solid var(--gold);">
+            <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);">
+              <span style="font-size:1.2em;color:var(--gold);">${patt.glyph}</span>
+              <strong style="color:var(--gold);">${patt.name}</strong>
+              ${patt.strength === 'major' ? '<span style="font-size:0.7em;color:var(--silver-dim);text-transform:uppercase;letter-spacing:0.05em;">Major</span>' : ''}
+            </div>
+            <p style="margin:0;color:var(--silver);font-size:0.9em;line-height:1.5;">${patt.description}</p>
+          </div>`).join('');
+        blocks.push(`<div class="analysis-section">
+          <h4 class="analysis-section__title">Chart Patterns</h4>
+          ${patternCards}
+        </div>`);
+      }
       ov.innerHTML = blocks.join('');
     }
 
@@ -427,11 +445,17 @@
       pt.innerHTML = order.filter(k => chart.positions[k]).map(k => {
         const p = chart.positions[k];
         const h = chart.planetHouses[k];
+        const planetName = k === 'NorthNode' ? 'north node' : k.toLowerCase();
+        const signName = (p.sign || '').toLowerCase();
+        const dignity = I && I.getDignity ? I.getDignity(planetName, signName) : null;
+        const dignityHtml = dignity && dignity.status !== 'peregrine'
+          ? `<span class="dignity-badge dignity-badge--${dignity.status}" title="${dignity.note}" style="display:inline-block;margin-left:var(--space-2);font-size:0.7em;padding:1px 5px;border-radius:3px;vertical-align:middle;background:rgba(196,146,10,0.15);color:var(--gold);border:1px solid rgba(196,146,10,0.3);">${dignity.glyph} ${dignity.label}</span>`
+          : '';
         return `<div class="planet-data-row">
           <span class="planet-data-row__glyph">${PLANET_GLYPHS[k]}</span>
           <div>
             <div class="planet-data-row__name">${k === 'NorthNode' ? 'North Node' : k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
-            <div class="planet-data-row__sign">${SIGN_GLYPHS[p.sign] || ''} ${p.sign}${h ? ` · H${h}` : ''}</div>
+            <div class="planet-data-row__sign">${SIGN_GLYPHS[p.sign] || ''} ${p.sign}${h ? ` · H${h}` : ''}${dignityHtml}</div>
           </div>
           <span class="planet-data-row__deg">${fmtDeg(p)}</span>
         </div>`;

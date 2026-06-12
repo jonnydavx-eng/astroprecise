@@ -511,6 +511,31 @@
       line-height: 1.75;
     }
 
+    /* ── Name Numbers section ── */
+    #name-numbers-section {
+      display: none;
+      margin-bottom: var(--space-6);
+    }
+    #name-numbers-section.is-visible { display: block; }
+    .name-numbers-header {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--lp-gold);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--lp-border);
+      font-family: var(--font-display);
+    }
+    .lp-name-numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    @media (max-width: 700px) { .lp-name-numbers-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 400px) { .lp-name-numbers-grid { grid-template-columns: 1fr 1fr; } }
+
     /* ── Mandala canvas inside number hero ── */
     #lp-mandala-canvas {
       position: absolute;
@@ -631,6 +656,12 @@
 
         <!-- Secondary numbers: Expression, Soul Urge, Personal Year -->
         <div class="lp-secondary-grid" id="lp-secondary"></div>
+
+        <!-- Name Numbers: Expression, Soul Urge, Personality, Birthday -->
+        <div id="name-numbers-section" aria-live="polite">
+          <p class="name-numbers-header">✦ Name Numbers</p>
+          <div class="lp-name-numbers-grid" id="lp-name-numbers-grid"></div>
+        </div>
 
         <!-- Reading panels -->
         <div class="lp-reading-grid">
@@ -858,6 +889,16 @@
     return toNumeroNum(vowels.reduce((a, c) => a + (PYTHAGOREAN[c] || 0), 0));
   }
 
+  function calcPersonality(name) {
+    const consonants = name.toUpperCase().replace(/[^A-Z]/g, '').split('').filter(c => !VOWELS.has(c));
+    if (!consonants.length) return null;
+    return toNumeroNum(consonants.reduce((a, c) => a + (PYTHAGOREAN[c] || 0), 0));
+  }
+
+  function calcBirthdayNumber(d) {
+    return toNumeroNum(d);
+  }
+
   function calcPersonalYear(m, d, currentYear) {
     return toNumeroNum(toNumeroNum(m) + toNumeroNum(d) + toNumeroNum(sumDigits(currentYear)));
   }
@@ -1008,7 +1049,7 @@
 
   /* ── Render helpers ─────────────────────────────────────────────────────── */
 
-  function renderResults(lp, expr, soul, personalYear, personalMonth) {
+  function renderResults(lp, expr, soul, personality, birthdayNum, personalYear, personalMonth) {
     const data = LP[lp];
     if (!data) return;
 
@@ -1037,29 +1078,13 @@
       return `<div class="lp-compat-num"><span class="lp-compat-num__digit">${n}</span><span class="lp-compat-num__label">${t}</span></div>`;
     }).join('');
 
-    // Secondary numbers
+    // Secondary numbers (Life Path + timing numbers)
     const cards = [];
     cards.push({
       label: 'Life Path', number: lp,
       name: data.title,
       desc: 'The overarching vibration of your life\'s journey and purpose'
     });
-    if (expr !== null) {
-      const ed = LP[expr];
-      cards.push({
-        label: 'Expression', number: expr,
-        name: ed ? ed.title : '',
-        desc: 'How your name\'s energy shapes the gifts you naturally express'
-      });
-    }
-    if (soul !== null) {
-      const sd = LP[soul];
-      cards.push({
-        label: 'Soul Urge', number: soul,
-        name: sd ? sd.title : '',
-        desc: 'The inner desire of your heart — what your soul truly craves'
-      });
-    }
     if (personalYear !== null) {
       cards.push({
         label: 'Personal Year', number: personalYear,
@@ -1082,6 +1107,48 @@
         <p class="lp-secondary-card__desc">${c.desc}</p>
       </div>
     `).join('');
+
+    // Name Numbers section (Expression, Soul Urge, Personality, Birthday)
+    const nameSection = document.getElementById('name-numbers-section');
+    const nameGrid = document.getElementById('lp-name-numbers-grid');
+    const hasNameNumbers = expr !== null || soul !== null || personality !== null || birthdayNum !== null;
+    if (hasNameNumbers) {
+      const nameCards = [];
+      if (expr !== null) {
+        nameCards.push({
+          label: 'Expression', number: expr,
+          desc: 'How your name\'s energy shapes the gifts and talents you naturally express to the world'
+        });
+      }
+      if (soul !== null) {
+        nameCards.push({
+          label: 'Soul Urge', number: soul,
+          desc: 'The deep inner desire of your heart — what your soul truly craves and is motivated by'
+        });
+      }
+      if (personality !== null) {
+        nameCards.push({
+          label: 'Personality', number: personality,
+          desc: 'The outward face you present to the world — how others perceive you at first encounter'
+        });
+      }
+      if (birthdayNum !== null) {
+        nameCards.push({
+          label: 'Birthday', number: birthdayNum,
+          desc: 'A special gift or talent indicated by the day of the month you were born'
+        });
+      }
+      nameGrid.innerHTML = nameCards.map(c => `
+        <div class="lp-secondary-card">
+          <p class="lp-secondary-card__label">${c.label}</p>
+          <div class="lp-secondary-card__number" style="background:linear-gradient(135deg,var(--lp-gold-pale),var(--lp-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${c.number}</div>
+          <p class="lp-secondary-card__desc">${c.desc}</p>
+        </div>
+      `).join('');
+      nameSection.classList.add('is-visible');
+    } else {
+      nameSection.classList.remove('is-visible');
+    }
 
     results.classList.add('is-visible');
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1308,6 +1375,7 @@
         document.getElementById('lp-challenges').innerHTML = d.challenges.map(c=>`<li>${c}</li>`).join('');
         document.getElementById('lp-compatibles').innerHTML = d.compatibles.map(cn=>`<div class="lp-compat-num"><span class="lp-compat-num__digit">${cn}</span><span class="lp-compat-num__label">${LP_TITLES[cn]||''}</span></div>`).join('');
         document.getElementById('lp-secondary').innerHTML = `<div class="lp-secondary-card"><p class="lp-secondary-card__label">Life Path</p><div class="lp-secondary-card__number">${n}</div><p class="lp-secondary-card__name">${d.title}</p></div>`;
+        document.getElementById('name-numbers-section').classList.remove('is-visible');
         const results = document.getElementById('lp-results');
         results.classList.add('is-visible');
         results.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1332,11 +1400,12 @@
       const nameVal = document.getElementById('lp-name').value.trim();
       const expr = nameVal ? calcExpression(nameVal) : null;
       const soul = nameVal ? calcSoulUrge(nameVal) : null;
+      const personality = nameVal ? calcPersonality(nameVal) : null;
+      const birthdayNum = calcBirthdayNumber(d);
 
       const now = new Date();
       const py = calcPersonalYear(m, d, now.getFullYear());
       const pm = toNumeroNum(py + now.getMonth() + 1);
-      const pd = toNumeroNum(pm + now.getDate());
 
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const birthLabel = `${d} ${months[m-1]} ${y}`;
@@ -1345,7 +1414,7 @@
       window._lpCurrentName = nameVal;
       window._lpCurrentBirth = birthLabel;
 
-      renderResults(lp, expr, soul, py, pm);
+      renderResults(lp, expr, soul, personality, birthdayNum, py, pm);
     });
 
     // Download
@@ -1368,13 +1437,14 @@
       dateInput.value = pd;
       const [y, m, d] = pd.split('-').map(Number);
       const lp = calcLifePath(y, m, d);
+      const birthdayNum = calcBirthdayNumber(d);
       const now = new Date();
       const py = calcPersonalYear(m, d, now.getFullYear());
       const pm = toNumeroNum(py + now.getMonth() + 1);
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       window._lpCurrentNum = lp;
       window._lpCurrentBirth = `${d} ${months[m-1]} ${y}`;
-      renderResults(lp, null, null, py, pm);
+      renderResults(lp, null, null, null, birthdayNum, py, pm);
     }
   });
   </script>
