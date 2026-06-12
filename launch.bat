@@ -2,38 +2,30 @@
 title AstroPrecise — Local Preview
 cd /d "%~dp0website"
 
-echo.
-echo  AstroPrecise Local Preview
-echo  ==========================
-echo  Starting server on http://localhost:8790
-echo  Press Ctrl+C to stop.
-echo.
-
-REM Try py launcher (Python 3 on Windows), then python, then python3
+REM The server runs in its own minimized window so closing the launcher
+REM never kills it. If :8790 is already being served, the extra instance
+REM exits immediately and the browser still opens fine.
 where py >nul 2>&1     && goto :server_py
 where python >nul 2>&1 && goto :server_python
 where python3 >nul 2>&1 && goto :server_python3
 
 echo  Python not found. Opening live site instead...
 start "" "https://jonnydavx-eng.github.io/astroprecise/"
-pause
 exit /b 1
 
 :server_py
-start /b py -m http.server 8790 >nul 2>&1
+start "AstroPrecise server :8790" /MIN py -m http.server 8790
 goto :open
 
 :server_python
-start /b python -m http.server 8790 >nul 2>&1
+start "AstroPrecise server :8790" /MIN python -m http.server 8790
 goto :open
 
 :server_python3
-start /b python3 -m http.server 8790 >nul 2>&1
+start "AstroPrecise server :8790" /MIN python3 -m http.server 8790
 goto :open
 
 :open
 timeout /t 2 /nobreak >nul
 start "" "http://localhost:8790"
-echo  Browser opened at http://localhost:8790
-echo  Close this window to stop the server.
-pause >nul
+exit /b 0
