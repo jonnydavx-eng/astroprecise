@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AstroPrecise logo">
   <defs>
     <linearGradient id="ap-gold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e8c96a"/>
-      <stop offset="0.55" stop-color="#d4a820"/>
-      <stop offset="1" stop-color="#c4920a"/>
+      <stop offset="0" stop-color="#E8C872"/>
+      <stop offset="0.55" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#B8962E"/>
     </linearGradient>
     <linearGradient id="ap-amethyst" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#92b4ee"/>
-      <stop offset="1" stop-color="#2a4a94"/>
+      <stop offset="0" stop-color="#C77DFF"/>
+      <stop offset="1" stop-color="#7B2CBF"/>
     </linearGradient>
     <radialGradient id="ap-planet" cx="0.35" cy="0.35" r="1">
-      <stop offset="0" stop-color="#b8ccf4"/>
-      <stop offset="1" stop-color="#3b5fae"/>
+      <stop offset="0" stop-color="#C77DFF"/>
+      <stop offset="1" stop-color="#5B3FA0"/>
     </radialGradient>
   </defs>
 
@@ -25,7 +25,7 @@
     <line x1="2"  y1="32" x2="6.5" y2="32"/>
     <line x1="62" y1="32" x2="57.5" y2="32"/>
   </g>
-  <g stroke="#c4920a" stroke-width="0.7" opacity="0.45">
+  <g stroke="#D4AF37" stroke-width="0.7" opacity="0.45">
     <line x1="47" y1="6.02"  x2="45.5" y2="8.62"/>
     <line x1="57.98" y1="17" x2="55.38" y2="18.5"/>
     <line x1="57.98" y1="47" x2="55.38" y2="45.5"/>
@@ -37,19 +37,31 @@
   </g>
 
   <!-- Inner dashed meridian -->
-  <circle cx="32" cy="32" r="24.5" fill="none" stroke="#c4920a" stroke-width="0.5" opacity="0.3" stroke-dasharray="1.2 3.4"/>
+  <circle cx="32" cy="32" r="24.5" fill="none" stroke="#D4AF37" stroke-width="0.5" opacity="0.3" stroke-dasharray="1.2 3.4"/>
 
-  <!-- Orbit ellipse with planet -->
-  <ellipse cx="32" cy="32" rx="27" ry="9.5" fill="none" stroke="url(#ap-amethyst)" stroke-width="1.1" opacity="0.8" transform="rotate(-28 32 32)"/>
-  <circle cx="55.9" cy="23" r="2.8" fill="url(#ap-planet)"/>
-  <circle cx="55.9" cy="23" r="2.8" fill="none" stroke="#92b4ee" stroke-width="0.5" opacity="0.5"/>
+  <!-- Light-cone wavefront — expanding ring, like birth-light spreading outward -->
+  <circle cx="32" cy="32" fill="none" stroke="#00D4FF" stroke-width="0.8">
+    <animate attributeName="r" values="3;29" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.65;0" dur="6s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Orbit ellipse with planet — precessing (25,772-year cycle, one turn per minute) -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 32 32" to="360 32 32" dur="60s" repeatCount="indefinite"/>
+    <ellipse cx="32" cy="32" rx="27" ry="9.5" fill="none" stroke="url(#ap-amethyst)" stroke-width="1.1" opacity="0.8" transform="rotate(-28 32 32)"/>
+    <circle cx="55.9" cy="23" r="2.8" fill="url(#ap-planet)"/>
+    <circle cx="55.9" cy="23" r="2.8" fill="none" stroke="#C77DFF" stroke-width="0.5" opacity="0.5"/>
+  </g>
 
   <!-- Eight-point compass star -->
   <path d="M32 12 L34.6 29.4 L52 32 L34.6 34.6 L32 52 L29.4 34.6 L12 32 L29.4 29.4 Z" fill="url(#ap-gold)"/>
   <path d="M32 21 L36.2 27.8 L43 32 L36.2 36.2 L32 43 L27.8 36.2 L21 32 L27.8 27.8 Z"
         fill="url(#ap-gold)" opacity="0.55" transform="rotate(45 32 32)"/>
 
-  <!-- Center jewel -->
+  <!-- Center jewel — slow breath -->
   <circle cx="32" cy="32" r="2.2" fill="#f0e8d8"/>
-  <circle cx="32" cy="32" r="3.4" fill="none" stroke="#e8c96a" stroke-width="0.6" opacity="0.7"/>
+  <circle cx="32" cy="32" r="3.4" fill="none" stroke="#E8C872" stroke-width="0.6" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.25;0.7" dur="4s" repeatCount="indefinite"/>
+  </circle>
 </svg>

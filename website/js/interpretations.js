@@ -2993,3 +2993,112 @@ window.AstroInterpretations = Object.assign({}, window.Interpretations, {
   if (window.Interpretations) Object.assign(window.Interpretations, additions);
 
 })();
+
+// =============================================================================
+// SECTION 9 — Fixed Stars & Decans
+// =============================================================================
+
+(function () {
+  'use strict';
+
+  // ── Fixed stars ──────────────────────────────────────────────────────────
+  // Tropical ecliptic longitudes at epoch J2000.0 (standard values used in
+  // fixed-star astrology). Precession moves them ~50.3″/yr; adjusted at query
+  // time. The four "royal stars" are the Persian Watchers of the sky.
+  const FIXED_STARS = [
+    { name: 'Algol',        lon2000:  56.17, con: 'Perseus',          meaning: 'The most intense star in the canon — confronting what others turn away from; power reclaimed from crisis and the courage to face the shadow directly.' },
+    { name: 'Alcyone',      lon2000:  60.00, con: 'Taurus (Pleiades)', meaning: 'Heart of the Pleiades — vision and inner sight, sometimes at the cost of seeing what is painful; mystical perception and ancestral memory.' },
+    { name: 'Aldebaran',    lon2000:  69.79, con: 'Taurus', royal: 'Watcher of the East', meaning: 'Success through unwavering integrity. Honors and achievement are promised, but only while the native stays true to their own moral line.' },
+    { name: 'Rigel',        lon2000:  76.83, con: 'Orion',            meaning: 'The teacher and the builder — ambition channeled into educating and elevating others; technical brilliance and rapid rises.' },
+    { name: 'Capella',      lon2000:  81.86, con: 'Auriga',           meaning: 'Restless curiosity and the love of freedom — a need for movement, learning, and independence that resists every harness.' },
+    { name: 'Betelgeuse',   lon2000:  88.75, con: 'Orion',            meaning: 'Unqualified success — ease of accomplishment and natural luck in worldly affairs, the strong right shoulder of the Hunter.' },
+    { name: 'Sirius',       lon2000: 104.08, con: 'Canis Major',      meaning: 'The brightest star in the sky — the mundane made sacred; fame, ambition, and deeds that burn brighter and reach further than intended.' },
+    { name: 'Castor',       lon2000: 110.24, con: 'Gemini',           meaning: 'The mortal twin — the writer and storyteller; intelligence expressed through ideas, language, and sudden shifts of fortune.' },
+    { name: 'Pollux',       lon2000: 113.22, con: 'Gemini',           meaning: 'The immortal twin — the fighter and craftsman; strength forged through contest and the willingness to struggle for what matters.' },
+    { name: 'Procyon',      lon2000: 115.79, con: 'Canis Minor',      meaning: 'The star that rises before Sirius — quick rewards that demand quick action; opportunities that must be seized before they pass.' },
+    { name: 'Alphard',      lon2000: 147.28, con: 'Hydra',            meaning: 'The solitary one — intensity of feeling and appetite; transformative passage through the strong emotions others suppress.' },
+    { name: 'Regulus',      lon2000: 149.83, con: 'Leo', royal: 'Watcher of the North', meaning: 'The heart of the Lion — leadership, honors, and royal success, granted on one condition: never take revenge. Magnanimity is the contract.' },
+    { name: 'Algorab',      lon2000: 193.45, con: 'Corvus',           meaning: 'The Crow — the scavenger\'s gift of finding value where others see none; tests of character around opportunism and honesty.' },
+    { name: 'Spica',        lon2000: 203.84, con: 'Virgo',            meaning: 'The gift of the goddess — pure talent, protection, and brilliance; a marker of exceptional skill that seems given rather than earned.' },
+    { name: 'Arcturus',     lon2000: 204.23, con: 'Boötes',           meaning: 'The pathfinder — prosperity through pioneering a new way; the guardian who leads others into unmapped territory.' },
+    { name: 'Antares',      lon2000: 249.76, con: 'Scorpius', royal: 'Watcher of the West', meaning: 'The rival of Mars — obsessive courage and the drive toward intensity; success through entering the heat rather than avoiding it.' },
+    { name: 'Vega',         lon2000: 285.32, con: 'Lyra',             meaning: 'The falling eagle, the harp of Orpheus — charisma, artistry, and a magical, otherworldly quality to the voice or creative gift.' },
+    { name: 'Altair',       lon2000: 301.78, con: 'Aquila',           meaning: 'The eagle in flight — boldness, swiftness, and the confidence to act decisively from great heights; daring rewarded.' },
+    { name: 'Deneb Algedi', lon2000: 323.55, con: 'Capricornus',      meaning: 'The benefic ruler — wisdom applied to practical life; the law-giver who protects through structure and fair judgment.' },
+    { name: 'Fomalhaut',    lon2000: 333.87, con: 'Piscis Austrinus', royal: 'Watcher of the South', meaning: 'The loneliest royal star — idealism and mysticism; success through ideals kept uncorrupted, and the falls that follow compromise.' },
+  ];
+
+  const PRECESSION_DEG_PER_YEAR = 50.29 / 3600;
+
+  function starLonAtYear(star, year) {
+    const y = (typeof year === 'number' && isFinite(year)) ? year : 2000;
+    return ((star.lon2000 + (y - 2000) * PRECESSION_DEG_PER_YEAR) % 360 + 360) % 360;
+  }
+
+  // Conjunctions of natal points to the major fixed stars.
+  // `points`: { Label: lonDeg, ... } — pass planets plus Ascendant/Midheaven.
+  // `year`: birth year for precession correction. Orb: 1° (the traditional
+  // fixed-star orb; only conjunctions count — fixed stars take no aspects).
+  function getFixedStarConjunctions(points, year, orbDeg) {
+    const orb = orbDeg || 1.0;
+    const hits = [];
+    for (const label in points) {
+      const lon = points[label];
+      if (typeof lon !== 'number' || !isFinite(lon)) continue;
+      for (let i = 0; i < FIXED_STARS.length; i++) {
+        const star = FIXED_STARS[i];
+        const sLon = starLonAtYear(star, year);
+        let d = Math.abs(((lon - sLon) % 360 + 360) % 360);
+        if (d > 180) d = 360 - d;
+        if (d <= orb) {
+          hits.push({ point: label, star: star.name, constellation: star.con,
+                      royal: star.royal || null, orb: d, meaning: star.meaning });
+        }
+      }
+    }
+    return hits.sort((a, b) => a.orb - b.orb);
+  }
+
+  // ── Decans ───────────────────────────────────────────────────────────────
+  // Triplicity system: each 10° decan is sub-ruled by the traditional rulers
+  // of the three signs of the same element, in zodiacal order.
+  const DECAN_RULERS = {
+    aries:       ['Mars', 'Sun', 'Jupiter'],
+    taurus:      ['Venus', 'Mercury', 'Saturn'],
+    gemini:      ['Mercury', 'Venus', 'Saturn'],
+    cancer:      ['Moon', 'Mars', 'Jupiter'],
+    leo:         ['Sun', 'Jupiter', 'Mars'],
+    virgo:       ['Mercury', 'Saturn', 'Venus'],
+    libra:       ['Venus', 'Saturn', 'Mercury'],
+    scorpio:     ['Mars', 'Jupiter', 'Moon'],
+    sagittarius: ['Jupiter', 'Mars', 'Sun'],
+    capricorn:   ['Saturn', 'Venus', 'Mercury'],
+    aquarius:    ['Saturn', 'Mercury', 'Venus'],
+    pisces:      ['Jupiter', 'Moon', 'Mars'],
+  };
+
+  const DECAN_GLYPHS = { Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃', Saturn:'♄' };
+
+  // Decan from an absolute ecliptic longitude (0–360).
+  function getDecan(lonDeg) {
+    const lon = ((lonDeg % 360) + 360) % 360;
+    const signs = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+    const sign = signs[Math.floor(lon / 30)];
+    const index = Math.floor((lon % 30) / 10) + 1;  // 1, 2, 3
+    const ruler = DECAN_RULERS[sign][index - 1];
+    return { sign, index, ruler, glyph: DECAN_GLYPHS[ruler] || '',
+             label: 'Decan ' + index + ' — ' + ruler };
+  }
+
+  const additions = {
+    FIXED_STARS,
+    getFixedStarConjunctions,
+    starLonAtYear,
+    DECAN_RULERS,
+    getDecan,
+  };
+
+  window.AstroInterpretations = Object.assign(window.AstroInterpretations || {}, additions);
+  if (window.Interpretations) Object.assign(window.Interpretations, additions);
+
+})();

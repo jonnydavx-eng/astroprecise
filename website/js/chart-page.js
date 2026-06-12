@@ -435,6 +435,48 @@
           ${patternCards}
         </div>`);
       }
+
+      // Part of Fortune — day chart when the Sun stands above the horizon (houses 7–12)
+      if (I && I.getPartOfFortune && typeof chart.asc === 'number' && chart.positions.Sun && chart.positions.Moon) {
+        const sunHouse = chart.planetHouses ? chart.planetHouses.Sun : null;
+        const isDay = sunHouse >= 7 && sunHouse <= 12;
+        const pof = I.getPartOfFortune(chart.asc, chart.positions.Sun.lon, chart.positions.Moon.lon, isDay);
+        blocks.push(analysisSection('Lot of Fortune',
+          `Your Part of Fortune falls at <strong>${pof.degree}° ${pof.sign}</strong> ` +
+          `(${isDay ? 'day' : 'night'} chart formula) — the point where Sun, Moon, and Ascendant ` +
+          `converge; classically read as where life flows with the least resistance.`));
+      }
+
+      const fixedStars = I && I.getFixedStarConjunctions
+        ? I.getFixedStarConjunctions(
+            (() => {
+              const pts = {};
+              ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']
+                .forEach(k => { if (chart.positions[k]) pts[k] = chart.positions[k].lon; });
+              if (typeof chart.asc === 'number') pts['Ascendant'] = chart.asc;
+              if (typeof chart.mc === 'number')  pts['Midheaven'] = chart.mc;
+              return pts;
+            })(),
+            parseInt(chart.birthDate, 10) || 2000)
+        : [];
+      if (fixedStars.length) {
+        const starCards = fixedStars.slice(0, 6).map(fs => `
+          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(123,44,191,0.07);border-radius:8px;border-left:3px solid var(--violet-bright);">
+            <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);flex-wrap:wrap;">
+              <span style="font-size:1.1em;color:var(--violet-bright);">✦</span>
+              <strong style="color:var(--violet-bright);">${fs.point} conjunct ${fs.star}</strong>
+              <span style="font-size:0.75em;color:var(--silver-dim);">${fs.orb.toFixed(1)}° orb · ${fs.constellation}</span>
+              ${fs.royal ? `<span style="font-size:0.7em;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">★ Royal Star — ${fs.royal}</span>` : ''}
+            </div>
+            <p style="margin:0;color:var(--silver);font-size:0.9em;line-height:1.5;">${fs.meaning}</p>
+          </div>`).join('');
+        blocks.push(`<div class="analysis-section">
+          <h4 class="analysis-section__title">Fixed Star Conjunctions</h4>
+          <p style="font-size:0.85em;color:var(--silver-dim);margin-bottom:var(--space-3);">Natal points within 1° of the major named stars, precession-corrected to your birth year.</p>
+          ${starCards}
+        </div>`);
+      }
+
       ov.innerHTML = blocks.join('');
     }
 
@@ -449,13 +491,17 @@
         const signName = (p.sign || '').toLowerCase();
         const dignity = I && I.getDignity ? I.getDignity(planetName, signName) : null;
         const dignityHtml = dignity && dignity.status !== 'peregrine'
-          ? `<span class="dignity-badge dignity-badge--${dignity.status}" title="${dignity.note}" style="display:inline-block;margin-left:var(--space-2);font-size:0.7em;padding:1px 5px;border-radius:3px;vertical-align:middle;background:rgba(196,146,10,0.15);color:var(--gold);border:1px solid rgba(196,146,10,0.3);">${dignity.glyph} ${dignity.label}</span>`
+          ? `<span class="dignity-badge dignity-badge--${dignity.status}" title="${dignity.note}" style="display:inline-block;margin-left:var(--space-2);font-size:0.7em;padding:1px 5px;border-radius:3px;vertical-align:middle;background:rgba(212,175,55,0.15);color:var(--gold);border:1px solid rgba(212,175,55,0.3);">${dignity.glyph} ${dignity.label}</span>`
+          : '';
+        const decan = I && I.getDecan && typeof p.lon === 'number' ? I.getDecan(p.lon) : null;
+        const decanHtml = decan
+          ? ` · <span title="${decan.label} of ${p.sign} (triplicity sub-ruler)" style="cursor:help;">D${decan.index} ${decan.glyph}</span>`
           : '';
         return `<div class="planet-data-row">
           <span class="planet-data-row__glyph">${PLANET_GLYPHS[k]}</span>
           <div>
             <div class="planet-data-row__name">${k === 'NorthNode' ? 'North Node' : k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
-            <div class="planet-data-row__sign">${SIGN_GLYPHS[p.sign] || ''} ${p.sign}${h ? ` · H${h}` : ''}${dignityHtml}</div>
+            <div class="planet-data-row__sign">${SIGN_GLYPHS[p.sign] || ''} ${p.sign}${h ? ` · H${h}` : ''}${decanHtml}${dignityHtml}</div>
           </div>
           <span class="planet-data-row__deg">${fmtDeg(p)}</span>
         </div>`;
@@ -569,6 +615,33 @@
     a.href = cv.toDataURL('image/png');
     a.click();
     if (window.AstroApp) AstroApp.showToast('Card ready', 'Your Big Three card has been downloaded.', 'success');
+  });
+
+  document.getElementById('json-btn')?.addEventListener('click', () => {
+    if (!currentChart) return;
+    const I = window.AstroInterpretations;
+    const data = {
+      generator: 'AstroPrecise (astroprecise ephemeris — truncated VSOP87/ELP2000, ~1′ accuracy)',
+      exported: new Date().toISOString(),
+      name: currentChart.name,
+      birthDate: currentChart.birthDate,
+      birthTime: currentChart.birthTime || null,
+      place: { city: currentChart.city, lat: currentChart.lat, lon: currentChart.lon, tz: currentChart.tz },
+      risingSign: currentChart.risingSign,
+      positions: currentChart.positions,
+      houses: currentChart.houses,
+      planetHouses: currentChart.planetHouses,
+      aspects: currentChart.aspects,
+      patterns: I && I.detectChartPatterns
+        ? I.detectChartPatterns(currentChart.positions, currentChart.aspects) : [],
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.download = `${(currentChart.name || 'chart').replace(/[^\w]+/g, '-').toLowerCase()}-natal-chart.json`;
+    a.href = URL.createObjectURL(blob);
+    a.click();
+    URL.revokeObjectURL(a.href);
+    if (window.AstroApp) AstroApp.showToast('Exported', 'Chart data downloaded as JSON.', 'success');
   });
 
   document.getElementById('app-btn')?.addEventListener('click', () => {
