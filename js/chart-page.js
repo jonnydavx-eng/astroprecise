@@ -87,29 +87,36 @@
   const tzInput   = document.getElementById('tz-input');
   let activeIdx   = -1;
 
-  function citySearch(q) {
-    if (!E() || !E().CITIES) return [];
-    q = q.trim().toLowerCase();
-    if (q.length < 2) return [];
-    const starts = [], contains = [];
-    for (const c of E().CITIES) {
-      const n = c.name.toLowerCase();
-      if (n.startsWith(q)) starts.push(c);
-      else if (n.includes(q)) contains.push(c);
-      if (starts.length >= 8) break;
-    }
-    return starts.concat(contains).slice(0, 8);
-  }
+  const esc = s => String(s).replace(/[&<>"']/g,
+    ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
 
-  function renderDropdown(items) {
+  const regionOf = c => c.admin ? `${c.admin}, ${c.country}` : c.country;
+
+  function renderDropdown(items, source, state) {
     if (!dropdown) return;
     activeIdx = -1;
     dropdown._items = items;
-    if (!items.length) { dropdown.innerHTML = ''; dropdown.hidden = true; return; }
+    if (state === 'searching') {
+      dropdown.innerHTML = '<div class="autocomplete-note">Searching the gazetteer…</div>';
+      dropdown.hidden = false;
+      return;
+    }
+    if (!items.length) {
+      if (state === 'empty') {
+        dropdown.innerHTML = '<div class="autocomplete-note">No places matched — check the spelling, or try the nearest larger town.</div>';
+        dropdown.hidden = false;
+      } else {
+        dropdown.innerHTML = '';
+        dropdown.hidden = true;
+      }
+      return;
+    }
+    const note = source === 'offline'
+      ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
     dropdown.innerHTML = items.map((c, i) =>
       `<div class="autocomplete-option" role="option" data-i="${i}" id="city-opt-${i}">
-        <span aria-hidden="true">📍</span> <strong>${c.name}</strong>&nbsp;<span style="opacity:0.6">${c.country}</span>
-      </div>`).join('');
+        <span aria-hidden="true">📍</span> <strong>${esc(c.name)}</strong>&nbsp;<span style="opacity:0.6">${esc(regionOf(c))}</span>
+      </div>`).join('') + note;
     dropdown.hidden = false;
     dropdown.querySelectorAll('.autocomplete-option').forEach(elx => {
       elx.addEventListener('mousedown', ev => { ev.preventDefault(); pickCity(items[+elx.dataset.i]); });
@@ -117,19 +124,30 @@
   }
 
   function pickCity(c) {
-    cityInput.value = `${c.name}, ${c.country}`;
+    cityInput.value = c.admin ? `${c.name}, ${c.admin}, ${c.country}` : `${c.name}, ${c.country}`;
     latInput.value  = c.lat;
     lonInput.value  = c.lon;
-    tzInput.value   = c.tz;
+    tzInput.value   = c.tz || '';
     dropdown.innerHTML = '';
     dropdown.hidden = true;
     document.dispatchEvent(new CustomEvent('astro:city-selected'));
   }
 
   if (cityInput && dropdown) {
+    let searchSeq = 0;
+    const runSearch = window.AstroApp.debounce(q => {
+      const mySeq = ++searchSeq;
+      window.AstroApp.searchPlaces(q).then(({ results, source }) => {
+        if (mySeq !== searchSeq) return;
+        renderDropdown(results, source, results.length ? 'results' : 'empty');
+      });
+    }, 250);
     cityInput.addEventListener('input', () => {
       latInput.value = ''; lonInput.value = ''; tzInput.value = '';
-      renderDropdown(citySearch(cityInput.value));
+      const q = cityInput.value.trim();
+      if (q.length < 2) { searchSeq++; renderDropdown([], 'live', 'idle'); return; }
+      renderDropdown([], 'live', 'searching');
+      runSearch(q);
     });
     cityInput.addEventListener('keydown', ev => {
       const items = dropdown._items || [];
