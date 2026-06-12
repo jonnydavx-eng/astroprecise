@@ -74,7 +74,7 @@
     }
     .cta-btn:hover { transform: translateY(-2px); }
     .cta-btn--primary {
-      background: linear-gradient(135deg, #7B2CBF, #D4AF37);
+      background: linear-gradient(135deg, #C9A227, #EFE3C0);
       color: #0A0B1F;
       box-shadow: 0 0 16px rgba(212,175,55,0.25);
     }
@@ -115,7 +115,7 @@
     }
     .srp-chart-cta__btn {
       display: inline-block; padding: 0.6rem 1.6rem;
-      background: linear-gradient(135deg, #7B2CBF 0%, #D4AF37 100%);
+      background: linear-gradient(135deg, #C9A227 0%, #EFE3C0 100%);
       color: #0A0B1F; font-weight: 700; font-size: 0.85rem;
       letter-spacing: 0.04em; border-radius: 999px;
       text-decoration: none; transition: box-shadow .15s, transform .15s;
@@ -268,8 +268,8 @@
       align-items: center;
       gap: var(--space-2);
       position: relative;
-      backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
     }
     /* Element-coloured left borders */
     .sign-card[data-element="fire"] { border-left-color: #e05a3a; }
@@ -409,8 +409,8 @@
       background: linear-gradient(135deg, rgba(9, 11, 22, 0.97) 0%, rgba(13, 17, 38, 0.97) 60%, rgba(18, 11, 28, 0.97) 100%);
       padding: var(--space-8);
       margin-top: var(--space-8);
-      backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(24px);
       overflow: hidden;
     }
     /* Dramatic gradient border via ::before */
@@ -614,8 +614,8 @@
       text-align: center;
       max-width: 560px;
       margin: 0 auto;
-      backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
     }
     .moon-phase__icon {
       font-size: 5rem;
@@ -691,8 +691,8 @@
       display: flex;
       flex-direction: column;
       gap: var(--space-2);
-      backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
       transition: border-color 0.2s, transform 0.18s;
     }
     .planet-weather-card:hover {
@@ -800,16 +800,79 @@
 </head>
 <body>
 
+  <!-- CINEMATIC PRELOADER — masterpiece entry experience (engraved hermetic celestial) -->
+  <div id="page-preloader" class="page-preloader" aria-label="Astral alignment in progress">
+    <canvas id="page-preloader-canvas" width="600" height="600" aria-hidden="true"></canvas>
+    <div class="preloader-content">
+      <div class="preloader-seal">✧</div>
+      <div class="preloader-title">The Spheres Align</div>
+      <div class="preloader-subtitle">The Sky Is Your Eternal Hermetic Clock</div>
+      <div class="preloader-progress" id="page-preloader-progress">
+        <div class="preloader-bar"><div class="preloader-fill" style="width:100%"></div></div>
+      </div>
+      <button id="page-preloader-enter" class="preloader-skip" style="display:none; font-size:0.82rem; padding:11px 28px;">✧ Click to Enter the Record</button>
+    </div>
+  </div>
+
+  <!-- Masterpiece preloader script (lightweight fade + celestial vibe for this page) - after DOM elements -->
+  <script>
+  (function(){
+    const pre = document.getElementById('page-preloader');
+    if(!pre) return;
+    const cvs = document.getElementById('page-preloader-canvas');
+    if(cvs){
+      const ctx = cvs.getContext('2d');
+      let t=0;
+      function draw(){
+        ctx.clearRect(0,0,600,600);
+        ctx.save(); ctx.translate(300,300);
+        ctx.strokeStyle = 'rgba(201,162,39,0.5)'; ctx.lineWidth=1;
+        for(let i=0;i<6;i++){ ctx.beginPath(); ctx.arc(0,0,80+i*18,0,Math.PI*2); ctx.stroke(); }
+        ctx.fillStyle = '#C9A227';
+        ctx.beginPath(); ctx.arc(Math.cos(t*0.03)*40, Math.sin(t*0.02)*30, 4,0,Math.PI*2); ctx.fill();
+        ctx.restore(); t++; requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    const progress = document.getElementById('page-preloader-progress');
+    const enterBtn = document.getElementById('page-preloader-enter');
+    const startTime = Date.now();
+
+    function hidePre() {
+      pre.style.opacity = '0';
+      setTimeout(() => { pre.style.display = 'none'; pre.remove(); }, 400);
+    }
+
+    setTimeout(() => {
+      if (progress) progress.style.display = 'none';
+      if (enterBtn) {
+        enterBtn.style.display = 'inline-block';
+        enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
+      }
+    }, 1400);
+
+    pre.addEventListener('click', function onFirstClick() {
+      if (enterBtn && enterBtn.style.display !== 'none') return;
+      if (Date.now() - startTime > 1200) {
+        pre.removeEventListener('click', onFirstClick);
+        hidePre();
+      }
+    });
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTimeout(() => {
+        if (progress) progress.style.display = 'none';
+        if (enterBtn) {
+          enterBtn.style.display = 'inline-block';
+          enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
+        }
+      }, 400);
+    }
+  })();
+  </script>
+
   <!-- Animated starfield -->
   <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="cosmos-solar-system" aria-hidden="true">
-    <div class="css-sun"></div>
-    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
-    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
-    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
-    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
-    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
-  </div>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>

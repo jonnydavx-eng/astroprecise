@@ -27,27 +27,36 @@
 window.Orrery3D = (() => {
   'use strict';
 
+  // Debug load message (remove after testing)
+  console.log('%c[orrery3d] orrery3d.js loaded (globe intro active)', 'color: lime');
+
   // ── Planet definitions ────────────────────────────────────────────────────
 
   const PLANETS = [
-    { id: 'mercury', name: 'Mercury', glyph: '☿', size: 3,   period: 87.969,
+    { id: 'mercury', name: 'Mercury', glyph: '☿', size: 3,   period: 87.969, spinPeriod: 58.6,
       color: '#8a8580', hi: '#c8c2bc', lo: '#4a4744',
       sign: '', interpretation: 'Mercury governs communication, intellect, and swift movement. In this sign it sharpens wit and lends a restless, curious energy to thought.' },
-    { id: 'venus',   name: 'Venus',   glyph: '♀', size: 5,   period: 224.701,
+    { id: 'venus',   name: 'Venus',   glyph: '♀', size: 5,   period: 224.701, spinPeriod: 243,
       color: '#c8a86a', hi: '#ecd9a8', lo: '#7a6238',
       sign: '', interpretation: 'Venus rules love, beauty, and harmony. Here it softens relationships and draws pleasurable, aesthetic experiences into focus.' },
-    { id: 'earth',   name: 'Earth',   glyph: '⊕', size: 5.5, period: 365.256,
+    { id: 'earth',   name: 'Earth',   glyph: '⊕', size: 5.5, period: 365.256, spinPeriod: 1,
       color: '#3274b8', hi: '#7ab4e8', lo: '#173a64',
       sign: '', interpretation: 'Earth is our vantage point — the axis around which all other cycles are measured. Its position anchors the chart in lived experience.' },
-    { id: 'mars',    name: 'Mars',    glyph: '♂', size: 4,   period: 686.980,
+    { id: 'mars',    name: 'Mars',    glyph: '♂', size: 4,   period: 686.980, spinPeriod: 1.03,
       color: '#b84a32', hi: '#e08868', lo: '#642618',
       sign: '', interpretation: 'Mars rules drive, courage, and desire. Its placement ignites action and shapes how we assert ourselves in the world.' },
-    { id: 'jupiter', name: 'Jupiter', glyph: '♃', size: 9,   period: 4332.589,
+    { id: 'jupiter', name: 'Jupiter', glyph: '♃', size: 9,   period: 4332.589, spinPeriod: 0.41,
       color: '#c08858', hi: '#e8bc90', lo: '#6c4a2c',
       sign: '', interpretation: 'Jupiter expands whatever it touches — wisdom, abundance, and good fortune. It marks the areas of life where we naturally seek growth.' },
-    { id: 'saturn',  name: 'Saturn',  glyph: '♄', size: 7.5, period: 10759.22,
+    { id: 'saturn',  name: 'Saturn',  glyph: '♄', size: 7.5, period: 10759.22, spinPeriod: 0.45,
       color: '#c8b48a', hi: '#ecdcb8', lo: '#6e6248',
       sign: '', interpretation: 'Saturn teaches discipline, structure, and long-term responsibility. Where it falls, we face our greatest tests and most lasting achievements.' },
+    { id: 'uranus', name: 'Uranus', glyph: '♅', size: 5.5, period: 30685, spinPeriod: 0.72,
+      color: '#9ed1e8', hi: '#d6f0ff', lo: '#5a8aa0',
+      sign: '', interpretation: 'Uranus brings sudden insight, innovation, and the urge to break free. It colors the areas of life where we seek originality and awakenings.' },
+    { id: 'neptune', name: 'Neptune', glyph: '♆', size: 5.5, period: 60190, spinPeriod: 0.67,
+      color: '#7aa8d8', hi: '#b8d4f0', lo: '#3a5a8a',
+      sign: '', interpretation: 'Neptune dissolves boundaries and inspires dreams, compassion, and the mystical. It rules intuition, art, and the longing to merge with something greater.' },
   ];
 
   const SIGN_GLYPHS  = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(g => g + '︎');
@@ -104,11 +113,31 @@ window.Orrery3D = (() => {
   // Aspect lines
   let showAspects = false;
 
+  // Hero-optimized defaults: clean, elegant, instantly understandable
+  let showOrbits = true;       // very faint elegant orbits – help see the clockwork without clutter
+  let showLabels = true;       // planet names + current signs – essential for comprehension
+  let showAsteroids = false;   // off in hero – adds noise; can be toggled in full Instrument view
+  showParticles = false;   // keep minimal for hero; beautiful but secondary
+  showShootingStars = false; // rare elegant events only in deeper views
+
   // Zodiac ring frame throttle
   let zodiacFrameCount = 0;
 
+  // Planet self-rotation (axial spin) for living 3D feel
+  let planetSpins = {};   // id -> current angle in radians
+
+  // Asteroid belt (between Mars and Jupiter)
+  let asteroids = [];
+  let asteroidsInited = false;
+
   // Reduced motion
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Intro zoom sequence: start close on Earth (instant recognition), zoom out to full solar system, then rotate
+  let introActive = false;
+  let introProgress = 0;
+  const introStartZoom = 5.5;   // very close "globe" view of Earth to start
+  const introDuration = 4.8;    // seconds
 
   // Sun corona
   let coronaPhase = 0;
@@ -231,6 +260,26 @@ window.Orrery3D = (() => {
     }
   }
 
+  function initAsteroids() {
+    if (asteroidsInited) return;
+    asteroidsInited = true;
+    asteroids = [];
+    const count = 72;
+    const innerR = 1.85; // between Mars & Jupiter, in our compressed units
+    const outerR = 2.15;
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.04;
+      const r = innerR + Math.random() * (outerR - innerR);
+      asteroids.push({
+        angle: a,
+        r,
+        size: 0.6 + Math.random() * 1.1,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.0008 + Math.random() * 0.0006, // slow orbital drift
+      });
+    }
+  }
+
   function newParticle() {
     return {
       x: Math.random() * W,
@@ -257,6 +306,17 @@ window.Orrery3D = (() => {
       if (p.x > W + 2) p.x = -2;
       if (p.y < -2) p.y = H + 2;
       if (p.y > H + 2) p.y = -2;
+    });
+  }
+
+  // Self-rotation for planets (makes them feel 3D and alive)
+  function updatePlanetSpins(dt) {
+    if (prefersReducedMotion) return;
+    PLANETS.forEach(p => {
+      if (!planetSpins[p.id]) planetSpins[p.id] = Math.random() * Math.PI * 2;
+      const spinRate = (2 * Math.PI) / (p.spinPeriod * 24); // artistic visual speed (days scaled)
+      planetSpins[p.id] += spinRate * dt * 120; // boost for nice visible rotation
+      planetSpins[p.id] %= Math.PI * 2;
     });
   }
 
@@ -458,8 +518,13 @@ window.Orrery3D = (() => {
   function handleClick(e) {
     const { x, y } = canvasLocalPos(e);
     const hit = hitTestBodies(x, y);
-    if (hit && onPlanetClick) {
-      onPlanetClick(hit);
+    if (hit) {
+      if (onPlanetClick) onPlanetClick(hit);
+      // Also dispatch custom event so hero (and other pages) can listen without setting the callback
+      try {
+        const ev = new CustomEvent('orrery-planet-click', { detail: hit, bubbles: true });
+        (canvas || document).dispatchEvent(ev);
+      } catch (_) {}
     }
   }
 
@@ -526,8 +591,27 @@ window.Orrery3D = (() => {
     computeOrbits();
     computeBodies();
     initParticles();
+    initAsteroids();
+
+    // Initial camera for the opening "globe" phase — looking nicely at Earth
+    const earth0 = bodies.find(b => b.id === 'earth');
+    if (earth0) {
+      yaw = Math.atan2(earth0.pos.y, earth0.pos.x) - 0.55;
+      pitch = 0.48;
+    }
+    targetZoomScale = introStartZoom;
+    currentZoomScale = introStartZoom;
 
     if (!prefersReducedMotion) scheduleNextShootingStar(performance.now());
+
+    // Stronger, slower, more guided Earth-first intro: deliberate pull-back that teaches scale and structure
+    if (!prefersReducedMotion) {
+      introActive = true;
+      introProgress = 0;
+      autoSpin = false;
+    } else {
+      autoSpin = true;
+    }
 
     lastFrame = performance.now();
     loop(lastFrame);
@@ -536,7 +620,8 @@ window.Orrery3D = (() => {
   function resize() {
     dpr = window.devicePixelRatio || 1;
     const rect = wrap.getBoundingClientRect();
-    const size = Math.min(rect.width, 520);
+    // Match intended hero presence: up to 580px logical (CSS sets 580 on desktop, scales down responsively)
+    const size = Math.min(Math.max(rect.width, 280), 580);
     W = H = size;
     canvas.width = size * dpr;
     canvas.height = size * dpr;
@@ -612,10 +697,29 @@ window.Orrery3D = (() => {
       dayOffset += speed * dt;
       computeBodies();
     }
-    if (autoSpin && !dragging && ts - lastInteract > 3000) {
-      yaw += 0.0012;
+
+    // Intro sequence: zoom out from Earth, then hand off to auto rotation
+    if (introActive && !prefersReducedMotion) {
+      introProgress += dt / introDuration;
+      if (introProgress >= 1) {
+        introActive = false;
+        targetZoomScale = 1.0;
+        autoSpin = true;
+        lastInteract = ts - 2800;
+      } else {
+        const eased = 1 - Math.pow(1 - Math.min(introProgress, 1), 2.5);
+        targetZoomScale = introStartZoom * (1 - eased) + 1.0 * eased;
+
+        // Very gentle camera motion only after the pure globe phase
+        if (introProgress > 0.22) {
+          yaw += 0.00055 * (introProgress - 0.22) * 1.8;
+        }
+      }
+    } else if (autoSpin && !dragging && ts - lastInteract > 3000) {
+      yaw += 0.00115;
     }
 
+    updatePlanetSpins(dt);
     updateZoom();
     updateParticles(dt);
 
@@ -629,22 +733,45 @@ window.Orrery3D = (() => {
   function draw(ts) {
     ctx.clearRect(0, 0, W, H);
 
-    drawParticles();
+    // During pure globe phase, suppress all the decorative layers so it's a clean Earth globe
+    const isGlobePhase = introActive && introProgress < 0.28;
+    if (!isGlobePhase) {
+      drawParticles();
+      if (showAsteroids) drawAsteroids();
+    }
 
     zodiacFrameCount++;
-    if (zodiacFrameCount % 3 === 0) {
+    if (!isGlobePhase && zodiacFrameCount % 3 === 0) {
       drawZodiacRing();
     }
 
-    drawOrbitPaths();
-    drawAspectLines();
+    if (!isGlobePhase && showOrbits) drawOrbitPaths();
+    if (!isGlobePhase) drawAspectLines();
 
     const items = bodies.map(b => ({ kind: 'planet', b, pr: project(b.pos) }));
     items.push({ kind: 'sun', pr: project({ x: 0, y: 0, z: 0 }) });
     items.sort((a, b) => b.pr.depth - a.pr.depth);
 
-    // Trails
-    if (speed !== 0) {
+    // Globe-first reveal: during the opening phase show a clean Earth + Sun only,
+    // then gradually bring in the rest of the solar system as we zoom out.
+    let visibleItems = items;
+    if (introActive) {
+      if (introProgress < 0.28) {
+        // Pure globe phase — just the beautiful rotating Earth + Sun (longer for visibility)
+        visibleItems = items.filter(it => it.kind === 'sun' || (it.b && it.b.id === 'earth'));
+        console.log('[orrery] PURE GLOBE PHASE active — Earth only, progress=', introProgress.toFixed(2));
+      } else if (introProgress < 0.55) {
+        // Early pull-back — inner system starts to appear
+        visibleItems = items.filter(it =>
+          it.kind === 'sun' ||
+          (it.b && (it.b.id === 'earth' || it.b.id === 'mercury' || it.b.id === 'venus' || it.b.id === 'mars'))
+        );
+      }
+      // After ~0.55 the full system is visible and the gentle rotation has begun
+    }
+
+    // Trails (only meaningful after the globe phase)
+    if (speed !== 0 && (!introActive || introProgress > 0.35)) {
       items.forEach(it => {
         if (it.kind !== 'planet' || it.b.id === 'moon') return;
         let t = trails.get(it.b.id);
@@ -653,23 +780,39 @@ window.Orrery3D = (() => {
         if (t.length > 26) t.shift();
       });
     }
-    trails.forEach((t, id) => {
-      if (t.length < 2) return;
-      const b = bodies.find(x => x.id === id);
-      if (!b) return;
-      for (let i = 1; i < t.length; i++) {
-        ctx.beginPath();
-        ctx.moveTo(t[i - 1].x, t[i - 1].y);
-        ctx.lineTo(t[i].x, t[i].y);
-        ctx.strokeStyle = b.color;
-        ctx.globalAlpha = (i / t.length) * 0.4;
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-      }
-      ctx.globalAlpha = 1;
-    });
+    if (!introActive || introProgress > 0.35) {
+      trails.forEach((t, id) => {
+        if (t.length < 2) return;
+        const b = bodies.find(x => x.id === id);
+        if (!b) return;
+        for (let i = 1; i < t.length; i++) {
+          ctx.beginPath();
+          ctx.moveTo(t[i - 1].x, t[i - 1].y);
+          ctx.lineTo(t[i].x, t[i].y);
+          ctx.strokeStyle = b.color;
+          ctx.globalAlpha = (i / t.length) * 0.4;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      });
+    }
 
-    items.forEach(it => it.kind === 'sun' ? drawSun(it.pr) : drawPlanet(it.b, it.pr));
+    visibleItems.forEach(it => it.kind === 'sun' ? drawSun(it.pr) : drawPlanet(it.b, it.pr));
+
+    if (showLabels) drawPlanetLabels(visibleItems);
+
+    // Obvious visual + console for the "start with a globe" phase (remove after you confirm you see it)
+    if (introActive && introProgress < 0.28) {
+      ctx.font = 'bold 26px Inter, system-ui';
+      ctx.fillStyle = 'rgba(255, 230, 120, 1)';
+      ctx.textAlign = 'center';
+      ctx.fillText('★ START: DETAILED EARTH GLOBE ★', cx, 65);
+      ctx.font = '14px Inter, system-ui';
+      ctx.fillStyle = 'rgba(200, 220, 255, 0.9)';
+      ctx.fillText('(watch the zoom out from here)', cx, 85);
+      console.log('[orrery] Drawing GLOBE indicator — big yellow text at top + large detailed Earth should be visible now');
+    }
 
     updateAndDrawShootingStars(ts || performance.now());
 
@@ -720,165 +863,431 @@ window.Orrery3D = (() => {
       const pts = orbits[p.id];
       if (!pts) return;
       const isInner = INNER_IDS.has(p.id);
-      const baseColor = isInner ? '196,146,10' : '91,127,199';
+      const baseColor = isInner ? '212,175,55' : '120,160,220';
 
-      // Draw orbit in segments to simulate depth fade
+      // Draw orbit in segments with soft glow + depth fade for stronger 3D graphic presence
       for (let i = 0; i < pts.length; i++) {
         const curr = project(pts[i]);
         const next = project(pts[(i + 1) % pts.length]);
-        // Depth: more negative = further back. Range approx -3.5 to +3.5
         const d = curr.depth;
-        // Back half = more transparent
-        const depthAlpha = 0.05 + 0.12 * Math.max(0, Math.min(1, (d + 3.5) / 7));
+        const depthAlpha = 0.06 + 0.16 * Math.max(0, Math.min(1, (d + 3.6) / 7.2));
+
+        // Soft outer glow pass
+        ctx.beginPath();
+        ctx.moveTo(curr.x, curr.y);
+        ctx.lineTo(next.x, next.y);
+        ctx.strokeStyle = `rgba(${baseColor},${depthAlpha * 0.55})`;
+        ctx.lineWidth = 2.8;
+        ctx.stroke();
+
+        // Crisp core line
         ctx.beginPath();
         ctx.moveTo(curr.x, curr.y);
         ctx.lineTo(next.x, next.y);
         ctx.strokeStyle = `rgba(${baseColor},${depthAlpha})`;
-        ctx.lineWidth = 0.8;
+        ctx.lineWidth = 0.9;
         ctx.stroke();
       }
     });
   }
 
+  function drawAsteroids() {
+    if (prefersReducedMotion || asteroids.length === 0) return;
+    const beltAlpha = 0.45;
+    ctx.save();
+    asteroids.forEach(ast => {
+      // slow drift
+      ast.angle += ast.speed;
+      const pos = project({
+        x: Math.cos(ast.angle) * ast.r,
+        y: Math.sin(ast.angle) * ast.r * 0.7, // slight tilt for 3D belt feel
+        z: 0,
+      });
+      const s = Math.max(0.4, ast.size * (pos.f * 0.8));
+      ctx.globalAlpha = beltAlpha * (0.6 + 0.4 * Math.sin(ast.phase));
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, s, 0, Math.PI * 2);
+      ctx.fillStyle = '#d4c8a0';
+      ctx.fill();
+      // tiny glow
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, s * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.12)';
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
   function drawSun(pr) {
     const r = 13 * pr.f;
 
-    // Animated corona rings
+    // Richer animated corona — multiple layered glows + subtle rays for more 3D solar presence
     if (!prefersReducedMotion) {
-      for (let ring = 0; ring < 3; ring++) {
-        const phase = coronaPhase + ring * (Math.PI * 2 / 3);
-        const pulseR = r * (3.5 + ring * 1.2 + 0.4 * Math.sin(phase));
-        const baseOp = [0.12, 0.07, 0.04][ring];
-        const opacity = baseOp * (0.6 + 0.4 * Math.sin(phase * 1.3 + ring));
-        const corona = ctx.createRadialGradient(pr.x, pr.y, r * 0.8, pr.x, pr.y, pulseR);
-        corona.addColorStop(0, `rgba(255,220,100,${opacity})`);
-        corona.addColorStop(0.4, `rgba(212,175,55,${opacity * 0.5})`);
-        corona.addColorStop(1, 'rgba(196,100,0,0)');
+      // Main pulsing corona
+      for (let ring = 0; ring < 4; ring++) {
+        const phase = coronaPhase + ring * (Math.PI * 2 / 3.2);
+        const pulseR = r * (4.2 + ring * 1.35 + 0.55 * Math.sin(phase));
+        const baseOp = [0.18, 0.11, 0.065, 0.035][ring];
+        const opacity = baseOp * (0.65 + 0.45 * Math.sin(phase * 1.4 + ring * 0.7));
+        const corona = ctx.createRadialGradient(pr.x, pr.y, r * 0.7, pr.x, pr.y, pulseR);
+        corona.addColorStop(0, `rgba(255,235,140,${opacity})`);
+        corona.addColorStop(0.35, `rgba(212,175,55,${opacity * 0.65})`);
+        corona.addColorStop(0.7, `rgba(180,110,30,${opacity * 0.35})`);
+        corona.addColorStop(1, 'rgba(140,70,10,0)');
         ctx.beginPath();
         ctx.arc(pr.x, pr.y, pulseR, 0, Math.PI * 2);
         ctx.fillStyle = corona;
         ctx.fill();
       }
+
+      // Soft radial rays (subtle energy)
+      ctx.save();
+      ctx.translate(pr.x, pr.y);
+      ctx.rotate(coronaPhase * 0.6);
+      for (let i = 0; i < 8; i++) {
+        const ang = (i / 8) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(ang) * r * 5.5, Math.sin(ang) * r * 5.5);
+        ctx.strokeStyle = `rgba(255,220,100,${0.09 + Math.sin(coronaPhase * 2 + i) * 0.04})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+      ctx.restore();
     } else {
-      // Static glow for reduced motion
-      const glow = ctx.createRadialGradient(pr.x, pr.y, 0, pr.x, pr.y, r * 4);
-      glow.addColorStop(0, 'rgba(240,192,64,0.55)');
-      glow.addColorStop(0.4, 'rgba(212,175,55,0.18)');
+      // Static rich glow for reduced motion
+      const glow = ctx.createRadialGradient(pr.x, pr.y, 0, pr.x, pr.y, r * 5);
+      glow.addColorStop(0, 'rgba(255,235,140,0.65)');
+      glow.addColorStop(0.3, 'rgba(240,192,64,0.35)');
+      glow.addColorStop(0.6, 'rgba(212,175,55,0.12)');
       glow.addColorStop(1, 'transparent');
       ctx.beginPath();
-      ctx.arc(pr.x, pr.y, r * 4, 0, Math.PI * 2);
+      ctx.arc(pr.x, pr.y, r * 5, 0, Math.PI * 2);
       ctx.fillStyle = glow;
       ctx.fill();
     }
 
-    // Outer glow halo
-    const outerGlow = ctx.createRadialGradient(pr.x, pr.y, r * 0.5, pr.x, pr.y, r * 2.5);
-    outerGlow.addColorStop(0, 'rgba(240,200,80,0.4)');
-    outerGlow.addColorStop(1, 'rgba(212,175,55,0)');
+    // Strong outer halo
+    const outerGlow = ctx.createRadialGradient(pr.x, pr.y, r * 0.6, pr.x, pr.y, r * 3.2);
+    outerGlow.addColorStop(0, 'rgba(255,230,120,0.55)');
+    outerGlow.addColorStop(0.5, 'rgba(212,175,55,0.22)');
+    outerGlow.addColorStop(1, 'rgba(180,110,30,0)');
     ctx.beginPath();
-    ctx.arc(pr.x, pr.y, r * 2.5, 0, Math.PI * 2);
+    ctx.arc(pr.x, pr.y, r * 3.2, 0, Math.PI * 2);
     ctx.fillStyle = outerGlow;
     ctx.fill();
 
-    // Core sphere
-    const core = ctx.createRadialGradient(pr.x - r * 0.2, pr.y - r * 0.2, 0, pr.x, pr.y, r);
-    core.addColorStop(0, '#fff8e0');
-    core.addColorStop(0.5, '#f0c040');
-    core.addColorStop(1, '#D4AF37');
+    // Core sphere with better 3D shading
+    const core = ctx.createRadialGradient(
+      pr.x - r * 0.25, pr.y - r * 0.28, r * 0.08,
+      pr.x + r * 0.1, pr.y + r * 0.1, r * 1.1
+    );
+    core.addColorStop(0, '#fffdf0');
+    core.addColorStop(0.35, '#ffe070');
+    core.addColorStop(0.7, '#f0c040');
+    core.addColorStop(1, '#c48a20');
     ctx.beginPath();
     ctx.arc(pr.x, pr.y, r, 0, Math.PI * 2);
     ctx.fillStyle = core;
     ctx.fill();
 
-    // Bright highlight
+    // Sharp specular highlight
     ctx.beginPath();
-    ctx.arc(pr.x - r * 0.28, pr.y - r * 0.28, r * 0.22, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,240,0.55)';
+    ctx.arc(pr.x - r * 0.32, pr.y - r * 0.35, r * 0.26, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,245,0.85)';
+    ctx.fill();
+
+    // Tiny bright core
+    ctx.beginPath();
+    ctx.arc(pr.x - r * 0.12, pr.y - r * 0.15, r * 0.18, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
     ctx.fill();
   }
 
   function drawPlanet(b, pr) {
     const r = Math.max(1.6, b.size * pr.f);
 
-    // Outer glow halo
-    const haloR = r * 2.2;
-    const halo = ctx.createRadialGradient(pr.x, pr.y, r * 0.5, pr.x, pr.y, haloR);
-    // Parse hex color to rgba
+    // Stronger atmospheric/rim glow for more 3D volume
+    const haloR = r * 2.8;
     const [hr, hg, hb] = hexToRgb(b.color);
-    halo.addColorStop(0, `rgba(${hr},${hg},${hb},0.25)`);
+    const halo = ctx.createRadialGradient(pr.x, pr.y, r * 0.35, pr.x, pr.y, haloR);
+    halo.addColorStop(0, `rgba(${hr},${hg},${hb},0.32)`);
+    halo.addColorStop(0.5, `rgba(${hr},${hg},${hb},0.12)`);
     halo.addColorStop(1, `rgba(${hr},${hg},${hb},0)`);
     ctx.beginPath();
     ctx.arc(pr.x, pr.y, haloR, 0, Math.PI * 2);
     ctx.fillStyle = halo;
     ctx.fill();
 
-    // Inner sphere — light direction from sun
+    // Directional lighting from sun (improved 3D sphere)
     const sunPr = project({ x: 0, y: 0, z: 0 });
     let lx = sunPr.x - pr.x, ly = sunPr.y - pr.y;
     const ll = Math.sqrt(lx * lx + ly * ly) || 1;
     lx /= ll; ly /= ll;
 
+    const spin = planetSpins[b.id] || 0;
+    const rotX = lx * Math.cos(spin) - ly * Math.sin(spin); // rotate light dir with planet spin for living surface
+    const rotY = lx * Math.sin(spin) + ly * Math.cos(spin);
+
     const grad = ctx.createRadialGradient(
-      pr.x + lx * r * 0.45, pr.y + ly * r * 0.45, r * 0.1,
-      pr.x, pr.y, r * 1.05);
+      pr.x + rotX * r * 0.38, pr.y + rotY * r * 0.38, r * 0.08,
+      pr.x - rotX * r * 0.25, pr.y - rotY * r * 0.25, r * 1.15
+    );
     grad.addColorStop(0, b.hi);
-    grad.addColorStop(0.55, b.color);
-    grad.addColorStop(1, b.lo);
+    grad.addColorStop(0.42, b.color);
+    grad.addColorStop(0.78, b.lo);
+    grad.addColorStop(1, 'rgba(20,18,28,0.6)');  // subtle terminator shading
     ctx.beginPath();
     ctx.arc(pr.x, pr.y, r, 0, Math.PI * 2);
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Bright highlight dot (top-left of sphere)
+    // Sharper moving specular highlight (top-left relative to light + spin)
+    const specX = pr.x + rotX * r * 0.18 - r * 0.22;
+    const specY = pr.y + rotY * r * 0.18 - r * 0.26;
     ctx.beginPath();
-    ctx.arc(pr.x - r * 0.32, pr.y - r * 0.32, r * 0.2, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.arc(specX, specY, r * 0.32, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,250,0.75)';
     ctx.fill();
 
-    // Saturn rings
+    // Tiny bright core reflection
+    ctx.beginPath();
+    ctx.arc(specX - r * 0.06, specY - r * 0.06, r * 0.11, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.fill();
+
+    // Gas giant bands — more realistic layered look
+    if (b.id === 'jupiter' || b.id === 'saturn') {
+      ctx.save();
+      ctx.translate(pr.x, pr.y);
+      ctx.rotate(spin * 0.65);
+      // Multiple band colors for depth
+      for (let band = -3; band <= 3; band++) {
+        const by = band * r * 0.29;
+        const wobble = Math.sin(spin * 1.8 + band) * 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-r * 1.08, by + wobble);
+        ctx.quadraticCurveTo(0, by + 3 + wobble * 0.6, r * 1.08, by - wobble);
+        const alpha = 0.22 + Math.abs(band) * 0.04;
+        ctx.strokeStyle = b.id === 'jupiter'
+          ? `rgba(58,42,28,${alpha})`
+          : `rgba(88,73,52,${alpha * 0.9})`;
+        ctx.lineWidth = r * (0.09 + Math.abs(band) * 0.015);
+        ctx.stroke();
+      }
+      // Jupiter Great Red Spot hint
+      if (b.id === 'jupiter') {
+        ctx.fillStyle = 'rgba(170, 68, 48, 0.55)';
+        ctx.beginPath();
+        ctx.ellipse(r * 0.18, -r * 0.08, r * 0.14, r * 0.07, spin * 0.6 + 0.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Earth — realistic detailed globe (the opening "start with a globe" view)
+    // When very close (high zoom at intro start) it reads as a beautiful spinning Earth.
+    // As we zoom out it becomes the anchor of the solar system.
+    if (b.id === 'earth') {
+      const spinOffset = spin * 1.2;
+      ctx.save();
+      ctx.translate(pr.x, pr.y);
+
+      // Ocean base (richer, deeper blue)
+      const ocean = ctx.createRadialGradient(-r*0.22, -r*0.28, r*0.25, 0, 0, r*1.08);
+      ocean.addColorStop(0, '#3b9be8');
+      ocean.addColorStop(0.42, '#2a7bc4');
+      ocean.addColorStop(0.78, '#1e5a9a');
+      ocean.addColorStop(1, '#154a7a');
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = ocean;
+      ctx.fill();
+
+      // Land / continents (rotate with spin so you see the globe turning)
+      ctx.fillStyle = 'rgba(46, 125, 50, 0.72)';
+      // Rough Africa/South America shape
+      ctx.beginPath();
+      ctx.ellipse(-r*0.12, r*0.08, r*0.17, r*0.35, spinOffset * 0.55, 0, Math.PI * 2);
+      ctx.fill();
+      // Americas
+      ctx.beginPath();
+      ctx.ellipse(-r*0.38, -r*0.12, r*0.11, r*0.36, spinOffset * 0.55 + 0.35, 0, Math.PI * 2);
+      ctx.fill();
+      // Eurasia
+      ctx.fillStyle = 'rgba(56, 142, 60, 0.6)';
+      ctx.beginPath();
+      ctx.ellipse(r*0.25, -r*0.18, r*0.35, r*0.16, spinOffset * 0.55 - 0.15, 0, Math.PI * 2);
+      ctx.fill();
+      // Australia
+      ctx.beginPath();
+      ctx.ellipse(r*0.42, r*0.35, r*0.12, r*0.07, spinOffset * 0.55 + 1.0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Polar ice caps
+      ctx.fillStyle = 'rgba(245, 250, 255, 0.9)';
+      ctx.beginPath();
+      ctx.arc(0, -r * 0.9, r * 0.17, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(0, r * 0.9, r * 0.145, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cloud layers (multiple speeds and opacities for realistic globe look)
+      ctx.strokeStyle = 'rgba(255,255,255,0.78)';
+      ctx.lineWidth = r * 0.105;
+      for (let c = -2; c <= 2; c++) {
+        const cy = c * r * 0.26;
+        const ph = spinOffset * (0.85 + c * 0.12);
+        ctx.beginPath();
+        ctx.moveTo(-r * 0.96, cy);
+        ctx.quadraticCurveTo(-r*0.25, cy + 5.5 * Math.sin(ph), r*0.35, cy - 4 * Math.sin(ph + 1.2));
+        ctx.quadraticCurveTo(r*0.65, cy + 3.5 * Math.sin(ph + 2), r * 0.96, cy);
+        ctx.stroke();
+      }
+      // High thin clouds
+      ctx.lineWidth = r * 0.05;
+      ctx.strokeStyle = 'rgba(255,255,255,0.42)';
+      for (let c = -1; c <= 1; c++) {
+        const cy = c * r * 0.52;
+        ctx.beginPath();
+        ctx.moveTo(-r*0.82, cy);
+        ctx.quadraticCurveTo(r*0.5, cy + 7 * Math.sin(spinOffset * 1.35 + c), r*0.82, cy);
+        ctx.stroke();
+      }
+
+      // Atmosphere (strong and clean when close — this is what makes it feel like a real planet)
+      const atm = ctx.createRadialGradient(-r*0.08, -r*0.12, r*0.65, 0, 0, r * 1.92);
+      atm.addColorStop(0, 'rgba(75,165,255,0.0)');
+      atm.addColorStop(0.48, 'rgba(115,200,255,0.32)');
+      atm.addColorStop(1, 'rgba(150,225,255,0.0)');
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 1.92, 0, Math.PI * 2);
+      ctx.fillStyle = atm;
+      ctx.fill();
+
+      // Ocean specular glint (gives wet realistic look)
+      const glint = ctx.createRadialGradient(r*0.32, -r*0.22, r*0.06, r*0.42, -r*0.32, r*0.5);
+      glint.addColorStop(0, 'rgba(255,255,255,0.6)');
+      glint.addColorStop(0.7, 'rgba(255,255,255,0.0)');
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = glint;
+      ctx.fill();
+
+      ctx.restore();
+
+      // "EARTH • You are here" — strong and clear at the very beginning (globe phase),
+      // then gracefully becomes the normal label as we zoom out.
+      const showEarthAnchor = introActive && (introProgress < 0.82);
+      if (showEarthAnchor) {
+        const af = Math.max(0.18, 1 - introProgress * 0.9);
+        ctx.font = `${Math.max(13, 17 * pr.f)}px Inter, system-ui`;
+        ctx.fillStyle = `rgba(235,245,255,${af * 0.97})`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('EARTH', pr.x, pr.y + r * 2.2);
+        ctx.font = `${Math.max(9, 11.5 * pr.f)}px Inter, system-ui`;
+        ctx.fillStyle = `rgba(130,205,255,${af * 0.78})`;
+        ctx.fillText('You are here', pr.x, pr.y + r * 2.58);
+      }
+    }
+
+    // Saturn rings — more realistic with shadow and division
     if (b.id === 'saturn') {
       ctx.save();
       ctx.translate(pr.x, pr.y);
-      ctx.rotate(-0.35);
-      const ringScale = 0.28 + 0.28 * Math.cos(pitch);
+      ctx.rotate(-0.38);
+      const ringScale = 0.26 + 0.32 * Math.cos(pitch);
       ctx.scale(1, ringScale);
 
-      // Outer ring
+      // Ring shadow on the planet (subtle but nice when close)
       ctx.beginPath();
-      ctx.arc(0, 0, r * 2.2, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(200,180,138,0.5)';
-      ctx.lineWidth = r * 0.42;
+      ctx.arc(0, 0, r * 1.35, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(30,28,35,0.25)';
+      ctx.fill();
+
+      // Main outer ring
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 2.6, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(215,192,152,0.72)';
+      ctx.lineWidth = r * 0.46;
       ctx.stroke();
 
-      // Inner ring detail
+      // Cassini-like gap
       ctx.beginPath();
-      ctx.arc(0, 0, r * 1.7, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(220,200,158,0.25)';
-      ctx.lineWidth = r * 0.18;
+      ctx.arc(0, 0, r * 2.18, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(40,35,28,0.55)';
+      ctx.lineWidth = r * 0.09;
+      ctx.stroke();
+
+      // Inner bright band
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 1.78, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(232,218,178,0.5)';
+      ctx.lineWidth = r * 0.19;
       ctx.stroke();
 
       ctx.restore();
     }
 
-    // Earth atmosphere
+    // Earth — nicer blue atmosphere halo
     if (b.id === 'earth') {
       ctx.beginPath();
-      ctx.arc(pr.x, pr.y, r + 1.4, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(122,180,232,0.3)';
-      ctx.lineWidth = 1;
+      ctx.arc(pr.x, pr.y, r * 1.55, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(110,175,235,0.28)';
+      ctx.lineWidth = Math.max(1.2, r * 0.35);
+      ctx.stroke();
+
+      // Thin cloud layer hint
+      ctx.beginPath();
+      ctx.arc(pr.x - r * 0.15, pr.y - r * 0.1, r * 1.05, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(240,245,255,0.22)';
+      ctx.lineWidth = 0.9;
       ctx.stroke();
     }
 
-    // Glyph label
-    if (b.id !== 'moon' || pr.f > 0.9) {
-      ctx.font = `${Math.max(8, 11 * pr.f)}px serif`;
+    // Uranus/Neptune — subtle ring or haze
+    if (b.id === 'uranus' || b.id === 'neptune') {
+      ctx.save();
+      ctx.translate(pr.x, pr.y);
+      ctx.rotate(b.id === 'uranus' ? -1.1 : 0.6);
+      ctx.scale(1, 0.22);
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 2.1, 0, Math.PI * 2);
+      ctx.strokeStyle = b.id === 'uranus' ? 'rgba(180,225,250,0.4)' : 'rgba(130,175,235,0.35)';
+      ctx.lineWidth = r * 0.55;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Glyph label — crisper and slightly larger
+    if (b.id !== 'moon' || pr.f > 0.85) {
+      ctx.font = `${Math.max(9, 13 * pr.f)}px serif`;
       ctx.fillStyle = b.hi;
-      ctx.globalAlpha = 0.85;
+      ctx.globalAlpha = 0.92;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
-      ctx.fillText(b.glyph, pr.x, pr.y - r - 3);
+      ctx.fillText(b.glyph, pr.x, pr.y - r - 4);
       ctx.globalAlpha = 1;
     }
+  }
+
+  function drawPlanetLabels(items) {
+    items.forEach(it => {
+      if (it.kind === 'sun') return;
+      const b = it.b;
+      const pr = it.pr;
+      if (!b || pr.f < 0.35) return; // hide when small / far
+      const r = Math.max(1.6, b.size * pr.f);
+      ctx.font = `${Math.max(7, 9.5 * pr.f)}px Inter, sans-serif`;
+      ctx.fillStyle = 'rgba(232, 224, 208, 0.85)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      const label = b.name;
+      ctx.fillText(label, pr.x, pr.y + r + 2);
+    });
   }
 
   // Hex color to [r, g, b] (handles 6-char hex only)
@@ -962,6 +1371,10 @@ window.Orrery3D = (() => {
     setShowAspects,
     setShowParticles,
     triggerShootingStar,
+    // New layer toggles for upgraded solar system
+    setShowOrbits(bool) { showOrbits = !!bool; },
+    setShowLabels(bool) { showLabels = !!bool; },
+    setShowAsteroids(bool) { showAsteroids = !!bool; },
     // Callback property (set externally: Orrery3D.onPlanetClick = fn)
     get onPlanetClick() { return onPlanetClick; },
     set onPlanetClick(fn) { onPlanetClick = fn; },

@@ -213,8 +213,8 @@
     /* ── Glassmorphism card ── */
     .glass-card {
       background: var(--surface);
-      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: var(--radius-2xl);
       padding: 2rem;
@@ -276,8 +276,8 @@
       background:
         radial-gradient(circle at 20% 0%, rgba(42,74,148,0.15), transparent 60%),
         rgba(10,14,30,0.7);
-      backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
       margin: 1.5rem 0;
     }
     .daimon-name {
@@ -435,6 +435,11 @@
     </nav>
   </header>
 
+  <!-- Preloader for Instrument page too (lightweight version) -->
+  <div id="inst-preloader" style="position:fixed;inset:0;z-index:9998;background:#050406;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .5s;">
+    <div style="text-align:center;color:#C9A227;font-family:'Cinzel',serif;letter-spacing:0.2em;font-size:0.9rem;">Aligning the Spheres…</div>
+  </div>
+
   <main id="main-content">
 
     <!-- ═══ HERO ═══ -->
@@ -506,6 +511,37 @@
           <p style="font-size:0.65rem;color:var(--silver-dim);line-height:1.6;">
             Life Path, Expression, and Personal Year numbers computed from your birth date.
           </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VI. THE CLOCK OF THE SPHERES — Planetary Hours Masterpiece (Celestia "Sky Is a Clock" + engraved hermetic + Astro precision)
+         Award-level SVG wheel. Sectors for the 12 hours, current ruler highlighted, sun arc, deep correspondences. Interactive. Never experienced before on an astrology site.
+    ═══ -->
+    <section class="instrument-section" id="sec-clock">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VI</span> The Clock of the Spheres</p>
+        <h2 class="instrument-title">The sky tells time in gold and shadow.</h2>
+        <p class="instrument-lede">
+          Planetary hours are the living unequal divisions the ancients used — from sunrise the sequence of classical rulers repeats. This engraved wheel is both instrument and icon.
+        </p>
+
+        <div class="glass-card glass-card--gold-rim engraved-plate" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
+          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(212,175,55,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
+            <defs>
+              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C9A227"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
+            </defs>
+            <!-- Rim -->
+            <circle cx="230" cy="230" r="215" fill="none" stroke="#C9A227" stroke-width="2.5" opacity="0.4"/>
+            <!-- Sectors + labels drawn/enhanced by JS below for live current-hour + click lore -->
+          </svg>
+          <div id="ph-readout" style="margin-top:8px;font-family:'Cormorant Garamond',serif;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
+          <div style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap sector for hermetic lore • Sunrise-based unequal hours</div>
+        </div>
+
+        <div style="max-width:620px;margin:0 auto;font-family:'Cormorant Garamond',serif;font-size:0.97rem;color:#d4c9a8;line-height:1.7;">
+          <p><strong>Hermetic law:</strong> The hour of a planet is its throne. Work of that nature (Venus for love and art, Mars for severance and courage) is said to find the most willing ear of the cosmos.</p>
+          <p><strong>Modern synthesis:</strong> Chronobiology and seasonal affective research echo the old observation that different times of day carry qualitatively different energies. Use the wheel as a beautiful, precise reminder to align intention with the actual sky.</p>
         </div>
       </div>
     </section>
