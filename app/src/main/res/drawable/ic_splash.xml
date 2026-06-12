@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Outer ring -->
+    <path
+        android:strokeColor="#FFD700"
+        android:strokeWidth="1.5"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M54,10 A44,44 0 1 1 53.99,10 Z" />
+
+    <!-- Star points -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M54,14 L56.5,46 L54,50 L51.5,46 Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M54,94 L56.5,62 L54,58 L51.5,62 Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M14,54 L46,56.5 L50,54 L46,51.5 Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M94,54 L62,56.5 L58,54 L62,51.5 Z" />
+
+    <!-- Diagonal rays -->
+    <path
+        android:fillColor="#FFD700"
+        android:alpha="0.7"
+        android:pathData="M23.2,23.2 L47,47 L50,44 L44,42 Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:alpha="0.7"
+        android:pathData="M84.8,84.8 L61,61 L58,64 L64,66 Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:alpha="0.7"
+        android:pathData="M84.8,23.2 L61,47 L64,50 L66,44 Z" />
+    <path
+        android:fillColor="#FFD700"
+        android:alpha="0.7"
+        android:pathData="M23.2,84.8 L47,61 L44,58 L42,64 Z" />
+
+    <!-- Center circle -->
+    <circle
+        android:fillColor="#FFD700"
+        android:cx="54"
+        android:cy="54"
+        android:r="8" />
+
+    <!-- Inner circle ring -->
+    <circle
+        android:strokeColor="#FFD700"
+        android:strokeWidth="1"
+        android:fillColor="@android:color/transparent"
+        android:cx="54"
+        android:cy="54"
+        android:r="18" />
+
+</vector>

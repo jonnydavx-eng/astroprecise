@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AstroPrecise Preview
+Comment=Build and launch the AstroPrecise Android app
+Exec=bash -c 'cd %k/.. && ./preview.sh; read -p "Press Enter to close..."'
+Icon=%k/../app/src/main/res/drawable/ic_splash.xml
+Terminal=true
+Categories=Development;
+StartupNotify=true

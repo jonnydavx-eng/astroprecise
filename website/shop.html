@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Curated astrology tools, books, crystals, oracle cards, and art. Recommendations for the serious student of the cosmos — no gimmicks, only substance." />
+  <title>Cosmic Shop — Curated Astrology Recommendations | AstroPrecise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <meta name="theme-color" content="#0A0B1F" />
+  <meta property="og:title" content="Cosmic Shop | AstroPrecise" />
+  <meta property="og:description" content="Curated astrology tools and resources — books, crystals, oracle cards, and art for the serious student of the cosmos." />
+  <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/shop.html" />
+  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .hero--small {
+      padding: var(--space-16) 0 var(--space-12);
+      text-align: center;
+      background: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Affiliate disclosure ── */
+    .disclosure-banner {
+      background: rgba(196,146,10,0.06);
+      border: 1px solid rgba(196,146,10,0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-6);
+      font-size: 0.7rem;
+      color: var(--silver-dim);
+      text-align: center;
+      line-height: 1.6;
+      max-width: 760px;
+      margin: 0 auto var(--space-10);
+    }
+    .disclosure-banner strong { color: var(--gold); }
+
+    /* ── Category navigation ── */
+    .shop-cats {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: var(--space-10);
+    }
+    .shop-cat-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--silver);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-family: var(--font-sans);
+      padding: 6px 18px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+      display: inline-block;
+    }
+    .shop-cat-btn:hover, .shop-cat-btn.active {
+      border-color: rgba(196,146,10,0.5);
+      color: var(--gold-pale);
+      background: rgba(196,146,10,0.08);
+    }
+
+    /* ── Product grid ── */
+    .shop-section-title {
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .shop-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(196,146,10,0.3), transparent);
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-6);
+      margin-bottom: var(--space-10);
+    }
+    @media (max-width: 600px) { .shop-grid { grid-template-columns: 1fr; } }
+
+    .shop-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: all var(--transition-base);
+      position: relative;
+    }
+    .shop-card:hover {
+      border-color: rgba(196,146,10,0.35);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(42,74,148,0.15);
+    }
+
+    /* CSS art product image */
+    .shop-card__img {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .shop-card__img-glyph {
+      font-size: 4.5rem;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 0 12px currentColor);
+    }
+
+    /* Category-specific image backgrounds */
+    .shop-card--books .shop-card__img {
+      background: linear-gradient(135deg, rgba(42,74,148,0.2) 0%, rgba(196,146,10,0.08) 100%);
+    }
+    .shop-card--crystals .shop-card__img {
+      background: linear-gradient(135deg, rgba(27,95,170,0.15) 0%, rgba(110,26,38,0.12) 100%);
+    }
+    .shop-card--oracle .shop-card__img {
+      background: linear-gradient(135deg, rgba(196,146,10,0.1) 0%, rgba(42,74,148,0.15) 100%);
+    }
+    .shop-card--jewelry .shop-card__img {
+      background: linear-gradient(135deg, rgba(196,146,10,0.12) 0%, rgba(14,92,58,0.1) 100%);
+    }
+    .shop-card--prints .shop-card__img {
+      background: linear-gradient(135deg, rgba(110,26,38,0.1) 0%, rgba(42,74,148,0.15) 100%);
+    }
+
+    .shop-card__body {
+      padding: var(--space-5);
+    }
+    .shop-card__tag {
+      display: inline-block;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(196,146,10,0.3);
+      border-radius: 99px;
+      padding: 2px 8px;
+      margin-bottom: var(--space-3);
+    }
+    .shop-card__name {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      color: var(--white);
+      letter-spacing: 0.03em;
+      margin-bottom: var(--space-2);
+      line-height: 1.4;
+    }
+    .shop-card__desc {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.65;
+      margin-bottom: var(--space-4);
+    }
+    .shop-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border);
+    }
+    .shop-card__price {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      color: var(--gold-pale);
+    }
+    .shop-card__link {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color var(--transition-fast);
+    }
+    .shop-card__link:hover { color: var(--gold-pale); }
+    .shop-card__affiliate {
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-3);
+      font-size: 0.5rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--silver-dark);
+      background: rgba(9,11,22,0.7);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+
+    /* ── Featured banner ── */
+    .shop-featured {
+      background: var(--surface);
+      border: 1px solid rgba(196,146,10,0.25);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      margin-bottom: var(--space-10);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-8);
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .shop-featured::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(196,146,10,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    @media (max-width: 700px) {
+      .shop-featured { grid-template-columns: 1fr; }
+    }
+
+    /* ── Free tools section ── */
+    .free-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-10);
+    }
+    .free-tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      text-align: center;
+      text-decoration: none;
+      transition: all var(--transition-base);
+      display: block;
+    }
+    .free-tool-card:hover {
+      border-color: rgba(196,146,10,0.35);
+      transform: translateY(-2px);
+    }
+    .free-tool-card__icon { font-size: 2.2rem; display: block; margin-bottom: var(--space-3); }
+    .free-tool-card__title { font-family: var(--font-display); font-size: var(--text-sm); color: var(--gold-pale); margin-bottom: var(--space-2); }
+    .free-tool-card__desc { font-size: 0.7rem; color: var(--silver-dim); line-height: 1.5; }
+    .free-tool-card__badge {
+      display: inline-block;
+      font-size: 0.5rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--emerald-light);
+      border: 1px solid rgba(14,92,58,0.4);
+      border-radius: 99px;
+      padding: 2px 8px;
+      margin-top: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="cosmos-solar-system" aria-hidden="true">
+    <div class="css-sun"></div>
+    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
+    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
+    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
+    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
+    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
+  </div>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="shop.html" class="navbar__link active" aria-current="page">Shop</a>
+          <a href="profile.html" class="navbar__link">Profile</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="chart.html" class="navbar__link">Chart</a>
+        <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
+        <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="shop.html" class="navbar__link active">Shop</a>
+        <a href="profile.html" class="navbar__link">Profile</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero--small">
+      <div class="container">
+        <p class="eyebrow">Curated Recommendations</p>
+        <h1 class="gradient-text">Cosmic Shop</h1>
+        <p class="hero-subtitle" style="max-width:560px;margin:0 auto var(--space-8);">
+          Carefully chosen books, tools, and objects for the serious student of the cosmos.
+          No pop-astrology noise — only things that genuinely deepen the practice.
+        </p>
+
+        <!-- Disclosure -->
+        <div class="disclosure-banner" role="note">
+          <strong>Affiliate Disclosure</strong> — Some links below are affiliate links:
+          if you purchase through them, AstroPrecise earns a small commission at no extra cost to you.
+          We only recommend things we would genuinely use ourselves.
+          All our core tools remain free forever.
+        </div>
+
+        <!-- Category filter -->
+        <nav class="shop-cats" aria-label="Shop categories">
+          <a href="#free-tools" class="shop-cat-btn">Free Tools</a>
+          <a href="#books" class="shop-cat-btn">Books</a>
+          <a href="#crystals" class="shop-cat-btn">Crystals</a>
+          <a href="#oracle-cards" class="shop-cat-btn">Oracle Cards</a>
+          <a href="#jewelry" class="shop-cat-btn">Jewellery</a>
+          <a href="#prints" class="shop-cat-btn">Art Prints</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- FREE TOOLS SECTION -->
+    <section class="section" id="free-tools">
+      <div class="container">
+        <p class="shop-section-title">✦ Always Free on AstroPrecise</p>
+        <div class="free-tools-grid">
+          <a href="chart.html" class="free-tool-card">
+            <span class="free-tool-card__icon">⊙</span>
+            <span class="free-tool-card__title">Birth Chart</span>
+            <p class="free-tool-card__desc">Full natal chart with VSOP87 planetary positions, house system, and deep interpretations.</p>
+            <span class="free-tool-card__badge">Free · No account</span>
+          </a>
+          <a href="horoscope.html" class="free-tool-card">
+            <span class="free-tool-card__icon">☽</span>
+            <span class="free-tool-card__title">Daily Horoscope</span>
+            <p class="free-tool-card__desc">Deterministic daily readings seeded by real planetary positions — same sign, same day, same answer.</p>
+            <span class="free-tool-card__badge">Free · Offline</span>
+          </a>
+          <a href="lifepath.html" class="free-tool-card">
+            <span class="free-tool-card__icon">✦</span>
+            <span class="free-tool-card__title">Life Path Calculator</span>
+            <p class="free-tool-card__desc">Full numerology blueprint: Life Path, Expression, Soul Urge, Personal Year, and downloadable card.</p>
+            <span class="free-tool-card__badge">Free · Download card</span>
+          </a>
+          <a href="compatibility.html" class="free-tool-card">
+            <span class="free-tool-card__icon">♡</span>
+            <span class="free-tool-card__title">Synastry Report</span>
+            <p class="free-tool-card__desc">Two-chart compatibility analysis with aspect overlays and shareable invite links.</p>
+            <span class="free-tool-card__badge">Free · Shareable</span>
+          </a>
+          <a href="ephemeris.html" class="free-tool-card">
+            <span class="free-tool-card__icon">⬡</span>
+            <span class="free-tool-card__title">The Instrument</span>
+            <p class="free-tool-card__desc">Light-cone wavefront, zenith star, echo dates, field weather, and precession engine.</p>
+            <span class="free-tool-card__badge">Free · Unique</span>
+          </a>
+          <a href="transits.html" class="free-tool-card">
+            <span class="free-tool-card__icon">☿</span>
+            <span class="free-tool-card__title">Transit Forecast</span>
+            <p class="free-tool-card__desc">Current planetary transits and personalised forecast for your natal placements.</p>
+            <span class="free-tool-card__badge">Free · Live sky</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOOKS -->
+    <section class="section" id="books">
+      <div class="container">
+        <p class="shop-section-title">☿ Essential Reading</p>
+        <div class="shop-grid">
+
+          <div class="shop-card shop-card--books">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#5b7fc7;">
+              <span class="shop-card__img-glyph">📖</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Foundation</span>
+              <h3 class="shop-card__name">The Only Astrology Book You'll Ever Need</h3>
+              <p class="shop-card__desc">Joanna Martine Woolfolk's comprehensive reference — sun signs, moon signs, rising signs, planets in houses, and synastry. The most complete single-volume introduction in print.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£14</span>
+                <a href="https://www.amazon.co.uk/s?k=The+Only+Astrology+Book+You+ll+Ever+Need+Woolfolk" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--books">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#c4920a;">
+              <span class="shop-card__img-glyph">📚</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Advanced</span>
+              <h3 class="shop-card__name">The Inner Sky</h3>
+              <p class="shop-card__desc">Steven Forrest's masterwork on the sky as psychological mirror. Poetic, precise, and utterly transformative — the text that convinced a generation that astrology could be serious.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£16</span>
+                <a href="https://www.amazon.co.uk/s?k=The+Inner+Sky+Steven+Forrest" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--books">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#b04a52;">
+              <span class="shop-card__img-glyph">🔭</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Astronomy + Astrology</span>
+              <h3 class="shop-card__name">Cosmos and Psyche</h3>
+              <p class="shop-card__desc">Richard Tarnas examines the historical correlations between outer planet alignments and the cultural and personal events that mark their transits. Scholarly, bold, and essential.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£18</span>
+                <a href="https://www.amazon.co.uk/s?k=Cosmos+and+Psyche+Tarnas" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--books">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#d4a820;">
+              <span class="shop-card__img-glyph">✦</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Numerology</span>
+              <h3 class="shop-card__name">The Complete Book of Numerology</h3>
+              <p class="shop-card__desc">David Phillips decodes the mathematics of personality and destiny. An ideal companion to AstroPrecise's Life Path Calculator — takes the numbers deeper into their vibrational meaning.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£12</span>
+                <a href="https://www.amazon.co.uk/s?k=The+Complete+Book+of+Numerology+David+Phillips" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--books">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#2a4a94;">
+              <span class="shop-card__img-glyph">🌙</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Lunar Cycles</span>
+              <h3 class="shop-card__name">Moonology</h3>
+              <p class="shop-card__desc">Yasmin Boland's guide to working with lunar cycles. Practical, grounded, and beautifully presented. Essential reading alongside AstroPrecise moon phase data.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£12</span>
+                <a href="https://www.amazon.co.uk/s?k=Moonology+Yasmin+Boland" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--books">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#5b7fc7;">
+              <span class="shop-card__img-glyph">⬡</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Transits</span>
+              <h3 class="shop-card__name">Planets in Transit</h3>
+              <p class="shop-card__desc">Robert Hand's definitive transit reference — every planet transiting every natal planet, explained in depth. The professional's go-to when a transit hits hard and you need to understand exactly why.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£28</span>
+                <a href="https://www.amazon.co.uk/s?k=Planets+in+Transit+Robert+Hand" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CRYSTALS -->
+    <section class="section" id="crystals">
+      <div class="container">
+        <p class="shop-section-title">⊕ Crystals &amp; Stones</p>
+        <div class="shop-grid">
+
+          <div class="shop-card shop-card--crystals">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#9b72cf;">
+              <span class="shop-card__img-glyph">💎</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Amethyst</span>
+              <h3 class="shop-card__name">Amethyst Cluster — Raw</h3>
+              <p class="shop-card__desc">Associated with Pisces and the higher mind. Carries protective Neptunian energy. Place near your workspace during chart readings or meditation to deepen intuitive access.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£12–£40</span>
+                <a href="https://www.etsy.com/uk/search?q=amethyst+crystal+cluster+raw" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--crystals">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#f5d67a;">
+              <span class="shop-card__img-glyph">✦</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Citrine</span>
+              <h3 class="shop-card__name">Natural Citrine Point</h3>
+              <p class="shop-card__desc">Jupiter's stone — expansive, warm, and abundance-attracting. Ideal for those with prominent Sagittarius or Pisces placements. Carries solar frequencies for manifestation work.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£8–£25</span>
+                <a href="https://www.etsy.com/uk/search?q=natural+citrine+crystal+point" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--crystals">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#d0d8e8;">
+              <span class="shop-card__img-glyph">🌙</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Moonstone</span>
+              <h3 class="shop-card__name">Peach Moonstone Palm Stone</h3>
+              <p class="shop-card__desc">The Moon's own stone — intuitive, gentle, and deeply feminine. Perfect for Cancer placements, New Moon rituals, or anyone deepening their relationship with the lunar cycle.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£10–£30</span>
+                <a href="https://www.etsy.com/uk/search?q=peach+moonstone+palm+stone" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--crystals">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#2a4a94;">
+              <span class="shop-card__img-glyph">💠</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Lapis Lazuli</span>
+              <h3 class="shop-card__name">Lapis Lazuli Sphere</h3>
+              <p class="shop-card__desc">The stone of the heavens — the same pigment used to illuminate medieval star charts. Resonates with Mercury and the 3rd house. Enhances clarity of communication and astrological study.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£15–£45</span>
+                <a href="https://www.etsy.com/uk/search?q=lapis+lazuli+sphere+crystal" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--crystals">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#b04a52;">
+              <span class="shop-card__img-glyph">❤️</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Red Jasper</span>
+              <h3 class="shop-card__name">Red Jasper Tumbled Set</h3>
+              <p class="shop-card__desc">Mars and Aries in mineral form — grounding, warming, and activating. Used for protection and root chakra work. Excellent for Aries, Scorpio, and anyone whose chart needs more earth energy.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£6–£18</span>
+                <a href="https://www.etsy.com/uk/search?q=red+jasper+tumbled+crystals" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--crystals">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#1a8a56;">
+              <span class="shop-card__img-glyph">🌿</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Malachite</span>
+              <h3 class="shop-card__name">Malachite Tumble Stone</h3>
+              <p class="shop-card__desc">Venus in her emerald aspect — the stone of transformation and heart opening. Resonates with Taurus and Libra. Powerful for anyone navigating Venus transits or the 7th house.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£8–£22</span>
+                <a href="https://www.etsy.com/uk/search?q=malachite+tumble+stone" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ORACLE CARDS -->
+    <section class="section" id="oracle-cards">
+      <div class="container">
+        <p class="shop-section-title">☽ Oracle &amp; Tarot Decks</p>
+        <div class="shop-grid">
+
+          <div class="shop-card shop-card--oracle">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#c4920a;">
+              <span class="shop-card__img-glyph">🌙</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Oracle</span>
+              <h3 class="shop-card__name">Moonology Oracle Cards</h3>
+              <p class="shop-card__desc">Yasmin Boland's 44-card lunar oracle — moon phases, signs, and manifesting messages. The most elegant moon-focused oracle in print. Pairs perfectly with AstroPrecise's moon phase data.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£16</span>
+                <a href="https://www.amazon.co.uk/s?k=Moonology+Oracle+Cards+Yasmin+Boland" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--oracle">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#d4a820;">
+              <span class="shop-card__img-glyph">⭐</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Tarot</span>
+              <h3 class="shop-card__name">Rider-Waite Centennial Deck</h3>
+              <p class="shop-card__desc">The original 1909 deck in its centennial edition — the archetype against which every subsequent tarot is measured. Essential for anyone learning to read alongside their natal chart.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£18</span>
+                <a href="https://www.amazon.co.uk/s?k=Rider+Waite+Centennial+Tarot+Deck" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--oracle">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#5b7fc7;">
+              <span class="shop-card__img-glyph">✦</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Astrology Oracle</span>
+              <h3 class="shop-card__name">Astrology Reading Cards</h3>
+              <p class="shop-card__desc">A 36-card set covering all the planets, signs, and houses — an ideal tool for learning the symbolic language of astrology through intuitive card draws alongside your natal chart.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">~£14</span>
+                <a href="https://www.amazon.co.uk/s?k=Astrology+Reading+Oracle+Cards" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Amazon →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- JEWELRY -->
+    <section class="section" id="jewelry">
+      <div class="container">
+        <p class="shop-section-title">⊙ Jewellery &amp; Accessories</p>
+        <div class="shop-grid">
+
+          <div class="shop-card shop-card--jewelry">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#d4a820;">
+              <span class="shop-card__img-glyph">⭐</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Constellation</span>
+              <h3 class="shop-card__name">Personalised Constellation Necklace</h3>
+              <p class="shop-card__desc">Hand-stamped silver necklace mapping the star pattern of your sun sign. A wearable reference to the sky you were born under. Custom to your birth chart constellation.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£18–£55</span>
+                <a href="https://www.etsy.com/uk/search?q=personalised+constellation+necklace+zodiac" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--jewelry">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#c8b07a;">
+              <span class="shop-card__img-glyph">◉</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Zodiac Ring</span>
+              <h3 class="shop-card__name">Zodiac Glyph Signet Ring</h3>
+              <p class="shop-card__desc">Sterling silver or gold-plated signet ring engraved with your sun sign glyph. An ancient tradition — signet rings were used to seal important documents with the owner's symbol.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£25–£80</span>
+                <a href="https://www.etsy.com/uk/search?q=zodiac+signet+ring+sterling+silver" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--jewelry">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#9b72cf;">
+              <span class="shop-card__img-glyph">🌙</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Moon Phase</span>
+              <h3 class="shop-card__name">Moon Phase Birthdate Bracelet</h3>
+              <p class="shop-card__desc">A bracelet engraved with the exact phase of the Moon on your birth date. Pair with your natal chart from AstroPrecise — your lunar placement and its phase together.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£20–£45</span>
+                <a href="https://www.etsy.com/uk/search?q=moon+phase+personalised+bracelet+birthdate" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ART PRINTS -->
+    <section class="section" id="prints">
+      <div class="container">
+        <p class="shop-section-title">◈ Art Prints &amp; Journals</p>
+        <div class="shop-grid">
+
+          <div class="shop-card shop-card--prints">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#c4920a;">
+              <span class="shop-card__img-glyph">🗺</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Birth Chart Print</span>
+              <h3 class="shop-card__name">Custom Natal Chart Art Print</h3>
+              <p class="shop-card__desc">A professionally printed natal chart rendered as wall art — your exact planetary placements on archive-quality paper. Ideal as a gift or as a daily reminder of your cosmic architecture. (Or download AstroPrecise's free poster.)</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£20–£60</span>
+                <a href="https://www.etsy.com/uk/search?q=custom+natal+birth+chart+art+print" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--prints">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#2a4a94;">
+              <span class="shop-card__img-glyph">📓</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Journal</span>
+              <h3 class="shop-card__name">Moon Cycle Journal</h3>
+              <p class="shop-card__desc">Track New Moon intentions, Full Moon releases, and your inner responses to each lunar phase across the 13-moon year. The analogue complement to AstroPrecise's digital moon data.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£12–£28</span>
+                <a href="https://www.etsy.com/uk/search?q=moon+cycle+journal+lunar+phases" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="shop-card shop-card--prints">
+            <span class="shop-card__affiliate">Affiliate</span>
+            <div class="shop-card__img" style="color:#5b7fc7;">
+              <span class="shop-card__img-glyph">🌌</span>
+            </div>
+            <div class="shop-card__body">
+              <span class="shop-card__tag">Celestial Art</span>
+              <h3 class="shop-card__name">Vintage Star Map Print</h3>
+              <p class="shop-card__desc">Reproduction of 18th-century celestial cartography — the same stars that inspired the astronomical tradition underlying VSOP87. Beautiful for study spaces and reading rooms.</p>
+              <div class="shop-card__footer">
+                <span class="shop-card__price">£10–£35</span>
+                <a href="https://www.etsy.com/uk/search?q=vintage+celestial+star+map+print" class="shop-card__link" rel="noopener sponsored" target="_blank">Find on Etsy →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SUGGEST AN ITEM -->
+    <section class="section">
+      <div class="container" style="max-width:680px;">
+        <div class="lp-number-hero" style="padding:var(--space-8);">
+          <p style="font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:var(--space-4);">✦ Contribute</p>
+          <h2 style="font-family:var(--font-display);font-size:var(--text-2xl);color:var(--white);margin-bottom:var(--space-4);">Know Something We Should Carry?</h2>
+          <p style="color:var(--silver);font-size:var(--text-sm);line-height:1.7;margin-bottom:var(--space-6);">
+            If you've found a book, deck, crystal supplier, or artist whose work genuinely serves the practice of astrology, we'd love to hear about it. We review every suggestion personally.
+          </p>
+          <a href="mailto:jonnydavx@gmail.com?subject=Shop+suggestion+for+AstroPrecise" class="btn btn--outline">
+            ✦ Suggest an Item
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
+            <span aria-hidden="true">✦</span>
+            <span>AstroPrecise</span>
+          </a>
+          <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
+          <p style="margin-top:var(--space-3);"><span class="ap-badge">Computed locally · VSOP87 + ELP2000</span></p>
+        </div>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <h3 class="footer-nav__heading">Navigate</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="chart.html">Birth Chart</a></li>
+            <li><a href="horoscope.html">Horoscope</a></li>
+            <li><a href="compatibility.html">Compatibility</a></li>
+            <li><a href="lifepath.html">Life Path</a></li>
+            <li><a href="transits.html">Transits</a></li>
+          </ul>
+        </nav>
+        <div class="footer-nav">
+          <h3 class="footer-nav__heading">Tools &amp; Shop</h3>
+          <ul>
+            <li><a href="ephemeris.html">The Instrument</a></li>
+            <li><a href="lifepath.html">Numerology</a></li>
+            <li><a href="shop.html">Cosmic Shop</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <p class="footer-copyright">
+          &copy; 2026 AstroPrecise · Affiliate links disclosed above · All tool calculations run locally · No data collected
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+</body>
+</html>
