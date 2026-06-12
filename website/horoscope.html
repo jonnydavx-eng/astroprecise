@@ -28,6 +28,104 @@
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
   <link rel="stylesheet" href="css/main.css" />
   <style>
+    /* ── 3D Sphere hero ─────────────────────────────────────────────────── */
+    .sphere-hero {
+      position: relative; z-index: 1;
+      padding: calc(var(--nav-height, 72px) + 2.5rem) 0 2rem;
+      text-align: center;
+    }
+    .sphere-hero__header { margin-bottom: 1.25rem; }
+    .sphere-hero__header h1 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+      font-weight: 700; line-height: 1.1; letter-spacing: 0.03em;
+      color: #F8F4EE; margin-bottom: 0.6rem;
+    }
+    .sphere-hero__sub {
+      font-size: 0.95rem; color: var(--silver-dim, #8891AA);
+      max-width: 500px; margin: 0 auto; line-height: 1.6;
+    }
+    .sphere-wrap {
+      position: relative; width: 100%; max-width: 700px;
+      margin: 0 auto; cursor: grab;
+    }
+    .sphere-wrap canvas { display: block; width: 100%; touch-action: none; }
+
+    /* Planet legend */
+    .planet-legend {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: center; gap: 0.5rem 1rem;
+      margin: 0.9rem auto 0; max-width: 600px;
+      font-size: 0.72rem; color: var(--silver-dim, #8891AA);
+    }
+    .planet-legend__label { color: var(--gold, #D4AF37); font-weight: 600; }
+    .pl-dot { color: var(--c); opacity: 0.85; letter-spacing: 0.04em; }
+
+    /* Birth chart CTAs under sphere */
+    .sphere-ctas {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+      justify-content: center; margin-top: 1.5rem;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.6rem 1.4rem; border-radius: 999px;
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em;
+      text-decoration: none; transition: transform .15s, box-shadow .15s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); }
+    .cta-btn--primary {
+      background: linear-gradient(135deg, #7B2CBF, #D4AF37);
+      color: #0A0B1F;
+      box-shadow: 0 0 16px rgba(212,175,55,0.25);
+    }
+    .cta-btn--primary:hover { box-shadow: 0 0 28px rgba(212,175,55,0.45); }
+    .cta-btn--ghost {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--silver, #C8D0E8);
+    }
+    .cta-btn--ghost:hover { border-color: rgba(212,175,55,0.4); color: var(--gold, #D4AF37); }
+
+    /* Sign-grid toggle row */
+    .sign-grid-toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: var(--space-4, 1rem);
+    }
+    .sign-grid-toggle-row .section__title { margin-bottom: 0; }
+    .sign-grid-toggle {
+      background: none; border: 1px solid rgba(255,255,255,0.12);
+      color: var(--silver-dim, #8891AA); border-radius: 999px;
+      padding: 0.35rem 1rem; font-size: 0.78rem; cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .sign-grid-toggle:hover { border-color: var(--gold, #D4AF37); color: var(--gold, #D4AF37); }
+
+    /* Reading panel chart CTA */
+    .srp-chart-cta {
+      margin-top: var(--space-6, 1.5rem);
+      padding: var(--space-5, 1.25rem) var(--space-6, 1.5rem);
+      background: rgba(123,44,191,0.10);
+      border: 1px solid rgba(123,44,191,0.25);
+      border-radius: var(--radius-xl, 16px);
+      text-align: center;
+    }
+    .srp-chart-cta__lead {
+      font-size: 0.88rem; color: var(--silver, #C8D0E8);
+      line-height: 1.6; margin-bottom: 0.9rem;
+    }
+    .srp-chart-cta__btn {
+      display: inline-block; padding: 0.6rem 1.6rem;
+      background: linear-gradient(135deg, #7B2CBF 0%, #D4AF37 100%);
+      color: #0A0B1F; font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 0.04em; border-radius: 999px;
+      text-decoration: none; transition: box-shadow .15s, transform .15s;
+      box-shadow: 0 0 16px rgba(212,175,55,0.2);
+    }
+    .srp-chart-cta__btn:hover {
+      box-shadow: 0 0 28px rgba(212,175,55,0.45);
+      transform: translateY(-2px);
+    }
+
     /* ---- Horoscope-page overrides ---- */
     .starfield-canvas {
       position: fixed;
@@ -758,25 +856,56 @@
   <main id="main-content">
 
     <!-- ============================================================
-         HERO
+         3D ZODIAC SPHERE HERO
     ============================================================ -->
-    <section class="hero hero--small" aria-labelledby="page-title">
+    <section class="sphere-hero" aria-labelledby="page-title">
       <div class="container">
-        <p class="hero__eyebrow">Updated Daily at Midnight UTC</p>
-        <h1 id="page-title">Daily Cosmic Guidance</h1>
-        <p>Your personalised horoscope powered by real-time planetary positions</p>
+        <div class="sphere-hero__header">
+          <p class="hero__eyebrow" id="today-date-display" aria-live="polite">Updated Daily at Midnight UTC</p>
+          <h1 id="page-title">Spin to Your Sign</h1>
+          <p class="sphere-hero__sub">The live sky above — real planet positions on the ecliptic ring. Drag to explore, click your sign for today's reading.</p>
+        </div>
+
+        <!-- The 3D canvas -->
+        <div class="sphere-wrap" id="sphere-wrap" role="region" aria-label="Interactive 3D zodiac ring">
+          <canvas id="zodiac-ring-canvas" aria-label="Zodiac ring — drag to spin, click a sign"></canvas>
+          <noscript>
+            <p style="color:var(--silver);text-align:center;padding:2rem;">Enable JavaScript to use the interactive zodiac ring.</p>
+          </noscript>
+        </div>
+
+        <!-- Planet legend strip -->
+        <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="list">
+          <span class="planet-legend__label">Live sky:</span>
+          <span class="pl-dot" style="--c:#D4AF37" aria-label="Sun position">☉ Sun</span>
+          <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon</span>
+          <span class="pl-dot" style="--c:#00D4FF" aria-label="Mercury position">☿ Mercury</span>
+          <span class="pl-dot" style="--c:#C77DFF" aria-label="Venus position">♀ Venus</span>
+          <span class="pl-dot" style="--c:#e05848" aria-label="Mars position">♂ Mars</span>
+          <span class="pl-dot" style="--c:#E8A050" aria-label="Jupiter position">♃ Jupiter</span>
+          <span class="pl-dot" style="--c:#A0B898" aria-label="Saturn position">♄ Saturn</span>
+        </div>
+
+        <!-- Birth chart CTA -->
+        <div class="sphere-ctas">
+          <a href="chart.html" class="cta-btn cta-btn--primary">
+            ✦ Calculate Your Full Birth Chart
+          </a>
+          <a href="compatibility.html" class="cta-btn cta-btn--ghost">
+            ⟐ Synastry &amp; Compatibility
+          </a>
+          <a href="transits.html" class="cta-btn cta-btn--ghost">
+            ↻ Today's Transits
+          </a>
+        </div>
       </div>
     </section>
-
-    <!-- Today's date -->
-    <div class="today-date" id="today-date-display" aria-live="polite"></div>
 
     <!-- ============================================================
          LIVE PLANETS STRIP
     ============================================================ -->
     <div class="planets-live-strip" id="planets-live-strip" aria-label="Current planetary positions">
       <div class="planets-live-strip__inner" id="planets-strip-inner">
-        <!-- JS populates compact planet pills -->
         <div class="planet-pill"><span class="planet-pill__symbol">☉</span><span class="planet-pill__info"><span class="planet-pill__sign">Gemini</span> 21°</span></div>
         <div class="planet-pill"><span class="planet-pill__symbol">☽</span><span class="planet-pill__info"><span class="planet-pill__sign">Scorpio</span> 14°</span></div>
         <div class="planet-pill"><span class="planet-pill__symbol">☿</span><span class="planet-pill__info"><span class="planet-pill__sign">Cancer</span> 3°</span></div>
@@ -788,12 +917,18 @@
     </div>
 
     <!-- ============================================================
-         SIGN GRID
+         SIGN GRID (collapsible fallback)
     ============================================================ -->
     <section class="section" aria-labelledby="sign-grid-heading">
       <div class="container">
-        <h2 class="section__title" id="sign-grid-heading">Choose Your Sign</h2>
-        <p class="section__subtitle">Select your Sun sign for today's personalised cosmic guidance</p>
+        <div class="sign-grid-toggle-row">
+          <h2 class="section__title" id="sign-grid-heading">All Signs</h2>
+          <button class="sign-grid-toggle" id="sign-grid-toggle" aria-expanded="false" aria-controls="sign-grid-wrap">
+            <span class="sgt-show">▾ Show sign grid</span>
+            <span class="sgt-hide" style="display:none">▴ Hide sign grid</span>
+          </button>
+        </div>
+        <div id="sign-grid-wrap" hidden>
 
         <div class="sign-grid" id="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
           <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
@@ -902,6 +1037,11 @@
                 <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
                 <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
               </div>
+              <!-- Chart pathway CTA -->
+              <div class="srp-chart-cta" id="srp-chart-cta">
+                <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. Your personal birth chart reveals how this energy plays out <em>for you specifically</em>.</p>
+                <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn">✦ Get Your Personal Birth Chart →</a>
+              </div>
             </div>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
             <div class="srp-energy" id="srp-energy-wrap">
@@ -949,6 +1089,8 @@
             </p>
           </div>
         </div>
+
+        </div><!-- /#sign-grid-wrap -->
 
         <!-- Crawlable deep-dive guides -->
         <nav aria-label="Zodiac sign guides" style="margin-top:var(--space-10);text-align:center;">
@@ -1282,6 +1424,15 @@
       var Interp = window.Interpretations;
       if (!Interp || typeof Interp.getDailyHoroscope !== 'function') return;
 
+      // Sync sphere selection highlight
+      if (window.ZodiacSphere) ZodiacSphere.setSelected(signKey);
+
+      // Update the "Get Your Personal Birth Chart" CTA with the selected sign context
+      var ctaSignEl = document.getElementById('srp-chart-sign-name');
+      if (ctaSignEl) ctaSignEl.textContent = info.name;
+      var ctaLink = document.getElementById('srp-chart-link');
+      if (ctaLink) ctaLink.href = 'chart.html';
+
       var data = Interp.getDailyHoroscope(info.name, new Date());
       var panel = document.getElementById('sign-reading-panel');
 
@@ -1459,6 +1610,30 @@
           badge.textContent = 'Your Sign';
           userCard.appendChild(badge);
         }
+      }
+
+      // ── Zodiac sphere ────────────────────────────────────────────────────
+      var sphereCanvas = document.getElementById('zodiac-ring-canvas');
+      if (sphereCanvas && window.ZodiacSphere) {
+        ZodiacSphere.init(sphereCanvas, function(signKey) {
+          selectSign(signKey);
+          var panel = document.getElementById('sign-reading-panel');
+          if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        if (userSign) ZodiacSphere.setSelected(userSign);
+      }
+
+      // ── Sign-grid toggle ──────────────────────────────────────────────────
+      var gridToggle = document.getElementById('sign-grid-toggle');
+      var gridWrap   = document.getElementById('sign-grid-wrap');
+      if (gridToggle && gridWrap) {
+        gridToggle.addEventListener('click', function() {
+          var isOpen = !gridWrap.hidden;
+          gridWrap.hidden = isOpen;
+          gridToggle.setAttribute('aria-expanded', String(!isOpen));
+          gridToggle.querySelector('.sgt-show').style.display = isOpen ? '' : 'none';
+          gridToggle.querySelector('.sgt-hide').style.display = isOpen ? 'none' : '';
+        });
       }
 
       // Wire sign card clicks
@@ -1883,6 +2058,7 @@
   <script src="js/stellar.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/oracle.js"></script>
+  <script src="js/zodiac-sphere.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/interpretations.js"></script>
   <script src="js/profile.js"></script>
