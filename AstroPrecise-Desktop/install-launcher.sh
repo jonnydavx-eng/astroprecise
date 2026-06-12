@@ -23,7 +23,7 @@ Type=Application
 Name=AstroPrecise
 GenericName=Astrology Web App
 Comment=Launch AstroPrecise — birth charts, horoscopes & live sky
-Exec=bash -c 'cd "$WEBSITE" && python3 -m http.server 8420 & sleep 2 && xdg-open http://localhost:8420'
+Exec=bash -c 'cd "$WEBSITE" && python3 -m http.server 8790 & sleep 2 && xdg-open http://localhost:8790'
 Icon=astroprecise
 Terminal=false
 Categories=Science;Education;
@@ -65,9 +65,9 @@ EOF
   cat > "$APPDIR/Contents/MacOS/launch" << SCRIPT
 #!/usr/bin/env bash
 cd "$WEBSITE"
-python3 -m http.server 8420 &
+python3 -m http.server 8790 &
 sleep 2
-open http://localhost:8420
+open http://localhost:8790
 SCRIPT
   chmod +x "$APPDIR/Contents/MacOS/launch"
   echo "✓ macOS app bundle: $APPDIR"

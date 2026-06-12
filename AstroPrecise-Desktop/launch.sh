@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 SITE_DIR="$REPO_DIR/website"
-PORT="${PORT:-8420}"
+PORT="${PORT:-8790}"
 URL="http://localhost:$PORT/"
 
 if ! curl -s -o /dev/null --max-time 1 "$URL" 2>/dev/null; then
