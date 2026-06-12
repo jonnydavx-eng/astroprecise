@@ -58,7 +58,10 @@
 
   let rotation = -Math.PI / 2;   // Aries at the top initially
   let rotVel   = 0;
-  let autoSpin = true;
+  const reducedMotion = typeof matchMedia === 'function' &&
+    matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let autoSpin = !reducedMotion;
+  let visible  = true;           // pause rendering while scrolled offscreen
   const SPIN_SPEED = 0.0018;     // rad/frame at 60fps → ~1 full revolution per ~6 min
 
   let hovered  = null;
@@ -349,11 +352,8 @@
 
   // ── Animation loop ────────────────────────────────────────────────────────
 
-  let lastT = 0;
-
   function frame(ts) {
-    const dt = Math.min((ts - lastT) / 1000, 0.05);
-    lastT = ts;
+    if (!visible) { requestAnimationFrame(frame); return; }
 
     ctx.clearRect(0, 0, W, H);
 
@@ -393,7 +393,7 @@
     hovered   = hitSign(x, y);
     const onC = hitCentre(x, y);
     cvs.style.cursor = (hovered || onC) ? 'pointer' : (dragging ? 'grabbing' : 'grab');
-    autoSpin = !hovered && !onC && !dragging;
+    autoSpin = !hovered && !onC && !dragging && !reducedMotion;
   }
 
   function onDrag(clientX) {
@@ -429,29 +429,30 @@
       }
     }
     cvs.style.cursor = hovered ? 'pointer' : 'grab';
+    // Resume the idle spin once the inertia has played out
+    setTimeout(() => { if (!dragging && !hovered) autoSpin = !reducedMotion; }, 2200);
   }
 
-  cvs_mousemove  = (e) => { onMove(e.clientX, e.clientY); onDrag(e.clientX); };
-  cvs_mouseleave = ()  => { hovered = null; autoSpin = !dragging; cvs.style.cursor = ''; };
-  cvs_mousedown  = (e) => onPress(e.clientX, e.clientY);
-  win_mouseup    = (e) => onRelease(e.clientX, e.clientY);
+  const cvs_mousemove  = (e) => { onMove(e.clientX, e.clientY); onDrag(e.clientX); };
+  const cvs_mouseleave = ()  => { hovered = null; autoSpin = !dragging && !reducedMotion; cvs.style.cursor = ''; };
+  const cvs_mousedown  = (e) => onPress(e.clientX, e.clientY);
+  const win_mouseup    = (e) => onRelease(e.clientX, e.clientY);
 
-  cvs_touchstart = (e) => {
+  const cvs_touchstart = (e) => {
     if (e.touches.length === 1) onPress(e.touches[0].clientX, e.touches[0].clientY);
   };
-  cvs_touchmove  = (e) => {
+  const cvs_touchmove  = (e) => {
     if (e.touches.length === 1) {
       e.preventDefault();
       onDrag(e.touches[0].clientX);
       onMove(e.touches[0].clientX, e.touches[0].clientY);
     }
   };
-  cvs_touchend   = (e) => {
+  const cvs_touchend   = (e) => {
     if (e.changedTouches.length) {
       const t = e.changedTouches[0];
       onRelease(t.clientX, t.clientY);
     }
-    setTimeout(() => { autoSpin = !hovered; }, 2200);
   };
 
   // ── Resize ────────────────────────────────────────────────────────────────
@@ -481,7 +482,7 @@
     if (!E) { setTimeout(fetchPlanets, 350); return; }
     try {
       const now = new Date();
-      const jd  = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
+      const jd  = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
                                now.getUTCHours(), now.getUTCMinutes(), 0);
       const mod = l => ((l % 360) + 360) % 360;
       for (const pl of PLANETS) {
@@ -501,10 +502,17 @@
   function init(canvasEl, cb) {
     cvs      = canvasEl;
     ctx      = cvs.getContext('2d');
+    if (!ctx) throw new Error('canvas 2d context unavailable');
     selectCb = cb;
 
     resize();
     window.addEventListener('resize', resize);
+
+    if (typeof IntersectionObserver === 'function') {
+      new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting;
+      }, { threshold: 0.01 }).observe(cvs);
+    }
 
     fetchPlanets();
 

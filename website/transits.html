@@ -1012,11 +1012,11 @@
       }
       try {
         var now = new Date();
-        var jd = AstroEphemeris.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
-                                           now.getHours(), now.getMinutes(), 0);
+        var jd = AstroEphemeris.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+                                           now.getUTCHours(), now.getUTCMinutes(), 0);
         var chart = AstroEphemeris.calculateNatalChart(
-          now.getFullYear(), now.getMonth() + 1, now.getDate(),
-          now.getHours(), now.getMinutes(), 0, 0
+          now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+          now.getUTCHours(), now.getUTCMinutes(), 0, 0
         );
         var pos = {};
         if (chart && chart.positions) {

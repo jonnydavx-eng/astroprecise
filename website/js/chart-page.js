@@ -495,7 +495,7 @@
           : '';
         const decan = I && I.getDecan && typeof p.lon === 'number' ? I.getDecan(p.lon) : null;
         const decanHtml = decan
-          ? ` · <span title="${decan.label} of ${p.sign} (triplicity sub-ruler)" style="cursor:help;">D${decan.index} ${decan.glyph}</span>`
+          ? ` · <span title="Decan ${decan.index} of ${p.sign}, sub-ruled by ${decan.ruler} (triplicity system)" style="cursor:help;">D${decan.index} ${decan.glyph}</span>`
           : '';
         return `<div class="planet-data-row">
           <span class="planet-data-row__glyph">${PLANET_GLYPHS[k]}</span>
@@ -620,6 +620,11 @@
   document.getElementById('json-btn')?.addEventListener('click', () => {
     if (!currentChart) return;
     const I = window.AstroInterpretations;
+    // positions carries NNode/MC alias keys for the renderer — drop them here
+    const cleanPositions = {};
+    for (const [k, v] of Object.entries(currentChart.positions)) {
+      if (k !== 'NNode' && k !== 'MC') cleanPositions[k] = v;
+    }
     const data = {
       generator: 'AstroPrecise (astroprecise ephemeris — truncated VSOP87/ELP2000, ~1′ accuracy)',
       exported: new Date().toISOString(),
@@ -628,7 +633,7 @@
       birthTime: currentChart.birthTime || null,
       place: { city: currentChart.city, lat: currentChart.lat, lon: currentChart.lon, tz: currentChart.tz },
       risingSign: currentChart.risingSign,
-      positions: currentChart.positions,
+      positions: cleanPositions,
       houses: currentChart.houses,
       planetHouses: currentChart.planetHouses,
       aspects: currentChart.aspects,

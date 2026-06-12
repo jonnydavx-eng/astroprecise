@@ -1004,6 +1004,7 @@
             <span class="sign-card__element-badge">Water</span>
           </button>
         </div>
+        </div><!-- /#sign-grid-wrap -->
 
         <!-- Inline reading panel — animates open below grid when a sign is selected -->
         <div class="sign-reading-panel" id="sign-reading-panel" aria-live="polite" aria-label="Daily horoscope reading">
@@ -1036,11 +1037,6 @@
                 <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">⬇ Download Card</button>
                 <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
                 <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
-              </div>
-              <!-- Chart pathway CTA -->
-              <div class="srp-chart-cta" id="srp-chart-cta">
-                <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. Your personal birth chart reveals how this energy plays out <em>for you specifically</em>.</p>
-                <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn">✦ Get Your Personal Birth Chart →</a>
               </div>
             </div>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
@@ -1081,6 +1077,11 @@
               <div id="srp-weekly-body" aria-live="polite"></div>
             </div>
             <p class="srp-personal-note" id="srp-personal-note" hidden></p>
+            <!-- Chart pathway CTA -->
+            <div class="srp-chart-cta" id="srp-chart-cta">
+              <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. Your personal birth chart reveals how this energy plays out <em>for you specifically</em>.</p>
+              <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn">✦ Get Your Personal Birth Chart →</a>
+            </div>
             <p style="margin-top:var(--space-4);">
               <span class="ap-badge ap-badge--deterministic">Fixed for this date — same sign, same day, same reading</span>
             </p>
@@ -1089,8 +1090,6 @@
             </p>
           </div>
         </div>
-
-        </div><!-- /#sign-grid-wrap -->
 
         <!-- Crawlable deep-dive guides -->
         <nav aria-label="Zodiac sign guides" style="margin-top:var(--space-10);text-align:center;">
@@ -1612,15 +1611,27 @@
         }
       }
 
-      // ── Zodiac sphere ────────────────────────────────────────────────────
+      // ── Zodiac sphere (fall back to the sign grid if it can't start) ─────
+      var sphereOK = false;
       var sphereCanvas = document.getElementById('zodiac-ring-canvas');
       if (sphereCanvas && window.ZodiacSphere) {
-        ZodiacSphere.init(sphereCanvas, function(signKey) {
-          selectSign(signKey);
-          var panel = document.getElementById('sign-reading-panel');
-          if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-        if (userSign) ZodiacSphere.setSelected(userSign);
+        try {
+          ZodiacSphere.init(sphereCanvas, function(signKey) {
+            selectSign(signKey);
+            var panel = document.getElementById('sign-reading-panel');
+            if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          });
+          if (userSign) ZodiacSphere.setSelected(userSign);
+          sphereOK = true;
+        } catch (e) { /* fall through to grid */ }
+      }
+      if (!sphereOK) {
+        var wrapEl = document.getElementById('sign-grid-wrap');
+        var hero   = document.querySelector('.sphere-hero .sphere-wrap');
+        if (wrapEl) wrapEl.hidden = false;
+        if (hero) hero.style.display = 'none';
+        var tgl = document.getElementById('sign-grid-toggle');
+        if (tgl) { tgl.style.display = 'none'; }
       }
 
       // ── Sign-grid toggle ──────────────────────────────────────────────────
