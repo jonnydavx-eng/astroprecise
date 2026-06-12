@@ -83,23 +83,47 @@
   const cityDd = document.getElementById('ev-city-dd');
   let pickedCity = null;
 
-  cityIn.addEventListener('input', () => {
-    pickedCity = null;
-    const q = cityIn.value.trim().toLowerCase();
-    if (q.length < 2 || !E()) { cityDd.hidden = true; return; }
-    const hits = E().CITIES.filter(c => c.name.toLowerCase().includes(q)).slice(0, 7);
-    if (!hits.length) { cityDd.hidden = true; return; }
-    cityDd.innerHTML = hits.map((c, i) =>
-      `<div class="autocomplete-option" data-i="${i}"><strong>${c.name}</strong>&nbsp;<span style="opacity:0.6">${c.country}</span></div>`).join('');
-    cityDd.hidden = false;
-    cityDd.querySelectorAll('.autocomplete-option').forEach((el, i) => {
-      el.addEventListener('mousedown', ev2 => {
-        ev2.preventDefault();
-        pickedCity = hits[i];
-        cityIn.value = `${hits[i].name}, ${hits[i].country}`;
-        cityDd.hidden = true;
+  const escHtml = s => String(s).replace(/[&<>"']/g,
+    ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+
+  let citySeq = 0;
+  const runCitySearch = window.AstroApp.debounce(q => {
+    const mySeq = ++citySeq;
+    window.AstroApp.searchPlaces(q).then(({ results, source }) => {
+      if (mySeq !== citySeq) return;
+      const hits = results.slice(0, 7);
+      if (!hits.length) {
+        cityDd.innerHTML = '<div class="autocomplete-note">No places matched — check the spelling, or try the nearest larger town.</div>';
+        cityDd.hidden = false;
+        return;
+      }
+      const note = source === 'offline'
+        ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
+      cityDd.innerHTML = hits.map((c, i) => {
+        const region = c.admin ? `${c.admin}, ${c.country}` : c.country;
+        return `<div class="autocomplete-option" data-i="${i}"><strong>${escHtml(c.name)}</strong>&nbsp;<span style="opacity:0.6">${escHtml(region)}</span></div>`;
+      }).join('') + note;
+      cityDd.hidden = false;
+      cityDd.querySelectorAll('.autocomplete-option').forEach((el, i) => {
+        el.addEventListener('mousedown', ev2 => {
+          ev2.preventDefault();
+          pickedCity = hits[i];
+          cityIn.value = hits[i].admin
+            ? `${hits[i].name}, ${hits[i].admin}`
+            : `${hits[i].name}, ${hits[i].country}`;
+          cityDd.hidden = true;
+        });
       });
     });
+  }, 250);
+
+  cityIn.addEventListener('input', () => {
+    pickedCity = null;
+    const q = cityIn.value.trim();
+    if (q.length < 2) { citySeq++; cityDd.hidden = true; return; }
+    cityDd.innerHTML = '<div class="autocomplete-note">Searching the gazetteer…</div>';
+    cityDd.hidden = false;
+    runCitySearch(q);
   });
   cityIn.addEventListener('blur', () => setTimeout(() => { cityDd.hidden = true; }, 150));
 

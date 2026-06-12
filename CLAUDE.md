@@ -130,7 +130,8 @@ attached to `window`, one stylesheet, hand-written HTML pages.
 ## JS Modules (`website/js/`, load order matters)
 
 - `ephemeris.js` — VSOP87/ELP2000 astronomy engine; exports `window.AstroEphemeris`
-  (`calculateNatalChart`, `julianDay`, `CITIES` with IANA `tz` fields, …)
+  (`calculateNatalChart`, `julianDay`, `CITIES` with IANA `tz` fields — offline
+  fallback for place search, …)
 - `interpretations.js` — all reading text + `calculateCompatibility`, `getDailyHoroscope`; 424KB
 - `oracle.js` — transit-aspect daily insights, deterministic Q&A (`window.AstroOracle`)
 - `starcatalog.js` — 253 real stars, self-contained sky math (`window.StarCatalog`)
@@ -141,7 +142,9 @@ attached to `window`, one stylesheet, hand-written HTML pages.
 - `orrery3d.js` — heliocentric 3D canvas orrery with time controls (`window.Orrery3D`)
 - `instrument.js` — page controller for `ephemeris.html`
 - `chart-page.js` — page controller for `chart.html`
-- `app.js` — shared nav/toast/modal/autocomplete + service-worker registration
+- `app.js` — shared nav/toast/modal/autocomplete + service-worker registration;
+  `searchPlaces()` worldwide birth-place search (Open-Meteo geocoder, debounced,
+  cached, offline fallback to built-in CITIES) used by chart + instrument pages
 - `cosmos.js`, `effects.js` — starfield background, scroll/tilt/spotlight interactions
 
 ## Conventions
@@ -149,7 +152,9 @@ attached to `window`, one stylesheet, hand-written HTML pages.
 - **Honesty rule**: never fake data. Live feeds get source labels; unavailable feeds say so
   (`fieldweather.js` Schumann pattern). Hero stats must be true.
 - **Determinism**: same inputs → same reading everywhere (FNV-1a/mulberry32 seeding).
-- **Privacy**: everything computes in-browser; no analytics, no servers, no data sent.
+- **Privacy**: everything computes in-browser; no analytics, no own servers. The only
+  outbound requests are labelled public feeds (NOAA SWPC, ANU QRNG) and the
+  Open-Meteo place-search query (typed place text only — never the birth moment).
 - **Time zones**: convert local→UT via `Intl.DateTimeFormat` two-iteration refinement
   (see `localToUT` in `chart-page.js`) — never hardcode offsets.
 - **Palette**: lapis `#2a4a94`, oxblood `#6e1a26`, gold `#c4920a`, parchment `#f0e8d8`,

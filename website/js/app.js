@@ -325,39 +325,104 @@ const AstroApp = (() => {
     { name: 'Denver',        country: 'US', lat: 39.7392,  lon: -104.9903 },
   ];
 
+  // ── Worldwide place search ────────────────────────────────────────────────
+  // Live geocoding via Open-Meteo (GeoNames data — any town or village on
+  // Earth), falling back to the built-in city lists when the network is
+  // unreachable. Only the typed place query is sent; never the birth moment.
+
+  const GEO_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+  const geoCache = new Map();
+
+  function offlinePlaceMatches(q) {
+    const list = (window.AstroEphemeris && window.AstroEphemeris.CITIES) || CITIES;
+    const starts = [], contains = [];
+    for (const c of list) {
+      const n = c.name.toLowerCase();
+      if (n.startsWith(q)) starts.push(c);
+      else if (n.includes(q)) contains.push(c);
+    }
+    return starts.concat(contains).slice(0, 8).map(c => ({
+      name: c.name, admin: '', country: c.country,
+      lat: c.lat, lon: c.lon, tz: c.tz || null,
+    }));
+  }
+
+  async function searchPlaces(query) {
+    const q = query.trim().toLowerCase();
+    if (q.length < 2) return { results: [], source: 'live' };
+    if (geoCache.has(q)) return geoCache.get(q);
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 6000);
+      const res = await fetch(
+        `${GEO_URL}?name=${encodeURIComponent(q)}&count=8&language=en&format=json`,
+        { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(`geocoder HTTP ${res.status}`);
+      const data = await res.json();
+      const results = (data.results || []).map(r => ({
+        name: r.name,
+        admin: r.admin1 && r.admin1 !== r.name ? r.admin1 : '',
+        country: r.country_code || r.country || '',
+        lat: r.latitude,
+        lon: r.longitude,
+        tz: r.timezone || null,
+      }));
+      const out = { results, source: 'live' };
+      geoCache.set(q, out);
+      return out;
+    } catch (e) {
+      return { results: offlinePlaceMatches(q), source: 'offline' };
+    }
+  }
+
+  function debounce(fn, wait) {
+    let t;
+    return function (...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  }
+
   function initCityAutocomplete(inputEl, latEl, lonEl, dropdown) {
     if (!inputEl || !dropdown) return;
+    let seq = 0;
 
-    function search(query) {
-      const q = query.toLowerCase().trim();
-      if (q.length < 2) { dropdown.classList.remove('open'); return; }
+    const run = debounce(query => {
+      const mySeq = ++seq;
+      searchPlaces(query).then(({ results }) => {
+        if (mySeq !== seq) return;
+        dropdown.innerHTML = '';
+        if (results.length === 0) { dropdown.classList.remove('open'); return; }
 
-      const results = CITIES.filter(c =>
-        c.name.toLowerCase().startsWith(q) ||
-        c.name.toLowerCase().includes(q)
-      ).slice(0, 8);
-
-      dropdown.innerHTML = '';
-      if (results.length === 0) { dropdown.classList.remove('open'); return; }
-
-      results.forEach(city => {
-        const item = document.createElement('div');
-        item.className = 'autocomplete-item';
-        item.innerHTML = `${city.name} <span class="city-country">${city.country}</span>`;
-        item.addEventListener('click', () => {
-          inputEl.value = city.name;
-          if (latEl) latEl.value = city.lat;
-          if (lonEl) lonEl.value = city.lon;
-          dropdown.classList.remove('open');
-          inputEl.dispatchEvent(new Event('citySelected', { detail: city }));
+        results.forEach(city => {
+          const item = document.createElement('div');
+          item.className = 'autocomplete-item';
+          const region = city.admin ? `${city.admin}, ${city.country}` : city.country;
+          item.textContent = city.name + ' ';
+          const span = document.createElement('span');
+          span.className = 'city-country';
+          span.textContent = region;
+          item.appendChild(span);
+          item.addEventListener('click', () => {
+            inputEl.value = city.name;
+            if (latEl) latEl.value = city.lat;
+            if (lonEl) lonEl.value = city.lon;
+            if (city.tz) inputEl.dataset.tz = city.tz;
+            dropdown.classList.remove('open');
+            inputEl.dispatchEvent(new CustomEvent('citySelected', { detail: city }));
+          });
+          dropdown.appendChild(item);
         });
-        dropdown.appendChild(item);
+
+        dropdown.classList.add('open');
       });
+    }, 250);
 
-      dropdown.classList.add('open');
-    }
-
-    inputEl.addEventListener('input', () => search(inputEl.value));
+    inputEl.addEventListener('input', () => {
+      if (inputEl.value.trim().length < 2) { seq++; dropdown.classList.remove('open'); return; }
+      run(inputEl.value);
+    });
     inputEl.addEventListener('blur', () => setTimeout(() => dropdown.classList.remove('open'), 200));
 
     // Keyboard navigation
@@ -464,12 +529,16 @@ const AstroApp = (() => {
     animateScoreBars,
     animateCircularProgress,
     initCityAutocomplete,
+    searchPlaces,
+    debounce,
     detectTimezone,
     buildPlanetTable,
     buildHoroscopeCard,
     CITIES,
   };
 })();
+
+window.AstroApp = AstroApp;
 
 document.addEventListener('DOMContentLoaded', () => AstroApp.init());
 
@@ -488,7 +557,8 @@ if ('serviceWorker' in navigator) {
     b.setAttribute('role', 'status');
     b.innerHTML =
       '<span class="privacy-banner__text"><strong>Everything happens in your hands.</strong> ' +
-      'Charts and readings compute in your browser — nothing is sent anywhere, ever.</span>' +
+      'Charts and readings compute in your browser. Only place-name searches query a geocoder ' +
+      '(Open-Meteo) — your birth moment and readings never leave your device.</span>' +
       '<button class="privacy-banner__close" aria-label="Dismiss privacy notice">Understood</button>';
     document.body.appendChild(b);
     b.querySelector('.privacy-banner__close').addEventListener('click', () => {
