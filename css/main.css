@@ -88,8 +88,8 @@
   --gradient-hero:     linear-gradient(135deg, #5C4A6E 0%, #0D0A07 45%, #C9A227 100%);
 
   /* ── Typography ── */
-  --font-display: 'Cinzel', 'Playfair Display', serif;
-  --font-heading: 'Playfair Display', serif;
+  --font-display: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-heading: 'Cormorant Garamond', serif;
   --font-body:    'Inter', sans-serif;
   --font-sans:    'Inter', sans-serif;   /* alias */
 
@@ -1203,7 +1203,7 @@ body > .cosmos-solar-system {
 }
 .preloader-content, .page-preloader .preloader-content {
   position: relative; z-index: 2; text-align: center; color: #E8E0D0;
-  font-family: 'Cinzel', 'Playfair Display', serif; pointer-events: auto;
+  font-family: 'Cinzel', 'Cormorant Garamond', serif; pointer-events: auto;
 }
 .preloader-seal, .page-preloader .preloader-seal {
   font-size: 2.8rem; color: #C9A227; margin-bottom: 12px; opacity: 0.9;
@@ -1247,7 +1247,7 @@ body > .cosmos-solar-system { display: none !important; }
 
 /* Enhanced engraved glyphs site-wide — no more emoji-like symbols */
 .engraved-glyph, .sign-hero__glyph, .ticker-glyph, .pbar-g, .pos-g, .sp-glyph, .card-glyph {
-  font-family: 'Cinzel Decorative', 'Playfair Display', serif !important;
+  font-family: 'Cinzel', 'Cormorant Garamond', serif !important;
   color: #C9A227;
   text-shadow: 
     0 1px 0 rgba(255,255,255,0.1),
@@ -5798,7 +5798,7 @@ body[data-element="water"]::before {
   box-shadow: inset 0 1px 1px rgba(255,255,255,0.07);
 }
 .ap-badge::before {
-  content: '⚙';
+  content: '✶';
   font-size: 0.7rem;
   opacity: 0.8;
 }
@@ -6271,3 +6271,68 @@ body[data-element="water"]::before {
 .num-card__number { font-family: var(--font-display); font-size: 2.8rem; font-weight: 700; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: var(--space-2); }
 .num-card__title  { font-family: var(--font-display); font-size: var(--text-sm); color: var(--white); margin-bottom: var(--space-3); }
 .num-card__desc   { font-size: var(--text-sm); color: var(--silver); line-height: 1.7; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPOGRAPHIC SYSTEM — expert pass, 2026-06-13.
+   Three families, three voices, everywhere:
+     Cinzel              — the engraver (display, headings, labels)
+     Cormorant Garamond  — the scribe   (ledes, readings, quotes)
+     Inter               — the clerk    (UI, forms, data)
+   Playfair Display & Cinzel Decorative retired site-wide.
+   ═══════════════════════════════════════════════════════════════ */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: rgba(201, 162, 39, 0.28); color: #EFE3C0; }
+
+h1, h2, h3, .section-title, .hero__title {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.06em;
+  font-feature-settings: 'kern' 1;
+}
+h1 { letter-spacing: 0.08em; }
+
+/* the scribe's voice — generous, readable, never cramped */
+.lede, .section-subtitle, .instrument-lede, .grimoire, blockquote,
+.reading-txt, .card-text, .toast__message {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.08em;
+  line-height: 1.8;
+}
+
+/* small-caps engraved labels: one consistent treatment */
+.section-eyebrow, .form-label, .form-section-label__text, .sec-label,
+.instrument-eyebrow, .chart-hero__eyebrow {
+  font-family: 'Cinzel', serif !important;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+/* numerals that line up — coordinates, degrees, ephemeris tables */
+.field-row__value, .data-mono, .pos-v, .chart-meta, .t-orb, .asp-orb,
+table td, .stat-value, [data-tabular] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* engraved icon harmony with text */
+.eng-i { opacity: 0.92; }
+button .eng-i, a .eng-i { margin-right: 0.35em; }
+.toast__icon .eng-i { width: 1.1em; height: 1.1em; }
+
+/* links: hairline gold underline, no default blue anywhere */
+main a:not([class]) {
+  color: var(--gold, #C9A227);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(201, 162, 39, 0.45);
+}
+main a:not([class]):hover { text-decoration-color: var(--gold, #C9A227); }
+.hero__subtitle, .chart-hero__subtitle, .page-hero__subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.12em;
+  line-height: 1.75;
+}

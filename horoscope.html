@@ -7,7 +7,7 @@
   <title>Daily Horoscope for All 12 Zodiac Signs — Free &amp; Computed from the Real Sky | AstroPrecise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -582,7 +582,7 @@
       max-height: 0;
       transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
       opacity: 0;
-      font-family: 'Playfair Display', serif;
+      font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-size: var(--text-sm);
       color: var(--color-silver);
@@ -1086,14 +1086,14 @@
                 <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(196,146,10,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
                 <!-- Lunar cycle indicator -->
                 <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon">🌑</span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent">🌒</span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="2" title="First Quarter">🌓</span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="3" title="Waxing Gibbous">🌔</span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="4" title="Full Moon">🌕</span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="5" title="Waning Gibbous">🌖</span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="6" title="Last Quarter">🌗</span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="7" title="Waning Crescent">🌘</span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon1"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="2" title="First Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon2"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="3" title="Waxing Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon3"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="4" title="Full Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="5" title="Waning Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon5"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="6" title="Last Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon6"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="7" title="Waning Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon7"/></svg></span>
                 </div>
               </div>
               <div class="sign-reading-panel__actions">
@@ -1273,18 +1273,14 @@
     ============================================================ -->
     <section class="section" aria-labelledby="moon-heading">
       <div class="container">
-        <h2 class="section__title" id="moon-heading">🌙 Moon Phase</h2>
+        <h2 class="section__title" id="moon-heading"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg> Moon Phase</h2>
         <p class="section__subtitle">Current lunar energy and guidance for today</p>
 
         <div id="moon-phase-info" class="moon-card" aria-live="polite">
-          <!-- JS fills via Interpretations.getMoonPhase() -->
-          <div class="moon-phase__icon" aria-hidden="true">🌔</div>
-          <h3>Waxing Gibbous</h3>
-          <p>
-            The Moon builds toward fullness — momentum and effort are beginning to show results.
-            Refine your intentions, stay committed to what you started at the New Moon,
-            and prepare yourself to receive. The peak is almost here.
-          </p>
+          <!-- filled live by the script below — never hardcode a phase here -->
+          <div class="moon-phase__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></div>
+          <h3>Reading the Moon…</h3>
+          <p>Computing tonight's actual phase from the synodic cycle.</p>
         </div>
       </div>
     </section>
@@ -1368,7 +1364,7 @@
           </div>
           <div class="transit-item animate-in animate-in--delay-1">
             <p class="transit-item__date">Friday, Jun 13</p>
-            <h3 class="transit-item__title">Full Moon in Sagittarius 🌕</h3>
+            <h3 class="transit-item__title">Full Moon in Sagittarius <svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg></h3>
             <p class="transit-item__desc">A full moon illuminates your beliefs, adventures, and need for freedom. Release rigid thinking; celebrate how far your faith has brought you. Truth spoken now lands with weight.</p>
           </div>
           <div class="transit-item animate-in animate-in--delay-2">
@@ -1652,16 +1648,46 @@
         });
       }
 
-      // Moon phase
+      // Moon phase — computed live. (The old code waited for an
+      // Interpretations.getMoonPhase() that never existed, so the card sat
+      // frozen on a hardcoded "Waxing Gibbous" no matter the actual sky.)
       var moonEl = document.getElementById('moon-phase-info');
-      if (moonEl && window.Interpretations) {
-        var phase = typeof Interpretations.getMoonPhase === 'function' ? Interpretations.getMoonPhase() : null;
-        if (phase) {
-          moonEl.innerHTML =
-            '<div class="moon-phase__icon" aria-hidden="true">' + phase.emoji + '</div>' +
-            '<h3>' + phase.name + '</h3>' +
-            '<p>' + phase.guidance + '</p>';
-        }
+      if (moonEl) {
+        var nowM = new Date();
+        var jdM = 367 * nowM.getUTCFullYear()
+          - Math.floor(7 * (nowM.getUTCFullYear() + Math.floor((nowM.getUTCMonth() + 1 + 9) / 12)) / 4)
+          + Math.floor(275 * (nowM.getUTCMonth() + 1) / 9)
+          + nowM.getUTCDate() + 1721013.5
+          + (nowM.getUTCHours() + nowM.getUTCMinutes() / 60) / 24;
+        var synM = 29.53058867;
+        var phF = ((jdM - 2451549.5) % synM + synM) % synM / synM;
+        // exact Sun–Moon elongation when the real engine is present;
+        // the mean-cycle value above remains as an honest fallback
+        try {
+          if (window.AstroEphemeris && AstroEphemeris.moonPosition) {
+            var jdE = AstroEphemeris.julianDay(nowM.getUTCFullYear(), nowM.getUTCMonth() + 1,
+              nowM.getUTCDate(), nowM.getUTCHours(), nowM.getUTCMinutes(), 0);
+            var elongM = ((AstroEphemeris.moonPosition(jdE).lon - AstroEphemeris.sunPosition(jdE).lon) % 360 + 360) % 360;
+            phF = elongM / 360;
+          }
+        } catch (eM) {}
+        var idxM = Math.round(phF * 8) % 8;
+        var illumM = Math.round((1 - Math.cos(2 * Math.PI * phF)) / 2 * 100);
+        var PHASES_M = [
+          ['New Moon', 'Begin in the dark — name intentions quietly; the cycle is yours to write.'],
+          ['Waxing Crescent', 'First light returns. Feed what you have just started — small, consistent pushes.'],
+          ['First Quarter', 'The first obstacle is the path introducing itself. Decide, then act.'],
+          ['Waxing Gibbous', 'The Moon builds toward fullness — refine rather than restart; the peak is near.'],
+          ['Full Moon', 'Culmination: what you have been building shows its true face. Release what is finished.'],
+          ['Waning Gibbous', 'Share what worked; record what didn’t. Gratitude is information.'],
+          ['Last Quarter', 'Release is also a decision. Clear the ground for the next seed.'],
+          ['Waning Crescent', 'Rest is preparation wearing its other coat. Close the books gently.'],
+        ];
+        moonEl.innerHTML =
+          '<div class="moon-phase__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon' + idxM + '"/></svg></div>' +
+          '<h3>' + PHASES_M[idxM][0] + '</h3>' +
+          '<p>' + PHASES_M[idxM][1] + '</p>' +
+          '<p style="font-size:0.68rem;opacity:0.6;letter-spacing:0.08em;text-transform:uppercase;">' + illumM + '% illuminated · computed live</p>';
       }
 
       // Mark user's sign with "Your Sign" badge
