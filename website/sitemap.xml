@@ -26,6 +26,21 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/lifepath.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/shop.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/profile.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://jonnydavx-eng.github.io/astroprecise/ephemeris.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
