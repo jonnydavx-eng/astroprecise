@@ -634,11 +634,7 @@ window.Orrery3D = (() => {
     zodiacFrameCount++;
     if (zodiacFrameCount % 3 === 0) {
       drawZodiacRing();
-    } else {
-      // Redraw cached zodiac or skip — draw anyway but only every 3rd frame
-      // For simplicity we still draw but check counter in drawZodiacRing
     }
-    drawZodiacRing();
 
     drawOrbitPaths();
     drawAspectLines();

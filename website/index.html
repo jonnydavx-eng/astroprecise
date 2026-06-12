@@ -3,57 +3,275 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AstroPrecise — Professional birth chart analysis powered by precise astronomical calculations, accurate to arcminutes. Free online birth chart, daily horoscopes, and compatibility reports." />
-  <title>AstroPrecise — Free Birth Chart, Daily Horoscope &amp; Live Sky</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta name="description" content="AstroPrecise — Free birth chart calculator powered by VSOP87 astronomical precision. Precise natal charts, daily horoscopes, compatibility reports, and live planetary positions. Everything computes in your browser." />
+  <meta name="keywords" content="birth chart, natal chart, astrology, horoscope, VSOP87, planetary positions, free birth chart, zodiac, compatibility, numerology, life path" />
+  <meta name="robots" content="index, follow" />
+  <title>AstroPrecise — Your Cosmic Blueprint | Free Birth Chart &amp; Precise Astrology</title>
+
+  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="AstroPrecise — Discover Your Cosmic Blueprint" />
-  <meta property="og:description" content="Free professional birth chart analysis, daily horoscopes and a live 3D solar system — powered by astronomical calculations accurate to arcminutes." />
+  <meta property="og:title" content="AstroPrecise — Your Cosmic Blueprint" />
+  <meta property="og:description" content="Free professional birth chart analysis powered by VSOP87 astronomical precision. Precise natal charts, daily horoscopes, and live planetary positions — all computed privately in your browser." />
   <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/" />
   <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AstroPrecise — Discover Your Cosmic Blueprint" />
-  <meta name="twitter:description" content="Free professional birth chart analysis, daily horoscopes and a live 3D solar system — powered by astronomical calculations accurate to arcminutes." />
+  <meta name="twitter:title" content="AstroPrecise — Your Cosmic Blueprint" />
+  <meta name="twitter:description" content="Free professional birth chart analysis powered by VSOP87 astronomical precision. Everything computes in your browser — no data sent anywhere." />
   <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
-  <meta name="theme-color" content="#090b16" />
+
+  <!-- App / PWA -->
+  <meta name="theme-color" content="#0A0B1F" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
-  <style>
-    /* ── Index-page specific ── */
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
 
-    /* Two-column hero */
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/main.css" />
+
+  <style>
+    /* =====================================================================
+       INDEX PAGE — PREMIUM REDESIGN
+       ===================================================================== */
+
+    /* ── Color overrides / extensions for this page ── */
+    :root {
+      --void: #0A0B1F;
+      --purple: #7B2CBF;
+      --purple-glow: rgba(123, 44, 191, 0.35);
+      --cyan: #00D4FF;
+      --cyan-glow: rgba(0, 212, 255, 0.25);
+      --gold-hero: #D4AF37;
+      --gold-hero-light: #E8C872;
+      --glass-bg: rgba(15, 18, 50, 0.55);
+      --glass-border: rgba(200, 208, 232, 0.12);
+      --glass-border-glow: rgba(212, 175, 55, 0.35);
+    }
+
+    /* ── Glassmorphism base ── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+    }
+
+    .glass--glow {
+      border-color: var(--glass-border-glow);
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.06), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    /* ── Utility ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* =====================================================================
+       HERO SECTION
+       ===================================================================== */
     .hero {
       min-height: 100vh;
       padding-top: var(--nav-height);
       display: flex;
       align-items: center;
+      position: relative;
+      overflow: hidden;
     }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 65% 45%, rgba(123, 44, 191, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 20% 60%, rgba(0, 212, 255, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
     .hero__split {
       display: grid;
-      grid-template-columns: 1fr 480px;
+      grid-template-columns: 1fr 500px;
       gap: var(--space-12);
       align-items: center;
       width: 100%;
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: var(--space-16) var(--space-6);
+      padding: var(--space-16) var(--space-8);
     }
-    .hero__text { text-align: left; }
-    .hero__text h1 { text-align: left; }
-    .hero__text .hero__eyebrow { text-align: left; }
-    .hero__text .hero__actions { justify-content: flex-start; }
-    .hero__text p { margin-left: 0; max-width: 520px; }
-    .hero__text .hero-stats { justify-content: flex-start; }
 
+    .hero__text { text-align: left; }
+
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.65rem;
+      font-family: var(--font-body);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      margin-bottom: var(--space-5);
+      opacity: 0.9;
+    }
+    .hero__eyebrow::before {
+      content: '✦';
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .hero__h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      color: var(--white);
+      margin-bottom: var(--space-6);
+    }
+
+    .hero__h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--gold-hero-light) 0%, var(--gold-hero) 40%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero__subtitle {
+      font-size: 1.05rem;
+      font-weight: 400;
+      line-height: 1.75;
+      color: var(--silver);
+      max-width: 480px;
+      margin-bottom: var(--space-10);
+    }
+
+    /* Quick chart form */
+    .hero__cta-form {
+      display: flex;
+      gap: var(--space-3);
+      align-items: stretch;
+      flex-wrap: wrap;
+      margin-bottom: var(--space-6);
+    }
+
+    .hero__date-input {
+      flex: 1;
+      min-width: 180px;
+      height: 52px;
+      padding: 0 var(--space-5);
+      background: rgba(15, 18, 50, 0.7);
+      border: 1px solid var(--glass-border-glow);
+      border-radius: var(--radius-lg);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+      -webkit-appearance: none;
+      color-scheme: dark;
+    }
+    .hero__date-input:focus {
+      outline: none;
+      border-color: var(--gold-hero);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    .hero__cast-btn {
+      height: 52px;
+      padding: 0 var(--space-7);
+      background: linear-gradient(135deg, var(--gold-hero) 0%, #c49a1a 100%);
+      border: none;
+      border-radius: var(--radius-lg);
+      color: #0A0B1F;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      box-shadow: 0 4px 24px rgba(212, 175, 55, 0.3);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .hero__cast-btn:hover {
+      background: linear-gradient(135deg, var(--gold-hero-light) 0%, var(--gold-hero) 100%);
+      box-shadow: 0 6px 32px rgba(212, 175, 55, 0.45);
+      transform: translateY(-1px);
+    }
+    .hero__cast-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 12px rgba(212, 175, 55, 0.25);
+    }
+
+    .hero__trust {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      margin-bottom: var(--space-10);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .hero__trust-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--silver-dark);
+      flex-shrink: 0;
+    }
+
+    /* Stat row */
+    .hero__stats {
+      display: flex;
+      gap: var(--space-8);
+      flex-wrap: wrap;
+    }
+    .hero__stat { display: flex; flex-direction: column; gap: 3px; }
+    .hero__stat-value {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--gold-hero-light);
+      line-height: 1;
+    }
+    .hero__stat-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+
+    /* Orrery wrap */
     .hero__orrery-wrap {
       display: flex;
       flex-direction: column;
@@ -61,21 +279,50 @@
       gap: var(--space-4);
       position: relative;
     }
+
+    .hero__orrery-ring {
+      position: relative;
+      padding: 3px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(212, 175, 55, 0.5),
+        rgba(0, 212, 255, 0.3),
+        rgba(123, 44, 191, 0.4),
+        rgba(212, 175, 55, 0.5)
+      );
+      animation: ring-spin 20s linear infinite;
+    }
+    @keyframes ring-spin {
+      to { transform: rotate(360deg); }
+    }
+    .hero__orrery-ring::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--void);
+    }
+
     #orrery-canvas {
       display: block;
-      width: 100%;
-      max-width: 460px;
+      width: 460px;
+      height: 460px;
       border-radius: 50%;
-      background: radial-gradient(circle at 50% 50%, rgba(42, 74, 148,0.12) 0%, transparent 70%);
+      position: relative;
+      z-index: 1;
+      background: radial-gradient(circle at 50% 50%, rgba(15,18,50,0.9) 0%, rgba(10,11,31,0.98) 70%);
     }
+
     .orrery-label {
-      font-size: 0.65rem;
+      font-size: 0.63rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.6;
+      color: var(--gold-hero);
+      opacity: 0.55;
       text-align: center;
     }
+
     .orrery-controls {
       display: flex;
       align-items: center;
@@ -83,304 +330,960 @@
       gap: var(--space-2);
       flex-wrap: wrap;
     }
+
     .orrery-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: rgba(15, 18, 50, 0.7);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
       color: var(--silver-dim);
       font-size: 0.62rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      font-family: var(--font-sans);
-      padding: 5px 10px;
+      font-family: var(--font-body);
+      padding: 5px 11px;
       cursor: pointer;
       transition: all var(--transition-fast);
       line-height: 1;
     }
-    .orrery-btn:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
+    .orrery-btn:hover { border-color: rgba(212, 175, 55, 0.4); color: var(--gold-hero-light); }
     .orrery-btn.active {
-      border-color: var(--gold);
-      color: var(--gold-pale);
-      background: rgba(196,146,10,0.1);
+      border-color: var(--gold-hero);
+      color: var(--gold-hero-light);
+      background: rgba(212, 175, 55, 0.1);
     }
+
     .orrery-date {
       font-size: 0.62rem;
       font-family: 'Courier New', monospace;
-      color: var(--gold);
+      color: var(--gold-hero);
       opacity: 0.7;
       letter-spacing: 0.05em;
       margin-left: var(--space-2);
     }
-    /* Retrograde countdown strip */
-    .retro-strip {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      padding: var(--space-3) var(--space-5);
-      border-top: 1px solid var(--border);
-      font-size: 0.78rem;
-      color: var(--silver);
-    }
-    .retro-strip__glyph { color: var(--crimson-light); font-size: 1rem; }
-    .retro-strip strong { color: var(--gold-pale); font-weight: 600; }
 
-    /* Planet list rows (Live Sky) */
-    .planet-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .planet-row {
-      display: grid;
-      grid-template-columns: 28px 1fr auto;
-      align-items: center;
-      gap: var(--space-4);
-      padding: var(--space-3) var(--space-5);
-      border-bottom: 1px solid var(--border);
-      transition: background var(--transition-fast);
-      cursor: default;
-    }
-    .planet-row:first-child { border-top: 1px solid var(--border); }
-    .planet-row:hover { background: var(--surface); }
-    .planet-row__glyph {
-      font-size: 1.4rem;
-      text-align: center;
-      line-height: 1;
-    }
-    .planet-row__info { display: flex; flex-direction: column; gap: 2px; }
-    .planet-row__name {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--silver-dim);
-    }
-    .planet-row__sign {
-      font-size: 0.95rem;
-      color: var(--white);
-      font-family: var(--font-display);
-      letter-spacing: 0.02em;
-    }
-    .planet-row__degree {
-      font-size: 0.72rem;
-      font-family: 'Courier New', monospace;
-      color: var(--gold);
-      opacity: 0.75;
-      letter-spacing: 0.04em;
-      text-align: right;
-    }
-    .planet-row__retro {
-      display: none;
-      font-size: 0.65rem;
-      color: var(--crimson-light);
-      margin-left: var(--space-2);
-      vertical-align: super;
-    }
-    .planet-row--retro .planet-row__retro { display: inline; }
-
-    /* Live sky section */
-    .live-sky {
-      background: linear-gradient(180deg, transparent 0%, rgba(42, 74, 148,0.04) 50%, transparent 100%);
-    }
-    .live-sky__grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6);
-    }
-    .live-sky__panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      backdrop-filter: blur(16px);
-      position: relative;
-    }
-    .live-sky__panel::before {
-      content: '';
+    /* Planet info panel */
+    .planet-info-panel {
       position: absolute;
-      top: 0; left: var(--space-6); right: var(--space-6);
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.5), rgba(42, 74, 148,0.4), transparent);
+      bottom: calc(100% + var(--space-4));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border-glow);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5) var(--space-6);
+      width: 240px;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 24px rgba(212, 175, 55, 0.08);
+      z-index: 10;
+      animation: panel-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .live-sky__panel-header {
-      padding: var(--space-5) var(--space-5) var(--space-3);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
+    @keyframes panel-in {
+      from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
-    .live-sky__panel-title {
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 700;
-    }
-    .live-sky__panel-date {
-      font-size: 0.65rem;
-      color: var(--silver-dim);
-      letter-spacing: 0.05em;
-    }
-
-    /* Moon phase widget */
-    .moon-widget {
-      display: flex;
-      align-items: center;
-      gap: var(--space-5);
-      padding: var(--space-5);
-    }
-    .moon-phase-visual {
-      font-size: 3.5rem;
+    .planet-info-panel.hidden { display: none; }
+    .planet-info-panel__glyph {
+      font-size: 2.5rem;
       line-height: 1;
-      flex-shrink: 0;
+      display: block;
+      margin-bottom: var(--space-2);
     }
-    .moon-phase-info { display: flex; flex-direction: column; gap: var(--space-2); }
-    .moon-phase-name {
+    .planet-info-panel__name {
       font-family: var(--font-display);
       font-size: var(--text-lg);
-      color: var(--white);
-      letter-spacing: 0.03em;
+      color: var(--gold-hero-light);
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
     }
-    .moon-phase-sign {
+    .planet-info-panel__sign {
       font-size: var(--text-sm);
       color: var(--silver);
+      margin-bottom: 4px;
     }
-    .moon-phase-pct {
+    .planet-info-panel__degree {
       font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--gold);
-      text-transform: uppercase;
+      font-family: 'Courier New', monospace;
+      color: var(--gold-hero);
+      opacity: 0.75;
     }
-    .moon-illumination-bar {
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      margin-top: var(--space-2);
+    .planet-info-panel__close {
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-3);
+      background: none;
+      border: none;
+      color: var(--silver-dim);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 4px;
+      opacity: 0.6;
+      transition: opacity var(--transition-fast);
+    }
+    .planet-info-panel__close:hover { opacity: 1; }
+
+    /* =====================================================================
+       LIVE SKY STRIP
+       ===================================================================== */
+    .live-sky-section {
+      padding: var(--space-8) 0;
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      background: linear-gradient(180deg, rgba(15,18,50,0.3) 0%, transparent 100%);
       overflow: hidden;
     }
-    .moon-illumination-bar__fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--amethyst-light), var(--gold));
-      border-radius: 2px;
-      transition: width 1s ease;
+
+    .live-sky-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      opacity: 0.7;
+      text-align: center;
+      margin-bottom: var(--space-5);
     }
 
-    /* Sign grid */
-    .sign-grid-v2 {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: var(--space-2);
-    }
-    .sign-tile {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-3) var(--space-2);
-      text-align: center;
-      cursor: pointer;
-      transition: all var(--transition-base);
-      text-decoration: none;
+    #live-sky-strip {
       display: flex;
-      flex-direction: column;
+      gap: var(--space-2);
+      overflow-x: auto;
+      padding: 0 var(--space-6) var(--space-2);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    #live-sky-strip::-webkit-scrollbar { display: none; }
+
+    .sky-pill {
+      display: flex;
       align-items: center;
-      gap: var(--space-1);
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+      transition: border-color var(--transition-fast), transform var(--transition-fast);
+      cursor: default;
+      flex-shrink: 0;
     }
-    .sign-tile:hover {
-      border-color: rgba(196,146,10,0.4);
-      background: var(--surface-2);
+    .sky-pill:hover {
+      border-color: var(--glass-border-glow);
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(42, 74, 148,0.15);
     }
-    .sign-tile { padding: var(--space-4) var(--space-2); gap: var(--space-3); }
-    .sign-tile__name {
+    .sky-pill--retro { border-color: rgba(176, 74, 82, 0.3); }
+
+    .sky-pill__glyph {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+    .sky-pill__info { display: flex; flex-direction: column; gap: 1px; }
+    .sky-pill__name {
       font-size: 0.55rem;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--silver-dim);
       font-weight: 600;
     }
-    .sign-tile--fire  { border-color: rgba(180,66,50,0.2); }
-    .sign-tile--earth { border-color: rgba(14,92,58,0.2); }
-    .sign-tile--air   { border-color: rgba(42, 74, 148,0.2); }
-    .sign-tile--water { border-color: rgba(27,95,170,0.2); }
+    .sky-pill__placement {
+      font-size: 0.8rem;
+      color: var(--white);
+      font-family: var(--font-display);
+      letter-spacing: 0.02em;
+    }
+    .sky-pill__degree {
+      font-size: 0.62rem;
+      font-family: 'Courier New', monospace;
+      color: var(--gold-hero);
+      opacity: 0.7;
+    }
+    .sky-pill__retro {
+      font-size: 0.6rem;
+      color: var(--crimson-light);
+      display: none;
+    }
+    .sky-pill--retro .sky-pill__retro { display: inline; }
 
-    /* Feature strip */
-    .feature-strip {
+    /* =====================================================================
+       FEATURE BENTO GRID (4 cards)
+       ===================================================================== */
+    .features-section {
+      padding: var(--space-24) 0;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: var(--space-4);
+    }
+
+    .bento-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition:
+        border-color 0.3s ease,
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.3s ease;
+    }
+
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .bento-card:hover {
+      border-color: var(--glass-border-glow);
+      transform: translateY(-5px);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 40px rgba(212, 175, 55, 0.08),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .bento-card:hover::before { opacity: 1; }
+
+    .bento-card--featured {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(15,18,50,0.7) 0%, rgba(20,10,40,0.75) 100%);
+    }
+    .bento-card--featured:hover {
+      border-color: rgba(123, 44, 191, 0.5);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 60px rgba(123, 44, 191, 0.12);
+    }
+
+    .bento-card__symbol {
+      font-size: 3.5rem;
+      line-height: 1;
+      margin-bottom: var(--space-5);
+      display: block;
+      opacity: 0.85;
+    }
+
+    .bento-card--featured .bento-card__symbol {
+      font-size: 5rem;
+      position: absolute;
+      right: var(--space-8);
+      top: var(--space-8);
+      opacity: 0.12;
+    }
+
+    .bento-card__tag {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      margin-bottom: var(--space-3);
+      font-weight: 600;
+    }
+
+    .bento-card__title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--white);
+      letter-spacing: 0.03em;
+      margin-bottom: var(--space-3);
+      line-height: 1.3;
+    }
+
+    .bento-card--featured .bento-card__title {
+      font-size: var(--text-3xl);
+    }
+
+    .bento-card__body {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.7;
+      margin-bottom: var(--space-6);
+      flex: 1;
+    }
+
+    .bento-card__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      transition: gap var(--transition-fast), color var(--transition-fast);
+    }
+    .bento-card:hover .bento-card__cta {
+      gap: var(--space-3);
+      color: var(--gold-hero-light);
+    }
+
+    /* =====================================================================
+       COSMIC STORY SECTION
+       ===================================================================== */
+    .cosmic-story-section {
+      padding: var(--space-24) 0;
+      position: relative;
+    }
+
+    .cosmic-story-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 90% 50%, rgba(123, 44, 191, 0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cosmic-story__grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: var(--space-16);
+      align-items: center;
+    }
+
+    .cosmic-story__text {}
+
+    .cosmic-story__text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: var(--space-6);
+      line-height: 1.2;
+    }
+
+    .cosmic-story__text h2 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--gold-hero-light), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cosmic-story__text p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--silver);
+      margin-bottom: var(--space-5);
+    }
+
+    .cosmic-story__text p strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .cosmic-story__concepts {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      margin-top: var(--space-8);
+    }
+
+    .concept-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      background: rgba(15, 18, 50, 0.45);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      transition: border-color var(--transition-base);
+    }
+    .concept-pill:hover { border-color: var(--glass-border-glow); }
+
+    .concept-pill__icon {
+      font-size: 1.4rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .concept-pill__text h4 {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      color: var(--gold-hero-light);
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .concept-pill__text p {
+      font-size: 0.82rem;
+      color: var(--silver);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Zodiac wheel SVG decoration */
+    .cosmic-story__wheel-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .zodiac-wheel-svg {
+      width: 100%;
+      max-width: 380px;
+      animation: wheel-slow-spin 80s linear infinite;
+      opacity: 0.65;
+    }
+    @keyframes wheel-slow-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* =====================================================================
+       HOW IT WORKS
+       ===================================================================== */
+    .how-it-works {
+      padding: var(--space-24) 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(15,18,50,0.25) 50%, transparent 100%);
+    }
+
+    .steps-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: var(--space-6);
+      position: relative;
+      margin-top: var(--space-12);
     }
-    .feature-strip__item {
+
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 48px;
+      left: calc(33.33% / 2);
+      right: calc(33.33% / 2);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glass-border-glow), transparent);
+    }
+
+    .step-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
       padding: var(--space-8);
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-2xl);
+      position: relative;
+      transition: border-color var(--transition-base), transform var(--transition-base);
+    }
+    .step-card:hover {
+      border-color: var(--glass-border-glow);
+      transform: translateY(-4px);
+    }
+
+    .step-card__number {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.05) 100%);
+      border: 1.5px solid rgba(212, 175, 55, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold-hero-light);
+      margin-bottom: var(--space-6);
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.12);
+    }
+
+    .step-card__icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      display: block;
+      margin-bottom: var(--space-4);
+    }
+
+    .step-card__title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-4);
+      line-height: 1.3;
+    }
+
+    .step-card__text {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.7;
+    }
+
+    /* =====================================================================
+       ALL TOOLS SECTION
+       ===================================================================== */
+    .tools-section {
+      padding: var(--space-24) 0;
+    }
+
+    .tools-bento {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-12);
+    }
+
+    .tool-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-xl);
+      padding: var(--space-7);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(16px);
-      transition: all var(--transition-base);
+      transition:
+        border-color 0.3s ease,
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.3s ease;
     }
-    .feature-strip__item::before {
+
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-hero), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .tool-card:hover { border-color: var(--glass-border-glow); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.35), 0 0 32px rgba(212, 175, 55, 0.07); }
+    .tool-card:hover::after { opacity: 1; }
+
+    .tool-card--wide { grid-column: span 2; }
+
+    .tool-card__icon {
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: var(--space-4);
+      display: block;
+    }
+    .tool-card__label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      margin-bottom: var(--space-2);
+      font-weight: 600;
+      opacity: 0.8;
+    }
+    .tool-card__title {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-3);
+      line-height: 1.3;
+    }
+    .tool-card--wide .tool-card__title { font-size: var(--text-xl); }
+    .tool-card__desc {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.65;
+      flex: 1;
+    }
+    .tool-card__arrow {
+      margin-top: var(--space-5);
+      font-size: 0.75rem;
+      color: var(--gold-hero);
+      opacity: 0.6;
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .tool-card:hover .tool-card__arrow { opacity: 1; transform: translateX(4px); }
+
+    /* =====================================================================
+       PHILOSOPHY SECTION
+       ===================================================================== */
+    .philosophy-section {
+      padding: var(--space-24) 0;
+      position: relative;
+    }
+
+    .philosophy-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 10% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 60% at 90% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-6);
+      margin-top: var(--space-12);
+    }
+
+    .philosophy-card {
+      padding: var(--space-8);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-2xl);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--transition-base), transform var(--transition-base);
+    }
+    .philosophy-card:hover {
+      border-color: var(--glass-border-glow);
+      transform: translateY(-4px);
+    }
+
+    .philosophy-card::before {
       content: '';
       position: absolute;
       top: 0; left: 20%; right: 20%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.5), transparent);
-    }
-    .feature-strip__item:hover {
-      border-color: rgba(196,146,10,0.35);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 40px rgba(42, 74, 148,0.15);
-    }
-    .feature-strip__icon {
-      font-size: 2.2rem;
-      display: block;
-      margin-bottom: var(--space-4);
-      line-height: 1;
-    }
-    .feature-strip__title {
-      font-family: var(--font-display);
-      font-size: var(--text-base);
-      letter-spacing: 0.05em;
-      color: var(--gold-pale);
-      margin-bottom: var(--space-3);
-    }
-    .feature-strip__text {
-      font-size: var(--text-sm);
-      color: var(--silver);
-      line-height: 1.65;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent);
     }
 
-    /* Responsive */
+    .philosophy-card__accent {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin: 0 auto var(--space-5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .philosophy-card__accent--gold {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    .philosophy-card__accent--cyan {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+    }
+    .philosophy-card__accent--purple {
+      background: rgba(123, 44, 191, 0.12);
+      border: 1px solid rgba(123, 44, 191, 0.3);
+    }
+
+    .philosophy-card__title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--gold-hero-light);
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-4);
+    }
+
+    .philosophy-card__body {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.75;
+    }
+
+    /* =====================================================================
+       MANIFESTO / QUOTE
+       ===================================================================== */
+    .manifesto-section {
+      padding: var(--space-16) 0;
+    }
+
+    .manifesto-card {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: var(--space-12) var(--space-12);
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border-glow);
+      border-radius: var(--radius-2xl);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .manifesto-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(123, 44, 191, 0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .manifesto-card__quote-mark {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      color: var(--gold-hero);
+      opacity: 0.25;
+      line-height: 0.5;
+      display: block;
+      margin-bottom: var(--space-4);
+    }
+
+    .manifesto-card p {
+      font-family: var(--font-heading);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-style: italic;
+      color: var(--silver);
+      line-height: 1.85;
+      margin-bottom: var(--space-5);
+    }
+
+    .manifesto-card p strong { color: var(--white); font-style: normal; font-weight: 600; }
+
+    .manifesto-beats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+      margin-top: var(--space-8);
+      flex-wrap: wrap;
+    }
+
+    .manifesto-beat {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      font-weight: 700;
+      opacity: 0.75;
+      padding: var(--space-2) var(--space-4);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: var(--radius-full);
+    }
+
+    /* =====================================================================
+       SECTION HEADER OVERRIDES
+       ===================================================================== */
+    .section-eyebrow {
+      font-size: 0.62rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+    }
+    .section-eyebrow::before,
+    .section-eyebrow::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5));
+    }
+    .section-eyebrow::after {
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), transparent);
+    }
+
+    .section-h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-4);
+      text-align: center;
+    }
+
+    .section-h2--gradient {
+      background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-subtitle {
+      font-size: var(--text-base);
+      color: var(--silver);
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    /* =====================================================================
+       FOOTER OVERRIDES
+       ===================================================================== */
+    .site-footer {
+      border-top: 1px solid var(--glass-border);
+      background: rgba(10, 11, 31, 0.9);
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: var(--space-10);
+      padding: var(--space-16) 0 var(--space-10);
+    }
+
+    .footer-brand__logo {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      text-decoration: none;
+      margin-bottom: var(--space-5);
+    }
+    .footer-brand__logo-mark {
+      color: var(--gold-hero);
+      font-size: 1.4rem;
+    }
+    .footer-brand__logo-text {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--white);
+      letter-spacing: 0.08em;
+    }
+    .footer-brand__tagline {
+      font-size: var(--text-sm);
+      color: var(--silver-dim);
+      line-height: 1.7;
+      margin-bottom: var(--space-4);
+    }
+    .footer-brand__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      opacity: 0.6;
+      padding: var(--space-1) var(--space-3);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: var(--radius-full);
+    }
+
+    .footer-nav-col h4 {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      opacity: 0.75;
+      margin-bottom: var(--space-5);
+    }
+    .footer-nav-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
+    .footer-nav-col ul li a {
+      font-size: var(--text-sm);
+      color: var(--silver-dim);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .footer-nav-col ul li a:hover { color: var(--white); }
+
+    .footer-legal {
+      padding: var(--space-6) 0;
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+    .footer-legal p {
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: var(--silver-dark);
+    }
+
+    /* =====================================================================
+       RESPONSIVE
+       ===================================================================== */
+    @media (max-width: 1100px) {
+      .hero__split { grid-template-columns: 1fr 420px; gap: var(--space-8); }
+      #orrery-canvas { width: 380px; height: 380px; }
+      .cosmic-story__grid { grid-template-columns: 1fr 340px; gap: var(--space-10); }
+    }
+
     @media (max-width: 900px) {
       .hero__split {
         grid-template-columns: 1fr;
         text-align: center;
+        padding: var(--space-12) var(--space-5);
       }
-      .hero__text { order: 1; text-align: center; }
-      .hero__text h1, .hero__text .hero__eyebrow { text-align: center; }
-      .hero__text .hero__actions { justify-content: center; }
-      .hero__text .hero-stats { justify-content: center; }
-      .hero__text p { margin: 0 auto var(--space-10); }
-      .hero__orrery-wrap { order: 0; }
-      #orrery-canvas { max-width: 300px; }
-      .live-sky__grid { grid-template-columns: 1fr; }
-      .feature-strip { grid-template-columns: 1fr; }
+      .hero__text { order: 2; }
+      .hero__orrery-wrap { order: 1; }
+      .hero__eyebrow,
+      .hero__trust,
+      .hero__stats { justify-content: center; }
+      .hero__subtitle { margin-left: auto; margin-right: auto; }
+      .hero__cta-form { justify-content: center; }
+      #orrery-canvas { width: 300px; height: 300px; }
+      .bento-grid { grid-template-columns: 1fr 1fr; }
+      .bento-card--featured { grid-column: span 2; }
+      .cosmic-story__grid { grid-template-columns: 1fr; }
+      .cosmic-story__wheel-wrap { display: none; }
+      .steps-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+      .steps-grid::before { display: none; }
+      .tools-bento { grid-template-columns: 1fr 1fr; }
+      .tool-card--wide { grid-column: span 2; }
+      .philosophy-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: var(--space-8); }
     }
-    @media (max-width: 600px) {
-      .sign-grid-v2 { grid-template-columns: repeat(4, 1fr); }
-      #orrery-canvas { max-width: 260px; }
+
+    @media (max-width: 640px) {
+      #orrery-canvas { width: 260px; height: 260px; }
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-card--featured { grid-column: span 1; }
+      .tools-bento { grid-template-columns: 1fr; }
+      .tool-card--wide { grid-column: span 1; }
+      .manifesto-card { padding: var(--space-8) var(--space-5); }
+      .footer-inner { grid-template-columns: 1fr; }
+      #live-sky-strip { justify-content: flex-start; }
     }
-    @media (max-width: 400px) {
-      .sign-grid-v2 { grid-template-columns: repeat(3, 1fr); }
+
+    /* =====================================================================
+       LOADING STATE
+       ===================================================================== */
+    .sky-loading-pill {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-5);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      color: var(--silver-dim);
     }
+
+    /* font-sans alias */
+    .font-sans { font-family: var(--font-body); }
   </style>
 </head>
 <body>
 
-  <!-- Cosmic background -->
+  <!-- Cosmic starfield canvas -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+
+  <!-- CSS decorative solar system (corner element) -->
   <div class="cosmos-solar-system" aria-hidden="true">
     <div class="css-sun"></div>
     <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
@@ -390,679 +1293,696 @@
     <div class="css-orbit--asteroid-belt" aria-hidden="true"></div>
     <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
   </div>
+
+  <!-- Aurora orbs -->
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
 
-  <!-- NAV -->
+  <!-- ══════════════════════════════════════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════════════════════════════════════ -->
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true">
+            <img src="img/logo.svg" alt="" width="32" height="32" />
+          </div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav">
-          <a href="index.html" class="navbar__link active" aria-current="page">Home</a>
-          <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">Instrument</a>
-          <a href="horoscope.html" class="navbar__link">Horoscope</a>
-          <a href="compatibility.html" class="navbar__link">Compatibility</a>
-          <a href="lifepath.html" class="navbar__link">Life Path</a>
-          <a href="transits.html" class="navbar__link">Transits</a>
-          <a href="shop.html" class="navbar__link">Shop</a>
+
+        <div class="navbar__nav" role="list">
+          <a href="index.html" class="navbar__link active" aria-current="page" role="listitem">Home</a>
+          <a href="chart.html" class="navbar__link" role="listitem">Chart</a>
+          <a href="horoscope.html" class="navbar__link" role="listitem">Horoscope</a>
+          <a href="lifepath.html" class="navbar__link" role="listitem">Life Path</a>
+          <a href="compatibility.html" class="navbar__link" role="listitem">Compatibility</a>
+          <a href="ephemeris.html" class="navbar__link" role="listitem">Instrument</a>
+          <a href="shop.html" class="navbar__link" role="listitem">Shop</a>
         </div>
-        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+
+        <a href="profile.html" class="btn btn--gold btn--sm" style="border-radius:var(--radius-full);padding:8px 20px;font-size:0.78rem;" aria-label="My Profile">
+          My Profile
+        </a>
+
+        <button
+          class="navbar__toggle"
+          id="nav-toggle"
+          aria-controls="nav-mobile-menu"
+          aria-expanded="false"
+          aria-label="Toggle navigation menu"
+        >
           <span></span><span></span><span></span>
         </button>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
-        <a href="index.html" class="navbar__link active">Home</a>
+
+      <!-- Mobile menu -->
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+        <a href="index.html" class="navbar__link active" aria-current="page">Home</a>
         <a href="chart.html" class="navbar__link">Chart</a>
-        <a href="ephemeris.html" class="navbar__link">Instrument</a>
         <a href="horoscope.html" class="navbar__link">Horoscope</a>
-        <a href="compatibility.html" class="navbar__link">Compatibility</a>
         <a href="lifepath.html" class="navbar__link">Life Path</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="ephemeris.html" class="navbar__link">Instrument</a>
         <a href="transits.html" class="navbar__link">Transits</a>
         <a href="shop.html" class="navbar__link">Shop</a>
+        <a href="profile.html" class="navbar__link">My Profile</a>
       </div>
     </nav>
   </header>
 
   <main id="main-content">
 
-    <!-- ═══════════════════════════════════════════════
-         HERO — two-column with live orrery
-    ═══════════════════════════════════════════════ -->
-    <section class="hero" aria-label="Hero section">
+    <!-- ══════════════════════════════════════════════════════════════════════
+         HERO — Full viewport, two-column
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="hero" aria-label="Hero — Your cosmic blueprint">
       <div class="hero__split">
 
-        <!-- Left: text -->
+        <!-- Left: Text content -->
         <div class="hero__text">
-          <div class="moon-badge" aria-label="Live planetary calculations">
-            <span class="moon-badge__symbol" aria-hidden="true">☽</span>
-            <span id="hero-moon-phase">Ancient Wisdom · Modern Precision</span>
-          </div>
+          <p class="hero__eyebrow" aria-label="Powered by VSOP87 Astronomical Precision">
+            Powered by VSOP87 Astronomical Precision
+          </p>
 
-          <h1 class="gradient-text" style="margin-top:var(--space-5);">
-            Discover Your<br /><em>Cosmic Blueprint</em>
+          <h1 class="hero__h1">
+            Your personal universe,<br /><em>beautifully revealed.</em>
           </h1>
 
-          <p style="margin-top:var(--space-5);">
-            Professional birth chart analysis powered by precise astronomical
-            calculations — accurate to arcminutes. The stars held a specific
-            configuration the moment you arrived. Let's map it.
+          <p class="hero__subtitle">
+            Precise astronomical positions. Deep symbolic interpretation.
+            A map of your soul computed entirely in your browser — private,
+            free, and accurate to the arcminute.
           </p>
 
-          <div class="hero__actions" style="margin-top:var(--space-8);">
-            <a href="chart.html" class="btn btn--primary btn--lg">
-              ✦ &nbsp;Calculate Your Chart
-            </a>
-            <a href="#live-sky" class="btn btn--outline btn--lg">
-              View Live Sky
-            </a>
-          </div>
-          <p style="margin-top:var(--space-4);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--silver-dim);">
-            Free forever &nbsp;·&nbsp; No account &nbsp;·&nbsp; Nothing leaves your browser
-          </p>
-
-          <ul class="hero-stats" aria-label="Statistics" style="margin-top:var(--space-8);">
-            <li class="hero-stat">
-              <span class="hero-stat__number">253</span>
-              <span class="hero-stat__label">Stars Catalogued</span>
-            </li>
-            <li class="hero-stat">
-              <span class="hero-stat__number">1′</span>
-              <span class="hero-stat__label">Arcminute Precision</span>
-            </li>
-            <li class="hero-stat">
-              <span class="hero-stat__number">0</span>
-              <span class="hero-stat__label">Data Sent to Servers</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Right: 3D orrery -->
-        <div class="hero__orrery-wrap">
-          <canvas id="orrery-canvas" aria-label="Interactive 3D solar system showing live planetary positions. Drag to rotate." role="img"></canvas>
-          <p class="orrery-label">Live 3D Solar System · Drag to Rotate</p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         LIVE SKY — planets + moon phase
-    ═══════════════════════════════════════════════ -->
-    <section class="live-sky section" id="live-sky" aria-labelledby="live-sky-heading">
-      <div class="container">
-        <header class="section-header">
-          <p class="eyebrow">Real-time Ephemeris</p>
-          <h2 class="section-title" id="live-sky-heading">The Sky Right Now</h2>
-          <p class="section-subtitle">
-            Current planetary positions calculated for <span id="sky-date-display" style="color:var(--gold-pale)">today</span>
-          </p>
-        </header>
-
-        <div class="live-sky__grid">
-          <!-- Planet list panel -->
-          <div class="live-sky__panel">
-            <div class="live-sky__panel-header">
-              <span class="live-sky__panel-title">☉ Planetary Positions</span>
-              <span class="live-sky__panel-date" id="sky-panel-date"></span>
-            </div>
-            <div id="planet-list" class="planet-list" role="list" aria-label="Current planetary positions" aria-live="polite">
-              <!-- JS populates -->
-              <div class="sky-loading" style="padding:var(--space-8) var(--space-5);">
-                <span class="loading-spinner" aria-hidden="true"></span>
-                <span style="font-size:var(--text-sm);color:var(--silver-dim);">Calculating…</span>
-              </div>
-            </div>
-            <div class="retro-strip" id="retro-strip" hidden>
-              <span class="retro-strip__glyph" aria-hidden="true">℞</span>
-              <span id="retro-text"></span>
-            </div>
-            <div style="padding:var(--space-4) var(--space-5);border-top:1px solid var(--border);">
-              <a href="transits.html" style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);text-decoration:none;opacity:0.75;">
-                Full Transit Forecast →
-              </a>
-            </div>
-          </div>
-
-          <!-- Moon phase panel -->
-          <div class="live-sky__panel">
-            <div class="live-sky__panel-header">
-              <span class="live-sky__panel-title">☽ Moon Phase</span>
-              <span class="live-sky__panel-date" id="moon-panel-date"></span>
-            </div>
-            <div class="moon-widget">
-              <div class="moon-phase-visual" id="moon-phase-emoji" aria-hidden="true">🌑</div>
-              <div class="moon-phase-info">
-                <span class="moon-phase-name" id="moon-phase-name">Calculating…</span>
-                <span class="moon-phase-sign" id="moon-phase-sign"></span>
-                <span class="moon-phase-pct" id="moon-phase-pct"></span>
-                <div class="moon-illumination-bar">
-                  <div class="moon-illumination-bar__fill" id="moon-illum-fill" style="width:0%"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick chart CTA -->
-            <div style="margin:0 var(--space-5) var(--space-5);padding:var(--space-5);background:var(--surface-2);border-radius:var(--radius-lg);border:1px solid var(--border);">
-              <p style="font-size:var(--text-sm);color:var(--silver);margin-bottom:var(--space-4);line-height:1.6;">
-                The Moon moves through all 12 signs in 28 days. Its placement at your birth reveals your emotional nature and inner world.
-              </p>
-              <a href="chart.html" class="btn btn--gold btn--sm" style="width:100%;justify-content:center;">
-                Find Your Moon Sign
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         THE ORACLE — daily insight + ask
-    ═══════════════════════════════════════════════ -->
-    <section class="section" id="oracle" aria-labelledby="oracle-heading">
-      <div class="container">
-        <header class="section-header">
-          <p class="eyebrow">AstroPrecise Intelligence</p>
-          <h2 class="section-title" id="oracle-heading">The Oracle</h2>
-          <p class="section-subtitle">
-            Daily guidance computed from real planetary motion — personalized to your
-            saved chart, or read from today's sky.
-          </p>
-        </header>
-
-        <div class="live-sky__grid">
-          <!-- Day at a glance -->
-          <div class="live-sky__panel">
-            <div class="live-sky__panel-header">
-              <span class="live-sky__panel-title">✦ Your Day at a Glance</span>
-              <span class="live-sky__panel-date" id="oracle-mode"></span>
-            </div>
-            <div style="padding:var(--space-5);" id="oracle-daily">
-              <p style="color:var(--silver-dim);font-size:var(--text-sm);">Consulting the sky…</p>
-            </div>
-          </div>
-
-          <!-- Ask the oracle -->
-          <div class="live-sky__panel">
-            <div class="live-sky__panel-header">
-              <span class="live-sky__panel-title">☽ Ask the Oracle</span>
-              <span class="live-sky__panel-date">one question · one day · one answer</span>
-            </div>
-            <div style="padding:var(--space-5);">
-              <p style="font-size:var(--text-sm);color:var(--silver);line-height:1.65;margin-bottom:var(--space-4);">
-                Hold a question in your mind, then ask. The Oracle answers each question
-                once per day — the same question returns the same truth until the sky turns.
-              </p>
-              <form id="oracle-form" style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
-                <label for="oracle-q" class="sr-only">Your question</label>
-                <input type="text" id="oracle-q" class="form-input" placeholder="Should I…?"
-                       style="flex:1;min-width:200px;" maxlength="200" />
-                <button type="submit" class="btn btn--gold">Ask</button>
-              </form>
-              <div id="oracle-answer" style="margin-top:var(--space-5);display:none;">
-                <div style="padding:var(--space-5);background:var(--surface-2);border-radius:var(--radius-lg);border:1px solid rgba(196,146,10,0.25);position:relative;">
-                  <span style="position:absolute;top:-10px;left:var(--space-5);background:var(--bg);padding:0 var(--space-2);color:var(--gold);font-size:0.7rem;letter-spacing:0.2em;">✦ THE ORACLE SPEAKS</span>
-                  <p id="oracle-answer-text" style="font-family:var(--font-display);font-size:var(--text-base);color:var(--white);line-height:1.7;font-style:italic;"></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         ZODIAC SIGNS
-    ═══════════════════════════════════════════════ -->
-    <section class="section" id="signs" aria-labelledby="signs-heading">
-      <div class="container">
-        <header class="section-header">
-          <p class="eyebrow">Daily Guidance</p>
-          <h2 class="section-title" id="signs-heading">Today's Horoscopes</h2>
-          <p class="section-subtitle">Choose your sign for cosmic insight</p>
-        </header>
-
-        <div class="sign-grid-v2" role="list" aria-label="Zodiac signs">
-          <a href="horoscope.html?sign=aries" class="sign-tile sign-tile--fire" role="listitem" aria-label="Aries horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♈&#xFE0E;</span></span><span class="sign-tile__name">Aries</span></a>
-          <a href="horoscope.html?sign=taurus" class="sign-tile sign-tile--earth" role="listitem" aria-label="Taurus horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♉&#xFE0E;</span></span><span class="sign-tile__name">Taurus</span></a>
-          <a href="horoscope.html?sign=gemini" class="sign-tile sign-tile--air" role="listitem" aria-label="Gemini horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♊&#xFE0E;</span></span><span class="sign-tile__name">Gemini</span></a>
-          <a href="horoscope.html?sign=cancer" class="sign-tile sign-tile--water" role="listitem" aria-label="Cancer horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♋&#xFE0E;</span></span><span class="sign-tile__name">Cancer</span></a>
-          <a href="horoscope.html?sign=leo" class="sign-tile sign-tile--fire" role="listitem" aria-label="Leo horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♌&#xFE0E;</span></span><span class="sign-tile__name">Leo</span></a>
-          <a href="horoscope.html?sign=virgo" class="sign-tile sign-tile--earth" role="listitem" aria-label="Virgo horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♍&#xFE0E;</span></span><span class="sign-tile__name">Virgo</span></a>
-          <a href="horoscope.html?sign=libra" class="sign-tile sign-tile--air" role="listitem" aria-label="Libra horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♎&#xFE0E;</span></span><span class="sign-tile__name">Libra</span></a>
-          <a href="horoscope.html?sign=scorpio" class="sign-tile sign-tile--water" role="listitem" aria-label="Scorpio horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♏&#xFE0E;</span></span><span class="sign-tile__name">Scorpio</span></a>
-          <a href="horoscope.html?sign=sagittarius" class="sign-tile sign-tile--fire" role="listitem" aria-label="Sagittarius horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♐&#xFE0E;</span></span><span class="sign-tile__name">Sagitt.</span></a>
-          <a href="horoscope.html?sign=capricorn" class="sign-tile sign-tile--earth" role="listitem" aria-label="Capricorn horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♑&#xFE0E;</span></span><span class="sign-tile__name">Capric.</span></a>
-          <a href="horoscope.html?sign=aquarius" class="sign-tile sign-tile--air" role="listitem" aria-label="Aquarius horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♒&#xFE0E;</span></span><span class="sign-tile__name">Aquar.</span></a>
-          <a href="horoscope.html?sign=pisces" class="sign-tile sign-tile--water" role="listitem" aria-label="Pisces horoscope" data-tilt><span class="sign-medallion" aria-hidden="true"><span class="sign-medallion__glyph">♓&#xFE0E;</span></span><span class="sign-tile__name">Pisces</span></a>
-        </div>
-
-        <div style="text-align:center;margin-top:var(--space-8);">
-          <a href="horoscope.html" class="btn btn--outline">Read All Horoscopes →</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         FEATURES
-    ═══════════════════════════════════════════════ -->
-    <section class="section" id="features" aria-labelledby="features-heading" style="background:linear-gradient(180deg,transparent 0%,rgba(42, 74, 148,0.04) 50%,transparent 100%);">
-      <div class="container">
-        <header class="section-header">
-          <p class="eyebrow">Why AstroPrecise</p>
-          <h2 class="section-title" id="features-heading">Precision Meets Mystery</h2>
-          <p class="section-subtitle">
-            Not all astrology software is equal. Every calculation here is derived
-            from verified astronomical algorithms — the same precision used by
-            professional observatories.
-          </p>
-        </header>
-
-        <div class="feature-strip" role="list">
-          <div class="feature-strip__item" role="listitem">
-            <span class="feature-strip__icon" aria-hidden="true">⊙</span>
-            <h3 class="feature-strip__title">Arcminute Precision</h3>
-            <p class="feature-strip__text">
-              Planetary positions accurate to arcminutes using VSOP87 &amp; ELP2000
-              algorithms — the same ephemeris trusted by NASA and professional astrologers worldwide.
-            </p>
-          </div>
-          <div class="feature-strip__item" role="listitem">
-            <span class="feature-strip__icon" aria-hidden="true">⚷</span>
-            <h3 class="feature-strip__title">Deep Interpretations</h3>
-            <p class="feature-strip__text">
-              Every chart includes nuanced readings of Sun, Moon, Rising, all planetary
-              placements, house positions, aspects, and dominant elements.
-            </p>
-          </div>
-          <div class="feature-strip__item" role="listitem">
-            <span class="feature-strip__icon" aria-hidden="true">☽</span>
-            <h3 class="feature-strip__title">Fully Private</h3>
-            <p class="feature-strip__text">
-              All calculations run in your browser. No data leaves your device.
-              No accounts required. Your cosmic map belongs to you alone.
-            </p>
-          </div>
-        </div>
-        <!-- Second row: new tools -->
-        <div class="feature-strip" role="list" style="margin-top:var(--space-6);">
-          <div class="feature-strip__item" role="listitem" style="text-align:left;">
-            <span class="feature-strip__icon" aria-hidden="true">✦</span>
-            <h3 class="feature-strip__title">Life Path Builder</h3>
-            <p class="feature-strip__text">
-              Discover your numerology blueprint — Life Path, Expression, Soul Urge, and
-              Personal Year numbers, with rich descriptions and a downloadable reading card.
-            </p>
-            <a href="lifepath.html" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);display:inline-flex;">
-              Calculate →
-            </a>
-          </div>
-          <div class="feature-strip__item" role="listitem" style="text-align:left;">
-            <span class="feature-strip__icon" aria-hidden="true">◉</span>
-            <h3 class="feature-strip__title">Synastry &amp; Compatibility</h3>
-            <p class="feature-strip__text">
-              Two-chart synastry with aspect overlays, elemental compatibility scores,
-              and shareable invite links — calculate together even when apart.
-            </p>
-            <a href="compatibility.html" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);display:inline-flex;">
-              Try Synastry →
-            </a>
-          </div>
-          <div class="feature-strip__item" role="listitem" style="text-align:left;">
-            <span class="feature-strip__icon" aria-hidden="true">⬡</span>
-            <h3 class="feature-strip__title">The Instrument</h3>
-            <p class="feature-strip__text">
-              Your birth as an event in spacetime — light-cone wavefront, zenith star,
-              echo dates, field weather, and a live precession engine. Unique to AstroPrecise.
-            </p>
-            <a href="ephemeris.html" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);display:inline-flex;">
-              Open →
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         HOW IT WORKS
-    ═══════════════════════════════════════════════ -->
-    <section class="section" id="how-it-works" aria-labelledby="how-heading">
-      <div class="container">
-        <header class="section-header">
-          <p class="eyebrow">Getting Started</p>
-          <h2 class="section-title" id="how-heading">Your Chart in Three Steps</h2>
-        </header>
-        <ol class="steps-list" aria-label="How to get your birth chart">
-          <li class="step-item">
-            <div class="step-number" aria-hidden="true">I</div>
-            <div class="step-content">
-              <h3 class="step-title">Enter Your Birth Data</h3>
-              <p class="step-text">
-                Date, time, and place of birth. The more precise your birth time,
-                the more accurate your Ascendant and house placements will be.
-                Accuracy to the minute gives the fullest reading.
-              </p>
-            </div>
-          </li>
-          <li class="step-item">
-            <div class="step-number" aria-hidden="true">II</div>
-            <div class="step-content">
-              <h3 class="step-title">The Sky is Calculated</h3>
-              <p class="step-text">
-                Our astronomical engine computes every planet, the Ascendant,
-                Midheaven, and all twelve house cusps for the exact moment
-                and coordinates of your birth — instantly, in your browser.
-              </p>
-            </div>
-          </li>
-          <li class="step-item">
-            <div class="step-number" aria-hidden="true">III</div>
-            <div class="step-content">
-              <h3 class="step-title">Receive Your Blueprint</h3>
-              <p class="step-text">
-                Explore your natal chart with detailed interpretations for every
-                placement, aspect, and house. Discover your dominant elements,
-                modalities, and the hidden architecture of your psyche.
-              </p>
-            </div>
-          </li>
-        </ol>
-        <div class="how-cta">
-          <a href="chart.html" class="btn btn--primary btn--lg">✦ &nbsp;Begin Your Reading</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         MANIFESTO — the voice of the instrument
-    ═══════════════════════════════════════════════ -->
-    <section class="section" aria-label="What AstroPrecise is">
-      <div class="manifesto">
-        <p>
-          You arrived under a particular sky. Most of the people who tell you about it are
-          guessing — <strong>we are not</strong>. This site keeps the actual mathematics of the
-          heavens: planetary theory accurate to an arcminute, 253 real stars, the geometry of
-          light itself. Give it the moment you were born and it rebuilds that sky exactly —
-          then reads it to you in the old language.
-        </p>
-        <p>
-          Same question, same moment, <strong>same answer, always</strong> — no random flattery.
-          And everything happens here, in your hands: nothing sent anywhere, no account,
-          no tracking, no price. The sky was free the night you were born;
-          reading it should be too.
-        </p>
-        <div class="manifesto__beats">
-          <span class="manifesto__beat">Precision</span>
-          <span class="manifesto__beat">Honesty</span>
-          <span class="manifesto__beat">Privacy</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         BENTO TOOLS GRID
-    ═══════════════════════════════════════════════ -->
-    <section class="section" id="all-tools" aria-labelledby="tools-heading">
-      <div class="container">
-        <header class="section-header">
-          <p class="eyebrow">Everything in One Place</p>
-          <h2 class="section-title" id="tools-heading">Explore All Tools</h2>
-          <p class="section-subtitle">Eight precision instruments — all free, all offline-capable, nothing sent anywhere.</p>
-        </header>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);" class="tools-bento-grid">
-          <a href="chart.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;grid-column:span 2;">
-            <span class="feature-strip__icon" aria-hidden="true">⊙</span>
-            <h3 class="feature-strip__title">Birth Chart</h3>
-            <p class="feature-strip__text">Full natal chart with VSOP87 planetary positions, house cusps, aspects, and deep interpretations. The core tool.</p>
-          </a>
-          <a href="lifepath.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
-            <span class="feature-strip__icon" aria-hidden="true">✦</span>
-            <h3 class="feature-strip__title">Life Path</h3>
-            <p class="feature-strip__text">Full numerology blueprint — Life Path, Expression, Soul Urge numbers and a downloadable card.</p>
-          </a>
-          <a href="compatibility.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
-            <span class="feature-strip__icon" aria-hidden="true">♡</span>
-            <h3 class="feature-strip__title">Compatibility</h3>
-            <p class="feature-strip__text">Two-chart synastry with aspect overlays and a shareable invite link.</p>
-          </a>
-          <a href="horoscope.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
-            <span class="feature-strip__icon" aria-hidden="true">☽</span>
-            <h3 class="feature-strip__title">Horoscope</h3>
-            <p class="feature-strip__text">Deterministic daily readings for all 12 signs — same day, same answer, always.</p>
-          </a>
-          <a href="transits.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
-            <span class="feature-strip__icon" aria-hidden="true">☿</span>
-            <h3 class="feature-strip__title">Transits</h3>
-            <p class="feature-strip__text">Current planetary transits plus a personalised forecast for your natal chart.</p>
-          </a>
-          <a href="ephemeris.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;grid-column:span 2;">
-            <span class="feature-strip__icon" aria-hidden="true">⬡</span>
-            <h3 class="feature-strip__title">The Instrument</h3>
-            <p class="feature-strip__text">Your birth as an event in spacetime — light-cone wavefront, zenith star, echo dates, field weather, and precession engine. The feature you won't find anywhere else.</p>
-          </a>
-        </div>
-        <style>
-          @media (max-width: 900px) {
-            .tools-bento-grid { grid-template-columns: repeat(2,1fr) !important; }
-            .tools-bento-grid a[style*="span 2"] { grid-column: span 2; }
-          }
-          @media (max-width: 600px) {
-            .tools-bento-grid { grid-template-columns: 1fr !important; }
-            .tools-bento-grid a[style*="span 2"] { grid-column: span 1; }
-          }
-        </style>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         THE INSTRUMENT — teaser
-    ═══════════════════════════════════════════════ -->
-    <section class="section instrument-teaser" id="instrument-teaser" aria-labelledby="instrument-teaser-heading">
-      <div class="container">
-        <div class="instrument-teaser__inner" data-tilt>
-          <div class="instrument-teaser__badge">✦ Signature Feature</div>
-          <h2 class="instrument-teaser__title" id="instrument-teaser-heading">The Instrument</h2>
-          <p class="instrument-teaser__subtitle">
-            Your birth as an event in spacetime.
-          </p>
-          <p class="instrument-teaser__body">
-            At the moment you were born, light left that place at the speed of light
-            and has been expanding outward ever since. That wavefront is now
-            <strong id="instr-radius" style="color:var(--gold-pale);">calculating…</strong> light-years across —
-            and it has already reached <strong id="instr-stars" style="color:var(--gold-pale);">—</strong> star systems.
-          </p>
-          <ul class="instrument-teaser__features">
-            <li><span class="itf-dot" style="background:var(--gold);"></span>Light-cone wavefront · your signal still travelling at <em>c</em></li>
-            <li><span class="itf-dot" style="background:#5b7fc7;"></span>Zenith Star · the star directly overhead when you were born</li>
-            <li><span class="itf-dot" style="background:#8b4a8b;"></span>Echo Dates · when today's sky mirrors your natal chart</li>
-            <li><span class="itf-dot" style="background:#2a7a4a;"></span>Consciousness Weather · live solar &amp; cosmic field data</li>
-          </ul>
-          <a href="ephemeris.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-6);">
-            Open The Instrument →
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         APP DOWNLOAD
-    ═══════════════════════════════════════════════ -->
-    <section class="app-download-section section" id="app-download" aria-labelledby="app-download-heading">
-      <div class="container">
-        <div class="app-download-inner">
-          <div class="app-download-content">
-            <p class="eyebrow" style="text-align:left;">Android App</p>
-            <h2 class="section-title" id="app-download-heading" style="text-align:left;-webkit-text-fill-color:unset;background:none;color:var(--white);">
-              The Cosmos in Your Pocket
-            </h2>
-            <p class="app-download-text">
-              Sync your charts between web and mobile. The AstroPrecise Android app gives
-              you birth charts, daily horoscopes, and live sky updates — all offline,
-              all private, no subscription required.
-            </p>
-            <ul class="app-features-list">
-              <li>Birth charts saved locally to your device</li>
-              <li>Daily transit notifications</li>
-              <li>Offline — no internet connection needed</li>
-              <li>Home screen widget for live planetary positions</li>
-            </ul>
-            <div class="app-badges">
-              <a href="https://play.google.com/store" class="app-badge" aria-label="Get it on Google Play" rel="noopener noreferrer" target="_blank">
-                <svg class="play-badge-svg" viewBox="0 0 145 44" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google Play badge">
-                  <rect width="145" height="44" rx="6" fill="rgba(17, 26, 54,0.9)" stroke="rgba(196,146,10,0.5)" stroke-width="1"/>
-                  <text x="48" y="15" fill="rgba(240,232,216,0.6)" font-family="Inter,sans-serif" font-size="7.5" font-weight="500" letter-spacing="0.05em">GET IT ON</text>
-                  <text x="48" y="32" fill="#f0e8d8" font-family="Inter,sans-serif" font-size="15" font-weight="600">Google Play</text>
-                  <text x="16" y="29" fill="#c4920a" font-size="22">▶</text>
-                </svg>
-              </a>
-            </div>
-          </div>
-          <div class="app-download-visual">
-            <!-- Stylised phone mockup -->
-            <div style="
-              width:160px;height:280px;
-              background:linear-gradient(180deg,rgba(17, 26, 54,0.95),rgba(13,9,24,0.95));
-              border:1.5px solid rgba(196,146,10,0.35);
-              border-radius:24px;
-              display:flex;flex-direction:column;align-items:center;justify-content:center;
-              gap:var(--space-4);
-              box-shadow:0 0 40px rgba(42, 74, 148,0.2),0 0 80px rgba(196,146,10,0.08);
-              position:relative;overflow:hidden;
-            " aria-hidden="true">
-              <div style="position:absolute;top:12px;width:40px;height:4px;background:rgba(196,146,10,0.3);border-radius:2px;"></div>
-              <span style="font-size:2.8rem;">✦</span>
-              <span style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;color:var(--gold);opacity:0.8;">ASTROPRECISE</span>
-              <div style="display:flex;flex-direction:column;gap:4px;width:80%;">
-                <div style="height:3px;background:linear-gradient(90deg,var(--amethyst),var(--gold));border-radius:2px;opacity:0.7;"></div>
-                <div style="height:3px;background:rgba(196,146,10,0.3);border-radius:2px;width:70%;"></div>
-                <div style="height:3px;background:rgba(42, 74, 148,0.4);border-radius:2px;width:85%;"></div>
-              </div>
-              <div style="position:absolute;bottom:12px;width:60px;height:4px;background:rgba(196,146,10,0.25);border-radius:2px;"></div>
-            </div>
-            <p class="qr-label" style="margin-top:var(--space-4);">AstroPrecise for Android</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════
-         NEWSLETTER
-    ═══════════════════════════════════════════════ -->
-    <section class="newsletter-section section" id="newsletter" aria-labelledby="newsletter-heading">
-      <div class="container">
-        <div class="newsletter-inner">
-          <div class="newsletter-content">
-            <p class="eyebrow" style="text-align:left;">Weekly Dispatch</p>
-            <h2 class="newsletter-title" id="newsletter-heading">Celestial Forecasts</h2>
-            <p class="newsletter-text">
-              Planetary transits, eclipse guides, and retrograde alerts delivered
-              every Sunday. No noise — only the stars.
-            </p>
-          </div>
-          <form class="newsletter-form" id="newsletter-form" novalidate aria-label="Newsletter signup form">
-            <div class="newsletter-input-group">
-              <label for="newsletter-email" class="sr-only">Email address</label>
-              <input type="email" id="newsletter-email" name="newsletter-email" class="newsletter-input"
-                placeholder="your@email.com" autocomplete="email" aria-required="true" aria-describedby="newsletter-hint" />
-              <button type="submit" class="btn btn--primary newsletter-submit">Subscribe</button>
-            </div>
-            <p class="newsletter-hint" id="newsletter-hint">We respect your privacy. Unsubscribe any time.</p>
-            <div class="newsletter-feedback" id="newsletter-feedback" role="alert" aria-live="polite"></div>
+          <!-- Quick chart CTA form -->
+          <form class="hero__cta-form" id="hero-chart-form" novalidate aria-label="Quick birth chart calculator">
+            <label for="hero-birthdate" class="sr-only">Your birth date</label>
+            <input
+              type="date"
+              id="hero-birthdate"
+              class="hero__date-input"
+              aria-required="true"
+              aria-describedby="hero-form-hint"
+              max="2099-12-31"
+              min="1900-01-01"
+            />
+            <button type="submit" class="hero__cast-btn" aria-label="Cast my birth chart">
+              <span aria-hidden="true">✦</span> Cast My Chart &rarr;
+            </button>
           </form>
+          <p id="hero-form-hint" class="hero__trust">
+            <span>Real VSOP87 data</span>
+            <span class="hero__trust-dot" aria-hidden="true"></span>
+            <span>Privacy-first</span>
+            <span class="hero__trust-dot" aria-hidden="true"></span>
+            <span>No account required</span>
+            <span class="hero__trust-dot" aria-hidden="true"></span>
+            <span>Free forever</span>
+          </p>
+
+          <!-- Stats -->
+          <div class="hero__stats" role="list" aria-label="AstroPrecise precision statistics">
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value">1&prime;</span>
+              <span class="hero__stat-label">Arcminute Precision</span>
+            </div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value">253</span>
+              <span class="hero__stat-label">Stars Catalogued</span>
+            </div>
+            <div class="hero__stat" role="listitem">
+              <span class="hero__stat-value">0</span>
+              <span class="hero__stat-label">Bytes Sent to Servers</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: 3D Orrery -->
+        <div class="hero__orrery-wrap">
+          <div class="hero__orrery-ring" style="position:relative;">
+            <canvas
+              id="orrery-canvas"
+              width="460"
+              height="460"
+              role="img"
+              aria-label="Interactive 3D solar system showing live heliocentric planetary positions. Drag to rotate, click planets for details."
+              style="position:relative;z-index:1;"
+            ></canvas>
+          </div>
+
+          <!-- Planet info panel (shown on planet click) -->
+          <div id="planet-info-panel" class="planet-info-panel hidden" role="dialog" aria-label="Planet information" aria-live="polite">
+            <button class="planet-info-panel__close" id="planet-panel-close" aria-label="Close planet information">&times;</button>
+            <span class="planet-info-panel__glyph" id="pip-glyph" aria-hidden="true">☉</span>
+            <p class="planet-info-panel__name" id="pip-name">Sun</p>
+            <p class="planet-info-panel__sign" id="pip-sign">in Gemini</p>
+            <p class="planet-info-panel__degree" id="pip-degree">21°34′</p>
+          </div>
+
+          <p class="orrery-label" aria-label="Live heliocentric positions — drag to orbit — click planets">
+            Live heliocentric positions &middot; drag to orbit &middot; click planets
+          </p>
+
+          <div class="orrery-controls" role="group" aria-label="Orrery time speed controls">
+            <button class="orrery-btn active" data-speed="0" id="orrery-pause" aria-label="Pause orrery">Pause</button>
+            <button class="orrery-btn" data-speed="1" id="orrery-1x" aria-label="Play at 1x speed">1&times;</button>
+            <button class="orrery-btn" data-speed="30" id="orrery-30x" aria-label="Play at 30x speed">30&times;</button>
+            <button class="orrery-btn" data-speed="365" id="orrery-365x" aria-label="Play at 365x speed">365&times;</button>
+            <span class="orrery-date" id="orrery-date-display" aria-live="polite" aria-label="Current orrery date"></span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         LIVE SKY STRIP
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="live-sky-section" aria-labelledby="live-sky-heading">
+      <div class="container">
+        <p class="live-sky-label" id="live-sky-heading" aria-label="Current Planetary Positions">
+          ✦ Current Planetary Positions
+        </p>
+        <div id="live-sky-strip" role="list" aria-label="Live planetary positions" aria-live="polite">
+          <div class="sky-loading-pill" role="status">
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <span>Calculating positions&hellip;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         FEATURE SHOWCASE — Bento grid (4 cards)
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="features-section" id="tools" aria-labelledby="features-heading">
+      <div class="container">
+        <header style="text-align:center;margin-bottom:var(--space-12);">
+          <p class="section-eyebrow">Precision Tools</p>
+          <h2 class="section-h2" id="features-heading">Your complete cosmic toolkit</h2>
+          <p class="section-subtitle">
+            Four signature instruments, each built on verified astronomical algorithms
+            and deep symbolic traditions.
+          </p>
+        </header>
+
+        <div class="bento-grid" role="list">
+          <!-- Birth Chart — featured, spans 2 cols -->
+          <a href="chart.html" class="bento-card bento-card--featured reveal" role="listitem" aria-label="Birth Chart calculator">
+            <span class="bento-card__symbol" aria-hidden="true">⊙</span>
+            <p class="bento-card__tag">Signature Tool</p>
+            <h3 class="bento-card__title">Birth Chart</h3>
+            <p class="bento-card__body">
+              Your complete natal blueprint — 10 planets, 12 houses, all major and minor
+              aspects, computed from VSOP87 data accurate to the arcminute. Includes
+              detailed interpretations, dominant element analysis, and a downloadable chart poster.
+            </p>
+            <span class="bento-card__cta" aria-hidden="true">Calculate Your Chart &rarr;</span>
+          </a>
+
+          <!-- Daily Horoscope -->
+          <a href="horoscope.html" class="bento-card reveal reveal-delay-1" role="listitem" aria-label="Daily Horoscope">
+            <span class="bento-card__symbol" aria-hidden="true">☽</span>
+            <p class="bento-card__tag">Daily</p>
+            <h3 class="bento-card__title">Daily Horoscope</h3>
+            <p class="bento-card__body">
+              Sign-specific readings derived from real planetary transits — not generic predictions.
+              Same sign, same date, same answer: deterministic and honest.
+            </p>
+            <span class="bento-card__cta" aria-hidden="true">Read Today's &rarr;</span>
+          </a>
+
+          <!-- Life Path -->
+          <a href="lifepath.html" class="bento-card reveal reveal-delay-2" role="listitem" aria-label="Life Path numerology">
+            <span class="bento-card__symbol" aria-hidden="true">✦</span>
+            <p class="bento-card__tag">Numerology</p>
+            <h3 class="bento-card__title">Life Path</h3>
+            <p class="bento-card__body">
+              Your numerological blueprint — Life Path, Expression, Soul Urge, and Personal Year
+              numbers computed via Pythagorean reduction, with all master numbers preserved.
+            </p>
+            <span class="bento-card__cta" aria-hidden="true">Find Your Number &rarr;</span>
+          </a>
+
+          <!-- Compatibility -->
+          <a href="compatibility.html" class="bento-card reveal reveal-delay-2" role="listitem" aria-label="Compatibility synastry analysis">
+            <span class="bento-card__symbol" aria-hidden="true">♡</span>
+            <p class="bento-card__tag">Synastry</p>
+            <h3 class="bento-card__title">Compatibility</h3>
+            <p class="bento-card__body">
+              Two charts overlaid in full synastry — inter-chart aspects measured with precise
+              orbs, elemental compatibility scores, and shareable invite links.
+            </p>
+            <span class="bento-card__cta" aria-hidden="true">Compare Charts &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         YOUR COSMIC STORY — Storytelling section
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="cosmic-story-section" id="about" aria-labelledby="story-heading">
+      <div class="container">
+        <div class="cosmic-story__grid">
+
+          <!-- Left: Storytelling text -->
+          <div class="cosmic-story__text reveal">
+            <p class="section-eyebrow" style="justify-content:flex-start;">What astrology actually is</p>
+            <h2 id="story-heading">
+              Not prediction.<br /><em>Pattern recognition across time.</em>
+            </h2>
+
+            <p>
+              Astrology is not fortune-telling. It is an ancient symbolic language
+              for describing the qualities of time — the specific flavors of energy
+              present at any given moment. Your birth chart is a <strong>snapshot of the
+              precise positions of every planet</strong> at the exact second you arrived in the world.
+              Not approximate positions. Not a generalized sign column. Exact positions, computed
+              from the same ephemeris algorithms used by observatories.
+            </p>
+
+            <p>
+              That snapshot is a map — not of your fate, but of your <strong>nature</strong>.
+              The Sun describes your essential self and creative drive. The Moon reveals
+              your emotional landscape and instinctive responses. The Ascendant (Rising sign)
+              shapes how you meet the world. Each planet in each sign in each house
+              adds a layer of nuance to an extraordinarily complex portrait. AstroPrecise
+              renders all of it, with interpretations rooted in classical tradition.
+            </p>
+
+            <p>
+              <strong>Transits</strong> show where the current sky connects to your natal chart —
+              which natal planets are being activated right now, and what themes those
+              activations historically correlate with. <strong>Numerology</strong> adds a complementary
+              layer: the mathematical resonance of your birth date and name, compressed
+              into archetypal numbers that describe your soul's purpose, expression,
+              and the rhythm of your personal years.
+            </p>
+
+            <div class="cosmic-story__concepts" role="list">
+              <div class="concept-pill" role="listitem">
+                <span class="concept-pill__icon" aria-hidden="true">⊙</span>
+                <div class="concept-pill__text">
+                  <h4>Natal Chart</h4>
+                  <p>A character map — the symbolic architecture of your psyche, frozen at birth.</p>
+                </div>
+              </div>
+              <div class="concept-pill" role="listitem">
+                <span class="concept-pill__icon" aria-hidden="true">☿</span>
+                <div class="concept-pill__text">
+                  <h4>Transits</h4>
+                  <p>The timing layer — how the moving sky activates dormant themes in your chart.</p>
+                </div>
+              </div>
+              <div class="concept-pill" role="listitem">
+                <span class="concept-pill__icon" aria-hidden="true">✦</span>
+                <div class="concept-pill__text">
+                  <h4>Numerology</h4>
+                  <p>Your soul's path number — the mathematical resonance of the date you chose to arrive.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Decorative zodiac wheel SVG -->
+          <div class="cosmic-story__wheel-wrap reveal reveal-delay-2" aria-hidden="true">
+            <svg class="zodiac-wheel-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative zodiac wheel">
+              <!-- Outer ring -->
+              <circle cx="200" cy="200" r="190" stroke="rgba(212,175,55,0.15)" stroke-width="1.5" fill="none"/>
+              <!-- Middle ring -->
+              <circle cx="200" cy="200" r="155" stroke="rgba(212,175,55,0.1)" stroke-width="1" fill="none"/>
+              <!-- Inner ring -->
+              <circle cx="200" cy="200" r="120" stroke="rgba(0,212,255,0.12)" stroke-width="1" fill="none"/>
+              <!-- Innermost -->
+              <circle cx="200" cy="200" r="80" stroke="rgba(123,44,191,0.15)" stroke-width="1" fill="none"/>
+              <!-- Center sun -->
+              <circle cx="200" cy="200" r="12" fill="rgba(212,175,55,0.25)" stroke="rgba(212,175,55,0.5)" stroke-width="1"/>
+              <!-- 12 spoke lines -->
+              <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
+              <line x1="10" y1="200" x2="390" y2="200" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
+              <line x1="62" y1="62" x2="338" y2="338" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
+              <line x1="338" y1="62" x2="62" y2="338" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
+              <line x1="10" y1="131" x2="390" y2="269" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
+              <line x1="10" y1="269" x2="390" y2="131" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
+              <line x1="131" y1="10" x2="269" y2="390" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
+              <line x1="269" y1="10" x2="131" y2="390" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
+              <!-- Zodiac glyphs at 30° intervals -->
+              <text x="196" y="28" fill="rgba(212,175,55,0.6)" font-size="14" text-anchor="middle" font-family="serif">♈</text>
+              <text x="275" y="50" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♉</text>
+              <text x="346" y="120" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♊</text>
+              <text x="370" y="200" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♋</text>
+              <text x="346" y="282" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♌</text>
+              <text x="275" y="354" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♍</text>
+              <text x="196" y="378" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♎</text>
+              <text x="118" y="354" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♏</text>
+              <text x="46" y="282" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♐</text>
+              <text x="22" y="205" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♑</text>
+              <text x="46" y="120" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♒</text>
+              <text x="118" y="50" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♓</text>
+              <!-- Planet glyphs inside -->
+              <text x="200" y="170" fill="rgba(240,192,64,0.45)" font-size="18" text-anchor="middle" font-family="serif">☉</text>
+              <text x="230" y="215" fill="rgba(200,216,232,0.4)" font-size="16" text-anchor="middle" font-family="serif">☽</text>
+              <text x="170" y="230" fill="rgba(154,144,144,0.4)" font-size="14" text-anchor="middle" font-family="serif">☿</text>
+              <text x="200" y="245" fill="rgba(200,176,122,0.4)" font-size="14" text-anchor="middle" font-family="serif">♀</text>
+              <text x="175" y="195" fill="rgba(184,66,50,0.4)" font-size="14" text-anchor="middle" font-family="serif">♂</text>
+              <text x="225" y="185" fill="rgba(192,136,88,0.4)" font-size="16" text-anchor="middle" font-family="serif">♃</text>
+            </svg>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         HOW IT WORKS — 3 steps
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="how-it-works" id="how-it-works" aria-labelledby="how-heading">
+      <div class="container">
+        <header style="text-align:center;">
+          <p class="section-eyebrow">Getting started</p>
+          <h2 class="section-h2" id="how-heading">Your chart in three steps</h2>
+          <p class="section-subtitle">From birth data to complete blueprint in seconds. No account, no waiting, nothing sent anywhere.</p>
+        </header>
+
+        <div class="steps-grid">
+          <div class="step-card reveal">
+            <div class="step-card__number" aria-hidden="true">I</div>
+            <span class="step-card__icon" aria-hidden="true">📅</span>
+            <h3 class="step-card__title">Enter Your Birth Data</h3>
+            <p class="step-card__text">
+              Provide your date, time, and place of birth. The more precise your birth time,
+              the more accurate your Ascendant and house placements. Accuracy to the minute
+              gives the fullest, most personal reading.
+            </p>
+          </div>
+
+          <div class="step-card reveal reveal-delay-2">
+            <div class="step-card__number" aria-hidden="true">II</div>
+            <span class="step-card__icon" aria-hidden="true">⚙️</span>
+            <h3 class="step-card__title">VSOP87 Calculates Exact Positions</h3>
+            <p class="step-card__text">
+              Our VSOP87-derived astronomical engine computes every planet's position,
+              the Ascendant, Midheaven, and all twelve house cusps for the exact moment
+              and coordinates of your birth — instantly, entirely in your browser.
+            </p>
+          </div>
+
+          <div class="step-card reveal reveal-delay-4">
+            <div class="step-card__number" aria-hidden="true">III</div>
+            <span class="step-card__icon" aria-hidden="true">🌌</span>
+            <h3 class="step-card__title">Explore Your Complete Blueprint</h3>
+            <p class="step-card__text">
+              Navigate the full chart wheel, read interpretations for every placement,
+              examine house rulerships, measure aspect orbs, discover dominant elements,
+              and share or download your chart poster. Your cosmic map, complete.
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-12);">
+          <a href="chart.html" class="btn btn--primary btn--lg" aria-label="Begin your birth chart reading">
+            ✦ &nbsp;Begin Your Reading
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         ALL TOOLS — Bento grid of 8 tools
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="tools-section" id="all-tools" aria-labelledby="tools-heading">
+      <div class="container">
+        <header style="text-align:center;">
+          <p class="section-eyebrow">Everything in one place</p>
+          <h2 class="section-h2" id="tools-heading">Explore all instruments</h2>
+          <p class="section-subtitle">
+            Eight precision instruments — all free, all offline-capable, nothing sent to any server.
+          </p>
+        </header>
+
+        <div class="tools-bento" role="list">
+          <!-- Birth Chart — wide -->
+          <a href="chart.html" class="tool-card tool-card--wide reveal" role="listitem" aria-label="Birth Chart — full natal chart">
+            <span class="tool-card__icon" aria-hidden="true">⊙</span>
+            <p class="tool-card__label">Core Tool</p>
+            <h3 class="tool-card__title">Birth Chart</h3>
+            <p class="tool-card__desc">Full natal chart with VSOP87 planetary positions, house cusps, all Ptolemaic aspects with orbs, and deep interpretations. Includes a downloadable poster at print resolution.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Open chart calculator &rarr;</span>
+          </a>
+
+          <!-- Horoscope -->
+          <a href="horoscope.html" class="tool-card reveal reveal-delay-1" role="listitem" aria-label="Daily Horoscope">
+            <span class="tool-card__icon" aria-hidden="true">☽</span>
+            <p class="tool-card__label">Daily</p>
+            <h3 class="tool-card__title">Daily Horoscope</h3>
+            <p class="tool-card__desc">Element, modality, and planetary ruler-informed readings for each sign. Deterministic — same day, same sign, same reading, always.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Read yours &rarr;</span>
+          </a>
+
+          <!-- Life Path -->
+          <a href="lifepath.html" class="tool-card reveal reveal-delay-1" role="listitem" aria-label="Life Path numerology">
+            <span class="tool-card__icon" aria-hidden="true">✦</span>
+            <p class="tool-card__label">Numerology</p>
+            <h3 class="tool-card__title">Life Path</h3>
+            <p class="tool-card__desc">Pythagorean numerology with all master numbers (11, 22, 33). Life Path, Expression, Soul Urge, and Personal Year — with a downloadable reading card.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Calculate &rarr;</span>
+          </a>
+
+          <!-- Compatibility -->
+          <a href="compatibility.html" class="tool-card reveal reveal-delay-2" role="listitem" aria-label="Compatibility synastry">
+            <span class="tool-card__icon" aria-hidden="true">♡</span>
+            <p class="tool-card__label">Synastry</p>
+            <h3 class="tool-card__title">Compatibility</h3>
+            <p class="tool-card__desc">Two charts overlaid in synastry — inter-chart aspects with precise orbs, compatibility score, and shareable invite links so partners can calculate together.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Compare charts &rarr;</span>
+          </a>
+
+          <!-- Transits -->
+          <a href="transits.html" class="tool-card reveal reveal-delay-2" role="listitem" aria-label="Current Transits">
+            <span class="tool-card__icon" aria-hidden="true">☿</span>
+            <p class="tool-card__label">Live Sky</p>
+            <h3 class="tool-card__title">Current Transits</h3>
+            <p class="tool-card__desc">Real-time sky versus your natal chart. See exactly which natal planets are being activated by current transits, with interpretations and a personal forecast.</p>
+            <span class="tool-card__arrow" aria-hidden="true">View transits &rarr;</span>
+          </a>
+
+          <!-- The Instrument — wide -->
+          <a href="ephemeris.html" class="tool-card tool-card--wide reveal reveal-delay-3" role="listitem" aria-label="The Instrument — AstroPrecise's signature feature">
+            <span class="tool-card__icon" aria-hidden="true">⬡</span>
+            <p class="tool-card__label">Signature Feature</p>
+            <h3 class="tool-card__title">The Instrument</h3>
+            <p class="tool-card__desc">Your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, daimon reading-voice, quantum oracle draw, field weather via live NOAA SWPC feeds, and a precession engine. Unique to AstroPrecise — there is nothing else like it.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Open The Instrument &rarr;</span>
+          </a>
+
+          <!-- Shop -->
+          <a href="shop.html" class="tool-card reveal reveal-delay-3" role="listitem" aria-label="Cosmic Shop">
+            <span class="tool-card__icon" aria-hidden="true">💎</span>
+            <p class="tool-card__label">Curated</p>
+            <h3 class="tool-card__title">Shop</h3>
+            <p class="tool-card__desc">Curated books, crystals, oracle card decks, and ritual tools — chosen for depth and craft, not mass market volume.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Browse shop &rarr;</span>
+          </a>
+
+          <!-- Divination Oracle -->
+          <a href="ephemeris.html#oracle" class="tool-card reveal reveal-delay-3" role="listitem" aria-label="Divination Oracle">
+            <span class="tool-card__icon" aria-hidden="true">🔮</span>
+            <p class="tool-card__label">Oracle</p>
+            <h3 class="tool-card__title">Divination Oracle</h3>
+            <p class="tool-card__desc">Today's oracle insight seeded by live astronomical data. Ask one question — the sky answers once per day. The same question returns the same truth until the planets turn.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Consult oracle &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         PHILOSOPHY — Why precision matters
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="philosophy-section" id="philosophy" aria-labelledby="philosophy-heading">
+      <div class="container">
+        <header style="text-align:center;">
+          <p class="section-eyebrow">Our principles</p>
+          <h2 class="section-h2" id="philosophy-heading">Why precision matters</h2>
+          <p class="section-subtitle">
+            Three values that set AstroPrecise apart from every other astrology platform.
+          </p>
+        </header>
+
+        <div class="philosophy-grid">
+          <div class="philosophy-card reveal">
+            <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
+              <span style="font-size:1.2rem;">⊕</span>
+            </div>
+            <h3 class="philosophy-card__title">Deterministic</h3>
+            <p class="philosophy-card__body">
+              Same inputs always produce the same outputs. There is no randomness in our readings.
+              Your birth chart is computed from the same ephemeris every time. Your horoscope
+              for a given sign on a given date is always the same reading. This is not a limitation —
+              it is honesty. The sky is deterministic; our engine mirrors it.
+            </p>
+          </div>
+
+          <div class="philosophy-card reveal reveal-delay-2">
+            <div class="philosophy-card__accent philosophy-card__accent--cyan" aria-hidden="true">
+              <span style="font-size:1.2rem;">🔒</span>
+            </div>
+            <h3 class="philosophy-card__title">Privacy-First</h3>
+            <p class="philosophy-card__body">
+              Everything computes in your browser. Your birth data never leaves your device.
+              We have no analytics, no user accounts (unless you choose to save locally),
+              no third-party trackers, and no subscription model. The sky was free the night
+              you were born; reading it should be too.
+            </p>
+          </div>
+
+          <div class="philosophy-card reveal reveal-delay-4">
+            <div class="philosophy-card__accent philosophy-card__accent--purple" aria-hidden="true">
+              <span style="font-size:1.2rem;">✦</span>
+            </div>
+            <h3 class="philosophy-card__title">Honest</h3>
+            <p class="philosophy-card__body">
+              Live feeds are labeled as live. When a data source is unavailable, we say so —
+              we never substitute fake or placeholder data. Our Schumann resonance display,
+              our solar weather feed, our field weather reports: all sourced from real NOAA SWPC
+              data, with honest-fallback patterns when feeds are temporarily unavailable.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         MANIFESTO
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="manifesto-section" aria-label="AstroPrecise manifesto">
+      <div class="container">
+        <div class="manifesto-card reveal">
+          <span class="manifesto-card__quote-mark" aria-hidden="true">&ldquo;</span>
+          <p>
+            You arrived under a particular sky. Most of the people who tell you about it are
+            guessing — <strong>we are not.</strong> This site keeps the actual mathematics
+            of the heavens: planetary theory accurate to an arcminute, 253 real catalogued stars,
+            the geometry of light itself. Give it the moment you were born and it rebuilds
+            that sky exactly — then reads it to you in the old language.
+          </p>
+          <p>
+            Same question, same moment, <strong>same answer, always</strong> — no random flattery,
+            no shuffled cards, no probabilistic fudging. And everything happens here, in your hands:
+            nothing sent anywhere, no account, no tracking, no price.
+          </p>
+          <div class="manifesto-beats" role="list" aria-label="Core principles">
+            <span class="manifesto-beat" role="listitem">Precision</span>
+            <span class="manifesto-beat" role="listitem">Honesty</span>
+            <span class="manifesto-beat" role="listitem">Privacy</span>
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
+  <!-- ══════════════════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════════════════ -->
   <footer class="site-footer" role="contentinfo">
     <div class="container">
       <div class="footer-inner">
-        <div class="footer-brand">
-          <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
-            <span aria-hidden="true">✦</span>
-            <span>AstroPrecise</span>
+        <!-- Brand -->
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true">✦</span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
           </a>
-          <p class="footer-tagline">
+          <p class="footer-brand__tagline">
             A precision instrument wearing the skin of an astrology site.
             Real astronomy, read in the old language.
           </p>
-          <p style="margin-top:var(--space-3);">
-            <span class="ap-badge">Computed locally · VSOP87 + ELP2000</span>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
           </p>
-          <p style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--silver-dark);margin-top:var(--space-2);">
+          <p style="font-size:0.6rem;letter-spacing:0.12em;color:var(--silver-dark);margin-top:var(--space-4);" aria-hidden="true">
             ♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓
           </p>
         </div>
-        <nav class="footer-nav" aria-label="Footer navigation">
-          <h3 class="footer-nav__heading">Navigate</h3>
+
+        <!-- Tools nav -->
+        <nav class="footer-nav-col" aria-label="Tools navigation">
+          <h4>Tools</h4>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="chart.html">Birth Chart</a></li>
-            <li><a href="horoscope.html">Horoscope</a></li>
-            <li><a href="compatibility.html">Compatibility</a></li>
-            <li><a href="transits.html">Transits</a></li>
-            <li><a href="lifepath.html">Life Path</a></li>
-            <li><a href="ephemeris.html">The Instrument</a></li>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Horoscope</a></li>
+            <li><a href="lifepath.html"><span aria-hidden="true">✦</span> Life Path</a></li>
+            <li><a href="compatibility.html"><span aria-hidden="true">♡</span> Compatibility</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> The Instrument</a></li>
           </ul>
         </nav>
-        <div class="footer-nav">
-          <h3 class="footer-nav__heading">More</h3>
+
+        <!-- Explore nav -->
+        <nav class="footer-nav-col" aria-label="Explore navigation">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries Horoscope</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus Horoscope</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini Horoscope</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer Horoscope</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo Horoscope</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo Horoscope</a></li>
+          </ul>
+        </nav>
+
+        <!-- Learn nav -->
+        <nav class="footer-nav-col" aria-label="Learn navigation">
+          <h4>Learn</h4>
           <ul>
             <li><a href="shop.html">Cosmic Shop</a></li>
             <li><a href="profile.html">My Profile</a></li>
-            <li><a href="chart.html">☉ Sun</a></li>
-            <li><a href="chart.html">☽ Moon</a></li>
-            <li><a href="chart.html">☿ Mercury</a></li>
-            <li><a href="chart.html">♀ Venus</a></li>
+            <li><a href="ephemeris.html#oracle">Oracle</a></li>
+            <li><a href="chart.html">Sun Sign</a></li>
+            <li><a href="chart.html">Moon Sign</a></li>
+            <li><a href="chart.html">Rising Sign</a></li>
           </ul>
-        </div>
+        </nav>
       </div>
+
       <div class="footer-legal">
-        <p class="footer-copyright">
-          &copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected
-        </p>
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SCRIPTS — load order matters
+       ══════════════════════════════════════════════════════════════════════ -->
+  <script src="js/stellar.js"></script>
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/orrery3d.js"></script>
-  <script src="js/chart-render.js"></script>
   <script src="js/interpretations.js"></script>
   <script src="js/oracle.js"></script>
-  <script src="js/starcatalog.js"></script>
-  <script src="js/lightcone.js"></script>
   <script src="js/profile.js"></script>
+  <script src="js/journey.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
 
+  <!-- ══════════════════════════════════════════════════════════════════════
+       INLINE CONTROLLER SCRIPT
+       ══════════════════════════════════════════════════════════════════════ -->
   <script>
-  /* ── Homepage live data ─────────────────────────────────────────── */
-  (function() {
+  (function () {
     'use strict';
 
-    const SIGN_NAMES = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
-                        'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-    const SIGN_GLYPHS= ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(g => g + '\uFE0E');
-    const MOON_PHASES = [
-      { min:0,   max:1,    emoji:'🌑', name:'New Moon' },
-      { min:1,   max:49,   emoji:'🌒', name:'Waxing Crescent' },
-      { min:49,  max:51,   emoji:'🌓', name:'First Quarter' },
-      { min:51,  max:99,   emoji:'🌔', name:'Waxing Gibbous' },
-      { min:99,  max:101,  emoji:'🌕', name:'Full Moon' },
-      { min:101, max:149,  emoji:'🌖', name:'Waning Gibbous' },
-      { min:149, max:151,  emoji:'🌗', name:'Last Quarter' },
-      { min:151, max:360,  emoji:'🌘', name:'Waning Crescent' },
-    ];
+    /* ── Constants ─────────────────────────────────────────────────────── */
+    const SIGN_NAMES  = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+                         'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    const SIGN_GLYPHS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 
     const PLANET_DEF = [
       { id:'sun',     label:'Sun',     glyph:'☉', color:'#f0c040' },
@@ -1076,253 +1996,261 @@
       { id:'neptune', label:'Neptune', glyph:'♆', color:'#4469f5' },
     ];
 
+    /* Keyword summaries for planet info panel */
+    const PLANET_INFO = {
+      sun:     'Core identity, creative drive, will',
+      moon:    'Emotional nature, instinct, memory',
+      mercury: 'Mind, communication, perception',
+      venus:   'Love, beauty, values, attraction',
+      mars:    'Drive, action, desire, assertion',
+      jupiter: 'Expansion, wisdom, opportunity',
+      saturn:  'Structure, discipline, karma, time',
+      uranus:  'Innovation, liberation, the unexpected',
+      neptune: 'Dreams, dissolution, transcendence',
+    };
+
+    /* ── Utilities ─────────────────────────────────────────────────────── */
     function ready(fn) {
       if (document.readyState !== 'loading') fn();
       else document.addEventListener('DOMContentLoaded', fn);
     }
 
     function waitFor(condition, timeout, interval) {
-      return new Promise((resolve, reject) => {
-        const t = setTimeout(() => reject('timeout'), timeout || 8000);
-        const i = setInterval(() => {
-          if (condition()) { clearTimeout(t); clearInterval(i); resolve(); }
-        }, interval || 100);
+      return new Promise(function (resolve, reject) {
+        var t = setTimeout(function () { reject('timeout'); }, timeout || 8000);
+        var i = setInterval(function () {
+          if (condition()) {
+            clearTimeout(t);
+            clearInterval(i);
+            resolve();
+          }
+        }, interval || 80);
       });
     }
 
-    ready(async function() {
-      // Date labels
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-      const els = document.querySelectorAll('#sky-date-display,#sky-panel-date,#moon-panel-date');
-      els.forEach(el => el && (el.textContent = dateStr));
+    function lonToDisplay(lon) {
+      lon = ((lon % 360) + 360) % 360;
+      var signIdx = Math.floor(lon / 30);
+      var deg     = lon - signIdx * 30;
+      var degStr  = Math.floor(deg) + '°' + Math.floor((deg % 1) * 60).toString().padStart(2, '0') + '′';
+      return { signIdx: signIdx, degStr: degStr };
+    }
+
+    /* ── 1. Service worker ─────────────────────────────────────────────── */
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+
+    /* ── 2. Navbar scroll glass effect ────────────────────────────────── */
+    (function () {
+      var header = document.querySelector('.site-header');
+      if (!header) return;
+      function onScroll() {
+        header.classList.toggle('scrolled', window.scrollY > 20);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    /* ── 3. Mobile nav hamburger ───────────────────────────────────────── */
+    (function () {
+      var btn  = document.getElementById('nav-toggle');
+      var menu = document.getElementById('nav-mobile-menu');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', function () {
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        menu.setAttribute('aria-hidden', String(expanded));
+        menu.classList.toggle('open', !expanded);
+        btn.classList.toggle('open', !expanded);
+      });
+      // close on outside click
+      document.addEventListener('click', function (e) {
+        if (!btn.contains(e.target) && !menu.contains(e.target)) {
+          btn.setAttribute('aria-expanded', 'false');
+          menu.setAttribute('aria-hidden', 'true');
+          menu.classList.remove('open');
+          btn.classList.remove('open');
+        }
+      });
+    })();
+
+    /* ── 4. Hero chart CTA form ────────────────────────────────────────── */
+    (function () {
+      var form = document.getElementById('hero-chart-form');
+      if (!form) return;
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var dateInput = document.getElementById('hero-birthdate');
+        var dateVal   = dateInput ? dateInput.value : '';
+        var url       = 'chart.html';
+        if (dateVal) url += '?date=' + encodeURIComponent(dateVal);
+        window.location.href = url;
+      });
+    })();
+
+    /* ── 5. Orrery speed controls ──────────────────────────────────────── */
+    (function () {
+      var buttons = document.querySelectorAll('.orrery-btn[data-speed]');
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var speed = parseFloat(btn.dataset.speed);
+          // Tell orrery3d if available
+          if (window.Orrery3D && typeof Orrery3D.setSpeed === 'function') {
+            Orrery3D.setSpeed(speed);
+          }
+          // Active state
+          buttons.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        });
+      });
+      // Date display update
+      var dateEl = document.getElementById('orrery-date-display');
+      if (dateEl) {
+        function updateOrreryDate() {
+          var d = (window.Orrery3D && typeof Orrery3D.getDate === 'function')
+            ? Orrery3D.getDate()
+            : new Date();
+          if (d) {
+            dateEl.textContent = d.toLocaleDateString('en-GB', {
+              year: 'numeric', month: 'short', day: 'numeric'
+            });
+          }
+          requestAnimationFrame(updateOrreryDate);
+        }
+        requestAnimationFrame(updateOrreryDate);
+      }
+    })();
+
+    /* ── 6. Orrery planet click → info panel ───────────────────────────── */
+    (function () {
+      var panel   = document.getElementById('planet-info-panel');
+      var closeBtn = document.getElementById('planet-panel-close');
+      if (!panel) return;
+
+      function showPanel(data) {
+        document.getElementById('pip-glyph').textContent  = data.glyph || '☉';
+        document.getElementById('pip-name').textContent   = data.name  || '';
+        document.getElementById('pip-sign').textContent   = data.sign  || '';
+        document.getElementById('pip-degree').textContent = data.degree || '';
+        panel.classList.remove('hidden');
+      }
+
+      function hidePanel() { panel.classList.add('hidden'); }
+
+      if (closeBtn) closeBtn.addEventListener('click', hidePanel);
+
+      // Listen for planet click events from orrery3d.js
+      document.addEventListener('orrery-planet-click', function (e) {
+        var detail = e.detail || {};
+        var planetId = (detail.name || '').toLowerCase();
+        var def = PLANET_DEF.find(function (p) { return p.id === planetId; }) || {};
+
+        var signInfo = detail.longitude !== undefined
+          ? lonToDisplay(detail.longitude)
+          : null;
+
+        showPanel({
+          glyph:  def.glyph || '?',
+          name:   detail.name || planetId,
+          sign:   signInfo
+            ? ('in ' + SIGN_NAMES[signInfo.signIdx])
+            : (PLANET_INFO[planetId] || ''),
+          degree: signInfo ? signInfo.degStr : '',
+        });
+      });
+    })();
+
+    /* ── 7. Scroll reveal (IntersectionObserver) ───────────────────────── */
+    (function () {
+      if (!window.IntersectionObserver) {
+        document.querySelectorAll('.reveal').forEach(function (el) {
+          el.classList.add('visible');
+        });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    })();
+
+    /* ── 8. Live sky strip population ─────────────────────────────────── */
+    ready(async function () {
+      var strip = document.getElementById('live-sky-strip');
+      if (!strip) return;
 
       // Wait for ephemeris
       try {
-        await waitFor(() => window.AstroEphemeris && window.AstroEphemeris.julianDay, 10000);
-      } catch(e) {
-        document.getElementById('planet-list').innerHTML =
-          '<p style="padding:var(--space-5);font-size:var(--text-sm);color:var(--silver-dim);">Ephemeris unavailable</p>';
+        await waitFor(function () {
+          return window.AstroEphemeris && window.AstroEphemeris.julianDay;
+        }, 12000);
+      } catch (e) {
+        strip.innerHTML = '<span style="font-size:0.78rem;color:var(--silver-dim);padding:var(--space-2) var(--space-4);">Ephemeris unavailable</span>';
         return;
       }
 
-      const E = window.AstroEphemeris;
-      const jd = E.julianDay(now.getFullYear(), now.getMonth()+1, now.getDate(),
-                              now.getHours(), now.getMinutes(), 0);
+      var E   = window.AstroEphemeris;
+      var now = new Date();
+      var jd  = E.julianDay(
+        now.getFullYear(), now.getMonth() + 1, now.getDate(),
+        now.getHours(), now.getMinutes(), 0
+      );
 
-      /* ── Planet list ── */
-      const listEl = document.getElementById('planet-list');
-      if (listEl) {
-        let html = '';
-        for (const p of PLANET_DEF) {
-          let lon = 0, retro = false;
-          try {
-            switch(p.id) {
-              case 'sun':     lon = E.sunPosition(jd).lon; break;
-              case 'moon':    lon = E.moonPosition(jd).lon; break;
-              case 'mercury': lon = E.mercuryPosition(jd).lon; retro = E.isRetrograde('mercury',jd); break;
-              case 'venus':   lon = E.venusPosition(jd).lon;   retro = E.isRetrograde('venus',jd);   break;
-              case 'mars':    lon = E.marsPosition(jd).lon;    retro = E.isRetrograde('mars',jd);    break;
-              case 'jupiter': lon = E.jupiterPosition(jd).lon; retro = E.isRetrograde('jupiter',jd); break;
-              case 'saturn':  lon = E.saturnPosition(jd).lon;  retro = E.isRetrograde('saturn',jd);  break;
-              case 'uranus':  lon = E.uranusPosition(jd).lon;  retro = E.isRetrograde('uranus',jd);  break;
-              case 'neptune': lon = E.neptunePosition(jd).lon; retro = E.isRetrograde('neptune',jd); break;
-            }
-          } catch(err) {}
-          lon = ((lon%360)+360)%360;
-          const signIdx = Math.floor(lon/30);
-          const deg = lon - signIdx*30;
-          const degStr = `${Math.floor(deg)}°${Math.floor((deg%1)*60).toString().padStart(2,'0')}′`;
-
-          html += `<div class="planet-row${retro?' planet-row--retro':''}" role="listitem">
-            <span class="planet-row__glyph" style="color:${p.color}" aria-hidden="true">${p.glyph}</span>
-            <div class="planet-row__info">
-              <span class="planet-row__name">${p.label}<span class="planet-row__retro"> ℞</span></span>
-              <span class="planet-row__sign">${SIGN_GLYPHS[signIdx]} ${SIGN_NAMES[signIdx]}</span>
-            </div>
-            <span class="planet-row__degree">${degStr}</span>
-          </div>`;
-        }
-        listEl.innerHTML = html;
-      }
-
-      /* ── Moon phase ── */
-      try {
-        const moonLon  = E.moonPosition(jd).lon;
-        const sunLon   = E.sunPosition(jd).lon;
-        const elongation = ((moonLon - sunLon) % 360 + 360) % 360;
-        const illumPct = (1 - Math.cos(elongation * Math.PI / 180)) / 2 * 100;
-
-        const phase = MOON_PHASES.find(ph => elongation >= ph.min && elongation < ph.max)
-          || MOON_PHASES[0];
-
-        const moonSignIdx = Math.floor(((moonLon%360)+360)%360 / 30);
-
-        const moonEmoji = document.getElementById('moon-phase-emoji');
-        const moonName  = document.getElementById('moon-phase-name');
-        const moonSign  = document.getElementById('moon-phase-sign');
-        const moonPct   = document.getElementById('moon-phase-pct');
-        const moonFill  = document.getElementById('moon-illum-fill');
-        const heroBadge = document.getElementById('hero-moon-phase');
-
-        if (moonEmoji) moonEmoji.textContent = phase.emoji;
-        if (moonName)  moonName.textContent  = phase.name;
-        if (moonSign)  moonSign.textContent  = `Moon in ${SIGN_NAMES[moonSignIdx]}`;
-        if (moonPct)   moonPct.textContent   = `${Math.round(illumPct)}% illuminated`;
-        if (moonFill)  moonFill.style.width  = illumPct + '%';
-        if (heroBadge) heroBadge.textContent = `${phase.emoji} ${phase.name} · ${SIGN_NAMES[moonSignIdx]}`;
-      } catch(e) {}
-
-      /* ── Mercury retrograde countdown ── */
-      try {
-        const strip = document.getElementById('retro-strip');
-        const text  = document.getElementById('retro-text');
-        if (strip && text && E.isRetrograde) {
-          const nowRx = E.isRetrograde('mercury', jd);
-          let flipDay = null;
-          for (let d = 1; d <= 150; d++) {
-            if (E.isRetrograde('mercury', jd + d) !== nowRx) { flipDay = d; break; }
-          }
-          if (flipDay !== null) {
-            text.innerHTML = nowRx
-              ? `Mercury is retrograde — <strong>${flipDay} day${flipDay===1?'':'s'}</strong> until it stations direct`
-              : `Mercury is direct — next retrograde begins in <strong>${flipDay} day${flipDay===1?'':'s'}</strong>`;
-            strip.hidden = false;
-          }
-        }
-      } catch(e) {}
-
-      /* ── 3D Orrery ── */
-      try {
-        await waitFor(() => window.Orrery3D, 5000);
-        window.Orrery3D.init(document.getElementById('orrery-canvas'));
-      } catch(e) {}
-
-      /* ── Instrument teaser: live light-cone stats ── */
-      try {
-        await waitFor(() => window.LightCone && window.StarCatalog, 4000);
-        const charts = window.AstroProfile ? AstroProfile.getCharts() : [];
-        if (charts.length) {
-          const birth = new Date(charts[0].birthDate || charts[0].meta?.birthDate);
-          if (!isNaN(birth)) {
-            const st = LightCone.state(birth);
-            const r = document.getElementById('instr-radius');
-            const s = document.getElementById('instr-stars');
-            if (r && st) r.textContent = st.radiusLy.toFixed(2) + ' light-years';
-            if (s && st) {
-              const reached = StarCatalog.reachedBy(st.radiusLy);
-              s.textContent = reached.length + (reached.length === 1 ? ' star system' : ' star systems');
-            }
-          }
-        } else {
-          const r = document.getElementById('instr-radius');
-          if (r) r.textContent = 'age-in-light-years';
-        }
-      } catch(e) {
-        const r = document.getElementById('instr-radius');
-        if (r) r.textContent = 'age-in-light-years';
-      }
-
-      /* ── Oracle: day at a glance ── */
-      try {
-        await waitFor(() => window.AstroOracle, 5000);
-        const O = window.AstroOracle;
-        let natal = null;
+      var html = '';
+      for (var pi = 0; pi < PLANET_DEF.length; pi++) {
+        var p     = PLANET_DEF[pi];
+        var lon   = 0;
+        var retro = false;
         try {
-          const charts = window.AstroProfile ? AstroProfile.getCharts() : [];
-          if (charts.length) natal = charts[0];
-        } catch(e) {}
+          switch (p.id) {
+            case 'sun':     lon = E.sunPosition(jd).lon;     break;
+            case 'moon':    lon = E.moonPosition(jd).lon;    break;
+            case 'mercury': lon = E.mercuryPosition(jd).lon; retro = E.isRetrograde('mercury',jd); break;
+            case 'venus':   lon = E.venusPosition(jd).lon;   retro = E.isRetrograde('venus',jd);   break;
+            case 'mars':    lon = E.marsPosition(jd).lon;    retro = E.isRetrograde('mars',jd);    break;
+            case 'jupiter': lon = E.jupiterPosition(jd).lon; retro = E.isRetrograde('jupiter',jd); break;
+            case 'saturn':  lon = E.saturnPosition(jd).lon;  retro = E.isRetrograde('saturn',jd);  break;
+            case 'uranus':  lon = E.uranusPosition(jd).lon;  retro = E.isRetrograde('uranus',jd);  break;
+            case 'neptune': lon = E.neptunePosition(jd).lon; retro = E.isRetrograde('neptune',jd); break;
+          }
+        } catch (err) {}
 
-        const insight = O.getDailyInsight(natal, new Date());
-        const modeEl = document.getElementById('oracle-mode');
-        if (modeEl) modeEl.textContent = insight.meta.mode === 'natal'
-          ? 'personalized · your chart' : 'sky weather · save a chart to personalize';
+        var disp     = lonToDisplay(lon);
+        var retroHtml = retro
+          ? '<span class="sky-pill__retro" aria-label="retrograde"> ℞</span>'
+          : '';
 
-        const el = document.getElementById('oracle-daily');
-        if (el && insight) {
-          el.innerHTML = `
-            <h3 style="font-family:var(--font-display);font-size:var(--text-lg);color:var(--gold-pale);margin-bottom:var(--space-3);line-height:1.4;">${insight.headline}</h3>
-            <p style="font-size:var(--text-sm);color:var(--silver);line-height:1.7;margin-bottom:var(--space-4);">${insight.body}</p>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-bottom:var(--space-4);">
-              <div style="padding:var(--space-3);background:rgba(14,92,58,0.12);border-radius:var(--radius-md);border:1px solid rgba(14,140,80,0.25);">
-                <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:#3fae7a;margin-bottom:4px;">⊕ Power · ${insight.power.area}</p>
-                <p style="font-size:0.78rem;color:var(--silver);line-height:1.55;">${insight.power.text}</p>
-              </div>
-              <div style="padding:var(--space-3);background:rgba(110, 26, 38,0.12);border-radius:var(--radius-md);border:1px solid rgba(176, 74, 82,0.25);">
-                <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--crimson-light);margin-bottom:4px;">⚠ Caution · ${insight.caution.area}</p>
-                <p style="font-size:0.78rem;color:var(--silver);line-height:1.55;">${insight.caution.text}</p>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap;">
-              <div style="flex:1;min-width:140px;">
-                <p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--silver-dim);margin-bottom:4px;">Cosmic Mood · ${insight.moodScore}/100</p>
-                <div class="moon-illumination-bar" style="margin-top:0;"><div class="moon-illumination-bar__fill" style="width:${insight.moodScore}%"></div></div>
-              </div>
-              <div style="display:flex;gap:var(--space-2);">
-                ${insight.keywords.map(k => `<span style="font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border);border-radius:999px;color:var(--gold-pale);">${k}</span>`).join('')}
-              </div>
-            </div>`;
-        }
-
-        /* Ask the oracle */
-        const oForm = document.getElementById('oracle-form');
-        if (oForm) {
-          oForm.addEventListener('submit', ev => {
-            ev.preventDefault();
-            const q = document.getElementById('oracle-q').value.trim();
-            if (!q) return;
-            const ans = O.askOracle(q);
-            const box = document.getElementById('oracle-answer');
-            const txt = document.getElementById('oracle-answer-text');
-            if (box && txt) {
-              txt.textContent = ans.answer || `${ans.opening} ${ans.insight} ${ans.guidance}`;
-              box.style.display = 'block';
-            }
-          });
-        }
-      } catch(e) {}
-    });
-  })();
-  </script>
-
-  <script>
-  /* Horizon: hero stat count-up on scroll into view */
-  (function () {
-    var stats = document.querySelectorAll('.hero-stat__number');
-    if (!stats.length || !window.IntersectionObserver) return;
-    stats.forEach(function(el) {
-      var raw = el.textContent.trim();
-      // store original for reset
-      el.dataset.original = raw;
-      // parse numeric target
-      var num = parseInt(raw.replace(/[^0-9]/g, ''), 10);
-      if (!isNaN(num) && num > 0) el.dataset.target = num;
-    });
-    function runCount(el) {
-      var target = parseInt(el.dataset.target, 10);
-      if (isNaN(target)) return;
-      var dur = Math.min(1600, 600 + target * 2);
-      var start = performance.now();
-      function step(now) {
-        var p = Math.min((now - start) / dur, 1);
-        var ease = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.floor(ease * target);
-        if (p < 1) requestAnimationFrame(step);
-        else el.textContent = el.dataset.original;
+        html += '<div class="sky-pill' + (retro ? ' sky-pill--retro' : '') + '" role="listitem"'
+          + ' aria-label="' + p.label + ' in ' + SIGN_NAMES[disp.signIdx] + ' at ' + disp.degStr + (retro ? ' retrograde' : '') + '">'
+          + '<span class="sky-pill__glyph" style="color:' + p.color + '" aria-hidden="true">' + p.glyph + '</span>'
+          + '<div class="sky-pill__info">'
+          +   '<span class="sky-pill__name">' + p.label + retroHtml + '</span>'
+          +   '<span class="sky-pill__placement">' + SIGN_GLYPHS[disp.signIdx] + '︎ ' + SIGN_NAMES[disp.signIdx] + '</span>'
+          +   '<span class="sky-pill__degree">' + disp.degStr + '</span>'
+          + '</div>'
+          + '</div>';
       }
-      requestAnimationFrame(step);
-    }
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (!e.isIntersecting) return;
-        obs.unobserve(e.target);
-        e.target.querySelectorAll('.hero-stat__number[data-target]').forEach(function(el) {
-          setTimeout(function() { runCount(el); }, 120);
+      strip.innerHTML = html;
+
+      /* ── Initialise 3D orrery ── */
+      try {
+        await waitFor(function () { return window.Orrery3D; }, 6000);
+        window.Orrery3D.init(document.getElementById('orrery-canvas'));
+        // Default paused
+        if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
+        // Activate pause button
+        document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
+          btn.classList.toggle('active', btn.dataset.speed === '0');
         });
-      });
-    }, { threshold: 0.6 });
-    var row = document.querySelector('.hero-stats');
-    if (row) obs.observe(row);
+      } catch (e) {}
+    });
+
   })();
   </script>
 
