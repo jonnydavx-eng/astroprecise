@@ -387,6 +387,7 @@
     <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
     <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
     <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
+    <div class="css-orbit--asteroid-belt" aria-hidden="true"></div>
     <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
   </div>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
@@ -407,8 +408,9 @@
           <a href="ephemeris.html" class="navbar__link">Instrument</a>
           <a href="horoscope.html" class="navbar__link">Horoscope</a>
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
           <a href="transits.html" class="navbar__link">Transits</a>
-          <a href="profile.html" class="navbar__link">Profile</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
         </div>
         <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
           <span></span><span></span><span></span>
@@ -417,11 +419,12 @@
       <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
         <a href="index.html" class="navbar__link active">Home</a>
         <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+        <a href="ephemeris.html" class="navbar__link">Instrument</a>
         <a href="horoscope.html" class="navbar__link">Horoscope</a>
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
         <a href="transits.html" class="navbar__link">Transits</a>
-        <a href="profile.html" class="navbar__link">Profile</a>
+        <a href="shop.html" class="navbar__link">Shop</a>
       </div>
     </nav>
   </header>
@@ -665,7 +668,7 @@
             <span class="feature-strip__icon" aria-hidden="true">⊙</span>
             <h3 class="feature-strip__title">Arcminute Precision</h3>
             <p class="feature-strip__text">
-              Planetary positions accurate to arcminutes using VSOP87 & ELP2000
+              Planetary positions accurate to arcminutes using VSOP87 &amp; ELP2000
               algorithms — the same ephemeris trusted by NASA and professional astrologers worldwide.
             </p>
           </div>
@@ -684,6 +687,42 @@
               All calculations run in your browser. No data leaves your device.
               No accounts required. Your cosmic map belongs to you alone.
             </p>
+          </div>
+        </div>
+        <!-- Second row: new tools -->
+        <div class="feature-strip" role="list" style="margin-top:var(--space-6);">
+          <div class="feature-strip__item" role="listitem" style="text-align:left;">
+            <span class="feature-strip__icon" aria-hidden="true">✦</span>
+            <h3 class="feature-strip__title">Life Path Builder</h3>
+            <p class="feature-strip__text">
+              Discover your numerology blueprint — Life Path, Expression, Soul Urge, and
+              Personal Year numbers, with rich descriptions and a downloadable reading card.
+            </p>
+            <a href="lifepath.html" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);display:inline-flex;">
+              Calculate →
+            </a>
+          </div>
+          <div class="feature-strip__item" role="listitem" style="text-align:left;">
+            <span class="feature-strip__icon" aria-hidden="true">◉</span>
+            <h3 class="feature-strip__title">Synastry &amp; Compatibility</h3>
+            <p class="feature-strip__text">
+              Two-chart synastry with aspect overlays, elemental compatibility scores,
+              and shareable invite links — calculate together even when apart.
+            </p>
+            <a href="compatibility.html" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);display:inline-flex;">
+              Try Synastry →
+            </a>
+          </div>
+          <div class="feature-strip__item" role="listitem" style="text-align:left;">
+            <span class="feature-strip__icon" aria-hidden="true">⬡</span>
+            <h3 class="feature-strip__title">The Instrument</h3>
+            <p class="feature-strip__text">
+              Your birth as an event in spacetime — light-cone wavefront, zenith star,
+              echo dates, field weather, and a live precession engine. Unique to AstroPrecise.
+            </p>
+            <a href="ephemeris.html" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);display:inline-flex;">
+              Open →
+            </a>
           </div>
         </div>
       </div>
@@ -762,6 +801,61 @@
           <span class="manifesto__beat">Honesty</span>
           <span class="manifesto__beat">Privacy</span>
         </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         BENTO TOOLS GRID
+    ═══════════════════════════════════════════════ -->
+    <section class="section" id="all-tools" aria-labelledby="tools-heading">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">Everything in One Place</p>
+          <h2 class="section-title" id="tools-heading">Explore All Tools</h2>
+          <p class="section-subtitle">Eight precision instruments — all free, all offline-capable, nothing sent anywhere.</p>
+        </header>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);" class="tools-bento-grid">
+          <a href="chart.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;grid-column:span 2;">
+            <span class="feature-strip__icon" aria-hidden="true">⊙</span>
+            <h3 class="feature-strip__title">Birth Chart</h3>
+            <p class="feature-strip__text">Full natal chart with VSOP87 planetary positions, house cusps, aspects, and deep interpretations. The core tool.</p>
+          </a>
+          <a href="lifepath.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
+            <span class="feature-strip__icon" aria-hidden="true">✦</span>
+            <h3 class="feature-strip__title">Life Path</h3>
+            <p class="feature-strip__text">Full numerology blueprint — Life Path, Expression, Soul Urge numbers and a downloadable card.</p>
+          </a>
+          <a href="compatibility.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
+            <span class="feature-strip__icon" aria-hidden="true">♡</span>
+            <h3 class="feature-strip__title">Compatibility</h3>
+            <p class="feature-strip__text">Two-chart synastry with aspect overlays and a shareable invite link.</p>
+          </a>
+          <a href="horoscope.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
+            <span class="feature-strip__icon" aria-hidden="true">☽</span>
+            <h3 class="feature-strip__title">Horoscope</h3>
+            <p class="feature-strip__text">Deterministic daily readings for all 12 signs — same day, same answer, always.</p>
+          </a>
+          <a href="transits.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;">
+            <span class="feature-strip__icon" aria-hidden="true">☿</span>
+            <h3 class="feature-strip__title">Transits</h3>
+            <p class="feature-strip__text">Current planetary transits plus a personalised forecast for your natal chart.</p>
+          </a>
+          <a href="ephemeris.html" class="feature-strip__item" style="text-decoration:none;display:flex;flex-direction:column;align-items:flex-start;grid-column:span 2;">
+            <span class="feature-strip__icon" aria-hidden="true">⬡</span>
+            <h3 class="feature-strip__title">The Instrument</h3>
+            <p class="feature-strip__text">Your birth as an event in spacetime — light-cone wavefront, zenith star, echo dates, field weather, and precession engine. The feature you won't find anywhere else.</p>
+          </a>
+        </div>
+        <style>
+          @media (max-width: 900px) {
+            .tools-bento-grid { grid-template-columns: repeat(2,1fr) !important; }
+            .tools-bento-grid a[style*="span 2"] { grid-column: span 2; }
+          }
+          @media (max-width: 600px) {
+            .tools-bento-grid { grid-template-columns: 1fr !important; }
+            .tools-bento-grid a[style*="span 2"] { grid-column: span 1; }
+          }
+        </style>
       </div>
     </section>
 
@@ -914,24 +1008,25 @@
             <li><a href="horoscope.html">Horoscope</a></li>
             <li><a href="compatibility.html">Compatibility</a></li>
             <li><a href="transits.html">Transits</a></li>
-            <li><a href="profile.html">Profile</a></li>
+            <li><a href="lifepath.html">Life Path</a></li>
+            <li><a href="ephemeris.html">The Instrument</a></li>
           </ul>
         </nav>
         <div class="footer-nav">
-          <h3 class="footer-nav__heading">The Planets</h3>
+          <h3 class="footer-nav__heading">More</h3>
           <ul>
+            <li><a href="shop.html">Cosmic Shop</a></li>
+            <li><a href="profile.html">My Profile</a></li>
             <li><a href="chart.html">☉ Sun</a></li>
             <li><a href="chart.html">☽ Moon</a></li>
             <li><a href="chart.html">☿ Mercury</a></li>
             <li><a href="chart.html">♀ Venus</a></li>
-            <li><a href="chart.html">♂ Mars</a></li>
-            <li><a href="chart.html">♃ Jupiter</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-legal">
         <p class="footer-copyright">
-          &copy; 2025 AstroPrecise · All calculations run locally in your browser · No data collected
+          &copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected
         </p>
       </div>
     </div>

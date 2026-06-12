@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Discover your Life Path number, Expression number, and Personal Year. Free numerology calculator powered by precise birth-date arithmetic — no random readings, always deterministic." />
+  <title>Life Path Calculator — Numerology Blueprint | AstroPrecise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Life Path Calculator — Numerology Blueprint | AstroPrecise" />
+  <meta property="og:description" content="Discover your Life Path number and full numerology blueprint. Always deterministic — same birth date, same answer, always." />
+  <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/lifepath.html" />
+  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#090b16" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .hero--small {
+      padding: var(--space-16) 0 var(--space-12);
+      text-align: center;
+      background: transparent;
+      position: relative;
+      z-index: 1;
+    }
+    .hero--small h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 0.04em;
+      color: var(--white);
+      margin-bottom: var(--space-4);
+    }
+
+    /* ── Calculator card ── */
+    .lp-form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .lp-form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.6), transparent);
+    }
+    .lp-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .lp-form-grid .full-width { grid-column: 1 / -1; }
+    @media (max-width: 600px) {
+      .lp-form-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Results panel ── */
+    #lp-results {
+      display: none;
+      margin-top: var(--space-10);
+    }
+    #lp-results.is-visible { display: block; }
+
+    .lp-number-hero {
+      text-align: center;
+      padding: var(--space-12) var(--space-8);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: var(--space-6);
+    }
+    .lp-number-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 30%, var(--lp-color-dim, rgba(196,146,10,0.07)) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .lp-number-hero__master-badge {
+      display: none;
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(196,146,10,0.4);
+      border-radius: var(--radius-sm);
+      padding: 2px 8px;
+      margin-bottom: var(--space-4);
+    }
+    .lp-number-hero.is-master .lp-number-hero__master-badge { display: inline-block; }
+    .lp-number-hero__digit {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 14vw, 9rem);
+      line-height: 1;
+      color: var(--gold-pale);
+      text-shadow: 0 0 40px rgba(196,146,10,0.3), 0 0 80px rgba(196,146,10,0.15);
+      letter-spacing: -0.02em;
+    }
+    .lp-number-hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--white);
+      letter-spacing: 0.08em;
+      margin-top: var(--space-2);
+    }
+    .lp-number-hero__tagline {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      font-style: italic;
+      margin-top: var(--space-3);
+      max-width: 440px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .lp-keywords {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      justify-content: center;
+      margin-top: var(--space-5);
+    }
+    .lp-keyword {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(196,146,10,0.3);
+      border-radius: 99px;
+      padding: 3px 10px;
+      background: rgba(196,146,10,0.06);
+    }
+
+    /* ── Reading grid ── */
+    .lp-reading-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    @media (max-width: 700px) { .lp-reading-grid { grid-template-columns: 1fr; } }
+
+    .lp-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .lp-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.35), transparent);
+    }
+    .lp-panel__title {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+    }
+    .lp-overview { line-height: 1.8; color: var(--silver); font-size: var(--text-sm); }
+
+    .lp-trait-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .lp-trait-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.5;
+    }
+    .lp-trait-list li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 0.6rem;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .lp-trait-list--challenges li::before {
+      content: '◈';
+      color: var(--crimson-light);
+    }
+
+    /* ── Compatible numbers ── */
+    .lp-compat-strip {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .lp-compat-num {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-3) var(--space-4);
+      min-width: 56px;
+      cursor: default;
+      transition: border-color var(--transition-fast);
+    }
+    .lp-compat-num:hover { border-color: rgba(196,146,10,0.4); }
+    .lp-compat-num__digit {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--gold-pale);
+    }
+    .lp-compat-num__label {
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+
+    /* ── Secondary numbers row ── */
+    .lp-secondary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    @media (max-width: 600px) { .lp-secondary-grid { grid-template-columns: 1fr 1fr; } }
+
+    .lp-secondary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      text-align: center;
+    }
+    .lp-secondary-card__label {
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      margin-bottom: var(--space-2);
+    }
+    .lp-secondary-card__number {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      color: var(--white);
+      line-height: 1;
+    }
+    .lp-secondary-card__name {
+      font-size: 0.72rem;
+      color: var(--silver);
+      margin-top: var(--space-2);
+    }
+    .lp-secondary-card__desc {
+      font-size: 0.65rem;
+      color: var(--silver-dim);
+      line-height: 1.5;
+      margin-top: var(--space-2);
+    }
+
+    /* ── Download button ── */
+    .lp-download-wrap {
+      text-align: center;
+      padding: var(--space-6) 0 var(--space-2);
+    }
+
+    /* ── Education section ── */
+    .lp-numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .lp-number-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      position: relative;
+      overflow: hidden;
+    }
+    .lp-number-card:hover {
+      border-color: rgba(196,146,10,0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(42, 74, 148, 0.15);
+    }
+    .lp-number-card__num {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--gold-pale);
+    }
+    .lp-number-card__title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      margin-top: var(--space-1);
+    }
+    .lp-number-card__tagline {
+      font-size: 0.68rem;
+      color: var(--silver-dim);
+      font-style: italic;
+      line-height: 1.5;
+      margin-top: var(--space-2);
+    }
+    .lp-number-card--master {
+      border-color: rgba(196,146,10,0.22);
+      background: linear-gradient(135deg, rgba(196,146,10,0.05), var(--surface));
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="cosmos-solar-system" aria-hidden="true">
+    <div class="css-sun"></div>
+    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
+    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
+    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
+    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
+    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
+  </div>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="lifepath.html" class="navbar__link active" aria-current="page">Life Path</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="chart.html" class="navbar__link">Chart</a>
+        <a href="ephemeris.html" class="navbar__link">Instrument</a>
+        <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="lifepath.html" class="navbar__link active">Life Path</a>
+        <a href="transits.html" class="navbar__link">Transits</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero--small">
+      <div class="container">
+        <p class="eyebrow">Numerology Blueprint</p>
+        <h1 class="gradient-text">Life Path Calculator</h1>
+        <p class="hero-subtitle" style="max-width:520px;margin:0 auto var(--space-8);">
+          Your birth date encodes a precise number — not a random fortune, but an arithmetic
+          truth derived from the moment you entered the world. Discover what it reveals.
+        </p>
+
+        <!-- Calculator form -->
+        <div class="lp-form-card reveal-init">
+          <h2 class="section-title" style="font-size:var(--text-xl);margin-bottom:var(--space-6);">Calculate Your Numbers</h2>
+          <form id="lp-form" novalidate>
+            <div class="lp-form-grid">
+              <div class="form-group full-width">
+                <label for="lp-birthdate" class="form-label">Date of Birth <span style="color:var(--crimson-light)">*</span></label>
+                <input type="date" id="lp-birthdate" class="form-input" required max="2015-12-31" min="1900-01-01" />
+              </div>
+              <div class="form-group full-width">
+                <label for="lp-name" class="form-label">Full Name at Birth <span style="color:var(--silver-dim);font-weight:400;">(optional — for Expression &amp; Soul Urge)</span></label>
+                <input type="text" id="lp-name" class="form-input" placeholder="e.g. Jane Elizabeth Smith" maxlength="100" autocomplete="name" />
+                <p class="form-hint" style="font-size:0.68rem;color:var(--silver-dim);margin-top:var(--space-2);">Name never leaves your browser. Used only for local calculation.</p>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:var(--space-6);">
+              <button type="submit" class="btn btn--primary btn--lg">✦ &nbsp;Reveal My Numbers</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="lp-results" class="section" aria-live="polite" aria-atomic="true">
+      <div class="container" style="max-width:900px;">
+
+        <!-- Big number display -->
+        <div class="lp-number-hero" id="lp-main-display">
+          <div class="lp-number-hero__master-badge">✦ Master Number</div>
+          <div class="lp-number-hero__digit" id="lp-digit">—</div>
+          <div class="lp-number-hero__title" id="lp-title">—</div>
+          <div class="lp-number-hero__tagline" id="lp-tagline">—</div>
+          <div class="lp-keywords" id="lp-keywords"></div>
+        </div>
+
+        <!-- Secondary numbers: Expression, Soul Urge, Personal Year -->
+        <div class="lp-secondary-grid" id="lp-secondary"></div>
+
+        <!-- Reading panels -->
+        <div class="lp-reading-grid">
+          <div class="lp-panel">
+            <p class="lp-panel__title">Overview</p>
+            <p class="lp-overview" id="lp-overview">—</p>
+          </div>
+          <div class="lp-panel">
+            <p class="lp-panel__title">Core Strengths</p>
+            <ul class="lp-trait-list" id="lp-strengths"></ul>
+          </div>
+          <div class="lp-panel">
+            <p class="lp-panel__title">Growth Areas</p>
+            <ul class="lp-trait-list lp-trait-list--challenges" id="lp-challenges"></ul>
+          </div>
+          <div class="lp-panel">
+            <p class="lp-panel__title">Most Compatible Numbers</p>
+            <div class="lp-compat-strip" id="lp-compatibles"></div>
+            <p style="font-size:0.65rem;color:var(--silver-dim);margin-top:var(--space-4);line-height:1.5;">
+              Compatibility is calculated from life path vibration resonance, not personalities alone.
+            </p>
+          </div>
+        </div>
+
+        <!-- Download card -->
+        <div class="lp-download-wrap">
+          <button id="lp-download-btn" class="btn btn--gold">
+            ⬇ Download Numerology Card
+          </button>
+          <p style="font-size:0.65rem;color:var(--silver-dim);margin-top:var(--space-3);">
+            PNG · 1080×1080 · Computed locally · <span class="ap-badge">Deterministic</span>
+          </p>
+        </div>
+
+        <!-- Hidden canvas for download -->
+        <canvas id="lp-card-canvas" width="1080" height="1080" style="display:none;"></canvas>
+
+      </div>
+    </section>
+
+    <!-- EDUCATION: all numbers -->
+    <section class="section" id="all-numbers">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">The Nine Paths + Masters</p>
+          <h2 class="section-title">Every Life Path Number</h2>
+          <p class="section-subtitle">
+            Each number carries a distinct vibration and life purpose. The Master Numbers
+            (11, 22, 33) are not reduced — they carry amplified potential.
+          </p>
+        </header>
+
+        <div class="lp-numbers-grid" id="all-numbers-grid"></div>
+      </div>
+    </section>
+
+    <!-- HOW NUMEROLOGY WORKS -->
+    <section class="section" style="background:linear-gradient(180deg,transparent 0%,rgba(42,74,148,0.04) 50%,transparent 100%);">
+      <div class="container" style="max-width:760px;">
+        <header class="section-header">
+          <p class="eyebrow">The Method</p>
+          <h2 class="section-title">How It Works</h2>
+        </header>
+        <ol class="steps-list" aria-label="Numerology calculation method">
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">I</div>
+            <div class="step-content">
+              <h3 class="step-title">Reduce Each Component</h3>
+              <p class="step-text">
+                The month, day, and year of your birth are each reduced to a single digit
+                by summing their component numbers. A birth on 29 January → day: 2+9=11
+                (a Master Number — held here, not reduced further).
+              </p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">II</div>
+            <div class="step-content">
+              <h3 class="step-title">Honour Master Numbers</h3>
+              <p class="step-text">
+                11, 22, and 33 are Master Numbers. They carry higher vibrational intensity
+                and are never reduced to 2, 4, or 6 in the final calculation.
+                If they appear at any stage of reduction, they are preserved.
+              </p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-number" aria-hidden="true">III</div>
+            <div class="step-content">
+              <h3 class="step-title">Sum and Reduce Again</h3>
+              <p class="step-text">
+                The three reduced components are added together. If the result exceeds 9
+                (and is not 11, 22, or 33), sum the digits again. The final single digit
+                or Master Number is your Life Path.
+              </p>
+            </div>
+          </li>
+        </ol>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);margin-top:var(--space-8);">
+          <p style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:var(--space-3);">✦ Example Calculation</p>
+          <p style="font-family:'Courier New',monospace;font-size:var(--text-sm);color:var(--silver);line-height:2;">
+            Birth date: <strong style="color:var(--white);">14 April 1992</strong><br>
+            Month: <strong style="color:var(--gold-pale);">4</strong><br>
+            Day: 1+4 = <strong style="color:var(--gold-pale);">5</strong><br>
+            Year: 1+9+9+2 = 21 → 2+1 = <strong style="color:var(--gold-pale);">3</strong><br>
+            Life Path: 4 + 5 + 3 = 12 → 1+2 = <strong style="color:var(--gold-pale);">3</strong><br>
+            <strong style="color:var(--white);">Life Path 3 — The Creator</strong>
+          </p>
+        </div>
+        <div style="text-align:center;margin-top:var(--space-8);">
+          <p style="font-size:0.65rem;letter-spacing:0.12em;color:var(--silver-dim);">
+            <span class="ap-badge">Deterministic</span>&nbsp; Same birth date → same number, always.
+            No random generation. All computation runs locally in your browser.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RELATED TOOLS -->
+    <section class="section instrument-teaser">
+      <div class="container">
+        <div class="instrument-teaser__inner">
+          <div class="instrument-teaser__badge">✦ Go Deeper</div>
+          <h2 class="instrument-teaser__title">Pair with Your Birth Chart</h2>
+          <p class="instrument-teaser__body" style="max-width:580px;margin:0 auto var(--space-6);">
+            Your Life Path number works alongside your natal chart to reveal the full picture.
+            A Life Path 7 with Scorpio rising reads very differently from one with Aries rising.
+            Combine both for a complete cosmic blueprint.
+          </p>
+          <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
+            <a href="chart.html" class="btn btn--primary btn--lg">✦ &nbsp;Calculate Your Birth Chart</a>
+            <a href="compatibility.html" class="btn btn--outline btn--lg">Synastry &amp; Compatibility</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
+            <span aria-hidden="true">✦</span>
+            <span>AstroPrecise</span>
+          </a>
+          <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
+          <p style="margin-top:var(--space-3);"><span class="ap-badge">Computed locally · Deterministic</span></p>
+        </div>
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <h3 class="footer-nav__heading">Navigate</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="chart.html">Birth Chart</a></li>
+            <li><a href="horoscope.html">Horoscope</a></li>
+            <li><a href="compatibility.html">Compatibility</a></li>
+            <li><a href="lifepath.html">Life Path</a></li>
+            <li><a href="transits.html">Transits</a></li>
+          </ul>
+        </nav>
+        <div class="footer-nav">
+          <h3 class="footer-nav__heading">Tools</h3>
+          <ul>
+            <li><a href="ephemeris.html">The Instrument</a></li>
+            <li><a href="chart.html">Natal Chart</a></li>
+            <li><a href="lifepath.html">Numerology</a></li>
+            <li><a href="shop.html">Cosmic Shop</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <p class="footer-copyright">
+          &copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+
+  <script>
+  'use strict';
+  /* ── Numerology engine ──────────────────────────────────────────────────── */
+
+  const PYTHAGOREAN = {
+    A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,
+    J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,
+    S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8
+  };
+  const VOWELS = new Set(['A','E','I','O','U']);
+
+  function sumDigits(n) {
+    return String(Math.abs(n)).split('').reduce((a, d) => a + parseInt(d, 10), 0);
+  }
+
+  function toNumeroNum(n) {
+    while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
+      n = sumDigits(n);
+    }
+    return n;
+  }
+
+  function calcLifePath(y, m, d) {
+    const mr = toNumeroNum(m);
+    const dr = toNumeroNum(d);
+    const yr = toNumeroNum(sumDigits(y));
+    return toNumeroNum(mr + dr + yr);
+  }
+
+  function calcExpression(name) {
+    const letters = name.toUpperCase().replace(/[^A-Z]/g, '').split('');
+    if (!letters.length) return null;
+    return toNumeroNum(letters.reduce((a, c) => a + (PYTHAGOREAN[c] || 0), 0));
+  }
+
+  function calcSoulUrge(name) {
+    const vowels = name.toUpperCase().replace(/[^A-Z]/g, '').split('').filter(c => VOWELS.has(c));
+    if (!vowels.length) return null;
+    return toNumeroNum(vowels.reduce((a, c) => a + (PYTHAGOREAN[c] || 0), 0));
+  }
+
+  function calcPersonalYear(m, d, currentYear) {
+    return toNumeroNum(toNumeroNum(m) + toNumeroNum(d) + toNumeroNum(sumDigits(currentYear)));
+  }
+
+  /* ── Number data ──────────────────────────────────────────────────────── */
+
+  const LP = {
+    1: {
+      title: 'The Pioneer', glyph: '⊙', element: 'fire',
+      tagline: 'Leadership, independence, and the courage to forge new paths',
+      overview: 'Life Path 1 carries the vibration of pure origination — radiant, singular, self-directed. You are here to lead. Your purpose unfolds through developing independence, originality, and the courage to stand alone when the moment demands it. The 1 is not arrogance; it is the necessary force of a new idea meeting a world that hasn\'t yet imagined it.',
+      strengths: ['Natural leadership and executive ability','Innovative, original thinking','Drive and determined follow-through','Self-reliance under pressure','Courage to initiate the untried'],
+      challenges: ['Tendency toward self-absorption','Impatience with slower paces','Difficulty delegating control','Vulnerability masked by strength'],
+      compatibles: [3,5,9], keywords: ['Leadership','Originality','Ambition','Independence','Courage'],
+      color: '#c4920a',
+    },
+    2: {
+      title: 'The Diplomat', glyph: '☽', element: 'water',
+      tagline: 'Cooperation, sensitivity, and the gift of harmony',
+      overview: 'Life Path 2 vibrates with the Moon — intuitive, receptive, and deeply attuned to the currents between people. Your gift is the ability to bring opposing forces into balance. Where others see conflict, you perceive the bridge. You are the hidden power behind every great collaboration.',
+      strengths: ['Deep empathy and emotional intelligence','Diplomatic and peacemaking skill','Patience in complex situations','Supportive, loyal nature','Intuitive perception of others\' needs'],
+      challenges: ['Over-sensitivity to criticism','Indecision when outcomes are unclear','Self-doubt in solo endeavours','Avoidance of necessary confrontation'],
+      compatibles: [4,6,8], keywords: ['Harmony','Partnership','Intuition','Balance','Cooperation'],
+      color: '#9aa6c8',
+    },
+    3: {
+      title: 'The Creator', glyph: '✦', element: 'air',
+      tagline: 'Creative expression, joy, and the power of imagination',
+      overview: 'Life Path 3 pulses with creative energy — the joy of self-expression, communication, and artistic vision. You are meant to lift others through beauty, laughter, and inspired ideas. The world receives your vibration as warmth. Your purpose is to make real what imagination sees first.',
+      strengths: ['Creative talent and artistic sensitivity','Charismatic, magnetic communication','Optimism that transmits to others','Gift with language, words, and story','Social ease and genuine charm'],
+      challenges: ['Scattered focus and inconsistency','Emotional volatility under pressure','Procrastination disguised as perfectionism','Superficiality when depth is needed'],
+      compatibles: [1,5,9], keywords: ['Creativity','Expression','Joy','Communication','Optimism'],
+      color: '#c08858',
+    },
+    4: {
+      title: 'The Builder', glyph: '⊕', element: 'earth',
+      tagline: 'Foundation, discipline, and the mastery of form',
+      overview: 'Life Path 4 carries the energy of the earth itself — solid, dependable, and built to last. Your purpose is to create enduring structures: in business, family, or the architecture of ideas. You are the one who ensures that what was dreamed yesterday becomes the reality others can stand on tomorrow.',
+      strengths: ['Reliability — people build lives around the 4','Methodical thinking and precision','Practical wisdom earned through work','Extraordinary discipline','Loyalty that does not waver'],
+      challenges: ['Rigidity and resistance to change','Tendency toward workaholism','Difficulty with spontaneous expression','Fear of risk beyond the known plan'],
+      compatibles: [2,6,8], keywords: ['Stability','Order','Foundation','Practicality','Discipline'],
+      color: '#0e5c3a',
+    },
+    5: {
+      title: 'The Explorer', glyph: '✩', element: 'air',
+      tagline: 'Freedom, adventure, and the alchemy of change',
+      overview: 'Life Path 5 breathes with the winds of change — freedom-seeking, sensory-rich, and endlessly curious. Your soul requires variety and movement, not as escape but as a genuine mode of being. You teach others that liberation lies in adaptation, not certainty. Every ending you encounter opens a door the world didn\'t know existed.',
+      strengths: ['Extraordinary adaptability','Magnetic, dynamic presence','Resourcefulness in any environment','Insatiable, generative curiosity','Capacity for profound personal reinvention'],
+      challenges: ['Commitment issues masking deeper fears','Restlessness that prevents deep roots','Tendency toward sensory excess','Difficulty sustaining routine disciplines'],
+      compatibles: [1,3,7], keywords: ['Freedom','Adventure','Change','Versatility','Sensuality'],
+      color: '#5b7fc7',
+    },
+    6: {
+      title: 'The Nurturer', glyph: '♡', element: 'earth',
+      tagline: 'Love, responsibility, and the healing power of service',
+      overview: 'Life Path 6 vibrates with Venus — the love of home, beauty, and deep care for the people who matter. Your path is one of service, healing, and creating harmony in the lives of those around you. You were not given tenderness as a weakness; you were given it as the most powerful tool for transformation.',
+      strengths: ['Deep, healing compassion','Extraordinary sense of responsibility','Natural counsellor and guide','Aesthetic sensitivity and beauty sense','Fierce loyalty in love and friendship'],
+      challenges: ['Martyrdom — giving until there is nothing left','Over-protectiveness that limits others\' growth','Difficulty receiving help and care','Perfectionism applied mercilessly to home and self'],
+      compatibles: [2,4,9], keywords: ['Service','Compassion','Family','Healing','Harmony'],
+      color: '#b04a52',
+    },
+    7: {
+      title: 'The Seeker', glyph: '⬡', element: 'water',
+      tagline: 'Wisdom, spiritual depth, and the pursuit of inner truth',
+      overview: 'Life Path 7 resonates with the deep waters of the unconscious — introspective, analytical, and drawn to mystery. You are pulled toward the hidden laws beneath visible reality, toward what cannot be easily named. Solitude is not loneliness for you; it is where you find the signal beneath the noise.',
+      strengths: ['Analytical brilliance and precision','Spiritual depth that few can match','Exceptional research and synthesis','Intuitive intelligence bordering on prescient','Philosophical insight that advances understanding'],
+      challenges: ['Isolation as a default rather than a choice','Difficulty with sustained emotional intimacy','Perfectionism that delays completion','Occasional cynicism when faith is tested'],
+      compatibles: [5,7,9], keywords: ['Analysis','Wisdom','Spirituality','Introspection','Mystery'],
+      color: '#2a4a94',
+    },
+    8: {
+      title: 'The Achiever', glyph: '◉', element: 'earth',
+      tagline: 'Power, abundance, and the mastery of material reality',
+      overview: 'Life Path 8 carries the frequency of Saturn — discipline, ambition, and the mastery of material form. Yours is the path of power used wisely: authority that does not lord itself over others but directs energy toward lasting outcomes. When you align your inner authority with outer action, the material world responds.',
+      strengths: ['Executive vision and leadership','Ambition calibrated to long-term outcomes','Financial and organisational intelligence','Resilience in the face of repeated setbacks','Authority that others trust instinctively'],
+      challenges: ['Workaholism that erodes personal life','Controlling tendencies in relationships','Vulnerability around perceived weakness','Material attachment that obscures deeper purpose'],
+      compatibles: [2,4,6], keywords: ['Power','Success','Abundance','Authority','Manifestation'],
+      color: '#6e1a26',
+    },
+    9: {
+      title: 'The Humanitarian', glyph: '◈', element: 'fire',
+      tagline: 'Universal love, compassion, and the vibration of completion',
+      overview: 'Life Path 9 vibrates at the highest frequency of the single digits — the universal current of love, completion, and transcendence. You carry wisdom from many lifetimes and feel called to serve humanity in sweeping, impersonal ways. The 9 does not ask for credit; it asks only that the light it carries reaches those who need it.',
+      strengths: ['Universal compassion that transcends personal agenda','Deep, cross-cultural wisdom','Genuine generosity of spirit and resources','Creative and artistic range','Ability to see the whole where others see parts'],
+      challenges: ['Giving so much there is little left for self','Difficulty releasing the past and its sorrows','Scattered idealism that lacks executable form','Emotional volatility when ideals meet reality'],
+      compatibles: [3,6,9], keywords: ['Compassion','Universal Love','Service','Wisdom','Completion'],
+      color: '#c4920a',
+    },
+    11: {
+      title: 'The Illuminator', glyph: '⊙', element: 'air', master: true,
+      tagline: 'Master Intuitive — the bridge between the visible and invisible',
+      overview: 'Life Path 11 is the first Master Number — a doubled vibration of 1 carrying tremendous spiritual potential. You are the Illuminator: a bridge between the rational and the mystical, the seen and the unseen. Your intuitive gifts border on the psychic. The 11 is both blessing and burden; the sensitivity that grants you vision also demands extraordinary grounding.',
+      strengths: ['Profound intuition that operates ahead of logic','Inspirational, charismatic presence','Visionary capacity that others follow instinctively','Spiritual sensitivity as a genuine instrument','Creative and artistic genius'],
+      challenges: ['Overwhelming sensitivity to environment and others','Anxiety and self-doubt that undermines the gift','Tendency toward extremes with no middle ground','Difficulty grounding high-frequency awareness in daily life'],
+      compatibles: [2,6,22], keywords: ['Intuition','Inspiration','Enlightenment','Vision','Sensitivity'],
+      color: '#d4a820',
+    },
+    22: {
+      title: 'The Master Builder', glyph: '⊕', element: 'earth', master: true,
+      tagline: 'Master Builder — turning grand vision into enduring form',
+      overview: 'Life Path 22 is the most powerful number — the Master Builder. You possess both the visionary insight of the 11 and the disciplined practicality of the 4. You are designed to accomplish things of lasting significance: structures, systems, movements that serve not just a generation but many. The 22 is rare because the responsibility it carries is extraordinary.',
+      strengths: ['Grand visionary thinking paired with execution ability','Exceptional, patient discipline','Leadership operating at a world-historical scale','Mastery of complex systems and organisations','Transformative impact that outlasts the person'],
+      challenges: ['The crushing weight of unrealised potential','Paralysing perfectionism that prevents the first step','Difficulty trusting others enough to delegate','Fear of the full magnitude of the 22 frequency'],
+      compatibles: [4,11,22], keywords: ['Master Builder','Vision','Manifestation','Legacy','Power'],
+      color: '#c4920a',
+    },
+    33: {
+      title: 'The Master Teacher', glyph: '♡', element: 'water', master: true,
+      tagline: 'Master Teacher — unconditional love and the highest healing',
+      overview: 'Life Path 33 is the rarest and highest vibration — the Master Teacher. The 33 is only genuinely operative when the 11 and 22 are present in the full chart. You are called to uplift humanity through unconditional love, inspired creative expression, and spiritual healing. The 33 asks everything of the person who carries it — and returns everything transformed.',
+      strengths: ['Profound, cellular healing energy','Capacity for unconditional love in full expression','Visionary compassion that sees suffering\'s source','Inspiring others through lived example, not instruction','Spiritual mastery in the service of others\' freedom'],
+      challenges: ['The unbearable weight of the 33 frequency ungrounded','Self-sacrifice that becomes quiet martyrdom','Grounding the frequency in the ordinary days of life','Maintaining personal boundaries while radiating universal love'],
+      compatibles: [6,11,22], keywords: ['Master Teacher','Healing','Service','Love','Inspiration'],
+      color: '#b04a52',
+    },
+  };
+
+  const LP_TITLES = {
+    1:'Pioneer',2:'Diplomat',3:'Creator',4:'Builder',5:'Explorer',
+    6:'Nurturer',7:'Seeker',8:'Achiever',9:'Humanitarian',
+    11:'Illuminator',22:'Master Builder',33:'Master Teacher'
+  };
+
+  /* ── Render helpers ─────────────────────────────────────────────────────── */
+
+  function renderResults(lp, expr, soul, personalYear, personalMonth) {
+    const data = LP[lp];
+    if (!data) return;
+
+    const results = document.getElementById('lp-results');
+    const display = document.getElementById('lp-main-display');
+
+    document.getElementById('lp-digit').textContent = lp;
+    document.getElementById('lp-title').textContent = data.title;
+    document.getElementById('lp-tagline').textContent = data.tagline;
+
+    display.classList.toggle('is-master', !!data.master);
+
+    const kw = document.getElementById('lp-keywords');
+    kw.innerHTML = data.keywords.map(k => `<span class="lp-keyword">${k}</span>`).join('');
+
+    document.getElementById('lp-overview').textContent = data.overview;
+
+    document.getElementById('lp-strengths').innerHTML =
+      data.strengths.map(s => `<li>${s}</li>`).join('');
+    document.getElementById('lp-challenges').innerHTML =
+      data.challenges.map(c => `<li>${c}</li>`).join('');
+
+    const compat = document.getElementById('lp-compatibles');
+    compat.innerHTML = data.compatibles.map(n => {
+      const t = LP_TITLES[n] || '';
+      return `<div class="lp-compat-num"><span class="lp-compat-num__digit">${n}</span><span class="lp-compat-num__label">${t}</span></div>`;
+    }).join('');
+
+    // Secondary numbers
+    const cards = [];
+    cards.push({
+      label: 'Life Path', number: lp,
+      name: data.title,
+      desc: 'The overarching vibration of your life\'s journey and purpose'
+    });
+    if (expr !== null) {
+      const ed = LP[expr];
+      cards.push({
+        label: 'Expression', number: expr,
+        name: ed ? ed.title : '',
+        desc: 'How your name\'s energy shapes the gifts you naturally express'
+      });
+    }
+    if (soul !== null) {
+      const sd = LP[soul];
+      cards.push({
+        label: 'Soul Urge', number: soul,
+        name: sd ? sd.title : '',
+        desc: 'The inner desire of your heart — what your soul truly craves'
+      });
+    }
+    if (personalYear !== null) {
+      cards.push({
+        label: 'Personal Year', number: personalYear,
+        name: '', desc: 'The numerological theme governing your current year'
+      });
+    }
+    if (personalMonth !== null) {
+      cards.push({
+        label: 'Personal Month', number: personalMonth,
+        name: '', desc: 'This month\'s energetic focus within your personal year cycle'
+      });
+    }
+
+    const secGrid = document.getElementById('lp-secondary');
+    secGrid.innerHTML = cards.map(c => `
+      <div class="lp-secondary-card">
+        <p class="lp-secondary-card__label">${c.label}</p>
+        <div class="lp-secondary-card__number">${c.number}</div>
+        ${c.name ? `<p class="lp-secondary-card__name">${c.name}</p>` : ''}
+        <p class="lp-secondary-card__desc">${c.desc}</p>
+      </div>
+    `).join('');
+
+    results.classList.add('is-visible');
+    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── Canvas download card ───────────────────────────────────────────────── */
+
+  function drawLPCard(lp, name, birthLabel) {
+    const canvas = document.getElementById('lp-card-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 1080, H = 1080;
+    const data = LP[lp];
+    if (!data || !ctx) return;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Background
+    const bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W * 0.7);
+    bg.addColorStop(0, '#0d1124');
+    bg.addColorStop(0.5, '#090b16');
+    bg.addColorStop(1, '#06070f');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Nebula glow
+    const glow = ctx.createRadialGradient(W/2, H * 0.35, 0, W/2, H * 0.35, W * 0.45);
+    glow.addColorStop(0, 'rgba(196,146,10,0.08)');
+    glow.addColorStop(0.5, 'rgba(42,74,148,0.05)');
+    glow.addColorStop(1, 'transparent');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+
+    // Stars
+    const rng = (() => { let s = lp * 997 + 137; return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 4294967296; }; })();
+    for (let i = 0; i < 200; i++) {
+      const x = rng() * W, y = rng() * H;
+      const r = rng() * 1.2;
+      const a = 0.2 + rng() * 0.6;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(240,232,216,${a})`;
+      ctx.fill();
+    }
+
+    // Double border frame
+    ctx.strokeStyle = 'rgba(196,146,10,0.55)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, W - 80, H - 80);
+    ctx.strokeStyle = 'rgba(196,146,10,0.18)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(52, 52, W - 104, H - 104);
+
+    // Corner ornaments
+    const corners = [[64,64],[W-64,64],[64,H-64],[W-64,H-64]];
+    corners.forEach(([cx,cy]) => {
+      ctx.font = '20px serif';
+      ctx.fillStyle = 'rgba(196,146,10,0.5)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('✦', cx, cy);
+    });
+
+    // Eyebrow
+    ctx.font = '700 22px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(196,146,10,0.8)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.letterSpacing = '0.2em';
+    ctx.fillText('LIFE PATH NUMBER', W/2, 140);
+
+    // Big number
+    ctx.font = `900 ${lp >= 10 ? '280' : '340'}px Cinzel, serif`;
+    ctx.fillStyle = 'rgba(232,201,106,0.9)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(196,146,10,0.4)';
+    ctx.shadowBlur = 60;
+    ctx.fillText(String(lp), W/2, 390);
+    ctx.shadowBlur = 0;
+
+    // Master badge
+    if (data.master) {
+      ctx.font = '600 20px Inter, sans-serif';
+      ctx.fillStyle = 'rgba(196,146,10,0.7)';
+      ctx.fillText('✦  MASTER NUMBER  ✦', W/2, 520);
+    }
+
+    // Title
+    ctx.font = `600 54px Cinzel, serif`;
+    ctx.fillStyle = '#f0e8d8';
+    ctx.textAlign = 'center';
+    ctx.fillText(data.title.toUpperCase(), W/2, 590);
+
+    // Divider
+    ctx.strokeStyle = 'rgba(196,146,10,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(W/2 - 160, 620); ctx.lineTo(W/2 + 160, 620);
+    ctx.stroke();
+
+    // Keywords
+    ctx.font = '400 26px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(196,146,10,0.75)';
+    ctx.fillText(data.keywords.join('  ·  '), W/2, 660);
+
+    // Name & birth date
+    if (name) {
+      ctx.font = 'italic 400 34px Playfair Display, serif';
+      ctx.fillStyle = 'rgba(240,232,216,0.75)';
+      ctx.fillText(name, W/2, 730);
+    }
+    if (birthLabel) {
+      ctx.font = '400 26px Inter, sans-serif';
+      ctx.fillStyle = 'rgba(154,166,200,0.7)';
+      ctx.fillText(birthLabel, W/2, 770);
+    }
+
+    // Tagline (wrapped)
+    ctx.font = 'italic 400 26px Playfair Display, serif';
+    ctx.fillStyle = 'rgba(154,166,200,0.8)';
+    const words = data.tagline.split(' ');
+    let line = '', lines = [], maxW = 780;
+    for (const w of words) {
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > maxW) { lines.push(line); line = w; }
+      else line = test;
+    }
+    if (line) lines.push(line);
+    const tagY = name ? 820 : 780;
+    lines.forEach((l, i) => ctx.fillText(l, W/2, tagY + i * 36));
+
+    // Brand
+    ctx.font = '700 22px Cinzel, serif';
+    ctx.fillStyle = 'rgba(196,146,10,0.55)';
+    ctx.fillText('astroprecise · computed locally · deterministic', W/2, H - 80);
+  }
+
+  /* ── Event wiring ───────────────────────────────────────────────────────── */
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // Populate education grid
+    const grid = document.getElementById('all-numbers-grid');
+    if (grid) {
+      const ORDER = [1,2,3,4,5,6,7,8,9,11,22,33];
+      grid.innerHTML = ORDER.map(n => {
+        const d = LP[n];
+        return `<div class="lp-number-card${d.master ? ' lp-number-card--master' : ''}" data-n="${n}">
+          <div style="display:flex;align-items:center;gap:var(--space-3);">
+            <div class="lp-number-card__num">${n}</div>
+            ${d.master ? '<span style="font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(196,146,10,0.3);border-radius:99px;padding:2px 7px;">Master</span>' : ''}
+          </div>
+          <div class="lp-number-card__title">${d.title}</div>
+          <div class="lp-number-card__tagline">${d.tagline}</div>
+        </div>`;
+      }).join('');
+
+      grid.addEventListener('click', e => {
+        const card = e.target.closest('[data-n]');
+        if (!card) return;
+        const n = parseInt(card.dataset.n);
+        const d = LP[n];
+        if (!d) return;
+        // Fill and show results
+        document.getElementById('lp-digit').textContent = n;
+        document.getElementById('lp-title').textContent = d.title;
+        document.getElementById('lp-tagline').textContent = d.tagline;
+        document.getElementById('lp-main-display').classList.toggle('is-master', !!d.master);
+        document.getElementById('lp-keywords').innerHTML =
+          d.keywords.map(k => `<span class="lp-keyword">${k}</span>`).join('');
+        document.getElementById('lp-overview').textContent = d.overview;
+        document.getElementById('lp-strengths').innerHTML = d.strengths.map(s=>`<li>${s}</li>`).join('');
+        document.getElementById('lp-challenges').innerHTML = d.challenges.map(c=>`<li>${c}</li>`).join('');
+        document.getElementById('lp-compatibles').innerHTML = d.compatibles.map(cn=>`<div class="lp-compat-num"><span class="lp-compat-num__digit">${cn}</span><span class="lp-compat-num__label">${LP_TITLES[cn]||''}</span></div>`).join('');
+        document.getElementById('lp-secondary').innerHTML = `<div class="lp-secondary-card"><p class="lp-secondary-card__label">Life Path</p><div class="lp-secondary-card__number">${n}</div><p class="lp-secondary-card__name">${d.title}</p></div>`;
+        const results = document.getElementById('lp-results');
+        results.classList.add('is-visible');
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window._lpCurrentNum = n; window._lpCurrentName = ''; window._lpCurrentBirth = '';
+      });
+    }
+
+    // Form submit
+    const form = document.getElementById('lp-form');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const dateVal = document.getElementById('lp-birthdate').value;
+      if (!dateVal) { document.getElementById('lp-birthdate').focus(); return; }
+      const [y, m, d] = dateVal.split('-').map(Number);
+      const lp = calcLifePath(y, m, d);
+
+      const nameVal = document.getElementById('lp-name').value.trim();
+      const expr = nameVal ? calcExpression(nameVal) : null;
+      const soul = nameVal ? calcSoulUrge(nameVal) : null;
+
+      const now = new Date();
+      const py = calcPersonalYear(m, d, now.getFullYear());
+      const pm = toNumeroNum(py + now.getMonth() + 1);
+      const pd = toNumeroNum(pm + now.getDate());
+
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const birthLabel = `${d} ${months[m-1]} ${y}`;
+
+      window._lpCurrentNum = lp;
+      window._lpCurrentName = nameVal;
+      window._lpCurrentBirth = birthLabel;
+
+      renderResults(lp, expr, soul, py, pm);
+    });
+
+    // Download
+    document.getElementById('lp-download-btn').addEventListener('click', () => {
+      const n = window._lpCurrentNum;
+      if (!n) return;
+      drawLPCard(n, window._lpCurrentName || '', window._lpCurrentBirth || '');
+      const canvas = document.getElementById('lp-card-canvas');
+      const link = document.createElement('a');
+      link.download = `lifepath-${n}-numerology.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    // URL param auto-fill
+    const params = new URLSearchParams(location.search);
+    const pd = params.get('date');
+    if (pd) {
+      const dateInput = document.getElementById('lp-birthdate');
+      dateInput.value = pd;
+      const [y, m, d] = pd.split('-').map(Number);
+      const lp = calcLifePath(y, m, d);
+      const now = new Date();
+      const py = calcPersonalYear(m, d, now.getFullYear());
+      const pm = toNumeroNum(py + now.getMonth() + 1);
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      window._lpCurrentNum = lp;
+      window._lpCurrentBirth = `${d} ${months[m-1]} ${y}`;
+      renderResults(lp, null, null, py, pm);
+    }
+  });
+  </script>
+</body>
+</html>

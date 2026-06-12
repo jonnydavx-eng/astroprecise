@@ -551,8 +551,8 @@ if ('serviceWorker' in navigator) {
       { href: 'index.html',         icon: '✦', label: 'Home' },
       { href: 'chart.html',         icon: '◉', label: 'Chart' },
       { href: 'horoscope.html',     icon: '☽', label: 'Daily' },
+      { href: 'lifepath.html',      icon: '✩', label: 'Life Path' },
       { href: 'compatibility.html', icon: '♡', label: 'Match' },
-      { href: 'ephemeris.html',     icon: '⬡', label: 'Instrument' },
     ];
     const nav = document.createElement('nav');
     nav.className = 'bottom-nav';
@@ -574,9 +574,9 @@ if ('serviceWorker' in navigator) {
   }
 })();
 
-/* Horizon: corner solar system reflects real planetary positions.
-   Heliocentric longitudes set each orbit's phase; periods are
-   real-proportional (Mercury 88d → 14s, Jupiter 4333d → 689s). */
+/* Corner solar system: real heliocentric longitudes via VSOP87.
+   Orbital periods scaled so Mercury = 14 s CSS animation.
+   Saturn, Uranus and Neptune appended dynamically with proper radii. */
 (function () {
   const PLANETS = [
     { id: 'mercury', period: 87.969 },
@@ -585,7 +585,12 @@ if ('serviceWorker' in navigator) {
     { id: 'mars',    period: 686.980 },
     { id: 'jupiter', period: 4332.589 },
   ];
-  const SECONDS_PER_DAY = 14 / 87.969; // Mercury = 14s baseline
+  const OUTER = [
+    { id: 'saturn',  period: 10759.22,  r: 360,  cls: 'css-planet--saturn' },
+    { id: 'uranus',  period: 30688.5,   r: 415,  cls: 'css-planet--uranus' },
+    { id: 'neptune', period: 60182.0,   r: 460,  cls: 'css-planet--neptune' },
+  ];
+  const S = 14 / 87.969; // seconds-per-day scale: Mercury = 14 s
 
   function helioLon(E, id, jd) {
     const sun = E.sunPosition(jd);
@@ -602,6 +607,12 @@ if ('serviceWorker' in navigator) {
     return ((Math.atan2(hy, hx) * 180 / Math.PI) + 360) % 360;
   }
 
+  function applyPhase(orbit, lon, dur) {
+    orbit.style.animationDuration  = dur + 's';
+    orbit.style.animationDirection = 'reverse';
+    orbit.style.animationDelay     = -(((360 - lon) / 360) * dur) + 's';
+  }
+
   function init() {
     const E = window.AstroEphemeris;
     if (!E || typeof E.julianDay !== 'function' || typeof E.sunPosition !== 'function') {
@@ -610,33 +621,34 @@ if ('serviceWorker' in navigator) {
     }
     const systems = document.querySelectorAll('.cosmos-solar-system');
     if (!systems.length) return;
+
     const now = new Date();
-    const jd = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
-                           now.getUTCHours(), now.getUTCMinutes(), 0);
+    const jd  = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+                             now.getUTCHours(), now.getUTCMinutes(), 0);
+
     systems.forEach(sys => {
-      const orbits = sys.querySelectorAll('.css-orbit');
-      orbits.forEach((orbit, i) => {
+      // Update inner planets already in the HTML
+      sys.querySelectorAll('.css-orbit').forEach((orbit, i) => {
         const p = PLANETS[i];
         if (!p) return;
-        let lon;
-        try { lon = helioLon(E, p.id, jd); } catch (e) { return; }
-        const dur = p.period * SECONDS_PER_DAY;
-        orbit.style.animationDuration = dur + 's';
-        orbit.style.animationDirection = 'reverse';
-        orbit.style.animationDelay = -(((360 - lon) / 360) * dur) + 's';
+        try { applyPhase(orbit, helioLon(E, p.id, jd), p.period * S); } catch (_) {}
       });
-      if (!sys.querySelector('.css-orbit--saturn-live')) {
+
+      // Append outer planets if not already done
+      OUTER.forEach(op => {
+        const marker = 'css-orbit--' + op.id + '-live';
+        if (sys.querySelector('.' + marker)) return;
         let lon;
-        try { lon = helioLon(E, 'saturn', jd); } catch (e) { return; }
-        const dur = 10759.22 * SECONDS_PER_DAY;
-        const orbit = document.createElement('div');
-        orbit.className = 'css-orbit css-orbit--saturn-live';
-        orbit.style.cssText = '--r:345px;width:690px;height:690px;' +
-          'animation-duration:' + dur + 's;animation-direction:reverse;' +
-          'animation-delay:' + (-(((360 - lon) / 360) * dur)) + 's;';
-        orbit.innerHTML = '<div class="css-planet css-planet--saturn"></div>';
+        try { lon = helioLon(E, op.id, jd); } catch (_) { return; }
+        const dur    = op.period * S;
+        const d      = op.r * 2;
+        const orbit  = document.createElement('div');
+        orbit.className = 'css-orbit ' + marker;
+        orbit.style.cssText = `--r:${op.r}px;width:${d}px;height:${d}px;`;
+        applyPhase(orbit, lon, dur);
+        orbit.innerHTML = `<div class="css-planet ${op.cls}"></div>`;
         sys.appendChild(orbit);
-      }
+      });
     });
   }
 
