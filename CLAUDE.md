@@ -108,12 +108,17 @@ attached to `window`, one stylesheet, hand-written HTML pages.
 
 ## Branches & Deployment
 
-- **Development**: feature branches; site source lives in `website/`
-- **Deploy**: `gh-pages` branch serves the site **from the repo root** (not `website/`).
-  To deploy: checkout `gh-pages`, copy changed files from `website/<path>` to `<path>`, commit, push.
+- **Development**: `main` (or feature branches); site source lives in `website/`
+- **Deploy (current reality)**: GitHub Pages serves the **`gh-pages` branch from the
+  repo root** (verified 2026-06-12: live site 404s files that exist only under
+  `main:website/`). To deploy: mirror `website/` onto `gh-pages` root, commit, push.
+- `.github/workflows/deploy-pages.yml` is currently **inert** — it only takes effect
+  if the repo's Pages source is switched to "GitHub Actions" (Settings → Pages).
+  Doing that would retire the manual gh-pages copy entirely (recommended).
 - Live URL: `https://jonnydavx-eng.github.io/astroprecise/`
-- Local preview: `./launch.sh` from repo root (serves `website/` and opens browser;
-  `--install` adds a Linux desktop launcher)
+- Local preview: `./launch.sh` (or `launch.bat` on Windows) from repo root — serves
+  `website/` on http://localhost:8790, `PORT` env overrides; `--install` adds a
+  Linux desktop launcher
 
 ## Pages
 

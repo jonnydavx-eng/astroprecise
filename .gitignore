@@ -1,0 +1,22 @@
+# Local agent coordination — machine-specific, stays out of the public repo
+AGENT-HANDOFF.md
+
+# Android / Gradle
+.gradle/
+build/
+app/build/
+local.properties
+.idea/
+*.iml
+captures/
+
+# Node
+node_modules/
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/

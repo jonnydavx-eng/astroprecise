@@ -11,7 +11,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SITE_DIR="$REPO_DIR/website"
-PORT="${PORT:-8420}"
+PORT="${PORT:-8790}"
 URL="http://localhost:$PORT/"
 
 install_launcher() {
