@@ -115,7 +115,7 @@
       ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
     dropdown.innerHTML = items.map((c, i) =>
       `<div class="autocomplete-option" role="option" data-i="${i}" id="city-opt-${i}">
-        <span aria-hidden="true">📍</span> <strong>${esc(c.name)}</strong>&nbsp;<span style="opacity:0.6">${esc(regionOf(c))}</span>
+        <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span> <strong>${esc(c.name)}</strong>&nbsp;<span style="opacity:0.6">${esc(regionOf(c))}</span>
       </div>`).join('') + note;
     dropdown.hidden = false;
     dropdown.querySelectorAll('.autocomplete-option').forEach(elx => {
@@ -740,7 +740,7 @@
   // ── Poster draw helpers ───────────────────────────────────────────────────
 
   // Try Cinzel from Google Fonts; fall back to Georgia / serif
-  const FONT_DISPLAY = '"Cinzel", "Playfair Display", Georgia, serif';
+  const FONT_DISPLAY = '"Cinzel", "Cormorant Garamond", Georgia, serif';
   const FONT_SANS    = '"Inter", "Helvetica Neue", Arial, sans-serif';
 
   // Draw a faint dot grid across the canvas

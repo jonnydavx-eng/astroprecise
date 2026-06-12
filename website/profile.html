@@ -7,7 +7,7 @@
   <title>My Cosmic Dashboard | AstroPrecise</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -1015,7 +1015,7 @@
           </label>
 
           <p class="privacy-note">
-            <span aria-hidden="true">🔒</span>
+            <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-lock"/></svg></span>
             Your data never leaves this device
           </p>
         </div>
@@ -1244,7 +1244,7 @@
           <!-- ── 9. Preferences ── -->
           <div class="glass-panel reveal-init" aria-labelledby="prefs-heading">
             <h3 class="glass-panel__title" id="prefs-heading">
-              <span class="panel-icon" aria-hidden="true">⚙</span>
+              <span class="panel-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gear"/></svg></span>
               Preferences
             </h3>
             <div class="prefs-grid">
@@ -1546,7 +1546,7 @@
 
       if (charts.length > 0 && !profile.history?.includes('compatibility')) {
         recs.push({
-          icon:'⚭', iconClass:'', urgent:false,
+          icon:'<svg class="eng-i" aria-hidden="true"><use href="#ei-rings"/></svg>', iconClass:'', urgent:false,
           title:'Run a Compatibility Report',
           body:'Compare your chart with someone important — a partner, parent, or friend. Synastry reveals the invisible architecture between two people.',
           cta:'Open Compatibility', href:'compatibility.html'
