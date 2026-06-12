@@ -170,7 +170,7 @@
         '<p class="instrument-eyebrow" style="margin-bottom:var(--space-3);">Most recently reached</p>' +
         '<div style="display:flex;flex-wrap:wrap;gap:var(--space-2);">' +
         last.map(s =>
-          `<span title="${(s.fact || '').replace(/"/g, '&quot;')}" style="font-size:0.7rem;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(196,146,10,0.3);border-radius:999px;color:var(--gold-pale);cursor:help;">
+          `<span title="${(s.fact || '').replace(/"/g, '&quot;')}" style="font-size:0.7rem;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(212,175,55,0.3);border-radius:999px;color:var(--gold-pale);cursor:help;">
             ${s.name} · ${s.ly} ly</span>`).join('') + '</div>';
     }
 
@@ -202,7 +202,7 @@
     x.fillStyle = '#06060f';
     x.fillRect(0, 0, W, H);
     const neb = x.createRadialGradient(W / 2, 430, 0, W / 2, 430, 520);
-    neb.addColorStop(0, 'rgba(42, 74, 148, 0.22)');
+    neb.addColorStop(0, 'rgba(123, 44, 191, 0.22)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, W, H);
 
@@ -215,10 +215,10 @@
       x.fill();
     }
 
-    x.strokeStyle = 'rgba(196,146,10,0.55)';
+    x.strokeStyle = 'rgba(212,175,55,0.55)';
     x.lineWidth = 2;
     x.strokeRect(46, 46, W - 92, H - 92);
-    x.strokeStyle = 'rgba(196,146,10,0.22)';
+    x.strokeStyle = 'rgba(212,175,55,0.22)';
     x.strokeRect(58, 58, W - 116, H - 116);
 
     // ── wavefront map (same log-radial mapping as the live canvas) ──
@@ -237,7 +237,7 @@
     });
 
     const fill = x.createRadialGradient(cx, cy, 0, cx, cy, waveR);
-    fill.addColorStop(0, 'rgba(196,146,10,0.14)');
+    fill.addColorStop(0, 'rgba(212,175,55,0.14)');
     fill.addColorStop(1, 'rgba(91,127,199,0.03)');
     x.beginPath(); x.arc(cx, cy, waveR, 0, Math.PI * 2);
     x.fillStyle = fill; x.fill();
@@ -258,7 +258,7 @@
     x.arc(cx, cy, waveR, 0, Math.PI * 2);
     x.strokeStyle = 'rgba(232,201,106,0.9)';
     x.lineWidth = 2.4;
-    x.shadowColor = 'rgba(196,146,10,0.9)';
+    x.shadowColor = 'rgba(212,175,55,0.9)';
     x.shadowBlur = 18;
     x.stroke();
     x.shadowBlur = 0;
@@ -273,7 +273,7 @@
 
     // ── text ──
     x.textAlign = 'center';
-    x.fillStyle = '#c4920a';
+    x.fillStyle = '#D4AF37';
     x.font = '26px Georgia, serif';
     x.fillText('✦  T H E   L I G H T - C O N E  ✦', W / 2, 130);
 
@@ -289,7 +289,7 @@
     x.font = '28px Georgia, serif';
     x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, W / 2, 975);
 
-    x.fillStyle = '#c4920a';
+    x.fillStyle = '#D4AF37';
     x.font = '22px Georgia, serif';
     x.fillText('astroprecise · the instrument', W / 2, 1010);
 
@@ -438,7 +438,7 @@
         el.innerHTML =
           `<h3 style="font-family:var(--font-display);color:var(--gold-pale);letter-spacing:0.06em;margin-bottom:var(--space-4);">${r.title}</h3>` +
           r.sections.map(s => `<h4>${s.heading}</h4>` + s.paragraphs.map(p => `<p>${p}</p>`).join('')).join('') +
-          `<div style="border:1px solid rgba(196,146,10,0.3);border-radius:var(--radius-lg);padding:var(--space-5);margin-top:var(--space-6);background:rgba(17,26,54,0.4);">
+          `<div style="border:1px solid rgba(212,175,55,0.3);border-radius:var(--radius-lg);padding:var(--space-5);margin-top:var(--space-6);background:rgba(17,26,54,0.4);">
             <p class="instrument-eyebrow" style="margin-bottom:var(--space-2);">The question</p>
             <p style="font-style:italic;font-size:1.25rem;">${r.question}</p>
           </div>`;

@@ -5950,3 +5950,76 @@ body[data-element="water"]::before {
 .section--alt {
   background: linear-gradient(180deg, transparent 0%, rgba(17,26,54,0.4) 50%, transparent 100%);
 }
+
+/* ==========================================================================
+   Planetary Dignity Badges — Section 8 additions
+   ========================================================================== */
+.dignity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: help;
+}
+.dignity-badge--domicile   { background: rgba(212,175,55,0.15); color: var(--gold-light);     border: 1px solid rgba(212,175,55,0.4); }
+.dignity-badge--exaltation { background: rgba(52,211,153,0.12); color: #34d399;               border: 1px solid rgba(52,211,153,0.35); }
+.dignity-badge--detriment  { background: rgba(176,74,82,0.12);  color: var(--crimson-light);  border: 1px solid rgba(176,74,82,0.3); }
+.dignity-badge--fall       { background: rgba(123,44,191,0.12); color: var(--violet-bright);  border: 1px solid rgba(123,44,191,0.3); }
+
+/* Chart pattern cards */
+.pattern-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+.pattern-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: var(--space-4); right: var(--space-4); height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent);
+}
+.pattern-card--major { border-color: rgba(212,175,55,0.3); }
+.pattern-card__glyph { font-size: 1.8rem; line-height: 1; margin-bottom: var(--space-2); }
+.pattern-card__name  { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-pale); margin-bottom: var(--space-2); }
+.pattern-card__desc  { font-size: var(--text-sm); color: var(--silver); line-height: 1.7; }
+.pattern-card__planets { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-3); }
+.pattern-card__planet-tag { font-size: 0.62rem; letter-spacing: 0.08em; padding: 2px 8px; border-radius: var(--radius-full); background: rgba(123,44,191,0.12); border: 1px solid rgba(123,44,191,0.2); color: var(--violet-bright); }
+.patterns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); }
+
+/* Expression / Soul Urge number card (Life Path page) */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+.num-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  position: relative;
+  overflow: hidden;
+}
+.num-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.45), transparent);
+}
+.num-card__label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--silver-dim); margin-bottom: var(--space-2); }
+.num-card__number { font-family: var(--font-display); font-size: 2.8rem; font-weight: 700; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: var(--space-2); }
+.num-card__title  { font-family: var(--font-display); font-size: var(--text-sm); color: var(--white); margin-bottom: var(--space-3); }
+.num-card__desc   { font-size: var(--text-sm); color: var(--silver); line-height: 1.7; }

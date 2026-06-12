@@ -58,7 +58,7 @@ window.Orrery3D = (() => {
 
   // Aspect definitions for aspect lines
   const ASPECTS = [
-    { name: 'Conjunction', angle:   0, orb: 8,  color: 'rgba(196,146,10,' },
+    { name: 'Conjunction', angle:   0, orb: 8,  color: 'rgba(212,175,55,' },
     { name: 'Sextile',     angle:  60, orb: 4,  color: 'rgba(64,128,196,' },
     { name: 'Square',      angle:  90, orb: 6,  color: 'rgba(180,50,50,'  },
     { name: 'Trine',       angle: 120, orb: 6,  color: 'rgba(50,160,80,'  },
@@ -267,7 +267,7 @@ window.Orrery3D = (() => {
       ctx.globalAlpha = opacity;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.gold ? '#c4920a' : '#d8dce8';
+      ctx.fillStyle = p.gold ? '#D4AF37' : '#d8dce8';
       ctx.fill();
     });
     ctx.globalAlpha = 1;
@@ -317,7 +317,7 @@ window.Orrery3D = (() => {
 
       const grad = ctx.createLinearGradient(tx, ty, hx, hy);
       grad.addColorStop(0, 'rgba(255,255,255,0)');
-      grad.addColorStop(0.6, `rgba(196,146,10,${alpha * 0.5})`);
+      grad.addColorStop(0.6, `rgba(212,175,55,${alpha * 0.5})`);
       grad.addColorStop(1, `rgba(255,255,255,${alpha})`);
 
       ctx.save();
@@ -689,7 +689,7 @@ window.Orrery3D = (() => {
       const p = project({ x: Math.cos(a) * R, y: Math.sin(a) * R, z: 0 });
       i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
     }
-    ctx.strokeStyle = `rgba(196,146,10,${0.18 * baseAlpha})`;
+    ctx.strokeStyle = `rgba(212,175,55,${0.18 * baseAlpha})`;
     ctx.stroke();
 
     for (let i = 0; i < 12; i++) {
@@ -698,7 +698,7 @@ window.Orrery3D = (() => {
       const t1 = project({ x: Math.cos(a0) * (R + 0.09), y: Math.sin(a0) * (R + 0.09), z: 0 });
       ctx.beginPath();
       ctx.moveTo(t0.x, t0.y); ctx.lineTo(t1.x, t1.y);
-      ctx.strokeStyle = `rgba(196,146,10,${0.22 * baseAlpha})`;
+      ctx.strokeStyle = `rgba(212,175,55,${0.22 * baseAlpha})`;
       ctx.stroke();
 
       const am = (i * 30 + 15) * Math.PI / 180;
@@ -708,7 +708,7 @@ window.Orrery3D = (() => {
       const glyphAlpha = (0.15 + 0.25 * g.f) * depthFade * baseAlpha;
       if (glyphAlpha < 0.04) continue;
       ctx.font = `${Math.max(9, 12 * g.f)}px serif`;
-      ctx.fillStyle = `rgba(196,146,10,${glyphAlpha})`;
+      ctx.fillStyle = `rgba(212,175,55,${glyphAlpha})`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(SIGN_GLYPHS[i], g.x, g.y);
@@ -752,7 +752,7 @@ window.Orrery3D = (() => {
         const opacity = baseOp * (0.6 + 0.4 * Math.sin(phase * 1.3 + ring));
         const corona = ctx.createRadialGradient(pr.x, pr.y, r * 0.8, pr.x, pr.y, pulseR);
         corona.addColorStop(0, `rgba(255,220,100,${opacity})`);
-        corona.addColorStop(0.4, `rgba(196,146,10,${opacity * 0.5})`);
+        corona.addColorStop(0.4, `rgba(212,175,55,${opacity * 0.5})`);
         corona.addColorStop(1, 'rgba(196,100,0,0)');
         ctx.beginPath();
         ctx.arc(pr.x, pr.y, pulseR, 0, Math.PI * 2);
@@ -763,7 +763,7 @@ window.Orrery3D = (() => {
       // Static glow for reduced motion
       const glow = ctx.createRadialGradient(pr.x, pr.y, 0, pr.x, pr.y, r * 4);
       glow.addColorStop(0, 'rgba(240,192,64,0.55)');
-      glow.addColorStop(0.4, 'rgba(196,146,10,0.18)');
+      glow.addColorStop(0.4, 'rgba(212,175,55,0.18)');
       glow.addColorStop(1, 'transparent');
       ctx.beginPath();
       ctx.arc(pr.x, pr.y, r * 4, 0, Math.PI * 2);
@@ -774,7 +774,7 @@ window.Orrery3D = (() => {
     // Outer glow halo
     const outerGlow = ctx.createRadialGradient(pr.x, pr.y, r * 0.5, pr.x, pr.y, r * 2.5);
     outerGlow.addColorStop(0, 'rgba(240,200,80,0.4)');
-    outerGlow.addColorStop(1, 'rgba(196,146,10,0)');
+    outerGlow.addColorStop(1, 'rgba(212,175,55,0)');
     ctx.beginPath();
     ctx.arc(pr.x, pr.y, r * 2.5, 0, Math.PI * 2);
     ctx.fillStyle = outerGlow;
@@ -784,7 +784,7 @@ window.Orrery3D = (() => {
     const core = ctx.createRadialGradient(pr.x - r * 0.2, pr.y - r * 0.2, 0, pr.x, pr.y, r);
     core.addColorStop(0, '#fff8e0');
     core.addColorStop(0.5, '#f0c040');
-    core.addColorStop(1, '#c4920a');
+    core.addColorStop(1, '#D4AF37');
     ctx.beginPath();
     ctx.arc(pr.x, pr.y, r, 0, Math.PI * 2);
     ctx.fillStyle = core;

@@ -980,6 +980,22 @@
         <h2 class="section__title" id="sky-heading">Today's Planetary Weather</h2>
         <p class="section__subtitle">Current positions of all planets and their influences on collective energy</p>
 
+        <!-- Live cosmic status bar -->
+        <div id="cosmic-status-bar" style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-6);align-items:center;">
+          <div id="void-moon-badge" style="display:none;align-items:center;gap:6px;background:rgba(110,26,38,0.12);border:1px solid rgba(110,26,38,0.35);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:#b04a52;">
+            <span style="font-size:1rem;">☽</span>
+            <span>Void of Course Moon</span>
+            <span id="void-moon-sign" style="color:var(--silver-dim);"></span>
+          </div>
+          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
+            <span id="ph-glyph" style="font-size:1rem;">⏱</span>
+            <span>Planetary Hour: </span><strong id="ph-name" style="color:var(--gold-light);">loading…</strong>
+          </div>
+          <div id="retrogrades-badge" style="display:flex;align-items:center;gap:6px;background:rgba(123,44,191,0.08);border:1px solid rgba(123,44,191,0.2);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--violet-bright);">
+            <span>Rx</span> <span id="retrogrades-list" style="color:var(--silver);">loading…</span>
+          </div>
+        </div>
+
         <div id="todays-sky" class="planet-grid" role="region" aria-live="polite" aria-label="Today's planetary positions">
           <!-- JS populates -->
           <div class="planet-weather-card">
@@ -1764,6 +1780,50 @@
         tryUpdate();
       })();
 
+      // Cosmic status bar: void moon, planetary hour, retrogrades
+      (function updateCosmicStatus() {
+        function tryStatus() {
+          if (!window.AstroEphemeris || !window.AstroOracle) { setTimeout(tryStatus, 400); return; }
+          var now = new Date();
+          var raw = AstroEphemeris.calculateNatalChart(now.getUTCFullYear(), now.getUTCMonth()+1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 51.5, 0);
+          if (!raw) return;
+
+          // Retrograde display
+          var PLANETS_RX = [
+            {key:'mercury',glyph:'☿'},{key:'venus',glyph:'♀'},{key:'mars',glyph:'♂'},
+            {key:'jupiter',glyph:'♃'},{key:'saturn',glyph:'♄'},{key:'uranus',glyph:'♅'},
+            {key:'neptune',glyph:'♆'},{key:'pluto',glyph:'♇'},
+          ];
+          var retroList = PLANETS_RX.filter(function(p){ return raw.positions && raw.positions[p.key] && raw.positions[p.key].retrograde; });
+          var rxEl = document.getElementById('retrogrades-list');
+          if (rxEl) {
+            rxEl.textContent = retroList.length
+              ? retroList.map(function(p){ return p.glyph + ' ' + p.key.charAt(0).toUpperCase()+p.key.slice(1); }).join('  ·  ')
+              : 'No planets retrograde';
+          }
+
+          // Void of course moon
+          var voc = AstroOracle.getVoidOfCourseMoon ? AstroOracle.getVoidOfCourseMoon(now) : null;
+          var vocBadge = document.getElementById('void-moon-badge');
+          if (voc && voc.isVoid && vocBadge) {
+            vocBadge.style.display = 'flex';
+            var vocSign = document.getElementById('void-moon-sign');
+            if (vocSign) vocSign.textContent = '— moon in ' + (voc.moonSign || '') + ', no major aspects until sign change';
+          }
+
+          // Planetary hour
+          var ph = AstroOracle.getPlanetaryHour ? AstroOracle.getPlanetaryHour(now, 51.5, 0) : null;
+          if (ph) {
+            var phName = document.getElementById('ph-name');
+            var phGlyph = document.getElementById('ph-glyph');
+            var PH_GLYPHS = {Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄'};
+            if (phName) phName.textContent = ph.planet;
+            if (phGlyph) phGlyph.textContent = PH_GLYPHS[ph.planet] || '⏱';
+          }
+        }
+        tryStatus();
+      })();
+
       // Dynamic weekly forecast via Oracle
       (function updateWeeklyForecast() {
         function tryUpdate() {
@@ -1820,7 +1880,9 @@
 
   <!-- JS -->
   <script src="js/cosmos.js"></script>
+  <script src="js/stellar.js"></script>
   <script src="js/ephemeris.js"></script>
+  <script src="js/oracle.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/interpretations.js"></script>
   <script src="js/profile.js"></script>

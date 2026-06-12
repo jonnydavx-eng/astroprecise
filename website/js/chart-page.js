@@ -55,13 +55,13 @@
     fire:  '#c84832',
     earth: '#2d8a3e',
     air:   '#4a7ac7',
-    water: '#2a4a94',
+    water: '#5B3FA0',
   };
   const ELEMENT_LABEL_COLORS = {
     fire:  '#e07060',
     earth: '#5ab870',
     air:   '#7aabef',
-    water: '#6090d8',
+    water: '#8B6FD4',
   };
   // Modality mapping
   const MODALITY_MAP = {
@@ -598,10 +598,10 @@
 
   // Draw double gold frame
   function drawFrame(x, W, H, outerInset, innerInset) {
-    x.strokeStyle = 'rgba(196,146,10,0.65)';
+    x.strokeStyle = 'rgba(212,175,55,0.65)';
     x.lineWidth = 2.5;
     x.strokeRect(outerInset, outerInset, W - outerInset * 2, H - outerInset * 2);
-    x.strokeStyle = 'rgba(196,146,10,0.28)';
+    x.strokeStyle = 'rgba(212,175,55,0.28)';
     x.lineWidth = 1.5;
     x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
   }
@@ -617,13 +617,13 @@
     const x = cv.getContext('2d');
 
     // ── Background ──
-    x.fillStyle = '#090b16';
+    x.fillStyle = '#0A0B1F';
     x.fillRect(0, 0, W, H);
 
     // Nebula gradients — richer, two-color
     const neb1 = x.createRadialGradient(W * 0.25, H * 0.18, 0, W * 0.25, H * 0.18, W * 0.85);
-    neb1.addColorStop(0, 'rgba(42,74,148,0.30)');
-    neb1.addColorStop(0.5, 'rgba(42,74,148,0.10)');
+    neb1.addColorStop(0, 'rgba(123,44,191,0.30)');
+    neb1.addColorStop(0.5, 'rgba(123,44,191,0.10)');
     neb1.addColorStop(1, 'transparent');
     x.fillStyle = neb1; x.fillRect(0, 0, W, H);
 
@@ -651,12 +651,12 @@
     x.textAlign = 'center';
 
     // "✦ NATAL CHART ✦" eyebrow
-    x.fillStyle = '#c4920a';
+    x.fillStyle = '#D4AF37';
     x.font = `500 28px ${FONT_DISPLAY}`;
     x.fillText('✦  N A T A L   C H A R T  ✦', W / 2, 152);
 
     // Decorative separator line
-    x.strokeStyle = 'rgba(196,146,10,0.3)';
+    x.strokeStyle = 'rgba(212,175,55,0.3)';
     x.lineWidth = 1;
     x.beginPath(); x.moveTo(200, 172); x.lineTo(W - 200, 172); x.stroke();
 
@@ -683,7 +683,7 @@
     const trioY = 390;
     threeItems.forEach((ti, idx) => {
       const tx = W / 2 + (idx - 1) * 160;
-      x.fillStyle = '#c4920a';
+      x.fillStyle = '#D4AF37';
       x.font = `400 44px ${FONT_DISPLAY}`;
       x.fillText(ti.glyph, tx, trioY);
       x.fillStyle = '#8891aa';
@@ -709,31 +709,31 @@
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                           'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
     const ELEMENT_SECTOR_COLORS = {
-      Aries:'rgba(200,72,50,0.10)', Taurus:'rgba(45,138,62,0.10)', Gemini:'rgba(74,122,199,0.10)', Cancer:'rgba(42,74,148,0.12)',
-      Leo:'rgba(200,72,50,0.10)', Virgo:'rgba(45,138,62,0.10)', Libra:'rgba(74,122,199,0.10)', Scorpio:'rgba(42,74,148,0.12)',
-      Sagittarius:'rgba(200,72,50,0.10)', Capricorn:'rgba(45,138,62,0.10)', Aquarius:'rgba(74,122,199,0.10)', Pisces:'rgba(42,74,148,0.12)',
+      Aries:'rgba(200,72,50,0.10)', Taurus:'rgba(45,138,62,0.10)', Gemini:'rgba(74,122,199,0.10)', Cancer:'rgba(123,44,191,0.12)',
+      Leo:'rgba(200,72,50,0.10)', Virgo:'rgba(45,138,62,0.10)', Libra:'rgba(74,122,199,0.10)', Scorpio:'rgba(123,44,191,0.12)',
+      Sagittarius:'rgba(200,72,50,0.10)', Capricorn:'rgba(45,138,62,0.10)', Aquarius:'rgba(74,122,199,0.10)', Pisces:'rgba(123,44,191,0.12)',
     };
 
     const ascLon = chart.asc || 0;
     const ang = lon => Math.PI - ((lon - ascLon) * Math.PI / 180);
 
     // Outer rim circle
-    x.strokeStyle = 'rgba(196,146,10,0.75)';
+    x.strokeStyle = 'rgba(212,175,55,0.75)';
     x.lineWidth = 3;
     x.beginPath(); x.arc(cx, cy, rOuter, 0, Math.PI * 2); x.stroke();
 
     // Sign band inner ring
-    x.strokeStyle = 'rgba(196,146,10,0.45)';
+    x.strokeStyle = 'rgba(212,175,55,0.45)';
     x.lineWidth = 1.5;
     x.beginPath(); x.arc(cx, cy, rSignInner, 0, Math.PI * 2); x.stroke();
 
     // Sign band outer ring
-    x.strokeStyle = 'rgba(196,146,10,0.3)';
+    x.strokeStyle = 'rgba(212,175,55,0.3)';
     x.lineWidth = 1;
     x.beginPath(); x.arc(cx, cy, rBand, 0, Math.PI * 2); x.stroke();
 
     // Planet ring
-    x.strokeStyle = 'rgba(196,146,10,0.2)';
+    x.strokeStyle = 'rgba(212,175,55,0.2)';
     x.lineWidth = 1;
     x.beginPath(); x.arc(cx, cy, rInner, 0, Math.PI * 2); x.stroke();
 
@@ -755,7 +755,7 @@
       x.fill();
 
       // Spoke
-      x.strokeStyle = 'rgba(196,146,10,0.3)';
+      x.strokeStyle = 'rgba(212,175,55,0.3)';
       x.lineWidth = 1;
       x.beginPath();
       x.moveTo(cx + Math.cos(a1) * rSignInner, cy + Math.sin(a1) * rSignInner);
@@ -765,7 +765,7 @@
       // Sign glyph in the band midpoint
       const mid = ang(i * 30 + 15);
       const gR  = (rBand + rSignInner) / 2;
-      x.fillStyle = '#c4920a';
+      x.fillStyle = '#D4AF37';
       x.font = `400 42px ${FONT_DISPLAY}`;
       x.textBaseline = 'middle';
       x.textAlign = 'center';
@@ -773,7 +773,7 @@
     }
 
     // Degree ticks every 10° (minor) and 30° (major already handled by spokes)
-    x.strokeStyle = 'rgba(196,146,10,0.4)';
+    x.strokeStyle = 'rgba(212,175,55,0.4)';
     for (let d2 = 0; d2 < 360; d2 += 10) {
       if (d2 % 30 === 0) continue;
       const a = ang(d2);
@@ -857,7 +857,7 @@
       // Halo circle behind glyph
       const haloR = 28;
       const haloGrad = x.createRadialGradient(px2, py2, 0, px2, py2, haloR);
-      haloGrad.addColorStop(0, 'rgba(196,146,10,0.18)');
+      haloGrad.addColorStop(0, 'rgba(212,175,55,0.18)');
       haloGrad.addColorStop(1, 'transparent');
       x.fillStyle = haloGrad;
       x.beginPath(); x.arc(px2, py2, haloR, 0, Math.PI * 2); x.fill();
@@ -879,7 +879,7 @@
     x.textBaseline = 'alphabetic';
 
     // Centre star
-    x.fillStyle = 'rgba(196,146,10,0.9)';
+    x.fillStyle = 'rgba(212,175,55,0.9)';
     x.font = `400 56px ${FONT_DISPLAY}`;
     x.textBaseline = 'middle';
     x.textAlign = 'center';
@@ -892,11 +892,11 @@
     const BAR_W = 580, BAR_H = 26, BAR_X = (W - BAR_W) / 2;
 
     x.textAlign = 'center';
-    x.fillStyle = '#c4920a';
+    x.fillStyle = '#D4AF37';
     x.font = `600 22px ${FONT_SANS}`;
     x.fillText('E L E M E N T A L   D I S T R I B U T I O N', W / 2, elemTop);
 
-    x.strokeStyle = 'rgba(196,146,10,0.2)';
+    x.strokeStyle = 'rgba(212,175,55,0.2)';
     x.lineWidth = 1;
     x.beginPath(); x.moveTo(200, elemTop + 16); x.lineTo(W - 200, elemTop + 16); x.stroke();
 
@@ -945,11 +945,11 @@
     // ── Planet Placements Table ── two-column
     const tableTop = 1630;
     x.textAlign = 'center';
-    x.fillStyle = '#c4920a';
+    x.fillStyle = '#D4AF37';
     x.font = `600 22px ${FONT_SANS}`;
     x.fillText('P L A N E T A R Y   P L A C E M E N T S', W / 2, tableTop);
 
-    x.strokeStyle = 'rgba(196,146,10,0.2)';
+    x.strokeStyle = 'rgba(212,175,55,0.2)';
     x.lineWidth = 1;
     x.beginPath(); x.moveTo(200, tableTop + 14); x.lineTo(W - 200, tableTop + 14); x.stroke();
 
@@ -975,7 +975,7 @@
 
         // Planet glyph
         x.textAlign = 'left';
-        x.fillStyle = '#c4920a';
+        x.fillStyle = '#D4AF37';
         x.font = `400 36px ${FONT_DISPLAY}`;
         x.fillText(PLANET_GLYPHS[row.k] || '', colX, ry + 20);
 
@@ -997,7 +997,7 @@
         }
 
         // Degree
-        x.fillStyle = '#c4920a';
+        x.fillStyle = '#D4AF37';
         x.font = `400 18px "Courier New", monospace`;
         x.textAlign = 'right';
         x.fillText(
@@ -1042,13 +1042,13 @@
     const x = cv.getContext('2d');
 
     // ── Background ──
-    x.fillStyle = '#090b16';
+    x.fillStyle = '#0A0B1F';
     x.fillRect(0, 0, W, H);
 
     // Nebula 1 — lapis top-right
     const neb1 = x.createRadialGradient(W * 0.75, H * 0.2, 0, W * 0.75, H * 0.2, W * 0.7);
-    neb1.addColorStop(0, 'rgba(42,74,148,0.30)');
-    neb1.addColorStop(0.5, 'rgba(42,74,148,0.10)');
+    neb1.addColorStop(0, 'rgba(123,44,191,0.30)');
+    neb1.addColorStop(0.5, 'rgba(123,44,191,0.10)');
     neb1.addColorStop(1, 'transparent');
     x.fillStyle = neb1; x.fillRect(0, 0, W, H);
 
@@ -1067,7 +1067,7 @@
 
     // ── Header ──
     x.textAlign = 'center';
-    x.fillStyle = '#c4920a';
+    x.fillStyle = '#D4AF37';
     x.font = `500 24px ${FONT_DISPLAY}`;
     x.fillText('✦  A S T R O P R E C I S E  ✦', W / 2, 122);
 
@@ -1140,7 +1140,7 @@
       x.beginPath(); x.moveTo(CARD_X + 20, cardY + 1); x.lineTo(CARD_X + CARD_W - 20, cardY + 1); x.stroke();
 
       // Planet glyph (big, gold)
-      x.fillStyle = '#c4920a';
+      x.fillStyle = '#D4AF37';
       x.font = `400 74px ${FONT_DISPLAY}`;
       x.textBaseline = 'middle';
       x.textAlign = 'left';
@@ -1196,14 +1196,14 @@
     x.globalAlpha = 1;
 
     // Circle border
-    x.strokeStyle = 'rgba(196,146,10,0.5)';
+    x.strokeStyle = 'rgba(212,175,55,0.5)';
     x.lineWidth = 2;
     x.beginPath(); x.arc(circX, circY, circR, 0, Math.PI * 2); x.stroke();
 
     // Centre dot
-    x.fillStyle = '#090b16';
+    x.fillStyle = '#0A0B1F';
     x.beginPath(); x.arc(circX, circY, 14, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#c4920a';
+    x.fillStyle = '#D4AF37';
     x.font = `400 14px ${FONT_DISPLAY}`;
     x.textAlign = 'center';
     x.textBaseline = 'middle';
@@ -1230,7 +1230,7 @@
     x.fillText('Discover your cosmic blueprint at astroprecise.app', W / 2, H - 86);
 
     // Bottom gold rule
-    x.strokeStyle = 'rgba(196,146,10,0.25)';
+    x.strokeStyle = 'rgba(212,175,55,0.25)';
     x.lineWidth = 1;
     x.beginPath(); x.moveTo(200, H - 106); x.lineTo(W - 200, H - 106); x.stroke();
 
