@@ -573,12 +573,14 @@ h1, h2, h3, h4, h5, h6 {
   width: 32px;
   height: 32px;
   flex-shrink: 0;
-  animation: spin-slow 20s linear infinite;
+  /* The instrument stays still — its sky moves (animation lives inside logo.svg).
+     Spinning the whole astrolabe (ticks, star and all) read as accidental. */
+  transition: transform 0.5s var(--ease-out, ease);
 }
 
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+.navbar__logo:hover .navbar__logo-icon,
+.navbar__logo:focus-visible .navbar__logo-icon {
+  transform: rotate(12deg) scale(1.08);
 }
 
 .navbar__nav {
@@ -3753,6 +3755,11 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0.22;
   pointer-events: none;
   animation: spin-slow 80s linear infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .wheel-decoration {
