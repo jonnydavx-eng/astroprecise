@@ -226,7 +226,9 @@
           <a href="ephemeris.html" class="navbar__link active" aria-current="page">Instrument</a>
           <a href="horoscope.html" class="navbar__link">Horoscope</a>
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
           <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
           <a href="profile.html" class="navbar__link">Profile</a>
         </div>
         <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -239,7 +241,9 @@
         <a href="ephemeris.html" class="navbar__link active">Instrument</a>
         <a href="horoscope.html" class="navbar__link">Horoscope</a>
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
         <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="shop.html" class="navbar__link">Shop</a>
         <a href="profile.html" class="navbar__link">Profile</a>
       </div>
     </nav>
@@ -281,6 +285,23 @@
             <span id="ev-status" style="font-size:0.75rem;color:var(--silver-dim);"></span>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ═══ 0b. NATAL SIGNATURE (appears after event is set) ═══ -->
+    <section class="instrument-section" id="sec-natal-signature" hidden style="padding-top:var(--space-8);padding-bottom:var(--space-8);border-bottom:1px solid rgba(150,175,230,0.08);">
+      <p class="instrument-eyebrow">Your Natal Signature</p>
+      <h2 class="instrument-title" style="font-size:1.4rem;">Key frequencies at your moment of birth.</h2>
+      <div id="natal-sig-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-4);margin-top:var(--space-5);">
+        <!-- JS populates -->
+      </div>
+      <div style="margin-top:var(--space-6);">
+        <a id="natal-lifepath-link" href="lifepath.html" class="glow-btn" style="display:inline-flex;align-items:center;gap:var(--space-2);text-decoration:none;">
+          ✦ Your Numerology Blueprint →
+        </a>
+        <p style="margin-top:var(--space-3);font-size:0.68rem;color:var(--silver-dim);line-height:1.6;">
+          Life Path, Expression, and Personal Year numbers computed from your birth date.
+        </p>
       </div>
     </section>
 
@@ -439,7 +460,7 @@
   <footer class="footer" role="contentinfo">
     <div class="container">
       <div class="footer__bottom" style="border-top:none;">
-        <p>&copy; 2025 AstroPrecise · Every number on this page is computed from the real sky.</p>
+        <p>&copy; 2026 AstroPrecise · Every number on this page is computed from the real sky.</p>
       </div>
     </div>
   </footer>
@@ -459,6 +480,82 @@
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
+  <script>
+  /* Natal signature — populates when event is set via the Instrument form */
+  (function () {
+    function sumDigits(n) {
+      return String(Math.abs(n)).split('').reduce(function(a,d){return a+parseInt(d,10);},0);
+    }
+    function toNumeroNum(n) {
+      while (n > 9 && n !== 11 && n !== 22 && n !== 33) n = sumDigits(n);
+      return n;
+    }
+    function calcLifePath(y,m,d) {
+      return toNumeroNum(toNumeroNum(m)+toNumeroNum(d)+toNumeroNum(sumDigits(y)));
+    }
+    var LP_TITLES={1:'Pioneer',2:'Diplomat',3:'Creator',4:'Builder',5:'Explorer',6:'Nurturer',7:'Seeker',8:'Achiever',9:'Humanitarian',11:'Illuminator',22:'Master Builder',33:'Master Teacher'};
+
+    function tryWireEventSet() {
+      var btn = document.getElementById('ev-set');
+      if (!btn) { setTimeout(tryWireEventSet, 300); return; }
+      btn.addEventListener('click', function () {
+        setTimeout(function () {
+          var sig = document.getElementById('sec-natal-signature');
+          var dtInput = document.getElementById('ev-datetime');
+          if (!sig || !dtInput || !dtInput.value) return;
+          var dt = new Date(dtInput.value);
+          if (isNaN(dt.getTime())) return;
+          var y = dt.getFullYear(), m = dt.getMonth()+1, d = dt.getDate();
+          var lp = calcLifePath(y,m,d);
+          var title = LP_TITLES[lp] || '';
+          // Life Path link
+          var link = document.getElementById('natal-lifepath-link');
+          if (link) {
+            var iso = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+            link.href = 'lifepath.html?date=' + iso;
+            link.textContent = '✦ Life Path ' + lp + ' — ' + title + ' →';
+          }
+          // Compact planet grid
+          var grid = document.getElementById('natal-sig-grid');
+          if (grid) {
+            var E = window.AstroEphemeris;
+            var items = [];
+            if (E && typeof E.calculateNatalChart === 'function') {
+              try {
+                var raw = E.calculateNatalChart(y,m,d,dt.getUTCHours()||12,dt.getUTCMinutes()||0,0,0);
+                if (raw && raw.positions) {
+                  var PLANETS = [
+                    {k:'sun',g:'☉',n:'Sun'},{k:'moon',g:'☽',n:'Moon'},
+                    {k:'mercury',g:'☿',n:'Mercury'},{k:'venus',g:'♀',n:'Venus'},
+                    {k:'mars',g:'♂',n:'Mars'},{k:'jupiter',g:'♃',n:'Jupiter'}
+                  ];
+                  PLANETS.forEach(function(p) {
+                    var pos = raw.positions[p.k];
+                    if (!pos) return;
+                    items.push('<div style="background:rgba(17,26,54,0.7);border:1px solid rgba(150,175,230,0.12);border-radius:12px;padding:var(--space-4);">' +
+                      '<span style="font-size:1.4rem;">' + p.g + '</span>' +
+                      '<div style="font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--silver-dim);margin-top:4px;">' + p.n + '</div>' +
+                      '<div style="color:var(--white);font-family:var(--font-display);font-size:0.9rem;margin-top:2px;">' + (pos.sign||'?') + ' ' + Math.floor(pos.degree||0) + '°</div>' +
+                    '</div>');
+                  });
+                }
+              } catch(e) {}
+            }
+            items.push('<div style="background:rgba(196,146,10,0.07);border:1px solid rgba(196,146,10,0.2);border-radius:12px;padding:var(--space-4);">' +
+              '<span style="font-size:1.4rem;color:var(--gold-pale);">✦</span>' +
+              '<div style="font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--silver-dim);margin-top:4px;">Life Path</div>' +
+              '<div style="color:var(--gold-pale);font-family:var(--font-display);font-size:0.9rem;margin-top:2px;">' + lp + ' — ' + title + '</div>' +
+            '</div>');
+            grid.innerHTML = items.join('');
+          }
+          sig.removeAttribute('hidden');
+        }, 600);
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryWireEventSet);
+    else tryWireEventSet();
+  })();
+  </script>
   <script src="js/instrument.js"></script>
 </body>
 </html>

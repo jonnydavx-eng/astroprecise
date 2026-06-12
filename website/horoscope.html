@@ -432,6 +432,17 @@
       text-align: right;
       white-space: nowrap;
     }
+    /* Element-themed reading card borders */
+    .sign-reading-panel[data-element="fire"] .reading-card { border-color: rgba(180,66,50,0.3); }
+    .sign-reading-panel[data-element="earth"] .reading-card { border-color: rgba(14,92,58,0.3); }
+    .sign-reading-panel[data-element="air"] .reading-card { border-color: rgba(42,74,148,0.35); }
+    .sign-reading-panel[data-element="water"] .reading-card { border-color: rgba(27,95,170,0.35); }
+    /* Sign card hover glyph glow */
+    .sign-card:hover .sign-card__glyph { filter: drop-shadow(0 0 8px rgba(196,146,10,0.5)); transition: filter 0.3s; }
+    .sign-card[data-element="fire"]:hover .sign-card__glyph { filter: drop-shadow(0 0 8px rgba(180,66,50,0.6)); }
+    .sign-card[data-element="earth"]:hover .sign-card__glyph { filter: drop-shadow(0 0 8px rgba(14,92,58,0.6)); }
+    .sign-card[data-element="air"]:hover .sign-card__glyph { filter: drop-shadow(0 0 8px rgba(42,74,148,0.6)); }
+    .sign-card[data-element="water"]:hover .sign-card__glyph { filter: drop-shadow(0 0 8px rgba(27,95,170,0.6)); }
   </style>
 </head>
 <body>
@@ -466,7 +477,9 @@
           <a href="ephemeris.html" class="navbar__link">Instrument</a>
           <a href="horoscope.html" class="navbar__link active" aria-current="page">Horoscope</a>
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
           <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
           <a href="profile.html" class="navbar__link">Profile</a>
         </div>
         <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -479,7 +492,9 @@
           <a href="ephemeris.html" class="navbar__link">Instrument</a>
         <a href="horoscope.html" class="navbar__link active" aria-current="page">Horoscope</a>
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
         <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="shop.html" class="navbar__link">Shop</a>
         <a href="profile.html" class="navbar__link">Profile</a>
       </div>
     </nav>
@@ -586,6 +601,10 @@
                   <span class="srp-element-text" id="srp-element-text"></span>
                 </div>
               </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
+                <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
+                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(196,146,10,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
+              </div>
               <div class="sign-reading-panel__actions">
                 <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">✦ Card</button>
                 <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
@@ -622,9 +641,19 @@
               <span class="lucky-item">Lucky Color <strong id="srp-lucky-color"></strong></span>
               <span class="lucky-item">Best Day <strong id="srp-best-day"></strong></span>
             </div>
+            <div id="srp-weekly-wrap" style="margin-top:var(--space-5);border-top:1px solid rgba(255,255,255,0.06);padding-top:var(--space-4);">
+              <button id="srp-weekly-toggle" class="btn btn--ghost btn--sm" style="width:100%;justify-content:space-between;margin-bottom:0;" aria-expanded="false">
+                <span>✦ Weekly Outlook</span>
+                <span id="srp-weekly-chevron">▾</span>
+              </button>
+              <div id="srp-weekly-body" style="display:none;margin-top:var(--space-4);font-family:'Playfair Display',serif;font-style:italic;font-size:var(--text-sm);color:var(--silver);line-height:1.75;" aria-live="polite"></div>
+            </div>
             <p class="srp-personal-note" id="srp-personal-note" hidden></p>
             <p style="margin-top:var(--space-4);">
               <span class="ap-badge ap-badge--deterministic">Fixed for this date — same sign, same day, same reading</span>
+            </p>
+            <p style="margin-top:var(--space-3);font-size:0.65rem;color:var(--silver-dim);">
+              Discover your numerology: <a href="lifepath.html" class="text-link" style="color:var(--gold);text-decoration:none;">Life Path Calculator →</a>
             </p>
           </div>
         </div>
@@ -932,6 +961,11 @@
       return null;
     }
 
+    var PLANETARY_RULERS = {
+      aries:'♂ Mars', taurus:'♀ Venus', gemini:'☿ Mercury', cancer:'☽ Moon',
+      leo:'☉ Sun', virgo:'☿ Mercury', libra:'♀ Venus', scorpio:'♇ Pluto',
+      sagittarius:'♃ Jupiter', capricorn:'♄ Saturn', aquarius:'♅ Uranus', pisces:'♆ Neptune'
+    };
     var ELEMENT_LABELS = { fire:'Fire Sign ✦', earth:'Earth Sign ⬡', air:'Air Sign ◈', water:'Water Sign ◉' };
     var SIGN_KEYS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
 
@@ -981,6 +1015,77 @@
           noteEl.setAttribute('hidden', '');
         }
       }
+
+      // Planetary ruler badge
+      var rulerEl = document.getElementById('srp-ruler-badge');
+      if (rulerEl) rulerEl.textContent = (PLANETARY_RULERS[signKey] || '') + ' Ruler';
+
+      // Weekly reading
+      var weeklyBody = document.getElementById('srp-weekly-body');
+      if (weeklyBody) weeklyBody.textContent = data.weekly || 'Weekly reading will appear here.';
+      var weeklyToggle = document.getElementById('srp-weekly-toggle');
+      var weeklyChevron = document.getElementById('srp-weekly-chevron');
+      if (weeklyToggle && weeklyBody) {
+        weeklyToggle.setAttribute('aria-expanded', 'false');
+        weeklyBody.style.display = 'none';
+        if (weeklyChevron) weeklyChevron.textContent = '▾';
+        weeklyToggle._bound && weeklyToggle.removeEventListener('click', weeklyToggle._bound);
+        weeklyToggle._bound = function() {
+          var open = weeklyBody.style.display === 'none';
+          weeklyBody.style.display = open ? 'block' : 'none';
+          weeklyToggle.setAttribute('aria-expanded', String(open));
+          if (weeklyChevron) weeklyChevron.textContent = open ? '▴' : '▾';
+        };
+        weeklyToggle.addEventListener('click', weeklyToggle._bound);
+      }
+
+      // Moon phase canvas
+      (function drawMoonPhase() {
+        var cv = document.getElementById('srp-moon-canvas');
+        if (!cv) return;
+        var ctx = cv.getContext('2d');
+        var W = cv.width, H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        // Compute approximate moon phase from current Julian Day
+        var now2 = new Date();
+        var jd2 = 367 * now2.getUTCFullYear()
+          - Math.floor(7 * (now2.getUTCFullYear() + Math.floor((now2.getUTCMonth()+1+9)/12)) / 4)
+          + Math.floor(275 * (now2.getUTCMonth()+1) / 9)
+          + now2.getUTCDate() + 1721013.5
+          + (now2.getUTCHours() + now2.getUTCMinutes()/60) / 24;
+        var synodicPeriod = 29.53058867;
+        var newMoonRef = 2451549.5; // JD of known new moon (Jan 6, 2000)
+        var phase = ((jd2 - newMoonRef) % synodicPeriod + synodicPeriod) % synodicPeriod / synodicPeriod; // 0–1
+        var cx = W/2, cy = H/2, r = Math.min(W, H) * 0.38;
+        // Dark background circle
+        ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
+        var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r + 4);
+        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#090b16');
+        ctx.fillStyle = bgGrad; ctx.fill();
+        // Draw moon
+        ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
+        // Dark side — full disc
+        ctx.fillStyle = '#1c2550'; ctx.fillRect(0, 0, W, H);
+        // Illuminated side
+        ctx.fillStyle = '#d8c890';
+        ctx.beginPath();
+        if (phase < 0.5) {
+          // Waxing — right half lit, shadow on left
+          ctx.arc(cx, cy, r, -Math.PI/2, Math.PI/2); // right semicircle
+          var ex = r * Math.cos(Math.PI * (1 - 2 * phase)); // ellipse x-radius
+          ctx.ellipse(cx, cy, Math.abs(ex), r, 0, Math.PI/2, -Math.PI/2, phase < 0.25);
+        } else {
+          // Waning — left half lit, shadow on right
+          ctx.arc(cx, cy, r, Math.PI/2, -Math.PI/2); // left semicircle
+          var ex2 = r * Math.cos(Math.PI * (2 * phase - 1));
+          ctx.ellipse(cx, cy, Math.abs(ex2), r, 0, -Math.PI/2, Math.PI/2, phase > 0.75);
+        }
+        ctx.closePath(); ctx.fill();
+        ctx.restore();
+        // Outer glow ring
+        ctx.strokeStyle = 'rgba(196,146,10,0.3)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(cx, cy, r + 2, 0, Math.PI * 2); ctx.stroke();
+      })();
 
       panel.classList.add('is-open');
       setTimeout(function () {
