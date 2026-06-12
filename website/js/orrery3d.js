@@ -28,7 +28,6 @@ window.Orrery3D = (() => {
   'use strict';
 
   // Debug load message (remove after testing)
-  console.log('%c[orrery3d] orrery3d.js loaded (globe intro active)', 'color: lime');
 
   // ── Planet definitions ────────────────────────────────────────────────────
 
@@ -759,7 +758,6 @@ window.Orrery3D = (() => {
       if (introProgress < 0.28) {
         // Pure globe phase — just the beautiful rotating Earth + Sun (longer for visibility)
         visibleItems = items.filter(it => it.kind === 'sun' || (it.b && it.b.id === 'earth'));
-        console.log('[orrery] PURE GLOBE PHASE active — Earth only, progress=', introProgress.toFixed(2));
       } else if (introProgress < 0.55) {
         // Early pull-back — inner system starts to appear
         visibleItems = items.filter(it =>
@@ -801,18 +799,6 @@ window.Orrery3D = (() => {
     visibleItems.forEach(it => it.kind === 'sun' ? drawSun(it.pr) : drawPlanet(it.b, it.pr));
 
     if (showLabels) drawPlanetLabels(visibleItems);
-
-    // Obvious visual + console for the "start with a globe" phase (remove after you confirm you see it)
-    if (introActive && introProgress < 0.28) {
-      ctx.font = 'bold 26px Inter, system-ui';
-      ctx.fillStyle = 'rgba(255, 230, 120, 1)';
-      ctx.textAlign = 'center';
-      ctx.fillText('★ START: DETAILED EARTH GLOBE ★', cx, 65);
-      ctx.font = '14px Inter, system-ui';
-      ctx.fillStyle = 'rgba(200, 220, 255, 0.9)';
-      ctx.fillText('(watch the zoom out from here)', cx, 85);
-      console.log('[orrery] Drawing GLOBE indicator — big yellow text at top + large detailed Earth should be visible now');
-    }
 
     updateAndDrawShootingStars(ts || performance.now());
 
