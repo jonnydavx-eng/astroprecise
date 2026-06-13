@@ -1263,13 +1263,19 @@ body > .cosmos-solar-system { display: none !important; }
 .engraved-glyph.moon { font-size: 1.3em; color: #E8E0D0; }
 .engraved-glyph.planet { font-size: 1.15em; }
 
-/* Subtle Sacred Geometry overlays for ancient hermetic synchronicity (circles, vesica, subtle alignments) */
-.sacred-geo,
+/* Subtle Sacred Geometry overlays for ancient hermetic synchronicity (circles, vesica, subtle alignments).
+   The overlay MUST be a pseudo-element. Applying position:absolute to the .sacred-geo container
+   itself rips it out of flow — that was stacking .bento-grid / .tools-bento on top of the hero.
+   The container only needs to establish a positioning context for its ::before / ::after. */
+.sacred-geo {
+  position: relative;
+}
+.sacred-geo::after,
 .hero::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: 
+  background:
     radial-gradient(circle at 25% 30%, transparent 48%, rgba(212,175,55,0.04) 49%, transparent 51%),
     radial-gradient(circle at 75% 70%, transparent 48%, rgba(123,44,191,0.035) 49%, transparent 51%);
   background-size: 320px 320px, 420px 420px;
