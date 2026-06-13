@@ -6336,3 +6336,7 @@ main a:not([class]):hover { text-decoration-color: var(--gold, #C9A227); }
   font-size: 1.12em;
   line-height: 1.75;
 }
+
+/* Native typographic polish (2026 baseline): balanced headings, tidy paragraphs. */
+h1, h2, h3, .sec-title, .section__title, .hero__title, .chart-hero__title, .form-glass__title { text-wrap: balance; }
+p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text-wrap: pretty; }
