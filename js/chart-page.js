@@ -23,7 +23,7 @@
   };
   const PLANET_GLYPHS = {
     Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃',
-    Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇', Chiron:'⚷',
+    Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇', Chiron:'⚷', Lilith:'⚸',
     NorthNode:'☊', SouthNode:'☋', Ascendant:'AC', Midheaven:'MC',
   };
   const ASPECT_DISPLAY = {
@@ -201,7 +201,8 @@
   const KEY_MAP = {
     sun:'Sun', moon:'Moon', mercury:'Mercury', venus:'Venus', mars:'Mars',
     jupiter:'Jupiter', saturn:'Saturn', uranus:'Uranus', neptune:'Neptune',
-    pluto:'Pluto', chiron:'Chiron', northNode:'NorthNode', southNode:'SouthNode',
+    pluto:'Pluto', chiron:'Chiron', lilith:'Lilith',
+    northNode:'NorthNode', southNode:'SouthNode',
     asc:'Ascendant', mc:'Midheaven',
   };
 
@@ -286,13 +287,48 @@
       city: cityInput.value,
       timeKnown: !!document.getElementById('time-input').value,
       houseSystem: document.getElementById('house-system').value,
+      nodeMode: getNodeMode(),
     };
+  }
+
+  // ── Lunar-node model toggle (Mean default · True optional), persisted ──────
+  // Honest default: the Mean node is the smoothly-moving classical point; the
+  // True (osculating) node wobbles ±~1.5° around it. The choice is remembered
+  // in localStorage so it survives reloads and shared-link re-runs.
+  const NODE_MODE_KEY = 'ap_node_mode';
+  function getNodeMode() {
+    try {
+      const v = localStorage.getItem(NODE_MODE_KEY);
+      return v === 'true' ? 'true' : 'mean';
+    } catch (e) { return 'mean'; }
+  }
+  function setNodeMode(mode) {
+    const m = mode === 'true' ? 'true' : 'mean';
+    try { localStorage.setItem(NODE_MODE_KEY, m); } catch (e) {}
+    return m;
+  }
+  // Reflect the persisted choice onto the toggle control + recompute if a chart
+  // is already on screen, so flipping it is immediate and honest.
+  function initNodeToggle() {
+    const radios = document.querySelectorAll('input[name="node-mode"]');
+    if (!radios.length) return;
+    const current = getNodeMode();
+    radios.forEach(r => {
+      r.checked = (r.value === current);
+      r.addEventListener('change', () => {
+        if (!r.checked) return;
+        setNodeMode(r.value);
+        // Live re-run: only if we already have a valid chart on screen.
+        if (currentChart) form.requestSubmit();
+      });
+    });
   }
 
   function calculate(input) {
     const ut = localToUT(input.y, input.m, input.d, input.hh, input.mm, input.tz);
-    const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem);
+    const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem, input.nodeMode);
     return adaptChart(raw, {
+      nodeMode: raw.nodeMode,
       name: input.name,
       birthDate: `${input.y}-${String(input.m).padStart(2,'0')}-${String(input.d).padStart(2,'0')}`,
       birthTime: input.timeKnown ? `${String(input.hh).padStart(2,'0')}:${String(input.mm).padStart(2,'0')}` : null,
@@ -456,6 +492,8 @@
     renderWheel(chart);
     renderTabs(chart);
     initTabs();
+    renderDeepTeaser(chart);
+    initEmailCapture(chart);
 
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -471,7 +509,7 @@
     el.innerHTML = items.map(it => `
       <div class="big-three-card">
         <p class="big-three-card__planet">${it.planet} · ${it.sub}</p>
-        <span class="big-three-card__glyph" aria-hidden="true">${it.glyph}</span>
+        ${(window.AstroIcons && AstroIcons.SIGN_GLYPH[it.sign]) ? AstroIcons.sign(it.sign,{lg:true,class:'big-three-card__orb'}) : '<span class="big-three-card__glyph" aria-hidden="true">'+it.glyph+'</span>'}
         <h3 class="big-three-card__sign">${it.sign}</h3>
         <p class="big-three-card__desc">${it.deg ? it.deg + ' · ' : ''}${ELEMENT_MAP[it.sign] ? cap(ELEMENT_MAP[it.sign]) + ' · ' + cap(MODALITY_MAP[it.sign] || '') : ''}</p>
       </div>`).join('');
@@ -574,11 +612,12 @@
     // Planets
     const pt = document.getElementById('planets-table');
     if (pt) {
-      const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','NorthNode'];
+      const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','Lilith','NorthNode','SouthNode'];
+      const DISPLAY_NAME = { NorthNode:'North Node', SouthNode:'South Node', Lilith:'Lilith' };
       pt.innerHTML = order.filter(k => chart.positions[k]).map(k => {
         const p = chart.positions[k];
         const h = chart.planetHouses[k];
-        const planetName = k === 'NorthNode' ? 'north node' : k.toLowerCase();
+        const planetName = DISPLAY_NAME[k] ? DISPLAY_NAME[k].toLowerCase() : k.toLowerCase();
         const signName = (p.sign || '').toLowerCase();
         const dignity = I && I.getDignity ? I.getDignity(planetName, signName) : null;
         const dignityHtml = dignity && dignity.status !== 'peregrine'
@@ -589,14 +628,20 @@
           ? ` · <span title="${decan.label} of ${p.sign} (triplicity sub-ruler)" style="cursor:help;">D${decan.index} ${decan.glyph}</span>`
           : '';
         return `<div class="planet-data-row">
-          <span class="planet-data-row__glyph">${PLANET_GLYPHS[k]}</span>
+          ${(window.AstroIcons && AstroIcons.PLANET_GLYPH[k]) ? AstroIcons.planet(k,{lg:true,class:'planet-data-row__orb'}) : '<span class="planet-data-row__glyph">'+(PLANET_GLYPHS[k]||'')+'</span>'}
           <div>
-            <div class="planet-data-row__name">${k === 'NorthNode' ? 'North Node' : k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
-            <div class="planet-data-row__sign">${SIGN_GLYPHS[p.sign] || ''} ${p.sign}${h ? ` · H${h}` : ''}${decanHtml}${dignityHtml}</div>
+            <div class="planet-data-row__name">${DISPLAY_NAME[k] || k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
+            <div class="planet-data-row__sign">${window.AstroIcons ? AstroIcons.sign(p.sign,{sm:true})+' ' : (SIGN_GLYPHS[p.sign]||'')+' '}${p.sign}${h ? ` · H${h}` : ''}${decanHtml}${dignityHtml}</div>
           </div>
           <span class="planet-data-row__deg">${fmtDeg(p)}</span>
         </div>`;
       }).join('');
+      // Honest disclosure of which lunar-node model produced the nodes shown.
+      if (chart.nodeMode) {
+        const modeLabel = chart.nodeMode === 'true' ? 'True (osculating) node' : 'Mean node';
+        pt.innerHTML += `<p style="margin:var(--space-3) var(--space-4) 0;font-size:0.66rem;color:var(--silver-dim);letter-spacing:0.04em;">
+          Lunar nodes: <strong style="color:var(--gold-pale);">${modeLabel}</strong> · Lilith = mean Black Moon (lunar apogee). South Node = North Node + 180°.</p>`;
+      }
     }
 
     // Houses
@@ -612,7 +657,7 @@
             <div class="planet-data-row__name">House ${i + 1}</div>
             <div class="planet-data-row__sign">${HOUSE_THEMES[i]}</div>
           </div>
-          <span class="planet-data-row__deg">${SIGN_GLYPHS[sign] || ''} ${dg}°${String(mn).padStart(2,'0')}′</span>
+          <span class="planet-data-row__deg">${window.AstroIcons ? AstroIcons.sign(sign,{sm:true})+' ' : (SIGN_GLYPHS[sign]||'')+' '}${dg}°${String(mn).padStart(2,'0')}′</span>
         </div>`;
       }).join('');
     }
@@ -647,6 +692,221 @@
   }
   const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
   const roman = n => ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'][n - 1] || n;
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DEEP READING TEASER — snippet → paywall funnel
+  // ----------------------------------------------------------------------------
+  // Honesty rule (CLAUDE.md): every word shown is the visitor's REAL computed
+  // chart. We open each snippet with the genuine first sentence of the matching
+  // interpretation (the curiosity gap), then HARD-WALL the rest behind a blurred
+  // tail + lock pill. The locked tail names a real placement (e.g. "Venus in
+  // your 8th house") but withholds the interpretation — we never invent text.
+  // The CTA links to AP_MON.deepReadingUrl when set; otherwise it stays DORMANT
+  // and opens the email capture instead of a fake checkout.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  function ORDINAL(n) {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  // First sentence of a passage — the genuine "open the curiosity gap" line.
+  function firstSentence(text) {
+    if (!text) return '';
+    const m = String(text).match(/^.*?[.!?](?=\s|$)/);
+    return (m ? m[0] : String(text)).trim();
+  }
+
+  function renderDeepTeaser(chart) {
+    const host = document.getElementById('deep-teaser');
+    if (!host) return;
+    const I = window.AstroInterpretations;
+    if (!I || !chart || !chart.positions) { host.hidden = true; return; }
+
+    const sunSign  = chart.positions.Sun  && chart.positions.Sun.sign;
+    const moonSign = chart.positions.Moon && chart.positions.Moon.sign;
+    const riseSign = chart.risingSign;
+
+    // ── Build snippets from REAL interpretation text for THIS chart ──
+    const snippets = [];
+
+    if (sunSign) {
+      const full = I.getPlanetInterpretation('Sun', sunSign);
+      snippets.push({
+        planet: 'Sun', sign: sunSign, label: 'Sun in ' + sunSign,
+        open: firstSentence(full),
+        // Hard-walled: name the real placement, withhold the reading.
+        lock: 'How your ' + sunSign + ' Sun shapes the way you lead, create, and claim your purpose',
+      });
+    }
+    if (moonSign) {
+      const full = I.getPlanetInterpretation('Moon', moonSign);
+      snippets.push({
+        planet: 'Moon', sign: moonSign, label: 'Moon in ' + moonSign,
+        open: firstSentence(full),
+        lock: 'What your ' + moonSign + ' Moon truly needs to feel safe — and the emotional pattern it sets in love',
+      });
+    }
+
+    // Third snippet: Venus-in-house if we have a real Ascendant-based house
+    // (matches the brief's "Venus in the 8th house" example); else Rising.
+    const venus = chart.positions.Venus;
+    const venusHouse = chart.planetHouses && chart.planetHouses.Venus;
+    if (chart.birthTime && venus && venusHouse) {
+      const houseMeaning = I.getHouseMeaning(venusHouse);
+      const houseName = (houseMeaning && houseMeaning.keyword) ? houseMeaning.keyword.toLowerCase() : 'this area of life';
+      snippets.push({
+        planet: 'Venus', sign: venus.sign, label: 'Venus in your ' + ORDINAL(venusHouse) + ' house',
+        open: 'Your Venus in ' + venus.sign + ' sits in your ' + ORDINAL(venusHouse) + ' house — the house of ' + houseName + '.',
+        lock: 'the exact relationship pattern this drives, where you seek beauty, and what you must learn to receive',
+      });
+    } else if (riseSign) {
+      const ruler = chart.chartRuler ? cap(chart.chartRuler) : null;
+      snippets.push({
+        planet: 'Ascendant', sign: riseSign, label: riseSign + ' Rising',
+        open: 'You meet the world through a ' + riseSign + ' Ascendant' + (ruler ? ', ruled by ' + ruler : '') + '.',
+        lock: 'how this shapes first impressions, your instinctive style, and the path your chart ruler is steering you toward',
+      });
+    }
+
+    if (!snippets.length) { host.hidden = true; return; }
+
+    const orbFor = s =>
+      (window.AstroIcons && AstroIcons.SIGN_GLYPH && AstroIcons.SIGN_GLYPH[s.sign])
+        ? (s.planet && AstroIcons.PLANET_GLYPH && AstroIcons.PLANET_GLYPH[s.planet]
+            ? AstroIcons.planet(s.planet, { class: 'deep-snippet__orb' })
+            : AstroIcons.sign(s.sign, { class: 'deep-snippet__orb' }))
+        : '<span class="deep-snippet__orb" aria-hidden="true">✦</span>';
+
+    const cards = snippets.map(s => `
+      <div class="deep-snippet">
+        <div class="deep-snippet__head">
+          ${orbFor(s)}
+          <span class="deep-snippet__label">${esc(s.label)}</span>
+        </div>
+        <p class="deep-snippet__open">${esc(s.open)}</p>
+        <p class="deep-snippet__locked">
+          <span class="deep-lock-tail">${esc(s.lock)}…</span>
+          <span class="deep-lock-pill"><svg class="eng-i" aria-hidden="true"><use href="#ei-lock"/></svg> Unlock the full reading</span>
+        </p>
+      </div>`).join('');
+
+    // ── CTA: configured → real product link · dormant → email capture ──
+    const M = window.AP_MON || {};
+    const url = typeof M.deepReadingUrl === 'string' ? M.deepReadingUrl.trim() : '';
+    const configured = /^https?:\/\//i.test(url);
+    const ctaHtml = configured
+      ? `<a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
+           ✦ Unlock Your Deep Reading
+         </a>
+         <p class="deep-teaser__honest">Opens a secure checkout on our partner store — your birth data stays in your browser and is never sent there.</p>`
+      : `<button type="button" class="btn--deep" id="deep-cta">
+           ✦ Full readings coming soon
+         </button>
+         <p class="deep-teaser__honest">Deep written readings aren't open for purchase yet. Drop your email below and you'll be the first to know — no spam.</p>`;
+
+    host.innerHTML = `
+      <div class="deep-teaser__head">
+        <p class="deep-teaser__eyebrow">Your Deep Reading</p>
+        <h3 class="deep-teaser__title">There's more written in this sky</h3>
+        <p class="deep-teaser__sub">Your free chart above shows the placements. Your Deep Reading interprets how they weave together — drawn line by line from the exact chart you just cast.</p>
+      </div>
+      ${cards}
+      <div class="deep-teaser__cta-wrap">
+        ${ctaHtml}
+      </div>`;
+    host.hidden = false;
+
+    const cta = document.getElementById('deep-cta');
+    if (cta && !configured) {
+      cta.addEventListener('click', () => {
+        const ec = document.getElementById('email-capture');
+        if (ec) {
+          ec.hidden = false;
+          ec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const inp = document.getElementById('email-capture-input');
+          if (inp) setTimeout(() => inp.focus(), 400);
+        }
+        if (window.AstroApp) AstroApp.showToast('Coming soon',
+          'Deep readings aren’t open yet — leave your email and we’ll let you know.', 'info');
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // EMAIL CAPTURE — optional, privacy-respecting, dormant-by-default
+  // ----------------------------------------------------------------------------
+  // Provider-agnostic: when AP_MON.emailUrl is a real endpoint we POST there as a
+  // standard hosted-newsletter form (Buttondown / Mailchimp style). When it's
+  // empty (dormant) the email never leaves the device — we store the intent in
+  // localStorage and show a friendly confirmation. Email is NEVER required to
+  // use the free chart.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  let emailCaptureWired = false;
+
+  function initEmailCapture(chart) {
+    const host = document.getElementById('email-capture');
+    if (!host) return;
+    host.hidden = false;            // reveal alongside a cast chart
+
+    if (emailCaptureWired) return;  // wire the form exactly once
+    emailCaptureWired = true;
+
+    const form = document.getElementById('email-capture-form');
+    const input = document.getElementById('email-capture-input');
+    const doneMsg = document.getElementById('email-capture-done-msg');
+    if (!form || !input) return;
+
+    const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+    form.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const email = input.value.trim();
+      if (!validEmail(email)) {
+        if (window.AstroApp) AstroApp.showToast('Check your email',
+          'That doesn’t look like a valid email address.', 'warning');
+        input.focus();
+        return;
+      }
+
+      const M = window.AP_MON || {};
+      const endpoint = typeof M.emailUrl === 'string' ? M.emailUrl.trim() : '';
+      const configured = /^https?:\/\//i.test(endpoint);
+
+      if (configured) {
+        // Standard hosted-newsletter POST (Buttondown/Mailchimp form action).
+        // no-cors keeps it a fire-and-forget subscribe from a static page; we
+        // only ever send the address the visitor typed — no birth data.
+        try {
+          const body = new FormData();
+          body.append('email', email);
+          await fetch(endpoint, { method: 'POST', mode: 'no-cors', body });
+        } catch (e) { /* opaque/no-cors — treat as sent, confirm below */ }
+        if (doneMsg) doneMsg.innerHTML = '<strong>You’re on the list.</strong> Your cosmic weather will arrive by email — unsubscribe anytime.';
+        if (window.AstroApp) AstroApp.showToast('Subscribed', 'You’ll get your cosmic weather by email.', 'success');
+      } else {
+        // DORMANT: nothing leaves the device. Save intent locally only.
+        try {
+          const key = 'ap_email_intent';
+          const prev = JSON.parse(localStorage.getItem(key) || '[]');
+          prev.push({
+            email,
+            forName: (chart && chart.name) ? String(chart.name).split(/\s+/)[0] : null,
+            sunSign: chart && chart.positions && chart.positions.Sun ? chart.positions.Sun.sign : null,
+            savedAt: Date.now(),
+          });
+          localStorage.setItem(key, JSON.stringify(prev.slice(-20)));
+        } catch (e) {}
+        if (doneMsg) doneMsg.innerHTML = '<strong>We’ll let you know.</strong> Saved on your device only — no email has been sent anywhere yet. The moment readings open, you’ll be first.';
+        if (window.AstroApp) AstroApp.showToast('Saved on your device',
+          'Email signup isn’t live yet, so nothing left your browser — we kept your interest locally.', 'info');
+      }
+
+      host.classList.add('is-done');
+    });
+  }
 
   // ── Tabs ──────────────────────────────────────────────────────────────────
 
@@ -683,10 +943,23 @@
     }
   });
 
+  // Share Chart → one-tap share of the polished square image (Web Share API with
+  // an image file where supported), falling back to a copied link otherwise.
   document.getElementById('share-btn')?.addEventListener('click', async () => {
     if (!currentChart) return;
     const url  = location.href;
     const text = `${currentChart.name}: ☉ ${currentChart.positions.Sun.sign} · ☽ ${currentChart.positions.Moon.sign} · ↑ ${currentChart.risingSign}`;
+    // Prefer sharing the generated image (richer than a bare link) on capable devices.
+    if (navigator.canShare && navigator.share) {
+      try {
+        const blob = await canvasToBlob(paintShareImage(currentChart, 'square'));
+        const file = blob && new File([blob], `${slugify(currentChart.name)}-natal-square.png`, { type: 'image/png' });
+        if (file && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'My Birth Chart — AstroPrecise', text, url });
+          return;
+        }
+      } catch (e) { if (e && e.name === 'AbortError') return; /* else fall through */ }
+    }
     try {
       if (navigator.share) {
         await navigator.share({ title: 'My Birth Chart — AstroPrecise', text, url });
@@ -697,15 +970,10 @@
     } catch (e) { /* user cancelled */ }
   });
 
-  // print-btn now serves as Big Three card (HTML has it labelled that way)
+  // Big Three Card → one-tap export of the polished square image.
   document.getElementById('print-btn')?.addEventListener('click', () => {
     if (!currentChart) { window.print(); return; }
-    const cv = drawShareCard(currentChart);
-    const a  = document.createElement('a');
-    a.download = `${(currentChart.name || 'chart').replace(/[^\w]+/g, '-').toLowerCase()}-big-three.png`;
-    a.href = cv.toDataURL('image/png');
-    a.click();
-    if (window.AstroApp) AstroApp.showToast('Card ready', 'Your Big Three card has been downloaded.', 'success');
+    exportShareImage(currentChart, 'square');
   });
 
   document.getElementById('json-btn')?.addEventListener('click', () => {
@@ -751,395 +1019,382 @@
     return counts;
   }
 
-  // ── Poster draw helpers ───────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SHARE-IMAGE ENGINE — one deterministic renderer, many formats
+  // ----------------------------------------------------------------------------
+  // A single resolution-independent painter (paintShareImage) feeds every output:
+  //   • square   1080×1080  — Instagram / general social post
+  //   • story    1080×1920  — IG / FB / WhatsApp story (9:16)
+  //   • print    2480×3508  — A4-proportioned, print-on-demand poster (300dpi)
+  // The merch / print-on-demand line will reuse the SAME pipeline, so geometry is
+  // expressed in a 0..1 "design space" and multiplied by the canvas size: the
+  // print export is genuinely high-resolution, not an upscaled screenshot.
+  // Honest + deterministic: only the real computed chart is ever drawn.
+  // ═══════════════════════════════════════════════════════════════════════════
 
-  // Try Cinzel from Google Fonts; fall back to Georgia / serif
+  // Cinzel (display) + Inter (sans), loaded by the page <head>; serif/sans fallback.
   const FONT_DISPLAY = '"Cinzel", "Cormorant Garamond", Georgia, serif';
   const FONT_SANS    = '"Inter", "Helvetica Neue", Arial, sans-serif';
 
-  // Draw a faint dot grid across the canvas
-  function drawDotGrid(x, W, H) {
-    const step = 48;
-    x.fillStyle = 'rgba(150,175,230,0.04)';
+  // Engraved palette (matches css/main.css :root) ────────────────────────────
+  const PAL = {
+    void:     '#090b16',
+    voidWarm: '#0c1024',
+    lapis:    '#2a4a94',
+    gold:     '#c4920a',
+    goldHi:   '#e8c96a',
+    goldPale: '#efe3c0',
+    parchment:'#f0e8d8',
+    oxblood:  '#6e1a26',
+    silver:   '#9aa6c8',
+    silverDim:'#6a7398',
+  };
+
+  const SHARE_FORMATS = {
+    square: { w: 1080, h: 1080 },
+    story:  { w: 1080, h: 1920 },
+    print:  { w: 2480, h: 3508 }, // A4 @ ~300dpi — print-on-demand ready
+  };
+
+  // Deterministic star seed from the chart so the same person → same artwork.
+  function seedFromChart(chart) {
+    const s = `${chart.name || ''}|${chart.birthDate || ''}|${chart.birthTime || ''}|${chart.city || ''}`;
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0) || 1;
+  }
+
+  // Faint dot grid (scaled).
+  function drawDotGrid(x, W, H, S) {
+    const step = 48 * S;
+    x.fillStyle = 'rgba(150,175,230,0.045)';
     for (let gx = step; gx < W; gx += step) {
       for (let gy = step; gy < H; gy += step) {
         x.beginPath();
-        x.arc(gx, gy, 1.2, 0, Math.PI * 2);
+        x.arc(gx, gy, 1.2 * S, 0, Math.PI * 2);
         x.fill();
       }
     }
   }
 
-  // Draw deterministic stars
-  function drawStars(x, W, H, count, seed0) {
-    let seed = seed0;
-    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  // Deterministic starfield with occasional gold sparkles.
+  function drawStars(x, W, H, count, seed0, S) {
+    let seed = seed0 >>> 0 || 1;
+    const rnd = () => (seed = (Math.imul(seed, 16807)) % 2147483647) / 2147483647;
     for (let i = 0; i < count; i++) {
-      const alpha = 0.12 + rnd() * 0.52;
-      const r     = rnd() * 1.8 + 0.3;
-      x.fillStyle = `rgba(240,232,216,${alpha})`;
+      const sparkle = rnd() > 0.9;
+      const alpha = 0.12 + rnd() * 0.55;
+      const r     = (rnd() * 1.8 + 0.3) * S;
+      x.fillStyle = sparkle
+        ? `rgba(232,201,106,${alpha})`
+        : `rgba(240,232,216,${alpha})`;
       x.beginPath();
       x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2);
       x.fill();
     }
   }
 
-  // Draw double gold frame
-  function drawFrame(x, W, H, outerInset, innerInset) {
-    x.strokeStyle = 'rgba(212,175,55,0.65)';
-    x.lineWidth = 2.5;
-    x.strokeRect(outerInset, outerInset, W - outerInset * 2, H - outerInset * 2);
-    x.strokeStyle = 'rgba(212,175,55,0.28)';
-    x.lineWidth = 1.5;
-    x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
-  }
+  // Void → lapis cosmic ground + nebulae (scaled, deterministic).
+  function paintBackground(x, W, H, seed, S) {
+    // Vertical void → lapis gradient
+    const g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, PAL.void);
+    g.addColorStop(0.55, PAL.voidWarm);
+    g.addColorStop(1, '#10204a');
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // CHART POSTER — 1600×2000
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  function drawChartPoster(chart) {
-    const W = 1600, H = 2000;
-    const cv = document.createElement('canvas');
-    cv.width = W; cv.height = H;
-    const x = cv.getContext('2d');
-
-    // ── Background ──
-    x.fillStyle = '#0A0B1F';
-    x.fillRect(0, 0, W, H);
-
-    // Nebula gradients — richer, two-color
-    const neb1 = x.createRadialGradient(W * 0.25, H * 0.18, 0, W * 0.25, H * 0.18, W * 0.85);
-    neb1.addColorStop(0, 'rgba(123,44,191,0.30)');
-    neb1.addColorStop(0.5, 'rgba(123,44,191,0.10)');
+    // Lapis nebula (top)
+    const neb1 = x.createRadialGradient(W * 0.72, H * 0.16, 0, W * 0.72, H * 0.16, Math.max(W, H) * 0.75);
+    neb1.addColorStop(0, 'rgba(42,74,148,0.42)');
+    neb1.addColorStop(0.5, 'rgba(42,74,148,0.12)');
     neb1.addColorStop(1, 'transparent');
     x.fillStyle = neb1; x.fillRect(0, 0, W, H);
 
-    const neb2 = x.createRadialGradient(W * 0.82, H * 0.88, 0, W * 0.82, H * 0.88, W * 0.75);
-    neb2.addColorStop(0, 'rgba(110,26,38,0.20)');
-    neb2.addColorStop(0.5, 'rgba(110,26,38,0.07)');
+    // Oxblood nebula (lower)
+    const neb2 = x.createRadialGradient(W * 0.2, H * 0.86, 0, W * 0.2, H * 0.86, Math.max(W, H) * 0.7);
+    neb2.addColorStop(0, 'rgba(110,26,38,0.30)');
+    neb2.addColorStop(0.5, 'rgba(110,26,38,0.08)');
     neb2.addColorStop(1, 'transparent');
     x.fillStyle = neb2; x.fillRect(0, 0, W, H);
 
-    const neb3 = x.createRadialGradient(W * 0.78, H * 0.08, 0, W * 0.78, H * 0.08, W * 0.5);
-    neb3.addColorStop(0, 'rgba(91,127,199,0.12)');
-    neb3.addColorStop(1, 'transparent');
-    x.fillStyle = neb3; x.fillRect(0, 0, W, H);
+    drawDotGrid(x, W, H, S);
+    drawStars(x, W, H, Math.round((W * H) / 5200), seed, S);
 
-    // Dot grid
-    drawDotGrid(x, W, H);
+    // Subtle vignette to focus the eye
+    const vig = x.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.72);
+    vig.addColorStop(0, 'transparent');
+    vig.addColorStop(1, 'rgba(5,6,14,0.55)');
+    x.fillStyle = vig; x.fillRect(0, 0, W, H);
+  }
 
-    // Stars
-    drawStars(x, W, H, 320, 1907);
+  // Double gold frame with generous margin (print bleed-friendly).
+  function drawFrame(x, W, H, outerInset, innerInset) {
+    x.strokeStyle = 'rgba(196,146,10,0.7)';
+    x.lineWidth = Math.max(2, outerInset * 0.05);
+    x.strokeRect(outerInset, outerInset, W - outerInset * 2, H - outerInset * 2);
+    x.strokeStyle = 'rgba(196,146,10,0.3)';
+    x.lineWidth = Math.max(1, outerInset * 0.025);
+    x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
+    // Corner ticks
+    x.strokeStyle = 'rgba(232,201,106,0.55)';
+    x.lineWidth = Math.max(1.5, outerInset * 0.04);
+    const t = (outerInset + innerInset) / 2;
+    const len = (innerInset - outerInset) * 1.4;
+    [[outerInset, outerInset, 1, 1], [W - outerInset, outerInset, -1, 1],
+     [outerInset, H - outerInset, 1, -1], [W - outerInset, H - outerInset, -1, -1]]
+      .forEach(([cx2, cy2, sx, sy]) => {
+        x.beginPath();
+        x.moveTo(cx2, cy2 + sy * len); x.lineTo(cx2, cy2); x.lineTo(cx2 + sx * len, cy2);
+        x.stroke();
+      });
+  }
 
-    // Double frame
-    drawFrame(x, W, H, 52, 72);
+  // Centred text helper that shrinks to fit a max width (keeps long names tidy).
+  function fitText(x, text, cx, cy, maxW, weight, basePx, fontFamily) {
+    let px = basePx;
+    x.font = `${weight} ${px}px ${fontFamily}`;
+    while (x.measureText(text).width > maxW && px > basePx * 0.45) {
+      px -= Math.max(1, basePx * 0.04);
+      x.font = `${weight} ${px}px ${fontFamily}`;
+    }
+    x.fillText(text, cx, cy);
+    return px;
+  }
 
-    // ── Header area (top 380px) ──
-    x.textAlign = 'center';
+  // Sign-glyph helper drawing a small glass orb behind the unicode glyph.
+  function drawSignOrb(x, glyph, cx, cy, r, elemCol) {
+    const grad = x.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
+    grad.addColorStop(0, 'rgba(255,255,255,0.18)');
+    grad.addColorStop(0.4, elemCol + 'cc');
+    grad.addColorStop(1, elemCol + '33');
+    x.fillStyle = grad;
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
+    x.strokeStyle = 'rgba(196,146,10,0.55)';
+    x.lineWidth = Math.max(1, r * 0.06);
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
+    // top highlight
+    x.strokeStyle = 'rgba(255,255,255,0.28)';
+    x.lineWidth = Math.max(1, r * 0.05);
+    x.beginPath(); x.arc(cx, cy, r * 0.78, Math.PI * 1.15, Math.PI * 1.85); x.stroke();
+    x.fillStyle = PAL.parchment;
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = `400 ${r * 0.95}px ${FONT_DISPLAY}`;
+    x.fillText(glyph, cx, cy + r * 0.04);
+  }
 
-    // "✦ NATAL CHART ✦" eyebrow
-    x.fillStyle = '#D4AF37';
-    x.font = `500 28px ${FONT_DISPLAY}`;
-    x.fillText('✦  N A T A L   C H A R T  ✦', W / 2, 152);
-
-    // Decorative separator line
-    x.strokeStyle = 'rgba(212,175,55,0.3)';
-    x.lineWidth = 1;
-    x.beginPath(); x.moveTo(200, 172); x.lineTo(W - 200, 172); x.stroke();
-
-    // Name — large Cinzel
-    x.fillStyle = '#f0e8d8';
-    x.font = `bold 80px ${FONT_DISPLAY}`;
-    x.fillText(chart.name || 'Birth Chart', W / 2, 270);
-
-    // Birth date + city
-    x.fillStyle = '#9aa6c8';
-    x.font = `400 32px ${FONT_SANS}`;
-    const cityShort = (chart.city || '').split(',')[0];
-    x.fillText(
-      `${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''}  ·  ${cityShort}`,
-      W / 2, 328
-    );
-
-    // Three sign glyphs in a row (Sun / Moon / Rising)
-    const threeItems = [
-      { glyph: SIGN_GLYPHS[chart.positions.Sun.sign] || '?',  label: 'Sun' },
-      { glyph: SIGN_GLYPHS[chart.positions.Moon.sign] || '?', label: 'Moon' },
-      { glyph: SIGN_GLYPHS[chart.risingSign] || '?',          label: 'Rising' },
-    ];
-    const trioY = 390;
-    threeItems.forEach((ti, idx) => {
-      const tx = W / 2 + (idx - 1) * 160;
-      x.fillStyle = '#D4AF37';
-      x.font = `400 44px ${FONT_DISPLAY}`;
-      x.fillText(ti.glyph, tx, trioY);
-      x.fillStyle = '#8891aa';
-      x.font = `500 18px ${FONT_SANS}`;
-      x.fillText(ti.label.toUpperCase(), tx, trioY + 30);
-    });
-
-    // Element + modality line
-    const ruler = chart.chartRuler ? `${cap(chart.chartRuler)} Rules` : '';
-    const elemLine = [
-      chart.dominantElement ? cap(chart.dominantElement) + ' Energy' : '',
-      chart.dominantModality ? cap(chart.dominantModality) + ' Mode' : '',
-      ruler,
-    ].filter(Boolean).join('  ·  ');
-    x.fillStyle = '#8891aa';
-    x.font = `400 22px ${FONT_SANS}`;
-    x.fillText(elemLine, W / 2, 450);
-
-    // ── Natal Wheel (center, large) ──
-    const cx = W / 2, cy = 900;
-    const rOuter  = 410, rBand = 365, rSignInner = 310, rPlanets = 250, rInner = 195;
-
+  // ── The natal wheel, drawn in design-space (cx,cy,radius in px) ────────────
+  function drawWheel(x, chart, cx, cy, R) {
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
-                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
-    const ELEMENT_SECTOR_COLORS = {
-      Aries:'rgba(200,72,50,0.10)', Taurus:'rgba(45,138,62,0.10)', Gemini:'rgba(74,122,199,0.10)', Cancer:'rgba(123,44,191,0.12)',
-      Leo:'rgba(200,72,50,0.10)', Virgo:'rgba(45,138,62,0.10)', Libra:'rgba(74,122,199,0.10)', Scorpio:'rgba(123,44,191,0.12)',
-      Sagittarius:'rgba(200,72,50,0.10)', Capricorn:'rgba(45,138,62,0.10)', Aquarius:'rgba(74,122,199,0.10)', Pisces:'rgba(123,44,191,0.12)',
+                         'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    const ELEMENT_SECTOR = {
+      Aries:'rgba(200,72,50,0.12)', Taurus:'rgba(45,138,62,0.12)', Gemini:'rgba(74,122,199,0.12)', Cancer:'rgba(91,63,160,0.14)',
+      Leo:'rgba(200,72,50,0.12)', Virgo:'rgba(45,138,62,0.12)', Libra:'rgba(74,122,199,0.12)', Scorpio:'rgba(91,63,160,0.14)',
+      Sagittarius:'rgba(200,72,50,0.12)', Capricorn:'rgba(45,138,62,0.12)', Aquarius:'rgba(74,122,199,0.12)', Pisces:'rgba(91,63,160,0.14)',
     };
+    const rOuter     = R;
+    const rBand      = R * 0.89;
+    const rSignInner = R * 0.755;
+    const rPlanets   = R * 0.61;
+    const rInner     = R * 0.475;
+    const lw = R / 410; // line-weight scale relative to the original 410px wheel
 
     const ascLon = chart.asc || 0;
     const ang = lon => Math.PI - ((lon - ascLon) * Math.PI / 180);
 
-    // Outer rim circle
-    x.strokeStyle = 'rgba(212,175,55,0.75)';
-    x.lineWidth = 3;
+    // Rings
+    x.strokeStyle = 'rgba(196,146,10,0.75)'; x.lineWidth = 3 * lw;
     x.beginPath(); x.arc(cx, cy, rOuter, 0, Math.PI * 2); x.stroke();
-
-    // Sign band inner ring
-    x.strokeStyle = 'rgba(212,175,55,0.45)';
-    x.lineWidth = 1.5;
+    x.strokeStyle = 'rgba(196,146,10,0.45)'; x.lineWidth = 1.5 * lw;
     x.beginPath(); x.arc(cx, cy, rSignInner, 0, Math.PI * 2); x.stroke();
-
-    // Sign band outer ring
-    x.strokeStyle = 'rgba(212,175,55,0.3)';
-    x.lineWidth = 1;
+    x.strokeStyle = 'rgba(196,146,10,0.3)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rBand, 0, Math.PI * 2); x.stroke();
-
-    // Planet ring
-    x.strokeStyle = 'rgba(212,175,55,0.2)';
-    x.lineWidth = 1;
+    x.strokeStyle = 'rgba(196,146,10,0.22)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rInner, 0, Math.PI * 2); x.stroke();
 
-    // Sign sectors — tinted fill + spoke lines + glyphs
+    // Sign sectors
     for (let i = 0; i < 12; i++) {
-      const a1 = ang(i * 30);
-      const a2 = ang((i + 1) * 30);
+      const a1 = ang(i * 30), a2 = ang((i + 1) * 30);
       const sign = SIGNS_ORDER[i];
+      x.fillStyle = ELEMENT_SECTOR[sign] || 'transparent';
+      x.beginPath(); x.moveTo(cx, cy);
+      x.arc(cx, cy, rOuter, a1, a2, a1 > a2); x.closePath(); x.fill();
 
-      // Sector fill (element tint in the outer band)
-      x.fillStyle = ELEMENT_SECTOR_COLORS[sign] || 'transparent';
-      x.beginPath();
-      x.moveTo(cx, cy);
-      // arc direction: because ang maps to canvas angles with reversed y
-      const startA = Math.min(a1, a2) - 0.001;
-      const endA   = Math.max(a1, a2) + 0.001;
-      x.arc(cx, cy, rOuter, a1, a2, a1 > a2);
-      x.closePath();
-      x.fill();
-
-      // Spoke
-      x.strokeStyle = 'rgba(212,175,55,0.3)';
-      x.lineWidth = 1;
+      x.strokeStyle = 'rgba(196,146,10,0.3)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(a1) * rSignInner, cy + Math.sin(a1) * rSignInner);
       x.lineTo(cx + Math.cos(a1) * rOuter,     cy + Math.sin(a1) * rOuter);
       x.stroke();
 
-      // Sign glyph in the band midpoint
       const mid = ang(i * 30 + 15);
       const gR  = (rBand + rSignInner) / 2;
-      x.fillStyle = '#D4AF37';
-      x.font = `400 42px ${FONT_DISPLAY}`;
-      x.textBaseline = 'middle';
-      x.textAlign = 'center';
+      x.fillStyle = PAL.gold;
+      x.font = `400 ${R * 0.1}px ${FONT_DISPLAY}`;
+      x.textBaseline = 'middle'; x.textAlign = 'center';
       x.fillText(SIGN_GLYPHS[sign] || '', cx + Math.cos(mid) * gR, cy + Math.sin(mid) * gR);
     }
 
-    // Degree ticks every 10° (minor) and 30° (major already handled by spokes)
-    x.strokeStyle = 'rgba(212,175,55,0.4)';
+    // 10° ticks
+    x.strokeStyle = 'rgba(196,146,10,0.4)';
     for (let d2 = 0; d2 < 360; d2 += 10) {
       if (d2 % 30 === 0) continue;
       const a = ang(d2);
-      x.lineWidth = 1;
+      x.lineWidth = 1 * lw;
       x.beginPath();
-      x.moveTo(cx + Math.cos(a) * rSignInner,       cy + Math.sin(a) * rSignInner);
-      x.lineTo(cx + Math.cos(a) * (rSignInner + 12), cy + Math.sin(a) * (rSignInner + 12));
+      x.moveTo(cx + Math.cos(a) * rSignInner,            cy + Math.sin(a) * rSignInner);
+      x.lineTo(cx + Math.cos(a) * (rSignInner + 12 * lw), cy + Math.sin(a) * (rSignInner + 12 * lw));
       x.stroke();
     }
 
-    // Aspect lines inside inner ring — colored by type
+    // Aspect lines
     const ASPECT_LINE_COLORS = {
       Trine: '#3fae7a', Sextile: '#5b7fc7', Conjunction: '#e8c96a',
       Opposition: '#b04a52', Square: '#b04a52',
     };
-    (chart.renderAspects || []).slice(0, 20).forEach(asp => {
-      const p1 = chart.positions[asp.planet1];
-      const p2 = chart.positions[asp.planet2];
+    (chart.renderAspects || []).slice(0, 24).forEach(asp => {
+      const p1 = chart.positions[asp.planet1], p2 = chart.positions[asp.planet2];
       if (!p1 || !p2) return;
-      const a1 = ang(p1.lon);
-      const a2 = ang(p2.lon);
-      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(150,175,230,0.25)';
-      x.strokeStyle = col.startsWith('rgba') ? col : col + '55';
-      x.globalAlpha = 0.45;
-      x.lineWidth = 1.5;
+      const a1 = ang(p1.lon), a2 = ang(p2.lon);
+      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(150,175,230,0.3)';
+      x.strokeStyle = col.startsWith('rgba') ? col : col + '66';
+      x.globalAlpha = 0.5; x.lineWidth = 1.5 * lw;
       x.beginPath();
-      x.moveTo(cx + Math.cos(a1) * (rInner - 8), cy + Math.sin(a1) * (rInner - 8));
-      x.lineTo(cx + Math.cos(a2) * (rInner - 8), cy + Math.sin(a2) * (rInner - 8));
+      x.moveTo(cx + Math.cos(a1) * (rInner - 8 * lw), cy + Math.sin(a1) * (rInner - 8 * lw));
+      x.lineTo(cx + Math.cos(a2) * (rInner - 8 * lw), cy + Math.sin(a2) * (rInner - 8 * lw));
       x.stroke();
       x.globalAlpha = 1;
     });
 
-    // House lines (faint spokes from centre to inner ring)
-    (chart.houses || []).forEach((cusp) => {
+    // House spokes
+    (chart.houses || []).forEach(cusp => {
       const a = ang(cusp);
-      x.strokeStyle = 'rgba(150,175,230,0.18)';
-      x.lineWidth = 1;
-      x.beginPath();
-      x.moveTo(cx, cy);
-      x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner);
-      x.stroke();
+      x.strokeStyle = 'rgba(150,175,230,0.2)'; x.lineWidth = 1 * lw;
+      x.beginPath(); x.moveTo(cx, cy);
+      x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner); x.stroke();
     });
 
     // Ascendant axis
     const aAsc = ang(ascLon);
-    x.strokeStyle = 'rgba(176,74,82,0.9)';
-    x.lineWidth = 2.5;
+    x.strokeStyle = 'rgba(176,74,82,0.9)'; x.lineWidth = 2.5 * lw;
     x.beginPath();
     x.moveTo(cx + Math.cos(aAsc) * rInner,     cy + Math.sin(aAsc) * rInner);
     x.lineTo(cx + Math.cos(aAsc) * rSignInner, cy + Math.sin(aAsc) * rSignInner);
     x.stroke();
-    x.fillStyle = '#b04a52';
-    x.font = `bold 20px ${FONT_SANS}`;
-    x.textBaseline = 'middle';
-    x.textAlign = 'center';
-    x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 32), cy + Math.sin(aAsc) * (rInner - 32));
+    x.fillStyle = '#c97a82';
+    x.font = `bold ${R * 0.05}px ${FONT_SANS}`;
+    x.textBaseline = 'middle'; x.textAlign = 'center';
+    x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 32 * lw), cy + Math.sin(aAsc) * (rInner - 32 * lw));
 
-    // Planet glyphs — with halo + collision offset
+    // Planet glyphs with halo + collision offset
     const PLANET_ORDER_WHEEL = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
     const placed = [];
     PLANET_ORDER_WHEEL.forEach(k => {
       const p = chart.positions[k];
       if (!p) return;
       let lon2 = p.lon;
-      // nudge to avoid overlap
       while (placed.some(q => Math.abs(((q - lon2) + 540) % 360 - 180) < 8)) lon2 += 8;
       placed.push(lon2);
       const a = ang(lon2);
       const px2 = cx + Math.cos(a) * rPlanets;
       const py2 = cy + Math.sin(a) * rPlanets;
 
-      // pointer tick
       const at2 = ang(p.lon);
-      x.strokeStyle = 'rgba(240,232,216,0.4)';
-      x.lineWidth = 1;
+      x.strokeStyle = 'rgba(240,232,216,0.45)'; x.lineWidth = 1 * lw;
       x.beginPath();
-      x.moveTo(cx + Math.cos(at2) * rSignInner,       cy + Math.sin(at2) * rSignInner);
-      x.lineTo(cx + Math.cos(at2) * (rSignInner - 14), cy + Math.sin(at2) * (rSignInner - 14));
+      x.moveTo(cx + Math.cos(at2) * rSignInner,            cy + Math.sin(at2) * rSignInner);
+      x.lineTo(cx + Math.cos(at2) * (rSignInner - 14 * lw), cy + Math.sin(at2) * (rSignInner - 14 * lw));
       x.stroke();
 
-      // Halo circle behind glyph
-      const haloR = 28;
+      const haloR = R * 0.07;
       const haloGrad = x.createRadialGradient(px2, py2, 0, px2, py2, haloR);
-      haloGrad.addColorStop(0, 'rgba(212,175,55,0.18)');
+      haloGrad.addColorStop(0, 'rgba(196,146,10,0.22)');
       haloGrad.addColorStop(1, 'transparent');
       x.fillStyle = haloGrad;
       x.beginPath(); x.arc(px2, py2, haloR, 0, Math.PI * 2); x.fill();
 
-      // Glyph
-      x.fillStyle = '#f0e8d8';
-      x.font = `400 46px ${FONT_DISPLAY}`;
-      x.textBaseline = 'middle';
-      x.textAlign = 'center';
+      x.fillStyle = PAL.parchment;
+      x.font = `400 ${R * 0.112}px ${FONT_DISPLAY}`;
+      x.textBaseline = 'middle'; x.textAlign = 'center';
       x.fillText(PLANET_GLYPHS[k] || '', px2, py2);
 
-      // Retrograde marker
       if (p.retrograde) {
-        x.fillStyle = '#b04a52';
-        x.font = `500 16px ${FONT_SANS}`;
-        x.fillText('℞', px2 + 22, py2 - 20);
+        x.fillStyle = '#c97a82';
+        x.font = `500 ${R * 0.04}px ${FONT_SANS}`;
+        x.fillText('℞', px2 + R * 0.055, py2 - R * 0.05);
       }
     });
     x.textBaseline = 'alphabetic';
 
     // Centre star
-    x.fillStyle = 'rgba(212,175,55,0.9)';
-    x.font = `400 56px ${FONT_DISPLAY}`;
-    x.textBaseline = 'middle';
-    x.textAlign = 'center';
+    x.fillStyle = 'rgba(196,146,10,0.95)';
+    x.font = `400 ${R * 0.14}px ${FONT_DISPLAY}`;
+    x.textBaseline = 'middle'; x.textAlign = 'center';
     x.fillText('✦', cx, cy);
     x.textBaseline = 'alphabetic';
+  }
 
-    // ── Elemental Distribution bars ──
+  // ── Shared building blocks for the poster layout (used by 'print' & 'story') ─
+
+  // Elemental distribution bars (centred), origin at (x0, y0), bar width barW.
+  function paintElementBars(x, chart, x0, y0, barW, scale) {
     const elems = computeElements(chart.positions);
-    const elemTop = 1380;
-    const BAR_W = 580, BAR_H = 26, BAR_X = (W - BAR_W) / 2;
-
     x.textAlign = 'center';
-    x.fillStyle = '#D4AF37';
-    x.font = `600 22px ${FONT_SANS}`;
-    x.fillText('E L E M E N T A L   D I S T R I B U T I O N', W / 2, elemTop);
+    x.fillStyle = PAL.gold;
+    x.font = `600 ${22 * scale}px ${FONT_SANS}`;
+    x.fillText('E L E M E N T A L   D I S T R I B U T I O N', x0 + barW / 2, y0);
 
-    x.strokeStyle = 'rgba(212,175,55,0.2)';
-    x.lineWidth = 1;
-    x.beginPath(); x.moveTo(200, elemTop + 16); x.lineTo(W - 200, elemTop + 16); x.stroke();
+    x.strokeStyle = 'rgba(196,146,10,0.22)'; x.lineWidth = 1 * scale;
+    x.beginPath(); x.moveTo(x0, y0 + 16 * scale); x.lineTo(x0 + barW, y0 + 16 * scale); x.stroke();
 
-    const elemRows = [
+    const rows = [
       { key: 'fire',  label: 'Fire',  color: ELEMENT_COLORS.fire,  lColor: ELEMENT_LABEL_COLORS.fire  },
       { key: 'earth', label: 'Earth', color: ELEMENT_COLORS.earth, lColor: ELEMENT_LABEL_COLORS.earth },
       { key: 'air',   label: 'Air',   color: ELEMENT_COLORS.air,   lColor: ELEMENT_LABEL_COLORS.air   },
       { key: 'water', label: 'Water', color: ELEMENT_COLORS.water, lColor: ELEMENT_LABEL_COLORS.water },
     ];
-    const maxCount = 7; // 7 counted planets
-    elemRows.forEach((er, idx) => {
-      const rowY = elemTop + 50 + idx * 58;
+    const maxCount = 7;
+    const BAR_H = 26 * scale;
+    const innerW = barW - 220 * scale;     // leave room for label + count
+    const innerX = x0 + 110 * scale;
+    rows.forEach((er, idx) => {
+      const rowY = y0 + 50 * scale + idx * 58 * scale;
       const count = elems[er.key] || 0;
-      const fillW = (count / maxCount) * BAR_W;
+      const fillW = (count / maxCount) * innerW;
 
-      // Label
       x.textAlign = 'left';
       x.fillStyle = er.lColor;
-      x.font = `600 20px ${FONT_SANS}`;
-      x.fillText(er.label.toUpperCase(), BAR_X - 110, rowY + BAR_H / 2 + 7);
+      x.font = `600 ${20 * scale}px ${FONT_SANS}`;
+      x.fillText(er.label.toUpperCase(), x0, rowY + BAR_H / 2 + 7 * scale);
 
-      // Track
-      x.fillStyle = 'rgba(150,175,230,0.07)';
+      x.fillStyle = 'rgba(150,175,230,0.08)';
       x.beginPath();
-      if (x.roundRect) { x.roundRect(BAR_X, rowY, BAR_W, BAR_H, 6); } else { x.rect(BAR_X, rowY, BAR_W, BAR_H); }
+      if (x.roundRect) x.roundRect(innerX, rowY, innerW, BAR_H, 6 * scale); else x.rect(innerX, rowY, innerW, BAR_H);
       x.fill();
 
-      // Fill bar
       if (fillW > 0) {
-        const barGrad = x.createLinearGradient(BAR_X, 0, BAR_X + fillW, 0);
-        barGrad.addColorStop(0, er.color);
-        barGrad.addColorStop(1, er.color + 'aa');
-        x.fillStyle = barGrad;
+        const bg = x.createLinearGradient(innerX, 0, innerX + fillW, 0);
+        bg.addColorStop(0, er.color); bg.addColorStop(1, er.color + 'aa');
+        x.fillStyle = bg;
         x.beginPath();
-        if (x.roundRect) { x.roundRect(BAR_X, rowY, fillW, BAR_H, 6); } else { x.rect(BAR_X, rowY, fillW, BAR_H); }
+        if (x.roundRect) x.roundRect(innerX, rowY, fillW, BAR_H, 6 * scale); else x.rect(innerX, rowY, fillW, BAR_H);
         x.fill();
       }
 
-      // Count label
       x.textAlign = 'right';
-      x.fillStyle = '#9aa6c8';
-      x.font = `400 18px ${FONT_SANS}`;
-      x.fillText(`${count} planet${count !== 1 ? 's' : ''}`, BAR_X + BAR_W + 110, rowY + BAR_H / 2 + 7);
+      x.fillStyle = PAL.silver;
+      x.font = `400 ${18 * scale}px ${FONT_SANS}`;
+      x.fillText(`${count} planet${count !== 1 ? 's' : ''}`, x0 + barW, rowY + BAR_H / 2 + 7 * scale);
     });
+  }
 
-    // ── Planet Placements Table ── two-column
-    const tableTop = 1630;
+  // Two-column planetary placements table, full content width.
+  function paintPlacementTable(x, chart, x0, y0, colW, scale) {
     x.textAlign = 'center';
-    x.fillStyle = '#D4AF37';
-    x.font = `600 22px ${FONT_SANS}`;
-    x.fillText('P L A N E T A R Y   P L A C E M E N T S', W / 2, tableTop);
+    x.fillStyle = PAL.gold;
+    x.font = `600 ${22 * scale}px ${FONT_SANS}`;
+    x.fillText('P L A N E T A R Y   P L A C E M E N T S', x0 + colW, y0);
 
-    x.strokeStyle = 'rgba(212,175,55,0.2)';
-    x.lineWidth = 1;
-    x.beginPath(); x.moveTo(200, tableTop + 14); x.lineTo(W - 200, tableTop + 14); x.stroke();
+    x.strokeStyle = 'rgba(196,146,10,0.22)'; x.lineWidth = 1 * scale;
+    x.beginPath(); x.moveTo(x0, y0 + 14 * scale); x.lineTo(x0 + colW * 2, y0 + 14 * scale); x.stroke();
 
     const PLANET_ORDER_TABLE = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
     const cols = [[], []];
@@ -1148,296 +1403,304 @@
       if (p) cols[i % 2].push({ k, p, h: chart.planetHouses[k] });
     });
 
-    const ROW_H = 56;
+    const ROW_H = 56 * scale;
     cols.forEach((col, c) => {
-      const colX = c === 0 ? 200 : 900;
+      const colX = x0 + c * colW + (c === 0 ? 0 : 40 * scale);
       col.forEach((row, r) => {
-        const ry = tableTop + 36 + r * ROW_H;
-
-        // thin row separator
+        const ry = y0 + 36 * scale + r * ROW_H;
         if (r > 0) {
-          x.strokeStyle = 'rgba(150,175,230,0.07)';
-          x.lineWidth = 1;
-          x.beginPath(); x.moveTo(colX, ry - 6); x.lineTo(colX + 480, ry - 6); x.stroke();
+          x.strokeStyle = 'rgba(150,175,230,0.08)'; x.lineWidth = 1 * scale;
+          x.beginPath(); x.moveTo(colX, ry - 6 * scale); x.lineTo(colX + colW - 60 * scale, ry - 6 * scale); x.stroke();
         }
-
-        // Planet glyph
         x.textAlign = 'left';
-        x.fillStyle = '#D4AF37';
-        x.font = `400 36px ${FONT_DISPLAY}`;
-        x.fillText(PLANET_GLYPHS[row.k] || '', colX, ry + 20);
+        x.fillStyle = PAL.gold;
+        x.font = `400 ${36 * scale}px ${FONT_DISPLAY}`;
+        x.fillText(PLANET_GLYPHS[row.k] || '', colX, ry + 20 * scale);
 
-        // Planet name
-        x.fillStyle = '#f0e8d8';
-        x.font = `600 24px ${FONT_SANS}`;
-        x.fillText(row.k, colX + 56, ry + 10);
+        x.fillStyle = PAL.parchment;
+        x.font = `600 ${24 * scale}px ${FONT_SANS}`;
+        x.fillText(row.k, colX + 56 * scale, ry + 10 * scale);
 
-        // Sign glyph + sign name
-        x.fillStyle = '#9aa6c8';
-        x.font = `400 22px ${FONT_SANS}`;
-        x.fillText(`${SIGN_GLYPHS[row.p.sign] || ''} ${row.p.sign}`, colX + 56, ry + 34);
+        x.fillStyle = PAL.silver;
+        x.font = `400 ${22 * scale}px ${FONT_SANS}`;
+        x.fillText(`${SIGN_GLYPHS[row.p.sign] || ''} ${row.p.sign}`, colX + 56 * scale, ry + 34 * scale);
 
-        // House
         if (row.h) {
-          x.fillStyle = '#5a648a';
-          x.font = `400 18px ${FONT_SANS}`;
-          x.fillText(`H${row.h}`, colX + 240, ry + 10);
+          x.fillStyle = PAL.silverDim;
+          x.font = `400 ${18 * scale}px ${FONT_SANS}`;
+          x.fillText(`H${row.h}`, colX + 240 * scale, ry + 10 * scale);
         }
 
-        // Degree
-        x.fillStyle = '#D4AF37';
-        x.font = `400 18px "Courier New", monospace`;
+        x.fillStyle = PAL.gold;
+        x.font = `400 ${18 * scale}px "Courier New", monospace`;
         x.textAlign = 'right';
         x.fillText(
           `${Math.floor(row.p.degree)}°${String(Math.round((row.p.degree - Math.floor(row.p.degree)) * 60)).padStart(2,'0')}′${row.p.retrograde ? ' ℞' : ''}`,
-          colX + 480,
-          ry + 10
-        );
+          colX + colW - 60 * scale, ry + 10 * scale);
       });
     });
-
-    // ── Footer ──
-    x.textAlign = 'center';
-    x.fillStyle = '#5a648a';
-    x.font = `400 20px ${FONT_SANS}`;
-    x.fillText(
-      '✦  ASTROPRECISE  —  VSOP87 · ELP2000 · Computed privately in your browser  ✦',
-      W / 2, H - 100
-    );
-
-    return cv;
   }
 
-  document.getElementById('poster-btn')?.addEventListener('click', () => {
-    if (!currentChart) return;
-    const cv = drawChartPoster(currentChart);
-    const a  = document.createElement('a');
-    const slug = (currentChart.name || 'chart').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    a.download = slug + '-natal-poster.png';
-    a.href = cv.toDataURL('image/png');
-    a.click();
-    if (window.AstroApp) AstroApp.showToast('Poster saved', 'Your natal chart poster has been downloaded.', 'success');
-  });
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // BIG THREE SHARE CARD — 1080×1080
-  // ═══════════════════════════════════════════════════════════════════════════
-
-  function drawShareCard(chart) {
-    const W = 1080, H = 1080;
+  // ── THE UNIFIED PAINTER ───────────────────────────────────────────────────
+  // Returns a canvas for the requested format. All three formats share the same
+  // header → wheel → footer spine; 'print' and 'story' add the detail panels.
+  function paintShareImage(chart, format) {
+    const fmt = SHARE_FORMATS[format] || SHARE_FORMATS.square;
+    const W = fmt.w, H = fmt.h;
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = H;
     const x = cv.getContext('2d');
+    const S = W / 1080;                       // scale relative to the 1080-wide baseline
+    const seed = seedFromChart(chart);
 
-    // ── Background ──
-    x.fillStyle = '#0A0B1F';
-    x.fillRect(0, 0, W, H);
+    paintBackground(x, W, H, seed, S);
+    drawFrame(x, W, H, 44 * S, 62 * S);
 
-    // Nebula 1 — lapis top-right
-    const neb1 = x.createRadialGradient(W * 0.75, H * 0.2, 0, W * 0.75, H * 0.2, W * 0.7);
-    neb1.addColorStop(0, 'rgba(123,44,191,0.30)');
-    neb1.addColorStop(0.5, 'rgba(123,44,191,0.10)');
-    neb1.addColorStop(1, 'transparent');
-    x.fillStyle = neb1; x.fillRect(0, 0, W, H);
+    const cityShort = (chart.city || '').split(',')[0];
+    const accLine = 'VSOP87 · ELP2000 · computed privately in your browser';
 
-    // Nebula 2 — crimson bottom-left
-    const neb2 = x.createRadialGradient(W * 0.18, H * 0.82, 0, W * 0.18, H * 0.82, W * 0.65);
-    neb2.addColorStop(0, 'rgba(110,26,38,0.22)');
-    neb2.addColorStop(0.5, 'rgba(110,26,38,0.07)');
-    neb2.addColorStop(1, 'transparent');
-    x.fillStyle = neb2; x.fillRect(0, 0, W, H);
-
-    // Deterministic stars
-    drawStars(x, W, H, 180, 42);
-
-    // ── Double gold frame ──
-    drawFrame(x, W, H, 40, 58);
-
-    // ── Header ──
+    // ── Header (shared) ──
     x.textAlign = 'center';
-    x.fillStyle = '#D4AF37';
-    x.font = `500 24px ${FONT_DISPLAY}`;
-    x.fillText('✦  A S T R O P R E C I S E  ✦', W / 2, 122);
+    let y = 116 * S;
+    x.fillStyle = PAL.gold;
+    x.font = `500 ${24 * S}px ${FONT_DISPLAY}`;
+    x.fillText('✦  A S T R O P R E C I S E  ✦', W / 2, y);
 
-    // ── Name ──
-    x.fillStyle = '#f0e8d8';
-    x.font = `bold 68px ${FONT_DISPLAY}`;
-    x.fillText(chart.name || 'Birth Chart', W / 2, 230);
+    y += 36 * S;
+    x.fillStyle = PAL.goldPale;
+    x.font = `500 ${16 * S}px ${FONT_SANS}`;
+    x.fillText('N A T A L   C H A R T', W / 2, y);
 
-    // ── Birth info ──
-    x.fillStyle = '#9aa6c8';
-    x.font = `400 26px ${FONT_SANS}`;
-    const birthLabel = `${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''} · ${(chart.city || '').split(',')[0]}`;
-    x.fillText(birthLabel, W / 2, 278);
+    y += 78 * S;
+    x.fillStyle = PAL.parchment;
+    fitText(x, chart.name || 'Birth Chart', W / 2, y, W - 200 * S, 'bold', 68 * S, FONT_DISPLAY);
 
-    // ── Three placement rows ──
-    const rowData = [
-      {
-        planetGlyph: '☉', label: 'SUN',    desc: 'Core Identity',
-        sign: chart.positions.Sun.sign,
-        elem: ELEMENT_MAP[chart.positions.Sun.sign] || 'fire',
-      },
-      {
-        planetGlyph: '☽', label: 'MOON',   desc: 'Inner World',
-        sign: chart.positions.Moon.sign,
-        elem: ELEMENT_MAP[chart.positions.Moon.sign] || 'water',
-      },
-      {
-        planetGlyph: '↑', label: 'RISING', desc: 'Outward Self',
-        sign: chart.risingSign,
-        elem: ELEMENT_MAP[chart.risingSign] || 'air',
-      },
+    y += 50 * S;
+    x.fillStyle = PAL.silver;
+    x.font = `400 ${26 * S}px ${FONT_SANS}`;
+    x.fillText(
+      `${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''}${cityShort ? '  ·  ' + cityShort : ''}`,
+      W / 2, y);
+
+    // ── Big-Three glass orbs (shared) ──
+    y += 78 * S;
+    const trio = [
+      { sign: chart.positions.Sun.sign,  label: 'SUN' },
+      { sign: chart.positions.Moon.sign, label: 'MOON' },
+      { sign: chart.risingSign,          label: 'RISING' },
     ];
-
-    const CARD_H   = 168;
-    const CARD_PAD = 16;
-    const CARD_X   = 84;
-    const CARD_W   = W - 168;
-
-    rowData.forEach((row, i) => {
-      const cardY = 330 + i * (CARD_H + 18);
-      const elemCol = ELEMENT_COLORS[row.elem] || '#5b7fc7';
-      const elemColBright = ELEMENT_LABEL_COLORS[row.elem] || '#9aa6c8';
-
-      // Card background — glassmorphism fill
-      x.fillStyle = 'rgba(17,26,54,0.62)';
-      x.beginPath();
-      if (x.roundRect) { x.roundRect(CARD_X, cardY, CARD_W, CARD_H, 18); }
-      else { x.rect(CARD_X, cardY, CARD_W, CARD_H); }
-      x.fill();
-
-      // Card border
-      x.strokeStyle = 'rgba(150,175,230,0.2)';
-      x.lineWidth = 1.5;
-      x.stroke();
-
-      // Left element accent bar
-      x.fillStyle = elemCol;
-      x.beginPath();
-      if (x.roundRect) { x.roundRect(CARD_X, cardY + 12, 4, CARD_H - 24, 2); }
-      else { x.rect(CARD_X, cardY + 12, 4, CARD_H - 24); }
-      x.fill();
-
-      // Top highlight
-      const hlGrad = x.createLinearGradient(CARD_X + 40, cardY, CARD_X + CARD_W * 0.6, cardY);
-      hlGrad.addColorStop(0, 'transparent');
-      hlGrad.addColorStop(0.2, 'rgba(200,208,232,0.1)');
-      hlGrad.addColorStop(1, 'transparent');
-      x.strokeStyle = hlGrad;
-      x.lineWidth = 1;
-      x.beginPath(); x.moveTo(CARD_X + 20, cardY + 1); x.lineTo(CARD_X + CARD_W - 20, cardY + 1); x.stroke();
-
-      // Planet glyph (big, gold)
-      x.fillStyle = '#D4AF37';
-      x.font = `400 74px ${FONT_DISPLAY}`;
-      x.textBaseline = 'middle';
-      x.textAlign = 'left';
-      x.fillText(row.planetGlyph, CARD_X + 28, cardY + CARD_H / 2);
-
-      // Label + descriptor
-      x.fillStyle = '#8891aa';
-      x.font = `600 18px ${FONT_SANS}`;
-      x.textBaseline = 'top';
-      x.fillText(`${row.label}  ·  ${row.desc}`, CARD_X + 124, cardY + 32);
-
-      // Sign glyph + name
-      x.fillStyle = '#f0e8d8';
-      x.font = `bold 52px ${FONT_DISPLAY}`;
-      x.textBaseline = 'top';
-      x.fillText(`${SIGN_GLYPHS[row.sign] || ''} ${row.sign}`, CARD_X + 124, cardY + 62);
-
-      // Element label (right side)
-      x.fillStyle = elemColBright;
-      x.font = `500 16px ${FONT_SANS}`;
-      x.textAlign = 'right';
-      x.textBaseline = 'middle';
-      x.fillText(cap(row.elem), CARD_X + CARD_W - 20, cardY + CARD_H / 2);
-
-      x.textBaseline = 'alphabetic';
+    const orbR = 56 * S;
+    const gap  = (format === 'square') ? 200 * S : 230 * S;
+    trio.forEach((t, i) => {
+      const tx = W / 2 + (i - 1) * gap;
+      const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
+      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+      x.fillStyle = PAL.goldPale;
+      x.font = `600 ${15 * S}px ${FONT_SANS}`;
+      x.textAlign = 'center';
+      x.fillText(t.label, tx, y + orbR + 26 * S);
+      x.fillStyle = PAL.silver;
+      x.font = `400 ${17 * S}px ${FONT_SANS}`;
+      x.fillText(t.sign, tx, y + orbR + 48 * S);
     });
 
-    // ── Element distribution circle (small, right side, below rows) ──
-    const elems = computeElements(chart.positions);
-    const circX = W - 160, circY = 900, circR = 68;
-
-    // Background circle
-    x.fillStyle = 'rgba(17,26,54,0.5)';
-    x.beginPath(); x.arc(circX, circY, circR + 8, 0, Math.PI * 2); x.fill();
-
-    // Pie slices for each element
-    const elemKeys = ['fire','earth','air','water'];
-    const total = elemKeys.reduce((s, k) => s + (elems[k] || 0), 0) || 1;
-    let startAngle = -Math.PI / 2;
-    elemKeys.forEach(ek => {
-      const count = elems[ek] || 0;
-      if (!count) return;
-      const slice = (count / total) * Math.PI * 2;
-      x.fillStyle = ELEMENT_COLORS[ek];
-      x.globalAlpha = 0.85;
-      x.beginPath();
-      x.moveTo(circX, circY);
-      x.arc(circX, circY, circR, startAngle, startAngle + slice);
-      x.closePath();
-      x.fill();
-      startAngle += slice;
-    });
-    x.globalAlpha = 1;
-
-    // Circle border
-    x.strokeStyle = 'rgba(212,175,55,0.5)';
-    x.lineWidth = 2;
-    x.beginPath(); x.arc(circX, circY, circR, 0, Math.PI * 2); x.stroke();
-
-    // Centre dot
-    x.fillStyle = '#0A0B1F';
-    x.beginPath(); x.arc(circX, circY, 14, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#D4AF37';
-    x.font = `400 14px ${FONT_DISPLAY}`;
-    x.textAlign = 'center';
-    x.textBaseline = 'middle';
-    x.fillText('✦', circX, circY);
-    x.textBaseline = 'alphabetic';
-
-    // ── Dominant voice line ──
+    // Dominant-energy line
+    y += orbR + 86 * S;
     const dom = [
-      chart.dominantElement ? cap(chart.dominantElement) + ' Dominant' : '',
+      chart.dominantElement ? cap(chart.dominantElement) + ' Energy' : '',
       chart.dominantModality ? cap(chart.dominantModality) + ' Mode' : '',
-    ].filter(Boolean).join('  ·  ');
+      chart.chartRuler ? cap(chart.chartRuler) + ' Rules' : '',
+    ].filter(Boolean).join('   ·   ');
+    if (dom) {
+      x.fillStyle = PAL.silverDim;
+      x.font = `400 ${20 * S}px ${FONT_SANS}`;
+      x.textAlign = 'center';
+      x.fillText(dom, W / 2, y);
+    }
 
-    x.textAlign = 'left';
-    x.fillStyle = '#5a648a';
-    x.font = `400 20px ${FONT_SANS}`;
-    x.textBaseline = 'middle';
-    x.fillText(dom, 90, 900);
-    x.textBaseline = 'alphabetic';
+    // ── Natal wheel + detail panels (height-aware so every format fits) ──
+    // Everything below the header lives in the band between the dominant line and
+    // the footer. We reserve space for the optional panels first, then size the
+    // wheel to fill what remains — so nothing ever overflows the canvas.
+    const bandTop = y + 28 * S;
+    const bandBot = H - 132 * S;            // just above the footer rule
+    const margin  = 150 * S;
+    const contentW = W - margin * 2;
 
-    // ── Footer ──
+    // Panel heights (must match what paintElementBars / paintPlacementTable draw).
+    const ELEM_BARS_H = 50 * S + 4 * 58 * S + 26 * S;     // title + 4 rows
+    const PLACE_ROWS  = 5;                                 // 10 planets / 2 cols
+    const PLACE_H     = 36 * S + PLACE_ROWS * 56 * S;      // title offset + rows
+    const PANEL_GAP   = 64 * S;
+
+    // What each format stacks below the wheel, chosen so the wheel stays large
+    // and nothing overflows the canvas:
+    //   square — wheel only (single-screen social post)
+    //   story  — wheel + element bars (9:16, room for one panel)
+    //   print  — wheel + full placement table (A4 poster; the data people frame)
+    let showBars = false, showTable = false, reserved = 0;
+    if (format === 'print') {
+      showTable = true;
+      reserved = PANEL_GAP + PLACE_H;
+    } else if (format === 'story') {
+      showBars = true;
+      reserved = PANEL_GAP + ELEM_BARS_H;
+    }
+
+    const wheelBandBot = bandBot - reserved;
+    let wheelR = Math.min(contentW / 2, (wheelBandBot - bandTop) / 2);
+    if (format === 'square') wheelR = Math.min(wheelR, W * 0.24);
+    const wheelCY = (bandTop + wheelBandBot) / 2;
+    drawWheel(x, chart, W / 2, wheelCY, wheelR);
+
+    let py = wheelCY + wheelR + PANEL_GAP;
+    if (showBars)  { paintElementBars(x, chart, margin, py, contentW, S); py += ELEM_BARS_H + PANEL_GAP; }
+    if (showTable) { paintPlacementTable(x, chart, margin, py, contentW / 2, S); }
+
+    // ── Footer (shared) ──
     x.textAlign = 'center';
-    x.fillStyle = '#5a648a';
-    x.font = `400 20px ${FONT_SANS}`;
-    x.fillText('Discover your cosmic blueprint at astroprecise.app', W / 2, H - 86);
-
-    // Bottom gold rule
-    x.strokeStyle = 'rgba(212,175,55,0.25)';
-    x.lineWidth = 1;
-    x.beginPath(); x.moveTo(200, H - 106); x.lineTo(W - 200, H - 106); x.stroke();
+    x.strokeStyle = 'rgba(196,146,10,0.25)'; x.lineWidth = 1 * S;
+    x.beginPath(); x.moveTo(W * 0.2, H - 108 * S); x.lineTo(W * 0.8, H - 108 * S); x.stroke();
+    x.fillStyle = PAL.silverDim;
+    x.font = `400 ${20 * S}px ${FONT_SANS}`;
+    x.fillText(`✦  astroprecise  ·  ${accLine}  ✦`, W / 2, H - 78 * S);
 
     return cv;
   }
 
+  // Format wrappers (kept as named entry points the rest of the app can call).
+  function drawChartPoster(chart) { return paintShareImage(chart, 'print'); }
+  function drawShareImageSquare(chart) { return paintShareImage(chart, 'square'); }
+  function drawShareImageStory(chart) { return paintShareImage(chart, 'story'); }
+
+  const slugify = name =>
+    (name || 'chart').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'chart';
+
+  // Canvas → Blob (toBlob preferred; dataURL fallback for older engines).
+  function canvasToBlob(cv) {
+    return new Promise(resolve => {
+      if (cv.toBlob) {
+        cv.toBlob(b => resolve(b), 'image/png');
+      } else {
+        const data = cv.toDataURL('image/png');
+        const bin = atob(data.split(',')[1]);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        resolve(new Blob([arr], { type: 'image/png' }));
+      }
+    });
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.download = filename; a.href = url;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
+  // One-tap export: Web Share (with image file) where supported, else download.
+  async function exportShareImage(chart, format, opts) {
+    opts = opts || {};
+    const cv = paintShareImage(chart, format);
+    const filename = `${slugify(chart.name)}-${format === 'print' ? 'natal-poster' : 'natal-' + format}.png`;
+    const blob = await canvasToBlob(cv);
+    if (!blob) { if (window.AstroApp) AstroApp.showToast('Export failed', 'Could not render the image.', 'error'); return; }
+
+    // Try the Web Share API with a file (mobile-first), unless caller forces download.
+    if (!opts.forceDownload && navigator.canShare && navigator.share) {
+      try {
+        const file = new File([blob], filename, { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: 'My Birth Chart — AstroPrecise',
+            text: `${chart.name}: ☉ ${chart.positions.Sun.sign} · ☽ ${chart.positions.Moon.sign} · ↑ ${chart.risingSign}`,
+          });
+          return; // shared successfully
+        }
+      } catch (e) {
+        if (e && e.name === 'AbortError') return; // user cancelled — do nothing
+        // otherwise fall through to download
+      }
+    }
+    downloadBlob(blob, filename);
+    if (window.AstroApp) {
+      const labels = { square: 'Square image', story: 'Story image', print: 'Print poster' };
+      AstroApp.showToast('Saved', `${labels[format] || 'Image'} downloaded.`, 'success');
+    }
+  }
+
+  // Tiny chooser so one button can offer all three formats without a framework.
+  function openShareFormatMenu(anchorBtn) {
+    if (!currentChart) return;
+    document.getElementById('share-format-menu')?.remove();
+    const menu = document.createElement('div');
+    menu.id = 'share-format-menu';
+    menu.setAttribute('role', 'menu');
+    menu.style.cssText =
+      'position:absolute;z-index:1200;min-width:240px;padding:8px;border-radius:14px;' +
+      'background:rgba(13,17,36,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
+      'border:1px solid rgba(196,146,10,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
+    const opts = [
+      { fmt: 'square', title: 'Square · 1080×1080', sub: 'Instagram & social posts' },
+      { fmt: 'story',  title: 'Story · 1080×1920',  sub: 'IG / WhatsApp stories' },
+      { fmt: 'print',  title: 'Print poster · 2480×3508', sub: 'High-res, print-ready' },
+    ];
+    menu.innerHTML = opts.map(o =>
+      `<button type="button" role="menuitem" data-fmt="${o.fmt}" style="display:block;width:100%;text-align:left;` +
+      `padding:10px 12px;margin:2px 0;border:none;border-radius:10px;background:transparent;cursor:pointer;color:#f0e8d8;` +
+      `font-family:Inter,sans-serif;transition:background .15s;">` +
+      `<span style="display:block;font-weight:600;font-size:0.8rem;letter-spacing:0.04em;">${o.title}</span>` +
+      `<span style="display:block;font-size:0.66rem;color:#9aa6c8;margin-top:2px;">${o.sub}</span></button>`
+    ).join('');
+
+    document.body.appendChild(menu);
+    const r = anchorBtn.getBoundingClientRect();
+    menu.style.top  = (r.bottom + window.scrollY + 8) + 'px';
+    menu.style.left = (Math.min(r.left + window.scrollX, window.scrollX + window.innerWidth - menu.offsetWidth - 12)) + 'px';
+
+    const close = () => { menu.remove(); document.removeEventListener('click', onDoc, true); };
+    const onDoc = ev => { if (!menu.contains(ev.target) && ev.target !== anchorBtn) close(); };
+    setTimeout(() => document.addEventListener('click', onDoc, true), 0);
+
+    menu.querySelectorAll('button[data-fmt]').forEach(b => {
+      b.addEventListener('mouseenter', () => { b.style.background = 'rgba(196,146,10,0.12)'; });
+      b.addEventListener('mouseleave', () => { b.style.background = 'transparent'; });
+      b.addEventListener('click', () => { const f = b.dataset.fmt; close(); exportShareImage(currentChart, f); });
+    });
+  }
+
+  // Poster button → defaults to the print-ready export (one-tap), long-standing label.
+  document.getElementById('poster-btn')?.addEventListener('click', ev => {
+    if (!currentChart) return;
+    // Click opens the format menu so users can pick square / story / print.
+    openShareFormatMenu(ev.currentTarget);
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BIG THREE SHARE CARD
+  // The "Big Three card" is now the polished square (1080×1080) share image —
+  // produced by the same unified painter as the poster, so screen and merch
+  // share one design language. Kept as a named function for the button wiring.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  function drawShareCard(chart) { return paintShareImage(chart, 'square'); }
+
   function addShareCardButton() {
-    // The HTML already has print-btn wired to the share card.
-    // This function is kept for backwards-compat but is a no-op now.
+    // The HTML already has the buttons; wiring lives below. No-op kept for boot.
   }
 
   // ── Boot ──────────────────────────────────────────────────────────────────
 
   document.addEventListener('DOMContentLoaded', () => {
     addShareCardButton();
+    initNodeToggle();
     restoreFromURL();
   });
   if (document.readyState !== 'loading') {
     addShareCardButton();
+    initNodeToggle();
     restoreFromURL();
   }
 

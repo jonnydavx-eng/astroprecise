@@ -56,6 +56,61 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/accuracy.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/retrograde.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/moonphase.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/charts.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/what-is-my-rising-sign.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/synastry.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/solar-return.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/quiz.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/angel-numbers.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/tonight.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/name-numerology.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://jonnydavx-eng.github.io/astroprecise/aries.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>

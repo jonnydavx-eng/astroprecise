@@ -473,6 +473,67 @@
     /* ── Loading + results ── */
     .hidden { display: none !important; }
 
+    /* ── City autocomplete (shared AstroApp.initCityAutocomplete) ── */
+    .autocomplete-dropdown { display: none; }
+    .autocomplete-dropdown.open { display: block; }
+    .autocomplete-item {
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      color: var(--silver);
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s, color 0.15s;
+    }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover,
+    .autocomplete-item.highlighted {
+      background: rgba(123,44,191,0.18);
+      color: var(--white);
+    }
+    .autocomplete-item .city-country { color: var(--silver-dim); font-size: 0.78rem; }
+
+    /* ── Personal forecast result blocks (reuse .transit-item from main.css) ── */
+    .ptf-overview {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.6rem 1.75rem;
+      margin-bottom: 1.75rem;
+    }
+    .ptf-overview__eyebrow {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--gold); margin: 0 0 0.6rem;
+    }
+    .ptf-overview__headline {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.2rem, 2.6vw, 1.6rem); color: var(--white);
+      line-height: 1.25; margin: 0 0 0.75rem;
+    }
+    .ptf-overview__body {
+      font-size: 0.92rem; color: var(--silver); line-height: 1.75; margin: 0 0 1.1rem;
+    }
+    .ptf-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .ptf-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; color: var(--silver);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+    }
+    .ptf-keywords { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
+    .ptf-keyword {
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold-light); background: rgba(123,44,191,0.12);
+      border: 1px solid rgba(123,44,191,0.3); border-radius: 999px; padding: 0.25rem 0.7rem;
+    }
+    /* Aspect quality accent inside the transit-item date row */
+    .ptf-quality { font-weight: 700; }
+    .ptf-quality--harmonious { color: #5ad498; }
+    .ptf-quality--dynamic { color: #fb8a6a; }
+    .ptf-quality--intensifying { color: var(--gold-light); }
+
     /* ── CTA section ── */
     .cta-divider {
       display: flex;
@@ -569,16 +630,16 @@
 
         <div class="transit-ticker" role="marquee" aria-label="Current planetary positions ticker" id="transit-ticker">
           <div class="transit-ticker__track" id="transit-ticker-track">
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9728;</span><span class="transit-pill__name">Sun</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9789;</span><span class="transit-pill__name">Moon</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9791;</span><span class="transit-pill__name">Mercury</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9792;</span><span class="transit-pill__name">Venus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9794;</span><span class="transit-pill__name">Mars</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9795;</span><span class="transit-pill__name">Jupiter</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9796;</span><span class="transit-pill__name">Saturn</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9797;</span><span class="transit-pill__name">Uranus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9798;</span><span class="transit-pill__name">Neptune</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9799;</span><span class="transit-pill__name">Pluto</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span><span class="transit-pill__name">Sun</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span><span class="transit-pill__name">Moon</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span><span class="transit-pill__name">Mercury</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span><span class="transit-pill__name">Venus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span><span class="transit-pill__name">Mars</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span><span class="transit-pill__name">Jupiter</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span><span class="transit-pill__name">Saturn</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span><span class="transit-pill__name">Uranus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span><span class="transit-pill__name">Neptune</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span><span class="transit-pill__name">Pluto</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
           </div>
         </div>
       </div>
@@ -598,43 +659,43 @@
         <div id="current-sky" class="planet-grid" role="region" aria-live="polite" aria-label="Current planetary positions">
           <!-- Static fallback — JS may update these -->
           <div class="planet-card planet-card--air">
-            <span class="planet-card__symbol" aria-hidden="true">&#9728;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span>
             <span class="planet-card__name">Sun</span>
             <span class="planet-card__position">Gemini 21&#176;04&#8217;</span>
             <span class="planet-card__desc">Solar energy in Gemini heightens curiosity, social energy, and the desire to share ideas and connect with others.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9789;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span>
             <span class="planet-card__name">Moon</span>
             <span class="planet-card__position">Scorpio 14&#176;37&#8217;</span>
             <span class="planet-card__desc">Lunar intensity deepens emotional perception and intuition. Trust your instincts; honour what rises from the depths.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9791;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
             <span class="planet-card__name">Mercury</span>
             <span class="planet-card__position">Cancer 3&#176;22&#8217;</span>
             <span class="planet-card__desc">Thought and communication become more intuitive and emotionally resonant. Nurturing conversations flow with ease.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9792;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
             <span class="planet-card__name">Venus</span>
             <span class="planet-card__position">Cancer 19&#176;11&#8217;</span>
             <span class="planet-card__desc">Affections are tender and home-oriented. Deepen bonds with loved ones and create beauty in your personal space.</span>
           </div>
           <div class="planet-card planet-card--fire">
-            <span class="planet-card__symbol" aria-hidden="true">&#9794;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
             <span class="planet-card__name">Mars</span>
             <span class="planet-card__position">Leo 8&#176;54&#8217;</span>
             <span class="planet-card__desc">Drive is bold and expressive. Channel energy into creative projects, courageous initiatives, and confident leadership.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9795;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
             <span class="planet-card__name">Jupiter</span>
             <span class="planet-card__position">Cancer 2&#176;09&#8217;</span>
             <span class="planet-card__desc">Growth through emotional wisdom, family ties, and intuition. Abundance is found by nurturing what matters most.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9796;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
             <span class="planet-card__name">Saturn</span>
             <span class="planet-card__position">
               Pisces 22&#176;47&#8217; <span class="retrograde-badge" aria-label="retrograde">Rx</span>
@@ -642,19 +703,19 @@
             <span class="planet-card__desc">Discipline and structure are under revision. Review spiritual commitments; release what no longer serves your highest path.</span>
           </div>
           <div class="planet-card planet-card--earth">
-            <span class="planet-card__symbol" aria-hidden="true">&#9797;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span>
             <span class="planet-card__name">Uranus</span>
             <span class="planet-card__position">Taurus 28&#176;03&#8217;</span>
             <span class="planet-card__desc">Radical changes to material values and resources. Innovative approaches to security and ownership come to the fore.</span>
           </div>
           <div class="planet-card planet-card--fire">
-            <span class="planet-card__symbol" aria-hidden="true">&#9798;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span>
             <span class="planet-card__name">Neptune</span>
             <span class="planet-card__position">Aries 2&#176;18&#8217;</span>
             <span class="planet-card__desc">Pioneering dreams and dissolving of old identities. A new spiritual ideal is crystallising around courage and vision.</span>
           </div>
           <div class="planet-card planet-card--air">
-            <span class="planet-card__symbol" aria-hidden="true">&#9799;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span>
             <span class="planet-card__name">Pluto</span>
             <span class="planet-card__position">Aquarius 3&#176;42&#8217;</span>
             <span class="planet-card__desc">Collective transformation through community, technology, and shared vision. Old power structures are being fundamentally rebuilt.</span>
@@ -673,6 +734,10 @@
           <h2 class="ts-section__title" id="personal-transits-heading">Personal Transit Forecast</h2>
           <p class="ts-section__subtitle">Enter your birth data to see how current planets interact with your natal chart positions.</p>
         </div>
+
+        <!-- "Your Sky Today" — personalised daily transit card (js/daily-transit.js).
+             Auto-renders from a saved chart; otherwise invites the visitor to cast one. -->
+        <div id="daily-transit-card" aria-live="polite" aria-label="Your personalised daily sky reading"></div>
 
         <div class="personal-transit-wrap">
           <form id="transit-form" class="transit-form" novalidate aria-label="Personal transit forecast form">
@@ -749,7 +814,7 @@
 
           <ul class="retrograde-list" aria-label="Retrograde schedule 2025&#8211;2026">
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9794;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Mars Retrograde &mdash; Leo &amp; Cancer</h4>
                 <p>Ambition and drive recalibrate. Redirect energy rather than forcing forward against resistance. Review ongoing projects and goals.</p>
@@ -757,7 +822,7 @@
               <div class="retrograde-item__dates">Dec 6, 2024 &ndash; Feb 23, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9792;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Venus Retrograde &mdash; Aries &amp; Pisces</h4>
                 <p>Reassess what &mdash; and who &mdash; you truly value. Old relationships resurface for resolution or release. Avoid major purchases or new romantic commitments.</p>
@@ -765,7 +830,7 @@
               <div class="retrograde-item__dates">Mar 1 &ndash; Apr 12, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9791;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Mercury Retrograde &mdash; Leo</h4>
                 <p>Communication and self-expression need revision. Back up all important work; re-read contracts before signing. Creative projects benefit from reworking.</p>
@@ -773,7 +838,7 @@
               <div class="retrograde-item__dates">Jul 18 &ndash; Aug 11, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9796;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Saturn Retrograde &mdash; Pisces</h4>
                 <p>Review spiritual boundaries, long-term structures, and dissolving illusions. Inner discipline brings more reward than outer control during this window.</p>
@@ -781,7 +846,7 @@
               <div class="retrograde-item__dates">Jul 13 &ndash; Nov 27, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9791;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Mercury Retrograde &mdash; Scorpio &amp; Sagittarius</h4>
                 <p>Deep investigations, beliefs, and long-distance plans need revisiting. Truth surfaces unexpectedly; be prepared for revealing conversations.</p>
@@ -789,7 +854,7 @@
               <div class="retrograde-item__dates">Nov 9 &ndash; Nov 29, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9795;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Jupiter Retrograde &mdash; Cancer</h4>
                 <p>Expansion turns inward. Deepen emotional intelligence and revisit family foundations. Abundance is found by nourishing inner roots before seeking it externally.</p>
@@ -991,8 +1056,9 @@
         var lon = positions && positions[p.key] != null ? positions[p.key] : null;
         var posText = lon != null ? degToSignPos(lon) : '—°';
         var isRetro = RETRO_KEYS[p.key] || false;
+        var symHtml = window.AstroIcons ? AstroIcons.planet(p.name, { sm: true }) : p.sym;
         return '<span class="transit-pill' + (isRetro ? ' transit-pill--retrograde' : '') + '">' +
-          '<span class="transit-pill__symbol" aria-hidden="true">' + p.sym + '</span>' +
+          '<span class="transit-pill__symbol" aria-hidden="true">' + symHtml + '</span>' +
           '<span class="transit-pill__name">' + p.name + '</span>' +
           '<span class="transit-pill__pos">' + posText + (isRetro ? ' Rx' : '') + '</span>' +
           '</span>';
@@ -1046,9 +1112,334 @@
   <!-- JS -->
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
+  <script src="js/oracle.js"></script>
   <script src="js/chart-render.js"></script>
+  <script src="js/interpretations.js"></script>
   <script src="js/profile.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/daily-transit.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
+
+  <!-- ============================================================
+       PERSONAL TRANSIT FORECAST — form controller
+       City autocomplete + on-submit chart build + transit aspect cards.
+       Determinism/honesty (website/CLAUDE.md): every position comes from the
+       live VSOP87/ELP2000 engine; the reading is deterministic per chart+day;
+       when nothing is within orb we say so rather than inventing a transit.
+  ============================================================ -->
+  <script>
+  (function () {
+    'use strict';
+
+    function $(id) { return document.getElementById(id); }
+
+    var SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+      'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+    var NATAL_PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'];
+    var TRANSIT_PLANETS = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars',
+      'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'];
+    var ASPECT_GLYPHS = {
+      conjunction: '☌', sextile: '⚹', square: '□',
+      trine: '△', opposition: '☍'
+    };
+
+    function mod360(x) { return ((x % 360) + 360) % 360; }
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function cap(s) {
+      s = String(s || '');
+      return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+    }
+
+    // Normalise a positions value (number | {longitude} | {lon}) to a number.
+    function lonOf(v) {
+      if (v == null) return null;
+      if (typeof v === 'number') return v;
+      if (typeof v === 'object') {
+        if (typeof v.longitude === 'number') return v.longitude;
+        if (typeof v.lon === 'number') return v.lon;
+      }
+      return null;
+    }
+
+    function signOf(lon) { return SIGNS[Math.floor(mod360(lon) / 30)]; }
+
+    function planetGlyph(name) {
+      if (window.AstroIcons && typeof AstroIcons.planet === 'function') {
+        try { return AstroIcons.planet(name, { sm: true }) + ' '; } catch (e) {}
+      }
+      return '';
+    }
+    function signGlyph(name) {
+      if (window.AstroIcons && typeof AstroIcons.sign === 'function') {
+        try { return AstroIcons.sign(name, { sm: true }) + ' '; } catch (e) {}
+      }
+      return '';
+    }
+
+    // ── live transit longitudes for the current moment (capitalised → degrees)
+    function computeTransitPositions(date) {
+      var E = window.AstroEphemeris;
+      var out = {};
+      if (!E || typeof E.calculateNatalChart !== 'function') return out;
+      try {
+        var c = E.calculateNatalChart(
+          date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(),
+          date.getUTCHours(), date.getUTCMinutes(), 0, 0
+        );
+        if (c && c.positions) {
+          TRANSIT_PLANETS.forEach(function (name) {
+            var lon = lonOf(c.positions[name] != null ? c.positions[name] : c.positions[name.toLowerCase()]);
+            if (lon != null) out[name] = mod360(lon);
+          });
+        }
+      } catch (e) {}
+      return out;
+    }
+
+    // Re-shape the buildChartData chart into what getTransitAspects expects:
+    // positions keyed by capitalised name with real per-planet longitudes.
+    function normalizeNatal(chart) {
+      var positions = {};
+      NATAL_PLANETS.forEach(function (name) {
+        var lon = lonOf(chart.positions[name] != null ? chart.positions[name] : chart.positions[name.toLowerCase()]);
+        if (lon != null) positions[name] = { lon: mod360(lon) };
+      });
+      return { positions: positions, sunSign: chart.sunSign };
+    }
+
+    // ── rendering ────────────────────────────────────────────────────────────
+
+    function overviewHtml(insight, chart) {
+      var headline = insight && insight.headline ? insight.headline : 'Your sky today';
+      var body = insight && insight.body ? insight.body : '';
+      var chips = '';
+      if (chart.sunSign) chips += '<span class="ptf-chip">' + signGlyph(chart.sunSign) + 'Sun ' + esc(chart.sunSign) + '</span>';
+      if (chart.moonSign) chips += '<span class="ptf-chip">' + signGlyph(chart.moonSign) + 'Moon ' + esc(chart.moonSign) + '</span>';
+      if (chart.risingSign) chips += '<span class="ptf-chip">' + signGlyph(chart.risingSign) + 'Rising ' + esc(chart.risingSign) + '</span>';
+      if (insight && insight.moodScore != null) chips += '<span class="ptf-chip">Mood ' + Math.round(insight.moodScore) + '/100</span>';
+
+      var keywords = '';
+      if (insight && insight.keywords && insight.keywords.length) {
+        keywords = '<div class="ptf-keywords">' + insight.keywords.map(function (k) {
+          return '<span class="ptf-keyword">' + esc(k) + '</span>';
+        }).join('') + '</div>';
+      }
+
+      return '<div class="ptf-overview">' +
+        '<p class="ptf-overview__eyebrow">Today’s Sky · Your Chart</p>' +
+        '<h3 class="ptf-overview__headline">' + esc(headline) + '</h3>' +
+        (body ? '<p class="ptf-overview__body">' + esc(body) + '</p>' : '') +
+        (chips ? '<div class="ptf-chips">' + chips + '</div>' : '') +
+        keywords +
+        '</div>';
+    }
+
+    // Card from AstroInterpretations.getTransitAspects (slow outer-planet forecast).
+    function aspectCardHtml(a) {
+      // Robust to both getTransitAspects schemas (exported: 'exact'/'close'/'wide';
+      // legacy IIFE: 'major'/'minor') — fall back to the orb itself for the
+      // major flag so the gold styling tracks the tightest contacts either way.
+      var major = a.strength === 'exact' || a.strength === 'major' ||
+        (typeof a.orb === 'number' && a.orb < 2);
+      var glyph = ASPECT_GLYPHS[a.aspect] || '';
+      var orbTxt = (typeof a.orb === 'number') ? a.orb.toFixed(1) + '° orb' : '';
+      var qualityTag = a.quality
+        ? ' · <span class="ptf-quality ptf-quality--' + esc(a.quality) + '">' + esc(a.quality) + '</span>'
+        : '';
+      var meta = esc(a.transitPlanet) + ' ' + glyph + ' ' + esc(a.natalPlanet) +
+        (a.strength ? ' · ' + esc(a.strength) : '') + (orbTxt ? ' · ' + orbTxt : '') + qualityTag;
+      return '<div class="transit-item' + (major ? ' transit-item--major' : '') + '">' +
+        '<div class="transit-item__date">' + meta + '</div>' +
+        '<h4 class="transit-item__title">' + planetGlyph(a.transitPlanet) +
+          'Transiting ' + esc(a.transitPlanet) + ' ' + esc(cap(a.aspect)) + ' natal ' + esc(a.natalPlanet) + '</h4>' +
+        '<p class="transit-item__body">' + esc(a.interpretation) + '</p>' +
+      '</div>';
+    }
+
+    // Fallback card from AstroOracle.getDailyInsight transit list (includes the
+    // fast movers, so the visitor still sees real contacts on days with no
+    // outer-planet aspects in orb).
+    function oracleCardHtml(t) {
+      var orbTxt = (t.orb != null && isFinite(t.orb)) ? Number(t.orb).toFixed(1) + '° orb' : '';
+      var meta = esc(t.transit) + ' → ' + esc(t.natal) + (orbTxt ? ' · ' + orbTxt : '');
+      return '<div class="transit-item">' +
+        '<div class="transit-item__date">' + meta + '</div>' +
+        '<h4 class="transit-item__title">' + planetGlyph(t.transit) +
+          esc(t.transit) + ' ' + esc(t.aspect || '') + ' ' + esc(t.natal) + '</h4>' +
+        '<p class="transit-item__body">' + esc(t.text || '') + '</p>' +
+      '</div>';
+    }
+
+    function noContactHtml(insight) {
+      var body = insight && insight.body
+        ? insight.body
+        : 'No major planetary transit is within orb of your natal placements right now — ' +
+          'open sky. Days like this don’t pull you in any one direction; the heading is yours to set.';
+      return '<div class="transit-item">' +
+        '<div class="transit-item__date">Open Sky</div>' +
+        '<h4 class="transit-item__title">No tight transits to your chart right now</h4>' +
+        '<p class="transit-item__body">' + esc(body) + '</p>' +
+      '</div>';
+    }
+
+    function errorHtml(msg) {
+      return '<div class="transit-item">' +
+        '<div class="transit-item__date">Unavailable</div>' +
+        '<h4 class="transit-item__title">Couldn’t cast your forecast</h4>' +
+        '<p class="transit-item__body">' + esc(msg) + '</p>' +
+      '</div>';
+    }
+
+    function setLoading(on) {
+      var loading = $('transit-loading');
+      var btn = $('transit-submit-btn');
+      if (loading) loading.classList.toggle('hidden', !on);
+      if (btn) { btn.disabled = on; btn.textContent = on ? 'Casting…' : 'Show My Transits'; }
+    }
+
+    function warn(title, msg) {
+      if (window.AstroApp && typeof AstroApp.showToast === 'function') {
+        AstroApp.showToast(title, msg, 'warning');
+      }
+    }
+
+    function runForecast(birth) {
+      var results = $('transit-results');
+      if (!results) { setLoading(false); return; }
+
+      var chart = (window.AstroProfile && typeof AstroProfile.buildChartData === 'function')
+        ? AstroProfile.buildChartData(birth) : null;
+
+      if (!chart || !chart.positions) {
+        results.innerHTML = errorHtml('We couldn’t compute a chart from those details. ' +
+          'Check the date and re-select your birth city from the list, then try again.');
+        results.classList.remove('hidden');
+        setLoading(false);
+        return;
+      }
+
+      var date = new Date();
+      var insight = null;
+      if (window.AstroOracle && typeof AstroOracle.getDailyInsight === 'function') {
+        try { insight = AstroOracle.getDailyInsight(chart, date); } catch (e) { insight = null; }
+      }
+
+      var aspects = [];
+      if (window.AstroInterpretations && typeof AstroInterpretations.getTransitAspects === 'function') {
+        try {
+          aspects = AstroInterpretations.getTransitAspects(normalizeNatal(chart), computeTransitPositions(date)) || [];
+        } catch (e) { aspects = []; }
+      }
+
+      var html = '';
+      if (insight) html += overviewHtml(insight, chart);
+
+      if (aspects.length) {
+        html += '<div class="transit-timeline" role="list" aria-label="Current transits to your natal chart">' +
+          aspects.map(aspectCardHtml).join('') + '</div>';
+      } else if (insight && insight.transits && insight.transits.length) {
+        html += '<div class="transit-timeline" role="list" aria-label="Current transits to your natal chart">' +
+          insight.transits.map(oracleCardHtml).join('') + '</div>';
+      } else {
+        html += noContactHtml(insight);
+      }
+
+      results.innerHTML = html;
+      results.classList.remove('hidden');
+      setLoading(false);
+      try {
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        results.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+      } catch (e) {}
+    }
+
+    function onSubmit(e) {
+      e.preventDefault();
+      var cityInput = $('transit-city');
+      var date = $('natal-date-transit') ? $('natal-date-transit').value : '';
+      var time = ($('natal-time-transit') && $('natal-time-transit').value) || '12:00';
+      var lat = $('transit-lat') ? $('transit-lat').value : '';
+      var lon = $('transit-lon') ? $('transit-lon').value : '';
+      var tz = (cityInput && cityInput.dataset.tz) || ($('transit-tz') && $('transit-tz').value) || '';
+      var city = cityInput ? cityInput.value.trim() : '';
+
+      if (!date) {
+        warn('Birth date needed', 'Add your date of birth to cast the forecast.');
+        return;
+      }
+      if (!isFinite(parseFloat(lat)) || !isFinite(parseFloat(lon))) {
+        warn('Pick your birth city', 'Choose your city from the dropdown so the houses can be placed.');
+        return;
+      }
+
+      var results = $('transit-results');
+      if (results) results.classList.add('hidden');
+      setLoading(true);
+
+      // Let the spinner paint before the synchronous engine work runs.
+      setTimeout(function () {
+        try {
+          runForecast({
+            name: '', date: date, time: time,
+            lat: lat, lon: lon, city: city, tz: tz, houseSystem: 'placidus'
+          });
+        } catch (err) {
+          if (results) {
+            results.innerHTML = errorHtml(String((err && err.message) || err));
+            results.classList.remove('hidden');
+          }
+          setLoading(false);
+        }
+      }, 30);
+    }
+
+    function wire() {
+      var form = $('transit-form');
+      if (!form || form.dataset.wired) return;
+      form.dataset.wired = '1';
+      form.addEventListener('submit', onSubmit);
+
+      // City autocomplete — populates #transit-lat/#transit-lon and inputEl.dataset.tz.
+      var cityInput = $('transit-city');
+      var latInput = $('transit-lat');
+      var lonInput = $('transit-lon');
+      var dropdown = $('transit-city-dropdown');
+      var tries = 0;
+      (function initAC() {
+        if (window.AstroApp && typeof AstroApp.initCityAutocomplete === 'function') {
+          AstroApp.initCityAutocomplete(cityInput, latInput, lonInput, dropdown);
+          return;
+        }
+        if (tries++ < 40) setTimeout(initAC, 200);
+      })();
+
+      // The shared helper only writes inputEl.dataset.tz; mirror the picked
+      // timezone into the documented hidden #transit-tz field (and clear it on
+      // edit) so the onSubmit fallback that reads it stays truthful.
+      var tzInput = $('transit-tz');
+      if (cityInput) {
+        cityInput.addEventListener('citySelected', function (e) {
+          if (tzInput) tzInput.value = (e.detail && e.detail.tz) || '';
+        });
+        cityInput.addEventListener('input', function () {
+          if (tzInput) tzInput.value = '';
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', wire);
+    } else {
+      wire();
+    }
+  })();
+  </script>
 </body>
 </html>

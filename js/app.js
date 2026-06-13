@@ -398,6 +398,7 @@ const AstroApp = (() => {
         results.forEach(city => {
           const item = document.createElement('div');
           item.className = 'autocomplete-item';
+          item.setAttribute('role', 'option');
           const region = city.admin ? `${city.admin}, ${city.country}` : city.country;
           item.textContent = city.name + ' ';
           const span = document.createElement('span');
@@ -420,6 +421,12 @@ const AstroApp = (() => {
     }, 250);
 
     inputEl.addEventListener('input', () => {
+      // Editing the text invalidates any previously-picked place — clear the
+      // resolved coordinates/timezone so a submit can't reuse stale values for
+      // a city the visitor has since retyped (matches chart-page.js).
+      if (latEl) latEl.value = '';
+      if (lonEl) lonEl.value = '';
+      delete inputEl.dataset.tz;
       if (inputEl.value.trim().length < 2) { seq++; dropdown.classList.remove('open'); return; }
       run(inputEl.value);
     });
@@ -629,6 +636,93 @@ window.AstroApp = AstroApp;
   else place();
 })();
 
+// ═══ UNIVERSAL "ACCURACY" NAV LINK ═══════════════════════════════════════
+// Nav markup is hardcoded per page; rather than edit ~25 files, inject the
+// Accuracy link into both the desktop and mobile nav lists once, here.
+(function injectExtraNav() {
+  // Secondary tools go in the MOBILE menu only (it scrolls) — keep the desktop
+  // top-bar lean at its hardcoded core. Footer guide-links cover desktop discovery.
+  var EXTRAS = [
+    { href: 'charts.html', label: 'My Charts' },
+    { href: 'quiz.html', label: 'Cosmic Quiz' },
+    { href: 'tonight.html', label: "Tonight's Sky" },
+    { href: 'moonphase.html', label: 'Moon Phase' },
+    { href: 'retrograde.html', label: 'Retrograde' },
+    { href: 'angel-numbers.html', label: 'Angel Numbers' },
+    { href: 'name-numerology.html', label: 'Name Numerology' },
+    { href: 'what-is-my-rising-sign.html', label: 'Rising Sign' },
+    { href: 'synastry.html', label: 'Synastry' },
+    { href: 'solar-return.html', label: 'Solar Return' },
+    { href: 'accuracy.html', label: 'Accuracy' },
+  ];
+  function place() {
+    var lists = document.querySelectorAll('.navbar__mobile-menu');
+    if (!lists.length) return;
+    var here = (location.pathname.split('/').pop() || 'index.html');
+    lists.forEach(function (list) {
+      var anchor = list.querySelector('a[href="shop.html"]'); // insert before Shop, in order
+      EXTRAS.forEach(function (x) {
+        if (list.querySelector('a[href="' + x.href + '"]')) return;
+        var a = document.createElement('a');
+        a.className = 'navbar__link' + (here === x.href ? ' active' : '');
+        a.href = x.href;
+        a.textContent = x.label;
+        if (here === x.href) a.setAttribute('aria-current', 'page');
+        if (anchor) list.insertBefore(a, anchor); else list.appendChild(a);
+      });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
+  else place();
+})();
+
+// ═══ FOOTER GUIDE / TOOL LINKS (site-wide internal links for SEO) ════════
+(function injectGuideLinks() {
+  function place() {
+    if (document.querySelector('.ap-guide-links')) return;
+    var host = document.querySelector('footer .container') || document.querySelector('footer');
+    if (!host) return;
+    var links = [
+      ['what-is-my-rising-sign.html', 'Rising sign'],
+      ['quiz.html', 'Cosmic archetype quiz'],
+      ['tonight.html', 'Tonight’s sky'],
+      ['moonphase.html', 'Moon phase'],
+      ['retrograde.html', 'Mercury retrograde'],
+      ['angel-numbers.html', 'Angel numbers'],
+      ['name-numerology.html', 'Name numerology'],
+      ['synastry.html', 'Synastry'],
+      ['solar-return.html', 'Solar return'],
+      ['charts.html', 'My charts'],
+      ['accuracy.html', 'How it’s accurate'],
+    ];
+    var p = document.createElement('p');
+    p.className = 'ap-guide-links';
+    p.style.cssText = 'font-size:0.62rem;letter-spacing:0.08em;margin-top:10px;opacity:0.6;'
+      + 'font-family:Inter,system-ui,sans-serif;text-align:center;line-height:1.9;';
+    p.innerHTML = 'Guides &amp; tools: ' + links.map(function (l) {
+      return '<a href="' + l[0] + '" style="color:var(--gold,#C9A227);text-decoration:none;">' + l[1] + '</a>';
+    }).join(' <span style="opacity:.4">&middot;</span> ');
+    host.appendChild(p);
+
+    // Family of sites — dormant-safe: only links the siblings whose URLs are set in AP_MON.family
+    var fam = (window.AP_MON && window.AP_MON.family) || {};
+    var famLinks = [];
+    if (fam.biggerPicture) famLinks.push('<a href="' + fam.biggerPicture + '" target="_blank" rel="noopener" style="color:var(--gold,#C9A227);text-decoration:none;">The Bigger Picture</a>');
+    if (fam.backInTime) famLinks.push('<a href="' + fam.backInTime + '" target="_blank" rel="noopener" style="color:var(--gold,#C9A227);text-decoration:none;">Back In Time</a>');
+    if (famLinks.length) {
+      var fp = document.createElement('p');
+      fp.className = 'ap-family-links';
+      fp.style.cssText = 'font-size:0.6rem;letter-spacing:0.1em;margin-top:8px;opacity:0.5;'
+        + 'font-family:Inter,system-ui,sans-serif;text-align:center;';
+      fp.innerHTML = 'A small family of sites — <span style="color:var(--gold,#C9A227)">AstroPrecise</span> <span style="opacity:.4">&middot;</span> '
+        + famLinks.join(' <span style="opacity:.4">&middot;</span> ');
+      host.appendChild(fp);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
+  else place();
+})();
+
 // ═══════════════════════════════════════════════════════════════════════
 // MONETISATION — provider-agnostic, dormant-by-default, link-out only.
 // GitHub Pages forbids SELLING on the site, but permits donation/crowdfunding
@@ -638,12 +732,171 @@ window.AstroApp = AstroApp;
 // never sees a broken or fake checkout.  ◆ EDIT THIS BLOCK TO GO LIVE ◆
 // ═══════════════════════════════════════════════════════════════════════
 window.AP_MON = Object.assign({
+  family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
   tipUrl:       '',   // tips/support — Ko-fi (0% on tips) or buymeacoffee. Pages-permitted.
   reportUrl:    '',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
   posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
   giftUrl:      '',   // gift a reading — hosted product
   newsletterUrl:'',   // email list signup — hosted (Buttondown / Kit / MailerLite)
   affiliateTag: '',   // honest affiliate tag for the shop page (e.g. Amazon Associates)
+  // Deep Reading purchase link — the chart-page teaser's CTA points here when set.
+  // Same rule as the rest: a hosted product page (Gumroad / Ko-fi Shop / Lemon
+  // Squeezy). Empty '' = DORMANT: the teaser button falls back to email capture,
+  // never a fake checkout.
+  deepReadingUrl: '',
+  // Email-list signup ENDPOINT (a hosted newsletter form-action, e.g. Buttondown
+  // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
+  // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
+  // localStorage only — no data leaves the device. When set, the form POSTs here.
+  emailUrl: '',
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // COMMERCE — the "wear your sky" shop (config-driven, dormant by default).
+  // ─────────────────────────────────────────────────────────────────────
+  // Read by js/shop-commerce.js (window.AstroShop). The whole catalogue is
+  // PERSONALISED-per-chart, ONE-TIME purchases — no subscriptions. Every
+  // product fulfils elsewhere (hosted store / Etsy / Gelato / Gumroad), so
+  // the site itself never takes money — Pages-compliant, link-out only.
+  //
+  // GO-LIVE: paste a URL into ONE of these and the matching path lights up.
+  // Checkout priority (per item, highest first):
+  //   1. product.fulfilUrl   — that product's own hosted listing ("Buy Now")
+  //   2. checkout.externalStoreUrl / checkout.etsyUrl — whole-cart handoff
+  //   3. checkout.paypalClientId — on-site PayPal Buttons (advanced)
+  //   4. (none set) — DORMANT branded modal + email-signup invite
+  // While every field below is '' the shop stays in honest pre-launch mode:
+  // the cart is real and saved locally, but checkout invites you to be told
+  // when the doors open — it never shows a fake or broken checkout.
+  commerce: {
+    // ── CHECKOUT — how the cart actually fulfils ──────────────────────────
+    checkout: {
+      paypalClientId:   '',   // PayPal REST Client ID → on-site Buttons (developer.paypal.com)
+      currency:         'USD',
+      externalStoreUrl: '',   // whole-cart handoff to a hosted store (Shopify / Gelato pop-up)
+      etsyUrl:          '',    // Etsy storefront ("Browse on Etsy" path)
+    },
+
+    // ── COLLECTIONS — the architecture of the sky ─────────────────────────
+    // Every piece belongs to one collection. Re-themed from TBP's tree to
+    // the chart: what you were born under, what you wear, what you keep.
+    collections: {
+      wearYourSky: {
+        name: 'Wear Your Sky',
+        story: 'Your exact birth sky, rendered for the body. Each piece is generated from your own chart — no two are alike.',
+      },
+      onYourWall: {
+        name: 'On Your Wall',
+        story: 'The map of the moment you arrived, printed to keep. Archive paper, your real placements, museum-grade.',
+      },
+      theReading: {
+        name: 'The Reading',
+        story: 'Words for your chart alone. Deep written readings and personalised guidance, delivered to you.',
+      },
+    },
+
+    // ── PRODUCTS ──────────────────────────────────────────────────────────
+    // type: 'digital' | 'print' | 'apparel' | 'accessory'
+    // personalized: true  → art/text is generated from the buyer's own chart
+    // fulfilUrl: ''       → DORMANT (no per-product link yet); '' keeps it honest
+    products: [
+      {
+        id:           'natal-poster',
+        name:         'Your Natal Sky — Art Poster',
+        type:         'print',
+        collection:   'onYourWall',
+        price:        38.00,
+        personalized: true,
+        badge:        'Signature',
+        blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. Archive paper, made to order.',
+        icon:         'map',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'sky-tee',
+        name:         'Your Sky — Tee',
+        type:         'apparel',
+        collection:   'wearYourSky',
+        price:        34.00,
+        personalized: true,
+        badge:        'New',
+        blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
+        icon:         'star4',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'sky-hoodie',
+        name:         'Your Sky — Heavyweight Hoodie',
+        type:         'apparel',
+        collection:   'wearYourSky',
+        price:        62.00,
+        personalized: true,
+        badge:        null,
+        blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
+        icon:         'crescent',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'big-three-print',
+        name:         'Big Three — Mini Print',
+        type:         'print',
+        collection:   'onYourWall',
+        price:        18.00,
+        personalized: true,
+        badge:        null,
+        blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
+        icon:         'sunhigh',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'constellation-mug',
+        name:         'Your Star Map — Mug',
+        type:         'accessory',
+        collection:   'wearYourSky',
+        price:        20.00,
+        personalized: true,
+        badge:        null,
+        blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
+        icon:         'orb',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'deep-reading',
+        name:         'Deep Natal Reading — Digital',
+        type:         'digital',
+        collection:   'theReading',
+        price:        28.00,
+        personalized: true,
+        badge:        'Bestseller',
+        blurb:        'A long-form written reading of your whole chart — every placement, the major aspects, and the year ahead. Delivered as a beautifully set PDF, yours to keep.',
+        icon:         'book',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'year-ahead',
+        name:         'Your Year Ahead — Transit Report',
+        type:         'digital',
+        collection:   'theReading',
+        price:        22.00,
+        personalized: true,
+        badge:        null,
+        blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — so you can read the weather before it arrives.',
+        icon:         'calendar',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'gift-reading',
+        name:         'Gift a Reading',
+        type:         'digital',
+        collection:   'theReading',
+        price:        28.00,
+        personalized: true,
+        badge:        null,
+        blurb:        'A deep natal reading for someone you love — generated from their birth details, delivered with a note from you. The chart as a gift.',
+        icon:         'heart',
+        fulfilUrl:    '',
+      },
+    ],
+  },
 }, window.AP_MON || {});
 
 (function monetisation() {

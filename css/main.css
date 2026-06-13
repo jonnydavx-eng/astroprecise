@@ -2090,7 +2090,11 @@ body > .cosmos-solar-system { display: none !important; }
   line-height: 1.65;
 }
 
-.transit-item--major .transit-item::before {
+/* Major aspect: .transit-item--major is applied to the .transit-item element
+   itself (flat markup, not a wrapper), so the dot rule must target its own
+   ::before — a descendant selector here was dead. Used by transits.html and
+   horoscope.html. */
+.transit-item--major::before {
   background: var(--gradient-gold);
   box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
 }

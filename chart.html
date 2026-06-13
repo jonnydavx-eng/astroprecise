@@ -166,6 +166,44 @@
       letter-spacing: 0.04em;
     }
 
+    /* ── Privacy badge — glass/cosmic callout ─────────────────────── */
+    .privacy-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0 0 var(--space-8);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(42,74,148,0.14), rgba(13,17,36,0.5));
+      border: 1px solid rgba(196,146,10,0.28);
+      border-top-color: rgba(232,201,106,0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(150,175,230,0.04) inset;
+    }
+    .privacy-badge__icon {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      color: var(--gold);
+      background: radial-gradient(circle at 35% 30%, rgba(232,201,106,0.22), rgba(42,74,148,0.12));
+      border: 1px solid rgba(196,146,10,0.35);
+      box-shadow: 0 0 16px rgba(196,146,10,0.18);
+    }
+    .privacy-badge__icon .eng-i { width: 20px; height: 20px; }
+    .privacy-badge__text {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: var(--silver);
+      letter-spacing: 0.01em;
+    }
+    .privacy-badge__text strong {
+      color: var(--gold-pale);
+      font-weight: 600;
+    }
+
     /* ── Section labels inside form ─────────────────────────────── */
     .form-section-label {
       display: flex;
@@ -320,6 +358,59 @@
       line-height: 1.55;
     }
     @media (max-width: 500px) { .house-cards { grid-template-columns: 1fr; } }
+
+    /* ── Lunar node model toggle ────────────────────────────────── */
+    .node-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    .node-toggle__opt {
+      display: block;
+      cursor: pointer;
+      position: relative;
+    }
+    .node-toggle__opt input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .node-toggle__pill {
+      display: block;
+      padding: var(--space-5) var(--space-4);
+      background: rgba(13,17,36,0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .node-toggle__opt:hover .node-toggle__pill {
+      border-color: rgba(196,146,10,0.3);
+      background: rgba(24,36,76,0.65);
+    }
+    .node-toggle__opt input:checked + .node-toggle__pill {
+      border-color: rgba(196,146,10,0.6);
+      background: linear-gradient(135deg, rgba(196,146,10,0.1), rgba(42,74,148,0.08));
+      box-shadow: 0 0 20px rgba(196,146,10,0.1);
+    }
+    .node-toggle__opt input:focus-visible + .node-toggle__pill {
+      box-shadow: 0 0 0 2px rgba(196,146,10,0.4);
+    }
+    .node-toggle__name {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: var(--space-2);
+    }
+    .node-toggle__desc {
+      display: block;
+      font-size: 0.65rem;
+      color: var(--silver-dim);
+      line-height: 1.55;
+    }
+    @media (max-width: 500px) { .node-toggle { grid-template-columns: 1fr; } }
 
     /* ── Form divider ───────────────────────────────────────────── */
     .form-divider {
@@ -732,11 +823,178 @@
       padding: var(--space-24) 0;
     }
 
+    /* ── Deep Reading teaser (snippet → paywall) ─────────────────── */
+    .deep-teaser {
+      margin-top: var(--space-8);
+      background: rgba(13,17,36,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(196,146,10,0.28);
+      border-top-color: rgba(232,201,106,0.4);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-10) var(--space-8);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(196,146,10,0.06) inset;
+    }
+    .deep-teaser::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(196,146,10,0.06) 0%, transparent 45%, rgba(42,74,148,0.06) 100%);
+      pointer-events: none;
+    }
+    @media (max-width: 640px) {
+      .deep-teaser { padding: var(--space-8) var(--space-5); border-radius: var(--radius-xl); }
+    }
+    .deep-teaser__head { text-align: center; margin-bottom: var(--space-8); position: relative; }
+    .deep-teaser__eyebrow {
+      display: inline-flex; align-items: center; gap: var(--space-3);
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.24em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: var(--space-4);
+    }
+    .deep-teaser__eyebrow::before, .deep-teaser__eyebrow::after {
+      content: ''; width: 26px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .deep-teaser__eyebrow::after { background: linear-gradient(90deg, var(--gold), transparent); }
+    .deep-teaser__title {
+      font-family: var(--font-display); font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700; color: var(--white); letter-spacing: 0.03em; margin-bottom: var(--space-3);
+    }
+    .deep-teaser__sub {
+      max-width: 540px; margin: 0 auto; font-size: var(--text-sm);
+      color: var(--silver); line-height: 1.7;
+    }
+    .deep-snippet {
+      position: relative; margin-bottom: var(--space-5);
+      padding: var(--space-6); border-radius: var(--radius-lg);
+      background: rgba(9,11,22,0.45); border: 1px solid rgba(150,175,230,0.1);
+      border-left: 3px solid var(--gold);
+    }
+    .deep-snippet__head {
+      display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3);
+    }
+    .deep-snippet__orb { flex-shrink: 0; }
+    .deep-snippet__label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--gold-pale);
+    }
+    .deep-snippet__open {
+      font-size: var(--text-sm); color: var(--silver); line-height: 1.75; margin: 0 0 var(--space-3);
+    }
+    .deep-snippet__locked {
+      position: relative; font-size: var(--text-sm); line-height: 1.75;
+      color: var(--silver-dim); margin: 0;
+    }
+    .deep-snippet__locked .deep-lock-tail {
+      color: rgba(154,166,200,0.35);
+      -webkit-mask-image: linear-gradient(90deg, #000 10%, transparent 92%);
+      mask-image: linear-gradient(90deg, #000 10%, transparent 92%);
+      filter: blur(0.3px);
+    }
+    .deep-snippet__locked .deep-lock-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-left: var(--space-2); padding: 2px 9px; border-radius: var(--radius-full);
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--gold-pale); background: rgba(196,146,10,0.14);
+      border: 1px solid rgba(196,146,10,0.35); white-space: nowrap; vertical-align: middle;
+    }
+    .deep-lock-pill .eng-i { width: 13px; height: 13px; }
+    .deep-teaser__cta-wrap { text-align: center; margin-top: var(--space-8); }
+    .deep-teaser__price {
+      font-size: 0.72rem; color: var(--silver-dim);
+      letter-spacing: 0.05em; margin-bottom: var(--space-4);
+    }
+    .btn--deep {
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+      min-width: 260px;
+      background: linear-gradient(135deg, #c4920a 0%, #8a5f00 100%);
+      color: #0A0B1F; font-family: var(--font-display); font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase;
+      padding: var(--space-5) var(--space-8);
+      border: none; border-radius: var(--radius-xl); cursor: pointer;
+      text-decoration: none; transition: all var(--transition-base);
+      box-shadow: 0 8px 32px rgba(196,146,10,0.35), 0 0 0 1px rgba(196,146,10,0.4);
+    }
+    .btn--deep:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 40px rgba(196,146,10,0.45), 0 0 0 1px rgba(196,146,10,0.5);
+    }
+    .btn--deep:active { transform: translateY(0); }
+    .deep-teaser__honest {
+      margin-top: var(--space-4); font-size: 0.62rem; color: var(--silver-dim);
+      letter-spacing: 0.04em; line-height: 1.6;
+    }
+
+    /* ── Email capture (save chart / cosmic weather) ─────────────── */
+    .email-capture {
+      margin-top: var(--space-8);
+      background: rgba(13,17,36,0.6);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(150,175,230,0.12);
+      border-top-color: rgba(200,208,232,0.18);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .email-capture__head {
+      display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-5);
+    }
+    .email-capture__orb { flex-shrink: 0; }
+    .email-capture__title {
+      font-family: var(--font-display); font-size: 1.15rem;
+      color: var(--white); letter-spacing: 0.03em; margin: 0 0 2px;
+    }
+    .email-capture__sub { font-size: 0.72rem; color: var(--silver-dim); margin: 0; }
+    .email-capture__form { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+    .email-capture__input {
+      flex: 1; min-width: 200px;
+      padding: var(--space-4) var(--space-5);
+      background: rgba(9,11,22,0.6); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); color: var(--white);
+      font-family: var(--font-body); font-size: 0.85rem;
+      transition: all var(--transition-fast);
+    }
+    .email-capture__input::placeholder { color: var(--silver-dim); }
+    .email-capture__input:focus {
+      outline: none; border-color: rgba(196,146,10,0.5);
+      box-shadow: 0 0 0 2px rgba(196,146,10,0.15);
+    }
+    .email-capture__btn {
+      padding: var(--space-4) var(--space-7);
+      background: linear-gradient(135deg, rgba(196,146,10,0.22), rgba(196,146,10,0.12));
+      border: 1px solid rgba(196,146,10,0.5); border-radius: var(--radius-lg);
+      color: var(--gold-pale); font-family: var(--font-body);
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em;
+      cursor: pointer; white-space: nowrap; transition: all var(--transition-fast);
+    }
+    .email-capture__btn:hover {
+      border-color: var(--gold); background: linear-gradient(135deg, rgba(196,146,10,0.32), rgba(196,146,10,0.2));
+      box-shadow: 0 0 16px rgba(196,146,10,0.2);
+    }
+    .email-capture__privacy {
+      margin: var(--space-4) 0 0; font-size: 0.62rem; color: var(--silver-dim);
+      letter-spacing: 0.03em; line-height: 1.6; display: flex; align-items: center; gap: 6px;
+    }
+    .email-capture__privacy .eng-i { width: 14px; height: 14px; color: var(--gold); flex-shrink: 0; }
+    .email-capture__done {
+      display: none; align-items: center; gap: var(--space-3);
+      padding: var(--space-4) var(--space-5); border-radius: var(--radius-lg);
+      background: rgba(14,140,80,0.08); border: 1px solid rgba(14,140,80,0.3);
+      color: var(--silver); font-size: 0.8rem; line-height: 1.6;
+    }
+    .email-capture__done strong { color: var(--gold-pale); }
+    .email-capture.is-done .email-capture__form,
+    .email-capture.is-done .email-capture__privacy { display: none; }
+    .email-capture.is-done .email-capture__done { display: flex; }
+
     /* ── Responsive tweaks ───────────────────────────────────────── */
     @media (max-width: 640px) {
       .result-header-inner { flex-direction: column; }
       .result-actions { width: 100%; }
       .action-btn { font-size: 0.65rem; padding: var(--space-3); }
+      .email-capture__form { flex-direction: column; }
+      .email-capture__btn { width: 100%; }
     }
   </style>
 </head>
@@ -887,6 +1145,20 @@
           <div class="form-glass__icon" aria-hidden="true">✦</div>
           <h2 class="form-glass__title">Your Birth Details</h2>
           <p class="form-glass__sub">All calculations happen instantly in your browser — nothing is sent to any server.</p>
+        </div>
+
+        <!-- Privacy badge — glass/cosmic callout near the birth-data form -->
+        <div class="privacy-badge" role="note" aria-label="Privacy guarantee">
+          <span class="privacy-badge__icon" aria-hidden="true">
+            <svg class="eng-i" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.6 4-1.3 7-5.2 7-9.6V6l-7-3Z"/>
+              <path d="M9.2 12.2l1.9 1.9 3.7-3.9"/>
+            </svg>
+          </span>
+          <span class="privacy-badge__text">
+            <strong>Private by design.</strong> Your chart is computed in your browser —
+            your birth data never leaves your device. No account, no tracking.
+          </span>
         </div>
 
         <form id="chart-form" novalidate aria-label="Birth chart calculation form">
@@ -1053,6 +1325,32 @@
           </div>
           <input type="hidden" id="house-system" name="house-system" value="equal" />
 
+          <!-- ── Lunar Node Model ─────────────────────────────────── -->
+          <div class="form-section-label" style="margin-top:var(--space-8);">
+            <div class="form-section-label__num" aria-hidden="true">☊</div>
+            <span class="form-section-label__text">Lunar Node Model</span>
+          </div>
+
+          <div class="node-toggle" role="radiogroup" aria-label="Lunar node calculation model">
+            <label class="node-toggle__opt">
+              <input type="radio" name="node-mode" value="mean" checked />
+              <span class="node-toggle__pill">
+                <span class="node-toggle__name">Mean Node</span>
+                <span class="node-toggle__desc">Smoothly-moving classical point (default)</span>
+              </span>
+            </label>
+            <label class="node-toggle__opt">
+              <input type="radio" name="node-mode" value="true" />
+              <span class="node-toggle__pill">
+                <span class="node-toggle__name">True Node</span>
+                <span class="node-toggle__desc">Osculating node — wobbles ±~1.5° about the mean</span>
+              </span>
+            </label>
+          </div>
+          <p class="form-hint" style="margin-top:var(--space-2);">
+            Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
+          </p>
+
           <!-- Submit CTA -->
           <div class="form-divider" aria-hidden="true">✦</div>
 
@@ -1208,6 +1506,51 @@
           </div><!-- /.tabs-card -->
         </div><!-- /.chart-results-grid -->
 
+        <!-- ── DEEP READING TEASER (real snippets → paywall) ──────────
+             JS (chart-page.js → renderDeepTeaser) fills this with TRUE
+             sentences pulled from THIS chart's interpretations, then a
+             hard-walled locked tail + CTA. Empty until a chart is cast. -->
+        <section id="deep-teaser" class="deep-teaser animate-in" aria-label="Your Deep Reading preview" hidden></section>
+
+        <!-- ── EMAIL CAPTURE (optional · privacy-respecting) ──────────
+             Provider-agnostic + dormant by default. Posts to AP_MON.emailUrl
+             when configured; otherwise saves intent to localStorage only.
+             Never required to use the free chart. -->
+        <section id="email-capture" class="email-capture animate-in" aria-label="Save your chart and cosmic weather" hidden>
+          <div class="email-capture__head">
+            <span class="email-capture__orb" aria-hidden="true">
+              <svg class="eng-i" style="width:34px;height:34px;color:var(--gold);" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5.5" width="18" height="13" rx="2"/>
+                <path d="M3.5 7 12 13l8.5-6"/>
+              </svg>
+            </span>
+            <div>
+              <h3 class="email-capture__title">Get your cosmic weather</h3>
+              <p class="email-capture__sub">Save this chart and receive your personal transits — only if you want to.</p>
+            </div>
+          </div>
+          <form id="email-capture-form" class="email-capture__form" novalidate>
+            <input
+              type="email"
+              id="email-capture-input"
+              class="email-capture__input"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              aria-label="Your email address (optional)"
+            />
+            <button type="submit" class="email-capture__btn">✦ Notify me</button>
+          </form>
+          <p class="email-capture__privacy">
+            <svg class="eng-i" viewBox="0 0 24 24" aria-hidden="true"><use href="#ei-lock"/></svg>
+            <span>We'll only email your cosmic weather — no spam, unsubscribe anytime. Your birth data stays on your device.</span>
+          </p>
+          <div class="email-capture__done" role="status" aria-live="polite">
+            <span aria-hidden="true" style="color:var(--gold);font-size:1.1rem;">✦</span>
+            <span id="email-capture-done-msg"><strong>We'll let you know.</strong></span>
+          </div>
+        </section>
+
       </div><!-- /#chart-result -->
 
       <!-- Loading -->
@@ -1330,6 +1673,7 @@
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
+  <script src="js/icons.js"></script>
   <script src="js/chart-page.js"></script>
   <script>
   /* ── Chart page interaction enhancements ── */
