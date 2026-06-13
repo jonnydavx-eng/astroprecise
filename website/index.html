@@ -562,6 +562,8 @@
       font-size: 1.1rem;
       line-height: 1;
     }
+    .sky-pill__orb { font-size: 0.95rem; }
+    .sky-pill:hover .sky-pill__orb { transform: translateY(-1px) scale(1.04); }
     .sky-pill__info { display: flex; flex-direction: column; gap: 1px; }
     .sky-pill__name {
       font-size: 0.55rem;
@@ -575,6 +577,9 @@
       color: var(--white);
       font-family: var(--font-display);
       letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
     .sky-pill__degree {
       font-size: 0.62rem;
@@ -2266,10 +2271,16 @@
   <script src="js/stellar.js"></script>
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
-  <script src="js/orrery3d.js"></script>
+  <!-- Photoreal WebGL hero orrery (Three.js, vendored locally — no CDN at runtime).
+       Falls back to the canvas orrery3d.js automatically if WebGL is unavailable. -->
+  <script type="importmap">
+  { "imports": { "three": "./js/vendor/three/three.module.min.js" } }
+  </script>
+  <script type="module" src="js/orrery-webgl.js"></script>
   <script src="js/oracle.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/journey.js"></script>
+  <script src="js/icons.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
 
@@ -2608,10 +2619,16 @@
 
         html += '<div class="sky-pill' + (retro ? ' sky-pill--retro' : '') + '" role="listitem"'
           + ' aria-label="' + p.label + ' in ' + SIGN_NAMES[disp.signIdx] + ' at ' + disp.degStr + (retro ? ' retrograde' : '') + '">'
-          + '<span class="sky-pill__glyph" style="color:' + p.color + '" aria-hidden="true">' + p.glyph + '</span>'
+          + (window.AstroIcons
+              ? window.AstroIcons.orb(p.glyph, p.id, { lg: true, class: 'sky-pill__orb' })
+              : '<span class="sky-pill__glyph" style="color:' + p.color + '" aria-hidden="true">' + p.glyph + '</span>')
           + '<div class="sky-pill__info">'
           +   '<span class="sky-pill__name">' + p.label + retroHtml + '</span>'
-          +   '<span class="sky-pill__placement">' + SIGN_GLYPHS[disp.signIdx] + '︎ ' + SIGN_NAMES[disp.signIdx] + '</span>'
+          +   '<span class="sky-pill__placement">'
+          +     (window.AstroIcons
+                  ? window.AstroIcons.orb(SIGN_GLYPHS[disp.signIdx], window.AstroIcons.elementOf(SIGN_NAMES[disp.signIdx]), { sm: true }) + ' '
+                  : SIGN_GLYPHS[disp.signIdx] + '︎ ')
+          +     SIGN_NAMES[disp.signIdx] + '</span>'
           +   '<span class="sky-pill__degree">' + disp.degStr + '</span>'
           + '</div>'
           + '</div>';

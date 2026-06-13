@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v45';
+const V = 'ap-v46';
 
 const PRECACHE = [
   './',
@@ -23,6 +23,8 @@ const PRECACHE = [
   './js/cosmos.js',
   './js/ephemeris.js',
   './js/orrery3d.js',
+  './js/orrery-webgl.js',
+  './js/vendor/three/three.module.min.js',
   './js/chart-render.js',
   './js/interpretations.js',
   './js/oracle.js',
@@ -39,8 +41,20 @@ const PRECACHE = [
   './js/stellar.js',
   './js/journey.js',
   './js/zodiac-sphere.js',
+  './js/icons.js',
   './img/logo.svg',
   './img/favicon.svg',
+  './assets/textures/earth.jpg',
+  './assets/textures/earth_clouds.jpg',
+  './assets/textures/moon.jpg',
+  './assets/textures/mercury.jpg',
+  './assets/textures/venus.jpg',
+  './assets/textures/mars.jpg',
+  './assets/textures/jupiter.jpg',
+  './assets/textures/saturn.jpg',
+  './assets/textures/saturn_ring.png',
+  './assets/textures/uranus.jpg',
+  './assets/textures/neptune.jpg',
 ];
 
 self.addEventListener('install', e => {
