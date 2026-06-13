@@ -617,7 +617,12 @@ window.AstroApp = AstroApp;
       + 'margin-top:10px;opacity:0.7;font-family:Inter,system-ui,sans-serif;';
     p.innerHTML = '<a href="privacy.html" style="color:var(--gold,#C9A227);text-decoration:none;">Privacy</a>'
       + ' <span style="opacity:.4">&middot;</span> '
-      + '<a href="terms.html" style="color:var(--gold,#C9A227);text-decoration:none;">Terms</a>';
+      + '<a href="terms.html" style="color:var(--gold,#C9A227);text-decoration:none;">Terms</a>'
+      + ' <span style="opacity:.4">&middot;</span> '
+      + '<a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer" '
+      + 'style="color:var(--gold,#C9A227);text-decoration:none;">Planet textures &copy; Solar System Scope</a>'
+      + ' <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" '
+      + 'style="color:inherit;opacity:.65;text-decoration:none;">CC&nbsp;BY&nbsp;4.0</a>';
     host.appendChild(p);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
