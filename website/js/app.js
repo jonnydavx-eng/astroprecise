@@ -629,6 +629,29 @@ window.AstroApp = AstroApp;
   else place();
 })();
 
+// ═══ UNIVERSAL "ACCURACY" NAV LINK ═══════════════════════════════════════
+// Nav markup is hardcoded per page; rather than edit ~25 files, inject the
+// Accuracy link into both the desktop and mobile nav lists once, here.
+(function injectAccuracyNav() {
+  function place() {
+    var lists = document.querySelectorAll('.navbar__nav, .navbar__mobile-menu');
+    if (!lists.length) return;
+    var here = (location.pathname.split('/').pop() || 'index.html');
+    lists.forEach(function (list) {
+      if (list.querySelector('a[href="accuracy.html"]')) return;
+      var a = document.createElement('a');
+      a.className = 'navbar__link' + (here === 'accuracy.html' ? ' active' : '');
+      a.href = 'accuracy.html';
+      a.textContent = 'Accuracy';
+      if (here === 'accuracy.html') a.setAttribute('aria-current', 'page');
+      var shop = list.querySelector('a[href="shop.html"]');
+      if (shop) list.insertBefore(a, shop); else list.appendChild(a);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
+  else place();
+})();
+
 // ═══════════════════════════════════════════════════════════════════════
 // MONETISATION — provider-agnostic, dormant-by-default, link-out only.
 // GitHub Pages forbids SELLING on the site, but permits donation/crowdfunding
