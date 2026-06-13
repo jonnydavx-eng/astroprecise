@@ -389,6 +389,100 @@
       gap: 0.6rem;
       flex-wrap: wrap;
     }
+
+    /* ── Consciousness Weather — tiles, gauge, sparklines, popover ── */
+    #weather-out { position: relative; }
+    .cw-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 480px) { .cw-grid { grid-template-columns: 1fr; } }
+    .cw-tile {
+      padding: 1.25rem 1.25rem 1rem;
+      display: flex; flex-direction: column; gap: 0.6rem; position: relative;
+    }
+    .cw-tile__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .cw-tile__title { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--silver-dim); }
+    .cw-tile__body { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .cw-tile__src { text-align: left; margin-top: 0.25rem; }
+    .cw-readout {
+      margin: 0; font-size: 0.9rem; color: var(--white); text-align: center;
+      display: flex; align-items: baseline; justify-content: center; gap: 0.3rem; flex-wrap: wrap;
+    }
+    .cw-readout__big {
+      font-family: var(--font-display, 'Cinzel', serif); font-size: 1.6rem;
+      color: var(--gold-pale, var(--gold)); font-variant-numeric: tabular-nums;
+    }
+    .cw-unit { font-size: 0.75rem; color: var(--silver-dim); }
+    .cw-note { margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--silver-dim); text-align: center; }
+    .cw-unavail { margin: 0; font-size: 0.8rem; color: var(--crimson-light); text-align: center; }
+    .cw-info {
+      width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%;
+      border: 1px solid rgba(201,162,39,0.4); background: transparent; color: var(--gold);
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.72rem;
+      line-height: 1; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    }
+    .cw-info:hover, .cw-info[aria-expanded="true"] { background: rgba(201,162,39,0.15); border-color: var(--gold); }
+    .cw-gauge { width: 150px; height: 86px; overflow: visible; }
+    .cw-gauge__band { fill: none; stroke-width: 9; stroke-linecap: butt; opacity: 0.85; }
+    .cw-gauge__band--quiet     { stroke: #3fae7a; }
+    .cw-gauge__band--unsettled { stroke: var(--gold, #D4AF37); }
+    .cw-gauge__band--storm     { stroke: var(--crimson-light, #f87171); }
+    .cw-gauge__needle { stroke: var(--white); stroke-width: 2; stroke-linecap: round; }
+    .cw-gauge__hub    { fill: var(--gold-pale, var(--gold)); }
+    .cw-gauge__val { fill: var(--white); font-family: var(--font-display, 'Cinzel', serif); font-size: 16px; text-anchor: middle; font-variant-numeric: tabular-nums; }
+    .cw-gauge__lo, .cw-gauge__hi { fill: var(--silver-dim); font-size: 8px; }
+    .cw-gauge__hi { text-anchor: end; }
+    .cw-spark-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+    .cw-spark { width: 96px; height: 26px; display: block; }
+    .cw-spark__line { stroke: var(--lapis-light, #92b4ee); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #D4AF37); }
+    .cw-spark__zero { stroke: var(--crimson-light, #f87171); stroke-width: 0.6; stroke-dasharray: 2 2; opacity: 0.5; }
+    .cw-spark--empty { font-size: 0.62rem; color: var(--silver-dim); }
+    .cw-spark-cap { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver-dim); }
+    .cw-bz-arrow { font-size: 1.3rem; line-height: 1; font-weight: 700; }
+    .cw-bz-arrow--north, .cw-bz-north { color: #3fae7a; }
+    .cw-bz-arrow--south, .cw-bz-south { color: var(--crimson-light, #f87171); }
+    .cw-bz-south { font-weight: 600; }
+    .cw-flare-badge {
+      display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.25rem; letter-spacing: 0.04em; padding: 0.2rem 0.7rem;
+      border-radius: 999px; border: 1px solid currentColor;
+    }
+    .cw-flare-badge--A, .cw-flare-badge--B { color: #3fae7a; }
+    .cw-flare-badge--C { color: var(--lapis-light, #92b4ee); }
+    .cw-flare-badge--M { color: var(--gold, #D4AF37); }
+    .cw-flare-badge--X { color: var(--crimson-light, #f87171); }
+    .cw-chip {
+      display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.4rem; color: var(--gold-pale, var(--gold)); padding: 0.15rem 0.7rem;
+      border-radius: 999px; background: rgba(201,162,39,0.1);
+      border: 1px solid rgba(201,162,39,0.28); font-variant-numeric: tabular-nums;
+    }
+    .cw-chip small { font-size: 0.6rem; color: var(--silver-dim); letter-spacing: 0.1em; }
+    .cw-rows { margin: 0.5rem 0 1rem; }
+    .cw-aurora {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem;
+      padding: 0.9rem 1.1rem; margin: 0.5rem 0 1rem;
+      border: 1px solid rgba(146,180,238,0.22); border-radius: var(--radius-xl, 20px);
+      background: rgba(146,180,238,0.06);
+    }
+    .cw-aurora__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--silver-dim); }
+    .cw-aurora__val { font-size: 0.95rem; color: var(--white); flex: 1 1 auto; }
+    .cw-aurora__src { font-size: 0.6rem; }
+    .cw-pop {
+      position: absolute; z-index: 40; max-width: 300px; padding: 1rem 1.1rem 0.9rem;
+      background: var(--void, #0A0B1F); border: 1px solid rgba(201,162,39,0.35);
+      border-radius: var(--radius-xl, 20px); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+      -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    }
+    .cw-pop__close { position: absolute; top: 6px; right: 10px; background: none; border: none; color: var(--silver-dim); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+    .cw-pop__close:hover { color: var(--gold); }
+    .cw-pop__title { margin: 0 0 0.4rem; font-family: var(--font-display, 'Cinzel', serif); font-size: 0.9rem; letter-spacing: 0.06em; color: var(--gold-pale, var(--gold)); }
+    .cw-pop__body { margin: 0 0 0.6rem; font-family: 'Cormorant Garamond', serif; font-size: 0.98rem; line-height: 1.6; color: var(--silver, #C8D0E8); }
+    .cw-pop__src { margin: 0; font-size: 0.62rem; letter-spacing: 0.06em; color: #3fae7a; }
   </style>
 </head>
 <body>
@@ -440,6 +534,23 @@
   <div id="inst-preloader" style="position:fixed;inset:0;z-index:9998;background:#050406;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .5s;">
     <div style="text-align:center;color:#C9A227;font-family:'Cinzel',serif;letter-spacing:0.2em;font-size:0.9rem;">Aligning the Spheres…</div>
   </div>
+  <script>
+    /* Dismiss the Instrument preloader once the page is ready. This overlay has
+       no progress meter, so a safety timeout guarantees it can never stay stuck
+       even if a feed or asset hangs. */
+    (function () {
+      function hideInstPreloader() {
+        var p = document.getElementById('inst-preloader');
+        if (!p) return;
+        p.style.opacity = '0';
+        p.style.pointerEvents = 'none';
+        setTimeout(function () { p.style.display = 'none'; }, 600);
+      }
+      if (document.readyState === 'complete') hideInstPreloader();
+      else window.addEventListener('load', hideInstPreloader);
+      setTimeout(hideInstPreloader, 3500);
+    })();
+  </script>
 
   <main id="main-content">
 
@@ -452,7 +563,7 @@
         <p class="instrument-lede">
           You arrived under a particular sky &mdash; a unique coordinate of matter, light, and
           consciousness that occurred exactly once and will never repeat. I keep the actual
-          mathematics of that sky: planetary theory to an arcminute, 253 real stars, the
+          mathematics of that sky: planetary theory to within roughly an arcminute, 253 real stars, the
           geometry of light itself. This page is not prediction &mdash; it is orientation.
         </p>
 
@@ -589,6 +700,11 @@
         <div class="glass-card" style="margin-top:1.75rem;">
           <div id="zenith-out"></div>
         </div>
+        <div style="text-align:center;margin-top:1.5rem;">
+          <button class="glow-btn" id="zenith-card-btn" type="button" aria-label="Download a shareable zenith-star image card">
+            &#10022;&nbsp; Download My Zenith-Star Card
+          </button>
+        </div>
       </div>
     </section>
 
@@ -694,6 +810,12 @@
             <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
             <p style="text-align:center;font-size:0.78rem;color:var(--silver-dim);margin-top:0.5rem;">Loading field data&hellip;</p>
           </div>
+        </div>
+        <p style="text-align:center;font-size:0.62rem;letter-spacing:0.12em;color:var(--silver-dim);margin-top:0.6rem;">Measured feeds from NOAA SWPC — if a feed is down, we say so rather than fake it.</p>
+        <div style="text-align:center;margin-top:1.25rem;">
+          <button class="glow-btn" id="dailysky-card-btn" type="button" aria-label="Download today's daily-sky postcard">
+            &#10022;&nbsp; Download Today's Daily-Sky Postcard
+          </button>
         </div>
       </div>
     </section>

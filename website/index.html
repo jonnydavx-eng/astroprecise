@@ -1507,7 +1507,9 @@
 
     const startTime = Date.now();
 
+    var preDone = false;
     function hidePre() {
+      if (preDone) return; preDone = true;
       if (raf) cancelAnimationFrame(raf);
       pre.classList.add('fade-out');
       setTimeout(() => { pre.style.display = 'none'; }, 620);
@@ -1515,7 +1517,7 @@
       if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';
     }
 
-    // After loading sequence, hide progress and require click to enter (mystical threshold)
+    // After the brief alignment, reveal the "Enter" button as an instant skip…
     setTimeout(() => {
       if (progress) progress.style.display = 'none';
       if (enterBtn) {
@@ -1523,6 +1525,9 @@
         enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
       }
     }, 2200);
+
+    // …but ALSO auto-reveal the site so a visitor is NEVER trapped behind the gate.
+    setTimeout(hidePre, 3400);
 
     // Fallback: allow click anywhere on preloader after short time (ancient "touch the seal")
     pre.addEventListener('click', function onFirstClick(e) {
@@ -1573,6 +1578,7 @@
           <a href="chart.html" class="navbar__link" role="listitem">Chart</a>
           <a href="horoscope.html" class="navbar__link" role="listitem">Horoscope</a>
           <a href="lifepath.html" class="navbar__link" role="listitem">Life Path</a>
+          <a href="why.html" class="navbar__link" role="listitem">Why</a>
           <a href="compatibility.html" class="navbar__link" role="listitem">Compatibility</a>
           <a href="ephemeris.html" class="navbar__link" role="listitem">Instrument</a>
           <a href="shop.html" class="navbar__link" role="listitem">Shop</a>
@@ -1599,6 +1605,7 @@
         <a href="chart.html" class="navbar__link">Chart</a>
         <a href="horoscope.html" class="navbar__link">Horoscope</a>
         <a href="lifepath.html" class="navbar__link">Life Path</a>
+        <a href="why.html" class="navbar__link">Why</a>
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
         <a href="ephemeris.html" class="navbar__link">Instrument</a>
         <a href="transits.html" class="navbar__link">Transits</a>
@@ -1627,9 +1634,9 @@
           </h1>
 
           <p class="hero__subtitle">
-            Precise astronomical positions. Deep symbolic interpretation.
-            A map of your soul computed entirely in your browser — private,
-            free, and accurate to the arcminute.
+            Real astronomical positions from VSOP87, computed entirely in your
+            browser — so your birth data never leaves your device. Private, free,
+            and accurate to roughly an arcminute (1800&ndash;2200 CE).
           </p>
 
           <!-- Quick chart CTA form -->
@@ -1761,6 +1768,7 @@
             <span>Calculating positions&hellip;</span>
           </div>
         </div>
+        <p class="live-sky-note" style="text-align:center;font-size:0.6rem;letter-spacing:0.08em;color:#8891AA;margin-top:0.6rem;">Live positions from the same VSOP87/ELP2000 math the engine uses — recomputed, never canned.</p>
       </div>
     </section>
 
@@ -1786,7 +1794,7 @@
             <h3 class="bento-card__title">Birth Chart</h3>
             <p class="bento-card__body">
               Your complete natal blueprint — 10 planets, 12 houses, all major and minor
-              aspects, computed from VSOP87 data accurate to the arcminute. Includes
+              aspects, computed from VSOP87 data accurate to roughly an arcminute (1800&ndash;2200 CE). Includes
               detailed interpretations, dominant element analysis, and a downloadable chart poster.
             </p>
             <span class="bento-card__cta" aria-hidden="true">Calculate Your Chart &rarr;</span>
@@ -2011,6 +2019,7 @@
           <p class="section-subtitle">
             Eight precision instruments — all free, all offline-capable, nothing sent to any server.
           </p>
+          <p style="margin-top:0.9rem;"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Every figure is real — labelled measured or computed, never faked</span></a></p>
         </header>
 
         <div class="tools-bento sacred-geo" role="list">
@@ -2155,7 +2164,7 @@
           <p>
             You arrived under a particular sky. Most of the people who tell you about it are
             guessing — <strong>we are not.</strong> This site keeps the actual mathematics
-            of the heavens: planetary theory accurate to an arcminute, 253 real catalogued stars,
+            of the heavens: planetary theory accurate to roughly an arcminute, 253 real catalogued stars,
             the geometry of light itself. Give it the moment you were born and it rebuilds
             that sky exactly — then reads it to you in the old language.
           </p>
