@@ -877,9 +877,23 @@
     };
     function eventLoc() {
       try { const ev = JSON.parse(localStorage.getItem('ap_instrument_event') || 'null');
-        if (ev && isFinite(ev.lat) && isFinite(ev.lon)) return { lat: +ev.lat, lon: +ev.lon, city: ev.city || '' };
+        // Number.isFinite (not global isFinite) so blank "" coords don't coerce to 0,0
+        if (ev && ev.lat !== '' && ev.lon !== '' && Number.isFinite(+ev.lat) && Number.isFinite(+ev.lon)
+            && Math.abs(+ev.lat) <= 90 && Math.abs(+ev.lon) <= 180) {
+          return { lat: +ev.lat, lon: +ev.lon, city: ev.city || '', tz: ev.tz || null };
+        }
       } catch (e) {}
       return null;
+    }
+    // Weekday in a given IANA zone (the planetary day-ruler depends on the
+    // LOCAL civil day at the event, not the viewer's browser timezone).
+    function tzWeekday(date, tz) {
+      if (!tz) return date.getUTCDay();
+      try {
+        const wd = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short' }).format(date);
+        const i = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(wd);
+        return i < 0 ? date.getUTCDay() : i;
+      } catch (e) { return date.getUTCDay(); }
     }
     function sunTimes(d, lat, lon) {
       const rad = Math.PI / 180;
@@ -904,7 +918,7 @@
           let rise, set, nextRise;
           if (t < st0.rise) { rise = stY.rise; set = stY.set; nextRise = st0.rise; }
           else { rise = st0.rise; set = st0.set; nextRise = stT.rise; }
-          const dow = new Date(rise).getDay(), slots = [];
+          const dow = tzWeekday(new Date(rise), loc.tz), slots = [];
           const dl = (set - rise) / 12, nl = (nextRise - set) / 12;
           for (let i = 0; i < 12; i++) slots.push({ start: new Date(+rise + i * dl), end: new Date(+rise + (i + 1) * dl), rulerKey: CHALD[(DAY_RULER[dow] + i) % 7], kind: 'day' });
           for (let i = 0; i < 12; i++) slots.push({ start: new Date(+set + i * nl), end: new Date(+set + (i + 1) * nl), rulerKey: CHALD[(DAY_RULER[dow] + 12 + i) % 7], kind: 'night' });
@@ -918,7 +932,8 @@
       return { slots, dow, approx: true };
     }
     const pt = (aDeg, r) => { const a = aDeg * Math.PI / 180; return [CX + r * Math.cos(a), CY - r * Math.sin(a)]; };
-    const fmt = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let activeTz = null; // event's zone while an event is set, else viewer-local
+    const fmt = d => d.toLocaleTimeString([], Object.assign({ hour: '2-digit', minute: '2-digit' }, activeTz ? { timeZone: activeTz } : {}));
     let aligned = null, current = null;
     function defaultReadout() {
       if (!current) return;
@@ -927,6 +942,7 @@
     }
     function render(t) {
       const loc = eventLoc();
+      activeTz = loc ? loc.tz : null;
       const { slots, dow, approx } = daySlots(t, loc);
       const nowIdx = slots.findIndex(s => t >= s.start && t < s.end);
       current = nowIdx >= 0 ? { slot: slots[nowIdx], idx: nowIdx } : null;

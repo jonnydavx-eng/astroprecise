@@ -1044,44 +1044,76 @@ function midheaven(lst, eps) {
 // 11. Placidus Houses
 // ---------------------------------------------------------------------------
 
-function placidusHouses(mc_lon, asc_lon, lat, eps) {
-  const latR = toRad(lat);
-  const epsR = toRad(eps);
+// Ecliptic longitude of the point on the ecliptic whose right ascension is raDeg.
+function eclLonFromRA(raDeg, epsDeg) {
+  const ra = toRad(raDeg), e = toRad(epsDeg);
+  return mod360(toDeg(Math.atan2(Math.sin(ra) * Math.cos(e), Math.cos(ra))));
+}
 
-  // Iterative Placidus cusp for house cusps between MC and ASC
-  // fraction = 1/3 or 2/3 of the nocturnal/diurnal semi-arc
-  function placidusInterp(startLon, fraction) {
-    let cusp = mod360(startLon + fraction * 90);
-    for (let iter = 0; iter < 30; iter++) {
-      const cr = toRad(cusp);
-      const sinDec = Math.sin(epsR) * Math.sin(cr);
-      // clamp to avoid asin domain errors
-      const sinDecClamped = Math.max(-1, Math.min(1, sinDec));
-      const dec = Math.asin(sinDecClamped);
-      const tanDecTanLat = Math.tan(dec) * Math.tan(latR);
-      if (Math.abs(tanDecTanLat) > 1) break; // circumpolar
-      const hourAngle = toDeg(Math.acos(-tanDecTanLat));
-      const newCusp = mod360(mc_lon + fraction * hourAngle);
-      if (Math.abs(newCusp - cusp) < 0.00001) { cusp = newCusp; break; }
-      cusp = newCusp;
+// Correct Placidus via the semi-arc method. ramc = right ascension of the MC
+// (= local sidereal time in degrees). Each intermediate cusp's meridian
+// distance is a fixed fraction (1/3, 2/3) of that cusp point's OWN semi-arc,
+// solved iteratively. Returns null in the circumpolar case (Placidus is
+// undefined there) so the caller can fall back to a quadrant system.
+function placidusCusps(ramc, ascDeg, mcDeg, lat, eps) {
+  const phi = toRad(lat), e = toRad(eps);
+  function solve(f, below) {
+    let ra = ramc + (below ? 180 - f * 90 : f * 90);
+    for (let i = 0; i < 80; i++) {
+      const L   = eclLonFromRA(ra, eps);
+      const dec = Math.asin(Math.sin(e) * Math.sin(toRad(L)));
+      const t   = -Math.tan(phi) * Math.tan(dec);
+      if (Math.abs(t) >= 1) return null;            // circumpolar
+      const SA  = toDeg(Math.acos(t));              // semi-diurnal arc (deg)
+      const raNew = below ? (ramc + 180 - f * (180 - SA)) : (ramc + f * SA);
+      if (Math.abs(((raNew - ra + 540) % 360) - 180) < 1e-9) { ra = raNew; break; }
+      ra = raNew;
     }
-    return mod360(cusp);
+    return eclLonFromRA(ra, eps);
   }
+  const H11 = solve(1/3, false), H12 = solve(2/3, false);
+  const H2  = solve(2/3, true),  H3  = solve(1/3, true);
+  if ([H11, H12, H2, H3].some(c => c === null)) return null;
+  return [ascDeg, H2, H3, mod360(mcDeg + 180), mod360(H11 + 180), mod360(H12 + 180),
+          mod360(ascDeg + 180), mod360(H2 + 180), mod360(H3 + 180), mcDeg, H11, H12];
+}
 
-  const H1  = asc_lon;
-  const H10 = mc_lon;
-  const H11 = placidusInterp(mc_lon, 1/3);
-  const H12 = placidusInterp(mc_lon, 2/3);
-  const H2  = mod360(H12 + 180);
-  const H3  = mod360(H11 + 180);
-  const H4  = mod360(H10 + 180);
-  const H5  = mod360(H3  + 180);
-  const H6  = mod360(H2  + 180);
-  const H7  = mod360(H1  + 180);
-  const H8  = mod360(H12);
-  const H9  = mod360(H11);
+// Porphyry — trisect each ecliptic quadrant between the true angles. Always
+// monotonic; the robust quadrant fallback when Placidus is circumpolar.
+function porphyryCusps(ascDeg, mcDeg) {
+  const ic = mod360(mcDeg + 180), dsc = mod360(ascDeg + 180);
+  const arc = (a, b) => mod360(b - a);
+  const qA = arc(ascDeg, ic), qB = arc(ic, dsc), qC = arc(dsc, mcDeg), qD = arc(mcDeg, ascDeg);
+  return [
+    ascDeg, mod360(ascDeg + qA/3), mod360(ascDeg + 2*qA/3),
+    ic,     mod360(ic + qB/3),     mod360(ic + 2*qB/3),
+    dsc,    mod360(dsc + qC/3),    mod360(dsc + 2*qC/3),
+    mcDeg,  mod360(mcDeg + qD/3),  mod360(mcDeg + 2*qD/3),
+  ];
+}
 
-  return [H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12];
+// House-system dispatcher. Default Placidus (with graceful quadrant fallback).
+function houseCusps(system, lst, lat, eps, ascDeg, mcDeg) {
+  switch ((system || 'placidus').toLowerCase()) {
+    case 'whole': {
+      const s0 = Math.floor(ascDeg / 30) * 30;
+      return Array.from({ length: 12 }, (_, i) => mod360(s0 + i * 30));
+    }
+    case 'equal':
+      return Array.from({ length: 12 }, (_, i) => mod360(ascDeg + i * 30));
+    case 'porphyry':
+      return porphyryCusps(ascDeg, mcDeg);
+    case 'placidus':
+    default:
+      return placidusCusps(lst, ascDeg, mcDeg, lat, eps) || porphyryCusps(ascDeg, mcDeg);
+  }
+}
+
+// Back-compatible export: derive RAMC from the MC longitude.
+function placidusHouses(mc_lon, asc_lon, lat, eps) {
+  const ramc = mod360(toDeg(Math.atan2(
+    Math.sin(toRad(mc_lon)) * Math.cos(toRad(eps)), Math.cos(toRad(mc_lon)))));
+  return placidusCusps(ramc, asc_lon, mc_lon, lat, eps) || porphyryCusps(asc_lon, mc_lon);
 }
 
 // ---------------------------------------------------------------------------
@@ -1147,11 +1179,32 @@ function calculateAspects(positions, jd) {
 // 13. Retrograde
 // ---------------------------------------------------------------------------
 
+// Accurate geocentric longitude. Routes planets through the full VSOP87
+// series (mercuryPosition…plutoPosition) instead of the crude fixed-radius
+// planar geocentricPlanetLongitude — which put Pluto a whole sign (65°) wrong
+// and Mars ~4° off, crossing sign boundaries. Function declarations are
+// hoisted, so referencing the later-defined position functions here is safe.
+const _ACCURATE_FNS = {
+  mercury: () => mercuryPosition, venus: () => venusPosition, mars: () => marsPosition,
+  jupiter: () => jupiterPosition, saturn: () => saturnPosition, uranus: () => uranusPosition,
+  neptune: () => neptunePosition, pluto: () => plutoPosition,
+};
+function planetLongitude(planet, jd) {
+  const p = planet.toLowerCase();
+  if (p === 'sun')  return sunPosition(jd).lon;
+  if (p === 'moon') return moonPosition(jd).lon;
+  if (p === 'chiron') return chironPosition(jd);
+  if (p === 'northnode') return lunarNode(jd);
+  if (p === 'southnode') return mod360(lunarNode(jd) + 180);
+  if (_ACCURATE_FNS[p]) return _ACCURATE_FNS[p]()(jd).lon;
+  return geocentricPlanetLongitude(p, jd);
+}
+
 function isRetrograde(planet, jd) {
   const p = planet.toLowerCase();
   if (p === 'sun' || p === 'moon' || p === 'northnode' || p === 'southnode') return false;
-  const lon1 = geocentricPlanetLongitude(p, jd);
-  const lon2 = geocentricPlanetLongitude(p, jd + 1);
+  const lon1 = planetLongitude(p, jd);
+  const lon2 = planetLongitude(p, jd + 1);
   let motion = lon2 - lon1;
   if (motion > 180)  motion -= 360;
   if (motion < -180) motion += 360;
@@ -1215,7 +1268,7 @@ const SIGN_RULERS = {
 // 14. calculateNatalChart — main entry point
 // ---------------------------------------------------------------------------
 
-function calculateNatalChart(year, month, day, hour, minute, lat, lon) {
+function calculateNatalChart(year, month, day, hour, minute, lat, lon, houseSystem) {
   const jd  = julianDay(year, month, day, hour, minute, 0);
   const T   = (jd - 2451545.0) / 36525;
   const eps = obliquityOfEcliptic(T);
@@ -1227,7 +1280,7 @@ function calculateNatalChart(year, month, day, hour, minute, lat, lon) {
   const outerPlanets = ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto'];
   const rawPositions = {};
   for (const p of outerPlanets) {
-    rawPositions[p] = geocentricPlanetLongitude(p, jd);
+    rawPositions[p] = planetLongitude(p, jd);
   }
   rawPositions.sun   = sunPos.lon;
   rawPositions.moon  = moonPos.lon;
@@ -1240,7 +1293,7 @@ function calculateNatalChart(year, month, day, hour, minute, lat, lon) {
   rawPositions.asc = ascDeg;
   rawPositions.mc  = mcDeg;
 
-  const houses = placidusHouses(mcDeg, ascDeg, lat, eps);
+  const houses = houseCusps(houseSystem, lst, lat, eps, ascDeg, mcDeg);
 
   // Build detailed position objects
   const retroPlanets = new Set(['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto','chiron']);
@@ -1506,6 +1559,8 @@ window.AstroEphemeris = {
   ascendant,
   midheaven,
   placidusHouses,
+  houseCusps,
+  planetLongitude,
   calculateAspects,
   isRetrograde,
   calculateNatalChart,

@@ -275,6 +275,12 @@
     if (isNaN(lat) || isNaN(lon)) return { error: 'Please pick your birth city from the dropdown.', focus: 'city-input' };
     const [y, m, d]  = date.split('-').map(Number);
     const [hh, mm]   = time.split(':').map(Number);
+    // Guard against malformed date/time (e.g. a hand-edited share URL): NaN
+    // doesn't throw, it would silently render a chart full of NaN°.
+    if (![y, m, d, hh, mm].every(Number.isFinite) ||
+        m < 1 || m > 12 || d < 1 || d > 31 || hh > 23 || mm > 59) {
+      return { error: 'That birth date or time looks malformed.', focus: 'date-input' };
+    }
     return {
       name, y, m, d, hh, mm, lat, lon, tz,
       city: cityInput.value,
@@ -285,7 +291,7 @@
 
   function calculate(input) {
     const ut = localToUT(input.y, input.m, input.d, input.hh, input.mm, input.tz);
-    const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon);
+    const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem);
     return adaptChart(raw, {
       name: input.name,
       birthDate: `${input.y}-${String(input.m).padStart(2,'0')}-${String(input.d).padStart(2,'0')}`,
@@ -433,6 +439,13 @@
   function renderResults(chart) {
     const wrapEl = document.getElementById('chart-result');
     if (!wrapEl) return;
+    // Defense-in-depth: never render a chart whose core points failed to
+    // compute (would otherwise throw on chart.positions.Sun.sign below).
+    if (!chart || !chart.positions || !chart.positions.Sun || !chart.positions.Moon) {
+      if (window.AstroApp) AstroApp.showToast('Calculation failed',
+        'Could not compute this chart — please check the birth details.', 'error');
+      return;
+    }
     wrapEl.classList.remove('hidden');
 
     document.getElementById('result-name').textContent = `${chart.name} — Natal Chart`;
@@ -513,8 +526,9 @@
         </div>`);
       }
 
-      // Part of Fortune — day chart when the Sun stands above the horizon (houses 7–12)
-      if (I && I.getPartOfFortune && typeof chart.asc === 'number' && chart.positions.Sun && chart.positions.Moon) {
+      // Part of Fortune — needs a real Ascendant, so only when birth time is
+      // known (a noon-default ASC would make the Lot meaningless).
+      if (I && I.getPartOfFortune && chart.birthTime && typeof chart.asc === 'number' && chart.positions.Sun && chart.positions.Moon) {
         const sunHouse = chart.planetHouses ? chart.planetHouses.Sun : null;
         const isDay = sunHouse >= 7 && sunHouse <= 12;
         const pof = I.getPartOfFortune(chart.asc, chart.positions.Sun.lon, chart.positions.Moon.lon, isDay);
