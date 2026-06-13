@@ -554,6 +554,119 @@ window.Interpretations = (() => {
     };
   }
 
+  // ── computeCompositeChart ─────────────────────────────────────────────────
+  // The classic "composite": the MIDPOINT OF POSITIONS. For each shared planet
+  // we take the circular midpoint of the two longitudes. This is NOT a real
+  // chart cast for a real moment — it is a derived/mathematical chart that
+  // represents the relationship as a blend of the two natal positions.
+  // Deterministic: identical input charts always yield identical output.
+  function computeCompositeChart(chart1, chart2) {
+    if (!chart1 || !chart2 || !chart1.positions || !chart2.positions) return null;
+    const E = window.AstroEphemeris;
+    const signOf = lon => E ? E.signName(lon) : '?';
+    const degInSign = lon => E && E.degreeInSign ? +E.degreeInSign(lon).toFixed(2)
+                                                 : +((((lon % 30) + 30) % 30).toFixed(2));
+
+    // Circular midpoint of two angles (degrees). Chooses the shorter arc so the
+    // composite point sits between the two bodies, never on the far side.
+    function midpointAngle(a, b) {
+      a = ((a % 360) + 360) % 360;
+      b = ((b % 360) + 360) % 360;
+      let diff = b - a;
+      if (diff > 180) diff -= 360;
+      if (diff < -180) diff += 360;
+      return ((a + diff / 2) % 360 + 360) % 360;
+    }
+
+    const planets = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+    const positions = {};
+    for (const p of planets) {
+      const a = chart1.positions[p], b = chart2.positions[p];
+      if (!a || !b || a.lon === undefined || b.lon === undefined) continue;
+      const lon = midpointAngle(a.lon, b.lon);
+      positions[p] = { lon, sign: signOf(lon), degree: degInSign(lon) };
+    }
+    return { method: 'composite', positions };
+  }
+
+  // ── computeDavisonChart ───────────────────────────────────────────────────
+  // The Davison relationship chart: a REAL natal chart cast for the relationship's
+  // midpoint in spacetime — the moment exactly halfway (in UT) between the two
+  // birth moments, at the geographic midpoint between the two birthplaces.
+  // Distinct from the composite (which averages positions): Davison is an actual
+  // chart for an actual moment, so it carries a genuine Ascendant, houses, and
+  // real planetary motion at that instant.
+  //
+  // Each person object: { y, m, d, hh, mm, lat, lon }  — date/time already in UT.
+  // Returns the full AstroEphemeris natal chart plus { method, midpoint }.
+  // Deterministic: identical inputs always yield an identical chart.
+  function computeDavisonChart(personA, personB) {
+    const E = window.AstroEphemeris;
+    if (!E || !E.calculateNatalChart || !E.julianDay || !personA || !personB) return null;
+
+    // 1. Midpoint in TIME — average the two Julian Days (continuous, leap-safe),
+    //    then convert the mean JD back to a UT calendar date/time.
+    const jdA = E.julianDay(personA.y, personA.m, personA.d, personA.hh, personA.mm, 0);
+    const jdB = E.julianDay(personB.y, personB.m, personB.d, personB.hh, personB.mm, 0);
+    const jdMid = (jdA + jdB) / 2;
+    const mid = jdToCivilUT(jdMid);
+
+    // 2. Midpoint in SPACE — geographic midpoint (great-circle) of the two places.
+    const geo = geographicMidpoint(+personA.lat, +personA.lon, +personB.lat, +personB.lon);
+
+    // 3. Cast a real natal chart for that midpoint moment & place.
+    const chart = E.calculateNatalChart(mid.y, mid.m, mid.d, mid.hh, mid.mm, geo.lat, geo.lon);
+
+    chart.method = 'davison';
+    chart.midpoint = {
+      utYear: mid.y, utMonth: mid.m, utDay: mid.d, utHour: mid.hh, utMinute: mid.mm,
+      lat: +geo.lat.toFixed(4), lon: +geo.lon.toFixed(4),
+    };
+    return chart;
+  }
+
+  // Convert a Julian Day back to a UT civil date/time (Meeus, Ch. 7, inverse).
+  function jdToCivilUT(jd) {
+    const z = Math.floor(jd + 0.5);
+    const f = (jd + 0.5) - z;
+    let a = z;
+    if (z >= 2299161) {
+      const alpha = Math.floor((z - 1867216.25) / 36524.25);
+      a = z + 1 + alpha - Math.floor(alpha / 4);
+    }
+    const b = a + 1524;
+    const c = Math.floor((b - 122.1) / 365.25);
+    const d = Math.floor(365.25 * c);
+    const e = Math.floor((b - d) / 30.6001);
+    const dayFrac = b - d - Math.floor(30.6001 * e) + f;
+    const day = Math.floor(dayFrac);
+    const month = e < 14 ? e - 1 : e - 13;
+    const year = month > 2 ? c - 4716 : c - 4715;
+    let hoursDec = (dayFrac - day) * 24;
+    let hh = Math.floor(hoursDec);
+    let mm = Math.round((hoursDec - hh) * 60);
+    if (mm === 60) { mm = 0; hh += 1; }
+    return { y: year, m: month, d: day, hh, mm };
+  }
+
+  // Great-circle (spherical) midpoint of two lat/lon points, in degrees.
+  function geographicMidpoint(lat1, lon1, lat2, lon2) {
+    const r = Math.PI / 180;
+    const φ1 = lat1 * r, φ2 = lat2 * r;
+    const λ1 = lon1 * r, λ2 = lon2 * r;
+    const dλ = λ2 - λ1;
+    const Bx = Math.cos(φ2) * Math.cos(dλ);
+    const By = Math.cos(φ2) * Math.sin(dλ);
+    const φm = Math.atan2(
+      Math.sin(φ1) + Math.sin(φ2),
+      Math.sqrt((Math.cos(φ1) + Bx) * (Math.cos(φ1) + Bx) + By * By)
+    );
+    const λm = λ1 + Math.atan2(By, Math.cos(φ1) + Bx);
+    let lat = φm / r;
+    let lon = ((λm / r + 540) % 360) - 180; // normalise to -180..180
+    return { lat, lon };
+  }
+
   // ── getTransitAspects ─────────────────────────────────────────────────────
   function getTransitAspects(natalChart, transitPositions) {
     if (!natalChart || !transitPositions) return [];
@@ -609,6 +722,8 @@ window.Interpretations = (() => {
     getBestMatches,
     analyzeChart,
     calculateCompatibility,
+    computeCompositeChart,
+    computeDavisonChart,
     getTransitAspects,
     ZODIAC_SIGNS_ORDER,
   };

@@ -563,6 +563,143 @@
     .sat-nature--harmonic  { background: rgba(34,197,94,0.15);  color: #6cd47e; }
     .sat-nature--dynamic   { background: rgba(239,68,68,0.14);  color: #f87171; }
     .sat-nature--polarity  { background: rgba(249,115,22,0.14); color: #fdba74; }
+
+    /* ============================================================
+       RESULT TABS — Synastry / Composite / Davison
+    ============================================================ */
+    .compat-tabs {
+      display: flex;
+      gap: var(--space-2);
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: var(--space-8);
+    }
+    .compat-tab {
+      background: rgba(17,26,54,0.55);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--silver);
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: var(--space-3) var(--space-6);
+      cursor: pointer;
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+    .compat-tab:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
+    .compat-tab[aria-selected="true"] {
+      color: var(--bg);
+      background: linear-gradient(135deg, #c4920a 0%, #e8c96a 100%);
+      border-color: transparent;
+      box-shadow: 0 4px 18px rgba(196,146,10,0.28);
+    }
+    @media (max-width: 600px) {
+      .compat-tab { padding: var(--space-2) var(--space-4); font-size: var(--text-xs); }
+    }
+
+    .compat-tabpanel[hidden] { display: none; }
+
+    /* ---- Explanatory note for composite / davison ---- */
+    .compat-method-note {
+      background: rgba(17,26,54,0.62);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-8);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+    }
+    .compat-method-note h3 {
+      font-family: var(--font-display);
+      color: var(--gold-pale);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-3);
+    }
+    .compat-method-note p {
+      color: var(--color-silver-dim);
+      line-height: 1.8;
+      font-size: var(--text-sm);
+      margin: 0 0 var(--space-3);
+    }
+    .compat-method-note p:last-child { margin-bottom: 0; }
+
+    .compat-midpoint-line {
+      font-size: var(--text-xs);
+      color: var(--silver-dim);
+      margin-top: var(--space-3);
+      font-style: italic;
+    }
+    .compat-midpoint-line strong { color: var(--white); font-style: normal; }
+
+    /* ---- Midpoint-chart planet grid (composite + davison) ---- */
+    .midchart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: var(--space-3);
+    }
+    .midchart-cell {
+      background: rgba(17,26,54,0.62);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      transition: transform 0.18s, border-color 0.2s, box-shadow 0.18s;
+    }
+    .midchart-cell:hover {
+      transform: translateY(-2px);
+      border-color: rgba(196,146,10,0.28);
+      box-shadow: 0 6px 22px rgba(0,0,0,0.3);
+    }
+    .midchart-cell__orb { flex-shrink: 0; display: inline-flex; }
+    .midchart-cell__glyph {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 34px;
+      text-align: center;
+      color: var(--gold-pale);
+    }
+    .midchart-cell__body { min-width: 0; }
+    .midchart-cell__planet {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--silver-dim);
+      font-weight: 600;
+    }
+    .midchart-cell__sign {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      color: var(--white);
+      font-weight: 600;
+    }
+    .midchart-cell__deg { font-size: var(--text-xs); color: var(--silver); }
+
+    .midchart-angles {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      margin-top: var(--space-5);
+      justify-content: center;
+    }
+    .midchart-angle {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: var(--space-2) var(--space-5);
+    }
+    .midchart-angle strong { color: var(--gold-pale); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -637,7 +774,7 @@
         <div class="compat-orbs" aria-hidden="true">
           <div class="compat-orb compat-orb--1">
             <div class="compat-orb__core" id="orb1-core"><span id="orb1-glyph">✦</span></div>
-            <span class="compat-person-label">Person One</span>
+            <span class="compat-person-label">Person A</span>
           </div>
           <div class="compat-orbs__arc">
             <svg viewBox="0 0 100 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -654,7 +791,7 @@
           </div>
           <div class="compat-orb compat-orb--2">
             <div class="compat-orb__core" id="orb2-core"><span id="orb2-glyph">✦</span></div>
-            <span class="compat-person-label">Person Two</span>
+            <span class="compat-person-label">Person B</span>
           </div>
         </div>
       </div>
@@ -674,10 +811,10 @@
           <div class="compat-form__grid">
             <!-- Person One card -->
             <fieldset class="compat-person-card compat-person-card--p1" style="border:none;padding:var(--space-7);margin:0;">
-              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person One birth details</legend>
+              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person A birth details</legend>
               <h3>
                 <span class="person-icon person-icon--p1" aria-hidden="true">✦</span>
-                Person One
+                Person A
               </h3>
               <div class="form-group">
                 <label for="person1-name" class="form-label">Name</label>
@@ -698,7 +835,7 @@
                   <span class="input-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span>
                   <input type="text" id="person1-city" name="person1-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p1-city-dropdown" />
                 </div>
-                <div class="autocomplete-dropdown" id="p1-city-dropdown" role="listbox" aria-label="City suggestions for person one"></div>
+                <div class="autocomplete-dropdown" id="p1-city-dropdown" role="listbox" aria-label="City suggestions for person A"></div>
                 <input type="hidden" id="person1-lat" name="person1-lat" />
                 <input type="hidden" id="person1-lon" name="person1-lon" />
                 <input type="hidden" id="person1-tz"  name="person1-tz" />
@@ -714,10 +851,10 @@
 
             <!-- Person Two card -->
             <fieldset class="compat-person-card compat-person-card--p2" style="border:none;padding:var(--space-7);margin:0;">
-              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person Two birth details</legend>
+              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person B birth details</legend>
               <h3>
                 <span class="person-icon person-icon--p2" aria-hidden="true">✦</span>
-                Person Two
+                Person B
               </h3>
               <div class="form-group">
                 <label for="person2-name" class="form-label">Name</label>
@@ -738,7 +875,7 @@
                   <span class="input-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span>
                   <input type="text" id="person2-city" name="person2-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p2-city-dropdown" />
                 </div>
-                <div class="autocomplete-dropdown" id="p2-city-dropdown" role="listbox" aria-label="City suggestions for person two"></div>
+                <div class="autocomplete-dropdown" id="p2-city-dropdown" role="listbox" aria-label="City suggestions for person B"></div>
                 <input type="hidden" id="person2-lat" name="person2-lat" />
                 <input type="hidden" id="person2-lon" name="person2-lon" />
                 <input type="hidden" id="person2-tz"  name="person2-tz" />
@@ -783,6 +920,16 @@
             <h2 id="compat-result-title" class="section-header__title" style="margin-bottom:var(--space-2);font-size:var(--text-2xl);"></h2>
             <p id="compat-result-subtitle" style="color:var(--color-silver-dim);font-size:var(--text-sm);"></p>
           </div>
+
+          <!-- Method tabs: Synastry / Composite / Davison -->
+          <div class="compat-tabs animate-in" role="tablist" aria-label="Compatibility chart methods">
+            <button class="compat-tab" id="tab-synastry" role="tab" aria-selected="true" aria-controls="panel-synastry" type="button">Synastry</button>
+            <button class="compat-tab" id="tab-composite" role="tab" aria-selected="false" aria-controls="panel-composite" type="button">Composite</button>
+            <button class="compat-tab" id="tab-davison" role="tab" aria-selected="false" aria-controls="panel-davison" type="button">Davison</button>
+          </div>
+
+          <!-- ===== SYNASTRY PANEL ===== -->
+          <div class="compat-tabpanel" id="panel-synastry" role="tabpanel" aria-labelledby="tab-synastry" tabindex="0">
 
           <!-- Score ring (200px, gradient stroke) -->
           <div class="compat-score animate-in animate-in--delay-1">
@@ -862,6 +1009,46 @@
           <div class="compat-download-row">
             <button id="compat-download-btn" class="btn btn--gold" style="display:none;">&#8659; Download Compatibility Card</button>
           </div>
+
+          </div><!-- /#panel-synastry -->
+
+          <!-- ===== COMPOSITE PANEL ===== -->
+          <div class="compat-tabpanel" id="panel-composite" role="tabpanel" aria-labelledby="tab-composite" tabindex="0" hidden>
+            <div class="compat-method-note">
+              <h3>The Composite Chart</h3>
+              <p>
+                The composite is the <strong>midpoint of positions</strong>: for each planet we take
+                the point exactly halfway between where it sat in each person's chart. The result is a
+                single derived chart that portrays the relationship as a blend of two natures.
+              </p>
+              <p>
+                It is a mathematical average, not a chart cast for any real moment — so it has no true
+                rising sign or houses. For a relationship chart anchored to an actual instant in spacetime,
+                see the <em>Davison</em> tab.
+              </p>
+            </div>
+            <div id="composite-planets" class="midchart-grid"></div>
+          </div><!-- /#panel-composite -->
+
+          <!-- ===== DAVISON PANEL ===== -->
+          <div class="compat-tabpanel" id="panel-davison" role="tabpanel" aria-labelledby="tab-davison" tabindex="0" hidden>
+            <div class="compat-method-note">
+              <h3>The Davison Relationship Chart</h3>
+              <p>
+                The Davison chart is a <strong>real chart cast for the relationship's midpoint in
+                spacetime</strong>: the moment exactly halfway (in Universal Time) between the two birth
+                moments, at the geographic midpoint between the two birthplaces.
+              </p>
+              <p>
+                Because it is an actual chart for an actual instant, it carries a genuine Ascendant,
+                real houses, and the true planetary sky of that moment — which is what distinguishes it
+                from the composite's averaging of positions.
+              </p>
+              <p class="compat-midpoint-line" id="davison-midpoint"></p>
+            </div>
+            <div id="davison-planets" class="midchart-grid"></div>
+            <div id="davison-angles" class="midchart-angles"></div>
+          </div><!-- /#panel-davison -->
 
         </section><!-- /#compat-result -->
 
@@ -1247,9 +1434,12 @@
         marsSign:    p.mars  ? p.mars.sign  : p.sun.sign,
         mercurySign: p.mercury ? p.mercury.sign : p.sun.sign,
         rising:      p.asc  ? p.asc.sign   : p.sun.sign,
+        // Birth moment expressed in UT + place — used to cast the Davison chart.
+        ut: { y: ut.y, m: ut.m, d: ut.d, hh: ut.hh, mm: ut.mm, lat: lat, lon: lon },
         positions: {
           Sun:     { lon: p.sun.longitude },
           Moon:    { lon: p.moon.longitude },
+          Mercury: { lon: p.mercury ? p.mercury.longitude : p.sun.longitude },
           Venus:   { lon: p.venus ? p.venus.longitude : p.sun.longitude },
           Mars:    { lon: p.mars  ? p.mars.longitude  : p.sun.longitude },
           Jupiter: { lon: p.jupiter ? p.jupiter.longitude : 0 },
@@ -1323,7 +1513,7 @@
       ctx.font = 'italic 400 42px Cormorant Garamond,serif';
       ctx.fillStyle = 'rgba(240,232,216,0.75)';
       if (name1 && name2) ctx.fillText(name1 + ' & ' + name2, W/2, 480);
-      else if (name1 || name2) ctx.fillText((name1||'Person 1') + ' & ' + (name2||'Person 2'), W/2, 480);
+      else if (name1 || name2) ctx.fillText((name1||'Person A') + ' & ' + (name2||'Person B'), W/2, 480);
 
       // Score
       ctx.font = '900 200px Cinzel,serif'; ctx.fillStyle = 'rgba(232,201,106,0.9)';
@@ -1363,19 +1553,131 @@
       return cv;
     }
 
-    function showResult(result, name1, name2) {
+    /* Planet glyphs (fallback when AstroIcons unavailable) for midpoint charts */
+    var MIDCHART_PLANETS = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+
+    function planetOrbMarkup(planet) {
+      if (window.AstroIcons && AstroIcons.planet) return AstroIcons.planet(planet, { sm:true });
+      return '<span class="midchart-cell__glyph">' + (PLANET_GLYPHS[planet] || '✦') + '</span>';
+    }
+
+    function renderMidpointPlanets(containerId, positions) {
+      var el = document.getElementById(containerId);
+      if (!el) return;
+      if (!positions) { el.innerHTML = '<p style="color:var(--silver-dim);font-size:var(--text-sm);">Chart unavailable.</p>'; return; }
+      el.innerHTML = MIDCHART_PLANETS.map(function(p) {
+        var pos = positions[p];
+        if (!pos) return '';
+        var orb = planetOrbMarkup(p);
+        var hasIcon = window.AstroIcons && AstroIcons.planet;
+        var deg = (pos.degree !== undefined ? pos.degree : '').toString();
+        return '<div class="midchart-cell">' +
+          (hasIcon ? '<div class="midchart-cell__orb">' + orb + '</div>' : orb) +
+          '<div class="midchart-cell__body">' +
+            '<div class="midchart-cell__planet">' + p + '</div>' +
+            '<div class="midchart-cell__sign">' + (pos.sign || '—') + '</div>' +
+            (deg !== '' ? '<div class="midchart-cell__deg">' + deg + '° in sign</div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderDavison(chart1, chart2) {
+      var I = window.Interpretations;
+      if (!I || !I.computeDavisonChart || !chart1 || !chart2 || !chart1.ut || !chart2.ut) return;
+      var dav = I.computeDavisonChart(chart1.ut, chart2.ut);
+      if (!dav) return;
+
+      // Planet grid — normalise position objects to { lon, sign, degree }.
+      var pos = {};
+      MIDCHART_PLANETS.forEach(function(name) {
+        var key = name.toLowerCase();
+        var src = dav.positions[key] || dav.positions[name];
+        if (src) pos[name] = { lon: src.longitude !== undefined ? src.longitude : src.lon, sign: src.sign, degree: src.degree };
+      });
+      renderMidpointPlanets('davison-planets', pos);
+
+      // Real angles (Davison has a genuine Ascendant & Midheaven).
+      var ascP = dav.positions.asc, mcP = dav.positions.mc;
+      var angEl = document.getElementById('davison-angles');
+      if (angEl) {
+        var bits = [];
+        if (ascP) bits.push('<span class="midchart-angle">Ascendant <strong>' + ascP.sign + '</strong></span>');
+        if (mcP)  bits.push('<span class="midchart-angle">Midheaven <strong>' + mcP.sign + '</strong></span>');
+        angEl.innerHTML = bits.join('');
+      }
+
+      // Honest midpoint disclosure (UT moment + geographic midpoint).
+      var mp = dav.midpoint;
+      var mpEl = document.getElementById('davison-midpoint');
+      if (mp && mpEl) {
+        var dateStr = mp.utYear + '-' + String(mp.utMonth).padStart(2,'0') + '-' + String(mp.utDay).padStart(2,'0');
+        var timeStr = String(mp.utHour).padStart(2,'0') + ':' + String(mp.utMinute).padStart(2,'0');
+        mpEl.innerHTML = 'Cast for the spacetime midpoint: <strong>' + dateStr + ' ' + timeStr + ' UT</strong> ' +
+          'at <strong>' + mp.lat.toFixed(2) + '°, ' + mp.lon.toFixed(2) + '°</strong>.';
+      }
+    }
+
+    function renderComposite(chart1, chart2) {
+      var I = window.Interpretations;
+      if (!I || !I.computeCompositeChart) return;
+      var comp = I.computeCompositeChart(chart1, chart2);
+      renderMidpointPlanets('composite-planets', comp ? comp.positions : null);
+    }
+
+    function setupResultTabs() {
+      var tabs = [
+        { btn: document.getElementById('tab-synastry'),  panel: document.getElementById('panel-synastry') },
+        { btn: document.getElementById('tab-composite'), panel: document.getElementById('panel-composite') },
+        { btn: document.getElementById('tab-davison'),   panel: document.getElementById('panel-davison') }
+      ].filter(function(t) { return t.btn && t.panel; });
+      if (!tabs.length) return;
+
+      function activate(idx) {
+        tabs.forEach(function(t, i) {
+          var on = i === idx;
+          t.btn.setAttribute('aria-selected', on ? 'true' : 'false');
+          t.panel.hidden = !on;
+        });
+      }
+      tabs.forEach(function(t, i) {
+        if (t.btn.dataset.wired) return;
+        t.btn.dataset.wired = '1';
+        t.btn.addEventListener('click', function() { activate(i); });
+        t.btn.addEventListener('keydown', function(e) {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            var dir = e.key === 'ArrowRight' ? 1 : -1;
+            var next = (i + dir + tabs.length) % tabs.length;
+            tabs[next].btn.focus();
+            activate(next);
+          }
+        });
+      });
+      activate(0);
+    }
+
+    function showResult(result, name1, name2, chart1, chart2) {
       var loadEl = document.getElementById('compat-loading');
       var resEl  = document.getElementById('compat-result');
       if (loadEl) loadEl.classList.add('hidden');
       if (!resEl) return;
       resEl.classList.remove('hidden');
 
+      var personA = name1 || 'Person A';
+      var personB = name2 || 'Person B';
+
       var titleEl = document.getElementById('compat-result-title');
       var subEl   = document.getElementById('compat-result-subtitle');
       var score   = result.overall;
       var label   = score >= 80 ? 'A Profound Match' : score >= 65 ? 'Genuine Potential' : score >= 50 ? 'Growth Dynamic' : 'Challenging Beauty';
-      if (titleEl) titleEl.textContent = (name1 || 'Person 1') + ' & ' + (name2 || 'Person 2') + ' — ' + label;
+      if (titleEl) titleEl.textContent = personA + ' & ' + personB + ' — ' + label;
       if (subEl) subEl.textContent = 'Overall compatibility: ' + score + '% · Based on full synastry analysis';
+
+      // Build the composite + Davison relationship charts for their tabs.
+      try { renderComposite(chart1, chart2); } catch (e) {}
+      try { renderDavison(chart1, chart2); } catch (e) {}
+      setupResultTabs();
 
       // Store sign data for download card
       window._p1SunSign = result.chart1SunSign || '';
@@ -1726,8 +2028,8 @@
         var p1 = readPerson('person1');
         var p2 = readPerson('person2');
 
-        if (!p1) { alert('Please enter complete birth data for Person 1 (including selecting a city from the dropdown).'); return; }
-        if (!p2) { alert('Please enter complete birth data for Person 2 (including selecting a city from the dropdown).'); return; }
+        if (!p1) { alert('Please enter complete birth data for Person A (including selecting a city from the dropdown).'); return; }
+        if (!p2) { alert('Please enter complete birth data for Person B (including selecting a city from the dropdown).'); return; }
 
         var loadEl = document.getElementById('compat-loading');
         var resEl  = document.getElementById('compat-result');
@@ -1743,7 +2045,7 @@
           var chart2 = buildChart(E, p2.y, p2.m, p2.d, p2.hh, p2.mm, p2.lat, p2.lon, p2.tz);
           var result = window.Interpretations.calculateCompatibility(chart1, chart2);
           encodeToURL(p1, p2);
-          showResult(result, p1.name, p2.name);
+          showResult(result, p1.name, p2.name, chart1, chart2);
         } catch(err) {
           if (loadEl) loadEl.classList.add('hidden');
           alert('Calculation error: ' + err);

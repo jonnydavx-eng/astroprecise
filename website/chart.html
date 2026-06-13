@@ -166,6 +166,44 @@
       letter-spacing: 0.04em;
     }
 
+    /* ── Privacy badge — glass/cosmic callout ─────────────────────── */
+    .privacy-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0 0 var(--space-8);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(42,74,148,0.14), rgba(13,17,36,0.5));
+      border: 1px solid rgba(196,146,10,0.28);
+      border-top-color: rgba(232,201,106,0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(150,175,230,0.04) inset;
+    }
+    .privacy-badge__icon {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      color: var(--gold);
+      background: radial-gradient(circle at 35% 30%, rgba(232,201,106,0.22), rgba(42,74,148,0.12));
+      border: 1px solid rgba(196,146,10,0.35);
+      box-shadow: 0 0 16px rgba(196,146,10,0.18);
+    }
+    .privacy-badge__icon .eng-i { width: 20px; height: 20px; }
+    .privacy-badge__text {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: var(--silver);
+      letter-spacing: 0.01em;
+    }
+    .privacy-badge__text strong {
+      color: var(--gold-pale);
+      font-weight: 600;
+    }
+
     /* ── Section labels inside form ─────────────────────────────── */
     .form-section-label {
       display: flex;
@@ -887,6 +925,20 @@
           <div class="form-glass__icon" aria-hidden="true">✦</div>
           <h2 class="form-glass__title">Your Birth Details</h2>
           <p class="form-glass__sub">All calculations happen instantly in your browser — nothing is sent to any server.</p>
+        </div>
+
+        <!-- Privacy badge — glass/cosmic callout near the birth-data form -->
+        <div class="privacy-badge" role="note" aria-label="Privacy guarantee">
+          <span class="privacy-badge__icon" aria-hidden="true">
+            <svg class="eng-i" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.6 4-1.3 7-5.2 7-9.6V6l-7-3Z"/>
+              <path d="M9.2 12.2l1.9 1.9 3.7-3.9"/>
+            </svg>
+          </span>
+          <span class="privacy-badge__text">
+            <strong>Private by design.</strong> Your chart is computed in your browser —
+            your birth data never leaves your device. No account, no tracking.
+          </span>
         </div>
 
         <form id="chart-form" novalidate aria-label="Birth chart calculation form">
