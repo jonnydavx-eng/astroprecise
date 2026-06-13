@@ -640,14 +640,23 @@ window.AstroApp = AstroApp;
 // Nav markup is hardcoded per page; rather than edit ~25 files, inject the
 // Accuracy link into both the desktop and mobile nav lists once, here.
 (function injectExtraNav() {
+  // Secondary tools go in the MOBILE menu only (it scrolls) — keep the desktop
+  // top-bar lean at its hardcoded core. Footer guide-links cover desktop discovery.
   var EXTRAS = [
     { href: 'charts.html', label: 'My Charts' },
-    { href: 'retrograde.html', label: 'Retrograde' },
+    { href: 'quiz.html', label: 'Cosmic Quiz' },
+    { href: 'tonight.html', label: "Tonight's Sky" },
     { href: 'moonphase.html', label: 'Moon Phase' },
+    { href: 'retrograde.html', label: 'Retrograde' },
+    { href: 'angel-numbers.html', label: 'Angel Numbers' },
+    { href: 'name-numerology.html', label: 'Name Numerology' },
+    { href: 'what-is-my-rising-sign.html', label: 'Rising Sign' },
+    { href: 'synastry.html', label: 'Synastry' },
+    { href: 'solar-return.html', label: 'Solar Return' },
     { href: 'accuracy.html', label: 'Accuracy' },
   ];
   function place() {
-    var lists = document.querySelectorAll('.navbar__nav, .navbar__mobile-menu');
+    var lists = document.querySelectorAll('.navbar__mobile-menu');
     if (!lists.length) return;
     var here = (location.pathname.split('/').pop() || 'index.html');
     lists.forEach(function (list) {
@@ -674,11 +683,16 @@ window.AstroApp = AstroApp;
     var host = document.querySelector('footer .container') || document.querySelector('footer');
     if (!host) return;
     var links = [
-      ['what-is-my-rising-sign.html', 'What’s my rising sign?'],
+      ['what-is-my-rising-sign.html', 'Rising sign'],
+      ['quiz.html', 'Cosmic archetype quiz'],
+      ['tonight.html', 'Tonight’s sky'],
+      ['moonphase.html', 'Moon phase'],
+      ['retrograde.html', 'Mercury retrograde'],
+      ['angel-numbers.html', 'Angel numbers'],
+      ['name-numerology.html', 'Name numerology'],
       ['synastry.html', 'Synastry'],
       ['solar-return.html', 'Solar return'],
-      ['retrograde.html', 'Mercury retrograde'],
-      ['moonphase.html', 'Moon phase'],
+      ['charts.html', 'My charts'],
       ['accuracy.html', 'How it’s accurate'],
     ];
     var p = document.createElement('p');
@@ -689,6 +703,21 @@ window.AstroApp = AstroApp;
       return '<a href="' + l[0] + '" style="color:var(--gold,#C9A227);text-decoration:none;">' + l[1] + '</a>';
     }).join(' <span style="opacity:.4">&middot;</span> ');
     host.appendChild(p);
+
+    // Family of sites — dormant-safe: only links the siblings whose URLs are set in AP_MON.family
+    var fam = (window.AP_MON && window.AP_MON.family) || {};
+    var famLinks = [];
+    if (fam.biggerPicture) famLinks.push('<a href="' + fam.biggerPicture + '" target="_blank" rel="noopener" style="color:var(--gold,#C9A227);text-decoration:none;">The Bigger Picture</a>');
+    if (fam.backInTime) famLinks.push('<a href="' + fam.backInTime + '" target="_blank" rel="noopener" style="color:var(--gold,#C9A227);text-decoration:none;">Back In Time</a>');
+    if (famLinks.length) {
+      var fp = document.createElement('p');
+      fp.className = 'ap-family-links';
+      fp.style.cssText = 'font-size:0.6rem;letter-spacing:0.1em;margin-top:8px;opacity:0.5;'
+        + 'font-family:Inter,system-ui,sans-serif;text-align:center;';
+      fp.innerHTML = 'A small family of sites — <span style="color:var(--gold,#C9A227)">AstroPrecise</span> <span style="opacity:.4">&middot;</span> '
+        + famLinks.join(' <span style="opacity:.4">&middot;</span> ');
+      host.appendChild(fp);
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
   else place();
@@ -703,6 +732,7 @@ window.AstroApp = AstroApp;
 // never sees a broken or fake checkout.  ◆ EDIT THIS BLOCK TO GO LIVE ◆
 // ═══════════════════════════════════════════════════════════════════════
 window.AP_MON = Object.assign({
+  family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
   tipUrl:       '',   // tips/support — Ko-fi (0% on tips) or buymeacoffee. Pages-permitted.
   reportUrl:    '',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
   posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)

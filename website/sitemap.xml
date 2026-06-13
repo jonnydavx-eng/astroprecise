@@ -91,6 +91,26 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/quiz.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/angel-numbers.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/tonight.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/name-numerology.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://jonnydavx-eng.github.io/astroprecise/aries.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
