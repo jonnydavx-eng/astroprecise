@@ -5798,7 +5798,9 @@ body[data-element="water"]::before {
   border: 1px solid rgba(212,175,55,0.3);
   border-radius: 999px;
   padding: 4px 12px;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 100%;
+  text-align: center;
   box-shadow: inset 0 1px 1px rgba(255,255,255,0.07);
 }
 .ap-badge::before {
@@ -5807,6 +5809,9 @@ body[data-element="water"]::before {
   opacity: 0.8;
 }
 .ap-badge--deterministic::before { content: '✦'; }
+
+/* Safety net: never allow horizontal scroll from stray decorative/pseudo elements on narrow viewports */
+html, body { overflow-x: clip; max-width: 100%; }
 
 /* Privacy banner — first visit only */
 .privacy-banner {

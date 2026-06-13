@@ -320,6 +320,310 @@
     return cv;
   }
 
+  // ── Shared share-card scaffolding (1080×1080 brand frame) ────────────────
+  const CARD_W = 1080, CARD_H = 1080;
+
+  // Deterministic LCG starfield + nebula + gold double border. Returns {cv,x}.
+  function cardBase(opts) {
+    opts = opts || {};
+    const nebX = opts.nebX == null ? CARD_W / 2 : opts.nebX;
+    const nebY = opts.nebY == null ? 430 : opts.nebY;
+    const nebR = opts.nebR == null ? 520 : opts.nebR;
+    const stars = opts.stars == null ? 160 : opts.stars;
+    let seed = opts.seed0 == null ? 137 : opts.seed0;
+    const cv = document.createElement('canvas');
+    cv.width = CARD_W; cv.height = CARD_H;
+    const x = cv.getContext('2d');
+
+    x.fillStyle = '#06060f';
+    x.fillRect(0, 0, CARD_W, CARD_H);
+    const neb = x.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebR);
+    neb.addColorStop(0, 'rgba(123, 44, 191, 0.22)');
+    neb.addColorStop(1, 'transparent');
+    x.fillStyle = neb; x.fillRect(0, 0, CARD_W, CARD_H);
+
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < stars; i++) {
+      x.fillStyle = `rgba(240,232,216,${0.1 + rnd() * 0.5})`;
+      x.beginPath();
+      x.arc(rnd() * CARD_W, rnd() * CARD_H, rnd() * 1.6 + 0.3, 0, Math.PI * 2);
+      x.fill();
+    }
+
+    x.strokeStyle = 'rgba(212,175,55,0.55)';
+    x.lineWidth = 2;
+    x.strokeRect(46, 46, CARD_W - 92, CARD_H - 92);
+    x.strokeStyle = 'rgba(212,175,55,0.22)';
+    x.strokeRect(58, 58, CARD_W - 116, CARD_H - 116);
+    return { cv, x };
+  }
+
+  function cardHeader(x, text, y) {
+    x.textAlign = 'center';
+    x.fillStyle = '#D4AF37';
+    x.font = '26px Georgia, serif';
+    x.fillText(text, CARD_W / 2, y == null ? 130 : y);
+  }
+
+  function cardFooter(x, y) {
+    x.textAlign = 'center';
+    x.fillStyle = '#D4AF37';
+    x.font = '22px Georgia, serif';
+    x.fillText('astroprecise · the instrument', CARD_W / 2, y == null ? 1010 : y);
+  }
+
+  // Honesty/provenance pill: a dot + label. measured -> gold dot, else silver-blue.
+  function honestyBadge(x, cx, y, label, measured) {
+    x.font = '20px Georgia, serif';
+    const padX = 26, dotGap = 16, dotR = 5;
+    const tw = x.measureText(label).width;
+    const w = tw + padX * 2 + dotGap + dotR * 2;
+    const h = 42, left = cx - w / 2;
+    x.beginPath();
+    if (x.roundRect) x.roundRect(left, y - h / 2, w, h, h / 2);
+    else x.rect(left, y - h / 2, w, h);
+    x.fillStyle = 'rgba(17,26,54,0.55)';
+    x.fill();
+    x.lineWidth = 1;
+    x.strokeStyle = measured ? 'rgba(212,175,55,0.55)' : 'rgba(154,166,200,0.45)';
+    x.stroke();
+    const dotX = left + padX;
+    x.beginPath();
+    x.arc(dotX, y, dotR, 0, Math.PI * 2);
+    x.fillStyle = measured ? '#D4AF37' : '#9aa6c8';
+    x.fill();
+    x.textAlign = 'left';
+    x.fillStyle = measured ? '#e8c96a' : '#9aa6c8';
+    x.fillText(label, dotX + dotGap, y + 7);
+    x.textAlign = 'center';
+  }
+
+  function wrapText(x, text, cx, y, maxW, lineH) {
+    const words = String(text).split(/\s+/);
+    let line = '', yy = y;
+    for (const w of words) {
+      const test = line ? line + ' ' + w : w;
+      if (x.measureText(test).width > maxW && line) {
+        x.fillText(line, cx, yy); line = w; yy += lineH;
+      } else line = test;
+    }
+    if (line) { x.fillText(line, cx, yy); yy += lineH; }
+    return yy;
+  }
+
+  // Moon disc with a correct terminator for any phase. illum 0..1, waxing => lit
+  // on the right limb. Confirmed against canvas arc/ellipse sweep semantics.
+  function moonDisc(x, cx, cy, r, illum, waxing) {
+    illum = Math.max(0, Math.min(1, illum));
+    x.save();
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.closePath();
+    x.fillStyle = '#11142a'; x.fill();
+    x.clip();
+    const g = x.createRadialGradient(cx, cy, 0, cx, cy, r);
+    g.addColorStop(0, 'rgba(240,232,216,0.97)');
+    g.addColorStop(1, 'rgba(212,201,170,0.80)');
+    const tw = r * (1 - 2 * illum);
+    x.beginPath();
+    x.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2, !waxing); // lit limb semicircle
+    const anti = (illum < 0.5) ? waxing : !waxing;        // terminator bulge dir
+    x.ellipse(cx, cy, Math.abs(tw), r, 0, Math.PI / 2, -Math.PI / 2, anti);
+    x.closePath();
+    x.fillStyle = g; x.fill();
+    x.restore();
+    x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2);
+    x.strokeStyle = 'rgba(154,166,200,0.30)'; x.lineWidth = 1; x.stroke();
+  }
+
+  // 1080×1080: the named real star at the birth zenith, over a local star patch.
+  function drawZenithCard() {
+    const S = window.StarCatalog;
+    if (!S || !event_) return null;
+    const jd = eventJd(event_);
+    const z = window.LightCone.zenithStar(jd, event_.lat, event_.lon);
+    if (!z) return null;
+    const s = z.star;
+
+    const { cv, x } = cardBase({ nebY: 470, nebR: 460 });
+
+    cardHeader(x, '✦  Z E N I T H   S T A R  ✦');
+
+    x.fillStyle = '#9aa6c8';
+    x.font = 'italic 30px Georgia, serif';
+    x.fillText('The star over my first breath', CARD_W / 2, 196);
+
+    x.fillStyle = '#f0e8d8';
+    let nameSize = 96;
+    x.font = `bold ${nameSize}px Georgia, serif`;
+    while (x.measureText(s.name.toUpperCase()).width > CARD_W - 200 && nameSize > 48) {
+      nameSize -= 4; x.font = `bold ${nameSize}px Georgia, serif`;
+    }
+    x.textAlign = 'center';
+    x.shadowColor = 'rgba(212,175,55,0.55)';
+    x.shadowBlur = 24;
+    x.fillText(s.name.toUpperCase(), CARD_W / 2, 296);
+    x.shadowBlur = 0;
+
+    // local star patch: real stars within ±18° of the zenith point
+    const panelCy = 540, half = 200, span = 18;
+    const wrapDeg = d => ((d + 540) % 360) - 180;
+    const panelStars = [];
+    for (const st of S.STARS) {
+      const dRa = wrapDeg(st.ra - z.zenithRa) * Math.cos(z.zenithDec * Math.PI / 180);
+      const dDec = st.dec - z.zenithDec;
+      if (Math.abs(dRa) <= span && Math.abs(dDec) <= span) {
+        panelStars.push({ st, px: CARD_W / 2 + (dRa / span) * half, py: panelCy - (dDec / span) * half });
+      }
+    }
+    x.beginPath();
+    x.arc(CARD_W / 2, panelCy, half, 0, Math.PI * 2);
+    x.strokeStyle = 'rgba(154,166,200,0.12)';
+    x.lineWidth = 1; x.stroke();
+    x.strokeStyle = 'rgba(212,175,55,0.30)';
+    x.beginPath();
+    x.moveTo(CARD_W / 2 - 16, panelCy); x.lineTo(CARD_W / 2 + 16, panelCy);
+    x.moveTo(CARD_W / 2, panelCy - 16); x.lineTo(CARD_W / 2, panelCy + 16);
+    x.stroke();
+    for (const p of panelStars) {
+      const isHero = p.st === s;
+      const r = Math.max(1.4, 4.2 - p.st.mag * 0.7);
+      x.beginPath();
+      x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
+      if (isHero) { x.fillStyle = 'rgba(232,201,106,0.98)'; x.shadowColor = 'rgba(212,175,55,0.9)'; x.shadowBlur = 16; }
+      else { x.fillStyle = 'rgba(154,166,200,0.55)'; x.shadowBlur = 0; }
+      x.fill(); x.shadowBlur = 0;
+    }
+
+    x.fillStyle = '#e8c96a';
+    x.font = '30px Georgia, serif';
+    const parts = [];
+    if (s.con) parts.push(s.con);
+    if (s.spectral) parts.push('type ' + s.spectral);
+    parts.push('mag ' + s.mag);
+    parts.push(s.ly + ' ly');
+    x.fillText(parts.join('   ·   '), CARD_W / 2, 812);
+
+    x.fillStyle = '#9aa6c8';
+    x.font = '26px Georgia, serif';
+    wrapText(x,
+      `Nearest catalogued star to the point directly overhead at my birth — ${z.sepDeg.toFixed(1)}° from the exact zenith.`,
+      CARD_W / 2, 862, CARD_W - 220, 38);
+
+    honestyBadge(x, CARD_W / 2, 952, 'computed · J2000 catalogue + LST', false);
+    cardFooter(x);
+    return cv;
+  }
+
+  // One-line transit highlight. Prefers the day's strongest oracle aspect.
+  function transitHighlightLine(report) {
+    try {
+      if (window.AstroOracle && event_) {
+        const natal = natalFor(event_);
+        const ins = window.AstroOracle.getDailyInsight
+          ? window.AstroOracle.getDailyInsight(natal, new Date()) : null;
+        if (ins && ins.headline) return ins.headline;
+      }
+    } catch (e) {}
+    const t = report.components.transits;
+    if (t && t.basis && t.basis !== 'unavailable')
+      return report.composite.label + ' — ' + report.composite.summary.split('.')[0] + '.';
+    return null;
+  }
+
+  // 1080×1080: today's sky postcard. `report` = resolved FieldWeather.assemble(...).
+  function drawDailySkyCard(report) {
+    if (!report) return null;
+    const c = report.components;
+    const lunar = c.lunar, wind = c.solarWind, kp = c.kp;
+
+    const { cv, x } = cardBase({ nebY: 380, nebR: 480 });
+    cardHeader(x, '✦  D A I L Y   S K Y  ✦');
+
+    const today = new Date(report.generatedAt);
+    x.fillStyle = '#9aa6c8';
+    x.font = 'italic 28px Georgia, serif';
+    x.textAlign = 'center';
+    x.fillText(today.toLocaleDateString(undefined,
+      { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), CARD_W / 2, 190);
+
+    // Moon disc (correct terminator for the phase)
+    moonDisc(x, CARD_W / 2, 400, 130, lunar.illumination, lunar.waxing);
+
+    x.fillStyle = '#f0e8d8';
+    x.font = 'bold 54px Georgia, serif';
+    x.fillText(lunar.phaseName, CARD_W / 2, 622);
+    x.fillStyle = '#e8c96a';
+    x.font = '30px Georgia, serif';
+    x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_W / 2, 668);
+
+    const tHi = transitHighlightLine(report);
+    if (tHi) {
+      x.fillStyle = '#9aa6c8';
+      x.font = '27px Georgia, serif';
+      wrapText(x, tHi, CARD_W / 2, 742, CARD_W - 240, 38);
+    }
+
+    let swLine, measured;
+    if (wind && !wind.unavailable && isFinite(wind.speedKmS)) {
+      swLine = `Solar wind ${Math.round(wind.speedKmS)} km/s`;
+      if (kp && !kp.unavailable && isFinite(kp.kp)) swLine += ` · Kp ${kp.kp.toFixed(1)}`;
+      measured = true;
+    } else if (kp && !kp.unavailable && isFinite(kp.kp)) {
+      swLine = `Geomagnetic Kp ${kp.kp.toFixed(1)} — ${kp.band ? kp.band.label : ''}`.trim();
+      measured = true;
+    } else {
+      swLine = 'Live space-weather feed unreachable — not faked';
+      measured = false;
+    }
+    x.fillStyle = measured ? '#e8c96a' : '#9aa6c8';
+    x.font = '30px Georgia, serif';
+    x.fillText(swLine, CARD_W / 2, 858);
+
+    honestyBadge(x, CARD_W / 2, 942, measured ? 'measured · NOAA SWPC' : 'computed only · feed down', measured);
+    cardFooter(x);
+    return cv;
+  }
+
+  // Zenith card download — synchronous (catalogue + computed point only)
+  function wireZenithCardBtn() {
+    const btn = document.getElementById('zenith-card-btn');
+    if (!btn || btn.dataset.wired) return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', () => {
+      const cv = drawZenithCard();
+      if (!cv) { if (window.AstroApp) AstroApp.showToast('Unavailable', 'Set a birth event first.', 'error'); return; }
+      const a = document.createElement('a');
+      a.download = 'my-zenith-star.png';
+      a.href = cv.toDataURL('image/png');
+      a.click();
+    });
+  }
+
+  // Daily Sky card download — async: pulls a fresh live space-weather snapshot
+  function wireDailySkyCardBtn() {
+    const btn = document.getElementById('dailysky-card-btn');
+    if (!btn || btn.dataset.wired) return;
+    btn.dataset.wired = '1';
+    btn.addEventListener('click', async () => {
+      const label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Reading the live sky…';
+      try {
+        const natal = event_ ? natalFor(event_) : null;
+        const report = await window.FieldWeather.assemble(natal, new Date());
+        const cv = drawDailySkyCard(report);
+        if (cv) {
+          const a = document.createElement('a');
+          a.download = 'daily-sky-' + new Date().toISOString().slice(0, 10) + '.png';
+          a.href = cv.toDataURL('image/png');
+          a.click();
+        }
+      } catch (e) {
+        if (window.AstroApp) AstroApp.showToast('Could not build card', e.message || String(e), 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = label;
+      }
+    });
+  }
+
   // ── Section 2: Zenith star ────────────────────────────────────────────────
 
   function renderZenith() {
@@ -578,46 +882,318 @@
 
   // ── Section 6: Consciousness weather ──────────────────────────────────────
 
+  // Tap-to-explain copy. Each ends by stating that (and by whom) the value is
+  // measured — the honesty rule, in plain language.
+  const CW_EXPLAIN = {
+    kp: {
+      title: 'The Kp index',
+      body: 'Kp is a planet-wide pulse-check on Earth\'s magnetic field, scored 0 (glassy calm) to 9 (full geomagnetic storm). It rises when the solar wind shakes the magnetosphere hard enough to light auroras and nudge compasses. Treat it as the sea-state of the sky, not an omen.',
+      src: 'Measured every 3 hours by a network of ground magnetometers, reported by NOAA SWPC.'
+    },
+    wind: {
+      title: 'Solar wind speed',
+      body: 'The Sun is always exhaling — a thin plasma streaming past Earth at roughly 300 to 800 kilometres every second. Faster wind hits the magnetosphere harder, so a rising number means a louder field. The sparkline is the last seven days of that breath.',
+      src: 'Measured at the L1 point, a million miles sunward, by NOAA / NASA\'s DSCOVR spacecraft.'
+    },
+    bz: {
+      title: 'The Bz component',
+      body: 'Bz is the north–south tilt of the Sun\'s magnetic field as it arrives on the wind. When it points north it deflects; when it turns southward (negative) it latches onto Earth\'s field and pours energy in — the real trigger behind storms and aurora. Southward Bz is the door held open.',
+      src: 'Measured at the L1 point by DSCOVR\'s magnetometer, reported by NOAA SWPC.'
+    },
+    flares: {
+      title: 'Solar flares',
+      body: 'A flare is a sudden flash of X-rays from the Sun, graded by letter — A, B, C, M, X — each step ten times brighter than the last. Big flares can ruffle radio and GPS within minutes of the light reaching us. We show the largest of the last day, and what\'s burning right now.',
+      src: 'Measured continuously by the GOES satellites\' X-ray sensors, reported by NOAA SWPC.'
+    },
+    f107: {
+      title: 'F10.7 solar flux',
+      body: 'F10.7 is the Sun\'s brightness at a 10.7 cm radio wavelength, given in solar flux units — a steady, weather-proof gauge of how active the Sun is overall. It climbs and falls with the eleven-year sunspot cycle, a slow tide under the daily chop. Higher means a busier Sun.',
+      src: 'Measured daily by the Dominion Radio Astrophysical Observatory, distributed by NOAA SWPC.'
+    }
+  };
+
+  // Tiny inline-SVG sparkline path builder. Deterministic: same series ->
+  // identical path string. Returns '' for <2 finite points.
+  function sparkPath(series, w, h, pad) {
+    pad = pad == null ? 1 : pad;
+    const vals = (series || []).filter(function (v) { return isFinite(v); });
+    if (vals.length < 2) return '';
+    let min = Infinity, max = -Infinity;
+    for (let i = 0; i < vals.length; i++) { if (vals[i] < min) min = vals[i]; if (vals[i] > max) max = vals[i]; }
+    const span = (max - min) || 1;
+    const innerW = w - pad * 2, innerH = h - pad * 2;
+    let d = '';
+    for (let i = 0; i < vals.length; i++) {
+      const x = pad + (i / (vals.length - 1)) * innerW;
+      const y = pad + (1 - (vals[i] - min) / span) * innerH; // invert: high = up
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1) + ' ';
+    }
+    return d.trim();
+  }
+
+  // Zero baseline y for a series (for the Bz green-above/red-below split).
+  function sparkZeroY(series, h, pad) {
+    pad = pad == null ? 1 : pad;
+    const vals = (series || []).filter(function (v) { return isFinite(v); });
+    if (!vals.length) return null;
+    let min = Infinity, max = -Infinity;
+    for (let i = 0; i < vals.length; i++) { if (vals[i] < min) min = vals[i]; if (vals[i] > max) max = vals[i]; }
+    const span = (max - min) || 1;
+    return pad + (1 - (0 - min) / span) * (h - pad * 2);
+  }
+
+  function sparkline(series, cls) {
+    const W = 96, H = 26;
+    const d = sparkPath(series, W, H, 1);
+    if (!d) return '<span class="cw-spark cw-spark--empty">no series</span>';
+    const zeroY = sparkZeroY(series, H, 1);
+    const baseline = (zeroY != null && zeroY > 0 && zeroY < H)
+      ? '<line class="cw-spark__zero" x1="0" y1="' + zeroY.toFixed(1) + '" x2="' + W + '" y2="' + zeroY.toFixed(1) + '"/>'
+      : '';
+    return '<svg class="cw-spark ' + (cls || '') + '" viewBox="0 0 ' + W + ' ' + H +
+      '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
+      baseline +
+      '<path class="cw-spark__line" d="' + d + '" fill="none" vector-effect="non-scaling-stroke"/></svg>';
+  }
+
+  // Kp gauge: a 0-9 banded 180° arc with a needle.
+  function kpGauge(kp) {
+    const W = 150, H = 86, cx = 75, cy = 78, r = 62;
+    function pt(frac) {
+      const a = Math.PI - frac * Math.PI;
+      return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+    }
+    function arc(f0, f1) {
+      const a = pt(f0), b = pt(f1);
+      return 'M' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) +
+             ' A' + r + ' ' + r + ' 0 0 1 ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1);
+    }
+    const bands =
+      '<path class="cw-gauge__band cw-gauge__band--quiet" d="' + arc(0, 3 / 9) + '" />' +
+      '<path class="cw-gauge__band cw-gauge__band--unsettled" d="' + arc(3 / 9, 5 / 9) + '" />' +
+      '<path class="cw-gauge__band cw-gauge__band--storm" d="' + arc(5 / 9, 1) + '" />';
+    const frac = Math.max(0, Math.min(1, kp / 9));
+    const tip = pt(frac);
+    const needle = '<line class="cw-gauge__needle" x1="' + cx + '" y1="' + cy +
+      '" x2="' + tip[0].toFixed(1) + '" y2="' + tip[1].toFixed(1) + '" />' +
+      '<circle class="cw-gauge__hub" cx="' + cx + '" cy="' + cy + '" r="3.5" />';
+    return '<svg class="cw-gauge" viewBox="0 0 ' + W + ' ' + H +
+      '" role="img" aria-label="Kp index ' + kp.toFixed(1) + ' of 9">' +
+      bands + needle +
+      '<text class="cw-gauge__lo" x="13" y="84">0</text>' +
+      '<text class="cw-gauge__hi" x="137" y="84">9</text>' +
+      '<text class="cw-gauge__val" x="' + cx + '" y="58">' + kp.toFixed(1) + '</text></svg>';
+  }
+
+  function provClass(src, unavailable) {
+    if (unavailable) return 'src-unavailable';
+    return (src && src.indexOf('measured') !== -1) ? 'src-measured' : 'src-computed';
+  }
+
+  function info(key) {
+    return '<button type="button" class="cw-info" data-explain="' + key +
+      '" aria-label="Explain this measurement" aria-expanded="false">i</button>';
+  }
+
   async function renderWeather() {
     const out = document.getElementById('weather-out');
     try {
       const natal = event_ ? natalFor(event_) : null;
       const w = await window.FieldWeather.assemble(natal, new Date());
       const c = w.components;
-      const rows = [];
-      rows.push(row('Geomagnetic', c.kp.unavailable ? 'unavailable' :
-        `Kp ${c.kp.kp.toFixed(1)} — ${c.kp.band.label}`, c.kp.source, c.kp.unavailable));
-      rows.push(row('Solar wind', c.solarWind.unavailable ? 'unavailable' :
-        `${Math.round(c.solarWind.speedKmS)} km/s`, c.solarWind.source, c.solarWind.unavailable));
-      rows.push(row('Moon', `${c.lunar.phaseName} · ${Math.round(c.lunar.illumination * 100)}% lit`, c.lunar.source));
-      rows.push(row('Transits', c.transits.basis === 'natal' ? 'personal — weighed against your chart' : 'sky weather (set the event above to personalise)', c.transits.source));
-      rows.push(row('Schumann', 'unavailable', c.schumann.source, true));
 
       const comp = w.composite;
       const scoreHtml = (comp.score == null)
-        ? `<span style="font-size:1.4rem;">—</span>`
-        : `${comp.score}<span style="font-size:1rem;color:var(--silver-dim);">/100</span>`;
-      out.innerHTML = `
-        <div class="daimon-card" style="text-align:center;">
-          <p class="instrument-eyebrow">Composite field</p>
-          <p style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold-pale);">${scoreHtml}</p>
-          <p class="daimon-epithet" style="font-size:1.2rem;">${comp.label}</p>
-          <p class="grimoire" style="font-size:1.05rem;max-width:520px;margin:var(--space-4) auto 0;">${comp.summary}</p>
-          ${comp.provenance ? `<p style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--silver-dim);margin-top:var(--space-3);">${comp.provenance}</p>` : ''}
-        </div>
-        ${rows.join('')}`;
+        ? '<span style="font-size:1.4rem;">&mdash;</span>'
+        : comp.score + '<span style="font-size:1rem;color:var(--silver-dim);">/100</span>';
+      let html =
+        '<div class="daimon-card" style="text-align:center;">' +
+          '<p class="instrument-eyebrow">Composite field</p>' +
+          '<p style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold-pale);">' + scoreHtml + '</p>' +
+          '<p class="daimon-epithet" style="font-size:1.2rem;">' + comp.label + '</p>' +
+          '<p class="grimoire" style="font-size:1.05rem;max-width:520px;margin:var(--space-4) auto 0;">' + comp.summary + '</p>' +
+          (comp.provenance ? '<p style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--silver-dim);margin-top:var(--space-3);">' + comp.provenance + '</p>' : '') +
+        '</div>';
+
+      html += '<div class="cw-grid">';
+
+      // Kp gauge
+      if (c.kp.unavailable) {
+        html += cwTile('Geomagnetic', 'kp', '<p class="cw-unavail">Kp index unavailable — feed unreachable.</p>', c.kp.source, true);
+      } else {
+        html += cwTile('Geomagnetic', 'kp',
+          kpGauge(c.kp.kp) +
+          '<p class="cw-readout"><span class="cw-readout__big">Kp ' + c.kp.kp.toFixed(1) + '</span> &middot; ' + c.kp.band.label + '</p>' +
+          '<p class="cw-note">' + c.kp.band.note + '</p>',
+          c.kp.source);
+      }
+
+      // Solar wind speed + sparkline
+      if (c.solarWind.unavailable) {
+        html += cwTile('Solar wind', 'wind', '<p class="cw-unavail">Solar-wind plasma unavailable — feed unreachable.</p>', c.solarWind.source, true);
+      } else {
+        const dens = (isFinite(c.solarWind.density) && c.solarWind.density != null)
+          ? ' &middot; ' + c.solarWind.density.toFixed(1) + ' p/cm³' : '';
+        html += cwTile('Solar wind', 'wind',
+          '<p class="cw-readout"><span class="cw-readout__big">' + Math.round(c.solarWind.speedKmS) +
+            '</span><span class="cw-unit"> km/s</span>' + dens + '</p>' +
+          '<div class="cw-spark-wrap">' + sparkline(c.solarWind.series, 'cw-spark--wind') +
+            '<span class="cw-spark-cap">7-day speed</span></div>',
+          c.solarWind.source);
+      }
+
+      // Bz indicator + sparkline
+      if (c.bz.unavailable) {
+        html += cwTile('Magnetic field (Bz)', 'bz', '<p class="cw-unavail">Interplanetary Bz unavailable — feed unreachable.</p>', c.bz.source, true);
+      } else {
+        const south = c.bz.bz < 0;
+        const arrow = '<span class="cw-bz-arrow ' + (south ? 'cw-bz-arrow--south' : 'cw-bz-arrow--north') + '" aria-hidden="true">' +
+          (south ? '↓' : '↑') + '</span>';
+        const word = south ? '<span class="cw-bz-south">southward</span>' : '<span class="cw-bz-north">northward</span>';
+        html += cwTile('Magnetic field (Bz)', 'bz',
+          '<p class="cw-readout">' + arrow +
+            '<span class="cw-readout__big">' + c.bz.bz.toFixed(1) + '</span><span class="cw-unit"> nT</span> &middot; ' + word + '</p>' +
+          '<div class="cw-spark-wrap">' + sparkline(c.bz.series, 'cw-spark--bz') +
+            '<span class="cw-spark-cap">7-day Bz</span></div>',
+          c.bz.source);
+      }
+
+      // Flare badge
+      if (c.flares.unavailable) {
+        html += cwTile('Solar flares', 'flares', '<p class="cw-unavail">GOES X-ray flux unavailable — feed unreachable.</p>', c.flares.source, true);
+      } else {
+        const cls = (c.flares.max24h || 'A0')[0];
+        html += cwTile('Solar flares', 'flares',
+          '<p class="cw-readout"><span class="cw-flare-badge cw-flare-badge--' + cls + '">' + c.flares.max24h + '</span></p>' +
+          '<p class="cw-note">Largest flare, last 24h. Now: ' + c.flares.current + '.</p>',
+          c.flares.source);
+      }
+
+      // F10.7 chip
+      if (c.f107.unavailable) {
+        html += cwTile('Solar flux (F10.7)', 'f107', '<p class="cw-unavail">F10.7 flux unavailable — feed unreachable.</p>', c.f107.source, true);
+      } else {
+        html += cwTile('Solar flux (F10.7)', 'f107',
+          '<p class="cw-readout"><span class="cw-chip">' + Math.round(c.f107.sfu) + ' <small>sfu</small></span></p>' +
+          '<p class="cw-note">10.7 cm radio flux — the standard proxy for solar activity.</p>',
+          c.f107.source);
+      }
+
+      html += '</div>'; // .cw-grid
+
+      // Computed companions kept as honest field-rows
+      html += '<div class="cw-rows">';
+      html += row('Moon', c.lunar.phaseName + ' &middot; ' + Math.round(c.lunar.illumination * 100) + '% lit', c.lunar.source);
+      html += row('Transits', c.transits.basis === 'natal' ? 'personal — weighed against your chart' : 'sky weather (set the event above to personalise)', c.transits.source);
+      html += row('Schumann', 'unavailable', c.schumann.source, true);
+      html += '</div>';
+
+      // Aurora-at-your-latitude (only when an event/location is set)
+      html += '<div id="cw-aurora" class="cw-aurora" hidden></div>';
+
+      // Popover host (single, repositioned per tap)
+      html += '<div id="cw-pop" class="cw-pop" role="dialog" aria-live="polite" hidden>' +
+        '<button type="button" class="cw-pop__close" aria-label="Close">×</button>' +
+        '<p class="cw-pop__title"></p><p class="cw-pop__body"></p>' +
+        '<p class="cw-pop__src"></p></div>';
+
+      out.innerHTML = html;
+      wireExplainers(out);
+      maybeRenderAurora();
     } catch (e) {
       out.innerHTML = '<p class="grimoire">The field instruments could not be read: ' + (e.message || e) + '</p>';
     }
 
     function row(label, value, src, unavailable) {
-      const cls = unavailable ? 'src-unavailable' : (src.includes('measured') ? 'src-measured' : 'src-computed');
-      return `<div class="field-row">
-        <span class="field-row__label">${label}</span>
-        <span class="field-row__value">${value}</span>
-        <span class="field-row__src ${cls}">${src}</span>
-      </div>`;
+      const cls = unavailable ? 'src-unavailable' : (src.indexOf('measured') !== -1 ? 'src-measured' : 'src-computed');
+      return '<div class="field-row">' +
+        '<span class="field-row__label">' + label + '</span>' +
+        '<span class="field-row__value">' + value + '</span>' +
+        '<span class="field-row__src ' + cls + '">' + src + '</span></div>';
     }
+
+    function cwTile(title, key, body, src, unavailable) {
+      const pc = provClass(src, unavailable);
+      return '<div class="cw-tile glass-card glass-card--flat">' +
+        '<div class="cw-tile__head">' +
+          '<span class="cw-tile__title">' + title + '</span>' + info(key) +
+        '</div>' +
+        '<div class="cw-tile__body">' + body + '</div>' +
+        '<span class="field-row__src ' + pc + ' cw-tile__src">' + src + '</span></div>';
+    }
+  }
+
+  // Aurora line: only when an event/location exists. Uses getAuroraAt on demand.
+  async function maybeRenderAurora() {
+    const host = document.getElementById('cw-aurora');
+    if (!host) return;
+    const loc = event_ && isFinite(event_.lat) && isFinite(event_.lon) ? event_ : null;
+    if (!loc) return; // no event/location set — show nothing (honest: we don't know where you are)
+    host.hidden = false;
+    host.innerHTML = '<span class="cw-aurora__label">Aurora at your latitude</span>' +
+      '<span class="cw-aurora__val">measuring…</span>';
+    try {
+      const a = await window.FieldWeather.getAuroraAt(loc.lat, loc.lon);
+      const p = (a.probability == null) ? null : Math.round(a.probability);
+      const valTxt = (p == null)
+        ? 'outside the model grid'
+        : p + '% chance of visible aurora overhead';
+      host.innerHTML =
+        '<span class="cw-aurora__label">Aurora at ' + loc.lat.toFixed(1) + '°, ' + loc.lon.toFixed(1) + '°</span>' +
+        '<span class="cw-aurora__val">' + valTxt + '</span>' +
+        '<span class="field-row__src src-measured cw-aurora__src">' + a.source + '</span>';
+    } catch (e) {
+      host.innerHTML =
+        '<span class="cw-aurora__label">Aurora at your latitude</span>' +
+        '<span class="cw-aurora__val">unavailable</span>' +
+        '<span class="field-row__src src-unavailable cw-aurora__src">NOAA SWPC / OVATION (feed unreachable)</span>';
+    }
+  }
+
+  // Tap-to-explain wiring. One shared popover, positioned under the tapped button.
+  function wireExplainers(root) {
+    const pop = root.querySelector('#cw-pop');
+    if (!pop) return;
+    const titleEl = pop.querySelector('.cw-pop__title');
+    const bodyEl = pop.querySelector('.cw-pop__body');
+    const srcEl = pop.querySelector('.cw-pop__src');
+    let openBtn = null;
+
+    function close() {
+      pop.hidden = true;
+      if (openBtn) { openBtn.setAttribute('aria-expanded', 'false'); openBtn = null; }
+    }
+    function open(btn) {
+      const key = btn.getAttribute('data-explain');
+      const e = CW_EXPLAIN[key];
+      if (!e) return;
+      titleEl.textContent = e.title;
+      bodyEl.textContent = e.body;
+      srcEl.textContent = e.src;
+      pop.hidden = false;
+      const br = btn.getBoundingClientRect();
+      const hr = root.getBoundingClientRect();
+      pop.style.top = (br.bottom - hr.top + 8) + 'px';
+      let left = br.left - hr.left;
+      const maxLeft = root.clientWidth - pop.offsetWidth - 8;
+      if (left > maxLeft) left = maxLeft;
+      if (left < 8) left = 8;
+      pop.style.left = left + 'px';
+      btn.setAttribute('aria-expanded', 'true');
+      openBtn = btn;
+    }
+
+    root.querySelectorAll('.cw-info').forEach(function (btn) {
+      btn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (openBtn === btn) { close(); return; }
+        open(btn);
+      });
+    });
+    pop.querySelector('.cw-pop__close').addEventListener('click', close);
+    pop.addEventListener('click', function (ev) { ev.stopPropagation(); });
+    document.addEventListener('click', close);
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') close(); });
   }
 
   // ── Section 7: Precession layer ───────────────────────────────────────────
@@ -714,6 +1290,8 @@
     renderWeather();
     renderFrame('tropical');
     initTimeTravel();
+    wireZenithCardBtn();
+    wireDailySkyCardBtn();
     if (event_) activate();
   }
 

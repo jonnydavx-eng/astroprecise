@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Why AstroPrecise is different: every number is real, labelled measured or computed, and checkable. Real VSOP87/ELP2000 astronomy, a privacy-first engine that runs in your browser, deterministic readings, and an honesty rule that never fakes data." />
+  <title>Why AstroPrecise — Astrology You Can Check | AstroPrecise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Why AstroPrecise — Astrology You Can Check" />
+  <meta property="og:description" content="Every number on this site is real, labelled measured or computed, and checkable. Real astronomy, private by design, never faked." />
+  <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/why.html" />
+  <link rel="canonical" href="https://jonnydavx-eng.github.io/astroprecise/why.html" />
+  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Why AstroPrecise — Astrology You Can Check" />
+  <meta name="twitter:description" content="Every number is real, labelled measured or computed, and checkable. Real astronomy, private by design, never faked." />
+  <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#090b16" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Why AstroPrecise","description":"Why AstroPrecise is different: every number is real, labelled measured or computed, and checkable. Real VSOP87/ELP2000 astronomy, a privacy-first in-browser engine, deterministic readings, and an honesty rule that never fakes data.","url":"https://jonnydavx-eng.github.io/astroprecise/why.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://jonnydavx-eng.github.io/astroprecise"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://jonnydavx-eng.github.io/astroprecise"}}</script>
+  <style>
+    /* ── Why page (scoped; reuses main.css tokens) ── */
+    .why-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .why-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(123,44,191,0.16) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 35% at 80% 10%, rgba(201,162,39,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .why-wrap { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; position: relative; }
+    .why-eyebrow {
+      display: inline-block;
+      font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--gold, #C9A227); margin-bottom: 1.1rem;
+    }
+    .why-hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      line-height: 1.15; color: var(--white, #F8F4EE);
+      letter-spacing: 0.01em; margin: 0 0 1.1rem;
+    }
+    .why-hero h1 em {
+      font-style: normal;
+      background: linear-gradient(160deg, #F0E8D8 18%, #E6C24A 50%, #F0E8D8 82%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .why-lede {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; line-height: 1.75;
+      color: var(--silver, #C8D0E8); max-width: 620px; margin: 0 auto;
+    }
+    .why-section {
+      max-width: 760px; margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+      border-top: 1px solid rgba(150,175,230,0.09);
+    }
+    .why-section h2 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+      color: var(--white, #F8F4EE); margin: 0 0 1rem; letter-spacing: 0.02em;
+    }
+    .why-section p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.12rem; line-height: 1.85;
+      color: #e6ddc8; margin: 0 0 1rem;
+    }
+    .why-section p strong { color: var(--gold-light, #E8C872); font-weight: 600; }
+    .why-rule {
+      border-left: 2px solid rgba(201,162,39,0.5);
+      padding: 0.4rem 0 0.4rem 1.25rem; margin: 1.25rem 0;
+      font-style: italic; color: var(--gold-light, #E8C872);
+    }
+    /* sources table */
+    .sources-table {
+      width: 100%; border-collapse: collapse; margin: 1.5rem 0 0.5rem;
+      font-family: 'Inter', sans-serif; font-size: 0.86rem;
+    }
+    .sources-table th, .sources-table td {
+      text-align: left; padding: 0.7rem 0.8rem;
+      border-bottom: 1px solid rgba(150,175,230,0.1);
+      color: var(--silver, #C8D0E8); vertical-align: top;
+    }
+    .sources-table th {
+      font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--silver-dim, #8891AA); font-weight: 600;
+    }
+    .sources-table .tag {
+      display: inline-block; font-size: 0.62rem; letter-spacing: 0.06em;
+      padding: 0.12rem 0.55rem; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap;
+    }
+    .tag--measured { color: #3fae7a; }
+    .tag--computed { color: #92b4ee; }
+    .tag--catalogued { color: var(--gold, #C9A227); }
+    .tag--unavailable { color: #f87171; }
+    .verify-list { list-style: none; padding: 0; margin: 1rem 0 0; }
+    .verify-list li {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; line-height: 1.7;
+      color: #e6ddc8; padding: 0.6rem 0 0.6rem 1.6rem; position: relative;
+      border-bottom: 1px solid rgba(150,175,230,0.07);
+    }
+    .verify-list li::before {
+      content: '✦'; position: absolute; left: 0; top: 0.7rem;
+      color: var(--gold, #C9A227); font-size: 0.8rem;
+    }
+    .verify-list strong { color: var(--gold-light, #E8C872); font-weight: 600; }
+    .why-cta {
+      max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 4rem; text-align: center;
+      border-top: 1px solid rgba(150,175,230,0.09);
+    }
+    .why-cta p {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.3rem; line-height: 1.7; color: var(--silver, #C8D0E8);
+      max-width: 560px; margin: 0 auto 1.5rem;
+    }
+    .why-btn {
+      display: inline-block; text-decoration: none;
+      font-family: 'Inter', sans-serif; font-size: 0.78rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: #06060f; background: linear-gradient(160deg, #E8C872, #C9A227);
+      padding: 0.85rem 1.8rem; border-radius: 999px; font-weight: 600;
+      transition: filter 0.3s, transform 0.3s;
+    }
+    .why-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .why-btn--ghost {
+      color: var(--gold-light, #E8C872); background: transparent;
+      border: 1px solid rgba(201,162,39,0.4); margin-top: 0.5rem;
+    }
+    .why-btn--ghost:hover { border-color: var(--gold, #C9A227); background: rgba(201,162,39,0.06); }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
+          <a href="why.html" class="navbar__link active" aria-current="page">Why</a>
+          <a href="accuracy.html" class="navbar__link">Accuracy</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
+          <a href="profile.html" class="navbar__link">Profile</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="chart.html" class="navbar__link">Chart</a>
+        <a href="ephemeris.html" class="navbar__link">Instrument</a>
+        <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
+        <a href="why.html" class="navbar__link active" aria-current="page">Why</a>
+        <a href="accuracy.html" class="navbar__link">Accuracy</a>
+        <a href="shop.html" class="navbar__link">Shop</a>
+        <a href="profile.html" class="navbar__link">Profile</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ═══ HERO ═══ -->
+    <section class="why-hero">
+      <div class="why-wrap">
+        <p class="why-eyebrow">The Method</p>
+        <h1>Astrology you can <em>check</em>.</h1>
+        <p class="why-lede">
+          Most of the sky-talk you read online is simply asserted. Ours is
+          computed — from the real astronomical theories the field is built on —
+          and every number on this site is labelled with where it came from.
+          This page explains exactly how, so you never have to take our word for it.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ THE HONESTY RULE ═══ -->
+    <section class="why-section" id="honesty">
+      <h2>The Honesty Rule</h2>
+      <p>We have one rule that outranks every other design decision:
+        <strong>never show a number we can't stand behind.</strong></p>
+      <p>If a value is measured from a live instrument, we say so and name the
+        instrument. If it's computed from an astronomical model, we say that
+        instead. And if a feed we'd like to show is unreachable, we tell you it's
+        unavailable — we do not invent a plausible-looking figure to fill the gap.</p>
+      <p class="why-rule">A blank that's honest is worth more than a number that's wrong.</p>
+    </section>
+
+    <!-- ═══ MEASURED VS COMPUTED ═══ -->
+    <section class="why-section" id="measured-computed">
+      <h2>Measured vs Computed</h2>
+      <p>Everything on AstroPrecise falls into one of two clearly-marked buckets.</p>
+      <p><strong>Measured</strong> means a real, current instrument reading, pulled
+        live and stamped with its source — the day's solar-wind speed, the
+        geomagnetic Kp index, X-ray flare class, the F10.7 solar flux. These come
+        straight from NOAA's Space Weather Prediction Center and the DSCOVR and
+        GOES spacecraft. When you see "measured," a satellite saw it.</p>
+      <p><strong>Computed</strong> means we calculated it ourselves from a published
+        astronomical model — planetary and lunar positions, your ascendant, the
+        Moon's phase, transit geometry. These aren't guesses or live readings;
+        they're the output of real orbital mathematics, run in your browser at the
+        moment you ask.</p>
+      <table class="sources-table">
+        <thead>
+          <tr><th>What you see</th><th>Bucket</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Solar wind, Kp, Bz, flares, F10.7</td><td><span class="tag tag--measured">measured</span></td><td>NOAA SWPC · DSCOVR · GOES</td></tr>
+          <tr><td>Aurora probability</td><td><span class="tag tag--measured">measured</span></td><td>NOAA OVATION model</td></tr>
+          <tr><td>Planet &amp; Moon positions</td><td><span class="tag tag--computed">computed</span></td><td>VSOP87 / ELP2000</td></tr>
+          <tr><td>Ascendant, houses, transits</td><td><span class="tag tag--computed">computed</span></td><td>Local sidereal time + the above</td></tr>
+          <tr><td>Star positions &amp; distances</td><td><span class="tag tag--catalogued">catalogued</span></td><td>Real star catalogue (J2000)</td></tr>
+          <tr><td>Schumann resonance</td><td><span class="tag tag--unavailable">unavailable</span></td><td>No trustworthy public live feed — so we show nothing, rather than fake it</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;font-size:1rem;color:var(--silver-dim,#8891AA);">That last row is the rule in miniature.</p>
+    </section>
+
+    <!-- ═══ ACCURACY ═══ -->
+    <section class="why-section" id="accuracy">
+      <h2>Real Ephemeris Accuracy</h2>
+      <p>The planetary engine is a real implementation of <strong>VSOP87</strong> for
+        the planets and <strong>ELP2000</strong> for the Moon — the analytical
+        theories that underpin modern almanacs — following Meeus' <em>Astronomical
+        Algorithms</em>. Positions are computed to roughly an arcminute across the
+        supported era (1800–2200 CE), not rounded sun-sign approximations. Your
+        ascendant is derived from true local sidereal time at your exact birthplace
+        and minute, not a lookup table.</p>
+      <p>We publish the validation separately, so you can see exactly how the numbers
+        hold up.</p>
+      <a class="why-btn why-btn--ghost" href="accuracy.html">See the accuracy page →</a>
+    </section>
+
+    <!-- ═══ PRIVACY ═══ -->
+    <section class="why-section" id="privacy">
+      <h2>Privacy by Architecture</h2>
+      <p>Your birth data is the most personal thing you'll type into an astrology
+        site — the date, time, and place of your first breath. On AstroPrecise it
+        <strong>never leaves your device.</strong></p>
+      <p>This isn't a promise in a policy document; it's how the site is built. The
+        entire chart calculation runs in your browser. There is no account, no
+        login, no analytics, and no server of ours that ever sees your birth moment.
+        The only outbound requests the site makes are public space-weather feeds and
+        — if you search for a birthplace — the place name you typed, sent to a
+        geocoder. Your birth time and the chart we draw from it stay with you.</p>
+    </section>
+
+    <!-- ═══ DETERMINISM ═══ -->
+    <section class="why-section" id="determinism">
+      <h2>Determinism</h2>
+      <p>The same birth details will always produce the same chart and the same
+        reading — today, next year, on any device. Our interpretations are seeded
+        deterministically, not pulled from a model that says something different
+        every time you ask.</p>
+      <p>This matters more than it sounds. It means your reading is a property of the
+        sky and your moment in it, not an accident of when you clicked. You can
+        return to it, share it, and find it unchanged.</p>
+    </section>
+
+    <!-- ═══ THE FABRICATION PROBLEM ═══ -->
+    <section class="why-section" id="fabrication">
+      <h2>The Fabrication Problem</h2>
+      <p>A word on why we built it this way. General-purpose AI tools are
+        extraordinary at language — and notoriously unreliable at numbers they were
+        never actually given. Ask one for "the position of Mars on your birthday" and
+        it will often produce a confident, specific, beautifully-worded figure that
+        is simply made up: a plausible answer pattern-matched from text, not a
+        calculation from an orbit.</p>
+      <p>This isn't a flaw of any one product; it's what happens when fluent language
+        stands in for real computation. We took the opposite path on purpose.
+        AstroPrecise computes positions from astronomical models and shows you the
+        provenance, so the poetry sits on top of arithmetic you can verify — never
+        in place of it.</p>
+    </section>
+
+    <!-- ═══ VERIFY IT YOURSELF ═══ -->
+    <section class="why-section" id="verify">
+      <h2>Verify It Yourself</h2>
+      <p>We'd rather be checked than believed. So:</p>
+      <ul class="verify-list">
+        <li><strong>Read the source.</strong> The whole site is static and open in your browser — open developer tools and watch the math run.</li>
+        <li><strong>Compare the numbers.</strong> Take any planetary position we give and check it against a reference ephemeris; they'll agree to about an arcminute across the supported era.</li>
+        <li><strong>Watch the network.</strong> Open the network tab and confirm what we said: public feeds and place-name lookups only. Your birth moment is never in a request.</li>
+        <li><strong>Test determinism.</strong> Enter the same details twice. Same chart, same words, every time.</li>
+      </ul>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="why-cta">
+      <p>Astrology asks you to trust a picture of the sky. The least we can do is
+        make the picture true — and let you prove it.</p>
+      <a class="why-btn" href="chart.html">Cast a chart you can check →</a>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">&#10022; AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <nav aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="About navigation">
+          <p class="footer__heading">About</p>
+          <ul class="footer__links">
+            <li><a href="why.html" class="footer__link">Why AstroPrecise</a></li>
+            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
+            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 AstroPrecise. Every number on this site is real — measured or computed, and labelled which.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- JS -->
+  <script src="js/cosmos.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+</body>
+</html>

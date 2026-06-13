@@ -1,12 +1,14 @@
 /**
  * AstroPrecise — Consciousness Weather
  * A field-conditions report, not a prediction. Blends:
- *   MEASURED — planetary K-index (NOAA SWPC), solar wind speed (NOAA SWPC)
- *   COMPUTED — lunar phase & illumination, day's transit pressure
+ *   MEASURED — planetary K-index, solar wind speed/density, interplanetary
+ *              magnetic field Bz, GOES X-ray flares, F10.7 solar flux (NOAA SWPC)
+ *   COMPUTED — lunar phase & illumination, the day's transit pressure
  * Each component is labelled by provenance; the composite is presented as
  * "conditions," like a surf report for awareness. Schumann resonance has no
  * public CORS-accessible live feed, so it is honestly reported as
- * unavailable rather than faked.
+ * unavailable rather than faked. Aurora probability is fetched on demand
+ * (getAuroraAt) because the OVATION grid is large (~900 KB).
  *
  * Requires: ephemeris.js. Oracle.js optional (transit pressure fallback).
  */
@@ -14,8 +16,12 @@
 window.FieldWeather = (() => {
   'use strict';
 
-  const KP_URL   = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json';
-  const WIND_URL = 'https://services.swpc.noaa.gov/products/solar-wind/plasma-7-day.json';
+  const KP_URL     = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json';
+  const WIND_URL   = 'https://services.swpc.noaa.gov/products/solar-wind/plasma-7-day.json';
+  const MAG_URL    = 'https://services.swpc.noaa.gov/products/solar-wind/mag-7-day.json';
+  const XRAY_URL   = 'https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json';
+  const F107_URL   = 'https://services.swpc.noaa.gov/products/summary/10cm-flux.json';
+  const AURORA_URL = 'https://services.swpc.noaa.gov/json/ovation_aurora_latest.json';
 
   async function fetchJson(url, timeoutMs = 6000) {
     const ctl = new AbortController();
@@ -27,6 +33,20 @@ window.FieldWeather = (() => {
     } finally {
       clearTimeout(t);
     }
+  }
+
+  // Downsample a column of an array-of-arrays feed (row 0 is the header) to at
+  // most n finite points, for sparklines. Preserves chronological order.
+  function downsampleCol(rows, col, n = 80) {
+    const vals = [];
+    for (let i = 1; i < rows.length; i++) {
+      const v = parseFloat(rows[i][col]);
+      if (isFinite(v)) vals.push(v);
+    }
+    if (vals.length <= n) return vals;
+    const step = vals.length / n, out = [];
+    for (let i = 0; i < n; i++) out.push(vals[Math.floor(i * step)]);
+    return out;
   }
 
   async function getKp() {
@@ -43,15 +63,90 @@ window.FieldWeather = (() => {
   }
 
   async function getSolarWind() {
-    // same dual-format tolerance: [time_tag, density, speed, …] or {speed, …}
+    // dual-format tolerance: [time_tag, density, speed, temp] rows or {speed,…}
     const rows = await fetchJson(WIND_URL);
+    const series = Array.isArray(rows[0]) ? downsampleCol(rows, 2) : [];
     for (let i = rows.length - 1; i >= 0; i--) {
       const r = rows[i];
       const speed = parseFloat(Array.isArray(r) ? r[2] : r.speed);
+      const density = parseFloat(Array.isArray(r) ? r[1] : r.density);
       const time = Array.isArray(r) ? r[0] : r.time_tag;
-      if (isFinite(speed)) return { speedKmS: speed, time, source: 'NOAA SWPC / DSCOVR (measured)' };
+      if (isFinite(speed)) return {
+        speedKmS: speed,
+        density: isFinite(density) ? density : null,
+        series, time, source: 'NOAA SWPC / DSCOVR (measured)',
+      };
     }
     throw new Error('no plasma data');
+  }
+
+  async function getBz() {
+    // mag-7-day header: [time_tag, bx_gsm, by_gsm, bz_gsm, lon_gsm, lat_gsm, bt]
+    // Bz (GSM) is the single best geomagnetic-coupling indicator.
+    const rows = await fetchJson(MAG_URL);
+    const series = Array.isArray(rows[0]) ? downsampleCol(rows, 3) : [];
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const r = rows[i];
+      if (!Array.isArray(r)) continue;
+      const bz = parseFloat(r[3]), bt = parseFloat(r[6]);
+      if (isFinite(bz)) return {
+        bz, bt: isFinite(bt) ? bt : null,
+        series, time: r[0], source: 'NOAA SWPC / DSCOVR (measured)',
+      };
+    }
+    throw new Error('no Bz data');
+  }
+
+  // GOES X-ray flux (W/m²) → flare class letter+magnitude. The long channel
+  // (0.1-0.8 nm) is the standard flare-classification band.
+  function classifyFlare(f) {
+    if (!isFinite(f) || f <= 0) return null;
+    const bands = [['X', 1e-4], ['M', 1e-5], ['C', 1e-6], ['B', 1e-7], ['A', 1e-8]];
+    for (const [letter, base] of bands) if (f >= base) return letter + (f / base).toFixed(1);
+    return 'A' + (f / 1e-8).toFixed(1);
+  }
+
+  async function getFlares() {
+    const rows = await fetchJson(XRAY_URL);
+    let latest = null, maxF = -1, maxTime = null;
+    for (const r of rows) {
+      if (r.energy && r.energy !== '0.1-0.8nm') continue;
+      const f = parseFloat(r.flux ?? r.observed_flux);
+      if (!isFinite(f)) continue;
+      latest = { flux: f, time: r.time_tag };
+      if (f > maxF) { maxF = f; maxTime = r.time_tag; }
+    }
+    if (!latest) throw new Error('no X-ray data');
+    return {
+      current: classifyFlare(latest.flux), currentFlux: latest.flux, time: latest.time,
+      max24h: classifyFlare(maxF), max24hFlux: maxF, max24hTime: maxTime,
+      source: 'NOAA SWPC / GOES (measured)',
+    };
+  }
+
+  async function getF107() {
+    const rows = await fetchJson(F107_URL);
+    const r = Array.isArray(rows) ? rows[rows.length - 1] : rows;
+    const sfu = parseFloat(r && r.flux);
+    if (!isFinite(sfu)) throw new Error('no F10.7 data');
+    return { sfu, time: r.time_tag, source: 'NOAA SWPC (measured)' };
+  }
+
+  // Aurora probability (%) over a given lat/lon, from NOAA's OVATION model.
+  // Fetched on demand — the global 1°×1° grid is ~900 KB, too heavy for every load.
+  async function getAuroraAt(lat, lon, timeoutMs = 12000) {
+    const data = await fetchJson(AURORA_URL, timeoutMs);
+    if (!data || !data.coordinates) throw new Error('no aurora grid');
+    const latR = Math.round(lat), lonR = Math.round(((lon % 360) + 360) % 360);
+    let prob = null;
+    for (const c of data.coordinates) {
+      if (c[1] === latR && c[0] === lonR) { prob = c[2]; break; }
+    }
+    return {
+      probability: prob, lat, lon,
+      observationTime: data['Observation Time'], forecastTime: data['Forecast Time'],
+      source: 'NOAA SWPC / OVATION (measured)',
+    };
   }
 
   function getLunar(date) {
@@ -91,7 +186,7 @@ window.FieldWeather = (() => {
 
   /**
    * assemble(natalChart|null) → {
-   *   components: { kp, solarWind, lunar, transits, schumann },
+   *   components: { kp, solarWind, bz, flares, f107, lunar, transits, schumann },
    *   composite: { score (0-100, higher = clearer), label, summary },
    * }
    * Live fetches fail soft: missing feeds are marked unavailable and the
@@ -99,9 +194,13 @@ window.FieldWeather = (() => {
    */
   async function assemble(natalChart, date) {
     date = date || new Date();
-    const [kpR, windR] = await Promise.allSettled([getKp(), getSolarWind()]);
-    const kp    = kpR.status === 'fulfilled' ? kpR.value : null;
-    const wind  = windR.status === 'fulfilled' ? windR.value : null;
+    const [kpR, windR, bzR, flR, f107R] = await Promise.allSettled([
+      getKp(), getSolarWind(), getBz(), getFlares(), getF107()]);
+    const kp     = kpR.status   === 'fulfilled' ? kpR.value   : null;
+    const wind   = windR.status === 'fulfilled' ? windR.value : null;
+    const bz     = bzR.status   === 'fulfilled' ? bzR.value   : null;
+    const flares = flR.status   === 'fulfilled' ? flR.value   : null;
+    const f107   = f107R.status === 'fulfilled' ? f107R.value : null;
     const lunar = getLunar(date);
     const transits = getTransitPressure(natalChart, date);
 
@@ -111,6 +210,9 @@ window.FieldWeather = (() => {
     let score = 100, measured = 0, symbolic = 0;
     if (kp && isFinite(kp.kp)) { score -= (Math.min(kp.kp, 9) / 9) * 30; measured++; }
     if (wind && isFinite(wind.speedKmS)) { score -= Math.max(0, Math.min(1, (wind.speedKmS - 350) / 450)) * 15; measured++; }
+    // southward Bz (negative) is what actually couples the solar wind into the
+    // magnetosphere — the real driver behind storms and aurora.
+    if (bz && isFinite(bz.bz) && bz.bz < 0) { score -= Math.min(Math.abs(bz.bz), 20) / 20 * 12; measured++; }
     // full & new moons are "spring tides" of the field — not bad, but loud
     score -= Math.pow(Math.abs(lunar.illumination - 0.5) * 2, 2) * 15; symbolic++;
     // only let transits move the score when we actually have a chart/oracle —
@@ -138,6 +240,9 @@ window.FieldWeather = (() => {
       components: {
         kp: kp ? { ...kp, band: kpBand(kp.kp) } : { unavailable: true, source: 'NOAA SWPC (feed unreachable)' },
         solarWind: wind || { unavailable: true, source: 'NOAA SWPC (feed unreachable)' },
+        bz: bz || { unavailable: true, source: 'NOAA SWPC (feed unreachable)' },
+        flares: flares || { unavailable: true, source: 'NOAA SWPC / GOES (feed unreachable)' },
+        f107: f107 || { unavailable: true, source: 'NOAA SWPC (feed unreachable)' },
         lunar,
         transits,
         schumann: { unavailable: true, source: 'no public live feed — not faked' },
@@ -147,6 +252,6 @@ window.FieldWeather = (() => {
     };
   }
 
-  return { assemble, getKp, getSolarWind, getLunar };
+  return { assemble, getKp, getSolarWind, getBz, getFlares, getF107, getLunar, getAuroraAt };
 
 })();
