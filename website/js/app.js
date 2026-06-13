@@ -709,6 +709,16 @@ window.AP_MON = Object.assign({
   giftUrl:      '',   // gift a reading — hosted product
   newsletterUrl:'',   // email list signup — hosted (Buttondown / Kit / MailerLite)
   affiliateTag: '',   // honest affiliate tag for the shop page (e.g. Amazon Associates)
+  // Deep Reading purchase link — the chart-page teaser's CTA points here when set.
+  // Same rule as the rest: a hosted product page (Gumroad / Ko-fi Shop / Lemon
+  // Squeezy). Empty '' = DORMANT: the teaser button falls back to email capture,
+  // never a fake checkout.
+  deepReadingUrl: '',
+  // Email-list signup ENDPOINT (a hosted newsletter form-action, e.g. Buttondown
+  // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
+  // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
+  // localStorage only — no data leaves the device. When set, the form POSTs here.
+  emailUrl: '',
 }, window.AP_MON || {});
 
 (function monetisation() {

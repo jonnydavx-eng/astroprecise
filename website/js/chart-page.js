@@ -492,6 +492,8 @@
     renderWheel(chart);
     renderTabs(chart);
     initTabs();
+    renderDeepTeaser(chart);
+    initEmailCapture(chart);
 
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -690,6 +692,221 @@
   }
   const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
   const roman = n => ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'][n - 1] || n;
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DEEP READING TEASER — snippet → paywall funnel
+  // ----------------------------------------------------------------------------
+  // Honesty rule (CLAUDE.md): every word shown is the visitor's REAL computed
+  // chart. We open each snippet with the genuine first sentence of the matching
+  // interpretation (the curiosity gap), then HARD-WALL the rest behind a blurred
+  // tail + lock pill. The locked tail names a real placement (e.g. "Venus in
+  // your 8th house") but withholds the interpretation — we never invent text.
+  // The CTA links to AP_MON.deepReadingUrl when set; otherwise it stays DORMANT
+  // and opens the email capture instead of a fake checkout.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  function ORDINAL(n) {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  // First sentence of a passage — the genuine "open the curiosity gap" line.
+  function firstSentence(text) {
+    if (!text) return '';
+    const m = String(text).match(/^.*?[.!?](?=\s|$)/);
+    return (m ? m[0] : String(text)).trim();
+  }
+
+  function renderDeepTeaser(chart) {
+    const host = document.getElementById('deep-teaser');
+    if (!host) return;
+    const I = window.AstroInterpretations;
+    if (!I || !chart || !chart.positions) { host.hidden = true; return; }
+
+    const sunSign  = chart.positions.Sun  && chart.positions.Sun.sign;
+    const moonSign = chart.positions.Moon && chart.positions.Moon.sign;
+    const riseSign = chart.risingSign;
+
+    // ── Build snippets from REAL interpretation text for THIS chart ──
+    const snippets = [];
+
+    if (sunSign) {
+      const full = I.getPlanetInterpretation('Sun', sunSign);
+      snippets.push({
+        planet: 'Sun', sign: sunSign, label: 'Sun in ' + sunSign,
+        open: firstSentence(full),
+        // Hard-walled: name the real placement, withhold the reading.
+        lock: 'How your ' + sunSign + ' Sun shapes the way you lead, create, and claim your purpose',
+      });
+    }
+    if (moonSign) {
+      const full = I.getPlanetInterpretation('Moon', moonSign);
+      snippets.push({
+        planet: 'Moon', sign: moonSign, label: 'Moon in ' + moonSign,
+        open: firstSentence(full),
+        lock: 'What your ' + moonSign + ' Moon truly needs to feel safe — and the emotional pattern it sets in love',
+      });
+    }
+
+    // Third snippet: Venus-in-house if we have a real Ascendant-based house
+    // (matches the brief's "Venus in the 8th house" example); else Rising.
+    const venus = chart.positions.Venus;
+    const venusHouse = chart.planetHouses && chart.planetHouses.Venus;
+    if (chart.birthTime && venus && venusHouse) {
+      const houseMeaning = I.getHouseMeaning(venusHouse);
+      const houseName = (houseMeaning && houseMeaning.keyword) ? houseMeaning.keyword.toLowerCase() : 'this area of life';
+      snippets.push({
+        planet: 'Venus', sign: venus.sign, label: 'Venus in your ' + ORDINAL(venusHouse) + ' house',
+        open: 'Your Venus in ' + venus.sign + ' sits in your ' + ORDINAL(venusHouse) + ' house — the house of ' + houseName + '.',
+        lock: 'the exact relationship pattern this drives, where you seek beauty, and what you must learn to receive',
+      });
+    } else if (riseSign) {
+      const ruler = chart.chartRuler ? cap(chart.chartRuler) : null;
+      snippets.push({
+        planet: 'Ascendant', sign: riseSign, label: riseSign + ' Rising',
+        open: 'You meet the world through a ' + riseSign + ' Ascendant' + (ruler ? ', ruled by ' + ruler : '') + '.',
+        lock: 'how this shapes first impressions, your instinctive style, and the path your chart ruler is steering you toward',
+      });
+    }
+
+    if (!snippets.length) { host.hidden = true; return; }
+
+    const orbFor = s =>
+      (window.AstroIcons && AstroIcons.SIGN_GLYPH && AstroIcons.SIGN_GLYPH[s.sign])
+        ? (s.planet && AstroIcons.PLANET_GLYPH && AstroIcons.PLANET_GLYPH[s.planet]
+            ? AstroIcons.planet(s.planet, { class: 'deep-snippet__orb' })
+            : AstroIcons.sign(s.sign, { class: 'deep-snippet__orb' }))
+        : '<span class="deep-snippet__orb" aria-hidden="true">✦</span>';
+
+    const cards = snippets.map(s => `
+      <div class="deep-snippet">
+        <div class="deep-snippet__head">
+          ${orbFor(s)}
+          <span class="deep-snippet__label">${esc(s.label)}</span>
+        </div>
+        <p class="deep-snippet__open">${esc(s.open)}</p>
+        <p class="deep-snippet__locked">
+          <span class="deep-lock-tail">${esc(s.lock)}…</span>
+          <span class="deep-lock-pill"><svg class="eng-i" aria-hidden="true"><use href="#ei-lock"/></svg> Unlock the full reading</span>
+        </p>
+      </div>`).join('');
+
+    // ── CTA: configured → real product link · dormant → email capture ──
+    const M = window.AP_MON || {};
+    const url = typeof M.deepReadingUrl === 'string' ? M.deepReadingUrl.trim() : '';
+    const configured = /^https?:\/\//i.test(url);
+    const ctaHtml = configured
+      ? `<a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
+           ✦ Unlock Your Deep Reading
+         </a>
+         <p class="deep-teaser__honest">Opens a secure checkout on our partner store — your birth data stays in your browser and is never sent there.</p>`
+      : `<button type="button" class="btn--deep" id="deep-cta">
+           ✦ Full readings coming soon
+         </button>
+         <p class="deep-teaser__honest">Deep written readings aren't open for purchase yet. Drop your email below and you'll be the first to know — no spam.</p>`;
+
+    host.innerHTML = `
+      <div class="deep-teaser__head">
+        <p class="deep-teaser__eyebrow">Your Deep Reading</p>
+        <h3 class="deep-teaser__title">There's more written in this sky</h3>
+        <p class="deep-teaser__sub">Your free chart above shows the placements. Your Deep Reading interprets how they weave together — drawn line by line from the exact chart you just cast.</p>
+      </div>
+      ${cards}
+      <div class="deep-teaser__cta-wrap">
+        ${ctaHtml}
+      </div>`;
+    host.hidden = false;
+
+    const cta = document.getElementById('deep-cta');
+    if (cta && !configured) {
+      cta.addEventListener('click', () => {
+        const ec = document.getElementById('email-capture');
+        if (ec) {
+          ec.hidden = false;
+          ec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const inp = document.getElementById('email-capture-input');
+          if (inp) setTimeout(() => inp.focus(), 400);
+        }
+        if (window.AstroApp) AstroApp.showToast('Coming soon',
+          'Deep readings aren’t open yet — leave your email and we’ll let you know.', 'info');
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // EMAIL CAPTURE — optional, privacy-respecting, dormant-by-default
+  // ----------------------------------------------------------------------------
+  // Provider-agnostic: when AP_MON.emailUrl is a real endpoint we POST there as a
+  // standard hosted-newsletter form (Buttondown / Mailchimp style). When it's
+  // empty (dormant) the email never leaves the device — we store the intent in
+  // localStorage and show a friendly confirmation. Email is NEVER required to
+  // use the free chart.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  let emailCaptureWired = false;
+
+  function initEmailCapture(chart) {
+    const host = document.getElementById('email-capture');
+    if (!host) return;
+    host.hidden = false;            // reveal alongside a cast chart
+
+    if (emailCaptureWired) return;  // wire the form exactly once
+    emailCaptureWired = true;
+
+    const form = document.getElementById('email-capture-form');
+    const input = document.getElementById('email-capture-input');
+    const doneMsg = document.getElementById('email-capture-done-msg');
+    if (!form || !input) return;
+
+    const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+    form.addEventListener('submit', async ev => {
+      ev.preventDefault();
+      const email = input.value.trim();
+      if (!validEmail(email)) {
+        if (window.AstroApp) AstroApp.showToast('Check your email',
+          'That doesn’t look like a valid email address.', 'warning');
+        input.focus();
+        return;
+      }
+
+      const M = window.AP_MON || {};
+      const endpoint = typeof M.emailUrl === 'string' ? M.emailUrl.trim() : '';
+      const configured = /^https?:\/\//i.test(endpoint);
+
+      if (configured) {
+        // Standard hosted-newsletter POST (Buttondown/Mailchimp form action).
+        // no-cors keeps it a fire-and-forget subscribe from a static page; we
+        // only ever send the address the visitor typed — no birth data.
+        try {
+          const body = new FormData();
+          body.append('email', email);
+          await fetch(endpoint, { method: 'POST', mode: 'no-cors', body });
+        } catch (e) { /* opaque/no-cors — treat as sent, confirm below */ }
+        if (doneMsg) doneMsg.innerHTML = '<strong>You’re on the list.</strong> Your cosmic weather will arrive by email — unsubscribe anytime.';
+        if (window.AstroApp) AstroApp.showToast('Subscribed', 'You’ll get your cosmic weather by email.', 'success');
+      } else {
+        // DORMANT: nothing leaves the device. Save intent locally only.
+        try {
+          const key = 'ap_email_intent';
+          const prev = JSON.parse(localStorage.getItem(key) || '[]');
+          prev.push({
+            email,
+            forName: (chart && chart.name) ? String(chart.name).split(/\s+/)[0] : null,
+            sunSign: chart && chart.positions && chart.positions.Sun ? chart.positions.Sun.sign : null,
+            savedAt: Date.now(),
+          });
+          localStorage.setItem(key, JSON.stringify(prev.slice(-20)));
+        } catch (e) {}
+        if (doneMsg) doneMsg.innerHTML = '<strong>We’ll let you know.</strong> Saved on your device only — no email has been sent anywhere yet. The moment readings open, you’ll be first.';
+        if (window.AstroApp) AstroApp.showToast('Saved on your device',
+          'Email signup isn’t live yet, so nothing left your browser — we kept your interest locally.', 'info');
+      }
+
+      host.classList.add('is-done');
+    });
+  }
 
   // ── Tabs ──────────────────────────────────────────────────────────────────
 
