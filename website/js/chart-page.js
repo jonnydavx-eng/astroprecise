@@ -23,7 +23,7 @@
   };
   const PLANET_GLYPHS = {
     Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃',
-    Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇', Chiron:'⚷',
+    Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇', Chiron:'⚷', Lilith:'⚸',
     NorthNode:'☊', SouthNode:'☋', Ascendant:'AC', Midheaven:'MC',
   };
   const ASPECT_DISPLAY = {
@@ -201,7 +201,8 @@
   const KEY_MAP = {
     sun:'Sun', moon:'Moon', mercury:'Mercury', venus:'Venus', mars:'Mars',
     jupiter:'Jupiter', saturn:'Saturn', uranus:'Uranus', neptune:'Neptune',
-    pluto:'Pluto', chiron:'Chiron', northNode:'NorthNode', southNode:'SouthNode',
+    pluto:'Pluto', chiron:'Chiron', lilith:'Lilith',
+    northNode:'NorthNode', southNode:'SouthNode',
     asc:'Ascendant', mc:'Midheaven',
   };
 
@@ -286,13 +287,48 @@
       city: cityInput.value,
       timeKnown: !!document.getElementById('time-input').value,
       houseSystem: document.getElementById('house-system').value,
+      nodeMode: getNodeMode(),
     };
+  }
+
+  // ── Lunar-node model toggle (Mean default · True optional), persisted ──────
+  // Honest default: the Mean node is the smoothly-moving classical point; the
+  // True (osculating) node wobbles ±~1.5° around it. The choice is remembered
+  // in localStorage so it survives reloads and shared-link re-runs.
+  const NODE_MODE_KEY = 'ap_node_mode';
+  function getNodeMode() {
+    try {
+      const v = localStorage.getItem(NODE_MODE_KEY);
+      return v === 'true' ? 'true' : 'mean';
+    } catch (e) { return 'mean'; }
+  }
+  function setNodeMode(mode) {
+    const m = mode === 'true' ? 'true' : 'mean';
+    try { localStorage.setItem(NODE_MODE_KEY, m); } catch (e) {}
+    return m;
+  }
+  // Reflect the persisted choice onto the toggle control + recompute if a chart
+  // is already on screen, so flipping it is immediate and honest.
+  function initNodeToggle() {
+    const radios = document.querySelectorAll('input[name="node-mode"]');
+    if (!radios.length) return;
+    const current = getNodeMode();
+    radios.forEach(r => {
+      r.checked = (r.value === current);
+      r.addEventListener('change', () => {
+        if (!r.checked) return;
+        setNodeMode(r.value);
+        // Live re-run: only if we already have a valid chart on screen.
+        if (currentChart) form.requestSubmit();
+      });
+    });
   }
 
   function calculate(input) {
     const ut = localToUT(input.y, input.m, input.d, input.hh, input.mm, input.tz);
-    const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem);
+    const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem, input.nodeMode);
     return adaptChart(raw, {
+      nodeMode: raw.nodeMode,
       name: input.name,
       birthDate: `${input.y}-${String(input.m).padStart(2,'0')}-${String(input.d).padStart(2,'0')}`,
       birthTime: input.timeKnown ? `${String(input.hh).padStart(2,'0')}:${String(input.mm).padStart(2,'0')}` : null,
@@ -574,11 +610,12 @@
     // Planets
     const pt = document.getElementById('planets-table');
     if (pt) {
-      const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','NorthNode'];
+      const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','Lilith','NorthNode','SouthNode'];
+      const DISPLAY_NAME = { NorthNode:'North Node', SouthNode:'South Node', Lilith:'Lilith' };
       pt.innerHTML = order.filter(k => chart.positions[k]).map(k => {
         const p = chart.positions[k];
         const h = chart.planetHouses[k];
-        const planetName = k === 'NorthNode' ? 'north node' : k.toLowerCase();
+        const planetName = DISPLAY_NAME[k] ? DISPLAY_NAME[k].toLowerCase() : k.toLowerCase();
         const signName = (p.sign || '').toLowerCase();
         const dignity = I && I.getDignity ? I.getDignity(planetName, signName) : null;
         const dignityHtml = dignity && dignity.status !== 'peregrine'
@@ -591,12 +628,18 @@
         return `<div class="planet-data-row">
           ${(window.AstroIcons && AstroIcons.PLANET_GLYPH[k]) ? AstroIcons.planet(k,{lg:true,class:'planet-data-row__orb'}) : '<span class="planet-data-row__glyph">'+(PLANET_GLYPHS[k]||'')+'</span>'}
           <div>
-            <div class="planet-data-row__name">${k === 'NorthNode' ? 'North Node' : k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
+            <div class="planet-data-row__name">${DISPLAY_NAME[k] || k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
             <div class="planet-data-row__sign">${window.AstroIcons ? AstroIcons.sign(p.sign,{sm:true})+' ' : (SIGN_GLYPHS[p.sign]||'')+' '}${p.sign}${h ? ` · H${h}` : ''}${decanHtml}${dignityHtml}</div>
           </div>
           <span class="planet-data-row__deg">${fmtDeg(p)}</span>
         </div>`;
       }).join('');
+      // Honest disclosure of which lunar-node model produced the nodes shown.
+      if (chart.nodeMode) {
+        const modeLabel = chart.nodeMode === 'true' ? 'True (osculating) node' : 'Mean node';
+        pt.innerHTML += `<p style="margin:var(--space-3) var(--space-4) 0;font-size:0.66rem;color:var(--silver-dim);letter-spacing:0.04em;">
+          Lunar nodes: <strong style="color:var(--gold-pale);">${modeLabel}</strong> · Lilith = mean Black Moon (lunar apogee). South Node = North Node + 180°.</p>`;
+      }
     }
 
     // Houses
@@ -1435,10 +1478,12 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     addShareCardButton();
+    initNodeToggle();
     restoreFromURL();
   });
   if (document.readyState !== 'loading') {
     addShareCardButton();
+    initNodeToggle();
     restoreFromURL();
   }
 

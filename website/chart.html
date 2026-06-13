@@ -359,6 +359,59 @@
     }
     @media (max-width: 500px) { .house-cards { grid-template-columns: 1fr; } }
 
+    /* ── Lunar node model toggle ────────────────────────────────── */
+    .node-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    .node-toggle__opt {
+      display: block;
+      cursor: pointer;
+      position: relative;
+    }
+    .node-toggle__opt input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .node-toggle__pill {
+      display: block;
+      padding: var(--space-5) var(--space-4);
+      background: rgba(13,17,36,0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .node-toggle__opt:hover .node-toggle__pill {
+      border-color: rgba(196,146,10,0.3);
+      background: rgba(24,36,76,0.65);
+    }
+    .node-toggle__opt input:checked + .node-toggle__pill {
+      border-color: rgba(196,146,10,0.6);
+      background: linear-gradient(135deg, rgba(196,146,10,0.1), rgba(42,74,148,0.08));
+      box-shadow: 0 0 20px rgba(196,146,10,0.1);
+    }
+    .node-toggle__opt input:focus-visible + .node-toggle__pill {
+      box-shadow: 0 0 0 2px rgba(196,146,10,0.4);
+    }
+    .node-toggle__name {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: var(--space-2);
+    }
+    .node-toggle__desc {
+      display: block;
+      font-size: 0.65rem;
+      color: var(--silver-dim);
+      line-height: 1.55;
+    }
+    @media (max-width: 500px) { .node-toggle { grid-template-columns: 1fr; } }
+
     /* ── Form divider ───────────────────────────────────────────── */
     .form-divider {
       display: flex;
@@ -1104,6 +1157,32 @@
             </div>
           </div>
           <input type="hidden" id="house-system" name="house-system" value="equal" />
+
+          <!-- ── Lunar Node Model ─────────────────────────────────── -->
+          <div class="form-section-label" style="margin-top:var(--space-8);">
+            <div class="form-section-label__num" aria-hidden="true">☊</div>
+            <span class="form-section-label__text">Lunar Node Model</span>
+          </div>
+
+          <div class="node-toggle" role="radiogroup" aria-label="Lunar node calculation model">
+            <label class="node-toggle__opt">
+              <input type="radio" name="node-mode" value="mean" checked />
+              <span class="node-toggle__pill">
+                <span class="node-toggle__name">Mean Node</span>
+                <span class="node-toggle__desc">Smoothly-moving classical point (default)</span>
+              </span>
+            </label>
+            <label class="node-toggle__opt">
+              <input type="radio" name="node-mode" value="true" />
+              <span class="node-toggle__pill">
+                <span class="node-toggle__name">True Node</span>
+                <span class="node-toggle__desc">Osculating node — wobbles ±~1.5° about the mean</span>
+              </span>
+            </label>
+          </div>
+          <p class="form-hint" style="margin-top:var(--space-2);">
+            Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
+          </p>
 
           <!-- Submit CTA -->
           <div class="form-divider" aria-hidden="true">✦</div>

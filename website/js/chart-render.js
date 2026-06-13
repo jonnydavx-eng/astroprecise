@@ -80,21 +80,21 @@
   const PLANET_GLYPHS = {
     Sun:'☉',      Moon:'☽',      Mercury:'☿',  Venus:'♀',
     Mars:'♂',     Jupiter:'♃',   Saturn:'♄',   Uranus:'♅',
-    Neptune:'♆',  Pluto:'♇',     Chiron:'⚷',   NorthNode:'☊',
-    SouthNode:'☋', Ascendant:'AC', Midheaven:'MC'
+    Neptune:'♆',  Pluto:'♇',     Chiron:'⚷',   Lilith:'⚸',
+    NorthNode:'☊', SouthNode:'☋', Ascendant:'AC', Midheaven:'MC'
   };
 
   const PLANET_COLORS = {
     Sun:'#FFD700',      Moon:'#C8D8E8',    Mercury:'#B8CCD8', Venus:'#FFB6C1',
     Mars:'#FF6644',     Jupiter:'#FFB347', Saturn:'#C8A86B',  Uranus:'#88DDFF',
-    Neptune:'#8899FF',  Pluto:'#CC88AA',   Chiron:'#AABB99',  NorthNode:'#DDCC88',
-    SouthNode:'#BBAA77', Ascendant:'#FFFFFF', Midheaven:'#FFFFFF'
+    Neptune:'#8899FF',  Pluto:'#CC88AA',   Chiron:'#AABB99',  Lilith:'#9A6FB0',
+    NorthNode:'#DDCC88', SouthNode:'#BBAA77', Ascendant:'#FFFFFF', Midheaven:'#FFFFFF'
   };
 
   const PLANET_ORDER = [
     'Sun','Moon','Mercury','Venus','Mars',
     'Jupiter','Saturn','Uranus','Neptune','Pluto',
-    'Chiron','NorthNode','SouthNode'
+    'Chiron','Lilith','NorthNode','SouthNode'
   ];
 
   // ─── Aspect styling (per spec) ─────────────────────────────────────────────

@@ -239,7 +239,7 @@ const DAILY_MOTION = {
   sun: 0.9856, moon: 13.176, mercury: 1.383, venus: 1.202, mars: 0.524,
   jupiter: 0.0831, saturn: 0.0335, uranus: 0.0117, neptune: 0.0060,
   pluto: 0.0040, chiron: 0.014, northnode: -0.053, southnode: 0.053,
-  asc: 0, mc: 0
+  lilith: 0.111, asc: 0, mc: 0
 };
 
 function calculateAspects(positions, jd) {
@@ -298,6 +298,7 @@ function planetLongitude(planet, jd) {
   if (p === 'sun')  return sunPosition(jd).lon;
   if (p === 'moon') return moonPosition(jd).lon;
   if (p === 'chiron') return chironPosition(jd);
+  if (p === 'lilith') return lilithPosition(jd).lon;
   if (p === 'northnode') return lunarNode(jd);
   if (p === 'southnode') return mod360(lunarNode(jd) + 180);
   if (_ACCURATE_FNS[p]) return _ACCURATE_FNS[p]()(jd).lon;
@@ -306,7 +307,7 @@ function planetLongitude(planet, jd) {
 
 function isRetrograde(planet, jd) {
   const p = planet.toLowerCase();
-  if (p === 'sun' || p === 'moon' || p === 'northnode' || p === 'southnode') return false;
+  if (p === 'sun' || p === 'moon' || p === 'northnode' || p === 'southnode' || p === 'lilith') return false;
   const lon1 = planetLongitude(p, jd);
   const lon2 = planetLongitude(p, jd + 1);
   let motion = lon2 - lon1;
@@ -322,6 +323,91 @@ function isRetrograde(planet, jd) {
 function lunarNode(jd) {
   const T = (jd - 2451545.0) / 36525;
   return mod360(125.04452 - 1934.136261*T + 0.0020708*T*T + T*T*T/450000);
+}
+
+// ---------------------------------------------------------------------------
+// Black Moon Lilith (MEAN lunar apogee) — Meeus Ch 47 fundamental arguments.
+// The mean Black Moon Lilith is the empty geometric focus of the Moon's mean
+// orbital ellipse, i.e. the mean lunar apogee: 180° from the mean perigee.
+// Mean perigee longitude = Lp − Mp, where Lp is the Moon's mean longitude and
+// Mp its mean anomaly (both from Meeus 47.1). Apogee = perigee + 180.
+// Accurate to the mean-element class (the "mean" Lilith used by virtually all
+// astrology software); the oscillating/true Lilith is a different point and is
+// deliberately NOT what 'lilithPosition' returns.
+// ---------------------------------------------------------------------------
+
+function lilithPosition(jd) {
+  const T  = (jd - 2451545.0) / 36525;
+  const T2 = T * T;
+  const T3 = T2 * T;
+  const T4 = T3 * T;
+  // Moon's mean longitude (Meeus 47.1)
+  const Lp = 218.3164477 + 481267.88123421*T - 0.0015786*T2 + T3/538841 - T4/65194000;
+  // Moon's mean anomaly (Meeus 47.1)
+  const Mp = 134.9633964 + 477198.8675055*T + 0.0087414*T2 + T3/69699 - T4/14712000;
+  // Mean perigee = Lp − Mp; mean apogee (Black Moon Lilith) = perigee + 180.
+  const lon = mod360(Lp - Mp + 180);
+  return { lon, lat: 0, sign: signOf(lon) };
+}
+
+// ---------------------------------------------------------------------------
+// Lunar Node — mode 'mean' (default) or 'true'.
+//   mean : Meeus mean ascending node (smooth secular motion, ~18.6 yr cycle).
+//   true : the osculating ascending node, derived deterministically from the
+//          real ELP2000 Moon (position + a one-second-of-arc-stable velocity
+//          difference). The node is the ecliptic longitude where the Moon's
+//          instantaneous orbit plane crosses the ecliptic going north. We get
+//          it from the Moon's position/velocity vectors: n = r × v gives the
+//          orbit-normal, and the ascending node lies 90° "behind" that normal's
+//          ecliptic projection. Uses moonPosition only — no fabricated series.
+// Returns { lon, sign, mode } (mode echoes which was actually computed).
+// ---------------------------------------------------------------------------
+
+function nodePosition(jd, mode) {
+  mode = (mode === 'true') ? 'true' : 'mean';
+
+  if (mode === 'mean') {
+    const lon = lunarNode(jd);
+    return { lon, sign: signOf(lon), mode: 'mean' };
+  }
+
+  // True (osculating) node from the real Moon's state vector.
+  // Build geocentric ecliptic rectangular position at jd and jd±dt, form a
+  // central-difference velocity, then the orbit normal h = r × v. The line of
+  // nodes is the intersection of the orbit plane (⊥ h) with the ecliptic
+  // plane (⊥ ẑ): direction = ẑ × h. Ascending node is the end of that line
+  // where the Moon is climbing (v_z > 0 there).
+  const dt = 0.02; // days — small enough for a good derivative, large enough
+                   // to stay clear of ELP2000 truncation noise.
+
+  function moonVec(j) {
+    const m = moonPosition(j);
+    const latR = toRad(m.lat), lonR = toRad(m.lon), r = m.distance;
+    return [
+      r * Math.cos(latR) * Math.cos(lonR),
+      r * Math.cos(latR) * Math.sin(lonR),
+      r * Math.sin(latR),
+    ];
+  }
+
+  const rp = moonVec(jd + dt);
+  const rm = moonVec(jd - dt);
+  const r0 = moonVec(jd);
+  const v  = [(rp[0]-rm[0])/(2*dt), (rp[1]-rm[1])/(2*dt), (rp[2]-rm[2])/(2*dt)];
+
+  // Orbit normal h = r × v
+  const hx = r0[1]*v[2] - r0[2]*v[1];
+  const hy = r0[2]*v[0] - r0[0]*v[2];
+  const hz = r0[0]*v[1] - r0[1]*v[0];
+
+  // Node line direction = ẑ × h = (-hy, hx, 0); its ecliptic longitude is the
+  // ascending node when the Moon crosses there moving north (hz > 0 keeps the
+  // (-hy, hx) branch ascending; if hz < 0 the orbit is retrograde-normal and
+  // the ascending direction flips).
+  let nodeLon = mod360(toDeg(Math.atan2(hx, -hy)));
+  if (hz < 0) nodeLon = mod360(nodeLon + 180);
+
+  return { lon: nodeLon, sign: signOf(nodeLon), mode: 'true' };
 }
 
 function chironPosition(jd) {
@@ -372,7 +458,7 @@ const SIGN_RULERS = {
 // 14. calculateNatalChart — main entry point
 // ---------------------------------------------------------------------------
 
-function calculateNatalChart(year, month, day, hour, minute, lat, lon, houseSystem) {
+function calculateNatalChart(year, month, day, hour, minute, lat, lon, houseSystem, nodeMode) {
   // Reject impossible inputs rather than return a confident fake chart
   // (the ethos: never present a number that isn't real).
   lat = +lat; lon = +lon;
@@ -399,8 +485,10 @@ function calculateNatalChart(year, month, day, hour, minute, lat, lon, houseSyst
   rawPositions.sun   = sunPos.lon;
   rawPositions.moon  = moonPos.lon;
   rawPositions.chiron     = chironPosition(jd);
-  rawPositions.northNode  = lunarNode(jd);
-  rawPositions.southNode  = mod360(rawPositions.northNode + 180);
+  rawPositions.lilith     = lilithPosition(jd).lon;     // mean Black Moon Lilith
+  const node              = nodePosition(jd, nodeMode); // 'mean' (default) | 'true'
+  rawPositions.northNode  = node.lon;
+  rawPositions.southNode  = mod360(node.lon + 180);
 
   const ascDeg = ascendant(lst, lat, eps);
   const mcDeg  = midheaven(lst, eps);
@@ -450,6 +538,7 @@ function calculateNatalChart(year, month, day, hour, minute, lat, lon, houseSyst
     ascendant: ascDeg,
     midheaven: mcDeg,
     obliquity: eps,
+    nodeMode: node.mode,   // which node model was actually used ('mean' | 'true')
   };
 }
 
@@ -685,6 +774,8 @@ window.AstroEphemeris = {
   signName: signOf,
   degreeInSign,
   lunarNode,
+  lilithPosition,
+  nodePosition,
   chironPosition,
   SIGNS,
   ELEMENTS,

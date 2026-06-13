@@ -667,6 +667,33 @@ window.AstroApp = AstroApp;
   else place();
 })();
 
+// ═══ FOOTER GUIDE / TOOL LINKS (site-wide internal links for SEO) ════════
+(function injectGuideLinks() {
+  function place() {
+    if (document.querySelector('.ap-guide-links')) return;
+    var host = document.querySelector('footer .container') || document.querySelector('footer');
+    if (!host) return;
+    var links = [
+      ['what-is-my-rising-sign.html', 'What’s my rising sign?'],
+      ['synastry.html', 'Synastry'],
+      ['solar-return.html', 'Solar return'],
+      ['retrograde.html', 'Mercury retrograde'],
+      ['moonphase.html', 'Moon phase'],
+      ['accuracy.html', 'How it’s accurate'],
+    ];
+    var p = document.createElement('p');
+    p.className = 'ap-guide-links';
+    p.style.cssText = 'font-size:0.62rem;letter-spacing:0.08em;margin-top:10px;opacity:0.6;'
+      + 'font-family:Inter,system-ui,sans-serif;text-align:center;line-height:1.9;';
+    p.innerHTML = 'Guides &amp; tools: ' + links.map(function (l) {
+      return '<a href="' + l[0] + '" style="color:var(--gold,#C9A227);text-decoration:none;">' + l[1] + '</a>';
+    }).join(' <span style="opacity:.4">&middot;</span> ');
+    host.appendChild(p);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
+  else place();
+})();
+
 // ═══════════════════════════════════════════════════════════════════════
 // MONETISATION — provider-agnostic, dormant-by-default, link-out only.
 // GitHub Pages forbids SELLING on the site, but permits donation/crowdfunding

@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v52';
+const V = 'ap-v53';
 
 const PRECACHE = [
   './',
@@ -20,6 +20,9 @@ const PRECACHE = [
   './charts.html',
   './retrograde.html',
   './moonphase.html',
+  './what-is-my-rising-sign.html',
+  './synastry.html',
+  './solar-return.html',
   './privacy.html',
   './terms.html',
   './manifest.json',
@@ -50,6 +53,7 @@ const PRECACHE = [
   './js/charts-dashboard.js',
   './js/retrograde.js',
   './js/moonphase.js',
+  './js/seo-tools.js',
   './img/logo.svg',
   './img/favicon.svg',
   './assets/textures/earth.jpg',
