@@ -405,14 +405,41 @@ import * as THREE from 'three';
   }
   function pt(e) { const r = canvas.getBoundingClientRect(); return { x: (e.clientX || 0) - r.left, y: (e.clientY || 0) - r.top }; }
   const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  const CAP = { sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune' };
+  // Geocentric ecliptic longitude (the astrological sign as seen from Earth) — not the helio display angle
+  function geoLonOf(id, jd) {
+    const E = window.AstroEphemeris; if (!E) return null;
+    try {
+      if (id === 'sun') return E.sunPosition(jd).lon;
+      if (id === 'moon') return E.moonPosition(jd).lon;
+      if (id === 'earth') return null; // Earth has no geocentric sign
+      return E[id + 'Position'](jd).lon;
+    } catch (e) { return null; }
+  }
   function pick(p) {
-    if (typeof onPlanetClick !== 'function') return;
     const r = canvas.getBoundingClientRect();
     ndc.x = (p.x / r.width) * 2 - 1; ndc.y = -(p.y / r.height) * 2 + 1;
     raycaster.setFromCamera(ndc, camera);
     const targets = BODIES.map((b) => meshes[b.id].userData.mesh);
+    if (sunMesh) targets.push(sunMesh);
+    if (moonMesh) targets.push(moonMesh);
     const hit = raycaster.intersectObjects(targets, false)[0];
-    if (hit) { const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object); if (b) onPlanetClick(b.id); }
+    if (!hit) return;
+    let id = null;
+    if (hit.object === sunMesh) id = 'sun';
+    else if (hit.object === moonMesh) id = 'moon';
+    else { const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object); if (b) id = b.id; }
+    if (!id) return;
+    const jd = baseJd + dayOffset;
+    const lon = geoLonOf(id, jd);
+    let retro = false;
+    try {
+      const E = window.AstroEphemeris;
+      if (E && E.isRetrograde && id !== 'sun' && id !== 'moon' && id !== 'earth') retro = !!E.isRetrograde(id, jd);
+    } catch (e) { /* optional */ }
+    const detail = { name: CAP[id] || id, id, longitude: (lon == null ? undefined : lon), retro };
+    document.dispatchEvent(new CustomEvent('orrery-planet-click', { detail }));
+    if (typeof onPlanetClick === 'function') onPlanetClick(id);
   }
 
   // ── Fallback: drop to the canvas orrery if anything goes wrong at runtime ──

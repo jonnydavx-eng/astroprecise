@@ -503,6 +503,15 @@
       transition: opacity var(--transition-fast);
     }
     .planet-info-panel__close:hover { opacity: 1; }
+    .planet-info-panel__glyph .ap-orb { font-size: 1.5rem; }
+    .planet-info-panel__sign .ap-orb { vertical-align: -0.12em; margin-right: 3px; }
+    .planet-info-panel__meaning {
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: var(--silver-dim, #aab4c4);
+      margin-top: 7px;
+      max-width: 210px;
+    }
 
     /* =====================================================================
        LIVE SKY STRIP
@@ -1642,6 +1651,7 @@
             <p class="planet-info-panel__name" id="pip-name">Sun</p>
             <p class="planet-info-panel__sign" id="pip-sign">in Gemini</p>
             <p class="planet-info-panel__degree" id="pip-degree">21°34′</p>
+            <p class="planet-info-panel__meaning" id="pip-meaning"></p>
           </div>
 
           <!-- The Living Orrery – Earth-first, instantly understandable, high-value instrument -->
@@ -2268,6 +2278,8 @@
       saturn:  'Structure, discipline, karma, time',
       uranus:  'Innovation, liberation, the unexpected',
       neptune: 'Dreams, dissolution, transcendence',
+      pluto:   'Power, transformation, the unconscious',
+      earth:   'Your vantage point — the chart is cast from here',
     };
 
     /* ── Utilities ─────────────────────────────────────────────────────── */
@@ -2469,10 +2481,23 @@
       if (!panel) return;
 
       function showPanel(data) {
-        document.getElementById('pip-glyph').textContent  = data.glyph || '☉';
-        document.getElementById('pip-name').textContent   = data.name  || '';
-        document.getElementById('pip-sign').textContent   = data.sign  || '';
+        var gEl = document.getElementById('pip-glyph');
+        if (window.AstroIcons && data.name && window.AstroIcons.PLANET_GLYPH[data.name]) {
+          gEl.innerHTML = window.AstroIcons.planet(data.name);
+        } else {
+          gEl.textContent = data.glyph || '☉';
+        }
+        document.getElementById('pip-name').textContent = data.name || '';
+        var sEl = document.getElementById('pip-sign');
+        if (data.signName && window.AstroIcons) {
+          sEl.innerHTML = window.AstroIcons.sign(data.signName, { sm: true })
+            + ' in ' + data.signName
+            + (data.retro ? ' <span style="color:var(--crimson-light,#e07a82);">℞</span>' : '');
+        } else {
+          sEl.textContent = data.signName ? ('in ' + data.signName) : '';
+        }
         document.getElementById('pip-degree').textContent = data.degree || '';
+        document.getElementById('pip-meaning').textContent = data.meaning || '';
         panel.classList.remove('hidden');
       }
 
@@ -2480,23 +2505,21 @@
 
       if (closeBtn) closeBtn.addEventListener('click', hidePanel);
 
-      // Listen for planet click events from orrery3d.js
+      // Planet click from the orrery (WebGL or canvas) → dispatches 'orrery-planet-click'
       document.addEventListener('orrery-planet-click', function (e) {
         var detail = e.detail || {};
-        var planetId = (detail.name || '').toLowerCase();
+        var planetId = detail.id || (detail.name || '').toLowerCase();
         var def = PLANET_DEF.find(function (p) { return p.id === planetId; }) || {};
-
-        var signInfo = detail.longitude !== undefined
-          ? lonToDisplay(detail.longitude)
-          : null;
+        var hasLon = detail.longitude !== undefined && detail.longitude !== null;
+        var signInfo = hasLon ? lonToDisplay(detail.longitude) : null;
 
         showPanel({
-          glyph:  def.glyph || '?',
-          name:   detail.name || planetId,
-          sign:   signInfo
-            ? ('in ' + SIGN_NAMES[signInfo.signIdx])
-            : (PLANET_INFO[planetId] || ''),
-          degree: signInfo ? signInfo.degStr : '',
+          name:     detail.name || planetId,
+          glyph:    planetId === 'earth' ? '⊕' : (def.glyph || '?'),
+          signName: signInfo ? SIGN_NAMES[signInfo.signIdx] : '',
+          degree:   signInfo ? signInfo.degStr : '',
+          retro:    !!detail.retro,
+          meaning:  PLANET_INFO[planetId] || '',
         });
       });
     })();

@@ -569,16 +569,16 @@
 
         <div class="transit-ticker" role="marquee" aria-label="Current planetary positions ticker" id="transit-ticker">
           <div class="transit-ticker__track" id="transit-ticker-track">
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9728;</span><span class="transit-pill__name">Sun</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9789;</span><span class="transit-pill__name">Moon</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9791;</span><span class="transit-pill__name">Mercury</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9792;</span><span class="transit-pill__name">Venus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9794;</span><span class="transit-pill__name">Mars</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9795;</span><span class="transit-pill__name">Jupiter</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9796;</span><span class="transit-pill__name">Saturn</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9797;</span><span class="transit-pill__name">Uranus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9798;</span><span class="transit-pill__name">Neptune</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
-            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true">&#9799;</span><span class="transit-pill__name">Pluto</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span><span class="transit-pill__name">Sun</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span><span class="transit-pill__name">Moon</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span><span class="transit-pill__name">Mercury</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span><span class="transit-pill__name">Venus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span><span class="transit-pill__name">Mars</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span><span class="transit-pill__name">Jupiter</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span><span class="transit-pill__name">Saturn</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span><span class="transit-pill__name">Uranus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span><span class="transit-pill__name">Neptune</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span><span class="transit-pill__name">Pluto</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
           </div>
         </div>
       </div>
@@ -598,43 +598,43 @@
         <div id="current-sky" class="planet-grid" role="region" aria-live="polite" aria-label="Current planetary positions">
           <!-- Static fallback — JS may update these -->
           <div class="planet-card planet-card--air">
-            <span class="planet-card__symbol" aria-hidden="true">&#9728;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span>
             <span class="planet-card__name">Sun</span>
             <span class="planet-card__position">Gemini 21&#176;04&#8217;</span>
             <span class="planet-card__desc">Solar energy in Gemini heightens curiosity, social energy, and the desire to share ideas and connect with others.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9789;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span>
             <span class="planet-card__name">Moon</span>
             <span class="planet-card__position">Scorpio 14&#176;37&#8217;</span>
             <span class="planet-card__desc">Lunar intensity deepens emotional perception and intuition. Trust your instincts; honour what rises from the depths.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9791;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
             <span class="planet-card__name">Mercury</span>
             <span class="planet-card__position">Cancer 3&#176;22&#8217;</span>
             <span class="planet-card__desc">Thought and communication become more intuitive and emotionally resonant. Nurturing conversations flow with ease.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9792;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
             <span class="planet-card__name">Venus</span>
             <span class="planet-card__position">Cancer 19&#176;11&#8217;</span>
             <span class="planet-card__desc">Affections are tender and home-oriented. Deepen bonds with loved ones and create beauty in your personal space.</span>
           </div>
           <div class="planet-card planet-card--fire">
-            <span class="planet-card__symbol" aria-hidden="true">&#9794;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
             <span class="planet-card__name">Mars</span>
             <span class="planet-card__position">Leo 8&#176;54&#8217;</span>
             <span class="planet-card__desc">Drive is bold and expressive. Channel energy into creative projects, courageous initiatives, and confident leadership.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9795;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
             <span class="planet-card__name">Jupiter</span>
             <span class="planet-card__position">Cancer 2&#176;09&#8217;</span>
             <span class="planet-card__desc">Growth through emotional wisdom, family ties, and intuition. Abundance is found by nurturing what matters most.</span>
           </div>
           <div class="planet-card planet-card--water">
-            <span class="planet-card__symbol" aria-hidden="true">&#9796;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
             <span class="planet-card__name">Saturn</span>
             <span class="planet-card__position">
               Pisces 22&#176;47&#8217; <span class="retrograde-badge" aria-label="retrograde">Rx</span>
@@ -642,19 +642,19 @@
             <span class="planet-card__desc">Discipline and structure are under revision. Review spiritual commitments; release what no longer serves your highest path.</span>
           </div>
           <div class="planet-card planet-card--earth">
-            <span class="planet-card__symbol" aria-hidden="true">&#9797;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span>
             <span class="planet-card__name">Uranus</span>
             <span class="planet-card__position">Taurus 28&#176;03&#8217;</span>
             <span class="planet-card__desc">Radical changes to material values and resources. Innovative approaches to security and ownership come to the fore.</span>
           </div>
           <div class="planet-card planet-card--fire">
-            <span class="planet-card__symbol" aria-hidden="true">&#9798;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span>
             <span class="planet-card__name">Neptune</span>
             <span class="planet-card__position">Aries 2&#176;18&#8217;</span>
             <span class="planet-card__desc">Pioneering dreams and dissolving of old identities. A new spiritual ideal is crystallising around courage and vision.</span>
           </div>
           <div class="planet-card planet-card--air">
-            <span class="planet-card__symbol" aria-hidden="true">&#9799;</span>
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span>
             <span class="planet-card__name">Pluto</span>
             <span class="planet-card__position">Aquarius 3&#176;42&#8217;</span>
             <span class="planet-card__desc">Collective transformation through community, technology, and shared vision. Old power structures are being fundamentally rebuilt.</span>
@@ -749,7 +749,7 @@
 
           <ul class="retrograde-list" aria-label="Retrograde schedule 2025&#8211;2026">
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9794;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Mars Retrograde &mdash; Leo &amp; Cancer</h4>
                 <p>Ambition and drive recalibrate. Redirect energy rather than forcing forward against resistance. Review ongoing projects and goals.</p>
@@ -757,7 +757,7 @@
               <div class="retrograde-item__dates">Dec 6, 2024 &ndash; Feb 23, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9792;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Venus Retrograde &mdash; Aries &amp; Pisces</h4>
                 <p>Reassess what &mdash; and who &mdash; you truly value. Old relationships resurface for resolution or release. Avoid major purchases or new romantic commitments.</p>
@@ -765,7 +765,7 @@
               <div class="retrograde-item__dates">Mar 1 &ndash; Apr 12, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9791;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Mercury Retrograde &mdash; Leo</h4>
                 <p>Communication and self-expression need revision. Back up all important work; re-read contracts before signing. Creative projects benefit from reworking.</p>
@@ -773,7 +773,7 @@
               <div class="retrograde-item__dates">Jul 18 &ndash; Aug 11, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9796;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Saturn Retrograde &mdash; Pisces</h4>
                 <p>Review spiritual boundaries, long-term structures, and dissolving illusions. Inner discipline brings more reward than outer control during this window.</p>
@@ -781,7 +781,7 @@
               <div class="retrograde-item__dates">Jul 13 &ndash; Nov 27, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9791;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Mercury Retrograde &mdash; Scorpio &amp; Sagittarius</h4>
                 <p>Deep investigations, beliefs, and long-distance plans need revisiting. Truth surfaces unexpectedly; be prepared for revealing conversations.</p>
@@ -789,7 +789,7 @@
               <div class="retrograde-item__dates">Nov 9 &ndash; Nov 29, 2025</div>
             </li>
             <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">&#9795;</span>
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
               <div class="retrograde-item__info">
                 <h4>Jupiter Retrograde &mdash; Cancer</h4>
                 <p>Expansion turns inward. Deepen emotional intelligence and revisit family foundations. Abundance is found by nourishing inner roots before seeking it externally.</p>
@@ -991,8 +991,9 @@
         var lon = positions && positions[p.key] != null ? positions[p.key] : null;
         var posText = lon != null ? degToSignPos(lon) : '—°';
         var isRetro = RETRO_KEYS[p.key] || false;
+        var symHtml = window.AstroIcons ? AstroIcons.planet(p.name, { sm: true }) : p.sym;
         return '<span class="transit-pill' + (isRetro ? ' transit-pill--retrograde' : '') + '">' +
-          '<span class="transit-pill__symbol" aria-hidden="true">' + p.sym + '</span>' +
+          '<span class="transit-pill__symbol" aria-hidden="true">' + symHtml + '</span>' +
           '<span class="transit-pill__name">' + p.name + '</span>' +
           '<span class="transit-pill__pos">' + posText + (isRetro ? ' Rx' : '') + '</span>' +
           '</span>';
@@ -1048,6 +1049,7 @@
   <script src="js/ephemeris.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/profile.js"></script>
+  <script src="js/icons.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
 </body>

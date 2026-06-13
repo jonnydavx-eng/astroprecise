@@ -8,6 +8,7 @@
 import { writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { CONSTELLATIONS } from './constellations.mjs';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = 'https://jonnydavx-eng.github.io/astroprecise';
@@ -219,6 +220,8 @@ function page(s) {
       background: linear-gradient(180deg, #f2dfa7 0%, #c4920a 60%, #8c6a2f 100%);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 0 18px rgba(196,146,10,0.4)); }
+    .sign-hero__constellation { max-width: 380px; margin: 0 auto var(--space-4); }
+    .sign-hero__constellation svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 14px rgba(42,74,148,0.45)); }
     .sign-hero h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.6rem); color: var(--color-white); margin-bottom: var(--space-2); }
     .sign-hero__dates { color: var(--color-gold); font-size: var(--text-sm); letter-spacing: 0.14em; text-transform: uppercase; }
     .sign-facts { display: flex; justify-content: center; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-6); }
@@ -265,7 +268,7 @@ function page(s) {
   <main id="main-content">
 
     <section class="sign-hero" aria-labelledby="page-title">
-      <span class="sign-hero__glyph" aria-hidden="true">${s.glyph}</span>
+      <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ('<span class="sign-hero__glyph" aria-hidden="true">' + s.glyph + '</span>')}</div>
       <h1 id="page-title">${s.name}</h1>
       <p class="sign-hero__dates">${s.dates}</p>
       <div class="sign-facts">

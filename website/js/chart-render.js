@@ -136,6 +136,65 @@
     return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
   }
 
+  // ─── Utility: colour math (hex → lighter / darker shade) ─────────────────
+  function _hex2rgb(hex) {
+    let h = String(hex || '#888888').replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    const n = parseInt(h, 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  }
+  function _rgb2hex(r, g, b) {
+    const c = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+    return '#' + c(r) + c(g) + c(b);
+  }
+  // amt > 0 lightens toward white, amt < 0 darkens toward black
+  function shade(hex, amt) {
+    const { r, g, b } = _hex2rgb(hex);
+    if (amt >= 0) {
+      return _rgb2hex(r + (255 - r) * amt, g + (255 - g) * amt, b + (255 - b) * amt);
+    }
+    const k = 1 + amt;
+    return _rgb2hex(r * k, g * k, b * k);
+  }
+
+  // ─── Glass disc (glossy orb chip) behind a glyph ─────────────────────────
+  // Appends, into parentG, a radial-gradient-filled disc + white top highlight,
+  // matching the .ap-orb glass look but rendered natively in SVG. The per-colour
+  // radialGradient is created once into the SVG <defs> (deduped by colour+prefix).
+  // `svg` is passed explicitly because parentG may not yet be attached when called.
+  function glassDisc(svg, parentG, cx, cy, r, hexColor, idPrefix) {
+    let gradId = null;
+    if (svg) {
+      let defs = svg.querySelector('defs');
+      if (!defs) { defs = el('defs'); svg.insertBefore(defs, svg.firstChild); }
+      const key = (idPrefix || '') + 'orb_' + String(hexColor || '#888').replace('#', '');
+      gradId = key;
+      if (!defs.querySelector('#' + gradId)) {
+        const rg = el('radialGradient', { id: gradId, cx: '32%', cy: '24%', r: '78%' });
+        [[0,   shade(hexColor, 0.55)],
+         [0.32, shade(hexColor, 0.22)],
+         [0.7,  hexColor],
+         [1,    shade(hexColor, -0.42)]
+        ].forEach(([o, c]) => {
+          rg.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c }));
+        });
+        defs.appendChild(rg);
+      }
+    }
+    // Base glass disc
+    parentG.appendChild(el('circle', {
+      cx: cx.toFixed(2), cy: cy.toFixed(2), r: r.toFixed(2),
+      fill: gradId ? `url(#${gradId})` : hexColor,
+      stroke: 'rgba(255,255,255,0.28)', 'stroke-width': '0.5'
+    }));
+    // Soft white top highlight
+    parentG.appendChild(el('ellipse', {
+      cx: cx.toFixed(2), cy: (cy - r * 0.34).toFixed(2),
+      rx: (r * 0.55).toFixed(2), ry: (r * 0.32).toFixed(2),
+      fill: 'rgba(255,255,255,0.40)'
+    }));
+  }
+
   // ─── Utility: ecliptic longitude → SVG visual angle ──────────────────────
   // Traditional natal wheel: ASC is at the 9 o'clock (left) position = 180°.
   // Degrees increase counter-clockwise on the wheel (east = up).
@@ -270,10 +329,12 @@
       // Zodiac glyph centered in segment
       const midAng = lonToAngle(midLon, ascLon);
       const gp     = polar(CX, CY, R_GLYPH, midAng);
+      // Glass orb chip behind the glyph (element colour, brightened)
+      glassDisc(svg, g, gp.x, gp.y, 12, shade(fillClr, 0.18), idPrefix);
       const glyph  = el('text', {
         x: gp.x.toFixed(2), y: gp.y.toFixed(2),
         'text-anchor': 'middle', 'dominant-baseline': 'central',
-        fill: txtClr,
+        fill: '#ffffff',
         'font-size': '15',
         'font-family': 'serif, "Apple Color Emoji", "Segoe UI Emoji", system-ui',
         'font-weight': 'bold',
@@ -490,10 +551,12 @@
 
       // Planet glyph at collision-resolved position
       const gp  = polar(CX, CY, rPlanet, dispAng);
+      // Glass orb chip behind the planet glyph (planet colour)
+      glassDisc(svg, g, gp.x, gp.y, 10, pColor, idPrefix);
       const txt = el('text', {
         x: gp.x.toFixed(2), y: gp.y.toFixed(2),
         'text-anchor': 'middle', 'dominant-baseline': 'central',
-        fill: pColor,
+        fill: '#ffffff',
         'font-size': fSize,
         'font-family': 'serif, "Apple Color Emoji", "Segoe UI Emoji", system-ui',
         'font-weight': 'bold',

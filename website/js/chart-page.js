@@ -471,7 +471,7 @@
     el.innerHTML = items.map(it => `
       <div class="big-three-card">
         <p class="big-three-card__planet">${it.planet} · ${it.sub}</p>
-        <span class="big-three-card__glyph" aria-hidden="true">${it.glyph}</span>
+        ${(window.AstroIcons && AstroIcons.SIGN_GLYPH[it.sign]) ? AstroIcons.sign(it.sign,{lg:true,class:'big-three-card__orb'}) : '<span class="big-three-card__glyph" aria-hidden="true">'+it.glyph+'</span>'}
         <h3 class="big-three-card__sign">${it.sign}</h3>
         <p class="big-three-card__desc">${it.deg ? it.deg + ' · ' : ''}${ELEMENT_MAP[it.sign] ? cap(ELEMENT_MAP[it.sign]) + ' · ' + cap(MODALITY_MAP[it.sign] || '') : ''}</p>
       </div>`).join('');
@@ -589,10 +589,10 @@
           ? ` · <span title="${decan.label} of ${p.sign} (triplicity sub-ruler)" style="cursor:help;">D${decan.index} ${decan.glyph}</span>`
           : '';
         return `<div class="planet-data-row">
-          <span class="planet-data-row__glyph">${PLANET_GLYPHS[k]}</span>
+          ${(window.AstroIcons && AstroIcons.PLANET_GLYPH[k]) ? AstroIcons.planet(k,{lg:true,class:'planet-data-row__orb'}) : '<span class="planet-data-row__glyph">'+(PLANET_GLYPHS[k]||'')+'</span>'}
           <div>
             <div class="planet-data-row__name">${k === 'NorthNode' ? 'North Node' : k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
-            <div class="planet-data-row__sign">${SIGN_GLYPHS[p.sign] || ''} ${p.sign}${h ? ` · H${h}` : ''}${decanHtml}${dignityHtml}</div>
+            <div class="planet-data-row__sign">${window.AstroIcons ? AstroIcons.sign(p.sign,{sm:true})+' ' : (SIGN_GLYPHS[p.sign]||'')+' '}${p.sign}${h ? ` · H${h}` : ''}${decanHtml}${dignityHtml}</div>
           </div>
           <span class="planet-data-row__deg">${fmtDeg(p)}</span>
         </div>`;
@@ -612,7 +612,7 @@
             <div class="planet-data-row__name">House ${i + 1}</div>
             <div class="planet-data-row__sign">${HOUSE_THEMES[i]}</div>
           </div>
-          <span class="planet-data-row__deg">${SIGN_GLYPHS[sign] || ''} ${dg}°${String(mn).padStart(2,'0')}′</span>
+          <span class="planet-data-row__deg">${window.AstroIcons ? AstroIcons.sign(sign,{sm:true})+' ' : (SIGN_GLYPHS[sign]||'')+' '}${dg}°${String(mn).padStart(2,'0')}′</span>
         </div>`;
       }).join('');
     }
