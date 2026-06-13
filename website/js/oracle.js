@@ -751,7 +751,7 @@ window.AstroOracle = (() => {
         } catch (e) { lon = null; }
       }
       if (lon === null || !isFinite(lon)) {
-        try { lon = E.geocentricPlanetLongitude(p.toLowerCase(), jd); } catch (e) { lon = null; }
+        try { lon = E.planetLongitude(p.toLowerCase(), jd); } catch (e) { lon = null; }
       }
       if (lon !== null && isFinite(lon)) out[p] = mod360(lon);
     }
