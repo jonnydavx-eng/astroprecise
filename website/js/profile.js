@@ -141,7 +141,7 @@ window.AstroProfile = (() => {
       utH = u.getUTCHours(); utMin = u.getUTCMinutes();
     }
     let raw;
-    try { raw = E.calculateNatalChart(utY, utM, utD, utH, utMin, parseFloat(lat), parseFloat(lon)); }
+    try { raw = E.calculateNatalChart(utY, utM, utD, utH, utMin, parseFloat(lat), parseFloat(lon), houseSystem); }
     catch (e) { console.error('Chart calculation error:', e); return null; }
     return {
       name,

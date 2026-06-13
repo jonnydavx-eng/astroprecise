@@ -519,8 +519,9 @@
 
       // Degree label (tiny, just inside the planet ring)
       if (showDeg) {
-        const degNum = pos.degree !== undefined ? pos.degree : Math.floor(pos.lon % 30);
-        const minNum = pos.minute !== undefined ? pos.minute : 0;
+        const _dv    = pos.degree !== undefined ? pos.degree : (((pos.lon % 30) + 30) % 30);
+        const degNum = Math.floor(_dv);
+        const minNum = Math.floor((_dv - degNum) * 60);
         const dlr    = rPlanet - 16;
         const dp     = polar(CX, CY, dlr, dispAng);
         const dl = el('text', {
@@ -599,8 +600,9 @@
       tr.style.background   = row % 2 === 0 ? '#0A0A1E' : '#0F0F26';
       tr.style.borderBottom = '1px solid #1E1E3A';
 
-      const degNum   = pos.degree !== undefined ? pos.degree : Math.floor(pos.lon % 30);
-      const minNum   = pos.minute !== undefined ? pos.minute : 0;
+      const _dv      = pos.degree !== undefined ? pos.degree : (((pos.lon % 30) + 30) % 30);
+      const degNum   = Math.floor(_dv);
+      const minNum   = Math.floor((_dv - degNum) * 60);
       const signName = pos.sign || ZODIAC_SIGNS[Math.floor(normLon(pos.lon) / 30)];
       const elemClr  = ELEMENT_TEXT[SIGN_ELEMENT[signName]] || '#AABBCC';
       const houseNum = houses ? getPlanetHouse(pos.lon, houses) : '—';

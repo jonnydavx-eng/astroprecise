@@ -105,13 +105,17 @@ window.FieldWeather = (() => {
     const lunar = getLunar(date);
     const transits = getTransitPressure(natalChart, date);
 
-    // composite: start at 100 (clear), subtract weighted disturbances
-    let score = 100, parts = 0;
-    if (kp && isFinite(kp.kp)) { score -= (Math.min(kp.kp, 9) / 9) * 30; parts++; }
-    if (wind && isFinite(wind.speedKmS)) { score -= Math.max(0, Math.min(1, (wind.speedKmS - 350) / 450)) * 15; parts++; }
+    // composite: start at 100 (clear), subtract weighted disturbances.
+    // Track measured vs symbolic inputs so the headline never poses as a
+    // measured index when the live feeds are dead (the honesty rule).
+    let score = 100, measured = 0, symbolic = 0;
+    if (kp && isFinite(kp.kp)) { score -= (Math.min(kp.kp, 9) / 9) * 30; measured++; }
+    if (wind && isFinite(wind.speedKmS)) { score -= Math.max(0, Math.min(1, (wind.speedKmS - 350) / 450)) * 15; measured++; }
     // full & new moons are "spring tides" of the field — not bad, but loud
-    score -= Math.pow(Math.abs(lunar.illumination - 0.5) * 2, 2) * 15;
-    score -= transits.pressure * 30;
+    score -= Math.pow(Math.abs(lunar.illumination - 0.5) * 2, 2) * 15; symbolic++;
+    // only let transits move the score when we actually have a chart/oracle —
+    // never subtract on the 0.5 "unavailable" placeholder
+    if (transits && transits.basis !== 'unavailable') { score -= transits.pressure * 30; symbolic++; }
     score = Math.round(Math.max(0, Math.min(100, score)));
 
     let label, summary;
@@ -124,6 +128,12 @@ window.FieldWeather = (() => {
     else { label = 'Heavy weather';
       summary = 'Multiple systems peaking at once. Conditions, not verdicts — but a day to sail close to shore.'; }
 
+    // No live measurement reached us — disclose it rather than imply a reading.
+    const provenance = measured === 0
+      ? 'symbolic only — live space-weather feeds unreachable'
+      : `from ${measured} measured + ${symbolic} symbolic input${(measured + symbolic) === 1 ? '' : 's'}`;
+    if (measured === 0) { label = 'Symbolic only'; summary = 'The live space-weather feeds (NOAA SWPC) could not be reached, so this reflects only the computed Moon and transits — not a measured field state.'; }
+
     return {
       components: {
         kp: kp ? { ...kp, band: kpBand(kp.kp) } : { unavailable: true, source: 'NOAA SWPC (feed unreachable)' },
@@ -132,7 +142,7 @@ window.FieldWeather = (() => {
         transits,
         schumann: { unavailable: true, source: 'no public live feed — not faked' },
       },
-      composite: { score, label, summary },
+      composite: { score: measured === 0 ? null : score, label, summary, provenance, measured, symbolic },
       generatedAt: date.toISOString(),
     };
   }

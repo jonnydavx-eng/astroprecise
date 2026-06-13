@@ -593,12 +593,17 @@
       rows.push(row('Transits', c.transits.basis === 'natal' ? 'personal — weighed against your chart' : 'sky weather (set the event above to personalise)', c.transits.source));
       rows.push(row('Schumann', 'unavailable', c.schumann.source, true));
 
+      const comp = w.composite;
+      const scoreHtml = (comp.score == null)
+        ? `<span style="font-size:1.4rem;">—</span>`
+        : `${comp.score}<span style="font-size:1rem;color:var(--silver-dim);">/100</span>`;
       out.innerHTML = `
         <div class="daimon-card" style="text-align:center;">
           <p class="instrument-eyebrow">Composite field</p>
-          <p style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold-pale);">${w.composite.score}<span style="font-size:1rem;color:var(--silver-dim);">/100</span></p>
-          <p class="daimon-epithet" style="font-size:1.2rem;">${w.composite.label}</p>
-          <p class="grimoire" style="font-size:1.05rem;max-width:520px;margin:var(--space-4) auto 0;">${w.composite.summary}</p>
+          <p style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold-pale);">${scoreHtml}</p>
+          <p class="daimon-epithet" style="font-size:1.2rem;">${comp.label}</p>
+          <p class="grimoire" style="font-size:1.05rem;max-width:520px;margin:var(--space-4) auto 0;">${comp.summary}</p>
+          ${comp.provenance ? `<p style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--silver-dim);margin-top:var(--space-3);">${comp.provenance}</p>` : ''}
         </div>
         ${rows.join('')}`;
     } catch (e) {
