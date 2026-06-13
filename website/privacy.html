@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy | AstroPrecise</title>
+  <meta name="description" content="How AstroPrecise handles your data: everything is computed in your browser. No accounts, no tracking, no data sold." />
+  <link rel="canonical" href="https://jonnydavx-eng.github.io/astroprecise/privacy.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <meta name="theme-color" content="#070608" />
+  <style>
+    :root{ --gold:#C9A227; --gold-light:#EFE3C0; --ink:#E8E0D0; --dim:#A89E88; --void:#070608; }
+    *{box-sizing:border-box;}
+    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#0D0A07 0%,#070608 55%,#040305 100%);
+      color:var(--ink);font-family:'Cormorant Garamond',Georgia,serif;font-size:1.12rem;line-height:1.8;
+      -webkit-font-smoothing:antialiased;padding:0 24px 80px;}
+    .legal-doc{max-width:720px;margin:0 auto;}
+    .legal-top{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-bottom:1px solid rgba(201,162,39,.18);margin-bottom:40px;}
+    .legal-top a{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
+    .legal-top a:hover{color:var(--gold-light);}
+    .legal-brand{display:flex;align-items:center;gap:9px;}
+    .legal-brand span{font-family:'Cinzel',serif;letter-spacing:.28em;color:var(--gold-light);font-size:.9rem;}
+    h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light);font-size:clamp(1.6rem,4vw,2.3rem);
+      text-shadow:0 0 34px rgba(201,162,39,.18);margin:0 0 6px;}
+    .legal-sub{font-style:italic;color:var(--dim);margin:0 0 36px;}
+    h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;
+      color:var(--gold);margin:38px 0 12px;display:flex;align-items:center;gap:12px;}
+    h2::before{content:'';flex:0 0 18px;height:1px;background:var(--gold);opacity:.5;}
+    p,li{color:var(--ink);}
+    a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(201,162,39,.45);}
+    a:hover{text-decoration-color:var(--gold);}
+    strong{color:var(--gold-light);font-weight:600;}
+    .placeholder{color:#c98e6a;font-family:'Inter',sans-serif;font-size:.85em;}
+    .lede{font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(201,162,39,.4);padding-left:18px;}
+    ul{padding-left:22px;} li{margin-bottom:8px;}
+    .legal-foot{margin-top:54px;padding-top:22px;border-top:1px solid rgba(201,162,39,.18);font-size:.92rem;color:var(--dim);}
+  </style>
+</head>
+<body>
+  <div class="legal-doc">
+    <div class="legal-top">
+      <a class="legal-brand" href="index.html"><span>✦ ASTROPRECISE</span></a>
+      <a href="terms.html">Terms →</a>
+    </div>
+
+    <h1>Privacy Policy</h1>
+    <p class="legal-sub">Last updated: 13 June 2026</p>
+
+    <p class="lede">AstroPrecise is built privacy-first. Your birth details, charts, and readings are
+      computed and stored <strong>on your own device</strong>. We have no accounts, no analytics, and no
+      advertising trackers, and we never sell your data — because, in almost every case, we never receive it.</p>
+
+    <h2>Who we are</h2>
+    <p>This site is operated by <span class="placeholder">[OWNER / BUSINESS NAME — fill in]</span>
+      (&ldquo;we&rdquo;, &ldquo;us&rdquo;). For any privacy question, contact
+      <span class="placeholder">[CONTACT EMAIL — fill in]</span>.</p>
+
+    <h2>What happens on your device</h2>
+    <p>The astronomy and the readings run entirely in your browser. Your name, birth date, birth time,
+      and chart results are processed locally and saved in your browser&rsquo;s <strong>localStorage</strong>
+      so the site can remember your chart between visits. This data stays on your device, is never sent to
+      us, and you can erase it at any time by clearing your browser&rsquo;s site data.</p>
+
+    <h2>The only information that leaves your browser</h2>
+    <p>To provide certain features, your browser contacts a small number of third-party services directly.
+      We do not operate servers of our own and do not see these requests:</p>
+    <ul>
+      <li><strong>Place search</strong> — when you type a birth city, the place text (and, if you use the map,
+        the coordinates) is sent to the <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>
+        geocoding service to look up coordinates and timezone. Your name, birth date and birth time are
+        <em>not</em> included.</li>
+      <li><strong>Live sky data</strong> — the Instrument page fetches public space-weather readings from
+        <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA SWPC</a> and, for the
+        &ldquo;quantum draw&rdquo;, a random number from the <a href="https://qrng.anu.edu.au/" target="_blank" rel="noopener">ANU Quantum RNG</a>.
+        These requests carry no personal information.</li>
+      <li><strong>Fonts &amp; (optional) map tiles</strong> — typefaces load from Google Fonts; if you open the
+        optional &ldquo;refine on map&rdquo; pin, map tiles load from OpenStreetMap/Carto. As with any web
+        request, these providers receive your IP address and standard request headers.</li>
+    </ul>
+
+    <h2>Cookies &amp; tracking</h2>
+    <p>We set <strong>no cookies</strong> and run <strong>no analytics or advertising scripts</strong>. The only
+      browser storage we use is localStorage for your own chart and preferences, described above.</p>
+
+    <h2>Payments</h2>
+    <p>If and when paid products are offered, checkout is handled entirely by a reputable third-party payment
+      provider (for example Stripe or Gumroad) on their own secure pages. We never see or store your card
+      details. That provider&rsquo;s privacy policy governs the payment, and this policy will be updated to
+      name the provider when payments go live.</p>
+
+    <h2>Your rights</h2>
+    <p>Because we hold no personal data about you on any server, there is nothing for us to export or delete on
+      your behalf — you are in direct control via your browser. Where the GDPR, UK GDPR, or similar laws apply,
+      you retain your rights of access, rectification, erasure, and objection; contact us and we will help with
+      anything within our control.</p>
+
+    <h2>Children</h2>
+    <p>AstroPrecise is intended for adults and is not directed at children under 13 (or the minimum age in your
+      jurisdiction). We do not knowingly collect information from children.</p>
+
+    <h2>Changes</h2>
+    <p>We may update this policy as the site evolves. Material changes will be reflected by the &ldquo;last
+      updated&rdquo; date above.</p>
+
+    <p class="legal-foot">AstroPrecise &middot; computed locally, in the old language of the sky.
+      &nbsp;<a href="index.html">Return to the sky</a> &middot; <a href="terms.html">Terms of Use</a></p>
+  </div>
+</body>
+</html>

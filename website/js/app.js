@@ -598,6 +598,32 @@ window.AstroApp = AstroApp;
   document.head.appendChild(st);
 })();
 
+// ═══ UNIVERSAL LEGAL FOOTER LINKS ════════════════════════════════════════
+// The footer markup varies across pages (and the generated sign pages), so
+// rather than hand-edit each one, ensure a consistent Privacy · Terms line
+// exists once per page. Idempotent; skips the legal pages themselves.
+(function injectLegalLinks() {
+  const here = (location.pathname.split('/').pop() || 'index.html');
+  if (here === 'privacy.html' || here === 'terms.html') return;
+  function place() {
+    if (document.querySelector('.ap-legal-links')) return;
+    const host = document.querySelector('.footer-legal')
+      || document.querySelector('footer .container')
+      || document.querySelector('footer');
+    if (!host) return;
+    const p = document.createElement('p');
+    p.className = 'ap-legal-links';
+    p.style.cssText = 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;'
+      + 'margin-top:10px;opacity:0.7;font-family:Inter,system-ui,sans-serif;';
+    p.innerHTML = '<a href="privacy.html" style="color:var(--gold,#C9A227);text-decoration:none;">Privacy</a>'
+      + ' <span style="opacity:.4">&middot;</span> '
+      + '<a href="terms.html" style="color:var(--gold,#C9A227);text-decoration:none;">Terms</a>';
+    host.appendChild(p);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
+  else place();
+})();
+
 document.addEventListener('DOMContentLoaded', () => AstroApp.init());
 
 if ('serviceWorker' in navigator) {
