@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="My Charts — your saved AstroPrecise birth charts in one place. View the Big Three (Sun, Moon, Rising) for everyone you've cast, rename, delete, or set a chart as today's daily transit reading. Private, in-browser, free." />
+  <title>My Charts — Saved Birth Charts Dashboard | AstroPrecise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="My Charts | AstroPrecise" />
+  <meta property="og:description" content="Your saved birth charts, all in one place — the Big Three at a glance, with view, rename, delete, and set-as-today's-chart. Private and in-browser." />
+  <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/charts.html" />
+  <link rel="canonical" href="https://jonnydavx-eng.github.io/astroprecise/charts.html" />
+  <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="My Charts | AstroPrecise" />
+  <meta name="twitter:description" content="Your saved birth charts, all in one place — the Big Three at a glance, with view, rename, delete, and set-as-today's-chart." />
+  <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#090b16" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — My Charts",
+    "url": "https://jonnydavx-eng.github.io/astroprecise/charts.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "A private, in-browser dashboard of your saved AstroPrecise birth charts. View the Big Three for each chart, rename, delete, and choose which chart powers your daily transit reading.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://jonnydavx-eng.github.io/astroprecise/"
+    }
+  }
+  </script>
+
+  <style>
+    /* ── My Charts page ── */
+    :root {
+      --mc-surface: rgba(16, 18, 34, 0.55);
+      --mc-border:  rgba(255, 255, 255, 0.09);
+    }
+
+    /* Hero */
+    .mc-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .mc-hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.1rem;
+    }
+    .mc-hero__eyebrow::before,
+    .mc-hero__eyebrow::after {
+      content: '';
+      display: block;
+      width: 26px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+    .mc-hero h1 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(2.1rem, 5vw, 3.4rem);
+      font-weight: 700;
+      color: var(--gold-pale, #f0e8d8);
+      line-height: 1.1;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.9rem;
+    }
+    .mc-hero__sub {
+      font-size: 1.02rem;
+      color: var(--silver, #A89E88);
+      max-width: 540px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.65;
+    }
+    .mc-stat {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      background: var(--mc-surface);
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--mc-border);
+      border-radius: 999px;
+      padding: 0.45rem 1.15rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--silver, #A89E88);
+    }
+    .mc-stat__num {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .mc-section { padding: 1rem 0 5rem; }
+
+    /* Grid */
+    .mc-grid--cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* Card */
+    .mc-card {
+      padding: 1.5rem 1.5rem 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+    .mc-card--active {
+      border-color: rgba(201, 162, 39, 0.45) !important;
+      box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.18), 0 14px 40px rgba(0, 0, 0, 0.4);
+    }
+    .mc-card__head {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      position: relative;
+    }
+    .mc-card__avatar {
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gold-pale, #f0e8d8);
+      background: radial-gradient(circle at 30% 28%, rgba(201, 162, 39, 0.4), rgba(110, 26, 38, 0.35));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .mc-card__id { min-width: 0; flex: 1; }
+    .mc-card__name {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold-pale, #f0e8d8);
+      line-height: 1.2;
+      margin: 0 0 0.3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mc-card__birth {
+      font-size: 0.78rem;
+      color: var(--silver, #A89E88);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .mc-card__active {
+      flex: 0 0 auto;
+      align-self: flex-start;
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(201, 162, 39, 0.12);
+      border: 1px solid rgba(201, 162, 39, 0.35);
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      white-space: nowrap;
+    }
+
+    /* Big Three */
+    .mc-big3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      padding: 0.9rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .mc-big3__cell {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+    .mc-big3__orb { flex: 0 0 auto; line-height: 0; }
+    .mc-big3__meta { display: flex; flex-direction: column; min-width: 0; }
+    .mc-big3__label {
+      font-size: 0.56rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+    }
+    .mc-big3__sign {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--gold-pale, #f0e8d8);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Actions */
+    .mc-card__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .mc-card__actions .btn { flex: 1 1 auto; text-align: center; }
+    .mc-card__actions .btn[disabled] { opacity: 0.55; cursor: default; pointer-events: none; }
+
+    /* Empty / fallback state */
+    .mc-empty {
+      grid-column: 1 / -1;
+      max-width: 560px;
+      margin: 1rem auto 0;
+      padding: 3rem 2.5rem;
+      text-align: center;
+    }
+    .mc-empty__glyph {
+      display: block;
+      font-size: 2.6rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      line-height: 1;
+    }
+    .mc-empty__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--gold-pale, #f0e8d8);
+      margin: 0 0 0.7rem;
+    }
+    .mc-empty__text {
+      font-size: 0.92rem;
+      color: var(--silver, #A89E88);
+      line-height: 1.75;
+      max-width: 420px;
+      margin: 0 auto 1.75rem;
+    }
+
+    @media (max-width: 600px) {
+      .mc-grid--cards { grid-template-columns: 1fr; }
+      .mc-empty { padding: 2.25rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="cosmos-solar-system" aria-hidden="true">
+    <div class="css-sun"></div>
+    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
+    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
+    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
+    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
+    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
+  </div>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="ephemeris.html" class="navbar__link">Instrument</a>
+          <a href="horoscope.html" class="navbar__link">Horoscope</a>
+          <a href="compatibility.html" class="navbar__link">Compatibility</a>
+          <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="lifepath.html" class="navbar__link">Life Path</a>
+          <a href="shop.html" class="navbar__link">Shop</a>
+          <a href="profile.html" class="navbar__link">Profile</a>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="chart.html" class="navbar__link">Chart</a>
+        <a href="ephemeris.html" class="navbar__link">Instrument</a>
+        <a href="horoscope.html" class="navbar__link">Horoscope</a>
+        <a href="compatibility.html" class="navbar__link">Compatibility</a>
+        <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="lifepath.html" class="navbar__link">Life Path</a>
+        <a href="shop.html" class="navbar__link">Shop</a>
+        <a href="profile.html" class="navbar__link">Profile</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <div id="charts-dashboard">
+
+      <!-- ============================================================
+           HERO
+      ============================================================ -->
+      <section class="mc-hero" aria-labelledby="page-title">
+        <div class="container">
+          <p class="mc-hero__eyebrow">Your Collection</p>
+          <h1 id="page-title">My Charts</h1>
+          <p class="mc-hero__sub">Every birth chart you've saved, gathered in one place — the Big Three at a glance, ready to revisit. Everything lives privately in your browser; nothing leaves your device.</p>
+          <p class="mc-stat" id="charts-stat" hidden aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           CHART GRID
+      ============================================================ -->
+      <section class="mc-section" aria-labelledby="page-title">
+        <div class="container">
+          <div id="charts-grid" role="region" aria-label="Saved charts" aria-live="polite">
+            <!-- js/charts-dashboard.js renders glass cards or the empty state here -->
+            <div class="glass-card mc-empty">
+              <span class="mc-empty__glyph" aria-hidden="true">✧</span>
+              <h2 class="mc-empty__title">Loading your charts…</h2>
+              <p class="mc-empty__text">If this message stays, JavaScript may be disabled — saved charts need it to display.</p>
+              <a class="btn btn--primary btn--lg" href="chart.html">Calculate a Birth Chart →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">&#10022; AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <nav aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Account navigation">
+          <p class="footer__heading">Account</p>
+          <ul class="footer__links">
+            <li><a href="charts.html" class="footer__link">My Charts</a></li>
+            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- JS -->
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/charts-dashboard.js"></script>
+
+</body>
+</html>

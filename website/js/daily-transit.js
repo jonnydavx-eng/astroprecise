@@ -107,6 +107,15 @@
       var charts = P.getCharts();
       if (charts && charts.length) {
         var c = charts[0];
+        // Honor the dashboard's "Set as today's chart" (localStorage 'ap_active_chart' = chart id)
+        try {
+          var activeId = localStorage.getItem('ap_active_chart');
+          if (activeId) {
+            var found = charts.filter(function (x) { return String(x.id) === String(activeId); })[0]
+                        || (typeof P.getChart === 'function' ? P.getChart(activeId) : null);
+            if (found) c = found;
+          }
+        } catch (e) {}
         if (c && c.birthDate && isFinite(parseFloat(c.lat)) && isFinite(parseFloat(c.lon))) {
           var full = null;
           try {

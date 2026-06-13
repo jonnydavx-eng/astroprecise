@@ -398,6 +398,7 @@ const AstroApp = (() => {
         results.forEach(city => {
           const item = document.createElement('div');
           item.className = 'autocomplete-item';
+          item.setAttribute('role', 'option');
           const region = city.admin ? `${city.admin}, ${city.country}` : city.country;
           item.textContent = city.name + ' ';
           const span = document.createElement('span');
@@ -420,6 +421,12 @@ const AstroApp = (() => {
     }, 250);
 
     inputEl.addEventListener('input', () => {
+      // Editing the text invalidates any previously-picked place — clear the
+      // resolved coordinates/timezone so a submit can't reuse stale values for
+      // a city the visitor has since retyped (matches chart-page.js).
+      if (latEl) latEl.value = '';
+      if (lonEl) lonEl.value = '';
+      delete inputEl.dataset.tz;
       if (inputEl.value.trim().length < 2) { seq++; dropdown.classList.remove('open'); return; }
       run(inputEl.value);
     });
@@ -632,20 +639,28 @@ window.AstroApp = AstroApp;
 // ═══ UNIVERSAL "ACCURACY" NAV LINK ═══════════════════════════════════════
 // Nav markup is hardcoded per page; rather than edit ~25 files, inject the
 // Accuracy link into both the desktop and mobile nav lists once, here.
-(function injectAccuracyNav() {
+(function injectExtraNav() {
+  var EXTRAS = [
+    { href: 'charts.html', label: 'My Charts' },
+    { href: 'retrograde.html', label: 'Retrograde' },
+    { href: 'moonphase.html', label: 'Moon Phase' },
+    { href: 'accuracy.html', label: 'Accuracy' },
+  ];
   function place() {
     var lists = document.querySelectorAll('.navbar__nav, .navbar__mobile-menu');
     if (!lists.length) return;
     var here = (location.pathname.split('/').pop() || 'index.html');
     lists.forEach(function (list) {
-      if (list.querySelector('a[href="accuracy.html"]')) return;
-      var a = document.createElement('a');
-      a.className = 'navbar__link' + (here === 'accuracy.html' ? ' active' : '');
-      a.href = 'accuracy.html';
-      a.textContent = 'Accuracy';
-      if (here === 'accuracy.html') a.setAttribute('aria-current', 'page');
-      var shop = list.querySelector('a[href="shop.html"]');
-      if (shop) list.insertBefore(a, shop); else list.appendChild(a);
+      var anchor = list.querySelector('a[href="shop.html"]'); // insert before Shop, in order
+      EXTRAS.forEach(function (x) {
+        if (list.querySelector('a[href="' + x.href + '"]')) return;
+        var a = document.createElement('a');
+        a.className = 'navbar__link' + (here === x.href ? ' active' : '');
+        a.href = x.href;
+        a.textContent = x.label;
+        if (here === x.href) a.setAttribute('aria-current', 'page');
+        if (anchor) list.insertBefore(a, anchor); else list.appendChild(a);
+      });
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);

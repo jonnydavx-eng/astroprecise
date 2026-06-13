@@ -61,6 +61,21 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/retrograde.html</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/moonphase.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/charts.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://jonnydavx-eng.github.io/astroprecise/aries.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
