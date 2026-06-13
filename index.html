@@ -1469,6 +1469,12 @@
       box-shadow:0 0 18px rgba(255,210,110,.85),0 0 54px rgba(240,150,30,.55),inset 0 -6px 12px rgba(120,60,0,.5);animation:apl-pulse 3.4s ease-in-out infinite;}
     @keyframes apl-pulse{0%,100%{box-shadow:0 0 18px rgba(255,210,110,.8),0 0 50px rgba(240,150,30,.5),inset 0 -6px 12px rgba(120,60,0,.5);}50%{box-shadow:0 0 26px rgba(255,225,150,.95),0 0 80px rgba(245,170,50,.7),inset 0 -6px 12px rgba(120,60,0,.5);}}
     @keyframes seal-pulse{0%,100%{opacity:.8;}50%{opacity:1;}}
+    /* The REAL 3D orrery (same model as the hero) is relocated into this slot during loading,
+       then flown into the hero on dismiss. The CSS-mock above stays as a graceful fallback. */
+    .apl-live-orr{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:min(86vmin,640px);height:min(86vmin,640px);pointer-events:none;z-index:2;opacity:0;transition:opacity 1s ease;}
+    .apl-live-orr canvas{width:100%!important;height:100%!important;display:block;}
+    #preloader.has-real .apl-live-orr{opacity:1;}
+    #preloader.has-real .apl-orr,#preloader.has-real .apl-core{opacity:0;transition:opacity .9s ease;}
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core,.preloader-seal{animation:none;}}
   </style>
   <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
@@ -1480,6 +1486,8 @@
       <div class="apl-spin apl-s3"><span class="apl-pl apl-goldp"></span></div>
     </div>
     <div class="apl-core" aria-hidden="true"></div>
+    <!-- The real 3D orrery (same model as the hero centrepiece) is relocated here during loading -->
+    <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
     <div class="preloader-content" style="position:relative; z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto; padding:0 24px;">
       <div class="preloader-seal" style="font-size:2.6rem; color:#C9A227; margin-bottom:10px; opacity:0.9; text-shadow:0 0 40px rgba(201,162,39,0.6); animation:seal-pulse 3.2s ease-in-out infinite;">✧</div>
       <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px;">The Spheres Align</div>
@@ -1507,15 +1515,49 @@
 
     const startTime = Date.now();
 
+    // ── The REAL 3D orrery (same model as the hero centrepiece) on the loading screen ──
+    const orrSlot = document.getElementById('preloader-orrery-slot');
+    const orrCanvas = document.getElementById('orrery-canvas');
+    const heroRing = orrCanvas ? orrCanvas.parentElement : null;   // .hero__orrery-ring
+    let orreryRelocated = false;
+    function waitForGlobal(test, ms) {
+      return new Promise((res) => { const t0 = Date.now();
+        (function poll() { try { if (test()) return res(true); } catch (e) {}
+          if (Date.now() - t0 > ms) return res(false); requestAnimationFrame(poll); })(); });
+    }
+
     var preDone = false;
     function hidePre() {
       if (preDone) return; preDone = true;
       if (raf) cancelAnimationFrame(raf);
+      // Fly the real orrery back into the hero — ONE model, no rebuild, context preserved.
+      if (orreryRelocated && orrCanvas && heroRing) {
+        orrCanvas.style.width = ''; orrCanvas.style.height = '';
+        heroRing.appendChild(orrCanvas);
+        window.dispatchEvent(new Event('resize'));   // ResizeObserver + resize() refit to hero size
+        if (window.Orrery3D && typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
+      }
       pre.classList.add('fade-out');
       setTimeout(() => { pre.style.display = 'none'; }, 620);
       const heroO = document.getElementById('orrery-canvas');
       if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';
     }
+
+    // Mount the same WebGL orrery onto the centred loading stage as soon as the engine is ready.
+    (async function featureOrreryOnLoadingScreen() {
+      if (!orrSlot || !orrCanvas || !heroRing) return;
+      const ready = await waitForGlobal(() => window.Orrery3D && window.AstroEphemeris, 3800);
+      if (!ready || preDone) return;                 // engine slow / already dismissed → CSS mock stays, hero inits normally
+      orrSlot.appendChild(orrCanvas);                // move the ONE canvas onto the loading stage
+      orrCanvas.style.width = '100%'; orrCanvas.style.height = '100%';
+      orreryRelocated = true;
+      try {
+        window.Orrery3D.init(orrCanvas);
+        window.__orreryReady = true;                 // tells the hero boot not to double-init
+        if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(6); // gentle drift while loading
+        pre.classList.add('has-real');               // fade the CSS-mock fallback, reveal the real model
+      } catch (e) {}
+    })();
 
     // After the brief alignment, reveal the "Enter" button as an instant skip…
     setTimeout(() => {
@@ -1527,7 +1569,9 @@
     }, 2200);
 
     // …but ALSO auto-reveal the site so a visitor is NEVER trapped behind the gate.
-    setTimeout(hidePre, 3400);
+    // (4.2s gives the real 3D orrery a moment to shine on the loading stage; the Enter
+    //  button at 2.2s and tap-anywhere remain as instant skips.)
+    setTimeout(hidePre, 4200);
 
     // Fallback: allow click anywhere on preloader after short time (ancient "touch the seal")
     pre.addEventListener('click', function onFirstClick(e) {
@@ -1858,8 +1902,8 @@
               for describing the qualities of time — the specific flavors of energy
               present at any given moment. Your birth chart is a <strong>snapshot of the
               precise positions of every planet</strong> at the exact second you arrived in the world.
-              Not approximate positions. Not a generalized sign column. Exact positions, computed
-              from the same ephemeris algorithms used by observatories.
+              Not a generalized sign column — real positions computed from the same planetary
+              theories professional astronomy is built on (VSOP87 and ELP2000), to within roughly an arcminute.
             </p>
 
             <p>
@@ -2677,7 +2721,12 @@
       /* ── Initialise 3D orrery ── */
       try {
         await waitFor(function () { return window.Orrery3D; }, 6000);
-        window.Orrery3D.init(document.getElementById('orrery-canvas'));
+        // The preloader may already have mounted the SAME orrery (and will relocate it into
+        // the hero on dismiss). Only init here if that didn't happen.
+        if (!window.__orreryReady) {
+          window.Orrery3D.init(document.getElementById('orrery-canvas'));
+          window.__orreryReady = true;
+        }
         // Default paused
         if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
         // Activate pause button
