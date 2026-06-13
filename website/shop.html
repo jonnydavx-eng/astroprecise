@@ -270,6 +270,182 @@
       padding: 2px 8px;
       margin-top: var(--space-2);
     }
+
+    /* ═══ COMMERCE: WEAR YOUR SKY ═══════════════════════════════════════ */
+    .shopc-intro { max-width: 620px; margin: 0 auto var(--space-8); text-align: center; }
+    .shopc-story {
+      font-family: var(--font-display); font-style: italic;
+      color: var(--silver); font-size: var(--text-base); line-height: 1.7;
+      min-height: 2.6em; margin: 0 auto; max-width: 620px;
+    }
+
+    /* Filter chips */
+    .shopc-filters {
+      display: flex; gap: var(--space-2); flex-wrap: wrap;
+      justify-content: center; margin: var(--space-6) 0 var(--space-10);
+    }
+    .shopc-chip {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 99px;
+      color: var(--silver); font-size: 0.72rem; letter-spacing: 0.1em;
+      text-transform: uppercase; font-family: var(--font-sans);
+      padding: 6px 18px; cursor: pointer; transition: all var(--transition-fast);
+    }
+    .shopc-chip:hover, .shopc-chip.active {
+      border-color: rgba(201,162,39,0.5); color: var(--gold-pale);
+      background: rgba(201,162,39,0.08);
+    }
+
+    /* Grid */
+    .shopc-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-6);
+    }
+    @media (max-width: 600px) { .shopc-grid { grid-template-columns: 1fr; } }
+    .shopc-empty { text-align: center; color: var(--silver-dim); padding: var(--space-10) 0; }
+
+    .shopc-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); overflow: hidden; position: relative;
+      display: flex; flex-direction: column; transition: all var(--transition-base);
+    }
+    .shopc-card:hover {
+      border-color: rgba(201,162,39,0.35); transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(42,74,148,0.15);
+    }
+    .shopc-card__art {
+      height: 170px; display: flex; align-items: center; justify-content: center;
+      position: relative; cursor: pointer; overflow: hidden;
+      background: linear-gradient(135deg, rgba(42,74,148,0.18) 0%, rgba(201,162,39,0.08) 100%);
+    }
+    .shopc-card__glyph { font-size: 3.6rem; color: var(--gold); line-height: 1;
+      filter: drop-shadow(0 0 14px rgba(201,162,39,0.35)); }
+    .shopc-card__badge {
+      position: absolute; top: var(--space-3); left: var(--space-3);
+      font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--void, #050406); background: var(--gold); font-weight: 700;
+      border-radius: 99px; padding: 2px 9px;
+    }
+    .shopc-card__personal {
+      position: absolute; bottom: var(--space-3); right: var(--space-3);
+      font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold-pale); background: rgba(9,11,22,0.72);
+      border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .shopc-card__body { padding: var(--space-5); display: flex; flex-direction: column; flex: 1; }
+    .shopc-card__kicker {
+      font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: var(--space-2);
+    }
+    .shopc-card__top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
+    .shopc-card__name { font-family: var(--font-display); font-size: var(--text-base); color: var(--white); line-height: 1.35; }
+    .shopc-card__price { font-family: var(--font-display); color: var(--gold-pale); font-size: var(--text-sm); white-space: nowrap; }
+    .shopc-card__blurb { font-size: var(--text-sm); color: var(--silver); line-height: 1.65; margin: var(--space-3) 0 var(--space-5); flex: 1; }
+    .shopc-card__cta { width: 100%; text-align: center; justify-content: center; }
+
+    /* Personalised note (quick view) */
+    .shopc-personal {
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      background: rgba(201,162,39,0.05); padding: var(--space-4); margin-top: var(--space-4); text-align: left;
+    }
+    .shopc-personal__head { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 6px; margin-bottom: var(--space-2); }
+    .shopc-personal__chart { font-family: var(--font-display); color: var(--gold-pale); font-size: var(--text-sm); margin-bottom: var(--space-2); }
+    .shopc-personal__note { font-size: 0.72rem; color: var(--silver-dim); line-height: 1.6; }
+    .shopc-personal__note a { color: var(--gold); }
+    .shopc-personal--empty { background: rgba(42,74,148,0.06); }
+
+    /* Quick view */
+    .shopc-qv { text-align: center; }
+    .shopc-qv__art { font-size: 3rem; color: var(--gold); margin-bottom: var(--space-3); filter: drop-shadow(0 0 14px rgba(201,162,39,0.3)); }
+    .shopc-qv__kicker { font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--space-2); }
+    .shopc-qv__price { font-family: var(--font-display); color: var(--gold-pale); font-size: 1.3rem; margin-bottom: var(--space-3); }
+    .shopc-qv__blurb { font-size: var(--text-sm); color: var(--silver); line-height: 1.7; }
+
+    /* ─ Cart toggle (floating) ─ */
+    .shopc-cart-toggle {
+      position: fixed; bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px)); right: var(--space-6); z-index: 60;
+      background: var(--gold); color: var(--void, #050406); border: none; cursor: pointer;
+      width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4); font-size: 1.3rem; transition: transform var(--transition-fast);
+    }
+    .shopc-cart-toggle:hover { transform: scale(1.06); }
+    .shopc-cart-toggle__count {
+      position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px;
+      background: var(--oxblood, #6e1a26); color: #fff; border-radius: 99px;
+      font-size: 0.62rem; font-weight: 700; display: none; align-items: center; justify-content: center; padding: 0 5px;
+    }
+    @media (max-width: 720px) { .shopc-cart-toggle { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); } }
+
+    /* ─ Cart drawer ─ */
+    .shopc-cart-overlay {
+      position: fixed; inset: 0; background: rgba(5,4,6,0.6); backdrop-filter: blur(2px);
+      opacity: 0; pointer-events: none; transition: opacity var(--transition-base); z-index: 90;
+    }
+    .shopc-cart-overlay.open { opacity: 1; pointer-events: auto; }
+    .shopc-cart {
+      position: fixed; top: 0; right: 0; height: 100%; width: min(380px, 92vw);
+      background: var(--surface-2); border-left: 1px solid var(--border);
+      transform: translateX(100%); transition: transform var(--transition-base);
+      z-index: 95; display: flex; flex-direction: column;
+    }
+    .shopc-cart.open { transform: translateX(0); }
+    .shopc-cart__header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-5); border-bottom: 1px solid var(--border); }
+    .shopc-cart__title { font-family: var(--font-display); color: var(--gold-pale); font-size: var(--text-lg); }
+    .shopc-cart__close { background: none; border: none; color: var(--silver); font-size: 1.6rem; cursor: pointer; line-height: 1; }
+    .shopc-cart__items { flex: 1; overflow-y: auto; padding: var(--space-4); }
+    .shopc-cart__empty { text-align: center; color: var(--silver-dim); padding: var(--space-10) var(--space-4); }
+    .shopc-cart__empty .eng-i { font-size: 2.4rem; color: var(--gold); display: block; margin: 0 auto var(--space-3); }
+    .shopc-cart__item { display: flex; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--border); }
+    .shopc-cart__icon { font-size: 1.6rem; color: var(--gold); flex-shrink: 0; }
+    .shopc-cart__info { flex: 1; min-width: 0; }
+    .shopc-cart__name { font-family: var(--font-display); color: var(--white); font-size: var(--text-sm); }
+    .shopc-cart__meta { font-size: 0.62rem; letter-spacing: 0.06em; color: var(--silver-dim); text-transform: uppercase; margin: 2px 0 6px; }
+    .shopc-cart__qtyrow { display: flex; align-items: center; gap: 6px; }
+    .shopc-qty { background: var(--surface); border: 1px solid var(--border); color: var(--gold-pale); width: 24px; height: 24px; border-radius: 6px; cursor: pointer; line-height: 1; }
+    .shopc-qty__n { min-width: 18px; text-align: center; color: var(--silver); font-size: var(--text-sm); }
+    .shopc-cart__price { margin-left: auto; color: var(--gold-pale); font-family: var(--font-display); font-size: var(--text-sm); }
+    .shopc-cart__remove { background: none; border: none; color: var(--silver-dim); font-size: 1.2rem; cursor: pointer; flex-shrink: 0; align-self: flex-start; }
+    .shopc-cart__remove:hover { color: var(--oxblood, #b04a52); }
+    .shopc-cart__footer { padding: var(--space-5); border-top: 1px solid var(--border); }
+    .shopc-cart__totalrow { display: flex; justify-content: space-between; margin-bottom: var(--space-4); color: var(--gold-pale); font-family: var(--font-display); font-size: var(--text-base); }
+    .shopc-cart__checkout { width: 100%; justify-content: center; }
+    .shopc-cart__note { font-size: 0.62rem; color: var(--silver-dim); text-align: center; line-height: 1.6; margin-top: var(--space-3); }
+
+    /* ─ Commerce modal ─ */
+    .shopc-modal-backdrop {
+      position: fixed; inset: 0; background: rgba(5,4,6,0.7); backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center; z-index: 100; padding: var(--space-4);
+    }
+    .shopc-modal-backdrop.open { display: flex; }
+    .shopc-modal {
+      background: var(--surface-2); border: 1px solid var(--border-2); border-radius: var(--radius-xl);
+      max-width: 440px; width: 100%; padding: var(--space-6); position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    .shopc-modal__close { position: absolute; top: var(--space-3); right: var(--space-4); background: none; border: none; color: var(--silver); font-size: 1.6rem; cursor: pointer; line-height: 1; }
+    .shopc-modal__title { font-family: var(--font-display); color: var(--gold-pale); font-size: var(--text-xl); margin-bottom: var(--space-4); padding-right: var(--space-6); }
+    .shopc-modal__body { color: var(--silver); font-size: var(--text-sm); line-height: 1.7; }
+    .shopc-modal__body p { margin-bottom: var(--space-3); }
+    .shopc-modal__body strong { color: var(--gold-pale); }
+    .shopc-modal__note { font-size: 0.78rem; color: var(--silver-dim); }
+    .shopc-modal__actions { display: flex; gap: var(--space-3); justify-content: flex-end; margin-top: var(--space-5); flex-wrap: wrap; }
+    .shopc-checkout { font-size: var(--text-sm); margin-bottom: var(--space-3); }
+    .shopc-checkout__row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid var(--border); }
+    .shopc-checkout__total { color: var(--gold-pale); font-weight: 700; border-bottom: none; padding-top: var(--space-2); }
+
+    /* ─ Email invite ─ */
+    .shopc-email { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+    .shopc-email__input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); color: var(--gold-pale); padding: 9px 12px; font-family: var(--font-sans); font-size: var(--text-sm); }
+    .shopc-email__btn { white-space: nowrap; }
+    .shopc-email__priv { font-size: 0.62rem; color: var(--silver-dim); margin-top: var(--space-2); }
+
+    /* ─ Toast fallback ─ */
+    .shopc-toast {
+      position: fixed; bottom: var(--space-8); left: 50%; transform: translate(-50%, 20px);
+      background: var(--surface-2); border: 1px solid var(--border-2); color: var(--gold-pale);
+      padding: 10px 18px; border-radius: 99px; font-size: var(--text-sm); z-index: 110;
+      opacity: 0; transition: all var(--transition-base);
+    }
+    .shopc-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
   </style>
 </head>
 <body>
@@ -328,8 +504,8 @@
         <p class="eyebrow">Curated Recommendations</p>
         <h1 class="gradient-text">Cosmic Shop</h1>
         <p class="hero-subtitle" style="max-width:560px;margin:0 auto var(--space-8);">
-          Carefully chosen books, tools, and objects for the serious student of the cosmos.
-          No pop-astrology noise — only things that genuinely deepen the practice.
+          Pieces made from your own sky — posters, apparel, and deep readings generated from
+          your birth chart. Plus a small, honest shelf of books and objects we'd use ourselves.
         </p>
 
         <!-- Disclosure -->
@@ -342,6 +518,7 @@
 
         <!-- Category filter -->
         <nav class="shop-cats" aria-label="Shop categories">
+          <a href="#wear-your-sky" class="shop-cat-btn">Wear Your Sky</a>
           <a href="#free-tools" class="shop-cat-btn">Free Tools</a>
           <a href="#books" class="shop-cat-btn">Books</a>
           <a href="#crystals" class="shop-cat-btn">Crystals</a>
@@ -349,6 +526,22 @@
           <a href="#jewelry" class="shop-cat-btn">Jewellery</a>
           <a href="#prints" class="shop-cat-btn">Art Prints</a>
         </nav>
+      </div>
+    </section>
+
+    <!-- WEAR YOUR SKY — personalised commerce (config-driven via AstroShop) -->
+    <section class="section" id="wear-your-sky">
+      <div class="container">
+        <div class="shopc-intro">
+          <p class="shop-section-title" style="justify-content:center;">✦ Wear Your Sky</p>
+          <p class="shopc-story" id="shopc-story"></p>
+        </div>
+        <div class="shopc-filters" id="shopc-filters" role="tablist" aria-label="Collections"></div>
+        <div class="shopc-grid" id="shopc-grid" aria-live="polite"></div>
+        <p style="text-align:center;color:var(--silver-dim);font-size:0.68rem;line-height:1.7;max-width:560px;margin:var(--space-8) auto 0;">
+          Every piece is made to order from your own birth chart. Purchases are one-time — no subscriptions.
+          Checkout opens soon; your cart is saved on this device, and your birth details never leave your browser.
+        </p>
       </div>
     </section>
 
@@ -840,8 +1033,30 @@
     </div>
   </footer>
 
+  <!-- ═══ COMMERCE CHROME: floating cart toggle + slide-out drawer ═══ -->
+  <button class="shopc-cart-toggle" data-cart-toggle aria-label="Open cart">
+    <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>
+    <span class="shopc-cart-toggle__count" data-cart-count aria-hidden="true">0</span>
+  </button>
+
+  <div class="shopc-cart-overlay" id="shopc-cart-overlay" aria-hidden="true"></div>
+  <aside class="shopc-cart" id="shopc-cart" aria-label="Shopping cart">
+    <div class="shopc-cart__header">
+      <span class="shopc-cart__title">Your Cart</span>
+      <button class="shopc-cart__close" data-cart-close aria-label="Close cart">×</button>
+    </div>
+    <div class="shopc-cart__items" id="shopc-cart-items"></div>
+    <div class="shopc-cart__footer">
+      <div class="shopc-cart__totalrow"><span>Total</span><span id="shopc-cart-total">$0.00</span></div>
+      <button class="btn btn--primary shopc-cart__checkout" id="shopc-checkout-btn">Checkout</button>
+      <p class="shopc-cart__note">One-time purchases · made from your chart · birth data never leaves your device.</p>
+    </div>
+  </aside>
+
   <script src="js/cosmos.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/shop-commerce.js"></script>
   <script src="js/effects.js"></script>
 </body>
 </html>
