@@ -489,7 +489,7 @@
           let lon;
           if      (pl.key === 'sun')  lon = E.sunPosition(jd).lon;
           else if (pl.key === 'moon') lon = E.moonPosition(jd).lon;
-          else                        lon = E.geocentricPlanetLongitude(pl.key, jd);
+          else                        lon = E.planetLongitude(pl.key, jd); // accurate path (was geocentricPlanetLongitude — rendered Pluto ~2.5 signs wrong)
           planetLons[pl.key] = mod(lon);
         } catch (e) { /* leave unset — planet simply won't render */ }
       }
