@@ -624,6 +624,70 @@ window.AstroApp = AstroApp;
   else place();
 })();
 
+// ═══════════════════════════════════════════════════════════════════════
+// MONETISATION — provider-agnostic, dormant-by-default, link-out only.
+// GitHub Pages forbids SELLING on the site, but permits donation/crowdfunding
+// links, and outbound links to storefronts hosted elsewhere are fine. So every
+// avenue here is an external link (tips, hosted product pages, newsletter,
+// affiliate). Nothing renders until you paste a real URL below — so a visitor
+// never sees a broken or fake checkout.  ◆ EDIT THIS BLOCK TO GO LIVE ◆
+// ═══════════════════════════════════════════════════════════════════════
+window.AP_MON = Object.assign({
+  tipUrl:       '',   // tips/support — Ko-fi (0% on tips) or buymeacoffee. Pages-permitted.
+  reportUrl:    '',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
+  posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
+  giftUrl:      '',   // gift a reading — hosted product
+  newsletterUrl:'',   // email list signup — hosted (Buttondown / Kit / MailerLite)
+  affiliateTag: '',   // honest affiliate tag for the shop page (e.g. Amazon Associates)
+}, window.AP_MON || {});
+
+(function monetisation() {
+  const M = window.AP_MON;
+  const isUrl = u => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
+  const keyToUrl = k => M[k + 'Url'];
+
+  function wire() {
+    // Buttons/links opt in with data-mon="report|poster|gift|newsletter|tip".
+    // mode: data-mon-mode="hide" (default — vanish until configured) or "dormant"
+    // (stay visible but disabled with a gentle "coming soon").
+    document.querySelectorAll('[data-mon]').forEach(el => {
+      const url = keyToUrl(el.dataset.mon);
+      const mode = el.dataset.monMode || 'hide';
+      if (isUrl(url)) {
+        if (el.tagName === 'A') { el.href = url; el.target = '_blank'; el.rel = 'noopener'; }
+        else el.addEventListener('click', () => window.open(url, '_blank', 'noopener'));
+        el.removeAttribute('aria-disabled');
+        el.style.removeProperty('display');
+      } else if (mode === 'dormant') {
+        el.setAttribute('aria-disabled', 'true');
+        el.style.opacity = '0.55'; el.style.cursor = 'default';
+        el.addEventListener('click', e => { e.preventDefault();
+          if (window.AstroApp) AstroApp.showToast('Coming soon', 'This offering isn’t open yet.', 'info'); });
+      } else {
+        el.style.display = 'none'; // honest: no link, no clutter
+      }
+    });
+
+    // Footer support line — appears the moment a tip URL is configured.
+    if (isUrl(M.tipUrl) && !document.querySelector('.ap-support-link')) {
+      const host = document.querySelector('.ap-legal-links') || document.querySelector('.footer-legal')
+        || document.querySelector('footer .container') || document.querySelector('footer');
+      if (host) {
+        const a = document.createElement('a');
+        a.className = 'ap-support-link';
+        a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = '♥ Support this free tool';
+        a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
+          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#C9A227);text-decoration:none;';
+        host.appendChild(document.createElement('br'));
+        host.appendChild(a);
+      }
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+  else wire();
+})();
+
 document.addEventListener('DOMContentLoaded', () => AstroApp.init());
 
 if ('serviceWorker' in navigator) {
