@@ -99,8 +99,10 @@ const a = buildPerson(P1), b = buildPerson(P2);
 const toCompat = pe => ({ sunSign: pe.pos.sun.sign, moonSign: pe.pos.moon.sign, venusSign: pe.pos.venus.sign, marsSign: pe.pos.mars.sign, mercurySign: pe.pos.mercury.sign, rising: pe.A.sign });
 const syn = (I && I.calculateCompatibility) ? I.calculateCompatibility(toCompat(a), toCompat(b))
   : { overall: 50, love: 50, communication: 50, values: 50, longTerm: 50, passion: 50, synastryAspects: [], overview: 'Synastry engine unavailable.' };
+// window.AstroInterpretations.calculateCompatibility emits planet1/planet2;
+// the inner Interpretations.* variant emits p1/p2 — accept either.
 const synAspects = (syn.synastryAspects || []).map(x => ({
-  p1: x.p1 || x.planet1 || '', p2: x.p2 || x.planet2 || '',
+  p1: x.planet1 || x.p1 || '', p2: x.planet2 || x.p2 || '',
   aspect: x.aspect || x.type || '', orb: x.orb, interpretation: x.interpretation || '',
   harmony: x.harmony || '',
 }));

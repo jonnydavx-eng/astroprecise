@@ -408,7 +408,7 @@ window.AstroShop = (() => {
 
   function openQuickView(id) {
     const p = productById(id);
-    if (!p) return;
+    if (!p || p.available === false) return;   // honesty: never price/cart an unfulfillable SKU
     const cols = collections();
     const colName = cols[p.collection] ? cols[p.collection].name : '';
     const live = isUrl(p.fulfilUrl);
@@ -576,7 +576,7 @@ window.AstroShop = (() => {
   // ═══════════════════════════════════════════════════════════════════════
   function injectCatalogSchema() {
     if (document.getElementById('shopc-catalog-ld')) return;
-    const list = products();
+    const list = products().filter(p => p.available !== false);   // don't advertise unfulfillable SKUs to crawlers
     if (!list.length) return;
     const s = document.createElement('script');
     s.type = 'application/ld+json';
