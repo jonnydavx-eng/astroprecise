@@ -1793,7 +1793,11 @@ if ('serviceWorker' in navigator) {
   }
 
   function boot() {
-    injectEmailModal();
+    function injectModalWhenReady() {
+      injectEmailModal();
+    }
+    if (window.__apHeroEntered) injectModalWhenReady();
+    else window.addEventListener('ap-hero-enter', injectModalWhenReady, { once: true });
     injectNavCTA();
     injectHeroCTA();
     injectBannerCTA();
