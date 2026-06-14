@@ -205,8 +205,8 @@
     .hero__content::before {
       content: '';
       position: absolute;
-      inset: -24px -40px -24px -24px;
-      background: radial-gradient(ellipse 90% 110% at 0% 50%, rgba(5, 4, 6, 0.72) 0%, transparent 72%);
+      inset: -24px -90px -24px -24px;
+      background: radial-gradient(ellipse 100% 120% at 12% 50%, rgba(5, 4, 6, 0.9) 0%, rgba(5, 4, 6, 0.62) 52%, transparent 88%);
       pointer-events: none;
       z-index: -1;
     }
@@ -280,6 +280,7 @@
       letter-spacing: 0.01em;
       color: var(--white);
       margin-bottom: var(--space-5);
+      text-shadow: 0 2px 18px rgba(5, 4, 6, 0.9), 0 1px 4px rgba(5, 4, 6, 0.75);
     }
 
     .hero__h1 em {
@@ -503,16 +504,10 @@
 
     /* Sacred-geometry meridian — instrument frame, not a box */
     .hero__meridian {
-      position: absolute;
-      inset: -6%;
-      width: 112%;
-      height: 112%;
-      left: -6%;
-      top: -6%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.38;
-      transition: opacity 1.2s ease;
+      /* Retired: the astrolabe crosshair/rings overlaid on the 3D model read as
+         clutter ("logo in the way") and its dashed rings poked out around the
+         masked canvas edges, distorting the background. The model speaks for itself. */
+      display: none;
     }
     .hero__meridian-drift {
       transform-origin: 100px 100px;
@@ -541,8 +536,10 @@
     .hero__meridian .meridian-ring { stroke-width: 0.75; stroke-dasharray: 3 9; opacity: 0.65; }
     .hero__meridian .meridian-axis { stroke-width: 0.5; opacity: 0.35; }
 
-    /* Chronicle HUD — mirrors orrery time readout */
+    /* Chronicle HUD — retired: duplicated the orrery console's own date/timeline
+       readout and floated over the model corner as clutter. */
     .hero__chronicle {
+      display: none;
       position: absolute;
       top: 8%;
       right: 6%;
@@ -763,9 +760,10 @@
       cursor: grab;
       touch-action: none;
       pointer-events: auto;
-      /* Full dissolve into the page nebula — no visible disc edge */
-      -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 46%, #000 46%, rgba(0,0,0,0.92) 58%, rgba(0,0,0,0.42) 76%, transparent 100%);
-              mask-image: radial-gradient(ellipse 90% 90% at 50% 46%, #000 46%, rgba(0,0,0,0.92) 58%, rgba(0,0,0,0.42) 76%, transparent 100%);
+      /* Tight circular vignette so the model dissolves into the page nebula —
+         no boxy disc edge, and the glow pulls away from the hero title. */
+      -webkit-mask-image: radial-gradient(circle at 50% 47%, #000 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.28) 68%, transparent 84%);
+              mask-image: radial-gradient(circle at 50% 47%, #000 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.28) 68%, transparent 84%);
     }
     #orrery-canvas:active { cursor: grabbing; }
     /* Affordance hint — fades after a beat, returns on hover so the model never feels static/locked */
