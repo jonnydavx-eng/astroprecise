@@ -226,6 +226,8 @@ const AstroApp = (() => {
     const modal = document.getElementById(id);
     if (modal) {
       modal.classList.add('open');
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
     }
   }
@@ -234,6 +236,8 @@ const AstroApp = (() => {
     const modal = document.getElementById(id);
     if (modal) {
       modal.classList.remove('open');
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
   }
@@ -1533,12 +1537,28 @@ if ('serviceWorker' in navigator) {
     return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_tool', tag: 'tag_banner_tool', showPerks: true };
   }
 
+  function closeEmailModal() {
+    var modal = document.getElementById('ap-email-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (window.AstroApp && typeof AstroApp.closeModal === 'function') AstroApp.closeModal('ap-email-modal');
+  }
+
   function openEmailSignup(source) {
+    if (document.body.classList.contains('preloader-active')) return;
     if (!document.getElementById('ap-email-modal')) injectEmailModal();
     var modal = document.getElementById('ap-email-modal');
     if (modal) modal.dataset.source = source || 'modal';
     if (window.AstroApp && typeof AstroApp.openModal === 'function') AstroApp.openModal('ap-email-modal');
-    else if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    else if (modal) {
+      modal.classList.add('open');
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
   }
 
   function confirmHtml(res) {
@@ -1643,11 +1663,13 @@ if ('serviceWorker' in navigator) {
     wrap.setAttribute('role', 'dialog');
     wrap.setAttribute('aria-labelledby', 'ap-email-modal-title');
     wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-hidden', 'true');
+    wrap.style.display = 'none';
     wrap.innerHTML =
       '<div class="modal ap-email-modal">'
       + '<div class="modal__header">'
       + '<h2 class="modal__title" id="ap-email-modal-title">' + c.modalTitle + '</h2>'
-      + '<button type="button" class="modal__close" data-modal-close aria-label="Close">\u00d7</button>'
+      + '<button type="button" class="modal__close" id="ap-email-modal-close" data-modal-close aria-label="Close">\u00d7</button>'
       + '</div>'
       + '<div class="modal__body">'
       + '<p class="ap-email-modal__sub">' + c.modalSub + '</p>'
@@ -1662,11 +1684,29 @@ if ('serviceWorker' in navigator) {
       + '</form></div></div>';
     document.body.appendChild(wrap);
     wireEmailForm(wrap.querySelector('form'), { source: 'email_modal', tag: 'tag_email_modal' });
+    var closeBtn = wrap.querySelector('#ap-email-modal-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        closeEmailModal();
+      });
+    }
+    wrap.addEventListener('click', function (ev) {
+      if (ev.target === wrap) closeEmailModal();
+    });
     wrap.querySelector('form').addEventListener('submit', function () {
-      setTimeout(function () {
-        if (window.AstroApp && typeof AstroApp.closeModal === 'function') AstroApp.closeModal('ap-email-modal');
-      }, 2400);
+      setTimeout(closeEmailModal, 2400);
     }, true);
+  }
+
+  function resetEmailModalState() {
+    var modal = document.getElementById('ap-email-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
   }
 
   function injectNavCTA() {
@@ -1793,11 +1833,19 @@ if ('serviceWorker' in navigator) {
   }
 
   function boot() {
+    resetEmailModalState();
     function injectModalWhenReady() {
+      if (document.body.classList.contains('preloader-active')) return;
       injectEmailModal();
+      resetEmailModalState();
     }
-    if (window.__apHeroEntered) injectModalWhenReady();
-    else window.addEventListener('ap-hero-enter', injectModalWhenReady, { once: true });
+    window.addEventListener('ap-hero-enter', injectModalWhenReady, { once: true });
+    if (window.__apHeroEntered && !document.body.classList.contains('preloader-active')) {
+      injectModalWhenReady();
+    }
+    window.addEventListener('pageshow', function (ev) {
+      if (ev.persisted) resetEmailModalState();
+    });
     injectNavCTA();
     injectHeroCTA();
     injectBannerCTA();

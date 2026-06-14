@@ -2820,6 +2820,19 @@ body > .cosmos-solar-system { display: none !important; }
   animation: fade-in var(--transition-base) ease;
 }
 
+/* Email signup — never visible until explicitly opened (survives stale SW CSS) */
+.ap-email-modal-backdrop {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden;
+}
+
+.ap-email-modal-backdrop.open {
+  display: flex !important;
+  pointer-events: auto !important;
+  visibility: visible;
+}
+
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }

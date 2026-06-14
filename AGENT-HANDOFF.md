@@ -10,7 +10,7 @@ Rules: edit only here · read the newest entries below before working · append 
 
 ## Session digest — Grok 2026-06-14 (ap-v115 → ap-v119, all PUSHED)
 
-**Current SW cache:** `ap-v135` (`website/sw.js` — hard-refresh or unregister SW after deploy).
+**Current SW cache:** `ap-v136` (`website/sw.js` — hard-refresh or unregister SW after deploy).
 
 ### 1. Pricing ladder (`website/js/app.js` → `AP_MON`) — ap-v115 then ap-v116
 
@@ -197,3 +197,4 @@ Docs aligned at ap-v116: `GTM-LADDER.md`, `GROWTH.md`, `LINK-IN-BIO.md`, `INSTAN
 | 2026-06-14 (PM #9) | Grok | **Homepage intro email (ap-v133).** Optional email field on preloader bottom panel (with Enter) — captures on enter via `tag_intro_entry`; **Enter Your Sky** still works with empty email. Orrery/model untouched. Removed duplicate hero email strip on index. | Clear sessionStorage `ap_intro_complete` to re-test intro, or incognito. |
 | 2026-06-14 (PM #10) | Grok | **Post-intro email gate (ap-v134).** Removed inline email from loading panel — orrery sequence unchanged. After **Enter Your Sky**, dismissible overlay (`#preloader-email-gate`): **×** close, optional email + **Join list**, or **Continue without email** — all paths then fly orrery to hero. Email never blocks loading. | Clear `sessionStorage.ap_intro_complete` or incognito to re-test. Hard-refresh for ap-v134. |
 | 2026-06-14 (PM #11) | Grok | **Email dismiss fix (ap-v135).** Root bug: `.modal-backdrop` was always `display:flex` — close removed `.open` but modal stayed blocking. Now hidden until `.open`. Intro gate: `position:fixed` z-index 100000, orrery `pointer-events:none` while open, 44px × target, Escape/backdrop dismiss. `injectEmailModal` deferred until `ap-hero-enter`. | Hard-refresh ap-v135. Re-test intro gate × / skip + nav Updates modal close. |
+| 2026-06-14 (PM #12) | Grok | **Email-on-load fix (ap-v136).** Stale SW CSS could show email modal before intro. `.ap-email-modal-backdrop` forced hidden with `!important` + inline `display:none` on inject; close wired directly; `openEmailSignup` blocked during `preloader-active`; intro gate back to `position:absolute` inside preloader (can't beat intro layer). | Hard-refresh/unregister SW for ap-v136. Cold-open PWA: orrery first, email only after Enter → optional popup. |
