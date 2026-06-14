@@ -1117,9 +1117,13 @@
   };
 
   const SHARE_FORMATS = {
-    square: { w: 1080, h: 1080 },
-    story:  { w: 1080, h: 1920 },
-    print:  { w: 2480, h: 3508 }, // A4 @ ~300dpi — print-on-demand ready
+    square: { w: 2160, h: 2160 },
+    story:  { w: 2160, h: 3840 },
+    print:  { w: 4960, h: 7016 }, // A4 @ ~600dpi — print-on-demand HD
+    // Legacy social sizes (still available via export picker)
+    square1x: { w: 1080, h: 1080 },
+    story1x:  { w: 1080, h: 1920 },
+    print1x:  { w: 2480, h: 3508 },
   };
 
   // Deterministic star seed from the chart so the same person → same artwork.
@@ -1250,6 +1254,8 @@
 
   // ── The natal wheel, drawn in design-space (cx,cy,radius in px) ────────────
   function drawWheel(x, chart, cx, cy, R) {
+    x.lineCap = 'round';
+    x.lineJoin = 'round';
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
     const ELEMENT_SECTOR = {
@@ -1515,7 +1521,10 @@
     const W = fmt.w, H = fmt.h;
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = H;
-    const x = cv.getContext('2d');
+    const x = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(cv, W, H)
+      : cv.getContext('2d');
+    if (x && !x.imageSmoothingQuality) { x.imageSmoothingEnabled = true; }
     const S = W / 1080;                       // scale relative to the 1080-wide baseline
     const seed = seedFromChart(chart);
 
@@ -1709,9 +1718,10 @@
       'background:rgba(13, 10, 7,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
       'border:1px solid rgba(196,146,10,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
     const opts = [
-      { fmt: 'square', title: 'Square · 1080×1080', sub: 'Instagram & social posts' },
-      { fmt: 'story',  title: 'Story · 1080×1920',  sub: 'IG / WhatsApp stories' },
-      { fmt: 'print',  title: 'Print poster · 2480×3508', sub: 'High-res, print-ready' },
+      { fmt: 'square', title: 'Square · 2160×2160 HD', sub: 'Instagram & social posts' },
+      { fmt: 'story',  title: 'Story · 2160×3840 HD',  sub: 'IG / WhatsApp stories' },
+      { fmt: 'print',  title: 'Print poster · 4960×7016', sub: 'Ultra HD, print-ready' },
+      { fmt: 'square1x', title: 'Square · 1080×1080', sub: 'Smaller file size' },
     ];
     menu.innerHTML = opts.map(o =>
       `<button type="button" role="menuitem" data-fmt="${o.fmt}" style="display:block;width:100%;text-align:left;` +

@@ -218,35 +218,39 @@
     const S = window.StarCatalog;
     if (!m || !S) return null;
 
-    const W = 1080, H = 1080;
+    const BASE = 1080;
+    const W = cardExportPx();
+    const H = W;
     const cv = document.createElement('canvas');
-    cv.width = W; cv.height = H;
-    const x = cv.getContext('2d');
+    const x = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(cv, W, H)
+      : (cv.width = W, cv.height = H, cv.getContext('2d'));
+    x.scale(W / BASE, W / BASE);
 
     x.fillStyle = '#050406';
-    x.fillRect(0, 0, W, H);
-    const neb = x.createRadialGradient(W / 2, 430, 0, W / 2, 430, 520);
+    x.fillRect(0, 0, BASE, BASE);
+    const neb = x.createRadialGradient(BASE / 2, 430, 0, BASE / 2, 430, 520);
     neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
     neb.addColorStop(1, 'transparent');
-    x.fillStyle = neb; x.fillRect(0, 0, W, H);
+    x.fillStyle = neb; x.fillRect(0, 0, BASE, BASE);
 
     let seed = 137;
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     for (let i = 0; i < 160; i++) {
       x.fillStyle = `rgba(240,232,216,${0.1 + rnd() * 0.5})`;
       x.beginPath();
-      x.arc(rnd() * W, rnd() * H, rnd() * 1.6 + 0.3, 0, Math.PI * 2);
+      x.arc(rnd() * BASE, rnd() * BASE, rnd() * 1.6 + 0.3, 0, Math.PI * 2);
       x.fill();
     }
 
     x.strokeStyle = 'rgba(201, 162, 39,0.55)';
     x.lineWidth = 2;
-    x.strokeRect(46, 46, W - 92, H - 92);
+    x.strokeRect(46, 46, BASE - 92, BASE - 92);
     x.strokeStyle = 'rgba(201, 162, 39,0.22)';
-    x.strokeRect(58, 58, W - 116, H - 116);
+    x.strokeRect(58, 58, BASE - 116, BASE - 116);
 
     // ── wavefront map (same log-radial mapping as the live canvas) ──
-    const cx = W / 2, cy = 430, maxR = 330;
+    const cx = BASE / 2, cy = 430, maxR = 330;
     const rOf = ly => 12 + (Math.log10(Math.max(ly, 0.1) / 0.1) / 4) * (maxR - 12);
     const waveR = rOf(m.radiusLy);
 
@@ -299,77 +303,85 @@
     x.textAlign = 'center';
     x.fillStyle = '#C9A227';
     x.font = '26px "AstroGlyph", Georgia, serif';
-    x.fillText('✦  T H E   L I G H T - C O N E  ✦', W / 2, 130);
+    x.fillText('✦  T H E   L I G H T - C O N E  ✦', BASE / 2, 130);
 
     x.fillStyle = '#A89E88';
     x.font = '30px "AstroGlyph", Georgia, serif';
-    x.fillText('The light of my first breath has reached', W / 2, 830);
+    x.fillText('The light of my first breath has reached', BASE / 2, 830);
 
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 76px "AstroGlyph", Georgia, serif';
-    x.fillText(`${m.reached.length} star systems`, W / 2, 920);
+    x.fillText(`${m.reached.length} star systems`, BASE / 2, 920);
 
     x.fillStyle = '#A89E88';
     x.font = '28px "AstroGlyph", Georgia, serif';
-    x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, W / 2, 975);
+    x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, BASE / 2, 975);
 
     x.fillStyle = '#C9A227';
     x.font = '22px "AstroGlyph", Georgia, serif';
-    x.fillText('astroprecise · the instrument', W / 2, 1010);
+    x.fillText('astroprecise · the instrument', BASE / 2, 1010);
 
     return cv;
   }
 
-  // ── Shared share-card scaffolding (1080×1080 brand frame) ────────────────
-  const CARD_W = 1080, CARD_H = 1080;
+  // ── Shared share-card scaffolding (HD export, 1080 design-space) ─────────
+  const CARD_BASE = 1080;
+  function cardExportPx() {
+    return (window.RafCore && window.RafCore.cardExportSize) ? window.RafCore.cardExportSize() : CARD_BASE * 2;
+  }
 
-  // Deterministic LCG starfield + nebula + gold double border. Returns {cv,x}.
+  // Deterministic LCG starfield + nebula + gold double border. Returns {cv,x,S}.
   function cardBase(opts) {
     opts = opts || {};
-    const nebX = opts.nebX == null ? CARD_W / 2 : opts.nebX;
+    const CARD_W = cardExportPx();
+    const CARD_H = CARD_W;
+    const S = CARD_W / CARD_BASE;
+    const nebX = opts.nebX == null ? CARD_BASE / 2 : opts.nebX;
     const nebY = opts.nebY == null ? 430 : opts.nebY;
     const nebR = opts.nebR == null ? 520 : opts.nebR;
     const stars = opts.stars == null ? 160 : opts.stars;
     let seed = opts.seed0 == null ? 137 : opts.seed0;
     const cv = document.createElement('canvas');
-    cv.width = CARD_W; cv.height = CARD_H;
-    const x = cv.getContext('2d');
+    const x = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(cv, CARD_W, CARD_H)
+      : (cv.width = CARD_W, cv.height = CARD_H, cv.getContext('2d'));
+    x.scale(S, S);
 
     x.fillStyle = '#050406';
-    x.fillRect(0, 0, CARD_W, CARD_H);
+    x.fillRect(0, 0, CARD_BASE, CARD_BASE);
     const neb = x.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebR);
     neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
     neb.addColorStop(1, 'transparent');
-    x.fillStyle = neb; x.fillRect(0, 0, CARD_W, CARD_H);
+    x.fillStyle = neb; x.fillRect(0, 0, CARD_BASE, CARD_BASE);
 
     const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
     for (let i = 0; i < stars; i++) {
       x.fillStyle = `rgba(240,232,216,${0.1 + rnd() * 0.5})`;
       x.beginPath();
-      x.arc(rnd() * CARD_W, rnd() * CARD_H, rnd() * 1.6 + 0.3, 0, Math.PI * 2);
+      x.arc(rnd() * CARD_BASE, rnd() * CARD_BASE, rnd() * 1.6 + 0.3, 0, Math.PI * 2);
       x.fill();
     }
 
     x.strokeStyle = 'rgba(201, 162, 39,0.55)';
     x.lineWidth = 2;
-    x.strokeRect(46, 46, CARD_W - 92, CARD_H - 92);
+    x.strokeRect(46, 46, CARD_BASE - 92, CARD_BASE - 92);
     x.strokeStyle = 'rgba(201, 162, 39,0.22)';
-    x.strokeRect(58, 58, CARD_W - 116, CARD_H - 116);
-    return { cv, x };
+    x.strokeRect(58, 58, CARD_BASE - 116, CARD_BASE - 116);
+    return { cv, x, S, CARD_W };
   }
 
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
     x.fillStyle = '#C9A227';
     x.font = '26px "AstroGlyph", Georgia, serif';
-    x.fillText(text, CARD_W / 2, y == null ? 130 : y);
+    x.fillText(text, CARD_BASE / 2, y == null ? 130 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
     x.fillStyle = '#C9A227';
     x.font = '22px "AstroGlyph", Georgia, serif';
-    x.fillText('astroprecise · the instrument', CARD_W / 2, y == null ? 1010 : y);
+    x.fillText('astroprecise · the instrument', CARD_BASE / 2, y == null ? 1010 : y);
   }
 
   // Honesty/provenance pill: a dot + label. measured -> gold dot, else silver-blue.
@@ -449,18 +461,18 @@
 
     x.fillStyle = '#A89E88';
     x.font = 'italic 30px "AstroGlyph", Georgia, serif';
-    x.fillText('The star over my first breath', CARD_W / 2, 196);
+    x.fillText('The star over my first breath', CARD_BASE / 2, 196);
 
     x.fillStyle = '#f0e8d8';
     let nameSize = 96;
     x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
-    while (x.measureText(s.name.toUpperCase()).width > CARD_W - 200 && nameSize > 48) {
+    while (x.measureText(s.name.toUpperCase()).width > CARD_BASE - 200 && nameSize > 48) {
       nameSize -= 4; x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
     }
     x.textAlign = 'center';
     x.shadowColor = 'rgba(201, 162, 39,0.55)';
     x.shadowBlur = 24;
-    x.fillText(s.name.toUpperCase(), CARD_W / 2, 296);
+    x.fillText(s.name.toUpperCase(), CARD_BASE / 2, 296);
     x.shadowBlur = 0;
 
     // local star patch: real stars within ±18° of the zenith point
@@ -471,17 +483,17 @@
       const dRa = wrapDeg(st.ra - z.zenithRa) * Math.cos(z.zenithDec * Math.PI / 180);
       const dDec = st.dec - z.zenithDec;
       if (Math.abs(dRa) <= span && Math.abs(dDec) <= span) {
-        panelStars.push({ st, px: CARD_W / 2 + (dRa / span) * half, py: panelCy - (dDec / span) * half });
+        panelStars.push({ st, px: CARD_BASE / 2 + (dRa / span) * half, py: panelCy - (dDec / span) * half });
       }
     }
     x.beginPath();
-    x.arc(CARD_W / 2, panelCy, half, 0, Math.PI * 2);
+    x.arc(CARD_BASE / 2, panelCy, half, 0, Math.PI * 2);
     x.strokeStyle = 'rgba(154,166,200,0.12)';
     x.lineWidth = 1; x.stroke();
     x.strokeStyle = 'rgba(201, 162, 39,0.30)';
     x.beginPath();
-    x.moveTo(CARD_W / 2 - 16, panelCy); x.lineTo(CARD_W / 2 + 16, panelCy);
-    x.moveTo(CARD_W / 2, panelCy - 16); x.lineTo(CARD_W / 2, panelCy + 16);
+    x.moveTo(CARD_BASE / 2 - 16, panelCy); x.lineTo(CARD_BASE / 2 + 16, panelCy);
+    x.moveTo(CARD_BASE / 2, panelCy - 16); x.lineTo(CARD_BASE / 2, panelCy + 16);
     x.stroke();
     for (const p of panelStars) {
       const isHero = p.st === s;
@@ -500,15 +512,15 @@
     if (s.spectral) parts.push('type ' + s.spectral);
     parts.push('mag ' + s.mag);
     parts.push(s.ly + ' ly');
-    x.fillText(parts.join('   ·   '), CARD_W / 2, 812);
+    x.fillText(parts.join('   ·   '), CARD_BASE / 2, 812);
 
     x.fillStyle = '#A89E88';
     x.font = '26px "AstroGlyph", Georgia, serif';
     wrapText(x,
       `Nearest catalogued star to the point directly overhead at my birth — ${z.sepDeg.toFixed(1)}° from the exact zenith.`,
-      CARD_W / 2, 862, CARD_W - 220, 38);
+      CARD_BASE / 2, 862, CARD_BASE - 220, 38);
 
-    honestyBadge(x, CARD_W / 2, 952, 'computed · J2000 catalogue + LST', false);
+    honestyBadge(x, CARD_BASE / 2, 952, 'computed · J2000 catalogue + LST', false);
     cardFooter(x);
     return cv;
   }
@@ -543,23 +555,23 @@
     x.font = 'italic 28px "AstroGlyph", Georgia, serif';
     x.textAlign = 'center';
     x.fillText(today.toLocaleDateString(undefined,
-      { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), CARD_W / 2, 190);
+      { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), CARD_BASE / 2, 190);
 
     // Moon disc (correct terminator for the phase)
-    moonDisc(x, CARD_W / 2, 400, 130, lunar.illumination, lunar.waxing);
+    moonDisc(x, CARD_BASE / 2, 400, 130, lunar.illumination, lunar.waxing);
 
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 54px "AstroGlyph", Georgia, serif';
-    x.fillText(lunar.phaseName, CARD_W / 2, 622);
+    x.fillText(lunar.phaseName, CARD_BASE / 2, 622);
     x.fillStyle = '#EFE3C0';
     x.font = '30px "AstroGlyph", Georgia, serif';
-    x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_W / 2, 668);
+    x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_BASE / 2, 668);
 
     const tHi = transitHighlightLine(report);
     if (tHi) {
       x.fillStyle = '#A89E88';
       x.font = '27px "AstroGlyph", Georgia, serif';
-      wrapText(x, tHi, CARD_W / 2, 742, CARD_W - 240, 38);
+      wrapText(x, tHi, CARD_BASE / 2, 742, CARD_BASE - 240, 38);
     }
 
     let swLine, measured;
@@ -576,9 +588,9 @@
     }
     x.fillStyle = measured ? '#EFE3C0' : '#A89E88';
     x.font = '30px "AstroGlyph", Georgia, serif';
-    x.fillText(swLine, CARD_W / 2, 858);
+    x.fillText(swLine, CARD_BASE / 2, 858);
 
-    honestyBadge(x, CARD_W / 2, 942, measured ? 'measured · NOAA SWPC' : 'computed only · feed down', measured);
+    honestyBadge(x, CARD_BASE / 2, 942, measured ? 'measured · NOAA SWPC' : 'computed only · feed down', measured);
     cardFooter(x);
     return cv;
   }

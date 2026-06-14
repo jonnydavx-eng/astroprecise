@@ -3519,13 +3519,19 @@
       btn.addEventListener('click', function() {
         var oc = document.getElementById('orrery-canvas');
         if (!oc) return;
-        var W = oc.width, H = oc.height;
-        var off = document.createElement('canvas');
-        off.width = W; off.height = H;
+        var off = (window.Orrery3D && typeof Orrery3D.captureFrame === 'function')
+          ? Orrery3D.captureFrame({ scale: 2 })
+          : null;
+        if (!off) {
+          off = document.createElement('canvas');
+          off.width = oc.width; off.height = oc.height;
+          var ctx0 = off.getContext('2d');
+          ctx0.fillStyle = '#050406';
+          ctx0.fillRect(0, 0, off.width, off.height);
+          try { ctx0.drawImage(oc, 0, 0); } catch(e) { return; }
+        }
+        var W = off.width, H = off.height;
         var ctx = off.getContext('2d');
-        ctx.fillStyle = '#050406';
-        ctx.fillRect(0, 0, W, H);
-        try { ctx.drawImage(oc, 0, 0); } catch(e) { return; }
         var fs = Math.max(11, Math.round(H * 0.022));
         ctx.font = '600 ' + fs + 'px Cinzel, serif';
         ctx.fillStyle = 'rgba(201,162,39,0.55)';
@@ -3541,8 +3547,8 @@
         }
         off.toBlob(function(blob) {
           var slug = (dateStr || 'now').replace(/[^a-z0-9]/gi, '-').toLowerCase();
-          var fname = 'sky-' + slug + '.jpg';
-          var file = new File([blob], fname, { type: 'image/jpeg' });
+          var fname = 'sky-' + slug + '.png';
+          var file = new File([blob], fname, { type: 'image/png' });
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             navigator.share({ files: [file], title: 'My Sky — AstroPrecise', text: 'The living sky · ' + dateStr }).catch(function(){});
           } else {
@@ -3554,7 +3560,7 @@
             document.body.removeChild(a);
             setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
           }
-        }, 'image/jpeg', 0.93);
+        }, 'image/png');
       });
     })();
 

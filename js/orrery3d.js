@@ -636,7 +636,7 @@ window.Orrery3D = (() => {
   }
 
   function resize() {
-    dpr = (window.RafCore && RafCore.capDPR) ? RafCore.capDPR(2) : Math.min(window.devicePixelRatio || 1, 2);
+    dpr = (window.RafCore && RafCore.hdDPR) ? RafCore.hdDPR(2.5) : Math.min(window.devicePixelRatio || 1, 2.5);
     const rect = wrap.getBoundingClientRect();
     // If the wrap isn't laid out yet (width ~0), Math.max would lock us to the 280 floor —
     // a tiny orrery on a desktop hero. Arm a one-shot refit on the next frame instead.
@@ -645,7 +645,8 @@ window.Orrery3D = (() => {
       requestAnimationFrame(function () { resize._armed = false; resize(); });
     }
     // Match intended hero presence: up to 580px logical (CSS sets 580 on desktop, scales down responsively)
-    const size = Math.min(Math.max(rect.width, 280), 580);
+    const sizeCap = (window.RafCore && RafCore.tier === 'high') ? 760 : 640;
+    const size = Math.min(Math.max(rect.width, 280), sizeCap);
     W = H = size;
     canvas.width = size * dpr;
     canvas.height = size * dpr;
@@ -653,7 +654,11 @@ window.Orrery3D = (() => {
     canvas.style.height = size + 'px';
     cx = cy = size / 2;
     scale = (size / 2 - 18) / 3.7;
-    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (ctx) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      if (ctx.imageSmoothingQuality) ctx.imageSmoothingQuality = 'high';
+    }
     // Re-position particles within new canvas size
     particlesInited = false;
     particles = [];

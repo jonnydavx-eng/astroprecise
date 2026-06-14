@@ -1835,32 +1835,36 @@
         var signIdx = SIGN_KEYS.indexOf(signKey);
         var stone = SIGN_STONES[signIdx] || 'Crystal';
 
+        var BASE = 1080;
+        var exportW = (window.RafCore && window.RafCore.cardExportSize) ? window.RafCore.cardExportSize() : BASE * 2;
         var cv = document.createElement('canvas');
-        cv.width = 1080; cv.height = 1080;
-        var ctx = cv.getContext('2d');
+        var ctx = (window.RafCore && window.RafCore.prepExportCtx)
+          ? window.RafCore.prepExportCtx(cv, exportW, exportW)
+          : (cv.width = exportW, cv.height = exportW, cv.getContext('2d'));
+        ctx.scale(exportW / BASE, exportW / BASE);
 
         // Background: void base
         ctx.fillStyle = '#0d0a07';
-        ctx.fillRect(0, 0, 1080, 1080);
+        ctx.fillRect(0, 0, BASE, BASE);
 
         // Nebula: lapis glow left side
         var neb1 = ctx.createRadialGradient(160, 300, 0, 160, 300, 680);
         neb1.addColorStop(0, 'rgba(92, 74, 110,0.38)');
         neb1.addColorStop(1, 'transparent');
-        ctx.fillStyle = neb1; ctx.fillRect(0, 0, 1080, 1080);
+        ctx.fillStyle = neb1; ctx.fillRect(0, 0, BASE, BASE);
 
         // Nebula: element color right side
         var neb2 = ctx.createRadialGradient(920, 780, 0, 920, 780, 560);
         neb2.addColorStop(0, tint[1].replace('0.13', '0.28').replace('0.16', '0.28').replace('0.15', '0.28'));
         neb2.addColorStop(1, 'transparent');
-        ctx.fillStyle = neb2; ctx.fillRect(0, 0, 1080, 1080);
+        ctx.fillStyle = neb2; ctx.fillRect(0, 0, BASE, BASE);
 
         // Deterministic stars
         var epochDay = Math.floor(Date.now() / 86400000);
         var seed = epochDay * 7 + signIdx;
         function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
         for (var i = 0; i < 180; i++) {
-          var sx = rnd() * 1080, sy = rnd() * 1080, sr = rnd() * 1.4 + 0.3;
+          var sx = rnd() * BASE, sy = rnd() * BASE, sr = rnd() * 1.4 + 0.3;
           ctx.fillStyle = 'rgba(240,232,216,' + (rnd() * 0.55 + 0.12) + ')';
           ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
         }
