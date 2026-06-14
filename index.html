@@ -2340,15 +2340,25 @@
     #preloader.fallback-css .apl-live-orr{display:none;}
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core,.preloader-seal{animation:none;}}
     /* The way-in is revealed only when the sky SETTLES (driven by the orrery, not a blind timer) */
-    #preloader-enter,#preloader-tagline,#preloader-email-block{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
-    #preloader.aligned #preloader-enter,#preloader.aligned #preloader-tagline,#preloader.aligned #preloader-email-block{opacity:1;transform:none;pointer-events:auto;}
-    .preloader-email{margin:0 0 14px;text-align:center;}
-    .preloader-email__hint{font-family:'Cormorant Garamond',serif;font-size:0.78rem;line-height:1.45;color:#a89f8a;margin:0 0 8px;font-style:italic;}
-    .preloader-email__row{display:flex;justify-content:center;}
-    .preloader-email__input{width:min(280px,100%);padding:10px 14px;border-radius:999px;border:1px solid rgba(201,162,39,0.32);background:rgba(5,4,6,0.55);color:#F0E8D8;font-size:0.82rem;font-family:Inter,system-ui,sans-serif;outline:none;}
-    .preloader-email__input::placeholder{color:rgba(168,159,138,0.75);}
-    .preloader-email__input:focus{border-color:rgba(201,162,39,0.65);box-shadow:0 0 0 3px rgba(201,162,39,0.12);}
-    .preloader-email__micro{font-size:0.58rem;color:rgba(168,159,138,0.85);margin:6px 0 0;letter-spacing:0.04em;}
+    #preloader-enter,#preloader-tagline{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
+    #preloader.aligned #preloader-enter,#preloader.aligned #preloader-tagline{opacity:1;transform:none;pointer-events:auto;}
+    #preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease;}
+    .preloader-email-gate{position:absolute;inset:0;z-index:12;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s ease,visibility .45s ease;}
+    .preloader-email-gate.is-open{opacity:1;visibility:visible;pointer-events:auto;}
+    .preloader-email-gate__backdrop{position:absolute;inset:0;background:rgba(4,3,6,0.52);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+    .preloader-email-gate__panel{position:relative;width:min(22rem,92vw);padding:22px 20px 18px;border-radius:18px;border:1px solid rgba(201,162,39,0.38);background:linear-gradient(165deg,rgba(18,14,10,0.94),rgba(8,6,5,0.97));box-shadow:0 18px 48px rgba(0,0,0,0.55),0 0 32px rgba(201,162,39,0.12);text-align:center;color:#E8E0D0;transform:translateY(12px) scale(0.97);transition:transform .45s cubic-bezier(0.22,1,0.36,1);}
+    .preloader-email-gate.is-open .preloader-email-gate__panel{transform:none;}
+    .preloader-email-gate__close{position:absolute;top:10px;right:12px;width:32px;height:32px;border:none;border-radius:50%;background:rgba(201,162,39,0.12);color:#E8E0D0;font-size:1.35rem;line-height:1;cursor:pointer;transition:background .2s ease,color .2s ease;}
+    .preloader-email-gate__close:hover,.preloader-email-gate__close:focus-visible{background:rgba(201,162,39,0.28);color:#fff;}
+    .preloader-email-gate__title{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.14em;text-transform:uppercase;margin:0 0 10px;color:#F0E8D8;}
+    .preloader-email-gate__hint{font-family:'Cormorant Garamond',serif;font-size:0.82rem;line-height:1.5;color:#a89f8a;margin:0 0 14px;font-style:italic;}
+    .preloader-email-gate__input{width:100%;padding:11px 14px;border-radius:999px;border:1px solid rgba(201,162,39,0.32);background:rgba(5,4,6,0.55);color:#F0E8D8;font-size:0.84rem;font-family:Inter,system-ui,sans-serif;outline:none;margin-bottom:10px;}
+    .preloader-email-gate__input::placeholder{color:rgba(168,159,138,0.75);}
+    .preloader-email-gate__input:focus{border-color:rgba(201,162,39,0.65);box-shadow:0 0 0 3px rgba(201,162,39,0.12);}
+    .preloader-email-gate__join{width:100%;padding:11px 18px;border-radius:999px;border:1px solid rgba(201,162,39,0.55);background:linear-gradient(rgba(28,22,12,0.72),rgba(12,10,7,0.82));color:#F0E8D8;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;transition:box-shadow .25s ease,border-color .25s ease;}
+    .preloader-email-gate__join:hover,.preloader-email-gate__join:focus-visible{border-color:rgba(201,162,39,0.85);box-shadow:0 0 18px rgba(201,162,39,0.28);}
+    .preloader-email-gate__skip{display:block;width:100%;margin-top:10px;padding:8px 12px;border:none;background:transparent;color:rgba(168,159,138,0.95);font-family:Inter,system-ui,sans-serif;font-size:0.72rem;letter-spacing:0.04em;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+    .preloader-email-gate__skip:hover,.preloader-email-gate__skip:focus-visible{color:#E8E0D0;}
     #preloader.aligned #preloader-progress{opacity:0;transition:opacity .4s ease;}
     #preloader.aligned .preloader-seal{animation:sealFlare 1.3s ease-out;}
     @keyframes sealFlare{0%{transform:scale(1);}42%{transform:scale(1.22);text-shadow:0 0 72px rgba(201,162,39,.95);}100%{transform:scale(1);}}
@@ -2370,14 +2380,18 @@
     <div class="preloader-content" style="position:absolute; left:50%; bottom:max(6vh, calc(env(safe-area-inset-bottom) + 18px)); transform:translateX(-50%); width:min(31rem,90vw); z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto;">
       <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px;">The Spheres Align</div>
       <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:20px; font-style:italic; color:#cdbf9f;">HD Earth close-up, then a pull through the live solar system &mdash; your sky, aligned for this moment.</div>
-      <div id="preloader-email-block" class="preloader-email">
-        <p class="preloader-email__hint">Free to enter. Optional: join for chart wallpapers, cosmic weather, deep readings &amp; shop drops when they ship.</p>
-        <div class="preloader-email__row">
-          <input type="email" id="preloader-email" class="preloader-email__input" name="email" placeholder="you@example.com (optional)" autocomplete="email" aria-label="Email for launch updates (optional)" />
-        </div>
-        <p class="preloader-email__micro">Skip it &mdash; <strong>Enter Your Sky</strong> works with or without an email.</p>
-      </div>
       <button id="preloader-enter" class="preloader-skip" aria-label="Enter the site" style="font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(28,22,12,0.5),rgba(12,10,7,0.62)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;"><span class="eng-star-mark" style="width:0.75em;height:0.75em;margin-right:0.35em;" aria-hidden="true"></span> Enter Your Sky &nbsp;&rarr;</button>
+    </div>
+    <div id="preloader-email-gate" class="preloader-email-gate" aria-hidden="true" hidden>
+      <div class="preloader-email-gate__backdrop" aria-hidden="true"></div>
+      <div class="preloader-email-gate__panel" role="dialog" aria-labelledby="preloader-gate-title" aria-modal="true">
+        <button type="button" class="preloader-email-gate__close" id="preloader-gate-close" aria-label="Close and continue without email">&times;</button>
+        <h2 class="preloader-email-gate__title" id="preloader-gate-title">Stay in the loop</h2>
+        <p class="preloader-email-gate__hint">Optional: join for chart wallpapers, cosmic weather, deep readings &amp; shop drops when they ship. Free to skip.</p>
+        <input type="email" id="preloader-gate-email" class="preloader-email-gate__input" name="email" placeholder="you@example.com (optional)" autocomplete="email" aria-label="Email for launch updates (optional)" />
+        <button type="button" class="preloader-email-gate__join" id="preloader-gate-join">Join list</button>
+        <button type="button" class="preloader-email-gate__skip" id="preloader-gate-skip">Continue without email</button>
+      </div>
     </div>
   </div>
 
@@ -2520,8 +2534,14 @@
 
     // After the brief alignment, reveal the "Enter" button as an instant skip…
     const tagline = document.getElementById('preloader-tagline');
+    var gateEl = document.getElementById('preloader-email-gate');
+    var gateClose = document.getElementById('preloader-gate-close');
+    var gateSkip = document.getElementById('preloader-gate-skip');
+    var gateJoin = document.getElementById('preloader-gate-join');
+    var gateOpen = false;
+
     function captureIntroEmail() {
-      var inp = document.getElementById('preloader-email');
+      var inp = document.getElementById('preloader-gate-email');
       if (!inp) return;
       var email = (inp.value || '').trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
@@ -2537,13 +2557,50 @@
       } catch (e) {}
     }
 
+    function dismissEmailGate(andCapture) {
+      if (andCapture) captureIntroEmail();
+      hidePre();
+    }
+
+    function showEmailGate() {
+      if (preDone || gateOpen || !gateEl) return;
+      gateOpen = true;
+      pre.classList.add('gate-open');
+      gateEl.hidden = false;
+      gateEl.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(function () { gateEl.classList.add('is-open'); });
+      var emailInp = document.getElementById('preloader-gate-email');
+      if (emailInp) setTimeout(function () { emailInp.focus(); }, 420);
+    }
+
+    function wireEmailGate() {
+      if (!gateEl || gateEl.dataset.wired) return;
+      gateEl.dataset.wired = '1';
+      if (gateClose) gateClose.addEventListener('click', function () { dismissEmailGate(false); });
+      if (gateSkip) gateSkip.addEventListener('click', function () { dismissEmailGate(false); });
+      if (gateJoin) gateJoin.addEventListener('click', function () { dismissEmailGate(true); });
+      if (gateEl) {
+        gateEl.addEventListener('click', function (ev) {
+          if (ev.target === gateEl || (ev.target && ev.target.classList && ev.target.classList.contains('preloader-email-gate__backdrop'))) {
+            dismissEmailGate(false);
+          }
+        });
+      }
+      var emailInp = document.getElementById('preloader-gate-email');
+      if (emailInp) {
+        emailInp.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter') { ev.preventDefault(); dismissEmailGate(true); }
+        });
+      }
+    }
+    wireEmailGate();
+
     function revealEnter() {
       pre.classList.add('aligned');   // CSS fades Enter + tagline in, fades the progress bar out
       if (enterBtn && !enterBtn.dataset.wired) {
         enterBtn.dataset.wired = '1';
         enterBtn.addEventListener('click', function () {
-          captureIntroEmail();
-          hidePre();
+          showEmailGate();
         }, { once: true });
       }
     }
