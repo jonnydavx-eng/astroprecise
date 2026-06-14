@@ -21,6 +21,7 @@ const AstroApp = (() => {
       try { document.fonts.load("16px 'AstroGlyph'").then(function () { window.dispatchEvent(new Event('astroglyph-ready')); }); } catch (e) {}
     }
     renderNav();        // canonical site nav on every page — single source of truth
+    injectTopProfile(); // Profile tab — top-right on every page
     initNavbar();
     initToastContainer();
     initScrollAnimations();
@@ -75,7 +76,7 @@ const AstroApp = (() => {
     ['index.html', 'Home'], ['chart.html', 'Chart'], ['horoscope.html', 'Horoscope'],
     ['compatibility.html', 'Compatibility'], ['transits.html', 'Transits'],
     ['lifepath.html', 'Life Path'], ['ephemeris.html', 'Instrument'],
-    ['why.html', 'Why'], ['shop.html', 'Shop'], ['profile.html', 'Profile'],
+    ['why.html', 'Why'], ['shop.html', 'Shop'],
   ];
   const NAV_EXTRAS = [ // mobile menu only — the scrolling list keeps the top bar lean
     ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
@@ -95,7 +96,27 @@ const AstroApp = (() => {
     const desktop = document.querySelector('.navbar__nav');
     const mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) desktop.innerHTML = linkHtml(NAV_CORE);
-    if (mobile) mobile.innerHTML = linkHtml(NAV_CORE.concat(NAV_EXTRAS));
+    if (mobile) mobile.innerHTML = linkHtml(NAV_CORE.concat(NAV_EXTRAS).concat([['profile.html', 'Profile']]));
+  }
+
+  /** Profile as a top-bar tab on every page (not in the bottom nav). */
+  function injectTopProfile() {
+    if (document.querySelector('.navbar__profile-top')) return;
+    var inner = document.querySelector('.navbar__inner');
+    var toggle = document.querySelector('.navbar__toggle');
+    if (!inner) return;
+    var here = location.pathname.split('/').pop() || 'index.html';
+    inner.querySelectorAll('a[href="profile.html"]').forEach(function (el) {
+      if (!el.classList.contains('navbar__profile-top')) el.remove();
+    });
+    var a = document.createElement('a');
+    a.href = 'profile.html';
+    a.className = 'navbar__profile-top';
+    a.setAttribute('aria-label', 'My Profile');
+    if (here === 'profile.html') { a.classList.add('is-active'); a.setAttribute('aria-current', 'page'); }
+    a.innerHTML = '<svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg><span>Profile</span>';
+    if (toggle) inner.insertBefore(a, toggle);
+    else inner.appendChild(a);
   }
 
   // ── Toast Notifications ───────────────────────────────────────────────────
@@ -1243,29 +1264,49 @@ if ('serviceWorker' in navigator) {
   function initBottomNav() {
     if (document.querySelector('.bottom-nav')) return;
     const here = (location.pathname.split('/').pop() || 'index.html');
-    const items = [
-      { href: 'index.html',         icon: 'star4', label: 'Home' },
-      { href: 'chart.html',         icon: 'spiral', label: 'Chart' },
+    const scrollItems = [
+      { href: 'index.html',         icon: 'star4',    label: 'Home' },
+      { href: 'chart.html',         icon: 'spiral',   label: 'Chart' },
       { href: 'horoscope.html',     icon: 'crescent', label: 'Daily' },
-      { type: 'updates',            icon: 'mail', label: 'Updates' },
-      { href: 'profile.html',       icon: 'gem', label: 'Profile' },
+      { href: 'lifepath.html',      icon: 'gem',      label: 'Life' },
+      { href: 'compatibility.html', icon: 'heart',    label: 'Match' },
+      { href: 'transits.html',      icon: 'planet',   label: 'Transits' },
+      { href: 'shop.html',          icon: 'map',      label: 'Shop' },
+      { href: 'links.html',         icon: 'star4',    label: 'Links' },
+      { href: 'ephemeris.html',     icon: 'telescope', label: 'Sky' },
+      { href: 'quiz.html',          icon: 'orb',      label: 'Quiz' },
+      { href: 'tonight.html',       icon: 'sunhigh',  label: 'Tonight' },
+      { href: 'moonphase.html',     icon: 'moon4',    label: 'Moon' },
     ];
     const nav = document.createElement('nav');
     nav.className = 'bottom-nav';
     nav.setAttribute('aria-label', 'Mobile navigation');
     const ei = (id) => '<svg class="eng-i" aria-hidden="true"><use href="#ei-' + id + '"/></svg>';
-    nav.innerHTML = '<div class="bottom-nav__inner">' + items.map(it => {
-      if (it.type === 'updates') {
-        return '<button type="button" class="bottom-nav__item bottom-nav__item--updates" data-ap-open-email="bottom_nav" aria-label="Sign up for email updates">'
-          + '<span class="bottom-nav__icon" aria-hidden="true">' + ei(it.icon) + '</span>'
-          + '<span class="bottom-nav__label">' + it.label + '</span></button>';
-      }
+    const itemHtml = (it) => {
       return '<a href="' + it.href + '" class="bottom-nav__item' + (here === it.href ? ' is-active' : '') + '"'
         + (here === it.href ? ' aria-current="page"' : '') + '>'
         + '<span class="bottom-nav__icon" aria-hidden="true">' + ei(it.icon) + '</span>'
         + '<span class="bottom-nav__label">' + it.label + '</span></a>';
-    }).join('') + '</div>';
+    };
+    nav.innerHTML =
+      '<div class="bottom-nav__shell">'
+      + '<div class="bottom-nav__scroll" tabindex="0" aria-label="Swipe for more tools">'
+      + '<div class="bottom-nav__inner">' + scrollItems.map(itemHtml).join('') + '</div>'
+      + '</div>'
+      + '<div class="bottom-nav__pinned">'
+      + '<button type="button" class="bottom-nav__item bottom-nav__item--updates" data-ap-open-email="bottom_nav" aria-label="Sign up for email updates">'
+      + '<span class="bottom-nav__icon" aria-hidden="true">' + ei('mail') + '</span>'
+      + '<span class="bottom-nav__label">Updates</span>'
+      + '</button></div></div>';
     document.body.appendChild(nav);
+    const scroller = nav.querySelector('.bottom-nav__scroll');
+    const active = nav.querySelector('.bottom-nav__item.is-active');
+    if (scroller && active) {
+      requestAnimationFrame(function () {
+        var left = active.offsetLeft - (scroller.clientWidth - active.offsetWidth) / 2;
+        scroller.scrollLeft = Math.max(0, left);
+      });
+    }
   }
 
   if (document.readyState === 'loading') {
