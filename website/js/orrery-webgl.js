@@ -70,6 +70,10 @@ import * as THREE from 'three';
   // time
   let baseNowMs = 0, baseJd = 0, dayOffset = 0, daysPerSec = 0;
   let lastT = 0, needRecompute = true;
+  // drag-to-scrub: horizontal drag advances REAL time (planets walk to where they
+  // truly are); a flick keeps time coasting with decay. scrubVel = days/event EMA.
+  const SCRUB_SENS = 0.4;          // days of real time per px of horizontal drag
+  let scrubVel = 0, flicking = false, onScrub = null;
 
   // camera orbit (spherical around target)
   let camRadius = 48, camAz = -0.6, camEl = 26 * D2R;  // tighter framing — inner system + Earth as the hero (was 82)
@@ -325,9 +329,17 @@ import * as THREE from 'three';
     if (!running || !inView) { lastT = t; return; }
     const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t;
 
+    // flick momentum — time coasts after a drag-release, decaying to rest
+    if (flicking) {
+      daysPerSec *= Math.pow(0.12, dt);
+      if (Math.abs(daysPerSec) < 0.5) { daysPerSec = 0; flicking = false; }
+    }
     // advance time
     if (daysPerSec !== 0) { dayOffset += daysPerSec * dt; needRecompute = true; }
-    if (needRecompute) { updatePositions(); needRecompute = false; updateDateUI(); }
+    if (needRecompute) {
+      updatePositions(); needRecompute = false; updateDateUI();
+      if (onScrub) { try { onScrub(baseJd + dayOffset); } catch (e) {} }
+    }
 
     // self-rotation (liveliness)
     if (!PRM) {
@@ -390,15 +402,22 @@ import * as THREE from 'three';
 
   // ── Pointer controls ───────────────────────────────────────────────────────
   function bindControls() {
-    const onDown = (e) => { dragging = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; try { canvas.style.cursor = 'grabbing'; } catch (_) {} };
+    const onDown = (e) => { dragging = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; daysPerSec = 0; flicking = false; scrubVel = 0; try { canvas.style.cursor = 'grabbing'; } catch (_) {} };
     const onMove = (e) => {
       if (!dragging) return; const p = pt(e);
-      camAz -= (p.x - lastX) * 0.008; camEl += (p.y - lastY) * 0.008;  // slightly more responsive drag
-      camEl = Math.max(-1.3, Math.min(1.45, camEl)); lastX = p.x; lastY = p.y; userTouched = performance.now();
+      const dx = p.x - lastX, dy = p.y - lastY;
+      // Horizontal drag SCRUBS REAL TIME — the planets walk to their true dated
+      // positions (not a camera spin). Vertical drag tilts the view.
+      if (dx) { const dd = dx * SCRUB_SENS; dayOffset += dd; needRecompute = true; scrubVel = scrubVel * 0.6 + dd * 0.4; }
+      camEl += dy * 0.008; camEl = Math.max(-1.3, Math.min(1.45, camEl)); lastX = p.x; lastY = p.y; userTouched = performance.now();
     };
     const onUp = (e) => {
-      if (dragging) { const p = pt(e); if (Math.hypot(p.x - downX, p.y - downY) < 5) pick(p); }
-      dragging = false; try { canvas.style.cursor = 'grab'; } catch (_) {}
+      if (dragging) {
+        const p = pt(e);
+        if (Math.hypot(p.x - downX, p.y - downY) < 5) { pick(p); }
+        else if (!PRM && Math.abs(scrubVel) > 0.05) { daysPerSec = Math.max(-365, Math.min(365, scrubVel * 40)); flicking = true; }  // flick → time coasts
+      }
+      dragging = false; scrubVel = 0; try { canvas.style.cursor = 'grab'; } catch (_) {}
     };
     const onWheel = (e) => { e.preventDefault(); camRadius = Math.max(5, Math.min(160, camRadius * (1 + Math.sign(e.deltaY) * 0.08))); userTouched = performance.now(); introActive = false; };
     canvas.addEventListener('pointerdown', onDown);
@@ -504,6 +523,7 @@ import * as THREE from 'three';
   function setSpeed(s) {
     // button values: 0 pause, 1 (1 day/s), 30 (30 day/s), 365 (~1 year/s)
     daysPerSec = Number(s) || 0;
+    flicking = false;   // a speed button is a constant rate, not a decaying flick
     if (daysPerSec !== 0) introActive = false;
   }
   function getDate() { return new Date(baseNowMs + dayOffset * 86400000); }
@@ -512,7 +532,8 @@ import * as THREE from 'three';
     const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), 0);
     jumpTo(jd);
   }
-  function jumpTo(jd) { dayOffset = jd - baseJd; daysPerSec = 0; needRecompute = true; introActive = false; }
+  function jumpTo(jd) { dayOffset = jd - baseJd; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; }
+  function scrubDays(d) { dayOffset += Number(d) || 0; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; }
   function destroy() {
     destroyed = true; if (raf) cancelAnimationFrame(raf);
     window.removeEventListener('resize', resize);
@@ -523,8 +544,11 @@ import * as THREE from 'three';
   }
 
   window.Orrery3D = {
-    init, destroy, setSpeed, getDate, setDate, jumpTo,
+    init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays,
     goTo: setDate,
+    get onScrub() { return onScrub; },
+    set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
+    nowJd: () => baseJd + dayOffset,
     getPlanets: () => BODIES.map((b) => ({ ...b, lon: meshes[b.id] && meshes[b.id].userData.lon })),
     setBodies: () => {},
     setShowAspects: () => {},

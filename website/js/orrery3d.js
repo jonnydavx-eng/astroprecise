@@ -87,6 +87,8 @@ window.Orrery3D = (() => {
   let baseJd = 0;
   let dayOffset = 0;
   let speed = 0;
+  const SCRUB_SENS = 0.4;   // days of real time per px of horizontal drag (mirror of WebGL engine)
+  let onScrub = null;
   let lastFrame = 0;
   let orbits = {};
   let bodies = [];
@@ -480,7 +482,10 @@ window.Orrery3D = (() => {
         updateCursorForHover(e);
         return;
       }
-      yaw += (e.clientX - lastX) * 0.008;
+      // Horizontal drag SCRUBS REAL TIME (planets walk to their true dated positions);
+      // vertical drag tilts the view. (Mirrors the WebGL engine.)
+      const dxp = e.clientX - lastX;
+      if (dxp) { dayOffset += dxp * SCRUB_SENS; computeBodies(); if (onScrub) { try { onScrub(baseJd + dayOffset); } catch (_) {} } }
       pitch = Math.min(1.5, Math.max(0.25, pitch + (e.clientY - lastY) * 0.006));
       lastX = e.clientX; lastY = e.clientY;
       lastInteract = performance.now();
@@ -1383,6 +1388,13 @@ window.Orrery3D = (() => {
     computeBodies();
   }
 
+  function scrubDays(d) {
+    dayOffset += Number(d) || 0;
+    setSpeed(0);
+    computeBodies();
+    if (onScrub) { try { onScrub(baseJd + dayOffset); } catch (_) {} }
+  }
+
   function setDate(date) {
     goTo(date);
   }
@@ -1404,10 +1416,14 @@ window.Orrery3D = (() => {
     destroy,
     setSpeed,
     jumpTo,
+    scrubDays,
     setDate,
     getDate,
     setBodies,
     getPlanets,
+    nowJd: () => baseJd + dayOffset,
+    get onScrub() { return onScrub; },
+    set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
     // Backward compat aliases
     goTo,
     // New API
