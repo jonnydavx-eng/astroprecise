@@ -96,17 +96,29 @@
       overflow: hidden;
     }
 
+    /* Homepage: ghost nav — icon only, no competing wordmark */
+    .page-home .site-header {
+      background: transparent;
+      border-bottom-color: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .page-home .site-header.scrolled {
+      background: rgba(5, 4, 6, 0.88);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom-color: rgba(201, 162, 39, 0.12);
+    }
+    .page-home .navbar__logo .logo-text { display: none; }
+    .page-home .navbar__logo-icon { width: 28px; height: 28px; opacity: 0.88; }
+
     .hero::before {
       content: '';
       position: absolute;
       inset: 0;
       background:
-        url('img/hero-cosmic-ref.jpg') center 30% / cover no-repeat,
-        radial-gradient(ellipse 90% 70% at 58% 42%, rgba(201, 162, 39, 0.14) 0%, transparent 62%),
-        radial-gradient(ellipse 55% 45% at 18% 68%, rgba(110, 26, 38, 0.10) 0%, transparent 58%),
-        radial-gradient(ellipse 48% 38% at 82% 22%, rgba(201, 162, 39, 0.08) 0%, transparent 55%);
-      opacity: 0.22;
-      filter: sepia(0.35) saturate(1.2) hue-rotate(-8deg) brightness(0.85);
+        radial-gradient(ellipse 80% 65% at 62% 44%, rgba(201, 162, 39, 0.09) 0%, transparent 68%),
+        radial-gradient(ellipse 50% 40% at 20% 70%, rgba(110, 26, 38, 0.06) 0%, transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
@@ -115,8 +127,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(ellipse 120% 80% at 50% 50%, transparent 40%, rgba(5, 4, 6, 0.55) 100%);
+      background: radial-gradient(ellipse 100% 90% at 50% 50%, transparent 55%, rgba(5, 4, 6, 0.35) 100%);
       pointer-events: none;
       z-index: 0;
     }
@@ -126,7 +137,7 @@
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.55;
+      opacity: 0.22;
     }
 
     .hero__constellation line,
@@ -135,34 +146,71 @@
       fill: rgba(239, 227, 192, 0.75);
     }
 
-    .hero__split {
+    /* Immersive stage — orrery floats on the sky, copy sits in front */
+    .hero__stage {
       position: relative;
       z-index: 1;
-    }
-
-    .hero__split {
-      display: grid;
-      grid-template-columns: minmax(300px, 1fr) minmax(520px, 720px);
-      gap: var(--space-6);
-      align-items: center;
       width: 100%;
       max-width: 1400px;
       margin: 0 auto;
-      padding: var(--space-10) var(--space-8);
+      min-height: calc(100vh - var(--nav-height) - var(--space-8));
+      padding: var(--space-8) var(--space-8) var(--space-10);
+      display: flex;
+      align-items: center;
+    }
+
+    .hero__orrery-layer {
+      position: absolute;
+      inset: -8% -12% -12% 18%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      max-width: 420px;
+      pointer-events: auto;
+    }
+
+    .hero__content::before {
+      content: '';
+      position: absolute;
+      inset: -24px -40px -24px -24px;
+      background: radial-gradient(ellipse 90% 110% at 0% 50%, rgba(5, 4, 6, 0.72) 0%, transparent 72%);
+      pointer-events: none;
+      z-index: -1;
     }
 
     /* Responsive hero graphics & layout */
     @media (max-width: 900px) {
       .hero { min-height: auto; padding-bottom: var(--space-8); }
-      .hero__split {
-        grid-template-columns: 1fr;
-        gap: var(--space-6);
+      .hero__stage {
+        flex-direction: column;
+        align-items: stretch;
+        min-height: auto;
+        padding-top: var(--space-6);
+      }
+      .hero__orrery-layer {
+        inset: 0 0 42% 0;
+        top: var(--space-4);
+      }
+      .hero__content {
+        max-width: none;
+        margin-top: 52vh;
         text-align: center;
+      }
+      .hero__content::before {
+        inset: -60px -20px 0;
+        background: linear-gradient(to bottom, transparent 0%, rgba(5, 4, 6, 0.55) 18%, rgba(5, 4, 6, 0.82) 100%);
       }
       .hero__text { text-align: center; }
       .hero__subtitle { margin-left: auto; margin-right: auto; }
-      .hero__orrery-wrap { order: 1; margin-top: 0; }
-      #orrery-canvas { width: min(92vw, 480px); height: auto; aspect-ratio: 1 / 1; }
+      #orrery-canvas { width: min(105vw, 520px); }
     }
     @media (max-width: 520px) {
       #orrery-canvas { width: min(88vw, 420px); height: auto; aspect-ratio: 1 / 1; }
@@ -190,38 +238,13 @@
       opacity: 0.7;
     }
 
-    .hero__brand {
-      font-family: var(--font-display);
-      font-size: clamp(2.8rem, 6.5vw, 4.8rem);
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: 0.06em;
-      margin-bottom: var(--space-2);
-      background: linear-gradient(165deg, #f5ecd8 8%, #e8c85a 42%, #c9a227 68%, #f0e4c8 92%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 60px rgba(201, 162, 39, 0.25);
-      filter: drop-shadow(0 2px 24px rgba(201, 162, 39, 0.18));
-    }
-
-    .hero__tagline {
-      font-family: var(--font-display);
-      font-size: clamp(1rem, 2.2vw, 1.35rem);
-      font-weight: 400;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(201, 162, 39, 0.82);
-      margin-bottom: var(--space-6);
-    }
-
     .hero__h1 {
       font-family: var(--font-display);
-      font-size: clamp(1.5rem, 3vw, 2.1rem);
-      font-weight: 500;
-      line-height: 1.35;
-      letter-spacing: 0.02em;
-      color: var(--silver);
+      font-size: clamp(2rem, 4.2vw, 3rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      color: var(--white);
       margin-bottom: var(--space-5);
     }
 
@@ -338,34 +361,33 @@
       color: var(--silver-dim);
     }
 
-    /* The Living Orrery – model-first centerpiece */
+    /* Orrery dissolves into the shared starfield — no plate, no halo disc */
     .hero__orrery-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0;
       position: relative;
       width: 100%;
+      max-width: 920px;
+      pointer-events: none;
     }
 
     .orrery-console {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--space-3);
+      gap: var(--space-2);
       width: 100%;
     }
 
     .orrery-console__deck {
       width: 100%;
       max-width: 640px;
-      padding: var(--space-4) var(--space-5);
-      background: var(--surface-raised, rgba(13, 10, 7, 0.42));
-      border: 1px solid var(--hairline, rgba(201, 162, 39, 0.14));
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-raised, 0 8px 32px rgba(0, 0, 0, 0.35));
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
+      padding: var(--space-2) 0 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      pointer-events: auto;
     }
 
     .orrery-console__deck .orrery-controls {
@@ -386,40 +408,21 @@
       align-self: center;
     }
 
-    .hero__orrery-ring::before {
-      content: '';
-      position: absolute;
-      inset: -8%;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 50%, rgba(255, 210, 120, 0.18) 0%, rgba(201, 162, 39, 0.08) 35%, transparent 72%);
-      animation: orreryHalo 5s ease-in-out infinite;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    @keyframes orreryHalo {
-      0%, 100% { opacity: 0.75; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.03); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .hero__orrery-ring::before { animation: none; opacity: 0.85; }
-    }
-
     #orrery-canvas {
       display: block;
-      width: min(100%, 640px);
+      width: min(108vw, 880px);
       height: auto;
       aspect-ratio: 1 / 1;
-      border-radius: 50%;
+      border-radius: 0;
       position: relative;
       z-index: 1;
       background: transparent;
       cursor: grab;
       touch-action: none;
-      /* EDGE FEATHERING: outer planets stay inside the solid core; soft dissolve to nebula */
-      -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 55%, rgba(0,0,0,0.75) 78%, transparent 99%);
-              mask-image: radial-gradient(circle at 50% 50%, #000 55%, rgba(0,0,0,0.75) 78%, transparent 99%);
+      pointer-events: auto;
+      /* Full dissolve into the page nebula — no visible disc edge */
+      -webkit-mask-image: radial-gradient(ellipse 88% 88% at 50% 46%, #000 32%, rgba(0,0,0,0.85) 52%, rgba(0,0,0,0.35) 72%, transparent 100%);
+              mask-image: radial-gradient(ellipse 88% 88% at 50% 46%, #000 32%, rgba(0,0,0,0.85) 52%, rgba(0,0,0,0.35) 72%, transparent 100%);
     }
     #orrery-canvas:active { cursor: grabbing; }
     /* Affordance hint — fades after a beat, returns on hover so the model never feels static/locked */
@@ -1469,26 +1472,18 @@
        RESPONSIVE
        ===================================================================== */
     @media (max-width: 1100px) {
-      .hero__split { grid-template-columns: 1fr minmax(440px, 580px); gap: var(--space-6); }
-      #orrery-canvas { width: min(100%, 520px); }
+      .hero__orrery-layer { inset: -6% -8% -10% 10%; }
+      #orrery-canvas { width: min(100vw, 760px); }
       .cosmic-story__grid { grid-template-columns: 1fr 340px; gap: var(--space-10); }
     }
 
     @media (max-width: 900px) {
-      .hero__split {
-        grid-template-columns: 1fr;
-        text-align: center;
-        padding: var(--space-12) var(--space-5);
-      }
-      .hero__text { order: 2; }
-      .hero__orrery-wrap { order: 1; }
       .hero__eyebrow,
       .hero__trust,
       .hero__stats { justify-content: center; }
       .hero__subtitle { margin-left: auto; margin-right: auto; }
       .hero__cta-form { justify-content: center; }
-      #orrery-canvas { width: min(92vw, 480px); height: auto; aspect-ratio: 1 / 1; }
-      .orrery-console__deck { max-width: min(92vw, 480px); }
+      .orrery-console__deck { max-width: min(92vw, 480px); margin: 0 auto; }
       .bento-grid { grid-template-columns: 1fr 1fr; }
       .bento-card--featured { grid-column: span 2; }
       .cosmic-story__grid { grid-template-columns: 1fr; }
@@ -1619,7 +1614,7 @@
   }
   </script>
 </head>
-<body>
+<body class="page-home">
 
   <!-- ═════════════════════════════════════════════════════════════════════
        CINEMATIC PRELOADER — "The Spheres Align"
@@ -1660,7 +1655,9 @@
        then flown into the hero on dismiss. The CSS-mock above stays as a graceful fallback. */
     .apl-live-orr{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:min(66vmin,480px);height:min(66vmin,480px);pointer-events:auto;z-index:2;opacity:0;transition:opacity 1s ease;cursor:grab;}
     .apl-live-orr:active{cursor:grabbing;}
-    .apl-live-orr canvas{width:100%!important;height:100%!important;display:block;}
+    .apl-live-orr canvas{width:100%!important;height:100%!important;display:block;
+      -webkit-mask-image:radial-gradient(ellipse 90% 90% at 50% 46%,#000 30%,rgba(0,0,0,0.5) 65%,transparent 100%);
+      mask-image:radial-gradient(ellipse 90% 90% at 50% 46%,#000 30%,rgba(0,0,0,0.5) 65%,transparent 100%);}
     #preloader.has-real .apl-live-orr{opacity:1;}
     #preloader.has-real .apl-orr,#preloader.has-real .apl-core{opacity:0;transition:opacity .9s ease;}
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core,.preloader-seal{animation:none;}}
@@ -1886,16 +1883,61 @@
           <circle r="2" cx="180" cy="620"/><circle r="2" cx="260" cy="580"/><circle r="2" cx="340" cy="640"/><circle r="2" cx="300" cy="720"/><circle r="2" cx="200" cy="700"/>
         </g>
       </svg>
-      <div class="hero__split">
+      <div class="hero__stage">
 
-        <!-- Left: Text content -->
+        <!-- Orrery floats on the sky behind the copy -->
+        <div class="hero__orrery-layer" aria-hidden="false">
+        <div class="hero__orrery-wrap">
+          <div class="orrery-console">
+            <div class="hero__orrery-ring" style="position:relative;">
+              <canvas
+                id="orrery-canvas"
+                width="640"
+                height="640"
+                role="img"
+                aria-label="The Living Orrery – real solar system positions starting from Earth. Drag to scrub time, scroll the page to advance the sky."
+                style="position:relative;z-index:1;"
+              ></canvas>
+              <div class="orrery-hint" aria-hidden="true">✦&nbsp; drag through time &middot; scroll page to advance</div>
+            </div>
+
+            <div class="orrery-console__deck">
+              <div class="orrery-controls" role="group" aria-label="Time controls for the living orrery">
+                <button class="orrery-btn active" data-speed="0" id="orrery-pause" aria-label="Pause">Pause</button>
+                <button class="orrery-btn" data-speed="1" id="orrery-1x" aria-label="Real time">1×</button>
+                <button class="orrery-btn" data-speed="30" id="orrery-30x" aria-label="30× speed">30×</button>
+                <button class="orrery-btn" data-speed="365" id="orrery-365x" aria-label="1 year per second">Year</button>
+                <span class="orrery-date" id="orrery-date-display" aria-live="polite" aria-label="Current date in the orrery"></span>
+                <span id="orrery-moon-phase" aria-live="polite" style="font-size:0.72rem;color:rgba(201,162,39,0.72);letter-spacing:0.04em;padding-left:0.5rem;white-space:nowrap;"></span>
+                <button class="orrery-btn" id="orrery-capture" aria-label="Capture the current sky as an image" style="margin-left:auto;">Capture</button>
+              </div>
+
+              <div class="orrery-timeline">
+                <div class="orrery-timeline__label">
+                  <span>TIMELINE</span>
+                  <button class="orrery-btn" id="orrery-reset" style="padding:1px 6px; font-size:0.58rem;">Now</button>
+                </div>
+                <input type="range" id="orrery-scrub" min="-2000" max="2000" step="1" value="0" style="flex:1; accent-color:#c9a227;" aria-label="Scrub through time – watch the planets move in their real paths">
+              </div>
+            </div>
+          </div>
+
+          <div id="planet-info-panel" class="planet-info-panel hidden" role="dialog" aria-label="Planet information" aria-live="polite">
+            <button class="planet-info-panel__close" id="planet-panel-close" aria-label="Close planet information">&times;</button>
+            <span class="planet-info-panel__glyph" id="pip-glyph" aria-hidden="true">☉</span>
+            <p class="planet-info-panel__name" id="pip-name">Sun</p>
+            <p class="planet-info-panel__sign" id="pip-sign">in Gemini</p>
+            <p class="planet-info-panel__degree" id="pip-degree">21°34′</p>
+            <p class="planet-info-panel__meaning" id="pip-meaning"></p>
+          </div>
+        </div>
+        </div>
+
+        <div class="hero__content">
         <div class="hero__text">
           <p class="hero__eyebrow" aria-label="Powered by VSOP87 Astronomical Precision">
-            Powered by VSOP87 Astronomical Precision
+            Your Cosmic Blueprint
           </p>
-
-          <p class="hero__brand" aria-hidden="false">AstroPrecise</p>
-          <p class="hero__tagline">&mdash; Your Cosmic Blueprint</p>
 
           <h1 class="hero__h1">
             Your personal universe, <em>beautifully revealed.</em>
@@ -1937,62 +1979,6 @@
             <span>Private · no account</span>
           </p>
         </div>
-
-        <!-- Right: The Living Orrery — model-first centerpiece -->
-        <div class="hero__orrery-wrap">
-          <div class="orrery-console">
-            <div class="hero__orrery-ring" style="position:relative;">
-              <canvas
-                id="orrery-canvas"
-                width="640"
-                height="640"
-                role="img"
-                aria-label="The Living Orrery – real solar system positions starting from Earth. Drag to scrub time, scroll the page to advance the sky."
-                style="position:relative;z-index:1;"
-              ></canvas>
-              <div class="orrery-hint" aria-hidden="true">✦&nbsp; drag through time &middot; scroll page to advance</div>
-            </div>
-
-            <div class="orrery-console__deck">
-              <div class="orrery-instrument">
-                <div class="orrery-instrument__header">
-                  <span class="orrery-instrument__eyebrow">LIVE SOLAR SYSTEM</span>
-                  <h3 class="orrery-instrument__title">The Living Orrery</h3>
-                </div>
-                <p class="orrery-instrument__desc">
-                  Real VSOP87 positions — the same sky that powers every chart. <strong>Scroll to travel forward in time.</strong>
-                </p>
-              </div>
-
-              <div class="orrery-controls" role="group" aria-label="Time controls for the living orrery">
-                <button class="orrery-btn active" data-speed="0" id="orrery-pause" aria-label="Pause">Pause</button>
-                <button class="orrery-btn" data-speed="1" id="orrery-1x" aria-label="Real time">1×</button>
-                <button class="orrery-btn" data-speed="30" id="orrery-30x" aria-label="30× speed">30×</button>
-                <button class="orrery-btn" data-speed="365" id="orrery-365x" aria-label="1 year per second">Year</button>
-                <span class="orrery-date" id="orrery-date-display" aria-live="polite" aria-label="Current date in the orrery"></span>
-                <span id="orrery-moon-phase" aria-live="polite" style="font-size:0.72rem;color:rgba(201,162,39,0.72);letter-spacing:0.04em;padding-left:0.5rem;white-space:nowrap;"></span>
-                <button class="orrery-btn" id="orrery-capture" aria-label="Capture the current sky as an image" style="margin-left:auto;">Capture</button>
-              </div>
-
-              <div class="orrery-timeline">
-                <div class="orrery-timeline__label">
-                  <span>TIMELINE</span>
-                  <button class="orrery-btn" id="orrery-reset" style="padding:1px 6px; font-size:0.58rem;">Now</button>
-                </div>
-                <input type="range" id="orrery-scrub" min="-2000" max="2000" step="1" value="0" style="flex:1; accent-color:#c9a227;" aria-label="Scrub through time – watch the planets move in their real paths">
-              </div>
-            </div>
-          </div>
-
-          <!-- Planet info panel (shown on planet click) -->
-          <div id="planet-info-panel" class="planet-info-panel hidden" role="dialog" aria-label="Planet information" aria-live="polite">
-            <button class="planet-info-panel__close" id="planet-panel-close" aria-label="Close planet information">&times;</button>
-            <span class="planet-info-panel__glyph" id="pip-glyph" aria-hidden="true">☉</span>
-            <p class="planet-info-panel__name" id="pip-name">Sun</p>
-            <p class="planet-info-panel__sign" id="pip-sign">in Gemini</p>
-            <p class="planet-info-panel__degree" id="pip-degree">21°34′</p>
-            <p class="planet-info-panel__meaning" id="pip-meaning"></p>
-          </div>
         </div>
 
       </div>
