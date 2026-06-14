@@ -59,7 +59,7 @@
       margin: 0.9rem auto 0; max-width: 600px;
       font-size: 0.72rem; color: var(--silver-dim, #8891AA);
     }
-    .planet-legend__label { color: var(--gold, #D4AF37); font-weight: 600; }
+    .planet-legend__label { color: var(--gold, #c9a227); font-weight: 600; }
     .pl-dot { color: var(--c); opacity: 0.85; letter-spacing: 0.04em; }
 
     /* Birth chart CTAs under sphere */
@@ -76,16 +76,16 @@
     .cta-btn:hover { transform: translateY(-2px); }
     .cta-btn--primary {
       background: linear-gradient(135deg, #C9A227, #EFE3C0);
-      color: #0A0B1F;
-      box-shadow: 0 0 16px rgba(212,175,55,0.25);
+      color: #0d0a07;
+      box-shadow: 0 0 16px rgba(201, 162, 39,0.25);
     }
-    .cta-btn--primary:hover { box-shadow: 0 0 28px rgba(212,175,55,0.45); }
+    .cta-btn--primary:hover { box-shadow: 0 0 28px rgba(201, 162, 39,0.45); }
     .cta-btn--ghost {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.12);
       color: var(--silver, #C8D0E8);
     }
-    .cta-btn--ghost:hover { border-color: rgba(212,175,55,0.4); color: var(--gold, #D4AF37); }
+    .cta-btn--ghost:hover { border-color: rgba(201, 162, 39,0.4); color: var(--gold, #c9a227); }
 
     /* Sign-grid toggle row */
     .sign-grid-toggle-row {
@@ -99,14 +99,14 @@
       padding: 0.35rem 1rem; font-size: 0.78rem; cursor: pointer;
       transition: border-color .15s, color .15s;
     }
-    .sign-grid-toggle:hover { border-color: var(--gold, #D4AF37); color: var(--gold, #D4AF37); }
+    .sign-grid-toggle:hover { border-color: var(--gold, #c9a227); color: var(--gold, #c9a227); }
 
     /* Reading panel chart CTA */
     .srp-chart-cta {
       margin-top: var(--space-6, 1.5rem);
       padding: var(--space-5, 1.25rem) var(--space-6, 1.5rem);
-      background: rgba(123,44,191,0.10);
-      border: 1px solid rgba(123,44,191,0.25);
+      background: rgba(92, 74, 110,0.10);
+      border: 1px solid rgba(92, 74, 110,0.25);
       border-radius: var(--radius-xl, 16px);
       text-align: center;
     }
@@ -117,13 +117,13 @@
     .srp-chart-cta__btn {
       display: inline-block; padding: 0.6rem 1.6rem;
       background: linear-gradient(135deg, #C9A227 0%, #EFE3C0 100%);
-      color: #0A0B1F; font-weight: 700; font-size: 0.85rem;
+      color: #0d0a07; font-weight: 700; font-size: 0.85rem;
       letter-spacing: 0.04em; border-radius: 999px;
       text-decoration: none; transition: box-shadow .15s, transform .15s;
-      box-shadow: 0 0 16px rgba(212,175,55,0.2);
+      box-shadow: 0 0 16px rgba(201, 162, 39,0.2);
     }
     .srp-chart-cta__btn:hover {
-      box-shadow: 0 0 28px rgba(212,175,55,0.45);
+      box-shadow: 0 0 28px rgba(201, 162, 39,0.45);
       transform: translateY(-2px);
     }
 
@@ -213,8 +213,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(17, 26, 54, 0.68);
-      border: 1px solid rgba(150, 175, 230, 0.12);
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: 999px;
       padding: 5px 12px;
       white-space: nowrap;
@@ -256,9 +256,9 @@
 
     /* ---- Sign card — premium glassmorphism ---- */
     .sign-card {
-      background: rgba(17, 26, 54, 0.68);
-      border: 1px solid rgba(150, 175, 230, 0.12);
-      border-left: 4px solid rgba(150, 175, 230, 0.18);
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(168, 158, 136, 0.12);
+      border-left: 4px solid rgba(168, 158, 136, 0.18);
       border-radius: 20px;
       padding: var(--space-5) var(--space-4) var(--space-4);
       text-align: center;
@@ -275,7 +275,7 @@
     /* Element-coloured left borders */
     .sign-card[data-element="fire"] { border-left-color: #e05a3a; }
     .sign-card[data-element="earth"] { border-left-color: #2a8a5a; }
-    .sign-card[data-element="air"] { border-left-color: #5b7fc7; }
+    .sign-card[data-element="air"] { border-left-color: #9db36a; }
     .sign-card[data-element="water"] { border-left-color: #3a7ad4; }
 
     /* Hover — element glows */
@@ -302,8 +302,8 @@
 
     /* Active — gold border all sides */
     .sign-card.is-active {
-      border-color: #c4920a;
-      border-left-color: #c4920a;
+      border-color: #c9a227;
+      border-left-color: #c9a227;
       border-left-width: 4px;
       background: rgba(196, 146, 10, 0.08);
       box-shadow: 0 0 0 1px rgba(196, 146, 10, 0.35), 0 0 24px rgba(196, 146, 10, 0.2);
@@ -399,7 +399,7 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       background: var(--color-gold);
-      color: #0A0B1F;
+      color: #0d0a07;
       padding: 2px 8px;
       border-radius: 999px;
       font-weight: 700;
@@ -434,7 +434,7 @@
       inset: 0;
       border-radius: inherit;
       padding: 1.5px;
-      background: linear-gradient(135deg, #c4920a 0%, rgba(196, 146, 10, 0.6) 20%, rgba(90, 60, 140, 0.5) 50%, rgba(42, 74, 148, 0.5) 80%, #c4920a 100%);
+      background: linear-gradient(135deg, #c9a227 0%, rgba(196, 146, 10, 0.6) 20%, rgba(90, 60, 140, 0.5) 50%, rgba(92, 74, 110, 0.5) 80%, #c9a227 100%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -502,7 +502,7 @@
       .sign-reading-panel__inner { padding: var(--space-5) var(--space-4); }
     }
     .reading-card {
-      background: rgba(42, 74, 148, 0.08);
+      background: rgba(92, 74, 110, 0.08);
       border: 1px solid rgba(91, 127, 199, 0.2);
       border-radius: var(--radius-lg);
       padding: var(--space-5);
@@ -540,7 +540,7 @@
     /* Element-themed reading card borders */
     .sign-reading-panel[data-element="fire"] .reading-card { border-color: rgba(180, 66, 50, 0.3); }
     .sign-reading-panel[data-element="earth"] .reading-card { border-color: rgba(14, 92, 58, 0.3); }
-    .sign-reading-panel[data-element="air"] .reading-card { border-color: rgba(42, 74, 148, 0.35); }
+    .sign-reading-panel[data-element="air"] .reading-card { border-color: rgba(92, 74, 110, 0.35); }
     .sign-reading-panel[data-element="water"] .reading-card { border-color: rgba(27, 95, 170, 0.35); }
 
     /* ---- Lunar cycle indicator ---- */
@@ -621,8 +621,8 @@
       flex-direction: column;
       align-items: center;
       gap: var(--space-4);
-      background: rgba(17, 26, 54, 0.68);
-      border: 1px solid rgba(150, 175, 230, 0.12);
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: 28px;
       padding: var(--space-12) var(--space-8);
       text-align: center;
@@ -668,8 +668,8 @@
       grid-template-columns: 3rem 1fr auto;
       align-items: center;
       gap: var(--space-4);
-      background: rgba(17, 26, 54, 0.68);
-      border: 1px solid rgba(150, 175, 230, 0.12);
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: var(--radius-lg);
       padding: var(--space-4) var(--space-5);
     }
@@ -698,8 +698,8 @@
 
     /* ---- Planetary weather cards ---- */
     .planet-weather-card {
-      background: rgba(17, 26, 54, 0.68);
-      border: 1px solid rgba(150, 175, 230, 0.12);
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: 20px;
       padding: var(--space-5);
       display: flex;
@@ -773,7 +773,7 @@
       width: calc(100% - 2rem);
       max-height: 85vh;
       overflow-y: auto;
-      box-shadow: 0 24px 80px rgba(42, 74, 148, 0.25);
+      box-shadow: 0 24px 80px rgba(92, 74, 110, 0.25);
     }
     @media (max-width: 600px) {
       .modal__content { padding: var(--space-8) var(--space-6); }
@@ -889,9 +889,9 @@
         <!-- Planet legend strip -->
         <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="list">
           <span class="planet-legend__label">Live sky:</span>
-          <span class="pl-dot" style="--c:#D4AF37" aria-label="Sun position">☉ Sun</span>
+          <span class="pl-dot" style="--c:#c9a227" aria-label="Sun position">☉ Sun</span>
           <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon</span>
-          <span class="pl-dot" style="--c:#00D4FF" aria-label="Mercury position">☿ Mercury</span>
+          <span class="pl-dot" style="--c:#3f7d76" aria-label="Mercury position">☿ Mercury</span>
           <span class="pl-dot" style="--c:#C77DFF" aria-label="Venus position">♀ Venus</span>
           <span class="pl-dot" style="--c:#e05848" aria-label="Mars position">♂ Mars</span>
           <span class="pl-dot" style="--c:#E8A050" aria-label="Jupiter position">♃ Jupiter</span>
@@ -1142,11 +1142,11 @@
             <span>Void of Course Moon</span>
             <span id="void-moon-sign" style="color:var(--silver-dim);"></span>
           </div>
-          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
+          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(201, 162, 39,0.08);border:1px solid rgba(201, 162, 39,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
             <span id="ph-glyph" style="font-size:1rem;">⏱</span>
             <span>Planetary Hour: </span><strong id="ph-name" style="color:var(--gold-light);">loading…</strong>
           </div>
-          <div id="retrogrades-badge" style="display:flex;align-items:center;gap:6px;background:rgba(123,44,191,0.08);border:1px solid rgba(123,44,191,0.2);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--violet-bright);">
+          <div id="retrogrades-badge" style="display:flex;align-items:center;gap:6px;background:rgba(92, 74, 110,0.08);border:1px solid rgba(92, 74, 110,0.2);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--violet-bright);">
             <span>Rx</span> <span id="retrogrades-list" style="color:var(--silver);">loading…</span>
           </div>
         </div>
@@ -1527,7 +1527,7 @@
         // Dark background circle
         ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
         var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r + 4);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0A0B1F');
+        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
         ctx.fillStyle = bgGrad; ctx.fill();
         // Draw moon
         ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
@@ -1705,8 +1705,8 @@
       // Shareable cosmic card — enhanced 1080×1080 PNG
       var ELEMENT_CARD_TINTS = {
         fire:  ['#fb923c', 'rgba(251,146,60,0.16)', '#b44232'],
-        earth: ['#34d399', 'rgba(52,211,153,0.13)', '#0e5c3a'],
-        air:   ['#38bdf8', 'rgba(56,189,248,0.13)', '#2a4a94'],
+        earth: ['#9ab363', 'rgba(94, 122, 58,0.13)', '#0e5c3a'],
+        air:   ['#a78bba', 'rgba(167, 139, 186,0.13)', '#5c4a6e'],
         water: ['#818cf8', 'rgba(129,140,248,0.15)', '#1b5faa'],
       };
 
@@ -1742,7 +1742,7 @@
         // Dark background circle
         ctx.beginPath(); ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
         var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius + 3);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0A0B1F');
+        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
         ctx.fillStyle = bgGrad; ctx.fill();
         // Draw moon disc
         ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.clip();
@@ -1767,7 +1767,7 @@
       function drawHoroscopeCard(signKey) {
         var info = SIGNS[signKey];
         var data = Interpretations.getDailyHoroscope(info.name, new Date());
-        var tint = ELEMENT_CARD_TINTS[info.element] || ['#c4920a', 'rgba(196,146,10,0.13)', '#2a4a94'];
+        var tint = ELEMENT_CARD_TINTS[info.element] || ['#c9a227', 'rgba(196,146,10,0.13)', '#5c4a6e'];
         var signIdx = SIGN_KEYS.indexOf(signKey);
         var stone = SIGN_STONES[signIdx] || 'Crystal';
 
@@ -1776,12 +1776,12 @@
         var ctx = cv.getContext('2d');
 
         // Background: void base
-        ctx.fillStyle = '#0A0B1F';
+        ctx.fillStyle = '#0d0a07';
         ctx.fillRect(0, 0, 1080, 1080);
 
         // Nebula: lapis glow left side
         var neb1 = ctx.createRadialGradient(160, 300, 0, 160, 300, 680);
-        neb1.addColorStop(0, 'rgba(42,74,148,0.38)');
+        neb1.addColorStop(0, 'rgba(92, 74, 110,0.38)');
         neb1.addColorStop(1, 'transparent');
         ctx.fillStyle = neb1; ctx.fillRect(0, 0, 1080, 1080);
 
@@ -1846,7 +1846,7 @@
         ctx.fillText(info.name.toUpperCase(), 540, 450);
 
         // "Daily Reading": 22px tracking, gold, y=490
-        ctx.fillStyle = '#c4920a';
+        ctx.fillStyle = '#c9a227';
         ctx.font = '300 22px Georgia, serif';
         ctx.letterSpacing = '0.18em';
         ctx.fillText('D A I L Y   R E A D I N G', 540, 494);
@@ -1879,7 +1879,7 @@
         ctx.fillText(elemLabel, 540, 922);
 
         // Branding at y=1038
-        ctx.fillStyle = '#c4920a';
+        ctx.fillStyle = '#c9a227';
         ctx.font = '600 22px Georgia, serif';
         ctx.fillText('✦ ASTROPRECISE · computed from the real sky ✦', 540, 1038);
 

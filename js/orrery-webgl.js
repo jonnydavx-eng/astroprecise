@@ -380,7 +380,10 @@ import * as THREE from 'three';
   function resize() {
     if (!renderer) return;
     const w = canvas.clientWidth || 560, h = canvas.clientHeight || 560;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const dpr = (window.RafCore && window.RafCore.capDPR)
+      ? window.RafCore.capDPR(2)
+      : Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
   }

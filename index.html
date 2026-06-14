@@ -131,11 +131,11 @@
       .hero__text { text-align: center; }
       .hero__subtitle { margin-left: auto; margin-right: auto; }
       .hero__orrery-wrap { order: 2; margin-top: var(--space-6); }
-      #orrery-canvas { width: 420px; height: 420px; }
+      #orrery-canvas { width: min(86vw, 460px); height: auto; aspect-ratio: 1 / 1; }
       .hero__orrery-ring { padding: 1px; background: rgba(10,11,31,0.04); border-color: rgba(201,162,39,0.04); }
     }
     @media (max-width: 520px) {
-      #orrery-canvas { width: 320px; height: 320px; }
+      #orrery-canvas { width: min(88vw, 420px); height: auto; aspect-ratio: 1 / 1; }
       .hero__cast-btn { width: 100%; justify-content: center; }
     }
 
@@ -223,7 +223,7 @@
       background: linear-gradient(135deg, var(--gold-hero) 0%, #a8841e 100%);
       border: none;
       border-radius: var(--radius-lg);
-      color: #0A0B1F;
+      color: #0d0a07;
       font-family: var(--font-body);
       font-size: 0.9rem;
       font-weight: 700;
@@ -1363,7 +1363,7 @@
       .hero__stats { justify-content: center; }
       .hero__subtitle { margin-left: auto; margin-right: auto; }
       .hero__cta-form { justify-content: center; }
-      #orrery-canvas { width: 340px; height: 340px; }
+      #orrery-canvas { width: min(86vw, 460px); height: auto; aspect-ratio: 1 / 1; }
       .bento-grid { grid-template-columns: 1fr 1fr; }
       .bento-card--featured { grid-column: span 2; }
       .cosmic-story__grid { grid-template-columns: 1fr; }
@@ -1377,7 +1377,7 @@
     }
 
     @media (max-width: 640px) {
-      #orrery-canvas { width: 300px; height: 300px; }
+      #orrery-canvas { width: min(88vw, 420px); height: auto; aspect-ratio: 1 / 1; }
       .bento-grid { grid-template-columns: 1fr; }
       .bento-card--featured { grid-column: span 1; }
       .tools-bento { grid-template-columns: 1fr; }
@@ -1419,12 +1419,12 @@
       margin: 1.1rem 0 0;
       padding: 0.7rem 1rem;
       border-radius: 14px;
-      background: linear-gradient(135deg, rgba(42,74,148,0.14), rgba(13,17,36,0.55));
+      background: linear-gradient(135deg, rgba(92, 74, 110,0.14), rgba(13, 10, 7,0.55));
       -webkit-backdrop-filter: blur(14px);
       backdrop-filter: blur(14px);
       border: 1px solid rgba(196,146,10,0.28);
       border-top-color: rgba(232,201,106,0.4);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 1px rgba(150,175,230,0.04) inset;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 1px rgba(168, 158, 136,0.04) inset;
     }
     .privacy-badge__icon {
       flex-shrink: 0;
@@ -1434,7 +1434,7 @@
       width: 36px; height: 36px;
       border-radius: 50%;
       color: var(--gold-hero, #C9A227);
-      background: radial-gradient(circle at 35% 30%, rgba(232,201,106,0.22), rgba(42,74,148,0.12));
+      background: radial-gradient(circle at 35% 30%, rgba(232,201,106,0.22), rgba(92, 74, 110,0.12));
       border: 1px solid rgba(196,146,10,0.35);
       box-shadow: 0 0 16px rgba(196,146,10,0.18);
     }
@@ -1878,7 +1878,7 @@
               <span>TIMELINE</span>
               <button class="orrery-btn" id="orrery-reset" style="padding:1px 6px; font-size:0.58rem;">Now</button>
             </div>
-            <input type="range" id="orrery-scrub" min="-2000" max="2000" step="1" value="0" style="flex:1; accent-color:#D4AF37;" aria-label="Scrub through time – watch the planets move in their real paths">
+            <input type="range" id="orrery-scrub" min="-2000" max="2000" step="1" value="0" style="flex:1; accent-color:#c9a227;" aria-label="Scrub through time – watch the planets move in their real paths">
           </div>
         </div>
 
@@ -2023,9 +2023,9 @@
               <!-- Middle ring -->
               <circle cx="200" cy="200" r="155" stroke="rgba(201,162,39,0.1)" stroke-width="1" fill="none"/>
               <!-- Inner ring -->
-              <circle cx="200" cy="200" r="120" stroke="rgba(0,212,255,0.12)" stroke-width="1" fill="none"/>
+              <circle cx="200" cy="200" r="120" stroke="rgba(63, 125, 118,0.12)" stroke-width="1" fill="none"/>
               <!-- Innermost -->
-              <circle cx="200" cy="200" r="80" stroke="rgba(123,44,191,0.15)" stroke-width="1" fill="none"/>
+              <circle cx="200" cy="200" r="80" stroke="rgba(92, 74, 110,0.15)" stroke-width="1" fill="none"/>
               <!-- Center sun -->
               <circle cx="200" cy="200" r="12" fill="rgba(201,162,39,0.25)" stroke="rgba(201,162,39,0.5)" stroke-width="1"/>
               <!-- 12 spoke lines -->
@@ -2439,6 +2439,8 @@
   <!-- ══════════════════════════════════════════════════════════════════════
        SCRIPTS — load order matters
        ══════════════════════════════════════════════════════════════════════ -->
+  <!-- One scroll/rAF dispatcher + DPR/reduced-motion source of truth. Load first. -->
+  <script src="js/raf-core.js"></script>
   <script src="js/stellar.js"></script>
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
@@ -2530,11 +2532,10 @@
     (function () {
       var header = document.querySelector('.site-header');
       if (!header) return;
-      function onScroll() {
-        header.classList.toggle('scrolled', window.scrollY > 20);
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
+      var apply = function () { header.classList.toggle('scrolled', window.scrollY > 20); };
+      if (window.RafCore) { window.RafCore.onScroll(apply); return; }
+      window.addEventListener('scroll', apply, { passive: true });
+      apply();
     })();
 
     /* ── 3. Mobile nav hamburger ───────────────────────────────────────── */

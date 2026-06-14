@@ -194,7 +194,7 @@
         '<p class="instrument-eyebrow" style="margin-bottom:var(--space-3);">Most recently reached</p>' +
         '<div style="display:flex;flex-wrap:wrap;gap:var(--space-2);">' +
         last.map(s =>
-          `<span title="${(s.fact || '').replace(/"/g, '&quot;')}" style="font-size:0.7rem;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(212,175,55,0.3);border-radius:999px;color:var(--gold-pale);cursor:help;">
+          `<span title="${(s.fact || '').replace(/"/g, '&quot;')}" style="font-size:0.7rem;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(201, 162, 39,0.3);border-radius:999px;color:var(--gold-pale);cursor:help;">
             ${s.name} · ${s.ly} ly</span>`).join('') + '</div>';
     }
 
@@ -239,10 +239,10 @@
       x.fill();
     }
 
-    x.strokeStyle = 'rgba(212,175,55,0.55)';
+    x.strokeStyle = 'rgba(201, 162, 39,0.55)';
     x.lineWidth = 2;
     x.strokeRect(46, 46, W - 92, H - 92);
-    x.strokeStyle = 'rgba(212,175,55,0.22)';
+    x.strokeStyle = 'rgba(201, 162, 39,0.22)';
     x.strokeRect(58, 58, W - 116, H - 116);
 
     // ── wavefront map (same log-radial mapping as the live canvas) ──
@@ -261,7 +261,7 @@
     });
 
     const fill = x.createRadialGradient(cx, cy, 0, cx, cy, waveR);
-    fill.addColorStop(0, 'rgba(212,175,55,0.14)');
+    fill.addColorStop(0, 'rgba(201, 162, 39,0.14)');
     fill.addColorStop(1, 'rgba(91,127,199,0.03)');
     x.beginPath(); x.arc(cx, cy, waveR, 0, Math.PI * 2);
     x.fillStyle = fill; x.fill();
@@ -282,7 +282,7 @@
     x.arc(cx, cy, waveR, 0, Math.PI * 2);
     x.strokeStyle = 'rgba(232,201,106,0.9)';
     x.lineWidth = 2.4;
-    x.shadowColor = 'rgba(212,175,55,0.9)';
+    x.shadowColor = 'rgba(201, 162, 39,0.9)';
     x.shadowBlur = 18;
     x.stroke();
     x.shadowBlur = 0;
@@ -350,10 +350,10 @@
       x.fill();
     }
 
-    x.strokeStyle = 'rgba(212,175,55,0.55)';
+    x.strokeStyle = 'rgba(201, 162, 39,0.55)';
     x.lineWidth = 2;
     x.strokeRect(46, 46, CARD_W - 92, CARD_H - 92);
-    x.strokeStyle = 'rgba(212,175,55,0.22)';
+    x.strokeStyle = 'rgba(201, 162, 39,0.22)';
     x.strokeRect(58, 58, CARD_W - 116, CARD_H - 116);
     return { cv, x };
   }
@@ -382,10 +382,10 @@
     x.beginPath();
     if (x.roundRect) x.roundRect(left, y - h / 2, w, h, h / 2);
     else x.rect(left, y - h / 2, w, h);
-    x.fillStyle = 'rgba(17,26,54,0.55)';
+    x.fillStyle = 'rgba(20, 16, 10,0.55)';
     x.fill();
     x.lineWidth = 1;
-    x.strokeStyle = measured ? 'rgba(212,175,55,0.55)' : 'rgba(154,166,200,0.45)';
+    x.strokeStyle = measured ? 'rgba(201, 162, 39,0.55)' : 'rgba(154,166,200,0.45)';
     x.stroke();
     const dotX = left + padX;
     x.beginPath();
@@ -458,7 +458,7 @@
       nameSize -= 4; x.font = `bold ${nameSize}px Georgia, serif`;
     }
     x.textAlign = 'center';
-    x.shadowColor = 'rgba(212,175,55,0.55)';
+    x.shadowColor = 'rgba(201, 162, 39,0.55)';
     x.shadowBlur = 24;
     x.fillText(s.name.toUpperCase(), CARD_W / 2, 296);
     x.shadowBlur = 0;
@@ -478,7 +478,7 @@
     x.arc(CARD_W / 2, panelCy, half, 0, Math.PI * 2);
     x.strokeStyle = 'rgba(154,166,200,0.12)';
     x.lineWidth = 1; x.stroke();
-    x.strokeStyle = 'rgba(212,175,55,0.30)';
+    x.strokeStyle = 'rgba(201, 162, 39,0.30)';
     x.beginPath();
     x.moveTo(CARD_W / 2 - 16, panelCy); x.lineTo(CARD_W / 2 + 16, panelCy);
     x.moveTo(CARD_W / 2, panelCy - 16); x.lineTo(CARD_W / 2, panelCy + 16);
@@ -488,7 +488,7 @@
       const r = Math.max(1.4, 4.2 - p.st.mag * 0.7);
       x.beginPath();
       x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
-      if (isHero) { x.fillStyle = 'rgba(232,201,106,0.98)'; x.shadowColor = 'rgba(212,175,55,0.9)'; x.shadowBlur = 16; }
+      if (isHero) { x.fillStyle = 'rgba(232,201,106,0.98)'; x.shadowColor = 'rgba(201, 162, 39,0.9)'; x.shadowBlur = 16; }
       else { x.fillStyle = 'rgba(154,166,200,0.55)'; x.shadowBlur = 0; }
       x.fill(); x.shadowBlur = 0;
     }
@@ -766,7 +766,7 @@
         el.innerHTML =
           `<h3 style="font-family:var(--font-display);color:var(--gold-pale);letter-spacing:0.06em;margin-bottom:var(--space-4);">${r.title}</h3>` +
           r.sections.map(s => `<h4>${s.heading}</h4>` + s.paragraphs.map(p => `<p>${p}</p>`).join('')).join('') +
-          `<div style="border:1px solid rgba(212,175,55,0.3);border-radius:var(--radius-lg);padding:var(--space-5);margin-top:var(--space-6);background:rgba(17,26,54,0.4);">
+          `<div style="border:1px solid rgba(201, 162, 39,0.3);border-radius:var(--radius-lg);padding:var(--space-5);margin-top:var(--space-6);background:rgba(20, 16, 10,0.4);">
             <p class="instrument-eyebrow" style="margin-bottom:var(--space-2);">The question</p>
             <p style="font-style:italic;font-size:1.25rem;">${r.question}</p>
           </div>`;
@@ -1314,7 +1314,7 @@
       });
     }
     items.push(
-      '<div class="sig-cell" style="border-color:rgba(212,175,55,0.22);background:rgba(212,175,55,0.06);">' +
+      '<div class="sig-cell" style="border-color:rgba(201, 162, 39,0.22);background:rgba(201, 162, 39,0.06);">' +
         '<span class="sig-cell__glyph" style="color:var(--gold);">✦</span>' +
         '<span class="sig-cell__label">Life Path</span>' +
         '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +

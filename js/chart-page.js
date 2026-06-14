@@ -31,7 +31,7 @@
     opposition:     { name:'Opposition',     glyph:'☍', color:'#b04a52' },
     trine:          { name:'Trine',          glyph:'△', color:'#3fae7a' },
     square:         { name:'Square',         glyph:'□', color:'#b04a52' },
-    sextile:        { name:'Sextile',        glyph:'⚹', color:'#5b7fc7' },
+    sextile:        { name:'Sextile',        glyph:'⚹', color:'#9db36a' },
     quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#9aa6c8' },
     semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#9aa6c8' },
     sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#9aa6c8' },
@@ -590,7 +590,7 @@
         : [];
       if (fixedStars.length) {
         const starCards = fixedStars.slice(0, 6).map(fs => `
-          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(123,44,191,0.07);border-radius:8px;border-left:3px solid var(--violet-bright);">
+          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(92, 74, 110,0.07);border-radius:8px;border-left:3px solid var(--violet-bright);">
             <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);flex-wrap:wrap;">
               <span style="font-size:1.1em;color:var(--violet-bright);">✦</span>
               <strong style="color:var(--violet-bright);">${fs.point} conjunct ${fs.star}</strong>
@@ -621,7 +621,7 @@
         const signName = (p.sign || '').toLowerCase();
         const dignity = I && I.getDignity ? I.getDignity(planetName, signName) : null;
         const dignityHtml = dignity && dignity.status !== 'peregrine'
-          ? `<span class="dignity-badge dignity-badge--${dignity.status}" title="${dignity.note}" style="display:inline-block;margin-left:var(--space-2);font-size:0.7em;padding:1px 5px;border-radius:3px;vertical-align:middle;background:rgba(212,175,55,0.15);color:var(--gold);border:1px solid rgba(212,175,55,0.3);">${dignity.glyph} ${dignity.label}</span>`
+          ? `<span class="dignity-badge dignity-badge--${dignity.status}" title="${dignity.note}" style="display:inline-block;margin-left:var(--space-2);font-size:0.7em;padding:1px 5px;border-radius:3px;vertical-align:middle;background:rgba(201, 162, 39,0.15);color:var(--gold);border:1px solid rgba(201, 162, 39,0.3);">${dignity.glyph} ${dignity.label}</span>`
           : '';
         const decan = I && I.getDecan && typeof p.lon === 'number' ? I.getDecan(p.lon) : null;
         const decanHtml = decan
@@ -1251,14 +1251,14 @@
 
     // Aspect lines
     const ASPECT_LINE_COLORS = {
-      Trine: '#3fae7a', Sextile: '#5b7fc7', Conjunction: '#e8c96a',
+      Trine: '#3fae7a', Sextile: '#9db36a', Conjunction: '#e8c96a',
       Opposition: '#b04a52', Square: '#b04a52',
     };
     (chart.renderAspects || []).slice(0, 24).forEach(asp => {
       const p1 = chart.positions[asp.planet1], p2 = chart.positions[asp.planet2];
       if (!p1 || !p2) return;
       const a1 = ang(p1.lon), a2 = ang(p2.lon);
-      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(150,175,230,0.3)';
+      const col = ASPECT_LINE_COLORS[asp.aspect] || 'rgba(168, 158, 136,0.3)';
       x.strokeStyle = col.startsWith('rgba') ? col : col + '66';
       x.globalAlpha = 0.5; x.lineWidth = 1.5 * lw;
       x.beginPath();
@@ -1271,7 +1271,7 @@
     // House spokes
     (chart.houses || []).forEach(cusp => {
       const a = ang(cusp);
-      x.strokeStyle = 'rgba(150,175,230,0.2)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(168, 158, 136,0.2)'; x.lineWidth = 1 * lw;
       x.beginPath(); x.moveTo(cx, cy);
       x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner); x.stroke();
     });
@@ -1369,7 +1369,7 @@
       x.font = `600 ${20 * scale}px ${FONT_SANS}`;
       x.fillText(er.label.toUpperCase(), x0, rowY + BAR_H / 2 + 7 * scale);
 
-      x.fillStyle = 'rgba(150,175,230,0.08)';
+      x.fillStyle = 'rgba(168, 158, 136,0.08)';
       x.beginPath();
       if (x.roundRect) x.roundRect(innerX, rowY, innerW, BAR_H, 6 * scale); else x.rect(innerX, rowY, innerW, BAR_H);
       x.fill();
@@ -1413,7 +1413,7 @@
       col.forEach((row, r) => {
         const ry = y0 + 36 * scale + r * ROW_H;
         if (r > 0) {
-          x.strokeStyle = 'rgba(150,175,230,0.08)'; x.lineWidth = 1 * scale;
+          x.strokeStyle = 'rgba(168, 158, 136,0.08)'; x.lineWidth = 1 * scale;
           x.beginPath(); x.moveTo(colX, ry - 6 * scale); x.lineTo(colX + colW - 60 * scale, ry - 6 * scale); x.stroke();
         }
         x.textAlign = 'left';
@@ -1644,7 +1644,7 @@
     menu.setAttribute('role', 'menu');
     menu.style.cssText =
       'position:absolute;z-index:1200;min-width:240px;padding:8px;border-radius:14px;' +
-      'background:rgba(13,17,36,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
+      'background:rgba(13, 10, 7,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
       'border:1px solid rgba(196,146,10,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
     const opts = [
       { fmt: 'square', title: 'Square · 1080×1080', sub: 'Instagram & social posts' },

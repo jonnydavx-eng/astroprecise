@@ -229,7 +229,7 @@
           '<clipPath id="' + uid + '-clip"><circle cx="' + cx + '" cy="' + cy + '" r="' + R + '"/></clipPath>' +
         '</defs>' +
         // soft outer halo
-        '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R + 6) + '" fill="rgba(212,175,55,0.10)"/>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R + 6) + '" fill="rgba(201, 162, 39,0.10)"/>' +
         // dark disc (the unlit Moon, faintly visible)
         '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="url(#' + uid + '-dark)"/>' +
         // craters on the dark side for texture

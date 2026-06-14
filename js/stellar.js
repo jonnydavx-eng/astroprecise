@@ -22,10 +22,10 @@ window.StellarBackground = (function () {
 
   // Nebula palette: [r, g, b, minAlpha, maxAlpha]
   const NEBULA_DEFS = [
-    [42,  74,  148, 0.07, 0.13],   // lapis indigo
+    [92, 74, 110, 0.07, 0.13],   // lapis indigo
     [107, 33,  168, 0.06, 0.11],   // violet
     [139, 26,  46,  0.06, 0.12],   // oxblood crimson
-    [212, 175, 55,  0.05, 0.09],   // gold
+    [201, 162, 39,  0.05, 0.09],   // gold
     [26,  44,  100, 0.06, 0.10],   // deep void blue
   ];
 
@@ -232,7 +232,7 @@ window.StellarBackground = (function () {
   // ── Drawing routines ─────────────────────────────────────────────────────────
 
   function drawBackground() {
-    ctx.fillStyle = '#0A0B1F';
+    ctx.fillStyle = '#0d0a07';
     ctx.fillRect(0, 0, W, H);
   }
 

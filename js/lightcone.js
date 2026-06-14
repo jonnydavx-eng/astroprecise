@@ -130,7 +130,7 @@ window.LightCone = (() => {
 
     // interior glow — the volume your light has filled
     const fillGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, waveR);
-    fillGrad.addColorStop(0, 'rgba(212, 175, 55, 0.10)');
+    fillGrad.addColorStop(0, 'rgba(201, 162, 39, 0.10)');
     fillGrad.addColorStop(0.75, 'rgba(91, 127, 199, 0.05)');
     fillGrad.addColorStop(1, 'rgba(91, 127, 199, 0.02)');
     ctx.beginPath();
@@ -166,7 +166,7 @@ window.LightCone = (() => {
     ctx.arc(cx, cy, waveR * pulse, 0, Math.PI * 2);
     ctx.strokeStyle = 'rgba(232, 201, 106, 0.85)';
     ctx.lineWidth = 1.6;
-    ctx.shadowColor = 'rgba(212, 175, 55, 0.8)';
+    ctx.shadowColor = 'rgba(201, 162, 39, 0.8)';
     ctx.shadowBlur = 12;
     ctx.stroke();
     ctx.shadowBlur = 0;

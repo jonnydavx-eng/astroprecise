@@ -89,7 +89,7 @@
       padding: var(--space-10);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 8px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(150,175,230,0.06);
+      box-shadow: 0 8px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(168, 158, 136,0.06);
     }
     @media (max-width: 700px) { .compat-form { padding: var(--space-6) var(--space-4); } }
 
@@ -124,10 +124,10 @@
       border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     }
     .compat-person-card--p1::before {
-      background: linear-gradient(90deg, #3a5fa8 0%, #5b7fc7 60%, transparent 100%);
+      background: linear-gradient(90deg, #3a5fa8 0%, #9db36a 60%, transparent 100%);
     }
     .compat-person-card--p2::before {
-      background: linear-gradient(90deg, #c4920a 0%, #e8c96a 60%, transparent 100%);
+      background: linear-gradient(90deg, #c9a227 0%, #e8c96a 60%, transparent 100%);
     }
     @media (max-width: 700px) { .compat-person-card { padding: var(--space-5) var(--space-4); } }
 
@@ -140,7 +140,7 @@
       align-items: center;
       gap: var(--space-2);
     }
-    .compat-person-card--p1 h3 { color: #5b7fc7; }
+    .compat-person-card--p1 h3 { color: #9db36a; }
     .compat-person-card--p2 h3 { color: var(--gold); }
 
     .person-icon {
@@ -205,7 +205,7 @@
       text-align: center;
       margin-bottom: var(--space-8);
       padding: var(--space-8) var(--space-6);
-      background: rgba(17,26,54,0.72);
+      background: rgba(20, 16, 10,0.72);
       border: 1px solid var(--border);
       border-radius: var(--radius-2xl);
       -webkit-backdrop-filter: blur(20px);
@@ -272,7 +272,7 @@
       margin-bottom: var(--space-8);
     }
     .category-score-item {
-      background: rgba(17,26,54,0.62);
+      background: rgba(20, 16, 10,0.62);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-5) var(--space-5);
@@ -316,7 +316,7 @@
     }
     .score-bar__fill {
       height: 100%;
-      background: linear-gradient(90deg, #2a4a94 0%, #c4920a 100%);
+      background: linear-gradient(90deg, #5c4a6e 0%, #c9a227 100%);
       border-radius: 999px;
       transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -338,7 +338,7 @@
       gap: var(--space-3);
     }
     .aspect-card {
-      background: rgba(17,26,54,0.60);
+      background: rgba(20, 16, 10,0.60);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-4) var(--space-5);
@@ -390,7 +390,7 @@
       grid-column: 1 / -1;
       font-size: var(--text-xs);
       color: var(--silver-dim);
-      border-top: 1px solid rgba(150,175,230,0.08);
+      border-top: 1px solid rgba(168, 158, 136,0.08);
       padding-top: var(--space-2);
       margin-top: var(--space-1);
     }
@@ -413,7 +413,7 @@
 
     /* --- Overview ---- */
     .compat-overview {
-      background: rgba(17,26,54,0.68);
+      background: rgba(20, 16, 10,0.68);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-8);
@@ -442,7 +442,7 @@
     @media (max-width: 600px) { .element-compat-grid { grid-template-columns: 1fr; } }
 
     .element-compat-card {
-      background: rgba(17,26,54,0.62);
+      background: rgba(20, 16, 10,0.62);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-6) var(--space-6);
@@ -464,7 +464,7 @@
     }
     .element-compat-card--earth:hover { box-shadow: 0 8px 32px rgba(42,138,90,0.15); }
     .element-compat-card--air {
-      border-left-color: #5b7fc7;
+      border-left-color: #9db36a;
     }
     .element-compat-card--air:hover { box-shadow: 0 8px 32px rgba(91,127,199,0.15); }
     .element-compat-card--water {
@@ -480,7 +480,7 @@
     }
     .element-compat-card--fire h4  { color: #e05a3a; }
     .element-compat-card--earth h4 { color: #2a8a5a; }
-    .element-compat-card--air h4   { color: #5b7fc7; }
+    .element-compat-card--air h4   { color: #9db36a; }
     .element-compat-card--water h4 { color: #3a7ad4; }
     .element-compat-card p {
       font-size: var(--text-sm);
@@ -508,14 +508,14 @@
     }
     .compat-matrix td { cursor: default; transition: background var(--transition-fast); }
     .compat-matrix td:hover { background: var(--color-surface-2); }
-    .compat-cell--high    { background: rgba(34, 197, 94, 0.18);  color: var(--color-success); font-weight: 700; }
+    .compat-cell--high    { background: rgba(120, 140, 70, 0.18);  color: var(--color-success); font-weight: 700; }
     .compat-cell--medium  { background: rgba(251, 191, 36, 0.15); color: var(--color-gold); }
     .compat-cell--low     { background: rgba(239, 68, 68, 0.12);  color: var(--color-danger); }
     .compat-cell--neutral { background: transparent; color: var(--color-silver-dark); }
 
     /* ---- Synastry sidebar premium ---- */
     .synastry-sidebar-card {
-      background: rgba(17,26,54,0.68);
+      background: rgba(20, 16, 10,0.68);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-7);
@@ -538,7 +538,7 @@
     }
     .synastry-aspect-table td {
       padding: var(--space-3) var(--space-3);
-      border-bottom: 1px solid rgba(150,175,230,0.06);
+      border-bottom: 1px solid rgba(168, 158, 136,0.06);
       font-size: var(--text-sm);
       color: var(--silver);
       vertical-align: middle;
@@ -560,7 +560,7 @@
       font-weight: 600;
     }
     .sat-nature--intense   { background: rgba(196,146,10,0.18); color: var(--gold-pale); }
-    .sat-nature--harmonic  { background: rgba(34,197,94,0.15);  color: #6cd47e; }
+    .sat-nature--harmonic  { background: rgba(120, 140, 70,0.15);  color: #6cd47e; }
     .sat-nature--dynamic   { background: rgba(239,68,68,0.14);  color: #f87171; }
     .sat-nature--polarity  { background: rgba(249,115,22,0.14); color: #fdba74; }
 
@@ -575,7 +575,7 @@
       margin-bottom: var(--space-8);
     }
     .compat-tab {
-      background: rgba(17,26,54,0.55);
+      background: rgba(20, 16, 10,0.55);
       border: 1px solid var(--border);
       border-radius: 999px;
       color: var(--silver);
@@ -592,7 +592,7 @@
     .compat-tab:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
     .compat-tab[aria-selected="true"] {
       color: var(--bg);
-      background: linear-gradient(135deg, #c4920a 0%, #e8c96a 100%);
+      background: linear-gradient(135deg, #c9a227 0%, #e8c96a 100%);
       border-color: transparent;
       box-shadow: 0 4px 18px rgba(196,146,10,0.28);
     }
@@ -604,7 +604,7 @@
 
     /* ---- Explanatory note for composite / davison ---- */
     .compat-method-note {
-      background: rgba(17,26,54,0.62);
+      background: rgba(20, 16, 10,0.62);
       border: 1px solid var(--border);
       border-left: 3px solid var(--gold);
       border-radius: var(--radius-xl);
@@ -643,7 +643,7 @@
       gap: var(--space-3);
     }
     .midchart-cell {
-      background: rgba(17,26,54,0.62);
+      background: rgba(20, 16, 10,0.62);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-4) var(--space-5);
@@ -784,9 +784,9 @@
               <path d="M 2 28 Q 50 4 98 28" stroke="url(#arc-g)" stroke-width="1.2" fill="none" stroke-dasharray="3 3" opacity="0.7"/>
               <defs>
                 <linearGradient id="arc-g" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0%" stop-color="#5b7fc7"/>
-                  <stop offset="50%" stop-color="#c4920a" stop-opacity="0.6"/>
-                  <stop offset="100%" stop-color="#c4920a"/>
+                  <stop offset="0%" stop-color="#9db36a"/>
+                  <stop offset="50%" stop-color="#c9a227" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#c9a227"/>
                 </linearGradient>
               </defs>
             </svg>
@@ -942,8 +942,8 @@
               <svg viewBox="0 0 160 160" class="score-ring-svg" aria-hidden="true">
                 <defs>
                   <linearGradient id="compat-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#2a4a94" />
-                    <stop offset="100%" stop-color="#c4920a" />
+                    <stop offset="0%" stop-color="#5c4a6e" />
+                    <stop offset="100%" stop-color="#c9a227" />
                   </linearGradient>
                 </defs>
                 <!-- Track -->
@@ -1221,7 +1221,7 @@
           </div>
           <div style="display:flex;gap:var(--space-6);margin-top:var(--space-5);flex-wrap:wrap;" aria-label="Legend">
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(34,197,94,0.4);display:inline-block;" aria-hidden="true"></span>High Compatibility
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(120, 140, 70,0.4);display:inline-block;" aria-hidden="true"></span>High Compatibility
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
               <span style="width:14px;height:14px;border-radius:50%;background:rgba(251,191,36,0.4);display:inline-block;" aria-hidden="true"></span>Medium Compatibility
@@ -1468,13 +1468,13 @@
       // Background
       var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
       bg.addColorStop(0, '#0d1124');
-      bg.addColorStop(0.5, '#0A0B1F');
+      bg.addColorStop(0.5, '#0d0a07');
       bg.addColorStop(1, '#06070f');
       ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
       // Nebula glows
       var neb1 = ctx.createRadialGradient(220, 400, 0, 220, 400, 400);
-      neb1.addColorStop(0, 'rgba(42,74,148,0.25)'); neb1.addColorStop(1, 'transparent');
+      neb1.addColorStop(0, 'rgba(92, 74, 110,0.25)'); neb1.addColorStop(1, 'transparent');
       ctx.fillStyle = neb1; ctx.fillRect(0, 0, W, H);
       var neb2 = ctx.createRadialGradient(860, 400, 0, 860, 400, 400);
       neb2.addColorStop(0, 'rgba(196,146,10,0.18)'); neb2.addColorStop(1, 'transparent');
@@ -1510,9 +1510,9 @@
       var SIGN_GLYPHS = {Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
       var g1 = SIGN_GLYPHS[sign1] || '✦', g2 = SIGN_GLYPHS[sign2] || '✦';
       ctx.font = '220px serif';
-      ctx.fillStyle = '#5b7fc7'; ctx.fillText(g1, W/2 - 220, 340);
+      ctx.fillStyle = '#9db36a'; ctx.fillText(g1, W/2 - 220, 340);
       ctx.fillStyle = 'rgba(196,146,10,0.9)'; ctx.font = '100px serif'; ctx.fillText('♡', W/2, 320);
-      ctx.fillStyle = '#c4920a'; ctx.font = '220px serif'; ctx.fillText(g2, W/2 + 220, 340);
+      ctx.fillStyle = '#c9a227'; ctx.font = '220px serif'; ctx.fillText(g2, W/2 + 220, 340);
 
       // Names
       ctx.font = 'italic 400 42px Cormorant Garamond,serif';

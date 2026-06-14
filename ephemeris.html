@@ -54,7 +54,7 @@
     /* ── Section layout ── */
     .instrument-section {
       padding: 4rem 0;
-      border-bottom: 1px solid rgba(150,175,230,0.07);
+      border-bottom: 1px solid rgba(168, 158, 136,0.07);
     }
     .instrument-section:last-of-type { border-bottom: none; }
 
@@ -115,7 +115,7 @@
     /* ── Glow button ── */
     .glow-btn {
       background: transparent;
-      border: 1px solid rgba(212,175,55,0.4);
+      border: 1px solid rgba(201, 162, 39,0.4);
       color: var(--gold-pale);
       padding: 0.65rem 1.4rem;
       border-radius: 999px;
@@ -125,16 +125,16 @@
       font-family: var(--font-sans, 'Inter', sans-serif);
       cursor: pointer;
       transition: all 0.4s ease;
-      box-shadow: 0 0 0 rgba(212,175,55,0);
+      box-shadow: 0 0 0 rgba(201, 162, 39,0);
     }
     .glow-btn:hover {
-      box-shadow: 0 0 24px rgba(212,175,55,0.22), inset 0 0 12px rgba(212,175,55,0.07);
+      box-shadow: 0 0 24px rgba(201, 162, 39,0.22), inset 0 0 12px rgba(201, 162, 39,0.07);
       border-color: var(--gold);
-      background: rgba(212,175,55,0.05);
+      background: rgba(201, 162, 39,0.05);
     }
     .glow-btn:disabled { opacity: 0.4; cursor: wait; }
     .glow-btn.active {
-      background: rgba(212,175,55,0.12);
+      background: rgba(201, 162, 39,0.12);
       border-color: var(--gold);
     }
 
@@ -165,7 +165,7 @@
       gap: 1rem;
       align-items: baseline;
       padding: 0.75rem 0;
-      border-bottom: 1px solid rgba(150,175,230,0.07);
+      border-bottom: 1px solid rgba(168, 158, 136,0.07);
       font-size: 0.85rem;
     }
     .field-row__label {
@@ -192,18 +192,18 @@
       gap: 1rem;
       align-items: center;
       padding: 1rem 1.25rem;
-      border: 1px solid rgba(212,175,55,0.16);
+      border: 1px solid rgba(201, 162, 39,0.16);
       border-radius: var(--radius-xl);
       margin-bottom: 0.75rem;
-      background: rgba(17,26,54,0.4);
+      background: rgba(20, 16, 10,0.4);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       transition: border-color 0.2s;
     }
-    .echo-window:hover { border-color: rgba(212,175,55,0.3); }
+    .echo-window:hover { border-color: rgba(201, 162, 39,0.3); }
     .resonance-meter {
       height: 3px; width: 110px;
-      background: rgba(150,175,230,0.12);
+      background: rgba(168, 158, 136,0.12);
       border-radius: 2px; overflow: hidden;
     }
     .resonance-meter span {
@@ -221,7 +221,7 @@
       padding: 2rem;
     }
     .glass-card--gold-rim {
-      border-color: rgba(212,175,55,0.22);
+      border-color: rgba(201, 162, 39,0.22);
     }
 
     /* ── Event form ── */
@@ -243,15 +243,15 @@
       margin-top: 1.25rem;
     }
     .sig-cell {
-      background: rgba(17,26,54,0.7);
-      border: 1px solid rgba(150,175,230,0.12);
+      background: rgba(20, 16, 10,0.7);
+      border: 1px solid rgba(168, 158, 136,0.12);
       border-radius: var(--radius-xl);
       padding: 1.1rem 1.25rem;
       transition: border-color 0.2s, background 0.2s;
     }
     .sig-cell:hover {
-      border-color: rgba(212,175,55,0.25);
-      background: rgba(17,26,54,0.85);
+      border-color: rgba(201, 162, 39,0.25);
+      background: rgba(20, 16, 10,0.85);
     }
     .sig-cell__glyph { font-size: 1.5rem; display: block; margin-bottom: 0.35rem; color: var(--gold-pale); }
     .sig-cell__label {
@@ -271,11 +271,11 @@
 
     /* ── Daimon card ── */
     .daimon-card {
-      border: 1px solid rgba(212,175,55,0.28);
+      border: 1px solid rgba(201, 162, 39,0.28);
       border-radius: var(--radius-xl);
       padding: 2rem;
       background:
-        radial-gradient(circle at 20% 0%, rgba(42,74,148,0.15), transparent 60%),
+        radial-gradient(circle at 20% 0%, rgba(92, 74, 110,0.15), transparent 60%),
         rgba(10,14,30,0.7);
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
@@ -301,7 +301,7 @@
       text-align: center;
       color: var(--gold-pale);
       line-height: 1;
-      filter: drop-shadow(0 0 18px rgba(212,175,55,0.5));
+      filter: drop-shadow(0 0 18px rgba(201, 162, 39,0.5));
     }
     .provenance {
       font-size: 0.6rem;
@@ -335,7 +335,7 @@
       justify-content: center;
       width: 28px;
       height: 28px;
-      border: 1px solid rgba(212,175,55,0.35);
+      border: 1px solid rgba(201, 162, 39,0.35);
       border-radius: 50%;
       font-size: 0.65rem;
       font-family: var(--font-display, 'Cinzel', serif);
@@ -349,7 +349,7 @@
     /* ── Hero ── */
     .instrument-hero {
       padding: calc(var(--nav-height, 72px) + 4rem) 0 3.5rem;
-      border-bottom: 1px solid rgba(150,175,230,0.07);
+      border-bottom: 1px solid rgba(168, 158, 136,0.07);
       position: relative;
     }
     .instrument-hero::before {
@@ -357,8 +357,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 55% 40% at 30% 0%, rgba(123,44,191,0.14) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(212,175,55,0.07) 0%, transparent 60%);
+        radial-gradient(ellipse 55% 40% at 30% 0%, rgba(92, 74, 110,0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(201, 162, 39,0.07) 0%, transparent 60%);
       pointer-events: none;
     }
     .hero-caps {
@@ -428,7 +428,7 @@
     .cw-gauge { width: 150px; height: 86px; overflow: visible; }
     .cw-gauge__band { fill: none; stroke-width: 9; stroke-linecap: butt; opacity: 0.85; }
     .cw-gauge__band--quiet     { stroke: #3fae7a; }
-    .cw-gauge__band--unsettled { stroke: var(--gold, #D4AF37); }
+    .cw-gauge__band--unsettled { stroke: var(--gold, #c9a227); }
     .cw-gauge__band--storm     { stroke: var(--crimson-light, #f87171); }
     .cw-gauge__needle { stroke: var(--white); stroke-width: 2; stroke-linecap: round; }
     .cw-gauge__hub    { fill: var(--gold-pale, var(--gold)); }
@@ -437,8 +437,8 @@
     .cw-gauge__hi { text-anchor: end; }
     .cw-spark-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
     .cw-spark { width: 96px; height: 26px; display: block; }
-    .cw-spark__line { stroke: var(--lapis-light, #92b4ee); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
-    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #D4AF37); }
+    .cw-spark__line { stroke: var(--lapis-light, #c8b88f); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #c9a227); }
     .cw-spark__zero { stroke: var(--crimson-light, #f87171); stroke-width: 0.6; stroke-dasharray: 2 2; opacity: 0.5; }
     .cw-spark--empty { font-size: 0.62rem; color: var(--silver-dim); }
     .cw-spark-cap { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver-dim); }
@@ -452,8 +452,8 @@
       border-radius: 999px; border: 1px solid currentColor;
     }
     .cw-flare-badge--A, .cw-flare-badge--B { color: #3fae7a; }
-    .cw-flare-badge--C { color: var(--lapis-light, #92b4ee); }
-    .cw-flare-badge--M { color: var(--gold, #D4AF37); }
+    .cw-flare-badge--C { color: var(--lapis-light, #c8b88f); }
+    .cw-flare-badge--M { color: var(--gold, #c9a227); }
     .cw-flare-badge--X { color: var(--crimson-light, #f87171); }
     .cw-chip {
       display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
@@ -474,7 +474,7 @@
     .cw-aurora__src { font-size: 0.6rem; }
     .cw-pop {
       position: absolute; z-index: 40; max-width: 300px; padding: 1rem 1.1rem 0.9rem;
-      background: var(--void, #0A0B1F); border: 1px solid rgba(201,162,39,0.35);
+      background: var(--void, #0d0a07); border: 1px solid rgba(201,162,39,0.35);
       border-radius: var(--radius-xl, 20px); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
       -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
     }
@@ -622,7 +622,7 @@
         </p>
 
         <div class="glass-card glass-card--gold-rim engraved-plate" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
-          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(212,175,55,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
+          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(201, 162, 39,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
             <defs>
               <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C9A227"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
             </defs>
@@ -942,7 +942,7 @@
               } catch(e) {}
             }
             items.push(
-              '<div class="sig-cell" style="border-color:rgba(212,175,55,0.22);background:rgba(212,175,55,0.06);">' +
+              '<div class="sig-cell" style="border-color:rgba(201, 162, 39,0.22);background:rgba(201, 162, 39,0.06);">' +
                 '<span class="sig-cell__glyph" style="color:var(--gold);">✦</span>' +
                 '<span class="sig-cell__label">Life Path</span>' +
                 '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +

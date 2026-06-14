@@ -53,20 +53,21 @@
     Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓'
   };
 
-  // Element fill colors per spec (30% opacity applied via fill-opacity)
+  // Element fill colors — warm observatory palette, kept distinguishable.
+  // (Air/water were cool cyan/blue; remapped to warm lilac / muted teal.)
   const ELEMENT_FILL = {
-    fire:  '#FF6B35',
-    earth: '#2D7A4F',
-    air:   '#4A9EBF',
-    water: '#3D5A99'
+    fire:  '#D85A2C',   /* warm ember */
+    earth: '#5E7A3A',   /* warm olive */
+    air:   '#A78BBA',   /* warm lilac */
+    water: '#3F7D76'    /* muted observatory teal */
   };
 
-  // Text/stroke accent per element
+  // Text/stroke accent per element (lighter)
   const ELEMENT_TEXT = {
-    fire:  '#FF9966',
-    earth: '#66CC88',
-    air:   '#88CCEE',
-    water: '#88AADD'
+    fire:  '#F0A878',
+    earth: '#A8C07A',
+    air:   '#C6AEDA',
+    water: '#7FB8B0'
   };
 
   const SIGN_ELEMENT = {
@@ -84,10 +85,12 @@
     NorthNode:'☊', SouthNode:'☋', Ascendant:'AC', Midheaven:'MC'
   };
 
+  // Warm palette — Moon/Mercury warmed off cool silver; Uranus/Neptune off
+  // electric cyan/blue to warm lavender/violet.
   const PLANET_COLORS = {
-    Sun:'#FFD700',      Moon:'#C8D8E8',    Mercury:'#B8CCD8', Venus:'#FFB6C1',
-    Mars:'#FF6644',     Jupiter:'#FFB347', Saturn:'#C8A86B',  Uranus:'#88DDFF',
-    Neptune:'#8899FF',  Pluto:'#CC88AA',   Chiron:'#AABB99',  Lilith:'#9A6FB0',
+    Sun:'#FFD700',      Moon:'#D2CBB8',    Mercury:'#BFB39A', Venus:'#FFB6C1',
+    Mars:'#FF6644',     Jupiter:'#FFB347', Saturn:'#C8A86B',  Uranus:'#B89AD0',
+    Neptune:'#7E6BB0',  Pluto:'#CC88AA',   Chiron:'#AEB389',  Lilith:'#9A6FB0',
     NorthNode:'#DDCC88', SouthNode:'#BBAA77', Ascendant:'#FFFFFF', Midheaven:'#FFFFFF'
   };
 
@@ -101,10 +104,10 @@
   // Major aspects: exact color, width, optional dash
   const ASPECT_STYLE = {
     Conjunction:     { color:'#FFFFFF', width:1,   dash:null  },
-    Opposition:      { color:'#EF4444', width:1.5, dash:null  },
-    Trine:           { color:'#60A5FA', width:1.5, dash:null  },
+    Opposition:      { color:'#E0514A', width:1.5, dash:null  },
+    Trine:           { color:'#5FA39A', width:1.5, dash:null  },   /* warm teal (was sky blue) */
     Square:          { color:'#F97316', width:1.5, dash:null  },
-    Sextile:         { color:'#4ADE80', width:1,   dash:null  },
+    Sextile:         { color:'#9DB36A', width:1,   dash:null  },   /* warm sage (was bright green) */
     // Minor aspects — gray dashed
     Quincunx:        { color:'#6B7280', width:0.5, dash:'3,3' },
     SemiSquare:      { color:'#6B7280', width:0.5, dash:'3,3' },
@@ -723,8 +726,8 @@
     aDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ASPECTS</div>';
     [
       ['Conjunction','☌','#FFFFFF'],['Opposition','☍','#EF4444'],
-      ['Trine','△','#60A5FA'],['Square','□','#F97316'],
-      ['Sextile','⚹','#4ADE80'],['Minor','- -','#6B7280']
+      ['Trine','△','#5fa39a'],['Square','□','#F97316'],
+      ['Sextile','⚹','#9db36a'],['Minor','- -','#6B7280']
     ].forEach(([n, s, c]) => {
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:center;gap:5px;margin-bottom:2px';
@@ -739,7 +742,7 @@
     eDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ELEMENTS</div>';
     [
       ['Fire', '#FF6B35','♈♌♐'],['Earth','#2D7A4F','♉♍♑'],
-      ['Air',  '#4A9EBF','♊♎♒'],['Water','#3D5A99','♋♏♓']
+      ['Air',  '#a78bba','♊♎♒'],['Water','#3f7d76','♋♏♓']
     ].forEach(([n, c, s]) => {
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:2px';
@@ -802,7 +805,7 @@
     const c = document.getElementById(containerId);
     if (!c) { console.error(`AstroChartRender: #${containerId} not found`); return null; }
     c.innerHTML    = '';
-    c.style.background   = '#06060F';
+    c.style.background   = '#050406';
     c.style.borderRadius = '10px';
     c.style.padding      = '14px';
     c.style.boxSizing    = 'border-box';
@@ -921,7 +924,7 @@
       dotRadius:     R_PLANET + 28,
       fontSize:      '12',
       groupId:       'p2-planets',
-      colorOverride: '#88DDFF',
+      colorOverride: '#cc88aa',
       showDegrees:   false
     });
 
@@ -933,7 +936,7 @@
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:4px"></span><span style="color:#FFD700;font-weight:600">${name1}</span></span>` +
-      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#88DDFF;vertical-align:middle;margin-right:4px"></span><span style="color:#88DDFF;font-weight:600">${name2}</span></span>`;
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#cc88aa;vertical-align:middle;margin-right:4px"></span><span style="color:#cc88aa;font-weight:600">${name2}</span></span>`;
     container.appendChild(keyRow);
 
     // Side-by-side planet tables
@@ -952,7 +955,7 @@
     };
 
     tables.appendChild(makeTableBlock(name1, '#FFD700', pos1, houses1));
-    tables.appendChild(makeTableBlock(name2, '#88DDFF', pos2, houses2));
+    tables.appendChild(makeTableBlock(name2, '#cc88aa', pos2, houses2));
     container.appendChild(tables);
   }
 
