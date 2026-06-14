@@ -2644,6 +2644,25 @@
         requestAnimationFrame(updateOrreryDate);
       }
 
+      // ── Scroll → orrery time drive ──
+      (function () {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var hero = document.querySelector('.hero');
+        if (!hero) return;
+        var ticking = false;
+        function update() {
+          var rect = hero.getBoundingClientRect();
+          var progress = Math.max(0, Math.min(1, -rect.top / hero.offsetHeight));
+          if (window.Orrery3D && typeof Orrery3D.setScrollDrive === 'function') {
+            Orrery3D.setScrollDrive(progress);
+          }
+          ticking = false;
+        }
+        window.addEventListener('scroll', function () {
+          if (!ticking) { requestAnimationFrame(update); ticking = true; }
+        }, { passive: true });
+      })();
+
       // Time scrubber — direct control of the 3D solar system rotation / offset
       (function () {
         var scrub = document.getElementById('orrery-scrub');
@@ -2675,6 +2694,7 @@
           scrub.value = 0;
           lastVal = 0;
           if (window.Orrery3D) {
+            if (typeof Orrery3D.resetScrollDrive === 'function') Orrery3D.resetScrollDrive();
             if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
             if (typeof Orrery3D.setDate === 'function') Orrery3D.setDate(new Date());
             else if (typeof Orrery3D.jumpTo === 'function' && window.AstroEphemeris) {

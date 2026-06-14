@@ -69,6 +69,7 @@ import * as THREE from 'three';
 
   // time
   let baseNowMs = 0, baseJd = 0, dayOffset = 0, daysPerSec = 0;
+  let scrollBias = 0;  // days offset from hero scroll position
   let lastT = 0, needRecompute = true;
   // drag-to-scrub: horizontal drag advances REAL time (planets walk to where they
   // truly are); a flick keeps time coasting with decay. scrubVel = days/event EMA.
@@ -301,7 +302,7 @@ import * as THREE from 'three';
 
   // ── Per-frame position update from the ephemeris ───────────────────────────
   function updatePositions() {
-    const jd = baseJd + dayOffset;
+    const jd = baseJd + dayOffset + scrollBias;
     BODIES.forEach((b) => {
       const ll = helioLonLat(b.id, jd);
       const p = scenePos(b.R, ll.lon, ll.lat);
@@ -355,7 +356,7 @@ import * as THREE from 'three';
     try {
       const E = window.AstroEphemeris;
       if (E && E.isRetrograde) {
-        const jd = baseJd + dayOffset;
+        const jd = baseJd + dayOffset + scrollBias;
         const pulse = Math.sin(t * 0.002) * 0.15 + 1.0;
         BODIES.forEach((b) => {
           if (b.id === 'earth') return;
@@ -413,14 +414,14 @@ import * as THREE from 'three';
   // ── UI date readout (mirrors canvas behaviour) ─────────────────────────────
   function updateDateUI() {
     const el = document.getElementById('orrery-date-display'); if (!el) return;
-    const d = new Date(baseNowMs + dayOffset * 86400000);
+    const d = new Date(baseNowMs + (dayOffset + scrollBias) * 86400000);
     const str = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    const tag = Math.abs(dayOffset) < 0.5 ? ' · now' : (dayOffset > 0 ? ` · +${Math.round(dayOffset)}d` : ` · ${Math.round(dayOffset)}d`);
+    const tag = Math.abs(dayOffset + scrollBias) < 0.5 ? ' · now' : ((dayOffset + scrollBias) > 0 ? ` · +${Math.round(dayOffset + scrollBias)}d` : ` · ${Math.round(dayOffset + scrollBias)}d`);
     el.textContent = str + tag;
 
     try {
       const E = window.AstroEphemeris;
-      const jd = baseJd + dayOffset;
+      const jd = baseJd + dayOffset + scrollBias;
       const sunLon = E.sunPosition(jd).lon;
       const moonLon = E.moonPosition(jd).lon;
       const phase = ((moonLon - sunLon) % 360 + 360) % 360;
@@ -506,7 +507,7 @@ import * as THREE from 'three';
     else if (hit.object === moonMesh) id = 'moon';
     else { const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object); if (b) id = b.id; }
     if (!id) return;
-    const jd = baseJd + dayOffset;
+    const jd = baseJd + dayOffset + scrollBias;
     const lon = geoLonOf(id, jd);
     let retro = false;
     try {
@@ -618,6 +619,20 @@ import * as THREE from 'three';
     },
     set onIntroDone(fn) { onIntroDone = fn; if (PRM && fn && !introActive) { onIntroDone = null; fn(); } },
     get onIntroDone() { return onIntroDone; },
+    setScrollDrive(progress) {
+      if (PRM) return;
+      scrollBias = progress * 120;
+      if (!introActive) {
+        camRadius = 48 - progress * 18;
+        camEl = 26 * D2R + progress * 5 * D2R;
+        applyCamera();
+      }
+      needRecompute = true;
+    },
+    resetScrollDrive() {
+      scrollBias = 0;
+      needRecompute = true;
+    },
     isWebGL: true,
   };
 })();
