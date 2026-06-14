@@ -517,7 +517,12 @@
 
   function renderWheel(chart) {
     const el = document.getElementById('natal-wheel');
-    if (!el || !window.AstroChartRender) return;
+    if (!el) return;
+    if (!window.AstroChartRender) {
+      // Renderer missing (failed to load/parse) — say so instead of a silent blank wheel.
+      el.innerHTML = '<p style="text-align:center;color:var(--silver-dim,#8F8579);padding:2rem;">The chart renderer didn\'t load — please refresh the page.</p>';
+      return;
+    }
     el.innerHTML = '';
     AstroChartRender.renderNatalChart(
       { positions: chart.positions, houses: chart.houses, aspects: chart.renderAspects,

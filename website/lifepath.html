@@ -1167,6 +1167,7 @@
 
   function drawLPCard(lp, name, birthLabel) {
     const canvas = document.getElementById('lp-card-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const W = 1080, H = 1080;
     const data = LP[lp];
