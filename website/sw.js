@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v89';
+const V = 'ap-v90';
 
 const PRECACHE = [
   './',
@@ -54,6 +54,16 @@ const PRECACHE = [
   './js/orrery3d.js',
   './js/orrery-webgl.js',
   './js/vendor/three/three.module.min.js',
+  './js/vendor/three/jsm/postprocessing/Pass.js',
+  './js/vendor/three/jsm/postprocessing/EffectComposer.js',
+  './js/vendor/three/jsm/postprocessing/RenderPass.js',
+  './js/vendor/three/jsm/postprocessing/ShaderPass.js',
+  './js/vendor/three/jsm/postprocessing/MaskPass.js',
+  './js/vendor/three/jsm/postprocessing/UnrealBloomPass.js',
+  './js/vendor/three/jsm/postprocessing/OutputPass.js',
+  './js/vendor/three/jsm/shaders/CopyShader.js',
+  './js/vendor/three/jsm/shaders/LuminosityHighPassShader.js',
+  './js/vendor/three/jsm/shaders/OutputShader.js',
   './js/chart-render.js',
   './js/interpretations.js',
   './js/oracle.js',
