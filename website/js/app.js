@@ -240,10 +240,21 @@ const AstroApp = (() => {
     if (mobile) mobile.innerHTML = renderDrawer(here);
   }
 
-  /** Right rail: email CTA, profile, hamburger — keeps center nav from overlapping. */
+  /** Right rail: profile + hamburger — keeps center nav from overlapping. */
+  function cleanupNavEnd() {
+    var inner = document.querySelector('.navbar__inner');
+    if (!inner) return;
+    inner.querySelectorAll('.ap-nav-email-cluster, .ap-nav-email-cluster__copy').forEach(function (el) {
+      el.remove();
+    });
+    var profiles = inner.querySelectorAll('.navbar__profile-top');
+    for (var i = 1; i < profiles.length; i++) profiles[i].remove();
+  }
+
   function ensureNavEnd() {
     var inner = document.querySelector('.navbar__inner');
     if (!inner) return null;
+    cleanupNavEnd();
     var end = inner.querySelector('.navbar__end');
     var toggle = inner.querySelector('.navbar__toggle');
     if (!end) {
@@ -252,7 +263,7 @@ const AstroApp = (() => {
       inner.appendChild(end);
     }
     if (toggle && !end.contains(toggle)) end.appendChild(toggle);
-    inner.querySelectorAll('.navbar__profile-top, .ap-nav-email-cluster').forEach(function (el) {
+    inner.querySelectorAll('.navbar__profile-top').forEach(function (el) {
       if (!end.contains(el)) {
         var tgl = end.querySelector('.navbar__toggle');
         if (tgl) end.insertBefore(el, tgl);
@@ -277,7 +288,7 @@ const AstroApp = (() => {
     a.className = 'navbar__profile-top';
     a.setAttribute('aria-label', 'My Profile');
     if (here === 'profile.html') { a.classList.add('is-active'); a.setAttribute('aria-current', 'page'); }
-    a.innerHTML = '<svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg><span>Profile</span>';
+    a.innerHTML = '<svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg>';
     var toggle = end && end.querySelector('.navbar__toggle');
     if (end) {
       if (toggle) end.insertBefore(a, toggle);
@@ -772,6 +783,7 @@ const AstroApp = (() => {
     openModal,
     closeModal,
     ensureNavEnd,
+    cleanupNavEnd,
     closeNavDrawer,
     initTabs,
     animateScoreBars,
@@ -1867,35 +1879,20 @@ if ('serviceWorker' in navigator) {
     document.body.style.overflow = '';
   }
 
-  function injectNavCTA() {
-    if (document.querySelector('.ap-nav-email-cluster')) return;
-    var inner = document.querySelector('.navbar__inner');
-    var c = window.AP_COPY;
-    if (inner) {
-      var cluster = document.createElement('div');
-      cluster.className = 'ap-nav-email-cluster';
-      cluster.innerHTML =
-        '<button type="button" class="ap-nav-updates ap-nav-updates--icon" data-ap-open-email="nav_left"'
-        + ' aria-label="' + (c.btnShort || 'Get updates') + '" title="' + (c.navTeaser || 'Email updates') + '">'
-        + '<svg class="eng-i" aria-hidden="true"><use href="#ei-mail"/></svg>'
-        + '<span class="ap-nav-updates__text">' + (c.btnShort || 'Updates') + '</span>'
-        + '</button>';
-      var end = (window.AstroApp && typeof AstroApp.ensureNavEnd === 'function')
-        ? AstroApp.ensureNavEnd() : null;
-      var profile = inner.querySelector('.navbar__profile-top');
-      var toggle = inner.querySelector('.navbar__toggle');
-      if (end) {
-        if (profile) end.insertBefore(cluster, profile);
-        else if (toggle) end.insertBefore(cluster, toggle);
-        else end.appendChild(cluster);
-      }
-    }
+  function wireEmailOpenDelegation() {
+    if (document.documentElement.dataset.apEmailOpenWired) return;
+    document.documentElement.dataset.apEmailOpenWired = '1';
     document.addEventListener('click', function (e) {
       var t = e.target.closest('[data-ap-open-email]');
       if (!t) return;
       e.preventDefault();
       openEmailSignup(t.getAttribute('data-ap-open-email') || 'nav');
     });
+  }
+
+  function injectNavCTA() {
+    if (window.AstroApp && typeof AstroApp.cleanupNavEnd === 'function') AstroApp.cleanupNavEnd();
+    wireEmailOpenDelegation();
   }
 
   function injectBannerCTA() {
