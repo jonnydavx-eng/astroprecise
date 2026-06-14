@@ -303,7 +303,7 @@
     x.textAlign = 'center';
     x.fillStyle = '#C9A227';
     x.font = '26px "AstroGlyph", Georgia, serif';
-    x.fillText('✦  T H E   L I G H T - C O N E  ✦', BASE / 2, 130);
+    x.fillText('T H E   L I G H T - C O N E', BASE / 2, 130);
 
     x.fillStyle = '#A89E88';
     x.font = '30px "AstroGlyph", Georgia, serif';
@@ -457,7 +457,7 @@
 
     const { cv, x } = cardBase({ nebY: 470, nebR: 460 });
 
-    cardHeader(x, '✦  Z E N I T H   S T A R  ✦');
+    cardHeader(x, 'Z E N I T H   S T A R');
 
     x.fillStyle = '#A89E88';
     x.font = 'italic 30px "AstroGlyph", Georgia, serif';
@@ -548,7 +548,7 @@
     const lunar = c.lunar, wind = c.solarWind, kp = c.kp;
 
     const { cv, x } = cardBase({ nebY: 380, nebR: 480 });
-    cardHeader(x, '✦  D A I L Y   S K Y  ✦');
+    cardHeader(x, 'D A I L Y   S K Y');
 
     const today = new Date(report.generatedAt);
     x.fillStyle = '#A89E88';
@@ -1301,7 +1301,7 @@
     const link = document.getElementById('natal-lifepath-link');
     if (link) {
       link.href = 'lifepath.html?date=' + event_.dt.split('T')[0];
-      link.textContent = '✦ Life Path ' + lp + ' — ' + title + ' →';
+      link.textContent = '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path ' + lp + ' — ' + title + ' →';
     }
 
     const items = [];
@@ -1327,7 +1327,7 @@
     }
     items.push(
       '<div class="sig-cell" style="border-color:rgba(201, 162, 39,0.22);background:rgba(201, 162, 39,0.06);">' +
-        '<span class="sig-cell__glyph" style="color:var(--gold);">✦</span>' +
+        '<span class="sig-cell__glyph eng-star-mark" style="color:var(--gold);"></span>' +
         '<span class="sig-cell__label">Life Path</span>' +
         '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +
       '</div>'

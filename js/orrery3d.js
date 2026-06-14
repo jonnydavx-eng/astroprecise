@@ -908,7 +908,7 @@ window.Orrery3D = (() => {
       ctx.font = '10px Inter, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillStyle = `rgba(232,201,106,${0.45 * baseAlpha})`;
-      ctx.fillText(`✦ ${natalPins.name ? natalPins.name + '’s' : 'your'} sky pinned`, 14, H - 14);
+      ctx.fillText(`${natalPins.name ? natalPins.name + '’s' : 'your'} sky pinned`, 14, H - 14);
     }
   }
 

@@ -249,9 +249,15 @@
       opacity: 0.9;
     }
     .hero__eyebrow::before {
-      content: '✦';
-      font-size: 0.7rem;
-      opacity: 0.7;
+      content: '';
+      display: inline-block;
+      width: 0.55em;
+      height: 0.55em;
+      margin-right: 0.45em;
+      background: currentColor;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      opacity: 0.75;
+      vertical-align: 0.05em;
     }
 
     .hero__h1 {
@@ -2260,7 +2266,7 @@
     <!-- The real 3D orrery (same model as the hero centrepiece) is relocated here during loading -->
     <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
     <div class="preloader-content" style="position:absolute; left:50%; bottom:max(6vh, calc(env(safe-area-inset-bottom) + 18px)); transform:translateX(-50%); width:min(31rem,90vw); z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto;">
-      <div class="preloader-seal" style="font-size:2.6rem; color:#C9A227; margin-bottom:10px; opacity:0.9; text-shadow:0 0 40px rgba(201,162,39,0.6); animation:seal-pulse 3.2s ease-in-out infinite;">✧</div>
+      <div class="preloader-seal" style="margin-bottom:10px; animation:seal-pulse 3.2s ease-in-out infinite;"><span class="eng-star-mark" style="width:2.2rem;height:2.2rem;color:#C9A227;filter:drop-shadow(0 0 40px rgba(201,162,39,0.6));" aria-hidden="true"></span></div>
       <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px;">The Spheres Align</div>
       <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:28px; font-style:italic; color:#cdbf9f;">The living solar system, aligned for this very moment. Take a moment with it &mdash; then step inside.</div>
       <div class="preloader-progress" id="preloader-progress" style="width:230px; margin:0 auto 26px;">
@@ -2268,8 +2274,8 @@
           <div id="preloader-fill" style="height:100%; width:0%; background:linear-gradient(to right, #6e1a26, #C9A227, #EFE3C0); box-shadow:0 0 8px rgba(201,162,39,0.6); transition:width 1.8s cubic-bezier(0.22,1,0.36,1);"></div>
         </div>
       </div>
-      <button id="preloader-enter" class="preloader-skip" aria-label="Enter the site" style="font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(28,22,12,0.5),rgba(12,10,7,0.62)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;">&#10022;&nbsp; Enter Your Sky &nbsp;&rarr;</button>
-      <div id="preloader-tagline" style="margin-top:14px; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.86rem; letter-spacing:0.06em; color:#cdbf9f; opacity:0.85;">Your real sky, free &middot; computed privately &middot; every number real &#10022;</div>
+      <button id="preloader-enter" class="preloader-skip" aria-label="Enter the site" style="font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(28,22,12,0.5),rgba(12,10,7,0.62)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;"><span class="eng-star-mark" style="width:0.75em;height:0.75em;margin-right:0.35em;" aria-hidden="true"></span> Enter Your Sky &nbsp;&rarr;</button>
+      <div id="preloader-tagline" style="margin-top:14px; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.86rem; letter-spacing:0.06em; color:#cdbf9f; opacity:0.85;">Your real sky, free &middot; computed privately &middot; every number real</div>
     </div>
   </div>
 
@@ -2503,7 +2509,7 @@
                 aria-label="The Living Orrery – real solar system positions starting from Earth. Drag to scrub time, scroll the page to advance the sky."
                 style="position:relative;z-index:1;"
               ></canvas>
-              <div class="orrery-hint" aria-hidden="true">✦&nbsp; drag through time &middot; scroll page to advance &middot; zoom dial for space</div>
+              <div class="orrery-hint" aria-hidden="true">drag through time &middot; scroll page to advance &middot; zoom dial for space</div>
             </div>
 
             <div class="orrery-console__deck">
@@ -2580,7 +2586,7 @@
               min="1900-01-01"
             />
             <button type="submit" class="hero__cast-btn" aria-label="Cast my birth chart">
-              <span aria-hidden="true">✦</span> Cast My Chart &rarr;
+              <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast My Chart &rarr;
             </button>
           </form>
           <p id="hero-form-hint" class="hero__trust hero__entrance hero__entrance--5">
@@ -2621,7 +2627,7 @@
       <div class="hero__sky-dock">
         <div class="live-sky-section-inner" aria-labelledby="live-sky-heading">
           <p class="live-sky-label" id="live-sky-heading" aria-label="Current Planetary Positions">
-            ✦ Now in the sky
+            Now in the sky
           </p>
           <div id="live-sky-strip" role="list" aria-label="Live planetary positions" aria-live="polite">
             <div class="sky-loading-pill" role="status">
@@ -2783,7 +2789,7 @@
                 </div>
               </div>
               <div class="concept-pill" role="listitem">
-                <span class="concept-pill__icon" aria-hidden="true">✦</span>
+                <span class="concept-pill__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
                 <div class="concept-pill__text">
                   <h4>Numerology</h4>
                   <p>Your soul's path number — the mathematical resonance of the date you chose to arrive.</p>
@@ -2889,7 +2895,7 @@
 
         <div style="text-align:center;margin-top:var(--space-12);">
           <a href="chart.html" class="btn btn--primary btn--lg" aria-label="Begin your birth chart reading">
-            ✦ &nbsp;Begin Your Reading
+            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Begin Your Reading
           </a>
         </div>
       </div>
@@ -2930,7 +2936,7 @@
 
           <!-- Life Path -->
           <a href="lifepath.html" class="tool-card reveal reveal-delay-1" role="listitem" aria-label="Life Path numerology">
-            <span class="tool-card__icon" aria-hidden="true">✦</span>
+            <span class="tool-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
             <p class="tool-card__label">Numerology</p>
             <h3 class="tool-card__title">Life Path</h3>
             <p class="tool-card__desc">Pythagorean numerology with all master numbers (11, 22, 33). Life Path, Expression, Soul Urge, and Personal Year — with a downloadable reading card.</p>
@@ -2939,7 +2945,7 @@
 
           <!-- Compatibility -->
           <a href="compatibility.html" class="tool-card reveal reveal-delay-2" role="listitem" aria-label="Compatibility synastry">
-            <span class="tool-card__icon" aria-hidden="true">♡</span>
+            <span class="tool-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
             <p class="tool-card__label">Synastry</p>
             <h3 class="tool-card__title">Compatibility</h3>
             <p class="tool-card__desc">Two charts overlaid in synastry — inter-chart aspects with precise orbs, compatibility score, and shareable invite links so partners can calculate together.</p>
@@ -3027,7 +3033,7 @@
 
           <div class="philosophy-card reveal reveal-delay-4">
             <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
-              <span style="font-size:1.2rem;">✦</span>
+              <span style="font-size:1.2rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-eye"/></svg></span>
             </div>
             <h3 class="philosophy-card__title">Honest</h3>
             <p class="philosophy-card__body">
@@ -3117,19 +3123,19 @@
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(264px,1fr));gap:18px;">
         <div style="border:1px solid rgba(201,162,39,.18);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(20,16,10,.55),rgba(10,8,6,.72));">
-          <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;">&#9829;</div>
+          <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-heart"/></svg></div>
           <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">Support the Instrument</h3>
           <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Buy the maker a coffee. Keeps the free chart private, ad-free, and open to all.</p>
-          <a data-mon="tip" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C9A227);border:1px solid rgba(201,162,39,.4);border-radius:30px;padding:11px 26px;text-decoration:none;">&#9829;&nbsp; Support</a>
+          <a data-mon="tip" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C9A227);border:1px solid rgba(201,162,39,.4);border-radius:30px;padding:11px 26px;text-decoration:none;"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support</a>
         </div>
         <div style="border:1px solid rgba(201,162,39,.4);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(201,162,39,.08),rgba(10,8,6,.78));box-shadow:0 0 40px rgba(201,162,39,.08);">
-          <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;">&#10038;</div>
+          <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">The Deep Reading</h3>
           <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">A long, hand-crafted interpretation of your whole chart &mdash; delivered as a beautiful PDF.</p>
           <a data-mon="deepReading" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#0a0805;background:linear-gradient(160deg,#D9B544,#A8841E);border:none;border-radius:30px;padding:12px 28px;text-decoration:none;font-weight:700;">Get the PDF</a>
         </div>
         <div style="border:1px solid rgba(201,162,39,.18);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(20,16,10,.55),rgba(10,8,6,.72));">
-          <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;">&#9993;</div>
+          <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-chat"/></svg></div>
           <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">Gift a Reading</h3>
           <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Give someone their sky &mdash; a personalised chart reading, delivered for them.</p>
           <a data-mon="gift" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C9A227);border:1px solid rgba(201,162,39,.4);border-radius:30px;padding:11px 26px;text-decoration:none;">Gift it</a>
@@ -3149,7 +3155,7 @@
         <!-- Brand -->
         <div class="footer-brand-col">
           <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
-            <span class="footer-brand__logo-mark" aria-hidden="true">✦</span>
+            <span class="footer-brand__logo-mark" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
             <span class="footer-brand__logo-text">AstroPrecise</span>
           </a>
           <p class="footer-brand__tagline">
@@ -3172,8 +3178,8 @@
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Horoscope</a></li>
-            <li><a href="lifepath.html"><span aria-hidden="true">✦</span> Life Path</a></li>
-            <li><a href="compatibility.html"><span aria-hidden="true">♡</span> Compatibility</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Compatibility</a></li>
             <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
             <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> The Instrument</a></li>
           </ul>

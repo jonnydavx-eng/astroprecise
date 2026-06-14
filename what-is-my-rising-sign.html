@@ -537,7 +537,7 @@
         var min = Math.round((asc.degree - deg) * 60);
         if (min === 60) { min = 0; deg += 1; }
         resultBox.classList.add('is-shown');
-        resGlyph.textContent = SIGN_GLYPHS[asc.sign] || '✦';
+        resGlyph.textContent = SIGN_GLYPHS[asc.sign] || '';
         resSign.textContent = asc.sign + ' Rising';
         resDeg.textContent = 'Ascendant at ' + asc.sign + ' ' + deg + '°' + String(min).padStart(2, '0') + '′';
         resNote.textContent = 'Computed from the real sky for ' + (picked.name || 'your birth place') +

@@ -985,7 +985,7 @@
     <section id="setup-section" aria-labelledby="setup-heading" class="hidden">
       <div class="container">
         <div class="profile-setup-card">
-          <div class="setup-star-icon" aria-hidden="true">✦</div>
+          <div class="setup-star-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h2 id="setup-heading">Begin Your Cosmic Record</h2>
           <p>Your complete astrological journal lives here — birth charts, life milestones, and personal insights. Everything is computed in your browser and never leaves your device.</p>
 
@@ -1034,7 +1034,7 @@
           <div class="profile-hero reveal-init" role="banner">
             <div class="avatar-wrap">
               <div class="avatar-pulse" aria-hidden="true"></div>
-              <div class="avatar-circle" id="profile-avatar" aria-hidden="true">✦</div>
+              <div class="avatar-circle" id="profile-avatar" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
             </div>
             <div class="profile-hero__info">
               <p class="profile-hero__label">Cosmic Profile</p>
@@ -1110,7 +1110,7 @@
           <!-- ── 5. Recommendations ── -->
           <div class="glass-panel reveal-init" id="recommendations-section" aria-labelledby="rec-heading">
             <h3 class="glass-panel__title" id="rec-heading">
-              <span class="panel-icon" aria-hidden="true">✧</span>
+              <span class="panel-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
               Explore Next
             </h3>
             <div class="recommendations-grid" id="recommendations-grid" aria-live="polite">
@@ -1144,7 +1144,7 @@
           <div class="glass-panel reveal-init" id="charts-gallery-section" aria-labelledby="charts-heading">
             <div class="charts-gallery-header">
               <h3 id="charts-heading">
-                <span aria-hidden="true">✦</span> Saved Charts
+                <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span> Saved Charts
               </h3>
               <button class="btn btn--primary btn--micro" id="add-chart-btn"
                       aria-expanded="false" aria-controls="add-chart-panel">
@@ -1188,7 +1188,7 @@
                     <input type="hidden" id="ac-tz" />
                   </div>
                   <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
-                    <button type="submit" class="btn btn--primary">Compute &amp; Save ✦</button>
+                    <button type="submit" class="btn btn--primary">Compute &amp; Save <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></button>
                     <button type="button" class="btn btn--ghost" id="cancel-chart-btn">Cancel</button>
                   </div>
                 </form>
@@ -1292,7 +1292,7 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <p class="footer__logo">✦ AstroPrecise</p>
+          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
           <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
         </div>
         <nav aria-label="Tools navigation">
@@ -1501,7 +1501,7 @@
 
       if (charts.length === 0) {
         recs.push({
-          icon:'✦', iconClass:'rec-icon--gold', urgent:true,
+          icon:'<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>', iconClass:'rec-icon--gold', urgent:true,
           title:'Calculate Your Birth Chart',
           body:'Your natal chart is the foundation of everything — it reveals your Sun, Moon, Rising, and the placement of every planet at the moment of your birth.',
           cta:'Open Chart Calculator', href:'chart.html'
@@ -1603,7 +1603,7 @@
       if (stepsEl) {
         stepsEl.innerHTML = steps.map(s => `
           <div class="completeness-step completeness-step--${s.done ? 'done' : 'pending'}" role="listitem">
-            <span class="step-marker" aria-hidden="true">${s.done ? '✓' : '○'}</span>
+            <span class="step-marker" aria-hidden="true">${s.done ? '<span class="eng-check-mark"></span>' : '<span class="eng-step-ring"></span>'}</span>
             <span>${s.label}</span>
           </div>`).join('');
       }
@@ -1626,7 +1626,7 @@
       if (first.asc || first.ascendant) ascSign = first.asc || first.ascendant;
 
       if (avatarEl) {
-        avatarEl.textContent = sunSign ? (SIGN_GLYPHS[sunSign] || '✦') : '✦';
+        avatarEl.textContent = sunSign ? (SIGN_GLYPHS[sunSign] || '') : '';
       }
 
       let tagline = 'Your cosmic journey begins here';

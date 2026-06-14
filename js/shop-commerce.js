@@ -308,7 +308,7 @@ window.AstroShop = (() => {
             this.clear();
             this.close();
             modal({
-              title: 'Order received ✦',
+              title: 'Order received',
               body: `<p>Thank you${details && details.payer && details.payer.name ? ', ' + esc(details.payer.name.given_name) : ''}.</p>
                      <p>Order <strong>${details && details.id ? esc(details.id) : ''}</strong> is confirmed. Personalised pieces are generated from your saved chart and a receipt is on its way to your inbox.</p>`,
               actions: [{ label: 'Done', primary: true }],
@@ -536,7 +536,7 @@ window.AstroShop = (() => {
           localStorage.setItem('ap_shop_waitlist', JSON.stringify(list));
         } catch (err) {}
         form.reset();
-        toast('Noted ✦ we will tell you when the shop opens.');
+        toast('Noted we will tell you when the shop opens.');
       });
     }
   }

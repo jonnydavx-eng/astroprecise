@@ -889,17 +889,17 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       const moonLon = E.moonPosition(jd).lon;
       const phase = ((moonLon - sunLon) % 360 + 360) % 360;
       const PHASES = [
-        [0,   '● New'],
-        [45,  '◑ Crescent'],
-        [90,  '◑ Quarter'],
-        [135, '◕ Gibbous'],
-        [180, '○ Full'],
-        [225, '◕ Gibbous'],
-        [270, '◐ Quarter'],
-        [315, '◐ Crescent'],
-        [360, '● New'],
+        [0,   'New Moon'],
+        [45,  'Waxing Crescent'],
+        [90,  'First Quarter'],
+        [135, 'Waxing Gibbous'],
+        [180, 'Full Moon'],
+        [225, 'Waning Gibbous'],
+        [270, 'Last Quarter'],
+        [315, 'Waning Crescent'],
+        [360, 'New Moon'],
       ];
-      const phaseLabel = PHASES.find((_, i) => phase < PHASES[i + 1][0])?.[1] || '● New';
+      const phaseLabel = PHASES.find((_, i) => phase < PHASES[i + 1][0])?.[1] || 'New Moon';
       const moonEl = document.getElementById('orrery-moon-phase');
       if (moonEl) moonEl.textContent = phaseLabel;
     } catch (e) { /* moon phase is optional */ }

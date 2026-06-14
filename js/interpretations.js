@@ -2684,7 +2684,7 @@ window.AstroInterpretations = Object.assign({}, window.Interpretations, {
       if (planets.length >= 3) {
         patterns.push({
           name: 'Stellium',
-          glyph: '✦',
+          glyph: '',
           description: `${planets.map(cap).join(', ')} are all concentrated in ${cap(sign)} — this is your chart's power centre. Themes of ${sign} permeate your core identity, purpose, and expression.`,
           planets: planets,
           type: 'stellium',

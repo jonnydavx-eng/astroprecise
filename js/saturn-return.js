@@ -130,15 +130,15 @@
       DFMT(r.peakDate) + '</strong>, around age <strong>' + r.ageAtPeak + '</strong>. ' +
       'Natal Saturn sits at ' + (SIGN_GLYPHS[sign] || '') + ' <strong>' + sign + ' ' + degStr(data.natalDeg) +
       '</strong> — the place the planet now returns to for the first time since you were born.</p>';
-    html += '<div class="sat-orn"><span>✦ WHAT IT MATURES ✦</span></div>';
+    html += '<div class="sat-orn"><span>WHAT IT MATURES</span></div>';
     html += '<p>' + lesson + '</p>';
-    html += '<div class="sat-orn"><span>✦ THE THREE PHASES ✦</span></div>';
+    html += '<div class="sat-orn"><span>THE THREE PHASES</span></div>';
     html += '<p>This return is not a single day but a passage of roughly nine to fourteen months — here, <strong>' +
       window_ + '</strong> (' + passesLine(r) + ').</p>';
     PHASES.forEach(function (p) {
       html += '<p><strong>' + p[0] + '.</strong> ' + p[1] + '</p>';
     });
-    html += '<div class="sat-orn"><span>✦ YOUR THREE RETURNS ✦</span></div>';
+    html += '<div class="sat-orn"><span>YOUR THREE RETURNS</span></div>';
     html += '<ul class="sat-list">' + data.returns.map(function (x) {
       var cur = x.n === r.n ? ' <em>(this one)</em>' : '';
       return '<li><strong>' + ORD[x.n] + '</strong> &middot; age ~' + x.ageAtPeak + cur + ' &middot; ' +
@@ -178,7 +178,7 @@
       '<title>' + title + '</title>' +
       '<link rel="stylesheet" href="css/fonts.css">' +
       '<style>' + css + '</style></head><body><div class="page">' +
-      '<div class="seal">✦</div>' +
+      '<div class="seal"><span class="eng-star-mark" style="color:var(--gold);width:1.2em;height:1.2em;"></span></div>' +
       '<p class="eyebrow">AstroPrecise · The Saturn Return</p>' +
       '<h1>The Return of<br>Saturn</h1>' +
       '<div class="glyph">♄</div>' +

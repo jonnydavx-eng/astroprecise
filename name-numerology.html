@@ -541,7 +541,7 @@
             </div>
             <div style="text-align:center;margin-top:var(--space-7);">
               <button type="submit" class="nn-submit-btn">
-                <span aria-hidden="true">✦</span> Reveal My Numbers
+                <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span> Reveal My Numbers
               </button>
             </div>
             <p class="nn-error" id="nn-error" role="alert"></p>
@@ -613,7 +613,7 @@
     <section class="section instrument-teaser nn-funnel">
       <div class="container">
         <div class="nn-funnel__inner">
-          <div class="instrument-teaser__badge">✦ Go Deeper</div>
+          <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Go Deeper</div>
           <h2 class="instrument-teaser__title">Your Name Is Only Half the Story</h2>
           <p class="instrument-teaser__body" style="margin:0 auto var(--space-6);">
             Your name numbers describe your gifts and your inner motivations. Your
@@ -622,7 +622,7 @@
             day you were born. Combine all three for the complete picture.
           </p>
           <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
-            <a href="lifepath.html" class="btn btn--primary btn--lg">✦ &nbsp;Calculate Your Life Path</a>
+            <a href="lifepath.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Life Path</a>
             <a href="chart.html" class="btn btn--outline btn--lg">Your Full Birth Chart</a>
           </div>
           <div id="nn-deep-reading" style="margin-top:var(--space-8);"></div>
@@ -672,7 +672,7 @@
       <div class="footer-inner">
         <div class="footer-brand">
           <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
-            <span aria-hidden="true">✦</span>
+            <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
             <span>AstroPrecise</span>
           </a>
           <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
@@ -828,7 +828,7 @@
     function renderLifePath(lp) {
       if (!lp) { lpCard.style.display = 'none'; return; }
       var m = NN.meaning(lp.value) || {};
-      lpDigit.textContent = lp.value + (lp.isMaster ? ' ✦' : '');
+      lpDigit.textContent = lp.value + (lp.isMaster ? ' · Master' : '');
       lpText.innerHTML = '<strong style="color:var(--nn-white);">' + esc(m.title || '') + '</strong> — ' +
         esc(m.essence ? (m.essence.charAt(0).toUpperCase() + m.essence.slice(1) + '.') : '') +
         ' Your Life Path comes from your birth date: month ' + lp.month + ' → ' + lp.monthReduced.value +
@@ -847,7 +847,7 @@
       var isUrl = typeof url === 'string' && /^https?:\/\//i.test(url.trim());
       if (isUrl) {
         wrap.innerHTML = '<a href="' + esc(url.trim()) + '" class="btn btn--primary" target="_blank" rel="noopener">' +
-          '✦ Get Your Deep Personal Reading</a>' +
+          '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Deep Personal Reading</a>' +
           '<p style="font-size:0.7rem;color:var(--nn-silver-dim);margin-top:var(--space-3);">' +
           'A written reading that weaves your name numbers, Life Path, and natal chart into one narrative.</p>';
       } else {

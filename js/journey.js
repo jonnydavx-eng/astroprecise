@@ -73,7 +73,7 @@ window.AstroJourney = (function () {
       theme: 'Power recognized, domain extended, limits tested',
       planet: 'Jupiter',
       glyph: '♃',
-      icon: '✦',
+      icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>',
       narrative: 'Having survived the first reckoning, you grow into the space your courage cleared. Ambition finds its right shape, relationships deepen into genuine partnership, and the world begins to respond to you as the authority you have become. The danger is expansion without reflection — reaching without feeling.',
       invitation: 'Where is abundance asking you to grow beyond your comfort?',
     },
@@ -743,7 +743,7 @@ window.AstroJourney = (function () {
       headline: 'Your daily cosmic weather',
       body:     'The stars speak daily. Check your horoscope to align your energy with the moment.',
       urgency:  'low',
-      icon:     '✦',
+      icon:     '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>',
     });
 
     // Ephemeris for all
