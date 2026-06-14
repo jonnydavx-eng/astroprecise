@@ -121,22 +121,10 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   const camTarget = new THREE.Vector3(0, 0, 0);
   let dragging = false, lastX = 0, lastY = 0, downX = 0, downY = 0, userTouched = 0;
 
-  // intro — cinematic Earth → cosmos journey (preloader + replay)
+  // intro — HD Earth close-up → pull back through the solar system (preloader + replay)
   let introActive = false, introStart = 0;
-  let introVisualLevel = -1;
   let onIntroDone = null;
-  const INTRO_KEYFRAMES = [
-    { u: 0.00, level: 0, camRadius: 2.75, camEl: 5 * D2R },
-    { u: 0.20, level: 0, camRadius: 3.6,  camEl: 7 * D2R },
-    { u: 0.34, level: 1, camRadius: 20 },
-    { u: 0.48, level: 2, camRadius: 44 },
-    { u: 0.58, level: 2, camRadius: 52 },
-    { u: 0.68, level: 3 },
-    { u: 0.78, level: 4 },
-    { u: 0.88, level: 5 },
-    { u: 1.00, level: 6 },
-  ];
-  const INTRO_MS = 20000;
+  const INTRO_MS = 5800;
   let texturesReady = false;
   let texturesReadyResolve = null;
   const texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
@@ -169,7 +157,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       camRadius: 1950, camMin: 1300, camMax: 3000, camEl: 58 * D2R, camAz: 0.05, targetEarth: false,
       honesty: 'Deep field · decorative galaxy sprites · not a measured sky survey' },
   ];
-  let scaleLevel = 0;
+  let scaleLevel = 2;
   let scaleAnimActive = false, scaleAnimStart = 0;
   const scaleAnimFrom = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
   const scaleAnimTo = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
@@ -220,76 +208,31 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     return out.set(0, 0, 0);
   }
 
-  const _introTargetA = new THREE.Vector3();
-  const _introTargetB = new THREE.Vector3();
-
-  function getIntroSegment(u) {
-    let i = 0;
-    for (let k = 0; k < INTRO_KEYFRAMES.length - 1; k++) {
-      if (INTRO_KEYFRAMES[k + 1].u <= u) i = k + 1;
-      else break;
-    }
-    const a = INTRO_KEYFRAMES[i];
-    const b = INTRO_KEYFRAMES[Math.min(i + 1, INTRO_KEYFRAMES.length - 1)];
-    const segU = b.u > a.u ? (u - a.u) / (b.u - a.u) : 0;
-    return { a, b, segU: Math.max(0, Math.min(1, segU)) };
-  }
-
-  function applyIntroCamera(u) {
-    const { a, b, segU } = getIntroSegment(u);
-    const e = easeInOut(segU);
-    const pa = scalePreset(a.level);
-    const pb = scalePreset(b.level);
-    const ra = a.camRadius != null ? a.camRadius : pa.camRadius;
-    const rb = b.camRadius != null ? b.camRadius : pb.camRadius;
-    camRadius = ra + (rb - ra) * e;
-    const ea = a.camEl != null ? a.camEl : pa.camEl;
-    const eb = b.camEl != null ? b.camEl : pb.camEl;
-    camEl = ea + (eb - ea) * e;
-    camAz = pa.camAz + (pb.camAz - pa.camAz) * e;
-    if (pa.targetEarth) earthTargetVec(_introTargetA);
-    else _introTargetA.set(0, 0, 0);
-    if (pb.targetEarth) earthTargetVec(_introTargetB);
-    else _introTargetB.set(0, 0, 0);
-    camTarget.lerpVectors(_introTargetA, _introTargetB, e);
-    const visLevel = segU >= 0.5 ? b.level : a.level;
-    if (visLevel !== introVisualLevel) {
-      introVisualLevel = visLevel;
-      scaleLevel = visLevel;
-      updateScaleVisuals(scaleLevel, true);
-      const chip = document.getElementById('orrery-honesty-chip');
-      const p = scalePreset(visLevel);
-      if (chip && p.honesty) chip.textContent = p.honesty;
-      const scaleEl = document.getElementById('orrery-scale-label');
-      if (scaleEl) scaleEl.textContent = p.hud;
-    }
-  }
-
-  function startIntro() {
+  function restartIntro() {
     scaleAnimActive = false;
-    introVisualLevel = -1;
     introStart = performance.now();
     introActive = !PRM;
     userTouched = performance.now();
     daysPerSec = 0;
     flicking = false;
     scaleLevel = 0;
-    const p0 = scalePreset(0);
-    camRadius = 2.75;
-    camEl = 5 * D2R;
-    camAz = p0.camAz;
+    updateScaleVisuals(0);
     earthTargetVec(camTarget);
-    updateScaleVisuals(0, true);
-    updateScaleHUD();
+    camRadius = 3.0;
+    camEl = 7 * D2R;
+    camAz = -0.6;
     applyCamera();
-    if (PRM && onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+    if (PRM) {
+      introActive = false;
+      applyScalePreset(2, false);
+      if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+    }
   }
 
   function settleFromIntro() {
     introActive = false;
-    introVisualLevel = -1;
     userTouched = performance.now();
-    applyScalePreset(2, true);
+    if (scaleLevel !== 2) applyScalePreset(2, true);
   }
 
   function preloadTextures() {
@@ -679,18 +622,17 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     buildCosmicField();
   }
 
-  function updateScaleVisuals(level, introMode) {
+  function updateScaleVisuals(level) {
     const lv = level | 0;
-    const inIntro = introMode || introActive;
     solarDim = lv <= 2 ? 1 : lv === 3 ? 0.55 : lv === 4 ? 0.12 : 0;
     const showSolar = solarDim > 0.02;
-    const showPlanetLabels = showLabels && lv <= 2 && !inIntro;
+    const showPlanetLabels = showLabels && lv <= 2;
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
       g.visible = showSolar;
       if (showSolar) {
-        const s = inIntro && lv <= 2 ? 1 : (lv <= 2 ? 1 : lv === 3 ? 0.45 : 0.15);
+        const s = lv <= 2 ? 1 : lv === 3 ? 0.45 : 0.15;
         g.scale.setScalar(s);
         const m = g.userData.mesh;
         if (m && m.material) {
@@ -1173,7 +1115,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     catch (err) { console.warn('[orrery] render error — falling back to canvas orrery:', err); fallbackToCanvas(canvas); }
   }
   function frameBody(t) {
-    if (!running || !inView) { lastT = t; return; }
+    const preloaderRender = !!window.__orreryPreloaderOwns;
+    if (!running || (!inView && !preloaderRender)) { lastT = t; return; }
     const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t;
 
     // flick momentum — time coasts after a drag-release, decaying to rest
@@ -1223,16 +1166,11 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       });
     }
 
-    // self-rotation (liveliness) — muted during intro so Earth reads as a stable HD close-up
-    if (!PRM && scaleLevel <= 2) {
-      if (introActive) {
-        if (meshes.earth) meshes.earth.userData.mesh.rotation.y += 0.12 * dt;
-        if (earthCloud) earthCloud.rotation.y += 0.08 * dt;
-      } else {
-        BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
-        if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
-        if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
-      }
+    // self-rotation (liveliness)
+    if (!PRM && scaleLevel <= 2 && !introActive) {
+      BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
+      if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
+      if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
     }
 
     // scale-level camera transition (zoom dial)
@@ -1251,20 +1189,24 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       earthTargetVec(camTarget);
     }
 
-    // intro: Earth close-up → solar system → galaxy → cosmos edge
+    // intro: HD Earth close-up → pull back through the full solar system
     if (introActive) {
-      const p = Math.min(1, (t - introStart) / INTRO_MS);
-      applyIntroCamera(p);
+      const p = Math.min(1, (t - introStart) / INTRO_MS), e = easeInOut(p);
+      const earthPos = meshes.earth.position;
+      const end = scalePreset(2);
+      camTarget.lerpVectors(earthPos, new THREE.Vector3(0, 0, 0), e);
+      camRadius = 3.0 + (end.camRadius - 3.0) * e;
+      camEl = (7 * D2R) + (end.camEl - 7 * D2R) * e;
+      camAz = (Math.atan2(earthPos.z, earthPos.x) * -1 - 0.2) * (1 - e) + (end.camAz) * e;
       if (p >= 1) {
         introActive = false;
-        scaleLevel = 6;
-        introVisualLevel = 6;
+        scaleLevel = 2;
         userTouched = performance.now();
         updateScaleHUD();
         updateScaleVisuals(scaleLevel);
         if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
       }
-    } else if (!dragging && !scaleAnimActive && !PRM && !introActive && (t - userTouched) > 2800) {
+    } else if (!dragging && !scaleAnimActive && !PRM && (t - userTouched) > 1200) {
       camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
     }
     if (!introActive && !scaleAnimActive) clampCamToLevel();
@@ -1468,8 +1410,11 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     try { _initWebGL(canvasEl); }
     catch (err) { console.warn('[orrery] WebGL init failed — falling back to canvas orrery:', err); fallbackToCanvas(canvasEl); }
   }
+  let webglBooted = false;
   function _initWebGL(canvasEl) {
-    if (!canvasEl || !window.AstroEphemeris) return;
+    if (!canvasEl) return;
+    if (webglBooted && canvas === canvasEl) return;
+    if (!window.AstroEphemeris) throw new Error('AstroEphemeris not loaded');
     canvas = canvasEl; wrap = canvas.parentElement;
 
     perfTier = getPerfTier();
@@ -1514,34 +1459,18 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     buildGalaxyLayers();
     tuneSunGlowForComposer(perfTier);
     updatePositions();
-    const preloaderMode = !!window.__orreryPreloaderOwns;
-    if (preloaderMode) {
-      scaleLevel = 0;
-      const p0 = scalePreset(0);
-      camRadius = 2.75;
-      camEl = 5 * D2R;
-      camAz = p0.camAz;
-      earthTargetVec(camTarget);
-      scaleAnimActive = false;
-      updateScaleHUD();
-      updateScaleVisuals(0, true);
-      applyCamera();
-    } else {
-      scaleLevel = 2;
-      applyScalePreset(2, false);
-    }
+    scaleLevel = 2;
+    applyScalePreset(2, false);
     resize();
     preloadTextures();
 
     if (PRM) {
       introActive = false;
-      if (!preloaderMode) {
-        camTarget.set(0, 0, 0);
-        camRadius = 48;
-        camEl = 26 * D2R;
-        camAz = -0.6;
-        applyCamera();
-      }
+      camTarget.set(0, 0, 0);
+      camRadius = 48;
+      camEl = 26 * D2R;
+      camAz = -0.6;
+      applyCamera();
     }
 
     bindControls();
@@ -1554,6 +1483,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     document.addEventListener('visibilitychange', () => { running = !document.hidden; });
 
     lastT = 0; raf = requestAnimationFrame(frame);
+    webglBooted = true;
   }
 
   function setSpeed(s) {
@@ -1598,8 +1528,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     setShowAsteroids(b) { showAsteroids = !!b; updateScaleVisuals(scaleLevel); },
     get onPlanetClick() { return onPlanetClick; },
     set onPlanetClick(fn) { onPlanetClick = fn; },
-    startIntro,
-    restartIntro() { startIntro(); },
+    startIntro: restartIntro,
+    restartIntro,
     settleFromIntro,
     isIntroActive() { return introActive; },
     whenReady() { return texturesReady ? Promise.resolve() : texturesReadyPromise; },
