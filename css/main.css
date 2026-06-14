@@ -15,13 +15,13 @@
   --hermetic: #1a1428;       /* deep violet-indigo for subtle mystery */
 
   /* ── Engraved / Plate surfaces (less glass, more ancient metal/parchment) ── */
-  --glass:         rgba(20, 16, 10, 0.72);   /* warm dark plate */
-  --glass-2:       rgba(13, 10, 7, 0.85);
+  --glass:         rgba(20, 16, 10, 0.58);   /* warm plate — translucent so the one sky shows through */
+  --glass-2:       rgba(13, 10, 7, 0.80);
   --glass-3:       rgba(10, 8, 6, 0.92);
-  --glass-bg:      rgba(20, 16, 10, 0.72);
-  --surface:       rgba(20, 16, 10, 0.72);
-  --surface-2:     rgba(13, 10, 7, 0.85);
-  --surface-hover: rgba(28, 22, 14, 0.9);
+  --glass-bg:      rgba(20, 16, 10, 0.58);
+  --surface:       rgba(20, 16, 10, 0.56);
+  --surface-2:     rgba(13, 10, 7, 0.80);
+  --surface-hover: rgba(28, 22, 14, 0.80);
 
   /* ── Borders — hairline gold engravings ── */
   --border:         rgba(201, 162, 39, 0.16);

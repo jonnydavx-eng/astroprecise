@@ -92,6 +92,8 @@
       box-shadow: inset 0 1px 0 rgba(232,224,208,0.08), 0 10px 30px rgba(0,0,0,0.16);
     }
     @media (max-width: 700px) { .compat-form { padding: var(--space-6) var(--space-4); } }
+    .aspect-unlock { text-align: center; margin-top: var(--space-6); }
+    .aspect-unlock__note { margin-top: var(--space-3); font-size: 0.8rem; color: var(--color-silver-dim); }
 
     /* ---- Two-person grid ---- */
     .compat-form__grid {
@@ -1747,17 +1749,50 @@
         var visibleAspects = allAspects.slice(0, visibleCount);
         var hiddenAspects  = allAspects.slice(visibleCount);
 
-        var showAllBtn = hiddenAspects.length > 0
-          ? '<button class="aspect-show-all-btn" id="aspect-show-all-btn">Show all ' + allAspects.length + ' aspects ↓</button>'
-          : '';
+        // ── Unlock state ──────────────────────────────────────────────────
+        // Honest model: top 8 aspects + categories + overview are ALWAYS free.
+        // The remaining aspects unlock for a one-time fee — but ONLY once the
+        // product is live (compatUnlockUrl set). While dormant, everything is
+        // free so we never downgrade pre-launch. The unlock is an on-device
+        // "thank-you" reveal (?unlocked=1 → localStorage), not DRM — the listing
+        // copy says exactly that.
+        var AP = window.AP_MON || {};
+        var unlockUrl = AP.compatUnlockUrl || '';
+        var unlockPrice = AP.compatUnlockPrice || '£4.99';
+        var unlocked = false;
+        try {
+          if (new URLSearchParams(location.search).get('unlocked') === '1') {
+            localStorage.setItem('ap_compat_unlocked', '1');
+          }
+          unlocked = localStorage.getItem('ap_compat_unlocked') === '1';
+        } catch (e) {}
+        var gated = !!unlockUrl && !unlocked;   // live + not yet unlocked
+
+        var hiddenHtml = '';
+        var ctaHtml = '';
+        if (hiddenAspects.length > 0) {
+          if (gated) {
+            // Locked: hidden aspects are not placed in the DOM; show the unlock CTA.
+            ctaHtml =
+              '<div class="aspect-unlock">' +
+                '<button class="btn btn--primary aspect-show-all-btn" id="aspect-unlock-btn">' +
+                  'Unlock all ' + allAspects.length + ' cross-chart aspects — ' + unlockPrice +
+                '</button>' +
+                '<p class="aspect-unlock__note">Unlocks the full report on this device. Your birth details never leave your browser.</p>' +
+              '</div>';
+          } else {
+            // Free (dormant) or already unlocked: render the rest behind a toggle.
+            hiddenHtml = '<div class="aspect-card-list" id="aspect-card-list-hidden" style="display:' + (unlocked ? '' : 'none') + ';">' + renderAspectCards(hiddenAspects) + '</div>';
+            if (!unlocked) {
+              ctaHtml = '<button class="aspect-show-all-btn" id="aspect-show-all-btn">Show all ' + allAspects.length + ' aspects ↓</button>';
+            }
+          }
+        }
 
         aspEl.innerHTML =
           '<h3 class="synastry-aspects-header">Cross-Chart Aspects</h3>' +
           '<div class="aspect-card-list" id="aspect-card-list-visible">' + renderAspectCards(visibleAspects) + '</div>' +
-          (hiddenAspects.length > 0
-            ? '<div class="aspect-card-list" id="aspect-card-list-hidden" style="display:none;">' + renderAspectCards(hiddenAspects) + '</div>'
-            : '') +
-          showAllBtn;
+          hiddenHtml + ctaHtml;
 
         var showAllBtnEl = document.getElementById('aspect-show-all-btn');
         if (showAllBtnEl) {
@@ -1768,6 +1803,10 @@
               showAllBtnEl.style.display = 'none';
             }
           });
+        }
+        var unlockBtnEl = document.getElementById('aspect-unlock-btn');
+        if (unlockBtnEl && unlockUrl) {
+          unlockBtnEl.addEventListener('click', function() { window.open(unlockUrl, '_blank', 'noopener'); });
         }
       }
 

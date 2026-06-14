@@ -819,6 +819,10 @@
       ${cards}
       <div class="deep-teaser__cta-wrap">
         ${ctaHtml}
+        <p class="deep-teaser__sample" style="margin-top:var(--space-3);font-size:0.85rem;">
+          <a href="sample-reading.html" target="_blank" rel="noopener" style="color:var(--gold-light,#E8C872);">See a real sample reading →</a>
+          &nbsp;·&nbsp; Hand-prepared and personally checked before it's sent.
+        </p>
       </div>`;
     host.hidden = false;
 
