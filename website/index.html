@@ -474,6 +474,30 @@
       border-radius: 50%;
       background: transparent;
       align-self: center;
+      width: min(100%, 720px);
+      aspect-ratio: 1 / 1;
+      margin: 0 auto;
+    }
+
+    /* Reserves hero space while the canvas lives on the preloader stage */
+    .orrery-canvas-placeholder {
+      display: none;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      pointer-events: none;
+    }
+    .hero__orrery-ring.orrery-canvas-away .orrery-canvas-placeholder {
+      display: block;
+    }
+
+    body.preloader-active {
+      overflow: hidden;
+    }
+    body.preloader-active .hero {
+      visibility: hidden;
+    }
+    body.page-home--ready .hero {
+      visibility: visible;
     }
 
     /* Sacred-geometry meridian — instrument frame, not a box */
@@ -2345,14 +2369,23 @@
     // (or arriving from an internal page) skips it entirely → smooth, never re-gated.
     // Fail-open: if sessionStorage throws (private mode), the intro simply shows.
     let introSeen = false;
-    try { introSeen = sessionStorage.getItem('ap_intro_seen') === '1'; } catch (e) {}
+    try { introSeen = sessionStorage.getItem('ap_intro_complete') === '1'; } catch (e) {}
     if (introSeen) {
       pre.style.display = 'none';
       if (pre.parentNode) pre.parentNode.removeChild(pre);
-      requestAnimationFrame(function () { window.dispatchEvent(new Event('ap-hero-enter')); });
-      return; // the hero-boot path inits the orrery normally on repeat visits
+      window.__apHeroEntered = true;
+      function skipEnter() {
+        if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
+        window.dispatchEvent(new Event('ap-hero-enter'));
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(skipEnter); });
+      } else {
+        requestAnimationFrame(skipEnter);
+      }
+      return;
     }
-    try { sessionStorage.setItem('ap_intro_seen', '1'); } catch (e) {}
+    document.body.classList.add('preloader-active');
     let raf = null;
     const fill = document.getElementById('preloader-fill');
     if (fill) fill.style.width = '100%';
@@ -2383,12 +2416,17 @@
       if (orreryRelocated && orrCanvas && heroRing) {
         orrCanvas.style.width = ''; orrCanvas.style.height = '';
         heroRing.appendChild(orrCanvas);
+        heroRing.classList.remove('orrery-canvas-away');
         window.dispatchEvent(new Event('resize'));   // ResizeObserver + resize() refit to hero size
         if (window.Orrery3D && typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
       }
+      try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (e) {}
+      document.body.classList.remove('preloader-active');
       pre.classList.add('fade-out');
       setTimeout(() => {
         pre.style.display = 'none';
+        window.__apHeroEntered = true;
+        if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
         window.dispatchEvent(new Event('ap-hero-enter'));
       }, 620);
       const heroO = document.getElementById('orrery-canvas');
@@ -2405,6 +2443,7 @@
       }, 20000);   // generous window so a slow first paint can't strand the static CSS-mock
       if (!ready || preDone) return;                 // engine/canvas slow or already dismissed → CSS mock stays
       heroRing = orrCanvas.parentElement;            // remember home so we can fly it back on enter
+      if (heroRing) heroRing.classList.add('orrery-canvas-away');
       orrSlot.appendChild(orrCanvas);                // move the ONE canvas onto the loading stage
       orrCanvas.style.width = '100%'; orrCanvas.style.height = '100%';
       orreryRelocated = true;
@@ -2558,6 +2597,7 @@
                 <span class="hero__chronicle-date" id="hero-chronicle-date">—</span>
                 <span class="hero__chronicle-offset" id="hero-chronicle-offset">Now</span>
               </div>
+              <div class="orrery-canvas-placeholder" aria-hidden="true"></div>
               <canvas
                 id="orrery-canvas"
                 width="640"
