@@ -82,26 +82,41 @@
   // ── Scroll reveal (IntersectionObserver, staggered) ──────────────────────
 
   function initReveal() {
+    const preset = document.querySelectorAll('.reveal-init');
     const targets = document.querySelectorAll(
       '.section-header, .sign-tile, .feature-strip__item, .step-item, ' +
       '.live-sky__panel, .hero-stat, .footer__grid > *');
+    const all = [...new Set([...preset, ...targets])];
+
+    function reveal(el, delayMs) {
+      if (delayMs) el.style.transitionDelay = delayMs + 'ms';
+      el.classList.add('revealed');
+    }
+
     if (reduceMotion || !('IntersectionObserver' in window)) {
-      targets.forEach(t => t.classList.add('revealed'));
+      all.forEach(t => reveal(t));
       return;
     }
+
     let order = 0;
     const io = new IntersectionObserver(entries => {
       entries.forEach(en => {
         if (!en.isIntersecting) return;
-        const el = en.target;
-        // stagger siblings revealed in the same batch
-        el.style.transitionDelay = (order++ % 6) * 70 + 'ms';
-        el.classList.add('revealed');
-        io.unobserve(el);
+        reveal(en.target, (order++ % 6) * 70);
+        io.unobserve(en.target);
         setTimeout(() => { order = 0; }, 50);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
-    targets.forEach(t => { t.classList.add('reveal-init'); io.observe(t); });
+
+    all.forEach(t => {
+      if (!t.classList.contains('reveal-init')) t.classList.add('reveal-init');
+      const r = t.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.92 && r.bottom > 0) {
+        reveal(t);
+      } else {
+        io.observe(t);
+      }
+    });
   }
 
   // ── Count-up stats ────────────────────────────────────────────────────────
