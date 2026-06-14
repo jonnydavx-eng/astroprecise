@@ -814,6 +814,13 @@ window.AP_MON = Object.assign({
   // displayed (honesty: never show a price until the product is live and it matches
   // the storefront listing exactly).
   deepReadingPrice: '',
+  // Compatibility "Full Synastry" unlock — the compatibility page keeps the top 8
+  // cross-chart aspects + category scores + overview FREE; the rest unlock here.
+  // Hosted checkout (Lemon Squeezy) that redirects back to compatibility.html?unlocked=1.
+  // Empty '' = DORMANT: everything stays free (no downgrade pre-launch). When set,
+  // the "Show all aspects" toggle becomes an "Unlock — <price>" button.
+  compatUnlockUrl: '',
+  compatUnlockPrice: '£4.99',   // shown on the unlock button only when compatUnlockUrl is set
   // Email-list signup ENDPOINT (a hosted newsletter form-action, e.g. Buttondown
   // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
   // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
