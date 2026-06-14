@@ -15,11 +15,11 @@
   <meta property="og:description" content="Free daily horoscopes for all 12 zodiac signs, generated from real planetary positions." />
   <meta property="og:url" content="https://astroprecise.app/horoscope.html" />
   <link rel="canonical" href="https://astroprecise.app/horoscope.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/hero-cosmic-ref.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Daily Horoscopes | AstroPrecise" />
   <meta name="twitter:description" content="Free daily horoscopes for all 12 zodiac signs, generated from real planetary positions." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/hero-cosmic-ref.jpg" />
   <meta name="theme-color" content="#050406" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,6 +51,41 @@
       position: relative; z-index: 1;
       padding: calc(var(--nav-height, 72px) + 2.5rem) 0 2rem;
       text-align: center;
+      overflow: hidden;
+    }
+    .sphere-hero::before {
+      content: '';
+      position: absolute;
+      inset: -5% 0 0;
+      z-index: 0;
+      pointer-events: none;
+      background: url('img/hero-cosmic-ref.jpg') center 20% / cover no-repeat;
+      opacity: 0.15;
+      filter: sepia(0.35) saturate(1.08) brightness(0.55);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.6) 55%, transparent 92%);
+              mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.6) 55%, transparent 92%);
+    }
+    .sphere-hero .container { position: relative; z-index: 1; }
+    .sign-glyphs-banner {
+      max-width: 920px;
+      margin: 0 auto var(--space-6, 1.5rem);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    .sign-glyphs-banner img {
+      width: 100%;
+      display: block;
+      filter: sepia(0.1) brightness(0.92);
+    }
+    .sign-glyphs-banner__cap {
+      text-align: center;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(201, 162, 39, 0.55);
+      margin-top: var(--space-2, 0.5rem);
     }
     .sphere-hero__header { margin-bottom: 1.25rem; }
     .sphere-hero__header h1 {
@@ -950,6 +985,11 @@
           </button>
         </div>
         <div id="sign-grid-wrap" hidden>
+
+        <div class="sign-glyphs-banner" aria-hidden="true">
+          <img src="img/zodiac-glyphs-all.jpg" alt="" width="1024" height="768" loading="lazy" decoding="async" />
+        </div>
+        <p class="sign-glyphs-banner__cap">Gold line art &middot; premium 3D cards below</p>
 
         <div class="sign-grid" id="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
           <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">

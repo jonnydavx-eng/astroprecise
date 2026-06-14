@@ -26,6 +26,16 @@
       max-width: 480px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem;
       text-align: center; position: relative; z-index: 1;
     }
+    .lib__banner {
+      max-width: 100%; margin: 0 auto 1.25rem;
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(201,162,39,0.28);
+      box-shadow: 0 14px 44px rgba(0,0,0,0.5), 0 0 28px rgba(201,162,39,0.08);
+    }
+    .lib__banner img {
+      width: 100%; display: block;
+      filter: sepia(0.15) brightness(0.9);
+    }
     .lib__seal { font-size: 2.4rem; color: var(--gold, #C9A227); text-shadow: 0 0 40px rgba(201,162,39,0.5); }
     .lib__title {
       font-family: 'Cinzel', serif; font-size: 1.9rem; letter-spacing: 0.14em;
@@ -58,6 +68,9 @@
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
 
   <main class="lib">
+    <div class="lib__banner" aria-hidden="true">
+      <img src="img/hero-cosmic-ref.jpg" alt="" width="480" height="270" loading="eager" decoding="async" />
+    </div>
     <div class="lib__seal" aria-hidden="true">&#10022;</div>
     <h1 class="lib__title">AstroPrecise</h1>
     <p class="lib__tag">Genuinely accurate astrology &mdash; your real sky, computed privately. &#10022;</p>

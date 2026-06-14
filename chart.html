@@ -58,6 +58,18 @@
       text-align: center;
       overflow: hidden;
     }
+    .chart-hero__cosmic-art {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: url('img/hero-cosmic-ref.jpg') center 30% / cover no-repeat;
+      opacity: 0.1;
+      filter: sepia(0.4) brightness(0.5);
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 35%, #000 10%, transparent 78%);
+              mask-image: radial-gradient(ellipse 90% 70% at 50% 35%, #000 10%, transparent 78%);
+    }
+    .chart-hero .container { position: relative; z-index: 1; }
     .chart-hero__eyebrow {
       display: inline-flex;
       align-items: center;
@@ -102,7 +114,7 @@
       top: -80px; left: -120px;
       width: 500px; height: 500px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(92, 74, 110,0.18) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(110, 26, 38, 0.12) 0%, transparent 70%);
       pointer-events: none;
     }
     .chart-hero__orb-b {
@@ -1133,6 +1145,7 @@
          HERO — Compact
     ============================================================ -->
     <section class="chart-hero" aria-labelledby="page-title">
+      <div class="chart-hero__cosmic-art" aria-hidden="true"></div>
       <div class="chart-hero__orb-a" aria-hidden="true"></div>
       <div class="chart-hero__orb-b" aria-hidden="true"></div>
       <div class="container">
