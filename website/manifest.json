@@ -1,7 +1,7 @@
 {
   "name": "AstroPrecise — Birth Charts & Horoscopes",
   "short_name": "AstroPrecise",
-  "description": "Professional birth chart analysis powered by precise astronomical calculations",
+  "description": "Free birth chart calculator, daily horoscope, rising sign, synastry & transits — VSOP87 precision, computed privately in your browser. No account required.",
   "id": "/",
   "start_url": "chart.html?app=1",
   "display": "standalone",

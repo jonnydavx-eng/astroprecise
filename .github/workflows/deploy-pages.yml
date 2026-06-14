@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**]
+    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs]
   workflow_dispatch:
 
 permissions:
@@ -27,3 +27,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./website
           exclude_assets: 'tools'
+
+      - name: Notify search engines (IndexNow)
+        if: success()
+        run: |
+          sleep 45
+          node tools/ping-indexnow.mjs
