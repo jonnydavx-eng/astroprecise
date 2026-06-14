@@ -18,6 +18,10 @@
  * ==========================================================================*/
 
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 (function () {
   'use strict';
@@ -67,8 +71,12 @@ import * as THREE from 'three';
   const labels = {};
   let starField = null;
 
+  let composer = null;
+  let bloomPass = null;
+
   // time
   let baseNowMs = 0, baseJd = 0, dayOffset = 0, daysPerSec = 0;
+  let scrollBias = 0;  // days offset from hero scroll position
   let lastT = 0, needRecompute = true;
   // drag-to-scrub: horizontal drag advances REAL time (planets walk to where they
   // truly are); a flick keeps time coasting with decay. scrubVel = days/event EMA.
@@ -301,7 +309,7 @@ import * as THREE from 'three';
 
   // ── Per-frame position update from the ephemeris ───────────────────────────
   function updatePositions() {
-    const jd = baseJd + dayOffset;
+    const jd = baseJd + dayOffset + scrollBias;
     BODIES.forEach((b) => {
       const ll = helioLonLat(b.id, jd);
       const p = scenePos(b.R, ll.lon, ll.lat);
@@ -355,7 +363,7 @@ import * as THREE from 'three';
     try {
       const E = window.AstroEphemeris;
       if (E && E.isRetrograde) {
-        const jd = baseJd + dayOffset;
+        const jd = baseJd + dayOffset + scrollBias;
         const pulse = Math.sin(t * 0.002) * 0.15 + 1.0;
         BODIES.forEach((b) => {
           if (b.id === 'earth') return;
@@ -407,20 +415,20 @@ import * as THREE from 'three';
     });
     orbitLines.forEach((o) => { o.visible = showOrbits; });
 
-    renderer.render(scene, camera);
+    if (composer) { composer.render(); } else { renderer.render(scene, camera); }
   }
 
   // ── UI date readout (mirrors canvas behaviour) ─────────────────────────────
   function updateDateUI() {
     const el = document.getElementById('orrery-date-display'); if (!el) return;
-    const d = new Date(baseNowMs + dayOffset * 86400000);
+    const d = new Date(baseNowMs + (dayOffset + scrollBias) * 86400000);
     const str = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    const tag = Math.abs(dayOffset) < 0.5 ? ' · now' : (dayOffset > 0 ? ` · +${Math.round(dayOffset)}d` : ` · ${Math.round(dayOffset)}d`);
+    const tag = Math.abs(dayOffset + scrollBias) < 0.5 ? ' · now' : ((dayOffset + scrollBias) > 0 ? ` · +${Math.round(dayOffset + scrollBias)}d` : ` · ${Math.round(dayOffset + scrollBias)}d`);
     el.textContent = str + tag;
 
     try {
       const E = window.AstroEphemeris;
-      const jd = baseJd + dayOffset;
+      const jd = baseJd + dayOffset + scrollBias;
       const sunLon = E.sunPosition(jd).lon;
       const moonLon = E.moonPosition(jd).lon;
       const phase = ((moonLon - sunLon) % 360 + 360) % 360;
@@ -450,6 +458,8 @@ import * as THREE from 'three';
       : Math.min(window.devicePixelRatio || 1, 2);
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
+    if (composer) composer.setSize(w, h);
+    if (bloomPass) bloomPass.resolution.set(w, h);
     camera.aspect = w / h; camera.updateProjectionMatrix();
   }
 
@@ -506,7 +516,7 @@ import * as THREE from 'three';
     else if (hit.object === moonMesh) id = 'moon';
     else { const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object); if (b) id = b.id; }
     if (!id) return;
-    const jd = baseJd + dayOffset;
+    const jd = baseJd + dayOffset + scrollBias;
     const lon = geoLonOf(id, jd);
     let retro = false;
     try {
@@ -546,6 +556,24 @@ import * as THREE from 'three';
 
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
     renderer.setClearColor(0x000000, 0);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
+
+    // Bloom composer — skip for reduced-motion or low-end devices
+    const _skipComposer = PRM || (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4);
+    if (!_skipComposer) {
+      try {
+        composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        bloomPass = new UnrealBloomPass(new THREE.Vector2(renderer.domElement.width, renderer.domElement.height), 0.35, 0.5, 0.88);
+        // strength 0.35, radius 0.5, threshold 0.88 — only the sun + bright glow blooms; no planet halos
+        composer.addPass(bloomPass);
+        composer.addPass(new OutputPass());
+      } catch (e) {
+        composer = null;
+        console.warn('[orrery] post-processing unavailable:', e.message);
+      }
+    }
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);
     texLoader = new THREE.TextureLoader();
@@ -618,6 +646,20 @@ import * as THREE from 'three';
     },
     set onIntroDone(fn) { onIntroDone = fn; if (PRM && fn && !introActive) { onIntroDone = null; fn(); } },
     get onIntroDone() { return onIntroDone; },
+    setScrollDrive(progress) {
+      if (PRM) return;
+      scrollBias = progress * 120;
+      if (!introActive) {
+        camRadius = 48 - progress * 18;
+        camEl = 26 * D2R + progress * 5 * D2R;
+        applyCamera();
+      }
+      needRecompute = true;
+    },
+    resetScrollDrive() {
+      scrollBias = 0;
+      needRecompute = true;
+    },
     isWebGL: true,
   };
 })();
