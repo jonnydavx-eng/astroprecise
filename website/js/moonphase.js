@@ -111,48 +111,48 @@
     var W = 7; // half-window around exact 0/90/180/270 in degrees
     if (e <= W || e >= 360 - W) {
       return {
-        name: 'New Moon', emoji: '🌑',
+        name: 'New Moon', emoji: '<svg class="eng-i"><use href="#ei-moon0"/></svg>',
         blurb: 'The Moon rides with the Sun, its face turned away from Earth — a dark sky and a clean slate. Traditionally a moment for intentions, seeds, and quiet beginnings.'
       };
     }
     if (e < 90 - W) {
       return {
-        name: 'Waxing Crescent', emoji: '🌒',
+        name: 'Waxing Crescent', emoji: '<svg class="eng-i"><use href="#ei-moon1"/></svg>',
         blurb: 'A slender sliver of light is growing on the western horizon after sunset. Momentum is building — the time to nurture a young intention into action.'
       };
     }
     if (e <= 90 + W) {
       return {
-        name: 'First Quarter', emoji: '🌓',
+        name: 'First Quarter', emoji: '<svg class="eng-i"><use href="#ei-moon2"/></svg>',
         blurb: 'Half-lit and climbing. A decision point — push through the first resistance. What you commit to now tends to take real shape.'
       };
     }
     if (e < 180 - W) {
       return {
-        name: 'Waxing Gibbous', emoji: '🌔',
+        name: 'Waxing Gibbous', emoji: '<svg class="eng-i"><use href="#ei-moon3"/></svg>',
         blurb: 'Almost full and brightening fast. Refinement, anticipation, last adjustments before things come to a head.'
       };
     }
     if (e <= 180 + W) {
       return {
-        name: 'Full Moon', emoji: '🌕',
+        name: 'Full Moon', emoji: '<svg class="eng-i"><use href="#ei-moon4"/></svg>',
         blurb: 'The Moon stands opposite the Sun, fully lit and high in the night. A peak of clarity and feeling — culmination, revelation, release.'
       };
     }
     if (e < 270 - W) {
       return {
-        name: 'Waning Gibbous', emoji: '🌖',
+        name: 'Waning Gibbous', emoji: '<svg class="eng-i"><use href="#ei-moon5"/></svg>',
         blurb: 'Just past full and beginning to fade. A time of gratitude, sharing what you have gathered, and gentle letting-go.'
       };
     }
     if (e <= 270 + W) {
       return {
-        name: 'Last Quarter', emoji: '🌗',
+        name: 'Last Quarter', emoji: '<svg class="eng-i"><use href="#ei-moon6"/></svg>',
         blurb: 'Half-lit and shrinking. Reassessment and release — clear away what no longer serves before the next cycle.'
       };
     }
     return {
-      name: 'Waning Crescent', emoji: '🌘',
+      name: 'Waning Crescent', emoji: '<svg class="eng-i"><use href="#ei-moon7"/></svg>',
       blurb: 'A thin paring of light before dawn — the old Moon. Rest, surrender, and quiet completion as the cycle closes.'
     };
   }

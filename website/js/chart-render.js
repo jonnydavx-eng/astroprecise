@@ -772,7 +772,7 @@
   }
 
   // ─── Title bar ────────────────────────────────────────────────────────────
-  function buildTitleBar(title, subtitle) {
+  function buildTitleBar(title, subtitle, subtitleHtml) {
     const bar = document.createElement('div');
     bar.style.cssText = 'text-align:center;padding:8px 4px 4px;font-family:system-ui,sans-serif';
     if (title) {
@@ -781,10 +781,11 @@
       h.textContent = title.toUpperCase();
       bar.appendChild(h);
     }
-    if (subtitle) {
+    if (subtitle || subtitleHtml) {
       const s = document.createElement('div');
       s.style.cssText = 'color:#6A7A8A;font-size:11px;margin-top:2px;letter-spacing:0.05em';
-      s.textContent = subtitle;
+      if (subtitleHtml) s.innerHTML = subtitleHtml;
+      else s.textContent = subtitle;
       bar.appendChild(s);
     }
     return bar;
@@ -897,9 +898,13 @@
 
     const prefix = nextPrefix();
 
+    const escHtml = (str) => String(str).replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
     container.appendChild(buildTitleBar(
       opts.title    || 'Synastry Chart',
-      opts.subtitle || `${name1} ♥ ${name2}`
+      opts.subtitle || null,
+      opts.subtitle ? null : `${escHtml(name1)} <svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> ${escHtml(name2)}`
     ));
 
     const svg = createSVG();

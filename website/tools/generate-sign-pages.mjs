@@ -299,11 +299,11 @@ function page(s) {
   <style>
     .sign-hero { text-align: center; padding: var(--space-16) var(--space-4) var(--space-10); position: relative; z-index: 1; }
     .sign-hero__glyph { font-size: 4.5rem; line-height: 1; display: block; margin-bottom: var(--space-4);
-      background: linear-gradient(180deg, #f2dfa7 0%, #c4920a 60%, #8c6a2f 100%);
+      background: linear-gradient(180deg, #f2dfa7 0%, #c9a227 60%, #8c6a2f 100%);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 0 18px rgba(196,146,10,0.4)); }
     .sign-hero__constellation { max-width: 380px; margin: 0 auto var(--space-4); }
-    .sign-hero__constellation svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 14px rgba(42,74,148,0.45)); }
+    .sign-hero__constellation svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 14px rgba(201,162,39,0.38)); }
     .sign-hero h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.6rem); color: var(--color-white); margin-bottom: var(--space-2); }
     .sign-hero__dates { color: var(--color-gold); font-size: var(--text-sm); letter-spacing: 0.14em; text-transform: uppercase; }
     .sign-facts { display: flex; justify-content: center; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-6); }
@@ -325,7 +325,7 @@ function page(s) {
       color: var(--color-silver-dim); text-decoration: none; transition: border-color .2s, color .2s; }
     .other-signs a:hover { border-color: var(--color-gold); color: var(--color-gold-pale); }
     .glance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-4); max-width: 760px; margin: 0 auto; }
-    .glance-cell { padding: var(--space-4); background: rgba(42,74,148,0.08); border: 1px solid rgba(91,127,199,0.2); border-radius: var(--radius-lg); }
+    .glance-cell { padding: var(--space-4); background: rgba(201,162,39,0.06); border: 1px solid rgba(201,162,39,0.18); border-radius: var(--radius-lg); }
     .glance-cell__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 6px; }
     .glance-cell__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: var(--text-base); line-height: 1.4; }
   </style>
@@ -512,13 +512,13 @@ function page(s) {
         '<div class="card" style="padding:var(--space-8);">' +
         '<p style="color:var(--color-silver);line-height:1.85;font-size:1.05rem;margin-bottom:var(--space-6);">' + d.overview + '</p>' +
         '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4);margin-bottom:var(--space-5);">' +
-        '<div style="padding:var(--space-4);background:rgba(42,74,148,0.08);border:1px solid rgba(91,127,199,0.2);border-radius:var(--radius-lg);">' +
-        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">♥ Love</p>' +
+        '<div style="padding:var(--space-4);background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.18);border-radius:var(--radius-lg);">' +
+        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Love</p>' +
         '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.love + '</p></div>' +
-        '<div style="padding:var(--space-4);background:rgba(42,74,148,0.08);border:1px solid rgba(91,127,199,0.2);border-radius:var(--radius-lg);">' +
+        '<div style="padding:var(--space-4);background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.18);border-radius:var(--radius-lg);">' +
         '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">⬡ Career</p>' +
         '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.career + '</p></div>' +
-        '<div style="padding:var(--space-4);background:rgba(42,74,148,0.08);border:1px solid rgba(91,127,199,0.2);border-radius:var(--radius-lg);">' +
+        '<div style="padding:var(--space-4);background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.18);border-radius:var(--radius-lg);">' +
         '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">✦ Wellness</p>' +
         '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.health + '</p></div>' +
         '</div>' +

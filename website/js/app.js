@@ -527,7 +527,7 @@ const AstroApp = (() => {
         <p style="line-height:1.8; margin-bottom:var(--space-4)">${data.overview}</p>
         <div class="grid-3 gap-4" style="margin-bottom:var(--space-4)">
           <div class="card" style="padding:var(--space-4)">
-            <div class="text-gold" style="font-size:1.2rem;margin-bottom:var(--space-2)">♥</div>
+            <div class="text-gold" style="font-size:1.2rem;margin-bottom:var(--space-2)"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></div>
             <strong class="text-white" style="display:block;font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-2)">Love</strong>
             <p style="font-size:var(--text-sm);color:var(--color-silver-dim)">${data.love}</p>
           </div>
@@ -964,7 +964,7 @@ window.AP_MON = Object.assign({
         name:         'Your Year Ahead — Transit Report',
         type:         'digital',
         collection:   'theReading',
-        // ⚠ NO generator backing yet — generate-reading.mjs is natal-only (no transit
+        // NOTE: NO generator backing yet — generate-reading.mjs is natal-only (no transit
         // module). Keep fulfilUrl '' until a transit report is built, or it can't be fulfilled.
         price:        32.00,
         personalized: true,
@@ -983,7 +983,7 @@ window.AP_MON = Object.assign({
         badge:        'Instant',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
         icon:         'map',
-        fulfilUrl:    '',   // ✅ generator-backed today: generate-reading.mjs outputs poster-<slug>.html
+        fulfilUrl:    '',   // OK: generator-backed today: generate-reading.mjs outputs poster-<slug>.html
       },
       {
         id:           'reading-poster-bundle',
@@ -995,7 +995,7 @@ window.AP_MON = Object.assign({
         badge:        'Best value',
         blurb:        'Your long-form Deep Natal Reading and your print-at-home natal poster, generated together from one chart. The words and the map of your sky — two PDFs, yours to keep, for less than buying both.',
         icon:         'book',
-        fulfilUrl:    '',   // ✅ generator-backed today: one run yields both reading + poster PDFs
+        fulfilUrl:    '',   // OK: generator-backed today: one run yields both reading + poster PDFs
       },
       {
         id:           'solar-return',
@@ -1003,7 +1003,7 @@ window.AP_MON = Object.assign({
         name:         'Solar Return — Your Birthday Year',
         type:         'digital',
         collection:   'theReading',
-        // ⚠ NO generator backing yet — needs a solar-return/transit module. Keep fulfilUrl '' until built.
+        // NOTE: NO generator backing yet — needs a solar-return/transit module. Keep fulfilUrl '' until built.
         price:        29.00,
         personalized: true,
         badge:        null,
@@ -1092,7 +1092,7 @@ window.AP_MON = Object.assign({
         const a = document.createElement('a');
         a.className = 'ap-support-link';
         a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
-        a.textContent = '♥ Support the free chart';
+        a.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support the free chart';
         a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
           + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#C9A227);text-decoration:none;';
         host.appendChild(document.createElement('br'));

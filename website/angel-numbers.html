@@ -327,7 +327,7 @@
           <p class="sync-clock__status" id="sync-clock-status" aria-live="polite">Watching for mirror &amp; repeating times…</p>
           <div class="sync-clock__meta">
             <span class="sync-chip" id="sync-chip-hour">
-              <span class="sync-chip__glyph" id="sync-ph-glyph" aria-hidden="true">⏱</span>
+              <span class="sync-chip__glyph" id="sync-ph-glyph" aria-hidden="true">◷</span>
               Planetary hour: <strong id="sync-ph-name">—</strong>
             </span>
             <span class="sync-chip" id="sync-chip-root">
@@ -533,7 +533,7 @@
 
       // Planetary hour + time numerology chips (always shown)
       if (phName) phName.textContent = m.planetaryHour.ruler + (m.planetaryHour.glyph ? ' ' + m.planetaryHour.glyph : '');
-      if (phGlyph) phGlyph.textContent = m.planetaryHour.glyph || '⏱';
+      if (phGlyph) phGlyph.textContent = m.planetaryHour.glyph || '◷';
       if (rootEl) rootEl.textContent = m.timeRoot + ' — ' + m.timeRootMeaning;
 
       if (m.isMoment) {

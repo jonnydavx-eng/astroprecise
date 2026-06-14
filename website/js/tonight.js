@@ -186,16 +186,16 @@
 
   function phaseGlyph(name) {
     var G = {
-      'New Moon': '🌑',
-      'Waxing Crescent': '🌒',
-      'First Quarter': '🌓',
-      'Waxing Gibbous': '🌔',
-      'Full Moon': '🌕',
-      'Waning Gibbous': '🌖',
-      'Last Quarter': '🌗',
-      'Waning Crescent': '🌘',
+      'New Moon': '<svg class="eng-i"><use href="#ei-moon0"/></svg>',
+      'Waxing Crescent': '<svg class="eng-i"><use href="#ei-moon1"/></svg>',
+      'First Quarter': '<svg class="eng-i"><use href="#ei-moon2"/></svg>',
+      'Waxing Gibbous': '<svg class="eng-i"><use href="#ei-moon3"/></svg>',
+      'Full Moon': '<svg class="eng-i"><use href="#ei-moon4"/></svg>',
+      'Waning Gibbous': '<svg class="eng-i"><use href="#ei-moon5"/></svg>',
+      'Last Quarter': '<svg class="eng-i"><use href="#ei-moon6"/></svg>',
+      'Waning Crescent': '<svg class="eng-i"><use href="#ei-moon7"/></svg>',
     };
-    return G[name] || '🌑';
+    return G[name] || '<svg class="eng-i"><use href="#ei-moon0"/></svg>';
   }
 
   // -------------------------------------------------------------------------

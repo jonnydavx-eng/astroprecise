@@ -1043,7 +1043,7 @@
                 </div>
               </div>
               <div class="sign-reading-panel__actions">
-                <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">⬇ Download Card</button>
+                <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">↓ Download Card</button>
                 <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
                 <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
               </div>
@@ -1063,7 +1063,7 @@
             </div>
             <div class="sign-reading-panel__grid">
               <div class="reading-card">
-                <span class="reading-card__icon">♥</span>
+                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
                 <span class="reading-card__label">Love &amp; Relationships</span>
                 <p class="reading-card__text" id="srp-love"></p>
               </div>
@@ -1141,7 +1141,7 @@
             <span id="void-moon-sign" style="color:var(--silver-dim);"></span>
           </div>
           <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(201, 162, 39,0.08);border:1px solid rgba(201, 162, 39,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
-            <span id="ph-glyph" style="font-size:1rem;">⏱</span>
+            <span id="ph-glyph" style="font-size:1rem;">◷</span>
             <span>Planetary Hour: </span><strong id="ph-name" style="color:var(--gold-light);">loading…</strong>
           </div>
           <div id="retrogrades-badge" style="display:flex;align-items:center;gap:6px;background:rgba(92, 74, 110,0.08);border:1px solid rgba(92, 74, 110,0.2);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--violet-bright);">
@@ -1152,7 +1152,7 @@
         <div id="todays-sky" class="planet-grid" role="region" aria-live="polite" aria-label="Today's planetary positions">
           <!-- JS populates -->
           <div class="planet-weather-card">
-            <span class="planet-weather-card__symbol" aria-hidden="true">☀</span>
+            <span class="planet-weather-card__symbol" aria-hidden="true">☉</span>
             <span class="planet-weather-card__name">Sun</span>
             <span class="planet-weather-card__position">Gemini 21°</span>
             <span class="planet-weather-card__desc">Curiosity and communication are highlighted. Express your ideas and stay open to new perspectives.</span>
@@ -1896,7 +1896,7 @@
           a.href = cv.toDataURL('image/png');
           a.click();
           cardBtn.textContent = '✓ Saved';
-          setTimeout(function() { cardBtn.textContent = '⬇ Download Card'; }, 2000);
+          setTimeout(function() { cardBtn.textContent = '↓ Download Card'; }, 2000);
         });
       }
 
@@ -2030,7 +2030,7 @@
             var phGlyph = document.getElementById('ph-glyph');
             var PH_GLYPHS = {Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄'};
             if (phName) phName.textContent = ph.planet;
-            if (phGlyph) phGlyph.textContent = PH_GLYPHS[ph.planet] || '⏱';
+            if (phGlyph) phGlyph.textContent = PH_GLYPHS[ph.planet] || '◷';
           }
         }
         tryStatus();
