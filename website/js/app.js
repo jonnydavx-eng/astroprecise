@@ -603,6 +603,7 @@ window.AstroApp = AstroApp;
     orb: '<circle cx="12" cy="10.5" r="6.3"/><path d="M8.5 19h7M9.8 16.5h4.4M8.8 8.2a3.6 3.6 0 0 1 3-1.8"/>',
     calendar: '<rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
     lock: '<rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/>',
+    mail: '<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7 12 13l8.5-6"/>',
     gear: '<circle cx="12" cy="12" r="3.1"/><path d="M12 4.2v2.1M12 17.7v2.1M4.2 12h2.1M17.7 12h2.1M6.5 6.5 8 8M16 16l1.5 1.5M17.5 6.5 16 8M8 16l-1.5 1.5"/>',
     infinity: '<path d="M6 12c0-2.1 1.5-3.4 2.9-3.4 2.7 0 4.5 6.8 7.2 6.8 1.4 0 2.9-1.3 2.9-3.4s-1.5-3.4-2.9-3.4c-2.7 0-4.5 6.8-7.2 6.8C7.5 15.4 6 14.1 6 12Z"/>',
     chat: '<path d="M4.5 6.5h15v9.5h-10l-5 4v-13.5Z" stroke-linejoin="round"/>',
@@ -1246,19 +1247,24 @@ if ('serviceWorker' in navigator) {
       { href: 'index.html',         icon: 'star4', label: 'Home' },
       { href: 'chart.html',         icon: 'spiral', label: 'Chart' },
       { href: 'horoscope.html',     icon: 'crescent', label: 'Daily' },
-      { href: 'lifepath.html',      icon: 'gem', label: 'Life Path' },
-      { href: 'compatibility.html', icon: 'heart', label: 'Match' },
+      { type: 'updates',            icon: 'mail', label: 'Updates' },
+      { href: 'profile.html',       icon: 'gem', label: 'Profile' },
     ];
     const nav = document.createElement('nav');
     nav.className = 'bottom-nav';
     nav.setAttribute('aria-label', 'Mobile navigation');
     const ei = (id) => '<svg class="eng-i" aria-hidden="true"><use href="#ei-' + id + '"/></svg>';
-    nav.innerHTML = '<div class="bottom-nav__inner">' + items.map(it =>
-      '<a href="' + it.href + '" class="bottom-nav__item' + (here === it.href ? ' is-active' : '') + '"' +
-      (here === it.href ? ' aria-current="page"' : '') + '>' +
-      '<span class="bottom-nav__icon" aria-hidden="true">' + ei(it.icon) + '</span>' +
-      '<span class="bottom-nav__label">' + it.label + '</span></a>'
-    ).join('') + '</div>';
+    nav.innerHTML = '<div class="bottom-nav__inner">' + items.map(it => {
+      if (it.type === 'updates') {
+        return '<button type="button" class="bottom-nav__item bottom-nav__item--updates" data-ap-open-email="bottom_nav" aria-label="Sign up for email updates">'
+          + '<span class="bottom-nav__icon" aria-hidden="true">' + ei(it.icon) + '</span>'
+          + '<span class="bottom-nav__label">' + it.label + '</span></button>';
+      }
+      return '<a href="' + it.href + '" class="bottom-nav__item' + (here === it.href ? ' is-active' : '') + '"'
+        + (here === it.href ? ' aria-current="page"' : '') + '>'
+        + '<span class="bottom-nav__icon" aria-hidden="true">' + ei(it.icon) + '</span>'
+        + '<span class="bottom-nav__label">' + it.label + '</span></a>';
+    }).join('') + '</div>';
     document.body.appendChild(nav);
   }
 
@@ -1374,17 +1380,28 @@ if ('serviceWorker' in navigator) {
 
   window.AP_COPY = window.AP_COPY || {
     privacyMicro: 'Only your email is sent — birth data never leaves your device. Unsubscribe anytime.',
-    confirmLive: 'You\u2019re on the list. Cosmic weather, new readings & features \u2014 updates land in your inbox soon.',
+    confirmLive: 'You\u2019re on the list. We\u2019ll email when wallpapers, readings or cosmic weather go live.',
     confirmDoubleOptIn: 'You\u2019re on the list \u2014 cosmic weather updates will land in your inbox. (Only your email was sent; birth data stayed on your device.)',
     dormantSaved: 'Sign-up isn\u2019t live yet, so nothing left your browser. The moment it opens, you\u2019ll be first.',
     eyebrow: 'More coming soon',
-    bannerTitle: 'Sign up for updates \u2014 be first when we ship',
-    bannerSub: 'Chart wallpapers, daily cosmic weather, deep readings & new tools. One honest email at a time \u2014 no spam.',
+    bannerTitle: 'Sign up \u2014 be first when we ship',
+    bannerSub: 'One email list for everything launching next. No spam, no birth data uploaded \u2014 just your address.',
     heroTitle: 'Get updates before anyone else',
-    heroSub: 'New features & cosmic weather are on the way. Leave your email \u2014 we\u2019ll only write when there\u2019s something worth reading.',
+    heroSub: 'Wallpapers, written readings, cosmic weather & shop drops \u2014 we\u2019ll only write when something real ships.',
     stickyTitle: 'Updates coming soon \u2014 join the list',
+    navTeaser: 'Wallpapers \u00b7 deep readings \u00b7 cosmic weather \u00b7 shop drops',
+    modalTitle: 'What\u2019s landing in your inbox',
+    modalSub: 'Join once. We\u2019ll email you when each of these goes live \u2014 early access before the public site.',
     btnLabel: '\u2726 Get updates',
-    btnShort: 'Join list'
+    btnShort: 'Join list',
+    comingPerks: [
+      'Chart wallpaper \u2014 your exact birth sky as a phone & desktop background',
+      'Personal cosmic weather \u2014 transits to your chart, in plain English',
+      'Deep reading previews \u2014 written natal reports before the shop opens',
+      'Daily & monthly horoscopes \u2014 same real-sky engine as the site, in your inbox',
+      'Shop early access \u2014 wear-your-sky prints, posters & gift readings first',
+      'New tools first \u2014 retrograde alerts, synastry unlocks & more as we build them'
+    ]
   };
 
   var isUrl = function (u) { return typeof u === 'string' && /^https?:\/\//i.test((u || '').trim()); };
@@ -1447,23 +1464,40 @@ if ('serviceWorker' in navigator) {
   function pageSlug() { return (location.pathname.split('/').pop() || 'index.html').toLowerCase(); }
   function isSignPage() { var p = pageSlug().replace('.html',''); return SIGNS.indexOf(p) >= 0; }
 
+  function perksHtml(compact) {
+    var perks = (window.AP_COPY || {}).comingPerks || [];
+    if (!perks.length) return '';
+    var cls = 'ap-email-cta__perks' + (compact ? ' ap-email-cta__perks--compact' : '');
+    return '<ul class="' + cls + '">' + perks.map(function (p) {
+      return '<li>' + p + '</li>';
+    }).join('') + '</ul>';
+  }
+
   function pageEmailCopy() {
     var c = window.AP_COPY, p = pageSlug();
     if (p === 'horoscope.html') {
-      return { eyebrow: 'Free in your inbox', title: 'Daily horoscopes + what\u2019s coming next', sub: 'Same readings as this page, plus early access when deep readings & wallpapers launch.', source: 'banner_horoscope', tag: 'tag_horoscope_banner' };
+      return { eyebrow: 'Free in your inbox', title: 'Daily horoscopes + what\u2019s coming next', sub: 'Your sign\u2019s daily & monthly reading, plus first access to wallpapers, deep readings & the shop.', source: 'banner_horoscope', tag: 'tag_horoscope_banner', showPerks: true };
     }
     if (isSignPage()) {
       var sign = p.replace('.html','');
       sign = sign.charAt(0).toUpperCase() + sign.slice(1);
-      return { eyebrow: c.eyebrow, title: sign + ' updates in your inbox', sub: 'Daily reading for ' + sign + ', plus cosmic weather & new features as we ship them.', source: 'banner_sign', tag: 'tag_sign_' + sign.toLowerCase() };
+      return { eyebrow: c.eyebrow, title: sign + ' updates in your inbox', sub: 'Daily ' + sign + ' reading, cosmic weather for your chart, wallpapers & deep readings as they launch.', source: 'banner_sign', tag: 'tag_sign_' + sign.toLowerCase(), showPerks: true };
     }
     if (p === 'index.html' || p === '') {
-      return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_home', tag: 'tag_banner_home' };
+      return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_home', tag: 'tag_banner_home', showPerks: true };
     }
     if (p === 'shop.html') {
-      return { eyebrow: 'Shop opening soon', title: 'Be first when the doors open', sub: 'Wear-your-sky prints, readings & gifts are coming. One email when we launch \u2014 no checkout spam.', source: 'banner_shop', tag: 'tag_shop_waitlist' };
+      return { eyebrow: 'Shop opening soon', title: 'Be first when the doors open', sub: 'Wear-your-sky tees, natal posters, gift readings & bundles \u2014 one email at launch, never checkout spam.', source: 'banner_shop', tag: 'tag_shop_waitlist', showPerks: true };
     }
-    return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_tool', tag: 'tag_banner_tool' };
+    return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_tool', tag: 'tag_banner_tool', showPerks: true };
+  }
+
+  function openEmailSignup(source) {
+    if (!document.getElementById('ap-email-modal')) injectEmailModal();
+    var modal = document.getElementById('ap-email-modal');
+    if (modal) modal.dataset.source = source || 'modal';
+    if (window.AstroApp && typeof AstroApp.openModal === 'function') AstroApp.openModal('ap-email-modal');
+    else if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
   }
 
   function confirmHtml(res) {
@@ -1523,6 +1557,7 @@ if ('serviceWorker' in navigator) {
     if (variant !== 'sticky') inner += '<p class="ap-email-cta__eyebrow">' + (copy.eyebrow || c.eyebrow) + '</p>';
     inner += '<p class="ap-email-cta__title">' + (copy.title || c.bannerTitle) + '</p>';
     if (variant !== 'sticky') inner += '<p class="ap-email-cta__sub">' + (copy.sub || c.bannerSub) + '</p>';
+    if ((variant === 'banner' || variant === 'hero') && copy.showPerks) inner += perksHtml(variant === 'hero');
     inner += '</div>';
     inner += '<form class="ap-email-cta__form' + (variant === 'sticky' ? ' ap-email-cta__form--sticky' : '') + '" novalidate>'
       + '<div class="ap-email-cta__fields">'
@@ -1553,31 +1588,77 @@ if ('serviceWorker' in navigator) {
     if (target) {
       if (target.id === 'email-capture') target.hidden = false;
       target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
     }
+    openEmailSignup('scroll_fallback');
+  }
+
+  function injectEmailModal() {
+    if (document.getElementById('ap-email-modal')) return;
+    var c = window.AP_COPY;
+    var wrap = document.createElement('div');
+    wrap.id = 'ap-email-modal';
+    wrap.className = 'modal-backdrop ap-email-modal-backdrop';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-labelledby', 'ap-email-modal-title');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.innerHTML =
+      '<div class="modal ap-email-modal">'
+      + '<div class="modal__header">'
+      + '<h2 class="modal__title" id="ap-email-modal-title">' + c.modalTitle + '</h2>'
+      + '<button type="button" class="modal__close" data-modal-close aria-label="Close">\u00d7</button>'
+      + '</div>'
+      + '<div class="modal__body">'
+      + '<p class="ap-email-modal__sub">' + c.modalSub + '</p>'
+      + perksHtml(false)
+      + '<form class="ap-email-cta__form ap-email-modal__form" id="ap-email-modal-form" novalidate>'
+      + '<div class="ap-email-cta__fields">'
+      + '<input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address">'
+      + '<button type="submit" class="ap-email-cta__btn">' + c.btnLabel + '</button>'
+      + '</div>'
+      + '<p class="ap-email-cta__msg" role="status" aria-live="polite"></p>'
+      + '<p class="ap-email-cta__hint">' + c.privacyMicro + '</p>'
+      + '</form></div></div>';
+    document.body.appendChild(wrap);
+    wireEmailForm(wrap.querySelector('form'), { source: 'email_modal', tag: 'tag_email_modal' });
+    wrap.querySelector('form').addEventListener('submit', function () {
+      setTimeout(function () {
+        if (window.AstroApp && typeof AstroApp.closeModal === 'function') AstroApp.closeModal('ap-email-modal');
+      }, 2400);
+    }, true);
   }
 
   function injectNavCTA() {
-    if (document.querySelector('.ap-nav-updates')) return;
+    if (document.querySelector('.ap-nav-email-cluster')) return;
     var inner = document.querySelector('.navbar__inner');
-    var toggle = document.querySelector('.navbar__toggle');
+    var logo = inner && inner.querySelector('.navbar__logo');
     var mobile = document.querySelector('.navbar__mobile-menu');
-    if (inner) {
-      var a = document.createElement('a');
-      a.href = '#ap-email-banner';
-      a.className = 'ap-nav-updates';
-      a.textContent = 'Updates';
-      a.addEventListener('click', scrollToEmailCTA);
-      if (toggle) inner.insertBefore(a, toggle);
-      else inner.appendChild(a);
+    var c = window.AP_COPY;
+    if (inner && logo) {
+      var cluster = document.createElement('div');
+      cluster.className = 'ap-nav-email-cluster';
+      cluster.innerHTML =
+        '<div class="ap-nav-email-cluster__copy">'
+        + '<span class="ap-nav-email-cluster__eyebrow">' + c.eyebrow + '</span>'
+        + '<span class="ap-nav-email-cluster__teaser">' + c.navTeaser + '</span>'
+        + '</div>'
+        + '<button type="button" class="ap-nav-updates" data-ap-open-email="nav_left">' + c.btnLabel + '</button>';
+      logo.insertAdjacentElement('afterend', cluster);
     }
     if (mobile && !mobile.querySelector('.ap-nav-updates-mobile')) {
-      var m = document.createElement('a');
-      m.href = '#ap-email-banner';
+      var m = document.createElement('button');
+      m.type = 'button';
       m.className = 'navbar__link ap-nav-updates-mobile';
       m.textContent = '\u2726 Get updates';
-      m.addEventListener('click', scrollToEmailCTA);
+      m.setAttribute('data-ap-open-email', 'mobile_menu');
       mobile.insertBefore(m, mobile.firstChild);
     }
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-ap-open-email]');
+      if (!t) return;
+      e.preventDefault();
+      openEmailSignup(t.getAttribute('data-ap-open-email') || 'nav');
+    });
   }
 
   function injectBannerCTA() {
@@ -1604,6 +1685,7 @@ if ('serviceWorker' in navigator) {
 
   function injectStickyCTA() {
     if (document.querySelector('.ap-email-cta--sticky')) return;
+    if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return;
     try {
       var dismissed = parseInt(localStorage.getItem('ap_email_sticky_dismiss') || '0', 10);
       if (dismissed && (Date.now() - dismissed) < 7 * 86400000) return;
@@ -1679,6 +1761,7 @@ if ('serviceWorker' in navigator) {
   }
 
   function boot() {
+    injectEmailModal();
     injectNavCTA();
     injectHeroCTA();
     injectBannerCTA();

@@ -4749,22 +4749,59 @@ body > .cosmos-solar-system { display: none !important; }
 
 .ap-email-cta__close:hover { color: var(--white, #fff); background: rgba(255, 255, 255, 0.1); }
 
+.ap-nav-email-cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: var(--space-2);
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: min(520px, 42vw);
+}
+
+.ap-nav-email-cluster__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  text-align: left;
+}
+
+.ap-nav-email-cluster__eyebrow {
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold, #C9A227);
+  font-weight: 700;
+}
+
+.ap-nav-email-cluster__teaser {
+  font-size: 0.68rem;
+  color: var(--silver-dim, #8891AA);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ap-nav-updates {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  margin-right: var(--space-3);
+  flex-shrink: 0;
   border-radius: 999px;
   border: 1px solid rgba(201, 162, 39, 0.45);
   background: rgba(201, 162, 39, 0.12);
-  color: var(--gold, #C9A227) !important;
-  font-size: 0.72rem;
+  color: var(--gold, #C9A227);
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  text-decoration: none !important;
+  text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
   transition: background 0.2s, box-shadow 0.2s;
 }
 
@@ -4773,16 +4810,87 @@ body > .cosmos-solar-system { display: none !important; }
   box-shadow: 0 0 16px rgba(201, 162, 39, 0.15);
 }
 
+.ap-nav-updates-mobile {
+  width: 100%;
+  text-align: left;
+  background: rgba(201, 162, 39, 0.08);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ap-email-cta__perks {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.ap-email-cta__perks li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.8rem;
+  color: var(--silver, #C8D0E8);
+  line-height: 1.5;
+}
+
+.ap-email-cta__perks li::before {
+  content: '\2726';
+  position: absolute;
+  left: 0;
+  color: var(--gold, #C9A227);
+  font-size: 0.62rem;
+  top: 0.2em;
+}
+
+.ap-email-cta__perks--compact {
+  margin-top: var(--space-3);
+  gap: 6px;
+}
+
+.ap-email-cta__perks--compact li {
+  font-size: 0.72rem;
+}
+
+.ap-email-modal {
+  max-width: 520px;
+}
+
+.ap-email-modal__sub {
+  font-size: 0.88rem;
+  color: var(--silver, #C8D0E8);
+  line-height: 1.65;
+  margin: 0 0 var(--space-4);
+}
+
+.ap-email-modal .ap-email-cta__perks {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  background: rgba(201, 162, 39, 0.06);
+  border: 1px solid rgba(201, 162, 39, 0.14);
+  border-radius: 12px;
+}
+
 .ap-footer-signup--compact {
   max-width: 520px;
   margin: var(--space-6) auto var(--space-4);
   text-align: center;
 }
 
+@media (max-width: 1100px) {
+  .ap-nav-email-cluster__teaser { display: none; }
+  .ap-nav-email-cluster { max-width: none; }
+}
+
+@media (max-width: 900px) {
+  .ap-nav-email-cluster__copy { display: none; }
+}
+
 @media (max-width: 768px) {
   .ap-email-cta--sticky .ap-email-cta__fields { flex-direction: column; }
   .ap-email-cta--sticky .ap-email-cta__btn { width: 100%; }
-  .ap-nav-updates { display: none; }
+  .ap-nav-email-cluster { display: none; }
 }
 
 body.has-email-sticky { padding-bottom: 72px; }
@@ -6350,6 +6458,19 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 .bottom-nav__item.is-active .bottom-nav__icon {
   filter: drop-shadow(0 0 6px rgba(201,162,39,0.6));
+}
+.bottom-nav__item--updates {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--gold, #C9A227);
+}
+.bottom-nav__item--updates .bottom-nav__icon {
+  filter: drop-shadow(0 0 5px rgba(201,162,39,0.45));
+}
+.bottom-nav__item--updates .bottom-nav__label {
+  color: var(--gold-pale, #EFE3C0);
 }
 @media (max-width: 768px) {
   .bottom-nav { display: block; }
