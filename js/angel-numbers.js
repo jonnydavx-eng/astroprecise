@@ -124,7 +124,7 @@
           var ruler = r.ruler || r.planet;
           return {
             ruler: ruler,
-            glyph: r.glyph || PLANET_GLYPH[ruler] || '⏱',
+            glyph: r.glyph || PLANET_GLYPH[ruler] || '◷',
             meaning: r.meaning || HOUR_MEANINGS[ruler] || '',
             endsAt: r.endsAt || null
           };

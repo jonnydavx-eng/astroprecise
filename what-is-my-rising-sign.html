@@ -503,7 +503,7 @@
 
     function fail(msg) {
       resultBox.classList.add('is-shown', 'rs-result--error');
-      resGlyph.textContent = '⚠';
+      resGlyph.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-warn"/></svg>';
       resSign.textContent = 'Need a little more';
       resDeg.textContent = '';
       resNote.textContent = msg;

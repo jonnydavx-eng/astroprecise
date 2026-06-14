@@ -513,7 +513,7 @@ window.Orrery3D = (() => {
   function hitTestBodies(lx, ly) {
     // Build projected positions for all bodies
     const sunPr = project({ x: 0, y: 0, z: 0 });
-    const sun = { id: 'sun', name: 'Sun', glyph: '☀', size: 13 * sunPr.f,
+    const sun = { id: 'sun', name: 'Sun', glyph: '☉', size: 13 * sunPr.f,
                   color: '#f0c040', sign: '', pr: sunPr,
                   interpretation: 'The Sun represents the core self — vital force, identity, and the conscious will driving one forward through life.' };
 
@@ -679,7 +679,7 @@ window.Orrery3D = (() => {
     if (s > 0) ui._lastSpeed = s;
     speed = s;
     if (s === 0) trails.clear();
-    if (ui.play) ui.play.textContent = s === 0 ? '▶' : '⏸';
+    if (ui.play) ui.play.textContent = s === 0 ? '▶' : '‖';
     if (ui.speedBtns) ui.speedBtns.forEach(b => b.classList.toggle('active', +b.dataset.speed === s && s !== 0));
   }
 
