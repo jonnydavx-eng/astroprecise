@@ -1721,8 +1721,12 @@ if ('serviceWorker' in navigator) {
         + '<span class="ap-nav-email-cluster__eyebrow">' + c.eyebrow + '</span>'
         + '<span class="ap-nav-email-cluster__teaser">' + c.navTeaser + '</span>'
         + '</div>'
-        + '<button type="button" class="ap-nav-updates" data-ap-open-email="nav_left">' + c.btnLabel + '</button>';
-      logo.insertAdjacentElement('afterend', cluster);
+        + '<button type="button" class="ap-nav-updates" data-ap-open-email="nav_left">' + c.btnShort + '</button>';
+      var nav = inner.querySelector('.navbar__nav');
+      var anchor = inner.querySelector('.navbar__profile-top') || inner.querySelector('.navbar__toggle');
+      if (nav) nav.insertAdjacentElement('afterend', cluster);
+      else if (anchor) inner.insertBefore(cluster, anchor);
+      else logo.insertAdjacentElement('afterend', cluster);
     }
     if (mobile && !mobile.querySelector('.ap-nav-updates-mobile')) {
       var m = document.createElement('button');

@@ -10,7 +10,7 @@ Rules: edit only here · read the newest entries below before working · append 
 
 ## Session digest — Grok 2026-06-14 (ap-v115 → ap-v119, all PUSHED)
 
-**Current SW cache:** `ap-v137` (`website/sw.js` — hard-refresh or unregister SW after deploy).
+**Current SW cache:** `ap-v138` (`website/sw.js` — hard-refresh or unregister SW after deploy).
 
 ### 1. Pricing ladder (`website/js/app.js` → `AP_MON`) — ap-v115 then ap-v116
 
@@ -199,3 +199,4 @@ Docs aligned at ap-v116: `GTM-LADDER.md`, `GROWTH.md`, `LINK-IN-BIO.md`, `INSTAN
 | 2026-06-14 (PM #11) | Grok | **Email dismiss fix (ap-v135).** Root bug: `.modal-backdrop` was always `display:flex` — close removed `.open` but modal stayed blocking. Now hidden until `.open`. Intro gate: `position:fixed` z-index 100000, orrery `pointer-events:none` while open, 44px × target, Escape/backdrop dismiss. `injectEmailModal` deferred until `ap-hero-enter`. | Hard-refresh ap-v135. Re-test intro gate × / skip + nav Updates modal close. |
 | 2026-06-14 (PM #12) | Grok | **Email-on-load fix (ap-v136).** Stale SW CSS could show email modal before intro. `.ap-email-modal-backdrop` forced hidden with `!important` + inline `display:none` on inject; close wired directly; `openEmailSignup` blocked during `preloader-active`; intro gate back to `position:absolute` inside preloader (can't beat intro layer). | Hard-refresh/unregister SW for ap-v136. Cold-open PWA: orrery first, email only after Enter → optional popup. |
 | 2026-06-14 (PM #13) | Grok | **Audit fixes (ap-v137).** PWA `start_url` → `index.html?app=1` (intro on app open). bfcache: gate restore completes intro or re-arms Enter. SW network-first for `app.js`/`main.css`. Intro Join validates email (toast if bad/empty). Sticky bar deferred until `ap-hero-enter`. Preloader dead CSS/refs cleaned; duplicate SW reg removed from index. | Re-install PWA or clear site data for new start_url. Hard-refresh ap-v137. |
+| 2026-06-14 (PM #14) | Grok | **Desktop nav spacing (ap-v138).** Updates cluster moved after nav links (not after logo); nav flex-grow + margins; compact "Join list" btn; copy hidden ≤1320px. Fixes Updates overlapping Home on laptop. | Hard-refresh ap-v138; check laptop nav bar. |
