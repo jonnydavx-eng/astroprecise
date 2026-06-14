@@ -4998,8 +4998,6 @@ body > .cosmos-solar-system { display: none !important; }
     font-size: 0.72rem;
     letter-spacing: 0.1em;
   }
-  .navbar__profile-top span { display: none; }
-  .navbar__profile-top { padding: 7px 10px; }
 }
 
 /* Tablet + mobile: hamburger nav, no desktop link row */
@@ -6558,37 +6556,33 @@ html, body { overflow-x: clip; max-width: 100%; }
   opacity: 0.7;
 }
 
-/* ── Top Profile tab (every page, injected by app.js) ─────── */
+/* ── Top Profile control (icon-only; injected by app.js) ─── */
 .navbar__profile-top {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: 999px;
-  border: 1px solid rgba(201, 162, 39, 0.45);
-  background: rgba(201, 162, 39, 0.14);
-  color: var(--gold-pale, #EFE3C0) !important;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 162, 39, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--silver, #C8D0E8) !important;
   text-decoration: none !important;
-  white-space: nowrap;
   flex-shrink: 0;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 .navbar__profile-top:hover,
 .navbar__profile-top.is-active {
-  background: rgba(201, 162, 39, 0.26);
-  box-shadow: 0 0 14px rgba(201, 162, 39, 0.18);
+  background: rgba(201, 162, 39, 0.12);
+  border-color: rgba(201, 162, 39, 0.42);
   color: var(--gold-pale, #EFE3C0) !important;
 }
 .navbar__profile-top__icon {
-  width: 14px;
-  height: 14px;
-  color: var(--gold, #C9A227);
+  width: 18px;
+  height: 18px;
+  color: currentColor;
 }
 
 /* ── Mobile bottom navigation (scroll + pinned Updates) ───── */
@@ -6706,8 +6700,6 @@ html, body { overflow-x: clip; max-width: 100%; }
   .offline-ready-pill {
     bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   }
-  .navbar__profile-top span { display: none; }
-  .navbar__profile-top { padding: 7px 10px; }
 }
 
 @media (max-width: 480px) {
