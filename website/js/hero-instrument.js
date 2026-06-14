@@ -1,0 +1,135 @@
+/**
+ * AstroPrecise — Homepage signature instrument layer.
+ * Meridian ring, scroll-time rail, chronicle HUD, staggered hero entrance.
+ * Depends on RafCore (optional) and Orrery3D on index.html only.
+ */
+(function () {
+  'use strict';
+
+  var hero = document.querySelector('.hero');
+  if (!hero) return;
+
+  var PRM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var meridian = document.getElementById('hero-meridian');
+  var railFill = document.getElementById('hero-scroll-rail-fill');
+  var railDot = document.getElementById('hero-scroll-rail-dot');
+  var chronicleDate = document.getElementById('hero-chronicle-date');
+  var chronicleOffset = document.getElementById('hero-chronicle-offset');
+  var scrollCue = document.getElementById('hero-scroll-cue');
+  var orreryDateEl = document.getElementById('orrery-date-display');
+  var scrolledOnce = false;
+
+  /* ── Staggered entrance after preloader (or instant on repeat visit) ── */
+  function enterHero() {
+    if (hero.classList.contains('hero--entered')) return;
+    hero.classList.add('hero--entered');
+    document.body.classList.add('page-home--ready');
+  }
+
+  window.addEventListener('ap-hero-enter', enterHero, { once: true });
+
+  /* Repeat visit: preloader removed before this script — enter immediately */
+  if (!document.getElementById('preloader')) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(enterHero); });
+    } else {
+      requestAnimationFrame(enterHero);
+    }
+  }
+
+  /* ── Scroll-time rail + meridian rotation + chronicle mirror ── */
+  function formatOffsetDays(days) {
+    var n = Math.round(days);
+    if (Math.abs(n) < 1) return 'Now';
+    return n > 0 ? '+' + n + ' days' : n + ' days';
+  }
+
+  function parseOffsetFromDateTag(text) {
+    if (!text) return 0;
+    var m = text.match(/·\s*([+-]?\d+)d/);
+    if (m) return parseInt(m[1], 10);
+    if (text.indexOf('· now') !== -1) return 0;
+    return null;
+  }
+
+  function updateInstrument(state) {
+    var progress = state && typeof state.progress === 'number'
+      ? Math.max(0, Math.min(1, state.progress))
+      : (function () {
+          var rect = hero.getBoundingClientRect();
+          return Math.max(0, Math.min(1, -rect.top / (hero.offsetHeight || 1)));
+        })();
+
+    if (railFill) railFill.style.transform = 'scaleY(' + progress + ')';
+    if (railDot) railDot.style.top = (progress * 100) + '%';
+
+    if (meridian && !PRM) {
+      var deg = progress * 48 - 6;
+      meridian.style.transform = 'rotate(' + deg + 'deg)';
+    }
+
+    if (chronicleOffset) {
+      var days = Math.round(progress * 120);
+      chronicleOffset.textContent = formatOffsetDays(days);
+      chronicleOffset.setAttribute('aria-label', 'Sky offset: ' + formatOffsetDays(days));
+    }
+
+    if (orreryDateEl && chronicleDate) {
+      var raw = orreryDateEl.textContent || '';
+      var main = raw.replace(/\s*·\s*(now|[+-]?\d+d)\s*$/i, '').trim();
+      if (main) chronicleDate.textContent = main;
+      var parsed = parseOffsetFromDateTag(raw);
+      if (parsed !== null && chronicleOffset) {
+        chronicleOffset.textContent = formatOffsetDays(parsed);
+      }
+    }
+
+    if (scrollCue && progress > 0.04) {
+      scrollCue.classList.add('hero__scroll-cue--hidden');
+      scrolledOnce = true;
+    }
+  }
+
+  function onScroll(state) { updateInstrument(state); }
+
+  if (window.RafCore) {
+    window.RafCore.onScroll(onScroll);
+  } else {
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        requestAnimationFrame(function () { onScroll(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+  updateInstrument();
+
+  /* Chronicle ticks with orrery date HUD even when not scrolling */
+  if (chronicleDate && orreryDateEl && window.MutationObserver) {
+    var mo = new MutationObserver(function () { updateInstrument(); });
+    mo.observe(orreryDateEl, { childList: true, characterData: true, subtree: true });
+  }
+
+  /* ── Scroll cue dismiss on wheel / touch ── */
+  function dismissCue() {
+    if (scrollCue && !scrolledOnce) scrollCue.classList.add('hero__scroll-cue--hidden');
+  }
+  window.addEventListener('wheel', dismissCue, { passive: true, once: true });
+  window.addEventListener('touchmove', dismissCue, { passive: true, once: true });
+
+  /* ── Sky pill → orrery planet focus (dispatch existing click event) ── */
+  document.addEventListener('click', function (e) {
+    var pill = e.target.closest && e.target.closest('.sky-pill');
+    if (!pill || !window.Orrery3D) return;
+    var nameEl = pill.querySelector('.sky-pill__name');
+    if (!nameEl) return;
+    var name = nameEl.textContent.replace(/\s*℞\s*/g, '').trim().toLowerCase();
+    document.dispatchEvent(new CustomEvent('orrery-planet-click', {
+      detail: { name: name.charAt(0).toUpperCase() + name.slice(1), id: name }
+    }));
+    pill.classList.add('sky-pill--focus');
+    setTimeout(function () { pill.classList.remove('sky-pill--focus'); }, 1400);
+  });
+
+})();
