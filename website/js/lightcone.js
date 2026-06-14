@@ -88,14 +88,26 @@ window.LightCone = (() => {
   }
 
   function resize() {
-    dpr = window.devicePixelRatio || 1;
     const rect = canvas.parentElement.getBoundingClientRect();
-    const size = Math.min(rect.width, 560);
+    const tier = (window.RafCore && window.RafCore.tier) || 'high';
+    const maxSize = tier === 'high' ? 700 : tier === 'mid' ? 600 : 560;
+    const size = Math.min(rect.width, maxSize);
+    if (window.RafCore && window.RafCore.setupCanvas2D) {
+      const setup = window.RafCore.setupCanvas2D(canvas, size, size, 2.5);
+      dpr = setup.dpr;
+      ctx = setup.ctx;
+    } else {
+      dpr = window.devicePixelRatio || 1;
+      canvas.width = size * dpr; canvas.height = size * dpr;
+      canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
+      if (ctx) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.imageSmoothingEnabled = true;
+        if (ctx.imageSmoothingQuality) ctx.imageSmoothingQuality = 'high';
+      }
+    }
     W = size; H = size;
-    canvas.width = size * dpr; canvas.height = size * dpr;
-    canvas.style.width = size + 'px'; canvas.style.height = size + 'px';
     cx = cy = size / 2;
-    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   function loop() {

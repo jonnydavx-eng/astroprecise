@@ -74,7 +74,7 @@ window.CosmosEngine = (() => {
   // ── DPR-aware canvas setup ─────────────────────────────────────────────────
 
   function setupCanvas() {
-    dpr = capDPR(2);
+    dpr = capDPR(2.5);
     const cssW = window.innerWidth;
     const cssH = window.innerHeight;
 
@@ -116,20 +116,24 @@ window.CosmosEngine = (() => {
 
   // Per-color halo sprites for bright stars — drawn with globalAlpha each frame
   // instead of allocating a fresh radial gradient per bright star per frame.
-  const HALO_PX = 64;
+  function haloPx() {
+    const t = (window.RafCore && window.RafCore.tier) || 'high';
+    return t === 'high' ? 128 : t === 'mid' ? 96 : 64;
+  }
   let haloSprites = {};
   function buildHaloSprites() {
+    const px = haloPx();
     haloSprites = {};
     for (const c of ['white', 'gold', 'amethyst', 'crimson']) {
       const off  = document.createElement('canvas');
-      off.width  = HALO_PX;
-      off.height = HALO_PX;
+      off.width  = px;
+      off.height = px;
       const o = off.getContext('2d');
-      const g = o.createRadialGradient(HALO_PX / 2, HALO_PX / 2, 0, HALO_PX / 2, HALO_PX / 2, HALO_PX / 2);
+      const g = o.createRadialGradient(px / 2, px / 2, 0, px / 2, px / 2, px / 2);
       g.addColorStop(0, colorString(c, 1));
       g.addColorStop(1, colorString(c, 0));
       o.fillStyle = g;
-      o.fillRect(0, 0, HALO_PX, HALO_PX);
+      o.fillRect(0, 0, px, px);
       haloSprites[c] = off;
     }
   }

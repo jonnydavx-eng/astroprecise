@@ -94,6 +94,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
 
   function orreryDPR() {
+    if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(2.5);
     const real = window.devicePixelRatio || 1;
     if (perfTier === 'low') return Math.min(real, 1.25);
     if (perfTier === 'mid') return Math.min(real, 2);
@@ -421,7 +422,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
 
   function makeEarthNightTexture() {
-    const s = perfTier === 'high' ? 1024 : 768, c = document.createElement('canvas'); c.width = c.height = s;
+    const s = perfTier === 'low' ? 768 : 1024, c = document.createElement('canvas'); c.width = c.height = s;
     const x = c.getContext('2d');
     x.fillStyle = '#000'; x.fillRect(0, 0, s, s);
     const land = [[0.22, 0.38, 0.18, 0.32], [0.48, 0.52, 0.22, 0.42], [0.62, 0.78, 0.28, 0.55],
@@ -1138,6 +1139,30 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       scrollBias = 0;
       scrollDriveLocked = false;
       needRecompute = true;
+    },
+    captureFrame(opts) {
+      if (!renderer || !canvas) return null;
+      opts = opts || {};
+      const mult = opts.scale || 2;
+      const cssW = canvas.clientWidth || 560;
+      const cssH = canvas.clientHeight || cssW;
+      const exportDpr = Math.min(orreryDPR() * mult, 3);
+      try {
+        renderer.setPixelRatio(exportDpr);
+        renderer.setSize(cssW, cssH, false);
+        if (composer) composer.setSize(cssW, cssH);
+        applyCamera();
+        if (composer) composer.render();
+        else renderer.render(scene, camera);
+        const off = document.createElement('canvas');
+        off.width = Math.round(cssW * exportDpr);
+        off.height = Math.round(cssH * exportDpr);
+        const octx = off.getContext('2d');
+        octx.drawImage(canvas, 0, 0, off.width, off.height);
+        return off;
+      } finally {
+        resize();
+      }
     },
     isWebGL: true,
   };

@@ -123,7 +123,7 @@
   // ── Ecliptic ring ─────────────────────────────────────────────────────────
 
   function drawRing() {
-    const STEPS = 180;
+    const STEPS = ringSteps();
 
     // Outer dashed gold ring
     ctx.beginPath();
@@ -465,18 +465,31 @@
 
   // ── Resize ────────────────────────────────────────────────────────────────
 
+  function ringSteps() {
+    const t = (window.RafCore && window.RafCore.tier) || 'high';
+    return t === 'high' ? 360 : t === 'mid' ? 240 : 180;
+  }
+
   function resize() {
-    dpr = window.devicePixelRatio || 1;
     const wrap = cvs.parentElement;
     const cssW = wrap.clientWidth;
-    const cssH = Math.min(Math.round(cssW * 0.65), Math.round(window.innerHeight * 0.52), 460);
+    const maxH = (window.RafCore && window.RafCore.tier === 'high') ? 520 : 460;
+    const cssH = Math.min(Math.round(cssW * 0.65), Math.round(window.innerHeight * 0.52), maxH);
 
-    cvs.style.width  = cssW + 'px';
-    cvs.style.height = cssH + 'px';
-    cvs.width        = Math.round(cssW * dpr);
-    cvs.height       = Math.round(cssH * dpr);
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (window.RafCore && window.RafCore.setupCanvas2D) {
+      const setup = window.RafCore.setupCanvas2D(cvs, cssW, cssH, 2.5);
+      dpr = setup.dpr;
+      ctx = setup.ctx;
+    } else {
+      dpr = window.devicePixelRatio || 1;
+      cvs.style.width = cssW + 'px';
+      cvs.style.height = cssH + 'px';
+      cvs.width = Math.round(cssW * dpr);
+      cvs.height = Math.round(cssH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = true;
+      if (ctx.imageSmoothingQuality) ctx.imageSmoothingQuality = 'high';
+    }
 
     W = cssW; H = cssH;
     cx = W / 2; cy = H / 2 + 10;

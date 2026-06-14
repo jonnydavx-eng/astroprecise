@@ -1171,8 +1171,14 @@
   function drawLPCard(lp, name, birthLabel) {
     const canvas = document.getElementById('lp-card-canvas');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W = 1080, H = 1080;
+    const BASE = 1080;
+    const exportW = (window.RafCore && window.RafCore.cardExportSize) ? window.RafCore.cardExportSize() : BASE * 2;
+    canvas.width = exportW; canvas.height = exportW;
+    const ctx = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(canvas, exportW, exportW)
+      : canvas.getContext('2d');
+    ctx.scale(exportW / BASE, exportW / BASE);
+    const W = BASE, H = BASE;
     const data = LP[lp];
     if (!data || !ctx) return;
 

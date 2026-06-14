@@ -31,11 +31,50 @@ window.RafCore = (() => {
   else if (coarse)            tier = 'mid';
   else                        tier = 'high';
 
-  function capDPR(base = 2) {
+  /** Orrery-aligned HD DPR — canonical budget for all canvas/WebGL renderers. */
+  function hdDPR(base = 2.5) {
     const real = window.devicePixelRatio || 1;
-    if (tier === 'low') return 1;
-    if (tier === 'mid') return Math.min(real, 1.5);
+    if (tier === 'low') return Math.min(real, 1.25);
+    if (tier === 'mid') return Math.min(real, 2);
     return Math.min(real, base);
+  }
+
+  /** Legacy alias — delegates to hdDPR with a 2.0 desktop cap. */
+  function capDPR(base = 2) {
+    return hdDPR(base);
+  }
+
+  const CARD_EXPORT_BASE = 1080;
+
+  /** Retina share-card export width (1080 → 1620 mid → 2160 high). */
+  function cardExportSize() {
+    if (tier === 'low') return CARD_EXPORT_BASE;
+    if (tier === 'mid') return Math.round(CARD_EXPORT_BASE * 1.5);
+    return CARD_EXPORT_BASE * 2;
+  }
+
+  /** Setup a 2D canvas at CSS size with HD DPR + high-quality smoothing. */
+  function setupCanvas2D(canvas, cssW, cssH, dprBase) {
+    const dpr = hdDPR(dprBase == null ? 2.5 : dprBase);
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    canvas.style.width = cssW + 'px';
+    canvas.style.height = cssH + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    if (ctx.imageSmoothingQuality) ctx.imageSmoothingQuality = 'high';
+    return { ctx, dpr, W: cssW, H: cssH };
+  }
+
+  /** Fresh offscreen export context at exact pixel dimensions. */
+  function prepExportCtx(cv, w, h) {
+    cv.width = w;
+    cv.height = h;
+    const ctx = cv.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    if (ctx.imageSmoothingQuality) ctx.imageSmoothingQuality = 'high';
+    return ctx;
   }
 
   // ── single scroll/resize → rAF dispatcher ─────────────────────────────────
@@ -95,6 +134,11 @@ window.RafCore = (() => {
   return {
     tier,
     capDPR,
+    hdDPR,
+    cardExportSize,
+    setupCanvas2D,
+    prepExportCtx,
+    CARD_EXPORT_BASE,
     onScroll,
     offScroll,
     onReducedMotionChange,
