@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AstroPrecise logo">
   <defs>
     <linearGradient id="ap-gold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#E8C872"/>
-      <stop offset="0.55" stop-color="#D4AF37"/>
-      <stop offset="1" stop-color="#B8962E"/>
+      <stop offset="0" stop-color="#F2DFA7"/>
+      <stop offset="0.55" stop-color="#C9A227"/>
+      <stop offset="1" stop-color="#8C6A2F"/>
     </linearGradient>
     <linearGradient id="ap-amethyst" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#C77DFF"/>
-      <stop offset="1" stop-color="#7B2CBF"/>
+      <stop offset="0" stop-color="#E8C872"/>
+      <stop offset="1" stop-color="#8C6A2F"/>
     </linearGradient>
     <radialGradient id="ap-planet" cx="0.35" cy="0.35" r="1">
-      <stop offset="0" stop-color="#C77DFF"/>
-      <stop offset="1" stop-color="#5B3FA0"/>
+      <stop offset="0" stop-color="#E8C872"/>
+      <stop offset="1" stop-color="#6B4E1A"/>
     </radialGradient>
     <radialGradient id="ap-inner-planet" cx="0.35" cy="0.35" r="1">
-      <stop offset="0" stop-color="#EDF2FF"/>
-      <stop offset="1" stop-color="#5B7FC7"/>
+      <stop offset="0" stop-color="#F2DFA7"/>
+      <stop offset="1" stop-color="#A8841E"/>
     </radialGradient>
   </defs>
 
@@ -79,7 +79,7 @@
     <line x1="2"  y1="32" x2="6.5" y2="32"/>
     <line x1="62" y1="32" x2="57.5" y2="32"/>
   </g>
-  <g stroke="#D4AF37" stroke-width="0.7" opacity="0.45">
+  <g stroke="#C9A227" stroke-width="0.7" opacity="0.45">
     <line x1="47" y1="6.02"  x2="45.5" y2="8.62"/>
     <line x1="57.98" y1="17" x2="55.38" y2="18.5"/>
     <line x1="57.98" y1="47" x2="55.38" y2="45.5"/>
@@ -91,14 +91,14 @@
   </g>
 
   <!-- Inner dashed meridian -->
-  <circle cx="32" cy="32" r="24.5" fill="none" stroke="#D4AF37" stroke-width="0.5" opacity="0.3" stroke-dasharray="1.2 3.4"/>
+  <circle cx="32" cy="32" r="24.5" fill="none" stroke="#C9A227" stroke-width="0.5" opacity="0.3" stroke-dasharray="1.2 3.4"/>
 
   <!-- Light-cone wavefront — two staggered, eased pulses of birth-light -->
   <g class="ap-anim ap-pulse" aria-hidden="true">
-    <circle cx="0" cy="0" r="29" fill="none" stroke="#00D4FF" stroke-width="0.8"/>
+    <circle cx="0" cy="0" r="29" fill="none" stroke="#C9A227" stroke-width="0.8"/>
   </g>
   <g class="ap-anim ap-pulse ap-pulse--late" aria-hidden="true">
-    <circle cx="0" cy="0" r="29" fill="none" stroke="#00D4FF" stroke-width="0.8"/>
+    <circle cx="0" cy="0" r="29" fill="none" stroke="#C9A227" stroke-width="0.8"/>
   </g>
 
   <!-- Outer orbit: the planet truly travels the ellipse (14 s) while the
@@ -110,13 +110,13 @@
       <g class="ap-anim ap-orbit-a" transform="translate(27 0)">
         <circle cx="0" cy="0" r="4.6" fill="url(#ap-planet)" opacity="0.22"/>
         <circle cx="0" cy="0" r="2.8" fill="url(#ap-planet)"/>
-        <circle cx="0" cy="0" r="2.8" fill="none" stroke="#C77DFF" stroke-width="0.5" opacity="0.5"/>
+        <circle cx="0" cy="0" r="2.8" fill="none" stroke="#E8C872" stroke-width="0.5" opacity="0.5"/>
       </g>
     </g>
   </g>
 
   <!-- Inner orbit: small swift body, silver-lapis (5.5 s) -->
-  <circle cx="32" cy="32" r="12.5" fill="none" stroke="#D4AF37" stroke-width="0.4" opacity="0.22"/>
+  <circle cx="32" cy="32" r="12.5" fill="none" stroke="#C9A227" stroke-width="0.4" opacity="0.22"/>
   <g class="ap-anim ap-orbit-b">
     <g transform="rotate(140) translate(12.5 0)">
       <circle cx="0" cy="0" r="1.7" fill="url(#ap-inner-planet)"/>
@@ -129,7 +129,7 @@
         fill="url(#ap-gold)" opacity="0.55" transform="rotate(45 32 32)"/>
 
   <!-- Center jewel — the sun, breathing -->
-  <circle class="ap-sun-glow" cx="32" cy="32" r="5.2" fill="#E8C872" opacity="0.28"/>
+  <circle class="ap-sun-glow" cx="32" cy="32" r="5.2" fill="#C9A227" opacity="0.28"/>
   <circle cx="32" cy="32" r="2.2" fill="#f0e8d8"/>
-  <circle class="ap-breathe" cx="32" cy="32" r="3.4" fill="none" stroke="#E8C872" stroke-width="0.6" opacity="0.7"/>
+  <circle class="ap-breathe" cx="32" cy="32" r="3.4" fill="none" stroke="#C9A227" stroke-width="0.6" opacity="0.7"/>
 </svg>

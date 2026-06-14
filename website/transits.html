@@ -25,7 +25,26 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — Transit Calculator",
+    "url": "https://jonnydavx-eng.github.io/astroprecise/transits.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "description": "See how current planetary transits aspect your natal chart — dated, orb-aware, and computed privately in your browser.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://jonnydavx-eng.github.io/astroprecise/"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="css/main.css" />
   <style>
     /* ── Transits page premium overrides ── */
     :root {
@@ -1112,6 +1131,8 @@
   </script>
 
   <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/oracle.js"></script>

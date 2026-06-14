@@ -25,7 +25,26 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — Synastry & Compatibility",
+    "url": "https://jonnydavx-eng.github.io/astroprecise/compatibility.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "description": "Compare two birth charts for synastry aspects, composite themes, and relationship compatibility — computed locally from precise astronomy.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://jonnydavx-eng.github.io/astroprecise/"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="css/main.css" />
   <style>
     /* ---- Compatibility-page design variables ---- */
     :root {
@@ -1377,6 +1396,8 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/chart-render.js"></script>

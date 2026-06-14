@@ -20,7 +20,26 @@
   <meta name="theme-color" content="#050406" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <link rel="stylesheet" href="css/main.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — The Instrument",
+    "url": "https://jonnydavx-eng.github.io/astroprecise/ephemeris.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "description": "A precision ephemeris and cosmic instrument — planetary hours, natal signature, field weather, and live sky data computed locally.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://jonnydavx-eng.github.io/astroprecise/"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="css/main.css" />
   <style>
     /* ── Deep Time aesthetic — darker, slower ── */
     :root {
@@ -578,9 +597,12 @@
               </div>
               <div class="full" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
                 <button type="button" class="glow-btn" id="ev-set">Set the Event</button>
-                <button type="button" class="glow-btn" id="ev-example" style="border-color:rgba(91,127,199,0.4);color:var(--lapis-bright);">Try an example &mdash; Carl Sagan</button>
+                <button type="button" class="glow-btn" id="ev-example" style="border-color:rgba(201,162,39,0.4);color:var(--gold-pale);">Try an example &mdash; Carl Sagan</button>
                 <span id="ev-status" style="font-size:0.75rem;color:var(--silver-dim);"></span>
               </div>
+              <p style="font-size:0.72rem;color:var(--silver-dim);line-height:1.65;margin:0.25rem 0 0;">
+                Sections II&ndash;V unlock after you set your birth event above.
+              </p>
             </div>
           </div>
         </div>
@@ -608,7 +630,7 @@
       </div>
     </section>
 
-    <!-- ═══ VI. THE CLOCK OF THE SPHERES — Planetary Hours Masterpiece (Celestia "Sky Is a Clock" + engraved hermetic + Astro precision)
+    <!-- ═══ I. THE CLOCK OF THE SPHERES — Planetary Hours Masterpiece (Celestia "Sky Is a Clock" + engraved hermetic + Astro precision)
          Award-level SVG wheel. Sectors for the 12 hours, current ruler highlighted, sun arc, deep correspondences. Interactive. Never experienced before on an astrology site.
     ═══ -->
     <section class="instrument-section" id="sec-clock">
@@ -863,6 +885,9 @@
   </footer>
 
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/raf-core.js"></script>
+
 
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>

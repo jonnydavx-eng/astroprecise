@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v89';
+const V = 'ap-v90';
 
 const PRECACHE = [
   './',
@@ -32,6 +32,21 @@ const PRECACHE = [
   './name-numerology.html',
   './privacy.html',
   './terms.html',
+  './profile.html',
+  './sample-reading.html',
+  './404.html',
+  './aries.html',
+  './taurus.html',
+  './gemini.html',
+  './cancer.html',
+  './leo.html',
+  './virgo.html',
+  './libra.html',
+  './scorpio.html',
+  './sagittarius.html',
+  './capricorn.html',
+  './aquarius.html',
+  './pisces.html',
   './manifest.json',
   './css/main.css',
   './css/fonts.css',
@@ -55,7 +70,7 @@ const PRECACHE = [
   './js/orrery-webgl.js',
   './js/vendor/three/three.module.min.js',
   './js/chart-render.js',
-  './js/interpretations.js',
+  './js/sign-daily.js',
   './js/oracle.js',
   './js/profile.js',
   './js/app.js',
@@ -84,6 +99,10 @@ const PRECACHE = [
   './js/name-numerology.js',
   './img/logo.svg',
   './img/favicon.svg',
+  './img/icon-192.png',
+  './img/icon-512.png',
+  './img/icon-maskable-512.png',
+  './img/og-banner-improved.jpg',
   './assets/textures/earth.jpg',
   './assets/textures/earth_clouds.jpg',
   './assets/textures/moon.jpg',
