@@ -316,6 +316,27 @@ function page(s) {
     .sign-hero__constellation svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 14px rgba(201,162,39,0.38)); }
     .sign-hero h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.6rem); color: var(--color-white); margin-bottom: var(--space-2); }
     .sign-hero__dates { color: var(--color-gold); font-size: var(--text-sm); letter-spacing: 0.14em; text-transform: uppercase; }
+    .sign-hero__keyword {
+      font-family: var(--font-display); font-style: italic; font-size: 1.05rem;
+      color: rgba(239, 227, 192, 0.82); margin: var(--space-3) 0 0; letter-spacing: 0.04em;
+    }
+    body[data-element="fire"] .sign-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(180, 66, 50, 0.08) 0%, transparent 70%);
+    }
+    body[data-element="earth"] .sign-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(14, 92, 58, 0.08) 0%, transparent 70%);
+    }
+    body[data-element="air"] .sign-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(168, 142, 88, 0.07) 0%, transparent 70%);
+    }
+    body[data-element="water"] .sign-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(74, 122, 138, 0.09) 0%, transparent 70%);
+    }
+    .sign-hero__inner, .sign-hero h1 { position: relative; z-index: 1; }
     .sign-facts { display: flex; justify-content: center; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-6); }
     .sign-fact { text-align: center; }
     .sign-fact__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 4px; }
@@ -330,10 +351,45 @@ function page(s) {
     .trait-list--minus li::before { content: '◆'; color: var(--crimson-light, #b04a52); }
     .prose-block { max-width: 760px; margin: 0 auto; color: var(--color-silver); line-height: 1.85; font-size: var(--text-base); }
     .match-chips { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-top: var(--space-5); }
-    .other-signs { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; }
-    .other-signs a { font-size: var(--text-xs); letter-spacing: 0.08em; padding: 6px 14px; border: 1px solid var(--color-border); border-radius: 999px;
-      color: var(--color-silver-dim); text-decoration: none; transition: border-color .2s, color .2s; }
-    .other-signs a:hover { border-color: var(--color-gold); color: var(--color-gold-pale); }
+    .sign-thumb-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: var(--space-3); max-width: 820px; margin: 0 auto;
+    }
+    .sign-thumb {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      text-decoration: none; transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .sign-thumb img {
+      width: 100%; max-width: 92px; aspect-ratio: 2 / 3; object-fit: cover; object-position: center top;
+      border-radius: 9px; border: 1px solid rgba(201,162,39,0.28);
+      box-shadow: 0 6px 22px rgba(0,0,0,0.5), 0 0 16px rgba(201,162,39,0.06);
+      transition: border-color 0.22s, box-shadow 0.22s;
+    }
+    .sign-thumb:hover { transform: translateY(-4px); }
+    .sign-thumb:hover img {
+      border-color: rgba(201,162,39,0.55);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.58), 0 0 22px rgba(201,162,39,0.14);
+    }
+    .sign-thumb__label {
+      font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--color-silver-dim); text-align: center; line-height: 1.3;
+    }
+    .sign-thumb:hover .sign-thumb__label { color: var(--color-gold-pale); }
+    .sign-thumb--current img { border-color: rgba(201,162,39,0.65); box-shadow: 0 0 20px rgba(201,162,39,0.2); }
+    .daily-reading__overview { color: var(--color-silver); line-height: 1.85; font-size: 1.05rem; margin-bottom: var(--space-6); font-family: var(--font-display); }
+    .daily-reading__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5); }
+    .daily-reading__tile {
+      padding: var(--space-4); background: rgba(201,162,39,0.06);
+      border: 1px solid rgba(201,162,39,0.18); border-radius: var(--radius-lg);
+    }
+    .daily-reading__tile-label {
+      font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--color-gold); margin-bottom: 6px; display: block;
+    }
+    .daily-reading__tile-text { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.65; margin: 0; }
+    .daily-reading__meta { display: flex; gap: var(--space-6); flex-wrap: wrap; font-size: var(--text-sm); color: var(--color-silver-dim); }
+    .daily-reading__meta strong { color: var(--color-gold); font-weight: 600; }
+    .daily-reading__note { font-size: 0.62rem; letter-spacing: 0.08em; color: var(--color-silver-dim); margin-top: var(--space-4); text-align: center; }
     .glance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-4); max-width: 760px; margin: 0 auto; }
     .glance-cell { padding: var(--space-4); background: rgba(201,162,39,0.06); border: 1px solid rgba(201,162,39,0.18); border-radius: var(--radius-lg); }
     .glance-cell__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 6px; }
@@ -366,12 +422,13 @@ function page(s) {
     <section class="sign-hero" aria-labelledby="page-title">
       <div class="sign-hero__inner">
         <img class="sign-hero__card-img" src="assets/images/zodiac-cards/${s.key}.jpg"
-          alt="${s.name} — AstroForge engraved observatory zodiac card"
+          alt="${s.name} — AstroPrecise engraved zodiac card"
           width="230" height="345" loading="eager" decoding="async" />
         <div class="sign-hero__content">
           <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ('<span class="sign-hero__glyph" aria-hidden="true">' + s.glyph + '</span>')}</div>
           <h1 id="page-title">${s.name}</h1>
           <p class="sign-hero__dates">${s.dates}</p>
+          <p class="sign-hero__keyword" aria-label="Sign keyword">“${s.keyword}”</p>
           <div class="sign-facts">
             <div class="sign-fact"><span class="sign-fact__label">Element</span><span class="sign-fact__value">${s.element}</span></div>
             <div class="sign-fact"><span class="sign-fact__label">Modality</span><span class="sign-fact__value">${s.modality}</span></div>
@@ -386,6 +443,7 @@ function page(s) {
       <div class="container">
         <h2 class="section__title" id="today-heading">${s.name} Horoscope Today</h2>
         <p class="section__subtitle" id="today-date" aria-live="polite"></p>
+        <p class="section__subtitle" style="font-size:0.78rem;opacity:0.75;margin-top:var(--space-2);">Computed from live planetary positions — same VSOP87 engine as the orrery</p>
         <div class="today-reading" id="today-reading" aria-live="polite">
           <div class="card" style="padding:var(--space-8);">
             <p style="color:var(--color-silver);line-height:1.85;">
@@ -490,9 +548,10 @@ function page(s) {
 
     <section class="section" aria-label="Other zodiac signs">
       <div class="container">
-        <h2 class="section__title" style="font-size:var(--text-lg);">All Zodiac Signs</h2>
-        <div class="other-signs">
-          ${others.map(o => `<a href="${o.key}.html">${o.glyph} ${o.name}</a>`).join('\n          ')}
+        <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
+        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
+        <div class="sign-thumb-grid" role="list">
+          ${SIGNS.map(o => `<a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}" role="listitem" aria-label="${o.name} horoscope and guide${o.key === s.key ? ' (current page)' : ''}"><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.glyph} ${o.name}</span></a>`).join('\n          ')}
         </div>
       </div>
     </section>
@@ -528,22 +587,18 @@ function page(s) {
       if (!el || !d) return;
       el.innerHTML =
         '<div class="card" style="padding:var(--space-8);">' +
-        '<p style="color:var(--color-silver);line-height:1.85;font-size:1.05rem;margin-bottom:var(--space-6);">' + d.overview + '</p>' +
-        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4);margin-bottom:var(--space-5);">' +
-        '<div style="padding:var(--space-4);background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.18);border-radius:var(--radius-lg);">' +
-        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Love</p>' +
-        '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.love + '</p></div>' +
-        '<div style="padding:var(--space-4);background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.18);border-radius:var(--radius-lg);">' +
-        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">⬡ Career</p>' +
-        '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.career + '</p></div>' +
-        '<div style="padding:var(--space-4);background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.18);border-radius:var(--radius-lg);">' +
-        '<p style="font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--color-primary-light);margin-bottom:6px;">✦ Wellness</p>' +
-        '<p style="font-size:var(--text-sm);color:var(--color-silver);line-height:1.65;">' + d.health + '</p></div>' +
+        '<p class="daily-reading__overview">' + d.overview + '</p>' +
+        '<div class="daily-reading__grid">' +
+        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Love</span><p class="daily-reading__tile-text">' + d.love + '</p></div>' +
+        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Career</span><p class="daily-reading__tile-text">' + d.career + '</p></div>' +
+        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Wellness</span><p class="daily-reading__tile-text">' + d.health + '</p></div>' +
         '</div>' +
-        '<div style="display:flex;gap:var(--space-6);flex-wrap:wrap;font-size:var(--text-sm);color:var(--color-silver-dim);">' +
-        '<span>Lucky Number <strong style="color:var(--color-gold);">' + d.luckyNumber + '</strong></span>' +
-        '<span>Lucky Color <strong style="color:var(--color-gold);">' + d.luckyColor + '</strong></span>' +
-        '</div></div>';
+        '<div class="daily-reading__meta">' +
+        '<span>Lucky Number <strong>' + d.luckyNumber + '</strong></span>' +
+        '<span>Lucky Color <strong>' + d.luckyColor + '</strong></span>' +
+        '</div>' +
+        '<p class="daily-reading__note">Deterministic for this date — refresh tomorrow for a new reading</p>' +
+        '</div>';
     }
     render();
   })();
