@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Outreach toolkit — AstroPrecise</title>
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    body { background: #050406; color: #C8D0E8; }
+    .ot { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 4rem; font-family: Inter, system-ui, sans-serif; }
+    .ot h1 { font-family: Cinzel, serif; font-size: 1.4rem; color: #E6C24A; letter-spacing: 0.12em; margin: 0 0 0.25rem; }
+    .ot__sub { font-size: 0.75rem; opacity: 0.7; margin-bottom: 1.5rem; }
+    .ot-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .ot-tab { padding: 0.45rem 0.85rem; border-radius: 999px; border: 1px solid rgba(201,162,39,0.35); background: transparent; color: #C8D0E8; font-size: 0.72rem; cursor: pointer; }
+    .ot-tab.is-on { background: rgba(201,162,39,0.15); border-color: #C9A227; color: #E6C24A; }
+    .ot-panel { display: none; }
+    .ot-panel.is-on { display: block; }
+    .ot-card { background: rgba(20,16,10,0.55); border: 1px solid rgba(201,162,39,0.22); border-radius: 12px; padding: 1rem; margin-bottom: 0.85rem; }
+    .ot-card h3 { font-size: 0.82rem; color: #E6C24A; margin: 0 0 0.35rem; }
+    .ot-meta { font-size: 0.62rem; opacity: 0.65; margin-bottom: 0.5rem; }
+    .ot-pre { white-space: pre-wrap; font-size: 0.78rem; line-height: 1.55; margin: 0; font-family: inherit; }
+    .ot-actions { margin-top: 0.65rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ot-btn { padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(201,162,39,0.45); background: rgba(201,162,39,0.1); color: #E6C24A; font-size: 0.68rem; cursor: pointer; }
+    .ot-btn:hover { border-color: #C9A227; }
+    .ot-list { font-size: 0.78rem; line-height: 1.6; padding-left: 1.1rem; margin: 0.35rem 0; }
+    .ot-list li { margin-bottom: 0.35rem; }
+    .ot-toast { position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%); background: #1a1510; border: 1px solid #C9A227; color: #E6C24A; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.75rem; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+    .ot-toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <main class="ot">
+    <h1>Outreach toolkit</h1>
+    <p class="ot__sub">Owner copy deck — emails + X posts from <code>js/outreach-content.js</code>. Not indexed.</p>
+
+    <div class="ot-tabs" role="tablist">
+      <button type="button" class="ot-tab is-on" data-tab="x">X playbook</button>
+      <button type="button" class="ot-tab" data-tab="emails">Emails</button>
+      <button type="button" class="ot-tab" data-tab="posts">X posts</button>
+      <button type="button" class="ot-tab" data-tab="replies">Reply templates</button>
+    </div>
+
+    <div id="panel-x" class="ot-panel is-on"></div>
+    <div id="panel-emails" class="ot-panel"></div>
+    <div id="panel-posts" class="ot-panel"></div>
+    <div id="panel-replies" class="ot-panel"></div>
+
+    <p style="font-size:0.65rem;opacity:0.55;margin-top:2rem;">
+      CLI export: <code>node tools/export-outreach.mjs</code> ·
+      <a href="links.html" style="color:#C9A227">links.html</a> ·
+      <a href="index.html" style="color:#C9A227">Home</a>
+    </p>
+  </main>
+  <div class="ot-toast" id="toast" aria-live="polite">Copied</div>
+
+  <script src="js/outreach-content.js"></script>
+  <script>
+  (function () {
+    var O = window.AP_OUTREACH;
+    if (!O) return;
+
+    function toast() {
+      var t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(function () { t.classList.remove('show'); }, 1400);
+    }
+    function copy(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(toast);
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); toast(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    }
+    function btn(label, text) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'ot-btn'; b.textContent = label;
+      b.addEventListener('click', function () { copy(text); });
+      return b;
+    }
+    function card(title, meta, body, copyText) {
+      var d = document.createElement('div');
+      d.className = 'ot-card';
+      d.innerHTML = '<h3>' + title + '</h3>' + (meta ? '<p class="ot-meta">' + meta + '</p>' : '') + '<pre class="ot-pre"></pre><div class="ot-actions"></div>';
+      d.querySelector('.ot-pre').textContent = body;
+      var actions = d.querySelector('.ot-actions');
+      actions.appendChild(btn('Copy all', copyText || body));
+      return d;
+    }
+
+    // X playbook
+    var px = document.getElementById('panel-x');
+    var xt = O.xTraffic;
+    px.appendChild(card('Strategy', O.version, xt.summary));
+    var ul = document.createElement('ul'); ul.className = 'ot-list';
+    xt.algorithm.priorities.forEach(function (p) { var li = document.createElement('li'); li.textContent = p; ul.appendChild(li); });
+    var alg = card('Algorithm (2026)', 'First ' + xt.algorithm.velocityWindowMin + ' min velocity', '');
+    alg.appendChild(ul);
+    px.appendChild(alg);
+    px.appendChild(card('Profile bio', xt.profile.handle, xt.profile.bio, xt.profile.bio));
+    px.appendChild(card('Pinned post', '', xt.profile.pinnedPost, xt.profile.pinnedPost));
+    px.appendChild(card('Cadence', '', 'Posts: ' + xt.cadence.originalPostsPerDay + '/day · Replies: ' + xt.cadence.repliesPerDay + '/day · Times (UK): ' + xt.cadence.bestTimesUk.join(', ')));
+    var eng = card('Accounts to engage', '', '');
+    var el = document.createElement('ul'); el.className = 'ot-list';
+    xt.accountsToEngage.forEach(function (a) {
+      var li = document.createElement('li'); li.textContent = a.handle + ' — ' + a.why; el.appendChild(li);
+    });
+    eng.appendChild(el);
+    px.appendChild(eng);
+
+    // Emails
+    var pe = document.getElementById('panel-emails');
+    O.exportAllEmails().forEach(function (e) {
+      var meta = [e.section, e.delay, e.tag].filter(Boolean).join(' · ');
+      var full = 'SUBJECT: ' + e.subject + '\n\n' + e.body;
+      pe.appendChild(card(e.id, meta, full, full));
+    });
+
+    // X posts
+    var pp = document.getElementById('panel-posts');
+    O.xPosts.singles.forEach(function (p) {
+      var text = O.format(p.text);
+      pp.appendChild(card(p.id, 'Day ' + p.day, text, text));
+    });
+    O.xPosts.threads.forEach(function (th) {
+      var joined = th.posts.map(function (t, i) { return (i + 1) + '/' + th.posts.length + '\n' + O.format(t); }).join('\n\n');
+      pp.appendChild(card(th.id, th.title, joined, joined));
+    });
+
+    // Replies
+    var pr = document.getElementById('panel-replies');
+    O.xPosts.replyTemplates.forEach(function (r) {
+      pr.appendChild(card(r.id, '', r.template, r.template));
+    });
+
+    document.querySelectorAll('.ot-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.ot-tab').forEach(function (t) { t.classList.remove('is-on'); });
+        document.querySelectorAll('.ot-panel').forEach(function (p) { p.classList.remove('is-on'); });
+        tab.classList.add('is-on');
+        document.getElementById('panel-' + tab.dataset.tab).classList.add('is-on');
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
