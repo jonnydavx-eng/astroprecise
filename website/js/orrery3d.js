@@ -855,7 +855,7 @@ window.Orrery3D = (() => {
       const depthFade = Math.max(0.05, 0.5 + 0.5 * (1 - Math.min(1, (g.depth + 3.5) / 7)));
       const glyphAlpha = (0.15 + 0.25 * g.f) * depthFade * baseAlpha;
       if (glyphAlpha < 0.04) continue;
-      ctx.font = `${Math.max(9, 12 * g.f)}px serif`;
+      ctx.font = `${Math.max(9, 12 * g.f)}px 'AstroGlyph', serif`;
       ctx.fillStyle = `rgba(201, 162, 39,${glyphAlpha})`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -1307,7 +1307,7 @@ window.Orrery3D = (() => {
 
     // Glyph label — crisper and slightly larger
     if (b.id !== 'moon' || pr.f > 0.85) {
-      ctx.font = `${Math.max(9, 13 * pr.f)}px serif`;
+      ctx.font = `${Math.max(9, 13 * pr.f)}px 'AstroGlyph', serif`;
       ctx.fillStyle = b.hi;
       ctx.globalAlpha = 0.92;
       ctx.textAlign = 'center';

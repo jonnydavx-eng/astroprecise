@@ -14,6 +14,12 @@ const AstroApp = (() => {
   // ── Init ──────────────────────────────────────────────────────────────────
 
   function init() {
+    // Preload the astrological symbol font (AstroGlyph) so canvas-drawn glyphs
+    // (orrery, zodiac ring, share cards) never paint in the fallback colour-emoji
+    // font on Android — and force a redraw once it's ready.
+    if (document.fonts && document.fonts.load) {
+      try { document.fonts.load("16px 'AstroGlyph'").then(function () { window.dispatchEvent(new Event('astroglyph-ready')); }); } catch (e) {}
+    }
     renderNav();        // canonical site nav on every page — single source of truth
     initNavbar();
     initToastContainer();

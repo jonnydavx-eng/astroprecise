@@ -1046,7 +1046,7 @@
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Cinzel (display) + Inter (sans), loaded by the page <head>; serif/sans fallback.
-  const FONT_DISPLAY = '"Cinzel", "Cormorant Garamond", Georgia, serif';
+  const FONT_DISPLAY = '"AstroGlyph", "Cinzel", "Cormorant Garamond", Georgia, serif';
   const FONT_SANS    = '"Inter", "Helvetica Neue", Arial, sans-serif';
 
   // Engraved palette (matches css/main.css :root) ────────────────────────────

@@ -190,7 +190,7 @@
       ctx.fill();
 
       // Symbol above the dot
-      ctx.font          = `${Math.max(8, 9 * pt.s)}px sans-serif`;
+      ctx.font          = `${Math.max(8, 9 * pt.s)}px 'AstroGlyph', sans-serif`;
       ctx.fillStyle     = pl.col;
       ctx.textAlign     = 'center';
       ctx.textBaseline  = 'bottom';
@@ -252,7 +252,7 @@
       // Zodiac glyph. Append U+FE0E (text-presentation selector) so Android/mobile
       // canvas renders the engraved serif glyph instead of the colour-emoji square
       // (zodiac signs U+2648–2653 default to emoji presentation otherwise).
-      ctx.font         = `${r * 0.92}px Georgia, 'Times New Roman', serif`;
+      ctx.font         = `${r * 0.92}px 'AstroGlyph', Georgia, serif`;
       ctx.fillStyle    = isSel ? '#c9a227' : isHov ? `rgb(${el[0]},${el[1]},${el[2]})` : '#C8BFA6';
       ctx.textAlign    = 'center';
       ctx.textBaseline = 'middle';
