@@ -1373,9 +1373,18 @@ if ('serviceWorker' in navigator) {
   M.newsletterUrl = M.emailUrl = liveUrl;
 
   window.AP_COPY = window.AP_COPY || {
-    privacyMicro: 'Only the email you choose to give us is ever sent — your birth data never leaves your device. Unsubscribe anytime.',
+    privacyMicro: 'Only your email is sent — birth data never leaves your device. Unsubscribe anytime.',
+    confirmLive: 'You\u2019re on the list. Cosmic weather, new readings & features \u2014 updates land in your inbox soon.',
     confirmDoubleOptIn: 'You\u2019re on the list \u2014 cosmic weather updates will land in your inbox. (Only your email was sent; birth data stayed on your device.)',
-    dormantSaved: 'Sign-up isn’t live yet, so nothing left your browser. The moment it opens, you’ll be first.'
+    dormantSaved: 'Sign-up isn\u2019t live yet, so nothing left your browser. The moment it opens, you\u2019ll be first.',
+    eyebrow: 'More coming soon',
+    bannerTitle: 'Sign up for updates \u2014 be first when we ship',
+    bannerSub: 'Chart wallpapers, daily cosmic weather, deep readings & new tools. One honest email at a time \u2014 no spam.',
+    heroTitle: 'Get updates before anyone else',
+    heroSub: 'New features & cosmic weather are on the way. Leave your email \u2014 we\u2019ll only write when there\u2019s something worth reading.',
+    stickyTitle: 'Updates coming soon \u2014 join the list',
+    btnLabel: '\u2726 Get updates',
+    btnShort: 'Join list'
   };
 
   var isUrl = function (u) { return typeof u === 'string' && /^https?:\/\//i.test((u || '').trim()); };
@@ -1434,35 +1443,222 @@ if ('serviceWorker' in navigator) {
   if (window.AstroApp) { window.AstroApp.captureEmail = captureEmail; window.AstroApp.exportIntents = exportIntents; }
   if (location.hash === '#export-intents') setTimeout(exportIntents, 400);
 
-  // ── Site-wide footer email signup (every page; skips the chart page's richer form) ──
-  function injectFooterSignup() {
-    if (document.querySelector('.ap-footer-signup')) return;
-    if (document.getElementById('email-capture')) return;   // chart page already has the primary form
-    var host = document.querySelector('footer .container') || document.querySelector('footer');
-    if (!host) return;
-    var wrap = document.createElement('div');
-    wrap.className = 'ap-footer-signup';
-    wrap.style.cssText = 'max-width:440px;margin:18px auto 6px;text-align:center;font-family:Inter,system-ui,sans-serif;';
-    wrap.innerHTML =
-      '<p style="font-size:0.8rem;color:var(--silver,#C8D0E8);margin:0 0 8px;letter-spacing:0.02em;">Your sky, in your inbox — a little cosmic weather, now and then.</p>'
-      + '<form class="ap-footer-signup__form" novalidate style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">'
-      + '<input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" '
-      + 'style="flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,rgba(168, 158, 136,0.2));background:rgba(13, 10, 7,0.6);color:#fff;font-size:0.82rem;">'
-      + '<button type="submit" style="padding:9px 16px;border-radius:10px;border:1px solid var(--gold,#C9A227);background:rgba(201,162,39,0.14);color:var(--gold,#C9A227);font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">&#10022; Subscribe</button>'
-      + '</form>'
-      + '<p class="ap-footer-signup__msg" role="status" aria-live="polite" style="font-size:0.62rem;color:var(--silver-dim,#8891AA);margin:8px 0 0;line-height:1.6;">' + window.AP_COPY.privacyMicro + '</p>';
-    host.appendChild(wrap);
-    var form = wrap.querySelector('form'), msg = wrap.querySelector('.ap-footer-signup__msg');
+  var SIGNS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+  function pageSlug() { return (location.pathname.split('/').pop() || 'index.html').toLowerCase(); }
+  function isSignPage() { var p = pageSlug().replace('.html',''); return SIGNS.indexOf(p) >= 0; }
+
+  function pageEmailCopy() {
+    var c = window.AP_COPY, p = pageSlug();
+    if (p === 'horoscope.html') {
+      return { eyebrow: 'Free in your inbox', title: 'Daily horoscopes + what\u2019s coming next', sub: 'Same readings as this page, plus early access when deep readings & wallpapers launch.', source: 'banner_horoscope', tag: 'tag_horoscope_banner' };
+    }
+    if (isSignPage()) {
+      var sign = p.replace('.html','');
+      sign = sign.charAt(0).toUpperCase() + sign.slice(1);
+      return { eyebrow: c.eyebrow, title: sign + ' updates in your inbox', sub: 'Daily reading for ' + sign + ', plus cosmic weather & new features as we ship them.', source: 'banner_sign', tag: 'tag_sign_' + sign.toLowerCase() };
+    }
+    if (p === 'index.html' || p === '') {
+      return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_home', tag: 'tag_banner_home' };
+    }
+    if (p === 'shop.html') {
+      return { eyebrow: 'Shop opening soon', title: 'Be first when the doors open', sub: 'Wear-your-sky prints, readings & gifts are coming. One email when we launch \u2014 no checkout spam.', source: 'banner_shop', tag: 'tag_shop_waitlist' };
+    }
+    return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_tool', tag: 'tag_banner_tool' };
+  }
+
+  function confirmHtml(res) {
+    var c = window.AP_COPY;
+    return res.sent === 'provider'
+      ? '<strong>' + (c.confirmLive || c.confirmDoubleOptIn) + '</strong>'
+      : '<strong>Noted.</strong> ' + c.dormantSaved;
+  }
+
+  function wireEmailForm(form, opts) {
+    if (!form || form._apWired) return;
+    form._apWired = true;
+    opts = opts || {};
+    var msg = form.querySelector('.ap-email-cta__msg, .ap-footer-signup__msg');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var email = form.email.value.trim();
-      if (!isEmail(email)) { if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning'); return; }
-      var res = captureEmail(email, { source: 'footer', tag: 'tag_footer' });
-      msg.innerHTML = res.sent === 'provider'
-        ? '<strong style="color:var(--gold,#C9A227)">' + window.AP_COPY.confirmDoubleOptIn + '</strong>'
-        : '<strong style="color:var(--gold,#C9A227)">Noted.</strong> ' + window.AP_COPY.dormantSaved;
-      form.style.display = 'none';
+      var email = (form.email && form.email.value || '').trim();
+      if (!isEmail(email)) {
+        if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
+        return;
+      }
+      var res = captureEmail(email, {
+        source: opts.source || 'email_cta',
+        tag: opts.tag || 'tag_email_cta',
+        meta: opts.meta || null
+      });
+      if (msg) msg.innerHTML = confirmHtml(res);
+      form.classList.add('is-done');
+      if (form.classList.contains('ap-email-cta__form--sticky')) {
+        var sticky = form.closest('.ap-email-cta--sticky');
+        if (sticky) setTimeout(function () { sticky.classList.remove('is-visible'); document.body.classList.remove('has-email-sticky'); }, 3200);
+      }
+      if (window.AstroApp) AstroApp.showToast('You\u2019re on the list', 'We\u2019ll email when there\u2019s something new.', 'success');
     });
+  }
+
+  function buildEmailCTA(variant, copy, opts) {
+    copy = copy || pageEmailCopy();
+    opts = opts || {};
+    var c = window.AP_COPY;
+    var btn = variant === 'sticky' ? c.btnShort : c.btnLabel;
+    var el = document.createElement(variant === 'banner' ? 'section' : 'div');
+    el.className = 'ap-email-cta ap-email-cta--' + variant + (opts.extraClass ? ' ' + opts.extraClass : '');
+    if (variant === 'banner') {
+      el.id = 'ap-email-banner';
+      el.setAttribute('aria-label', 'Email updates signup');
+    }
+    var inner = variant === 'hero'
+      ? '<div class="container ap-email-cta__inner">'
+      : (variant === 'sticky'
+        ? '<div class="ap-email-cta__inner">'
+        : '<div class="container ap-email-cta__inner">');
+    if (variant === 'sticky') {
+      inner += '<button type="button" class="ap-email-cta__close" aria-label="Dismiss signup bar">\u00d7</button>';
+    }
+    inner += '<div class="ap-email-cta__copy">';
+    if (variant !== 'sticky') inner += '<p class="ap-email-cta__eyebrow">' + (copy.eyebrow || c.eyebrow) + '</p>';
+    inner += '<p class="ap-email-cta__title">' + (copy.title || c.bannerTitle) + '</p>';
+    if (variant !== 'sticky') inner += '<p class="ap-email-cta__sub">' + (copy.sub || c.bannerSub) + '</p>';
+    inner += '</div>';
+    inner += '<form class="ap-email-cta__form' + (variant === 'sticky' ? ' ap-email-cta__form--sticky' : '') + '" novalidate>'
+      + '<div class="ap-email-cta__fields">'
+      + '<input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address">'
+      + '<button type="submit" class="ap-email-cta__btn">' + btn + '</button>'
+      + '</div>'
+      + '<p class="ap-email-cta__msg" role="status" aria-live="polite"></p>'
+      + '<p class="ap-email-cta__hint">' + c.privacyMicro + '</p>'
+      + '</form></div>';
+    el.innerHTML = inner;
+    wireEmailForm(el.querySelector('form'), { source: copy.source, tag: copy.tag });
+    if (variant === 'sticky') {
+      el.querySelector('.ap-email-cta__close').addEventListener('click', function () {
+        try { localStorage.setItem('ap_email_sticky_dismiss', String(Date.now())); } catch (e) {}
+        el.classList.remove('is-visible');
+        document.body.classList.remove('has-email-sticky');
+      });
+    }
+    return el;
+  }
+
+  function scrollToEmailCTA(e) {
+    if (e) e.preventDefault();
+    var target = document.getElementById('ap-email-banner')
+      || document.getElementById('horoscope-subscribe')
+      || document.getElementById('email-capture')
+      || document.querySelector('.ap-email-cta--hero');
+    if (target) {
+      if (target.id === 'email-capture') target.hidden = false;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function injectNavCTA() {
+    if (document.querySelector('.ap-nav-updates')) return;
+    var inner = document.querySelector('.navbar__inner');
+    var toggle = document.querySelector('.navbar__toggle');
+    var mobile = document.querySelector('.navbar__mobile-menu');
+    if (inner) {
+      var a = document.createElement('a');
+      a.href = '#ap-email-banner';
+      a.className = 'ap-nav-updates';
+      a.textContent = 'Updates';
+      a.addEventListener('click', scrollToEmailCTA);
+      if (toggle) inner.insertBefore(a, toggle);
+      else inner.appendChild(a);
+    }
+    if (mobile && !mobile.querySelector('.ap-nav-updates-mobile')) {
+      var m = document.createElement('a');
+      m.href = '#ap-email-banner';
+      m.className = 'navbar__link ap-nav-updates-mobile';
+      m.textContent = '\u2726 Get updates';
+      m.addEventListener('click', scrollToEmailCTA);
+      mobile.insertBefore(m, mobile.firstChild);
+    }
+  }
+
+  function injectBannerCTA() {
+    if (document.querySelector('.ap-email-cta--banner')) return;
+    if (document.getElementById('email-capture')) return;
+    if (document.getElementById('horoscope-subscribe')) return;
+    var footer = document.querySelector('footer.footer, footer.site-footer, footer[role="contentinfo"]');
+    if (!footer || !footer.parentNode) return;
+    footer.parentNode.insertBefore(buildEmailCTA('banner', pageEmailCopy()), footer);
+  }
+
+  function injectHeroCTA() {
+    if (document.querySelector('.ap-email-cta--hero')) return;
+    var p = pageSlug();
+    if (p !== 'index.html' && p !== '') return;
+    var hero = document.querySelector('.hero');
+    if (!hero || !hero.parentNode) return;
+    var c = window.AP_COPY;
+    var copy = { eyebrow: c.eyebrow, title: c.heroTitle, sub: c.heroSub, source: 'hero_strip', tag: 'tag_hero_strip' };
+    var el = buildEmailCTA('hero', copy);
+    if (hero.nextElementSibling) hero.parentNode.insertBefore(el, hero.nextElementSibling);
+    else hero.parentNode.appendChild(el);
+  }
+
+  function injectStickyCTA() {
+    if (document.querySelector('.ap-email-cta--sticky')) return;
+    try {
+      var dismissed = parseInt(localStorage.getItem('ap_email_sticky_dismiss') || '0', 10);
+      if (dismissed && (Date.now() - dismissed) < 7 * 86400000) return;
+    } catch (e) {}
+    var sticky = buildEmailCTA('sticky', {
+      title: window.AP_COPY.stickyTitle,
+      source: 'sticky_bar',
+      tag: 'tag_sticky'
+    });
+    document.body.appendChild(sticky);
+    var show = function () {
+      if (sticky.classList.contains('is-visible')) return;
+      sticky.classList.add('is-visible');
+      document.body.classList.add('has-email-sticky');
+    };
+    setTimeout(show, 6000);
+    var unsubScroll = null;
+    var onScroll = function () {
+      if (window.scrollY > 480) {
+        show();
+        if (unsubScroll) unsubScroll();
+        else window.removeEventListener('scroll', onScroll);
+      }
+    };
+    if (window.RafCore) unsubScroll = window.RafCore.onScroll(onScroll);
+    else window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  // ── Compact footer reminder (banner pages get a one-liner; others get mini form) ──
+  function injectFooterSignup() {
+    if (document.querySelector('.ap-footer-signup')) return;
+    if (document.getElementById('email-capture')) return;
+    var host = document.querySelector('footer .container, footer .footer__grid, footer');
+    if (!host) return;
+    var hasBanner = !!document.getElementById('ap-email-banner');
+    var wrap = document.createElement('div');
+    wrap.className = 'ap-footer-signup ap-footer-signup--compact';
+    if (hasBanner) {
+      wrap.innerHTML = '<p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">'
+        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C9A227);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
+        + ' \u2014 cosmic weather & new features coming soon.</p>';
+      wrap.querySelector('a').addEventListener('click', scrollToEmailCTA);
+    } else {
+      wrap.innerHTML =
+        '<p class="ap-email-cta__eyebrow" style="margin-bottom:6px;">' + window.AP_COPY.eyebrow + '</p>'
+        + '<form class="ap-email-cta__form ap-footer-signup__form" novalidate>'
+        + '<div class="ap-email-cta__fields" style="justify-content:center;">'
+        + '<input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address">'
+        + '<button type="submit" class="ap-email-cta__btn">' + window.AP_COPY.btnShort + '</button>'
+        + '</div><p class="ap-email-cta__msg ap-footer-signup__msg" role="status" aria-live="polite"></p>'
+        + '<p class="ap-email-cta__hint">' + window.AP_COPY.privacyMicro + '</p></form>';
+      wireEmailForm(wrap.querySelector('form'), { source: 'footer', tag: 'tag_footer' });
+    }
+    host.insertBefore(wrap, host.firstChild);
   }
 
   // ── "Cosmic Weather Premium" waitlist forms (validate the future subscription) ──
@@ -1482,7 +1678,14 @@ if ('serviceWorker' in navigator) {
     });
   }
 
-  function boot() { injectFooterSignup(); wireWaitlist(); }
+  function boot() {
+    injectNavCTA();
+    injectHeroCTA();
+    injectBannerCTA();
+    injectFooterSignup();
+    injectStickyCTA();
+    wireWaitlist();
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
