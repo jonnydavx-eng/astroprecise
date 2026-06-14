@@ -298,23 +298,23 @@
     // ── text ──
     x.textAlign = 'center';
     x.fillStyle = '#C9A227';
-    x.font = '26px Georgia, serif';
+    x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText('✦  T H E   L I G H T - C O N E  ✦', W / 2, 130);
 
     x.fillStyle = '#A89E88';
-    x.font = '30px Georgia, serif';
+    x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText('The light of my first breath has reached', W / 2, 830);
 
     x.fillStyle = '#f0e8d8';
-    x.font = 'bold 76px Georgia, serif';
+    x.font = 'bold 76px "AstroGlyph", Georgia, serif';
     x.fillText(`${m.reached.length} star systems`, W / 2, 920);
 
     x.fillStyle = '#A89E88';
-    x.font = '28px Georgia, serif';
+    x.font = '28px "AstroGlyph", Georgia, serif';
     x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, W / 2, 975);
 
     x.fillStyle = '#C9A227';
-    x.font = '22px Georgia, serif';
+    x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', W / 2, 1010);
 
     return cv;
@@ -361,20 +361,20 @@
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
     x.fillStyle = '#C9A227';
-    x.font = '26px Georgia, serif';
+    x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText(text, CARD_W / 2, y == null ? 130 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
     x.fillStyle = '#C9A227';
-    x.font = '22px Georgia, serif';
+    x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', CARD_W / 2, y == null ? 1010 : y);
   }
 
   // Honesty/provenance pill: a dot + label. measured -> gold dot, else silver-blue.
   function honestyBadge(x, cx, y, label, measured) {
-    x.font = '20px Georgia, serif';
+    x.font = '20px "AstroGlyph", Georgia, serif';
     const padX = 26, dotGap = 16, dotR = 5;
     const tw = x.measureText(label).width;
     const w = tw + padX * 2 + dotGap + dotR * 2;
@@ -448,14 +448,14 @@
     cardHeader(x, '✦  Z E N I T H   S T A R  ✦');
 
     x.fillStyle = '#A89E88';
-    x.font = 'italic 30px Georgia, serif';
+    x.font = 'italic 30px "AstroGlyph", Georgia, serif';
     x.fillText('The star over my first breath', CARD_W / 2, 196);
 
     x.fillStyle = '#f0e8d8';
     let nameSize = 96;
-    x.font = `bold ${nameSize}px Georgia, serif`;
+    x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
     while (x.measureText(s.name.toUpperCase()).width > CARD_W - 200 && nameSize > 48) {
-      nameSize -= 4; x.font = `bold ${nameSize}px Georgia, serif`;
+      nameSize -= 4; x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
     }
     x.textAlign = 'center';
     x.shadowColor = 'rgba(201, 162, 39,0.55)';
@@ -494,7 +494,7 @@
     }
 
     x.fillStyle = '#EFE3C0';
-    x.font = '30px Georgia, serif';
+    x.font = '30px "AstroGlyph", Georgia, serif';
     const parts = [];
     if (s.con) parts.push(s.con);
     if (s.spectral) parts.push('type ' + s.spectral);
@@ -503,7 +503,7 @@
     x.fillText(parts.join('   ·   '), CARD_W / 2, 812);
 
     x.fillStyle = '#A89E88';
-    x.font = '26px Georgia, serif';
+    x.font = '26px "AstroGlyph", Georgia, serif';
     wrapText(x,
       `Nearest catalogued star to the point directly overhead at my birth — ${z.sepDeg.toFixed(1)}° from the exact zenith.`,
       CARD_W / 2, 862, CARD_W - 220, 38);
@@ -540,7 +540,7 @@
 
     const today = new Date(report.generatedAt);
     x.fillStyle = '#A89E88';
-    x.font = 'italic 28px Georgia, serif';
+    x.font = 'italic 28px "AstroGlyph", Georgia, serif';
     x.textAlign = 'center';
     x.fillText(today.toLocaleDateString(undefined,
       { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), CARD_W / 2, 190);
@@ -549,16 +549,16 @@
     moonDisc(x, CARD_W / 2, 400, 130, lunar.illumination, lunar.waxing);
 
     x.fillStyle = '#f0e8d8';
-    x.font = 'bold 54px Georgia, serif';
+    x.font = 'bold 54px "AstroGlyph", Georgia, serif';
     x.fillText(lunar.phaseName, CARD_W / 2, 622);
     x.fillStyle = '#EFE3C0';
-    x.font = '30px Georgia, serif';
+    x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_W / 2, 668);
 
     const tHi = transitHighlightLine(report);
     if (tHi) {
       x.fillStyle = '#A89E88';
-      x.font = '27px Georgia, serif';
+      x.font = '27px "AstroGlyph", Georgia, serif';
       wrapText(x, tHi, CARD_W / 2, 742, CARD_W - 240, 38);
     }
 
@@ -575,7 +575,7 @@
       measured = false;
     }
     x.fillStyle = measured ? '#EFE3C0' : '#A89E88';
-    x.font = '30px Georgia, serif';
+    x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(swLine, CARD_W / 2, 858);
 
     honestyBadge(x, CARD_W / 2, 942, measured ? 'measured · NOAA SWPC' : 'computed only · feed down', measured);
