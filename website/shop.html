@@ -22,7 +22,21 @@
       background: transparent;
       position: relative;
       z-index: 1;
+      overflow: hidden;
     }
+    .hero--small::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: url('img/hero-cosmic-ref.jpg') center 28% / cover no-repeat;
+      opacity: 0.08;
+      filter: sepia(0.35) brightness(0.52);
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 35%, #000 8%, transparent 78%);
+              mask-image: radial-gradient(ellipse 90% 70% at 50% 35%, #000 8%, transparent 78%);
+    }
+    .hero--small .container { position: relative; z-index: 1; }
 
     /* ── Affiliate disclosure ── */
     .disclosure-banner {

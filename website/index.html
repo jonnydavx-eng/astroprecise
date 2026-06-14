@@ -112,6 +112,22 @@
     .page-home .navbar__logo .logo-text { display: none; }
     .page-home .navbar__logo-icon { width: 28px; height: 28px; opacity: 0.88; }
 
+    /* Grok cinematic ref — observatory + zodiac wheel depth (subtle, right-weighted) */
+    .hero__cosmic-art {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: url('img/hero-cosmic-ref.jpg') 72% 38% / min(115%, 920px) auto no-repeat;
+      opacity: 0.13;
+      filter: sepia(0.42) saturate(1.12) brightness(0.52);
+      -webkit-mask-image: radial-gradient(ellipse 68% 62% at 72% 40%, #000 12%, transparent 74%);
+              mask-image: radial-gradient(ellipse 68% 62% at 72% 40%, #000 12%, transparent 74%);
+    }
+    @media (max-width: 900px) {
+      .hero__cosmic-art { opacity: 0.08; background-position: 88% 28%; }
+    }
+
     .hero::before {
       content: '';
       position: absolute;
@@ -1005,6 +1021,42 @@
           (3rem on mobile) cadence across the whole page. ── */
     :root { --section-pad-y: var(--space-16); }
     @media (max-width: 640px) { :root { --section-pad-y: var(--space-12); } }
+    /* Grok zodiac glyph banner — all 12 signs */
+    .zodiac-glyphs-band {
+      padding: var(--space-8) var(--space-4) var(--space-4);
+      position: relative;
+      z-index: 1;
+    }
+    .zodiac-glyphs-band__link {
+      display: block;
+      max-width: 920px;
+      margin: 0 auto;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 0 32px rgba(201, 162, 39, 0.06);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+    }
+    .zodiac-glyphs-band__link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 56px rgba(0, 0, 0, 0.5), 0 0 40px rgba(201, 162, 39, 0.12);
+    }
+    .zodiac-glyphs-band__link img {
+      width: 100%;
+      display: block;
+      filter: sepia(0.1) brightness(0.94);
+    }
+    .zodiac-glyphs-band__caption {
+      text-align: center;
+      margin-top: var(--space-3);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+    .zodiac-glyphs-band__caption a { color: var(--gold-hero); text-decoration: none; }
+    .zodiac-glyphs-band__caption a:hover { text-decoration: underline; }
+
     .features-section {
       padding: var(--section-pad-y) 0;
     }
@@ -1882,6 +1934,9 @@
     #preloader::before{content:'';position:absolute;inset:0;pointer-events:none;background:
       radial-gradient(38% 46% at 20% 16%, rgba(201,162,39,0.14), transparent 70%),
       radial-gradient(42% 48% at 84% 90%, rgba(110,26,38,0.22), transparent 72%);}
+    .apl-cosmic-art{position:absolute;inset:0;pointer-events:none;opacity:.1;
+      background:url('img/hero-cosmic-ref.jpg') center 32%/cover no-repeat;
+      filter:sepia(.38) saturate(1.1) brightness(.48);}
     #preloader.fade-out{opacity:0;transition:opacity .6s ease;}
     .apl-stars{position:absolute;inset:0;pointer-events:none;opacity:.85;background-image:
       radial-gradient(1.4px 1.4px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 28% 68%,#EFE3C0,transparent),
@@ -1923,6 +1978,7 @@
     @media (prefers-reduced-motion: reduce){#preloader.aligned .preloader-seal{animation:none;}}
   </style>
   <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
+    <div class="apl-cosmic-art" aria-hidden="true"></div>
     <div class="apl-stars" aria-hidden="true"></div>
     <div class="apl-orr" aria-hidden="true">
       <div class="apl-ring apl-r1"></div><div class="apl-ring apl-r2"></div><div class="apl-ring apl-r3"></div>
@@ -2130,6 +2186,7 @@
          HERO — Full viewport, two-column
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="hero" aria-label="Hero — Your cosmic blueprint">
+      <div class="hero__cosmic-art" aria-hidden="true"></div>
       <svg class="hero__constellation" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <g stroke-width="1" fill="none">
           <line x1="120" y1="180" x2="200" y2="140"/><line x1="200" y1="140" x2="280" y2="200"/><line x1="280" y1="200" x2="240" y2="280"/><line x1="240" y1="280" x2="120" y2="180"/>
@@ -2289,6 +2346,15 @@
           </div>
           <p class="live-sky-note" style="text-align:center;font-size:0.6rem;letter-spacing:0.08em;color:rgba(168,158,136,0.75);margin-top:0.6rem;">Tap a planet · same VSOP87 math as the orrery · recomputed live</p>
         </div>
+      </div>
+    </section>
+
+    <section class="zodiac-glyphs-band" aria-label="All twelve zodiac signs">
+      <div class="container">
+        <a href="horoscope.html" class="zodiac-glyphs-band__link" aria-label="Open daily horoscope for all twelve signs">
+          <img src="img/zodiac-glyphs-all.jpg" alt="All twelve zodiac signs in gold line art" width="1024" height="768" loading="lazy" decoding="async" />
+        </a>
+        <p class="zodiac-glyphs-band__caption">Twelve signs &middot; tap to spin the ring on <a href="horoscope.html">Daily Horoscope</a></p>
       </div>
     </section>
 
