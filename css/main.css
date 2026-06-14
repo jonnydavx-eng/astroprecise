@@ -6172,6 +6172,15 @@ html, body { overflow-x: clip; max-width: 100%; }
   border-radius: 50% 50% 46% 46%; pointer-events: none; z-index: 2;
   background: linear-gradient(rgba(255,255,255,0.62), rgba(255,255,255,0.04) 70%, rgba(255,255,255,0));
 }
+/* Force ENGRAVED TEXT glyphs, never colour-emoji, for every astrological symbol in
+   the DOM. Zodiac (U+2648–2653) + several planet glyphs default to emoji presentation
+   on Android; font-family alone doesn't override it — font-variant-emoji:text does.
+   (Canvas-drawn glyphs are handled separately by appending U+FE0E at the draw site.) */
+.ap-orb__glyph, .sign-card__glyph, .pl-dot, .planet-pill__symbol, .sky-pill__glyph,
+.sky-pill__placement, .category-icon, .planet-ticker__sym,
+[class*="glyph"], [class*="__symbol"] {
+  font-variant-emoji: text;
+}
 .ap-orb__glyph {
   position: relative; z-index: 1; color: #fff; font-style: normal;
   font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;

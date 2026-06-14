@@ -194,7 +194,7 @@
       ctx.fillStyle     = pl.col;
       ctx.textAlign     = 'center';
       ctx.textBaseline  = 'bottom';
-      ctx.fillText(pl.sym, pt.x, pt.y - r - 1);
+      ctx.fillText(pl.sym + '︎', pt.x, pt.y - r - 1);  // FE0E = force text glyph, not emoji
 
       ctx.globalAlpha = 1;
     }
@@ -249,12 +249,14 @@
       ctx.lineWidth = isSel || isHov ? 1.8 : 0.9;
       ctx.stroke();
 
-      // Zodiac glyph
+      // Zodiac glyph. Append U+FE0E (text-presentation selector) so Android/mobile
+      // canvas renders the engraved serif glyph instead of the colour-emoji square
+      // (zodiac signs U+2648–2653 default to emoji presentation otherwise).
       ctx.font         = `${r * 0.92}px Georgia, 'Times New Roman', serif`;
       ctx.fillStyle    = isSel ? '#c9a227' : isHov ? `rgb(${el[0]},${el[1]},${el[2]})` : '#C8BFA6';
       ctx.textAlign    = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(s.glyph, s.x, s.y);
+      ctx.fillText(s.glyph + '︎', s.x, s.y);
 
       // Name label — visible for near-side signs, always for hovered/selected
       const labelFade = Math.max(0, (s.depth - 0.35) / 0.35 + (isHov || isSel ? 1 : 0));

@@ -43,7 +43,7 @@
     if (opts.xl) cls += ' ap-orb--xl';
     if (opts.class) cls += ' ' + opts.class;
     const label = opts.label ? ' aria-label="' + opts.label + '" role="img"' : ' aria-hidden="true"';
-    return '<span class="' + cls + '"' + label + '><i class="ap-orb__glyph">' + glyph + '</i></span>';
+    return '<span class="' + cls + '"' + label + '><i class="ap-orb__glyph">' + glyph + '︎</i></span>';
   }
 
   function elementOf(signName) { return SIGN_ELEMENT[signName] || 'air'; }

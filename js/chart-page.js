@@ -22,9 +22,9 @@
     Sagittarius:'♐︎', Capricorn:'♑︎', Aquarius:'♒︎', Pisces:'♓︎',
   };
   const PLANET_GLYPHS = {
-    Sun:'☉', Moon:'☽', Mercury:'☿', Venus:'♀', Mars:'♂', Jupiter:'♃',
-    Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇', Chiron:'⚷', Lilith:'⚸',
-    NorthNode:'☊', SouthNode:'☋', Ascendant:'AC', Midheaven:'MC',
+    Sun:'☉︎', Moon:'☽︎', Mercury:'☿︎', Venus:'♀︎', Mars:'♂︎', Jupiter:'♃︎',
+    Saturn:'♄︎', Uranus:'♅︎', Neptune:'♆︎', Pluto:'♇︎', Chiron:'⚷︎', Lilith:'⚸︎',
+    NorthNode:'☊︎', SouthNode:'☋︎', Ascendant:'AC', Midheaven:'MC',
   };
   const ASPECT_DISPLAY = {
     conjunction:    { name:'Conjunction',    glyph:'☌', color:'#e8c96a' },

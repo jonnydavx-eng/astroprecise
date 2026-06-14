@@ -48,9 +48,9 @@
   ];
 
   const ZODIAC_GLYPHS = {
-    Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋',
-    Leo:'♌',   Virgo:'♍',  Libra:'♎',  Scorpio:'♏',
-    Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓'
+    Aries:'♈︎', Taurus:'♉︎', Gemini:'♊︎', Cancer:'♋︎',
+    Leo:'♌︎',   Virgo:'♍︎',  Libra:'♎︎',  Scorpio:'♏︎',
+    Sagittarius:'♐︎', Capricorn:'♑︎', Aquarius:'♒︎', Pisces:'♓︎'
   };
 
   // Element fill colors — warm observatory palette, kept distinguishable.
@@ -79,10 +79,10 @@
 
   // ─── Planet data ───────────────────────────────────────────────────────────
   const PLANET_GLYPHS = {
-    Sun:'☉',      Moon:'☽',      Mercury:'☿',  Venus:'♀',
-    Mars:'♂',     Jupiter:'♃',   Saturn:'♄',   Uranus:'♅',
-    Neptune:'♆',  Pluto:'♇',     Chiron:'⚷',   Lilith:'⚸',
-    NorthNode:'☊', SouthNode:'☋', Ascendant:'AC', Midheaven:'MC'
+    Sun:'☉︎',      Moon:'☽︎',      Mercury:'☿︎',  Venus:'♀︎',
+    Mars:'♂︎',     Jupiter:'♃︎',   Saturn:'♄︎',   Uranus:'♅︎',
+    Neptune:'♆︎',  Pluto:'♇︎',     Chiron:'⚷︎',   Lilith:'⚸︎',
+    NorthNode:'☊︎', SouthNode:'☋︎', Ascendant:'AC', Midheaven:'MC'
   };
 
   // Warm palette — Moon/Mercury warmed off cool silver; Uranus/Neptune off
