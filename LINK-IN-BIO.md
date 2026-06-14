@@ -28,7 +28,7 @@ step for people who already got value.
 ✦ **[FREE BIRTH CHART — Your Real Sky]**
 → `https://jonnydavx-eng.github.io/astroprecise/chart.html`
 _Every number is real (VSOP87/ELP2000). Computed in your browser — your birth data never leaves your
-device. Free, forever._
+device. Free to cast._
 
 ☉ **[TODAY'S SKY & YOUR HOROSCOPE]**
 → `https://jonnydavx-eng.github.io/astroprecise/horoscope.html`

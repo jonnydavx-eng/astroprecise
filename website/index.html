@@ -26,7 +26,7 @@
   <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
 
   <!-- App / PWA -->
-  <meta name="theme-color" content="#0A0B1F" />
+  <meta name="theme-color" content="#050406" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -68,7 +68,7 @@
 
     .glass--glow {
       border-color: var(--glass-border-glow);
-      box-shadow: 0 0 40px rgba(212, 175, 55, 0.06), inset 0 1px 0 rgba(255,255,255,0.05);
+      box-shadow: 0 0 40px rgba(201, 162, 39, 0.06), inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     /* ── Utility ── */
@@ -132,7 +132,7 @@
       .hero__subtitle { margin-left: auto; margin-right: auto; }
       .hero__orrery-wrap { order: 2; margin-top: var(--space-6); }
       #orrery-canvas { width: 420px; height: 420px; }
-      .hero__orrery-ring { padding: 1px; background: rgba(10,11,31,0.04); border-color: rgba(212,175,55,0.04); }
+      .hero__orrery-ring { padding: 1px; background: rgba(10,11,31,0.04); border-color: rgba(201,162,39,0.04); }
     }
     @media (max-width: 520px) {
       #orrery-canvas { width: 320px; height: 320px; }
@@ -201,7 +201,7 @@
       min-width: 180px;
       height: 52px;
       padding: 0 var(--space-5);
-      background: rgba(15, 18, 50, 0.7);
+      background: rgba(18, 15, 11, 0.7);
       border: 1px solid var(--glass-border-glow);
       border-radius: var(--radius-lg);
       color: var(--white);
@@ -214,13 +214,13 @@
     .hero__date-input:focus {
       outline: none;
       border-color: var(--gold-hero);
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
     }
 
     .hero__cast-btn {
       height: 52px;
       padding: 0 var(--space-7);
-      background: linear-gradient(135deg, var(--gold-hero) 0%, #c49a1a 100%);
+      background: linear-gradient(135deg, var(--gold-hero) 0%, #a8841e 100%);
       border: none;
       border-radius: var(--radius-lg);
       color: #0A0B1F;
@@ -230,7 +230,7 @@
       letter-spacing: 0.05em;
       cursor: pointer;
       transition: all var(--transition-base);
-      box-shadow: 0 4px 24px rgba(212, 175, 55, 0.3);
+      box-shadow: 0 4px 24px rgba(201, 162, 39, 0.3);
       white-space: nowrap;
       display: inline-flex;
       align-items: center;
@@ -238,12 +238,12 @@
     }
     .hero__cast-btn:hover {
       background: linear-gradient(135deg, var(--gold-hero-light) 0%, var(--gold-hero) 100%);
-      box-shadow: 0 6px 32px rgba(212, 175, 55, 0.45);
+      box-shadow: 0 6px 32px rgba(201, 162, 39, 0.45);
       transform: translateY(-1px);
     }
     .hero__cast-btn:active {
       transform: translateY(0);
-      box-shadow: 0 2px 12px rgba(212, 175, 55, 0.25);
+      box-shadow: 0 2px 12px rgba(201, 162, 39, 0.25);
     }
 
     .hero__trust {
@@ -299,10 +299,8 @@
       position: relative;
       padding: 0;
       border-radius: 50%;
-      /* fully dissolved frame – the orbital graphic lives inside the cosmic-hermetic nebula */
       background: transparent;
-      box-shadow: 0 0 120px rgba(10, 11, 31, 0.45), inset 0 0 90px rgba(10,11,31,0.35);
-      border: 1px solid rgba(212,175,55,0.035);
+      /* frame fully dissolved — no border, no cool-toned ring/shadow */
     }
 
     #orrery-canvas {
@@ -312,11 +310,27 @@
       border-radius: 50%;
       position: relative;
       z-index: 1;
-      background: transparent; /* fully blended into cosmic nebula background */
-      /* deep cosmic atmosphere + strong blend for immersive integration */
-      box-shadow: inset 0 0 140px rgba(10,11,31,0.55), 0 0 80px rgba(212,175,55,0.06);
-      mix-blend-mode: screen; /* helps planets and glows blend with background nebula/aurora */
+      background: transparent;
+      cursor: grab;
+      touch-action: none;
+      /* EDGE FEATHERING (alpha vignette): dissolve the canvas's own pixels to transparent
+         over the outer ~14% so there's NO hard circle edge — the warm nebula shows straight
+         through. -webkit- prefix is mandatory for iOS Safari. */
+      -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 60%, rgba(0,0,0,0.6) 80%, transparent 97%);
+              mask-image: radial-gradient(circle at 50% 50%, #000 60%, rgba(0,0,0,0.6) 80%, transparent 97%);
     }
+    #orrery-canvas:active { cursor: grabbing; }
+    /* Affordance hint — fades after a beat, returns on hover so the model never feels static/locked */
+    .orrery-hint {
+      position: absolute; left: 50%; bottom: 4%; transform: translateX(-50%);
+      font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(232,200,114,0.8); white-space: nowrap;
+      pointer-events: none; z-index: 3; text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+      opacity: 0; animation: orreryHint 9s ease forwards;
+    }
+    @keyframes orreryHint { 0%{opacity:0} 14%{opacity:.9} 76%{opacity:.9} 100%{opacity:0} }
+    .hero__orrery-ring:hover .orrery-hint { opacity: .85; animation: none; transition: opacity .3s; }
+    @media (prefers-reduced-motion: reduce) { .orrery-hint { animation: none; opacity: .7; } }
 
     .orrery-instrument {
       text-align: center;
@@ -356,7 +370,7 @@
       color: var(--gold-pale);
       letter-spacing: 0.01em;
       margin: 0;
-      text-shadow: 0 0 12px rgba(212,175,55,0.2);
+      text-shadow: 0 0 12px rgba(201,162,39,0.2);
     }
     .orrery-instrument__desc {
       font-size: 0.76rem;
@@ -368,7 +382,7 @@
     .orrery-instrument__desc strong {
       color: var(--gold-light);
       font-weight: 600;
-      text-shadow: 0 0 8px rgba(212,175,55,0.15);
+      text-shadow: 0 0 8px rgba(201,162,39,0.15);
     }
     /* subtle hermetic synchronicity glow on the instrument */
     .orrery-instrument::before {
@@ -390,7 +404,7 @@
     }
 
     .orrery-btn {
-      background: rgba(15, 18, 50, 0.65);
+      background: rgba(18, 15, 11, 0.65);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
       color: var(--silver-dim);
@@ -403,11 +417,11 @@
       transition: all var(--transition-fast);
       line-height: 1;
     }
-    .orrery-btn:hover { border-color: rgba(212, 175, 55, 0.35); color: var(--gold-hero-light); }
+    .orrery-btn:hover { border-color: rgba(201, 162, 39, 0.35); color: var(--gold-hero-light); }
     .orrery-btn.active {
       border-color: var(--gold-hero);
       color: var(--gold-hero-light);
-      background: rgba(212, 175, 55, 0.08);
+      background: rgba(201, 162, 39, 0.08);
     }
 
     .orrery-date {
@@ -455,7 +469,7 @@
       padding: var(--space-5) var(--space-6);
       width: 240px;
       text-align: center;
-      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 24px rgba(212, 175, 55, 0.08);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 24px rgba(201, 162, 39, 0.08);
       z-index: 10;
       animation: panel-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -520,7 +534,7 @@
       padding: var(--space-8) 0;
       border-top: 1px solid var(--glass-border);
       border-bottom: 1px solid var(--glass-border);
-      background: linear-gradient(180deg, rgba(15,18,50,0.3) 0%, transparent 100%);
+      background: linear-gradient(180deg, rgba(18,15,11,0.3) 0%, transparent 100%);
       overflow: hidden;
     }
 
@@ -606,8 +620,13 @@
     /* =====================================================================
        FEATURE BENTO GRID (4 cards)
        ===================================================================== */
+    /* ── One vertical-rhythm token drives every homepage section seam.
+          Was a mix of 6rem/4rem producing big, uneven gaps; now an even 4rem
+          (3rem on mobile) cadence across the whole page. ── */
+    :root { --section-pad-y: var(--space-16); }
+    @media (max-width: 640px) { :root { --section-pad-y: var(--space-12); } }
     .features-section {
-      padding: var(--space-24) 0;
+      padding: var(--section-pad-y) 0;
     }
 
     .bento-grid {
@@ -616,6 +635,9 @@
       grid-template-rows: auto auto;
       gap: var(--space-4);
     }
+    /* "Start here" is a focused two-door (Chart + Horoscope) — centred, not 2-of-4 columns */
+    #tools .bento-grid { grid-template-columns: repeat(2, 1fr); max-width: 920px; margin-inline: auto; }
+    @media (max-width: 640px) { #tools .bento-grid { grid-template-columns: 1fr; } }
 
     @media (max-width: 1100px) {
       .bento-grid { grid-template-columns: repeat(2, 1fr); }
@@ -645,14 +667,14 @@
     }
     /* stronger hermetic engraved cosmic on feature bento for site-wide mystical vibe */
     .bento-grid .bento-card { border-color: var(--border-ritual); }
-    .bento-grid .bento-card::after { box-shadow: 4px 4px 0 rgba(212,175,55,0.04), -4px -4px 0 rgba(201,162,39,0.04); }
+    .bento-grid .bento-card::after { box-shadow: 4px 4px 0 rgba(201,162,39,0.04), -4px -4px 0 rgba(201,162,39,0.04); }
 
     .bento-card::before {
       content: '';
       position: absolute;
       top: 0; left: 10%; right: 10%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.4), transparent);
       opacity: 0;
       transition: opacity 0.3s ease;
     }
@@ -662,14 +684,14 @@
       transform: translateY(-5px);
       box-shadow:
         0 20px 60px rgba(0,0,0,0.4),
-        0 0 40px rgba(212, 175, 55, 0.08),
+        0 0 40px rgba(201, 162, 39, 0.08),
         inset 0 1px 0 rgba(255,255,255,0.05);
     }
     .bento-card:hover::before { opacity: 1; }
 
     .bento-card--featured {
       grid-column: span 2;
-      background: linear-gradient(145deg, rgba(15,18,50,0.7) 0%, rgba(20,10,40,0.75) 100%);
+      background: linear-gradient(145deg, rgba(18,15,11,0.7) 0%, rgba(16,12,8,0.75) 100%);
     }
     .bento-card--featured:hover {
       border-color: rgba(201, 162, 39, 0.5);
@@ -744,7 +766,7 @@
        COSMIC STORY SECTION
        ===================================================================== */
     .cosmic-story-section {
-      padding: var(--space-24) 0;
+      padding: var(--section-pad-y) 0;
       position: relative;
     }
 
@@ -806,7 +828,7 @@
       align-items: flex-start;
       gap: var(--space-4);
       padding: var(--space-4) var(--space-5);
-      background: rgba(15, 18, 50, 0.45);
+      background: rgba(18, 15, 11, 0.45);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
       transition: border-color var(--transition-base);
@@ -855,8 +877,8 @@
        HOW IT WORKS
        ===================================================================== */
     .how-it-works {
-      padding: var(--space-24) 0;
-      background: linear-gradient(180deg, transparent 0%, rgba(15,18,50,0.25) 50%, transparent 100%);
+      padding: var(--section-pad-y) 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(18,15,11,0.25) 50%, transparent 100%);
     }
 
     .steps-grid {
@@ -900,8 +922,8 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.05) 100%);
-      border: 1.5px solid rgba(212, 175, 55, 0.4);
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.2) 0%, rgba(201, 162, 39, 0.05) 100%);
+      border: 1.5px solid rgba(201, 162, 39, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -911,7 +933,7 @@
       color: var(--gold-hero-light);
       margin-bottom: var(--space-6);
       flex-shrink: 0;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.12);
+      box-shadow: 0 0 20px rgba(201, 162, 39, 0.12);
     }
 
     .step-card__icon {
@@ -940,7 +962,7 @@
        ALL TOOLS SECTION
        ===================================================================== */
     .tools-section {
-      padding: var(--space-24) 0;
+      padding: var(--section-pad-y) 0;
     }
 
     .tools-bento {
@@ -977,7 +999,7 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    .tool-card:hover { border-color: var(--glass-border-glow); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.35), 0 0 32px rgba(212, 175, 55, 0.07); }
+    .tool-card:hover { border-color: var(--glass-border-glow); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.35), 0 0 32px rgba(201, 162, 39, 0.07); }
     .tool-card:hover::after { opacity: 1; }
 
     .tool-card--wide { grid-column: span 2; }
@@ -1028,7 +1050,7 @@
        PHILOSOPHY SECTION
        ===================================================================== */
     .philosophy-section {
-      padding: var(--space-24) 0;
+      padding: var(--section-pad-y) 0;
       position: relative;
     }
 
@@ -1071,7 +1093,7 @@
       position: absolute;
       top: 0; left: 20%; right: 20%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(201,162,39,0.4), transparent);
     }
 
     .philosophy-card__accent {
@@ -1085,8 +1107,8 @@
       font-size: 1.4rem;
     }
     .philosophy-card__accent--gold {
-      background: rgba(212, 175, 55, 0.12);
-      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: rgba(201, 162, 39, 0.12);
+      border: 1px solid rgba(201, 162, 39, 0.3);
     }
     .philosophy-card__accent--gold {
       background: rgba(201, 162, 39, 0.12);
@@ -1173,7 +1195,7 @@
       font-weight: 700;
       opacity: 0.75;
       padding: var(--space-2) var(--space-4);
-      border: 1px solid rgba(212, 175, 55, 0.2);
+      border: 1px solid rgba(201, 162, 39, 0.2);
       border-radius: var(--radius-full);
     }
 
@@ -1198,10 +1220,10 @@
       display: block;
       height: 1px;
       width: 40px;
-      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5));
+      background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.5));
     }
     .section-eyebrow::after {
-      background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), transparent);
+      background: linear-gradient(90deg, rgba(201, 162, 39, 0.5), transparent);
     }
 
     .section-h2 {
@@ -1279,7 +1301,7 @@
       color: var(--gold-hero);
       opacity: 0.6;
       padding: var(--space-1) var(--space-3);
-      border: 1px solid rgba(212, 175, 55, 0.2);
+      border: 1px solid rgba(201, 162, 39, 0.2);
       border-radius: var(--radius-full);
     }
 
@@ -1432,6 +1454,45 @@
       .privacy-badge { margin-left: auto; margin-right: auto; }
     }
   </style>
+
+  <!-- Structured data — WebSite + FAQPage (answers match the visible FAQ verbatim; honesty rule) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AstroPrecise",
+    "url": "https://jonnydavx-eng.github.io/astroprecise/",
+    "description": "Genuinely accurate astrology — your real birth chart computed privately in your browser from VSOP87/ELP2000. Free to cast; the full personalised reading is a one-time export."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is it really free?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Your birth chart, daily horoscope, compatibility, transits and the Instrument are all free to use — no account, no sign-up. The one thing you can pay for is the full personalised Deep Reading: a one-time PDF export drawn from your exact chart. It's never a subscription." }
+      },
+      {
+        "@type": "Question",
+        "name": "What's in the paid Deep Reading?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A long-form written interpretation of your whole chart — every placement, your tightest aspects, your dominant element and the houses they fall in — drawn line by line from the chart you just cast, and set as a PDF that's yours to keep." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my birth data private?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your chart is computed entirely in your browser — your birth moment is never sent to any server, and there's no account or tracking. The only outbound calls are public sky-data feeds and a place-name lookup (the typed place only, never your birth time)." }
+      },
+      {
+        "@type": "Question",
+        "name": "How accurate is it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Positions come from real astronomy — VSOP87 for the planets, ELP2000 for the Moon — accurate to roughly an arcminute for dates between 1800 and 2200 CE. Every figure on the site is labelled measured or computed, never invented." }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -1443,19 +1504,20 @@
   <style>
     /* Cosmic lapis+gold intro preloader — themed to match the hero/orrery */
     #preloader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:all;
-      background:radial-gradient(ellipse 120% 92% at 50% 44%, #14204c 0%, #0b1228 44%, #070912 100%);}
+      padding:max(24px,env(safe-area-inset-top)) 20px max(28px,env(safe-area-inset-bottom));
+      background:radial-gradient(ellipse 120% 92% at 50% 38%, #0D0A07 0%, #050406 60%, #030203 100%);}
     #preloader::before{content:'';position:absolute;inset:0;pointer-events:none;background:
-      radial-gradient(38% 46% at 20% 16%, rgba(42,74,148,0.40), transparent 70%),
+      radial-gradient(38% 46% at 20% 16%, rgba(201,162,39,0.14), transparent 70%),
       radial-gradient(42% 48% at 84% 90%, rgba(110,26,38,0.22), transparent 72%);}
     #preloader.fade-out{opacity:0;transition:opacity .6s ease;}
     .apl-stars{position:absolute;inset:0;pointer-events:none;opacity:.85;background-image:
-      radial-gradient(1.4px 1.4px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 28% 68%,#cfe0ff,transparent),
+      radial-gradient(1.4px 1.4px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 28% 68%,#EFE3C0,transparent),
       radial-gradient(1.2px 1.2px at 47% 12%,#fff,transparent),radial-gradient(1px 1px at 66% 78%,#fff,transparent),
       radial-gradient(1.3px 1.3px at 82% 34%,#ffe9b8,transparent),radial-gradient(1px 1px at 91% 62%,#fff,transparent),
-      radial-gradient(1px 1px at 58% 48%,#cfe0ff,transparent),radial-gradient(1px 1px at 38% 88%,#fff,transparent),
+      radial-gradient(1px 1px at 58% 48%,#EFE3C0,transparent),radial-gradient(1px 1px at 38% 88%,#fff,transparent),
       radial-gradient(1px 1px at 8% 52%,#fff,transparent),radial-gradient(1px 1px at 73% 18%,#fff,transparent);}
-    .apl-orr{position:absolute;top:46%;left:50%;width:min(74vmin,560px);height:min(74vmin,560px);transform:translate(-50%,-50%) scaleY(.34);pointer-events:none;}
-    .apl-ring{position:absolute;top:50%;left:50%;border:1px solid rgba(201,162,39,.22);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 22px rgba(42,74,148,.25),inset 0 0 34px rgba(42,74,148,.12);}
+    .apl-orr{position:absolute;top:44%;left:50%;width:min(66vmin,480px);height:min(66vmin,480px);transform:translate(-50%,-50%) scaleY(.34);pointer-events:none;}
+    .apl-ring{position:absolute;top:50%;left:50%;border:1px solid rgba(201,162,39,.22);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 22px rgba(201,162,39,.18),inset 0 0 34px rgba(201,162,39,.08);}
     .apl-r1{width:36%;height:36%;}.apl-r2{width:60%;height:60%;}.apl-r3{width:86%;height:86%;}
     .apl-spin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:apl-orbit linear infinite;}
     .apl-s1{width:36%;height:36%;animation-duration:20s;}.apl-s2{width:60%;height:60%;animation-duration:34s;}.apl-s3{width:86%;height:86%;animation-duration:52s;}
@@ -1471,11 +1533,19 @@
     @keyframes seal-pulse{0%,100%{opacity:.8;}50%{opacity:1;}}
     /* The REAL 3D orrery (same model as the hero) is relocated into this slot during loading,
        then flown into the hero on dismiss. The CSS-mock above stays as a graceful fallback. */
-    .apl-live-orr{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:min(86vmin,640px);height:min(86vmin,640px);pointer-events:none;z-index:2;opacity:0;transition:opacity 1s ease;}
+    .apl-live-orr{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:min(66vmin,480px);height:min(66vmin,480px);pointer-events:auto;z-index:2;opacity:0;transition:opacity 1s ease;cursor:grab;}
+    .apl-live-orr:active{cursor:grabbing;}
     .apl-live-orr canvas{width:100%!important;height:100%!important;display:block;}
     #preloader.has-real .apl-live-orr{opacity:1;}
     #preloader.has-real .apl-orr,#preloader.has-real .apl-core{opacity:0;transition:opacity .9s ease;}
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core,.preloader-seal{animation:none;}}
+    /* The way-in is revealed only when the sky SETTLES (driven by the orrery, not a blind timer) */
+    #preloader-enter,#preloader-tagline{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
+    #preloader.aligned #preloader-enter,#preloader.aligned #preloader-tagline{opacity:1;transform:none;pointer-events:auto;}
+    #preloader.aligned #preloader-progress{opacity:0;transition:opacity .4s ease;}
+    #preloader.aligned .preloader-seal{animation:sealFlare 1.3s ease-out;}
+    @keyframes sealFlare{0%{transform:scale(1);}42%{transform:scale(1.22);text-shadow:0 0 72px rgba(201,162,39,.95);}100%{transform:scale(1);}}
+    @media (prefers-reduced-motion: reduce){#preloader.aligned .preloader-seal{animation:none;}}
   </style>
   <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
     <div class="apl-stars" aria-hidden="true"></div>
@@ -1488,16 +1558,17 @@
     <div class="apl-core" aria-hidden="true"></div>
     <!-- The real 3D orrery (same model as the hero centrepiece) is relocated here during loading -->
     <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
-    <div class="preloader-content" style="position:relative; z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto; padding:0 24px;">
+    <div class="preloader-content" style="position:absolute; left:50%; bottom:max(6vh, calc(env(safe-area-inset-bottom) + 18px)); transform:translateX(-50%); width:min(31rem,90vw); z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto;">
       <div class="preloader-seal" style="font-size:2.6rem; color:#C9A227; margin-bottom:10px; opacity:0.9; text-shadow:0 0 40px rgba(201,162,39,0.6); animation:seal-pulse 3.2s ease-in-out infinite;">✧</div>
       <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px;">The Spheres Align</div>
-      <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:28px; font-style:italic; color:#cdbf9f;">Consulting the Hermetic Record • Sky as Eternal Clock</div>
+      <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:28px; font-style:italic; color:#cdbf9f;">The living solar system, aligned for this very moment. Take a moment with it &mdash; then step inside.</div>
       <div class="preloader-progress" id="preloader-progress" style="width:230px; margin:0 auto 26px;">
         <div class="preloader-bar" style="height:1px; background:rgba(201,162,39,0.18); border-radius:1px; overflow:hidden;">
-          <div id="preloader-fill" style="height:100%; width:0%; background:linear-gradient(to right, #2a4a94, #C9A227, #F0E8D8); box-shadow:0 0 8px rgba(201,162,39,0.6); transition:width 1.8s cubic-bezier(0.22,1,0.36,1);"></div>
+          <div id="preloader-fill" style="height:100%; width:0%; background:linear-gradient(to right, #6e1a26, #C9A227, #EFE3C0); box-shadow:0 0 8px rgba(201,162,39,0.6); transition:width 1.8s cubic-bezier(0.22,1,0.36,1);"></div>
         </div>
       </div>
-      <button id="preloader-enter" class="preloader-skip" aria-label="Click to enter after alignment" style="display:none; font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(42,74,148,0.28),rgba(12,18,40,0.5)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(42,74,148,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;">✧ Click to Enter the Record</button>
+      <button id="preloader-enter" class="preloader-skip" aria-label="Enter the site" style="font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(28,22,12,0.5),rgba(12,10,7,0.62)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;">&#10022;&nbsp; Enter Your Sky &nbsp;&rarr;</button>
+      <div id="preloader-tagline" style="margin-top:14px; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.86rem; letter-spacing:0.06em; color:#cdbf9f; opacity:0.85;">Your real sky, free &middot; computed privately &middot; every number real &#10022;</div>
     </div>
   </div>
 
@@ -1506,6 +1577,17 @@
   (function preloaderMasterpiece() {
     const pre = document.getElementById('preloader');
     if (!pre) return;
+    // Show the cinematic intro ONCE per browser session. Returning to Home mid-session
+    // (or arriving from an internal page) skips it entirely → smooth, never re-gated.
+    // Fail-open: if sessionStorage throws (private mode), the intro simply shows.
+    let introSeen = false;
+    try { introSeen = sessionStorage.getItem('ap_intro_seen') === '1'; } catch (e) {}
+    if (introSeen) {
+      pre.style.display = 'none';
+      if (pre.parentNode) pre.parentNode.removeChild(pre);
+      return; // the hero-boot path inits the orrery normally on repeat visits
+    }
+    try { sessionStorage.setItem('ap_intro_seen', '1'); } catch (e) {}
     let raf = null;
     const fill = document.getElementById('preloader-fill');
     if (fill) fill.style.width = '100%';
@@ -1517,8 +1599,10 @@
 
     // ── The REAL 3D orrery (same model as the hero centrepiece) on the loading screen ──
     const orrSlot = document.getElementById('preloader-orrery-slot');
-    const orrCanvas = document.getElementById('orrery-canvas');
-    const heroRing = orrCanvas ? orrCanvas.parentElement : null;   // .hero__orrery-ring
+    // The hero #orrery-canvas is parsed LATER in the DOM than this early script, so
+    // resolve it lazily (poll) inside the feature fn rather than capturing null now.
+    let orrCanvas = null;
+    let heroRing = null;
     let orreryRelocated = false;
     function waitForGlobal(test, ms) {
       return new Promise((res) => { const t0 = Date.now();
@@ -1545,53 +1629,55 @@
 
     // Mount the same WebGL orrery onto the centred loading stage as soon as the engine is ready.
     (async function featureOrreryOnLoadingScreen() {
-      if (!orrSlot || !orrCanvas || !heroRing) return;
-      const ready = await waitForGlobal(() => window.Orrery3D && window.AstroEphemeris, 3800);
-      if (!ready || preDone) return;                 // engine slow / already dismissed → CSS mock stays, hero inits normally
+      if (!orrSlot) return;
+      // Wait for BOTH the (later-parsed) hero canvas AND the engine to exist.
+      const ready = await waitForGlobal(() => {
+        if (!orrCanvas) orrCanvas = document.getElementById('orrery-canvas');
+        return orrCanvas && orrCanvas.parentElement && window.Orrery3D && window.AstroEphemeris;
+      }, 20000);   // generous window so a slow first paint can't strand the static CSS-mock
+      if (!ready || preDone) return;                 // engine/canvas slow or already dismissed → CSS mock stays
+      heroRing = orrCanvas.parentElement;            // remember home so we can fly it back on enter
       orrSlot.appendChild(orrCanvas);                // move the ONE canvas onto the loading stage
       orrCanvas.style.width = '100%'; orrCanvas.style.height = '100%';
       orreryRelocated = true;
       try {
-        window.Orrery3D.init(orrCanvas);
-        window.__orreryReady = true;                 // tells the hero boot not to double-init
-        if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(6); // gentle drift while loading
+        if (!window.__orreryReady) {                 // init once; if the hero already booted it, adopt it instead
+          window.Orrery3D.init(orrCanvas);
+          window.__orreryReady = true;               // tell the hero boot not to double-init
+        }
+        // Hold the LIVE positions still — a settled sky reads as "aligned" (and is honest: planets at NOW, not drifting).
+        if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
         pre.classList.add('has-real');               // fade the CSS-mock fallback, reveal the real model
+        // Play the camera pull-back now the real model is visible; reveal the way-in when the sky SETTLES.
+        if (typeof window.Orrery3D.restartIntro === 'function') {
+          try { window.Orrery3D.onIntroDone = function () { revealEnter(); }; } catch (e) {}
+          window.Orrery3D.restartIntro();
+        }
       } catch (e) {}
     })();
 
     // After the brief alignment, reveal the "Enter" button as an instant skip…
-    setTimeout(() => {
-      if (progress) progress.style.display = 'none';
-      if (enterBtn) {
-        enterBtn.style.display = 'inline-block';
+    const tagline = document.getElementById('preloader-tagline');
+    function revealEnter() {
+      pre.classList.add('aligned');   // CSS fades Enter + tagline in, fades the progress bar out
+      if (enterBtn && !enterBtn.dataset.wired) {
+        enterBtn.dataset.wired = '1';
         enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
       }
-    }, 2200);
+    }
+    // Entry reveal is driven by the orrery's onIntroDone (the sky settling) — see above.
+    // The timers below are only safety nets so the button can never be unreachable.
 
-    // …but ALSO auto-reveal the site so a visitor is NEVER trapped behind the gate.
-    // (4.2s gives the real 3D orrery a moment to shine on the loading stage; the Enter
-    //  button at 2.2s and tap-anywhere remain as instant skips.)
-    setTimeout(hidePre, 4200);
-
-    // Fallback: allow click anywhere on preloader after short time (ancient "touch the seal")
-    pre.addEventListener('click', function onFirstClick(e) {
-      if (enterBtn && enterBtn.style.display !== 'none') {
-        return;
-      }
-      if (Date.now() - startTime > 1800) {
-        pre.removeEventListener('click', onFirstClick);
-        hidePre();
-      }
-    });
+    // No auto-dismiss: the visitor lingers on the live orrery and enters when ready.
+    // Re-assert the reveal at 5s (in case 2.6s fired before the button existed), and
+    // keep only a long last-resort safety net so no one is ever truly trapped.
+    setTimeout(revealEnter, 5000);
+    setTimeout(hidePre, 90000);   // 90s safety only — never rushes, never traps
+    // (tap-anywhere-to-enter removed: the orrery is now draggable, so a drag must
+    //  not dismiss; entry is the explicit button.)
 
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setTimeout(() => {
-        if (progress) progress.style.display = 'none';
-        if (enterBtn) {
-          enterBtn.style.display = 'inline-block';
-          enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
-        }
-      }, 600);
+      setTimeout(revealEnter, 600);
     }
   })();
   </script>
@@ -1706,7 +1792,7 @@
             <span class="hero__trust-dot" aria-hidden="true"></span>
             <span>No account required</span>
             <span class="hero__trust-dot" aria-hidden="true"></span>
-            <span>Free forever</span>
+            <span>Free chart</span>
           </p>
 
           <!-- Privacy badge — glass/cosmic callout -->
@@ -1748,9 +1834,10 @@
               width="580"
               height="580"
               role="img"
-              aria-label="The Living Orrery – real solar system positions starting from Earth. Drag to explore, scrub time to watch the sky move. These exact positions power every chart on AstroPrecise."
+              aria-label="The Living Orrery – real solar system positions starting from Earth. Drag to explore, scrub time to watch the sky move. These real positions power every chart on AstroPrecise."
               style="position:relative;z-index:1;"
             ></canvas>
+            <div class="orrery-hint" aria-hidden="true">✦&nbsp; drag to explore &middot; scroll to zoom</div>
           </div>
 
           <!-- Planet info panel (shown on planet click) -->
@@ -1821,12 +1908,12 @@
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="features-section" id="tools" aria-labelledby="features-heading">
       <div class="container">
-        <header style="text-align:center;margin-bottom:var(--space-12);">
-          <p class="section-eyebrow">Precision Tools</p>
-          <h2 class="section-h2" id="features-heading">Your complete cosmic toolkit</h2>
+        <header style="text-align:center;margin-bottom:var(--space-10);">
+          <p class="section-eyebrow">Start here</p>
+          <h2 class="section-h2" id="features-heading">Two doors into your sky</h2>
           <p class="section-subtitle">
-            Four signature instruments, each built on verified astronomical algorithms
-            and deep symbolic traditions.
+            Cast your full birth chart, or read today's sky for your sign — both free,
+            both computed privately in your browser. The complete personalised reading is a one-time export.
           </p>
         </header>
 
@@ -1834,7 +1921,7 @@
           <!-- Birth Chart — featured, spans 2 cols -->
           <a href="chart.html" class="bento-card bento-card--featured reveal" role="listitem" aria-label="Birth Chart calculator">
             <span class="bento-card__symbol" aria-hidden="true">⊙</span>
-            <p class="bento-card__tag">Signature Tool</p>
+            <p class="bento-card__tag">Free · Signature tool</p>
             <h3 class="bento-card__title">Birth Chart</h3>
             <p class="bento-card__body">
               Your complete natal blueprint — 10 planets, 12 houses, all major and minor
@@ -1847,7 +1934,7 @@
           <!-- Daily Horoscope -->
           <a href="horoscope.html" class="bento-card reveal reveal-delay-1" role="listitem" aria-label="Daily Horoscope">
             <span class="bento-card__symbol" aria-hidden="true">☽</span>
-            <p class="bento-card__tag">Daily</p>
+            <p class="bento-card__tag">Free · Daily</p>
             <h3 class="bento-card__title">Daily Horoscope</h3>
             <p class="bento-card__body">
               Sign-specific readings derived from real planetary transits — not generic predictions.
@@ -1856,29 +1943,8 @@
             <span class="bento-card__cta" aria-hidden="true">Read Today's &rarr;</span>
           </a>
 
-          <!-- Life Path -->
-          <a href="lifepath.html" class="bento-card reveal reveal-delay-2" role="listitem" aria-label="Life Path numerology">
-            <span class="bento-card__symbol" aria-hidden="true">✦</span>
-            <p class="bento-card__tag">Numerology</p>
-            <h3 class="bento-card__title">Life Path</h3>
-            <p class="bento-card__body">
-              Your numerological blueprint — Life Path, Expression, Soul Urge, and Personal Year
-              numbers computed via Pythagorean reduction, with all master numbers preserved.
-            </p>
-            <span class="bento-card__cta" aria-hidden="true">Find Your Number &rarr;</span>
-          </a>
-
-          <!-- Compatibility -->
-          <a href="compatibility.html" class="bento-card reveal reveal-delay-2" role="listitem" aria-label="Compatibility synastry analysis">
-            <span class="bento-card__symbol" aria-hidden="true">♡</span>
-            <p class="bento-card__tag">Synastry</p>
-            <h3 class="bento-card__title">Compatibility</h3>
-            <p class="bento-card__body">
-              Two charts overlaid in full synastry — inter-chart aspects measured with precise
-              orbs, elemental compatibility scores, and shareable invite links.
-            </p>
-            <span class="bento-card__cta" aria-hidden="true">Compare Charts &rarr;</span>
-          </a>
+          <!-- Life Path & Compatibility live in the full instrument set below — kept out
+               of this two-door row so the same cards don't appear twice on one page. -->
         </div>
       </div>
     </section>
@@ -1953,37 +2019,37 @@
           <div class="cosmic-story__wheel-wrap reveal reveal-delay-2" aria-hidden="true">
             <svg class="zodiac-wheel-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative zodiac wheel">
               <!-- Outer ring -->
-              <circle cx="200" cy="200" r="190" stroke="rgba(212,175,55,0.15)" stroke-width="1.5" fill="none"/>
+              <circle cx="200" cy="200" r="190" stroke="rgba(201,162,39,0.15)" stroke-width="1.5" fill="none"/>
               <!-- Middle ring -->
-              <circle cx="200" cy="200" r="155" stroke="rgba(212,175,55,0.1)" stroke-width="1" fill="none"/>
+              <circle cx="200" cy="200" r="155" stroke="rgba(201,162,39,0.1)" stroke-width="1" fill="none"/>
               <!-- Inner ring -->
               <circle cx="200" cy="200" r="120" stroke="rgba(0,212,255,0.12)" stroke-width="1" fill="none"/>
               <!-- Innermost -->
               <circle cx="200" cy="200" r="80" stroke="rgba(123,44,191,0.15)" stroke-width="1" fill="none"/>
               <!-- Center sun -->
-              <circle cx="200" cy="200" r="12" fill="rgba(212,175,55,0.25)" stroke="rgba(212,175,55,0.5)" stroke-width="1"/>
+              <circle cx="200" cy="200" r="12" fill="rgba(201,162,39,0.25)" stroke="rgba(201,162,39,0.5)" stroke-width="1"/>
               <!-- 12 spoke lines -->
-              <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
-              <line x1="10" y1="200" x2="390" y2="200" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
-              <line x1="62" y1="62" x2="338" y2="338" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
-              <line x1="338" y1="62" x2="62" y2="338" stroke="rgba(212,175,55,0.07)" stroke-width="1"/>
-              <line x1="10" y1="131" x2="390" y2="269" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
-              <line x1="10" y1="269" x2="390" y2="131" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
-              <line x1="131" y1="10" x2="269" y2="390" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
-              <line x1="269" y1="10" x2="131" y2="390" stroke="rgba(212,175,55,0.05)" stroke-width="0.5"/>
+              <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(201,162,39,0.07)" stroke-width="1"/>
+              <line x1="10" y1="200" x2="390" y2="200" stroke="rgba(201,162,39,0.07)" stroke-width="1"/>
+              <line x1="62" y1="62" x2="338" y2="338" stroke="rgba(201,162,39,0.07)" stroke-width="1"/>
+              <line x1="338" y1="62" x2="62" y2="338" stroke="rgba(201,162,39,0.07)" stroke-width="1"/>
+              <line x1="10" y1="131" x2="390" y2="269" stroke="rgba(201,162,39,0.05)" stroke-width="0.5"/>
+              <line x1="10" y1="269" x2="390" y2="131" stroke="rgba(201,162,39,0.05)" stroke-width="0.5"/>
+              <line x1="131" y1="10" x2="269" y2="390" stroke="rgba(201,162,39,0.05)" stroke-width="0.5"/>
+              <line x1="269" y1="10" x2="131" y2="390" stroke="rgba(201,162,39,0.05)" stroke-width="0.5"/>
               <!-- Zodiac glyphs at 30° intervals -->
-              <text x="196" y="28" fill="rgba(212,175,55,0.6)" font-size="14" text-anchor="middle" font-family="serif">♈</text>
-              <text x="275" y="50" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♉</text>
-              <text x="346" y="120" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♊</text>
-              <text x="370" y="200" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♋</text>
-              <text x="346" y="282" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♌</text>
-              <text x="275" y="354" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♍</text>
-              <text x="196" y="378" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♎</text>
-              <text x="118" y="354" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♏</text>
-              <text x="46" y="282" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♐</text>
-              <text x="22" y="205" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♑</text>
-              <text x="46" y="120" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♒</text>
-              <text x="118" y="50" fill="rgba(212,175,55,0.55)" font-size="14" text-anchor="middle" font-family="serif">♓</text>
+              <text x="196" y="28" fill="rgba(201,162,39,0.6)" font-size="14" text-anchor="middle" font-family="serif">♈</text>
+              <text x="275" y="50" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♉</text>
+              <text x="346" y="120" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♊</text>
+              <text x="370" y="200" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♋</text>
+              <text x="346" y="282" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♌</text>
+              <text x="275" y="354" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♍</text>
+              <text x="196" y="378" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♎</text>
+              <text x="118" y="354" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♏</text>
+              <text x="46" y="282" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♐</text>
+              <text x="22" y="205" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♑</text>
+              <text x="46" y="120" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♒</text>
+              <text x="118" y="50" fill="rgba(201,162,39,0.55)" font-size="14" text-anchor="middle" font-family="serif">♓</text>
               <!-- Planet glyphs inside -->
               <text x="200" y="170" fill="rgba(240,192,64,0.45)" font-size="18" text-anchor="middle" font-family="serif">☉</text>
               <text x="230" y="215" fill="rgba(200,216,232,0.4)" font-size="16" text-anchor="middle" font-family="serif">☽</text>
@@ -2024,10 +2090,10 @@
           <div class="step-card reveal reveal-delay-2">
             <div class="step-card__number" aria-hidden="true">II</div>
             <span class="step-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gear"/></svg></span>
-            <h3 class="step-card__title">VSOP87 Calculates Exact Positions</h3>
+            <h3 class="step-card__title">VSOP87 Computes Precise Positions</h3>
             <p class="step-card__text">
               Our VSOP87-derived astronomical engine computes every planet's position,
-              the Ascendant, Midheaven, and all twelve house cusps for the exact moment
+              the Ascendant, Midheaven, and all twelve house cusps for the precise moment
               and coordinates of your birth — instantly, entirely in your browser.
             </p>
           </div>
@@ -2061,7 +2127,7 @@
           <p class="section-eyebrow">Everything in one place</p>
           <h2 class="section-h2" id="tools-heading">Explore all instruments</h2>
           <p class="section-subtitle">
-            Eight precision instruments — all free, all offline-capable, nothing sent to any server.
+            Eight precision instruments — free to use, offline-capable, nothing sent to any server. The full personalised reading is a one-time export.
           </p>
           <p style="margin-top:0.9rem;"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Every figure is real — labelled measured or computed, never faked</span></a></p>
         </header>
@@ -2215,7 +2281,7 @@
           <p>
             Same question, same moment, <strong>same answer, always</strong> — no random flattery,
             no shuffled cards, no probabilistic fudging. And everything happens here, in your hands:
-            nothing sent anywhere, no account, no tracking, no price.
+            nothing sent anywhere, no account, no tracking, no subscription.
           </p>
           <div class="manifesto-beats" role="list" aria-label="Core principles">
             <span class="manifesto-beat" role="listitem">Precision</span>
@@ -2227,28 +2293,63 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════════════════════════
+         FAQ — objection handling before the offer (honesty-safe: verifiable claims only)
+         ══════════════════════════════════════════════════════════════════════ -->
+    <style>
+      .ap-faq__item { border:1px solid rgba(201,162,39,.18); border-radius:12px; margin-bottom:10px; background:linear-gradient(160deg,rgba(20,16,10,.4),rgba(10,8,6,.6)); overflow:hidden; }
+      .ap-faq__item summary { cursor:pointer; list-style:none; padding:15px 20px; font-family:'Cinzel',serif; font-size:.92rem; color:var(--gold-light,#EFE3C0); display:flex; justify-content:space-between; align-items:center; gap:12px; }
+      .ap-faq__item summary::-webkit-details-marker { display:none; }
+      .ap-faq__item summary::after { content:'\002B'; color:var(--gold,#C9A227); font-size:1.1rem; transition:transform .25s ease; }
+      .ap-faq__item[open] summary::after { transform:rotate(45deg); }
+      .ap-faq__item > p { margin:0; padding:0 20px 18px; font-family:'Cormorant Garamond',serif; font-size:1.05rem; line-height:1.7; color:var(--silver,#A89E88); }
+      .ap-faq__item > p a { color:var(--gold,#C9A227); }
+    </style>
+    <section id="faq" aria-labelledby="faq-heading" style="padding:var(--section-pad-y) 0;">
+      <div class="container" style="max-width:760px;">
+        <header style="text-align:center;margin-bottom:var(--space-10);">
+          <p class="section-eyebrow">Good to know</p>
+          <h2 class="section-h2" id="faq-heading">Questions, answered honestly</h2>
+        </header>
+        <div class="ap-faq">
+          <details class="ap-faq__item"><summary>Is it really free?</summary>
+            <p>Your birth chart, daily horoscope, compatibility, transits and the Instrument are all free to use — no account, no sign-up. The one thing you can pay for is the full personalised <strong>Deep Reading</strong>: a one-time PDF export drawn from your exact chart. It's never a subscription.</p>
+          </details>
+          <details class="ap-faq__item"><summary>What's in the paid Deep Reading?</summary>
+            <p>A long-form written interpretation of your whole chart — every placement, your tightest aspects, your dominant element and the houses they fall in — drawn line by line from the chart you just cast, and set as a PDF that's yours to keep.</p>
+          </details>
+          <details class="ap-faq__item"><summary>Is my birth data private?</summary>
+            <p>Yes. Your chart is computed entirely in your browser — your birth moment is never sent to any server, and there's no account or tracking. The only outbound calls are public sky-data feeds and a place-name lookup (the typed place only, never your birth time).</p>
+          </details>
+          <details class="ap-faq__item"><summary>How accurate is it?</summary>
+            <p>Positions come from real astronomy — VSOP87 for the planets, ELP2000 for the Moon — accurate to roughly an arcminute for dates between 1800 and 2200 CE. Every figure on the site is labelled <em>measured</em> or <em>computed</em>, never invented. <a href="why.html">See exactly how &rarr;</a></p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
          OFFERINGS / SUPPORT — wired to the AP_MON engine (app.js).
          Cards are dormant ("coming soon") until the owner pastes real URLs.
          ══════════════════════════════════════════════════════════════════════ -->
     <section id="offerings" aria-label="Support and offerings"
-             style="max-width:1080px;margin:0 auto;padding:76px 24px;">
+             style="max-width:1080px;margin:0 auto;padding:var(--section-pad-y) 24px;">
       <div style="text-align:center;margin-bottom:40px;">
-        <p style="font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold,#C9A227);opacity:.85;margin:0 0 .5em;">&middot;&nbsp; Keep the sky free &nbsp;&middot;</p>
-        <h2 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light,#EFE3C0);font-size:clamp(1.5rem,3.4vw,2.2rem);margin:0 0 .4em;text-wrap:balance;text-shadow:0 0 34px rgba(201,162,39,.18);">Free forever — kept alight by those who can</h2>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:1.14rem;line-height:1.75;color:var(--silver,#A89E88);max-width:580px;margin:0 auto;text-wrap:pretty;">Every chart and reading is computed privately in your browser, and always free. If it served you, keep it lit — or take home something deeper.</p>
+        <p style="font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold,#C9A227);opacity:.85;margin:0 0 .5em;">&middot;&nbsp; Support the instrument &nbsp;&middot;</p>
+        <h2 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light,#EFE3C0);font-size:clamp(1.5rem,3.4vw,2.2rem);margin:0 0 .4em;text-wrap:balance;text-shadow:0 0 34px rgba(201,162,39,.18);">The chart is free. The deep reading is yours to keep.</h2>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.14rem;line-height:1.75;color:var(--silver,#A89E88);max-width:580px;margin:0 auto;text-wrap:pretty;">Every chart is computed privately in your browser, free to cast. When you want the whole story, the full personalised reading exports as a one-time PDF pack — no subscription, yours forever. If the free chart served you, you can also just keep it lit.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(264px,1fr));gap:18px;">
         <div style="border:1px solid rgba(201,162,39,.18);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(20,16,10,.55),rgba(10,8,6,.72));">
           <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;">&#9829;</div>
           <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">Support the Instrument</h3>
-          <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Buy the maker a coffee. Keeps AstroPrecise free, private, and ad-free.</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Buy the maker a coffee. Keeps the free chart private, ad-free, and open to all.</p>
           <a data-mon="tip" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C9A227);border:1px solid rgba(201,162,39,.4);border-radius:30px;padding:11px 26px;text-decoration:none;">&#9829;&nbsp; Support</a>
         </div>
         <div style="border:1px solid rgba(201,162,39,.4);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(201,162,39,.08),rgba(10,8,6,.78));box-shadow:0 0 40px rgba(201,162,39,.08);">
           <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;">&#10038;</div>
           <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">The Deep Reading</h3>
           <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">A long, hand-crafted interpretation of your whole chart &mdash; delivered as a beautiful PDF.</p>
-          <a data-mon="report" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#0a0805;background:linear-gradient(160deg,#D9B544,#A8841E);border:none;border-radius:30px;padding:12px 28px;text-decoration:none;font-weight:700;">Get the PDF</a>
+          <a data-mon="deepReading" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#0a0805;background:linear-gradient(160deg,#D9B544,#A8841E);border:none;border-radius:30px;padding:12px 28px;text-decoration:none;font-weight:700;">Get the PDF</a>
         </div>
         <div style="border:1px solid rgba(201,162,39,.18);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(20,16,10,.55),rgba(10,8,6,.72));">
           <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;">&#9993;</div>

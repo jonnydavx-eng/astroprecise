@@ -223,10 +223,10 @@
     cv.width = W; cv.height = H;
     const x = cv.getContext('2d');
 
-    x.fillStyle = '#06060f';
+    x.fillStyle = '#050406';
     x.fillRect(0, 0, W, H);
     const neb = x.createRadialGradient(W / 2, 430, 0, W / 2, 430, 520);
-    neb.addColorStop(0, 'rgba(123, 44, 191, 0.22)');
+    neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, W, H);
 
@@ -297,11 +297,11 @@
 
     // ── text ──
     x.textAlign = 'center';
-    x.fillStyle = '#D4AF37';
+    x.fillStyle = '#C9A227';
     x.font = '26px Georgia, serif';
     x.fillText('✦  T H E   L I G H T - C O N E  ✦', W / 2, 130);
 
-    x.fillStyle = '#9aa6c8';
+    x.fillStyle = '#A89E88';
     x.font = '30px Georgia, serif';
     x.fillText('The light of my first breath has reached', W / 2, 830);
 
@@ -309,11 +309,11 @@
     x.font = 'bold 76px Georgia, serif';
     x.fillText(`${m.reached.length} star systems`, W / 2, 920);
 
-    x.fillStyle = '#9aa6c8';
+    x.fillStyle = '#A89E88';
     x.font = '28px Georgia, serif';
     x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, W / 2, 975);
 
-    x.fillStyle = '#D4AF37';
+    x.fillStyle = '#C9A227';
     x.font = '22px Georgia, serif';
     x.fillText('astroprecise · the instrument', W / 2, 1010);
 
@@ -335,10 +335,10 @@
     cv.width = CARD_W; cv.height = CARD_H;
     const x = cv.getContext('2d');
 
-    x.fillStyle = '#06060f';
+    x.fillStyle = '#050406';
     x.fillRect(0, 0, CARD_W, CARD_H);
     const neb = x.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebR);
-    neb.addColorStop(0, 'rgba(123, 44, 191, 0.22)');
+    neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, CARD_W, CARD_H);
 
@@ -360,14 +360,14 @@
 
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#D4AF37';
+    x.fillStyle = '#C9A227';
     x.font = '26px Georgia, serif';
     x.fillText(text, CARD_W / 2, y == null ? 130 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#D4AF37';
+    x.fillStyle = '#C9A227';
     x.font = '22px Georgia, serif';
     x.fillText('astroprecise · the instrument', CARD_W / 2, y == null ? 1010 : y);
   }
@@ -390,10 +390,10 @@
     const dotX = left + padX;
     x.beginPath();
     x.arc(dotX, y, dotR, 0, Math.PI * 2);
-    x.fillStyle = measured ? '#D4AF37' : '#9aa6c8';
+    x.fillStyle = measured ? '#C9A227' : '#A89E88';
     x.fill();
     x.textAlign = 'left';
-    x.fillStyle = measured ? '#e8c96a' : '#9aa6c8';
+    x.fillStyle = measured ? '#EFE3C0' : '#A89E88';
     x.fillText(label, dotX + dotGap, y + 7);
     x.textAlign = 'center';
   }
@@ -447,7 +447,7 @@
 
     cardHeader(x, '✦  Z E N I T H   S T A R  ✦');
 
-    x.fillStyle = '#9aa6c8';
+    x.fillStyle = '#A89E88';
     x.font = 'italic 30px Georgia, serif';
     x.fillText('The star over my first breath', CARD_W / 2, 196);
 
@@ -493,7 +493,7 @@
       x.fill(); x.shadowBlur = 0;
     }
 
-    x.fillStyle = '#e8c96a';
+    x.fillStyle = '#EFE3C0';
     x.font = '30px Georgia, serif';
     const parts = [];
     if (s.con) parts.push(s.con);
@@ -502,7 +502,7 @@
     parts.push(s.ly + ' ly');
     x.fillText(parts.join('   ·   '), CARD_W / 2, 812);
 
-    x.fillStyle = '#9aa6c8';
+    x.fillStyle = '#A89E88';
     x.font = '26px Georgia, serif';
     wrapText(x,
       `Nearest catalogued star to the point directly overhead at my birth — ${z.sepDeg.toFixed(1)}° from the exact zenith.`,
@@ -539,7 +539,7 @@
     cardHeader(x, '✦  D A I L Y   S K Y  ✦');
 
     const today = new Date(report.generatedAt);
-    x.fillStyle = '#9aa6c8';
+    x.fillStyle = '#A89E88';
     x.font = 'italic 28px Georgia, serif';
     x.textAlign = 'center';
     x.fillText(today.toLocaleDateString(undefined,
@@ -551,13 +551,13 @@
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 54px Georgia, serif';
     x.fillText(lunar.phaseName, CARD_W / 2, 622);
-    x.fillStyle = '#e8c96a';
+    x.fillStyle = '#EFE3C0';
     x.font = '30px Georgia, serif';
     x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_W / 2, 668);
 
     const tHi = transitHighlightLine(report);
     if (tHi) {
-      x.fillStyle = '#9aa6c8';
+      x.fillStyle = '#A89E88';
       x.font = '27px Georgia, serif';
       wrapText(x, tHi, CARD_W / 2, 742, CARD_W - 240, 38);
     }
@@ -574,7 +574,7 @@
       swLine = 'Live space-weather feed unreachable — not faked';
       measured = false;
     }
-    x.fillStyle = measured ? '#e8c96a' : '#9aa6c8';
+    x.fillStyle = measured ? '#EFE3C0' : '#A89E88';
     x.font = '30px Georgia, serif';
     x.fillText(swLine, CARD_W / 2, 858);
 
@@ -1268,6 +1268,62 @@
     });
   }
 
+  // ── Natal signature (planets + Life Path) ─────────────────────────────────
+  // Rendered here (not in an inline page script) so it uses the event's real
+  // IANA timezone + birthplace via natalFor(), and runs for the example event.
+
+  function renderNatalSignature() {
+    const sig = document.getElementById('sec-natal-signature');
+    const grid = document.getElementById('natal-sig-grid');
+    if (!sig || !grid || !event_) return;
+
+    const sumDigits = n => String(Math.abs(n)).split('').reduce((a, d) => a + parseInt(d, 10), 0);
+    const reduce = n => { while (n > 9 && n !== 11 && n !== 22 && n !== 33) n = sumDigits(n); return n; };
+    const LP_TITLES = { 1:'Pioneer',2:'Diplomat',3:'Creator',4:'Builder',5:'Explorer',6:'Nurturer',7:'Seeker',8:'Achiever',9:'Humanitarian',11:'Illuminator',22:'Master Builder',33:'Master Teacher' };
+
+    // Life Path uses the civil birth DATE the visitor entered (timezone-independent).
+    const [y, m, d] = event_.dt.split('T')[0].split('-').map(Number);
+    const lp = reduce(reduce(m) + reduce(d) + reduce(sumDigits(y)));
+    const title = LP_TITLES[lp] || '';
+
+    const link = document.getElementById('natal-lifepath-link');
+    if (link) {
+      link.href = 'lifepath.html?date=' + event_.dt.split('T')[0];
+      link.textContent = '✦ Life Path ' + lp + ' — ' + title + ' →';
+    }
+
+    const items = [];
+    // Planets from the timezone- and location-correct natal chart.
+    const raw = natalFor(event_);
+    if (raw && raw.positions) {
+      const PLANETS = [
+        { k:'sun', g:'☉', n:'Sun' }, { k:'moon', g:'☽', n:'Moon' },
+        { k:'mercury', g:'☿', n:'Mercury' }, { k:'venus', g:'♀', n:'Venus' },
+        { k:'mars', g:'♂', n:'Mars' }, { k:'jupiter', g:'♃', n:'Jupiter' },
+      ];
+      PLANETS.forEach(p => {
+        const pos = raw.positions[p.k];
+        if (!pos) return;
+        items.push(
+          '<div class="sig-cell">' +
+            '<span class="sig-cell__glyph">' + p.g + '</span>' +
+            '<span class="sig-cell__label">' + p.n + '</span>' +
+            '<span class="sig-cell__value">' + (pos.sign || '?') + ' ' + Math.floor(pos.degree || 0) + '°</span>' +
+          '</div>'
+        );
+      });
+    }
+    items.push(
+      '<div class="sig-cell" style="border-color:rgba(212,175,55,0.22);background:rgba(212,175,55,0.06);">' +
+        '<span class="sig-cell__glyph" style="color:var(--gold);">✦</span>' +
+        '<span class="sig-cell__label">Life Path</span>' +
+        '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +
+      '</div>'
+    );
+    grid.innerHTML = items.join('');
+    sig.removeAttribute('hidden');
+  }
+
   // ── Activation ────────────────────────────────────────────────────────────
 
   function activate() {
@@ -1282,17 +1338,18 @@
     renderLightCone();
     renderZenith();
     renderDaimonIdentity();
+    renderNatalSignature();
     renderWeather();   // re-render personalised
   }
 
   function boot() {
     event_ = loadEvent();
-    renderWeather();
     renderFrame('tropical');
     initTimeTravel();
     wireZenithCardBtn();
     wireDailySkyCardBtn();
-    if (event_) activate();
+    if (event_) activate();   // activate() renders the personalised weather
+    else renderWeather();     // no event yet — show the generic sky weather
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

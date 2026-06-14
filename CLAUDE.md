@@ -162,6 +162,10 @@ attached to `window`, one stylesheet, hand-written HTML pages.
   Open-Meteo place-search query (typed place text only — never the birth moment).
 - **Time zones**: convert local→UT via `Intl.DateTimeFormat` two-iteration refinement
   (see `localToUT` in `chart-page.js`) — never hardcode offsets.
-- **Palette**: lapis `#2a4a94`, oxblood `#6e1a26`, gold `#c4920a`, parchment `#f0e8d8`,
-  void `#090b16` (defined in `css/main.css` `:root`).
+- **Palette (WARM "observatory" — engraved gold on warm void; the live `:root`)**: gold
+  `#C9A227`, gold-light `#EFE3C0`, parchment `#E8E0D0`, silver `#A89E88`, oxblood `#6e1a26`,
+  warm voids `#050406`/`#0D0A07`/`#13100C` (defined in `css/main.css` `:root`). The old COOL
+  values (lapis `#2a4a94`, electric violet `rgba(123,44,191)`, cyan, `#D4AF37`, void `#090b16`)
+  are RETIRED — do not reintroduce them; per-page `:root` overrides + share-card/chart renderers
+  were all unified to warm (2026-06-14).
 - Service worker `sw.js` precaches the shell; bump cache version `V` when changing cached assets.

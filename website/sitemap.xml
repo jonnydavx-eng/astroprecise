@@ -56,6 +56,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/why.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/links.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://jonnydavx-eng.github.io/astroprecise/accuracy.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

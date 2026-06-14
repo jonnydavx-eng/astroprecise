@@ -1,54 +1,147 @@
+// AstroPrecise — Deep Reading + Natal Poster generator (Phase-1 fulfilment).
+//
+// Computes ONE buyer's real chart (VSOP87/ELP2000) and renders a personalised,
+// print-ready Deep Reading (A4) + Natal Poster (A3) as standalone HTML you
+// "Print to PDF". Every placement, aspect and the wheel are computed; the prose
+// is drawn from the SAME interpretations.js the website uses — so it is genuinely
+// per-chart, not a template with names swapped.
+//
+// USAGE
+//   node generate-reading.mjs --in order.json --final
+//   node generate-reading.mjs --name "Ada Lovelace" --date "10 Dec 1815" \
+//        --time "13:00 LMT" --place "London, England" \
+//        --y 1815 --mo 12 --d 10 --h 13 --mi 0 --lat 51.5074 --lon -0.1278 --final
+//
+//   order.json: { "name","date","time","place","y","mo","d","h","mi","lat","lon","house" }
+//   (individual --flags override JSON fields.)
+//
+// FLAGS
+//   --final   drop the watermark (paid, deliverable copy). Omit = "DRAFT" watermark (proofing).
+//   --house   house system (default "placidus").
+//   --out     output dir (default %TEMP%/ap-out).
+//
+// With NO buyer args it falls back to the built-in sample chart (watermark stays
+// "SAMPLE") so the script still runs as a demo.
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-const src = readFileSync('C:/Users/jonny/OneDrive/astroprecise/website/js/ephemeris.js','utf8');
-const win={}; new Function('window','console',src)(win,console); const E=win.AstroEphemeris;
-const OUT='C:/Users/jonny/AppData/Local/Temp/ap-out'; mkdirSync(OUT,{recursive:true});
+
+// ── load the real engines into a shared sandbox window ──
+const win = {};
+const ephSrc = readFileSync('C:/Users/jonny/OneDrive/astroprecise/website/js/ephemeris.js','utf8');
+new Function('window','console',ephSrc)(win,console);
+const E = win.AstroEphemeris;
+let I = null;
+try {
+  const interpSrc = readFileSync('C:/Users/jonny/OneDrive/astroprecise/website/js/interpretations.js','utf8');
+  new Function('window','console','document',interpSrc)(win,console,undefined);
+  I = win.AstroInterpretations || win.Interpretations || null;
+} catch (e) { console.warn('interpretations.js not loaded — using built-in fallbacks:', e.message); }
+
+// ── arg parsing ──
+function parseArgs(argv){
+  const a={ _:[] };
+  for(let i=0;i<argv.length;i++){
+    const t=argv[i];
+    if(t.startsWith('--')){ const k=t.slice(2); const n=argv[i+1];
+      if(n===undefined||n.startsWith('--')){ a[k]=true; } else { a[k]=n; i++; } }
+    else a._.push(t);
+  }
+  return a;
+}
+const A_ = parseArgs(process.argv.slice(2));
+let order = {};
+if (A_.in) { try { order = JSON.parse(readFileSync(A_.in,'utf8')); } catch(e){ console.error('Could not read --in JSON:',e.message); process.exit(1); } }
+// flag overrides JSON
+['name','date','time','place','house'].forEach(k=>{ if(A_[k]!==undefined) order[k]=A_[k]; });
+['y','mo','d','h','mi','lat','lon'].forEach(k=>{ if(A_[k]!==undefined) order[k]=Number(A_[k]); });
+
+const usingSample = order.y===undefined;
+const FINAL = !!A_.final;
+const WATERMARK = FINAL ? '' : (usingSample ? 'SAMPLE' : 'DRAFT');
+
+// ── the sample chart (default when no buyer supplied) ──
+const PERSON = {
+  name:  order.name  || 'Aurora Vale',
+  date:  order.date  || '14 June 1990',
+  time:  order.time  || '03:42 BST',
+  place: order.place || 'Whitby, England',
+};
+const Y  = order.y  ?? 1990, MO = order.mo ?? 6, D = order.d ?? 14,
+      H  = order.h  ?? 2,    MI = order.mi ?? 42,
+      LAT= order.lat?? 54.486, LON = order.lon ?? -0.613,
+      HSYS = order.house || 'placidus';
+
+const OUT = A_.out || (process.env.TEMP ? process.env.TEMP.replace(/\\/g,'/') + '/ap-out' : 'C:/Users/jonny/AppData/Local/Temp/ap-out');
+mkdirSync(OUT,{recursive:true});
 
 const SIGNS=['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 const SGL=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
 const PGL={sun:'☉',moon:'☽',mercury:'☿',venus:'♀',mars:'♂',jupiter:'♃',saturn:'♄',uranus:'♅',neptune:'♆',pluto:'♇',chiron:'⚷',northNode:'☊'};
 const PNAME={sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',chiron:'Chiron',northNode:'North Node'};
 const ELEM={Aries:'Fire',Leo:'Fire',Sagittarius:'Fire',Taurus:'Earth',Virgo:'Earth',Capricorn:'Earth',Gemini:'Air',Libra:'Air',Aquarius:'Air',Cancer:'Water',Scorpio:'Water',Pisces:'Water'};
+const MODE={Aries:'Cardinal',Cancer:'Cardinal',Libra:'Cardinal',Capricorn:'Cardinal',Taurus:'Fixed',Leo:'Fixed',Scorpio:'Fixed',Aquarius:'Fixed',Gemini:'Mutable',Virgo:'Mutable',Sagittarius:'Mutable',Pisces:'Mutable'};
+const ELEM_BLURB={
+  Fire:'a will-led nature, alive in action, courage and momentum',
+  Earth:'a body-led nature, alive in the tangible — the built, the useful, the lasting',
+  Air:'a mind-led nature, alive in language, pattern and connection',
+  Water:'a feeling-led nature, alive in emotion, memory and intuition',
+};
 const norm=x=>((x%360)+360)%360;
 const sd=l=>{const s=norm(l);return {sign:SIGNS[Math.floor(s/30)], idx:Math.floor(s/30), d:Math.floor(s%30), m:Math.floor((s%1)*60)};};
 const fmt=l=>{const x=sd(l);return `${x.d}°${String(x.m).padStart(2,'0')}′ ${x.sign}`;};
+const ord=n=>{const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);};
+// first n sentences of an interpretation passage (keeps the PDF tight)
+const sents=(t,n=2)=>{ if(!t) return ''; const m=String(t).match(/[^.!?]+[.!?]+/g); return (m?m.slice(0,n).join(' '):String(t)).trim(); };
 
-// ── Sample person ──
-const PERSON={name:'Aurora Vale', date:'14 June 1990', time:'03:42 BST', place:'Whitby, England'};
-const c=E.calculateNatalChart(1990,6,14,2,42,54.486,-0.613,'placidus');
+// interpretation accessors (with safe fallbacks if interpretations.js is absent)
+const pInterp=(planet,sign)=> (I&&I.getPlanetInterpretation) ? I.getPlanetInterpretation(planet,sign)
+  : `${planet} in ${sign} blends ${planet}'s principle with ${sign}'s qualities.`;
+const hMeaning=n=>{ const h=(I&&I.getHouseMeaning)?I.getHouseMeaning(n):null;
+  return { keyword:(h&&h.keyword)?h.keyword:'this area of life', meaning:(h&&(h.meaning||h.description))||'' }; };
+const aInterp=(type,p1,p2)=>{ try{ const r=(I&&I.getAspectMeaning)?I.getAspectMeaning(String(type).toLowerCase(),p1,p2):''; return (r&&typeof r==='string')?r:''; }catch{ return ''; } };
+
+// ── compute the chart ──
+const c=E.calculateNatalChart(Y,MO,D,H,MI,LAT,LON,HSYS);
 const houses=c.houses;
 function houseOf(lon){lon=norm(lon);for(let i=0;i<12;i++){const a=houses[i],b=houses[(i+1)%12];const span=norm(b-a)||30;if(norm(lon-a)<span)return i+1;}return 1;}
 const BODIES=['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto','chiron','northNode'];
 const pos={}; BODIES.forEach(k=>{const p=c.positions[k];pos[k]={lon:p.longitude,...sd(p.longitude),house:houseOf(p.longitude),retro:p.retrograde};});
 const asc=c.ascendant, mc=c.midheaven, A=sd(asc), M=sd(mc);
+const ruler = c.chartRuler && pos[c.chartRuler] ? c.chartRuler : 'mars';
 
-// ── Aspects ──
+// ── aspects ──
 const ASP=[['Conjunction',0,7,'☌'],['Opposition',180,7,'☍'],['Trine',120,6,'△'],['Square',90,6,'□'],['Sextile',60,4,'⚹']];
 const aspects=[]; const ak=BODIES.filter(b=>b!=='northNode');
 for(let i=0;i<ak.length;i++)for(let j=i+1;j<ak.length;j++){let d=Math.abs(pos[ak[i]].lon-pos[ak[j]].lon);if(d>180)d=360-d;for(const[nm,ang,orb,gl]of ASP){const o=Math.abs(d-ang);if(o<=orb){aspects.push({a:ak[i],b:ak[j],type:nm,gl,orb:o});break;}}}
 aspects.sort((x,y)=>x.orb-y.orb);
 
-// ── Element / modality tally ──
-const eC={Fire:0,Earth:0,Air:0,Water:0};
-['sun','moon','mercury','venus','mars','jupiter','saturn'].forEach(k=>eC[ELEM[pos[k].sign]]++);
+// ── element / modality dominance (7 classical bodies) ──
+const CLASSICAL=['sun','moon','mercury','venus','mars','jupiter','saturn'];
+const eC={Fire:0,Earth:0,Air:0,Water:0}; CLASSICAL.forEach(k=>eC[ELEM[pos[k].sign]]++);
+const mC={Cardinal:0,Fixed:0,Mutable:0}; CLASSICAL.forEach(k=>mC[MODE[pos[k].sign]]++);
+const domEl = Object.entries(eC).sort((a,b)=>b[1]-a[1])[0];     // [element,count]
+const domMode = Object.entries(mC).sort((a,b)=>b[1]-a[1])[0];
 
-// ── SVG natal wheel ──
+// ── stellium detection (3+ of sun..pluto+chiron in one sign) ──
+const STELLI_BODIES=['sun','moon','mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto','chiron'];
+const bySign={}; STELLI_BODIES.forEach(k=>{(bySign[pos[k].sign]=bySign[pos[k].sign]||[]).push(k);});
+const stellium = Object.entries(bySign).map(([sign,ks])=>({sign,ks})).filter(s=>s.ks.length>=3).sort((a,b)=>b.ks.length-a.ks.length)[0]||null;
+
+// ── SVG natal wheel (unchanged geometry) ──
 function wheel(size){
   const cx=size/2, cy=size/2, R=size/2-8, rSign=R-size*0.085, rHouse=rSign-size*0.11, rPlanet=rHouse-size*0.05, rAspect=rPlanet-size*0.02;
-  const ang=lon=>(180-(norm(lon)-asc))*Math.PI/180; // ASC at left, CCW
+  const ang=lon=>(180-(norm(lon)-asc))*Math.PI/180;
   const pt=(lon,r)=>[cx+r*Math.cos(ang(lon)), cy-r*Math.sin(ang(lon))];
   let s='';
   s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#C9A227" stroke-width="1.5" opacity=".75"/>`;
   s+=`<circle cx="${cx}" cy="${cy}" r="${rSign}" fill="none" stroke="#C9A227" stroke-width="1" opacity=".5"/>`;
   s+=`<circle cx="${cx}" cy="${cy}" r="${rHouse}" fill="none" stroke="#C9A227" stroke-width=".7" opacity=".35"/>`;
   s+=`<circle cx="${cx}" cy="${cy}" r="${rAspect}" fill="none" stroke="#C9A227" stroke-width=".5" opacity=".25"/>`;
-  // sign sectors
   for(let i=0;i<12;i++){
     const a0=i*30; const [x1,y1]=pt(a0,rSign),[x2,y2]=pt(a0,R);
     s+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#C9A227" stroke-width=".7" opacity=".4"/>`;
     const [gx,gy]=pt(a0+15,(R+rSign)/2);
     s+=`<text x="${gx.toFixed(1)}" y="${gy.toFixed(1)}" font-size="${size*0.035}" fill="#E8C872" text-anchor="middle" dominant-baseline="central" font-family="serif">${SGL[i]}</text>`;
   }
-  // house cusps
   for(let i=0;i<12;i++){
     const axis=[0,3,6,9].includes(i);
     const [x1,y1]=pt(houses[i],rAspect),[x2,y2]=pt(houses[i],rHouse);
@@ -56,16 +149,13 @@ function wheel(size){
     const [nx,ny]=pt(houses[i]+ (norm(houses[(i+1)%12]-houses[i])/2), rHouse-size*0.028);
     s+=`<text x="${nx.toFixed(1)}" y="${ny.toFixed(1)}" font-size="${size*0.018}" fill="#A89E88" text-anchor="middle" dominant-baseline="central" font-family="sans-serif">${i+1}</text>`;
   }
-  // ASC / MC labels
   const [ax,ay]=pt(asc,R+size*0.02);
   s+=`<text x="${(ax).toFixed(1)}" y="${(ay).toFixed(1)}" font-size="${size*0.02}" fill="#E8C872" text-anchor="middle" font-family="sans-serif" font-weight="bold">ASC</text>`;
   const [mx,my]=pt(mc,R+size*0.02);
   s+=`<text x="${(mx).toFixed(1)}" y="${(my).toFixed(1)}" font-size="${size*0.02}" fill="#E8C872" text-anchor="middle" font-family="sans-serif" font-weight="bold">MC</text>`;
-  // aspect lines
   const AC={Conjunction:'#E8C872',Trine:'#5fae8a',Sextile:'#5fae8a',Square:'#b06a6a',Opposition:'#c98e5a'};
   aspects.forEach(asp=>{const [x1,y1]=pt(pos[asp.a].lon,rAspect),[x2,y2]=pt(pos[asp.b].lon,rAspect);
     s+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${AC[asp.type]||'#888'}" stroke-width=".5" opacity=".4"/>`;});
-  // planets
   BODIES.forEach((k,n)=>{
     const [px,py]=pt(pos[k].lon,rPlanet);
     const [tx,ty]=pt(pos[k].lon,rHouse-size*0.005);
@@ -106,64 +196,88 @@ th{font-family:'Cinzel',serif;font-size:7.5pt;letter-spacing:.12em;text-transfor
 .watermark{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-family:'Cinzel',serif;font-size:60pt;letter-spacing:.2em;color:rgba(201,162,39,.06);white-space:nowrap;pointer-events:none;}
 `;
 const FONTS=`<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">`;
+const wm = WATERMARK ? `<div class="watermark">${WATERMARK}</div>` : '';
+const wmBig = WATERMARK ? `<div class="watermark" style="font-size:90pt;">${WATERMARK}</div>` : '';
 const foot=n=>`<div class="foot"><span>AstroPrecise · The Deep Reading</span><span>${PERSON.name}</span><span>${n}</span></div>`;
 
-// ── READING (bespoke to the computed chart) ──
+// ── derived narrative fragments (all from THIS chart) ──
+const sunSign=pos.sun.sign, moonSign=pos.moon.sign, ascSign=A.sign;
+const domLine = `You are a <strong>${domEl[0]}-dominant</strong> chart (${domEl[1]} of the seven classical bodies in ${domEl[0].toLowerCase()} signs): ${ELEM_BLURB[domEl[0]]}. The chart leans <strong>${domMode[0].toLowerCase()}</strong> in mode, and your ${M.sign} Midheaven shows the public shape it wants to take.`;
+
+// page IV — architecture of depth (stellium if present, else outer-planet generation)
+function architecture(){
+  let body='';
+  if(stellium){
+    const ks=stellium.ks;
+    const hs=[...new Set(ks.map(k=>pos[k].house))].sort((a,b)=>a-b).map(ord);
+    const names = ks.map(k=>PNAME[k]).join(', ').replace(/, ([^,]*)$/,' and $1');
+    body += `<h1 style="font-size:20pt;">A ${stellium.sign} stellium across<br>your ${hs.join(' & ')} house${hs.length>1?'s':''}.</h1>`;
+    body += `<p class="lede">${names} all gather in ${stellium.sign} — the most concentrated signature in your chart, and the theme your life keeps returning to.</p>`;
+    body += `<p><strong>${ks.map(k=>`${PGL[k]} ${PNAME[k]} ${pos[k].d}°`).join(' · ')}</strong>, all in ${stellium.sign}. ${sents(pInterp(ks[0]==='sun'?'Sun':PNAME[ks[0]], stellium.sign),2)} Where this much weight collects in one sign, that sign's lessons are not optional — they are the spine of the story.</p>`;
+  } else {
+    body += `<h1 style="font-size:20pt;">The slow planets<br>and the long arc.</h1>`;
+    body += `<p class="lede">The outer planets move slowly — they mark the deep, generational currents your chart channels into a single life.</p>`;
+    ['saturn','uranus','neptune'].forEach(k=>{
+      body += `<p><strong>${PGL[k]} ${PNAME[k]} in ${pos[k].sign}</strong> — ${ord(pos[k].house)} house (${hMeaning(pos[k].house).keyword}). ${sents(pInterp(PNAME[k],pos[k].sign),1)}</p>`;
+    });
+  }
+  body += `<p>${PGL.pluto} <strong>Pluto in ${pos.pluto.sign}</strong>, in your ${ord(pos.pluto.house)} house, marks where you transform through depth and repetition — the house of ${hMeaning(pos.pluto.house).keyword}. ${PGL.chiron} <strong>Chiron in ${pos.chiron.sign}</strong> marks the tender place that, tended, becomes a gift for others.</p>`;
+  body += `<h3>☊ The North Node in ${pos.northNode.sign} — your growing edge</h3>`;
+  body += `<p>The soul's direction points toward ${pos.northNode.sign} in your ${ord(pos.northNode.house)} house — the house of ${hMeaning(pos.northNode.house).keyword}. Every choice that feels both exposing and strangely inevitable is pointing you up this path.</p>`;
+  return body;
+}
+
+// ── READING (data-driven from THIS chart) ──
 const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${CSS}</style></head><body>
 <div class="page cover">
-  <div class="watermark">SAMPLE</div>
+  ${wm}
   <div class="seal">✦</div>
   <p class="eyebrow">The Deep Reading</p>
   <h1>The Sky at Your<br>First Breath</h1>
   <p class="lede" style="border:none;text-align:center;max-width:120mm;">A complete reading of the natal chart of<br><strong style="font-style:normal;color:#EFE3C0;font-size:16pt;">${PERSON.name}</strong></p>
-  <p class="meta">${PERSON.date} &nbsp;·&nbsp; ${PERSON.time}<br>${PERSON.place}<br>Sun ${fmt(pos.sun.lon)} · Moon ${fmt(pos.moon.lon)} · ${A.sign} Rising</p>
+  <p class="meta">${PERSON.date} &nbsp;·&nbsp; ${PERSON.time}<br>${PERSON.place}<br>Sun ${fmt(pos.sun.lon)} · Moon ${fmt(pos.moon.lon)} · ${ascSign} Rising</p>
   <p style="position:absolute;bottom:18mm;font-size:8pt;letter-spacing:.2em;color:#5E5748;font-family:'Cinzel',serif;">EVERY NUMBER COMPUTED FROM THE REAL SKY · VSOP87 · ELP2000</p>
 </div>
 
 <div class="page">
   <p class="eyebrow">I · The Event in Spacetime</p>
   <h1 style="font-size:22pt;">You were a coordinate<br>the universe held once.</h1>
-  <p class="lede">At 3:42 on the morning of 14 June 1990, the sky above Whitby held a configuration of light it had never shown before and will never show again. This reading is the transcription of that exact moment — your blueprint, in the old language.</p>
-  <p>Three signatures govern everything that follows. Your <strong>Sun in ${pos.sun.sign}</strong> is the engine — the will, the thing being grown across a lifetime. Your <strong>Moon in ${pos.moon.sign}</strong> is the inner weather — how you feel, soothe, and remember. And ${A.sign} <strong>rising</strong> is the mask and the doorway — the first thing the world meets, and the lens you meet it through.</p>
-  <p>You are an <strong>Air-dominant</strong> chart (${eC.Air} of the seven classical bodies in air signs): a mind-led nature, alive in language, pattern and connection. The work of the chart is to bring that quick, bright air down into form — and your ${M.sign} Midheaven and a cluster of planets in Capricorn show exactly where it asks to be built.</p>
+  <p class="lede">At ${PERSON.time} on ${PERSON.date}, the sky above ${PERSON.place} held a configuration of light it had never shown before and will never show again. This reading is the transcription of that exact moment — your blueprint, in the old language.</p>
+  <p>Three signatures govern everything that follows. Your <strong>Sun in ${sunSign}</strong> is the engine — the will, the thing being grown across a lifetime. Your <strong>Moon in ${moonSign}</strong> is the inner weather — how you feel, soothe, and remember. And ${ascSign} <strong>rising</strong> is the mask and the doorway — the first thing the world meets, and the lens you meet it through.</p>
+  <p>${domLine}</p>
   <div class="big3">
-    <div class="b"><div class="g">${PGL.sun}</div><div class="lbl">Sun · Core Self</div><div class="v">${pos.sun.d}° ${pos.sun.sign}</div></div>
-    <div class="b"><div class="g">${PGL.moon}</div><div class="lbl">Moon · Inner World</div><div class="v">${pos.moon.d}° ${pos.moon.sign}</div></div>
-    <div class="b"><div class="g">↑</div><div class="lbl">Rising · The Mask</div><div class="v">${A.d}° ${A.sign}</div></div>
+    <div class="b"><div class="g">${PGL.sun}</div><div class="lbl">Sun · Core Self</div><div class="v">${pos.sun.d}° ${sunSign}</div></div>
+    <div class="b"><div class="g">${PGL.moon}</div><div class="lbl">Moon · Inner World</div><div class="v">${pos.moon.d}° ${moonSign}</div></div>
+    <div class="b"><div class="g">↑</div><div class="lbl">Rising · The Mask</div><div class="v">${A.d}° ${ascSign}</div></div>
   </div>
   ${foot('1')}
 </div>
 
 <div class="page">
   <p class="eyebrow">II · The Luminaries</p>
-  <h3>${PGL.sun} The Sun in ${pos.sun.sign} — ${pos.sun.house}${['','st','nd','rd'][pos.sun.house]||'th'} House</h3>
-  <p>Your Sun sits at ${fmt(pos.sun.lon)}, in the house of the self and the body — and in the sign of the messenger. This is a self made of curiosity: you become more yourself the more you learn, link, and put into words. Gemini suns are rarely one thing; you contain several, and the lifelong art is to let them coexist rather than demanding you choose. You shine when you are translating — making one world legible to another.</p>
-  <h3>${PGL.moon} The Moon in ${pos.moon.sign} — ${pos.moon.house}th House</h3>
-  <p>Your emotional nature is ${pos.moon.sign} — and it lives high in the chart, near the Midheaven, where private feeling and public life touch. You feel through ideas and ideals; you steady yourself with a certain cool distance, observing your own weather rather than drowning in it. This can read as detachment, but it is really a need for freedom and for the bigger picture. You are nourished by community, by causes, by being useful to something larger than yourself.</p>
-  <h3>↑ ${A.sign} Rising — and its ruler, ${PNAME[c.chartRuler]} in ${pos[c.chartRuler].sign}</h3>
-  <p>${A.sign} rising makes you appear quick, youthful, and approachable — a person of many doorways. Because ${A.sign} rises, your whole chart is ruled by <strong>${PNAME[c.chartRuler]}</strong>, here at ${fmt(pos[c.chartRuler].lon)} in the ${pos[c.chartRuler].house}th house. Your ruling planet rests just behind the eastern horizon, in the house of the hidden and the inward — so beneath the bright, communicative surface runs a deep private current. Much of your real work happens out of sight.</p>
+  <h3>${PGL.sun} The Sun in ${sunSign} — ${ord(pos.sun.house)} House (${hMeaning(pos.sun.house).keyword})</h3>
+  <p>Your Sun sits at ${fmt(pos.sun.lon)}. ${sents(pInterp('Sun',sunSign),3)}</p>
+  <h3>${PGL.moon} The Moon in ${moonSign} — ${ord(pos.moon.house)} House (${hMeaning(pos.moon.house).keyword})</h3>
+  <p>${sents(pInterp('Moon',moonSign),3)}</p>
+  <h3>↑ ${ascSign} Rising — and its ruler, ${PNAME[ruler]} in ${pos[ruler].sign}</h3>
+  <p>${ascSign} rising is the first thing the world meets in you. Because ${ascSign} rises, your whole chart is ruled by <strong>${PNAME[ruler]}</strong>, here at ${fmt(pos[ruler].lon)} in your ${ord(pos[ruler].house)} house — the house of ${hMeaning(pos[ruler].house).keyword}. ${sents(pInterp(PNAME[ruler],pos[ruler].sign),1)}</p>
   ${foot('2')}
 </div>
 
 <div class="page">
   <p class="eyebrow">III · The Personal Planets</p>
-  <h3>${PGL.mercury} Mercury in ${pos.mercury.sign} — the doubled messenger</h3>
-  <p>With Mercury in its own sign and ruling your chart, the mind is the centre of gravity here. You think fast, in branches and bridges; you persuade by sheer fluency. The 12th-house placement gives that mind a back room — intuition, dreams, things half-known before they are said. Write them down: your best thinking arrives sideways.</p>
+  <h3>${PGL.mercury} Mercury in ${pos.mercury.sign} — ${ord(pos.mercury.house)} House</h3>
+  <p>${sents(pInterp('Mercury',pos.mercury.sign),2)}</p>
   <h3>${PGL.venus} Venus in ${pos.venus.sign} &nbsp; ${PGL.mars} Mars in ${pos.mars.sign}</h3>
-  <p>You love in ${pos.venus.sign} — steadily, sensually, with loyalty and a need for the tangible: touch, beauty, the kept promise. But you act in ${pos.mars.sign}: fast, first, direct. Desire and affection run on different clocks — Mars wants it now, Venus wants it to last. Naming that difference out loud is how the two stop pulling against each other.</p>
-  <h3>${PGL.jupiter} Jupiter in ${pos.jupiter.sign}</h3>
-  <p>Where life over-delivers when you say yes is through ${pos.jupiter.sign} — care, belonging, the making of a home or a tribe. Generosity given here returns with interest.</p>
+  <p>You love in ${pos.venus.sign}. ${sents(pInterp('Venus',pos.venus.sign),1)} But you act in ${pos.mars.sign}. ${sents(pInterp('Mars',pos.mars.sign),1)} Desire and affection run on different clocks — naming that difference out loud is how the two stop pulling against each other.</p>
+  <h3>${PGL.jupiter} Jupiter in ${pos.jupiter.sign} — ${ord(pos.jupiter.house)} House (${hMeaning(pos.jupiter.house).keyword})</h3>
+  <p>Where life tends to over-deliver when you say yes is through ${pos.jupiter.sign}, in the house of ${hMeaning(pos.jupiter.house).keyword}. ${sents(pInterp('Jupiter',pos.jupiter.sign),1)} Generosity given here returns with interest.</p>
   ${foot('3')}
 </div>
 
 <div class="page">
   <p class="eyebrow">IV · The Architecture of Depth</p>
-  <h1 style="font-size:20pt;">A Capricorn stellium in the<br>houses of transformation.</h1>
-  <p class="lede">Saturn, Uranus and Neptune all stand together in Capricorn, across the 8th and 9th houses — the rarest and most defining signature in your chart.</p>
-  <p><strong>${PGL.saturn} Saturn ${pos.saturn.d}° · ${PGL.uranus} Uranus ${pos.uranus.d}° · ${PGL.neptune} Neptune ${pos.neptune.d}°</strong>, all in Capricorn. This is the great generational conjunction of 1988–90 — but in your chart it falls in the houses of shared resources, intimacy, death-and-rebirth (8th) and meaning, philosophy, the long horizon (9th). You carry a serious, structural relationship to transformation itself: you rebuild rather than patch, and you are drawn to the deep questions — what is true, what lasts, what is worth the climb.</p>
-  <p>${PGL.pluto} <strong>Pluto in ${pos.pluto.sign}</strong> in the 6th adds a quiet intensity to your daily work and health: you transform through discipline, through the unglamorous repeated act. ${PGL.chiron} <strong>Chiron in ${pos.chiron.sign}</strong> marks the tender place — a wound around being seen and being enough — that, tended, becomes a gift for helping others shine.</p>
-  <h3>☊ The North Node in ${pos.northNode.sign} — your growing edge</h3>
-  <p>The soul's direction points toward ${pos.northNode.sign} in the 10th: away from working quietly behind the scenes, toward a visible, original public contribution. Every time a choice feels both exposing and strangely inevitable, it is pointing you up this path.</p>
+  ${architecture()}
   ${foot('4')}
 </div>
 
@@ -174,9 +288,10 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
   <table><tr><th>Bodies</th><th>Aspect</th><th>Orb</th></tr>
   ${aspects.slice(0,10).map(a=>`<tr><td><span class="glyph">${PGL[a.a]}</span> ${PNAME[a.a]} &nbsp;${a.gl}&nbsp; <span class="glyph">${PGL[a.b]}</span> ${PNAME[a.b]}</td><td>${a.type}</td><td>${a.orb.toFixed(1)}°</td></tr>`).join('')}
   </table>
-  <p style="margin-top:12pt;">The tightest of these set the key signature of the whole life — the recurring negotiations your story keeps returning to. A flowing aspect (trine, sextile) is a gift to spend; a hard one (square, opposition) is an engine, not an accident — pressure applied exactly where strength is meant to grow.</p>
+  ${aspects[0] ? `<p style="margin-top:12pt;">Your tightest aspect — <strong>${PNAME[aspects[0].a]} ${aspects[0].type.toLowerCase()} ${PNAME[aspects[0].b]}</strong> (orb ${aspects[0].orb.toFixed(1)}°)${aInterp(aspects[0].type,PNAME[aspects[0].a],PNAME[aspects[0].b]) ? ' — ' + sents(aInterp(aspects[0].type,PNAME[aspects[0].a],PNAME[aspects[0].b]),2) : '.'}</p>`:''}
+  <p>A flowing aspect (trine, sextile) is a gift to spend; a hard one (square, opposition) is an engine, not an accident — pressure applied exactly where strength is meant to grow.</p>
   <h2>The Closing</h2>
-  <p>${PERSON.name}, you are a bright, mercurial mind built over a deep and serious foundation — air over earth, the translator over the architect. Your chart asks you to bring what you privately understand into a public, original form, and to trust that the slow Capricorn structure underneath can carry the quick Gemini light. This is not prediction. It is orientation — a map of the sky you were born under, drawn honestly. What you build on it is yours.</p>
+  <p>${PERSON.name}, your chart is led by ${domEl[0].toLowerCase()} — ${ELEM_BLURB[domEl[0]].replace(/^a /,'')} — carried on a ${sunSign} Sun, a ${moonSign} Moon, and a ${ascSign} rising. It asks you to bring what you privately understand into a visible form, and to trust the structure underneath to carry the light. This is not prediction. It is orientation — a map of the sky you were born under, drawn honestly. What you build on it is yours.</p>
   ${foot('5')}
 </div>
 </body></html>`;
@@ -193,7 +308,7 @@ const poster=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${
 .pl .r{color:#b06a6a;font-size:9pt;}
 </style></head><body>
 <div class="page" style="text-align:center;">
-  <div class="watermark" style="font-size:90pt;">SAMPLE</div>
+  ${wmBig}
   <p class="eyebrow">The Natal Chart of</p>
   <h1 style="font-size:34pt;margin-top:2mm;">${PERSON.name}</h1>
   <p class="meta">${PERSON.date} &nbsp;·&nbsp; ${PERSON.time} &nbsp;·&nbsp; ${PERSON.place}</p>
@@ -212,7 +327,11 @@ const poster=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${
 </div>
 </body></html>`;
 
-writeFileSync(OUT+'/reading.html', reading,'utf8');
-writeFileSync(OUT+'/poster.html', poster,'utf8');
-console.log('Sun',fmt(pos.sun.lon),'| Moon',fmt(pos.moon.lon),'| ASC',fmt(asc),'| aspects',aspects.length);
-console.log('written to',OUT);
+const slug = PERSON.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'reading';
+const rPath = `${OUT}/reading-${slug}.html`, pPath = `${OUT}/poster-${slug}.html`;
+writeFileSync(rPath, reading,'utf8');
+writeFileSync(pPath, poster,'utf8');
+console.log(`${PERSON.name} — Sun ${fmt(pos.sun.lon)} | Moon ${fmt(pos.moon.lon)} | ASC ${fmt(asc)} | ${domEl[0]}-dominant | ${aspects.length} aspects${stellium?` | ${stellium.sign} stellium (${stellium.ks.length})`:''}`);
+console.log(`watermark: ${WATERMARK||'(none — FINAL)'}`);
+console.log('written:', rPath);
+console.log('written:', pPath);

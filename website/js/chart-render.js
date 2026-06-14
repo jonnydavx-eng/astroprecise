@@ -234,9 +234,9 @@
 
     // Radial gradient: deep space center fill
     const rg = el('radialGradient', { id: idPrefix + 'cgrad', cx:'50%', cy:'50%', r:'50%' });
-    [[0,   '#16162E', 1],
-     [0.6, '#0D0D22', 1],
-     [1,   '#06060F', 1]
+    [[0,   '#13100C', 1],
+     [0.6, '#0D0A07', 1],
+     [1,   '#050406', 1]
     ].forEach(([o, c, op]) => {
       rg.appendChild(el('stop', { offset: o * 100 + '%', 'stop-color': c, 'stop-opacity': op }));
     });
@@ -270,7 +270,7 @@
     // Dark background circle
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_ZODIAC_OUT,
-      fill: '#080814'
+      fill: '#050406'
     }));
 
     // Subtle star dots (deterministic LCG so they're always the same)
@@ -322,7 +322,7 @@
         d,
         fill: fillClr,
         'fill-opacity': '0.30',
-        stroke: '#B8943A',
+        stroke: '#C9A227',
         'stroke-width': '0.6'
       }));
 
@@ -356,7 +356,7 @@
       g.appendChild(el('line', {
         x1: tp1.x.toFixed(2), y1: tp1.y.toFixed(2),
         x2: tp2.x.toFixed(2), y2: tp2.y.toFixed(2),
-        stroke: '#C8A84B',
+        stroke: '#C9A227',
         'stroke-width': isSignCusp ? '1.4' : isMajor ? '0.9' : '0.5',
         opacity: isSignCusp ? '0.9' : '0.7'
       }));
@@ -365,14 +365,14 @@
     // Outer border circle
     g.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_ZODIAC_OUT,
-      fill: 'none', stroke: '#C8A84B', 'stroke-width': '2',
+      fill: 'none', stroke: '#C9A227', 'stroke-width': '2',
       filter: `url(#${idPrefix}rglow)`
     }));
 
     // Inner border of zodiac ring
     g.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_ZODIAC_IN,
-      fill: 'none', stroke: '#C8A84B', 'stroke-width': '1'
+      fill: 'none', stroke: '#C9A227', 'stroke-width': '1'
     }));
 
     svg.appendChild(g);
@@ -403,7 +403,7 @@
       g.appendChild(el('line', {
         x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
         x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
-        stroke: isAngle ? '#C8A84B' : '#4A4838',
+        stroke: isAngle ? '#C9A227' : '#4A4838',
         'stroke-width': isAngle ? '2' : '0.8',
         opacity: isAngle ? '1' : '0.75'
       }));
@@ -415,7 +415,7 @@
         const lbl = el('text', {
           x: lp.x.toFixed(2), y: lp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'central',
-          fill: '#C8A84B',
+          fill: '#C9A227',
           'font-size': '9',
           'font-family': 'system-ui, sans-serif',
           'font-weight': '700',
@@ -614,7 +614,7 @@
     const lbl = el('text', {
       x: CX, y: CY,
       'text-anchor': 'middle', 'dominant-baseline': 'central',
-      fill: '#C8A84B',
+      fill: '#C9A227',
       'font-size': displayName.length > 14 ? '10' : '12',
       'font-family': 'system-ui, sans-serif',
       'font-weight': '600',
@@ -625,7 +625,7 @@
 
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_CORE_DOT,
-      fill: '#C8A84B', opacity: '0.85'
+      fill: '#C9A227', opacity: '0.85'
     }));
   }
 
@@ -643,10 +643,10 @@
     // Header row
     const thead = document.createElement('thead');
     const hr    = document.createElement('tr');
-    hr.style.cssText = 'background:#111130;border-bottom:2px solid #C8A84B';
+    hr.style.cssText = 'background:#111130;border-bottom:2px solid #C9A227';
     ['', 'Planet', '', 'Sign', "Degree°Min'", 'House', 'Rx'].forEach(hdr => {
       const th = document.createElement('th');
-      th.style.cssText = 'padding:6px 9px;text-align:left;color:#C8A84B;font-weight:700;font-size:11px;letter-spacing:0.08em;white-space:nowrap';
+      th.style.cssText = 'padding:6px 9px;text-align:left;color:#C9A227;font-weight:700;font-size:11px;letter-spacing:0.08em;white-space:nowrap';
       th.textContent = hdr;
       hr.appendChild(th);
     });
@@ -677,7 +677,7 @@
         `<span style="font-size:15px;font-family:serif;color:${elemClr}">${ZODIAC_GLYPHS[signName] || ''}</span>`,
         `<span style="color:${elemClr}">${signName}</span>`,
         `<span style="color:#D0E8FF;font-variant-numeric:tabular-nums">${degNum}°${String(minNum).padStart(2,'0')}'</span>`,
-        `<span style="color:#C8A84B;font-weight:600">${houseNum}</span>`,
+        `<span style="color:#C9A227;font-weight:600">${houseNum}</span>`,
         pos.retrograde ? `<span style="color:#FF9977;font-family:serif;font-size:13px">℞</span>` : ''
       ];
 
@@ -720,7 +720,7 @@
     // Aspect legend
     const aDiv = document.createElement('div');
     aDiv.style.cssText = 'flex:1;min-width:180px';
-    aDiv.innerHTML = '<div style="color:#C8A84B;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ASPECTS</div>';
+    aDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ASPECTS</div>';
     [
       ['Conjunction','☌','#FFFFFF'],['Opposition','☍','#EF4444'],
       ['Trine','△','#60A5FA'],['Square','□','#F97316'],
@@ -736,7 +736,7 @@
     // Element legend
     const eDiv = document.createElement('div');
     eDiv.style.cssText = 'flex:1;min-width:160px';
-    eDiv.innerHTML = '<div style="color:#C8A84B;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ELEMENTS</div>';
+    eDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ELEMENTS</div>';
     [
       ['Fire', '#FF6B35','♈♌♐'],['Earth','#2D7A4F','♉♍♑'],
       ['Air',  '#4A9EBF','♊♎♒'],['Water','#3D5A99','♋♏♓']
@@ -752,7 +752,7 @@
     if (dominant || chartRuler) {
       const iDiv = document.createElement('div');
       iDiv.style.cssText = 'flex:1;min-width:150px';
-      iDiv.innerHTML = '<div style="color:#C8A84B;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">CHART INFO</div>';
+      iDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">CHART INFO</div>';
       if (dominant) {
         if (dominant.element)  iDiv.innerHTML += `<div style="margin-bottom:3px">Element: <strong style="color:#DDEEFF">${dominant.element}</strong></div>`;
         if (dominant.modality) iDiv.innerHTML += `<div style="margin-bottom:3px">Modality: <strong style="color:#DDEEFF">${dominant.modality}</strong></div>`;
@@ -774,7 +774,7 @@
     bar.style.cssText = 'text-align:center;padding:8px 4px 4px;font-family:system-ui,sans-serif';
     if (title) {
       const h = document.createElement('div');
-      h.style.cssText = 'color:#C8A84B;font-size:15px;font-weight:700;letter-spacing:0.12em';
+      h.style.cssText = 'color:#C9A227;font-size:15px;font-weight:700;letter-spacing:0.12em';
       h.textContent = title.toUpperCase();
       bar.appendChild(h);
     }

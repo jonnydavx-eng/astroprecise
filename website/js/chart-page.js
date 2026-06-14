@@ -796,11 +796,15 @@
     const M = window.AP_MON || {};
     const url = typeof M.deepReadingUrl === 'string' ? M.deepReadingUrl.trim() : '';
     const configured = /^https?:\/\//i.test(url);
+    // Price renders ONLY if the owner sets it (honesty rule — never a fake number).
+    const price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
+    const priceBit = price ? ` — <strong>${esc(price)}</strong>` : '';
     const ctaHtml = configured
-      ? `<a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
-           ✦ Unlock Your Deep Reading
+      ? `<p class="deep-teaser__format">A personalised 6–10 page PDF, drawn line by line from your exact chart${priceBit}. One-time — yours to keep, no subscription.</p>
+         <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
+           ✦ Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>
-         <p class="deep-teaser__honest">Opens a secure checkout on our partner store — your birth data stays in your browser and is never sent there.</p>`
+         <p class="deep-teaser__honest">Opens a secure checkout on our partner store. The chart you cast here never leaves your browser — your reading is hand-prepared from the birth details you enter at checkout.</p>`
       : `<button type="button" class="btn--deep" id="deep-cta">
            ✦ Full readings coming soon
          </button>
@@ -1038,16 +1042,16 @@
 
   // Engraved palette (matches css/main.css :root) ────────────────────────────
   const PAL = {
-    void:     '#090b16',
-    voidWarm: '#0c1024',
-    lapis:    '#2a4a94',
-    gold:     '#c4920a',
-    goldHi:   '#e8c96a',
-    goldPale: '#efe3c0',
-    parchment:'#f0e8d8',
+    void:     '#050406',
+    voidWarm: '#0D0A07',
+    lapis:    '#6e1a26',   // repurposed cool→warm: structural/accent lines are now oxblood, not blue
+    gold:     '#C9A227',
+    goldHi:   '#EFE3C0',
+    goldPale: '#E8E0D0',
+    parchment:'#E8E0D0',
     oxblood:  '#6e1a26',
-    silver:   '#9aa6c8',
-    silverDim:'#6a7398',
+    silver:   '#A89E88',
+    silverDim:'#6E6658',
   };
 
   const SHARE_FORMATS = {
@@ -1067,7 +1071,7 @@
   // Faint dot grid (scaled).
   function drawDotGrid(x, W, H, S) {
     const step = 48 * S;
-    x.fillStyle = 'rgba(150,175,230,0.045)';
+    x.fillStyle = 'rgba(201,162,39,0.05)';
     for (let gx = step; gx < W; gx += step) {
       for (let gy = step; gy < H; gy += step) {
         x.beginPath();
@@ -1100,13 +1104,13 @@
     const g = x.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, PAL.void);
     g.addColorStop(0.55, PAL.voidWarm);
-    g.addColorStop(1, '#10204a');
+    g.addColorStop(1, '#13100C');
     x.fillStyle = g; x.fillRect(0, 0, W, H);
 
-    // Lapis nebula (top)
+    // Gold nebula (top)
     const neb1 = x.createRadialGradient(W * 0.72, H * 0.16, 0, W * 0.72, H * 0.16, Math.max(W, H) * 0.75);
-    neb1.addColorStop(0, 'rgba(42,74,148,0.42)');
-    neb1.addColorStop(0.5, 'rgba(42,74,148,0.12)');
+    neb1.addColorStop(0, 'rgba(201,162,39,0.20)');
+    neb1.addColorStop(0.5, 'rgba(201,162,39,0.06)');
     neb1.addColorStop(1, 'transparent');
     x.fillStyle = neb1; x.fillRect(0, 0, W, H);
 

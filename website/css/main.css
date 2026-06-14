@@ -30,6 +30,11 @@
   --border-ritual:  rgba(176, 74, 82, 0.35);   /* muted oxblood */
   --glass-border:       rgba(201, 162, 39, 0.16);
   --glass-border-glow:  rgba(201, 162, 39, 0.55);
+  /* ── Unified glow / shimmer tokens (warm — replaces scattered violet glows) ── */
+  --glow-gold:    rgba(201, 162, 39, 0.16);
+  --glow-gold-2:  rgba(201, 162, 39, 0.10);
+  --glow-oxblood: rgba(176, 74, 82, 0.10);
+  --shimmer-line: linear-gradient(90deg, transparent, rgba(201,162,39,0.55), rgba(176,74,82,0.30), transparent);
 
   /* ── Primary ancient gold (preloader + Celestia match) ── */
   --gold:        #C9A227;      /* core engraved gold */
@@ -74,7 +79,7 @@
   /* ── Text — aged parchment on warm black ── */
   --white:       #E8E0D0;   /* parchment primary */
   --silver:      #A89E88;
-  --silver-dim:  #6E6658;
+  --silver-dim:  #7E7565;   /* nudged up for WCAG AA on body/hero text (was #6E6658, ~3.5:1) */
   --silver-dark: #4A4238;
 
   /* ── Gradients — warmer, engraved feel (gold/black dominant) ── */
@@ -181,6 +186,7 @@
 
 html {
   font-size: 16px;
+  background: #050406;   /* first paint = warm void, before any canvas/JS — kills the nav flash */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -195,6 +201,13 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  -webkit-tap-highlight-color: transparent;   /* no grey flash on tap (mobile polish) */
+}
+/* Keyboard-only focus ring — visible for a11y, invisible on mouse/touch */
+:focus-visible {
+  outline: 2px solid var(--gold, #C9A227);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* Ancient hermetic observatory background — warm gold/black from preloader, engraved mystical edge */
@@ -249,16 +262,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::selection {
-  background: rgba(123, 44, 191, 0.45);
+  background: rgba(176, 74, 82, 0.45);
   color: var(--gold-pale);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar              { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track        { background: var(--bg-2); }
-::-webkit-scrollbar-thumb        { background: rgba(123, 44, 191, 0.55); border-radius: var(--radius-full); }
-::-webkit-scrollbar-thumb:hover  { background: rgba(212, 175, 55, 0.65); }
-* { scrollbar-width: thin; scrollbar-color: rgba(123, 44, 191,0.5) var(--bg-2); }
+::-webkit-scrollbar-thumb        { background: rgba(176, 74, 82, 0.55); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover  { background: rgba(201, 162, 39, 0.65); }
+* { scrollbar-width: thin; scrollbar-color: rgba(176, 74, 82,0.5) var(--bg-2); }
 
 /* --------------------------------------------------------------------------
    3. Starfield Canvas
@@ -300,7 +313,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 520px;
   top: 38%;
   right: -140px;
-  background: radial-gradient(circle, rgba(110, 26, 38, 0.18) 0%, rgba(212, 175, 55, 0.06) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(110, 26, 38, 0.18) 0%, rgba(201, 162, 39, 0.06) 40%, transparent 70%);
   animation-delay: -8s;
   animation-duration: 28s;
 }
@@ -310,7 +323,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 420px;
   bottom: 8%;
   left: 28%;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, rgba(14, 92, 58, 0.07) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(201, 162, 39, 0.12) 0%, rgba(14, 92, 58, 0.07) 40%, transparent 70%);
   animation-delay: -16s;
   animation-duration: 34s;
 }
@@ -812,12 +825,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn--primary:active {
   transform: translateY(0);
-  box-shadow: 0 0 18px rgba(123, 44, 191, 0.45);
+  box-shadow: 0 0 18px rgba(176, 74, 82, 0.45);
 }
 
 .btn--outline {
   background: transparent;
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 1px solid rgba(201, 162, 39, 0.4);
   color: var(--gold);
   letter-spacing: 0.04em;
 }
@@ -825,20 +838,20 @@ h1, h2, h3, h4, h5, h6 {
 .btn--outline:hover {
   border-color: var(--gold);
   color: var(--gold-pale);
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(201, 162, 39, 0.08);
   transform: translateY(-1px);
-  box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 0 16px rgba(201, 162, 39, 0.2);
 }
 
 .btn--gold {
   background: var(--gradient-gold);
   color: #090b16;
   font-weight: 700;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.45);
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.45);
 }
 
 .btn--gold:hover {
-  box-shadow: 0 0 36px rgba(212, 175, 55, 0.65);
+  box-shadow: 0 0 36px rgba(201, 162, 39, 0.65);
   transform: translateY(-2px);
   color: #090b16;
 }
@@ -942,7 +955,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0.04em;
-  background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 35%, var(--amethyst-light) 70%, var(--amethyst-bright) 100%);
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 45%, var(--gold-pale) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1028,10 +1041,11 @@ h1, h2, h3, h4, h5, h6 {
    -------------------------------------------------------------------------- */
 .card,
 .glass-card {
-  background: var(--surface);
+  background: linear-gradient(158deg, rgba(20,16,10,0.80), rgba(10,8,6,0.92));
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
+  box-shadow: inset 0 1px 0 rgba(232,224,208,0.05), 0 8px 28px rgba(0,0,0,0.45);
   transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
   position: relative;
   overflow: hidden;
@@ -1060,7 +1074,7 @@ h1, h2, h3, h4, h5, h6 {
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55), rgba(123, 44, 191, 0.45), transparent);
+  background: var(--shimmer-line);
   pointer-events: none;
 }
 
@@ -1074,15 +1088,16 @@ h1, h2, h3, h4, h5, h6 {
   right: 8px;
   bottom: 8px;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(212, 175, 55, 0.06);
+  /* second inset border removed — one hairline + inner top-light is the whole edge system now
+     (depth-by-light, not depth-by-outline). content/positioning kept for the .engraved/.hermetic ornaments. */
   pointer-events: none;
 }
 
 .card:hover,
 .glass-card:hover {
-  border-color: rgba(212, 175, 55, 0.35);
-  box-shadow: 0 0 40px rgba(123, 44, 191, 0.14), 0 0 20px rgba(212, 175, 55, 0.1);
-  transform: translateY(-3px);
+  border-color: var(--border-2);
+  box-shadow: inset 0 1px 0 rgba(232,224,208,0.06), 0 16px 48px rgba(0,0,0,0.5), 0 0 36px var(--glow-gold);
+  transform: translateY(-4px);
 }
 
 .card--flat:hover,
@@ -1091,7 +1106,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card--glow {
-  box-shadow: 0 0 30px rgba(123, 44, 191, 0.14), 0 0 15px rgba(212, 175, 55, 0.08);
+  box-shadow: 0 0 30px var(--glow-gold), 0 0 15px var(--glow-gold-2);
 }
 
 /* Ancient Hermetic Glass – engraved, sacred geometry edges for mystical vibe */
@@ -1102,15 +1117,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hermetic-glass::before,
 .glass-card.hermetic::before {
-  background: linear-gradient(90deg, transparent, rgba(123, 44, 191, 0.6), rgba(212, 175, 55, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(176, 74, 82, 0.6), rgba(201, 162, 39, 0.5), transparent);
 }
 .hermetic-glass::after,
 .glass-card.hermetic::after {
-  border: 1px solid rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(201, 162, 39, 0.08);
   /* subtle sacred geometry corner accents */
   box-shadow: 
-    4px 4px 0 rgba(212,175,55,0.04),
-    -4px -4px 0 rgba(123,44,191,0.04);
+    4px 4px 0 rgba(201,162,39,0.04),
+    -4px -4px 0 rgba(176,74,82,0.04);
 }
 
 /* Mystical Synchronicity Glow – subtle alignments and cosmic connections */
@@ -1118,14 +1133,14 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 .synchro-glow:hover {
-  box-shadow: 0 0 40px rgba(123, 44, 191, 0.18), 0 0 20px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 0 40px rgba(176, 74, 82, 0.18), 0 0 20px rgba(201, 162, 39, 0.1);
 }
 .synchro-glow::after {
   content: '';
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(123,44,191,0.08), transparent, rgba(212,175,55,0.06));
+  background: linear-gradient(135deg, rgba(176,74,82,0.08), transparent, rgba(201,162,39,0.06));
   opacity: 0;
   transition: opacity var(--transition-base);
   pointer-events: none;
@@ -1137,8 +1152,8 @@ h1, h2, h3, h4, h5, h6 {
 /* Cosmic Nebula + Hermetic Grain backgrounds for ancient space vibe */
 .cosmic-hermetic-bg {
   background: 
-    radial-gradient(ellipse 80% 70% at 30% 20%, rgba(123, 44, 191, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 70% 80%, rgba(0, 212, 255, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 70% at 30% 20%, rgba(176, 74, 82, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 70% 80%, rgba(176, 74, 82, 0.07) 0%, transparent 55%),
     linear-gradient(180deg, var(--void) 0%, var(--hermetic) 100%);
   background-size: cover;
 }
@@ -1150,8 +1165,8 @@ h1, h2, h3, h4, h5, h6 {
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(212,175,55,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(123,44,191,0.01) 1px, transparent 1px);
+    linear-gradient(rgba(201,162,39,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(176,74,82,0.01) 1px, transparent 1px);
   background-size: 4px 4px, 6px 6px;
   pointer-events: none;
   mix-blend-mode: screen;
@@ -1276,8 +1291,8 @@ body > .cosmos-solar-system { display: none !important; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 25% 30%, transparent 48%, rgba(212,175,55,0.04) 49%, transparent 51%),
-    radial-gradient(circle at 75% 70%, transparent 48%, rgba(123,44,191,0.035) 49%, transparent 51%);
+    radial-gradient(circle at 25% 30%, transparent 48%, rgba(201,162,39,0.04) 49%, transparent 51%),
+    radial-gradient(circle at 75% 70%, transparent 48%, rgba(176,74,82,0.035) 49%, transparent 51%);
   background-size: 320px 320px, 420px 420px;
   pointer-events: none;
   opacity: 0.4;
@@ -1289,23 +1304,23 @@ body > .cosmos-solar-system { display: none !important; }
   position: absolute;
   top: 15%; left: 10%;
   width: 70%; height: 70%;
-  border: 1px solid rgba(212,175,55,0.03);
+  border: 1px solid rgba(201,162,39,0.03);
   border-radius: 50%;
   transform: rotate(12deg);
   pointer-events: none;
 }
 
 .card--gold {
-  border-color: rgba(212, 175, 55, 0.28);
+  border-color: rgba(201, 162, 39, 0.28);
 }
 
 .card--gold::before {
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.5), transparent);
 }
 
 .card--gold:hover {
-  border-color: rgba(212, 175, 55, 0.55);
-  box-shadow: 0 0 40px rgba(212, 175, 55, 0.14);
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 40px rgba(201, 162, 39, 0.14);
 }
 
 /* Card inner layout helpers */
@@ -1369,11 +1384,11 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .section--alt {
-  background: rgba(5, 5, 26, 0.6);
+  background: transparent;   /* one continuous sky — no per-section plate */
 }
 
 .section--deep {
-  background: rgba(8, 8, 35, 0.8);
+  background: transparent;
 }
 
 .section-header,
@@ -1399,7 +1414,7 @@ body > .cosmos-solar-system { display: none !important; }
   font-size: 2.2rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  background: linear-gradient(135deg, var(--gold-pale) 0%, var(--gold) 50%, var(--amethyst-light) 100%);
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 45%, var(--gold-pale) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1445,12 +1460,12 @@ body > .cosmos-solar-system { display: none !important; }
   left: var(--space-6);
   right: var(--space-6);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55), rgba(123, 44, 191, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.55), rgba(176, 74, 82, 0.4), transparent);
 }
 
 .feature-card:hover {
-  border-color: rgba(212, 175, 55, 0.38);
-  box-shadow: 0 0 40px rgba(123, 44, 191, 0.14), 0 0 20px rgba(212, 175, 55, 0.1);
+  border-color: rgba(201, 162, 39, 0.38);
+  box-shadow: 0 0 40px rgba(176, 74, 82, 0.14), 0 0 20px rgba(201, 162, 39, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1536,12 +1551,12 @@ body > .cosmos-solar-system { display: none !important; }
   left: 20%;
   right: 20%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.5), transparent);
 }
 
 .sign-card:hover {
-  border-color: rgba(212, 175, 55, 0.35);
-  box-shadow: 0 0 28px rgba(123, 44, 191, 0.14), 0 0 14px rgba(212, 175, 55, 0.1);
+  border-color: rgba(201, 162, 39, 0.35);
+  box-shadow: 0 0 28px rgba(176, 74, 82, 0.14), 0 0 14px rgba(201, 162, 39, 0.1);
   transform: translateY(-3px);
 }
 
@@ -1612,8 +1627,8 @@ body > .cosmos-solar-system { display: none !important; }
 
 .sign-card.is-active,
 .sign-card--active {
-  border-color: rgba(212, 175, 55, 0.6);
-  box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(123, 44, 191, 0.12);
+  border-color: rgba(201, 162, 39, 0.6);
+  box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(176, 74, 82, 0.12);
 }
 
 .sign-card.is-active .sign-card__name,
@@ -1670,8 +1685,8 @@ body > .cosmos-solar-system { display: none !important; }
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: rgba(212, 175, 55, 0.55);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12), 0 0 16px rgba(123, 44, 191, 0.1);
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12), 0 0 16px rgba(176, 74, 82, 0.1);
   background: rgba(25, 16, 50, 0.85);
 }
 
@@ -4761,11 +4776,11 @@ body > .cosmos-solar-system { display: none !important; }
   flex: 1;
   max-width: 200px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5));
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.5));
 }
 
 .divider-stars::after {
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), transparent);
+  background: linear-gradient(90deg, rgba(201, 162, 39, 0.5), transparent);
 }
 
 /* Gold separator line */
@@ -4803,8 +4818,8 @@ body > .cosmos-solar-system { display: none !important; }
 /* Sacred geometry background pattern on cards */
 .card--sacred::after {
   background-image:
-    radial-gradient(circle at 8px 8px, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 24px 24px, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+    radial-gradient(circle at 8px 8px, rgba(201, 162, 39, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 24px 24px, rgba(201, 162, 39, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
   border: none;
 }
@@ -4815,7 +4830,7 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .card--ritual::before {
-  background: linear-gradient(90deg, transparent, rgba(110, 26, 38, 0.5), rgba(212, 175, 55, 0.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(110, 26, 38, 0.5), rgba(201, 162, 39, 0.35), transparent);
 }
 
 /* Moon phase badge */
@@ -4823,8 +4838,8 @@ body > .cosmos-solar-system { display: none !important; }
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(201, 162, 39, 0.1);
+  border: 1px solid rgba(201, 162, 39, 0.3);
   border-radius: var(--radius-full);
   padding: var(--space-1) var(--space-3);
   font-size: var(--text-xs);
@@ -4845,12 +4860,12 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(123, 44, 191, 0.5);
+  background: rgba(176, 74, 82, 0.5);
   border: 2px solid var(--bg-2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.5);
+  background: rgba(201, 162, 39, 0.5);
 }
 
 /* ==========================================================================
@@ -4867,8 +4882,8 @@ body > .cosmos-solar-system { display: none !important; }
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-  border-color: rgba(212, 175, 55, 0.55);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12), 0 0 16px rgba(123, 44, 191, 0.1);
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12), 0 0 16px rgba(176, 74, 82, 0.1);
   outline: none;
 }
 
@@ -4909,15 +4924,15 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .testimonial-card--featured {
-  border-color: rgba(212, 175, 55, 0.35);
-  box-shadow: 0 0 40px rgba(123, 44, 191, 0.12), 0 0 20px rgba(212, 175, 55, 0.08);
+  border-color: rgba(201, 162, 39, 0.35);
+  box-shadow: 0 0 40px rgba(176, 74, 82, 0.12), 0 0 20px rgba(201, 162, 39, 0.08);
 }
 
 /* ==========================================================================
    63. Step numbers — gold amethyst gradient
    ========================================================================== */
 .step-number {
-  border-color: rgba(212, 175, 55, 0.4) !important;
+  border-color: rgba(201, 162, 39, 0.4) !important;
   background: linear-gradient(135deg, var(--gold), var(--amethyst-light)) !important;
 }
 
@@ -4925,9 +4940,9 @@ body > .cosmos-solar-system { display: none !important; }
    64. Newsletter section — gold accent border
    ========================================================================== */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(123, 44, 191, 0.08) 0%, rgba(212, 175, 55, 0.06) 100%);
-  border-top: 1px solid rgba(212, 175, 55, 0.15);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  background: linear-gradient(135deg, rgba(176, 74, 82, 0.08) 0%, rgba(201, 162, 39, 0.06) 100%);
+  border-top: 1px solid rgba(201, 162, 39, 0.15);
+  border-bottom: 1px solid rgba(201, 162, 39, 0.15);
 }
 
 .newsletter-title {
@@ -4968,7 +4983,7 @@ body > .cosmos-solar-system { display: none !important; }
    68. Data table — gold header
    ========================================================================== */
 .data-table th {
-  background: rgba(123, 44, 191, 0.2);
+  background: rgba(176, 74, 82, 0.2);
   color: var(--gold-pale);
   letter-spacing: 0.06em;
 }
@@ -5039,12 +5054,12 @@ body > .cosmos-solar-system { display: none !important; }
   transition: all var(--transition-fast);
 }
 
-.tabs__trigger:hover { color: var(--gold-pale); background: rgba(212, 175, 55, 0.05); }
+.tabs__trigger:hover { color: var(--gold-pale); background: rgba(201, 162, 39, 0.05); }
 
 .tabs__trigger[aria-selected="true"] {
   color: var(--gold-pale);
   border-bottom-color: var(--gold);
-  background: rgba(212, 175, 55, 0.07);
+  background: rgba(201, 162, 39, 0.07);
 }
 
 .tabs__panel {
@@ -5067,7 +5082,19 @@ body > .cosmos-solar-system { display: none !important; }
 
 /* Cross-document view transitions (progressive enhancement) */
 @view-transition { navigation: auto; }
+/* "Cosmic dissolve" — a slow eased fade + sub-2% scale breath so moving between
+   pages feels like moving through one space. Degrades to instant nav on browsers
+   without cross-document View Transitions (Firefox / older Safari). */
+@keyframes vt-fade-out { from { opacity: 1; transform: scale(1); }    to { opacity: 0; transform: scale(1.02); } }
+@keyframes vt-fade-in  { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
+::view-transition-old(root) { animation: vt-fade-out 520ms var(--ease-smooth, ease) both; z-index: 1; }
+::view-transition-new(root) { animation: vt-fade-in  520ms var(--ease-smooth, ease) both; z-index: 2; }
 .navbar__logo-icon img { view-transition-name: site-sigil; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+    animation-duration: 1ms !important; animation-delay: 0ms !important;
+  }
+}
 
 /* Film grain — aged parchment texture over everything */
 body::after {
@@ -5103,7 +5130,7 @@ body::before {
   transform-origin: left;
   transform: scaleX(0);
   background: linear-gradient(90deg, var(--gold), var(--gold-pale), var(--gold));
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 8px rgba(201, 162, 39, 0.5);
 }
 
 /* Spotlight hover — candlelight follows the cursor */
@@ -5169,12 +5196,12 @@ body::before {
     radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.16), transparent 42%),
     radial-gradient(circle at 72% 80%, rgba(0, 0, 0, 0.55), transparent 55%),
     radial-gradient(circle at 50% 50%, var(--m-tint) 0%, #10162c 68%, #090d1c 100%);
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 1px solid rgba(201, 162, 39, 0.4);
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.14),
     inset 0 -3px 6px rgba(0, 0, 0, 0.6),
     0 5px 14px rgba(0, 0, 0, 0.55),
-    0 0 0 3px rgba(212, 175, 55, 0.06);
+    0 0 0 3px rgba(201, 162, 39, 0.06);
   transform: translateZ(18px);
 }
 .sign-medallion::before {
@@ -5182,7 +5209,7 @@ body::before {
   position: absolute;
   inset: 5px;
   border-radius: 50%;
-  border: 1px solid rgba(212, 175, 55, 0.28);
+  border: 1px solid rgba(201, 162, 39, 0.28);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.55);
 }
 .sign-medallion::after {
@@ -5192,7 +5219,7 @@ body::before {
   inset: 1px;
   border-radius: 50%;
   background: repeating-conic-gradient(
-    rgba(212, 175, 55, 0.22) 0deg 1.2deg,
+    rgba(201, 162, 39, 0.22) 0deg 1.2deg,
     transparent 1.2deg 30deg);
   -webkit-mask: radial-gradient(circle, transparent 64%, #000 66%, #000 78%, transparent 80%);
   mask: radial-gradient(circle, transparent 64%, #000 66%, #000 78%, transparent 80%);
@@ -5225,8 +5252,8 @@ body::before {
 .instrument-teaser {
   background: linear-gradient(180deg,
     transparent 0%,
-    rgba(123, 44, 191, 0.06) 30%,
-    rgba(212, 175, 55, 0.04) 70%,
+    rgba(176, 74, 82, 0.06) 30%,
+    rgba(201, 162, 39, 0.04) 70%,
     transparent 100%);
 }
 
@@ -5235,9 +5262,9 @@ body::before {
   margin: 0 auto;
   text-align: center;
   padding: var(--space-12) var(--space-6);
-  border: 1px solid rgba(212, 175, 55, 0.18);
+  border: 1px solid rgba(201, 162, 39, 0.18);
   border-radius: var(--radius-xl);
-  background: rgba(9, 11, 22, 0.6);
+  background: transparent;   /* frosted glass on the one sky — no cool plate */
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   position: relative;
@@ -5249,10 +5276,10 @@ body::before {
   inset: -1px;
   border-radius: inherit;
   background: linear-gradient(135deg,
-    rgba(212, 175, 55, 0.15) 0%,
+    rgba(201, 162, 39, 0.15) 0%,
     transparent 40%,
     transparent 60%,
-    rgba(123, 44, 191, 0.12) 100%);
+    rgba(176, 74, 82, 0.12) 100%);
   pointer-events: none;
 }
 
@@ -5262,7 +5289,7 @@ body::before {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
-  border: 1px solid rgba(212, 175, 55, 0.4);
+  border: 1px solid rgba(201, 162, 39, 0.4);
   padding: 4px 14px;
   border-radius: 999px;
   margin-bottom: var(--space-5);
@@ -5333,13 +5360,13 @@ body::before {
 .sign-reading-panel[data-element="water"] { --el-color:#818cf8; --el-glow:rgba(129,140,248,0.45); --el-bg:rgba(129,140,248,0.06);  --el-border:rgba(129,140,248,0.32); }
 
 .sign-reading-panel[data-element] .sign-reading-panel__inner {
-  border-color: var(--el-border, rgba(212,175,55,0.28));
+  border-color: var(--el-border, rgba(201,162,39,0.28));
   background: linear-gradient(160deg, var(--el-bg, transparent) 0%, rgba(9,11,22,0.96) 55%);
 }
 
 .sign-reading-panel[data-element] .reading-card {
   border-color: var(--el-border, rgba(91,127,199,0.2));
-  background: var(--el-bg, rgba(123,44,191,0.08));
+  background: var(--el-bg, rgba(176,74,82,0.08));
 }
 
 .sign-reading-panel[data-element] .reading-card__label {
@@ -5348,8 +5375,8 @@ body::before {
 
 /* Animated sign glyph when panel opens */
 @keyframes glyph-pulse {
-  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 7px  var(--el-glow, rgba(212,175,55,0.45))); }
-  50%      { transform: scale(1.11); filter: drop-shadow(0 0 18px var(--el-glow, rgba(212,175,55,0.8)));  }
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 7px  var(--el-glow, rgba(201,162,39,0.45))); }
+  50%      { transform: scale(1.11); filter: drop-shadow(0 0 18px var(--el-glow, rgba(201,162,39,0.8)));  }
 }
 .sign-reading-panel.is-open .sign-reading-panel__glyph {
   display: inline-block;
@@ -5416,15 +5443,15 @@ body::before {
   transition: border-color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
 }
 .planet-weather-card:hover {
-  border-color: rgba(212,175,55,0.32);
+  border-color: rgba(201,162,39,0.32);
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(123,44,191,0.16);
+  box-shadow: 0 6px 22px rgba(176,74,82,0.16);
 }
 
 /* ── Hero stat separators ────────────────────────────────── */
 .hero-stat + .hero-stat {
   padding-left: var(--space-8);
-  border-left: 1px solid rgba(212,175,55,0.22);
+  border-left: 1px solid rgba(201,162,39,0.22);
 }
 
 /* ── Section title gold underline ───────────────────────── */
@@ -5436,7 +5463,7 @@ body::before {
   display: block;
   width: 44px;
   height: 2px;
-  background: linear-gradient(90deg, var(--gold-light), rgba(212,175,55,0.3));
+  background: linear-gradient(90deg, var(--gold-light), rgba(201,162,39,0.3));
   border-radius: 1px;
   margin: var(--space-3) auto 0;
 }
@@ -5451,8 +5478,8 @@ body::before {
 
 /* ── Weekly forecast item improvements ─────────────────── */
 .transit-item--major {
-  border-color: rgba(212,175,55,0.35) !important;
-  background: rgba(212,175,55,0.05) !important;
+  border-color: rgba(201,162,39,0.35) !important;
+  background: rgba(201,162,39,0.05) !important;
 }
 .transit-item--major .transit-item__title {
   color: var(--gold-light);
@@ -5467,7 +5494,7 @@ body::before {
 
 /* ── Sign reading panel header accent line ─────────────── */
 .sign-reading-panel__header {
-  border-bottom: 1px solid var(--el-border, rgba(212,175,55,0.15));
+  border-bottom: 1px solid var(--el-border, rgba(201,162,39,0.15));
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -5483,7 +5510,7 @@ body::before {
 
 /* Global focus-visible ring */
 :focus-visible {
-  outline: 2px solid rgba(212,175,55,0.72);
+  outline: 2px solid rgba(201,162,39,0.72);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
@@ -5541,31 +5568,31 @@ body::before {
   line-height: 1;
 }
 .compat-orb--1 .compat-orb__core {
-  background: radial-gradient(circle at 35% 32%, rgba(91,127,199,0.3) 0%, rgba(123,44,191,0.55) 55%, rgba(9,11,22,0.8) 100%);
+  background: radial-gradient(circle at 35% 32%, rgba(91,127,199,0.3) 0%, rgba(176,74,82,0.55) 55%, rgba(9,11,22,0.8) 100%);
   border: 1px solid rgba(91,127,199,0.55);
   box-shadow:
-    0 0 0 8px rgba(123,44,191,0.08),
+    0 0 0 8px rgba(176,74,82,0.08),
     0 0 30px rgba(91,127,199,0.25),
     inset 0 1px 2px rgba(255,255,255,0.14);
   animation: orb-breathe-1 5s ease-in-out infinite;
 }
 .compat-orb--2 .compat-orb__core {
-  background: radial-gradient(circle at 35% 32%, rgba(212,168,32,0.3) 0%, rgba(212,175,55,0.45) 55%, rgba(9,11,22,0.8) 100%);
-  border: 1px solid rgba(212,175,55,0.55);
+  background: radial-gradient(circle at 35% 32%, rgba(212,168,32,0.3) 0%, rgba(201,162,39,0.45) 55%, rgba(9,11,22,0.8) 100%);
+  border: 1px solid rgba(201,162,39,0.55);
   box-shadow:
-    0 0 0 8px rgba(212,175,55,0.07),
-    0 0 30px rgba(212,175,55,0.2),
+    0 0 0 8px rgba(201,162,39,0.07),
+    0 0 30px rgba(201,162,39,0.2),
     inset 0 1px 2px rgba(255,255,255,0.14);
   animation: orb-breathe-2 5s ease-in-out infinite;
   animation-delay: -2.5s;
 }
 @keyframes orb-breathe-1 {
-  0%,100% { box-shadow: 0 0 0 8px rgba(123,44,191,0.08), 0 0 24px rgba(91,127,199,0.2), inset 0 1px 2px rgba(255,255,255,0.14); }
-  50%     { box-shadow: 0 0 0 12px rgba(123,44,191,0.12), 0 0 44px rgba(91,127,199,0.35), inset 0 1px 2px rgba(255,255,255,0.18); }
+  0%,100% { box-shadow: 0 0 0 8px rgba(176,74,82,0.08), 0 0 24px rgba(91,127,199,0.2), inset 0 1px 2px rgba(255,255,255,0.14); }
+  50%     { box-shadow: 0 0 0 12px rgba(176,74,82,0.12), 0 0 44px rgba(91,127,199,0.35), inset 0 1px 2px rgba(255,255,255,0.18); }
 }
 @keyframes orb-breathe-2 {
-  0%,100% { box-shadow: 0 0 0 8px rgba(212,175,55,0.07), 0 0 24px rgba(212,175,55,0.18), inset 0 1px 2px rgba(255,255,255,0.14); }
-  50%     { box-shadow: 0 0 0 12px rgba(212,175,55,0.10), 0 0 44px rgba(212,175,55,0.32), inset 0 1px 2px rgba(255,255,255,0.18); }
+  0%,100% { box-shadow: 0 0 0 8px rgba(201,162,39,0.07), 0 0 24px rgba(201,162,39,0.18), inset 0 1px 2px rgba(255,255,255,0.14); }
+  50%     { box-shadow: 0 0 0 12px rgba(201,162,39,0.10), 0 0 44px rgba(201,162,39,0.32), inset 0 1px 2px rgba(255,255,255,0.18); }
 }
 .compat-orbs__arc {
   flex: 1;
@@ -5615,7 +5642,7 @@ body::before {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 8px rgba(212,175,55,0.25));
+  filter: drop-shadow(0 0 8px rgba(201,162,39,0.25));
   opacity: 1 !important;
 }
 
@@ -5661,7 +5688,7 @@ body::before {
   opacity: 0.82;
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: 1px solid rgba(212,175,55,0.12);
+  border-top: 1px solid rgba(201,162,39,0.12);
   font-style: italic;
   line-height: 1.7;
 }
@@ -5683,7 +5710,7 @@ body[data-element="fire"]::before {
   background:
     radial-gradient(ellipse 65% 55% at 8% 12%,  rgba(220, 80, 20, 0.22)  0%, transparent 55%),
     radial-gradient(ellipse 55% 45% at 88% 72%,  rgba(196, 100, 10, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(212, 175, 55, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 50% 90%,  rgba(201, 162, 39, 0.12) 0%, transparent 50%),
     radial-gradient(ellipse 50% 40% at 72% 18%,  rgba(180, 50, 10, 0.10)  0%, transparent 50%);
 }
 
@@ -5800,8 +5827,8 @@ body[data-element="water"]::before {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold-pale);
-  background: linear-gradient(145deg, rgba(212,175,55,0.1) 0%, rgba(9,11,22,0.6) 100%);
-  border: 1px solid rgba(212,175,55,0.3);
+  background: linear-gradient(145deg, rgba(201,162,39,0.1) 0%, rgba(9,11,22,0.6) 100%);
+  border: 1px solid rgba(201,162,39,0.3);
   border-radius: 999px;
   padding: 4px 12px;
   white-space: normal;
@@ -5834,7 +5861,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   background: rgba(9, 11, 22, 0.94);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(212,175,55,0.35);
+  border-top: 1px solid rgba(201,162,39,0.35);
   transform: translateY(0);
   transition: transform 0.45s var(--ease-spring, ease);
 }
@@ -5847,7 +5874,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 .privacy-banner__text strong { color: var(--gold-pale); font-weight: 600; }
 .privacy-banner__close {
   background: none;
-  border: 1px solid rgba(212,175,55,0.4);
+  border: 1px solid rgba(201,162,39,0.4);
   border-radius: 999px;
   color: var(--gold-pale);
   font-size: 0.7rem;
@@ -5858,7 +5885,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   flex-shrink: 0;
 }
 .privacy-banner__close:hover {
-  background: rgba(212,175,55,0.12);
+  background: rgba(201,162,39,0.12);
   border-color: var(--gold);
 }
 @media (max-width: 600px) {
@@ -5961,7 +5988,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   background: rgba(9, 11, 22, 0.96);
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
-  border-top: 1px solid rgba(212,175,55,0.22);
+  border-top: 1px solid rgba(201,162,39,0.22);
   padding: 6px 0 max(6px, env(safe-area-inset-bottom));
 }
 .bottom-nav__inner {
@@ -5975,14 +6002,17 @@ html, body { overflow-x: clip; max-width: 100%; }
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2px;
-  padding: 6px 10px;
+  padding: 8px 10px 6px;
   text-decoration: none;
   color: var(--silver-dim);
   border-radius: var(--radius-md);
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.08s ease;
   min-width: 56px;
+  min-height: 48px;
 }
+.bottom-nav__item:active { transform: scale(0.92); }
 .bottom-nav__icon { font-size: 1.15rem; line-height: 1; }
 .bottom-nav__label {
   font-size: 0.52rem;
@@ -5993,7 +6023,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   color: var(--gold-pale);
 }
 .bottom-nav__item.is-active .bottom-nav__icon {
-  filter: drop-shadow(0 0 6px rgba(212,175,55,0.6));
+  filter: drop-shadow(0 0 6px rgba(201,162,39,0.6));
 }
 @media (max-width: 768px) {
   .bottom-nav { display: block; }
@@ -6075,14 +6105,14 @@ html, body { overflow-x: clip; max-width: 100%; }
 
 /* ── Enhanced feature card hover depth ───────────────────────────────────── */
 .feature-strip__item:hover {
-  box-shadow: 0 20px 50px rgba(123, 44, 191, 0.2), 0 0 1px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 20px 50px rgba(176, 74, 82, 0.2), 0 0 1px rgba(201, 162, 39, 0.3);
 }
 .feature-strip__item::after {
   content: '';
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, transparent 50%);
+  background: linear-gradient(135deg, rgba(201,162,39,0.08) 0%, transparent 50%);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-base);
@@ -6094,8 +6124,8 @@ html, body { overflow-x: clip; max-width: 100%; }
   transition: box-shadow var(--transition-base), border-color var(--transition-base);
 }
 .live-sky__panel:hover {
-  border-color: rgba(212,175,55,0.2);
-  box-shadow: 0 8px 40px rgba(123,44,191,0.12);
+  border-color: rgba(201,162,39,0.2);
+  box-shadow: 0 8px 40px rgba(176,74,82,0.12);
 }
 
 /* ── Planet weather card hover ───────────────────────────────────────────── */
@@ -6103,10 +6133,10 @@ html, body { overflow-x: clip; max-width: 100%; }
   transition: all var(--transition-base);
 }
 .planet-weather-card:hover {
-  border-color: rgba(212,175,55,0.3);
+  border-color: rgba(201,162,39,0.3);
   background: var(--surface-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(123,44,191,0.15);
+  box-shadow: 0 6px 20px rgba(176,74,82,0.15);
 }
 
 /* ── Glossy glass-gradient zodiac / planet icon orbs (see js/icons.js) ─────── */
@@ -6206,7 +6236,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 
 /* ── Life path panel theme ───────────────────────────────────────────────── */
 .lp-panel { transition: box-shadow var(--transition-base); }
-.lp-panel:hover { box-shadow: 0 8px 28px rgba(123,44,191,0.12); }
+.lp-panel:hover { box-shadow: 0 8px 28px rgba(176,74,82,0.12); }
 
 /* ── Shop card image shimmer ─────────────────────────────────────────────── */
 .shop-card__img::after {
@@ -6219,7 +6249,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 
 /* ── Improved navbar scrolled state ─────────────────────────────────────── */
 .navbar.scrolled {
-  box-shadow: 0 4px 24px rgba(9,11,22,0.7), 0 0 0 1px rgba(212,175,55,0.08);
+  box-shadow: 0 4px 24px rgba(9,11,22,0.7), 0 0 0 1px rgba(201,162,39,0.08);
 }
 
 /* ── Gradient text utility ───────────────────────────────────────────────── */
@@ -6248,7 +6278,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 
 /* ── Weekly reading accordion ────────────────────────────────────────────── */
 #srp-weekly-body {
-  border-left: 2px solid rgba(212,175,55,0.2);
+  border-left: 2px solid rgba(201,162,39,0.2);
   padding-left: var(--space-4);
 }
 
@@ -6257,13 +6287,13 @@ html, body { overflow-x: clip; max-width: 100%; }
   transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 #natal-sig-grid > div:hover {
-  border-color: rgba(212,175,55,0.3) !important;
+  border-color: rgba(201,162,39,0.3) !important;
   background: rgba(17,26,54,0.9) !important;
 }
 
-/* ── Horoscope page section separator ───────────────────────────────────── */
+/* ── Horoscope page section separator (seamless — no cool plate) ─────────── */
 .section--alt {
-  background: linear-gradient(180deg, transparent 0%, rgba(17,26,54,0.4) 50%, transparent 100%);
+  background: transparent;
 }
 
 /* ==========================================================================
@@ -6282,10 +6312,10 @@ html, body { overflow-x: clip; max-width: 100%; }
   white-space: nowrap;
   cursor: help;
 }
-.dignity-badge--domicile   { background: rgba(212,175,55,0.15); color: var(--gold-light);     border: 1px solid rgba(212,175,55,0.4); }
+.dignity-badge--domicile   { background: rgba(201,162,39,0.15); color: var(--gold-light);     border: 1px solid rgba(201,162,39,0.4); }
 .dignity-badge--exaltation { background: rgba(52,211,153,0.12); color: #34d399;               border: 1px solid rgba(52,211,153,0.35); }
 .dignity-badge--detriment  { background: rgba(176,74,82,0.12);  color: var(--crimson-light);  border: 1px solid rgba(176,74,82,0.3); }
-.dignity-badge--fall       { background: rgba(123,44,191,0.12); color: var(--violet-bright);  border: 1px solid rgba(123,44,191,0.3); }
+.dignity-badge--fall       { background: rgba(176,74,82,0.12); color: var(--violet-bright);  border: 1px solid rgba(176,74,82,0.3); }
 
 /* Chart pattern cards */
 .pattern-card {
@@ -6302,14 +6332,14 @@ html, body { overflow-x: clip; max-width: 100%; }
   content: '';
   position: absolute;
   top: 0; left: var(--space-4); right: var(--space-4); height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201,162,39,0.4), transparent);
 }
-.pattern-card--major { border-color: rgba(212,175,55,0.3); }
+.pattern-card--major { border-color: rgba(201,162,39,0.3); }
 .pattern-card__glyph { font-size: 1.8rem; line-height: 1; margin-bottom: var(--space-2); }
 .pattern-card__name  { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-pale); margin-bottom: var(--space-2); }
 .pattern-card__desc  { font-size: var(--text-sm); color: var(--silver); line-height: 1.7; }
 .pattern-card__planets { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-3); }
-.pattern-card__planet-tag { font-size: 0.62rem; letter-spacing: 0.08em; padding: 2px 8px; border-radius: var(--radius-full); background: rgba(123,44,191,0.12); border: 1px solid rgba(123,44,191,0.2); color: var(--violet-bright); }
+.pattern-card__planet-tag { font-size: 0.62rem; letter-spacing: 0.08em; padding: 2px 8px; border-radius: var(--radius-full); background: rgba(176,74,82,0.12); border: 1px solid rgba(176,74,82,0.2); color: var(--violet-bright); }
 .patterns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); }
 
 /* Expression / Soul Urge number card (Life Path page) */
@@ -6332,7 +6362,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   content: '';
   position: absolute;
   top: 0; left: 20%; right: 20%; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201,162,39,0.45), transparent);
 }
 .num-card__label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--silver-dim); margin-bottom: var(--space-2); }
 .num-card__number { font-family: var(--font-display); font-size: 2.8rem; font-weight: 700; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: var(--space-2); }

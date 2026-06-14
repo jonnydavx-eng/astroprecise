@@ -194,6 +194,7 @@ function navLinks(activeKey) {
           <a href="horoscope.html" class="navbar__link">Horoscope</a>
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
           <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="why.html" class="navbar__link">Why</a>
           <a href="profile.html" class="navbar__link">Profile</a>`;
 }
 
@@ -277,7 +278,7 @@ function page(s) {
   <link rel="canonical" href="${url}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <meta property="og:type" content="article" />
@@ -285,12 +286,12 @@ function page(s) {
   <meta property="og:title" content="${s.name} Horoscope Today | AstroPrecise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:image" content="${BASE_URL}/img/og-banner.png" />
+  <meta property="og:image" content="${BASE_URL}/img/og-banner-improved.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${s.name} Horoscope Today | AstroPrecise" />
   <meta name="twitter:description" content="${desc}" />
-  <meta name="twitter:image" content="${BASE_URL}/img/og-banner.png" />
-  <meta name="theme-color" content="#090b16" />
+  <meta name="twitter:image" content="${BASE_URL}/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
   <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script type="application/ld+json">${JSON.stringify(breadcrumbLd)}</script>
@@ -484,7 +485,7 @@ function page(s) {
   <footer class="footer" role="contentinfo">
     <div class="container">
       <div class="footer__bottom">
-        <p>&copy; 2025 AstroPrecise · All calculations run locally in your browser · No data collected</p>
+        <p>&copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected</p>
       </div>
     </div>
   </footer>
