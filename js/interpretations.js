@@ -416,7 +416,11 @@ window.Interpretations = (() => {
   const ZODIAC_SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
 
   function getPlanetInterpretation(planet, sign) {
+    // Prefer the curated table; fall back to the full 11-body × 12-sign corpus
+    // (_planetInSign, keyed lower-case) before the last-resort generic line.
+    const p = String(planet || '').toLowerCase(), s = String(sign || '').toLowerCase();
     return (PLANET_IN_SIGN[planet] && PLANET_IN_SIGN[planet][sign])
+      || (typeof _planetInSign !== 'undefined' && _planetInSign[p] && _planetInSign[p][s])
       || `${planet} in ${sign} blends ${planet}'s core principle with ${sign}'s qualities, creating a unique expression that colors this area of your chart.`;
   }
 

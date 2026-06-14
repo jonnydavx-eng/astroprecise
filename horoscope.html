@@ -22,7 +22,7 @@
   <meta name="twitter:title" content="Daily Horoscopes | AstroPrecise" />
   <meta name="twitter:description" content="Free daily horoscopes for all 12 zodiac signs, generated from real planetary positions." />
   <meta name="twitter:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0A0B1F" />
+  <meta name="theme-color" content="#050406" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -814,76 +814,8 @@
 </head>
 <body>
 
-  <!-- CINEMATIC PRELOADER — masterpiece entry experience (engraved hermetic celestial) -->
-  <div id="page-preloader" class="page-preloader" aria-label="Astral alignment in progress">
-    <canvas id="page-preloader-canvas" width="600" height="600" aria-hidden="true"></canvas>
-    <div class="preloader-content">
-      <div class="preloader-seal">✧</div>
-      <div class="preloader-title">The Spheres Align</div>
-      <div class="preloader-subtitle">The Sky Is Your Eternal Hermetic Clock</div>
-      <div class="preloader-progress" id="page-preloader-progress">
-        <div class="preloader-bar"><div class="preloader-fill" style="width:100%"></div></div>
-      </div>
-      <button id="page-preloader-enter" class="preloader-skip" style="display:none; font-size:0.82rem; padding:11px 28px;">✧ Click to Enter the Record</button>
-    </div>
-  </div>
-
-  <!-- Masterpiece preloader script (lightweight fade + celestial vibe for this page) - after DOM elements -->
-  <script>
-  (function(){
-    const pre = document.getElementById('page-preloader');
-    if(!pre) return;
-    const cvs = document.getElementById('page-preloader-canvas');
-    if(cvs){
-      const ctx = cvs.getContext('2d');
-      let t=0;
-      function draw(){
-        ctx.clearRect(0,0,600,600);
-        ctx.save(); ctx.translate(300,300);
-        ctx.strokeStyle = 'rgba(201,162,39,0.5)'; ctx.lineWidth=1;
-        for(let i=0;i<6;i++){ ctx.beginPath(); ctx.arc(0,0,80+i*18,0,Math.PI*2); ctx.stroke(); }
-        ctx.fillStyle = '#C9A227';
-        ctx.beginPath(); ctx.arc(Math.cos(t*0.03)*40, Math.sin(t*0.02)*30, 4,0,Math.PI*2); ctx.fill();
-        ctx.restore(); t++; requestAnimationFrame(draw);
-      }
-      draw();
-    }
-    const progress = document.getElementById('page-preloader-progress');
-    const enterBtn = document.getElementById('page-preloader-enter');
-    const startTime = Date.now();
-
-    function hidePre() {
-      pre.style.opacity = '0';
-      setTimeout(() => { pre.style.display = 'none'; pre.remove(); }, 400);
-    }
-
-    setTimeout(() => {
-      if (progress) progress.style.display = 'none';
-      if (enterBtn) {
-        enterBtn.style.display = 'inline-block';
-        enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
-      }
-    }, 1400);
-
-    pre.addEventListener('click', function onFirstClick() {
-      if (enterBtn && enterBtn.style.display !== 'none') return;
-      if (Date.now() - startTime > 1200) {
-        pre.removeEventListener('click', onFirstClick);
-        hidePre();
-      }
-    });
-
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setTimeout(() => {
-        if (progress) progress.style.display = 'none';
-        if (enterBtn) {
-          enterBtn.style.display = 'inline-block';
-          enterBtn.addEventListener('click', () => { hidePre(); }, { once: true });
-        }
-      }, 400);
-    }
-  })();
-  </script>
+  <!-- Intro lives only on the homepage (once per session). Internal pages load
+       straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
 
   <!-- Animated starfield -->
   <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true"></canvas>
@@ -909,6 +841,7 @@
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
           <a href="lifepath.html" class="navbar__link">Life Path</a>
           <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="why.html" class="navbar__link">Why</a>
           <a href="shop.html" class="navbar__link">Shop</a>
           <a href="profile.html" class="navbar__link">Profile</a>
         </div>
@@ -924,6 +857,7 @@
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
         <a href="lifepath.html" class="navbar__link">Life Path</a>
         <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="why.html" class="navbar__link">Why</a>
         <a href="shop.html" class="navbar__link">Shop</a>
         <a href="profile.html" class="navbar__link">Profile</a>
       </div>
@@ -1434,7 +1368,7 @@
         </nav>
       </div>
       <div class="footer__bottom">
-        <p>&copy; 2025 AstroPrecise. Powered by accurate astronomical calculations.</p>
+        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
       </div>
     </div>
   </footer>

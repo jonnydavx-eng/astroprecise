@@ -72,12 +72,13 @@ import * as THREE from 'three';
   let lastT = 0, needRecompute = true;
 
   // camera orbit (spherical around target)
-  let camRadius = 82, camAz = -0.6, camEl = 26 * D2R;
+  let camRadius = 48, camAz = -0.6, camEl = 26 * D2R;  // tighter framing — inner system + Earth as the hero (was 82)
   const camTarget = new THREE.Vector3(0, 0, 0);
   let dragging = false, lastX = 0, lastY = 0, downX = 0, downY = 0, userTouched = 0;
 
   // intro
   let introActive = !PRM, introStart = 0;
+  let onIntroDone = null;        // fired once when the intro pull-back settles (the loader uses it to reveal "Enter")
   const INTRO_MS = 4200;
 
   // layer toggles (mirror canvas API)
@@ -340,12 +341,12 @@ import * as THREE from 'three';
       const p = Math.min(1, (t - introStart) / INTRO_MS), e = easeInOut(p);
       const earthPos = meshes.earth.position;
       camTarget.lerpVectors(earthPos, new THREE.Vector3(0, 0, 0), e);
-      camRadius = 3.0 + (82 - 3.0) * e;
+      camRadius = 3.0 + (48 - 3.0) * e;
       camEl = (7 * D2R) + (26 * D2R - 7 * D2R) * e;
       camAz = (Math.atan2(earthPos.z, earthPos.x) * -1 - 0.2) * (1 - e) + (-0.6) * e;
-      if (p >= 1) introActive = false;
-    } else if (!dragging && !PRM && (t - userTouched) > 4000) {
-      camAz += 0.018 * dt; // gentle auto-orbit when idle
+      if (p >= 1) { introActive = false; if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); } }
+    } else if (!dragging && !PRM && (t - userTouched) > 1200) {
+      camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
     }
     applyCamera();
 
@@ -386,15 +387,15 @@ import * as THREE from 'three';
 
   // ── Pointer controls ───────────────────────────────────────────────────────
   function bindControls() {
-    const onDown = (e) => { dragging = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; };
+    const onDown = (e) => { dragging = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; try { canvas.style.cursor = 'grabbing'; } catch (_) {} };
     const onMove = (e) => {
       if (!dragging) return; const p = pt(e);
-      camAz -= (p.x - lastX) * 0.006; camEl += (p.y - lastY) * 0.006;
+      camAz -= (p.x - lastX) * 0.008; camEl += (p.y - lastY) * 0.008;  // slightly more responsive drag
       camEl = Math.max(-1.3, Math.min(1.45, camEl)); lastX = p.x; lastY = p.y; userTouched = performance.now();
     };
     const onUp = (e) => {
       if (dragging) { const p = pt(e); if (Math.hypot(p.x - downX, p.y - downY) < 5) pick(p); }
-      dragging = false;
+      dragging = false; try { canvas.style.cursor = 'grab'; } catch (_) {}
     };
     const onWheel = (e) => { e.preventDefault(); camRadius = Math.max(5, Math.min(160, camRadius * (1 + Math.sign(e.deltaY) * 0.08))); userTouched = performance.now(); introActive = false; };
     canvas.addEventListener('pointerdown', onDown);
@@ -483,7 +484,7 @@ import * as THREE from 'three';
     resize();
 
     introStart = performance.now();
-    if (PRM) { introActive = false; camTarget.set(0, 0, 0); camRadius = 82; camEl = 26 * D2R; camAz = -0.6; applyCamera(); }
+    if (PRM) { introActive = false; camTarget.set(0, 0, 0); camRadius = 48; camEl = 26 * D2R; camAz = -0.6; applyCamera(); }
 
     bindControls();
     if ('ResizeObserver' in window) { const ro = new ResizeObserver(resize); ro.observe(canvas); canvas._orreryRO = ro; }
@@ -531,6 +532,12 @@ import * as THREE from 'three';
     setShowAsteroids() {},
     get onPlanetClick() { return onPlanetClick; },
     set onPlanetClick(fn) { onPlanetClick = fn; },
+    restartIntro() {
+      introStart = performance.now(); introActive = !PRM;
+      if (PRM && onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); } // reduced-motion: settle instantly
+    },
+    set onIntroDone(fn) { onIntroDone = fn; if (PRM && fn && !introActive) { onIntroDone = null; fn(); } },
+    get onIntroDone() { return onIntroDone; },
     isWebGL: true,
   };
 })();

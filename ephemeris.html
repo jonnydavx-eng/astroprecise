@@ -19,30 +19,30 @@
   <link rel="canonical" href="https://jonnydavx-eng.github.io/astroprecise/ephemeris.html" />
   <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#06060f" />
+  <meta name="theme-color" content="#050406" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="stylesheet" href="css/main.css" />
   <style>
     /* ── Deep Time aesthetic — darker, slower ── */
     :root {
-      --void: #0A0B1F;
-      --gold: #D4AF37;
-      --gold-light: #E8C872;
-      --gold-pale: #e8c872;
-      --purple: #7B2CBF;
-      --white: #F8F4EE;
-      --silver: #C8D0E8;
-      --silver-dim: #8891AA;
-      --surface: rgba(15,18,50,0.55);
-      --border: rgba(255,255,255,0.08);
+      --void: #050406;
+      --gold: #C9A227;
+      --gold-light: #EFE3C0;
+      --gold-pale: #E8E0D0;
+      --purple: #5C4A6E;
+      --white: #E8E0D0;
+      --silver: #A89E88;
+      --silver-dim: #7E7565;
+      --surface: rgba(20,16,10,0.55);
+      --border: rgba(201,162,39,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
-      --lapis-light: #92b4ee;
-      --lapis-bright: #92b4ee;
-      --crimson-light: #f87171;
+      --lapis-light: #A89E88;
+      --lapis-bright: #C9A227;
+      --crimson-light: #b04a52;
     }
-    body { background: #06060f; }
+    body { background: #050406; }
 
     /* ── Instrument shell ── */
     .instrument-wrap {
@@ -509,6 +509,7 @@
           <a href="compatibility.html" class="navbar__link">Compatibility</a>
           <a href="lifepath.html" class="navbar__link">Life Path</a>
           <a href="transits.html" class="navbar__link">Transits</a>
+          <a href="why.html" class="navbar__link">Why</a>
           <a href="shop.html" class="navbar__link">Shop</a>
           <a href="profile.html" class="navbar__link">Profile</a>
         </div>
@@ -524,33 +525,15 @@
         <a href="compatibility.html" class="navbar__link">Compatibility</a>
         <a href="lifepath.html" class="navbar__link">Life Path</a>
         <a href="transits.html" class="navbar__link">Transits</a>
+        <a href="why.html" class="navbar__link">Why</a>
         <a href="shop.html" class="navbar__link">Shop</a>
         <a href="profile.html" class="navbar__link">Profile</a>
       </div>
     </nav>
   </header>
 
-  <!-- Preloader for Instrument page too (lightweight version) -->
-  <div id="inst-preloader" style="position:fixed;inset:0;z-index:9998;background:#050406;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .5s;">
-    <div style="text-align:center;color:#C9A227;font-family:'Cinzel',serif;letter-spacing:0.2em;font-size:0.9rem;">Aligning the Spheres…</div>
-  </div>
-  <script>
-    /* Dismiss the Instrument preloader once the page is ready. This overlay has
-       no progress meter, so a safety timeout guarantees it can never stay stuck
-       even if a feed or asset hangs. */
-    (function () {
-      function hideInstPreloader() {
-        var p = document.getElementById('inst-preloader');
-        if (!p) return;
-        p.style.opacity = '0';
-        p.style.pointerEvents = 'none';
-        setTimeout(function () { p.style.display = 'none'; }, 600);
-      }
-      if (document.readyState === 'complete') hideInstPreloader();
-      else window.addEventListener('load', hideInstPreloader);
-      setTimeout(hideInstPreloader, 3500);
-    })();
-  </script>
+  <!-- Intro lives only on the homepage (once per session). The Instrument loads
+       straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
 
   <main id="main-content">
 
@@ -632,7 +615,7 @@
     ═══ -->
     <section class="instrument-section" id="sec-clock">
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">VI</span> The Clock of the Spheres</p>
+        <p class="instrument-eyebrow"><span class="section-num">I</span> The Clock of the Spheres</p>
         <h2 class="instrument-title">The sky tells time in gold and shadow.</h2>
         <p class="instrument-lede">
           Planetary hours are the living unequal divisions the ancients used — from sunrise the sequence of classical rulers repeats. This engraved wheel is both instrument and icon.
@@ -665,7 +648,7 @@
     <!-- ═══ I. LIGHT-CONE ═══ -->
     <section class="instrument-section" id="sec-lightcone" hidden>
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">I</span> The Light-Cone</p>
+        <p class="instrument-eyebrow"><span class="section-num">II</span> The Light-Cone</p>
         <h2 class="instrument-title">The light of your first breath is still travelling.</h2>
         <p class="instrument-lede">
           At the moment you were born, light left your birthplace and began moving outward at
@@ -690,7 +673,7 @@
     <!-- ═══ II. ZENITH STAR ═══ -->
     <section class="instrument-section" id="sec-zenith" hidden>
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">II</span> Your Zenith Star</p>
+        <p class="instrument-eyebrow"><span class="section-num">III</span> Your Zenith Star</p>
         <h2 class="instrument-title">One star stood directly above you.</h2>
         <p class="instrument-lede">
           At the minute of your birth, one catalogued star sat closest to the exact zenith of
@@ -711,7 +694,7 @@
     <!-- ═══ III. ECHO DATES ═══ -->
     <section class="instrument-section" id="sec-echo" hidden>
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">III</span> Echo Dates</p>
+        <p class="instrument-eyebrow"><span class="section-num">IV</span> Echo Dates</p>
         <h2 class="instrument-title">The sky never repeats. But it rhymes.</h2>
         <p class="instrument-lede">
           These are the moments in the next five years when the seven classical planets most
@@ -733,7 +716,7 @@
     <!-- ═══ IV. THE DAIMON ═══ -->
     <section class="instrument-section" id="sec-daimon" hidden>
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">IV</span> The Daimon</p>
+        <p class="instrument-eyebrow"><span class="section-num">V</span> The Daimon</p>
         <h2 class="instrument-title">A voice that remembers you.</h2>
         <p class="instrument-lede">
           Your chart summons a particular intelligence &mdash; a daimon with a name, a temperament,
@@ -774,7 +757,7 @@
     <!-- ═══ V. QUANTUM DRAW ═══ -->
     <section class="instrument-section" id="sec-quantum">
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">V</span> Quantum Draw</p>
+        <p class="instrument-eyebrow"><span class="section-num">VI</span> Quantum Draw</p>
         <h2 class="instrument-title">Let indeterminacy choose.</h2>
         <p class="instrument-lede">
           One sigil for the day. We first try a true quantum random source (ANU's vacuum-fluctuation
@@ -797,7 +780,7 @@
     <!-- ═══ VI. CONSCIOUSNESS WEATHER ═══ -->
     <section class="instrument-section" id="sec-weather">
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">VI</span> Consciousness Weather</p>
+        <p class="instrument-eyebrow"><span class="section-num">VII</span> Consciousness Weather</p>
         <h2 class="instrument-title">Field conditions, not forecasts.</h2>
         <p class="instrument-lede">
           A surf report for awareness: the measured state of the geomagnetic field and solar wind,
@@ -823,7 +806,7 @@
     <!-- ═══ VII. PRECESSION LAYER ═══ -->
     <section class="instrument-section" id="sec-precession">
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">VII</span> The Precession Layer</p>
+        <p class="instrument-eyebrow"><span class="section-num">VIII</span> The Precession Layer</p>
         <h2 class="instrument-title">The sky has drifted. We will not hide it.</h2>
         <p class="instrument-lede">
           Earth's axis wobbles once every ~25,772 years, so the zodiac signs and the constellations
@@ -847,7 +830,7 @@
     <!-- ═══ VIII. TIME TRAVEL ═══ -->
     <section class="instrument-section" id="sec-timetravel" style="border-bottom:none;">
       <div class="instrument-wrap">
-        <p class="instrument-eyebrow"><span class="section-num">VIII</span> True-Sky Time Travel</p>
+        <p class="instrument-eyebrow"><span class="section-num">IX</span> True-Sky Time Travel</p>
         <h2 class="instrument-title">Stand under any sky.</h2>
         <p class="instrument-lede">
           Fly the solar system to any moment &mdash; a birth, a first kiss, a goodbye &mdash; and read the
@@ -971,8 +954,11 @@
         }, 600);
       });
     }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryWireEventSet);
-    else tryWireEventSet();
+    /* Disabled — the natal signature is now rendered by js/instrument.js
+       (renderNatalSignature) with the correct timezone + birthplace, and for the
+       example event too. This inline path duplicated the #ev-set handler and
+       computed positions in the wrong timezone with lat/lon 0,0. */
+    void tryWireEventSet;
   })();
   </script>
   <script>

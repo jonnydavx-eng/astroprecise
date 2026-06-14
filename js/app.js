@@ -14,11 +14,11 @@ const AstroApp = (() => {
   // ── Init ──────────────────────────────────────────────────────────────────
 
   function init() {
+    renderNav();        // canonical site nav on every page — single source of truth
     initNavbar();
     initToastContainer();
     initScrollAnimations();
     initModalHandlers();
-    markActiveNavLink();
 
     // Load preferences
     if (window.AstroProfile) {
@@ -57,14 +57,35 @@ const AstroApp = (() => {
     }
   }
 
-  function markActiveNavLink() {
-    const page = location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.navbar__link, .navbar__mobile-menu a').forEach(a => {
-      const href = a.getAttribute('href') || '';
-      if (href === page || (page === 'index.html' && href === '#')) {
-        a.classList.add('active');
-      }
-    });
+  // Single source of truth for site navigation. Injected on every page that has
+  // a .navbar so the hardcoded per-page nav (kept only as a no-JS fallback) can
+  // never drift again. Desktop = lean core; mobile menu = core + secondary tools.
+  // Adding a page = add one line here; it then appears everywhere automatically.
+  const NAV_CORE = [
+    ['index.html', 'Home'], ['chart.html', 'Chart'], ['horoscope.html', 'Horoscope'],
+    ['compatibility.html', 'Compatibility'], ['transits.html', 'Transits'],
+    ['lifepath.html', 'Life Path'], ['ephemeris.html', 'Instrument'],
+    ['why.html', 'Why'], ['shop.html', 'Shop'], ['profile.html', 'Profile'],
+  ];
+  const NAV_EXTRAS = [ // mobile menu only — the scrolling list keeps the top bar lean
+    ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
+    ['tonight.html', "Tonight's Sky"], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
+    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
+    ['what-is-my-rising-sign.html', 'Rising Sign'], ['synastry.html', 'Synastry'],
+    ['solar-return.html', 'Solar Return'],
+  ];
+
+  function renderNav() {
+    const here = location.pathname.split('/').pop() || 'index.html';
+    const linkHtml = pairs => pairs.map(([href, label]) => {
+      const active = here === href;
+      return '<a href="' + href + '" class="navbar__link' + (active ? ' active' : '') + '"' +
+        (active ? ' aria-current="page"' : '') + '>' + label + '</a>';
+    }).join('');
+    const desktop = document.querySelector('.navbar__nav');
+    const mobile = document.querySelector('.navbar__mobile-menu');
+    if (desktop) desktop.innerHTML = linkHtml(NAV_CORE);
+    if (mobile) mobile.innerHTML = linkHtml(NAV_CORE.concat(NAV_EXTRAS));
   }
 
   // ── Toast Notifications ───────────────────────────────────────────────────
@@ -656,6 +677,9 @@ window.AstroApp = AstroApp;
     { href: 'accuracy.html', label: 'Accuracy' },
   ];
   function place() {
+    // Superseded by renderNav() (the single source of truth in init()), which now
+    // injects these secondary tools into the mobile menu itself. Kept as a no-op.
+    return;
     var lists = document.querySelectorAll('.navbar__mobile-menu');
     if (!lists.length) return;
     var here = (location.pathname.split('/').pop() || 'index.html');
@@ -723,6 +747,44 @@ window.AstroApp = AstroApp;
   else place();
 })();
 
+// ═══ SOCIAL LINKS — dormant-by-default, single config (honesty: only render set handles) ═══
+// Paste a full profile URL to switch each channel on; empty = hidden (no dead links).
+// Used by the footer social row AND by links.html (the link-in-bio page).
+window.AP_SOCIAL = window.AP_SOCIAL || {
+  handle:    '@astroprecise',                                  // display handle (link-in-bio)
+  tiktok:    '',  // https://www.tiktok.com/@astroprecise
+  instagram: '',  // https://www.instagram.com/astroprecise
+  pinterest: '',  // https://www.pinterest.com/astroprecise
+  reddit:    '',  // https://www.reddit.com/user/astroprecise
+  youtube:   '',  // https://www.youtube.com/@astroprecise
+  x:         '',  // https://x.com/astroprecise
+  threads:   '',  // https://www.threads.net/@astroprecise
+};
+
+(function injectSocialLinks() {
+  var ORDER = [['tiktok','TikTok'],['instagram','Instagram'],['pinterest','Pinterest'],
+               ['reddit','Reddit'],['youtube','YouTube'],['x','X'],['threads','Threads']];
+  function place() {
+    if (document.querySelector('.ap-social-links')) return;
+    var S = window.AP_SOCIAL || {};
+    var live = ORDER.filter(function (o) { return S[o[0]] && /^https?:\/\//.test(S[o[0]]); });
+    if (!live.length) return; // dormant — nothing configured yet, render nothing
+    var host = document.querySelector('footer .container') || document.querySelector('footer');
+    if (!host) return;
+    var p = document.createElement('p');
+    p.className = 'ap-social-links';
+    p.style.cssText = 'font-size:0.66rem;letter-spacing:0.1em;margin-top:10px;opacity:0.85;'
+      + 'font-family:Inter,system-ui,sans-serif;text-align:center;';
+    p.innerHTML = 'Follow ' + (S.handle || 'us') + ': ' + live.map(function (o) {
+      return '<a href="' + S[o[0]] + '" target="_blank" rel="noopener noreferrer" '
+        + 'style="color:var(--gold,#C9A227);text-decoration:none;">' + o[1] + '</a>';
+    }).join(' <span style="opacity:.4">&middot;</span> ');
+    host.appendChild(p);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
+  else place();
+})();
+
 // ═══════════════════════════════════════════════════════════════════════
 // MONETISATION — provider-agnostic, dormant-by-default, link-out only.
 // GitHub Pages forbids SELLING on the site, but permits donation/crowdfunding
@@ -744,6 +806,10 @@ window.AP_MON = Object.assign({
   // Squeezy). Empty '' = DORMANT: the teaser button falls back to email capture,
   // never a fake checkout.
   deepReadingUrl: '',
+  // Price shown on the chart-page Deep Reading CTA — e.g. '£29'. Blank = no price
+  // displayed (honesty: never show a price until the product is live and it matches
+  // the storefront listing exactly).
+  deepReadingPrice: '',
   // Email-list signup ENDPOINT (a hosted newsletter form-action, e.g. Buttondown
   // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
   // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
@@ -771,7 +837,7 @@ window.AP_MON = Object.assign({
     // ── CHECKOUT — how the cart actually fulfils ──────────────────────────
     checkout: {
       paypalClientId:   '',   // PayPal REST Client ID → on-site Buttons (developer.paypal.com)
-      currency:         'USD',
+      currency:         'GBP',
       externalStoreUrl: '',   // whole-cart handoff to a hosted store (Shopify / Gelato pop-up)
       etsyUrl:          '',    // Etsy storefront ("Browse on Etsy" path)
     },
@@ -792,6 +858,10 @@ window.AP_MON = Object.assign({
         name: 'The Reading',
         story: 'Words for your chart alone. Deep written readings and personalised guidance, delivered to you.',
       },
+      gifts: {
+        name: 'Gifts',
+        story: 'A chart made for someone else — their exact sky, delivered with a note from you. Recipient birth details and your gift message are collected privately at checkout, never on this site.',
+      },
     },
 
     // ── PRODUCTS ──────────────────────────────────────────────────────────
@@ -804,10 +874,10 @@ window.AP_MON = Object.assign({
         name:         'Your Natal Sky — Art Poster',
         type:         'print',
         collection:   'onYourWall',
-        price:        38.00,
+        price:        42.00,
         personalized: true,
         badge:        'Signature',
-        blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. Archive paper, made to order.',
+        blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
         icon:         'map',
         fulfilUrl:    '',
       },
@@ -816,7 +886,7 @@ window.AP_MON = Object.assign({
         name:         'Your Sky — Tee',
         type:         'apparel',
         collection:   'wearYourSky',
-        price:        34.00,
+        price:        36.00,
         personalized: true,
         badge:        'New',
         blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
@@ -828,7 +898,7 @@ window.AP_MON = Object.assign({
         name:         'Your Sky — Heavyweight Hoodie',
         type:         'apparel',
         collection:   'wearYourSky',
-        price:        62.00,
+        price:        64.00,
         personalized: true,
         badge:        null,
         blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
@@ -840,7 +910,7 @@ window.AP_MON = Object.assign({
         name:         'Big Three — Mini Print',
         type:         'print',
         collection:   'onYourWall',
-        price:        18.00,
+        price:        20.00,
         personalized: true,
         badge:        null,
         blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
@@ -852,7 +922,7 @@ window.AP_MON = Object.assign({
         name:         'Your Star Map — Mug',
         type:         'accessory',
         collection:   'wearYourSky',
-        price:        20.00,
+        price:        19.00,
         personalized: true,
         badge:        null,
         blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
@@ -864,10 +934,10 @@ window.AP_MON = Object.assign({
         name:         'Deep Natal Reading — Digital',
         type:         'digital',
         collection:   'theReading',
-        price:        28.00,
+        price:        39.00,
         personalized: true,
         badge:        'Bestseller',
-        blurb:        'A long-form written reading of your whole chart — every placement, the major aspects, and the year ahead. Delivered as a beautifully set PDF, yours to keep.',
+        blurb:        'A long-form written reading of your whole chart — every placement and the major aspects, interpreted in depth. Typeset as a beautifully set multi-page PDF, yours to keep forever.',
         icon:         'book',
         fulfilUrl:    '',
       },
@@ -876,7 +946,9 @@ window.AP_MON = Object.assign({
         name:         'Your Year Ahead — Transit Report',
         type:         'digital',
         collection:   'theReading',
-        price:        22.00,
+        // ⚠ NO generator backing yet — generate-reading.mjs is natal-only (no transit
+        // module). Keep fulfilUrl '' until a transit report is built, or it can't be fulfilled.
+        price:        32.00,
         personalized: true,
         badge:        null,
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — so you can read the weather before it arrives.',
@@ -884,15 +956,79 @@ window.AP_MON = Object.assign({
         fulfilUrl:    '',
       },
       {
+        id:           'natal-poster-pdf',
+        name:         'Your Natal Sky — Print-at-Home PDF',
+        type:         'digital',
+        collection:   'onYourWall',
+        price:        14.00,
+        personalized: true,
+        badge:        'Instant',
+        blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
+        icon:         'map',
+        fulfilUrl:    '',   // ✅ generator-backed today: generate-reading.mjs outputs poster-<slug>.html
+      },
+      {
+        id:           'reading-poster-bundle',
+        name:         'Deep Reading + Poster — Bundle',
+        type:         'digital',
+        collection:   'theReading',
+        price:        46.00,
+        personalized: true,
+        badge:        'Best value',
+        blurb:        'Your long-form Deep Natal Reading and your print-at-home natal poster, generated together from one chart. The words and the map of your sky — two PDFs, yours to keep, for less than buying both.',
+        icon:         'book',
+        fulfilUrl:    '',   // ✅ generator-backed today: one run yields both reading + poster PDFs
+      },
+      {
+        id:           'solar-return',
+        name:         'Solar Return — Your Birthday Year',
+        type:         'digital',
+        collection:   'theReading',
+        // ⚠ NO generator backing yet — needs a solar-return/transit module. Keep fulfilUrl '' until built.
+        price:        29.00,
+        personalized: true,
+        badge:        null,
+        blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
+        icon:         'sunhigh',
+        fulfilUrl:    '',
+      },
+      {
         id:           'gift-reading',
         name:         'Gift a Reading',
         type:         'digital',
-        collection:   'theReading',
-        price:        28.00,
+        collection:   'gifts',
+        price:        42.00,
         personalized: true,
+        giftNote:     true,
         badge:        null,
-        blurb:        'A deep natal reading for someone you love — generated from their birth details, delivered with a note from you. The chart as a gift.',
+        blurb:        'A Deep Natal Reading for someone you love — sent as a PDF gift voucher with a redemption code. They redeem by email and give us their own birth details; we generate the reading and deliver it with your note. Choose a delivery date at checkout.',
         icon:         'heart',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'gift-box-whole-sky',
+        name:         'The Whole Sky — Gift Box',
+        type:         'print',
+        collection:   'gifts',
+        price:        69.00,
+        personalized: true,
+        giftNote:     true,
+        badge:        'Gift',
+        blurb:        'The complete gift: a Deep Natal Reading PDF plus an A4 foil natal print, shipped, with a personalised gift card carrying your note. They redeem the reading by email with their own birth details — their sky, never our server. Choose a delivery date at checkout, for less than the two bought separately.',
+        icon:         'star4',
+        fulfilUrl:    '',
+      },
+      {
+        id:           'two-skies-map',
+        name:         'Two Skies — Couples Star Map',
+        type:         'print',
+        collection:   'gifts',
+        price:        48.00,
+        personalized: true,
+        giftNote:     true,
+        badge:        'Together',
+        blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. The proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
+        icon:         'crescent',
         fulfilUrl:    '',
       },
     ],
@@ -934,7 +1070,7 @@ window.AP_MON = Object.assign({
         const a = document.createElement('a');
         a.className = 'ap-support-link';
         a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
-        a.textContent = '♥ Support this free tool';
+        a.textContent = '♥ Support the free chart';
         a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
           + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#C9A227);text-decoration:none;';
         host.appendChild(document.createElement('br'));
@@ -1133,4 +1269,136 @@ if ('serviceWorker' in navigator) {
   } else {
     init();
   }
+})();
+
+// ═══════════════════════════════════════════════════════════════════════
+// EMAIL CAPTURE / SUBSCRIBERS — one honest engine, dormant-by-default.
+// The "subscriber database" is a hosted provider (Kit / Buttondown / MailerLite)
+// the site POSTs to via AP_MON.newsletterUrl. Until that's set, sign-ups are
+// relayed to the owner by mailto (AP_MON.ownerEmail) AND saved on-device — so an
+// early sign-up is never silently lost. Only the email is ever sent; birth data
+// never leaves the device. Adds a site-wide footer signup, "Cosmic Weather
+// Premium" waitlist wiring, and an owner CSV export (AstroApp.exportIntents()).
+// ═══════════════════════════════════════════════════════════════════════
+(function emailEngine() {
+  var M = window.AP_MON = window.AP_MON || {};
+  if (typeof M.waitlistUrl === 'undefined') M.waitlistUrl = '';   // separate list/tag for the premium waitlist
+  if (typeof M.ownerEmail  === 'undefined') M.ownerEmail  = '';   // mailto relay target before a provider is live
+  // emailUrl and newsletterUrl are aliases — set EITHER, get both.
+  var liveUrl = (M.newsletterUrl && String(M.newsletterUrl).trim()) || (M.emailUrl && String(M.emailUrl).trim()) || '';
+  M.newsletterUrl = M.emailUrl = liveUrl;
+
+  window.AP_COPY = window.AP_COPY || {
+    privacyMicro: 'Only the email you choose to give us is ever sent — your birth data never leaves your device. Unsubscribe anytime.',
+    confirmDoubleOptIn: 'Almost there — check your inbox and tap the confirmation link. (Just one email; your birth data stayed on your device.)',
+    dormantSaved: 'Sign-up isn’t live yet, so nothing left your browser. The moment it opens, you’ll be first.'
+  };
+
+  var isUrl = function (u) { return typeof u === 'string' && /^https?:\/\//i.test((u || '').trim()); };
+  var isEmail = function (e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ''); };
+
+  // Honest 3-tier capture: configured provider POST → owner mailto relay → localStorage.
+  function captureEmail(email, opts) {
+    opts = opts || {};
+    var Mn = window.AP_MON || {};
+    var endpoint = (opts.list === 'waitlist' && isUrl(Mn.waitlistUrl)) ? Mn.waitlistUrl.trim()
+                 : (isUrl(Mn.newsletterUrl) ? Mn.newsletterUrl.trim() : '');
+    if (endpoint) {
+      try {
+        var body = new FormData();
+        body.append('email', email);
+        if (opts.tag) body.append('tags', opts.tag);
+        fetch(endpoint, { method: 'POST', mode: 'no-cors', body: body });
+      } catch (e) {}
+    } else if (Mn.ownerEmail && isEmail(Mn.ownerEmail)) {
+      try {
+        var subj = encodeURIComponent('AstroPrecise sign-up' + (opts.list ? ' — ' + opts.list : ''));
+        var bdy = encodeURIComponent('New subscriber: ' + email + (opts.source ? '\nSource: ' + opts.source : ''));
+        var a = document.createElement('a');
+        a.href = 'mailto:' + Mn.ownerEmail + '?subject=' + subj + '&body=' + bdy;
+        a.style.display = 'none'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      } catch (e) {}
+    }
+    // Always also save same-device intent (owner backstop / offline convenience, capped).
+    try {
+      var key = 'ap_email_intent';
+      var prev = JSON.parse(localStorage.getItem(key) || '[]');
+      prev.push(Object.assign({ email: email, savedAt: Date.now(), source: opts.source || null }, opts.meta || {}));
+      localStorage.setItem(key, JSON.stringify(prev.slice(-50)));
+    } catch (e) {}
+    return { sent: endpoint ? 'provider' : (Mn.ownerEmail ? 'mailto' : 'local') };
+  }
+
+  // Owner utility: download captured local intents as CSV (run AstroApp.exportIntents() or visit #export-intents).
+  function exportIntents() {
+    var rows; try { rows = JSON.parse(localStorage.getItem('ap_email_intent') || '[]'); } catch (e) { rows = []; }
+    if (!rows.length) return '';
+    var cols = ['email', 'source', 'sunSign', 'forName', 'savedAt'];
+    var csv = [cols.join(',')].concat(rows.map(function (r) {
+      return cols.map(function (c) {
+        return JSON.stringify(c === 'savedAt' && r[c] ? new Date(r[c]).toISOString() : (r[c] == null ? '' : r[c]));
+      }).join(',');
+    })).join('\n');
+    try {
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'ap-email-intents.csv'; a.click(); URL.revokeObjectURL(a.href);
+    } catch (e) {}
+    return csv;
+  }
+
+  if (window.AstroApp) { window.AstroApp.captureEmail = captureEmail; window.AstroApp.exportIntents = exportIntents; }
+  if (location.hash === '#export-intents') setTimeout(exportIntents, 400);
+
+  // ── Site-wide footer email signup (every page; skips the chart page's richer form) ──
+  function injectFooterSignup() {
+    if (document.querySelector('.ap-footer-signup')) return;
+    if (document.getElementById('email-capture')) return;   // chart page already has the primary form
+    var host = document.querySelector('footer .container') || document.querySelector('footer');
+    if (!host) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'ap-footer-signup';
+    wrap.style.cssText = 'max-width:440px;margin:18px auto 6px;text-align:center;font-family:Inter,system-ui,sans-serif;';
+    wrap.innerHTML =
+      '<p style="font-size:0.8rem;color:var(--silver,#C8D0E8);margin:0 0 8px;letter-spacing:0.02em;">Your sky, in your inbox — a little cosmic weather, now and then.</p>'
+      + '<form class="ap-footer-signup__form" novalidate style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">'
+      + '<input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" '
+      + 'style="flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,rgba(150,175,230,0.2));background:rgba(9,11,22,0.6);color:#fff;font-size:0.82rem;">'
+      + '<button type="submit" style="padding:9px 16px;border-radius:10px;border:1px solid var(--gold,#C9A227);background:rgba(201,162,39,0.14);color:var(--gold,#C9A227);font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">&#10022; Subscribe</button>'
+      + '</form>'
+      + '<p class="ap-footer-signup__msg" role="status" aria-live="polite" style="font-size:0.62rem;color:var(--silver-dim,#8891AA);margin:8px 0 0;line-height:1.6;">' + window.AP_COPY.privacyMicro + '</p>';
+    host.appendChild(wrap);
+    var form = wrap.querySelector('form'), msg = wrap.querySelector('.ap-footer-signup__msg');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      if (!isEmail(email)) { if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning'); return; }
+      var res = captureEmail(email, { source: 'footer', tag: 'tag_footer' });
+      msg.innerHTML = res.sent === 'provider'
+        ? '<strong style="color:var(--gold,#C9A227)">' + window.AP_COPY.confirmDoubleOptIn + '</strong>'
+        : '<strong style="color:var(--gold,#C9A227)">Noted.</strong> ' + window.AP_COPY.dormantSaved;
+      form.style.display = 'none';
+    });
+  }
+
+  // ── "Cosmic Weather Premium" waitlist forms (validate the future subscription) ──
+  function wireWaitlist() {
+    document.querySelectorAll('.cw-waitlist__form').forEach(function (f) {
+      if (f._wired) return; f._wired = true;
+      f.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var email = f.email.value.trim();
+        if (!isEmail(email)) { if (window.AstroApp) AstroApp.showToast('Check your email', 'That looks off.', 'warning'); return; }
+        var res = captureEmail(email, { list: 'waitlist', source: 'waitlist', tag: 'tag_waitlist' });
+        var box = f.closest('.cw-waitlist');
+        if (box) box.innerHTML = '<p class="cw-waitlist__eyebrow" style="font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver-dim,#8891AA);margin:0 0 0.3rem;">You’re on the waitlist.</p><p style="font-family:\'Cormorant Garamond\',serif;font-size:0.98rem;color:var(--silver,#C8D0E8);margin:0;">'
+          + (res.sent === 'provider' ? 'Check your inbox to confirm. We’ll only ever email you if this becomes real.'
+                                     : 'Saved — nothing was sent or charged. If enough of you want it, we’ll build it.') + '</p>';
+      });
+    });
+  }
+
+  function boot() { injectFooterSignup(); wireWaitlist(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();

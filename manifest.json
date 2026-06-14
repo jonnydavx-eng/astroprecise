@@ -2,11 +2,11 @@
   "name": "AstroPrecise — Birth Charts & Horoscopes",
   "short_name": "AstroPrecise",
   "description": "Professional birth chart analysis powered by precise astronomical calculations",
-  "start_url": "/astroprecise/",
+  "start_url": "chart.html?app=1",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#090b16",
-  "theme_color": "#090b16",
+  "background_color": "#050406",
+  "theme_color": "#050406",
   "icons": [
     {
       "src": "img/icon-192.png",
@@ -30,5 +30,10 @@
   "categories": ["lifestyle", "entertainment"],
   "lang": "en",
   "dir": "ltr",
-  "scope": "/astroprecise/"
+  "scope": "./",
+  "shortcuts": [
+    { "name": "Today's Horoscope", "url": "horoscope.html" },
+    { "name": "Cast a Chart", "url": "chart.html" },
+    { "name": "Current Transits", "url": "transits.html" }
+  ]
 }

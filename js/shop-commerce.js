@@ -90,6 +90,17 @@ window.AstroShop = (() => {
       </div>`;
   }
 
+  // Gift affordance: shown only for products flagged giftNote:true. Collects
+  // NOTHING on-site — it explains that the gift note and the recipient's birth
+  // details are taken at the external checkout, keeping birth data off this site.
+  function giftNoteHtml() {
+    return `
+      <div class="shopc-personal shopc-gift">
+        <div class="shopc-personal__head">${icon('heart')} A gift for someone else</div>
+        <p class="shopc-personal__note">At checkout you'll add your gift message and choose a delivery date. We send a PDF gift voucher — the recipient redeems it by email and gives us <em>their own</em> birth details, so no birth data is ever entered here. Their sky, their privacy.</p>
+      </div>`;
+  }
+
   // ═══════════════════════════════════════════════════════════════════════
   // CART — localStorage-backed, mirrors the TBP Cart but re-themed.
   // ═══════════════════════════════════════════════════════════════════════
@@ -162,7 +173,7 @@ window.AstroShop = (() => {
 
       const itemsEl = document.getElementById('shopc-cart-items');
       const totalEl = document.getElementById('shopc-cart-total');
-      if (totalEl) totalEl.textContent = `$${this.total().toFixed(2)}`;
+      if (totalEl) totalEl.textContent = `£${this.total().toFixed(2)}`;
       if (!itemsEl) return;
 
       if (this.items.length === 0) {
@@ -182,7 +193,7 @@ window.AstroShop = (() => {
                 <button class="shopc-qty" data-qty-dec="${i.key}" aria-label="Decrease quantity">−</button>
                 <span class="shopc-qty__n">${i.qty}</span>
                 <button class="shopc-qty" data-qty-inc="${i.key}" aria-label="Increase quantity">+</button>
-                <span class="shopc-cart__price">$${(i.price * i.qty).toFixed(2)}</span>
+                <span class="shopc-cart__price">£${(i.price * i.qty).toFixed(2)}</span>
               </div>
             </div>
             <button class="shopc-cart__remove" data-remove-key="${i.key}" aria-label="Remove ${esc(i.name)}">×</button>
@@ -241,7 +252,7 @@ window.AstroShop = (() => {
       modal({
         title: 'The shop opens soon',
         body: `
-          <p>Your cart is saved on this device — <strong>${n} item${n === 1 ? '' : 's'} · $${this.total().toFixed(2)}</strong>.</p>
+          <p>Your cart is saved on this device — <strong>${n} item${n === 1 ? '' : 's'} · £${this.total().toFixed(2)}</strong>.</p>
           <p class="shopc-modal__note">Checkout goes live with the first drop. ${anyPersonal ? 'Every personalised piece is generated from your own chart — your birth details never leave your device. ' : ''}Leave your email and we'll tell you the moment the doors open.</p>
           ${emailInviteHtml()}
         `,
@@ -255,7 +266,7 @@ window.AstroShop = (() => {
     // PayPal Buttons in a modal (active once checkout.paypalClientId is set).
     async paypalCheckout() {
       const co = checkout();
-      const currency = co.currency || 'USD';
+      const currency = co.currency || 'GBP';
       const itemTotal = this.total();
       const items = this.items.map(i => ({
         name: `${i.name}${i.variant ? ' (' + i.variant + ')' : ''}`,
@@ -267,8 +278,8 @@ window.AstroShop = (() => {
         title: 'Checkout',
         body: `
           <div class="shopc-checkout">
-            ${this.items.map(i => `<div class="shopc-checkout__row"><span>${esc(i.name)}${i.variant ? ' (' + esc(i.variant) + ')' : ''} × ${i.qty}</span><span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('')}
-            <div class="shopc-checkout__row shopc-checkout__total"><span>Total</span><span>$${itemTotal.toFixed(2)}</span></div>
+            ${this.items.map(i => `<div class="shopc-checkout__row"><span>${esc(i.name)}${i.variant ? ' (' + esc(i.variant) + ')' : ''} × ${i.qty}</span><span>£${(i.price * i.qty).toFixed(2)}</span></div>`).join('')}
+            <div class="shopc-checkout__row shopc-checkout__total"><span>Total</span><span>£${itemTotal.toFixed(2)}</span></div>
           </div>
           <p class="shopc-modal__note">Personalised pieces are produced from your saved chart after purchase. Your birth details never leave your device.</p>
           <div id="shopc-paypal"><p class="shopc-modal__note">Loading secure checkout…</p></div>`,
@@ -373,7 +384,7 @@ window.AstroShop = (() => {
             <div class="shopc-card__kicker">${esc(colName)}${p.type ? ' · ' + (TYPE_LABEL[p.type] || '') : ''}</div>
             <div class="shopc-card__top">
               <h3 class="shopc-card__name">${esc(p.name)}</h3>
-              <span class="shopc-card__price">$${p.price.toFixed(2)}</span>
+              <span class="shopc-card__price">£${p.price.toFixed(2)}</span>
             </div>
             <p class="shopc-card__blurb">${esc(p.blurb)}</p>
             ${cta}
@@ -405,9 +416,9 @@ window.AstroShop = (() => {
         <div class="shopc-qv">
           <div class="shopc-qv__art">${icon(p.icon)}</div>
           <div class="shopc-qv__kicker">${esc(colName)}${p.type ? ' · ' + (TYPE_LABEL[p.type] || '') : ''}</div>
-          <div class="shopc-qv__price">$${p.price.toFixed(2)}</div>
+          <div class="shopc-qv__price">£${p.price.toFixed(2)}</div>
           <p class="shopc-qv__blurb">${esc(p.blurb)}</p>
-          ${personalNote(p)}
+          ${p.giftNote ? giftNoteHtml() : personalNote(p)}
         </div>`,
       actions: live
         ? [
@@ -581,7 +592,7 @@ window.AstroShop = (() => {
           offers: {
             '@type': 'Offer',
             price: p.price.toFixed(2),
-            priceCurrency: (checkout().currency || 'USD'),
+            priceCurrency: (checkout().currency || 'GBP'),
             availability: 'https://schema.org/PreOrder',
           },
         },
