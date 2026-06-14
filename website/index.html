@@ -91,7 +91,9 @@
       min-height: 100vh;
       padding-top: var(--nav-height);
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
       position: relative;
       overflow: hidden;
     }
@@ -162,7 +164,7 @@
       fill: rgba(239, 227, 192, 0.75);
     }
 
-    /* Immersive stage — orrery floats on the sky, copy sits in front */
+    /* Immersive stage — copy left, orrery right (grid, not overlapping absolute) */
     .hero__stage {
       position: relative;
       z-index: 1;
@@ -171,26 +173,33 @@
       margin: 0 auto;
       min-height: calc(100vh - var(--nav-height) - var(--space-8));
       padding: var(--space-8) var(--space-8) var(--space-10);
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
       align-items: center;
+      gap: clamp(var(--space-4), 3vw, var(--space-10));
     }
 
     .hero__orrery-layer {
-      position: absolute;
-      inset: -8% -12% -12% 18%;
+      position: relative;
+      grid-column: 2;
+      grid-row: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
+      min-width: 0;
     }
 
     .hero__content {
       position: relative;
       z-index: 2;
-      max-width: 420px;
+      grid-column: 1;
+      grid-row: 1;
+      max-width: 400px;
       pointer-events: auto;
+      align-self: center;
     }
 
     .hero__content::before {
@@ -204,29 +213,32 @@
 
     /* Responsive hero graphics & layout */
     @media (max-width: 900px) {
-      .hero { min-height: auto; padding-bottom: var(--space-8); }
+      .hero { min-height: auto; padding-bottom: var(--space-6); }
       .hero__stage {
+        display: flex;
         flex-direction: column;
         align-items: stretch;
         min-height: auto;
-        padding-top: var(--space-6);
+        padding: var(--space-4) var(--space-4) var(--space-6);
+        gap: var(--space-4);
       }
       .hero__orrery-layer {
-        inset: 0 0 42% 0;
-        top: var(--space-4);
+        order: 1;
+        width: 100%;
       }
       .hero__content {
+        order: 2;
         max-width: none;
-        margin-top: 52vh;
+        margin-top: 0;
         text-align: center;
       }
       .hero__content::before {
-        inset: -60px -20px 0;
-        background: linear-gradient(to bottom, transparent 0%, rgba(5, 4, 6, 0.55) 18%, rgba(5, 4, 6, 0.82) 100%);
+        inset: -40px -16px -16px;
+        background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(5, 4, 6, 0.5) 0%, transparent 72%);
       }
       .hero__text { text-align: center; }
       .hero__subtitle { margin-left: auto; margin-right: auto; }
-      #orrery-canvas { width: min(105vw, 520px); }
+      #orrery-canvas { width: min(92vw, 480px); margin: 0 auto; }
     }
     @media (max-width: 520px) {
       #orrery-canvas { width: min(88vw, 420px); height: auto; aspect-ratio: 1 / 1; }
@@ -388,6 +400,7 @@
       position: relative;
       width: 100%;
       max-width: 920px;
+      margin: 0 auto;
       pointer-events: none;
     }
 
@@ -401,8 +414,8 @@
 
     .orrery-console__deck {
       width: 100%;
-      max-width: 640px;
-      padding: var(--space-2) 0 0;
+      max-width: min(100%, 680px);
+      padding: var(--space-2) var(--space-2) 0;
       background: transparent;
       border: none;
       border-radius: 0;
@@ -410,16 +423,49 @@
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
       pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .orrery-scale-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .orrery-aux-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem 0.55rem;
+      width: 100%;
     }
 
     .orrery-console__deck .orrery-controls {
       flex-wrap: wrap;
-      margin-top: var(--space-2);
+      justify-content: center;
+      row-gap: 0.35rem;
+      width: 100%;
+      max-width: 100%;
     }
 
     .orrery-console__deck .orrery-timeline {
-      max-width: none;
-      margin-top: var(--space-1);
+      width: 100%;
+      max-width: 100%;
+      margin-top: 0;
+    }
+
+    .orrery-console__deck #orrery-capture {
+      margin-left: 0 !important;
+    }
+
+    @media (min-width: 640px) {
+      .orrery-console__deck #orrery-capture { margin-left: auto !important; }
     }
 
     .hero__orrery-ring {
@@ -680,9 +726,11 @@
 
     #orrery-canvas {
       display: block;
-      width: min(108vw, 880px);
+      width: min(100%, 720px);
+      max-width: 100%;
       height: auto;
       aspect-ratio: 1 / 1;
+      margin: 0 auto;
       border-radius: 0;
       position: relative;
       z-index: 1;
@@ -841,39 +889,38 @@
     /* Hide competing decorative corner solar system — the real orrery is the hero */
     .hero .cosmos-solar-system,
     body > .cosmos-solar-system { display: none !important; }
-    .orrery-scale-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 0.45rem 0.65rem;
-      width: 100%;
-      margin-top: var(--space-1);
-    }
     .orrery-scale-dial {
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 0.2rem;
-      max-width: min(100%, 22rem);
-      padding: 3px 4px;
+      width: 100%;
+      max-width: 26rem;
+      padding: 4px;
       border-radius: 12px;
       border: 1px solid rgba(201, 162, 39, 0.22);
       background: rgba(8, 6, 4, 0.35);
     }
     .orrery-scale-btn {
       font-family: var(--font-ui, Inter, system-ui, sans-serif);
-      font-size: 0.52rem;
-      letter-spacing: 0.07em;
+      font-size: 0.5rem;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 3px 7px;
+      padding: 4px 2px;
       border-radius: 999px;
       border: 1px solid transparent;
       background: transparent;
       color: rgba(232, 224, 208, 0.72);
       cursor: pointer;
       transition: color 0.2s, border-color 0.2s, background 0.2s;
+      text-align: center;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    @media (min-width: 768px) {
+      .orrery-scale-dial {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        max-width: 32rem;
+      }
     }
     .orrery-scale-btn:hover { color: var(--gold-pale); border-color: rgba(201, 162, 39, 0.35); }
     .orrery-scale-btn.active {
@@ -894,8 +941,10 @@
       line-height: 1.35;
       color: rgba(168, 158, 136, 0.82);
       text-align: center;
+      width: 100%;
       max-width: 34rem;
-      padding: 0 0.5rem;
+      margin: 0;
+      padding: 0 0.25rem;
     }
     .orrery-layer-toggles {
       display: inline-flex;
@@ -2056,8 +2105,11 @@
        RESPONSIVE
        ===================================================================== */
     @media (max-width: 1100px) {
-      .hero__orrery-layer { inset: -6% -8% -10% 10%; }
-      #orrery-canvas { width: min(100vw, 760px); }
+      .hero__stage {
+        grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+        gap: var(--space-4);
+      }
+      #orrery-canvas { width: min(72vw, 640px); }
       .cosmic-story__grid { grid-template-columns: 1fr 340px; gap: var(--space-10); }
     }
 
@@ -2067,7 +2119,9 @@
       .hero__stats { justify-content: center; }
       .hero__subtitle { margin-left: auto; margin-right: auto; }
       .hero__cta-form { justify-content: center; }
-      .orrery-console__deck { max-width: min(92vw, 480px); margin: 0 auto; }
+      .orrery-console__deck { max-width: min(96vw, 520px); margin: 0 auto; padding-left: 0; padding-right: 0; }
+      .orrery-date, #orrery-moon-phase { flex: 1 1 100%; text-align: center; margin-left: 0 !important; padding-left: 0 !important; }
+      .hero__scroll-cue { display: none; }
       .bento-grid { grid-template-columns: 1fr 1fr; }
       .bento-card--featured { grid-column: span 2; }
       .cosmic-story__grid { grid-template-columns: 1fr; }
@@ -2517,7 +2571,7 @@
 
             <div class="orrery-console__deck">
               <p class="orrery-honesty-chip" id="orrery-honesty-chip">Solar system instrument · positions live (VSOP87) · distances schematic</p>
-              <div class="orrery-scale-row" role="group" aria-label="Zoom scale for the living orrery">
+              <div class="orrery-scale-block" role="group" aria-label="Zoom scale for the living orrery">
                 <span class="orrery-scale-label" id="orrery-scale-label">Full solar system</span>
                 <div class="orrery-scale-dial">
                   <button type="button" class="orrery-scale-btn" data-scale="0" aria-pressed="false">Earth</button>
@@ -2528,6 +2582,8 @@
                   <button type="button" class="orrery-scale-btn" data-scale="5" aria-pressed="false">Galaxy</button>
                   <button type="button" class="orrery-scale-btn" data-scale="6" aria-pressed="false">Cosmos</button>
                 </div>
+              </div>
+              <div class="orrery-aux-row">
                 <button type="button" class="orrery-btn" id="orrery-replay-intro" aria-label="Replay the Earth to solar system intro">Replay intro</button>
                 <div class="orrery-layer-toggles" role="group" aria-label="Orrery layer toggles">
                   <button type="button" class="orrery-toggle" data-layer="orbits" aria-pressed="false">Orbits</button>
