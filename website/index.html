@@ -2338,10 +2338,10 @@
     #preloader.has-real .apl-orr,#preloader.has-real .apl-core{opacity:0;pointer-events:none;transition:opacity .9s ease;}
     #preloader.fallback-css .apl-orr,#preloader.fallback-css .apl-core{display:block;opacity:1;}
     #preloader.fallback-css .apl-live-orr{display:none;}
-    @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core,.preloader-seal{animation:none;}}
+    @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core{animation:none;}}
     /* The way-in is revealed only when the sky SETTLES (driven by the orrery, not a blind timer) */
-    #preloader-enter,#preloader-tagline{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
-    #preloader.aligned #preloader-enter,#preloader.aligned #preloader-tagline{opacity:1;transform:none;pointer-events:auto;}
+    #preloader-enter{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
+    #preloader.aligned #preloader-enter{opacity:1;transform:none;pointer-events:auto;}
     #preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease;}
     #preloader.gate-open .apl-live-orr,#preloader.gate-open .apl-live-orr canvas{pointer-events:none !important;}
     .preloader-email-gate{position:absolute;inset:0;z-index:20;display:none !important;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none !important;transition:opacity .35s ease,visibility .35s ease;}
@@ -2360,10 +2360,6 @@
     .preloader-email-gate__join:hover,.preloader-email-gate__join:focus-visible{border-color:rgba(201,162,39,0.85);box-shadow:0 0 18px rgba(201,162,39,0.28);}
     .preloader-email-gate__skip{display:block;width:100%;margin-top:10px;padding:8px 12px;border:none;background:transparent;color:rgba(168,159,138,0.95);font-family:Inter,system-ui,sans-serif;font-size:0.72rem;letter-spacing:0.04em;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
     .preloader-email-gate__skip:hover,.preloader-email-gate__skip:focus-visible{color:#E8E0D0;}
-    #preloader.aligned #preloader-progress{opacity:0;transition:opacity .4s ease;}
-    #preloader.aligned .preloader-seal{animation:sealFlare 1.3s ease-out;}
-    @keyframes sealFlare{0%{transform:scale(1);}42%{transform:scale(1.22);text-shadow:0 0 72px rgba(201,162,39,.95);}100%{transform:scale(1);}}
-    @media (prefers-reduced-motion: reduce){#preloader.aligned .preloader-seal{animation:none;}}
   </style>
   <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
     <div class="apl-brand"><img src="img/logo.svg" alt="" width="30" height="30" /><span>AstroPrecise</span></div>
@@ -2429,13 +2425,7 @@
     document.body.classList.add('preloader-active');
     window.__orreryPreloaderOwns = true;
     let raf = null;
-    const fill = document.getElementById('preloader-fill');
-    if (fill) fill.style.width = '100%';
-
-    const progress = document.getElementById('preloader-progress');
     const enterBtn = document.getElementById('preloader-enter');
-
-    const startTime = Date.now();
 
     // ── The REAL 3D orrery (same model as the hero centrepiece) on the loading screen ──
     const orrSlot = document.getElementById('preloader-orrery-slot');
@@ -2534,8 +2524,6 @@
       featureOrreryOnLoadingScreen();
     }
 
-    // After the brief alignment, reveal the "Enter" button as an instant skip…
-    const tagline = document.getElementById('preloader-tagline');
     var gateEl = document.getElementById('preloader-email-gate');
     var gateClose = document.getElementById('preloader-gate-close');
     var gateSkip = document.getElementById('preloader-gate-skip');
@@ -2546,11 +2534,7 @@
       gateEl.setAttribute('aria-hidden', 'true');
     }
 
-    function captureIntroEmail() {
-      var inp = document.getElementById('preloader-gate-email');
-      if (!inp) return;
-      var email = (inp.value || '').trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+    function captureIntroEmail(email) {
       if (window.AstroApp && typeof window.AstroApp.captureEmail === 'function') {
         window.AstroApp.captureEmail(email, { source: 'intro_entry', tag: 'tag_intro_entry' });
         return;
@@ -2563,9 +2547,29 @@
       } catch (e) {}
     }
 
+    function tryJoinIntroEmail() {
+      var inp = document.getElementById('preloader-gate-email');
+      if (!inp) return true;
+      var email = (inp.value || '').trim();
+      if (!email) {
+        if (window.AstroApp && typeof AstroApp.showToast === 'function') {
+          AstroApp.showToast('Add your email', 'Or tap Continue without email.', 'warning');
+        }
+        return false;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (window.AstroApp && typeof AstroApp.showToast === 'function') {
+          AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
+        }
+        return false;
+      }
+      captureIntroEmail(email);
+      return true;
+    }
+
     function dismissEmailGate(andCapture) {
       if (preDone) return;
-      if (andCapture) captureIntroEmail();
+      if (andCapture && !tryJoinIntroEmail()) return;
       if (gateEl) {
         gateEl.classList.remove('is-open');
         gateEl.setAttribute('aria-hidden', 'true');
@@ -2573,6 +2577,15 @@
       pre.classList.remove('gate-open');
       gateOpen = false;
       hidePre();
+    }
+
+    function rearmEnterButton() {
+      if (!enterBtn || preDone || !pre.classList.contains('aligned')) return;
+      enterBtn.dataset.wired = '';
+      enterBtn.addEventListener('click', function () {
+        showEmailGate();
+      }, { once: true });
+      enterBtn.dataset.wired = '1';
     }
 
     function showEmailGate() {
@@ -2620,10 +2633,18 @@
     }
     wireEmailGate();
     window.addEventListener('pageshow', function (ev) {
-      if (!ev.persisted || !gateEl) return;
-      gateEl.classList.remove('is-open');
-      gateOpen = false;
-      pre.classList.remove('gate-open');
+      if (!ev.persisted || preDone) return;
+      if (gateOpen) {
+        if (gateEl) {
+          gateEl.classList.remove('is-open');
+          gateEl.setAttribute('aria-hidden', 'true');
+        }
+        pre.classList.remove('gate-open');
+        gateOpen = false;
+        hidePre();
+        return;
+      }
+      rearmEnterButton();
     });
 
     function revealEnter() {
@@ -3566,12 +3587,7 @@
       return { signIdx: signIdx, degStr: degStr };
     }
 
-    /* ── 1. Service worker ─────────────────────────────────────────────── */
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(function () {});
-    }
-
-    /* ── 2. Navbar scroll glass effect ────────────────────────────────── */
+    /* ── 1. Navbar scroll glass effect (SW registered in app.js) ─────── */
     (function () {
       var header = document.querySelector('.site-header');
       if (!header) return;

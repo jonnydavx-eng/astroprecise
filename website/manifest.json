@@ -3,7 +3,7 @@
   "short_name": "AstroPrecise",
   "description": "Free birth chart calculator, daily horoscope, rising sign, synastry & transits — VSOP87 precision, computed privately in your browser. No account required.",
   "id": "/",
-  "start_url": "chart.html?app=1",
+  "start_url": "index.html?app=1",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#050406",

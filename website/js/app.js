@@ -1538,13 +1538,11 @@ if ('serviceWorker' in navigator) {
   }
 
   function closeEmailModal() {
-    var modal = document.getElementById('ap-email-modal');
-    if (!modal) return;
-    modal.classList.remove('open');
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    if (window.AstroApp && typeof AstroApp.closeModal === 'function') AstroApp.closeModal('ap-email-modal');
+    if (window.AstroApp && typeof AstroApp.closeModal === 'function') {
+      AstroApp.closeModal('ap-email-modal');
+      return;
+    }
+    resetEmailModalState();
   }
 
   function openEmailSignup(source) {
@@ -1757,6 +1755,10 @@ if ('serviceWorker' in navigator) {
 
   function injectStickyCTA() {
     if (document.querySelector('.ap-email-cta--sticky')) return;
+    if (document.body.classList.contains('preloader-active')) {
+      window.addEventListener('ap-hero-enter', injectStickyCTA, { once: true });
+      return;
+    }
     if (window.matchMedia && window.matchMedia('(max-width: 768px)').matches) return;
     try {
       var dismissed = parseInt(localStorage.getItem('ap_email_sticky_dismiss') || '0', 10);
