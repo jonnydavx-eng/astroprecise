@@ -126,17 +126,17 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   let introVisualLevel = -1;
   let onIntroDone = null;
   const INTRO_KEYFRAMES = [
-    { u: 0.00, level: 0, camRadius: 3.1 },
-    { u: 0.14, level: 0, camRadius: 4.5 },
-    { u: 0.26, level: 1 },
-    { u: 0.38, level: 2 },
-    { u: 0.50, level: 3 },
-    { u: 0.62, level: 4 },
-    { u: 0.74, level: 5 },
-    { u: 0.86, level: 6 },
+    { u: 0.00, level: 0, camRadius: 2.75, camEl: 5 * D2R },
+    { u: 0.20, level: 0, camRadius: 3.6,  camEl: 7 * D2R },
+    { u: 0.34, level: 1, camRadius: 20 },
+    { u: 0.48, level: 2, camRadius: 44 },
+    { u: 0.58, level: 2, camRadius: 52 },
+    { u: 0.68, level: 3 },
+    { u: 0.78, level: 4 },
+    { u: 0.88, level: 5 },
     { u: 1.00, level: 6 },
   ];
-  const INTRO_MS = 18000;
+  const INTRO_MS = 20000;
   let texturesReady = false;
   let texturesReadyResolve = null;
   const texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
@@ -243,18 +243,20 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     const ra = a.camRadius != null ? a.camRadius : pa.camRadius;
     const rb = b.camRadius != null ? b.camRadius : pb.camRadius;
     camRadius = ra + (rb - ra) * e;
-    camEl = pa.camEl + (pb.camEl - pa.camEl) * e;
+    const ea = a.camEl != null ? a.camEl : pa.camEl;
+    const eb = b.camEl != null ? b.camEl : pb.camEl;
+    camEl = ea + (eb - ea) * e;
     camAz = pa.camAz + (pb.camAz - pa.camAz) * e;
     if (pa.targetEarth) earthTargetVec(_introTargetA);
     else _introTargetA.set(0, 0, 0);
     if (pb.targetEarth) earthTargetVec(_introTargetB);
     else _introTargetB.set(0, 0, 0);
     camTarget.lerpVectors(_introTargetA, _introTargetB, e);
-    const visLevel = segU > 0.38 ? b.level : a.level;
+    const visLevel = segU >= 0.5 ? b.level : a.level;
     if (visLevel !== introVisualLevel) {
       introVisualLevel = visLevel;
       scaleLevel = visLevel;
-      updateScaleVisuals(scaleLevel);
+      updateScaleVisuals(scaleLevel, true);
       const chip = document.getElementById('orrery-honesty-chip');
       const p = scalePreset(visLevel);
       if (chip && p.honesty) chip.textContent = p.honesty;
@@ -268,13 +270,16 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     introVisualLevel = -1;
     introStart = performance.now();
     introActive = !PRM;
+    userTouched = performance.now();
+    daysPerSec = 0;
+    flicking = false;
     scaleLevel = 0;
     const p0 = scalePreset(0);
-    camRadius = 3.1;
-    camEl = p0.camEl;
+    camRadius = 2.75;
+    camEl = 5 * D2R;
     camAz = p0.camAz;
     earthTargetVec(camTarget);
-    updateScaleVisuals(0);
+    updateScaleVisuals(0, true);
     updateScaleHUD();
     applyCamera();
     if (PRM && onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
@@ -283,6 +288,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   function settleFromIntro() {
     introActive = false;
     introVisualLevel = -1;
+    userTouched = performance.now();
     applyScalePreset(2, true);
   }
 
@@ -673,17 +679,18 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     buildCosmicField();
   }
 
-  function updateScaleVisuals(level) {
+  function updateScaleVisuals(level, introMode) {
     const lv = level | 0;
+    const inIntro = introMode || introActive;
     solarDim = lv <= 2 ? 1 : lv === 3 ? 0.55 : lv === 4 ? 0.12 : 0;
     const showSolar = solarDim > 0.02;
-    const showPlanetLabels = showLabels && lv <= 2;
+    const showPlanetLabels = showLabels && lv <= 2 && !inIntro;
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
       g.visible = showSolar;
       if (showSolar) {
-        const s = lv <= 2 ? 1 : lv === 3 ? 0.45 : 0.15;
+        const s = inIntro && lv <= 2 ? 1 : (lv <= 2 ? 1 : lv === 3 ? 0.45 : 0.15);
         g.scale.setScalar(s);
         const m = g.userData.mesh;
         if (m && m.material) {
@@ -1216,11 +1223,16 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       });
     }
 
-    // self-rotation (liveliness)
+    // self-rotation (liveliness) — muted during intro so Earth reads as a stable HD close-up
     if (!PRM && scaleLevel <= 2) {
-      BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
-      if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
-      if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
+      if (introActive) {
+        if (meshes.earth) meshes.earth.userData.mesh.rotation.y += 0.12 * dt;
+        if (earthCloud) earthCloud.rotation.y += 0.08 * dt;
+      } else {
+        BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
+        if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
+        if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
+      }
     }
 
     // scale-level camera transition (zoom dial)
@@ -1247,11 +1259,12 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         introActive = false;
         scaleLevel = 6;
         introVisualLevel = 6;
+        userTouched = performance.now();
         updateScaleHUD();
         updateScaleVisuals(scaleLevel);
         if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
       }
-    } else if (!dragging && !scaleAnimActive && !PRM && (t - userTouched) > 1200) {
+    } else if (!dragging && !scaleAnimActive && !PRM && !introActive && (t - userTouched) > 2800) {
       camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
     }
     if (!introActive && !scaleAnimActive) clampCamToLevel();
@@ -1502,10 +1515,21 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     tuneSunGlowForComposer(perfTier);
     updatePositions();
     const preloaderMode = !!window.__orreryPreloaderOwns;
-    scaleLevel = preloaderMode ? 0 : 2;
-    applyScalePreset(scaleLevel, false);
-    updateScaleHUD();
-    updateScaleVisuals(scaleLevel);
+    if (preloaderMode) {
+      scaleLevel = 0;
+      const p0 = scalePreset(0);
+      camRadius = 2.75;
+      camEl = 5 * D2R;
+      camAz = p0.camAz;
+      earthTargetVec(camTarget);
+      scaleAnimActive = false;
+      updateScaleHUD();
+      updateScaleVisuals(0, true);
+      applyCamera();
+    } else {
+      scaleLevel = 2;
+      applyScalePreset(2, false);
+    }
     resize();
     preloadTextures();
 
