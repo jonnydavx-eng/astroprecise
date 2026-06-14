@@ -286,23 +286,35 @@ function page(s) {
   <meta property="og:title" content="${s.name} Horoscope Today | AstroPrecise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:image" content="${BASE_URL}/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${s.name} Horoscope Today | AstroPrecise" />
   <meta name="twitter:description" content="${desc}" />
-  <meta name="twitter:image" content="${BASE_URL}/img/og-banner-improved.jpg" />
+  <meta name="twitter:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
   <meta name="theme-color" content="#050406" />
   <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script type="application/ld+json">${JSON.stringify(breadcrumbLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
   <style>
-    .sign-hero { text-align: center; padding: var(--space-16) var(--space-4) var(--space-10); position: relative; z-index: 1; }
+    .sign-hero { text-align: center; padding: calc(var(--nav-height,72px) + 2.5rem) var(--space-4) var(--space-10); position: relative; z-index: 1; }
+    .sign-hero__inner { display: flex; gap: clamp(1.5rem,4vw,3.5rem); align-items: center; justify-content: center; max-width: 860px; margin: 0 auto; }
+    .sign-hero__card-img {
+      flex-shrink: 0; width: clamp(150px, 22vw, 230px);
+      border-radius: 14px; display: block;
+      border: 1px solid rgba(201,162,39,0.38);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.65), 0 0 0 1px rgba(201,162,39,0.14),
+                  0 0 40px rgba(201,162,39,0.12);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
+    }
+    .sign-hero__card-img:hover { transform: translateY(-6px) rotate(-1deg); box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,162,39,0.3), 0 0 48px rgba(201,162,39,0.22); }
+    .sign-hero__content { text-align: center; }
+    @media (max-width: 640px) { .sign-hero__inner { flex-direction: column; gap: 1.5rem; } .sign-hero__card-img { width: clamp(130px, 50vw, 190px); } }
     .sign-hero__glyph { font-size: 4.5rem; line-height: 1; display: block; margin-bottom: var(--space-4);
       background: linear-gradient(180deg, #f2dfa7 0%, #c9a227 60%, #8c6a2f 100%);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
       filter: drop-shadow(0 0 18px rgba(196,146,10,0.4)); }
-    .sign-hero__constellation { max-width: 380px; margin: 0 auto var(--space-4); }
+    .sign-hero__constellation { max-width: 280px; margin: 0 auto var(--space-4); }
     .sign-hero__constellation svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 14px rgba(201,162,39,0.38)); }
     .sign-hero h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.6rem); color: var(--color-white); margin-bottom: var(--space-2); }
     .sign-hero__dates { color: var(--color-gold); font-size: var(--text-sm); letter-spacing: 0.14em; text-transform: uppercase; }
@@ -354,14 +366,21 @@ function page(s) {
   <main id="main-content">
 
     <section class="sign-hero" aria-labelledby="page-title">
-      <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ('<span class="sign-hero__glyph" aria-hidden="true">' + s.glyph + '</span>')}</div>
-      <h1 id="page-title">${s.name}</h1>
-      <p class="sign-hero__dates">${s.dates}</p>
-      <div class="sign-facts">
-        <div class="sign-fact"><span class="sign-fact__label">Element</span><span class="sign-fact__value">${s.element}</span></div>
-        <div class="sign-fact"><span class="sign-fact__label">Modality</span><span class="sign-fact__value">${s.modality}</span></div>
-        <div class="sign-fact"><span class="sign-fact__label">Ruler</span><span class="sign-fact__value">${s.ruler}</span></div>
-        <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">${s.symbol}</span></div>
+      <div class="sign-hero__inner">
+        <img class="sign-hero__card-img" src="assets/images/zodiac-cards/${s.key}.jpg"
+          alt="${s.name} — AstroForge engraved observatory zodiac card"
+          width="230" height="345" loading="eager" decoding="async" />
+        <div class="sign-hero__content">
+          <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ('<span class="sign-hero__glyph" aria-hidden="true">' + s.glyph + '</span>')}</div>
+          <h1 id="page-title">${s.name}</h1>
+          <p class="sign-hero__dates">${s.dates}</p>
+          <div class="sign-facts">
+            <div class="sign-fact"><span class="sign-fact__label">Element</span><span class="sign-fact__value">${s.element}</span></div>
+            <div class="sign-fact"><span class="sign-fact__label">Modality</span><span class="sign-fact__value">${s.modality}</span></div>
+            <div class="sign-fact"><span class="sign-fact__label">Ruler</span><span class="sign-fact__value">${s.ruler}</span></div>
+            <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">${s.symbol}</span></div>
+          </div>
+        </div>
       </div>
     </section>
 

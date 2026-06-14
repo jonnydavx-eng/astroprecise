@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v86';
+const V = 'ap-v87';
 
 const PRECACHE = [
   './',
@@ -95,6 +95,18 @@ const PRECACHE = [
   './assets/textures/saturn_ring.png',
   './assets/textures/uranus.jpg',
   './assets/textures/neptune.jpg',
+  './assets/images/zodiac-cards/aries.jpg',
+  './assets/images/zodiac-cards/taurus.jpg',
+  './assets/images/zodiac-cards/gemini.jpg',
+  './assets/images/zodiac-cards/cancer.jpg',
+  './assets/images/zodiac-cards/leo.jpg',
+  './assets/images/zodiac-cards/virgo.jpg',
+  './assets/images/zodiac-cards/libra.jpg',
+  './assets/images/zodiac-cards/scorpio.jpg',
+  './assets/images/zodiac-cards/sagittarius.jpg',
+  './assets/images/zodiac-cards/capricorn.jpg',
+  './assets/images/zodiac-cards/aquarius.jpg',
+  './assets/images/zodiac-cards/pisces.jpg',
 ];
 
 self.addEventListener('install', e => {
