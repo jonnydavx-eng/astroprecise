@@ -588,7 +588,15 @@ h1, h2, h3, h4, h5, h6 {
 .navbar:has(.navbar__inner) {
   display: block;
   height: auto;
-  padding: 0;
+  padding: 0 var(--space-6);
+}
+
+.navbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .navbar__logo {
@@ -630,6 +638,12 @@ h1, h2, h3, h4, h5, h6 {
   min-width: 0;
   margin-left: var(--space-4);
   margin-right: var(--space-2);
+  overflow: hidden;
+}
+
+.navbar__nav .navbar__link {
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .navbar__link {
@@ -737,14 +751,18 @@ h1, h2, h3, h4, h5, h6 {
   top: var(--nav-height);
   left: 0;
   right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.97);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border-glow);
   flex-direction: column;
   padding: var(--space-6);
+  padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
   gap: var(--space-2);
-  z-index: 99;
+  z-index: 9100;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: slide-down var(--transition-base) ease forwards;
 }
 
@@ -4777,11 +4795,11 @@ body > .cosmos-solar-system { display: none !important; }
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin-left: var(--space-4);
-  margin-right: var(--space-2);
+  margin-left: 0;
+  margin-right: 0;
   flex: 0 0 auto;
   min-width: 0;
-  max-width: min(360px, 28vw);
+  max-width: min(280px, 24vw);
 }
 
 .ap-nav-email-cluster__copy {
@@ -4903,22 +4921,22 @@ body > .cosmos-solar-system { display: none !important; }
   text-align: center;
 }
 
+@media (max-width: 1280px) {
+  .navbar__nav .navbar__link[data-nav-tier="low"] { display: none; }
+}
+
+@media (max-width: 1120px) {
+  .navbar__nav .navbar__link[data-nav-tier="mid"] { display: none; }
+}
+
 @media (max-width: 1320px) {
   .ap-nav-email-cluster__copy { display: none; }
-  .ap-nav-email-cluster { max-width: none; margin-left: var(--space-5); }
+  .ap-nav-email-cluster { max-width: none; }
   .navbar__link {
     padding: var(--space-2) var(--space-2);
     font-size: 0.72rem;
     letter-spacing: 0.1em;
   }
-}
-
-@media (max-width: 1100px) {
-  .ap-nav-email-cluster__teaser { display: none; }
-}
-
-@media (max-width: 900px) {
-  .ap-nav-email-cluster__copy { display: none; }
 }
 
 @media (max-width: 768px) {
@@ -6451,8 +6469,8 @@ html, body { overflow-x: clip; max-width: 100%; }
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  margin-left: auto;
-  margin-right: var(--space-2);
+  margin-left: 0;
+  margin-right: 0;
   border-radius: 999px;
   border: 1px solid rgba(201, 162, 39, 0.45);
   background: rgba(201, 162, 39, 0.14);
@@ -6572,16 +6590,23 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 @media (max-width: 768px) {
   .bottom-nav { display: block; }
-  body { padding-bottom: 68px; }
-  body.has-email-sticky { padding-bottom: 68px; }
-  .privacy-banner { bottom: 68px; }
-  .offline-ready-pill { bottom: 80px; }
+  body {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+  body.has-email-sticky {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+  body.nav-drawer-open .bottom-nav {
+    display: none !important;
+  }
+  .privacy-banner {
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+  .offline-ready-pill {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
   .navbar__nav { display: none; }
-}
-@media (min-width: 769px) {
-  .navbar__profile-top { margin-left: auto; margin-right: var(--space-2); }
-  .navbar__toggle { margin-left: auto; }
-  .navbar__inner:has(.navbar__profile-top) .navbar__toggle { margin-left: 0; }
+  .navbar__end .ap-nav-email-cluster { display: none; }
 }
 
 /* Saturn with ring — appended live by app.js */
