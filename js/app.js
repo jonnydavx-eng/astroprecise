@@ -868,19 +868,19 @@ window.AP_MON = Object.assign({
   // Price shown on the chart-page Deep Reading CTA — e.g. '£29'. Blank = no price
   // displayed (honesty: never show a price until the product is live and it matches
   // the storefront listing exactly).
-  deepReadingPrice: '',
+  deepReadingPrice: '£18',
   // Compatibility "Full Synastry" unlock — the compatibility page keeps the top 8
   // cross-chart aspects + category scores + overview FREE; the rest unlock here.
   // Hosted checkout (Lemon Squeezy) that redirects back to compatibility.html?unlocked=1.
   // Empty '' = DORMANT: everything stays free (no downgrade pre-launch). When set,
   // the "Show all aspects" toggle becomes an "Unlock — <price>" button.
   compatUnlockUrl: '',
-  compatUnlockPrice: '£4.99',   // shown on the unlock button only when compatUnlockUrl is set
+  compatUnlockPrice: '£2.99',   // shown on the unlock button only when compatUnlockUrl is set
   // Saturn Return reading + PDF unlock. Dormant ('') = the full reading shows FREE
   // (no pre-launch downgrade); the finder DATES are always free. Set this to a
   // hosted checkout (Lemon Squeezy) that redirects to saturn-return.html?unlocked=1.
   saturnReturnUrl: '',
-  saturnReturnPrice: '£0.49',
+  saturnReturnPrice: '£0.29',
   // Email-list signup ENDPOINT (a hosted newsletter form-action, e.g. Buttondown
   // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
   // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
@@ -946,7 +946,7 @@ window.AP_MON = Object.assign({
         name:         'Your Natal Sky — Art Poster',
         type:         'print',
         collection:   'onYourWall',
-        price:        42.00,
+        price:        28.00,
         personalized: true,
         badge:        'Signature',
         blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
@@ -959,7 +959,7 @@ window.AP_MON = Object.assign({
         name:         'Your Sky — Tee',
         type:         'apparel',
         collection:   'wearYourSky',
-        price:        36.00,
+        price:        24.00,
         personalized: true,
         badge:        'New',
         blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
@@ -972,7 +972,7 @@ window.AP_MON = Object.assign({
         name:         'Your Sky — Heavyweight Hoodie',
         type:         'apparel',
         collection:   'wearYourSky',
-        price:        64.00,
+        price:        44.00,
         personalized: true,
         badge:        null,
         blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
@@ -985,7 +985,7 @@ window.AP_MON = Object.assign({
         name:         'Big Three — Mini Print',
         type:         'print',
         collection:   'onYourWall',
-        price:        20.00,
+        price:        14.00,
         personalized: true,
         badge:        null,
         blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
@@ -998,7 +998,7 @@ window.AP_MON = Object.assign({
         name:         'Your Star Map — Mug',
         type:         'accessory',
         collection:   'wearYourSky',
-        price:        19.00,
+        price:        13.00,
         personalized: true,
         badge:        null,
         blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
@@ -1010,7 +1010,7 @@ window.AP_MON = Object.assign({
         name:         'Deep Natal Reading — Digital',
         type:         'digital',
         collection:   'theReading',
-        price:        39.00,
+        price:        18.00,
         personalized: true,
         badge:        'Bestseller',
         blurb:        'A long-form written reading of your whole chart — every placement and the major aspects, interpreted in depth. Typeset as a beautifully set multi-page PDF, yours to keep forever.',
@@ -1026,7 +1026,7 @@ window.AP_MON = Object.assign({
         collection:   'theReading',
         // NOTE: NO generator backing yet — generate-reading.mjs is natal-only (no transit
         // module). Keep fulfilUrl '' until a transit report is built, or it can't be fulfilled.
-        price:        32.00,
+        price:        22.00,
         personalized: true,
         badge:        null,
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — so you can read the weather before it arrives.',
@@ -1038,7 +1038,7 @@ window.AP_MON = Object.assign({
         name:         'Your Natal Sky — Print-at-Home PDF',
         type:         'digital',
         collection:   'onYourWall',
-        price:        14.00,
+        price:        9.00,
         personalized: true,
         badge:        'Instant',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
@@ -1050,7 +1050,7 @@ window.AP_MON = Object.assign({
         name:         'Deep Reading + Poster — Bundle',
         type:         'digital',
         collection:   'theReading',
-        price:        46.00,
+        price:        25.00,
         personalized: true,
         badge:        'Best value',
         blurb:        'Your long-form Deep Natal Reading and your print-at-home natal poster, generated together from one chart. The words and the map of your sky — two PDFs, yours to keep, for less than buying both.',
@@ -1064,7 +1064,7 @@ window.AP_MON = Object.assign({
         type:         'digital',
         collection:   'theReading',
         // NOTE: NO generator backing yet — needs a solar-return/transit module. Keep fulfilUrl '' until built.
-        price:        29.00,
+        price:        19.00,
         personalized: true,
         badge:        null,
         blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
@@ -1077,7 +1077,7 @@ window.AP_MON = Object.assign({
         name:         'Gift a Reading',
         type:         'digital',
         collection:   'gifts',
-        price:        42.00,
+        price:        22.00,
         personalized: true,
         giftNote:     true,
         badge:        null,
@@ -1091,7 +1091,7 @@ window.AP_MON = Object.assign({
         name:         'The Whole Sky — Gift Box',
         type:         'print',
         collection:   'gifts',
-        price:        69.00,
+        price:        48.00,
         personalized: true,
         giftNote:     true,
         badge:        'Gift',
@@ -1105,7 +1105,7 @@ window.AP_MON = Object.assign({
         name:         'Two Skies — Couples Star Map',
         type:         'print',
         collection:   'gifts',
-        price:        48.00,
+        price:        34.00,
         personalized: true,
         giftNote:     true,
         badge:        'Together',
