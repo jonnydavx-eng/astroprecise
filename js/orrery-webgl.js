@@ -65,7 +65,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   const PLANET_VIS = {
     mercury: { roughness: 0.94, metalness: 0.06, atmo: null, atmoS: 1.0 },
     venus:   { roughness: 0.88, metalness: 0.0,  atmo: 0xffc070, atmoS: 1.07 },
-    earth:   { roughness: 0.78, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.20 },
+    earth:   { roughness: 0.78, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.025 },
     mars:    { roughness: 0.91, metalness: 0.0,  atmo: 0xff6644, atmoS: 1.05 },
     jupiter: { roughness: 0.72, metalness: 0.0,  atmo: 0xe8b060, atmoS: 1.14 },
     saturn:  { roughness: 0.76, metalness: 0.0,  atmo: 0xf0d8a8, atmoS: 1.10 },
@@ -87,6 +87,23 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   let composer = null;
   let bloomPass = null;
   let perfTier = 'high';
+
+  // ── HD Earth (shader-injected) state ──────────────────────────────────────
+  let earthMat = null;        // hero surface MeshStandardMaterial (onBeforeCompile-patched)
+  let earthAtmoMat = null;    // dedicated Rayleigh atmosphere shell material
+  const ORIGIN = new THREE.Vector3();
+  const _earthWorld = new THREE.Vector3();
+  const _sunWorld = new THREE.Vector3();
+  const _earthInv = new THREE.Matrix3();
+  const earthUniforms = {
+    uSunDir:      { value: new THREE.Vector3(1, 0, 0) }, // OBJECT-space (spinning textured surface)
+    uSunDirWorld: { value: new THREE.Vector3(1, 0, 0) }, // WORLD-space (atmosphere shell, no spin)
+    uNightInt:    { value: 1.6 },   // city-light master (tier-tuned at build, live-tunable)
+    uTermSharp:   { value: 4.5 },   // terminator falloff hardness (single softener)
+    uHasLights:   { value: 0.0 },   // 0 until earth_lights.png loads (no pre-load flash)
+    uCloudShadow: { value: 0.0 },   // high-tier only: 1 when cloud tex present
+    uCloudTex:    { value: null },  // high-tier cloud-shadow sampler
+  };
 
   function getPerfTier() {
     return (window.RafCore && window.RafCore.tier)
@@ -218,8 +235,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     scaleLevel = 0;
     updateScaleVisuals(0);
     earthTargetVec(camTarget);
-    camRadius = 2.55;
-    camEl = 6 * D2R;
+    camRadius = 2.35;
+    camEl = 4 * D2R;
     camAz = -0.6;
     applyCamera();
     if (PRM) {
@@ -241,7 +258,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       if (b.tex) files.push(b.tex);
       if (b.ring) files.push(b.ring);
     });
-    files.push('earth_clouds.jpg', 'moon.jpg');
+    files.push('moon.jpg', 'earth_lights.png', 'earth_specular.jpg');
+    if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
     return Promise.all(files.map((f) => loadTex(f))).then(() => {
       texturesReady = true;
       refreshTextures();
@@ -954,18 +972,87 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     });
   }
 
+  // ── HD Earth surface shader injection (terminator-gated city lights, ocean
+  //    gloss, terrain normals). All GLSL is plain string data passed to
+  //    .replace() on byte-verified r160 #include tokens; a missed token is a
+  //    silent no-op (degrade, never throw). Called inside a try/catch. ─────────
+  function injectEarth(shader) {
+    shader.uniforms.uSunDir      = earthUniforms.uSunDir;
+    shader.uniforms.uNightInt    = earthUniforms.uNightInt;
+    shader.uniforms.uTermSharp   = earthUniforms.uTermSharp;
+    shader.uniforms.uHasLights   = earthUniforms.uHasLights;
+    shader.uniforms.uCloudShadow = earthUniforms.uCloudShadow;
+    shader.uniforms.uCloudTex    = earthUniforms.uCloudTex;
+    if (earthMat) earthMat.userData.shader = shader;
+
+    // (A) VERTEX — carry the OBJECT-space geometric normal (tilt/camera-independent terminator)
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\n varying vec3 vObjNormalE;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n vObjNormalE = normalize( normal );');
+
+    // (B) FRAGMENT — uniform + varying declarations
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>',
+        '#include <common>\n uniform vec3 uSunDir;\n uniform float uNightInt;\n uniform float uTermSharp;\n uniform float uHasLights;\n uniform float uCloudShadow;\n uniform sampler2D uCloudTex;\n varying vec3 vObjNormalE;');
+
+    // (C) OCEAN-ONLY GLOSS — invert white-ocean spec mask into low roughness
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <roughnessmap_fragment>',
+        'float roughnessFactor = roughness;\n #ifdef USE_ROUGHNESSMAP\n   vec4 texelRoughness = texture2D( roughnessMap, vRoughnessMapUv );\n   float oceanMask = texelRoughness.g;\n   roughnessFactor = mix( 0.92, 0.16, oceanMask );\n #endif');
+
+    // (D) DAY MAP + optional high-tier cloud shadow on the surface
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <map_fragment>',
+        '#include <map_fragment>\n #ifdef USE_MAP\n   if ( uCloudShadow > 0.5 ) {\n     float cl = texture2D( uCloudTex, vMapUv ).g;\n     diffuseColor.rgb *= ( 1.0 - cl * 0.32 );\n   }\n #endif');
+
+    // (E) TERMINATOR-GATED REAL CITY LIGHTS + warm dusk band (overwrite, never bleed onto day side)
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <emissivemap_fragment>',
+        '#ifdef USE_EMISSIVEMAP\n   vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );\n   float ndl = dot( normalize( vObjNormalE ), normalize( uSunDir ) );\n   float dayness = clamp( ndl * uTermSharp * 0.5 + 0.5, 0.0, 1.0 );\n   float nightMask = 1.0 - dayness;\n   vec3 cityCol = emissiveColor.rgb * vec3( 1.0, 0.90, 0.66 );\n   float duskBand = pow( clamp( 1.0 - abs( ndl ), 0.0, 1.0 ), 6.0 ) * smoothstep( -0.05, 0.30, ndl );\n   totalEmissiveRadiance = cityCol * nightMask * uNightInt * uHasLights + vec3( 0.55, 0.22, 0.08 ) * duskBand * 0.30;\n #endif');
+  }
+
+  // Dedicated Earth atmosphere: cyan-blue Rayleigh day-limb + terminator sunset band.
+  // Uses WORLD-space sun dir + world normal (the shell shares the group tilt but does
+  // NOT spin with the textured surface, so object-space would swim).
+  function earthAtmosphereMaterial() {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uSunDir: earthUniforms.uSunDirWorld,            // shared world-space dir (by reference)
+        uCamPos: { value: new THREE.Vector3() },
+        uIntensity: { value: composer ? 0.82 : 1.15 }, // dimmer under bloom so the rim reads blue, not blown white
+      },
+      vertexShader: 'varying vec3 vWN; varying vec3 vWP;\n void main(){ vec4 wp = modelMatrix * vec4(position,1.0); vWP = wp.xyz; vWN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * wp; }',
+      fragmentShader: 'uniform vec3 uSunDir; uniform vec3 uCamPos; uniform float uIntensity; varying vec3 vWN; varying vec3 vWP;\n void main(){\n   vec3 V = normalize(uCamPos - vWP);\n   vec3 N = normalize(vWN);\n   float fres = pow(1.0 - max(dot(N,V),0.0), 2.5);\n   float ndl = dot(N, normalize(uSunDir));\n   float dayMask = smoothstep(-0.25, 0.35, ndl);\n   float band = smoothstep(0.0, 0.35, 1.0 - abs(ndl));\n   vec3 rayleigh = vec3(0.22, 0.45, 0.95);\n   vec3 sunset   = vec3(0.95, 0.45, 0.18);\n   vec3 col = mix(rayleigh, sunset, band * 0.6);\n   float a = clamp(fres * dayMask * uIntensity, 0.0, 1.0);\n   gl_FragColor = vec4(col * (0.6 + fres * 0.7), a * 0.9);\n }',
+      blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
+    });
+  }
+
   function buildPlanets() {
-    const nightTex = makeEarthNightTexture();
     BODIES.forEach((b) => {
       const group = new THREE.Group();
       const vis = PLANET_VIS[b.id] || { roughness: 0.9, metalness: 0, atmo: null, atmoS: 1.0 };
-      const clearcoat = b.hero ? 0.14 : (b.id === 'jupiter' || b.id === 'saturn' ? 0.22 : b.id === 'venus' ? 0.18 : 0);
-      const mat = new THREE.MeshPhysicalMaterial({
-        color: b.color, roughness: vis.roughness, metalness: vis.metalness,
-        clearcoat, clearcoatRoughness: b.hero ? 0.32 : 0.42,
-        emissive: b.hero ? 0x0a1428 : 0x000000, emissiveIntensity: b.hero ? 0.08 : 0,
-        envMapIntensity: b.hero ? 0.35 : 0.18,
-      });
+      let mat;
+      if (b.hero) {
+        // HD Earth: single MeshStandardMaterial patched via onBeforeCompile (day map +
+        // ocean gloss + terrain normal + terminator-gated city lights). emissive must be
+        // a non-black carrier (emissiveMap multiplies) — the injected GLSL overwrites
+        // totalEmissiveRadiance so the white never reaches the day side.
+        mat = new THREE.MeshStandardMaterial({
+          color: 0x14202c, roughness: 0.92, metalness: 0.0,
+          emissive: 0xffffff, emissiveIntensity: 1.0, envMapIntensity: 0.30,
+        });
+        mat.onBeforeCompile = (shader) => { try { injectEarth(shader); } catch (e) { console.warn('[orrery] earth shader patch skipped', e); } };
+        earthMat = mat;
+        earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
+      } else {
+        const clearcoat = (b.id === 'jupiter' || b.id === 'saturn' ? 0.22 : b.id === 'venus' ? 0.18 : 0);
+        mat = new THREE.MeshPhysicalMaterial({
+          color: b.color, roughness: vis.roughness, metalness: vis.metalness,
+          clearcoat, clearcoatRoughness: 0.42,
+          emissive: 0x000000, emissiveIntensity: 0,
+          envMapIntensity: 0.18,
+        });
+      }
       const segs = sphereSegs(b.hero);
       const mesh = new THREE.Mesh(new THREE.SphereGeometry(b.size, segs, segs), mat);
       // axial tilt for character
@@ -986,28 +1073,51 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       group.userData.retroSprite = retroSprite;
 
       // textures load async; swap in when ready (no blank-hero blocking)
-      loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
+      // (hero Earth has its own priority-ordered HD swap-in in the b.hero block below)
+      if (!b.hero) loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
 
       if (vis.atmo) {
-        const atmo = new THREE.Mesh(
-          new THREE.SphereGeometry(b.size * vis.atmoS, segs, segs),
-          atmosphereMaterial(vis.atmo, b.hero ? 1.35 : 0.85)
-        );
+        let atmoMat;
+        if (b.hero && perfTier !== 'low' && !PRM) {
+          atmoMat = earthAtmosphereMaterial();
+          earthAtmoMat = atmoMat;
+        } else {
+          atmoMat = atmosphereMaterial(vis.atmo, b.hero ? 1.35 : 0.85);
+        }
+        const atmo = new THREE.Mesh(new THREE.SphereGeometry(b.size * vis.atmoS, segs, segs), atmoMat);
         group.add(atmo);
       }
 
       if (b.hero) {
-        const nightMesh = new THREE.Mesh(
-          new THREE.SphereGeometry(b.size * 1.002, segs, segs),
-          new THREE.MeshBasicMaterial({ map: nightTex, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.55, depthWrite: false })
-        );
-        group.add(nightMesh);
-        earthCloud = new THREE.Mesh(
-          new THREE.SphereGeometry(b.size * 1.014, segs, segs),
-          new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.86, depthWrite: false, roughness: 0.95, metalness: 0, clearcoat: 0.08, clearcoatRoughness: 0.5 })
-        );
-        group.add(earthCloud);
-        loadTex('earth_clouds.jpg', false).then((t) => { if (t) { const m = earthCloud.material; m.alphaMap = t; m.needsUpdate = true; } });
+        // ── HD Earth texture swap-in: perceived-quality order, each guarded ──
+        loadTex('earth.jpg').then((t) => { if (t && earthMat) { earthMat.map = t; earthMat.color.set(0xffffff); earthMat.needsUpdate = true; } });
+        loadTex('earth_lights.png').then((t) => { if (t && earthMat) { earthMat.emissiveMap = t; earthUniforms.uHasLights.value = 1.0; earthMat.needsUpdate = true; } });
+        loadTex('earth_specular.jpg', false).then((t) => { if (t && earthMat) { earthMat.roughnessMap = t; earthMat.needsUpdate = true; } });
+        if (perfTier !== 'low' && !PRM) {
+          loadTex('earth_normal.jpg', false).then((t) => { if (t && earthMat) { earthMat.normalMap = t; const ns = perfTier === 'high' ? 0.7 : 0.5; earthMat.normalScale = new THREE.Vector2(ns, ns); earthMat.needsUpdate = true; } });
+        }
+        // Clouds (high/mid only): a sun-LIT sphere so the night hemisphere self-darkens
+        // instead of glowing white over the city lights.
+        if (perfTier !== 'low' && !PRM) {
+          earthCloud = new THREE.Mesh(
+            new THREE.SphereGeometry(b.size * 1.015, segs, segs),
+            new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0, depthWrite: false, roughness: 1.0, metalness: 0.0 })
+          );
+          if (perfTier === 'high') {
+            earthCloud.material.onBeforeCompile = (sh) => { try {
+              sh.vertexShader = sh.vertexShader
+                .replace('#include <common>', '#include <common>\n varying vec3 vCN; varying vec3 vCV;')
+                .replace('#include <begin_vertex>', '#include <begin_vertex>\n vec4 _cmv = modelViewMatrix * vec4(position,1.0);\n vCN = normalize(normalMatrix * normal);\n vCV = normalize(-_cmv.xyz);');
+              sh.fragmentShader = sh.fragmentShader
+                .replace('#include <common>', '#include <common>\n varying vec3 vCN; varying vec3 vCV;')
+                .replace('#include <opaque_fragment>', '#include <opaque_fragment>\n {\n   float fres = pow(1.0 - max(dot(normalize(vCN), normalize(vCV)), 0.0), 3.0);\n   gl_FragColor.a *= (0.85 + 0.5 * fres);\n   gl_FragColor.rgb += vec3(0.12) * fres;\n }');
+            } catch (e) { console.warn('[orrery] cloud patch skipped', e); } };
+          }
+          group.add(earthCloud);
+          loadTex('earth_clouds.jpg', false).then((t) => { if (t && earthCloud) { const m = earthCloud.material; m.alphaMap = t; m.map = t; m.opacity = 0.9; m.needsUpdate = true;
+            if (perfTier === 'high') { earthUniforms.uCloudTex.value = t; earthUniforms.uCloudShadow.value = 1.0; if (earthMat) earthMat.needsUpdate = true; }
+          } });
+        } else { earthCloud = null; }
         // Moon
         moonGroup = new THREE.Group(); scene.add(moonGroup);
         const moonSegs = perfTier === 'high' ? 56 : perfTier === 'mid' ? 40 : 28;
@@ -1162,6 +1272,21 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     if (sunMaterial && sunMaterial.uniforms) sunMaterial.uniforms.uTime.value = t * 0.001;
     if (starField && starField.material.uniforms) starField.material.uniforms.uTime.value = t;
     if (sunDirLight && sunMesh) sunDirLight.position.copy(sunMesh.position);
+
+    // HD Earth: feed the sun direction to the surface shader (OBJECT-space, so the
+    // terminator + city lights track the sun as the globe spins) and to the atmosphere
+    // (WORLD-space, shell doesn't spin). Guarded; pure vector math, cannot throw.
+    if (earthMat && earthMat.userData.shader && sunMesh && meshes.earth) {
+      const em = meshes.earth.userData.mesh;
+      em.updateWorldMatrix(true, false);
+      _earthWorld.setFromMatrixPosition(em.matrixWorld);
+      _sunWorld.copy(sunMesh.position).sub(_earthWorld).normalize();
+      earthUniforms.uSunDirWorld.value.copy(_sunWorld);
+      _earthInv.setFromMatrix4(em.matrixWorld).invert();
+      earthUniforms.uSunDir.value.copy(_sunWorld).applyMatrix3(_earthInv).normalize();
+    }
+    if (earthAtmoMat) earthAtmoMat.uniforms.uCamPos.value.copy(camera.position);
+
     if (sunCoronaGroup && !PRM) sunCoronaGroup.rotation.z += dt * 0.06;
 
     if (milkyWayDisk && milkyWayDisk.visible && !PRM) milkyWayDisk.rotation.y += dt * 0.004;
@@ -1170,6 +1295,13 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       cosmicField.children.forEach((ch) => {
         if (ch.userData && ch.userData.drift) ch.material.rotation += ch.userData.drift;
       });
+    }
+
+    // intro spin: keep Earth + clouds turning during the held close-up so cities
+    // ignite across the dusk line (the hook). ~2x normal so motion reads in 7.2s.
+    if (introActive && !PRM && meshes.earth) {
+      meshes.earth.userData.mesh.rotation.y += 0.55 * dt * 0.5;
+      if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.62;
     }
 
     // self-rotation (liveliness)
@@ -1195,22 +1327,37 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       earthTargetVec(camTarget);
     }
 
-    // intro: HD Earth close-up → pull back through the full solar system
+    // intro: held Earth close-up on the terminator → Earth+Moon → full system (Earth-FIRST)
     if (introActive) {
-      const p = Math.min(1, (t - introStart) / INTRO_MS), e = easeInOut(p);
-      const earthPos = meshes.earth.position;
-      const end = scalePreset(2);
-      camTarget.lerpVectors(earthPos, new THREE.Vector3(0, 0, 0), e);
-      camRadius = 2.55 + (end.camRadius - 2.55) * e;
-      camEl = (6 * D2R) + (end.camEl - 6 * D2R) * e;
-      camAz = (Math.atan2(earthPos.z, earthPos.x) * -1 - 0.2) * (1 - e) + (end.camAz) * e;
-      if (p >= 1) {
-        introActive = false;
-        scaleLevel = 2;
-        userTouched = performance.now();
-        updateScaleHUD();
-        updateScaleVisuals(scaleLevel);
-        if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+      if (!meshes.earth) { introActive = false; }
+      else {
+        const p = Math.min(1, (t - introStart) / INTRO_MS);
+        const earthPos = meshes.earth.position;
+        const end = scalePreset(2);
+        const baseAz = Math.atan2(earthPos.z, earthPos.x) * -1 - 0.15;
+        if (p < 0.18) {                          // STAGE 0 — held close-up on the terminator
+          camTarget.copy(earthPos); camRadius = 2.35; camEl = 4 * D2R; camAz = baseAz;
+        } else if (p < 0.55) {                   // STAGE 1 — Earth → Earth + Moon
+          const e = easeInOut((p - 0.18) / 0.37);
+          camTarget.copy(earthPos);
+          camRadius = 2.35 + (6.5 - 2.35) * e;
+          camEl = (4 * D2R) + (12 * D2R - 4 * D2R) * e;
+          camAz = baseAz;
+        } else {                                 // STAGE 2 — Earth + Moon → full system
+          const e = easeInOut((p - 0.55) / 0.45);
+          camTarget.lerpVectors(earthPos, ORIGIN, e);
+          camRadius = 6.5 + (end.camRadius - 6.5) * e;
+          camEl = (12 * D2R) + (end.camEl - 12 * D2R) * e;
+          camAz = baseAz * (1 - e) + end.camAz * e;
+        }
+        if (p >= 1) {
+          introActive = false;
+          scaleLevel = 2;
+          userTouched = performance.now();
+          updateScaleHUD();
+          updateScaleVisuals(scaleLevel);
+          if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+        }
       }
     } else if (!dragging && !scaleAnimActive && !PRM && (t - userTouched) > 1200) {
       camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
@@ -1471,8 +1618,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       introActive = false;
       updateScaleVisuals(0);
       earthTargetVec(camTarget);
-      camRadius = 2.55;
-      camEl = 6 * D2R;
+      camRadius = 2.35;
+      camEl = 4 * D2R;
       camAz = -0.6;
       scaleAnimActive = false;
       applyCamera();
