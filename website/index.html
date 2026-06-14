@@ -2276,8 +2276,15 @@
     ]
   }
   </script>
+  <!-- Orrery engine: load early so DOMContentLoaded preloader boot finds Orrery3D -->
+  <script type="importmap">
+  { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+  </script>
+  <script type="module" src="js/orrery-webgl.js"></script>
 </head>
 <body class="page-home">
+  <script src="js/raf-core.js"></script>
+  <script src="js/ephemeris.js"></script>
 
   <!-- ═════════════════════════════════════════════════════════════════════
        CINEMATIC PRELOADER — "The Spheres Align"
@@ -2409,9 +2416,19 @@
     let heroRing = null;
     let orreryRelocated = false;
     function waitForGlobal(test, ms) {
-      return new Promise((res) => { const t0 = Date.now();
-        (function poll() { try { if (test()) return res(true); } catch (e) {}
-          if (Date.now() - t0 > ms) return res(false); requestAnimationFrame(poll); })(); });
+      return new Promise(function (res) {
+        var t0 = Date.now();
+        (function poll() {
+          try { if (test()) return res(true); } catch (e) {}
+          if (Date.now() - t0 > ms) return res(false);
+          setTimeout(poll, 40);
+        })();
+      });
+    }
+    function afterLayout() {
+      return new Promise(function (res) {
+        requestAnimationFrame(function () { requestAnimationFrame(res); });
+      });
     }
 
     var preDone = false;
@@ -2445,44 +2462,50 @@
       if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';
     }
 
-    (async function featureOrreryOnLoadingScreen() {
-      if (!orrSlot) return;
-      const canvasReady = await waitForGlobal(function () {
-        if (!orrCanvas) orrCanvas = document.getElementById('orrery-canvas');
-        return orrCanvas && orrCanvas.parentElement;
-      }, 25000);
-      if (!canvasReady || preDone) {
-        if (!preDone) pre.classList.add('fallback-css');
-        return;
-      }
-      heroRing = orrCanvas.parentElement;
-      if (heroRing) heroRing.classList.add('orrery-canvas-away');
-      orrSlot.appendChild(orrCanvas);
-      orreryRelocated = true;
-      const engineReady = await waitForGlobal(function () {
-        return window.Orrery3D && window.AstroEphemeris;
-      }, 25000);
-      if (!engineReady || preDone) {
-        if (!preDone) pre.classList.add('fallback-css');
-        return;
-      }
-      try {
-        if (!window.__orreryReady) {
-          window.Orrery3D.init(orrCanvas);
-          window.__orreryReady = true;
+    function featureOrreryOnLoadingScreen() {
+      (async function () {
+        if (!orrSlot || preDone) return;
+        orrCanvas = document.getElementById('orrery-canvas');
+        if (!orrCanvas || !orrCanvas.parentElement) {
+          if (!preDone) pre.classList.add('fallback-css');
+          return;
         }
-        if (typeof window.Orrery3D.whenReady === 'function') await window.Orrery3D.whenReady();
+        heroRing = orrCanvas.parentElement;
+        if (heroRing) heroRing.classList.add('orrery-canvas-away');
+        orrSlot.appendChild(orrCanvas);
+        orreryRelocated = true;
+        await afterLayout();
         if (preDone) return;
-        if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
-        pre.classList.add('has-real');
-        if (typeof window.Orrery3D.restartIntro === 'function') {
-          window.Orrery3D.onIntroDone = function () { revealEnter(); };
-          window.Orrery3D.restartIntro();
+        var engineReady = await waitForGlobal(function () {
+          return window.Orrery3D && window.AstroEphemeris && typeof Orrery3D.init === 'function';
+        }, 20000);
+        if (!engineReady || preDone) {
+          if (!preDone) pre.classList.add('fallback-css');
+          return;
         }
-      } catch (e) {
-        if (!preDone) pre.classList.add('fallback-css');
-      }
-    })();
+        try {
+          if (!window.__orreryReady) {
+            window.Orrery3D.init(orrCanvas);
+            window.__orreryReady = true;
+          }
+          if (typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
+          if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
+          pre.classList.add('has-real');
+          if (typeof window.Orrery3D.restartIntro === 'function') {
+            window.Orrery3D.onIntroDone = function () { revealEnter(); };
+            window.Orrery3D.restartIntro();
+            if (typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
+          }
+        } catch (e) {
+          if (!preDone) pre.classList.add('fallback-css');
+        }
+      })();
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', featureOrreryOnLoadingScreen);
+    } else {
+      featureOrreryOnLoadingScreen();
+    }
 
     // After the brief alignment, reveal the "Enter" button as an instant skip…
     const tagline = document.getElementById('preloader-tagline');
@@ -3345,17 +3368,9 @@
   <!-- ══════════════════════════════════════════════════════════════════════
        SCRIPTS — load order matters
        ══════════════════════════════════════════════════════════════════════ -->
-  <!-- One scroll/rAF dispatcher + DPR/reduced-motion source of truth. Load first. -->
-  <script src="js/raf-core.js"></script>
+  <!-- raf-core + ephemeris load at top of <body>; orrery-webgl module loads from <head> -->
   <script src="js/stellar.js"></script>
   <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <!-- Photoreal WebGL hero orrery (Three.js, vendored locally — no CDN at runtime).
-       Falls back to the canvas orrery3d.js automatically if WebGL is unavailable. -->
-  <script type="importmap">
-  { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
-  </script>
-  <script type="module" src="js/orrery-webgl.js"></script>
   <script src="js/oracle.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/journey.js"></script>
