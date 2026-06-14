@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v76';
+const V = 'ap-v77';
 
 const PRECACHE = [
   './',
@@ -33,6 +33,19 @@ const PRECACHE = [
   './terms.html',
   './manifest.json',
   './css/main.css',
+  './css/fonts.css',
+  './fonts/cinzel-normal-400.woff2',
+  './fonts/cinzel-normal-600.woff2',
+  './fonts/cinzel-normal-700.woff2',
+  './fonts/cormorant-garamond-normal-400.woff2',
+  './fonts/cormorant-garamond-normal-500.woff2',
+  './fonts/cormorant-garamond-normal-600.woff2',
+  './fonts/cormorant-garamond-italic-400.woff2',
+  './fonts/cormorant-garamond-italic-500.woff2',
+  './fonts/inter-normal-300.woff2',
+  './fonts/inter-normal-400.woff2',
+  './fonts/inter-normal-500.woff2',
+  './fonts/inter-normal-600.woff2',
   './js/raf-core.js',
   './js/cosmos.js',
   './js/ephemeris.js',
