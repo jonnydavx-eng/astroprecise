@@ -112,8 +112,8 @@
       backdrop-filter: blur(16px);
       border-bottom-color: rgba(201, 162, 39, 0.12);
     }
-    .page-home .navbar__logo .logo-text { display: none; }
-    .page-home .navbar__logo-icon { width: 28px; height: 28px; opacity: 0.88; }
+    .page-home .navbar__logo .logo-text { display: inline; }
+    .page-home .navbar__logo-icon { width: 30px; height: 30px; opacity: 1; }
 
     /* Grok cinematic ref — observatory + zodiac wheel depth (subtle, right-weighted) */
     .hero__cosmic-art {
@@ -2298,9 +2298,10 @@
     #preloader::before{content:'';position:absolute;inset:0;pointer-events:none;background:
       radial-gradient(38% 46% at 20% 16%, rgba(201,162,39,0.14), transparent 70%),
       radial-gradient(42% 48% at 84% 90%, rgba(110,26,38,0.22), transparent 72%);}
-    .apl-cosmic-art{position:absolute;inset:0;pointer-events:none;opacity:.1;
-      background:url('img/hero-cosmic-ref.jpg') center 32%/cover no-repeat;
-      filter:sepia(.38) saturate(1.1) brightness(.48);}
+    /* Retired: hero-cosmic-ref.jpg is a mockup banner with the "AstroPrecise — Your
+       Cosmic Blueprint" wordmark baked in; at opacity .1 it read as a faint ghost
+       watermark behind the model. The real logo now lives in .apl-brand up top. */
+    .apl-cosmic-art{display:none;}
     #preloader.fade-out{opacity:0;transition:opacity .6s ease;}
     .apl-stars{position:absolute;inset:0;pointer-events:none;opacity:.85;background-image:
       radial-gradient(1.4px 1.4px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 28% 68%,#EFE3C0,transparent),
@@ -2308,7 +2309,10 @@
       radial-gradient(1.3px 1.3px at 82% 34%,#ffe9b8,transparent),radial-gradient(1px 1px at 91% 62%,#fff,transparent),
       radial-gradient(1px 1px at 58% 48%,#EFE3C0,transparent),radial-gradient(1px 1px at 38% 88%,#fff,transparent),
       radial-gradient(1px 1px at 8% 52%,#fff,transparent),radial-gradient(1px 1px at 73% 18%,#fff,transparent);}
-    .apl-orr{display:none;position:absolute;top:44%;left:50%;width:min(66vmin,480px);height:min(66vmin,480px);transform:translate(-50%,-50%) scaleY(.34);pointer-events:none;}
+    .apl-orr{display:none;position:absolute;top:40%;left:50%;width:min(60vmin,440px);height:min(60vmin,440px);transform:translate(-50%,-50%) scaleY(.34);pointer-events:none;}
+    .apl-brand{position:absolute;top:max(26px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:5;font-family:'Cinzel',serif;letter-spacing:0.2em;font-size:0.95rem;font-weight:700;color:#EFE3C0;text-transform:uppercase;white-space:nowrap;}
+    .apl-brand img{width:30px;height:30px;filter:drop-shadow(0 0 12px rgba(201,162,39,0.55));}
+    .apl-brand span{background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .apl-ring{position:absolute;top:50%;left:50%;border:1px solid rgba(201,162,39,.22);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 22px rgba(201,162,39,.18),inset 0 0 34px rgba(201,162,39,.08);}
     .apl-r1{width:36%;height:36%;}.apl-r2{width:60%;height:60%;}.apl-r3{width:86%;height:86%;}
     .apl-spin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:apl-orbit linear infinite;}
@@ -2325,11 +2329,11 @@
     @keyframes seal-pulse{0%,100%{opacity:.8;}50%{opacity:1;}}
     /* The REAL 3D orrery (same model as the hero) is relocated into this slot during loading,
        then flown into the hero on dismiss. The CSS-mock above stays as a graceful fallback. */
-    .apl-live-orr{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:min(66vmin,480px);height:min(66vmin,480px);pointer-events:auto;z-index:2;opacity:1;cursor:grab;}
+    .apl-live-orr{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:min(60vmin,440px);height:min(60vmin,440px);pointer-events:auto;z-index:2;opacity:1;cursor:grab;}
     .apl-live-orr:active{cursor:grabbing;}
     .apl-live-orr canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;
-      -webkit-mask-image:radial-gradient(ellipse 92% 92% at 50% 46%,#000 42%,rgba(0,0,0,0.88) 56%,rgba(0,0,0,0.35) 74%,transparent 100%);
-      mask-image:radial-gradient(ellipse 92% 92% at 50% 46%,#000 42%,rgba(0,0,0,0.88) 56%,rgba(0,0,0,0.35) 74%,transparent 100%);}
+      -webkit-mask-image:radial-gradient(circle at 50% 47%,#000 30%,rgba(0,0,0,0.8) 50%,rgba(0,0,0,0.28) 68%,transparent 84%);
+      mask-image:radial-gradient(circle at 50% 47%,#000 30%,rgba(0,0,0,0.8) 50%,rgba(0,0,0,0.28) 68%,transparent 84%);}
     #preloader.has-real .apl-live-orr{opacity:1;}
     #preloader.has-real .apl-orr,#preloader.has-real .apl-core{opacity:0;pointer-events:none;transition:opacity .9s ease;}
     #preloader.fallback-css .apl-orr,#preloader.fallback-css .apl-core{display:block;opacity:1;}
@@ -2344,6 +2348,7 @@
     @media (prefers-reduced-motion: reduce){#preloader.aligned .preloader-seal{animation:none;}}
   </style>
   <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
+    <div class="apl-brand"><img src="img/logo.svg" alt="" width="30" height="30" /><span>AstroPrecise</span></div>
     <div class="apl-cosmic-art" aria-hidden="true"></div>
     <div class="apl-stars" aria-hidden="true"></div>
     <div class="apl-orr" aria-hidden="true">
@@ -2356,16 +2361,9 @@
     <!-- The real 3D orrery is relocated here from the hero during loading -->
     <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
     <div class="preloader-content" style="position:absolute; left:50%; bottom:max(6vh, calc(env(safe-area-inset-bottom) + 18px)); transform:translateX(-50%); width:min(31rem,90vw); z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto;">
-      <div class="preloader-seal" style="margin-bottom:10px; animation:seal-pulse 3.2s ease-in-out infinite;"><span class="eng-star-mark" style="width:2.2rem;height:2.2rem;color:#C9A227;filter:drop-shadow(0 0 40px rgba(201,162,39,0.6));" aria-hidden="true"></span></div>
       <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px;">The Spheres Align</div>
       <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:28px; font-style:italic; color:#cdbf9f;">HD Earth close-up, then a pull through the live solar system &mdash; your sky, aligned for this moment.</div>
-      <div class="preloader-progress" id="preloader-progress" style="width:230px; margin:0 auto 26px;">
-        <div class="preloader-bar" style="height:1px; background:rgba(201,162,39,0.18); border-radius:1px; overflow:hidden;">
-          <div id="preloader-fill" style="height:100%; width:0%; background:linear-gradient(to right, #6e1a26, #C9A227, #EFE3C0); box-shadow:0 0 8px rgba(201,162,39,0.6); transition:width 1.8s cubic-bezier(0.22,1,0.36,1);"></div>
-        </div>
-      </div>
       <button id="preloader-enter" class="preloader-skip" aria-label="Enter the site" style="font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(28,22,12,0.5),rgba(12,10,7,0.62)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;"><span class="eng-star-mark" style="width:0.75em;height:0.75em;margin-right:0.35em;" aria-hidden="true"></span> Enter Your Sky &nbsp;&rarr;</button>
-      <div id="preloader-tagline" style="margin-top:14px; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:0.86rem; letter-spacing:0.06em; color:#cdbf9f; opacity:0.85;">Your real sky, free &middot; computed privately &middot; every number real</div>
     </div>
   </div>
 

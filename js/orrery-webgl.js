@@ -227,8 +227,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   function restartIntro() {
     scaleAnimActive = false;
-    introStart = performance.now();
-    introActive = !PRM;
+    introActive = false;          // hold static until we actually begin (below)
     userTouched = performance.now();
     daysPerSec = 0;
     flicking = false;
@@ -240,10 +239,22 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     camAz = -0.6;
     applyCamera();
     if (PRM) {
-      introActive = false;
       applyScalePreset(2, false);
       if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+      return;
     }
+    // Smooth start: hold the static Earth close-up until the HD textures have loaded
+    // (so the shader recompiles land on this held beat, not mid-animation), then fly
+    // out. Capped at 1.5s so a slow connection never stalls the reveal.
+    const begin = () => {
+      if (destroyed || introActive || scaleLevel !== 0) return;
+      introStart = performance.now();
+      introActive = true;
+    };
+    if (texturesReady) { begin(); return; }
+    needRecompute = true;
+    texturesReadyPromise.then(begin);
+    setTimeout(begin, 1500);
   }
 
   function settleFromIntro() {
@@ -1651,6 +1662,13 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       inView = true;
     }
     document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+
+    // Pre-compile shaders + warm the bloom composer NOW (while the preloader is still
+    // static) so the first animated intro frame doesn't hitch on a heavy program link.
+    try {
+      if (renderer.compile) renderer.compile(scene, camera);
+      if (composer) composer.render(); else renderer.render(scene, camera);
+    } catch (e) { /* pre-warm is best-effort */ }
 
     lastT = 0; raf = requestAnimationFrame(frame);
     webglBooted = true;
