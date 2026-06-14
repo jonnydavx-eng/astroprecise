@@ -2324,7 +2324,9 @@
     .apl-live-orr canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;
       -webkit-mask-image:radial-gradient(ellipse 92% 92% at 50% 46%,#000 42%,rgba(0,0,0,0.88) 56%,rgba(0,0,0,0.35) 74%,transparent 100%);
       mask-image:radial-gradient(ellipse 92% 92% at 50% 46%,#000 42%,rgba(0,0,0,0.88) 56%,rgba(0,0,0,0.35) 74%,transparent 100%);}
-    #preloader.fallback-css .apl-orr,#preloader.fallback-css .apl-core{display:block;}
+    #preloader.has-real .apl-live-orr{opacity:1;}
+    #preloader.has-real .apl-orr,#preloader.has-real .apl-core{opacity:0;pointer-events:none;transition:opacity .9s ease;}
+    #preloader.fallback-css .apl-orr,#preloader.fallback-css .apl-core{display:block;opacity:1;}
     #preloader.fallback-css .apl-live-orr{display:none;}
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core,.preloader-seal{animation:none;}}
     /* The way-in is revealed only when the sky SETTLES (driven by the orrery, not a blind timer) */
@@ -2345,21 +2347,12 @@
       <div class="apl-spin apl-s3"><span class="apl-pl apl-goldp"></span></div>
     </div>
     <div class="apl-core" aria-hidden="true"></div>
-    <!-- The real 3D orrery lives here during the cinematic intro; moves to hero on Enter -->
-    <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true">
-      <canvas
-        id="orrery-canvas"
-        width="640"
-        height="640"
-        role="img"
-        aria-label="The Living Orrery – cinematic journey from Earth to the cosmos"
-        style="position:relative;z-index:1;"
-      ></canvas>
-    </div>
+    <!-- The real 3D orrery is relocated here from the hero during loading -->
+    <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
     <div class="preloader-content" style="position:absolute; left:50%; bottom:max(6vh, calc(env(safe-area-inset-bottom) + 18px)); transform:translateX(-50%); width:min(31rem,90vw); z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto;">
       <div class="preloader-seal" style="margin-bottom:10px; animation:seal-pulse 3.2s ease-in-out infinite;"><span class="eng-star-mark" style="width:2.2rem;height:2.2rem;color:#C9A227;filter:drop-shadow(0 0 40px rgba(201,162,39,0.6));" aria-hidden="true"></span></div>
       <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px;">The Spheres Align</div>
-      <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:28px; font-style:italic; color:#cdbf9f;">From Earth to the edge of the galaxy &mdash; your living sky, aligned for this moment.</div>
+      <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:28px; font-style:italic; color:#cdbf9f;">HD Earth close-up, then a pull through the live solar system &mdash; your sky, aligned for this moment.</div>
       <div class="preloader-progress" id="preloader-progress" style="width:230px; margin:0 auto 26px;">
         <div class="preloader-bar" style="height:1px; background:rgba(201,162,39,0.18); border-radius:1px; overflow:hidden;">
           <div id="preloader-fill" style="height:100%; width:0%; background:linear-gradient(to right, #6e1a26, #C9A227, #EFE3C0); box-shadow:0 0 8px rgba(201,162,39,0.6); transition:width 1.8s cubic-bezier(0.22,1,0.36,1);"></div>
@@ -2383,22 +2376,11 @@
     if (introSeen) {
       pre.style.display = 'none';
       window.__apHeroEntered = true;
-      function relocateCanvasToHero() {
-        var skipCanvas = document.getElementById('orrery-canvas');
-        var skipRing = document.querySelector('.hero__orrery-ring');
-        if (skipCanvas && skipRing && skipCanvas.parentElement !== skipRing) {
-          skipCanvas.style.width = '';
-          skipCanvas.style.height = '';
-          skipRing.appendChild(skipCanvas);
-          skipRing.classList.remove('orrery-canvas-away');
-        }
-        var preEl = document.getElementById('preloader');
-        if (preEl && preEl.parentNode) preEl.parentNode.removeChild(preEl);
-      }
       function skipEnter() {
-        relocateCanvasToHero();
         if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
         window.dispatchEvent(new Event('ap-hero-enter'));
+        var preEl = document.getElementById('preloader');
+        if (preEl && preEl.parentNode) preEl.parentNode.removeChild(preEl);
         requestAnimationFrame(function () {
           if (window.Orrery3D && typeof Orrery3D.forceResize === 'function') Orrery3D.forceResize();
         });
@@ -2423,9 +2405,9 @@
 
     // ── The REAL 3D orrery (same model as the hero centrepiece) on the loading screen ──
     const orrSlot = document.getElementById('preloader-orrery-slot');
-    let orrCanvas = document.getElementById('orrery-canvas');
-    let orreryInHero = false;
-    function getHeroRing() { return document.querySelector('.hero__orrery-ring'); }
+    let orrCanvas = null;
+    let heroRing = null;
+    let orreryRelocated = false;
     function waitForGlobal(test, ms) {
       return new Promise((res) => { const t0 = Date.now();
         (function poll() { try { if (test()) return res(true); } catch (e) {}
@@ -2436,13 +2418,11 @@
     function hidePre() {
       if (preDone) return; preDone = true;
       if (raf) cancelAnimationFrame(raf);
-      var heroRing = getHeroRing();
-      orrCanvas = document.getElementById('orrery-canvas') || orrCanvas;
-      if (!orreryInHero && orrCanvas && heroRing) {
+      if (orreryRelocated && orrCanvas && heroRing) {
         orrCanvas.style.width = ''; orrCanvas.style.height = '';
+        orrCanvas.removeAttribute('width'); orrCanvas.removeAttribute('height');
         heroRing.appendChild(orrCanvas);
         heroRing.classList.remove('orrery-canvas-away');
-        orreryInHero = true;
         if (window.Orrery3D && typeof window.Orrery3D.settleFromIntro === 'function') window.Orrery3D.settleFromIntro();
         function refitOrrery() {
           if (window.Orrery3D && typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
@@ -2466,10 +2446,22 @@
     }
 
     (async function featureOrreryOnLoadingScreen() {
-      if (!orrSlot || !orrCanvas) return;
-      var heroRingEarly = getHeroRing();
-      if (heroRingEarly) heroRingEarly.classList.add('orrery-canvas-away');
-      const engineReady = await waitForGlobal(() => window.Orrery3D && window.AstroEphemeris, 25000);
+      if (!orrSlot) return;
+      const canvasReady = await waitForGlobal(function () {
+        if (!orrCanvas) orrCanvas = document.getElementById('orrery-canvas');
+        return orrCanvas && orrCanvas.parentElement;
+      }, 25000);
+      if (!canvasReady || preDone) {
+        if (!preDone) pre.classList.add('fallback-css');
+        return;
+      }
+      heroRing = orrCanvas.parentElement;
+      if (heroRing) heroRing.classList.add('orrery-canvas-away');
+      orrSlot.appendChild(orrCanvas);
+      orreryRelocated = true;
+      const engineReady = await waitForGlobal(function () {
+        return window.Orrery3D && window.AstroEphemeris;
+      }, 25000);
       if (!engineReady || preDone) {
         if (!preDone) pre.classList.add('fallback-css');
         return;
@@ -2482,9 +2474,10 @@
         if (typeof window.Orrery3D.whenReady === 'function') await window.Orrery3D.whenReady();
         if (preDone) return;
         if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
-        if (typeof window.Orrery3D.startIntro === 'function') {
+        pre.classList.add('has-real');
+        if (typeof window.Orrery3D.restartIntro === 'function') {
           window.Orrery3D.onIntroDone = function () { revealEnter(); };
-          window.Orrery3D.startIntro();
+          window.Orrery3D.restartIntro();
         }
       } catch (e) {
         if (!preDone) pre.classList.add('fallback-css');
@@ -2506,7 +2499,7 @@
     // No auto-dismiss: the visitor lingers on the live orrery and enters when ready.
     // Re-assert the reveal at 5s (in case 2.6s fired before the button existed), and
     // keep only a long last-resort safety net so no one is ever truly trapped.
-    setTimeout(revealEnter, 20000);
+    setTimeout(revealEnter, 8000);
     setTimeout(hidePre, 90000);   // 90s safety only — never rushes, never traps
     // (tap-anywhere-to-enter removed: the orrery is now draggable, so a drag must
     //  not dismiss; entry is the explicit button.)
@@ -2626,6 +2619,13 @@
                 <span class="hero__chronicle-offset" id="hero-chronicle-offset">Now</span>
               </div>
               <div class="orrery-canvas-placeholder" aria-hidden="true"></div>
+              <canvas
+                id="orrery-canvas"
+                width="640"
+                height="640"
+                role="img"
+                aria-label="The Living Orrery — drag to scrub time, scroll the page to advance the sky"
+              ></canvas>
               <div class="orrery-hint" aria-hidden="true">drag through time &middot; scroll page to advance &middot; zoom dial for space</div>
             </div>
 
