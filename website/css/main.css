@@ -581,7 +581,8 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  min-width: 0;
 }
 
 /* When .navbar__inner is present, reset outer .navbar layout */
@@ -594,9 +595,10 @@ h1, h2, h3, h4, h5, h6 {
 .navbar__end {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex-shrink: 0;
   margin-left: auto;
+  padding-left: var(--space-2);
 }
 
 .navbar__logo {
@@ -633,17 +635,19 @@ h1, h2, h3, h4, h5, h6 {
 .navbar__nav {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 2px;
   flex: 1 1 auto;
   min-width: 0;
-  margin-left: var(--space-4);
-  margin-right: var(--space-2);
+  margin-left: var(--space-3);
+  margin-right: var(--space-1);
   overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 20px), transparent 100%);
 }
 
 .navbar__nav .navbar__link {
-  flex-shrink: 1;
-  min-width: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .navbar__link {
@@ -799,6 +803,13 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--surface-2);
   border-left: 2px solid var(--gold);
   padding-left: calc(var(--space-4) - 2px);
+}
+
+.navbar__drawer-divider {
+  height: 1px;
+  margin: var(--space-3) var(--space-2);
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.28), transparent);
+  flex-shrink: 0;
 }
 
 @keyframes slide-down {
@@ -2829,7 +2840,7 @@ body > .cosmos-solar-system { display: none !important; }
   background: rgba(5, 4, 6, 0.85);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
-  z-index: 200;
+  z-index: 9200;
   display: none;
   pointer-events: none;
   align-items: center;
@@ -4794,12 +4805,12 @@ body > .cosmos-solar-system { display: none !important; }
 .ap-nav-email-cluster {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   margin-left: 0;
   margin-right: 0;
   flex: 0 0 auto;
   min-width: 0;
-  max-width: min(280px, 24vw);
+  max-width: min(240px, 22vw);
 }
 
 .ap-nav-email-cluster__copy {
@@ -4937,6 +4948,12 @@ body > .cosmos-solar-system { display: none !important; }
     font-size: 0.72rem;
     letter-spacing: 0.1em;
   }
+  .navbar__profile-top span { display: none; }
+  .navbar__profile-top { padding: 7px 10px; }
+}
+
+@media (max-width: 1024px) {
+  .navbar__nav .navbar__link[data-nav-tier="mid"] { display: none; }
 }
 
 @media (max-width: 768px) {
@@ -6607,6 +6624,8 @@ html, body { overflow-x: clip; max-width: 100%; }
   }
   .navbar__nav { display: none; }
   .navbar__end .ap-nav-email-cluster { display: none; }
+  .navbar__profile-top span { display: inline; }
+  .navbar__profile-top { padding: 7px 14px; }
 }
 
 /* Saturn with ring — appended live by app.js */
