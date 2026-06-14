@@ -15,6 +15,24 @@
   <meta property="og:description" content="Discover your Life Path number and full numerology blueprint. Always deterministic — same birth date, same answer, always." />
   <meta property="og:url" content="https://astroprecise.app/lifepath.html" />
   <link rel="canonical" href="https://astroprecise.app/lifepath.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — Life Path Calculator",
+    "url": "https://astroprecise.app/lifepath.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "description": "Free Life Path numerology calculator with Expression, Soul Urge, and Personal Year numbers — deterministic Pythagorean arithmetic, computed locally in your browser.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://astroprecise.app/"
+    }
+  }
+  </script>
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#050406" />
@@ -42,6 +60,23 @@
       position: relative;
       z-index: 1;
     }
+    .lp-hero {
+      padding: calc(var(--nav-height, 72px) + 2rem) 0 var(--space-8);
+      overflow: hidden;
+    }
+    .lp-hero::before {
+      content: '';
+      position: absolute;
+      inset: -5% 0 0;
+      z-index: 0;
+      pointer-events: none;
+      background: url('img/hero-cosmic-ref.jpg') center 25% / cover no-repeat;
+      opacity: 0.14;
+      filter: sepia(0.4) saturate(1.05) brightness(0.52);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.55) 60%, transparent 94%);
+              mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.55) 60%, transparent 94%);
+    }
+    .lp-hero .container { position: relative; z-index: 1; }
     .hero--small h1 {
       font-family: var(--font-display);
       font-size: clamp(2rem, 5vw, 3.5rem);
@@ -296,7 +331,7 @@
       line-height: 1.5;
     }
     .lp-trait-list li::before {
-      content: ''
+      content: '✦';
       color: var(--lp-gold);
       font-size: 0.6rem;
       flex-shrink: 0;
@@ -544,6 +579,73 @@
       pointer-events: none;
       opacity: 0.6;
     }
+
+    /* ── Calculation breakdown ── */
+    .lp-math-panel { display: none; margin-bottom: var(--space-6); }
+    .lp-math-panel.is-visible { display: block; }
+    .lp-math-steps {
+      font-family: 'Courier New', Consolas, monospace;
+      font-size: var(--text-sm);
+      color: var(--lp-silver);
+      line-height: 2;
+    }
+    .lp-math-val { color: var(--lp-gold-pale); font-weight: 700; }
+    .lp-math-note { color: var(--lp-gold); font-style: italic; font-size: 0.85em; }
+    .lp-math-result {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--lp-border);
+      color: var(--lp-white);
+      font-family: var(--font-display);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Cross-links after results ── */
+    .lp-crosslinks {
+      display: none;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: var(--space-6);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--lp-border);
+    }
+    .lp-crosslinks.is-visible { display: flex; }
+    .lp-crosslink {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--lp-silver);
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 1px solid var(--lp-border);
+      border-radius: 99px;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .lp-crosslink:hover {
+      border-color: rgba(196,146,10,0.45);
+      color: var(--lp-gold-pale);
+    }
+
+    .lp-profile-hint {
+      display: none;
+      font-size: 0.68rem;
+      color: var(--lp-silver-dim);
+      margin-top: var(--space-2);
+    }
+    .lp-profile-hint.is-visible { display: block; }
+    .lp-profile-hint button {
+      background: none;
+      border: none;
+      color: var(--lp-gold);
+      cursor: pointer;
+      font: inherit;
+      text-decoration: underline;
+      padding: 0;
+    }
   </style>
 </head>
 <body>
@@ -601,7 +703,7 @@
   <main id="main-content">
 
     <!-- HERO -->
-    <section class="hero--small">
+    <section class="hero--small lp-hero">
       <div class="container">
         <p class="eyebrow">Numerology Blueprint</p>
         <h1 class="gradient-text">Life Path Calculator</h1>
@@ -624,7 +726,8 @@
             <div class="lp-form-grid">
               <div class="form-group full-width">
                 <label for="lp-birthdate" class="form-label">Date of Birth <span style="color:var(--crimson-light)">*</span></label>
-                <input type="date" id="lp-birthdate" class="form-input" required max="2015-12-31" min="1900-01-01" />
+                <input type="date" id="lp-birthdate" class="form-input" required min="1900-01-01" />
+                <p class="lp-profile-hint" id="lp-profile-hint">Saved birth date available — <button type="button" id="lp-use-saved">use profile chart</button></p>
               </div>
               <div class="form-group full-width">
                 <label for="lp-name" class="form-label">Full Name at Birth <span style="color:var(--silver-dim);font-weight:400;">(optional — for Expression &amp; Soul Urge)</span></label>
@@ -660,6 +763,12 @@
         <!-- Secondary numbers: Expression, Soul Urge, Personal Year -->
         <div class="lp-secondary-grid" id="lp-secondary"></div>
 
+        <!-- Transparent calculation breakdown -->
+        <div class="lp-panel lp-math-panel" id="lp-math-panel">
+          <p class="lp-panel__title">Your Calculation</p>
+          <div class="lp-math-steps" id="lp-math-steps"></div>
+        </div>
+
         <!-- Name Numbers: Expression, Soul Urge, Personality, Birthday -->
         <div id="name-numbers-section" aria-live="polite">
           <p class="name-numbers-header"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Name Numbers</p>
@@ -689,13 +798,16 @@
           </div>
         </div>
 
+        <!-- Cross-links -->
+        <div class="lp-crosslinks" id="lp-crosslinks"></div>
+
         <!-- Download card -->
         <div class="lp-download-wrap">
           <button id="lp-download-btn" class="btn btn--gold">
             ↓ Download Numerology Card
           </button>
           <p style="font-size:0.65rem;color:var(--silver-dim);margin-top:var(--space-3);">
-            PNG · 1080×1080 · Computed locally · <span class="ap-badge">Deterministic</span>
+            PNG · up to 2160×2160 · Computed locally · <span class="ap-badge">Deterministic</span>
           </p>
         </div>
 
@@ -798,6 +910,7 @@
           </p>
           <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
             <a href="chart.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Birth Chart</a>
+            <a href="name-numerology.html" class="btn btn--outline btn--lg">Name Numerology Deep Dive</a>
             <a href="compatibility.html" class="btn btn--outline btn--lg">Synastry &amp; Compatibility</a>
           </div>
         </div>
@@ -847,7 +960,7 @@
   </footer>
 
   <script src="js/raf-core.js"></script>
-
+  <script src="js/profile.js"></script>
 
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
@@ -1028,6 +1141,107 @@
     11:'Illuminator',22:'Master Builder',33:'Master Teacher'
   };
 
+  const LP_ORDER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
+
+  const ELEMENT_THEME = {
+    fire:  { stripe: '#c9a227', dim: 'rgba(196,100,50,0.12)',  mandala: 'rgba(196,100,50,0.2)' },
+    earth: { stripe: '#0e5c3a', dim: 'rgba(14,92,58,0.12)',    mandala: 'rgba(14,92,58,0.2)' },
+    air:   { stripe: '#5b7fc7', dim: 'rgba(91,127,199,0.12)',  mandala: 'rgba(91,127,199,0.2)' },
+    water: { stripe: '#9aa6c8', dim: 'rgba(58,122,212,0.12)',  mandala: 'rgba(58,122,212,0.2)' },
+  };
+
+  const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function savedBirthProfile() {
+    try {
+      if (window.AstroProfile && typeof AstroProfile.getCharts === 'function') {
+        const charts = AstroProfile.getCharts();
+        if (charts && charts.length && charts[0]) {
+          return { date: charts[0].birthDate || null, name: charts[0].name || '' };
+        }
+      }
+    } catch (e) { /* storage blocked */ }
+    return null;
+  }
+
+  function formatReduceLine(label, raw) {
+    const reduced = toNumeroNum(raw);
+    if (raw === reduced) {
+      if (raw === 11 || raw === 22 || raw === 33) {
+        return `${label}: <span class="lp-math-val">${raw}</span> <em class="lp-math-note">Master — held</em>`;
+      }
+      return `${label}: <span class="lp-math-val">${raw}</span>`;
+    }
+    const parts = [raw];
+    let cur = raw;
+    while (cur > 9 && cur !== 11 && cur !== 22 && cur !== 33) {
+      cur = sumDigits(cur);
+      parts.push(cur);
+    }
+    const chain = parts.join(' → ');
+    const masterNote = (cur === 11 || cur === 22 || cur === 33)
+      ? ' <em class="lp-math-note">Master — held</em>' : '';
+    return `${label}: ${chain} = <span class="lp-math-val">${cur}</span>${masterNote}`;
+  }
+
+  function explainLifePath(y, m, d) {
+    const mr = toNumeroNum(m);
+    const dr = toNumeroNum(d);
+    const yrDigits = sumDigits(y);
+    const yr = toNumeroNum(yrDigits);
+    const sum = mr + dr + yr;
+    const lp = toNumeroNum(sum);
+    const data = LP[lp];
+    const birthLabel = `${d} ${MONTHS_LONG[m - 1]} ${y}`;
+
+    let sumLine = `Sum: ${mr} + ${dr} + ${yr} = <span class="lp-math-val">${sum}</span>`;
+    if (sum !== lp) {
+      sumLine += ` → ${sumDigits(sum)} = <span class="lp-math-val">${lp}</span>`;
+    }
+
+    return {
+      html: [
+        `Birth date: <strong>${birthLabel}</strong>`,
+        formatReduceLine('Month', m),
+        formatReduceLine('Day', d),
+        formatReduceLine('Year', yrDigits) + ` <span style="opacity:0.65">(${String(y).split('').join('+')})</span>`,
+        sumLine,
+        `<div class="lp-math-result">Life Path <span class="lp-math-val">${lp}</span> — ${data ? data.title : ''}</div>`,
+      ].join('<br>'),
+      lp,
+      birthLabel,
+    };
+  }
+
+  function applyElementTheme(display, element) {
+    const theme = ELEMENT_THEME[element] || ELEMENT_THEME.fire;
+    display.style.setProperty('--lp-element-color', theme.stripe);
+    display.style.setProperty('--lp-color-dim', theme.dim);
+    return theme.mandala;
+  }
+
+  function renderCrosslinks(opts) {
+    const wrap = document.getElementById('lp-crosslinks');
+    if (!wrap) return;
+    if (!opts || opts.preview) {
+      wrap.classList.remove('is-visible');
+      wrap.innerHTML = '';
+      return;
+    }
+    const links = [];
+    if (opts.birthDate) {
+      links.push(`<a class="lp-crosslink" href="chart.html?date=${encodeURIComponent(opts.birthDate)}${opts.name ? '&name=' + encodeURIComponent(opts.name) : ''}">Birth chart for this date</a>`);
+    }
+    if (opts.name) {
+      links.push(`<a class="lp-crosslink" href="name-numerology.html?name=${encodeURIComponent(opts.name)}">Name numerology breakdown</a>`);
+    }
+    links.push('<a class="lp-crosslink" href="ephemeris.html">Sky on your birth day</a>');
+    links.push('<a class="lp-crosslink" href="compatibility.html">Compare with a partner</a>');
+    wrap.innerHTML = links.join('');
+    wrap.classList.add('is-visible');
+  }
+
   /* ── Mandala drawing ─────────────────────────────────────────────────────── */
 
   function drawMandala(canvas, color) {
@@ -1055,7 +1269,8 @@
 
   /* ── Render helpers ─────────────────────────────────────────────────────── */
 
-  function renderResults(lp, expr, soul, personality, birthdayNum, personalYear, personalMonth) {
+  function renderResults(lp, expr, soul, personality, birthdayNum, personalYear, personalMonth, opts) {
+    opts = opts || {};
     const data = LP[lp];
     if (!data) return;
 
@@ -1067,6 +1282,7 @@
     document.getElementById('lp-tagline').textContent = data.tagline;
 
     display.classList.toggle('is-master', !!data.master);
+    const mandalaColor = applyElementTheme(display, data.element);
 
     const kw = document.getElementById('lp-keywords');
     kw.innerHTML = data.keywords.map(k => `<span class="lp-keyword">${k}</span>`).join('');
@@ -1084,23 +1300,26 @@
       return `<div class="lp-compat-num"><span class="lp-compat-num__digit">${n}</span><span class="lp-compat-num__label">${t}</span></div>`;
     }).join('');
 
-    // Secondary numbers (Life Path + timing numbers)
     const cards = [];
     cards.push({
       label: 'Life Path', number: lp,
       name: data.title,
       desc: 'The overarching vibration of your life\'s journey and purpose'
     });
-    if (personalYear !== null) {
+    if (personalYear !== null && personalYear !== undefined) {
+      const pyData = LP[personalYear];
       cards.push({
         label: 'Personal Year', number: personalYear,
-        name: '', desc: 'The numerological theme governing your current year'
+        name: pyData ? pyData.title : '',
+        desc: pyData ? pyData.tagline : 'The numerological theme governing your current year'
       });
     }
-    if (personalMonth !== null) {
+    if (personalMonth !== null && personalMonth !== undefined) {
+      const pmData = LP[personalMonth];
       cards.push({
         label: 'Personal Month', number: personalMonth,
-        name: '', desc: 'This month\'s energetic focus within your personal year cycle'
+        name: pmData ? LP_TITLES[personalMonth] || '' : '',
+        desc: pmData ? pmData.keywords.slice(0, 3).join(' · ') : 'This month\'s energetic focus within your personal year cycle'
       });
     }
 
@@ -1114,10 +1333,19 @@
       </div>
     `).join('');
 
-    // Name Numbers section (Expression, Soul Urge, Personality, Birthday)
+    const mathPanel = document.getElementById('lp-math-panel');
+    const mathSteps = document.getElementById('lp-math-steps');
+    if (!opts.preview && opts.mathHtml) {
+      mathSteps.innerHTML = opts.mathHtml;
+      mathPanel.classList.add('is-visible');
+    } else {
+      mathPanel.classList.remove('is-visible');
+      mathSteps.innerHTML = '';
+    }
+
     const nameSection = document.getElementById('name-numbers-section');
     const nameGrid = document.getElementById('lp-name-numbers-grid');
-    const hasNameNumbers = expr !== null || soul !== null || personality !== null || birthdayNum !== null;
+    const hasNameNumbers = !opts.preview && (expr !== null || soul !== null || personality !== null || birthdayNum !== null);
     if (hasNameNumbers) {
       const nameCards = [];
       if (expr !== null) {
@@ -1156,14 +1384,41 @@
       nameSection.classList.remove('is-visible');
     }
 
-    results.classList.add('is-visible');
-    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    renderCrosslinks(opts);
 
-    var mc = document.getElementById('lp-mandala-canvas');
-    if (mc && data) {
-      var elColors = {fire:'rgba(196,100,50,0.2)',earth:'rgba(14,92,58,0.2)',air:'rgba(91,127,199,0.2)',water:'rgba(58,122,212,0.2)'};
-      drawMandala(mc, elColors[data.element] || 'rgba(196,146,10,0.18)');
+    results.classList.add('is-visible');
+    if (opts.scroll !== false) {
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+
+    const mc = document.getElementById('lp-mandala-canvas');
+    if (mc) drawMandala(mc, mandalaColor);
+  }
+
+  function runFromBirthDate(dateVal, nameVal, opts) {
+    opts = opts || {};
+    const [y, m, d] = dateVal.split('-').map(Number);
+    const explained = explainLifePath(y, m, d);
+    const lp = explained.lp;
+    const expr = nameVal ? calcExpression(nameVal) : null;
+    const soul = nameVal ? calcSoulUrge(nameVal) : null;
+    const personality = nameVal ? calcPersonality(nameVal) : null;
+    const birthdayNum = calcBirthdayNumber(d);
+    const now = new Date();
+    const py = calcPersonalYear(m, d, now.getFullYear());
+    const pm = toNumeroNum(py + now.getMonth() + 1);
+
+    window._lpCurrentNum = lp;
+    window._lpCurrentName = nameVal || '';
+    window._lpCurrentBirth = explained.birthLabel;
+
+    renderResults(lp, expr, soul, personality, birthdayNum, py, pm, {
+      mathHtml: explained.html,
+      birthDate: dateVal,
+      name: nameVal || '',
+      scroll: opts.scroll,
+    });
+    return lp;
   }
 
   /* ── Canvas download card ───────────────────────────────────────────────── */
@@ -1345,18 +1600,46 @@
   /* ── Event wiring ───────────────────────────────────────────────────────── */
 
   document.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('lp-birthdate');
+    const nameInput = document.getElementById('lp-name');
+    const profileHint = document.getElementById('lp-profile-hint');
+    const useSavedBtn = document.getElementById('lp-use-saved');
+    const saved = savedBirthProfile();
 
-    // Populate education grid
+    if (dateInput) {
+      dateInput.max = new Date().toISOString().slice(0, 10);
+    }
+
+    if (saved && saved.date && profileHint) {
+      profileHint.classList.add('is-visible');
+      if (useSavedBtn) {
+        useSavedBtn.addEventListener('click', () => {
+          if (saved.date) dateInput.value = saved.date;
+          if (saved.name && nameInput && !nameInput.value) nameInput.value = saved.name;
+          profileHint.classList.remove('is-visible');
+        });
+      }
+    }
+
+    const params = new URLSearchParams(location.search);
+    const pd = params.get('date');
+    const pn = params.get('name');
+
+    if (!pd && saved) {
+      if (saved.date && dateInput && !dateInput.value) dateInput.value = saved.date;
+      if (saved.name && nameInput && !nameInput.value) nameInput.value = saved.name;
+    }
+    if (pn && nameInput && !nameInput.value) nameInput.value = pn;
+
     const grid = document.getElementById('all-numbers-grid');
     if (grid) {
-      const ORDER = [1,2,3,4,5,6,7,8,13, 10, 7,33];
       const elementCardColors = {
         fire: { border: '#c9a227', glow: 'rgba(196,146,10,0.15)' },
         earth: { border: '#0e5c3a', glow: 'rgba(14,92,58,0.15)' },
         air: { border: '#9db36a', glow: 'rgba(91,127,199,0.15)' },
         water: { border: '#9aa6c8', glow: 'rgba(154,166,200,0.15)' }
       };
-      grid.innerHTML = ORDER.map(n => {
+      grid.innerHTML = LP_ORDER.map(n => {
         const d = LP[n];
         const ec = elementCardColors[d.element] || elementCardColors.fire;
         return `<div class="lp-number-card${d.master ? ' lp-number-card--master' : ''}" data-n="${n}"
@@ -1373,64 +1656,23 @@
       grid.addEventListener('click', e => {
         const card = e.target.closest('[data-n]');
         if (!card) return;
-        const n = parseInt(card.dataset.n);
-        const d = LP[n];
-        if (!d) return;
-        // Fill and show results
-        document.getElementById('lp-digit').textContent = n;
-        document.getElementById('lp-title').textContent = d.title;
-        document.getElementById('lp-tagline').textContent = d.tagline;
-        document.getElementById('lp-main-display').classList.toggle('is-master', !!d.master);
-        document.getElementById('lp-keywords').innerHTML =
-          d.keywords.map(k => `<span class="lp-keyword">${k}</span>`).join('');
-        document.getElementById('lp-overview').textContent = d.overview;
-        document.getElementById('lp-strengths').innerHTML = d.strengths.map(s=>`<li>${s}</li>`).join('');
-        document.getElementById('lp-challenges').innerHTML = d.challenges.map(c=>`<li>${c}</li>`).join('');
-        document.getElementById('lp-compatibles').innerHTML = d.compatibles.map(cn=>`<div class="lp-compat-num"><span class="lp-compat-num__digit">${cn}</span><span class="lp-compat-num__label">${LP_TITLES[cn]||''}</span></div>`).join('');
-        document.getElementById('lp-secondary').innerHTML = `<div class="lp-secondary-card"><p class="lp-secondary-card__label">Life Path</p><div class="lp-secondary-card__number">${n}</div><p class="lp-secondary-card__name">${d.title}</p></div>`;
-        document.getElementById('name-numbers-section').classList.remove('is-visible');
-        const results = document.getElementById('lp-results');
-        results.classList.add('is-visible');
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window._lpCurrentNum = n; window._lpCurrentName = ''; window._lpCurrentBirth = '';
-        var mc = document.getElementById('lp-mandala-canvas');
-        if (mc && d) {
-          var elColors = {fire:'rgba(196,100,50,0.2)',earth:'rgba(14,92,58,0.2)',air:'rgba(91,127,199,0.2)',water:'rgba(58,122,212,0.2)'};
-          drawMandala(mc, elColors[d.element] || 'rgba(196,146,10,0.18)');
-        }
+        const n = parseInt(card.dataset.n, 10);
+        if (!LP[n]) return;
+        window._lpCurrentNum = n;
+        window._lpCurrentName = '';
+        window._lpCurrentBirth = '';
+        renderResults(n, null, null, null, null, null, null, { preview: true });
       });
     }
 
-    // Form submit
     const form = document.getElementById('lp-form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const dateVal = document.getElementById('lp-birthdate').value;
-      if (!dateVal) { document.getElementById('lp-birthdate').focus(); return; }
-      const [y, m, d] = dateVal.split('-').map(Number);
-      const lp = calcLifePath(y, m, d);
-
-      const nameVal = document.getElementById('lp-name').value.trim();
-      const expr = nameVal ? calcExpression(nameVal) : null;
-      const soul = nameVal ? calcSoulUrge(nameVal) : null;
-      const personality = nameVal ? calcPersonality(nameVal) : null;
-      const birthdayNum = calcBirthdayNumber(d);
-
-      const now = new Date();
-      const py = calcPersonalYear(m, d, now.getFullYear());
-      const pm = toNumeroNum(py + now.getMonth() + 1);
-
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const birthLabel = `${d} ${months[m-1]} ${y}`;
-
-      window._lpCurrentNum = lp;
-      window._lpCurrentName = nameVal;
-      window._lpCurrentBirth = birthLabel;
-
-      renderResults(lp, expr, soul, personality, birthdayNum, py, pm);
+      const dateVal = dateInput.value;
+      if (!dateVal) { dateInput.focus(); return; }
+      runFromBirthDate(dateVal, nameInput.value.trim());
     });
 
-    // Download
     document.getElementById('lp-download-btn').addEventListener('click', () => {
       const n = window._lpCurrentNum;
       if (!n) return;
@@ -1442,22 +1684,9 @@
       link.click();
     });
 
-    // URL param auto-fill
-    const params = new URLSearchParams(location.search);
-    const pd = params.get('date');
     if (pd) {
-      const dateInput = document.getElementById('lp-birthdate');
-      dateInput.value = pd;
-      const [y, m, d] = pd.split('-').map(Number);
-      const lp = calcLifePath(y, m, d);
-      const birthdayNum = calcBirthdayNumber(d);
-      const now = new Date();
-      const py = calcPersonalYear(m, d, now.getFullYear());
-      const pm = toNumeroNum(py + now.getMonth() + 1);
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      window._lpCurrentNum = lp;
-      window._lpCurrentBirth = `${d} ${months[m-1]} ${y}`;
-      renderResults(lp, null, null, null, birthdayNum, py, pm);
+      if (dateInput) dateInput.value = pd;
+      runFromBirthDate(pd, (pn || (nameInput && nameInput.value) || '').trim(), { scroll: true });
     }
   });
   </script>
