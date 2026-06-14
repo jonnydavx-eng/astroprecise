@@ -559,14 +559,17 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.9;
 
-    // Bloom composer — skip for reduced-motion or low-end devices
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);
+    texLoader = new THREE.TextureLoader();
+
+    // Bloom composer — skip for reduced-motion or low-end devices (needs scene + camera first)
     const _skipComposer = PRM || (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4);
     if (!_skipComposer) {
       try {
         composer = new EffectComposer(renderer);
         composer.addPass(new RenderPass(scene, camera));
         bloomPass = new UnrealBloomPass(new THREE.Vector2(renderer.domElement.width, renderer.domElement.height), 0.35, 0.5, 0.88);
-        // strength 0.35, radius 0.5, threshold 0.88 — only the sun + bright glow blooms; no planet halos
         composer.addPass(bloomPass);
         composer.addPass(new OutputPass());
       } catch (e) {
@@ -574,9 +577,6 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         console.warn('[orrery] post-processing unavailable:', e.message);
       }
     }
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);
-    texLoader = new THREE.TextureLoader();
 
     const now = new Date();
     baseNowMs = now.getTime();
@@ -658,6 +658,11 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     },
     resetScrollDrive() {
       scrollBias = 0;
+      if (!introActive) {
+        camRadius = 48;
+        camEl = 26 * D2R;
+        applyCamera();
+      }
       needRecompute = true;
     },
     isWebGL: true,

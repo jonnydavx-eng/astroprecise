@@ -2,6 +2,7 @@
   "name": "AstroPrecise — Birth Charts & Horoscopes",
   "short_name": "AstroPrecise",
   "description": "Professional birth chart analysis powered by precise astronomical calculations",
+  "id": "/",
   "start_url": "chart.html?app=1",
   "display": "standalone",
   "orientation": "portrait-primary",

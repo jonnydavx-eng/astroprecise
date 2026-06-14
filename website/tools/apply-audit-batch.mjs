@@ -4,7 +4,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const BASE = 'https://jonnydavx-eng.github.io/astroprecise';
+const BASE = 'https://astroprecise.app';
 
 const JSON_LD_PAGES = {
   'chart.html': {

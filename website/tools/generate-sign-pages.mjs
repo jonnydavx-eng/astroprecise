@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 import { CONSTELLATIONS } from './constellations.mjs';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
-const BASE_URL = 'https://jonnydavx-eng.github.io/astroprecise';
+const BASE_URL = 'https://astroprecise.app';
 
 const SIGNS = [
   {
