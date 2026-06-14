@@ -66,27 +66,85 @@
               mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.6) 55%, transparent 92%);
     }
     .sphere-hero .container { position: relative; z-index: 1; }
-    .sign-glyphs-banner {
-      max-width: 920px;
-      margin: 0 auto var(--space-6, 1.5rem);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid rgba(201, 162, 39, 0.2);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    /* Horoscope email subscription */
+    .horoscope-subscribe {
+      background: linear-gradient(180deg, transparent 0%, rgba(92, 74, 110, 0.06) 50%, transparent 100%);
     }
-    .sign-glyphs-banner img {
-      width: 100%;
-      display: block;
-      filter: sepia(0.1) brightness(0.92);
+    .horoscope-subscribe__inner {
+      max-width: 820px;
+      margin: 0 auto;
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      border-radius: 20px;
+      padding: var(--space-8, 2rem);
     }
-    .sign-glyphs-banner__cap {
-      text-align: center;
-      font-size: 0.58rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(201, 162, 39, 0.55);
-      margin-top: var(--space-2, 0.5rem);
+    .horoscope-subscribe__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6, 1.5rem);
+      margin-top: var(--space-6, 1.5rem);
     }
+    @media (max-width: 700px) {
+      .horoscope-subscribe__grid { grid-template-columns: 1fr; }
+    }
+    .horoscope-subscribe__preview {
+      background: rgba(5, 4, 6, 0.55);
+      border: 1px solid rgba(168, 158, 136, 0.12);
+      border-radius: 14px;
+      padding: var(--space-5, 1.25rem);
+      font-size: 0.82rem;
+      color: var(--silver, #C8D0E8);
+      line-height: 1.65;
+    }
+    .horoscope-subscribe__preview h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.95rem;
+      color: var(--gold, #c9a227);
+      margin: 0 0 0.5rem;
+      letter-spacing: 0.04em;
+    }
+    .horoscope-subscribe__form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .horoscope-subscribe__form label {
+      font-size: 0.72rem;
+      color: var(--silver-dim, #8891AA);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+    .horoscope-subscribe__form select,
+    .horoscope-subscribe__form input[type="email"] {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(168, 158, 136, 0.2);
+      background: rgba(13, 10, 7, 0.7);
+      color: #fff;
+      font-size: 0.85rem;
+    }
+    .horoscope-subscribe__cadence {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      margin: 0.25rem 0;
+    }
+    .horoscope-subscribe__msg {
+      font-size: 0.68rem;
+      color: var(--silver-dim, #8891AA);
+      line-height: 1.55;
+      margin-top: 0.35rem;
+    }
+    .horoscope-subscribe__done {
+      display: none;
+      font-size: 0.82rem;
+      color: var(--gold, #c9a227);
+      line-height: 1.6;
+    }
+    .horoscope-subscribe__done.is-visible { display: block; }
+    .horoscope-subscribe__form.is-hidden { display: none; }
     .sphere-hero__header { margin-bottom: 1.25rem; }
     .sphere-hero__header h1 {
       font-family: var(--font-display, 'Cinzel', serif);
@@ -338,7 +396,10 @@
 
     /* ---- Sign card — premium zodiac card ---- */
     .sign-card {
-      background: #0d0a07 center top / cover no-repeat;
+      background-color: #0d0a07;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center 18%;
       border: 1px solid rgba(201, 162, 39, 0.22);
       border-radius: 16px;
       aspect-ratio: 2 / 3;
@@ -1010,11 +1071,6 @@
         </div>
         <div id="sign-grid-wrap">
 
-        <div class="sign-glyphs-banner" aria-hidden="true">
-          <img src="img/zodiac-glyphs-all.jpg" alt="" width="1024" height="768" loading="lazy" decoding="async" />
-        </div>
-        <p class="sign-glyphs-banner__cap">Gold line art &middot; premium 3D cards below</p>
-
         <div class="sign-grid" id="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
           <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♈</span>
@@ -1166,6 +1222,13 @@
               </button>
               <div id="srp-weekly-body" aria-live="polite"></div>
             </div>
+            <div id="srp-monthly-wrap" style="margin-top:var(--space-3);">
+              <button id="srp-monthly-toggle" class="btn btn--ghost btn--sm" aria-expanded="false">
+                <span><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg> Monthly Outlook</span>
+                <span id="srp-monthly-chevron">▾</span>
+              </button>
+              <div id="srp-monthly-body" aria-live="polite"></div>
+            </div>
             <p class="srp-personal-note" id="srp-personal-note" hidden></p>
             <p style="margin-top:var(--space-4);">
               <span class="ap-badge ap-badge--deterministic">Fixed for this date — same sign, same day, same reading</span>
@@ -1197,6 +1260,57 @@
           </div>
         </nav>
 
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DAILY + MONTHLY EMAIL SUBSCRIPTION
+    ============================================================ -->
+    <section class="section horoscope-subscribe" id="horoscope-subscribe" aria-labelledby="hs-heading">
+      <div class="container">
+        <div class="horoscope-subscribe__inner">
+          <header class="section-header" style="margin-bottom:0;">
+            <p class="eyebrow">Free in your inbox</p>
+            <h2 class="section-title" id="hs-heading">Daily &amp; Monthly Horoscopes</h2>
+            <p class="section-subtitle" style="margin-bottom:0;">
+              Same deterministic readings as on this page — computed from your sign and the date, never random filler.
+              Only your email is sent; birth data stays on your device.
+            </p>
+          </header>
+          <div class="horoscope-subscribe__grid">
+            <div class="horoscope-subscribe__preview" id="hs-preview" aria-live="polite">
+              <h3 id="hs-preview-title">Today's preview</h3>
+              <p id="hs-preview-daily">Select your sign to preview today's reading.</p>
+              <p id="hs-preview-monthly" style="margin-top:0.75rem;opacity:0.85;"></p>
+            </div>
+            <form class="horoscope-subscribe__form" id="hs-form" novalidate>
+              <label for="hs-sign">Your sign</label>
+              <select id="hs-sign" name="sign" aria-label="Zodiac sign for horoscope emails">
+                <option value="aries">Aries</option>
+                <option value="taurus">Taurus</option>
+                <option value="gemini">Gemini</option>
+                <option value="cancer">Cancer</option>
+                <option value="leo">Leo</option>
+                <option value="virgo">Virgo</option>
+                <option value="libra">Libra</option>
+                <option value="scorpio">Scorpio</option>
+                <option value="sagittarius">Sagittarius</option>
+                <option value="capricorn">Capricorn</option>
+                <option value="aquarius">Aquarius</option>
+                <option value="pisces">Pisces</option>
+              </select>
+              <div class="horoscope-subscribe__cadence" role="group" aria-label="Email frequency">
+                <label><input type="checkbox" name="cadence_daily" value="daily" checked /> Daily reading</label>
+                <label><input type="checkbox" name="cadence_monthly" value="monthly" checked /> Monthly overview</label>
+              </div>
+              <label for="hs-email">Email</label>
+              <input type="email" id="hs-email" name="email" required placeholder="you@example.com" autocomplete="email" />
+              <button type="submit" class="btn btn--gold btn--sm"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Subscribe</button>
+              <p class="horoscope-subscribe__msg"><span class="ap-badge">Deterministic</span> Unsubscribe anytime. No account required.</p>
+            </form>
+          </div>
+          <p class="horoscope-subscribe__done" id="hs-done" role="status" aria-live="polite"></p>
+        </div>
       </div>
     </section>
 
@@ -1462,6 +1576,7 @@
   <script src="js/ephemeris.js"></script>
   <script src="js/zodiac-sphere.js"></script>
   <script src="js/interpretations.js"></script>
+  <script src="js/horoscope-subscribe.js"></script>
   <script src="js/profile.js"></script>
 
   <!-- Inline init script -->
@@ -1592,6 +1707,10 @@
         weeklyToggle.addEventListener('click', weeklyToggle._bound);
       }
 
+      if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.fillMonthlyPanel === 'function') {
+        HoroscopeSubscribe.fillMonthlyPanel(signKey);
+      }
+
       // Moon phase canvas
       (function drawMoonPhase() {
         var cv = document.getElementById('srp-moon-canvas');
@@ -1691,6 +1810,13 @@
       updateSphereLabel(signKey);
       history.replaceState(null, '', '?sign=' + signKey);
       openPanel(signKey);
+      var hsSign = document.getElementById('hs-sign');
+      if (hsSign) {
+        hsSign.value = signKey;
+        if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.updatePreview === 'function') {
+          HoroscopeSubscribe.updatePreview(signKey);
+        }
+      }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
