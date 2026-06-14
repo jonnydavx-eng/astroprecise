@@ -42,9 +42,9 @@ _Two charts, the real aspects between them. Shareable. Free._
 → Hosted email signup (Buttondown / Kit / MailerLite landing page)
 _Your sky as a phone + desktop background, plus the occasional cosmic-weather note. One email, that's it._
 
-✷ **[GET THE DEEP READING — £18]**
+✷ **[GET THE DEEP READING — £12]**
 → Hosted product (Gumroad), the `deepReadingUrl` target
-_A beautiful 6–10 page reading of your exact chart. Or the print-at-home Natal Poster, £9._
+_A beautiful 6–10 page reading of your exact chart. Or the print-at-home Natal Poster, £6._
 
 🖼 **[WEAR YOUR SKY — SHOP]**
 → Etsy / Gelato store (the `posterUrl` target)
@@ -106,7 +106,7 @@ explained." The site computes every chart for real (VSOP87/ELP2000) and privatel
 ```
 
 ## The two rules, applied to the funnel (from CLAUDE.md)
-1. **Nothing fake.** Only list links that work. The £18 reading / shop links go live **only** once the
+1. **Nothing fake.** Only list links that work. The £12 reading / shop links go live **only** once the
    storefront product exists (paste the URL into `AP_MON` — `deepReadingUrl`, `posterUrl`, `giftUrl`).
    Until then, lead with the free tool + email signup, which are real today. Never link a "buy" that
    404s or fakes a checkout.

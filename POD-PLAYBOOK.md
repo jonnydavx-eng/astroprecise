@@ -47,15 +47,15 @@ let prints/framed carry margin.
 
 | Product | Base (blank + print) | Retail | Gross margin | Notes |
 |---|---|---|---|---|
-| Poster A3 (digital PDF) | ~£0 (file) | **£12** | ~£11 after fee | the print-at-home taster; near-pure margin |
-| Poster A3 (physical) | ~£8–11 | **£34** | ~£22–25 | Gelato in-region print |
-| Poster A2 (physical) | ~£12–16 | **£45** | ~£28–32 | upsell size |
-| Framed print | ~£20–28 | **£48** | ~£18–25 | highest-AOV wall product |
-| Sky tee (Bella+Canvas) | ~£15–17 | **£32** | ~£14–16 | DTG; -£2–3 after Printify/Printful fee |
-| Chart mug | ~£6–8 | **£18** | ~£9–11 | impulse / gift add-on |
+| Poster A3 (digital PDF) | ~£0 (file) | **£6** | ~£5 after fee | the print-at-home taster; near-pure margin |
+| Poster A3 (physical) | ~£8–11 | **£20** | ~£8–11 | Gelato in-region print |
+| Poster A2 (physical) | ~£12–16 | **£28** | ~£12–16 | upsell size |
+| Framed print | ~£20–28 | **£35** | ~£7–12 | highest-AOV wall product |
+| Sky tee (Bella+Canvas) | ~£15–17 | **£18** | ~£1–3 | DTG; -£2–3 after Printify/Printful fee |
+| Chart mug | ~£6–8 | **£9** | ~£1–3 | impulse / gift add-on |
 
 After the storefront's cut (Etsy ~6.5% + listing; Gumroad 10%+£0.50; on-site Stripe 2.9%+30¢) the **net**
-on a physical poster is comfortably £18–28. The digital poster (£12) and Deep Reading (£24) remain the
+on a physical poster is comfortably £8–12. The digital poster (£6) and Deep Reading (£12) remain the
 margin champions — physical merch is the **wow/gift/shareable** layer, not the profit core.
 
 ## How to fulfil a PERSONALIZED order (the core operation)

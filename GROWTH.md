@@ -15,16 +15,16 @@ The free, accurate tool is the funnel. We sell **artifacts, depth, gifts** — n
 
 | Product | Price | Notes |
 |---|---|---|
-| **The Deep Reading** (PDF, ~6–10pp, the Desktop sample) | **£18** | impulse-friendly vs Etsy's £14–20 — still craft + accuracy |
-| **Natal Chart Poster** — digital PDF (print-at-home) | **£9** | the Pinterest/IG magnet; also a free taster → upsell |
-| **Natal Chart Poster** — physical print (print-on-demand) | **£24–30** | A3/A2 via Gelato/Printful; margin after print cost |
-| **Reading + Poster bundle** | **£25** | anchor the £18+£9 against this |
-| **Gift a Reading** | **£22** | gifting carries a premium; Valentine's/birthday seasonal |
+| **The Deep Reading** (PDF, ~6–10pp, the Desktop sample) | **£12** | impulse-friendly vs Etsy's £14–20 — still craft + accuracy |
+| **Natal Chart Poster** — digital PDF (print-at-home) | **£6** | the Pinterest/IG magnet; also a free taster → upsell |
+| **Natal Chart Poster** — physical print (print-on-demand) | **£18–22** | A3/A2 via Gelato/Printful; margin after print cost |
+| **Reading + Poster bundle** | **£16** | anchor the £12+£6 against this |
+| **Gift a Reading** | **£15** | gifting carries a premium; Valentine's/birthday seasonal |
 | **Tip / "keep the sky free"** | pay-what-you-want | Ko-fi, 0% on tips |
-| **Cosmic Weather** subscription _(Phase 2)_ | **£3.49/mo** | deliberately undercuts Co-Star £9 / Chani £12 |
+| **Cosmic Weather** subscription _(Phase 2)_ | **£2.49/mo** | deliberately undercuts Co-Star £9 / Chani £12 |
 | **Engine API licensing** _(Phase 3, B2B)_ | bespoke | the corrected ephemeris is genuinely good IP |
 
-Psychology: one **anchor** (the bundle), one **hero** (£18 Deep Reading), one **doorway** (free chart + £9 poster). Don't build a 4-tier subscription wall — it fights the brand.
+Psychology: one **anchor** (the bundle), one **hero** (£12 Deep Reading), one **doorway** (free chart + £6 poster). Don't build a 4-tier subscription wall — it fights the brand.
 
 ## How the money is actually made (implementation)
 The products are **personalised** (per birth data), but a static site + hosted checkout delivers a *fixed* file. So:
@@ -46,7 +46,7 @@ The products are **personalised** (per birth data), but a static site + hosted c
 ## Go-to-market — taking it to the masses
 - **Phase 0 — Ship (this week):** `git push` live; flip Pages→Actions; fill legal placeholders; create Gumroad + Ko-fi; paste into `AP_MON`. Soft-launch the *free tool* (Reddit, personal socials), start collecting emails.
 - **Phase 1 — Prove (weeks 1–6):** publish 1 short video/day from the live sky; pin posters; manual-fulfil the first Deep Readings. Goal: first 100 emails, first 10 sales — validates price & message.
-- **Phase 2 — Compound (months 2–6):** consistent content cadence, SEO maturing, Pinterest flywheel; migrate host + automate delivery; launch the £3.49 Cosmic Weather subscription to the warm email list.
+- **Phase 2 — Compound (months 2–6):** consistent content cadence, SEO maturing, Pinterest flywheel; migrate host + automate delivery; launch the £2.49 Cosmic Weather subscription to the warm email list.
 - **Phase 3 — Scale (6mo+):** PWA → app-store wrappers; paid TikTok/IG once a product converts; B2B engine-API licensing; localisation.
 
 **Honest sequencing:** don't pour money into ads before one organic product converts. The order is *free tool → audience → first organic sales → automate → then amplify*. The unfair advantages — real accuracy, privacy, auto-generated artifacts + content — are all already built.

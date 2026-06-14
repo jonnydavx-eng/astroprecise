@@ -255,7 +255,7 @@
   function renderReading(data, idx, name, el) {
     var AP = window.AP_MON || {};
     var url = AP.saturnReturnUrl || '';
-    var price = AP.saturnReturnPrice || '£0.49';
+    var price = AP.saturnReturnPrice || '£0.19';
     var unlocked = false;
     try {
       if (new URLSearchParams(location.search).get('unlocked') === '1') localStorage.setItem('ap_saturn_unlocked', '1');
