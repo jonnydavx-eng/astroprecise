@@ -875,6 +875,7 @@ window.AP_MON = Object.assign({
     products: [
       {
         id:           'natal-poster',
+        available:    false,   // dormant — physical print needs a Gelato/Etsy listing (see launch brief)
         name:         'Your Natal Sky — Art Poster',
         type:         'print',
         collection:   'onYourWall',
@@ -887,6 +888,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'sky-tee',
+        available:    false,   // dormant — no apparel art generator / POD yet
         name:         'Your Sky — Tee',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -899,6 +901,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'sky-hoodie',
+        available:    false,   // dormant — no apparel art generator / POD yet
         name:         'Your Sky — Heavyweight Hoodie',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -911,6 +914,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'big-three-print',
+        available:    false,   // dormant — needs print art + POD listing
         name:         'Big Three — Mini Print',
         type:         'print',
         collection:   'onYourWall',
@@ -923,6 +927,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'constellation-mug',
+        available:    false,   // dormant — needs art + POD listing
         name:         'Your Star Map — Mug',
         type:         'accessory',
         collection:   'wearYourSky',
@@ -947,6 +952,8 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'year-ahead',
+        available:    false,   // BLOCKED — engine is natal-only, no transit module
+
         name:         'Your Year Ahead — Transit Report',
         type:         'digital',
         collection:   'theReading',
@@ -985,6 +992,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'solar-return',
+        available:    false,   // dormant — free finder ships, but no paid solar-return PDF module
         name:         'Solar Return — Your Birthday Year',
         type:         'digital',
         collection:   'theReading',
@@ -998,6 +1006,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'gift-reading',
+        available:    false,   // dormant — needs a voucher/redemption flow (none today)
         name:         'Gift a Reading',
         type:         'digital',
         collection:   'gifts',
@@ -1011,6 +1020,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'gift-box-whole-sky',
+        available:    false,   // dormant — voucher flow + physical pipeline not built
         name:         'The Whole Sky — Gift Box',
         type:         'print',
         collection:   'gifts',
@@ -1024,6 +1034,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'two-skies-map',
+        available:    false,   // dormant — couples 2-up export not built yet (Step 3 of launch brief)
         name:         'Two Skies — Couples Star Map',
         type:         'print',
         collection:   'gifts',
@@ -1367,7 +1378,7 @@ if ('serviceWorker' in navigator) {
       '<p style="font-size:0.8rem;color:var(--silver,#C8D0E8);margin:0 0 8px;letter-spacing:0.02em;">Your sky, in your inbox — a little cosmic weather, now and then.</p>'
       + '<form class="ap-footer-signup__form" novalidate style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">'
       + '<input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" '
-      + 'style="flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,rgba(168, 158, 136,0.2));background:rgba(9,11,22,0.6);color:#fff;font-size:0.82rem;">'
+      + 'style="flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,rgba(168, 158, 136,0.2));background:rgba(13, 10, 7,0.6);color:#fff;font-size:0.82rem;">'
       + '<button type="submit" style="padding:9px 16px;border-radius:10px;border:1px solid var(--gold,#C9A227);background:rgba(201,162,39,0.14);color:var(--gold,#C9A227);font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">&#10022; Subscribe</button>'
       + '</form>'
       + '<p class="ap-footer-signup__msg" role="status" aria-live="polite" style="font-size:0.62rem;color:var(--silver-dim,#8891AA);margin:8px 0 0;line-height:1.6;">' + window.AP_COPY.privacyMicro + '</p>';

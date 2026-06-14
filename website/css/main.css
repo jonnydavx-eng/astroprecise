@@ -36,6 +36,16 @@
   --glow-oxblood: rgba(176, 74, 82, 0.10);
   --shimmer-line: linear-gradient(90deg, transparent, rgba(201,162,39,0.55), rgba(176,74,82,0.30), transparent);
 
+  /* ── Continuity tokens — depth-by-light, not depth-by-outline ──
+     Surfaces are translucent so the one warm sky shows through; edges are a
+     faint rim catching light, not a hard frame; shadows are soft, not floaty. */
+  --hairline:       rgba(232, 224, 208, 0.08);
+  --rim-light:      inset 0 1px 0 rgba(232, 224, 208, 0.08);
+  --shadow-raised:  0 1px 2px rgba(0,0,0,0.16), 0 10px 30px rgba(0,0,0,0.16);
+  --shadow-overlay: 0 8px 32px rgba(0,0,0,0.34), 0 0 30px rgba(176,74,82,0.06);
+  --surface-raised: linear-gradient(158deg, rgba(20,16,10,0.52), rgba(13,10,7,0.64));
+  --surface-overlay: rgba(19,16,12,0.90);
+
   /* ── Primary ancient gold (preloader + Celestia match) ── */
   --gold:        #C9A227;      /* core engraved gold */
   --gold-light:  #EFE3C0;
@@ -145,7 +155,7 @@
 
   /* ── --color-* aliases used in page-level <style> blocks ── */
   --color-bg:            var(--bg);
-  --color-bg-2:          var(--bg-2);
+  --color-bg-2:          transparent;   /* section bands dissolve into the one sky (was a flat plate) */
   --color-bg-3:          var(--bg-3);
   --color-surface:       var(--surface);
   --color-surface-2:     var(--surface-2);
@@ -924,7 +934,7 @@ h1, h2, h3, h4, h5, h6 {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 80% at 50% 50%, transparent 30%, rgba(2, 2, 14, 0.7) 100%);
+  background: radial-gradient(ellipse 70% 80% at 50% 50%, transparent 30%, rgba(5, 4, 6, 0.7) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -1041,12 +1051,14 @@ h1, h2, h3, h4, h5, h6 {
    -------------------------------------------------------------------------- */
 .card,
 .glass-card {
-  background: linear-gradient(158deg, rgba(20,16,10,0.80), rgba(10,8,6,0.92));
-  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
-  box-shadow: inset 0 1px 0 rgba(232,224,208,0.05), 0 8px 28px rgba(0,0,0,0.45);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+  box-shadow: var(--rim-light), var(--shadow-raised);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
   position: relative;
   overflow: hidden;
 }
@@ -1095,9 +1107,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .card:hover,
 .glass-card:hover {
-  border-color: var(--border-2);
-  box-shadow: inset 0 1px 0 rgba(232,224,208,0.06), 0 16px 48px rgba(0,0,0,0.5), 0 0 36px var(--glow-gold);
-  transform: translateY(-4px);
+  border-color: var(--border);
+  box-shadow: var(--rim-light), var(--shadow-raised), 0 0 36px var(--glow-gold);
 }
 
 .card--flat:hover,
@@ -1442,13 +1453,14 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .feature-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
+  box-shadow: var(--rim-light), var(--shadow-raised);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
-  transition: all var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
   position: relative;
   overflow: hidden;
 }
@@ -1464,9 +1476,8 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .feature-card:hover {
-  border-color: rgba(201, 162, 39, 0.38);
-  box-shadow: 0 0 40px rgba(176, 74, 82, 0.14), 0 0 20px rgba(201, 162, 39, 0.1);
-  transform: translateY(-3px);
+  border-color: var(--border);
+  box-shadow: var(--rim-light), var(--shadow-raised), 0 0 40px rgba(176, 74, 82, 0.12), 0 0 20px rgba(201, 162, 39, 0.1);
 }
 
 .feature-card__icon {
@@ -1527,8 +1538,8 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .sign-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-xl);
   padding: var(--space-5) var(--space-4);
   -webkit-backdrop-filter: blur(16px);
@@ -1663,7 +1674,7 @@ body > .cosmos-solar-system { display: none !important; }
 .form-select,
 .form-textarea {
   width: 100%;
-  background: rgba(20, 12, 40, 0.75);
+  background: rgba(22, 17, 12, 0.75);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-3) var(--space-4);
@@ -1760,7 +1771,7 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .autocomplete-dropdown {
-  background: rgba(8, 8, 35, 0.98);
+  background: rgba(19, 16, 12, 0.98);
   border: 1px solid var(--border-glow);
   border-radius: var(--radius-lg);
   position: absolute;
@@ -1851,7 +1862,7 @@ body > .cosmos-solar-system { display: none !important; }
   left: var(--space-8);
   right: var(--space-8);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(154, 111, 176, 0.5), transparent);
 }
 
 .natal-wheel-container {
@@ -1982,7 +1993,7 @@ body > .cosmos-solar-system { display: none !important; }
   padding-right: var(--space-4);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
-  background: rgba(8, 8, 35, 0.6);
+  background: rgba(19, 16, 12, 0.6);
 }
 
 .data-table td {
@@ -2423,7 +2434,7 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .toast {
-  background: rgba(8, 8, 35, 0.95);
+  background: rgba(19, 16, 12, 0.95);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-lg);
   -webkit-backdrop-filter: blur(20px);
@@ -2792,7 +2803,7 @@ body > .cosmos-solar-system { display: none !important; }
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(2, 2, 14, 0.85);
+  background: rgba(5, 4, 6, 0.85);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   z-index: 200;
@@ -2809,7 +2820,7 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .modal {
-  background: rgba(8, 8, 35, 0.97);
+  background: rgba(19, 16, 12, 0.97);
   border: 1px solid var(--border-glow);
   border-radius: var(--radius-2xl);
   -webkit-backdrop-filter: blur(24px);
@@ -3081,7 +3092,7 @@ body > .cosmos-solar-system { display: none !important; }
   bottom: calc(100% + var(--space-2));
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(8, 8, 35, 0.97);
+  background: rgba(19, 16, 12, 0.97);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-md);
   padding: var(--space-2) var(--space-3);
@@ -3126,8 +3137,8 @@ body > .cosmos-solar-system { display: none !important; }
 .planet-icon--jupiter { background: rgba(180, 120, 60, 0.1);  border-color: rgba(180, 120, 60, 0.25); }
 .planet-icon--saturn  { background: rgba(212, 175, 116, 0.1); border-color: rgba(212, 175, 116, 0.25); }
 .planet-icon--uranus  { background: rgba(95, 163, 154, 0.1);  border-color: rgba(95, 163, 154, 0.25); }
-.planet-icon--neptune { background: rgba(99, 102, 241, 0.1);  border-color: rgba(99, 102, 241, 0.25); }
-.planet-icon--pluto   { background: rgba(139, 92, 246, 0.1);  border-color: rgba(139, 92, 246, 0.25); }
+.planet-icon--neptune { background: rgba(126, 107, 176, 0.1);  border-color: rgba(126, 107, 176, 0.25); }
+.planet-icon--pluto   { background: rgba(154, 111, 176, 0.1);  border-color: rgba(154, 111, 176, 0.25); }
 
 /* Element color indicators */
 .element-dot {
@@ -3282,7 +3293,7 @@ body > .cosmos-solar-system { display: none !important; }
   left: var(--space-8);
   right: var(--space-8);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(154, 111, 176, 0.6), transparent);
 }
 
 .birthchart-results {
@@ -3293,7 +3304,7 @@ body > .cosmos-solar-system { display: none !important; }
 
 /* Sun sign highlight card */
 .sun-sign-card {
-  background: linear-gradient(135deg, rgba(92, 74, 110, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(92, 74, 110, 0.15) 0%, rgba(126, 107, 176, 0.1) 100%);
   border: 1px solid rgba(92, 74, 110, 0.3);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
@@ -3495,8 +3506,8 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .alert--info {
-  background: rgba(99, 102, 241, 0.1);
-  border-color: rgba(99, 102, 241, 0.25);
+  background: rgba(126, 107, 176, 0.1);
+  border-color: rgba(126, 107, 176, 0.25);
   color: #a5b4fc;
 }
 
@@ -4238,7 +4249,7 @@ body > .cosmos-solar-system { display: none !important; }
   left: var(--space-8);
   right: var(--space-8);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(154, 111, 176, 0.4), transparent);
 }
 
 .testimonial-card--featured {
@@ -4414,7 +4425,7 @@ body > .cosmos-solar-system { display: none !important; }
    52. Newsletter
    ========================================================================== */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(92, 74, 110, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(92, 74, 110, 0.08) 0%, rgba(126, 107, 176, 0.06) 100%);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -5361,7 +5372,7 @@ body::before {
 
 .sign-reading-panel[data-element] .sign-reading-panel__inner {
   border-color: var(--el-border, rgba(201,162,39,0.28));
-  background: linear-gradient(160deg, var(--el-bg, transparent) 0%, rgba(9,11,22,0.96) 55%);
+  background: linear-gradient(160deg, var(--el-bg, transparent) 0%, rgba(13, 10, 7,0.96) 55%);
 }
 
 .sign-reading-panel[data-element] .reading-card {
@@ -5519,19 +5530,19 @@ body::before {
 .sign-card {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  background: linear-gradient(145deg, rgba(20, 16, 10,0.72) 0%, rgba(13, 10, 7,0.88) 100%);
+  background: var(--surface-raised);
+  box-shadow: var(--rim-light), var(--shadow-raised);
   transition:
     border-color var(--transition-base),
     background   var(--transition-base),
-    transform    0.18s var(--ease-spring),
     box-shadow   0.2s ease;
 }
 .sign-card:hover {
-  background: linear-gradient(145deg, rgba(28, 22, 14,0.88) 0%, rgba(20, 16, 10,0.95) 100%);
-  transform: translateY(-3px) scale(1.01);
+  background: linear-gradient(145deg, rgba(28, 22, 14,0.60) 0%, rgba(20, 16, 10,0.70) 100%);
+  box-shadow: var(--rim-light), var(--shadow-raised), 0 0 30px var(--glow-gold);
 }
 .sign-card:active {
-  transform: translateY(-1px) scale(0.99);
+  transform: scale(0.99);
   transition-duration: 0.08s;
 }
 
@@ -5568,7 +5579,7 @@ body::before {
   line-height: 1;
 }
 .compat-orb--1 .compat-orb__core {
-  background: radial-gradient(circle at 35% 32%, rgba(91,127,199,0.3) 0%, rgba(176,74,82,0.55) 55%, rgba(9,11,22,0.8) 100%);
+  background: radial-gradient(circle at 35% 32%, rgba(91,127,199,0.3) 0%, rgba(176,74,82,0.55) 55%, rgba(13, 10, 7,0.8) 100%);
   border: 1px solid rgba(91,127,199,0.55);
   box-shadow:
     0 0 0 8px rgba(176,74,82,0.08),
@@ -5577,7 +5588,7 @@ body::before {
   animation: orb-breathe-1 5s ease-in-out infinite;
 }
 .compat-orb--2 .compat-orb__core {
-  background: radial-gradient(circle at 35% 32%, rgba(212,168,32,0.3) 0%, rgba(201,162,39,0.45) 55%, rgba(9,11,22,0.8) 100%);
+  background: radial-gradient(circle at 35% 32%, rgba(212,168,32,0.3) 0%, rgba(201,162,39,0.45) 55%, rgba(13, 10, 7,0.8) 100%);
   border: 1px solid rgba(201,162,39,0.55);
   box-shadow:
     0 0 0 8px rgba(201,162,39,0.07),
@@ -5827,7 +5838,7 @@ body[data-element="water"]::before {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold-pale);
-  background: linear-gradient(145deg, rgba(201,162,39,0.1) 0%, rgba(9,11,22,0.6) 100%);
+  background: linear-gradient(145deg, rgba(201,162,39,0.1) 0%, rgba(13, 10, 7,0.6) 100%);
   border: 1px solid rgba(201,162,39,0.3);
   border-radius: 999px;
   padding: 4px 12px;
@@ -5858,7 +5869,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   justify-content: center;
   gap: var(--space-4);
   padding: var(--space-3) var(--space-5);
-  background: rgba(9, 11, 22, 0.94);
+  background: rgba(13, 10, 7, 0.94);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-top: 1px solid rgba(201,162,39,0.35);
@@ -5902,7 +5913,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--emerald-light);
-  background: rgba(9, 11, 22, 0.9);
+  background: rgba(13, 10, 7, 0.9);
   border: 1px solid rgba(26, 138, 86, 0.4);
   border-radius: 999px;
   padding: 5px 13px;
@@ -5985,7 +5996,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   left: 0;
   right: 0;
   z-index: 8990;
-  background: rgba(9, 11, 22, 0.96);
+  background: rgba(13, 10, 7, 0.96);
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   border-top: 1px solid rgba(201,162,39,0.22);
@@ -6249,7 +6260,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 
 /* ── Improved navbar scrolled state ─────────────────────────────────────── */
 .navbar.scrolled {
-  box-shadow: 0 4px 24px rgba(9,11,22,0.7), 0 0 0 1px rgba(201,162,39,0.08);
+  box-shadow: 0 4px 24px rgba(13, 10, 7,0.7), 0 0 0 1px rgba(201,162,39,0.08);
 }
 
 /* ── Gradient text utility ───────────────────────────────────────────────── */

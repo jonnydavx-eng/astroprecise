@@ -236,11 +236,11 @@ window.AstroShop = (() => {
         return;
       }
 
-      // 3. On-site PayPal Buttons (advanced).
-      if (co.paypalClientId) {
-        this.paypalCheckout();
-        return;
-      }
+      // 3. On-site PayPal Buttons — HARD-DISABLED. GitHub Pages ToS prohibits
+      //    capturing payment on the github.io domain. Checkout must always link
+      //    OUT (externalStoreUrl / etsyUrl above, or a per-item Lemon Squeezy
+      //    fulfilUrl). Do NOT re-enable paypalCheckout() while hosted on Pages.
+      // if (co.paypalClientId) { this.paypalCheckout(); return; }
 
       // 4. DORMANT — honest pre-launch modal + email invite.
       this.dormantModal();
@@ -365,7 +365,10 @@ window.AstroShop = (() => {
       return;
     }
     const cols = collections();
-    const list = activeCollection === 'all' ? all : all.filter(p => p.collection === activeCollection);
+    // Honesty: never show a price / cart for a product we can't fulfil.
+    // Mark unbuildable SKUs `available:false` in AP_MON.commerce.products.
+    const sellable = all.filter(p => p.available !== false);
+    const list = activeCollection === 'all' ? sellable : sellable.filter(p => p.collection === activeCollection);
 
     grid.innerHTML = list.map(p => {
       const colName = cols[p.collection] ? cols[p.collection].name : '';
