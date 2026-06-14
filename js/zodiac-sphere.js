@@ -460,7 +460,7 @@
       const t = e.changedTouches[0];
       onRelease(t.clientX, t.clientY);
     }
-    setTimeout(() => { autoSpin = !hovered; }, 2200);
+    autoSpin = !hovered;
   };
 
   // ── Resize ────────────────────────────────────────────────────────────────

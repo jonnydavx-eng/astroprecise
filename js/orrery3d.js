@@ -210,17 +210,20 @@ window.Orrery3D = (() => {
       const pos = helioDisplay(p.id, jd);
       // Compute ecliptic longitude for sign
       let sign = '';
+      let lon = null;
       try {
         if (p.id === 'earth') {
           const sun = E.sunPosition(jd);
           // Earth's ecliptic lon = sun lon + 180
-          sign = lonToSign(sun.lon + 180);
+          lon = (sun.lon + 180) % 360;
+          sign = lonToSign(lon);
         } else {
           const g = E[p.id + 'Position'](jd);
-          sign = lonToSign(g.lon);
+          lon = g.lon;
+          sign = lonToSign(lon);
         }
       } catch (e) { /* optional */ }
-      return { ...p, pos, sign };
+      return { ...p, pos, sign, lon };
     });
 
     // Moon
@@ -232,6 +235,7 @@ window.Orrery3D = (() => {
         id: 'moon', name: 'Moon', glyph: '☽', size: 2.2,
         color: '#c8ccd8', hi: '#eef0f6', lo: '#6a6e7a',
         sign: lonToSign(m.lon),
+        lon: m.lon,
         interpretation: 'The Moon reflects the inner emotional world — instinct, memory, and the rhythms of feeling that ebb and flow beneath the surface.',
         pos: {
           x: earth.pos.x + dir.x * 0.16,
@@ -560,12 +564,9 @@ window.Orrery3D = (() => {
     for (let i = 0; i < projected.length; i++) {
       for (let j = i + 1; j < projected.length; j++) {
         const a = projected[i], b = projected[j];
-        if (!a.sign || !b.sign) continue;
-
-        // Compute ecliptic angle difference from sign indices
-        // Approximate: use sign midpoint degrees
-        const aDeg = SIGN_NAMES.indexOf(a.sign.split(' ')[1]) * 30 + 15;
-        const bDeg = SIGN_NAMES.indexOf(b.sign.split(' ')[1]) * 30 + 15;
+        if (a.lon == null || b.lon == null) continue;
+        const aDeg = a.lon;
+        const bDeg = b.lon;
         let diff = Math.abs(aDeg - bDeg);
         if (diff > 180) diff = 360 - diff;
 

@@ -217,6 +217,16 @@ import * as THREE from 'three';
       group.userData = { b, mesh, mat };
       scene.add(group);
 
+      // retrograde glow halo — warm red sprite, hidden until isRetrograde fires
+      const retroTex = makeGlowTexture('rgba(255,70,20,0.7)', 'rgba(200,40,0,0.0)');
+      const retroSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: retroTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
+      const retroBaseScale = b.size * 3.5;
+      retroSprite.scale.set(retroBaseScale, retroBaseScale, 1);
+      retroSprite.visible = false;
+      retroSprite.userData.baseScale = retroBaseScale;
+      group.add(retroSprite);
+      group.userData.retroSprite = retroSprite;
+
       // textures load async; swap in when ready (no blank-hero blocking)
       loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
 
@@ -341,6 +351,27 @@ import * as THREE from 'three';
       if (onScrub) { try { onScrub(baseJd + dayOffset); } catch (e) {} }
     }
 
+    // retrograde glow: update visibility + pulse breathing animation each frame
+    try {
+      const E = window.AstroEphemeris;
+      if (E && E.isRetrograde) {
+        const jd = baseJd + dayOffset;
+        const pulse = Math.sin(t * 0.002) * 0.15 + 1.0;
+        BODIES.forEach((b) => {
+          if (b.id === 'earth') return;
+          const sprite = meshes[b.id].userData.retroSprite;
+          if (!sprite) return;
+          let isRetro = false;
+          try { isRetro = !!E.isRetrograde(b.id, jd); } catch (e) {}
+          sprite.visible = isRetro;
+          if (isRetro) {
+            const s = sprite.userData.baseScale * pulse;
+            sprite.scale.set(s, s, 1);
+          }
+        });
+      }
+    } catch (e) { /* retrograde glow is optional */ }
+
     // self-rotation (liveliness)
     if (!PRM) {
       BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
@@ -386,6 +417,28 @@ import * as THREE from 'three';
     const str = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
     const tag = Math.abs(dayOffset) < 0.5 ? ' · now' : (dayOffset > 0 ? ` · +${Math.round(dayOffset)}d` : ` · ${Math.round(dayOffset)}d`);
     el.textContent = str + tag;
+
+    try {
+      const E = window.AstroEphemeris;
+      const jd = baseJd + dayOffset;
+      const sunLon = E.sunPosition(jd).lon;
+      const moonLon = E.moonPosition(jd).lon;
+      const phase = ((moonLon - sunLon) % 360 + 360) % 360;
+      const PHASES = [
+        [0,   '● New'],
+        [45,  '◑ Crescent'],
+        [90,  '◑ Quarter'],
+        [135, '◕ Gibbous'],
+        [180, '○ Full'],
+        [225, '◕ Gibbous'],
+        [270, '◐ Quarter'],
+        [315, '◐ Crescent'],
+        [360, '● New'],
+      ];
+      const phaseLabel = PHASES.find((_, i) => phase < PHASES[i + 1][0])?.[1] || '● New';
+      const moonEl = document.getElementById('orrery-moon-phase');
+      if (moonEl) moonEl.textContent = phaseLabel;
+    } catch (e) { /* moon phase is optional */ }
   }
 
   // ── Sizing / observers ─────────────────────────────────────────────────────
@@ -491,7 +544,7 @@ import * as THREE from 'three';
     if (!canvasEl || !window.AstroEphemeris) return;
     canvas = canvasEl; wrap = canvas.parentElement;
 
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
     renderer.setClearColor(0x000000, 0);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);

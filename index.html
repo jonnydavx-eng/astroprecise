@@ -1903,6 +1903,8 @@
             <button class="orrery-btn" data-speed="30" id="orrery-30x" aria-label="30× speed">30×</button>
             <button class="orrery-btn" data-speed="365" id="orrery-365x" aria-label="1 year per second">Year</button>
             <span class="orrery-date" id="orrery-date-display" aria-live="polite" aria-label="Current date in the orrery"></span>
+            <span id="orrery-moon-phase" aria-live="polite" style="font-size:0.72rem;color:rgba(201,162,39,0.72);letter-spacing:0.04em;padding-left:0.5rem;white-space:nowrap;"></span>
+            <button class="orrery-btn" id="orrery-capture" aria-label="Capture the current sky as an image" style="margin-left:auto;">Capture</button>
           </div>
 
           <!-- Prominent, beautiful timeline scrubber – the primary way users interact with time -->
@@ -2718,6 +2720,52 @@
         if (typeof Orrery3D.setShowAsteroids === 'function') Orrery3D.setShowAsteroids(state.asteroids);
         if (typeof Orrery3D.setShowParticles === 'function') Orrery3D.setShowParticles(false);
       })();
+    })();
+
+    /* ── 6a. Capture Sky button ─────────────────────────────────────────── */
+    (function() {
+      var btn = document.getElementById('orrery-capture');
+      if (!btn) return;
+      btn.addEventListener('click', function() {
+        var oc = document.getElementById('orrery-canvas');
+        if (!oc) return;
+        var W = oc.width, H = oc.height;
+        var off = document.createElement('canvas');
+        off.width = W; off.height = H;
+        var ctx = off.getContext('2d');
+        ctx.fillStyle = '#050406';
+        ctx.fillRect(0, 0, W, H);
+        try { ctx.drawImage(oc, 0, 0); } catch(e) { return; }
+        var fs = Math.max(11, Math.round(H * 0.022));
+        ctx.font = '600 ' + fs + 'px Cinzel, serif';
+        ctx.fillStyle = 'rgba(201,162,39,0.55)';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('AstroPrecise', W - 14, H - 10);
+        var dateEl = document.getElementById('orrery-date-display');
+        var dateStr = dateEl ? dateEl.textContent.trim() : '';
+        if (dateStr) {
+          ctx.font = '400 ' + Math.max(9, Math.round(H * 0.016)) + 'px Cinzel, serif';
+          ctx.fillStyle = 'rgba(201,162,39,0.4)';
+          ctx.fillText(dateStr, W - 14, H - 10 - fs - 4);
+        }
+        off.toBlob(function(blob) {
+          var slug = (dateStr || 'now').replace(/[^a-z0-9]/gi, '-').toLowerCase();
+          var fname = 'sky-' + slug + '.jpg';
+          var file = new File([blob], fname, { type: 'image/jpeg' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], title: 'My Sky — AstroPrecise', text: 'The living sky · ' + dateStr }).catch(function(){});
+          } else {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fname;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+          }
+        }, 'image/jpeg', 0.93);
+      });
     })();
 
     /* ── 6. Orrery planet click → info panel ───────────────────────────── */
