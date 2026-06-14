@@ -1021,41 +1021,235 @@
           (3rem on mobile) cadence across the whole page. ── */
     :root { --section-pad-y: var(--space-16); }
     @media (max-width: 640px) { :root { --section-pad-y: var(--space-12); } }
-    /* Grok zodiac glyph banner — all 12 signs */
-    .zodiac-glyphs-band {
-      padding: var(--space-8) var(--space-4) var(--space-4);
+    /* Homepage sign card picker */
+    .home-sign-picker {
+      padding: var(--space-10) 0 var(--space-6);
       position: relative;
       z-index: 1;
     }
-    .zodiac-glyphs-band__link {
-      display: block;
-      max-width: 920px;
-      margin: 0 auto;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(201, 162, 39, 0.22);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 0 32px rgba(201, 162, 39, 0.06);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
-    }
-    .zodiac-glyphs-band__link:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 56px rgba(0, 0, 0, 0.5), 0 0 40px rgba(201, 162, 39, 0.12);
-    }
-    .zodiac-glyphs-band__link img {
-      width: 100%;
-      display: block;
-      filter: sepia(0.1) brightness(0.94);
-    }
-    .zodiac-glyphs-band__caption {
+    .home-sign-picker__header {
       text-align: center;
-      margin-top: var(--space-3);
+      max-width: 36rem;
+      margin: 0 auto var(--space-6);
+      padding: 0 var(--space-4);
+    }
+    .home-sign-picker__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      color: var(--color-white);
+      margin-bottom: var(--space-2);
+    }
+    .home-sign-picker__sub {
+      font-size: 0.9rem;
+      color: var(--silver-dim);
+      line-height: 1.55;
+    }
+    .home-sign-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: center;
+      margin-bottom: var(--space-5);
+      padding: 0 var(--space-4);
+    }
+    .home-sign-filter {
+      font-family: var(--font-body);
       font-size: 0.62rem;
+      font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      background: rgba(12, 10, 8, 0.45);
       color: var(--silver-dim);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
     }
-    .zodiac-glyphs-band__caption a { color: var(--gold-hero); text-decoration: none; }
-    .zodiac-glyphs-band__caption a:hover { text-decoration: underline; }
+    .home-sign-filter:hover,
+    .home-sign-filter.is-active {
+      border-color: rgba(201, 162, 39, 0.55);
+      color: var(--gold-hero);
+      background: rgba(201, 162, 39, 0.08);
+    }
+    .home-sign-scroll {
+      display: flex;
+      gap: 0.7rem;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      padding: 0.25rem var(--space-4) var(--space-4);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .home-sign-scroll::-webkit-scrollbar { display: none; }
+    @media (min-width: 768px) {
+      .home-sign-scroll {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.85rem;
+        overflow: visible;
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 var(--space-4);
+      }
+    }
+    @media (min-width: 1024px) {
+      .home-sign-scroll { grid-template-columns: repeat(6, 1fr); }
+    }
+    .home-sign-card {
+      flex: 0 0 min(38vw, 132px);
+      scroll-snap-align: center;
+      aspect-ratio: 2 / 3;
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      border-radius: 14px;
+      padding: 0 0 0.75rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.15rem;
+      text-align: center;
+      background: #0d0a07 center top / cover no-repeat;
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s, border-color 0.22s;
+    }
+    .home-sign-card.is-filtered-out { display: none; }
+    .home-sign-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5, 4, 6, 0.9) 0%, rgba(5, 4, 6, 0.5) 32%, transparent 68%);
+      pointer-events: none;
+      border-radius: inherit;
+      z-index: 1;
+    }
+    .home-sign-card:hover,
+    .home-sign-card:focus-visible {
+      transform: translateY(-4px) scale(1.02);
+      border-color: rgba(201, 162, 39, 0.55);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(201, 162, 39, 0.14);
+    }
+    .home-sign-card.is-active {
+      border-color: #c9a227;
+      box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.45), 0 0 28px rgba(201, 162, 39, 0.2);
+    }
+    .home-sign-card[data-sign="aries"]       { background-image: url('assets/images/zodiac-cards/aries.jpg'); }
+    .home-sign-card[data-sign="taurus"]      { background-image: url('assets/images/zodiac-cards/taurus.jpg'); }
+    .home-sign-card[data-sign="gemini"]      { background-image: url('assets/images/zodiac-cards/gemini.jpg'); }
+    .home-sign-card[data-sign="cancer"]      { background-image: url('assets/images/zodiac-cards/cancer.jpg'); }
+    .home-sign-card[data-sign="leo"]         { background-image: url('assets/images/zodiac-cards/leo.jpg'); }
+    .home-sign-card[data-sign="virgo"]       { background-image: url('assets/images/zodiac-cards/virgo.jpg'); }
+    .home-sign-card[data-sign="libra"]       { background-image: url('assets/images/zodiac-cards/libra.jpg'); }
+    .home-sign-card[data-sign="scorpio"]     { background-image: url('assets/images/zodiac-cards/scorpio.jpg'); }
+    .home-sign-card[data-sign="sagittarius"] { background-image: url('assets/images/zodiac-cards/sagittarius.jpg'); }
+    .home-sign-card[data-sign="capricorn"]   { background-image: url('assets/images/zodiac-cards/capricorn.jpg'); }
+    .home-sign-card[data-sign="aquarius"]    { background-image: url('assets/images/zodiac-cards/aquarius.jpg'); }
+    .home-sign-card[data-sign="pisces"]      { background-image: url('assets/images/zodiac-cards/pisces.jpg'); }
+    .home-sign-card__name {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #efe3c0;
+      letter-spacing: 0.05em;
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.85);
+    }
+    .home-sign-card__dates {
+      position: relative;
+      z-index: 2;
+      font-size: 0.52rem;
+      color: rgba(201, 162, 39, 0.78);
+      letter-spacing: 0.03em;
+    }
+    .home-sign-card__badge {
+      position: absolute;
+      top: 0.45rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      font-size: 0.48rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(201, 162, 39, 0.92);
+      color: #0d0a07;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .home-sign-preview {
+      max-width: 720px;
+      margin: var(--space-4) auto 0;
+      padding: var(--space-5);
+      border-radius: 18px;
+      border: 1px solid rgba(201, 162, 39, 0.28);
+      background: rgba(12, 10, 8, 0.62);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    }
+    .home-sign-preview[hidden] { display: none !important; }
+    .home-sign-preview__inner {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-4);
+      align-items: start;
+    }
+    @media (max-width: 520px) {
+      .home-sign-preview__inner { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    }
+    .home-sign-preview__thumb {
+      width: 72px;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(201, 162, 39, 0.35);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    .home-sign-preview__name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--color-white);
+      margin: 0 0 0.2rem;
+    }
+    .home-sign-preview__meta {
+      font-size: 0.68rem;
+      color: var(--silver-dim);
+      margin-bottom: var(--space-3);
+    }
+    .home-sign-preview__element {
+      display: inline-block;
+      margin-left: 0.5rem;
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: 999px;
+      padding: 1px 7px;
+    }
+    .home-sign-preview__overview {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--color-silver);
+      margin: 0 0 var(--space-4);
+    }
+    .home-sign-preview__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.75rem;
+      align-items: center;
+    }
+    .home-sign-preview__hint {
+      text-align: center;
+      margin-top: var(--space-3);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(168, 158, 136, 0.75);
+    }
 
     .features-section {
       padding: var(--section-pad-y) 0;
@@ -2349,12 +2543,49 @@
       </div>
     </section>
 
-    <section class="zodiac-glyphs-band" aria-label="All twelve zodiac signs">
+    <section class="home-sign-picker" id="home-sign-picker" aria-labelledby="home-sign-heading">
       <div class="container">
-        <a href="horoscope.html" class="zodiac-glyphs-band__link" aria-label="Open daily horoscope for all twelve signs">
-          <img src="img/zodiac-glyphs-all.jpg" alt="All twelve zodiac signs in gold line art" width="1024" height="768" loading="lazy" decoding="async" />
-        </a>
-        <p class="zodiac-glyphs-band__caption">Twelve signs &middot; tap to spin the ring on <a href="horoscope.html">Daily Horoscope</a></p>
+        <header class="home-sign-picker__header">
+          <p class="section-eyebrow">Daily horoscope</p>
+          <h2 class="home-sign-picker__title" id="home-sign-heading">Choose your sign</h2>
+          <p class="home-sign-picker__sub">Premium 3D cards &middot; tap once for today&rsquo;s preview, tap again for the full reading on the horoscope page.</p>
+        </header>
+        <div class="home-sign-filters" role="group" aria-label="Filter by element">
+          <button type="button" class="home-sign-filter is-active" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="home-sign-filter" data-filter="fire" aria-pressed="false">Fire</button>
+          <button type="button" class="home-sign-filter" data-filter="earth" aria-pressed="false">Earth</button>
+          <button type="button" class="home-sign-filter" data-filter="air" aria-pressed="false">Air</button>
+          <button type="button" class="home-sign-filter" data-filter="water" aria-pressed="false">Water</button>
+        </div>
+        <div class="home-sign-scroll" id="home-sign-grid" role="list" aria-label="Zodiac sign cards">
+          <button type="button" class="home-sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Aries</span><span class="home-sign-card__dates">Mar 21 – Apr 19</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="taurus" data-element="earth" aria-label="Taurus daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Taurus</span><span class="home-sign-card__dates">Apr 20 – May 20</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="gemini" data-element="air" aria-label="Gemini daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Gemini</span><span class="home-sign-card__dates">May 21 – Jun 20</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="cancer" data-element="water" aria-label="Cancer daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Cancer</span><span class="home-sign-card__dates">Jun 21 – Jul 22</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="leo" data-element="fire" aria-label="Leo daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Leo</span><span class="home-sign-card__dates">Jul 23 – Aug 22</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="virgo" data-element="earth" aria-label="Virgo daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Virgo</span><span class="home-sign-card__dates">Aug 23 – Sep 22</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="libra" data-element="air" aria-label="Libra daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Libra</span><span class="home-sign-card__dates">Sep 23 – Oct 22</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="scorpio" data-element="water" aria-label="Scorpio daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Scorpio</span><span class="home-sign-card__dates">Oct 23 – Nov 21</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Sagittarius</span><span class="home-sign-card__dates">Nov 22 – Dec 21</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="capricorn" data-element="earth" aria-label="Capricorn daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Capricorn</span><span class="home-sign-card__dates">Dec 22 – Jan 19</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="aquarius" data-element="air" aria-label="Aquarius daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Aquarius</span><span class="home-sign-card__dates">Jan 20 – Feb 18</span></button>
+          <button type="button" class="home-sign-card" role="listitem" data-sign="pisces" data-element="water" aria-label="Pisces daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Pisces</span><span class="home-sign-card__dates">Feb 19 – Mar 20</span></button>
+        </div>
+        <div class="home-sign-preview" id="home-sign-preview" hidden aria-live="polite">
+          <div class="home-sign-preview__inner">
+            <img class="home-sign-preview__thumb" id="hsp-thumb" src="assets/images/zodiac-cards/aries.jpg" alt="" width="72" height="108" decoding="async" />
+            <div>
+              <h3 class="home-sign-preview__name" id="hsp-name">Aries</h3>
+              <p class="home-sign-preview__meta"><span id="hsp-date"></span><span class="home-sign-preview__element" id="hsp-element"></span></p>
+              <p class="home-sign-preview__overview" id="hsp-overview"></p>
+              <div class="home-sign-preview__actions">
+                <a href="horoscope.html" class="btn btn--gold btn--sm" id="hsp-full">Read full horoscope &rarr;</a>
+                <a href="aries.html" class="btn btn--ghost btn--sm" id="hsp-guide">Sign guide</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="home-sign-preview__hint">Same sign + same day = same reading &middot; computed from live transits</p>
       </div>
     </section>
 
@@ -2908,6 +3139,8 @@
   <script src="js/oracle.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/journey.js"></script>
+  <script src="js/sign-daily.js"></script>
+  <script src="js/home-sign-picker.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>

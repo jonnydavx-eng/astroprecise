@@ -359,6 +359,11 @@
       border-color: rgba(201, 162, 39, 0.6);
       box-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,162,39,0.3),
                   0 0 28px rgba(201,162,39,0.18);
+      outline: none;
+    }
+    .sign-card:focus-visible {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 0 0 2px rgba(201,162,39,0.65),
+                  0 0 28px rgba(201,162,39,0.22);
     }
     .sign-card:hover::before, .sign-card:focus-visible::before {
       opacity: 0.75;
@@ -978,13 +983,13 @@
     <section class="section" aria-labelledby="sign-grid-heading">
       <div class="container">
         <div class="sign-grid-toggle-row">
-          <h2 class="section__title" id="sign-grid-heading">All Signs</h2>
-          <button class="sign-grid-toggle" id="sign-grid-toggle" aria-expanded="false" aria-controls="sign-grid-wrap">
-            <span class="sgt-show">▾ Show sign grid</span>
-            <span class="sgt-hide" style="display:none">▴ Hide sign grid</span>
+          <h2 class="section__title" id="sign-grid-heading">Pick your sign</h2>
+          <button class="sign-grid-toggle" id="sign-grid-toggle" aria-expanded="true" aria-controls="sign-grid-wrap">
+            <span class="sgt-show" style="display:none">▾ Show sign grid</span>
+            <span class="sgt-hide">▴ Hide sign grid</span>
           </button>
         </div>
-        <div id="sign-grid-wrap" hidden>
+        <div id="sign-grid-wrap">
 
         <div class="sign-glyphs-banner" aria-hidden="true">
           <img src="img/zodiac-glyphs-all.jpg" alt="" width="1024" height="768" loading="lazy" decoding="async" />
