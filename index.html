@@ -2344,8 +2344,8 @@
     #preloader.aligned #preloader-enter,#preloader.aligned #preloader-tagline{opacity:1;transform:none;pointer-events:auto;}
     #preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease;}
     #preloader.gate-open .apl-live-orr,#preloader.gate-open .apl-live-orr canvas{pointer-events:none !important;}
-    .preloader-email-gate{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s ease;}
-    .preloader-email-gate.is-open{display:flex;opacity:1;visibility:visible;pointer-events:auto;}
+    .preloader-email-gate{position:absolute;inset:0;z-index:20;display:none !important;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none !important;transition:opacity .35s ease,visibility .35s ease;}
+    .preloader-email-gate.is-open{display:flex !important;opacity:1;visibility:visible;pointer-events:auto !important;}
     .preloader-email-gate__backdrop{position:absolute;inset:0;z-index:0;background:rgba(4,3,6,0.52);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer;}
     .preloader-email-gate__panel{position:relative;z-index:1;width:min(22rem,92vw);padding:22px 20px 18px;border-radius:18px;border:1px solid rgba(201,162,39,0.38);background:linear-gradient(165deg,rgba(18,14,10,0.94),rgba(8,6,5,0.97));box-shadow:0 18px 48px rgba(0,0,0,0.55),0 0 32px rgba(201,162,39,0.12);text-align:center;color:#E8E0D0;transform:translateY(12px) scale(0.97);transition:transform .45s cubic-bezier(0.22,1,0.36,1);pointer-events:auto;}
     .preloader-email-gate.is-open .preloader-email-gate__panel{transform:none;}
@@ -2408,6 +2408,7 @@
     try { introSeen = sessionStorage.getItem('ap_intro_complete') === '1'; } catch (e) {}
     if (introSeen) {
       pre.style.display = 'none';
+      document.body.classList.remove('preloader-active');
       window.__apHeroEntered = true;
       function skipEnter() {
         if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
@@ -2540,6 +2541,10 @@
     var gateSkip = document.getElementById('preloader-gate-skip');
     var gateJoin = document.getElementById('preloader-gate-join');
     var gateOpen = false;
+    if (gateEl) {
+      gateEl.classList.remove('is-open');
+      gateEl.setAttribute('aria-hidden', 'true');
+    }
 
     function captureIntroEmail() {
       var inp = document.getElementById('preloader-gate-email');
@@ -2576,33 +2581,32 @@
       pre.classList.add('gate-open');
       gateEl.setAttribute('aria-hidden', 'false');
       gateEl.classList.add('is-open');
-      var emailInp = document.getElementById('preloader-gate-email');
-      if (emailInp) setTimeout(function () { try { emailInp.focus({ preventScroll: true }); } catch (e) { emailInp.focus(); } }, 80);
     }
 
     function onGateAction(ev, andCapture) {
-      ev.preventDefault();
-      ev.stopPropagation();
+      if (ev) { ev.preventDefault(); ev.stopPropagation(); }
       dismissEmailGate(andCapture);
     }
 
     function wireEmailGate() {
       if (!gateEl || gateEl.dataset.wired) return;
       gateEl.dataset.wired = '1';
-      if (gateClose) {
-        gateClose.addEventListener('click', function (ev) { onGateAction(ev, false); });
-        gateClose.addEventListener('pointerup', function (ev) { onGateAction(ev, false); });
-      }
-      if (gateSkip) {
-        gateSkip.addEventListener('click', function (ev) { onGateAction(ev, false); });
-      }
-      if (gateJoin) {
-        gateJoin.addEventListener('click', function (ev) { onGateAction(ev, true); });
-      }
-      var backdrop = gateEl.querySelector('.preloader-email-gate__backdrop');
-      if (backdrop) {
-        backdrop.addEventListener('click', function (ev) { onGateAction(ev, false); });
-      }
+      pre.addEventListener('click', function (ev) {
+        if (!gateOpen || preDone) return;
+        var t = ev.target;
+        if (!t) return;
+        if (t.id === 'preloader-gate-close' || t.id === 'preloader-gate-skip') {
+          onGateAction(ev, false);
+          return;
+        }
+        if (t.id === 'preloader-gate-join') {
+          onGateAction(ev, true);
+          return;
+        }
+        if (t.classList && t.classList.contains('preloader-email-gate__backdrop')) {
+          onGateAction(ev, false);
+        }
+      }, true);
       var emailInp = document.getElementById('preloader-gate-email');
       if (emailInp) {
         emailInp.addEventListener('keydown', function (ev) {
@@ -2615,6 +2619,12 @@
       });
     }
     wireEmailGate();
+    window.addEventListener('pageshow', function (ev) {
+      if (!ev.persisted || !gateEl) return;
+      gateEl.classList.remove('is-open');
+      gateOpen = false;
+      pre.classList.remove('gate-open');
+    });
 
     function revealEnter() {
       pre.classList.add('aligned');   // CSS fades Enter + tagline in, fades the progress bar out
