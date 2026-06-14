@@ -1,6 +1,10 @@
 # Local agent coordination — machine-specific, stays out of the public repo
 AGENT-HANDOFF.md
 
+# Secrets (Cloudflare API token, etc.)
+secrets/.env.local
+.env.local
+
 # Android / Gradle
 .gradle/
 build/
