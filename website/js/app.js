@@ -69,6 +69,7 @@ const AstroApp = (() => {
 
     if (toggle && mobile) {
       toggle.addEventListener('click', () => {
+        closeMoreMenus();
         const isOpen = mobile.classList.toggle('open');
         toggle.classList.toggle('open', isOpen);
         toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -78,7 +79,9 @@ const AstroApp = (() => {
       });
 
       mobile.addEventListener('click', (e) => {
-        if (e.target.closest('a.navbar__link')) closeNavDrawer();
+        if (e.target.closest('a.navbar__link') || e.target.closest('.ap-nav-updates-mobile')) {
+          closeNavDrawer();
+        }
       });
 
       document.addEventListener('keydown', (e) => {
@@ -97,59 +100,144 @@ const AstroApp = (() => {
     }
   }
 
-  // Single source of truth for site navigation. Injected on every page that has
-  // a .navbar so the hardcoded per-page nav (kept only as a no-JS fallback) can
-  // never drift again. Desktop = lean core; mobile menu = core + secondary tools.
-  // Adding a page = add one line here; it then appears everywhere automatically.
-  const NAV_CORE = [
-    ['index.html', 'Home', 'high'], ['chart.html', 'Chart', 'high'], ['horoscope.html', 'Horoscope', 'high'],
-    ['compatibility.html', 'Compatibility', 'high'], ['transits.html', 'Transits', 'mid'],
-    ['lifepath.html', 'Life Path', 'high'], ['ephemeris.html', 'Instrument', 'high'],
-    ['why.html', 'Why', 'low'], ['shop.html', 'Shop', 'low'],
+  // ── Navigation IA (single source of truth) ───────────────────────────────
+  // Desktop: 5 primaries + More flyout. Mobile: 4 bottom tabs + categorized drawer.
+  const NAV_PRIMARY = [
+    ['index.html', 'Home'],
+    ['chart.html', 'Chart'],
+    ['horoscope.html', 'Daily'],
+    ['compatibility.html', 'Match'],
+    ['ephemeris.html', 'Sky'],
   ];
-  const NAV_BOTTOM_ICONS = {
-    'index.html': 'star4', 'chart.html': 'spiral', 'horoscope.html': 'crescent',
-    'lifepath.html': 'gem', 'compatibility.html': 'heart', 'transits.html': 'planet',
-    'shop.html': 'map', 'ephemeris.html': 'telescope', 'why.html': 'star4',
-  };
-  const NAV_BOTTOM_LABELS = {
-    'horoscope.html': 'Daily', 'ephemeris.html': 'Sky', 'lifepath.html': 'Life',
-    'compatibility.html': 'Match',
-  };
-  const NAV_BOTTOM_EXTRAS = [
-    ['links.html', 'Links', 'star4'], ['quiz.html', 'Quiz', 'orb'],
-    ['tonight.html', 'Tonight', 'sunhigh'], ['moonphase.html', 'Moon', 'moon4'],
+  const NAV_MORE_EXPLORE = [
+    ['lifepath.html', 'Life Path'],
+    ['transits.html', 'Transits'],
+    ['why.html', 'Why'],
+    ['shop.html', 'Shop'],
   ];
-  const NAV_EXTRAS = [ // mobile drawer only — lean desktop bar
+  const NAV_EXTRAS = [
     ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
     ['tonight.html', "Tonight's Sky"], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
     ['what-is-my-rising-sign.html', 'Rising Sign'], ['synastry.html', 'Synastry'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
+    ['links.html', 'Links'],
   ];
+  const NAV_BOTTOM_TABS = [
+    ['index.html', 'Home', 'star4'],
+    ['chart.html', 'Chart', 'spiral'],
+    ['horoscope.html', 'Daily', 'crescent'],
+    ['compatibility.html', 'Match', 'heart'],
+  ];
+  const NAV_DRAWER_SECTIONS = [
+    { label: 'Explore', items: NAV_MORE_EXPLORE },
+    { label: 'Tools', items: NAV_EXTRAS },
+  ];
+  // Legacy aliases for any code that still reads these
+  const NAV_CORE = NAV_PRIMARY.concat(NAV_MORE_EXPLORE);
+  const NAV_BOTTOM_ICONS = Object.fromEntries(NAV_BOTTOM_TABS.map(function (r) { return [r[0], r[2]]; }));
+  const NAV_BOTTOM_LABELS = Object.fromEntries(NAV_BOTTOM_TABS.map(function (r) { return [r[0], r[1]]; }));
+  const NAV_BOTTOM_EXTRAS = [];
+
+  function navLinkHtml(pairs, here, drawer) {
+    return pairs.map(function (row) {
+      var href = row[0];
+      var label = row[1];
+      var active = here === href;
+      var cls = 'navbar__link' + (active ? ' active' : '') + (drawer ? ' navbar__link--drawer' : '');
+      return '<a href="' + href + '" class="' + cls + '"' +
+        (active ? ' aria-current="page"' : '') + '>' + label + '</a>';
+    }).join('');
+  }
+
+  function morePageActive(here) {
+    return NAV_MORE_EXPLORE.some(function (r) { return r[0] === here; })
+      || NAV_EXTRAS.some(function (r) { return r[0] === here; });
+  }
+
+  function renderMoreMenu(here) {
+    var active = morePageActive(here);
+    var groups = NAV_DRAWER_SECTIONS.map(function (sec) {
+      return '<div class="navbar__more-group" role="group" aria-label="' + sec.label + '">'
+        + '<p class="navbar__more-label">' + sec.label + '</p>'
+        + navLinkHtml(sec.items, here, true)
+        + '</div>';
+    }).join('');
+    return '<div class="navbar__more" data-nav-more>'
+      + '<button type="button" class="navbar__more-btn' + (active ? ' active' : '') + '"'
+      + ' aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>'
+      + '<div class="navbar__more-panel" id="navbar-more-panel" role="menu" hidden>' + groups + '</div>'
+      + '</div>';
+  }
+
+  function closeMoreMenus() {
+    document.querySelectorAll('[data-nav-more]').forEach(function (wrap) {
+      var btn = wrap.querySelector('.navbar__more-btn');
+      var panel = wrap.querySelector('.navbar__more-panel');
+      if (!btn || !panel) return;
+      btn.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+      wrap.classList.remove('is-open');
+    });
+  }
+
+  function initMoreMenu() {
+    document.querySelectorAll('[data-nav-more]').forEach(function (wrap) {
+      if (wrap.dataset.moreWired) return;
+      wrap.dataset.moreWired = '1';
+      var btn = wrap.querySelector('.navbar__more-btn');
+      var panel = wrap.querySelector('.navbar__more-panel');
+      if (!btn || !panel) return;
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = !wrap.classList.contains('is-open');
+        closeMoreMenus();
+        if (open) {
+          wrap.classList.add('is-open');
+          btn.setAttribute('aria-expanded', 'true');
+          panel.hidden = false;
+        }
+      });
+      panel.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', closeMoreMenus);
+      });
+    });
+    if (!document.documentElement.dataset.moreGlobalWired) {
+      document.documentElement.dataset.moreGlobalWired = '1';
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('[data-nav-more]')) closeMoreMenus();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMoreMenus();
+      });
+    }
+  }
+
+  function renderDrawer(here) {
+    var html = '<p class="navbar__drawer-heading">Main</p>'
+      + navLinkHtml(NAV_PRIMARY, here, true);
+    NAV_DRAWER_SECTIONS.forEach(function (sec) {
+      html += '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
+        + '<p class="navbar__drawer-heading">' + sec.label + '</p>'
+        + navLinkHtml(sec.items, here, true);
+    });
+    html += '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
+      + '<p class="navbar__drawer-heading">Account</p>'
+      + navLinkHtml([['profile.html', 'Profile']], here, true)
+      + '<button type="button" class="navbar__link ap-nav-updates-mobile" data-ap-open-email="mobile_menu">'
+      + '\u2726 Get updates</button>';
+    return html;
+  }
 
   function renderNav() {
-    const here = location.pathname.split('/').pop() || 'index.html';
-    const linkHtml = (pairs, tierAttr) => pairs.map(function (row) {
-      const href = row[0];
-      const label = row[1];
-      const tier = row[2] || '';
-      const active = here === href;
-      var tierHtml = tierAttr && tier && tier !== 'high' ? ' data-nav-tier="' + tier + '"' : '';
-      return '<a href="' + href + '" class="navbar__link' + (active ? ' active' : '') + '"' +
-        tierHtml + (active ? ' aria-current="page"' : '') + '>' + label + '</a>';
-    }).join('');
-    const desktop = document.querySelector('.navbar__nav');
-    const mobile = document.querySelector('.navbar__mobile-menu');
-    if (desktop) desktop.innerHTML = linkHtml(NAV_CORE, true);
-    if (mobile) {
-      mobile.innerHTML =
-        linkHtml(NAV_CORE, false)
-        + '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
-        + linkHtml(NAV_EXTRAS, false)
-        + '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
-        + linkHtml([['profile.html', 'Profile']], false);
+    var here = location.pathname.split('/').pop() || 'index.html';
+    var desktop = document.querySelector('.navbar__nav');
+    var mobile = document.querySelector('.navbar__mobile-menu');
+    if (desktop) {
+      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
+      initMoreMenu();
     }
+    if (mobile) mobile.innerHTML = renderDrawer(here);
   }
 
   /** Right rail: email CTA, profile, hamburger — keeps center nav from overlapping. */
@@ -670,8 +758,10 @@ const AstroApp = (() => {
   }
 
   return {
+    NAV_PRIMARY,
     NAV_CORE,
     NAV_EXTRAS,
+    NAV_BOTTOM_TABS,
     NAV_BOTTOM_EXTRAS,
     NAV_BOTTOM_ICONS,
     NAV_BOTTOM_LABELS,
@@ -1357,44 +1447,29 @@ if ('serviceWorker' in navigator) {
     if (document.querySelector('.bottom-nav')) return;
     if (!document.querySelector('.navbar')) return;
     const here = (location.pathname.split('/').pop() || 'index.html');
-    const core = (window.AstroApp && AstroApp.NAV_CORE) || [];
-    const extras = (window.AstroApp && AstroApp.NAV_BOTTOM_EXTRAS) || [];
-    const icons = (window.AstroApp && AstroApp.NAV_BOTTOM_ICONS) || {};
-    const labels = (window.AstroApp && AstroApp.NAV_BOTTOM_LABELS) || {};
-    const scrollItems = core.map(function (row) {
-      return { href: row[0], icon: icons[row[0]] || 'star4', label: labels[row[0]] || row[1] };
-    }).concat(extras.map(function (row) {
-      return { href: row[0], icon: row[2] || 'star4', label: row[1] };
-    }));
+    const tabs = (window.AstroApp && AstroApp.NAV_BOTTOM_TABS) || [];
     const nav = document.createElement('nav');
     nav.className = 'bottom-nav';
     nav.setAttribute('aria-label', 'Mobile navigation');
     const ei = (id) => '<svg class="eng-i" aria-hidden="true"><use href="#ei-' + id + '"/></svg>';
-    const itemHtml = (it) => {
-      return '<a href="' + it.href + '" class="bottom-nav__item' + (here === it.href ? ' is-active' : '') + '"'
-        + (here === it.href ? ' aria-current="page"' : '') + '>'
-        + '<span class="bottom-nav__icon" aria-hidden="true">' + ei(it.icon) + '</span>'
-        + '<span class="bottom-nav__label">' + it.label + '</span></a>';
+    const itemHtml = (row) => {
+      const href = row[0];
+      const label = row[1];
+      const icon = row[2] || 'star4';
+      return '<a href="' + href + '" class="bottom-nav__item' + (here === href ? ' is-active' : '') + '"'
+        + (here === href ? ' aria-current="page"' : '') + '>'
+        + '<span class="bottom-nav__icon" aria-hidden="true">' + ei(icon) + '</span>'
+        + '<span class="bottom-nav__label">' + label + '</span></a>';
     };
     nav.innerHTML =
       '<div class="bottom-nav__shell">'
-      + '<div class="bottom-nav__scroll" tabindex="0" aria-label="Swipe for more tools">'
-      + '<div class="bottom-nav__inner">' + scrollItems.map(itemHtml).join('') + '</div>'
-      + '</div>'
+      + '<div class="bottom-nav__tabs">' + tabs.map(itemHtml).join('') + '</div>'
       + '<div class="bottom-nav__pinned">'
       + '<button type="button" class="bottom-nav__item bottom-nav__item--updates" data-ap-open-email="bottom_nav" aria-label="Sign up for email updates">'
       + '<span class="bottom-nav__icon" aria-hidden="true">' + ei('mail') + '</span>'
       + '<span class="bottom-nav__label">Updates</span>'
       + '</button></div></div>';
     document.body.appendChild(nav);
-    const scroller = nav.querySelector('.bottom-nav__scroll');
-    const active = nav.querySelector('.bottom-nav__item.is-active');
-    if (scroller && active) {
-      requestAnimationFrame(function () {
-        var left = active.offsetLeft - (scroller.clientWidth - active.offsetWidth) / 2;
-        scroller.scrollLeft = Math.max(0, left);
-      });
-    }
   }
 
   if (document.readyState === 'loading') {
@@ -1795,18 +1870,16 @@ if ('serviceWorker' in navigator) {
   function injectNavCTA() {
     if (document.querySelector('.ap-nav-email-cluster')) return;
     var inner = document.querySelector('.navbar__inner');
-    var logo = inner && inner.querySelector('.navbar__logo');
-    var mobile = document.querySelector('.navbar__mobile-menu');
     var c = window.AP_COPY;
-    if (inner && logo) {
+    if (inner) {
       var cluster = document.createElement('div');
       cluster.className = 'ap-nav-email-cluster';
       cluster.innerHTML =
-        '<div class="ap-nav-email-cluster__copy">'
-        + '<span class="ap-nav-email-cluster__eyebrow">' + c.eyebrow + '</span>'
-        + '<span class="ap-nav-email-cluster__teaser">' + c.navTeaser + '</span>'
-        + '</div>'
-        + '<button type="button" class="ap-nav-updates" data-ap-open-email="nav_left">' + c.btnShort + '</button>';
+        '<button type="button" class="ap-nav-updates ap-nav-updates--icon" data-ap-open-email="nav_left"'
+        + ' aria-label="' + (c.btnShort || 'Get updates') + '" title="' + (c.navTeaser || 'Email updates') + '">'
+        + '<svg class="eng-i" aria-hidden="true"><use href="#ei-mail"/></svg>'
+        + '<span class="ap-nav-updates__text">' + (c.btnShort || 'Updates') + '</span>'
+        + '</button>';
       var end = (window.AstroApp && typeof AstroApp.ensureNavEnd === 'function')
         ? AstroApp.ensureNavEnd() : null;
       var profile = inner.querySelector('.navbar__profile-top');
@@ -1815,19 +1888,7 @@ if ('serviceWorker' in navigator) {
         if (profile) end.insertBefore(cluster, profile);
         else if (toggle) end.insertBefore(cluster, toggle);
         else end.appendChild(cluster);
-      } else {
-        var nav = inner.querySelector('.navbar__nav');
-        if (nav) nav.insertAdjacentElement('afterend', cluster);
-        else logo.insertAdjacentElement('afterend', cluster);
       }
-    }
-    if (mobile && !mobile.querySelector('.ap-nav-updates-mobile')) {
-      var m = document.createElement('button');
-      m.type = 'button';
-      m.className = 'navbar__link ap-nav-updates-mobile';
-      m.textContent = '\u2726 Get updates';
-      m.setAttribute('data-ap-open-email', 'mobile_menu');
-      mobile.insertBefore(m, mobile.firstChild);
     }
     document.addEventListener('click', function (e) {
       var t = e.target.closest('[data-ap-open-email]');
