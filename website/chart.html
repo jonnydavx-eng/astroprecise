@@ -929,6 +929,63 @@
       letter-spacing: 0.04em; line-height: 1.6;
     }
 
+    /* ── Post-chart "what's next" ─────────────────────────────────── */
+    .chart-whats-next {
+      margin-top: var(--space-8);
+      padding: var(--space-8);
+      background: var(--surface-raised, rgba(19, 16, 12, 0.56));
+      border: 1px solid var(--hairline, rgba(201, 162, 39, 0.12));
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-raised, 0 12px 40px rgba(0, 0, 0, 0.35));
+    }
+    .chart-whats-next__head { text-align: center; margin-bottom: var(--space-6); }
+    .chart-whats-next__eyebrow {
+      font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: var(--space-2);
+    }
+    .chart-whats-next__title {
+      font-family: var(--font-display); font-size: 1.35rem;
+      color: var(--white); margin: 0 0 var(--space-2);
+    }
+    .chart-whats-next__sub {
+      font-size: var(--text-sm); color: var(--silver-dim); margin: 0 auto;
+      max-width: 520px; line-height: 1.65;
+    }
+    .chart-whats-next__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4);
+    }
+    @media (max-width: 768px) {
+      .chart-whats-next__grid { grid-template-columns: 1fr; }
+      .chart-whats-next { padding: var(--space-6) var(--space-5); }
+    }
+    .chart-next-card {
+      display: flex; flex-direction: column; gap: var(--space-3);
+      padding: var(--space-5); border-radius: var(--radius-lg);
+      background: rgba(5, 4, 6, 0.45);
+      border: 1px solid rgba(201, 162, 39, 0.14);
+      text-decoration: none; color: inherit;
+      transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    }
+    .chart-next-card:hover {
+      border-color: rgba(201, 162, 39, 0.32);
+      box-shadow: 0 8px 28px rgba(201, 162, 39, 0.08);
+    }
+    .chart-next-card__tag {
+      font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); opacity: 0.85;
+    }
+    .chart-next-card__title {
+      font-family: var(--font-display); font-size: 1rem;
+      color: var(--white); margin: 0;
+    }
+    .chart-next-card__desc {
+      font-size: 0.82rem; color: var(--silver-dim); line-height: 1.55; margin: 0;
+      flex: 1;
+    }
+    .chart-next-card__cta {
+      font-size: 0.72rem; letter-spacing: 0.08em; color: var(--gold-light, #EFE3C0);
+    }
+
     /* ── Email capture (save chart / cosmic weather) ─────────────── */
     .email-capture {
       margin-top: var(--space-8);
@@ -1442,6 +1499,11 @@
 
           </div><!-- /.tabs-card -->
         </div><!-- /.chart-results-grid -->
+
+        <!-- ── WHAT'S NEXT (post-chart guidance) ───────────────────────
+             JS (chart-page.js → renderWhatsNext) fills personalised links
+             to transits, compatibility, and the Instrument. -->
+        <section id="chart-whats-next" class="chart-whats-next animate-in" aria-label="Explore your chart further" hidden></section>
 
         <!-- ── DEEP READING TEASER (real snippets → paywall) ──────────
              JS (chart-page.js → renderDeepTeaser) fills this with TRUE

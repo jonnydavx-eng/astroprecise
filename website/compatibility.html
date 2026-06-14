@@ -109,7 +109,7 @@
     .compat-person-card {
       border-radius: var(--radius-xl);
       padding: var(--space-7) var(--space-7);
-      background: rgba(15,22,50,0.60);
+      background: rgba(19, 16, 12, 0.56);
       -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border);
@@ -124,7 +124,7 @@
       border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     }
     .compat-person-card--p1::before {
-      background: linear-gradient(90deg, #3a5fa8 0%, #9db36a 60%, transparent 100%);
+      background: linear-gradient(90deg, #8b5a3c 0%, #c9a227 60%, transparent 100%);
     }
     .compat-person-card--p2::before {
       background: linear-gradient(90deg, #c9a227 0%, #e8c96a 60%, transparent 100%);
@@ -140,7 +140,7 @@
       align-items: center;
       gap: var(--space-2);
     }
-    .compat-person-card--p1 h3 { color: #9db36a; }
+    .compat-person-card--p1 h3 { color: #c4a07a; }
     .compat-person-card--p2 h3 { color: var(--gold); }
 
     .person-icon {
@@ -153,7 +153,7 @@
       font-size: 1rem;
       flex-shrink: 0;
     }
-    .person-icon--p1 { background: rgba(91,127,199,0.2); border: 1px solid rgba(91,127,199,0.35); }
+    .person-icon--p1 { background: rgba(168, 107, 74, 0.2); border: 1px solid rgba(168, 107, 74, 0.35); }
     .person-icon--p2 { background: rgba(196,146,10,0.2); border: 1px solid rgba(196,146,10,0.35); }
 
     /* ---- Form inputs ---- */
@@ -466,7 +466,7 @@
     .element-compat-card--air {
       border-left-color: #9db36a;
     }
-    .element-compat-card--air:hover { box-shadow: 0 8px 32px rgba(91,127,199,0.15); }
+    .element-compat-card--air:hover { box-shadow: 0 8px 32px rgba(168, 107, 74, 0.15); }
     .element-compat-card--water {
       border-left-color: #3a7ad4;
     }
@@ -1465,19 +1465,19 @@
       var ctx = cv.getContext('2d');
       var W = 1080, H = 1080;
 
-      // Background
+      // Background — warm void (matches site palette)
       var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
-      bg.addColorStop(0, '#0d1124');
+      bg.addColorStop(0, '#13100c');
       bg.addColorStop(0.5, '#0d0a07');
-      bg.addColorStop(1, '#06070f');
+      bg.addColorStop(1, '#050406');
       ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
-      // Nebula glows
+      // Nebula glows — person 1 warm copper, person 2 gold
       var neb1 = ctx.createRadialGradient(220, 400, 0, 220, 400, 400);
-      neb1.addColorStop(0, 'rgba(92, 74, 110,0.25)'); neb1.addColorStop(1, 'transparent');
+      neb1.addColorStop(0, 'rgba(168,107,74,0.22)'); neb1.addColorStop(1, 'transparent');
       ctx.fillStyle = neb1; ctx.fillRect(0, 0, W, H);
       var neb2 = ctx.createRadialGradient(860, 400, 0, 860, 400, 400);
-      neb2.addColorStop(0, 'rgba(196,146,10,0.18)'); neb2.addColorStop(1, 'transparent');
+      neb2.addColorStop(0, 'rgba(201,162,39,0.18)'); neb2.addColorStop(1, 'transparent');
       ctx.fillStyle = neb2; ctx.fillRect(0, 0, W, H);
 
       // Stars
@@ -1510,7 +1510,7 @@
       var SIGN_GLYPHS = {Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
       var g1 = SIGN_GLYPHS[sign1] || '✦', g2 = SIGN_GLYPHS[sign2] || '✦';
       ctx.font = '220px serif';
-      ctx.fillStyle = '#9db36a'; ctx.fillText(g1, W/2 - 220, 340);
+      ctx.fillStyle = '#b87850'; ctx.fillText(g1, W/2 - 220, 340);
       ctx.fillStyle = 'rgba(196,146,10,0.9)'; ctx.font = '100px serif'; ctx.fillText('♡', W/2, 320);
       ctx.fillStyle = '#c9a227'; ctx.font = '220px serif'; ctx.fillText(g2, W/2 + 220, 340);
 
@@ -1538,7 +1538,7 @@
       // Overview (wrapped)
       if (overview) {
         ctx.font = 'italic 400 26px Cormorant Garamond,serif';
-        ctx.fillStyle = 'rgba(154,166,200,0.8)';
+        ctx.fillStyle = 'rgba(168,158,136,0.8)';
         var words = overview.split(' '), line = '', yy = 830, maxW = 860;
         var lineCount = 0, maxLines = 3;
         for (var w = 0; w < words.length; w++) {

@@ -492,10 +492,63 @@
     renderWheel(chart);
     renderTabs(chart);
     initTabs();
+    renderWhatsNext(chart);
     renderDeepTeaser(chart);
     initEmailCapture(chart);
 
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderWhatsNext(chart) {
+    const host = document.getElementById('chart-whats-next');
+    if (!host || !chart) { if (host) host.hidden = true; return; }
+
+    const sunSign = chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
+    const riseSign = chart.risingSign;
+    const name = chart.name ? String(chart.name).split(/\s+/)[0] : 'your';
+
+    const steps = [
+      {
+        tag: 'Free · Live sky',
+        title: 'See your transits',
+        desc: sunSign
+          ? `Watch how today's planets aspect your ${sunSign} Sun and ${riseSign || 'chart'} — computed from the same engine you just used.`
+          : 'See how the current sky interacts with the chart you just cast.',
+        href: 'transits.html',
+        cta: 'Open Transits →',
+      },
+      {
+        tag: 'Free · Two charts',
+        title: 'Compare with a partner',
+        desc: `Run a synastry reading for ${name}'s chart against someone else's — cross-chart aspects, element balance, and a shareable card.`,
+        href: 'compatibility.html',
+        cta: 'Open Compatibility →',
+      },
+      {
+        tag: 'Free · Deep dive',
+        title: 'Read the Instrument',
+        desc: 'Light-cone, zenith star, planetary hours, field weather, and time-travel — the precision tools behind every chart.',
+        href: 'ephemeris.html',
+        cta: 'Open Instrument →',
+      },
+    ];
+
+    host.innerHTML = `
+      <div class="chart-whats-next__head">
+        <p class="chart-whats-next__eyebrow">What to explore next</p>
+        <h3 class="chart-whats-next__title">Your chart is cast — where now?</h3>
+        <p class="chart-whats-next__sub">Three free tools that build on the sky you just calculated. Everything still runs in your browser.</p>
+      </div>
+      <div class="chart-whats-next__grid" role="list">
+        ${steps.map(s => `
+          <a href="${esc(s.href)}" class="chart-next-card" role="listitem">
+            <span class="chart-next-card__tag">${esc(s.tag)}</span>
+            <h4 class="chart-next-card__title">${esc(s.title)}</h4>
+            <p class="chart-next-card__desc">${esc(s.desc)}</p>
+            <span class="chart-next-card__cta">${esc(s.cta)}</span>
+          </a>`).join('')}
+      </div>`;
+    host.hidden = false;
   }
 
   function renderBigThree(chart) {
