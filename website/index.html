@@ -2482,7 +2482,7 @@
   <!-- Photoreal WebGL hero orrery (Three.js, vendored locally — no CDN at runtime).
        Falls back to the canvas orrery3d.js automatically if WebGL is unavailable. -->
   <script type="importmap">
-  { "imports": { "three": "./js/vendor/three/three.module.min.js" } }
+  { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
   <script type="module" src="js/orrery-webgl.js"></script>
   <script src="js/oracle.js"></script>

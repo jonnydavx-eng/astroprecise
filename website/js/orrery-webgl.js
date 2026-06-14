@@ -18,6 +18,10 @@
  * ==========================================================================*/
 
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 (function () {
   'use strict';
@@ -66,6 +70,9 @@ import * as THREE from 'three';
   const orbitLines = [];
   const labels = {};
   let starField = null;
+
+  let composer = null;
+  let bloomPass = null;
 
   // time
   let baseNowMs = 0, baseJd = 0, dayOffset = 0, daysPerSec = 0;
@@ -408,7 +415,7 @@ import * as THREE from 'three';
     });
     orbitLines.forEach((o) => { o.visible = showOrbits; });
 
-    renderer.render(scene, camera);
+    if (composer) { composer.render(); } else { renderer.render(scene, camera); }
   }
 
   // ── UI date readout (mirrors canvas behaviour) ─────────────────────────────
@@ -451,6 +458,8 @@ import * as THREE from 'three';
       : Math.min(window.devicePixelRatio || 1, 2);
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
+    if (composer) composer.setSize(w, h);
+    if (bloomPass) bloomPass.resolution.set(w, h);
     camera.aspect = w / h; camera.updateProjectionMatrix();
   }
 
@@ -547,6 +556,24 @@ import * as THREE from 'three';
 
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
     renderer.setClearColor(0x000000, 0);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
+
+    // Bloom composer — skip for reduced-motion or low-end devices
+    const _skipComposer = PRM || (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4);
+    if (!_skipComposer) {
+      try {
+        composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        bloomPass = new UnrealBloomPass(new THREE.Vector2(renderer.domElement.width, renderer.domElement.height), 0.35, 0.5, 0.88);
+        // strength 0.35, radius 0.5, threshold 0.88 — only the sun + bright glow blooms; no planet halos
+        composer.addPass(bloomPass);
+        composer.addPass(new OutputPass());
+      } catch (e) {
+        composer = null;
+        console.warn('[orrery] post-processing unavailable:', e.message);
+      }
+    }
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);
     texLoader = new THREE.TextureLoader();
