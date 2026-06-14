@@ -578,6 +578,7 @@ function page(s) {
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/horoscope-engine.js"></script>
+  <script src="js/content-service.js"></script>
   <script src="js/sign-daily.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
@@ -588,11 +589,7 @@ function page(s) {
     var dateEl = document.getElementById('today-date');
     if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-    function render() {
-      if (!window.Interpretations || typeof Interpretations.getDailyHoroscope !== 'function') {
-        setTimeout(render, 200); return;
-      }
-      var d = Interpretations.getDailyHoroscope('${s.name}', new Date());
+    function paint(d) {
       var el = document.getElementById('today-reading');
       if (!el || !d) return;
       el.innerHTML =
@@ -609,6 +606,20 @@ function page(s) {
         '</div>' +
         '<p class="daily-reading__note">Deterministic for this date — refresh tomorrow for a new reading</p>' +
         '</div>';
+    }
+    function render() {
+      var sign = '${s.name}';
+      var ready = window.ContentService || (window.Interpretations && Interpretations.getDailyHoroscope);
+      if (!ready) { setTimeout(render, 200); return; }
+      var run = function() {
+        var d = window.ContentService
+          ? ContentService.resolveDailyHoroscope(sign, new Date())
+          : Interpretations.getDailyHoroscope(sign, new Date());
+        paint(d);
+      };
+      if (window.ContentService && ContentService.ensureDaily) {
+        ContentService.ensureDaily(new Date()).then(run).catch(run);
+      } else run();
     }
     render();
   })();

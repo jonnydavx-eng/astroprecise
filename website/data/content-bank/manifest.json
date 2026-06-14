@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "generated": "2026-06-14T22:16:28.899Z",
+  "engine": "VSOP87 solar-chart horoscope + interpretations.js corpus",
+  "counts": {
+    "dailyReadings": 1080,
+    "monthlyReadings": 72,
+    "planetInSign": 132,
+    "houses": 12
+  },
+  "daily": {
+    "start": "2026-06-14",
+    "end": "2026-09-11"
+  },
+  "monthly": {
+    "start": "2026-06",
+    "end": "2026-11"
+  },
+  "core": [
+    "planet-in-sign.json",
+    "houses.json",
+    "aspects.json",
+    "rising-by-sign.json",
+    "deep-reading-sections.json"
+  ],
+  "usage": "Fetched by website/js/content-service.js — static backend for GitHub Pages."
+}
