@@ -431,6 +431,13 @@
     cvs.style.cursor = hovered ? 'pointer' : 'grab';
   }
 
+  // These handlers are referenced in init()'s addEventListener calls. They MUST be
+  // declared — under 'use strict' an undeclared assignment throws ReferenceError at
+  // load, which previously aborted the whole module (window.ZodiacSphere never set →
+  // the "Spin to Your Sign" canvas rendered blank on horoscope.html).
+  let cvs_mousemove, cvs_mouseleave, cvs_mousedown, win_mouseup,
+      cvs_touchstart, cvs_touchmove, cvs_touchend;
+
   cvs_mousemove  = (e) => { onMove(e.clientX, e.clientY); onDrag(e.clientX); };
   cvs_mouseleave = ()  => { hovered = null; autoSpin = !dragging; cvs.style.cursor = ''; };
   cvs_mousedown  = (e) => onPress(e.clientX, e.clientY);
