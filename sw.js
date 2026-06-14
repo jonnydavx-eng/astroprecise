@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v136';
+const V = 'ap-v137';
 
 const PRECACHE = [
   './',
@@ -175,6 +175,8 @@ self.addEventListener('fetch', e => {
   if (url.hostname !== self.location.hostname) return;
 
   const isNav = e.request.mode === 'navigate';
+  const path = url.pathname.replace(/\/+$/, '') || '/';
+  const isCritical = /\/(js\/app\.js|css\/main\.css)$/.test(path);
 
   e.respondWith(
     caches.match(e.request).then(cached => {
@@ -190,7 +192,11 @@ self.addEventListener('fetch', e => {
         // HTML: prefer network, fall back to cache
         return networkFetch.then(res => res || cached || caches.match('./index.html'));
       }
-      // Assets: serve from cache immediately, revalidate in background
+      if (isCritical) {
+        // app.js + main.css: network-first so email/intro fixes reach users promptly
+        return networkFetch.then(res => res || cached);
+      }
+      // Other assets: cache-first, revalidate in background
       return cached || networkFetch;
     })
   );
