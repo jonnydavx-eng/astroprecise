@@ -927,7 +927,7 @@
 
     const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
-    form.addEventListener('submit', async ev => {
+    form.addEventListener('submit', ev => {
       ev.preventDefault();
       const email = input.value.trim();
       if (!validEmail(email)) {
@@ -937,40 +937,35 @@
         return;
       }
 
-      const M = window.AP_MON || {};
-      const endpoint = typeof M.emailUrl === 'string' ? M.emailUrl.trim() : '';
-      const configured = /^https?:\/\//i.test(endpoint);
-
-      if (configured) {
-        // Standard hosted-newsletter POST (Buttondown/Mailchimp form action).
-        // no-cors keeps it a fire-and-forget subscribe from a static page; we
-        // only ever send the address the visitor typed — no birth data.
-        try {
-          const body = new FormData();
-          body.append('email', email);
-          await fetch(endpoint, { method: 'POST', mode: 'no-cors', body });
-        } catch (e) { /* opaque/no-cors — treat as sent, confirm below */ }
-        if (doneMsg) doneMsg.innerHTML = '<strong>You’re on the list.</strong> Your cosmic weather will arrive by email — unsubscribe anytime.';
-        if (window.AstroApp) AstroApp.showToast('Subscribed', 'You’ll get your cosmic weather by email.', 'success');
-      } else {
-        // DORMANT: nothing leaves the device. Save intent locally only.
-        try {
-          const key = 'ap_email_intent';
-          const prev = JSON.parse(localStorage.getItem(key) || '[]');
-          prev.push({
-            email,
+            const copy = window.AP_COPY || {};
+      let res = { sent: 'local' };
+      if (window.AstroApp && typeof AstroApp.captureEmail === 'function') {
+        res = AstroApp.captureEmail(email, {
+          source: 'chart_capture',
+          tag: 'tag_chart_wallpaper',
+          meta: {
             forName: (chart && chart.name) ? String(chart.name).split(/\s+/)[0] : null,
             sunSign: chart && chart.positions && chart.positions.Sun ? chart.positions.Sun.sign : null,
-            savedAt: Date.now(),
-          });
-          localStorage.setItem(key, JSON.stringify(prev.slice(-20)));
-        } catch (e) {}
-        if (doneMsg) doneMsg.innerHTML = '<strong>We’ll let you know.</strong> Saved on your device only — no email has been sent anywhere yet. The moment readings open, you’ll be first.';
-        if (window.AstroApp) AstroApp.showToast('Saved on your device',
-          'Email signup isn’t live yet, so nothing left your browser — we kept your interest locally.', 'info');
+          },
+        });
       }
 
-      host.classList.add('is-done');
+      if (doneMsg) {
+        doneMsg.innerHTML = res.sent === 'provider'
+          ? '<strong>You’re on the list.</strong> ' + (copy.confirmDoubleOptIn || 'Your cosmic weather will arrive by email — unsubscribe anytime.')
+          : res.sent === 'mailto'
+            ? '<strong>Noted.</strong> Your email client should open to complete sign-up — check your drafts if it didn’t.'
+            : '<strong>We’ll let you know.</strong> ' + (copy.dormantSaved || 'Saved on your device only.');
+      }
+      if (window.AstroApp) {
+        AstroApp.showToast(
+          res.sent === 'provider' ? 'Subscribed' : (res.sent === 'mailto' ? 'Almost there' : 'Saved on your device'),
+          res.sent === 'provider' ? 'You’ll get your cosmic weather by email.' : (copy.dormantSaved || 'Saved locally.'),
+          res.sent === 'provider' ? 'success' : 'info'
+        );
+      }
+
+host.classList.add('is-done');
     });
   }
 
