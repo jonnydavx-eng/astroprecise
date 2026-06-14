@@ -5164,13 +5164,37 @@ body::before {
 }
 .has-spotlight:hover .spotlight-layer { opacity: 1; }
 
-/* Scroll reveal */
+/* Scroll reveal — placeholder art visible while waiting; content fades in on .revealed */
 .reveal-init {
+  position: relative;
+  opacity: 1;
+  transform: none;
+}
+.reveal-init::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 1;
+  transition: opacity 0.55s ease;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 42%, rgba(201, 162, 39, 0.09) 0%, transparent 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23C9A227' stroke-width='0.6' opacity='0.35'%3E%3Ccircle cx='60' cy='60' r='52'/%3E%3Ccircle cx='60' cy='60' r='36'/%3E%3Ccircle cx='60' cy='60' r='18'/%3E%3Cpath d='M60 8v104M8 60h104M22 22l76 76M98 22L22 98'/%3E%3C/g%3E%3C/svg%3E")
+    center / min(140px, 42%) no-repeat;
+}
+.reveal-init.revealed::before {
   opacity: 0;
-  transform: translateY(22px);
+}
+.reveal-init > * {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(18px);
   transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.reveal-init.revealed {
+.reveal-init.revealed > * {
   opacity: 1;
   transform: none;
 }

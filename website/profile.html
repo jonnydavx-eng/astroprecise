@@ -826,16 +826,7 @@
     }
     @media (max-width: 600px) { .personal-year-card { padding: var(--space-5); } }
 
-    /* ── Reveal animation ── */
-    .reveal-init {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-    .reveal-init.revealed {
-      opacity: 1;
-      transform: none;
-    }
+    /* Reveal animation: see main.css (.reveal-init placeholder art + child fade-in) */
 
     /* ── Small hero ── */
     .hero--small {
@@ -2087,8 +2078,14 @@
         });
       }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
       els.forEach((el, i) => {
-        el.style.transitionDelay = (i * 60) + 'ms';
-        obs.observe(el);
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.92 && r.bottom > 0) {
+          el.style.transitionDelay = (i * 60) + 'ms';
+          el.classList.add('revealed');
+        } else {
+          el.style.transitionDelay = (i * 60) + 'ms';
+          obs.observe(el);
+        }
       });
     }
 

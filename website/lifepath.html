@@ -149,9 +149,86 @@
     .lp-form-card__corner--bl { bottom: 14px; left: 14px; border-bottom: 1px solid rgba(196,146,10,0.6); border-left: 1px solid rgba(196,146,10,0.6); }
     .lp-form-card__corner--br { bottom: 14px; right: 14px; border-bottom: 1px solid rgba(196,146,10,0.6); border-right: 1px solid rgba(196,146,10,0.6); }
 
-    .lp-form-card > *:not(.lp-form-card__inner-border):not(.lp-form-card__corner) {
+    .lp-form-card > *:not(.lp-form-card__inner-border):not(.lp-form-card__corner):not(.lp-form-card__art) {
       position: relative;
       z-index: 1;
+    }
+    /* Decorative numerology wheel — always visible (fills space while form/UI loads) */
+    .lp-form-card__art {
+      position: absolute;
+      right: -24px;
+      bottom: -36px;
+      width: min(300px, 55vw);
+      height: min(300px, 55vw);
+      opacity: 0.14;
+      pointer-events: none;
+      z-index: 0;
+      color: var(--lp-gold);
+      animation: lp-art-drift 28s linear infinite;
+    }
+    @keyframes lp-art-drift {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lp-form-card__art { animation: none; }
+    }
+
+    /* Education grid — skeleton art until JS paints the cards */
+    .lp-grid-placeholder {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    @media (max-width: 900px) { .lp-grid-placeholder { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .lp-grid-placeholder { grid-template-columns: repeat(2, 1fr); } }
+    .lp-skel-card {
+      min-height: 148px;
+      border-radius: var(--lp-radius-xl);
+      border: 1px solid rgba(201, 162, 39, 0.14);
+      background:
+        radial-gradient(ellipse 80% 70% at 50% 35%, rgba(201, 162, 39, 0.07), transparent 70%),
+        rgba(20, 16, 10, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      animation: lp-shimmer 2.2s ease-in-out infinite;
+    }
+    .lp-skel-card__num {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      color: rgba(201, 162, 39, 0.28);
+      letter-spacing: 0.06em;
+    }
+    .lp-skel-card__bar {
+      width: 58%;
+      height: 6px;
+      border-radius: 99px;
+      background: rgba(201, 162, 39, 0.12);
+    }
+    @keyframes lp-shimmer {
+      0%, 100% { opacity: 0.72; }
+      50%      { opacity: 1; }
+    }
+    .lp-numbers-grid.is-ready .lp-grid-placeholder { display: none; }
+
+    /* Results hero — static ring until canvas mandala draws */
+    .lp-number-hero__ring-art {
+      position: absolute;
+      inset: 8% 12%;
+      width: 76%;
+      height: 84%;
+      margin: auto;
+      opacity: 0.22;
+      pointer-events: none;
+      color: var(--lp-gold);
+    }
+    .lp-number-hero.is-mandala-ready .lp-number-hero__ring-art {
+      opacity: 0;
+      transition: opacity 0.6s ease;
     }
 
     .lp-form-grid {
@@ -720,6 +797,16 @@
 
         <!-- Calculator form card -->
         <div class="lp-form-card">
+          <svg class="lp-form-card__art" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-width="0.65" opacity="0.9">
+              <circle cx="100" cy="100" r="88"/><circle cx="100" cy="100" r="62"/><circle cx="100" cy="100" r="36"/>
+              <path d="M100 12v176M12 100h176M35 35l130 130M165 35L35 165"/>
+              <text x="100" y="28" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">9</text>
+              <text x="168" y="106" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">3</text>
+              <text x="100" y="182" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">6</text>
+              <text x="32" y="106" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">1</text>
+            </g>
+          </svg>
           <div class="lp-form-card__inner-border" aria-hidden="true"></div>
           <div class="lp-form-card__corner lp-form-card__corner--tl" aria-hidden="true"></div>
           <div class="lp-form-card__corner lp-form-card__corner--tr" aria-hidden="true"></div>
@@ -757,6 +844,12 @@
 
         <!-- Big number display with mandala -->
         <div class="lp-number-hero" id="lp-main-display">
+          <svg class="lp-number-hero__ring-art" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.85">
+              <circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="68"/><circle cx="100" cy="100" r="44"/>
+              <path d="M100 10v180M10 100h180M30 30l140 140M170 30L30 170"/>
+            </g>
+          </svg>
           <canvas id="lp-mandala-canvas" aria-hidden="true"></canvas>
           <div class="lp-number-hero__master-badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Master Number</div>
           <div class="lp-number-hero__digit" id="lp-digit">—</div>
@@ -834,7 +927,22 @@
           </p>
         </header>
 
-        <div class="lp-numbers-grid" id="all-numbers-grid"></div>
+        <div class="lp-numbers-grid" id="all-numbers-grid">
+          <div class="lp-grid-placeholder" id="lp-grid-placeholder" aria-hidden="true">
+            <div class="lp-skel-card"><span class="lp-skel-card__num">1</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">2</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">3</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">4</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">5</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">6</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">7</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">8</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">9</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">11</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">22</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">33</span><span class="lp-skel-card__bar"></span></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1397,7 +1505,10 @@
     }
 
     const mc = document.getElementById('lp-mandala-canvas');
-    if (mc) drawMandala(mc, mandalaColor);
+    if (mc) {
+      drawMandala(mc, mandalaColor);
+      display.classList.add('is-mandala-ready');
+    }
   }
 
   function runFromBirthDate(dateVal, nameVal, opts) {
@@ -1638,13 +1749,14 @@
 
     const grid = document.getElementById('all-numbers-grid');
     if (grid) {
+      const placeholder = document.getElementById('lp-grid-placeholder');
       const elementCardColors = {
         fire: { border: '#c9a227', glow: 'rgba(196,146,10,0.15)' },
         earth: { border: '#0e5c3a', glow: 'rgba(14,92,58,0.15)' },
         air: { border: '#9db36a', glow: 'rgba(91,127,199,0.15)' },
         water: { border: '#9aa6c8', glow: 'rgba(154,166,200,0.15)' }
       };
-      grid.innerHTML = LP_ORDER.map(n => {
+      const cardsHtml = LP_ORDER.map(n => {
         const d = LP[n];
         const ec = elementCardColors[d.element] || elementCardColors.fire;
         return `<div class="lp-number-card${d.master ? ' lp-number-card--master' : ''}" data-n="${n}"
@@ -1657,6 +1769,9 @@
           <div class="lp-number-card__tagline">${d.tagline}</div>
         </div>`;
       }).join('');
+      if (placeholder) placeholder.remove();
+      grid.insertAdjacentHTML('beforeend', cardsHtml);
+      grid.classList.add('is-ready');
 
       grid.addEventListener('click', e => {
         const card = e.target.closest('[data-n]');
