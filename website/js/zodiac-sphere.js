@@ -251,7 +251,7 @@
 
       // Zodiac glyph
       ctx.font         = `${r * 0.92}px Georgia, 'Times New Roman', serif`;
-      ctx.fillStyle    = isSel ? '#c9a227' : isHov ? `rgb(${el[0]},${el[1]},${el[2]})` : '#C4CCE4';
+      ctx.fillStyle    = isSel ? '#c9a227' : isHov ? `rgb(${el[0]},${el[1]},${el[2]})` : '#C8BFA6';
       ctx.textAlign    = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(s.glyph, s.x, s.y);
@@ -261,7 +261,7 @@
       if (labelFade > 0) {
         ctx.globalAlpha = alpha * Math.min(1, labelFade);
         ctx.font        = `${Math.max(8, 9.5 * s.s)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle   = isSel ? '#c9a227' : 'rgba(200,212,245,0.9)';
+        ctx.fillStyle   = isSel ? '#c9a227' : 'rgba(200,190,165,0.9)';
         ctx.textAlign   = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(s.name, s.x, s.y + r + 3);
