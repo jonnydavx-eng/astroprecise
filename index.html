@@ -101,10 +101,43 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 65% 45%, rgba(201, 162, 39, 0.08) 0%, transparent 65%),
-        radial-gradient(ellipse 60% 50% at 20% 60%, rgba(176, 74, 82, 0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 80% 80%, rgba(201, 162, 39, 0.05) 0%, transparent 55%);
+        url('img/hero-cosmic-ref.jpg') center 30% / cover no-repeat,
+        radial-gradient(ellipse 90% 70% at 58% 42%, rgba(201, 162, 39, 0.14) 0%, transparent 62%),
+        radial-gradient(ellipse 55% 45% at 18% 68%, rgba(110, 26, 38, 0.10) 0%, transparent 58%),
+        radial-gradient(ellipse 48% 38% at 82% 22%, rgba(201, 162, 39, 0.08) 0%, transparent 55%);
+      opacity: 0.22;
+      filter: sepia(0.35) saturate(1.2) hue-rotate(-8deg) brightness(0.85);
       pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 120% 80% at 50% 50%, transparent 40%, rgba(5, 4, 6, 0.55) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero__constellation {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+
+    .hero__constellation line,
+    .hero__constellation circle {
+      stroke: rgba(201, 162, 39, 0.35);
+      fill: rgba(239, 227, 192, 0.75);
+    }
+
+    .hero__split {
+      position: relative;
+      z-index: 1;
     }
 
     .hero__split {
@@ -157,22 +190,44 @@
       opacity: 0.7;
     }
 
+    .hero__brand {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6.5vw, 4.8rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.06em;
+      margin-bottom: var(--space-2);
+      background: linear-gradient(165deg, #f5ecd8 8%, #e8c85a 42%, #c9a227 68%, #f0e4c8 92%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 60px rgba(201, 162, 39, 0.25);
+      filter: drop-shadow(0 2px 24px rgba(201, 162, 39, 0.18));
+    }
+
+    .hero__tagline {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(201, 162, 39, 0.82);
+      margin-bottom: var(--space-6);
+    }
+
     .hero__h1 {
       font-family: var(--font-display);
-      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
-      font-weight: 700;
-      line-height: 1.12;
-      letter-spacing: -0.01em;
-      color: var(--white);
-      margin-bottom: var(--space-6);
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 500;
+      line-height: 1.35;
+      letter-spacing: 0.02em;
+      color: var(--silver);
+      margin-bottom: var(--space-5);
     }
 
     .hero__h1 em {
       font-style: italic;
-      background: linear-gradient(135deg, var(--gold-hero-light) 0%, var(--gold-hero) 40%, var(--gold-hero) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--gold-hero-light);
     }
 
     .hero__subtitle {
@@ -329,6 +384,26 @@
       border-radius: 50%;
       background: transparent;
       align-self: center;
+    }
+
+    .hero__orrery-ring::before {
+      content: '';
+      position: absolute;
+      inset: -8%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 210, 120, 0.18) 0%, rgba(201, 162, 39, 0.08) 35%, transparent 72%);
+      animation: orreryHalo 5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes orreryHalo {
+      0%, 100% { opacity: 0.75; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.03); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero__orrery-ring::before { animation: none; opacity: 0.85; }
     }
 
     #orrery-canvas {
@@ -1801,6 +1876,16 @@
          HERO — Full viewport, two-column
          ══════════════════════════════════════════════════════════════════════ -->
     <section class="hero" aria-label="Hero — Your cosmic blueprint">
+      <svg class="hero__constellation" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g stroke-width="1" fill="none">
+          <line x1="120" y1="180" x2="200" y2="140"/><line x1="200" y1="140" x2="280" y2="200"/><line x1="280" y1="200" x2="240" y2="280"/><line x1="240" y1="280" x2="120" y2="180"/>
+          <circle r="3" cx="120" cy="180"/><circle r="3" cx="200" cy="140"/><circle r="3" cx="280" cy="200"/><circle r="3" cx="240" cy="280"/>
+          <line x1="1080" y1="120" x2="1160" y2="80"/><line x1="1160" y1="80" x2="1240" y2="140"/><line x1="1240" y1="140" x2="1180" y2="220"/><line x1="1180" y1="220" x2="1080" y2="120"/>
+          <circle r="2.5" cx="1080" cy="120"/><circle r="2.5" cx="1160" cy="80"/><circle r="2.5" cx="1240" cy="140"/><circle r="2.5" cx="1180" cy="220"/>
+          <line x1="180" y1="620" x2="260" y2="580"/><line x1="260" y1="580" x2="340" y2="640"/><line x1="340" y1="640" x2="300" y2="720"/><line x1="300" y1="720" x2="200" y2="700"/><line x1="200" y1="700" x2="180" y2="620"/>
+          <circle r="2" cx="180" cy="620"/><circle r="2" cx="260" cy="580"/><circle r="2" cx="340" cy="640"/><circle r="2" cx="300" cy="720"/><circle r="2" cx="200" cy="700"/>
+        </g>
+      </svg>
       <div class="hero__split">
 
         <!-- Left: Text content -->
@@ -1809,8 +1894,11 @@
             Powered by VSOP87 Astronomical Precision
           </p>
 
+          <p class="hero__brand" aria-hidden="false">AstroPrecise</p>
+          <p class="hero__tagline">&mdash; Your Cosmic Blueprint</p>
+
           <h1 class="hero__h1">
-            Your personal universe,<br /><em>beautifully revealed.</em>
+            Your personal universe, <em>beautifully revealed.</em>
           </h1>
 
           <p class="hero__subtitle">
