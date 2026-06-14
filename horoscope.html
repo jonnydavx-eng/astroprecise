@@ -103,6 +103,19 @@
       margin: 0 auto; cursor: grab;
     }
     .sphere-wrap canvas { display: block; width: 100%; touch-action: none; }
+    .sphere-controls {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 0.65rem 1rem; margin-top: 0.85rem;
+    }
+    .sphere-selected-label {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(201, 162, 39, 0.88); min-height: 1.2rem;
+    }
+    .sphere-hint {
+      font-size: 0.68rem; color: var(--silver-dim, #8891AA);
+      letter-spacing: 0.04em;
+    }
 
     /* Planet legend */
     .planet-legend {
@@ -929,10 +942,16 @@
 
         <!-- The 3D canvas -->
         <div class="sphere-wrap" id="sphere-wrap" role="region" aria-label="Interactive 3D zodiac ring">
-          <canvas id="zodiac-ring-canvas" aria-label="Zodiac ring — drag to spin, click a sign"></canvas>
+          <canvas id="zodiac-ring-canvas" aria-label="Zodiac ring — drag to spin, tap a sign for today's reading"></canvas>
           <noscript>
             <p style="color:var(--silver);text-align:center;padding:2rem;">Enable JavaScript to use the interactive zodiac ring.</p>
           </noscript>
+        </div>
+        <div class="sphere-controls" aria-live="polite">
+          <p class="sphere-selected-label" id="sphere-selected-label">Drag the ring or tap a sign</p>
+          <button type="button" class="btn btn--gold btn--sm" id="sphere-spin-mine">Spin to my sign</button>
+          <button type="button" class="btn btn--outline btn--sm" id="sphere-spin-random">Lucky spin</button>
+          <span class="sphere-hint">Tap centre star for your birth chart</span>
         </div>
 
         <!-- Planet legend strip -->
@@ -1439,6 +1458,12 @@
     </div>
   </div>
 
+  <script src="js/raf-core.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/zodiac-sphere.js"></script>
+  <script src="js/interpretations.js"></script>
+  <script src="js/profile.js"></script>
+
   <!-- Inline init script -->
   <script>
   (function () {
@@ -1487,9 +1512,6 @@
       if (!info) return;
       var Interp = window.Interpretations;
       if (!Interp || typeof Interp.getDailyHoroscope !== 'function') return;
-
-      // Sync sphere selection highlight
-      if (window.ZodiacSphere) ZodiacSphere.setSelected(signKey);
 
       // Update the "Get Your Personal Birth Chart" CTA with the selected sign context
       var ctaSignEl = document.getElementById('srp-chart-sign-name');
@@ -1644,10 +1666,29 @@
       history.replaceState(null, '', window.location.pathname);
     }
 
-    function selectSign(signKey) {
+    function updateSphereLabel(signKey) {
+      var el = document.getElementById('sphere-selected-label');
+      if (!el) return;
+      if (signKey && SIGNS[signKey]) {
+        el.textContent = 'Reading: ' + SIGNS[signKey].name;
+      } else {
+        el.textContent = 'Drag the ring or tap a sign';
+      }
+    }
+
+    function selectSign(signKey, opts) {
+      opts = opts || {};
       document.querySelectorAll('.sign-card').forEach(function(card) {
         card.classList.toggle('is-active', card.dataset.sign === signKey);
       });
+      if (window.ZodiacSphere) {
+        if (opts.skipSpin) {
+          ZodiacSphere.setSelected(signKey, { instant: true });
+        } else if (typeof ZodiacSphere.spinToSign === 'function') {
+          ZodiacSphere.spinToSign(signKey, { duration: opts.spinDuration || 640 });
+        }
+      }
+      updateSphereLabel(signKey);
       history.replaceState(null, '', '?sign=' + signKey);
       openPanel(signKey);
     }
@@ -1718,12 +1759,43 @@
       // ── Zodiac sphere ────────────────────────────────────────────────────
       var sphereCanvas = document.getElementById('zodiac-ring-canvas');
       if (sphereCanvas && window.ZodiacSphere) {
-        ZodiacSphere.init(sphereCanvas, function(signKey) {
-          selectSign(signKey);
+        ZodiacSphere.onSelectChange = function (key) { updateSphereLabel(key); };
+        ZodiacSphere.init(sphereCanvas, function (signKey) {
+          selectSign(signKey, { skipSpin: true });
           var panel = document.getElementById('sign-reading-panel');
           if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
-        if (userSign) ZodiacSphere.setSelected(userSign);
+        var spinMine = document.getElementById('sphere-spin-mine');
+        if (spinMine) {
+          spinMine.addEventListener('click', function () {
+            var mine = getUserSign();
+            if (!mine || !SIGNS[mine]) {
+              window.location.href = 'chart.html';
+              return;
+            }
+            ZodiacSphere.spinToSign(mine, {
+              duration: 1100,
+              onDone: function () { selectSign(mine, { skipSpin: true }); },
+            });
+          });
+        }
+        var spinRandom = document.getElementById('sphere-spin-random');
+        if (spinRandom) {
+          spinRandom.addEventListener('click', function () {
+            var key = ZodiacSphere.spinRandom({
+              duration: 1400,
+              onDone: function () {
+                var picked = ZodiacSphere.getSelected();
+                if (picked) selectSign(picked, { skipSpin: true });
+              },
+            });
+            if (key) updateSphereLabel(key);
+          });
+        }
+        if (userSign) {
+          ZodiacSphere.spinToSign(userSign, { duration: 900 });
+          updateSphereLabel(userSign);
+        }
       }
 
       // ── Sign-grid toggle ──────────────────────────────────────────────────
@@ -2147,28 +2219,22 @@
         // Auto-open user's own sign on first load (no URL param)
         function tryAutoOpenUser() {
           if (window.Interpretations && typeof Interpretations.getDailyHoroscope === 'function') {
-            selectSign(userSign);
+            selectSign(userSign, { skipSpin: true });
           } else {
             setTimeout(tryAutoOpenUser, 150);
           }
         }
-        setTimeout(tryAutoOpenUser, 400);
+        setTimeout(tryAutoOpenUser, 1100);
       }
     });
   })();
   </script>
 
   <!-- JS -->
-  <script src="js/raf-core.js"></script>
-
   <script src="js/cosmos.js"></script>
   <script src="js/stellar.js"></script>
-  <script src="js/ephemeris.js"></script>
   <script src="js/oracle.js"></script>
-  <script src="js/zodiac-sphere.js"></script>
   <script src="js/chart-render.js"></script>
-  <script src="js/interpretations.js"></script>
-  <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
 </body>
