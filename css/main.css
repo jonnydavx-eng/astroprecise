@@ -580,8 +580,8 @@ h1, h2, h3, h4, h5, h6 {
   height: var(--nav-height);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-8);
+  justify-content: flex-start;
+  gap: var(--space-3);
 }
 
 /* When .navbar__inner is present, reset outer .navbar layout */
@@ -595,6 +595,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  flex-shrink: 0;
   font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
@@ -625,6 +626,10 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-left: var(--space-4);
+  margin-right: var(--space-2);
 }
 
 .navbar__link {
@@ -4772,10 +4777,11 @@ body > .cosmos-solar-system { display: none !important; }
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin-left: var(--space-2);
-  flex: 0 1 auto;
+  margin-left: var(--space-4);
+  margin-right: var(--space-2);
+  flex: 0 0 auto;
   min-width: 0;
-  max-width: min(520px, 42vw);
+  max-width: min(360px, 28vw);
 }
 
 .ap-nav-email-cluster__copy {
@@ -4897,9 +4903,18 @@ body > .cosmos-solar-system { display: none !important; }
   text-align: center;
 }
 
+@media (max-width: 1320px) {
+  .ap-nav-email-cluster__copy { display: none; }
+  .ap-nav-email-cluster { max-width: none; margin-left: var(--space-5); }
+  .navbar__link {
+    padding: var(--space-2) var(--space-2);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+}
+
 @media (max-width: 1100px) {
   .ap-nav-email-cluster__teaser { display: none; }
-  .ap-nav-email-cluster { max-width: none; }
 }
 
 @media (max-width: 900px) {
@@ -6564,7 +6579,9 @@ html, body { overflow-x: clip; max-width: 100%; }
   .navbar__nav { display: none; }
 }
 @media (min-width: 769px) {
-  .navbar__profile-top { margin-left: var(--space-3); }
+  .navbar__profile-top { margin-left: auto; margin-right: var(--space-2); }
+  .navbar__toggle { margin-left: auto; }
+  .navbar__inner:has(.navbar__profile-top) .navbar__toggle { margin-left: 0; }
 }
 
 /* Saturn with ring — appended live by app.js */
