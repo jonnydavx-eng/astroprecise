@@ -152,27 +152,27 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   // scale levels 0–6 — zoom dial = space, scroll = time
   const SCALE_LEVELS = [
-    { id: 0, name: 'Earth', hud: 'Earth close-up · live VSOP87',
+    { id: 0, name: 'Earth', hud: 'Earth close-up',
       camRadius: 4.5, camMin: 3, camMax: 8, camEl: 7 * D2R, camAz: -0.6, targetEarth: true,
-      honesty: 'Earth close-up · positions live (VSOP87) · distances schematic' },
+      honesty: 'Positions live (VSOP87) · distances schematic' },
     { id: 1, name: 'Inner', hud: 'Inner solar system',
       camRadius: 22, camMin: 14, camMax: 38, camEl: 22 * D2R, camAz: -0.6, targetEarth: false,
-      honesty: 'Inner solar system · positions live · distances schematic' },
+      honesty: 'Positions live (VSOP87) · distances schematic' },
     { id: 2, name: 'System', hud: 'Full solar system',
       camRadius: 48, camMin: 32, camMax: 160, camEl: 26 * D2R, camAz: -0.6, targetEarth: false,
-      honesty: 'Solar system instrument · positions live (VSOP87) · distances schematic' },
-    { id: 3, name: 'Oort', hud: 'Oort cloud · illustrative shell',
+      honesty: 'Positions live (VSOP87) · distances schematic' },
+    { id: 3, name: 'Oort', hud: 'Oort cloud',
       camRadius: 108, camMin: 78, camMax: 175, camEl: 20 * D2R, camAz: -0.45, targetEarth: false,
-      honesty: 'Oort cloud · illustrative shell around the system · not measured distances' },
-    { id: 4, name: 'Stars', hud: 'Local stars · schematic directions',
+      honesty: 'Illustrative shell · not measured distances' },
+    { id: 4, name: 'Stars', hud: 'Local stars',
       camRadius: 310, camMin: 200, camMax: 520, camEl: 24 * D2R, camAz: -0.5, targetEarth: false,
-      honesty: 'Nearby stars · directions schematic · not true 3D distances' },
-    { id: 5, name: 'Galaxy', hud: 'Milky Way · Sun is one point',
+      honesty: 'Directions schematic · not true 3D distances' },
+    { id: 5, name: 'Galaxy', hud: 'Milky Way',
       camRadius: 780, camMin: 520, camMax: 1200, camEl: 52 * D2R, camAz: -0.28, targetEarth: false,
-      honesty: 'Milky Way · illustrative spiral · Sun marked in the Orion arm' },
-    { id: 6, name: 'Cosmos', hud: 'Deep field · distant galaxies',
+      honesty: 'Illustrative spiral · Sun marked in the Orion arm' },
+    { id: 6, name: 'Cosmos', hud: 'Deep field',
       camRadius: 1950, camMin: 1300, camMax: 3000, camEl: 58 * D2R, camAz: 0.05, targetEarth: false,
-      honesty: 'Deep field · decorative galaxy sprites · not a measured sky survey' },
+      honesty: 'Decorative galaxy sprites · not a measured survey' },
   ];
   let scaleLevel = 2;
   let scaleAnimActive = false, scaleAnimStart = 0;
@@ -1019,10 +1019,10 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       uniforms: {
         uSunDir: earthUniforms.uSunDirWorld,            // shared world-space dir (by reference)
         uCamPos: { value: new THREE.Vector3() },
-        uIntensity: { value: composer ? 0.82 : 1.15 }, // dimmer under bloom so the rim reads blue, not blown white
+        uIntensity: { value: composer ? 0.5 : 0.8 }, // kept low so the rim stays a thin glow, not a bloomed halo
       },
       vertexShader: 'varying vec3 vWN; varying vec3 vWP;\n void main(){ vec4 wp = modelMatrix * vec4(position,1.0); vWP = wp.xyz; vWN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * wp; }',
-      fragmentShader: 'uniform vec3 uSunDir; uniform vec3 uCamPos; uniform float uIntensity; varying vec3 vWN; varying vec3 vWP;\n void main(){\n   vec3 V = normalize(uCamPos - vWP);\n   vec3 N = normalize(vWN);\n   float fres = pow(1.0 - max(dot(N,V),0.0), 2.5);\n   float ndl = dot(N, normalize(uSunDir));\n   float dayMask = smoothstep(-0.25, 0.35, ndl);\n   float band = smoothstep(0.0, 0.35, 1.0 - abs(ndl));\n   vec3 rayleigh = vec3(0.22, 0.45, 0.95);\n   vec3 sunset   = vec3(0.95, 0.45, 0.18);\n   vec3 col = mix(rayleigh, sunset, band * 0.6);\n   float a = clamp(fres * dayMask * uIntensity, 0.0, 1.0);\n   gl_FragColor = vec4(col * (0.6 + fres * 0.7), a * 0.9);\n }',
+      fragmentShader: 'uniform vec3 uSunDir; uniform vec3 uCamPos; uniform float uIntensity; varying vec3 vWN; varying vec3 vWP;\n void main(){\n   vec3 V = normalize(uCamPos - vWP);\n   vec3 N = normalize(vWN);\n   float fres = pow(1.0 - max(dot(N,V),0.0), 4.5);\n   float ndl = dot(N, normalize(uSunDir));\n   float dayMask = smoothstep(-0.2, 0.4, ndl);\n   float band = smoothstep(0.0, 0.3, 1.0 - abs(ndl));\n   vec3 rayleigh = vec3(0.20, 0.42, 0.9);\n   vec3 sunset   = vec3(0.9, 0.42, 0.16);\n   vec3 col = mix(rayleigh, sunset, band * 0.55);\n   float a = clamp(fres * dayMask * uIntensity, 0.0, 1.0);\n   gl_FragColor = vec4(col * (0.35 + fres * 0.4), a * 0.7);\n }',
       blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
     });
   }
@@ -1608,7 +1608,9 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
     buildStars(); buildSun(); buildPlanets();
     buildAsteroids();
-    buildHalley();
+    // buildHalley();  // retired — the illustrative comet + its blue dashed orbit were
+    //                    cool-blue clutter (off the warm palette). halleyGroup stays null;
+    //                    updateHalley() and all visibility paths are null-guarded.
     buildGalaxyLayers();
     tuneSunGlowForComposer(perfTier);
     updatePositions();
