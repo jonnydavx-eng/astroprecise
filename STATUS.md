@@ -1,8 +1,9 @@
 # STATUS — AstroPrecise · 2026-06-14
 
-**State:** Live at **https://astroprecise.app/**. Latest includes **sw `ap-v93`** (shared-sky scroll parallax + tiered bloom + scroll-drive lock). Pushed to `main`; auto-deploys via `deploy-pages.yml` → `gh-pages`. To see changes: **hard-refresh / reinstall the PWA** (the service worker caches the shell; each `ap-vNN` bump replaces it).
+**State:** Live at **https://astroprecise.app/**. Latest includes **sw `ap-v94`** (visual masterpiece: animated sun, planet atmospheres, cinematic hero). Pushed to `main`; auto-deploys via `deploy-pages.yml` → `gh-pages`. To see changes: **hard-refresh / reinstall the PWA** (the service worker caches the shell; each `ap-vNN` bump replaces it).
 
 ## Shipped since ap-v83 (most recent first)
+- **ap-v94 — Visual masterpiece (Grok):** animated sun shader + corona rays, per-planet atmosphere rims, Earth night lights, twinkling starfield; hero uses Grok ref image + constellation overlay + brand typography.
 - **ap-v93 — Shared sky + tiered bloom (Grok):** cosmos parallax tied to hero scroll clock; RafCore-tier bloom (mid/light, high/full); scroll-drive locks on manual time control until Now.
 - **ap-v92 — 3D hero recomposition (Grok):** model-first layout (wider orrery column, 640px canvas), unified `.orrery-console` instrument deck, trimmed hero copy, mask feather tuned (outer planets no longer clip), `resetScrollDrive` resets camera dolly, duplicate date HUD removed (orrery-webgl owns it), sw precache deduped.
 - **ap-v91 — Domain + orrery audit (Grok):** `astroprecise.app` global URL migration (43 files + 12 sign pages regen); Claude Phase 2 merged — scroll-linked `setScrollDrive` + ACES/UnrealBloom; fixed EffectComposer init order (scene/camera before composer); RafCore scroll drive.
