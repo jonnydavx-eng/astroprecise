@@ -574,22 +574,26 @@ h1, h2, h3, h4, h5, h6 {
   gap: var(--space-8);
 }
 
-/* Inner flex wrapper used on sub-pages — replaces .navbar layout */
+/* Three-zone grid: logo | primary links | actions */
 .navbar__inner {
   width: 100%;
   height: var(--nav-height);
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: flex-start;
-  gap: var(--space-2);
+  column-gap: clamp(8px, 1.5vw, 20px);
   min-width: 0;
 }
+
+.navbar__logo { grid-column: 1; }
+.navbar__nav { grid-column: 2; }
+.navbar__end { grid-column: 3; }
 
 /* When .navbar__inner is present, reset outer .navbar layout */
 .navbar:has(.navbar__inner) {
   display: block;
   height: auto;
-  padding: 0 var(--space-6);
+  padding: 0 clamp(var(--space-4), 3vw, var(--space-6));
 }
 
 .navbar__end {
@@ -597,8 +601,8 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   gap: var(--space-2);
   flex-shrink: 0;
-  margin-left: auto;
-  padding-left: var(--space-2);
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .navbar__logo {
@@ -635,19 +639,107 @@ h1, h2, h3, h4, h5, h6 {
 .navbar__nav {
   display: flex;
   align-items: center;
-  gap: 2px;
-  flex: 1 1 auto;
+  justify-content: center;
+  gap: clamp(2px, 0.4vw, 8px);
   min-width: 0;
-  margin-left: var(--space-3);
-  margin-right: var(--space-1);
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 20px), transparent 100%);
-  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 20px), transparent 100%);
+  margin: 0;
+  overflow: visible;
 }
 
 .navbar__nav .navbar__link {
   flex-shrink: 0;
   white-space: nowrap;
+}
+
+/* Desktop "More" flyout */
+.navbar__more {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.navbar__more-btn {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver);
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color var(--transition-base), background var(--transition-base);
+}
+
+.navbar__more-btn::after {
+  content: '\25BE';
+  margin-left: 4px;
+  font-size: 0.7em;
+  opacity: 0.7;
+}
+
+.navbar__more-btn:hover,
+.navbar__more-btn.active,
+.navbar__more.is-open .navbar__more-btn {
+  color: var(--white);
+  background: var(--surface);
+}
+
+.navbar__more-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  max-width: min(320px, 90vw);
+  max-height: min(70vh, 480px);
+  overflow-y: auto;
+  background: rgba(8, 6, 10, 0.98);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  border-radius: 12px;
+  padding: var(--space-3);
+  z-index: 200;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+}
+
+.navbar__more-group + .navbar__more-group {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(201, 162, 39, 0.14);
+}
+
+.navbar__more-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 var(--space-2) var(--space-2);
+  font-weight: 700;
+}
+
+.navbar__more-panel .navbar__link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: 0.72rem;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 6px;
+}
+
+.navbar__more-panel .navbar__link::after {
+  display: none;
+}
+
+.navbar__drawer-heading {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: var(--space-2) var(--space-2) var(--space-1);
+  font-weight: 700;
 }
 
 .navbar__link {
@@ -3779,16 +3871,6 @@ body > .cosmos-solar-system { display: none !important; }
     font-size: 1.8rem;
   }
 
-  .navbar__nav,
-  .navbar__actions {
-    display: none;
-  }
-
-  .navbar__hamburger,
-  .navbar__toggle {
-    display: flex;
-  }
-
   .compat-selectors {
     grid-template-columns: 1fr;
     text-align: center;
@@ -4805,37 +4887,7 @@ body > .cosmos-solar-system { display: none !important; }
 .ap-nav-email-cluster {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  margin-left: 0;
-  margin-right: 0;
   flex: 0 0 auto;
-  min-width: 0;
-  max-width: min(240px, 22vw);
-}
-
-.ap-nav-email-cluster__copy {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  text-align: left;
-}
-
-.ap-nav-email-cluster__eyebrow {
-  font-size: 0.52rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold, #C9A227);
-  font-weight: 700;
-}
-
-.ap-nav-email-cluster__teaser {
-  font-size: 0.68rem;
-  color: var(--silver-dim, #8891AA);
-  line-height: 1.35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .ap-nav-updates {
@@ -4857,6 +4909,11 @@ body > .cosmos-solar-system { display: none !important; }
   cursor: pointer;
   font-family: inherit;
   transition: background 0.2s, box-shadow 0.2s;
+}
+
+.ap-nav-updates--icon .eng-i {
+  width: 14px;
+  height: 14px;
 }
 
 .ap-nav-updates:hover {
@@ -4932,18 +4989,11 @@ body > .cosmos-solar-system { display: none !important; }
   text-align: center;
 }
 
-@media (max-width: 1280px) {
-  .navbar__nav .navbar__link[data-nav-tier="low"] { display: none; }
-}
-
-@media (max-width: 1120px) {
-  .navbar__nav .navbar__link[data-nav-tier="mid"] { display: none; }
-}
-
 @media (max-width: 1320px) {
-  .ap-nav-email-cluster__copy { display: none; }
-  .ap-nav-email-cluster { max-width: none; }
-  .navbar__link {
+  .ap-nav-updates__text { display: none; }
+  .ap-nav-updates--icon { padding: 7px 10px; }
+  .navbar__link,
+  .navbar__more-btn {
     padding: var(--space-2) var(--space-2);
     font-size: 0.72rem;
     letter-spacing: 0.1em;
@@ -4952,8 +5002,36 @@ body > .cosmos-solar-system { display: none !important; }
   .navbar__profile-top { padding: 7px 10px; }
 }
 
-@media (max-width: 1024px) {
-  .navbar__nav .navbar__link[data-nav-tier="mid"] { display: none; }
+/* Tablet + mobile: hamburger nav, no desktop link row */
+@media (max-width: 1023px) {
+  .navbar__nav,
+  .navbar__more {
+    display: none !important;
+  }
+
+  .navbar__hamburger,
+  .navbar__toggle {
+    display: flex;
+  }
+
+  .ap-nav-email-cluster {
+    display: none;
+  }
+
+  .navbar__logo .logo-text {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .navbar__hamburger,
+  .navbar__toggle {
+    display: none !important;
+  }
+
+  .navbar__mobile-menu {
+    display: none !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -6532,6 +6610,14 @@ html, body { overflow-x: clip; max-width: 100%; }
   align-items: stretch;
   max-width: 100%;
 }
+.bottom-nav__tabs {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-width: 0;
+  padding: 0 4px;
+}
 .bottom-nav__scroll {
   flex: 1;
   min-width: 0;
@@ -6540,8 +6626,6 @@ html, body { overflow-x: clip; max-width: 100%; }
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
-  mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 28px), transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 28px), transparent 100%);
 }
 .bottom-nav__scroll::-webkit-scrollbar { display: none; }
 .bottom-nav__inner {
@@ -6605,7 +6689,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   color: var(--gold-pale, #EFE3C0);
   font-weight: 700;
 }
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .bottom-nav { display: block; }
   body {
     padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
@@ -6622,10 +6706,12 @@ html, body { overflow-x: clip; max-width: 100%; }
   .offline-ready-pill {
     bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   }
-  .navbar__nav { display: none; }
-  .navbar__end .ap-nav-email-cluster { display: none; }
-  .navbar__profile-top span { display: inline; }
-  .navbar__profile-top { padding: 7px 14px; }
+  .navbar__profile-top span { display: none; }
+  .navbar__profile-top { padding: 7px 10px; }
+}
+
+@media (max-width: 480px) {
+  .navbar__logo .logo-text { display: none; }
 }
 
 /* Saturn with ring — appended live by app.js */
