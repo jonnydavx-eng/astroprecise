@@ -835,6 +835,82 @@
     /* Hide competing decorative corner solar system — the real orrery is the hero */
     .hero .cosmos-solar-system,
     body > .cosmos-solar-system { display: none !important; }
+    .orrery-scale-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem 0.65rem;
+      width: 100%;
+      margin-top: var(--space-1);
+    }
+    .orrery-scale-dial {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 2px;
+      border-radius: 999px;
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      background: rgba(8, 6, 4, 0.35);
+    }
+    .orrery-scale-btn {
+      font-family: var(--font-ui, Inter, system-ui, sans-serif);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: rgba(232, 224, 208, 0.72);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .orrery-scale-btn:hover { color: var(--gold-pale); border-color: rgba(201, 162, 39, 0.35); }
+    .orrery-scale-btn.active {
+      color: var(--gold-hero-light);
+      border-color: rgba(201, 162, 39, 0.55);
+      background: rgba(201, 162, 39, 0.12);
+      box-shadow: inset 0 1px 0 rgba(232, 224, 208, 0.08);
+    }
+    .orrery-scale-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      color: rgba(201, 162, 39, 0.82);
+      white-space: nowrap;
+    }
+    .orrery-honesty-chip {
+      font-size: 0.54rem;
+      letter-spacing: 0.05em;
+      line-height: 1.35;
+      color: rgba(168, 158, 136, 0.82);
+      text-align: center;
+      max-width: 34rem;
+      padding: 0 0.5rem;
+    }
+    .orrery-layer-toggles {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      justify-content: center;
+    }
+    .orrery-toggle {
+      font-size: 0.54rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      background: rgba(5, 4, 6, 0.4);
+      color: rgba(168, 158, 136, 0.85);
+      cursor: pointer;
+    }
+    .orrery-toggle.active {
+      border-color: rgba(201, 162, 39, 0.5);
+      color: var(--gold-light);
+      background: rgba(201, 162, 39, 0.1);
+    }
+
     .orrery-timeline__label {
       display: flex;
       align-items: center;
@@ -2427,10 +2503,25 @@
                 aria-label="The Living Orrery – real solar system positions starting from Earth. Drag to scrub time, scroll the page to advance the sky."
                 style="position:relative;z-index:1;"
               ></canvas>
-              <div class="orrery-hint" aria-hidden="true">✦&nbsp; drag through time &middot; scroll page to advance</div>
+              <div class="orrery-hint" aria-hidden="true">✦&nbsp; drag through time &middot; scroll page to advance &middot; zoom dial for space</div>
             </div>
 
             <div class="orrery-console__deck">
+              <p class="orrery-honesty-chip" id="orrery-honesty-chip">Solar system instrument · positions live (VSOP87) · distances schematic</p>
+              <div class="orrery-scale-row" role="group" aria-label="Zoom scale for the living orrery">
+                <span class="orrery-scale-label" id="orrery-scale-label">Full solar system</span>
+                <div class="orrery-scale-dial">
+                  <button type="button" class="orrery-scale-btn" data-scale="0" aria-pressed="false">Earth</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="1" aria-pressed="false">Inner</button>
+                  <button type="button" class="orrery-scale-btn active" data-scale="2" aria-pressed="true">System</button>
+                </div>
+                <button type="button" class="orrery-btn" id="orrery-replay-intro" aria-label="Replay the Earth to solar system intro">Replay intro</button>
+                <div class="orrery-layer-toggles" role="group" aria-label="Orrery layer toggles">
+                  <button type="button" class="orrery-toggle" data-layer="orbits" aria-pressed="false">Orbits</button>
+                  <button type="button" class="orrery-toggle active" data-layer="labels" aria-pressed="true">Labels</button>
+                  <button type="button" class="orrery-toggle" data-layer="asteroids" aria-pressed="false">Asteroids</button>
+                </div>
+              </div>
               <div class="orrery-controls" role="group" aria-label="Time controls for the living orrery">
                 <button class="orrery-btn active" data-speed="0" id="orrery-pause" aria-label="Pause">Pause</button>
                 <button class="orrery-btn" data-speed="1" id="orrery-1x" aria-label="Real time">1×</button>
@@ -3356,38 +3447,68 @@
         });
       })();
 
-      // Layer toggles for the hero 3D solar system (orbits, labels, asteroids) – asteroids off for clean view
-      (function () {
-        var toggles = document.querySelectorAll('.orrery-toggle');
-        if (!toggles.length || !window.Orrery3D) return;
+      // Scale dial + layer toggles + replay intro
+      (function wireOrreryInstrument() {
+        function applyLayers(state) {
+          if (!window.Orrery3D) return;
+          if (typeof Orrery3D.setShowOrbits === 'function') Orrery3D.setShowOrbits(state.orbits);
+          if (typeof Orrery3D.setShowLabels === 'function') Orrery3D.setShowLabels(state.labels);
+          if (typeof Orrery3D.setShowAsteroids === 'function') Orrery3D.setShowAsteroids(state.asteroids);
+          if (typeof Orrery3D.setShowParticles === 'function') Orrery3D.setShowParticles(false);
+        }
 
-        // defaults for clean hero view (no clutter: asteroids/particles off)
         var state = { orbits: false, labels: true, asteroids: false };
 
-        toggles.forEach(function (btn) {
+        document.querySelectorAll('.orrery-toggle').forEach(function (btn) {
           var layer = btn.dataset.layer;
+          if (!layer) return;
           btn.classList.toggle('active', !!state[layer]);
+          btn.setAttribute('aria-pressed', state[layer] ? 'true' : 'false');
           btn.addEventListener('click', function () {
             state[layer] = !state[layer];
             btn.classList.toggle('active', state[layer]);
+            btn.setAttribute('aria-pressed', state[layer] ? 'true' : 'false');
+            applyLayers(state);
+          });
+        });
 
-            if (layer === 'orbits' && typeof Orrery3D.setShowOrbits === 'function') {
-              Orrery3D.setShowOrbits(state[layer]);
-            }
-            if (layer === 'labels' && typeof Orrery3D.setShowLabels === 'function') {
-              Orrery3D.setShowLabels(state[layer]);
-            }
-            if (layer === 'asteroids' && typeof Orrery3D.setShowAsteroids === 'function') {
-              Orrery3D.setShowAsteroids(state[layer]);
+        document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var lv = parseInt(btn.dataset.scale, 10);
+            if (window.Orrery3D && typeof Orrery3D.setScaleLevel === 'function') {
+              Orrery3D.setScaleLevel(lv);
             }
           });
         });
 
-        // initial sync for clean hero
-        if (typeof Orrery3D.setShowOrbits === 'function') Orrery3D.setShowOrbits(state.orbits);
-        if (typeof Orrery3D.setShowLabels === 'function') Orrery3D.setShowLabels(state.labels);
-        if (typeof Orrery3D.setShowAsteroids === 'function') Orrery3D.setShowAsteroids(state.asteroids);
-        if (typeof Orrery3D.setShowParticles === 'function') Orrery3D.setShowParticles(false);
+        var replay = document.getElementById('orrery-replay-intro');
+        if (replay) {
+          replay.addEventListener('click', function () {
+            if (window.Orrery3D && typeof Orrery3D.restartIntro === 'function') {
+              Orrery3D.restartIntro();
+            }
+          });
+        }
+
+        function boot() {
+          applyLayers(state);
+          if (window.Orrery3D && typeof Orrery3D.getScaleLevel === 'function') {
+            document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
+              var lv = parseInt(btn.dataset.scale, 10);
+              var on = Orrery3D.getScaleLevel() === lv;
+              btn.classList.toggle('active', on);
+              btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            });
+          }
+        }
+
+        if (window.Orrery3D) boot();
+        else {
+          var tries = 0;
+          var poll = setInterval(function () {
+            if (window.Orrery3D || ++tries > 80) { clearInterval(poll); boot(); }
+          }, 100);
+        }
       })();
     })();
 
