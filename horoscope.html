@@ -279,7 +279,7 @@
     .planet-pill[data-planet="Neptune"] .planet-pill__symbol { --planet-pill-col:#7E6BB0; border-color:rgba(60,90,200,0.4); background:radial-gradient(circle at 35% 30%,#90a8f0,#2040a0 60%,#081840); }
     .planet-pill[data-planet="Pluto"]   .planet-pill__symbol { --planet-pill-col:#CC88AA; border-color:rgba(120,80,160,0.4); background:radial-gradient(circle at 35% 30%,#d0a0c0,#7840a0 60%,#280840); }
 
-    /* ---- Sign grid — AstroForge card gallery ---- */
+    /* ---- Sign grid — zodiac card gallery ---- */
     .sign-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -288,7 +288,7 @@
     @media (max-width: 900px) { .sign-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 600px) { .sign-grid { grid-template-columns: repeat(2, 1fr); } }
 
-    /* ---- Sign card — AstroForge premium dark card ---- */
+    /* ---- Sign card — premium zodiac card ---- */
     .sign-card {
       background: #0d0a07 center top / cover no-repeat;
       border: 1px solid rgba(201, 162, 39, 0.22);
@@ -416,7 +416,7 @@
     .sign-reading-panel__inner {
       position: relative;
       border-radius: 28px;
-      background: linear-gradient(135deg, rgba(13, 10, 7, 0.97) 0%, rgba(19, 16, 12, 0.97) 60%, rgba(18, 11, 28, 0.97) 100%);
+      background: linear-gradient(135deg, rgba(13, 10, 7, 0.97) 0%, rgba(19, 16, 12, 0.97) 60%, rgba(22, 14, 10, 0.97) 100%);
       padding: var(--space-8);
       margin-top: var(--space-8);
       -webkit-backdrop-filter: blur(24px);
@@ -430,7 +430,7 @@
       inset: 0;
       border-radius: inherit;
       padding: 1.5px;
-      background: linear-gradient(135deg, #c9a227 0%, rgba(196, 146, 10, 0.6) 20%, rgba(90, 60, 140, 0.5) 50%, rgba(92, 74, 110, 0.5) 80%, #c9a227 100%);
+      background: linear-gradient(135deg, #c9a227 0%, rgba(201, 162, 39, 0.55) 25%, rgba(110, 26, 38, 0.35) 55%, rgba(168, 142, 88, 0.35) 80%, #c9a227 100%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -450,17 +450,30 @@
       gap: var(--space-4);
       margin-bottom: var(--space-6);
       padding-bottom: var(--space-5);
-      border-bottom: 1px solid rgba(196, 146, 10, 0.15);
+      border-bottom: 1px solid rgba(201, 162, 39, 0.15);
     }
     .sign-reading-panel__title-group {
       display: flex;
       align-items: center;
       gap: var(--space-4);
     }
+    .srp-card-thumb {
+      flex-shrink: 0; width: 68px; height: auto; aspect-ratio: 2 / 3;
+      border-radius: 8px; border: 1px solid rgba(201,162,39,0.38);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 16px rgba(201,162,39,0.1);
+      object-fit: cover; object-position: center top;
+    }
+    .srp-guide-link {
+      display: inline-block; margin-top: 6px;
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(201,162,39,0.78); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .srp-guide-link:hover { color: var(--color-gold-pale); }
     .sign-reading-panel__glyph {
       font-size: 2.8rem;
       line-height: 1;
-      filter: drop-shadow(0 0 10px rgba(196, 146, 10, 0.55));
+      filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.55));
     }
     .sign-reading-panel__sign-name {
       font-family: var(--font-display);
@@ -498,8 +511,8 @@
       .sign-reading-panel__inner { padding: var(--space-5) var(--space-4); }
     }
     .reading-card {
-      background: rgba(92, 74, 110, 0.08);
-      border: 1px solid rgba(91, 127, 199, 0.2);
+      background: rgba(201, 162, 39, 0.06);
+      border: 1px solid rgba(201, 162, 39, 0.18);
       border-radius: var(--radius-lg);
       padding: var(--space-5);
     }
@@ -536,8 +549,8 @@
     /* Element-themed reading card borders */
     .sign-reading-panel[data-element="fire"] .reading-card { border-color: rgba(180, 66, 50, 0.3); }
     .sign-reading-panel[data-element="earth"] .reading-card { border-color: rgba(14, 92, 58, 0.3); }
-    .sign-reading-panel[data-element="air"] .reading-card { border-color: rgba(92, 74, 110, 0.35); }
-    .sign-reading-panel[data-element="water"] .reading-card { border-color: rgba(27, 95, 170, 0.35); }
+    .sign-reading-panel[data-element="air"] .reading-card { border-color: rgba(168, 142, 88, 0.32); }
+    .sign-reading-panel[data-element="water"] .reading-card { border-color: rgba(74, 122, 138, 0.32); }
 
     /* ---- Lunar cycle indicator ---- */
     .lunar-cycle-strip {
@@ -1018,16 +1031,17 @@
           <div class="sign-reading-panel__inner">
             <div class="sign-reading-panel__header">
               <div class="sign-reading-panel__title-group">
-                <span class="sign-reading-panel__glyph" id="srp-glyph" aria-hidden="true"></span>
+                <img class="srp-card-thumb" id="srp-card-thumb" src="assets/images/zodiac-cards/aries.jpg" alt="" width="68" height="102" decoding="async" />
                 <div>
                   <h2 class="sign-reading-panel__sign-name" id="srp-sign-name"></h2>
                   <p class="sign-reading-panel__date" id="srp-date"></p>
                   <span class="srp-element-text" id="srp-element-text"></span>
+                  <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide →</a>
                 </div>
               </div>
               <div class="srp-moon-wrap">
                 <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
-                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(196,146,10,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
+                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(201,162,39,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
                 <!-- Lunar cycle indicator -->
                 <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
                   <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
@@ -1420,7 +1434,7 @@
       leo:'☉ Sun', virgo:'☿ Mercury', libra:'♀ Venus', scorpio:'♇ Pluto',
       sagittarius:'♃ Jupiter', capricorn:'♄ Saturn', aquarius:'♅ Uranus', pisces:'♆ Neptune'
     };
-    var ELEMENT_LABELS = { fire:'Fire Sign ✦', earth:'Earth Sign ⬡', air:'Air Sign ◈', water:'Water Sign ◉' };
+    var ELEMENT_LABELS = { fire:'Fire sign', earth:'Earth sign', air:'Air sign', water:'Water sign' };
     var SIGN_KEYS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
 
     function openPanel(signKey) {
@@ -1446,7 +1460,16 @@
       var elText = document.getElementById('srp-element-text');
       if (elText) elText.textContent = ELEMENT_LABELS[info.element] || '';
 
-      document.getElementById('srp-glyph').textContent = info.glyph;
+      var thumb = document.getElementById('srp-card-thumb');
+      if (thumb) {
+        thumb.src = 'assets/images/zodiac-cards/' + signKey + '.jpg';
+        thumb.alt = info.name + ' zodiac card';
+      }
+      var guide = document.getElementById('srp-guide-link');
+      if (guide) {
+        guide.href = signKey + '.html';
+        guide.textContent = 'Full ' + info.name + ' guide →';
+      }
       document.getElementById('srp-sign-name').textContent = info.name;
       document.getElementById('srp-date').textContent = info.dates + ' · ' + new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
       document.getElementById('srp-overview').textContent = data.overview || '';
