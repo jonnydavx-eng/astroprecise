@@ -2688,40 +2688,19 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true">
-            <img src="img/logo.svg" alt="" width="32" height="32" />
-          </div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-
-        <div class="navbar__nav" role="list" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a></noscript>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
         </div>
-
-        <button
-          class="navbar__toggle"
-          id="nav-toggle"
-          aria-controls="nav-mobile-menu"
-          aria-expanded="false"
-          aria-label="Toggle navigation menu"
-        >
-          <span></span><span></span><span></span>
-        </button>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </div>
-
-      <!-- Mobile menu -->
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
-        <a href="index.html" class="navbar__link active" aria-current="page">Home</a>
-        <a href="chart.html" class="navbar__link">Chart</a>
-        <a href="horoscope.html" class="navbar__link">Horoscope</a>
-        <a href="lifepath.html" class="navbar__link">Life Path</a>
-        <a href="why.html" class="navbar__link">Why</a>
-        <a href="compatibility.html" class="navbar__link">Compatibility</a>
-        <a href="ephemeris.html" class="navbar__link">Instrument</a>
-        <a href="transits.html" class="navbar__link">Transits</a>
-        <a href="shop.html" class="navbar__link">Shop</a>
-        <a href="profile.html" class="navbar__link">My Profile</a>
-      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -3586,30 +3565,7 @@
       apply();
     })();
 
-    /* ── 3. Mobile nav hamburger ───────────────────────────────────────── */
-    (function () {
-      var btn  = document.getElementById('nav-toggle');
-      var menu = document.getElementById('nav-mobile-menu');
-      if (!btn || !menu) return;
-      btn.addEventListener('click', function () {
-        var expanded = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', String(!expanded));
-        menu.setAttribute('aria-hidden', String(expanded));
-        menu.classList.toggle('open', !expanded);
-        btn.classList.toggle('open', !expanded);
-      });
-      // close on outside click
-      document.addEventListener('click', function (e) {
-        if (!btn.contains(e.target) && !menu.contains(e.target)) {
-          btn.setAttribute('aria-expanded', 'false');
-          menu.setAttribute('aria-hidden', 'true');
-          menu.classList.remove('open');
-          btn.classList.remove('open');
-        }
-      });
-    })();
-
-    /* ── 4. Hero chart CTA form ────────────────────────────────────────── */
+    /* ── 3. Hero chart CTA form ────────────────────────────────────────── */
     (function () {
       var form = document.getElementById('hero-chart-form');
       if (!form) return;

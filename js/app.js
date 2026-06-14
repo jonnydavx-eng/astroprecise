@@ -36,6 +36,22 @@ const AstroApp = (() => {
 
   // ── Navbar ────────────────────────────────────────────────────────────────
 
+  function closeNavDrawer() {
+    const toggle = document.querySelector('.navbar__toggle');
+    const mobile = document.querySelector('.navbar__mobile-menu');
+    if (!mobile || !mobile.classList.contains('open')) return;
+    mobile.classList.remove('open');
+    if (toggle) {
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    mobile.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('nav-drawer-open');
+    if (!document.querySelector('.modal-backdrop.open')) {
+      document.body.style.overflow = '';
+    }
+  }
+
   function initNavbar() {
     const navbar = document.querySelector('.navbar');
     const toggle = document.querySelector('.navbar__toggle');
@@ -61,15 +77,22 @@ const AstroApp = (() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
       });
 
-      mobile.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          mobile.classList.remove('open');
-          toggle.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-          mobile.setAttribute('aria-hidden', 'true');
-          document.body.classList.remove('nav-drawer-open');
-          document.body.style.overflow = '';
-        });
+      mobile.addEventListener('click', (e) => {
+        if (e.target.closest('a.navbar__link')) closeNavDrawer();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape' || !mobile.classList.contains('open')) return;
+        closeNavDrawer();
+        toggle.focus();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!mobile.classList.contains('open')) return;
+        const inner = document.querySelector('.navbar__inner');
+        if (inner && !inner.contains(e.target) && !mobile.contains(e.target)) {
+          closeNavDrawer();
+        }
       });
     }
   }
@@ -119,7 +142,14 @@ const AstroApp = (() => {
     const desktop = document.querySelector('.navbar__nav');
     const mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) desktop.innerHTML = linkHtml(NAV_CORE, true);
-    if (mobile) mobile.innerHTML = linkHtml(NAV_CORE.concat(NAV_EXTRAS).concat([['profile.html', 'Profile']]), false);
+    if (mobile) {
+      mobile.innerHTML =
+        linkHtml(NAV_CORE, false)
+        + '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
+        + linkHtml(NAV_EXTRAS, false)
+        + '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
+        + linkHtml([['profile.html', 'Profile']], false);
+    }
   }
 
   /** Right rail: email CTA, profile, hamburger — keeps center nav from overlapping. */
@@ -131,10 +161,9 @@ const AstroApp = (() => {
     if (!end) {
       end = document.createElement('div');
       end.className = 'navbar__end';
-      if (toggle) inner.insertBefore(end, toggle);
-      else inner.appendChild(end);
-      if (toggle) end.appendChild(toggle);
+      inner.appendChild(end);
     }
+    if (toggle && !end.contains(toggle)) end.appendChild(toggle);
     inner.querySelectorAll('.navbar__profile-top, .ap-nav-email-cluster').forEach(function (el) {
       if (!end.contains(el)) {
         var tgl = end.querySelector('.navbar__toggle');
@@ -289,7 +318,8 @@ const AstroApp = (() => {
       modal.classList.remove('open');
       modal.style.display = 'none';
       modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
+      const drawerOpen = document.querySelector('.navbar__mobile-menu.open');
+      if (!drawerOpen) document.body.style.overflow = '';
     }
   }
 
@@ -652,6 +682,7 @@ const AstroApp = (() => {
     openModal,
     closeModal,
     ensureNavEnd,
+    closeNavDrawer,
     initTabs,
     animateScoreBars,
     animateCircularProgress,
@@ -1600,6 +1631,7 @@ if ('serviceWorker' in navigator) {
 
   function openEmailSignup(source) {
     if (document.body.classList.contains('preloader-active')) return;
+    if (window.AstroApp && typeof AstroApp.closeNavDrawer === 'function') AstroApp.closeNavDrawer();
     if (!document.getElementById('ap-email-modal')) injectEmailModal();
     var modal = document.getElementById('ap-email-modal');
     if (modal) modal.dataset.source = source || 'modal';

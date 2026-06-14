@@ -926,35 +926,16 @@
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" role="menubar">
-          <a href="index.html" class="navbar__link" role="menuitem">Home</a>
-          <a href="chart.html" class="navbar__link" role="menuitem">Chart</a>
-          <a href="horoscope.html" class="navbar__link" role="menuitem">Horoscope</a>
-          <a href="lifepath.html" class="navbar__link" role="menuitem">Life Path</a>
-          <a href="compatibility.html" class="navbar__link" role="menuitem">Compatibility</a>
-          <a href="ephemeris.html" class="navbar__link" role="menuitem">Instrument</a>
-          <a href="why.html" class="navbar__link" role="menuitem">Why</a>
-          <a href="shop.html" class="navbar__link" role="menuitem">Shop</a>
-          <a href="profile.html" class="navbar__link active" aria-current="page" role="menuitem">Profile</a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
         </div>
-        <button class="navbar__toggle" id="nav-toggle"
-                aria-controls="nav-mobile-menu"
-                aria-expanded="false"
-                aria-label="Toggle navigation menu">
-          <span></span><span></span><span></span>
-        </button>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-modal="false">
-        <a href="index.html" class="navbar__link">Home</a>
-        <a href="chart.html" class="navbar__link">Chart</a>
-        <a href="horoscope.html" class="navbar__link">Horoscope</a>
-        <a href="lifepath.html" class="navbar__link">Life Path</a>
-        <a href="compatibility.html" class="navbar__link">Compatibility</a>
-        <a href="ephemeris.html" class="navbar__link">Instrument</a>
-        <a href="why.html" class="navbar__link">Why</a>
-        <a href="shop.html" class="navbar__link">Shop</a>
-        <a href="profile.html" class="navbar__link active" aria-current="page">Profile</a>
-      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -1029,7 +1010,7 @@
             </div>
             <div class="profile-hero__info">
               <p class="profile-hero__label">Cosmic Profile</p>
-              <h2 id="dash-name-heading" id="profile-display-name">Stargazer</h2>
+              <h2 id="dash-name-heading">Stargazer</h2>
               <p class="profile-hero__tagline" id="profile-tagline">Your cosmic journey begins here</p>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--space-3);">
@@ -1604,7 +1585,7 @@
     function renderHero(profile) {
       const charts = profile.charts || [];
       const first = charts[0] || {};
-      const nameEl = document.getElementById('profile-display-name');
+      const nameEl = document.getElementById('dash-name-heading');
       const avatarEl = document.getElementById('profile-avatar');
       const taglineEl = document.getElementById('profile-tagline');
 
@@ -2109,21 +2090,8 @@
       });
     }
 
-    // ── Navbar mobile toggle ─────────────────────────────────────────
-    function setupNav() {
-      const toggle = document.getElementById('nav-toggle');
-      const menu = document.getElementById('nav-mobile-menu');
-      if (!toggle || !menu) return;
-      toggle.addEventListener('click', () => {
-        const open = menu.classList.toggle('is-open');
-        toggle.setAttribute('aria-expanded', String(open));
-      });
-    }
-
     // ── Init ─────────────────────────────────────────────────────────
     function init() {
-      setupNav();
-
       const profile = getProfile();
 
       if (profile) {
