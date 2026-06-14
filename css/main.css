@@ -4512,6 +4512,286 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 /* ==========================================================================
+   52b. Email capture CTAs (site-wide via app.js emailEngine)
+   ========================================================================== */
+.ap-email-cta {
+  font-family: var(--font-body);
+}
+
+.ap-email-cta--banner {
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(13, 10, 7, 0.92) 48%, rgba(92, 74, 110, 0.08) 100%);
+  border-top: 1px solid rgba(201, 162, 39, 0.22);
+  border-bottom: 1px solid rgba(201, 162, 39, 0.12);
+  padding: var(--space-12) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ap-email-cta--banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 80% at 85% 50%, rgba(201, 162, 39, 0.07), transparent 65%);
+  pointer-events: none;
+}
+
+.ap-email-cta__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--space-10);
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .ap-email-cta__inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: var(--space-6);
+  }
+}
+
+.ap-email-cta__eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold, #C9A227);
+  margin: 0 0 var(--space-2);
+  font-weight: 600;
+}
+
+.ap-email-cta__title {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  font-weight: 600;
+  color: var(--white, #fff);
+  margin: 0 0 var(--space-3);
+  line-height: 1.25;
+}
+
+.ap-email-cta__sub {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--silver, #C8D0E8);
+  margin: 0;
+  line-height: 1.65;
+  max-width: 36ch;
+}
+
+@media (max-width: 768px) {
+  .ap-email-cta__sub { max-width: none; margin: 0 auto; }
+}
+
+.ap-email-cta__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ap-email-cta__fields {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ap-email-cta__input {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  background: rgba(5, 4, 6, 0.75);
+  color: var(--white, #fff);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ap-email-cta__input::placeholder { color: var(--silver-dim, #8891AA); }
+
+.ap-email-cta__input:focus {
+  border-color: var(--gold, #C9A227);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+}
+
+.ap-email-cta__btn {
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: 1px solid var(--gold, #C9A227);
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.28) 0%, rgba(201, 162, 39, 0.12) 100%);
+  color: var(--gold-pale, #EFE3C0);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.ap-email-cta__btn:hover {
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.42) 0%, rgba(201, 162, 39, 0.2) 100%);
+  box-shadow: 0 4px 20px rgba(201, 162, 39, 0.18);
+  transform: translateY(-1px);
+}
+
+.ap-email-cta__hint {
+  font-size: 0.62rem;
+  color: var(--silver-dim, #8891AA);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ap-email-cta__msg {
+  font-size: 0.78rem;
+  color: var(--silver, #C8D0E8);
+  margin: 0;
+  min-height: 1.2em;
+}
+
+.ap-email-cta__msg strong { color: var(--gold, #C9A227); }
+
+.ap-email-cta__form.is-done .ap-email-cta__fields,
+.ap-email-cta__form.is-done .ap-email-cta__hint { display: none; }
+
+.ap-email-cta--hero {
+  padding: var(--space-6) 0;
+  margin: 0;
+}
+
+.ap-email-cta--hero .ap-email-cta__inner {
+  grid-template-columns: 1fr;
+  text-align: center;
+  gap: var(--space-4);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5);
+  background: rgba(13, 10, 7, 0.55);
+  border: 1px solid rgba(201, 162, 39, 0.18);
+  border-radius: 16px;
+}
+
+.ap-email-cta--hero .ap-email-cta__fields {
+  justify-content: center;
+}
+
+.ap-email-cta--sticky {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9000;
+  padding: var(--space-3) var(--space-4);
+  background: rgba(5, 4, 6, 0.94);
+  border-top: 1px solid rgba(201, 162, 39, 0.35);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: translateY(110%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ap-email-cta--sticky.is-visible { transform: translateY(0); }
+
+.ap-email-cta--sticky .ap-email-cta__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  max-width: 1100px;
+  margin: 0 auto;
+  grid-template-columns: unset;
+}
+
+.ap-email-cta--sticky .ap-email-cta__copy {
+  flex: 1;
+  min-width: 180px;
+}
+
+.ap-email-cta--sticky .ap-email-cta__title {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.ap-email-cta--sticky .ap-email-cta__sub,
+.ap-email-cta--sticky .ap-email-cta__eyebrow { display: none; }
+
+.ap-email-cta--sticky .ap-email-cta__form {
+  flex: 1.2;
+  min-width: 260px;
+}
+
+.ap-email-cta--sticky .ap-email-cta__fields { flex-wrap: nowrap; }
+
+.ap-email-cta--sticky .ap-email-cta__input {
+  min-width: 0;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+}
+
+.ap-email-cta--sticky .ap-email-cta__btn {
+  padding: 10px 16px;
+  font-size: 0.75rem;
+}
+
+.ap-email-cta__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--silver-dim, #8891AA);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ap-email-cta__close:hover { color: var(--white, #fff); background: rgba(255, 255, 255, 0.1); }
+
+.ap-nav-updates {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  margin-right: var(--space-3);
+  border-radius: 999px;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  background: rgba(201, 162, 39, 0.12);
+  color: var(--gold, #C9A227) !important;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.ap-nav-updates:hover {
+  background: rgba(201, 162, 39, 0.22);
+  box-shadow: 0 0 16px rgba(201, 162, 39, 0.15);
+}
+
+.ap-footer-signup--compact {
+  max-width: 520px;
+  margin: var(--space-6) auto var(--space-4);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .ap-email-cta--sticky .ap-email-cta__fields { flex-direction: column; }
+  .ap-email-cta--sticky .ap-email-cta__btn { width: 100%; }
+  .ap-nav-updates { display: none; }
+}
+
+body.has-email-sticky { padding-bottom: 72px; }
+
+@media (max-width: 768px) {
+  body.has-email-sticky { padding-bottom: 120px; }
+}
+
+/* ==========================================================================
    53. Footer (index.html flat-name classes)
    ========================================================================== */
 .footer-inner,
