@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
+# LLM site summary for AI crawlers: https://astroprecise.app/llms.txt
+
 Sitemap: https://astroprecise.app/sitemap.xml
