@@ -61,8 +61,13 @@
       z-index: 1;
     }
     .lp-hero {
-      padding: calc(var(--nav-height, 72px) + 2rem) 0 var(--space-8);
+      padding: calc(var(--nav-height, 72px) + 1.5rem) 0 var(--space-6);
       overflow: hidden;
+    }
+    /* Tighter handoff to the education grid (default .section pad is 6rem). */
+    #all-numbers.section {
+      padding-top: var(--space-12);
+      padding-bottom: var(--space-16);
     }
     .lp-hero::before {
       content: '';
@@ -714,7 +719,7 @@
         <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge ap-badge--deterministic">Arithmetic, not fortune — same birth date, same number, always</span></a></p>
 
         <!-- Calculator form card -->
-        <div class="lp-form-card reveal-init">
+        <div class="lp-form-card">
           <div class="lp-form-card__inner-border" aria-hidden="true"></div>
           <div class="lp-form-card__corner lp-form-card__corner--tl" aria-hidden="true"></div>
           <div class="lp-form-card__corner lp-form-card__corner--tr" aria-hidden="true"></div>
