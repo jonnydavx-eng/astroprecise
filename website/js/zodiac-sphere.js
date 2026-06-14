@@ -60,10 +60,13 @@
   let rotVel   = 0;
   let autoSpin = true;
   const SPIN_SPEED = 0.0018;     // rad/frame at 60fps → ~1 full revolution per ~6 min
+  let spinAnim = null;
+  let spinDoneCb = null;
 
   let hovered  = null;
   let selected = null;
   let selectCb = null;
+  let onSelectChange = null;
 
   let planetLons = {};           // signKey → ecliptic lon (degrees, 0–360)
   let stars      = [];
@@ -366,7 +369,16 @@
     drawSigns(cachedPositions);
     drawCentre(ts / 1000);
 
-    if (autoSpin) {
+    if (spinAnim) {
+      const p = Math.min(1, (ts - spinAnim.start) / spinAnim.dur);
+      const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      rotation = spinAnim.from + spinAnim.delta * e;
+      if (p >= 1) {
+        rotation = spinAnim.from + spinAnim.delta;
+        spinAnim = null;
+        if (spinDoneCb) { const f = spinDoneCb; spinDoneCb = null; f(); }
+      }
+    } else if (autoSpin) {
       rotation += SPIN_SPEED;
     } else if (Math.abs(rotVel) > 0.0001) {
       rotation += rotVel;
@@ -380,6 +392,7 @@
 
   let dragging    = false;
   let dragStartX  = 0;
+  let dragStartY  = 0;
   let dragDist    = 0;
 
   function canvasCoords(clientX, clientY) {
@@ -410,7 +423,10 @@
   function onPress(clientX, clientY) {
     dragging   = true;
     dragStartX = clientX;
+    dragStartY = clientY;
     dragDist   = 0;
+    spinAnim   = null;
+    spinDoneCb = null;
     autoSpin   = false;
     rotVel     = 0;
     cvs.style.cursor = 'grabbing';
@@ -420,12 +436,14 @@
     if (!dragging) return;
     dragging = false;
     const { x, y } = canvasCoords(clientX, clientY);
+    const moved = Math.hypot(clientX - dragStartX, clientY - dragStartY);
 
-    if (Math.abs(rotVel) < 0.006) {
+    if (moved < 14) {
       const hit = hitSign(x, y);
       if (hit) {
-        selected = hit;
-        if (selectCb) selectCb(hit);
+        spinToSign(hit, { duration: 520, onDone: function () {
+          if (selectCb) selectCb(hit);
+        } });
       } else if (hitCentre(x, y)) {
         window.location.href = 'chart.html';
       }
@@ -543,10 +561,65 @@
     requestAnimationFrame(frame);
   }
 
-  function setSelected(key) {
-    selected = key || null;
+  function shortestDelta(from, to) {
+    let d = to - from;
+    while (d > Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    return d;
   }
 
-  window.ZodiacSphere = { init, setSelected };
+  function targetRotationForSign(key) {
+    const s = SIGNS.find((x) => x.key === key);
+    if (!s) return rotation;
+    return -Math.PI / 2 - (s.lon * Math.PI / 180);
+  }
+
+  function spinToSign(key, opts) {
+    opts = opts || {};
+    const s = SIGNS.find((x) => x.key === key);
+    if (!s) return;
+    selected = key;
+    if (onSelectChange) onSelectChange(key, s);
+    const target = targetRotationForSign(key);
+    const delta = shortestDelta(rotation, target);
+    if (opts.instant || opts.animate === false || opts.duration === 0) {
+      rotation += delta;
+      spinAnim = null;
+      if (opts.onDone) opts.onDone();
+      return;
+    }
+    spinAnim = {
+      from: rotation,
+      delta,
+      start: performance.now(),
+      dur: opts.duration || 900,
+    };
+    spinDoneCb = opts.onDone || null;
+    autoSpin = false;
+    rotVel = 0;
+  }
+
+  function spinRandom(opts) {
+    const pick = SIGNS[Math.floor(Math.random() * SIGNS.length)];
+    spinToSign(pick.key, opts);
+    return pick.key;
+  }
+
+  function getSelected() { return selected; }
+
+  function setSelected(key, opts) {
+    if (!key) { selected = null; return; }
+    spinToSign(key, Object.assign({ duration: 700 }, opts || {}));
+  }
+
+  window.ZodiacSphere = {
+    init,
+    setSelected,
+    spinToSign,
+    spinRandom,
+    getSelected,
+    get onSelectChange() { return onSelectChange; },
+    set onSelectChange(fn) { onSelectChange = typeof fn === 'function' ? fn : null; },
+  };
 
 })();

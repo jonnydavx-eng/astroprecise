@@ -1537,7 +1537,7 @@ body > .cosmos-solar-system { display: none !important; }
   gap: var(--space-4);
 }
 
-.sign-card {
+.sign-card:not([data-sign]) {
   background: var(--surface-raised);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-xl);
@@ -5529,8 +5529,8 @@ body::before {
   border-radius: var(--radius-sm);
 }
 
-/* ── Sign card glassmorphism (Horizon depth layer) ─────────── */
-.sign-card {
+/* ── Sign card glassmorphism (legacy glyph cards — not HD horoscope gallery) ── */
+.sign-card:not([data-sign]) {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   background: var(--surface-raised);
@@ -5540,11 +5540,11 @@ body::before {
     background   var(--transition-base),
     box-shadow   0.2s ease;
 }
-.sign-card:hover {
+.sign-card:not([data-sign]):hover {
   background: linear-gradient(145deg, rgba(28, 22, 14,0.60) 0%, rgba(20, 16, 10,0.70) 100%);
   box-shadow: var(--rim-light), var(--shadow-raised), 0 0 30px var(--glow-gold);
 }
-.sign-card:active {
+.sign-card:not([data-sign]):active {
   transform: scale(0.99);
   transition-duration: 0.08s;
 }
