@@ -339,7 +339,7 @@
         'text-anchor': 'middle', 'dominant-baseline': 'central',
         fill: '#ffffff',
         'font-size': '15',
-        'font-family': 'serif, "Apple Color Emoji", "Segoe UI Emoji", system-ui',
+        'font-family': '"AstroGlyph", "Noto Sans Symbols", serif',
         'font-weight': 'bold',
         filter: `url(#${idPrefix}rglow)`
       });

@@ -224,8 +224,14 @@
       background: rgba(30, 42, 80, 0.8);
     }
     .planet-pill__symbol {
-      font-size: 1rem;
-      line-height: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.7rem; height: 1.7rem; border-radius: 50%; flex-shrink: 0;
+      font-size: 0.9rem; line-height: 1;
+      font-family: 'AstroGlyph', Georgia, serif; font-variant-emoji: text;
+      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.18), rgba(0,0,0,0.5));
+      border: 1px solid rgba(201,162,39,0.35);
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.25), 0 2px 5px rgba(0,0,0,0.4);
+      color: var(--planet-pill-col, #EFE3C0);
     }
     .planet-pill__info {
       font-size: 0.7rem;
@@ -242,6 +248,17 @@
       font-weight: 700;
       vertical-align: super;
     }
+    /* Per-planet orb colours */
+    .planet-pill[data-planet="Sun"]     .planet-pill__symbol { --planet-pill-col:#FFD700; border-color:rgba(255,215,0,0.5); background:radial-gradient(circle at 35% 30%,#fff5cc,#c9820a 60%,#7a4800); }
+    .planet-pill[data-planet="Moon"]    .planet-pill__symbol { --planet-pill-col:#D2CBB8; border-color:rgba(210,203,184,0.4); background:radial-gradient(circle at 35% 30%,#f0eee8,#b0a898 60%,#6a6060); }
+    .planet-pill[data-planet="Mercury"] .planet-pill__symbol { --planet-pill-col:#BFB39A; border-color:rgba(63,125,118,0.4); background:radial-gradient(circle at 35% 30%,#b0e8e0,#3f7d76 60%,#1a3830); }
+    .planet-pill[data-planet="Venus"]   .planet-pill__symbol { --planet-pill-col:#FFB6C1; border-color:rgba(199,125,255,0.4); background:radial-gradient(circle at 35% 30%,#ffe0f5,#c06090 60%,#6a1840); }
+    .planet-pill[data-planet="Mars"]    .planet-pill__symbol { --planet-pill-col:#FF6644; border-color:rgba(224,88,72,0.45); background:radial-gradient(circle at 35% 30%,#ffa080,#cc3310 60%,#5a0800); }
+    .planet-pill[data-planet="Jupiter"] .planet-pill__symbol { --planet-pill-col:#FFB347; border-color:rgba(232,160,80,0.4); background:radial-gradient(circle at 35% 30%,#ffe0a0,#c87020 60%,#6a3800); }
+    .planet-pill[data-planet="Saturn"]  .planet-pill__symbol { --planet-pill-col:#C8A86B; border-color:rgba(160,184,152,0.4); background:radial-gradient(circle at 35% 30%,#e8d8a0,#a08040 60%,#503810); }
+    .planet-pill[data-planet="Uranus"]  .planet-pill__symbol { --planet-pill-col:#B89AD0; border-color:rgba(80,200,220,0.35); background:radial-gradient(circle at 35% 30%,#c0f0f5,#3090a0 60%,#104858); }
+    .planet-pill[data-planet="Neptune"] .planet-pill__symbol { --planet-pill-col:#7E6BB0; border-color:rgba(60,90,200,0.4); background:radial-gradient(circle at 35% 30%,#90a8f0,#2040a0 60%,#081840); }
+    .planet-pill[data-planet="Pluto"]   .planet-pill__symbol { --planet-pill-col:#CC88AA; border-color:rgba(120,80,160,0.4); background:radial-gradient(circle at 35% 30%,#d0a0c0,#7840a0 60%,#280840); }
 
     /* ---- Sign grid ---- */
     .sign-grid {
@@ -307,42 +324,70 @@
       box-shadow: 0 0 0 1px rgba(196, 146, 10, 0.35), 0 0 24px rgba(196, 146, 10, 0.2);
     }
 
-    /* Glossy glass-gradient orb (matches js/icons.js .ap-orb), tinted per element */
+    /* ── Premium glass orb — matches the engraved observatory style ── */
     .sign-card__glyph {
-      --c1: #bfeaff; --c2: #2f86cf;
-      width: 3.2rem; height: 3.2rem; border-radius: 50%;
+      --c1: #7fd6e6; --c2: #2a54b0; --c-glow: rgba(127,214,230,0.55);
+      width: 4.6rem; height: 4.6rem; border-radius: 50%;
       display: inline-flex; align-items: center; justify-content: center;
       position: relative; isolation: isolate; margin: 0 auto;
-      font-size: 1.7rem; line-height: 1; color: #fff;
-      font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.55), 0 0 7px rgba(255,255,255,0.28);
-      background: radial-gradient(118% 118% at 32% 24%,
-        color-mix(in srgb, var(--c1) 94%, #fff) 0%, var(--c1) 30%, var(--c2) 100%);
+      font-size: 2.4rem; line-height: 1; color: #fff; z-index: 0;
+      font-family: 'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+      font-variant-emoji: text;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 16px rgba(255,255,255,0.4);
+      background: radial-gradient(120% 120% at 30% 20%,
+        color-mix(in srgb, var(--c1) 88%, #fff) 0%,
+        var(--c1) 28%,
+        color-mix(in srgb, var(--c2) 85%, #000) 70%,
+        color-mix(in srgb, var(--c2) 60%, #000) 100%);
       box-shadow:
-        inset 0 1.5px 2px rgba(255,255,255,0.55),
-        inset 0 -5px 9px rgba(0,0,0,0.42),
-        inset 0 0 0 1px rgba(255,255,255,0.08),
-        0 3px 9px rgba(0,0,0,0.4);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+        inset 0 2px 4px rgba(255,255,255,0.7),
+        inset 0 -8px 16px rgba(0,0,0,0.55),
+        inset 0 0 0 1.5px rgba(255,255,255,0.14),
+        0 5px 18px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(0,0,0,0.4),
+        0 0 0 3px rgba(255,255,255,0.04);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
     }
+    /* Glass top-highlight */
     .sign-card__glyph::before {
-      content: ''; position: absolute; top: 8%; left: 14%; width: 72%; height: 42%;
+      content: ''; position: absolute; top: 7%; left: 12%; width: 74%; height: 44%;
       border-radius: 50% 50% 46% 46%; z-index: 2; pointer-events: none;
-      background: linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.03) 70%, rgba(255,255,255,0));
+      background: linear-gradient(
+        rgba(255,255,255,0.72) 0%,
+        rgba(255,255,255,0.12) 55%,
+        rgba(255,255,255,0) 100%
+      );
     }
-    .sign-card[data-element="fire"]  .sign-card__glyph { --c1: #ffb04a; --c2: #cf2f24; }
-    .sign-card[data-element="earth"] .sign-card__glyph { --c1: #c8da86; --c2: #566e2a; }
-    .sign-card[data-element="air"]   .sign-card__glyph { --c1: #bfeaff; --c2: #2f86cf; }
-    .sign-card[data-element="water"] .sign-card__glyph { --c1: #7fd6e6; --c2: #2a54b0; }
+    /* Constellation-dot overlay */
+    .sign-card__glyph::after {
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+      z-index: 1; pointer-events: none;
+      background-image:
+        radial-gradient(circle 1.2px at 18% 28%, rgba(255,255,255,0.65) 0%, transparent 100%),
+        radial-gradient(circle 0.9px at 78% 22%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(circle 0.8px at 62% 68%, rgba(255,255,255,0.38) 0%, transparent 100%),
+        radial-gradient(circle 1px at 28% 74%, rgba(255,255,255,0.45) 0%, transparent 100%),
+        radial-gradient(circle 0.9px at 84% 58%, rgba(255,255,255,0.42) 0%, transparent 100%),
+        radial-gradient(circle 0.7px at 44% 18%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(circle 0.6px at 90% 38%, rgba(255,255,255,0.28) 0%, transparent 100%);
+    }
+    /* Element colour palettes */
+    .sign-card[data-element="fire"]  .sign-card__glyph { --c1: #ffb04a; --c2: #9e1c0e; --c-glow: rgba(255,100,40,0.6); }
+    .sign-card[data-element="earth"] .sign-card__glyph { --c1: #c8da86; --c2: #3a5018; --c-glow: rgba(100,160,60,0.55); }
+    .sign-card[data-element="air"]   .sign-card__glyph { --c1: #c8e8ff; --c2: #1a5fa8; --c-glow: rgba(100,180,255,0.5); }
+    .sign-card[data-element="water"] .sign-card__glyph { --c1: #80d8ea; --c2: #1a3d8a; --c-glow: rgba(60,140,200,0.55); }
+    /* Hover & active state */
     .sign-card:hover .sign-card__glyph,
     .sign-card:focus-visible .sign-card__glyph,
     .sign-card.is-active .sign-card__glyph {
-      transform: translateY(-2px) scale(1.06);
+      transform: translateY(-3px) scale(1.08);
       box-shadow:
-        inset 0 1.5px 2px rgba(255,255,255,0.6),
-        inset 0 -5px 9px rgba(0,0,0,0.42),
-        0 6px 16px rgba(0,0,0,0.45),
-        0 0 18px -2px var(--c1);
+        inset 0 2px 4px rgba(255,255,255,0.75),
+        inset 0 -8px 16px rgba(0,0,0,0.55),
+        0 8px 24px rgba(0,0,0,0.5),
+        0 0 28px -2px var(--c-glow),
+        0 0 0 1px rgba(0,0,0,0.4),
+        0 0 0 3px rgba(255,255,255,0.06);
     }
 
     .sign-card__name {
@@ -916,13 +961,13 @@
     ============================================================ -->
     <div class="planets-live-strip" id="planets-live-strip" aria-label="Current planetary positions">
       <div class="planets-live-strip__inner" id="planets-strip-inner">
-        <div class="planet-pill"><span class="planet-pill__symbol">☉</span><span class="planet-pill__info"><span class="planet-pill__sign">Gemini</span> 21°</span></div>
-        <div class="planet-pill"><span class="planet-pill__symbol">☽</span><span class="planet-pill__info"><span class="planet-pill__sign">Scorpio</span> 14°</span></div>
-        <div class="planet-pill"><span class="planet-pill__symbol">☿</span><span class="planet-pill__info"><span class="planet-pill__sign">Cancer</span> 3°</span></div>
-        <div class="planet-pill"><span class="planet-pill__symbol">♀</span><span class="planet-pill__info"><span class="planet-pill__sign">Cancer</span> 19°</span></div>
-        <div class="planet-pill"><span class="planet-pill__symbol">♂</span><span class="planet-pill__info"><span class="planet-pill__sign">Leo</span> 8°</span></div>
-        <div class="planet-pill"><span class="planet-pill__symbol">♃</span><span class="planet-pill__info"><span class="planet-pill__sign">Cancer</span> 2°</span></div>
-        <div class="planet-pill"><span class="planet-pill__symbol">♄</span><span class="planet-pill__info"><span class="planet-pill__sign">Pisces</span> 22° <span class="planet-pill__rx">Rx</span></span></div>
+        <div class="planet-pill" data-planet="Sun"><span class="planet-pill__symbol">☉</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
+        <div class="planet-pill" data-planet="Moon"><span class="planet-pill__symbol">☽</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
+        <div class="planet-pill" data-planet="Mercury"><span class="planet-pill__symbol">☿</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
+        <div class="planet-pill" data-planet="Venus"><span class="planet-pill__symbol">♀</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
+        <div class="planet-pill" data-planet="Mars"><span class="planet-pill__symbol">♂</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
+        <div class="planet-pill" data-planet="Jupiter"><span class="planet-pill__symbol">♃</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
+        <div class="planet-pill" data-planet="Saturn"><span class="planet-pill__symbol">♄</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
       </div>
     </div>
 
@@ -1983,6 +2028,7 @@
               var rxHtml = pos.retrograde ? '<span class="planet-pill__rx">Rx</span>' : '';
               var pill = document.createElement('div');
               pill.className = 'planet-pill';
+              pill.dataset.planet = p.name;
               pill.innerHTML = '<span class="planet-pill__symbol">' + p.symbol + '</span>' +
                 '<span class="planet-pill__info"><span class="planet-pill__sign">' + sign + '</span> ' + deg + '°' + rxHtml + '</span>';
               strip.appendChild(pill);
