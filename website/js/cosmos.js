@@ -27,6 +27,10 @@ window.CosmosEngine = (() => {
 
   // Parallax speed as fraction of screen offset per layer (deep/mid/bright)
   const PARALLAX_SPEED = [0.004, 0.008, 0.014];
+  // Hero scroll drive — shares the same 0→1 clock as the orrery for one continuous sky
+  const SCROLL_STAR_SHIFT = [14, 26, 44];   // px downward drift at progress=1
+  const SCROLL_NEBULA_SHIFT = 22;
+  let scrollDrive = 0;
 
   // ── Module state ──────────────────────────────────────────────────────────
 
@@ -226,9 +230,10 @@ window.CosmosEngine = (() => {
   // ── Nebula draw ────────────────────────────────────────────────────────────
 
   function drawNebulas(now) {
+    const scrollY = scrollDrive * SCROLL_NEBULA_SHIFT;
     for (const n of nebulas) {
       const cx = n.originX + Math.sin(now * n.freqX + n.phaseX) * n.ampX;
-      const cy = n.originY + Math.cos(now * n.freqY + n.phaseY) * n.ampY;
+      const cy = n.originY + Math.cos(now * n.freqY + n.phaseY) * n.ampY - scrollY;
 
       // Ellipse via context scale; sprite is drawn at its native radius.
       ctx.save();
@@ -247,8 +252,9 @@ window.CosmosEngine = (() => {
 
     for (const s of stars) {
       const speed = PARALLAX_SPEED[s.layer];
+      const scrollY = scrollDrive * SCROLL_STAR_SHIFT[s.layer];
       const px = s.x + offX * speed;
-      const py = s.y + offY * speed;
+      const py = s.y + offY * speed - scrollY;
 
       // Twinkling: oscillate between 60% and 100% of baseAlpha
       const twinkle = 0.5 + 0.5 * Math.sin(time * s.twinkleSpeed + s.twinkleOffset);
@@ -549,6 +555,12 @@ window.CosmosEngine = (() => {
 
   document.addEventListener('DOMContentLoaded', init);
 
-  return { destroy };
+  /** 0→1 hero scroll progress — ties the background starfield to the orrery scroll clock. */
+  function setScrollDrive(progress) {
+    if (reduceMotion) return;
+    scrollDrive = Math.max(0, Math.min(1, Number(progress) || 0));
+  }
+
+  return { destroy, setScrollDrive };
 
 })();
