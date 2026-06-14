@@ -89,8 +89,8 @@
   /* ── Text — aged parchment on warm black ── */
   --white:       #E8E0D0;   /* parchment primary */
   --silver:      #A89E88;
-  --silver-dim:  #7E7565;   /* nudged up for WCAG AA on body/hero text (was #6E6658, ~3.5:1) */
-  --silver-dark: #4A4238;
+  --silver-dim:  #8F8579;   /* WCAG AA margin on translucent surfaces (was #7E7565) */
+  --silver-dark: #6E6658;   /* lifted for AA on the now-translucent cards (was #4A4238, ~3.4:1) */
 
   /* ── Gradients — warmer, engraved feel (gold/black dominant) ── */
   --gradient-primary:  linear-gradient(135deg, #5C4A6E 0%, #4A3A5A 50%, #C9A227 100%);
