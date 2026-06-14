@@ -32,6 +32,9 @@
   <style>
     :root { --sat-gold: var(--gold, #C9A227); --sat-line: rgba(232,224,208,0.10); }
     .sat-hero { padding: calc(var(--nav-height, 72px) + 3.5rem) 0 1.5rem; text-align: center; position: relative; overflow: hidden; }
+    /* Orbital canvas visualization */
+    .sat-orbital-wrap { max-width: 680px; margin: 1.6rem auto 0.4rem; position: relative; }
+    #sat-orbital { display: block; width: 100%; height: auto; border-radius: 16px; opacity: 0.94; }
     .sat-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,162,39,0.16) 0%, transparent 70%); pointer-events: none; }
     .sat-hero__eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-size: .64rem; letter-spacing: .24em; text-transform: uppercase; color: var(--sat-gold); margin-bottom: 1rem; }
     .sat-hero h1 { font-family: var(--font-display, 'Cinzel', serif); font-size: clamp(2rem, 5.2vw, 3.2rem); line-height: 1.1; letter-spacing: .02em; color: var(--white, #E8E0D0); margin-bottom: .9rem; }
@@ -126,6 +129,9 @@
         <span class="sat-hero__glyph" aria-hidden="true">♄</span>
         <h1 id="page-title">Your Saturn Return</h1>
         <p class="sat-hero__sub">Every ~29.5 years, Saturn returns to the exact place it held at your birth — and asks you to grow up, on its terms. Find your exact dates free, from the real sky.</p>
+        <div class="sat-orbital-wrap" aria-hidden="true">
+          <canvas id="sat-orbital" width="680" height="300"></canvas>
+        </div>
       </div>
     </section>
 
@@ -213,5 +219,142 @@
   <script src="js/app.js"></script>
   <script src="js/saturn-return.js"></script>
   <script src="js/effects.js"></script>
+  <script>
+  /* ── Saturn Return Orbital Diagram ── */
+  (function(){
+    var cvs = document.getElementById('sat-orbital');
+    if(!cvs) return;
+    var W=680, H=300, ctx=cvs.getContext('2d');
+    var CX=W*0.36, CY=H*0.54;
+    var GOLD='#C9A227', GOLD_L='#EFE3C0', GOLD_D='rgba(201,162,39,0.25)';
+
+    // Background
+    ctx.fillStyle='#050406'; ctx.fillRect(0,0,W,H);
+
+    // Stars (deterministic)
+    var sv=0xA5DEF2B3;
+    function sr(){ sv=Math.imul(sv^(sv>>>16),0x45D9F3B); sv=Math.imul(sv^(sv>>>16),0x45D9F3B); sv^=sv>>>16; return(sv>>>0)/4294967295; }
+    for(var i=0;i<320;i++){
+      var sx=sr()*W, sy=sr()*H, ss=sr()*1.1+0.2, sa=sr()*0.5+0.1;
+      ctx.beginPath(); ctx.arc(sx,sy,ss,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,'+sa.toFixed(2)+')'; ctx.fill();
+    }
+    // 4-pointed sparkle stars
+    function sparkle(x,y,sz,a){
+      ctx.save(); ctx.translate(x,y); ctx.globalAlpha=a;
+      ctx.fillStyle=GOLD_L;
+      [[0,sz,0,-sz],[sz,0,-sz,0]].forEach(function(d){
+        ctx.beginPath(); ctx.moveTo(d[0],d[1]); ctx.lineTo(d[2],d[3]); ctx.lineWidth=0.8; ctx.strokeStyle=GOLD_L; ctx.stroke();
+      });
+      ctx.beginPath(); ctx.arc(0,0,sz*0.22,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    sparkle(580,40,7,0.8); sparkle(620,90,5,0.6); sparkle(48,38,6,0.7); sparkle(640,220,4,0.5); sparkle(90,240,5,0.55);
+
+    // Orbital ellipses (perspective-foreshortened)
+    function orbit(rx,ry,alpha,dash){
+      ctx.save(); ctx.beginPath();
+      ctx.ellipse(CX,CY,rx,ry,0,0,Math.PI*2);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=0.9; ctx.globalAlpha=alpha;
+      if(dash) ctx.setLineDash(dash); else ctx.setLineDash([3,5]);
+      ctx.stroke(); ctx.restore();
+    }
+    orbit(52,16,0.18); orbit(104,32,0.24); orbit(166,51,0.30); orbit(238,73,0.22);
+
+    // Saturn sphere
+    function drawSaturn(){
+      var r=28;
+      // Planet shadow
+      ctx.save();
+      var sg=ctx.createRadialGradient(CX+8,CY+8,2,CX,CY,r+4);
+      sg.addColorStop(0,'rgba(0,0,0,0.5)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.ellipse(CX+6,CY+10,r,r*0.7,0,0,Math.PI*2);
+      ctx.fillStyle=sg; ctx.fill(); ctx.restore();
+      // Ring (back half)
+      ctx.save(); ctx.globalAlpha=0.75;
+      ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,Math.PI,0,false);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=r*0.32; ctx.stroke(); ctx.restore();
+      // Planet
+      var pg=ctx.createRadialGradient(CX-r*0.28,CY-r*0.28,r*0.08,CX,CY,r);
+      pg.addColorStop(0,'#F8EEC8'); pg.addColorStop(0.3,'#D4A820');
+      pg.addColorStop(0.7,'#8A6808'); pg.addColorStop(1,'#3A2408');
+      ctx.beginPath(); ctx.arc(CX,CY,r,0,Math.PI*2);
+      ctx.fillStyle=pg; ctx.fill();
+      // Planet bands
+      for(var b=-2;b<=2;b++){
+        var by=CY+b*r*0.16, hw=Math.sqrt(Math.max(0,r*r-(by-CY)*(by-CY)));
+        ctx.beginPath(); ctx.moveTo(CX-hw,by); ctx.lineTo(CX+hw,by);
+        ctx.strokeStyle=b%2===0?'rgba(255,200,80,0.2)':'rgba(100,70,10,0.18)';
+        ctx.lineWidth=2; ctx.stroke();
+      }
+      // Ring (front half)
+      ctx.save(); ctx.globalAlpha=0.92;
+      ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,0,Math.PI,false);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=r*0.32; ctx.stroke(); ctx.restore();
+      // Ring outer edge line
+      ctx.save(); ctx.globalAlpha=0.55;
+      ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,0,Math.PI*2);
+      ctx.strokeStyle=GOLD_L; ctx.lineWidth=0.5; ctx.stroke(); ctx.restore();
+    }
+    drawSaturn();
+
+    // Return dot marker
+    function dot(x,y,label,age,glow){
+      // Halo
+      var hg=ctx.createRadialGradient(x,y,0,x,y,22);
+      hg.addColorStop(0,'rgba(201,162,39,'+( glow?0.7:0.45)+')'); hg.addColorStop(1,'rgba(201,162,39,0)');
+      ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2); ctx.fillStyle=hg; ctx.fill();
+      // Dot
+      ctx.beginPath(); ctx.arc(x,y,5.5,0,Math.PI*2);
+      ctx.fillStyle=glow?GOLD_L:GOLD; ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=1.2; ctx.stroke();
+      // Label
+      var lx=x+16, ly=y-4;
+      ctx.fillStyle=GOLD_L; ctx.font='bold 13px Cinzel,serif'; ctx.textAlign='left';
+      ctx.fillText(age, lx, ly-1);
+      ctx.fillStyle='rgba(168,158,136,0.85)'; ctx.font='11px sans-serif';
+      ctx.fillText(label, lx, ly+14);
+    }
+
+    // Birth marker
+    function birth(x,y){
+      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+      ctx.fillStyle='#ffffff'; ctx.fill();
+      ctx.strokeStyle=GOLD; ctx.lineWidth=1; ctx.stroke();
+      ctx.fillStyle=GOLD_L; ctx.font='10px Cinzel,serif'; ctx.textAlign='center';
+      ctx.fillText('Birth',x,y-11);
+    }
+
+    // Position return dots along the appropriate orbit ellipse
+    // Orbit 1: rx=104, ry=32 — 1st return (~29yr)
+    // Orbit 2: rx=166, ry=51 — 2nd return (~58yr)
+    // Orbit 3: rx=238, ry=73 — 3rd return (~87yr)
+    var a1=Math.PI*0.18, a2=Math.PI*1.42, a3=Math.PI*0.82;
+    var r1x=CX+104*Math.cos(a1), r1y=CY+32*Math.sin(a1);
+    var r2x=CX+166*Math.cos(a2), r2y=CY+51*Math.sin(a2);
+    var r3x=CX+238*Math.cos(a3), r3y=CY+73*Math.sin(a3);
+    var bx=CX+52*Math.cos(Math.PI*1.65), by=CY+16*Math.sin(Math.PI*1.65);
+
+    birth(bx,by);
+    dot(r1x,r1y,'1st Return','~29 yrs',true);
+    dot(r2x,r2y,'2nd Return','~58 yrs',false);
+    dot(r3x,r3y,'3rd Return','~87 yrs',false);
+
+    // Decorative connecting lines from Saturn to dots
+    [[[CX,CY],[r1x,r1y]],[[CX,CY],[r2x,r2y]],[[CX,CY],[r3x,r3y]]].forEach(function(pts,i){
+      ctx.save(); ctx.globalAlpha=0.12+i*0.03;
+      ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); ctx.lineTo(pts[1][0],pts[1][1]);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=0.6; ctx.setLineDash([2,6]); ctx.stroke(); ctx.restore();
+    });
+
+    // Title + label
+    ctx.fillStyle='rgba(201,162,39,0.9)';
+    ctx.font='bold 12px Cinzel,serif'; ctx.textAlign='left';
+    ctx.fillText('AstroPrecise  ·  The Saturn Cycle', 18, 24);
+    ctx.fillStyle='rgba(168,158,136,0.6)';
+    ctx.font='10px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Saturn orbits the Sun once every ~29.5 years · real astronomy, computed in your browser', W/2, H-10);
+  })();
+  </script>
 </body>
 </html>
