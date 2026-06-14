@@ -2705,22 +2705,27 @@
 
       function showPanel(data) {
         var gEl = document.getElementById('pip-glyph');
-        if (window.AstroIcons && data.name && window.AstroIcons.PLANET_GLYPH[data.name]) {
-          gEl.innerHTML = window.AstroIcons.planet(data.name);
-        } else {
-          gEl.textContent = data.glyph || '☉';
+        if (gEl) {
+          if (window.AstroIcons && data.name && window.AstroIcons.PLANET_GLYPH[data.name]) {
+            gEl.innerHTML = window.AstroIcons.planet(data.name);
+          } else {
+            gEl.textContent = data.glyph || '☉';
+          }
         }
-        document.getElementById('pip-name').textContent = data.name || '';
+        var nEl = document.getElementById('pip-name');
+        if (nEl) nEl.textContent = data.name || '';
         var sEl = document.getElementById('pip-sign');
-        if (data.signName && window.AstroIcons) {
-          sEl.innerHTML = window.AstroIcons.sign(data.signName, { sm: true })
-            + ' in ' + data.signName
-            + (data.retro ? ' <span style="color:var(--crimson-light,#e07a82);">℞</span>' : '');
-        } else {
-          sEl.textContent = data.signName ? ('in ' + data.signName) : '';
+        if (sEl) {
+          if (data.signName && window.AstroIcons) {
+            sEl.innerHTML = window.AstroIcons.sign(data.signName, { sm: true })
+              + ' in ' + data.signName
+              + (data.retro ? ' <span style="color:var(--crimson-light,#e07a82);">℞</span>' : '');
+          } else {
+            sEl.textContent = data.signName ? ('in ' + data.signName) : '';
+          }
         }
-        document.getElementById('pip-degree').textContent = data.degree || '';
-        document.getElementById('pip-meaning').textContent = data.meaning || '';
+        var dEl = document.getElementById('pip-degree'); if (dEl) dEl.textContent = data.degree || '';
+        var mEl = document.getElementById('pip-meaning'); if (mEl) mEl.textContent = data.meaning || '';
         panel.classList.remove('hidden');
       }
 
@@ -2845,7 +2850,28 @@
         document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
           btn.classList.toggle('active', btn.dataset.speed === '0');
         });
-      } catch (e) {}
+      } catch (e) {
+        // The WebGL orrery is an ES module; if its `import 'three'` fails (corrupt/
+        // partial vendored bundle), the module never loads, so its OWN canvas fallback
+        // can't run and window.Orrery3D is never defined — leaving only the static
+        // CSS-mock. Self-arm the canvas fallback (orrery3d.js) here so the hero still
+        // shows a live model. Only fires on the genuine import-failure path.
+        if (!window.Orrery3D && !window.__orreryReady) {
+          var _fb = document.createElement('script');
+          _fb.src = 'js/orrery3d.js';
+          _fb.onload = function () {
+            try {
+              var _c = document.getElementById('orrery-canvas');
+              if (window.Orrery3D && _c && !window.__orreryReady) {
+                window.Orrery3D.init(_c);
+                window.__orreryReady = true;
+                if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
+              }
+            } catch (e2) {}
+          };
+          document.head.appendChild(_fb);
+        }
+      }
     });
 
   })();

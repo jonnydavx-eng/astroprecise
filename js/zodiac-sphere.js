@@ -507,7 +507,9 @@
 
   function init(canvasEl, cb) {
     cvs      = canvasEl;
+    if (!cvs) return;
     ctx      = cvs.getContext('2d');
+    if (!ctx) return;
     selectCb = cb;
 
     resize();

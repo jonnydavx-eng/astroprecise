@@ -80,6 +80,7 @@ window.LightCone = (() => {
     birth = birthDate;
     if (!canvas || !birth) return;
     ctx = canvas.getContext('2d');
+    if (!ctx) return;
     resize();
     window.addEventListener('resize', resize);
     destroyed = false;

@@ -630,8 +630,14 @@ window.Orrery3D = (() => {
   }
 
   function resize() {
-    dpr = window.devicePixelRatio || 1;
+    dpr = (window.RafCore && RafCore.capDPR) ? RafCore.capDPR(2) : Math.min(window.devicePixelRatio || 1, 2);
     const rect = wrap.getBoundingClientRect();
+    // If the wrap isn't laid out yet (width ~0), Math.max would lock us to the 280 floor —
+    // a tiny orrery on a desktop hero. Arm a one-shot refit on the next frame instead.
+    if (rect.width < 40 && !resize._armed) {
+      resize._armed = true;
+      requestAnimationFrame(function () { resize._armed = false; resize(); });
+    }
     // Match intended hero presence: up to 580px logical (CSS sets 580 on desktop, scales down responsively)
     const size = Math.min(Math.max(rect.width, 280), 580);
     W = H = size;
