@@ -332,7 +332,10 @@ window.AstroShop = (() => {
     const bar = document.getElementById('shopc-filters');
     if (!bar) return;
     const cols = collections();
-    const chips = [['all', 'All']].concat(Object.entries(cols).map(([k, c]) => [k, c.name]));
+    // Only show a collection chip if it has at least one fulfillable product.
+    const counts = {};
+    products().filter(p => p.available !== false).forEach(p => { counts[p.collection] = (counts[p.collection] || 0) + 1; });
+    const chips = [['all', 'All']].concat(Object.entries(cols).filter(([k]) => counts[k] > 0).map(([k, c]) => [k, c.name]));
     bar.innerHTML = chips.map(([key, label]) =>
       `<button class="shopc-chip ${key === activeCollection ? 'active' : ''}" data-collection="${key}">${esc(label)}</button>`
     ).join('');
