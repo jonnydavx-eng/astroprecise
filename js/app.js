@@ -858,7 +858,7 @@ window.AP_MON = Object.assign({
   reportUrl:    '',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
   posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
   giftUrl:      '',   // gift a reading — hosted product
-  newsletterUrl:'',   // email list signup — hosted (Buttondown / Kit / MailerLite)
+  newsletterUrl:'https://list.astroprecise.app/subscribe',   // LIVE — CF Worker + KV (ap-subscribe)
   affiliateTag: '',   // honest affiliate tag for the shop page (e.g. Amazon Associates)
   // Deep Reading purchase link — the chart-page teaser's CTA points here when set.
   // Same rule as the rest: a hosted product page (Gumroad / Ko-fi Shop / Lemon
@@ -885,7 +885,8 @@ window.AP_MON = Object.assign({
   // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
   // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
   // localStorage only — no data leaves the device. When set, the form POSTs here.
-  emailUrl: '',
+  emailUrl: 'https://list.astroprecise.app/subscribe',
+  ownerEmail: 'jonnydavx@gmail.com',   // fallback relay + owner notifications from worker
 
   // ═══════════════════════════════════════════════════════════════════════
   // COMMERCE — the "wear your sky" shop (config-driven, dormant by default).
@@ -1373,7 +1374,7 @@ if ('serviceWorker' in navigator) {
 
   window.AP_COPY = window.AP_COPY || {
     privacyMicro: 'Only the email you choose to give us is ever sent — your birth data never leaves your device. Unsubscribe anytime.',
-    confirmDoubleOptIn: 'Almost there — check your inbox and tap the confirmation link. (Just one email; your birth data stayed on your device.)',
+    confirmDoubleOptIn: 'You\u2019re on the list \u2014 cosmic weather updates will land in your inbox. (Only your email was sent; birth data stayed on your device.)',
     dormantSaved: 'Sign-up isn’t live yet, so nothing left your browser. The moment it opens, you’ll be first.'
   };
 
