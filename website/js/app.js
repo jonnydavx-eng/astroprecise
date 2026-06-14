@@ -55,6 +55,9 @@ const AstroApp = (() => {
       toggle.addEventListener('click', () => {
         const isOpen = mobile.classList.toggle('open');
         toggle.classList.toggle('open', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        mobile.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        document.body.classList.toggle('nav-drawer-open', isOpen);
         document.body.style.overflow = isOpen ? 'hidden' : '';
       });
 
@@ -62,6 +65,9 @@ const AstroApp = (() => {
         link.addEventListener('click', () => {
           mobile.classList.remove('open');
           toggle.classList.remove('open');
+          toggle.setAttribute('aria-expanded', 'false');
+          mobile.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('nav-drawer-open');
           document.body.style.overflow = '';
         });
       });
@@ -73,12 +79,25 @@ const AstroApp = (() => {
   // never drift again. Desktop = lean core; mobile menu = core + secondary tools.
   // Adding a page = add one line here; it then appears everywhere automatically.
   const NAV_CORE = [
-    ['index.html', 'Home'], ['chart.html', 'Chart'], ['horoscope.html', 'Horoscope'],
-    ['compatibility.html', 'Compatibility'], ['transits.html', 'Transits'],
-    ['lifepath.html', 'Life Path'], ['ephemeris.html', 'Instrument'],
-    ['why.html', 'Why'], ['shop.html', 'Shop'],
+    ['index.html', 'Home', 'high'], ['chart.html', 'Chart', 'high'], ['horoscope.html', 'Horoscope', 'high'],
+    ['compatibility.html', 'Compatibility', 'high'], ['transits.html', 'Transits', 'mid'],
+    ['lifepath.html', 'Life Path', 'high'], ['ephemeris.html', 'Instrument', 'high'],
+    ['why.html', 'Why', 'low'], ['shop.html', 'Shop', 'low'],
   ];
-  const NAV_EXTRAS = [ // mobile menu only — the scrolling list keeps the top bar lean
+  const NAV_BOTTOM_ICONS = {
+    'index.html': 'star4', 'chart.html': 'spiral', 'horoscope.html': 'crescent',
+    'lifepath.html': 'gem', 'compatibility.html': 'heart', 'transits.html': 'planet',
+    'shop.html': 'map', 'ephemeris.html': 'telescope', 'why.html': 'star4',
+  };
+  const NAV_BOTTOM_LABELS = {
+    'horoscope.html': 'Daily', 'ephemeris.html': 'Sky', 'lifepath.html': 'Life',
+    'compatibility.html': 'Match',
+  };
+  const NAV_BOTTOM_EXTRAS = [
+    ['links.html', 'Links', 'star4'], ['quiz.html', 'Quiz', 'orb'],
+    ['tonight.html', 'Tonight', 'sunhigh'], ['moonphase.html', 'Moon', 'moon4'],
+  ];
+  const NAV_EXTRAS = [ // mobile drawer only — lean desktop bar
     ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
     ['tonight.html', "Tonight's Sky"], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
@@ -88,23 +107,50 @@ const AstroApp = (() => {
 
   function renderNav() {
     const here = location.pathname.split('/').pop() || 'index.html';
-    const linkHtml = pairs => pairs.map(([href, label]) => {
+    const linkHtml = (pairs, tierAttr) => pairs.map(function (row) {
+      const href = row[0];
+      const label = row[1];
+      const tier = row[2] || '';
       const active = here === href;
+      var tierHtml = tierAttr && tier && tier !== 'high' ? ' data-nav-tier="' + tier + '"' : '';
       return '<a href="' + href + '" class="navbar__link' + (active ? ' active' : '') + '"' +
-        (active ? ' aria-current="page"' : '') + '>' + label + '</a>';
+        tierHtml + (active ? ' aria-current="page"' : '') + '>' + label + '</a>';
     }).join('');
     const desktop = document.querySelector('.navbar__nav');
     const mobile = document.querySelector('.navbar__mobile-menu');
-    if (desktop) desktop.innerHTML = linkHtml(NAV_CORE);
-    if (mobile) mobile.innerHTML = linkHtml(NAV_CORE.concat(NAV_EXTRAS).concat([['profile.html', 'Profile']]));
+    if (desktop) desktop.innerHTML = linkHtml(NAV_CORE, true);
+    if (mobile) mobile.innerHTML = linkHtml(NAV_CORE.concat(NAV_EXTRAS).concat([['profile.html', 'Profile']]), false);
+  }
+
+  /** Right rail: email CTA, profile, hamburger — keeps center nav from overlapping. */
+  function ensureNavEnd() {
+    var inner = document.querySelector('.navbar__inner');
+    if (!inner) return null;
+    var end = inner.querySelector('.navbar__end');
+    var toggle = inner.querySelector('.navbar__toggle');
+    if (!end) {
+      end = document.createElement('div');
+      end.className = 'navbar__end';
+      if (toggle) inner.insertBefore(end, toggle);
+      else inner.appendChild(end);
+      if (toggle) end.appendChild(toggle);
+    }
+    inner.querySelectorAll('.navbar__profile-top, .ap-nav-email-cluster').forEach(function (el) {
+      if (!end.contains(el)) {
+        var tgl = end.querySelector('.navbar__toggle');
+        if (tgl) end.insertBefore(el, tgl);
+        else end.appendChild(el);
+      }
+    });
+    return end;
   }
 
   /** Profile as a top-bar tab on every page (not in the bottom nav). */
   function injectTopProfile() {
     if (document.querySelector('.navbar__profile-top')) return;
     var inner = document.querySelector('.navbar__inner');
-    var toggle = document.querySelector('.navbar__toggle');
     if (!inner) return;
+    var end = ensureNavEnd();
     var here = location.pathname.split('/').pop() || 'index.html';
     inner.querySelectorAll('a[href="profile.html"]').forEach(function (el) {
       if (!el.classList.contains('navbar__profile-top')) el.remove();
@@ -115,8 +161,13 @@ const AstroApp = (() => {
     a.setAttribute('aria-label', 'My Profile');
     if (here === 'profile.html') { a.classList.add('is-active'); a.setAttribute('aria-current', 'page'); }
     a.innerHTML = '<svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg><span>Profile</span>';
-    if (toggle) inner.insertBefore(a, toggle);
-    else inner.appendChild(a);
+    var toggle = end && end.querySelector('.navbar__toggle');
+    if (end) {
+      if (toggle) end.insertBefore(a, toggle);
+      else end.appendChild(a);
+    } else {
+      inner.appendChild(a);
+    }
   }
 
   // ── Toast Notifications ───────────────────────────────────────────────────
@@ -589,12 +640,18 @@ const AstroApp = (() => {
   }
 
   return {
+    NAV_CORE,
+    NAV_EXTRAS,
+    NAV_BOTTOM_EXTRAS,
+    NAV_BOTTOM_ICONS,
+    NAV_BOTTOM_LABELS,
     init,
     showToast,
     showLoading,
     hideLoading,
     openModal,
     closeModal,
+    ensureNavEnd,
     initTabs,
     animateScoreBars,
     animateCircularProgress,
@@ -1267,21 +1324,17 @@ if ('serviceWorker' in navigator) {
 
   function initBottomNav() {
     if (document.querySelector('.bottom-nav')) return;
+    if (!document.querySelector('.navbar')) return;
     const here = (location.pathname.split('/').pop() || 'index.html');
-    const scrollItems = [
-      { href: 'index.html',         icon: 'star4',    label: 'Home' },
-      { href: 'chart.html',         icon: 'spiral',   label: 'Chart' },
-      { href: 'horoscope.html',     icon: 'crescent', label: 'Daily' },
-      { href: 'lifepath.html',      icon: 'gem',      label: 'Life' },
-      { href: 'compatibility.html', icon: 'heart',    label: 'Match' },
-      { href: 'transits.html',      icon: 'planet',   label: 'Transits' },
-      { href: 'shop.html',          icon: 'map',      label: 'Shop' },
-      { href: 'links.html',         icon: 'star4',    label: 'Links' },
-      { href: 'ephemeris.html',     icon: 'telescope', label: 'Sky' },
-      { href: 'quiz.html',          icon: 'orb',      label: 'Quiz' },
-      { href: 'tonight.html',       icon: 'sunhigh',  label: 'Tonight' },
-      { href: 'moonphase.html',     icon: 'moon4',    label: 'Moon' },
-    ];
+    const core = (window.AstroApp && AstroApp.NAV_CORE) || [];
+    const extras = (window.AstroApp && AstroApp.NAV_BOTTOM_EXTRAS) || [];
+    const icons = (window.AstroApp && AstroApp.NAV_BOTTOM_ICONS) || {};
+    const labels = (window.AstroApp && AstroApp.NAV_BOTTOM_LABELS) || {};
+    const scrollItems = core.map(function (row) {
+      return { href: row[0], icon: icons[row[0]] || 'star4', label: labels[row[0]] || row[1] };
+    }).concat(extras.map(function (row) {
+      return { href: row[0], icon: row[2] || 'star4', label: row[1] };
+    }));
     const nav = document.createElement('nav');
     nav.className = 'bottom-nav';
     nav.setAttribute('aria-label', 'Mobile navigation');
@@ -1722,11 +1775,19 @@ if ('serviceWorker' in navigator) {
         + '<span class="ap-nav-email-cluster__teaser">' + c.navTeaser + '</span>'
         + '</div>'
         + '<button type="button" class="ap-nav-updates" data-ap-open-email="nav_left">' + c.btnShort + '</button>';
-      var nav = inner.querySelector('.navbar__nav');
-      var anchor = inner.querySelector('.navbar__profile-top') || inner.querySelector('.navbar__toggle');
-      if (nav) nav.insertAdjacentElement('afterend', cluster);
-      else if (anchor) inner.insertBefore(cluster, anchor);
-      else logo.insertAdjacentElement('afterend', cluster);
+      var end = (window.AstroApp && typeof AstroApp.ensureNavEnd === 'function')
+        ? AstroApp.ensureNavEnd() : null;
+      var profile = inner.querySelector('.navbar__profile-top');
+      var toggle = inner.querySelector('.navbar__toggle');
+      if (end) {
+        if (profile) end.insertBefore(cluster, profile);
+        else if (toggle) end.insertBefore(cluster, toggle);
+        else end.appendChild(cluster);
+      } else {
+        var nav = inner.querySelector('.navbar__nav');
+        if (nav) nav.insertAdjacentElement('afterend', cluster);
+        else logo.insertAdjacentElement('afterend', cluster);
+      }
     }
     if (mobile && !mobile.querySelector('.ap-nav-updates-mobile')) {
       var m = document.createElement('button');

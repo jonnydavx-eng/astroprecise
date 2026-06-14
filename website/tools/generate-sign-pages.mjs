@@ -186,16 +186,16 @@ const SIGNS = [
 
 const SIGN_LIST = SIGNS.map(s => ({ key: s.key, name: s.name, glyph: s.glyph }));
 
-function navLinks(activeKey) {
+function navShell() {
   return `
-          <a href="index.html" class="navbar__link">Home</a>
-          <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="ephemeris.html" class="navbar__link">Instrument</a>
-          <a href="horoscope.html" class="navbar__link">Horoscope</a>
-          <a href="compatibility.html" class="navbar__link">Compatibility</a>
-          <a href="transits.html" class="navbar__link">Transits</a>
-          <a href="why.html" class="navbar__link">Why</a>
-          <a href="profile.html" class="navbar__link">Profile</a>`;
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a></noscript>
+        </div>
+        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>`;
 }
 
 function page(s) {
@@ -414,14 +414,7 @@ function page(s) {
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav">${navLinks(s.key)}
-        </div>
-        <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation">${navLinks(s.key)}
-      </div>
+        ${navShell()}
     </nav>
   </header>
 

@@ -10,7 +10,7 @@ Rules: edit only here · read the newest entries below before working · append 
 
 ## Session digest — Grok 2026-06-14 (ap-v115 → ap-v119, all PUSHED)
 
-**Current SW cache:** `ap-v138` (`website/sw.js` — hard-refresh or unregister SW after deploy).
+**Current SW cache:** `ap-v139` (`website/sw.js` — hard-refresh or unregister SW after deploy).
 
 ### 1. Pricing ladder (`website/js/app.js` → `AP_MON`) — ap-v115 then ap-v116
 
@@ -200,3 +200,4 @@ Docs aligned at ap-v116: `GTM-LADDER.md`, `GROWTH.md`, `LINK-IN-BIO.md`, `INSTAN
 | 2026-06-14 (PM #12) | Grok | **Email-on-load fix (ap-v136).** Stale SW CSS could show email modal before intro. `.ap-email-modal-backdrop` forced hidden with `!important` + inline `display:none` on inject; close wired directly; `openEmailSignup` blocked during `preloader-active`; intro gate back to `position:absolute` inside preloader (can't beat intro layer). | Hard-refresh/unregister SW for ap-v136. Cold-open PWA: orrery first, email only after Enter → optional popup. |
 | 2026-06-14 (PM #13) | Grok | **Audit fixes (ap-v137).** PWA `start_url` → `index.html?app=1` (intro on app open). bfcache: gate restore completes intro or re-arms Enter. SW network-first for `app.js`/`main.css`. Intro Join validates email (toast if bad/empty). Sticky bar deferred until `ap-hero-enter`. Preloader dead CSS/refs cleaned; duplicate SW reg removed from index. | Re-install PWA or clear site data for new start_url. Hard-refresh ap-v137. |
 | 2026-06-14 (PM #14) | Grok | **Desktop nav spacing (ap-v138).** Updates cluster moved after nav links (not after logo); nav flex-grow + margins; compact "Join list" btn; copy hidden ≤1320px. Fixes Updates overlapping Home on laptop. | Hard-refresh ap-v138; check laptop nav bar. |
+| 2026-06-14 (PM #15) | Grok | **Nav overhaul (ap-v139).** Three-zone desktop: `.navbar__end` (Updates + Profile + menu). Progressive hide Why/Shop/Transits by width. Bottom nav from `NAV_CORE` + extras; drawer z-index 9100 + scroll; safe-area body padding; hamburger a11y. Sign pages regenerated (empty nav shell). index.html profile gold btn removed. | Hard-refresh ap-v139. Test laptop 900–1400px + mobile drawer vs bottom bar. |
