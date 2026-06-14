@@ -22,6 +22,7 @@
   /* ── Staggered entrance after preloader (or instant on repeat visit) ── */
   function enterHero() {
     if (hero.classList.contains('hero--entered')) return;
+    if (preloaderStillActive()) return;
     hero.classList.add('hero--entered');
     document.body.classList.add('page-home--ready');
     document.body.classList.remove('preloader-active');
@@ -57,7 +58,7 @@
 
   /* Safety: never leave hero copy invisible if the enter event was missed. */
   setTimeout(bootHeroEntrance, 1200);
-  setTimeout(enterHero, 10000);
+  setTimeout(bootHeroEntrance, 10000);
 
   /* ── Scroll-time rail + meridian rotation + chronicle mirror ── */
   function formatOffsetDays(days) {

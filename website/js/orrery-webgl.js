@@ -589,13 +589,10 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         g.scale.setScalar(s);
         const m = g.userData.mesh;
         if (m && m.material) {
-          if (lv <= 2) {
-            m.material.transparent = false;
-            m.material.opacity = 1;
-          } else {
-            m.material.transparent = true;
-            m.material.opacity = lv === 3 ? 0.88 : 0.55;
-          }
+          m.material.transparent = false;
+          m.material.opacity = 1;
+          m.material.depthWrite = true;
+          m.material.needsUpdate = true;
         }
       }
     });
@@ -1222,14 +1219,52 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   // ── Sizing / observers ─────────────────────────────────────────────────────
   function resize() {
-    if (!renderer) return;
-    const w = canvas.clientWidth || 560, h = canvas.clientHeight || 560;
+    if (!renderer || !canvas) return;
+    const w = canvas.clientWidth || 560;
+    const h = canvas.clientHeight || w;
     const dpr = orreryDPR();
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
     if (composer) composer.setSize(w, h);
     if (bloomPass) bloomPass.resolution.set(w, h);
     camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+
+  function forceResize() {
+    resize();
+    if (renderer && scene && camera) {
+      applyCamera();
+      if (composer) composer.render();
+      else renderer.render(scene, camera);
+    }
+  }
+
+  function refreshTextures() {
+    if (!texLoader || !renderer) return;
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g || !g.userData.mesh) return;
+      const mat = g.userData.mesh.material;
+      if (!mat) return;
+      if (mat.map && mat.map.image) {
+        tuneTexture(mat.map);
+        mat.map.needsUpdate = true;
+        mat.needsUpdate = true;
+      } else if (b.tex) {
+        loadTex(b.tex).then((t) => {
+          if (t && mat) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; }
+        });
+      }
+    });
+    if (moonMesh && moonMesh.material) {
+      const mm = moonMesh.material;
+      if (mm.map && mm.map.image) { tuneTexture(mm.map); mm.map.needsUpdate = true; mm.needsUpdate = true; }
+      else loadTex('moon.jpg').then((t) => { if (t && mm) { mm.map = t; mm.color.set(0xffffff); mm.needsUpdate = true; } });
+    }
+    if (earthCloud && earthCloud.material && earthCloud.material.alphaMap) {
+      earthCloud.material.alphaMap.needsUpdate = true;
+      earthCloud.material.needsUpdate = true;
+    }
   }
 
   // ── Pointer controls ───────────────────────────────────────────────────────
@@ -1457,6 +1492,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       scrollDriveLocked = false;
       needRecompute = true;
     },
+    forceResize,
+    refreshTextures,
     captureFrame(opts) {
       if (!renderer || !canvas) return null;
       opts = opts || {};

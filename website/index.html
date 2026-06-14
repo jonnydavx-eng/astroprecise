@@ -493,12 +493,6 @@
     body.preloader-active {
       overflow: hidden;
     }
-    body.preloader-active .hero {
-      visibility: hidden;
-    }
-    body.page-home--ready .hero {
-      visibility: visible;
-    }
 
     /* Sacred-geometry meridian — instrument frame, not a box */
     .hero__meridian {
@@ -2320,7 +2314,7 @@
        then flown into the hero on dismiss. The CSS-mock above stays as a graceful fallback. */
     .apl-live-orr{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:min(66vmin,480px);height:min(66vmin,480px);pointer-events:auto;z-index:2;opacity:0;transition:opacity 1s ease;cursor:grab;}
     .apl-live-orr:active{cursor:grabbing;}
-    .apl-live-orr canvas{width:100%!important;height:100%!important;display:block;
+    .apl-live-orr canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;
       -webkit-mask-image:radial-gradient(ellipse 90% 90% at 50% 46%,#000 30%,rgba(0,0,0,0.5) 65%,transparent 100%);
       mask-image:radial-gradient(ellipse 90% 90% at 50% 46%,#000 30%,rgba(0,0,0,0.5) 65%,transparent 100%);}
     #preloader.has-real .apl-live-orr{opacity:1;}
@@ -2386,6 +2380,7 @@
       return;
     }
     document.body.classList.add('preloader-active');
+    window.__orreryPreloaderOwns = true;
     let raf = null;
     const fill = document.getElementById('preloader-fill');
     if (fill) fill.style.width = '100%';
@@ -2415,11 +2410,18 @@
       // Fly the real orrery back into the hero — ONE model, no rebuild, context preserved.
       if (orreryRelocated && orrCanvas && heroRing) {
         orrCanvas.style.width = ''; orrCanvas.style.height = '';
+        orrCanvas.removeAttribute('width'); orrCanvas.removeAttribute('height');
         heroRing.appendChild(orrCanvas);
         heroRing.classList.remove('orrery-canvas-away');
-        window.dispatchEvent(new Event('resize'));   // ResizeObserver + resize() refit to hero size
+        function refitOrrery() {
+          if (window.Orrery3D && typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
+          else window.dispatchEvent(new Event('resize'));
+          if (window.Orrery3D && typeof window.Orrery3D.refreshTextures === 'function') window.Orrery3D.refreshTextures();
+        }
+        requestAnimationFrame(function () { requestAnimationFrame(refitOrrery); });
         if (window.Orrery3D && typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
       }
+      window.__orreryPreloaderOwns = false;
       try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (e) {}
       document.body.classList.remove('preloader-active');
       pre.classList.add('fade-out');
@@ -2433,20 +2435,20 @@
       if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';
     }
 
-    // Mount the same WebGL orrery onto the centred loading stage as soon as the engine is ready.
+    // Mount the same WebGL orrery onto the centred loading stage as soon as the canvas exists.
     (async function featureOrreryOnLoadingScreen() {
       if (!orrSlot) return;
-      // Wait for BOTH the (later-parsed) hero canvas AND the engine to exist.
-      const ready = await waitForGlobal(() => {
+      const canvasReady = await waitForGlobal(() => {
         if (!orrCanvas) orrCanvas = document.getElementById('orrery-canvas');
-        return orrCanvas && orrCanvas.parentElement && window.Orrery3D && window.AstroEphemeris;
-      }, 20000);   // generous window so a slow first paint can't strand the static CSS-mock
-      if (!ready || preDone) return;                 // engine/canvas slow or already dismissed → CSS mock stays
-      heroRing = orrCanvas.parentElement;            // remember home so we can fly it back on enter
+        return orrCanvas && orrCanvas.parentElement;
+      }, 20000);
+      if (!canvasReady || preDone) return;
+      heroRing = orrCanvas.parentElement;
       if (heroRing) heroRing.classList.add('orrery-canvas-away');
-      orrSlot.appendChild(orrCanvas);                // move the ONE canvas onto the loading stage
-      orrCanvas.style.width = '100%'; orrCanvas.style.height = '100%';
+      orrSlot.appendChild(orrCanvas);
       orreryRelocated = true;
+      const engineReady = await waitForGlobal(() => window.Orrery3D && window.AstroEphemeris, 20000);
+      if (!engineReady || preDone) return;
       try {
         if (!window.__orreryReady) {                 // init once; if the hero already booted it, adopt it instead
           window.Orrery3D.init(orrCanvas);
@@ -3816,7 +3818,7 @@
         await waitFor(function () { return window.Orrery3D; }, 6000);
         // The preloader may already have mounted the SAME orrery (and will relocate it into
         // the hero on dismiss). Only init here if that didn't happen.
-        if (!window.__orreryReady) {
+        if (!window.__orreryReady && !window.__orreryPreloaderOwns) {
           window.Orrery3D.init(document.getElementById('orrery-canvas'));
           window.__orreryReady = true;
         }
@@ -3838,7 +3840,7 @@
           _fb.onload = function () {
             try {
               var _c = document.getElementById('orrery-canvas');
-              if (window.Orrery3D && _c && !window.__orreryReady) {
+              if (window.Orrery3D && _c && !window.__orreryReady && !window.__orreryPreloaderOwns) {
                 window.Orrery3D.init(_c);
                 window.__orreryReady = true;
                 if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
