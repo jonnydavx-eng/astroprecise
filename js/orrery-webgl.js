@@ -124,7 +124,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   // intro — HD Earth close-up → pull back through the solar system (preloader + replay)
   let introActive = false, introStart = 0;
   let onIntroDone = null;
-  const INTRO_MS = 5800;
+  const INTRO_MS = 7200;
   let texturesReady = false;
   let texturesReadyResolve = null;
   const texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
@@ -218,8 +218,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     scaleLevel = 0;
     updateScaleVisuals(0);
     earthTargetVec(camTarget);
-    camRadius = 3.0;
-    camEl = 7 * D2R;
+    camRadius = 2.55;
+    camEl = 6 * D2R;
     camAz = -0.6;
     applyCamera();
     if (PRM) {
@@ -1115,8 +1115,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     catch (err) { console.warn('[orrery] render error — falling back to canvas orrery:', err); fallbackToCanvas(canvas); }
   }
   function frameBody(t) {
-    const preloaderRender = !!window.__orreryPreloaderOwns;
-    if (!running || (!inView && !preloaderRender)) { lastT = t; return; }
+    if (window.__orreryPreloaderOwns) inView = true;
+    if (!running || !inView) { lastT = t; return; }
     const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t;
 
     // flick momentum — time coasts after a drag-release, decaying to rest
@@ -1195,8 +1195,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       const earthPos = meshes.earth.position;
       const end = scalePreset(2);
       camTarget.lerpVectors(earthPos, new THREE.Vector3(0, 0, 0), e);
-      camRadius = 3.0 + (end.camRadius - 3.0) * e;
-      camEl = (7 * D2R) + (end.camEl - 7 * D2R) * e;
+      camRadius = 2.55 + (end.camRadius - 2.55) * e;
+      camEl = (6 * D2R) + (end.camEl - 6 * D2R) * e;
       camAz = (Math.atan2(earthPos.z, earthPos.x) * -1 - 0.2) * (1 - e) + (end.camAz) * e;
       if (p >= 1) {
         introActive = false;
@@ -1459,8 +1459,21 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     buildGalaxyLayers();
     tuneSunGlowForComposer(perfTier);
     updatePositions();
-    scaleLevel = 2;
-    applyScalePreset(2, false);
+    const preloaderMode = !!window.__orreryPreloaderOwns;
+    if (preloaderMode) {
+      scaleLevel = 0;
+      introActive = false;
+      updateScaleVisuals(0);
+      earthTargetVec(camTarget);
+      camRadius = 2.55;
+      camEl = 6 * D2R;
+      camAz = -0.6;
+      scaleAnimActive = false;
+      applyCamera();
+    } else {
+      scaleLevel = 2;
+      applyScalePreset(2, false);
+    }
     resize();
     preloadTextures();
 
@@ -1476,9 +1489,11 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     bindControls();
     if ('ResizeObserver' in window) { const ro = new ResizeObserver(resize); ro.observe(canvas); canvas._orreryRO = ro; }
     window.addEventListener('resize', resize);
-    if ('IntersectionObserver' in window) {
+    if ('IntersectionObserver' in window && !window.__orreryPreloaderOwns) {
       const io = new IntersectionObserver((ents) => { inView = ents[0].isIntersecting; }, { threshold: 0.01 });
       io.observe(canvas); canvas._orreryIO = io;
+    } else {
+      inView = true;
     }
     document.addEventListener('visibilitychange', () => { running = !document.hidden; });
 
