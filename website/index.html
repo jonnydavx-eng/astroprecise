@@ -2381,18 +2381,27 @@
     let introSeen = false;
     try { introSeen = sessionStorage.getItem('ap_intro_complete') === '1'; } catch (e) {}
     if (introSeen) {
-      var skipCanvas = document.getElementById('orrery-canvas');
-      var skipRing = document.querySelector('.hero__orrery-ring');
-      if (skipCanvas && skipRing && skipCanvas.parentElement !== skipRing) {
-        skipRing.appendChild(skipCanvas);
-        skipRing.classList.remove('orrery-canvas-away');
-      }
       pre.style.display = 'none';
-      if (pre.parentNode) pre.parentNode.removeChild(pre);
       window.__apHeroEntered = true;
+      function relocateCanvasToHero() {
+        var skipCanvas = document.getElementById('orrery-canvas');
+        var skipRing = document.querySelector('.hero__orrery-ring');
+        if (skipCanvas && skipRing && skipCanvas.parentElement !== skipRing) {
+          skipCanvas.style.width = '';
+          skipCanvas.style.height = '';
+          skipRing.appendChild(skipCanvas);
+          skipRing.classList.remove('orrery-canvas-away');
+        }
+        var preEl = document.getElementById('preloader');
+        if (preEl && preEl.parentNode) preEl.parentNode.removeChild(preEl);
+      }
       function skipEnter() {
+        relocateCanvasToHero();
         if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
         window.dispatchEvent(new Event('ap-hero-enter'));
+        requestAnimationFrame(function () {
+          if (window.Orrery3D && typeof Orrery3D.forceResize === 'function') Orrery3D.forceResize();
+        });
       }
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(skipEnter); });
@@ -2414,11 +2423,9 @@
 
     // ── The REAL 3D orrery (same model as the hero centrepiece) on the loading screen ──
     const orrSlot = document.getElementById('preloader-orrery-slot');
-    // The hero #orrery-canvas is parsed LATER in the DOM than this early script, so
-    // resolve it lazily (poll) inside the feature fn rather than capturing null now.
     let orrCanvas = document.getElementById('orrery-canvas');
-    let heroRing = document.querySelector('.hero__orrery-ring');
     let orreryInHero = false;
+    function getHeroRing() { return document.querySelector('.hero__orrery-ring'); }
     function waitForGlobal(test, ms) {
       return new Promise((res) => { const t0 = Date.now();
         (function poll() { try { if (test()) return res(true); } catch (e) {}
@@ -2429,6 +2436,8 @@
     function hidePre() {
       if (preDone) return; preDone = true;
       if (raf) cancelAnimationFrame(raf);
+      var heroRing = getHeroRing();
+      orrCanvas = document.getElementById('orrery-canvas') || orrCanvas;
       if (!orreryInHero && orrCanvas && heroRing) {
         orrCanvas.style.width = ''; orrCanvas.style.height = '';
         heroRing.appendChild(orrCanvas);
@@ -2458,7 +2467,8 @@
 
     (async function featureOrreryOnLoadingScreen() {
       if (!orrSlot || !orrCanvas) return;
-      if (heroRing) heroRing.classList.add('orrery-canvas-away');
+      var heroRingEarly = getHeroRing();
+      if (heroRingEarly) heroRingEarly.classList.add('orrery-canvas-away');
       const engineReady = await waitForGlobal(() => window.Orrery3D && window.AstroEphemeris, 25000);
       if (!engineReady || preDone) {
         if (!preDone) pre.classList.add('fallback-css');
