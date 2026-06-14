@@ -852,19 +852,22 @@
     }
     .orrery-scale-dial {
       display: inline-flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 0.25rem;
-      padding: 2px;
-      border-radius: 999px;
+      justify-content: center;
+      gap: 0.2rem;
+      max-width: min(100%, 22rem);
+      padding: 3px 4px;
+      border-radius: 12px;
       border: 1px solid rgba(201, 162, 39, 0.22);
       background: rgba(8, 6, 4, 0.35);
     }
     .orrery-scale-btn {
       font-family: var(--font-ui, Inter, system-ui, sans-serif);
-      font-size: 0.58rem;
-      letter-spacing: 0.08em;
+      font-size: 0.52rem;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      padding: 4px 10px;
+      padding: 3px 7px;
       border-radius: 999px;
       border: 1px solid transparent;
       background: transparent;
@@ -2520,6 +2523,10 @@
                   <button type="button" class="orrery-scale-btn" data-scale="0" aria-pressed="false">Earth</button>
                   <button type="button" class="orrery-scale-btn" data-scale="1" aria-pressed="false">Inner</button>
                   <button type="button" class="orrery-scale-btn active" data-scale="2" aria-pressed="true">System</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="3" aria-pressed="false">Oort</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="4" aria-pressed="false">Stars</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="5" aria-pressed="false">Galaxy</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="6" aria-pressed="false">Cosmos</button>
                 </div>
                 <button type="button" class="orrery-btn" id="orrery-replay-intro" aria-label="Replay the Earth to solar system intro">Replay intro</button>
                 <div class="orrery-layer-toggles" role="group" aria-label="Orrery layer toggles">

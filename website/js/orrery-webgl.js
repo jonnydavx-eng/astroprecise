@@ -130,14 +130,29 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   let showOrbits = true, showLabels = false, showAsteroids = false;
   let onPlanetClick = null;
 
-  // scale levels 0–2 (Earth · Inner · System) — zoom dial = space, scroll = time
+  // scale levels 0–6 — zoom dial = space, scroll = time
   const SCALE_LEVELS = [
-    { id: 0, name: 'Earth', hud: 'Earth close-up',
-      camRadius: 4.5, camMin: 3, camMax: 8, camEl: 7 * D2R, camAz: -0.6, targetEarth: true },
+    { id: 0, name: 'Earth', hud: 'Earth close-up · live VSOP87',
+      camRadius: 4.5, camMin: 3, camMax: 8, camEl: 7 * D2R, camAz: -0.6, targetEarth: true,
+      honesty: 'Earth close-up · positions live (VSOP87) · distances schematic' },
     { id: 1, name: 'Inner', hud: 'Inner solar system',
-      camRadius: 22, camMin: 14, camMax: 38, camEl: 22 * D2R, camAz: -0.6, targetEarth: false },
+      camRadius: 22, camMin: 14, camMax: 38, camEl: 22 * D2R, camAz: -0.6, targetEarth: false,
+      honesty: 'Inner solar system · positions live · distances schematic' },
     { id: 2, name: 'System', hud: 'Full solar system',
-      camRadius: 48, camMin: 32, camMax: 160, camEl: 26 * D2R, camAz: -0.6, targetEarth: false },
+      camRadius: 48, camMin: 32, camMax: 160, camEl: 26 * D2R, camAz: -0.6, targetEarth: false,
+      honesty: 'Solar system instrument · positions live (VSOP87) · distances schematic' },
+    { id: 3, name: 'Oort', hud: 'Oort cloud · illustrative shell',
+      camRadius: 108, camMin: 78, camMax: 175, camEl: 20 * D2R, camAz: -0.45, targetEarth: false,
+      honesty: 'Oort cloud · illustrative shell around the system · not measured distances' },
+    { id: 4, name: 'Stars', hud: 'Local stars · schematic directions',
+      camRadius: 310, camMin: 200, camMax: 520, camEl: 24 * D2R, camAz: -0.5, targetEarth: false,
+      honesty: 'Nearby stars · directions schematic · not true 3D distances' },
+    { id: 5, name: 'Galaxy', hud: 'Milky Way · Sun is one point',
+      camRadius: 780, camMin: 520, camMax: 1200, camEl: 52 * D2R, camAz: -0.28, targetEarth: false,
+      honesty: 'Milky Way · illustrative spiral · Sun marked in the Orion arm' },
+    { id: 6, name: 'Cosmos', hud: 'Deep field · distant galaxies',
+      camRadius: 1950, camMin: 1300, camMax: 3000, camEl: 58 * D2R, camAz: 0.05, targetEarth: false,
+      honesty: 'Deep field · decorative galaxy sprites · not a measured sky survey' },
   ];
   let scaleLevel = 2;
   let scaleAnimActive = false, scaleAnimStart = 0;
@@ -150,6 +165,12 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   let halleyGroup = null, halleyOrbit = null, halleyTail = null;
   let saturnRingMesh = null, saturnShadowBand = null;
   let eclipseDim = 0; // 0 = none, 1 = full eclipse dimming
+
+  // Phase 3 galaxy layers (L3–L6)
+  let galaxyGroup = null;
+  let oortShell = null, localStarsGroup = null, milkyWayDisk = null, cosmicField = null;
+  let galacticCore = null, galacticHalo = null;
+  let sunMarker = null, solarDim = 1;
 
   // ── Helpers ──────────────────────────────────────────────────────────────
   const norm360 = (d) => ((d % 360) + 360) % 360;
@@ -177,7 +198,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
   const easeInOut = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
-  function scalePreset(n) { return SCALE_LEVELS[Math.max(0, Math.min(2, n | 0))] || SCALE_LEVELS[2]; }
+  function scalePreset(n) { return SCALE_LEVELS[Math.max(0, Math.min(6, n | 0))] || SCALE_LEVELS[2]; }
 
   function earthTargetVec(out) {
     if (meshes.earth) return out.copy(meshes.earth.position);
@@ -216,6 +237,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       applyCamera();
     }
     updateScaleHUD();
+    updateScaleVisuals(scaleLevel);
     try {
       document.dispatchEvent(new CustomEvent('orrery-scale-change', { detail: { level: scaleLevel, preset: p } }));
     } catch (e) { /* optional */ }
@@ -335,6 +357,289 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         labels.halley.scale.set(s * labels.halley.userData.aspect, s, 1);
       }
     }
+  }
+
+  const LOCAL_STARS = [
+    { name: 'Proxima Cen', dir: [0.78, -0.08, 0.62], dist: 58, color: 0xffe8c8 },
+    { name: 'Alpha Cen', dir: [0.74, -0.12, 0.66], dist: 62, color: 0xfff0d8 },
+    { name: 'Sirius', dir: [-0.42, -0.58, 0.70], dist: 78, color: 0xe8f4ff },
+    { name: 'Vega', dir: [0.12, 0.82, 0.55], dist: 85, color: 0xf0f8ff },
+    { name: 'Betelgeuse', dir: [-0.55, 0.18, 0.81], dist: 92, color: 0xffb890 },
+    { name: 'Polaris', dir: [0.05, 0.96, 0.28], dist: 70, color: 0xfff8e8 },
+    { name: 'Arcturus', dir: [-0.68, 0.52, 0.52], dist: 80, color: 0xffd8a0 },
+    { name: 'Altair', dir: [0.38, 0.62, 0.68], dist: 74, color: 0xf8fcff },
+  ];
+
+  function galaxySpriteTexture(inner, outer, w, h) {
+    const c = document.createElement('canvas');
+    c.width = w || 256; c.height = h || 128;
+    const x = c.getContext('2d');
+    const g = x.createRadialGradient(c.width / 2, c.height / 2, 0, c.width / 2, c.height / 2, c.width / 2);
+    g.addColorStop(0, inner); g.addColorStop(0.45, outer); g.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = g; x.fillRect(0, 0, c.width, c.height);
+    return new THREE.CanvasTexture(c);
+  }
+
+  function buildOortShell() {
+    const innerR = 52, outerR = 68;
+    const count = perfTier === 'low' ? 900 : perfTier === 'mid' ? 1400 : 2200;
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const u = Math.random(), v = Math.random();
+      const th = 2 * Math.PI * u, ph = Math.acos(2 * v - 1);
+      const r = innerR + Math.random() * (outerR - innerR);
+      pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      pos[i * 3 + 1] = r * Math.cos(ph) * 0.35;
+      pos[i * 3 + 2] = -r * Math.sin(ph) * Math.sin(th);
+      const w = 0.35 + Math.random() * 0.45;
+      col[i * 3] = 0.72 * w; col[i * 3 + 1] = 0.68 * w; col[i * 3 + 2] = 0.88 * w;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    oortShell = new THREE.Points(g, new THREE.PointsMaterial({
+      size: perfTier === 'high' ? 0.35 : 0.28, vertexColors: true, transparent: true,
+      opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    oortShell.visible = false;
+    galaxyGroup.add(oortShell);
+  }
+
+  function buildLocalStars() {
+    localStarsGroup = new THREE.Group();
+    LOCAL_STARS.forEach((s) => {
+      const d = new THREE.Vector3(s.dir[0], s.dir[1], s.dir[2]).normalize().multiplyScalar(s.dist);
+      const core = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTexture('rgba(255,245,220,0.95)', 'rgba(180,200,255,0.0)'),
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, color: s.color,
+      }));
+      core.scale.set(3.2, 3.2, 1);
+      core.position.copy(d);
+      localStarsGroup.add(core);
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTexture('rgba(200,220,255,0.25)', 'rgba(80,120,200,0.0)'),
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.5,
+      }));
+      halo.scale.set(9, 9, 1);
+      halo.position.copy(d);
+      localStarsGroup.add(halo);
+      const lab = makeLabel(s.name);
+      lab.position.set(d.x, d.y + 2.2, d.z);
+      lab.scale.set(0.55, 0.55, 1);
+      localStarsGroup.add(lab);
+    });
+    const sysDot = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTexture('rgba(255,220,120,0.9)', 'rgba(255,160,40,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+    }));
+    sysDot.scale.set(2.4, 2.4, 1);
+    sysDot.position.set(0, 0, 0);
+    localStarsGroup.add(sysDot);
+    const sysLab = makeLabel('Solar system');
+    sysLab.position.set(0, 2.5, 0);
+    sysLab.scale.set(0.5, 0.5, 1);
+    localStarsGroup.add(sysLab);
+    localStarsGroup.visible = false;
+    galaxyGroup.add(localStarsGroup);
+  }
+
+  function buildMilkyWaySpiral() {
+    const arms = 4;
+    const count = perfTier === 'low' ? 6000 : perfTier === 'mid' ? 10000 : 16000;
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const bulgeCount = Math.floor(count * 0.08);
+    for (let i = 0; i < count; i++) {
+      let x, y, z, r, g, b;
+      if (i < bulgeCount) {
+        const u = Math.random(), ang = Math.random() * Math.PI * 2;
+        const rad = Math.pow(u, 0.55) * 42;
+        x = Math.cos(ang) * rad;
+        z = Math.sin(ang) * rad;
+        y = (Math.random() - 0.5) * 8;
+        r = 1.0; g = 0.88; b = 0.62;
+      } else {
+        const arm = Math.floor(Math.random() * arms);
+        const t = Math.pow(Math.random(), 0.72);
+        const angle = t * 5.8 * Math.PI + arm * (Math.PI * 2 / arms) + (Math.random() - 0.5) * 0.35;
+        const rad = 48 + t * 520 + (Math.random() - 0.5) * 28;
+        x = Math.cos(angle) * rad;
+        z = Math.sin(angle) * rad;
+        y = (Math.random() - 0.5) * (14 + t * 10) * (1 - t * 0.35);
+        const warm = Math.random();
+        r = 0.55 + warm * 0.4; g = 0.48 + warm * 0.35; b = 0.72 + (1 - warm) * 0.2;
+      }
+      pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z;
+      const w = 0.45 + Math.random() * 0.55;
+      col[i * 3] = r * w; col[i * 3 + 1] = g * w; col[i * 3 + 2] = b * w;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    milkyWayDisk = new THREE.Points(geo, new THREE.PointsMaterial({
+      size: perfTier === 'high' ? 0.55 : 0.42, vertexColors: true, transparent: true,
+      opacity: 0.82, depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    milkyWayDisk.rotation.x = 62 * D2R;
+    milkyWayDisk.visible = false;
+    galaxyGroup.add(milkyWayDisk);
+
+    sunMarker = new THREE.Group();
+    const sunPos = new THREE.Vector3(118, 3.5, 52);
+    const sm = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTexture('rgba(255,230,160,0.95)', 'rgba(255,180,60,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+    }));
+    sm.scale.set(5, 5, 1);
+    sm.position.copy(sunPos);
+    sunMarker.add(sm);
+    const sl = makeLabel('Sun · Orion arm');
+    sl.position.set(sunPos.x, sunPos.y + 4, sunPos.z);
+    sl.scale.set(0.65, 0.65, 1);
+    sunMarker.add(sl);
+    sunMarker.visible = false;
+    galaxyGroup.add(sunMarker);
+
+    galacticCore = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTexture('rgba(255,240,210,0.55)', 'rgba(255,180,80,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.72,
+    }));
+    galacticCore.scale.set(48, 48, 1);
+    galacticCore.position.set(0, 2, 0);
+    galacticCore.visible = false;
+    galaxyGroup.add(galacticCore);
+
+    galacticHalo = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: galaxySpriteTexture('rgba(180,140,255,0.18)', 'rgba(60,40,120,0.0)', 512, 256),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.42,
+    }));
+    galacticHalo.scale.set(920, 420, 1);
+    galacticHalo.rotation.x = 62 * D2R;
+    galacticHalo.visible = false;
+    galaxyGroup.add(galacticHalo);
+  }
+
+  function buildCosmicField() {
+    cosmicField = new THREE.Group();
+    const count = perfTier === 'low' ? 5 : 9;
+    for (let i = 0; i < count; i++) {
+      const tex = galaxySpriteTexture(
+        'rgba(220,200,255,0.35)', 'rgba(120,90,180,0.05)', 320, 180
+      );
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.55,
+      }));
+      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      const r = 900 + Math.random() * 1400;
+      sp.position.set(
+        r * Math.sin(ph) * Math.cos(th),
+        (Math.random() - 0.5) * 400,
+        r * Math.sin(ph) * Math.sin(th)
+      );
+      const sc = 120 + Math.random() * 180;
+      sp.scale.set(sc * (1.4 + Math.random() * 0.8), sc, 1);
+      sp.material.rotation = Math.random() * Math.PI;
+      sp.userData.drift = (Math.random() - 0.5) * 0.00008;
+      cosmicField.add(sp);
+    }
+    const deepN = perfTier === 'low' ? 1200 : 2400;
+    const dPos = new Float32Array(deepN * 3);
+    const dCol = new Float32Array(deepN * 3);
+    for (let i = 0; i < deepN; i++) {
+      const r = 600 + Math.random() * 2200;
+      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      dPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      dPos[i * 3 + 1] = r * Math.cos(ph);
+      dPos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+      const w = 0.2 + Math.random() * 0.5;
+      dCol[i * 3] = 0.9 * w; dCol[i * 3 + 1] = 0.85 * w; dCol[i * 3 + 2] = 1.0 * w;
+    }
+    const dGeo = new THREE.BufferGeometry();
+    dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+    dGeo.setAttribute('color', new THREE.BufferAttribute(dCol, 3));
+    const deep = new THREE.Points(dGeo, new THREE.PointsMaterial({
+      size: 0.5, vertexColors: true, transparent: true, opacity: 0.35, depthWrite: false,
+    }));
+    cosmicField.add(deep);
+    cosmicField.visible = false;
+    galaxyGroup.add(cosmicField);
+  }
+
+  function buildGalaxyLayers() {
+    galaxyGroup = new THREE.Group();
+    scene.add(galaxyGroup);
+    buildOortShell();
+    buildLocalStars();
+    buildMilkyWaySpiral();
+    buildCosmicField();
+  }
+
+  function updateScaleVisuals(level) {
+    const lv = level | 0;
+    solarDim = lv <= 2 ? 1 : lv === 3 ? 0.55 : lv === 4 ? 0.12 : 0;
+    const showSolar = solarDim > 0.02;
+    const showPlanetLabels = showLabels && lv <= 2;
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
+      g.visible = showSolar;
+      if (showSolar) {
+        const s = lv <= 2 ? 1 : lv === 3 ? 0.45 : 0.15;
+        g.scale.setScalar(s);
+        const m = g.userData.mesh;
+        if (m && m.material) {
+          if (lv <= 2) {
+            m.material.transparent = false;
+            m.material.opacity = 1;
+          } else {
+            m.material.transparent = true;
+            m.material.opacity = lv === 3 ? 0.88 : 0.55;
+          }
+        }
+      }
+    });
+    if (sunMesh) {
+      sunMesh.visible = showSolar;
+      if (sunGlow.length && showSolar) {
+        sunGlow.forEach((sp) => { sp.visible = lv <= 2; });
+      }
+      if (sunCoronaGroup) sunCoronaGroup.visible = showSolar && lv <= 2;
+    }
+    if (moonGroup) moonGroup.visible = showSolar && lv <= 1;
+    if (earthCloud) earthCloud.visible = showSolar && lv <= 1;
+    orbitLines.forEach((o) => { o.visible = showOrbits && lv <= 3; });
+    if (asteroidPoints) asteroidPoints.visible = showAsteroids && lv <= 3;
+    if (halleyGroup) halleyGroup.visible = lv <= 3;
+    if (labels.halley) labels.halley.visible = showLabels && lv >= 1 && lv <= 3;
+    Object.keys(labels).forEach((k) => {
+      if (k === 'halley') return;
+      if (labels[k]) labels[k].visible = showPlanetLabels;
+    });
+
+    if (oortShell) oortShell.visible = lv === 3;
+    if (localStarsGroup) localStarsGroup.visible = lv === 4;
+    if (milkyWayDisk) milkyWayDisk.visible = lv === 5;
+    if (sunMarker) sunMarker.visible = lv === 5;
+    if (galacticCore) galacticCore.visible = lv === 5;
+    if (galacticHalo) galacticHalo.visible = lv >= 5;
+    if (cosmicField) cosmicField.visible = lv === 6;
+
+    if (starField && starField.material.uniforms) {
+      starField.material.uniforms.uFade.value = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
+    }
+
+    if (bloomPass) {
+      bloomPass.strength = lv >= 5 ? 0.42 : perfTier === 'mid' ? 0.2 : 0.3;
+      bloomPass.threshold = lv >= 5 ? 0.82 : perfTier === 'mid' ? 0.93 : 0.9;
+    }
+    if (renderer) {
+      renderer.toneMappingExposure = lv >= 5 ? 1.18 : perfTier === 'high' ? 1.08 : 1.02;
+    }
+
+    const chip = document.getElementById('orrery-honesty-chip');
+    const p = scalePreset(lv);
+    if (chip && p.honesty) chip.textContent = p.honesty;
   }
 
   function updateEclipseDim(jd) {
@@ -493,7 +798,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     g.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
     const m = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, vertexColors: true,
-      uniforms: { uTime: { value: 0 } },
+      uniforms: { uTime: { value: 0 }, uFade: { value: 1 } },
       vertexShader: `
         attribute float size;
         varying vec3 vColor;
@@ -507,13 +812,14 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         }`,
       fragmentShader: `
         varying vec3 vColor;
+        uniform float uFade;
         void main() {
           vec2 uv = gl_PointCoord - 0.5;
           float d = length(uv);
           if (d > 0.5) discard;
           float core = smoothstep(0.5, 0.0, d);
           float halo = smoothstep(0.5, 0.12, d) * 0.35;
-          gl_FragColor = vec4(vColor * (core + halo), core);
+          gl_FragColor = vec4(vColor * (core + halo), core * uFade);
         }`,
     });
     starField = new THREE.Points(g, m); scene.add(starField);
@@ -807,8 +1113,16 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     if (sunDirLight && sunMesh) sunDirLight.position.copy(sunMesh.position);
     if (sunCoronaGroup && !PRM) sunCoronaGroup.rotation.z += dt * 0.06;
 
+    if (milkyWayDisk && milkyWayDisk.visible && !PRM) milkyWayDisk.rotation.y += dt * 0.004;
+    if (oortShell && oortShell.visible && !PRM) oortShell.rotation.y += dt * 0.003;
+    if (cosmicField && cosmicField.visible && !PRM) {
+      cosmicField.children.forEach((ch) => {
+        if (ch.userData && ch.userData.drift) ch.material.rotation += ch.userData.drift;
+      });
+    }
+
     // self-rotation (liveliness)
-    if (!PRM) {
+    if (!PRM && scaleLevel <= 2) {
       BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
       if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
       if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
@@ -843,6 +1157,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         introActive = false;
         scaleLevel = 2;
         updateScaleHUD();
+        updateScaleVisuals(scaleLevel);
         if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
       }
     } else if (!dragging && !scaleAnimActive && !PRM && (t - userTouched) > 1200) {
@@ -860,7 +1175,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     // labels follow planets, scale with distance, face camera
     BODIES.forEach((b) => {
       const lab = labels[b.id]; if (!lab) return;
-      lab.visible = showLabels && !introActive;
+      lab.visible = showLabels && !introActive && scaleLevel <= 2;
       if (lab.visible) {
         const m = meshes[b.id];
         lab.position.set(m.position.x, m.position.y + b.size + 0.9, m.position.z);
@@ -869,7 +1184,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         lab.scale.set(s * lab.userData.aspect, s, 1);
       }
     });
-    orbitLines.forEach((o) => { o.visible = showOrbits; });
+    orbitLines.forEach((o) => { o.visible = showOrbits && scaleLevel <= 3; });
 
     if (composer) { composer.render(); } else { renderer.render(scene, camera); }
   }
@@ -1024,7 +1339,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     renderer.toneMappingExposure = perfTier === 'high' ? 1.08 : 1.02;
 
     scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);
+    camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
 
     // Bloom composer — tiered via RafCore (low/PRM = off, mid = light, high = full)
@@ -1054,9 +1369,11 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     buildStars(); buildSun(); buildPlanets();
     buildAsteroids();
     buildHalley();
+    buildGalaxyLayers();
     tuneSunGlowForComposer(perfTier);
     updatePositions();
     updateScaleHUD();
+    updateScaleVisuals(scaleLevel);
     resize();
 
     introStart = performance.now();
@@ -1111,9 +1428,9 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     setShowAspects: () => {},
     setShowParticles: () => {},
     triggerShootingStar: () => {},
-    setShowOrbits(b) { showOrbits = !!b; },
-    setShowLabels(b) { showLabels = !!b; },
-    setShowAsteroids(b) { showAsteroids = !!b; if (asteroidPoints) asteroidPoints.visible = showAsteroids; },
+    setShowOrbits(b) { showOrbits = !!b; updateScaleVisuals(scaleLevel); },
+    setShowLabels(b) { showLabels = !!b; updateScaleVisuals(scaleLevel); },
+    setShowAsteroids(b) { showAsteroids = !!b; updateScaleVisuals(scaleLevel); },
     get onPlanetClick() { return onPlanetClick; },
     set onPlanetClick(fn) { onPlanetClick = fn; },
     restartIntro() {
