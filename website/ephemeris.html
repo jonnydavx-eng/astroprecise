@@ -934,7 +934,7 @@
           if (link) {
             var iso = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
             link.href = 'lifepath.html?date=' + iso;
-            link.textContent = '✦ Life Path ' + lp + ' — ' + title + ' →';
+            link.textContent = '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path ' + lp + ' — ' + title + ' →';
           }
           // Compact planet grid
           var grid = document.getElementById('natal-sig-grid');
@@ -966,7 +966,7 @@
             }
             items.push(
               '<div class="sig-cell" style="border-color:rgba(201, 162, 39,0.22);background:rgba(201, 162, 39,0.06);">' +
-                '<span class="sig-cell__glyph" style="color:var(--gold);">✦</span>' +
+                '<span class="sig-cell__glyph eng-star-mark" style="color:var(--gold);"></span>' +
                 '<span class="sig-cell__label">Life Path</span>' +
                 '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +
               '</div>'

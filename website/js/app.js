@@ -108,20 +108,27 @@ const AstroApp = (() => {
     }
   }
 
+  const EI = (id) => `<svg class="eng-i" aria-hidden="true"><use href="#ei-${id}"/></svg>`;
+
   function showToast(title, message, type = 'info', duration = 4000) {
-    const icons = { success: '✓', error: '✕', warning: '<svg class="eng-i" aria-hidden="true"><use href="#ei-warn"/></svg>', info: '✦' };
+    const icons = {
+      success: EI('check'),
+      error: EI('close'),
+      warning: EI('warn'),
+      info: EI('star4'),
+    };
     const tc    = document.querySelector('.toast-container');
     if (!tc) return;
 
     const toast = document.createElement('div');
     toast.className = `toast toast--${type}`;
     toast.innerHTML = `
-      <span class="toast__icon">${icons[type] || '✦'}</span>
+      <span class="toast__icon">${icons[type] || EI('star4')}</span>
       <div class="toast__body">
         <div class="toast__title">${title}</div>
         ${message ? `<div class="toast__message">${message}</div>` : ''}
       </div>
-      <button class="toast__close" aria-label="Close">✕</button>
+      <button class="toast__close" aria-label="Close">${EI('close')}</button>
     `;
 
     tc.appendChild(toast);
@@ -538,12 +545,12 @@ const AstroApp = (() => {
             <p style="font-size:var(--text-sm);color:var(--color-silver-dim)">${data.love}</p>
           </div>
           <div class="card" style="padding:var(--space-4)">
-            <div class="text-gold" style="font-size:1.2rem;margin-bottom:var(--space-2)">⬡</div>
+            <div class="text-gold" style="font-size:1.2rem;margin-bottom:var(--space-2)">${EI('gear')}</div>
             <strong class="text-white" style="display:block;font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-2)">Career</strong>
             <p style="font-size:var(--text-sm);color:var(--color-silver-dim)">${data.career}</p>
           </div>
           <div class="card" style="padding:var(--space-4)">
-            <div class="text-gold" style="font-size:1.2rem;margin-bottom:var(--space-2)">✦</div>
+            <div class="text-gold" style="font-size:1.2rem;margin-bottom:var(--space-2)">${EI('leaf')}</div>
             <strong class="text-white" style="display:block;font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--space-2)">Health</strong>
             <p style="font-size:var(--text-sm);color:var(--color-silver-dim)">${data.health}</p>
           </div>
@@ -614,6 +621,8 @@ window.AstroApp = AstroApp;
     rings: '<circle cx="9.2" cy="12" r="5"/><circle cx="14.8" cy="12" r="5"/>',
     trident: '<path d="M12 21V6M12 6a4 4 0 0 0 4-4M12 6a4 4 0 0 1-4-4M6.5 9.5a5.5 5.5 0 0 0 11 0M9.5 21h5"/>',
     warn: '<path d="M12 4 2.8 19.5h18.4L12 4ZM12 10v4.2M12 16.8v.4"/>',
+    check: '<path d="M5.5 12.5 10 17l8.5-9"/>',
+    close: '<path d="M7.5 7.5 16.5 16.5M16.5 7.5 7.5 16.5"/>',
     moon0: '<circle cx="12" cy="12" r="7.6"/>',
     moon1: '<circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/>',
     moon2: '<circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/>',
@@ -634,6 +643,46 @@ window.AstroApp = AstroApp;
   st.textContent = `.eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;
     fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}`;
   document.head.appendChild(st);
+})();
+
+/** Engraved UI helpers — SVG chrome + canvas ornaments (no unicode decoration). */
+window.AstroUI = (() => {
+  function icon(name, cls) {
+    const c = cls ? ' eng-i ' + cls : ' eng-i';
+    return `<svg class="${c.trim()}" aria-hidden="true"><use href="#ei-${name || 'star4'}"/></svg>`;
+  }
+  function drawStar4(ctx, x, y, r) {
+    const s = r / 12;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.beginPath();
+    ctx.moveTo(0, -8.5 * s);
+    ctx.lineTo(1.7 * s, -2 * s);
+    ctx.lineTo(8 * s, 0);
+    ctx.lineTo(1.7 * s, 2 * s);
+    ctx.lineTo(0, 8.5 * s);
+    ctx.lineTo(-1.7 * s, 2 * s);
+    ctx.lineTo(-8 * s, 0);
+    ctx.lineTo(-1.7 * s, -2 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  function drawHeart(ctx, x, y, r) {
+    const s = r / 12;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.beginPath();
+    ctx.moveTo(0, 7.8 * s);
+    ctx.bezierCurveTo(-7.3 * s, 3.2 * s, -9 * s, -0.7 * s, -3 * s, -5 * s);
+    ctx.bezierCurveTo(0, -7 * s, 3 * s, -5 * s, 3 * s, -5 * s);
+    ctx.bezierCurveTo(3 * s, -5 * s, 6 * s, -7 * s, 9 * s, -5 * s);
+    ctx.bezierCurveTo(15 * s, -0.7 * s, 13.3 * s, 3.2 * s, 0, 7.8 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  return { icon, drawStar4, drawHeart };
 })();
 
 // ═══ UNIVERSAL LEGAL FOOTER LINKS ════════════════════════════════════════
@@ -1193,19 +1242,20 @@ if ('serviceWorker' in navigator) {
     if (document.querySelector('.bottom-nav')) return;
     const here = (location.pathname.split('/').pop() || 'index.html');
     const items = [
-      { href: 'index.html',         icon: '✦', label: 'Home' },
-      { href: 'chart.html',         icon: '◉', label: 'Chart' },
-      { href: 'horoscope.html',     icon: '☽', label: 'Daily' },
-      { href: 'lifepath.html',      icon: '✩', label: 'Life Path' },
-      { href: 'compatibility.html', icon: '♡', label: 'Match' },
+      { href: 'index.html',         icon: 'star4', label: 'Home' },
+      { href: 'chart.html',         icon: 'spiral', label: 'Chart' },
+      { href: 'horoscope.html',     icon: 'crescent', label: 'Daily' },
+      { href: 'lifepath.html',      icon: 'gem', label: 'Life Path' },
+      { href: 'compatibility.html', icon: 'heart', label: 'Match' },
     ];
     const nav = document.createElement('nav');
     nav.className = 'bottom-nav';
     nav.setAttribute('aria-label', 'Mobile navigation');
+    const ei = (id) => '<svg class="eng-i" aria-hidden="true"><use href="#ei-' + id + '"/></svg>';
     nav.innerHTML = '<div class="bottom-nav__inner">' + items.map(it =>
       '<a href="' + it.href + '" class="bottom-nav__item' + (here === it.href ? ' is-active' : '') + '"' +
       (here === it.href ? ' aria-current="page"' : '') + '>' +
-      '<span class="bottom-nav__icon" aria-hidden="true">' + it.icon + '</span>' +
+      '<span class="bottom-nav__icon" aria-hidden="true">' + ei(it.icon) + '</span>' +
       '<span class="bottom-nav__label">' + it.label + '</span></a>'
     ).join('') + '</div>';
     document.body.appendChild(nav);

@@ -232,7 +232,7 @@
       padding-top: var(--space-3);
       line-height: 1.5;
     }
-    .an-reflection::before { content: '✦ '; color: var(--an-gold); }
+    .an-reflection::before { content: ''; color: var(--an-gold); }
 
     /* ── Method / honesty band ── */
     .an-method {
@@ -398,7 +398,7 @@
     <section class="section instrument-teaser">
       <div class="container">
         <div class="instrument-teaser__inner">
-          <div class="instrument-teaser__badge">✦ Go Deeper</div>
+          <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Go Deeper</div>
           <h2 class="instrument-teaser__title">Numbers Are Only Half the Picture</h2>
           <p class="instrument-teaser__body" style="max-width:580px;margin:0 auto var(--space-6);">
             Repeating numbers are a mirror for the moment. Your <strong>Life Path number</strong> and your
@@ -406,7 +406,7 @@
             deterministically and privately.
           </p>
           <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
-            <a href="lifepath.html" class="btn btn--primary btn--lg">✦ &nbsp;Calculate Your Life Path</a>
+            <a href="lifepath.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Life Path</a>
             <a href="name-numerology.html" class="btn btn--outline btn--lg">Name Numerology</a>
             <a href="chart.html" class="btn btn--outline btn--lg">Birth Chart</a>
           </div>
@@ -421,7 +421,7 @@
       <div class="footer-inner">
         <div class="footer-brand">
           <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
-            <span aria-hidden="true">✦</span>
+            <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
             <span>AstroPrecise</span>
           </a>
           <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
@@ -564,7 +564,7 @@
           var body = m.reference ? m.reference.title + ' · ' + m.planetaryHour.ruler + ' hour'
                                  : 'Numerology ' + m.timeRoot + ' · ' + m.planetaryHour.ruler + ' hour';
           if (window.AstroApp && typeof AstroApp.showToast === 'function') {
-            AstroApp.showToast('✦ ' + title, body, 'info', 6000);
+            AstroApp.showToast(' + title, body, 'info', 6000);
           }
         }
       } else {

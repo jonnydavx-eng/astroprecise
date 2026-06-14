@@ -650,7 +650,7 @@
         const starCards = fixedStars.slice(0, 6).map(fs => `
           <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(92, 74, 110,0.07);border-radius:8px;border-left:3px solid var(--violet-bright);">
             <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);flex-wrap:wrap;">
-              <span style="font-size:1.1em;color:var(--violet-bright);">✦</span>
+              <span class="eng-star-mark" style="color:var(--violet-bright);"></span>
               <strong style="color:var(--violet-bright);">${fs.point} conjunct ${fs.star}</strong>
               <span style="font-size:0.75em;color:var(--silver-dim);">${fs.orb.toFixed(1)}° orb · ${fs.constellation}</span>
               ${fs.royal ? `<span style="font-size:0.7em;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">★ Royal Star — ${fs.royal}</span>` : ''}
@@ -835,7 +835,7 @@
         ? (s.planet && AstroIcons.PLANET_GLYPH && AstroIcons.PLANET_GLYPH[s.planet]
             ? AstroIcons.planet(s.planet, { class: 'deep-snippet__orb' })
             : AstroIcons.sign(s.sign, { class: 'deep-snippet__orb' }))
-        : '<span class="deep-snippet__orb" aria-hidden="true">✦</span>';
+        : '<span class="deep-snippet__orb eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>';
 
     const cards = snippets.map(s => `
       <div class="deep-snippet">
@@ -860,11 +860,11 @@
     const ctaHtml = configured
       ? `<p class="deep-teaser__format">A personalised 6–10 page PDF, drawn line by line from your exact chart${priceBit}. One-time — yours to keep, no subscription.</p>
          <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
-           ✦ Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
+           <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>
          <p class="deep-teaser__honest">Opens a secure checkout on our partner store. The chart you cast here never leaves your browser — your reading is hand-prepared from the birth details you enter at checkout.</p>`
       : `<button type="button" class="btn--deep" id="deep-cta">
-           ✦ Full readings coming soon
+           <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Full readings coming soon
          </button>
          <p class="deep-teaser__honest">Deep written readings aren't open for purchase yet. Drop your email below and you'll be the first to know — no spam.</p>`;
 
@@ -1400,7 +1400,10 @@
     x.fillStyle = 'rgba(196,146,10,0.95)';
     x.font = `400 ${R * 0.14}px ${FONT_DISPLAY}`;
     x.textBaseline = 'middle'; x.textAlign = 'center';
-    x.fillText('✦', cx, cy);
+    if (window.AstroUI && AstroUI.drawStar4) {
+      x.fillStyle = 'rgba(196,146,10,0.95)';
+      AstroUI.drawStar4(x, cx, cy, R * 0.12);
+    }
     x.textBaseline = 'alphabetic';
   }
 
@@ -1539,7 +1542,7 @@
     let y = 116 * S;
     x.fillStyle = PAL.gold;
     x.font = `500 ${24 * S}px ${FONT_DISPLAY}`;
-    x.fillText('✦  A S T R O P R E C I S E  ✦', W / 2, y);
+    x.fillText('A S T R O P R E C I S E', W / 2, y);
 
     y += 36 * S;
     x.fillStyle = PAL.goldPale;
@@ -1638,7 +1641,7 @@
     x.beginPath(); x.moveTo(W * 0.2, H - 108 * S); x.lineTo(W * 0.8, H - 108 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${20 * S}px ${FONT_SANS}`;
-    x.fillText(`✦  astroprecise  ·  ${accLine}  ✦`, W / 2, H - 78 * S);
+    x.fillText(`astroprecise  ·  ${accLine}`, W / 2, H - 78 * S);
 
     return cv;
   }

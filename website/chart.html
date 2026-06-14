@@ -283,8 +283,12 @@
       right: 14px;
       top: calc(50% + 10px);
       transform: translateY(-50%);
-      font-size: 0.8rem;
-      color: #0e9c52;
+      width: 10px;
+      height: 6px;
+      border: 2px solid #0e9c52;
+      border-top: none;
+      border-right: none;
+      transform: translateY(-50%) rotate(-45deg);
       opacity: 0;
       transition: opacity var(--transition-fast);
       pointer-events: none;
@@ -366,12 +370,16 @@
       box-shadow: 0 0 20px rgba(201,162,39,0.1);
     }
     .house-card.active::after {
-      content: '✓';
+      content: '';
       position: absolute;
       top: var(--space-2);
       right: var(--space-3);
-      color: var(--gold);
-      font-size: 0.7rem;
+      width: 10px;
+      height: 6px;
+      border: 2px solid var(--gold);
+      border-top: none;
+      border-right: none;
+      transform: rotate(-45deg);
     }
     .house-card__name {
       font-size: 0.7rem;
@@ -1168,7 +1176,7 @@
       <div class="form-glass animate-in" id="chart-form-wrapper">
 
         <div class="form-glass__header">
-          <div class="form-glass__icon" aria-hidden="true">✦</div>
+          <div class="form-glass__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h2 class="form-glass__title">Your Birth Details</h2>
           <p class="form-glass__sub">All calculations happen instantly in your browser — nothing is sent to any server.</p>
         </div>
@@ -1210,7 +1218,7 @@
               aria-required="true"
               aria-describedby="name-hint"
             />
-            <span class="form-group__check" aria-hidden="true">✓</span>
+            <span class="form-group__check" aria-hidden="true"></span>
             <p class="form-error-msg" role="alert">Please enter your name.</p>
             <p class="form-hint" id="name-hint">Used to label your saved chart.</p>
           </div>
@@ -1235,7 +1243,7 @@
                 aria-required="true"
                 aria-describedby="date-hint"
               />
-              <span class="form-group__check" aria-hidden="true">✓</span>
+              <span class="form-group__check" aria-hidden="true"></span>
               <p class="form-error-msg" role="alert">Please enter your birth date.</p>
               <p class="form-hint" id="date-hint">Your date of birth.</p>
             </div>
@@ -1310,7 +1318,7 @@
                 aria-describedby="city-hint"
               />
             </div>
-            <span class="form-group__check" aria-hidden="true" style="right:14px;top:calc(50% + 12px);">✓</span>
+            <span class="form-group__check" aria-hidden="true" style="right:14px;top:calc(50% + 12px);"></span>
             <div
               class="autocomplete-dropdown"
               id="city-autocomplete"
@@ -1378,7 +1386,7 @@
           </p>
 
           <!-- Submit CTA -->
-          <div class="form-divider" aria-hidden="true">✦</div>
+          <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
 
           <div class="form-cta">
             <div id="spacetime-summary" hidden style="margin:0 0 18px;padding:14px 20px;border:1px solid rgba(201,162,39,0.3);border-radius:12px;background:linear-gradient(135deg,rgba(201,162,39,0.07),transparent);font-family:'Cormorant Garamond',serif;font-size:1.02rem;color:var(--white,#f0e8d8);letter-spacing:0.03em;">
@@ -1386,7 +1394,7 @@
               <span id="spacetime-summary-txt"></span>
             </div>
             <button type="submit" class="btn--calculate" id="calculate-btn" aria-describedby="submit-hint">
-              <span class="btn-idle">✦ &nbsp;Calculate My Chart</span>
+              <span class="btn-idle"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Chart</span>
               <span class="btn-loading" aria-hidden="true">
                 <span class="btn-spinner"></span>Calculating…
               </span>
@@ -1413,11 +1421,11 @@
             <div class="result-header-meta">
               <h2 id="result-name"></h2>
               <p id="result-date"></p>
-              <span class="result-badge">✦ Computed locally · VSOP87 + ELP2000</span>
+              <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000</span>
             </div>
             <div class="result-actions" id="result-actions-row">
               <button id="poster-btn" class="action-btn action-btn--gold" aria-label="Download natal chart poster image">
-                ✦ Download Poster
+                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Download Poster
               </button>
               <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
                 ↗ Share Chart
@@ -1448,7 +1456,7 @@
 
           <!-- Natal Wheel -->
           <div class="chart-wheel-card" aria-label="Natal chart wheel diagram">
-            <p class="chart-wheel-label" aria-hidden="true">✦ Natal Wheel</p>
+            <p class="chart-wheel-label" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Natal Wheel</p>
             <div id="natal-wheel" role="img" aria-label="Natal chart wheel"></div>
           </div>
 
@@ -1570,14 +1578,14 @@
               autocomplete="email"
               aria-label="Your email address (optional)"
             />
-            <button type="submit" class="email-capture__btn">✦ Notify me</button>
+            <button type="submit" class="email-capture__btn"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Notify me</button>
           </form>
           <p class="email-capture__privacy">
             <svg class="eng-i" viewBox="0 0 24 24" aria-hidden="true"><use href="#ei-lock"/></svg>
             <span>We'll only email your cosmic weather — no spam, unsubscribe anytime. Your birth data stays on your device.</span>
           </p>
           <div class="email-capture__done" role="status" aria-live="polite">
-            <span aria-hidden="true" style="color:var(--gold);font-size:1.1rem;">✦</span>
+            <span aria-hidden="true" style="color:var(--gold);font-size:1.1rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
             <span id="email-capture-done-msg"><strong>We'll let you know.</strong></span>
           </div>
         </section>
@@ -1662,7 +1670,7 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <p class="footer__logo">✦ AstroPrecise</p>
+          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
           <p class="footer__tagline">
             Professional astrology powered by precise astronomical calculations.
           </p>

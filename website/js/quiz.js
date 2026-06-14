@@ -291,7 +291,7 @@ const AstroQuiz = (() => {
     // 1) PRIMARY — cast the real chart (always live, internal link).
     rows.push(`
       <a class="aq-route aq-route--primary" href="chart.html">
-        <span class="aq-route__icon" aria-hidden="true">✦</span>
+        <span class="aq-route__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
         <span class="aq-route__body">
           <span class="aq-route__title">Cast your real birth chart</span>
           <span class="aq-route__sub">See your actual Sun, Moon &amp; Rising — computed from the real sky, free.</span>
@@ -407,7 +407,7 @@ const AstroQuiz = (() => {
           localStorage.setItem('ap_email_intent', JSON.stringify(queue));
         } catch (_) { /* ignore storage failures */ }
       }
-      note.textContent = '✓ Saved — you\'re on the list. Thank you.';
+      note.textContent = 'Saved — you\'re on the list. Thank you.';
       note.style.color = 'var(--color-gold, #C9A227)';
       input.disabled = true;
       form.querySelector('button[type="submit"]').disabled = true;
@@ -431,9 +431,9 @@ const AstroQuiz = (() => {
     // Glass-orb glyph for the archetype's representative sign.
     const orb = (window.AstroIcons && window.AstroIcons.sign)
       ? window.AstroIcons.sign(arch.sign, { xl: true, label: arch.name })
-      : `<span class="aq-orb-fallback">✦</span>`;
+      : `<span class="aq-orb-fallback eng-star-mark" style="color:var(--gold);"></span>`;
 
-    const shareText = `My cosmic archetype is ${arch.name} (${arch.tagline}) ✦ Discover yours at ${SHARE_NAME}`;
+    const shareText = `My cosmic archetype is ${arch.name} (${arch.tagline}) — Discover yours at ${SHARE_NAME}`;
 
     container.innerHTML = `
       <div class="aq-result" data-element="${arch.element}">
@@ -531,7 +531,7 @@ const AstroQuiz = (() => {
 
     container.innerHTML = `
       <div class="aq-card aq-intro">
-        <div class="aq-intro__seal" aria-hidden="true">✦</div>
+        <div class="aq-intro__seal" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);width:1.4em;height:1.4em;"></span></div>
         <h2 class="aq-intro__title">Which cosmic archetype are you?</h2>
         <p class="aq-intro__sub">
           Six questions. One archetype, drawn from the timeless language of element,

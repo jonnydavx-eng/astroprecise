@@ -810,7 +810,7 @@
         <!-- Two luminous orb avatars with connecting arc -->
         <div class="compat-orbs" aria-hidden="true">
           <div class="compat-orb compat-orb--1">
-            <div class="compat-orb__core" id="orb1-core"><span id="orb1-glyph">✦</span></div>
+            <div class="compat-orb__core" id="orb1-core"><span id="orb1-glyph"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span></div>
             <span class="compat-person-label">Person A</span>
           </div>
           <div class="compat-orbs__arc">
@@ -824,10 +824,10 @@
                 </linearGradient>
               </defs>
             </svg>
-            <span class="compat-orbs__arc-label">♡</span>
+            <span class="compat-orbs__arc-label"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
           </div>
           <div class="compat-orb compat-orb--2">
-            <div class="compat-orb__core" id="orb2-core"><span id="orb2-glyph">✦</span></div>
+            <div class="compat-orb__core" id="orb2-core"><span id="orb2-glyph"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span></div>
             <span class="compat-person-label">Person B</span>
           </div>
         </div>
@@ -851,7 +851,7 @@
             <fieldset class="compat-person-card compat-person-card--p1" style="border:none;padding:var(--space-7);margin:0;">
               <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person A birth details</legend>
               <h3>
-                <span class="person-icon person-icon--p1" aria-hidden="true">✦</span>
+                <span class="person-icon person-icon--p1" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
                 Person A
               </h3>
               <div class="form-group">
@@ -883,7 +883,7 @@
             <!-- Desktop divider -->
             <div class="compat-form__divider" aria-hidden="true">
               <div class="compat-form__divider-line"></div>
-              <span class="compat-form__divider-heart">♡</span>
+              <span class="compat-form__divider-heart"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
               <div class="compat-form__divider-line"></div>
             </div>
 
@@ -891,7 +891,7 @@
             <fieldset class="compat-person-card compat-person-card--p2" style="border:none;padding:var(--space-7);margin:0;">
               <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person B birth details</legend>
               <h3>
-                <span class="person-icon person-icon--p2" aria-hidden="true">✦</span>
+                <span class="person-icon person-icon--p2" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
                 Person B
               </h3>
               <div class="form-group">
@@ -926,7 +926,7 @@
               Calculate Compatibility <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>
             </button>
             <button type="button" class="btn btn--outline btn--lg" id="compat-invite-btn" style="margin-left:var(--space-3);">
-              ♡ Invite Someone
+              <svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone
             </button>
           </div>
           <p class="form-hint" style="text-align:center;margin-top:var(--space-3);">
@@ -1382,7 +1382,7 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <p class="footer__logo">✦ AstroPrecise</p>
+          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
           <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
         </div>
         <nav aria-label="Tools navigation">
@@ -1537,10 +1537,9 @@
       ctx.strokeRect(54, 54, W-108, H-108);
 
       // Corner ornaments
+      ctx.fillStyle = 'rgba(196,146,10,0.5)';
       [[68,68],[W-68,68],[68,H-68],[W-68,H-68]].forEach(function(c) {
-        ctx.font = '22px serif'; ctx.fillStyle = 'rgba(196,146,10,0.5)';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('✦', c[0], c[1]);
+        if (window.AstroUI && AstroUI.drawStar4) AstroUI.drawStar4(ctx, c[0], c[1], 11);
       });
 
       // Eyebrow
@@ -1550,10 +1549,11 @@
 
       // Sign glyphs
       var SIGN_GLYPHS = {Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
-      var g1 = SIGN_GLYPHS[sign1] || '✦', g2 = SIGN_GLYPHS[sign2] || '✦';
+      var g1 = SIGN_GLYPHS[sign1] || '', g2 = SIGN_GLYPHS[sign2] || '';
       ctx.font = '220px serif';
       ctx.fillStyle = '#b87850'; ctx.fillText(g1, W/2 - 220, 340);
-      ctx.fillStyle = 'rgba(196,146,10,0.9)'; ctx.font = '100px serif'; ctx.fillText('♡', W/2, 320);
+      ctx.fillStyle = 'rgba(196,146,10,0.9)';
+      if (window.AstroUI && AstroUI.drawHeart) AstroUI.drawHeart(ctx, W/2, 320, 48);
       ctx.fillStyle = '#c9a227'; ctx.font = '220px serif'; ctx.fillText(g2, W/2 + 220, 340);
 
       // Names
@@ -1605,7 +1605,7 @@
 
     function planetOrbMarkup(planet) {
       if (window.AstroIcons && AstroIcons.planet) return AstroIcons.planet(planet, { sm:true });
-      return '<span class="midchart-cell__glyph">' + (PLANET_GLYPHS[planet] || '✦') + '</span>';
+      return '<span class="midchart-cell__glyph">' + (PLANET_GLYPHS[planet] || '') + '</span>';
     }
 
     function renderMidpointPlanets(containerId, positions) {
@@ -1927,7 +1927,7 @@
         var p1 = readPerson('person1');
         if (!p1) {
           inviteBtn.textContent = 'Fill in your details first';
-          setTimeout(function() { inviteBtn.innerHTML = '♡ Invite Someone'; }, 2200);
+          setTimeout(function() { inviteBtn.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone'; }, 2200);
           return;
         }
         var params = new URLSearchParams();
@@ -1939,13 +1939,13 @@
         params.set('p1tz', p1.tz);
         var link = location.origin + location.pathname + '?' + params.toString();
         var inviteText = (p1.name ? p1.name + ' wants' : 'Someone wants') +
-          ' to check your cosmic compatibility ♡ Their half of the chart is already filled in — add yours: ' + link;
+          ' to check your cosmic compatibility. Their half of the chart is already filled in — add yours: ' + link;
         if (navigator.share) {
           navigator.share({ title: 'Cosmic Compatibility', text: inviteText, url: link }).catch(function(){});
         } else {
           navigator.clipboard.writeText(inviteText).then(function() {
-            inviteBtn.textContent = '✓ Invite link copied';
-            setTimeout(function() { inviteBtn.innerHTML = '♡ Invite Someone'; }, 2400);
+            inviteBtn.textContent = 'Invite link copied';
+            setTimeout(function() { inviteBtn.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone'; }, 2400);
           }).catch(function(){});
         }
       });
@@ -1982,7 +1982,7 @@
         var p1name = decodeURIComponent(params.get('p1n') || '');
         var formHeading = document.getElementById('form-heading');
         if (formHeading && p1name) {
-          formHeading.innerHTML = '<div class="chart-form-panel__title-icon" aria-hidden="true">♡</div>' +
+          formHeading.innerHTML = '<div class="chart-form-panel__title-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></div>' +
             p1name + ' invited you — add your details';
         }
         var p2date = document.getElementById('person2-date');

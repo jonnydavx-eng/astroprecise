@@ -347,8 +347,16 @@ function page(s) {
     .trait-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
     .trait-list li { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.6; padding-left: var(--space-5); position: relative; }
     .trait-list li::before { position: absolute; left: 0; }
-    .trait-list--plus li::before { content: '✦'; color: var(--color-gold); }
-    .trait-list--minus li::before { content: '◆'; color: var(--crimson-light, #b04a52); }
+    .trait-list--plus li::before {
+      content: ''; top: 0.55em; width: 5px; height: 5px;
+      background: var(--color-gold);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    .trait-list--minus li::before {
+      content: ''; top: 0.55em; width: 5px; height: 5px;
+      background: var(--crimson-light, #b04a52);
+      transform: rotate(45deg); border-radius: 1px;
+    }
     .prose-block { max-width: 760px; margin: 0 auto; color: var(--color-silver); line-height: 1.85; font-size: var(--text-base); }
     .match-chips { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-top: var(--space-5); }
     .sign-thumb-grid {
@@ -542,7 +550,7 @@ function page(s) {
       <div class="container" style="text-align:center;">
         <h2 class="section__title" id="cta-heading">Your Sun sign is one of dozens of placements</h2>
         <p class="section__subtitle">Your Moon, Rising, and every planet shape who you are. Calculate your complete birth chart — free, private, in your browser.</p>
-        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);">✦ &nbsp;Calculate My Birth Chart</a>
+        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Birth Chart</a>
       </div>
     </section>
 
@@ -551,7 +559,7 @@ function page(s) {
         <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
         <div class="sign-thumb-grid" role="list">
-          ${SIGNS.map(o => `<a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}" role="listitem" aria-label="${o.name} horoscope and guide${o.key === s.key ? ' (current page)' : ''}"><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.glyph} ${o.name}</span></a>`).join('\n          ')}
+          ${SIGNS.map(o => `<a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}" role="listitem" aria-label="${o.name} horoscope and guide${o.key === s.key ? ' (current page)' : ''}"><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="${o.name}" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a>`).join('\n          ')}
         </div>
       </div>
     </section>

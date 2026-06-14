@@ -157,7 +157,7 @@
   function emptyHtml() {
     return '' +
       '<div class="glass-card mc-empty">' +
-        '<span class="mc-empty__glyph" aria-hidden="true">✧</span>' +
+        '<span class="mc-empty__glyph eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>' +
         '<h2 class="mc-empty__title">No charts saved yet</h2>' +
         '<p class="mc-empty__text">Cast your first birth chart and save it here to build your ' +
           'personal collection. Saved charts power your daily transit reading and let you ' +

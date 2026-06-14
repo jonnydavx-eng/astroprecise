@@ -950,7 +950,7 @@
         <!-- Birth chart CTA -->
         <div class="sphere-ctas">
           <a href="chart.html" class="cta-btn cta-btn--primary">
-            ✦ Calculate Your Full Birth Chart
+            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Full Birth Chart
           </a>
           <a href="compatibility.html" class="cta-btn cta-btn--ghost">
             ⟐ Synastry &amp; Compatibility
@@ -1107,7 +1107,7 @@
               <!-- Chart pathway CTA -->
               <div class="srp-chart-cta" id="srp-chart-cta">
                 <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. Your personal birth chart reveals how this energy plays out <em>for you specifically</em>.</p>
-                <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn">✦ Get Your Personal Birth Chart →</a>
+                <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Personal Birth Chart →</a>
               </div>
             </div>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
@@ -1130,7 +1130,7 @@
                 <p class="reading-card__text" id="srp-career"></p>
               </div>
               <div class="reading-card">
-                <span class="reading-card__icon">✦</span>
+                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
                 <span class="reading-card__label">Wellness &amp; Energy</span>
                 <p class="reading-card__text" id="srp-health"></p>
               </div>
@@ -1142,7 +1142,7 @@
             </div>
             <div id="srp-weekly-wrap">
               <button id="srp-weekly-toggle" class="btn btn--ghost btn--sm" aria-expanded="false">
-                <span>✦ Weekly Outlook</span>
+                <span><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Weekly Outlook</span>
                 <span id="srp-weekly-chevron">▾</span>
               </button>
               <div id="srp-weekly-body" aria-live="polite"></div>
@@ -1403,7 +1403,7 @@
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <p class="footer__logo">✦ AstroPrecise</p>
+          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
           <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
         </div>
         <nav aria-label="Tools navigation">
@@ -1540,7 +1540,7 @@
         var userSun = getUserSign();
         if (userSun && userSun !== signKey && window.AstroOracle && typeof AstroOracle.getDailyInsight === 'function') {
           var oracle = AstroOracle.getDailyInsight(null, new Date());
-          noteEl.textContent = '✦ Your sky today: ' + oracle.headline;
+          noteEl.textContent = 'Your sky today: ' + oracle.headline;
           noteEl.removeAttribute('hidden');
         } else {
           noteEl.setAttribute('hidden', '');
@@ -1878,14 +1878,11 @@
         ctx.lineWidth = 1;
         ctx.strokeRect(54, 54, 972, 972);
 
-        // Corner ornaments ✦
+        // Corner ornaments
         ctx.fillStyle = 'rgba(196,146,10,0.7)';
-        ctx.font = '28px serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('✦', 54, 74);
-        ctx.fillText('✦', 1026, 74);
-        ctx.fillText('✦', 54, 1052);
-        ctx.fillText('✦', 1026, 1052);
+        if (window.AstroUI && AstroUI.drawStar4) {
+          [[54,74],[1026,74],[54,1052],[1026,1052]].forEach(function(c) { AstroUI.drawStar4(ctx, c[0], c[1], 13); });
+        }
 
         // Moon phase mini-visual: top-right corner
         var now2 = new Date();
@@ -1949,7 +1946,7 @@
         // Branding at y=1038
         ctx.fillStyle = '#c9a227';
         ctx.font = '600 22px Georgia, serif';
-        ctx.fillText('✦ ASTROPRECISE · computed from the real sky ✦', 540, 1038);
+        ctx.fillText('ASTROPRECISE · computed from the real sky', 540, 1038);
 
         return cv;
       }
@@ -1965,7 +1962,7 @@
           a.download = key + '-horoscope-' + new Date().toISOString().slice(0,10) + '.png';
           a.href = cv.toDataURL('image/png');
           a.click();
-          cardBtn.textContent = '✓ Saved';
+          cardBtn.textContent = 'Saved';
           setTimeout(function() { cardBtn.textContent = '↓ Download Card'; }, 2000);
         });
       }

@@ -77,8 +77,16 @@
     .trait-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
     .trait-list li { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.6; padding-left: var(--space-5); position: relative; }
     .trait-list li::before { position: absolute; left: 0; }
-    .trait-list--plus li::before { content: '✦'; color: var(--color-gold); }
-    .trait-list--minus li::before { content: '◆'; color: var(--crimson-light, #b04a52); }
+    .trait-list--plus li::before {
+      content: ''; top: 0.55em; width: 5px; height: 5px;
+      background: var(--color-gold);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    .trait-list--minus li::before {
+      content: ''; top: 0.55em; width: 5px; height: 5px;
+      background: var(--crimson-light, #b04a52);
+      transform: rotate(45deg); border-radius: 1px;
+    }
     .prose-block { max-width: 760px; margin: 0 auto; color: var(--color-silver); line-height: 1.85; font-size: var(--text-base); }
     .match-chips { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-top: var(--space-5); }
     .sign-thumb-grid {
@@ -296,7 +304,7 @@
       <div class="container" style="text-align:center;">
         <h2 class="section__title" id="cta-heading">Your Sun sign is one of dozens of placements</h2>
         <p class="section__subtitle">Your Moon, Rising, and every planet shape who you are. Calculate your complete birth chart — free, private, in your browser.</p>
-        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);">✦ &nbsp;Calculate My Birth Chart</a>
+        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Birth Chart</a>
       </div>
     </section>
 
@@ -305,18 +313,18 @@
         <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
         <div class="sign-thumb-grid" role="list">
-          <a href="aries.html" class="sign-thumb" role="listitem" aria-label="Aries horoscope and guide"><img src="assets/images/zodiac-cards/aries.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♈ Aries</span></a>
-          <a href="taurus.html" class="sign-thumb" role="listitem" aria-label="Taurus horoscope and guide"><img src="assets/images/zodiac-cards/taurus.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♉ Taurus</span></a>
-          <a href="gemini.html" class="sign-thumb" role="listitem" aria-label="Gemini horoscope and guide"><img src="assets/images/zodiac-cards/gemini.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♊ Gemini</span></a>
-          <a href="cancer.html" class="sign-thumb" role="listitem" aria-label="Cancer horoscope and guide"><img src="assets/images/zodiac-cards/cancer.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♋ Cancer</span></a>
-          <a href="leo.html" class="sign-thumb" role="listitem" aria-label="Leo horoscope and guide"><img src="assets/images/zodiac-cards/leo.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♌ Leo</span></a>
-          <a href="virgo.html" class="sign-thumb" role="listitem" aria-label="Virgo horoscope and guide"><img src="assets/images/zodiac-cards/virgo.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♍ Virgo</span></a>
-          <a href="libra.html" class="sign-thumb sign-thumb--current" role="listitem" aria-label="Libra horoscope and guide (current page)"><img src="assets/images/zodiac-cards/libra.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♎ Libra</span></a>
-          <a href="scorpio.html" class="sign-thumb" role="listitem" aria-label="Scorpio horoscope and guide"><img src="assets/images/zodiac-cards/scorpio.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♏ Scorpio</span></a>
-          <a href="sagittarius.html" class="sign-thumb" role="listitem" aria-label="Sagittarius horoscope and guide"><img src="assets/images/zodiac-cards/sagittarius.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♐ Sagittarius</span></a>
-          <a href="capricorn.html" class="sign-thumb" role="listitem" aria-label="Capricorn horoscope and guide"><img src="assets/images/zodiac-cards/capricorn.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♑ Capricorn</span></a>
-          <a href="aquarius.html" class="sign-thumb" role="listitem" aria-label="Aquarius horoscope and guide"><img src="assets/images/zodiac-cards/aquarius.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♒ Aquarius</span></a>
-          <a href="pisces.html" class="sign-thumb" role="listitem" aria-label="Pisces horoscope and guide"><img src="assets/images/zodiac-cards/pisces.jpg" alt="" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">♓ Pisces</span></a>
+          <a href="aries.html" class="sign-thumb" role="listitem" aria-label="Aries horoscope and guide"><img src="assets/images/zodiac-cards/aries.jpg" alt="Aries" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a>
+          <a href="taurus.html" class="sign-thumb" role="listitem" aria-label="Taurus horoscope and guide"><img src="assets/images/zodiac-cards/taurus.jpg" alt="Taurus" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a>
+          <a href="gemini.html" class="sign-thumb" role="listitem" aria-label="Gemini horoscope and guide"><img src="assets/images/zodiac-cards/gemini.jpg" alt="Gemini" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a>
+          <a href="cancer.html" class="sign-thumb" role="listitem" aria-label="Cancer horoscope and guide"><img src="assets/images/zodiac-cards/cancer.jpg" alt="Cancer" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a>
+          <a href="leo.html" class="sign-thumb" role="listitem" aria-label="Leo horoscope and guide"><img src="assets/images/zodiac-cards/leo.jpg" alt="Leo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a>
+          <a href="virgo.html" class="sign-thumb" role="listitem" aria-label="Virgo horoscope and guide"><img src="assets/images/zodiac-cards/virgo.jpg" alt="Virgo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a>
+          <a href="libra.html" class="sign-thumb sign-thumb--current" role="listitem" aria-label="Libra horoscope and guide (current page)"><img src="assets/images/zodiac-cards/libra.jpg" alt="Libra" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a>
+          <a href="scorpio.html" class="sign-thumb" role="listitem" aria-label="Scorpio horoscope and guide"><img src="assets/images/zodiac-cards/scorpio.jpg" alt="Scorpio" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a>
+          <a href="sagittarius.html" class="sign-thumb" role="listitem" aria-label="Sagittarius horoscope and guide"><img src="assets/images/zodiac-cards/sagittarius.jpg" alt="Sagittarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a>
+          <a href="capricorn.html" class="sign-thumb" role="listitem" aria-label="Capricorn horoscope and guide"><img src="assets/images/zodiac-cards/capricorn.jpg" alt="Capricorn" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a>
+          <a href="aquarius.html" class="sign-thumb" role="listitem" aria-label="Aquarius horoscope and guide"><img src="assets/images/zodiac-cards/aquarius.jpg" alt="Aquarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a>
+          <a href="pisces.html" class="sign-thumb" role="listitem" aria-label="Pisces horoscope and guide"><img src="assets/images/zodiac-cards/pisces.jpg" alt="Pisces" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a>
         </div>
       </div>
     </section>
