@@ -334,17 +334,17 @@
       'padding:2.5rem;max-width:760px;margin:0 auto 2.5rem;}' +
       '@media(max-width:600px){.dt-card{padding:1.75rem 1.25rem;}}' +
       '.dt-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;' +
-      'background:linear-gradient(90deg,var(--gold,#D4AF37),var(--purple,#7B2CBF));opacity:0.8;}' +
+      'background:linear-gradient(90deg,var(--gold,#c9a227),var(--purple,#5c4a6e));opacity:0.8;}' +
       '.dt-card__top{display:flex;align-items:center;justify-content:space-between;gap:1rem;' +
       'flex-wrap:wrap;margin-bottom:1.25rem;}' +
       '.dt-card__eyebrow{font-size:0.62rem;font-weight:600;letter-spacing:0.28em;' +
-      'text-transform:uppercase;color:var(--gold,#D4AF37);margin:0 0 0.4rem;}' +
+      'text-transform:uppercase;color:var(--gold,#c9a227);margin:0 0 0.4rem;}' +
       '.dt-card__date{font-size:0.8rem;color:var(--silver-dim,#8891AA);margin:0;letter-spacing:0.04em;}' +
       '.dt-card__streak{display:inline-flex;align-items:center;gap:0.45rem;' +
-      'background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.28);border-radius:999px;' +
+      'background:rgba(201, 162, 39,0.1);border:1px solid rgba(201, 162, 39,0.28);border-radius:999px;' +
       'padding:0.35rem 0.85rem;font-size:0.72rem;color:var(--gold-light,#E8C872);' +
       'letter-spacing:0.03em;white-space:nowrap;}' +
-      '.dt-card__streak-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;' +
+      '.dt-card__streak-dot{width:6px;height:6px;border-radius:50%;background:#9db36a;' +
       'box-shadow:0 0 6px rgba(74,222,128,0.7);}' +
       '.dt-card__headline{font-family:var(--font-display,"Cinzel",serif);' +
       'font-size:clamp(1.4rem,3vw,1.9rem);font-weight:700;color:var(--white,#F8F4EE);' +
@@ -354,25 +354,25 @@
       '.dt-aspect{display:flex;align-items:center;gap:0.75rem;background:rgba(255,255,255,0.03);' +
       'border:1px solid var(--border,rgba(255,255,255,0.08));border-radius:14px;padding:0.7rem 0.95rem;}' +
       '.dt-aspect__orbs{display:inline-flex;align-items:center;gap:0.3rem;flex-shrink:0;}' +
-      '.dt-aspect__rel{font-size:0.95rem;color:var(--gold,#D4AF37);width:1.4rem;text-align:center;flex-shrink:0;}' +
+      '.dt-aspect__rel{font-size:0.95rem;color:var(--gold,#c9a227);width:1.4rem;text-align:center;flex-shrink:0;}' +
       '.dt-aspect__text{flex:1;min-width:0;}' +
       '.dt-aspect__name{font-size:0.78rem;font-weight:600;color:var(--white,#F8F4EE);' +
       'letter-spacing:0.02em;margin:0;}' +
       '.dt-aspect__detail{font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0.15rem 0 0;line-height:1.5;}' +
-      '.dt-aspect__orb{font-size:0.68rem;color:var(--gold,#D4AF37);white-space:nowrap;flex-shrink:0;opacity:0.85;}' +
+      '.dt-aspect__orb{font-size:0.68rem;color:var(--gold,#c9a227);white-space:nowrap;flex-shrink:0;opacity:0.85;}' +
       '.dt-meta{display:flex;flex-wrap:wrap;gap:0.5rem;margin:0 0 1.5rem;}' +
       '.dt-chip{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.72rem;' +
       'color:var(--silver,#C8D0E8);background:rgba(255,255,255,0.04);' +
       'border:1px solid var(--border,rgba(255,255,255,0.08));border-radius:999px;padding:0.3rem 0.75rem;}' +
       '.dt-keywords{display:flex;flex-wrap:wrap;gap:0.4rem;margin:0 0 1.25rem;}' +
       '.dt-keyword{font-size:0.62rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;' +
-      'color:var(--gold-light,#E8C872);background:rgba(123,44,191,0.12);' +
-      'border:1px solid rgba(123,44,191,0.3);border-radius:999px;padding:0.25rem 0.7rem;}' +
+      'color:var(--gold-light,#E8C872);background:rgba(92, 74, 110,0.12);' +
+      'border:1px solid rgba(92, 74, 110,0.3);border-radius:999px;padding:0.25rem 0.7rem;}' +
       '.dt-tease{border-top:1px solid var(--border,rgba(255,255,255,0.08));padding-top:1.25rem;' +
       'margin-top:0.5rem;font-size:0.82rem;color:var(--silver-dim,#8891AA);line-height:1.7;}' +
-      '.dt-tease a{color:var(--gold,#D4AF37);text-decoration:none;border-bottom:1px solid rgba(212,175,55,0.4);' +
+      '.dt-tease a{color:var(--gold,#c9a227);text-decoration:none;border-bottom:1px solid rgba(201, 162, 39,0.4);' +
       'transition:border-color 0.2s;}' +
-      '.dt-tease a:hover{border-bottom-color:var(--gold,#D4AF37);}' +
+      '.dt-tease a:hover{border-bottom-color:var(--gold,#c9a227);}' +
       '.dt-empty{text-align:center;}' +
       '.dt-empty__icon{display:block;margin:0 auto 1rem;}' +
       '.dt-empty h3{font-family:var(--font-display,"Cinzel",serif);font-size:1.3rem;font-weight:700;' +

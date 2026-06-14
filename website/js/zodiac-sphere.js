@@ -36,14 +36,14 @@
   const EL = {
     fire:  [224,  80,  64],
     earth: [107, 155,  95],
-    air:   [123,  44, 191],
+    air:   [92, 74, 110],
     water: [ 42, 110, 189],
   };
 
   const PLANETS = [
-    { key: 'sun',     sym: '☉', col: '#D4AF37', name: 'Sun'     },
+    { key: 'sun',     sym: '☉', col: '#c9a227', name: 'Sun'     },
     { key: 'moon',    sym: '☽', col: '#C8D0E8', name: 'Moon'    },
-    { key: 'mercury', sym: '☿', col: '#00D4FF', name: 'Mercury' },
+    { key: 'mercury', sym: '☿', col: '#3f7d76', name: 'Mercury' },
     { key: 'venus',   sym: '♀', col: '#C77DFF', name: 'Venus'   },
     { key: 'mars',    sym: '♂', col: '#e05848', name: 'Mars'    },
     { key: 'jupiter', sym: '♃', col: '#E8A050', name: 'Jupiter' },
@@ -133,7 +133,7 @@
       i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(212,175,55,0.30)';
+    ctx.strokeStyle = 'rgba(201, 162, 39,0.30)';
     ctx.lineWidth   = 1.5;
     ctx.setLineDash([5, 9]);
     ctx.stroke();
@@ -154,7 +154,7 @@
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(123,44,191,0.14)';
+    ctx.strokeStyle = 'rgba(92, 74, 110,0.14)';
     ctx.lineWidth   = 1;
     ctx.stroke();
   }
@@ -222,7 +222,7 @@
 
       // Glow for hovered / selected
       if (isSel || isHov) {
-        const [gr, gg, gb] = isSel ? [212, 175, 55] : el;
+        const [gr, gg, gb] = isSel ? [201, 162, 39] : el;
         const glow = ctx.createRadialGradient(s.x, s.y, r * 0.4, s.x, s.y, r * 2.8);
         glow.addColorStop(0, `rgba(${gr},${gg},${gb},0.40)`);
         glow.addColorStop(1, `rgba(${gr},${gg},${gb},0)`);
@@ -236,13 +236,13 @@
       ctx.beginPath();
       ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
       ctx.fillStyle = isSel
-        ? 'rgba(212,175,55,0.22)'
+        ? 'rgba(201, 162, 39,0.22)'
         : `rgba(${el[0]},${el[1]},${el[2]},0.14)`;
       ctx.fill();
 
       // Border ring
       ctx.strokeStyle = isSel
-        ? 'rgba(212,175,55,0.95)'
+        ? 'rgba(201, 162, 39,0.95)'
         : isHov
           ? `rgba(${el[0]},${el[1]},${el[2]},0.85)`
           : `rgba(${el[0]},${el[1]},${el[2]},0.40)`;
@@ -251,7 +251,7 @@
 
       // Zodiac glyph
       ctx.font         = `${r * 0.92}px Georgia, 'Times New Roman', serif`;
-      ctx.fillStyle    = isSel ? '#D4AF37' : isHov ? `rgb(${el[0]},${el[1]},${el[2]})` : '#C4CCE4';
+      ctx.fillStyle    = isSel ? '#c9a227' : isHov ? `rgb(${el[0]},${el[1]},${el[2]})` : '#C4CCE4';
       ctx.textAlign    = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(s.glyph, s.x, s.y);
@@ -261,7 +261,7 @@
       if (labelFade > 0) {
         ctx.globalAlpha = alpha * Math.min(1, labelFade);
         ctx.font        = `${Math.max(8, 9.5 * s.s)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle   = isSel ? '#D4AF37' : 'rgba(200,212,245,0.9)';
+        ctx.fillStyle   = isSel ? '#c9a227' : 'rgba(200,212,245,0.9)';
         ctx.textAlign   = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(s.name, s.x, s.y + r + 3);
@@ -282,7 +282,7 @@
     const wA     = Math.max(0, 0.45 - waveR / (R * 5));
     ctx.beginPath();
     ctx.arc(cx, cy, waveR, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(0,212,255,${wA})`;
+    ctx.strokeStyle = `rgba(63, 125, 118,${wA})`;
     ctx.lineWidth   = 1.2;
     ctx.stroke();
 
@@ -306,7 +306,7 @@
     starPath(R * pulse, R * 0.38 * pulse, 8);
     const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, R * pulse);
     grad.addColorStop(0,   '#F0D868');
-    grad.addColorStop(0.5, '#D4AF37');
+    grad.addColorStop(0.5, '#c9a227');
     grad.addColorStop(1,   '#B8962E');
     ctx.fillStyle = grad;
     ctx.fill();
@@ -321,7 +321,7 @@
 
     // "BIRTH CHART" prompt below the star
     ctx.font          = `500 ${Math.max(9, 10 * (W / 600))}px Inter, system-ui, sans-serif`;
-    ctx.fillStyle     = 'rgba(212,175,55,0.65)';
+    ctx.fillStyle     = 'rgba(201, 162, 39,0.65)';
     ctx.textAlign     = 'center';
     ctx.textBaseline  = 'top';
     ctx.fillText('BIRTH CHART', cx, cy + R * pulse + 9);

@@ -141,7 +141,7 @@
 
   var NUMBERS = {
     '111': {
-      title: 'New Beginnings & Focus', root: 1, element: 'fire', color: '#c4920a',
+      title: 'New Beginnings & Focus', root: 1, element: 'fire', color: '#c9a227',
       keywords: ['Initiative', 'Alignment', 'Fresh Start', 'Intention'],
       meaning: 'In numerology, 1 is the number of beginnings, will, and self-direction. Seeing 111 is often read as a nudge to notice what you were just thinking — and to point that attention somewhere worthy. It is a mirror for fresh starts and singular focus, not a forecast.',
       reflection: 'What did your mind land on a moment ago — and is it where you want your energy to flow?',
@@ -169,7 +169,7 @@
       faq: 'In numerology, 444 emphasises 4: stability, structure, and disciplined effort. Many treat it as a reassuring reminder that their foundations are sound. It is a mirror for reflection, not a prediction.'
     },
     '555': {
-      title: 'Change & Movement', root: 5, element: 'air', color: '#5b7fc7',
+      title: 'Change & Movement', root: 5, element: 'air', color: '#9db36a',
       keywords: ['Change', 'Freedom', 'Movement', 'Adaptation'],
       meaning: 'Five is the number of change, freedom, and the senses. 555 is commonly read as a mirror for transition — a cue to loosen your grip on the familiar and stay adaptable as something shifts.',
       reflection: 'What change are you resisting that might actually be an opening?',
@@ -183,7 +183,7 @@
       faq: 'In numerology, 666 is not sinister — 6 is the number of care, home, and responsibility. 666 is commonly read as a nudge to rebalance and return to what matters. It is a reflective symbol, not a warning or prediction.'
     },
     '777': {
-      title: 'Reflection & Wisdom', root: 7, element: 'water', color: '#2a4a94',
+      title: 'Reflection & Wisdom', root: 7, element: 'water', color: '#5c4a6e',
       keywords: ['Insight', 'Solitude', 'Learning', 'Depth'],
       meaning: 'Seven is the number of inner work, study, and quiet insight. 777 is often read as a mirror for the contemplative — a cue to trust what you are learning and to make room for stillness.',
       reflection: 'What is the quiet insight you keep noticing but have not acted on?',
@@ -197,7 +197,7 @@
       faq: 'In numerology, 888 amplifies 8: cycles, balance, and effort. It is often read as a symbol of reciprocity and steady flow. It is a reflective prompt only — never financial advice or a prediction.'
     },
     '999': {
-      title: 'Completion & Release', root: 9, element: 'fire', color: '#c4920a',
+      title: 'Completion & Release', root: 9, element: 'fire', color: '#c9a227',
       keywords: ['Completion', 'Release', 'Closure', 'Wisdom'],
       meaning: 'Nine is the number of completion and the close of a cycle. 999 is widely read as a mirror for endings — an invitation to release what is finished so the next chapter has room to arrive.',
       reflection: 'What are you ready to let reach its natural ending?',

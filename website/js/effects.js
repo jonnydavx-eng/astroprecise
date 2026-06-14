@@ -18,6 +18,13 @@
     bar.className = 'scroll-progress';
     bar.setAttribute('aria-hidden', 'true');
     document.body.appendChild(bar);
+
+    if (window.RafCore) {
+      window.RafCore.onScroll(s => { bar.style.transform = `scaleX(${s.progress})`; });
+      return;
+    }
+
+    // Fallback: self-contained rAF-throttled handler (RafCore absent on this page)
     let ticking = false;
     function update() {
       const max = document.documentElement.scrollHeight - window.innerHeight;

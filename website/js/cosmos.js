@@ -13,14 +13,16 @@ window.CosmosEngine = (() => {
   const MID_COUNT    = 350;
   const BRIGHT_COUNT = 120;
 
+  // Warm "observatory" nebula palette — gold / oxblood / subdued warm violet.
+  // (The old cool lapis/void-violet/emerald values were retired; see CLAUDE.md.)
   const NEBULA_COLORS = [
-    [42, 74, 148],   /* amethyst */
-    [110, 26, 38],   /* ritual crimson */
-    [ 26, 44, 100],   /* deep amethyst */
-    [196, 146,  10],   /* antique gold */
-    [ 20, 34, 86],   /* void violet */
-    [ 14,  92,  58],   /* emerald shadow */
-    [128, 52, 64],   /* rose crimson */
+    [201, 162,  39],   /* antique gold */
+    [110,  26,  38],   /* oxblood */
+    [ 92,  74, 110],   /* subdued warm violet */
+    [128,  52,  64],   /* rose crimson */
+    [ 60,  42,  74],   /* deep warm violet */
+    [120,  80,  30],   /* warm amber-brown */
+    [ 90,  30,  44],   /* deep oxblood */
   ];
 
   // Parallax speed as fraction of screen offset per layer (deep/mid/bright)
@@ -34,6 +36,18 @@ window.CosmosEngine = (() => {
   let shootTimerId = null;
   let resizeTimer  = null;
   let destroyed    = false;
+  let paused       = false;   // tab hidden — skip the loop to save battery
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Tiered DPR cap (RafCore is the source of truth; fall back to a local
+  // equivalent so the perf win applies on pages that don't load RafCore).
+  function capDPR(base) {
+    if (window.RafCore && window.RafCore.capDPR) return window.RafCore.capDPR(base);
+    const real = window.devicePixelRatio || 1;
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    return coarse ? Math.min(real, 1.5) : Math.min(real, base);
+  }
 
   // Logical (CSS) mouse coords, lerped toward target
   const mouse       = { x: 0, y: 0 };
@@ -56,7 +70,7 @@ window.CosmosEngine = (() => {
   // ── DPR-aware canvas setup ─────────────────────────────────────────────────
 
   function setupCanvas() {
-    dpr = window.devicePixelRatio || 1;
+    dpr = capDPR(2);
     const cssW = window.innerWidth;
     const cssH = window.innerHeight;
 
@@ -90,13 +104,34 @@ window.CosmosEngine = (() => {
   function colorString(colorType, alpha) {
     switch (colorType) {
       case 'gold':      return `hsla(40,70%,75%,${alpha})`;
-      case 'amethyst':  return `hsla(270,60%,80%,${alpha})`;
+      case 'amethyst':  return `hsla(300,42%,80%,${alpha})`;   /* warm mauve, not cool violet */
       case 'crimson':   return `hsla(340,55%,70%,${alpha})`;
       default:          return `rgba(240,232,216,${alpha})`;   /* warm parchment */
     }
   }
 
+  // Per-color halo sprites for bright stars — drawn with globalAlpha each frame
+  // instead of allocating a fresh radial gradient per bright star per frame.
+  const HALO_PX = 64;
+  let haloSprites = {};
+  function buildHaloSprites() {
+    haloSprites = {};
+    for (const c of ['white', 'gold', 'amethyst', 'crimson']) {
+      const off  = document.createElement('canvas');
+      off.width  = HALO_PX;
+      off.height = HALO_PX;
+      const o = off.getContext('2d');
+      const g = o.createRadialGradient(HALO_PX / 2, HALO_PX / 2, 0, HALO_PX / 2, HALO_PX / 2, HALO_PX / 2);
+      g.addColorStop(0, colorString(c, 1));
+      g.addColorStop(1, colorString(c, 0));
+      o.fillStyle = g;
+      o.fillRect(0, 0, HALO_PX, HALO_PX);
+      haloSprites[c] = off;
+    }
+  }
+
   function generateStars() {
+    buildHaloSprites();
     stars = [];
 
     // Layer 0 — deep (tiny, slow)
@@ -144,15 +179,32 @@ window.CosmosEngine = (() => {
 
   // ── Nebula generation ──────────────────────────────────────────────────────
 
+  // Pre-render a nebula's radial gradient once to an offscreen sprite. The
+  // per-frame loop then just drawImage()s it at the drifted position — no
+  // createRadialGradient() allocation every frame (the big cosmos.js win).
+  function makeNebulaSprite(n) {
+    const size = Math.max(2, Math.ceil(n.rx * 2));
+    const off  = document.createElement('canvas');
+    off.width  = size;
+    off.height = size;
+    const octx = off.getContext('2d');
+    const grad = octx.createRadialGradient(n.rx, n.rx, 0, n.rx, n.rx, n.rx);
+    grad.addColorStop(0,   `rgba(${n.r},${n.g},${n.b},${n.alpha})`);
+    grad.addColorStop(0.5, `rgba(${n.r},${n.g},${n.b},${n.alpha * 0.4})`);
+    grad.addColorStop(1,   `rgba(${n.r},${n.g},${n.b},0)`);
+    octx.fillStyle = grad;
+    octx.fillRect(0, 0, size, size);
+    n.sprite     = off;
+    n.spriteSize = size;
+  }
+
   function generateNebulas() {
     nebulas = [];
     for (let i = 0; i < 7; i++) {
       const [r, g, b] = NEBULA_COLORS[i];
-      const cx = rand(0.05, 0.95) * W;
-      const cy = rand(0.05, 0.95) * H;
-      nebulas.push({
-        originX: cx,
-        originY: cy,
+      const n = {
+        originX: rand(0.05, 0.95) * W,
+        originY: rand(0.05, 0.95) * H,
         rx:      rand(0.15, 0.30) * W,
         ry:      rand(0.12, 0.22) * H,
         r, g, b,
@@ -165,7 +217,9 @@ window.CosmosEngine = (() => {
         freqY:   (2 * Math.PI) / rand(35000, 50000),
         ampX:    rand(20, 60),
         ampY:    rand(15, 45),
-      });
+      };
+      makeNebulaSprite(n);
+      nebulas.push(n);
     }
   }
 
@@ -176,20 +230,11 @@ window.CosmosEngine = (() => {
       const cx = n.originX + Math.sin(now * n.freqX + n.phaseX) * n.ampX;
       const cy = n.originY + Math.cos(now * n.freqY + n.phaseY) * n.ampY;
 
-      // We approximate an ellipse by scaling the context
+      // Ellipse via context scale; sprite is drawn at its native radius.
       ctx.save();
       ctx.translate(cx, cy);
       ctx.scale(1, n.ry / n.rx);
-
-      const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, n.rx);
-      grad.addColorStop(0,   `rgba(${n.r},${n.g},${n.b},${n.alpha})`);
-      grad.addColorStop(0.5, `rgba(${n.r},${n.g},${n.b},${n.alpha * 0.4})`);
-      grad.addColorStop(1,   `rgba(${n.r},${n.g},${n.b},0)`);
-
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(0, 0, n.rx, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.drawImage(n.sprite, -n.rx, -n.rx, n.spriteSize, n.spriteSize);
       ctx.restore();
     }
   }
@@ -210,15 +255,12 @@ window.CosmosEngine = (() => {
       const alpha   = s.baseAlpha * (0.6 + 0.4 * twinkle);
 
       if (s.size > 1.4) {
-        // Radial glow halo for bright stars
-        const haloR = s.size * 4;
-        const glow  = ctx.createRadialGradient(px, py, 0, px, py, haloR);
-        glow.addColorStop(0,   colorString(s.color, alpha * 0.55));
-        glow.addColorStop(1,   colorString(s.color, 0));
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(px, py, haloR, 0, Math.PI * 2);
-        ctx.fill();
+        // Radial glow halo for bright stars — cached sprite + globalAlpha
+        const haloR  = s.size * 4;
+        const sprite = haloSprites[s.color] || haloSprites.white;
+        ctx.globalAlpha = alpha * 0.55;
+        ctx.drawImage(sprite, px - haloR, py - haloR, haloR * 2, haloR * 2);
+        ctx.globalAlpha = 1;
       }
 
       // Star core
@@ -409,7 +451,25 @@ window.CosmosEngine = (() => {
       setupCanvas();
       generateStars();
       generateNebulas();
+      if (reduceMotion) drawStaticFrame();   // no loop to repaint it otherwise
     }, 120);
+  }
+
+  function drawStaticFrame() {
+    ctx.clearRect(0, 0, W, H);
+    drawNebulas(0);
+    drawStars(0);
+  }
+
+  function onVisibility() {
+    if (document.hidden) {
+      paused = true;
+      if (animFrameId !== null) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+    } else if (paused && !destroyed && !reduceMotion) {
+      paused = false;
+      lastTime = null;                         // reset dt baseline to avoid a jump
+      animFrameId = requestAnimationFrame(frame);
+    }
   }
 
   // ── Boot ───────────────────────────────────────────────────────────────────
@@ -430,8 +490,17 @@ window.CosmosEngine = (() => {
     generateStars();
     generateNebulas();
 
+    window.addEventListener('resize', onResize, { passive: true });
+
+    if (reduceMotion) {
+      // One static frame — no rAF loop, no shooting stars, no parallax.
+      drawStaticFrame();
+      initScrollReveal();
+      return;
+    }
+
     window.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('resize',    onResize,    { passive: true });
+    document.addEventListener('visibilitychange', onVisibility, { passive: true });
 
     animFrameId  = requestAnimationFrame(frame);
     shootTimerId = setTimeout(spawnShoot, rand(2000, 6000));
@@ -461,6 +530,7 @@ window.CosmosEngine = (() => {
 
     window.removeEventListener('mousemove', onMouseMove);
     window.removeEventListener('resize',    onResize);
+    document.removeEventListener('visibilitychange', onVisibility);
 
     if (revealObserver) {
       revealObserver.disconnect();

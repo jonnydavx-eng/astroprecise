@@ -35,9 +35,13 @@ const AstroApp = (() => {
     const mobile = document.querySelector('.navbar__mobile-menu');
 
     if (navbar) {
-      window.addEventListener('scroll', () => {
-        navbar.classList.toggle('scrolled', window.scrollY > 20);
-      }, { passive: true });
+      const applyScrolled = () => navbar.classList.toggle('scrolled', window.scrollY > 20);
+      if (window.RafCore) {
+        window.RafCore.onScroll(applyScrolled);
+      } else {
+        window.addEventListener('scroll', applyScrolled, { passive: true });
+        applyScrolled();
+      }
     }
 
     if (toggle && mobile) {
@@ -1363,7 +1367,7 @@ if ('serviceWorker' in navigator) {
       '<p style="font-size:0.8rem;color:var(--silver,#C8D0E8);margin:0 0 8px;letter-spacing:0.02em;">Your sky, in your inbox — a little cosmic weather, now and then.</p>'
       + '<form class="ap-footer-signup__form" novalidate style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">'
       + '<input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" '
-      + 'style="flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,rgba(150,175,230,0.2));background:rgba(9,11,22,0.6);color:#fff;font-size:0.82rem;">'
+      + 'style="flex:1;min-width:180px;padding:9px 12px;border-radius:10px;border:1px solid var(--border,rgba(168, 158, 136,0.2));background:rgba(9,11,22,0.6);color:#fff;font-size:0.82rem;">'
       + '<button type="submit" style="padding:9px 16px;border-radius:10px;border:1px solid var(--gold,#C9A227);background:rgba(201,162,39,0.14);color:var(--gold,#C9A227);font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">&#10022; Subscribe</button>'
       + '</form>'
       + '<p class="ap-footer-signup__msg" role="status" aria-live="polite" style="font-size:0.62rem;color:var(--silver-dim,#8891AA);margin:8px 0 0;line-height:1.6;">' + window.AP_COPY.privacyMicro + '</p>';

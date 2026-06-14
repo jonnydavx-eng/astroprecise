@@ -66,12 +66,12 @@
   --purple-light:  var(--violet-light);
   --purple-bright: var(--violet-bright);
   --indigo:        #4a3a5c;
-  --blue:          #4A6A7A;
+  --blue:          #6a5a52;     /* warmed off slate-blue */
   --danger:        var(--crimson-light);
   --success:       var(--teal);
-  --lapis:         #4A5A6A;
-  --lapis-light:   #6A7A8A;
-  --lapis-bright:  #8A9AAA;
+  --lapis:         #5a4a52;     /* legacy 'lapis' kept as a warm taupe-mauve */
+  --lapis-light:   #b09a86;     /* warm parchment-taupe (compat person accent) */
+  --lapis-bright:  #c2b09a;
   --amethyst:      var(--violet);
   --amethyst-light: var(--violet-light);
   --amethyst-bright: var(--violet-bright);
@@ -845,7 +845,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn--gold {
   background: var(--gradient-gold);
-  color: #090b16;
+  color: #0d0a07;
   font-weight: 700;
   box-shadow: 0 0 20px rgba(201, 162, 39, 0.45);
 }
@@ -853,7 +853,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn--gold:hover {
   box-shadow: 0 0 36px rgba(201, 162, 39, 0.65);
   transform: translateY(-2px);
-  color: #090b16;
+  color: #0d0a07;
 }
 
 .btn--ghost {
@@ -999,7 +999,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 6px;
   border-radius: 50%;
   background: var(--success);
-  box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.6);
+  box-shadow: 0 0 8px 2px rgba(120, 140, 70, 0.6);
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
@@ -1583,46 +1583,46 @@ body > .cosmos-solar-system { display: none !important; }
 /* Element variants */
 .sign-card[data-element="fire"],
 .sign-card--fire {
-  border-color: rgba(251, 146, 60, 0.22);
+  border-color: rgba(216, 90, 44, 0.22);
 }
 
 .sign-card[data-element="fire"]:hover,
 .sign-card--fire:hover {
-  border-color: rgba(251, 146, 60, 0.5);
-  box-shadow: 0 0 30px rgba(251, 146, 60, 0.12);
+  border-color: rgba(216, 90, 44, 0.5);
+  box-shadow: 0 0 30px rgba(216, 90, 44, 0.12);
 }
 
 .sign-card[data-element="earth"],
 .sign-card--earth {
-  border-color: rgba(52, 211, 153, 0.22);
+  border-color: rgba(94, 122, 58, 0.22);
 }
 
 .sign-card[data-element="earth"]:hover,
 .sign-card--earth:hover {
-  border-color: rgba(52, 211, 153, 0.5);
-  box-shadow: 0 0 30px rgba(52, 211, 153, 0.12);
+  border-color: rgba(94, 122, 58, 0.5);
+  box-shadow: 0 0 30px rgba(94, 122, 58, 0.12);
 }
 
 .sign-card[data-element="air"],
 .sign-card--air {
-  border-color: rgba(56, 189, 248, 0.22);
+  border-color: rgba(167, 139, 186, 0.22);
 }
 
 .sign-card[data-element="air"]:hover,
 .sign-card--air:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 0 30px rgba(56, 189, 248, 0.12);
+  border-color: rgba(167, 139, 186, 0.5);
+  box-shadow: 0 0 30px rgba(167, 139, 186, 0.12);
 }
 
 .sign-card[data-element="water"],
 .sign-card--water {
-  border-color: rgba(96, 165, 250, 0.22);
+  border-color: rgba(63, 125, 118, 0.22);
 }
 
 .sign-card[data-element="water"]:hover,
 .sign-card--water:hover {
-  border-color: rgba(96, 165, 250, 0.5);
-  box-shadow: 0 0 30px rgba(96, 165, 250, 0.12);
+  border-color: rgba(63, 125, 118, 0.5);
+  box-shadow: 0 0 30px rgba(63, 125, 118, 0.12);
 }
 
 .sign-card.is-active,
@@ -1751,7 +1751,7 @@ body > .cosmos-solar-system { display: none !important; }
 .form-input.is-success,
 .form-select.is-success {
   border-color: var(--success);
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+  box-shadow: 0 0 0 3px rgba(120, 140, 70, 0.12);
 }
 
 /* Autocomplete dropdown */
@@ -1790,12 +1790,12 @@ body > .cosmos-solar-system { display: none !important; }
 
 .autocomplete-option:hover,
 .autocomplete-option.is-selected {
-  background: rgba(58, 94, 170, 0.15);
+  background: rgba(92, 74, 110, 0.15);
   color: var(--white);
 }
 
 .autocomplete-option:active {
-  background: rgba(58, 94, 170, 0.25);
+  background: rgba(92, 74, 110, 0.25);
 }
 
 .autocomplete-note {
@@ -1860,8 +1860,8 @@ body > .cosmos-solar-system { display: none !important; }
   margin: 0 auto;
   border-radius: 50%;
   box-shadow:
-    0 0 60px rgba(58, 94, 170, 0.3),
-    0 0 120px rgba(58, 94, 170, 0.1);
+    0 0 60px rgba(92, 74, 110, 0.3),
+    0 0 120px rgba(92, 74, 110, 0.1);
 }
 
 #natal-wheel svg,
@@ -1902,7 +1902,7 @@ body > .cosmos-solar-system { display: none !important; }
   background: var(--gradient-primary);
   border-color: transparent;
   color: #fff;
-  box-shadow: 0 0 16px rgba(58, 94, 170, 0.4);
+  box-shadow: 0 0 16px rgba(92, 74, 110, 0.4);
 }
 
 .chart-panel {
@@ -2001,7 +2001,7 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .data-table tr:hover td {
-  background: rgba(58, 94, 170, 0.06);
+  background: rgba(92, 74, 110, 0.06);
   color: var(--white);
 }
 
@@ -2023,9 +2023,9 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .table-badge--purple {
-  background: rgba(58, 94, 170, 0.2);
+  background: rgba(92, 74, 110, 0.2);
   color: var(--purple-bright);
-  border: 1px solid rgba(58, 94, 170, 0.3);
+  border: 1px solid rgba(92, 74, 110, 0.3);
 }
 
 .table-badge--gold {
@@ -2035,9 +2035,9 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .table-badge--blue {
-  background: rgba(96, 165, 250, 0.15);
+  background: rgba(95, 163, 154, 0.15);
   color: var(--blue);
-  border: 1px solid rgba(96, 165, 250, 0.25);
+  border: 1px solid rgba(95, 163, 154, 0.25);
 }
 
 /* --------------------------------------------------------------------------
@@ -2075,7 +2075,7 @@ body > .cosmos-solar-system { display: none !important; }
 
 .transit-item:hover {
   border-color: var(--border-glow);
-  box-shadow: 0 0 24px rgba(58, 94, 170, 0.12);
+  box-shadow: 0 0 24px rgba(92, 74, 110, 0.12);
 }
 
 .transit-item::before {
@@ -2087,7 +2087,7 @@ body > .cosmos-solar-system { display: none !important; }
   height: 10px;
   border-radius: 50%;
   background: var(--gradient-primary);
-  box-shadow: 0 0 8px rgba(58, 94, 170, 0.6);
+  box-shadow: 0 0 8px rgba(92, 74, 110, 0.6);
 }
 
 .transit-item__date {
@@ -2237,7 +2237,7 @@ body > .cosmos-solar-system { display: none !important; }
   border-radius: 50%;
   background: var(--gradient-primary);
   border: 2px solid var(--border-glow);
-  box-shadow: 0 0 20px rgba(58, 94, 170, 0.35);
+  box-shadow: 0 0 20px rgba(92, 74, 110, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2297,7 +2297,7 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .profile-nav__link.active {
-  background: rgba(58, 94, 170, 0.12);
+  background: rgba(92, 74, 110, 0.12);
   color: var(--white);
   border-left-color: var(--purple-light);
 }
@@ -2363,7 +2363,7 @@ body > .cosmos-solar-system { display: none !important; }
 .horoscope-period-tab.is-active {
   background: var(--gradient-primary);
   color: #fff;
-  box-shadow: 0 0 12px rgba(58, 94, 170, 0.4);
+  box-shadow: 0 0 12px rgba(92, 74, 110, 0.4);
 }
 
 .horoscope-reading {
@@ -2388,12 +2388,12 @@ body > .cosmos-solar-system { display: none !important; }
   letter-spacing: 0.06em;
 }
 
-.aspect-tag--conjunction  { background: rgba(58, 94, 170, 0.2); color: var(--purple-bright); border: 1px solid rgba(58, 94, 170, 0.3); }
-.aspect-tag--sextile      { background: rgba(96, 165, 250, 0.15); color: var(--blue); border: 1px solid rgba(96, 165, 250, 0.25); }
-.aspect-tag--trine        { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.25); }
+.aspect-tag--conjunction  { background: rgba(92, 74, 110, 0.2); color: var(--purple-bright); border: 1px solid rgba(92, 74, 110, 0.3); }
+.aspect-tag--sextile      { background: rgba(95, 163, 154, 0.15); color: var(--blue); border: 1px solid rgba(95, 163, 154, 0.25); }
+.aspect-tag--trine        { background: rgba(120, 140, 70, 0.15); color: #9db36a; border: 1px solid rgba(120, 140, 70, 0.25); }
 .aspect-tag--square       { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
 .aspect-tag--opposition   { background: rgba(245, 158, 11, 0.15); color: var(--gold-light); border: 1px solid rgba(245, 158, 11, 0.25); }
-.aspect-tag--quincunx     { background: rgba(168, 85, 247, 0.15); color: var(--purple-light); border: 1px solid rgba(168, 85, 247, 0.25); }
+.aspect-tag--quincunx     { background: rgba(122, 100, 150, 0.15); color: var(--purple-light); border: 1px solid rgba(122, 100, 150, 0.25); }
 
 /* Planet tags */
 .planet-tag {
@@ -2628,10 +2628,10 @@ body > .cosmos-solar-system { display: none !important; }
   vertical-align: middle;
 }
 
-.badge--purple   { background: rgba(58, 94, 170, 0.2);  color: var(--purple-bright); }
+.badge--purple   { background: rgba(92, 74, 110, 0.2);  color: var(--purple-bright); }
 .badge--gold     { background: var(--gold-dim);           color: var(--gold-light); }
-.badge--blue     { background: rgba(96, 165, 250, 0.15); color: var(--blue); }
-.badge--green    { background: rgba(34, 197, 94, 0.15);  color: #4ade80; }
+.badge--blue     { background: rgba(95, 163, 154, 0.15); color: var(--blue); }
+.badge--green    { background: rgba(120, 140, 70, 0.15);  color: #9db36a; }
 .badge--red      { background: rgba(239, 68, 68, 0.15);  color: #f87171; }
 .badge--silver   { background: var(--surface-2);          color: var(--silver); }
 
@@ -2655,14 +2655,14 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .chip--interactive:hover {
-  background: rgba(58, 94, 170, 0.15);
+  background: rgba(92, 74, 110, 0.15);
   border-color: var(--border-glow);
   color: var(--white);
 }
 
 .chip--active {
-  background: rgba(58, 94, 170, 0.2);
-  border-color: rgba(58, 94, 170, 0.4);
+  background: rgba(92, 74, 110, 0.2);
+  border-color: rgba(92, 74, 110, 0.4);
   color: var(--purple-bright);
 }
 
@@ -2764,8 +2764,8 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .divider--glow {
-  border-top-color: rgba(58, 94, 170, 0.25);
-  box-shadow: 0 1px 8px rgba(58, 94, 170, 0.1);
+  border-top-color: rgba(92, 74, 110, 0.25);
+  box-shadow: 0 1px 8px rgba(92, 74, 110, 0.1);
 }
 
 .divider--with-text {
@@ -2818,7 +2818,7 @@ body > .cosmos-solar-system { display: none !important; }
   max-width: 560px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(58, 94, 170, 0.12);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(92, 74, 110, 0.12);
   animation: modal-enter var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -2940,7 +2940,7 @@ body > .cosmos-solar-system { display: none !important; }
   background: var(--gradient-primary);
   color: #fff;
   border-bottom-color: transparent;
-  box-shadow: 0 0 12px rgba(58, 94, 170, 0.4);
+  box-shadow: 0 0 12px rgba(92, 74, 110, 0.4);
 }
 
 /* --------------------------------------------------------------------------
@@ -3125,7 +3125,7 @@ body > .cosmos-solar-system { display: none !important; }
 .planet-icon--mars    { background: rgba(239, 68, 68, 0.1);   border-color: rgba(239, 68, 68, 0.25); }
 .planet-icon--jupiter { background: rgba(180, 120, 60, 0.1);  border-color: rgba(180, 120, 60, 0.25); }
 .planet-icon--saturn  { background: rgba(212, 175, 116, 0.1); border-color: rgba(212, 175, 116, 0.25); }
-.planet-icon--uranus  { background: rgba(96, 165, 250, 0.1);  border-color: rgba(96, 165, 250, 0.25); }
+.planet-icon--uranus  { background: rgba(95, 163, 154, 0.1);  border-color: rgba(95, 163, 154, 0.25); }
 .planet-icon--neptune { background: rgba(99, 102, 241, 0.1);  border-color: rgba(99, 102, 241, 0.25); }
 .planet-icon--pluto   { background: rgba(139, 92, 246, 0.1);  border-color: rgba(139, 92, 246, 0.25); }
 
@@ -3138,9 +3138,9 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .element-dot--fire  { background: #fb923c; box-shadow: 0 0 6px rgba(251, 146, 60, 0.5); }
-.element-dot--earth { background: #34d399; box-shadow: 0 0 6px rgba(52, 211, 153, 0.5); }
-.element-dot--air   { background: #38bdf8; box-shadow: 0 0 6px rgba(56, 189, 248, 0.5); }
-.element-dot--water { background: #60a5fa; box-shadow: 0 0 6px rgba(96, 165, 250, 0.5); }
+.element-dot--earth { background: #9ab363; box-shadow: 0 0 6px rgba(94, 122, 58, 0.5); }
+.element-dot--air   { background: #a78bba; box-shadow: 0 0 6px rgba(167, 139, 186, 0.5); }
+.element-dot--water { background: #5fa39a; box-shadow: 0 0 6px rgba(95, 163, 154, 0.5); }
 
 /* --------------------------------------------------------------------------
    32. Footer
@@ -3293,8 +3293,8 @@ body > .cosmos-solar-system { display: none !important; }
 
 /* Sun sign highlight card */
 .sun-sign-card {
-  background: linear-gradient(135deg, rgba(58, 94, 170, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
-  border: 1px solid rgba(58, 94, 170, 0.3);
+  background: linear-gradient(135deg, rgba(92, 74, 110, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1px solid rgba(92, 74, 110, 0.3);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
   display: flex;
@@ -3416,8 +3416,8 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .sign-picker-item.is-active {
-  background: rgba(58, 94, 170, 0.2);
-  border-color: rgba(58, 94, 170, 0.5);
+  background: rgba(92, 74, 110, 0.2);
+  border-color: rgba(92, 74, 110, 0.5);
 }
 
 .sign-picker-item__glyph {
@@ -3501,8 +3501,8 @@ body > .cosmos-solar-system { display: none !important; }
 }
 
 .alert--success {
-  background: rgba(34, 197, 94, 0.08);
-  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(120, 140, 70, 0.08);
+  border-color: rgba(120, 140, 70, 0.2);
   color: #86efac;
 }
 
@@ -4034,7 +4034,7 @@ body > .cosmos-solar-system { display: none !important; }
 
 .feature-card--highlighted {
   border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(58, 94, 170, 0.12);
+  box-shadow: 0 0 40px rgba(92, 74, 110, 0.12);
 }
 
 .feature-card__text {
@@ -4243,7 +4243,7 @@ body > .cosmos-solar-system { display: none !important; }
 
 .testimonial-card--featured {
   border-color: var(--border-glow);
-  box-shadow: 0 0 40px rgba(58, 94, 170, 0.1);
+  box-shadow: 0 0 40px rgba(92, 74, 110, 0.1);
 }
 
 .testimonial-card:hover {
@@ -4310,7 +4310,7 @@ body > .cosmos-solar-system { display: none !important; }
    51. App Download Section
    ========================================================================== */
 .app-download-section {
-  background: linear-gradient(180deg, transparent 0%, rgba(58, 94, 170, 0.06) 50%, transparent 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(92, 74, 110, 0.06) 50%, transparent 100%);
 }
 
 .app-download-inner {
@@ -4414,7 +4414,7 @@ body > .cosmos-solar-system { display: none !important; }
    52. Newsletter
    ========================================================================== */
 .newsletter-section {
-  background: linear-gradient(135deg, rgba(58, 94, 170, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(92, 74, 110, 0.08) 0%, rgba(99, 102, 241, 0.06) 100%);
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -4479,7 +4479,7 @@ body > .cosmos-solar-system { display: none !important; }
 
 .newsletter-input:focus {
   border-color: var(--border-glow);
-  box-shadow: 0 0 0 3px rgba(58, 94, 170, 0.15);
+  box-shadow: 0 0 0 3px rgba(92, 74, 110, 0.15);
 }
 
 .newsletter-submit {
@@ -4642,7 +4642,7 @@ body > .cosmos-solar-system { display: none !important; }
 .orb--purple {
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(58, 94, 170, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(92, 74, 110, 0.25) 0%, transparent 70%);
 }
 
 .orb--gold {
@@ -4964,7 +4964,7 @@ body > .cosmos-solar-system { display: none !important; }
    66. Loading state — amethyst spinner
    ========================================================================== */
 .loading-spinner {
-  border-color: rgba(150, 175, 230, 0.15);
+  border-color: rgba(168, 158, 136, 0.15);
   border-top-color: var(--gold);
 }
 
@@ -5165,7 +5165,7 @@ body::before {
 .gradient-text {
   background-image: linear-gradient(
     110deg,
-    #8c6a2f 0%, #c4920a 22%, #f2dfa7 42%, #c4920a 58%, #92b4ee 85%, #5b7fc7 100%);
+    #8c6a2f 0%, #c9a227 22%, #f2dfa7 42%, #c9a227 58%, #c8b88f 85%, #9db36a 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -5228,7 +5228,7 @@ body::before {
   font-size: 1.65rem;
   line-height: 1;
   font-family: serif;
-  background: linear-gradient(180deg, #f2dfa7 0%, #c4920a 55%, #8c6a2f 100%);
+  background: linear-gradient(180deg, #f2dfa7 0%, #c9a227 55%, #8c6a2f 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -5301,7 +5301,7 @@ body::before {
   color: var(--gold-pale);
   margin-bottom: var(--space-2);
   line-height: 1.1;
-  background: linear-gradient(135deg, #f2dfa7, var(--gold), #c4920a);
+  background: linear-gradient(135deg, #f2dfa7, var(--gold), #c9a227);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -5355,8 +5355,8 @@ body::before {
 
 /* ── Element-Tinted Reading Panel ──────────────────────────── */
 .sign-reading-panel[data-element="fire"]  { --el-color:#fb923c; --el-glow:rgba(251,146,60,0.5);   --el-bg:rgba(251,146,60,0.06);   --el-border:rgba(251,146,60,0.38); }
-.sign-reading-panel[data-element="earth"] { --el-color:#34d399; --el-glow:rgba(52,211,153,0.45);  --el-bg:rgba(52,211,153,0.05);   --el-border:rgba(52,211,153,0.32); }
-.sign-reading-panel[data-element="air"]   { --el-color:#38bdf8; --el-glow:rgba(56,189,248,0.45);  --el-bg:rgba(56,189,248,0.05);   --el-border:rgba(56,189,248,0.32); }
+.sign-reading-panel[data-element="earth"] { --el-color:#9ab363; --el-glow:rgba(94, 122, 58,0.45);  --el-bg:rgba(94, 122, 58,0.05);   --el-border:rgba(94, 122, 58,0.32); }
+.sign-reading-panel[data-element="air"]   { --el-color:#a78bba; --el-glow:rgba(167, 139, 186,0.45);  --el-bg:rgba(167, 139, 186,0.05);   --el-border:rgba(167, 139, 186,0.32); }
 .sign-reading-panel[data-element="water"] { --el-color:#818cf8; --el-glow:rgba(129,140,248,0.45); --el-bg:rgba(129,140,248,0.06);  --el-border:rgba(129,140,248,0.32); }
 
 .sign-reading-panel[data-element] .sign-reading-panel__inner {
@@ -5428,14 +5428,14 @@ body::before {
 
 /* ── Sign card element tints ──────────────────────────────── */
 .sign-card[data-element="fire"]  .sign-card__glyph { color: #fb923c; }
-.sign-card[data-element="earth"] .sign-card__glyph { color: #34d399; }
-.sign-card[data-element="air"]   .sign-card__glyph { color: #38bdf8; }
+.sign-card[data-element="earth"] .sign-card__glyph { color: #9ab363; }
+.sign-card[data-element="air"]   .sign-card__glyph { color: #a78bba; }
 .sign-card[data-element="water"] .sign-card__glyph { color: #818cf8; }
 
 /* Active state with element glow (overrides generic gold glow) */
 .sign-card[data-element="fire"].is-active  { border-color:rgba(251,146,60,0.65);  box-shadow:0 0 24px rgba(251,146,60,0.2),  0 4px 20px rgba(0,0,0,0.3); }
-.sign-card[data-element="earth"].is-active { border-color:rgba(52,211,153,0.55);  box-shadow:0 0 24px rgba(52,211,153,0.18), 0 4px 20px rgba(0,0,0,0.3); }
-.sign-card[data-element="air"].is-active   { border-color:rgba(56,189,248,0.6);   box-shadow:0 0 24px rgba(56,189,248,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="earth"].is-active { border-color:rgba(94, 122, 58,0.55);  box-shadow:0 0 24px rgba(94, 122, 58,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card[data-element="air"].is-active   { border-color:rgba(167, 139, 186,0.6);   box-shadow:0 0 24px rgba(167, 139, 186,0.18), 0 4px 20px rgba(0,0,0,0.3); }
 .sign-card[data-element="water"].is-active { border-color:rgba(129,140,248,0.6);  box-shadow:0 0 24px rgba(129,140,248,0.18),0 4px 20px rgba(0,0,0,0.3); }
 
 /* ── Planet weather card hover ────────────────────────────── */
@@ -5519,7 +5519,7 @@ body::before {
 .sign-card {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  background: linear-gradient(145deg, rgba(17,26,54,0.72) 0%, rgba(13,17,36,0.88) 100%);
+  background: linear-gradient(145deg, rgba(20, 16, 10,0.72) 0%, rgba(13, 10, 7,0.88) 100%);
   transition:
     border-color var(--transition-base),
     background   var(--transition-base),
@@ -5527,7 +5527,7 @@ body::before {
     box-shadow   0.2s ease;
 }
 .sign-card:hover {
-  background: linear-gradient(145deg, rgba(24,36,76,0.88) 0%, rgba(17,26,54,0.95) 100%);
+  background: linear-gradient(145deg, rgba(28, 22, 14,0.88) 0%, rgba(20, 16, 10,0.95) 100%);
   transform: translateY(-3px) scale(1.01);
 }
 .sign-card:active {
@@ -5771,8 +5771,8 @@ body[data-element="water"]::before {
   gap: 0.4rem;
   padding: 0.3rem 0.85rem;
   border-radius: 999px;
-  border: 1px solid rgba(150, 175, 230, 0.18);
-  background: rgba(17, 26, 54, 0.65);
+  border: 1px solid rgba(168, 158, 136, 0.18);
+  background: rgba(20, 16, 10, 0.65);
   font-size: 0.78rem;
   white-space: nowrap;
   color: var(--silver);
@@ -5790,7 +5790,7 @@ body[data-element="water"]::before {
   font-family: var(--font-display);
   font-size: 0.65rem;
   letter-spacing: 0.08em;
-  color: var(--lapis-light, #5b7fc7);
+  color: var(--lapis-light, #9db36a);
 }
 
 .transit-pill__pos {
@@ -6141,7 +6141,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 
 /* ── Glossy glass-gradient zodiac / planet icon orbs (see js/icons.js) ─────── */
 .ap-orb {
-  --c1: #bfeaff; --c2: #2f86cf;
+  --c1: #efe3c0; --c2: #c9a227;
   display: inline-flex; align-items: center; justify-content: center;
   width: 1.9em; height: 1.9em; border-radius: 50%; position: relative; flex: none;
   vertical-align: middle; isolation: isolate;
@@ -6177,25 +6177,25 @@ html, body { overflow-x: clip; max-width: 100%; }
 /* element variants (zodiac) */
 .ap-orb--fire  { --c1: #ffb04a; --c2: #cf2f24; }
 .ap-orb--earth { --c1: #c8da86; --c2: #566e2a; }
-.ap-orb--air   { --c1: #bfeaff; --c2: #2f86cf; }
-.ap-orb--water { --c1: #7fd6e6; --c2: #2a54b0; }
+.ap-orb--air   { --c1: #dcc8ec; --c2: #8a6aa8; }
+.ap-orb--water { --c1: #bfe4dd; --c2: #2f6e66; }
 /* planet variants */
 .ap-orb--sun     { --c1: #ffe27a; --c2: #c47a0a; }
-.ap-orb--moon    { --c1: #eef2fb; --c2: #98a1b4; }
+.ap-orb--moon    { --c1: #f2ece0; --c2: #9a9080; }
 .ap-orb--mercury { --c1: #d6cfc2; --c2: #6e655a; }
 .ap-orb--venus   { --c1: #ffd8c2; --c2: #c5765a; }
 .ap-orb--mars    { --c1: #ff8a64; --c2: #a82414; }
 .ap-orb--jupiter { --c1: #f3cf94; --c2: #9a6a2a; }
 .ap-orb--saturn  { --c1: #ecd8a4; --c2: #8a6a30; }
-.ap-orb--uranus  { --c1: #c4f0ff; --c2: #3a8aa8; }
-.ap-orb--neptune { --c1: #a4beff; --c2: #2a3fa0; }
+.ap-orb--uranus  { --c1: #dcc8ec; --c2: #6e5a9a; }
+.ap-orb--neptune { --c1: #c2b4e2; --c2: #4e3f8a; }
 .ap-orb--pluto   { --c1: #dcb6d6; --c2: #5a2a52; }
 
 /* ── Ticker strip for live planetary positions ───────────────────────────── */
 .planet-ticker-strip {
-  background: rgba(17,26,54,0.75);
-  border-top: 1px solid rgba(150,175,230,0.1);
-  border-bottom: 1px solid rgba(150,175,230,0.1);
+  background: rgba(13,10,7,0.75);
+  border-top: 1px solid rgba(201,162,39,0.12);
+  border-bottom: 1px solid rgba(201,162,39,0.12);
   overflow: hidden;
   padding: var(--space-2) 0;
   -webkit-backdrop-filter: blur(8px);
@@ -6288,7 +6288,7 @@ html, body { overflow-x: clip; max-width: 100%; }
 }
 #natal-sig-grid > div:hover {
   border-color: rgba(201,162,39,0.3) !important;
-  background: rgba(17,26,54,0.9) !important;
+  background: rgba(20, 16, 10,0.9) !important;
 }
 
 /* ── Horoscope page section separator (seamless — no cool plate) ─────────── */
@@ -6313,7 +6313,7 @@ html, body { overflow-x: clip; max-width: 100%; }
   cursor: help;
 }
 .dignity-badge--domicile   { background: rgba(201,162,39,0.15); color: var(--gold-light);     border: 1px solid rgba(201,162,39,0.4); }
-.dignity-badge--exaltation { background: rgba(52,211,153,0.12); color: #34d399;               border: 1px solid rgba(52,211,153,0.35); }
+.dignity-badge--exaltation { background: rgba(94, 122, 58,0.12); color: #9ab363;               border: 1px solid rgba(94, 122, 58,0.35); }
 .dignity-badge--detriment  { background: rgba(176,74,82,0.12);  color: var(--crimson-light);  border: 1px solid rgba(176,74,82,0.3); }
 .dignity-badge--fall       { background: rgba(176,74,82,0.12); color: var(--violet-bright);  border: 1px solid rgba(176,74,82,0.3); }
 
