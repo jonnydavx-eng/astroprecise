@@ -2343,12 +2343,13 @@
     #preloader-enter,#preloader-tagline{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
     #preloader.aligned #preloader-enter,#preloader.aligned #preloader-tagline{opacity:1;transform:none;pointer-events:auto;}
     #preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease;}
-    .preloader-email-gate{position:absolute;inset:0;z-index:12;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none;transition:opacity .45s ease,visibility .45s ease;}
-    .preloader-email-gate.is-open{opacity:1;visibility:visible;pointer-events:auto;}
-    .preloader-email-gate__backdrop{position:absolute;inset:0;background:rgba(4,3,6,0.52);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
-    .preloader-email-gate__panel{position:relative;width:min(22rem,92vw);padding:22px 20px 18px;border-radius:18px;border:1px solid rgba(201,162,39,0.38);background:linear-gradient(165deg,rgba(18,14,10,0.94),rgba(8,6,5,0.97));box-shadow:0 18px 48px rgba(0,0,0,0.55),0 0 32px rgba(201,162,39,0.12);text-align:center;color:#E8E0D0;transform:translateY(12px) scale(0.97);transition:transform .45s cubic-bezier(0.22,1,0.36,1);}
+    #preloader.gate-open .apl-live-orr,#preloader.gate-open .apl-live-orr canvas{pointer-events:none !important;}
+    .preloader-email-gate{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s ease;}
+    .preloader-email-gate.is-open{display:flex;opacity:1;visibility:visible;pointer-events:auto;}
+    .preloader-email-gate__backdrop{position:absolute;inset:0;z-index:0;background:rgba(4,3,6,0.52);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer;}
+    .preloader-email-gate__panel{position:relative;z-index:1;width:min(22rem,92vw);padding:22px 20px 18px;border-radius:18px;border:1px solid rgba(201,162,39,0.38);background:linear-gradient(165deg,rgba(18,14,10,0.94),rgba(8,6,5,0.97));box-shadow:0 18px 48px rgba(0,0,0,0.55),0 0 32px rgba(201,162,39,0.12);text-align:center;color:#E8E0D0;transform:translateY(12px) scale(0.97);transition:transform .45s cubic-bezier(0.22,1,0.36,1);pointer-events:auto;}
     .preloader-email-gate.is-open .preloader-email-gate__panel{transform:none;}
-    .preloader-email-gate__close{position:absolute;top:10px;right:12px;width:32px;height:32px;border:none;border-radius:50%;background:rgba(201,162,39,0.12);color:#E8E0D0;font-size:1.35rem;line-height:1;cursor:pointer;transition:background .2s ease,color .2s ease;}
+    .preloader-email-gate__close{position:absolute;top:8px;right:8px;width:44px;height:44px;border:none;border-radius:50%;background:rgba(201,162,39,0.18);color:#F0E8D8;font-size:1.5rem;line-height:1;cursor:pointer;transition:background .2s ease,color .2s ease;touch-action:manipulation;z-index:2;}
     .preloader-email-gate__close:hover,.preloader-email-gate__close:focus-visible{background:rgba(201,162,39,0.28);color:#fff;}
     .preloader-email-gate__title{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.14em;text-transform:uppercase;margin:0 0 10px;color:#F0E8D8;}
     .preloader-email-gate__hint{font-family:'Cormorant Garamond',serif;font-size:0.82rem;line-height:1.5;color:#a89f8a;margin:0 0 14px;font-style:italic;}
@@ -2382,7 +2383,7 @@
       <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:20px; font-style:italic; color:#cdbf9f;">HD Earth close-up, then a pull through the live solar system &mdash; your sky, aligned for this moment.</div>
       <button id="preloader-enter" class="preloader-skip" aria-label="Enter the site" style="font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(28,22,12,0.5),rgba(12,10,7,0.62)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;"><span class="eng-star-mark" style="width:0.75em;height:0.75em;margin-right:0.35em;" aria-hidden="true"></span> Enter Your Sky &nbsp;&rarr;</button>
     </div>
-    <div id="preloader-email-gate" class="preloader-email-gate" aria-hidden="true" hidden>
+    <div id="preloader-email-gate" class="preloader-email-gate" aria-hidden="true">
       <div class="preloader-email-gate__backdrop" aria-hidden="true"></div>
       <div class="preloader-email-gate__panel" role="dialog" aria-labelledby="preloader-gate-title" aria-modal="true">
         <button type="button" class="preloader-email-gate__close" id="preloader-gate-close" aria-label="Close and continue without email">&times;</button>
@@ -2558,7 +2559,14 @@
     }
 
     function dismissEmailGate(andCapture) {
+      if (preDone) return;
       if (andCapture) captureIntroEmail();
+      if (gateEl) {
+        gateEl.classList.remove('is-open');
+        gateEl.setAttribute('aria-hidden', 'true');
+      }
+      pre.classList.remove('gate-open');
+      gateOpen = false;
       hidePre();
     }
 
@@ -2566,25 +2574,34 @@
       if (preDone || gateOpen || !gateEl) return;
       gateOpen = true;
       pre.classList.add('gate-open');
-      gateEl.hidden = false;
       gateEl.setAttribute('aria-hidden', 'false');
-      requestAnimationFrame(function () { gateEl.classList.add('is-open'); });
+      gateEl.classList.add('is-open');
       var emailInp = document.getElementById('preloader-gate-email');
-      if (emailInp) setTimeout(function () { emailInp.focus(); }, 420);
+      if (emailInp) setTimeout(function () { try { emailInp.focus({ preventScroll: true }); } catch (e) { emailInp.focus(); } }, 80);
+    }
+
+    function onGateAction(ev, andCapture) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      dismissEmailGate(andCapture);
     }
 
     function wireEmailGate() {
       if (!gateEl || gateEl.dataset.wired) return;
       gateEl.dataset.wired = '1';
-      if (gateClose) gateClose.addEventListener('click', function () { dismissEmailGate(false); });
-      if (gateSkip) gateSkip.addEventListener('click', function () { dismissEmailGate(false); });
-      if (gateJoin) gateJoin.addEventListener('click', function () { dismissEmailGate(true); });
-      if (gateEl) {
-        gateEl.addEventListener('click', function (ev) {
-          if (ev.target === gateEl || (ev.target && ev.target.classList && ev.target.classList.contains('preloader-email-gate__backdrop'))) {
-            dismissEmailGate(false);
-          }
-        });
+      if (gateClose) {
+        gateClose.addEventListener('click', function (ev) { onGateAction(ev, false); });
+        gateClose.addEventListener('pointerup', function (ev) { onGateAction(ev, false); });
+      }
+      if (gateSkip) {
+        gateSkip.addEventListener('click', function (ev) { onGateAction(ev, false); });
+      }
+      if (gateJoin) {
+        gateJoin.addEventListener('click', function (ev) { onGateAction(ev, true); });
+      }
+      var backdrop = gateEl.querySelector('.preloader-email-gate__backdrop');
+      if (backdrop) {
+        backdrop.addEventListener('click', function (ev) { onGateAction(ev, false); });
       }
       var emailInp = document.getElementById('preloader-gate-email');
       if (emailInp) {
@@ -2592,6 +2609,10 @@
           if (ev.key === 'Enter') { ev.preventDefault(); dismissEmailGate(true); }
         });
       }
+      document.addEventListener('keydown', function (ev) {
+        if (!gateOpen || preDone) return;
+        if (ev.key === 'Escape') { ev.preventDefault(); dismissEmailGate(false); }
+      });
     }
     wireEmailGate();
 
