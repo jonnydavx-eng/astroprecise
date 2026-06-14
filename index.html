@@ -2626,7 +2626,7 @@
         requestAnimationFrame(syncSkyTime);
       })();
 
-      // ── Scroll → orrery time drive (RafCore dispatcher when available) ──
+      // ── Scroll → shared sky clock (orrery time + cosmos parallax) ──
       (function () {
         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         var hero = document.querySelector('.hero');
@@ -2636,6 +2636,9 @@
           var progress = Math.max(0, Math.min(1, -rect.top / (hero.offsetHeight || 1)));
           if (window.Orrery3D && typeof Orrery3D.setScrollDrive === 'function') {
             Orrery3D.setScrollDrive(progress);
+          }
+          if (window.CosmosEngine && typeof CosmosEngine.setScrollDrive === 'function') {
+            CosmosEngine.setScrollDrive(progress);
           }
         }
         if (window.RafCore) { window.RafCore.onScroll(update); return; }

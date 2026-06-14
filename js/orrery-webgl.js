@@ -77,6 +77,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   // time
   let baseNowMs = 0, baseJd = 0, dayOffset = 0, daysPerSec = 0;
   let scrollBias = 0;  // days offset from hero scroll position
+  let scrollDriveLocked = false;  // manual scrub/speed disables scroll-drive until "Now"
   let lastT = 0, needRecompute = true;
   // drag-to-scrub: horizontal drag advances REAL time (planets walk to where they
   // truly are); a flick keeps time coasting with decay. scrubVel = days/event EMA.
@@ -200,6 +201,18 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     const light = new THREE.PointLight(0xfff2d8, 3.2, 0, 0); // decay 0 → even illumination at all distances
     sunMesh.add(light);
     scene.add(new THREE.AmbientLight(0x2a3550, 0.22)); // faint fill so night sides aren't pure black
+  }
+
+  // Real bloom replaces the outer fake corona; keep a subtle inner halo on all tiers.
+  function tuneSunGlowForComposer(tier) {
+    if (!sunGlow.length) return;
+    sunGlow.forEach((sp, i) => {
+      if (!composer) return;
+      if (tier === 'high' && i === 1) { sp.visible = false; return; }
+      sp.visible = true;
+      const op = tier === 'mid' ? (i === 0 ? 0.65 : 0.35) : (i === 0 ? 0.45 : 0);
+      if (sp.material) sp.material.opacity = op;
+    });
   }
 
   function atmosphereMaterial(colorHex) {
@@ -465,7 +478,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   // ── Pointer controls ───────────────────────────────────────────────────────
   function bindControls() {
-    const onDown = (e) => { dragging = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; daysPerSec = 0; flicking = false; scrubVel = 0; try { canvas.style.cursor = 'grabbing'; } catch (_) {} };
+    const onDown = (e) => { dragging = true; scrollDriveLocked = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; daysPerSec = 0; flicking = false; scrubVel = 0; try { canvas.style.cursor = 'grabbing'; } catch (_) {} };
     const onMove = (e) => {
       if (!dragging) return; const p = pt(e);
       const dx = p.x - lastX, dy = p.y - lastY;
@@ -563,13 +576,20 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);
     texLoader = new THREE.TextureLoader();
 
-    // Bloom composer — skip for reduced-motion or low-end devices (needs scene + camera first)
-    const _skipComposer = PRM || (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4);
-    if (!_skipComposer) {
+    // Bloom composer — tiered via RafCore (low/PRM = off, mid = light, high = full)
+    const perfTier = (window.RafCore && window.RafCore.tier)
+      || ((navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4) ? 'low' : 'high');
+    if (!PRM && perfTier !== 'low') {
       try {
         composer = new EffectComposer(renderer);
         composer.addPass(new RenderPass(scene, camera));
-        bloomPass = new UnrealBloomPass(new THREE.Vector2(renderer.domElement.width, renderer.domElement.height), 0.35, 0.5, 0.88);
+        const bloomStrength = perfTier === 'mid' ? 0.22 : 0.35;
+        const bloomRadius = perfTier === 'mid' ? 0.38 : 0.5;
+        const bloomThreshold = perfTier === 'mid' ? 0.92 : 0.88;
+        bloomPass = new UnrealBloomPass(
+          new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
+          bloomStrength, bloomRadius, bloomThreshold
+        );
         composer.addPass(bloomPass);
         composer.addPass(new OutputPass());
       } catch (e) {
@@ -583,6 +603,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     baseJd = window.AstroEphemeris.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
 
     buildStars(); buildSun(); buildPlanets();
+    tuneSunGlowForComposer(perfTier);
     updatePositions();
     resize();
 
@@ -605,16 +626,19 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     // button values: 0 pause, 1 (1 day/s), 30 (30 day/s), 365 (~1 year/s)
     daysPerSec = Number(s) || 0;
     flicking = false;   // a speed button is a constant rate, not a decaying flick
-    if (daysPerSec !== 0) introActive = false;
+    if (daysPerSec !== 0) { introActive = false; scrollDriveLocked = true; }
   }
   function getDate() { return new Date(baseNowMs + dayOffset * 86400000); }
   function setDate(date) {
     const E = window.AstroEphemeris;
     const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), 0);
     jumpTo(jd);
+    // "Now" reset passes real-time date — unlock scroll drive when within ~12h of live
+    const nowJd = E.julianDay(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate(), new Date().getHours(), new Date().getMinutes(), 0);
+    if (Math.abs(jd - nowJd) < 0.5) scrollDriveLocked = false;
   }
-  function jumpTo(jd) { dayOffset = jd - baseJd; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; }
-  function scrubDays(d) { dayOffset += Number(d) || 0; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; }
+  function jumpTo(jd) { dayOffset = jd - baseJd; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
+  function scrubDays(d) { dayOffset += Number(d) || 0; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
   function destroy() {
     destroyed = true; if (raf) cancelAnimationFrame(raf);
     window.removeEventListener('resize', resize);
@@ -647,7 +671,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     set onIntroDone(fn) { onIntroDone = fn; if (PRM && fn && !introActive) { onIntroDone = null; fn(); } },
     get onIntroDone() { return onIntroDone; },
     setScrollDrive(progress) {
-      if (PRM) return;
+      if (PRM || scrollDriveLocked) return;
       scrollBias = progress * 120;
       if (!introActive) {
         camRadius = 48 - progress * 18;
@@ -658,6 +682,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     },
     resetScrollDrive() {
       scrollBias = 0;
+      scrollDriveLocked = false;
       if (!introActive) {
         camRadius = 48;
         camEl = 26 * D2R;
