@@ -24,6 +24,10 @@
   };
 
   function getDailyHoroscope(sign, date) {
+    if (window.ContentService && typeof ContentService.getDailyReading === 'function') {
+      var bank = ContentService.getDailyReading(sign, date);
+      if (bank) return bank;
+    }
     if (window.HoroscopeEngine && typeof HoroscopeEngine.getDailyHoroscope === 'function') {
       var live = HoroscopeEngine.getDailyHoroscope(sign, date);
       if (live) return live;

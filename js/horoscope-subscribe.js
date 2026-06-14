@@ -54,6 +54,10 @@
   }
 
   function getMonthlyHoroscope(sign, date) {
+    if (window.ContentService && typeof ContentService.getMonthlyReading === 'function') {
+      var bank = ContentService.getMonthlyReading(sign, date);
+      if (bank) return bank;
+    }
     if (window.HoroscopeEngine && typeof HoroscopeEngine.getMonthlyHoroscope === 'function') {
       var live = HoroscopeEngine.getMonthlyHoroscope(sign, date);
       if (live) return live;
