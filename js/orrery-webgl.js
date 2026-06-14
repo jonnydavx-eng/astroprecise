@@ -86,6 +86,24 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   let composer = null;
   let bloomPass = null;
+  let perfTier = 'high';
+
+  function getPerfTier() {
+    return (window.RafCore && window.RafCore.tier)
+      || ((navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4) ? 'low' : 'high');
+  }
+
+  function orreryDPR() {
+    const real = window.devicePixelRatio || 1;
+    if (perfTier === 'low') return Math.min(real, 1.25);
+    if (perfTier === 'mid') return Math.min(real, 2);
+    return Math.min(real, 2.5);
+  }
+
+  function sphereSegs(hero) {
+    if (hero) return perfTier === 'high' ? 128 : perfTier === 'mid' ? 96 : 64;
+    return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 40;
+  }
 
   // time
   let baseNowMs = 0, baseJd = 0, dayOffset = 0, daysPerSec = 0;
@@ -183,7 +201,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
 
   function makeEarthNightTexture() {
-    const s = 512, c = document.createElement('canvas'); c.width = c.height = s;
+    const s = perfTier === 'high' ? 1024 : 768, c = document.createElement('canvas'); c.width = c.height = s;
     const x = c.getContext('2d');
     x.fillStyle = '#000'; x.fillRect(0, 0, s, s);
     const land = [[0.22, 0.38, 0.18, 0.32], [0.48, 0.52, 0.22, 0.42], [0.62, 0.78, 0.28, 0.55],
@@ -205,7 +223,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
   // radial-gradient sprite used for the sun's glow / corona (fake bloom)
   function makeGlowTexture(inner, outer) {
-    const s = 256, c = document.createElement('canvas'); c.width = c.height = s;
+    const s = perfTier === 'high' ? 512 : 256, c = document.createElement('canvas'); c.width = c.height = s;
     const x = c.getContext('2d');
     const g = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
     g.addColorStop(0, inner); g.addColorStop(0.35, outer); g.addColorStop(1, 'rgba(0,0,0,0)');
@@ -214,18 +232,27 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
 
   // ── Scene construction ─────────────────────────────────────────────────────
+  function tuneTexture(t) {
+    if (!t || !renderer) return;
+    const max = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
+    t.anisotropy = max;
+    t.generateMipmaps = true;
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.magFilter = THREE.LinearFilter;
+  }
+
   function loadTex(file, srgb) {
     return new Promise((res) => {
       texLoader.load(TEX + file, (t) => {
         if (srgb !== false) t.colorSpace = THREE.SRGBColorSpace;
-        t.anisotropy = renderer.capabilities.getMaxAnisotropy ? Math.min(8, renderer.capabilities.getMaxAnisotropy()) : 1;
+        tuneTexture(t);
         res(t);
       }, undefined, () => res(null));
     });
   }
 
   function buildStars() {
-    const N = PRM ? 900 : 2400;
+    const N = PRM ? 900 : (perfTier === 'high' ? 3200 : perfTier === 'mid' ? 2600 : 1800);
     const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
     const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
     for (let i = 0; i < N; i++) {
@@ -297,7 +324,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   function buildSun() {
     sunMaterial = makeSunShaderMaterial();
-    sunMesh = new THREE.Mesh(new THREE.SphereGeometry(SUN_SIZE, 64, 64), sunMaterial);
+    const sunSegs = perfTier === 'high' ? 96 : perfTier === 'mid' ? 72 : 48;
+    sunMesh = new THREE.Mesh(new THREE.SphereGeometry(SUN_SIZE, sunSegs, sunSegs), sunMaterial);
     scene.add(sunMesh);
     buildSunCorona();
     const layers = [
@@ -311,11 +339,11 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     });
     const light = new THREE.PointLight(0xfff0d0, 4.2, 0, 0);
     sunMesh.add(light);
-    sunDirLight = new THREE.DirectionalLight(0xfff4e0, 2.6);
+    sunDirLight = new THREE.DirectionalLight(0xfff4e0, perfTier === 'high' ? 3.0 : 2.5);
     sunDirLight.position.set(0, 0, 0);
     scene.add(sunDirLight);
-    scene.add(new THREE.HemisphereLight(0x3a4a68, 0x0a0806, 0.28));
-    scene.add(new THREE.AmbientLight(0x1a2030, 0.12));
+    scene.add(new THREE.HemisphereLight(0x3a4a68, 0x0a0806, perfTier === 'high' ? 0.32 : 0.26));
+    scene.add(new THREE.AmbientLight(0x1a2030, perfTier === 'high' ? 0.1 : 0.12));
   }
 
   // Real bloom replaces the outer fake corona; keep a subtle inner halo on all tiers.
@@ -354,11 +382,14 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     BODIES.forEach((b) => {
       const group = new THREE.Group();
       const vis = PLANET_VIS[b.id] || { roughness: 0.9, metalness: 0, atmo: null, atmoS: 1.0 };
-      const mat = new THREE.MeshStandardMaterial({
+      const clearcoat = b.hero ? 0.14 : (b.id === 'jupiter' || b.id === 'saturn' ? 0.22 : b.id === 'venus' ? 0.18 : 0);
+      const mat = new THREE.MeshPhysicalMaterial({
         color: b.color, roughness: vis.roughness, metalness: vis.metalness,
+        clearcoat, clearcoatRoughness: b.hero ? 0.32 : 0.42,
         emissive: b.hero ? 0x0a1428 : 0x000000, emissiveIntensity: b.hero ? 0.08 : 0,
+        envMapIntensity: b.hero ? 0.35 : 0.18,
       });
-      const segs = b.hero ? 72 : 48;
+      const segs = sphereSegs(b.hero);
       const mesh = new THREE.Mesh(new THREE.SphereGeometry(b.size, segs, segs), mat);
       // axial tilt for character
       group.rotation.z = (b.id === 'uranus' ? 82 : b.id === 'saturn' ? 26.7 : b.id === 'earth' ? 23.4 : 6) * D2R;
@@ -396,15 +427,16 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         group.add(nightMesh);
         earthCloud = new THREE.Mesh(
           new THREE.SphereGeometry(b.size * 1.014, segs, segs),
-          new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.82, depthWrite: false, roughness: 1, metalness: 0 })
+          new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.86, depthWrite: false, roughness: 0.95, metalness: 0, clearcoat: 0.08, clearcoatRoughness: 0.5 })
         );
         group.add(earthCloud);
         loadTex('earth_clouds.jpg', false).then((t) => { if (t) { const m = earthCloud.material; m.alphaMap = t; m.needsUpdate = true; } });
         // Moon
         moonGroup = new THREE.Group(); scene.add(moonGroup);
+        const moonSegs = perfTier === 'high' ? 56 : perfTier === 'mid' ? 40 : 28;
         moonMesh = new THREE.Mesh(
-          new THREE.SphereGeometry(0.23, 32, 32),
-          new THREE.MeshStandardMaterial({ color: 0xbfc2cc, roughness: 1, metalness: 0 })
+          new THREE.SphereGeometry(0.23, moonSegs, moonSegs),
+          new THREE.MeshPhysicalMaterial({ color: 0xbfc2cc, roughness: 0.96, metalness: 0, clearcoat: 0.04, clearcoatRoughness: 0.6 })
         );
         moonGroup.add(moonMesh);
         loadTex('moon.jpg').then((t) => { if (t) { moonMesh.material.map = t; moonMesh.material.color.set(0xffffff); moonMesh.material.needsUpdate = true; } });
@@ -412,7 +444,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
       if (b.ring) {
         const inner = b.size * 1.35, outer = b.size * 2.35;
-        const ringGeo = new THREE.RingGeometry(inner, outer, 96, 1);
+        const ringSegs = perfTier === 'high' ? 160 : perfTier === 'mid' ? 128 : 96;
+        const ringGeo = new THREE.RingGeometry(inner, outer, ringSegs, 1);
         // remap UVs so the texture strip maps across the ring radius
         const pos = ringGeo.attributes.position, uv = ringGeo.attributes.uv, v3 = new THREE.Vector3();
         for (let i = 0; i < pos.count; i++) {
@@ -613,9 +646,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   function resize() {
     if (!renderer) return;
     const w = canvas.clientWidth || 560, h = canvas.clientHeight || 560;
-    const dpr = (window.RafCore && window.RafCore.capDPR)
-      ? window.RafCore.capDPR(2)
-      : Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = orreryDPR();
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
     if (composer) composer.setSize(w, h);
@@ -714,25 +745,26 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     if (!canvasEl || !window.AstroEphemeris) return;
     canvas = canvasEl; wrap = canvas.parentElement;
 
+    perfTier = getPerfTier();
+
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
     renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = perfTier === 'high' ? 1.08 : 1.02;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 2000);
     texLoader = new THREE.TextureLoader();
 
     // Bloom composer — tiered via RafCore (low/PRM = off, mid = light, high = full)
-    const perfTier = (window.RafCore && window.RafCore.tier)
-      || ((navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4) ? 'low' : 'high');
     if (!PRM && perfTier !== 'low') {
       try {
         composer = new EffectComposer(renderer);
         composer.addPass(new RenderPass(scene, camera));
-        const bloomStrength = perfTier === 'mid' ? 0.22 : 0.35;
-        const bloomRadius = perfTier === 'mid' ? 0.38 : 0.5;
-        const bloomThreshold = perfTier === 'mid' ? 0.92 : 0.88;
+        const bloomStrength = perfTier === 'mid' ? 0.2 : 0.3;
+        const bloomRadius = perfTier === 'mid' ? 0.36 : 0.44;
+        const bloomThreshold = perfTier === 'mid' ? 0.93 : 0.9;
         bloomPass = new UnrealBloomPass(
           new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
           bloomStrength, bloomRadius, bloomThreshold
