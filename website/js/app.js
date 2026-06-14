@@ -1712,16 +1712,7 @@ if ('serviceWorker' in navigator) {
   }
 
   function injectHeroCTA() {
-    if (document.querySelector('.ap-email-cta--hero')) return;
-    var p = pageSlug();
-    if (p !== 'index.html' && p !== '') return;
-    var hero = document.querySelector('.hero');
-    if (!hero || !hero.parentNode) return;
-    var c = window.AP_COPY;
-    var copy = { eyebrow: c.eyebrow, title: c.heroTitle, sub: c.heroSub, source: 'hero_strip', tag: 'tag_hero_strip' };
-    var el = buildEmailCTA('hero', copy);
-    if (hero.nextElementSibling) hero.parentNode.insertBefore(el, hero.nextElementSibling);
-    else hero.parentNode.appendChild(el);
+    // Homepage: optional email is on the intro preloader (bottom panel — orrery stays clear).
   }
 
   function injectStickyCTA() {
