@@ -25,7 +25,26 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — Birth Chart Calculator",
+    "url": "https://jonnydavx-eng.github.io/astroprecise/chart.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "description": "Free natal chart calculator — enter your birth date, time and place for a precise birth chart with Sun, Moon, Rising, houses and aspects. All calculations run privately in your browser.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://jonnydavx-eng.github.io/astroprecise/"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="css/main.css" />
   <style>
     /* ═══════════════════════════════════════════════════════════════
        CHART PAGE — PREMIUM REDESIGN
@@ -1666,6 +1685,8 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/chart-render.js"></script>

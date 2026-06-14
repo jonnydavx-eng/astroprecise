@@ -101,6 +101,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/saturn-return.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jonnydavx-eng.github.io/astroprecise/sample-reading.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://jonnydavx-eng.github.io/astroprecise/quiz.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

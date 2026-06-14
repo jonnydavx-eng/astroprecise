@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Curated astrology tools, books, crystals, oracle cards, and art. Recommendations for the serious student of the cosmos — no gimmicks, only substance." />
-  <title>Cosmic Shop — Curated Astrology Recommendations | AstroPrecise</title>
+  <meta name="description" content="Personalised astrology products from your birth chart — deep natal readings, print-at-home posters, and keepsakes generated from the chart you cast in AstroPrecise." />
+  <title>Cosmic Shop — Personalised Chart Products | AstroPrecise</title>
 <link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <meta name="theme-color" content="#050406" />
   <meta property="og:title" content="Cosmic Shop | AstroPrecise" />
-  <meta property="og:description" content="Curated astrology tools and resources — books, crystals, oracle cards, and art for the serious student of the cosmos." />
+  <meta property="og:description" content="Personalised chart products — deep natal readings, print-at-home posters, and keepsakes generated from your AstroPrecise birth chart." />
   <meta property="og:url" content="https://jonnydavx-eng.github.io/astroprecise/shop.html" />
   <link rel="canonical" href="https://jonnydavx-eng.github.io/astroprecise/shop.html" />
   <meta property="og:image" content="https://jonnydavx-eng.github.io/astroprecise/img/og-banner-improved.jpg" />
@@ -338,6 +338,7 @@
     .shopc-card__top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
     .shopc-card__name { font-family: var(--font-display); font-size: var(--text-base); color: var(--white); line-height: 1.35; }
     .shopc-card__price { font-family: var(--font-display); color: var(--gold-pale); font-size: var(--text-sm); white-space: nowrap; }
+    .shopc-card__price--soon, .shopc-qv__price--soon { color: var(--silver-dim); font-size: var(--text-xs); letter-spacing: 0.12em; text-transform: uppercase; }
     .shopc-card__blurb { font-size: var(--text-sm); color: var(--silver); line-height: 1.65; margin: var(--space-3) 0 var(--space-5); flex: 1; }
     .shopc-card__cta { width: 100%; text-align: center; justify-content: center; }
 
@@ -1054,6 +1055,9 @@
       <p class="shopc-cart__note">One-time purchases · made from your chart · birth data never leaves your device.</p>
     </div>
   </aside>
+
+  <script src="js/raf-core.js"></script>
+
 
   <script src="js/cosmos.js"></script>
   <script src="js/profile.js"></script>

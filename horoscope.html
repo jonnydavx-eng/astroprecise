@@ -25,7 +25,26 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — Daily Horoscopes",
+    "url": "https://jonnydavx-eng.github.io/astroprecise/horoscope.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "description": "Free daily horoscopes for all 12 zodiac signs, generated from real planetary positions using VSOP87 astronomy — private, in your browser.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://jonnydavx-eng.github.io/astroprecise/"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="css/main.css" />
   <style>
     /* ── 3D Sphere hero ─────────────────────────────────────────────────── */
     .sphere-hero {
@@ -2071,6 +2090,8 @@
   </script>
 
   <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
   <script src="js/cosmos.js"></script>
   <script src="js/stellar.js"></script>
   <script src="js/ephemeris.js"></script>

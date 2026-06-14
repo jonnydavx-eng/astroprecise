@@ -390,7 +390,9 @@ window.AstroShop = (() => {
             <div class="shopc-card__kicker">${esc(colName)}${p.type ? ' · ' + (TYPE_LABEL[p.type] || '') : ''}</div>
             <div class="shopc-card__top">
               <h3 class="shopc-card__name">${esc(p.name)}</h3>
-              <span class="shopc-card__price">£${p.price.toFixed(2)}</span>
+              ${live
+                ? `<span class="shopc-card__price">£${p.price.toFixed(2)}</span>`
+                : `<span class="shopc-card__price shopc-card__price--soon">Coming soon</span>`}
             </div>
             <p class="shopc-card__blurb">${esc(p.blurb)}</p>
             ${cta}
@@ -422,7 +424,9 @@ window.AstroShop = (() => {
         <div class="shopc-qv">
           <div class="shopc-qv__art">${icon(p.icon)}</div>
           <div class="shopc-qv__kicker">${esc(colName)}${p.type ? ' · ' + (TYPE_LABEL[p.type] || '') : ''}</div>
-          <div class="shopc-qv__price">£${p.price.toFixed(2)}</div>
+          ${live
+            ? `<div class="shopc-qv__price">£${p.price.toFixed(2)}</div>`
+            : `<div class="shopc-qv__price shopc-qv__price--soon">Coming soon</div>`}
           <p class="shopc-qv__blurb">${esc(p.blurb)}</p>
           ${p.giftNote ? giftNoteHtml() : personalNote(p)}
         </div>`,
@@ -432,8 +436,7 @@ window.AstroShop = (() => {
             { label: 'Add to Cart', onClick: () => cart.add(p) },
           ]
         : [
-            { label: 'Add to Cart', primary: true, onClick: () => cart.add(p) },
-            { label: 'Keep Browsing' },
+            { label: 'Keep Browsing', primary: true },
           ],
     });
   }
