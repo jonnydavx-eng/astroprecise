@@ -54,6 +54,10 @@
   }
 
   function getMonthlyHoroscope(sign, date) {
+    if (window.HoroscopeEngine && typeof HoroscopeEngine.getMonthlyHoroscope === 'function') {
+      var live = HoroscopeEngine.getMonthlyHoroscope(sign, date);
+      if (live) return live;
+    }
     var d = date ? new Date(date) : new Date();
     var monthKey = d.getFullYear() * 12 + d.getMonth();
     var idx = signIndex(sign);
@@ -80,7 +84,9 @@
   };
 
   window.Interpretations = window.Interpretations || {};
-  window.Interpretations.getMonthlyHoroscope = getMonthlyHoroscope;
+  if (!window.HoroscopeEngine) {
+    window.Interpretations.getMonthlyHoroscope = getMonthlyHoroscope;
+  }
 
   function isEmail(e) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || '');

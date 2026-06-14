@@ -1186,6 +1186,7 @@
               </div>
             </div>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
+            <p class="srp-sky-facts" id="srp-sky-facts" style="font-size:0.72rem;color:var(--color-silver-dim);line-height:1.55;margin:0 0 var(--space-3);"></p>
             <div class="srp-energy" id="srp-energy-wrap">
               <div class="srp-energy__label">
                 <span>Cosmic Energy Today</span>
@@ -1231,8 +1232,9 @@
             </div>
             <p class="srp-personal-note" id="srp-personal-note" hidden></p>
             <p style="margin-top:var(--space-4);">
-              <span class="ap-badge ap-badge--deterministic">Fixed for this date — same sign, same day, same reading</span>
+              <span class="ap-badge ap-badge--deterministic">Solar-chart reading — VSOP87 sky at local noon</span>
             </p>
+            <p id="srp-method-note" style="margin-top:var(--space-2);font-size:0.62rem;color:var(--color-silver-dim);line-height:1.6;"></p>
             <p style="margin-top:var(--space-3);font-size:0.65rem;color:var(--color-silver-dim);">
               Discover your numerology: <a href="lifepath.html" class="text-link" style="color:var(--color-gold);text-decoration:none;">Life Path Calculator →</a>
             </p>
@@ -1575,7 +1577,7 @@
   <script src="js/raf-core.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/zodiac-sphere.js"></script>
-  <script src="js/interpretations.js"></script>
+  <script src="js/horoscope-engine.js"></script>
   <script src="js/horoscope-subscribe.js"></script>
   <script src="js/profile.js"></script>
 
@@ -1655,6 +1657,14 @@
       document.getElementById('srp-sign-name').textContent = info.name;
       document.getElementById('srp-date').textContent = info.dates + ' · ' + new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
       document.getElementById('srp-overview').textContent = data.overview || '';
+      var factsEl = document.getElementById('srp-sky-facts');
+      if (factsEl) {
+        factsEl.textContent = (data.skyFacts && data.skyFacts.length)
+          ? 'Today\'s sky: ' + data.skyFacts.join(' · ')
+          : '';
+      }
+      var methodEl = document.getElementById('srp-method-note');
+      if (methodEl) methodEl.textContent = data.methodNote || '';
       document.getElementById('srp-love').textContent = data.love || '';
       document.getElementById('srp-career').textContent = data.career || '';
       document.getElementById('srp-health').textContent = data.health || '';
@@ -1662,10 +1672,11 @@
       document.getElementById('srp-lucky-color').textContent = data.luckyColor || '—';
       document.getElementById('srp-best-day').textContent = data.bestDay || DAYS[(new Date().getDay() + 1) % 7];
 
-      // Energy bar — deterministic score from sign + date
-      var epochDay = Math.floor(Date.now() / 86400000);
+      // Energy bar — mood score from transit harmony (horoscope-engine) or fallback
       var signIdx = SIGN_KEYS.indexOf(signKey);
-      var energyPct = 55 + ((signIdx * 7 + epochDay * 3) % 40);
+      var energyPct = (typeof data.moodScore === 'number')
+        ? data.moodScore
+        : (55 + ((signIdx * 7 + Math.floor(Date.now() / 86400000) * 3) % 40));
       var pctEl = document.getElementById('srp-energy-pct');
       var fillEl = document.getElementById('srp-energy-fill');
       if (pctEl) pctEl.textContent = energyPct + '%';
