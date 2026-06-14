@@ -887,7 +887,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       const ang = (i / rayCount) * Math.PI * 2;
       sp.position.set(Math.cos(ang) * SUN_SIZE * 0.2, Math.sin(ang) * SUN_SIZE * 0.15, 0);
       sp.scale.set(SUN_SIZE * 1.8, SUN_SIZE * 5.5, 1);
-      sp.rotation.z = ang + Math.PI / 2;
+      sp.material.rotation = ang + Math.PI / 2;  // Sprite billboards to camera; roll must be on the material, not Object3D.rotation
       sunCoronaGroup.add(sp);
     }
     sunMesh.add(sunCoronaGroup);
@@ -919,6 +919,12 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   // Real bloom replaces the outer fake corona; keep a subtle inner halo on all tiers.
   function tuneSunGlowForComposer(tier) {
+    // With real bloom active, retire the god-ray corona entirely — the soft glow layers
+    // + UnrealBloom carry the sun's light, and the discrete rays only read as a hard
+    // 12-spoke artifact over the bloom. (On low/PRM tiers the corona stays, now rotated right.)
+    if (sunCoronaGroup && composer) {
+      sunCoronaGroup.children.forEach((sp) => { sp.visible = false; });
+    }
     if (!sunGlow.length) return;
     sunGlow.forEach((sp, i) => {
       if (!composer) return;
@@ -1045,9 +1051,9 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
       // orbit ring line
       const oGeo = new THREE.BufferGeometry();
-      const segs = 160, arr = new Float32Array((segs + 1) * 3);
-      for (let i = 0; i <= segs; i++) {
-        const a = (i / segs) * Math.PI * 2;
+      const orbitSegs = 160, arr = new Float32Array((orbitSegs + 1) * 3);
+      for (let i = 0; i <= orbitSegs; i++) {
+        const a = (i / orbitSegs) * Math.PI * 2;
         arr[i * 3] = Math.cos(a) * b.R; arr[i * 3 + 1] = 0; arr[i * 3 + 2] = -Math.sin(a) * b.R;
       }
       oGeo.setAttribute('position', new THREE.BufferAttribute(arr, 3));
