@@ -10,7 +10,7 @@ Rules: edit only here · read the newest entries below before working · append 
 
 ## Session digest — Grok 2026-06-14 (ap-v115 → ap-v119, all PUSHED)
 
-**Current SW cache:** `ap-v141` (`website/sw.js` — hard-refresh or unregister SW after deploy).
+**Current SW cache:** `ap-v142` (`website/sw.js` — hard-refresh or unregister SW after deploy).
 
 ### 1. Pricing ladder (`website/js/app.js` → `AP_MON`) — ap-v115 then ap-v116
 
@@ -203,3 +203,4 @@ Docs aligned at ap-v116: `GTM-LADDER.md`, `GROWTH.md`, `LINK-IN-BIO.md`, `INSTAN
 | 2026-06-14 (PM #15) | Grok | **Nav overhaul (ap-v139).** Three-zone desktop: `.navbar__end` (Updates + Profile + menu). Progressive hide Why/Shop/Transits by width. Bottom nav from `NAV_CORE` + extras; drawer z-index 9100 + scroll; safe-area body padding; hamburger a11y. Sign pages regenerated (empty nav shell). index.html profile gold btn removed. | Hard-refresh ap-v139. Test laptop 900–1400px + mobile drawer vs bottom bar. |
 | 2026-06-15 | Grok | **Top nav tidy (ap-v140).** Canonical nav shell on all 34 pages via `tools/normalize-nav-shells.mjs` (logo | links | `.navbar__end` with hamburger). Removed duplicate hamburger on `index.html` + `setupNav()` on `profile.html`. `closeNavDrawer()` + Escape/outside-click; email modal closes drawer first; modal z-index 9200. Drawer sections + dividers; Profile icon-only ≤1320px; Transits hides ≤1024px. | Hard-refresh ap-v140. Laptop 900–1320px + mobile hamburger/email flow. |
 | 2026-06-15 | Grok | **Nav IA rebuild (ap-v141).** Research-backed restructure: desktop = 5 primaries (Home·Chart·Daily·Match·Sky) + **More** flyout (Explore + Tools); CSS grid 3-zone layout; tablet ≤1023 uses hamburger only (fixes 769–1023 squeeze). Mobile bottom nav cut to **4 tabs** + pinned Updates; drawer = categorized sitemap. Updates CTA → compact mail icon in right rail. | Hard-refresh ap-v141. Test desktop More menu, tablet portrait, phone bottom tabs + drawer. |
+| 2026-06-15 | Grok | **Top-right nav cleanup (ap-v142).** Root cause of “random boxes”: two matching gold pills in `.navbar__end` (Updates + Profile). Removed desktop header email cluster entirely (`cleanupNavEnd` strips stale `.ap-nav-email-cluster` too). Profile → single 36px ghost icon; email stays in drawer / bottom nav / footer / sticky. Email click handler wired once. | Hard-refresh ap-v142. Desktop top-right = Profile icon only (+ hamburger ≤1023). |
