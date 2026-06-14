@@ -6,6 +6,97 @@ The saved-page snapshot `OneDrive\Desktop\AstroPrecise.html` + `AstroPrecise_fil
 
 Rules: edit only here · read the newest entries below before working · append a line after any change that affects the other agents, a schedule, a deploy, or a served page.
 
+---
+
+## Session digest — Grok 2026-06-14 (ap-v115 → ap-v119, all PUSHED)
+
+**Current SW cache:** `ap-v119` (`website/sw.js` — hard-refresh or unregister SW after deploy).
+
+### 1. Pricing ladder (`website/js/app.js` → `AP_MON`) — ap-v115 then ap-v116
+
+Two cuts in this session. **Use ap-v116 numbers** for any new Gumroad/Lemon/Etsy listings.
+
+| Product / unlock | ap-v115 | **ap-v116 (current)** | `AP_MON` key |
+|---|---|---|---|
+| Print-at-home poster PDF | £9 | **£6** | `posterUrl` |
+| Deep Reading | £18 | **£12** | `deepReadingPrice` / `deepReadingUrl` |
+| Reading + Poster bundle | £25 | **£16** | bundle SKU in `commerce` |
+| Gift a Reading | £22 | **£15** | `giftUrl` |
+| Synastry unlock | £2.99 | **£1.99** | `compatUnlockPrice` |
+| Saturn Return unlock | £0.29 | **£0.19** | `saturnReturnPrice` |
+| Physical natal poster | £28 | **£20** | `commerce` `natal-poster` |
+| Sky tee | £24 | **£18** | `sky-tee` |
+| Hoodie | £44 | **£32** | `sky-hoodie` |
+| Mug | £13 | **£9** | `constellation-mug` |
+| Two Skies couples print | £34 | **£24** | `two-skies-map` |
+| Gift box | £48 | **£35** | `gift-box-whole-sky` |
+| Cosmic Weather (Phase 2 doc) | £3.49/mo | **£2.49/mo** | waitlist only |
+
+Docs aligned at ap-v116: `GTM-LADDER.md`, `GROWTH.md`, `LINK-IN-BIO.md`, `INSTANT-MONETIZATION.md`, `LAUNCH-PLAN.md`, `POD-PLAYBOOK.md`, `SHOP-AUDIT.md`. All paid routes still **dormant** until real URLs pasted into `AP_MON`.
+
+### 2. Outreach + X traffic (ap-v118)
+
+**Research (2026 X algorithm):** first-30-min reply velocity matters most; 3–5 original posts/day + **20–30 substantive replies/day** on bigger accounts; bio link only → `https://astroprecise.app/links.html` (never checkout from X); native video ≈10× text; constructive tone favoured over rage-bait.
+
+| Asset | Path | Use |
+|---|---|---|
+| Master copy + playbook | `website/js/outreach-content.js` → `window.AP_OUTREACH` | X playbook, emails, post templates |
+| Owner copy UI | `website/outreach.html` (noindex) | One-click copy for MailerLite / Postiz |
+| CLI export | `node tools/export-outreach.mjs` | Writes `outreach-exports/` (emails + x-posts + x-playbook.txt) |
+
+**Email sequences in code:** welcome (5), horoscope daily/monthly welcomes, monthly cosmic weather, re-engagement, post-purchase (4). **X content:** 14 singles, 2 threads, 5 reply templates. Prices in emails match ap-v116.
+
+**X accounts to engage (reply strategy):** `@chaninicholas`, `@costarastrology`, `@astro_poets`, `@TheAstroTwins`, `@NASA`, r/astrology cross-posts.
+
+**Config to flip:** `AP_SOCIAL.x` in `app.js`; `AP_MON.emailUrl` for live newsletter; schedule via Postiz per `LAUNCH-PLAN.md`.
+
+### 3. Horoscope accuracy (ap-v119)
+
+**Problem fixed:** Old readings used static text pools with **fabricated aspects** (“Mars trine Moon”) — not computed from the sky. Violated honesty / “real positions” marketing.
+
+**Solution:** `website/js/horoscope-engine.js` — transit-based **solar-chart** horoscope (whole-sign houses from Sun sign) using **VSOP87 ephemeris** at local noon:
+
+- Overview: real Moon sign + solar house + lunar phase + top aspect to solar Sun (15° representative)
+- Love / career / health: Venus/Mars/Moon house themes + actual positions
+- `skyFacts[]`: auditable line (“Moon in X · Mercury in Y retrograde · solar house N”)
+- `moodScore`: energy bar from harmonious vs challenging aspects
+- Monthly: `getMonthlyHoroscope()` — Jupiter/Saturn/Sun solar-house themes from mid-month ephemeris
+- **Scope honesty:** collective sun-sign reading, not full natal transits → personal chart = `transits.html`
+
+**Wiring:**
+
+| Page | Scripts |
+|---|---|
+| `horoscope.html` | `ephemeris.js` + `horoscope-engine.js` (dropped 464KB `interpretations.js` on this page) |
+| All 12 sign pages | `ephemeris.js` + `horoscope-engine.js` + `sign-daily.js` (regenerated via `node website/tools/generate-sign-pages.mjs`) |
+| `horoscope-subscribe.js` | Delegates monthly to engine when loaded |
+
+**UI on horoscope panel:** `#srp-sky-facts`, `#srp-method-note`, badge “Solar-chart reading — VSOP87 sky at local noon”.
+
+**Tests:** `node test-horoscope.mjs` (9/9) · `node test-engine.mjs` (16/16).
+
+### 4. Earlier in same thread (already live before ap-v115)
+
+- **ap-v114:** horoscope email subscribe + removed grey `zodiac-glyphs-all.jpg` banner; HD `zodiac-cards` kept.
+- **ap-v113:** Life Path page polish (`lifepath.html`).
+- **ap-v112–v107:** cinematic preloader / WebGL orrery regressions — **homepage cinematic intro may still be broken** (user reported pre-ap-v113); Claude fixed duplicate `const segs` in `orrery-webgl.js` at **ap-v117** — verify separately.
+
+### 5. Owner checklist (Jonny)
+
+1. Hard-refresh **ap-v119** (or unregister SW) on horoscope + one sign page — confirm overview cites **today’s real Moon sign** and “Today’s sky” facts line.
+2. Open `outreach.html` or run `node tools/export-outreach.mjs` — paste emails into MailerLite/Kit; schedule X posts.
+3. When creating storefront listings, use **ap-v116 prices** (table above).
+4. Set `AP_MON.emailUrl` + `AP_SOCIAL.x` when accounts are live.
+5. Eyeballed verify: homepage preloader/WebGL orrery still works after ap-v117 (`node --check website/js/orrery-webgl.js` before any orrery edit).
+
+### 6. Still open (not done this session)
+
+- `AP_MON` storefront URLs empty — shop/checkout dormant by design.
+- Cinematic homepage intro — may need re-test after ap-v117 orrery-webgl fix.
+- `interpretations.js` still exists for chart deep-reading copy elsewhere; **horoscope path no longer uses it**.
+
+---
+
 | When (local) | Agent | What changed | Needed from the other agent |
 |---|---|---|---|
 | 2026-06-14 (ap-v119: transit-based horoscope engine — PUSHED) | Grok | **HOROSCOPE ACCURACY FIX.** New `js/horoscope-engine.js`: professional solar-chart readings from live VSOP87 positions (Moon house/phase, real aspects to Sun, retrograde honesty, skyFacts). Replaced fake static copy on `horoscope.html` (dropped 464KB `interpretations.js` there) + all 12 sign pages (regenerated with ephemeris). `sign-daily.js` delegates; monthly subscribe uses engine. Tests: `test-horoscope.mjs` 9/9. sw **ap-v119**. | Jonny: hard-refresh ap-v119 → pick a sign → overview cites real Moon sign; "Today's sky" facts line visible. Personal chart still on transits.html. |
