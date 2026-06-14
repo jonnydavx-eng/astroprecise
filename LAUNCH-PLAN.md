@@ -67,7 +67,7 @@ Per `LAUNCH.md`: zero backend, push to deploy. The one upgrade to do **before** 
 
 | Need | Provider | Fee | VAT | Why |
 |---|---|---|---|---|
-| **Digital — Deep Reading PDF (£24)** | **Lemon Squeezy** | ~5% + $0.50 | ✅ Merchant-of-record, **remits UK/EU VAT** | Lowest all-in full-MoR; GBP payout. (Gumroad = simpler fallback at 10%+$0.50.) |
+| **Digital — Deep Reading PDF (£18)** | **Lemon Squeezy** | ~5% + $0.50 | ✅ Merchant-of-record, **remits UK/EU VAT** | Lowest all-in full-MoR; GBP payout. (Gumroad = simpler fallback at 10%+$0.50.) |
 | **Physical POD — posters/tees/mugs** | **Etsy storefront + Gelato fulfilment** | ~11% (Etsy) + product cost | ✅ Etsy remits VAT on physical (≤£135/≤€150) | Built-in discovery, £0 fixed, UK/EU-local printing. Migrate to Shopify+Gelato only at volume. |
 | **Tips** | **Ko-fi** | 0% on tips | n/a (gifts) | Instant, Pages-permitted. |
 | **On-site Stripe checkout** | _Phase 2_ | 1.5%+£0.20 | ❌ you handle VAT (Stripe ≠ MoR) | Only after migrating host (Cloudflare Pages/Netlify) **and** VAT-registered. |
