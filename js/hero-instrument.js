@@ -24,18 +24,40 @@
     if (hero.classList.contains('hero--entered')) return;
     hero.classList.add('hero--entered');
     document.body.classList.add('page-home--ready');
+    document.body.classList.remove('preloader-active');
+    window.__apHeroEntered = true;
   }
 
-  window.addEventListener('ap-hero-enter', enterHero, { once: true });
+  /* Exposed for the early preloader script (may run before this file loads). */
+  window.__apHeroEnter = enterHero;
 
-  /* Repeat visit: preloader removed before this script — enter immediately */
-  if (!document.getElementById('preloader')) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(enterHero); });
-    } else {
-      requestAnimationFrame(enterHero);
+  function preloaderStillActive() {
+    var pre = document.getElementById('preloader');
+    if (!pre) return false;
+    if (pre.classList.contains('fade-out')) return false;
+    if (pre.style.display === 'none') return false;
+    return true;
+  }
+
+  function bootHeroEntrance() {
+    if (window.__apHeroEntered || hero.classList.contains('hero--entered')) {
+      enterHero();
+      return;
     }
+    if (!preloaderStillActive()) enterHero();
   }
+
+  window.addEventListener('ap-hero-enter', enterHero);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(bootHeroEntrance); });
+  } else {
+    requestAnimationFrame(bootHeroEntrance);
+  }
+
+  /* Safety: never leave hero copy invisible if the enter event was missed. */
+  setTimeout(bootHeroEntrance, 1200);
+  setTimeout(enterHero, 10000);
 
   /* ── Scroll-time rail + meridian rotation + chronicle mirror ── */
   function formatOffsetDays(days) {
