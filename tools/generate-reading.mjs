@@ -194,6 +194,20 @@ th{font-family:'Cinzel',serif;font-size:7.5pt;letter-spacing:.12em;text-transfor
 .glyph{color:#E8C872;font-family:serif;font-size:12pt;}
 .foot{position:absolute;bottom:12mm;left:24mm;right:24mm;display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.16em;text-transform:uppercase;color:#5E5748;border-top:1px solid rgba(201,162,39,.15);padding-top:6pt;}
 .watermark{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-family:'Cinzel',serif;font-size:60pt;letter-spacing:.2em;color:rgba(201,162,39,.06);white-space:nowrap;pointer-events:none;}
+/* ── premium engraved keepsake: double-rule frame, ornaments, drop cap, balance ── */
+.page::before{content:'';position:absolute;inset:8mm;border:1px solid rgba(201,162,39,.42);pointer-events:none;}
+.page::after{content:'';position:absolute;inset:9.4mm;border:1px solid rgba(201,162,39,.15);pointer-events:none;}
+.orn{display:flex;align-items:center;gap:10pt;color:#C9A227;margin:16pt 0;}
+.orn::before,.orn::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.5),transparent);}
+.orn span{font-size:9pt;letter-spacing:.4em;}
+.dropcap::first-letter{font-family:'Cinzel',serif;font-size:33pt;line-height:.78;float:left;padding:3pt 7pt 0 0;color:#E8C872;}
+.balance{display:flex;flex-direction:column;gap:5pt;margin:12pt 0 4pt;}
+.balance .row{display:flex;align-items:center;gap:8pt;font-size:9.5pt;}
+.balance .el{width:52pt;font-family:'Cinzel',serif;font-size:7.5pt;letter-spacing:.12em;text-transform:uppercase;color:#A89E88;}
+.balance .track{flex:1;height:5pt;background:rgba(201,162,39,.12);border-radius:3pt;overflow:hidden;}
+.balance .fill{height:100%;background:linear-gradient(90deg,#9a6a2a,#E8C872);}
+.balance .n{width:14pt;text-align:right;color:#EFE3C0;font-variant-numeric:tabular-nums;}
+.cover-wheel{margin:16pt 0 6pt;}
 `;
 const FONTS=`<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">`;
 const wm = WATERMARK ? `<div class="watermark">${WATERMARK}</div>` : '';
@@ -203,6 +217,9 @@ const foot=n=>`<div class="foot"><span>AstroPrecise · The Deep Reading</span><s
 // ── derived narrative fragments (all from THIS chart) ──
 const sunSign=pos.sun.sign, moonSign=pos.moon.sign, ascSign=A.sign;
 const domLine = `You are a <strong>${domEl[0]}-dominant</strong> chart (${domEl[1]} of the seven classical bodies in ${domEl[0].toLowerCase()} signs): ${ELEM_BLURB[domEl[0]]}. The chart leans <strong>${domMode[0].toLowerCase()}</strong> in mode, and your ${M.sign} Midheaven shows the public shape it wants to take.`;
+// element balance mini-chart (the 7 classical bodies across fire/earth/air/water)
+const balanceBars = () => `<div class="balance">${['Fire','Earth','Air','Water'].map(el =>
+  `<div class="row"><span class="el">${el}</span><span class="track"><span class="fill" style="width:${Math.round(eC[el] / 7 * 100)}%"></span></span><span class="n">${eC[el]}</span></div>`).join('')}</div>`;
 
 // page IV — architecture of depth (stellium if present, else outer-planet generation)
 function architecture(){
@@ -235,6 +252,7 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
   <p class="eyebrow">The Deep Reading</p>
   <h1>The Sky at Your<br>First Breath</h1>
   <p class="lede" style="border:none;text-align:center;max-width:120mm;">A complete reading of the natal chart of<br><strong style="font-style:normal;color:#EFE3C0;font-size:16pt;">${PERSON.name}</strong></p>
+  <div class="cover-wheel">${wheel(300)}</div>
   <p class="meta">${PERSON.date} &nbsp;·&nbsp; ${PERSON.time}<br>${PERSON.place}<br>Sun ${fmt(pos.sun.lon)} · Moon ${fmt(pos.moon.lon)} · ${ascSign} Rising</p>
   <p style="position:absolute;bottom:18mm;font-size:8pt;letter-spacing:.2em;color:#5E5748;font-family:'Cinzel',serif;">EVERY NUMBER COMPUTED FROM THE REAL SKY · VSOP87 · ELP2000</p>
 </div>
@@ -243,8 +261,10 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
   <p class="eyebrow">I · The Event in Spacetime</p>
   <h1 style="font-size:22pt;">You were a coordinate<br>the universe held once.</h1>
   <p class="lede">At ${PERSON.time} on ${PERSON.date}, the sky above ${PERSON.place} held a configuration of light it had never shown before and will never show again. This reading is the transcription of that exact moment — your blueprint, in the old language.</p>
-  <p>Three signatures govern everything that follows. Your <strong>Sun in ${sunSign}</strong> is the engine — the will, the thing being grown across a lifetime. Your <strong>Moon in ${moonSign}</strong> is the inner weather — how you feel, soothe, and remember. And ${ascSign} <strong>rising</strong> is the mask and the doorway — the first thing the world meets, and the lens you meet it through.</p>
+  <p class="dropcap">Three signatures govern everything that follows. Your <strong>Sun in ${sunSign}</strong> is the engine — the will, the thing being grown across a lifetime. Your <strong>Moon in ${moonSign}</strong> is the inner weather — how you feel, soothe, and remember. And ${ascSign} <strong>rising</strong> is the mask and the doorway — the first thing the world meets, and the lens you meet it through.</p>
   <p>${domLine}</p>
+  ${balanceBars()}
+  <div class="orn"><span>✦ THE BIG THREE ✦</span></div>
   <div class="big3">
     <div class="b"><div class="g">${PGL.sun}</div><div class="lbl">Sun · Core Self</div><div class="v">${pos.sun.d}° ${sunSign}</div></div>
     <div class="b"><div class="g">${PGL.moon}</div><div class="lbl">Moon · Inner World</div><div class="v">${pos.moon.d}° ${moonSign}</div></div>

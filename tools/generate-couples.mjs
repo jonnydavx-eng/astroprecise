@@ -167,6 +167,13 @@ th{font-family:'Cinzel',serif;font-size:7.5pt;letter-spacing:.12em;text-transfor
 .glyph{color:#E8C872;font-family:serif;font-size:12pt;}
 .foot{position:absolute;bottom:12mm;left:24mm;right:24mm;display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:7pt;letter-spacing:.16em;text-transform:uppercase;color:#5E5748;border-top:1px solid rgba(201,162,39,.15);padding-top:6pt;}
 .watermark{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) rotate(-24deg);font-family:'Cinzel',serif;font-size:60pt;letter-spacing:.2em;color:rgba(201,162,39,.06);white-space:nowrap;pointer-events:none;}
+/* ── premium engraved keepsake: double-rule frame, ornaments, drop cap ── */
+.page::before{content:'';position:absolute;inset:8mm;border:1px solid rgba(201,162,39,.42);pointer-events:none;}
+.page::after{content:'';position:absolute;inset:9.4mm;border:1px solid rgba(201,162,39,.15);pointer-events:none;}
+.orn{display:flex;align-items:center;gap:10pt;color:#C9A227;margin:16pt 0;}
+.orn::before,.orn::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.5),transparent);}
+.orn span{font-size:9pt;letter-spacing:.4em;}
+.dropcap::first-letter{font-family:'Cinzel',serif;font-size:33pt;line-height:.78;float:left;padding:3pt 7pt 0 0;color:#E8C872;}
 `;
 const FONTS = `<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">`;
 const wm = WATERMARK ? `<div class="watermark">${WATERMARK}</div>` : '';
@@ -215,7 +222,8 @@ const reading = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style
     <div style="text-align:center;"><div class="scorebig">${Math.round(syn.overall || 0)}</div><div style="font-family:'Cinzel',serif;font-size:8pt;letter-spacing:.18em;color:#A89E88;">OVERALL</div></div>
     <div style="flex:1;">${CATS.map(catRow).join('')}</div>
   </div>
-  <p>${esc(syn.overview || '')}</p>
+  <div class="orn"><span>✦ THE READING ✦</span></div>
+  <p class="dropcap">${esc(syn.overview || '')}</p>
   ${foot('2')}
 </div>
 
