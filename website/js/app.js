@@ -76,7 +76,7 @@ const AstroApp = (() => {
     ['tonight.html', "Tonight's Sky"], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
     ['what-is-my-rising-sign.html', 'Rising Sign'], ['synastry.html', 'Synastry'],
-    ['solar-return.html', 'Solar Return'],
+    ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
   ];
 
   function renderNav() {
@@ -821,6 +821,11 @@ window.AP_MON = Object.assign({
   // the "Show all aspects" toggle becomes an "Unlock — <price>" button.
   compatUnlockUrl: '',
   compatUnlockPrice: '£4.99',   // shown on the unlock button only when compatUnlockUrl is set
+  // Saturn Return reading + PDF unlock. Dormant ('') = the full reading shows FREE
+  // (no pre-launch downgrade); the finder DATES are always free. Set this to a
+  // hosted checkout (Lemon Squeezy) that redirects to saturn-return.html?unlocked=1.
+  saturnReturnUrl: '',
+  saturnReturnPrice: '£0.49',
   // Email-list signup ENDPOINT (a hosted newsletter form-action, e.g. Buttondown
   // https://buttondown.email/api/emails/embed-subscribe/<user>, or a Mailchimp
   // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
