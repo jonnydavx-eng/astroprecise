@@ -11,6 +11,9 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { spawnSync } from 'child_process';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { loadSecrets } from './load-secrets.mjs';
+
+loadSecrets();
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dir, '..');
