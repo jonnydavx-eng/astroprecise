@@ -22,7 +22,7 @@ export const PAID_STANDARDS = {
   longitudePrecision: 'arcminute',
   proseSource: 'interpretations.js (site corpus)',
   art: 'engraved gold-on-void, element-tinted wheel, starfield — matches chart-render palette',
-  minReadingPages: 8,
+  minReadingPages: 12,
   posterFormat: 'A3 print-ready',
   readingFormat: 'A4 print-ready',
 };

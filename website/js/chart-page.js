@@ -859,7 +859,7 @@
     const price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
     const priceBit = price ? ` — <strong>${esc(price)}</strong>` : '';
     const ctaHtml = configured
-      ? `<p class="deep-teaser__format">A personalised 9-page PDF — Big Three, love & vocation, Saturn, aspects, and a full chart reference — drawn from your exact chart${priceBit}. One-time; yours to keep, no subscription.</p>
+      ? `<p class="deep-teaser__format">A personalised 13-page PDF — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, ten tightest aspects, and a full reference — drawn from the same engine as your free chart${priceBit}. One-time; yours to keep, no subscription.</p>
          <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>

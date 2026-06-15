@@ -37,7 +37,7 @@ const body = `
   <h1 style="font-size:32pt;margin-top:8mm;">${esc(productLabel)}</h1>
   <p class="meta">For ${esc(order.recipient_name || 'your recipient')}</p>
   <p style="font-size:18pt;margin:12mm 0;color:#E8C872;font-family:'Cinzel',serif;letter-spacing:.2em;">${esc(code)}</p>
-  <p class="lede" style="text-align:left;">${esc(order.gift_message || 'Someone wanted you to see your sky as it truly was — measured, not guessed. This voucher unlocks a full Deep Reading PDF: nine pages of natal interpretation computed from your exact birth chart.')}</p>
+  <p class="lede" style="text-align:left;">${esc(order.gift_message || 'Someone wanted you to see your sky as it truly was — measured, not guessed. This voucher unlocks a full Deep Reading PDF: thirteen pages — every planet, all houses, life areas, patterns, and aspects — computed from their exact birth chart.')}</p>
   <p style="text-align:left;">From: <strong>${esc(order.buyer_name || 'A friend')}</strong></p>
   <h3 style="text-align:left;margin-top:14pt;">How to redeem</h3>
   <p style="text-align:left;">1. Open the link below on any device.<br>2. Enter your birth name, date, time, and place (private — never shown to the giver).<br>3. Receive your PDF by email within 24 hours.</p>

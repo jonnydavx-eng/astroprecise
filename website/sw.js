@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v184';
+const V = 'ap-v185';
 
 const PRECACHE = [
   './',

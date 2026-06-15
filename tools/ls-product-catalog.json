@@ -7,7 +7,7 @@
   "products": {
     "deep-reading": {
       "name": "AstroPrecise Deep Natal Reading — Personal PDF",
-      "short_description": "Nine pages written for your chart alone — the Gen Z/millennial favourite for self-discovery. Sun, Moon, Rising, love & vocation, Saturn, outer planets, and your six tightest aspects. VSOP87 arcminute precision. PDF within 24–48 hours.",
+      "short_description": "Thirteen pages written for your chart alone — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, and ten tightest aspects. Same interpretations.js engine as the free chart tools. VSOP87 arcminute precision. PDF within 24–48 hours.",
       "receipt_thank_you": "Thank you — your reading is being prepared. Complete the short birth-details form (about 2 minutes) so we can compute your exact sky and write your PDF.",
       "receipt_button": "Submit birth details",
       "image": "product-deep-reading.jpg",
@@ -25,7 +25,7 @@
     },
     "reading-poster-bundle": {
       "name": "AstroPrecise Deep Reading + Poster Bundle",
-      "short_description": "Both keepsakes from one chart: the 9-page Deep Reading plus the A3 print-at-home natal poster. Submit birth details once; receive both PDFs within 24–48 hours. Save £2 — our most-loved starter bundle.",
+      "short_description": "Both keepsakes from one chart: the 13-page Deep Reading plus the A3 print-at-home natal poster. Submit birth details once; receive both PDFs within 24–48 hours. Save £2 — our most-loved starter bundle.",
       "receipt_thank_you": "Two PDFs, one chart. Complete the birth-details form and we'll deliver your reading and poster together within 24–48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-bundle.jpg",
@@ -43,7 +43,7 @@
     },
     "gift-reading": {
       "name": "AstroPrecise Gift a Deep Reading",
-      "short_description": "Give someone a 9-page Deep Natal Reading written for their chart alone. Delivered as a beautiful PDF gift voucher with redemption code and your personal note — the thoughtful gift that feels bespoke, not generic.",
+      "short_description": "Give someone a 13-page Deep Natal Reading written for their chart alone. Delivered as a beautiful PDF gift voucher with redemption code and your personal note — the thoughtful gift that feels bespoke, not generic.",
       "receipt_thank_you": "Your gift is ready to send. Complete the form to add your message and recipient details — we'll email the voucher within 24 hours.",
       "receipt_button": "Complete gift details",
       "image": "product-gift-reading.jpg",

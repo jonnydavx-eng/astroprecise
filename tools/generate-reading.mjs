@@ -20,7 +20,11 @@ import {
 import {
   productLabel, modalityBars, chartRulerNarrative, mcCareerBlock, loveValuesBlock,
   saturnChapter, aspectsChapter, placementTable, methodologyPage, closingChapter,
+  skyFactsBlock, lifeAreasChapter, houseTourChapter, planetDossiersChapter, chartPatternsChapter,
 } from './reading-narrative.mjs';
+import {
+  buildAnalyzePayload, detectChartPatterns,
+} from './reading-data-bridge.mjs';
 
 const win = {};
 const ephSrc = readFileSync(join(JS, 'ephemeris.js'), 'utf8');
@@ -184,9 +188,13 @@ const wmBig = WATERMARK ? `<div class="watermark" style="font-size:90pt;">${WATE
 const PLABEL = productLabel(PRODUCT);
 const foot=n=>`<div class="foot"><span>AstroPrecise · ${PLABEL.short}</span><span>${PERSON.name}</span><span>${n}</span></div>`;
 const domLineTail = ELEM_BLURB[domEl[0]].replace(/^a /,'');
-
+const chartPatterns = detectChartPatterns(aspects, pos, PNAME);
+const analyzePayload = buildAnalyzePayload({ pos, asc, mc, ruler, aspects, BODIES, PNAME });
 // ── derived narrative fragments (all from THIS chart) ──
 const sunSign=pos.sun.sign, moonSign=pos.moon.sign, ascSign=A.sign;
+const lifeAreasCtx = {
+  pos, ascSign, mcSign: M.sign, I, analyzePayload, hMeaning, pInterp, sentsFn: sents,
+};
 const domLine = `You are a <strong>${domEl[0]}-dominant</strong> chart (${domEl[1]} of the seven classical bodies in ${domEl[0].toLowerCase()} signs): ${ELEM_BLURB[domEl[0]]}. The chart leans <strong>${domMode[0].toLowerCase()}</strong> in mode, and your ${M.sign} Midheaven shows the public shape it wants to take.`;
 // element balance mini-chart (the 7 classical bodies across fire/earth/air/water)
 const balanceBars = () => `<div class="balance">${['Fire','Earth','Air','Water'].map(el =>
@@ -238,6 +246,7 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
   ${balanceBars()}
   <p style="font-size:10pt;color:#A89E88;margin-top:8pt;">Modality — how you move through change:</p>
   ${modalityBars(mC)}
+  ${skyFactsBlock(pos, asc, mc, fmt, PGL, PNAME, BODIES)}
   <div class="orn"><span>✦ THE BIG THREE ✦</span></div>
   <div class="big3">
     <div class="b"><div class="g">${PGL.sun}</div><div class="lbl">Sun · Core Self</div><div class="v">${pos.sun.d}° ${sunSign}</div></div>
@@ -250,9 +259,9 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
 <div class="page">
   <p class="eyebrow">II · The Luminaries</p>
   <h3>${PGL.sun} The Sun in ${sunSign} — ${ord(pos.sun.house)} House (${hMeaning(pos.sun.house).keyword})</h3>
-  <p>Your Sun sits at ${fmt(pos.sun.lon)}. ${sents(pInterp('Sun',sunSign),3)} In the ${ord(pos.sun.house)} house, this solar purpose expresses through ${hMeaning(pos.sun.house).keyword.toLowerCase()} — the arena where your vitality most wants to be spent.</p>
+  <p>Your Sun sits at ${fmt(pos.sun.lon)}. ${sents(pInterp('Sun',sunSign),4)} In the ${ord(pos.sun.house)} house, this solar purpose expresses through ${hMeaning(pos.sun.house).keyword.toLowerCase()} — the arena where your vitality most wants to be spent.</p>
   <h3>${PGL.moon} The Moon in ${moonSign} — ${ord(pos.moon.house)} House (${hMeaning(pos.moon.house).keyword})</h3>
-  <p>${sents(pInterp('Moon',moonSign),3)} The Moon's house shows where you seek emotional safety: here, in ${hMeaning(pos.moon.house).keyword.toLowerCase()}.</p>
+  <p>${sents(pInterp('Moon',moonSign),4)} The Moon's house shows where you seek emotional safety: here, in ${hMeaning(pos.moon.house).keyword.toLowerCase()}.</p>
   <h3>↑ ${ascSign} Rising</h3>
   <p>${chartRulerNarrative(ruler, pos, PNAME[ruler], pInterp, hMeaning)}</p>
   ${foot('2')}
@@ -274,38 +283,62 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
 </div>
 
 <div class="page">
-  <p class="eyebrow">V · Vocation & Mastery</p>
-  <h1 style="font-size:20pt;">Public life & the long game.</h1>
-  ${mcCareerBlock(M, mc, pInterp, hMeaning, sents)}
-  ${saturnChapter(pos, pInterp, hMeaning, sents, PGL)}
+  <p class="eyebrow">V · Life Areas</p>
+  ${lifeAreasChapter(lifeAreasCtx)}
   ${foot('5')}
 </div>
 
 <div class="page">
-  <p class="eyebrow">VI · The Architecture of Depth</p>
-  ${architecture()}
+  <p class="eyebrow">VI · Vocation & Mastery</p>
+  <h1 style="font-size:20pt;">Public life & the long game.</h1>
+  ${mcCareerBlock(M, mc, pInterp, hMeaning, sents)}
+  ${saturnChapter(pos, pInterp, hMeaning, sents, PGL)}
   ${foot('6')}
 </div>
 
 <div class="page">
-  <p class="eyebrow">VII · The Conversations Between Planets</p>
-  <h1 style="font-size:20pt;">Your tightest aspects.</h1>
-  ${aspectsChapter(aspects, I, PNAME, PGL, 6)}
+  <p class="eyebrow">VII · The Architecture of Depth</p>
+  ${architecture()}
   ${foot('7')}
 </div>
 
 <div class="page">
-  <p class="eyebrow">VIII · Closing</p>
+  <p class="eyebrow">VIII · The Twelve Houses</p>
+  ${houseTourChapter(houses, pos, hMeaning, fmt, PGL, PNAME, BODIES)}
+  ${foot('8')}
+</div>
+
+<div class="page">
+  <p class="eyebrow">IX · Planet by Planet</p>
+  ${planetDossiersChapter(pos, pInterp, hMeaning, sents, PGL, PNAME, BODIES)}
+  ${foot('9')}
+</div>
+
+<div class="page">
+  <p class="eyebrow">X · Chart Patterns</p>
+  ${chartPatternsChapter(chartPatterns)}
+  ${foot('10')}
+</div>
+
+<div class="page">
+  <p class="eyebrow">XI · The Conversations Between Planets</p>
+  <h1 style="font-size:20pt;">Your tightest aspects.</h1>
+  ${aspectsChapter(aspects, I, PNAME, PGL, 10)}
+  ${foot('11')}
+</div>
+
+<div class="page">
+  <p class="eyebrow">XII · Closing</p>
   <h1 style="font-size:20pt;">Living the chart.</h1>
   ${closingChapter(PERSON.name, sunSign, moonSign, ascSign, domEl, domMode, domLineTail)}
-  ${foot('8')}
+  ${foot('12')}
 </div>
 
 <div class="page">
   ${methodologyPage(PERSON, { ...order, timeUnknown })}
   <div class="orn"><span>✦ CHART REFERENCE ✦</span></div>
   ${placementTable(BODIES, pos, PGL, PNAME, fmt, asc, mc)}
-  ${foot('9')}
+  ${foot('13')}
 </div>
 </body></html>`;
 

@@ -40,13 +40,39 @@ for (const e of events) {
   byMonth[key].push(e);
 }
 
+const HOUSE_THEME = {
+  1: 'identity and vitality', 2: 'money and values', 3: 'communication', 4: 'home and roots',
+  5: 'romance and creativity', 6: 'health and daily craft', 7: 'partnerships', 8: 'intimacy and shared resources',
+  9: 'travel and meaning', 10: 'career and reputation', 11: 'community and hopes', 12: 'rest and reflection',
+};
+
+function monthNarrative(hits, natalHouseOf) {
+  if (!hits.length) return '<p>A quieter month for slow-planet contacts — check transits.html for fast-moving daily weather.</p>';
+  const lead = hits[0];
+  const prose = sents(aInterp(lead.aspect, lead.transit, lead.natal), 2)
+    || `${lead.transit} ${lead.aspect.toLowerCase()} your natal ${lead.natal} — read this as ${lead.aspect === 'Square' || lead.aspect === 'Opposition' ? 'homework' : 'support'} in the life area that planet rules for you.`;
+  const extras = hits.slice(1, 4).map((h) => {
+    const nh = natalHouseOf(h.natal);
+    return `${h.transit} ${h.aspect.toLowerCase()} natal ${h.natal}${nh ? ` (${HOUSE_THEME[nh] || 'natal theme'})` : ''} (orb ${h.orb.toFixed(1)}°)`;
+  });
+  return `<p class="lede">${esc(prose)}</p>${extras.length ? `<p>Also this month: ${esc(extras.join('; '))}.</p>` : ''}<p class="note">Mirror this month on <strong>horoscope.html</strong> (daily themes) and <strong>transits.html</strong> (live sky on your saved chart).</p>`;
+}
+
+const natalHouseOf = (planetName) => {
+  const raw = String(planetName || '').toLowerCase().replace(/\s+/g, '');
+  const aliases = { northnode: 'northNode', ascendant: null, midheaven: null };
+  const k = aliases[raw] === undefined ? raw : aliases[raw];
+  if (!k) return raw === 'ascendant' ? 1 : raw === 'midheaven' ? 10 : null;
+  return pos[k]?.house ?? null;
+};
+
 const monthBlocks = Object.entries(byMonth).map(([month, hits]) => `
   <h3>${esc(month)}</h3>
   <table>
     <tr><th>Transit</th><th>Aspect</th><th>Natal</th><th>Orb</th></tr>
     ${hits.map((h) => `<tr><td>${esc(h.transit)}</td><td>${esc(h.glyph)} ${esc(h.aspect)}</td><td>${esc(h.natal)}</td><td>${h.orb.toFixed(1)}°</td></tr>`).join('')}
   </table>
-  ${hits[0] ? `<p>${esc(sents(aInterp(hits[0].aspect, hits[0].transit, hits[0].natal), 2) || `${hits[0].transit} ${hits[0].aspect.toLowerCase()} your natal ${hits[0].natal} — a ${hits[0].aspect === 'Square' || hits[0].aspect === 'Opposition' ? 'growth' : 'flow'} point in the month's weather.`)}</p>` : ''}
+  ${monthNarrative(hits, natalHouseOf)}
 `).join('');
 
 const body = `

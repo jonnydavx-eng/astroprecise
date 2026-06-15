@@ -1,7 +1,12 @@
 /**
  * Rich narrative helpers for paid natal readings (Deep Reading / bundle).
+ * Life-area layout mirrors horoscope.html (overview · love · career · health).
  */
 import { fmt, ord, sents } from './fulfil-shared.mjs';
+import {
+  HOUSE_THEME, buildBirthSkyFacts, detectChartPatterns, synthesizeLifeAreas,
+  planetsInHouse, houseCuspSign,
+} from './reading-data-bridge.mjs';
 
 export const PRODUCT_LABELS = {
   'deep-reading': { short: 'The Deep Reading', tag: 'Personal Natal Reading' },
@@ -88,7 +93,86 @@ export function saturnChapter(pos, pInterp, hMeaning, sentsFn, PGL) {
   <p>${sentsFn(pInterp('Saturn', pos[k].sign), 3)} In the ${ord(pos[k].house)} house, this discipline lands in the territory of ${hMeaning(pos[k].house).keyword.toLowerCase()}: the life arena where patience earns authority.</p>`;
 }
 
-export function aspectsChapter(aspects, I, PNAME, PGL, limit = 6) {
+export function skyFactsBlock(pos, asc, mc, fmtFn, PGL, PNAME, BODIES) {
+  const facts = buildBirthSkyFacts(pos, asc, mc, fmtFn, PGL, PNAME, BODIES);
+  return `<p class="note" style="font-size:10pt;line-height:1.75;">Your birth sky at a glance — the same ephemeris data behind <em>horoscope.html</em>, <em>transits.html</em>, and <em>chart.html</em>:<br>${facts.join(' · ')}</p>`;
+}
+
+export function lifeAreasChapter(ctx) {
+  const areas = synthesizeLifeAreas(ctx);
+  return `
+  <h1 style="font-size:20pt;">Four life territories<br>your chart maps.</h1>
+  <p class="lede">Daily horoscopes on AstroPrecise translate the moving sky into love, career, and wellbeing themes. Your natal chart is the permanent map beneath that weather — the same house logic, written in depth for you alone.</p>
+  <h2>Love &amp; connection</h2>
+  <p>${areas.love}</p>
+  <h2>Vocation &amp; public life</h2>
+  <p>${areas.career}</p>
+  <h2>Body, rhythm &amp; wellbeing</h2>
+  <p>${areas.health}</p>
+  <h2>Purpose &amp; growth edge</h2>
+  <p>${areas.purpose}</p>
+  <p class="note">${areas.challenges} Return to <strong>astroprecise.app/transits.html</strong> anytime to see how today's sky activates these natal themes.</p>`;
+}
+
+export function houseTourChapter(houses, pos, hMeaning, fmtFn, PGL, PNAME, BODIES) {
+  let body = `
+  <h1 style="font-size:20pt;">House by house —<br>where life happens.</h1>
+  <p class="lede">Each house is a theatre of experience. Below: the sign on the cusp, any planets stationed there, and the life themes they activate — drawn from the same house dictionary used across the site.</p>
+  <table class="placements"><tr><th>House</th><th>Cusp</th><th>Planets</th><th>Life theme</th></tr>`;
+  for (let n = 1; n <= 12; n++) {
+    const cusp = houseCuspSign(houses, n);
+    const inmates = planetsInHouse(n, pos, BODIES);
+    const pl = inmates.length
+      ? inmates.map((k) => `${PGL[k]} ${PNAME[k]}`).join(', ')
+      : '—';
+    body += `<tr><td>${ord(n)}</td><td>${cusp}</td><td>${pl}</td><td>${HOUSE_THEME[n]}</td></tr>`;
+  }
+  body += '</table>';
+  const hotspots = [1, 4, 7, 10].map((n) => {
+    const inmates = planetsInHouse(n, pos, BODIES);
+    if (!inmates.length) return '';
+    return `<p><strong>${ord(n)} house (${houseCuspSign(houses, n)} cusp):</strong> ${inmates.map((k) => PNAME[k]).join(', ')} concentrate energy in ${HOUSE_THEME[n]}. ${hMeaning(n).meaning ? sents(hMeaning(n).meaning, 1) : ''}</p>`;
+  }).filter(Boolean).join('');
+  body += hotspots || '<p>No angular house stellions — energy distributes across the wheel rather than clustering on the four cardinal doors.</p>';
+  return body;
+}
+
+export function planetDossiersChapter(pos, pInterp, hMeaning, sentsFn, PGL, PNAME, BODIES) {
+  let body = `
+  <h1 style="font-size:20pt;">Every body<br>in your sky.</h1>
+  <p class="lede">Twelve placements, twelve voices — each with sign, house, and (where relevant) retrograde motion. This is the instrument panel behind every AstroPrecise reading.</p>`;
+  BODIES.forEach((k) => {
+    const rx = pos[k].retro ? ' <span class="r">℞ retrograde</span>' : '';
+    body += `<h3>${PGL[k]} ${PNAME[k]} — ${fmt(pos[k].lon)} · ${ord(pos[k].house)} house${rx}</h3>`;
+    body += `<p>${housePlacementLine(PNAME[k], pos[k].house, pos[k].sign, hMeaning)} ${sentsFn(pInterp(PNAME[k], pos[k].sign), 3)}`;
+    if (pos[k].retro) {
+      body += ` Retrograde motion turns ${PNAME[k]}'s expression inward — you metabolise this planet's themes privately before showing them outwardly.`;
+    }
+    body += '</p>';
+  });
+  return body;
+}
+
+export function chartPatternsChapter(patterns) {
+  if (!patterns.length) {
+    return `<h1 style="font-size:20pt;">Chart patterns</h1><p>No major stellium, grand trine, or T-square dominates — your chart distributes its weight across multiple stories rather than one loud configuration.</p>`;
+  }
+  let body = `<h1 style="font-size:20pt;">Patterns the sky repeats.</h1><p class="lede">Beyond individual placements, geometry links planets into recurring life themes.</p>`;
+  patterns.forEach((p) => {
+    if (p.type === 'stellium') {
+      body += `<h3>${p.sign} stellium</h3><p>${p.planets.join(', ')} gather in ${p.sign} — a concentrated signature the way a horoscope's "dominant transit" would feel, except this is permanent in your natal map.</p>`;
+    } else if (p.type === 'grandTrine') {
+      body += `<h3>Grand trine</h3><p>${p.planets.join(', ')} — ${p.note}</p>`;
+    } else if (p.type === 'tSquare') {
+      body += `<h3>T-square</h3><p>${p.note}</p>`;
+    } else if (p.type === 'mutualReception') {
+      body += `<h3>Mutual reception</h3><p>${p.pairs.join('; ')} — each planet guests in the other's sign, trading strengths like allies covering each other's blind spots.</p>`;
+    }
+  });
+  return body;
+}
+
+export function aspectsChapter(aspects, I, PNAME, PGL, limit = 10) {
   const top = aspects.slice(0, limit);
   let body = `
   <p>Aspects are the angles planets make to one another — the wiring beneath temperament. Yours, listed by exactness:</p>
@@ -124,7 +208,9 @@ export function methodologyPage(PERSON, order) {
   return `
   <p class="eyebrow">How This Reading Was Made</p>
   <h1 style="font-size:22pt;">Measured sky,<br>not invented copy.</h1>
-  <p class="lede">Every longitude in this document is computed from planetary theory (VSOP87 for the planets, ELP2000 for the Moon) for ${PERSON.date} at ${PERSON.time} above ${PERSON.place}. Interpretations are drawn from AstroPrecise's curated corpus and stitched to <em>your</em> placements — not a generic sign column.</p>
+  <p class="lede">Every longitude in this document is computed from planetary theory (VSOP87 for the planets, ELP2000 for the Moon) for ${PERSON.date} at ${PERSON.time} above ${PERSON.place}. Interpretations are drawn from AstroPrecise's curated corpus — the same <code>interpretations.js</code> engine behind chart analysis, compatibility, and horoscope copy — stitched to <em>your</em> placements, not a generic sign column.</p>
+  <h3>Your free instruments</h3>
+  <p>This reading deepens what you can explore free on the site: <strong>chart.html</strong> (your wheel), <strong>horoscope.html</strong> (daily sky against your Sun sign), <strong>transits.html</strong> (live weather on your natal map), <strong>compatibility.html</strong> (synastry), and <strong>ephemeris.html</strong> (raw positions). The PDF is the keptake; the site stays your living observatory.</p>
   ${timeNote}
   <h3>What astrology is — here</h3>
   <p>This is symbolic pattern recognition, not fortune-telling. The chart describes qualities of time at your first breath: temperament, motivation, recurring themes. It does not diagnose, prescribe, or guarantee outcomes.</p>
