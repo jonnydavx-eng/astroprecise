@@ -139,8 +139,13 @@
   font-weight: 600;
 }
 
-.ap-chart-table .ap-pt-deg {
+.ap-chart-table .ap-pt-deg,
+.ap-chart-table .ap-pt-house {
+  font-family: var(--font-mono, ui-monospace, monospace);
   font-variant-numeric: tabular-nums;
+}
+
+.ap-chart-table .ap-pt-deg {
   color: var(--silver, #a89e88);
 }
 

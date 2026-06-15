@@ -726,7 +726,7 @@
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
           fill: WARM.silverDim,
           'font-size': '7',
-          'font-family': 'system-ui, sans-serif',
+          'font-family': 'var(--font-mono, "IBM Plex Mono", ui-monospace, monospace)',
           'font-variant-numeric': 'tabular-nums'
         });
         dl.textContent = `${degNum}°${String(minNum).padStart(2,'0')}'`;
@@ -792,9 +792,21 @@
 
     const thead = document.createElement('thead');
     const hr    = document.createElement('tr');
-    ['', 'Planet', '', 'Sign', "Degree°Min'", 'House', 'Rx'].forEach(hdr => {
+    [
+      { visible: 'Sym', label: 'Planet symbol' },
+      'Planet',
+      { visible: 'Sym', label: 'Sign symbol' },
+      'Sign',
+      "Degree°Min'",
+      'House',
+      'Rx'
+    ].forEach(hdr => {
       const th = document.createElement('th');
-      th.textContent = hdr;
+      if (typeof hdr === 'string') {
+        th.textContent = hdr;
+      } else {
+        th.innerHTML = '<span class="sr-only">' + hdr.label + '</span><span aria-hidden="true">' + hdr.visible + '</span>';
+      }
       hr.appendChild(th);
     });
     thead.appendChild(hr);

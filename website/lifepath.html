@@ -733,14 +733,6 @@
 <body>
 
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="cosmos-solar-system" aria-hidden="true">
-    <div class="css-sun"></div>
-    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
-    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
-    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
-    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
-    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
-  </div>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
 
@@ -1025,7 +1017,7 @@
           <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
           <p style="margin-top:var(--space-3);"><span class="ap-badge">Computed locally · Deterministic</span></p>
         </div>
-        <nav class="footer-nav" aria-label="Footer navigation">
+        <div class="footer-nav" role="group" aria-label="Footer">
           <h3 class="footer-nav__heading">Navigate</h3>
           <ul>
             <li><a href="index.html">Home</a></li>
@@ -1035,7 +1027,7 @@
             <li><a href="lifepath.html">Life Path</a></li>
             <li><a href="transits.html">Transits</a></li>
           </ul>
-        </nav>
+        </div>
         <div class="footer-nav">
           <h3 class="footer-nav__heading">Tools</h3>
           <ul>

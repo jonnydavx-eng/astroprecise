@@ -541,6 +541,14 @@
       color: var(--color-silver-dim);
       font-weight: 700;
     }
+    .compat-matrix .compat-sign-abbr {
+      display: block;
+      font-size: 0.55rem;
+      letter-spacing: 0.06em;
+      line-height: 1.2;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
     .compat-matrix td { cursor: default; transition: background var(--transition-fast); }
     .compat-matrix td:hover { background: var(--color-surface-2); }
     .compat-cell--high    { background: rgba(120, 140, 70, 0.18);  color: var(--color-success); font-weight: 700; }
@@ -741,14 +749,6 @@
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="cosmos-solar-system" aria-hidden="true">
-    <div class="css-sun"></div>
-    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
-    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
-    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
-    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
-    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
-  </div>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
@@ -1145,90 +1145,90 @@
               <caption class="sr-only">Sun sign compatibility: High (green), Medium (gold), Low (red), Neutral (grey).</caption>
               <thead>
                 <tr>
-                  <th scope="col" style="background:transparent;border:none;"><span class="sr-only">Row sign</span></th>
-                  <th scope="col" data-sign-orb="Aries"><span class="sr-only">Aries</span><abbr title="Aries" aria-hidden="true">♈</abbr></th>
-                  <th scope="col" data-sign-orb="Taurus"><span class="sr-only">Taurus</span><abbr title="Taurus" aria-hidden="true">♉</abbr></th>
-                  <th scope="col" data-sign-orb="Gemini"><span class="sr-only">Gemini</span><abbr title="Gemini" aria-hidden="true">♊</abbr></th>
-                  <th scope="col" data-sign-orb="Cancer"><span class="sr-only">Cancer</span><abbr title="Cancer" aria-hidden="true">♋</abbr></th>
-                  <th scope="col" data-sign-orb="Leo"><span class="sr-only">Leo</span><abbr title="Leo" aria-hidden="true">♌</abbr></th>
-                  <th scope="col" data-sign-orb="Virgo"><span class="sr-only">Virgo</span><abbr title="Virgo" aria-hidden="true">♍</abbr></th>
-                  <th scope="col" data-sign-orb="Libra"><span class="sr-only">Libra</span><abbr title="Libra" aria-hidden="true">♎</abbr></th>
-                  <th scope="col" data-sign-orb="Scorpio"><span class="sr-only">Scorpio</span><abbr title="Scorpio" aria-hidden="true">♏</abbr></th>
-                  <th scope="col" data-sign-orb="Sagittarius"><span class="sr-only">Sagittarius</span><abbr title="Sagittarius" aria-hidden="true">♐</abbr></th>
-                  <th scope="col" data-sign-orb="Capricorn"><span class="sr-only">Capricorn</span><abbr title="Capricorn" aria-hidden="true">♑</abbr></th>
-                  <th scope="col" data-sign-orb="Aquarius"><span class="sr-only">Aquarius</span><abbr title="Aquarius" aria-hidden="true">♒</abbr></th>
-                  <th scope="col" data-sign-orb="Pisces"><span class="sr-only">Pisces</span><abbr title="Pisces" aria-hidden="true">♓</abbr></th>
+                  <th scope="col" style="background:transparent;border:none;"><span class="sr-only">Row sign</span><span class="compat-sign-abbr" aria-hidden="true">Sign</span></th>
+                  <th scope="col" data-sign-orb="Aries"><span class="sr-only">Aries</span><abbr title="Aries" aria-hidden="true">♈</abbr> <span class="compat-sign-abbr" aria-hidden="true">Ari</span></th>
+                  <th scope="col" data-sign-orb="Taurus"><span class="sr-only">Taurus</span><abbr title="Taurus" aria-hidden="true">♉</abbr> <span class="compat-sign-abbr" aria-hidden="true">Tau</span></th>
+                  <th scope="col" data-sign-orb="Gemini"><span class="sr-only">Gemini</span><abbr title="Gemini" aria-hidden="true">♊</abbr> <span class="compat-sign-abbr" aria-hidden="true">Gem</span></th>
+                  <th scope="col" data-sign-orb="Cancer"><span class="sr-only">Cancer</span><abbr title="Cancer" aria-hidden="true">♋</abbr> <span class="compat-sign-abbr" aria-hidden="true">Can</span></th>
+                  <th scope="col" data-sign-orb="Leo"><span class="sr-only">Leo</span><abbr title="Leo" aria-hidden="true">♌</abbr> <span class="compat-sign-abbr" aria-hidden="true">Leo</span></th>
+                  <th scope="col" data-sign-orb="Virgo"><span class="sr-only">Virgo</span><abbr title="Virgo" aria-hidden="true">♍</abbr> <span class="compat-sign-abbr" aria-hidden="true">Vir</span></th>
+                  <th scope="col" data-sign-orb="Libra"><span class="sr-only">Libra</span><abbr title="Libra" aria-hidden="true">♎</abbr> <span class="compat-sign-abbr" aria-hidden="true">Lib</span></th>
+                  <th scope="col" data-sign-orb="Scorpio"><span class="sr-only">Scorpio</span><abbr title="Scorpio" aria-hidden="true">♏</abbr> <span class="compat-sign-abbr" aria-hidden="true">Sco</span></th>
+                  <th scope="col" data-sign-orb="Sagittarius"><span class="sr-only">Sagittarius</span><abbr title="Sagittarius" aria-hidden="true">♐</abbr> <span class="compat-sign-abbr" aria-hidden="true">Sag</span></th>
+                  <th scope="col" data-sign-orb="Capricorn"><span class="sr-only">Capricorn</span><abbr title="Capricorn" aria-hidden="true">♑</abbr> <span class="compat-sign-abbr" aria-hidden="true">Cap</span></th>
+                  <th scope="col" data-sign-orb="Aquarius"><span class="sr-only">Aquarius</span><abbr title="Aquarius" aria-hidden="true">♒</abbr> <span class="compat-sign-abbr" aria-hidden="true">Aqu</span></th>
+                  <th scope="col" data-sign-orb="Pisces"><span class="sr-only">Pisces</span><abbr title="Pisces" aria-hidden="true">♓</abbr> <span class="compat-sign-abbr" aria-hidden="true">Pis</span></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row" data-sign-orb="Aries"><span class="sr-only">Aries</span><abbr title="Aries" aria-hidden="true">♈</abbr></th>
+                  <th scope="row" data-sign-orb="Aries"><span class="sr-only">Aries</span><abbr title="Aries" aria-hidden="true">♈</abbr> <span class="compat-sign-abbr" aria-hidden="true">Ari</span></th>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Taurus"><span class="sr-only">Taurus</span><abbr title="Taurus" aria-hidden="true">♉</abbr></th>
+                  <th scope="row" data-sign-orb="Taurus"><span class="sr-only">Taurus</span><abbr title="Taurus" aria-hidden="true">♉</abbr> <span class="compat-sign-abbr" aria-hidden="true">Tau</span></th>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Gemini"><span class="sr-only">Gemini</span><abbr title="Gemini" aria-hidden="true">♊</abbr></th>
+                  <th scope="row" data-sign-orb="Gemini"><span class="sr-only">Gemini</span><abbr title="Gemini" aria-hidden="true">♊</abbr> <span class="compat-sign-abbr" aria-hidden="true">Gem</span></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Cancer"><span class="sr-only">Cancer</span><abbr title="Cancer" aria-hidden="true">♋</abbr></th>
+                  <th scope="row" data-sign-orb="Cancer"><span class="sr-only">Cancer</span><abbr title="Cancer" aria-hidden="true">♋</abbr> <span class="compat-sign-abbr" aria-hidden="true">Can</span></th>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Leo"><span class="sr-only">Leo</span><abbr title="Leo" aria-hidden="true">♌</abbr></th>
+                  <th scope="row" data-sign-orb="Leo"><span class="sr-only">Leo</span><abbr title="Leo" aria-hidden="true">♌</abbr> <span class="compat-sign-abbr" aria-hidden="true">Leo</span></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--neutral">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Virgo"><span class="sr-only">Virgo</span><abbr title="Virgo" aria-hidden="true">♍</abbr></th>
+                  <th scope="row" data-sign-orb="Virgo"><span class="sr-only">Virgo</span><abbr title="Virgo" aria-hidden="true">♍</abbr> <span class="compat-sign-abbr" aria-hidden="true">Vir</span></th>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Libra"><span class="sr-only">Libra</span><abbr title="Libra" aria-hidden="true">♎</abbr></th>
+                  <th scope="row" data-sign-orb="Libra"><span class="sr-only">Libra</span><abbr title="Libra" aria-hidden="true">♎</abbr> <span class="compat-sign-abbr" aria-hidden="true">Lib</span></th>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Scorpio"><span class="sr-only">Scorpio</span><abbr title="Scorpio" aria-hidden="true">♏</abbr></th>
+                  <th scope="row" data-sign-orb="Scorpio"><span class="sr-only">Scorpio</span><abbr title="Scorpio" aria-hidden="true">♏</abbr> <span class="compat-sign-abbr" aria-hidden="true">Sco</span></th>
                   <td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Sagittarius"><span class="sr-only">Sagittarius</span><abbr title="Sagittarius" aria-hidden="true">♐</abbr></th>
+                  <th scope="row" data-sign-orb="Sagittarius"><span class="sr-only">Sagittarius</span><abbr title="Sagittarius" aria-hidden="true">♐</abbr> <span class="compat-sign-abbr" aria-hidden="true">Sag</span></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Capricorn"><span class="sr-only">Capricorn</span><abbr title="Capricorn" aria-hidden="true">♑</abbr></th>
+                  <th scope="row" data-sign-orb="Capricorn"><span class="sr-only">Capricorn</span><abbr title="Capricorn" aria-hidden="true">♑</abbr> <span class="compat-sign-abbr" aria-hidden="true">Cap</span></th>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Aquarius"><span class="sr-only">Aquarius</span><abbr title="Aquarius" aria-hidden="true">♒</abbr></th>
+                  <th scope="row" data-sign-orb="Aquarius"><span class="sr-only">Aquarius</span><abbr title="Aquarius" aria-hidden="true">♒</abbr> <span class="compat-sign-abbr" aria-hidden="true">Aqu</span></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-sign-orb="Pisces"><span class="sr-only">Pisces</span><abbr title="Pisces" aria-hidden="true">♓</abbr></th>
+                  <th scope="row" data-sign-orb="Pisces"><span class="sr-only">Pisces</span><abbr title="Pisces" aria-hidden="true">♓</abbr> <span class="compat-sign-abbr" aria-hidden="true">Pis</span></th>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
@@ -1368,7 +1368,7 @@
           <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
           <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
         </div>
-        <nav class="footer-nav-col" aria-label="Footer tools navigation">
+        <div class="footer-nav-col" role="group" aria-label="Footer tools navigation">
           <h2 class="footer-nav-col__title">Tools</h2>
           <ul class="footer__links">
             <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
@@ -1376,13 +1376,13 @@
             <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
             <li><a href="transits.html" class="footer__link">Transits</a></li>
           </ul>
-        </nav>
-        <nav class="footer-nav-col" aria-label="Footer account navigation">
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Footer account navigation">
           <h2 class="footer-nav-col__title">Account</h2>
           <ul class="footer__links">
             <li><a href="profile.html" class="footer__link">My Profile</a></li>
           </ul>
-        </nav>
+        </div>
       </div>
       <div class="footer__bottom">
         <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>

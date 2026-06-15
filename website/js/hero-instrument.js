@@ -121,6 +121,16 @@
       scrollCue.classList.add('hero__scroll-cue--hidden');
       scrolledOnce = true;
     }
+
+    /* Scroll → shared sky clock (orrery time advance + cosmos parallax) */
+    if (!PRM) {
+      if (window.Orrery3D && typeof window.Orrery3D.setScrollDrive === 'function') {
+        window.Orrery3D.setScrollDrive(progress);
+      }
+      if (window.CosmosEngine && typeof window.CosmosEngine.setScrollDrive === 'function') {
+        window.CosmosEngine.setScrollDrive(progress);
+      }
+    }
   }
 
   function onScroll(state) { updateInstrument(state); }

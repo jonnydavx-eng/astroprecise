@@ -177,7 +177,7 @@ const AstroApp = (() => {
     return '<div class="navbar__more" data-nav-more>'
       + '<button type="button" class="navbar__more-btn' + (active ? ' active' : '') + '"'
       + ' aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>'
-      + '<div class="navbar__more-panel" id="navbar-more-panel" role="navigation" aria-label="More tools and pages" hidden>' + groups + '</div>'
+      + '<div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden>' + groups + '</div>'
       + '</div>';
   }
 

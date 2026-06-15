@@ -494,6 +494,7 @@
     initTabs();
     renderWhatsNext(chart);
     renderDeepTeaser(chart);
+    initWallpaperLead(chart);
     initEmailCapture(chart);
 
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -910,6 +911,32 @@
   // use the free chart.
   // ═══════════════════════════════════════════════════════════════════════════
 
+  let wallpaperLeadWired = false;
+
+  function downloadWallpaper() {
+    if (!currentChart) return;
+    exportShareImage(currentChart, 'wallpaper', { forceDownload: true });
+  }
+
+  function initWallpaperLead(chart) {
+    const host = document.getElementById('wallpaper-lead');
+    if (!host || !chart) return;
+    host.hidden = false;
+
+    if (wallpaperLeadWired) return;
+    wallpaperLeadWired = true;
+
+    document.getElementById('wallpaper-download-btn')?.addEventListener('click', downloadWallpaper);
+    document.getElementById('wallpaper-lead-email')?.addEventListener('click', () => {
+      const ec = document.getElementById('email-capture');
+      if (ec) {
+        ec.hidden = false;
+        ec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('email-capture-input')?.focus();
+      }
+    });
+  }
+
   let emailCaptureWired = false;
 
   function initEmailCapture(chart) {
@@ -966,6 +993,10 @@
       }
 
 host.classList.add('is-done');
+
+      if (currentChart) {
+        exportShareImage(currentChart, 'wallpaper', { forceDownload: true });
+      }
     });
   }
 
@@ -1041,11 +1072,13 @@ host.classList.add('is-done');
     } catch (e) { /* user cancelled */ }
   });
 
-  // Big Three Card → one-tap export of the polished square image.
+  // Big Three Card → dedicated Sun/Moon/Rising square (no full natal wheel).
   document.getElementById('print-btn')?.addEventListener('click', () => {
     if (!currentChart) { window.print(); return; }
-    exportShareImage(currentChart, 'square');
+    exportShareImage(currentChart, 'bigthree');
   });
+
+  document.getElementById('wallpaper-btn')?.addEventListener('click', downloadWallpaper);
 
   document.getElementById('json-btn')?.addEventListener('click', () => {
     if (!currentChart) return;
@@ -1094,9 +1127,11 @@ host.classList.add('is-done');
   // SHARE-IMAGE ENGINE — one deterministic renderer, many formats
   // ----------------------------------------------------------------------------
   // A single resolution-independent painter (paintShareImage) feeds every output:
-  //   • square   1080×1080  — Instagram / general social post
-  //   • story    1080×1920  — IG / FB / WhatsApp story (9:16)
-  //   • print    2480×3508  — A4-proportioned, print-on-demand poster (300dpi)
+  //   • square    1080×1080  — Instagram / general social post
+  //   • story     1080×1920  — IG / FB / WhatsApp story (9:16)
+  //   • wallpaper 1080×1920  — lock-screen portrait (lead magnet)
+  //   • bigthree  1080×1080  — Sun / Moon / Rising social card only
+  //   • print     2480×3508  — A4-proportioned, print-on-demand poster (300dpi)
   // The merch / print-on-demand line will reuse the SAME pipeline, so geometry is
   // expressed in a 0..1 "design space" and multiplied by the canvas size: the
   // print export is genuinely high-resolution, not an upscaled screenshot.
@@ -1122,9 +1157,11 @@ host.classList.add('is-done');
   };
 
   const SHARE_FORMATS = {
-    square: { w: 2160, h: 2160 },
-    story:  { w: 2160, h: 3840 },
-    print:  { w: 4960, h: 7016 }, // A4 @ ~600dpi — print-on-demand HD
+    square:    { w: 2160, h: 2160 },
+    story:     { w: 2160, h: 3840 },
+    wallpaper: { w: 1080, h: 1920 },
+    bigthree:  { w: 1080, h: 1080 },
+    print:     { w: 4960, h: 7016 }, // A4 @ ~600dpi — print-on-demand HD
     // Legacy social sizes (still available via export picker)
     square1x: { w: 1080, h: 1080 },
     story1x:  { w: 1080, h: 1920 },
@@ -1533,10 +1570,189 @@ host.classList.add('is-done');
     });
   }
 
+  // Lock-screen wallpaper — warm void, centred wheel, big three, minimal chrome.
+  function paintWallpaperImage(chart) {
+    const fmt = SHARE_FORMATS.wallpaper;
+    const W = fmt.w, H = fmt.h;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const x = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(cv, W, H)
+      : cv.getContext('2d');
+    if (x && !x.imageSmoothingQuality) { x.imageSmoothingEnabled = true; }
+    const S = W / 1080;
+    const seed = seedFromChart(chart);
+
+    // Warm void ground (lighter vignette — clock widgets sit on top)
+    const g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#0A0806');
+    g.addColorStop(0.45, PAL.voidWarm);
+    g.addColorStop(1, '#14100C');
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+
+    const neb = x.createRadialGradient(W * 0.5, H * 0.42, 0, W * 0.5, H * 0.42, Math.max(W, H) * 0.85);
+    neb.addColorStop(0, 'rgba(201,162,39,0.14)');
+    neb.addColorStop(0.55, 'rgba(110,26,38,0.08)');
+    neb.addColorStop(1, 'transparent');
+    x.fillStyle = neb; x.fillRect(0, 0, W, H);
+
+    drawDotGrid(x, W, H, S);
+    drawStars(x, W, H, Math.round((W * H) / 6200), seed, S);
+
+    const safeTop = 200 * S;
+    const safeBot = 280 * S;
+
+    // Name — upper safe band
+    x.textAlign = 'center';
+    let y = safeTop + 24 * S;
+    x.fillStyle = PAL.parchment;
+    fitText(x, chart.name || 'Birth Chart', W / 2, y, W - 120 * S, 'bold', 52 * S, FONT_DISPLAY);
+
+    // Big-three one-liner
+    y += 52 * S;
+    const sunG = SIGN_GLYPHS[chart.positions.Sun.sign] || '';
+    const moonG = SIGN_GLYPHS[chart.positions.Moon.sign] || '';
+    const riseG = SIGN_GLYPHS[chart.risingSign] || '';
+    x.fillStyle = PAL.goldPale;
+    x.font = `500 ${22 * S}px ${FONT_SANS}`;
+    x.fillText(
+      `☉ ${sunG} ${chart.positions.Sun.sign}   ·   ☽ ${moonG} ${chart.positions.Moon.sign}   ·   ↑ ${riseG} ${chart.risingSign}`,
+      W / 2, y);
+
+    // Glass orbs row
+    y += 56 * S;
+    const trio = [
+      { sign: chart.positions.Sun.sign,  label: 'SUN' },
+      { sign: chart.positions.Moon.sign, label: 'MOON' },
+      { sign: chart.risingSign,          label: 'RISING' },
+    ];
+    const orbR = 44 * S;
+    const gap = 168 * S;
+    trio.forEach((t, i) => {
+      const tx = W / 2 + (i - 1) * gap;
+      const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
+      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+      x.fillStyle = PAL.goldPale;
+      x.font = `600 ${12 * S}px ${FONT_SANS}`;
+      x.textAlign = 'center';
+      x.fillText(t.label, tx, y + orbR + 20 * S);
+    });
+
+    // Centred natal wheel — main focal point for lock screen
+    const wheelTop = y + orbR + 72 * S;
+    const wheelBot = H - safeBot - 48 * S;
+    const wheelCY = (wheelTop + wheelBot) / 2;
+    const wheelR = Math.min((W - 96 * S) / 2, (wheelBot - wheelTop) / 2);
+    drawWheel(x, chart, W / 2, wheelCY, wheelR);
+
+    // Subtle footer (below thumb zone)
+    x.strokeStyle = 'rgba(196,146,10,0.18)'; x.lineWidth = 1 * S;
+    x.beginPath(); x.moveTo(W * 0.28, H - safeBot + 36 * S); x.lineTo(W * 0.72, H - safeBot + 36 * S); x.stroke();
+    x.fillStyle = PAL.silverDim;
+    x.font = `400 ${16 * S}px ${FONT_SANS}`;
+    x.textAlign = 'center';
+    x.fillText('astroprecise  ·  your sky', W / 2, H - safeBot + 72 * S);
+
+    return cv;
+  }
+
+  // Big Three only — square social card, no natal wheel.
+  function paintBigThreeCard(chart) {
+    const fmt = SHARE_FORMATS.bigthree;
+    const W = fmt.w, H = fmt.h;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const x = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(cv, W, H)
+      : cv.getContext('2d');
+    if (x && !x.imageSmoothingQuality) { x.imageSmoothingEnabled = true; }
+    const S = W / 1080;
+    const seed = seedFromChart(chart);
+
+    paintBackground(x, W, H, seed, S);
+    drawFrame(x, W, H, 36 * S, 52 * S);
+
+    x.textAlign = 'center';
+    let y = 100 * S;
+    x.fillStyle = PAL.gold;
+    x.font = `500 ${20 * S}px ${FONT_DISPLAY}`;
+    x.fillText('A S T R O P R E C I S E', W / 2, y);
+
+    y += 32 * S;
+    x.fillStyle = PAL.goldPale;
+    x.font = `500 ${14 * S}px ${FONT_SANS}`;
+    x.fillText('B I G   T H R E E', W / 2, y);
+
+    y += 64 * S;
+    x.fillStyle = PAL.parchment;
+    fitText(x, chart.name || 'Birth Chart', W / 2, y, W - 160 * S, 'bold', 56 * S, FONT_DISPLAY);
+
+    y += 48 * S;
+    const cityShort = (chart.city || '').split(',')[0];
+    x.fillStyle = PAL.silver;
+    x.font = `400 ${20 * S}px ${FONT_SANS}`;
+    x.fillText(
+      `${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''}${cityShort ? '  ·  ' + cityShort : ''}`,
+      W / 2, y);
+
+    y += 100 * S;
+    const trio = [
+      { key: 'Sun',  sign: chart.positions.Sun.sign,  label: 'SUN',    glyph: '☉' },
+      { key: 'Moon', sign: chart.positions.Moon.sign, label: 'MOON',   glyph: '☽' },
+      { sign: chart.risingSign, label: 'RISING', glyph: '↑' },
+    ];
+    const orbR = 78 * S;
+    const gap = 220 * S;
+    trio.forEach((t, i) => {
+      const tx = W / 2 + (i - 1) * gap;
+      const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
+      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+
+      x.fillStyle = PAL.gold;
+      x.font = `600 ${13 * S}px ${FONT_SANS}`;
+      x.fillText(t.label, tx, y + orbR + 28 * S);
+
+      x.fillStyle = PAL.parchment;
+      x.font = `600 ${28 * S}px ${FONT_SANS}`;
+      x.fillText(t.sign, tx, y + orbR + 58 * S);
+
+      const pos = t.key && chart.positions[t.key];
+      if (pos) {
+        x.fillStyle = PAL.silverDim;
+        x.font = `400 ${17 * S}px ${FONT_SANS}`;
+        x.fillText(
+          `${Math.floor(pos.degree)}°${String(Math.round((pos.degree - Math.floor(pos.degree)) * 60)).padStart(2, '0')}′`,
+          tx, y + orbR + 82 * S);
+      }
+    });
+
+    y += orbR + 120 * S;
+    const dom = [
+      chart.dominantElement ? cap(chart.dominantElement) + ' Energy' : '',
+      chart.dominantModality ? cap(chart.dominantModality) + ' Mode' : '',
+    ].filter(Boolean).join('   ·   ');
+    if (dom) {
+      x.fillStyle = PAL.silverDim;
+      x.font = `400 ${18 * S}px ${FONT_SANS}`;
+      x.fillText(dom, W / 2, y);
+    }
+
+    x.strokeStyle = 'rgba(196,146,10,0.25)'; x.lineWidth = 1 * S;
+    x.beginPath(); x.moveTo(W * 0.2, H - 88 * S); x.lineTo(W * 0.8, H - 88 * S); x.stroke();
+    x.fillStyle = PAL.silverDim;
+    x.font = `400 ${17 * S}px ${FONT_SANS}`;
+    x.fillText('astroprecise  ·  wear your sky', W / 2, H - 58 * S);
+
+    return cv;
+  }
+
   // ── THE UNIFIED PAINTER ───────────────────────────────────────────────────
-  // Returns a canvas for the requested format. All three formats share the same
-  // header → wheel → footer spine; 'print' and 'story' add the detail panels.
+  // Returns a canvas for the requested format. Dedicated layouts for wallpaper &
+  // bigthree; other formats share header → wheel → footer spine.
   function paintShareImage(chart, format) {
+    if (format === 'wallpaper') return paintWallpaperImage(chart);
+    if (format === 'bigthree') return paintBigThreeCard(chart);
+
     const fmt = SHARE_FORMATS[format] || SHARE_FORMATS.square;
     const W = fmt.w, H = fmt.h;
     const cv = document.createElement('canvas');
@@ -1698,7 +1914,12 @@ host.classList.add('is-done');
   async function exportShareImage(chart, format, opts) {
     opts = opts || {};
     const cv = paintShareImage(chart, format);
-    const filename = `${slugify(chart.name)}-${format === 'print' ? 'natal-poster' : 'natal-' + format}.png`;
+    const nameMap = {
+      print: 'natal-poster',
+      wallpaper: 'wallpaper',
+      bigthree: 'big-three',
+    };
+    const filename = `${slugify(chart.name)}-${nameMap[format] || 'natal-' + format}.png`;
     const blob = await canvasToBlob(cv);
     if (!blob) { if (window.AstroApp) AstroApp.showToast('Export failed', 'Could not render the image.', 'error'); return; }
 
@@ -1721,7 +1942,10 @@ host.classList.add('is-done');
     }
     downloadBlob(blob, filename);
     if (window.AstroApp) {
-      const labels = { square: 'Square image', story: 'Story image', print: 'Print poster' };
+      const labels = {
+        square: 'Square image', story: 'Story image', print: 'Print poster',
+        wallpaper: 'Phone wallpaper', bigthree: 'Big Three card',
+      };
       AstroApp.showToast('Saved', `${labels[format] || 'Image'} downloaded.`, 'success');
     }
   }
@@ -1738,6 +1962,8 @@ host.classList.add('is-done');
       'background:rgba(13, 10, 7,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
       'border:1px solid rgba(196,146,10,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
     const opts = [
+      { fmt: 'wallpaper', title: 'Phone wallpaper · 1080×1920', sub: 'Lock screen — your chart' },
+      { fmt: 'bigthree',  title: 'Big Three card · 1080×1080', sub: 'Sun, Moon & Rising only' },
       { fmt: 'square', title: 'Square · 2160×2160 HD', sub: 'Instagram & social posts' },
       { fmt: 'story',  title: 'Story · 2160×3840 HD',  sub: 'IG / WhatsApp stories' },
       { fmt: 'print',  title: 'Print poster · 4960×7016', sub: 'Ultra HD, print-ready' },
@@ -1775,13 +2001,10 @@ host.classList.add('is-done');
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // BIG THREE SHARE CARD
-  // The "Big Three card" is now the polished square (1080×1080) share image —
-  // produced by the same unified painter as the poster, so screen and merch
-  // share one design language. Kept as a named function for the button wiring.
+  // BIG THREE SHARE CARD — Sun/Moon/Rising orbs only (no natal wheel).
   // ═══════════════════════════════════════════════════════════════════════════
 
-  function drawShareCard(chart) { return paintShareImage(chart, 'square'); }
+  function drawShareCard(chart) { return paintShareImage(chart, 'bigthree'); }
 
   function addShareCardButton() {
     // The HTML already has the buttons; wiring lives below. No-op kept for boot.
