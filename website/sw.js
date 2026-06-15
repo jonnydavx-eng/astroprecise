@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v185';
+const V = 'ap-v188';
 
 const PRECACHE = [
   './',
@@ -111,8 +111,11 @@ const PRECACHE = [
   './js/saturn-return.js',
   './js/moonphase.js',
   './js/seo-tools.js',
+  './js/art-theme-library.js',
   './js/shop-commerce.js',
+  './js/shop-art-themes.js',
   './js/shop-curated.js',
+  './data/art-themes.json',
   './js/tool-cards.js',
   './css/shop.css',
   './css/chart.css',
@@ -133,6 +136,16 @@ const PRECACHE = [
   './img/shop/product-deep-reading.jpg',
   './img/shop/product-poster-pdf.jpg',
   './img/shop/product-bundle.jpg',
+  './img/shop/product-two-skies.jpg',
+  './img/shop/product-gift-reading.jpg',
+  './img/shop/product-gift-box.jpg',
+  './img/shop/product-natal-poster.jpg',
+  './img/shop/product-big-three.jpg',
+  './img/shop/product-sky-tee.jpg',
+  './img/shop/product-sky-hoodie.jpg',
+  './img/shop/product-mug.jpg',
+  './img/shop/product-year-ahead.jpg',
+  './img/shop/product-solar-return.jpg',
   './img/shop/cat-books.jpg',
   './img/shop/cat-crystals.jpg',
   './img/shop/cat-oracle.jpg',

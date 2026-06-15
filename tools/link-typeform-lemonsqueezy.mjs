@@ -27,6 +27,7 @@ const LS_CATALOG = join(__dir, 'ls-product-catalog.json');
 const URLS = join(__dir, 'commerce-urls.json');
 const RESULT = join(__dir, 'commerce-setup-result.json');
 const IMAGE_BASE = 'https://astroprecise.app/img/shop';
+const MEDIA_BUST = process.env.LS_MEDIA_BUST || '187';
 const STORE_ID = process.env.LEMONSQUEEZY_STORE_ID || '407645';
 const VARIANT_ID = process.env.LEMONSQUEEZY_VARIANT_ID || '';
 const LS_KEY = process.env.LEMONSQUEEZY_API_KEY || '';
@@ -56,7 +57,7 @@ function productMeta(sku) {
     description: p.short_description
       ? (p.short_description.endsWith('.') ? p.short_description : p.short_description + '.') + disclaimer
       : 'After payment you will submit birth details on our secure Typeform. Delivered within 24–48 hours.' + disclaimer,
-    media: p.image ? [`${IMAGE_BASE}/${p.image}`] : [],
+    media: p.image ? [`${IMAGE_BASE}/${p.image}?v=${MEDIA_BUST}`] : [],
     receipt_button: p.receipt_button || 'Submit birth details',
     receipt_thank_you: p.receipt_thank_you || 'Thank you! Complete the short birth-details form so we can generate your order.',
   };
