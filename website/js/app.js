@@ -1054,9 +1054,9 @@ window.AP_SOCIAL = window.AP_SOCIAL || {
 window.AP_MON = Object.assign({
   family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
   tipUrl:       'https://ko-fi.com/astroprecise',   // tips/support — Ko-fi (0% on tips). LIVE 2026-06-14.
-  reportUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/58c6e4de-9e30-42dd-b024-22d9efd42e4c?signature=ecc69eb8b653c36a19a152ea64dcdbd775f6845c8ec62ed763353fe4b728d614',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
-  posterUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/b2e5691c-4308-455c-b796-f904d8742fa2?signature=667a4920af0a7f3ad90a949574b94afb07bf00ec94953a55faa79ba8e2d07302',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
-  giftUrl:      'https://astroprecise.lemonsqueezy.com/checkout/custom/c66165b8-e9ac-4b3d-a8fd-bcfd6b3b0dff?signature=fb026140079270c5ce659e3d507fb171f961dd621482eadc20c45ff4d1074a3f',   // gift a reading — hosted product
+  reportUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
+  posterUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
+  giftUrl:      'https://astroprecise.lemonsqueezy.com/checkout/custom/2fd63e38-78d6-4096-b0b5-db3ae68a8287?signature=05153867779b0dba4aba5b1e2349cc3af3252c65c047a9e906a366d3bf158f15',   // gift a reading — hosted product
   newsletterUrl:'https://list.astroprecise.app/subscribe',   // LIVE — CF Worker + KV (ap-subscribe)
   affiliateTag: '',   // Amazon Associates tag — auto-appended to amazon.* links site-wide (e.g. astroprecise-21)
   // Editorial affiliate picks — disclosed ad strip before footer on key pages (js/affiliate-social.js).
@@ -1098,7 +1098,7 @@ window.AP_MON = Object.assign({
   // Same rule as the rest: a hosted product page (Gumroad / Ko-fi Shop / Lemon
   // Squeezy). Empty '' = DORMANT: the teaser button falls back to email capture,
   // never a fake checkout.
-  deepReadingUrl: 'https://astroprecise.lemonsqueezy.com/checkout/custom/58c6e4de-9e30-42dd-b024-22d9efd42e4c?signature=ecc69eb8b653c36a19a152ea64dcdbd775f6845c8ec62ed763353fe4b728d614',
+  deepReadingUrl: 'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',
   // Price shown on the chart-page Deep Reading CTA — e.g. '£29'. Blank = no price
   // displayed (honesty: never show a price until the product is live and it matches
   // the storefront listing exactly).
@@ -1188,7 +1188,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-natal-poster.jpg',
         blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
         icon:         'map',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/a80be244-d866-489a-9551-553c697a3eb7?signature=73a5ed4aa09bd6c6ab378138f326ea150c43bafcc33f95a78eedb9f7fe3b2ef3',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/b96ab7e6-5b60-463f-a447-2829c65d1948?signature=aaba0330319df3dabc194a375ea7f37b3da70655687fae87c9b686b84d7882a7',
       },
       {
         id:           'sky-tee',
@@ -1203,7 +1203,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-sky-tee.jpg',
         blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
         icon:         'star4',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/cabfc644-2dac-447d-bd05-4cd2e230e1b7?signature=9032f562c002e03a12254028c80eb0b385962b199326ee4b785d97e62f33d0cf',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/bc99eaab-fe40-4336-84be-4986169b7d4f?signature=7f07cebec6e274b3898992547b0816503b90a83554ca3311ff372714b5dc05c9',
       },
       {
         id:           'sky-hoodie',
@@ -1218,7 +1218,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-sky-hoodie.jpg',
         blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
         icon:         'crescent',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/6c4098af-e677-4dcc-b3dc-910ca2ee60a3?signature=780e502f32017e7f98fc117dea95d6c38433c4d53d71dda71d97e5192223a3d0',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/e4433127-c65b-481d-8cb9-9b1d5f95006e?signature=82e68c110830134e1d7a986f3ab12414233529ba426f61e01eaf9deaec5f6caa',
       },
       {
         id:           'big-three-print',
@@ -1233,7 +1233,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-big-three.jpg',
         blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
         icon:         'sunhigh',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/0361def3-8a50-47cb-9825-181dcb9ff2ac?signature=e3bc41c7bf04b55bee662b9d841c378c94b270e9742d136484b45f4fc6e5424e',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/293d41b4-95b2-49b8-a5dd-933ba8bac28d?signature=ae2e0280080783aee3858dae9dacaa67047fb9043c0f62f96fe2e84409103353',
       },
       {
         id:           'constellation-mug',
@@ -1248,7 +1248,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-mug.jpg',
         blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
         icon:         'orb',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2aba2698-4f83-442e-96ea-b5bc13aa7039?signature=34b639ab989cd137a655d093954d79d76d92df3597918eb87e7ba8fb8649ba62',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/1f278c11-0c09-4ea8-9d90-4eec2a168287?signature=c36479767c244cd7173a7a6a218d7aadaabd3bf7c71e4b7450d9a9c1c3270346',
       },
       {
         id:           'deep-reading',
@@ -1265,7 +1265,7 @@ window.AP_MON = Object.assign({
         sampleUrl:    'sample-reading.html',
         blurb:        'Thirteen pages from the same engine as your free chart — every planet, all twelve houses, love/career/wellbeing chapters, chart patterns, and ten tightest aspects. Typeset as a beautifully set PDF, yours to keep forever.',
         icon:         'book',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/58c6e4de-9e30-42dd-b024-22d9efd42e4c?signature=ecc69eb8b653c36a19a152ea64dcdbd775f6845c8ec62ed763353fe4b728d614',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',
       },
       {
         id:           'year-ahead',
@@ -1280,7 +1280,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-year-ahead.jpg',
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — the trending wellness forecast for chart-curious millennials and Gen Z.',
         icon:         'calendar',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/586a9cb8-214a-4678-8080-05147bdfa74b?signature=9a6aaa3947f8e4c969a8ba5dea0c9b24e49ad25c317b6ce5c17390b5c0f71eaf',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785',
       },
       {
         id:           'natal-poster-pdf',
@@ -1296,7 +1296,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-poster-pdf.jpg',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
         icon:         'map',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/b2e5691c-4308-455c-b796-f904d8742fa2?signature=667a4920af0a7f3ad90a949574b94afb07bf00ec94953a55faa79ba8e2d07302',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a',
       },
       {
         id:           'reading-poster-bundle',
@@ -1314,7 +1314,7 @@ window.AP_MON = Object.assign({
         sampleUrl:    'sample-reading.html',
         blurb:        'Your long-form Deep Natal Reading and your print-at-home natal poster, generated together from one chart. The words and the map of your sky — two PDFs, yours to keep, for less than buying both.',
         icon:         'book',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/3f26d9cb-1f4d-4299-ac7e-5d8ce7554442?signature=44c76dfec979b8ea238351fa823fbe4247189ddfa64cd6d8eb091108c8141599',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7?signature=818268afc134daac9ba3ed051e5eb2d8a5b10c4ac392dc2a45afb4782bd4ec3f',
       },
       {
         id:           'solar-return',
@@ -1329,7 +1329,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-solar-return.jpg',
         blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
         icon:         'sunhigh',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/9f0abb1f-2bfd-4e24-91b4-49e1700199f9?signature=fd75e7b69ac520cc7597c1975c3c239ce6f5fe49a1c7d909f0b223d8bdf12fb6',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723',
       },
       {
         id:           'gift-reading',
@@ -1345,7 +1345,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-gift-reading.jpg',
         blurb:        'A Deep Natal Reading for someone you love — sent as a PDF gift voucher with a redemption code. They redeem by email and give us their own birth details; we generate the reading and deliver it with your note. Choose a delivery date at checkout.',
         icon:         'heart',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/c66165b8-e9ac-4b3d-a8fd-bcfd6b3b0dff?signature=fb026140079270c5ce659e3d507fb171f961dd621482eadc20c45ff4d1074a3f',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2fd63e38-78d6-4096-b0b5-db3ae68a8287?signature=05153867779b0dba4aba5b1e2349cc3af3252c65c047a9e906a366d3bf158f15',
       },
       {
         id:           'gift-box-whole-sky',
@@ -1361,7 +1361,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-gift-box.jpg',
         blurb:        'The complete gift: a Deep Natal Reading PDF plus an A4 foil natal print, shipped, with a personalised gift card carrying your note. They redeem the reading by email with their own birth details — their sky, never our server. Choose a delivery date at checkout, for less than the two bought separately.',
         icon:         'star4',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/3d221849-3591-45f3-a174-947d2550d855?signature=7abfc31a04cc07fa4301b7a10f8d65dad22761397a9595e672e529ac42e90c50',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/0c1e9679-cde4-45b3-8e64-bf4137efa236?signature=fe0c7290321dec98d7d726bee69ed6e2152cf9f9a4acc8b3ccfe9dce5dcbedba',
       },
       {
         id:           'two-skies-map',
@@ -1377,7 +1377,7 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-two-skies.jpg',
         blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. The proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
         icon:         'crescent',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/eec348c8-8519-49c8-8f2f-285e9e43115d?signature=4fa9facb11439f9cbe8198391361b53b8f19956d6e2cc296cb174fa06867bdb7',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7',
       },
     ],
   },
