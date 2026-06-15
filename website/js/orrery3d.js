@@ -1062,12 +1062,14 @@ window.Orrery3D = (() => {
   function drawPlanet(b, pr) {
     const r = Math.max(1.6, b.size * pr.f);
 
-    // Stronger atmospheric/rim glow for more 3D volume
-    const haloR = r * 2.8;
+    // Subtle rim glow — large halos on gas giants read as fake rings
+    const isGiant = b.id === 'jupiter' || b.id === 'saturn' || b.id === 'uranus' || b.id === 'neptune';
+    const haloR = r * (isGiant ? 1.55 : 2.2);
     const [hr, hg, hb] = hexToRgb(b.color);
-    const halo = ctx.createRadialGradient(pr.x, pr.y, r * 0.35, pr.x, pr.y, haloR);
-    halo.addColorStop(0, `rgba(${hr},${hg},${hb},0.32)`);
-    halo.addColorStop(0.5, `rgba(${hr},${hg},${hb},0.12)`);
+    const halo = ctx.createRadialGradient(pr.x, pr.y, r * 0.55, pr.x, pr.y, haloR);
+    const haloPeak = isGiant ? 0.14 : 0.26;
+    halo.addColorStop(0, `rgba(${hr},${hg},${hb},0)`);
+    halo.addColorStop(0.72, `rgba(${hr},${hg},${hb},${haloPeak * 0.45})`);
     halo.addColorStop(1, `rgba(${hr},${hg},${hb},0)`);
     ctx.beginPath();
     ctx.arc(pr.x, pr.y, haloR, 0, Math.PI * 2);
@@ -1300,20 +1302,6 @@ window.Orrery3D = (() => {
       ctx.strokeStyle = 'rgba(240,245,255,0.22)';
       ctx.lineWidth = 0.9;
       ctx.stroke();
-    }
-
-    // Uranus/Neptune — subtle ring or haze
-    if (b.id === 'uranus' || b.id === 'neptune') {
-      ctx.save();
-      ctx.translate(pr.x, pr.y);
-      ctx.rotate(b.id === 'uranus' ? -1.1 : 0.6);
-      ctx.scale(1, 0.22);
-      ctx.beginPath();
-      ctx.arc(0, 0, r * 2.1, 0, Math.PI * 2);
-      ctx.strokeStyle = b.id === 'uranus' ? 'rgba(180,225,250,0.4)' : 'rgba(130,175,235,0.35)';
-      ctx.lineWidth = r * 0.55;
-      ctx.stroke();
-      ctx.restore();
     }
 
     // Glyph label — crisper and slightly larger

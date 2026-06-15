@@ -258,7 +258,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.5;
+      opacity: 1;
     }
     .hero--small {
       position: relative;
@@ -965,7 +965,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -998,7 +998,7 @@
         </div>
 
         <!-- Planet legend strip -->
-        <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="list">
+        <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="group">
           <span class="planet-legend__label">Live sky:</span>
           <span class="pl-dot" style="--c:#c9a227" aria-label="Sun position">☉ Sun</span>
           <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon</span>
@@ -1053,74 +1053,74 @@
         </div>
         <div id="sign-grid-wrap">
 
-        <div class="sign-grid" id="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
-          <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
+        <div class="sign-grid" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
+          <button class="sign-card" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♈</span>
             <span class="sign-card__name">Aries</span>
             <span class="sign-card__dates">Mar 21 – Apr 19</span>
             <span class="sign-card__element-badge">Fire</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♉</span>
             <span class="sign-card__name">Taurus</span>
             <span class="sign-card__dates">Apr 20 – May 20</span>
             <span class="sign-card__element-badge">Earth</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="gemini" data-element="air" aria-label="Gemini horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="gemini" data-element="air" aria-label="Gemini horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♊</span>
             <span class="sign-card__name">Gemini</span>
             <span class="sign-card__dates">May 21 – Jun 20</span>
             <span class="sign-card__element-badge">Air</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="cancer" data-element="water" aria-label="Cancer horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="cancer" data-element="water" aria-label="Cancer horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♋</span>
             <span class="sign-card__name">Cancer</span>
             <span class="sign-card__dates">Jun 21 – Jul 22</span>
             <span class="sign-card__element-badge">Water</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="leo" data-element="fire" aria-label="Leo horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="leo" data-element="fire" aria-label="Leo horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♌</span>
             <span class="sign-card__name">Leo</span>
             <span class="sign-card__dates">Jul 23 – Aug 22</span>
             <span class="sign-card__element-badge">Fire</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♍</span>
             <span class="sign-card__name">Virgo</span>
             <span class="sign-card__dates">Aug 23 – Sep 22</span>
             <span class="sign-card__element-badge">Earth</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="libra" data-element="air" aria-label="Libra horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="libra" data-element="air" aria-label="Libra horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♎</span>
             <span class="sign-card__name">Libra</span>
             <span class="sign-card__dates">Sep 23 – Oct 22</span>
             <span class="sign-card__element-badge">Air</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♏</span>
             <span class="sign-card__name">Scorpio</span>
             <span class="sign-card__dates">Oct 23 – Nov 21</span>
             <span class="sign-card__element-badge">Water</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♐</span>
             <span class="sign-card__name">Sagittarius</span>
             <span class="sign-card__dates">Nov 22 – Dec 21</span>
             <span class="sign-card__element-badge">Fire</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♑</span>
             <span class="sign-card__name">Capricorn</span>
             <span class="sign-card__dates">Dec 22 – Jan 19</span>
             <span class="sign-card__element-badge">Earth</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♒</span>
             <span class="sign-card__name">Aquarius</span>
             <span class="sign-card__dates">Jan 20 – Feb 18</span>
             <span class="sign-card__element-badge">Air</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="pisces" data-element="water" aria-label="Pisces horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="pisces" data-element="water" aria-label="Pisces horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♓</span>
             <span class="sign-card__name">Pisces</span>
             <span class="sign-card__dates">Feb 19 – Mar 20</span>
@@ -2110,13 +2110,13 @@
         ctx.letterSpacing = '0';
 
         // Date: y=530
-        ctx.fillStyle = '#9aa6c8';
+        ctx.fillStyle = '#A89E88';
         ctx.font = '22px Georgia, serif';
         var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         ctx.fillText(dateStr.toUpperCase(), 540, 532);
 
         // Reading text: italic Playfair 30px, silver, from y=590, max 840px wide
-        ctx.fillStyle = '#9aa6c8';
+        ctx.fillStyle = '#A89E88';
         ctx.font = 'italic 30px Georgia, serif';
         wrapText(ctx, data.overview || '', 540, 590, 840, 46, 7);
 
@@ -2125,7 +2125,7 @@
         ctx.fillRect(120, 852, 840, 1);
 
         // Luckies row at y=884
-        ctx.fillStyle = '#8891aa';
+        ctx.fillStyle = '#7E7565';
         ctx.font = '24px Georgia, serif';
         ctx.fillText('Lucky Number: ' + (data.luckyNumber || '—') + '  ·  Color: ' + (data.luckyColor || '—') + '  ·  Stone: ' + stone, 540, 884);
 
@@ -2352,7 +2352,6 @@
 
   <!-- JS -->
   <script src="js/cosmos.js"></script>
-  <script src="js/stellar.js"></script>
   <script src="js/oracle.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/app.js"></script>

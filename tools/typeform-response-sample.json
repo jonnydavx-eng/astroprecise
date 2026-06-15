@@ -1,0 +1,16 @@
+{
+  "form_response": {
+    "hidden": {
+      "email": "buyer@example.com",
+      "buyer_name": "Jonny",
+      "order_id": "LS-12345",
+      "product_sku": "deep-reading"
+    },
+    "answers": [
+      { "field": { "ref": "chart_name" }, "type": "text", "text": "Jane Example" },
+      { "field": { "ref": "dob" }, "type": "date", "date": "1990-03-15" },
+      { "field": { "ref": "birth_time" }, "type": "text", "text": "14:30" },
+      { "field": { "ref": "birth_place" }, "type": "text", "text": "London, England" }
+    ]
+  }
+}

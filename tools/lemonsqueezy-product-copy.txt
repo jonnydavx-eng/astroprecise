@@ -1,0 +1,125 @@
+ASTROPRECISE — LEMON SQUEEZY PRODUCT COPY (paste into LS dashboard)
+Prices match AP_MON ap-v116. Tax category for all: eBooks (or Digital Goods or Services).
+Pricing: Single payment, GBP, no subscription.
+
+================================================================================
+PRODUCT 1 — HERO (create first)
+================================================================================
+Name:
+  AstroPrecise Deep Natal Reading — Personal PDF
+
+Price:
+  £12.00 GBP (one-time)
+
+Short description (checkout):
+  A 9-page personalised natal reading — Sun, Moon, Rising, love & vocation, Saturn,
+  outer planets, and your six tightest aspects explained in full. VSOP87 astronomy,
+  arcminute positions, print-ready PDF within 24 hours.
+
+Long description (optional / store page):
+  After purchase you'll receive a link to submit your birth details (name, date, time,
+  place). We compute your chart with the same VSOP87/ELP2000 engine as astroprecise.app
+  and write a keepsake PDF written for your placements alone — not a generic sign column.
+
+  Inside: Big Three deep-dive · chart ruler · Mercury & Jupiter · Venus & Mars ·
+  Midheaven & Saturn · stellium or outer-planet architecture · aspect-by-aspect prose ·
+  chart reference table · methodology page.
+
+  Entertainment purposes only. Not medical, financial, or legal advice.
+
+Files tab:
+  DO NOT upload the real reading PDF (it's personalised per buyer).
+  Upload a tiny placeholder PDF named "NEXT-STEP.pdf" with text:
+    "Thank you for your order. Open the link in your receipt email (or the
+     confirmation screen) to submit your birth details. Your personalised PDF
+     arrives within 24 hours."
+
+Confirmation modal (customize after publish):
+  Title:   Order confirmed — one more step
+  Message: Submit your birth details so we can generate your chart reading.
+           You'll get your PDF by email within 24 hours.
+  Button:  Submit birth details
+  Link:    [YOUR TYPEFORM URL — see typeform-import-questions.txt]
+
+Receipt email (customize):
+  Button:  Submit birth details
+  Link:    [SAME TYPEFORM URL — #email=[email]&full_name=[name]&order_id=[order_id]]
+  Message: Your Deep Reading is written for your chart alone — nine pages of measured
+           sky, not generic copy. Complete the short form (2 minutes) and we'll email
+           your PDF within 24 hours.
+
+================================================================================
+PRODUCT 2 — LOW-FRICTION (create second)
+================================================================================
+Name:
+  AstroPrecise Natal Chart Poster — Print-at-Home PDF
+
+Price:
+  £6.00 GBP (one-time)
+
+Short description:
+  Your full birth chart as a print-ready A3 PDF — engraved gold on void black.
+  Same chart engine as the free tool. Delivered within 24 hours after you submit
+  birth details.
+
+Files / confirmation / receipt:
+  Same pattern as Product 1 (placeholder PDF + form link).
+
+================================================================================
+PRODUCT 3 — OPTIONAL DAY ONE (bundle anchor)
+================================================================================
+Name:
+  AstroPrecise Deep Reading + Poster Bundle
+
+Price:
+  £16.00 GBP (one-time)
+
+Short description:
+  Both PDFs from one chart: the 9-page Deep Reading plus the A3 print-at-home
+  natal poster. Submit birth details once; receive both within 24 hours.
+
+================================================================================
+BIRTH-DETAILS FORM (Typeform — see tools/typeform-import-questions.txt)
+================================================================================
+Required fields:
+  - Full name (as you want it on the reading)
+  - Email (must match purchase email)
+  - Date of birth
+  - Time of birth (or checkbox: "I don't know my exact time")
+  - Place of birth (city, country)
+  - Lemon Squeezy order number (from your receipt)
+  - Product ordered (dropdown: Deep Reading / Poster / Bundle)
+
+Form intro text:
+  "Your birth data is used only to generate your PDF and is deleted after delivery.
+   AstroPrecise never stores birth data on its website — this form is the only place
+   it is collected for fulfilment."
+
+After submit: you fulfil manually (steps below).
+
+================================================================================
+FULFILMENT (per order, ~2 minutes)
+================================================================================
+1. Open the form response + LS order email.
+2. Geocode place if needed (or use chart tool to verify).
+3. Save as tools/order-from-ls.json (copy order-template.json).
+4. From repo root:
+     node tools/generate-reading.mjs --in tools/order-from-ls.json --final
+5. Print HTML outputs to PDF (browser Print → Save as PDF).
+6. Email PDF(s) to buyer from jonnydavx@gmail.com (or your AstroPrecise address).
+
+Bundle: one generator run produces both reading + poster HTML files.
+
+================================================================================
+CHECKOUT URLS → tools/commerce-urls.json (then run wire-ap-mon.mjs)
+================================================================================
+After each LS product is published: Share → Copy checkout link into commerce-urls.json
+  OR: LEMONSQUEEZY_API_KEY=... node tools/setup-commerce.mjs --apply
+
+Then:
+  node tools/wire-ap-mon.mjs
+
+TYPEFORM BUTTON per product — tools/typeform-catalog.json → lemon_squeezy_button column.
+Legacy v1 form KjdyR6Id is superseded — use per-SKU forms in the catalog.
+
+All 14 Typeform forms exist. Generators + fulfil-order.mjs ready. POD = manual Gelato/Printful.

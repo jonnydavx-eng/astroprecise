@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs]
+    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, test-engine.mjs, test-horoscope.mjs, test-compat.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
 permissions:
@@ -14,7 +14,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Ephemeris engine regression
+        run: node test-engine.mjs
+
+      - name: Horoscope determinism
+        run: node test-horoscope.mjs
+
+      - name: Synastry compatibility
+        run: node test-compat.mjs
+
+      - name: Profile save e2e audit
+        run: node tools/e2e-profile-save-audit.mjs
+
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

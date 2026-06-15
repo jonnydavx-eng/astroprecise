@@ -407,7 +407,7 @@ function page(s) {
   </style>
 </head>
 <body data-element="${s.element.toLowerCase()}">
-  <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.5;"></canvas>
+  <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true"></canvas>
 
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">

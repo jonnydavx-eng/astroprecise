@@ -1,0 +1,21 @@
+{
+  "_comment": "Paste Lemon Squeezy checkout URLs after creating each product (Share → Copy checkout link). wire-ap-mon.mjs reads this + typeform-catalog.json.",
+  "store_slug": "astroprecise",
+  "updated_at": "2026-06-15T20:00:00.000Z",
+  "checkout": {
+    "deep-reading": "https://astroprecise.lemonsqueezy.com/checkout/buy/a89e0ee2-fd6f-42bf-85cb-52083eee365e",
+    "natal-poster-pdf": "https://astroprecise.lemonsqueezy.com/checkout/buy/e8f8a32c-b6e1-4be6-9309-16997d5b01bd",
+    "reading-poster-bundle": "https://astroprecise.lemonsqueezy.com/checkout/buy/d521b7e8-23f5-448a-90a4-6992179d548b",
+    "two-skies-map": "",
+    "gift-reading": "",
+    "gift-box-whole-sky": "",
+    "natal-poster": "",
+    "big-three-print": "",
+    "sky-tee": "",
+    "sky-hoodie": "",
+    "constellation-mug": "",
+    "year-ahead": "",
+    "solar-return": ""
+  },
+  "store_id": "407645"
+}

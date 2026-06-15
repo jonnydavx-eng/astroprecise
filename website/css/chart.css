@@ -1,0 +1,298 @@
+/* AstroPrecise — Chart page premium visuals (warm observatory, shop parity) */
+
+.page-chart .chart-wheel-card,
+.page-chart .tabs-card {
+  background: var(--surface-raised, rgba(19, 16, 12, 0.72));
+  border: 1px solid var(--hairline, rgba(201, 162, 39, 0.14));
+  border-top-color: rgba(232, 224, 208, 0.14);
+  box-shadow: var(--shadow-raised, 0 16px 40px rgba(0, 0, 0, 0.4)),
+    0 0 48px rgba(201, 162, 39, 0.05);
+}
+
+.page-chart .chart-results-grid .natal-wheel-container {
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: var(--radius-xl, 16px);
+  box-shadow:
+    0 0 60px rgba(92, 74, 110, 0.22),
+    0 0 100px rgba(201, 162, 39, 0.06);
+  padding: var(--space-2, 0.5rem);
+}
+
+/* Render target — wheel only; parent card provides the frame */
+.ap-chart-render {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0;
+}
+
+.ap-chart-render svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg, 12px);
+}
+
+.ap-chart-render .aspect-line {
+  cursor: pointer;
+  transition: opacity 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
+}
+
+.ap-chart-render .aspect-line.is-dimmed {
+  opacity: 0.12 !important;
+}
+
+.ap-chart-render .aspect-line.is-highlight,
+.ap-chart-render .aspect-line:hover {
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.ap-chart-render .aspect-line--draw {
+  animation: ap-aspect-draw 0.85s ease forwards;
+}
+
+@keyframes ap-aspect-draw {
+  from { stroke-dashoffset: var(--aspect-len, 120); opacity: 0.15; }
+  to { stroke-dashoffset: 0; opacity: var(--aspect-op, 0.55); }
+}
+
+.chart-advanced .accordion-content {
+  max-height: none;
+}
+
+@media (max-width: 768px) {
+  .chart-advanced .accordion-item:not(.is-open) .accordion-content {
+    max-height: 0;
+  }
+
+  .chart-advanced .accordion-item.is-open .accordion-content {
+    max-height: 1200px;
+  }
+}
+
+@media (min-width: 769px) {
+  .chart-advanced .accordion-trigger {
+    display: none;
+  }
+
+  .chart-advanced .accordion-content__inner {
+    border-top: none;
+    padding-top: 0;
+  }
+}
+
+/* Planet table (compat/transit/accuracy pages that embed full render) */
+.ap-chart-table-wrap {
+  margin-top: var(--space-4);
+  overflow-x: auto;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.ap-chart-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  background: rgba(13, 10, 7, 0.85);
+  color: var(--silver, #a89e88);
+  border: 1px solid rgba(201, 162, 39, 0.18);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+}
+
+.ap-chart-table thead tr {
+  background: rgba(19, 16, 12, 0.95);
+  border-bottom: 2px solid rgba(201, 162, 39, 0.35);
+}
+
+.ap-chart-table th {
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  color: var(--gold, #c9a227);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ap-chart-table td {
+  padding: 0.45rem 0.65rem;
+  border-bottom: 1px solid rgba(168, 158, 136, 0.08);
+}
+
+.ap-chart-table tbody tr:nth-child(even) {
+  background: rgba(5, 4, 6, 0.35);
+}
+
+.ap-chart-table tbody tr:hover {
+  background: rgba(201, 162, 39, 0.04);
+}
+
+.ap-chart-table .ap-pt-glyph {
+  font-size: 1.05rem;
+  font-family: var(--font-display, serif);
+}
+
+.ap-chart-table .ap-pt-name {
+  color: var(--parchment, #e8e0d0);
+  font-weight: 600;
+}
+
+.ap-chart-table .ap-pt-deg {
+  font-variant-numeric: tabular-nums;
+  color: var(--silver, #a89e88);
+}
+
+.ap-chart-table .ap-pt-house {
+  color: var(--gold, #c9a227);
+  font-weight: 600;
+}
+
+.ap-chart-table .ap-pt-rx {
+  color: #c97a82;
+  font-family: serif;
+}
+
+/* Legend row */
+.ap-chart-legend {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 0.72rem;
+  color: var(--silver, #a89e88);
+}
+
+.ap-chart-legend__title {
+  color: var(--gold, #c9a227);
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.1em;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+
+.ap-chart-legend__block {
+  flex: 1;
+  min-width: 140px;
+}
+
+.ap-chart-legend__row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.15rem;
+}
+
+.ap-chart-legend__dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+
+/* Title bar above embedded full charts */
+.ap-chart-title {
+  text-align: center;
+  padding: 0.5rem 0.25rem 0.25rem;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.ap-chart-title__main {
+  color: var(--gold, #c9a227);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ap-chart-title__sub {
+  color: var(--silver-dim, #7e7565);
+  font-size: 0.65rem;
+  margin-top: 0.15rem;
+  letter-spacing: 0.05em;
+}
+
+/* Subtle orbital ring pulse (SVG class hook — reduced-motion safe) */
+.ap-orbital-track {
+  opacity: 0.22;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ap-orbital-track--pulse {
+    animation: ap-orbit-pulse 8s ease-in-out infinite;
+  }
+}
+
+@keyframes ap-orbit-pulse {
+  0%, 100% { opacity: 0.16; }
+  50% { opacity: 0.28; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-orbital-track--pulse {
+    animation: none;
+    opacity: 0.2;
+  }
+}
+
+/* Chart pattern / stellium cards (Overview tab) */
+.pattern-card {
+  margin-bottom: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(19, 16, 12, 0.55);
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid rgba(201, 162, 39, 0.12);
+  border-left: 3px solid var(--gold, #c9a227);
+  box-shadow: var(--shadow-raised, 0 4px 16px rgba(0, 0, 0, 0.25));
+}
+
+.pattern-card--star {
+  border-left-color: rgba(110, 26, 38, 0.65);
+  background: rgba(110, 26, 38, 0.06);
+  border-color: rgba(110, 26, 38, 0.14);
+}
+
+.pattern-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.pattern-card__glyph {
+  font-size: 1.2em;
+  color: var(--gold, #c9a227);
+}
+
+.pattern-card__name {
+  color: var(--gold, #c9a227);
+}
+
+.pattern-card__name--star {
+  color: #c9a88a;
+}
+
+.pattern-card__badge {
+  font-size: 0.7em;
+  color: var(--silver-dim, #7e7565);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pattern-card__body {
+  margin: 0;
+  color: var(--silver, #a89e88);
+  font-size: 0.9em;
+  line-height: 1.55;
+}
+
+.pattern-card__meta {
+  font-size: 0.75em;
+  color: var(--silver-dim, #7e7565);
+}

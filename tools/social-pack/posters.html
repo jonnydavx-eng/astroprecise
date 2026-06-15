@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AstroPrecise — Social poster pack</title>
+  <link rel="stylesheet" href="../../website/css/fonts.css" />
+  <style>
+    :root {
+      --void: #050406;
+      --gold: #C9A227;
+      --gold-light: #EFE3C0;
+      --parchment: #E8E0D0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: #1a1510;
+      color: var(--parchment);
+      padding: 24px;
+    }
+    h1 {
+      font-family: Cinzel, serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    p.note { font-size: 0.85rem; opacity: 0.75; margin-bottom: 24px; max-width: 720px; line-height: 1.5; }
+    .grid { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+    .wrap { display: flex; flex-direction: column; gap: 10px; }
+    .wrap label { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-light); }
+    .poster {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse 80% 70% at 50% 35%, #1a1208 0%, var(--void) 55%, #020101 100%);
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.55);
+    }
+    .poster::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(201,162,39,0.08) 0%, transparent 42%),
+        repeating-conic-gradient(from 0deg at 50% 50%, transparent 0deg 29deg, rgba(201,162,39,0.04) 29deg 30deg);
+      pointer-events: none;
+    }
+    .poster::after {
+      content: '';
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(201, 162, 39, 0.18);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+    .inner {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 40px 40px;
+    }
+    .brand {
+      font-family: Cinzel, serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(201, 162, 39, 0.7);
+    }
+    .headline {
+      font-family: Cinzel, serif;
+      font-weight: 600;
+      line-height: 1.12;
+      color: var(--gold-light);
+      text-shadow: 0 2px 24px rgba(201, 162, 39, 0.25);
+    }
+    .sub {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.35rem;
+      line-height: 1.45;
+      color: var(--parchment);
+      opacity: 0.92;
+      max-width: 92%;
+    }
+    .url {
+      font-family: Cinzel, serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+    .wheel {
+      position: absolute;
+      right: -8%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 58%;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 8px 14px;
+      border: 1px solid rgba(201, 162, 39, 0.35);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    /* Sizes */
+    .square { width: 540px; height: 540px; }
+    .square .headline { font-size: 2.15rem; margin-top: 12px; }
+    .story { width: 405px; height: 720px; }
+    .story .headline { font-size: 2.35rem; margin-top: 16px; }
+    .story .inner { padding-top: 56px; }
+    .pin { width: 400px; height: 600px; }
+    .pin .headline { font-size: 2.5rem; margin-top: 20px; }
+    .pin .inner { padding-top: 52px; justify-content: flex-end; gap: 24px; }
+    .pin .sub { font-size: 1.5rem; }
+    @media print {
+      body { background: white; }
+      .note, h1 { display: none; }
+      .poster { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <h1>AstroPrecise social poster pack</h1>
+  <p class="note">Open this file in Chrome → right-click each poster → "Save image as…" (or screenshot at 2× for 1080px). Pair with copy in <code>outreach-exports/free-traffic/</code>. Link in every caption: <strong>astroprecise.app/links.html</strong></p>
+
+  <div class="grid">
+    <div class="wrap">
+      <label>Square 1080×1080 (IG / X / Facebook)</label>
+      <div class="poster square" id="p-square">
+        <svg class="wheel" viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#C9A227" stroke-width="0.6" opacity="0.5"/>
+          <circle cx="100" cy="100" r="72" fill="none" stroke="#C9A227" stroke-width="0.4" opacity="0.4"/>
+          <circle cx="100" cy="100" r="52" fill="none" stroke="#C9A227" stroke-width="0.3" opacity="0.35"/>
+          <g stroke="#C9A227" stroke-width="0.35" opacity="0.45">
+            <line x1="100" y1="8" x2="100" y2="192"/><line x1="8" y1="100" x2="192" y2="100"/>
+            <line x1="28" y1="28" x2="172" y2="172"/><line x1="172" y1="28" x2="28" y2="172"/>
+          </g>
+        </svg>
+        <div class="inner">
+          <div>
+            <div class="brand">AstroPrecise</div>
+            <div class="headline">Your sky was<br>never repeated</div>
+            <p class="sub">Free birth chart — computed in your browser. Birth data never uploaded.</p>
+            <span class="badge">VSOP87 precision</span>
+          </div>
+          <div class="url">astroprecise.app</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <label>Story 1080×1920 (Reels / TikTok cover / Stories)</label>
+      <div class="poster story" id="p-story">
+        <div class="inner">
+          <div>
+            <div class="brand">AstroPrecise</div>
+            <div class="headline">You know your<br>Sun sign.</div>
+            <p class="sub" style="margin-top:20px">That's one line of a whole book.</p>
+            <p class="sub" style="margin-top:16px; font-size:1.15rem; opacity:0.8">☉ Sun · ☽ Moon · ↑ Rising — free in 30 seconds.</p>
+            <span class="badge">No account · Private</span>
+          </div>
+          <div class="url">astroprecise.app/links</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <label>Pinterest 1000×1500 (2:3 pin)</label>
+      <div class="poster pin" id="p-pin">
+        <div class="inner">
+          <div>
+            <div class="brand">Free tool</div>
+            <div class="headline">Birth chart<br>calculator</div>
+            <p class="sub">Accurate natal chart with houses &amp; aspects. Runs entirely in your browser — nothing sent to a server.</p>
+          </div>
+          <div class="url">astroprecise.app/chart</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <label>Square — Rising sign hook</label>
+      <div class="poster square" id="p-rising">
+        <div class="inner">
+          <div>
+            <div class="brand">AstroPrecise</div>
+            <div class="headline">What is my<br>rising sign?</div>
+            <p class="sub">The face you show the world — and it changes every 2 hours. You need birth time + place.</p>
+            <span class="badge">Free calculator</span>
+          </div>
+          <div class="url">astroprecise.app</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

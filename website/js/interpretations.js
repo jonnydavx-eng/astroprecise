@@ -2030,12 +2030,14 @@ function analyzeChartDetailed(chartData) {
   return result;
 }
 // ── SECTION 4: calculateCompatibility function ────────────────────────────
+// Canonical synastry: real natal longitudes when chart.positions exist;
+// sign midpoints only as fallback. Emits p1/p2 for compatibility.html.
 function calculateCompatibility(chart1, chart2) {
-  // Returns: {overall, love, communication, values, longTerm, passion, synastryAspects[], overview}
-  // All scores 0-100
   if (!chart1 || !chart2) {
     return { overall:50, love:50, communication:50, values:50, longTerm:50, passion:50, synastryAspects:[], overview:'Insufficient chart data.' };
   }
+
+  const E = (typeof window !== 'undefined' && window.AstroEphemeris) ? window.AstroEphemeris : null;
 
   const ELEMENT_MAP = {
     Aries:'fire', Leo:'fire', Sagittarius:'fire',
@@ -2050,7 +2052,6 @@ function calculateCompatibility(chart1, chart2) {
     Gemini:'mutable', Virgo:'mutable', Sagittarius:'mutable', Pisces:'mutable'
   };
 
-  // Element compatibility base scores
   const ELEMENT_COMPAT = {
     'fire_air':88, 'air_fire':88,
     'earth_water':87, 'water_earth':87,
@@ -2062,6 +2063,16 @@ function calculateCompatibility(chart1, chart2) {
     'earth_air':62, 'air_earth':62
   };
 
+  const SIGN_DEGREES = {
+    Aries:0, Taurus:30, Gemini:60, Cancer:90, Leo:120, Virgo:150,
+    Libra:180, Scorpio:210, Sagittarius:240, Capricorn:270, Aquarius:300, Pisces:330
+  };
+
+  const SIGN_FIELDS = {
+    Sun:'sunSign', Moon:'moonSign', Venus:'venusSign',
+    Mars:'marsSign', Mercury:'mercurySign'
+  };
+
   function getElementScore(sign1, sign2) {
     const e1 = ELEMENT_MAP[sign1] || 'fire';
     const e2 = ELEMENT_MAP[sign2] || 'fire';
@@ -2071,52 +2082,63 @@ function calculateCompatibility(chart1, chart2) {
   function getModalityBonus(sign1, sign2) {
     const m1 = MODALITY_MAP[sign1];
     const m2 = MODALITY_MAP[sign2];
-    if (m1 === m2) return -3;  // same modality can be competitive
+    if (m1 === m2) return -3;
     if ((m1 === 'cardinal' && m2 === 'mutable') || (m1 === 'mutable' && m2 === 'cardinal')) return 4;
     if ((m1 === 'fixed' && m2 === 'mutable') || (m1 === 'mutable' && m2 === 'fixed')) return 5;
     return 2;
   }
 
-  const sign1 = chart1.sunSign || 'Aries';
-  const sign2 = chart2.sunSign || 'Aries';
-  const moon1 = chart1.moonSign || sign1;
-  const moon2 = chart2.moonSign || sign2;
-  const venus1 = chart1.venusSign || sign1;
-  const venus2 = chart2.venusSign || sign2;
-  const mars1 = chart1.marsSign || sign1;
-  const mars2 = chart2.marsSign || sign2;
-  const mercury1 = chart1.mercurySign || sign1;
-  const mercury2 = chart2.mercurySign || sign2;
+  function signFromChart(chart, planet, field) {
+    const pos = chart.positions && chart.positions[planet];
+    if (pos && pos.lon !== undefined && E && E.signName) {
+      return E.signName(pos.lon);
+    }
+    return chart[field] || chart.sunSign || 'Aries';
+  }
+
+  function planetLon(chart, planet) {
+    const pos = chart.positions && chart.positions[planet];
+    if (pos && pos.lon !== undefined) return ((pos.lon % 360) + 360) % 360;
+    const sign = signFromChart(chart, planet, SIGN_FIELDS[planet]);
+    return (SIGN_DEGREES[sign] || 0) + 15;
+  }
+
+  function aspectTitle(name) {
+    if (!name) return 'Conjunction';
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  const sign1 = signFromChart(chart1, 'Sun', 'sunSign');
+  const sign2 = signFromChart(chart2, 'Sun', 'sunSign');
+  const moon1 = signFromChart(chart1, 'Moon', 'moonSign');
+  const moon2 = signFromChart(chart2, 'Moon', 'moonSign');
+  const venus1 = signFromChart(chart1, 'Venus', 'venusSign');
+  const venus2 = signFromChart(chart2, 'Venus', 'venusSign');
+  const mars1 = signFromChart(chart1, 'Mars', 'marsSign');
+  const mars2 = signFromChart(chart2, 'Mars', 'marsSign');
+  const mercury1 = signFromChart(chart1, 'Mercury', 'mercurySign');
+  const mercury2 = signFromChart(chart2, 'Mercury', 'mercurySign');
   const rising1 = chart1.rising || sign1;
   const rising2 = chart2.rising || sign2;
 
-  // Sun-Sun compatibility (35% weight)
   const sunScore = getElementScore(sign1, sign2) + getModalityBonus(sign1, sign2);
 
-  // Moon-Moon compatibility (30% weight)
   let moonScore = getElementScore(moon1, moon2);
   if (moon1 === moon2) moonScore += 15;
   else if (ELEMENT_MAP[moon1] === ELEMENT_MAP[moon2]) moonScore += 10;
   else moonScore += getModalityBonus(moon1, moon2);
 
-  // Venus compatibility (20% weight)
   let venusScore = getElementScore(venus1, venus2);
   if (venus1 === venus2) venusScore += 12;
-  // Venus-Mars cross-compatibility bonus
   const venusMars12 = getElementScore(venus1, mars2);
   const venusMars21 = getElementScore(venus2, mars1);
   const passionBase = Math.round((venusMars12 + venusMars21) / 2);
 
-  // Communication (Mercury)
   const mercuryScore = getElementScore(mercury1, mercury2) + getModalityBonus(mercury1, mercury2);
-
-  // Rising compatibility
   const risingScore = getElementScore(rising1, rising2);
 
-  // Weighted overall
   const rawOverall = (sunScore * 0.35) + (moonScore * 0.30) + (venusScore * 0.20) + (mercuryScore * 0.15);
 
-  // Deterministic variance based on sign combination
   const seedStr = sign1 + sign2 + moon1 + moon2;
   let hashSeed = 0;
   for (let i = 0; i < seedStr.length; i++) hashSeed = (hashSeed * 31 + seedStr.charCodeAt(i)) >>> 0;
@@ -2124,36 +2146,18 @@ function calculateCompatibility(chart1, chart2) {
 
   function clamp(v) { return Math.min(97, Math.max(20, Math.round(v))); }
 
-  const overall      = clamp(rawOverall + variance);
-  const love         = clamp((venusScore + getElementScore(venus1, mars2) + getElementScore(venus2, mars1)) / 3 + variance * 0.8);
-  const communication= clamp(mercuryScore + getElementScore(sign1, sign2) * 0.3 + variance);
-  const values       = clamp((moonScore + getElementScore(sign1, sign2)) / 2 + variance * 0.5);
-  const longTerm     = clamp((sunScore * 0.4 + moonScore * 0.4 + risingScore * 0.2) + variance * 0.7);
-  const passion      = clamp(passionBase + venusScore * 0.3 + variance * 1.2);
-
-  // Synastry aspects
   const synastryAspects = [];
-  const ASPECT_DEFS = [
+  const ASPECT_DEFS = (E && E.ASPECT_DEFS) ? E.ASPECT_DEFS.filter(a =>
+    ['conjunction', 'sextile', 'square', 'trine', 'opposition'].includes(a.name)
+  ) : [
     {name:'conjunction', angle:0, orb:8},
-    {name:'sextile', angle:60, orb:4},
-    {name:'square', angle:90, orb:6},
-    {name:'trine', angle:120, orb:6},
+    {name:'sextile', angle:60, orb:5},
+    {name:'square', angle:90, orb:7},
+    {name:'trine', angle:120, orb:7},
     {name:'opposition', angle:180, orb:8}
   ];
 
-  const SIGN_DEGREES = {
-    Aries:0, Taurus:30, Gemini:60, Cancer:90, Leo:120, Virgo:150,
-    Libra:180, Scorpio:210, Sagittarius:240, Capricorn:270, Aquarius:300, Pisces:330
-  };
-
-  const p1Placements = {
-    Sun: chart1.sunSign, Moon: chart1.moonSign, Venus: chart1.venusSign,
-    Mars: chart1.marsSign, Mercury: chart1.mercurySign
-  };
-  const p2Placements = {
-    Sun: chart2.sunSign, Moon: chart2.moonSign, Venus: chart2.venusSign,
-    Mars: chart2.marsSign, Mercury: chart2.mercurySign
-  };
+  const synastryPlanets = ['Sun','Moon','Venus','Mars','Mercury','Jupiter','Saturn'];
 
   const SYNASTRY_INTERPS = {
     'Sun_trine_Sun': 'Your solar energies harmonize naturally — you share a fundamental orientation toward life that makes cooperation feel effortless.',
@@ -2177,11 +2181,14 @@ function calculateCompatibility(chart1, chart2) {
     'default': 'This planetary connection between your charts adds a layer of interaction that both challenges and enriches your connection.'
   };
 
-  for (const [p1name, p1sign] of Object.entries(p1Placements)) {
-    for (const [p2name, p2sign] of Object.entries(p2Placements)) {
-      if (!p1sign || !p2sign) continue;
-      const deg1 = SIGN_DEGREES[p1sign] + 15;  // use midpoint of sign
-      const deg2 = SIGN_DEGREES[p2sign] + 15;
+  const getAspectInterp = (window.Interpretations && window.Interpretations.getAspectMeaning)
+    ? window.Interpretations.getAspectMeaning.bind(window.Interpretations)
+    : null;
+
+  for (const p1name of synastryPlanets) {
+    for (const p2name of synastryPlanets) {
+      const deg1 = planetLon(chart1, p1name);
+      const deg2 = planetLon(chart2, p2name);
       const rawDiff = Math.abs(deg1 - deg2);
       const diff = rawDiff > 180 ? 360 - rawDiff : rawDiff;
 
@@ -2190,18 +2197,39 @@ function calculateCompatibility(chart1, chart2) {
         if (orbActual <= orb) {
           const key = `${p1name}_${name}_${p2name}`;
           const reverseKey = `${p2name}_${name}_${p1name}`;
-          const interp = SYNASTRY_INTERPS[key] || SYNASTRY_INTERPS[reverseKey] || SYNASTRY_INTERPS['default'];
+          let meaning = SYNASTRY_INTERPS[key] || SYNASTRY_INTERPS[reverseKey] || SYNASTRY_INTERPS['default'];
+          if (getAspectInterp) {
+            const rich = getAspectInterp(aspectTitle(name), p1name, p2name);
+            if (rich && !rich.includes('texture and meaning')) meaning = rich;
+          }
           synastryAspects.push({
-            planet1: p1name, planet2: p2name, aspect: name,
+            p1: p1name, p2: p2name,
+            planet1: p1name, planet2: p2name,
+            aspect: name,
             orb: orbActual.toFixed(1),
             harmony: name === 'trine' || name === 'sextile' || name === 'conjunction' ? 'harmonious' : 'dynamic',
-            interpretation: `${p1name} ${name} ${p2name}: ${interp}`
+            interpretation: `${p1name} ${name} ${p2name}: ${meaning}`
           });
           break;
         }
       }
     }
   }
+
+  synastryAspects.sort((a, b) => parseFloat(a.orb) - parseFloat(b.orb));
+
+  const harmonyBonus = synastryAspects.filter(a => a.harmony === 'harmonious').length * 1.2;
+  const tensionAdj = synastryAspects.filter(a =>
+    a.harmony === 'dynamic' && (a.aspect === 'square' || a.aspect === 'opposition')
+  ).length * 0.9;
+  const aspectAdjust = Math.min(7, Math.max(-5, harmonyBonus - tensionAdj));
+
+  const overall       = clamp(rawOverall + variance + aspectAdjust);
+  const love          = clamp((venusScore + venusMars12 + venusMars21) / 3 + variance * 0.8 + aspectAdjust * 0.4);
+  const communication = clamp(mercuryScore + getElementScore(sign1, sign2) * 0.3 + variance);
+  const values        = clamp((moonScore + getElementScore(sign1, sign2)) / 2 + variance * 0.5);
+  const longTerm      = clamp((sunScore * 0.4 + moonScore * 0.4 + risingScore * 0.2) + variance * 0.7 + aspectAdjust * 0.3);
+  const passion       = clamp(passionBase + venusScore * 0.3 + variance * 1.2);
 
   const COMPAT_NARRATIVES = {
     'fire_air': 'Your fire-air combination creates natural inspiration and excitement — you fan each other\'s flames and keep the energy intellectually alive.',

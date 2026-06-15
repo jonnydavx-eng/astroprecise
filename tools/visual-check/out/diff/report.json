@@ -1,0 +1,141 @@
+{
+  "ok": false,
+  "issues": [
+    "preloader/00-earth-hold: diff 11.67%",
+    "preloader/03-sky-aligned: diff 12.47%",
+    "pages/hero-entered: diff 2.75%"
+  ],
+  "preloader": {
+    "label": "preloader",
+    "results": [
+      {
+        "name": "00-earth-hold",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\00-earth-hold.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\00-earth-hold.png",
+        "diffPixels": 151293,
+        "diffRatio": 0.11674,
+        "ok": false,
+        "diffImage": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\diff\\preloader\\00-earth-hold-diff.png"
+      },
+      {
+        "name": "01-approaching",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\01-approaching.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\01-approaching.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "02-mid-intro",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\02-mid-intro.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\02-mid-intro.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "03-sky-aligned",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\03-sky-aligned.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\03-sky-aligned.png",
+        "diffPixels": 161602,
+        "diffRatio": 0.12469,
+        "ok": false,
+        "diffImage": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\diff\\preloader\\03-sky-aligned-diff.png"
+      },
+      {
+        "name": "error-state",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\error-state.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\error-state.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      }
+    ]
+  },
+  "pages": {
+    "label": "pages",
+    "results": [
+      {
+        "name": "angel-numbers",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\angel-numbers.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\angel-numbers.png",
+        "diffPixels": 8576,
+        "diffRatio": 0.00662,
+        "ok": true
+      },
+      {
+        "name": "chart",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\chart.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\chart.png",
+        "diffPixels": 7740,
+        "diffRatio": 0.00597,
+        "ok": true
+      },
+      {
+        "name": "compatibility",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\compatibility.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\compatibility.png",
+        "diffPixels": 10775,
+        "diffRatio": 0.00831,
+        "ok": true
+      },
+      {
+        "name": "ephemeris",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\ephemeris.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\ephemeris.png",
+        "diffPixels": 8563,
+        "diffRatio": 0.00661,
+        "ok": true
+      },
+      {
+        "name": "hero-entered",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\hero-entered.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\hero-entered.png",
+        "diffPixels": 35630,
+        "diffRatio": 0.02749,
+        "ok": false,
+        "diffImage": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\diff\\pages\\hero-entered-diff.png"
+      },
+      {
+        "name": "horoscope",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\horoscope.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\horoscope.png",
+        "diffPixels": 14901,
+        "diffRatio": 0.0115,
+        "ok": true
+      },
+      {
+        "name": "lifepath",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\lifepath.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\lifepath.png",
+        "diffPixels": 8381,
+        "diffRatio": 0.00647,
+        "ok": true
+      },
+      {
+        "name": "moonphase",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\moonphase.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\moonphase.png",
+        "diffPixels": 9338,
+        "diffRatio": 0.00721,
+        "ok": true
+      },
+      {
+        "name": "shop",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\shop.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\shop.png",
+        "diffPixels": 8259,
+        "diffRatio": 0.00637,
+        "ok": true
+      },
+      {
+        "name": "sign-aries",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\sign-aries.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\sign-aries.png",
+        "diffPixels": 10725,
+        "diffRatio": 0.00828,
+        "ok": true
+      }
+    ]
+  }
+}

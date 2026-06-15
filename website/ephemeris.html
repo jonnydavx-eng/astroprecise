@@ -50,7 +50,7 @@
       --purple: #5C4A6E;
       --white: #E8E0D0;
       --silver: #A89E88;
-      --silver-dim: #7E7565;
+      --silver-dim: #9A9084;
       --surface: rgba(20,16,10,0.55);
       --border: rgba(201,162,39,0.10);
       --radius-xl: 20px;
@@ -200,7 +200,7 @@
     }
     .src-measured { color: #3fae7a; }
     .src-computed { color: var(--lapis-light); }
-    .src-unavailable { color: var(--crimson-light); }
+    .src-unavailable { color: #E8A0A0; }
 
     /* ── Echo windows ── */
     .echo-window {
@@ -421,7 +421,7 @@
       display: flex; flex-direction: column; gap: 0.6rem; position: relative;
     }
     .cw-tile__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-    .cw-tile__title { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--silver-dim); }
+    .cw-tile__title { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--silver); }
     .cw-tile__body { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
     .cw-tile__src { text-align: left; margin-top: 0.25rem; }
     .cw-readout {
@@ -433,7 +433,7 @@
       color: var(--gold-pale, var(--gold)); font-variant-numeric: tabular-nums;
     }
     .cw-unit { font-size: 0.75rem; color: var(--silver-dim); }
-    .cw-note { margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--silver-dim); text-align: center; }
+    .cw-note { margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--silver); text-align: center; }
     .cw-unavail { margin: 0; font-size: 0.8rem; color: var(--crimson-light); text-align: center; }
     .cw-info {
       width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%;
@@ -527,7 +527,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 

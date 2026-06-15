@@ -32,11 +32,11 @@
     trine:          { name:'Trine',          glyph:'△', color:'#3fae7a' },
     square:         { name:'Square',         glyph:'□', color:'#b04a52' },
     sextile:        { name:'Sextile',        glyph:'⚹', color:'#9db36a' },
-    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#9aa6c8' },
-    semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#9aa6c8' },
-    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#9aa6c8' },
-    semisextile:    { name:'Semisextile',    glyph:'⚺', color:'#9aa6c8' },
-    quintile:       { name:'Quintile',       glyph:'Q', color:'#9aa6c8' },
+    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#7E7565' },
+    semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#7E7565' },
+    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#7E7565' },
+    semisextile:    { name:'Semisextile',    glyph:'⚺', color:'#7E7565' },
+    quintile:       { name:'Quintile',       glyph:'Q', color:'#7E7565' },
   };
   const HOUSE_THEMES = [
     'Self & Identity', 'Money & Values', 'Mind & Communication', 'Home & Roots',
@@ -52,16 +52,16 @@
     Cancer:'water',     Scorpio:'water', Pisces:'water',
   };
   const ELEMENT_COLORS = {
-    fire:  '#c84832',
-    earth: '#2d8a3e',
-    air:   '#4a7ac7',
-    water: '#5B3FA0',
+    fire:  '#D85A2C',
+    earth: '#5E7A3A',
+    air:   '#A78BBA',
+    water: '#3F7D76',
   };
   const ELEMENT_LABEL_COLORS = {
-    fire:  '#e07060',
-    earth: '#5ab870',
-    air:   '#7aabef',
-    water: '#8B6FD4',
+    fire:  '#F0A878',
+    earth: '#A8C07A',
+    air:   '#C6AEDA',
+    water: '#7FB8B0',
   };
   // Modality mapping
   const MODALITY_MAP = {
@@ -581,7 +581,7 @@
       { positions: chart.positions, houses: chart.houses, aspects: chart.renderAspects,
         name: chart.name, dominant: chart.dominant, chartRuler: chart.chartRuler },
       'natal-wheel',
-      { title: null });
+      { title: null, wheelOnly: true, showTable: false, showLegend: false });
   }
 
   function renderTabs(chart) {
@@ -608,13 +608,13 @@
         : [];
       if (patterns.length) {
         const patternCards = patterns.map(patt => `
-          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(255,255,255,0.04);border-radius:8px;border-left:3px solid var(--gold);">
-            <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);">
-              <span style="font-size:1.2em;color:var(--gold);">${patt.glyph}</span>
-              <strong style="color:var(--gold);">${patt.name}</strong>
-              ${patt.strength === 'major' ? '<span style="font-size:0.7em;color:var(--silver-dim);text-transform:uppercase;letter-spacing:0.05em;">Major</span>' : ''}
+          <div class="pattern-card">
+            <div class="pattern-card__head">
+              <span class="pattern-card__glyph">${patt.glyph}</span>
+              <strong class="pattern-card__name">${patt.name}</strong>
+              ${patt.strength === 'major' ? '<span class="pattern-card__badge">Major</span>' : ''}
             </div>
-            <p style="margin:0;color:var(--silver);font-size:0.9em;line-height:1.5;">${patt.description}</p>
+            <p class="pattern-card__body">${patt.description}</p>
           </div>`).join('');
         blocks.push(`<div class="analysis-section">
           <h4 class="analysis-section__title">Chart Patterns</h4>
@@ -648,14 +648,14 @@
         : [];
       if (fixedStars.length) {
         const starCards = fixedStars.slice(0, 6).map(fs => `
-          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(92, 74, 110,0.07);border-radius:8px;border-left:3px solid var(--violet-bright);">
-            <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);flex-wrap:wrap;">
-              <span class="eng-star-mark" style="color:var(--violet-bright);"></span>
-              <strong style="color:var(--violet-bright);">${fs.point} conjunct ${fs.star}</strong>
-              <span style="font-size:0.75em;color:var(--silver-dim);">${fs.orb.toFixed(1)}° orb · ${fs.constellation}</span>
-              ${fs.royal ? `<span style="font-size:0.7em;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">★ Royal Star — ${fs.royal}</span>` : ''}
+          <div class="pattern-card pattern-card--star">
+            <div class="pattern-card__head">
+              <span class="eng-star-mark" style="color:#c9a88a;"></span>
+              <strong class="pattern-card__name pattern-card__name--star">${fs.point} conjunct ${fs.star}</strong>
+              <span class="pattern-card__meta">${fs.orb.toFixed(1)}° orb · ${fs.constellation}</span>
+              ${fs.royal ? `<span class="pattern-card__badge" style="color:var(--gold);">★ Royal Star — ${fs.royal}</span>` : ''}
             </div>
-            <p style="margin:0;color:var(--silver);font-size:0.9em;line-height:1.5;">${fs.meaning}</p>
+            <p class="pattern-card__body">${fs.meaning}</p>
           </div>`).join('');
         blocks.push(`<div class="analysis-section">
           <h4 class="analysis-section__title">Fixed Star Conjunctions</h4>
@@ -858,7 +858,7 @@
     const price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
     const priceBit = price ? ` — <strong>${esc(price)}</strong>` : '';
     const ctaHtml = configured
-      ? `<p class="deep-teaser__format">A personalised 6–10 page PDF, drawn line by line from your exact chart${priceBit}. One-time — yours to keep, no subscription.</p>
+      ? `<p class="deep-teaser__format">A personalised 9-page PDF — Big Three, love & vocation, Saturn, aspects, and a full chart reference — drawn from your exact chart${priceBit}. One-time; yours to keep, no subscription.</p>
          <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>
@@ -993,14 +993,24 @@ host.classList.add('is-done');
     if (!currentChart) return;
     if (window.AstroProfile) {
       AstroProfile.saveChart({
-        name: currentChart.name, birthDate: currentChart.birthDate,
-        birthTime: currentChart.birthTime, city: currentChart.city,
-        lat: currentChart.lat, lon: currentChart.lon, tz: currentChart.tz,
+        name: currentChart.name,
+        birthDate: currentChart.birthDate,
+        birthTime: currentChart.birthTime,
+        birthCity: currentChart.city,
+        city: currentChart.city,
+        lat: currentChart.lat,
+        lon: currentChart.lon,
+        tz: currentChart.tz,
+        houseSystem: currentChart.houseSystem || 'placidus',
         sunSign: currentChart.positions.Sun.sign,
         moonSign: currentChart.positions.Moon.sign,
         risingSign: currentChart.risingSign,
+        engineV: 2,
       });
-      if (window.AstroApp) AstroApp.showToast('Saved', 'Chart saved to your profile.', 'success');
+      if (window.AstroApp) {
+        AstroApp.showToast('Saved',
+          'Chart saved — view it in My Charts or your Profile.', 'success');
+      }
     }
   });
 
@@ -1254,19 +1264,31 @@ host.classList.add('is-done');
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
     const ELEMENT_SECTOR = {
-      Aries:'rgba(200,72,50,0.12)', Taurus:'rgba(45,138,62,0.12)', Gemini:'rgba(74,122,199,0.12)', Cancer:'rgba(91,63,160,0.14)',
-      Leo:'rgba(200,72,50,0.12)', Virgo:'rgba(45,138,62,0.12)', Libra:'rgba(74,122,199,0.12)', Scorpio:'rgba(91,63,160,0.14)',
-      Sagittarius:'rgba(200,72,50,0.12)', Capricorn:'rgba(45,138,62,0.12)', Aquarius:'rgba(74,122,199,0.12)', Pisces:'rgba(91,63,160,0.14)',
+      Aries:'rgba(216,90,44,0.14)', Taurus:'rgba(94,122,58,0.14)', Gemini:'rgba(167,139,186,0.14)', Cancer:'rgba(63,125,118,0.16)',
+      Leo:'rgba(216,90,44,0.14)', Virgo:'rgba(94,122,58,0.14)', Libra:'rgba(167,139,186,0.14)', Scorpio:'rgba(63,125,118,0.16)',
+      Sagittarius:'rgba(216,90,44,0.14)', Capricorn:'rgba(94,122,58,0.14)', Aquarius:'rgba(167,139,186,0.14)', Pisces:'rgba(63,125,118,0.16)',
     };
     const rOuter     = R;
     const rBand      = R * 0.89;
     const rSignInner = R * 0.755;
     const rPlanets   = R * 0.61;
     const rInner     = R * 0.475;
-    const lw = R / 410; // line-weight scale relative to the original 410px wheel
+    const lw = R / 410;
 
     const ascLon = chart.asc || 0;
     const ang = lon => Math.PI - ((lon - ascLon) * Math.PI / 180);
+
+    // Schematic orbital tracks (decorative — matches SVG chart-render layer)
+    [0.78, 0.68, 0.58].forEach((frac, i) => {
+      x.save();
+      x.strokeStyle = 'rgba(201,162,39,' + (0.1 + i * 0.04) + ')';
+      x.lineWidth = 0.8 * lw;
+      x.setLineDash([3 + i, 5 + i * 2]);
+      x.beginPath();
+      x.arc(cx, cy, R * frac, 0, Math.PI * 2);
+      x.stroke();
+      x.restore();
+    });
 
     // Rings
     x.strokeStyle = 'rgba(196,146,10,0.75)'; x.lineWidth = 3 * lw;
@@ -1726,7 +1748,7 @@ host.classList.add('is-done');
       `padding:10px 12px;margin:2px 0;border:none;border-radius:10px;background:transparent;cursor:pointer;color:#f0e8d8;` +
       `font-family:Inter,sans-serif;transition:background .15s;">` +
       `<span style="display:block;font-weight:600;font-size:0.8rem;letter-spacing:0.04em;">${o.title}</span>` +
-      `<span style="display:block;font-size:0.66rem;color:#9aa6c8;margin-top:2px;">${o.sub}</span></button>`
+      `<span style="display:block;font-size:0.66rem;color:var(--silver-dim,#7E7565);margin-top:2px;">${o.sub}</span></button>`
     ).join('');
 
     document.body.appendChild(menu);
@@ -1765,16 +1787,51 @@ host.classList.add('is-done');
     // The HTML already has the buttons; wiring lives below. No-op kept for boot.
   }
 
+  function initAdvancedAccordion() {
+    const root = document.getElementById('chart-advanced');
+    const item = document.getElementById('chart-advanced-item');
+    const trigger = document.getElementById('chart-advanced-trigger');
+    const panel = document.getElementById('chart-advanced-panel');
+    if (!root || !item || !trigger || !panel) return;
+
+    const mq = window.matchMedia('(max-width: 768px)');
+    if (mq.matches) item.classList.remove('is-open');
+
+    const sync = () => {
+      if (!mq.matches) {
+        item.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = '';
+        return;
+      }
+      const open = item.classList.contains('is-open');
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.style.maxHeight = open ? `${panel.scrollHeight}px` : '0';
+    };
+
+    trigger.addEventListener('click', () => {
+      if (!mq.matches) return;
+      item.classList.toggle('is-open');
+      sync();
+    });
+
+    if (mq.addEventListener) mq.addEventListener('change', sync);
+    else mq.addListener(sync);
+    sync();
+  }
+
   // ── Boot ──────────────────────────────────────────────────────────────────
 
   document.addEventListener('DOMContentLoaded', () => {
     addShareCardButton();
     initNodeToggle();
+    initAdvancedAccordion();
     restoreFromURL();
   });
   if (document.readyState !== 'loading') {
     addShareCardButton();
     initNodeToggle();
+    initAdvancedAccordion();
     restoreFromURL();
   }
 

@@ -17,6 +17,8 @@
   var chronicleOffset = document.getElementById('hero-chronicle-offset');
   var scrollCue = document.getElementById('hero-scroll-cue');
   var orreryDateEl = document.getElementById('orrery-date-display');
+  var heroContent = document.querySelector('.hero__content');
+  var heroOrreryLayer = document.querySelector('.hero__orrery-layer');
   var scrolledOnce = false;
 
   /* ── Staggered entrance after preloader (or instant on repeat visit) ── */
@@ -34,9 +36,7 @@
 
   function preloaderStillActive() {
     var pre = document.getElementById('preloader');
-    if (!pre) return false;
-    if (pre.classList.contains('fade-out')) return false;
-    if (pre.style.display === 'none') return false;
+    if (!pre || pre.style.display === 'none') return false;
     return true;
   }
 
@@ -85,6 +85,16 @@
 
     if (railFill) railFill.style.transform = 'scaleY(' + progress + ')';
     if (railDot) railDot.style.top = (progress * 100) + '%';
+
+    if (!PRM && hero.classList.contains('hero--entered')) {
+      var copyY = progress * -32;
+      var orrY = progress * 22;
+      var orrScale = 1 - progress * 0.035;
+      if (heroContent) heroContent.style.transform = 'translate3d(0,' + copyY.toFixed(1) + 'px,0)';
+      if (heroOrreryLayer) {
+        heroOrreryLayer.style.transform = 'translate3d(0,' + orrY.toFixed(1) + 'px,0) scale(' + orrScale.toFixed(3) + ')';
+      }
+    }
 
     if (meridian && !PRM) {
       var deg = progress * 48 - 6;

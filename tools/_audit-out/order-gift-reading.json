@@ -1,0 +1,8 @@
+{
+  "product": "gift-reading",
+  "orderId": "AUDIT-GIFT-001",
+  "buyer_name": "Buyer",
+  "recipient_name": "Recipient",
+  "recipient_email": "recipient@example.com",
+  "gift_message": "Happy birthday!"
+}

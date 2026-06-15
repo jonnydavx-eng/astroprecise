@@ -1,0 +1,102 @@
+{
+  "title": "AstroPrecise — Birth Details for Your Personalised PDF",
+  "type": "form",
+  "settings": {
+    "language": "en",
+    "is_public": true,
+    "progress_bar": "proportion",
+    "show_progress_bar": true,
+    "meta": {
+      "title": "AstroPrecise Birth Details",
+      "description": "Submit birth details after purchase to receive your personalised natal PDF.",
+      "allow_indexing": false
+    }
+  },
+  "hidden": ["email", "full_name", "order_id"],
+  "welcome_screens": [
+    {
+      "ref": "welcome",
+      "title": "AstroPrecise",
+      "properties": {
+        "description": "Hello {{hidden:full_name}}! Your birth data is used only to generate your PDF and is deleted after delivery. AstroPrecise never stores birth data on its website. Entertainment purposes only — not medical, financial, or legal advice.",
+        "button_text": "Start"
+      }
+    }
+  ],
+  "thankyou_screens": [
+    {
+      "ref": "thanks",
+      "title": "Thank you",
+      "properties": {
+        "description": "Your personalised PDF will be emailed within 24 hours.",
+        "button_text": "Done",
+        "share_icons": false
+      }
+    }
+  ],
+  "fields": [
+    {
+      "ref": "full_name_display",
+      "title": "What is your full name (as you want it printed on your reading)?",
+      "type": "short_text",
+      "validations": { "required": true },
+      "properties": {}
+    },
+    {
+      "ref": "email_display",
+      "title": "What is your email address? (Must match your purchase email.)",
+      "type": "email",
+      "validations": { "required": true },
+      "properties": {}
+    },
+    {
+      "ref": "dob",
+      "title": "What is your date of birth?",
+      "type": "date",
+      "validations": { "required": true },
+      "properties": { "structure": "DDMMYYYY", "separator": "/" }
+    },
+    {
+      "ref": "birth_time",
+      "title": "What is your time of birth? (e.g. 14:30 — or type \"unknown\")",
+      "type": "short_text",
+      "validations": { "required": true },
+      "properties": {}
+    },
+    {
+      "ref": "birth_place",
+      "title": "Where were you born? (City and country)",
+      "type": "short_text",
+      "validations": { "required": true },
+      "properties": {}
+    },
+    {
+      "ref": "order_confirm",
+      "title": "Confirm your Lemon Squeezy order number (pre-filled if you came from your receipt)",
+      "type": "short_text",
+      "validations": { "required": true },
+      "properties": {}
+    },
+    {
+      "ref": "product",
+      "title": "Which product did you order?",
+      "type": "multiple_choice",
+      "validations": { "required": true },
+      "properties": {
+        "choices": [
+          { "ref": "deep", "label": "Deep Reading (£12)" },
+          { "ref": "poster", "label": "Poster PDF (£6)" },
+          { "ref": "bundle", "label": "Reading + Poster Bundle (£16)" }
+        ],
+        "allow_multiple_selection": false
+      }
+    },
+    {
+      "ref": "disclaimer",
+      "title": "I understand this reading is for entertainment only and is not medical, financial, or legal advice.",
+      "type": "legal",
+      "validations": { "required": true },
+      "properties": {}
+    }
+  ]
+}

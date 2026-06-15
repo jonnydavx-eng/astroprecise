@@ -1,0 +1,163 @@
+{
+  "base": "http://localhost:8790",
+  "capturedAt": "2026-06-15T21:18:19.306Z",
+  "pages": [
+    {
+      "id": "chart",
+      "path": "/chart.html",
+      "note": "Birth chart form + wheel mount",
+      "ok": true,
+      "state": {
+        "title": "Free Birth Chart Calculator — Natal Chart, Rising Sign & Houses | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "page-chart",
+        "h1": "Your Natal Blueprint"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\chart.png"
+    },
+    {
+      "id": "horoscope",
+      "path": "/horoscope.html",
+      "note": "Daily horoscope hub",
+      "ok": true,
+      "state": {
+        "title": "Daily Horoscope for All 12 Zodiac Signs — Free & Computed from the Real Sky | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "",
+        "h1": "Spin to Your Sign"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\horoscope.png"
+    },
+    {
+      "id": "compatibility",
+      "path": "/compatibility.html",
+      "note": "Synastry / match UI",
+      "ok": true,
+      "state": {
+        "title": "Zodiac Compatibility Calculator — Free Synastry Report | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "",
+        "h1": "Cosmic Compatibility"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\compatibility.png"
+    },
+    {
+      "id": "ephemeris",
+      "path": "/ephemeris.html",
+      "note": "Sky instrument + ephemeris",
+      "ok": true,
+      "state": {
+        "title": "The Instrument | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "",
+        "h1": "The Instrument"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\ephemeris.png"
+    },
+    {
+      "id": "lifepath",
+      "path": "/lifepath.html",
+      "note": "Life path numerology",
+      "ok": true,
+      "state": {
+        "title": "Life Path Calculator — Numerology Blueprint | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "",
+        "h1": "Life Path Calculator"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\lifepath.png"
+    },
+    {
+      "id": "shop",
+      "path": "/shop.html",
+      "note": "Shop / readings",
+      "ok": true,
+      "state": {
+        "title": "Cosmic Shop — Personalised Chart Products | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "page-shop",
+        "h1": "Your sky, made tangible"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\shop.png"
+    },
+    {
+      "id": "sign-aries",
+      "path": "/aries.html",
+      "note": "Sign page template",
+      "ok": true,
+      "state": {
+        "title": "Aries Horoscope Today — Daily Reading & Sign Guide | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "",
+        "h1": "Aries"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\sign-aries.png"
+    },
+    {
+      "id": "moonphase",
+      "path": "/moonphase.html",
+      "note": "Moon phase tool",
+      "ok": true,
+      "state": {
+        "title": "Moon Phase on Your Birthday — Real Astronomy, Free & Shareable | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "",
+        "h1": "Moon Phase On Your Birthday"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\moonphase.png"
+    },
+    {
+      "id": "angel-numbers",
+      "path": "/angel-numbers.html",
+      "note": "Synchronicity clock",
+      "ok": true,
+      "state": {
+        "title": "Angel Numbers & 1111 Meaning — Synchronicity Clock | AstroPrecise",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "",
+        "h1": "Angel Numbers & the Synchronicity Clock"
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\angel-numbers.png"
+    },
+    {
+      "id": "hero-entered",
+      "path": "/index.html",
+      "note": "Hero orrery after intro skip",
+      "state": {
+        "title": "AstroPrecise — Your Cosmic Blueprint | Free Birth Chart & Precise Astrology",
+        "hasStarfield": true,
+        "starfieldOpacity": "1",
+        "hasCosmicArt": false,
+        "bodyClass": "page-home page-home--ready",
+        "h1": "Your personal universe, beautifully revealed.",
+        "orreryReady": true
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\hero-entered.png",
+      "canvasBox": {
+        "w": 720,
+        "h": 720
+      },
+      "ok": true
+    }
+  ],
+  "issues": [],
+  "ok": true
+}

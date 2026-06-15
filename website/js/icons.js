@@ -56,8 +56,18 @@
     return orb(PLANET_GLYPH[name] || PLANET_GLYPH[name && name[0].toUpperCase() + name.slice(1)] || '?', key, opts);
   }
 
+  const ELEMENT_GLYPH = { fire: '△', earth: '⊟', air: '◬', water: '▽', all: '✦' };
+
+  function element(name, opts) {
+    const key = String(name || 'all').toLowerCase();
+    if (window.AstroElementOrbs && typeof AstroElementOrbs.scene === 'function') {
+      return AstroElementOrbs.scene(key, opts);
+    }
+    return orb(ELEMENT_GLYPH[key] || '✦', key === 'all' ? 'sun' : key, opts);
+  }
+
   window.AstroIcons = {
-    orb, sign, planet, elementOf,
-    SIGN_GLYPH, SIGN_ELEMENT, PLANET_GLYPH,
+    orb, sign, planet, element, elementOf,
+    SIGN_GLYPH, SIGN_ELEMENT, PLANET_GLYPH, ELEMENT_GLYPH,
   };
 })();

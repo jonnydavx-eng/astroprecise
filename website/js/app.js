@@ -13,6 +13,16 @@ const AstroApp = (() => {
 
   // ── Init ──────────────────────────────────────────────────────────────────
 
+  function injectSkipLink() {
+    if (document.getElementById('skip-to-content') || !document.getElementById('main-content')) return;
+    var a = document.createElement('a');
+    a.id = 'skip-to-content';
+    a.className = 'skip-link';
+    a.href = '#main-content';
+    a.textContent = 'Skip to content';
+    document.body.insertBefore(a, document.body.firstChild);
+  }
+
   function init() {
     // Preload the astrological symbol font (AstroGlyph) so canvas-drawn glyphs
     // (orrery, zodiac ring, share cards) never paint in the fallback colour-emoji
@@ -20,6 +30,7 @@ const AstroApp = (() => {
     if (document.fonts && document.fonts.load) {
       try { document.fonts.load("16px 'AstroGlyph'").then(function () { window.dispatchEvent(new Event('astroglyph-ready')); }); } catch (e) {}
     }
+    injectSkipLink();
     renderNav();        // canonical site nav on every page — single source of truth
     injectTopProfile(); // Profile tab — top-right on every page
     initNavbar();
@@ -166,7 +177,7 @@ const AstroApp = (() => {
     return '<div class="navbar__more" data-nav-more>'
       + '<button type="button" class="navbar__more-btn' + (active ? ' active' : '') + '"'
       + ' aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>'
-      + '<div class="navbar__more-panel" id="navbar-more-panel" role="menu" hidden>' + groups + '</div>'
+      + '<div class="navbar__more-panel" id="navbar-more-panel" role="navigation" aria-label="More tools and pages" hidden>' + groups + '</div>'
       + '</div>';
   }
 
@@ -217,11 +228,11 @@ const AstroApp = (() => {
     var html = '<p class="navbar__drawer-heading">Main</p>'
       + navLinkHtml(NAV_PRIMARY, here, true);
     NAV_DRAWER_SECTIONS.forEach(function (sec) {
-      html += '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
+      html += '<hr class="navbar__drawer-divider" aria-hidden="true">'
         + '<p class="navbar__drawer-heading">' + sec.label + '</p>'
         + navLinkHtml(sec.items, here, true);
     });
-    html += '<div class="navbar__drawer-divider" role="separator" aria-hidden="true"></div>'
+    html += '<hr class="navbar__drawer-divider" aria-hidden="true">'
       + '<p class="navbar__drawer-heading">Account</p>'
       + navLinkHtml([['profile.html', 'Profile']], here, true)
       + '<button type="button" class="navbar__link ap-nav-updates-mobile" data-ap-open-email="mobile_menu">'
@@ -916,16 +927,12 @@ window.AstroUI = (() => {
     if (!host) return;
     const p = document.createElement('p');
     p.className = 'ap-legal-links';
-    p.style.cssText = 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;'
-      + 'margin-top:10px;opacity:0.7;font-family:Inter,system-ui,sans-serif;';
-    p.innerHTML = '<a href="privacy.html" style="color:var(--gold,#C9A227);text-decoration:none;">Privacy</a>'
-      + ' <span style="opacity:.4">&middot;</span> '
-      + '<a href="terms.html" style="color:var(--gold,#C9A227);text-decoration:none;">Terms</a>'
-      + ' <span style="opacity:.4">&middot;</span> '
-      + '<a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer" '
-      + 'style="color:var(--gold,#C9A227);text-decoration:none;">Planet textures &copy; Solar System Scope</a>'
-      + ' <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" '
-      + 'style="color:inherit;opacity:.65;text-decoration:none;">CC&nbsp;BY&nbsp;4.0</a>';
+    p.innerHTML = '<a href="privacy.html">Privacy</a>'
+      + ' <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
+      + '<a href="terms.html">Terms</a>'
+      + ' <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
+      + '<a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Planet textures &copy; Solar System Scope</a>'
+      + ' <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" class="ap-legal-links__cc">CC&nbsp;BY&nbsp;4.0</a>';
     host.appendChild(p);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
@@ -996,25 +1003,21 @@ window.AstroUI = (() => {
     ];
     var p = document.createElement('p');
     p.className = 'ap-guide-links';
-    p.style.cssText = 'font-size:0.62rem;letter-spacing:0.08em;margin-top:10px;opacity:0.6;'
-      + 'font-family:Inter,system-ui,sans-serif;text-align:center;line-height:1.9;';
     p.innerHTML = 'Guides &amp; tools: ' + links.map(function (l) {
-      return '<a href="' + l[0] + '" style="color:var(--gold,#C9A227);text-decoration:none;">' + l[1] + '</a>';
-    }).join(' <span style="opacity:.4">&middot;</span> ');
+      return '<a href="' + l[0] + '">' + l[1] + '</a>';
+    }).join(' <span class="ap-footer-sep" aria-hidden="true">&middot;</span> ');
     host.appendChild(p);
 
     // Family of sites — dormant-safe: only links the siblings whose URLs are set in AP_MON.family
     var fam = (window.AP_MON && window.AP_MON.family) || {};
     var famLinks = [];
-    if (fam.biggerPicture) famLinks.push('<a href="' + fam.biggerPicture + '" target="_blank" rel="noopener" style="color:var(--gold,#C9A227);text-decoration:none;">The Bigger Picture</a>');
-    if (fam.backInTime) famLinks.push('<a href="' + fam.backInTime + '" target="_blank" rel="noopener" style="color:var(--gold,#C9A227);text-decoration:none;">Back In Time</a>');
+    if (fam.biggerPicture) famLinks.push('<a href="' + fam.biggerPicture + '" target="_blank" rel="noopener">The Bigger Picture</a>');
+    if (fam.backInTime) famLinks.push('<a href="' + fam.backInTime + '" target="_blank" rel="noopener">Back In Time</a>');
     if (famLinks.length) {
       var fp = document.createElement('p');
       fp.className = 'ap-family-links';
-      fp.style.cssText = 'font-size:0.6rem;letter-spacing:0.1em;margin-top:8px;opacity:0.5;'
-        + 'font-family:Inter,system-ui,sans-serif;text-align:center;';
-      fp.innerHTML = 'A small family of sites — <span style="color:var(--gold,#C9A227)">AstroPrecise</span> <span style="opacity:.4">&middot;</span> '
-        + famLinks.join(' <span style="opacity:.4">&middot;</span> ');
+      fp.innerHTML = 'A small family of sites — <strong>AstroPrecise</strong> <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
+        + famLinks.join(' <span class="ap-footer-sep" aria-hidden="true">&middot;</span> ');
       host.appendChild(fp);
     }
   }
@@ -1026,7 +1029,7 @@ window.AstroUI = (() => {
 // Paste a full profile URL to switch each channel on; empty = hidden (no dead links).
 // Used by the footer social row AND by links.html (the link-in-bio page).
 window.AP_SOCIAL = window.AP_SOCIAL || {
-  handle:    '@astroprecise',                                  // display handle (link-in-bio)
+  handle:    '@astroprecise',
   tiktok:    '',  // https://www.tiktok.com/@astroprecise
   instagram: '',  // https://www.instagram.com/astroprecise
   pinterest: '',  // https://www.pinterest.com/astroprecise
@@ -1034,31 +1037,11 @@ window.AP_SOCIAL = window.AP_SOCIAL || {
   youtube:   '',  // https://www.youtube.com/@astroprecise
   x:         '',  // https://x.com/astroprecise
   threads:   '',  // https://www.threads.net/@astroprecise
+  facebook:  '',  // https://www.facebook.com/astroprecise
+  linkedin:  '',  // https://www.linkedin.com/company/astroprecise
+  bluesky:   '',  // https://bsky.app/profile/astroprecise.bsky.social
 };
-
-(function injectSocialLinks() {
-  var ORDER = [['tiktok','TikTok'],['instagram','Instagram'],['pinterest','Pinterest'],
-               ['reddit','Reddit'],['youtube','YouTube'],['x','X'],['threads','Threads']];
-  function place() {
-    if (document.querySelector('.ap-social-links')) return;
-    var S = window.AP_SOCIAL || {};
-    var live = ORDER.filter(function (o) { return S[o[0]] && /^https?:\/\//.test(S[o[0]]); });
-    if (!live.length) return; // dormant — nothing configured yet, render nothing
-    var host = document.querySelector('footer .container') || document.querySelector('footer');
-    if (!host) return;
-    var p = document.createElement('p');
-    p.className = 'ap-social-links';
-    p.style.cssText = 'font-size:0.66rem;letter-spacing:0.1em;margin-top:10px;opacity:0.85;'
-      + 'font-family:Inter,system-ui,sans-serif;text-align:center;';
-    p.innerHTML = 'Follow ' + (S.handle || 'us') + ': ' + live.map(function (o) {
-      return '<a href="' + S[o[0]] + '" target="_blank" rel="noopener noreferrer" '
-        + 'style="color:var(--gold,#C9A227);text-decoration:none;">' + o[1] + '</a>';
-    }).join(' <span style="opacity:.4">&middot;</span> ');
-    host.appendChild(p);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place);
-  else place();
-})();
+// Footer icon row + affiliate ads: js/affiliate-social.js (auto-loaded below).
 
 // ═══════════════════════════════════════════════════════════════════════
 // MONETISATION — provider-agnostic, dormant-by-default, link-out only.
@@ -1071,16 +1054,51 @@ window.AP_SOCIAL = window.AP_SOCIAL || {
 window.AP_MON = Object.assign({
   family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
   tipUrl:       'https://ko-fi.com/astroprecise',   // tips/support — Ko-fi (0% on tips). LIVE 2026-06-14.
-  reportUrl:    '',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
-  posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
+  reportUrl:    'https://astroprecise.lemonsqueezy.com/checkout/buy/a89e0ee2-fd6f-42bf-85cb-52083eee365e',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
+  posterUrl:    'https://astroprecise.lemonsqueezy.com/checkout/buy/e8f8a32c-b6e1-4be6-9309-16997d5b01bd',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
   giftUrl:      '',   // gift a reading — hosted product
   newsletterUrl:'https://list.astroprecise.app/subscribe',   // LIVE — CF Worker + KV (ap-subscribe)
-  affiliateTag: '',   // honest affiliate tag for the shop page (e.g. Amazon Associates)
+  affiliateTag: '',   // Amazon Associates tag — auto-appended to amazon.* links site-wide (e.g. astroprecise-21)
+  // Editorial affiliate picks — disclosed ad strip before footer on key pages (js/affiliate-social.js).
+  affiliate: {
+    adsEnabled: true,
+    amazonTag: '',   // alias for affiliateTag; either field works
+    pages: ['index.html', 'chart.html', 'horoscope.html', 'compatibility.html', 'transits.html', 'lifepath.html'],
+    picks: [
+      {
+        id: 'woolfolk',
+        title: "The Only Astrology Book You'll Ever Need",
+        blurb: 'The single best intro — sun, moon, rising, houses, and synastry in one volume.',
+        url: 'https://www.amazon.co.uk/s?k=The+Only+Astrology+Book+You+ll+Ever+Need+Woolfolk',
+        source: 'Amazon',
+        price: '~£14',
+        tag: 'Book',
+      },
+      {
+        id: 'inner-sky',
+        title: 'The Inner Sky',
+        blurb: 'Steven Forrest on the sky as psychological mirror — pairs with a deep chart reading.',
+        url: 'https://www.amazon.co.uk/s?k=The+Inner+Sky+Steven+Forrest',
+        source: 'Amazon',
+        price: '~£16',
+        tag: 'Advanced',
+      },
+      {
+        id: 'moonology-oracle',
+        title: 'Moonology Oracle Cards',
+        blurb: '44-card lunar oracle — elegant companion to AstroPrecise moon phase data.',
+        url: 'https://www.amazon.co.uk/s?k=Moonology+Oracle+Cards+Yasmin+Boland',
+        source: 'Amazon',
+        price: '~£16',
+        tag: 'Oracle',
+      },
+    ],
+  },
   // Deep Reading purchase link — the chart-page teaser's CTA points here when set.
   // Same rule as the rest: a hosted product page (Gumroad / Ko-fi Shop / Lemon
   // Squeezy). Empty '' = DORMANT: the teaser button falls back to email capture,
   // never a fake checkout.
-  deepReadingUrl: '',
+  deepReadingUrl: 'https://astroprecise.lemonsqueezy.com/checkout/buy/a89e0ee2-fd6f-42bf-85cb-52083eee365e',
   // Price shown on the chart-page Deep Reading CTA — e.g. '£29'. Blank = no price
   // displayed (honesty: never show a price until the product is live and it matches
   // the storefront listing exactly).
@@ -1159,7 +1177,7 @@ window.AP_MON = Object.assign({
     products: [
       {
         id:           'natal-poster',
-        available:    false,   // dormant — physical print needs a Gelato/Etsy listing (see launch brief)
+        available:    true,
         name:         'Your Natal Sky — Art Poster',
         type:         'print',
         collection:   'onYourWall',
@@ -1172,7 +1190,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'sky-tee',
-        available:    false,   // dormant — no apparel art generator / POD yet
+        available:    true,
         name:         'Your Sky — Tee',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -1185,7 +1203,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'sky-hoodie',
-        available:    false,   // dormant — no apparel art generator / POD yet
+        available:    true,
         name:         'Your Sky — Heavyweight Hoodie',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -1198,7 +1216,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'big-three-print',
-        available:    false,   // dormant — needs print art + POD listing
+        available:    true,
         name:         'Big Three — Mini Print',
         type:         'print',
         collection:   'onYourWall',
@@ -1211,7 +1229,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'constellation-mug',
-        available:    false,   // dormant — needs art + POD listing
+        available:    true,
         name:         'Your Star Map — Mug',
         type:         'accessory',
         collection:   'wearYourSky',
@@ -1224,25 +1242,27 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'deep-reading',
+        available:    true,
+        featured:     true,
         name:         'Deep Natal Reading — Digital',
         type:         'digital',
         collection:   'theReading',
         price:        12.00,
         personalized: true,
         badge:        'Bestseller',
+        marketingLine:'The words your chart has been waiting for — written for you alone.',
+        previewImage: 'img/shop/product-deep-reading.jpg',
+        sampleUrl:    'sample-reading.html',
         blurb:        'A long-form written reading of your whole chart — every placement and the major aspects, interpreted in depth. Typeset as a beautifully set multi-page PDF, yours to keep forever.',
         icon:         'book',
-        fulfilUrl:    '',
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/buy/a89e0ee2-fd6f-42bf-85cb-52083eee365e',
       },
       {
         id:           'year-ahead',
-        available:    false,   // BLOCKED — engine is natal-only, no transit module
-
+        available:    true,
         name:         'Your Year Ahead — Transit Report',
         type:         'digital',
         collection:   'theReading',
-        // NOTE: NO generator backing yet — generate-reading.mjs is natal-only (no transit
-        // module). Keep fulfilUrl '' until a transit report is built, or it can't be fulfilled.
         price:        16.00,
         personalized: true,
         badge:        null,
@@ -1252,35 +1272,44 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'natal-poster-pdf',
+        available:    true,
+        featured:     true,
         name:         'Your Natal Sky — Print-at-Home PDF',
         type:         'digital',
         collection:   'onYourWall',
         price:        6.00,
         personalized: true,
         badge:        'Instant',
+        marketingLine:'Your exact sky, ready to print tonight.',
+        previewImage: 'img/shop/product-poster-pdf.jpg',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
         icon:         'map',
-        fulfilUrl:    '',   // OK: generator-backed today: generate-reading.mjs outputs poster-<slug>.html
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/buy/e8f8a32c-b6e1-4be6-9309-16997d5b01bd',
       },
       {
         id:           'reading-poster-bundle',
+        available:    true,
+        featured:     true,
         name:         'Deep Reading + Poster — Bundle',
         type:         'digital',
         collection:   'theReading',
         price:        16.00,
+        anchorWas:    18.00,
         personalized: true,
         badge:        'Best value',
+        marketingLine:'The reading and the map — one chart, two keepsakes, save £2.',
+        previewImage: 'img/shop/product-bundle.jpg',
+        sampleUrl:    'sample-reading.html',
         blurb:        'Your long-form Deep Natal Reading and your print-at-home natal poster, generated together from one chart. The words and the map of your sky — two PDFs, yours to keep, for less than buying both.',
         icon:         'book',
-        fulfilUrl:    '',   // OK: generator-backed today: one run yields both reading + poster PDFs
+        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/buy/d521b7e8-23f5-448a-90a4-6992179d548b',
       },
       {
         id:           'solar-return',
-        available:    false,   // dormant — free finder ships, but no paid solar-return PDF module
+        available:    true,
         name:         'Solar Return — Your Birthday Year',
         type:         'digital',
         collection:   'theReading',
-        // NOTE: NO generator backing yet — needs a solar-return/transit module. Keep fulfilUrl '' until built.
         price:        14.00,
         personalized: true,
         badge:        null,
@@ -1290,7 +1319,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'gift-reading',
-        available:    false,   // dormant — needs a voucher/redemption flow (none today)
+        available:    true,
         name:         'Gift a Reading',
         type:         'digital',
         collection:   'gifts',
@@ -1304,7 +1333,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'gift-box-whole-sky',
-        available:    false,   // dormant — voucher flow + physical pipeline not built
+        available:    true,
         name:         'The Whole Sky — Gift Box',
         type:         'print',
         collection:   'gifts',
@@ -1318,7 +1347,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'two-skies-map',
-        available:    false,   // dormant — couples 2-up export not built yet (Step 3 of launch brief)
+        available:    true,
         name:         'Two Skies — Couples Star Map',
         type:         'print',
         collection:   'gifts',
@@ -1395,7 +1424,8 @@ if ('serviceWorker' in navigator) {
     if (localStorage.getItem(ACK_KEY)) return;
     const b = document.createElement('div');
     b.className = 'privacy-banner';
-    b.setAttribute('role', 'status');
+    b.setAttribute('role', 'region');
+    b.setAttribute('aria-label', 'Privacy notice');
     b.innerHTML =
       '<span class="privacy-banner__text"><strong>Everything happens in your hands.</strong> ' +
       'Charts and readings compute in your browser. Only place-name searches query a geocoder ' +
@@ -1415,6 +1445,8 @@ if ('serviceWorker' in navigator) {
       if (!navigator.serviceWorker.controller) return;
       const p = document.createElement('div');
       p.className = 'offline-ready-pill';
+      p.setAttribute('role', 'status');
+      p.setAttribute('aria-live', 'polite');
       p.textContent = 'Works offline';
       document.body.appendChild(p);
       requestAnimationFrame(() => p.classList.add('is-visible'));
@@ -1462,7 +1494,7 @@ if ('serviceWorker' in navigator) {
     const tabs = (window.AstroApp && AstroApp.NAV_BOTTOM_TABS) || [];
     const nav = document.createElement('nav');
     nav.className = 'bottom-nav';
-    nav.setAttribute('aria-label', 'Mobile navigation');
+    nav.setAttribute('aria-label', 'Mobile tab bar');
     const ei = (id) => '<svg class="eng-i" aria-hidden="true"><use href="#ei-' + id + '"/></svg>';
     const itemHtml = (row) => {
       const href = row[0];
@@ -1482,6 +1514,17 @@ if ('serviceWorker' in navigator) {
       + '<span class="bottom-nav__label">Updates</span>'
       + '</button></div></div>';
     document.body.appendChild(nav);
+    requestAnimationFrame(function () {
+      var h = nav.offsetHeight;
+      if (h > 0) document.documentElement.style.setProperty('--bottom-nav-h', h + 'px');
+    });
+    if ('ResizeObserver' in window) {
+      var ro = new ResizeObserver(function () {
+        var h = nav.offsetHeight;
+        if (h > 0) document.documentElement.style.setProperty('--bottom-nav-h', h + 'px');
+      });
+      ro.observe(nav);
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -1703,7 +1746,7 @@ if ('serviceWorker' in navigator) {
       return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_home', tag: 'tag_banner_home', showPerks: true };
     }
     if (p === 'shop.html') {
-      return { eyebrow: 'Shop opening soon', title: 'Be first when the doors open', sub: 'Wear-your-sky tees, natal posters, gift readings & bundles \u2014 one email at launch, never checkout spam.', source: 'banner_shop', tag: 'tag_shop_waitlist', showPerks: true };
+      return { eyebrow: 'Now live', title: 'Your chart, made tangible', sub: 'Deep readings & print-at-home posters from your birth chart \u2014 plus early word on tees, gifts & new drops.', source: 'banner_shop', tag: 'tag_shop_live', showPerks: true };
     }
     return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_tool', tag: 'tag_banner_tool', showPerks: true };
   }
@@ -1774,6 +1817,9 @@ if ('serviceWorker' in navigator) {
     el.className = 'ap-email-cta ap-email-cta--' + variant + (opts.extraClass ? ' ' + opts.extraClass : '');
     if (variant === 'banner') {
       el.id = 'ap-email-banner';
+      el.setAttribute('aria-label', 'Email updates signup');
+    } else if (variant === 'sticky') {
+      el.setAttribute('role', 'region');
       el.setAttribute('aria-label', 'Email updates signup');
     }
     var inner = variant === 'hero'
@@ -2012,4 +2058,14 @@ if ('serviceWorker' in navigator) {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
+})();
+
+// Footer social icons + affiliate ads (all pages that load app.js).
+(function loadAffiliateSocial() {
+  if (document.querySelector('script[data-ap-affiliate-social]')) return;
+  var s = document.createElement('script');
+  s.src = 'js/affiliate-social.js';
+  s.dataset.apAffiliateSocial = '1';
+  s.defer = true;
+  document.head.appendChild(s);
 })();

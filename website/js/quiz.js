@@ -238,9 +238,9 @@ const AstroQuiz = (() => {
       <div class="aq-card">
         <div class="aq-progress-label">Question ${step + 1} of ${QUESTIONS.length}</div>
         <h2 class="aq-question">${esc(Q.q)}</h2>
-        <div class="aq-options" role="list">
+        <div class="aq-options" role="group" aria-label="Answer choices">
           ${Q.options.map((opt, i) => `
-            <button class="aq-option" data-index="${i}" role="listitem"
+            <button class="aq-option" data-index="${i}"
               data-element="${opt.el}">
               <span class="aq-option__dot" aria-hidden="true"></span>
               <span class="aq-option__text">${esc(opt.text)}</span>

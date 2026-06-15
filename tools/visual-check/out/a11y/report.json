@@ -1,0 +1,89 @@
+{
+  "base": "http://localhost:8790",
+  "capturedAt": "2026-06-15T21:47:27.106Z",
+  "pages": [
+    {
+      "id": "index",
+      "path": "/",
+      "violations": [
+        {
+          "id": "landmark-unique",
+          "impact": "moderate",
+          "description": "Ensure landmarks are unique",
+          "nodes": 1,
+          "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination"
+        }
+      ],
+      "incomplete": 4,
+      "passes": 46
+    },
+    {
+      "id": "chart",
+      "path": "/chart.html",
+      "violations": [],
+      "incomplete": 4,
+      "passes": 45
+    },
+    {
+      "id": "horoscope",
+      "path": "/horoscope.html",
+      "violations": [
+        {
+          "id": "empty-heading",
+          "impact": "minor",
+          "description": "Ensure headings have discernible text",
+          "nodes": 1,
+          "help": "Headings should not be empty"
+        },
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "nodes": 1,
+          "help": "Heading levels should only increase by one"
+        }
+      ],
+      "incomplete": 4,
+      "passes": 47
+    },
+    {
+      "id": "compatibility",
+      "path": "/compatibility.html",
+      "violations": [
+        {
+          "id": "empty-table-header",
+          "impact": "minor",
+          "description": "Ensure table headers have discernible text",
+          "nodes": 24,
+          "help": "Table header text should not be empty"
+        },
+        {
+          "id": "landmark-unique",
+          "impact": "moderate",
+          "description": "Ensure landmarks are unique",
+          "nodes": 1,
+          "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination"
+        }
+      ],
+      "incomplete": 5,
+      "passes": 50
+    },
+    {
+      "id": "ephemeris",
+      "path": "/ephemeris.html",
+      "violations": [
+        {
+          "id": "landmark-unique",
+          "impact": "moderate",
+          "description": "Ensure landmarks are unique",
+          "nodes": 1,
+          "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination"
+        }
+      ],
+      "incomplete": 3,
+      "passes": 45
+    }
+  ],
+  "issues": [],
+  "ok": true
+}

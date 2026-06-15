@@ -34,7 +34,7 @@
     "url": "https://astroprecise.app/chart.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
     "description": "Free natal chart calculator — enter your birth date, time and place for a precise birth chart with Sun, Moon, Rising, houses and aspects. All calculations run privately in your browser.",
     "isPartOf": {
@@ -45,6 +45,7 @@
   }
   </script>
 <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/chart.css" />
   <style>
     /* ═══════════════════════════════════════════════════════════════
        CHART PAGE — PREMIUM REDESIGN
@@ -145,7 +146,7 @@
       box-shadow:
         0 32px 80px rgba(0, 0, 0, 0.6),
         0 0 0 1px rgba(168, 158, 136,0.05) inset,
-        0 1px 0 rgba(200,208,232,0.12) inset;
+        0 1px 0 rgba(232,224,208,0.1) inset;
       position: relative;
       overflow: hidden;
     }
@@ -553,7 +554,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.12);
-      border-top-color: rgba(200,208,232,0.18);
+      border-top-color: rgba(232,224,208,0.18);
       border-radius: var(--radius-xl);
       padding: var(--space-8) var(--space-8);
       margin-bottom: var(--space-8);
@@ -584,14 +585,14 @@
       align-items: center;
       gap: var(--space-2);
       padding: 3px var(--space-3);
-      background: rgba(92, 74, 110,0.2);
-      border: 1px solid rgba(92, 74, 110,0.3);
+      background: rgba(201, 162, 39, 0.1);
+      border: 1px solid rgba(201, 162, 39, 0.28);
       border-radius: var(--radius-full);
       font-size: 0.6rem;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--lapis-bright);
+      color: var(--gold-pale);
     }
 
     /* Action buttons row */
@@ -637,14 +638,14 @@
       background: rgba(168, 158, 136,0.1);
     }
     .action-btn--primary {
-      background: linear-gradient(135deg, rgba(92, 74, 110,0.35), rgba(92, 74, 110,0.2));
-      border-color: rgba(92, 74, 110,0.5);
-      color: var(--lapis-bright);
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.22), rgba(201, 162, 39, 0.1));
+      border-color: rgba(201, 162, 39, 0.45);
+      color: var(--gold-pale);
     }
     .action-btn--primary:hover {
-      background: linear-gradient(135deg, rgba(92, 74, 110,0.5), rgba(92, 74, 110,0.3));
-      border-color: var(--lapis-light);
-      box-shadow: 0 0 16px rgba(92, 74, 110,0.2);
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.32), rgba(201, 162, 39, 0.16));
+      border-color: var(--gold);
+      box-shadow: 0 0 16px rgba(201, 162, 39, 0.18);
     }
 
     /* ── Big Three premium cards ─────────────────────────────────── */
@@ -662,7 +663,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.1);
-      border-top-color: rgba(200,208,232,0.16);
+      border-top-color: rgba(232,224,208,0.16);
       border-radius: var(--radius-xl);
       padding: var(--space-8) var(--space-6);
       text-align: center;
@@ -681,9 +682,8 @@
       background: linear-gradient(90deg, transparent, rgba(201,162,39,0.4), transparent);
     }
     .big-three-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(201,162,39,0.2);
-      box-shadow: 0 24px 56px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,162,39,0.1);
+      border-color: rgba(201,162,39,0.22);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.45), 0 0 24px rgba(201,162,39,0.08);
     }
     .big-three-card__planet {
       font-size: 0.58rem;
@@ -731,7 +731,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.1);
-      border-top-color: rgba(200,208,232,0.16);
+      border-top-color: rgba(232,224,208,0.16);
       border-radius: var(--radius-xl);
       padding: var(--space-6);
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
@@ -751,7 +751,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.1);
-      border-top-color: rgba(200,208,232,0.16);
+      border-top-color: rgba(232,224,208,0.16);
       border-radius: var(--radius-xl);
       overflow: hidden;
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
@@ -1031,7 +1031,7 @@
       background: rgba(13, 10, 7,0.6);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(168, 158, 136,0.12);
-      border-top-color: rgba(200,208,232,0.18);
+      border-top-color: rgba(232,224,208,0.18);
       border-radius: var(--radius-xl);
       padding: var(--space-8);
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
@@ -1097,7 +1097,7 @@
     }
   </style>
 </head>
-<body>
+<body class="page-chart">
 
   <!-- Intro lives only on the homepage (once per session). Internal pages load
        straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
@@ -1127,7 +1127,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -1321,53 +1321,64 @@
           <input type="hidden" id="lon-input" name="longitude" />
           <input type="hidden" id="tz-input" name="timezone" />
 
-          <!-- ── House System ─────────────────────────────────────── -->
-          <div class="form-section-label" style="margin-top:var(--space-8);">
-            <div class="form-section-label__num" aria-hidden="true">☏</div>
-            <span class="form-section-label__text">House System</span>
-          </div>
+          <!-- ── Advanced options (accordion on mobile) ───────────── -->
+          <div class="chart-advanced accordion" id="chart-advanced" style="margin-top:var(--space-8);">
+            <div class="accordion-item is-open" id="chart-advanced-item">
+              <button type="button" class="accordion-trigger" id="chart-advanced-trigger" aria-expanded="true" aria-controls="chart-advanced-panel">
+                <span>Advanced chart options</span>
+                <svg class="accordion-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="accordion-content" id="chart-advanced-panel" role="region" aria-labelledby="chart-advanced-trigger">
+                <div class="accordion-content__inner">
+                  <div class="form-section-label">
+                    <div class="form-section-label__num" aria-hidden="true">☏</div>
+                    <span class="form-section-label__text">House System</span>
+                  </div>
 
-          <div class="house-cards" role="group" aria-label="House system selection">
-            <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
-              <div class="house-card__name">Equal</div>
-              <div class="house-card__desc">Each house spans exactly 30°. Simplest and most widely recommended for beginners.</div>
-            </div>
-            <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
-              <div class="house-card__name">Placidus</div>
-              <div class="house-card__desc">Time-based divisions. The most popular system in Western astrology today.</div>
-            </div>
-            <div class="house-card" data-value="whole" tabindex="0" role="radio" aria-checked="false">
-              <div class="house-card__name">Whole Sign</div>
-              <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
-            </div>
-          </div>
-          <input type="hidden" id="house-system" name="house-system" value="equal" />
+                  <div class="house-cards" role="group" aria-label="House system selection">
+                    <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
+                      <div class="house-card__name">Equal</div>
+                      <div class="house-card__desc">Each house spans exactly 30°. Simplest and most widely recommended for beginners.</div>
+                    </div>
+                    <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
+                      <div class="house-card__name">Placidus</div>
+                      <div class="house-card__desc">Time-based divisions. The most popular system in Western astrology today.</div>
+                    </div>
+                    <div class="house-card" data-value="whole" tabindex="0" role="radio" aria-checked="false">
+                      <div class="house-card__name">Whole Sign</div>
+                      <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="house-system" name="house-system" value="equal" />
 
-          <!-- ── Lunar Node Model ─────────────────────────────────── -->
-          <div class="form-section-label" style="margin-top:var(--space-8);">
-            <div class="form-section-label__num" aria-hidden="true">☊</div>
-            <span class="form-section-label__text">Lunar Node Model</span>
-          </div>
+                  <div class="form-section-label" style="margin-top:var(--space-6);">
+                    <div class="form-section-label__num" aria-hidden="true">☊</div>
+                    <span class="form-section-label__text">Lunar Node Model</span>
+                  </div>
 
-          <div class="node-toggle" role="radiogroup" aria-label="Lunar node calculation model">
-            <label class="node-toggle__opt">
-              <input type="radio" name="node-mode" value="mean" checked />
-              <span class="node-toggle__pill">
-                <span class="node-toggle__name">Mean Node</span>
-                <span class="node-toggle__desc">Smoothly-moving classical point (default)</span>
-              </span>
-            </label>
-            <label class="node-toggle__opt">
-              <input type="radio" name="node-mode" value="true" />
-              <span class="node-toggle__pill">
-                <span class="node-toggle__name">True Node</span>
-                <span class="node-toggle__desc">Osculating node — wobbles ±~1.5° about the mean</span>
-              </span>
-            </label>
+                  <div class="node-toggle" role="radiogroup" aria-label="Lunar node calculation model">
+                    <label class="node-toggle__opt">
+                      <input type="radio" name="node-mode" value="mean" checked />
+                      <span class="node-toggle__pill">
+                        <span class="node-toggle__name">Mean Node</span>
+                        <span class="node-toggle__desc">Smoothly-moving classical point (default)</span>
+                      </span>
+                    </label>
+                    <label class="node-toggle__opt">
+                      <input type="radio" name="node-mode" value="true" />
+                      <span class="node-toggle__pill">
+                        <span class="node-toggle__name">True Node</span>
+                        <span class="node-toggle__desc">Osculating node — wobbles ±~1.5° about the mean</span>
+                      </span>
+                    </label>
+                  </div>
+                  <p class="form-hint" style="margin-top:var(--space-2);">
+                    Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <p class="form-hint" style="margin-top:var(--space-2);">
-            Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
-          </p>
 
           <!-- Submit CTA -->
           <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
@@ -1441,7 +1452,9 @@
           <!-- Natal Wheel -->
           <div class="chart-wheel-card" aria-label="Natal chart wheel diagram">
             <p class="chart-wheel-label" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Natal Wheel</p>
-            <div id="natal-wheel" role="img" aria-label="Natal chart wheel"></div>
+            <div class="natal-wheel-container">
+              <div id="natal-wheel" role="img" aria-label="Natal chart wheel — VSOP87 positions on schematic ecliptic rings"></div>
+            </div>
           </div>
 
           <!-- Tabs -->

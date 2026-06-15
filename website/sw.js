@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v142';
+const V = 'ap-v177';
 
 const PRECACHE = [
   './',
@@ -52,6 +52,7 @@ const PRECACHE = [
   './pisces.html',
   './manifest.json',
   './css/main.css',
+  './css/orrery-visual.css',
   './css/fonts.css',
   './fonts/astro-glyphs.woff2',
   './fonts/cinzel-normal-400.woff2',
@@ -70,6 +71,7 @@ const PRECACHE = [
   './js/cosmos.js',
   './js/ephemeris.js',
   './js/orrery3d.js',
+  './js/orrery-loader.js',
   './js/orrery-webgl.js',
   './js/vendor/three/three.module.min.js',
   './js/vendor/three/jsm/postprocessing/Pass.js',
@@ -85,6 +87,7 @@ const PRECACHE = [
   './js/chart-render.js',
   './js/sign-daily.js',
   './js/horoscope-subscribe.js',
+  './js/element-orbs.js',
   './js/home-sign-picker.js',
   './js/oracle.js',
   './js/profile.js',
@@ -109,6 +112,11 @@ const PRECACHE = [
   './js/moonphase.js',
   './js/seo-tools.js',
   './js/shop-commerce.js',
+  './js/shop-curated.js',
+  './js/tool-cards.js',
+  './css/shop.css',
+  './css/chart.css',
+  './js/affiliate-social.js',
   './js/quiz.js',
   './js/angel-numbers.js',
   './js/tonight.js',
@@ -120,6 +128,16 @@ const PRECACHE = [
   './img/icon-maskable-512.png',
   './img/og-banner-improved.jpg',
   './img/hero-cosmic-ref.jpg',
+  './img/shop-product-cover.jpg',
+  './img/shop/hero-banner.jpg',
+  './img/shop/product-deep-reading.jpg',
+  './img/shop/product-poster-pdf.jpg',
+  './img/shop/product-bundle.jpg',
+  './img/shop/cat-books.jpg',
+  './img/shop/cat-crystals.jpg',
+  './img/shop/cat-oracle.jpg',
+  './img/shop/cat-jewelry.jpg',
+  './img/shop/cat-prints.jpg',
   './img/zodiac-glyphs-all.jpg',
   './img/zodiac-glyphs-row.jpg',
   './img/zodiac-glyphs-grid.jpg',

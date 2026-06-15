@@ -18,6 +18,7 @@
 //
 // With NO args it falls back to two built-in sample people (watermark "SAMPLE").
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { paidMetaBlock, isPaidOrder } from './fulfil-shared.mjs';
 
 // ── load the real engines into a shared sandbox ──
 const win = {};
@@ -45,7 +46,7 @@ const A_ = parseArgs(process.argv.slice(2));
 let order = {};
 if (A_.in) { try { order = JSON.parse(readFileSync(A_.in, 'utf8')); } catch (e) { console.error('Could not read --in JSON:', e.message); process.exit(1); } }
 
-const FINAL = !!A_.final;
+const FINAL = !!A_.final || isPaidOrder(order);
 const usingSample = !order.p1 || !order.p2;
 const WATERMARK = FINAL ? '' : (usingSample ? 'SAMPLE' : 'DRAFT');
 
@@ -106,6 +107,10 @@ const synAspects = (syn.synastryAspects || []).map(x => ({
   aspect: x.aspect || x.type || '', orb: x.orb, interpretation: x.interpretation || '',
   harmony: x.harmony || '',
 }));
+const paidMeta = paidMetaBlock(
+  { ...order, product: order.product || 'two-skies-map' },
+  { synastryScore: Math.round(syn.overall || 0), crossAspects: synAspects.length },
+);
 
 // ── SVG natal wheel for a given person ──
 function wheel(P, size) {
@@ -192,7 +197,7 @@ const CATS = [['Romantic Attraction','love'],['Emotional Depth','passion'],['Com
 const catRow = ([lbl, key]) => { const v = Math.round(syn[key] || 0); return `<div class="cat"><span class="lbl">${lbl}</span><span class="track"><span class="fill" style="width:${v}%"></span></span><span class="pct">${v}%</span></div>`; };
 
 // ── READING (A4) ──
-const reading = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${CSS}</style></head><body>
+const reading = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${CSS}</style></head><body>${paidMeta}
 <div class="page cover">
   ${wm}
   <div class="seal">✦</div>
@@ -257,7 +262,7 @@ const poster = `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>
 .sky .dt{font-family:'Cinzel',serif;font-size:8pt;letter-spacing:.14em;color:#A89E88;margin-top:2mm;}
 .amp{display:flex;align-items:center;font-family:'Cinzel',serif;font-size:30pt;color:#C9A227;}
 .scoreline{text-align:center;font-family:'Cinzel',serif;letter-spacing:.1em;color:#E8C872;margin-top:6mm;font-size:13pt;}
-</style></head><body>
+</style></head><body>${paidMeta}
 <div class="page" style="text-align:center;">
   ${wmBig}
   <p class="eyebrow">Two Skies</p>

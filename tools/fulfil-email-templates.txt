@@ -1,0 +1,142 @@
+ASTROPRECISE — CUSTOMER DELIVERY EMAIL TEMPLATES
+Paste into your mail client (or automate later). Replace {name}, {product}, {orderId} before send.
+Print HTML deliverables to PDF first (Chrome → Print → Save as PDF, backgrounds on).
+
+================================================================================
+DEEP READING (deep-reading)
+================================================================================
+Subject: Your Deep Reading is ready — {name}
+
+Hi {name},
+
+Thank you for ordering The Deep Reading from AstroPrecise.
+
+Attached is your personalised natal reading PDF — every placement computed from your exact birth data using the same VSOP87/ELP2000 engine as astroprecise.app. Inside you'll find:
+
+  · Your Big Three (Sun, Moon, Rising) with full interpretations
+  · Personal planets, love & vocation chapters
+  · Saturn, outer planets, and your tightest aspects — each explained
+  · A chart reference table with arcminute positions
+
+This is symbolic orientation, not fortune-telling — read for resonance, not verdict. Entertainment purposes only; not medical, financial, or legal advice.
+
+Order reference: {orderId}
+Questions? Reply to this email.
+
+With clear skies,
+AstroPrecise
+https://astroprecise.app
+
+================================================================================
+NATAL POSTER PDF (natal-poster-pdf)
+================================================================================
+Subject: Your natal chart poster — {name}
+
+Hi {name},
+
+Your print-at-home natal chart poster is attached.
+
+It's formatted for A3 (scale to A4 in your printer settings if needed). Every glyph position is computed from your birth moment — engraved gold on void black, matching the chart wheel on astroprecise.app.
+
+Tip: print on heavyweight matte paper (200gsm+) for best results.
+
+Order reference: {orderId}
+Cast another chart free anytime: https://astroprecise.app/chart.html
+
+AstroPrecise
+
+================================================================================
+READING + POSTER BUNDLE (reading-poster-bundle)
+================================================================================
+Subject: Your Deep Reading & chart poster — {name}
+
+Hi {name},
+
+Both PDFs are attached:
+
+  1. Deep Reading — your full written natal interpretation
+  2. Natal Chart Poster — print-ready wheel for framing
+
+Same birth data, same engine, two keepsakes. Start with the reading; keep the poster where you'll see your sky daily.
+
+Order reference: {orderId}
+Explore transits against this chart: https://astroprecise.app/transits.html
+
+AstroPrecise
+
+================================================================================
+GIFT VOUCHER (gift-reading) — to buyer
+================================================================================
+Subject: Your AstroPrecise gift voucher — for {recipient_name}
+
+Hi {buyer_name},
+
+Your gift is ready. Attached is a voucher PDF for {recipient_name}.
+
+They'll redeem it at the private link inside the voucher, submit their own birth details, and receive a full Deep Reading PDF — computed only for them, never shared with you (privacy by design).
+
+Voucher code: {voucher_code}
+Valid 12 months.
+
+Thank you for giving someone their sky.
+AstroPrecise
+
+================================================================================
+GIFT REDEMPTION DELIVERY (gift-reading-redeem)
+================================================================================
+Subject: Your gifted Deep Reading — {name}
+
+Hi {name},
+
+Someone thought your birth sky was worth reading — and we agree.
+
+Attached is your full Deep Reading PDF, computed from the birth details you submitted. Every number is measured, not invented.
+
+Enjoy exploring your chart. The free tools at astroprecise.app stay open whenever you want to check transits or cast another chart.
+
+AstroPrecise
+
+================================================================================
+YEAR AHEAD (year-ahead)
+================================================================================
+Subject: Your Year Ahead transit report — {name}
+
+Hi {name},
+
+Attached is your 12-month slow-planet transit report.
+
+We scanned Jupiter, Saturn, Uranus, Neptune, and Pluto against your natal longitudes week by week — only the tightest hits are listed. Use it as a weather map, not a script.
+
+Pair it with live transits: https://astroprecise.app/transits.html
+
+Order reference: {orderId}
+AstroPrecise
+
+================================================================================
+SOLAR RETURN (solar-return)
+================================================================================
+Subject: Your Solar Return chart — {name}
+
+Hi {name},
+
+Attached is your solar return report for the year ahead.
+
+The return moment is when the Sun reaches your natal degree again — we cast the chart for that instant at your birth place. If you'll celebrate elsewhere, recast with that location for a location-specific tone.
+
+Order reference: {orderId}
+AstroPrecise
+
+================================================================================
+FULFILMENT REMINDER (if buyer hasn't submitted Typeform within 48h)
+================================================================================
+Subject: One step left — your AstroPrecise {product}
+
+Hi {name},
+
+We have your order ({orderId}) but not your birth details yet.
+
+Open the link from your Lemon Squeezy receipt — it takes about two minutes. Once submitted, your PDF arrives within 24 hours.
+
+Your data is used only to generate your order and is deleted after delivery.
+
+AstroPrecise

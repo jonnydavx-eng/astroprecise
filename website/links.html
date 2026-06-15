@@ -56,7 +56,7 @@
     .lib-link__label { display: block; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--white, #F8F4EE); letter-spacing: 0.02em; }
     .lib-link__sub { display: block; font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; color: var(--silver-dim, #8891AA); margin-top: 2px; }
     .lib-link--primary { border-color: rgba(201,162,39,0.55); background: rgba(201,162,39,0.10); }
-    .lib__social { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; justify-content: center; }
+    .lib__social { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: center; }
     .lib-social { font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold, #C9A227); text-decoration: none; }
     .lib-social:hover { color: var(--gold-light, #E8C872); }
     .lib__foot { margin-top: 2rem; font-size: 0.62rem; letter-spacing: 0.08em; color: var(--silver-dim, #8891AA); line-height: 1.7; }
@@ -139,21 +139,19 @@
       paid.appendChild(a);
     }
     add(M.emailUrl || M.newsletterUrl, '&#128233; Free chart wallpaper + cosmic weather', 'One email. Your sky as a wallpaper.');
-    add(M.deepReadingUrl || M.reportUrl, '&#10039; The Deep Reading', 'A 6–10 page reading of your exact chart.');
+    add(M.deepReadingUrl || M.reportUrl, '&#10039; The Deep Reading', 'A 9-page natal reading of your exact chart.');
     add(M.posterUrl, '&#128444; Wear Your Sky &mdash; Shop', 'Posters, tees &amp; prints made from your chart.');
     add(M.giftUrl, '&#127873; Gift a Reading', '');
     add(M.tipUrl, '&#10084; Support the instrument &mdash; tip', '');
 
     var soc = document.getElementById('lib-social');
-    [['tiktok','TikTok'],['instagram','Instagram'],['pinterest','Pinterest'],['reddit','Reddit'],['youtube','YouTube'],['x','X'],['threads','Threads']]
-      .forEach(function (o) {
-        if (S[o[0]] && /^https?:\/\//.test(S[o[0]])) {
-          var a = document.createElement('a'); a.className = 'lib-social';
-          a.href = S[o[0]]; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = o[1];
-          soc.appendChild(a);
-        }
-      });
-    if (!soc.children.length) { soc.previousElementSibling.style.display = 'none'; } // hide "Follow" label if no socials yet
+    (function renderLibSocial() {
+      if (window.AstroSocial && AstroSocial.renderSocialRow) {
+        AstroSocial.renderSocialRow(soc, { wrap: false, showAll: true });
+        return;
+      }
+      setTimeout(renderLibSocial, 40);
+    })();
   })();
   </script>
 </body>

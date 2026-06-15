@@ -1,0 +1,25 @@
+{
+  "name": "astroprecise-visual-check",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture-preloader.mjs",
+    "pages": "node capture-pages.mjs",
+    "all": "node run-all.mjs",
+    "a11y": "node audit-a11y.mjs",
+    "lighthouse": "node audit-lighthouse.mjs",
+    "perf": "node audit-perf.mjs",
+    "baseline:save": "node save-baseline.mjs",
+    "baseline:diff": "node diff-baseline.mjs",
+    "audit": "node run-audit.mjs"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "chrome-launcher": "^1.1.2",
+    "lighthouse": "^12.6.0",
+    "pixelmatch": "^7.1.0",
+    "playwright": "^1.52.0",
+    "pngjs": "^7.0.0"
+  }
+}

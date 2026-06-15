@@ -44,7 +44,7 @@
       --lp-gold: #c9a227;
       --lp-gold-pale: #e8c96a;
       --lp-white: #f0e8d8;
-      --lp-silver: #9aa6c8;
+      --lp-silver: #A89E88;
       --lp-silver-dim: #8891aa;
       --lp-surface: rgba(20, 16, 10,0.68);
       --lp-border: rgba(168, 158, 136,0.12);
@@ -760,7 +760,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -1136,7 +1136,7 @@
       strengths: ['Deep empathy and emotional intelligence','Diplomatic and peacemaking skill','Patience in complex situations','Supportive, loyal nature','Intuitive perception of others\' needs'],
       challenges: ['Over-sensitivity to criticism','Indecision when outcomes are unclear','Self-doubt in solo endeavours','Avoidance of necessary confrontation'],
       compatibles: [4,6,8], keywords: ['Harmony','Partnership','Intuition','Balance','Cooperation'],
-      color: '#9aa6c8',
+      color: '#6a8a82',
     },
     3: {
       title: 'The Creator', glyph: '', element: 'air',
@@ -1242,7 +1242,7 @@
     fire:  { stripe: '#c9a227', dim: 'rgba(196,100,50,0.12)',  mandala: 'rgba(196,100,50,0.2)' },
     earth: { stripe: '#0e5c3a', dim: 'rgba(14,92,58,0.12)',    mandala: 'rgba(14,92,58,0.2)' },
     air:   { stripe: '#5b7fc7', dim: 'rgba(91,127,199,0.12)',  mandala: 'rgba(91,127,199,0.2)' },
-    water: { stripe: '#9aa6c8', dim: 'rgba(58,122,212,0.12)',  mandala: 'rgba(58,122,212,0.2)' },
+    water: { stripe: '#6a8a82', dim: 'rgba(63,125,118,0.12)',  mandala: 'rgba(63,125,118,0.18)' },
   };
 
   const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1566,7 +1566,7 @@
     }
 
     // Geometric mandala behind number
-    const elColorsCard = {fire:'rgba(196,100,50,0.15)',earth:'rgba(14,92,58,0.15)',air:'rgba(91,127,199,0.15)',water:'rgba(58,122,212,0.15)'};
+    const elColorsCard = {fire:'rgba(196,100,50,0.15)',earth:'rgba(14,92,58,0.15)',air:'rgba(167,139,186,0.12)',water:'rgba(63,125,118,0.12)'};
     const mandalaColor = elColorsCard[data.element] || 'rgba(196,146,10,0.15)';
     const mcx = 540, mcy = 380, mr = 280;
     for (let rot = 0; rot < 3; rot++) {
@@ -1587,7 +1587,7 @@
     }
 
     // Element color accent stripe — left edge 12px wide
-    const elementColorMap = {fire:'#c9a227',earth:'#0e5c3a',air:'#9db36a',water:'#9aa6c8'};
+    const elementColorMap = {fire:'#c9a227',earth:'#0e5c3a',air:'#9db36a',water:'#6a8a82'};
     const stripeColor = elementColorMap[data.element] || '#c9a227';
     ctx.fillStyle = stripeColor;
     ctx.fillRect(40, 40, 12, H - 80);
@@ -1736,7 +1736,7 @@
         fire: { border: '#c9a227', glow: 'rgba(196,146,10,0.15)' },
         earth: { border: '#0e5c3a', glow: 'rgba(14,92,58,0.15)' },
         air: { border: '#9db36a', glow: 'rgba(91,127,199,0.15)' },
-        water: { border: '#9aa6c8', glow: 'rgba(154,166,200,0.15)' }
+        water: { border: '#6a8a82', glow: 'rgba(63,125,118,0.15)' }
       };
       const cardsHtml = LP_ORDER.map(n => {
         const d = LP[n];

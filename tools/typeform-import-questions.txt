@@ -1,0 +1,61 @@
+ASTROPRECISE — TYPEFORM IMPORT BLOCK
+Copy everything below the line into Typeform:
+  Workspace → + Create form → Import questions (or paste into Typeform AI)
+
+================================================================================
+
+Form title: AstroPrecise — Birth Details for Your Personalised PDF
+
+Welcome text:
+Your birth data is used only to generate your PDF and is deleted after delivery.
+AstroPrecise never stores birth data on its website — this form is the only place
+it is collected for fulfilment. Entertainment purposes only. Not medical, financial,
+or legal advice.
+
+Questions:
+
+1. What is your full name (as you want it printed on your reading)?
+   [Short text — required]
+
+2. What is your email address? (Must match your purchase email.)
+   [Email — required]
+
+3. What is your date of birth?
+   [Date — required]
+
+4. What is your time of birth? (e.g. 14:30 — or type "unknown")
+   [Short text — required]
+
+5. Where were you born? (City and country)
+   [Short text — required]
+
+6. What is your Lemon Squeezy order number? (From your receipt email.)
+   [Short text — required]
+
+7. Which product did you order?
+   [Multiple choice — required]
+   - Deep Reading (£12)
+   - Poster PDF (£6)
+   - Reading + Poster Bundle (£16)
+
+8. I understand this reading is for entertainment only and is not medical, financial, or legal advice.
+   [Yes/No — required — only "Yes" accepted]
+
+Thank you screen:
+Thank you. Your personalised PDF will be emailed within 24 hours.
+
+================================================================================
+AFTER IMPORT — URL PARAMETERS (Workflow → Pull data in)
+Add these parameters (lowercase, underscores):
+  email
+  full_name
+  order_id
+
+Do NOT use "name" — Typeform reserves/conflicts with that term.
+
+Lemon Squeezy confirmation + receipt button link:
+  https://form.typeform.com/to/YOUR_FORM_ID#email=[email]&full_name=[name]&order_id=[order_id]
+
+Replace YOUR_FORM_ID after publish. Lemon Squeezy fills [email], [name], [order_id].
+
+Optional: use Recall information to greet buyer by @full_name in welcome screen.
