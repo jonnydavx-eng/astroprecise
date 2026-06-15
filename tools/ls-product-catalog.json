@@ -1,13 +1,13 @@
 {
-  "version": 1,
-  "updated_at": "2026-06-15T22:45:00.000Z",
+  "version": 2,
+  "updated_at": "2026-06-16T00:15:00.000Z",
   "image_base": "https://astroprecise.app/img/shop",
   "redirect_base": "https://astroprecise.app/fulfil-redirect.html",
   "disclaimer": "Entertainment purposes only. Not medical, financial, or legal advice.",
   "products": {
     "deep-reading": {
       "name": "AstroPrecise Deep Natal Reading — Personal PDF",
-      "short_description": "Nine pages written for your chart alone — Sun, Moon, Rising, love & vocation, Saturn, outer planets, and your six tightest aspects. VSOP87 astronomy, arcminute positions. PDF within 24–48 hours.",
+      "short_description": "Nine pages written for your chart alone — the Gen Z/millennial favourite for self-discovery. Sun, Moon, Rising, love & vocation, Saturn, outer planets, and your six tightest aspects. VSOP87 arcminute precision. PDF within 24–48 hours.",
       "receipt_thank_you": "Thank you — your reading is being prepared. Complete the short birth-details form (about 2 minutes) so we can compute your exact sky and write your PDF.",
       "receipt_button": "Submit birth details",
       "image": "product-deep-reading.jpg",
@@ -16,7 +16,7 @@
     },
     "natal-poster-pdf": {
       "name": "AstroPrecise Natal Chart Poster — Print-at-Home PDF",
-      "short_description": "Your full birth chart as a print-ready A3 PDF — engraved gold on void black. Same VSOP87 engine as astroprecise.app. Print tonight at home or any print shop. Delivered within 24–48 hours.",
+      "short_description": "Your full birth chart as a print-ready A3 PDF — engraved gold on void black. The affordable wall-art ritual: print tonight at home or any print shop. Same VSOP87 engine as astroprecise.app. Delivered within 24–48 hours.",
       "receipt_thank_you": "Your poster PDF is queued. Submit birth details on the next screen — we generate your exact sky and email the print-ready file within 24–48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-poster-pdf.jpg",
@@ -25,7 +25,7 @@
     },
     "reading-poster-bundle": {
       "name": "AstroPrecise Deep Reading + Poster Bundle",
-      "short_description": "Both keepsakes from one chart: the 9-page Deep Reading plus the A3 print-at-home natal poster. Submit birth details once; receive both PDFs within 24–48 hours. Save £2 versus buying separately.",
+      "short_description": "Both keepsakes from one chart: the 9-page Deep Reading plus the A3 print-at-home natal poster. Submit birth details once; receive both PDFs within 24–48 hours. Save £2 — our most-loved starter bundle.",
       "receipt_thank_you": "Two PDFs, one chart. Complete the birth-details form and we'll deliver your reading and poster together within 24–48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-bundle.jpg",
@@ -34,7 +34,7 @@
     },
     "two-skies-map": {
       "name": "AstroPrecise Two Skies — Couples Star Map",
-      "short_description": "Two birth charts, one fine-art print — your sky and theirs side by side on void black. The proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at fulfilment. Ships after you submit both birth details.",
+      "short_description": "Two birth charts, one fine-art print — your sky and theirs side by side on void black. The trending anniversary, wedding, and Valentine's keepsake. 250gsm museum-grade matte; framed option at fulfilment.",
       "receipt_thank_you": "Your couples print is in the queue. Submit both birth details on the next screen — we'll generate your Two Skies artwork and confirm shipping within 48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-two-skies.jpg",
@@ -43,7 +43,7 @@
     },
     "gift-reading": {
       "name": "AstroPrecise Gift a Deep Reading",
-      "short_description": "Give someone a 9-page Deep Natal Reading written for their chart alone. Delivered as a beautiful PDF gift voucher with redemption code and your personal note. They redeem with their own birth details — their sky, never stored on our servers.",
+      "short_description": "Give someone a 9-page Deep Natal Reading written for their chart alone. Delivered as a beautiful PDF gift voucher with redemption code and your personal note — the thoughtful gift that feels bespoke, not generic.",
       "receipt_thank_you": "Your gift is ready to send. Complete the form to add your message and recipient details — we'll email the voucher within 24 hours.",
       "receipt_button": "Complete gift details",
       "image": "product-gift-reading.jpg",
@@ -52,7 +52,7 @@
     },
     "gift-box-whole-sky": {
       "name": "AstroPrecise Whole Sky Gift Box",
-      "short_description": "The complete gift: Deep Natal Reading PDF plus A4 foil natal print, shipped with a personalised gift card carrying your note. They redeem the reading by email with their own birth details. Choose delivery date at fulfilment.",
+      "short_description": "The complete gift: Deep Natal Reading PDF plus A4 foil natal print, shipped with a personalised gift card carrying your note. Premium unboxing for birthdays and milestones. They redeem the reading privately by email.",
       "receipt_thank_you": "A whole sky, wrapped. Submit gift and birth details on the next screen — we'll confirm your box and delivery date within 48 hours.",
       "receipt_button": "Complete gift details",
       "image": "product-gift-box.jpg",
@@ -70,7 +70,7 @@
     },
     "big-three-print": {
       "name": "AstroPrecise Big Three Mini Print",
-      "short_description": "Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine. Museum-grade matte, made to order from your exact birth data.",
+      "short_description": "Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine. Perfect desk or shelf piece. Museum-grade matte, made to order from your exact birth data.",
       "receipt_thank_you": "Your Big Three print is queued. Submit birth details on the next screen — we'll typeset your placements and confirm shipping within 48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-big-three.jpg",
@@ -79,7 +79,7 @@
     },
     "sky-tee": {
       "name": "AstroPrecise Your Sky Tee",
-      "short_description": "The constellations overhead at your birth, printed across heavyweight cotton. Your Sun, Moon and Rising marked in gold — a chart you can wear. Printed to order from your natal data.",
+      "short_description": "The constellations overhead at your birth, printed across heavyweight cotton. Your Sun, Moon and Rising marked in gold — a wearable chart for the astro-curious crowd. Printed to order from your natal data.",
       "receipt_thank_you": "Your tee enters production after birth details. Submit the form on the next screen — we'll generate your sky artwork and confirm size and shipping within 48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-sky-tee.jpg",
@@ -97,7 +97,7 @@
     },
     "constellation-mug": {
       "name": "AstroPrecise Star Map Mug",
-      "short_description": "The sky over your birthplace wrapped around matte ceramic, your Sun-sign glyph at the rim. The first synchronicity of every morning — printed to order from your exact birth chart.",
+      "short_description": "The sky over your birthplace wrapped around matte ceramic, your Sun-sign glyph at the rim. The morning ritual piece — printed to order from your exact birth chart.",
       "receipt_thank_you": "Your mug enters production after birth details. Complete the form on the next screen — we'll generate your star map and confirm shipping within 48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-mug.jpg",
@@ -106,21 +106,21 @@
     },
     "year-ahead": {
       "name": "AstroPrecise Year Ahead Transit Report",
-      "short_description": "Every major transit to your natal chart for the next twelve months — dated, interpreted, and written for your placements alone. Read the weather before it arrives. PDF within 24–48 hours.",
+      "short_description": "Every major transit to your natal chart for the next twelve months — dated, interpreted, and written for your placements alone. The trending self-care forecast: read the weather before it arrives. PDF within 24–48 hours.",
       "receipt_thank_you": "Your Year Ahead report is being prepared. Submit birth details on the next screen — we'll compute your transits and email your PDF within 24–48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-year-ahead.jpg",
       "price_gbp": 16,
-      "badge": null
+      "badge": "Trending"
     },
     "solar-return": {
       "name": "AstroPrecise Solar Return PDF",
-      "short_description": "Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. PDF within 24–48 hours.",
+      "short_description": "Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. The annual birthday ritual, no subscription. PDF within 24–48 hours.",
       "receipt_thank_you": "Your Solar Return is queued. Submit birth details on the next screen — we'll compute your birthday chart and email your PDF within 24–48 hours.",
       "receipt_button": "Submit birth details",
       "image": "product-solar-return.jpg",
       "price_gbp": 14,
-      "badge": null
+      "badge": "Birthday"
     }
   }
 }

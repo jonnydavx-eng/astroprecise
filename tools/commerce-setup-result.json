@@ -1,83 +1,83 @@
 {
-  "created_at": "2026-06-15T22:29:38.723Z",
+  "created_at": "2026-06-15T23:03:14.120Z",
   "link_mode": "typeform-via-ls-checkouts-api",
   "master_variant_id": "1794298",
   "checkouts_created": 13,
   "lemonsqueezy": {
     "deep-reading": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/085cb6a2-7463-4a7f-b4ca-def52b7689a6?signature=59cd9e0822b54f3c4078325c5162108975697487644b10b094a6c301e0d89d65",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/40af6500-9d93-4b8a-884b-113adfa2ffbd?signature=3a2612560eac6329d10670c529330c2294727c8fb6d6f4c8c1f630c03271433e",
       "variantId": "1794298",
       "formId": "JVU3Atfm",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=JVU3Atfm&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=deep-reading"
     },
     "natal-poster-pdf": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/be6e2bdc-46a6-4fd5-ad19-f55f4de6d320?signature=e1de36a4d503e68ed2b09105bf85cc8bfb875a826fbbe427b9bef7e19816f172",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/62164d88-e988-4172-a523-f18693777137?signature=f36500be7a029a8d69571aba56c93c2aded9ad05a68bd6c967c14cae33305525",
       "variantId": "1794298",
       "formId": "sL9V4PTk",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=sL9V4PTk&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=natal-poster-pdf"
     },
     "reading-poster-bundle": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/49190619-8c67-4120-a057-f8b7ac2ed469?signature=1bcb50513af7d34a3d762a78fd83fba681429481b2eb6d0dfe228c55df2d0ee9",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/7f961a43-2bf6-4822-b879-844d4899003d?signature=0fafe76f35a87d43e42c97678591d90f5f06fb89f14b2806099915b2b4963805",
       "variantId": "1794298",
       "formId": "Iasu4Sia",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=Iasu4Sia&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=reading-poster-bundle"
     },
     "two-skies-map": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/25e9d481-42d0-41b9-a160-ae12c2d98875?signature=ccd1f428190b3c74643b3323a4386555cefc5a3eecbc1e93f470ca2486e88b66",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/ed400cf7-fc58-4383-bc10-ec7d4f4b989c?signature=e74e94c90bdf971497c0a0078ef833d35a9e5d597129db7dc84ec0349c1d5ff3",
       "variantId": "1794298",
       "formId": "ZOp9A1OW",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=ZOp9A1OW&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=two-skies-map"
     },
     "gift-reading": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/367774cc-fc3a-4019-9460-2e03a5fb288a?signature=3556df83c4baa1ede1919ce1da2f7062c6457754a59840ee5834a48753033478",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/b591f52d-6b94-479d-af29-3237dd75bd02?signature=0859bcd15cd1bd631048188cfcef8ca5485ff942c698afa99be58122aadfdc95",
       "variantId": "1794298",
       "formId": "VvzhK6Kj",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=VvzhK6Kj&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=gift-reading"
     },
     "gift-box-whole-sky": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/ba651c9b-522f-42be-bca4-1a1da94cbe34?signature=37ba9c6d46771a212bc7eaf4a972b703c5b87341d84a29310fac20352050ed0c",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/d6b57e7a-c673-448d-bbb1-72e64addf9fa?signature=3a24d49b0bfa971673a10dc5141c1c0dd2103eaffb172df92290f0fa7f442759",
       "variantId": "1794298",
       "formId": "uHADD51y",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=uHADD51y&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=gift-box-whole-sky"
     },
     "natal-poster": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/99fa509c-ba33-4bad-aaa1-2f54eb6f63cb?signature=9329471b1bd7dfaf7867d0b2ee317130bdb9c653e8fee89ee1f7cb6bbb63eadd",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/02f75f1f-1688-44a8-9cc0-c2ae083a5250?signature=d6b46305f8d78ab9b83bd2950a9dbf9b8930ea2fe87d2ae665c7c92a6b0a6a91",
       "variantId": "1794298",
       "formId": "MKutUmwh",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=MKutUmwh&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=natal-poster"
     },
     "big-three-print": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/841ff633-c2cd-442b-9891-b3ade64e8121?signature=f2ccd06762aa2253e6d5d893d2e782becebfb8171c18a0f8c513a209238e9ed3",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/023ca00d-7b9a-480b-8a3e-6d50edca4929?signature=cab56c2aa2c8623299760649867965e952f19afb18dba545e6272b2651a85fbe",
       "variantId": "1794298",
       "formId": "l3BHnRFG",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=l3BHnRFG&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=big-three-print"
     },
     "sky-tee": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/c82e2898-8395-4fcb-a72c-4cdf0a718bf1?signature=5c8aa4c3a876f3eb1208d8a7320dbcec2b1f541ed23368ce0f80ebc0039d28ec",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/f18eb3e6-79a1-4242-9407-2fb109f40a58?signature=91a6ffc4a18ab4a57d45f2d8982005b1e14973a1c972e67c9b8dafbc4a232454",
       "variantId": "1794298",
       "formId": "jymyb9t2",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=jymyb9t2&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=sky-tee"
     },
     "sky-hoodie": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/d08a5bde-9f5b-4ce2-be5a-c6cc7dcbb606?signature=2bf10283238d61b95688edcdf43b7280ec53ee6a8ddee7f8bb4555703f546e5b",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/d826283a-c110-44d7-89b8-a539f115f4b8?signature=81f9482cdf01643eab1c4dc126aed26eb784b2caf66e9de5745e847fd56014b7",
       "variantId": "1794298",
       "formId": "ItYwTtZw",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=ItYwTtZw&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=sky-hoodie"
     },
     "constellation-mug": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/5902cdf8-bf3a-4641-9f79-182d0038ee61?signature=30e78b478297008a0a88c31123327efee323fd140c789f4250dee3b3b4260b77",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/14ba1d92-34db-49f5-8a71-f4ce90197a46?signature=fb72ac37abe25f068c50d6718b97185631b7247afa7e016d68be06769f999d1e",
       "variantId": "1794298",
       "formId": "cQgoY4h4",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=cQgoY4h4&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=constellation-mug"
     },
     "year-ahead": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/452544c4-bc16-48bf-b36d-c80e95e1c116?signature=968e44e288db00c59bb7d1381eca3c4c38a462642ce8127eff59c375cf17b45b",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/ca3ee756-ccd9-4560-8012-1950f54c5d96?signature=1db721bf9a70690e10b2d6a83908e33f87d5ffc7b69ca0fde3ac8a2ebf366e9a",
       "variantId": "1794298",
       "formId": "QMcr0Ldw",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=QMcr0Ldw&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=year-ahead"
     },
     "solar-return": {
-      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/d6fc2bb8-be19-479b-bf82-dca196d3d244?signature=9192761b4759fd40fd66c2d593d02addfb77e6358efd46fb9ccc1725a39744e2",
+      "checkoutUrl": "https://astroprecise.lemonsqueezy.com/checkout/custom/7fabb569-578e-40fd-8ec2-015be2cba5f0?signature=42ca712686f8a538c448bc0ba47343843c72336c5116dada3a8eabbf74e50be7",
       "variantId": "1794298",
       "formId": "vp60QAiN",
       "typeformRedirect": "https://astroprecise.app/fulfil-redirect.html?form=vp60QAiN&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=solar-return"

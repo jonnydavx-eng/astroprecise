@@ -467,8 +467,8 @@ window.AstroShop = (() => {
     const others = featured.filter(p => p.id !== 'reading-poster-bundle');
     host.innerHTML = `<div class="container">
       <div class="shopc-featured__intro">
-        <p class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — 3 live PDFs</p>
-        <p class="shopc-featured__lede">Personalised from <strong>your</strong> birth chart. Delivered after secure Lemon Squeezy checkout.</p>
+        <p class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — ${products().filter(p => p.available !== false && isLive(p)).length} live pieces</p>
+        <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order. Secure Lemon Squeezy checkout.</p>
       </div>
       <div class="shopc-featured__grid shopc-featured__grid--equal">
         ${others[0] ? featuredCard(others[0]) : ''}
@@ -476,9 +476,10 @@ window.AstroShop = (() => {
         ${others[1] ? featuredCard(others[1]) : ''}
       </div>
       <div class="shopc-trust" role="list">
+        <span class="shopc-trust__item shopc-trust__item--stars" role="listitem" aria-label="5 star brand standard"><span class="shopc-rating">★★★★★</span> 5-star deliverables</span>
         <span class="shopc-trust__item" role="listitem">${icon('star4')} VSOP87 + ELP2000 engine</span>
         <span class="shopc-trust__item" role="listitem">${icon('orb')} Secure Lemon Squeezy checkout</span>
-        <span class="shopc-trust__item" role="listitem">${icon('map')} Instant PDF delivery</span>
+        <span class="shopc-trust__item" role="listitem">${icon('map')} PDFs in 24–48 hours</span>
         <span class="shopc-trust__item" role="listitem">${icon('heart')} Birth data never on this site</span>
       </div>
     </div>`;
