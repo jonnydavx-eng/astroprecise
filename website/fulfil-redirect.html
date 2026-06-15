@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Redirecting to birth details — AstroPrecise</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+      background: #050406; color: #efe3c0; font-family: Georgia, serif; }
+    p { opacity: .85; }
+    a { color: #c9a227; }
+  </style>
+</head>
+<body>
+  <p>Redirecting to your birth-details form…</p>
+  <script>
+    (function () {
+      var p = new URLSearchParams(location.search);
+      var form = p.get('form');
+      if (!form) {
+        document.body.innerHTML = '<p>Missing form reference. <a href="https://astroprecise.app/shop.html">Return to shop</a></p>';
+        return;
+      }
+      var parts = [];
+      ['email', 'buyer_name', 'order_id', 'product_sku'].forEach(function (k) {
+        var v = p.get(k);
+        if (v) parts.push(k + '=' + encodeURIComponent(v));
+      });
+      var dest = 'https://form.typeform.com/to/' + encodeURIComponent(form);
+      if (parts.length) dest += '#' + parts.join('&');
+      location.replace(dest);
+    })();
+  </script>
+</body>
+</html>

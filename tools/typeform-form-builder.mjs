@@ -528,9 +528,10 @@ export const FORM_CATALOG = [
 ];
 
 export function lsButtonLink(formId, productSku) {
+  // LS API rejects hash-fragment URLs for receipt_link_url — route via site redirect.
   return (
-    `https://form.typeform.com/to/${formId}` +
-    `#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=${productSku}`
+    `https://astroprecise.app/fulfil-redirect.html?form=${formId}` +
+    `&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=${productSku}`
   );
 }
 

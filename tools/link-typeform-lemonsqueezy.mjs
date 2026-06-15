@@ -23,45 +23,44 @@ loadSecrets();
 const __dir = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dir, '..');
 const CATALOG = join(__dir, 'typeform-catalog.json');
+const LS_CATALOG = join(__dir, 'ls-product-catalog.json');
 const URLS = join(__dir, 'commerce-urls.json');
 const RESULT = join(__dir, 'commerce-setup-result.json');
+const IMAGE_BASE = 'https://astroprecise.app/img/shop';
 const STORE_ID = process.env.LEMONSQUEEZY_STORE_ID || '407645';
 const VARIANT_ID = process.env.LEMONSQUEEZY_VARIANT_ID || '';
 const LS_KEY = process.env.LEMONSQUEEZY_API_KEY || '';
 const TF_KEY = process.env.TYPEFORM_TOKEN || '';
 const APPLY = process.argv.includes('--apply');
 
-const PRICES = {
-  'deep-reading': 1200,
-  'natal-poster-pdf': 600,
-  'reading-poster-bundle': 1600,
-  'two-skies-map': 2400,
-  'gift-reading': 1500,
-  'gift-box-whole-sky': 3500,
-  'natal-poster': 2000,
-  'big-three-print': 1000,
-  'sky-tee': 1800,
-  'sky-hoodie': 3200,
-  'constellation-mug': 900,
-  'year-ahead': 1600,
-  'solar-return': 1400,
+const lsProducts = existsSync(LS_CATALOG)
+  ? JSON.parse(readFileSync(LS_CATALOG, 'utf8')).products
+  : {};
+
+const PRICES = Object.fromEntries(
+  Object.entries(lsProducts).map(([id, p]) => [id, Math.round((p.price_gbp || 12) * 100)])
+);
+
+const FALLBACK_PRICES = {
+  'deep-reading': 1200, 'natal-poster-pdf': 600, 'reading-poster-bundle': 1600,
+  'two-skies-map': 2400, 'gift-reading': 1500, 'gift-box-whole-sky': 3500,
+  'natal-poster': 2000, 'big-three-print': 1000, 'sky-tee': 1800,
+  'sky-hoodie': 3200, 'constellation-mug': 900, 'year-ahead': 1600, 'solar-return': 1400,
 };
 
-const NAMES = {
-  'deep-reading': 'AstroPrecise Deep Natal Reading — Personal PDF',
-  'natal-poster-pdf': 'AstroPrecise Natal Chart Poster — Print-at-Home PDF',
-  'reading-poster-bundle': 'AstroPrecise Deep Reading + Poster Bundle',
-  'two-skies-map': 'AstroPrecise Two Skies — Couples Star Map',
-  'gift-reading': 'AstroPrecise Gift a Deep Reading',
-  'gift-box-whole-sky': 'AstroPrecise Whole Sky Gift Box',
-  'natal-poster': 'AstroPrecise Natal Sky — Art Poster (print)',
-  'big-three-print': 'AstroPrecise Big Three Mini Print',
-  'sky-tee': 'AstroPrecise Your Sky Tee',
-  'sky-hoodie': 'AstroPrecise Your Sky Hoodie',
-  'constellation-mug': 'AstroPrecise Star Map Mug',
-  'year-ahead': 'AstroPrecise Year Ahead Transit Report',
-  'solar-return': 'AstroPrecise Solar Return PDF',
-};
+function productMeta(sku) {
+  const p = lsProducts[sku] || {};
+  const disclaimer = ' Entertainment purposes only.';
+  return {
+    name: p.name || sku,
+    description: p.short_description
+      ? (p.short_description.endsWith('.') ? p.short_description : p.short_description + '.') + disclaimer
+      : 'After payment you will submit birth details on our secure Typeform. Delivered within 24–48 hours.' + disclaimer,
+    media: p.image ? [`${IMAGE_BASE}/${p.image}`] : [],
+    receipt_button: p.receipt_button || 'Submit birth details',
+    receipt_thank_you: p.receipt_thank_you || 'Thank you! Complete the short birth-details form so we can generate your order.',
+  };
+}
 
 async function ls(path, opts = {}) {
   const res = await fetch(`https://api.lemonsqueezy.com/v1${path}`, {
@@ -90,26 +89,29 @@ async function tf(path) {
 
 function typeformRedirect(formId, sku) {
   return (
-    `https://form.typeform.com/to/${formId}` +
-    `#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=${sku}`
+    `https://astroprecise.app/fulfil-redirect.html?form=${formId}` +
+    `&email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=${sku}`
   );
 }
 
 async function createLinkedCheckout(variantId, form, sku) {
   const redirect = form.lemon_squeezy_button || typeformRedirect(form.form_id, sku);
+  const meta = productMeta(sku);
+  const productOptions = {
+    name: meta.name,
+    description: meta.description,
+    redirect_url: redirect,
+    receipt_button_text: meta.receipt_button,
+    receipt_link_url: redirect,
+    receipt_thank_you_note: meta.receipt_thank_you,
+  };
+  if (meta.media.length) productOptions.media = meta.media;
   const body = {
     data: {
       type: 'checkouts',
       attributes: {
-        custom_price: PRICES[sku] || 1200,
-        product_options: {
-          name: NAMES[sku] || sku,
-          description: 'After payment you will submit birth details on our secure Typeform. PDF within 24–48 hours. Entertainment only.',
-          redirect_url: redirect,
-          receipt_button_text: 'Submit birth details',
-          receipt_link_url: redirect,
-          receipt_thank_you_note: 'Thank you! Complete the short birth-details form so we can generate your order.',
-        },
+        custom_price: PRICES[sku] || FALLBACK_PRICES[sku] || 1200,
+        product_options: productOptions,
         checkout_data: {
           custom: { product_sku: sku },
         },

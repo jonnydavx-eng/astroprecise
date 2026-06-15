@@ -1,6 +1,9 @@
-ASTROPRECISE — LEMON SQUEEZY PRODUCT COPY (paste into LS dashboard)
+ASTROPRECISE — LEMON SQUEEZY PRODUCT COPY
+Canonical source for API provisioning: tools/ls-product-catalog.json
+(Names, descriptions, receipt copy, image URLs — used by link-typeform-lemonsqueezy.mjs)
 Prices match AP_MON ap-v116. Tax category for all: eBooks (or Digital Goods or Services).
 Pricing: Single payment, GBP, no subscription.
+Route A (automated): node tools/provision-shop.mjs --apply → 13 checkouts with media + copy.
 
 ================================================================================
 PRODUCT 1 — HERO (create first)
