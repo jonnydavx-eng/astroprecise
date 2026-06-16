@@ -1154,7 +1154,7 @@
               <div class="sign-reading-panel__title-group">
                 <img class="srp-card-thumb" id="srp-card-thumb" src="assets/images/zodiac-cards/aries.jpg" alt="" width="68" height="102" decoding="async" />
                 <div>
-                  <h3 class="sign-reading-panel__sign-name" id="srp-sign-name">Daily reading</h3>
+                  <p class="sign-reading-panel__sign-name" id="srp-sign-name">Daily reading</p>
                   <p class="sign-reading-panel__date" id="srp-date"></p>
                   <span class="srp-element-text" id="srp-element-text"></span>
                   <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide →</a>
@@ -1222,14 +1222,14 @@
                 <span><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Weekly Outlook</span>
                 <span id="srp-weekly-chevron">▾</span>
               </button>
-              <div id="srp-weekly-body" aria-live="polite"></div>
+              <div id="srp-weekly-body" aria-live="polite" aria-hidden="true"></div>
             </div>
             <div id="srp-monthly-wrap" style="margin-top:var(--space-3);">
               <button id="srp-monthly-toggle" class="btn btn--ghost btn--sm" aria-expanded="false">
                 <span><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg> Monthly Outlook</span>
                 <span id="srp-monthly-chevron">▾</span>
               </button>
-              <div id="srp-monthly-body" aria-live="polite"></div>
+              <div id="srp-monthly-body" aria-live="polite" aria-hidden="true"></div>
             </div>
             <p class="srp-personal-note" id="srp-personal-note" hidden></p>
             <p style="margin-top:var(--space-4);">
@@ -1708,12 +1708,14 @@
       if (weeklyToggle && weeklyBody) {
         weeklyToggle.setAttribute('aria-expanded', 'false');
         weeklyBody.classList.remove('is-open');
+        weeklyBody.setAttribute('aria-hidden', 'true');
         if (weeklyChevron) weeklyChevron.textContent = '▾';
         weeklyToggle._bound && weeklyToggle.removeEventListener('click', weeklyToggle._bound);
         weeklyToggle._bound = function() {
           var open = !weeklyBody.classList.contains('is-open');
           weeklyBody.classList.toggle('is-open', open);
           weeklyToggle.setAttribute('aria-expanded', String(open));
+          weeklyBody.setAttribute('aria-hidden', String(!open));
           if (weeklyChevron) weeklyChevron.textContent = open ? '▴' : '▾';
         };
         weeklyToggle.addEventListener('click', weeklyToggle._bound);

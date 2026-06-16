@@ -1209,7 +1209,7 @@ window.AP_MON = Object.assign({
   // post URL). Empty '' = DORMANT: the chart-page email form saves intent in
   // localStorage only — no data leaves the device. When set, the form POSTs here.
   emailUrl: 'https://list.astroprecise.app/subscribe',
-  ownerEmail: 'jonnydavx@gmail.com',   // fallback relay + owner notifications from worker
+  ownerEmail: 'hello@astroprecise.app',   // fallback relay + owner notifications from worker
 
   // ═══════════════════════════════════════════════════════════════════════
   // COMMERCE — the "wear your sky" shop (config-driven, dormant by default).
