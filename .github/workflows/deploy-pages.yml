@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, test-engine.mjs, test-horoscope.mjs, test-compat.mjs, tools/e2e-profile-save-audit.mjs]
+    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, test-engine.mjs, test-horoscope.mjs, test-compat.mjs, test-art-themes.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
 permissions:
@@ -32,8 +32,14 @@ jobs:
       - name: Synastry compatibility
         run: node test-compat.mjs
 
+      - name: Art theme library
+        run: node test-art-themes.mjs
+
       - name: Profile save e2e audit
-        run: node tools/e2e-profile-save-audit.mjs
+        run: |
+          python3 -m http.server 8790 --directory website &
+          sleep 2
+          node tools/e2e-profile-save-audit.mjs
 
   deploy:
     needs: test
