@@ -41,6 +41,21 @@
   const R_CENTER_FILL = 78;    // filled center disc
   const R_CORE_DOT    = 5;     // small golden center dot
 
+  // Warm observatory tokens (shop / main.css parity — no cool navy)
+  const WARM = {
+    void:      '#050406',
+    plate:     '#13100C',
+    gold:      '#C9A227',
+    goldDim:   '#A8841E',
+    parchment: '#E8E0D0',
+    silver:    '#A89E88',
+    silverDim: '#7E7565',
+    hairline:  'rgba(201,162,39,0.22)',
+    mauve:     '#6E1A26',
+    synastry:  '#B87898',
+    transit:   '#9DB88A'
+  };
+
   // ─── Zodiac data ───────────────────────────────────────────────────────────
   const ZODIAC_SIGNS = [
     'Aries','Taurus','Gemini','Cancer','Leo','Virgo',
@@ -265,18 +280,72 @@
     flt2.appendChild(mg2);
     defs.appendChild(flt2);
 
+    // Nebula wash behind the wheel (warm void → oxblood rim)
+    const neb = el('radialGradient', { id: idPrefix + 'nebula', cx: '50%', cy: '48%', r: '58%' });
+    [[0,   WARM.plate, 0.95],
+     [0.55, WARM.void,  1],
+     [0.88, '#1a100c', 0.6],
+     [1,   WARM.mauve, 0.12]
+    ].forEach(([o, c, op]) => {
+      neb.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c, 'stop-opacity': op }));
+    });
+    defs.appendChild(neb);
+
+    // Engraved outer ring gradient
+    const ringG = el('linearGradient', { id: idPrefix + 'ringG', x1: '0%', y1: '0%', x2: '100%', y2: '100%' });
+    [[0, '#EFE3C0'], [0.45, WARM.gold], [1, WARM.goldDim]].forEach(([o, c]) => {
+      ringG.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c }));
+    });
+    defs.appendChild(ringG);
+
     svg.appendChild(defs);
   }
 
+  // ─── Schematic orbital tracks (decorative ecliptic rings — NOT WebGL orrery) ─
+  // Honest: ring radii are fixed/schematic for depth; only ASC–DSC lines use real longitudes.
+  function drawOrbitalSchematic(svg, ascLon, idPrefix) {
+    const g = el('g', { class: 'ap-orbital-tracks' });
+    const schematic = [
+      { r: 195, op: 0.14, dash: '2,6' },
+      { r: 178, op: 0.1,  dash: '1,7' },
+      { r: 162, op: 0.08, dash: '1,8' }
+    ];
+    schematic.forEach((track, i) => {
+      g.appendChild(el('circle', {
+        cx: CX, cy: CY, r: track.r,
+        fill: 'none',
+        stroke: WARM.gold,
+        'stroke-width': '0.55',
+        'stroke-dasharray': track.dash,
+        opacity: track.op.toFixed(2),
+        class: i === 0 ? 'ap-orbital-track ap-orbital-track--pulse' : 'ap-orbital-track'
+      }));
+    });
+    // Ecliptic horizon emphasis at ASC–DSC
+    const ascAng = lonToAngle(ascLon, ascLon);
+    const dscAng = lonToAngle(ascLon + 180, ascLon);
+    [ascAng, dscAng].forEach(ang => {
+      const p1 = polar(CX, CY, R_HOUSE_IN + 4, ang);
+      const p2 = polar(CX, CY, R_ZODIAC_IN - 6, ang);
+      g.appendChild(el('line', {
+        x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
+        x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
+        stroke: WARM.gold,
+        'stroke-width': '0.8',
+        opacity: '0.35',
+        'stroke-dasharray': '4,5'
+      }));
+    });
+    svg.appendChild(g);
+  }
+
   // ─── Background + star field ──────────────────────────────────────────────
-  function drawBackground(svg) {
-    // Dark background circle
+  function drawBackground(svg, idPrefix) {
     svg.appendChild(el('circle', {
-      cx: CX, cy: CY, r: R_ZODIAC_OUT,
-      fill: '#050406'
+      cx: CX, cy: CY, r: R_ZODIAC_OUT + 4,
+      fill: `url(#${idPrefix}nebula)`
     }));
 
-    // Subtle star dots (deterministic LCG so they're always the same)
     let seed = 0xDEADBEEF;
     function rand() {
       seed = Math.imul(seed ^ (seed >>> 16), 0x45D9F3B);
@@ -284,7 +353,8 @@
       seed ^= seed >>> 16;
       return (seed >>> 0) / 0xFFFFFFFF;
     }
-    for (let i = 0; i < 120; i++) {
+    const starG = el('g', { class: 'ap-chart-stars', opacity: '0.85' });
+    for (let i = 0; i < 180; i++) {
       let sx, sy;
       for (let t = 0; t < 8; t++) {
         sx = CX - R_ZODIAC_OUT + rand() * R_ZODIAC_OUT * 2;
@@ -292,13 +362,24 @@
         const d2 = (sx - CX) ** 2 + (sy - CY) ** 2;
         if (d2 < R_ZODIAC_OUT * R_ZODIAC_OUT) break;
       }
-      const sr  = rand() * 1.1 + 0.2;
-      const op  = (rand() * 0.4 + 0.15).toFixed(2);
-      svg.appendChild(el('circle', {
+      const sr  = rand() * 1.2 + 0.15;
+      const op  = (rand() * 0.55 + 0.12).toFixed(2);
+      const tint = rand() > 0.92 ? WARM.gold : '#FFFFFF';
+      starG.appendChild(el('circle', {
         cx: sx.toFixed(1), cy: sy.toFixed(1),
-        r: sr.toFixed(2), fill: '#FFFFFF', opacity: op
+        r: sr.toFixed(2), fill: tint, opacity: op
       }));
     }
+    svg.appendChild(starG);
+
+    // Faint engraved square (sacred-geo hint)
+    const sq = R_ZODIAC_OUT * 0.42;
+    svg.appendChild(el('rect', {
+      x: (CX - sq).toFixed(1), y: (CY - sq).toFixed(1),
+      width: (sq * 2).toFixed(1), height: (sq * 2).toFixed(1),
+      fill: 'none', stroke: WARM.gold, 'stroke-width': '0.35',
+      opacity: '0.06', transform: `rotate(45 ${CX} ${CY})`
+    }));
   }
 
   // ─── Zodiac wheel ─────────────────────────────────────────────────────────
@@ -336,7 +417,7 @@
       glassDisc(svg, g, gp.x, gp.y, 12, shade(fillClr, 0.18), idPrefix);
       const glyph  = el('text', {
         x: gp.x.toFixed(2), y: gp.y.toFixed(2),
-        'text-anchor': 'middle', 'dominant-baseline': 'central',
+        'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
         fill: '#ffffff',
         'font-size': '15',
         'font-family': '"AstroGlyph", "Noto Sans Symbols", serif',
@@ -365,10 +446,10 @@
       }));
     }
 
-    // Outer border circle
+    // Outer border circle (engraved gold gradient)
     g.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_ZODIAC_OUT,
-      fill: 'none', stroke: '#C9A227', 'stroke-width': '2',
+      fill: 'none', stroke: `url(#${idPrefix}ringG)`, 'stroke-width': '2.2',
       filter: `url(#${idPrefix}rglow)`
     }));
 
@@ -417,7 +498,7 @@
         const lp = polar(CX, CY, labelR, visualAng);
         const lbl = el('text', {
           x: lp.x.toFixed(2), y: lp.y.toFixed(2),
-          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
           fill: '#C9A227',
           'font-size': '9',
           'font-family': 'system-ui, sans-serif',
@@ -435,11 +516,11 @@
       const np     = polar(CX, CY, R_HOUSE_NUM, midAng);
       const hnum = el('text', {
         x: np.x.toFixed(2), y: np.y.toFixed(2),
-        'text-anchor': 'middle', 'dominant-baseline': 'central',
-        fill: '#778899',
+        'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
+        fill: WARM.silverDim,
         'font-size': '10',
         'font-family': 'system-ui, sans-serif',
-        opacity: '0.9'
+        opacity: '0.92'
       });
       hnum.textContent = String(h + 1);
       g.appendChild(hnum);
@@ -449,36 +530,86 @@
   }
 
   // ─── Aspect lines ─────────────────────────────────────────────────────────
+  function aspectKey(asp) {
+    const p1 = asp.planet1 || asp.p1 || '';
+    const p2 = asp.planet2 || asp.p2 || '';
+    const type = (asp.aspect || asp.type || '').toLowerCase();
+    return `${p1}-${p2}-${type}`;
+  }
+
+  function wireAspectHover(svg) {
+    const lines = svg.querySelectorAll('.aspect-line');
+    if (!lines.length) return;
+    const reset = () => lines.forEach(l => l.classList.remove('is-highlight', 'is-dimmed'));
+    lines.forEach(line => {
+      line.addEventListener('mouseenter', () => {
+        lines.forEach(l => {
+          l.classList.toggle('is-highlight', l === line);
+          l.classList.toggle('is-dimmed', l !== line);
+        });
+      });
+      line.addEventListener('mouseleave', reset);
+      line.addEventListener('focus', () => {
+        lines.forEach(l => {
+          l.classList.toggle('is-highlight', l === line);
+          l.classList.toggle('is-dimmed', l !== line);
+        });
+      });
+      line.addEventListener('blur', reset);
+    });
+  }
+
   function drawAspectLines(svg, aspects, positions, ascLon) {
     if (!aspects || aspects.length === 0) return;
     const g = el('g', { class: 'aspect-lines' });
 
     for (const asp of aspects) {
-      const pos1 = positions[asp.planet1];
-      const pos2 = positions[asp.planet2];
+      const p1name = asp.planet1 || asp.p1;
+      const p2name = asp.planet2 || asp.p2;
+      const pos1 = positions[p1name];
+      const pos2 = positions[p2name];
       if (!pos1 || !pos2) continue;
 
-      const style   = ASPECT_STYLE[asp.aspect]   || ASPECT_STYLE.Quincunx;
-      const opacity = ASPECT_OPACITY[asp.aspect]  || 0.35;
+      const aspectName = (asp.aspect || asp.type || '').toLowerCase();
+      const styleKey = aspectName.charAt(0).toUpperCase() + aspectName.slice(1);
+      const style   = ASPECT_STYLE[styleKey] || ASPECT_STYLE[aspectName] || ASPECT_STYLE.Quincunx;
+      const opacity = ASPECT_OPACITY[styleKey] || ASPECT_OPACITY[aspectName] || 0.35;
 
       const a1 = lonToAngle(pos1.lon, ascLon);
       const a2 = lonToAngle(pos2.lon, ascLon);
-      const p1 = polar(CX, CY, R_ASPECT, a1);
-      const p2 = polar(CX, CY, R_ASPECT, a2);
+      const pt1 = polar(CX, CY, R_ASPECT, a1);
+      const pt2 = polar(CX, CY, R_ASPECT, a2);
+      const len = Math.hypot(pt2.x - pt1.x, pt2.y - pt1.y);
+
+      const orbTxt = asp.orb !== undefined ? ` (${typeof asp.orb === 'number' ? asp.orb.toFixed(1) : asp.orb}°)` : '';
+      const title = el('title');
+      title.textContent = `${p1name} ${aspectName} ${p2name}${orbTxt}`;
 
       const attrs = {
-        x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
-        x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
+        class: 'aspect-line aspect-line--draw',
+        x1: pt1.x.toFixed(2), y1: pt1.y.toFixed(2),
+        x2: pt2.x.toFixed(2), y2: pt2.y.toFixed(2),
         stroke: style.color,
         'stroke-width': style.width,
-        opacity: opacity.toFixed(2)
+        opacity: opacity.toFixed(2),
+        'data-aspect-key': aspectKey(asp),
+        tabindex: '0',
+        role: 'graphics-symbol',
+        'aria-label': title.textContent
       };
       if (style.dash) attrs['stroke-dasharray'] = style.dash;
 
-      g.appendChild(el('line', attrs));
+      const line = el('line', attrs);
+      line.style.setProperty('--aspect-len', len.toFixed(1));
+      line.style.setProperty('--aspect-op', opacity.toFixed(2));
+      line.style.strokeDasharray = String(len);
+      line.style.strokeDashoffset = String(len);
+      line.appendChild(title);
+      g.appendChild(line);
     }
 
     svg.appendChild(g);
+    wireAspectHover(svg);
   }
 
   // ─── Collision avoidance for planet glyphs ────────────────────────────────
@@ -558,7 +689,7 @@
       glassDisc(svg, g, gp.x, gp.y, 10, pColor, idPrefix);
       const txt = el('text', {
         x: gp.x.toFixed(2), y: gp.y.toFixed(2),
-        'text-anchor': 'middle', 'dominant-baseline': 'central',
+        'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
         fill: '#ffffff',
         'font-size': fSize,
         'font-family': 'serif, "Apple Color Emoji", "Segoe UI Emoji", system-ui',
@@ -573,7 +704,7 @@
         const orp  = polar(CX, CY, rPlanet + 12, dispAng);
         const rTxt = el('text', {
           x: orp.x.toFixed(2), y: orp.y.toFixed(2),
-          'text-anchor': 'middle', 'dominant-baseline': 'central',
+          'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
           fill: '#FF9977',
           'font-size': '8',
           'font-family': 'serif, system-ui',
@@ -592,10 +723,11 @@
         const dp     = polar(CX, CY, dlr, dispAng);
         const dl = el('text', {
           x: dp.x.toFixed(2), y: dp.y.toFixed(2),
-          'text-anchor': 'middle', 'dominant-baseline': 'central',
-          fill: '#8899AA',
+          'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
+          fill: WARM.silverDim,
           'font-size': '7',
-          'font-family': 'system-ui, sans-serif'
+          'font-family': 'var(--font-mono, "IBM Plex Mono", ui-monospace, monospace)',
+          'font-variant-numeric': 'tabular-nums'
         });
         dl.textContent = `${degNum}°${String(minNum).padStart(2,'0')}'`;
         g.appendChild(dl);
@@ -607,91 +739,109 @@
 
   // ─── Center circle with label ─────────────────────────────────────────────
   function drawCenter(svg, label, idPrefix) {
+    // Engraved medallion rings
+    svg.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_INNER + 6,
+      fill: 'none', stroke: WARM.gold, 'stroke-width': '0.6', opacity: '0.22'
+    }));
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_CENTER_FILL,
       fill: `url(#${idPrefix}cgrad)`,
-      stroke: '#2A2A4A', 'stroke-width': '1.5'
+      stroke: WARM.goldDim, 'stroke-width': '1.2', opacity: '0.95'
     }));
 
     const displayName = (label || 'Natal Chart').slice(0, 22);
     const lbl = el('text', {
-      x: CX, y: CY,
-      'text-anchor': 'middle', 'dominant-baseline': 'central',
-      fill: '#C9A227',
-      'font-size': displayName.length > 14 ? '10' : '12',
-      'font-family': 'system-ui, sans-serif',
+      x: CX, y: CY - 4,
+      'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
+      fill: WARM.parchment,
+      'font-size': displayName.length > 14 ? '9' : '11',
+      'font-family': 'var(--font-display, "Cinzel", serif), system-ui, sans-serif',
       'font-weight': '600',
-      opacity: '0.9'
+      opacity: '0.95'
     });
     lbl.textContent = displayName;
     svg.appendChild(lbl);
 
+    const sub = el('text', {
+      x: CX, y: CY + 12,
+      'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
+      fill: WARM.gold,
+      'font-size': '6.5',
+      'font-family': 'system-ui, sans-serif',
+      'letter-spacing': '0.18em',
+      opacity: '0.75'
+    });
+    sub.textContent = 'NATAL WHEEL';
+    svg.appendChild(sub);
+
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_CORE_DOT,
-      fill: '#C9A227', opacity: '0.85'
+      fill: WARM.gold, opacity: '0.9',
+      filter: `url(#${idPrefix}pglow)`
     }));
   }
 
   // ─── Planet table (HTML, below the SVG) ──────────────────────────────────
   function buildPlanetTable(positions, houses) {
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'margin-top:14px;overflow-x:auto;font-family:system-ui,sans-serif';
+    wrap.className = 'ap-chart-table-wrap';
 
     const tbl = document.createElement('table');
-    tbl.style.cssText = [
-      'width:100%', 'border-collapse:collapse', 'font-size:12px',
-      'background:#0A0A1E', 'color:#CCDDE8', 'border:1px solid #1E1E3A'
-    ].join(';');
+    tbl.className = 'ap-chart-table';
 
-    // Header row
     const thead = document.createElement('thead');
     const hr    = document.createElement('tr');
-    hr.style.cssText = 'background:#111130;border-bottom:2px solid #C9A227';
-    ['', 'Planet', '', 'Sign', "Degree°Min'", 'House', 'Rx'].forEach(hdr => {
+    [
+      { visible: 'Sym', label: 'Planet symbol' },
+      'Planet',
+      { visible: 'Sym', label: 'Sign symbol' },
+      'Sign',
+      "Degree°Min'",
+      'House',
+      'Rx'
+    ].forEach(hdr => {
       const th = document.createElement('th');
-      th.style.cssText = 'padding:6px 9px;text-align:left;color:#C9A227;font-weight:700;font-size:11px;letter-spacing:0.08em;white-space:nowrap';
-      th.textContent = hdr;
+      if (typeof hdr === 'string') {
+        th.textContent = hdr;
+      } else {
+        th.innerHTML = '<span class="sr-only">' + hdr.label + '</span><span aria-hidden="true">' + hdr.visible + '</span>';
+      }
       hr.appendChild(th);
     });
     thead.appendChild(hr);
     tbl.appendChild(thead);
 
     const tbody = document.createElement('tbody');
-    let row = 0;
     for (const name of PLANET_ORDER) {
       const pos = positions[name];
       if (!pos) continue;
 
       const tr = document.createElement('tr');
-      tr.style.background   = row % 2 === 0 ? '#0A0A1E' : '#0F0F26';
-      tr.style.borderBottom = '1px solid #1E1E3A';
-
       const _dv      = pos.degree !== undefined ? pos.degree : (((pos.lon % 30) + 30) % 30);
       const degNum   = Math.floor(_dv);
       const minNum   = Math.floor((_dv - degNum) * 60);
       const signName = pos.sign || ZODIAC_SIGNS[Math.floor(normLon(pos.lon) / 30)];
-      const elemClr  = ELEMENT_TEXT[SIGN_ELEMENT[signName]] || '#AABBCC';
+      const elemClr  = ELEMENT_TEXT[SIGN_ELEMENT[signName]] || WARM.silver;
       const houseNum = houses ? getPlanetHouse(pos.lon, houses) : '—';
-      const pColor   = PLANET_COLORS[name] || '#CCCCCC';
+      const pColor   = PLANET_COLORS[name] || WARM.silver;
 
       const cells = [
-        `<span style="font-size:17px;font-family:serif;color:${pColor}">${PLANET_GLYPHS[name] || ''}</span>`,
-        `<span style="color:#DDEEFF">${name}</span>`,
-        `<span style="font-size:15px;font-family:serif;color:${elemClr}">${ZODIAC_GLYPHS[signName] || ''}</span>`,
+        `<span class="ap-pt-glyph" style="color:${pColor}">${PLANET_GLYPHS[name] || ''}</span>`,
+        `<span class="ap-pt-name">${name}</span>`,
+        `<span class="ap-pt-glyph" style="color:${elemClr}">${ZODIAC_GLYPHS[signName] || ''}</span>`,
         `<span style="color:${elemClr}">${signName}</span>`,
-        `<span style="color:#D0E8FF;font-variant-numeric:tabular-nums">${degNum}°${String(minNum).padStart(2,'0')}'</span>`,
-        `<span style="color:#C9A227;font-weight:600">${houseNum}</span>`,
-        pos.retrograde ? `<span style="color:#FF9977;font-family:serif;font-size:13px">℞</span>` : ''
+        `<span class="ap-pt-deg">${degNum}°${String(minNum).padStart(2,'0')}'</span>`,
+        `<span class="ap-pt-house">${houseNum}</span>`,
+        pos.retrograde ? `<span class="ap-pt-rx">℞</span>` : ''
       ];
 
       for (const html of cells) {
         const td = document.createElement('td');
-        td.style.padding = '5px 9px';
         td.innerHTML = html;
         tr.appendChild(td);
       }
       tbody.appendChild(tr);
-      row++;
     }
     tbl.appendChild(tbody);
     wrap.appendChild(tbl);
@@ -718,52 +868,51 @@
   // ─── Legend bar ───────────────────────────────────────────────────────────
   function buildLegend(dominant, chartRuler) {
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'margin-top:12px;display:flex;flex-wrap:wrap;gap:18px;font-family:system-ui,sans-serif;font-size:12px;color:#AABBCC';
+    wrap.className = 'ap-chart-legend';
 
-    // Aspect legend
     const aDiv = document.createElement('div');
-    aDiv.style.cssText = 'flex:1;min-width:180px';
-    aDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ASPECTS</div>';
+    aDiv.className = 'ap-chart-legend__block';
+    aDiv.innerHTML = '<div class="ap-chart-legend__title">Aspects</div>';
     [
       ['Conjunction','☌','#FFFFFF'],['Opposition','☍','#EF4444'],
       ['Trine','△','#5fa39a'],['Square','□','#F97316'],
       ['Sextile','⚹','#9db36a'],['Minor','- -','#6B7280']
     ].forEach(([n, s, c]) => {
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:5px;margin-bottom:2px';
+      row.className = 'ap-chart-legend__row';
       row.innerHTML = `<span style="color:${c};font-size:14px;font-family:serif;width:16px;text-align:center">${s}</span><span>${n}</span>`;
       aDiv.appendChild(row);
     });
     wrap.appendChild(aDiv);
 
-    // Element legend
     const eDiv = document.createElement('div');
-    eDiv.style.cssText = 'flex:1;min-width:160px';
-    eDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">ELEMENTS</div>';
+    eDiv.className = 'ap-chart-legend__block';
+    eDiv.innerHTML = '<div class="ap-chart-legend__title">Elements</div>';
     [
-      ['Fire', '#FF6B35','♈♌♐'],['Earth','#2D7A4F','♉♍♑'],
-      ['Air',  '#a78bba','♊♎♒'],['Water','#3f7d76','♋♏♓']
+      ['Fire',  ELEMENT_FILL.fire,  '♈♌♐'],
+      ['Earth', ELEMENT_FILL.earth, '♉♍♑'],
+      ['Air',   ELEMENT_FILL.air,   '♊♎♒'],
+      ['Water', ELEMENT_FILL.water, '♋♏♓']
     ].forEach(([n, c, s]) => {
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:2px';
-      row.innerHTML = `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${c};opacity:0.9;flex-shrink:0"></span><span style="color:${c};font-weight:600">${n}</span><span style="font-family:serif;font-size:12px">${s}</span>`;
+      row.className = 'ap-chart-legend__row';
+      row.innerHTML = `<span class="ap-chart-legend__dot" style="background:${c}"></span><span style="color:${ELEMENT_TEXT[n.toLowerCase()] || ELEMENT_TEXT[SIGN_ELEMENT[n]] || c};font-weight:600">${n}</span><span style="font-family:serif;font-size:12px">${s}</span>`;
       eDiv.appendChild(row);
     });
     wrap.appendChild(eDiv);
 
-    // Chart info (optional)
     if (dominant || chartRuler) {
       const iDiv = document.createElement('div');
-      iDiv.style.cssText = 'flex:1;min-width:150px';
-      iDiv.innerHTML = '<div style="color:#C9A227;font-weight:700;margin-bottom:5px;letter-spacing:0.08em;font-size:11px">CHART INFO</div>';
+      iDiv.className = 'ap-chart-legend__block';
+      iDiv.innerHTML = '<div class="ap-chart-legend__title">Chart info</div>';
       if (dominant) {
-        if (dominant.element)  iDiv.innerHTML += `<div style="margin-bottom:3px">Element: <strong style="color:#DDEEFF">${dominant.element}</strong></div>`;
-        if (dominant.modality) iDiv.innerHTML += `<div style="margin-bottom:3px">Modality: <strong style="color:#DDEEFF">${dominant.modality}</strong></div>`;
+        if (dominant.element)  iDiv.innerHTML += `<div style="margin-bottom:3px">Element: <strong style="color:${WARM.parchment}">${dominant.element}</strong></div>`;
+        if (dominant.modality) iDiv.innerHTML += `<div style="margin-bottom:3px">Modality: <strong style="color:${WARM.parchment}">${dominant.modality}</strong></div>`;
       }
       if (chartRuler) {
-        const rc = PLANET_COLORS[chartRuler] || '#CCC';
+        const rc = PLANET_COLORS[chartRuler] || WARM.silver;
         const rg = PLANET_GLYPHS[chartRuler] || '';
-        iDiv.innerHTML += `<div>Ruler: <span style="color:${rc};font-size:15px;font-family:serif">${rg}</span> <strong style="color:#DDEEFF">${chartRuler}</strong></div>`;
+        iDiv.innerHTML += `<div>Ruler: <span style="color:${rc};font-size:15px;font-family:serif">${rg}</span> <strong style="color:${WARM.parchment}">${chartRuler}</strong></div>`;
       }
       wrap.appendChild(iDiv);
     }
@@ -774,16 +923,16 @@
   // ─── Title bar ────────────────────────────────────────────────────────────
   function buildTitleBar(title, subtitle, subtitleHtml) {
     const bar = document.createElement('div');
-    bar.style.cssText = 'text-align:center;padding:8px 4px 4px;font-family:system-ui,sans-serif';
+    bar.className = 'ap-chart-title';
     if (title) {
       const h = document.createElement('div');
-      h.style.cssText = 'color:#C9A227;font-size:15px;font-weight:700;letter-spacing:0.12em';
+      h.className = 'ap-chart-title__main';
       h.textContent = title.toUpperCase();
       bar.appendChild(h);
     }
     if (subtitle || subtitleHtml) {
       const s = document.createElement('div');
-      s.style.cssText = 'color:#6A7A8A;font-size:11px;margin-top:2px;letter-spacing:0.05em';
+      s.className = 'ap-chart-title__sub';
       if (subtitleHtml) s.innerHTML = subtitleHtml;
       else s.textContent = subtitle;
       bar.appendChild(s);
@@ -802,14 +951,15 @@
   }
 
   // ─── Get/reset container ──────────────────────────────────────────────────
-  function getContainer(containerId) {
+  function getContainer(containerId, wheelOnly) {
     const c = document.getElementById(containerId);
     if (!c) { console.error(`AstroChartRender: #${containerId} not found`); return null; }
-    c.innerHTML    = '';
-    c.style.background   = '#050406';
-    c.style.borderRadius = '10px';
-    c.style.padding      = '14px';
-    c.style.boxSizing    = 'border-box';
+    c.innerHTML = '';
+    c.className = wheelOnly ? 'ap-chart-render' : 'ap-chart-render ap-chart-render--full';
+    c.style.background = wheelOnly ? 'transparent' : '';
+    c.style.borderRadius = wheelOnly ? '0' : '10px';
+    c.style.padding = wheelOnly ? '0' : '14px';
+    c.style.boxSizing = 'border-box';
     return c;
   }
 
@@ -829,7 +979,8 @@
    */
   function renderNatalChart(chartData, containerId, options) {
     const opts      = options || {};
-    const container = getContainer(containerId);
+    const wheelOnly = opts.wheelOnly === true;
+    const container = getContainer(containerId, wheelOnly);
     if (!container) return;
 
     const positions = chartData.positions || {};
@@ -837,6 +988,8 @@
     const aspects   = chartData.aspects   || [];
     const showAsp   = opts.showAspects !== false;
     const showDeg   = opts.showDegrees !== false;
+    const showTable = opts.showTable !== false && !wheelOnly;
+    const showLeg   = opts.showLegend !== false && !wheelOnly;
 
     const ascLon = normLon(
       positions.Ascendant ? positions.Ascendant.lon : houses[0]
@@ -844,15 +997,14 @@
 
     const prefix = nextPrefix();
 
-    // Optional title bar
-    const title    = opts.title    || chartData.name  || null;
+    const title    = opts.title    || (wheelOnly ? null : chartData.name) || null;
     const subtitle = opts.subtitle || null;
     if (title || subtitle) container.appendChild(buildTitleBar(title, subtitle));
 
-    // SVG wheel
     const svg = createSVG();
     buildDefs(svg, prefix);
-    drawBackground(svg);
+    drawBackground(svg, prefix);
+    drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
     drawHouseWheel(svg, houses, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, aspects, positions, ascLon);
@@ -861,11 +1013,8 @@
 
     container.appendChild(svg);
 
-    // Planet table
-    container.appendChild(buildPlanetTable(positions, houses));
-
-    // Aspect + element legend
-    container.appendChild(buildLegend(chartData.dominant, chartData.chartRuler));
+    if (showTable) container.appendChild(buildPlanetTable(positions, houses));
+    if (showLeg) container.appendChild(buildLegend(chartData.dominant, chartData.chartRuler));
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -909,12 +1058,12 @@
 
     const svg = createSVG();
     buildDefs(svg, prefix);
-    drawBackground(svg);
+    drawBackground(svg, prefix);
+    drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
     drawHouseWheel(svg, houses1, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, chart1.synastryAspects || aspects, pos1, ascLon);
 
-    // Person 1: inner ring at standard radius
     drawPlanets(svg, pos1, ascLon, prefix, {
       ringRadius:  R_PLANET,
       dotRadius:   R_PLANET_DOT,
@@ -923,13 +1072,12 @@
       showDegrees: showDeg
     });
 
-    // Person 2: outer ring between planet ring and zodiac inner edge
     drawPlanets(svg, pos2, ascLon, prefix, {
       ringRadius:    R_PLANET + 22,
       dotRadius:     R_PLANET + 28,
       fontSize:      '12',
       groupId:       'p2-planets',
-      colorOverride: '#cc88aa',
+      colorOverride: WARM.synastry,
       showDegrees:   false
     });
 
@@ -941,7 +1089,7 @@
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:4px"></span><span style="color:#FFD700;font-weight:600">${name1}</span></span>` +
-      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#cc88aa;vertical-align:middle;margin-right:4px"></span><span style="color:#cc88aa;font-weight:600">${name2}</span></span>`;
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.synastry};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.synastry};font-weight:600">${name2}</span></span>`;
     container.appendChild(keyRow);
 
     // Side-by-side planet tables
@@ -960,7 +1108,7 @@
     };
 
     tables.appendChild(makeTableBlock(name1, '#FFD700', pos1, houses1));
-    tables.appendChild(makeTableBlock(name2, '#cc88aa', pos2, houses2));
+    tables.appendChild(makeTableBlock(name2, WARM.synastry, pos2, houses2));
     container.appendChild(tables);
   }
 
@@ -1000,12 +1148,12 @@
 
     const svg = createSVG();
     buildDefs(svg, prefix);
-    drawBackground(svg);
+    drawBackground(svg, prefix);
+    drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
     drawHouseWheel(svg, houses, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, natalChart.transitAspects || aspects, natalPos, ascLon);
 
-    // Natal planets (inner ring, default colors)
     drawPlanets(svg, natalPos, ascLon, prefix, {
       ringRadius:  R_PLANET,
       dotRadius:   R_PLANET_DOT,
@@ -1014,13 +1162,12 @@
       showDegrees: showDeg
     });
 
-    // Transit planets (outer ring, lime/teal to distinguish)
     drawPlanets(svg, tPos, ascLon, prefix, {
       ringRadius:    R_PLANET + 22,
       dotRadius:     R_PLANET + 28,
       fontSize:      '12',
       groupId:       'transit-planets',
-      colorOverride: '#AAFFBB',
+      colorOverride: WARM.transit,
       showDegrees:   false
     });
 
@@ -1032,7 +1179,7 @@
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
       '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:4px"></span><span style="color:#FFD700;font-weight:600">Natal</span></span>' +
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#AAFFBB;vertical-align:middle;margin-right:4px"></span><span style="color:#AAFFBB;font-weight:600">Transits</span></span>';
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.transit};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.transit};font-weight:600">Transits</span></span>`;
     container.appendChild(keyRow);
 
     // Side-by-side planet tables
@@ -1051,7 +1198,7 @@
     };
 
     tables.appendChild(makeBlock('NATAL PLANETS',   '#FFD700', natalPos, houses));
-    tables.appendChild(makeBlock('TRANSIT PLANETS', '#AAFFBB', tPos,
+    tables.appendChild(makeBlock('TRANSIT PLANETS', WARM.transit, tPos,
       (transitPositions && transitPositions.houses) || houses));
     container.appendChild(tables);
 

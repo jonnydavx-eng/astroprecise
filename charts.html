@@ -270,14 +270,6 @@
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
-  <div class="cosmos-solar-system" aria-hidden="true">
-    <div class="css-sun"></div>
-    <div class="css-orbit" style="--r:85px;--dur:8s"><div class="css-planet" style="--c:#7a7572;--s:5px"></div></div>
-    <div class="css-orbit" style="--r:130px;--dur:16s"><div class="css-planet" style="--c:#c8b07a;--s:9px"></div></div>
-    <div class="css-orbit" style="--r:180px;--dur:26s"><div class="css-planet" style="--c:#2878c0;--s:10px"></div></div>
-    <div class="css-orbit" style="--r:230px;--dur:50s"><div class="css-planet" style="--c:#b84232;--s:8px"></div></div>
-    <div class="css-orbit" style="--r:300px;--dur:130s"><div class="css-planet" style="--c:#c08858;--s:17px"></div></div>
-  </div>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
   <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
@@ -301,7 +293,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -352,7 +344,7 @@
           <p class="footer__logo">&#10022; AstroPrecise</p>
           <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
         </div>
-        <nav aria-label="Tools navigation">
+        <div role="group" aria-label="Tools navigation">
           <p class="footer__heading">Tools</p>
           <ul class="footer__links">
             <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
@@ -360,14 +352,14 @@
             <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
             <li><a href="transits.html" class="footer__link">Transits</a></li>
           </ul>
-        </nav>
-        <nav aria-label="Account navigation">
+        </div>
+        <div role="group" aria-label="Account navigation">
           <p class="footer__heading">Account</p>
           <ul class="footer__links">
             <li><a href="charts.html" class="footer__link">My Charts</a></li>
             <li><a href="profile.html" class="footer__link">My Profile</a></li>
           </ul>
-        </nav>
+        </div>
       </div>
       <div class="footer__bottom">
         <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>

@@ -32,11 +32,11 @@
     trine:          { name:'Trine',          glyph:'△', color:'#3fae7a' },
     square:         { name:'Square',         glyph:'□', color:'#b04a52' },
     sextile:        { name:'Sextile',        glyph:'⚹', color:'#9db36a' },
-    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#9aa6c8' },
-    semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#9aa6c8' },
-    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#9aa6c8' },
-    semisextile:    { name:'Semisextile',    glyph:'⚺', color:'#9aa6c8' },
-    quintile:       { name:'Quintile',       glyph:'Q', color:'#9aa6c8' },
+    quincunx:       { name:'Quincunx',       glyph:'⚻', color:'#7E7565' },
+    semisquare:     { name:'SemiSquare',     glyph:'∠', color:'#7E7565' },
+    sesquiquadrate: { name:'Sesquiquadrate', glyph:'⚼', color:'#7E7565' },
+    semisextile:    { name:'Semisextile',    glyph:'⚺', color:'#7E7565' },
+    quintile:       { name:'Quintile',       glyph:'Q', color:'#7E7565' },
   };
   const HOUSE_THEMES = [
     'Self & Identity', 'Money & Values', 'Mind & Communication', 'Home & Roots',
@@ -52,16 +52,16 @@
     Cancer:'water',     Scorpio:'water', Pisces:'water',
   };
   const ELEMENT_COLORS = {
-    fire:  '#c84832',
-    earth: '#2d8a3e',
-    air:   '#4a7ac7',
-    water: '#5B3FA0',
+    fire:  '#D85A2C',
+    earth: '#5E7A3A',
+    air:   '#A78BBA',
+    water: '#3F7D76',
   };
   const ELEMENT_LABEL_COLORS = {
-    fire:  '#e07060',
-    earth: '#5ab870',
-    air:   '#7aabef',
-    water: '#8B6FD4',
+    fire:  '#F0A878',
+    earth: '#A8C07A',
+    air:   '#C6AEDA',
+    water: '#7FB8B0',
   };
   // Modality mapping
   const MODALITY_MAP = {
@@ -494,6 +494,7 @@
     initTabs();
     renderWhatsNext(chart);
     renderDeepTeaser(chart);
+    initWallpaperLead(chart);
     initEmailCapture(chart);
 
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -581,7 +582,7 @@
       { positions: chart.positions, houses: chart.houses, aspects: chart.renderAspects,
         name: chart.name, dominant: chart.dominant, chartRuler: chart.chartRuler },
       'natal-wheel',
-      { title: null });
+      { title: null, wheelOnly: true, showTable: false, showLegend: false });
   }
 
   function renderTabs(chart) {
@@ -608,13 +609,13 @@
         : [];
       if (patterns.length) {
         const patternCards = patterns.map(patt => `
-          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(255,255,255,0.04);border-radius:8px;border-left:3px solid var(--gold);">
-            <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);">
-              <span style="font-size:1.2em;color:var(--gold);">${patt.glyph}</span>
-              <strong style="color:var(--gold);">${patt.name}</strong>
-              ${patt.strength === 'major' ? '<span style="font-size:0.7em;color:var(--silver-dim);text-transform:uppercase;letter-spacing:0.05em;">Major</span>' : ''}
+          <div class="pattern-card">
+            <div class="pattern-card__head">
+              <span class="pattern-card__glyph">${patt.glyph}</span>
+              <strong class="pattern-card__name">${patt.name}</strong>
+              ${patt.strength === 'major' ? '<span class="pattern-card__badge">Major</span>' : ''}
             </div>
-            <p style="margin:0;color:var(--silver);font-size:0.9em;line-height:1.5;">${patt.description}</p>
+            <p class="pattern-card__body">${patt.description}</p>
           </div>`).join('');
         blocks.push(`<div class="analysis-section">
           <h4 class="analysis-section__title">Chart Patterns</h4>
@@ -648,14 +649,14 @@
         : [];
       if (fixedStars.length) {
         const starCards = fixedStars.slice(0, 6).map(fs => `
-          <div class="pattern-card" style="margin-bottom:var(--space-3);padding:var(--space-3) var(--space-4);background:rgba(92, 74, 110,0.07);border-radius:8px;border-left:3px solid var(--violet-bright);">
-            <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1);flex-wrap:wrap;">
-              <span class="eng-star-mark" style="color:var(--violet-bright);"></span>
-              <strong style="color:var(--violet-bright);">${fs.point} conjunct ${fs.star}</strong>
-              <span style="font-size:0.75em;color:var(--silver-dim);">${fs.orb.toFixed(1)}° orb · ${fs.constellation}</span>
-              ${fs.royal ? `<span style="font-size:0.7em;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">★ Royal Star — ${fs.royal}</span>` : ''}
+          <div class="pattern-card pattern-card--star">
+            <div class="pattern-card__head">
+              <span class="eng-star-mark" style="color:#c9a88a;"></span>
+              <strong class="pattern-card__name pattern-card__name--star">${fs.point} conjunct ${fs.star}</strong>
+              <span class="pattern-card__meta">${fs.orb.toFixed(1)}° orb · ${fs.constellation}</span>
+              ${fs.royal ? `<span class="pattern-card__badge" style="color:var(--gold);">★ Royal Star — ${fs.royal}</span>` : ''}
             </div>
-            <p style="margin:0;color:var(--silver);font-size:0.9em;line-height:1.5;">${fs.meaning}</p>
+            <p class="pattern-card__body">${fs.meaning}</p>
           </div>`).join('');
         blocks.push(`<div class="analysis-section">
           <h4 class="analysis-section__title">Fixed Star Conjunctions</h4>
@@ -858,7 +859,7 @@
     const price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
     const priceBit = price ? ` — <strong>${esc(price)}</strong>` : '';
     const ctaHtml = configured
-      ? `<p class="deep-teaser__format">A personalised 6–10 page PDF, drawn line by line from your exact chart${priceBit}. One-time — yours to keep, no subscription.</p>
+      ? `<p class="deep-teaser__format">A personalised 13-page PDF — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, ten tightest aspects, and a full reference — drawn from the same engine as your free chart${priceBit}. One-time; yours to keep, no subscription.</p>
          <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>
@@ -909,6 +910,32 @@
   // localStorage and show a friendly confirmation. Email is NEVER required to
   // use the free chart.
   // ═══════════════════════════════════════════════════════════════════════════
+
+  let wallpaperLeadWired = false;
+
+  function downloadWallpaper() {
+    if (!currentChart) return;
+    exportShareImage(currentChart, 'wallpaper', { forceDownload: true });
+  }
+
+  function initWallpaperLead(chart) {
+    const host = document.getElementById('wallpaper-lead');
+    if (!host || !chart) return;
+    host.hidden = false;
+
+    if (wallpaperLeadWired) return;
+    wallpaperLeadWired = true;
+
+    document.getElementById('wallpaper-download-btn')?.addEventListener('click', downloadWallpaper);
+    document.getElementById('wallpaper-lead-email')?.addEventListener('click', () => {
+      const ec = document.getElementById('email-capture');
+      if (ec) {
+        ec.hidden = false;
+        ec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('email-capture-input')?.focus();
+      }
+    });
+  }
 
   let emailCaptureWired = false;
 
@@ -966,6 +993,10 @@
       }
 
 host.classList.add('is-done');
+
+      if (currentChart) {
+        exportShareImage(currentChart, 'wallpaper', { forceDownload: true });
+      }
     });
   }
 
@@ -993,14 +1024,24 @@ host.classList.add('is-done');
     if (!currentChart) return;
     if (window.AstroProfile) {
       AstroProfile.saveChart({
-        name: currentChart.name, birthDate: currentChart.birthDate,
-        birthTime: currentChart.birthTime, city: currentChart.city,
-        lat: currentChart.lat, lon: currentChart.lon, tz: currentChart.tz,
+        name: currentChart.name,
+        birthDate: currentChart.birthDate,
+        birthTime: currentChart.birthTime,
+        birthCity: currentChart.city,
+        city: currentChart.city,
+        lat: currentChart.lat,
+        lon: currentChart.lon,
+        tz: currentChart.tz,
+        houseSystem: currentChart.houseSystem || 'placidus',
         sunSign: currentChart.positions.Sun.sign,
         moonSign: currentChart.positions.Moon.sign,
         risingSign: currentChart.risingSign,
+        engineV: 2,
       });
-      if (window.AstroApp) AstroApp.showToast('Saved', 'Chart saved to your profile.', 'success');
+      if (window.AstroApp) {
+        AstroApp.showToast('Saved',
+          'Chart saved — view it in My Charts or your Profile.', 'success');
+      }
     }
   });
 
@@ -1031,11 +1072,13 @@ host.classList.add('is-done');
     } catch (e) { /* user cancelled */ }
   });
 
-  // Big Three Card → one-tap export of the polished square image.
+  // Big Three Card → dedicated Sun/Moon/Rising square (no full natal wheel).
   document.getElementById('print-btn')?.addEventListener('click', () => {
     if (!currentChart) { window.print(); return; }
-    exportShareImage(currentChart, 'square');
+    exportShareImage(currentChart, 'bigthree');
   });
+
+  document.getElementById('wallpaper-btn')?.addEventListener('click', downloadWallpaper);
 
   document.getElementById('json-btn')?.addEventListener('click', () => {
     if (!currentChart) return;
@@ -1084,9 +1127,11 @@ host.classList.add('is-done');
   // SHARE-IMAGE ENGINE — one deterministic renderer, many formats
   // ----------------------------------------------------------------------------
   // A single resolution-independent painter (paintShareImage) feeds every output:
-  //   • square   1080×1080  — Instagram / general social post
-  //   • story    1080×1920  — IG / FB / WhatsApp story (9:16)
-  //   • print    2480×3508  — A4-proportioned, print-on-demand poster (300dpi)
+  //   • square    1080×1080  — Instagram / general social post
+  //   • story     1080×1920  — IG / FB / WhatsApp story (9:16)
+  //   • wallpaper 1080×1920  — lock-screen portrait (lead magnet)
+  //   • bigthree  1080×1080  — Sun / Moon / Rising social card only
+  //   • print     2480×3508  — A4-proportioned, print-on-demand poster (300dpi)
   // The merch / print-on-demand line will reuse the SAME pipeline, so geometry is
   // expressed in a 0..1 "design space" and multiplied by the canvas size: the
   // print export is genuinely high-resolution, not an upscaled screenshot.
@@ -1112,9 +1157,11 @@ host.classList.add('is-done');
   };
 
   const SHARE_FORMATS = {
-    square: { w: 2160, h: 2160 },
-    story:  { w: 2160, h: 3840 },
-    print:  { w: 4960, h: 7016 }, // A4 @ ~600dpi — print-on-demand HD
+    square:    { w: 2160, h: 2160 },
+    story:     { w: 2160, h: 3840 },
+    wallpaper: { w: 1080, h: 1920 },
+    bigthree:  { w: 1080, h: 1080 },
+    print:     { w: 4960, h: 7016 }, // A4 @ ~600dpi — print-on-demand HD
     // Legacy social sizes (still available via export picker)
     square1x: { w: 1080, h: 1080 },
     story1x:  { w: 1080, h: 1920 },
@@ -1254,19 +1301,31 @@ host.classList.add('is-done');
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
     const ELEMENT_SECTOR = {
-      Aries:'rgba(200,72,50,0.12)', Taurus:'rgba(45,138,62,0.12)', Gemini:'rgba(74,122,199,0.12)', Cancer:'rgba(91,63,160,0.14)',
-      Leo:'rgba(200,72,50,0.12)', Virgo:'rgba(45,138,62,0.12)', Libra:'rgba(74,122,199,0.12)', Scorpio:'rgba(91,63,160,0.14)',
-      Sagittarius:'rgba(200,72,50,0.12)', Capricorn:'rgba(45,138,62,0.12)', Aquarius:'rgba(74,122,199,0.12)', Pisces:'rgba(91,63,160,0.14)',
+      Aries:'rgba(216,90,44,0.14)', Taurus:'rgba(94,122,58,0.14)', Gemini:'rgba(167,139,186,0.14)', Cancer:'rgba(63,125,118,0.16)',
+      Leo:'rgba(216,90,44,0.14)', Virgo:'rgba(94,122,58,0.14)', Libra:'rgba(167,139,186,0.14)', Scorpio:'rgba(63,125,118,0.16)',
+      Sagittarius:'rgba(216,90,44,0.14)', Capricorn:'rgba(94,122,58,0.14)', Aquarius:'rgba(167,139,186,0.14)', Pisces:'rgba(63,125,118,0.16)',
     };
     const rOuter     = R;
     const rBand      = R * 0.89;
     const rSignInner = R * 0.755;
     const rPlanets   = R * 0.61;
     const rInner     = R * 0.475;
-    const lw = R / 410; // line-weight scale relative to the original 410px wheel
+    const lw = R / 410;
 
     const ascLon = chart.asc || 0;
     const ang = lon => Math.PI - ((lon - ascLon) * Math.PI / 180);
+
+    // Schematic orbital tracks (decorative — matches SVG chart-render layer)
+    [0.78, 0.68, 0.58].forEach((frac, i) => {
+      x.save();
+      x.strokeStyle = 'rgba(201,162,39,' + (0.1 + i * 0.04) + ')';
+      x.lineWidth = 0.8 * lw;
+      x.setLineDash([3 + i, 5 + i * 2]);
+      x.beginPath();
+      x.arc(cx, cy, R * frac, 0, Math.PI * 2);
+      x.stroke();
+      x.restore();
+    });
 
     // Rings
     x.strokeStyle = 'rgba(196,146,10,0.75)'; x.lineWidth = 3 * lw;
@@ -1511,10 +1570,189 @@ host.classList.add('is-done');
     });
   }
 
+  // Lock-screen wallpaper — warm void, centred wheel, big three, minimal chrome.
+  function paintWallpaperImage(chart) {
+    const fmt = SHARE_FORMATS.wallpaper;
+    const W = fmt.w, H = fmt.h;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const x = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(cv, W, H)
+      : cv.getContext('2d');
+    if (x && !x.imageSmoothingQuality) { x.imageSmoothingEnabled = true; }
+    const S = W / 1080;
+    const seed = seedFromChart(chart);
+
+    // Warm void ground (lighter vignette — clock widgets sit on top)
+    const g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#0A0806');
+    g.addColorStop(0.45, PAL.voidWarm);
+    g.addColorStop(1, '#14100C');
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+
+    const neb = x.createRadialGradient(W * 0.5, H * 0.42, 0, W * 0.5, H * 0.42, Math.max(W, H) * 0.85);
+    neb.addColorStop(0, 'rgba(201,162,39,0.14)');
+    neb.addColorStop(0.55, 'rgba(110,26,38,0.08)');
+    neb.addColorStop(1, 'transparent');
+    x.fillStyle = neb; x.fillRect(0, 0, W, H);
+
+    drawDotGrid(x, W, H, S);
+    drawStars(x, W, H, Math.round((W * H) / 6200), seed, S);
+
+    const safeTop = 200 * S;
+    const safeBot = 280 * S;
+
+    // Name — upper safe band
+    x.textAlign = 'center';
+    let y = safeTop + 24 * S;
+    x.fillStyle = PAL.parchment;
+    fitText(x, chart.name || 'Birth Chart', W / 2, y, W - 120 * S, 'bold', 52 * S, FONT_DISPLAY);
+
+    // Big-three one-liner
+    y += 52 * S;
+    const sunG = SIGN_GLYPHS[chart.positions.Sun.sign] || '';
+    const moonG = SIGN_GLYPHS[chart.positions.Moon.sign] || '';
+    const riseG = SIGN_GLYPHS[chart.risingSign] || '';
+    x.fillStyle = PAL.goldPale;
+    x.font = `500 ${22 * S}px ${FONT_SANS}`;
+    x.fillText(
+      `☉ ${sunG} ${chart.positions.Sun.sign}   ·   ☽ ${moonG} ${chart.positions.Moon.sign}   ·   ↑ ${riseG} ${chart.risingSign}`,
+      W / 2, y);
+
+    // Glass orbs row
+    y += 56 * S;
+    const trio = [
+      { sign: chart.positions.Sun.sign,  label: 'SUN' },
+      { sign: chart.positions.Moon.sign, label: 'MOON' },
+      { sign: chart.risingSign,          label: 'RISING' },
+    ];
+    const orbR = 44 * S;
+    const gap = 168 * S;
+    trio.forEach((t, i) => {
+      const tx = W / 2 + (i - 1) * gap;
+      const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
+      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+      x.fillStyle = PAL.goldPale;
+      x.font = `600 ${12 * S}px ${FONT_SANS}`;
+      x.textAlign = 'center';
+      x.fillText(t.label, tx, y + orbR + 20 * S);
+    });
+
+    // Centred natal wheel — main focal point for lock screen
+    const wheelTop = y + orbR + 72 * S;
+    const wheelBot = H - safeBot - 48 * S;
+    const wheelCY = (wheelTop + wheelBot) / 2;
+    const wheelR = Math.min((W - 96 * S) / 2, (wheelBot - wheelTop) / 2);
+    drawWheel(x, chart, W / 2, wheelCY, wheelR);
+
+    // Subtle footer (below thumb zone)
+    x.strokeStyle = 'rgba(196,146,10,0.18)'; x.lineWidth = 1 * S;
+    x.beginPath(); x.moveTo(W * 0.28, H - safeBot + 36 * S); x.lineTo(W * 0.72, H - safeBot + 36 * S); x.stroke();
+    x.fillStyle = PAL.silverDim;
+    x.font = `400 ${16 * S}px ${FONT_SANS}`;
+    x.textAlign = 'center';
+    x.fillText('astroprecise  ·  your sky', W / 2, H - safeBot + 72 * S);
+
+    return cv;
+  }
+
+  // Big Three only — square social card, no natal wheel.
+  function paintBigThreeCard(chart) {
+    const fmt = SHARE_FORMATS.bigthree;
+    const W = fmt.w, H = fmt.h;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const x = (window.RafCore && window.RafCore.prepExportCtx)
+      ? window.RafCore.prepExportCtx(cv, W, H)
+      : cv.getContext('2d');
+    if (x && !x.imageSmoothingQuality) { x.imageSmoothingEnabled = true; }
+    const S = W / 1080;
+    const seed = seedFromChart(chart);
+
+    paintBackground(x, W, H, seed, S);
+    drawFrame(x, W, H, 36 * S, 52 * S);
+
+    x.textAlign = 'center';
+    let y = 100 * S;
+    x.fillStyle = PAL.gold;
+    x.font = `500 ${20 * S}px ${FONT_DISPLAY}`;
+    x.fillText('A S T R O P R E C I S E', W / 2, y);
+
+    y += 32 * S;
+    x.fillStyle = PAL.goldPale;
+    x.font = `500 ${14 * S}px ${FONT_SANS}`;
+    x.fillText('B I G   T H R E E', W / 2, y);
+
+    y += 64 * S;
+    x.fillStyle = PAL.parchment;
+    fitText(x, chart.name || 'Birth Chart', W / 2, y, W - 160 * S, 'bold', 56 * S, FONT_DISPLAY);
+
+    y += 48 * S;
+    const cityShort = (chart.city || '').split(',')[0];
+    x.fillStyle = PAL.silver;
+    x.font = `400 ${20 * S}px ${FONT_SANS}`;
+    x.fillText(
+      `${chart.birthDate}${chart.birthTime ? ' · ' + chart.birthTime : ''}${cityShort ? '  ·  ' + cityShort : ''}`,
+      W / 2, y);
+
+    y += 100 * S;
+    const trio = [
+      { key: 'Sun',  sign: chart.positions.Sun.sign,  label: 'SUN',    glyph: '☉' },
+      { key: 'Moon', sign: chart.positions.Moon.sign, label: 'MOON',   glyph: '☽' },
+      { sign: chart.risingSign, label: 'RISING', glyph: '↑' },
+    ];
+    const orbR = 78 * S;
+    const gap = 220 * S;
+    trio.forEach((t, i) => {
+      const tx = W / 2 + (i - 1) * gap;
+      const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
+      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+
+      x.fillStyle = PAL.gold;
+      x.font = `600 ${13 * S}px ${FONT_SANS}`;
+      x.fillText(t.label, tx, y + orbR + 28 * S);
+
+      x.fillStyle = PAL.parchment;
+      x.font = `600 ${28 * S}px ${FONT_SANS}`;
+      x.fillText(t.sign, tx, y + orbR + 58 * S);
+
+      const pos = t.key && chart.positions[t.key];
+      if (pos) {
+        x.fillStyle = PAL.silverDim;
+        x.font = `400 ${17 * S}px ${FONT_SANS}`;
+        x.fillText(
+          `${Math.floor(pos.degree)}°${String(Math.round((pos.degree - Math.floor(pos.degree)) * 60)).padStart(2, '0')}′`,
+          tx, y + orbR + 82 * S);
+      }
+    });
+
+    y += orbR + 120 * S;
+    const dom = [
+      chart.dominantElement ? cap(chart.dominantElement) + ' Energy' : '',
+      chart.dominantModality ? cap(chart.dominantModality) + ' Mode' : '',
+    ].filter(Boolean).join('   ·   ');
+    if (dom) {
+      x.fillStyle = PAL.silverDim;
+      x.font = `400 ${18 * S}px ${FONT_SANS}`;
+      x.fillText(dom, W / 2, y);
+    }
+
+    x.strokeStyle = 'rgba(196,146,10,0.25)'; x.lineWidth = 1 * S;
+    x.beginPath(); x.moveTo(W * 0.2, H - 88 * S); x.lineTo(W * 0.8, H - 88 * S); x.stroke();
+    x.fillStyle = PAL.silverDim;
+    x.font = `400 ${17 * S}px ${FONT_SANS}`;
+    x.fillText('astroprecise  ·  wear your sky', W / 2, H - 58 * S);
+
+    return cv;
+  }
+
   // ── THE UNIFIED PAINTER ───────────────────────────────────────────────────
-  // Returns a canvas for the requested format. All three formats share the same
-  // header → wheel → footer spine; 'print' and 'story' add the detail panels.
+  // Returns a canvas for the requested format. Dedicated layouts for wallpaper &
+  // bigthree; other formats share header → wheel → footer spine.
   function paintShareImage(chart, format) {
+    if (format === 'wallpaper') return paintWallpaperImage(chart);
+    if (format === 'bigthree') return paintBigThreeCard(chart);
+
     const fmt = SHARE_FORMATS[format] || SHARE_FORMATS.square;
     const W = fmt.w, H = fmt.h;
     const cv = document.createElement('canvas');
@@ -1676,7 +1914,12 @@ host.classList.add('is-done');
   async function exportShareImage(chart, format, opts) {
     opts = opts || {};
     const cv = paintShareImage(chart, format);
-    const filename = `${slugify(chart.name)}-${format === 'print' ? 'natal-poster' : 'natal-' + format}.png`;
+    const nameMap = {
+      print: 'natal-poster',
+      wallpaper: 'wallpaper',
+      bigthree: 'big-three',
+    };
+    const filename = `${slugify(chart.name)}-${nameMap[format] || 'natal-' + format}.png`;
     const blob = await canvasToBlob(cv);
     if (!blob) { if (window.AstroApp) AstroApp.showToast('Export failed', 'Could not render the image.', 'error'); return; }
 
@@ -1699,7 +1942,10 @@ host.classList.add('is-done');
     }
     downloadBlob(blob, filename);
     if (window.AstroApp) {
-      const labels = { square: 'Square image', story: 'Story image', print: 'Print poster' };
+      const labels = {
+        square: 'Square image', story: 'Story image', print: 'Print poster',
+        wallpaper: 'Phone wallpaper', bigthree: 'Big Three card',
+      };
       AstroApp.showToast('Saved', `${labels[format] || 'Image'} downloaded.`, 'success');
     }
   }
@@ -1716,6 +1962,8 @@ host.classList.add('is-done');
       'background:rgba(13, 10, 7,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
       'border:1px solid rgba(196,146,10,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
     const opts = [
+      { fmt: 'wallpaper', title: 'Phone wallpaper · 1080×1920', sub: 'Lock screen — your chart' },
+      { fmt: 'bigthree',  title: 'Big Three card · 1080×1080', sub: 'Sun, Moon & Rising only' },
       { fmt: 'square', title: 'Square · 2160×2160 HD', sub: 'Instagram & social posts' },
       { fmt: 'story',  title: 'Story · 2160×3840 HD',  sub: 'IG / WhatsApp stories' },
       { fmt: 'print',  title: 'Print poster · 4960×7016', sub: 'Ultra HD, print-ready' },
@@ -1726,7 +1974,7 @@ host.classList.add('is-done');
       `padding:10px 12px;margin:2px 0;border:none;border-radius:10px;background:transparent;cursor:pointer;color:#f0e8d8;` +
       `font-family:Inter,sans-serif;transition:background .15s;">` +
       `<span style="display:block;font-weight:600;font-size:0.8rem;letter-spacing:0.04em;">${o.title}</span>` +
-      `<span style="display:block;font-size:0.66rem;color:#9aa6c8;margin-top:2px;">${o.sub}</span></button>`
+      `<span style="display:block;font-size:0.66rem;color:var(--silver-dim,#7E7565);margin-top:2px;">${o.sub}</span></button>`
     ).join('');
 
     document.body.appendChild(menu);
@@ -1753,16 +2001,46 @@ host.classList.add('is-done');
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // BIG THREE SHARE CARD
-  // The "Big Three card" is now the polished square (1080×1080) share image —
-  // produced by the same unified painter as the poster, so screen and merch
-  // share one design language. Kept as a named function for the button wiring.
+  // BIG THREE SHARE CARD — Sun/Moon/Rising orbs only (no natal wheel).
   // ═══════════════════════════════════════════════════════════════════════════
 
-  function drawShareCard(chart) { return paintShareImage(chart, 'square'); }
+  function drawShareCard(chart) { return paintShareImage(chart, 'bigthree'); }
 
   function addShareCardButton() {
     // The HTML already has the buttons; wiring lives below. No-op kept for boot.
+  }
+
+  function initAdvancedAccordion() {
+    const root = document.getElementById('chart-advanced');
+    const item = document.getElementById('chart-advanced-item');
+    const trigger = document.getElementById('chart-advanced-trigger');
+    const panel = document.getElementById('chart-advanced-panel');
+    if (!root || !item || !trigger || !panel) return;
+
+    const mq = window.matchMedia('(max-width: 768px)');
+    if (mq.matches) item.classList.remove('is-open');
+
+    const sync = () => {
+      if (!mq.matches) {
+        item.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        panel.style.maxHeight = '';
+        return;
+      }
+      const open = item.classList.contains('is-open');
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.style.maxHeight = open ? `${panel.scrollHeight}px` : '0';
+    };
+
+    trigger.addEventListener('click', () => {
+      if (!mq.matches) return;
+      item.classList.toggle('is-open');
+      sync();
+    });
+
+    if (mq.addEventListener) mq.addEventListener('change', sync);
+    else mq.addListener(sync);
+    sync();
   }
 
   // ── Boot ──────────────────────────────────────────────────────────────────
@@ -1770,11 +2048,13 @@ host.classList.add('is-done');
   document.addEventListener('DOMContentLoaded', () => {
     addShareCardButton();
     initNodeToggle();
+    initAdvancedAccordion();
     restoreFromURL();
   });
   if (document.readyState !== 'loading') {
     addShareCardButton();
     initNodeToggle();
+    initAdvancedAccordion();
     restoreFromURL();
   }
 

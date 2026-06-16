@@ -17,6 +17,8 @@
   var chronicleOffset = document.getElementById('hero-chronicle-offset');
   var scrollCue = document.getElementById('hero-scroll-cue');
   var orreryDateEl = document.getElementById('orrery-date-display');
+  var heroContent = document.querySelector('.hero__content');
+  var heroOrreryLayer = document.querySelector('.hero__orrery-layer');
   var scrolledOnce = false;
 
   /* ── Staggered entrance after preloader (or instant on repeat visit) ── */
@@ -34,9 +36,7 @@
 
   function preloaderStillActive() {
     var pre = document.getElementById('preloader');
-    if (!pre) return false;
-    if (pre.classList.contains('fade-out')) return false;
-    if (pre.style.display === 'none') return false;
+    if (!pre || pre.style.display === 'none') return false;
     return true;
   }
 
@@ -86,6 +86,16 @@
     if (railFill) railFill.style.transform = 'scaleY(' + progress + ')';
     if (railDot) railDot.style.top = (progress * 100) + '%';
 
+    if (!PRM && hero.classList.contains('hero--entered')) {
+      var copyY = progress * -32;
+      var orrY = progress * 22;
+      var orrScale = 1 - progress * 0.035;
+      if (heroContent) heroContent.style.transform = 'translate3d(0,' + copyY.toFixed(1) + 'px,0)';
+      if (heroOrreryLayer) {
+        heroOrreryLayer.style.transform = 'translate3d(0,' + orrY.toFixed(1) + 'px,0) scale(' + orrScale.toFixed(3) + ')';
+      }
+    }
+
     if (meridian && !PRM) {
       var deg = progress * 48 - 6;
       meridian.style.transform = 'rotate(' + deg + 'deg)';
@@ -110,6 +120,16 @@
     if (scrollCue && progress > 0.04) {
       scrollCue.classList.add('hero__scroll-cue--hidden');
       scrolledOnce = true;
+    }
+
+    /* Scroll → shared sky clock (orrery time advance + cosmos parallax) */
+    if (!PRM) {
+      if (window.Orrery3D && typeof window.Orrery3D.setScrollDrive === 'function') {
+        window.Orrery3D.setScrollDrive(progress);
+      }
+      if (window.CosmosEngine && typeof window.CosmosEngine.setScrollDrive === 'function') {
+        window.CosmosEngine.setScrollDrive(progress);
+      }
     }
   }
 
@@ -141,18 +161,6 @@
   window.addEventListener('wheel', dismissCue, { passive: true, once: true });
   window.addEventListener('touchmove', dismissCue, { passive: true, once: true });
 
-  /* ── Sky pill → orrery planet focus (dispatch existing click event) ── */
-  document.addEventListener('click', function (e) {
-    var pill = e.target.closest && e.target.closest('.sky-pill');
-    if (!pill || !window.Orrery3D) return;
-    var nameEl = pill.querySelector('.sky-pill__name');
-    if (!nameEl) return;
-    var name = nameEl.textContent.replace(/\s*℞\s*/g, '').trim().toLowerCase();
-    document.dispatchEvent(new CustomEvent('orrery-planet-click', {
-      detail: { name: name.charAt(0).toUpperCase() + name.slice(1), id: name }
-    }));
-    pill.classList.add('sky-pill--focus');
-    setTimeout(function () { pill.classList.remove('sky-pill--focus'); }, 1400);
-  });
+  /* Sky pill clicks are wired in index.html (richer longitude/retro detail). */
 
 })();

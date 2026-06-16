@@ -258,7 +258,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.5;
+      opacity: 1;
     }
     .hero--small {
       position: relative;
@@ -800,7 +800,7 @@
       font-size: 1.5rem;
       text-align: center;
     }
-    .retrograde-item__info h4 {
+    .retrograde-item__info h3 {
       font-family: var(--font-display);
       font-size: var(--text-base);
       font-weight: 700;
@@ -965,7 +965,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -998,7 +998,7 @@
         </div>
 
         <!-- Planet legend strip -->
-        <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="list">
+        <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="group">
           <span class="planet-legend__label">Live sky:</span>
           <span class="pl-dot" style="--c:#c9a227" aria-label="Sun position">☉ Sun</span>
           <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon</span>
@@ -1053,74 +1053,74 @@
         </div>
         <div id="sign-grid-wrap">
 
-        <div class="sign-grid" id="sign-grid" role="list" aria-label="Zodiac sign horoscope cards">
-          <button class="sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
+        <div class="sign-grid" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
+          <button class="sign-card" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♈</span>
             <span class="sign-card__name">Aries</span>
             <span class="sign-card__dates">Mar 21 – Apr 19</span>
             <span class="sign-card__element-badge">Fire</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♉</span>
             <span class="sign-card__name">Taurus</span>
             <span class="sign-card__dates">Apr 20 – May 20</span>
             <span class="sign-card__element-badge">Earth</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="gemini" data-element="air" aria-label="Gemini horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="gemini" data-element="air" aria-label="Gemini horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♊</span>
             <span class="sign-card__name">Gemini</span>
             <span class="sign-card__dates">May 21 – Jun 20</span>
             <span class="sign-card__element-badge">Air</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="cancer" data-element="water" aria-label="Cancer horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="cancer" data-element="water" aria-label="Cancer horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♋</span>
             <span class="sign-card__name">Cancer</span>
             <span class="sign-card__dates">Jun 21 – Jul 22</span>
             <span class="sign-card__element-badge">Water</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="leo" data-element="fire" aria-label="Leo horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="leo" data-element="fire" aria-label="Leo horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♌</span>
             <span class="sign-card__name">Leo</span>
             <span class="sign-card__dates">Jul 23 – Aug 22</span>
             <span class="sign-card__element-badge">Fire</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♍</span>
             <span class="sign-card__name">Virgo</span>
             <span class="sign-card__dates">Aug 23 – Sep 22</span>
             <span class="sign-card__element-badge">Earth</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="libra" data-element="air" aria-label="Libra horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="libra" data-element="air" aria-label="Libra horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♎</span>
             <span class="sign-card__name">Libra</span>
             <span class="sign-card__dates">Sep 23 – Oct 22</span>
             <span class="sign-card__element-badge">Air</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♏</span>
             <span class="sign-card__name">Scorpio</span>
             <span class="sign-card__dates">Oct 23 – Nov 21</span>
             <span class="sign-card__element-badge">Water</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♐</span>
             <span class="sign-card__name">Sagittarius</span>
             <span class="sign-card__dates">Nov 22 – Dec 21</span>
             <span class="sign-card__element-badge">Fire</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♑</span>
             <span class="sign-card__name">Capricorn</span>
             <span class="sign-card__dates">Dec 22 – Jan 19</span>
             <span class="sign-card__element-badge">Earth</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♒</span>
             <span class="sign-card__name">Aquarius</span>
             <span class="sign-card__dates">Jan 20 – Feb 18</span>
             <span class="sign-card__element-badge">Air</span>
           </button>
-          <button class="sign-card" role="listitem" data-sign="pisces" data-element="water" aria-label="Pisces horoscope" aria-pressed="false">
+          <button class="sign-card" data-sign="pisces" data-element="water" aria-label="Pisces horoscope" aria-pressed="false">
             <span class="sign-card__glyph" aria-hidden="true">♓</span>
             <span class="sign-card__name">Pisces</span>
             <span class="sign-card__dates">Feb 19 – Mar 20</span>
@@ -1135,7 +1135,7 @@
               <div class="sign-reading-panel__title-group">
                 <img class="srp-card-thumb" id="srp-card-thumb" src="assets/images/zodiac-cards/aries.jpg" alt="" width="68" height="102" decoding="async" />
                 <div>
-                  <h2 class="sign-reading-panel__sign-name" id="srp-sign-name"></h2>
+                  <h2 class="sign-reading-panel__sign-name" id="srp-sign-name">Horoscope</h2>
                   <p class="sign-reading-panel__date" id="srp-date"></p>
                   <span class="srp-element-text" id="srp-element-text"></span>
                   <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide →</a>
@@ -1226,7 +1226,7 @@
         </div><!-- /#sign-grid-wrap -->
 
         <!-- Crawlable deep-dive guides -->
-        <nav aria-label="Zodiac sign guides" style="margin-top:var(--space-10);text-align:center;">
+        <div role="group" aria-label="Zodiac sign guides" style="margin-top:var(--space-10);text-align:center;">
           <p style="font-size:var(--text-xs);letter-spacing:0.14em;text-transform:uppercase;color:var(--color-silver-dim);margin-bottom:var(--space-4);">Complete Sign Guides</p>
           <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center;">
             <a href="aries.html" class="btn btn--ghost btn--sm">♈ Aries</a>
@@ -1242,7 +1242,7 @@
             <a href="aquarius.html" class="btn btn--ghost btn--sm">♒ Aquarius</a>
             <a href="pisces.html" class="btn btn--ghost btn--sm">♓ Pisces</a>
           </div>
-        </nav>
+        </div>
 
       </div>
     </section>
@@ -1419,7 +1419,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true">♄</span>
               <div class="retrograde-item__info">
-                <h4>Saturn Retrograde in Pisces</h4>
+                <h3>Saturn Retrograde in Pisces</h3>
                 <p>Review spiritual commitments, dissolve illusions, and restructure long-term boundaries.</p>
               </div>
               <div class="retrograde-item__dates">Jul 13 – Nov 27, 2025</div>
@@ -1427,7 +1427,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true">♃</span>
               <div class="retrograde-item__info">
-                <h4>Jupiter Retrograde in Cancer</h4>
+                <h3>Jupiter Retrograde in Cancer</h3>
                 <p>Expansion turns inward — deepen emotional intelligence and revisit family foundations.</p>
               </div>
               <div class="retrograde-item__dates">Nov 11, 2025 – Mar 10, 2026</div>
@@ -1435,7 +1435,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true">☿</span>
               <div class="retrograde-item__info">
-                <h4>Mercury Retrograde in Leo</h4>
+                <h3>Mercury Retrograde in Leo</h3>
                 <p>Communication and self-expression need revision. Back up your work and clarify before committing.</p>
               </div>
               <div class="retrograde-item__dates">Jul 18 – Aug 11, 2025</div>
@@ -1443,7 +1443,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true">☿</span>
               <div class="retrograde-item__info">
-                <h4>Mercury Retrograde in Scorpio/Sagittarius</h4>
+                <h3>Mercury Retrograde in Scorpio/Sagittarius</h3>
                 <p>Revisit beliefs, deep investigations, and long-distance plans. Truth comes to the surface.</p>
               </div>
               <div class="retrograde-item__dates">Nov 9 – Nov 29, 2025</div>
@@ -1451,7 +1451,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true">♀</span>
               <div class="retrograde-item__info">
-                <h4>Venus Retrograde in Aries/Pisces</h4>
+                <h3>Venus Retrograde in Aries/Pisces</h3>
                 <p>Reassess what — and who — you truly value. Old relationships resurface for resolution.</p>
               </div>
               <div class="retrograde-item__dates">Mar 1 – Apr 12, 2025</div>
@@ -1459,7 +1459,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true">♂</span>
               <div class="retrograde-item__info">
-                <h4>Mars Retrograde in Leo/Cancer</h4>
+                <h3>Mars Retrograde in Leo/Cancer</h3>
                 <p>Ambition recalibrates — redirect energy rather than forcing ahead against resistance.</p>
               </div>
               <div class="retrograde-item__dates">Dec 6, 2024 – Feb 23, 2025</div>
@@ -1523,7 +1523,7 @@
           <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
           <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
         </div>
-        <nav aria-label="Tools navigation">
+        <div role="group" aria-label="Tools navigation">
           <p class="footer__heading">Tools</p>
           <ul class="footer__links">
             <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
@@ -1531,13 +1531,13 @@
             <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
             <li><a href="transits.html" class="footer__link">Transits</a></li>
           </ul>
-        </nav>
-        <nav aria-label="Account navigation">
+        </div>
+        <div role="group" aria-label="Account navigation">
           <p class="footer__heading">Account</p>
           <ul class="footer__links">
             <li><a href="profile.html" class="footer__link">My Profile</a></li>
           </ul>
-        </nav>
+        </div>
       </div>
       <div class="footer__bottom">
         <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
@@ -2110,13 +2110,13 @@
         ctx.letterSpacing = '0';
 
         // Date: y=530
-        ctx.fillStyle = '#9aa6c8';
+        ctx.fillStyle = '#A89E88';
         ctx.font = '22px Georgia, serif';
         var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
         ctx.fillText(dateStr.toUpperCase(), 540, 532);
 
         // Reading text: italic Playfair 30px, silver, from y=590, max 840px wide
-        ctx.fillStyle = '#9aa6c8';
+        ctx.fillStyle = '#A89E88';
         ctx.font = 'italic 30px Georgia, serif';
         wrapText(ctx, data.overview || '', 540, 590, 840, 46, 7);
 
@@ -2125,7 +2125,7 @@
         ctx.fillRect(120, 852, 840, 1);
 
         // Luckies row at y=884
-        ctx.fillStyle = '#8891aa';
+        ctx.fillStyle = '#7E7565';
         ctx.font = '24px Georgia, serif';
         ctx.fillText('Lucky Number: ' + (data.luckyNumber || '—') + '  ·  Color: ' + (data.luckyColor || '—') + '  ·  Stone: ' + stone, 540, 884);
 
@@ -2352,7 +2352,6 @@
 
   <!-- JS -->
   <script src="js/cosmos.js"></script>
-  <script src="js/stellar.js"></script>
   <script src="js/oracle.js"></script>
   <script src="js/chart-render.js"></script>
   <script src="js/app.js"></script>

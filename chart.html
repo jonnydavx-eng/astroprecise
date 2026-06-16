@@ -34,7 +34,7 @@
     "url": "https://astroprecise.app/chart.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
     "description": "Free natal chart calculator — enter your birth date, time and place for a precise birth chart with Sun, Moon, Rising, houses and aspects. All calculations run privately in your browser.",
     "isPartOf": {
@@ -45,6 +45,7 @@
   }
   </script>
 <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/chart.css" />
   <style>
     /* ═══════════════════════════════════════════════════════════════
        CHART PAGE — PREMIUM REDESIGN
@@ -145,7 +146,7 @@
       box-shadow:
         0 32px 80px rgba(0, 0, 0, 0.6),
         0 0 0 1px rgba(168, 158, 136,0.05) inset,
-        0 1px 0 rgba(200,208,232,0.12) inset;
+        0 1px 0 rgba(232,224,208,0.1) inset;
       position: relative;
       overflow: hidden;
     }
@@ -553,7 +554,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.12);
-      border-top-color: rgba(200,208,232,0.18);
+      border-top-color: rgba(232,224,208,0.18);
       border-radius: var(--radius-xl);
       padding: var(--space-8) var(--space-8);
       margin-bottom: var(--space-8);
@@ -584,14 +585,14 @@
       align-items: center;
       gap: var(--space-2);
       padding: 3px var(--space-3);
-      background: rgba(92, 74, 110,0.2);
-      border: 1px solid rgba(92, 74, 110,0.3);
+      background: rgba(201, 162, 39, 0.1);
+      border: 1px solid rgba(201, 162, 39, 0.28);
       border-radius: var(--radius-full);
       font-size: 0.6rem;
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--lapis-bright);
+      color: var(--gold-pale);
     }
 
     /* Action buttons row */
@@ -637,14 +638,14 @@
       background: rgba(168, 158, 136,0.1);
     }
     .action-btn--primary {
-      background: linear-gradient(135deg, rgba(92, 74, 110,0.35), rgba(92, 74, 110,0.2));
-      border-color: rgba(92, 74, 110,0.5);
-      color: var(--lapis-bright);
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.22), rgba(201, 162, 39, 0.1));
+      border-color: rgba(201, 162, 39, 0.45);
+      color: var(--gold-pale);
     }
     .action-btn--primary:hover {
-      background: linear-gradient(135deg, rgba(92, 74, 110,0.5), rgba(92, 74, 110,0.3));
-      border-color: var(--lapis-light);
-      box-shadow: 0 0 16px rgba(92, 74, 110,0.2);
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.32), rgba(201, 162, 39, 0.16));
+      border-color: var(--gold);
+      box-shadow: 0 0 16px rgba(201, 162, 39, 0.18);
     }
 
     /* ── Big Three premium cards ─────────────────────────────────── */
@@ -662,7 +663,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.1);
-      border-top-color: rgba(200,208,232,0.16);
+      border-top-color: rgba(232,224,208,0.16);
       border-radius: var(--radius-xl);
       padding: var(--space-8) var(--space-6);
       text-align: center;
@@ -681,9 +682,8 @@
       background: linear-gradient(90deg, transparent, rgba(201,162,39,0.4), transparent);
     }
     .big-three-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(201,162,39,0.2);
-      box-shadow: 0 24px 56px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,162,39,0.1);
+      border-color: rgba(201,162,39,0.22);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.45), 0 0 24px rgba(201,162,39,0.08);
     }
     .big-three-card__planet {
       font-size: 0.58rem;
@@ -731,7 +731,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.1);
-      border-top-color: rgba(200,208,232,0.16);
+      border-top-color: rgba(232,224,208,0.16);
       border-radius: var(--radius-xl);
       padding: var(--space-6);
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
@@ -751,7 +751,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(168, 158, 136,0.1);
-      border-top-color: rgba(200,208,232,0.16);
+      border-top-color: rgba(232,224,208,0.16);
       border-radius: var(--radius-xl);
       overflow: hidden;
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
@@ -1025,13 +1025,66 @@
       font-size: 0.72rem; letter-spacing: 0.08em; color: var(--gold-light, #EFE3C0);
     }
 
+    /* ── Wallpaper lead magnet (free download, no email) ───────────── */
+    .wallpaper-lead {
+      margin-top: var(--space-6);
+      padding: var(--space-8);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(145deg, rgba(110,26,38,0.12), rgba(13,10,7,0.75));
+      border: 1px solid rgba(201,162,39,0.35);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(232,224,208,0.08);
+      text-align: center;
+    }
+    .wallpaper-lead__eyebrow {
+      font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin: 0 0 var(--space-3);
+    }
+    .wallpaper-lead__title {
+      font-family: var(--font-display); font-size: clamp(1.25rem, 3vw, 1.65rem);
+      color: var(--white); letter-spacing: 0.02em; margin: 0 0 var(--space-3); line-height: 1.35;
+    }
+    .wallpaper-lead__sub {
+      font-size: 0.82rem; color: var(--silver); margin: 0 auto var(--space-6);
+      max-width: 36rem; line-height: 1.6;
+    }
+    .wallpaper-lead__actions {
+      display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; align-items: center;
+    }
+    .wallpaper-lead__download {
+      padding: var(--space-4) var(--space-8);
+      background: linear-gradient(135deg, rgba(201,162,39,0.35), rgba(201,162,39,0.18));
+      border: 1px solid rgba(201,162,39,0.65); border-radius: var(--radius-lg);
+      color: var(--gold-pale); font-family: var(--font-body);
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em;
+      cursor: pointer; transition: all var(--transition-fast);
+    }
+    .wallpaper-lead__download:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 24px rgba(201,162,39,0.28);
+      transform: translateY(-1px);
+    }
+    .wallpaper-lead__email-link {
+      padding: var(--space-4) var(--space-6);
+      background: transparent; border: 1px solid rgba(168,158,136,0.25);
+      border-radius: var(--radius-lg); color: var(--silver);
+      font-family: var(--font-body); font-size: 0.72rem; letter-spacing: 0.06em;
+      cursor: pointer; transition: all var(--transition-fast);
+    }
+    .wallpaper-lead__email-link:hover {
+      border-color: rgba(168,158,136,0.45); color: var(--gold-pale);
+    }
+    .wallpaper-lead__honest {
+      margin: var(--space-5) 0 0; font-size: 0.62rem; color: var(--silver-dim);
+      letter-spacing: 0.04em;
+    }
+
     /* ── Email capture (save chart / cosmic weather) ─────────────── */
     .email-capture {
       margin-top: var(--space-8);
       background: rgba(13, 10, 7,0.6);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(168, 158, 136,0.12);
-      border-top-color: rgba(200,208,232,0.18);
+      border-top-color: rgba(232,224,208,0.18);
       border-radius: var(--radius-xl);
       padding: var(--space-8);
       box-shadow: 0 16px 40px rgba(0,0,0,0.4);
@@ -1097,7 +1150,7 @@
     }
   </style>
 </head>
-<body>
+<body class="page-chart">
 
   <!-- Intro lives only on the homepage (once per session). Internal pages load
        straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
@@ -1127,7 +1180,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -1321,53 +1374,64 @@
           <input type="hidden" id="lon-input" name="longitude" />
           <input type="hidden" id="tz-input" name="timezone" />
 
-          <!-- ── House System ─────────────────────────────────────── -->
-          <div class="form-section-label" style="margin-top:var(--space-8);">
-            <div class="form-section-label__num" aria-hidden="true">☏</div>
-            <span class="form-section-label__text">House System</span>
-          </div>
+          <!-- ── Advanced options (accordion on mobile) ───────────── -->
+          <div class="chart-advanced accordion" id="chart-advanced" style="margin-top:var(--space-8);">
+            <div class="accordion-item is-open" id="chart-advanced-item">
+              <button type="button" class="accordion-trigger" id="chart-advanced-trigger" aria-expanded="true" aria-controls="chart-advanced-panel">
+                <span>Advanced chart options</span>
+                <svg class="accordion-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <div class="accordion-content" id="chart-advanced-panel" role="region" aria-labelledby="chart-advanced-trigger">
+                <div class="accordion-content__inner">
+                  <div class="form-section-label">
+                    <div class="form-section-label__num" aria-hidden="true">☏</div>
+                    <span class="form-section-label__text">House System</span>
+                  </div>
 
-          <div class="house-cards" role="group" aria-label="House system selection">
-            <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
-              <div class="house-card__name">Equal</div>
-              <div class="house-card__desc">Each house spans exactly 30°. Simplest and most widely recommended for beginners.</div>
-            </div>
-            <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
-              <div class="house-card__name">Placidus</div>
-              <div class="house-card__desc">Time-based divisions. The most popular system in Western astrology today.</div>
-            </div>
-            <div class="house-card" data-value="whole" tabindex="0" role="radio" aria-checked="false">
-              <div class="house-card__name">Whole Sign</div>
-              <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
-            </div>
-          </div>
-          <input type="hidden" id="house-system" name="house-system" value="equal" />
+                  <div class="house-cards" role="group" aria-label="House system selection">
+                    <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
+                      <div class="house-card__name">Equal</div>
+                      <div class="house-card__desc">Each house spans exactly 30°. Simplest and most widely recommended for beginners.</div>
+                    </div>
+                    <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
+                      <div class="house-card__name">Placidus</div>
+                      <div class="house-card__desc">Time-based divisions. The most popular system in Western astrology today.</div>
+                    </div>
+                    <div class="house-card" data-value="whole" tabindex="0" role="radio" aria-checked="false">
+                      <div class="house-card__name">Whole Sign</div>
+                      <div class="house-card__desc">Each sign = one house. The oldest classical method, used in Hellenistic astrology.</div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="house-system" name="house-system" value="equal" />
 
-          <!-- ── Lunar Node Model ─────────────────────────────────── -->
-          <div class="form-section-label" style="margin-top:var(--space-8);">
-            <div class="form-section-label__num" aria-hidden="true">☊</div>
-            <span class="form-section-label__text">Lunar Node Model</span>
-          </div>
+                  <div class="form-section-label" style="margin-top:var(--space-6);">
+                    <div class="form-section-label__num" aria-hidden="true">☊</div>
+                    <span class="form-section-label__text">Lunar Node Model</span>
+                  </div>
 
-          <div class="node-toggle" role="radiogroup" aria-label="Lunar node calculation model">
-            <label class="node-toggle__opt">
-              <input type="radio" name="node-mode" value="mean" checked />
-              <span class="node-toggle__pill">
-                <span class="node-toggle__name">Mean Node</span>
-                <span class="node-toggle__desc">Smoothly-moving classical point (default)</span>
-              </span>
-            </label>
-            <label class="node-toggle__opt">
-              <input type="radio" name="node-mode" value="true" />
-              <span class="node-toggle__pill">
-                <span class="node-toggle__name">True Node</span>
-                <span class="node-toggle__desc">Osculating node — wobbles ±~1.5° about the mean</span>
-              </span>
-            </label>
+                  <div class="node-toggle" role="radiogroup" aria-label="Lunar node calculation model">
+                    <label class="node-toggle__opt">
+                      <input type="radio" name="node-mode" value="mean" checked />
+                      <span class="node-toggle__pill">
+                        <span class="node-toggle__name">Mean Node</span>
+                        <span class="node-toggle__desc">Smoothly-moving classical point (default)</span>
+                      </span>
+                    </label>
+                    <label class="node-toggle__opt">
+                      <input type="radio" name="node-mode" value="true" />
+                      <span class="node-toggle__pill">
+                        <span class="node-toggle__name">True Node</span>
+                        <span class="node-toggle__desc">Osculating node — wobbles ±~1.5° about the mean</span>
+                      </span>
+                    </label>
+                  </div>
+                  <p class="form-hint" style="margin-top:var(--space-2);">
+                    Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-          <p class="form-hint" style="margin-top:var(--space-2);">
-            Black Moon Lilith (mean lunar apogee, ⚸) and the lunar nodes (☊ / ☋) are always included in your chart.
-          </p>
 
           <!-- Submit CTA -->
           <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
@@ -1408,7 +1472,10 @@
               <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000</span>
             </div>
             <div class="result-actions" id="result-actions-row">
-              <button id="poster-btn" class="action-btn action-btn--gold" aria-label="Download natal chart poster image">
+              <button id="wallpaper-btn" class="action-btn action-btn--gold" aria-label="Download free phone wallpaper of your chart">
+                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Free Wallpaper
+              </button>
+              <button id="poster-btn" class="action-btn action-btn--ghost" aria-label="Download natal chart poster image">
                 <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Download Poster
               </button>
               <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
@@ -1435,13 +1502,32 @@
           <!-- JS populates three .big-three-card elements -->
         </div>
 
+        <!-- Wallpaper lead magnet — free download, email optional -->
+        <section id="wallpaper-lead" class="wallpaper-lead animate-in animate-in--delay-1" aria-label="Free phone wallpaper of your chart" hidden>
+          <p class="wallpaper-lead__eyebrow">Wear your sky</p>
+          <h3 class="wallpaper-lead__title">Free phone wallpaper of <em>your</em> chart</h3>
+          <p class="wallpaper-lead__sub">Your natal wheel, centred for lock screen — generated from the chart you just cast. No email required. Honest.</p>
+          <div class="wallpaper-lead__actions">
+            <button type="button" id="wallpaper-download-btn" class="wallpaper-lead__download" aria-label="Download phone wallpaper PNG">
+              <svg class="eng-i" aria-hidden="true" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><use href="#ei-star4"/></svg>
+              Download wallpaper
+            </button>
+            <button type="button" id="wallpaper-lead-email" class="wallpaper-lead__email-link" aria-label="Optional — get cosmic weather updates by email">
+              Optional: email me updates
+            </button>
+          </div>
+          <p class="wallpaper-lead__honest">1080×1920 PNG · computed in your browser · set as lock screen in Photos</p>
+        </section>
+
         <!-- Wheel + Tabs -->
         <div class="chart-results-grid animate-in animate-in--delay-2">
 
           <!-- Natal Wheel -->
           <div class="chart-wheel-card" aria-label="Natal chart wheel diagram">
             <p class="chart-wheel-label" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Natal Wheel</p>
-            <div id="natal-wheel" role="img" aria-label="Natal chart wheel"></div>
+            <div class="natal-wheel-container">
+              <div id="natal-wheel" role="img" aria-label="Natal chart wheel — VSOP87 positions on schematic ecliptic rings"></div>
+            </div>
           </div>
 
           <!-- Tabs -->
@@ -1548,8 +1634,8 @@
               </svg>
             </span>
             <div>
-              <h3 class="email-capture__title">More coming soon — get updates first</h3>
-              <p class="email-capture__sub">Join for: your chart as a phone wallpaper · personal transit weather · deep reading previews · shop drops (prints, tees, gifts) · daily horoscopes by email. One list — we only write when something ships.</p>
+              <h3 class="email-capture__title">Got your wallpaper? Optional: cosmic weather by email</h3>
+              <p class="email-capture__sub">Your lock-screen wallpaper is already yours — tap Download above anytime, no signup. Leave your email only if you want monthly transit notes for <em>your</em> chart, deep-reading previews, shop drops &amp; horoscopes when they ship.</p>
             </div>
           </div>
           <form id="email-capture-form" class="email-capture__form" novalidate>
@@ -1659,7 +1745,7 @@
             Professional astrology powered by precise astronomical calculations.
           </p>
         </div>
-        <nav aria-label="Footer navigation">
+        <div role="group" aria-label="Footer">
           <p class="footer__heading">Pages</p>
           <ul class="footer__links">
             <li><a href="index.html" class="footer__link">Home</a></li>
@@ -1669,8 +1755,8 @@
             <li><a href="transits.html" class="footer__link">Transits</a></li>
             <li><a href="profile.html" class="footer__link">Profile</a></li>
           </ul>
-        </nav>
-        <nav aria-label="Tools navigation">
+        </div>
+        <div role="group" aria-label="Tools navigation">
           <p class="footer__heading">Tools</p>
           <ul class="footer__links">
             <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
@@ -1678,7 +1764,7 @@
             <li><a href="transits.html" class="footer__link">Transits</a></li>
             <li><a href="ephemeris.html" class="footer__link">Instrument</a></li>
           </ul>
-        </nav>
+        </div>
       </div>
       <div class="footer__bottom">
         <p>&copy; 2026 AstroPrecise. Powered by precise astronomical calculations.</p>

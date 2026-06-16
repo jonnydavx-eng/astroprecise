@@ -21,7 +21,50 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const RadialBlurShader = {
+  name: 'RadialBlurShader',
+  uniforms: {
+    tDiffuse: { value: null },
+    uStrength: { value: 0 },
+    uAspect: { value: 1 },
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+  fragmentShader: `
+    precision highp float;
+    uniform sampler2D tDiffuse;
+    uniform float uStrength;
+    uniform float uAspect;
+    varying vec2 vUv;
+    void main() {
+      vec2 uv = vUv;
+      vec2 c = uv - vec2(0.5, 0.46);
+      c.x *= uAspect;
+      float blurAmt = smoothstep(0.16, 0.58, length(c)) * uStrength;
+      if (blurAmt < 0.002) {
+        gl_FragColor = texture2D(tDiffuse, uv);
+      } else {
+        vec4 acc = vec4(0.0);
+        float wsum = 0.0;
+        vec2 dir = length(c) > 0.001 ? normalize(c) : vec2(0.0, 1.0);
+        for (int i = -6; i <= 6; i++) {
+          float fi = float(i);
+          vec2 off = dir * fi * 0.0026 * blurAmt;
+          float w = 1.0 - abs(fi) / 7.0;
+          acc += texture2D(tDiffuse, uv + off) * w;
+          wsum += w;
+        }
+        gl_FragColor = acc / max(wsum, 0.0001);
+      }
+    }`,
+};
 
 (function () {
   'use strict';
@@ -62,31 +105,42 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   const SUN_SIZE = 2.35;
 
   // Per-planet visual tuning (atmosphere rim + surface response)
+  // Gas giants: tiny atmo shells + low atmoI — large additive shells read as ugly "rings".
   const PLANET_VIS = {
-    mercury: { roughness: 0.94, metalness: 0.06, atmo: null, atmoS: 1.0 },
-    venus:   { roughness: 0.88, metalness: 0.0,  atmo: 0xffc070, atmoS: 1.07 },
-    earth:   { roughness: 0.78, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.025 },
-    mars:    { roughness: 0.91, metalness: 0.0,  atmo: 0xff6644, atmoS: 1.05 },
-    jupiter: { roughness: 0.72, metalness: 0.0,  atmo: 0xe8b060, atmoS: 1.14 },
-    saturn:  { roughness: 0.76, metalness: 0.0,  atmo: 0xf0d8a8, atmoS: 1.10 },
-    uranus:  { roughness: 0.82, metalness: 0.0,  atmo: 0x88d8f0, atmoS: 1.08 },
-    neptune: { roughness: 0.80, metalness: 0.0,  atmo: 0x5088e8, atmoS: 1.09 },
+    mercury: { roughness: 0.94, metalness: 0.06, atmo: null, atmoS: 1.0, atmoI: 0 },
+    venus:   { roughness: 0.84, metalness: 0.0,  atmo: 0xffc878, atmoS: 1.035, atmoI: 0.38 },
+    earth:   { roughness: 0.78, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.018, atmoI: 1.0 },
+    mars:    { roughness: 0.90, metalness: 0.0,  atmo: 0xff5533, atmoS: 1.028, atmoI: 0.30 },
+    jupiter: { roughness: 0.62, metalness: 0.0,  atmo: 0xe0a858, atmoS: 1.016, atmoI: 0.20 },
+    saturn:  { roughness: 0.66, metalness: 0.0,  atmo: 0xf0d8a0, atmoS: 1.012, atmoI: 0.16 },
+    uranus:  { roughness: 0.76, metalness: 0.0,  atmo: null, atmoS: 1.0, atmoI: 0 },
+    neptune: { roughness: 0.74, metalness: 0.0,  atmo: null, atmoS: 1.0, atmoI: 0 },
   };
 
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
   let raf = null, destroyed = false, running = true, inView = true;
+  let preloaderFrameTick = 0;
   let texLoader;
   const meshes = {};          // id → THREE.Object3D (planet group)
   let earthCloud = null, moonGroup = null, moonMesh = null, sunMesh = null, sunGlow = [];
   const orbitLines = [];
   const labels = {};
   let starField = null;
-  let sunMaterial = null, sunCoronaGroup = null, sunDirLight = null;
+  let sunMaterial = null, sunCoronaGroup = null, sunDirLight = null, sunDirLightTarget = null;
 
   let composer = null;
   let bloomPass = null;
+  let radialBlurPass = null;
   let perfTier = 'high';
+  let allPlanetsBuilt = false;
+  let sunVisualsMinimal = false;
+  let focusPlanetId = null;
+  let focusPlanetUntil = 0;
+  let focusBloomBase = 0.2;
+  let sunFocusRing = null;
+  let moonFocusRing = null;
+  let focusOrbitsRestore = null;
 
   // ── HD Earth (shader-injected) state ──────────────────────────────────────
   let earthMat = null;        // hero surface MeshStandardMaterial (onBeforeCompile-patched)
@@ -111,15 +165,21 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
 
   function orreryDPR() {
-    if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(2.5);
+    const pre = onPreloaderStage();
+    const cap = pre
+      ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.1 : 1.25)
+      : (perfTier === 'low' ? 1.25 : perfTier === 'mid' ? 2 : 2.5);
+    if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(cap);
     const real = window.devicePixelRatio || 1;
-    if (perfTier === 'low') return Math.min(real, 1.25);
-    if (perfTier === 'mid') return Math.min(real, 2);
-    return Math.min(real, 2.5);
+    return Math.min(real, cap);
   }
 
   function sphereSegs(hero) {
-    if (hero) return perfTier === 'high' ? 128 : perfTier === 'mid' ? 96 : 64;
+    if (hero) {
+      if (onPreloaderStage()) return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 48;
+      return perfTier === 'high' ? 128 : perfTier === 'mid' ? 96 : 64;
+    }
+    if (onPreloaderStage()) return perfTier === 'high' ? 40 : 32;
     return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 40;
   }
 
@@ -140,14 +200,61 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   // intro — HD Earth close-up → pull back through the solar system (preloader + replay)
   let introActive = false, introStart = 0;
+  let introBeginTimer = null;
   let onIntroDone = null;
-  const INTRO_MS = 7200;
+  let preloaderIntroScheduled = false;
+  let preloaderIntroFinished = false;
+  let preloaderIntroWatchdog = null;
+  let introStartedAt = 0;
+  const INTRO_MS = 6800;
+  const PRELOADER_INTRO_MS = 7500;
+  const PRELOADER_SYSTEM_CAM = 54;
+
+  function introDurationMs() {
+    return onPreloaderStage() ? PRELOADER_INTRO_MS : INTRO_MS;
+  }
+
+  function syncPreloaderIntroClass(active) {
+    if (!window.__orreryPreloaderOwns || window.__apHeroEntered) return;
+    try {
+      document.body.classList.toggle('preloader-intro-playing', !!active);
+    } catch (_) {}
+  }
+
+  function syncHeroReplayClass(active) {
+    if (onPreloaderStage()) return;
+    try {
+      document.body.classList.toggle('orrery-replay-active', !!active);
+      const vp = document.getElementById('orrery-viewport');
+      if (vp) vp.classList.toggle('orrery-viewport--replay', !!active);
+    } catch (_) {}
+  }
+
+  function syncPreloaderSystemClass(active) {
+    if (!window.__orreryPreloaderOwns || window.__apHeroEntered) return;
+    try {
+      const pre = document.getElementById('preloader');
+      if (pre) pre.classList.toggle('preloader--system-view', !!active);
+    } catch (_) {}
+  }
+  const CAM_FOV_CLOSE = 33;
+  const CAM_FOV_MID = 38;
+  const CAM_FOV_WIDE = 45;
   let texturesReady = false;
   let texturesReadyResolve = null;
   const texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
+  let earthMapReady = false;
+  let earthMapReadyResolve = null;
+  const earthMapReadyPromise = new Promise((res) => { earthMapReadyResolve = res; });
+
+  function markEarthMapReady() {
+    if (earthMapReady) return;
+    earthMapReady = true;
+    if (earthMapReadyResolve) { earthMapReadyResolve(); earthMapReadyResolve = null; }
+  }
 
   // layer toggles (mirror canvas API)
-  let showOrbits = true, showLabels = false, showAsteroids = false;
+  let showOrbits = false, showLabels = false, showAsteroids = false;
   let onPlanetClick = null;
 
   // scale levels 0–6 — zoom dial = space, scroll = time
@@ -184,6 +291,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   let asteroidPoints = null;
   let halleyGroup = null, halleyOrbit = null, halleyTail = null;
   let saturnRingMesh = null, saturnShadowBand = null;
+  let retroTick = 0;
   let eclipseDim = 0; // 0 = none, 1 = full eclipse dimming
 
   // Phase 3 galaxy layers (L3–L6)
@@ -217,53 +325,442 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     return new THREE.Vector3(R * Math.cos(lo), y, -R * Math.sin(lo));
   }
   const easeInOut = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+  const _projLabel = new THREE.Vector3();
+  let domLabelLayer = null;
+  const domLabelEls = {};
+  let useDomLabels = false;
 
-  function scalePreset(n) { return SCALE_LEVELS[Math.max(0, Math.min(6, n | 0))] || SCALE_LEVELS[2]; }
+  function scalePreset(n) { return SCALE_LEVELS[Math.max(0, Math.min(6, n | 0))] || SCALE_LEVELS[0]; }
 
   function earthTargetVec(out) {
     if (meshes.earth) return out.copy(meshes.earth.position);
     return out.set(0, 0, 0);
   }
 
-  function restartIntro() {
+  const _toSun = new THREE.Vector3();
+  const _camOff = new THREE.Vector3();
+  const _side = new THREE.Vector3();
+  const _WORLD_UP = new THREE.Vector3(0, 1, 0);
+
+  // Place the camera on the terminator plane (perpendicular to sun→Earth) so the
+  // day hemisphere faces the sun and the dusk line reads in frame — not orbital angle.
+  function onPreloaderStage() {
+    return !!(window.__orreryPreloaderOwns && !window.__apHeroEntered);
+  }
+
+  /** Default hero + enter-screen frame: lit Earth on the terminator — not wide system + labels. */
+  function setDefaultEarthFrame() {
+    scaleLevel = 0;
     scaleAnimActive = false;
-    introActive = false;          // hold static until we actually begin (below)
+    introActive = false;
+    updateScaleVisuals(0);
+    updateScaleHUD();
+    needRecompute = true;
+    updatePositions();
+    setEarthTerminatorCamera(3.8, 9 * D2R);
+    camera.fov = CAM_FOV_MID;
+    camera.updateProjectionMatrix();
+    if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
+    if (bloomPass && composer) {
+      bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
+      bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
+    }
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.10;
+    tunePreloaderSunGlow(true);
+    orbitLines.forEach((o) => { o.visible = showOrbits && scaleLevel <= 3; });
+    syncSceneStarfield(0);
+    applyCamera();
+    updateDomLabels(0);
+  }
+
+  function recoverPreloaderIntro() {
+    if (!onPreloaderStage() || preloaderIntroFinished) return;
+    if (preloaderIntroWatchdog) { clearTimeout(preloaderIntroWatchdog); preloaderIntroWatchdog = null; }
+    preloaderIntroScheduled = false;
+    preloaderIntroFinished = true;
+    introActive = false;
+    syncPreloaderIntroClass(false);
+    holdPreloaderSystemFrame();
+    if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+  }
+
+  function holdPreloaderSystemFrame() {
+    buildRemainingPlanets();
+    preloaderIntroScheduled = false;
+    scaleLevel = 2;
+    scaleAnimActive = false;
+    introActive = false;
+    showOrbits = true;
+    updateScaleHUD();
+    needRecompute = true;
+    updatePositions();
+    updateScaleVisuals(2);
+    const end = scalePreset(2);
+    camTarget.set(0, 0, 0);
+    camRadius = PRELOADER_SYSTEM_CAM;
+    camEl = end.camEl;
+    camAz = end.camAz;
+    camera.fov = CAM_FOV_WIDE;
+    camera.updateProjectionMatrix();
+    tuneSunGlowForComposer(perfTier);
+    if (bloomPass && composer) {
+      bloomPass.strength = perfTier === 'mid' ? 0.20 : 0.28;
+      bloomPass.threshold = perfTier === 'mid' ? 0.90 : 0.86;
+    }
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.10 : 1.06;
+    if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
+    syncSceneStarfield(2);
+    syncCosmosBlend(2);
+    applyPreloaderEarthIsolation(1);
+    applyCamera();
+    updateDomLabels(1);
+    syncPreloaderSystemClass(true);
+    updateIntroProgress(1);
+    try {
+      document.dispatchEvent(new CustomEvent('ap-preloader-ready'));
+    } catch (e) { /* optional */ }
+  }
+
+  function finishIntro() {
+    if (!introActive) return;
+    if (preloaderIntroWatchdog) { clearTimeout(preloaderIntroWatchdog); preloaderIntroWatchdog = null; }
+    introActive = false;
+    syncPreloaderIntroClass(false);
+    syncHeroReplayClass(false);
+    updateScaleHUD();
+    userTouched = performance.now();
+    if (onPreloaderStage()) {
+      preloaderIntroFinished = true;
+      preloaderIntroScheduled = false;
+      holdPreloaderSystemFrame();
+    } else {
+      settleToSystemHeroFrame(false);
+    }
+    if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+  }
+
+  function usesPageStarfield() {
+    return !!document.getElementById('starfield-canvas');
+  }
+
+  function tunePreloaderSunGlow(minimal) {
+    if (!sunGlow.length) return;
+    sunGlow.forEach((sp, i) => {
+      if (!sp.material) return;
+      if (minimal) {
+        sp.visible = false;
+        sp.material.opacity = 0;
+        return;
+      }
+      sp.visible = true;
+    });
+  }
+
+  /** Preloader: Earth close-up early, then full solar system for the Enter screen. */
+  function applyPreloaderEarthIsolation(introP) {
+    if (!onPreloaderStage()) return;
+    const systemReveal = preloaderIntroFinished || (introP != null && introP >= 0.42);
+    if (systemReveal) {
+      BODIES.forEach((b) => {
+        const g = meshes[b.id];
+        if (g) g.visible = true;
+      });
+      if (sunMesh) {
+        sunMesh.visible = true;
+        sunMesh.scale.setScalar(1);
+      }
+      if (sunCoronaGroup) sunCoronaGroup.visible = true;
+      tuneSunGlowForComposer(perfTier);
+      if (moonGroup) moonGroup.visible = false;
+      if (earthCloud) earthCloud.visible = false;
+      orbitLines.forEach((o) => { o.visible = showOrbits; });
+      if (asteroidPoints) asteroidPoints.visible = false;
+      if (halleyGroup) halleyGroup.visible = false;
+      Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
+      syncPreloaderSystemClass(true);
+      return;
+    }
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
+      g.visible = b.id === 'earth';
+    });
+    if (sunMesh) {
+      sunMesh.visible = false;
+      sunMesh.scale.setScalar(1);
+    }
+    if (sunCoronaGroup) sunCoronaGroup.visible = false;
+    tunePreloaderSunGlow(true);
+    if (moonGroup) moonGroup.visible = false;
+    if (earthCloud) earthCloud.visible = true;
+    orbitLines.forEach((o) => { o.visible = false; });
+    if (asteroidPoints) asteroidPoints.visible = false;
+    if (halleyGroup) halleyGroup.visible = false;
+    Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
+    syncPreloaderSystemClass(false);
+  }
+
+  function syncSceneStarfield(level) {
+    if (!starField) return;
+    const lv = level | 0;
+    if (usesPageStarfield() && lv < 5) {
+      starField.visible = false;
+      return;
+    }
+    starField.visible = true;
+    if (starField.material.uniforms) {
+      starField.material.uniforms.uFade.value = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
+    }
+  }
+
+  function setEarthTerminatorCamera(radius, elevRad) {
+    if (!meshes.earth || !sunMesh) {
+      earthTargetVec(camTarget);
+      camRadius = radius;
+      camEl = elevRad;
+      return;
+    }
+    const earthPos = meshes.earth.position;
+    camTarget.copy(earthPos);
+    _toSun.copy(sunMesh.position).sub(earthPos);
+    if (_toSun.lengthSq() < 1e-8) _toSun.set(-1, 0, 0);
+    _toSun.normalize();
+    _side.crossVectors(_WORLD_UP, _toSun);
+    if (_side.lengthSq() < 1e-8) _side.set(0, 0, 1);
+    _side.normalize();
+    const ce = Math.cos(elevRad), se = Math.sin(elevRad);
+    // Sun-side + lateral offset: day hemisphere lit toward camera, terminator arcs across the disc.
+    _camOff.copy(_toSun).multiplyScalar(radius * 0.76 * ce);
+    _camOff.addScaledVector(_side, radius * 0.48 * ce);
+    _camOff.y += radius * se;
+    camRadius = Math.max(radius, _camOff.length());
+    camEl = Math.asin(Math.max(-1, Math.min(1, _camOff.y / camRadius)));
+    const horiz = Math.cos(camEl) * camRadius;
+    camAz = horiz > 1e-6 ? Math.atan2(_camOff.z, _camOff.x) : 0;
+  }
+
+  function syncCosmosBlend(level) {
+    if (!window.CosmosEngine || typeof window.CosmosEngine.setOrreryBlend !== 'function') return;
+    const lv = level | 0;
+    let blend = 0;
+    if (lv >= 5) blend = Math.min(1, 0.4 + (lv - 4) * 0.6);
+    else if (lv >= 4) blend = (lv - 3) * 0.4;
+    window.CosmosEngine.setOrreryBlend(blend);
+  }
+
+  /** Hero settle: full solar system in the shared deep-space starfield (no duplicate canvas stars). */
+  function settleToSystemHeroFrame(animate) {
+    introActive = false;
+    const doAnimate = animate && !PRM;
+    if (doAnimate) {
+      applyScalePreset(2, true);
+    } else {
+      scaleAnimActive = false;
+      applyScalePreset(2, false);
+      camTarget.set(0, 0, 0);
+      camera.fov = CAM_FOV_WIDE;
+      camera.updateProjectionMatrix();
+      applyCamera();
+      updateDomLabels(1);
+    }
+    tuneSunGlowForComposer(perfTier);
+    if (bloomPass && composer) {
+      bloomPass.strength = perfTier === 'mid' ? 0.20 : 0.30;
+      bloomPass.threshold = perfTier === 'mid' ? 0.90 : 0.86;
+    }
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.10 : 1.06;
+    if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
+    syncSceneStarfield(2);
+    syncCosmosBlend(2);
+  }
+
+  function restartIntro() {
+    if (introBeginTimer) { clearTimeout(introBeginTimer); introBeginTimer = null; }
+    scaleAnimActive = false;
+    introActive = false;
+    introStart = 0;
+    syncPreloaderIntroClass(false);
     userTouched = performance.now();
     daysPerSec = 0;
     flicking = false;
     scaleLevel = 0;
     updateScaleVisuals(0);
-    earthTargetVec(camTarget);
-    camRadius = 2.35;
-    camEl = 4 * D2R;
-    camAz = -0.6;
+    needRecompute = true;
+    updatePositions();
+    setEarthTerminatorCamera(3.2, 6 * D2R);
     applyCamera();
     if (PRM) {
-      applyScalePreset(2, false);
+      syncPreloaderIntroClass(false);
+      if (onPreloaderStage()) {
+        preloaderIntroScheduled = false;
+        preloaderIntroFinished = true;
+        holdPreloaderSystemFrame();
+      } else {
+        applyScalePreset(2, false);
+      }
       if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
       return;
     }
-    // Smooth start: hold the static Earth close-up until the HD textures have loaded
-    // (so the shader recompiles land on this held beat, not mid-animation), then fly
-    // out. Capped at 1.5s so a slow connection never stalls the reveal.
+    // Hold static Earth until HD map is ready (shader compile lands on this beat).
     const begin = () => {
       if (destroyed || introActive || scaleLevel !== 0) return;
+      preloaderIntroScheduled = false;
       introStart = performance.now();
+      introStartedAt = introStart;
       introActive = true;
+      syncPreloaderIntroClass(true);
+      syncHeroReplayClass(true);
     };
-    if (texturesReady) { begin(); return; }
+    if (earthMapReady) { begin(); return; }
     needRecompute = true;
-    texturesReadyPromise.then(begin);
-    setTimeout(begin, 1500);
+    earthMapReadyPromise.then(begin);
+    introBeginTimer = setTimeout(begin, 1200);
+  }
+
+  function ensureComposer() {
+    if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
+    try {
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      const bloomStrength = perfTier === 'mid' ? 0.18 : 0.28;
+      const bloomRadius = perfTier === 'mid' ? 0.36 : 0.42;
+      const bloomThreshold = perfTier === 'mid' ? 0.94 : 0.91;
+      bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
+        bloomStrength, bloomRadius, bloomThreshold
+      );
+      composer.addPass(bloomPass);
+      if (perfTier === 'high') {
+        radialBlurPass = tryCreateRadialBlurPass(1);
+        if (radialBlurPass) composer.addPass(radialBlurPass);
+      }
+      composer.addPass(new OutputPass());
+      resize();
+    } catch (e) {
+      composer = null;
+      bloomPass = null;
+      radialBlurPass = null;
+      console.warn('[orrery] post-processing deferred init failed:', e.message);
+    }
+  }
+
+  function upgradeSunVisuals() {
+    if (!sunVisualsMinimal || !sunMesh) return;
+    sunVisualsMinimal = false;
+    buildSunCorona();
+    const layers = [
+      { tex: makeGlowTexture('rgba(255,248,220,0.92)', 'rgba(255,200,90,0.48)'), scale: SUN_SIZE * 5.8 },
+      { tex: makeGlowTexture('rgba(255,215,130,0.42)', 'rgba(235,140,40,0.12)'), scale: SUN_SIZE * 11 },
+      { tex: makeGlowTexture('rgba(255,170,60,0.14)', 'rgba(210,90,15,0.03)'), scale: SUN_SIZE * 18 },
+    ];
+    layers.forEach((l) => {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
+      sp.scale.set(l.scale, l.scale, 1);
+      sunMesh.add(sp);
+      sunGlow.push(sp);
+    });
+    tuneSunGlowForComposer(perfTier);
+  }
+
+  function buildRemainingPlanets() {
+    if (allPlanetsBuilt) return;
+    buildPlanets({ remainingOnly: true });
+    allPlanetsBuilt = true;
+    needRecompute = true;
+  }
+
+  function settleHeavyWork() {
+    if (destroyed) return;
+    buildRemainingPlanets();
+    upgradeSunVisuals();
+    ensureGalaxyLayers();
+    if (!asteroidPoints) buildAsteroids();
+    if (!starField && !usesPageStarfield()) buildStars();
+    preloadDeferredTextures();
+    needRecompute = true;
+    updatePositions();
+    updateScaleVisuals(scaleLevel);
+    resize();
   }
 
   function settleFromIntro() {
-    introActive = false;
     userTouched = performance.now();
-    if (scaleLevel !== 2) applyScalePreset(2, true);
+    settleToSystemHeroFrame(true);
+    resize();
+    requestAnimationFrame(() => {
+      if (destroyed) return;
+      ensureComposer();
+      resize();
+    });
+    if (window.requestIdleCallback) {
+      requestIdleCallback(settleHeavyWork, { timeout: 2400 });
+    } else {
+      setTimeout(settleHeavyWork, 160);
+    }
+  }
+
+  function skipIntro() {
+    if (!introActive && !preloaderIntroScheduled && scaleLevel === 2 && !onPreloaderStage()) return;
+    introActive = false;
+    preloaderIntroScheduled = false;
+    syncPreloaderIntroClass(false);
+    syncHeroReplayClass(false);
+    scaleAnimActive = false;
+    daysPerSec = 0;
+    flicking = false;
+    updateScaleHUD();
+    if (onPreloaderStage()) {
+      preloaderIntroFinished = true;
+      holdPreloaderSystemFrame();
+    } else {
+      settleToSystemHeroFrame(false);
+    }
+    userTouched = performance.now();
+    if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+  }
+
+  function earthTextureFiles() {
+    const files = ['earth.jpg', 'earth_lights.png', 'earth_specular.jpg'];
+    if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
+    return files;
+  }
+
+  function deferredTextureFiles() {
+    const files = [];
+    BODIES.forEach((b) => {
+      if (b.tex && b.id !== 'earth') files.push(b.tex);
+      if (b.ring) files.push(b.ring);
+    });
+    files.push('moon.jpg');
+    return files;
+  }
+
+  function preloadDeferredTextures() {
+    const files = deferredTextureFiles();
+    if (!files.length) return Promise.resolve();
+    let chain = Promise.resolve();
+    const gap = perfTier === 'low' ? 90 : perfTier === 'mid' ? 55 : 35;
+    files.forEach((f) => {
+      chain = chain.then(() => {
+        if (destroyed) return;
+        return loadTex(f);
+      }).then(() => new Promise((res) => setTimeout(res, gap)));
+    });
+    return chain.then(() => { if (!destroyed) refreshTextures(); }).catch(() => {});
   }
 
   function preloadTextures() {
+    if (onPreloaderStage()) {
+      return Promise.all(earthTextureFiles().map((f) => loadTex(f))).then(() => {
+        texturesReady = true;
+        refreshTextures();
+        if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+      }).catch(() => {
+        texturesReady = true;
+        if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+      });
+    }
     const files = [];
     BODIES.forEach((b) => {
       if (b.tex) files.push(b.tex);
@@ -304,12 +801,18 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       scaleAnimStart = performance.now();
       introActive = false;
     } else {
-      camRadius = p.camRadius;
-      camEl = p.camEl;
-      camAz = p.camAz;
-      if (p.targetEarth) earthTargetVec(camTarget);
-      else camTarget.set(0, 0, 0);
+      if (p.targetEarth) {
+        earthTargetVec(camTarget);
+        setEarthTerminatorCamera(p.camRadius, p.camEl);
+      } else {
+        camRadius = p.camRadius;
+        camEl = p.camEl;
+        camAz = p.camAz;
+        camTarget.set(0, 0, 0);
+      }
       scaleAnimActive = false;
+      camera.fov = p.targetEarth ? CAM_FOV_MID : (p.id <= 2 ? CAM_FOV_WIDE : CAM_FOV_WIDE);
+      camera.updateProjectionMatrix();
       applyCamera();
     }
     updateScaleHUD();
@@ -330,8 +833,10 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     if (scaleEl) scaleEl.textContent = p.hud;
     document.querySelectorAll('.orrery-scale-btn').forEach((btn) => {
       const lv = parseInt(btn.dataset.scale, 10);
+      const preset = scalePreset(lv);
       btn.classList.toggle('active', lv === scaleLevel);
       btn.setAttribute('aria-pressed', lv === scaleLevel ? 'true' : 'false');
+      if (preset.honesty) btn.title = preset.honesty;
     });
   }
 
@@ -642,13 +1147,21 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     galaxyGroup.add(cosmicField);
   }
 
+  let galaxyBuilt = false;
+
   function buildGalaxyLayers() {
+    if (galaxyBuilt || !scene) return;
+    galaxyBuilt = true;
     galaxyGroup = new THREE.Group();
     scene.add(galaxyGroup);
     buildOortShell();
     buildLocalStars();
     buildMilkyWaySpiral();
     buildCosmicField();
+  }
+
+  function ensureGalaxyLayers() {
+    if (!galaxyBuilt) buildGalaxyLayers();
   }
 
   function updateScaleVisuals(level) {
@@ -698,21 +1211,50 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     if (galacticHalo) galacticHalo.visible = lv >= 5;
     if (cosmicField) cosmicField.visible = lv === 6;
 
-    if (starField && starField.material.uniforms) {
-      starField.material.uniforms.uFade.value = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
-    }
+    syncSceneStarfield(lv);
+    syncCosmosBlend(lv);
 
     if (bloomPass) {
-      bloomPass.strength = lv >= 5 ? 0.42 : perfTier === 'mid' ? 0.2 : 0.3;
-      bloomPass.threshold = lv >= 5 ? 0.82 : perfTier === 'mid' ? 0.93 : 0.9;
+      if (lv === 0) {
+        bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
+        bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
+      } else {
+        bloomPass.strength = lv >= 5 ? 0.38 : perfTier === 'mid' ? 0.16 : 0.24;
+        bloomPass.threshold = lv >= 5 ? 0.84 : perfTier === 'mid' ? 0.95 : 0.93;
+      }
     }
     if (renderer) {
-      renderer.toneMappingExposure = lv >= 5 ? 1.18 : perfTier === 'high' ? 1.08 : 1.02;
+      if (lv === 0) renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.10;
+      else renderer.toneMappingExposure = lv >= 5 ? 1.14 : perfTier === 'high' ? 1.12 : 1.06;
+    }
+    if (onPreloaderStage()) applyPreloaderEarthIsolation(preloaderIntroFinished ? 1 : null);
+    else if (sunGlow.length && lv === 0) {
+      sunGlow.forEach((sp, i) => {
+        if (!sp.material) return;
+        sp.visible = i === 0;
+        sp.material.opacity = 0.18;
+      });
     }
 
     const chip = document.getElementById('orrery-honesty-chip');
     const p = scalePreset(lv);
-    if (chip && p.honesty) chip.textContent = p.honesty;
+    if (chip) {
+      if (eclipseDim > 0.45) chip.textContent = 'Eclipse geometry detected · positions live (VSOP87)';
+      else if (p.honesty) chip.textContent = p.honesty;
+    }
+    const hint = document.querySelector('.orrery-hint');
+    if (hint) {
+      const hints = [
+        'Drag to scrub time · scroll the page to advance the sky',
+        'Inner system · tap a planet or sky pill to focus',
+        'Full solar system · VSOP87 positions live',
+        'Oort cloud scale · illustrative shell',
+        'Local star directions · schematic layout',
+        'Milky Way view · Sun marked in the Orion arm',
+        'Deep field · decorative galaxy sprites',
+      ];
+      hint.textContent = hints[lv] || hints[2];
+    }
   }
 
   function updateEclipseDim(jd) {
@@ -741,15 +1283,21 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
 
   function updateSaturnShadow(jd) {
-    if (!saturnRingMesh || !saturnShadowBand || !sunMesh) return;
+    if (!saturnRingMesh || !sunMesh || !meshes.saturn) return;
     const saturnPos = meshes.saturn.position;
     const sunPos = sunMesh.position;
     const lit = new THREE.Vector3().subVectors(sunPos, saturnPos).normalize();
-    saturnShadowBand.position.copy(lit.clone().multiplyScalar(0.92 * 1.05));
-    saturnShadowBand.lookAt(saturnPos);
-    saturnShadowBand.visible = true;
-    const ringOpacity = 0.92 - eclipseDim * 0.08;
-    if (saturnRingMesh.material) saturnRingMesh.material.opacity = ringOpacity;
+    const ringMat = saturnRingMesh.material;
+    if (ringMat && ringMat.uniforms) {
+      ringMat.uniforms.uSunDir.value.copy(lit);
+      ringMat.uniforms.uOpacity.value = 0.9 - eclipseDim * 0.1;
+    } else if (ringMat) ringMat.opacity = 0.9 - eclipseDim * 0.1;
+    if (saturnShadowBand) {
+      saturnShadowBand.position.copy(lit.clone().multiplyScalar(0.92 * 1.05));
+      saturnShadowBand.lookAt(saturnPos);
+      saturnShadowBand.visible = true;
+      if (saturnShadowBand.material) saturnShadowBand.material.opacity = 0.34 + lit.y * 0.12;
+    }
   }
 
   // ── Animated sun surface shader (limb darkening + granulation + fresnel corona) ─
@@ -781,19 +1329,21 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         void main() {
           vec3 n = normalize(vNormal);
           vec3 v = normalize(vViewDir);
-          float facing = max(dot(n, v), 0.0);
-          float limb = pow(facing, 0.28);
-          float gran = noise(n.xy * 18.0 + uTime * 0.12) * 0.55
-                     + noise(n.xy * 36.0 - uTime * 0.07) * 0.3
-                     + noise(n.xy * 7.0 + uTime * 0.04) * 0.15;
-          vec3 core = vec3(1.0, 0.98, 0.90);
-          vec3 mid  = vec3(1.0, 0.78, 0.22);
-          vec3 edge = vec3(0.95, 0.42, 0.04);
-          vec3 col = mix(edge, mid, limb);
-          col = mix(col, core, limb * limb + gran * 0.14);
-          float rim = pow(1.0 - facing, 2.8);
-          col += vec3(1.0, 0.82, 0.35) * rim * 0.42;
-          col *= mix(1.0, 0.35, uEclipse);
+          float mu = max(dot(n, v), 0.0);
+          float limb = pow(mu, 0.22);
+          float gran = noise(n.xy * 22.0 + uTime * 0.09) * 0.42
+                     + noise(n.xy * 44.0 - uTime * 0.05) * 0.28
+                     + noise(n.xy * 9.0 + uTime * 0.03) * 0.12;
+          float faculae = smoothstep(0.55, 0.95, gran) * 0.18;
+          vec3 photosphere = vec3(1.0, 0.96, 0.86);
+          vec3 midBand     = vec3(1.0, 0.82, 0.38);
+          vec3 limbBand    = vec3(0.92, 0.48, 0.08);
+          vec3 col = mix(limbBand, midBand, limb);
+          col = mix(col, photosphere, limb * limb * (0.92 + gran * 0.08));
+          col += vec3(1.0, 0.88, 0.42) * faculae * limb;
+          float chromo = pow(1.0 - mu, 3.6);
+          col += vec3(1.0, 0.55, 0.12) * chromo * 0.22;
+          col *= mix(1.0, 0.32, uEclipse);
           gl_FragColor = vec4(col, 1.0);
         }`,
     });
@@ -831,27 +1381,163 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
 
   // ── Scene construction ─────────────────────────────────────────────────────
+  function capTextureSize(t, maxDim) {
+    if (!t || !t.image || !maxDim) return;
+    const img = t.image;
+    const w = img.width || 0;
+    const h = img.height || 0;
+    if (!w || !h) return;
+    const maxSide = Math.max(w, h);
+    if (maxSide <= maxDim) return;
+    const s = maxDim / maxSide;
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(w * s));
+    c.height = Math.max(1, Math.round(h * s));
+    const x = c.getContext('2d');
+    if (!x) return;
+    x.drawImage(img, 0, 0, c.width, c.height);
+    t.image = c;
+    t.needsUpdate = true;
+  }
+
   function tuneTexture(t) {
     if (!t || !renderer) return;
+    const maxDim = perfTier === 'low' ? 1024 : perfTier === 'mid' ? 2048 : 4096;
+    capTextureSize(t, onPreloaderStage() ? Math.min(maxDim, 1536) : maxDim);
     const max = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
-    t.anisotropy = max;
+    t.anisotropy = perfTier === 'low' ? Math.min(max, 4) : max;
     t.generateMipmaps = true;
     t.minFilter = THREE.LinearMipmapLinearFilter;
     t.magFilter = THREE.LinearFilter;
   }
 
+  function textureCandidates(file) {
+    const list = [];
+    if (perfTier === 'low' || onPreloaderStage()) {
+      const sm = file.replace(/\.(jpe?g|png)$/i, '_sm.$1');
+      if (sm !== file) list.push(sm);
+    }
+    list.push(file);
+    return list;
+  }
+
   function loadTex(file, srgb) {
+    const candidates = textureCandidates(file);
     return new Promise((res) => {
-      texLoader.load(TEX + file, (t) => {
-        if (srgb !== false) t.colorSpace = THREE.SRGBColorSpace;
-        tuneTexture(t);
-        res(t);
-      }, undefined, () => res(null));
+      let idx = 0;
+      const tryNext = () => {
+        if (idx >= candidates.length) return res(null);
+        const f = candidates[idx++];
+        texLoader.load(TEX + f, (t) => {
+          if (srgb !== false) t.colorSpace = THREE.SRGBColorSpace;
+          tuneTexture(t);
+          res(t);
+        }, undefined, tryNext);
+      };
+      tryNext();
     });
   }
 
+  function ensureFocusRing(group, scaleMul) {
+    if (group.userData.focusRing) return group.userData.focusRing;
+    const tex = makeGlowTexture('rgba(255, 228, 160, 0.85)', 'rgba(201, 162, 39, 0.0)');
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+    }));
+    const base = (scaleMul || 3.2);
+    sp.scale.set(base, base, 1);
+    sp.visible = false;
+    sp.userData.baseScale = base;
+    group.add(sp);
+    group.userData.focusRing = sp;
+    return sp;
+  }
+
+  function clearFocusHighlight() {
+    focusPlanetId = null;
+    focusPlanetUntil = 0;
+    if (focusOrbitsRestore === false) {
+      showOrbits = false;
+      focusOrbitsRestore = null;
+      updateScaleVisuals(scaleLevel);
+    }
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (g && g.userData.focusRing) g.userData.focusRing.visible = false;
+    });
+    if (sunFocusRing) sunFocusRing.visible = false;
+    if (moonFocusRing) moonFocusRing.visible = false;
+    if (bloomPass) bloomPass.strength = focusBloomBase;
+  }
+
+  function setFocusHighlight(id) {
+    if (!id || PRM) return;
+    focusPlanetId = id;
+    focusPlanetUntil = performance.now() + 2800;
+    if (bloomPass) focusBloomBase = bloomPass.strength;
+    if (id !== 'earth' && id !== 'moon' && id !== 'sun' && !showOrbits) {
+      focusOrbitsRestore = false;
+      showOrbits = true;
+      updateScaleVisuals(scaleLevel);
+    }
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
+      const ring = ensureFocusRing(g, b.size * 3.8);
+      ring.visible = b.id === id;
+    });
+    if (id === 'sun' && sunMesh) {
+      sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
+      sunFocusRing.visible = true;
+    } else if (sunFocusRing) {
+      sunFocusRing.visible = false;
+    }
+    if (id === 'moon' && moonGroup) {
+      moonFocusRing = moonFocusRing || ensureFocusRing(moonGroup, 1.4);
+      moonFocusRing.visible = true;
+    } else if (moonFocusRing) {
+      moonFocusRing.visible = false;
+    }
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-planet-focus', { detail: { id } }));
+    } catch (e) { /* optional */ }
+  }
+
+  function updateFocusHighlight(t) {
+    if (!focusPlanetId || t >= focusPlanetUntil) {
+      if (focusPlanetId) clearFocusHighlight();
+      return;
+    }
+    const pulse = 0.72 + 0.28 * Math.sin(t * 0.009);
+    const fade = Math.min(1, (focusPlanetUntil - t) / 2800);
+    BODIES.forEach((b) => {
+      if (b.id !== focusPlanetId) return;
+      const g = meshes[b.id];
+      const ring = g && g.userData.focusRing;
+      if (ring) {
+        const s = ring.userData.baseScale * (0.92 + pulse * 0.14);
+        ring.scale.set(s, s, 1);
+        if (ring.material) ring.material.opacity = 0.55 + pulse * 0.35 * fade;
+      }
+    });
+    if (focusPlanetId === 'sun' && sunFocusRing) {
+      const s = sunFocusRing.userData.baseScale * (0.94 + pulse * 0.1);
+      sunFocusRing.scale.set(s, s, 1);
+      if (sunFocusRing.material) sunFocusRing.material.opacity = 0.5 + pulse * 0.3 * fade;
+    }
+    if (focusPlanetId === 'moon' && moonFocusRing) {
+      const s = moonFocusRing.userData.baseScale * (0.94 + pulse * 0.12);
+      moonFocusRing.scale.set(s, s, 1);
+      if (moonFocusRing.material) moonFocusRing.material.opacity = 0.5 + pulse * 0.32 * fade;
+    }
+    if (bloomPass && composer) {
+      bloomPass.strength = focusBloomBase + pulse * 0.14 * fade;
+    }
+  }
+
   function buildStars() {
-    const N = PRM ? 900 : (perfTier === 'high' ? 3200 : perfTier === 'mid' ? 2600 : 1800);
+    if (onPreloaderStage() && usesPageStarfield()) return;
+    const N = PRM ? 800 : (perfTier === 'high' ? 2600 : perfTier === 'mid' ? 2000 : 1500);
     const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
     const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
     for (let i = 0; i < N; i++) {
@@ -922,28 +1608,36 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     sunMesh.add(sunCoronaGroup);
   }
 
-  function buildSun() {
+  function buildSun(minimal) {
     sunMaterial = makeSunShaderMaterial();
-    const sunSegs = perfTier === 'high' ? 96 : perfTier === 'mid' ? 72 : 48;
+    const sunSegs = minimal
+      ? (perfTier === 'high' ? 48 : 32)
+      : (perfTier === 'high' ? 96 : perfTier === 'mid' ? 72 : 48);
     sunMesh = new THREE.Mesh(new THREE.SphereGeometry(SUN_SIZE, sunSegs, sunSegs), sunMaterial);
     scene.add(sunMesh);
-    buildSunCorona();
-    const layers = [
-      { tex: makeGlowTexture('rgba(255,245,200,0.95)', 'rgba(255,190,70,0.55)'), scale: SUN_SIZE * 6.5 },
-      { tex: makeGlowTexture('rgba(255,210,120,0.50)', 'rgba(230,130,35,0.16)'), scale: SUN_SIZE * 13 },
-      { tex: makeGlowTexture('rgba(255,160,50,0.18)', 'rgba(200,80,10,0.04)'), scale: SUN_SIZE * 22 },
-    ];
-    layers.forEach((l) => {
-      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
-      sp.scale.set(l.scale, l.scale, 1); sunMesh.add(sp); sunGlow.push(sp);
-    });
-    const light = new THREE.PointLight(0xfff0d0, 4.2, 0, 0);
+    sunVisualsMinimal = !!minimal;
+    if (!minimal) {
+      buildSunCorona();
+      const layers = [
+        { tex: makeGlowTexture('rgba(255,248,220,0.92)', 'rgba(255,200,90,0.48)'), scale: SUN_SIZE * 5.8 },
+        { tex: makeGlowTexture('rgba(255,215,130,0.42)', 'rgba(235,140,40,0.12)'), scale: SUN_SIZE * 11 },
+        { tex: makeGlowTexture('rgba(255,170,60,0.14)', 'rgba(210,90,15,0.03)'), scale: SUN_SIZE * 18 },
+      ];
+      layers.forEach((l) => {
+        const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
+        sp.scale.set(l.scale, l.scale, 1); sunMesh.add(sp); sunGlow.push(sp);
+      });
+    }
+    const light = new THREE.PointLight(0xfff4e0, 5.2, 0, 1.5);
     sunMesh.add(light);
-    sunDirLight = new THREE.DirectionalLight(0xfff4e0, perfTier === 'high' ? 3.0 : 2.5);
+    sunDirLight = new THREE.DirectionalLight(0xfff8ec, perfTier === 'high' ? 3.6 : 3.0);
     sunDirLight.position.set(0, 0, 0);
     scene.add(sunDirLight);
-    scene.add(new THREE.HemisphereLight(0x3a4a68, 0x0a0806, perfTier === 'high' ? 0.32 : 0.26));
-    scene.add(new THREE.AmbientLight(0x1a2030, perfTier === 'high' ? 0.1 : 0.12));
+    sunDirLightTarget = new THREE.Object3D();
+    scene.add(sunDirLightTarget);
+    sunDirLight.target = sunDirLightTarget;
+    scene.add(new THREE.HemisphereLight(0x7088a8, 0x1a1410, perfTier === 'high' ? 0.48 : 0.40));
+    scene.add(new THREE.AmbientLight(0x3a5068, perfTier === 'high' ? 0.20 : 0.16));
   }
 
   // Real bloom replaces the outer fake corona; keep a subtle inner halo on all tiers.
@@ -967,19 +1661,57 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   function atmosphereMaterial(colorHex, intensity) {
     const col = new THREE.Color(colorHex);
     return new THREE.ShaderMaterial({
-      uniforms: { uColor: { value: col }, uIntensity: { value: intensity || 1.0 } },
+      uniforms: { uColor: { value: col }, uIntensity: { value: intensity || 0.45 } },
       vertexShader: `varying vec3 vN; varying vec3 vV; void main(){
         vec4 mv = modelViewMatrix * vec4(position, 1.0);
         vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
         gl_Position = projectionMatrix * mv; }`,
       fragmentShader: `uniform vec3 uColor; uniform float uIntensity; varying vec3 vN; varying vec3 vV;
         void main(){
-          float fresnel = pow(1.0 - max(dot(vN, vV), 0.0), 3.2);
-          float rim = pow(max(dot(vN, vV), 0.0), 0.5) * 0.15;
-          float a = clamp((fresnel + rim) * uIntensity, 0.0, 1.0);
-          gl_FragColor = vec4(uColor * (0.6 + fresnel * 0.8), a * 0.85);
+          float facing = max(dot(vN, vV), 0.0);
+          float fresnel = pow(1.0 - facing, 5.8);
+          float a = fresnel * uIntensity;
+          vec3 col = uColor * (0.38 + fresnel * 0.62);
+          gl_FragColor = vec4(col, clamp(a, 0.0, 0.65));
         }`,
       blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
+    });
+  }
+
+  function saturnRingMaterial() {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uMap: { value: null },
+        uSunDir: { value: new THREE.Vector3(1, 0, 0) },
+        uOpacity: { value: 0.9 },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vWorldNormal;
+        void main() {
+          vUv = uv;
+          vWorldNormal = normalize(mat3(modelMatrix) * normal);
+          vec4 wp = modelMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * viewMatrix * wp;
+        }`,
+      fragmentShader: `
+        uniform sampler2D uMap;
+        uniform vec3 uSunDir;
+        uniform float uOpacity;
+        varying vec2 vUv;
+        varying vec3 vWorldNormal;
+        void main() {
+          vec4 tex = texture2D(uMap, vUv);
+          float density = tex.a > 0.02 ? tex.a : max(tex.r, max(tex.g, tex.b));
+          if (density < 0.03) discard;
+          vec3 base = tex.rgb;
+          if (length(base) < 0.05) base = vec3(0.92, 0.86, 0.72);
+          float lit = clamp(dot(vWorldNormal, normalize(uSunDir)) * 0.5 + 0.52, 0.36, 1.0);
+          vec3 col = base * lit * vec3(1.04, 1.0, 0.94);
+          float edgeFade = smoothstep(0.0, 0.08, vUv.x) * smoothstep(1.0, 0.92, vUv.x);
+          gl_FragColor = vec4(col, density * uOpacity * edgeFade);
+        }`,
+      transparent: true, side: THREE.DoubleSide, depthWrite: false,
     });
   }
 
@@ -1038,8 +1770,14 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     });
   }
 
-  function buildPlanets() {
-    BODIES.forEach((b) => {
+  function buildPlanets(opts) {
+    const earthOnly = !!(opts && opts.earthOnly);
+    const remainingOnly = !!(opts && opts.remainingOnly);
+    let bodies = BODIES;
+    if (earthOnly) bodies = BODIES.filter((b) => b.id === 'earth');
+    else if (remainingOnly) bodies = BODIES.filter((b) => b.id !== 'earth');
+    bodies.forEach((b) => {
+      if (meshes[b.id]) return;
       const group = new THREE.Group();
       const vis = PLANET_VIS[b.id] || { roughness: 0.9, metalness: 0, atmo: null, atmoS: 1.0 };
       let mat;
@@ -1049,19 +1787,23 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         // a non-black carrier (emissiveMap multiplies) — the injected GLSL overwrites
         // totalEmissiveRadiance so the white never reaches the day side.
         mat = new THREE.MeshStandardMaterial({
-          color: 0x14202c, roughness: 0.92, metalness: 0.0,
-          emissive: 0xffffff, emissiveIntensity: 1.0, envMapIntensity: 0.30,
+          color: 0x2a6cb0, roughness: 0.78, metalness: 0.0,
+          emissive: 0xffffff, emissiveIntensity: 1.0, envMapIntensity: 0.48,
         });
         mat.onBeforeCompile = (shader) => { try { injectEarth(shader); } catch (e) { console.warn('[orrery] earth shader patch skipped', e); } };
         earthMat = mat;
         earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
       } else {
-        const clearcoat = (b.id === 'jupiter' || b.id === 'saturn' ? 0.22 : b.id === 'venus' ? 0.18 : 0);
+        const isGiant = b.id === 'jupiter' || b.id === 'saturn' || b.id === 'uranus' || b.id === 'neptune';
+        const clearcoat = (b.id === 'jupiter' ? 0.36 : b.id === 'saturn' ? 0.30 : b.id === 'venus' ? 0.20
+          : (b.id === 'uranus' || b.id === 'neptune') ? 0.14 : 0);
+        const giantGlow = b.id === 'jupiter' ? 0x2a1808 : b.id === 'saturn' ? 0x1e1608 : 0x000000;
+        const giantEmissiveI = b.id === 'jupiter' ? 0.08 : b.id === 'saturn' ? 0.06 : 0;
         mat = new THREE.MeshPhysicalMaterial({
           color: b.color, roughness: vis.roughness, metalness: vis.metalness,
-          clearcoat, clearcoatRoughness: 0.42,
-          emissive: 0x000000, emissiveIntensity: 0,
-          envMapIntensity: 0.18,
+          clearcoat, clearcoatRoughness: isGiant ? 0.30 : 0.42,
+          emissive: giantGlow, emissiveIntensity: giantEmissiveI,
+          envMapIntensity: isGiant ? 0.32 : 0.20,
         });
       }
       const segs = sphereSegs(b.hero);
@@ -1093,15 +1835,20 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
           atmoMat = earthAtmosphereMaterial();
           earthAtmoMat = atmoMat;
         } else {
-          atmoMat = atmosphereMaterial(vis.atmo, b.hero ? 1.35 : 0.85);
+          const atmoI = vis.atmoI != null ? vis.atmoI : (b.hero ? 1.0 : 0.4);
+          atmoMat = atmosphereMaterial(vis.atmo, atmoI);
         }
-        const atmo = new THREE.Mesh(new THREE.SphereGeometry(b.size * vis.atmoS, segs, segs), atmoMat);
+        const atmoSegs = Math.max(24, Math.floor(segs * 0.65));
+        const atmo = new THREE.Mesh(new THREE.SphereGeometry(b.size * vis.atmoS, atmoSegs, atmoSegs), atmoMat);
         group.add(atmo);
       }
 
       if (b.hero) {
         // ── HD Earth texture swap-in: perceived-quality order, each guarded ──
-        loadTex('earth.jpg').then((t) => { if (t && earthMat) { earthMat.map = t; earthMat.color.set(0xffffff); earthMat.needsUpdate = true; } });
+        loadTex('earth.jpg').then((t) => {
+          if (t && earthMat) { earthMat.map = t; earthMat.color.set(0xffffff); earthMat.needsUpdate = true; }
+          markEarthMapReady();
+        });
         loadTex('earth_lights.png').then((t) => { if (t && earthMat) { earthMat.emissiveMap = t; earthUniforms.uHasLights.value = 1.0; earthMat.needsUpdate = true; } });
         loadTex('earth_specular.jpg', false).then((t) => { if (t && earthMat) { earthMat.roughnessMap = t; earthMat.needsUpdate = true; } });
         if (perfTier !== 'low' && !PRM) {
@@ -1134,7 +1881,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         const moonSegs = perfTier === 'high' ? 56 : perfTier === 'mid' ? 40 : 28;
         moonMesh = new THREE.Mesh(
           new THREE.SphereGeometry(0.23, moonSegs, moonSegs),
-          new THREE.MeshPhysicalMaterial({ color: 0xbfc2cc, roughness: 0.96, metalness: 0, clearcoat: 0.04, clearcoatRoughness: 0.6 })
+          new THREE.MeshPhysicalMaterial({ color: 0xd8dce6, roughness: 0.88, metalness: 0, emissive: 0x888c98, emissiveIntensity: 0.35, clearcoat: 0.08, clearcoatRoughness: 0.5 })
         );
         moonGroup.add(moonMesh);
         loadTex('moon.jpg').then((t) => { if (t) { moonMesh.material.map = t; moonMesh.material.color.set(0xffffff); moonMesh.material.needsUpdate = true; } });
@@ -1151,23 +1898,41 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
           const rr = (v3.length() - inner) / (outer - inner);
           uv.setXY(i, rr, 0.5);
         }
-        const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({
-          side: THREE.DoubleSide, transparent: true, opacity: 0.92, depthWrite: false,
-          color: 0xf0e0c8, blending: THREE.NormalBlending,
-        }));
+        const ringMat = saturnRingMaterial();
+        const ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.PI / 2; // lay flat, then group tilt gives the iconic angle
         group.add(ring);
         if (b.id === 'saturn') {
           saturnRingMesh = ring;
           saturnShadowBand = new THREE.Mesh(
-            new THREE.PlaneGeometry(b.size * 1.6, b.size * 0.28),
+            new THREE.PlaneGeometry(b.size * 1.5, b.size * 0.22),
             new THREE.MeshBasicMaterial({
-              color: 0x0a0806, transparent: true, opacity: 0.42, depthWrite: false, side: THREE.DoubleSide,
+              color: 0x0c0a08, transparent: true, opacity: 0.36, depthWrite: false, side: THREE.DoubleSide,
             })
           );
           group.add(saturnShadowBand);
         }
-        loadTex(b.ring).then((t) => { if (t) { ring.material.map = t; ring.material.needsUpdate = true; } });
+        loadTex(b.ring).then((t) => {
+          if (t && ringMat.uniforms) {
+            ringMat.uniforms.uMap.value = t;
+            ringMat.needsUpdate = true;
+          }
+        });
+        // Procedural ring fallback until texture loads
+        const fb = document.createElement('canvas'); fb.width = 256; fb.height = 8;
+        const fx = fb.getContext('2d');
+        const rg = fx.createLinearGradient(0, 0, 256, 0);
+        rg.addColorStop(0, 'rgba(0,0,0,0)');
+        rg.addColorStop(0.12, 'rgba(210,190,155,0.85)');
+        rg.addColorStop(0.38, 'rgba(235,220,190,0.95)');
+        rg.addColorStop(0.52, 'rgba(60,50,40,0.7)');
+        rg.addColorStop(0.68, 'rgba(220,205,175,0.9)');
+        rg.addColorStop(0.88, 'rgba(180,165,140,0.75)');
+        rg.addColorStop(1, 'rgba(0,0,0,0)');
+        fx.fillStyle = rg; fx.fillRect(0, 0, 256, 8);
+        const fbTex = new THREE.CanvasTexture(fb);
+        fbTex.colorSpace = THREE.SRGBColorSpace;
+        if (ringMat.uniforms) ringMat.uniforms.uMap.value = fbTex;
       }
 
       // orbit ring line
@@ -1178,38 +1943,208 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         arr[i * 3] = Math.cos(a) * b.R; arr[i * 3 + 1] = 0; arr[i * 3 + 2] = -Math.sin(a) * b.R;
       }
       oGeo.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+      const baseOp = b.hero ? 0.48 : 0.18;
       const oLine = new THREE.Line(oGeo, new THREE.LineBasicMaterial({
-        color: b.hero ? 0xc9a227 : 0x8a7030, transparent: true, opacity: b.hero ? 0.42 : 0.14,
+        color: b.hero ? 0xd4b84a : 0x9a8040, transparent: true, opacity: baseOp,
       }));
+      oLine.userData = { baseOpacity: baseOp, hero: !!b.hero };
       scene.add(oLine); orbitLines.push(oLine);
 
       // name label (sprite, optional)
       labels[b.id] = makeLabel(b.name); labels[b.id].visible = false; scene.add(labels[b.id]);
     });
+    if (!earthOnly) allPlanetsBuilt = true;
   }
 
   function makeLabel(text) {
     const pad = 8, font = 26, c = document.createElement('canvas'), x = c.getContext('2d');
-    x.font = `600 ${font}px Inter, system-ui, sans-serif`;
+    x.font = `600 ${font}px Cinzel, Inter, system-ui, sans-serif`;
     const w = Math.ceil(x.measureText(text).width) + pad * 2;
     c.width = w; c.height = font + pad * 2;
-    x.font = `600 ${font}px Inter, system-ui, sans-serif`;
-    x.fillStyle = 'rgba(232,224,208,0.92)'; x.textBaseline = 'middle'; x.textAlign = 'center';
-    x.shadowColor = 'rgba(0,0,0,0.7)'; x.shadowBlur = 6;
+    x.font = `600 ${font}px Cinzel, Inter, system-ui, sans-serif`;
+    x.fillStyle = 'rgba(240,232,216,0.95)'; x.textBaseline = 'middle'; x.textAlign = 'center';
+    x.shadowColor = 'rgba(0,0,0,0.8)'; x.shadowBlur = 8;
     x.fillText(text, c.width / 2, c.height / 2);
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false, depthWrite: false }));
     sp.scale.set(c.width / c.height * 1.1, 1.1, 1); sp.userData.aspect = c.width / c.height;
     return sp;
   }
 
+  function ensureDomLabels() {
+    domLabelLayer = document.getElementById('orrery-dom-labels');
+    if (!domLabelLayer) { useDomLabels = false; return false; }
+    if (!domLabelEls.earth) {
+      BODIES.forEach((b) => {
+        const el = document.createElement('span');
+        el.className = 'orrery-dom-label' + (b.hero ? ' orrery-dom-label--hero' : '');
+        el.dataset.planet = b.id;
+        el.textContent = b.name;
+        domLabelLayer.appendChild(el);
+        domLabelEls[b.id] = el;
+      });
+    }
+    useDomLabels = true;
+    return true;
+  }
+
+  function introLabelAlpha(planetId, introP) {
+    if (introP < 0.16) return planetId === 'earth' ? 1 : 0;
+    if (introP < 0.52) return planetId === 'earth' ? 1 : 0;
+    const t = easeOutCubic(Math.min(1, (introP - 0.52) / 0.48));
+    const order = { mercury: 0.92, venus: 0.88, earth: 1, mars: 0.86, jupiter: 0.78, saturn: 0.72, uranus: 0.55, neptune: 0.5 };
+    const gate = order[planetId] != null ? order[planetId] : 0.6;
+    return Math.max(0, Math.min(1, (t - (1 - gate)) / gate));
+  }
+
+  function updateDomLabels(introP) {
+    if (!ensureDomLabels() || !camera || !canvas) return;
+    const canvasRect = canvas.getBoundingClientRect();
+    const layerRect = domLabelLayer.getBoundingClientRect();
+    if (!canvasRect.width || !canvasRect.height) return;
+    const ox = canvasRect.left - layerRect.left;
+    const oy = canvasRect.top - layerRect.top;
+    const w = canvasRect.width;
+    const h = canvasRect.height;
+
+    BODIES.forEach((b) => {
+      const el = domLabelEls[b.id];
+      const m = meshes[b.id];
+      if (!el || !m) return;
+
+      let alpha = 0;
+      if (onPreloaderStage()) {
+        alpha = 0;
+      } else if (introActive) {
+        alpha = introLabelAlpha(b.id, introP);
+      } else if (focusPlanetId === b.id && performance.now() < focusPlanetUntil) {
+        alpha = 1;
+      } else if (showLabels && scaleLevel <= 2) {
+        alpha = 1;
+      }
+
+      if (alpha <= 0.02) {
+        el.style.opacity = '0';
+        return;
+      }
+
+      _projLabel.copy(m.position);
+      _projLabel.y += b.size + 0.42;
+      _projLabel.project(camera);
+      if (_projLabel.z > 1) {
+        el.style.opacity = '0';
+        return;
+      }
+
+      const x = ox + (_projLabel.x * 0.5 + 0.5) * w;
+      const y = oy + (-_projLabel.y * 0.5 + 0.5) * h;
+      const depthFade = Math.max(0.35, 1 - Math.max(0, _projLabel.z) * 0.35);
+      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -100%)`;
+      el.style.opacity = String(alpha * depthFade);
+    });
+  }
+
+  function updateIntroProgress(introP) {
+    const bar = document.getElementById('preloader-intro-progress');
+    if (bar) bar.style.transform = `scaleX(${Math.max(0, Math.min(1, introP)).toFixed(3)})`;
+    const phase = document.getElementById('preloader-phase');
+    const scaleEl = document.getElementById('orrery-scale-label');
+    if (phase) {
+      if (onPreloaderStage()) {
+        if (introP < 0.18) phase.textContent = 'Calibrating sky';
+        else if (introP < 0.45) phase.textContent = 'Earth · live positions';
+        else phase.textContent = 'Solar system aligned';
+      } else if (introP < 0.18) phase.textContent = 'Earth';
+      else if (introP < 0.55) phase.textContent = 'Inner system';
+      else phase.textContent = 'Solar system';
+    }
+    if (scaleEl && introActive && !onPreloaderStage()) {
+      if (introP < 0.18) scaleEl.textContent = 'Earth close-up';
+      else if (introP < 0.55) scaleEl.textContent = 'Approaching inner system';
+      else scaleEl.textContent = 'Opening the solar system';
+    }
+  }
+
+  function applyIntroVisuals(p, t) {
+    const p0 = onPreloaderStage() ? 0.18 : 0.18;
+    if (p < p0) {
+      camera.fov = CAM_FOV_CLOSE;
+    } else if (onPreloaderStage() && p < 0.45) {
+      const e = easeInOut((p - 0.18) / 0.27);
+      camera.fov = CAM_FOV_CLOSE + (CAM_FOV_MID - CAM_FOV_CLOSE) * e;
+    } else if (onPreloaderStage()) {
+      const e = easeOutCubic((p - 0.45) / 0.55);
+      camera.fov = CAM_FOV_MID + (CAM_FOV_WIDE - CAM_FOV_MID) * e;
+    } else if (p < 0.55) {
+      const e = easeInOut((p - 0.18) / 0.37);
+      camera.fov = CAM_FOV_CLOSE + (CAM_FOV_MID - CAM_FOV_CLOSE) * e;
+    } else {
+      const e = easeOutCubic((p - 0.55) / 0.45);
+      camera.fov = CAM_FOV_MID + (CAM_FOV_WIDE - CAM_FOV_MID) * e;
+    }
+    camera.updateProjectionMatrix();
+
+    if (onPreloaderStage() && p >= 0.35 && !allPlanetsBuilt) buildRemainingPlanets();
+
+    const orbitFade = onPreloaderStage()
+      ? (p < 0.38 ? 0 : easeOutCubic(Math.min(1, (p - 0.38) / 0.45)))
+      : (p < 0.40 ? 0 : easeOutCubic(Math.min(1, (p - 0.40) / 0.55)));
+    orbitLines.forEach((o) => {
+      const base = o.userData.baseOpacity || 0.14;
+      o.visible = orbitFade > 0.02;
+      if (o.material) o.material.opacity = base * orbitFade * (o.userData.hero ? 1.15 : 1);
+    });
+
+    syncSceneStarfield(onPreloaderStage() ? (p >= 0.42 ? 2 : 0) : 2);
+    if (starField && starField.visible && starField.material.uniforms) {
+      starField.material.uniforms.uFade.value = 0.72 + orbitFade * 0.28;
+      if (!PRM) starField.rotation.y = p * 0.12;
+    }
+
+    if (sunMesh) {
+      const pulse = (!onPreloaderStage() && p < 0.22) ? 1 + Math.sin(t * 0.0032) * 0.02 : 1;
+      sunMesh.scale.setScalar(pulse);
+    }
+
+    if (onPreloaderStage()) {
+      if (p >= 0.42) showOrbits = true;
+      applyPreloaderEarthIsolation(p);
+    }
+    else if (sunGlow.length && p < 0.55) {
+      sunGlow.forEach((sp, i) => {
+        if (!sp.material) return;
+        sp.visible = i === 0 || (i === 1 && perfTier === 'high');
+        sp.material.opacity = i === 0 ? 0.22 : i === 1 ? 0.1 : 0.04;
+      });
+    }
+
+    if (bloomPass) {
+      bloomPass.radius = (perfTier === 'mid' ? 0.34 : 0.38) + orbitFade * 0.08;
+      if (p < 0.55) {
+        bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
+        bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
+      }
+    }
+
+    if (renderer && p < 0.55) {
+      renderer.toneMappingExposure = (perfTier === 'high' ? 1.12 : 1.08) + Math.min(p, 0.18) * 0.04;
+    }
+
+    if (radialBlurPass) {
+      const dof = p < 0.55 ? (1 - p / 0.55) * 0.32 : 0;
+      radialBlurPass.uniforms.uStrength.value = dof;
+    }
+  }
+
   // ── Per-frame position update from the ephemeris ───────────────────────────
   function updatePositions() {
     const jd = baseJd + dayOffset + scrollBias;
     BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
       const ll = helioLonLat(b.id, jd);
       const p = scenePos(b.R, ll.lon, ll.lat);
-      meshes[b.id].position.copy(p);
-      meshes[b.id].userData.lon = ll.lon;
+      g.position.copy(p);
+      g.userData.lon = ll.lon;
     });
     // Moon around Earth
     try {
@@ -1243,7 +2178,15 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
   function frameBody(t) {
     if (window.__orreryPreloaderOwns) inView = true;
+    // Wall-clock intro completion — tab hidden / throttled rAF must not stall Enter.
+    if (introActive && introStart > 0 && meshes.earth) {
+      if ((t - introStart) >= introDurationMs()) finishIntro();
+    }
     if (!running || !inView) { lastT = t; return; }
+    if (onPreloaderStage()) {
+      preloaderFrameTick++;
+      if (preloaderFrameTick % 2 !== 0) return;
+    }
     const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t;
 
     // flick momentum — time coasts after a drag-release, decaying to rest
@@ -1258,36 +2201,45 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       if (onScrub) { try { onScrub(baseJd + dayOffset); } catch (e) {} }
     }
 
-    // retrograde glow: update visibility + pulse breathing animation each frame
-    try {
-      const E = window.AstroEphemeris;
-      if (E && E.isRetrograde) {
-        const jd = baseJd + dayOffset + scrollBias;
-        const pulse = Math.sin(t * 0.002) * 0.15 + 1.0;
-        BODIES.forEach((b) => {
-          if (b.id === 'earth') return;
-          const sprite = meshes[b.id].userData.retroSprite;
-          if (!sprite) return;
-          let isRetro = false;
-          try { isRetro = !!E.isRetrograde(b.id, jd); } catch (e) {}
-          sprite.visible = isRetro;
-          if (isRetro) {
-            const s = sprite.userData.baseScale * pulse;
-            sprite.scale.set(s, s, 1);
-          }
-        });
-      }
-    } catch (e) { /* retrograde glow is optional */ }
+    // retrograde glow — throttled (ephemeris + sprite updates every 6 frames)
+    retroTick++;
+    if (retroTick % 6 === 0) {
+      try {
+        const E = window.AstroEphemeris;
+        if (E && E.isRetrograde) {
+          const jd = baseJd + dayOffset + scrollBias;
+          const pulse = Math.sin(t * 0.002) * 0.15 + 1.0;
+          BODIES.forEach((b) => {
+            if (b.id === 'earth') return;
+            const g = meshes[b.id];
+            if (!g) return;
+            const sprite = g.userData.retroSprite;
+            if (!sprite) return;
+            let isRetro = false;
+            try { isRetro = !!E.isRetrograde(b.id, jd); } catch (e) {}
+            sprite.visible = isRetro;
+            if (isRetro) {
+              const s = sprite.userData.baseScale * pulse;
+              sprite.scale.set(s, s, 1);
+            }
+          });
+        }
+      } catch (e) { /* retrograde glow is optional */ }
+    }
 
     // sun surface animation + corona drift
     if (sunMaterial && sunMaterial.uniforms) sunMaterial.uniforms.uTime.value = t * 0.001;
     if (starField && starField.material.uniforms) starField.material.uniforms.uTime.value = t;
-    if (sunDirLight && sunMesh) sunDirLight.position.copy(sunMesh.position);
+    if (sunDirLight && sunMesh) {
+      sunDirLight.position.copy(sunMesh.position);
+      if (sunDirLightTarget) {
+        if (meshes.earth) sunDirLightTarget.position.copy(meshes.earth.position);
+        else sunDirLightTarget.position.set(0, 0, 0);
+      }
+    }
 
-    // HD Earth: feed the sun direction to the surface shader (OBJECT-space, so the
-    // terminator + city lights track the sun as the globe spins) and to the atmosphere
-    // (WORLD-space, shell doesn't spin). Guarded; pure vector math, cannot throw.
-    if (earthMat && earthMat.userData.shader && sunMesh && meshes.earth) {
+    // HD Earth: feed sun direction every frame (shader ref may lag first compile).
+    if (earthMat && sunMesh && meshes.earth) {
       const em = meshes.earth.userData.mesh;
       em.updateWorldMatrix(true, false);
       _earthWorld.setFromMatrixPosition(em.matrixWorld);
@@ -1317,9 +2269,22 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
     // self-rotation (liveliness)
     if (!PRM && scaleLevel <= 2 && !introActive) {
-      BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
+      BODIES.forEach((b) => {
+        const g = meshes[b.id];
+        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.25;
+      });
       if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
       if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
+    }
+
+    // Preloader hold: gentle system orbit while Enter awaits
+    if (!PRM && onPreloaderStage() && !introActive && preloaderIntroFinished && !dragging) {
+      BODIES.forEach((b) => {
+        const g = meshes[b.id];
+        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.12;
+      });
+      if (sunMesh) sunMesh.rotation.y += 0.03 * dt;
+      camAz += 0.028 * dt;
     }
 
     // scale-level camera transition (zoom dial)
@@ -1333,44 +2298,91 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         scaleAnimFrom.ty + (scaleAnimTo.ty - scaleAnimFrom.ty) * e,
         scaleAnimFrom.tz + (scaleAnimTo.tz - scaleAnimFrom.tz) * e
       );
-      if (p >= 1) scaleAnimActive = false;
+      if (scaleAnimFrom.radius < 12 && scaleAnimTo.radius > 20) {
+        camera.fov = CAM_FOV_CLOSE + (CAM_FOV_WIDE - CAM_FOV_CLOSE) * e;
+        camera.updateProjectionMatrix();
+      }
+      if (p >= 1) {
+        scaleAnimActive = false;
+        if (scalePreset(scaleLevel).targetEarth) {
+          const ep = scalePreset(scaleLevel);
+          setEarthTerminatorCamera(ep.camRadius, ep.camEl);
+        } else {
+          const innerFocus = focusPlanetId && (focusPlanetId === 'mercury' || focusPlanetId === 'venus' || focusPlanetId === 'mars');
+          camera.fov = innerFocus ? CAM_FOV_MID : (scaleLevel >= 2 ? CAM_FOV_WIDE : CAM_FOV_MID);
+          camera.updateProjectionMatrix();
+          updateDomLabels(1);
+          updateScaleVisuals(scaleLevel);
+        }
+        if (focusPlanetId) forceResize();
+      }
     } else if (scalePreset(scaleLevel).targetEarth && !introActive) {
       earthTargetVec(camTarget);
     }
 
     // intro: held Earth close-up on the terminator → Earth+Moon → full system (Earth-FIRST)
     if (introActive) {
-      if (!meshes.earth) { introActive = false; }
-      else {
-        const p = Math.min(1, (t - introStart) / INTRO_MS);
-        const earthPos = meshes.earth.position;
-        const end = scalePreset(2);
-        const baseAz = Math.atan2(earthPos.z, earthPos.x) * -1 - 0.15;
-        if (p < 0.18) {                          // STAGE 0 — held close-up on the terminator
-          camTarget.copy(earthPos); camRadius = 2.35; camEl = 4 * D2R; camAz = baseAz;
-        } else if (p < 0.55) {                   // STAGE 1 — Earth → Earth + Moon
-          const e = easeInOut((p - 0.18) / 0.37);
-          camTarget.copy(earthPos);
-          camRadius = 2.35 + (6.5 - 2.35) * e;
-          camEl = (4 * D2R) + (12 * D2R - 4 * D2R) * e;
-          camAz = baseAz;
-        } else {                                 // STAGE 2 — Earth + Moon → full system
-          const e = easeInOut((p - 0.55) / 0.45);
-          camTarget.lerpVectors(earthPos, ORIGIN, e);
-          camRadius = 6.5 + (end.camRadius - 6.5) * e;
-          camEl = (12 * D2R) + (end.camEl - 12 * D2R) * e;
-          camAz = baseAz * (1 - e) + end.camAz * e;
-        }
-        if (p >= 1) {
-          introActive = false;
-          scaleLevel = 2;
-          userTouched = performance.now();
-          updateScaleHUD();
-          updateScaleVisuals(scaleLevel);
-          if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
-        }
+      if (!meshes.earth || introStart <= 0) {
+        introActive = false;
+        syncPreloaderIntroClass(false);
+        if (onPreloaderStage() && preloaderIntroScheduled && !preloaderIntroFinished) recoverPreloaderIntro();
       }
-    } else if (!dragging && !scaleAnimActive && !PRM && (t - userTouched) > 1200) {
+      else {
+        const introMs = introDurationMs();
+        const elapsed = t - introStart;
+        const p = Math.min(1, elapsed / introMs);
+        if (onPreloaderStage()) {
+          if (p < 0.18) {
+            setEarthTerminatorCamera(3.2, 6 * D2R);
+          } else if (p < 0.45) {
+            const e = easeInOut((p - 0.18) / 0.27);
+            setEarthTerminatorCamera(3.2 + (6.5 - 3.2) * e, (6 * D2R) + (11 * D2R - 6 * D2R) * e);
+          } else {
+            const e = easeOutCubic((p - 0.45) / 0.55);
+            const earthPos = meshes.earth.position;
+            const end = scalePreset(2);
+            setEarthTerminatorCamera(6.5, 11 * D2R);
+            const termAz = camAz, termEl = camEl, termRad = camRadius;
+            camTarget.lerpVectors(earthPos, ORIGIN, e);
+            camRadius = termRad + (PRELOADER_SYSTEM_CAM - termRad) * e;
+            camEl = termEl + (end.camEl - termEl) * e;
+            camAz = termAz * (1 - e) + end.camAz * e;
+          }
+        } else if (p < 0.18) {
+          setEarthTerminatorCamera(2.35, 4 * D2R);
+        } else if (p < 0.55) {
+          const e = easeInOut((p - 0.18) / 0.37);
+          setEarthTerminatorCamera(2.35 + (6.5 - 2.35) * e, (4 * D2R) + (12 * D2R - 4 * D2R) * e);
+        } else {                                 // STAGE 2 hero replay — Earth → system overview
+          const e = easeOutCubic((p - 0.55) / 0.45);
+          const earthPos = meshes.earth.position;
+          const end = scalePreset(2);
+          setEarthTerminatorCamera(6.5, 11 * D2R);
+          const termAz = camAz, termEl = camEl, termRad = camRadius;
+          camTarget.lerpVectors(earthPos, ORIGIN, e);
+          camRadius = termRad + (end.camRadius - termRad) * e;
+          camEl = termEl + (end.camEl - termEl) * e;
+          camAz = termAz * (1 - e) + end.camAz * e;
+        }
+        if (bloomPass && composer) {
+          if (p < 0.55) {
+            bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
+            bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
+          } else {
+            const e2 = easeOutCubic((p - 0.55) / 0.45);
+            bloomPass.strength = (perfTier === 'mid' ? 0.14 : 0.18) + e2 * 0.04;
+            bloomPass.threshold = perfTier === 'mid' ? 0.88 - e2 * 0.04 : 0.84 - e2 * 0.04;
+          }
+        }
+        if (renderer) {
+          renderer.toneMappingExposure = (perfTier === 'high' ? 1.12 : 1.08) + Math.min(p, 0.55) * 0.06;
+        }
+        applyIntroVisuals(p, t);
+        if (window.__orreryPreloaderOwns) updateIntroProgress(p);
+        updateDomLabels(p);
+        if (elapsed >= introMs) finishIntro();
+      }
+    } else if (!dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && (t - userTouched) > 1200) {
       camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
     }
     if (!introActive && !scaleAnimActive) clampCamToLevel();
@@ -1382,21 +2394,31 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       asteroidPoints.rotation.y += dt * 0.012;
     }
 
-    // labels follow planets, scale with distance, face camera
+    // DOM labels (preferred) or canvas sprites as fallback
+    updateFocusHighlight(t);
+    if (!introActive) updateDomLabels(1);
     BODIES.forEach((b) => {
       const lab = labels[b.id]; if (!lab) return;
-      lab.visible = showLabels && !introActive && scaleLevel <= 2;
+      lab.visible = !useDomLabels && showLabels && !introActive && scaleLevel <= 2;
       if (lab.visible) {
         const m = meshes[b.id];
+        if (!m) return;
         lab.position.set(m.position.x, m.position.y + b.size + 0.9, m.position.z);
         const d = camera.position.distanceTo(lab.position);
         const s = Math.max(0.04, d * 0.018);
         lab.scale.set(s * lab.userData.aspect, s, 1);
       }
     });
-    orbitLines.forEach((o) => { o.visible = showOrbits && scaleLevel <= 3; });
+    if (onPreloaderStage()) {
+      const ip = introActive ? Math.min(1, (t - introStart) / introDurationMs()) : null;
+      applyPreloaderEarthIsolation(ip);
+    } else {
+      orbitLines.forEach((o) => { o.visible = showOrbits && scaleLevel <= 3; });
+    }
 
-    if (composer) { composer.render(); } else { renderer.render(scene, camera); }
+    // Bloom composer tints transparent pixels dark — skip during preloader for one shared sky.
+    if (composer && !onPreloaderStage()) composer.render();
+    else renderer.render(scene, camera);
   }
 
   // ── UI date readout (mirrors canvas behaviour) ─────────────────────────────
@@ -1404,8 +2426,15 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     const el = document.getElementById('orrery-date-display'); if (!el) return;
     const d = new Date(baseNowMs + (dayOffset + scrollBias) * 86400000);
     const str = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    const tag = Math.abs(dayOffset + scrollBias) < 0.5 ? ' · now' : ((dayOffset + scrollBias) > 0 ? ` · +${Math.round(dayOffset + scrollBias)}d` : ` · ${Math.round(dayOffset + scrollBias)}d`);
+    const off = dayOffset + scrollBias;
+    const tag = Math.abs(off) < 0.5 ? ' · now' : (off > 0 ? ` · +${Math.round(off)}d` : ` · ${Math.round(off)}d`);
     el.textContent = str + tag;
+
+    const scrub = document.getElementById('orrery-scrub');
+    if (scrub && document.activeElement !== scrub) {
+      const rounded = Math.round(off);
+      if (parseInt(scrub.value, 10) !== rounded) scrub.value = String(rounded);
+    }
 
     try {
       const E = window.AstroEphemeris;
@@ -1424,22 +2453,70 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
         [315, 'Waning Crescent'],
         [360, 'New Moon'],
       ];
-      const phaseLabel = PHASES.find((_, i) => phase < PHASES[i + 1][0])?.[1] || 'New Moon';
+      let phaseLabel = 'New Moon';
+      for (let i = 0; i < PHASES.length - 1; i++) {
+        if (phase >= PHASES[i][0] && phase < PHASES[i + 1][0]) { phaseLabel = PHASES[i][1]; break; }
+      }
       const moonEl = document.getElementById('orrery-moon-phase');
       if (moonEl) moonEl.textContent = phaseLabel;
     } catch (e) { /* moon phase is optional */ }
+
+    try {
+      const jdTick = baseJd + dayOffset + scrollBias;
+      document.dispatchEvent(new CustomEvent('ap-sky-tick', { detail: { jd: jdTick } }));
+    } catch (e) { /* optional sync */ }
   }
 
   // ── Sizing / observers ─────────────────────────────────────────────────────
+  function removeRadialBlurPass() {
+    if (!composer || !radialBlurPass) return;
+    const idx = composer.passes.indexOf(radialBlurPass);
+    if (idx >= 0) composer.passes.splice(idx, 1);
+    try { radialBlurPass.dispose(); } catch (e) { /* optional */ }
+    radialBlurPass = null;
+  }
+
+  function tryCreateRadialBlurPass(aspect) {
+    try {
+      const pass = new ShaderPass(RadialBlurShader);
+      pass.uniforms.uAspect.value = aspect || 1;
+      pass.uniforms.uStrength.value = 0;
+      return pass;
+    } catch (e) {
+      console.warn('[orrery] radial blur shader unavailable:', e.message);
+      return null;
+    }
+  }
+
+  function canvasBox() {
+    const fallback = 560;
+    const probe = (wrap && wrap.clientWidth > 0) ? wrap : canvas;
+    if (window.RafCore && window.RafCore.canvasCssSize) {
+      const box = window.RafCore.canvasCssSize(canvas, fallback);
+      if (box.w > 1 && box.h > 1) return box;
+      const wrapBox = wrap ? window.RafCore.canvasCssSize(wrap, fallback) : null;
+      if (wrapBox && wrapBox.w > 1 && wrapBox.h > 1) return wrapBox;
+    }
+    const r = probe.getBoundingClientRect();
+    const w = Math.max(1, Math.round(r.width) || probe.clientWidth || fallback);
+    const h = Math.max(1, Math.round(r.height) || probe.clientHeight || w);
+    return { w, h };
+  }
+
   function resize() {
     if (!renderer || !canvas) return;
-    const w = canvas.clientWidth || 560;
-    const h = canvas.clientHeight || w;
+    const box = canvasBox();
+    const w = box.w;
+    const h = box.h;
     const dpr = orreryDPR();
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
-    if (composer) composer.setSize(w, h);
+    if (composer) {
+      composer.setPixelRatio(dpr);
+      composer.setSize(w, h);
+    }
     if (bloomPass) bloomPass.resolution.set(w, h);
+    if (radialBlurPass) radialBlurPass.uniforms.uAspect.value = w / Math.max(h, 1);
     camera.aspect = w / h; camera.updateProjectionMatrix();
   }
 
@@ -1447,7 +2524,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     resize();
     if (renderer && scene && camera) {
       applyCamera();
-      if (composer) composer.render();
+      if (composer && !onPreloaderStage()) composer.render();
       else renderer.render(scene, camera);
     }
   }
@@ -1482,7 +2559,45 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
   // ── Pointer controls ───────────────────────────────────────────────────────
   function bindControls() {
-    const onDown = (e) => { dragging = true; scrollDriveLocked = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; daysPerSec = 0; flicking = false; scrubVel = 0; try { canvas.style.cursor = 'grabbing'; } catch (_) {} };
+    try {
+      canvas.setAttribute('tabindex', '0');
+      if (!canvas.getAttribute('aria-label')) {
+        canvas.setAttribute('aria-label', 'The Living Orrery — drag to scrub time, arrow keys to step days, 0–6 for zoom scale');
+      }
+    } catch (_) {}
+    const onKey = (e) => {
+      if (onPreloaderStage() && introActive) return;
+      const k = e.key;
+      if (k === 'ArrowLeft') {
+        scrubDays(-1);
+        e.preventDefault();
+      } else if (k === 'ArrowRight') {
+        scrubDays(1);
+        e.preventDefault();
+      } else if (k === 'ArrowUp') {
+        const p = scalePreset(scaleLevel);
+        camRadius = Math.max(p.camMin, camRadius * 0.92);
+        userTouched = performance.now();
+        e.preventDefault();
+      } else if (k === 'ArrowDown') {
+        const p = scalePreset(scaleLevel);
+        camRadius = Math.min(p.camMax, camRadius * 1.08);
+        userTouched = performance.now();
+        e.preventDefault();
+      } else if (k >= '0' && k <= '6') {
+        applyScalePreset(parseInt(k, 10), true);
+        e.preventDefault();
+      } else if (k === ' ' || k === 'Spacebar') {
+        setSpeed(daysPerSec === 0 ? 1 : 0);
+        e.preventDefault();
+      }
+    };
+    canvas.addEventListener('keydown', onKey);
+    canvas._orreryKeyHandler = onKey;
+    const onDown = (e) => {
+      if (onPreloaderStage() && introActive) return;
+      dragging = true; scrollDriveLocked = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; syncPreloaderIntroClass(false); daysPerSec = 0; flicking = false; scrubVel = 0; try { canvas.style.cursor = 'grabbing'; } catch (_) {}
+    };
     const onMove = (e) => {
       if (!dragging) return; const p = pt(e);
       const dx = p.x - lastX, dy = p.y - lastY;
@@ -1501,17 +2616,28 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     };
     const onWheel = (e) => {
       e.preventDefault();
+      if (onPreloaderStage() && introActive) return;
       const p = scalePreset(scaleLevel);
       camRadius = Math.max(p.camMin, Math.min(p.camMax, camRadius * (1 + Math.sign(e.deltaY) * 0.08)));
       userTouched = performance.now();
       introActive = false;
+      syncPreloaderIntroClass(false);
       scaleAnimActive = false;
+    };
+    const onDbl = (e) => {
+      if (onPreloaderStage() && introActive) return;
+      const id = resolvePickId(pt(e));
+      if (!id) return;
+      e.preventDefault();
+      focusPlanet(id);
     };
     canvas.addEventListener('pointerdown', onDown);
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
+    canvas.addEventListener('dblclick', onDbl);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas._orreryHandlers = { onMove, onUp };
+    canvas._orreryDblHandler = onDbl;
   }
   function pt(e) { const r = canvas.getBoundingClientRect(); return { x: (e.clientX || 0) - r.left, y: (e.clientY || 0) - r.top }; }
   const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -1526,19 +2652,22 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       return E[id + 'Position'](jd).lon;
     } catch (e) { return null; }
   }
-  function pick(p) {
+  function resolvePickId(p) {
     const r = canvas.getBoundingClientRect();
     ndc.x = (p.x / r.width) * 2 - 1; ndc.y = -(p.y / r.height) * 2 + 1;
     raycaster.setFromCamera(ndc, camera);
-    const targets = BODIES.map((b) => meshes[b.id].userData.mesh);
+    const targets = BODIES.map((b) => meshes[b.id] && meshes[b.id].userData.mesh).filter(Boolean);
     if (sunMesh) targets.push(sunMesh);
     if (moonMesh) targets.push(moonMesh);
     const hit = raycaster.intersectObjects(targets, false)[0];
-    if (!hit) return;
-    let id = null;
-    if (hit.object === sunMesh) id = 'sun';
-    else if (hit.object === moonMesh) id = 'moon';
-    else { const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object); if (b) id = b.id; }
+    if (!hit) return null;
+    if (hit.object === sunMesh) return 'sun';
+    if (hit.object === moonMesh) return 'moon';
+    const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object);
+    return b ? b.id : null;
+  }
+  function pick(p) {
+    const id = resolvePickId(p);
     if (!id) return;
     const jd = baseJd + dayOffset + scrollBias;
     const lon = geoLonOf(id, jd);
@@ -1582,79 +2711,92 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     canvas = canvasEl; wrap = canvas.parentElement;
 
     perfTier = getPerfTier();
+    const preloaderMode = !!window.__orreryPreloaderOwns;
 
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: !preloaderMode,
+      alpha: true,
+      premultipliedAlpha: true,
+      powerPreference: preloaderMode ? 'default' : 'high-performance',
+      preserveDrawingBuffer: !preloaderMode,
+    });
     renderer.setClearColor(0x000000, 0);
+    canvas.style.background = 'transparent';
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = perfTier === 'high' ? 1.08 : 1.02;
+    renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.08;
 
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
 
-    // Bloom composer — tiered via RafCore (low/PRM = off, mid = light, high = full)
-    if (!PRM && perfTier !== 'low') {
-      try {
-        composer = new EffectComposer(renderer);
-        composer.addPass(new RenderPass(scene, camera));
-        const bloomStrength = perfTier === 'mid' ? 0.2 : 0.3;
-        const bloomRadius = perfTier === 'mid' ? 0.36 : 0.44;
-        const bloomThreshold = perfTier === 'mid' ? 0.93 : 0.9;
-        bloomPass = new UnrealBloomPass(
-          new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
-          bloomStrength, bloomRadius, bloomThreshold
-        );
-        composer.addPass(bloomPass);
-        composer.addPass(new OutputPass());
-      } catch (e) {
-        composer = null;
-        console.warn('[orrery] post-processing unavailable:', e.message);
-      }
+    // Bloom composer — defer during preloader to cut GPU memory; built in settleFromIntro.
+    if (!preloaderMode && !PRM && perfTier !== 'low') {
+      ensureComposer();
     }
 
     const now = new Date();
     baseNowMs = now.getTime();
     baseJd = window.AstroEphemeris.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
 
-    buildStars(); buildSun(); buildPlanets();
-    buildAsteroids();
+    if (!preloaderMode && !usesPageStarfield()) buildStars();
+    buildSun(preloaderMode);
+    buildPlanets(preloaderMode ? { earthOnly: true } : undefined);
+    if (!preloaderMode) {
+      buildAsteroids();
+      buildGalaxyLayers();
+    }
     // buildHalley();  // retired — the illustrative comet + its blue dashed orbit were
     //                    cool-blue clutter (off the warm palette). halleyGroup stays null;
     //                    updateHalley() and all visibility paths are null-guarded.
-    buildGalaxyLayers();
     tuneSunGlowForComposer(perfTier);
     updatePositions();
-    const preloaderMode = !!window.__orreryPreloaderOwns;
     if (preloaderMode) {
       scaleLevel = 0;
       introActive = false;
       updateScaleVisuals(0);
-      earthTargetVec(camTarget);
-      camRadius = 2.35;
-      camEl = 4 * D2R;
-      camAz = -0.6;
+      tunePreloaderSunGlow(true);
+      setEarthTerminatorCamera(3.2, 6 * D2R);
       scaleAnimActive = false;
+      applyIntroVisuals(0, 0);
       applyCamera();
     } else {
-      scaleLevel = 2;
-      applyScalePreset(2, false);
+      settleToSystemHeroFrame(false);
     }
     resize();
     preloadTextures();
 
     if (PRM) {
       introActive = false;
-      camTarget.set(0, 0, 0);
-      camRadius = 48;
-      camEl = 26 * D2R;
-      camAz = -0.6;
-      applyCamera();
+      if (!preloaderMode) {
+        setDefaultEarthFrame();
+        updateScaleHUD();
+      } else {
+        camTarget.set(0, 0, 0);
+        camRadius = 48;
+        camEl = 26 * D2R;
+        camAz = -0.6;
+        applyCamera();
+      }
     }
 
+    ensureDomLabels();
+    updateScaleHUD();
     bindControls();
-    if ('ResizeObserver' in window) { const ro = new ResizeObserver(resize); ro.observe(canvas); canvas._orreryRO = ro; }
+    if ('ResizeObserver' in window) {
+      const ro = new ResizeObserver(resize);
+      ro.observe(canvas);
+      if (wrap) ro.observe(wrap);
+      canvas._orreryRO = ro;
+    }
     window.addEventListener('resize', resize);
+    if (window.visualViewport) {
+      const vvRefit = () => requestAnimationFrame(resize);
+      window.visualViewport.addEventListener('resize', vvRefit, { passive: true });
+      window.visualViewport.addEventListener('scroll', vvRefit, { passive: true });
+      canvas._orreryVV = vvRefit;
+    }
     if ('IntersectionObserver' in window && !window.__orreryPreloaderOwns) {
       const io = new IntersectionObserver((ents) => { inView = ents[0].isIntersecting; }, { threshold: 0.01 });
       io.observe(canvas); canvas._orreryIO = io;
@@ -1662,13 +2804,29 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       inView = true;
     }
     document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+    canvas.addEventListener('webglcontextlost', (e) => {
+      try { e.preventDefault(); } catch (_) {}
+      console.warn('[orrery] WebGL context lost — falling back to canvas orrery');
+      fallbackToCanvas(canvas);
+    }, false);
 
     // Pre-compile shaders + warm the bloom composer NOW (while the preloader is still
     // static) so the first animated intro frame doesn't hitch on a heavy program link.
     try {
       if (renderer.compile) renderer.compile(scene, camera);
-      if (composer) composer.render(); else renderer.render(scene, camera);
-    } catch (e) { /* pre-warm is best-effort */ }
+      if (composer && !onPreloaderStage()) composer.render();
+      else renderer.render(scene, camera);
+    } catch (e) {
+      if (composer && radialBlurPass) {
+        console.warn('[orrery] radial blur broke composer — disabling pass:', e.message);
+        removeRadialBlurPass();
+        try { composer.render(); } catch (e2) {
+          console.warn('[orrery] post-processing unavailable after radial blur removal:', e2.message);
+          composer = null;
+          bloomPass = null;
+        }
+      }
+    }
 
     lastT = 0; raf = requestAnimationFrame(frame);
     webglBooted = true;
@@ -1679,8 +2837,26 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     daysPerSec = Number(s) || 0;
     flicking = false;   // a speed button is a constant rate, not a decaying flick
     if (daysPerSec !== 0) { introActive = false; scrollDriveLocked = true; }
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-speed-change', { detail: { speed: daysPerSec } }));
+    } catch (e) { /* optional */ }
   }
-  function getDate() { return new Date(baseNowMs + dayOffset * 86400000); }
+  function getDate() { return new Date(baseNowMs + (dayOffset + scrollBias) * 86400000); }
+  function snapToNow() {
+    const now = new Date();
+    const E = window.AstroEphemeris;
+    baseNowMs = now.getTime();
+    baseJd = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
+    dayOffset = 0;
+    scrollBias = 0;
+    scrollDriveLocked = false;
+    daysPerSec = 0;
+    flicking = false;
+    needRecompute = true;
+    introActive = false;
+    syncHeroReplayClass(false);
+    updateDateUI();
+  }
   function setDate(date) {
     const E = window.AstroEphemeris;
     const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), 0);
@@ -1691,17 +2867,99 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
   }
   function jumpTo(jd) { dayOffset = jd - baseJd; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
   function scrubDays(d) { dayOffset += Number(d) || 0; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
+  function getDayOffset() { return dayOffset + scrollBias; }
+  function setTimelineDays(days) {
+    dayOffset = Number(days) || 0;
+    scrollBias = 0;
+    scrollDriveLocked = true;
+    daysPerSec = 0;
+    flicking = false;
+    needRecompute = true;
+    introActive = false;
+    syncHeroReplayClass(false);
+    updateDateUI();
+  }
+  function focusPlanet(id) {
+    if (!id || destroyed) return;
+    id = String(id).toLowerCase();
+    userTouched = performance.now();
+    introActive = false;
+    syncPreloaderIntroClass(false);
+    syncHeroReplayClass(false);
+    daysPerSec = 0;
+    flicking = false;
+    scrollDriveLocked = true;
+
+    if (id === 'earth') {
+      setFocusHighlight('earth');
+      applyScalePreset(0, true);
+      return;
+    }
+
+    if (!allPlanetsBuilt) {
+      buildRemainingPlanets();
+      needRecompute = true;
+      updatePositions();
+    }
+
+    if (id === 'sun') {
+      setFocusHighlight('sun');
+      applyScalePreset(1, true);
+      return;
+    }
+
+    if (id === 'moon') {
+      setFocusHighlight('moon');
+      applyScalePreset(0, true);
+      return;
+    }
+
+    const body = BODIES.find((b) => b.id === id);
+    const g = meshes[id];
+    if (!body || !g) return;
+
+    const inner = (id === 'mercury' || id === 'venus' || id === 'mars');
+    const preset = scalePreset(inner ? 1 : 2);
+    scaleLevel = preset.id;
+    updateScaleHUD();
+    updateScaleVisuals(scaleLevel);
+
+    scaleAnimFrom.radius = camRadius;
+    scaleAnimFrom.el = camEl;
+    scaleAnimFrom.az = camAz;
+    scaleAnimFrom.tx = camTarget.x;
+    scaleAnimFrom.ty = camTarget.y;
+    scaleAnimFrom.tz = camTarget.z;
+
+    const pos = g.position;
+    const orbitR = Math.hypot(pos.x, pos.z) || body.R;
+    scaleAnimTo.radius = inner ? Math.max(body.size * 7.5, 12) : Math.max(orbitR * 0.44, preset.camRadius * 0.4);
+    scaleAnimTo.el = inner ? 16 * D2R : preset.camEl;
+    scaleAnimTo.az = Math.atan2(pos.z, pos.x);
+    scaleAnimTo.tx = pos.x;
+    scaleAnimTo.ty = pos.y;
+    scaleAnimTo.tz = pos.z;
+
+    setFocusHighlight(id);
+    scaleAnimActive = true;
+    scaleAnimStart = performance.now();
+    camera.fov = inner ? CAM_FOV_MID : CAM_FOV_WIDE;
+    camera.updateProjectionMatrix();
+  }
+
   function destroy() {
     destroyed = true; if (raf) cancelAnimationFrame(raf);
     window.removeEventListener('resize', resize);
     if (canvas && canvas._orreryHandlers) { window.removeEventListener('pointermove', canvas._orreryHandlers.onMove); window.removeEventListener('pointerup', canvas._orreryHandlers.onUp); }
+    if (canvas && canvas._orreryKeyHandler) canvas.removeEventListener('keydown', canvas._orreryKeyHandler);
+    if (canvas && canvas._orreryDblHandler) canvas.removeEventListener('dblclick', canvas._orreryDblHandler);
     if (canvas && canvas._orreryRO) canvas._orreryRO.disconnect();
     if (canvas && canvas._orreryIO) canvas._orreryIO.disconnect();
     try { renderer && renderer.dispose(); } catch (e) {}
   }
 
   window.Orrery3D = {
-    init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays,
+    init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays, getDayOffset, setTimelineDays, snapToNow,
     goTo: setDate,
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
@@ -1718,12 +2976,47 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     set onPlanetClick(fn) { onPlanetClick = fn; },
     startIntro: restartIntro,
     restartIntro,
+    startPreloaderIntro(fn) {
+      if (onPreloaderStage()) {
+        preloaderIntroScheduled = true;
+        preloaderIntroFinished = false;
+        if (preloaderIntroWatchdog) clearTimeout(preloaderIntroWatchdog);
+        preloaderIntroWatchdog = setTimeout(() => {
+          preloaderIntroWatchdog = null;
+          if (!destroyed && onPreloaderStage() && !preloaderIntroFinished) recoverPreloaderIntro();
+        }, introDurationMs() + 2500);
+      }
+      onIntroDone = fn || null;
+      restartIntro();
+    },
+    skipIntro,
     settleFromIntro,
     isIntroActive() { return introActive; },
+    isIntroPending() {
+      return onPreloaderStage() && !preloaderIntroFinished
+        && (preloaderIntroScheduled || introActive);
+    },
+    hasIntroCompleted() {
+      return !onPreloaderStage() || preloaderIntroFinished;
+    },
+    getIntroStartedAt() { return introStartedAt; },
+    getIntroDurationMs() { return introDurationMs(); },
+    getIntroProgress() {
+      if (preloaderIntroScheduled) return 0;
+      if (introActive && introStart > 0) {
+        return Math.min(1, (performance.now() - introStart) / introDurationMs());
+      }
+      return (onPreloaderStage() && !preloaderIntroFinished) ? 0 : 1;
+    },
     whenReady() { return texturesReady ? Promise.resolve() : texturesReadyPromise; },
+    whenEarthReady() { return earthMapReady ? Promise.resolve() : earthMapReadyPromise; },
     getScaleLevel() { return scaleLevel; },
     setScaleLevel(n) { applyScalePreset(n, true); },
-    set onIntroDone(fn) { onIntroDone = fn; if (PRM && fn && !introActive) { onIntroDone = null; fn(); } },
+    focusPlanet,
+    set onIntroDone(fn) {
+      onIntroDone = fn;
+      if (PRM && fn && !introActive && !preloaderIntroScheduled) { onIntroDone = null; fn(); }
+    },
     get onIntroDone() { return onIntroDone; },
     setScrollDrive(progress) {
       if (PRM || scrollDriveLocked) return;
@@ -1742,13 +3035,19 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       if (!renderer || !canvas) return null;
       opts = opts || {};
       const mult = opts.scale || 2;
-      const cssW = canvas.clientWidth || 560;
-      const cssH = canvas.clientHeight || cssW;
+      const box = (window.RafCore && window.RafCore.canvasCssSize)
+        ? window.RafCore.canvasCssSize(canvas, 560)
+        : { w: canvas.clientWidth || 560, h: canvas.clientHeight || canvas.clientWidth || 560 };
+      const cssW = box.w;
+      const cssH = box.h;
       const exportDpr = Math.min(orreryDPR() * mult, 3);
       try {
         renderer.setPixelRatio(exportDpr);
         renderer.setSize(cssW, cssH, false);
-        if (composer) composer.setSize(cssW, cssH);
+        if (composer) {
+          composer.setPixelRatio(exportDpr);
+          composer.setSize(cssW, cssH);
+        }
         applyCamera();
         if (composer) composer.render();
         else renderer.render(scene, camera);

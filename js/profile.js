@@ -11,6 +11,7 @@ window.AstroProfile = (() => {
   const STORAGE_KEY_CHARTS   = 'ap_charts';
   const STORAGE_KEY_PREFS    = 'ap_prefs';
   const STORAGE_KEY_COMPARES = 'ap_comparisons';
+  const STORAGE_KEY_DASHBOARD = 'ap_profile_v2';
 
   // ── Default Preferences ──────────────────────────────────────────────────
   const DEFAULT_PREFS = {
@@ -100,12 +101,62 @@ window.AstroProfile = (() => {
     }
 
     localStorage.setItem(STORAGE_KEY_CHARTS, JSON.stringify(charts));
-    return charts[existing >= 0 ? existing : 0];
+    const saved = charts[existing >= 0 ? existing : 0];
+    syncChartToDashboard(saved);
+    return saved;
+  }
+
+  // Map an `ap_charts` row to the cosmic-dashboard (`ap_profile_v2`) shape.
+  function chartToDashboardRow(c) {
+    if (!c) return null;
+    return {
+      id:      c.id,
+      name:    c.name || 'Untitled Chart',
+      date:    c.birthDate || c.date || '',
+      time:    c.birthTime || c.time || '12:00',
+      city:    c.birthCity || c.city || '',
+      lat:     c.lat,
+      lon:     c.lon,
+      tz:      c.tz || '',
+      sun:     c.sunSign || c.sun || null,
+      moon:    c.moonSign || c.moon || null,
+      asc:     c.risingSign || c.asc || c.ascendant || null,
+      savedAt: c.updatedAt || c.createdAt || c.savedAt || Date.now(),
+    };
+  }
+
+  // Keep profile.html's cosmic dashboard in sync when charts are saved from chart.html.
+  function syncChartToDashboard(savedChart) {
+    if (!savedChart) return null;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_DASHBOARD);
+      if (!raw) return null;
+      const profile = JSON.parse(raw);
+      if (!profile || typeof profile !== 'object') return null;
+      const row = chartToDashboardRow(savedChart);
+      if (!row || !row.date) return null;
+      profile.charts = profile.charts || [];
+      const idx = profile.charts.findIndex(c => c.id === row.id);
+      if (idx >= 0) profile.charts[idx] = { ...profile.charts[idx], ...row };
+      else profile.charts.unshift(row);
+      profile.updatedAt = Date.now();
+      localStorage.setItem(STORAGE_KEY_DASHBOARD, JSON.stringify(profile));
+      return profile;
+    } catch { return null; }
   }
 
   function deleteChart(id) {
     const charts = getCharts().filter(c => c.id !== id);
     localStorage.setItem(STORAGE_KEY_CHARTS, JSON.stringify(charts));
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_DASHBOARD);
+      if (!raw) return;
+      const profile = JSON.parse(raw);
+      if (!profile || !Array.isArray(profile.charts)) return;
+      profile.charts = profile.charts.filter(c => c.id !== id);
+      profile.updatedAt = Date.now();
+      localStorage.setItem(STORAGE_KEY_DASHBOARD, JSON.stringify(profile));
+    } catch { /* dashboard optional */ }
   }
 
   // ── Civil time → UT (historical tz rules via Intl, two-iteration) ────────
@@ -298,6 +349,7 @@ window.AstroProfile = (() => {
   return {
     getUser, saveUser, isLoggedIn, login, register, logout, updateProfile,
     getCharts, getChart, saveChart, deleteChart, buildChartData,
+    chartToDashboardRow, syncChartToDashboard,
     getComparisons, saveComparison, deleteComparison,
     getPrefs, savePrefs,
     exportData, importData,

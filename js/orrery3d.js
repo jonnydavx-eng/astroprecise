@@ -1062,12 +1062,14 @@ window.Orrery3D = (() => {
   function drawPlanet(b, pr) {
     const r = Math.max(1.6, b.size * pr.f);
 
-    // Stronger atmospheric/rim glow for more 3D volume
-    const haloR = r * 2.8;
+    // Subtle rim glow — large halos on gas giants read as fake rings
+    const isGiant = b.id === 'jupiter' || b.id === 'saturn' || b.id === 'uranus' || b.id === 'neptune';
+    const haloR = r * (isGiant ? 1.55 : 2.2);
     const [hr, hg, hb] = hexToRgb(b.color);
-    const halo = ctx.createRadialGradient(pr.x, pr.y, r * 0.35, pr.x, pr.y, haloR);
-    halo.addColorStop(0, `rgba(${hr},${hg},${hb},0.32)`);
-    halo.addColorStop(0.5, `rgba(${hr},${hg},${hb},0.12)`);
+    const halo = ctx.createRadialGradient(pr.x, pr.y, r * 0.55, pr.x, pr.y, haloR);
+    const haloPeak = isGiant ? 0.14 : 0.26;
+    halo.addColorStop(0, `rgba(${hr},${hg},${hb},0)`);
+    halo.addColorStop(0.72, `rgba(${hr},${hg},${hb},${haloPeak * 0.45})`);
     halo.addColorStop(1, `rgba(${hr},${hg},${hb},0)`);
     ctx.beginPath();
     ctx.arc(pr.x, pr.y, haloR, 0, Math.PI * 2);
@@ -1302,20 +1304,6 @@ window.Orrery3D = (() => {
       ctx.stroke();
     }
 
-    // Uranus/Neptune — subtle ring or haze
-    if (b.id === 'uranus' || b.id === 'neptune') {
-      ctx.save();
-      ctx.translate(pr.x, pr.y);
-      ctx.rotate(b.id === 'uranus' ? -1.1 : 0.6);
-      ctx.scale(1, 0.22);
-      ctx.beginPath();
-      ctx.arc(0, 0, r * 2.1, 0, Math.PI * 2);
-      ctx.strokeStyle = b.id === 'uranus' ? 'rgba(180,225,250,0.4)' : 'rgba(130,175,235,0.35)';
-      ctx.lineWidth = r * 0.55;
-      ctx.stroke();
-      ctx.restore();
-    }
-
     // Glyph label — crisper and slightly larger
     if (b.id !== 'moon' || pr.f > 0.85) {
       ctx.font = `${Math.max(9, 13 * pr.f)}px 'AstroGlyph', serif`;
@@ -1417,6 +1405,8 @@ window.Orrery3D = (() => {
     if (!prefersReducedMotion) spawnShootingStar(performance.now());
   }
 
+  const readyPromise = Promise.resolve();
+
   return {
     init,
     destroy,
@@ -1430,19 +1420,50 @@ window.Orrery3D = (() => {
     nowJd: () => baseJd + dayOffset,
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
-    // Backward compat aliases
     goTo,
-    // New API
     setShowAspects,
     setShowParticles,
     triggerShootingStar,
-    // New layer toggles for upgraded solar system
     setShowOrbits(bool) { showOrbits = !!bool; },
     setShowLabels(bool) { showLabels = !!bool; },
     setShowAsteroids(bool) { showAsteroids = !!bool; },
-    // Callback property (set externally: Orrery3D.onPlanetClick = fn)
     get onPlanetClick() { return onPlanetClick; },
     set onPlanetClick(fn) { onPlanetClick = fn; },
+    // Parity stubs — canvas fallback does not implement galaxy scale or WebGL intro
+    settleFromIntro() {},
+    startPreloaderIntro(fn) { if (typeof fn === 'function') fn(); },
+    skipIntro() {},
+    restartIntro() {},
+    startIntro() { this.restartIntro(); },
+    isIntroActive() { return false; },
+    isIntroPending() { return false; },
+    hasIntroCompleted() { return true; },
+    getIntroStartedAt() { return 0; },
+    getIntroDurationMs() { return 0; },
+    getIntroProgress() { return 1; },
+    whenReady() { return readyPromise; },
+    whenEarthReady() { return readyPromise; },
+    forceResize() { resize(); },
+    getScaleLevel() { return 2; },
+    setScaleLevel() {},
+    focusPlanet() {},
+    setScrollDrive() {},
+    resetScrollDrive() { dayOffset = 0; computeBodies(); },
+    getDayOffset() { return dayOffset; },
+    setTimelineDays(days) { dayOffset = Number(days) || 0; setSpeed(0); computeBodies(); },
+    snapToNow() { dayOffset = 0; setSpeed(0); computeBodies(); },
+    captureFrame(opts) {
+      if (!canvas) return null;
+      opts = opts || {};
+      const mult = opts.scale || 2;
+      const off = document.createElement('canvas');
+      off.width = Math.round(canvas.width * mult);
+      off.height = Math.round(canvas.height * mult);
+      const octx = off.getContext('2d');
+      octx.drawImage(canvas, 0, 0, off.width, off.height);
+      return off;
+    },
+    isWebGL: false,
   };
 
 })();

@@ -82,13 +82,52 @@ window.RafCore = (() => {
   let ticking = false;
   let lastY = window.scrollY || window.pageYOffset || 0;
 
+  /** Layout viewport — visualViewport on iOS Safari (toolbar show/hide). */
+  function layoutViewport() {
+    const vv = window.visualViewport;
+    if (!vv) {
+      return {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        offsetTop: 0,
+        offsetLeft: 0,
+      };
+    }
+    return {
+      width: vv.width,
+      height: vv.height,
+      offsetTop: vv.offsetTop,
+      offsetLeft: vv.offsetLeft,
+    };
+  }
+
+  function syncViewportVars() {
+    const lv = layoutViewport();
+    const vhUnit = lv.height * 0.01;
+    const root = document.documentElement;
+    root.style.setProperty('--ap-vh', vhUnit + 'px');
+    root.style.setProperty('--ap-vh-px', Math.round(lv.height) + 'px');
+    root.style.setProperty('--ap-vv-offset-top', Math.round(lv.offsetTop) + 'px');
+  }
+
+  /** Canvas/CSS size from layout box — fixes iOS aspect-ratio + height:auto (clientHeight=0). */
+  function canvasCssSize(el, fallback = 560) {
+    if (!el) return { w: fallback, h: fallback };
+    const r = el.getBoundingClientRect();
+    const w = Math.max(1, Math.round(r.width) || el.clientWidth || fallback);
+    const h = Math.max(1, Math.round(r.height) || el.clientHeight || w);
+    return { w, h, rect: r };
+  }
+
   function snapshot() {
     const y   = window.scrollY || window.pageYOffset || 0;
-    const ih  = window.innerHeight;
+    const lv  = layoutViewport();
+    const ih  = lv.height;
     const sh  = document.documentElement.scrollHeight;
     const max = sh - ih;
     const delta = y - lastY;
     lastY = y;
+    syncViewportVars();
     return {
       scrollY: y,
       delta,
@@ -96,6 +135,7 @@ window.RafCore = (() => {
       scrollHeight: sh,
       max,
       progress: max > 0 ? Math.min(1, Math.max(0, y / max)) : 0,
+      viewport: lv,
     };
   }
 
@@ -113,6 +153,11 @@ window.RafCore = (() => {
 
   window.addEventListener('scroll', request, { passive: true });
   window.addEventListener('resize', request, { passive: true });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', request, { passive: true });
+    window.visualViewport.addEventListener('scroll', request, { passive: true });
+  }
+  syncViewportVars();
 
   /** Subscribe to scroll/resize. Fires once immediately. Returns an unsubscribe fn. */
   function onScroll(fn) {
@@ -138,6 +183,9 @@ window.RafCore = (() => {
     cardExportSize,
     setupCanvas2D,
     prepExportCtx,
+    canvasCssSize,
+    layoutViewport,
+    syncViewportVars,
     CARD_EXPORT_BASE,
     onScroll,
     offScroll,

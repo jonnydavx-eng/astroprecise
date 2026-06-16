@@ -40,6 +40,7 @@
 <link rel="stylesheet" href="css/fonts.css" />
 <!-- Stylesheet -->
   <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/orrery-visual.css" />
 
   <style>
     /* =====================================================================
@@ -117,13 +118,14 @@
 
     /* Grok cinematic ref — observatory + zodiac wheel depth (subtle, right-weighted) */
     .hero__cosmic-art {
+      display: none;
       position: absolute;
       inset: 0;
       z-index: 0;
       pointer-events: none;
       background: url('img/hero-cosmic-ref.jpg') 72% 38% / min(115%, 920px) auto no-repeat;
-      opacity: 0.13;
-      filter: sepia(0.42) saturate(1.12) brightness(0.52);
+      opacity: 0;
+      filter: sepia(0.55) saturate(0.95) brightness(0.48);
       -webkit-mask-image: radial-gradient(ellipse 68% 62% at 72% 40%, #000 12%, transparent 74%);
               mask-image: radial-gradient(ellipse 68% 62% at 72% 40%, #000 12%, transparent 74%);
     }
@@ -136,8 +138,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 65% at 62% 44%, rgba(201, 162, 39, 0.09) 0%, transparent 68%),
-        radial-gradient(ellipse 50% 40% at 20% 70%, rgba(110, 26, 38, 0.06) 0%, transparent 60%);
+        radial-gradient(ellipse 80% 65% at 62% 44%, rgba(201, 162, 39, 0.04) 0%, transparent 68%),
+        radial-gradient(ellipse 50% 40% at 20% 70%, rgba(110, 26, 38, 0.03) 0%, transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
@@ -146,7 +148,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse 100% 90% at 50% 50%, transparent 55%, rgba(5, 4, 6, 0.35) 100%);
+      background: radial-gradient(ellipse 100% 90% at 50% 50%, transparent 62%, rgba(5, 4, 6, 0.18) 100%);
       pointer-events: none;
       z-index: 0;
     }
@@ -252,7 +254,7 @@
       display: inline-flex;
       align-items: center;
       gap: var(--space-2);
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       font-family: var(--font-body);
       font-weight: 600;
       letter-spacing: 0.22em;
@@ -275,13 +277,14 @@
 
     .hero__h1 {
       font-family: var(--font-display);
-      font-size: clamp(2rem, 4.2vw, 3rem);
+      font-size: clamp(2rem, 4.2vw, 3.15rem);
       font-weight: 600;
-      line-height: 1.2;
-      letter-spacing: 0.01em;
+      line-height: 1.14;
+      letter-spacing: 0.02em;
       color: var(--white);
       margin-bottom: var(--space-5);
-      text-shadow: 0 2px 18px rgba(5, 4, 6, 0.9), 0 1px 4px rgba(5, 4, 6, 0.75);
+      text-shadow: 0 2px 22px rgba(5, 4, 6, 0.92), 0 1px 6px rgba(5, 4, 6, 0.78);
+      text-wrap: balance;
     }
 
     .hero__h1 em {
@@ -401,9 +404,18 @@
     .hero__orrery-wrap {
       position: relative;
       width: 100%;
-      max-width: 920px;
+      max-width: min(100%, 560px);
       margin: 0 auto;
       pointer-events: none;
+    }
+
+    .page-home .hero__stage {
+      align-items: start;
+      padding-top: var(--space-6);
+    }
+
+    .page-home .hero__content {
+      align-self: center;
     }
 
     .orrery-console {
@@ -495,12 +507,32 @@
     body.preloader-active {
       overflow: hidden;
     }
+    body.preloader-active .site-header {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+    body.preloader-intro-playing .preloader-content {
+      opacity: 0 !important;
+      visibility: hidden;
+      pointer-events: none !important;
+    }
+    body.preloader-intro-playing #preloader.has-real #orrery-canvas {
+      cursor: default;
+    }
     body.preloader-active .hero__orrery-layer {
       visibility: hidden;
     }
+    body.preloader-active .hero__constellation,
+    body.preloader-active .hero::before,
+    body.preloader-active .hero::after {
+      visibility: hidden;
+    }
     body.preloader-active #starfield-canvas {
-      opacity: 0;
+      opacity: 1;
       pointer-events: none;
+      transition: opacity 1.2s ease;
     }
 
     /* Sacred-geometry meridian — instrument frame, not a box */
@@ -745,11 +777,70 @@
     .sky-pill--focus {
       border-color: rgba(201, 162, 39, 0.65) !important;
       box-shadow: 0 0 18px rgba(201, 162, 39, 0.22);
+      background: linear-gradient(145deg, rgba(28, 22, 14, 0.92), rgba(12, 10, 8, 0.88));
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .sky-pill--focus {
+        animation: sky-pill-focus-pulse 2.2s ease-in-out infinite;
+      }
+    }
+    @keyframes sky-pill-focus-pulse {
+      0%, 100% { box-shadow: 0 0 14px rgba(201, 162, 39, 0.18); }
+      50% { box-shadow: 0 0 22px rgba(201, 162, 39, 0.38); }
+    }
+
+    .live-sky-dock-panel {
+      padding: var(--space-5) var(--space-5) var(--space-4);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(201, 162, 39, 0.14);
+      background: linear-gradient(165deg, rgba(14, 11, 8, 0.72) 0%, rgba(6, 5, 5, 0.55) 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 248, 230, 0.04), 0 12px 36px rgba(0, 0, 0, 0.28);
+    }
+    .live-sky-dock__head {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: var(--space-2) var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .live-sky-stamp {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(168, 158, 136, 0.65);
+      font-family: var(--font-body);
+    }
+    .live-sky-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-2) var(--space-3);
+      margin-top: var(--space-4);
+      padding-top: var(--space-3);
+      border-top: 1px solid rgba(201, 162, 39, 0.1);
+    }
+    .live-sky-action {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-hero);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      background: rgba(201, 162, 39, 0.06);
+      transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+    }
+    .live-sky-action:hover {
+      border-color: rgba(201, 162, 39, 0.45);
+      background: rgba(201, 162, 39, 0.12);
+      color: var(--gold-hero-light);
     }
 
     #orrery-canvas {
       display: block;
-      width: min(100%, 720px);
+      width: min(100%, 520px);
       max-width: 100%;
       height: auto;
       aspect-ratio: 1 / 1;
@@ -761,10 +852,6 @@
       cursor: grab;
       touch-action: none;
       pointer-events: auto;
-      /* Tight circular vignette so the model dissolves into the page nebula —
-         no boxy disc edge, and the glow pulls away from the hero title. */
-      -webkit-mask-image: radial-gradient(circle at 50% 47%, #000 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.28) 68%, transparent 84%);
-              mask-image: radial-gradient(circle at 50% 47%, #000 30%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.28) 68%, transparent 84%);
     }
     #orrery-canvas:active { cursor: grabbing; }
     /* Affordance hint — fades after a beat, returns on hover so the model never feels static/locked */
@@ -910,9 +997,6 @@
       height: 3px; background: rgba(201,162,39,0.22); border-radius: 2px;
     }
 
-    /* Hide competing decorative corner solar system — the real orrery is the hero */
-    .hero .cosmos-solar-system,
-    body > .cosmos-solar-system { display: none !important; }
     .orrery-scale-dial {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1016,7 +1100,7 @@
       border: 1px solid var(--glass-border-glow);
       border-radius: var(--radius-xl);
       padding: var(--space-5) var(--space-6);
-      width: 240px;
+      width: min(260px, 92vw);
       text-align: center;
       box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 24px rgba(201, 162, 39, 0.08);
       z-index: 10;
@@ -1075,6 +1159,41 @@
       margin-top: 7px;
       max-width: 210px;
     }
+    .planet-info-panel__actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: var(--space-4);
+      width: 100%;
+    }
+    .pip-action {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(201, 162, 39, 0.28);
+      color: var(--gold-hero);
+      background: rgba(201, 162, 39, 0.08);
+      transition: background var(--transition-fast), border-color var(--transition-fast);
+    }
+    .pip-action:hover {
+      background: rgba(201, 162, 39, 0.16);
+      border-color: rgba(201, 162, 39, 0.45);
+    }
+    .pip-action--primary {
+      color: #0a0805;
+      background: linear-gradient(160deg, #D9B544, #A8841E);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .pip-action--primary:hover {
+      filter: brightness(1.06);
+      background: linear-gradient(160deg, #E4C45A, #B89228);
+    }
 
     /* =====================================================================
        LIVE SKY STRIP
@@ -1119,21 +1238,46 @@
       align-items: center;
       gap: var(--space-2);
       padding: var(--space-2) var(--space-4);
-      background: var(--glass-bg);
+      background: linear-gradient(145deg, rgba(22, 18, 13, 0.88), rgba(10, 9, 8, 0.82));
       -webkit-backdrop-filter: blur(16px);
       backdrop-filter: blur(16px);
-      border: 1px solid var(--glass-border);
+      border: 1px solid rgba(201, 162, 39, 0.16);
       border-radius: var(--radius-full);
       white-space: nowrap;
-      transition: border-color var(--transition-fast), transform var(--transition-fast);
-      cursor: default;
+      transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+      cursor: pointer;
       flex-shrink: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      appearance: none;
+      -webkit-appearance: none;
     }
     .sky-pill:hover {
-      border-color: var(--glass-border-glow);
+      border-color: rgba(201, 162, 39, 0.38);
       transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+    .sky-pill:focus-visible {
+      outline: 2px solid rgba(201, 162, 39, 0.55);
+      outline-offset: 2px;
     }
     .sky-pill--retro { border-color: rgba(176, 74, 82, 0.3); }
+    @media (prefers-reduced-motion: no-preference) {
+      .sky-pill--retro {
+        animation: sky-pill-retro-pulse 2.6s ease-in-out infinite;
+      }
+    }
+    @keyframes sky-pill-retro-pulse {
+      0%, 100% {
+        border-color: rgba(176, 74, 82, 0.28);
+        box-shadow: none;
+      }
+      50% {
+        border-color: rgba(210, 90, 98, 0.62);
+        box-shadow: 0 0 16px rgba(176, 74, 82, 0.2);
+      }
+    }
 
     .sky-pill__glyph {
       font-size: 1.1rem;
@@ -1184,6 +1328,7 @@
       padding: var(--space-10) 0 var(--space-6);
       position: relative;
       z-index: 1;
+      overflow: hidden;
     }
     .home-sign-picker__header {
       text-align: center;
@@ -1202,34 +1347,201 @@
       color: var(--silver-dim);
       line-height: 1.55;
     }
+    .home-sign-picker[data-active-element] {
+      --el-glow: rgba(201, 162, 39, 0.12);
+      transition: box-shadow 0.45s ease;
+    }
+    .home-sign-picker[data-active-element="fire"]  { --el-glow: rgba(224, 90, 58, 0.14); }
+    .home-sign-picker[data-active-element="earth"] { --el-glow: rgba(94, 138, 74, 0.14); }
+    .home-sign-picker[data-active-element="air"]   { --el-glow: rgba(167, 139, 186, 0.14); }
+    .home-sign-picker[data-active-element="water"] { --el-glow: rgba(63, 125, 118, 0.16); }
+    .home-sign-picker[data-active-element]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 80% 45% at 50% 0%, var(--el-glow), transparent 70%);
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+    .home-sign-picker[data-active-element="all"]::before,
+    .home-sign-picker:not([data-active-element])::before { opacity: 0; }
+
     .home-sign-filters {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.45rem;
+      gap: 0.55rem;
       justify-content: center;
       margin-bottom: var(--space-5);
-      padding: 0 var(--space-4);
+      padding: 0.35rem var(--space-4);
     }
     .home-sign-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
       font-family: var(--font-body);
       font-size: 0.62rem;
       font-weight: 600;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 0.4rem 0.85rem;
+      padding: 0.35rem 0.9rem 0.35rem 0.4rem;
       border-radius: 999px;
-      border: 1px solid rgba(201, 162, 39, 0.22);
-      background: rgba(12, 10, 8, 0.45);
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      background: linear-gradient(145deg, rgba(16, 13, 10, 0.82), rgba(8, 7, 6, 0.72));
       color: var(--silver-dim);
       cursor: pointer;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      transition: border-color 0.25s, color 0.25s, background 0.25s, transform 0.22s, box-shadow 0.25s;
+      appearance: none;
+      -webkit-appearance: none;
     }
-    .home-sign-filter:hover,
+    .home-sign-filter__orb { flex-shrink: 0; line-height: 0; }
+    .home-sign-filter__text { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; text-align: left; }
+    .home-sign-filter__label { line-height: 1.2; }
+    .home-sign-filter__count {
+      font-size: 0.48rem;
+      letter-spacing: 0.08em;
+      text-transform: none;
+      color: rgba(168, 158, 136, 0.65);
+      font-weight: 500;
+    }
+    .home-sign-filter:hover {
+      transform: translateY(-2px);
+      border-color: rgba(201, 162, 39, 0.42);
+      color: var(--gold-hero-light);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+    }
     .home-sign-filter.is-active {
-      border-color: rgba(201, 162, 39, 0.55);
+      border-color: rgba(201, 162, 39, 0.58);
       color: var(--gold-hero);
-      background: rgba(201, 162, 39, 0.08);
+      background: linear-gradient(145deg, rgba(28, 22, 14, 0.95), rgba(14, 11, 8, 0.88));
+      box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.18), 0 10px 28px rgba(0, 0, 0, 0.35);
     }
+    .home-sign-filter[data-filter="fire"].is-active  { border-color: rgba(224, 90, 58, 0.55); box-shadow: 0 0 20px rgba(224, 90, 58, 0.12); }
+    .home-sign-filter[data-filter="earth"].is-active { border-color: rgba(94, 138, 74, 0.55); box-shadow: 0 0 20px rgba(94, 138, 74, 0.12); }
+    .home-sign-filter[data-filter="air"].is-active   { border-color: rgba(167, 139, 186, 0.55); box-shadow: 0 0 20px rgba(167, 139, 186, 0.12); }
+    .home-sign-filter[data-filter="water"].is-active { border-color: rgba(63, 125, 118, 0.55); box-shadow: 0 0 20px rgba(63, 125, 118, 0.14); }
+    .home-sign-filter:focus-visible { outline: 2px solid rgba(201, 162, 39, 0.5); outline-offset: 2px; }
+
+    /* Animated elemental scenes (js/element-orbs.js) */
+    .ap-el-scene {
+      position: relative;
+      display: inline-flex;
+      width: 2.35rem;
+      height: 2.35rem;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+    }
+    .ap-el-scene--sm { width: 2rem; height: 2rem; }
+    .ap-el-scene__core { width: 100% !important; height: 100% !important; margin: 0; }
+    .ap-el-scene__tri {
+      width: 54%;
+      height: 54%;
+      color: rgba(255, 255, 255, 0.95);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+    }
+    .ap-el-scene__ring {
+      position: absolute;
+      inset: 2px;
+      border-radius: 50%;
+      border: 1px dashed rgba(201, 162, 39, 0.35);
+      pointer-events: none;
+    }
+    .ap-el-scene__spark,
+    .ap-el-scene__ripple,
+    .ap-el-scene__drift,
+    .ap-el-scene__grain {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+    .ap-el-scene__spark {
+      width: 4px; height: 4px;
+      background: #ffe08a;
+      box-shadow: 0 0 6px #ffb04a;
+    }
+    .ap-el-scene__spark--1 { top: 8%; right: 12%; }
+    .ap-el-scene__spark--2 { bottom: 14%; left: 10%; width: 3px; height: 3px; }
+    .ap-el-scene__ripple {
+      inset: 0;
+      border: 1px solid rgba(191, 228, 221, 0.45);
+    }
+    .ap-el-scene__ripple--2 { animation-delay: 0.9s; }
+    .ap-el-scene__drift {
+      width: 5px; height: 5px;
+      background: rgba(220, 200, 236, 0.7);
+      opacity: 0.7;
+    }
+    .ap-el-scene__drift--1 { top: 20%; left: 6%; }
+    .ap-el-scene__drift--2 { bottom: 18%; right: 8%; width: 4px; height: 4px; }
+    .ap-el-scene__grain {
+      inset: 18%;
+      background: radial-gradient(circle at 40% 35%, rgba(200, 218, 134, 0.35), transparent 70%);
+      opacity: 0.8;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .ap-el-scene--live.ap-el-scene--fire .ap-el-scene__core { animation: el-fire-pulse 2.4s ease-in-out infinite; }
+      .ap-el-scene--live.ap-el-scene--fire .ap-el-scene__spark { animation: el-spark 1.8s ease-in-out infinite; }
+      .ap-el-scene--live.ap-el-scene--fire .ap-el-scene__spark--2 { animation-delay: 0.7s; }
+      .ap-el-scene--live.ap-el-scene--water .ap-el-scene__ripple { animation: el-ripple 2.6s ease-out infinite; }
+      .ap-el-scene--live.ap-el-scene--air .ap-el-scene__core { animation: el-air-float 3.2s ease-in-out infinite; }
+      .ap-el-scene--live.ap-el-scene--air .ap-el-scene__drift { animation: el-drift 4s ease-in-out infinite; }
+      .ap-el-scene--live.ap-el-scene--air .ap-el-scene__drift--2 { animation-delay: -2s; }
+      .ap-el-scene--live.ap-el-scene--earth .ap-el-scene__core { animation: el-earth-steady 4.5s ease-in-out infinite; }
+      .ap-el-scene--live.ap-el-scene--all .ap-el-scene__ring { animation: el-orbit-spin 12s linear infinite; }
+      .home-sign-filter.is-active .ap-el-scene--live .ap-el-scene__core { animation-duration: 1.6s; }
+    }
+    @keyframes el-fire-pulse {
+      0%, 100% { filter: brightness(1); transform: scale(1); }
+      50% { filter: brightness(1.12); transform: scale(1.05); }
+    }
+    @keyframes el-spark {
+      0%, 100% { opacity: 0.2; transform: scale(0.6); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes el-ripple {
+      0% { transform: scale(0.75); opacity: 0.55; }
+      100% { transform: scale(1.45); opacity: 0; }
+    }
+    @keyframes el-air-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    @keyframes el-drift {
+      0%, 100% { transform: translate(0, 0); opacity: 0.35; }
+      50% { transform: translate(4px, -5px); opacity: 0.9; }
+    }
+    @keyframes el-earth-steady {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    @keyframes el-orbit-spin { to { transform: rotate(360deg); } }
+
+    .home-sign-card__el-orb {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+      z-index: 3;
+      transform: scale(0.72);
+      transform-origin: top right;
+      opacity: 0.92;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
+    }
+    .home-sign-scroll.is-filtering .home-sign-card:not(.is-filtered-out) {
+      animation: sign-filter-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes sign-filter-in {
+      from { opacity: 0; transform: translateY(8px) scale(0.96); }
+      to { opacity: 1; transform: none; }
+    }
+    .home-sign-preview__element {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    .home-sign-preview__element .ap-el-scene--sm { width: 1.35rem; height: 1.35rem; }
     .home-sign-scroll {
       display: flex;
       gap: 0.7rem;
@@ -1377,9 +1689,7 @@
       color: var(--silver-dim);
       margin-bottom: var(--space-3);
     }
-    .home-sign-preview__element {
-      display: inline-block;
-      margin-left: 0.5rem;
+    .home-sign-preview__element-label {
       font-size: 0.55rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -1615,9 +1925,20 @@
       background: rgba(18, 15, 11, 0.45);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
-      transition: border-color var(--transition-base);
+      transition: border-color var(--transition-base), transform var(--transition-fast), box-shadow var(--transition-fast);
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
     }
-    .concept-pill:hover { border-color: var(--glass-border-glow); }
+    .concept-pill:hover {
+      border-color: var(--glass-border-glow);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    }
+    .concept-pill:focus-visible {
+      outline: 2px solid rgba(201, 162, 39, 0.45);
+      outline-offset: 2px;
+    }
 
     .concept-pill__icon {
       font-size: 1.4rem;
@@ -1625,7 +1946,8 @@
       flex-shrink: 0;
       margin-top: 2px;
     }
-    .concept-pill__text h4 {
+    .concept-pill__text h3,
+    .concept-pill__title {
       font-family: var(--font-display);
       font-size: 0.85rem;
       color: var(--gold-hero-light);
@@ -2082,21 +2404,21 @@
       font-size: 0.6rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--gold-hero);
-      opacity: 0.6;
+      color: var(--gold-bright, #D4B84A);
       padding: var(--space-1) var(--space-3);
       border: 1px solid rgba(201, 162, 39, 0.2);
       border-radius: var(--radius-full);
     }
 
-    .footer-nav-col h4 {
+    .footer-nav-col h4,
+    .footer-nav-col__title {
       font-family: var(--font-display);
       font-size: 0.72rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--gold-hero);
-      opacity: 0.75;
+      color: var(--gold-bright, #D4B84A);
       margin-bottom: var(--space-5);
+      font-weight: 600;
     }
     .footer-nav-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
     .footer-nav-col ul li a {
@@ -2122,7 +2444,7 @@
     .footer-legal p {
       font-size: 0.68rem;
       letter-spacing: 0.08em;
-      color: var(--silver-dark);
+      color: var(--silver-dim);
     }
 
     /* =====================================================================
@@ -2225,7 +2547,7 @@
       font-family: var(--font-body, Inter, sans-serif);
       font-size: 0.72rem;
       line-height: 1.5;
-      color: var(--silver, #9aa6c8);
+      color: var(--silver, #A89E88);
       letter-spacing: 0.01em;
     }
     .privacy-badge__text strong {
@@ -2260,7 +2582,7 @@
       {
         "@type": "Question",
         "name": "What's in the paid Deep Reading?",
-        "acceptedAnswer": { "@type": "Answer", "text": "A long-form written interpretation of your whole chart — every placement, your tightest aspects, your dominant element and the houses they fall in — drawn line by line from the chart you just cast, and set as a PDF that's yours to keep." }
+        "acceptedAnswer": { "@type": "Answer", "text": "A 13-page written interpretation — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, and your ten tightest aspects — drawn from the same interpretations engine as the free chart tools, and set as a PDF that's yours to keep." }
       },
       {
         "@type": "Question",
@@ -2279,7 +2601,7 @@
   <script type="importmap">
   { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
   </script>
-  <script type="module" src="js/orrery-webgl.js"></script>
+  <script src="js/orrery-loader.js"></script>
 </head>
 <body class="page-home">
   <script src="js/raf-core.js"></script>
@@ -2291,28 +2613,26 @@
        Masterpiece entry: never seen before immersive threshold.
   ═════════════════════════════════════════════════════════════════════ -->
   <style>
-    /* Cosmic lapis+gold intro preloader — themed to match the hero/orrery */
+    /* Warm void preloader — matches body/starfield; dissolves to transparent when WebGL loads */
     #preloader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:all;
       padding:max(24px,env(safe-area-inset-top)) 20px max(28px,env(safe-area-inset-bottom));
-      background:radial-gradient(ellipse 120% 92% at 50% 38%, #0D0A07 0%, #050406 60%, #030203 100%);}
-    #preloader::before{content:'';position:absolute;inset:0;pointer-events:none;background:
-      radial-gradient(38% 46% at 20% 16%, rgba(201,162,39,0.14), transparent 70%),
-      radial-gradient(42% 48% at 84% 90%, rgba(110,26,38,0.22), transparent 72%);}
+      background:transparent;}
+    #preloader::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;background:none;}
     /* Retired: hero-cosmic-ref.jpg is a mockup banner with the "AstroPrecise — Your
        Cosmic Blueprint" wordmark baked in; at opacity .1 it read as a faint ghost
        watermark behind the model. The real logo now lives in .apl-brand up top. */
     .apl-cosmic-art{display:none;}
-    #preloader.fade-out{opacity:0;transition:opacity .6s ease;}
-    .apl-stars{position:absolute;inset:0;pointer-events:none;opacity:.85;background-image:
+    #preloader.fade-out{opacity:0;transition:opacity .9s cubic-bezier(0.22,1,0.36,1);pointer-events:none;}
+    #preloader.preloader-exit .apl-intro-header,#preloader.preloader-exit .preloader-content,#preloader.preloader-exit .preloader-skip-intro{opacity:0;transition:opacity .4s ease;pointer-events:none;}
+    body.preloader-active.hero-reveal #starfield-canvas{opacity:1;transition:opacity 1.1s ease;}
+    .apl-stars{background-image:
       radial-gradient(1.4px 1.4px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 28% 68%,#EFE3C0,transparent),
       radial-gradient(1.2px 1.2px at 47% 12%,#fff,transparent),radial-gradient(1px 1px at 66% 78%,#fff,transparent),
       radial-gradient(1.3px 1.3px at 82% 34%,#ffe9b8,transparent),radial-gradient(1px 1px at 91% 62%,#fff,transparent),
       radial-gradient(1px 1px at 58% 48%,#EFE3C0,transparent),radial-gradient(1px 1px at 38% 88%,#fff,transparent),
       radial-gradient(1px 1px at 8% 52%,#fff,transparent),radial-gradient(1px 1px at 73% 18%,#fff,transparent);}
     .apl-orr{display:none;position:absolute;top:40%;left:50%;width:min(60vmin,440px);height:min(60vmin,440px);transform:translate(-50%,-50%) scaleY(.34);pointer-events:none;}
-    .apl-brand{position:absolute;top:max(26px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:5;font-family:'Cinzel',serif;letter-spacing:0.2em;font-size:0.95rem;font-weight:700;color:#EFE3C0;text-transform:uppercase;white-space:nowrap;}
-    .apl-brand img{width:30px;height:30px;filter:drop-shadow(0 0 12px rgba(201,162,39,0.55));}
-    .apl-brand span{background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
     .apl-ring{position:absolute;top:50%;left:50%;border:1px solid rgba(201,162,39,.22);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 22px rgba(201,162,39,.18),inset 0 0 34px rgba(201,162,39,.08);}
     .apl-r1{width:36%;height:36%;}.apl-r2{width:60%;height:60%;}.apl-r3{width:86%;height:86%;}
     .apl-spin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:apl-orbit linear infinite;}
@@ -2327,21 +2647,15 @@
       box-shadow:0 0 18px rgba(255,210,110,.85),0 0 54px rgba(240,150,30,.55),inset 0 -6px 12px rgba(120,60,0,.5);animation:apl-pulse 3.4s ease-in-out infinite;}
     @keyframes apl-pulse{0%,100%{box-shadow:0 0 18px rgba(255,210,110,.8),0 0 50px rgba(240,150,30,.5),inset 0 -6px 12px rgba(120,60,0,.5);}50%{box-shadow:0 0 26px rgba(255,225,150,.95),0 0 80px rgba(245,170,50,.7),inset 0 -6px 12px rgba(120,60,0,.5);}}
     @keyframes seal-pulse{0%,100%{opacity:.8;}50%{opacity:1;}}
-    /* The REAL 3D orrery (same model as the hero) is relocated into this slot during loading,
-       then flown into the hero on dismiss. The CSS-mock above stays as a graceful fallback. */
-    .apl-live-orr{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:min(60vmin,440px);height:min(60vmin,440px);pointer-events:auto;z-index:2;opacity:1;cursor:grab;}
-    .apl-live-orr:active{cursor:grabbing;}
-    .apl-live-orr canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;
-      -webkit-mask-image:radial-gradient(circle at 50% 47%,#000 30%,rgba(0,0,0,0.8) 50%,rgba(0,0,0,0.28) 68%,transparent 84%);
-      mask-image:radial-gradient(circle at 50% 47%,#000 30%,rgba(0,0,0,0.8) 50%,rgba(0,0,0,0.28) 68%,transparent 84%);}
-    #preloader.has-real .apl-live-orr{opacity:1;}
-    #preloader.has-real .apl-orr,#preloader.has-real .apl-core{opacity:0;pointer-events:none;transition:opacity .9s ease;}
-    #preloader.fallback-css .apl-orr,#preloader.fallback-css .apl-core{display:block;opacity:1;}
-    #preloader.fallback-css .apl-live-orr{display:none;}
+    /* .apl-live-orr + has-real/fallback rules live in css/orrery-visual.css */
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core{animation:none;}}
     /* The way-in is revealed only when the sky SETTLES (driven by the orrery, not a blind timer) */
     #preloader-enter{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
-    #preloader.aligned #preloader-enter{opacity:1;transform:none;pointer-events:auto;}
+    #preloader.aligned #preloader-enter,#preloader.orrery-expanded #preloader-enter{pointer-events:auto;}
+    #preloader.aligned #preloader-enter:not(.preloader-enter-btn--arrive):not(.preloader-enter-btn--launch),
+    #preloader.orrery-expanded #preloader-enter:not(.preloader-enter-btn--arrive):not(.preloader-enter-btn--launch){opacity:1;transform:none;}
+    .preloader-join-optional{display:block;margin:10px auto 0;padding:0;border:none;background:transparent;color:rgba(168,159,138,0.82);font-family:Inter,system-ui,sans-serif;font-size:0.62rem;letter-spacing:0.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .45s ease;}
+    #preloader.aligned .preloader-join-optional{opacity:1;pointer-events:auto;}
     #preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease;}
     #preloader.gate-open .apl-live-orr,#preloader.gate-open .apl-live-orr canvas{pointer-events:none !important;}
     .preloader-email-gate{position:absolute;inset:0;z-index:20;display:none !important;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none !important;transition:opacity .35s ease,visibility .35s ease;}
@@ -2360,9 +2674,22 @@
     .preloader-email-gate__join:hover,.preloader-email-gate__join:focus-visible{border-color:rgba(201,162,39,0.85);box-shadow:0 0 18px rgba(201,162,39,0.28);}
     .preloader-email-gate__skip{display:block;width:100%;margin-top:10px;padding:8px 12px;border:none;background:transparent;color:rgba(168,159,138,0.95);font-family:Inter,system-ui,sans-serif;font-size:0.72rem;letter-spacing:0.04em;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
     .preloader-email-gate__skip:hover,.preloader-email-gate__skip:focus-visible{color:#E8E0D0;}
+    .apl-cine-vignette,.apl-cine-grain{pointer-events:none;}
   </style>
   <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
-    <div class="apl-brand"><img src="img/logo.svg" alt="" width="30" height="30" /><span>AstroPrecise</span></div>
+    <div class="apl-cine-vignette" aria-hidden="true"></div>
+    <div class="apl-cine-grain" aria-hidden="true"></div>
+    <header class="apl-intro-header">
+      <div class="apl-brand">
+        <span class="apl-brand__mark" aria-hidden="true">
+          <img src="img/logo.svg" alt="" width="40" height="40" decoding="async" fetchpriority="high" />
+        </span>
+        <span class="apl-brand__wordmark">AstroPrecise</span>
+      </div>
+      <div class="apl-intro-progress" aria-hidden="true"><span class="apl-intro-progress__bar" id="preloader-intro-progress"></span></div>
+      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">Calibrating sky</p>
+    </header>
+    <button type="button" class="preloader-skip-intro" id="preloader-skip-intro" aria-label="Skip intro">Skip</button>
     <div class="apl-cosmic-art" aria-hidden="true"></div>
     <div class="apl-stars" aria-hidden="true"></div>
     <div class="apl-orr" aria-hidden="true">
@@ -2372,12 +2699,13 @@
       <div class="apl-spin apl-s3"><span class="apl-pl apl-goldp"></span></div>
     </div>
     <div class="apl-core" aria-hidden="true"></div>
+    <div class="apl-earth-poster" aria-hidden="true"></div>
     <!-- The real 3D orrery is relocated here from the hero during loading -->
     <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
-    <div class="preloader-content" style="position:absolute; left:50%; bottom:max(6vh, calc(env(safe-area-inset-bottom) + 18px)); transform:translateX(-50%); width:min(31rem,90vw); z-index:3; text-align:center; color:#E8E0D0; font-family:'Cinzel', 'Cormorant Garamond', serif; pointer-events:auto;">
-      <div class="preloader-title" style="font-size:clamp(1.6rem,5vw,2.8rem); letter-spacing:0.28em; font-weight:700; background:linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:8px;">The Spheres Align</div>
-      <div class="preloader-subtitle" style="font-family:'Cormorant Garamond', serif; font-size:0.98rem; letter-spacing:0.1em; opacity:0.82; margin-bottom:20px; font-style:italic; color:#cdbf9f;">HD Earth close-up, then a pull through the live solar system &mdash; your sky, aligned for this moment.</div>
-      <button id="preloader-enter" class="preloader-skip" aria-label="Enter the site" style="font-size:0.8rem; padding:12px 30px; background:linear-gradient(rgba(28,22,12,0.5),rgba(12,10,7,0.62)); border:1px solid rgba(201,162,39,0.45); color:#F0E8D8; font-family:'Cinzel', serif; letter-spacing:0.22em; text-transform:uppercase; border-radius:30px; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 0 18px rgba(201,162,39,0.3), inset 0 1px 0 rgba(255,255,255,0.12); transition:all 0.3s;"><span class="eng-star-mark" style="width:0.75em;height:0.75em;margin-right:0.35em;" aria-hidden="true"></span> Enter Your Sky &nbsp;&rarr;</button>
+    <div class="preloader-content">
+      <div class="preloader-title">Sky aligned</div>
+      <button type="button" id="preloader-enter" class="preloader-skip preloader-enter-btn" aria-label="Enter the site">Enter</button>
+      <button type="button" id="preloader-join-optional" class="preloader-join-optional">Join update list</button>
     </div>
     <div id="preloader-email-gate" class="preloader-email-gate" aria-hidden="true">
       <div class="preloader-email-gate__backdrop" aria-hidden="true"></div>
@@ -2425,11 +2753,36 @@
     document.body.classList.add('preloader-active');
     window.__orreryPreloaderOwns = true;
     let raf = null;
+    let revealRetries = 0;
     const enterBtn = document.getElementById('preloader-enter');
+
+    function localPerfTier() {
+      try {
+        if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
+        if (navigator.deviceMemory && navigator.deviceMemory <= 4) return 'low';
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return 'low';
+      } catch (e) { return 'high'; }
+      return 'high';
+    }
+
+    function preloaderWebGLSafe() {
+      try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+        if (localPerfTier() === 'low') return false;
+        if (/[?&](lite|nosplash)=1/.test(location.search)) return false;
+      } catch (e) { return false; }
+      return true;
+    }
+
+    function useCssPreloaderFallback() {
+      if (preDone) return;
+      pre.classList.add('fallback-css');
+      setTimeout(function () { revealEnter(true); }, 900);
+    }
 
     // ── The REAL 3D orrery (same model as the hero centrepiece) on the loading screen ──
     const orrSlot = document.getElementById('preloader-orrery-slot');
-    let orrCanvas = null;
+    let orrViewport = null;
     let heroRing = null;
     let orreryRelocated = false;
     function waitForGlobal(test, ms) {
@@ -2452,72 +2805,146 @@
     function hidePre() {
       if (preDone) return; preDone = true;
       if (raf) cancelAnimationFrame(raf);
-      if (orreryRelocated && orrCanvas && heroRing) {
-        orrCanvas.style.width = ''; orrCanvas.style.height = '';
-        orrCanvas.removeAttribute('width'); orrCanvas.removeAttribute('height');
-        heroRing.appendChild(orrCanvas);
+      pre.classList.add('preloader-exit');
+      document.body.classList.add('hero-reveal');
+      if (orreryRelocated && orrViewport && heroRing) {
+        var orrCanvas = document.getElementById('orrery-canvas');
+        if (orrCanvas) {
+          orrCanvas.style.width = ''; orrCanvas.style.height = '';
+          orrCanvas.removeAttribute('width'); orrCanvas.removeAttribute('height');
+        }
+        heroRing.appendChild(orrViewport);
         heroRing.classList.remove('orrery-canvas-away');
+        orrViewport.classList.add('orrery-viewport--hero-enter');
+        setTimeout(function () { orrViewport.classList.remove('orrery-viewport--hero-enter'); }, 1400);
         if (window.Orrery3D && typeof window.Orrery3D.settleFromIntro === 'function') window.Orrery3D.settleFromIntro();
         function refitOrrery() {
           if (window.Orrery3D && typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
           else window.dispatchEvent(new Event('resize'));
         }
         requestAnimationFrame(function () { requestAnimationFrame(refitOrrery); });
+        setTimeout(refitOrrery, 400);
+        if (window.visualViewport) {
+          var vvOnce = function () { refitOrrery(); };
+          window.visualViewport.addEventListener('resize', vvOnce, { passive: true, once: true });
+        }
         if (window.Orrery3D && typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
       }
-      window.__orreryPreloaderOwns = false;
       try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (e) {}
-      document.body.classList.remove('preloader-active');
       pre.classList.add('fade-out');
       setTimeout(() => {
         pre.style.display = 'none';
+        document.body.classList.remove('preloader-active');
+        document.body.classList.remove('hero-reveal');
+        document.body.classList.remove('preloader-intro-playing');
+        window.__orreryPreloaderOwns = false;
         window.__apHeroEntered = true;
+        if (window.CosmosEngine && typeof window.CosmosEngine.setPreloaderPause === 'function') {
+          window.CosmosEngine.setPreloaderPause(false);
+        }
         if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
         window.dispatchEvent(new Event('ap-hero-enter'));
-      }, 620);
+      }, 920);
       const heroO = document.getElementById('orrery-canvas');
       if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';
+    }
+
+    function refitPreloaderOrrery() {
+      if (window.Orrery3D && typeof window.Orrery3D.forceResize === 'function') {
+        window.Orrery3D.forceResize();
+      }
+    }
+
+    async function waitForOrreryViewport(ms) {
+      var deadline = Date.now() + ms;
+      while (Date.now() < deadline) {
+        var vp = document.getElementById('orrery-viewport');
+        if (vp && vp.parentElement) return vp;
+        await new Promise(function (res) { setTimeout(res, 40); });
+      }
+      return null;
     }
 
     function featureOrreryOnLoadingScreen() {
       (async function () {
         if (!orrSlot || preDone) return;
-        orrCanvas = document.getElementById('orrery-canvas');
-        if (!orrCanvas || !orrCanvas.parentElement) {
-          if (!preDone) pre.classList.add('fallback-css');
+        if (!preloaderWebGLSafe()) {
+          useCssPreloaderFallback();
           return;
         }
-        heroRing = orrCanvas.parentElement;
+
+        var engineLoad = (typeof window.__loadOrreryEngine === 'function')
+          ? window.__loadOrreryEngine().catch(function () {})
+          : Promise.resolve();
+
+        orrViewport = await waitForOrreryViewport(12000);
+        if (!orrViewport || preDone) {
+          if (!preDone) useCssPreloaderFallback();
+          return;
+        }
+        heroRing = orrViewport.parentElement;
         if (heroRing) heroRing.classList.add('orrery-canvas-away');
-        orrSlot.appendChild(orrCanvas);
+        orrSlot.appendChild(orrViewport);
         orreryRelocated = true;
+        pre.classList.add('has-live-orr');
         await afterLayout();
         if (preDone) return;
+
+        await engineLoad;
         var engineReady = await waitForGlobal(function () {
           return window.Orrery3D && window.AstroEphemeris && typeof Orrery3D.init === 'function';
         }, 20000);
         if (!engineReady || preDone) {
-          if (!preDone) pre.classList.add('fallback-css');
+          if (!preDone) useCssPreloaderFallback();
           return;
         }
         try {
           if (!window.__orreryReady) {
-            window.Orrery3D.init(orrCanvas);
+            window.Orrery3D.init(document.getElementById('orrery-canvas'));
             window.__orreryReady = true;
           }
-          if (typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
+          refitPreloaderOrrery();
           if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
-          pre.classList.add('has-real');
-          if (typeof window.Orrery3D.restartIntro === 'function') {
-            window.Orrery3D.onIntroDone = function () { revealEnter(); };
-            window.Orrery3D.restartIntro();
-            if (typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
+          if (typeof window.Orrery3D.whenEarthReady === 'function') {
+            await window.Orrery3D.whenEarthReady();
           }
+          if (preDone) return;
+          pre.classList.add('orrery-expanded');
+          wireEnterButton();
+          refitPreloaderOrrery();
+          requestAnimationFrame(function () {
+            refitPreloaderOrrery();
+            setTimeout(refitPreloaderOrrery, 200);
+          });
+          if (typeof window.Orrery3D.startPreloaderIntro === 'function') {
+            window.Orrery3D.startPreloaderIntro(revealEnter);
+          } else if (typeof window.Orrery3D.restartIntro === 'function') {
+            window.Orrery3D.onIntroDone = revealEnter;
+            window.Orrery3D.restartIntro();
+          }
+          pre.classList.add('has-real');
+          if (window.CosmosEngine && typeof window.CosmosEngine.setPreloaderPause === 'function') {
+            window.CosmosEngine.setPreloaderPause(true);
+          }
+          orrSlot.setAttribute('aria-hidden', 'false');
+          refitPreloaderOrrery();
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              refitPreloaderOrrery();
+              setTimeout(refitPreloaderOrrery, 120);
+              setTimeout(refitPreloaderOrrery, 400);
+            });
+          });
         } catch (e) {
-          if (!preDone) pre.classList.add('fallback-css');
+          if (!preDone) useCssPreloaderFallback();
         }
       })();
     }
+    setTimeout(function () {
+      if (!preDone && !pre.classList.contains('has-real') && !pre.classList.contains('fallback-css')) {
+        useCssPreloaderFallback();
+      }
+    }, 14000);
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', featureOrreryOnLoadingScreen);
     } else {
@@ -2579,13 +3006,31 @@
       hidePre();
     }
 
+    function enterSite() {
+      if (preDone) return;
+      if (gateOpen) {
+        if (gateEl) {
+          gateEl.classList.remove('is-open');
+          gateEl.setAttribute('aria-hidden', 'true');
+        }
+        pre.classList.remove('gate-open');
+        gateOpen = false;
+      }
+      if (enterBtn) enterBtn.classList.add('preloader-enter-btn--launch');
+      hidePre();
+    }
+
     function rearmEnterButton() {
-      if (!enterBtn || preDone || !pre.classList.contains('aligned')) return;
-      enterBtn.dataset.wired = '';
-      enterBtn.addEventListener('click', function () {
-        showEmailGate();
-      }, { once: true });
+      wireEnterButton();
+    }
+
+    function wireEnterButton() {
+      if (!enterBtn || preDone || enterBtn.dataset.wired === '1') return;
       enterBtn.dataset.wired = '1';
+      enterBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        enterSite();
+      });
     }
 
     function showEmailGate() {
@@ -2647,14 +3092,43 @@
       rearmEnterButton();
     });
 
-    function revealEnter() {
-      pre.classList.add('aligned');   // CSS fades Enter + tagline in, fades the progress bar out
-      if (enterBtn && !enterBtn.dataset.wired) {
-        enterBtn.dataset.wired = '1';
-        enterBtn.addEventListener('click', function () {
-          showEmailGate();
-        }, { once: true });
+    function skipIntroAnim() {
+      if (preDone) return;
+      if (window.Orrery3D && typeof Orrery3D.skipIntro === 'function') {
+        Orrery3D.skipIntro();
+      } else {
+        revealEnter(true);
       }
+    }
+
+    var skipIntroBtn = document.getElementById('preloader-skip-intro');
+    if (skipIntroBtn) {
+      skipIntroBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        skipIntroAnim();
+      });
+    }
+
+    function revealEnter(force) {
+      if (!force && window.Orrery3D) {
+        if (typeof Orrery3D.isIntroPending === 'function' && Orrery3D.isIntroPending()) {
+          if (++revealRetries < 120) { requestAnimationFrame(function () { revealEnter(false); }); return; }
+        }
+        if (typeof Orrery3D.isIntroActive === 'function' && Orrery3D.isIntroActive()) {
+          if (++revealRetries < 120) { requestAnimationFrame(function () { revealEnter(false); }); return; }
+        }
+      }
+      revealRetries = 0;
+      pre.classList.add('aligned', 'preloader--enter-ready');
+      if (enterBtn) {
+        enterBtn.classList.remove('preloader-enter-btn--arrive', 'preloader-enter-btn--launch');
+        enterBtn.style.pointerEvents = 'auto';
+        void enterBtn.offsetWidth;
+        enterBtn.classList.add('preloader-enter-btn--arrive');
+      }
+      wireEnterButton();
+      try { enterBtn && enterBtn.focus({ preventScroll: true }); } catch (_) {}
     }
     // Entry reveal is driven by the orrery's onIntroDone (the sky settling) — see above.
     // The timers below are only safety nets so the button can never be unreachable.
@@ -2662,19 +3136,37 @@
     // No auto-dismiss: the visitor lingers on the live orrery and enters when ready.
     // Re-assert the reveal at 5s (in case 2.6s fired before the button existed), and
     // keep only a long last-resort safety net so no one is ever truly trapped.
-    setTimeout(revealEnter, 8000);
-    setTimeout(hidePre, 90000);   // 90s safety only — never rushes, never traps
+    document.addEventListener('ap-preloader-ready', function () { revealEnter(true); });
+    setTimeout(function () { revealEnter(true); }, 6000);
+    setTimeout(hidePre, 90000);
+
+    document.addEventListener('keydown', function (ev) {
+      if (preDone || gateOpen) return;
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      var tag = ev.target && ev.target.tagName ? ev.target.tagName : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (!pre.classList.contains('aligned') && ev.target !== enterBtn) return;
+      ev.preventDefault();
+      enterSite();
+    });
+
+    var joinOpt = document.getElementById('preloader-join-optional');
+    if (joinOpt) {
+      joinOpt.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        showEmailGate();
+      });
+    }
     // (tap-anywhere-to-enter removed: the orrery is now draggable, so a drag must
     //  not dismiss; entry is the explicit button.)
 
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setTimeout(revealEnter, 600);
-    }
+    // Reduced motion: orrery skipIntro / onIntroDone drives Enter — no early timer race.
   })();
   </script>
 
-  <!-- Cosmic starfield canvas -->
+  <!-- Cosmic starfield canvas — boot early so the preloader sees stars, not a flat void -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <script src="js/cosmos.js"></script>
 
   <!-- Aurora orbs (subtle background, behind content) -->
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
@@ -2700,7 +3192,7 @@
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -2750,13 +3242,19 @@
                 <span class="hero__chronicle-offset" id="hero-chronicle-offset">Now</span>
               </div>
               <div class="orrery-canvas-placeholder" aria-hidden="true"></div>
-              <canvas
-                id="orrery-canvas"
-                width="640"
-                height="640"
-                role="img"
-                aria-label="The Living Orrery — drag to scrub time, scroll the page to advance the sky"
-              ></canvas>
+              <div class="orrery-viewport" id="orrery-viewport">
+                <canvas
+                  id="orrery-canvas"
+                  width="640"
+                  height="640"
+                  role="img"
+                  tabindex="0"
+                  aria-label="The Living Orrery — drag to scrub time, arrow keys step days, 0–6 zoom scale, Space pause"
+                ></canvas>
+                <div class="orrery-cine-vignette" aria-hidden="true"></div>
+                <div class="orrery-cine-grain" aria-hidden="true"></div>
+                <div class="orrery-dom-labels" id="orrery-dom-labels" aria-hidden="true"></div>
+              </div>
               <div class="orrery-hint" aria-hidden="true">drag through time &middot; scroll page to advance &middot; zoom dial for space</div>
             </div>
 
@@ -2778,7 +3276,7 @@
                 <button type="button" class="orrery-btn" id="orrery-replay-intro" aria-label="Replay the Earth to solar system intro">Replay intro</button>
                 <div class="orrery-layer-toggles" role="group" aria-label="Orrery layer toggles">
                   <button type="button" class="orrery-toggle" data-layer="orbits" aria-pressed="false">Orbits</button>
-                  <button type="button" class="orrery-toggle active" data-layer="labels" aria-pressed="true">Labels</button>
+                  <button type="button" class="orrery-toggle" data-layer="labels" aria-pressed="false">Labels</button>
                   <button type="button" class="orrery-toggle" data-layer="asteroids" aria-pressed="false">Asteroids</button>
                 </div>
               </div>
@@ -2809,6 +3307,7 @@
             <p class="planet-info-panel__sign" id="pip-sign">in Gemini</p>
             <p class="planet-info-panel__degree" id="pip-degree">21°34′</p>
             <p class="planet-info-panel__meaning" id="pip-meaning"></p>
+            <div class="planet-info-panel__actions" id="pip-actions"></div>
           </div>
         </div>
         </div>
@@ -2820,7 +3319,7 @@
           </p>
 
           <h1 class="hero__h1 hero__entrance hero__entrance--2">
-            Your personal universe, <em>beautifully revealed.</em>
+            Your personal universe, <em class="hero-gold-shimmer">beautifully revealed.</em>
           </h1>
 
           <p class="hero__subtitle hero__entrance hero__entrance--3">
@@ -2879,17 +3378,26 @@
 
       <!-- Live sky dock — tied to the instrument, not a separate band -->
       <div class="hero__sky-dock">
-        <div class="live-sky-section-inner" aria-labelledby="live-sky-heading">
-          <p class="live-sky-label" id="live-sky-heading" aria-label="Current Planetary Positions">
-            Now in the sky
-          </p>
-          <div id="live-sky-strip" role="list" aria-label="Live planetary positions" aria-live="polite">
+        <div class="live-sky-section-inner live-sky-dock-panel" aria-labelledby="live-sky-heading">
+          <div class="live-sky-dock__head">
+            <p class="live-sky-label" id="live-sky-heading" aria-label="Current Planetary Positions">
+              Now in the sky
+            </p>
+            <span class="live-sky-stamp" id="live-sky-stamp" aria-live="polite">Computing&hellip;</span>
+          </div>
+          <div id="live-sky-strip" role="group" aria-label="Live planetary positions" aria-live="polite">
             <div class="sky-loading-pill" role="status">
               <span class="loading-spinner" aria-hidden="true"></span>
               <span>Calculating positions&hellip;</span>
             </div>
           </div>
-          <p class="live-sky-note" style="text-align:center;font-size:0.6rem;letter-spacing:0.08em;color:rgba(168,158,136,0.75);margin-top:0.6rem;">Tap a planet · same VSOP87 math as the orrery · recomputed live</p>
+          <nav class="live-sky-actions" aria-label="Explore the live sky">
+            <a href="tonight.html" class="live-sky-action">Visible tonight</a>
+            <a href="transits.html" class="live-sky-action">Live transits</a>
+            <a href="retrograde.html" class="live-sky-action">Retrogrades</a>
+            <a href="ephemeris.html" class="live-sky-action">The Instrument</a>
+          </nav>
+          <p class="live-sky-note" style="text-align:center;font-size:0.6rem;letter-spacing:0.08em;color:rgba(168,158,136,0.75);margin-top:0.6rem;">Tap a planet for detail and where to read more &middot; VSOP87 positions, recomputed live</p>
         </div>
       </div>
     </section>
@@ -2902,25 +3410,40 @@
           <p class="home-sign-picker__sub">Premium 3D cards &middot; tap once for today&rsquo;s preview, tap again for the full reading on the horoscope page.</p>
         </header>
         <div class="home-sign-filters" role="group" aria-label="Filter by element">
-          <button type="button" class="home-sign-filter is-active" data-filter="all" aria-pressed="true">All</button>
-          <button type="button" class="home-sign-filter" data-filter="fire" aria-pressed="false">Fire</button>
-          <button type="button" class="home-sign-filter" data-filter="earth" aria-pressed="false">Earth</button>
-          <button type="button" class="home-sign-filter" data-filter="air" aria-pressed="false">Air</button>
-          <button type="button" class="home-sign-filter" data-filter="water" aria-pressed="false">Water</button>
+          <button type="button" class="home-sign-filter is-active" data-filter="all" aria-pressed="true">
+            <span class="home-sign-filter__orb" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">All</span><span class="home-sign-filter__count">12 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="fire" aria-pressed="false">
+            <span class="home-sign-filter__orb" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Fire</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="earth" aria-pressed="false">
+            <span class="home-sign-filter__orb" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Earth</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="air" aria-pressed="false">
+            <span class="home-sign-filter__orb" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Air</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="water" aria-pressed="false">
+            <span class="home-sign-filter__orb" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Water</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
         </div>
-        <div class="home-sign-scroll" id="home-sign-grid" role="list" aria-label="Zodiac sign cards">
-          <button type="button" class="home-sign-card" role="listitem" data-sign="aries" data-element="fire" aria-label="Aries daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Aries</span><span class="home-sign-card__dates">Mar 21 – Apr 19</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="taurus" data-element="earth" aria-label="Taurus daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Taurus</span><span class="home-sign-card__dates">Apr 20 – May 20</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="gemini" data-element="air" aria-label="Gemini daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Gemini</span><span class="home-sign-card__dates">May 21 – Jun 20</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="cancer" data-element="water" aria-label="Cancer daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Cancer</span><span class="home-sign-card__dates">Jun 21 – Jul 22</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="leo" data-element="fire" aria-label="Leo daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Leo</span><span class="home-sign-card__dates">Jul 23 – Aug 22</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="virgo" data-element="earth" aria-label="Virgo daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Virgo</span><span class="home-sign-card__dates">Aug 23 – Sep 22</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="libra" data-element="air" aria-label="Libra daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Libra</span><span class="home-sign-card__dates">Sep 23 – Oct 22</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="scorpio" data-element="water" aria-label="Scorpio daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Scorpio</span><span class="home-sign-card__dates">Oct 23 – Nov 21</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Sagittarius</span><span class="home-sign-card__dates">Nov 22 – Dec 21</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="capricorn" data-element="earth" aria-label="Capricorn daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Capricorn</span><span class="home-sign-card__dates">Dec 22 – Jan 19</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="aquarius" data-element="air" aria-label="Aquarius daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Aquarius</span><span class="home-sign-card__dates">Jan 20 – Feb 18</span></button>
-          <button type="button" class="home-sign-card" role="listitem" data-sign="pisces" data-element="water" aria-label="Pisces daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Pisces</span><span class="home-sign-card__dates">Feb 19 – Mar 20</span></button>
+        <div class="home-sign-scroll" id="home-sign-grid" role="group" aria-label="Zodiac sign cards">
+          <button type="button" class="home-sign-card" data-sign="aries" data-element="fire" aria-label="Aries daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Aries</span><span class="home-sign-card__dates">Mar 21 – Apr 19</span></button>
+          <button type="button" class="home-sign-card" data-sign="taurus" data-element="earth" aria-label="Taurus daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Taurus</span><span class="home-sign-card__dates">Apr 20 – May 20</span></button>
+          <button type="button" class="home-sign-card" data-sign="gemini" data-element="air" aria-label="Gemini daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Gemini</span><span class="home-sign-card__dates">May 21 – Jun 20</span></button>
+          <button type="button" class="home-sign-card" data-sign="cancer" data-element="water" aria-label="Cancer daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Cancer</span><span class="home-sign-card__dates">Jun 21 – Jul 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="leo" data-element="fire" aria-label="Leo daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Leo</span><span class="home-sign-card__dates">Jul 23 – Aug 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="virgo" data-element="earth" aria-label="Virgo daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Virgo</span><span class="home-sign-card__dates">Aug 23 – Sep 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="libra" data-element="air" aria-label="Libra daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Libra</span><span class="home-sign-card__dates">Sep 23 – Oct 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="scorpio" data-element="water" aria-label="Scorpio daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Scorpio</span><span class="home-sign-card__dates">Oct 23 – Nov 21</span></button>
+          <button type="button" class="home-sign-card" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Sagittarius</span><span class="home-sign-card__dates">Nov 22 – Dec 21</span></button>
+          <button type="button" class="home-sign-card" data-sign="capricorn" data-element="earth" aria-label="Capricorn daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Capricorn</span><span class="home-sign-card__dates">Dec 22 – Jan 19</span></button>
+          <button type="button" class="home-sign-card" data-sign="aquarius" data-element="air" aria-label="Aquarius daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Aquarius</span><span class="home-sign-card__dates">Jan 20 – Feb 18</span></button>
+          <button type="button" class="home-sign-card" data-sign="pisces" data-element="water" aria-label="Pisces daily horoscope" aria-pressed="false"><span class="home-sign-card__name">Pisces</span><span class="home-sign-card__dates">Feb 19 – Mar 20</span></button>
         </div>
         <div class="home-sign-preview" id="home-sign-preview" hidden aria-live="polite">
           <div class="home-sign-preview__inner">
@@ -2954,9 +3477,9 @@
           </p>
         </header>
 
-        <div class="bento-grid sacred-geo" role="list">
+        <div class="bento-grid sacred-geo" role="group" aria-label="Featured tools">
           <!-- Birth Chart — featured, spans 2 cols -->
-          <a href="chart.html" class="bento-card bento-card--featured reveal" role="listitem" aria-label="Birth Chart calculator">
+          <a href="chart.html" class="bento-card bento-card--featured reveal" aria-label="Birth Chart calculator">
             <span class="bento-card__symbol" aria-hidden="true">⊙</span>
             <p class="bento-card__tag">Free · Signature tool</p>
             <h3 class="bento-card__title">Birth Chart</h3>
@@ -2969,7 +3492,7 @@
           </a>
 
           <!-- Daily Horoscope -->
-          <a href="horoscope.html" class="bento-card reveal reveal-delay-1" role="listitem" aria-label="Daily Horoscope">
+          <a href="horoscope.html" class="bento-card reveal reveal-delay-1" aria-label="Daily Horoscope">
             <span class="bento-card__symbol" aria-hidden="true">☽</span>
             <p class="bento-card__tag">Free · Daily</p>
             <h3 class="bento-card__title">Daily Horoscope</h3>
@@ -3027,28 +3550,28 @@
               and the rhythm of your personal years.
             </p>
 
-            <div class="cosmic-story__concepts" role="list">
-              <div class="concept-pill" role="listitem">
+            <div class="cosmic-story__concepts" role="group" aria-label="Core concepts">
+              <a href="chart.html" class="concept-pill" aria-label="Calculate your natal chart">
                 <span class="concept-pill__icon" aria-hidden="true">⊙</span>
                 <div class="concept-pill__text">
-                  <h4>Natal Chart</h4>
+                  <h3 class="concept-pill__title">Natal Chart</h3>
                   <p>A character map — the symbolic architecture of your psyche, frozen at birth.</p>
                 </div>
-              </div>
-              <div class="concept-pill" role="listitem">
+              </a>
+              <a href="transits.html" class="concept-pill" aria-label="Explore current transits">
                 <span class="concept-pill__icon" aria-hidden="true">☿</span>
                 <div class="concept-pill__text">
-                  <h4>Transits</h4>
+                  <h3 class="concept-pill__title">Transits</h3>
                   <p>The timing layer — how the moving sky activates dormant themes in your chart.</p>
                 </div>
-              </div>
-              <div class="concept-pill" role="listitem">
+              </a>
+              <a href="lifepath.html" class="concept-pill" aria-label="Calculate your life path number">
                 <span class="concept-pill__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
                 <div class="concept-pill__text">
-                  <h4>Numerology</h4>
+                  <h3 class="concept-pill__title">Numerology</h3>
                   <p>Your soul's path number — the mathematical resonance of the date you chose to arrive.</p>
                 </div>
-              </div>
+              </a>
             </div>
           </div>
 
@@ -3169,9 +3692,9 @@
           <p style="margin-top:0.9rem;"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Every figure is real — labelled measured or computed, never faked</span></a></p>
         </header>
 
-        <div class="tools-bento sacred-geo" role="list">
+        <div class="tools-bento sacred-geo" role="group" aria-label="All tools">
           <!-- Birth Chart — wide -->
-          <a href="chart.html" class="tool-card tool-card--wide reveal" role="listitem" aria-label="Birth Chart — full natal chart">
+          <a href="chart.html" class="tool-card tool-card--wide reveal" aria-label="Birth Chart — full natal chart">
             <span class="tool-card__icon" aria-hidden="true">⊙</span>
             <p class="tool-card__label">Core Tool</p>
             <h3 class="tool-card__title">Birth Chart</h3>
@@ -3180,7 +3703,7 @@
           </a>
 
           <!-- Horoscope -->
-          <a href="horoscope.html" class="tool-card reveal reveal-delay-1" role="listitem" aria-label="Daily Horoscope">
+          <a href="horoscope.html" class="tool-card reveal reveal-delay-1" aria-label="Daily Horoscope">
             <span class="tool-card__icon" aria-hidden="true">☽</span>
             <p class="tool-card__label">Daily</p>
             <h3 class="tool-card__title">Daily Horoscope</h3>
@@ -3189,7 +3712,7 @@
           </a>
 
           <!-- Life Path -->
-          <a href="lifepath.html" class="tool-card reveal reveal-delay-1" role="listitem" aria-label="Life Path numerology">
+          <a href="lifepath.html" class="tool-card reveal reveal-delay-1" aria-label="Life Path numerology">
             <span class="tool-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
             <p class="tool-card__label">Numerology</p>
             <h3 class="tool-card__title">Life Path</h3>
@@ -3198,7 +3721,7 @@
           </a>
 
           <!-- Compatibility -->
-          <a href="compatibility.html" class="tool-card reveal reveal-delay-2" role="listitem" aria-label="Compatibility synastry">
+          <a href="compatibility.html" class="tool-card reveal reveal-delay-2" aria-label="Compatibility synastry">
             <span class="tool-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
             <p class="tool-card__label">Synastry</p>
             <h3 class="tool-card__title">Compatibility</h3>
@@ -3207,7 +3730,7 @@
           </a>
 
           <!-- Transits -->
-          <a href="transits.html" class="tool-card reveal reveal-delay-2" role="listitem" aria-label="Current Transits">
+          <a href="transits.html" class="tool-card reveal reveal-delay-2" aria-label="Current Transits">
             <span class="tool-card__icon" aria-hidden="true">☿</span>
             <p class="tool-card__label">Live Sky</p>
             <h3 class="tool-card__title">Current Transits</h3>
@@ -3216,7 +3739,7 @@
           </a>
 
           <!-- The Instrument — wide -->
-          <a href="ephemeris.html" class="tool-card tool-card--wide reveal reveal-delay-3" role="listitem" aria-label="The Instrument — AstroPrecise's signature feature">
+          <a href="ephemeris.html" class="tool-card tool-card--wide reveal reveal-delay-3" aria-label="The Instrument — AstroPrecise's signature feature">
             <span class="tool-card__icon" aria-hidden="true">⬡</span>
             <p class="tool-card__label">Signature Feature</p>
             <h3 class="tool-card__title">The Instrument</h3>
@@ -3225,7 +3748,7 @@
           </a>
 
           <!-- Shop -->
-          <a href="shop.html" class="tool-card reveal reveal-delay-3" role="listitem" aria-label="Cosmic Shop">
+          <a href="shop.html" class="tool-card reveal reveal-delay-3" aria-label="Cosmic Shop">
             <span class="tool-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
             <p class="tool-card__label">Curated</p>
             <h3 class="tool-card__title">Shop</h3>
@@ -3234,7 +3757,7 @@
           </a>
 
           <!-- Divination Oracle -->
-          <a href="ephemeris.html#oracle" class="tool-card reveal reveal-delay-3" role="listitem" aria-label="Divination Oracle">
+          <a href="ephemeris.html#oracle" class="tool-card reveal reveal-delay-3" aria-label="Divination Oracle">
             <span class="tool-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg></span>
             <p class="tool-card__label">Oracle</p>
             <h3 class="tool-card__title">Divination Oracle</h3>
@@ -3320,10 +3843,10 @@
             no shuffled cards, no probabilistic fudging. And everything happens here, in your hands:
             nothing sent anywhere, no account, no tracking, no subscription.
           </p>
-          <div class="manifesto-beats" role="list" aria-label="Core principles">
-            <span class="manifesto-beat" role="listitem">Precision</span>
-            <span class="manifesto-beat" role="listitem">Honesty</span>
-            <span class="manifesto-beat" role="listitem">Privacy</span>
+          <div class="manifesto-beats" role="group" aria-label="Core principles">
+            <span class="manifesto-beat">Precision</span>
+            <span class="manifesto-beat">Honesty</span>
+            <span class="manifesto-beat">Privacy</span>
           </div>
         </div>
       </div>
@@ -3352,7 +3875,7 @@
             <p>Your birth chart, daily horoscope, compatibility, transits and the Instrument are all free to use — no account, no sign-up. The one thing you can pay for is the full personalised <strong>Deep Reading</strong>: a one-time PDF export drawn from your exact chart. It's never a subscription.</p>
           </details>
           <details class="ap-faq__item"><summary>What's in the paid Deep Reading?</summary>
-            <p>A long-form written interpretation of your whole chart — every placement, your tightest aspects, your dominant element and the houses they fall in — drawn line by line from the chart you just cast, and set as a PDF that's yours to keep.</p>
+            <p>A 13-page written interpretation — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, and your ten tightest aspects — drawn from the same engine as the free chart tools, and set as a PDF that's yours to keep. <a href="sample-reading.html">See a sample →</a></p>
           </details>
           <details class="ap-faq__item"><summary>Is my birth data private?</summary>
             <p>Yes. Your chart is computed entirely in your browser — your birth moment is never sent to any server, and there's no account or tracking. The only outbound calls are public sky-data feeds and a place-name lookup (the typed place only, never your birth time).</p>
@@ -3385,17 +3908,17 @@
         <div style="border:1px solid rgba(201,162,39,.4);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(201,162,39,.08),rgba(10,8,6,.78));box-shadow:0 0 40px rgba(201,162,39,.08);">
           <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">The Deep Reading</h3>
-          <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">A long, hand-crafted interpretation of your whole chart &mdash; delivered as a beautiful PDF.</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Thirteen pages &mdash; every planet, all houses, life areas &amp; patterns &mdash; from the same engine as your free chart. <a href="sample-reading.html" style="color:var(--gold,#C9A227);">Sample →</a></p>
           <a data-mon="deepReading" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#0a0805;background:linear-gradient(160deg,#D9B544,#A8841E);border:none;border-radius:30px;padding:12px 28px;text-decoration:none;font-weight:700;">Get the PDF</a>
         </div>
         <div style="border:1px solid rgba(201,162,39,.18);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(20,16,10,.55),rgba(10,8,6,.72));">
           <div style="font-size:1.8rem;color:var(--gold,#C9A227);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-chat"/></svg></div>
           <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">Gift a Reading</h3>
           <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Give someone their sky &mdash; a personalised chart reading, delivered for them.</p>
-          <a data-mon="gift" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C9A227);border:1px solid rgba(201,162,39,.4);border-radius:30px;padding:11px 26px;text-decoration:none;">Gift it</a>
+          <a href="shop.html" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C9A227);border:1px solid rgba(201,162,39,.4);border-radius:30px;padding:11px 26px;text-decoration:none;">Browse gifts</a>
         </div>
       </div>
-      <p style="text-align:center;font-family:'Inter',system-ui,sans-serif;font-size:.62rem;letter-spacing:.1em;color:var(--silver-dark,#5E5748);margin-top:26px;">Digital goods &middot; prices shown at checkout &middot; processed securely off-site</p>
+      <p class="offerings-footnote" style="text-align:center;font-family:'Inter',system-ui,sans-serif;font-size:.62rem;letter-spacing:.1em;margin-top:26px;">Digital goods &middot; prices shown at checkout &middot; processed securely off-site</p>
     </section>
 
   </main>
@@ -3427,8 +3950,8 @@
         </div>
 
         <!-- Tools nav -->
-        <nav class="footer-nav-col" aria-label="Tools navigation">
-          <h4>Tools</h4>
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Horoscope</a></li>
@@ -3437,11 +3960,11 @@
             <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
             <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> The Instrument</a></li>
           </ul>
-        </nav>
+        </div>
 
         <!-- Explore nav -->
-        <nav class="footer-nav-col" aria-label="Explore navigation">
-          <h4>Explore</h4>
+        <div class="footer-nav-col" role="group" aria-label="Explore">
+          <h2 class="footer-nav-col__title">Explore</h2>
           <ul>
             <li><a href="horoscope.html?sign=aries">Aries Horoscope</a></li>
             <li><a href="horoscope.html?sign=taurus">Taurus Horoscope</a></li>
@@ -3450,11 +3973,11 @@
             <li><a href="horoscope.html?sign=leo">Leo Horoscope</a></li>
             <li><a href="horoscope.html?sign=virgo">Virgo Horoscope</a></li>
           </ul>
-        </nav>
+        </div>
 
         <!-- Learn nav -->
-        <nav class="footer-nav-col" aria-label="Learn navigation">
-          <h4>Learn</h4>
+        <div class="footer-nav-col" role="group" aria-label="Learn">
+          <h2 class="footer-nav-col__title">Learn</h2>
           <ul>
             <li><a href="shop.html">Cosmic Shop</a></li>
             <li><a href="profile.html">My Profile</a></li>
@@ -3463,7 +3986,7 @@
             <li><a href="chart.html">Moon Sign</a></li>
             <li><a href="chart.html">Rising Sign</a></li>
           </ul>
-        </nav>
+        </div>
       </div>
 
       <div class="footer-legal">
@@ -3477,14 +4000,13 @@
        SCRIPTS — load order matters
        ══════════════════════════════════════════════════════════════════════ -->
   <!-- raf-core + ephemeris load at top of <body>; orrery-webgl module loads from <head> -->
-  <script src="js/stellar.js"></script>
-  <script src="js/cosmos.js"></script>
   <script src="js/oracle.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/journey.js"></script>
   <script src="js/sign-daily.js"></script>
-  <script src="js/home-sign-picker.js"></script>
+  <script src="js/element-orbs.js"></script>
   <script src="js/icons.js"></script>
+  <script src="js/home-sign-picker.js"></script>
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
   <script src="js/hero-instrument.js"></script>
@@ -3555,6 +4077,106 @@
       return { signIdx: signIdx, degStr: degStr };
     }
 
+    function planetExploreLink(planetId, signName, retro) {
+      var slug = signName ? signName.toLowerCase() : '';
+      var map = {
+        sun:     { href: slug ? ('horoscope.html?sign=' + slug) : 'horoscope.html', label: slug ? (signName + ' horoscope today') : 'Daily horoscopes' },
+        moon:    { href: 'moonphase.html', label: 'Moon phase tonight' },
+        mercury: { href: retro ? 'retrograde.html' : 'transits.html', label: retro ? 'Mercury retrograde' : 'Current transits' },
+        venus:   { href: retro ? 'retrograde.html' : 'transits.html', label: retro ? 'Venus retrograde' : 'Current transits' },
+        mars:    { href: retro ? 'retrograde.html' : 'tonight.html', label: retro ? 'Mars retrograde' : 'Visible tonight' },
+        jupiter: { href: 'tonight.html', label: 'Jupiter in the sky' },
+        saturn:  { href: retro ? 'saturn-return.html' : 'tonight.html', label: retro ? 'Saturn cycles' : 'Saturn tonight' },
+        uranus:  { href: 'ephemeris.html', label: 'The Instrument' },
+        neptune: { href: 'ephemeris.html', label: 'The Instrument' },
+        pluto:   { href: 'transits.html', label: 'Current transits' },
+        earth:   { href: 'chart.html', label: 'Cast your chart' },
+      };
+      return map[planetId] || { href: 'transits.html', label: 'Live transits' };
+    }
+
+    function focusSkyPill(planetId) {
+      var strip = document.getElementById('live-sky-strip');
+      if (!strip) return;
+      strip.querySelectorAll('.sky-pill[data-planet]').forEach(function (pill) {
+        var on = !!planetId && pill.dataset.planet === planetId;
+        pill.classList.toggle('sky-pill--focus', on);
+        pill.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
+
+    function liveSkyLonRetro(planetId, jd, E) {
+      var lon = 0;
+      var retro = false;
+      try {
+        switch (planetId) {
+          case 'sun':     lon = E.sunPosition(jd).lon; break;
+          case 'moon':    lon = E.moonPosition(jd).lon; break;
+          case 'mercury': lon = E.mercuryPosition(jd).lon; retro = E.isRetrograde('mercury', jd); break;
+          case 'venus':   lon = E.venusPosition(jd).lon;   retro = E.isRetrograde('venus', jd); break;
+          case 'mars':    lon = E.marsPosition(jd).lon;    retro = E.isRetrograde('mars', jd); break;
+          case 'jupiter': lon = E.jupiterPosition(jd).lon; retro = E.isRetrograde('jupiter', jd); break;
+          case 'saturn':  lon = E.saturnPosition(jd).lon;  retro = E.isRetrograde('saturn', jd); break;
+          case 'uranus':  lon = E.uranusPosition(jd).lon;  retro = E.isRetrograde('uranus', jd); break;
+          case 'neptune': lon = E.neptunePosition(jd).lon; retro = E.isRetrograde('neptune', jd); break;
+        }
+      } catch (err) {}
+      return { lon: lon, retro: retro };
+    }
+
+    function refreshLiveSkyStrip(jd) {
+      var strip = document.getElementById('live-sky-strip');
+      var E = window.AstroEphemeris;
+      if (!strip || !E || !strip.querySelector('.sky-pill[data-planet]')) return;
+      strip.querySelectorAll('.sky-pill[data-planet]').forEach(function (btn) {
+        var id = btn.dataset.planet;
+        var lr = liveSkyLonRetro(id, jd, E);
+        var disp = lonToDisplay(lr.lon);
+        btn.dataset.lon = String(lr.lon);
+        btn.dataset.retro = lr.retro ? '1' : '0';
+        btn.classList.toggle('sky-pill--retro', lr.retro);
+        var def = PLANET_DEF.find(function (p) { return p.id === id; }) || { label: id };
+        var retroSpan = btn.querySelector('.sky-pill__retro');
+        if (lr.retro && !retroSpan) {
+          var nameEl = btn.querySelector('.sky-pill__name');
+          if (nameEl) nameEl.insertAdjacentHTML('beforeend', '<span class="sky-pill__retro" aria-label="retrograde"> ℞</span>');
+        } else if (!lr.retro && retroSpan) {
+          retroSpan.remove();
+        }
+        var placeEl = btn.querySelector('.sky-pill__placement');
+        if (placeEl) {
+          placeEl.innerHTML = (window.AstroIcons
+            ? window.AstroIcons.orb(SIGN_GLYPHS[disp.signIdx], window.AstroIcons.elementOf(SIGN_NAMES[disp.signIdx]), { sm: true }) + ' '
+            : SIGN_GLYPHS[disp.signIdx] + ' ')
+            + SIGN_NAMES[disp.signIdx];
+        }
+        var degEl = btn.querySelector('.sky-pill__degree');
+        if (degEl) degEl.textContent = disp.degStr;
+        btn.setAttribute('aria-label', def.label + ' in ' + SIGN_NAMES[disp.signIdx] + ' at ' + disp.degStr + (lr.retro ? ' retrograde' : '') + ' — tap for detail');
+      });
+    }
+
+    document.addEventListener('ap-sky-tick', function (e) {
+      if (!e || !e.detail || e.detail.jd == null) return;
+      refreshLiveSkyStrip(e.detail.jd);
+    });
+
+    document.addEventListener('orrery-planet-focus', function (e) {
+      if (e && e.detail && e.detail.id) focusSkyPill(e.detail.id);
+    });
+
+    /* Refresh live sky strip every 60s when orrery is pinned near "now" */
+    setInterval(function () {
+      if (document.visibilityState !== 'visible') return;
+      if (!window.Orrery3D || typeof Orrery3D.getDayOffset !== 'function') return;
+      if (Math.abs(Orrery3D.getDayOffset()) > 0.5) return;
+      var E = window.AstroEphemeris;
+      if (!E) return;
+      var now = new Date();
+      var jd = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
+      refreshLiveSkyStrip(jd);
+    }, 60000);
+
     /* ── 1. Navbar scroll glass effect (SW registered in app.js) ─────── */
     (function () {
       var header = document.querySelector('.site-header');
@@ -3594,80 +4216,59 @@
           btn.classList.add('active');
         });
       });
-      // Sync live sky time to other instruments (orrery-webgl.js owns the date HUD)
+      // Sync live sky time to other instruments (throttled — orrery-webgl.js owns the date HUD)
       (function () {
+        var lastIso = '';
         function syncSkyTime() {
-          if (window.Orrery3D && typeof Orrery3D.getDate === 'function') {
-            try { localStorage.setItem('astro_current_demo_time', Orrery3D.getDate().toISOString()); } catch (e) {}
-          }
-          requestAnimationFrame(syncSkyTime);
+          if (document.visibilityState !== 'visible') return;
+          if (!window.Orrery3D || typeof Orrery3D.getDate !== 'function') return;
+          try {
+            var iso = Orrery3D.getDate().toISOString();
+            if (iso !== lastIso) {
+              lastIso = iso;
+              localStorage.setItem('astro_current_demo_time', iso);
+            }
+          } catch (e) {}
         }
-        requestAnimationFrame(syncSkyTime);
+        setInterval(syncSkyTime, 2000);
+        document.addEventListener('visibilitychange', syncSkyTime);
       })();
 
-      // ── Scroll → shared sky clock (orrery time + cosmos parallax) ──
-      (function () {
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        var hero = document.querySelector('.hero');
-        if (!hero) return;
-        function update() {
-          var rect = hero.getBoundingClientRect();
-          var progress = Math.max(0, Math.min(1, -rect.top / (hero.offsetHeight || 1)));
-          if (window.Orrery3D && typeof Orrery3D.setScrollDrive === 'function') {
-            Orrery3D.setScrollDrive(progress);
-          }
-          if (window.CosmosEngine && typeof CosmosEngine.setScrollDrive === 'function') {
-            CosmosEngine.setScrollDrive(progress);
-          }
-        }
-        if (window.RafCore) { window.RafCore.onScroll(update); return; }
-        var ticking = false;
-        window.addEventListener('scroll', function () {
-          if (!ticking) { requestAnimationFrame(function () { update(); ticking = false; }); ticking = true; }
-        }, { passive: true });
-      })();
+      document.addEventListener('orrery-speed-change', function (e) {
+        var sp = e && e.detail ? e.detail.speed : null;
+        if (sp == null) return;
+        document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
+          var on = parseFloat(btn.dataset.speed) === sp;
+          btn.classList.toggle('active', on);
+        });
+      });
 
-      // Time scrubber — direct control of the 3D solar system rotation / offset
+      // Time scrubber — absolute day offset (VSOP87 positions)
       (function () {
         var scrub = document.getElementById('orrery-scrub');
         var reset = document.getElementById('orrery-reset');
         if (!scrub) return;
 
-        var lastVal = 0;
         scrub.addEventListener('input', function () {
           var val = parseInt(scrub.value, 10) || 0;
-          if (window.Orrery3D && typeof Orrery3D.jumpTo === 'function') {
-            // jumpTo expects JD offset; we approximate days since we use dayOffset internally
-            // Use a small nudge via setDate or by calculating rough JD delta
-            var current = (window.Orrery3D.getDate && window.Orrery3D.getDate()) || new Date();
-            current = new Date(current.getTime() + (val - lastVal) * 86400000);
-            if (typeof Orrery3D.setDate === 'function') Orrery3D.setDate(current);
-            else if (typeof Orrery3D.jumpTo === 'function') {
-              // fallback approximate
-              var E = window.AstroEphemeris;
-              if (E && E.julianDay) {
-                var jd = E.julianDay(current.getFullYear(), current.getMonth()+1, current.getDate(), current.getHours(), current.getMinutes(), 0);
-                Orrery3D.jumpTo(jd);
-              }
-            }
+          if (window.Orrery3D && typeof Orrery3D.setTimelineDays === 'function') {
+            Orrery3D.setTimelineDays(val);
           }
-          lastVal = val;
         });
 
         if (reset) reset.addEventListener('click', function () {
           scrub.value = 0;
-          lastVal = 0;
           if (window.Orrery3D) {
-            if (typeof Orrery3D.resetScrollDrive === 'function') Orrery3D.resetScrollDrive();
-            if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
-            if (typeof Orrery3D.setDate === 'function') Orrery3D.setDate(new Date());
-            else if (typeof Orrery3D.jumpTo === 'function' && window.AstroEphemeris) {
-              var now = new Date();
-              var E = window.AstroEphemeris;
-              var jd = E.julianDay(now.getFullYear(), now.getMonth()+1, now.getDate(), now.getHours(), now.getMinutes(), 0);
-              Orrery3D.jumpTo(jd);
+            if (typeof Orrery3D.snapToNow === 'function') Orrery3D.snapToNow();
+            else {
+              if (typeof Orrery3D.resetScrollDrive === 'function') Orrery3D.resetScrollDrive();
+              if (typeof Orrery3D.setTimelineDays === 'function') Orrery3D.setTimelineDays(0);
+              if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
             }
           }
+          document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
+            btn.classList.toggle('active', btn.dataset.speed === '0');
+          });
         });
       })();
 
@@ -3681,7 +4282,7 @@
           if (typeof Orrery3D.setShowParticles === 'function') Orrery3D.setShowParticles(false);
         }
 
-        var state = { orbits: false, labels: true, asteroids: false };
+        var state = { orbits: false, labels: false, asteroids: false };
 
         document.querySelectorAll('.orrery-toggle').forEach(function (btn) {
           var layer = btn.dataset.layer;
@@ -3725,6 +4326,16 @@
             });
           }
         }
+
+        document.addEventListener('orrery-scale-change', function (e) {
+          var lv = e && e.detail ? e.detail.level : null;
+          if (lv == null) return;
+          document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
+            var on = parseInt(btn.dataset.scale, 10) === lv;
+            btn.classList.toggle('active', on);
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+        });
 
         if (window.Orrery3D) boot();
         else {
@@ -3795,6 +4406,7 @@
       if (!panel) return;
 
       function showPanel(data) {
+        var planetId = (data.id || (data.name || '')).toLowerCase();
         var gEl = document.getElementById('pip-glyph');
         if (gEl) {
           if (window.AstroIcons && data.name && window.AstroIcons.PLANET_GLYPH[data.name]) {
@@ -3817,10 +4429,29 @@
         }
         var dEl = document.getElementById('pip-degree'); if (dEl) dEl.textContent = data.degree || '';
         var mEl = document.getElementById('pip-meaning'); if (mEl) mEl.textContent = data.meaning || '';
+        var aEl = document.getElementById('pip-actions');
+        if (aEl) {
+          var primary = planetExploreLink(planetId, data.signName, data.retro);
+          var links = '<a class="pip-action pip-action--primary" href="' + primary.href + '">' + primary.label + ' &rarr;</a>';
+          if (data.retro && primary.href !== 'retrograde.html') {
+            links += '<a class="pip-action" href="retrograde.html">Retrograde calendar &rarr;</a>';
+          }
+          if (planetId !== 'sun' && data.signName) {
+            links += '<a class="pip-action" href="' + data.signName.toLowerCase() + '.html">' + data.signName + ' sign guide &rarr;</a>';
+          }
+          aEl.innerHTML = links;
+        }
+        focusSkyPill(planetId);
+        if (window.Orrery3D && typeof Orrery3D.focusPlanet === 'function') {
+          Orrery3D.focusPlanet(planetId);
+        }
         panel.classList.remove('hidden');
       }
 
-      function hidePanel() { panel.classList.add('hidden'); }
+      function hidePanel() {
+        panel.classList.add('hidden');
+        focusSkyPill(null);
+      }
 
       if (closeBtn) closeBtn.addEventListener('click', hidePanel);
 
@@ -3833,6 +4464,7 @@
         var signInfo = hasLon ? lonToDisplay(detail.longitude) : null;
 
         showPanel({
+          id:       planetId,
           name:     detail.name || planetId,
           glyph:    planetId === 'earth' ? '⊕' : (def.glyph || '?'),
           signName: signInfo ? SIGN_NAMES[signInfo.signIdx] : '',
@@ -3889,27 +4521,19 @@
         var p     = PLANET_DEF[pi];
         var lon   = 0;
         var retro = false;
-        try {
-          switch (p.id) {
-            case 'sun':     lon = E.sunPosition(jd).lon;     break;
-            case 'moon':    lon = E.moonPosition(jd).lon;    break;
-            case 'mercury': lon = E.mercuryPosition(jd).lon; retro = E.isRetrograde('mercury',jd); break;
-            case 'venus':   lon = E.venusPosition(jd).lon;   retro = E.isRetrograde('venus',jd);   break;
-            case 'mars':    lon = E.marsPosition(jd).lon;    retro = E.isRetrograde('mars',jd);    break;
-            case 'jupiter': lon = E.jupiterPosition(jd).lon; retro = E.isRetrograde('jupiter',jd); break;
-            case 'saturn':  lon = E.saturnPosition(jd).lon;  retro = E.isRetrograde('saturn',jd);  break;
-            case 'uranus':  lon = E.uranusPosition(jd).lon;  retro = E.isRetrograde('uranus',jd);  break;
-            case 'neptune': lon = E.neptunePosition(jd).lon; retro = E.isRetrograde('neptune',jd); break;
-          }
-        } catch (err) {}
+        var lr = liveSkyLonRetro(p.id, jd, E);
+        lon = lr.lon;
+        retro = lr.retro;
 
         var disp     = lonToDisplay(lon);
         var retroHtml = retro
           ? '<span class="sky-pill__retro" aria-label="retrograde"> ℞</span>'
           : '';
 
-        html += '<div class="sky-pill' + (retro ? ' sky-pill--retro' : '') + '" role="listitem"'
-          + ' aria-label="' + p.label + ' in ' + SIGN_NAMES[disp.signIdx] + ' at ' + disp.degStr + (retro ? ' retrograde' : '') + '">'
+        html += '<button type="button" class="sky-pill' + (retro ? ' sky-pill--retro' : '') + '"'
+          + ' data-planet="' + p.id + '" data-lon="' + lon + '" data-retro="' + (retro ? '1' : '0') + '"'
+          + ' aria-pressed="false"'
+          + ' aria-label="' + p.label + ' in ' + SIGN_NAMES[disp.signIdx] + ' at ' + disp.degStr + (retro ? ' retrograde' : '') + ' — tap for detail">'
           + (window.AstroIcons
               ? window.AstroIcons.orb(p.glyph, p.id, { lg: true, class: 'sky-pill__orb' })
               : '<span class="sky-pill__glyph" style="color:' + p.color + '" aria-hidden="true">' + p.glyph + '</span>')
@@ -3922,12 +4546,48 @@
           +     SIGN_NAMES[disp.signIdx] + '</span>'
           +   '<span class="sky-pill__degree">' + disp.degStr + '</span>'
           + '</div>'
-          + '</div>';
+          + '</button>';
       }
       strip.innerHTML = html;
 
+      var stamp = document.getElementById('live-sky-stamp');
+      if (stamp) {
+        stamp.textContent = 'Updated ' + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+          + ' · ' + now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      }
+
+      strip.querySelectorAll('.sky-pill[data-planet]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var planetId = btn.dataset.planet;
+          var def = PLANET_DEF.find(function (p) { return p.id === planetId; }) || {};
+          var lonVal = parseFloat(btn.dataset.lon);
+          var retro = btn.dataset.retro === '1';
+          var orreryHost = document.querySelector('.hero__orrery-wrap') || document.getElementById('orrery-canvas');
+          if (orreryHost) orreryHost.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          document.dispatchEvent(new CustomEvent('orrery-planet-click', {
+            detail: {
+              id: planetId,
+              name: def.label || planetId,
+              longitude: isFinite(lonVal) ? lonVal : null,
+              retro: retro,
+            },
+          }));
+        });
+        btn.addEventListener('dblclick', function (e) {
+          e.preventDefault();
+          var planetId = btn.dataset.planet;
+          focusSkyPill(planetId);
+          if (window.Orrery3D && typeof Orrery3D.focusPlanet === 'function') {
+            Orrery3D.focusPlanet(planetId);
+          }
+        });
+      });
+
       /* ── Initialise 3D orrery ── */
       try {
+        if (typeof window.__loadOrreryEngine === 'function') {
+          try { await window.__loadOrreryEngine(); } catch (e) {}
+        }
         await waitFor(function () { return window.Orrery3D; }, 6000);
         // The preloader may already have mounted the SAME orrery (and will relocate it into
         // the hero on dismiss). Only init here if that didn't happen.
@@ -3937,6 +4597,7 @@
         }
         // Default paused
         if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
+        Orrery3D.onScrub = function (jd) { refreshLiveSkyStrip(jd); };
         // Activate pause button
         document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
           btn.classList.toggle('active', btn.dataset.speed === '0');

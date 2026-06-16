@@ -148,7 +148,7 @@
       faq: 'In numerology, 111 amplifies the meaning of 1: beginnings, initiative, and focused intention. Many people treat 111 as a reminder to be deliberate about their current train of thought. It is a reflective prompt, not a prediction.'
     },
     '222': {
-      title: 'Balance & Patience', root: 2, element: 'water', color: '#9aa6c8',
+      title: 'Balance & Patience', root: 2, element: 'water', color: '#6a8a82',
       keywords: ['Harmony', 'Trust', 'Partnership', 'Patience'],
       meaning: 'The number 2 carries cooperation, balance, and the space between things. 222 is commonly read as a cue to trust the slow work of alignment — to keep faith with what is still forming beneath the surface and to value partnership over force.',
       reflection: 'Where in your life would patience serve you better than pressure right now?',
@@ -204,7 +204,7 @@
       faq: 'In numerology, 999 emphasises 9: completion, release, and closure. Many read it as a sign a chapter is ending. It is a reflective symbol, not a prediction.'
     },
     '000': {
-      title: 'Stillness & Potential', root: 9, element: 'void', color: '#9aa6c8',
+      title: 'Stillness & Potential', root: 9, element: 'void', color: '#A89E88',
       keywords: ['Wholeness', 'Reset', 'Openness', 'Stillness'],
       meaning: 'Zero is the circle of wholeness and unformed potential — the pause before the next thing. 000 is often read as a mirror for the threshold moment: a clean slate, a breath, an open field. (000 reduces to 0; reflectively it is paired with the completing energy of 9.)',
       reflection: 'If this were a genuinely fresh start, what would you do first?',

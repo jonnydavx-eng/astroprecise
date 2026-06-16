@@ -1,6 +1,6 @@
 /**
  * Homepage — interactive zodiac sign card picker + daily reading preview.
- * Depends: sign-daily.js (Interpretations.getDailyHoroscope), profile.js (optional).
+ * Depends: sign-daily.js, element-orbs.js, icons.js (AstroElementOrbs / AstroIcons).
  */
 (function () {
   'use strict';
@@ -22,6 +22,16 @@
 
   var ELEMENT_LABELS = { fire: 'Fire', earth: 'Earth', air: 'Air', water: 'Water' };
 
+  function elementScene(el, opts) {
+    if (window.AstroElementOrbs && typeof AstroElementOrbs.scene === 'function') {
+      return AstroElementOrbs.scene(el, opts);
+    }
+    if (window.AstroIcons && typeof AstroIcons.element === 'function') {
+      return AstroIcons.element(el, opts);
+    }
+    return '';
+  }
+
   function getUserSign() {
     try {
       if (window.AstroProfile) {
@@ -41,7 +51,37 @@
     return Interpretations.getDailyHoroscope(info.name, new Date());
   }
 
+  function wireFilterOrbs(filters) {
+    filters.forEach(function (btn) {
+      var slot = btn.querySelector('.home-sign-filter__orb');
+      var key = btn.dataset.filter || 'all';
+      if (slot) slot.innerHTML = elementScene(key, { sm: true });
+    });
+  }
+
+  function wireCardElementOrbs(cards) {
+    cards.forEach(function (card) {
+      var el = card.dataset.element;
+      if (!el || card.querySelector('.home-sign-card__el-orb')) return;
+      var span = document.createElement('span');
+      span.className = 'home-sign-card__el-orb';
+      span.setAttribute('aria-hidden', 'true');
+      span.innerHTML = elementScene(el, { sm: true, static: true });
+      card.appendChild(span);
+    });
+  }
+
+  function setPickerAmbience(section, filterKey) {
+    if (!section) return;
+    if (!filterKey || filterKey === 'all') {
+      section.setAttribute('data-active-element', 'all');
+    } else {
+      section.setAttribute('data-active-element', filterKey);
+    }
+  }
+
   function init() {
+    var section = document.getElementById('home-sign-picker');
     var grid = document.getElementById('home-sign-grid');
     var preview = document.getElementById('home-sign-preview');
     if (!grid) return;
@@ -49,6 +89,10 @@
     var cards = grid.querySelectorAll('.home-sign-card');
     var filters = document.querySelectorAll('.home-sign-filter');
     var activeKey = null;
+
+    wireFilterOrbs(filters);
+    wireCardElementOrbs(cards);
+    setPickerAmbience(section, 'all');
 
     function setActive(signKey) {
       activeKey = signKey;
@@ -85,7 +129,10 @@
           day: 'numeric', month: 'long', year: 'numeric',
         });
       }
-      if (elEl) elEl.textContent = ELEMENT_LABELS[info.element] || '';
+      if (elEl) {
+        elEl.innerHTML = elementScene(info.element, { sm: true })
+          + '<span class="home-sign-preview__element-label">' + (ELEMENT_LABELS[info.element] || '') + '</span>';
+      }
       if (overview) overview.textContent = data.overview || 'Select a sign to read today\'s sky.';
       if (fullLink) fullLink.href = 'horoscope.html?sign=' + signKey;
       if (guideLink) guideLink.href = signKey + '.html';
@@ -95,15 +142,23 @@
     }
 
     function applyFilter(element) {
-      cards.forEach(function (card) {
-        var show = !element || element === 'all' || card.dataset.element === element;
+      var key = element || 'all';
+      cards.forEach(function (card, i) {
+        var show = key === 'all' || card.dataset.element === key;
         card.classList.toggle('is-filtered-out', !show);
         card.setAttribute('aria-hidden', show ? 'false' : 'true');
+        if (show) card.style.animationDelay = (i * 35) + 'ms';
       });
       filters.forEach(function (btn) {
-        btn.classList.toggle('is-active', btn.dataset.filter === (element || 'all'));
-        btn.setAttribute('aria-pressed', btn.dataset.filter === (element || 'all') ? 'true' : 'false');
+        var on = btn.dataset.filter === key;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
+      setPickerAmbience(section, key);
+      grid.classList.remove('is-filtering');
+      void grid.offsetWidth;
+      grid.classList.add('is-filtering');
+      window.setTimeout(function () { grid.classList.remove('is-filtering'); }, 480);
     }
 
     cards.forEach(function (card) {
