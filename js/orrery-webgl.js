@@ -107,12 +107,12 @@ const RadialBlurShader = {
   // Per-planet visual tuning (atmosphere rim + surface response)
   // Gas giants: tiny atmo shells + low atmoI — large additive shells read as ugly "rings".
   const PLANET_VIS = {
-    mercury: { roughness: 0.94, metalness: 0.06, atmo: null, atmoS: 1.0, atmoI: 0 },
-    venus:   { roughness: 0.84, metalness: 0.0,  atmo: 0xffc878, atmoS: 1.035, atmoI: 0.38 },
-    earth:   { roughness: 0.78, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.018, atmoI: 1.0 },
-    mars:    { roughness: 0.90, metalness: 0.0,  atmo: 0xff5533, atmoS: 1.028, atmoI: 0.30 },
-    jupiter: { roughness: 0.62, metalness: 0.0,  atmo: 0xe0a858, atmoS: 1.016, atmoI: 0.20 },
-    saturn:  { roughness: 0.66, metalness: 0.0,  atmo: 0xf0d8a0, atmoS: 1.012, atmoI: 0.16 },
+    mercury: { roughness: 0.90, metalness: 0.08, atmo: null, atmoS: 1.0, atmoI: 0 },
+    venus:   { roughness: 0.80, metalness: 0.0,  atmo: 0xffc878, atmoS: 1.038, atmoI: 0.44 },
+    earth:   { roughness: 0.76, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.018, atmoI: 1.0 },
+    mars:    { roughness: 0.86, metalness: 0.0,  atmo: 0xff5533, atmoS: 1.032, atmoI: 0.36 },
+    jupiter: { roughness: 0.58, metalness: 0.0,  atmo: 0xe0a858, atmoS: 1.018, atmoI: 0.26 },
+    saturn:  { roughness: 0.62, metalness: 0.0,  atmo: 0xf0d8a0, atmoS: 1.014, atmoI: 0.20 },
     uranus:  { roughness: 0.76, metalness: 0.0,  atmo: null, atmoS: 1.0, atmoI: 0 },
     neptune: { roughness: 0.74, metalness: 0.0,  atmo: null, atmoS: 1.0, atmoI: 0 },
   };
@@ -127,7 +127,8 @@ const RadialBlurShader = {
   const orbitLines = [];
   const labels = {};
   let starField = null;
-  let sunMaterial = null, sunCoronaGroup = null, sunDirLight = null, sunDirLightTarget = null;
+  let sunMaterial = null, sunCoronaGroup = null, sunCoronaMesh = null, sunCoronaMat = null;
+  let sunPromGroup = null, sunDirLight = null, sunDirLightTarget = null, hemiLight = null;
 
   let composer = null;
   let bloomPass = null;
@@ -176,11 +177,11 @@ const RadialBlurShader = {
 
   function sphereSegs(hero) {
     if (hero) {
-      if (onPreloaderStage()) return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 48;
-      return perfTier === 'high' ? 128 : perfTier === 'mid' ? 96 : 64;
+      if (onPreloaderStage()) return perfTier === 'high' ? 80 : perfTier === 'mid' ? 64 : 48;
+      return perfTier === 'high' ? 144 : perfTier === 'mid' ? 104 : 64;
     }
-    if (onPreloaderStage()) return perfTier === 'high' ? 40 : 32;
-    return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 40;
+    if (onPreloaderStage()) return perfTier === 'high' ? 48 : 36;
+    return perfTier === 'high' ? 80 : perfTier === 'mid' ? 64 : 40;
   }
 
   // time
@@ -300,7 +301,14 @@ const RadialBlurShader = {
   let scaleAnimActive = false, scaleAnimStart = 0;
   const scaleAnimFrom = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
   const scaleAnimTo = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
-  const SCALE_ANIM_MS = 1000;
+  const SCALE_ANIM_MS = 1400;
+  const JOURNEY_HOLD_MS = 2800;
+  let scaleAnimFromLevel = 2;
+  let scaleAnimToLevel = 2;
+  let journeyActive = false;
+  let journeySteps = [];
+  let journeyTarget = 2;
+  let journeyHoldTimer = null;
 
   // asteroid belt + Halley comet
   let asteroidPoints = null;
@@ -311,7 +319,7 @@ const RadialBlurShader = {
 
   // Phase 3 galaxy layers (L3–L6)
   let galaxyGroup = null;
-  let oortShell = null, localStarsGroup = null, milkyWayDisk = null, cosmicField = null;
+  let oortShell = null, localStarsGroup = null, catalogStarsGroup = null, milkyWayDisk = null, cosmicField = null;
   let galacticCore = null, galacticHalo = null;
   let sunMarker = null, solarDim = 1;
 
@@ -640,9 +648,9 @@ const RadialBlurShader = {
     try {
       composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
-      const bloomStrength = perfTier === 'mid' ? 0.18 : 0.28;
-      const bloomRadius = perfTier === 'mid' ? 0.36 : 0.42;
-      const bloomThreshold = perfTier === 'mid' ? 0.94 : 0.91;
+      const bloomStrength = perfTier === 'mid' ? 0.22 : 0.34;
+      const bloomRadius = perfTier === 'mid' ? 0.38 : 0.46;
+      const bloomThreshold = perfTier === 'mid' ? 0.90 : 0.86;
       bloomPass = new UnrealBloomPass(
         new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
         bloomStrength, bloomRadius, bloomThreshold
@@ -665,15 +673,17 @@ const RadialBlurShader = {
   function upgradeSunVisuals() {
     if (!sunVisualsMinimal || !sunMesh) return;
     sunVisualsMinimal = false;
+    buildSunCoronaShell();
     buildSunCorona();
     const layers = [
-      { tex: makeGlowTexture('rgba(255,248,220,0.92)', 'rgba(255,200,90,0.48)'), scale: SUN_SIZE * 5.8 },
-      { tex: makeGlowTexture('rgba(255,215,130,0.42)', 'rgba(235,140,40,0.12)'), scale: SUN_SIZE * 11 },
-      { tex: makeGlowTexture('rgba(255,170,60,0.14)', 'rgba(210,90,15,0.03)'), scale: SUN_SIZE * 18 },
+      { tex: makeGlowTexture('rgba(255,252,235,0.95)', 'rgba(255,205,85,0.52)'), scale: SUN_SIZE * 6.2 },
+      { tex: makeGlowTexture('rgba(255,218,125,0.48)', 'rgba(240,135,35,0.14)'), scale: SUN_SIZE * 12 },
+      { tex: makeGlowTexture('rgba(255,175,55,0.16)', 'rgba(215,85,12,0.04)'), scale: SUN_SIZE * 19 },
     ];
     layers.forEach((l) => {
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
       sp.scale.set(l.scale, l.scale, 1);
+      sp.userData.baseScale = l.scale;
       sunMesh.add(sp);
       sunGlow.push(sp);
     });
@@ -795,10 +805,82 @@ const RadialBlurShader = {
     });
   }
 
+  function cancelScaleJourney(jumpToTarget) {
+    journeyActive = false;
+    journeySteps = [];
+    if (journeyHoldTimer) {
+      clearTimeout(journeyHoldTimer);
+      journeyHoldTimer = null;
+    }
+    if (jumpToTarget) applyScalePreset(journeyTarget, true);
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: scaleLevel, skipped: !!jumpToTarget } }));
+    } catch (e) { /* optional */ }
+  }
+
+  function runJourneyLeg() {
+    if (!journeyActive) return;
+    if (!journeySteps.length) {
+      journeyActive = false;
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: scaleLevel } }));
+      } catch (e) { /* optional */ }
+      return;
+    }
+    const level = journeySteps.shift();
+    applyScalePreset(level, true);
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-journey-step', {
+        detail: { level, remaining: journeySteps.length, target: journeyTarget },
+      }));
+    } catch (e) { /* optional */ }
+    journeyHoldTimer = setTimeout(runJourneyLeg, SCALE_ANIM_MS + JOURNEY_HOLD_MS);
+  }
+
+  function startScaleJourney(target, opts) {
+    opts = opts || {};
+    const to = Math.max(0, Math.min(6, target | 0));
+    if (journeyActive) cancelScaleJourney(false);
+
+    const begin = function () {
+      const from = scaleLevel;
+      journeyTarget = to;
+      daysPerSec = 0;
+      flicking = false;
+
+      if (opts.fullTour) {
+        journeySteps = opts.direction === 'in'
+          ? [6, 5, 4, 3, 2, 1, 0]
+          : [0, 1, 2, 3, 4, 5, 6];
+      } else if (from === to) {
+        applyScalePreset(to, true);
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-journey-step', { detail: { level: to, remaining: 0, target: to } }));
+          setTimeout(function () {
+            document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: to } }));
+          }, SCALE_ANIM_MS + 400);
+        } catch (e) { /* optional */ }
+        return;
+      } else {
+        journeySteps = [];
+        const dir = to > from ? 1 : -1;
+        for (let i = from + dir; dir > 0 ? i <= to : i >= to; i += dir) journeySteps.push(i);
+      }
+
+      if (!journeySteps.length) return;
+      journeyActive = true;
+      runJourneyLeg();
+    };
+
+    begin();
+  }
+
   function applyScalePreset(preset, animate) {
     const p = scalePreset(typeof preset === 'number' ? preset : (preset.id != null ? preset.id : preset));
     const prevLevel = scaleLevel;
     scaleLevel = p.id;
+    scaleAnimFromLevel = prevLevel;
+    scaleAnimToLevel = p.id;
     if (animate && !PRM) {
       scaleAnimFrom.radius = camRadius;
       scaleAnimFrom.el = camEl;
@@ -1014,6 +1096,8 @@ const RadialBlurShader = {
       }));
       core.scale.set(3.2, 3.2, 1);
       core.position.copy(d);
+      core.userData.baseOpa = 1;
+      core.userData.twinkle = 0.4 + Math.random() * 0.6;
       localStarsGroup.add(core);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({
         map: makeGlowTexture('rgba(200,220,255,0.25)', 'rgba(80,120,200,0.0)'),
@@ -1021,6 +1105,7 @@ const RadialBlurShader = {
       }));
       halo.scale.set(9, 9, 1);
       halo.position.copy(d);
+      halo.userData.baseOpa = 0.5;
       localStarsGroup.add(halo);
       const lab = makeLabel(s.name);
       lab.position.set(d.x, d.y + 2.2, d.z);
@@ -1044,7 +1129,7 @@ const RadialBlurShader = {
 
   function buildMilkyWaySpiral() {
     const arms = 4;
-    const count = perfTier === 'low' ? 6000 : perfTier === 'mid' ? 10000 : 16000;
+    const count = perfTier === 'low' ? 7000 : perfTier === 'mid' ? 12000 : 20000;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const bulgeCount = Math.floor(count * 0.08);
@@ -1056,7 +1141,7 @@ const RadialBlurShader = {
         x = Math.cos(ang) * rad;
         z = Math.sin(ang) * rad;
         y = (Math.random() - 0.5) * 8;
-        r = 1.0; g = 0.88; b = 0.62;
+        r = 1.0; g = 0.94; b = 0.78;
       } else {
         const arm = Math.floor(Math.random() * arms);
         const t = Math.pow(Math.random(), 0.72);
@@ -1065,8 +1150,13 @@ const RadialBlurShader = {
         x = Math.cos(angle) * rad;
         z = Math.sin(angle) * rad;
         y = (Math.random() - 0.5) * (14 + t * 10) * (1 - t * 0.35);
-        const warm = Math.random();
-        r = 0.55 + warm * 0.4; g = 0.48 + warm * 0.35; b = 0.72 + (1 - warm) * 0.2;
+        const dust = Math.random() < 0.12;
+        if (dust) {
+          r = 0.38; g = 0.32; b = 0.28;
+        } else {
+          const warm = Math.random();
+          r = 0.62 + warm * 0.28; g = 0.72 + warm * 0.18; b = 0.92 + (1 - warm) * 0.06;
+        }
       }
       pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z;
       const w = 0.45 + Math.random() * 0.55;
@@ -1076,8 +1166,8 @@ const RadialBlurShader = {
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
     milkyWayDisk = new THREE.Points(geo, new THREE.PointsMaterial({
-      size: perfTier === 'high' ? 0.55 : 0.42, vertexColors: true, transparent: true,
-      opacity: 0.82, depthWrite: false, blending: THREE.AdditiveBlending,
+      size: perfTier === 'high' ? 0.62 : 0.46, vertexColors: true, transparent: true,
+      opacity: 0.86, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
     }));
     milkyWayDisk.rotation.x = 62 * D2R;
     milkyWayDisk.visible = false;
@@ -1100,8 +1190,8 @@ const RadialBlurShader = {
     galaxyGroup.add(sunMarker);
 
     galacticCore = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: makeGlowTexture('rgba(255,240,210,0.55)', 'rgba(255,180,80,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.72,
+      map: makeGlowTexture('rgba(255,248,230,0.52)', 'rgba(220,180,100,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.68,
     }));
     galacticCore.scale.set(48, 48, 1);
     galacticCore.position.set(0, 2, 0);
@@ -1109,8 +1199,8 @@ const RadialBlurShader = {
     galaxyGroup.add(galacticCore);
 
     galacticHalo = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: galaxySpriteTexture('rgba(180,140,255,0.18)', 'rgba(60,40,120,0.0)', 512, 256),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.42,
+      map: galaxySpriteTexture('rgba(90,110,160,0.12)', 'rgba(20,30,60,0.0)', 1024, 512),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.34,
     }));
     galacticHalo.scale.set(920, 420, 1);
     galacticHalo.rotation.x = 62 * D2R;
@@ -1118,13 +1208,63 @@ const RadialBlurShader = {
     galaxyGroup.add(galacticHalo);
   }
 
+  function spectralClass(type) {
+    if (!type) return 'G';
+    const m = String(type).match(/([OBAFGKM]|D|L|T)/i);
+    return m ? m[1].toUpperCase() : 'G';
+  }
+
+  function buildCatalogStars() {
+    const SC = window.StarCatalog;
+    if (!SC || !SC.STARS || !galaxyGroup || catalogStarsGroup) return;
+    const starCap = perfTier === 'low' ? 48 : perfTier === 'mid' ? 96 : 140;
+    const stars = SC.STARS.slice(0, starCap);
+    const count = stars.length;
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const specColors = {
+      O: [0.6, 0.75, 1.0], B: [0.7, 0.85, 1.0], A: [0.88, 0.92, 1.0],
+      F: [1.0, 0.98, 0.95], G: [1.0, 0.92, 0.72], K: [1.0, 0.82, 0.55],
+      M: [1.0, 0.65, 0.45], L: [1.0, 0.5, 0.35], T: [1.0, 0.55, 0.4],
+      D: [0.95, 0.95, 1.0],
+    };
+    stars.forEach((s, i) => {
+      const ly = Math.min(s.ly || 16, 18);
+      const r = 55 + ly * 3.2;
+      const ra = (s.ra || 0) * D2R;
+      const dec = (s.dec || 0) * D2R;
+      pos[i * 3] = r * Math.cos(dec) * Math.cos(ra);
+      pos[i * 3 + 1] = r * Math.sin(dec);
+      pos[i * 3 + 2] = -r * Math.cos(dec) * Math.sin(ra);
+      const sp = spectralClass(s.spectral);
+      const c = specColors[sp] || specColors.G;
+      const w = 0.5 + Math.min(1, Math.max(0, (6 - (s.mag || 6)) / 8));
+      col[i * 3] = c[0] * w; col[i * 3 + 1] = c[1] * w; col[i * 3 + 2] = c[2] * w;
+    });
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    catalogStarsGroup = new THREE.Points(g, new THREE.PointsMaterial({
+      size: perfTier === 'high' ? 0.72 : 0.54, vertexColors: true, transparent: true,
+      opacity: 0.88, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+    }));
+    catalogStarsGroup.visible = false;
+    catalogStarsGroup.userData.baseOpa = 0.88;
+    galaxyGroup.add(catalogStarsGroup);
+  }
+
   function buildCosmicField() {
     cosmicField = new THREE.Group();
-    const count = perfTier === 'low' ? 5 : 9;
+    const count = perfTier === 'low' ? 6 : 12;
+    const palettes = [
+      ['rgba(200,160,255,0.42)', 'rgba(90,50,160,0.06)'],
+      ['rgba(255,210,160,0.32)', 'rgba(200,120,50,0.05)'],
+      ['rgba(160,200,255,0.28)', 'rgba(60,100,200,0.05)'],
+      ['rgba(255,180,220,0.3)', 'rgba(180,80,120,0.04)'],
+    ];
     for (let i = 0; i < count; i++) {
-      const tex = galaxySpriteTexture(
-        'rgba(220,200,255,0.35)', 'rgba(120,90,180,0.05)', 320, 180
-      );
+      const pal = palettes[i % palettes.length];
+      const tex = galaxySpriteTexture(pal[0], pal[1], 640, 360);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
         map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.55,
       }));
@@ -1139,9 +1279,10 @@ const RadialBlurShader = {
       sp.scale.set(sc * (1.4 + Math.random() * 0.8), sc, 1);
       sp.material.rotation = Math.random() * Math.PI;
       sp.userData.drift = (Math.random() - 0.5) * 0.00008;
+      sp.userData.baseOpa = 0.55;
       cosmicField.add(sp);
     }
-    const deepN = perfTier === 'low' ? 1200 : 2400;
+    const deepN = perfTier === 'low' ? 1800 : perfTier === 'mid' ? 3200 : 4800;
     const dPos = new Float32Array(deepN * 3);
     const dCol = new Float32Array(deepN * 3);
     for (let i = 0; i < deepN; i++) {
@@ -1157,8 +1298,10 @@ const RadialBlurShader = {
     dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
     dGeo.setAttribute('color', new THREE.BufferAttribute(dCol, 3));
     const deep = new THREE.Points(dGeo, new THREE.PointsMaterial({
-      size: 0.5, vertexColors: true, transparent: true, opacity: 0.35, depthWrite: false,
+      size: perfTier === 'high' ? 0.58 : 0.48, vertexColors: true, transparent: true,
+      opacity: 0.38, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
     }));
+    deep.userData.baseOpa = 0.38;
     cosmicField.add(deep);
     cosmicField.visible = false;
     galaxyGroup.add(cosmicField);
@@ -1173,6 +1316,7 @@ const RadialBlurShader = {
     scene.add(galaxyGroup);
     buildOortShell();
     buildLocalStars();
+    buildCatalogStars();
     buildMilkyWaySpiral();
     buildCosmicField();
   }
@@ -1181,17 +1325,47 @@ const RadialBlurShader = {
     if (!galaxyBuilt) buildGalaxyLayers();
   }
 
-  function updateScaleVisuals(level) {
-    const lv = level | 0;
-    solarDim = lv <= 2 ? 1 : lv === 3 ? 0.55 : lv === 4 ? 0.12 : 0;
+  function scaleFade(z, center, width) {
+    const d = Math.abs(z - center) / Math.max(width, 0.001);
+    return Math.max(0, 1 - d);
+  }
+
+  function applyCinematicLighting(z) {
+    const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
+    const earthT = Math.max(0, Math.min(1, (2.2 - z) / 2.2));
+    if (scene && scene.fog) {
+      scene.fog.density = 0.00045 + galaxyT * 0.00085;
+      scene.fog.color.set(z >= 5.2 ? 0x04020c : z >= 4 ? 0x06041a : z >= 3 ? 0x050c18 : 0x050406);
+    }
+    if (renderer) {
+      renderer.toneMappingExposure = 1.38 - galaxyT * 0.16 - (1 - earthT) * 0.08;
+    }
+    if (hemiLight) {
+      hemiLight.color.setHex(galaxyT > 0.35 ? 0x8090b8 : 0x4a6088);
+      hemiLight.intensity = (perfTier === 'high' ? 0.48 : 0.40) * (0.85 + earthT * 0.15);
+    }
+    if (bloomPass) {
+      if (z < 0.6) {
+        bloomPass.strength = perfTier === 'mid' ? 0.20 : 0.28;
+        bloomPass.threshold = perfTier === 'mid' ? 0.84 : 0.78;
+      } else {
+        bloomPass.strength = z >= 4.8 ? 0.42 : perfTier === 'mid' ? 0.16 : 0.24;
+        bloomPass.threshold = z >= 4.8 ? 0.82 : perfTier === 'mid' ? 0.95 : 0.93;
+      }
+    }
+  }
+
+  function updateScaleVisualsContinuous(z) {
+    const lv = Math.round(z);
+    solarDim = z <= 2 ? 1 : z <= 3.4 ? 0.55 + (3.4 - z) * 0.45 : z <= 4.4 ? 0.12 + (4.4 - z) * 0.43 : 0;
     const showSolar = solarDim > 0.02;
-    const showPlanetLabels = showLabels && lv <= 2;
+    const showPlanetLabels = showLabels && z <= 2.2;
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
       g.visible = showSolar;
       if (showSolar) {
-        const s = lv <= 2 ? 1 : lv === 3 ? 0.45 : 0.15;
+        const s = z <= 2 ? 1 : z <= 3 ? 0.45 + (3 - z) * 0.55 : 0.15;
         g.scale.setScalar(s);
         const m = g.userData.mesh;
         if (m && m.material) {
@@ -1204,48 +1378,71 @@ const RadialBlurShader = {
     });
     if (sunMesh) {
       sunMesh.visible = showSolar;
-      if (sunGlow.length && showSolar) {
-        sunGlow.forEach((sp) => { sp.visible = lv <= 2; });
-      }
-      if (sunCoronaGroup) sunCoronaGroup.visible = showSolar && lv <= 2;
+      if (sunGlow.length && showSolar) sunGlow.forEach((sp) => { sp.visible = z <= 2.2; });
+      if (sunCoronaGroup) sunCoronaGroup.visible = showSolar && z <= 2.2 && !composer;
+      if (sunCoronaMesh) sunCoronaMesh.visible = showSolar && z <= 2.4;
     }
-    if (moonGroup) moonGroup.visible = showSolar && lv <= 1;
-    if (earthCloud) earthCloud.visible = showSolar && lv <= 1;
-    orbitLines.forEach((o) => { o.visible = showOrbits && lv <= 3; });
-    if (asteroidPoints) asteroidPoints.visible = showAsteroids && lv <= 3;
-    if (halleyGroup) halleyGroup.visible = lv <= 3;
-    if (labels.halley) labels.halley.visible = showLabels && lv >= 1 && lv <= 3;
+    if (moonGroup) moonGroup.visible = showSolar && z <= 1.2;
+    if (earthCloud) earthCloud.visible = showSolar && z <= 1.2;
+    orbitLines.forEach((o) => { o.visible = showOrbits && z <= 3.2; });
+    if (asteroidPoints) asteroidPoints.visible = showAsteroids && z <= 3.2;
+    if (halleyGroup) halleyGroup.visible = z <= 3.2;
+    if (labels.halley) labels.halley.visible = showLabels && z >= 1 && z <= 3.2;
     Object.keys(labels).forEach((k) => {
       if (k === 'halley') return;
       if (labels[k]) labels[k].visible = showPlanetLabels;
     });
 
-    if (oortShell) oortShell.visible = lv === 3;
-    if (localStarsGroup) localStarsGroup.visible = lv === 4;
-    if (milkyWayDisk) milkyWayDisk.visible = lv === 5;
-    if (sunMarker) sunMarker.visible = lv === 5;
-    if (galacticCore) galacticCore.visible = lv === 5;
-    if (galacticHalo) galacticHalo.visible = lv >= 5;
-    if (cosmicField) cosmicField.visible = lv === 6;
+    const oortF = scaleFade(z, 3, 0.75);
+    if (oortShell) {
+      oortShell.visible = oortF > 0.02;
+      if (oortShell.material) oortShell.material.opacity = 0.55 * oortF;
+    }
+    const starsF = scaleFade(z, 4, 0.75);
+    if (localStarsGroup) {
+      localStarsGroup.visible = starsF > 0.02;
+      localStarsGroup.children.forEach((ch) => {
+        if (ch.material) ch.material.opacity = (ch.userData.baseOpa ?? 1) * starsF;
+      });
+    }
+    if (catalogStarsGroup) {
+      const catF = scaleFade(z, 4, 0.9) * Math.min(1, scaleFade(z, 4.6, 0.5));
+      catalogStarsGroup.visible = catF > 0.02;
+      if (catalogStarsGroup.material) {
+        catalogStarsGroup.material.opacity = (catalogStarsGroup.userData.baseOpa ?? 0.88) * catF;
+      }
+    }
+    const galF = scaleFade(z, 5, 0.85);
+    if (milkyWayDisk) {
+      milkyWayDisk.visible = galF > 0.02;
+      if (milkyWayDisk.material) milkyWayDisk.material.opacity = 0.86 * galF;
+    }
+    if (sunMarker) sunMarker.visible = galF > 0.35 && z < 5.8;
+    if (galacticCore) {
+      galacticCore.visible = galF > 0.25;
+      if (galacticCore.material) galacticCore.material.opacity = 0.72 * galF;
+    }
+    if (galacticHalo) {
+      const haloF = Math.max(galF, z >= 4.8 ? scaleFade(z, 5.4, 1.2) : 0);
+      galacticHalo.visible = haloF > 0.02;
+      if (galacticHalo.material) galacticHalo.material.opacity = 0.38 * haloF;
+    }
+    const cosF = scaleFade(z, 6, 1.1);
+    if (cosmicField) {
+      cosmicField.visible = cosF > 0.02;
+      cosmicField.children.forEach((ch) => {
+        if (!ch.material) return;
+        const base = ch.userData.baseOpa ?? (ch.type === 'Points' ? 0.38 : 0.55);
+        ch.material.opacity = base * Math.max(cosF, z >= 5.6 ? 0.55 : 0);
+      });
+    }
 
+    applyCinematicLighting(z);
     syncSceneStarfield(lv);
     syncCosmosBlend(lv);
 
-    if (bloomPass) {
-      if (lv === 0) {
-        bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
-        bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
-      } else {
-        bloomPass.strength = lv >= 5 ? 0.38 : perfTier === 'mid' ? 0.16 : 0.24;
-        bloomPass.threshold = lv >= 5 ? 0.84 : perfTier === 'mid' ? 0.95 : 0.93;
-      }
-    }
-    if (renderer) {
-      if (lv === 0) renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.10;
-      else renderer.toneMappingExposure = lv >= 5 ? 1.14 : perfTier === 'high' ? 1.12 : 1.06;
-    }
     if (onPreloaderStage()) applyPreloaderEarthIsolation(preloaderIntroFinished ? 1 : null);
-    else if (sunGlow.length && lv === 0) {
+    else if (sunGlow.length && z < 0.5) {
       sunGlow.forEach((sp, i) => {
         if (!sp.material) return;
         sp.visible = i === 0;
@@ -1274,6 +1471,10 @@ const RadialBlurShader = {
     }
   }
 
+  function updateScaleVisuals(level) {
+    updateScaleVisualsContinuous(level | 0);
+  }
+
   function updateEclipseDim(jd) {
     try {
       const E = window.AstroEphemeris;
@@ -1297,6 +1498,9 @@ const RadialBlurShader = {
       sunMaterial.uniforms.uEclipse = sunMaterial.uniforms.uEclipse || { value: 0 };
       sunMaterial.uniforms.uEclipse.value = eclipseDim;
     }
+    if (sunCoronaMat && sunCoronaMat.uniforms) {
+      sunCoronaMat.uniforms.uEclipse.value = eclipseDim;
+    }
   }
 
   function updateSaturnShadow(jd) {
@@ -1317,52 +1521,165 @@ const RadialBlurShader = {
     }
   }
 
-  // ── Animated sun surface shader (limb darkening + granulation + fresnel corona) ─
-  function makeSunShaderMaterial() {
+  // Shared GLSL noise helpers — 3D FBM fireball (Sangil Lee / Altered Qualia pattern, tier-scaled).
+  const SUN_NOISE_GLSL = `
+    float sunHash(vec3 p) {
+      p = fract(p * 0.3183099 + 0.17);
+      p *= 17.0;
+      return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+    }
+    float sunNoise3(vec3 p) {
+      vec3 i = floor(p);
+      vec3 f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      float n000 = sunHash(i);
+      float n100 = sunHash(i + vec3(1.0, 0.0, 0.0));
+      float n010 = sunHash(i + vec3(0.0, 1.0, 0.0));
+      float n110 = sunHash(i + vec3(1.0, 1.0, 0.0));
+      float n001 = sunHash(i + vec3(0.0, 0.0, 1.0));
+      float n101 = sunHash(i + vec3(1.0, 0.0, 1.0));
+      float n011 = sunHash(i + vec3(0.0, 1.0, 1.0));
+      float n111 = sunHash(i + vec3(1.0, 1.0, 1.0));
+      float nx00 = mix(n000, n100, f.x);
+      float nx10 = mix(n010, n110, f.x);
+      float nx01 = mix(n001, n101, f.x);
+      float nx11 = mix(n011, n111, f.x);
+      float nxy0 = mix(nx00, nx10, f.y);
+      float nxy1 = mix(nx01, nx11, f.y);
+      return mix(nxy0, nxy1, f.z);
+    }
+    float sunFBM(vec3 p, float quality) {
+      float v = 0.0;
+      float a = 0.55;
+      mat3 rot = mat3(
+        0.86, 0.12, -0.49,
+        -0.31, 0.94, 0.14,
+        0.41, -0.32, 0.85
+      );
+      for (int i = 0; i < 5; i++) {
+        float fi = float(i);
+        float w = step(fi, 2.0 + quality);
+        v += a * sunNoise3(p) * w;
+        p = rot * p * 2.08 + vec3(1.4, 2.1, 0.9);
+        a *= 0.52;
+      }
+      return v;
+    }`;
+
+  // ── Animated sun surface — turbulent photosphere + spots + faculae + flares ─
+  function makeSunShaderMaterial(quality) {
     return new THREE.ShaderMaterial({
-      uniforms: { uTime: { value: 0 }, uEclipse: { value: 0 } },
+      uniforms: {
+        uTime: { value: 0 },
+        uEclipse: { value: 0 },
+        uQuality: { value: quality },
+      },
       vertexShader: `
         varying vec3 vNormal;
         varying vec3 vViewDir;
+        varying vec3 vSphere;
         void main() {
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
           vNormal = normalize(normalMatrix * normal);
           vViewDir = normalize(-mv.xyz);
+          vSphere = normalize(position);
           gl_Position = projectionMatrix * mv;
         }`,
       fragmentShader: `
         precision highp float;
         varying vec3 vNormal;
         varying vec3 vViewDir;
+        varying vec3 vSphere;
         uniform float uTime;
         uniform float uEclipse;
-        float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-        float noise(vec2 p) {
-          vec2 i = floor(p); vec2 f = fract(p);
-          f = f * f * (3.0 - 2.0 * f);
-          return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-                     mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
-        }
+        uniform float uQuality;
+        ${SUN_NOISE_GLSL}
         void main() {
           vec3 n = normalize(vNormal);
           vec3 v = normalize(vViewDir);
-          float mu = max(dot(n, v), 0.0);
-          float limb = pow(mu, 0.22);
-          float gran = noise(n.xy * 22.0 + uTime * 0.09) * 0.42
-                     + noise(n.xy * 44.0 - uTime * 0.05) * 0.28
-                     + noise(n.xy * 9.0 + uTime * 0.03) * 0.12;
-          float faculae = smoothstep(0.55, 0.95, gran) * 0.18;
-          vec3 photosphere = vec3(1.0, 0.96, 0.86);
-          vec3 midBand     = vec3(1.0, 0.82, 0.38);
-          vec3 limbBand    = vec3(0.92, 0.48, 0.08);
-          vec3 col = mix(limbBand, midBand, limb);
-          col = mix(col, photosphere, limb * limb * (0.92 + gran * 0.08));
-          col += vec3(1.0, 0.88, 0.42) * faculae * limb;
-          float chromo = pow(1.0 - mu, 3.6);
-          col += vec3(1.0, 0.55, 0.12) * chromo * 0.22;
-          col *= mix(1.0, 0.32, uEclipse);
+          float mu = max(dot(n, v), 0.001);
+          float limb = pow(mu, 0.24);
+          float t = uTime;
+          vec3 drift = vec3(sin(t * 0.32), cos(t * 0.26), sin(t * 0.21)) * 0.09;
+          vec3 flow = vSphere + drift;
+          vec3 warp = flow * 3.4 + vec3(t * 0.09, t * 0.055, -t * 0.065);
+          float turb = sunFBM(warp, uQuality);
+          float turb2 = sunFBM(warp * 1.75 + vec3(4.2, 2.6, 1.4), uQuality);
+          float gran = turb * 0.62 + turb2 * 0.38;
+          float spots = smoothstep(0.70, 0.90, sunNoise3(flow * 1.35 + vec3(2.1, 0.8, 1.6)));
+          float spotMask = mix(1.0, 0.62, spots) * (0.82 + limb * 0.18);
+          float fac = smoothstep(0.56, 0.92, gran) * smoothstep(0.12, 0.52, turb2);
+          float flare = pow(max(0.0,
+            sin(flow.x * 11.0 + t * 2.4) * sin(flow.y * 9.0 - t * 1.7) * sin(flow.z * 8.0 + t * 1.2)
+          ), 5.0) * 0.32;
+          vec3 core = vec3(1.0, 0.98, 0.90);
+          vec3 mid = vec3(1.0, 0.76, 0.20);
+          vec3 edge = vec3(0.94, 0.36, 0.04);
+          vec3 col = mix(edge, mid, limb);
+          col = mix(col, core, limb * limb * (0.82 + gran * 0.22));
+          col *= spotMask;
+          col += vec3(1.0, 0.88, 0.48) * fac * limb * 0.38;
+          col += vec3(1.0, 0.58, 0.10) * flare * limb;
+          float chromo = pow(1.0 - mu, 3.4);
+          col += vec3(1.0, 0.40, 0.06) * chromo * (0.30 + gran * 0.14);
+          float coronaHint = pow(1.0 - mu, 1.6);
+          col += vec3(1.0, 0.52, 0.10) * coronaHint * 0.20;
+          col *= mix(1.0, 0.26, uEclipse);
+          col *= 1.65;
           gl_FragColor = vec4(col, 1.0);
         }`,
+    });
+  }
+
+  function makeSunCoronaShellMaterial(quality) {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uEclipse: { value: 0 },
+        uQuality: { value: quality },
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vViewDir;
+        varying vec3 vSphere;
+        void main() {
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vNormal = normalize(normalMatrix * normal);
+          vViewDir = normalize(-mv.xyz);
+          vSphere = normalize(position);
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: `
+        precision highp float;
+        varying vec3 vNormal;
+        varying vec3 vViewDir;
+        varying vec3 vSphere;
+        uniform float uTime;
+        uniform float uEclipse;
+        uniform float uQuality;
+        ${SUN_NOISE_GLSL}
+        void main() {
+          vec3 n = normalize(vNormal);
+          vec3 v = normalize(vViewDir);
+          float facing = max(dot(n, v), 0.0);
+          float fresnel = pow(1.0 - facing, 2.6);
+          float t = uTime;
+          float ang = atan(vSphere.y, vSphere.x);
+          float rays = 0.0;
+          for (int i = 0; i < 6; i++) {
+            float fi = float(i);
+            float w = step(fi, 2.0 + uQuality);
+            rays += pow(max(0.0, sin(ang * (4.5 + fi * 1.2) + t * (0.35 + fi * 0.04))), 7.0) * 0.14 * w;
+          }
+          float turb = sunFBM(vSphere * 2.8 + vec3(t * 0.12, -t * 0.08, t * 0.05), uQuality);
+          float a = fresnel * (0.48 + turb * 0.42 + rays) * (1.0 - uEclipse * 0.75);
+          vec3 col = mix(vec3(1.0, 0.48, 0.06), vec3(1.0, 0.92, 0.58), turb);
+          gl_FragColor = vec4(col * a * 1.5, clamp(a, 0.0, 0.92));
+        }`,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true,
+      depthWrite: false,
     });
   }
 
@@ -1389,12 +1706,33 @@ const RadialBlurShader = {
   }
   // radial-gradient sprite used for the sun's glow / corona (fake bloom)
   function makeGlowTexture(inner, outer) {
-    const s = perfTier === 'high' ? 512 : 256, c = document.createElement('canvas'); c.width = c.height = s;
+    const s = perfTier === 'high' ? 640 : 320, c = document.createElement('canvas'); c.width = c.height = s;
     const x = c.getContext('2d');
     const g = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
-    g.addColorStop(0, inner); g.addColorStop(0.35, outer); g.addColorStop(1, 'rgba(0,0,0,0)');
-    x.fillStyle = g; x.fillRect(0, 0, s, s);
-    return new THREE.CanvasTexture(c);
+    g.addColorStop(0, inner);
+    g.addColorStop(0.28, outer);
+    g.addColorStop(0.62, 'rgba(255,180,60,0.05)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = g;
+    x.fillRect(0, 0, s, s);
+    x.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < (perfTier === 'high' ? 18 : 10); i++) {
+      const ang = (i / 18) * Math.PI * 2;
+      const r = s * (0.08 + Math.random() * 0.22);
+      const px = s / 2 + Math.cos(ang) * r;
+      const py = s / 2 + Math.sin(ang) * r;
+      const rg = x.createRadialGradient(px, py, 0, px, py, s * (0.06 + Math.random() * 0.08));
+      rg.addColorStop(0, 'rgba(255,220,140,0.12)');
+      rg.addColorStop(1, 'rgba(0,0,0,0)');
+      x.fillStyle = rg;
+      x.beginPath();
+      x.arc(px, py, s * 0.1, 0, Math.PI * 2);
+      x.fill();
+    }
+    x.globalCompositeOperation = 'source-over';
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
   }
 
   // ── Scene construction ─────────────────────────────────────────────────────
@@ -1419,8 +1757,8 @@ const RadialBlurShader = {
 
   function tuneTexture(t) {
     if (!t || !renderer) return;
-    const maxDim = perfTier === 'low' ? 1024 : perfTier === 'mid' ? 2048 : 4096;
-    capTextureSize(t, onPreloaderStage() ? Math.min(maxDim, 1536) : maxDim);
+    const maxDim = perfTier === 'low' ? 1024 : perfTier === 'mid' ? 3072 : 4096;
+    capTextureSize(t, onPreloaderStage() ? Math.min(maxDim, 2048) : maxDim);
     const max = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
     t.anisotropy = perfTier === 'low' ? Math.min(max, 4) : max;
     t.generateMipmaps = true;
@@ -1601,51 +1939,83 @@ const RadialBlurShader = {
     starField = new THREE.Points(g, m); scene.add(starField);
   }
 
+  function buildSunCoronaShell() {
+    if (sunCoronaMesh || !sunMesh) return;
+    const q = perfTier === 'high' ? 2.0 : perfTier === 'mid' ? 1.0 : 0.0;
+    const segs = perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 36;
+    sunCoronaMat = makeSunCoronaShellMaterial(q);
+    sunCoronaMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(SUN_SIZE * 1.16, segs, segs),
+      sunCoronaMat
+    );
+    sunMesh.add(sunCoronaMesh);
+  }
+
   function buildSunCorona() {
+    if (sunCoronaGroup || !sunMesh) return;
     sunCoronaGroup = new THREE.Group();
-    const rayCount = PRM ? 6 : 12;
+    sunPromGroup = sunCoronaGroup;
+    const rayCount = PRM ? 6 : (perfTier === 'high' ? 14 : 10);
     for (let i = 0; i < rayCount; i++) {
-      const c = document.createElement('canvas'); c.width = 64; c.height = 256;
+      const c = document.createElement('canvas'); c.width = 72; c.height = 288;
       const x = c.getContext('2d');
-      const g = x.createLinearGradient(32, 200, 32, 0);
-      g.addColorStop(0, 'rgba(255,200,80,0)');
-      g.addColorStop(0.35, 'rgba(255,190,70,0.35)');
-      g.addColorStop(1, 'rgba(255,240,200,0.85)');
-      x.fillStyle = g; x.fillRect(14, 0, 36, 256);
+      const g = x.createLinearGradient(36, 240, 36, 0);
+      g.addColorStop(0, 'rgba(255,180,60,0)');
+      g.addColorStop(0.22, 'rgba(255,160,50,0.22)');
+      g.addColorStop(0.55, 'rgba(255,210,90,0.48)');
+      g.addColorStop(0.82, 'rgba(255,240,200,0.72)');
+      g.addColorStop(1, 'rgba(255,252,240,0.92)');
+      x.fillStyle = g;
+      x.fillRect(12, 0, 48, 288);
+      x.globalCompositeOperation = 'lighter';
+      for (let j = 0; j < 6; j++) {
+        const px = 18 + Math.random() * 36;
+        x.fillStyle = 'rgba(255,220,120,0.18)';
+        x.fillRect(px, 40 + Math.random() * 180, 2 + Math.random() * 3, 40 + Math.random() * 80);
+      }
+      x.globalCompositeOperation = 'source-over';
       const tex = new THREE.CanvasTexture(c);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.55,
+        map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.5,
       }));
       const ang = (i / rayCount) * Math.PI * 2;
-      sp.position.set(Math.cos(ang) * SUN_SIZE * 0.2, Math.sin(ang) * SUN_SIZE * 0.15, 0);
-      sp.scale.set(SUN_SIZE * 1.8, SUN_SIZE * 5.5, 1);
-      sp.material.rotation = ang + Math.PI / 2;  // Sprite billboards to camera; roll must be on the material, not Object3D.rotation
+      sp.position.set(Math.cos(ang) * SUN_SIZE * 0.18, Math.sin(ang) * SUN_SIZE * 0.14, 0);
+      const hScale = SUN_SIZE * (4.8 + (i % 3) * 0.6);
+      sp.scale.set(SUN_SIZE * 1.6, hScale, 1);
+      sp.userData.baseScale = hScale;
+      sp.userData.baseWidth = SUN_SIZE * 1.6;
+      sp.material.rotation = ang + Math.PI / 2;
       sunCoronaGroup.add(sp);
     }
     sunMesh.add(sunCoronaGroup);
   }
 
   function buildSun(minimal) {
-    sunMaterial = makeSunShaderMaterial();
+    const sunQ = perfTier === 'high' ? 2.0 : perfTier === 'mid' ? 1.0 : 0.0;
+    sunMaterial = makeSunShaderMaterial(sunQ);
     const sunSegs = minimal
-      ? (perfTier === 'high' ? 48 : 32)
-      : (perfTier === 'high' ? 96 : perfTier === 'mid' ? 72 : 48);
+      ? (perfTier === 'high' ? 56 : 36)
+      : (perfTier === 'high' ? 112 : perfTier === 'mid' ? 84 : 56);
     sunMesh = new THREE.Mesh(new THREE.SphereGeometry(SUN_SIZE, sunSegs, sunSegs), sunMaterial);
     scene.add(sunMesh);
     sunVisualsMinimal = !!minimal;
     if (!minimal) {
+      buildSunCoronaShell();
       buildSunCorona();
       const layers = [
-        { tex: makeGlowTexture('rgba(255,248,220,0.92)', 'rgba(255,200,90,0.48)'), scale: SUN_SIZE * 5.8 },
-        { tex: makeGlowTexture('rgba(255,215,130,0.42)', 'rgba(235,140,40,0.12)'), scale: SUN_SIZE * 11 },
-        { tex: makeGlowTexture('rgba(255,170,60,0.14)', 'rgba(210,90,15,0.03)'), scale: SUN_SIZE * 18 },
+        { tex: makeGlowTexture('rgba(255,252,235,0.95)', 'rgba(255,205,85,0.52)'), scale: SUN_SIZE * 6.2 },
+        { tex: makeGlowTexture('rgba(255,218,125,0.48)', 'rgba(240,135,35,0.14)'), scale: SUN_SIZE * 12 },
+        { tex: makeGlowTexture('rgba(255,175,55,0.16)', 'rgba(215,85,12,0.04)'), scale: SUN_SIZE * 19 },
       ];
       layers.forEach((l) => {
         const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
-        sp.scale.set(l.scale, l.scale, 1); sunMesh.add(sp); sunGlow.push(sp);
+        sp.scale.set(l.scale, l.scale, 1);
+        sp.userData.baseScale = l.scale;
+        sunMesh.add(sp);
+        sunGlow.push(sp);
       });
     }
-    const light = new THREE.PointLight(0xfff4e0, 5.2, 0, 1.5);
+    const light = new THREE.PointLight(0xfff4e0, perfTier === 'high' ? 6.0 : 5.4, 0, 1.45);
     sunMesh.add(light);
     sunDirLight = new THREE.DirectionalLight(0xfff8ec, perfTier === 'high' ? 3.6 : 3.0);
     sunDirLight.position.set(0, 0, 0);
@@ -1653,7 +2023,8 @@ const RadialBlurShader = {
     sunDirLightTarget = new THREE.Object3D();
     scene.add(sunDirLightTarget);
     sunDirLight.target = sunDirLightTarget;
-    scene.add(new THREE.HemisphereLight(0x7088a8, 0x1a1410, perfTier === 'high' ? 0.48 : 0.40));
+    hemiLight = new THREE.HemisphereLight(0x7088a8, 0x1a1410, perfTier === 'high' ? 0.48 : 0.40);
+    scene.add(hemiLight);
     scene.add(new THREE.AmbientLight(0x3a5068, perfTier === 'high' ? 0.20 : 0.16));
   }
 
@@ -1815,12 +2186,14 @@ const RadialBlurShader = {
         const clearcoat = (b.id === 'jupiter' ? 0.36 : b.id === 'saturn' ? 0.30 : b.id === 'venus' ? 0.20
           : (b.id === 'uranus' || b.id === 'neptune') ? 0.14 : 0);
         const giantGlow = b.id === 'jupiter' ? 0x2a1808 : b.id === 'saturn' ? 0x1e1608 : 0x000000;
-        const giantEmissiveI = b.id === 'jupiter' ? 0.08 : b.id === 'saturn' ? 0.06 : 0;
+        const giantEmissiveI = b.id === 'jupiter' ? 0.10 : b.id === 'saturn' ? 0.08
+          : b.id === 'uranus' ? 0.05 : b.id === 'neptune' ? 0.05 : 0;
+        const envI = isGiant ? 0.38 : (b.id === 'venus' ? 0.28 : 0.24);
         mat = new THREE.MeshPhysicalMaterial({
           color: b.color, roughness: vis.roughness, metalness: vis.metalness,
-          clearcoat, clearcoatRoughness: isGiant ? 0.30 : 0.42,
+          clearcoat, clearcoatRoughness: isGiant ? 0.26 : 0.38,
           emissive: giantGlow, emissiveIntensity: giantEmissiveI,
-          envMapIntensity: isGiant ? 0.32 : 0.20,
+          envMapIntensity: envI,
         });
       }
       const segs = sphereSegs(b.hero);
@@ -1895,7 +2268,7 @@ const RadialBlurShader = {
         } else { earthCloud = null; }
         // Moon
         moonGroup = new THREE.Group(); scene.add(moonGroup);
-        const moonSegs = perfTier === 'high' ? 56 : perfTier === 'mid' ? 40 : 28;
+        const moonSegs = perfTier === 'high' ? 72 : perfTier === 'mid' ? 52 : 32;
         moonMesh = new THREE.Mesh(
           new THREE.SphereGeometry(0.23, moonSegs, moonSegs),
           new THREE.MeshPhysicalMaterial({ color: 0xd8dce6, roughness: 0.88, metalness: 0, emissive: 0x888c98, emissiveIntensity: 0.35, clearcoat: 0.08, clearcoatRoughness: 0.5 })
@@ -2245,7 +2618,9 @@ const RadialBlurShader = {
     }
 
     // sun surface animation + corona drift
-    if (sunMaterial && sunMaterial.uniforms) sunMaterial.uniforms.uTime.value = t * 0.001;
+    const sunT = t * 0.001;
+    if (sunMaterial && sunMaterial.uniforms) sunMaterial.uniforms.uTime.value = sunT;
+    if (sunCoronaMat && sunCoronaMat.uniforms) sunCoronaMat.uniforms.uTime.value = sunT;
     if (starField && starField.material.uniforms) starField.material.uniforms.uTime.value = t;
     if (sunDirLight && sunMesh) {
       sunDirLight.position.copy(sunMesh.position);
@@ -2267,13 +2642,48 @@ const RadialBlurShader = {
     }
     if (earthAtmoMat) earthAtmoMat.uniforms.uCamPos.value.copy(camera.position);
 
-    if (sunCoronaGroup && !PRM) sunCoronaGroup.rotation.z += dt * 0.06;
+    if (sunCoronaGroup && !PRM) {
+      sunCoronaGroup.rotation.z += dt * 0.08;
+      sunCoronaGroup.rotation.y += dt * 0.025;
+      const promPulse = 1 + Math.sin(t * 0.0022) * 0.06;
+      sunCoronaGroup.children.forEach((sp, i) => {
+        if (!sp.userData || sp.userData.baseScale == null) return;
+        sp.scale.y = sp.userData.baseScale * promPulse * (1 + Math.sin(t * 0.0018 + i * 0.7) * 0.04);
+        if (sp.material) sp.material.opacity = 0.42 + Math.sin(t * 0.0025 + i) * 0.08;
+      });
+    }
+    if (sunGlow.length && !PRM && scaleLevel <= 2) {
+      const corePulse = 1 + Math.sin(t * 0.0026) * 0.07;
+      sunGlow.forEach((sp, i) => {
+        if (!sp.visible || sp.userData.baseScale == null) return;
+        const wobble = 1 + Math.sin(t * 0.002 + i * 1.1) * 0.035;
+        sp.scale.set(sp.userData.baseScale * (i === 0 ? corePulse : wobble), sp.userData.baseScale * (i === 0 ? corePulse : wobble), 1);
+      });
+    }
 
-    if (milkyWayDisk && milkyWayDisk.visible && !PRM) milkyWayDisk.rotation.y += dt * 0.004;
-    if (oortShell && oortShell.visible && !PRM) oortShell.rotation.y += dt * 0.003;
-    if (cosmicField && cosmicField.visible && !PRM) {
+    if (milkyWayDisk && milkyWayDisk.visible && !PRM) milkyWayDisk.rotation.y += dt * 0.0045;
+    if (oortShell && oortShell.visible && !PRM) oortShell.rotation.y += dt * 0.0032;
+    if (galacticCore && galacticCore.visible && !PRM && galacticCore.material && scaleLevel >= 5) {
+      galacticCore.material.opacity = 0.64 + Math.sin(t * 0.0006) * 0.04;
+      galacticCore.scale.setScalar(48 + Math.sin(t * 0.0005) * 1.2);
+    }
+    if (localStarsGroup && localStarsGroup.visible && !PRM && scaleLevel >= 4) {
+      localStarsGroup.children.forEach((ch) => {
+        if (!ch.material || ch.userData.baseOpa == null) return;
+        const tw = ch.userData.twinkle || 1;
+        ch.material.opacity = ch.userData.baseOpa * (0.94 + Math.sin(t * 0.001 * tw + tw * 4) * 0.05);
+      });
+    }
+    if (catalogStarsGroup && catalogStarsGroup.visible && !PRM && catalogStarsGroup.material && scaleLevel >= 4) {
+      const catBase = catalogStarsGroup.userData.baseOpa ?? 0.88;
+      catalogStarsGroup.material.opacity = catBase * (0.96 + Math.sin(t * 0.0008) * 0.03);
+    }
+    if (cosmicField && cosmicField.visible && !PRM && scaleLevel >= 5) {
       cosmicField.children.forEach((ch) => {
-        if (ch.userData && ch.userData.drift) ch.material.rotation += ch.userData.drift;
+        if (ch.userData && ch.userData.drift && ch.material) ch.material.rotation += ch.userData.drift;
+        if (ch.userData && ch.userData.baseOpa != null && ch.material) {
+          ch.material.opacity = ch.userData.baseOpa * (0.94 + Math.sin(t * 0.0005 + ch.id) * 0.04);
+        }
       });
     }
 
@@ -2304,7 +2714,7 @@ const RadialBlurShader = {
       camAz += 0.028 * dt;
     }
 
-    // scale-level camera transition (zoom dial)
+    // scale-level camera transition (zoom dial) — cinematic crossfade + warp blur
     if (scaleAnimActive) {
       const p = Math.min(1, (t - scaleAnimStart) / SCALE_ANIM_MS), e = easeInOut(p);
       camRadius = scaleAnimFrom.radius + (scaleAnimTo.radius - scaleAnimFrom.radius) * e;
@@ -2315,11 +2725,17 @@ const RadialBlurShader = {
         scaleAnimFrom.ty + (scaleAnimTo.ty - scaleAnimFrom.ty) * e,
         scaleAnimFrom.tz + (scaleAnimTo.tz - scaleAnimFrom.tz) * e
       );
-      if (scaleAnimFrom.radius < 12 && scaleAnimTo.radius > 20) {
-        camera.fov = CAM_FOV_CLOSE + (CAM_FOV_WIDE - CAM_FOV_CLOSE) * e;
-        camera.updateProjectionMatrix();
+      const zoomZ = scaleAnimFromLevel + (scaleAnimToLevel - scaleAnimFromLevel) * e;
+      updateScaleVisualsContinuous(zoomZ);
+      const fovFrom = scaleAnimFrom.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimFromLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID);
+      const fovTo = scaleAnimTo.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimToLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID);
+      camera.fov = fovFrom + (fovTo - fovFrom) * e;
+      camera.updateProjectionMatrix();
+      if (radialBlurPass) {
+        radialBlurPass.uniforms.uStrength.value = Math.sin(p * Math.PI) * 0.22;
       }
       if (p >= 1) {
+        if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
         scaleAnimActive = false;
         if (scalePreset(scaleLevel).targetEarth) {
           const ep = scalePreset(scaleLevel);
@@ -3029,6 +3445,9 @@ const RadialBlurShader = {
     whenEarthReady() { return earthMapReady ? Promise.resolve() : earthMapReadyPromise; },
     getScaleLevel() { return scaleLevel; },
     setScaleLevel(n) { applyScalePreset(n, true); },
+    startScaleJourney,
+    cancelScaleJourney,
+    isJourneyActive() { return journeyActive; },
     focusPlanet,
     set onIntroDone(fn) {
       onIntroDone = fn;
