@@ -215,7 +215,49 @@ const AstroApp = (() => {
     }
   }
 
+  var moreMenuTrap = null;
+  var moreMenuTrapBtn = null;
+
+  function clearMoreMenuTrap() {
+    if (moreMenuTrap) {
+      document.removeEventListener('keydown', moreMenuTrap);
+      moreMenuTrap = null;
+    }
+    moreMenuTrapBtn = null;
+  }
+
+  function wireMoreMenuTrap(wrap, btn, panel) {
+    clearMoreMenuTrap();
+    var links = Array.prototype.slice.call(panel.querySelectorAll('a[href]'));
+    if (!links.length) return;
+    moreMenuTrapBtn = btn;
+    links[0].focus();
+    moreMenuTrap = function (e) {
+      if (!wrap.classList.contains('is-open')) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMoreMenus();
+        if (moreMenuTrapBtn) moreMenuTrapBtn.focus();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      var nodes = [btn].concat(links);
+      var first = nodes[0];
+      var last = nodes[nodes.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', moreMenuTrap);
+  }
+
   function closeMoreMenus() {
+    var returnBtn = moreMenuTrapBtn;
+    clearMoreMenuTrap();
     document.querySelectorAll('[data-nav-more]').forEach(function (wrap) {
       var btn = wrap.querySelector('.navbar__more-btn');
       var panel = wrap.querySelector('.navbar__more-panel');
@@ -225,6 +267,7 @@ const AstroApp = (() => {
       wrap.classList.remove('is-open');
       resetMorePanel(panel);
     });
+    if (returnBtn && document.contains(returnBtn)) returnBtn.focus();
   }
 
   function initMoreMenu() {
@@ -243,6 +286,7 @@ const AstroApp = (() => {
           btn.setAttribute('aria-expanded', 'true');
           panel.hidden = false;
           positionMorePanel(btn, panel);
+          wireMoreMenuTrap(wrap, btn, panel);
         }
       });
       panel.querySelectorAll('a').forEach(function (a) {
@@ -255,7 +299,7 @@ const AstroApp = (() => {
         if (!e.target.closest('[data-nav-more]')) closeMoreMenus();
       });
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeMoreMenus();
+        if (e.key === 'Escape' && document.querySelector('[data-nav-more].is-open')) closeMoreMenus();
       });
       var repositionOpenMore = function () {
         document.querySelectorAll('[data-nav-more].is-open').forEach(function (wrap) {

@@ -373,7 +373,47 @@
 }
 @media (max-width: 900px) {
   .shopc-featured__grid,
-  .shopc-featured__grid--equal { grid-template-columns: 1fr; }
+  .shopc-featured__grid--equal {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .shopc-featured__card--hero {
+    transform: none;
+    order: -1;
+  }
+  .shopc-featured__copy { padding: var(--space-4) var(--space-5); }
+  .shopc-featured__foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+  .shopc-featured__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .shopc-featured__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .shop-sticky-nav__inner {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    padding: 0 var(--space-3) var(--space-1);
+    scrollbar-width: none;
+  }
+  .shop-sticky-nav__inner::-webkit-scrollbar { display: none; }
+  .shop-cat-btn,
+  .shopc-chip,
+  .shop-curated-tab {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
 }
 @media (min-width: 901px) {
   .shopc-featured__grid--equal .shopc-featured__card--hero {
