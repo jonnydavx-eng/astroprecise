@@ -35,9 +35,11 @@
   window.__apHeroEnter = enterHero;
 
   function preloaderStillActive() {
+    if (window.__apHeroEntered) return false;
     var pre = document.getElementById('preloader');
     if (!pre || pre.style.display === 'none') return false;
-    return true;
+    if (pre.classList.contains('fade-out') || pre.classList.contains('preloader-exit')) return false;
+    return document.body.classList.contains('preloader-active');
   }
 
   function bootHeroEntrance() {

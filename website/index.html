@@ -2651,9 +2651,8 @@
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core{animation:none;}}
     /* The way-in is revealed only when the sky SETTLES (driven by the orrery, not a blind timer) */
     #preloader-enter{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
-    #preloader.aligned #preloader-enter,#preloader.orrery-expanded #preloader-enter{pointer-events:auto;}
-    #preloader.aligned #preloader-enter:not(.preloader-enter-btn--arrive):not(.preloader-enter-btn--launch),
-    #preloader.orrery-expanded #preloader-enter:not(.preloader-enter-btn--arrive):not(.preloader-enter-btn--launch){opacity:1;transform:none;}
+    /* Enter must stay visible when aligned — do not exclude --arrive (animation can finish while intro is hidden). */
+    #preloader.aligned #preloader-enter,#preloader.orrery-expanded #preloader-enter,#preloader.preloader--enter-ready #preloader-enter{opacity:1;transform:none;pointer-events:auto;}
     .preloader-join-optional{display:block;margin:10px auto 0;padding:0;border:none;background:transparent;color:rgba(168,159,138,0.82);font-family:Inter,system-ui,sans-serif;font-size:0.62rem;letter-spacing:0.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .45s ease;}
     #preloader.aligned .preloader-join-optional{opacity:1;pointer-events:auto;}
     #preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease;}
@@ -2805,8 +2804,14 @@
     function hidePre() {
       if (preDone) return; preDone = true;
       if (raf) cancelAnimationFrame(raf);
+      document.body.classList.remove('preloader-active');
+      document.body.classList.remove('preloader-intro-playing');
+      window.__orreryPreloaderOwns = false;
+      window.__apHeroEntered = true;
       pre.classList.add('preloader-exit');
       document.body.classList.add('hero-reveal');
+      if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
+      window.dispatchEvent(new Event('ap-hero-enter'));
       if (orreryRelocated && orrViewport && heroRing) {
         var orrCanvas = document.getElementById('orrery-canvas');
         if (orrCanvas) {
@@ -2831,19 +2836,13 @@
         if (window.Orrery3D && typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
       }
       try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (e) {}
+      if (window.CosmosEngine && typeof window.CosmosEngine.setPreloaderPause === 'function') {
+        window.CosmosEngine.setPreloaderPause(false);
+      }
       pre.classList.add('fade-out');
       setTimeout(() => {
         pre.style.display = 'none';
-        document.body.classList.remove('preloader-active');
         document.body.classList.remove('hero-reveal');
-        document.body.classList.remove('preloader-intro-playing');
-        window.__orreryPreloaderOwns = false;
-        window.__apHeroEntered = true;
-        if (window.CosmosEngine && typeof window.CosmosEngine.setPreloaderPause === 'function') {
-          window.CosmosEngine.setPreloaderPause(false);
-        }
-        if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
-        window.dispatchEvent(new Event('ap-hero-enter'));
       }, 920);
       const heroO = document.getElementById('orrery-canvas');
       if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';
@@ -3110,25 +3109,35 @@
       });
     }
 
+    function pulseEnterArrive() {
+      if (!enterBtn || preDone) return;
+      enterBtn.classList.remove('preloader-enter-btn--launch');
+      enterBtn.style.pointerEvents = 'auto';
+      enterBtn.style.opacity = '1';
+      enterBtn.classList.remove('preloader-enter-btn--arrive');
+      void enterBtn.offsetWidth;
+      enterBtn.classList.add('preloader-enter-btn--arrive');
+      try { enterBtn.focus({ preventScroll: true }); } catch (_) {}
+    }
+
     function revealEnter(force) {
-      if (!force && window.Orrery3D) {
-        if (typeof Orrery3D.isIntroPending === 'function' && Orrery3D.isIntroPending()) {
-          if (++revealRetries < 120) { requestAnimationFrame(function () { revealEnter(false); }); return; }
+      if (!force) {
+        if (document.body.classList.contains('preloader-intro-playing')) {
+          if (++revealRetries < 240) { requestAnimationFrame(function () { revealEnter(false); }); return; }
         }
-        if (typeof Orrery3D.isIntroActive === 'function' && Orrery3D.isIntroActive()) {
-          if (++revealRetries < 120) { requestAnimationFrame(function () { revealEnter(false); }); return; }
+        if (window.Orrery3D) {
+          if (typeof Orrery3D.isIntroPending === 'function' && Orrery3D.isIntroPending()) {
+            if (++revealRetries < 240) { requestAnimationFrame(function () { revealEnter(false); }); return; }
+          }
+          if (typeof Orrery3D.isIntroActive === 'function' && Orrery3D.isIntroActive()) {
+            if (++revealRetries < 240) { requestAnimationFrame(function () { revealEnter(false); }); return; }
+          }
         }
       }
       revealRetries = 0;
       pre.classList.add('aligned', 'preloader--enter-ready');
-      if (enterBtn) {
-        enterBtn.classList.remove('preloader-enter-btn--arrive', 'preloader-enter-btn--launch');
-        enterBtn.style.pointerEvents = 'auto';
-        void enterBtn.offsetWidth;
-        enterBtn.classList.add('preloader-enter-btn--arrive');
-      }
       wireEnterButton();
-      try { enterBtn && enterBtn.focus({ preventScroll: true }); } catch (_) {}
+      pulseEnterArrive();
     }
     // Entry reveal is driven by the orrery's onIntroDone (the sky settling) — see above.
     // The timers below are only safety nets so the button can never be unreachable.
@@ -3137,7 +3146,7 @@
     // Re-assert the reveal at 5s (in case 2.6s fired before the button existed), and
     // keep only a long last-resort safety net so no one is ever truly trapped.
     document.addEventListener('ap-preloader-ready', function () { revealEnter(true); });
-    setTimeout(function () { revealEnter(true); }, 6000);
+    setTimeout(function () { revealEnter(false); }, 8000);
     setTimeout(hidePre, 90000);
 
     document.addEventListener('keydown', function (ev) {
