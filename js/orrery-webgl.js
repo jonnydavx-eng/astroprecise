@@ -208,7 +208,22 @@ const RadialBlurShader = {
   let introStartedAt = 0;
   const INTRO_MS = 6800;
   const PRELOADER_INTRO_MS = 7500;
-  const PRELOADER_SYSTEM_CAM = 54;
+  const PRELOADER_SYSTEM_CAM_DESKTOP = 34;
+  const PRELOADER_SYSTEM_CAM_MOBILE = 22;
+  const PRELOADER_HOLD_SCALE_DESKTOP = 2;
+  const PRELOADER_HOLD_SCALE_MOBILE = 1;
+
+  function isPreloaderMobile() {
+    try { return window.matchMedia('(max-width: 768px)').matches; } catch (e) { return false; }
+  }
+
+  function preloaderSystemCamRadius() {
+    return isPreloaderMobile() ? PRELOADER_SYSTEM_CAM_MOBILE : PRELOADER_SYSTEM_CAM_DESKTOP;
+  }
+
+  function preloaderHoldScaleLevel() {
+    return isPreloaderMobile() ? PRELOADER_HOLD_SCALE_MOBILE : PRELOADER_HOLD_SCALE_DESKTOP;
+  }
 
   function introDurationMs() {
     return onPreloaderStage() ? PRELOADER_INTRO_MS : INTRO_MS;
@@ -388,20 +403,21 @@ const RadialBlurShader = {
   function holdPreloaderSystemFrame() {
     buildRemainingPlanets();
     preloaderIntroScheduled = false;
-    scaleLevel = 2;
+    const holdScale = preloaderHoldScaleLevel();
+    scaleLevel = holdScale;
     scaleAnimActive = false;
     introActive = false;
     showOrbits = true;
     updateScaleHUD();
     needRecompute = true;
     updatePositions();
-    updateScaleVisuals(2);
-    const end = scalePreset(2);
+    updateScaleVisuals(holdScale);
+    const end = scalePreset(holdScale);
     camTarget.set(0, 0, 0);
-    camRadius = PRELOADER_SYSTEM_CAM;
-    camEl = end.camEl;
+    camRadius = preloaderSystemCamRadius();
+    camEl = isPreloaderMobile() ? 24 * D2R : end.camEl;
     camAz = end.camAz;
-    camera.fov = CAM_FOV_WIDE;
+    camera.fov = isPreloaderMobile() ? CAM_FOV_CLOSE : CAM_FOV_MID;
     camera.updateProjectionMatrix();
     tuneSunGlowForComposer(perfTier);
     if (bloomPass && composer) {
@@ -410,12 +426,13 @@ const RadialBlurShader = {
     }
     if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.10 : 1.06;
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
-    syncSceneStarfield(2);
-    syncCosmosBlend(2);
+    syncSceneStarfield(holdScale);
+    syncCosmosBlend(holdScale);
     applyPreloaderEarthIsolation(1);
     applyCamera();
     updateDomLabels(1);
     syncPreloaderSystemClass(true);
+    requestAnimationFrame(forceResize);
     updateIntroProgress(1);
     try {
       document.dispatchEvent(new CustomEvent('ap-preloader-ready'));
@@ -2344,7 +2361,7 @@ const RadialBlurShader = {
             setEarthTerminatorCamera(6.5, 11 * D2R);
             const termAz = camAz, termEl = camEl, termRad = camRadius;
             camTarget.lerpVectors(earthPos, ORIGIN, e);
-            camRadius = termRad + (PRELOADER_SYSTEM_CAM - termRad) * e;
+            camRadius = termRad + (preloaderSystemCamRadius() - termRad) * e;
             camEl = termEl + (end.camEl - termEl) * e;
             camAz = termAz * (1 - e) + end.camAz * e;
           }
