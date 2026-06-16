@@ -6697,10 +6697,19 @@ body.preloader-active .privacy-banner {
   color: var(--gold-pale, #EFE3C0);
   font-weight: 700;
 }
+body.preloader-active .bottom-nav {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 @media (max-width: 1023px) {
   .bottom-nav { display: block; }
   body {
     padding-bottom: calc(var(--bottom-nav-h, 72px) + env(safe-area-inset-bottom, 0px));
+  }
+  body.preloader-active {
+    padding-bottom: 0;
   }
   body.has-email-sticky {
     padding-bottom: calc(var(--bottom-nav-h, 72px) + env(safe-area-inset-bottom, 0px));

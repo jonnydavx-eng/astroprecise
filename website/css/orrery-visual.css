@@ -328,7 +328,50 @@
 
 #preloader.preloader--system-view .apl-live-orr,
 #preloader.aligned .apl-live-orr {
-  --preloader-orr-size: min(62vmin, 520px);
+  --preloader-orr-size: min(58vmin, 480px);
+  top: 46%;
+  transform: translate(-50%, -50%);
+}
+
+/* Mobile: fill the stage — small circle + far camera read as empty void + tiny planets */
+@media (max-width: 768px) {
+  #preloader.has-real .apl-live-orr,
+  #preloader.has-live-orr .apl-live-orr,
+  #preloader.orrery-expanded .apl-live-orr {
+    --preloader-orr-size: min(88vw, calc(100dvh - 200px));
+    top: 44%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #preloader.preloader--system-view .apl-live-orr,
+  #preloader.aligned .apl-live-orr {
+    --preloader-orr-size: min(92vw, calc(100dvh - 180px));
+    top: 42%;
+  }
+
+  #preloader.has-real #orrery-canvas,
+  #preloader.has-live-orr #orrery-canvas {
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0%, #000 70%, rgba(0, 0, 0, 0.4) 86%, transparent 98%);
+    mask-image: radial-gradient(circle at 50% 50%, #000 0%, #000 70%, rgba(0, 0, 0, 0.4) 86%, transparent 98%);
+  }
+
+  .preloader-content {
+    bottom: max(3vh, calc(env(safe-area-inset-bottom) + 10px));
+    width: min(24rem, 94vw);
+  }
+}
+
+/* Unified vignette over transparent preloader — one sky, not stacked UI layers */
+#preloader.has-real::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 95% 75% at 50% 42%, transparent 22%, rgba(5, 4, 6, 0.45) 72%, rgba(3, 2, 4, 0.82) 100%),
+    linear-gradient(180deg, rgba(5, 4, 6, 0.35) 0%, transparent 18%, transparent 72%, rgba(5, 4, 6, 0.55) 100%);
 }
 
 #preloader.aligned .apl-live-orr {

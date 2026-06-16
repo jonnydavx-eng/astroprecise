@@ -2853,6 +2853,17 @@
         window.Orrery3D.forceResize();
       }
     }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', function () {
+        if (!preDone && orreryRelocated) refitPreloaderOrrery();
+      }, { passive: true });
+    }
+    window.addEventListener('orientationchange', function () {
+      if (!preDone && orreryRelocated) {
+        setTimeout(refitPreloaderOrrery, 80);
+        setTimeout(refitPreloaderOrrery, 320);
+      }
+    }, { passive: true });
 
     async function waitForOrreryViewport(ms) {
       var deadline = Date.now() + ms;
