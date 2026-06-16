@@ -159,6 +159,8 @@
     .sphere-wrap {
       position: relative; width: 100%; max-width: 700px;
       margin: 0 auto; cursor: grab;
+      contain: layout style;
+      touch-action: pan-y;
     }
     .sphere-wrap canvas { display: block; width: 100%; touch-action: none; }
     .sphere-controls {
@@ -219,7 +221,9 @@
     .sign-grid-toggle {
       background: none; border: 1px solid rgba(255,255,255,0.12);
       color: var(--silver-dim, #8891AA); border-radius: 999px;
-      padding: 0.35rem 1rem; font-size: 0.78rem; cursor: pointer;
+      padding: 0.5rem 1.1rem; font-size: 0.78rem; cursor: pointer;
+      min-height: 44px; min-width: 44px;
+      touch-action: manipulation;
       transition: border-color .15s, color .15s;
     }
     .sign-grid-toggle:hover { border-color: var(--gold, #c9a227); color: var(--gold, #c9a227); }
@@ -396,6 +400,11 @@
 
     /* ---- Sign card — premium zodiac card ---- */
     .sign-card {
+      appearance: none;
+      -webkit-appearance: none;
+      font: inherit;
+      width: 100%;
+      margin: 0;
       background-color: #0d0a07;
       background-repeat: no-repeat;
       background-size: cover;
@@ -406,6 +415,7 @@
       padding: 0 0 1rem;
       text-align: center;
       cursor: pointer;
+      color: inherit;
       transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease, border-color 0.22s;
       display: flex;
       flex-direction: column;
@@ -414,6 +424,7 @@
       gap: 0.2rem;
       position: relative;
       overflow: hidden;
+      touch-action: manipulation;
     }
     /* Bottom gradient scrim for text legibility */
     .sign-card::before {
