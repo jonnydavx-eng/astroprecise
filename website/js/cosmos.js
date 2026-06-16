@@ -41,6 +41,8 @@ window.CosmosEngine = (() => {
   let resizeTimer  = null;
   let destroyed    = false;
   let paused       = false;   // tab hidden — skip the loop to save battery
+  let preloaderPaused = false; // live WebGL orrery owns the splash — freeze 2D starfield
+  let orreryBlend = 0;         // 0 = orrery owns sky; 1 = cosmos dominates at galaxy scale
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -376,6 +378,7 @@ window.CosmosEngine = (() => {
 
   function frame(timestamp) {
     if (destroyed) return;
+    if (preloaderPaused) return;
 
     if (lastTime === null) lastTime = timestamp;
     const dt  = Math.min(timestamp - lastTime, 50); // cap at 50ms to avoid jumps
@@ -475,9 +478,33 @@ window.CosmosEngine = (() => {
     if (document.hidden) {
       paused = true;
       if (animFrameId !== null) { cancelAnimationFrame(animFrameId); animFrameId = null; }
-    } else if (paused && !destroyed && !reduceMotion) {
+    } else if (paused && !destroyed && !reduceMotion && !preloaderPaused) {
       paused = false;
       lastTime = null;                         // reset dt baseline to avoid a jump
+      animFrameId = requestAnimationFrame(frame);
+    }
+  }
+
+  function setOrreryBlend(v) {
+    orreryBlend = Math.max(0, Math.min(1, Number(v) || 0));
+    if (!canvas) return;
+    const base = preloaderPaused ? 0.5 : 0.62;
+    canvas.style.opacity = String(base + orreryBlend * 0.38);
+    canvas.style.transition = reduceMotion ? 'none' : 'opacity 0.9s ease';
+  }
+
+  function setPreloaderPause(on) {
+    preloaderPaused = !!on;
+    if (preloaderPaused) {
+      if (animFrameId !== null) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
+      if (ctx && !destroyed) drawStaticFrame();
+      return;
+    }
+    if (!destroyed && !reduceMotion && !paused && animFrameId === null) {
+      lastTime = null;
       animFrameId = requestAnimationFrame(frame);
     }
   }
@@ -558,6 +585,7 @@ window.CosmosEngine = (() => {
   // ── DOMContentLoaded entry point ───────────────────────────────────────────
 
   document.addEventListener('DOMContentLoaded', init);
+  window.addEventListener('ap-hero-enter', () => setPreloaderPause(false));
 
   /** 0→1 hero scroll progress — ties the background starfield to the orrery scroll clock. */
   function setScrollDrive(progress) {
@@ -565,6 +593,6 @@ window.CosmosEngine = (() => {
     scrollDrive = Math.max(0, Math.min(1, Number(progress) || 0));
   }
 
-  return { destroy, setScrollDrive };
+  return { destroy, setScrollDrive, setPreloaderPause, setOrreryBlend };
 
 })();

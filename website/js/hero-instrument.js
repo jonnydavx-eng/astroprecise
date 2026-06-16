@@ -161,18 +161,6 @@
   window.addEventListener('wheel', dismissCue, { passive: true, once: true });
   window.addEventListener('touchmove', dismissCue, { passive: true, once: true });
 
-  /* ── Sky pill → orrery planet focus (dispatch existing click event) ── */
-  document.addEventListener('click', function (e) {
-    var pill = e.target.closest && e.target.closest('.sky-pill');
-    if (!pill || !window.Orrery3D) return;
-    var nameEl = pill.querySelector('.sky-pill__name');
-    if (!nameEl) return;
-    var name = nameEl.textContent.replace(/\s*℞\s*/g, '').trim().toLowerCase();
-    document.dispatchEvent(new CustomEvent('orrery-planet-click', {
-      detail: { name: name.charAt(0).toUpperCase() + name.slice(1), id: name }
-    }));
-    pill.classList.add('sky-pill--focus');
-    setTimeout(function () { pill.classList.remove('sky-pill--focus'); }, 1400);
-  });
+  /* Sky pill clicks are wired in index.html (richer longitude/retro detail). */
 
 })();

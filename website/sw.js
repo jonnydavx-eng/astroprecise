@@ -4,7 +4,7 @@
  * Runtime requests use stale-while-revalidate for HTML, cache-first for assets.
  */
 
-const V = 'ap-v189';
+const V = 'ap-v202';
 
 const PRECACHE = [
   './',
@@ -168,6 +168,20 @@ const PRECACHE = [
   './assets/textures/saturn_ring.png',
   './assets/textures/uranus.jpg',
   './assets/textures/neptune.jpg',
+  './assets/textures/earth_sm.jpg',
+  './assets/textures/earth_clouds_sm.jpg',
+  './assets/textures/earth_specular_sm.jpg',
+  './assets/textures/earth_normal_sm.jpg',
+  './assets/textures/earth_lights_sm.png',
+  './assets/textures/moon_sm.jpg',
+  './assets/textures/mercury_sm.jpg',
+  './assets/textures/venus_sm.jpg',
+  './assets/textures/mars_sm.jpg',
+  './assets/textures/jupiter_sm.jpg',
+  './assets/textures/saturn_sm.jpg',
+  './assets/textures/saturn_ring_sm.png',
+  './assets/textures/uranus_sm.jpg',
+  './assets/textures/neptune_sm.jpg',
   './assets/images/zodiac-cards/aries.jpg',
   './assets/images/zodiac-cards/taurus.jpg',
   './assets/images/zodiac-cards/gemini.jpg',

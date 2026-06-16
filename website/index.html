@@ -277,13 +277,14 @@
 
     .hero__h1 {
       font-family: var(--font-display);
-      font-size: clamp(2.25rem, 5.2vw, 3.55rem);
+      font-size: clamp(2rem, 4.2vw, 3.15rem);
       font-weight: 600;
-      line-height: 1.18;
+      line-height: 1.14;
       letter-spacing: 0.02em;
       color: var(--white);
       margin-bottom: var(--space-5);
       text-shadow: 0 2px 22px rgba(5, 4, 6, 0.92), 0 1px 6px rgba(5, 4, 6, 0.78);
+      text-wrap: balance;
     }
 
     .hero__h1 em {
@@ -403,9 +404,18 @@
     .hero__orrery-wrap {
       position: relative;
       width: 100%;
-      max-width: 920px;
+      max-width: min(100%, 560px);
       margin: 0 auto;
       pointer-events: none;
+    }
+
+    .page-home .hero__stage {
+      align-items: start;
+      padding-top: var(--space-6);
+    }
+
+    .page-home .hero__content {
+      align-self: center;
     }
 
     .orrery-console {
@@ -769,6 +779,15 @@
       box-shadow: 0 0 18px rgba(201, 162, 39, 0.22);
       background: linear-gradient(145deg, rgba(28, 22, 14, 0.92), rgba(12, 10, 8, 0.88));
     }
+    @media (prefers-reduced-motion: no-preference) {
+      .sky-pill--focus {
+        animation: sky-pill-focus-pulse 2.2s ease-in-out infinite;
+      }
+    }
+    @keyframes sky-pill-focus-pulse {
+      0%, 100% { box-shadow: 0 0 14px rgba(201, 162, 39, 0.18); }
+      50% { box-shadow: 0 0 22px rgba(201, 162, 39, 0.38); }
+    }
 
     .live-sky-dock-panel {
       padding: var(--space-5) var(--space-5) var(--space-4);
@@ -821,7 +840,7 @@
 
     #orrery-canvas {
       display: block;
-      width: min(100%, 720px);
+      width: min(100%, 520px);
       max-width: 100%;
       height: auto;
       aspect-ratio: 1 / 1;
@@ -1244,6 +1263,21 @@
       outline-offset: 2px;
     }
     .sky-pill--retro { border-color: rgba(176, 74, 82, 0.3); }
+    @media (prefers-reduced-motion: no-preference) {
+      .sky-pill--retro {
+        animation: sky-pill-retro-pulse 2.6s ease-in-out infinite;
+      }
+    }
+    @keyframes sky-pill-retro-pulse {
+      0%, 100% {
+        border-color: rgba(176, 74, 82, 0.28);
+        box-shadow: none;
+      }
+      50% {
+        border-color: rgba(210, 90, 98, 0.62);
+        box-shadow: 0 0 16px rgba(176, 74, 82, 0.2);
+      }
+    }
 
     .sky-pill__glyph {
       font-size: 1.1rem;
@@ -2617,7 +2651,11 @@
     @media (prefers-reduced-motion: reduce){.apl-spin,.apl-core{animation:none;}}
     /* The way-in is revealed only when the sky SETTLES (driven by the orrery, not a blind timer) */
     #preloader-enter{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(0.22,1,0.36,1);}
-    #preloader.aligned #preloader-enter{opacity:1;transform:none;pointer-events:auto;}
+    #preloader.aligned #preloader-enter,#preloader.orrery-expanded #preloader-enter{pointer-events:auto;}
+    #preloader.aligned #preloader-enter:not(.preloader-enter-btn--arrive):not(.preloader-enter-btn--launch),
+    #preloader.orrery-expanded #preloader-enter:not(.preloader-enter-btn--arrive):not(.preloader-enter-btn--launch){opacity:1;transform:none;}
+    .preloader-join-optional{display:block;margin:10px auto 0;padding:0;border:none;background:transparent;color:rgba(168,159,138,0.82);font-family:Inter,system-ui,sans-serif;font-size:0.62rem;letter-spacing:0.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .45s ease;}
+    #preloader.aligned .preloader-join-optional{opacity:1;pointer-events:auto;}
     #preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease;}
     #preloader.gate-open .apl-live-orr,#preloader.gate-open .apl-live-orr canvas{pointer-events:none !important;}
     .preloader-email-gate{position:absolute;inset:0;z-index:20;display:none !important;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none !important;transition:opacity .35s ease,visibility .35s ease;}
@@ -2649,7 +2687,7 @@
         <span class="apl-brand__wordmark">AstroPrecise</span>
       </div>
       <div class="apl-intro-progress" aria-hidden="true"><span class="apl-intro-progress__bar" id="preloader-intro-progress"></span></div>
-      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">Earth</p>
+      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">Calibrating sky</p>
     </header>
     <button type="button" class="preloader-skip-intro" id="preloader-skip-intro" aria-label="Skip intro">Skip</button>
     <div class="apl-cosmic-art" aria-hidden="true"></div>
@@ -2661,11 +2699,13 @@
       <div class="apl-spin apl-s3"><span class="apl-pl apl-goldp"></span></div>
     </div>
     <div class="apl-core" aria-hidden="true"></div>
+    <div class="apl-earth-poster" aria-hidden="true"></div>
     <!-- The real 3D orrery is relocated here from the hero during loading -->
     <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
     <div class="preloader-content">
       <div class="preloader-title">Sky aligned</div>
-      <button id="preloader-enter" class="preloader-skip preloader-enter-btn" aria-label="Enter the site">Enter</button>
+      <button type="button" id="preloader-enter" class="preloader-skip preloader-enter-btn" aria-label="Enter the site">Enter</button>
+      <button type="button" id="preloader-join-optional" class="preloader-join-optional">Join update list</button>
     </div>
     <div id="preloader-email-gate" class="preloader-email-gate" aria-hidden="true">
       <div class="preloader-email-gate__backdrop" aria-hidden="true"></div>
@@ -2713,7 +2753,32 @@
     document.body.classList.add('preloader-active');
     window.__orreryPreloaderOwns = true;
     let raf = null;
+    let revealRetries = 0;
     const enterBtn = document.getElementById('preloader-enter');
+
+    function localPerfTier() {
+      try {
+        if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
+        if (navigator.deviceMemory && navigator.deviceMemory <= 4) return 'low';
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return 'low';
+      } catch (e) { return 'high'; }
+      return 'high';
+    }
+
+    function preloaderWebGLSafe() {
+      try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+        if (localPerfTier() === 'low') return false;
+        if (/[?&](lite|nosplash)=1/.test(location.search)) return false;
+      } catch (e) { return false; }
+      return true;
+    }
+
+    function useCssPreloaderFallback() {
+      if (preDone) return;
+      pre.classList.add('fallback-css');
+      setTimeout(function () { revealEnter(true); }, 900);
+    }
 
     // ── The REAL 3D orrery (same model as the hero centrepiece) on the loading screen ──
     const orrSlot = document.getElementById('preloader-orrery-slot');
@@ -2750,6 +2815,8 @@
         }
         heroRing.appendChild(orrViewport);
         heroRing.classList.remove('orrery-canvas-away');
+        orrViewport.classList.add('orrery-viewport--hero-enter');
+        setTimeout(function () { orrViewport.classList.remove('orrery-viewport--hero-enter'); }, 1400);
         if (window.Orrery3D && typeof window.Orrery3D.settleFromIntro === 'function') window.Orrery3D.settleFromIntro();
         function refitOrrery() {
           if (window.Orrery3D && typeof window.Orrery3D.forceResize === 'function') window.Orrery3D.forceResize();
@@ -2769,8 +2836,12 @@
         pre.style.display = 'none';
         document.body.classList.remove('preloader-active');
         document.body.classList.remove('hero-reveal');
+        document.body.classList.remove('preloader-intro-playing');
         window.__orreryPreloaderOwns = false;
         window.__apHeroEntered = true;
+        if (window.CosmosEngine && typeof window.CosmosEngine.setPreloaderPause === 'function') {
+          window.CosmosEngine.setPreloaderPause(false);
+        }
         if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
         window.dispatchEvent(new Event('ap-hero-enter'));
       }, 920);
@@ -2797,6 +2868,10 @@
     function featureOrreryOnLoadingScreen() {
       (async function () {
         if (!orrSlot || preDone) return;
+        if (!preloaderWebGLSafe()) {
+          useCssPreloaderFallback();
+          return;
+        }
 
         var engineLoad = (typeof window.__loadOrreryEngine === 'function')
           ? window.__loadOrreryEngine().catch(function () {})
@@ -2804,7 +2879,7 @@
 
         orrViewport = await waitForOrreryViewport(12000);
         if (!orrViewport || preDone) {
-          if (!preDone) pre.classList.add('fallback-css');
+          if (!preDone) useCssPreloaderFallback();
           return;
         }
         heroRing = orrViewport.parentElement;
@@ -2820,7 +2895,7 @@
           return window.Orrery3D && window.AstroEphemeris && typeof Orrery3D.init === 'function';
         }, 20000);
         if (!engineReady || preDone) {
-          if (!preDone) pre.classList.add('fallback-css');
+          if (!preDone) useCssPreloaderFallback();
           return;
         }
         try {
@@ -2834,6 +2909,13 @@
             await window.Orrery3D.whenEarthReady();
           }
           if (preDone) return;
+          pre.classList.add('orrery-expanded');
+          wireEnterButton();
+          refitPreloaderOrrery();
+          requestAnimationFrame(function () {
+            refitPreloaderOrrery();
+            setTimeout(refitPreloaderOrrery, 200);
+          });
           if (typeof window.Orrery3D.startPreloaderIntro === 'function') {
             window.Orrery3D.startPreloaderIntro(revealEnter);
           } else if (typeof window.Orrery3D.restartIntro === 'function') {
@@ -2841,6 +2923,9 @@
             window.Orrery3D.restartIntro();
           }
           pre.classList.add('has-real');
+          if (window.CosmosEngine && typeof window.CosmosEngine.setPreloaderPause === 'function') {
+            window.CosmosEngine.setPreloaderPause(true);
+          }
           orrSlot.setAttribute('aria-hidden', 'false');
           refitPreloaderOrrery();
           requestAnimationFrame(function () {
@@ -2851,10 +2936,15 @@
             });
           });
         } catch (e) {
-          if (!preDone) pre.classList.add('fallback-css');
+          if (!preDone) useCssPreloaderFallback();
         }
       })();
     }
+    setTimeout(function () {
+      if (!preDone && !pre.classList.contains('has-real') && !pre.classList.contains('fallback-css')) {
+        useCssPreloaderFallback();
+      }
+    }, 14000);
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', featureOrreryOnLoadingScreen);
     } else {
@@ -2916,13 +3006,31 @@
       hidePre();
     }
 
+    function enterSite() {
+      if (preDone) return;
+      if (gateOpen) {
+        if (gateEl) {
+          gateEl.classList.remove('is-open');
+          gateEl.setAttribute('aria-hidden', 'true');
+        }
+        pre.classList.remove('gate-open');
+        gateOpen = false;
+      }
+      if (enterBtn) enterBtn.classList.add('preloader-enter-btn--launch');
+      hidePre();
+    }
+
     function rearmEnterButton() {
-      if (!enterBtn || preDone || !pre.classList.contains('aligned')) return;
-      enterBtn.dataset.wired = '';
-      enterBtn.addEventListener('click', function () {
-        showEmailGate();
-      }, { once: true });
+      wireEnterButton();
+    }
+
+    function wireEnterButton() {
+      if (!enterBtn || preDone || enterBtn.dataset.wired === '1') return;
       enterBtn.dataset.wired = '1';
+      enterBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        enterSite();
+      });
     }
 
     function showEmailGate() {
@@ -2989,7 +3097,7 @@
       if (window.Orrery3D && typeof Orrery3D.skipIntro === 'function') {
         Orrery3D.skipIntro();
       } else {
-        revealEnter();
+        revealEnter(true);
       }
     }
 
@@ -3002,24 +3110,25 @@
       });
     }
 
-    function revealEnter() {
-      if (window.Orrery3D) {
+    function revealEnter(force) {
+      if (!force && window.Orrery3D) {
         if (typeof Orrery3D.isIntroPending === 'function' && Orrery3D.isIntroPending()) {
-          requestAnimationFrame(revealEnter);
-          return;
+          if (++revealRetries < 120) { requestAnimationFrame(function () { revealEnter(false); }); return; }
         }
         if (typeof Orrery3D.isIntroActive === 'function' && Orrery3D.isIntroActive()) {
-          requestAnimationFrame(revealEnter);
-          return;
+          if (++revealRetries < 120) { requestAnimationFrame(function () { revealEnter(false); }); return; }
         }
       }
-      pre.classList.add('aligned');
-      if (enterBtn && !enterBtn.dataset.wired) {
-        enterBtn.dataset.wired = '1';
-        enterBtn.addEventListener('click', function () {
-          showEmailGate();
-        }, { once: true });
+      revealRetries = 0;
+      pre.classList.add('aligned', 'preloader--enter-ready');
+      if (enterBtn) {
+        enterBtn.classList.remove('preloader-enter-btn--arrive', 'preloader-enter-btn--launch');
+        enterBtn.style.pointerEvents = 'auto';
+        void enterBtn.offsetWidth;
+        enterBtn.classList.add('preloader-enter-btn--arrive');
       }
+      wireEnterButton();
+      try { enterBtn && enterBtn.focus({ preventScroll: true }); } catch (_) {}
     }
     // Entry reveal is driven by the orrery's onIntroDone (the sky settling) — see above.
     // The timers below are only safety nets so the button can never be unreachable.
@@ -3027,8 +3136,27 @@
     // No auto-dismiss: the visitor lingers on the live orrery and enters when ready.
     // Re-assert the reveal at 5s (in case 2.6s fired before the button existed), and
     // keep only a long last-resort safety net so no one is ever truly trapped.
-    setTimeout(revealEnter, 11000);
+    document.addEventListener('ap-preloader-ready', function () { revealEnter(true); });
+    setTimeout(function () { revealEnter(true); }, 6000);
     setTimeout(hidePre, 90000);
+
+    document.addEventListener('keydown', function (ev) {
+      if (preDone || gateOpen) return;
+      if (ev.key !== 'Enter' && ev.key !== ' ') return;
+      var tag = ev.target && ev.target.tagName ? ev.target.tagName : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (!pre.classList.contains('aligned') && ev.target !== enterBtn) return;
+      ev.preventDefault();
+      enterSite();
+    });
+
+    var joinOpt = document.getElementById('preloader-join-optional');
+    if (joinOpt) {
+      joinOpt.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        showEmailGate();
+      });
+    }
     // (tap-anywhere-to-enter removed: the orrery is now draggable, so a drag must
     //  not dismiss; entry is the explicit button.)
 
@@ -3120,7 +3248,8 @@
                   width="640"
                   height="640"
                   role="img"
-                  aria-label="The Living Orrery — drag to scrub time, scroll the page to advance the sky"
+                  tabindex="0"
+                  aria-label="The Living Orrery — drag to scrub time, arrow keys step days, 0–6 zoom scale, Space pause"
                 ></canvas>
                 <div class="orrery-cine-vignette" aria-hidden="true"></div>
                 <div class="orrery-cine-grain" aria-hidden="true"></div>
@@ -3976,6 +4105,78 @@
       });
     }
 
+    function liveSkyLonRetro(planetId, jd, E) {
+      var lon = 0;
+      var retro = false;
+      try {
+        switch (planetId) {
+          case 'sun':     lon = E.sunPosition(jd).lon; break;
+          case 'moon':    lon = E.moonPosition(jd).lon; break;
+          case 'mercury': lon = E.mercuryPosition(jd).lon; retro = E.isRetrograde('mercury', jd); break;
+          case 'venus':   lon = E.venusPosition(jd).lon;   retro = E.isRetrograde('venus', jd); break;
+          case 'mars':    lon = E.marsPosition(jd).lon;    retro = E.isRetrograde('mars', jd); break;
+          case 'jupiter': lon = E.jupiterPosition(jd).lon; retro = E.isRetrograde('jupiter', jd); break;
+          case 'saturn':  lon = E.saturnPosition(jd).lon;  retro = E.isRetrograde('saturn', jd); break;
+          case 'uranus':  lon = E.uranusPosition(jd).lon;  retro = E.isRetrograde('uranus', jd); break;
+          case 'neptune': lon = E.neptunePosition(jd).lon; retro = E.isRetrograde('neptune', jd); break;
+        }
+      } catch (err) {}
+      return { lon: lon, retro: retro };
+    }
+
+    function refreshLiveSkyStrip(jd) {
+      var strip = document.getElementById('live-sky-strip');
+      var E = window.AstroEphemeris;
+      if (!strip || !E || !strip.querySelector('.sky-pill[data-planet]')) return;
+      strip.querySelectorAll('.sky-pill[data-planet]').forEach(function (btn) {
+        var id = btn.dataset.planet;
+        var lr = liveSkyLonRetro(id, jd, E);
+        var disp = lonToDisplay(lr.lon);
+        btn.dataset.lon = String(lr.lon);
+        btn.dataset.retro = lr.retro ? '1' : '0';
+        btn.classList.toggle('sky-pill--retro', lr.retro);
+        var def = PLANET_DEF.find(function (p) { return p.id === id; }) || { label: id };
+        var retroSpan = btn.querySelector('.sky-pill__retro');
+        if (lr.retro && !retroSpan) {
+          var nameEl = btn.querySelector('.sky-pill__name');
+          if (nameEl) nameEl.insertAdjacentHTML('beforeend', '<span class="sky-pill__retro" aria-label="retrograde"> ℞</span>');
+        } else if (!lr.retro && retroSpan) {
+          retroSpan.remove();
+        }
+        var placeEl = btn.querySelector('.sky-pill__placement');
+        if (placeEl) {
+          placeEl.innerHTML = (window.AstroIcons
+            ? window.AstroIcons.orb(SIGN_GLYPHS[disp.signIdx], window.AstroIcons.elementOf(SIGN_NAMES[disp.signIdx]), { sm: true }) + ' '
+            : SIGN_GLYPHS[disp.signIdx] + ' ')
+            + SIGN_NAMES[disp.signIdx];
+        }
+        var degEl = btn.querySelector('.sky-pill__degree');
+        if (degEl) degEl.textContent = disp.degStr;
+        btn.setAttribute('aria-label', def.label + ' in ' + SIGN_NAMES[disp.signIdx] + ' at ' + disp.degStr + (lr.retro ? ' retrograde' : '') + ' — tap for detail');
+      });
+    }
+
+    document.addEventListener('ap-sky-tick', function (e) {
+      if (!e || !e.detail || e.detail.jd == null) return;
+      refreshLiveSkyStrip(e.detail.jd);
+    });
+
+    document.addEventListener('orrery-planet-focus', function (e) {
+      if (e && e.detail && e.detail.id) focusSkyPill(e.detail.id);
+    });
+
+    /* Refresh live sky strip every 60s when orrery is pinned near "now" */
+    setInterval(function () {
+      if (document.visibilityState !== 'visible') return;
+      if (!window.Orrery3D || typeof Orrery3D.getDayOffset !== 'function') return;
+      if (Math.abs(Orrery3D.getDayOffset()) > 0.5) return;
+      var E = window.AstroEphemeris;
+      if (!E) return;
+      var now = new Date();
+      var jd = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
+      refreshLiveSkyStrip(jd);
+    }, 60000);
+
     /* ── 1. Navbar scroll glass effect (SW registered in app.js) ─────── */
     (function () {
       var header = document.querySelector('.site-header');
@@ -4015,58 +4216,59 @@
           btn.classList.add('active');
         });
       });
-      // Sync live sky time to other instruments (orrery-webgl.js owns the date HUD)
+      // Sync live sky time to other instruments (throttled — orrery-webgl.js owns the date HUD)
       (function () {
+        var lastIso = '';
         function syncSkyTime() {
-          if (window.Orrery3D && typeof Orrery3D.getDate === 'function') {
-            try { localStorage.setItem('astro_current_demo_time', Orrery3D.getDate().toISOString()); } catch (e) {}
-          }
-          requestAnimationFrame(syncSkyTime);
+          if (document.visibilityState !== 'visible') return;
+          if (!window.Orrery3D || typeof Orrery3D.getDate !== 'function') return;
+          try {
+            var iso = Orrery3D.getDate().toISOString();
+            if (iso !== lastIso) {
+              lastIso = iso;
+              localStorage.setItem('astro_current_demo_time', iso);
+            }
+          } catch (e) {}
         }
-        requestAnimationFrame(syncSkyTime);
+        setInterval(syncSkyTime, 2000);
+        document.addEventListener('visibilitychange', syncSkyTime);
       })();
 
-      // Time scrubber — direct control of the 3D solar system rotation / offset
+      document.addEventListener('orrery-speed-change', function (e) {
+        var sp = e && e.detail ? e.detail.speed : null;
+        if (sp == null) return;
+        document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
+          var on = parseFloat(btn.dataset.speed) === sp;
+          btn.classList.toggle('active', on);
+        });
+      });
+
+      // Time scrubber — absolute day offset (VSOP87 positions)
       (function () {
         var scrub = document.getElementById('orrery-scrub');
         var reset = document.getElementById('orrery-reset');
         if (!scrub) return;
 
-        var lastVal = 0;
         scrub.addEventListener('input', function () {
           var val = parseInt(scrub.value, 10) || 0;
-          if (window.Orrery3D && typeof Orrery3D.jumpTo === 'function') {
-            // jumpTo expects JD offset; we approximate days since we use dayOffset internally
-            // Use a small nudge via setDate or by calculating rough JD delta
-            var current = (window.Orrery3D.getDate && window.Orrery3D.getDate()) || new Date();
-            current = new Date(current.getTime() + (val - lastVal) * 86400000);
-            if (typeof Orrery3D.setDate === 'function') Orrery3D.setDate(current);
-            else if (typeof Orrery3D.jumpTo === 'function') {
-              // fallback approximate
-              var E = window.AstroEphemeris;
-              if (E && E.julianDay) {
-                var jd = E.julianDay(current.getFullYear(), current.getMonth()+1, current.getDate(), current.getHours(), current.getMinutes(), 0);
-                Orrery3D.jumpTo(jd);
-              }
-            }
+          if (window.Orrery3D && typeof Orrery3D.setTimelineDays === 'function') {
+            Orrery3D.setTimelineDays(val);
           }
-          lastVal = val;
         });
 
         if (reset) reset.addEventListener('click', function () {
           scrub.value = 0;
-          lastVal = 0;
           if (window.Orrery3D) {
-            if (typeof Orrery3D.resetScrollDrive === 'function') Orrery3D.resetScrollDrive();
-            if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
-            if (typeof Orrery3D.setDate === 'function') Orrery3D.setDate(new Date());
-            else if (typeof Orrery3D.jumpTo === 'function' && window.AstroEphemeris) {
-              var now = new Date();
-              var E = window.AstroEphemeris;
-              var jd = E.julianDay(now.getFullYear(), now.getMonth()+1, now.getDate(), now.getHours(), now.getMinutes(), 0);
-              Orrery3D.jumpTo(jd);
+            if (typeof Orrery3D.snapToNow === 'function') Orrery3D.snapToNow();
+            else {
+              if (typeof Orrery3D.resetScrollDrive === 'function') Orrery3D.resetScrollDrive();
+              if (typeof Orrery3D.setTimelineDays === 'function') Orrery3D.setTimelineDays(0);
+              if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
             }
           }
+          document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
+            btn.classList.toggle('active', btn.dataset.speed === '0');
+          });
         });
       })();
 
@@ -4124,6 +4326,16 @@
             });
           }
         }
+
+        document.addEventListener('orrery-scale-change', function (e) {
+          var lv = e && e.detail ? e.detail.level : null;
+          if (lv == null) return;
+          document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
+            var on = parseInt(btn.dataset.scale, 10) === lv;
+            btn.classList.toggle('active', on);
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+        });
 
         if (window.Orrery3D) boot();
         else {
@@ -4230,6 +4442,9 @@
           aEl.innerHTML = links;
         }
         focusSkyPill(planetId);
+        if (window.Orrery3D && typeof Orrery3D.focusPlanet === 'function') {
+          Orrery3D.focusPlanet(planetId);
+        }
         panel.classList.remove('hidden');
       }
 
@@ -4306,19 +4521,9 @@
         var p     = PLANET_DEF[pi];
         var lon   = 0;
         var retro = false;
-        try {
-          switch (p.id) {
-            case 'sun':     lon = E.sunPosition(jd).lon;     break;
-            case 'moon':    lon = E.moonPosition(jd).lon;    break;
-            case 'mercury': lon = E.mercuryPosition(jd).lon; retro = E.isRetrograde('mercury',jd); break;
-            case 'venus':   lon = E.venusPosition(jd).lon;   retro = E.isRetrograde('venus',jd);   break;
-            case 'mars':    lon = E.marsPosition(jd).lon;    retro = E.isRetrograde('mars',jd);    break;
-            case 'jupiter': lon = E.jupiterPosition(jd).lon; retro = E.isRetrograde('jupiter',jd); break;
-            case 'saturn':  lon = E.saturnPosition(jd).lon;  retro = E.isRetrograde('saturn',jd);  break;
-            case 'uranus':  lon = E.uranusPosition(jd).lon;  retro = E.isRetrograde('uranus',jd);  break;
-            case 'neptune': lon = E.neptunePosition(jd).lon; retro = E.isRetrograde('neptune',jd); break;
-          }
-        } catch (err) {}
+        var lr = liveSkyLonRetro(p.id, jd, E);
+        lon = lr.lon;
+        retro = lr.retro;
 
         var disp     = lonToDisplay(lon);
         var retroHtml = retro
@@ -4368,6 +4573,14 @@
             },
           }));
         });
+        btn.addEventListener('dblclick', function (e) {
+          e.preventDefault();
+          var planetId = btn.dataset.planet;
+          focusSkyPill(planetId);
+          if (window.Orrery3D && typeof Orrery3D.focusPlanet === 'function') {
+            Orrery3D.focusPlanet(planetId);
+          }
+        });
       });
 
       /* ── Initialise 3D orrery ── */
@@ -4384,6 +4597,7 @@
         }
         // Default paused
         if (typeof Orrery3D.setSpeed === 'function') Orrery3D.setSpeed(0);
+        Orrery3D.onScrub = function (jd) { refreshLiveSkyStrip(jd); };
         // Activate pause button
         document.querySelectorAll('.orrery-btn[data-speed]').forEach(function (btn) {
           btn.classList.toggle('active', btn.dataset.speed === '0');

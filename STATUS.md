@@ -1,20 +1,21 @@
-# STATUS — AstroPrecise · 2026-06-15
+# STATUS — AstroPrecise · 2026-06-16
 
-**State:** Live at **https://astroprecise.app/**. Local SW **`ap-v179`** (engineering backlog batch). Prior push: **`d77a38e`** (ap-v143→v177). Auto-deploys via `deploy-pages.yml` → `gh-pages`. Hard-refresh / unregister SW after deploy.
+**State:** Production **stale at ap-v142** on https://astroprecise.app/ (gh-pages deploy blocked since ap-v142 by failing e2e audit — fixed today). Local + `main` after push: **ap-v202**. Auto-deploys via `deploy-pages.yml` → `gh-pages`. Hard-refresh / unregister SW after deploy lands.
 
 ## Shipped since ap-v83 (most recent first)
-- **ap-v179 — Engineering backlog (Grok):** moderate a11y (horoscope empty-heading, compat matrix headers, footer/nav landmark dedup); dead-code purge (`.cosmos-solar-system` HTML on 16 pages, `stellar.js`); free **chart wallpaper** lead magnet + dedicated **Big Three** share card on `chart.html`; Phase 2 scroll drive consolidated in `hero-instrument.js`; IBM Plex Mono numerics + AstroGlyph; footer nav landmarks → `role="group"`.
-- **ap-v177 — Production batch (Grok, `d77a38e`):** shop + Lemon Squeezy (3 live SKUs), nav IA, Earth-only preloader, chart wheels, fulfilment suite, a11y ap-v176, visual-check toolkit.
-- **ap-v170–v175 — Preloader + one-sky (Grok):** duplicate-sky audit; Earth-only cinematic intro; visual-check baseline.
-- **ap-v88–v94 — Visual/orrery passes (Claude/Grok):** scroll-linked bloom, seamless UI, domain migration, horoscope engine accuracy.
+- **ap-v202 — Preloader Enter fix (Grok):** `--arrive` pointer-events bug; intro watchdog; verified click→hero.
+- **ap-v192–201 — Orrery award-pass (Grok):** Earth-only boot, crash hardening, focus fly-to, `_sm` textures, timeline scrubber, live sky sync, system-zoom preloader.
+- **ap-v181–188 — Shop LIVE 13/13 (Grok):** Lemon Squeezy checkouts, product art, fulfilment suite, art style library UI.
+- **ap-v179 — Engineering backlog (Grok):** a11y, dead-code purge, chart wallpaper lead magnet, Big Three share card, IBM Plex Mono numerics.
+- **ap-v170–177 — Preloader + commerce (Grok):** Earth-only cinematic intro; nav IA; Ko-fi + LS pricing ladder.
 
 ## Open / ongoing
-- **Push ap-v179** — `git add website tools STATUS.md` + push `main` when ready (local batch not yet on origin).
-- **Eyeball ap-v179:** chart wallpaper download + email lead; Big Three card export; preloader on phone; shop buy flow on 3 live SKUs.
-- **Monetization partially live:** Ko-fi tips; Lemon Squeezy Deep Reading **£12**, poster **£6**, bundle **£16**; email **list.astroprecise.app**. **10 SKUs dormant** — paste URLs when listings exist.
-- **Owner:** wire remaining SKUs; Google/Bing Search Console; schedule outreach (`outreach.html`); ICO when fulfilment scales.
+- **Deploy catch-up:** push ap-v202 → verify Actions green → confirm astroprecise.app SW bumps past ap-v142.
+- **Eyeball ap-v202:** preloader Enter on phone; orrery focus/scrub; shop buy flow on LS SKUs.
+- **Monetization on `main`:** Ko-fi tips; **13/13 Lemon Squeezy SKUs** wired; email **list.astroprecise.app**. Compat/Saturn unlocks still dormant.
+- **Owner:** Google/Bing Search Console; schedule outreach (`outreach.html`); test one LS checkout end-to-end; ICO when fulfilment scales.
 
 ## Roadmap (deferred)
 - Play Store TWA (12 testers × 14 days); astrocartography map; on-site Stripe (post host migration).
 
-*Updated 2026-06-15 (ap-v179). Full history: AGENT-HANDOFF.md*
+*Updated 2026-06-16 (ap-v202). Full history: AGENT-HANDOFF.md*

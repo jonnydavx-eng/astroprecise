@@ -120,6 +120,7 @@ const RadialBlurShader = {
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
   let raf = null, destroyed = false, running = true, inView = true;
+  let preloaderFrameTick = 0;
   let texLoader;
   const meshes = {};          // id → THREE.Object3D (planet group)
   let earthCloud = null, moonGroup = null, moonMesh = null, sunMesh = null, sunGlow = [];
@@ -132,6 +133,14 @@ const RadialBlurShader = {
   let bloomPass = null;
   let radialBlurPass = null;
   let perfTier = 'high';
+  let allPlanetsBuilt = false;
+  let sunVisualsMinimal = false;
+  let focusPlanetId = null;
+  let focusPlanetUntil = 0;
+  let focusBloomBase = 0.2;
+  let sunFocusRing = null;
+  let moonFocusRing = null;
+  let focusOrbitsRestore = null;
 
   // ── HD Earth (shader-injected) state ──────────────────────────────────────
   let earthMat = null;        // hero surface MeshStandardMaterial (onBeforeCompile-patched)
@@ -156,15 +165,21 @@ const RadialBlurShader = {
   }
 
   function orreryDPR() {
-    if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(2.5);
+    const pre = onPreloaderStage();
+    const cap = pre
+      ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.1 : 1.25)
+      : (perfTier === 'low' ? 1.25 : perfTier === 'mid' ? 2 : 2.5);
+    if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(cap);
     const real = window.devicePixelRatio || 1;
-    if (perfTier === 'low') return Math.min(real, 1.25);
-    if (perfTier === 'mid') return Math.min(real, 2);
-    return Math.min(real, 2.5);
+    return Math.min(real, cap);
   }
 
   function sphereSegs(hero) {
-    if (hero) return perfTier === 'high' ? 128 : perfTier === 'mid' ? 96 : 64;
+    if (hero) {
+      if (onPreloaderStage()) return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 48;
+      return perfTier === 'high' ? 128 : perfTier === 'mid' ? 96 : 64;
+    }
+    if (onPreloaderStage()) return perfTier === 'high' ? 40 : 32;
     return perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 40;
   }
 
@@ -189,9 +204,11 @@ const RadialBlurShader = {
   let onIntroDone = null;
   let preloaderIntroScheduled = false;
   let preloaderIntroFinished = false;
+  let preloaderIntroWatchdog = null;
   let introStartedAt = 0;
   const INTRO_MS = 6800;
   const PRELOADER_INTRO_MS = 7500;
+  const PRELOADER_SYSTEM_CAM = 54;
 
   function introDurationMs() {
     return onPreloaderStage() ? PRELOADER_INTRO_MS : INTRO_MS;
@@ -201,6 +218,23 @@ const RadialBlurShader = {
     if (!window.__orreryPreloaderOwns || window.__apHeroEntered) return;
     try {
       document.body.classList.toggle('preloader-intro-playing', !!active);
+    } catch (_) {}
+  }
+
+  function syncHeroReplayClass(active) {
+    if (onPreloaderStage()) return;
+    try {
+      document.body.classList.toggle('orrery-replay-active', !!active);
+      const vp = document.getElementById('orrery-viewport');
+      if (vp) vp.classList.toggle('orrery-viewport--replay', !!active);
+    } catch (_) {}
+  }
+
+  function syncPreloaderSystemClass(active) {
+    if (!window.__orreryPreloaderOwns || window.__apHeroEntered) return;
+    try {
+      const pre = document.getElementById('preloader');
+      if (pre) pre.classList.toggle('preloader--system-view', !!active);
     } catch (_) {}
   }
   const CAM_FOV_CLOSE = 33;
@@ -324,7 +358,7 @@ const RadialBlurShader = {
     updateScaleHUD();
     needRecompute = true;
     updatePositions();
-    setEarthTerminatorCamera(3.6, 10 * D2R);
+    setEarthTerminatorCamera(3.8, 9 * D2R);
     camera.fov = CAM_FOV_MID;
     camera.updateProjectionMatrix();
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
@@ -340,20 +374,66 @@ const RadialBlurShader = {
     updateDomLabels(0);
   }
 
-  function holdPreloaderEarthFrame() {
-    setDefaultEarthFrame();
+  function recoverPreloaderIntro() {
+    if (!onPreloaderStage() || preloaderIntroFinished) return;
+    if (preloaderIntroWatchdog) { clearTimeout(preloaderIntroWatchdog); preloaderIntroWatchdog = null; }
+    preloaderIntroScheduled = false;
+    preloaderIntroFinished = true;
+    introActive = false;
+    syncPreloaderIntroClass(false);
+    holdPreloaderSystemFrame();
+    if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+  }
+
+  function holdPreloaderSystemFrame() {
+    buildRemainingPlanets();
+    preloaderIntroScheduled = false;
+    scaleLevel = 2;
+    scaleAnimActive = false;
+    introActive = false;
+    showOrbits = true;
+    updateScaleHUD();
+    needRecompute = true;
+    updatePositions();
+    updateScaleVisuals(2);
+    const end = scalePreset(2);
+    camTarget.set(0, 0, 0);
+    camRadius = PRELOADER_SYSTEM_CAM;
+    camEl = end.camEl;
+    camAz = end.camAz;
+    camera.fov = CAM_FOV_WIDE;
+    camera.updateProjectionMatrix();
+    tuneSunGlowForComposer(perfTier);
+    if (bloomPass && composer) {
+      bloomPass.strength = perfTier === 'mid' ? 0.20 : 0.28;
+      bloomPass.threshold = perfTier === 'mid' ? 0.90 : 0.86;
+    }
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.10 : 1.06;
+    if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
+    syncSceneStarfield(2);
+    syncCosmosBlend(2);
+    applyPreloaderEarthIsolation(1);
+    applyCamera();
+    updateDomLabels(1);
+    syncPreloaderSystemClass(true);
     updateIntroProgress(1);
+    try {
+      document.dispatchEvent(new CustomEvent('ap-preloader-ready'));
+    } catch (e) { /* optional */ }
   }
 
   function finishIntro() {
     if (!introActive) return;
+    if (preloaderIntroWatchdog) { clearTimeout(preloaderIntroWatchdog); preloaderIntroWatchdog = null; }
     introActive = false;
     syncPreloaderIntroClass(false);
+    syncHeroReplayClass(false);
+    updateScaleHUD();
     userTouched = performance.now();
     if (onPreloaderStage()) {
       preloaderIntroFinished = true;
       preloaderIntroScheduled = false;
-      holdPreloaderEarthFrame();
+      holdPreloaderSystemFrame();
     } else {
       settleToSystemHeroFrame(false);
     }
@@ -377,9 +457,30 @@ const RadialBlurShader = {
     });
   }
 
-  /** Preloader + Enter screen: Earth only — hide sun and inner-system bodies (no black dots / brown haze). */
+  /** Preloader: Earth close-up early, then full solar system for the Enter screen. */
   function applyPreloaderEarthIsolation(introP) {
     if (!onPreloaderStage()) return;
+    const systemReveal = preloaderIntroFinished || (introP != null && introP >= 0.42);
+    if (systemReveal) {
+      BODIES.forEach((b) => {
+        const g = meshes[b.id];
+        if (g) g.visible = true;
+      });
+      if (sunMesh) {
+        sunMesh.visible = true;
+        sunMesh.scale.setScalar(1);
+      }
+      if (sunCoronaGroup) sunCoronaGroup.visible = true;
+      tuneSunGlowForComposer(perfTier);
+      if (moonGroup) moonGroup.visible = false;
+      if (earthCloud) earthCloud.visible = false;
+      orbitLines.forEach((o) => { o.visible = showOrbits; });
+      if (asteroidPoints) asteroidPoints.visible = false;
+      if (halleyGroup) halleyGroup.visible = false;
+      Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
+      syncPreloaderSystemClass(true);
+      return;
+    }
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
@@ -397,6 +498,7 @@ const RadialBlurShader = {
     if (asteroidPoints) asteroidPoints.visible = false;
     if (halleyGroup) halleyGroup.visible = false;
     Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
+    syncPreloaderSystemClass(false);
   }
 
   function syncSceneStarfield(level) {
@@ -438,15 +540,30 @@ const RadialBlurShader = {
     camAz = horiz > 1e-6 ? Math.atan2(_camOff.z, _camOff.x) : 0;
   }
 
+  function syncCosmosBlend(level) {
+    if (!window.CosmosEngine || typeof window.CosmosEngine.setOrreryBlend !== 'function') return;
+    const lv = level | 0;
+    let blend = 0;
+    if (lv >= 5) blend = Math.min(1, 0.4 + (lv - 4) * 0.6);
+    else if (lv >= 4) blend = (lv - 3) * 0.4;
+    window.CosmosEngine.setOrreryBlend(blend);
+  }
+
   /** Hero settle: full solar system in the shared deep-space starfield (no duplicate canvas stars). */
   function settleToSystemHeroFrame(animate) {
     introActive = false;
-    scaleAnimActive = false;
-    if (animate && !PRM) applyScalePreset(2, true);
-    else applyScalePreset(2, false);
-    camTarget.set(0, 0, 0);
-    camera.fov = CAM_FOV_WIDE;
-    camera.updateProjectionMatrix();
+    const doAnimate = animate && !PRM;
+    if (doAnimate) {
+      applyScalePreset(2, true);
+    } else {
+      scaleAnimActive = false;
+      applyScalePreset(2, false);
+      camTarget.set(0, 0, 0);
+      camera.fov = CAM_FOV_WIDE;
+      camera.updateProjectionMatrix();
+      applyCamera();
+      updateDomLabels(1);
+    }
     tuneSunGlowForComposer(perfTier);
     if (bloomPass && composer) {
       bloomPass.strength = perfTier === 'mid' ? 0.20 : 0.30;
@@ -455,8 +572,7 @@ const RadialBlurShader = {
     if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.10 : 1.06;
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
     syncSceneStarfield(2);
-    applyCamera();
-    updateDomLabels(1);
+    syncCosmosBlend(2);
   }
 
   function restartIntro() {
@@ -472,14 +588,14 @@ const RadialBlurShader = {
     updateScaleVisuals(0);
     needRecompute = true;
     updatePositions();
-    setEarthTerminatorCamera(2.35, 4 * D2R);
+    setEarthTerminatorCamera(3.2, 6 * D2R);
     applyCamera();
     if (PRM) {
       syncPreloaderIntroClass(false);
       if (onPreloaderStage()) {
         preloaderIntroScheduled = false;
         preloaderIntroFinished = true;
-        holdPreloaderEarthFrame();
+        holdPreloaderSystemFrame();
       } else {
         applyScalePreset(2, false);
       }
@@ -494,6 +610,7 @@ const RadialBlurShader = {
       introStartedAt = introStart;
       introActive = true;
       syncPreloaderIntroClass(true);
+      syncHeroReplayClass(true);
     };
     if (earthMapReady) { begin(); return; }
     needRecompute = true;
@@ -501,9 +618,86 @@ const RadialBlurShader = {
     introBeginTimer = setTimeout(begin, 1200);
   }
 
+  function ensureComposer() {
+    if (composer || PRM || perfTier === 'low' || !renderer || !scene || !camera) return;
+    try {
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      const bloomStrength = perfTier === 'mid' ? 0.18 : 0.28;
+      const bloomRadius = perfTier === 'mid' ? 0.36 : 0.42;
+      const bloomThreshold = perfTier === 'mid' ? 0.94 : 0.91;
+      bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
+        bloomStrength, bloomRadius, bloomThreshold
+      );
+      composer.addPass(bloomPass);
+      if (perfTier === 'high') {
+        radialBlurPass = tryCreateRadialBlurPass(1);
+        if (radialBlurPass) composer.addPass(radialBlurPass);
+      }
+      composer.addPass(new OutputPass());
+      resize();
+    } catch (e) {
+      composer = null;
+      bloomPass = null;
+      radialBlurPass = null;
+      console.warn('[orrery] post-processing deferred init failed:', e.message);
+    }
+  }
+
+  function upgradeSunVisuals() {
+    if (!sunVisualsMinimal || !sunMesh) return;
+    sunVisualsMinimal = false;
+    buildSunCorona();
+    const layers = [
+      { tex: makeGlowTexture('rgba(255,248,220,0.92)', 'rgba(255,200,90,0.48)'), scale: SUN_SIZE * 5.8 },
+      { tex: makeGlowTexture('rgba(255,215,130,0.42)', 'rgba(235,140,40,0.12)'), scale: SUN_SIZE * 11 },
+      { tex: makeGlowTexture('rgba(255,170,60,0.14)', 'rgba(210,90,15,0.03)'), scale: SUN_SIZE * 18 },
+    ];
+    layers.forEach((l) => {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
+      sp.scale.set(l.scale, l.scale, 1);
+      sunMesh.add(sp);
+      sunGlow.push(sp);
+    });
+    tuneSunGlowForComposer(perfTier);
+  }
+
+  function buildRemainingPlanets() {
+    if (allPlanetsBuilt) return;
+    buildPlanets({ remainingOnly: true });
+    allPlanetsBuilt = true;
+    needRecompute = true;
+  }
+
+  function settleHeavyWork() {
+    if (destroyed) return;
+    buildRemainingPlanets();
+    upgradeSunVisuals();
+    ensureGalaxyLayers();
+    if (!asteroidPoints) buildAsteroids();
+    if (!starField && !usesPageStarfield()) buildStars();
+    preloadDeferredTextures();
+    needRecompute = true;
+    updatePositions();
+    updateScaleVisuals(scaleLevel);
+    resize();
+  }
+
   function settleFromIntro() {
     userTouched = performance.now();
     settleToSystemHeroFrame(true);
+    resize();
+    requestAnimationFrame(() => {
+      if (destroyed) return;
+      ensureComposer();
+      resize();
+    });
+    if (window.requestIdleCallback) {
+      requestIdleCallback(settleHeavyWork, { timeout: 2400 });
+    } else {
+      setTimeout(settleHeavyWork, 160);
+    }
   }
 
   function skipIntro() {
@@ -511,12 +705,14 @@ const RadialBlurShader = {
     introActive = false;
     preloaderIntroScheduled = false;
     syncPreloaderIntroClass(false);
+    syncHeroReplayClass(false);
     scaleAnimActive = false;
     daysPerSec = 0;
     flicking = false;
+    updateScaleHUD();
     if (onPreloaderStage()) {
       preloaderIntroFinished = true;
-      holdPreloaderEarthFrame();
+      holdPreloaderSystemFrame();
     } else {
       settleToSystemHeroFrame(false);
     }
@@ -524,7 +720,47 @@ const RadialBlurShader = {
     if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
   }
 
+  function earthTextureFiles() {
+    const files = ['earth.jpg', 'earth_lights.png', 'earth_specular.jpg'];
+    if (perfTier !== 'low' && !PRM) files.push('earth_clouds.jpg', 'earth_normal.jpg');
+    return files;
+  }
+
+  function deferredTextureFiles() {
+    const files = [];
+    BODIES.forEach((b) => {
+      if (b.tex && b.id !== 'earth') files.push(b.tex);
+      if (b.ring) files.push(b.ring);
+    });
+    files.push('moon.jpg');
+    return files;
+  }
+
+  function preloadDeferredTextures() {
+    const files = deferredTextureFiles();
+    if (!files.length) return Promise.resolve();
+    let chain = Promise.resolve();
+    const gap = perfTier === 'low' ? 90 : perfTier === 'mid' ? 55 : 35;
+    files.forEach((f) => {
+      chain = chain.then(() => {
+        if (destroyed) return;
+        return loadTex(f);
+      }).then(() => new Promise((res) => setTimeout(res, gap)));
+    });
+    return chain.then(() => { if (!destroyed) refreshTextures(); }).catch(() => {});
+  }
+
   function preloadTextures() {
+    if (onPreloaderStage()) {
+      return Promise.all(earthTextureFiles().map((f) => loadTex(f))).then(() => {
+        texturesReady = true;
+        refreshTextures();
+        if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+      }).catch(() => {
+        texturesReady = true;
+        if (texturesReadyResolve) { texturesReadyResolve(); texturesReadyResolve = null; }
+      });
+    }
     const files = [];
     BODIES.forEach((b) => {
       if (b.tex) files.push(b.tex);
@@ -597,8 +833,10 @@ const RadialBlurShader = {
     if (scaleEl) scaleEl.textContent = p.hud;
     document.querySelectorAll('.orrery-scale-btn').forEach((btn) => {
       const lv = parseInt(btn.dataset.scale, 10);
+      const preset = scalePreset(lv);
       btn.classList.toggle('active', lv === scaleLevel);
       btn.setAttribute('aria-pressed', lv === scaleLevel ? 'true' : 'false');
+      if (preset.honesty) btn.title = preset.honesty;
     });
   }
 
@@ -909,13 +1147,21 @@ const RadialBlurShader = {
     galaxyGroup.add(cosmicField);
   }
 
+  let galaxyBuilt = false;
+
   function buildGalaxyLayers() {
+    if (galaxyBuilt || !scene) return;
+    galaxyBuilt = true;
     galaxyGroup = new THREE.Group();
     scene.add(galaxyGroup);
     buildOortShell();
     buildLocalStars();
     buildMilkyWaySpiral();
     buildCosmicField();
+  }
+
+  function ensureGalaxyLayers() {
+    if (!galaxyBuilt) buildGalaxyLayers();
   }
 
   function updateScaleVisuals(level) {
@@ -966,6 +1212,7 @@ const RadialBlurShader = {
     if (cosmicField) cosmicField.visible = lv === 6;
 
     syncSceneStarfield(lv);
+    syncCosmosBlend(lv);
 
     if (bloomPass) {
       if (lv === 0) {
@@ -980,7 +1227,7 @@ const RadialBlurShader = {
       if (lv === 0) renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.10;
       else renderer.toneMappingExposure = lv >= 5 ? 1.14 : perfTier === 'high' ? 1.12 : 1.06;
     }
-    if (onPreloaderStage()) applyPreloaderEarthIsolation(null);
+    if (onPreloaderStage()) applyPreloaderEarthIsolation(preloaderIntroFinished ? 1 : null);
     else if (sunGlow.length && lv === 0) {
       sunGlow.forEach((sp, i) => {
         if (!sp.material) return;
@@ -991,7 +1238,23 @@ const RadialBlurShader = {
 
     const chip = document.getElementById('orrery-honesty-chip');
     const p = scalePreset(lv);
-    if (chip && p.honesty) chip.textContent = p.honesty;
+    if (chip) {
+      if (eclipseDim > 0.45) chip.textContent = 'Eclipse geometry detected · positions live (VSOP87)';
+      else if (p.honesty) chip.textContent = p.honesty;
+    }
+    const hint = document.querySelector('.orrery-hint');
+    if (hint) {
+      const hints = [
+        'Drag to scrub time · scroll the page to advance the sky',
+        'Inner system · tap a planet or sky pill to focus',
+        'Full solar system · VSOP87 positions live',
+        'Oort cloud scale · illustrative shell',
+        'Local star directions · schematic layout',
+        'Milky Way view · Sun marked in the Orion arm',
+        'Deep field · decorative galaxy sprites',
+      ];
+      hint.textContent = hints[lv] || hints[2];
+    }
   }
 
   function updateEclipseDim(jd) {
@@ -1020,7 +1283,7 @@ const RadialBlurShader = {
   }
 
   function updateSaturnShadow(jd) {
-    if (!saturnRingMesh || !sunMesh) return;
+    if (!saturnRingMesh || !sunMesh || !meshes.saturn) return;
     const saturnPos = meshes.saturn.position;
     const sunPos = sunMesh.position;
     const lit = new THREE.Vector3().subVectors(sunPos, saturnPos).normalize();
@@ -1118,26 +1381,162 @@ const RadialBlurShader = {
   }
 
   // ── Scene construction ─────────────────────────────────────────────────────
+  function capTextureSize(t, maxDim) {
+    if (!t || !t.image || !maxDim) return;
+    const img = t.image;
+    const w = img.width || 0;
+    const h = img.height || 0;
+    if (!w || !h) return;
+    const maxSide = Math.max(w, h);
+    if (maxSide <= maxDim) return;
+    const s = maxDim / maxSide;
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(w * s));
+    c.height = Math.max(1, Math.round(h * s));
+    const x = c.getContext('2d');
+    if (!x) return;
+    x.drawImage(img, 0, 0, c.width, c.height);
+    t.image = c;
+    t.needsUpdate = true;
+  }
+
   function tuneTexture(t) {
     if (!t || !renderer) return;
+    const maxDim = perfTier === 'low' ? 1024 : perfTier === 'mid' ? 2048 : 4096;
+    capTextureSize(t, onPreloaderStage() ? Math.min(maxDim, 1536) : maxDim);
     const max = renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1;
-    t.anisotropy = max;
+    t.anisotropy = perfTier === 'low' ? Math.min(max, 4) : max;
     t.generateMipmaps = true;
     t.minFilter = THREE.LinearMipmapLinearFilter;
     t.magFilter = THREE.LinearFilter;
   }
 
+  function textureCandidates(file) {
+    const list = [];
+    if (perfTier === 'low' || onPreloaderStage()) {
+      const sm = file.replace(/\.(jpe?g|png)$/i, '_sm.$1');
+      if (sm !== file) list.push(sm);
+    }
+    list.push(file);
+    return list;
+  }
+
   function loadTex(file, srgb) {
+    const candidates = textureCandidates(file);
     return new Promise((res) => {
-      texLoader.load(TEX + file, (t) => {
-        if (srgb !== false) t.colorSpace = THREE.SRGBColorSpace;
-        tuneTexture(t);
-        res(t);
-      }, undefined, () => res(null));
+      let idx = 0;
+      const tryNext = () => {
+        if (idx >= candidates.length) return res(null);
+        const f = candidates[idx++];
+        texLoader.load(TEX + f, (t) => {
+          if (srgb !== false) t.colorSpace = THREE.SRGBColorSpace;
+          tuneTexture(t);
+          res(t);
+        }, undefined, tryNext);
+      };
+      tryNext();
     });
   }
 
+  function ensureFocusRing(group, scaleMul) {
+    if (group.userData.focusRing) return group.userData.focusRing;
+    const tex = makeGlowTexture('rgba(255, 228, 160, 0.85)', 'rgba(201, 162, 39, 0.0)');
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+    }));
+    const base = (scaleMul || 3.2);
+    sp.scale.set(base, base, 1);
+    sp.visible = false;
+    sp.userData.baseScale = base;
+    group.add(sp);
+    group.userData.focusRing = sp;
+    return sp;
+  }
+
+  function clearFocusHighlight() {
+    focusPlanetId = null;
+    focusPlanetUntil = 0;
+    if (focusOrbitsRestore === false) {
+      showOrbits = false;
+      focusOrbitsRestore = null;
+      updateScaleVisuals(scaleLevel);
+    }
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (g && g.userData.focusRing) g.userData.focusRing.visible = false;
+    });
+    if (sunFocusRing) sunFocusRing.visible = false;
+    if (moonFocusRing) moonFocusRing.visible = false;
+    if (bloomPass) bloomPass.strength = focusBloomBase;
+  }
+
+  function setFocusHighlight(id) {
+    if (!id || PRM) return;
+    focusPlanetId = id;
+    focusPlanetUntil = performance.now() + 2800;
+    if (bloomPass) focusBloomBase = bloomPass.strength;
+    if (id !== 'earth' && id !== 'moon' && id !== 'sun' && !showOrbits) {
+      focusOrbitsRestore = false;
+      showOrbits = true;
+      updateScaleVisuals(scaleLevel);
+    }
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
+      const ring = ensureFocusRing(g, b.size * 3.8);
+      ring.visible = b.id === id;
+    });
+    if (id === 'sun' && sunMesh) {
+      sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
+      sunFocusRing.visible = true;
+    } else if (sunFocusRing) {
+      sunFocusRing.visible = false;
+    }
+    if (id === 'moon' && moonGroup) {
+      moonFocusRing = moonFocusRing || ensureFocusRing(moonGroup, 1.4);
+      moonFocusRing.visible = true;
+    } else if (moonFocusRing) {
+      moonFocusRing.visible = false;
+    }
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-planet-focus', { detail: { id } }));
+    } catch (e) { /* optional */ }
+  }
+
+  function updateFocusHighlight(t) {
+    if (!focusPlanetId || t >= focusPlanetUntil) {
+      if (focusPlanetId) clearFocusHighlight();
+      return;
+    }
+    const pulse = 0.72 + 0.28 * Math.sin(t * 0.009);
+    const fade = Math.min(1, (focusPlanetUntil - t) / 2800);
+    BODIES.forEach((b) => {
+      if (b.id !== focusPlanetId) return;
+      const g = meshes[b.id];
+      const ring = g && g.userData.focusRing;
+      if (ring) {
+        const s = ring.userData.baseScale * (0.92 + pulse * 0.14);
+        ring.scale.set(s, s, 1);
+        if (ring.material) ring.material.opacity = 0.55 + pulse * 0.35 * fade;
+      }
+    });
+    if (focusPlanetId === 'sun' && sunFocusRing) {
+      const s = sunFocusRing.userData.baseScale * (0.94 + pulse * 0.1);
+      sunFocusRing.scale.set(s, s, 1);
+      if (sunFocusRing.material) sunFocusRing.material.opacity = 0.5 + pulse * 0.3 * fade;
+    }
+    if (focusPlanetId === 'moon' && moonFocusRing) {
+      const s = moonFocusRing.userData.baseScale * (0.94 + pulse * 0.12);
+      moonFocusRing.scale.set(s, s, 1);
+      if (moonFocusRing.material) moonFocusRing.material.opacity = 0.5 + pulse * 0.32 * fade;
+    }
+    if (bloomPass && composer) {
+      bloomPass.strength = focusBloomBase + pulse * 0.14 * fade;
+    }
+  }
+
   function buildStars() {
+    if (onPreloaderStage() && usesPageStarfield()) return;
     const N = PRM ? 800 : (perfTier === 'high' ? 2600 : perfTier === 'mid' ? 2000 : 1500);
     const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
     const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
@@ -1209,21 +1608,26 @@ const RadialBlurShader = {
     sunMesh.add(sunCoronaGroup);
   }
 
-  function buildSun() {
+  function buildSun(minimal) {
     sunMaterial = makeSunShaderMaterial();
-    const sunSegs = perfTier === 'high' ? 96 : perfTier === 'mid' ? 72 : 48;
+    const sunSegs = minimal
+      ? (perfTier === 'high' ? 48 : 32)
+      : (perfTier === 'high' ? 96 : perfTier === 'mid' ? 72 : 48);
     sunMesh = new THREE.Mesh(new THREE.SphereGeometry(SUN_SIZE, sunSegs, sunSegs), sunMaterial);
     scene.add(sunMesh);
-    buildSunCorona();
-    const layers = [
-      { tex: makeGlowTexture('rgba(255,248,220,0.92)', 'rgba(255,200,90,0.48)'), scale: SUN_SIZE * 5.8 },
-      { tex: makeGlowTexture('rgba(255,215,130,0.42)', 'rgba(235,140,40,0.12)'), scale: SUN_SIZE * 11 },
-      { tex: makeGlowTexture('rgba(255,170,60,0.14)', 'rgba(210,90,15,0.03)'), scale: SUN_SIZE * 18 },
-    ];
-    layers.forEach((l) => {
-      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
-      sp.scale.set(l.scale, l.scale, 1); sunMesh.add(sp); sunGlow.push(sp);
-    });
+    sunVisualsMinimal = !!minimal;
+    if (!minimal) {
+      buildSunCorona();
+      const layers = [
+        { tex: makeGlowTexture('rgba(255,248,220,0.92)', 'rgba(255,200,90,0.48)'), scale: SUN_SIZE * 5.8 },
+        { tex: makeGlowTexture('rgba(255,215,130,0.42)', 'rgba(235,140,40,0.12)'), scale: SUN_SIZE * 11 },
+        { tex: makeGlowTexture('rgba(255,170,60,0.14)', 'rgba(210,90,15,0.03)'), scale: SUN_SIZE * 18 },
+      ];
+      layers.forEach((l) => {
+        const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: l.tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false }));
+        sp.scale.set(l.scale, l.scale, 1); sunMesh.add(sp); sunGlow.push(sp);
+      });
+    }
     const light = new THREE.PointLight(0xfff4e0, 5.2, 0, 1.5);
     sunMesh.add(light);
     sunDirLight = new THREE.DirectionalLight(0xfff8ec, perfTier === 'high' ? 3.6 : 3.0);
@@ -1366,8 +1770,14 @@ const RadialBlurShader = {
     });
   }
 
-  function buildPlanets() {
-    BODIES.forEach((b) => {
+  function buildPlanets(opts) {
+    const earthOnly = !!(opts && opts.earthOnly);
+    const remainingOnly = !!(opts && opts.remainingOnly);
+    let bodies = BODIES;
+    if (earthOnly) bodies = BODIES.filter((b) => b.id === 'earth');
+    else if (remainingOnly) bodies = BODIES.filter((b) => b.id !== 'earth');
+    bodies.forEach((b) => {
+      if (meshes[b.id]) return;
       const group = new THREE.Group();
       const vis = PLANET_VIS[b.id] || { roughness: 0.9, metalness: 0, atmo: null, atmoS: 1.0 };
       let mat;
@@ -1543,6 +1953,7 @@ const RadialBlurShader = {
       // name label (sprite, optional)
       labels[b.id] = makeLabel(b.name); labels[b.id].visible = false; scene.add(labels[b.id]);
     });
+    if (!earthOnly) allPlanetsBuilt = true;
   }
 
   function makeLabel(text) {
@@ -1605,6 +2016,8 @@ const RadialBlurShader = {
         alpha = 0;
       } else if (introActive) {
         alpha = introLabelAlpha(b.id, introP);
+      } else if (focusPlanetId === b.id && performance.now() < focusPlanetUntil) {
+        alpha = 1;
       } else if (showLabels && scaleLevel <= 2) {
         alpha = 1;
       }
@@ -1634,54 +2047,68 @@ const RadialBlurShader = {
     const bar = document.getElementById('preloader-intro-progress');
     if (bar) bar.style.transform = `scaleX(${Math.max(0, Math.min(1, introP)).toFixed(3)})`;
     const phase = document.getElementById('preloader-phase');
+    const scaleEl = document.getElementById('orrery-scale-label');
     if (phase) {
       if (onPreloaderStage()) {
-        if (introP < 0.22) phase.textContent = 'Earth';
-        else if (introP < 0.72) phase.textContent = 'Approaching Earth';
-        else phase.textContent = 'Sky aligned';
+        if (introP < 0.18) phase.textContent = 'Calibrating sky';
+        else if (introP < 0.45) phase.textContent = 'Earth · live positions';
+        else phase.textContent = 'Solar system aligned';
       } else if (introP < 0.18) phase.textContent = 'Earth';
       else if (introP < 0.55) phase.textContent = 'Inner system';
       else phase.textContent = 'Solar system';
     }
+    if (scaleEl && introActive && !onPreloaderStage()) {
+      if (introP < 0.18) scaleEl.textContent = 'Earth close-up';
+      else if (introP < 0.55) scaleEl.textContent = 'Approaching inner system';
+      else scaleEl.textContent = 'Opening the solar system';
+    }
   }
 
   function applyIntroVisuals(p, t) {
-    const p0 = onPreloaderStage() ? 0.22 : 0.18;
+    const p0 = onPreloaderStage() ? 0.18 : 0.18;
     if (p < p0) {
       camera.fov = CAM_FOV_CLOSE;
-    } else if (onPreloaderStage() && p < 0.72) {
-      const e = easeInOut((p - 0.22) / 0.50);
-      camera.fov = CAM_FOV_CLOSE + 3 * e;
-    } else if (!onPreloaderStage() && p < 0.55) {
+    } else if (onPreloaderStage() && p < 0.45) {
+      const e = easeInOut((p - 0.18) / 0.27);
+      camera.fov = CAM_FOV_CLOSE + (CAM_FOV_MID - CAM_FOV_CLOSE) * e;
+    } else if (onPreloaderStage()) {
+      const e = easeOutCubic((p - 0.45) / 0.55);
+      camera.fov = CAM_FOV_MID + (CAM_FOV_WIDE - CAM_FOV_MID) * e;
+    } else if (p < 0.55) {
       const e = easeInOut((p - 0.18) / 0.37);
       camera.fov = CAM_FOV_CLOSE + (CAM_FOV_MID - CAM_FOV_CLOSE) * e;
-    } else if (!onPreloaderStage()) {
+    } else {
       const e = easeOutCubic((p - 0.55) / 0.45);
       camera.fov = CAM_FOV_MID + (CAM_FOV_WIDE - CAM_FOV_MID) * e;
-    } else {
-      camera.fov = CAM_FOV_CLOSE + 3;
     }
     camera.updateProjectionMatrix();
 
-    const orbitFade = onPreloaderStage() ? 0 : (p < 0.40 ? 0 : easeOutCubic(Math.min(1, (p - 0.40) / 0.55)));
+    if (onPreloaderStage() && p >= 0.35 && !allPlanetsBuilt) buildRemainingPlanets();
+
+    const orbitFade = onPreloaderStage()
+      ? (p < 0.38 ? 0 : easeOutCubic(Math.min(1, (p - 0.38) / 0.45)))
+      : (p < 0.40 ? 0 : easeOutCubic(Math.min(1, (p - 0.40) / 0.55)));
     orbitLines.forEach((o) => {
       const base = o.userData.baseOpacity || 0.14;
       o.visible = orbitFade > 0.02;
       if (o.material) o.material.opacity = base * orbitFade * (o.userData.hero ? 1.15 : 1);
     });
 
-    syncSceneStarfield(onPreloaderStage() ? 0 : 2);
+    syncSceneStarfield(onPreloaderStage() ? (p >= 0.42 ? 2 : 0) : 2);
     if (starField && starField.visible && starField.material.uniforms) {
       starField.material.uniforms.uFade.value = 0.72 + orbitFade * 0.28;
       if (!PRM) starField.rotation.y = p * 0.12;
     }
 
-    if (sunMesh && !onPreloaderStage()) {
-      const pulse = p < 0.22 ? 1 + Math.sin(t * 0.0032) * 0.02 : 1;
+    if (sunMesh) {
+      const pulse = (!onPreloaderStage() && p < 0.22) ? 1 + Math.sin(t * 0.0032) * 0.02 : 1;
       sunMesh.scale.setScalar(pulse);
     }
 
-    if (onPreloaderStage()) applyPreloaderEarthIsolation(p);
+    if (onPreloaderStage()) {
+      if (p >= 0.42) showOrbits = true;
+      applyPreloaderEarthIsolation(p);
+    }
     else if (sunGlow.length && p < 0.55) {
       sunGlow.forEach((sp, i) => {
         if (!sp.material) return;
@@ -1712,10 +2139,12 @@ const RadialBlurShader = {
   function updatePositions() {
     const jd = baseJd + dayOffset + scrollBias;
     BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
       const ll = helioLonLat(b.id, jd);
       const p = scenePos(b.R, ll.lon, ll.lat);
-      meshes[b.id].position.copy(p);
-      meshes[b.id].userData.lon = ll.lon;
+      g.position.copy(p);
+      g.userData.lon = ll.lon;
     });
     // Moon around Earth
     try {
@@ -1754,6 +2183,10 @@ const RadialBlurShader = {
       if ((t - introStart) >= introDurationMs()) finishIntro();
     }
     if (!running || !inView) { lastT = t; return; }
+    if (onPreloaderStage()) {
+      preloaderFrameTick++;
+      if (preloaderFrameTick % 2 !== 0) return;
+    }
     const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t;
 
     // flick momentum — time coasts after a drag-release, decaying to rest
@@ -1778,7 +2211,9 @@ const RadialBlurShader = {
           const pulse = Math.sin(t * 0.002) * 0.15 + 1.0;
           BODIES.forEach((b) => {
             if (b.id === 'earth') return;
-            const sprite = meshes[b.id].userData.retroSprite;
+            const g = meshes[b.id];
+            if (!g) return;
+            const sprite = g.userData.retroSprite;
             if (!sprite) return;
             let isRetro = false;
             try { isRetro = !!E.isRetrograde(b.id, jd); } catch (e) {}
@@ -1834,9 +2269,22 @@ const RadialBlurShader = {
 
     // self-rotation (liveliness)
     if (!PRM && scaleLevel <= 2 && !introActive) {
-      BODIES.forEach((b) => { meshes[b.id].userData.mesh.rotation.y += b.spin * dt * 0.25; });
+      BODIES.forEach((b) => {
+        const g = meshes[b.id];
+        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.25;
+      });
       if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
       if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
+    }
+
+    // Preloader hold: gentle system orbit while Enter awaits
+    if (!PRM && onPreloaderStage() && !introActive && preloaderIntroFinished && !dragging) {
+      BODIES.forEach((b) => {
+        const g = meshes[b.id];
+        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.12;
+      });
+      if (sunMesh) sunMesh.rotation.y += 0.03 * dt;
+      camAz += 0.028 * dt;
     }
 
     // scale-level camera transition (zoom dial)
@@ -1850,12 +2298,23 @@ const RadialBlurShader = {
         scaleAnimFrom.ty + (scaleAnimTo.ty - scaleAnimFrom.ty) * e,
         scaleAnimFrom.tz + (scaleAnimTo.tz - scaleAnimFrom.tz) * e
       );
+      if (scaleAnimFrom.radius < 12 && scaleAnimTo.radius > 20) {
+        camera.fov = CAM_FOV_CLOSE + (CAM_FOV_WIDE - CAM_FOV_CLOSE) * e;
+        camera.updateProjectionMatrix();
+      }
       if (p >= 1) {
         scaleAnimActive = false;
         if (scalePreset(scaleLevel).targetEarth) {
           const ep = scalePreset(scaleLevel);
           setEarthTerminatorCamera(ep.camRadius, ep.camEl);
+        } else {
+          const innerFocus = focusPlanetId && (focusPlanetId === 'mercury' || focusPlanetId === 'venus' || focusPlanetId === 'mars');
+          camera.fov = innerFocus ? CAM_FOV_MID : (scaleLevel >= 2 ? CAM_FOV_WIDE : CAM_FOV_MID);
+          camera.updateProjectionMatrix();
+          updateDomLabels(1);
+          updateScaleVisuals(scaleLevel);
         }
+        if (focusPlanetId) forceResize();
       }
     } else if (scalePreset(scaleLevel).targetEarth && !introActive) {
       earthTargetVec(camTarget);
@@ -1863,19 +2322,31 @@ const RadialBlurShader = {
 
     // intro: held Earth close-up on the terminator → Earth+Moon → full system (Earth-FIRST)
     if (introActive) {
-      if (!meshes.earth || introStart <= 0) { introActive = false; syncPreloaderIntroClass(false); }
+      if (!meshes.earth || introStart <= 0) {
+        introActive = false;
+        syncPreloaderIntroClass(false);
+        if (onPreloaderStage() && preloaderIntroScheduled && !preloaderIntroFinished) recoverPreloaderIntro();
+      }
       else {
         const introMs = introDurationMs();
         const elapsed = t - introStart;
         const p = Math.min(1, elapsed / introMs);
         if (onPreloaderStage()) {
-          if (p < 0.22) {
-            setEarthTerminatorCamera(2.35, 4 * D2R);
-          } else if (p < 0.72) {
-            const e = easeInOut((p - 0.22) / 0.50);
-            setEarthTerminatorCamera(2.35 + (3.6 - 2.35) * e, (4 * D2R) + (10 * D2R - 4 * D2R) * e);
+          if (p < 0.18) {
+            setEarthTerminatorCamera(3.2, 6 * D2R);
+          } else if (p < 0.45) {
+            const e = easeInOut((p - 0.18) / 0.27);
+            setEarthTerminatorCamera(3.2 + (6.5 - 3.2) * e, (6 * D2R) + (11 * D2R - 6 * D2R) * e);
           } else {
-            setEarthTerminatorCamera(3.6, 10 * D2R);
+            const e = easeOutCubic((p - 0.45) / 0.55);
+            const earthPos = meshes.earth.position;
+            const end = scalePreset(2);
+            setEarthTerminatorCamera(6.5, 11 * D2R);
+            const termAz = camAz, termEl = camEl, termRad = camRadius;
+            camTarget.lerpVectors(earthPos, ORIGIN, e);
+            camRadius = termRad + (PRELOADER_SYSTEM_CAM - termRad) * e;
+            camEl = termEl + (end.camEl - termEl) * e;
+            camAz = termAz * (1 - e) + end.camAz * e;
           }
         } else if (p < 0.18) {
           setEarthTerminatorCamera(2.35, 4 * D2R);
@@ -1911,7 +2382,7 @@ const RadialBlurShader = {
         updateDomLabels(p);
         if (elapsed >= introMs) finishIntro();
       }
-    } else if (!dragging && !scaleAnimActive && !PRM && (t - userTouched) > 1200) {
+    } else if (!dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && (t - userTouched) > 1200) {
       camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
     }
     if (!introActive && !scaleAnimActive) clampCamToLevel();
@@ -1924,12 +2395,14 @@ const RadialBlurShader = {
     }
 
     // DOM labels (preferred) or canvas sprites as fallback
+    updateFocusHighlight(t);
     if (!introActive) updateDomLabels(1);
     BODIES.forEach((b) => {
       const lab = labels[b.id]; if (!lab) return;
       lab.visible = !useDomLabels && showLabels && !introActive && scaleLevel <= 2;
       if (lab.visible) {
         const m = meshes[b.id];
+        if (!m) return;
         lab.position.set(m.position.x, m.position.y + b.size + 0.9, m.position.z);
         const d = camera.position.distanceTo(lab.position);
         const s = Math.max(0.04, d * 0.018);
@@ -1953,8 +2426,15 @@ const RadialBlurShader = {
     const el = document.getElementById('orrery-date-display'); if (!el) return;
     const d = new Date(baseNowMs + (dayOffset + scrollBias) * 86400000);
     const str = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-    const tag = Math.abs(dayOffset + scrollBias) < 0.5 ? ' · now' : ((dayOffset + scrollBias) > 0 ? ` · +${Math.round(dayOffset + scrollBias)}d` : ` · ${Math.round(dayOffset + scrollBias)}d`);
+    const off = dayOffset + scrollBias;
+    const tag = Math.abs(off) < 0.5 ? ' · now' : (off > 0 ? ` · +${Math.round(off)}d` : ` · ${Math.round(off)}d`);
     el.textContent = str + tag;
+
+    const scrub = document.getElementById('orrery-scrub');
+    if (scrub && document.activeElement !== scrub) {
+      const rounded = Math.round(off);
+      if (parseInt(scrub.value, 10) !== rounded) scrub.value = String(rounded);
+    }
 
     try {
       const E = window.AstroEphemeris;
@@ -1973,10 +2453,18 @@ const RadialBlurShader = {
         [315, 'Waning Crescent'],
         [360, 'New Moon'],
       ];
-      const phaseLabel = PHASES.find((_, i) => phase < PHASES[i + 1][0])?.[1] || 'New Moon';
+      let phaseLabel = 'New Moon';
+      for (let i = 0; i < PHASES.length - 1; i++) {
+        if (phase >= PHASES[i][0] && phase < PHASES[i + 1][0]) { phaseLabel = PHASES[i][1]; break; }
+      }
       const moonEl = document.getElementById('orrery-moon-phase');
       if (moonEl) moonEl.textContent = phaseLabel;
     } catch (e) { /* moon phase is optional */ }
+
+    try {
+      const jdTick = baseJd + dayOffset + scrollBias;
+      document.dispatchEvent(new CustomEvent('ap-sky-tick', { detail: { jd: jdTick } }));
+    } catch (e) { /* optional sync */ }
   }
 
   // ── Sizing / observers ─────────────────────────────────────────────────────
@@ -2071,6 +2559,41 @@ const RadialBlurShader = {
 
   // ── Pointer controls ───────────────────────────────────────────────────────
   function bindControls() {
+    try {
+      canvas.setAttribute('tabindex', '0');
+      if (!canvas.getAttribute('aria-label')) {
+        canvas.setAttribute('aria-label', 'The Living Orrery — drag to scrub time, arrow keys to step days, 0–6 for zoom scale');
+      }
+    } catch (_) {}
+    const onKey = (e) => {
+      if (onPreloaderStage() && introActive) return;
+      const k = e.key;
+      if (k === 'ArrowLeft') {
+        scrubDays(-1);
+        e.preventDefault();
+      } else if (k === 'ArrowRight') {
+        scrubDays(1);
+        e.preventDefault();
+      } else if (k === 'ArrowUp') {
+        const p = scalePreset(scaleLevel);
+        camRadius = Math.max(p.camMin, camRadius * 0.92);
+        userTouched = performance.now();
+        e.preventDefault();
+      } else if (k === 'ArrowDown') {
+        const p = scalePreset(scaleLevel);
+        camRadius = Math.min(p.camMax, camRadius * 1.08);
+        userTouched = performance.now();
+        e.preventDefault();
+      } else if (k >= '0' && k <= '6') {
+        applyScalePreset(parseInt(k, 10), true);
+        e.preventDefault();
+      } else if (k === ' ' || k === 'Spacebar') {
+        setSpeed(daysPerSec === 0 ? 1 : 0);
+        e.preventDefault();
+      }
+    };
+    canvas.addEventListener('keydown', onKey);
+    canvas._orreryKeyHandler = onKey;
     const onDown = (e) => {
       if (onPreloaderStage() && introActive) return;
       dragging = true; scrollDriveLocked = true; const p = pt(e); lastX = downX = p.x; lastY = downY = p.y; userTouched = performance.now(); introActive = false; syncPreloaderIntroClass(false); daysPerSec = 0; flicking = false; scrubVel = 0; try { canvas.style.cursor = 'grabbing'; } catch (_) {}
@@ -2101,11 +2624,20 @@ const RadialBlurShader = {
       syncPreloaderIntroClass(false);
       scaleAnimActive = false;
     };
+    const onDbl = (e) => {
+      if (onPreloaderStage() && introActive) return;
+      const id = resolvePickId(pt(e));
+      if (!id) return;
+      e.preventDefault();
+      focusPlanet(id);
+    };
     canvas.addEventListener('pointerdown', onDown);
     window.addEventListener('pointermove', onMove);
     window.addEventListener('pointerup', onUp);
+    canvas.addEventListener('dblclick', onDbl);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas._orreryHandlers = { onMove, onUp };
+    canvas._orreryDblHandler = onDbl;
   }
   function pt(e) { const r = canvas.getBoundingClientRect(); return { x: (e.clientX || 0) - r.left, y: (e.clientY || 0) - r.top }; }
   const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -2120,19 +2652,22 @@ const RadialBlurShader = {
       return E[id + 'Position'](jd).lon;
     } catch (e) { return null; }
   }
-  function pick(p) {
+  function resolvePickId(p) {
     const r = canvas.getBoundingClientRect();
     ndc.x = (p.x / r.width) * 2 - 1; ndc.y = -(p.y / r.height) * 2 + 1;
     raycaster.setFromCamera(ndc, camera);
-    const targets = BODIES.map((b) => meshes[b.id].userData.mesh);
+    const targets = BODIES.map((b) => meshes[b.id] && meshes[b.id].userData.mesh).filter(Boolean);
     if (sunMesh) targets.push(sunMesh);
     if (moonMesh) targets.push(moonMesh);
     const hit = raycaster.intersectObjects(targets, false)[0];
-    if (!hit) return;
-    let id = null;
-    if (hit.object === sunMesh) id = 'sun';
-    else if (hit.object === moonMesh) id = 'moon';
-    else { const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object); if (b) id = b.id; }
+    if (!hit) return null;
+    if (hit.object === sunMesh) return 'sun';
+    if (hit.object === moonMesh) return 'moon';
+    const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object);
+    return b ? b.id : null;
+  }
+  function pick(p) {
+    const id = resolvePickId(p);
     if (!id) return;
     const jd = baseJd + dayOffset + scrollBias;
     const lon = geoLonOf(id, jd);
@@ -2176,8 +2711,16 @@ const RadialBlurShader = {
     canvas = canvasEl; wrap = canvas.parentElement;
 
     perfTier = getPerfTier();
+    const preloaderMode = !!window.__orreryPreloaderOwns;
 
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, premultipliedAlpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: !preloaderMode,
+      alpha: true,
+      premultipliedAlpha: true,
+      powerPreference: preloaderMode ? 'default' : 'high-performance',
+      preserveDrawingBuffer: !preloaderMode,
+    });
     renderer.setClearColor(0x000000, 0);
     canvas.style.background = 'transparent';
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -2188,49 +2731,33 @@ const RadialBlurShader = {
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
 
-    // Bloom composer — tiered via RafCore (low/PRM = off, mid = light, high = full)
-    if (!PRM && perfTier !== 'low') {
-      try {
-        composer = new EffectComposer(renderer);
-        composer.addPass(new RenderPass(scene, camera));
-        const bloomStrength = perfTier === 'mid' ? 0.18 : 0.28;
-        const bloomRadius = perfTier === 'mid' ? 0.36 : 0.42;
-        const bloomThreshold = perfTier === 'mid' ? 0.94 : 0.91;
-        bloomPass = new UnrealBloomPass(
-          new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
-          bloomStrength, bloomRadius, bloomThreshold
-        );
-        composer.addPass(bloomPass);
-        if (perfTier === 'high') {
-          radialBlurPass = tryCreateRadialBlurPass(1);
-          if (radialBlurPass) composer.addPass(radialBlurPass);
-        }
-        composer.addPass(new OutputPass());
-      } catch (e) {
-        composer = null;
-        console.warn('[orrery] post-processing unavailable:', e.message);
-      }
+    // Bloom composer — defer during preloader to cut GPU memory; built in settleFromIntro.
+    if (!preloaderMode && !PRM && perfTier !== 'low') {
+      ensureComposer();
     }
 
     const now = new Date();
     baseNowMs = now.getTime();
     baseJd = window.AstroEphemeris.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
 
-    buildStars(); buildSun(); buildPlanets();
-    buildAsteroids();
+    if (!preloaderMode && !usesPageStarfield()) buildStars();
+    buildSun(preloaderMode);
+    buildPlanets(preloaderMode ? { earthOnly: true } : undefined);
+    if (!preloaderMode) {
+      buildAsteroids();
+      buildGalaxyLayers();
+    }
     // buildHalley();  // retired — the illustrative comet + its blue dashed orbit were
     //                    cool-blue clutter (off the warm palette). halleyGroup stays null;
     //                    updateHalley() and all visibility paths are null-guarded.
-    buildGalaxyLayers();
     tuneSunGlowForComposer(perfTier);
     updatePositions();
-    const preloaderMode = !!window.__orreryPreloaderOwns;
     if (preloaderMode) {
       scaleLevel = 0;
       introActive = false;
       updateScaleVisuals(0);
       tunePreloaderSunGlow(true);
-      setEarthTerminatorCamera(2.35, 4 * D2R);
+      setEarthTerminatorCamera(3.2, 6 * D2R);
       scaleAnimActive = false;
       applyIntroVisuals(0, 0);
       applyCamera();
@@ -2242,14 +2769,20 @@ const RadialBlurShader = {
 
     if (PRM) {
       introActive = false;
-      camTarget.set(0, 0, 0);
-      camRadius = 48;
-      camEl = 26 * D2R;
-      camAz = -0.6;
-      applyCamera();
+      if (!preloaderMode) {
+        setDefaultEarthFrame();
+        updateScaleHUD();
+      } else {
+        camTarget.set(0, 0, 0);
+        camRadius = 48;
+        camEl = 26 * D2R;
+        camAz = -0.6;
+        applyCamera();
+      }
     }
 
     ensureDomLabels();
+    updateScaleHUD();
     bindControls();
     if ('ResizeObserver' in window) {
       const ro = new ResizeObserver(resize);
@@ -2271,6 +2804,11 @@ const RadialBlurShader = {
       inView = true;
     }
     document.addEventListener('visibilitychange', () => { running = !document.hidden; });
+    canvas.addEventListener('webglcontextlost', (e) => {
+      try { e.preventDefault(); } catch (_) {}
+      console.warn('[orrery] WebGL context lost — falling back to canvas orrery');
+      fallbackToCanvas(canvas);
+    }, false);
 
     // Pre-compile shaders + warm the bloom composer NOW (while the preloader is still
     // static) so the first animated intro frame doesn't hitch on a heavy program link.
@@ -2299,8 +2837,26 @@ const RadialBlurShader = {
     daysPerSec = Number(s) || 0;
     flicking = false;   // a speed button is a constant rate, not a decaying flick
     if (daysPerSec !== 0) { introActive = false; scrollDriveLocked = true; }
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-speed-change', { detail: { speed: daysPerSec } }));
+    } catch (e) { /* optional */ }
   }
-  function getDate() { return new Date(baseNowMs + dayOffset * 86400000); }
+  function getDate() { return new Date(baseNowMs + (dayOffset + scrollBias) * 86400000); }
+  function snapToNow() {
+    const now = new Date();
+    const E = window.AstroEphemeris;
+    baseNowMs = now.getTime();
+    baseJd = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
+    dayOffset = 0;
+    scrollBias = 0;
+    scrollDriveLocked = false;
+    daysPerSec = 0;
+    flicking = false;
+    needRecompute = true;
+    introActive = false;
+    syncHeroReplayClass(false);
+    updateDateUI();
+  }
   function setDate(date) {
     const E = window.AstroEphemeris;
     const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), 0);
@@ -2311,17 +2867,99 @@ const RadialBlurShader = {
   }
   function jumpTo(jd) { dayOffset = jd - baseJd; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
   function scrubDays(d) { dayOffset += Number(d) || 0; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
+  function getDayOffset() { return dayOffset + scrollBias; }
+  function setTimelineDays(days) {
+    dayOffset = Number(days) || 0;
+    scrollBias = 0;
+    scrollDriveLocked = true;
+    daysPerSec = 0;
+    flicking = false;
+    needRecompute = true;
+    introActive = false;
+    syncHeroReplayClass(false);
+    updateDateUI();
+  }
+  function focusPlanet(id) {
+    if (!id || destroyed) return;
+    id = String(id).toLowerCase();
+    userTouched = performance.now();
+    introActive = false;
+    syncPreloaderIntroClass(false);
+    syncHeroReplayClass(false);
+    daysPerSec = 0;
+    flicking = false;
+    scrollDriveLocked = true;
+
+    if (id === 'earth') {
+      setFocusHighlight('earth');
+      applyScalePreset(0, true);
+      return;
+    }
+
+    if (!allPlanetsBuilt) {
+      buildRemainingPlanets();
+      needRecompute = true;
+      updatePositions();
+    }
+
+    if (id === 'sun') {
+      setFocusHighlight('sun');
+      applyScalePreset(1, true);
+      return;
+    }
+
+    if (id === 'moon') {
+      setFocusHighlight('moon');
+      applyScalePreset(0, true);
+      return;
+    }
+
+    const body = BODIES.find((b) => b.id === id);
+    const g = meshes[id];
+    if (!body || !g) return;
+
+    const inner = (id === 'mercury' || id === 'venus' || id === 'mars');
+    const preset = scalePreset(inner ? 1 : 2);
+    scaleLevel = preset.id;
+    updateScaleHUD();
+    updateScaleVisuals(scaleLevel);
+
+    scaleAnimFrom.radius = camRadius;
+    scaleAnimFrom.el = camEl;
+    scaleAnimFrom.az = camAz;
+    scaleAnimFrom.tx = camTarget.x;
+    scaleAnimFrom.ty = camTarget.y;
+    scaleAnimFrom.tz = camTarget.z;
+
+    const pos = g.position;
+    const orbitR = Math.hypot(pos.x, pos.z) || body.R;
+    scaleAnimTo.radius = inner ? Math.max(body.size * 7.5, 12) : Math.max(orbitR * 0.44, preset.camRadius * 0.4);
+    scaleAnimTo.el = inner ? 16 * D2R : preset.camEl;
+    scaleAnimTo.az = Math.atan2(pos.z, pos.x);
+    scaleAnimTo.tx = pos.x;
+    scaleAnimTo.ty = pos.y;
+    scaleAnimTo.tz = pos.z;
+
+    setFocusHighlight(id);
+    scaleAnimActive = true;
+    scaleAnimStart = performance.now();
+    camera.fov = inner ? CAM_FOV_MID : CAM_FOV_WIDE;
+    camera.updateProjectionMatrix();
+  }
+
   function destroy() {
     destroyed = true; if (raf) cancelAnimationFrame(raf);
     window.removeEventListener('resize', resize);
     if (canvas && canvas._orreryHandlers) { window.removeEventListener('pointermove', canvas._orreryHandlers.onMove); window.removeEventListener('pointerup', canvas._orreryHandlers.onUp); }
+    if (canvas && canvas._orreryKeyHandler) canvas.removeEventListener('keydown', canvas._orreryKeyHandler);
+    if (canvas && canvas._orreryDblHandler) canvas.removeEventListener('dblclick', canvas._orreryDblHandler);
     if (canvas && canvas._orreryRO) canvas._orreryRO.disconnect();
     if (canvas && canvas._orreryIO) canvas._orreryIO.disconnect();
     try { renderer && renderer.dispose(); } catch (e) {}
   }
 
   window.Orrery3D = {
-    init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays,
+    init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays, getDayOffset, setTimelineDays, snapToNow,
     goTo: setDate,
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
@@ -2342,6 +2980,11 @@ const RadialBlurShader = {
       if (onPreloaderStage()) {
         preloaderIntroScheduled = true;
         preloaderIntroFinished = false;
+        if (preloaderIntroWatchdog) clearTimeout(preloaderIntroWatchdog);
+        preloaderIntroWatchdog = setTimeout(() => {
+          preloaderIntroWatchdog = null;
+          if (!destroyed && onPreloaderStage() && !preloaderIntroFinished) recoverPreloaderIntro();
+        }, introDurationMs() + 2500);
       }
       onIntroDone = fn || null;
       restartIntro();
@@ -2369,6 +3012,7 @@ const RadialBlurShader = {
     whenEarthReady() { return earthMapReady ? Promise.resolve() : earthMapReadyPromise; },
     getScaleLevel() { return scaleLevel; },
     setScaleLevel(n) { applyScalePreset(n, true); },
+    focusPlanet,
     set onIntroDone(fn) {
       onIntroDone = fn;
       if (PRM && fn && !introActive && !preloaderIntroScheduled) { onIntroDone = null; fn(); }

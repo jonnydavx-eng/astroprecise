@@ -13,9 +13,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const WEB = join(__dirname, '..', 'website');
 const BASE = process.env.AP_BASE || 'http://localhost:8790';
 
-const LS_DEEP = 'https://astroprecise.lemonsqueezy.com/checkout/buy/a89e0ee2-fd6f-42bf-85cb-52083eee365e';
-const LS_POSTER = 'https://astroprecise.lemonsqueezy.com/checkout/buy/e8f8a32c-b6e1-4be6-9309-16997d5b01bd';
-const LS_BUNDLE = 'https://astroprecise.lemonsqueezy.com/checkout/buy/d521b7e8-23f5-448a-90a4-6992179d548b';
+// Must match tools/commerce-urls.json checkout links (custom Typeform redirect URLs).
+const LS_DEEP = 'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67';
+const LS_POSTER = 'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594';
+const LS_BUNDLE = 'https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7';
 
 let passed = 0;
 let failed = 0;

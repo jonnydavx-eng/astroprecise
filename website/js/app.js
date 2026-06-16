@@ -1442,6 +1442,7 @@ if ('serviceWorker' in navigator) {
 
   function showPrivacyBanner() {
     if (localStorage.getItem(ACK_KEY)) return;
+    function mountBanner() {
     const b = document.createElement('div');
     b.className = 'privacy-banner';
     b.setAttribute('role', 'region');
@@ -1457,6 +1458,14 @@ if ('serviceWorker' in navigator) {
       try { localStorage.setItem(ACK_KEY, '1'); } catch (e) {}
       setTimeout(() => b.remove(), 600);
     });
+    }
+    if (document.body.classList.contains('page-home') && document.getElementById('preloader')) {
+      window.addEventListener('ap-hero-enter', function () {
+        setTimeout(mountBanner, 1200);
+      }, { once: true });
+      return;
+    }
+    mountBanner();
   }
 
   function showOfflinePill() {
@@ -1996,7 +2005,8 @@ if ('serviceWorker' in navigator) {
       sticky.classList.add('is-visible');
       document.body.classList.add('has-email-sticky');
     };
-    setTimeout(show, 6000);
+    var delayMs = document.body.classList.contains('page-home') ? 22000 : 6000;
+    setTimeout(show, delayMs);
     var unsubScroll = null;
     var onScroll = function () {
       if (window.scrollY > 480) {

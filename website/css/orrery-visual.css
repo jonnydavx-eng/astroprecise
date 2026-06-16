@@ -265,10 +265,28 @@
   opacity: 1;
 }
 
-#preloader.has-real:not(.aligned) .preloader-content {
+#preloader.has-real:not(.aligned) .preloader-title {
   opacity: 0;
   visibility: hidden;
+}
+
+#preloader.orrery-expanded:not(.aligned) .preloader-content {
   pointer-events: none;
+}
+
+#preloader.orrery-expanded:not(.aligned) #preloader-enter {
+  opacity: 0.78;
+  pointer-events: auto;
+  transition-delay: 0.35s;
+}
+
+#preloader.aligned #preloader-enter,
+#preloader.orrery-expanded #preloader-enter {
+  pointer-events: auto;
+}
+
+#preloader.aligned #preloader-enter {
+  opacity: 1;
 }
 
 .apl-intro-progress__bar {
@@ -282,35 +300,40 @@
   transition: transform 0.12s linear;
 }
 
-/* Preloader orrery slot — full viewport, transparent (no black 72vmin box) */
-#preloader.has-live-orr .apl-live-orr,
-#preloader.has-real .apl-live-orr {
-  position: fixed;
-  inset: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  transform: none;
-  pointer-events: auto;
-  z-index: 5;
-  opacity: 1;
-  cursor: grab;
-}
-
+/* Preloader orrery — small boot footprint, grows when Earth is ready (not full-viewport) */
 .apl-live-orr {
+  --preloader-orr-size: min(34vmin, 240px);
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(72vmin, 560px);
-  height: min(72vmin, 560px);
+  transform: translate(-50%, -52%);
+  width: var(--preloader-orr-size);
+  height: var(--preloader-orr-size);
   pointer-events: auto;
   z-index: 5;
   opacity: 1;
   cursor: grab;
+  transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+              height 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#preloader.has-live-orr .apl-live-orr {
+  --preloader-orr-size: min(40vmin, 300px);
+}
+
+#preloader.has-real .apl-live-orr,
+#preloader.orrery-expanded .apl-live-orr {
+  --preloader-orr-size: min(44vmin, 360px);
+}
+
+#preloader.preloader--system-view .apl-live-orr,
+#preloader.aligned .apl-live-orr {
+  --preloader-orr-size: min(62vmin, 520px);
+}
+
+#preloader.aligned .apl-live-orr {
+  pointer-events: none;
+  cursor: default;
 }
 
 .apl-live-orr:active {
@@ -328,14 +351,15 @@
 #preloader.has-real .orrery-viewport {
   width: 100%;
   height: 100%;
-  border-radius: 0;
-  isolation: auto;
-  aspect-ratio: auto;
+  border-radius: 50%;
+  isolation: isolate;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
 }
 
 #preloader.has-live-orr .orrery-viewport #orrery-canvas,
 #preloader.has-real .orrery-viewport #orrery-canvas {
-  border-radius: 0;
+  border-radius: 50%;
   width: 100% !important;
   height: 100% !important;
 }
@@ -345,7 +369,7 @@
   border-radius: 50%;
 }
 
-/* Preloader: full-bleed transparent canvas — no mask ring (was the "two backgrounds" seam) */
+/* Preloader: circular viewport — shared starfield shows around the globe */
 #preloader.has-real #orrery-canvas,
 #preloader.has-live-orr #orrery-canvas {
   display: block;
@@ -353,10 +377,10 @@
   height: 100%;
   max-width: none;
   margin: 0;
-  aspect-ratio: auto;
-  border-radius: 0;
-  -webkit-mask-image: none;
-  mask-image: none;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle at 50% 48%, #000 0%, #000 58%, rgba(0, 0, 0, 0.4) 78%, transparent 96%);
+  mask-image: radial-gradient(circle at 50% 48%, #000 0%, #000 58%, rgba(0, 0, 0, 0.4) 78%, transparent 96%);
 }
 
 /* Hero only: soft feather into the shared starfield */
@@ -393,6 +417,67 @@
   display: none;
 }
 
+/* CSS-only splash: real Earth texture poster when WebGL is skipped */
+.apl-earth-poster {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(72vw, 420px);
+  height: min(72vw, 420px);
+  margin: calc(min(72vw, 420px) / -2) 0 0 calc(min(72vw, 420px) / -2);
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 68% 32%, rgba(255, 255, 255, 0.14), transparent 42%),
+    url('../assets/textures/earth_sm.jpg') center / cover no-repeat;
+  box-shadow:
+    0 0 0 1px rgba(201, 162, 39, 0.12),
+    0 0 48px rgba(60, 120, 200, 0.22),
+    inset 0 0 40px rgba(0, 0, 0, 0.35);
+}
+
+.apl-earth-poster::after {
+  content: '';
+  position: absolute;
+  inset: -3%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 48%, transparent 58%, rgba(5, 4, 6, 0.35) 100%);
+}
+
+#preloader.fallback-css .apl-earth-poster {
+  display: block;
+}
+
+#preloader.fallback-css .apl-orr,
+#preloader.fallback-css .apl-core {
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #preloader.fallback-css .apl-earth-poster {
+    animation: apl-earth-poster-breathe 5.5s ease-in-out infinite;
+  }
+}
+
+@keyframes apl-earth-poster-breathe {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 1px rgba(201, 162, 39, 0.12),
+      0 0 48px rgba(60, 120, 200, 0.22),
+      inset 0 0 40px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    transform: scale(1.012);
+    box-shadow:
+      0 0 0 1px rgba(201, 162, 39, 0.2),
+      0 0 62px rgba(80, 140, 220, 0.28),
+      inset 0 0 40px rgba(0, 0, 0, 0.32);
+  }
+}
+
 #preloader.aligned .apl-intro-header {
   opacity: 0;
   pointer-events: none;
@@ -415,6 +500,7 @@
 
 #preloader.aligned .preloader-content {
   pointer-events: auto;
+  z-index: 8;
 }
 
 /* Preloader copy — one line + button, reveal only when intro settles */
@@ -483,7 +569,72 @@
   transition: opacity 0.45s ease, border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
 }
 
+@keyframes preloader-enter-arrive {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.86);
+    filter: blur(2px);
+  }
+  58% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.05);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes preloader-enter-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  35% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+}
+
+@keyframes preloader-enter-shimmer {
+  0% {
+    background-position: -140% center;
+  }
+  100% {
+    background-position: 240% center;
+  }
+}
+
+@keyframes preloader-enter-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 14px rgba(201, 162, 39, 0.14), 0 0 0 0 rgba(201, 162, 39, 0);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(201, 162, 39, 0.3), 0 0 0 5px rgba(201, 162, 39, 0.07);
+  }
+}
+
+@keyframes preloader-enter-launch {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.14);
+    filter: blur(3px);
+  }
+}
+
 #preloader-enter.preloader-enter-btn {
+  position: relative;
+  overflow: visible;
   font-size: 0.72rem;
   padding: 11px 26px;
   background: rgba(8, 6, 5, 0.42);
@@ -500,12 +651,83 @@
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
+#preloader-enter.preloader-enter-btn::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#preloader-enter.preloader-enter-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 236, 180, 0.42) 50%,
+    transparent 62%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+#preloader-enter.preloader-enter-btn--arrive {
+  pointer-events: auto;
+  animation: preloader-enter-arrive 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+#preloader.aligned #preloader-enter.preloader-enter-btn--arrive {
+  animation:
+    preloader-enter-arrive 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    preloader-enter-breathe 3.4s ease-in-out 1.05s infinite;
+}
+
+#preloader-enter.preloader-enter-btn--arrive::before {
+  animation: preloader-enter-ring 1.15s ease-out forwards;
+}
+
+#preloader-enter.preloader-enter-btn--arrive::after {
+  opacity: 1;
+  animation: preloader-enter-shimmer 1.35s ease-out 0.25s 1 forwards;
+}
+
+#preloader-enter.preloader-enter-btn--launch {
+  animation: preloader-enter-launch 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  pointer-events: none;
+}
+
 #preloader-enter.preloader-enter-btn:hover,
 #preloader-enter.preloader-enter-btn:focus-visible {
   border-color: rgba(201, 162, 39, 0.62);
   box-shadow: 0 0 18px rgba(201, 162, 39, 0.22);
   background: rgba(18, 14, 10, 0.55);
   outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #preloader-enter.preloader-enter-btn--arrive,
+  #preloader.aligned #preloader-enter.preloader-enter-btn--arrive,
+  #preloader-enter.preloader-enter-btn--launch {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  #preloader-enter.preloader-enter-btn--arrive::before,
+  #preloader-enter.preloader-enter-btn--arrive::after {
+    animation: none !important;
+    opacity: 0;
+  }
 }
 
 #preloader.has-real .preloader-skip-intro {
@@ -635,5 +857,41 @@
   .hero__content {
     transform: none !important;
     transition: none;
+  }
+
+  .orrery-viewport--hero-enter {
+    animation: none;
+  }
+}
+
+/* Preloader → hero handoff: the instrument settles into the centrepiece */
+.orrery-viewport--hero-enter {
+  animation: orrery-hero-enter 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes orrery-hero-enter {
+  from {
+    transform: scale(0.93);
+    filter: brightness(0.92);
+  }
+  to {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* Replay intro — subtle instrument glow while the cinematic runs */
+.orrery-viewport--replay .orrery-cine-vignette {
+  animation: orrery-replay-vignette 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes orrery-replay-vignette {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orrery-viewport--replay .orrery-cine-vignette {
+    animation: none;
   }
 }

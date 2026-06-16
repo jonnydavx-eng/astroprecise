@@ -26,17 +26,35 @@
 
   window.__loadOrreryEngine = loadEngine;
 
+  function localPerfTier() {
+    try {
+      if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
+      if (navigator.deviceMemory && navigator.deviceMemory <= 4) return 'low';
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return 'low';
+    } catch (e) { return 'high'; }
+    return 'high';
+  }
+
+  function preloaderWebGLSafe() {
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+      if (localPerfTier() === 'low') return false;
+      if (/[?&](lite|nosplash)=1/.test(location.search)) return false;
+    } catch (e) { return false; }
+    return true;
+  }
+
   try {
     var introSeen = sessionStorage.getItem('ap_intro_complete') === '1';
     if (introSeen) {
       var warm = function () { loadEngine().catch(function () {}); };
       if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 2200 });
       else setTimeout(warm, 500);
-    } else {
+    } else if (preloaderWebGLSafe()) {
       // First visit: preloader needs the engine — start loading immediately in <head>
       loadEngine().catch(function () {});
     }
   } catch (e) {
-    loadEngine().catch(function () {});
+    if (preloaderWebGLSafe()) loadEngine().catch(function () {});
   }
 })();

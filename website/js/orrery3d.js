@@ -1405,6 +1405,8 @@ window.Orrery3D = (() => {
     if (!prefersReducedMotion) spawnShootingStar(performance.now());
   }
 
+  const readyPromise = Promise.resolve();
+
   return {
     init,
     destroy,
@@ -1418,19 +1420,50 @@ window.Orrery3D = (() => {
     nowJd: () => baseJd + dayOffset,
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
-    // Backward compat aliases
     goTo,
-    // New API
     setShowAspects,
     setShowParticles,
     triggerShootingStar,
-    // New layer toggles for upgraded solar system
     setShowOrbits(bool) { showOrbits = !!bool; },
     setShowLabels(bool) { showLabels = !!bool; },
     setShowAsteroids(bool) { showAsteroids = !!bool; },
-    // Callback property (set externally: Orrery3D.onPlanetClick = fn)
     get onPlanetClick() { return onPlanetClick; },
     set onPlanetClick(fn) { onPlanetClick = fn; },
+    // Parity stubs — canvas fallback does not implement galaxy scale or WebGL intro
+    settleFromIntro() {},
+    startPreloaderIntro(fn) { if (typeof fn === 'function') fn(); },
+    skipIntro() {},
+    restartIntro() {},
+    startIntro() { this.restartIntro(); },
+    isIntroActive() { return false; },
+    isIntroPending() { return false; },
+    hasIntroCompleted() { return true; },
+    getIntroStartedAt() { return 0; },
+    getIntroDurationMs() { return 0; },
+    getIntroProgress() { return 1; },
+    whenReady() { return readyPromise; },
+    whenEarthReady() { return readyPromise; },
+    forceResize() { resize(); },
+    getScaleLevel() { return 2; },
+    setScaleLevel() {},
+    focusPlanet() {},
+    setScrollDrive() {},
+    resetScrollDrive() { dayOffset = 0; computeBodies(); },
+    getDayOffset() { return dayOffset; },
+    setTimelineDays(days) { dayOffset = Number(days) || 0; setSpeed(0); computeBodies(); },
+    snapToNow() { dayOffset = 0; setSpeed(0); computeBodies(); },
+    captureFrame(opts) {
+      if (!canvas) return null;
+      opts = opts || {};
+      const mult = opts.scale || 2;
+      const off = document.createElement('canvas');
+      off.width = Math.round(canvas.width * mult);
+      off.height = Math.round(canvas.height * mult);
+      const octx = off.getContext('2d');
+      octx.drawImage(canvas, 0, 0, off.width, off.height);
+      return off;
+    },
+    isWebGL: false,
   };
 
 })();
