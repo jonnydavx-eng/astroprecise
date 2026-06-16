@@ -10,6 +10,11 @@ body.landing-gate-exiting .site-footer {
   pointer-events: none !important;
 }
 
+body.preloader-active #preloader,
+body.landing-gate-exiting #preloader {
+  pointer-events: auto;
+}
+
 body.preloader-active .hero__entrance,
 body.preloader-active .hero__sky-dock,
 body.preloader-active .hero__scroll-cue,

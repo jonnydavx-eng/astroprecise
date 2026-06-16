@@ -486,12 +486,13 @@
     .hero__orrery-ring {
       position: relative;
       padding: 0;
-      border-radius: 50%;
+      border-radius: 0;
       background: transparent;
       align-self: center;
       width: min(100%, 720px);
       aspect-ratio: 1 / 1;
       margin: 0 auto;
+      overflow: visible;
     }
 
     /* Reserves hero space while the canvas lives on the preloader stage */
@@ -1011,19 +1012,20 @@
     }
     .orrery-scale-btn {
       font-family: var(--font-ui, Inter, system-ui, sans-serif);
-      font-size: 0.5rem;
-      letter-spacing: 0.06em;
+      font-size: 0.52rem;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      padding: 4px 2px;
+      padding: 6px 3px;
       border-radius: 999px;
       border: 1px solid transparent;
       background: transparent;
       color: rgba(232, 224, 208, 0.72);
       cursor: pointer;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      transition: color 0.28s, border-color 0.28s, background 0.28s, box-shadow 0.28s, transform 0.28s;
       text-align: center;
       white-space: nowrap;
       min-width: 0;
+      min-height: 28px;
     }
     @media (min-width: 768px) {
       .orrery-scale-dial {
@@ -1034,10 +1036,12 @@
     .orrery-scale-btn:hover { color: var(--gold-pale); border-color: rgba(201, 162, 39, 0.35); }
     .orrery-scale-btn.active {
       color: var(--gold-hero-light);
-      border-color: rgba(201, 162, 39, 0.55);
-      background: rgba(201, 162, 39, 0.12);
-      box-shadow: inset 0 1px 0 rgba(232, 224, 208, 0.08);
+      border-color: rgba(201, 162, 39, 0.65);
+      background: linear-gradient(180deg, rgba(201, 162, 39, 0.18), rgba(201, 162, 39, 0.08));
+      box-shadow: inset 0 1px 0 rgba(232, 224, 208, 0.12), 0 0 14px rgba(201, 162, 39, 0.18);
+      transform: translateY(-1px);
     }
+
     .orrery-scale-label {
       font-size: 0.62rem;
       letter-spacing: 0.06em;
@@ -2607,6 +2611,7 @@
 <body class="page-home">
   <script src="js/raf-core.js"></script>
   <script src="js/ephemeris.js"></script>
+  <script src="js/starcatalog.js"></script>
 
   <!-- ═════════════════════════════════════════════════════════════════════
        CINEMATIC PRELOADER — "The Spheres Align"
@@ -2779,6 +2784,30 @@
 
     lockMainContent();
 
+    var releasePreloaderTrap = (function trapPreloaderFocus() {
+      function onTab(e) {
+        if (e.key !== 'Tab' || preDone) return;
+        if (pre.style.display === 'none') return;
+        var nodes = Array.prototype.slice.call(pre.querySelectorAll(
+          'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )).filter(function (el) {
+          return !el.hidden && el.getAttribute('aria-hidden') !== 'true';
+        });
+        if (!nodes.length) return;
+        var first = nodes[0];
+        var last = nodes[nodes.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+      document.addEventListener('keydown', onTab);
+      return function () { document.removeEventListener('keydown', onTab); };
+    })();
+
     function localPerfTier() {
       try {
         if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
@@ -2827,6 +2856,7 @@
     var preDone = false;
     function hidePre() {
       if (preDone) return; preDone = true;
+      if (typeof releasePreloaderTrap === 'function') releasePreloaderTrap();
       if (raf) cancelAnimationFrame(raf);
       document.body.classList.remove('preloader-intro-playing');
       window.__orreryPreloaderOwns = false;
@@ -3306,9 +3336,26 @@
                 ></canvas>
                 <div class="orrery-cine-vignette" aria-hidden="true"></div>
                 <div class="orrery-cine-grain" aria-hidden="true"></div>
+                <div class="orrery-viewport-controls" role="toolbar" aria-label="Orrery quick controls on the model">
+                  <button type="button" class="orrery-vp-btn" id="orrery-vp-earth" aria-label="Jump to Earth close-up">⌂ Earth</button>
+                  <button type="button" class="orrery-vp-btn" id="orrery-vp-system" aria-label="View full solar system">☉ System</button>
+                  <button type="button" class="orrery-vp-btn" id="orrery-vp-sun" aria-label="Focus on the Sun">Sun</button>
+                  <button type="button" class="orrery-vp-btn" id="orrery-vp-moon" aria-label="Focus on the Moon">Moon</button>
+                  <button type="button" class="orrery-vp-btn orrery-vp-btn--journey" id="orrery-vp-inward" aria-label="Fly inward from cosmos to Earth">↓ Inward</button>
+                  <button type="button" class="orrery-vp-btn orrery-vp-btn--journey" id="orrery-vp-pause" hidden aria-label="Pause scale journey">⏸ Pause</button>
+                </div>
                 <div class="orrery-dom-labels" id="orrery-dom-labels" aria-hidden="true"></div>
+                <div class="journey-hud" id="orrery-journey-hud" hidden aria-live="polite">
+                  <div class="journey-hud__progress" aria-hidden="true"><span id="journey-progress-fill"></span></div>
+                  <p class="journey-hud__tagline" id="journey-tagline"></p>
+                  <h3 class="journey-hud__title" id="journey-title"></h3>
+                  <p class="journey-hud__narrative" id="journey-narrative"></p>
+                  <p class="journey-hud__fact" id="journey-fact"></p>
+                  <p class="journey-hud__pitch" id="journey-pitch"></p>
+                  <button type="button" class="journey-hud__skip" id="journey-skip">Skip to destination</button>
+                </div>
               </div>
-              <div class="orrery-hint" aria-hidden="true">drag through time &middot; scroll page to advance &middot; zoom dial for space</div>
+              <div class="orrery-hint" aria-hidden="true">tap a scale to fly there &middot; drag through time &middot; scroll page to advance</div>
             </div>
 
             <div class="orrery-console__deck">
@@ -3326,6 +3373,7 @@
                 </div>
               </div>
               <div class="orrery-aux-row">
+                <button type="button" class="orrery-btn orrery-btn--journey" id="orrery-full-tour" aria-label="Fly from Earth through every scale to the edge of the observable universe">✦ Cosmic Journey</button>
                 <button type="button" class="orrery-btn" id="orrery-replay-intro" aria-label="Replay the Earth to solar system intro">Replay intro</button>
                 <div class="orrery-layer-toggles" role="group" aria-label="Orrery layer toggles">
                   <button type="button" class="orrery-toggle" data-layer="orbits" aria-pressed="false">Orbits</button>
@@ -4063,6 +4111,8 @@
   <script src="js/app.js"></script>
   <script src="js/effects.js"></script>
   <script src="js/hero-instrument.js"></script>
+  <script src="js/scale-journey-chapters.js"></script>
+  <script src="js/scale-journey.js"></script>
 
   <!-- ══════════════════════════════════════════════════════════════════════
        INLINE CONTROLLER SCRIPT
@@ -4353,7 +4403,9 @@
         document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
           btn.addEventListener('click', function () {
             var lv = parseInt(btn.dataset.scale, 10);
-            if (window.Orrery3D && typeof Orrery3D.setScaleLevel === 'function') {
+            if (window.ScaleJourney && typeof ScaleJourney.start === 'function') {
+              ScaleJourney.start(lv);
+            } else if (window.Orrery3D && typeof Orrery3D.setScaleLevel === 'function') {
               Orrery3D.setScaleLevel(lv);
             }
           });

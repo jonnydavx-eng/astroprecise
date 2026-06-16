@@ -765,6 +765,14 @@
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
     }
+    .moon-phase__status {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--gold-pale, #EFE3C0);
+      margin: 0 0 0.5rem;
+    }
+
     .moon-phase__icon {
       font-size: 5rem;
       line-height: 1;
@@ -1140,13 +1148,13 @@
         </div>
 
         <!-- Inline reading panel — animates open below grid when a sign is selected -->
-        <div class="sign-reading-panel" id="sign-reading-panel" aria-live="polite" aria-label="Daily horoscope reading">
+        <div class="sign-reading-panel" id="sign-reading-panel" aria-live="polite" aria-label="Daily horoscope reading" aria-hidden="true">
           <div class="sign-reading-panel__inner">
             <div class="sign-reading-panel__header">
               <div class="sign-reading-panel__title-group">
                 <img class="srp-card-thumb" id="srp-card-thumb" src="assets/images/zodiac-cards/aries.jpg" alt="" width="68" height="102" decoding="async" />
                 <div>
-                  <h2 class="sign-reading-panel__sign-name" id="srp-sign-name">Horoscope</h2>
+                  <h3 class="sign-reading-panel__sign-name" id="srp-sign-name">Daily reading</h3>
                   <p class="sign-reading-panel__date" id="srp-date"></p>
                   <span class="srp-element-text" id="srp-element-text"></span>
                   <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide →</a>
@@ -1405,13 +1413,13 @@
     ============================================================ -->
     <section class="section" aria-labelledby="moon-heading">
       <div class="container">
-        <h2 class="section__title" id="moon-heading"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg> Moon Phase</h2>
+        <h2 class="section__title" id="moon-heading"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg><span>Moon Phase</span></h2>
         <p class="section__subtitle">Current lunar energy and guidance for today</p>
 
         <div id="moon-phase-info" class="moon-card" aria-live="polite">
           <!-- filled live by the script below — never hardcode a phase here -->
           <div class="moon-phase__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></div>
-          <h3>Reading the Moon…</h3>
+          <p class="moon-phase__status" id="moon-phase-status">Reading the Moon…</p>
           <p>Computing tonight's actual phase from the synodic cycle.</p>
         </div>
       </div>
@@ -1569,7 +1577,6 @@
 
   <script src="js/raf-core.js"></script>
   <script src="js/ephemeris.js"></script>
-  <script src="js/zodiac-sphere.js"></script>
   <script src="js/horoscope-engine.js"></script>
   <script src="js/content-service.js"></script>
   <script src="js/horoscope-subscribe.js"></script>
@@ -1773,6 +1780,7 @@
       })();
 
       panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
       setTimeout(function () {
         panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 80);
@@ -1781,6 +1789,7 @@
     function closePanel() {
       var panel = document.getElementById('sign-reading-panel');
       panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
       panel.removeAttribute('data-element');
       var fillEl = document.getElementById('srp-energy-fill');
       if (fillEl) fillEl.style.width = '0';
@@ -1887,9 +1896,10 @@
         }
       }
 
-      // ── Zodiac sphere ────────────────────────────────────────────────────
-      var sphereCanvas = document.getElementById('zodiac-ring-canvas');
-      if (sphereCanvas && window.ZodiacSphere) {
+      // ── Zodiac sphere (deferred — keeps canvas engine off first paint) ───
+      function initZodiacSphereUI() {
+        var sphereCanvas = document.getElementById('zodiac-ring-canvas');
+        if (!sphereCanvas || !window.ZodiacSphere) return;
         ZodiacSphere.onSelectChange = function (key) { updateSphereLabel(key); };
         ZodiacSphere.init(sphereCanvas, function (signKey) {
           selectSign(signKey, { skipSpin: true });
@@ -1923,9 +1933,32 @@
             if (key) updateSphereLabel(key);
           });
         }
-        if (userSign) {
-          ZodiacSphere.spinToSign(userSign, { duration: 900 });
-          updateSphereLabel(userSign);
+        var userSignSphere = getUserSign();
+        if (userSignSphere) {
+          ZodiacSphere.spinToSign(userSignSphere, { duration: 900 });
+          updateSphereLabel(userSignSphere);
+        }
+      }
+      function loadZodiacSphere() {
+        if (window.ZodiacSphere) { initZodiacSphereUI(); return; }
+        var s = document.createElement('script');
+        s.src = 'js/zodiac-sphere.js';
+        s.async = true;
+        s.onload = initZodiacSphereUI;
+        document.head.appendChild(s);
+      }
+      var sphereWrap = document.getElementById('sphere-wrap');
+      if (sphereWrap) {
+        if ('IntersectionObserver' in window) {
+          var sphereIo = new IntersectionObserver(function (entries) {
+            if (entries[0] && entries[0].isIntersecting) {
+              sphereIo.disconnect();
+              loadZodiacSphere();
+            }
+          }, { rootMargin: '160px 0px' });
+          sphereIo.observe(sphereWrap);
+        } else {
+          loadZodiacSphere();
         }
       }
 
@@ -2325,9 +2358,15 @@
             var dateStr = DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
             var div = document.createElement('div');
             div.className = 'transit-item' + (i === 0 ? ' transit-item--major' : '') + ' animate-in';
+            var headline = (insight.headline && String(insight.headline).trim())
+              ? insight.headline
+              : ('Sky note — ' + dateStr);
+            var body = (insight.body && String(insight.body).trim())
+              ? insight.body
+              : 'Transit themes update as the live sky shifts.';
             div.innerHTML = '<p class="transit-item__date">' + dateStr + '</p>' +
-              '<h3 class="transit-item__title">' + insight.headline + '</h3>' +
-              '<p class="transit-item__desc">' + insight.body + '</p>';
+              '<h3 class="transit-item__title">' + headline + '</h3>' +
+              '<p class="transit-item__desc">' + body + '</p>';
             container.appendChild(div);
           }
         }
