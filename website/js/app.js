@@ -181,6 +181,40 @@ const AstroApp = (() => {
       + '</div>';
   }
 
+  function resetMorePanel(panel) {
+    if (!panel) return;
+    panel.classList.remove('is-fixed');
+    panel.style.position = '';
+    panel.style.top = '';
+    panel.style.right = '';
+    panel.style.left = '';
+    panel.style.minWidth = '';
+    panel.style.maxHeight = '';
+  }
+
+  function positionMorePanel(btn, panel) {
+    if (!btn || !panel) return;
+    var rect = btn.getBoundingClientRect();
+    var gap = 8;
+    var maxH = Math.min(window.innerHeight * 0.7, 480);
+    panel.classList.add('is-fixed');
+    panel.style.position = 'fixed';
+    panel.style.top = Math.round(rect.bottom + gap) + 'px';
+    panel.style.left = 'auto';
+    panel.style.right = Math.max(8, Math.round(window.innerWidth - rect.right)) + 'px';
+    panel.style.minWidth = Math.max(220, Math.round(rect.width)) + 'px';
+    panel.style.maxHeight = maxH + 'px';
+    var panelRect = panel.getBoundingClientRect();
+    if (panelRect.bottom > window.innerHeight - 8) {
+      var lift = panelRect.bottom - window.innerHeight + 8;
+      panel.style.top = Math.max(rect.bottom + gap, Math.round(rect.bottom + gap - lift)) + 'px';
+    }
+    if (panelRect.left < 8) {
+      panel.style.left = '8px';
+      panel.style.right = 'auto';
+    }
+  }
+
   function closeMoreMenus() {
     document.querySelectorAll('[data-nav-more]').forEach(function (wrap) {
       var btn = wrap.querySelector('.navbar__more-btn');
@@ -189,6 +223,7 @@ const AstroApp = (() => {
       btn.setAttribute('aria-expanded', 'false');
       panel.hidden = true;
       wrap.classList.remove('is-open');
+      resetMorePanel(panel);
     });
   }
 
@@ -207,6 +242,7 @@ const AstroApp = (() => {
           wrap.classList.add('is-open');
           btn.setAttribute('aria-expanded', 'true');
           panel.hidden = false;
+          positionMorePanel(btn, panel);
         }
       });
       panel.querySelectorAll('a').forEach(function (a) {
@@ -221,6 +257,15 @@ const AstroApp = (() => {
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeMoreMenus();
       });
+      var repositionOpenMore = function () {
+        document.querySelectorAll('[data-nav-more].is-open').forEach(function (wrap) {
+          var btn = wrap.querySelector('.navbar__more-btn');
+          var panel = wrap.querySelector('.navbar__more-panel');
+          if (btn && panel && !panel.hidden) positionMorePanel(btn, panel);
+        });
+      };
+      window.addEventListener('resize', repositionOpenMore);
+      window.addEventListener('scroll', repositionOpenMore, { passive: true });
     }
   }
 

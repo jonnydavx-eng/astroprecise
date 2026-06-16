@@ -417,7 +417,9 @@ body:has(#starfield-canvas) .lib__banner {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 10100;
+  overflow: visible;
+  isolation: isolate;
   transition: background var(--transition-slow), border-color var(--transition-slow), -webkit-backdrop-filter var(--transition-slow), backdrop-filter var(--transition-slow);
 }
 
@@ -438,6 +440,9 @@ body:has(#starfield-canvas) .lib__banner {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-8);
+  overflow: visible;
+  position: relative;
+  z-index: 1;
 }
 
 /* Three-zone grid: logo | primary links | actions */
@@ -449,6 +454,8 @@ body:has(#starfield-canvas) .lib__banner {
   align-items: center;
   column-gap: clamp(8px, 1.5vw, 20px);
   min-width: 0;
+  overflow: visible;
+  position: relative;
 }
 
 .navbar__logo { grid-column: 1; }
@@ -537,6 +544,11 @@ body:has(#starfield-canvas) .lib__banner {
   border-radius: 4px;
   cursor: pointer;
   transition: color var(--transition-base), background var(--transition-base);
+  min-height: 44px;
+  min-width: 44px;
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
 }
 
 .navbar__more-btn::after {
@@ -567,8 +579,21 @@ body:has(#starfield-canvas) .lib__banner {
   border: 1px solid rgba(201, 162, 39, 0.28);
   border-radius: 12px;
   padding: var(--space-3);
-  z-index: 200;
+  z-index: 10200;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+  pointer-events: auto;
+}
+
+.navbar__more.is-open .navbar__more-panel,
+.navbar__more-panel:not([hidden]) {
+  display: block;
+}
+
+.navbar__more-panel.is-fixed {
+  position: fixed;
+  top: auto;
+  right: auto;
+  left: auto;
 }
 
 .navbar__more-group + .navbar__more-group {
@@ -621,6 +646,10 @@ body:has(#starfield-canvas) .lib__banner {
   position: relative;
   transition: color var(--transition-base), border-color var(--transition-base);
   border-bottom: 1px solid transparent;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  touch-action: manipulation;
 }
 
 .navbar__link::after {
@@ -667,14 +696,16 @@ body:has(#starfield-canvas) .lib__banner {
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   padding: var(--space-1);
   cursor: pointer;
-  z-index: 110;
+  z-index: 10210;
   flex-shrink: 0;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .navbar__hamburger span,
@@ -722,10 +753,17 @@ body:has(#starfield-canvas) .lib__banner {
   padding: var(--space-6);
   padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
   gap: var(--space-2);
-  z-index: 9100;
+  z-index: 10150;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   animation: slide-down var(--transition-base) ease forwards;
+  pointer-events: auto;
+}
+
+.navbar__mobile-menu .navbar__link {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
 .navbar__mobile-menu.is-open,
@@ -1542,7 +1580,7 @@ body:has(#starfield-canvas) .lib__banner {
   overflow: hidden;
 }
 
-.sign-card::before {
+.sign-card:not([data-sign])::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1552,10 +1590,22 @@ body:has(#starfield-canvas) .lib__banner {
   background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.5), transparent);
 }
 
-.sign-card:hover {
+.sign-card:not([data-sign]):hover {
   border-color: rgba(201, 162, 39, 0.35);
   box-shadow: 0 0 28px rgba(176, 74, 82, 0.14), 0 0 14px rgba(201, 162, 39, 0.1);
   transform: translateY(-3px);
+}
+
+/* Horoscope gallery cards (image buttons) — don't inherit legacy glyph-card chrome */
+button.sign-card[data-sign],
+.sign-card[data-sign] {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  color: inherit;
 }
 
 .sign-card__glyph {
@@ -1578,59 +1628,59 @@ body:has(#starfield-canvas) .lib__banner {
   color: var(--silver-dark);
 }
 
-/* Element variants */
-.sign-card[data-element="fire"],
-.sign-card--fire {
+/* Element variants (legacy glyph cards — not horoscope HD gallery) */
+.sign-card:not([data-sign])[data-element="fire"],
+.sign-card--fire:not([data-sign]) {
   border-color: rgba(216, 90, 44, 0.22);
 }
 
-.sign-card[data-element="fire"]:hover,
-.sign-card--fire:hover {
+.sign-card:not([data-sign])[data-element="fire"]:hover,
+.sign-card--fire:not([data-sign]):hover {
   border-color: rgba(216, 90, 44, 0.5);
   box-shadow: 0 0 30px rgba(216, 90, 44, 0.12);
 }
 
-.sign-card[data-element="earth"],
-.sign-card--earth {
+.sign-card:not([data-sign])[data-element="earth"],
+.sign-card--earth:not([data-sign]) {
   border-color: rgba(94, 122, 58, 0.22);
 }
 
-.sign-card[data-element="earth"]:hover,
-.sign-card--earth:hover {
+.sign-card:not([data-sign])[data-element="earth"]:hover,
+.sign-card--earth:not([data-sign]):hover {
   border-color: rgba(94, 122, 58, 0.5);
   box-shadow: 0 0 30px rgba(94, 122, 58, 0.12);
 }
 
-.sign-card[data-element="air"],
-.sign-card--air {
+.sign-card:not([data-sign])[data-element="air"],
+.sign-card--air:not([data-sign]) {
   border-color: rgba(167, 139, 186, 0.22);
 }
 
-.sign-card[data-element="air"]:hover,
-.sign-card--air:hover {
+.sign-card:not([data-sign])[data-element="air"]:hover,
+.sign-card--air:not([data-sign]):hover {
   border-color: rgba(167, 139, 186, 0.5);
   box-shadow: 0 0 30px rgba(167, 139, 186, 0.12);
 }
 
-.sign-card[data-element="water"],
-.sign-card--water {
+.sign-card:not([data-sign])[data-element="water"],
+.sign-card--water:not([data-sign]) {
   border-color: rgba(63, 125, 118, 0.22);
 }
 
-.sign-card[data-element="water"]:hover,
-.sign-card--water:hover {
+.sign-card:not([data-sign])[data-element="water"]:hover,
+.sign-card--water:not([data-sign]):hover {
   border-color: rgba(63, 125, 118, 0.5);
   box-shadow: 0 0 30px rgba(63, 125, 118, 0.12);
 }
 
-.sign-card.is-active,
-.sign-card--active {
+.sign-card:not([data-sign]).is-active,
+.sign-card--active:not([data-sign]) {
   border-color: rgba(201, 162, 39, 0.6);
   box-shadow: 0 0 30px var(--gold-dim), 0 0 60px rgba(176, 74, 82, 0.12);
 }
 
-.sign-card.is-active .sign-card__name,
-.sign-card--active .sign-card__name {
+.sign-card:not([data-sign]).is-active .sign-card__name,
+.sign-card--active:not([data-sign]) .sign-card__name {
   color: var(--gold-light);
 }
 
@@ -5688,6 +5738,7 @@ body.has-email-sticky { padding-bottom: 72px; }
   transform: scaleX(0);
   background: linear-gradient(90deg, var(--gold), var(--gold-pale), var(--gold));
   box-shadow: 0 0 8px rgba(201, 162, 39, 0.5);
+  pointer-events: none;
 }
 
 /* Spotlight hover — candlelight follows the cursor */
@@ -6013,11 +6064,11 @@ body.has-email-sticky { padding-bottom: 72px; }
 .sign-card[data-element="air"]   .sign-card__glyph { color: #a78bba; }
 .sign-card[data-element="water"] .sign-card__glyph { color: #818cf8; }
 
-/* Active state with element glow (overrides generic gold glow) */
-.sign-card[data-element="fire"].is-active  { border-color:rgba(251,146,60,0.65);  box-shadow:0 0 24px rgba(251,146,60,0.2),  0 4px 20px rgba(0,0,0,0.3); }
-.sign-card[data-element="earth"].is-active { border-color:rgba(94, 122, 58,0.55);  box-shadow:0 0 24px rgba(94, 122, 58,0.18), 0 4px 20px rgba(0,0,0,0.3); }
-.sign-card[data-element="air"].is-active   { border-color:rgba(167, 139, 186,0.6);   box-shadow:0 0 24px rgba(167, 139, 186,0.18), 0 4px 20px rgba(0,0,0,0.3); }
-.sign-card[data-element="water"].is-active { border-color:rgba(129,140,248,0.6);  box-shadow:0 0 24px rgba(129,140,248,0.18),0 4px 20px rgba(0,0,0,0.3); }
+/* Active state with element glow (legacy glyph cards only) */
+.sign-card:not([data-sign])[data-element="fire"].is-active  { border-color:rgba(251,146,60,0.65);  box-shadow:0 0 24px rgba(251,146,60,0.2),  0 4px 20px rgba(0,0,0,0.3); }
+.sign-card:not([data-sign])[data-element="earth"].is-active { border-color:rgba(94, 122, 58,0.55);  box-shadow:0 0 24px rgba(94, 122, 58,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card:not([data-sign])[data-element="air"].is-active   { border-color:rgba(167, 139, 186,0.6);   box-shadow:0 0 24px rgba(167, 139, 186,0.18), 0 4px 20px rgba(0,0,0,0.3); }
+.sign-card:not([data-sign])[data-element="water"].is-active { border-color:rgba(129,140,248,0.6);  box-shadow:0 0 24px rgba(129,140,248,0.18),0 4px 20px rgba(0,0,0,0.3); }
 
 /* ── Planet weather card hover ────────────────────────────── */
 .planet-weather-card {
