@@ -1,0 +1,100 @@
+/* AstroPrecise — landing gate (ap-v205)
+   Hard separation between intro (pre-Enter) and home until the gate opens. */
+
+body.preloader-active #main-content,
+body.landing-gate-exiting #main-content,
+body.preloader-active .site-footer,
+body.landing-gate-exiting .site-footer {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+body.preloader-active .hero__entrance,
+body.preloader-active .hero__sky-dock,
+body.preloader-active .hero__scroll-cue,
+body.preloader-active .hero__chronicle,
+body.landing-gate-exiting .hero__entrance,
+body.landing-gate-exiting .hero__sky-dock,
+body.landing-gate-exiting .hero__scroll-cue,
+body.landing-gate-exiting .hero__chronicle {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(22px) !important;
+  transition: none !important;
+}
+
+body.preloader-active .hero__sky-dock .live-sky-label,
+body.preloader-active .hero__sky-dock #live-sky-strip,
+body.preloader-active .hero__sky-dock .live-sky-note,
+body.landing-gate-exiting .hero__sky-dock .live-sky-label,
+body.landing-gate-exiting .hero__sky-dock #live-sky-strip,
+body.landing-gate-exiting .hero__sky-dock .live-sky-note {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.preloader-active .hero__entrance,
+  body.landing-gate-exiting .hero__entrance {
+    opacity: 0 !important;
+    transform: translateY(22px) !important;
+  }
+}
+
+body.preloader-active .privacy-banner,
+body.preloader-active .offline-ready-pill,
+body.preloader-active .email-sticky,
+body.landing-gate-exiting .privacy-banner,
+body.landing-gate-exiting .offline-ready-pill,
+body.landing-gate-exiting .email-sticky {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Opaque scrim behind preloader chrome — starfield + orrery only, no home bleed */
+#preloader.has-real .landing-gate-scrim,
+#preloader.has-live-orr .landing-gate-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 88% at 50% 44%, rgba(5, 4, 6, 0.08) 0%, rgba(5, 4, 6, 0.72) 68%, rgba(3, 2, 4, 0.94) 100%),
+    linear-gradient(180deg, rgba(5, 4, 6, 0.82) 0%, rgba(5, 4, 6, 0.35) 22%, rgba(5, 4, 6, 0.35) 78%, rgba(5, 4, 6, 0.88) 100%);
+}
+
+#preloader.fallback-css .landing-gate-scrim {
+  display: none;
+}
+
+body.landing-gate-exiting #preloader {
+  pointer-events: none;
+}
+
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance--1 { transition-delay: 0.08s; }
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance--2 { transition-delay: 0.18s; }
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance--3 { transition-delay: 0.28s; }
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance--4 { transition-delay: 0.38s; }
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance--5 { transition-delay: 0.48s; }
+
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__sky-dock .live-sky-label,
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__sky-dock #live-sky-strip,
+body.landing-gate-open.landing-home-reveal .hero--entered .hero__sky-dock .live-sky-note {
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance {
+    transition: none;
+  }
+}

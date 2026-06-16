@@ -41,6 +41,7 @@
 <!-- Stylesheet -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/orrery-visual.css" />
+  <link rel="stylesheet" href="css/landing-gate.css" />
 
   <style>
     /* =====================================================================
@@ -2676,6 +2677,7 @@
     .apl-cine-vignette,.apl-cine-grain{pointer-events:none;}
   </style>
   <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
+    <div class="landing-gate-scrim" aria-hidden="true"></div>
     <div class="apl-cine-vignette" aria-hidden="true"></div>
     <div class="apl-cine-grain" aria-hidden="true"></div>
     <header class="apl-intro-header">
@@ -2755,6 +2757,28 @@
     let revealRetries = 0;
     const enterBtn = document.getElementById('preloader-enter');
 
+    function lockMainContent() {
+      var mc = document.getElementById('main-content');
+      if (mc) {
+        mc.setAttribute('aria-hidden', 'true');
+        if ('inert' in HTMLElement.prototype) mc.inert = true;
+      }
+      var footer = document.querySelector('.site-footer');
+      if (footer) footer.setAttribute('aria-hidden', 'true');
+    }
+
+    function releaseMainContent() {
+      var mc = document.getElementById('main-content');
+      if (mc) {
+        mc.removeAttribute('aria-hidden');
+        if ('inert' in HTMLElement.prototype) mc.inert = false;
+      }
+      var footer = document.querySelector('.site-footer');
+      if (footer) footer.removeAttribute('aria-hidden');
+    }
+
+    lockMainContent();
+
     function localPerfTier() {
       try {
         if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
@@ -2804,14 +2828,10 @@
     function hidePre() {
       if (preDone) return; preDone = true;
       if (raf) cancelAnimationFrame(raf);
-      document.body.classList.remove('preloader-active');
       document.body.classList.remove('preloader-intro-playing');
       window.__orreryPreloaderOwns = false;
-      window.__apHeroEntered = true;
+      document.body.classList.add('landing-gate-exiting');
       pre.classList.add('preloader-exit');
-      document.body.classList.add('hero-reveal');
-      if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
-      window.dispatchEvent(new Event('ap-hero-enter'));
       if (orreryRelocated && orrViewport && heroRing) {
         var orrCanvas = document.getElementById('orrery-canvas');
         if (orrCanvas) {
@@ -2840,9 +2860,22 @@
         window.CosmosEngine.setPreloaderPause(false);
       }
       pre.classList.add('fade-out');
-      setTimeout(() => {
+      setTimeout(function () {
         pre.style.display = 'none';
-        document.body.classList.remove('hero-reveal');
+        pre.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('preloader-active');
+        document.body.classList.remove('landing-gate-exiting');
+        releaseMainContent();
+        window.__apHeroEntered = true;
+        document.body.classList.add('landing-gate-open');
+        if (typeof window.__apHeroEnter === 'function') window.__apHeroEnter();
+        window.dispatchEvent(new Event('ap-hero-enter'));
+        requestAnimationFrame(function () {
+          document.body.classList.add('landing-home-reveal');
+          setTimeout(function () {
+            document.body.classList.remove('landing-home-reveal');
+          }, 1400);
+        });
       }, 920);
       const heroO = document.getElementById('orrery-canvas');
       if (heroO) heroO.style.transition = 'filter 1.2s ease, opacity 1.2s';

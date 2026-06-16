@@ -38,8 +38,8 @@
     if (window.__apHeroEntered) return false;
     var pre = document.getElementById('preloader');
     if (!pre || pre.style.display === 'none') return false;
-    if (pre.classList.contains('fade-out') || pre.classList.contains('preloader-exit')) return false;
-    return document.body.classList.contains('preloader-active');
+    return document.body.classList.contains('preloader-active') ||
+      document.body.classList.contains('landing-gate-exiting');
   }
 
   function bootHeroEntrance() {
