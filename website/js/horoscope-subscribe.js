@@ -147,12 +147,14 @@
     if (!toggle || !body) return;
     toggle.setAttribute('aria-expanded', 'false');
     body.classList.remove('is-open');
+    body.setAttribute('aria-hidden', 'true');
     if (chevron) chevron.textContent = '▾';
     if (toggle._hsBound) toggle.removeEventListener('click', toggle._hsBound);
     toggle._hsBound = function () {
       var open = !body.classList.contains('is-open');
       body.classList.toggle('is-open', open);
       toggle.setAttribute('aria-expanded', String(open));
+      body.setAttribute('aria-hidden', String(!open));
       if (chevron) chevron.textContent = open ? '▴' : '▾';
     };
     toggle.addEventListener('click', toggle._hsBound);

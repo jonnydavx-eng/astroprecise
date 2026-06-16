@@ -1,20 +1,22 @@
 # STATUS — AstroPrecise · 2026-06-16
 
-**State:** Live at **https://astroprecise.app/** — **ap-v202** (`7caef69`). Deploy unblocked 2026-06-16 (e2e LS URL fix + CI preview server). Auto-deploys via `deploy-pages.yml` → `gh-pages`. Hard-refresh / unregister SW if cache shows an older version.
+**State:** Live at **https://astroprecise.app/** — **ap-v218** on gh-pages; local **ap-v219** staged (not pushed). Auto-deploys via `deploy-pages.yml` → `gh-pages`. Hard-refresh / unregister SW after deploy.
 
 ## Shipped since ap-v83 (most recent first)
-- **ap-v202 — Preloader Enter fix (Grok):** `--arrive` pointer-events bug; intro watchdog; verified click→hero.
-- **ap-v192–201 — Orrery award-pass (Grok):** Earth-only boot, crash hardening, focus fly-to, `_sm` textures, timeline scrubber, live sky sync, system-zoom preloader.
-- **ap-v181–188 — Shop LIVE 13/13 (Grok):** Lemon Squeezy checkouts, product art, fulfilment suite, art style library UI.
-- **ap-v179 — Engineering backlog (Grok):** a11y, dead-code purge, chart wallpaper lead magnet, Big Three share card, IBM Plex Mono numerics.
-- **ap-v170–177 — Preloader + commerce (Grok):** Earth-only cinematic intro; nav IA; Ko-fi + LS pricing ladder.
+- **ap-v218 — Lighthouse prep (Grok):** focus traps, horoscope a11y, shop mobile, deferred WebGL, trimmed SW precache.
+- **ap-v215–217 — Nav + shop + horoscope UX (Grok):** More menu portal, 44px touch targets, sign-card chrome fix.
+- **ap-v208–213 — Orrery visuals (Grok):** scale journeys, sun fireball, embedded blend, viewport toolbar.
+- **ap-v202–205 — Preloader Enter + landing gate (Grok):** pointer-events fix, mobile framing, hero bleed-through fix.
+- **ap-v192–201 — Orrery award-pass (Grok):** Earth-only boot, crash hardening, focus fly-to, timeline scrubber.
+- **ap-v181–188 — Shop LIVE 13/13 (Grok):** Lemon Squeezy checkouts, product art, fulfilment suite.
+- **ap-v179 — Engineering backlog (Grok):** a11y, dead-code purge, chart wallpaper lead magnet, Big Three share card.
 
-## Open / ongoing
-- **Eyeball ap-v202:** preloader Enter on phone; orrery focus/scrub; shop buy flow on LS SKUs.
-- **Monetization on `main`:** Ko-fi tips; **13/13 Lemon Squeezy SKUs** wired; email **list.astroprecise.app**. Compat/Saturn unlocks still dormant.
-- **Owner:** Google/Bing Search Console; schedule outreach (`outreach.html`); test one LS checkout end-to-end; ICO when fulfilment scales.
+## Open / ongoing (local ap-v219)
+- **Commit ready, push deferred:** `scale-journey.js` + chapters (were 404 on live), `orrery-visual.css` polish, compat matrix header a11y, landmark dedupe on home.
+- **Heavy tools last:** `cd tools/visual-check && npm run audit` before `git push` (Playwright/WebGL crashes when RAM low).
+- **Owner:** phone eyeball preloader + shop; one LS checkout end-to-end; Search Console; outreach schedule.
 
 ## Roadmap (deferred)
 - Play Store TWA (12 testers × 14 days); astrocartography map; on-site Stripe (post host migration).
 
-*Updated 2026-06-16 (ap-v202). Full history: AGENT-HANDOFF.md*
+*Updated 2026-06-16 (ap-v219 local). Full history: AGENT-HANDOFF.md*
