@@ -1,0 +1,21 @@
+Platform: X (Twitter)
+Handle: @astroprecise
+Display name: AstroPrecise ✦ Mission Control
+Website / link: https://astroprecise.app/links.html
+Banner: marketing/social/banner-x-1500x500.jpg
+Avatar: website/img/icon-512.png
+
+
+
+--- BIO (paste) ---
+Mission Control for your sky ✦
+Real ephemeris · computed in your browser
+Birth data never uploaded
+Free chart ↓
+
+--- PINNED POST (X only) ---
+I built a birth-chart tool that never uploads your birth data.
+
+VSOP87 astronomy. Free chart. Your sky as wallpaper.
+
+Start here → https://astroprecise.app/links.html

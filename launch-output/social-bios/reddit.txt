@@ -1,0 +1,18 @@
+Platform: Reddit
+Handle: @astroprecise
+Display name: u/astroprecise
+Website / link: https://astroprecise.app/links.html
+
+
+
+
+
+--- BIO (paste) ---
+Built AstroPrecise — free, accurate, private birth charts. https://astroprecise.app
+
+--- PINNED POST (X only) ---
+I built a birth-chart tool that never uploads your birth data.
+
+VSOP87 astronomy. Free chart. Your sky as wallpaper.
+
+Start here → https://astroprecise.app/links.html

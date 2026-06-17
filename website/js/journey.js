@@ -750,7 +750,7 @@ window.AstroJourney = (function () {
     recs.push({
       tool:     'ephemeris',
       href:     'ephemeris.html',
-      headline: 'The Instrument awaits',
+      headline: 'Sky awaits',
       body:     'Explore your light cone, zenith star, and echo dates — the deepest layer of your cosmic signature.',
       urgency:  'low',
       icon:     '⊕',

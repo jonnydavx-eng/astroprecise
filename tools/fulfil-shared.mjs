@@ -23,7 +23,8 @@ export const ASPECT_DEFS = [
 ];
 export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-export const FONTS = `<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">`;
+/** Self-hosted fonts — paths resolve from website root (css/fonts.css). */
+export const FONTS = `<link rel="stylesheet" href="css/fonts.css">`;
 
 export const PRINT_CSS = `
 @page{size:A4;margin:0;}
@@ -99,7 +100,28 @@ export const sd = (l) => { const s = norm(l); return { sign: SIGNS[Math.floor(s 
 export const fmt = (l) => { const x = sd(l); return `${x.d}°${String(x.m).padStart(2, '0')}′ ${x.sign}`; };
 export const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 export const slug = (name) => String(name || 'order').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'order';
-export const sents = (t, n = 2) => { if (!t) return ''; const m = String(t).match(/[^.!?]+[.!?]+/g); return (m ? m.slice(0, n).join(' ') : String(t)).trim(); };
+/** First n complete sentences — never returns a dangling fragment. */
+export const sents = (t, n = 2) => {
+  if (!t) return '';
+  const m = String(t).match(/[^.!?]+[.!?]+/g);
+  if (m && m.length) return m.slice(0, n).join(' ').trim();
+  const raw = String(t).trim();
+  if (!raw) return '';
+  return /[.!?]$/.test(raw) ? raw : `${raw}.`;
+};
+
+/** Truncate prose at sentence boundary within maxChars (paid fulfilment). */
+export const trimProse = (t, maxChars = 200) => {
+  if (!t) return '';
+  const raw = String(t).trim();
+  if (raw.length <= maxChars) return /[.!?]$/.test(raw) ? raw : `${raw}.`;
+  const chunk = raw.slice(0, maxChars);
+  const lastStop = Math.max(chunk.lastIndexOf('.'), chunk.lastIndexOf('!'), chunk.lastIndexOf('?'));
+  if (lastStop > maxChars * 0.4) return chunk.slice(0, lastStop + 1).trim();
+  const nextStop = raw.slice(maxChars).search(/[.!?]/);
+  if (nextStop >= 0 && nextStop < 120) return raw.slice(0, maxChars + nextStop + 1).trim();
+  return chunk.trim().replace(/\s+\S*$/, '') + '.';
+};
 export const ord = (n) => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
 
 export function parseDob(dob) {

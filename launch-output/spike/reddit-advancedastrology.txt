@@ -1,0 +1,15 @@
+SUBREDDIT: r/Advancedastrology
+FLAIR: Tools + Software
+TIMING: Tue–Thu, 14:00–18:00 UTC
+
+TITLE:
+I built a browser-only natal calculator (VSOP87, no server upload) — looking for accuracy feedback from working astrologers
+
+BODY:
+Positions: VSOP87 + ELP2000, ~arcminute, 1800–2200 CE.
+Privacy: birth data never leaves the browser. Free wheel, aspects, houses, transits, synastry.
+Paid: one-time £12 Deep Reading PDF (no subscription) — only mentioning because people always ask.
+
+I'm not an astrologer; I want critique on house system defaults, orb choices, and whether interpretations read too modern vs traditional.
+
+Link only if requested — https://astroprecise.app/chart.html

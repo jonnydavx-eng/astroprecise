@@ -1,0 +1,32 @@
+{
+  "base": "http://localhost:8790",
+  "capturedAt": "2026-06-15T23:47:40.136Z",
+  "pages": [
+    {
+      "id": "index",
+      "path": "/",
+      "loadMs": 1158,
+      "metrics": {
+        "domContentLoaded": 1037,
+        "loadEvent": 1154,
+        "fcp": 228,
+        "lcp": null,
+        "transferSize": 201980
+      }
+    },
+    {
+      "id": "chart",
+      "path": "/chart.html",
+      "loadMs": 525,
+      "metrics": {
+        "domContentLoaded": 383,
+        "loadEvent": 520,
+        "fcp": 428,
+        "lcp": null,
+        "transferSize": 0
+      }
+    }
+  ],
+  "issues": [],
+  "ok": true
+}

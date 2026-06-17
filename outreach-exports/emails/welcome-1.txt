@@ -1,0 +1,20 @@
+ID: welcome-1
+SECTION: welcome
+DELAY: instant
+TAG: tag_chart
+SUBJECT: Your sky is ready ✨
+Hey —
+
+Welcome. You just cast your chart — that wheel is yours, computed entirely in your own browser. Nothing about your birth moment ever touched a server.
+
+Here's the thing most people don't realise: that chart is a wallpaper waiting to happen. On the chart page, tap "Save image" — you'll get a clean, print-ready version of your sky for your phone, desktop, or to print.
+
+OPEN MY CHART → https://astroprecise.app/chart.html
+
+Every time you unlock your phone, let it remind you: you were born under a specific sky, and no one else has ever had yours.
+
+This list is for your monthly cosmic weather — what the planets are doing to YOUR chart, in plain language. First one lands soon.
+
+Reply and tell me your Sun sign — I read everything.
+
+— AstroPrecise

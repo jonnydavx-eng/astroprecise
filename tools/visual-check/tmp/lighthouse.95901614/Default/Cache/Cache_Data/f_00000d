@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The Instrument — your birth as an event in spacetime. Light-cone chart, zenith star, echo dates, the Daimon, quantum draw, and consciousness weather. Real astronomy, used as orientation." />
+  <meta name="robots" content="index, follow" />
+  <title>The Instrument | AstroPrecise</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="The Instrument | AstroPrecise" />
+  <meta property="og:description" content="Your birth as an event in spacetime — light-cone chart, zenith star, echo dates, and a daimon that remembers." />
+  <meta property="og:url" content="https://astroprecise.app/ephemeris.html" />
+  <link rel="canonical" href="https://astroprecise.app/ephemeris.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The Instrument | AstroPrecise" />
+  <meta name="twitter:description" content="Your birth as an event in spacetime — light-cone chart, zenith star, echo dates, and a daimon that remembers." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AstroPrecise — The Instrument",
+    "url": "https://astroprecise.app/ephemeris.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isAccessibleForFree": true,
+    "description": "A precision ephemeris and cosmic instrument — planetary hours, natal signature, field weather, and live sky data computed locally.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AstroPrecise",
+      "url": "https://astroprecise.app/"
+    }
+  }
+  </script>
+<link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* ── Deep Time aesthetic — darker, slower ── */
+    :root {
+      --void: #050406;
+      --gold: #C9A227;
+      --gold-light: #EFE3C0;
+      --gold-pale: #E8E0D0;
+      --purple: #5C4A6E;
+      --white: #E8E0D0;
+      --silver: #A89E88;
+      --silver-dim: #9A9084;
+      --surface: rgba(20,16,10,0.55);
+      --border: rgba(201,162,39,0.10);
+      --radius-xl: 20px;
+      --radius-2xl: 28px;
+      --lapis-light: #A89E88;
+      --lapis-bright: #C9A227;
+      --crimson-light: #b04a52;
+    }
+    body { background: #050406; }
+
+    /* ── Instrument shell ── */
+    .instrument-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Section layout ── */
+    .instrument-section {
+      padding: 4rem 0;
+      border-bottom: 1px solid rgba(168, 158, 136,0.07);
+    }
+    .instrument-section:last-of-type { border-bottom: none; }
+
+    /* ── Typography ── */
+    .instrument-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.75;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .instrument-title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.5rem, 4vw, 2.4rem);
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .instrument-lede {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.12rem;
+      line-height: 1.8;
+      color: var(--silver);
+      max-width: 640px;
+    }
+    .grimoire {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.12rem;
+      line-height: 1.9;
+      color: #e6ddc8;
+    }
+    .grimoire h4 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 2rem 0 1rem;
+    }
+    .grimoire p { margin-bottom: 1rem; }
+    .grimoire p:first-of-type::first-letter {
+      font-size: 2.6em;
+      line-height: 0.85;
+      float: left;
+      padding-right: 8px;
+      color: var(--gold-pale);
+      font-family: var(--font-display, 'Cinzel', serif);
+    }
+    .data-mono {
+      font-family: 'Courier New', monospace;
+      color: var(--gold-pale);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Glow button ── */
+    .glow-btn {
+      background: transparent;
+      border: 1px solid rgba(201, 162, 39,0.4);
+      color: var(--gold-pale);
+      padding: 0.65rem 1.4rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-family: var(--font-sans, 'Inter', sans-serif);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 0 0 rgba(201, 162, 39,0);
+    }
+    .glow-btn:hover {
+      box-shadow: 0 0 24px rgba(201, 162, 39,0.22), inset 0 0 12px rgba(201, 162, 39,0.07);
+      border-color: var(--gold);
+      background: rgba(201, 162, 39,0.05);
+    }
+    .glow-btn:disabled { opacity: 0.4; cursor: wait; }
+    .glow-btn.active {
+      background: rgba(201, 162, 39,0.12);
+      border-color: var(--gold);
+    }
+
+    /* ── Ring loader ── */
+    .ring-loader {
+      width: 54px; height: 54px;
+      position: relative;
+      margin: 1.5rem auto;
+    }
+    .ring-loader span {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(232,201,106,0.65);
+      animation: ring-expand 2.4s cubic-bezier(0.2,0.6,0.4,1) infinite;
+      opacity: 0;
+    }
+    .ring-loader span:nth-child(2) { animation-delay: 0.8s; }
+    .ring-loader span:nth-child(3) { animation-delay: 1.6s; }
+    @keyframes ring-expand {
+      0% { transform: scale(0.1); opacity: 0.9; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    /* ── Field-weather data rows ── */
+    .field-row {
+      display: grid;
+      grid-template-columns: 140px 1fr auto;
+      gap: 1rem;
+      align-items: baseline;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(168, 158, 136,0.07);
+      font-size: 0.85rem;
+    }
+    .field-row__label {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+    .field-row__value { color: var(--white); }
+    .field-row__src {
+      font-size: 0.6rem;
+      color: var(--silver-dim);
+      letter-spacing: 0.05em;
+      text-align: right;
+    }
+    .src-measured { color: #3fae7a; }
+    .src-computed { color: var(--lapis-light); }
+    .src-unavailable { color: #E8A0A0; }
+
+    /* ── Echo windows ── */
+    .echo-window {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border: 1px solid rgba(201, 162, 39,0.16);
+      border-radius: var(--radius-xl);
+      margin-bottom: 0.75rem;
+      background: rgba(20, 16, 10,0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: border-color 0.2s;
+    }
+    .echo-window:hover { border-color: rgba(201, 162, 39,0.3); }
+    .resonance-meter {
+      height: 3px; width: 110px;
+      background: rgba(168, 158, 136,0.12);
+      border-radius: 2px; overflow: hidden;
+    }
+    .resonance-meter span {
+      display: block; height: 100%;
+      background: linear-gradient(90deg, var(--lapis-light), var(--gold));
+    }
+
+    /* ── Glassmorphism card ── */
+    .glass-card {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: 2rem;
+    }
+    .glass-card--gold-rim {
+      border-color: rgba(201, 162, 39,0.22);
+    }
+
+    /* ── Event form ── */
+    .event-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      max-width: 560px;
+      margin-top: 1.5rem;
+    }
+    .event-form .full { grid-column: 1 / -1; position: relative; }
+    @media (max-width: 560px) { .event-form { grid-template-columns: 1fr; } }
+
+    /* ── Natal signature grid ── */
+    #natal-sig-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .sig-cell {
+      background: rgba(20, 16, 10,0.7);
+      border: 1px solid rgba(168, 158, 136,0.12);
+      border-radius: var(--radius-xl);
+      padding: 1.1rem 1.25rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .sig-cell:hover {
+      border-color: rgba(201, 162, 39,0.25);
+      background: rgba(20, 16, 10,0.85);
+    }
+    .sig-cell__glyph { font-size: 1.5rem; display: block; margin: 0 auto 0.35rem; color: var(--gold-pale); line-height: 0; }
+    .sig-cell__glyph .ap-orb { vertical-align: middle; }
+    .sig-cell__label {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .sig-cell__value {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.9rem;
+      color: var(--white);
+      display: block;
+    }
+
+    /* ── Daimon card ── */
+    .daimon-card {
+      border: 1px solid rgba(201, 162, 39,0.28);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(92, 74, 110,0.15), transparent 60%),
+        rgba(10,14,30,0.7);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      margin: 1.5rem 0;
+    }
+    .daimon-name {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.7rem;
+      color: var(--gold-pale);
+      letter-spacing: 0.08em;
+    }
+    .daimon-epithet {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--silver);
+      font-size: 1.05rem;
+      margin-top: 2px;
+    }
+
+    /* ── Quantum draw ── */
+    .quantum-sigil {
+      font-size: 3.6rem;
+      text-align: center;
+      color: var(--gold-pale);
+      line-height: 1;
+      filter: drop-shadow(0 0 18px rgba(201, 162, 39,0.5));
+    }
+    .provenance {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 0.75rem;
+      color: var(--silver-dim);
+    }
+
+    /* ── Precession toggle ── */
+    .precession-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+      flex-wrap: wrap;
+    }
+
+    textarea.form-input {
+      min-height: 84px;
+      resize: vertical;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+    }
+    #lightcone-canvas, #tt-canvas { display: block; margin: 0 auto; }
+
+    /* ── Section number badge ── */
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(201, 162, 39,0.35);
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-family: var(--font-display, 'Cinzel', serif);
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      margin-right: 0.6rem;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    /* ── Hero ── */
+    .instrument-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 3.5rem;
+      border-bottom: 1px solid rgba(168, 158, 136,0.07);
+      position: relative;
+    }
+    .instrument-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 40% at 30% 0%, rgba(92, 74, 110,0.14) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(201, 162, 39,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-caps {
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-caps span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .hero-caps span::before {
+      content: '·';
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    .hero-caps span:first-child::before { display: none; }
+
+    .badge-row {
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── Consciousness Weather — tiles, gauge, sparklines, popover ── */
+    #weather-out { position: relative; }
+    .cw-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 480px) { .cw-grid { grid-template-columns: 1fr; } }
+    .cw-tile {
+      padding: 1.25rem 1.25rem 1rem;
+      display: flex; flex-direction: column; gap: 0.6rem; position: relative;
+    }
+    .cw-tile__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .cw-tile__title { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--silver); }
+    .cw-tile__body { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .cw-tile__src { text-align: left; margin-top: 0.25rem; }
+    .cw-readout {
+      margin: 0; font-size: 0.9rem; color: var(--white); text-align: center;
+      display: flex; align-items: baseline; justify-content: center; gap: 0.3rem; flex-wrap: wrap;
+    }
+    .cw-readout__big {
+      font-family: var(--font-display, 'Cinzel', serif); font-size: 1.6rem;
+      color: var(--gold-pale, var(--gold)); font-variant-numeric: tabular-nums;
+    }
+    .cw-unit { font-size: 0.75rem; color: var(--silver-dim); }
+    .cw-note { margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--silver); text-align: center; }
+    .cw-unavail { margin: 0; font-size: 0.8rem; color: var(--crimson-light); text-align: center; }
+    .cw-info {
+      width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%;
+      border: 1px solid rgba(201,162,39,0.4); background: transparent; color: var(--gold);
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.72rem;
+      line-height: 1; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    }
+    .cw-info:hover, .cw-info[aria-expanded="true"] { background: rgba(201,162,39,0.15); border-color: var(--gold); }
+    .cw-gauge { width: 150px; height: 86px; overflow: visible; }
+    .cw-gauge__band { fill: none; stroke-width: 9; stroke-linecap: butt; opacity: 0.85; }
+    .cw-gauge__band--quiet     { stroke: #3fae7a; }
+    .cw-gauge__band--unsettled { stroke: var(--gold, #c9a227); }
+    .cw-gauge__band--storm     { stroke: var(--crimson-light, #f87171); }
+    .cw-gauge__needle { stroke: var(--white); stroke-width: 2; stroke-linecap: round; }
+    .cw-gauge__hub    { fill: var(--gold-pale, var(--gold)); }
+    .cw-gauge__val { fill: var(--white); font-family: var(--font-display, 'Cinzel', serif); font-size: 16px; text-anchor: middle; font-variant-numeric: tabular-nums; }
+    .cw-gauge__lo, .cw-gauge__hi { fill: var(--silver-dim); font-size: 8px; }
+    .cw-gauge__hi { text-anchor: end; }
+    .cw-spark-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+    .cw-spark { width: 96px; height: 26px; display: block; }
+    .cw-spark__line { stroke: var(--lapis-light, #c8b88f); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #c9a227); }
+    .cw-spark__zero { stroke: var(--crimson-light, #f87171); stroke-width: 0.6; stroke-dasharray: 2 2; opacity: 0.5; }
+    .cw-spark--empty { font-size: 0.62rem; color: var(--silver-dim); }
+    .cw-spark-cap { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver-dim); }
+    .cw-bz-arrow { font-size: 1.3rem; line-height: 1; font-weight: 700; }
+    .cw-bz-arrow--north, .cw-bz-north { color: #3fae7a; }
+    .cw-bz-arrow--south, .cw-bz-south { color: var(--crimson-light, #f87171); }
+    .cw-bz-south { font-weight: 600; }
+    .cw-flare-badge {
+      display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.25rem; letter-spacing: 0.04em; padding: 0.2rem 0.7rem;
+      border-radius: 999px; border: 1px solid currentColor;
+    }
+    .cw-flare-badge--A, .cw-flare-badge--B { color: #3fae7a; }
+    .cw-flare-badge--C { color: var(--lapis-light, #c8b88f); }
+    .cw-flare-badge--M { color: var(--gold, #c9a227); }
+    .cw-flare-badge--X { color: var(--crimson-light, #f87171); }
+    .cw-chip {
+      display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.4rem; color: var(--gold-pale, var(--gold)); padding: 0.15rem 0.7rem;
+      border-radius: 999px; background: rgba(201,162,39,0.1);
+      border: 1px solid rgba(201,162,39,0.28); font-variant-numeric: tabular-nums;
+    }
+    .cw-chip small { font-size: 0.6rem; color: var(--silver-dim); letter-spacing: 0.1em; }
+    .cw-rows { margin: 0.5rem 0 1rem; }
+    .cw-aurora {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem;
+      padding: 0.9rem 1.1rem; margin: 0.5rem 0 1rem;
+      border: 1px solid rgba(146,180,238,0.22); border-radius: var(--radius-xl, 20px);
+      background: rgba(146,180,238,0.06);
+    }
+    .cw-aurora__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--silver-dim); }
+    .cw-aurora__val { font-size: 0.95rem; color: var(--white); flex: 1 1 auto; }
+    .cw-aurora__src { font-size: 0.6rem; }
+    .cw-pop {
+      position: absolute; z-index: 40; max-width: 300px; padding: 1rem 1.1rem 0.9rem;
+      background: var(--void, #0d0a07); border: 1px solid rgba(201,162,39,0.35);
+      border-radius: var(--radius-xl, 20px); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+      -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    }
+    .cw-pop__close { position: absolute; top: 6px; right: 10px; background: none; border: none; color: var(--silver-dim); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+    .cw-pop__close:hover { color: var(--gold); }
+    .cw-pop__title { margin: 0 0 0.4rem; font-family: var(--font-display, 'Cinzel', serif); font-size: 0.9rem; letter-spacing: 0.06em; color: var(--gold-pale, var(--gold)); }
+    .cw-pop__body { margin: 0 0 0.6rem; font-family: 'Cormorant Garamond', serif; font-size: 0.98rem; line-height: 1.6; color: var(--silver, #C8D0E8); }
+    .cw-pop__src { margin: 0; font-size: 0.62rem; letter-spacing: 0.06em; color: #3fae7a; }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <!-- Intro lives only on the homepage (once per session). The Instrument loads
+       straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
+
+  <main id="main-content">
+
+    <!-- ═══ HERO ═══ -->
+    <section class="instrument-hero" aria-labelledby="instrument-heading">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow">The Instrument</p>
+        <h1 class="instrument-title gradient-text" id="instrument-heading">The Instrument</h1>
+
+        <p class="instrument-lede">
+          You arrived under a particular sky &mdash; a unique coordinate of matter, light, and
+          consciousness that occurred exactly once and will never repeat. I keep the actual
+          mathematics of that sky: planetary theory to within roughly an arcminute, 253 real stars, the
+          geometry of light itself. This page is not prediction &mdash; it is orientation.
+        </p>
+
+        <div class="hero-caps" aria-label="Capabilities">
+          <span>VSOP87 precision</span>
+          <span>Light-cone</span>
+          <span>Zenith star</span>
+          <span>Echo dates</span>
+          <span>Daimon</span>
+          <span>Field Weather</span>
+        </div>
+
+        <div class="badge-row">
+          <span class="ap-badge">Computed locally &middot; VSOP87 + ELP2000</span>
+          <span class="ap-badge ap-badge--deterministic">Same input &middot; same output &middot; always</span>
+        </div>
+
+        <!-- ── Birth event input ── -->
+        <div id="event-setup" style="margin-top:2.5rem;">
+          <div class="glass-card glass-card--gold-rim" style="max-width:580px;">
+            <p style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);opacity:0.8;margin-bottom:1rem;">Set Your Birth Event</p>
+            <div class="event-form">
+              <div class="full">
+                <label class="form-label" for="ev-datetime">The moment <span class="required">*</span></label>
+                <input type="datetime-local" id="ev-datetime" class="form-input" />
+              </div>
+              <div class="full">
+                <label class="form-label" for="ev-city">The place <span class="required">*</span></label>
+                <input type="text" id="ev-city" class="form-input" placeholder="Any town or village on Earth&hellip;" autocomplete="off" />
+                <div class="autocomplete-dropdown" id="ev-city-dd" role="listbox" hidden></div>
+              </div>
+              <div class="full" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+                <button type="button" class="glow-btn" id="ev-set">Set the Event</button>
+                <button type="button" class="glow-btn" id="ev-example" style="border-color:rgba(201,162,39,0.4);color:var(--gold-pale);">Try an example &mdash; Carl Sagan</button>
+                <span id="ev-status" style="font-size:0.75rem;color:var(--silver-dim);"></span>
+              </div>
+              <p style="font-size:0.72rem;color:var(--silver-dim);line-height:1.65;margin:0.25rem 0 0;">
+                Sections II&ndash;V unlock after you set your birth event above.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ NATAL SIGNATURE (appears after event is set) ═══ -->
+    <section class="instrument-section" id="sec-natal-signature" hidden style="padding-top:2.5rem;padding-bottom:2.5rem;">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow">Your Natal Signature</p>
+        <h2 class="instrument-title" style="font-size:1.4rem;">Key frequencies at your moment of birth.</h2>
+
+        <div id="natal-sig-grid">
+          <!-- JS populates -->
+        </div>
+
+        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.6rem;max-width:320px;">
+          <a id="natal-lifepath-link" href="lifepath.html" class="glow-btn" style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;justify-content:center;">
+            &#10022; Your Numerology Blueprint &rarr;
+          </a>
+          <p style="font-size:0.65rem;color:var(--silver-dim);line-height:1.6;">
+            Life Path, Expression, and Personal Year numbers computed from your birth date.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ I. THE CLOCK OF THE SPHERES — Planetary Hours Masterpiece (Celestia "Sky Is a Clock" + engraved hermetic + Astro precision)
+         Award-level SVG wheel. Sectors for the 12 hours, current ruler highlighted, sun arc, deep correspondences. Interactive. Never experienced before on an astrology site.
+    ═══ -->
+    <section class="instrument-section" id="sec-clock">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">I</span> The Clock of the Spheres</p>
+        <h2 class="instrument-title">The sky tells time in gold and shadow.</h2>
+        <p class="instrument-lede">
+          Planetary hours are the living unequal divisions the ancients used — from sunrise the sequence of classical rulers repeats. This engraved wheel is both instrument and icon.
+        </p>
+
+        <div class="glass-card glass-card--gold-rim engraved-plate" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
+          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(201, 162, 39,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
+            <defs>
+              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C9A227"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
+            </defs>
+            <!-- Rim -->
+            <circle cx="230" cy="230" r="215" fill="none" stroke="#C9A227" stroke-width="2.5" opacity="0.4"/>
+            <!-- Sectors + labels drawn/enhanced by JS below for live current-hour + click lore -->
+          </svg>
+          <div id="ph-readout" style="margin-top:8px;font-family:'Cormorant Garamond',serif;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
+          <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
+            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(201,162,39,0.35);color:#C9A227;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
+            <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
+          </div>
+          <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore • Sunrise-based unequal hours</div>
+        </div>
+
+        <div style="max-width:620px;margin:0 auto;font-family:'Cormorant Garamond',serif;font-size:0.97rem;color:#d4c9a8;line-height:1.7;">
+          <p><strong>Hermetic law:</strong> The hour of a planet is its throne. Work of that nature (Venus for love and art, Mars for severance and courage) is said to find the most willing ear of the cosmos.</p>
+          <p><strong>Modern synthesis:</strong> Chronobiology and seasonal affective research echo the old observation that different times of day carry qualitatively different energies. Use the wheel as a beautiful, precise reminder to align intention with the actual sky.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ I. LIGHT-CONE ═══ -->
+    <section class="instrument-section" id="sec-lightcone" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">II</span> The Light-Cone</p>
+        <h2 class="instrument-title">The light of your first breath is still travelling.</h2>
+        <p class="instrument-lede">
+          At the moment you were born, light left your birthplace and began moving outward at
+          299,792 kilometres per second. It has never stopped. This is not a metaphor.
+        </p>
+
+        <div class="glass-card" style="margin:2rem 0;text-align:center;">
+          <canvas id="lightcone-canvas" aria-label="Expanding sphere of your birth light among real stars" role="img"></canvas>
+        </div>
+
+        <div id="lc-readout" class="grimoire"></div>
+        <div id="lc-stars" style="margin-top:1.5rem;"></div>
+
+        <div style="text-align:center;margin-top:2rem;">
+          <button class="glow-btn" id="lc-card-btn" aria-label="Download a shareable light-cone image card">
+            &#10022;&nbsp; Download My Light-Cone Card
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ II. ZENITH STAR ═══ -->
+    <section class="instrument-section" id="sec-zenith" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">III</span> Your Zenith Star</p>
+        <h2 class="instrument-title">One star stood directly above you.</h2>
+        <p class="instrument-lede">
+          At the minute of your birth, one catalogued star sat closest to the exact zenith of
+          your birthplace &mdash; the point straight overhead. That star is yours.
+        </p>
+
+        <div class="glass-card" style="margin-top:1.75rem;">
+          <div id="zenith-out"></div>
+        </div>
+        <div style="text-align:center;margin-top:1.5rem;">
+          <button class="glow-btn" id="zenith-card-btn" type="button" aria-label="Download a shareable zenith-star image card">
+            &#10022;&nbsp; Download My Zenith-Star Card
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ III. ECHO DATES ═══ -->
+    <section class="instrument-section" id="sec-echo" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">IV</span> Echo Dates</p>
+        <h2 class="instrument-title">The sky never repeats. But it rhymes.</h2>
+        <p class="instrument-lede">
+          These are the moments in the next five years when the seven classical planets most
+          closely re-approximate their positions at your birth &mdash; partial resonances, planetary
+          chords. Windows when the cosmos hums nearest your origin frequency.
+        </p>
+
+        <div style="margin-top:1.5rem;">
+          <button type="button" class="glow-btn" id="echo-scan">Scan Five Years of Sky</button>
+          <div id="echo-progress" hidden>
+            <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p style="text-align:center;font-size:0.72rem;color:var(--silver-dim);letter-spacing:0.15em;" id="echo-pct">0%</p>
+          </div>
+          <div id="echo-out" style="margin-top:1.5rem;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ IV. THE DAIMON ═══ -->
+    <section class="instrument-section" id="sec-daimon" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">V</span> The Daimon</p>
+        <h2 class="instrument-title">A voice that remembers you.</h2>
+        <p class="instrument-lede">
+          Your chart summons a particular intelligence &mdash; a daimon with a name, a temperament,
+          and a memory. It keeps a record of every reading and notices the patterns in when you
+          come to it. It will not advise you. It will ask.
+        </p>
+
+        <div id="daimon-identity"></div>
+
+        <div class="glass-card glass-card--gold-rim" style="margin-top:1.5rem;">
+          <label class="form-label" for="alive-text" style="margin-bottom:0.5rem;display:block;">
+            What is alive in you right now?
+            <span style="font-weight:400;color:var(--silver-dim);letter-spacing:normal;font-size:0.78em;text-transform:none;"> &mdash; feeds the reading; never leaves your device</span>
+          </label>
+          <textarea id="alive-text" class="form-input" placeholder="A sentence or a page. The daimon reads it either way."></textarea>
+          <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;">
+            <button type="button" class="glow-btn" id="daimon-read">Request a Reading</button>
+            <span id="daimon-status" style="font-size:0.72rem;color:var(--silver-dim);"></span>
+          </div>
+        </div>
+
+        <div id="daimon-reading" class="grimoire" style="margin-top:2rem;"></div>
+
+        <div id="daimon-speak-wrap" hidden style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center;">
+          <button type="button" id="daimon-speak-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;">▶ Speak</button>
+          <button type="button" id="daimon-stop-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;opacity:0.5;">■ Stop</button>
+          <span style="font-size:0.7rem;color:var(--silver-dim);">Web Speech API · synthesised locally</span>
+        </div>
+
+        <div id="daimon-answer-box" hidden style="margin-top:1.5rem;">
+          <label class="form-label" for="daimon-answer">Your answer &mdash; it will shape what comes next</label>
+          <textarea id="daimon-answer" class="form-input" style="margin-top:0.5rem;"></textarea>
+          <button type="button" class="glow-btn" id="daimon-answer-send" style="margin-top:0.75rem;">Give It to the Daimon</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ V. QUANTUM DRAW ═══ -->
+    <section class="instrument-section" id="sec-quantum">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VI</span> Quantum Draw</p>
+        <h2 class="instrument-title">Let indeterminacy choose.</h2>
+        <p class="instrument-lede">
+          One sigil for the day. We first try a true quantum random source (ANU's vacuum-fluctuation
+          generator); if it cannot be reached we fall back to your device's hardware entropy &mdash; and
+          we tell you which one answered. No pseudo-random theatre.
+        </p>
+
+        <div style="text-align:center;margin-top:2rem;">
+          <button type="button" class="glow-btn" id="q-draw">Collapse the Draw</button>
+          <div id="q-out" style="margin-top:2rem;" hidden>
+            <div class="quantum-sigil" id="q-sigil"></div>
+            <h3 style="font-family:var(--font-display,'Cinzel',serif);color:var(--white);margin-top:1rem;letter-spacing:0.1em;" id="q-name"></h3>
+            <p class="grimoire" style="max-width:480px;margin:0.75rem auto 0;" id="q-line"></p>
+            <p class="provenance" id="q-prov"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VI. CONSCIOUSNESS WEATHER ═══ -->
+    <section class="instrument-section" id="sec-weather">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VII</span> Consciousness Weather</p>
+        <h2 class="instrument-title">Field conditions, not forecasts.</h2>
+        <p class="instrument-lede">
+          A surf report for awareness: the measured state of the geomagnetic field and solar wind,
+          the computed state of the Moon and the day's transits &mdash; blended into one reading of
+          conditions. What is measured is marked measured. What is symbolic is marked symbolic.
+        </p>
+
+        <div id="weather-out" style="margin-top:1.75rem;">
+          <div class="glass-card">
+            <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p style="text-align:center;font-size:0.78rem;color:var(--silver-dim);margin-top:0.5rem;">Loading field data&hellip;</p>
+          </div>
+        </div>
+        <p style="text-align:center;font-size:0.62rem;letter-spacing:0.12em;color:var(--silver-dim);margin-top:0.6rem;">Measured feeds from NOAA SWPC — if a feed is down, we say so rather than fake it.</p>
+        <div style="text-align:center;margin-top:1.25rem;">
+          <button class="glow-btn" id="dailysky-card-btn" type="button" aria-label="Download today's daily-sky postcard">
+            &#10022;&nbsp; Download Today's Daily-Sky Postcard
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VII. PRECESSION LAYER ═══ -->
+    <section class="instrument-section" id="sec-precession">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VIII</span> The Precession Layer</p>
+        <h2 class="instrument-title">The sky has drifted. We will not hide it.</h2>
+        <p class="instrument-lede">
+          Earth's axis wobbles once every ~25,772 years, so the zodiac signs and the constellations
+          they were named for have drifted about 24&deg; apart since the system was fixed. Most apps
+          ignore this. Here it is a lens you can change.
+        </p>
+
+        <div class="precession-toggle" role="group" aria-label="Zodiac frame">
+          <button type="button" class="glow-btn active" data-frame="tropical">Tropical</button>
+          <button type="button" class="glow-btn" data-frame="sidereal">Sidereal</button>
+          <button type="button" class="glow-btn" data-frame="raw">The Raw Sky</button>
+        </div>
+
+        <div class="glass-card" style="margin-top:1rem;">
+          <p id="frame-explain" class="grimoire" style="font-size:1.05rem;margin:0;"></p>
+          <div id="frame-table" style="margin-top:1.25rem;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VIII. TIME TRAVEL ═══ -->
+    <section class="instrument-section" id="sec-timetravel" style="border-bottom:none;">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">IX</span> True-Sky Time Travel</p>
+        <h2 class="instrument-title">Stand under any sky.</h2>
+        <p class="instrument-lede">
+          Fly the solar system to any moment &mdash; a birth, a first kiss, a goodbye &mdash; and read the
+          sky that held it. Memories become charts.
+        </p>
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;margin:1.5rem 0;">
+          <div>
+            <label class="form-label" for="tt-datetime">Destination</label>
+            <input type="datetime-local" id="tt-datetime" class="form-input" style="margin-top:0.4rem;" />
+          </div>
+          <button type="button" class="glow-btn" id="tt-go">Fly There</button>
+          <button type="button" class="glow-btn" id="tt-read">Read This Sky</button>
+        </div>
+
+        <div class="glass-card" style="max-width:580px;margin:0 auto;padding:1.5rem;">
+          <canvas id="tt-canvas" aria-label="Time-travelling 3D solar system" role="img"></canvas>
+        </div>
+
+        <div id="tt-reading" class="grimoire" style="margin-top:1.75rem;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__bottom" style="border-top:1px solid var(--border);padding-top:1.5rem;">
+        <p style="color:var(--silver-dim);font-size:0.78rem;">&copy; 2026 AstroPrecise &middot; Every number on this page is computed from the real sky.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/raf-core.js"></script>
+
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/starcatalog.js"></script>
+  <script src="js/lightcone.js"></script>
+  <script src="js/echoes.js"></script>
+  <script src="js/fieldweather.js"></script>
+  <script src="js/oracle.js"></script>
+  <script src="js/daimon.js"></script>
+  <script src="js/orrery3d.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+  <script>
+  /* Natal signature — populates when event is set via the Instrument form */
+  (function () {
+    function sumDigits(n) {
+      return String(Math.abs(n)).split('').reduce(function(a,d){return a+parseInt(d,10);},0);
+    }
+    function toNumeroNum(n) {
+      while (n > 9 && n !== 11 && n !== 22 && n !== 33) n = sumDigits(n);
+      return n;
+    }
+    function calcLifePath(y,m,d) {
+      return toNumeroNum(toNumeroNum(m)+toNumeroNum(d)+toNumeroNum(sumDigits(y)));
+    }
+    var LP_TITLES={1:'Pioneer',2:'Diplomat',3:'Creator',4:'Builder',5:'Explorer',6:'Nurturer',7:'Seeker',8:'Achiever',9:'Humanitarian',11:'Illuminator',22:'Master Builder',33:'Master Teacher'};
+
+    function tryWireEventSet() {
+      var btn = document.getElementById('ev-set');
+      if (!btn) { setTimeout(tryWireEventSet, 300); return; }
+      btn.addEventListener('click', function () {
+        setTimeout(function () {
+          var sig = document.getElementById('sec-natal-signature');
+          var dtInput = document.getElementById('ev-datetime');
+          if (!sig || !dtInput || !dtInput.value) return;
+          var dt = new Date(dtInput.value);
+          if (isNaN(dt.getTime())) return;
+          var y = dt.getFullYear(), m = dt.getMonth()+1, d = dt.getDate();
+          var lp = calcLifePath(y,m,d);
+          var title = LP_TITLES[lp] || '';
+          // Life Path link
+          var link = document.getElementById('natal-lifepath-link');
+          if (link) {
+            var iso = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+            link.href = 'lifepath.html?date=' + iso;
+            link.textContent = '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path ' + lp + ' — ' + title + ' →';
+          }
+          // Compact planet grid
+          var grid = document.getElementById('natal-sig-grid');
+          if (grid) {
+            var E = window.AstroEphemeris;
+            var items = [];
+            if (E && typeof E.calculateNatalChart === 'function') {
+              try {
+                var raw = E.calculateNatalChart(y,m,d,dt.getUTCHours()||12,dt.getUTCMinutes()||0,0,0);
+                if (raw && raw.positions) {
+                  var PLANETS = [
+                    {k:'sun',g:'☉',n:'Sun'},{k:'moon',g:'☽',n:'Moon'},
+                    {k:'mercury',g:'☿',n:'Mercury'},{k:'venus',g:'♀',n:'Venus'},
+                    {k:'mars',g:'♂',n:'Mars'},{k:'jupiter',g:'♃',n:'Jupiter'}
+                  ];
+                  PLANETS.forEach(function(p) {
+                    var pos = raw.positions[p.k];
+                    if (!pos) return;
+                    items.push(
+                      '<div class="sig-cell">' +
+                        '<span class="sig-cell__glyph">' + p.g + '</span>' +
+                        '<span class="sig-cell__label">' + p.n + '</span>' +
+                        '<span class="sig-cell__value">' + (pos.sign||'?') + ' ' + Math.floor(pos.degree||0) + '°</span>' +
+                      '</div>'
+                    );
+                  });
+                }
+              } catch(e) {}
+            }
+            items.push(
+              '<div class="sig-cell" style="border-color:rgba(201, 162, 39,0.22);background:rgba(201, 162, 39,0.06);">' +
+                '<span class="sig-cell__glyph eng-star-mark" style="color:var(--gold);"></span>' +
+                '<span class="sig-cell__label">Life Path</span>' +
+                '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +
+              '</div>'
+            );
+            grid.innerHTML = items.join('');
+          }
+          sig.removeAttribute('hidden');
+        }, 600);
+      });
+    }
+    /* Disabled — the natal signature is now rendered by js/instrument.js
+       (renderNatalSignature) with the correct timezone + birthplace, and for the
+       example event too. This inline path duplicated the #ev-set handler and
+       computed positions in the wrong timezone with lat/lon 0,0. */
+    void tryWireEventSet;
+  })();
+  </script>
+  <script>
+  // ═══ THE CLOCK OF THE SPHERES — planetary hours wheel ═══
+  // True unequal hours (sunrise→sunset twelfths) when the Instrument's saved
+  // event provides a location; otherwise an equal-hour approximation, said so.
+  (function clockOfSpheres() {
+    const svg = document.getElementById('ph-wheel'), readout = document.getElementById('ph-readout');
+    const alignBtn = document.getElementById('ph-align'), nowBtn = document.getElementById('ph-now');
+    const note = document.getElementById('ph-note');
+    if (!svg || !readout) return;
+    const CX = 230, CY = 230, R1 = 206, R2 = 142, RG = 174;
+    const CHALD = ['saturn', 'jupiter', 'mars', 'sun', 'venus', 'mercury', 'moon'];
+    const DAY_RULER = [3, 6, 2, 5, 1, 4, 0]; // Sun..Sat → index into CHALD
+    const P = {
+      saturn:  { g: '♄', n: 'Saturn',  c: '#9b8b6a', lore: 'Lead, boundaries, the long account. The old books give Saturn’s hour to endings, debts honoured, vows and foundations. Modern reading: do the disciplined thing — it compounds.' },
+      jupiter: { g: '♃', n: 'Jupiter', c: '#c9a05a', lore: 'Tin and increase. The hour of judges, oaths and fortune asked for openly. Modern reading: negotiate, apply, publish — generosity moves.' },
+      mars:    { g: '♂', n: 'Mars',    c: '#b0563a', lore: 'Iron severs. Courage, surgery, contest — the blade’s hour, for cutting what must be cut. Modern reading: confrontations scheduled here end cleaner than ones that ambush you.' },
+      sun:     { g: '☉', n: 'the Sun', c: '#E8C872', lore: 'Gold and sovereignty. Audiences with power, the work that bears your name. Modern reading: visibility — present, launch, be seen.' },
+      venus:   { g: '♀', n: 'Venus',   c: '#d4a0a0', lore: 'Copper binds. Love, art, alliance, the sweetening of things. Modern reading: reconcile, design, court — the social grain runs smooth.' },
+      mercury: { g: '☿', n: 'Mercury', c: '#b8bcc4', lore: 'Quicksilver runs. Letters, trade, travel, the crossroads god. Modern reading: write, send, sign, learn — the channels are open.' },
+      moon:    { g: '☽', n: 'the Moon',c: '#cfc8b8', lore: 'Silver remembers. The tide’s hour — home, water, dreams, the public mood. Modern reading: rest, nourish, listen; begin nothing loud.' },
+    };
+    function eventLoc() {
+      try { const ev = JSON.parse(localStorage.getItem('ap_instrument_event') || 'null');
+        // Number.isFinite (not global isFinite) so blank "" coords don't coerce to 0,0
+        if (ev && ev.lat !== '' && ev.lon !== '' && Number.isFinite(+ev.lat) && Number.isFinite(+ev.lon)
+            && Math.abs(+ev.lat) <= 90 && Math.abs(+ev.lon) <= 180) {
+          return { lat: +ev.lat, lon: +ev.lon, city: ev.city || '', tz: ev.tz || null };
+        }
+      } catch (e) {}
+      return null;
+    }
+    // Weekday in a given IANA zone (the planetary day-ruler depends on the
+    // LOCAL civil day at the event, not the viewer's browser timezone).
+    function tzWeekday(date, tz) {
+      if (!tz) return date.getUTCDay();
+      try {
+        const wd = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short' }).format(date);
+        const i = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(wd);
+        return i < 0 ? date.getUTCDay() : i;
+      } catch (e) { return date.getUTCDay(); }
+    }
+    function sunTimes(d, lat, lon) {
+      const rad = Math.PI / 180;
+      const n = Math.floor((d - new Date(Date.UTC(d.getUTCFullYear(), 0, 0))) / 864e5);
+      const B = rad * (360 / 365) * (n - 81);
+      const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+      const decl = -23.44 * Math.cos(rad * (360 / 365) * (n + 10));
+      const cosH = (Math.sin(-0.833 * rad) - Math.sin(lat * rad) * Math.sin(decl * rad)) / (Math.cos(lat * rad) * Math.cos(decl * rad));
+      if (cosH < -1 || cosH > 1) return null;
+      const H = Math.acos(cosH) / rad;
+      const noonMin = 720 - 4 * lon - eot;
+      const mk = min => { const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); x.setUTCMinutes(Math.round(min)); return x; };
+      return { rise: mk(noonMin - 4 * H), set: mk(noonMin + 4 * H) };
+    }
+    // Build the 24 slot boundaries + rulers for the planetary day containing t
+    function daySlots(t, loc) {
+      if (loc) {
+        const st0 = sunTimes(t, loc.lat, loc.lon);
+        const stY = sunTimes(new Date(t.getTime() - 864e5), loc.lat, loc.lon);
+        const stT = sunTimes(new Date(t.getTime() + 864e5), loc.lat, loc.lon);
+        if (st0 && stY && stT) {
+          let rise, set, nextRise;
+          if (t < st0.rise) { rise = stY.rise; set = stY.set; nextRise = st0.rise; }
+          else { rise = st0.rise; set = st0.set; nextRise = stT.rise; }
+          const dow = tzWeekday(new Date(rise), loc.tz), slots = [];
+          const dl = (set - rise) / 12, nl = (nextRise - set) / 12;
+          for (let i = 0; i < 12; i++) slots.push({ start: new Date(+rise + i * dl), end: new Date(+rise + (i + 1) * dl), rulerKey: CHALD[(DAY_RULER[dow] + i) % 7], kind: 'day' });
+          for (let i = 0; i < 12; i++) slots.push({ start: new Date(+set + i * nl), end: new Date(+set + (i + 1) * nl), rulerKey: CHALD[(DAY_RULER[dow] + 12 + i) % 7], kind: 'night' });
+          return { slots, dow, approx: false, rise, set };
+        }
+      }
+      const base = new Date(t); base.setHours(6, 0, 0, 0);
+      if (t < base) base.setDate(base.getDate() - 1);
+      const dow = base.getDay(), slots = [];
+      for (let i = 0; i < 24; i++) slots.push({ start: new Date(+base + i * 36e5), end: new Date(+base + (i + 1) * 36e5), rulerKey: CHALD[(DAY_RULER[dow] + i) % 7], kind: i < 12 ? 'day' : 'night' });
+      return { slots, dow, approx: true };
+    }
+    const pt = (aDeg, r) => { const a = aDeg * Math.PI / 180; return [CX + r * Math.cos(a), CY - r * Math.sin(a)]; };
+    let activeTz = null; // event's zone while an event is set, else viewer-local
+    const fmt = d => d.toLocaleTimeString([], Object.assign({ hour: '2-digit', minute: '2-digit' }, activeTz ? { timeZone: activeTz } : {}));
+    let aligned = null, current = null;
+    function defaultReadout() {
+      if (!current) return;
+      const { slot } = current, p = P[slot.rulerKey];
+      readout.innerHTML = `Hour of <strong style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(slot.start)} – ${fmt(slot.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
+    }
+    function render(t) {
+      const loc = eventLoc();
+      activeTz = loc ? loc.tz : null;
+      const { slots, dow, approx } = daySlots(t, loc);
+      const nowIdx = slots.findIndex(s => t >= s.start && t < s.end);
+      current = nowIdx >= 0 ? { slot: slots[nowIdx], idx: nowIdx } : null;
+      let s = `<defs><linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C9A227"/><stop offset="100%" stop-color="#A8841E"/></linearGradient></defs>`;
+      s += `<circle cx="${CX}" cy="${CY}" r="${R1 + 9}" fill="none" stroke="#C9A227" stroke-width="2.5" opacity="0.4"/>`;
+      s += `<circle cx="${CX}" cy="${CY}" r="${R2 - 8}" fill="none" stroke="#C9A227" stroke-width="0.8" opacity="0.3"/>`;
+      slots.forEach((sl, i) => {
+        const a0 = 180 - i * 15, a1 = 180 - (i + 1) * 15;
+        const [x1, y1] = pt(a0, R1), [x2, y2] = pt(a1, R1), [x3, y3] = pt(a1, R2), [x4, y4] = pt(a0, R2);
+        const isNow = i === nowIdx, p = P[sl.rulerKey];
+        const fill = isNow ? 'rgba(201,162,39,0.22)' : sl.kind === 'day' ? 'rgba(201,162,39,0.055)' : 'rgba(40,36,52,0.45)';
+        s += `<g class="ph-sec" data-i="${i}" style="cursor:pointer">
+          <path d="M${x1},${y1} A${R1},${R1} 0 0 1 ${x2},${y2} L${x3},${y3} A${R2},${R2} 0 0 0 ${x4},${y4} Z"
+            fill="${fill}" stroke="rgba(201,162,39,${isNow ? '0.8' : '0.22'})" stroke-width="${isNow ? 1.6 : 0.6}"/>
+          <text x="${pt(a0 - 7.5, RG)[0]}" y="${pt(a0 - 7.5, RG)[1]}" text-anchor="middle" dominant-baseline="central"
+            font-size="${isNow ? 17 : 13}" fill="${isNow ? '#EFE3C0' : p.c}" font-family="serif" ${isNow ? 'filter="drop-shadow(0 0 5px rgba(201,162,39,.9))"' : ''}>${p.g}</text>
+        </g>`;
+      });
+      if (current) {
+        const i = current.idx, fr = (t - current.slot.start) / (current.slot.end - current.slot.start);
+        const [mx, my] = pt(180 - (i + fr) * 15, R1 + 9);
+        s += `<circle cx="${mx}" cy="${my}" r="5" fill="#EFE3C0" opacity="0.95"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite"/></circle>`;
+      }
+      const cp = current ? P[current.slot.rulerKey] : P.sun;
+      s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="serif" filter="drop-shadow(0 0 10px rgba(201,162,39,.45))">${cp.g}</text>
+        <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#E8E0D0" font-family="Cinzel,serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
+        <text x="${CX}" y="${CY + 28}" text-anchor="middle" font-size="10" fill="#A89E88" font-family="Cormorant Garamond,serif" font-style="italic">${current ? fmt(current.slot.start) + ' – ' + fmt(current.slot.end) : ''}</text>
+        <text x="${CX}" y="${CY + 46}" text-anchor="middle" font-size="9" letter-spacing="2" fill="#A89E88" font-family="Cinzel,serif">DAY OF ${P[CHALD[DAY_RULER[dow]]].n.replace('the ', '').toUpperCase()}</text>`;
+      svg.innerHTML = s;
+      svg.querySelectorAll('.ph-sec').forEach(g => {
+        g.addEventListener('click', () => {
+          const sl = slots[+g.dataset.i], p = P[sl.rulerKey];
+          readout.innerHTML = `${sl.kind === 'day' ? 'Day' : 'Night'} hour ${(+g.dataset.i % 12) + 1} — <strong style="color:${p.c}">${p.g} ${p.n}</strong> · ${fmt(sl.start)} – ${fmt(sl.end)}<br><span style="opacity:.75;font-size:.9em;">${p.lore}</span>`;
+        });
+      });
+      defaultReadout();
+      note.textContent = approx
+        ? 'Tap a sector for hermetic lore • equal-hour approximation — set your event below for true sunrise hours'
+        : `Tap a sector for hermetic lore • true unequal hours${loc && loc.city ? ' for ' + loc.city : ''} (sunrise-based)`;
+    }
+    alignBtn.addEventListener('click', () => {
+      const t = localStorage.getItem('astro_current_demo_time');
+      if (!t) { readout.innerHTML = 'The home orrery has not set a shared time yet — visit the homepage and move the time scrubber first.'; return; }
+      aligned = new Date(t);
+      if (isNaN(aligned)) { aligned = null; return; }
+      render(aligned);
+      nowBtn.style.display = '';
+      readout.innerHTML += `<br><span style="color:#C9A227;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
+    });
+    nowBtn.addEventListener('click', () => { aligned = null; nowBtn.style.display = 'none'; render(new Date()); });
+    render(new Date());
+    setInterval(() => { if (!aligned) render(new Date()); }, 60000);
+  })();
+  </script>
+  <script src="js/icons.js"></script>
+  <script src="js/instrument.js"></script>
+</body>
+</html>

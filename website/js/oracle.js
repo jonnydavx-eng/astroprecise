@@ -98,12 +98,19 @@ window.AstroOracle = (() => {
     return Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
   }
 
+  function ephemerisReady() {
+    const E = window.AstroEphemeris;
+    return !!(E && typeof E.julianDay === 'function' && typeof E.planetLongitude === 'function');
+  }
+
   function jdAtLocalNoon(date) {
+    if (!ephemerisReady()) return null;
     const E = window.AstroEphemeris;
     return E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), 12, 0, 0);
   }
 
   function jdAtMoment(date) {
+    if (!ephemerisReady()) return null;
     const E = window.AstroEphemeris;
     return E.julianDay(
       date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(),
@@ -760,6 +767,23 @@ window.AstroOracle = (() => {
 
   function getDailyInsight(natalChart, date) {
     date = date instanceof Date ? date : new Date();
+    if (!ephemerisReady()) {
+      return {
+        headline: 'Sky note',
+        body: 'Transit themes update as the live sky shifts.',
+        power: { area: 'Spirit', text: 'Open weather — the direction is yours to supply.' },
+        caution: { area: 'Pace', text: 'Wait for the engine before acting on tight timing.' },
+        transits: [],
+        moodScore: 55,
+        keywords: ['patience', 'clarity', 'pace'],
+        meta: {
+          mode: natalChart ? 'natal' : 'sky',
+          sunSign: null,
+          moonSign: null,
+          date: new Date(date.getFullYear(), date.getMonth(), date.getDate()).toISOString().slice(0, 10),
+        },
+      };
+    }
     const jd = jdAtLocalNoon(date);
     const day = localEpochDay(date);
 

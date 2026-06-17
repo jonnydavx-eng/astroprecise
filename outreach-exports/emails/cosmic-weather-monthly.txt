@@ -1,0 +1,16 @@
+ID: cosmic-weather-monthly
+SECTION: monthly
+SUBJECT: June cosmic weather — what the sky is stirring
+Hi —
+
+Here's June in one pass:
+
+{{transitHighlight}}
+
+(Pull this from the live transits page — keep it specific, never generic filler.)
+
+See it on your chart, free: https://astroprecise.app/transits.html
+
+Want the map reread in depth? The Deep Reading is £12, one-time: https://astroprecise.app/chart.html#deep-reading
+
+— AstroPrecise

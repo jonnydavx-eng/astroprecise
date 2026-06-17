@@ -1,0 +1,3 @@
+Astrology you can trust shouldn't need your birth time on someone's server.
+
+We compute in-browser. Nothing uploaded. → https://astroprecise.app/links.html

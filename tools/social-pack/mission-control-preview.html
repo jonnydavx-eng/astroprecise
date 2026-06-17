@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AstroPrecise — Mission Control Social Pack</title>
+  <style>
+    :root { --void: #050406; --gold: #C9A227; --parchment: #E8E0D0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #1a1510; color: var(--parchment); padding: 24px; }
+    h1 { font-size: 1.4rem; color: var(--gold); margin-bottom: 8px; }
+    p.note { font-size: 0.85rem; opacity: 0.8; margin-bottom: 24px; max-width: 720px; line-height: 1.55; }
+    h2 { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin: 32px 0 12px; }
+    .grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+    .card { display: flex; flex-direction: column; gap: 8px; }
+    .card label { font-size: 0.7rem; opacity: 0.7; }
+    .card img { max-width: 100%; border: 1px solid rgba(201,162,39,0.25); border-radius: 4px; }
+    .banner img { max-width: 720px; }
+    .pin img { width: 200px; }
+    .square img { width: 220px; }
+    .story img { width: 160px; }
+    code { background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 3px; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <h1>Mission Control Social Pack</h1>
+  <p class="note">
+    Generated assets for <strong>@astroprecise</strong> profiles and posts.
+    Regenerate: <code>py tools/make-mission-control-social.py</code>.
+    Setup guide: <code>marketing/SOCIAL-ACCOUNTS-SETUP.md</code>.
+    Bio link everywhere: <code>https://astroprecise.app/links.html</code>
+  </p>
+
+  <h2>Profile banners</h2>
+  <div class="grid banner">
+    <div class="card"><label>X 1500×500</label><img src="../../marketing/social/banner-x-1500x500.jpg" alt="" /></div>
+    <div class="card"><label>YouTube 2560×1440 (scaled)</label><img src="../../marketing/social/banner-youtube-2560x1440.jpg" alt="" style="max-width:480px" /></div>
+    <div class="card"><label>LinkedIn 1584×396</label><img src="../../marketing/social/banner-linkedin-1584x396.jpg" alt="" style="max-width:480px" /></div>
+    <div class="card"><label>Avatar 400×400</label><img src="../../marketing/social/avatar-400.jpg" alt="" style="width:120px" /></div>
+  </div>
+
+  <h2>Pinterest pins (1000×1500)</h2>
+  <div class="grid pin">
+    <div class="card"><label>Natal poster</label><img src="../../marketing/social/pin-natal-poster.jpg" alt="" /></div>
+    <div class="card"><label>Birth chart</label><img src="../../marketing/social/pin-birth-chart.jpg" alt="" /></div>
+    <div class="card"><label>Zenith star</label><img src="../../marketing/social/pin-zenith-star.jpg" alt="" /></div>
+    <div class="card"><label>Mission Control</label><img src="../../marketing/social/pin-mission-control.jpg" alt="" /></div>
+  </div>
+
+  <h2>Square posts (1080×1080)</h2>
+  <div class="grid square">
+    <div class="card"><label>Big Three</label><img src="../../marketing/social/square-big-three.jpg" alt="" /></div>
+    <div class="card"><label>Birth time</label><img src="../../marketing/social/square-birth-time.jpg" alt="" /></div>
+    <div class="card"><label>Telemetry</label><img src="../../marketing/social/square-telemetry.jpg" alt="" /></div>
+    <div class="card"><label>Orrery</label><img src="../../marketing/social/square-orrery.jpg" alt="" /></div>
+    <div class="card"><label>Wear your sky</label><img src="../../marketing/social/square-wear-your-sky.jpg" alt="" /></div>
+  </div>
+
+  <h2>Story / Reel end cards (1080×1920)</h2>
+  <div class="grid story">
+    <div class="card"><label>Privacy</label><img src="../../marketing/social/story-privacy.jpg" alt="" /></div>
+    <div class="card"><label>Free chart</label><img src="../../marketing/social/story-free-chart.jpg" alt="" /></div>
+    <div class="card"><label>Brand close</label><img src="../../marketing/social/story-brand-close.jpg" alt="" /></div>
+  </div>
+</body>
+</html>

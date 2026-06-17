@@ -13,11 +13,16 @@
   'use strict';
 
   var SAT_PERIOD = 29.4571;            // mean years between Saturn returns
-  var SIGN_GLYPHS = {
-    Aries: '♈', Taurus: '♉', Gemini: '♊', Cancer: '♋',
-    Leo: '♌', Virgo: '♍', Libra: '♎', Scorpio: '♏',
-    Sagittarius: '♐', Capricorn: '♑', Aquarius: '♒', Pisces: '♓'
-  };
+
+  function signSeal(sign, opts) {
+    opts = Object.assign({ sm: true, hidden: true }, opts || {});
+    if (window.AstroCelestialSeals && typeof AstroCelestialSeals.zodiac === 'function') {
+      return AstroCelestialSeals.zodiac(sign, opts);
+    }
+    var Z = window.AP_ZODIAC;
+    var slug = (Z && typeof Z.glyphKey === 'function') ? Z.glyphKey(sign) : String(sign || '').toLowerCase();
+    return '<span class="ap-seal ap-seal--zodiac ap-seal--' + slug + ' ap-seal--sm" data-celestial-seal="zodiac:' + slug + '" aria-hidden="true"></span>';
+  }
 
   // What the return asks you to build maturity in, per natal Saturn sign.
   var SATURN_IN_SIGN = {
@@ -128,7 +133,7 @@
     var html = '';
     html += '<p class="sat-lead">' + who + ' <strong>' + ORD[r.n] + ' Saturn Return</strong> centres on <strong>' +
       DFMT(r.peakDate) + '</strong>, around age <strong>' + r.ageAtPeak + '</strong>. ' +
-      'Natal Saturn sits at ' + (SIGN_GLYPHS[sign] || '') + ' <strong>' + sign + ' ' + degStr(data.natalDeg) +
+      'Natal Saturn sits at ' + signSeal(sign) + ' <strong>' + sign + ' ' + degStr(data.natalDeg) +
       '</strong> — the place the planet now returns to for the first time since you were born.</p>';
     html += '<div class="sat-orn"><span>WHAT IT MATURES</span></div>';
     html += '<p>' + lesson + '</p>';
@@ -234,7 +239,7 @@
 
       // FREE: natal Saturn + the three return dates (the finder)
       datesEl.innerHTML =
-        '<p class="sat-natal">Natal Saturn at ' + (SIGN_GLYPHS[data.natalSign] || '') + ' <strong>' +
+        '<p class="sat-natal">Natal Saturn at ' + signSeal(data.natalSign) + ' <strong>' +
           data.natalSign + ' ' + degStr(data.natalDeg) + '</strong></p>' +
         '<div class="sat-cards">' + data.returns.map(function (r) {
           var cur = r.n === idx + 1 ? ' sat-card--now' : '';
@@ -248,6 +253,9 @@
 
       // PAID: the reading + PDF (dormant => free; gated => 49p button; unlocked => shown)
       renderReading(data, idx, name, readingEl);
+      if (window.AstroCelestialSeals && typeof AstroCelestialSeals.bindSlots === 'function') {
+        AstroCelestialSeals.bindSlots();
+      }
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }

@@ -1,0 +1,12 @@
+ID: purchase-2
+SECTION: postPurchase
+DELAY: day 3
+SUBJECT: Getting the most from your reading
+A few ways to use what you bought:
+
+→ Read once straight through, then again a week later.
+→ Cross-check with live transits: https://astroprecise.app/transits.html
+
+Questions? Reply — I'll answer.
+
+— AstroPrecise

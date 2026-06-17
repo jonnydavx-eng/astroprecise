@@ -283,6 +283,9 @@ function calculateAspects(positions, jd) {
 // 13. Retrograde
 // ---------------------------------------------------------------------------
 
+// Geocentric longitudes are apparent-Sun-referenced: helioToGeo uses sunPosition().lon
+// (nutation + aberration on the Sun only), not per-body nutation — typically ~1′ error.
+
 // Accurate geocentric longitude. Routes planets through the full VSOP87
 // series (mercuryPosition…plutoPosition) instead of the crude fixed-radius
 // planar geocentricPlanetLongitude — which put Pluto a whole sign (65°) wrong

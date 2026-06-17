@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Discover your cosmic archetype — a free 90-second astrology quiz that maps you to an element, modality and planet (The Pioneer, The Builder, The Mystic and more), then points you to your real birth chart." />
   <title>Discover Your Cosmic Archetype — Free Astrology Quiz | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,428 +20,34 @@
   <meta name="twitter:description" content="A free 90-second quiz that maps you to a cosmic archetype, then routes you to your real birth chart." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/quiz-page.css" />
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <style>
+    body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    .aq-hero h1,.aq-intro__title{font-family:Georgia,'Times New Roman',serif;font-weight:700;line-height:1.12;min-height:1.15em;contain:layout style;}
+    .aq-hero h1{font-size:clamp(2.1rem,5vw,3.4rem);}
+    .aq-intro__title{font-size:clamp(1.5rem,3.6vw,2.1rem);}
+    .aq-hero__sub{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:1.04rem;line-height:1.7;min-height:3.4em;}
+    .aq-intro__sub{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:0.98rem;line-height:1.7;min-height:4.5em;}
+    .aq-mount{min-height:clamp(380px,48vh,400px);contain:layout style;}
+    .navbar__nav{min-height:44px;}
+    .navbar__end{min-width:2.75rem;min-height:2.75rem;}
+  </style>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferQuizFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferQuizFonts();deferMainCss();});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Discover Your Cosmic Archetype","description":"A free 90-second astrology quiz that maps you to a cosmic archetype derived from element, modality and planet, then points you to your real birth chart.","url":"https://astroprecise.app/quiz.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Astrology"},{"@type":"Thing","name":"Zodiac elements and modalities"},{"@type":"Thing","name":"Personality archetypes"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Quiz","name":"Discover Your Cosmic Archetype","about":{"@type":"Thing","name":"Astrological archetypes"},"educationalLevel":"Beginner","url":"https://astroprecise.app/quiz.html","publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"hasPart":[{"@type":"Question","name":"A free weekend lands in your lap. What actually happens?","eduQuestionType":"Multiple choice","acceptedAnswer":{"@type":"Answer","text":"Answers map you toward Fire, Earth, Air or Water archetypes."}},{"@type":"Question","name":"At your absolute best, what do you bring to the world?","eduQuestionType":"Multiple choice","acceptedAnswer":{"@type":"Answer","text":"Answers reveal whether you bring the spark, the foundation, the connection or the depth."}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a cosmic archetype?","acceptedAnswer":{"@type":"Answer","text":"A cosmic archetype is a personality pattern drawn from astrology's core building blocks — the four elements (Fire, Earth, Air, Water) and three modalities (Cardinal, Fixed, Mutable), coloured by a guiding planet. AstroPrecise blends these into twelve archetypes such as The Pioneer, The Builder and The Mystic."}},{"@type":"Question","name":"Is the cosmic archetype quiz accurate?","acceptedAnswer":{"@type":"Answer","text":"The quiz is a fun, intuitive doorway based on your answers — not your real chart. Your true archetype lives in your actual birth placements. Cast your free birth chart on AstroPrecise to see the real sky you were born under, computed from genuine astronomy in your browser."}},{"@type":"Question","name":"Does the quiz collect my data?","acceptedAnswer":{"@type":"Answer","text":"No. The quiz runs entirely in your browser. Your result is saved only on your device, and nothing is sent anywhere unless you choose to join the email list."}},{"@type":"Question","name":"How long does the quiz take?","acceptedAnswer":{"@type":"Answer","text":"About ninety seconds. There are six multiple-choice questions, and you get your archetype immediately at the end."}}]}</script>
-  <style>
-    /* ── Cosmic Archetype Quiz — scoped page styles (glass / engraved) ── */
-    :root {
-      --aq-gold: var(--gold, #C9A227);
-      --aq-gold-light: var(--gold-light, #EFE3C0);
-      --aq-surface: rgba(15, 18, 50, 0.42);
-      --aq-border: rgba(232, 224, 208, 0.10);
-    }
-
-    /* ── Hero ── */
-    .aq-hero {
-      padding: calc(var(--nav-height, 72px) + 3.25rem) 0 1.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .aq-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(74, 90, 106, 0.20) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .aq-hero__eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--aq-gold);
-      margin-bottom: 1.1rem;
-    }
-    .aq-hero__eyebrow::before,
-    .aq-hero__eyebrow::after {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 1px;
-      background: var(--aq-gold);
-      opacity: 0.5;
-    }
-    .aq-hero h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(2.1rem, 5vw, 3.4rem);
-      font-weight: 700;
-      color: var(--white, #E8E0D0);
-      line-height: 1.12;
-      letter-spacing: 0.03em;
-      margin-bottom: 1rem;
-    }
-    .aq-hero__sub {
-      font-size: 1.04rem;
-      color: var(--silver, #A89E88);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* ── Quiz mount section ── */
-    .aq-section { padding: 1.5rem 0 4rem; position: relative; z-index: 1; }
-    .aq-mount { max-width: 720px; margin: 0 auto; }
-
-    /* ── Glass card (intro + question) ── */
-    .aq-card {
-      background: var(--aq-surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--aq-border);
-      border-radius: var(--radius-xl, 20px);
-      padding: clamp(1.6rem, 4vw, 2.6rem);
-      box-shadow: 0 18px 60px rgba(5, 7, 20, 0.45);
-    }
-
-    /* Intro */
-    .aq-intro { text-align: center; }
-    .aq-intro__seal {
-      font-size: 2.2rem;
-      color: var(--aq-gold);
-      line-height: 1;
-      margin-bottom: 0.8rem;
-      filter: drop-shadow(0 0 14px rgba(201, 162, 39, 0.45));
-    }
-    .aq-intro__title {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.5rem, 3.6vw, 2.1rem);
-      color: var(--white, #E8E0D0);
-      letter-spacing: 0.02em;
-      margin-bottom: 0.9rem;
-    }
-    .aq-intro__sub {
-      font-size: 0.98rem;
-      color: var(--silver, #A89E88);
-      line-height: 1.7;
-      max-width: 520px;
-      margin: 0 auto 1.8rem;
-    }
-    .aq-resume {
-      display: block;
-      margin: 1.1rem auto 0;
-      background: none;
-      border: none;
-      color: var(--silver-dim, #6E6658);
-      font-size: 0.82rem;
-      letter-spacing: 0.02em;
-      cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .aq-resume strong { color: var(--aq-gold); }
-    .aq-resume:hover { color: var(--aq-gold-light); }
-
-    /* Question */
-    .aq-progress-label {
-      font-size: 0.64rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--aq-gold);
-      margin-bottom: 0.85rem;
-    }
-    .aq-question {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.25rem, 3vw, 1.7rem);
-      color: var(--white, #E8E0D0);
-      line-height: 1.35;
-      letter-spacing: 0.01em;
-      margin-bottom: 1.5rem;
-    }
-    .aq-options { display: flex; flex-direction: column; gap: 0.7rem; }
-    .aq-option {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      text-align: left;
-      width: 100%;
-      background: rgba(20, 16, 10, 0.55);
-      border: 1px solid rgba(168, 158, 136, 0.14);
-      border-radius: 14px;
-      padding: 0.9rem 1.05rem;
-      color: var(--silver, #C8D0E8);
-      font-size: 0.96rem;
-      line-height: 1.5;
-      cursor: pointer;
-      transition: border-color 0.18s, background 0.18s, transform 0.14s;
-    }
-    .aq-option:hover, .aq-option:focus-visible {
-      background: rgba(25, 36, 72, 0.82);
-      border-color: rgba(201, 162, 39, 0.5);
-      transform: translateY(-2px);
-      outline: none;
-    }
-    .aq-option__dot {
-      width: 0.82rem; height: 0.82rem;
-      border-radius: 50%;
-      flex: none;
-      background: radial-gradient(circle at 32% 28%, #fff 0%, var(--dc, #9db36a) 75%);
-      box-shadow: 0 0 8px -1px var(--dc, #9db36a);
-    }
-    .aq-option[data-element="fire"]  .aq-option__dot { --dc: #e05a3a; }
-    .aq-option[data-element="earth"] .aq-option__dot { --dc: #2a8a5a; }
-    .aq-option[data-element="air"]   .aq-option__dot { --dc: #9db36a; }
-    .aq-option[data-element="water"] .aq-option__dot { --dc: #3a7ad4; }
-    .aq-option__text { flex: 1; }
-
-    .aq-progress {
-      margin-top: 1.5rem;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .aq-progress__fill {
-      height: 100%;
-      background: var(--gradient-gold, linear-gradient(135deg, #C9A227, #EFE3C0));
-      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    /* ── Result card ── */
-    .aq-result {
-      position: relative;
-      text-align: center;
-      background: linear-gradient(135deg, rgba(13, 10, 7, 0.96) 0%, rgba(19, 16, 12, 0.96) 60%, rgba(18, 11, 28, 0.96) 100%);
-      border-radius: 28px;
-      padding: clamp(1.8rem, 4vw, 3rem) clamp(1.4rem, 4vw, 2.6rem);
-      overflow: hidden;
-      -webkit-backdrop-filter: blur(24px);
-      backdrop-filter: blur(24px);
-    }
-    .aq-result::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1.5px;
-      background: linear-gradient(135deg, #c9a227 0%, rgba(196, 146, 10, 0.6) 20%, rgba(90, 60, 140, 0.5) 50%, rgba(92, 74, 110, 0.5) 80%, #c9a227 100%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-    .aq-result > * { position: relative; z-index: 1; }
-    .aq-result__eyebrow {
-      font-size: 0.62rem;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: var(--aq-gold);
-      margin-bottom: 1rem;
-    }
-    .aq-result__orb {
-      font-size: 3rem;
-      line-height: 1;
-      margin-bottom: 0.7rem;
-      display: flex;
-      justify-content: center;
-    }
-    .aq-orb-fallback { color: var(--aq-gold); }
-    .aq-result__name {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.9rem, 5vw, 2.8rem);
-      color: var(--gold-pale, var(--aq-gold-light));
-      line-height: 1.1;
-      margin-bottom: 0.4rem;
-    }
-    .aq-result__tagline {
-      font-size: 0.78rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--silver-dim, #8891AA);
-      margin-bottom: 1.3rem;
-    }
-    .aq-result__blurb {
-      font-family: var(--font-serif, 'Cormorant Garamond', serif);
-      font-size: clamp(1.05rem, 2.5vw, 1.22rem);
-      color: var(--silver, #C8D0E8);
-      line-height: 1.75;
-      max-width: 560px;
-      margin: 0 auto 1.6rem;
-    }
-
-    /* Traits */
-    .aq-traits {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      text-align: left;
-      margin-bottom: 1.6rem;
-    }
-    @media (max-width: 560px) { .aq-traits { grid-template-columns: 1fr; } }
-    .aq-traits__block {
-      background: rgba(92, 74, 110, 0.10);
-      border: 1px solid rgba(91, 127, 199, 0.22);
-      border-radius: 14px;
-      padding: 1.1rem 1.2rem;
-    }
-    .aq-traits__label {
-      display: block;
-      font-size: 0.6rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--aq-gold);
-      margin-bottom: 0.6rem;
-    }
-    .aq-traits__list { list-style: none; padding: 0; margin: 0; }
-    .aq-traits__list li {
-      position: relative;
-      padding-left: 1.3rem;
-      font-size: 0.92rem;
-      color: var(--silver, #C8D0E8);
-      line-height: 1.7;
-    }
-    .aq-traits__list li::before {
-      content: '\2726';
-      position: absolute; left: 0; top: 0;
-      color: var(--aq-gold);
-    }
-    .aq-traits__edge {
-      font-size: 0.92rem;
-      color: var(--silver, #C8D0E8);
-      line-height: 1.6;
-      font-style: italic;
-      margin: 0;
-    }
-
-    /* Disclaimer (honesty rule) */
-    .aq-disclaimer {
-      font-size: 0.84rem;
-      color: var(--silver-dim, #8891AA);
-      line-height: 1.65;
-      background: rgba(196, 146, 10, 0.06);
-      border: 1px solid rgba(196, 146, 10, 0.18);
-      border-radius: 12px;
-      padding: 0.85rem 1rem;
-      margin-bottom: 1.6rem;
-    }
-    .aq-disclaimer em { color: var(--aq-gold-light); font-style: italic; }
-
-    /* Routes */
-    .aq-routes { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.6rem; }
-    .aq-route {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-      text-align: left;
-      width: 100%;
-      background: rgba(20, 16, 10, 0.6);
-      border: 1px solid rgba(168, 158, 136, 0.16);
-      border-radius: 14px;
-      padding: 0.95rem 1.1rem;
-      color: var(--silver, #C8D0E8);
-      text-decoration: none;
-      cursor: pointer;
-      transition: border-color 0.18s, background 0.18s, transform 0.14s;
-      font: inherit;
-    }
-    .aq-route:hover, .aq-route:focus-visible {
-      background: rgba(25, 36, 72, 0.85);
-      border-color: rgba(201, 162, 39, 0.45);
-      transform: translateY(-2px);
-      outline: none;
-    }
-    .aq-route--primary {
-      background: rgba(196, 146, 10, 0.10);
-      border-color: rgba(196, 146, 10, 0.4);
-    }
-    .aq-route--primary:hover {
-      background: rgba(196, 146, 10, 0.16);
-      border-color: var(--aq-gold);
-    }
-    .aq-route__icon {
-      font-size: 1.25rem;
-      color: var(--aq-gold);
-      flex: none;
-      width: 1.6rem;
-      text-align: center;
-    }
-    .aq-route__body { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
-    .aq-route__title {
-      font-size: 0.96rem;
-      font-weight: 600;
-      color: var(--white, #E8E0D0);
-      letter-spacing: 0.01em;
-    }
-    .aq-route__price { color: var(--aq-gold); }
-    .aq-route__sub { font-size: 0.8rem; color: var(--silver-dim, #8891AA); line-height: 1.5; }
-    .aq-route__arrow { color: var(--aq-gold); font-size: 1.1rem; flex: none; }
-
-    /* Email capture */
-    .aq-email {
-      background: rgba(15, 18, 50, 0.4);
-      border: 1px solid var(--aq-border);
-      border-radius: 14px;
-      padding: 1.1rem 1.2rem;
-      margin-bottom: 1.4rem;
-      text-align: left;
-    }
-    .aq-email__label {
-      display: block;
-      font-size: 0.86rem;
-      color: var(--silver, #C8D0E8);
-      margin-bottom: 0.7rem;
-      line-height: 1.5;
-    }
-    .aq-email__row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-    .aq-email__input {
-      flex: 1;
-      min-width: 180px;
-      background: rgba(13, 10, 7, 0.6);
-      border: 1px solid rgba(168, 158, 136, 0.22);
-      border-radius: 8px;
-      padding: 0.6rem 0.85rem;
-      color: var(--white, #E8E0D0);
-      font: inherit;
-      font-size: 0.92rem;
-    }
-    .aq-email__input:focus {
-      outline: none;
-      border-color: var(--aq-gold);
-      box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.18);
-    }
-    .aq-email__note { font-size: 0.74rem; color: var(--silver-dim, #6E6658); margin: 0.7rem 0 0; line-height: 1.5; }
-
-    /* Share / restart row */
-    .aq-share { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
-
-    /* ── CTA strip ── */
-    .aq-cta {
-      text-align: center;
-      max-width: 620px;
-      margin: 0 auto;
-      padding: 2.5rem 2rem 0;
-    }
-    .aq-cta h2 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.5rem, 3.4vw, 2.1rem);
-      color: var(--white, #E8E0D0);
-      margin-bottom: 0.9rem;
-      letter-spacing: 0.02em;
-    }
-    .aq-cta p {
-      font-size: 0.98rem;
-      color: var(--silver, #A89E88);
-      line-height: 1.7;
-      margin-bottom: 1.6rem;
-    }
-    .aq-cta__note {
-      font-size: 0.76rem;
-      color: var(--silver-dim, #6E6658);
-      margin-top: 1rem;
-      letter-spacing: 0.02em;
-    }
-  </style>
-</head>
-<body>
+  </head>
+<body class="ap-no-nav-enter">
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -457,11 +62,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -497,7 +102,16 @@
     <section class="aq-section" aria-label="Cosmic archetype quiz">
       <div class="container">
         <div class="aq-mount" id="aq-mount" role="region" aria-live="polite">
-          <!-- AstroQuiz (js/quiz.js) renders intro → questions → result here -->
+          <div class="aq-card aq-intro">
+            <div class="aq-intro__seal" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);width:1.4em;height:1.4em;"></span></div>
+            <h2 class="aq-intro__title">Which cosmic archetype are you?</h2>
+            <p class="aq-intro__sub">
+              Six questions. One archetype, drawn from the timeless language of element,
+              modality and planet. It takes about ninety seconds — and points you toward
+              your real chart at the end.
+            </p>
+            <button class="btn btn--primary btn--lg" id="aq-start-btn" type="button">Begin the quiz</button>
+          </div>
           <noscript>
             <div class="aq-card" style="text-align:center">
               <p style="color:var(--silver,#A89E88);line-height:1.7">
@@ -536,30 +150,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo">&#10022; AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="quiz.html" class="footer__link">Cosmic Archetype Quiz</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="About">
-          <p class="footer__heading">About</p>
-          <ul class="footer__links">
-            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -574,8 +248,8 @@
   <script src="js/ephemeris.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/icons.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/quiz.js"></script>
+<script src="js/quiz.js"></script>
   <script src="js/effects.js"></script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

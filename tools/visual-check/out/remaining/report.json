@@ -1,0 +1,2231 @@
+{
+  "base": "http://localhost:8790",
+  "capturedAt": "2026-06-17T18:24:31.527Z",
+  "pages": [
+    {
+      "id": "accuracy",
+      "path": "/accuracy.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/accuracy.html",
+      "scores": {
+        "performance": 88,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 88,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 86
+      },
+      "sections": [
+        {
+          "name": "How AstroPrecise Is Accurate",
+          "score": 75
+        },
+        {
+          "name": "Professional-Grade Astronomy",
+          "score": 85
+        },
+        {
+          "name": "Planets via VSOP87",
+          "score": 75
+        },
+        {
+          "name": "Moon via ELP2000",
+          "score": 75
+        },
+        {
+          "name": "A True Ascendant & Midheaven",
+          "score": 75
+        },
+        {
+          "name": "Authentic House Systems",
+          "score": 75
+        },
+        {
+          "name": "Real Retrograde Detection",
+          "score": 75
+        },
+        {
+          "name": "Historical Timezone Conversion",
+          "score": 75
+        },
+        {
+          "name": "Arcminute Precision, Not Vague Generalit",
+          "score": 85
+        },
+        {
+          "name": "Your Birth Moment Never Leaves Your Brow",
+          "score": 85
+        },
+        {
+          "name": "See It for Yourself",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 2340,
+        "lcp": 3527,
+        "cls": 0,
+        "tbt": 61,
+        "si": 2557.993234582391
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "How AstroPrecise Is Accurate",
+        "metaDescLen": 210,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 1124,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "How AstroPrecise Is Accurate",
+            "score": 75
+          },
+          {
+            "name": "Professional-Grade Astronomy",
+            "score": 85
+          },
+          {
+            "name": "Planets via VSOP87",
+            "score": 75
+          },
+          {
+            "name": "Moon via ELP2000",
+            "score": 75
+          },
+          {
+            "name": "A True Ascendant & Midheaven",
+            "score": 75
+          },
+          {
+            "name": "Authentic House Systems",
+            "score": 75
+          },
+          {
+            "name": "Real Retrograde Detection",
+            "score": 75
+          },
+          {
+            "name": "Historical Timezone Conversion",
+            "score": 75
+          },
+          {
+            "name": "Arcminute Precision, Not Vague Generalit",
+            "score": 85
+          },
+          {
+            "name": "Your Birth Moment Never Leaves Your Brow",
+            "score": 85
+          },
+          {
+            "name": "See It for Yourself",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "angel-numbers",
+      "path": "/angel-numbers.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/angel-numbers.html",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 100,
+        "axe": 100,
+        "perf": 98,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 88
+      },
+      "sections": [
+        {
+          "name": "Numerology of Repeating Numbers",
+          "score": 75
+        },
+        {
+          "name": "The Repeating Numbers",
+          "score": 75
+        },
+        {
+          "name": "The Method",
+          "score": 85
+        },
+        {
+          "name": "Numbers Are Only Half the Picture",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 990,
+        "lcp": 2422,
+        "cls": 0.0007871008233697848,
+        "tbt": 8,
+        "si": 1861.0412137461685
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Angel Numbers & the Synchronicity Clock",
+        "metaDescLen": 250,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 685,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "Numerology of Repeating Numbers",
+            "score": 75
+          },
+          {
+            "name": "The Repeating Numbers",
+            "score": 75
+          },
+          {
+            "name": "The Method",
+            "score": 85
+          },
+          {
+            "name": "Numbers Are Only Half the Picture",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "charts",
+      "path": "/charts.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/charts.html",
+      "scores": {
+        "performance": 91,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 91,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 87
+      },
+      "sections": [
+        {
+          "name": "My Charts",
+          "score": 75
+        },
+        {
+          "name": "Saved charts",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 2040,
+        "lcp": 3250,
+        "cls": 0,
+        "tbt": 18.5,
+        "si": 2788.6047680263164
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "My Charts",
+        "metaDescLen": 219,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 400,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "My Charts",
+            "score": 75
+          },
+          {
+            "name": "Saved charts",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "lifepath",
+      "path": "/lifepath.html",
+      "type": "tool",
+      "url": "http://localhost:8790/lifepath.html",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 95,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 70,
+        "overall": 91
+      },
+      "sections": [
+        {
+          "name": "Hero",
+          "score": 86
+        },
+        {
+          "name": "The Nine Paths + Masters",
+          "score": 85
+        },
+        {
+          "name": "The Method",
+          "score": 85
+        },
+        {
+          "name": "Pair with Your Birth Chart",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 1140,
+        "lcp": 2933,
+        "cls": 0.02171573788974961,
+        "tbt": 11,
+        "si": 2303.6681197288294
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Life Path Calculator",
+        "metaDescLen": 181,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 903,
+        "shopLinks": 3,
+        "canvas": 3,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 70,
+        "sections": [
+          {
+            "name": "Hero",
+            "score": 86
+          },
+          {
+            "name": "The Nine Paths + Masters",
+            "score": 85
+          },
+          {
+            "name": "The Method",
+            "score": 85
+          },
+          {
+            "name": "Pair with Your Birth Chart",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "moonphase",
+      "path": "/moonphase.html",
+      "type": "tool",
+      "url": "http://localhost:8790/moonphase.html",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 85,
+        "perf": 98,
+        "a11y": 93,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 87
+      },
+      "sections": [
+        {
+          "name": "Moon Phase On Your Birthday",
+          "score": 75
+        },
+        {
+          "name": "Reveal Your Moon",
+          "score": 75
+        },
+        {
+          "name": "The Lunar Cycle",
+          "score": 85
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 990,
+        "lcp": 2413,
+        "cls": 0.0007871008233697848,
+        "tbt": 15,
+        "si": 2229.746826921999
+      },
+      "axeViolations": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "nodes": 1
+        }
+      ],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Moon Phase On Your Birthday",
+        "metaDescLen": 196,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 652,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "Moon Phase On Your Birthday",
+            "score": 75
+          },
+          {
+            "name": "Reveal Your Moon",
+            "score": 75
+          },
+          {
+            "name": "The Lunar Cycle",
+            "score": 85
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "name-numerology",
+      "path": "/name-numerology.html",
+      "type": "tool",
+      "url": "http://localhost:8790/name-numerology.html",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 100,
+        "axe": 100,
+        "perf": 98,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 65,
+        "overall": 91
+      },
+      "sections": [
+        {
+          "name": "Pythagorean Numerology",
+          "score": 75
+        },
+        {
+          "name": "The Calculation, Step by Step",
+          "score": 75
+        },
+        {
+          "name": "What Every Number Means",
+          "score": 50
+        },
+        {
+          "name": "Your Name Is Only Half the Story",
+          "score": 75
+        },
+        {
+          "name": "Name Numerology — Frequently Asked Quest",
+          "score": 85
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 990,
+        "lcp": 2398,
+        "cls": 0.0007871008233697848,
+        "tbt": 0,
+        "si": 1995.29486737301
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Name Numerology Calculator",
+        "metaDescLen": 235,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 927,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 65,
+        "sections": [
+          {
+            "name": "Pythagorean Numerology",
+            "score": 75
+          },
+          {
+            "name": "The Calculation, Step by Step",
+            "score": 75
+          },
+          {
+            "name": "What Every Number Means",
+            "score": 50
+          },
+          {
+            "name": "Your Name Is Only Half the Story",
+            "score": 75
+          },
+          {
+            "name": "Name Numerology — Frequently Asked Quest",
+            "score": 85
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "outreach",
+      "path": "/outreach.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/outreach.html",
+      "scores": {
+        "performance": 93,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 63,
+        "axe": 100,
+        "perf": 93,
+        "a11y": 100,
+        "visual": 90,
+        "content": 83,
+        "monetization": 40,
+        "overall": 84
+      },
+      "sections": [],
+      "issues": [],
+      "metrics": {
+        "fcp": 1860,
+        "lcp": 3013,
+        "cls": 0.0001319718327645252,
+        "tbt": 66,
+        "si": 1860
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Outreach toolkit",
+        "metaDescLen": 48,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 261,
+        "shopLinks": 0,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 90,
+        "content": 83,
+        "monetization": 40,
+        "sections": [],
+        "issues": []
+      }
+    },
+    {
+      "id": "phone-cosmic-viewer",
+      "path": "/phone-cosmic-viewer.html",
+      "type": "tool",
+      "url": "http://localhost:8790/phone-cosmic-viewer.html",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 79,
+        "seo": 91,
+        "axe": 100,
+        "perf": 96,
+        "a11y": 100,
+        "visual": 80,
+        "content": 58,
+        "monetization": 40,
+        "overall": 77
+      },
+      "sections": [],
+      "issues": [],
+      "metrics": {
+        "fcp": 1298.2880331157457,
+        "lcp": 1298.2880331157457,
+        "cls": 0,
+        "tbt": 0,
+        "si": 4968.654415244155
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Cosmic intro viewer",
+        "metaDescLen": 0,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": false,
+        "mainLite": false,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 8,
+        "shopLinks": 0,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 58,
+        "monetization": 40,
+        "sections": [],
+        "issues": []
+      }
+    },
+    {
+      "id": "phone-audit",
+      "path": "/phone-audit.html",
+      "type": "tool",
+      "url": "http://localhost:8790/phone-audit.html",
+      "scores": {
+        "performance": 91,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 91,
+        "axe": 100,
+        "perf": 91,
+        "a11y": 100,
+        "visual": 80,
+        "content": 58,
+        "monetization": 40,
+        "overall": 76
+      },
+      "sections": [],
+      "issues": [],
+      "metrics": {
+        "fcp": 2813.1319999999996,
+        "lcp": 2813.1319999999996,
+        "cls": 0,
+        "tbt": 0,
+        "si": 2813.1319999999996
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Phone audit",
+        "metaDescLen": 0,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": false,
+        "mainLite": false,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 45,
+        "shopLinks": 0,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 58,
+        "monetization": 40,
+        "sections": [],
+        "issues": []
+      }
+    },
+    {
+      "id": "profile",
+      "path": "/profile.html",
+      "type": "tool",
+      "url": "http://localhost:8790/profile.html",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 97,
+        "a11y": 100,
+        "visual": 80,
+        "content": 98,
+        "monetization": 65,
+        "overall": 90
+      },
+      "sections": [
+        {
+          "name": "Hero",
+          "score": 81
+        },
+        {
+          "name": "Begin Your Cosmic Record",
+          "score": 75
+        },
+        {
+          "name": "Stargazer",
+          "score": 85
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 1140,
+        "lcp": 2587,
+        "cls": 0.0007871008233697848,
+        "tbt": 0,
+        "si": 2222.249209446477
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "My Cosmic Dashboard",
+        "metaDescLen": 147,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 392,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 98,
+        "monetization": 65,
+        "sections": [
+          {
+            "name": "Hero",
+            "score": 81
+          },
+          {
+            "name": "Begin Your Cosmic Record",
+            "score": 75
+          },
+          {
+            "name": "Stargazer",
+            "score": 85
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "quiz",
+      "path": "/quiz.html",
+      "type": "tool",
+      "url": "http://localhost:8790/quiz.html",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 95,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 65,
+        "overall": 90
+      },
+      "sections": [
+        {
+          "name": "Discover Your Cosmic Archetype",
+          "score": 75
+        },
+        {
+          "name": "Which cosmic archetype are you?",
+          "score": 75
+        },
+        {
+          "name": "Your real archetype is written in the sk",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 1290,
+        "lcp": 2916,
+        "cls": 0.0007871008233697848,
+        "tbt": 1,
+        "si": 2467.8714934510917
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Discover Your Cosmic Archetype",
+        "metaDescLen": 204,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 473,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 65,
+        "sections": [
+          {
+            "name": "Discover Your Cosmic Archetype",
+            "score": 75
+          },
+          {
+            "name": "Which cosmic archetype are you?",
+            "score": 75
+          },
+          {
+            "name": "Your real archetype is written in the sk",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "retrograde",
+      "path": "/retrograde.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/retrograde.html",
+      "scores": {
+        "performance": 84,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 84,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 85
+      },
+      "sections": [
+        {
+          "name": "Is Mercury in Retrograde Right Now?",
+          "score": 75
+        },
+        {
+          "name": "Which Planets Are Retrograde Today?",
+          "score": 75
+        },
+        {
+          "name": "When Is the Next Mercury Retrograde?",
+          "score": 85
+        },
+        {
+          "name": "What Does Mercury Retrograde Actually Me",
+          "score": 85
+        },
+        {
+          "name": "Mercury Retrograde FAQ",
+          "score": 85
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 1290,
+        "lcp": 3304,
+        "cls": 0.024628377882988616,
+        "tbt": 354,
+        "si": 2117.5611785523524
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Is Mercury in Retrograde Right Now?",
+        "metaDescLen": 206,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 1086,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "Is Mercury in Retrograde Right Now?",
+            "score": 75
+          },
+          {
+            "name": "Which Planets Are Retrograde Today?",
+            "score": 75
+          },
+          {
+            "name": "When Is the Next Mercury Retrograde?",
+            "score": 85
+          },
+          {
+            "name": "What Does Mercury Retrograde Actually Me",
+            "score": 85
+          },
+          {
+            "name": "Mercury Retrograde FAQ",
+            "score": 85
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "saturn-return",
+      "path": "/saturn-return.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/saturn-return.html",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 97,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 88
+      },
+      "sections": [
+        {
+          "name": "Your Saturn Return",
+          "score": 75
+        },
+        {
+          "name": "Find your Saturn return",
+          "score": 85
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 1290,
+        "lcp": 2401.5,
+        "cls": 0.0007871008233697848,
+        "tbt": 66.5,
+        "si": 2013.4173688304782
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Your Saturn Return",
+        "metaDescLen": 241,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 548,
+        "shopLinks": 2,
+        "canvas": 2,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "Your Saturn Return",
+            "score": 75
+          },
+          {
+            "name": "Find your Saturn return",
+            "score": 85
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "solar-return",
+      "path": "/solar-return.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/solar-return.html",
+      "scores": {
+        "performance": 89,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 89,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 86
+      },
+      "sections": [
+        {
+          "name": "The Solar Return Chart",
+          "score": 75
+        },
+        {
+          "name": "Find Your Next Solar Return",
+          "score": 75
+        },
+        {
+          "name": "What Is a Solar Return?",
+          "score": 85
+        },
+        {
+          "name": "How a Solar Return Chart Is Read",
+          "score": 85
+        },
+        {
+          "name": "Why the Place Matters Too",
+          "score": 85
+        },
+        {
+          "name": "Solar Return FAQ",
+          "score": 85
+        },
+        {
+          "name": "Cast the Chart for Your Return",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 2340,
+        "lcp": 3385,
+        "cls": 0,
+        "tbt": 47.5,
+        "si": 2601.2186436274897
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "The Solar Return Chart",
+        "metaDescLen": 213,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 1164,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "The Solar Return Chart",
+            "score": 75
+          },
+          {
+            "name": "Find Your Next Solar Return",
+            "score": 75
+          },
+          {
+            "name": "What Is a Solar Return?",
+            "score": 85
+          },
+          {
+            "name": "How a Solar Return Chart Is Read",
+            "score": 85
+          },
+          {
+            "name": "Why the Place Matters Too",
+            "score": 85
+          },
+          {
+            "name": "Solar Return FAQ",
+            "score": 85
+          },
+          {
+            "name": "Cast the Chart for Your Return",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "synastry",
+      "path": "/synastry.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/synastry.html",
+      "scores": {
+        "performance": 90,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 90,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 87
+      },
+      "sections": [
+        {
+          "name": "The Synastry Chart, Explained",
+          "score": 75
+        },
+        {
+          "name": "What Is a Synastry Chart?",
+          "score": 85
+        },
+        {
+          "name": "The Planets That Carry a Relationship",
+          "score": 85
+        },
+        {
+          "name": "Reading the Inter-Aspects",
+          "score": 85
+        },
+        {
+          "name": "How to Build Your Synastry Chart",
+          "score": 75
+        },
+        {
+          "name": "Synastry FAQ",
+          "score": 85
+        },
+        {
+          "name": "See Your Two Charts Meet",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 2340,
+        "lcp": 3180,
+        "cls": 0.03230392962580159,
+        "tbt": 99,
+        "si": 2791.1988041058794
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "The Synastry Chart, Explained",
+        "metaDescLen": 218,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 1174,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "The Synastry Chart, Explained",
+            "score": 75
+          },
+          {
+            "name": "What Is a Synastry Chart?",
+            "score": 85
+          },
+          {
+            "name": "The Planets That Carry a Relationship",
+            "score": 85
+          },
+          {
+            "name": "Reading the Inter-Aspects",
+            "score": 85
+          },
+          {
+            "name": "How to Build Your Synastry Chart",
+            "score": 75
+          },
+          {
+            "name": "Synastry FAQ",
+            "score": 85
+          },
+          {
+            "name": "See Your Two Charts Meet",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "tonight",
+      "path": "/tonight.html",
+      "type": "tool",
+      "url": "http://localhost:8790/tonight.html",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 98,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 55,
+        "overall": 89
+      },
+      "sections": [
+        {
+          "name": "What's Visible Tonight",
+          "score": 75
+        },
+        {
+          "name": "Tonight Above You",
+          "score": 50
+        },
+        {
+          "name": "The Moon Tonight",
+          "score": 50
+        },
+        {
+          "name": "This is the most private sky tool you'll",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 990,
+        "lcp": 2426,
+        "cls": 0.0007871008233697848,
+        "tbt": 12,
+        "si": 2160.5631126521375
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "What's Visible Tonight",
+        "metaDescLen": 243,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 597,
+        "shopLinks": 3,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 55,
+        "sections": [
+          {
+            "name": "What's Visible Tonight",
+            "score": 75
+          },
+          {
+            "name": "Tonight Above You",
+            "score": 50
+          },
+          {
+            "name": "The Moon Tonight",
+            "score": 50
+          },
+          {
+            "name": "This is the most private sky tool you'll",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "transits",
+      "path": "/transits.html",
+      "type": "tool",
+      "url": "http://localhost:8790/transits.html",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 95,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 55,
+        "overall": 89
+      },
+      "sections": [
+        {
+          "name": "Current Planetary Transits",
+          "score": 75
+        },
+        {
+          "name": "Current Planetary Positions",
+          "score": 85
+        },
+        {
+          "name": "Personal Transit Forecast",
+          "score": 75
+        },
+        {
+          "name": "Retrograde Calendar 2025–2026",
+          "score": 85
+        },
+        {
+          "name": "Upcoming Eclipses",
+          "score": 85
+        },
+        {
+          "name": "What Are Planetary Transits?",
+          "score": 85
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 1290,
+        "lcp": 2806,
+        "cls": 0.0069504018547324525,
+        "tbt": 0,
+        "si": 2378.1403169995983
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Current Planetary Transits",
+        "metaDescLen": 161,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 1388,
+        "shopLinks": 3,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 55,
+        "sections": [
+          {
+            "name": "Current Planetary Transits",
+            "score": 75
+          },
+          {
+            "name": "Current Planetary Positions",
+            "score": 85
+          },
+          {
+            "name": "Personal Transit Forecast",
+            "score": 75
+          },
+          {
+            "name": "Retrograde Calendar 2025–2026",
+            "score": 85
+          },
+          {
+            "name": "Upcoming Eclipses",
+            "score": 85
+          },
+          {
+            "name": "What Are Planetary Transits?",
+            "score": 85
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "what-is-my-rising-sign",
+      "path": "/what-is-my-rising-sign.html",
+      "type": "editorial",
+      "url": "http://localhost:8790/what-is-my-rising-sign.html",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 95,
+        "a11y": 100,
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "overall": 88
+      },
+      "sections": [
+        {
+          "name": "What Is My Rising Sign?",
+          "score": 75
+        },
+        {
+          "name": "Find Your Rising Sign",
+          "score": 75
+        },
+        {
+          "name": "What the Rising Sign Actually Is",
+          "score": 85
+        },
+        {
+          "name": "Sun, Moon & Rising — The “Big Three”",
+          "score": 75
+        },
+        {
+          "name": "Why Your Birth Time Is Non-Negotiable",
+          "score": 85
+        },
+        {
+          "name": "Rising Sign FAQ",
+          "score": 85
+        },
+        {
+          "name": "Your Rising Sign Is Just the Beginning",
+          "score": 75
+        },
+        {
+          "name": "Navigation",
+          "score": 78
+        },
+        {
+          "name": "Footer",
+          "score": 80
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 1290,
+        "lcp": 2911,
+        "cls": 0.0007871008233697848,
+        "tbt": 45,
+        "si": 2152.9827490220605
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "What Is My Rising Sign?",
+        "metaDescLen": 223,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": true,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 1276,
+        "shopLinks": 2,
+        "canvas": 1,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 2,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 100,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "What Is My Rising Sign?",
+            "score": 75
+          },
+          {
+            "name": "Find Your Rising Sign",
+            "score": 75
+          },
+          {
+            "name": "What the Rising Sign Actually Is",
+            "score": 85
+          },
+          {
+            "name": "Sun, Moon & Rising — The “Big Three”",
+            "score": 75
+          },
+          {
+            "name": "Why Your Birth Time Is Non-Negotiable",
+            "score": 85
+          },
+          {
+            "name": "Rising Sign FAQ",
+            "score": 85
+          },
+          {
+            "name": "Your Rising Sign Is Just the Beginning",
+            "score": 75
+          },
+          {
+            "name": "Navigation",
+            "score": 78
+          },
+          {
+            "name": "Footer",
+            "score": 80
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "privacy",
+      "path": "/privacy.html",
+      "type": "legal",
+      "url": "http://localhost:8790/privacy.html",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 100,
+        "a11y": 100,
+        "visual": 85,
+        "content": 98,
+        "monetization": 50,
+        "overall": 89
+      },
+      "sections": [
+        {
+          "name": "Legal body",
+          "score": 89
+        },
+        {
+          "name": "Footer",
+          "score": 55
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 960,
+        "lcp": 1860,
+        "cls": 0,
+        "tbt": 0,
+        "si": 1177.8384720034899
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Privacy Policy",
+        "metaDescLen": 136,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": false,
+        "mainLite": false,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 644,
+        "shopLinks": 0,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 85,
+        "content": 98,
+        "monetization": 50,
+        "sections": [
+          {
+            "name": "Legal body",
+            "score": 89
+          },
+          {
+            "name": "Footer",
+            "score": 55
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "terms",
+      "path": "/terms.html",
+      "type": "legal",
+      "url": "http://localhost:8790/terms.html",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perf": 100,
+        "a11y": 100,
+        "visual": 85,
+        "content": 98,
+        "monetization": 35,
+        "overall": 87
+      },
+      "sections": [
+        {
+          "name": "Legal body",
+          "score": 89
+        },
+        {
+          "name": "Footer",
+          "score": 55
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 960,
+        "lcp": 1860,
+        "cls": 0,
+        "tbt": 0,
+        "si": 1225.5047060004476
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Terms of Use",
+        "metaDescLen": 129,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": false,
+        "mainLite": false,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 515,
+        "shopLinks": 0,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 85,
+        "content": 98,
+        "monetization": 35,
+        "sections": [
+          {
+            "name": "Legal body",
+            "score": 89
+          },
+          {
+            "name": "Footer",
+            "score": 55
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "404",
+      "path": "/404.html",
+      "type": "utility",
+      "url": "http://localhost:8790/404.html",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 54,
+        "axe": 100,
+        "perf": 96,
+        "a11y": 100,
+        "visual": 85,
+        "content": 78,
+        "monetization": 25,
+        "overall": 80
+      },
+      "sections": [
+        {
+          "name": "Footer",
+          "score": 55
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 2190,
+        "lcp": 2190,
+        "cls": 0.0008702609415822605,
+        "tbt": 0,
+        "si": 2190
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "404 · OFF THE ECLIPTIC",
+        "metaDescLen": 0,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": false,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 37,
+        "shopLinks": 0,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 85,
+        "content": 78,
+        "monetization": 25,
+        "sections": [
+          {
+            "name": "Footer",
+            "score": 55
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "sample-reading",
+      "path": "/sample-reading.html",
+      "type": "product",
+      "url": "http://localhost:8790/sample-reading.html",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 66,
+        "axe": 100,
+        "perf": 95,
+        "a11y": 100,
+        "visual": 75,
+        "content": 100,
+        "monetization": 88,
+        "overall": 93
+      },
+      "sections": [
+        {
+          "name": "Hero",
+          "score": 86
+        },
+        {
+          "name": "I · The Event in Spacetime",
+          "score": 85
+        },
+        {
+          "name": "II · The Luminaries",
+          "score": 85
+        },
+        {
+          "name": "III · Mind & Expansion",
+          "score": 85
+        },
+        {
+          "name": "IV · Love, Desire & Values",
+          "score": 85
+        },
+        {
+          "name": "V · Life Areas",
+          "score": 85
+        },
+        {
+          "name": "VI · Vocation & Mastery",
+          "score": 85
+        },
+        {
+          "name": "VII · The Architecture of Depth",
+          "score": 85
+        },
+        {
+          "name": "VIII · The Twelve Houses",
+          "score": 85
+        },
+        {
+          "name": "IX · Planet by Planet",
+          "score": 85
+        },
+        {
+          "name": "X · Chart Patterns",
+          "score": 75
+        },
+        {
+          "name": "XI · The Conversations Between Planets",
+          "score": 85
+        }
+      ],
+      "issues": [],
+      "metrics": {
+        "fcp": 2340,
+        "lcp": 2340,
+        "cls": 0.004804197180703525,
+        "tbt": 0,
+        "si": 2340
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "The Sky at YourFirst Breath",
+        "metaDescLen": 141,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": true,
+        "mainLite": false,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 4655,
+        "shopLinks": 0,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 75,
+        "content": 100,
+        "monetization": 88,
+        "sections": [
+          {
+            "name": "Hero",
+            "score": 86
+          },
+          {
+            "name": "I · The Event in Spacetime",
+            "score": 85
+          },
+          {
+            "name": "II · The Luminaries",
+            "score": 85
+          },
+          {
+            "name": "III · Mind & Expansion",
+            "score": 85
+          },
+          {
+            "name": "IV · Love, Desire & Values",
+            "score": 85
+          },
+          {
+            "name": "V · Life Areas",
+            "score": 85
+          },
+          {
+            "name": "VI · Vocation & Mastery",
+            "score": 85
+          },
+          {
+            "name": "VII · The Architecture of Depth",
+            "score": 85
+          },
+          {
+            "name": "VIII · The Twelve Houses",
+            "score": 85
+          },
+          {
+            "name": "IX · Planet by Planet",
+            "score": 85
+          },
+          {
+            "name": "X · Chart Patterns",
+            "score": 75
+          },
+          {
+            "name": "XI · The Conversations Between Planets",
+            "score": 85
+          }
+        ],
+        "issues": []
+      }
+    },
+    {
+      "id": "fulfil-redirect",
+      "path": "/fulfil-redirect.html",
+      "type": "utility",
+      "url": "http://localhost:8790/fulfil-redirect.html",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 96,
+        "seo": 54,
+        "axe": 100,
+        "perf": 100,
+        "a11y": 100,
+        "visual": 80,
+        "content": 72,
+        "monetization": 75,
+        "overall": 86
+      },
+      "sections": [],
+      "issues": [],
+      "metrics": {
+        "fcp": 677,
+        "lcp": 810,
+        "cls": 0,
+        "tbt": 0,
+        "si": 808.2665239967928
+      },
+      "axeViolations": [],
+      "analysis": {
+        "hasMain": true,
+        "h1": "Missing form reference",
+        "metaDescLen": 0,
+        "brokenSprite": 0,
+        "googleFonts": false,
+        "selfHostedFonts": false,
+        "mainLite": false,
+        "truncatedPatterns": 0,
+        "sunWrong": false,
+        "wordCount": 12,
+        "shopLinks": 1,
+        "canvas": 0,
+        "a11yFlags": {
+          "imgsNoAlt": 0,
+          "imgsEmptyAlt": 0,
+          "hasMain": true
+        },
+        "visual": 80,
+        "content": 72,
+        "monetization": 75,
+        "sections": [],
+        "issues": []
+      }
+    }
+  ],
+  "summary": {
+    "overall": 87,
+    "perf": 95,
+    "a11y": 100,
+    "visual": 81,
+    "content": 93,
+    "monetization": 53,
+    "critical": [],
+    "pageCount": 23
+  }
+}

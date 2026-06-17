@@ -1,0 +1,14 @@
+ID: horoscope-daily-welcome
+SECTION: horoscopeSubscribe
+DELAY: instant
+TAG: tag_horoscope_daily
+SUBJECT: Your daily sky note — starting tomorrow ☀️
+You're on the daily list.
+
+Each morning: a short note on what the live sky is doing — plain language, no jargon. Computed from real planetary positions, not a recycled column.
+
+Preview anytime (free, no account): https://astroprecise.app/horoscope.html
+
+Only your email was sent. Birth data stays in your browser.
+
+— AstroPrecise

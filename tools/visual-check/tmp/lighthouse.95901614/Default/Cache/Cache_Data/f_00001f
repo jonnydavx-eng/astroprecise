@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Saturn Return calculator: find the exact dates of your first, second and third Saturn return from the real sky — free — then unlock a full personalised reading and printable PDF. What a Saturn return is, when it happens, and what it matures." />
+  <title>Saturn Return Calculator: Your Exact Dates & Reading | AstroPrecise</title>
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Saturn Return Calculator: Your Exact Dates & Reading | AstroPrecise" />
+  <meta property="og:description" content="Find the exact dates of your Saturn return from the real sky — free — then unlock a full personalised reading and a printable PDF keepsake." />
+  <meta property="og:url" content="https://astroprecise.app/saturn-return.html" />
+  <link rel="canonical" href="https://astroprecise.app/saturn-return.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Saturn Return Calculator: Your Exact Dates & Reading" />
+  <meta name="twitter:description" content="Find the exact dates of your Saturn return from the real sky — free — then unlock a full personalised reading + printable PDF." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Saturn Return Calculator: Your Exact Dates & Reading","description":"A free Saturn Return calculator that finds the exact dates of your first, second and third Saturn return from the real sky (VSOP87), with an optional full personalised reading and printable PDF.","url":"https://astroprecise.app/saturn-return.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Saturn return"},{"@type":"Thing","name":"Astrology"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Saturn Return Calculator","item":"https://astroprecise.app/saturn-return.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a Saturn return?","acceptedAnswer":{"@type":"Answer","text":"A Saturn return is the period when transiting Saturn comes back to the exact ecliptic longitude it held at your birth. Because Saturn takes about 29.5 years to orbit the Sun, this happens around ages 29–30, 58–60 and 87–90. It is read as a maturing, structure-testing passage of life."}},{"@type":"Question","name":"When is my Saturn return?","acceptedAnswer":{"@type":"Answer","text":"Enter your birth date above and AstroPrecise computes the exact dates from the real sky. Your first Saturn return falls around age 29–30; the second around 58–60; the third around 87–90. Because Saturn retrogrades, the return often has up to three exact passes across roughly a year."}},{"@type":"Question","name":"How long does a Saturn return last?","acceptedAnswer":{"@type":"Answer","text":"The exact conjunction is a moment, but the felt passage runs roughly nine to fourteen months — the approach, the exact passes (sometimes three, as Saturn retrogrades back over the point), and the consolidation as Saturn moves on."}},{"@type":"Question","name":"Are the dates accurate?","acceptedAnswer":{"@type":"Answer","text":"Yes. AstroPrecise computes Saturn's position with the VSOP87 planetary theory and solves for the exact moment it returns to your natal longitude, entirely in your browser. The dates are real astronomy; the reading is reflective interpretation, not prediction."}}]}</script>
+  <style>
+    :root { --sat-gold: var(--gold, #C9A227); --sat-line: rgba(232,224,208,0.10); }
+    .sat-hero { padding: calc(var(--nav-height, 72px) + 3.5rem) 0 1.5rem; text-align: center; position: relative; overflow: hidden; }
+    /* Orbital canvas visualization */
+    .sat-orbital-wrap { max-width: 680px; margin: 1.6rem auto 0.4rem; position: relative; }
+    #sat-orbital { display: block; width: 100%; height: auto; border-radius: 16px; opacity: 0.94; }
+    .sat-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,162,39,0.16) 0%, transparent 70%); pointer-events: none; }
+    .sat-hero__eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-size: .64rem; letter-spacing: .24em; text-transform: uppercase; color: var(--sat-gold); margin-bottom: 1rem; }
+    .sat-hero h1 { font-family: var(--font-display, 'Cinzel', serif); font-size: clamp(2rem, 5.2vw, 3.2rem); line-height: 1.1; letter-spacing: .02em; color: var(--white, #E8E0D0); margin-bottom: .9rem; }
+    .sat-hero__glyph { font-size: 2.4rem; color: var(--sat-gold); display: block; margin: 0 auto .6rem; }
+    .sat-hero__sub { font-size: 1.02rem; color: var(--silver, #A89E88); max-width: 38rem; margin: 0 auto; line-height: 1.7; }
+    .sat-calc { max-width: 44rem; margin: 0 auto; padding: clamp(1.4rem, 4vw, 2.4rem); }
+    .sat-calc h2 { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.4rem; color: var(--white); margin-bottom: .4rem; text-align: center; }
+    .sat-calc__lead { color: var(--silver); text-align: center; margin-bottom: 1.4rem; font-size: .95rem; }
+    .sat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .sat-field { display: flex; flex-direction: column; gap: .35rem; }
+    .sat-field--full { grid-column: 1 / -1; }
+    .sat-field label { font-family: 'Cinzel', serif; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--silver); }
+    .sat-field input { background: rgba(20,16,10,0.5); border: 1px solid var(--sat-line); border-radius: var(--radius-md, 8px); padding: .7rem .8rem; color: var(--white); font-size: 1rem; font-family: inherit; }
+    .sat-field input:focus { outline: none; border-color: var(--border-glow, rgba(201,162,39,0.55)); box-shadow: 0 0 0 3px rgba(201,162,39,0.14); }
+    .sat-field__hint { font-size: .72rem; color: var(--silver-dim, #8F8579); }
+    .sat-submit-row { margin-top: 1.3rem; text-align: center; }
+    #sat-error { display: none; color: #e0857c; text-align: center; margin-top: .9rem; font-size: .9rem; }
+    .sat-result { display: none; margin-top: 1.6rem; }
+    .sat-result.is-shown { display: block; }
+    .sat-natal { text-align: center; font-family: 'Cinzel', serif; letter-spacing: .04em; color: var(--gold-light, #EFE3C0); margin-bottom: 1rem; }
+    .sat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+    .sat-card { position: relative; padding: 1rem .8rem; text-align: center; border: 1px solid var(--sat-line); border-radius: var(--radius-lg, 12px); background: rgba(20,16,10,0.4); }
+    .sat-card--now { border-color: rgba(201,162,39,0.5); box-shadow: 0 0 26px rgba(201,162,39,0.12); }
+    .sat-card__n { font-family: 'Cinzel', serif; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--silver); margin-bottom: .35rem; }
+    .sat-card__date { color: var(--gold-light, #EFE3C0); font-size: 1.02rem; font-weight: 600; }
+    .sat-card__age { font-size: .76rem; color: var(--silver-dim, #8F8579); margin-top: .2rem; }
+    .sat-card__tag { display: inline-block; margin-top: .5rem; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sat-gold); border: 1px solid rgba(201,162,39,0.4); border-radius: 999px; padding: .15rem .55rem; }
+    .sat-reading, .sat-unlock { margin-top: 1.4rem; padding: clamp(1.3rem, 4vw, 2.2rem); }
+    .sat-reading__title, .sat-unlock__eyebrow { font-family: 'Cinzel', serif; }
+    .sat-reading__title { font-size: 1.3rem; color: var(--white); margin-bottom: 1rem; text-align: center; }
+    .sat-reading p, .sat-unlock p { color: #e6ddc8; line-height: 1.75; margin-bottom: .85rem; font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; }
+    .sat-reading strong { color: var(--gold-light, #E8C872); font-weight: 600; }
+    .sat-reading em { color: var(--sat-gold); font-style: normal; }
+    .sat-lead { font-size: 1.15rem; }
+    .sat-orn { display: flex; align-items: center; gap: .7rem; color: var(--sat-gold); margin: 1.3rem 0 .9rem; }
+    .sat-orn::before, .sat-orn::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,162,39,0.5), transparent); }
+    .sat-orn span { font-size: .62rem; letter-spacing: .26em; }
+    .sat-list { list-style: none; padding: 0; margin: .4rem 0; }
+    .sat-list li { padding: .55rem 0; border-bottom: 1px solid rgba(201,162,39,0.14); color: var(--silver); font-family: 'Cormorant Garamond', serif; font-size: 1.02rem; }
+    .sat-list em { color: var(--sat-gold); font-style: normal; }
+    .sat-note { font-size: .9rem !important; color: var(--silver) !important; font-style: italic; }
+    .sat-reading__actions { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; margin-top: 1.4rem; }
+    .sat-unlock { text-align: center; }
+    .sat-unlock__eyebrow { font-size: .64rem; letter-spacing: .2em; text-transform: uppercase; color: var(--sat-gold); margin-bottom: .6rem; }
+    .sat-unlock__teaser { max-width: 32rem; margin: 0 auto 1.1rem; }
+    .sat-unlock__note { font-size: .78rem !important; color: var(--silver-dim, #8F8579) !important; margin-top: .8rem !important; }
+    .sat-content { max-width: 44rem; margin: 2.5rem auto 0; }
+    .sat-content h2 { font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--white); margin: 1.8rem 0 .7rem; }
+    .sat-content p { color: var(--silver); line-height: 1.8; margin-bottom: .9rem; }
+    .sat-content details { border-top: 1px solid var(--sat-line); padding: .9rem 0; }
+    .sat-content summary { cursor: pointer; font-family: 'Cinzel', serif; color: var(--gold-light, #EFE3C0); font-size: 1rem; }
+    .sat-content details p { margin-top: .6rem; }
+    @media (max-width: 560px) { .sat-grid { grid-template-columns: 1fr; } .sat-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="sat-hero" aria-labelledby="page-title">
+      <div class="container">
+        <span class="sat-hero__eyebrow"><svg class="eng-i" aria-hidden="true"><use href="#ei-planet"/></svg> The great reckoning</span>
+        <span class="sat-hero__glyph" aria-hidden="true">♄</span>
+        <h1 id="page-title">Your Saturn Return</h1>
+        <p class="sat-hero__sub">Every ~29.5 years, Saturn returns to the exact place it held at your birth — and asks you to grow up, on its terms. Find your exact dates free, from the real sky.</p>
+        <div class="sat-orbital-wrap" aria-hidden="true">
+          <canvas id="sat-orbital" width="680" height="300"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="calc-heading">
+      <div class="container">
+        <div class="glass-card engraved sat-calc">
+          <h2 id="calc-heading">Find your Saturn return</h2>
+          <p class="sat-calc__lead">Your birth date is enough for the dates. Add a time and name for a more personal reading.</p>
+          <form id="sat-form" autocomplete="off" novalidate>
+            <div class="sat-grid">
+              <div class="sat-field sat-field--full">
+                <label for="sat-name">Your name (optional)</label>
+                <input type="text" id="sat-name" maxlength="40" placeholder="For your reading" />
+              </div>
+              <div class="sat-field">
+                <label for="sat-date">Birth date</label>
+                <input type="date" id="sat-date" required />
+              </div>
+              <div class="sat-field">
+                <label for="sat-time">Birth time (optional)</label>
+                <input type="time" id="sat-time" />
+                <p class="sat-field__hint">Treated as Universal Time. Saturn moves slowly — the date barely changes without it.</p>
+              </div>
+            </div>
+            <div class="sat-submit-row">
+              <button type="submit" class="btn btn--primary btn--lg" id="sat-submit">Reveal my Saturn return</button>
+            </div>
+            <p id="sat-error" role="alert"></p>
+          </form>
+
+          <div class="sat-result" id="sat-result" aria-live="polite">
+            <div id="sat-dates"></div>
+            <div id="sat-reading"></div>
+          </div>
+        </div>
+
+        <div class="sat-content">
+          <h2>What is a Saturn return?</h2>
+          <p>Saturn takes about 29.5 years to circle the Sun. When it comes back to the exact spot it occupied at your birth, you reach a <strong>Saturn return</strong> — a threshold the tradition reads as the end of one life-structure and the building of the next. The first arrives around <strong>29–30</strong>, the second around <strong>58–60</strong>, the third around <strong>87–90</strong>.</p>
+          <p>It is famous for a reason. Around the first return, the scaffolding of early adulthood is stress-tested: careers, relationships and identities built to please others tend to crack, and what you rebuild is more truly your own. Because Saturn retrogrades, the return often arrives in up to three exact passes across roughly a year — the lesson read more than once until it lands.</p>
+          <h2>Common questions</h2>
+          <details><summary>When exactly is mine?</summary><p>Enter your birth date above — the calculator solves it from the real sky to the day. The first return centres near age 29–30, but the precise date depends on where Saturn was at your birth.</p></details>
+          <details><summary>How long does it last?</summary><p>The exact conjunction is a moment, but the felt passage runs roughly nine to fourteen months: the approach, the exact passes, and the consolidation as Saturn moves on.</p></details>
+          <details><summary>Are the dates real astronomy?</summary><p>Yes — computed with the VSOP87 planetary theory in your browser, the same model professional astronomy is built on. The dates are exact; the reading is a reflective interpretation, never a prediction.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">&#10022; AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <div role="group" aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="solar-return.html" class="footer__link">Solar Return</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+          </ul>
+        </div>
+        <div role="group" aria-label="About">
+          <p class="footer__heading">About</p>
+          <ul class="footer__links">
+            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
+            <li><a href="why.html" class="footer__link">Why We're Different</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/raf-core.js"></script>
+
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/saturn-return.js"></script>
+  <script src="js/effects.js"></script>
+  <script>
+  /* ── Saturn Return Orbital Diagram ── */
+  (function(){
+    var cvs = document.getElementById('sat-orbital');
+    if(!cvs) return;
+    var W=680, H=300, ctx=cvs.getContext('2d');
+    var CX=W*0.36, CY=H*0.54;
+    var GOLD='#C9A227', GOLD_L='#EFE3C0', GOLD_D='rgba(201,162,39,0.25)';
+
+    // Background
+    ctx.fillStyle='#050406'; ctx.fillRect(0,0,W,H);
+
+    // Stars (deterministic)
+    var sv=0xA5DEF2B3;
+    function sr(){ sv=Math.imul(sv^(sv>>>16),0x45D9F3B); sv=Math.imul(sv^(sv>>>16),0x45D9F3B); sv^=sv>>>16; return(sv>>>0)/4294967295; }
+    for(var i=0;i<320;i++){
+      var sx=sr()*W, sy=sr()*H, ss=sr()*1.1+0.2, sa=sr()*0.5+0.1;
+      ctx.beginPath(); ctx.arc(sx,sy,ss,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,'+sa.toFixed(2)+')'; ctx.fill();
+    }
+    // 4-pointed sparkle stars
+    function sparkle(x,y,sz,a){
+      ctx.save(); ctx.translate(x,y); ctx.globalAlpha=a;
+      ctx.fillStyle=GOLD_L;
+      [[0,sz,0,-sz],[sz,0,-sz,0]].forEach(function(d){
+        ctx.beginPath(); ctx.moveTo(d[0],d[1]); ctx.lineTo(d[2],d[3]); ctx.lineWidth=0.8; ctx.strokeStyle=GOLD_L; ctx.stroke();
+      });
+      ctx.beginPath(); ctx.arc(0,0,sz*0.22,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    sparkle(580,40,7,0.8); sparkle(620,90,5,0.6); sparkle(48,38,6,0.7); sparkle(640,220,4,0.5); sparkle(90,240,5,0.55);
+
+    // Orbital ellipses (perspective-foreshortened)
+    function orbit(rx,ry,alpha,dash){
+      ctx.save(); ctx.beginPath();
+      ctx.ellipse(CX,CY,rx,ry,0,0,Math.PI*2);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=0.9; ctx.globalAlpha=alpha;
+      if(dash) ctx.setLineDash(dash); else ctx.setLineDash([3,5]);
+      ctx.stroke(); ctx.restore();
+    }
+    orbit(52,16,0.18); orbit(104,32,0.24); orbit(166,51,0.30); orbit(238,73,0.22);
+
+    // Saturn sphere
+    function drawSaturn(){
+      var r=28;
+      // Planet shadow
+      ctx.save();
+      var sg=ctx.createRadialGradient(CX+8,CY+8,2,CX,CY,r+4);
+      sg.addColorStop(0,'rgba(0,0,0,0.5)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.ellipse(CX+6,CY+10,r,r*0.7,0,0,Math.PI*2);
+      ctx.fillStyle=sg; ctx.fill(); ctx.restore();
+      // Ring (back half)
+      ctx.save(); ctx.globalAlpha=0.75;
+      ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,Math.PI,0,false);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=r*0.32; ctx.stroke(); ctx.restore();
+      // Planet
+      var pg=ctx.createRadialGradient(CX-r*0.28,CY-r*0.28,r*0.08,CX,CY,r);
+      pg.addColorStop(0,'#F8EEC8'); pg.addColorStop(0.3,'#D4A820');
+      pg.addColorStop(0.7,'#8A6808'); pg.addColorStop(1,'#3A2408');
+      ctx.beginPath(); ctx.arc(CX,CY,r,0,Math.PI*2);
+      ctx.fillStyle=pg; ctx.fill();
+      // Planet bands
+      for(var b=-2;b<=2;b++){
+        var by=CY+b*r*0.16, hw=Math.sqrt(Math.max(0,r*r-(by-CY)*(by-CY)));
+        ctx.beginPath(); ctx.moveTo(CX-hw,by); ctx.lineTo(CX+hw,by);
+        ctx.strokeStyle=b%2===0?'rgba(255,200,80,0.2)':'rgba(100,70,10,0.18)';
+        ctx.lineWidth=2; ctx.stroke();
+      }
+      // Ring (front half)
+      ctx.save(); ctx.globalAlpha=0.92;
+      ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,0,Math.PI,false);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=r*0.32; ctx.stroke(); ctx.restore();
+      // Ring outer edge line
+      ctx.save(); ctx.globalAlpha=0.55;
+      ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,0,Math.PI*2);
+      ctx.strokeStyle=GOLD_L; ctx.lineWidth=0.5; ctx.stroke(); ctx.restore();
+    }
+    drawSaturn();
+
+    // Return dot marker
+    function dot(x,y,label,age,glow){
+      // Halo
+      var hg=ctx.createRadialGradient(x,y,0,x,y,22);
+      hg.addColorStop(0,'rgba(201,162,39,'+( glow?0.7:0.45)+')'); hg.addColorStop(1,'rgba(201,162,39,0)');
+      ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2); ctx.fillStyle=hg; ctx.fill();
+      // Dot
+      ctx.beginPath(); ctx.arc(x,y,5.5,0,Math.PI*2);
+      ctx.fillStyle=glow?GOLD_L:GOLD; ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=1.2; ctx.stroke();
+      // Label
+      var lx=x+16, ly=y-4;
+      ctx.fillStyle=GOLD_L; ctx.font='bold 13px Cinzel,serif'; ctx.textAlign='left';
+      ctx.fillText(age, lx, ly-1);
+      ctx.fillStyle='rgba(168,158,136,0.85)'; ctx.font='11px sans-serif';
+      ctx.fillText(label, lx, ly+14);
+    }
+
+    // Birth marker
+    function birth(x,y){
+      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+      ctx.fillStyle='#ffffff'; ctx.fill();
+      ctx.strokeStyle=GOLD; ctx.lineWidth=1; ctx.stroke();
+      ctx.fillStyle=GOLD_L; ctx.font='10px Cinzel,serif'; ctx.textAlign='center';
+      ctx.fillText('Birth',x,y-11);
+    }
+
+    // Position return dots along the appropriate orbit ellipse
+    // Orbit 1: rx=104, ry=32 — 1st return (~29yr)
+    // Orbit 2: rx=166, ry=51 — 2nd return (~58yr)
+    // Orbit 3: rx=238, ry=73 — 3rd return (~87yr)
+    var a1=Math.PI*0.18, a2=Math.PI*1.42, a3=Math.PI*0.82;
+    var r1x=CX+104*Math.cos(a1), r1y=CY+32*Math.sin(a1);
+    var r2x=CX+166*Math.cos(a2), r2y=CY+51*Math.sin(a2);
+    var r3x=CX+238*Math.cos(a3), r3y=CY+73*Math.sin(a3);
+    var bx=CX+52*Math.cos(Math.PI*1.65), by=CY+16*Math.sin(Math.PI*1.65);
+
+    birth(bx,by);
+    dot(r1x,r1y,'1st Return','~29 yrs',true);
+    dot(r2x,r2y,'2nd Return','~58 yrs',false);
+    dot(r3x,r3y,'3rd Return','~87 yrs',false);
+
+    // Decorative connecting lines from Saturn to dots
+    [[[CX,CY],[r1x,r1y]],[[CX,CY],[r2x,r2y]],[[CX,CY],[r3x,r3y]]].forEach(function(pts,i){
+      ctx.save(); ctx.globalAlpha=0.12+i*0.03;
+      ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); ctx.lineTo(pts[1][0],pts[1][1]);
+      ctx.strokeStyle=GOLD; ctx.lineWidth=0.6; ctx.setLineDash([2,6]); ctx.stroke(); ctx.restore();
+    });
+
+    // Title + label
+    ctx.fillStyle='rgba(201,162,39,0.9)';
+    ctx.font='bold 12px Cinzel,serif'; ctx.textAlign='left';
+    ctx.fillText('AstroPrecise  ·  The Saturn Cycle', 18, 24);
+    ctx.fillStyle='rgba(168,158,136,0.6)';
+    ctx.font='10px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Saturn orbits the Sun once every ~29.5 years · real astronomy, computed in your browser', W/2, H-10);
+  })();
+  </script>
+</body>
+</html>

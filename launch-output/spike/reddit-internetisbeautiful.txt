@@ -1,0 +1,8 @@
+SUBREDDIT: r/InternetIsBeautiful
+URL: https://astroprecise.app/chart.html (link post — not text)
+
+TITLE:
+A birth-chart tool that computes the real positions of the planets in your browser — no sign-up, no tracking, nothing leaves your device
+
+BODY (if text required):
+Type your birth date/time/place and it computes astronomical positions (VSOP87/ELP2000, ~arcminute) entirely client-side. No account, no email, no analytics. Wheel, aspects, zenith star mode. Free.

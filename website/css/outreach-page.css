@@ -1,0 +1,207 @@
+/* outreach.html — owner toolkit (ap-palette tokens, WCAG AA on void-deep) */
+
+/* ── Critical CLS shell (wave 2 + 24b) — panels hydrate via inline script ── */
+.ot h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  min-height: 1.5em;
+  line-height: 1.3;
+  contain: layout style;
+}
+html.ap-fonts-ready .ot h1 {
+  font-family: Cinzel, serif;
+}
+.ot-card__title {
+  min-height: 1.35em;
+  contain: layout style;
+}
+.ot-pre {
+  min-height: 4.5em;
+  contain: layout style;
+}
+.ot__sub {
+  min-height: 2.8em;
+}
+.ot-tabs {
+  min-height: 44px;
+  contain: layout style;
+}
+#panel-x.ot-panel.is-on:not([hidden]) {
+  min-height: 1300px;
+  contain: layout style;
+}
+.ot-panel[hidden] {
+  min-height: 0 !important;
+}
+.ot-skeleton {
+  pointer-events: none;
+}
+.ot-card--skeleton {
+  visibility: hidden;
+  min-height: 210px;
+  margin-bottom: 0.85rem;
+  contain: layout style;
+}
+
+body {
+  background: var(--ap-void-deep, #050406);
+  color: var(--ap-text-primary, #E8E0D0);
+}
+
+.ot {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.ot h1 {
+  font-family: Cinzel, serif;
+  font-size: 1.4rem;
+  color: var(--ap-gold-parchment, #EFE3C0);
+  letter-spacing: 0.12em;
+  margin: 0 0 0.25rem;
+}
+
+.ot__sub {
+  font-size: 0.75rem;
+  color: var(--ap-text-muted, #9A9084);
+  margin-bottom: 1.5rem;
+}
+
+.ot__sub code {
+  color: inherit;
+  font-family: inherit;
+}
+
+.ot-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.ot-tab {
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  background: transparent;
+  color: var(--ap-text-secondary, #A89E88);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.ot-tab.is-on {
+  background: var(--ap-gold-a12, rgba(201, 162, 39, 0.12));
+  border-color: var(--ap-gold-core, #C9A227);
+  color: var(--ap-gold-parchment, #EFE3C0);
+}
+
+.ot-panel { display: none; }
+.ot-panel.is-on:not([hidden]) { display: block; }
+.ot-panel[hidden] { display: none !important; }
+
+.ot-card {
+  background: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
+  border: 1px solid var(--ap-gold-a22, rgba(201, 162, 39, 0.22));
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.ot-card__title {
+  font-size: 0.88rem;
+  color: var(--ap-gold-parchment, #EFE3C0);
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+}
+
+.ot-meta {
+  font-size: 0.68rem;
+  color: var(--ap-text-faint, #8A8274);
+  margin-bottom: 0.5rem;
+}
+
+.ot-pre {
+  white-space: pre-wrap;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  margin: 0;
+  font-family: inherit;
+  color: var(--ap-text-primary, #E8E0D0);
+}
+
+.ot-actions {
+  margin-top: 0.65rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ot-btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  background: var(--ap-void-mid, #0D0A07);
+  color: var(--ap-gold-bright, #D4B84A);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ot-btn:hover {
+  border-color: var(--ap-gold-core, #C9A227);
+  color: var(--ap-gold-parchment, #EFE3C0);
+}
+
+.ot-list {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  padding-left: 1.1rem;
+  margin: 0.35rem 0;
+  color: var(--ap-text-primary, #E8E0D0);
+}
+
+.ot-list li { margin-bottom: 0.35rem; }
+
+.ot-toast {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ap-void-mid, #0D0A07);
+  border: 1px solid var(--ap-gold-core, #C9A227);
+  color: var(--ap-gold-parchment, #EFE3C0);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.ot-toast.show { opacity: 1; }
+
+.ot-foot {
+  font-size: 0.7rem;
+  color: var(--ap-text-muted, #9A9084);
+  margin-top: 2rem;
+  line-height: 1.5;
+}
+
+.ot-foot code {
+  color: inherit;
+  font-family: inherit;
+}
+
+.ot-foot a {
+  color: var(--ap-link, var(--ap-gold-bright, #D4B84A));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: currentColor;
+  font-weight: 600;
+}
+
+.ot-foot a:hover {
+  color: var(--ap-link-hover, var(--ap-gold-parchment, #EFE3C0));
+}

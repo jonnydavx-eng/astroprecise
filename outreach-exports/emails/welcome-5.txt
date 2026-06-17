@@ -1,0 +1,15 @@
+ID: welcome-5
+SECTION: welcome
+DELAY: day 10
+SUBJECT: Why I built this (and a small ask)
+Last email in the welcome series — so let me tell you why AstroPrecise exists.
+
+Most astrology apps want your birth data on their servers and a subscription on your card. I wanted the opposite: a real chart, computed in your browser. No account. No subscription. Your birth moment never leaves your device.
+
+The small ask: reply and tell me one thing your chart got right about you. Real person here. I read every reply.
+
+From now on: monthly cosmic weather — one email, the sky's main moves. Unsubscribe anytime.
+
+— AstroPrecise
+
+P.S. Your wallpaper is one tap away on the chart page.

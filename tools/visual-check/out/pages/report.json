@@ -1,7 +1,22 @@
 {
   "base": "http://localhost:8790",
-  "capturedAt": "2026-06-15T21:18:19.306Z",
+  "capturedAt": "2026-06-17T10:59:56.818Z",
   "pages": [
+    {
+      "id": "index",
+      "path": "/?lite=1",
+      "note": "Home lite shell LCP",
+      "ok": true,
+      "state": {
+        "title": "AstroPrecise — Your Cosmic Blueprint | Free Birth Chart & Precise Astrology",
+        "hasStarfield": false,
+        "starfieldOpacity": null,
+        "hasCosmicArt": false,
+        "bodyClass": "page-home ap-cinematic-2026 ap-skip-intro",
+        "h1": "Your personal universe, beautifully revealed."
+      },
+      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\index.png"
+    },
     {
       "id": "chart",
       "path": "/chart.html",
@@ -12,7 +27,7 @@
         "hasStarfield": true,
         "starfieldOpacity": "1",
         "hasCosmicArt": false,
-        "bodyClass": "page-chart",
+        "bodyClass": "page-chart ap-cinematic-2026 ap-no-nav-enter",
         "h1": "Your Natal Blueprint"
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\chart.png"
@@ -27,7 +42,7 @@
         "hasStarfield": true,
         "starfieldOpacity": "1",
         "hasCosmicArt": false,
-        "bodyClass": "",
+        "bodyClass": "page-horoscope ap-cinematic-2026 ap-no-nav-enter",
         "h1": "Spin to Your Sign"
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\horoscope.png"
@@ -42,7 +57,7 @@
         "hasStarfield": true,
         "starfieldOpacity": "1",
         "hasCosmicArt": false,
-        "bodyClass": "",
+        "bodyClass": "page-compat ap-cinematic-2026 ap-no-nav-enter",
         "h1": "Cosmic Compatibility"
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\compatibility.png"
@@ -53,11 +68,11 @@
       "note": "Sky instrument + ephemeris",
       "ok": true,
       "state": {
-        "title": "The Instrument | AstroPrecise",
+        "title": "Sky | AstroPrecise",
         "hasStarfield": true,
         "starfieldOpacity": "1",
         "hasCosmicArt": false,
-        "bodyClass": "",
+        "bodyClass": "page-instrument ap-cinematic-2026 ap-no-nav-enter",
         "h1": "The Instrument"
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\ephemeris.png"
@@ -72,7 +87,7 @@
         "hasStarfield": true,
         "starfieldOpacity": "1",
         "hasCosmicArt": false,
-        "bodyClass": "",
+        "bodyClass": "page-lifepath ap-no-nav-enter",
         "h1": "Life Path Calculator"
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\lifepath.png"
@@ -87,7 +102,7 @@
         "hasStarfield": true,
         "starfieldOpacity": "1",
         "hasCosmicArt": false,
-        "bodyClass": "page-shop",
+        "bodyClass": "page-shop ap-cinematic-2026 ap-no-nav-enter",
         "h1": "Your sky, made tangible"
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\shop.png"
@@ -99,10 +114,10 @@
       "ok": true,
       "state": {
         "title": "Aries Horoscope Today — Daily Reading & Sign Guide | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
+        "hasStarfield": false,
+        "starfieldOpacity": null,
         "hasCosmicArt": false,
-        "bodyClass": "",
+        "bodyClass": "ap-no-nav-enter",
         "h1": "Aries"
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\sign-aries.png"
@@ -139,21 +154,26 @@
     },
     {
       "id": "hero-entered",
-      "path": "/index.html",
-      "note": "Hero orrery after intro skip",
+      "path": "/?lite=1",
+      "note": "Lite home shell with orrery mount",
       "state": {
         "title": "AstroPrecise — Your Cosmic Blueprint | Free Birth Chart & Precise Astrology",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
+        "hasStarfield": false,
+        "starfieldOpacity": null,
         "hasCosmicArt": false,
-        "bodyClass": "page-home page-home--ready",
+        "bodyClass": "page-home ap-cinematic-2026 ap-skip-intro",
         "h1": "Your personal universe, beautifully revealed.",
-        "orreryReady": true
+        "orreryCanvas": {
+          "w": 640,
+          "h": 640,
+          "inDom": true
+        }
       },
       "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\hero-entered.png",
       "canvasBox": {
-        "w": 720,
-        "h": 720
+        "w": 640,
+        "h": 640,
+        "inDom": true
       },
       "ok": true
     }

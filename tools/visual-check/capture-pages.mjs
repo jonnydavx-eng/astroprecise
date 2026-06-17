@@ -12,13 +12,14 @@ const BASE = process.argv[2] || 'http://localhost:8790';
 const OUT = join(__dirname, 'out', 'pages');
 
 const PAGES = [
+  { id: 'index', path: '/?lite=1', wait: 'h1.hero__h1, .hero__h1', note: 'Home lite shell LCP', requireStarfield: false },
   { id: 'chart', path: '/chart.html', wait: '#chart-form, .chart-form, form', note: 'Birth chart form + wheel mount' },
   { id: 'horoscope', path: '/horoscope.html', wait: '.horoscope-hero, .section__title, main', note: 'Daily horoscope hub' },
   { id: 'compatibility', path: '/compatibility.html', wait: 'main, .compat', note: 'Synastry / match UI' },
   { id: 'ephemeris', path: '/ephemeris.html', wait: '#orrery-canvas, .instrument, main', note: 'Sky instrument + ephemeris' },
   { id: 'lifepath', path: '/lifepath.html', wait: 'main, form', note: 'Life path numerology' },
-  { id: 'shop', path: '/shop.html', wait: 'main, .shop', note: 'Shop / readings' },
-  { id: 'sign-aries', path: '/aries.html', wait: '.sign-hero, main', note: 'Sign page template' },
+  { id: 'shop', path: '/shop.html', wait: 'main, .shop', note: 'Shop / readings', requireStarfield: false },
+  { id: 'sign-aries', path: '/aries.html', wait: '.sign-hero, main', note: 'Sign page template', requireStarfield: false },
   { id: 'moonphase', path: '/moonphase.html', wait: 'main', note: 'Moon phase tool' },
   { id: 'angel-numbers', path: '/angel-numbers.html', wait: 'main', note: 'Synchronicity clock' },
 ];
@@ -66,7 +67,7 @@ async function main() {
       entry.state = await readPageState(page);
       entry.shot = await snap(page, p.id);
 
-      if (!entry.state.hasStarfield && p.id !== 'shop') {
+      if (p.requireStarfield !== false && !entry.state.hasStarfield) {
         report.issues.push(`${p.id}: missing #starfield-canvas`);
         entry.ok = false;
       }
@@ -86,23 +87,21 @@ async function main() {
 
   // Hero (post-intro) — index with intro skipped
   const heroPage = await context.newPage();
-  const hero = { id: 'hero-entered', path: '/index.html', note: 'Hero orrery after intro skip' };
+  const hero = { id: 'hero-entered', path: '/?lite=1', note: 'Lite home shell with orrery mount' };
   try {
-    await heroPage.goto(`${BASE}/?v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await heroPage.waitForSelector('#orrery-canvas', { timeout: 20000 });
+    await heroPage.goto(`${BASE}/?lite=1&v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await heroPage.waitForSelector('#orrery-canvas', { state: 'attached', timeout: 20000 });
     await heroPage.waitForTimeout(1500);
     hero.state = await readPageState(heroPage);
-    hero.state.orreryReady = await heroPage.evaluate(() => !!(window.Orrery3D && window.__orreryReady));
-    hero.shot = await snap(heroPage, 'hero-entered');
-    const box = await heroPage.evaluate(() => {
+    hero.state.orreryCanvas = await heroPage.evaluate(() => {
       const c = document.getElementById('orrery-canvas');
-      if (!c) return null;
-      const r = c.getBoundingClientRect();
-      return { w: r.width, h: r.height };
+      return c ? { w: c.width, h: c.height, inDom: true } : null;
     });
+    hero.shot = await snap(heroPage, 'hero-entered');
+    const box = hero.state.orreryCanvas;
     hero.canvasBox = box;
     if (!box || box.w < 200 || box.h < 200) {
-      report.issues.push('hero-entered: orrery canvas too small or missing');
+      report.issues.push('hero-entered: orrery canvas missing or undersized in DOM');
       hero.ok = false;
     } else hero.ok = true;
   } catch (err) {

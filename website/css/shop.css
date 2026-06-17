@@ -136,9 +136,11 @@
 /* ── Section titles ── */
 .shop-section-title {
   font-size: 0.75rem;
+  font-weight: inherit;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
+  margin-top: 0;
   margin-bottom: var(--space-6);
   display: flex;
   align-items: center;
@@ -445,6 +447,32 @@
   cursor: pointer;
   background: linear-gradient(135deg, rgba(92, 74, 110, 0.2) 0%, rgba(201, 162, 39, 0.08) 100%);
 }
+button.shopc-featured__visual,
+button.shopc-card__art {
+  display: block;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+button.ap-art-card {
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
 .shopc-card__preview, .shopc-qv__preview {
   width: 100%;
   height: 100%;
@@ -527,6 +555,9 @@
   padding: var(--space-4) var(--space-5);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
+  list-style: none;
+  margin-left: 0;
+  margin-right: 0;
   background: rgba(201, 162, 39, 0.04);
 }
 .shopc-trust__item {
@@ -689,6 +720,7 @@
 .shopc-subhead {
   grid-column: 1 / -1;
   font-size: 0.75rem;
+  font-weight: inherit;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold);
@@ -745,6 +777,12 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ap-tools-bento > li {
+  display: contents;
 }
 @media (max-width: 1100px) { .ap-tools-bento { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .ap-tools-bento { grid-template-columns: 1fr; } }
@@ -883,6 +921,43 @@
 .shopc-personal__note { font-size: 0.72rem; color: var(--silver-dim); line-height: 1.6; }
 .shopc-personal__note a { color: var(--gold); }
 .shopc-personal--empty { background: rgba(92, 74, 110, 0.06); }
+
+/* Dynamic mini-chart previews in shop (jewellery + personalised accessories) */
+.shop-mini-chart-preview {
+  margin: var(--space-2) 0;
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.shop-mini-chart__big3 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.shop-mini-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.65rem;
+  color: var(--gold);
+}
+.shop-mini-seal img { display: block; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
+.shop-mini-chart__label {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+}
+.shop-mini-chart__wheel {
+  width: 72px; height: 72px; margin: 2px auto;
+  border-radius: 999px; overflow: hidden; background: var(--void);
+  border: 1px solid var(--gold-dim);
+}
 
 .shopc-qv { text-align: center; }
 .shopc-qv__art {
@@ -1145,6 +1220,18 @@
   border-bottom: none;
   padding-top: var(--space-2);
 }
+
+/* ── Free wallpaper lead magnet (deferred polish) ── */
+.shop-wallpaper-lead__panel:hover {
+  border-color: rgba(201, 162, 39, 0.5);
+}
+.shop-wallpaper-lead__input:focus {
+  outline: 2px solid rgba(201, 162, 39, 0.45);
+  outline-offset: 2px;
+  border-color: rgba(201, 162, 39, 0.5);
+}
+.shop-wallpaper-lead__submit .eng-i { width: 14px; height: 14px; margin-right: 4px; }
+.shop-wallpaper-lead__saved .eng-i { width: 12px; height: 12px; margin-right: 4px; color: var(--gold); }
 
 .shopc-email { display: flex; gap: var(--space-2); margin-top: var(--space-3); flex-wrap: wrap; }
 .shopc-email__input {

@@ -17,6 +17,9 @@ const PAGES = [
   { id: 'horoscope', path: '/horoscope.html' },
   { id: 'compatibility', path: '/compatibility.html' },
   { id: 'ephemeris', path: '/ephemeris.html' },
+  { id: 'shop', path: '/shop.html' },
+  { id: 'transits', path: '/transits.html' },
+  { id: 'lifepath', path: '/lifepath.html' },
 ];
 
 async function main() {

@@ -1,0 +1,12 @@
+ID: horoscope-monthly-welcome
+SECTION: horoscopeSubscribe
+DELAY: instant
+TAG: tag_horoscope_monthly
+SUBJECT: Your monthly outlook — first note soon 🌙
+You're on the monthly list.
+
+Once a month: a longer outlook for your sign — major transits, themes, dates to watch. Same honest astronomy as the free horoscope page.
+
+Read this month's preview: https://astroprecise.app/horoscope.html
+
+— AstroPrecise

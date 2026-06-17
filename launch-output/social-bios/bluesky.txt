@@ -1,0 +1,18 @@
+Platform: Bluesky
+Handle: @astroprecise
+Display name: @astroprecise.bsky.social
+Website / link: https://astroprecise.app/links.html
+
+
+
+
+
+--- BIO (paste) ---
+Mission Control for your sky. VSOP87 ephemeris, computed in-browser, birth data never uploaded. https://astroprecise.app/links.html
+
+--- PINNED POST (X only) ---
+I built a birth-chart tool that never uploads your birth data.
+
+VSOP87 astronomy. Free chart. Your sky as wallpaper.
+
+Start here → https://astroprecise.app/links.html

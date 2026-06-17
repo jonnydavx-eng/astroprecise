@@ -1,0 +1,15 @@
+# AstroPrecise — Cloudflare Pages response headers (deployed with the static site).
+# CSP connect-src mirrors fetch() targets in js/fieldweather.js, js/instrument.js,
+# js/app.js (geocoding), js/chart-page.js (weather), and AP_MON email/checkout endpoints.
+# script-src: 'self' only (no unsafe-eval). Inline boot snippets need 'unsafe-inline'
+# until migrated to external .js; PayPal SDK host included for dormant checkout path.
+# See also: tools/setup-cloudflare-cache.mjs
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://www.paypal.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self' https://list.astroprecise.app https://*.lemonsqueezy.com https://services.swpc.noaa.gov https://qrng.anu.edu.au https://geocoding-api.open-meteo.com https://api.open-meteo.com; worker-src 'self'; manifest-src 'self'; form-action 'self' https://list.astroprecise.app; frame-src 'self' https://www.paypal.com https://*.lemonsqueezy.com https://form.typeform.com
+
+/phone-audit.html
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; form-action 'self'

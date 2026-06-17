@@ -1,0 +1,11 @@
+ID: purchase-3
+SECTION: postPurchase
+DELAY: day 14
+SUBJECT: How's it landing? (+ something for a friend)
+Two weeks in — how's the reading sitting with you?
+
+Reply with a line of feedback if you have 20 seconds.
+
+Know someone curious about their chart? Send them https://astroprecise.app/links.html — the chart tool is free.
+
+— AstroPrecise

@@ -1,0 +1,93 @@
+
+> astroprecise-visual-check@1.0.0 a11y
+> node audit-a11y.mjs
+
+{
+  "base": "http://localhost:8790",
+  "capturedAt": "2026-06-17T10:39:37.038Z",
+  "pages": [
+    {
+      "id": "index",
+      "path": "/",
+      "violations": [],
+      "incomplete": 3,
+      "passes": 38
+    },
+    {
+      "id": "chart",
+      "path": "/chart.html",
+      "violations": [],
+      "incomplete": 2,
+      "passes": 46
+    },
+    {
+      "id": "horoscope",
+      "path": "/horoscope.html",
+      "violations": [],
+      "incomplete": 3,
+      "passes": 48
+    },
+    {
+      "id": "compatibility",
+      "path": "/compatibility.html",
+      "violations": [],
+      "incomplete": 4,
+      "passes": 51
+    },
+    {
+      "id": "ephemeris",
+      "path": "/ephemeris.html",
+      "violations": [],
+      "incomplete": 3,
+      "passes": 48
+    },
+    {
+      "id": "shop",
+      "path": "/shop.html",
+      "violations": [],
+      "incomplete": 4,
+      "passes": 48
+    },
+    {
+      "id": "transits",
+      "path": "/transits.html",
+      "violations": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": 1,
+          "help": "Elements must only use permitted ARIA attributes"
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": 39,
+          "help": "Elements must meet minimum color contrast ratio thresholds"
+        },
+        {
+          "id": "landmark-unique",
+          "impact": "moderate",
+          "description": "Ensure landmarks are unique",
+          "nodes": 1,
+          "help": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination"
+        }
+      ],
+      "incomplete": 4,
+      "passes": 45
+    },
+    {
+      "id": "lifepath",
+      "path": "/lifepath.html",
+      "violations": [],
+      "incomplete": 2,
+      "passes": 44
+    }
+  ],
+  "issues": [
+    "transits: aria-prohibited-attr (serious) ÔÇö Elements must only use permitted ARIA attributes",
+    "transits: color-contrast (serious) ÔÇö Elements must meet minimum color contrast ratio thresholds"
+  ],
+  "ok": false
+}

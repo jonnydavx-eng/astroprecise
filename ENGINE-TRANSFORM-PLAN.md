@@ -1,5 +1,7 @@
 # ephemeris.js principal transform — verified plan (2026-06-13)
 
+**Status (Wave 20, ap-v405):** **Applied** — **A**, **D**, **B**, **C**, **Pluto** (Meeus Ch37), **E**, **F**, **G** (`408509e` + apparent-Sun ~1′ comment); `test-engine` **16/16**.
+
 Source: 5-lens workflow audit, 13 findings adversarially reproduced in Node. Constraints: single static
 file, no build, keep `window.AstroEphemeris`, "every number is real / unavailable is labelled".
 

@@ -1,0 +1,24 @@
+PLATFORM: TikTok + Instagram Reels (15–20 sec)
+ASSET: Screen-record chart.html — wheel drawing + Sun/Moon/Rising highlight
+AUDIO: Trending soft cosmic / ambient (or voiceover)
+
+HOOK (text on screen, 0–2s):
+"If your Sun sign is all you know, you've read one line of a whole book."
+
+BODY (2–12s):
+Show chart casting → three labels animate:
+Sun = who you are
+Moon = how you feel
+Rising = how you seem
+
+CTA (12–18s):
+"Cast the whole thing free — link in bio"
+Show links.html QR or URL astroprecise.app/links
+
+CAPTION:
+Most people only know their Sun sign. Your Moon runs your inner world. Your Rising is the face you meet the world with. Cast all three free — computed in your browser, no account, birth data never uploaded. Link in bio.
+
+#astrology #birthchart #moonsign #risingsign #bigthree #AstroTok #AstroPrecise #WearYourSky #zodiac
+
+DISCLAIMER (pin in comments):
+For entertainment. Computed to roughly an arcminute (1800–2200 CE). Birth data stays on your device.

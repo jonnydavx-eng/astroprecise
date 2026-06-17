@@ -31,6 +31,15 @@
       var pct = Math.round((lv / 6) * 100);
       els.progress.style.width = pct + '%';
     }
+    if (els.detail) {
+      els.detail.hidden = true;
+      els.detail.classList.remove('is-open');
+    }
+    if (els.more) {
+      els.more.hidden = false;
+      els.more.setAttribute('aria-expanded', 'false');
+      els.more.textContent = window.matchMedia && window.matchMedia('(max-width: 720px)').matches ? 'Notes' : 'Scene notes';
+    }
   }
 
   function setJourneyChrome(on) {
@@ -51,10 +60,77 @@
     if (els.viewport) els.viewport.classList.remove('orrery-journey-active');
     active = false;
     setJourneyChrome(false);
+    var startJourney = $('orrery-start-journey');
+    if (startJourney) startJourney.textContent = 'Start your journey here';
     document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
       btn.classList.remove('journey-active');
       btn.disabled = false;
     });
+  }
+
+  function syncVpLayerBtn(vpBtn, on) {
+    if (!vpBtn) return;
+    vpBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    vpBtn.classList.toggle('active', !!on);
+  }
+
+  function syncVpFocusScale(lv) {
+    var earth = $('orrery-vp-earth');
+    var system = $('orrery-vp-system');
+    var inner = $('orrery-vp-inner');
+    if (earth) earth.classList.toggle('active', lv === 0);
+    if (system) system.classList.toggle('active', lv === 2);
+    if (inner) inner.classList.toggle('active', lv === 1);
+  }
+
+  function syncVpDetailBtn() {
+    var btn = $('orrery-vp-detail');
+    var O = window.Orrery3D;
+    if (!btn || !O || typeof O.getDetailLighting !== 'function') return;
+    var active = O.getDetailLighting();
+    var mode = typeof O.getDetailLightingMode === 'function' ? O.getDetailLightingMode() : 'auto';
+    syncVpLayerBtn(btn, active);
+    btn.textContent = active ? 'Detail' : 'Glow';
+    btn.title = mode === 'auto'
+      ? 'Auto detail lighting (tap to force cinematic glow)'
+      : (mode === 'on' ? 'Detail lighting forced on' : 'Cinematic glow forced on');
+  }
+
+  function wireVpPlanetFocus() {
+    document.querySelectorAll('.orrery-vp-btn[data-planet]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var O = window.Orrery3D;
+        var id = btn.dataset.planet;
+        if (!O || !id || typeof O.focusPlanet !== 'function') return;
+        if (O.isJourneyActive && O.isJourneyActive()) O.cancelScaleJourney(false);
+        O.focusPlanet(id);
+      });
+    });
+  }
+
+  function wireVpLayerToggle(vpId, layer, setter) {
+    var vpBtn = $(vpId);
+    if (!vpBtn) return;
+    var deckBtn = document.querySelector('.orrery-toggle[data-layer="' + layer + '"]');
+
+    vpBtn.addEventListener('click', function () {
+      if (deckBtn) {
+        deckBtn.click();
+        syncVpLayerBtn(vpBtn, deckBtn.getAttribute('aria-pressed') === 'true');
+        return;
+      }
+      var O = window.Orrery3D;
+      if (!O || typeof O[setter] !== 'function') return;
+      var on = vpBtn.getAttribute('aria-pressed') !== 'true';
+      O[setter](on);
+      syncVpLayerBtn(vpBtn, on);
+    });
+
+    if (deckBtn) {
+      deckBtn.addEventListener('click', function () {
+        syncVpLayerBtn(vpBtn, deckBtn.getAttribute('aria-pressed') === 'true');
+      });
+    }
   }
 
   function bind() {
@@ -67,6 +143,19 @@
     els.pitch = $('journey-pitch');
     els.progress = $('journey-progress-fill');
     els.skip = $('journey-skip');
+    els.more = $('journey-more');
+    els.detail = $('journey-detail');
+
+    if (els.more && els.detail) {
+      els.more.addEventListener('click', function () {
+        var open = els.detail.hidden;
+        els.detail.hidden = !open;
+        els.detail.classList.toggle('is-open', open);
+        els.more.setAttribute('aria-expanded', open ? 'true' : 'false');
+        var notesLbl = window.matchMedia && window.matchMedia('(max-width: 720px)').matches ? 'Notes' : 'Scene notes';
+        els.more.textContent = open ? 'Hide' : notesLbl;
+      });
+    }
 
     if (els.skip) {
       els.skip.addEventListener('click', function () {
@@ -79,17 +168,52 @@
     document.addEventListener('orrery-journey-step', function (e) {
       var lv = e.detail && e.detail.level;
       if (lv == null) return;
+      var preloader = !!(e.detail && e.detail.preloader) ||
+        (window.__orreryPreloaderOwns && !window.__apHeroEntered);
+      if (preloader) return;
       active = true;
-      setJourneyChrome(true);
+      if (!preloader) setJourneyChrome(true);
       showChapter(lv);
-      document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
-        var on = parseInt(btn.dataset.scale, 10) === lv;
-        btn.classList.toggle('journey-active', on);
-        btn.disabled = true;
-      });
+      if (els.hud) els.hud.hidden = false;
+      if (els.viewport) els.viewport.classList.add('orrery-journey-active');
+      if (els.skip) els.skip.hidden = !!preloader;
+      if (els.more) els.more.hidden = !!preloader;
+      if (els.detail && preloader) {
+        els.detail.hidden = true;
+        els.detail.classList.remove('is-open');
+      }
+      if (els.narrative && preloader) els.narrative.textContent = '';
+      if (els.fact && preloader) els.fact.textContent = '';
+      if (els.pitch && preloader) els.pitch.textContent = '';
+      if (!preloader) {
+        document.querySelectorAll('.orrery-scale-btn').forEach(function (btn) {
+          var on = parseInt(btn.dataset.scale, 10) === lv;
+          btn.classList.toggle('journey-active', on);
+          btn.disabled = true;
+        });
+      }
     });
 
-    document.addEventListener('orrery-journey-end', hideHud);
+    document.addEventListener('orrery-journey-end', function (e) {
+      if (window.__orreryPreloaderOwns && !window.__apHeroEntered) {
+        if (els.hud) els.hud.hidden = true;
+        if (els.viewport) els.viewport.classList.remove('orrery-journey-active');
+        active = false;
+        return;
+      }
+      hideHud();
+    });
+
+    var startJourney = $('orrery-start-journey');
+    if (startJourney) {
+      startJourney.addEventListener('click', function () {
+        var O = window.Orrery3D;
+        if (!O || typeof O.startScaleJourney !== 'function') return;
+        setJourneyChrome(true);
+        startJourney.textContent = 'Journey in progress…';
+        O.startScaleJourney(0, { fullTour: true, direction: 'in' });
+      });
+    }
 
     var tour = $('orrery-full-tour');
     if (tour) {
@@ -119,6 +243,81 @@
         if (!O) return;
         if (O.isJourneyActive && O.isJourneyActive()) O.cancelScaleJourney(true);
         if (typeof O.setScaleLevel === 'function') O.setScaleLevel(2);
+      });
+    }
+
+    var vpInner = $('orrery-vp-inner');
+    if (vpInner) {
+      vpInner.addEventListener('click', function () {
+        var O = window.Orrery3D;
+        if (!O) return;
+        if (O.isJourneyActive && O.isJourneyActive()) O.cancelScaleJourney(true);
+        if (typeof O.setScaleLevel === 'function') O.setScaleLevel(1);
+      });
+    }
+
+    wireVpPlanetFocus();
+
+    wireVpLayerToggle('orrery-vp-orbits', 'orbits', 'setShowOrbits');
+    wireVpLayerToggle('orrery-vp-labels', 'labels', 'setShowLabels');
+
+    var vpDetail = $('orrery-vp-detail');
+    if (vpDetail) {
+      vpDetail.addEventListener('click', function () {
+        var O = window.Orrery3D;
+        if (!O || typeof O.setDetailLighting !== 'function') return;
+        var mode = typeof O.getDetailLightingMode === 'function' ? O.getDetailLightingMode() : 'auto';
+        if (mode === 'auto') O.setDetailLighting('off');
+        else if (mode === 'off') O.setDetailLighting('on');
+        else O.setDetailLighting('auto');
+        syncVpDetailBtn();
+      });
+      document.addEventListener('orrery-detail-lighting', syncVpDetailBtn);
+      document.addEventListener('orrery-scale-change', function (e) {
+        var lv = e && e.detail ? e.detail.level : null;
+        if (lv != null) syncVpFocusScale(lv);
+        syncVpDetailBtn();
+      });
+      document.addEventListener('orrery-planet-focus', syncVpDetailBtn);
+      syncVpDetailBtn();
+    }
+
+    var vpCapture = $('orrery-vp-capture');
+    if (vpCapture) {
+      vpCapture.addEventListener('click', function () {
+        var cap = $('orrery-capture');
+        if (cap) {
+          cap.click();
+          return;
+        }
+        var O = window.Orrery3D;
+        if (!O || typeof O.captureFrame !== 'function') return;
+        var off = O.captureFrame({ scale: 2 });
+        if (!off) return;
+        try {
+          off.toBlob(function (blob) {
+            if (!blob) return;
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'astroprecise-sky.png';
+            a.click();
+            URL.revokeObjectURL(url);
+          }, 'image/png');
+        } catch (e) { /* ignore */ }
+      });
+    }
+
+    var vpNow = $('orrery-vp-now');
+    if (vpNow) {
+      vpNow.addEventListener('click', function () {
+        var reset = $('orrery-reset');
+        if (reset) {
+          reset.click();
+          return;
+        }
+        var O = window.Orrery3D;
+        if (O && typeof O.snapToNow === 'function') O.snapToNow();
       });
     }
 

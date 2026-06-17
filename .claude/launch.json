@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "astroprecise-website",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8794", "--directory", "C:/Users/jonny/OneDrive/astroprecise/website"],
+      "port": 8794
+    }
+  ]
+}

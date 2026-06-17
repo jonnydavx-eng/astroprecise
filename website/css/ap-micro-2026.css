@@ -1,0 +1,451 @@
+/* AstroPrecise — micro-interactions layer (2026)
+ * Loads after ap-forms.css / celestial-seals.css / page shells.
+ * Motion-safe: all animated effects gated behind prefers-reduced-motion. */
+
+/* ── Shared tokens ─────────────────────────────────────────────────────── */
+:root {
+  --ap-micro-gold: #c9a227;
+  --ap-micro-gold-dim: rgba(201, 162, 39, 0.22);
+  --ap-micro-gold-glow: rgba(201, 162, 39, 0.32);
+  --ap-micro-press-ease: 0.12s cubic-bezier(0.33, 1, 0.68, 1);
+  --ap-micro-lift-ease: 0.22s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   1. Button press depth — scale 0.98 + shadow sink
+   ══════════════════════════════════════════════════════════════════════════ */
+.ap-micro-press,
+.btn,
+.btn--calculate,
+.btn--sample,
+.cta-btn,
+.action-btn,
+.glow-btn,
+.time-btn,
+.house-card,
+.node-toggle__pill,
+.shop-cat-btn,
+.shopc-chip,
+.shop-curated-tab,
+.navbar__more-btn,
+.bottom-nav__item,
+.bottom-nav__item--updates,
+.ap-lite-rail__tile,
+.sky-pill {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn:active:not(:disabled):not([disabled]),
+  .btn--calculate:active:not(:disabled):not(.is-loading),
+  .btn--sample:active:not(:disabled),
+  .cta-btn:active:not(:disabled),
+  .action-btn:active:not(:disabled),
+  .glow-btn:active:not(:disabled),
+  .time-btn:active,
+  .navbar__more-btn:active,
+  .bottom-nav__item:active,
+  .shop-cat-btn:active,
+  .shopc-chip:active,
+  .shop-curated-tab:active,
+  .ap-lite-rail__tile:active {
+    transform: scale(0.98) translateY(1px);
+    transition-duration: var(--ap-micro-press-ease);
+  }
+
+  .btn--primary:active:not(:disabled),
+  .btn--gold:active:not(:disabled),
+  .cta-btn--primary:active:not(:disabled) {
+    box-shadow:
+      0 2px 8px rgba(201, 162, 39, 0.28),
+      inset 0 2px 4px rgba(0, 0, 0, 0.18);
+  }
+
+  .btn--calculate:active:not(:disabled):not(.is-loading) {
+    box-shadow:
+      0 4px 14px rgba(201, 162, 39, 0.28),
+      0 0 0 1px rgba(201, 162, 39, 0.38),
+      inset 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
+
+  .btn--outline:active:not(:disabled),
+  .cta-btn--ghost:active:not(:disabled) {
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.22);
+  }
+
+  .house-card:active,
+  .node-toggle__pill:active {
+    transform: scale(0.98);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.28);
+  }
+
+  .sky-pill:active {
+    transform: scale(0.98) translateY(0);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   2. Seal engraving gleam — background-position sweep, zero layout shift
+   ══════════════════════════════════════════════════════════════════════════ */
+.ap-seal__plate {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ap-seal__plate::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background: linear-gradient(
+    105deg,
+    transparent 28%,
+    rgba(255, 255, 255, 0.06) 40%,
+    rgba(201, 162, 39, 0.28) 50%,
+    rgba(255, 255, 255, 0.05) 58%,
+    transparent 72%
+  );
+  background-size: 220% 100%;
+  background-position: 130% 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  will-change: background-position, opacity;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .ap-seal:hover .ap-seal__plate::after,
+  a:hover .ap-seal .ap-seal__plate::after,
+  .sky-pill:hover .ap-seal__plate::after,
+  .tool-card:hover .ap-seal__plate::after,
+  .ap-lite-rail__tile:hover .ap-seal__plate::after,
+  .home-sign-card:hover .ap-seal__plate::after,
+  .sign-card:hover .ap-seal__plate::after {
+    opacity: 1;
+    background-position: -30% 0;
+    transition:
+      opacity 0.28s ease,
+      background-position 0.55s cubic-bezier(0.22, 0.62, 0.36, 1);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ap-seal:hover .ap-seal__plate,
+  a:hover .ap-seal .ap-seal__plate,
+  .sky-pill:hover .ap-seal__plate,
+  .tool-card:hover .ap-seal__plate,
+  .ap-lite-rail__tile:hover .ap-seal__plate {
+    box-shadow:
+      inset 0 0 0 1px rgba(201, 162, 39, 0.45),
+      inset 0 -3px 8px rgba(0, 0, 0, 0.5),
+      0 2px 10px rgba(0, 0, 0, 0.45),
+      0 0 18px -2px var(--seal-glow, var(--ap-micro-gold-dim));
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   3. Form focus — gold rim pulse (box-shadow only)
+   ══════════════════════════════════════════════════════════════════════════ */
+@keyframes ap-form-rim-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px var(--ap-micro-gold-dim),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px var(--ap-micro-gold-glow),
+      0 0 14px rgba(201, 162, 39, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .form-input:focus-visible,
+  .form-select:focus-visible,
+  .form-textarea:focus-visible,
+  .horoscope-subscribe__form select:focus-visible,
+  .horoscope-subscribe__form input[type="email"]:focus-visible,
+  html.ap-lite-hero .hero__date-input:focus-visible {
+    animation: ap-form-rim-pulse 2.6s ease-in-out infinite;
+  }
+
+  .form-input.is-error:focus-visible,
+  .form-select.is-error:focus-visible,
+  .form-textarea.is-error:focus-visible,
+  .form-input[aria-invalid="true"]:focus-visible,
+  .form-select[aria-invalid="true"]:focus-visible,
+  .form-textarea[aria-invalid="true"]:focus-visible {
+    animation: none;
+  }
+}
+
+/* Autocomplete row — subtle gold wash on keyboard focus */
+@media (prefers-reduced-motion: no-preference) {
+  .autocomplete-option.is-selected:focus-visible,
+  .autocomplete-item.highlighted:focus-visible,
+  .ap-combobox__option--active:focus-visible {
+    box-shadow: inset 0 0 0 1px rgba(201, 162, 39, 0.35);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   4. Card lift on hover — translateY(-4px)
+   ══════════════════════════════════════════════════════════════════════════ */
+.shop-card,
+.shopc-card,
+.sign-card,
+.home-sign-card,
+.tool-card,
+.house-card {
+  transition:
+    transform var(--ap-micro-lift-ease),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shop-card:hover,
+  .shopc-card:hover,
+  .home-sign-card:hover,
+  .tool-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .sign-card:hover,
+  .sign-card:focus-visible {
+    transform: translateY(-4px);
+  }
+
+  .house-card:hover:not(.active) {
+    transform: translateY(-2px);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   5. Sky dock — alignment lock shimmer (pairs with ap-alignment-lock event)
+   ══════════════════════════════════════════════════════════════════════════ */
+@keyframes ap-lock-gleam-enhanced {
+  0%   { filter: brightness(0.85); }
+  40%  { filter: brightness(1.35) drop-shadow(0 0 12px rgba(201, 162, 39, 0.5)); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes ap-sky-strip-shimmer {
+  0% {
+    background-position: -40% 0;
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 140% 0;
+    opacity: 0;
+  }
+}
+
+@keyframes ap-sky-pill-lock-flash {
+  0%, 100% {
+    border-color: rgba(201, 162, 39, 0.16);
+    box-shadow: none;
+  }
+  35% {
+    border-color: rgba(201, 162, 39, 0.55);
+    box-shadow: 0 0 16px rgba(201, 162, 39, 0.28);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lite-poster-logo.ap-alignment-lock--pulse {
+    animation: ap-lock-gleam-enhanced 1.35s cubic-bezier(0.22, 0.62, 0.36, 1) forwards;
+  }
+
+  #live-sky-strip.ap-alignment-lock--pulse {
+    position: relative;
+  }
+
+  #live-sky-strip.ap-alignment-lock--pulse::before {
+    content: '';
+    position: absolute;
+    inset: -2px 0;
+    border-radius: var(--radius-full, 999px);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(201, 162, 39, 0.08) 35%,
+      rgba(201, 162, 39, 0.32) 50%,
+      rgba(201, 162, 39, 0.08) 65%,
+      transparent 100%
+    );
+    background-size: 45% 100%;
+    background-repeat: no-repeat;
+    animation: ap-sky-strip-shimmer 1.35s cubic-bezier(0.22, 0.62, 0.36, 1) forwards;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill {
+    animation: ap-sky-pill-lock-flash 1.35s cubic-bezier(0.22, 0.62, 0.36, 1) forwards;
+  }
+
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill:nth-child(2) { animation-delay: 0.04s; }
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill:nth-child(3) { animation-delay: 0.08s; }
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill:nth-child(4) { animation-delay: 0.12s; }
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill:nth-child(5) { animation-delay: 0.16s; }
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill:nth-child(6) { animation-delay: 0.2s; }
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill:nth-child(7) { animation-delay: 0.24s; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   6. Bottom nav & More menu — tactile feedback
+   ══════════════════════════════════════════════════════════════════════════ */
+.navbar__more-panel .navbar__link[data-nav-promoted="match"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5rem);
+}
+
+.navbar__nav-badge {
+  flex-shrink: 0;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold, #c9a227);
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  background: rgba(201, 162, 39, 0.08);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bottom-nav__item:hover:not(.is-active) {
+    color: var(--silver, #c8c0b0);
+  }
+
+  .bottom-nav__item.is-active {
+    text-shadow: 0 0 12px rgba(201, 162, 39, 0.25);
+  }
+
+  .navbar__more-btn:hover,
+  .navbar__more-btn.active,
+  .navbar__more.is-open .navbar__more-btn {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  }
+
+  .navbar__more-panel .navbar__link {
+    transition:
+      background 0.18s ease,
+      color 0.18s ease,
+      transform 0.18s ease,
+      padding-left 0.18s ease;
+  }
+
+  .navbar__more-panel .navbar__link:hover,
+  .navbar__more-panel .navbar__link:focus-visible {
+    background: rgba(201, 162, 39, 0.1);
+    transform: translateX(3px);
+    padding-left: calc(var(--space-3, 0.75rem) + 2px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .navbar__more.is-open .navbar__more-panel {
+    animation: ap-more-panel-in 0.22s cubic-bezier(0.22, 0.62, 0.36, 1) both;
+  }
+}
+
+@keyframes ap-more-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   7. Chart calculate CTA — hover lift + gleam handoff
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .btn--calculate:not(:disabled):not(.is-loading):hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   A11y / motion safety
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .form-input:focus-visible,
+  .form-select:focus-visible,
+  .form-textarea:focus-visible,
+  .horoscope-subscribe__form select:focus-visible,
+  .horoscope-subscribe__form input[type="email"]:focus-visible,
+  html.ap-lite-hero .hero__date-input:focus-visible {
+    animation: none;
+  }
+
+  .lite-poster-logo.ap-alignment-lock--pulse {
+    animation: none;
+    opacity: 0.92;
+    filter: brightness(1.08);
+  }
+
+  #live-sky-strip.ap-alignment-lock--pulse::before,
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill {
+    animation: none;
+  }
+
+  #live-sky-strip.ap-alignment-lock--pulse .sky-pill {
+    border-color: rgba(201, 162, 39, 0.45);
+    box-shadow: 0 0 10px rgba(201, 162, 39, 0.2);
+  }
+
+  .ap-seal__plate::after {
+    transition: none;
+    opacity: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .ap-seal:hover .ap-seal__plate::after,
+    a:hover .ap-seal .ap-seal__plate::after,
+    .sky-pill:hover .ap-seal__plate::after {
+      opacity: 0.65;
+      background-position: 50% 0;
+    }
+  }
+
+  .shop-card:hover,
+  .shopc-card:hover,
+  .sign-card:hover,
+  .sign-card:focus-visible,
+  .home-sign-card:hover,
+  .tool-card:hover,
+  .house-card:hover {
+    transform: none;
+  }
+
+  .navbar__more.is-open .navbar__more-panel {
+    animation: none;
+  }
+
+  .navbar__more-panel .navbar__link:hover,
+  .navbar__more-panel .navbar__link:focus-visible {
+    transform: none;
+    padding-left: var(--space-3, 0.75rem);
+  }
+
+  .btn:active:not(:disabled),
+  .btn--calculate:active:not(:disabled),
+  .bottom-nav__item:active,
+  .sky-pill:active,
+  .ap-lite-rail__tile:active {
+    transform: none;
+  }
+}

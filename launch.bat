@@ -3,8 +3,12 @@ title AstroPrecise — Local Preview
 cd /d "%~dp0website"
 
 REM The server runs in its own minimized window so closing the launcher
-REM never kills it. If :8790 is already being served, the extra instance
-REM exits immediately and the browser still opens fine.
+REM never kills it. Prefer Node gzip preview; fall back to Python.
+where node >nul 2>&1 && (
+  start "AstroPrecise server :8790" /MIN node tools\serve-preview.mjs 8790
+  goto :open
+)
+
 where py >nul 2>&1     && goto :server_py
 where python >nul 2>&1 && goto :server_python
 where python3 >nul 2>&1 && goto :server_python3

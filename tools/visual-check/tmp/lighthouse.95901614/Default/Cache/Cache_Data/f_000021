@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Angel numbers & the Synchronicity Clock: what 1111, 111, 222, 333, 444, 555, 666, 777, 888, 999, 000 & 1212 mean in numerology. A live mirror-time clock fuses the moment with its planetary hour. Deterministic, privacy-first, computed in your browser." />
+  <title>Angel Numbers & 1111 Meaning — Synchronicity Clock | AstroPrecise</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Angel Numbers & 1111 Meaning — Synchronicity Clock | AstroPrecise" />
+  <meta property="og:description" content="What 1111 and the repeating numbers mean in numerology — a mirror for reflection. Live mirror-time clock fused with the planetary hour. Deterministic & private." />
+  <meta property="og:url" content="https://astroprecise.app/angel-numbers.html" />
+  <link rel="canonical" href="https://astroprecise.app/angel-numbers.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Angel Numbers & 1111 Meaning — Synchronicity Clock | AstroPrecise" />
+  <meta name="twitter:description" content="What 1111 and the repeating numbers mean in numerology — a mirror for reflection, fused with the live planetary hour." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+
+  <!-- JSON-LD: WebPage + FAQPage (one Q&A per repeating number) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "name": "Angel Numbers & the Synchronicity Clock",
+        "url": "https://astroprecise.app/angel-numbers.html",
+        "description": "The numerology of repeating numbers (1111, 111, 222, 333, 444, 555, 666, 777, 888, 999, 000, 1212) and a live mirror-time clock fused with the planetary hour. Framed as a mirror for reflection, not prediction. Deterministic and computed in-browser.",
+        "isPartOf": { "@type": "WebSite", "name": "AstroPrecise", "url": "https://astroprecise.app/" }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "What does 1111 mean?", "acceptedAnswer": { "@type": "Answer", "text": "1111 is the most commonly noticed angel number. In numerology it stacks the 1 (beginnings, intention) four times and is read as a wake-up prompt to notice your thoughts. Its digits reduce to 4 (structure). It is a reflective symbol, not a prediction." } },
+          { "@type": "Question", "name": "What does 111 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 111 amplifies the meaning of 1: beginnings, initiative, and focused intention. Many people treat 111 as a reminder to be deliberate about their current train of thought. It is a reflective prompt, not a prediction." } },
+          { "@type": "Question", "name": "What does 222 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 222 doubles and triples the qualities of 2 — balance, cooperation, and trust in timing. It is often interpreted as a reminder to stay patient and seek harmony. Treat it as a mirror for reflection, not a guarantee." } },
+          { "@type": "Question", "name": "What does 333 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 333 magnifies 3: creativity, communication, and joyful self-expression. People often read it as a prompt to create or speak up. It is a reflective symbol, not a predictive sign." } },
+          { "@type": "Question", "name": "What does 444 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 444 emphasises 4: stability, structure, and disciplined effort. Many treat it as a reassuring reminder that their foundations are sound. It is a mirror for reflection, not a prediction." } },
+          { "@type": "Question", "name": "What does 555 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 555 intensifies 5: change, freedom, and movement. It is often interpreted as a sign that transition is underway and adaptability helps. Treat it as a reflective prompt rather than a forecast." } },
+          { "@type": "Question", "name": "What does 666 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 666 is not sinister — 6 is the number of care, home, and responsibility. 666 is commonly read as a nudge to rebalance and return to what matters. It is a reflective symbol, not a warning or prediction." } },
+          { "@type": "Question", "name": "What does 777 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 777 deepens 7: introspection, wisdom, and learning. People often read it as affirmation of their inner path. It is a reflective prompt, not a predictive sign." } },
+          { "@type": "Question", "name": "What does 888 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 888 amplifies 8: cycles, balance, and effort. It is often read as a symbol of reciprocity and steady flow. It is a reflective prompt only — never financial advice or a prediction." } },
+          { "@type": "Question", "name": "What does 999 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 999 emphasises 9: completion, release, and closure. Many read it as a sign a chapter is ending. It is a reflective symbol, not a prediction." } },
+          { "@type": "Question", "name": "What does 000 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 000 represents wholeness, potential, and a reset point — the circle of zero. It is commonly read as a clean-slate moment. It is a reflective prompt, not a prediction." } },
+          { "@type": "Question", "name": "What does 1212 mean?", "acceptedAnswer": { "@type": "Answer", "text": "In numerology, 1212 alternates 1 (beginnings) and 2 (balance), often read as a symbol of steady, ordered progress. Its digits reduce to 6. It is a reflective prompt, not a forecast." } },
+          { "@type": "Question", "name": "Are angel numbers real?", "acceptedAnswer": { "@type": "Answer", "text": "Angel numbers are a numerology framework, not a scientific or medical claim. AstroPrecise presents them strictly as a mirror for reflection — a structured prompt to pause and check in with your attention. The numerology itself is deterministic: the same number always reduces to the same root." } }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* ── Page-local tokens ── */
+    :root {
+      --an-gold: #c9a227;
+      --an-gold-pale: #e8c96a;
+      --an-surface: rgba(20, 16, 10, 0.72);
+      --an-border: rgba(196,146,10,0.18);
+    }
+
+    /* ── Hero ── */
+    .an-hero {
+      padding: calc(var(--nav-height, 72px) + var(--space-12)) 0 var(--space-8);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .an-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5.5vw, 3.4rem);
+      letter-spacing: 0.04em;
+      margin-bottom: var(--space-4);
+    }
+    .an-hero__sub { max-width: 600px; margin: 0 auto; color: var(--silver); line-height: 1.7; }
+
+    /* ── Synchronicity Clock ── */
+    .sync-clock-card {
+      max-width: 640px;
+      margin: var(--space-10) auto 0;
+      background: var(--an-surface);
+      border: 1px solid var(--an-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-10) var(--space-8) var(--space-8);
+      position: relative;
+      overflow: hidden;
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      text-align: center;
+      transition: box-shadow 0.6s ease, border-color 0.6s ease;
+    }
+    .sync-clock-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 15%; right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.7), transparent);
+    }
+    /* Glow state while a mirror/repeating moment is active */
+    .sync-clock-card.is-moment {
+      border-color: rgba(196,146,10,0.55);
+      box-shadow:
+        0 0 0 1px rgba(196,146,10,0.2) inset,
+        0 0 60px rgba(196,146,10,0.22),
+        0 24px 60px rgba(0,0,0,0.4);
+      animation: an-pulse 3.4s ease-in-out infinite;
+    }
+    @keyframes an-pulse {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(196,146,10,0.2) inset, 0 0 50px rgba(196,146,10,0.18), 0 24px 60px rgba(0,0,0,0.4); }
+      50%      { box-shadow: 0 0 0 1px rgba(196,146,10,0.3) inset, 0 0 80px rgba(196,146,10,0.30), 0 24px 60px rgba(0,0,0,0.4); }
+    }
+    .sync-clock__label {
+      font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--an-gold); margin-bottom: var(--space-3);
+    }
+    .sync-clock__time {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 12vw, 5.5rem);
+      line-height: 1;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 30px rgba(196,146,10,0.12);
+    }
+    .sync-clock-card.is-moment .sync-clock__time {
+      color: var(--an-gold-pale);
+      text-shadow: 0 0 40px rgba(196,146,10,0.45), 0 0 80px rgba(196,146,10,0.18);
+    }
+    .sync-clock__status {
+      margin-top: var(--space-5);
+      min-height: 2.5em;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--silver);
+      line-height: 1.55;
+      transition: color 0.5s ease;
+    }
+    .sync-clock-card.is-moment .sync-clock__status { color: var(--an-gold-pale); }
+
+    .sync-clock__meta {
+      display: flex; flex-wrap: wrap; gap: var(--space-3);
+      justify-content: center;
+      margin-top: var(--space-6);
+    }
+    .sync-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(196,146,10,0.06);
+      border: 1px solid var(--an-border);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.74rem;
+      color: var(--silver);
+    }
+    .sync-chip strong { color: var(--an-gold-pale); font-weight: 600; }
+    .sync-chip__glyph { font-size: 1rem; color: var(--an-gold-pale); }
+
+    .sync-clock__hint {
+      margin-top: var(--space-6);
+      font-size: 0.66rem;
+      color: var(--silver-dim);
+      line-height: 1.6;
+    }
+
+    /* ── Reference grid ── */
+    .an-numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-5);
+    }
+    .an-number-card {
+      background: var(--an-surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--an-card-color, var(--an-gold));
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      position: relative;
+      overflow: hidden;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+    .an-number-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 22px rgba(196,146,10,0.12);
+    }
+    .an-number-card__head {
+      display: flex; align-items: baseline; gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .an-number-card__num {
+      font-family: var(--font-display);
+      font-size: 2.4rem; line-height: 1;
+      color: var(--an-gold-pale);
+    }
+    .an-number-card__title {
+      font-size: 0.92rem; font-weight: 600; color: var(--white);
+      letter-spacing: 0.03em;
+    }
+    .an-number-card__root {
+      font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--silver-dim); margin-top: 3px;
+    }
+    .an-number-card__meaning {
+      font-size: 0.85rem; color: var(--silver); line-height: 1.7;
+      margin-bottom: var(--space-4);
+    }
+    .an-keywords { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-4); }
+    .an-keyword {
+      font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--an-gold);
+      border: 1px solid rgba(196,146,10,0.3);
+      border-radius: 999px; padding: 2px 9px;
+      background: rgba(196,146,10,0.05);
+    }
+    .an-reflection {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-size: 0.95rem;
+      color: var(--silver);
+      border-top: 1px solid var(--border);
+      padding-top: var(--space-3);
+      line-height: 1.5;
+    }
+    .an-reflection::before { content: ''; color: var(--an-gold); }
+
+    /* ── Method / honesty band ── */
+    .an-method {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      max-width: 760px; margin: 0 auto;
+    }
+    .an-method p { color: var(--silver); line-height: 1.8; font-size: var(--text-sm); }
+    .an-method code {
+      font-family: 'Courier New', monospace;
+      color: var(--an-gold-pale);
+      background: rgba(196,146,10,0.08);
+      border-radius: 6px; padding: 1px 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- HERO + LIVE CLOCK -->
+    <section class="an-hero">
+      <div class="container">
+        <p class="eyebrow">Numerology of Repeating Numbers</p>
+        <h1 class="gradient-text">Angel Numbers &amp; the Synchronicity Clock</h1>
+        <p class="an-hero__sub">
+          Whenever you glance up at <strong>11:11</strong>, <strong>2:22</strong>, or <strong>12:12</strong>,
+          you are catching a mirror time — a moment of symmetry. This page reads the
+          <em>numerology</em> of repeating numbers as a mirror for reflection — never a prediction —
+          and a live clock that fuses each mirror moment with its <strong>planetary hour</strong>
+          and the time's own digit-sum.
+        </p>
+
+        <!-- Live Synchronicity Clock -->
+        <div class="sync-clock-card" id="sync-clock-card" role="region" aria-label="Synchronicity clock">
+          <p class="sync-clock__label">Synchronicity Clock</p>
+          <div class="sync-clock__time" id="sync-clock-time" aria-live="off">--:--:--</div>
+          <p class="sync-clock__status" id="sync-clock-status" aria-live="polite">Watching for mirror &amp; repeating times…</p>
+          <div class="sync-clock__meta">
+            <span class="sync-chip" id="sync-chip-hour">
+              <span class="sync-chip__glyph" id="sync-ph-glyph" aria-hidden="true">◷</span>
+              Planetary hour: <strong id="sync-ph-name">—</strong>
+            </span>
+            <span class="sync-chip" id="sync-chip-root">
+              Time numerology: <strong id="sync-root">—</strong>
+            </span>
+          </div>
+          <p class="sync-clock__hint">
+            Times are read from <strong>your device clock</strong>; the planetary hour defaults to London
+            unless your saved profile includes a birthplace. Nothing is sent anywhere — it all computes in your browser.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- REFERENCE GRID -->
+    <section class="section" id="reference">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">The Repeating Numbers</p>
+          <h2 class="section-title">What Each Number Means</h2>
+          <p class="section-subtitle">
+            Each meaning is built from the numerology of its root digit. Read them as a structured
+            prompt to pause and reflect — not as a forecast of events.
+          </p>
+        </header>
+        <div class="an-numbers-grid" id="an-numbers-grid"></div>
+      </div>
+    </section>
+
+    <!-- METHOD + HONESTY -->
+    <section class="section" style="background:linear-gradient(180deg,transparent 0%,rgba(92, 74, 110,0.04) 50%,transparent 100%);">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">The Method</p>
+          <h2 class="section-title">How the Reading Is Built</h2>
+        </header>
+        <div class="an-method">
+          <p style="margin-bottom:var(--space-4);">
+            <strong style="color:var(--white);">Deterministic numerology.</strong>
+            A repeating number's meaning comes from its root: sum its digits and reduce until a
+            single digit remains (master numbers 11, 22, 33 are preserved). For example,
+            <code>1+1+1+1 = 4</code>, so <strong>1111</strong> carries the structuring energy of 4;
+            <code>1+2+1+2 = 6</code>, so <strong>1212</strong> carries the caring, progressive energy of 6.
+            The same number always reduces to the same root — no randomness, ever.
+          </p>
+          <p style="margin-bottom:var(--space-4);">
+            <strong style="color:var(--white);">The fused moment.</strong>
+            When the clock detects a mirror or repeating time, it combines three honest signals:
+            the number's numerology, the digit-sum of the time itself (e.g. <code>11:11 → 1+1+1+1 = 4</code>),
+            and the active <strong>Chaldean planetary hour</strong> (the classical ruler of that slice of
+            day, computed from sunrise &amp; sunset).
+          </p>
+          <p>
+            <strong style="color:var(--white);">Honesty first.</strong>
+            Angel numbers are a symbolic, numerological framework — <em>a mirror for reflection</em>.
+            AstroPrecise makes no predictive, medical, or financial claims. If a number invites you to
+            pause and check in with your attention, it has done its work.
+          </p>
+          <div style="text-align:center;margin-top:var(--space-6);">
+            <span class="ap-badge">Deterministic</span>&nbsp;
+            <span style="font-size:0.65rem;color:var(--silver-dim);letter-spacing:0.1em;">Same number → same root, always · Computed locally</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FUNNEL -->
+    <section class="section instrument-teaser">
+      <div class="container">
+        <div class="instrument-teaser__inner">
+          <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Go Deeper</div>
+          <h2 class="instrument-teaser__title">Numbers Are Only Half the Picture</h2>
+          <p class="instrument-teaser__body" style="max-width:580px;margin:0 auto var(--space-6);">
+            Repeating numbers are a mirror for the moment. Your <strong>Life Path number</strong> and your
+            <strong>birth chart</strong> are the deeper, personal layer — computed from your own birth data,
+            deterministically and privately.
+          </p>
+          <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
+            <a href="lifepath.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Life Path</a>
+            <a href="name-numerology.html" class="btn btn--outline btn--lg">Name Numerology</a>
+            <a href="chart.html" class="btn btn--outline btn--lg">Birth Chart</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
+            <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
+            <span>AstroPrecise</span>
+          </a>
+          <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
+          <p style="margin-top:var(--space-3);"><span class="ap-badge">Computed locally · Deterministic</span></p>
+        </div>
+        <div class="footer-nav" role="group" aria-label="Footer">
+          <h3 class="footer-nav__heading">Navigate</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="chart.html">Birth Chart</a></li>
+            <li><a href="horoscope.html">Horoscope</a></li>
+            <li><a href="compatibility.html">Compatibility</a></li>
+            <li><a href="lifepath.html">Life Path</a></li>
+            <li><a href="angel-numbers.html">Angel Numbers</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav">
+          <h3 class="footer-nav__heading">Tools</h3>
+          <ul>
+            <li><a href="ephemeris.html">The Instrument</a></li>
+            <li><a href="chart.html">Natal Chart</a></li>
+            <li><a href="lifepath.html">Numerology</a></li>
+            <li><a href="angel-numbers.html">Angel Numbers</a></li>
+            <li><a href="shop.html">Cosmic Shop</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <p class="footer-copyright">
+          &copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/oracle.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/angel-numbers.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+
+  <script>
+  'use strict';
+  (function () {
+    var AN = window.AngelNumbers;
+    if (!AN) return;
+
+    /* ── Build the reference grid ── */
+    (function buildGrid() {
+      var grid = document.getElementById('an-numbers-grid');
+      if (!grid) return;
+      grid.innerHTML = AN.ORDER.map(function (key) {
+        var d = AN.NUMBERS[key];
+        var rootLabel = key === '000' ? 'Root 0 · stillness' : ('Root ' + d.root + ' · ' + AN.rootMeaning(d.root));
+        var kws = d.keywords.map(function (k) { return '<span class="an-keyword">' + k + '</span>'; }).join('');
+        return '' +
+          '<article class="an-number-card" style="--an-card-color:' + d.color + '" id="num-' + key + '">' +
+            '<div class="an-number-card__head">' +
+              '<span class="an-number-card__num">' + key + '</span>' +
+              '<div>' +
+                '<div class="an-number-card__title">' + d.title + '</div>' +
+                '<div class="an-number-card__root">' + rootLabel + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="an-keywords">' + kws + '</div>' +
+            '<p class="an-number-card__meaning">' + d.meaning + '</p>' +
+            '<p class="an-reflection">' + d.reflection + '</p>' +
+          '</article>';
+      }).join('');
+    })();
+
+    /* ── Resolve a birthplace from saved profile (for the planetary hour) ── */
+    var LAT = 51.5, LON = 0; // London default
+    try {
+      if (window.AstroProfile && typeof AstroProfile.getCharts === 'function') {
+        var charts = AstroProfile.getCharts() || [];
+        var primary = charts[0];
+        if (primary && typeof primary.lat === 'number' && typeof primary.lon === 'number') {
+          LAT = primary.lat; LON = primary.lon;
+        } else if (primary && primary.birth && typeof primary.birth.lat === 'number') {
+          LAT = primary.birth.lat; LON = primary.birth.lon;
+        }
+      }
+    } catch (e) { /* keep London default */ }
+
+    /* ── Live Synchronicity Clock ── */
+    var card = document.getElementById('sync-clock-card');
+    var timeEl = document.getElementById('sync-clock-time');
+    var statusEl = document.getElementById('sync-clock-status');
+    var phName = document.getElementById('sync-ph-name');
+    var phGlyph = document.getElementById('sync-ph-glyph');
+    var rootEl = document.getElementById('sync-root');
+
+    var lastMomentLabel = null;
+
+    function pad2(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      var now = new Date();
+      if (timeEl) {
+        timeEl.textContent = pad2(now.getHours()) + ':' + pad2(now.getMinutes()) + ':' + pad2(now.getSeconds());
+      }
+
+      var m = AN.readMoment(now, LAT, LON);
+
+      // Planetary hour + time numerology chips (always shown)
+      if (phName) phName.textContent = m.planetaryHour.ruler + (m.planetaryHour.glyph ? ' ' + m.planetaryHour.glyph : '');
+      if (phGlyph) phGlyph.textContent = m.planetaryHour.glyph || '◷';
+      if (rootEl) rootEl.textContent = m.timeRoot + ' — ' + m.timeRootMeaning;
+
+      if (m.isMoment) {
+        card.classList.add('is-moment');
+        var msg;
+        if (m.reference) {
+          msg = m.label + ' — ' + m.reference.title + '. ' + m.reference.reflection;
+        } else if (m.kind === 'mirror') {
+          msg = m.label + ' — a mirror time. Symmetry on the clock; a cue to pause. The numerology of this moment is ' +
+                m.timeRoot + ' (' + m.timeRootMeaning + '), under the ' + m.planetaryHour.ruler + ' hour.';
+        } else {
+          msg = m.label + ' — a repeating moment to notice.';
+        }
+        // Fuse with the planetary hour for keyed moments too.
+        if (m.reference && m.planetaryHour.meaning) {
+          msg += ' Under the ' + m.planetaryHour.ruler + ' hour: ' + m.planetaryHour.meaning;
+        }
+        if (statusEl) statusEl.textContent = msg;
+
+        // Tasteful toast — once per occurrence.
+        if (lastMomentLabel !== m.label) {
+          lastMomentLabel = m.label;
+          var title = (m.kind === 'portal') ? '11:11 — a mirror moment'
+                    : (m.kind === 'reset') ? '00:00 — a reset point'
+                    : m.label + ' — a mirror moment';
+          var body = m.reference ? m.reference.title + ' · ' + m.planetaryHour.ruler + ' hour'
+                                 : 'Numerology ' + m.timeRoot + ' · ' + m.planetaryHour.ruler + ' hour';
+          if (window.AstroApp && typeof AstroApp.showToast === 'function') {
+            AstroApp.showToast(' + title, body, 'info', 6000);
+          }
+        }
+      } else {
+        card.classList.remove('is-moment');
+        lastMomentLabel = null;
+        if (statusEl) {
+          statusEl.textContent = 'Watching for mirror & repeating times… It is currently the ' +
+            m.planetaryHour.ruler + ' hour; the time reduces to ' + m.timeRoot + ' (' + m.timeRootMeaning + ').';
+        }
+      }
+    }
+
+    tick();
+    setInterval(tick, 1000);
+
+    /* ── Deep-link: #num-1111 etc. gently highlights a card ── */
+    if (location.hash && /^#num-/.test(location.hash)) {
+      var target = document.querySelector(location.hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        target.style.borderColor = 'rgba(196,146,10,0.6)';
+      }
+    }
+  })();
+  </script>
+
+</body>
+</html>

@@ -14,7 +14,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import {
-  JS, norm, sd, fmt, slug, sents, ord,
+  ROOT, JS, norm, sd, fmt, slug, sents, ord, FONTS,
   natalWheelSvg, deliverablesForProduct, paidMetaBlock, isPaidOrder,
 } from './fulfil-shared.mjs';
 import {
@@ -182,7 +182,7 @@ p.note{font-size:10.5pt;color:#A89E88;border-left:2px solid rgba(201,162,39,.25)
 table.placements td,table.placements th{font-size:9.5pt;}
 .r{color:#b06a6a;font-size:9pt;}
 `;
-const FONTS=`<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">`;
+
 const wm = WATERMARK ? `<div class="watermark">${WATERMARK}</div>` : '';
 const wmBig = WATERMARK ? `<div class="watermark" style="font-size:90pt;">${WATERMARK}</div>` : '';
 const PLABEL = productLabel(PRODUCT);
@@ -291,7 +291,7 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
 <div class="page">
   <p class="eyebrow">VI · Vocation & Mastery</p>
   <h1 style="font-size:20pt;">Public life & the long game.</h1>
-  ${mcCareerBlock(M, mc, pInterp, hMeaning, sents)}
+  ${mcCareerBlock(M, mc, sunSign, pInterp, hMeaning, sents)}
   ${saturnChapter(pos, pInterp, hMeaning, sents, PGL)}
   ${foot('6')}
 </div>
@@ -384,3 +384,21 @@ console.log(`${PERSON.name} — Sun ${fmt(pos.sun.lon)} | Moon ${fmt(pos.moon.lo
 console.log(`product: ${PRODUCT} → reading:${DELIVER.reading} poster:${DELIVER.poster}`);
 console.log(`watermark: ${WATERMARK || '(none — FINAL / paid)'}`);
 for (const p of written) console.log('written:', p);
+
+// Publish SAMPLE to website when using default demo chart (no --final).
+if (usingSample && DELIVER.reading && !FINAL) {
+  const samplePath = join(ROOT, 'website', 'sample-reading.html');
+  const sampleHead = `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Sample Deep Natal Reading from AstroPrecise — 13 pages: every planet, all twelve houses, life areas, patterns, and aspects. VSOP87 ephemeris." />
+<meta name="robots" content="noindex, follow" />
+<link rel="canonical" href="https://astroprecise.app/sample-reading.html" />
+<title>Sample Deep Natal Reading | AstroPrecise</title>
+${FONTS}`;
+  const sampleHtml = reading.replace(
+    /<!doctype html><html><head><meta charset="utf-8">\s*<link rel="stylesheet" href="css\/fonts\.css">\s*<style>/i,
+    `${sampleHead}<style>`,
+  );
+  writeFileSync(samplePath, sampleHtml, 'utf8');
+  console.log('published:', samplePath);
+}

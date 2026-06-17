@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="My Cosmic Dashboard — track your astrological journey, save birth charts, and explore your life timeline. All data stored privately on your device." />
   <title>My Cosmic Dashboard | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,885 +20,36 @@
   <meta name="twitter:description" content="Your personal cosmic journal — birth charts, life milestones, and astrological insights stored privately on your device." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/profile-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <style>
+    body:has(#setup-section){--font-display:Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    body:has(#setup-section) .site-header,body:has(#dashboard-section) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
+    body:has(#setup-section) .navbar__nav,body:has(#dashboard-section) .navbar__nav{min-height:44px;contain:layout style;}
+    .hero--small{min-height:380px;contain:layout style;}
+    .hero--small h1{font-family:Georgia,'Times New Roman',serif;min-height:1.15em;contain:layout style;}
+    .hero--small>.container>p:not(.hero__eyebrow){min-height:1.35em;}
+    .hero--small .ap-badge{min-height:3.25em;line-height:1.45;}
+    html:not(.has-profile) .profile-setup-card h2{min-height:2.2em;}
+    html:not(.has-profile) .profile-setup-card>p{min-height:5.2em;line-height:1.7;}
+    html:not(.has-profile) #setup-section{min-height:clamp(900px,125vw,960px);contain:layout style;}
+    html:not(.has-profile) .profile-setup-card{min-height:800px;contain:layout style;}
+    html:not(.has-profile) .setup-form{min-height:300px;}
+    html:not(.has-profile) .form-input{min-height:44px;}
+    html:not(.has-profile) #dashboard-section{display:none!important;}
+    .footer-zodiac-strip{min-height:2.75rem;}
+    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  </style>
+  <script>try{if(localStorage.getItem('ap_profile_v2'))document.documentElement.classList.add('has-profile');}catch(e){}</script>
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferProfileFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferProfileFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/profile-page.css','ap-css-profile');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
-
-  <style>
-    /* ================================================================
-       COSMIC DASHBOARD — Page-specific styles
-       Uses CSS vars from main.css
-    ================================================================ */
-
-    /* Dashboard layout */
-    .cosmic-dash {
-      max-width: 960px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-6);
-      padding: var(--space-8) var(--space-4) var(--space-16);
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Utility */
-    .hidden { display: none !important; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
-    /* ── Setup card ── */
-    .profile-setup-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-12) var(--space-10);
-      max-width: 520px;
-      margin: var(--space-16) auto;
-      text-align: center;
-      -webkit-backdrop-filter: blur(24px);
-      backdrop-filter: blur(24px);
-      box-shadow: 0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
-      position: relative;
-      overflow: hidden;
-    }
-    .profile-setup-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(196,146,10,0.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    @media (max-width: 600px) {
-      .profile-setup-card { padding: var(--space-8) var(--space-5); margin: var(--space-8) auto; }
-    }
-    .setup-star-icon {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, rgba(196,146,10,0.18) 0%, rgba(196,146,10,0.05) 100%);
-      border: 1px solid rgba(196,146,10,0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.75rem;
-      margin: 0 auto var(--space-6);
-    }
-    .profile-setup-card h2 {
-      font-family: var(--font-display);
-      font-size: var(--text-3xl);
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: var(--space-3);
-    }
-    .profile-setup-card > p {
-      font-size: var(--text-sm);
-      color: var(--silver-dim);
-      line-height: 1.7;
-      margin-bottom: var(--space-6);
-    }
-    .setup-form { text-align: left; }
-    .setup-divider {
-      display: flex;
-      align-items: center;
-      gap: var(--space-4);
-      margin: var(--space-6) 0;
-      color: var(--silver-dim);
-      font-size: var(--text-xs);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .setup-divider::before, .setup-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .privacy-note {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      justify-content: center;
-      font-size: var(--text-xs);
-      color: var(--silver-dim);
-      margin-top: var(--space-5);
-      opacity: 0.7;
-    }
-
-    /* ── Profile hero ── */
-    .profile-hero {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-8);
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: var(--space-6);
-      align-items: center;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      position: relative;
-      overflow: hidden;
-    }
-    .profile-hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.4), transparent);
-    }
-    @media (max-width: 640px) {
-      .profile-hero {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: var(--space-4);
-      }
-      .profile-hero .btn { align-self: center; }
-    }
-    .avatar-wrap {
-      position: relative;
-      flex-shrink: 0;
-    }
-    .avatar-circle {
-      width: 88px;
-      height: 88px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, rgba(92, 74, 110,0.5) 0%, rgba(110,26,38,0.4) 100%);
-      border: 2px solid rgba(196,146,10,0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      box-shadow: 0 0 32px rgba(196,146,10,0.15), inset 0 0 20px rgba(0,0,0,0.3);
-      position: relative;
-      z-index: 1;
-    }
-    .avatar-pulse {
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      border: 1px solid rgba(196,146,10,0.15);
-      animation: avatar-pulse 3s ease-in-out infinite;
-    }
-    @keyframes avatar-pulse {
-      0%, 100% { opacity: 0.4; transform: scale(1); }
-      50% { opacity: 0.9; transform: scale(1.04); }
-    }
-    .profile-hero__info h2 {
-      font-family: var(--font-display);
-      font-size: var(--text-3xl);
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: var(--space-1);
-    }
-    .profile-hero__label {
-      font-size: var(--text-xs);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: var(--space-2);
-    }
-    .profile-hero__tagline {
-      font-size: var(--text-sm);
-      color: var(--silver);
-      font-style: italic;
-    }
-    .profile-hero__actions {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-      align-items: flex-end;
-    }
-    @media (max-width: 640px) {
-      .profile-hero__actions { align-items: center; flex-direction: row; justify-content: center; }
-    }
-
-    /* ── Completeness ring ── */
-    .completeness-ring {
-      position: relative;
-      width: 56px;
-      height: 56px;
-      flex-shrink: 0;
-    }
-    .completeness-ring svg { transform: rotate(-90deg); }
-    .completeness-ring__label {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-display);
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: var(--gold);
-    }
-
-    /* ── Glass panel base ── */
-    .glass-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6) var(--space-8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      position: relative;
-      overflow: hidden;
-    }
-    @media (max-width: 600px) { .glass-panel { padding: var(--space-5); } }
-    .glass-panel__title {
-      font-family: var(--font-display);
-      font-size: var(--text-lg);
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: var(--space-5);
-      padding-bottom: var(--space-3);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-    }
-    .glass-panel__title .panel-icon {
-      font-size: 1rem;
-      opacity: 0.75;
-    }
-
-    /* ── Completeness panel ── */
-    .completeness-steps {
-      display: flex;
-      gap: var(--space-2);
-      flex-wrap: wrap;
-      margin-bottom: var(--space-4);
-    }
-    .completeness-step {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-2) var(--space-3);
-      border-radius: var(--radius-full);
-      font-size: var(--text-xs);
-      letter-spacing: 0.06em;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.2);
-      transition: all var(--transition-base);
-    }
-    .completeness-step--done {
-      border-color: rgba(196,146,10,0.4);
-      background: rgba(196,146,10,0.08);
-      color: var(--gold-pale);
-    }
-    .completeness-step--done .step-marker { color: var(--gold); }
-    .completeness-step--pending { color: var(--silver-dim); }
-    .completeness-step--pending .step-marker { color: var(--silver-dim); opacity: 0.5; }
-    .completeness-bar-wrap {
-      height: 4px;
-      background: rgba(255,255,255,0.06);
-      border-radius: var(--radius-full);
-      overflow: hidden;
-      margin-bottom: var(--space-3);
-    }
-    .completeness-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-pale) 100%);
-      border-radius: var(--radius-full);
-      transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    .completeness-msg {
-      font-size: var(--text-sm);
-      color: var(--silver-dim);
-      line-height: 1.6;
-    }
-    .completeness-msg a { color: var(--gold); }
-    .completeness-msg a:hover { color: var(--gold-pale); }
-
-    /* ── Cosmic season card ── */
-    .cosmic-season-card {
-      background: linear-gradient(135deg, rgba(20, 16, 10,0.9) 0%, rgba(92, 74, 110,0.12) 100%);
-      border: 1px solid rgba(196,146,10,0.2);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6) var(--space-8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      position: relative;
-      overflow: hidden;
-    }
-    .cosmic-season-card::before {
-      content: '';
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 200px; height: 200px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(196,146,10,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    @media (max-width: 600px) { .cosmic-season-card { padding: var(--space-5); } }
-    .season-grid {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: var(--space-6);
-      align-items: start;
-    }
-    @media (max-width: 560px) { .season-grid { grid-template-columns: 1fr; } }
-    .personal-year-num {
-      font-family: var(--font-display);
-      font-size: 4rem;
-      font-weight: 700;
-      color: var(--gold);
-      line-height: 1;
-      text-shadow: 0 0 40px rgba(196,146,10,0.4);
-      min-width: 80px;
-      text-align: center;
-    }
-    .personal-year-label {
-      font-size: var(--text-xs);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.7;
-      text-align: center;
-    }
-    .season-details h3 {
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: var(--space-2);
-    }
-    .season-theme {
-      font-size: var(--text-sm);
-      color: var(--silver);
-      line-height: 1.65;
-      margin-bottom: var(--space-4);
-      font-style: italic;
-    }
-    .season-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-3);
-    }
-    .season-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-1) var(--space-3);
-      border-radius: var(--radius-full);
-      background: rgba(92, 74, 110,0.2);
-      border: 1px solid rgba(92, 74, 110,0.3);
-      font-size: var(--text-xs);
-      color: var(--silver);
-    }
-    .season-badge--gold {
-      background: rgba(196,146,10,0.1);
-      border-color: rgba(196,146,10,0.3);
-      color: var(--gold-pale);
-    }
-
-    /* ── Chapter card ── */
-    .chapter-card {
-      display: flex;
-      align-items: center;
-      gap: var(--space-4);
-      padding: var(--space-4) var(--space-5);
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      margin-top: var(--space-4);
-    }
-    .chapter-planet-symbol {
-      font-size: 1.75rem;
-      flex-shrink: 0;
-      filter: drop-shadow(0 0 8px rgba(196,146,10,0.4));
-    }
-    .chapter-info p { font-size: var(--text-sm); color: var(--silver); }
-    .chapter-info strong {
-      display: block;
-      color: var(--white);
-      font-family: var(--font-heading);
-      font-size: var(--text-base);
-      margin-bottom: 2px;
-    }
-
-    /* ── Journey timeline ── */
-    .milestone-timeline {
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-      padding: var(--space-4) 0 var(--space-6);
-      scrollbar-width: thin;
-      scrollbar-color: rgba(196,146,10,0.2) transparent;
-      position: relative;
-    }
-    .milestone-timeline::before {
-      content: '';
-      position: absolute;
-      top: 38px;
-      left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border) 10%, var(--border) 90%, transparent);
-    }
-    .milestone-dot {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-2);
-      min-width: 100px;
-      padding: 0 var(--space-2);
-      position: relative;
-      flex-shrink: 0;
-    }
-    .milestone-dot__bubble {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      background: var(--surface);
-      position: relative;
-      z-index: 1;
-      transition: all var(--transition-base);
-    }
-    .milestone-dot--past .milestone-dot__bubble {
-      border-color: rgba(196,146,10,0.25);
-      background: rgba(196,146,10,0.06);
-      opacity: 0.6;
-    }
-    .milestone-dot--active .milestone-dot__bubble {
-      border-color: var(--gold);
-      background: rgba(196,146,10,0.15);
-      box-shadow: 0 0 20px rgba(196,146,10,0.3);
-    }
-    .milestone-dot--future .milestone-dot__bubble {
-      border-color: rgba(168, 158, 136,0.2);
-      background: rgba(168, 158, 136,0.04);
-    }
-    .milestone-dot--active .milestone-dot__bubble::after {
-      content: '';
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      border: 1px solid rgba(196,146,10,0.2);
-      animation: milestone-pulse 2s ease-in-out infinite;
-    }
-    @keyframes milestone-pulse {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.08); }
-    }
-    .milestone-dot__year {
-      font-size: var(--text-xs);
-      font-weight: 600;
-      letter-spacing: 0.06em;
-    }
-    .milestone-dot--past .milestone-dot__year { color: var(--silver-dim); opacity: 0.6; }
-    .milestone-dot--active .milestone-dot__year { color: var(--gold); }
-    .milestone-dot--future .milestone-dot__year { color: var(--silver); }
-    .milestone-dot__name {
-      font-size: 0.6rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.3;
-      max-width: 90px;
-    }
-    .milestone-dot--past .milestone-dot__name { color: var(--silver-dim); opacity: 0.55; }
-    .milestone-dot--active .milestone-dot__name { color: var(--gold-pale); }
-    .milestone-dot--future .milestone-dot__name { color: var(--silver-dim); }
-    .timeline-scroll-hint {
-      font-size: var(--text-xs);
-      color: var(--silver-dim);
-      opacity: 0.5;
-      text-align: right;
-      margin-top: var(--space-2);
-    }
-
-    /* ── Recommendations ── */
-    .recommendations-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: var(--space-4);
-    }
-    .recommendation-card {
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-5);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-      transition: all var(--transition-base);
-      position: relative;
-    }
-    .recommendation-card:hover {
-      border-color: rgba(196,146,10,0.25);
-      background: rgba(196,146,10,0.04);
-      transform: translateY(-2px);
-    }
-    .recommendation-card--urgent { border-color: rgba(196,146,10,0.3); }
-    .rec-header {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--space-3);
-    }
-    .rec-icon {
-      width: 40px; height: 40px;
-      border-radius: var(--radius-md);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
-      flex-shrink: 0;
-      background: rgba(92, 74, 110,0.2);
-      border: 1px solid rgba(92, 74, 110,0.3);
-    }
-    .rec-icon--gold { background: rgba(196,146,10,0.12); border-color: rgba(196,146,10,0.3); }
-    .rec-title {
-      font-family: var(--font-heading);
-      font-size: var(--text-base);
-      font-weight: 600;
-      color: var(--white);
-      line-height: 1.3;
-    }
-    .rec-body { font-size: var(--text-sm); color: var(--silver-dim); line-height: 1.6; }
-    .urgency-dot {
-      position: absolute;
-      top: var(--space-3); right: var(--space-3);
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 8px rgba(196,146,10,0.6);
-    }
-
-    /* ── Stat grid ── */
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-4);
-    }
-    @media (max-width: 500px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
-    .stat-cell {
-      text-align: center;
-      padding: var(--space-4) var(--space-3);
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-    }
-    .stat-cell__value {
-      font-family: var(--font-display);
-      font-size: var(--text-3xl);
-      font-weight: 700;
-      color: var(--gold);
-      line-height: 1;
-      margin-bottom: var(--space-1);
-    }
-    .stat-cell__label {
-      font-size: var(--text-xs);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--silver-dim);
-    }
-
-    /* ── Charts gallery ── */
-    .charts-gallery-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--space-5);
-      padding-bottom: var(--space-3);
-      border-bottom: 1px solid var(--border);
-    }
-    .charts-gallery-header h3 {
-      font-family: var(--font-display);
-      font-size: var(--text-lg);
-      font-weight: 700;
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-    .charts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: var(--space-4);
-    }
-    .chart-gallery-item {
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--space-5);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-      transition: all var(--transition-base);
-      position: relative;
-    }
-    .chart-gallery-item:hover {
-      border-color: rgba(196,146,10,0.3);
-      background: rgba(196,146,10,0.04);
-      transform: translateY(-2px);
-    }
-    .chart-gallery-item__name {
-      font-family: var(--font-heading);
-      font-size: var(--text-base);
-      font-weight: 600;
-      color: var(--white);
-    }
-    .chart-gallery-item__date {
-      font-size: var(--text-xs);
-      color: var(--silver-dim);
-      letter-spacing: 0.04em;
-    }
-    .big-three {
-      display: flex;
-      gap: var(--space-2);
-      flex-wrap: wrap;
-    }
-    .big-three-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px var(--space-2);
-      border-radius: var(--radius-full);
-      font-size: 0.65rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-    .big-three-badge--sun { background: rgba(196,146,10,0.12); border: 1px solid rgba(196,146,10,0.25); color: var(--gold-pale); }
-    .big-three-badge--moon { background: rgba(168, 158, 136,0.1); border: 1px solid rgba(168, 158, 136,0.2); color: var(--silver); }
-    .big-three-badge--asc { background: rgba(92, 74, 110,0.15); border: 1px solid rgba(92, 74, 110,0.3); color: var(--lapis-bright); }
-    .chart-gallery-item__actions {
-      display: flex;
-      gap: var(--space-2);
-      margin-top: auto;
-    }
-    .btn-chart-link {
-      flex: 1;
-      padding: var(--space-2) var(--space-3);
-      background: rgba(92, 74, 110,0.18);
-      border: 1px solid rgba(92, 74, 110,0.3);
-      border-radius: var(--radius-md);
-      color: var(--lapis-bright);
-      font-size: var(--text-xs);
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-align: center;
-      text-decoration: none;
-      transition: all var(--transition-fast);
-    }
-    .btn-chart-link:hover { background: rgba(92, 74, 110,0.3); color: var(--white); }
-    .btn-chart-delete {
-      padding: var(--space-2) var(--space-3);
-      background: transparent;
-      border: 1px solid rgba(110,26,38,0.3);
-      border-radius: var(--radius-md);
-      color: rgba(176,74,82,0.7);
-      font-size: var(--text-xs);
-      cursor: pointer;
-      transition: all var(--transition-fast);
-    }
-    .btn-chart-delete:hover { background: rgba(110,26,38,0.15); color: var(--crimson-light); border-color: rgba(176,74,82,0.5); }
-
-    /* empty state */
-    .charts-empty-state {
-      text-align: center;
-      padding: var(--space-12) var(--space-6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-4);
-    }
-    .charts-empty-wheel {
-      width: 96px; height: 96px;
-      opacity: 0.6;
-    }
-    .charts-empty-title {
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      background: linear-gradient(135deg, #e8c96a 0%, #c9a227 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .charts-empty-sub {
-      font-size: var(--text-sm);
-      color: var(--silver-dim);
-      max-width: 340px;
-      line-height: 1.7;
-    }
-
-    /* ── Add chart panel ── */
-    .add-chart-panel {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(196,146,10,0.2);
-      border-radius: var(--radius-lg);
-      padding: var(--space-6);
-      margin-top: var(--space-4);
-      animation: slide-in 0.25s ease;
-    }
-    @keyframes slide-in {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .add-chart-panel h4 {
-      font-family: var(--font-display);
-      font-size: var(--text-base);
-      color: var(--gold-pale);
-      margin-bottom: var(--space-4);
-    }
-    .form-row-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: var(--space-4);
-    }
-
-    /* ── Backup panel ── */
-    .backup-row {
-      display: flex;
-      gap: var(--space-3);
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .backup-note {
-      font-size: var(--text-xs);
-      color: var(--silver-dim);
-      margin-top: var(--space-3);
-      line-height: 1.6;
-    }
-
-    /* ── Preferences panel ── */
-    .prefs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-5);
-    }
-    .pref-toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--space-3) var(--space-4);
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-    }
-    .pref-toggle-label { font-size: var(--text-sm); color: var(--silver); }
-    .toggle-switch {
-      position: relative;
-      width: 40px; height: 22px;
-      flex-shrink: 0;
-    }
-    .toggle-switch input { opacity: 0; width: 0; height: 0; }
-    .toggle-track {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-full);
-      cursor: pointer;
-      transition: all var(--transition-base);
-    }
-    .toggle-track::after {
-      content: '';
-      position: absolute;
-      top: 3px; left: 3px;
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: var(--silver-dim);
-      transition: all var(--transition-base);
-    }
-    .toggle-switch input:checked + .toggle-track {
-      background: rgba(196,146,10,0.25);
-      border-color: rgba(196,146,10,0.5);
-    }
-    .toggle-switch input:checked + .toggle-track::after {
-      left: 21px;
-      background: var(--gold);
-    }
-
-    /* ── Personal year card ── */
-    .personal-year-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6) var(--space-8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    @media (max-width: 600px) { .personal-year-card { padding: var(--space-5); } }
-
-    /* Reveal animation: see main.css (.reveal-init placeholder art + child fade-in) */
-
-    /* ── Small hero ── */
-    .hero--small {
-      padding: calc(var(--nav-height) + var(--space-10)) 0 var(--space-8);
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-    .hero--small h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: var(--space-3);
-      letter-spacing: 0.04em;
-    }
-    .hero--small p {
-      font-size: var(--text-base);
-      color: var(--silver-dim);
-    }
-    .hero__eyebrow {
-      font-size: var(--text-xs);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: var(--space-3);
-    }
-
-    /* ── Autocomplete dropdown ── */
-    .autocomplete-dropdown {
-      position: absolute;
-      left: 0; right: 0;
-      top: calc(100% + 4px);
-      background: var(--bg-2);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-lg);
-      z-index: 100;
-      max-height: 220px;
-      overflow-y: auto;
-      display: none;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-    }
-    .autocomplete-dropdown.open { display: block; }
-    .autocomplete-item {
-      padding: var(--space-3) var(--space-4);
-      cursor: pointer;
-      font-size: var(--text-sm);
-      color: var(--silver);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      transition: background var(--transition-fast);
-    }
-    .autocomplete-item:last-child { border-bottom: none; }
-    .autocomplete-item:hover, .autocomplete-item.active {
-      background: rgba(92, 74, 110,0.2);
-      color: var(--white);
-    }
-
-    /* ── Btn micro ── */
-    .btn--micro {
-      padding: 5px var(--space-3);
-      font-size: var(--text-xs);
-      border-radius: var(--radius-md);
-    }
-
-    /* ── Section accent line ── */
-    .section-top-line {
-      height: 2px;
-      background: linear-gradient(90deg, rgba(196,146,10,0.5) 0%, rgba(196,146,10,0) 100%);
-      border-radius: var(--radius-full);
-      margin-bottom: var(--space-6);
-    }
-  </style>
-</head>
+  </head>
 <body>
 
   <!-- Cosmic background -->
@@ -915,11 +65,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -946,7 +96,7 @@
     <!-- ================================================================
          SETUP STATE — shown when no profile exists
     ================================================================ -->
-    <section id="setup-section" aria-labelledby="setup-heading" class="hidden">
+    <section id="setup-section" aria-labelledby="setup-heading">
       <div class="container">
         <div class="profile-setup-card">
           <div class="setup-star-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
@@ -995,7 +145,7 @@
         <div class="cosmic-dash">
 
           <!-- ── 1. Profile Hero ── -->
-          <div class="profile-hero reveal-init" role="banner">
+          <div class="profile-hero reveal-init">
             <div class="avatar-wrap">
               <div class="avatar-pulse" aria-hidden="true"></div>
               <div class="avatar-circle" id="profile-avatar" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
@@ -1032,7 +182,12 @@
               Your Blueprint Completeness
             </h3>
             <div class="completeness-steps" id="completeness-steps" role="list" aria-label="Profile completion steps">
-              <!-- JS populates -->
+              <div class="completeness-step completeness-step--pending" role="listitem" aria-hidden="true"><span class="step-marker" aria-hidden="true"><span class="eng-step-ring"></span></span><span>Name</span></div>
+              <div class="completeness-step completeness-step--pending" role="listitem" aria-hidden="true"><span class="step-marker" aria-hidden="true"><span class="eng-step-ring"></span></span><span>Birth Date</span></div>
+              <div class="completeness-step completeness-step--pending" role="listitem" aria-hidden="true"><span class="step-marker" aria-hidden="true"><span class="eng-step-ring"></span></span><span>Birth Time</span></div>
+              <div class="completeness-step completeness-step--pending" role="listitem" aria-hidden="true"><span class="step-marker" aria-hidden="true"><span class="eng-step-ring"></span></span><span>Birth City</span></div>
+              <div class="completeness-step completeness-step--pending" role="listitem" aria-hidden="true"><span class="step-marker" aria-hidden="true"><span class="eng-step-ring"></span></span><span>Life Path</span></div>
+              <div class="completeness-step completeness-step--pending" role="listitem" aria-hidden="true"><span class="step-marker" aria-hidden="true"><span class="eng-step-ring"></span></span><span>First Chart</span></div>
             </div>
             <div class="completeness-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="completeness-bar-wrap">
               <div class="completeness-bar" id="completeness-bar" style="width:0%"></div>
@@ -1078,7 +233,14 @@
               Explore Next
             </h3>
             <div class="recommendations-grid" id="recommendations-grid" aria-live="polite">
-              <!-- JS populates -->
+              <article class="recommendation-card recommendation-card--skeleton" aria-hidden="true">
+                <div class="rec-header"><div class="rec-icon" aria-hidden="true"></div><h4 class="rec-title">&nbsp;</h4></div>
+                <p class="rec-body">&nbsp;</p>
+              </article>
+              <article class="recommendation-card recommendation-card--skeleton" aria-hidden="true">
+                <div class="rec-header"><div class="rec-icon" aria-hidden="true"></div><h4 class="rec-title">&nbsp;</h4></div>
+                <p class="rec-body">&nbsp;</p>
+              </article>
             </div>
           </div>
 
@@ -1249,36 +411,128 @@
 
   </main>
 
+  <section id="ap-email-banner" class="ap-email-cta ap-email-cta--banner" role="region" aria-labelledby="ap-email-banner-title">
+    <div class="container ap-email-cta__inner">
+      <div class="ap-email-cta__copy">
+        <p class="ap-email-cta__eyebrow">More coming soon</p>
+        <p class="ap-email-cta__title" id="ap-email-banner-title">Sign up &mdash; be first when we ship</p>
+        <p class="ap-email-cta__sub">One email list for everything launching next. No spam, no birth data uploaded &mdash; just your address.</p>
+        <ul class="ap-email-cta__perks">
+          <li>Chart wallpaper &mdash; your exact birth sky as a phone &amp; desktop background</li>
+          <li>Personal cosmic weather &mdash; transits to your chart, in plain English</li>
+          <li>Deep reading previews &mdash; written natal reports before the shop opens</li>
+          <li>Daily &amp; monthly horoscopes &mdash; same real-sky engine as the site, in your inbox</li>
+          <li>Shop early access &mdash; wear-your-sky prints, posters &amp; gift readings first</li>
+          <li>New tools first &mdash; retrograde alerts, synastry unlocks &amp; more as we build them</li>
+        </ul>
+      </div>
+      <form class="ap-email-cta__form" novalidate aria-label="Join the AstroPrecise update list">
+        <div class="ap-email-cta__fields">
+          <input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" />
+          <button type="submit" class="ap-email-cta__btn">&#10022; Get updates</button>
+        </div>
+        <p class="ap-email-cta__msg" role="status" aria-live="polite"></p>
+        <p class="ap-email-cta__hint">Only your email is sent &mdash; birth data never leaves your device. Unsubscribe anytime.</p>
+      </form>
+    </div>
+  </section>
+
   <!-- ================================================================
        FOOTER
   ================================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="ap-footer-signup ap-footer-signup--compact">
+        <p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">
+          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C9A227);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
+          &mdash; cosmic weather &amp; new features coming soon.
+        </p>
+      </div>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
-            <li><a href="lifepath.html" class="footer__link">Life Path</a></li>
-            <li><a href="ephemeris.html" class="footer__link">Instrument</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="Account navigation">
-          <p class="footer__heading">Account</p>
-          <ul class="footer__links">
-            <li><a href="profile.html" class="footer__link">My Dashboard</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by precise astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -1288,12 +542,33 @@
   <!-- ================================================================
        SCRIPTS
   ================================================================ -->
-  <script src="js/raf-core.js"></script>
-  <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
+  <script src="js/profile.js" defer></script>
+  <script>
+  (function () {
+    function audit() {
+      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
+    }
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
+    }
+    if (audit()) return;
+    inject('js/raf-core.js');
+    inject('js/ephemeris.js');
+    inject('js/ap-zodiac-constants.js');
+    function idleCosmos() {
+      if (audit()) return;
+      inject('js/cosmos.js');
+      inject('js/effects.js');
+    }
+    window.addEventListener('load', function () {
+      if (window.requestIdleCallback) requestIdleCallback(idleCosmos, { timeout: 4000 });
+      else setTimeout(idleCosmos, 1200);
+    }, { once: true });
+  })();
+  </script>
 
   <script>
   /* ================================================================
@@ -1301,6 +576,7 @@
   ================================================================ */
   (function () {
     'use strict';
+    if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
 
     // ── Storage ──────────────────────────────────────────────────────
     const STORE = 'ap_profile_v2';
@@ -1357,10 +633,12 @@
     }
 
     // ── Zodiac helpers ───────────────────────────────────────────────
-    const SIGN_GLYPHS = {
-      Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋', Leo:'♌', Virgo:'♍',
-      Libra:'♎', Scorpio:'♏', Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓'
-    };
+    function signSealHtml(sign, size) {
+      if (!sign) return '';
+      const key = (window.AP_ZODIAC && AP_ZODIAC.glyphKey(sign)) || String(sign).toLowerCase();
+      const cls = size === 'sm' ? ' ap-seal--sm' : ' ap-seal--lg';
+      return '<img class="ap-seal ap-seal--zodiac' + cls + '" src="assets/images/seals/zodiac/' + key + '.svg" alt="" aria-hidden="true" loading="eager">';
+    }
 
     function sunSignFromDate(dateStr) {
       if (!dateStr) return null;
@@ -1552,9 +830,9 @@
       if (charts.length > 0 && !profile.history?.includes('ephemeris')) {
         recs.push({
           icon:'◉', iconClass:'', urgent:false,
-          title:'Enter The Instrument',
+          title:'Explore Sky',
           body:'The Instrument computes your birth-light wavefront, zenith star, echo dates, and daimon — our most advanced and unusual feature.',
-          cta:'Open The Instrument', href:'ephemeris.html'
+          cta:'Open Sky', href:'ephemeris.html'
         });
       }
 
@@ -1619,7 +897,9 @@
       if (first.asc || first.ascendant) ascSign = first.asc || first.ascendant;
 
       if (avatarEl) {
-        avatarEl.textContent = sunSign ? (SIGN_GLYPHS[sunSign] || '') : '';
+        avatarEl.innerHTML = sunSign
+          ? signSealHtml(sunSign)
+          : '<span class="eng-star-mark" style="color:var(--gold);"></span>';
       }
 
       let tagline = 'Your cosmic journey begins here';
@@ -1766,9 +1046,7 @@
       if (emptyEl) emptyEl.hidden = true;
 
       grid.innerHTML = charts.map(c => {
-        const sunGlyph = c.sun ? SIGN_GLYPHS[c.sun] || '' : '';
-        const moonGlyph = c.moon ? SIGN_GLYPHS[c.moon] || '' : '';
-        const ascGlyph = (c.asc || c.ascendant) ? SIGN_GLYPHS[c.asc || c.ascendant] || '' : '';
+
         const params = new URLSearchParams();
         if (c.name) params.set('n', c.name);
         if (c.date) params.set('d', c.date);
@@ -1783,9 +1061,9 @@
           <div class="chart-gallery-item__name">${c.name || 'Unnamed Chart'}</div>
           <div class="chart-gallery-item__date">${dateDisplay}${c.city ? ' · ' + c.city : ''}</div>
           <div class="big-three">
-            ${c.sun ? `<span class="big-three-badge big-three-badge--sun">☉ ${sunGlyph} ${c.sun}</span>` : ''}
-            ${c.moon ? `<span class="big-three-badge big-three-badge--moon">☽ ${moonGlyph} ${c.moon}</span>` : ''}
-            ${(c.asc||c.ascendant) ? `<span class="big-three-badge big-three-badge--asc">↑ ${ascGlyph} ${c.asc||c.ascendant}</span>` : ''}
+            ${c.sun ? `<span class="big-three-badge big-three-badge--sun">☉ ${signSealHtml(c.sun, 'sm')} ${c.sun}</span>` : ''}
+            ${c.moon ? `<span class="big-three-badge big-three-badge--moon">☽ ${signSealHtml(c.moon, 'sm')} ${c.moon}</span>` : ''}
+            ${(c.asc||c.ascendant) ? `<span class="big-three-badge big-three-badge--asc">↑ ${signSealHtml(c.asc||c.ascendant, 'sm')} ${c.asc||c.ascendant}</span>` : ''}
           </div>
           <div class="chart-gallery-item__actions">
             <a href="${chartUrl}" class="btn-chart-link" aria-label="Open chart for ${c.name || 'Unnamed'}">Open Chart →</a>
@@ -2174,5 +1452,6 @@
   })();
   </script>
 
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

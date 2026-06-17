@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="My Cosmic Dashboard — track your astrological journey, save birth charts, and explore your life timeline. All data stored privately on your device." />
+  <title>My Cosmic Dashboard | AstroPrecise</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="My Cosmic Dashboard | AstroPrecise" />
+  <meta property="og:description" content="Your personal cosmic journal — birth charts, life milestones, and astrological insights stored privately on your device." />
+  <meta property="og:url" content="https://astroprecise.app/profile.html" />
+  <link rel="canonical" href="https://astroprecise.app/profile.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="My Cosmic Dashboard | AstroPrecise" />
+  <meta name="twitter:description" content="Your personal cosmic journal — birth charts, life milestones, and astrological insights stored privately on your device." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+
+  <style>
+    /* ================================================================
+       COSMIC DASHBOARD — Page-specific styles
+       Uses CSS vars from main.css
+    ================================================================ */
+
+    /* Dashboard layout */
+    .cosmic-dash {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding: var(--space-8) var(--space-4) var(--space-16);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Utility */
+    .hidden { display: none !important; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    /* ── Setup card ── */
+    .profile-setup-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-12) var(--space-10);
+      max-width: 520px;
+      margin: var(--space-16) auto;
+      text-align: center;
+      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-setup-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(196,146,10,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .profile-setup-card { padding: var(--space-8) var(--space-5); margin: var(--space-8) auto; }
+    }
+    .setup-star-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, rgba(196,146,10,0.18) 0%, rgba(196,146,10,0.05) 100%);
+      border: 1px solid rgba(196,146,10,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin: 0 auto var(--space-6);
+    }
+    .profile-setup-card h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: var(--space-3);
+    }
+    .profile-setup-card > p {
+      font-size: var(--text-sm);
+      color: var(--silver-dim);
+      line-height: 1.7;
+      margin-bottom: var(--space-6);
+    }
+    .setup-form { text-align: left; }
+    .setup-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+      color: var(--silver-dim);
+      font-size: var(--text-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .setup-divider::before, .setup-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .privacy-note {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      justify-content: center;
+      font-size: var(--text-xs);
+      color: var(--silver-dim);
+      margin-top: var(--space-5);
+      opacity: 0.7;
+    }
+
+    /* ── Profile hero ── */
+    .profile-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: var(--space-8);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: var(--space-6);
+      align-items: center;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.4), transparent);
+    }
+    @media (max-width: 640px) {
+      .profile-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: var(--space-4);
+      }
+      .profile-hero .btn { align-self: center; }
+    }
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .avatar-circle {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(92, 74, 110,0.5) 0%, rgba(110,26,38,0.4) 100%);
+      border: 2px solid rgba(196,146,10,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 0 32px rgba(196,146,10,0.15), inset 0 0 20px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
+    .avatar-pulse {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(196,146,10,0.15);
+      animation: avatar-pulse 3s ease-in-out infinite;
+    }
+    @keyframes avatar-pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.04); }
+    }
+    .profile-hero__info h2 {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: var(--space-1);
+    }
+    .profile-hero__label {
+      font-size: var(--text-xs);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: var(--space-2);
+    }
+    .profile-hero__tagline {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      font-style: italic;
+    }
+    .profile-hero__actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      align-items: flex-end;
+    }
+    @media (max-width: 640px) {
+      .profile-hero__actions { align-items: center; flex-direction: row; justify-content: center; }
+    }
+
+    /* ── Completeness ring ── */
+    .completeness-ring {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+    }
+    .completeness-ring svg { transform: rotate(-90deg); }
+    .completeness-ring__label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    /* ── Glass panel base ── */
+    .glass-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 600px) { .glass-panel { padding: var(--space-5); } }
+    .glass-panel__title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: var(--space-5);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .glass-panel__title .panel-icon {
+      font-size: 1rem;
+      opacity: 0.75;
+    }
+
+    /* ── Completeness panel ── */
+    .completeness-steps {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-4);
+    }
+    .completeness-step {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+      transition: all var(--transition-base);
+    }
+    .completeness-step--done {
+      border-color: rgba(196,146,10,0.4);
+      background: rgba(196,146,10,0.08);
+      color: var(--gold-pale);
+    }
+    .completeness-step--done .step-marker { color: var(--gold); }
+    .completeness-step--pending { color: var(--silver-dim); }
+    .completeness-step--pending .step-marker { color: var(--silver-dim); opacity: 0.5; }
+    .completeness-bar-wrap {
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: var(--space-3);
+    }
+    .completeness-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-pale) 100%);
+      border-radius: var(--radius-full);
+      transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .completeness-msg {
+      font-size: var(--text-sm);
+      color: var(--silver-dim);
+      line-height: 1.6;
+    }
+    .completeness-msg a { color: var(--gold); }
+    .completeness-msg a:hover { color: var(--gold-pale); }
+
+    /* ── Cosmic season card ── */
+    .cosmic-season-card {
+      background: linear-gradient(135deg, rgba(20, 16, 10,0.9) 0%, rgba(92, 74, 110,0.12) 100%);
+      border: 1px solid rgba(196,146,10,0.2);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+    .cosmic-season-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,146,10,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    @media (max-width: 600px) { .cosmic-season-card { padding: var(--space-5); } }
+    .season-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-6);
+      align-items: start;
+    }
+    @media (max-width: 560px) { .season-grid { grid-template-columns: 1fr; } }
+    .personal-year-num {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(196,146,10,0.4);
+      min-width: 80px;
+      text-align: center;
+    }
+    .personal-year-label {
+      font-size: var(--text-xs);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.7;
+      text-align: center;
+    }
+    .season-details h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: var(--space-2);
+    }
+    .season-theme {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      line-height: 1.65;
+      margin-bottom: var(--space-4);
+      font-style: italic;
+    }
+    .season-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+    .season-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      background: rgba(92, 74, 110,0.2);
+      border: 1px solid rgba(92, 74, 110,0.3);
+      font-size: var(--text-xs);
+      color: var(--silver);
+    }
+    .season-badge--gold {
+      background: rgba(196,146,10,0.1);
+      border-color: rgba(196,146,10,0.3);
+      color: var(--gold-pale);
+    }
+
+    /* ── Chapter card ── */
+    .chapter-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-top: var(--space-4);
+    }
+    .chapter-planet-symbol {
+      font-size: 1.75rem;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 8px rgba(196,146,10,0.4));
+    }
+    .chapter-info p { font-size: var(--text-sm); color: var(--silver); }
+    .chapter-info strong {
+      display: block;
+      color: var(--white);
+      font-family: var(--font-heading);
+      font-size: var(--text-base);
+      margin-bottom: 2px;
+    }
+
+    /* ── Journey timeline ── */
+    .milestone-timeline {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      padding: var(--space-4) 0 var(--space-6);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(196,146,10,0.2) transparent;
+      position: relative;
+    }
+    .milestone-timeline::before {
+      content: '';
+      position: absolute;
+      top: 38px;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 10%, var(--border) 90%, transparent);
+    }
+    .milestone-dot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      min-width: 100px;
+      padding: 0 var(--space-2);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .milestone-dot__bubble {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      background: var(--surface);
+      position: relative;
+      z-index: 1;
+      transition: all var(--transition-base);
+    }
+    .milestone-dot--past .milestone-dot__bubble {
+      border-color: rgba(196,146,10,0.25);
+      background: rgba(196,146,10,0.06);
+      opacity: 0.6;
+    }
+    .milestone-dot--active .milestone-dot__bubble {
+      border-color: var(--gold);
+      background: rgba(196,146,10,0.15);
+      box-shadow: 0 0 20px rgba(196,146,10,0.3);
+    }
+    .milestone-dot--future .milestone-dot__bubble {
+      border-color: rgba(168, 158, 136,0.2);
+      background: rgba(168, 158, 136,0.04);
+    }
+    .milestone-dot--active .milestone-dot__bubble::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(196,146,10,0.2);
+      animation: milestone-pulse 2s ease-in-out infinite;
+    }
+    @keyframes milestone-pulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.08); }
+    }
+    .milestone-dot__year {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+    .milestone-dot--past .milestone-dot__year { color: var(--silver-dim); opacity: 0.6; }
+    .milestone-dot--active .milestone-dot__year { color: var(--gold); }
+    .milestone-dot--future .milestone-dot__year { color: var(--silver); }
+    .milestone-dot__name {
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.3;
+      max-width: 90px;
+    }
+    .milestone-dot--past .milestone-dot__name { color: var(--silver-dim); opacity: 0.55; }
+    .milestone-dot--active .milestone-dot__name { color: var(--gold-pale); }
+    .milestone-dot--future .milestone-dot__name { color: var(--silver-dim); }
+    .timeline-scroll-hint {
+      font-size: var(--text-xs);
+      color: var(--silver-dim);
+      opacity: 0.5;
+      text-align: right;
+      margin-top: var(--space-2);
+    }
+
+    /* ── Recommendations ── */
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--space-4);
+    }
+    .recommendation-card {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      transition: all var(--transition-base);
+      position: relative;
+    }
+    .recommendation-card:hover {
+      border-color: rgba(196,146,10,0.25);
+      background: rgba(196,146,10,0.04);
+      transform: translateY(-2px);
+    }
+    .recommendation-card--urgent { border-color: rgba(196,146,10,0.3); }
+    .rec-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+    }
+    .rec-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      background: rgba(92, 74, 110,0.2);
+      border: 1px solid rgba(92, 74, 110,0.3);
+    }
+    .rec-icon--gold { background: rgba(196,146,10,0.12); border-color: rgba(196,146,10,0.3); }
+    .rec-title {
+      font-family: var(--font-heading);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.3;
+    }
+    .rec-body { font-size: var(--text-sm); color: var(--silver-dim); line-height: 1.6; }
+    .urgency-dot {
+      position: absolute;
+      top: var(--space-3); right: var(--space-3);
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px rgba(196,146,10,0.6);
+    }
+
+    /* ── Stat grid ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+    @media (max-width: 500px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+    .stat-cell {
+      text-align: center;
+      padding: var(--space-4) var(--space-3);
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .stat-cell__value {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: var(--space-1);
+    }
+    .stat-cell__label {
+      font-size: var(--text-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+
+    /* ── Charts gallery ── */
+    .charts-gallery-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-5);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--border);
+    }
+    .charts-gallery-header h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+    .chart-gallery-item {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      transition: all var(--transition-base);
+      position: relative;
+    }
+    .chart-gallery-item:hover {
+      border-color: rgba(196,146,10,0.3);
+      background: rgba(196,146,10,0.04);
+      transform: translateY(-2px);
+    }
+    .chart-gallery-item__name {
+      font-family: var(--font-heading);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--white);
+    }
+    .chart-gallery-item__date {
+      font-size: var(--text-xs);
+      color: var(--silver-dim);
+      letter-spacing: 0.04em;
+    }
+    .big-three {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .big-three-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px var(--space-2);
+      border-radius: var(--radius-full);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .big-three-badge--sun { background: rgba(196,146,10,0.12); border: 1px solid rgba(196,146,10,0.25); color: var(--gold-pale); }
+    .big-three-badge--moon { background: rgba(168, 158, 136,0.1); border: 1px solid rgba(168, 158, 136,0.2); color: var(--silver); }
+    .big-three-badge--asc { background: rgba(92, 74, 110,0.15); border: 1px solid rgba(92, 74, 110,0.3); color: var(--lapis-bright); }
+    .chart-gallery-item__actions {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: auto;
+    }
+    .btn-chart-link {
+      flex: 1;
+      padding: var(--space-2) var(--space-3);
+      background: rgba(92, 74, 110,0.18);
+      border: 1px solid rgba(92, 74, 110,0.3);
+      border-radius: var(--radius-md);
+      color: var(--lapis-bright);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-align: center;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .btn-chart-link:hover { background: rgba(92, 74, 110,0.3); color: var(--white); }
+    .btn-chart-delete {
+      padding: var(--space-2) var(--space-3);
+      background: transparent;
+      border: 1px solid rgba(110,26,38,0.3);
+      border-radius: var(--radius-md);
+      color: rgba(176,74,82,0.7);
+      font-size: var(--text-xs);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .btn-chart-delete:hover { background: rgba(110,26,38,0.15); color: var(--crimson-light); border-color: rgba(176,74,82,0.5); }
+
+    /* empty state */
+    .charts-empty-state {
+      text-align: center;
+      padding: var(--space-12) var(--space-6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .charts-empty-wheel {
+      width: 96px; height: 96px;
+      opacity: 0.6;
+    }
+    .charts-empty-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      background: linear-gradient(135deg, #e8c96a 0%, #c9a227 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .charts-empty-sub {
+      font-size: var(--text-sm);
+      color: var(--silver-dim);
+      max-width: 340px;
+      line-height: 1.7;
+    }
+
+    /* ── Add chart panel ── */
+    .add-chart-panel {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(196,146,10,0.2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-top: var(--space-4);
+      animation: slide-in 0.25s ease;
+    }
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .add-chart-panel h4 {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      color: var(--gold-pale);
+      margin-bottom: var(--space-4);
+    }
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+    }
+
+    /* ── Backup panel ── */
+    .backup-row {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .backup-note {
+      font-size: var(--text-xs);
+      color: var(--silver-dim);
+      margin-top: var(--space-3);
+      line-height: 1.6;
+    }
+
+    /* ── Preferences panel ── */
+    .prefs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-5);
+    }
+    .pref-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-4);
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .pref-toggle-label { font-size: var(--text-sm); color: var(--silver); }
+    .toggle-switch {
+      position: relative;
+      width: 40px; height: 22px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--silver-dim);
+      transition: all var(--transition-base);
+    }
+    .toggle-switch input:checked + .toggle-track {
+      background: rgba(196,146,10,0.25);
+      border-color: rgba(196,146,10,0.5);
+    }
+    .toggle-switch input:checked + .toggle-track::after {
+      left: 21px;
+      background: var(--gold);
+    }
+
+    /* ── Personal year card ── */
+    .personal-year-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    @media (max-width: 600px) { .personal-year-card { padding: var(--space-5); } }
+
+    /* Reveal animation: see main.css (.reveal-init placeholder art + child fade-in) */
+
+    /* ── Small hero ── */
+    .hero--small {
+      padding: calc(var(--nav-height) + var(--space-10)) 0 var(--space-8);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero--small h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: var(--space-3);
+      letter-spacing: 0.04em;
+    }
+    .hero--small p {
+      font-size: var(--text-base);
+      color: var(--silver-dim);
+    }
+    .hero__eyebrow {
+      font-size: var(--text-xs);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: var(--space-3);
+    }
+
+    /* ── Autocomplete dropdown ── */
+    .autocomplete-dropdown {
+      position: absolute;
+      left: 0; right: 0;
+      top: calc(100% + 4px);
+      background: var(--bg-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-lg);
+      z-index: 100;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    }
+    .autocomplete-dropdown.open { display: block; }
+    .autocomplete-item {
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      color: var(--silver);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background var(--transition-fast);
+    }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover, .autocomplete-item.active {
+      background: rgba(92, 74, 110,0.2);
+      color: var(--white);
+    }
+
+    /* ── Btn micro ── */
+    .btn--micro {
+      padding: 5px var(--space-3);
+      font-size: var(--text-xs);
+      border-radius: var(--radius-md);
+    }
+
+    /* ── Section accent line ── */
+    .section-top-line {
+      height: 2px;
+      background: linear-gradient(90deg, rgba(196,146,10,0.5) 0%, rgba(196,146,10,0) 100%);
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ================================================================
+       NAVIGATION
+  ================================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section class="hero hero--small" aria-labelledby="page-heading">
+      <div class="container">
+        <p class="hero__eyebrow">Your Cosmic Record</p>
+        <h1 id="page-heading">My Cosmic Dashboard</h1>
+        <p>Your personal astrological journal — stored privately on this device</p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Your record lives only on this device — no server, no account needed</span></a></p>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SETUP STATE — shown when no profile exists
+    ================================================================ -->
+    <section id="setup-section" aria-labelledby="setup-heading" class="hidden">
+      <div class="container">
+        <div class="profile-setup-card">
+          <div class="setup-star-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
+          <h2 id="setup-heading">Begin Your Cosmic Record</h2>
+          <p>Your complete astrological journal lives here — birth charts, life milestones, and personal insights. Everything is computed in your browser and never leaves your device.</p>
+
+          <form id="setup-form" class="setup-form" novalidate aria-label="Create profile">
+            <div class="form-group">
+              <label for="setup-name" class="form-label">Your Name <span aria-hidden="true" style="color:var(--gold)">*</span></label>
+              <input type="text" id="setup-name" name="setup-name" class="form-input"
+                     placeholder="How shall the cosmos address you?"
+                     required aria-required="true" autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="setup-email" class="form-label">Email <span style="color:var(--silver-dim);font-weight:400">(optional)</span></label>
+              <input type="email" id="setup-email" name="setup-email" class="form-input"
+                     placeholder="Stored only on this device"
+                     autocomplete="email" />
+            </div>
+            <button type="submit" class="btn btn--primary btn--lg" style="width:100%;margin-top:var(--space-5);">
+              Begin &rarr;
+            </button>
+          </form>
+
+          <div class="setup-divider">or</div>
+
+          <label for="import-input-setup" class="btn btn--outline" style="cursor:pointer;width:100%;justify-content:center;">
+            Import Existing Profile
+            <input type="file" id="import-input-setup" accept=".json" class="sr-only"
+                   aria-label="Import profile from JSON file" />
+          </label>
+
+          <p class="privacy-note">
+            <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-lock"/></svg></span>
+            Your data never leaves this device
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         DASHBOARD STATE — shown once profile exists
+    ================================================================ -->
+    <section id="dashboard-section" class="hidden" aria-labelledby="dash-name-heading">
+      <div class="container">
+        <div class="cosmic-dash">
+
+          <!-- ── 1. Profile Hero ── -->
+          <div class="profile-hero reveal-init" role="banner">
+            <div class="avatar-wrap">
+              <div class="avatar-pulse" aria-hidden="true"></div>
+              <div class="avatar-circle" id="profile-avatar" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
+            </div>
+            <div class="profile-hero__info">
+              <p class="profile-hero__label">Cosmic Profile</p>
+              <h2 id="dash-name-heading">Stargazer</h2>
+              <p class="profile-hero__tagline" id="profile-tagline">Your cosmic journey begins here</p>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:var(--space-3);">
+              <div class="completeness-ring" title="Profile completeness" aria-label="Profile completeness">
+                <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+                  <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
+                  <circle id="completeness-arc" cx="28" cy="28" r="22" fill="none"
+                          stroke="var(--gold)" stroke-width="4"
+                          stroke-linecap="round"
+                          stroke-dasharray="138.2"
+                          stroke-dashoffset="138.2"
+                          style="transition:stroke-dashoffset 1s cubic-bezier(0.34,1.56,0.64,1)"/>
+                </svg>
+                <span class="completeness-ring__label" id="completeness-pct">0%</span>
+              </div>
+              <button class="btn btn--ghost btn--micro" id="clear-profile-btn"
+                      aria-label="Clear all profile data from this device">
+                Clear Profile
+              </button>
+            </div>
+          </div>
+
+          <!-- ── 2. Completeness Tracker ── -->
+          <div class="glass-panel reveal-init" id="completeness-panel" aria-labelledby="completeness-title">
+            <h3 class="glass-panel__title" id="completeness-title">
+              <span class="panel-icon" aria-hidden="true">◎</span>
+              Your Blueprint Completeness
+            </h3>
+            <div class="completeness-steps" id="completeness-steps" role="list" aria-label="Profile completion steps">
+              <!-- JS populates -->
+            </div>
+            <div class="completeness-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="completeness-bar-wrap">
+              <div class="completeness-bar" id="completeness-bar" style="width:0%"></div>
+            </div>
+            <p class="completeness-msg" id="completeness-msg"></p>
+          </div>
+
+          <!-- ── 3. Cosmic Season ── -->
+          <div class="cosmic-season-card reveal-init" id="cosmic-season-card" aria-labelledby="season-heading">
+            <div class="glass-panel__title" id="season-heading" style="border-bottom:1px solid rgba(196,146,10,0.15);margin-bottom:var(--space-5);padding-bottom:var(--space-3);font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--white);display:flex;align-items:center;gap:var(--space-3);">
+              <span aria-hidden="true">☿</span> Current Cosmic Season
+            </div>
+            <div class="season-grid" id="season-grid">
+              <!-- Populated by JS if birth date available -->
+              <div style="grid-column:1/-1;text-align:center;padding:var(--space-8) 0;">
+                <p style="color:var(--silver-dim);font-size:var(--text-sm);">
+                  Save a birth chart to unlock your personal cosmic season.
+                </p>
+                <a href="#charts-gallery-section" class="btn btn--outline btn--sm" style="margin-top:var(--space-4);">Add Birth Chart</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── 4. Life Journey Timeline ── -->
+          <div class="glass-panel reveal-init" id="journey-section" aria-labelledby="journey-heading">
+            <h3 class="glass-panel__title" id="journey-heading">
+              <span class="panel-icon" aria-hidden="true">⟳</span>
+              Your Cosmic Timeline
+            </h3>
+            <div class="milestone-timeline" id="milestone-timeline" role="list" aria-label="Life milestone timeline" tabindex="0">
+              <!-- JS populates -->
+              <div style="padding:var(--space-6) 0 var(--space-4);color:var(--silver-dim);font-size:var(--text-sm);" id="timeline-empty">
+                Add a birth chart to see your cosmic milestones.
+              </div>
+            </div>
+            <p class="timeline-scroll-hint" id="timeline-scroll-hint" hidden aria-hidden="true">← scroll to explore →</p>
+          </div>
+
+          <!-- ── 5. Recommendations ── -->
+          <div class="glass-panel reveal-init" id="recommendations-section" aria-labelledby="rec-heading">
+            <h3 class="glass-panel__title" id="rec-heading">
+              <span class="panel-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
+              Explore Next
+            </h3>
+            <div class="recommendations-grid" id="recommendations-grid" aria-live="polite">
+              <!-- JS populates -->
+            </div>
+          </div>
+
+          <!-- ── 6. Statistics ── -->
+          <div class="glass-panel reveal-init" aria-labelledby="stats-heading">
+            <h3 class="glass-panel__title" id="stats-heading">
+              <span class="panel-icon" aria-hidden="true">◈</span>
+              Your Journey Stats
+            </h3>
+            <div class="stat-grid">
+              <div class="stat-cell">
+                <div class="stat-cell__value" id="stat-charts">0</div>
+                <div class="stat-cell__label">Charts Saved</div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-cell__value" id="stat-days">0</div>
+                <div class="stat-cell__label">Days Active</div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-cell__value" id="stat-complete">0%</div>
+                <div class="stat-cell__label">Blueprint Complete</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── 7. Saved Charts Gallery ── -->
+          <div class="glass-panel reveal-init" id="charts-gallery-section" aria-labelledby="charts-heading">
+            <div class="charts-gallery-header">
+              <h3 id="charts-heading">
+                <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span> Saved Charts
+              </h3>
+              <button class="btn btn--primary btn--micro" id="add-chart-btn"
+                      aria-expanded="false" aria-controls="add-chart-panel">
+                + Add Chart
+              </button>
+            </div>
+
+            <!-- Add chart form (collapsible) -->
+            <div id="add-chart-panel" hidden aria-label="Add new birth chart">
+              <div class="add-chart-panel">
+                <h4>New Birth Chart</h4>
+                <form id="add-chart-form" novalidate aria-label="Add birth chart form">
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="ac-name" class="form-label">Chart Label</label>
+                      <input type="text" id="ac-name" class="form-input"
+                             placeholder="e.g. My Chart, Mom" autocomplete="off" />
+                    </div>
+                    <div class="form-group">
+                      <label for="ac-date" class="form-label">Birth Date <span aria-hidden="true" style="color:var(--gold)">*</span></label>
+                      <input type="date" id="ac-date" class="form-input" required aria-required="true" />
+                    </div>
+                    <div class="form-group">
+                      <label for="ac-time" class="form-label">Birth Time</label>
+                      <input type="time" id="ac-time" class="form-input" value="12:00"
+                             aria-describedby="ac-time-hint" />
+                      <p class="form-hint" id="ac-time-hint">Affects Rising sign and houses.</p>
+                    </div>
+                  </div>
+                  <div class="form-group" style="position:relative;margin-top:var(--space-3);">
+                    <label for="ac-city" class="form-label">Birth City <span aria-hidden="true" style="color:var(--gold)">*</span></label>
+                    <input type="text" id="ac-city" class="form-input"
+                           placeholder="Start typing a city…"
+                           autocomplete="off"
+                           aria-autocomplete="list"
+                           aria-controls="ac-city-dropdown"
+                           required aria-required="true" />
+                    <div id="ac-city-dropdown" class="autocomplete-dropdown" role="listbox" aria-label="City suggestions"></div>
+                    <input type="hidden" id="ac-lat" />
+                    <input type="hidden" id="ac-lon" />
+                    <input type="hidden" id="ac-tz" />
+                  </div>
+                  <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+                    <button type="submit" class="btn btn--primary">Compute &amp; Save <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></button>
+                    <button type="button" class="btn btn--ghost" id="cancel-chart-btn">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Charts grid -->
+            <div class="charts-grid" id="charts-grid" aria-live="polite" aria-label="Saved birth charts">
+              <!-- JS populates -->
+            </div>
+            <div id="charts-empty" class="charts-empty-state" hidden>
+              <svg class="charts-empty-wheel" viewBox="0 0 96 96" fill="none" aria-hidden="true">
+                <circle cx="48" cy="48" r="44" stroke="rgba(196,146,10,0.3)" stroke-width="1.5"/>
+                <circle cx="48" cy="48" r="32" stroke="rgba(91,127,199,0.3)" stroke-width="1"/>
+                <circle cx="48" cy="48" r="18" stroke="rgba(196,146,10,0.2)" stroke-width="1"/>
+                <circle cx="48" cy="48" r="4" fill="rgba(196,146,10,0.5)"/>
+                <g stroke="rgba(196,146,10,0.25)" stroke-width="1">
+                  <line x1="48" y1="4" x2="48" y2="14"/>
+                  <line x1="48" y1="82" x2="48" y2="92"/>
+                  <line x1="4" y1="48" x2="14" y2="48"/>
+                  <line x1="82" y1="48" x2="92" y2="48"/>
+                </g>
+              </svg>
+              <p class="charts-empty-title">Your Blueprint Awaits</p>
+              <p class="charts-empty-sub">Calculate your birth chart to unlock personalised readings, daily transits, and your cosmic timeline.</p>
+              <a href="chart.html" class="btn btn--primary btn--sm">Calculate My Chart</a>
+            </div>
+          </div>
+
+          <!-- ── 8. Backup & Restore ── -->
+          <div class="glass-panel reveal-init" aria-labelledby="backup-heading">
+            <h3 class="glass-panel__title" id="backup-heading">
+              <span class="panel-icon" aria-hidden="true">⬡</span>
+              Backup &amp; Restore
+            </h3>
+            <p style="color:var(--silver-dim);font-size:var(--text-sm);line-height:1.65;margin-bottom:var(--space-5);">
+              Export a complete JSON backup of your profile and charts. Import it on any device to restore your cosmic record. The format is open and human-readable.
+            </p>
+            <div class="backup-row">
+              <button id="export-btn" class="btn btn--secondary">
+                ↓ Export My Data
+              </button>
+              <label for="import-input-dash" class="btn btn--ghost" style="cursor:pointer;">
+                ↑ Import Data
+                <input type="file" id="import-input-dash" accept=".json" class="sr-only"
+                       aria-label="Import profile JSON file" />
+              </label>
+            </div>
+            <p class="backup-note">
+              Export files are standard JSON — inspect, back up, or import into the AstroPrecise Android app.
+            </p>
+          </div>
+
+          <!-- ── 9. Preferences ── -->
+          <div class="glass-panel reveal-init" aria-labelledby="prefs-heading">
+            <h3 class="glass-panel__title" id="prefs-heading">
+              <span class="panel-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gear"/></svg></span>
+              Preferences
+            </h3>
+            <div class="prefs-grid">
+              <div class="form-group">
+                <label for="pref-house" class="form-label">House System</label>
+                <select id="pref-house" class="form-select"
+                        aria-describedby="pref-house-desc">
+                  <option value="equal">Equal House</option>
+                  <option value="placidus">Placidus</option>
+                  <option value="whole">Whole Sign</option>
+                </select>
+                <p class="form-hint" id="pref-house-desc">Equal: widely used. Placidus: traditional Western. Whole Sign: ancient method.</p>
+              </div>
+              <div class="form-group">
+                <label for="pref-orbs" class="form-label">Aspect Orbs</label>
+                <select id="pref-orbs" class="form-select">
+                  <option value="standard">Standard (8° / 4°)</option>
+                  <option value="tight">Tight (6° / 3°)</option>
+                  <option value="wide">Wide (10° / 5°)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <div class="pref-toggle-row">
+                  <span class="pref-toggle-label">Reduced Nebula Effect</span>
+                  <label class="toggle-switch" aria-label="Toggle reduced nebula effect">
+                    <input type="checkbox" id="pref-reduced-nebula" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.cosmic-dash -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================================================================
+       FOOTER
+  ================================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <div role="group" aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+            <li><a href="lifepath.html" class="footer__link">Life Path</a></li>
+            <li><a href="ephemeris.html" class="footer__link">Instrument</a></li>
+          </ul>
+        </div>
+        <div role="group" aria-label="Account navigation">
+          <p class="footer__heading">Account</p>
+          <ul class="footer__links">
+            <li><a href="profile.html" class="footer__link">My Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 AstroPrecise. Powered by precise astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ================================================================
+       SCRIPTS
+  ================================================================ -->
+  <script src="js/raf-core.js"></script>
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+
+  <script>
+  /* ================================================================
+     COSMIC DASHBOARD — Inline controller
+  ================================================================ */
+  (function () {
+    'use strict';
+
+    // ── Storage ──────────────────────────────────────────────────────
+    const STORE = 'ap_profile_v2';
+
+    function getProfile() {
+      try { return JSON.parse(localStorage.getItem(STORE)) || null; } catch { return null; }
+    }
+
+    function saveProfile(p) {
+      p.updatedAt = Date.now();
+      localStorage.setItem(STORE, JSON.stringify(p));
+    }
+
+    function blankProfile(name, email) {
+      return {
+        name: name || 'Stargazer',
+        email: email || '',
+        created: Date.now(),
+        updatedAt: Date.now(),
+        charts: [],
+        prefs: { houseSystem: 'equal', orbStyle: 'standard', reducedNebula: false },
+        history: []
+      };
+    }
+
+    // Merge cosmic-dashboard charts with chart.html saves (`ap_charts` via AstroProfile).
+    function getEffectiveCharts(profile) {
+      const dashCharts = (profile && profile.charts) || [];
+      let apCharts = [];
+      if (window.AstroProfile && typeof AstroProfile.getCharts === 'function') {
+        try { apCharts = AstroProfile.getCharts() || []; } catch { apCharts = []; }
+      }
+      const mapAp = (window.AstroProfile && AstroProfile.chartToDashboardRow)
+        ? c => AstroProfile.chartToDashboardRow(c)
+        : c => ({
+            id: c.id, name: c.name, date: c.birthDate, time: c.birthTime || '12:00',
+            city: c.birthCity || c.city || '', lat: c.lat, lon: c.lon, tz: c.tz || '',
+            sun: c.sunSign, moon: c.moonSign, asc: c.risingSign,
+            savedAt: c.updatedAt || c.createdAt,
+          });
+      const byId = new Map();
+      dashCharts.forEach(c => { if (c && c.id) byId.set(c.id, c); });
+      apCharts.forEach(c => {
+        const row = mapAp(c);
+        if (!row || !row.id) return;
+        byId.set(row.id, byId.has(row.id) ? { ...byId.get(row.id), ...row } : row);
+      });
+      return Array.from(byId.values()).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
+    }
+
+    function profileWithMergedCharts(profile) {
+      if (!profile) return profile;
+      return { ...profile, charts: getEffectiveCharts(profile) };
+    }
+
+    // ── Zodiac helpers ───────────────────────────────────────────────
+    const SIGN_GLYPHS = {
+      Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋', Leo:'♌', Virgo:'♍',
+      Libra:'♎', Scorpio:'♏', Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓'
+    };
+
+    function sunSignFromDate(dateStr) {
+      if (!dateStr) return null;
+      const d = new Date(dateStr + 'T12:00:00');
+      const m = d.getMonth() + 1;
+      const day = d.getDate();
+      if ((m===3&&day>=21)||(m===4&&day<=19)) return 'Aries';
+      if ((m===4&&day>=20)||(m===5&&day<=20)) return 'Taurus';
+      if ((m===5&&day>=21)||(m===6&&day<=20)) return 'Gemini';
+      if ((m===6&&day>=21)||(m===7&&day<=22)) return 'Cancer';
+      if ((m===7&&day>=23)||(m===8&&day<=22)) return 'Leo';
+      if ((m===8&&day>=23)||(m===9&&day<=22)) return 'Virgo';
+      if ((m===9&&day>=23)||(m===10&&day<=22)) return 'Libra';
+      if ((m===10&&day>=23)||(m===11&&day<=21)) return 'Scorpio';
+      if ((m===11&&day>=22)||(m===12&&day<=21)) return 'Sagittarius';
+      if ((m===12&&day>=22)||(m===1&&day<=19)) return 'Capricorn';
+      if ((m===1&&day>=20)||(m===2&&day<=18)) return 'Aquarius';
+      return 'Pisces';
+    }
+
+    // ── Personal Year ────────────────────────────────────────────────
+    function calcPersonalYear(birthDateStr, targetYear) {
+      if (!birthDateStr) return null;
+      const bd = new Date(birthDateStr + 'T12:00:00');
+      const digits = [bd.getDate(), bd.getMonth() + 1, targetYear];
+      let sum = digits.reduce((acc, v) => acc + String(v).split('').reduce((a,c) => a + parseInt(c), 0), 0);
+      while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+        sum = String(sum).split('').reduce((a,c) => a + parseInt(c), 0);
+      }
+      return sum;
+    }
+
+    const PERSONAL_YEAR_NAMES = {
+      1:'New Beginnings', 2:'Patience & Partnership', 3:'Creativity & Expression',
+      4:'Foundation & Work', 5:'Change & Freedom', 6:'Responsibility & Harmony',
+      7:'Inner Reflection', 8:'Power & Ambition', 9:'Completion & Release',
+      11:'Intuition & Illumination', 22:'Master Builder', 33:'Master Teacher'
+    };
+
+    const PERSONAL_YEAR_THEMES = {
+      1:'A year to plant seeds, launch initiatives, and assert your individuality. The cosmos clears space for a fresh chapter.',
+      2:'Cooperation and emotional intelligence are your greatest assets. Nurture relationships and trust the quiet unfolding.',
+      3:'Your creative voice wants to be heard. Express, socialise, and allow joy to guide your choices.',
+      4:'Build the structures that will carry you forward. Discipline, planning, and steady effort compound now.',
+      5:'Expect the unexpected. This year rewards flexibility, travel, and willingness to leave the familiar behind.',
+      6:'Home, family, and community call for your attention. Beauty and service are the twin themes.',
+      7:'Retreat inward. Study, meditate, seek truth. The outer world offers little; the inner world offers everything.',
+      8:'Authority and ambition align. Financial and professional power are accessible — use them wisely.',
+      9:'A great cycle closes. Release what is spent; make room for what 1 will bring. Forgiveness is the key.',
+      11:'Heightened intuition and idealism define this master year. You are a channel — stay grounded and listen.',
+      22:'The master builder year. Vast practical vision combined with disciplined execution can move mountains.',
+      33:'Service at the highest level. Your gifts are meant to uplift others; teaching and healing are your path.'
+    };
+
+    // ── Saturn / Jupiter milestones ──────────────────────────────────
+    function getMilestones(birthDateStr) {
+      if (!birthDateStr) return [];
+      const bd = new Date(birthDateStr + 'T12:00:00');
+      const byear = bd.getFullYear();
+      const milestones = [
+        { name:'Jupiter Return',   sym:'♃', age:12, period:12 },
+        { name:'Saturn Return I',  sym:'♄', age:29.5 },
+        { name:'Uranus Opposition',sym:'♅', age:42 },
+        { name:'Chiron Return',    sym:'⚷', age:50 },
+        { name:'Saturn Return II', sym:'♄', age:59 },
+        { name:'Uranus Return',    sym:'♅', age:84 },
+      ];
+      const now = new Date();
+      const nowYear = now.getFullYear();
+      const ageNow = nowYear - byear;
+      const result = [];
+      milestones.forEach(m => {
+        const year = Math.round(byear + m.age);
+        const age = Math.round(m.age);
+        let status = 'future';
+        if (nowYear > year + 1) status = 'past';
+        else if (Math.abs(nowYear - year) <= 1) status = 'active';
+        result.push({ ...m, year, age, status });
+      });
+      // Also add Jupiter returns at 24, 36, 48, 60
+      [24,36,48,60].forEach(a => {
+        const year = Math.round(byear + a);
+        const age = a;
+        let status = 'future';
+        if (nowYear > year + 1) status = 'past';
+        else if (Math.abs(nowYear - year) <= 1) status = 'active';
+        result.push({ name:'Jupiter Return', sym:'♃', year, age, status });
+      });
+      result.sort((a,b) => a.year - b.year);
+      return result;
+    }
+
+    // ── Completeness ─────────────────────────────────────────────────
+    function calcCompleteness(profile) {
+      const first = (profile.charts || [])[0] || {};
+      const steps = [
+        { key:'name',       label:'Name',       done: !!(profile.name && profile.name !== 'Stargazer') },
+        { key:'birthdate',  label:'Birth Date',  done: !!first.date },
+        { key:'birthtime',  label:'Birth Time',  done: !!(first.time && first.time !== '12:00') },
+        { key:'birthcity',  label:'Birth City',  done: !!(first.city) },
+        { key:'lifepath',   label:'Life Path',   done: !!(profile.history && profile.history.includes('lifepath')) },
+        { key:'chart',      label:'First Chart', done: (profile.charts||[]).length > 0 },
+      ];
+      const done = steps.filter(s => s.done).length;
+      return { steps, pct: Math.round((done / steps.length) * 100), done };
+    }
+
+    function completenessMessage(steps, profile) {
+      const first = (profile.charts || [])[0] || {};
+      if (!steps.find(s=>s.key==='birthdate').done) {
+        return 'Add a birth chart to unlock your cosmic timeline and personalised insights. <a href="#charts-gallery-section">Add Chart →</a>';
+      }
+      if (!steps.find(s=>s.key==='birthtime').done) {
+        return 'Add your exact birth time for accurate Rising sign, houses, and ascendant.';
+      }
+      if (!steps.find(s=>s.key==='lifepath').done) {
+        return 'Visit <a href="lifepath.html">Life Path</a> to discover your numerological blueprint.';
+      }
+      if (!steps.find(s=>s.key==='lifepath').done || (profile.charts||[]).length < 2) {
+        return 'Try <a href="compatibility.html">Compatibility</a> to compare charts with someone important.';
+      }
+      return 'Your cosmic record is beautifully complete. Keep exploring the stars.';
+    }
+
+    // ── Recommendations engine ───────────────────────────────────────
+    function buildRecommendations(profile) {
+      const charts = profile.charts || [];
+      const first = charts[0] || {};
+      const recs = [];
+      const nowYear = new Date().getFullYear();
+
+      if (charts.length === 0) {
+        recs.push({
+          icon:'<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>', iconClass:'rec-icon--gold', urgent:true,
+          title:'Calculate Your Birth Chart',
+          body:'Your natal chart is the foundation of everything — it reveals your Sun, Moon, Rising, and the placement of every planet at the moment of your birth.',
+          cta:'Open Chart Calculator', href:'chart.html'
+        });
+      }
+
+      if (charts.length > 0 && !profile.history?.includes('transits')) {
+        recs.push({
+          icon:'☿', iconClass:'', urgent:false,
+          title:'Explore Your Current Transits',
+          body:'See how today\'s planetary movements activate your natal chart — this is where astrology becomes immediately practical.',
+          cta:'View Transits', href:'transits.html'
+        });
+      }
+
+      if (first.date) {
+        const byear = new Date(first.date + 'T12:00:00').getFullYear();
+        const age = nowYear - byear;
+        if (age >= 26 && age <= 34) {
+          recs.push({
+            icon:'♄', iconClass:'rec-icon--gold', urgent:true,
+            title:'Your Saturn Return Window',
+            body:`You're in or near your Saturn Return (ages 28–30). This pivotal cycle reshapes identity, career, and relationships. Understanding it changes everything.`,
+            cta:'Explore Life Path', href:'lifepath.html'
+          });
+        }
+        if (age >= 40 && age <= 44) {
+          recs.push({
+            icon:'♅', iconClass:'', urgent:true,
+            title:'Uranus Opposition',
+            body:`The mid-life Uranus Opposition (around age 42) shakes loose whatever no longer serves your authentic self. The disruption is purposeful.`,
+            cta:'Explore Life Path', href:'lifepath.html'
+          });
+        }
+      }
+
+      if (charts.length > 0 && !profile.history?.includes('lifepath')) {
+        recs.push({
+          icon:'◈', iconClass:'', urgent:false,
+          title:'Discover Your Life Path Number',
+          body:'Your numerological Life Path reveals the underlying theme of your incarnation. It works in concert with your birth chart in surprising ways.',
+          cta:'Calculate Life Path', href:'lifepath.html'
+        });
+      }
+
+      if (charts.length > 0 && !profile.history?.includes('compatibility')) {
+        recs.push({
+          icon:'<svg class="eng-i" aria-hidden="true"><use href="#ei-rings"/></svg>', iconClass:'', urgent:false,
+          title:'Run a Compatibility Report',
+          body:'Compare your chart with someone important — a partner, parent, or friend. Synastry reveals the invisible architecture between two people.',
+          cta:'Open Compatibility', href:'compatibility.html'
+        });
+      }
+
+      if (charts.length > 0 && !profile.history?.includes('ephemeris')) {
+        recs.push({
+          icon:'◉', iconClass:'', urgent:false,
+          title:'Enter The Instrument',
+          body:'The Instrument computes your birth-light wavefront, zenith star, echo dates, and daimon — our most advanced and unusual feature.',
+          cta:'Open The Instrument', href:'ephemeris.html'
+        });
+      }
+
+      return recs.slice(0, 4);
+    }
+
+    // ── Toast ────────────────────────────────────────────────────────
+    function toast(msg, type) {
+      const tc = document.getElementById('toast-container');
+      if (!tc) return;
+      const el = document.createElement('div');
+      el.className = 'toast toast--' + (type || 'info');
+      el.setAttribute('role', 'alert');
+      el.textContent = msg;
+      tc.appendChild(el);
+      requestAnimationFrame(() => el.classList.add('toast--show'));
+      setTimeout(() => { el.classList.remove('toast--show'); setTimeout(() => el.remove(), 300); }, 3500);
+    }
+
+    // ── Render helpers ───────────────────────────────────────────────
+    function renderCompleteness(profile) {
+      const { steps, pct } = calcCompleteness(profile);
+      const arc = document.getElementById('completeness-arc');
+      const pctEl = document.getElementById('completeness-pct');
+      const bar = document.getElementById('completeness-bar');
+      const barWrap = document.getElementById('completeness-bar-wrap');
+      const stepsEl = document.getElementById('completeness-steps');
+      const msgEl = document.getElementById('completeness-msg');
+      const statComplete = document.getElementById('stat-complete');
+
+      const circumference = 138.2;
+      const offset = circumference - (pct / 100) * circumference;
+      if (arc) { arc.style.strokeDashoffset = offset; }
+      if (pctEl) pctEl.textContent = pct + '%';
+      if (bar) bar.style.width = pct + '%';
+      if (barWrap) barWrap.setAttribute('aria-valuenow', pct);
+      if (statComplete) statComplete.textContent = pct + '%';
+
+      if (stepsEl) {
+        stepsEl.innerHTML = steps.map(s => `
+          <div class="completeness-step completeness-step--${s.done ? 'done' : 'pending'}" role="listitem">
+            <span class="step-marker" aria-hidden="true">${s.done ? '<span class="eng-check-mark"></span>' : '<span class="eng-step-ring"></span>'}</span>
+            <span>${s.label}</span>
+          </div>`).join('');
+      }
+      if (msgEl) msgEl.innerHTML = completenessMessage(steps, profile);
+    }
+
+    function renderHero(profile) {
+      const charts = profile.charts || [];
+      const first = charts[0] || {};
+      const nameEl = document.getElementById('dash-name-heading');
+      const avatarEl = document.getElementById('profile-avatar');
+      const taglineEl = document.getElementById('profile-tagline');
+
+      if (nameEl) nameEl.textContent = profile.name || 'Stargazer';
+
+      let sunSign = null, moonSign = null, ascSign = null;
+      if (first.date) sunSign = sunSignFromDate(first.date);
+      if (first.sun) sunSign = first.sun;
+      if (first.moon) moonSign = first.moon;
+      if (first.asc || first.ascendant) ascSign = first.asc || first.ascendant;
+
+      if (avatarEl) {
+        avatarEl.textContent = sunSign ? (SIGN_GLYPHS[sunSign] || '') : '';
+      }
+
+      let tagline = 'Your cosmic journey begins here';
+      if (sunSign || moonSign || ascSign) {
+        const parts = [];
+        if (sunSign) parts.push('☉ ' + sunSign);
+        if (moonSign) parts.push('☽ ' + moonSign);
+        if (ascSign) parts.push('↑ ' + ascSign);
+        if (parts.length) tagline = parts.join(' · ');
+      }
+      if (taglineEl) taglineEl.textContent = tagline;
+    }
+
+    function renderStats(profile) {
+      const charts = profile.charts || [];
+      const daysEl = document.getElementById('stat-days');
+      const chartsEl = document.getElementById('stat-charts');
+      if (chartsEl) chartsEl.textContent = charts.length;
+      if (daysEl && profile.created) {
+        const days = Math.max(1, Math.floor((Date.now() - profile.created) / 86400000));
+        daysEl.textContent = days;
+      }
+    }
+
+    function renderCosmicSeason(profile) {
+      const charts = profile.charts || [];
+      const first = charts[0] || {};
+      const grid = document.getElementById('season-grid');
+      if (!grid) return;
+      if (!first.date) return; // leave placeholder
+
+      const nowYear = new Date().getFullYear();
+      const nowMonth = new Date().getMonth() + 1;
+      const py = calcPersonalYear(first.date, nowYear);
+      const pyName = PERSONAL_YEAR_NAMES[py] || 'Year ' + py;
+      const pyTheme = PERSONAL_YEAR_THEMES[py] || '';
+      const pm = calcPersonalYear(first.date, nowYear); // simplified: personal month
+      const pmNum = ((pm + nowMonth - 2) % 9) + 1;
+
+      // Chapter / life age
+      const byear = new Date(first.date + 'T12:00:00').getFullYear();
+      const age = nowYear - byear;
+      let chapter = '', chapterSym = '♄';
+      if (age < 7) { chapter = 'The Seed — age 0–7'; chapterSym = '☽'; }
+      else if (age < 14) { chapter = 'The Threshold — age 7–14'; chapterSym = '☿'; }
+      else if (age < 21) { chapter = 'The Awakening — age 14–21'; chapterSym = '♀'; }
+      else if (age < 28) { chapter = 'The Apprentice — age 21–28'; chapterSym = '☉'; }
+      else if (age < 35) { chapter = 'The First Calling — age 28–35'; chapterSym = '♄'; }
+      else if (age < 42) { chapter = 'The Builder — age 35–42'; chapterSym = '♂'; }
+      else if (age < 49) { chapter = 'The Turning — age 42–49'; chapterSym = '♅'; }
+      else if (age < 56) { chapter = 'The Elder — age 49–56'; chapterSym = '♄'; }
+      else if (age < 63) { chapter = 'The Harvest — age 56–63'; chapterSym = '♃'; }
+      else { chapter = 'The Sage — age 63+'; chapterSym = '♄'; }
+
+      // Next milestone
+      const milestones = getMilestones(first.date);
+      const upcoming = milestones.find(m => m.status === 'future' || m.status === 'active');
+      let nextMs = '';
+      if (upcoming) {
+        const diff = upcoming.year - nowYear;
+        nextMs = diff <= 0 ? 'Now — ' + upcoming.name : 'In ' + diff + ' year' + (diff===1?'':'s') + ' — ' + upcoming.name + ' ' + upcoming.sym;
+      }
+
+      grid.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div class="personal-year-num">${py}</div>
+          <div class="personal-year-label">Personal Year</div>
+        </div>
+        <div class="season-details">
+          <h3>${pyName}</h3>
+          <p class="season-theme">${pyTheme}</p>
+          <div class="season-meta">
+            <span class="season-badge season-badge--gold">Personal Month ${pmNum}</span>
+            ${nextMs ? `<span class="season-badge">${nextMs}</span>` : ''}
+          </div>
+        </div>
+        <div class="chapter-card" style="grid-column:1/-1;">
+          <div class="chapter-planet-symbol">${chapterSym}</div>
+          <div class="chapter-info">
+            <strong>${chapter}</strong>
+            <p>Current life chapter — astrological age cycle</p>
+          </div>
+        </div>`;
+    }
+
+    function renderTimeline(profile) {
+      const first = (profile.charts || [])[0] || {};
+      const timeline = document.getElementById('milestone-timeline');
+      const emptyEl = document.getElementById('timeline-empty');
+      const hint = document.getElementById('timeline-scroll-hint');
+      if (!timeline) return;
+      if (!first.date) return;
+
+      if (emptyEl) emptyEl.remove();
+      if (hint) hint.hidden = false;
+
+      const milestones = getMilestones(first.date);
+      timeline.innerHTML = milestones.map(m => `
+        <div class="milestone-dot milestone-dot--${m.status}" role="listitem"
+             title="${m.name} — ${m.year}" aria-label="${m.name} in ${m.year}">
+          <div class="milestone-dot__bubble" aria-hidden="true">${m.sym}</div>
+          <div class="milestone-dot__year">${m.year}</div>
+          <div class="milestone-dot__name">${m.name}</div>
+        </div>`).join('');
+
+      // Scroll active into view
+      const active = timeline.querySelector('.milestone-dot--active');
+      if (active) {
+        setTimeout(() => active.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' }), 400);
+      }
+    }
+
+    function renderRecommendations(profile) {
+      const grid = document.getElementById('recommendations-grid');
+      if (!grid) return;
+      const recs = buildRecommendations(profile);
+      if (!recs.length) {
+        grid.innerHTML = '<p style="color:var(--silver-dim);font-size:var(--text-sm);">You\'ve explored the full cosmos. Well done, stargazer.</p>';
+        return;
+      }
+      grid.innerHTML = recs.map(r => `
+        <article class="recommendation-card${r.urgent ? ' recommendation-card--urgent' : ''}" aria-label="${r.title}">
+          ${r.urgent ? '<div class="urgency-dot" aria-label="Highlighted recommendation"></div>' : ''}
+          <div class="rec-header">
+            <div class="rec-icon ${r.iconClass}" aria-hidden="true">${r.icon}</div>
+            <h4 class="rec-title">${r.title}</h4>
+          </div>
+          <p class="rec-body">${r.body}</p>
+          <a href="${r.href}" class="btn btn--outline btn--micro">${r.cta} →</a>
+        </article>`).join('');
+    }
+
+    function renderCharts(profile) {
+      const grid = document.getElementById('charts-grid');
+      const emptyEl = document.getElementById('charts-empty');
+      if (!grid) return;
+      const charts = profile.charts || [];
+
+      if (!charts.length) {
+        grid.innerHTML = '';
+        if (emptyEl) emptyEl.hidden = false;
+        return;
+      }
+      if (emptyEl) emptyEl.hidden = true;
+
+      grid.innerHTML = charts.map(c => {
+        const sunGlyph = c.sun ? SIGN_GLYPHS[c.sun] || '' : '';
+        const moonGlyph = c.moon ? SIGN_GLYPHS[c.moon] || '' : '';
+        const ascGlyph = (c.asc || c.ascendant) ? SIGN_GLYPHS[c.asc || c.ascendant] || '' : '';
+        const params = new URLSearchParams();
+        if (c.name) params.set('n', c.name);
+        if (c.date) params.set('d', c.date);
+        if (c.time) params.set('t', c.time);
+        if (c.lat) params.set('lat', c.lat);
+        if (c.lon) params.set('lon', c.lon);
+        if (c.tz) params.set('tz', c.tz);
+        const chartUrl = 'chart.html?' + params.toString();
+        const dateDisplay = c.date ? new Date(c.date + 'T12:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '';
+
+        return `<article class="chart-gallery-item" aria-label="Chart: ${c.name || 'Unnamed'}">
+          <div class="chart-gallery-item__name">${c.name || 'Unnamed Chart'}</div>
+          <div class="chart-gallery-item__date">${dateDisplay}${c.city ? ' · ' + c.city : ''}</div>
+          <div class="big-three">
+            ${c.sun ? `<span class="big-three-badge big-three-badge--sun">☉ ${sunGlyph} ${c.sun}</span>` : ''}
+            ${c.moon ? `<span class="big-three-badge big-three-badge--moon">☽ ${moonGlyph} ${c.moon}</span>` : ''}
+            ${(c.asc||c.ascendant) ? `<span class="big-three-badge big-three-badge--asc">↑ ${ascGlyph} ${c.asc||c.ascendant}</span>` : ''}
+          </div>
+          <div class="chart-gallery-item__actions">
+            <a href="${chartUrl}" class="btn-chart-link" aria-label="Open chart for ${c.name || 'Unnamed'}">Open Chart →</a>
+            <button class="btn-chart-delete" data-id="${c.id}" aria-label="Delete chart for ${c.name || 'Unnamed'}">✕</button>
+          </div>
+        </article>`;
+      }).join('');
+
+      // Delete handlers
+      grid.querySelectorAll('.btn-chart-delete').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!confirm('Delete this chart? This cannot be undone.')) return;
+          const id = btn.dataset.id;
+          const profile = getProfile();
+          if (window.AstroProfile && typeof AstroProfile.deleteChart === 'function') {
+            AstroProfile.deleteChart(id);
+          } else {
+            profile.charts = (profile.charts || []).filter(c => c.id !== id);
+            saveProfile(profile);
+          }
+          renderDashboard(profile);
+          toast('Chart deleted.', 'info');
+        });
+      });
+    }
+
+    function renderPrefs(profile) {
+      const prefs = profile.prefs || {};
+      const houseEl = document.getElementById('pref-house');
+      const orbsEl = document.getElementById('pref-orbs');
+      const nebulaEl = document.getElementById('pref-reduced-nebula');
+      if (houseEl && prefs.houseSystem) houseEl.value = prefs.houseSystem;
+      if (orbsEl && prefs.orbStyle) orbsEl.value = prefs.orbStyle;
+      if (nebulaEl) nebulaEl.checked = !!prefs.reducedNebula;
+    }
+
+    function renderDashboard(profile) {
+      const view = profileWithMergedCharts(profile);
+      renderHero(view);
+      renderCompleteness(view);
+      renderStats(view);
+      renderCosmicSeason(view);
+      renderTimeline(view);
+      renderRecommendations(view);
+      renderCharts(view);
+      renderPrefs(profile);
+    }
+
+    // ── Show/hide states ─────────────────────────────────────────────
+    function showSetup() {
+      document.getElementById('setup-section').classList.remove('hidden');
+      document.getElementById('dashboard-section').classList.add('hidden');
+    }
+
+    function showDashboard(profile) {
+      document.getElementById('setup-section').classList.add('hidden');
+      document.getElementById('dashboard-section').classList.remove('hidden');
+      renderDashboard(profile);
+      initReveal();
+    }
+
+    // ── City autocomplete ────────────────────────────────────────────
+    function setupCityAutocomplete(inputId, dropdownId, latId, lonId, tzId) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+      const latHid = document.getElementById(latId);
+      const lonHid = document.getElementById(lonId);
+      const tzHid = document.getElementById(tzId);
+      if (!input || !dropdown) return;
+
+      let activeIdx = -1;
+      let cities = [];
+
+      function getFilteredCities(q) {
+        const Eph = window.AstroEphemeris;
+        if (!Eph || !Eph.CITIES) return [];
+        const ql = q.toLowerCase();
+        return Object.entries(Eph.CITIES)
+          .filter(([k]) => k.toLowerCase().includes(ql))
+          .slice(0, 8);
+      }
+
+      function renderDropdown(matches) {
+        cities = matches;
+        activeIdx = -1;
+        if (!matches.length) { dropdown.classList.remove('open'); dropdown.innerHTML = ''; return; }
+        dropdown.innerHTML = matches.map(([k, v], i) =>
+          `<div class="autocomplete-item" role="option" data-idx="${i}" tabindex="-1">${k}</div>`
+        ).join('');
+        dropdown.classList.add('open');
+        dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+          item.addEventListener('mousedown', e => {
+            e.preventDefault();
+            selectCity(parseInt(item.dataset.idx));
+          });
+        });
+      }
+
+      function selectCity(idx) {
+        if (idx < 0 || idx >= cities.length) return;
+        const [name, data] = cities[idx];
+        input.value = name;
+        if (latHid) latHid.value = data.lat;
+        if (lonHid) lonHid.value = data.lon;
+        if (tzHid) tzHid.value = data.tz || '';
+        dropdown.classList.remove('open');
+        dropdown.innerHTML = '';
+        activeIdx = -1;
+      }
+
+      input.addEventListener('input', () => {
+        const q = input.value.trim();
+        if (q.length < 2) { dropdown.classList.remove('open'); dropdown.innerHTML = ''; return; }
+        renderDropdown(getFilteredCities(q));
+      });
+
+      input.addEventListener('keydown', e => {
+        const items = dropdown.querySelectorAll('.autocomplete-item');
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          activeIdx = Math.min(activeIdx + 1, items.length - 1);
+          items.forEach((it,i) => it.classList.toggle('active', i === activeIdx));
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          activeIdx = Math.max(activeIdx - 1, -1);
+          items.forEach((it,i) => it.classList.toggle('active', i === activeIdx));
+        } else if (e.key === 'Enter') {
+          if (activeIdx >= 0) { e.preventDefault(); selectCity(activeIdx); }
+        } else if (e.key === 'Escape') {
+          dropdown.classList.remove('open');
+        }
+      });
+
+      document.addEventListener('click', e => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.remove('open');
+        }
+      });
+    }
+
+    // ── Add chart form ───────────────────────────────────────────────
+    function setupAddChart() {
+      const btn = document.getElementById('add-chart-btn');
+      const panel = document.getElementById('add-chart-panel');
+      const cancelBtn = document.getElementById('cancel-chart-btn');
+      const form = document.getElementById('add-chart-form');
+
+      if (btn && panel) {
+        btn.addEventListener('click', () => {
+          const open = !panel.hidden;
+          panel.hidden = open;
+          btn.setAttribute('aria-expanded', String(!open));
+        });
+      }
+      if (cancelBtn && panel) {
+        cancelBtn.addEventListener('click', () => { panel.hidden = true; if(btn) btn.setAttribute('aria-expanded','false'); });
+      }
+
+      setupCityAutocomplete('ac-city','ac-city-dropdown','ac-lat','ac-lon','ac-tz');
+
+      if (form) {
+        form.addEventListener('submit', e => {
+          e.preventDefault();
+          const nameVal = document.getElementById('ac-name').value.trim() || 'My Chart';
+          const dateVal = document.getElementById('ac-date').value;
+          const timeVal = document.getElementById('ac-time').value || '12:00';
+          const cityVal = document.getElementById('ac-city').value.trim();
+          const latVal = document.getElementById('ac-lat').value;
+          const lonVal = document.getElementById('ac-lon').value;
+          const tzVal = document.getElementById('ac-tz').value;
+
+          if (!dateVal) { toast('Please enter a birth date.', 'error'); return; }
+          if (!latVal || !lonVal) { toast('Please select a city from the suggestions.', 'error'); return; }
+
+          const profile = getProfile();
+          if (!profile) return;
+
+          // Try to compute chart via AstroEphemeris
+          let sunSign = sunSignFromDate(dateVal);
+          let moonSign = null;
+          let ascSign = null;
+
+          const Eph = window.AstroEphemeris;
+          if (Eph) {
+            try {
+              const d = new Date(`${dateVal}T${timeVal}:00`);
+              const jd = Eph.julianDay ? Eph.julianDay(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes()) : null;
+              if (jd) {
+                const positions = Eph.planetPositions ? Eph.planetPositions(jd) : null;
+                const asc = Eph.ascendant ? Eph.ascendant(jd, parseFloat(latVal), parseFloat(lonVal)) : null;
+                if (positions) {
+                  const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+                  if (positions.sun != null) sunSign = SIGNS[Math.floor(((positions.sun % 360) + 360) % 360 / 30)];
+                  if (positions.moon != null) moonSign = SIGNS[Math.floor(((positions.moon % 360) + 360) % 360 / 30)];
+                }
+                if (asc != null) {
+                  const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+                  ascSign = SIGNS[Math.floor(((asc % 360) + 360) % 360 / 30)];
+                }
+              }
+            } catch (err) { /* silent fallback */ }
+          }
+
+          const chart = {
+            id: (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)),
+            name: nameVal,
+            date: dateVal,
+            time: timeVal,
+            city: cityVal,
+            lat: latVal,
+            lon: lonVal,
+            tz: tzVal,
+            sun: sunSign,
+            moon: moonSign,
+            asc: ascSign,
+            savedAt: Date.now()
+          };
+
+          profile.charts = profile.charts || [];
+          profile.charts.unshift(chart);
+          saveProfile(profile);
+          renderDashboard(profile);
+          panel.hidden = true;
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+          form.reset();
+          document.getElementById('ac-lat').value = '';
+          document.getElementById('ac-lon').value = '';
+          document.getElementById('ac-tz').value = '';
+          toast('Chart saved to your cosmic record.', 'success');
+        });
+      }
+    }
+
+    // ── Export ───────────────────────────────────────────────────────
+    function exportProfile() {
+      const profile = getProfile();
+      if (!profile) return;
+      const json = JSON.stringify(profile, null, 2);
+      const blob = new Blob([json], { type:'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const date = new Date().toISOString().slice(0,10);
+      a.href = url;
+      a.download = `astroprecise-profile-${date}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('Profile exported as JSON.', 'success');
+    }
+
+    // ── Import ───────────────────────────────────────────────────────
+    function setupImport(inputId) {
+      const inp = document.getElementById(inputId);
+      if (!inp) return;
+      inp.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const data = JSON.parse(ev.target.result);
+            if (!data || typeof data !== 'object') throw new Error('Invalid format');
+            // Basic validation
+            const profile = {
+              name: data.name || 'Stargazer',
+              email: data.email || '',
+              created: data.created || Date.now(),
+              updatedAt: Date.now(),
+              charts: Array.isArray(data.charts) ? data.charts : [],
+              prefs: data.prefs || {},
+              history: Array.isArray(data.history) ? data.history : []
+            };
+            saveProfile(profile);
+            showDashboard(profile);
+            toast('Profile imported successfully.', 'success');
+          } catch {
+            toast('Import failed — invalid JSON format.', 'error');
+          }
+          inp.value = '';
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    // ── Scroll reveal ────────────────────────────────────────────────
+    function initReveal() {
+      const els = document.querySelectorAll('.reveal-init');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(el => el.classList.add('revealed'));
+        return;
+      }
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      els.forEach((el, i) => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.92 && r.bottom > 0) {
+          el.style.transitionDelay = (i * 60) + 'ms';
+          el.classList.add('revealed');
+        } else {
+          el.style.transitionDelay = (i * 60) + 'ms';
+          obs.observe(el);
+        }
+      });
+    }
+
+    // ── Pref change handlers ─────────────────────────────────────────
+    function setupPrefHandlers() {
+      function savePref(key, value) {
+        const p = getProfile();
+        if (!p) return;
+        p.prefs = p.prefs || {};
+        p.prefs[key] = value;
+        saveProfile(p);
+      }
+      const houseEl = document.getElementById('pref-house');
+      const orbsEl = document.getElementById('pref-orbs');
+      const nebulaEl = document.getElementById('pref-reduced-nebula');
+      if (houseEl) houseEl.addEventListener('change', () => savePref('houseSystem', houseEl.value));
+      if (orbsEl) orbsEl.addEventListener('change', () => savePref('orbStyle', orbsEl.value));
+      if (nebulaEl) nebulaEl.addEventListener('change', () => {
+        savePref('reducedNebula', nebulaEl.checked);
+        document.body.classList.toggle('reduced-nebula', nebulaEl.checked);
+      });
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────
+    function init() {
+      const profile = getProfile();
+
+      if (profile) {
+        showDashboard(profile);
+      } else {
+        showSetup();
+      }
+
+      // Setup form
+      const setupForm = document.getElementById('setup-form');
+      if (setupForm) {
+        setupForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const name = document.getElementById('setup-name').value.trim();
+          const email = document.getElementById('setup-email').value.trim();
+          if (!name) { toast('Please enter your name.', 'error'); return; }
+          const p = blankProfile(name, email);
+          saveProfile(p);
+          showDashboard(p);
+          toast('Welcome to your Cosmic Dashboard, ' + name + '.', 'success');
+        });
+      }
+
+      // Clear profile
+      const clearBtn = document.getElementById('clear-profile-btn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          if (!confirm('Clear your entire cosmic record? This cannot be undone.')) return;
+          localStorage.removeItem(STORE);
+          showSetup();
+          toast('Profile cleared.', 'info');
+        });
+      }
+
+      // Export
+      const exportBtn = document.getElementById('export-btn');
+      if (exportBtn) exportBtn.addEventListener('click', exportProfile);
+
+      // Imports
+      setupImport('import-input-dash');
+      setupImport('import-input-setup');
+
+      // Add chart
+      setupAddChart();
+      setupPrefHandlers();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+  })();
+  </script>
+
+</body>
+</html>

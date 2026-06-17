@@ -1,0 +1,15 @@
+I got annoyed that astrology apps treat the math as a black box and upload your exact birth time to a server behind a subscription.
+
+AstroPrecise computes the full natal chart client-side:
+- VSOP87 planetary positions + ELP2000 Moon
+- Placidus/Whole/Equal/Porphyry houses, aspect orbs
+- ~arcminute accuracy for 1800–2200 CE (stated honestly, not "NASA exact")
+- 253-star zenith catalogue, light-cone / orrery "Instrument" page
+
+Architecture: static site, vanilla JS, PWA with offline precache. No backend for chart data. Outbound calls are only NOAA SWPC (labelled) + geocoder for typed place name (never the birth timestamp).
+
+I'm not claiming astrology is predictive — entertainment only. The interesting part is verifiable engineering: open DevTools → Network while casting a chart.
+
+Would welcome accuracy feedback vs Swiss Ephemeris or similar.
+
+https://astroprecise.app/chart.html

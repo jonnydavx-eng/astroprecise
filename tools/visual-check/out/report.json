@@ -1,69 +1,75 @@
 {
   "base": "http://localhost:8790",
-  "capturedAt": "2026-06-15T21:18:05.764Z",
+  "capturedAt": "2026-06-16T21:48:58.245Z",
   "shots": [
     {
-      "label": "00-earth-hold",
-      "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\00-earth-hold.png"
+      "label": "01-cosmos-hold",
+      "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\01-cosmos-hold.png"
     },
     {
-      "label": "03-sky-aligned",
-      "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\03-sky-aligned.png"
+      "label": "04-earth-land",
+      "file": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\04-earth-land.png"
     }
   ],
   "states": [
     {
-      "label": "00-earth-hold",
-      "phase": "Earth",
+      "label": "01-cosmos-hold",
+      "preloaderClasses": "has-live-orr preloader--earth-ready preloader--cosmic has-real",
+      "phase": "The deep field",
       "preloaderVisible": true,
-      "preloaderClasses": "has-live-orr has-real",
       "aligned": false,
       "canvasClientW": 1440,
       "canvasClientH": 900,
       "orrery": {
         "introActive": true,
         "introCompleted": false,
-        "introProgress": 0.063546666666617,
-        "introStartedAt": 1314.9000000003725,
-        "introDurationMs": 7500,
-        "scaleLevel": 0
+        "introProgress": 0.12612727272747593,
+        "introStartedAt": 4105.79999999702,
+        "introDurationMs": 22000,
+        "scaleLevel": 6
       },
       "bodyIntro": true
     },
     {
-      "label": "03-sky-aligned",
-      "phase": "Sky aligned",
+      "label": "04-earth-land",
+      "phase": "Your meridian",
       "preloaderVisible": true,
-      "preloaderClasses": "has-live-orr has-real aligned",
+      "preloaderClasses": "has-live-orr preloader--earth-ready preloader--cosmic has-real preloader--earth-land orrery-expanded aligned preloader--enter-ready preloader--seamless-ready",
       "aligned": true,
-      "canvasClientW": 1440,
+      "canvasClientW": 945,
       "canvasClientH": 900,
       "orrery": {
-        "introActive": false,
+        "introActive": true,
         "introCompleted": true,
         "introProgress": 1,
-        "introStartedAt": 1314.9000000003725,
-        "introDurationMs": 7500,
+        "introStartedAt": 4105.79999999702,
+        "introDurationMs": 22000,
         "scaleLevel": 0
       },
       "bodyIntro": false
     }
   ],
-  "issues": [],
-  "introElapsedMs": 9585,
+  "issues": [
+    "Intro elapsed 27170ms — expected ~30s+ continuous cosmic descent"
+  ],
+  "introElapsedMs": 27170,
   "timeline": {
     "phases": [
-      "Earth",
-      "Approaching Earth",
-      "Sky aligned"
+      "The deep field",
+      "Transpersonal tides",
+      "Gas-giant thrones",
+      "Personal sky",
+      "Blue marble",
+      "Your meridian"
     ],
     "maxProgress": 1
   },
+  "mobile": false,
   "centerPixel": {
-    "r": 126,
-    "g": 121,
-    "b": 111,
-    "a": 255
+    "r": 0,
+    "g": 0,
+    "b": 0,
+    "a": 0
   },
-  "ok": true
+  "ok": false
 }

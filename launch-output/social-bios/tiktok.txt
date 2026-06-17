@@ -1,0 +1,18 @@
+Platform: TikTok
+Handle: @astroprecise
+Display name: AstroPrecise
+Website / link: https://astroprecise.app/links.html
+
+Avatar: marketing/social/avatar-400.jpg
+
+
+
+--- BIO (paste) ---
+Mission Control for your sky ✦ Real math. Free chart ↓
+
+--- PINNED POST (X only) ---
+I built a birth-chart tool that never uploads your birth data.
+
+VSOP87 astronomy. Free chart. Your sky as wallpaper.
+
+Start here → https://astroprecise.app/links.html

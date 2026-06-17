@@ -1,0 +1,201 @@
+
+> astroprecise-visual-check@1.0.0 lighthouse:production:ci
+> node lighthouse-production.mjs --ci
+
+{
+  "profile": "production",
+  "base": "http://localhost:8790",
+  "capturedAt": "2026-06-17T10:39:35.679Z",
+  "note": "Production URLs (index uses ?lite=1 shipped shell). HeadlessChrome may still trigger defer-page-css audit-path. Compare with audit-lighthouse.mjs for shortcut delta.",
+  "pages": [
+    {
+      "id": "chart",
+      "url": "http://localhost:8790/chart.html",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.7┬ás",
+        "cls": "0",
+        "fcp": "1.6┬ás",
+        "tbt": "0┬áms",
+        "si": "2.4┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "horoscope",
+      "url": "http://localhost:8790/horoscope.html",
+      "scores": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.6┬ás",
+        "cls": "0",
+        "fcp": "1.3┬ás",
+        "tbt": "0┬áms",
+        "si": "2.1┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "aries",
+      "url": "http://localhost:8790/aries.html",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.6┬ás",
+        "cls": "0.003",
+        "fcp": "1.0┬ás",
+        "tbt": "0┬áms",
+        "si": "1.8┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "leo",
+      "url": "http://localhost:8790/leo.html",
+      "scores": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.3┬ás",
+        "cls": "0.003",
+        "fcp": "1.0┬ás",
+        "tbt": "0┬áms",
+        "si": "1.5┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "compatibility",
+      "url": "http://localhost:8790/compatibility.html",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.5┬ás",
+        "cls": "0",
+        "fcp": "1.3┬ás",
+        "tbt": "0┬áms",
+        "si": "2.4┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "ephemeris",
+      "url": "http://localhost:8790/ephemeris.html",
+      "scores": {
+        "performance": 97,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.5┬ás",
+        "cls": "0",
+        "fcp": "1.3┬ás",
+        "tbt": "30┬áms",
+        "si": "2.1┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "shop",
+      "url": "http://localhost:8790/shop.html",
+      "scores": {
+        "performance": 95,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.9┬ás",
+        "cls": "0",
+        "fcp": "1.3┬ás",
+        "tbt": "10┬áms",
+        "si": "1.8┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "transits",
+      "url": "http://localhost:8790/transits.html",
+      "scores": {
+        "performance": 94,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "2.9┬ás",
+        "cls": "0.043",
+        "fcp": "1.3┬ás",
+        "tbt": "20┬áms",
+        "si": "2.2┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "lifepath",
+      "url": "http://localhost:8790/lifepath.html",
+      "scores": {
+        "performance": 94,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "3.0┬ás",
+        "cls": "0",
+        "fcp": "1.1┬ás",
+        "tbt": "0┬áms",
+        "si": "2.1┬ás"
+      },
+      "auditPathLikely": true
+    },
+    {
+      "id": "index",
+      "url": "http://localhost:8790/?lite=1",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "lcp": "1.3┬ás",
+        "cls": "0",
+        "fcp": "1.0┬ás",
+        "tbt": "0┬áms",
+        "si": "1.6┬ás"
+      },
+      "auditPathLikely": true
+    }
+  ],
+  "issues": [],
+  "ci": {
+    "mode": true,
+    "perfMin": 85,
+    "a11yMin": null,
+    "perfFails": [],
+    "a11yFails": []
+  },
+  "ok": true
+}

@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AstroPrecise Cosmic Compatibility — synastry birth chart comparison and full compatibility report. Discover your astrological dynamics." />
+  <meta name="robots" content="index, follow" />
   <title>Zodiac Compatibility Calculator — Free Synastry Report | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
+<link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -44,708 +46,41 @@
     }
   }
   </script>
-<link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/chart.css" />
   <style>
-    /* ---- Compatibility-page design variables ---- */
-    :root {
-      --bg: #050406;
-      --gold: #C9A227;
-      --gold-pale: #E8E0D0;
-      --white: #E8E0D0;
-      --silver: #A89E88;
-      --silver-dim: #9A9084;
-      --surface: rgba(20,16,10,0.68);
-      --border: rgba(201,162,39,0.10);
-      --radius-xl: 20px;
-      --radius-2xl: 28px;
-      --lapis: #6e1a26;
-    }
-
-    /* ---- Hero ---- */
-    .hero--small {
-      position: relative;
-      overflow: hidden;
-      padding: var(--space-16) 0 var(--space-12);
-      text-align: center;
-    }
-    .hero--small::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      background: url('img/hero-cosmic-ref.jpg') center 22% / cover no-repeat;
-      opacity: 0.09;
-      filter: sepia(0.4) brightness(0.5);
-      -webkit-mask-image: radial-gradient(ellipse 88% 68% at 50% 32%, #000 10%, transparent 76%);
-              mask-image: radial-gradient(ellipse 88% 68% at 50% 32%, #000 10%, transparent 76%);
-    }
-    .hero--small .container { position: relative; z-index: 1; }
-    .hero--small h1 {
-      font-family: var(--font-display);
-      font-size: var(--text-5xl);
-      font-weight: 900;
-      color: var(--color-white);
-      margin-bottom: var(--space-4);
-      line-height: 1.1;
-    }
-    .hero--small p {
-      font-size: var(--text-lg);
-      color: var(--color-silver-dim);
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    /* ---- Sections ---- */
-    .section { padding: var(--space-16) 0; }
-    .section--alt { background: transparent; }  /* one continuous sky — no plate */
-    .section__title {
-      font-family: var(--font-display);
-      font-size: var(--text-3xl);
-      font-weight: 700;
-      color: var(--color-white);
-      text-align: center;
-      margin-bottom: var(--space-3);
-    }
-    .section__subtitle {
-      text-align: center;
-      color: var(--color-silver-dim);
-      margin-bottom: var(--space-10);
-    }
-
-    /* ---- Compat form outer wrapper ---- */
-    .compat-form {
-      background: linear-gradient(158deg, rgba(20,16,10,0.52), rgba(13,10,7,0.64));
-      border: 1px solid var(--hairline);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-10);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      box-shadow: inset 0 1px 0 rgba(232,224,208,0.08), 0 10px 30px rgba(0,0,0,0.16);
-    }
-    @media (max-width: 700px) { .compat-form { padding: var(--space-6) var(--space-4); } }
-    .aspect-unlock { text-align: center; margin-top: var(--space-6); }
-    .aspect-unlock__note { margin-top: var(--space-3); font-size: 0.8rem; color: var(--color-silver-dim); }
-
-    /* ---- Two-person grid ---- */
-    .compat-form__grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: var(--space-8);
-      align-items: start;
-    }
+    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    /* CLS — hero shell + orbs before main-lite spacing tokens parse */
+    .hero--small{padding:calc(72px + 4rem) 0 3rem;min-height:603px}
+    .compat-orbs{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 2.5rem;max-width:460px;position:relative;min-height:120px}
+    .compat-orb{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .compat-orb__core{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;line-height:1}
+    .compat-orbs__arc{flex:1;height:40px;display:flex;align-items:center;justify-content:center;min-width:80px;position:relative}
+    .ap-badge{display:inline-flex;align-items:center;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;padding:4px 12px;border-radius:999px;border:1px solid rgba(201,162,39,0.3)}
     @media (max-width: 768px) {
-      .compat-form__grid { grid-template-columns: 1fr; }
-      .compat-form__divider { font-size: 2rem; }
+      #compat-form.compat-form { min-height: 1680px; }
+      .compat-form__grid { grid-template-columns: 1fr !important; }
+      .compat-form__divider { flex-direction: row !important; padding-top: 0 !important; }
+      .compat-form__divider-line { display: none !important; }
+      .compat-form .form-submit { flex-direction: column !important; align-items: stretch !important; }
+      .compat-form .form-submit .btn--lg { width: 100% !important; }
     }
-
-    /* ---- Person cards ---- */
-    .compat-person-card {
-      border-radius: var(--radius-xl);
-      padding: var(--space-7) var(--space-7);
-      background: rgba(19, 16, 12, 0.56);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-    .compat-person-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-    }
-    .compat-person-card--p1::before {
-      background: linear-gradient(90deg, #8b5a3c 0%, #c9a227 60%, transparent 100%);
-    }
-    .compat-person-card--p2::before {
-      background: linear-gradient(90deg, #c9a227 0%, #e8c96a 60%, transparent 100%);
-    }
-    @media (max-width: 700px) { .compat-person-card { padding: var(--space-5) var(--space-4); } }
-
-    .compat-person-card h3 {
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      font-weight: 700;
-      margin-bottom: var(--space-6);
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-    .compat-person-card--p1 h3 { color: #c4a07a; }
-    .compat-person-card--p2 h3 { color: var(--gold); }
-
-    .person-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
-    .person-icon--p1 { background: rgba(168, 107, 74, 0.2); border: 1px solid rgba(168, 107, 74, 0.35); }
-    .person-icon--p2 { background: rgba(196,146,10,0.2); border: 1px solid rgba(196,146,10,0.35); }
-
-    /* ---- Form inputs ---- */
-    .form-input:focus {
-      border-color: rgba(196,146,10,0.55) !important;
-      box-shadow: 0 0 0 3px rgba(196,146,10,0.12) !important;
-      outline: none;
-    }
-
-    /* ---- Desktop divider ---- */
-    .compat-form__divider {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding-top: 3rem;
-      gap: var(--space-2);
-    }
-    .compat-form__divider-line {
-      width: 1px;
-      flex: 1;
-      max-height: 80px;
-      background: linear-gradient(180deg, transparent, rgba(196,146,10,0.35), transparent);
-    }
-    .compat-form__divider-heart {
-      font-size: 2rem;
-      color: var(--gold);
-      opacity: 0.75;
-      line-height: 1;
-    }
-    @media (max-width: 768px) {
-      .compat-form__divider-line { display: none; }
-      .compat-form__divider { flex-direction: row; padding-top: 0; }
-      .compat-form__divider-heart { font-size: 2rem; }
-    }
-
-    /* ---- Submit row ---- */
-    .form-submit { text-align: center; margin-top: var(--space-10); }
-
-    /* ---- Utility ---- */
-    .hidden { display: none !important; }
-
-    /* ============================================================
-       RESULTS
-    ============================================================ */
-
-    /* --- Result header card --- */
-    .compat-result-header {
-      text-align: center;
-      margin-bottom: var(--space-8);
-      padding: var(--space-8) var(--space-6);
-      background: rgba(20, 16, 10,0.72);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-    }
-
-    /* --- Score ring (larger) --- */
-    .compat-score {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: var(--space-10);
-      gap: var(--space-3);
-    }
-    .score-ring-wrapper {
-      position: relative;
-      width: 200px;
-      height: 200px;
-      flex-shrink: 0;
-    }
-    .score-ring-svg {
-      width: 200px;
-      height: 200px;
-      transform: rotate(-90deg);
-    }
-    .score-ring-label {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-    }
-    .score-number {
-      font-family: var(--font-display);
-      font-size: 3rem;
-      font-weight: 900;
-      color: var(--color-white);
-      line-height: 1;
-      letter-spacing: -0.02em;
-    }
-    .score-ring-label .score-label-text {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--silver-dim);
-      margin-top: 2px;
-    }
-    .score-connection-label {
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      font-weight: 600;
-      color: var(--gold-pale);
-      letter-spacing: 0.04em;
-    }
-
-    /* --- Category scores --- */
-    .category-scores {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: var(--space-4);
-      margin-bottom: var(--space-8);
-    }
-    .category-score-item {
-      background: rgba(20, 16, 10,0.62);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-5) var(--space-5);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    }
-    .category-score-item:hover {
-      border-color: rgba(196,146,10,0.28);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.3);
-    }
-    .category-score-item__header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--space-3);
-    }
-    .category-score-item__label {
-      font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--silver);
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-    .category-icon {
-      font-size: 1rem;
-      opacity: 0.85;
-    }
-    .category-score-item__value {
-      font-size: var(--text-sm);
-      font-weight: 700;
-      color: var(--gold-pale);
-    }
-    .score-bar__track {
-      height: 10px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .score-bar__fill {
-      height: 100%;
-      background: linear-gradient(90deg, #5c4a6e 0%, #c9a227 100%);
-      border-radius: 999px;
-      transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    /* --- Synastry aspects (card-style) --- */
-    .synastry-aspects {
-      margin-bottom: var(--space-8);
-    }
-    .synastry-aspects-header {
-      font-family: var(--font-display);
-      color: var(--gold-pale);
-      margin-bottom: var(--space-5);
-      font-size: var(--text-xl);
-      font-weight: 600;
-    }
-    .aspect-card-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-    .aspect-card {
-      background: rgba(20, 16, 10,0.60);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-4) var(--space-5);
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto;
-      align-items: center;
-      gap: var(--space-3);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-left-width: 3px;
-      transition: transform 0.18s, box-shadow 0.18s;
-    }
-    .aspect-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.28);
-    }
-    .aspect-card--harmony { border-left-color: #22c55e; }
-    .aspect-card--tension { border-left-color: #ef4444; }
-    .aspect-card--neutral { border-left-color: var(--gold); }
-
-    .aspect-card__planet {
-      font-size: var(--text-sm);
-      color: var(--silver);
-      font-weight: 500;
-    }
-    .aspect-card__planet span {
-      font-size: 1.25rem;
-      display: block;
-      margin-bottom: 2px;
-    }
-    .aspect-card__symbol {
-      font-size: 1.5rem;
-      text-align: center;
-      font-weight: 700;
-    }
-    .aspect-card__symbol--harmony { color: #22c55e; }
-    .aspect-card__symbol--tension { color: #ef4444; }
-    .aspect-card__symbol--neutral { color: var(--gold); }
-    .aspect-card__orb {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: rgba(154,166,200,0.7);
-      background: rgba(255,255,255,0.06);
-      border-radius: 999px;
-      padding: 2px 8px;
-      white-space: nowrap;
-    }
-    .aspect-card__meaning {
-      grid-column: 1 / -1;
-      font-size: var(--text-xs);
-      color: var(--silver-dim);
-      border-top: 1px solid rgba(168, 158, 136,0.08);
-      padding-top: var(--space-2);
-      margin-top: var(--space-1);
-    }
-
-    .aspect-show-all-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      color: var(--silver);
-      font-size: var(--text-sm);
-      padding: var(--space-2) var(--space-5);
-      cursor: pointer;
-      margin-top: var(--space-4);
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .aspect-show-all-btn:hover { border-color: var(--gold); color: var(--gold-pale); }
-
-    /* --- Overview ---- */
-    .compat-overview {
-      background: rgba(20, 16, 10,0.68);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    .compat-overview p {
-      color: var(--color-silver-dim);
-      line-height: 1.8;
-      margin-bottom: var(--space-4);
-    }
-    .compat-overview p:last-child { margin-bottom: 0; }
-
-    /* --- Download button row --- */
-    .compat-download-row {
-      text-align: center;
-      margin-top: var(--space-6);
-    }
-
-    /* ---- Element compat grid ---- */
-    .element-compat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-5);
-    }
-    @media (max-width: 600px) { .element-compat-grid { grid-template-columns: 1fr; } }
-
-    .element-compat-card {
-      background: rgba(20, 16, 10,0.62);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6) var(--space-6);
-      border-left-width: 3px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    }
-    .element-compat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-    }
-    .element-compat-card--fire {
-      border-left-color: #e05a3a;
-    }
-    .element-compat-card--fire:hover { box-shadow: 0 8px 32px rgba(224,90,58,0.15); }
-    .element-compat-card--earth {
-      border-left-color: #2a8a5a;
-    }
-    .element-compat-card--earth:hover { box-shadow: 0 8px 32px rgba(42,138,90,0.15); }
-    .element-compat-card--air {
-      border-left-color: #9db36a;
-    }
-    .element-compat-card--air:hover { box-shadow: 0 8px 32px rgba(168, 107, 74, 0.15); }
-    .element-compat-card--water {
-      border-left-color: #3a7ad4;
-    }
-    .element-compat-card--water:hover { box-shadow: 0 8px 32px rgba(63,125,118,0.15); }
-
-    .element-compat-card h3 {
-      font-family: var(--font-display);
-      font-size: var(--text-lg);
-      font-weight: 700;
-      margin-bottom: var(--space-3);
-    }
-    .element-compat-card--fire h3  { color: #e05a3a; }
-    .element-compat-card--earth h3 { color: #2a8a5a; }
-    .element-compat-card--air h3   { color: #9db36a; }
-    .element-compat-card--water h3 { color: #3a7ad4; }
-    .element-compat-card p {
-      font-size: var(--text-sm);
-      color: var(--color-silver-dim);
-      line-height: 1.75;
-      margin: 0;
-    }
-
-    /* ---- Compat matrix ---- */
-    .compat-matrix {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--text-xs);
-    }
-    .compat-matrix th, .compat-matrix td {
-      border: 1px solid var(--color-border);
-      padding: var(--space-2);
-      text-align: center;
-      min-width: 36px;
-    }
-    .compat-matrix th {
-      background: var(--color-surface);
-      color: var(--color-silver-dim);
-      font-weight: 700;
-    }
-    .compat-matrix .compat-sign-abbr {
-      display: block;
-      font-size: 0.55rem;
-      letter-spacing: 0.06em;
-      line-height: 1.2;
-      margin-top: 2px;
-      text-transform: uppercase;
-    }
-    .compat-matrix td { cursor: default; transition: background var(--transition-fast); }
-    .compat-matrix td:hover { background: var(--color-surface-2); }
-    .compat-cell--high    { background: rgba(120, 140, 70, 0.18);  color: var(--color-success); font-weight: 700; }
-    .compat-cell--medium  { background: rgba(251, 191, 36, 0.15); color: var(--color-gold); }
-    .compat-cell--low     { background: rgba(239, 68, 68, 0.12);  color: var(--color-danger); }
-    .compat-cell--neutral { background: transparent; color: var(--color-silver-dark); }
-
-    /* ---- Synastry sidebar premium ---- */
-    .synastry-sidebar-card {
-      background: rgba(20, 16, 10,0.68);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-7);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-    }
-    .synastry-aspect-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .synastry-aspect-table th {
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--silver, #A89E88);
-      font-weight: 600;
-      padding: var(--space-2) var(--space-3);
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-    .synastry-aspect-table td {
-      padding: var(--space-3) var(--space-3);
-      border-bottom: 1px solid rgba(168, 158, 136,0.06);
-      font-size: var(--text-sm);
-      color: var(--silver);
-      vertical-align: middle;
-    }
-    .sat-glyph {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-    .sat-glyph--conjunction { color: var(--gold); }
-    .sat-glyph--trine       { color: #22c55e; }
-    .sat-glyph--sextile     { color: #6cd47e; }
-    .sat-glyph--square      { color: #ef4444; }
-    .sat-glyph--opposition  { color: #f97316; }
-    .sat-nature {
-      font-size: var(--text-xs);
-      padding: 2px 8px;
-      border-radius: 999px;
-      display: inline-block;
-      font-weight: 600;
-    }
-    .sat-nature--intense   { background: rgba(196,146,10,0.18); color: var(--gold-pale); }
-    .sat-nature--harmonic  { background: rgba(120, 140, 70,0.15);  color: #6cd47e; }
-    .sat-nature--dynamic   { background: rgba(239,68,68,0.14);  color: #f87171; }
-    .sat-nature--polarity  { background: rgba(249,115,22,0.14); color: #fdba74; }
-
-    /* ============================================================
-       RESULT TABS — Synastry / Composite / Davison
-    ============================================================ */
-    .compat-tabs {
-      display: flex;
-      gap: var(--space-2);
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: var(--space-8);
-    }
-    .compat-tab {
-      background: rgba(20, 16, 10,0.55);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      color: var(--silver);
-      font-family: var(--font-display);
-      font-size: var(--text-sm);
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      padding: var(--space-3) var(--space-6);
-      cursor: pointer;
-      -webkit-backdrop-filter: blur(14px);
-      backdrop-filter: blur(14px);
-      transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
-    }
-    .compat-tab:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
-    .compat-tab[aria-selected="true"] {
-      color: var(--bg);
-      background: linear-gradient(135deg, #c9a227 0%, #e8c96a 100%);
-      border-color: transparent;
-      box-shadow: 0 4px 18px rgba(196,146,10,0.28);
-    }
-    @media (max-width: 600px) {
-      .compat-tab { padding: var(--space-2) var(--space-4); font-size: var(--text-xs); }
-    }
-
-    .compat-tabpanel[hidden] { display: none; }
-
-    /* ---- Explanatory note for composite / davison ---- */
-    .compat-method-note {
-      background: rgba(20, 16, 10,0.62);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--gold);
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-      margin-bottom: var(--space-8);
-      -webkit-backdrop-filter: blur(16px);
-      backdrop-filter: blur(16px);
-    }
-    .compat-method-note h3 {
-      font-family: var(--font-display);
-      color: var(--gold-pale);
-      font-size: var(--text-lg);
-      font-weight: 600;
-      margin-bottom: var(--space-3);
-    }
-    .compat-method-note p {
-      color: var(--color-silver-dim);
-      line-height: 1.8;
-      font-size: var(--text-sm);
-      margin: 0 0 var(--space-3);
-    }
-    .compat-method-note p:last-child { margin-bottom: 0; }
-
-    .compat-midpoint-line {
-      font-size: var(--text-xs);
-      color: var(--silver-dim);
-      margin-top: var(--space-3);
-      font-style: italic;
-    }
-    .compat-midpoint-line strong { color: var(--white); font-style: normal; }
-
-    /* ---- Midpoint-chart planet grid (composite + davison) ---- */
-    .midchart-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: var(--space-3);
-    }
-    .midchart-cell {
-      background: rgba(20, 16, 10,0.62);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-4) var(--space-5);
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      -webkit-backdrop-filter: blur(14px);
-      backdrop-filter: blur(14px);
-      transition: transform 0.18s, border-color 0.2s, box-shadow 0.18s;
-    }
-    .midchart-cell:hover {
-      transform: translateY(-2px);
-      border-color: rgba(196,146,10,0.28);
-      box-shadow: 0 6px 22px rgba(0,0,0,0.3);
-    }
-    .midchart-cell__orb { flex-shrink: 0; display: inline-flex; }
-    .midchart-cell__glyph {
-      font-size: 1.5rem;
-      line-height: 1;
-      flex-shrink: 0;
-      width: 34px;
-      text-align: center;
-      color: var(--gold-pale);
-    }
-    .midchart-cell__body { min-width: 0; }
-    .midchart-cell__planet {
-      font-size: var(--text-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--silver-dim);
-      font-weight: 600;
-    }
-    .midchart-cell__sign {
-      font-family: var(--font-display);
-      font-size: var(--text-base);
-      color: var(--white);
-      font-weight: 600;
-    }
-    .midchart-cell__deg { font-size: var(--text-xs); color: var(--silver); }
-
-    .midchart-angles {
-      display: flex;
-      gap: var(--space-4);
-      flex-wrap: wrap;
-      margin-top: var(--space-5);
-      justify-content: center;
-    }
-    .midchart-angle {
-      font-size: var(--text-sm);
-      color: var(--silver);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: var(--space-2) var(--space-5);
-    }
-    .midchart-angle strong { color: var(--gold-pale); font-weight: 600; }
   </style>
+  <link rel="stylesheet" href="css/compatibility-critical.css" />
+  <link rel="stylesheet" href="css/ap-forms.css" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferCompatFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferCompatFonts();deferPageCss('css/celestial-seals.css','ap-css-seals');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/compatibility-page-deferred.css','ap-css-compat-deferred');});</script>
 </head>
-<body>
+<body class="page-compat ap-cinematic-2026 ap-no-nav-enter">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
+    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
+    <symbol id="ei-infinity" viewBox="0 0 24 24"><path d="M6 12c0-2.1 1.5-3.4 2.9-3.4 2.7 0 4.5 6.8 7.2 6.8 1.4 0 2.9-1.3 2.9-3.4s-1.5-3.4-2.9-3.4c-2.7 0-4.5 6.8-7.2 6.8C7.5 15.4 6 14.1 6 12Z"/></symbol>
+    <symbol id="ei-pin" viewBox="0 0 24 24"><path d="M12 21c-4-5.3-6-8.4-6-11a6 6 0 1 1 12 0c0 2.6-2 5.7-6 11Z"/><circle cx="12" cy="10" r="2.2"/></symbol>
+  </svg>
+
+  <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -760,13 +95,24 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="compatibility.html" class="navbar__link active" aria-current="page">Match</a>
+          <a href="ephemeris.html" class="navbar__link">Sky</a>
+          <div class="navbar__more" data-nav-more>
+            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
+            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
+          </div>
         </div>
         <div class="navbar__end">
+          <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+            <svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg>
+          </a>
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
             <span></span><span></span><span></span>
           </button>
@@ -781,7 +127,7 @@
     <!-- ============================================================
          HERO
     ============================================================ -->
-    <section class="hero hero--small" aria-labelledby="page-title">
+    <section class="hero hero--small" style="padding:calc(72px + 4rem) 0 3rem;min-height:603px" aria-labelledby="page-title">
       <div class="orb orb--purple" style="top:-60px;left:-80px;" aria-hidden="true"></div>
       <div class="orb orb--gold" style="top:80px;right:-60px;" aria-hidden="true"></div>
       <div class="container">
@@ -791,7 +137,7 @@
         <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Full synastry — inter-chart aspects with measured orbs, not Sun-sign matching</span></a></p>
 
         <!-- Two luminous orb avatars with connecting arc -->
-        <div class="compat-orbs" aria-hidden="true">
+        <div class="compat-orbs" style="display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;max-width:460px;min-height:120px" aria-hidden="true">
           <div class="compat-orb compat-orb--1">
             <div class="compat-orb__core" id="orb1-core"><span id="orb1-glyph"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span></div>
             <span class="compat-person-label">Person A</span>
@@ -822,7 +168,7 @@
     ============================================================ -->
     <section class="section" style="padding-top:var(--space-8);" aria-labelledby="form-heading">
       <div class="container">
-        <form id="compat-form" class="compat-form" novalidate aria-label="Compatibility calculation form">
+        <form id="compat-form" class="compat-form" style="min-height:1680px" novalidate aria-label="Compatibility calculation form">
           <h2 class="chart-form-panel__title" id="form-heading" style="text-align:center;margin-bottom:var(--space-8);">
             <div class="chart-form-panel__title-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-infinity"/></svg></div>
             Enter Both Birth Details
@@ -908,7 +254,7 @@
             <button type="submit" class="btn btn--primary btn--lg" id="compat-submit-btn">
               Calculate Compatibility <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>
             </button>
-            <button type="button" class="btn btn--outline btn--lg" id="compat-invite-btn" style="margin-left:var(--space-3);">
+            <button type="button" class="btn btn--outline btn--lg" id="compat-invite-btn">
               <svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone
             </button>
           </div>
@@ -1032,6 +378,8 @@
             <button id="compat-download-btn" class="btn btn--gold" style="display:none;">&#8659; Download Compatibility Card</button>
           </div>
 
+          <div id="compat-upsell" class="compat-upsell chart-whats-next" hidden aria-label="Keepsake and next steps"></div>
+
           </div><!-- /#panel-synastry -->
 
           <!-- ===== COMPOSITE PANEL ===== -->
@@ -1139,96 +487,96 @@
           Green = high harmony, Gold = moderate, Red = challenging, Grey = depends on the full chart.
         </p>
 
-        <div class="card" style="overflow-x:auto;" aria-label="12-by-12 zodiac sign compatibility matrix">
+        <div class="card compat-matrix-scroll" tabindex="0" aria-label="12-by-12 zodiac sign compatibility matrix">
           <div style="min-width:600px;">
-            <table class="compat-matrix" role="grid" aria-label="Sun sign compatibility overview">
+            <table class="compat-matrix" aria-label="Sun sign compatibility overview">
               <caption class="sr-only">Sun sign compatibility: High (green), Medium (gold), Low (red), Neutral (grey).</caption>
               <thead>
                 <tr>
                   <th scope="col" aria-label="Sign" style="background:transparent;border:none;"><span class="compat-sign-abbr">Sign</span></th>
-                  <th scope="col" aria-label="Aries" data-sign-orb="Aries"><abbr title="Aries" aria-hidden="true">♈</abbr> <span class="compat-sign-abbr">Ari</span></th>
-                  <th scope="col" aria-label="Taurus" data-sign-orb="Taurus"><abbr title="Taurus" aria-hidden="true">♉</abbr> <span class="compat-sign-abbr">Tau</span></th>
-                  <th scope="col" aria-label="Gemini" data-sign-orb="Gemini"><abbr title="Gemini" aria-hidden="true">♊</abbr> <span class="compat-sign-abbr">Gem</span></th>
-                  <th scope="col" aria-label="Cancer" data-sign-orb="Cancer"><abbr title="Cancer" aria-hidden="true">♋</abbr> <span class="compat-sign-abbr">Can</span></th>
-                  <th scope="col" aria-label="Leo" data-sign-orb="Leo"><abbr title="Leo" aria-hidden="true">♌</abbr> <span class="compat-sign-abbr">Leo</span></th>
-                  <th scope="col" aria-label="Virgo" data-sign-orb="Virgo"><abbr title="Virgo" aria-hidden="true">♍</abbr> <span class="compat-sign-abbr">Vir</span></th>
-                  <th scope="col" aria-label="Libra" data-sign-orb="Libra"><abbr title="Libra" aria-hidden="true">♎</abbr> <span class="compat-sign-abbr">Lib</span></th>
-                  <th scope="col" aria-label="Scorpio" data-sign-orb="Scorpio"><abbr title="Scorpio" aria-hidden="true">♏</abbr> <span class="compat-sign-abbr">Sco</span></th>
-                  <th scope="col" aria-label="Sagittarius" data-sign-orb="Sagittarius"><abbr title="Sagittarius" aria-hidden="true">♐</abbr> <span class="compat-sign-abbr">Sag</span></th>
-                  <th scope="col" aria-label="Capricorn" data-sign-orb="Capricorn"><abbr title="Capricorn" aria-hidden="true">♑</abbr> <span class="compat-sign-abbr">Cap</span></th>
-                  <th scope="col" aria-label="Aquarius" data-sign-orb="Aquarius"><abbr title="Aquarius" aria-hidden="true">♒</abbr> <span class="compat-sign-abbr">Aqu</span></th>
-                  <th scope="col" aria-label="Pisces" data-sign-orb="Pisces"><abbr title="Pisces" aria-hidden="true">♓</abbr> <span class="compat-sign-abbr">Pis</span></th>
+                  <th scope="col" aria-label="Aries"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aries" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aries">Ari</abbr></th>
+                  <th scope="col" aria-label="Taurus"><span class="compat-matrix__seal" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Taurus">Tau</abbr></th>
+                  <th scope="col" aria-label="Gemini"><span class="compat-matrix__seal" data-celestial-seal="zodiac:gemini" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Gemini">Gem</abbr></th>
+                  <th scope="col" aria-label="Cancer"><span class="compat-matrix__seal" data-celestial-seal="zodiac:cancer" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Cancer">Can</abbr></th>
+                  <th scope="col" aria-label="Leo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:leo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Leo">Leo</abbr></th>
+                  <th scope="col" aria-label="Virgo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:virgo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Virgo">Vir</abbr></th>
+                  <th scope="col" aria-label="Libra"><span class="compat-matrix__seal" data-celestial-seal="zodiac:libra" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Libra">Lib</abbr></th>
+                  <th scope="col" aria-label="Scorpio"><span class="compat-matrix__seal" data-celestial-seal="zodiac:scorpio" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Scorpio">Sco</abbr></th>
+                  <th scope="col" aria-label="Sagittarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:sagittarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Sagittarius">Sag</abbr></th>
+                  <th scope="col" aria-label="Capricorn"><span class="compat-matrix__seal" data-celestial-seal="zodiac:capricorn" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Capricorn">Cap</abbr></th>
+                  <th scope="col" aria-label="Aquarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aquarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aquarius">Aqu</abbr></th>
+                  <th scope="col" aria-label="Pisces"><span class="compat-matrix__seal" data-celestial-seal="zodiac:pisces" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Pisces">Pis</abbr></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row" aria-label="Aries" data-sign-orb="Aries"><abbr title="Aries" aria-hidden="true">♈</abbr> <span class="compat-sign-abbr">Ari</span></th>
+                  <th scope="row" aria-label="Aries"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aries" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aries">Ari</abbr></th>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Taurus" data-sign-orb="Taurus"><abbr title="Taurus" aria-hidden="true">♉</abbr> <span class="compat-sign-abbr">Tau</span></th>
+                  <th scope="row" aria-label="Taurus"><span class="compat-matrix__seal" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Taurus">Tau</abbr></th>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Gemini" data-sign-orb="Gemini"><abbr title="Gemini" aria-hidden="true">♊</abbr> <span class="compat-sign-abbr">Gem</span></th>
+                  <th scope="row" aria-label="Gemini"><span class="compat-matrix__seal" data-celestial-seal="zodiac:gemini" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Gemini">Gem</abbr></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Cancer" data-sign-orb="Cancer"><abbr title="Cancer" aria-hidden="true">♋</abbr> <span class="compat-sign-abbr">Can</span></th>
+                  <th scope="row" aria-label="Cancer"><span class="compat-matrix__seal" data-celestial-seal="zodiac:cancer" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Cancer">Can</abbr></th>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Leo" data-sign-orb="Leo"><abbr title="Leo" aria-hidden="true">♌</abbr> <span class="compat-sign-abbr">Leo</span></th>
+                  <th scope="row" aria-label="Leo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:leo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Leo">Leo</abbr></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--neutral">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Virgo" data-sign-orb="Virgo"><abbr title="Virgo" aria-hidden="true">♍</abbr> <span class="compat-sign-abbr">Vir</span></th>
+                  <th scope="row" aria-label="Virgo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:virgo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Virgo">Vir</abbr></th>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Libra" data-sign-orb="Libra"><abbr title="Libra" aria-hidden="true">♎</abbr> <span class="compat-sign-abbr">Lib</span></th>
+                  <th scope="row" aria-label="Libra"><span class="compat-matrix__seal" data-celestial-seal="zodiac:libra" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Libra">Lib</abbr></th>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Scorpio" data-sign-orb="Scorpio"><abbr title="Scorpio" aria-hidden="true">♏</abbr> <span class="compat-sign-abbr">Sco</span></th>
+                  <th scope="row" aria-label="Scorpio"><span class="compat-matrix__seal" data-celestial-seal="zodiac:scorpio" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Scorpio">Sco</abbr></th>
                   <td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Sagittarius" data-sign-orb="Sagittarius"><abbr title="Sagittarius" aria-hidden="true">♐</abbr> <span class="compat-sign-abbr">Sag</span></th>
+                  <th scope="row" aria-label="Sagittarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:sagittarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Sagittarius">Sag</abbr></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Capricorn" data-sign-orb="Capricorn"><abbr title="Capricorn" aria-hidden="true">♑</abbr> <span class="compat-sign-abbr">Cap</span></th>
+                  <th scope="row" aria-label="Capricorn"><span class="compat-matrix__seal" data-celestial-seal="zodiac:capricorn" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Capricorn">Cap</abbr></th>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td>
                   <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Aquarius" data-sign-orb="Aquarius"><abbr title="Aquarius" aria-hidden="true">♒</abbr> <span class="compat-sign-abbr">Aqu</span></th>
+                  <th scope="row" aria-label="Aquarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aquarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aquarius">Aqu</abbr></th>
                   <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
                   <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
                 </tr>
                 <tr>
-                  <th scope="row" aria-label="Pisces" data-sign-orb="Pisces"><abbr title="Pisces" aria-hidden="true">♓</abbr> <span class="compat-sign-abbr">Pis</span></th>
+                  <th scope="row" aria-label="Pisces"><span class="compat-matrix__seal" data-celestial-seal="zodiac:pisces" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Pisces">Pis</abbr></th>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
                   <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
@@ -1363,29 +711,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div class="footer-nav-col" role="group" aria-label="Footer tools navigation">
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
           <h2 class="footer-nav-col__title">Tools</h2>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div class="footer-nav-col" role="group" aria-label="Footer account navigation">
-          <h2 class="footer-nav-col__title">Account</h2>
-          <ul class="footer__links">
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -1394,762 +803,37 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- JS -->
-  <script src="js/raf-core.js"></script>
-
-  <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/chart-render.js"></script>
-  <script src="js/interpretations.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/icons.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
-
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/ap-zodiac-constants.js" defer></script>
+  <script src="js/chart-render.js" defer></script>
+  <script src="js/ap-load-interpretations.js" defer></script>
+  <script src="js/profile.js" defer></script>
+  <script src="js/celestial-seals.js" defer></script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/ap-nav-model.js"></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/ap-page-bridge.js" defer></script>
+  <script src="js/ap-canvas-seals.js" defer></script>
   <script>
-  /* ── Compatibility Calculator ─────────────────────────────────────────── */
   (function () {
-    'use strict';
-
-    var ASPECT_GLYPHS = { conjunction:'☌', trine:'△', sextile:'✶', square:'□', opposition:'☍' };
-
-    /* Aspect type classifier — harmony / tension / neutral */
-    function aspectType(aspect) {
-      if (aspect === 'trine' || aspect === 'sextile') return 'harmony';
-      if (aspect === 'square' || aspect === 'opposition') return 'tension';
-      return 'neutral';
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
     }
-
-    function waitFor(cond, ms) {
-      return new Promise(function(res, rej) {
-        var t = setTimeout(function() { rej('timeout'); }, ms || 8000);
-        (function check() {
-          if (cond()) { clearTimeout(t); res(); } else setTimeout(check, 100);
-        })();
-      });
+    function idle() {
+      inject('js/cosmos.js');
+      inject('js/effects.js');
     }
-
-    function tzOffsetMinutes(tz, utcDate) {
-      try {
-        var f = new Intl.DateTimeFormat('en-GB', { timeZone: tz, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12: false });
-        var p = {};
-        f.formatToParts(utcDate).forEach(function(x) { if (x.type !== 'literal') p[x.type] = parseInt(x.value, 10); });
-        var local = Date.UTC(p.year, p.month - 1, p.day, p.hour % 24, p.minute, p.second);
-        return (local - utcDate.getTime()) / 60000;
-      } catch(e) { return 0; }
-    }
-
-    function localToUT(y, m, d, hh, mm, tz) {
-      var utc = new Date(Date.UTC(y, m-1, d, hh, mm, 0));
-      for (var i = 0; i < 2; i++) {
-        var off = tzOffsetMinutes(tz, utc);
-        utc = new Date(Date.UTC(y, m-1, d, hh, mm, 0) - off * 60000);
-      }
-      return { y: utc.getUTCFullYear(), m: utc.getUTCMonth()+1, d: utc.getUTCDate(), hh: utc.getUTCHours(), mm: utc.getUTCMinutes() };
-    }
-
-    function buildChart(E, year, month, day, hour, min, lat, lon, tz) {
-      var ut = localToUT(year, month, day, hour, min, tz || 'UTC');
-      var raw = E.calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, lat, lon);
-      var p = raw.positions;
-      return {
-        sunSign:     p.sun.sign,
-        moonSign:    p.moon.sign,
-        venusSign:   p.venus ? p.venus.sign : p.sun.sign,
-        marsSign:    p.mars  ? p.mars.sign  : p.sun.sign,
-        mercurySign: p.mercury ? p.mercury.sign : p.sun.sign,
-        rising:      p.asc  ? p.asc.sign   : p.sun.sign,
-        // Birth moment expressed in UT + place — used to cast the Davison chart.
-        ut: { y: ut.y, m: ut.m, d: ut.d, hh: ut.hh, mm: ut.mm, lat: lat, lon: lon },
-        positions: {
-          Sun:     { lon: p.sun.longitude },
-          Moon:    { lon: p.moon.longitude },
-          Mercury: { lon: p.mercury ? p.mercury.longitude : p.sun.longitude },
-          Venus:   { lon: p.venus ? p.venus.longitude : p.sun.longitude },
-          Mars:    { lon: p.mars  ? p.mars.longitude  : p.sun.longitude },
-          Jupiter: { lon: p.jupiter ? p.jupiter.longitude : 0 },
-          Saturn:  { lon: p.saturn  ? p.saturn.longitude  : 0 },
-        }
-      };
-    }
-
-    /* Planet glyph map for aspect cards */
-    var PLANET_GLYPHS = {
-      Sun:'☉', Moon:'☽', Venus:'♀', Mars:'♂', Mercury:'☿',
-      Jupiter:'♃', Saturn:'♄', Uranus:'♅', Neptune:'♆', Pluto:'♇'
-    };
-
-    function drawCompatCard(name1, name2, sign1, sign2, score, overview) {
-      var cv = document.getElementById('compat-card-canvas');
-      if (!cv) return;
-      var BASE = 1080;
-      var exportW = (window.RafCore && window.RafCore.cardExportSize) ? window.RafCore.cardExportSize() : BASE * 2;
-      cv.width = exportW; cv.height = exportW;
-      var ctx = (window.RafCore && window.RafCore.prepExportCtx)
-        ? window.RafCore.prepExportCtx(cv, exportW, exportW)
-        : cv.getContext('2d');
-      ctx.scale(exportW / BASE, exportW / BASE);
-      var W = BASE, H = BASE;
-
-      // Background — warm void (matches site palette)
-      var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
-      bg.addColorStop(0, '#13100c');
-      bg.addColorStop(0.5, '#0d0a07');
-      bg.addColorStop(1, '#050406');
-      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-
-      // Nebula glows — person 1 warm copper, person 2 gold
-      var neb1 = ctx.createRadialGradient(220, 400, 0, 220, 400, 400);
-      neb1.addColorStop(0, 'rgba(168,107,74,0.22)'); neb1.addColorStop(1, 'transparent');
-      ctx.fillStyle = neb1; ctx.fillRect(0, 0, W, H);
-      var neb2 = ctx.createRadialGradient(860, 400, 0, 860, 400, 400);
-      neb2.addColorStop(0, 'rgba(201,162,39,0.18)'); neb2.addColorStop(1, 'transparent');
-      ctx.fillStyle = neb2; ctx.fillRect(0, 0, W, H);
-
-      // Stars
-      var seed = (score || 50) * 137;
-      function rnd() { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0)/4294967296; }
-      for (var i = 0; i < 180; i++) {
-        ctx.beginPath(); ctx.arc(rnd()*W, rnd()*H, rnd()*1.3+0.2, 0, Math.PI*2);
-        ctx.fillStyle = 'rgba(240,232,216,'+(rnd()*0.5+0.1)+')'; ctx.fill();
-      }
-
-      // Double border
-      ctx.strokeStyle = 'rgba(196,146,10,0.55)'; ctx.lineWidth = 2;
-      ctx.strokeRect(40, 40, W-80, H-80);
-      ctx.strokeStyle = 'rgba(196,146,10,0.18)'; ctx.lineWidth = 1;
-      ctx.strokeRect(54, 54, W-108, H-108);
-
-      // Corner ornaments
-      ctx.fillStyle = 'rgba(196,146,10,0.5)';
-      [[68,68],[W-68,68],[68,H-68],[W-68,H-68]].forEach(function(c) {
-        if (window.AstroUI && AstroUI.drawStar4) AstroUI.drawStar4(ctx, c[0], c[1], 11);
-      });
-
-      // Eyebrow
-      ctx.font = '700 24px Inter,sans-serif'; ctx.fillStyle = 'rgba(196,146,10,0.8)';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('COSMIC COMPATIBILITY READING', W/2, 140);
-
-      // Sign glyphs
-      var SIGN_GLYPHS = {Aries:'♈',Taurus:'♉',Gemini:'♊',Cancer:'♋',Leo:'♌',Virgo:'♍',Libra:'♎',Scorpio:'♏',Sagittarius:'♐',Capricorn:'♑',Aquarius:'♒',Pisces:'♓'};
-      var g1 = SIGN_GLYPHS[sign1] || '', g2 = SIGN_GLYPHS[sign2] || '';
-      ctx.font = '220px serif';
-      ctx.fillStyle = '#b87850'; ctx.fillText(g1, W/2 - 220, 340);
-      ctx.fillStyle = 'rgba(196,146,10,0.9)';
-      if (window.AstroUI && AstroUI.drawHeart) AstroUI.drawHeart(ctx, W/2, 320, 48);
-      ctx.fillStyle = '#c9a227'; ctx.font = '220px serif'; ctx.fillText(g2, W/2 + 220, 340);
-
-      // Names
-      ctx.font = 'italic 400 42px Cormorant Garamond,serif';
-      ctx.fillStyle = 'rgba(240,232,216,0.75)';
-      if (name1 && name2) ctx.fillText(name1 + ' & ' + name2, W/2, 480);
-      else if (name1 || name2) ctx.fillText((name1||'Person A') + ' & ' + (name2||'Person B'), W/2, 480);
-
-      // Score
-      ctx.font = '900 200px Cinzel,serif'; ctx.fillStyle = 'rgba(232,201,106,0.9)';
-      ctx.shadowColor = 'rgba(196,146,10,0.4)'; ctx.shadowBlur = 50;
-      ctx.fillText((score||0)+'%', W/2, 680);
-      ctx.shadowBlur = 0;
-
-      // Score label
-      var scoreLabel = score >= 80 ? 'A Profound Match' : score >= 65 ? 'Genuine Potential' : score >= 50 ? 'Growth Dynamic' : 'Challenging Beauty';
-      ctx.font = '600 52px Cinzel,serif'; ctx.fillStyle = '#f0e8d8';
-      ctx.fillText(scoreLabel, W/2, 760);
-
-      // Divider
-      ctx.strokeStyle = 'rgba(196,146,10,0.3)'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(W/2-200, 790); ctx.lineTo(W/2+200, 790); ctx.stroke();
-
-      // Overview (wrapped)
-      if (overview) {
-        ctx.font = 'italic 400 26px Cormorant Garamond,serif';
-        ctx.fillStyle = 'rgba(168,158,136,0.8)';
-        var words = overview.split(' '), line = '', yy = 830, maxW = 860;
-        var lineCount = 0, maxLines = 3;
-        for (var w = 0; w < words.length; w++) {
-          var test = line ? line + ' ' + words[w] : words[w];
-          if (ctx.measureText(test).width > maxW && line) {
-            if (lineCount < maxLines) { ctx.fillText(lineCount === maxLines-1 ? line+'...' : line, W/2, yy); yy += 38; lineCount++; }
-            line = words[w];
-          } else line = test;
-        }
-        if (line && lineCount < maxLines) ctx.fillText(line, W/2, yy);
-      }
-
-      // Branding
-      ctx.font = '700 22px Cinzel,serif'; ctx.fillStyle = 'rgba(196,146,10,0.55)';
-      ctx.fillText('astroprecise · synastry calculated locally · deterministic', W/2, H-80);
-
-      return cv;
-    }
-
-    /* Planet glyphs (fallback when AstroIcons unavailable) for midpoint charts */
-    var MIDCHART_PLANETS = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
-
-    function planetOrbMarkup(planet) {
-      if (window.AstroIcons && AstroIcons.planet) return AstroIcons.planet(planet, { sm:true });
-      return '<span class="midchart-cell__glyph">' + (PLANET_GLYPHS[planet] || '') + '</span>';
-    }
-
-    function renderMidpointPlanets(containerId, positions) {
-      var el = document.getElementById(containerId);
-      if (!el) return;
-      if (!positions) { el.innerHTML = '<p style="color:var(--silver-dim);font-size:var(--text-sm);">Chart unavailable.</p>'; return; }
-      el.innerHTML = MIDCHART_PLANETS.map(function(p) {
-        var pos = positions[p];
-        if (!pos) return '';
-        var orb = planetOrbMarkup(p);
-        var hasIcon = window.AstroIcons && AstroIcons.planet;
-        var deg = (pos.degree !== undefined ? pos.degree : '').toString();
-        return '<div class="midchart-cell">' +
-          (hasIcon ? '<div class="midchart-cell__orb">' + orb + '</div>' : orb) +
-          '<div class="midchart-cell__body">' +
-            '<div class="midchart-cell__planet">' + p + '</div>' +
-            '<div class="midchart-cell__sign">' + (pos.sign || '—') + '</div>' +
-            (deg !== '' ? '<div class="midchart-cell__deg">' + deg + '° in sign</div>' : '') +
-          '</div>' +
-        '</div>';
-      }).join('');
-    }
-
-    function renderDavison(chart1, chart2) {
-      var I = window.Interpretations;
-      if (!I || !I.computeDavisonChart || !chart1 || !chart2 || !chart1.ut || !chart2.ut) return;
-      var dav = I.computeDavisonChart(chart1.ut, chart2.ut);
-      if (!dav) return;
-
-      // Planet grid — normalise position objects to { lon, sign, degree }.
-      var pos = {};
-      MIDCHART_PLANETS.forEach(function(name) {
-        var key = name.toLowerCase();
-        var src = dav.positions[key] || dav.positions[name];
-        if (src) pos[name] = { lon: src.longitude !== undefined ? src.longitude : src.lon, sign: src.sign, degree: src.degree };
-      });
-      renderMidpointPlanets('davison-planets', pos);
-
-      // Real angles (Davison has a genuine Ascendant & Midheaven).
-      var ascP = dav.positions.asc, mcP = dav.positions.mc;
-      var angEl = document.getElementById('davison-angles');
-      if (angEl) {
-        var bits = [];
-        if (ascP) bits.push('<span class="midchart-angle">Ascendant <strong>' + ascP.sign + '</strong></span>');
-        if (mcP)  bits.push('<span class="midchart-angle">Midheaven <strong>' + mcP.sign + '</strong></span>');
-        angEl.innerHTML = bits.join('');
-      }
-
-      // Honest midpoint disclosure (UT moment + geographic midpoint).
-      var mp = dav.midpoint;
-      var mpEl = document.getElementById('davison-midpoint');
-      if (mp && mpEl) {
-        var dateStr = mp.utYear + '-' + String(mp.utMonth).padStart(2,'0') + '-' + String(mp.utDay).padStart(2,'0');
-        var timeStr = String(mp.utHour).padStart(2,'0') + ':' + String(mp.utMinute).padStart(2,'0');
-        mpEl.innerHTML = 'Cast for the spacetime midpoint: <strong>' + dateStr + ' ' + timeStr + ' UT</strong> ' +
-          'at <strong>' + mp.lat.toFixed(2) + '°, ' + mp.lon.toFixed(2) + '°</strong>.';
-      }
-    }
-
-    function renderComposite(chart1, chart2) {
-      var I = window.Interpretations;
-      if (!I || !I.computeCompositeChart) return;
-      var comp = I.computeCompositeChart(chart1, chart2);
-      renderMidpointPlanets('composite-planets', comp ? comp.positions : null);
-    }
-
-    function setupResultTabs() {
-      var tabs = [
-        { btn: document.getElementById('tab-synastry'),  panel: document.getElementById('panel-synastry') },
-        { btn: document.getElementById('tab-composite'), panel: document.getElementById('panel-composite') },
-        { btn: document.getElementById('tab-davison'),   panel: document.getElementById('panel-davison') }
-      ].filter(function(t) { return t.btn && t.panel; });
-      if (!tabs.length) return;
-
-      function activate(idx) {
-        tabs.forEach(function(t, i) {
-          var on = i === idx;
-          t.btn.setAttribute('aria-selected', on ? 'true' : 'false');
-          t.panel.hidden = !on;
-        });
-      }
-      tabs.forEach(function(t, i) {
-        if (t.btn.dataset.wired) return;
-        t.btn.dataset.wired = '1';
-        t.btn.addEventListener('click', function() { activate(i); });
-        t.btn.addEventListener('keydown', function(e) {
-          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-            e.preventDefault();
-            var dir = e.key === 'ArrowRight' ? 1 : -1;
-            var next = (i + dir + tabs.length) % tabs.length;
-            tabs[next].btn.focus();
-            activate(next);
-          }
-        });
-      });
-      activate(0);
-    }
-
-    function showResult(result, name1, name2, chart1, chart2) {
-      var loadEl = document.getElementById('compat-loading');
-      var resEl  = document.getElementById('compat-result');
-      if (loadEl) loadEl.classList.add('hidden');
-      if (!resEl) return;
-      resEl.classList.remove('hidden');
-
-      var personA = name1 || 'Person A';
-      var personB = name2 || 'Person B';
-
-      var titleEl = document.getElementById('compat-result-title');
-      var subEl   = document.getElementById('compat-result-subtitle');
-      var score   = result.overall;
-      var label   = score >= 80 ? 'A Profound Match' : score >= 65 ? 'Genuine Potential' : score >= 50 ? 'Growth Dynamic' : 'Challenging Beauty';
-      if (titleEl) titleEl.textContent = personA + ' & ' + personB + ' — ' + label;
-      if (subEl) subEl.textContent = 'Overall compatibility: ' + score + '% · Based on full synastry analysis';
-
-      // Build the composite + Davison relationship charts for their tabs.
-      try { renderComposite(chart1, chart2); } catch (e) {}
-      try { renderDavison(chart1, chart2); } catch (e) {}
-      setupResultTabs();
-
-      // Store sign data for download card
-      window._p1SunSign = result.chart1SunSign || '';
-      window._p2SunSign = result.chart2SunSign || '';
-
-      // Connection label beneath ring
-      var connLabel = document.getElementById('compat-connection-label');
-      if (connLabel) connLabel.textContent = label;
-
-      // Score ring — radius 70, circumference = 2π×70 ≈ 439.8
-      var ring  = document.getElementById('score-ring');
-      var numEl = document.getElementById('overall-score');
-      if (ring) {
-        var circ = 2 * Math.PI * 70;
-        ring.style.strokeDasharray = ((score / 100) * circ).toFixed(1) + ' ' + circ.toFixed(1);
-      }
-      if (numEl) numEl.textContent = score + '%';
-
-      // Category bars
-      var cats = [
-        { label:'Romantic Attraction', key:'love' },
-        { label:'Emotional Depth',     key:'values' },
-        { label:'Communication',       key:'communication' },
-        { label:'Long-Term Potential', key:'longTerm' },
-        { label:'Shared Vision',       key:'passion' },
-      ];
-      var catEl = document.getElementById('category-scores');
-      if (catEl) {
-        var items = catEl.querySelectorAll('.category-score-item');
-        cats.forEach(function(cat, i) {
-          if (!items[i]) return;
-          var v = result[cat.key] || 0;
-          items[i].querySelector('.category-score-item__value').textContent = v + '%';
-          items[i].querySelector('.score-bar__fill').style.width = v + '%';
-        });
-      }
-
-      // Synastry aspects — premium card-style list, top 8 shown, rest toggled
-      var aspEl = document.getElementById('synastry-aspects');
-      if (aspEl && result.synastryAspects && result.synastryAspects.length) {
-        var allAspects = result.synastryAspects;
-        var visibleCount = 8;
-
-        function renderAspectCards(list) {
-          return list.map(function(a) {
-            var type = aspectType(a.aspect);
-            var glyph = ASPECT_GLYPHS[a.aspect] || a.aspect;
-            var p1glyph = window.AstroIcons ? AstroIcons.planet(a.p1, { sm:true }) : (PLANET_GLYPHS[a.p1] || '');
-            var p2glyph = window.AstroIcons ? AstroIcons.planet(a.p2, { sm:true }) : (PLANET_GLYPHS[a.p2] || '');
-            var borderCls = type === 'harmony' ? 'aspect-card--harmony' : type === 'tension' ? 'aspect-card--tension' : 'aspect-card--neutral';
-            var symCls    = type === 'harmony' ? 'aspect-card__symbol--harmony' : type === 'tension' ? 'aspect-card__symbol--tension' : 'aspect-card__symbol--neutral';
-            return '<div class="aspect-card ' + borderCls + '">' +
-              '<div class="aspect-card__planet"><span>' + p1glyph + '</span>' + a.p1 + '</div>' +
-              '<div class="aspect-card__symbol ' + symCls + '">' + glyph + '</div>' +
-              '<div class="aspect-card__planet"><span>' + p2glyph + '</span>' + a.p2 + '</div>' +
-              '<div class="aspect-card__orb">' + (a.orb !== undefined ? a.orb + '°' : '—') + '</div>' +
-              (a.interpretation ? '<div class="aspect-card__meaning">' + a.interpretation + '</div>' : '') +
-            '</div>';
-          }).join('');
-        }
-
-        var visibleAspects = allAspects.slice(0, visibleCount);
-        var hiddenAspects  = allAspects.slice(visibleCount);
-
-        // ── Unlock state ──────────────────────────────────────────────────
-        // Honest model: top 8 aspects + categories + overview are ALWAYS free.
-        // The remaining aspects unlock for a one-time fee — but ONLY once the
-        // product is live (compatUnlockUrl set). While dormant, everything is
-        // free so we never downgrade pre-launch. The unlock is an on-device
-        // "thank-you" reveal (?unlocked=1 → localStorage), not DRM — the listing
-        // copy says exactly that.
-        var AP = window.AP_MON || {};
-        var unlockUrl = AP.compatUnlockUrl || '';
-        var unlockPrice = AP.compatUnlockPrice || '£1.99';
-        var unlocked = false;
-        try {
-          if (new URLSearchParams(location.search).get('unlocked') === '1') {
-            localStorage.setItem('ap_compat_unlocked', '1');
-          }
-          unlocked = localStorage.getItem('ap_compat_unlocked') === '1';
-        } catch (e) {}
-        var gated = !!unlockUrl && !unlocked;   // live + not yet unlocked
-
-        var hiddenHtml = '';
-        var ctaHtml = '';
-        if (hiddenAspects.length > 0) {
-          if (gated) {
-            // Locked: hidden aspects are not placed in the DOM; show the unlock CTA.
-            ctaHtml =
-              '<div class="aspect-unlock">' +
-                '<button class="btn btn--primary aspect-show-all-btn" id="aspect-unlock-btn">' +
-                  'Unlock all ' + allAspects.length + ' cross-chart aspects — ' + unlockPrice +
-                '</button>' +
-                '<p class="aspect-unlock__note">Unlocks the full report on this device. Your birth details never leave your browser.</p>' +
-              '</div>';
-          } else {
-            // Free (dormant) or already unlocked: render the rest behind a toggle.
-            hiddenHtml = '<div class="aspect-card-list" id="aspect-card-list-hidden" style="display:' + (unlocked ? '' : 'none') + ';">' + renderAspectCards(hiddenAspects) + '</div>';
-            if (!unlocked) {
-              ctaHtml = '<button class="aspect-show-all-btn" id="aspect-show-all-btn">Show all ' + allAspects.length + ' aspects ↓</button>';
-            }
-          }
-        }
-
-        aspEl.innerHTML =
-          '<h3 class="synastry-aspects-header">Cross-Chart Aspects</h3>' +
-          '<div class="aspect-card-list" id="aspect-card-list-visible">' + renderAspectCards(visibleAspects) + '</div>' +
-          hiddenHtml + ctaHtml;
-
-        var showAllBtnEl = document.getElementById('aspect-show-all-btn');
-        if (showAllBtnEl) {
-          showAllBtnEl.addEventListener('click', function() {
-            var hidden = document.getElementById('aspect-card-list-hidden');
-            if (hidden) {
-              hidden.style.display = '';
-              showAllBtnEl.style.display = 'none';
-            }
-          });
-        }
-        var unlockBtnEl = document.getElementById('aspect-unlock-btn');
-        if (unlockBtnEl && unlockUrl) {
-          unlockBtnEl.addEventListener('click', function() { window.open(unlockUrl, '_blank', 'noopener'); });
-        }
-      }
-
-      // Overview narrative
-      var overviewEl = document.getElementById('compat-overview');
-      if (overviewEl && result.overview) {
-        overviewEl.innerHTML = '<p style="color:var(--color-silver);line-height:1.8;">' + result.overview + '</p>';
-      }
-
-      // Show download button
-      var dlBtn = document.getElementById('compat-download-btn');
-      if (dlBtn) { dlBtn.style.display = 'inline-block'; dlBtn.dataset.ready = '1'; }
-
-      // Share button (created once)
-      if (!document.getElementById('compat-share-btn')) {
-        var shareWrap = document.createElement('div');
-        shareWrap.style.cssText = 'text-align:center;margin-top:var(--space-6);';
-        var shareBtn = document.createElement('button');
-        shareBtn.id = 'compat-share-btn';
-        shareBtn.className = 'btn btn--outline';
-        shareBtn.textContent = 'Share This Reading ↗';
-        shareBtn.addEventListener('click', function() {
-          var url = window.location.href;
-          if (navigator.share) {
-            navigator.share({ title: 'Our Compatibility Report', url: url }).catch(function(){});
-          } else {
-            navigator.clipboard.writeText(url).then(function() {
-              shareBtn.textContent = 'Link Copied!';
-              setTimeout(function() { shareBtn.textContent = 'Share This Reading ↗'; }, 2000);
-            });
-          }
-        });
-        shareWrap.appendChild(shareBtn);
-        resEl.appendChild(shareWrap);
-      }
-
-      // Scroll to result
-      setTimeout(function() { resEl.scrollIntoView({ behavior:'smooth', block:'start' }); }, 100);
-    }
-
-    function readPerson(prefix) {
-      var date = (document.getElementById(prefix + '-date') || {}).value || '';
-      var time = (document.getElementById(prefix + '-time') || {}).value || '12:00';
-      var name = (document.getElementById(prefix + '-name') || {}).value || '';
-      var lat  = parseFloat((document.getElementById(prefix + '-lat') || {}).value);
-      var lon  = parseFloat((document.getElementById(prefix + '-lon') || {}).value);
-      var tz   = (document.getElementById(prefix + '-tz') || {}).value || 'UTC';
-      if (!date || isNaN(lat) || isNaN(lon)) return null;
-      var parts = date.split('-').map(Number);
-      var timeParts = time.split(':').map(Number);
-      return { name, y: parts[0], m: parts[1], d: parts[2], hh: timeParts[0]||12, mm: timeParts[1]||0, lat, lon, tz };
-    }
-
-    function encodeToURL(p1, p2) {
-      var params = new URLSearchParams();
-      if (p1) {
-        params.set('p1d', p1.y + '-' + String(p1.m).padStart(2,'0') + '-' + String(p1.d).padStart(2,'0'));
-        params.set('p1t', String(p1.hh).padStart(2,'0') + ':' + String(p1.mm).padStart(2,'0'));
-        params.set('p1n', p1.name);
-        params.set('p1la', p1.lat.toFixed(4));
-        params.set('p1lo', p1.lon.toFixed(4));
-        params.set('p1tz', p1.tz);
-      }
-      if (p2) {
-        params.set('p2d', p2.y + '-' + String(p2.m).padStart(2,'0') + '-' + String(p2.d).padStart(2,'0'));
-        params.set('p2t', String(p2.hh).padStart(2,'0') + ':' + String(p2.mm).padStart(2,'0'));
-        params.set('p2n', p2.name);
-        params.set('p2la', p2.lat.toFixed(4));
-        params.set('p2lo', p2.lon.toFixed(4));
-        params.set('p2tz', p2.tz);
-      }
-      history.replaceState(null, '', '?' + params.toString());
-    }
-
-    var inviteBtn = document.getElementById('compat-invite-btn');
-    if (inviteBtn) {
-      inviteBtn.addEventListener('click', function() {
-        var p1 = readPerson('person1');
-        if (!p1) {
-          inviteBtn.textContent = 'Fill in your details first';
-          setTimeout(function() { inviteBtn.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone'; }, 2200);
-          return;
-        }
-        var params = new URLSearchParams();
-        params.set('p1d', p1.y + '-' + String(p1.m).padStart(2,'0') + '-' + String(p1.d).padStart(2,'0'));
-        params.set('p1t', String(p1.hh).padStart(2,'0') + ':' + String(p1.mm).padStart(2,'0'));
-        params.set('p1n', p1.name || '');
-        params.set('p1la', p1.lat.toFixed(4));
-        params.set('p1lo', p1.lon.toFixed(4));
-        params.set('p1tz', p1.tz);
-        var link = location.origin + location.pathname + '?' + params.toString();
-        var inviteText = (p1.name ? p1.name + ' wants' : 'Someone wants') +
-          ' to check your cosmic compatibility. Their half of the chart is already filled in — add yours: ' + link;
-        if (navigator.share) {
-          navigator.share({ title: 'Cosmic Compatibility', text: inviteText, url: link }).catch(function(){});
-        } else {
-          navigator.clipboard.writeText(inviteText).then(function() {
-            inviteBtn.textContent = 'Invite link copied';
-            setTimeout(function() { inviteBtn.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone'; }, 2400);
-          }).catch(function(){});
-        }
-      });
-    }
-
-    function fillFromURL() {
-      var params = new URLSearchParams(window.location.search);
-      if (!params.has('p1d')) return false;
-
-      function fillPerson(prefix, pfx) {
-        var dateEl = document.getElementById(prefix + '-date');
-        var timeEl = document.getElementById(prefix + '-time');
-        var nameEl = document.getElementById(prefix + '-name');
-        var latEl  = document.getElementById(prefix + '-lat');
-        var lonEl  = document.getElementById(prefix + '-lon');
-        var tzEl   = document.getElementById(prefix + '-tz');
-        if (dateEl) dateEl.value = params.get(pfx + 'd') || '';
-        if (timeEl) timeEl.value = params.get(pfx + 't') || '12:00';
-        if (nameEl) nameEl.value = decodeURIComponent(params.get(pfx + 'n') || '');
-        if (latEl)  latEl.value  = params.get(pfx + 'la') || '';
-        if (lonEl)  lonEl.value  = params.get(pfx + 'lo') || '';
-        if (tzEl)   tzEl.value   = params.get(pfx + 'tz') || 'UTC';
-        // Show lat/lon in city field as a hint
-        var cityEl = document.getElementById(prefix + '-city');
-        if (cityEl && params.get(pfx + 'la')) {
-          cityEl.value = '(' + parseFloat(params.get(pfx + 'la')).toFixed(2) + '°, ' + parseFloat(params.get(pfx + 'lo')).toFixed(2) + '°)';
-        }
-      }
-
-      fillPerson('person1', 'p1');
-
-      // Invite link: only Person 1 present — welcome the invitee, focus their half
-      if (!params.has('p2d')) {
-        var p1name = decodeURIComponent(params.get('p1n') || '');
-        var formHeading = document.getElementById('form-heading');
-        if (formHeading && p1name) {
-          formHeading.innerHTML = '<div class="chart-form-panel__title-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></div>' +
-            p1name + ' invited you — add your details';
-        }
-        var p2date = document.getElementById('person2-date');
-        if (p2date) setTimeout(function() {
-          p2date.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          p2date.focus();
-        }, 600);
-        return false;
-      }
-
-      fillPerson('person2', 'p2');
-      return true;
-    }
-
-    function initCompatAutocomplete(inputId, latId, lonId, tzId, dropId) {
-      var input    = document.getElementById(inputId);
-      var latEl    = document.getElementById(latId);
-      var lonEl    = document.getElementById(lonId);
-      var tzEl     = document.getElementById(tzId);
-      var dropdown = document.getElementById(dropId);
-      if (!input || !dropdown) return;
-
-      // Worldwide search via AstroApp.searchPlaces (Open-Meteo geocoder with
-      // offline CITIES fallback) — the old version filtered the 165-city
-      // built-in list, the same "can't enter my birth town" bug the chart
-      // page was cured of.
-      var seq = 0, debTimer = null;
-      function renderResults(results, source) {
-        dropdown.innerHTML = '';
-        if (!results.length) { dropdown.classList.remove('open'); return; }
-        results.forEach(function(city) {
-          var item = document.createElement('div');
-          item.className = 'autocomplete-item';
-          item.textContent = city.name + ' ';
-          var span = document.createElement('span');
-          span.className = 'city-country';
-          span.textContent = city.admin ? city.admin + ', ' + city.country : city.country;
-          item.appendChild(span);
-          item.addEventListener('click', function() {
-            input.value = city.name + (city.admin ? ', ' + city.admin : '');
-            if (latEl) latEl.value = (+city.lat).toFixed(4);
-            if (lonEl) lonEl.value = (+city.lon).toFixed(4);
-            if (tzEl)  tzEl.value  = city.tz || 'UTC';
-            dropdown.classList.remove('open');
-          });
-          dropdown.appendChild(item);
-        });
-        if (source === 'offline') {
-          var note = document.createElement('div');
-          note.style.cssText = 'padding:8px 14px;font-size:0.62rem;color:var(--silver-dim,#8F8579);font-style:italic;';
-          note.textContent = 'Offline — built-in city list only';
-          dropdown.appendChild(note);
-        }
-        dropdown.classList.add('open');
-      }
-      function search(q) {
-        q = q.trim();
-        if (q.length < 2) { dropdown.innerHTML = ''; dropdown.classList.remove('open'); return; }
-        clearTimeout(debTimer);
-        debTimer = setTimeout(function() {
-          var mySeq = ++seq;
-          window.AstroApp.searchPlaces(q).then(function(res) {
-            if (mySeq !== seq) return;
-            renderResults(res.results, res.source);
-          });
-        }, 250);
-      }
-
-      input.addEventListener('input', function() { search(input.value); });
-      input.addEventListener('blur', function() { setTimeout(function() { dropdown.classList.remove('open'); }, 200); });
-      input.addEventListener('keydown', function(e) {
-        var items = dropdown.querySelectorAll('.autocomplete-item');
-        var hi = dropdown.querySelector('.highlighted');
-        var idx = hi ? Array.from(items).indexOf(hi) : -1;
-        if (e.key === 'ArrowDown') { e.preventDefault(); if (hi) hi.classList.remove('highlighted'); var next = items[Math.min(idx+1, items.length-1)]; if (next) next.classList.add('highlighted'); }
-        if (e.key === 'ArrowUp')   { e.preventDefault(); if (hi) hi.classList.remove('highlighted'); var prev = items[Math.max(idx-1, 0)]; if (prev) prev.classList.add('highlighted'); }
-        if (e.key === 'Enter') { var h = dropdown.querySelector('.highlighted'); if (h) { e.preventDefault(); h.click(); } }
-        if (e.key === 'Escape') dropdown.classList.remove('open');
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      // Upgrade flat zodiac glyphs in the compatibility matrix headers to glass orbs
-      if (window.AstroIcons) {
-        document.querySelectorAll('[data-sign-orb]').forEach(function(el) {
-          var s = el.getAttribute('data-sign-orb');
-          if (s && AstroIcons.SIGN_GLYPH[s]) el.innerHTML = AstroIcons.sign(s, { sm:true });
-        });
-      }
-
-      // Wire up city autocomplete with timezone support
-      function tryInitAutocomplete() {
-        if (window.AstroApp && AstroApp.searchPlaces) {
-          initCompatAutocomplete('person1-city','person1-lat','person1-lon','person1-tz','p1-city-dropdown');
-          initCompatAutocomplete('person2-city','person2-lat','person2-lon','person2-tz','p2-city-dropdown');
-        } else {
-          setTimeout(tryInitAutocomplete, 200);
-        }
-      }
-      tryInitAutocomplete();
-
-      // Auto-fill "My Chart" for person 1 if profile exists
-      try {
-        if (window.AstroProfile) {
-          var charts = AstroProfile.getCharts();
-          if (charts.length) {
-            var c = charts[0];
-            var meta = c.meta || c;
-            var n1 = document.getElementById('person1-name');
-            if (n1 && !n1.value) n1.value = meta.name || '';
-            var d1 = document.getElementById('person1-date');
-            if (d1 && !d1.value && meta.birthDate) d1.value = meta.birthDate.split('T')[0];
-            var t1 = document.getElementById('person1-time');
-            if (t1 && !t1.value && meta.birthTime) t1.value = meta.birthTime;
-          }
-        }
-      } catch(e) {}
-
-      var preloaded = fillFromURL();
-
-      var form = document.getElementById('compat-form');
-      if (!form) return;
-
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        var p1 = readPerson('person1');
-        var p2 = readPerson('person2');
-
-        if (!p1) { alert('Please enter complete birth data for Person A (including selecting a city from the dropdown).'); return; }
-        if (!p2) { alert('Please enter complete birth data for Person B (including selecting a city from the dropdown).'); return; }
-
-        var loadEl = document.getElementById('compat-loading');
-        var resEl  = document.getElementById('compat-result');
-        var submitBtn = document.getElementById('compat-submit-btn');
-        if (loadEl) loadEl.classList.remove('hidden');
-        if (resEl)  resEl.classList.add('hidden');
-        if (submitBtn) submitBtn.disabled = true;
-
-        try {
-          await waitFor(function() { return window.AstroEphemeris && window.Interpretations; }, 12000);
-          var E = window.AstroEphemeris;
-          var chart1 = buildChart(E, p1.y, p1.m, p1.d, p1.hh, p1.mm, p1.lat, p1.lon, p1.tz);
-          var chart2 = buildChart(E, p2.y, p2.m, p2.d, p2.hh, p2.mm, p2.lat, p2.lon, p2.tz);
-          var result = window.Interpretations.calculateCompatibility(chart1, chart2);
-          encodeToURL(p1, p2);
-          showResult(result, p1.name, p2.name, chart1, chart2);
-        } catch(err) {
-          if (loadEl) loadEl.classList.add('hidden');
-          alert('Calculation error: ' + err);
-        } finally {
-          if (submitBtn) submitBtn.disabled = false;
-        }
-      });
-
-      // Auto-trigger if URL has complete data
-      if (preloaded) {
-        setTimeout(function() {
-          var btn = document.getElementById('compat-submit-btn');
-          if (btn) btn.click();
-        }, 600);
-      }
-
-      // Download card button
-      var dlBtn = document.getElementById('compat-download-btn');
-      if (dlBtn) {
-        dlBtn.addEventListener('click', function() {
-          if (!dlBtn.dataset.ready) return;
-          var cv = drawCompatCard(
-            (document.getElementById('person1-name')||{}).value||'',
-            (document.getElementById('person2-name')||{}).value||'',
-            window._p1SunSign||'', window._p2SunSign||'',
-            parseInt((document.getElementById('overall-score')||{}).textContent)||0,
-            document.querySelector('#compat-overview p') ? document.querySelector('#compat-overview p').textContent : ''
-          );
-          if (!cv) return;
-          var a = document.createElement('a');
-          a.download = 'compatibility-reading.png';
-          a.href = cv.toDataURL('image/png');
-          a.click();
-        });
-      }
-    });
+    window.addEventListener('load', function () {
+      if (window.requestIdleCallback) requestIdleCallback(idle, { timeout: 4000 });
+      else setTimeout(idle, 1200);
+    }, { once: true });
   })();
   </script>
+
+  <script src="js/compatibility-page.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,279 @@
+    /* ---- Element compat grid ---- */
+    .element-compat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-5);
+    }
+    @media (max-width: 600px) { .element-compat-grid { grid-template-columns: 1fr; } }
+
+    .element-compat-card {
+      background: rgba(20, 16, 10,0.62);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-6);
+      border-left-width: 3px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .element-compat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+    .element-compat-card--fire {
+      border-left-color: #e05a3a;
+    }
+    .element-compat-card--fire:hover { box-shadow: 0 8px 32px rgba(224,90,58,0.15); }
+    .element-compat-card--earth {
+      border-left-color: #2a8a5a;
+    }
+    .element-compat-card--earth:hover { box-shadow: 0 8px 32px rgba(42,138,90,0.15); }
+    .element-compat-card--air {
+      border-left-color: #9db36a;
+    }
+    .element-compat-card--air:hover { box-shadow: 0 8px 32px rgba(168, 107, 74, 0.15); }
+    .element-compat-card--water {
+      border-left-color: #3a7ad4;
+    }
+    .element-compat-card--water:hover { box-shadow: 0 8px 32px rgba(63,125,118,0.15); }
+
+    .element-compat-card h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+    }
+    .element-compat-card--fire h3  { color: #e05a3a; }
+    .element-compat-card--earth h3 { color: #2a8a5a; }
+    .element-compat-card--air h3   { color: #9db36a; }
+    .element-compat-card--water h3 { color: #3a7ad4; }
+    .element-compat-card p {
+      font-size: var(--text-sm);
+      color: var(--color-silver-dim);
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    /* ---- Compat matrix ---- */
+    .compat-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-xs);
+    }
+    .compat-matrix th, .compat-matrix td {
+      border: 1px solid var(--color-border);
+      padding: var(--space-2);
+      text-align: center;
+      min-width: 36px;
+    }
+    .compat-matrix th {
+      background: var(--color-surface);
+      color: var(--color-silver-dim);
+      font-weight: 700;
+    }
+    .compat-matrix .compat-sign-abbr,
+    .compat-matrix abbr.compat-sign-abbr {
+      display: block;
+      font-size: 0.55rem;
+      letter-spacing: 0.06em;
+      line-height: 1.2;
+      margin-top: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+    }
+    /* .compat-matrix-scroll overflow/focus — see compatibility-critical.css */
+    .compat-matrix td { cursor: default; transition: background var(--transition-fast); }
+    .compat-matrix td:hover { background: var(--color-surface-2); }
+    .compat-cell--high    { background: rgba(120, 140, 70, 0.18);  color: var(--color-success); font-weight: 700; }
+    .compat-cell--medium  { background: rgba(251, 191, 36, 0.15); color: var(--color-gold); }
+    .compat-cell--low     { background: rgba(239, 68, 68, 0.12);  color: var(--color-danger); }
+    .compat-cell--neutral { background: transparent; color: var(--color-silver-dark); }
+
+    /* ---- Synastry sidebar premium ---- */
+    .synastry-sidebar-card {
+      background: rgba(20, 16, 10,0.68);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-7);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+    }
+    .synastry-aspect-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .synastry-aspect-table th {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--silver, #A89E88);
+      font-weight: 600;
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    .synastry-aspect-table td {
+      padding: var(--space-3) var(--space-3);
+      border-bottom: 1px solid rgba(168, 158, 136,0.06);
+      font-size: var(--text-sm);
+      color: var(--silver);
+      vertical-align: middle;
+    }
+    .sat-glyph {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .sat-glyph--conjunction { color: var(--gold); }
+    .sat-glyph--trine       { color: #22c55e; }
+    .sat-glyph--sextile     { color: #6cd47e; }
+    .sat-glyph--square      { color: #ef4444; }
+    .sat-glyph--opposition  { color: #f97316; }
+    .sat-nature {
+      font-size: var(--text-xs);
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 600;
+    }
+    .sat-nature--intense   { background: rgba(196,146,10,0.18); color: var(--gold-pale); }
+    .sat-nature--harmonic  { background: rgba(120, 140, 70,0.15);  color: #6cd47e; }
+    .sat-nature--dynamic   { background: rgba(239,68,68,0.14);  color: #f87171; }
+    .sat-nature--polarity  { background: rgba(249,115,22,0.14); color: #fdba74; }
+
+    /* ============================================================
+       RESULT TABS — Synastry / Composite / Davison
+    ============================================================ */
+    .compat-tabs {
+      display: flex;
+      gap: var(--space-2);
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: var(--space-8);
+    }
+    .compat-tab {
+      background: rgba(20, 16, 10,0.55);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--silver);
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: var(--space-3) var(--space-6);
+      cursor: pointer;
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      transition: border-color 0.2s, color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+    .compat-tab:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
+    .compat-tab[aria-selected="true"] {
+      color: var(--bg);
+      background: linear-gradient(135deg, #c9a227 0%, #e8c96a 100%);
+      border-color: transparent;
+      box-shadow: 0 4px 18px rgba(196,146,10,0.28);
+    }
+    @media (max-width: 600px) {
+      .compat-tab { padding: var(--space-2) var(--space-4); font-size: var(--text-xs); }
+    }
+
+    .compat-tabpanel[hidden] { display: none; }
+
+    /* ---- Explanatory note for composite / davison ---- */
+    .compat-method-note {
+      background: rgba(20, 16, 10,0.62);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-8);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+    }
+    .compat-method-note h3 {
+      font-family: var(--font-display);
+      color: var(--gold-pale);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-3);
+    }
+    .compat-method-note p {
+      color: var(--color-silver-dim);
+      line-height: 1.8;
+      font-size: var(--text-sm);
+      margin: 0 0 var(--space-3);
+    }
+    .compat-method-note p:last-child { margin-bottom: 0; }
+
+    .compat-midpoint-line {
+      font-size: var(--text-xs);
+      color: var(--silver-dim);
+      margin-top: var(--space-3);
+      font-style: italic;
+    }
+    .compat-midpoint-line strong { color: var(--white); font-style: normal; }
+
+    /* ---- Midpoint-chart planet grid (composite + davison) ---- */
+    .midchart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: var(--space-3);
+    }
+    .midchart-cell {
+      background: rgba(20, 16, 10,0.62);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      transition: transform 0.18s, border-color 0.2s, box-shadow 0.18s;
+    }
+    .midchart-cell:hover {
+      transform: translateY(-2px);
+      border-color: rgba(196,146,10,0.28);
+      box-shadow: 0 6px 22px rgba(0,0,0,0.3);
+    }
+    .midchart-cell__orb { flex-shrink: 0; display: inline-flex; }
+    .midchart-cell__glyph {
+      font-size: 1.5rem;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 34px;
+      text-align: center;
+      color: var(--gold-pale);
+    }
+    .midchart-cell__body { min-width: 0; }
+    .midchart-cell__planet {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--silver-dim);
+      font-weight: 600;
+    }
+    .midchart-cell__sign {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      color: var(--white);
+      font-weight: 600;
+    }
+    .midchart-cell__deg { font-size: var(--text-xs); color: var(--silver); }
+
+    .midchart-angles {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      margin-top: var(--space-5);
+      justify-content: center;
+    }
+    .midchart-angle {
+      font-size: var(--text-sm);
+      color: var(--silver);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: var(--space-2) var(--space-5);
+    }
+    .midchart-angle strong { color: var(--gold-pale); font-weight: 600; }

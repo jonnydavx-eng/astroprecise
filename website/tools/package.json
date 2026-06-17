@@ -1,0 +1,11 @@
+{
+  "name": "astroprecise-website-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:pages": "node generate-sw-precache.mjs && node generate-sign-pages.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}

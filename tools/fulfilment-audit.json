@@ -1,5 +1,5 @@
 {
-  "audited_at": "2026-06-15T16:40:09.239Z",
+  "audited_at": "2026-06-17T19:03:36.579Z",
   "pass": 14,
   "fail": 0,
   "rows": [
@@ -8,21 +8,21 @@
       "status": "live",
       "generator": "fulfil-order.mjs → generate-reading.mjs",
       "result": "PASS",
-      "detail": "order-gift-reading-redeem.json, order-reading-poster-bundle.json, reading-jane-example.html, _order-gift-reading-redeem.json, _order-reading-poster-bundle.json"
+      "detail": "order-gift-reading-redeem.json, order-reading-poster-bundle.json, reading-aurora-vale.html, reading-jane-example.html, voucher-gift-reading-jane.html, _order-gift-reading-redeem.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "natal-poster-pdf",
       "status": "live",
       "generator": "fulfil-order.mjs → generate-reading.mjs",
       "result": "PASS",
-      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
+      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, poster-aurora-vale.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "reading-poster-bundle",
       "status": "live",
       "generator": "fulfil-order.mjs → generate-reading.mjs",
       "result": "PASS",
-      "detail": "order-gift-reading-redeem.json, order-natal-poster-pdf.json, order-reading-poster-bundle.json, poster-jane-example.html, reading-jane-example.html, _order-gift-reading-redeem.json, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
+      "detail": "order-gift-reading-redeem.json, order-natal-poster-pdf.json, order-reading-poster-bundle.json, poster-aurora-vale.html, poster-jane-example.html, reading-aurora-vale.html, reading-jane-example.html, voucher-gift-reading-jane.html, _order-gift-reading-redeem.json, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "two-skies-map",
@@ -36,28 +36,28 @@
       "status": "ready",
       "generator": "fulfil-order.mjs → generate-gift-voucher.mjs",
       "result": "PASS",
-      "detail": "voucher-recipient.html"
+      "detail": "voucher-gift-reading-jane.html, voucher-recipient.html"
     },
     {
       "pid": "gift-reading-redeem",
       "status": "ready",
       "generator": "fulfil-order.mjs → generate-reading.mjs",
       "result": "PASS",
-      "detail": "order-gift-reading-redeem.json, order-reading-poster-bundle.json, reading-jane-example.html, _order-gift-reading-redeem.json, _order-reading-poster-bundle.json"
+      "detail": "order-gift-reading-redeem.json, order-reading-poster-bundle.json, reading-aurora-vale.html, reading-jane-example.html, voucher-gift-reading-jane.html, _order-gift-reading-redeem.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "gift-box-whole-sky",
       "status": "ready",
       "generator": "fulfil-order.mjs → generate-pod-pack.mjs",
       "result": "PASS",
-      "detail": "voucher-recipient.html"
+      "detail": "voucher-gift-reading-jane.html, voucher-recipient.html"
     },
     {
       "pid": "natal-poster",
       "status": "ready",
       "generator": "fulfil-order.mjs → generate-pod-pack.mjs",
       "result": "PASS",
-      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
+      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-aurora-vale.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "big-three-print",
@@ -71,21 +71,21 @@
       "status": "ready",
       "generator": "fulfil-order.mjs → generate-pod-pack.mjs",
       "result": "PASS",
-      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
+      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-aurora-vale.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "sky-hoodie",
       "status": "ready",
       "generator": "fulfil-order.mjs → generate-pod-pack.mjs",
       "result": "PASS",
-      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
+      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-aurora-vale.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "constellation-mug",
       "status": "ready",
       "generator": "fulfil-order.mjs → generate-pod-pack.mjs",
       "result": "PASS",
-      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
+      "detail": "order-natal-poster-pdf.json, order-reading-poster-bundle.json, pod-memo-jane-example.html, poster-aurora-vale.html, poster-jane-example.html, _order-natal-poster-pdf.json, _order-reading-poster-bundle.json"
     },
     {
       "pid": "year-ahead",

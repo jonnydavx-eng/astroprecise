@@ -1,0 +1,17 @@
+# Privacy angle
+
+--- 1/4 ---
+I keep seeing astrology apps that want your birth time + email + payment details on day one.
+
+We went the other way.
+
+--- 2/4 ---
+AstroPrecise computes your chart entirely in-browser (VSOP87 ephemeris). Birth date, time, place never leave your device.
+
+--- 3/4 ---
+No account. No subscription wall on the chart. If you want more later — a reading, a poster — it's one-time.
+
+--- 4/4 ---
+Try it: https://astroprecise.app/links.html
+
+What would make you trust an astrology app?

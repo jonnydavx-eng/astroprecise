@@ -1,0 +1,11 @@
+ID: purchase-4
+SECTION: postPurchase
+DELAY: day 30
+SUBJECT: Your sky has moved — here's what's stirring
+{{transitHighlight}}
+
+See it live: https://astroprecise.app/transits.html
+
+When you're ready for another personalised piece — reading, poster, gift — it's one-time, no subscription.
+
+— AstroPrecise

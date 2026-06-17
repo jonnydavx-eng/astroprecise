@@ -1,0 +1,225 @@
+/* AstroPrecise — shared instrument-panel tokens (ephemeris, transits, moon, tonight) */
+
+:root {
+  --ip-void: var(--ap-ip-void, #050406);
+  --ip-surface: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
+  --ip-surface-deep: var(--ap-ip-surface-deep, rgba(14, 11, 8, 0.72));
+  --ip-border: var(--ap-ip-border, rgba(201, 162, 39, 0.12));
+  --ip-border-rim: var(--ap-ip-border-rim, rgba(201, 162, 39, 0.24));
+  --ip-gold: var(--ap-ip-gold, #C9A227);
+  --ip-gold-pale: var(--ap-ip-gold-pale, #E8E0D0);
+  --ip-silver: var(--ap-ip-silver, #A89E88);
+  --ip-silver-dim: var(--ap-ip-silver-dim, #9A9084);
+  --ip-radius: 20px;
+  --ip-radius-lg: 28px;
+  --ip-blur: blur(20px);
+  --ip-engrave-line: var(--ap-ip-engrave-line, rgba(168, 158, 136, 0.14));
+  /* Hollywood 2026 cinematic layer — consumed by ap-cinematic-2026.css */
+  --ip-bracket-size: 22px;
+  --ip-bracket-inset: 10px;
+  --ip-bracket-color: rgba(201, 162, 39, 0.42);
+  --ip-cine-grain-opacity: 0.038;
+  --ip-cine-vignette: rgba(5, 4, 6, 0.55);
+  --ip-cine-flare-gold: rgba(201, 162, 39, 0.14);
+  --ip-cine-flare-pale: rgba(245, 240, 232, 0.09);
+}
+
+/* Hero eyebrow — engraved seal lines (ephemeris, chart, transits) */
+.instrument-eyebrow {
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ap-gold-bright, var(--ip-gold));
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+/* Engraved observatory plate — critical path (main.css deferred on lite pages) */
+.instrument-panel,
+.engraved-plate.glass-card,
+.glass-card.engraved-plate {
+  position: relative;
+  background: var(--ip-surface);
+  -webkit-backdrop-filter: var(--ip-blur);
+  backdrop-filter: var(--ip-blur);
+  border: 1px solid var(--ip-border);
+  border-radius: var(--ip-radius-lg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.instrument-panel::before,
+.engraved-plate.glass-card::before,
+.glass-card.engraved-plate::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border: 1px solid var(--ip-engrave-line);
+  border-radius: calc(var(--ip-radius-lg) - 8px);
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.instrument-panel--gold-rim,
+.glass-card--gold-rim.instrument-panel,
+.glass-card--gold-rim.engraved-plate {
+  border-color: var(--ip-border-rim);
+}
+
+/* Hero eyebrow — chart / transits seal lines */
+.instrument-eyebrow--seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.instrument-eyebrow--seal::before,
+.instrument-eyebrow--seal::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ap-gold-core, var(--ip-gold)));
+  opacity: 0.65;
+}
+
+.instrument-eyebrow--seal::after {
+  background: linear-gradient(90deg, var(--ap-gold-core, var(--ip-gold)), transparent);
+}
+
+/* Instrument trust seal (matches tonight tn-privacy-seal) */
+.instrument-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ip-gold-pale);
+  background: var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
+  border: 1px solid var(--ap-gold-a22, rgba(201, 162, 39, 0.22));
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+}
+
+.instrument-seal__glyph {
+  font-size: 0.95rem;
+  color: var(--ip-gold);
+  line-height: 1;
+}
+
+/* Hero engraved header panel */
+.instrument-hero__panel {
+  position: relative;
+  z-index: 1;
+  padding: 2.25rem 2rem 2rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 560px) {
+  .instrument-hero__panel {
+    padding: 1.75rem 1.25rem 1.5rem;
+  }
+}
+
+/* Solid h1 — no gradient-text (avoids CLS from background-clip) */
+.instrument-hero .instrument-title {
+  color: var(--ip-gold-pale);
+  min-height: 1.2em;
+  text-wrap: balance;
+}
+
+/* Consciousness weather — reserved layout skeleton */
+#weather-out {
+  min-height: 520px;
+}
+
+.weather-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.weather-skeleton__composite {
+  min-height: 168px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.weather-skeleton__composite.instrument-panel::before,
+.weather-skeleton__tile.instrument-panel::before,
+.weather-skeleton__tile.glass-card::before {
+  content: none;
+}
+
+.weather-skeleton__bar {
+  display: block;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(168, 158, 136, 0.08) 0%,
+    rgba(201, 162, 39, 0.18) 45%,
+    rgba(168, 158, 136, 0.08) 100%
+  );
+  background-size: 200% 100%;
+  animation: ip-shimmer 1.6s ease-in-out infinite;
+}
+
+.weather-skeleton__bar--eyebrow { width: 38%; max-width: 140px; height: 0.5rem; }
+.weather-skeleton__bar--score { width: 42%; max-width: 120px; height: 2rem; border-radius: 8px; }
+.weather-skeleton__bar--line { width: 72%; max-width: 380px; }
+.weather-skeleton__bar--line-short { width: 55%; max-width: 260px; }
+
+.weather-skeleton__grid {
+  margin: 0;
+}
+
+.weather-skeleton__tile {
+  min-height: 148px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+}
+
+.weather-skeleton__tile::before {
+  content: none;
+}
+
+.weather-skeleton__gauge {
+  width: 120px;
+  height: 68px;
+  border-radius: 120px 120px 0 0;
+  border: 2px solid rgba(201, 162, 39, 0.12);
+  border-bottom: none;
+  opacity: 0.55;
+}
+
+.weather-skeleton__label {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ip-silver-dim);
+  letter-spacing: 0.08em;
+  margin: 0.25rem 0 0;
+}
+
+@keyframes ip-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weather-skeleton__bar {
+    animation: none;
+    background: rgba(168, 158, 136, 0.12);
+  }
+}

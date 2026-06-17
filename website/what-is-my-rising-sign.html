@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="What is my rising sign? Find your rising sign (Ascendant) free — enter your birth date, exact time, and place to compute it from the real sky. Plain-English guide to what the Ascendant means and why your birth time matters." />
   <title>What Is My Rising Sign? Find Your Ascendant Free | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,153 +20,24 @@
   <meta name="twitter:description" content="Find your rising sign (Ascendant) free — computed from the real sky using your exact birth date, time, and place." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/what-is-my-rising-sign-page.css" />
+  <link rel="stylesheet" href="css/celestial-seals.css" />
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferRsFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferRsFonts();deferMainCss();});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"What Is My Rising Sign?","description":"Find your rising sign (Ascendant) free — computed from the real sky using your exact birth date, time, and place. A plain-English guide to what the Ascendant means and why your birth time matters.","url":"https://astroprecise.app/what-is-my-rising-sign.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Rising sign"},{"@type":"Thing","name":"Ascendant"},{"@type":"Thing","name":"Astrology"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"What Is My Rising Sign?","item":"https://astroprecise.app/what-is-my-rising-sign.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a rising sign?","acceptedAnswer":{"@type":"Answer","text":"Your rising sign, also called the Ascendant, is the zodiac sign that was rising on the eastern horizon at the exact moment and place you were born. It marks the cusp of the first house and sets the orientation of your whole birth chart."}},{"@type":"Question","name":"Do I need my birth time to find my rising sign?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Ascendant moves about one degree every four minutes and changes sign roughly every two hours, so an accurate birth time is essential. Without a known time, a rising sign cannot be calculated honestly."}},{"@type":"Question","name":"What is the difference between my Sun sign and my rising sign?","acceptedAnswer":{"@type":"Answer","text":"Your Sun sign depends only on the date of birth and describes your core identity. Your rising sign depends on the exact time and place of birth and describes how you meet the world and how the rest of the chart is arranged."}},{"@type":"Question","name":"How accurate is this rising sign calculator?","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise computes the Ascendant from real astronomy — the local sidereal time and the obliquity of the ecliptic — entirely in your browser, to roughly arcminute precision. Same inputs always give the same result, and nothing is sent to a server."}}]}</script>
-  <style>
-    /* ── Rising-sign page premium overrides (scoped, mirrors accuracy.html) ── */
-    :root {
-      --rs-gold: var(--gold, #C9A227);
-      --rs-gold-light: var(--gold-light, #EFE3C0);
-      --rs-surface: rgba(15, 18, 50, 0.42);
-      --rs-border: rgba(232, 224, 208, 0.10);
-    }
-    .rs-hero {
-      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .rs-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(74, 90, 106, 0.20) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .rs-hero__eyebrow {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--rs-gold); margin-bottom: 1.1rem;
-    }
-    .rs-hero h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(2rem, 5.2vw, 3.3rem);
-      font-weight: 700; line-height: 1.1; letter-spacing: 0.02em;
-      color: var(--white, #E8E0D0); margin-bottom: 1rem;
-    }
-    .rs-hero__sub {
-      font-size: 1.02rem; color: var(--silver, #A89E88);
-      line-height: 1.75; max-width: 620px; margin: 0 auto;
-    }
-    .rs-section { padding: 2.75rem 0; position: relative; z-index: 1; }
-    .rs-section--alt { background: var(--color-bg-2, rgba(13, 10, 7,0.5)); }
-    .rs-section__label {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700;
-      color: var(--white, #E8E0D0); text-align: center;
-      margin-bottom: 0.6rem; letter-spacing: 0.02em;
-    }
-    .rs-section__intro {
-      text-align: center; color: var(--silver, #A89E88);
-      font-size: 1rem; line-height: 1.75; max-width: 680px; margin: 0 auto 2rem;
-    }
-
-    /* ── Inline finder tool ── */
-    .rs-finder { max-width: 640px; margin: 0 auto; padding: 2rem 2rem 2.25rem; }
-    .rs-finder h2 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.4rem; color: var(--rs-gold-light); text-align: center;
-      margin-bottom: 0.4rem; letter-spacing: 0.02em;
-    }
-    .rs-finder__lead {
-      text-align: center; font-size: 0.9rem; color: var(--silver, #A89E88);
-      line-height: 1.6; margin-bottom: 1.6rem;
-    }
-    .rs-field { margin-bottom: 1.1rem; position: relative; }
-    .rs-field label {
-      display: block; font-size: 0.72rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--rs-gold);
-      margin-bottom: 0.45rem; font-weight: 600;
-    }
-    .rs-field input {
-      width: 100%; padding: 0.75rem 0.95rem;
-      background: rgba(13, 10, 7, 0.6);
-      border: 1px solid var(--rs-border); border-radius: 12px;
-      color: var(--white, #E8E0D0); font-size: 0.95rem; font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .rs-field input:focus {
-      outline: none; border-color: rgba(201, 162, 39, 0.5);
-      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
-    }
-    .rs-field__hint { font-size: 0.72rem; color: var(--silver-dim, #6E6658); margin-top: 0.4rem; line-height: 1.5; }
-    .rs-autocomplete {
-      position: absolute; left: 0; right: 0; top: 100%; z-index: 30;
-      margin-top: 4px; background: var(--color-bg-3, #11142e);
-      border: 1px solid var(--rs-border); border-radius: 12px;
-      overflow: hidden; box-shadow: 0 18px 48px rgba(0,0,0,0.45);
-    }
-    .rs-autocomplete .autocomplete-option {
-      padding: 0.65rem 0.95rem; cursor: pointer; font-size: 0.9rem;
-      color: var(--white, #E8E0D0); transition: background 0.15s;
-    }
-    .rs-autocomplete .autocomplete-option:hover { background: rgba(201, 162, 39, 0.1); }
-    .rs-autocomplete .city-country { color: var(--silver-dim, #6E6658); font-size: 0.78rem; }
-    .rs-finder__btn-row { text-align: center; margin-top: 1.6rem; }
-    .rs-result {
-      margin-top: 1.75rem; padding: 1.75rem 1.5rem; text-align: center;
-      border-radius: 16px; border: 1px solid rgba(201, 162, 39, 0.3);
-      background: rgba(201, 162, 39, 0.07); display: none;
-    }
-    .rs-result.is-shown { display: block; }
-    .rs-result__glyph { font-size: 2.6rem; color: var(--rs-gold); line-height: 1; display: block; margin-bottom: 0.5rem; }
-    .rs-result__sign {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.9rem; color: var(--rs-gold-light); margin-bottom: 0.35rem; letter-spacing: 0.03em;
-    }
-    .rs-result__deg { font-size: 0.88rem; color: var(--silver, #A89E88); margin-bottom: 1rem; }
-    .rs-result__note { font-size: 0.8rem; color: var(--silver-dim, #6E6658); line-height: 1.6; }
-    .rs-result--error { border-color: rgba(180, 66, 50, 0.4); background: rgba(180, 66, 50, 0.08); }
-
-    /* ── Content cards ── */
-    .rs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; max-width: 920px; margin: 0 auto; }
-    .rs-card { padding: 1.6rem 1.5rem; }
-    .rs-card h3 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.08rem; color: var(--rs-gold-light); margin-bottom: 0.55rem; letter-spacing: 0.01em;
-    }
-    .rs-card p { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
-    .rs-prose { max-width: 740px; margin: 0 auto; }
-    .rs-prose p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.85; margin-bottom: 1.1rem; }
-    .rs-prose strong { color: var(--rs-gold-light); }
-
-    /* ── FAQ ── */
-    .rs-faq { max-width: 740px; margin: 0 auto; display: grid; gap: 0.9rem; }
-    .rs-faq__item { padding: 1.3rem 1.5rem; }
-    .rs-faq__q {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.02rem; color: var(--rs-gold-light); margin-bottom: 0.5rem;
-    }
-    .rs-faq__a { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
-
-    /* ── CTA ── */
-    .rs-cta { text-align: center; max-width: 640px; margin: 0 auto; padding: 2.5rem 2rem; }
-    .rs-cta h2 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.6rem, 3.6vw, 2.2rem); color: var(--white, #E8E0D0);
-      margin-bottom: 0.9rem; letter-spacing: 0.02em;
-    }
-    .rs-cta p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.7; margin-bottom: 1.75rem; }
-    .rs-cta__note { font-size: 0.78rem; color: var(--silver-dim, #6E6658); margin-top: 1.1rem; }
-  </style>
-</head>
-<body>
+  </head>
+<body class="ap-no-nav-enter">
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -182,11 +52,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -415,30 +285,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo">&#10022; AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="About">
-          <p class="footer__heading">About</p>
-          <ul class="footer__links">
-            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -450,11 +380,13 @@
   <script>
   (function () {
     'use strict';
-    var SIGN_GLYPHS = {
-      Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋',
-      Leo:'♌', Virgo:'♍', Libra:'♎', Scorpio:'♏',
-      Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓'
-    };
+    function signSealHtml(sign) {
+      var key = (window.AP_ZODIAC && AP_ZODIAC.glyphKey(sign)) || String(sign || '').toLowerCase();
+      if (window.AstroIcons && AstroIcons.sign) {
+        return AstroIcons.sign(sign, { lg: true, hidden: true, label: sign + ' rising' });
+      }
+      return '<img class="ap-seal ap-seal--zodiac ap-seal--lg" src="assets/images/seals/zodiac/' + key + '.svg" alt="" aria-hidden="true" loading="eager">';
+    }
     var form = document.getElementById('rs-form');
     if (!form) return;
     var cityInput = document.getElementById('rs-city');
@@ -511,7 +443,7 @@
         var min = Math.round((asc.degree - deg) * 60);
         if (min === 60) { min = 0; deg += 1; }
         resultBox.classList.add('is-shown');
-        resGlyph.textContent = SIGN_GLYPHS[asc.sign] || '';
+        resGlyph.innerHTML = signSealHtml(asc.sign);
         resSign.textContent = asc.sign + ' Rising';
         resDeg.textContent = 'Ascendant at ' + asc.sign + ' ' + deg + '°' + String(min).padStart(2, '0') + '′';
         resNote.textContent = 'Computed from the real sky for ' + (picked.name || 'your birth place') +
@@ -530,8 +462,8 @@
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/icons.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/seo-tools.js"></script>
+<script src="js/seo-tools.js"></script>
   <script src="js/effects.js"></script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

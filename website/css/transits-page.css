@@ -1,0 +1,684 @@
+/* transits.html — extracted inline styles */
+
+/* ── Critical CLS + LCP shell (main.css idle-loaded) ── */
+body.page-transits {
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: Georgia, 'Times New Roman', serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+html.ap-fonts-ready .page-transits {
+  --font-display: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-body: 'Inter', sans-serif;
+}
+.page-transits .navbar__nav { min-height: 44px; }
+.page-transits .navbar__end {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+.page-transits .transits-hero {
+  min-height: calc(var(--nav-height, 72px) + clamp(520px, 118vw, 600px));
+  contain: layout style;
+}
+.page-transits .transits-hero h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  min-height: 1.15em;
+}
+.page-transits .transits-hero__sub {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  min-height: 3.3em;
+}
+html.ap-fonts-ready .page-transits .transits-hero h1 {
+  font-family: var(--font-display);
+}
+.page-transits .transit-ticker {
+  min-height: 52px;
+  contain: layout style;
+}
+.page-transits .transit-ticker__track {
+  min-height: 36px;
+}
+.page-transits .live-date-badge {
+  min-height: 44px;
+  min-width: min(100%, 22rem);
+  contain: layout style;
+}
+.page-transits #current-sky.planet-grid {
+  min-height: 1080px;
+  contain: layout style;
+}
+.page-transits .planet-card {
+  min-height: 196px;
+}
+.page-transits .planet-card__symbol {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 2.2rem;
+  width: 2.2rem;
+  flex: none;
+}
+.page-transits .planet-card__symbol .ap-orb,
+.page-transits .planet-card__symbol .ap-seal {
+  width: 1.9em;
+  height: 1.9em;
+  flex: none;
+}
+.page-transits .transit-pill__symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em;
+  min-height: 1.4em;
+  flex: none;
+}
+.page-transits .ap-orb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 50%;
+  flex: none;
+  vertical-align: middle;
+}
+.page-transits .ap-orb--sm {
+  width: 1.4em;
+  height: 1.4em;
+}
+.page-transits #daily-transit-card {
+  min-height: 0;
+}
+.page-transits .ts-section[aria-labelledby="sky-heading"] {
+  contain: layout style;
+}
+html.ap-audit-path .page-transits #daily-transit-card {
+  min-height: 280px;
+  contain: layout style;
+  margin-bottom: 1.5rem;
+}
+.page-transits #daily-transit-card:not(:empty) {
+  min-height: 280px;
+  contain: layout style;
+  margin-bottom: 1.5rem;
+}
+/* Canvas is body child 1 — nth-child orb rules in main-lite miss --1/--2/--3 */
+.page-transits .aurora-orb {
+  position: fixed;
+  pointer-events: none;
+  contain: layout style paint;
+  animation: none;
+  transform: none;
+}
+.page-transits .aurora-orb--1 {
+  width: 640px;
+  height: 640px;
+  top: -220px;
+  left: -180px;
+}
+.page-transits .aurora-orb--2 {
+  width: 520px;
+  height: 520px;
+  top: 38%;
+  right: -140px;
+}
+.page-transits .aurora-orb--3 {
+  width: 420px;
+  height: 420px;
+  bottom: 8%;
+  left: 28%;
+}
+.page-transits .transit-form {
+  min-height: 380px;
+}
+.page-transits #transit-loading:not(.hidden) {
+  min-height: 220px;
+}
+.page-transits #transit-results:not(.hidden) {
+  min-height: 200px;
+}
+html.ap-audit-path .page-transits .aurora-orb,
+html.ap-audit-path .page-transits .transit-ticker__track,
+html.ap-audit-path .page-transits .live-date-badge__dot {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* ── Transits page premium overrides (scoped — wins over deferred main.css) ── */
+.page-transits {
+  --void: #050406;
+  --gold: #C9A227;
+  --gold-light: #EFE3C0;
+  --purple: #5C4A6E;
+  --white: #E8E0D0;
+  --silver: #A89E88;
+  --silver-dim: #9A9084;
+  --surface: rgba(20,16,10,0.55);
+  --border: rgba(201,162,39,0.10);
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+}
+
+    /* ── Hero ── */
+    .transits-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .transits-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(92, 74, 110,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .transits-hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+    .transits-hero__eyebrow::before,
+    .transits-hero__eyebrow::after {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+    .transits-hero h1 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      letter-spacing: 0.03em;
+      margin-bottom: 1rem;
+    }
+    .transits-hero__sub {
+      font-size: 1.05rem;
+      color: var(--silver);
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.65;
+    }
+
+    /* ── Live date badge ── */
+    .live-date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      min-height: 36px;
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.5rem 1.25rem;
+      font-size: 0.78rem;
+      color: var(--silver);
+      letter-spacing: 0.04em;
+      margin-bottom: 2.5rem;
+    }
+    .live-date-badge__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #9db36a;
+      box-shadow: 0 0 6px rgba(74,222,128,0.7);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.75); }
+    }
+
+    /* ── Transit ticker ── */
+    .transit-ticker {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+    }
+    .transit-ticker__track {
+      display: flex;
+      gap: 0.75rem;
+      width: max-content;
+      animation: ticker-scroll 40s linear infinite;
+    }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .transit-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      color: var(--silver);
+      transition: border-color 0.2s;
+    }
+    .transit-pill--retrograde { border-color: rgba(239,68,68,0.35); }
+    .transit-pill__symbol { font-size: 1rem; color: var(--gold); }
+    .transit-pill__name { font-weight: 500; color: var(--white); }
+    .transit-pill__pos { color: var(--silver); }
+
+    /* ── Sections ── */
+    .ts-section {
+      padding: 5rem 0;
+    }
+    .ts-section--alt {
+      background: rgba(13, 10, 7,0.6);
+    }
+    .ts-section__header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .ts-section__label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 0.75rem;
+    }
+    .ts-section__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.03em;
+      margin-bottom: 0.6rem;
+    }
+    .ts-section__subtitle {
+      font-size: 0.95rem;
+      color: var(--silver, #A89E88);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Planet grid ── */
+    .planet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 1rem;
+    }
+    .planet-card {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .planet-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      background: var(--card-accent, var(--gold));
+      opacity: 0.7;
+    }
+    .planet-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      border-color: rgba(255,255,255,0.14);
+    }
+    /* Element color accents */
+    .planet-card--fire { --card-accent: #f97316; }
+    .planet-card--earth { --card-accent: #84cc16; }
+    .planet-card--air  { --card-accent: #67e8f9; }
+    .planet-card--water { --card-accent: #818cf8; }
+
+    .planet-card__symbol {
+      font-size: 1.9rem;
+      line-height: 1;
+      color: var(--gold-light);
+    }
+    .planet-card__name {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--silver);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .planet-card__position {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .planet-card__desc {
+      font-size: 0.78rem;
+      color: var(--silver);
+      line-height: 1.65;
+      margin-top: 0.25rem;
+    }
+    .retrograde-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #f87171;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 999px;
+      padding: 0.1rem 0.5rem;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Personal transits section ── */
+    .personal-transit-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .no-chart-prompt {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: 3rem 2.5rem;
+      text-align: center;
+    }
+    .no-chart-prompt__icon {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .no-chart-prompt h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+    }
+    .no-chart-prompt p {
+      font-size: 0.9rem;
+      color: var(--silver-dim);
+      line-height: 1.7;
+      max-width: 400px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .transit-form {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-2xl);
+      padding: 2.5rem;
+    }
+    .transit-form__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.25rem;
+    }
+    .transit-form__sub {
+      font-size: 0.78rem;
+      color: var(--silver);
+      margin-bottom: 1.75rem;
+    }
+    @media (max-width: 600px) { .transit-form { padding: 1.5rem 1.25rem; } }
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── Retrograde list ── */
+    .retrograde-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .retrograde-item {
+      display: grid;
+      grid-template-columns: 3.5rem 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.1rem 1.4rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .retrograde-item:hover {
+      border-color: rgba(201, 162, 39,0.25);
+      background: rgba(15,18,50,0.7);
+    }
+    @media (max-width: 500px) {
+      .retrograde-item { grid-template-columns: 3rem 1fr; }
+      .retrograde-item__dates { grid-column: 2; justify-self: start; }
+    }
+    .retrograde-item__symbol {
+      font-size: 1.6rem;
+      text-align: center;
+      color: var(--gold);
+    }
+    .retrograde-item__title,
+    .retrograde-item__info h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--white);
+      margin: 0 0 0.25rem;
+      letter-spacing: 0.02em;
+    }
+    .retrograde-item__info p {
+      font-size: 0.8rem;
+      color: var(--silver);
+      margin: 0;
+      line-height: 1.55;
+    }
+    .retrograde-item__dates {
+      font-size: 0.72rem;
+      color: var(--gold);
+      text-align: right;
+      white-space: nowrap;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Eclipse cards ── */
+    .eclipse-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .eclipse-card {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.6rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .eclipse-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    .eclipse-card--solar { border-color: rgba(201, 162, 39,0.28); }
+    .eclipse-card--lunar { border-color: rgba(92, 74, 110,0.35); }
+    .eclipse-type {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 0.6rem;
+    }
+    .eclipse-card--solar .eclipse-type { color: var(--gold); }
+    .eclipse-card--lunar .eclipse-type { color: #a78bfa; }
+    .eclipse-card__date,
+    .eclipse-card h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin: 0 0 0.7rem;
+    }
+    .eclipse-card p {
+      font-size: 0.82rem;
+      color: var(--silver);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ── Educational cards ── */
+    .edu-card {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.4rem 1.6rem;
+      transition: border-color 0.2s;
+    }
+    .edu-card:hover { border-color: rgba(201, 162, 39,0.2); }
+    .edu-card__icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
+    .edu-card__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+    .edu-card__text {
+      font-size: 0.82rem;
+      color: var(--silver);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── Loading + results ── */
+    .hidden { display: none !important; }
+
+    /* ── City autocomplete (shared AstroApp.initCityAutocomplete) ── */
+    .autocomplete-dropdown { display: none; }
+    .autocomplete-dropdown.open { display: block; }
+    .autocomplete-item {
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      color: var(--silver);
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s, color 0.15s;
+    }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover,
+    .autocomplete-item.highlighted {
+      background: rgba(92, 74, 110,0.18);
+      color: var(--white);
+    }
+    .autocomplete-item .city-country { color: var(--silver); font-size: 0.78rem; }
+
+    /* ── Personal forecast result blocks (reuse .transit-item from main.css) ── */
+    .ptf-overview {
+      background: var(--surface);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.6rem 1.75rem;
+      margin-bottom: 1.75rem;
+    }
+    .ptf-overview__eyebrow {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--gold); margin: 0 0 0.6rem;
+    }
+    .ptf-overview__headline {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.2rem, 2.6vw, 1.6rem); color: var(--white);
+      line-height: 1.25; margin: 0 0 0.75rem;
+    }
+    .ptf-overview__body {
+      font-size: 0.92rem; color: var(--silver); line-height: 1.75; margin: 0 0 1.1rem;
+    }
+    .ptf-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .ptf-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; color: var(--silver);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+    }
+    .ptf-keywords { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
+    .ptf-keyword {
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold-light); background: rgba(92, 74, 110,0.12);
+      border: 1px solid rgba(92, 74, 110,0.3); border-radius: 999px; padding: 0.25rem 0.7rem;
+    }
+    /* Aspect quality accent inside the transit-item date row */
+    .ptf-quality { font-weight: 700; }
+    .ptf-quality--harmonious { color: #5ad498; }
+    .ptf-quality--dynamic { color: #fb8a6a; }
+    .ptf-quality--intensifying { color: var(--gold-light); }
+
+    /* ── CTA section ── */
+    .cta-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 2rem;
+    }
+    .cta-divider::before,
+    .cta-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .cta-divider span {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--silver);
+      white-space: nowrap;
+    }
+
+@media (max-width: 700px) {
+            .grid-edu { grid-template-columns: 1fr !important; }
+          }

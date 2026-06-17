@@ -12,7 +12,7 @@ const OUT = join(__dirname, 'out', 'lighthouse');
 const LH = join(__dirname, 'node_modules', 'lighthouse', 'cli', 'index.js');
 
 const URLS = [
-  { id: 'index', url: `${BASE}/` },
+  { id: 'index', url: `${BASE}/?lite=1` },
   { id: 'chart', url: `${BASE}/chart.html` },
 ];
 

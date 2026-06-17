@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="What is my rising sign? Find your rising sign (Ascendant) free — enter your birth date, exact time, and place to compute it from the real sky. Plain-English guide to what the Ascendant means and why your birth time matters." />
+  <title>What Is My Rising Sign? Find Your Ascendant Free | AstroPrecise</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="What Is My Rising Sign? Find Your Ascendant Free | AstroPrecise" />
+  <meta property="og:description" content="Find your rising sign (Ascendant) free — computed from the real sky using your exact birth date, time, and place. Learn what the Ascendant means and why it changes every two hours." />
+  <meta property="og:url" content="https://astroprecise.app/what-is-my-rising-sign.html" />
+  <link rel="canonical" href="https://astroprecise.app/what-is-my-rising-sign.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="What Is My Rising Sign? Find Your Ascendant Free" />
+  <meta name="twitter:description" content="Find your rising sign (Ascendant) free — computed from the real sky using your exact birth date, time, and place." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"What Is My Rising Sign?","description":"Find your rising sign (Ascendant) free — computed from the real sky using your exact birth date, time, and place. A plain-English guide to what the Ascendant means and why your birth time matters.","url":"https://astroprecise.app/what-is-my-rising-sign.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Rising sign"},{"@type":"Thing","name":"Ascendant"},{"@type":"Thing","name":"Astrology"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"What Is My Rising Sign?","item":"https://astroprecise.app/what-is-my-rising-sign.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a rising sign?","acceptedAnswer":{"@type":"Answer","text":"Your rising sign, also called the Ascendant, is the zodiac sign that was rising on the eastern horizon at the exact moment and place you were born. It marks the cusp of the first house and sets the orientation of your whole birth chart."}},{"@type":"Question","name":"Do I need my birth time to find my rising sign?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Ascendant moves about one degree every four minutes and changes sign roughly every two hours, so an accurate birth time is essential. Without a known time, a rising sign cannot be calculated honestly."}},{"@type":"Question","name":"What is the difference between my Sun sign and my rising sign?","acceptedAnswer":{"@type":"Answer","text":"Your Sun sign depends only on the date of birth and describes your core identity. Your rising sign depends on the exact time and place of birth and describes how you meet the world and how the rest of the chart is arranged."}},{"@type":"Question","name":"How accurate is this rising sign calculator?","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise computes the Ascendant from real astronomy — the local sidereal time and the obliquity of the ecliptic — entirely in your browser, to roughly arcminute precision. Same inputs always give the same result, and nothing is sent to a server."}}]}</script>
+  <style>
+    /* ── Rising-sign page premium overrides (scoped, mirrors accuracy.html) ── */
+    :root {
+      --rs-gold: var(--gold, #C9A227);
+      --rs-gold-light: var(--gold-light, #EFE3C0);
+      --rs-surface: rgba(15, 18, 50, 0.42);
+      --rs-border: rgba(232, 224, 208, 0.10);
+    }
+    .rs-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .rs-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(74, 90, 106, 0.20) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .rs-hero__eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--rs-gold); margin-bottom: 1.1rem;
+    }
+    .rs-hero h1 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(2rem, 5.2vw, 3.3rem);
+      font-weight: 700; line-height: 1.1; letter-spacing: 0.02em;
+      color: var(--white, #E8E0D0); margin-bottom: 1rem;
+    }
+    .rs-hero__sub {
+      font-size: 1.02rem; color: var(--silver, #A89E88);
+      line-height: 1.75; max-width: 620px; margin: 0 auto;
+    }
+    .rs-section { padding: 2.75rem 0; position: relative; z-index: 1; }
+    .rs-section--alt { background: var(--color-bg-2, rgba(13, 10, 7,0.5)); }
+    .rs-section__label {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700;
+      color: var(--white, #E8E0D0); text-align: center;
+      margin-bottom: 0.6rem; letter-spacing: 0.02em;
+    }
+    .rs-section__intro {
+      text-align: center; color: var(--silver, #A89E88);
+      font-size: 1rem; line-height: 1.75; max-width: 680px; margin: 0 auto 2rem;
+    }
+
+    /* ── Inline finder tool ── */
+    .rs-finder { max-width: 640px; margin: 0 auto; padding: 2rem 2rem 2.25rem; }
+    .rs-finder h2 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.4rem; color: var(--rs-gold-light); text-align: center;
+      margin-bottom: 0.4rem; letter-spacing: 0.02em;
+    }
+    .rs-finder__lead {
+      text-align: center; font-size: 0.9rem; color: var(--silver, #A89E88);
+      line-height: 1.6; margin-bottom: 1.6rem;
+    }
+    .rs-field { margin-bottom: 1.1rem; position: relative; }
+    .rs-field label {
+      display: block; font-size: 0.72rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--rs-gold);
+      margin-bottom: 0.45rem; font-weight: 600;
+    }
+    .rs-field input {
+      width: 100%; padding: 0.75rem 0.95rem;
+      background: rgba(13, 10, 7, 0.6);
+      border: 1px solid var(--rs-border); border-radius: 12px;
+      color: var(--white, #E8E0D0); font-size: 0.95rem; font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .rs-field input:focus {
+      outline: none; border-color: rgba(201, 162, 39, 0.5);
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
+    }
+    .rs-field__hint { font-size: 0.72rem; color: var(--silver-dim, #6E6658); margin-top: 0.4rem; line-height: 1.5; }
+    .rs-autocomplete {
+      position: absolute; left: 0; right: 0; top: 100%; z-index: 30;
+      margin-top: 4px; background: var(--color-bg-3, #11142e);
+      border: 1px solid var(--rs-border); border-radius: 12px;
+      overflow: hidden; box-shadow: 0 18px 48px rgba(0,0,0,0.45);
+    }
+    .rs-autocomplete .autocomplete-option {
+      padding: 0.65rem 0.95rem; cursor: pointer; font-size: 0.9rem;
+      color: var(--white, #E8E0D0); transition: background 0.15s;
+    }
+    .rs-autocomplete .autocomplete-option:hover { background: rgba(201, 162, 39, 0.1); }
+    .rs-autocomplete .city-country { color: var(--silver-dim, #6E6658); font-size: 0.78rem; }
+    .rs-finder__btn-row { text-align: center; margin-top: 1.6rem; }
+    .rs-result {
+      margin-top: 1.75rem; padding: 1.75rem 1.5rem; text-align: center;
+      border-radius: 16px; border: 1px solid rgba(201, 162, 39, 0.3);
+      background: rgba(201, 162, 39, 0.07); display: none;
+    }
+    .rs-result.is-shown { display: block; }
+    .rs-result__glyph { font-size: 2.6rem; color: var(--rs-gold); line-height: 1; display: block; margin-bottom: 0.5rem; }
+    .rs-result__sign {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.9rem; color: var(--rs-gold-light); margin-bottom: 0.35rem; letter-spacing: 0.03em;
+    }
+    .rs-result__deg { font-size: 0.88rem; color: var(--silver, #A89E88); margin-bottom: 1rem; }
+    .rs-result__note { font-size: 0.8rem; color: var(--silver-dim, #6E6658); line-height: 1.6; }
+    .rs-result--error { border-color: rgba(180, 66, 50, 0.4); background: rgba(180, 66, 50, 0.08); }
+
+    /* ── Content cards ── */
+    .rs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; max-width: 920px; margin: 0 auto; }
+    .rs-card { padding: 1.6rem 1.5rem; }
+    .rs-card h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.08rem; color: var(--rs-gold-light); margin-bottom: 0.55rem; letter-spacing: 0.01em;
+    }
+    .rs-card p { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
+    .rs-prose { max-width: 740px; margin: 0 auto; }
+    .rs-prose p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.85; margin-bottom: 1.1rem; }
+    .rs-prose strong { color: var(--rs-gold-light); }
+
+    /* ── FAQ ── */
+    .rs-faq { max-width: 740px; margin: 0 auto; display: grid; gap: 0.9rem; }
+    .rs-faq__item { padding: 1.3rem 1.5rem; }
+    .rs-faq__q {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.02rem; color: var(--rs-gold-light); margin-bottom: 0.5rem;
+    }
+    .rs-faq__a { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
+
+    /* ── CTA ── */
+    .rs-cta { text-align: center; max-width: 640px; margin: 0 auto; padding: 2.5rem 2rem; }
+    .rs-cta h2 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.6rem, 3.6vw, 2.2rem); color: var(--white, #E8E0D0);
+      margin-bottom: 0.9rem; letter-spacing: 0.02em;
+    }
+    .rs-cta p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.7; margin-bottom: 1.75rem; }
+    .rs-cta__note { font-size: 0.78rem; color: var(--silver-dim, #6E6658); margin-top: 1.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="rs-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="rs-hero__eyebrow"><span aria-hidden="true">&#9650;</span> The Ascendant</p>
+        <h1 id="page-title">What Is My Rising Sign?</h1>
+        <p class="rs-hero__sub">
+          Your rising sign &mdash; the <strong>Ascendant</strong> &mdash; is the zodiac sign that was
+          climbing over the eastern horizon at the exact minute and place you were born. Enter your
+          birth details below to find it, computed from the real sky in your browser.
+        </p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Your real Ascendant, computed in your browser — not a sign lookup</span></a></p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         INLINE FINDER TOOL
+    ============================================================ -->
+    <section class="rs-section" aria-labelledby="finder-heading">
+      <div class="container">
+        <div class="glass-card engraved rs-finder">
+          <h2 id="finder-heading">Find Your Rising Sign</h2>
+          <p class="rs-finder__lead">
+            The Ascendant changes sign roughly every two hours, so an accurate birth time and place are essential.
+          </p>
+          <form id="rs-form" autocomplete="off" novalidate>
+            <div class="rs-field">
+              <label for="rs-date">Birth date</label>
+              <input type="date" id="rs-date" required />
+            </div>
+            <div class="rs-field">
+              <label for="rs-time">Birth time (local clock time)</label>
+              <input type="time" id="rs-time" required />
+              <p class="rs-field__hint">As shown on the clock where you were born. The rising sign cannot be found without a real time.</p>
+            </div>
+            <div class="rs-field">
+              <label for="rs-city">Birth place</label>
+              <input type="text" id="rs-city" placeholder="Start typing a city&hellip;" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="rs-city-list" />
+              <div class="rs-autocomplete" id="rs-city-list" role="listbox" hidden></div>
+              <p class="rs-field__hint">Used only to look up coordinates and time zone &mdash; your birth moment is never sent anywhere.</p>
+            </div>
+            <div class="rs-finder__btn-row">
+              <button type="submit" class="btn btn--primary btn--lg" id="rs-submit">Reveal My Rising Sign</button>
+            </div>
+          </form>
+
+          <div class="rs-result" id="rs-result" aria-live="polite">
+            <span class="rs-result__glyph" id="rs-result-glyph" aria-hidden="true">&#9728;</span>
+            <p class="rs-result__sign" id="rs-result-sign">&mdash;</p>
+            <p class="rs-result__deg" id="rs-result-deg"></p>
+            <p class="rs-result__note" id="rs-result-note"></p>
+            <p style="margin-top:1.25rem;">
+              <a href="chart.html" class="btn btn--secondary">See My Full Birth Chart &rarr;</a>
+            </p>
+          </div>
+
+          <noscript>
+            <p style="text-align:center;color:var(--silver,#A89E88);margin-top:1rem;">
+              This finder needs JavaScript. You can still
+              <a href="chart.html" style="color:var(--gold,#C9A227);">cast your full birth chart here</a>,
+              which includes your rising sign.
+            </p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHAT THE ASCENDANT IS
+    ============================================================ -->
+    <section class="rs-section rs-section--alt" aria-labelledby="explain-heading">
+      <div class="container">
+        <h2 class="rs-section__label" id="explain-heading">What the Rising Sign Actually Is</h2>
+        <p class="rs-section__intro">
+          Three things define the backbone of a birth chart. The rising sign is the one most people have never been told.
+        </p>
+        <div class="rs-prose">
+          <p>
+            Imagine standing at the place you were born, at the exact minute of your birth, looking east.
+            The zodiac is a band of constellations that the Sun, Moon, and planets travel through, and the
+            whole band appears to wheel up over the eastern horizon as the Earth turns. The point of the
+            zodiac that was rising on that eastern horizon at your birth is your <strong>Ascendant</strong>,
+            or rising sign.
+          </p>
+          <p>
+            Because the Earth spins once a day, the entire zodiac rises over about twenty-four hours &mdash;
+            which means the Ascendant moves through all twelve signs in a single day, changing sign
+            roughly every <strong>two hours</strong>. That is why your birth <em>time</em> matters so much.
+            Two people born on the same day in the same city, but a few hours apart, can have completely
+            different rising signs and, with them, completely different chart layouts.
+          </p>
+          <p>
+            Astrologically, the Ascendant marks the cusp of the <strong>first house</strong> and anchors
+            the rest of the houses around the wheel. It is often described as your &ldquo;outer self&rdquo;
+            &mdash; the instinctive way you meet the world, your first impression, your physical bearing,
+            and the lens through which you approach new situations. Where your Sun sign is the core you,
+            the rising sign is the doorway others walk through to reach it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SUN vs MOON vs RISING
+    ============================================================ -->
+    <section class="rs-section" aria-labelledby="bigthree-heading">
+      <div class="container">
+        <h2 class="rs-section__label" id="bigthree-heading">Sun, Moon &amp; Rising &mdash; The &ldquo;Big Three&rdquo;</h2>
+        <p class="rs-section__intro">
+          Together these three points sketch the outline of a personality. Each answers a different question.
+        </p>
+        <div class="rs-grid">
+          <div class="glass-card engraved rs-card">
+            <h3>&#9728; Sun Sign</h3>
+            <p>Set by your birth <strong>date</strong> alone. It describes your core identity, your will,
+            and what energises you &mdash; the &ldquo;who am I&rdquo; at the centre of the chart.</p>
+          </div>
+          <div class="glass-card engraved rs-card">
+            <h3>&#9789; Moon Sign</h3>
+            <p>Needs your date and a fairly close time. It describes your inner emotional life, your
+            instincts, and what makes you feel safe &mdash; the private self behind the public one.</p>
+          </div>
+          <div class="glass-card engraved rs-card">
+            <h3>&#9650; Rising Sign</h3>
+            <p>Needs your exact time <em>and</em> place. It describes how you come across, how you start
+            things, and how your entire chart of houses is oriented &mdash; the self in motion.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHY BIRTH TIME MATTERS
+    ============================================================ -->
+    <section class="rs-section rs-section--alt" aria-labelledby="time-heading">
+      <div class="container">
+        <h2 class="rs-section__label" id="time-heading">Why Your Birth Time Is Non-Negotiable</h2>
+        <div class="rs-prose">
+          <p>
+            The Ascendant moves about <strong>one degree every four minutes</strong> &mdash; roughly fifteen
+            degrees an hour. A twenty-minute error in your recorded birth time can shift your Ascendant by
+            five degrees; an hour or two can push it into an entirely different sign. This is the single
+            biggest reason cheap &ldquo;rising sign&rdquo; tools disagree with one another: many quietly
+            assume noon, or skip the time zone, and hand you a confident but meaningless answer.
+          </p>
+          <p>
+            AstroPrecise does it honestly. It converts your local clock time to Universal Time using the
+            real time-zone rules for your birth place (including historical daylight saving), then derives
+            the local sidereal time and the obliquity of the ecliptic to compute the true Ascendant &mdash;
+            the same method a professional astrologer uses. If a birth time is genuinely unknown, no rising
+            sign can be calculated; we would rather tell you that than fabricate one.
+          </p>
+          <p>
+            If your birth certificate lists a time, use it. If a parent remembers &ldquo;around 3 in the
+            afternoon,&rdquo; try a couple of nearby times &mdash; if they all land in the same sign, you can
+            be confident; if they straddle a boundary, your rising sign is genuinely uncertain, and that is
+            worth knowing too.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ
+    ============================================================ -->
+    <section class="rs-section" aria-labelledby="faq-heading">
+      <div class="container">
+        <h2 class="rs-section__label" id="faq-heading">Rising Sign FAQ</h2>
+        <div class="rs-faq">
+          <div class="glass-card engraved rs-faq__item">
+            <p class="rs-faq__q">What is a rising sign?</p>
+            <p class="rs-faq__a">Your rising sign, also called the Ascendant, is the zodiac sign that was rising on the eastern horizon at the exact moment and place you were born. It marks the cusp of the first house and sets the orientation of your whole birth chart.</p>
+          </div>
+          <div class="glass-card engraved rs-faq__item">
+            <p class="rs-faq__q">Do I need my birth time to find my rising sign?</p>
+            <p class="rs-faq__a">Yes. The Ascendant moves about one degree every four minutes and changes sign roughly every two hours, so an accurate birth time is essential. Without a known time, a rising sign cannot be calculated honestly.</p>
+          </div>
+          <div class="glass-card engraved rs-faq__item">
+            <p class="rs-faq__q">What is the difference between my Sun sign and my rising sign?</p>
+            <p class="rs-faq__a">Your Sun sign depends only on the date of birth and describes your core identity. Your rising sign depends on the exact time and place of birth and describes how you meet the world and how the rest of the chart is arranged.</p>
+          </div>
+          <div class="glass-card engraved rs-faq__item">
+            <p class="rs-faq__q">How accurate is this rising sign calculator?</p>
+            <p class="rs-faq__a">AstroPrecise computes the Ascendant from real astronomy &mdash; the local sidereal time and the obliquity of the ecliptic &mdash; entirely in your browser, to roughly arcminute precision. Same inputs always give the same result, and nothing is sent to a server.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CTA
+    ============================================================ -->
+    <section class="rs-section rs-section--alt" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="glass-card engraved rs-cta">
+          <h2 id="cta-heading">Your Rising Sign Is Just the Beginning</h2>
+          <p>
+            The Ascendant orients your whole chart. Cast a complete natal chart to see your Sun, Moon,
+            rising, every planet, and the houses they fall in &mdash; free, in your browser, with nothing
+            to sign up for.
+          </p>
+          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Free Birth Chart &rarr;</a>
+          <p class="rs-cta__note">No account &middot; No tracking &middot; Computed on your device</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">&#10022; AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <div role="group" aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          </ul>
+        </div>
+        <div role="group" aria-label="About">
+          <p class="footer__heading">About</p>
+          <ul class="footer__links">
+            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
+            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Inline finder logic -->
+  <script>
+  (function () {
+    'use strict';
+    var SIGN_GLYPHS = {
+      Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋',
+      Leo:'♌', Virgo:'♍', Libra:'♎', Scorpio:'♏',
+      Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓'
+    };
+    var form = document.getElementById('rs-form');
+    if (!form) return;
+    var cityInput = document.getElementById('rs-city');
+    var cityList = document.getElementById('rs-city-list');
+    var resultBox = document.getElementById('rs-result');
+    var resGlyph = document.getElementById('rs-result-glyph');
+    var resSign = document.getElementById('rs-result-sign');
+    var resDeg = document.getElementById('rs-result-deg');
+    var resNote = document.getElementById('rs-result-note');
+    var picked = null; // { lat, lon, tz, name }
+
+    function wireAutocomplete() {
+      if (window.AstroSeoTools && window.AstroApp) {
+        AstroSeoTools.initCityAutocomplete(cityInput, cityList, function (c) { picked = c; });
+      } else {
+        setTimeout(wireAutocomplete, 200);
+      }
+    }
+    wireAutocomplete();
+
+    function fail(msg) {
+      resultBox.classList.add('is-shown', 'rs-result--error');
+      resGlyph.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-warn"/></svg>';
+      resSign.textContent = 'Need a little more';
+      resDeg.textContent = '';
+      resNote.textContent = msg;
+    }
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      resultBox.classList.remove('rs-result--error');
+      var date = document.getElementById('rs-date').value;
+      var time = document.getElementById('rs-time').value;
+      if (!date) { fail('Please enter your birth date.'); return; }
+      if (!time) { fail('A rising sign cannot be calculated without your exact birth time.'); return; }
+      if (!picked || !isFinite(picked.lat) || !isFinite(picked.lon)) {
+        fail('Please pick your birth city from the dropdown so we can use the right coordinates and time zone.');
+        return;
+      }
+      if (!window.AstroEphemeris || !window.AstroSeoTools) {
+        fail('The astronomy engine is still loading &mdash; please try again in a moment.');
+        return;
+      }
+      var dp = date.split('-').map(Number);
+      var tp = time.split(':').map(Number);
+      var y = dp[0], m = dp[1], d = dp[2], hh = tp[0], mm = tp[1];
+      if (![y, m, d, hh, mm].every(isFinite)) { fail('That birth date or time looks malformed.'); return; }
+
+      try {
+        var ut = AstroSeoTools.localToUT(y, m, d, hh, mm, picked.tz);
+        var chart = AstroEphemeris.calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, picked.lat, picked.lon);
+        var asc = chart.positions.asc;
+        var deg = Math.floor(asc.degree);
+        var min = Math.round((asc.degree - deg) * 60);
+        if (min === 60) { min = 0; deg += 1; }
+        resultBox.classList.add('is-shown');
+        resGlyph.textContent = SIGN_GLYPHS[asc.sign] || '';
+        resSign.textContent = asc.sign + ' Rising';
+        resDeg.textContent = 'Ascendant at ' + asc.sign + ' ' + deg + '°' + String(min).padStart(2, '0') + '′';
+        resNote.textContent = 'Computed from the real sky for ' + (picked.name || 'your birth place') +
+          '. The Ascendant sets the layout of your whole chart — explore the rest below.';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (e) {
+        fail('Those coordinates look out of range. Please re-pick your birth city from the dropdown.');
+      }
+    });
+  })();
+  </script>
+
+  <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/seo-tools.js"></script>
+  <script src="js/effects.js"></script>
+</body>
+</html>

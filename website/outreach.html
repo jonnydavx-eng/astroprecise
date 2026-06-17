@@ -4,59 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Owner outreach toolkit — copy emails and X posts" />
   <title>Outreach toolkit — AstroPrecise</title>
-  <link rel="stylesheet" href="css/fonts.css" />
-  <link rel="stylesheet" href="css/main.css" />
+  
   <style>
-    body { background: #050406; color: #C8D0E8; }
-    .ot { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 4rem; font-family: Inter, system-ui, sans-serif; }
-    .ot h1 { font-family: Cinzel, serif; font-size: 1.4rem; color: #E6C24A; letter-spacing: 0.12em; margin: 0 0 0.25rem; }
-    .ot__sub { font-size: 0.75rem; opacity: 0.7; margin-bottom: 1.5rem; }
-    .ot-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
-    .ot-tab { padding: 0.45rem 0.85rem; border-radius: 999px; border: 1px solid rgba(201,162,39,0.35); background: transparent; color: #C8D0E8; font-size: 0.72rem; cursor: pointer; }
-    .ot-tab.is-on { background: rgba(201,162,39,0.15); border-color: #C9A227; color: #E6C24A; }
-    .ot-panel { display: none; }
-    .ot-panel.is-on { display: block; }
-    .ot-card { background: rgba(20,16,10,0.55); border: 1px solid rgba(201,162,39,0.22); border-radius: 12px; padding: 1rem; margin-bottom: 0.85rem; }
-    .ot-card h3 { font-size: 0.82rem; color: #E6C24A; margin: 0 0 0.35rem; }
-    .ot-meta { font-size: 0.62rem; opacity: 0.65; margin-bottom: 0.5rem; }
-    .ot-pre { white-space: pre-wrap; font-size: 0.78rem; line-height: 1.55; margin: 0; font-family: inherit; }
-    .ot-actions { margin-top: 0.65rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .ot-btn { padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(201,162,39,0.45); background: rgba(201,162,39,0.1); color: #E6C24A; font-size: 0.68rem; cursor: pointer; }
-    .ot-btn:hover { border-color: #C9A227; }
-    .ot-list { font-size: 0.78rem; line-height: 1.6; padding-left: 1.1rem; margin: 0.35rem 0; }
-    .ot-list li { margin-bottom: 0.35rem; }
-    .ot-toast { position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%); background: #1a1510; border: 1px solid #C9A227; color: #E6C24A; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.75rem; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
-    .ot-toast.show { opacity: 1; }
+    /* Critical fonts — block display prevents panel-x reflow when fonts.css defers */
+    @font-face{font-family:'Cinzel';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cinzel-normal-600.woff2) format('woff2');}
+    @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:block;src:url(fonts/inter-normal-400.woff2) format('woff2');}
+    @font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:block;src:url(fonts/inter-normal-600.woff2) format('woff2');}
+    /* CLS: panel-x skeleton must reserve before outreach-page.css parses */
+    #panel-x.ot-panel.is-on { min-height: 1300px; contain: layout style; }
+    .ot-card--skeleton { visibility: hidden; min-height: 210px; margin-bottom: 0.85rem; }
+    .ot h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 1.5em;
+      line-height: 1.3;
+      contain: layout style;
+    }
+    html.ap-fonts-ready .ot h1 { font-family: Cinzel, serif; }
+    .ot-card__title {
+      font-family: Inter, system-ui, sans-serif;
+      min-height: 1.35em;
+      contain: layout style;
+    }
+    .ot-pre { min-height: 4.5em; contain: layout style; }
+    .ot-tabs { min-height: 44px; }
   </style>
-</head>
-<body>
-  <main class="ot">
-    <h1>Outreach toolkit</h1>
-    <p class="ot__sub">Owner copy deck — emails + X posts from <code>js/outreach-content.js</code>. Not indexed.</p>
-
-    <div class="ot-tabs" role="tablist">
-      <button type="button" class="ot-tab is-on" data-tab="x">X playbook</button>
-      <button type="button" class="ot-tab" data-tab="emails">Emails</button>
-      <button type="button" class="ot-tab" data-tab="posts">X posts</button>
-      <button type="button" class="ot-tab" data-tab="replies">Reply templates</button>
-    </div>
-
-    <div id="panel-x" class="ot-panel is-on"></div>
-    <div id="panel-emails" class="ot-panel"></div>
-    <div id="panel-posts" class="ot-panel"></div>
-    <div id="panel-replies" class="ot-panel"></div>
-
-    <p style="font-size:0.65rem;opacity:0.55;margin-top:2rem;">
-      CLI export: <code>node tools/export-outreach.mjs</code> ·
-      <a href="links.html" style="color:#C9A227">links.html</a> ·
-      <a href="index.html" style="color:#C9A227">Home</a>
-    </p>
-  </main>
-  <div class="ot-toast" id="toast" aria-live="polite">Copied</div>
-
-  <script src="js/outreach-content.js"></script>
-  <script>
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="preload" href="fonts/cinzel-normal-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all';document.documentElement.classList.add('ap-fonts-ready');" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/outreach-page.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
+  <script src="js/outreach-content.js" defer></script>
+  <script defer>
+  document.addEventListener('DOMContentLoaded', function () {
   (function () {
     var O = window.AP_OUTREACH;
     if (!O) return;
@@ -85,43 +71,49 @@
     function card(title, meta, body, copyText) {
       var d = document.createElement('div');
       d.className = 'ot-card';
-      d.innerHTML = '<h3>' + title + '</h3>' + (meta ? '<p class="ot-meta">' + meta + '</p>' : '') + '<pre class="ot-pre"></pre><div class="ot-actions"></div>';
+      d.innerHTML = '<h2 class="ot-card__title">' + title + '</h2>' + (meta ? '<p class="ot-meta">' + meta + '</p>' : '') + '<pre class="ot-pre"></pre><div class="ot-actions"></div>';
       d.querySelector('.ot-pre').textContent = body;
       var actions = d.querySelector('.ot-actions');
       actions.appendChild(btn('Copy all', copyText || body));
       return d;
     }
 
-    // X playbook
+    function clearSkeleton(panel) {
+      var sk = panel && panel.querySelector('.ot-skeleton');
+      if (sk) sk.remove();
+    }
+
     var px = document.getElementById('panel-x');
     var xt = O.xTraffic;
-    px.appendChild(card('Strategy', O.version, xt.summary));
+    var pxCards = [];
+    pxCards.push(card('Strategy', O.version, xt.summary));
     var ul = document.createElement('ul'); ul.className = 'ot-list';
     xt.algorithm.priorities.forEach(function (p) { var li = document.createElement('li'); li.textContent = p; ul.appendChild(li); });
     var alg = card('Algorithm (2026)', 'First ' + xt.algorithm.velocityWindowMin + ' min velocity', '');
     alg.appendChild(ul);
-    px.appendChild(alg);
-    px.appendChild(card('Profile bio', xt.profile.handle, xt.profile.bio, xt.profile.bio));
-    px.appendChild(card('Pinned post', '', xt.profile.pinnedPost, xt.profile.pinnedPost));
-    px.appendChild(card('Cadence', '', 'Posts: ' + xt.cadence.originalPostsPerDay + '/day · Replies: ' + xt.cadence.repliesPerDay + '/day · Times (UK): ' + xt.cadence.bestTimesUk.join(', ')));
+    pxCards.push(alg);
+    pxCards.push(card('Profile bio', xt.profile.handle, xt.profile.bio, xt.profile.bio));
+    pxCards.push(card('Pinned post', '', xt.profile.pinnedPost, xt.profile.pinnedPost));
+    pxCards.push(card('Cadence', '', 'Posts: ' + xt.cadence.originalPostsPerDay + '/day · Replies: ' + xt.cadence.repliesPerDay + '/day · Times (UK): ' + xt.cadence.bestTimesUk.join(', ')));
     var eng = card('Accounts to engage', '', '');
     var el = document.createElement('ul'); el.className = 'ot-list';
     xt.accountsToEngage.forEach(function (a) {
       var li = document.createElement('li'); li.textContent = a.handle + ' — ' + a.why; el.appendChild(li);
     });
     eng.appendChild(el);
-    px.appendChild(eng);
+    pxCards.push(eng);
+    px.replaceChildren.apply(px, pxCards);
 
-    // Emails
     var pe = document.getElementById('panel-emails');
+    clearSkeleton(pe);
     O.exportAllEmails().forEach(function (e) {
       var meta = [e.section, e.delay, e.tag].filter(Boolean).join(' · ');
       var full = 'SUBJECT: ' + e.subject + '\n\n' + e.body;
       pe.appendChild(card(e.id, meta, full, full));
     });
 
-    // X posts
     var pp = document.getElementById('panel-posts');
+    clearSkeleton(pp);
     O.xPosts.singles.forEach(function (p) {
       var text = O.format(p.text);
       pp.appendChild(card(p.id, 'Day ' + p.day, text, text));
@@ -131,21 +123,87 @@
       pp.appendChild(card(th.id, th.title, joined, joined));
     });
 
-    // Replies
     var pr = document.getElementById('panel-replies');
+    clearSkeleton(pr);
     O.xPosts.replyTemplates.forEach(function (r) {
       pr.appendChild(card(r.id, '', r.template, r.template));
     });
 
+    function activateTab(tab) {
+      document.querySelectorAll('.ot-tab').forEach(function (t) {
+        var on = t === tab;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      document.querySelectorAll('.ot-panel').forEach(function (p) {
+        var on = p.id === 'panel-' + tab.dataset.tab;
+        p.classList.toggle('is-on', on);
+        if (on) p.removeAttribute('hidden');
+        else p.setAttribute('hidden', '');
+      });
+    }
+
     document.querySelectorAll('.ot-tab').forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        document.querySelectorAll('.ot-tab').forEach(function (t) { t.classList.remove('is-on'); });
-        document.querySelectorAll('.ot-panel').forEach(function (p) { p.classList.remove('is-on'); });
-        tab.classList.add('is-on');
-        document.getElementById('panel-' + tab.dataset.tab).classList.add('is-on');
+      tab.addEventListener('click', function () { activateTab(tab); });
+      tab.addEventListener('keydown', function (e) {
+        var tabs = Array.prototype.slice.call(document.querySelectorAll('.ot-tab'));
+        var idx = tabs.indexOf(tab);
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          activateTab(tabs[(idx + 1) % tabs.length]);
+          tabs[(idx + 1) % tabs.length].focus();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          activateTab(tabs[(idx - 1 + tabs.length) % tabs.length]);
+          tabs[(idx - 1 + tabs.length) % tabs.length].focus();
+        }
       });
     });
   })();
+  });
   </script>
+</head>
+<body>
+  <main id="main" class="ot">
+    <h1>Outreach toolkit</h1>
+    <p class="ot__sub">Owner copy deck — emails + X posts from <code>js/outreach-content.js</code>. Not indexed.</p>
+
+    <div class="ot-tabs" role="tablist" aria-label="Outreach content sections">
+      <button type="button" class="ot-tab is-on" role="tab" id="tab-x" aria-selected="true" aria-controls="panel-x" data-tab="x">X playbook</button>
+      <button type="button" class="ot-tab" role="tab" id="tab-emails" aria-selected="false" aria-controls="panel-emails" data-tab="emails">Emails</button>
+      <button type="button" class="ot-tab" role="tab" id="tab-posts" aria-selected="false" aria-controls="panel-posts" data-tab="posts">X posts</button>
+      <button type="button" class="ot-tab" role="tab" id="tab-replies" aria-selected="false" aria-controls="panel-replies" data-tab="replies">Reply templates</button>
+    </div>
+
+    <div id="panel-x" class="ot-panel is-on" role="tabpanel" aria-labelledby="tab-x">
+      <div class="ot-skeleton" aria-hidden="true">
+        <div class="ot-card ot-card--skeleton"></div>
+        <div class="ot-card ot-card--skeleton"></div>
+        <div class="ot-card ot-card--skeleton"></div>
+        <div class="ot-card ot-card--skeleton"></div>
+        <div class="ot-card ot-card--skeleton"></div>
+        <div class="ot-card ot-card--skeleton"></div>
+      </div>
+    </div>
+    <div id="panel-emails" class="ot-panel" role="tabpanel" aria-labelledby="tab-emails" hidden>
+      <div class="ot-skeleton" aria-hidden="true"><div class="ot-card ot-card--skeleton"></div></div>
+    </div>
+    <div id="panel-posts" class="ot-panel" role="tabpanel" aria-labelledby="tab-posts" hidden>
+      <div class="ot-skeleton" aria-hidden="true"><div class="ot-card ot-card--skeleton"></div></div>
+    </div>
+    <div id="panel-replies" class="ot-panel" role="tabpanel" aria-labelledby="tab-replies" hidden>
+      <div class="ot-skeleton" aria-hidden="true"><div class="ot-card ot-card--skeleton"></div></div>
+    </div>
+
+    <p class="ot-foot">
+      CLI export: <code>node tools/export-outreach.mjs</code> ·
+      <a href="links.html">links.html</a> ·
+      <a href="index.html">Home</a>
+    </p>
+  </main>
+  <div class="ot-toast" id="toast" aria-live="polite">Copied</div>
+
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

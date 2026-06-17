@@ -37,9 +37,19 @@ jobs:
 
       - name: Profile save e2e audit
         run: |
-          python3 -m http.server 8790 --directory website &
+          node website/tools/serve-preview.mjs 8790 &
           sleep 2
           node tools/e2e-profile-save-audit.mjs
+
+      - name: Production Lighthouse CI
+        env:
+          LH_CI_A11Y_MIN: 90
+        run: |
+          node website/tools/serve-preview.mjs 8790 &
+          sleep 2
+          npm ci
+          npm run lighthouse:production:ci
+        working-directory: tools/visual-check
 
   deploy:
     needs: test

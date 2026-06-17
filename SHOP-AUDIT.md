@@ -1,23 +1,38 @@
 # AstroPrecise — Shop Audit & Product Lineup
 
-_2026-06-13. Reviewed `shop.html`, `js/shop-commerce.js`, `AP_MON.commerce` (app.js), `POD-PLAYBOOK.md`, `tools/generate-reading.mjs`. Pairs with `GTM-LADDER.md`, `INSTANT-MONETIZATION.md`._
+_2026-06-13 (base). Wave 21 closure: 2026-06-17 — `shop.html`, `js/shop-commerce.js`, `AP_MON.commerce` (app.js), `POD-PLAYBOOK.md`. Pairs with `GTM-LADDER.md`, `INSTANT-MONETIZATION.md`._
 
 ## Verdict
-**Architecturally launch-ready, commercially not-yet-open — and that's by design and honest.** The shop is a clean, config-driven, Pages-compliant link-out engine, correctly **dormant** (every fulfilment URL empty → the honest "shop opens soon" modal + email invite, never a fake/dead Buy button). To open: (a) create the external products, (b) paste URLs, (c) fix the items below.
+**Architecturally launch-ready; commercially gated on owner fulfilment.** The shop is a config-driven, Pages-compliant link-out engine. When every `fulfilUrl` is empty the UI stays **dormant** (honest “opens soon” modal + email invite — never a fake Buy button). When URLs are pasted per SKU, Buy CTAs and JSON-LD availability flip live automatically.
 
 ## What exists today
-- **"Wear Your Sky"** (`#wear-your-sky`, `window.AstroShop`): real cart + quick-view + checkout fallback chain, **8 SKUs** defined in config, all dormant. ✅ honest.
-- **Affiliate shelf**: ~21 hardcoded cards to Amazon/Etsy **search** URLs (live, but untagged — see gap 4).
-- **Free Tools** cards: live, correct.
-- **Config SKUs (ap-v116):** natal-poster £20, sky-tee £18, sky-hoodie £32, big-three-print £10, constellation-mug £9, deep-reading £12, year-ahead £16, natal-poster-pdf £6, reading-poster-bundle £16, solar-return £14, gift-reading £15, gift-box £35, two-skies-map £24.
+- **"Wear Your Sky"** (`#wear-your-sky`, `window.AstroShop`): real cart + quick-view + checkout fallback chain, **13 SKUs** in `AP_MON.commerce.products`.
+- **Free Chart Wallpaper** (`#shop-wallpaper-lead`, `js/shop-wallpaper-lead.js`): rung-0 lead magnet on shop — email capture + chart-page download path. ✅ Wave 18–20
+- **Affiliate shelf**: ~21 curated cards; disclosure **softens** when `affiliateTag` empty (`affiliate-social.js` → “Some links may earn us a commission…”). ✅ Wave 19–20
+- **Turnaround copy**: hero + featured lede — “rendered to your birth data · prints & apparel ship in 2–7 business days”. ✅ Wave 19–20
+- **Currency**: `checkout.currency: 'GBP'`, `formatPrice()` → `£` everywhere in commerce JS. ✅ Wave 18–20
+- **JSON-LD**: static `WebApplication` in `shop.html` (`priceCurrency: GBP`); dynamic `ItemList` injected by `injectCatalogSchema()` with per-SKU availability from config. ✅ Wave 21
 
 ## Gaps / bugs to fix before opening (priority)
-1. **CURRENCY BUG (the one real bug):** `checkout.currency: 'USD'` (app.js) and `$` literals in `shop-commerce.js` (≈ lines 165, 185, 376, 408) — a UK GBP brand showing `$38.00` is wrong + trust-eroding. **Set `currency:'GBP'` and change `$`→`£`.** (schema.org priceCurrency already reads from config.)
-2. **Price drift vs the ladder:** ~~resolved ap-v116~~ — config now matches `GTM-LADDER.md` (reading £12, poster PDF £6, bundle £16, gift £15).
-3. **No free Chart Wallpaper lead-magnet (rung 0)** anywhere — the biggest *strategic* gap (it builds the list that sells everything). Now partly addressed by the new site-wide email capture; add the wallpaper as the incentive.
-4. **Affiliate links are untagged search URLs** + `affiliateTag` empty → the prominent disclosure currently over-discloses. Either get an Amazon Associates tag + apply it, or soften the banner to "some links may be affiliate links" until tags exist.
-5. **No made-to-order turnaround copy** on personalised cards ("rendered + shipped in 2–7 business days; don't know your birth time? we'll help").
-6. **Minor:** cart placeholder `$0.00` (cosmetic, fix with currency); JSON-LD `availability: PreOrder` — flip to `InStock`/`MadeToOrder` per product when it goes live.
+1. ~~**CURRENCY BUG**~~ — **resolved** (`GBP` + `£` in `shop-commerce.js` / `app.js`).
+2. ~~**Price drift**~~ — resolved ap-v116; ladder-aligned.
+3. ~~**Chart Wallpaper lead-magnet**~~ — `#shop-wallpaper-lead` on shop + chart `#wallpaper-lead`.
+4. **Affiliate tag (owner):** `affiliateTag` still empty — softened disclosure is honest interim; paste Amazon Associates tag when approved.
+5. ~~**Made-to-order turnaround copy**~~ — on hero + featured section.
+6. ~~**JSON-LD availability**~~ — dynamic per SKU (`schemaAvailability()` in `shop-commerce.js`).
+
+## JSON-LD availability (Wave 21)
+`injectCatalogSchema()` reads each product from `AP_MON.commerce.products`:
+
+| Condition | `schema.org` value |
+|---|---|
+| `fulfilUrl` empty, `available !== false` | `PreOrder` (dormant / opens soon) |
+| `fulfilUrl` empty, `available === false` | `OutOfStock` |
+| `fulfilUrl` set, `type === 'digital'` | `OnlineOnly` |
+| `fulfilUrl` set, physical (`print` / `apparel` / `accessory`) | `InStock` |
+| Optional per-SKU override | `product.schemaAvailability` → `InStock` \| `OnlineOnly` \| `PreOrder` \| `OutOfStock` |
+
+Live offers also emit `offers.url` = `fulfilUrl`. Static `shop.html` `WebApplication` block unchanged (aggregate GBP range); catalog truth is the injected `ItemList`.
 
 ## Recommended lineup
 **DIGITAL (margin core — start here, ~90% margin):**
@@ -52,9 +67,17 @@ _2026-06-13. Reviewed `shop.html`, `js/shop-commerce.js`, `AP_MON.commerce` (app
 Then: **week 2–6** add the £16 bundle + Gift; **month 2+** open Etsy POD (lead with the £20 A3 star-map + £9 mug + the "two skies" print), set `checkout.etsyUrl`; **month 3+** tee, framed, foil, astrocartography. **Defer** the hoodie and any subscription.
 
 ## Pre-open fix checklist
-- ☐ `currency 'USD'→'GBP'` + `$`→`£` in shop-commerce.js (the one real bug)
+
+### Dev / agent (Waves 18–21)
+- ☑ `currency 'USD'→'GBP'` + `$`→`£` in shop-commerce.js — Wave 18–20
 - ☑ reconcile prices (ap-v116: reading £12, poster PDF £6, bundle £16)
-- ☐ add free Chart Wallpaper lead-magnet (rung 0)
-- ☐ fix affiliate honesty (tag, or soften the banner)
-- ☐ add made-to-order turnaround copy
-- ☐ flip JSON-LD `availability` off `PreOrder` per product as it goes live
+- ☑ add free Chart Wallpaper lead-magnet (rung 0) — `#shop-wallpaper-lead`
+- ☑ fix affiliate honesty (soften banner when no tag) — `affiliate-social.js`
+- ☑ add made-to-order turnaround copy — hero + featured lede
+- ☑ JSON-LD `availability` dynamic per SKU — `schemaAvailability()` Wave 21
+
+### Owner (do not fake — paste real URLs when products exist)
+- ☐ Paste Lemon Squeezy / Etsy / Gelato **`fulfilUrl` per SKU** in `AP_MON.commerce.products` (and `checkout.*` URLs as needed)
+- ☐ Set **`affiliateTag`** (Amazon Associates) when approved
+- ☐ Set **`newsletterUrl`** / **`tipUrl`** when backends are live
+- ☐ Smoke-test one live checkout end-to-end before announcing shop open

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Neptune">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="30%" r="72%">
+      <stop offset="0%" stop-color="#2a2218"/>
+      <stop offset="55%" stop-color="#120e0a"/>
+      <stop offset="100%" stop-color="#050406"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="#c9a227" stop-opacity="0.18"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="62" fill="url(#bg)" stroke="#c9a227" stroke-width="1.2" opacity="0.85"/>
+  <circle cx="64" cy="64" r="62" fill="url(#glow)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#c9a227" vector-effect="non-scaling-stroke">
+    <path d="M64 36v44" stroke-width="2.2"/>
+    <path d="M52 44c6-6 14-6 20 0M52 52c8 4 16 4 24 0" stroke-width="1.6"/>
+    <path d="M48 80c8 8 24 8 32 0" stroke-width="1.8"/>
+    <path d="M54 72c6 4 14 4 20 0" stroke-width="1.2" opacity="0.55"/>
+  </g>
+</svg>

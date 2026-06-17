@@ -11,9 +11,9 @@
   }
 
   function renderPackTabs(packs, activeId) {
-    const all = `<button type="button" class="ap-art-pack${activeId === 'all' ? ' active' : ''}" data-art-pack="all" aria-selected="${activeId === 'all'}">All styles</button>`;
+    const all = `<button type="button" class="ap-art-pack${activeId === 'all' ? ' active' : ''}" role="tab" id="ap-art-pack-all" data-art-pack="all" aria-controls="ap-art-theme-panel" aria-selected="${activeId === 'all' ? 'true' : 'false'}">All styles</button>`;
     const tabs = packs.map(p =>
-      `<button type="button" class="ap-art-pack${p.id === activeId ? ' active' : ''}" data-art-pack="${p.id}" aria-selected="${p.id === activeId}">${icon(p.icon)} ${AP_ART.esc(p.name)}</button>`
+      `<button type="button" class="ap-art-pack${p.id === activeId ? ' active' : ''}" role="tab" id="ap-art-pack-${p.id}" data-art-pack="${p.id}" aria-controls="ap-art-theme-panel" aria-selected="${p.id === activeId ? 'true' : 'false'}">${icon(p.icon)} ${AP_ART.esc(p.name)}</button>`
     ).join('');
     return `<div class="ap-art-packs" role="tablist" aria-label="Art expansion packs">${all}${tabs}</div>`;
   }
@@ -21,14 +21,14 @@
   function renderThemeCard(theme, selectedId, recommendedId) {
     const sel = theme.id === selectedId;
     const rec = theme.id === recommendedId;
-    return `<article class="ap-art-card${sel ? ' ap-art-card--selected' : ''}" data-art-theme="${theme.id}" tabindex="0" role="button" aria-pressed="${sel}">
-      <div class="ap-art-card__preview">${AP_ART.previewSvg(theme.id, 100)}</div>
-      <div class="ap-art-card__swatches">${AP_ART.swatchHtml(theme)}</div>
-      <h3 class="ap-art-card__name">${AP_ART.esc(theme.name)}</h3>
-      <p class="ap-art-card__tag">${AP_ART.esc(theme.tagline)}</p>
+    return `<button type="button" class="ap-art-card${sel ? ' ap-art-card--selected' : ''}" data-art-theme="${theme.id}" aria-pressed="${sel ? 'true' : 'false'}" aria-label="${AP_ART.esc(theme.name)} — ${AP_ART.esc(theme.tagline)}">
+      <span class="ap-art-card__preview">${AP_ART.previewSvg(theme.id, 100)}</span>
+      <span class="ap-art-card__swatches">${AP_ART.swatchHtml(theme)}</span>
+      <span class="ap-art-card__name">${AP_ART.esc(theme.name)}</span>
+      <span class="ap-art-card__tag">${AP_ART.esc(theme.tagline)}</span>
       ${rec ? '<span class="ap-art-card__badge">Recommended</span>' : ''}
       ${sel ? '<span class="ap-art-card__badge ap-art-card__badge--sel">Selected</span>' : ''}
-    </article>`;
+    </button>`;
   }
 
   function renderLibrary(root, packId) {
@@ -49,12 +49,12 @@
 
     root.innerHTML = `
       <header class="ap-art-library__head">
-        <p class="shop-section-title">${icon('orb')} Art Style Library</p>
+        <h2 class="shop-section-title">${icon('orb')} Art Style Library</h2>
         <p class="ap-art-library__lede">${lede}</p>
         ${chartNote}
       </header>
       ${renderPackTabs(packs, packId)}
-      <div class="ap-art-grid" role="list">${themes.map(t => renderThemeCard(t, selected.id, recommendedId)).join('')}</div>
+      <div class="ap-art-grid" id="ap-art-theme-panel" role="tabpanel" aria-labelledby="ap-art-pack-${packId}" tabindex="0">${themes.map(t => renderThemeCard(t, selected.id, recommendedId)).join('')}</div>
       <div class="ap-art-library__foot">
         <p class="ap-art-library__selected" id="ap-art-selected-label">
           Selected: <strong>${AP_ART.esc((AP_ART.themeById(selected.id) || {}).name || selected.id)}</strong>
@@ -79,9 +79,6 @@
         }
       };
       card.addEventListener('click', pick);
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); }
-      });
     });
 
     root.querySelectorAll('[data-art-pack]').forEach(btn => {
@@ -97,7 +94,7 @@
     });
   }
 
-  function init() {
+  function runInit() {
     const root = document.getElementById(ROOT_ID);
     if (!root || !window.AP_ART) return;
 
@@ -109,9 +106,35 @@
     });
   }
 
+  function scheduleInit() {
+    const section = document.getElementById('art-library');
+    const hash = (location.hash || '').replace(/^#/, '');
+    if (hash === 'art-library' || (hash && hash.startsWith('art-'))) {
+      runInit();
+      return;
+    }
+    if (!section || !('IntersectionObserver' in window)) {
+      runInit();
+      return;
+    }
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      runInit();
+    };
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) {
+        io.disconnect();
+        start();
+      }
+    }, { rootMargin: '0px 0px 240px 0px', threshold: 0 });
+    io.observe(section);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', scheduleInit);
   } else {
-    init();
+    scheduleInit();
   }
 })();

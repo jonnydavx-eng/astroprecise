@@ -1,0 +1,12 @@
+PLATFORM: Facebook astrology groups (reply when someone asks for chart help)
+USE: Paste as a helpful comment — NOT as a standalone ad post
+
+TEMPLATE:
+If you have birth time + city, you can cast a full chart free here — it runs in your browser so your details aren't uploaded: https://astroprecise.app/chart.html
+
+For your question about [THEIR TOPIC: Moon in X / rising sign / compatibility]:
+[ADD 2-3 SENTENCES OF GENUINE HELP USING GENERAL ASTROLOGY KNOWLEDGE]
+
+The houses will only be reliable if birth time is accurate to within ~30 minutes. Without birth time, focus on Sun/Moon/planet signs and ignore rising/houses.
+
+(Disclaimer: entertainment only — not professional advice.)

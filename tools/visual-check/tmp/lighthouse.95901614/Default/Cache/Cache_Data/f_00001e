@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="What is a solar return chart? Learn how your astrological birthday works — the exact moment the Sun returns to its natal position each year — and compute the date of your next solar return free, from the real sky." />
+  <title>Solar Return Chart: Your Astrological Birthday Explained | AstroPrecise</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Solar Return Chart: Your Astrological Birthday Explained | AstroPrecise" />
+  <meta property="og:description" content="The solar return is the exact moment the Sun returns to its natal position each year. Learn how the solar return chart works and compute your next solar return date free." />
+  <meta property="og:url" content="https://astroprecise.app/solar-return.html" />
+  <link rel="canonical" href="https://astroprecise.app/solar-return.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Solar Return Chart: Your Astrological Birthday Explained" />
+  <meta name="twitter:description" content="The solar return is the exact moment the Sun returns to its natal position each year. Compute your next solar return date free." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Solar Return Chart: Your Astrological Birthday Explained","description":"A plain-English guide to the solar return chart — the exact moment the Sun returns to its natal ecliptic longitude each year — with a free tool to compute the date of your next solar return from the real sky.","url":"https://astroprecise.app/solar-return.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Solar return"},{"@type":"Thing","name":"Solar return chart"},{"@type":"Thing","name":"Predictive astrology"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Solar Return Chart","item":"https://astroprecise.app/solar-return.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a solar return chart?","acceptedAnswer":{"@type":"Answer","text":"A solar return chart is the birth chart cast for the exact moment each year when the transiting Sun returns to the precise ecliptic longitude it held at your birth. It is read as a forecast for the year ahead, from one astrological birthday to the next."}},{"@type":"Question","name":"Is the solar return always on my birthday?","acceptedAnswer":{"@type":"Answer","text":"Almost, but not exactly. Because a tropical year is about 365.2422 days, the Sun returns to its natal longitude a little earlier or later than midnight on your calendar birthday — usually within a day either side, and at a specific time of day, not at the start of it."}},{"@type":"Question","name":"What does a solar return chart tell you?","acceptedAnswer":{"@type":"Answer","text":"The solar return chart's Ascendant, house emphasis, and planetary placements are read as themes for the coming year — where your focus, opportunities, and challenges are likely to concentrate between this birthday and the next."}},{"@type":"Question","name":"How is the exact solar return moment calculated?","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise finds the natal Sun's exact longitude, then solves for the moment in the target year when the transiting Sun matches it, using the real VSOP87 solar position — accurate to well under an arcsecond, computed entirely in your browser."}}]}</script>
+  <style>
+    /* ── Solar-return page premium overrides (scoped, mirrors accuracy.html) ── */
+    :root {
+      --sr-gold: var(--gold, #C9A227);
+      --sr-gold-light: var(--gold-light, #EFE3C0);
+      --sr-border: rgba(232, 224, 208, 0.10);
+    }
+    .sr-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .sr-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(196, 146, 10, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .sr-hero__eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--sr-gold); margin-bottom: 1.1rem;
+    }
+    .sr-hero h1 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(2rem, 5.2vw, 3.3rem);
+      font-weight: 700; line-height: 1.1; letter-spacing: 0.02em;
+      color: var(--white, #E8E0D0); margin-bottom: 1rem;
+    }
+    .sr-hero__sub {
+      font-size: 1.02rem; color: var(--silver, #A89E88);
+      line-height: 1.75; max-width: 640px; margin: 0 auto;
+    }
+    .sr-section { padding: 2.75rem 0; position: relative; z-index: 1; }
+    .sr-section--alt { background: var(--color-bg-2, rgba(13, 10, 7,0.5)); }
+    .sr-section__label {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700;
+      color: var(--white, #E8E0D0); text-align: center;
+      margin-bottom: 0.6rem; letter-spacing: 0.02em;
+    }
+    .sr-section__intro {
+      text-align: center; color: var(--silver, #A89E88);
+      font-size: 1rem; line-height: 1.75; max-width: 680px; margin: 0 auto 2rem;
+    }
+    .sr-prose { max-width: 740px; margin: 0 auto; }
+    .sr-prose p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.85; margin-bottom: 1.1rem; }
+    .sr-prose strong { color: var(--sr-gold-light); }
+
+    /* ── Inline calculator ── */
+    .sr-calc { max-width: 560px; margin: 0 auto; padding: 2rem 2rem 2.25rem; }
+    .sr-calc h2 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.4rem; color: var(--sr-gold-light); text-align: center;
+      margin-bottom: 0.4rem; letter-spacing: 0.02em;
+    }
+    .sr-calc__lead { text-align: center; font-size: 0.9rem; color: var(--silver, #A89E88); line-height: 1.6; margin-bottom: 1.6rem; }
+    .sr-field { margin-bottom: 1.1rem; }
+    .sr-field label {
+      display: block; font-size: 0.72rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sr-gold); margin-bottom: 0.45rem; font-weight: 600;
+    }
+    .sr-field input {
+      width: 100%; padding: 0.75rem 0.95rem; background: rgba(13, 10, 7, 0.6);
+      border: 1px solid var(--sr-border); border-radius: 12px;
+      color: var(--white, #E8E0D0); font-size: 0.95rem; font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .sr-field input:focus { outline: none; border-color: rgba(201, 162, 39, 0.5); box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12); }
+    .sr-field__hint { font-size: 0.72rem; color: var(--silver-dim, #6E6658); margin-top: 0.4rem; line-height: 1.5; }
+    .sr-calc__btn-row { text-align: center; margin-top: 1.6rem; }
+    .sr-result {
+      margin-top: 1.75rem; padding: 1.75rem 1.5rem; text-align: center;
+      border-radius: 16px; border: 1px solid rgba(201, 162, 39, 0.3);
+      background: rgba(201, 162, 39, 0.07); display: none;
+    }
+    .sr-result.is-shown { display: block; }
+    .sr-result__glyph { font-size: 2.6rem; color: var(--sr-gold); line-height: 1; display: block; margin-bottom: 0.5rem; }
+    .sr-result__date {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.6rem; color: var(--sr-gold-light); margin-bottom: 0.35rem; letter-spacing: 0.02em; line-height: 1.25;
+    }
+    .sr-result__sub { font-size: 0.88rem; color: var(--silver, #A89E88); margin-bottom: 0.9rem; line-height: 1.55; }
+    .sr-result__note { font-size: 0.8rem; color: var(--silver-dim, #6E6658); line-height: 1.6; }
+    .sr-result--error { border-color: rgba(180, 66, 50, 0.4); background: rgba(180, 66, 50, 0.08); }
+
+    /* ── Cards ── */
+    .sr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.1rem; max-width: 920px; margin: 0 auto; }
+    .sr-card { padding: 1.6rem 1.5rem; }
+    .sr-card h3 { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.06rem; color: var(--sr-gold-light); margin-bottom: 0.5rem; }
+    .sr-card p { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
+
+    /* ── FAQ ── */
+    .sr-faq { max-width: 740px; margin: 0 auto; display: grid; gap: 0.9rem; }
+    .sr-faq__item { padding: 1.3rem 1.5rem; }
+    .sr-faq__q { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.02rem; color: var(--sr-gold-light); margin-bottom: 0.5rem; }
+    .sr-faq__a { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
+
+    /* ── CTA ── */
+    .sr-cta { text-align: center; max-width: 640px; margin: 0 auto; padding: 2.5rem 2rem; }
+    .sr-cta h2 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.6rem, 3.6vw, 2.2rem); color: var(--white, #E8E0D0);
+      margin-bottom: 0.9rem; letter-spacing: 0.02em;
+    }
+    .sr-cta p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.7; margin-bottom: 1.75rem; }
+    .sr-cta__note { font-size: 0.78rem; color: var(--silver-dim, #6E6658); margin-top: 1.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="sr-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="sr-hero__eyebrow"><span aria-hidden="true">&#9728;</span> Your Astrological Birthday</p>
+        <h1 id="page-title">The Solar Return Chart</h1>
+        <p class="sr-hero__sub">
+          Once a year, the Sun returns to the exact spot it occupied at your birth. That precise moment
+          &mdash; your <strong>solar return</strong> &mdash; opens a fresh chart read as a forecast for the
+          year ahead. Find the date and time of your next one below, computed from the real sky.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         INLINE CALCULATOR
+    ============================================================ -->
+    <section class="sr-section" aria-labelledby="calc-heading">
+      <div class="container">
+        <div class="glass-card engraved sr-calc">
+          <h2 id="calc-heading">Find Your Next Solar Return</h2>
+          <p class="sr-calc__lead">
+            Enter your birth date (and time, if you know it) to compute the exact moment the Sun next returns to its natal position.
+          </p>
+          <form id="sr-form" autocomplete="off" novalidate>
+            <div class="sr-field">
+              <label for="sr-date">Birth date</label>
+              <input type="date" id="sr-date" required />
+            </div>
+            <div class="sr-field">
+              <label for="sr-time">Birth time (optional)</label>
+              <input type="time" id="sr-time" />
+              <p class="sr-field__hint">Treated as Universal Time for the Sun's longitude. The solar-return <em>date</em> is barely affected by the minute of birth; a full solar-return <em>chart</em> needs an exact time and place.</p>
+            </div>
+            <div class="sr-calc__btn-row">
+              <button type="submit" class="btn btn--primary btn--lg" id="sr-submit">Calculate Solar Return</button>
+            </div>
+          </form>
+
+          <div class="sr-result" id="sr-result" aria-live="polite">
+            <span class="sr-result__glyph" aria-hidden="true">&#9728;</span>
+            <p class="sr-result__date" id="sr-result-date">&mdash;</p>
+            <p class="sr-result__sub" id="sr-result-sub"></p>
+            <p class="sr-result__note" id="sr-result-note"></p>
+            <p style="margin-top:1.25rem;">
+              <a href="chart.html" class="btn btn--secondary">Cast the Full Chart for That Moment &rarr;</a>
+            </p>
+          </div>
+
+          <noscript>
+            <p style="text-align:center;color:var(--silver,#A89E88);margin-top:1rem;">
+              This calculator needs JavaScript. You can still
+              <a href="chart.html" style="color:var(--gold,#C9A227);">cast a chart for any moment here</a>.
+            </p>
+          </noscript>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHAT IS A SOLAR RETURN
+    ============================================================ -->
+    <section class="sr-section sr-section--alt" aria-labelledby="what-heading">
+      <div class="container">
+        <h2 class="sr-section__label" id="what-heading">What Is a Solar Return?</h2>
+        <p class="sr-section__intro">
+          Your real birthday, measured by the Sun rather than the calendar.
+        </p>
+        <div class="sr-prose">
+          <p>
+            At the moment you were born, the Sun sat at a precise point on the ecliptic &mdash; an exact
+            degree, minute, and second of a zodiac sign. Over the following year it travels all the way
+            around the zodiac and comes back. The instant it lands on that <strong>exact natal longitude</strong>
+            again is your <strong>solar return</strong>, and a chart cast for that instant is your
+            <strong>solar return chart</strong>.
+          </p>
+          <p>
+            Here is the subtle part: a tropical year is about <strong>365.2422 days</strong>, not a whole
+            number. So the Sun doesn't return at midnight on your calendar birthday &mdash; it returns at a
+            specific <em>time of day</em>, often a day before or after the date you celebrate, and that
+            time drifts year to year (which is also why we have leap years). The calculator above pins down
+            the real moment for you.
+          </p>
+          <p>
+            Astrologers read the solar return chart as a snapshot of the year between one astrological
+            birthday and the next. Its rising sign and the houses where the planets fall are interpreted as
+            the themes, opportunities, and pressures of the coming twelve months &mdash; a yearly forecast
+            anchored to a genuine astronomical event rather than an arbitrary date.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         HOW IT'S READ
+    ============================================================ -->
+    <section class="sr-section" aria-labelledby="read-heading">
+      <div class="container">
+        <h2 class="sr-section__label" id="read-heading">How a Solar Return Chart Is Read</h2>
+        <p class="sr-section__intro">
+          Three layers turn the moment into a story about the year ahead.
+        </p>
+        <div class="sr-grid">
+          <div class="glass-card engraved sr-card">
+            <h3>The Return Ascendant</h3>
+            <p>The rising sign of the solar return chart sets the overall tone and focus for the year &mdash;
+            the lens through which the next twelve months unfold. It depends on the exact return time and place.</p>
+          </div>
+          <div class="glass-card engraved sr-card">
+            <h3>House Emphasis</h3>
+            <p>Where the Sun and other planets fall in the return chart shows the areas of life &mdash; work,
+            relationships, home, travel &mdash; that will draw your energy and attention this year.</p>
+          </div>
+          <div class="glass-card engraved sr-card">
+            <h3>Return-to-Natal Links</h3>
+            <p>Comparing the return chart back to your natal chart reveals which long-standing themes are
+            activated now &mdash; the conversation between the year ahead and the whole of your life.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELOCATION NOTE / WHY PLACE MATTERS
+    ============================================================ -->
+    <section class="sr-section sr-section--alt" aria-labelledby="place-heading">
+      <div class="container">
+        <h2 class="sr-section__label" id="place-heading">Why the Place Matters Too</h2>
+        <div class="sr-prose">
+          <p>
+            The <em>moment</em> of the solar return is the same everywhere on Earth &mdash; the Sun is at one
+            longitude for the whole planet at once. But the return chart's <strong>Ascendant and houses</strong>
+            depend on <em>where you are</em> at that moment, because those angles are set by the local horizon
+            and sidereal time.
+          </p>
+          <p>
+            That is the basis of the &ldquo;solar return relocation&rdquo; technique: some astrologers
+            deliberately travel for their birthday to place a more favourable sign on the return Ascendant.
+            Whether or not you find that meaningful, it shows why a complete solar return chart needs both the
+            exact return time <em>and</em> a location. The date calculator above gives you the moment; the full
+            <a href="chart.html" style="color:var(--sr-gold,#C9A227);">chart tool</a> lets you cast the chart for any place.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ
+    ============================================================ -->
+    <section class="sr-section" aria-labelledby="faq-heading">
+      <div class="container">
+        <h2 class="sr-section__label" id="faq-heading">Solar Return FAQ</h2>
+        <div class="sr-faq">
+          <div class="glass-card engraved sr-faq__item">
+            <p class="sr-faq__q">What is a solar return chart?</p>
+            <p class="sr-faq__a">A solar return chart is the birth chart cast for the exact moment each year when the transiting Sun returns to the precise ecliptic longitude it held at your birth. It is read as a forecast for the year ahead, from one astrological birthday to the next.</p>
+          </div>
+          <div class="glass-card engraved sr-faq__item">
+            <p class="sr-faq__q">Is the solar return always on my birthday?</p>
+            <p class="sr-faq__a">Almost, but not exactly. Because a tropical year is about 365.2422 days, the Sun returns to its natal longitude a little earlier or later than midnight on your calendar birthday — usually within a day either side, and at a specific time of day, not at the start of it.</p>
+          </div>
+          <div class="glass-card engraved sr-faq__item">
+            <p class="sr-faq__q">What does a solar return chart tell you?</p>
+            <p class="sr-faq__a">The solar return chart's Ascendant, house emphasis, and planetary placements are read as themes for the coming year — where your focus, opportunities, and challenges are likely to concentrate between this birthday and the next.</p>
+          </div>
+          <div class="glass-card engraved sr-faq__item">
+            <p class="sr-faq__q">How is the exact solar return moment calculated?</p>
+            <p class="sr-faq__a">AstroPrecise finds the natal Sun's exact longitude, then solves for the moment in the target year when the transiting Sun matches it, using the real VSOP87 solar position — accurate to well under an arcsecond, computed entirely in your browser.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CTA
+    ============================================================ -->
+    <section class="sr-section sr-section--alt" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="glass-card engraved sr-cta">
+          <h2 id="cta-heading">Cast the Chart for Your Return</h2>
+          <p>
+            You have the moment &mdash; now cast the full chart. Open the birth chart tool, enter your solar
+            return date, time, and the place you'll be, and read your year ahead from real planetary positions.
+          </p>
+          <a href="chart.html" class="btn btn--primary btn--lg">Open the Birth Chart Tool &rarr;</a>
+          <p class="sr-cta__note">No account &middot; No tracking &middot; Computed on your device</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">&#10022; AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <div role="group" aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          </ul>
+        </div>
+        <div role="group" aria-label="About">
+          <p class="footer__heading">About</p>
+          <ul class="footer__links">
+            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
+            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Inline solar-return logic -->
+  <script>
+  (function () {
+    'use strict';
+    var SIGN_GLYPHS = {
+      Aries:'♈', Taurus:'♉', Gemini:'♊', Cancer:'♋',
+      Leo:'♌', Virgo:'♍', Libra:'♎', Scorpio:'♏',
+      Sagittarius:'♐', Capricorn:'♑', Aquarius:'♒', Pisces:'♓'
+    };
+    var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var form = document.getElementById('sr-form');
+    if (!form) return;
+    var resultBox = document.getElementById('sr-result');
+    var resDate = document.getElementById('sr-result-date');
+    var resSub = document.getElementById('sr-result-sub');
+    var resNote = document.getElementById('sr-result-note');
+
+    function fail(msg) {
+      resultBox.classList.add('is-shown', 'sr-result--error');
+      resDate.textContent = 'Need a little more';
+      resSub.textContent = '';
+      resNote.textContent = msg;
+    }
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      resultBox.classList.remove('sr-result--error');
+      var date = document.getElementById('sr-date').value;
+      var time = document.getElementById('sr-time').value || '12:00';
+      if (!date) { fail('Please enter your birth date.'); return; }
+      if (!window.AstroEphemeris || !window.AstroSeoTools) {
+        fail('The astronomy engine is still loading — please try again in a moment.');
+        return;
+      }
+      var dp = date.split('-').map(Number);
+      var tp = time.split(':').map(Number);
+      var y = dp[0], m = dp[1], d = dp[2], hh = tp[0], mm = tp[1];
+      if (![y, m, d, hh, mm].every(isFinite)) { fail('That birth date or time looks malformed.'); return; }
+
+      try {
+        var sr = AstroSeoTools.nextSolarReturn(y, m, d, hh, mm, new Date());
+        if (!sr) { fail('Could not compute the solar return. Please try again in a moment.'); return; }
+        var dt = sr.date;
+        var deg = Math.floor(sr.degree);
+        var min = Math.round((sr.degree - deg) * 60);
+        if (min === 60) { min = 0; deg += 1; }
+        var hourStr = String(dt.hour).padStart(2, '0') + ':' + String(dt.minute).padStart(2, '0');
+        resultBox.classList.add('is-shown');
+        resDate.textContent = MONTHS[dt.month - 1] + ' ' + dt.day + ', ' + dt.year;
+        resSub.textContent = 'at ' + hourStr + ' UT — Sun returns to ' +
+          (SIGN_GLYPHS[sr.sign] || '') + ' ' + sr.sign + ' ' + deg + '°' + String(min).padStart(2, '0') + '′';
+        resNote.textContent = 'This is your astrological birthday. To read the full year ahead, cast a chart ' +
+          'for this exact moment and the place you will be.';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (e) {
+        fail('Something went wrong computing the return. Please check your birth date and try again.');
+      }
+    });
+  })();
+  </script>
+
+  <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/seo-tools.js"></script>
+  <script src="js/effects.js"></script>
+</body>
+</html>

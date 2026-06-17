@@ -1,22 +1,26 @@
-# STATUS — AstroPrecise · 2026-06-16
+# STATUS — AstroPrecise · 2026-06-17
 
-**State:** Live at **https://astroprecise.app/** — **ap-v218** on gh-pages; local **ap-v220** committed (not pushed). Auto-deploys via `deploy-pages.yml` → `gh-pages`. Hard-refresh / unregister SW after deploy.
+**State:** Local **ap-v430** (Wave 25–26 multi-agent audit complete, **NOT PUSHED**). Live production still **ap-v277** at https://astroprecise.app/ — push when Jonny signs off.
 
-## Shipped since ap-v83 (most recent first)
-- **ap-v218 — Lighthouse prep (Grok):** focus traps, horoscope a11y, shop mobile, deferred WebGL, trimmed SW precache.
-- **ap-v215–217 — Nav + shop + horoscope UX (Grok):** More menu portal, 44px touch targets, sign-card chrome fix.
-- **ap-v208–213 — Orrery visuals (Grok):** scale journeys, sun fireball, embedded blend, viewport toolbar.
-- **ap-v202–205 — Preloader Enter + landing gate (Grok):** pointer-events fix, mobile framing, hero bleed-through fix.
-- **ap-v192–201 — Orrery award-pass (Grok):** Earth-only boot, crash hardening, focus fly-to, timeline scrubber.
-- **ap-v181–188 — Shop LIVE 13/13 (Grok):** Lemon Squeezy checkouts, product art, fulfilment suite.
-- **ap-v179 — Engineering backlog (Grok):** a11y, dead-code purge, chart wallpaper lead magnet, Big Three share card.
+## Shipped locally (Wave 25–26 audit closure)
+- **Perf outliers fixed:** terms 57→**100**, tonight 66→**98**, transits 66→**95**, profile 77→**97**, angel-numbers/moonphase/name-numerology 83→**95–98**
+- **CLS fixes:** rising-sign 0.058→**0.001**, outreach 0.28→**0**, transits 0.098→**0.007**, quiz 0.052→**0.001**, moonphase CLS restored (blocking page CSS)
+- **icons.js:** skip seal upgrade on audit path (transits CLS root cause)
+- **Preview:** `serve-preview.mjs` on :8790 (Brotli)
 
-## Open / ongoing (local ap-v220)
-- **Commit ready, push deferred:** `scale-journey.js` + chapters (were 404 on live), `orrery-visual.css` polish, compat matrix header a11y, landmark dedupe on home.
-- **Heavy tools last:** `cd tools/visual-check && npm run audit` before `git push` (Playwright/WebGL crashes when RAM low).
-- **Owner:** phone eyeball preloader + shop; one LS checkout end-to-end; Search Console; outreach schedule.
+## QA gates (local ap-v430)
+- 10-page Lighthouse CI: **pass** (index 100, chart/horoscope 94–97, all perf ≥85)
+- 8-page axe: **0 violations**
+- Engine tests: **16/16 + 5/5 + 9/9**
+- 23-page remaining audit: overall **87**, perf avg **95**, a11y **100** (`capturedAt` 2026-06-17T18:34Z)
+- **All 23 pages perf ≥84** (retrograde **84** — sole borderline); **all CLS ≤0.05**
+- Visual baseline: **saved** (25 preloader + 13 pages)
+
+## Open / ongoing
+- **Push blocked by Jonny** — single commit ap-v278→v430 when ready
+- **Owner (unchanged):** TWOSKIES50 in LS, GSC/Bing, social accounts + Postiz, one checkout smoke-test, email verify
 
 ## Roadmap (deferred)
-- Play Store TWA (12 testers × 14 days); astrocartography map; on-site Stripe (post host migration).
+- Play Store TWA; astrocartography map; on-site Stripe
 
-*Updated 2026-06-16 (ap-v220 local). Full history: AGENT-HANDOFF.md*
+*Updated 2026-06-17 (ap-v430 local). Full history: AGENT-HANDOFF.md*

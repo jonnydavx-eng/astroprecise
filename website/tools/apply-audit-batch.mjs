@@ -24,7 +24,7 @@ const JSON_LD_PAGES = {
     description: 'See how current planetary transits aspect your natal chart — dated, orb-aware, and computed privately in your browser.',
   },
   'ephemeris.html': {
-    name: 'AstroPrecise — The Instrument',
+    name: 'AstroPrecise — Sky',
     description: 'A precision ephemeris and cosmic instrument — planetary hours, natal signature, field weather, and live sky data computed locally.',
   },
 };

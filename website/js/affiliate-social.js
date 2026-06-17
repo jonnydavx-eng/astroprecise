@@ -154,21 +154,16 @@
     var aff = M.affiliate || {};
     if (aff.adsEnabled === false) return false;
     var here = (location.pathname.split('/').pop() || 'index.html');
-    var pages = aff.pages || ['index.html', 'chart.html', 'horoscope.html', 'compatibility.html', 'transits.html', 'lifepath.html'];
+    var pages = aff.pages || [
+      'index.html', 'index-full.html', 'chart.html', 'horoscope.html',
+      'compatibility.html', 'transits.html', 'lifepath.html',
+      'shop.html', 'ephemeris.html', 'tonight.html',
+    ];
     return pages.indexOf(here) >= 0 && affiliatePicks().length > 0;
   }
 
-  function renderAffiliateAd() {
-    if (!shouldShowAds() || document.querySelector('.ap-affiliate-ad')) return;
-    var picks = affiliatePicks().slice(0, 3);
-    var tag = amazonTag();
-    var footer = document.querySelector('footer.footer, footer.site-footer, footer[role="contentinfo"]');
-    if (!footer || !footer.parentNode) return;
-
-    var el = document.createElement('aside');
-    el.className = 'ap-affiliate-ad';
-    el.setAttribute('aria-label', 'Recommended picks');
-    el.innerHTML = '<div class="container ap-affiliate-ad__inner">'
+  function affiliateAdMarkup(picks, tag) {
+    return '<div class="container ap-affiliate-ad__inner">'
       + '<p class="ap-affiliate-ad__eyebrow">Recommended <span class="ap-affiliate-ad__disc">Affiliate</span></p>'
       + '<p class="ap-affiliate-ad__lede">Books and tools we actually use — commissions help keep the free chart tools running.</p>'
       + '<div class="ap-affiliate-ad__grid" role="group" aria-label="Affiliate product picks">'
@@ -178,24 +173,108 @@
           + '<span class="ap-affiliate-ad__tag">' + esc(p.tag || 'Pick') + '</span>'
           + '<span class="ap-affiliate-ad__title">' + esc(p.title) + '</span>'
           + '<span class="ap-affiliate-ad__blurb">' + esc(p.blurb || '') + '</span>'
-          + '<span class="ap-affiliate-ad__meta">' + esc(p.price || '') + ' · ' + esc(p.source || 'Amazon') + ' →</span>'
+          + '<span class="ap-affiliate-ad__meta">' + esc(p.price || '') + ' · ' + esc(p.source || 'Curated pick') + ' →</span>'
           + '</a>';
       }).join('')
       + '</div>'
       + '<p class="ap-affiliate-ad__fine">Some links earn a small commission at no extra cost to you. <a href="shop.html#shop-curated">Browse the full curated shelf</a>.</p>'
       + '</div>';
-    footer.parentNode.insertBefore(el, footer);
+  }
+
+  function affiliateInsertPoint() {
+    var siteFooter = document.querySelector('footer.site-footer, footer.footer');
+    if (siteFooter && siteFooter.parentNode) {
+      return { parent: siteFooter.parentNode, before: siteFooter };
+    }
+    if (!document.querySelector('footer.site-footer')) {
+      var steps = document.querySelector('.ap-lite-steps');
+      if (steps && steps.parentNode) {
+        return { parent: steps.parentNode, before: steps.nextElementSibling };
+      }
+      var liteFooter = document.querySelector('.ap-lite-footer, footer.ap-lite-footer');
+      if (liteFooter && liteFooter.parentNode) {
+        return { parent: liteFooter.parentNode, before: liteFooter };
+      }
+    }
+    var anyFooter = document.querySelector('footer[role="contentinfo"]');
+    if (anyFooter && anyFooter.parentNode) {
+      return { parent: anyFooter.parentNode, before: anyFooter };
+    }
+    return null;
+  }
+
+  function renderAffiliateAd() {
+    if (!shouldShowAds() || document.querySelector('.ap-affiliate-ad')) return;
+    var picks = affiliatePicks().slice(0, 3);
+    if (!picks.length) return;
+    var tag = amazonTag();
+    var point = affiliateInsertPoint();
+    if (!point) return;
+
+    var el = document.createElement('aside');
+    el.className = 'ap-affiliate-ad';
+    el.setAttribute('aria-label', 'Recommended picks');
+    el.innerHTML = affiliateAdMarkup(picks, tag);
+    if (point.before) point.parent.insertBefore(el, point.before);
+    else point.parent.appendChild(el);
+  }
+
+  function renderInlineAffiliateCard(hostSelector) {
+    if (!shouldShowAds()) return;
+    var host = typeof hostSelector === 'string' ? document.querySelector(hostSelector) : hostSelector;
+    if (!host || host.querySelector('.ap-affiliate-inline')) return;
+    var picks = affiliatePicks();
+    if (!picks.length) return;
+    var pick = picks[0];
+    var tag = amazonTag();
+    var href = withAmazonTag(pick.url, tag);
+    host.innerHTML = '<aside class="ap-affiliate-inline" aria-label="Recommended pick">'
+      + '<span class="ap-affiliate-inline__disc">Affiliate</span>'
+      + '<a class="ap-affiliate-inline__link" href="' + esc(href) + '" target="_blank" rel="noopener sponsored">'
+      + '<span class="ap-affiliate-inline__title">' + esc(pick.title) + '</span>'
+      + '<span class="ap-affiliate-inline__blurb">' + esc(pick.blurb || '') + '</span>'
+      + '<span class="ap-affiliate-inline__meta">' + esc(pick.price || '') + ' · ' + esc(pick.source || 'Curated pick') + ' →</span>'
+      + '</a></aside>';
+  }
+
+  function softenShopAffiliateDisclosure() {
+    if (amazonTag()) return;
+    var banner = document.querySelector('[data-ap-affiliate-disclosure], .disclosure-banner');
+    if (!banner || banner.dataset.apDisclosureSoftened) return;
+    banner.dataset.apDisclosureSoftened = '1';
+    banner.innerHTML = '<strong>Affiliate note</strong> — Some links may earn us a commission at no extra cost to you.';
+  }
+
+  function renderShopEditorialStrip() {
+    var here = (location.pathname.split('/').pop() || 'index.html');
+    if (here !== 'shop.html') return;
+    var host = document.getElementById('ap-shop-affiliate-editorial');
+    if (!host || host.querySelector('.ap-affiliate-ad__grid')) return;
+    var picks = affiliatePicks().slice(0, 3);
+    if (!picks.length) return;
+    var tag = amazonTag();
+    host.className = 'ap-affiliate-ad';
+    host.setAttribute('aria-label', 'Editorial curated picks');
+    host.innerHTML = affiliateAdMarkup(picks, tag)
+      .replace('shop.html#shop-curated', '#shop-curated');
   }
 
   function boot() {
     injectFooterSocial();
     wireAffiliateLinks();
+    softenShopAffiliateDisclosure();
     renderAffiliateAd();
+    renderShopEditorialStrip();
+    var slot = document.getElementById('ap-affiliate-slot');
+    if (slot) renderInlineAffiliateCard(slot);
   }
 
   window.AstroSocial = {
     SOCIAL_ORDER: SOCIAL_ORDER,
     renderSocialRow: renderSocialRow,
+    renderAffiliateAd: renderAffiliateAd,
+    renderShopEditorialStrip: renderShopEditorialStrip,
+    renderInlineAffiliateCard: renderInlineAffiliateCard,
     withAmazonTag: withAmazonTag,
     wireAffiliateLinks: wireAffiliateLinks,
   };

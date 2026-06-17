@@ -58,8 +58,8 @@ window.Orrery3D = (() => {
       sign: '', interpretation: 'Neptune dissolves boundaries and inspires dreams, compassion, and the mystical. It rules intuition, art, and the longing to merge with something greater.' },
   ];
 
-  const SIGN_GLYPHS  = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'].map(g => g + '︎');
-  const SIGN_NAMES   = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
+  const Z = window.AP_ZODIAC;
+  const SIGN_NAMES = (Z && Z.SIGN_ORDER) || ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                         'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
   const RADIAL_COMP  = 0.5;
   const ORBIT_SAMPLES = 160;
@@ -152,6 +152,8 @@ window.Orrery3D = (() => {
   let introProgress = 0;
   const introStartZoom = 5.5;   // very close "globe" view of Earth to start
   const introDuration = 4.8;    // seconds
+  let fromLiteHandoff = false;
+  let framesDrawn = 0;
 
   // Sun corona
   let coronaPhase = 0;
@@ -190,7 +192,7 @@ window.Orrery3D = (() => {
   function lonToSign(lon) {
     // lon in degrees [0,360)
     const idx = Math.floor(((lon % 360) + 360) % 360 / 30);
-    return SIGN_GLYPHS[idx] + ' ' + SIGN_NAMES[idx];
+    return SIGN_NAMES[idx];
   }
 
   function computeOrbits() {
@@ -591,10 +593,13 @@ window.Orrery3D = (() => {
   // ── Setup ─────────────────────────────────────────────────────────────────
 
   function init(canvasEl, options) {
+    options = options || {};
     canvas = canvasEl;
     if (!canvas || !window.AstroEphemeris) return;
     ctx = canvas.getContext('2d');
     wrap = canvas.parentElement;
+    fromLiteHandoff = !!options.fromLite;
+    framesDrawn = 0;
 
     const now = new Date();
     baseJd = window.AstroEphemeris.julianDay(
@@ -610,25 +615,39 @@ window.Orrery3D = (() => {
     computeBodies();
     initParticles();
     initAsteroids();
-
-    // Initial camera for the opening "globe" phase — looking nicely at Earth
-    const earth0 = bodies.find(b => b.id === 'earth');
-    if (earth0) {
-      yaw = Math.atan2(earth0.pos.y, earth0.pos.x) - 0.55;
-      pitch = 0.48;
+    if (window.APCanvasSeals && typeof APCanvasSeals.preload === 'function') {
+      APCanvasSeals.preload();
     }
-    targetZoomScale = introStartZoom;
-    currentZoomScale = introStartZoom;
 
-    if (!prefersReducedMotion) scheduleNextShootingStar(performance.now());
+    const skipIntro = !!options.skipIntro || fromLiteHandoff;
 
-    // Stronger, slower, more guided Earth-first intro: deliberate pull-back that teaches scale and structure
-    if (!prefersReducedMotion) {
-      introActive = true;
-      introProgress = 0;
-      autoSpin = false;
-    } else {
+    if (skipIntro) {
+      yaw = -0.35;
+      pitch = 1.05;
+      targetZoomScale = 1;
+      currentZoomScale = 1;
+      introActive = false;
+      introProgress = 1;
       autoSpin = true;
+      lastInteract = performance.now() - 3200;
+    } else {
+      const earth0 = bodies.find(b => b.id === 'earth');
+      if (earth0) {
+        yaw = Math.atan2(earth0.pos.y, earth0.pos.x) - 0.55;
+        pitch = 0.48;
+      }
+      targetZoomScale = introStartZoom;
+      currentZoomScale = introStartZoom;
+
+      if (!prefersReducedMotion) scheduleNextShootingStar(performance.now());
+
+      if (!prefersReducedMotion) {
+        introActive = true;
+        introProgress = 0;
+        autoSpin = false;
+      } else {
+        autoSpin = true;
+      }
     }
 
     lastFrame = performance.now();
@@ -760,7 +779,16 @@ window.Orrery3D = (() => {
   // ── Rendering ─────────────────────────────────────────────────────────────
 
   function draw(ts) {
-    ctx.clearRect(0, 0, W, H);
+    if (fromLiteHandoff) {
+      ctx.fillStyle = '#060a10';
+      ctx.fillRect(0, 0, W, H);
+    } else {
+      ctx.clearRect(0, 0, W, H);
+    }
+    framesDrawn++;
+    if (framesDrawn === 2) {
+      document.dispatchEvent(new Event('ap-orrery-first-frame'));
+    }
 
     // During pure globe phase, suppress all the decorative layers so it's a clean Earth globe
     const isGlobePhase = introActive && introProgress < 0.28;
@@ -866,11 +894,22 @@ window.Orrery3D = (() => {
       const depthFade = Math.max(0.05, 0.5 + 0.5 * (1 - Math.min(1, (g.depth + 3.5) / 7)));
       const glyphAlpha = (0.15 + 0.25 * g.f) * depthFade * baseAlpha;
       if (glyphAlpha < 0.04) continue;
-      ctx.font = `${Math.max(9, 12 * g.f)}px 'AstroGlyph', serif`;
-      ctx.fillStyle = `rgba(201, 162, 39,${glyphAlpha})`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(SIGN_GLYPHS[i], g.x, g.y);
+      const sealSize = Math.max(10, 13 * g.f);
+      const signName = SIGN_NAMES[i];
+      ctx.save();
+      ctx.globalAlpha = glyphAlpha;
+      const drewSeal = window.APCanvasSeals && (
+        (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, signName, g.x, g.y, sealSize)) ||
+        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, signName, g.x, g.y, sealSize * 0.42, '#c9a227'))
+      );
+      if (!drewSeal) {
+        ctx.font = `${Math.max(8, 10 * g.f)}px Inter, system-ui, sans-serif`;
+        ctx.fillStyle = `rgba(201, 162, 39,${Math.min(1, glyphAlpha * 1.2)})`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText((signName || '?').charAt(0), g.x, g.y);
+      }
+      ctx.restore();
     }
 
     // Natal medallions — the visitor's own Sun, Moon and Ascendant riding the band

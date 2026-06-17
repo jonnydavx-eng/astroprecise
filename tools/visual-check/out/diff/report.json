@@ -1,10 +1,6 @@
 {
-  "ok": false,
-  "issues": [
-    "preloader/00-earth-hold: diff 11.67%",
-    "preloader/03-sky-aligned: diff 12.47%",
-    "pages/hero-entered: diff 2.75%"
-  ],
+  "ok": true,
+  "issues": [],
   "preloader": {
     "label": "preloader",
     "results": [
@@ -12,15 +8,30 @@
         "name": "00-earth-hold",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\00-earth-hold.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\00-earth-hold.png",
-        "diffPixels": 151293,
-        "diffRatio": 0.11674,
-        "ok": false,
-        "diffImage": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\diff\\preloader\\00-earth-hold-diff.png"
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
       },
       {
         "name": "01-approaching",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\01-approaching.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\01-approaching.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "01-cosmos-hold-mobile",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\01-cosmos-hold-mobile.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\01-cosmos-hold-mobile.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "01-cosmos-hold",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\01-cosmos-hold.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\01-cosmos-hold.png",
         "diffPixels": 0,
         "diffRatio": 0,
         "ok": true
@@ -37,15 +48,158 @@
         "name": "03-sky-aligned",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\03-sky-aligned.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\03-sky-aligned.png",
-        "diffPixels": 161602,
-        "diffRatio": 0.12469,
-        "ok": false,
-        "diffImage": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\diff\\preloader\\03-sky-aligned-diff.png"
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "04-earth-land-mobile",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\04-earth-land-mobile.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\04-earth-land-mobile.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "04-earth-land",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\04-earth-land.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\04-earth-land.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "05-system-view",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\05-system-view.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\05-system-view.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "06-home-lite-seals",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\06-home-lite-seals.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\06-home-lite-seals.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "07-home-full-sign-picker",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\07-home-full-sign-picker.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\07-home-full-sign-picker.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "08-home-full-tools",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\08-home-full-tools.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\08-home-full-tools.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "09-chart-form",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\09-chart-form.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\09-chart-form.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "10-horoscope-select",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\10-horoscope-select.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\10-horoscope-select.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "11-hero-date-focus",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\11-hero-date-focus.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\11-hero-date-focus.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "element-seals-check",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\element-seals-check.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\element-seals-check.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
       },
       {
         "name": "error-state",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\error-state.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\error-state.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "lite-canvas-handoff-mobile",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\lite-canvas-handoff-mobile.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\lite-canvas-handoff-mobile.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "lite-canvas-v3-mobile",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\lite-canvas-v3-mobile.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\lite-canvas-v3-mobile.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "lite-poster-mobile",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\lite-poster-mobile.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\lite-poster-mobile.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "lite-poster-v2-mobile",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\lite-poster-v2-mobile.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\lite-poster-v2-mobile.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "live-audit-canvas-handoff",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\live-audit-canvas-handoff.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\live-audit-canvas-handoff.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "live-audit-poster-fixed",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\live-audit-poster-fixed.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\live-audit-poster-fixed.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "live-audit-poster",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\live-audit-poster.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\live-audit-poster.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "live-sky-meteor-check",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\live-sky-meteor-check.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\preloader\\live-sky-meteor-check.png",
         "diffPixels": 0,
         "diffRatio": 0,
         "ok": true
@@ -59,81 +213,104 @@
         "name": "angel-numbers",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\angel-numbers.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\angel-numbers.png",
-        "diffPixels": 8576,
-        "diffRatio": 0.00662,
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "chart",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\chart.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\chart.png",
-        "diffPixels": 7740,
-        "diffRatio": 0.00597,
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "compatibility",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\compatibility.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\compatibility.png",
-        "diffPixels": 10775,
-        "diffRatio": 0.00831,
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "ephemeris",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\ephemeris.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\ephemeris.png",
-        "diffPixels": 8563,
-        "diffRatio": 0.00661,
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "hero-entered-debug",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\hero-entered-debug.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\hero-entered-debug.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "hero-entered",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\hero-entered.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\hero-entered.png",
-        "diffPixels": 35630,
-        "diffRatio": 0.02749,
-        "ok": false,
-        "diffImage": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\diff\\pages\\hero-entered-diff.png"
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
       },
       {
         "name": "horoscope",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\horoscope.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\horoscope.png",
-        "diffPixels": 14901,
-        "diffRatio": 0.0115,
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "index",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\index.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\index.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "lifepath",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\lifepath.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\lifepath.png",
-        "diffPixels": 8381,
-        "diffRatio": 0.00647,
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "moonphase",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\moonphase.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\moonphase.png",
-        "diffPixels": 9338,
-        "diffRatio": 0.00721,
+        "diffPixels": 0,
+        "diffRatio": 0,
+        "ok": true
+      },
+      {
+        "name": "shop-art-library",
+        "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\shop-art-library.png",
+        "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\shop-art-library.png",
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "shop",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\shop.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\shop.png",
-        "diffPixels": 8259,
-        "diffRatio": 0.00637,
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       },
       {
         "name": "sign-aries",
         "current": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\sign-aries.png",
         "baseline": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\baseline\\pages\\sign-aries.png",
-        "diffPixels": 10725,
-        "diffRatio": 0.00828,
+        "diffPixels": 0,
+        "diffRatio": 0,
         "ok": true
       }
     ]

@@ -1,0 +1,21 @@
+Platform: Instagram
+Handle: @astroprecise
+Display name: AstroPrecise
+Website / link: https://astroprecise.app/links.html
+
+Avatar: marketing/social/avatar-400.jpg
+Highlights: FREE CHART · SHOP · PRIVACY · ORRERY
+
+
+--- BIO (paste) ---
+Mission Control for your sky ✦
+Genuinely accurate · private · free birth chart
+VSOP87 ephemeris — every number is real
+↓
+
+--- PINNED POST (X only) ---
+I built a birth-chart tool that never uploads your birth data.
+
+VSOP87 astronomy. Free chart. Your sky as wallpaper.
+
+Start here → https://astroprecise.app/links.html

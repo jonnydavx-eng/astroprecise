@@ -16,7 +16,7 @@ const NAV_HEADER = `<header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" decoding="async" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
         <div class="navbar__nav" aria-label="Primary">

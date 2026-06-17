@@ -50,6 +50,14 @@ O.xPosts.singles.forEach((p) => {
   fs.writeFileSync(path.join(outDir, 'x-posts', `${p.id}.txt`), text + '\n', 'utf8');
 });
 
+if (O.xPosts.missionControlSingles) {
+  fs.mkdirSync(path.join(outDir, 'x-posts', 'mission-control'), { recursive: true });
+  O.xPosts.missionControlSingles.forEach((p) => {
+    const text = O.format(p.text);
+    fs.writeFileSync(path.join(outDir, 'x-posts', 'mission-control', `${p.id}.txt`), text + '\n', 'utf8');
+  });
+}
+
 O.xPosts.threads.forEach((th) => {
   const parts = th.posts.map((t, i) => `--- ${i + 1}/${th.posts.length} ---\n${O.format(t)}`);
   fs.writeFileSync(path.join(outDir, 'x-posts', `${th.id}.txt`), `# ${th.title}\n\n${parts.join('\n\n')}\n`, 'utf8');
@@ -73,4 +81,5 @@ const playbook = [
 ].join('\n');
 fs.writeFileSync(path.join(outDir, 'x-playbook.txt'), playbook, 'utf8');
 
-console.log(`Exported ${O.exportAllEmails().length} emails + ${O.xPosts.singles.length} singles + ${O.xPosts.threads.length} threads → ${outDir}`);
+const mc = (O.xPosts.missionControlSingles || []).length;
+console.log(`Exported ${O.exportAllEmails().length} emails + ${O.xPosts.singles.length} singles + ${mc} mission-control + ${O.xPosts.threads.length} threads → ${outDir}`);

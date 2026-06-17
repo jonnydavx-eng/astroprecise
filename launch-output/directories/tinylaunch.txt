@@ -1,0 +1,29 @@
+# TinyLaunch
+Priority: P0
+Submit: https://www.tinylaunch.com/submit
+Notes: Launch spike L+1
+
+--- PASTE: Name ---
+AstroPrecise
+
+--- PASTE: URL ---
+https://astroprecise.app
+
+--- PASTE: Tagline (≤80 chars) ---
+Mission Control for your sky — free accurate private birth charts
+
+--- PASTE: Short description ---
+Free private birth chart calculator. VSOP87/ELP2000 ephemeris (~arcminute). Computed entirely in your browser — birth data never uploaded. Optional one-time Deep Reading PDF and natal posters.
+
+--- PASTE: Long description ---
+Free private birth chart calculator. VSOP87/ELP2000 ephemeris (~arcminute). Computed entirely in your browser — birth data never uploaded. Optional one-time Deep Reading PDF and natal posters.
+
+Live tools: natal chart, daily horoscopes, synastry, transits, rising sign, ephemeris orrery. PWA — install on phone/desktop, works offline. Entertainment only; not professional advice.
+
+Mission Control for your sky.
+
+--- PASTE: Category tags ---
+astrology, birth chart, horoscope, privacy, PWA, free tool, natal chart calculator
+
+--- Link for users ---
+https://astroprecise.app/links.html

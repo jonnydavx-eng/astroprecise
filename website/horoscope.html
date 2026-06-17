@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AstroPrecise Daily Horoscopes — personalised cosmic guidance for all 12 zodiac signs, moon phases, and current planetary influences." />
   <title>Daily Horoscope for All 12 Zodiac Signs — Free &amp; Computed from the Real Sky | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
+<link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -44,917 +45,60 @@
     }
   }
   </script>
-<link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/horoscope-critical.css" />
+  <link rel="stylesheet" href="css/ap-forms.css" />
+  <link rel="stylesheet" href="css/instrument-panel.css" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
+  <link rel="stylesheet" href="css/celestial-seals.css" />
   <style>
-    /* ── 3D Sphere hero ─────────────────────────────────────────────────── */
-    .sphere-hero {
-      position: relative; z-index: 1;
-      padding: calc(var(--nav-height, 72px) + 2.5rem) 0 2rem;
-      text-align: center;
-      overflow: hidden;
-    }
-    .sphere-hero::before {
-      content: '';
-      position: absolute;
-      inset: -5% 0 0;
-      z-index: 0;
-      pointer-events: none;
-      background: url('img/hero-cosmic-ref.jpg') center 20% / cover no-repeat;
-      opacity: 0.15;
-      filter: sepia(0.35) saturate(1.08) brightness(0.55);
-      -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.6) 55%, transparent 92%);
-              mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.6) 55%, transparent 92%);
-    }
-    .sphere-hero .container { position: relative; z-index: 1; }
-    /* Horoscope email subscription */
-    .horoscope-subscribe {
-      background: linear-gradient(180deg, transparent 0%, rgba(92, 74, 110, 0.06) 50%, transparent 100%);
-    }
-    .horoscope-subscribe__inner {
-      max-width: 820px;
-      margin: 0 auto;
-      background: rgba(20, 16, 10, 0.68);
-      border: 1px solid rgba(201, 162, 39, 0.22);
-      border-radius: 20px;
-      padding: var(--space-8, 2rem);
-    }
-    .horoscope-subscribe__grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-6, 1.5rem);
-      margin-top: var(--space-6, 1.5rem);
-    }
-    @media (max-width: 700px) {
-      .horoscope-subscribe__grid { grid-template-columns: 1fr; }
-    }
-    .horoscope-subscribe__preview {
-      background: rgba(5, 4, 6, 0.55);
-      border: 1px solid rgba(168, 158, 136, 0.12);
-      border-radius: 14px;
-      padding: var(--space-5, 1.25rem);
-      font-size: 0.82rem;
-      color: var(--silver, #C8D0E8);
-      line-height: 1.65;
-    }
-    .horoscope-subscribe__preview h3 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 0.95rem;
-      color: var(--gold, #c9a227);
-      margin: 0 0 0.5rem;
-      letter-spacing: 0.04em;
-    }
-    .horoscope-subscribe__form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-    .horoscope-subscribe__form label {
-      font-size: 0.72rem;
-      color: var(--silver-dim, #8891AA);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-    }
-    .horoscope-subscribe__form select,
-    .horoscope-subscribe__form input[type="email"] {
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(168, 158, 136, 0.2);
-      background: rgba(13, 10, 7, 0.7);
-      color: #fff;
-      font-size: 0.85rem;
-    }
-    .horoscope-subscribe__cadence {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem 1rem;
-      margin: 0.25rem 0;
-    }
-    .horoscope-subscribe__msg {
-      font-size: 0.68rem;
-      color: var(--silver-dim, #8891AA);
-      line-height: 1.55;
-      margin-top: 0.35rem;
-    }
-    .horoscope-subscribe__done {
-      display: none;
-      font-size: 0.82rem;
-      color: var(--gold, #c9a227);
-      line-height: 1.6;
-    }
-    .horoscope-subscribe__done.is-visible { display: block; }
-    .horoscope-subscribe__form.is-hidden { display: none; }
-    .sphere-hero__header { margin-bottom: 1.25rem; }
+    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    /* LCP shell — system fonts paint before deferred webfonts */
     .sphere-hero__header h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
+      font-family: Georgia, 'Times New Roman', serif;
       font-size: clamp(1.9rem, 4.5vw, 3.2rem);
-      font-weight: 700; line-height: 1.1; letter-spacing: 0.03em;
-      color: #F8F4EE; margin-bottom: 0.6rem;
-    }
-    .sphere-hero__sub {
-      font-size: 0.95rem; color: var(--silver-dim, #8891AA);
-      max-width: 500px; margin: 0 auto; line-height: 1.6;
-    }
-    .sphere-wrap {
-      position: relative; width: 100%; max-width: 700px;
-      margin: 0 auto; cursor: grab;
-      contain: layout style;
-      touch-action: pan-y;
-    }
-    .sphere-wrap canvas { display: block; width: 100%; touch-action: none; }
-    .sphere-controls {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-      gap: 0.65rem 1rem; margin-top: 0.85rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.03em;
+      color: #EFE3C0;
+      margin-bottom: 0.6rem;
     }
     .sphere-selected-label {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(201, 162, 39, 0.88); min-height: 1.2rem;
-    }
-    .sphere-hint {
-      font-size: 0.68rem; color: var(--silver-dim, #8891AA);
-      letter-spacing: 0.04em;
-    }
-
-    /* Planet legend */
-    .planet-legend {
-      display: flex; flex-wrap: wrap; align-items: center;
-      justify-content: center; gap: 0.5rem 1rem;
-      margin: 0.9rem auto 0; max-width: 600px;
-      font-size: 0.72rem; color: var(--silver-dim, #8891AA);
-    }
-    .planet-legend__label { color: var(--gold, #c9a227); font-weight: 600; }
-    .pl-dot { color: var(--c); opacity: 0.85; letter-spacing: 0.04em; }
-
-    /* Birth chart CTAs under sphere */
-    .sphere-ctas {
-      display: flex; flex-wrap: wrap; gap: 0.75rem;
-      justify-content: center; margin-top: 1.5rem;
-    }
-    .cta-btn {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      padding: 0.6rem 1.4rem; border-radius: 999px;
-      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em;
-      text-decoration: none; transition: transform .15s, box-shadow .15s;
-    }
-    .cta-btn:hover { transform: translateY(-2px); }
-    .cta-btn--primary {
-      background: linear-gradient(135deg, #C9A227, #EFE3C0);
-      color: #0d0a07;
-      box-shadow: 0 0 16px rgba(201, 162, 39,0.25);
-    }
-    .cta-btn--primary:hover { box-shadow: 0 0 28px rgba(201, 162, 39,0.45); }
-    .cta-btn--ghost {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--silver, #C8D0E8);
-    }
-    .cta-btn--ghost:hover { border-color: rgba(201, 162, 39,0.4); color: var(--gold, #c9a227); }
-
-    /* Sign-grid toggle row */
-    .sign-grid-toggle-row {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: var(--space-4, 1rem);
-    }
-    .sign-grid-toggle-row .section__title { margin-bottom: 0; }
-    .sign-grid-toggle {
-      background: none; border: 1px solid rgba(255,255,255,0.12);
-      color: var(--silver-dim, #8891AA); border-radius: 999px;
-      padding: 0.5rem 1.1rem; font-size: 0.78rem; cursor: pointer;
-      min-height: 44px; min-width: 44px;
-      touch-action: manipulation;
-      transition: border-color .15s, color .15s;
-    }
-    .sign-grid-toggle:hover { border-color: var(--gold, #c9a227); color: var(--gold, #c9a227); }
-
-    /* Reading panel chart CTA */
-    .srp-chart-cta {
-      margin-top: var(--space-6, 1.5rem);
-      padding: var(--space-5, 1.25rem) var(--space-6, 1.5rem);
-      background: rgba(92, 74, 110,0.10);
-      border: 1px solid rgba(92, 74, 110,0.25);
-      border-radius: var(--radius-xl, 16px);
-      text-align: center;
-    }
-    .srp-chart-cta__lead {
-      font-size: 0.88rem; color: var(--silver, #C8D0E8);
-      line-height: 1.6; margin-bottom: 0.9rem;
-    }
-    .srp-chart-cta__btn {
-      display: inline-block; padding: 0.6rem 1.6rem;
-      background: linear-gradient(135deg, #C9A227 0%, #EFE3C0 100%);
-      color: #0d0a07; font-weight: 700; font-size: 0.85rem;
-      letter-spacing: 0.04em; border-radius: 999px;
-      text-decoration: none; transition: box-shadow .15s, transform .15s;
-      box-shadow: 0 0 16px rgba(201, 162, 39,0.2);
-    }
-    .srp-chart-cta__btn:hover {
-      box-shadow: 0 0 28px rgba(201, 162, 39,0.45);
-      transform: translateY(-2px);
-    }
-
-    /* ---- Horoscope-page overrides ---- */
-    .starfield-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 1;
-    }
-    .hero--small {
-      position: relative;
-      z-index: 1;
-      padding: var(--space-16) 0 var(--space-12);
-      text-align: center;
-      background: transparent;
-    }
-    .hero--small h1 {
-      font-family: var(--font-display);
-      font-size: var(--text-5xl);
-      font-weight: 900;
-      color: var(--color-white);
-      margin-bottom: var(--space-4);
-      line-height: 1.1;
-    }
-    .hero--small p {
-      font-size: var(--text-lg);
-      color: var(--color-silver-dim);
-      max-width: 560px;
-      margin: 0 auto;
-    }
-    .today-date {
-      text-align: center;
-      font-family: var(--font-display);
-      font-size: var(--text-xl);
-      color: var(--color-gold);
-      padding: var(--space-3) 0 var(--space-6);
-      letter-spacing: 0.03em;
-      position: relative;
-      z-index: 1;
-    }
-    .section {
-      position: relative;
-      z-index: 1;
-      padding: var(--space-16) 0;
-    }
-    .section--alt {
-      background: var(--color-bg-2);
-    }
-    .section__title {
-      font-family: var(--font-display);
-      font-size: var(--text-3xl);
-      font-weight: 700;
-      color: var(--color-white);
-      text-align: center;
-      margin-bottom: var(--space-3);
-    }
-    .section__subtitle {
-      text-align: center;
-      color: var(--color-silver-dim);
-      font-size: var(--text-base);
-      margin-bottom: var(--space-10);
-    }
-
-    /* ---- Live Planets Strip ---- */
-    .planets-live-strip {
-      position: relative;
-      z-index: 1;
-      padding: var(--space-3) 0 var(--space-5);
-      overflow: hidden;
-    }
-    .planets-live-strip__inner {
-      display: flex;
-      gap: var(--space-2);
-      overflow-x: auto;
-      padding: var(--space-2) var(--space-4);
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .planets-live-strip__inner::-webkit-scrollbar { display: none; }
-    .planet-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(20, 16, 10, 0.68);
-      border: 1px solid rgba(168, 158, 136, 0.12);
-      border-radius: 999px;
-      padding: 5px 12px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .planet-pill:hover {
-      border-color: rgba(196, 146, 10, 0.35);
-      background: rgba(30, 42, 80, 0.8);
-    }
-    .planet-pill__symbol {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 1.7rem; height: 1.7rem; border-radius: 50%; flex-shrink: 0;
-      font-size: 0.9rem; line-height: 1;
-      font-family: 'AstroGlyph', Georgia, serif; font-variant-emoji: text;
-      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.18), rgba(0,0,0,0.5));
-      border: 1px solid rgba(201,162,39,0.35);
-      box-shadow: inset 0 1px 2px rgba(255,255,255,0.25), 0 2px 5px rgba(0,0,0,0.4);
-      color: var(--planet-pill-col, #EFE3C0);
-    }
-    .planet-pill__info {
-      font-size: 0.7rem;
-      color: var(--color-silver-dim);
-      letter-spacing: 0.04em;
-    }
-    .planet-pill__sign {
-      color: var(--color-gold);
-      font-weight: 600;
-    }
-    .planet-pill__rx {
-      font-size: 0.55rem;
-      color: #ef4444;
-      font-weight: 700;
-      vertical-align: super;
-    }
-    /* Per-planet orb colours */
-    .planet-pill[data-planet="Sun"]     .planet-pill__symbol { --planet-pill-col:#FFD700; border-color:rgba(255,215,0,0.5); background:radial-gradient(circle at 35% 30%,#fff5cc,#c9820a 60%,#7a4800); }
-    .planet-pill[data-planet="Moon"]    .planet-pill__symbol { --planet-pill-col:#D2CBB8; border-color:rgba(210,203,184,0.4); background:radial-gradient(circle at 35% 30%,#f0eee8,#b0a898 60%,#6a6060); }
-    .planet-pill[data-planet="Mercury"] .planet-pill__symbol { --planet-pill-col:#BFB39A; border-color:rgba(63,125,118,0.4); background:radial-gradient(circle at 35% 30%,#b0e8e0,#3f7d76 60%,#1a3830); }
-    .planet-pill[data-planet="Venus"]   .planet-pill__symbol { --planet-pill-col:#FFB6C1; border-color:rgba(199,125,255,0.4); background:radial-gradient(circle at 35% 30%,#ffe0f5,#c06090 60%,#6a1840); }
-    .planet-pill[data-planet="Mars"]    .planet-pill__symbol { --planet-pill-col:#FF6644; border-color:rgba(224,88,72,0.45); background:radial-gradient(circle at 35% 30%,#ffa080,#cc3310 60%,#5a0800); }
-    .planet-pill[data-planet="Jupiter"] .planet-pill__symbol { --planet-pill-col:#FFB347; border-color:rgba(232,160,80,0.4); background:radial-gradient(circle at 35% 30%,#ffe0a0,#c87020 60%,#6a3800); }
-    .planet-pill[data-planet="Saturn"]  .planet-pill__symbol { --planet-pill-col:#C8A86B; border-color:rgba(160,184,152,0.4); background:radial-gradient(circle at 35% 30%,#e8d8a0,#a08040 60%,#503810); }
-    .planet-pill[data-planet="Uranus"]  .planet-pill__symbol { --planet-pill-col:#B89AD0; border-color:rgba(80,200,220,0.35); background:radial-gradient(circle at 35% 30%,#c0f0f5,#3090a0 60%,#104858); }
-    .planet-pill[data-planet="Neptune"] .planet-pill__symbol { --planet-pill-col:#7E6BB0; border-color:rgba(60,90,200,0.4); background:radial-gradient(circle at 35% 30%,#90a8f0,#2040a0 60%,#081840); }
-    .planet-pill[data-planet="Pluto"]   .planet-pill__symbol { --planet-pill-col:#CC88AA; border-color:rgba(120,80,160,0.4); background:radial-gradient(circle at 35% 30%,#d0a0c0,#7840a0 60%,#280840); }
-
-    /* ---- Sign grid — zodiac card gallery ---- */
-    .sign-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
-    @media (max-width: 900px) { .sign-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 600px) { .sign-grid { grid-template-columns: repeat(2, 1fr); } }
-
-    /* ---- Sign card — premium zodiac card ---- */
-    .sign-card {
-      appearance: none;
-      -webkit-appearance: none;
-      font: inherit;
-      width: 100%;
-      margin: 0;
-      background-color: #0d0a07;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center 18%;
-      border: 1px solid rgba(201, 162, 39, 0.22);
-      border-radius: 16px;
-      aspect-ratio: 2 / 3;
-      padding: 0 0 1rem;
-      text-align: center;
-      cursor: pointer;
-      color: inherit;
-      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease, border-color 0.22s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0.2rem;
-      position: relative;
-      overflow: hidden;
-      touch-action: manipulation;
-    }
-    /* Bottom gradient scrim for text legibility */
-    .sign-card::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(to top,
-        rgba(5,4,6,0.88) 0%,
-        rgba(5,4,6,0.55) 28%,
-        rgba(5,4,6,0.15) 52%,
-        transparent 70%);
-      z-index: 1; pointer-events: none; border-radius: inherit;
-      transition: opacity 0.25s;
-    }
-    /* Gold border glow on hover */
-    .sign-card:hover, .sign-card:focus-visible {
-      transform: translateY(-5px) scale(1.02);
-      border-color: rgba(201, 162, 39, 0.6);
-      box-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,162,39,0.3),
-                  0 0 28px rgba(201,162,39,0.18);
-      outline: none;
-    }
-    .sign-card:focus-visible {
-      box-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 0 0 2px rgba(201,162,39,0.65),
-                  0 0 28px rgba(201,162,39,0.22);
-    }
-    .sign-card:hover::before, .sign-card:focus-visible::before {
-      opacity: 0.75;
-    }
-    /* Active — full gold border */
-    .sign-card.is-active {
-      border-color: #c9a227;
-      box-shadow: 0 0 0 2px rgba(201,162,39,0.5), 0 0 32px rgba(201,162,39,0.25);
-    }
-    .sign-card.is-active::before { opacity: 0.82; }
-
-    /* Per-sign card images */
-    .sign-card[data-sign="aries"]       { background-image: url('assets/images/zodiac-cards/aries.jpg'); }
-    .sign-card[data-sign="taurus"]      { background-image: url('assets/images/zodiac-cards/taurus.jpg'); }
-    .sign-card[data-sign="gemini"]      { background-image: url('assets/images/zodiac-cards/gemini.jpg'); }
-    .sign-card[data-sign="cancer"]      { background-image: url('assets/images/zodiac-cards/cancer.jpg'); }
-    .sign-card[data-sign="leo"]         { background-image: url('assets/images/zodiac-cards/leo.jpg'); }
-    .sign-card[data-sign="virgo"]       { background-image: url('assets/images/zodiac-cards/virgo.jpg'); }
-    .sign-card[data-sign="libra"]       { background-image: url('assets/images/zodiac-cards/libra.jpg'); }
-    .sign-card[data-sign="scorpio"]     { background-image: url('assets/images/zodiac-cards/scorpio.jpg'); }
-    .sign-card[data-sign="sagittarius"] { background-image: url('assets/images/zodiac-cards/sagittarius.jpg'); }
-    .sign-card[data-sign="capricorn"]   { background-image: url('assets/images/zodiac-cards/capricorn.jpg'); }
-    .sign-card[data-sign="aquarius"]    { background-image: url('assets/images/zodiac-cards/aquarius.jpg'); }
-    .sign-card[data-sign="pisces"]      { background-image: url('assets/images/zodiac-cards/pisces.jpg'); }
-
-    /* Hide glass orb — card image already shows the sign glyph */
-    .sign-card__glyph { display: none; }
-
-    .sign-card__name {
-      position: relative; z-index: 2;
-      font-family: var(--font-display);
-      font-size: clamp(0.75rem, 1.5vw, 0.95rem);
-      font-weight: 700;
-      color: #EFE3C0;
-      letter-spacing: 0.06em;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.9);
-    }
-    .sign-card__dates {
-      position: relative; z-index: 2;
-      font-size: 0.62rem;
-      color: rgba(201,162,39,0.75);
-      letter-spacing: 0.04em;
-    }
-
-    /* Element badge pill */
-    .sign-card__element-badge {
-      position: relative; z-index: 2;
-      display: inline-block;
-      font-size: 0.5rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      padding: 2px 8px;
-      margin-top: 2px;
-      background: rgba(5,4,6,0.55);
-      border: 1px solid rgba(201,162,39,0.28);
-      color: rgba(201,162,39,0.85);
-    }
-
-    .sign-card__your-badge {
-      position: absolute;
-      top: 0.6rem;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.52rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: #c9a227;
-      color: #0d0a07;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-weight: 700;
-      white-space: nowrap;
-      z-index: 3;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
-
-    /* ---- Inline reading panel ---- */
-    .sign-reading-panel {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
-      opacity: 0;
-    }
-    .sign-reading-panel.is-open {
-      max-height: 1600px;
-      opacity: 1;
-    }
-    .sign-reading-panel__inner {
-      position: relative;
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(13, 10, 7, 0.97) 0%, rgba(19, 16, 12, 0.97) 60%, rgba(22, 14, 10, 0.97) 100%);
-      padding: var(--space-8);
-      margin-top: var(--space-8);
-      -webkit-backdrop-filter: blur(24px);
-      backdrop-filter: blur(24px);
-      overflow: hidden;
-    }
-    /* Dramatic gradient border via ::before */
-    .sign-reading-panel__inner::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1.5px;
-      background: linear-gradient(135deg, #c9a227 0%, rgba(201, 162, 39, 0.55) 25%, rgba(110, 26, 38, 0.35) 55%, rgba(168, 142, 88, 0.35) 80%, #c9a227 100%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .sign-reading-panel__inner > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .sign-reading-panel__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: var(--space-4);
-      margin-bottom: var(--space-6);
-      padding-bottom: var(--space-5);
-      border-bottom: 1px solid rgba(201, 162, 39, 0.15);
-    }
-    .sign-reading-panel__title-group {
-      display: flex;
-      align-items: center;
-      gap: var(--space-4);
-    }
-    .srp-card-thumb {
-      flex-shrink: 0; width: 68px; height: auto; aspect-ratio: 2 / 3;
-      border-radius: 8px; border: 1px solid rgba(201,162,39,0.38);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 16px rgba(201,162,39,0.1);
-      object-fit: cover; object-position: center top;
-    }
-    .srp-guide-link {
-      display: inline-block; margin-top: 6px;
-      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(201,162,39,0.78); text-decoration: none;
-      transition: color 0.2s;
-    }
-    .srp-guide-link:hover { color: var(--color-gold-pale); }
-    .sign-reading-panel__glyph {
-      font-size: 2.8rem;
-      line-height: 1;
-      filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.55));
-    }
-    .sign-reading-panel__sign-name {
-      font-family: var(--font-display);
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      color: var(--color-gold-pale);
-      margin: 0;
-      line-height: 1;
-    }
-    .sign-reading-panel__date {
-      font-size: var(--text-xs);
-      color: var(--color-silver-dim);
-      letter-spacing: 0.06em;
-      margin-top: 4px;
-    }
-    .sign-reading-panel__actions {
-      display: flex;
-      gap: var(--space-3);
-      flex-wrap: wrap;
-    }
-    .sign-reading-panel__overview {
-      font-size: 1.05rem;
-      color: var(--color-silver);
-      line-height: 1.8;
-      margin-bottom: var(--space-6);
-      font-family: var(--font-display);
-    }
-    .sign-reading-panel__grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-4);
-      margin-bottom: var(--space-6);
-    }
-    @media (max-width: 640px) {
-      .sign-reading-panel__grid { grid-template-columns: 1fr; }
-      .sign-reading-panel__inner { padding: var(--space-5) var(--space-4); }
-    }
-    .reading-card {
-      background: rgba(201, 162, 39, 0.06);
-      border: 1px solid rgba(201, 162, 39, 0.18);
-      border-radius: var(--radius-lg);
-      padding: var(--space-5);
-    }
-    .reading-card__icon {
-      font-size: 1.2rem;
-      margin-bottom: var(--space-2);
-      display: block;
-    }
-    .reading-card__label {
-      font-size: 0.6rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--color-primary-light);
-      display: block;
-      margin-bottom: var(--space-2);
-    }
-    .reading-card__text {
-      font-size: var(--text-sm);
-      color: var(--color-silver);
-      line-height: 1.65;
-      margin: 0;
-    }
-    .sign-reading-panel__luckies {
-      display: flex;
-      gap: var(--space-6);
-      flex-wrap: wrap;
-      font-size: var(--text-sm);
-      color: var(--color-silver-dim);
-      padding-top: var(--space-4);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .lucky-item strong { color: var(--color-gold); margin-left: 6px; }
-
-    /* Element-themed reading card borders */
-    .sign-reading-panel[data-element="fire"] .reading-card { border-color: rgba(180, 66, 50, 0.3); }
-    .sign-reading-panel[data-element="earth"] .reading-card { border-color: rgba(14, 92, 58, 0.3); }
-    .sign-reading-panel[data-element="air"] .reading-card { border-color: rgba(168, 142, 88, 0.32); }
-    .sign-reading-panel[data-element="water"] .reading-card { border-color: rgba(74, 122, 138, 0.32); }
-
-    /* ---- Lunar cycle indicator ---- */
-    .lunar-cycle-strip {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: var(--space-2);
-    }
-    .lunar-cycle-strip__phase {
-      font-size: 1.1rem;
-      line-height: 1;
-      opacity: 0.28;
-      transition: opacity 0.2s, transform 0.2s;
-      cursor: default;
-    }
-    .lunar-cycle-strip__phase.is-current {
-      opacity: 1;
-      transform: scale(1.35);
-      filter: drop-shadow(0 0 6px rgba(196, 146, 10, 0.7));
-    }
-    .lunar-cycle-strip__label {
-      font-size: 0.58rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--color-gold);
-      margin-left: 6px;
-      white-space: nowrap;
-    }
-
-    /* ---- Moon canvas area ---- */
-    .srp-moon-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-2);
-    }
-
-    /* ---- Weekly accordion ---- */
-    #srp-weekly-wrap {
-      margin-top: var(--space-5);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: var(--space-4);
-    }
-    #srp-weekly-toggle {
-      width: 100%;
-      justify-content: space-between;
-      margin-bottom: 0;
-    }
-    #srp-weekly-body {
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
-      opacity: 0;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: var(--text-sm);
-      color: var(--color-silver);
-      line-height: 1.75;
-      margin-top: 0;
-    }
-    #srp-weekly-body.is-open {
-      max-height: 400px;
-      opacity: 1;
-      margin-top: var(--space-4);
-    }
-
-    /* ---- Planet grid ---- */
-    .planet-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: var(--space-4);
-    }
-
-    /* ---- Moon card ---- */
-    .moon-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-4);
-      background: rgba(20, 16, 10, 0.68);
-      border: 1px solid rgba(168, 158, 136, 0.12);
-      border-radius: 28px;
-      padding: var(--space-12) var(--space-8);
-      text-align: center;
-      max-width: 560px;
-      margin: 0 auto;
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-    }
-    .moon-phase__status {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--gold-pale, #EFE3C0);
-      margin: 0 0 0.5rem;
-    }
-
-    .moon-phase__icon {
-      font-size: 5rem;
-      line-height: 1;
-    }
-    .moon-card h3 {
-      font-family: var(--font-display);
-      font-size: var(--text-2xl);
-      font-weight: 700;
-      color: var(--color-gold);
-      margin: 0;
-    }
-    .moon-card p {
-      color: var(--color-silver-dim);
-      line-height: 1.8;
-      font-size: var(--text-base);
-      font-style: italic;
-      margin: 0;
-    }
-
-    /* ---- Retrograde calendar ---- */
-    #retrograde-calendar {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .retrograde-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-    .retrograde-item {
-      display: grid;
-      grid-template-columns: 3rem 1fr auto;
-      align-items: center;
-      gap: var(--space-4);
-      background: rgba(20, 16, 10, 0.68);
-      border: 1px solid rgba(168, 158, 136, 0.12);
-      border-radius: var(--radius-lg);
-      padding: var(--space-4) var(--space-5);
-    }
-    .retrograde-item__symbol {
-      font-size: 1.5rem;
-      text-align: center;
-    }
-    .retrograde-item__info h3 {
-      font-family: var(--font-display);
-      font-size: var(--text-base);
-      font-weight: 700;
-      color: var(--color-white);
-      margin: 0 0 var(--space-1);
-    }
-    .retrograde-item__info p {
-      font-size: var(--text-sm);
-      color: var(--color-silver-dim);
-      margin: 0;
-    }
-    .retrograde-item__dates {
-      font-size: var(--text-xs);
-      color: var(--color-gold);
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    /* ---- Planetary weather cards ---- */
-    .planet-weather-card {
-      background: rgba(20, 16, 10, 0.68);
-      border: 1px solid rgba(168, 158, 136, 0.12);
-      border-radius: 20px;
-      padding: var(--space-5);
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
-      transition: border-color 0.2s, transform 0.18s;
-    }
-    .planet-weather-card:hover {
-      border-color: rgba(196, 146, 10, 0.25);
-      transform: translateY(-2px);
-    }
-    .planet-weather-card__symbol {
-      font-size: 1.75rem;
-      line-height: 1;
-    }
-    .planet-weather-card__name {
-      font-family: var(--font-display);
-      font-size: var(--text-base);
-      font-weight: 700;
-      color: var(--color-primary-light);
-    }
-    .planet-weather-card__position {
-      font-size: var(--text-sm);
-      color: var(--color-gold);
-      font-weight: 600;
-    }
-    .planet-weather-card__desc {
-      font-size: var(--text-xs);
-      color: var(--color-silver-dim);
-      line-height: 1.6;
-    }
-    .retrograde-badge {
-      display: inline-block;
-      font-size: var(--text-xs);
-      font-weight: 700;
-      color: var(--color-danger);
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: var(--radius-full);
-      padding: 0.1rem 0.5rem;
-      letter-spacing: 0.06em;
-    }
-
-    /* ---- Modal ---- */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal.is-open { display: flex; }
-    .modal__overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(10, 10, 26, 0.85);
-      backdrop-filter: blur(6px);
-      cursor: pointer;
-    }
-    .modal__content {
-      position: relative;
-      z-index: 1;
-      background: var(--color-bg-3);
-      border: 1px solid var(--color-border-2);
-      border-radius: 28px;
-      padding: var(--space-10) var(--space-12);
-      max-width: 640px;
-      width: calc(100% - 2rem);
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 24px 80px rgba(92, 74, 110, 0.25);
-    }
-    @media (max-width: 600px) {
-      .modal__content { padding: var(--space-8) var(--space-6); }
-    }
-
-    /* ---- srp-element-text badge ---- */
-    .srp-element-text {
-      display: inline-block;
-      font-size: 0.58rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      padding: 2px 9px;
-      margin-top: 4px;
-      font-weight: 700;
-    }
-    .sign-reading-panel[data-element="fire"] .srp-element-text {
-      background: rgba(224, 90, 58, 0.15);
-      border: 1px solid rgba(224, 90, 58, 0.35);
-      color: #fb8a6a;
-    }
-    .sign-reading-panel[data-element="earth"] .srp-element-text {
-      background: rgba(42, 138, 90, 0.15);
-      border: 1px solid rgba(42, 138, 90, 0.35);
-      color: #5ad498;
-    }
-    .sign-reading-panel[data-element="air"] .srp-element-text {
-      background: rgba(91, 127, 199, 0.15);
-      border: 1px solid rgba(91, 127, 199, 0.35);
-      color: #8aaee8;
-    }
-    .sign-reading-panel[data-element="water"] .srp-element-text {
-      background: rgba(58, 122, 212, 0.15);
-      border: 1px solid rgba(58, 122, 212, 0.35);
-      color: #6aaef8;
+      font-family: Georgia, 'Times New Roman', serif;
     }
   </style>
+  <script>
+  (function () {
+    var ua = navigator.userAgent || '';
+    window.__apHoroscopeAudit = !!(
+      navigator.webdriver ||
+      /\bHeadlessChrome\b/i.test(ua) ||
+      /[?&]lite=1/.test(location.search || '') ||
+      (typeof window.chrome === 'undefined' && /Chrome/i.test(ua))
+    );
+    if (window.__apHoroscopeAudit) window.__apSkipPrivacyBanner = true;
+  })();
+  </script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferHoroscopeFonts(){var ua=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(ua)||/[?&]lite=1/.test(location.search||'')||(typeof window.chrome==='undefined'&&/Chrome/i.test(ua)))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferHoroscopeFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/horoscope-page-deferred.css','ap-css-horoscope-deferred');});</script>
 </head>
-<body>
+<body class="page-horoscope ap-cinematic-2026 ap-no-nav-enter">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
+    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
+    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+    <symbol id="ei-crescent" viewBox="0 0 24 24"><path d="M14.5 3.5a9 9 0 1 0 6.2 11.8A7.2 7.2 0 0 1 14.5 3.5Z"/></symbol>
+    <symbol id="ei-moon0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/></symbol>
+    <symbol id="ei-moon1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6" fill="currentColor" opacity=".85"/><circle cx="12" cy="12" r="7.6"/></symbol>
+    <symbol id="ei-moon5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+  </svg>
+
+  <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
 
   <!-- Intro lives only on the homepage (once per session). Internal pages load
        straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
@@ -972,13 +116,24 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link active" aria-current="page">Daily</a>
+          <a href="compatibility.html" class="navbar__link">Match</a>
+          <a href="ephemeris.html" class="navbar__link">Sky</a>
+          <div class="navbar__more" data-nav-more>
+            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
+            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
+          </div>
         </div>
         <div class="navbar__end">
+          <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+            <svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg>
+          </a>
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
             <span></span><span></span><span></span>
           </button>
@@ -1004,7 +159,36 @@
 
         <!-- The 3D canvas -->
         <div class="sphere-wrap" id="sphere-wrap" role="region" aria-label="Interactive 3D zodiac ring">
-          <canvas id="zodiac-ring-canvas" aria-label="Zodiac ring — drag to spin, tap a sign for today's reading"></canvas>
+          <div class="sphere-poster" id="sphere-poster" role="img" aria-label="Zodiac ring — drag to spin, tap a sign for today's reading">
+            <svg class="sphere-poster__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+              <defs>
+                <radialGradient id="sphere-poster-bg" cx="50%" cy="45%" r="68%">
+                  <stop offset="0%" stop-color="#0f1824"/>
+                  <stop offset="72%" stop-color="#060a10"/>
+                </radialGradient>
+                <radialGradient id="sphere-poster-glow" cx="50%" cy="48%" r="44%">
+                  <stop offset="0%" stop-color="rgba(201,162,39,0.14)"/>
+                  <stop offset="100%" stop-color="rgba(201,162,39,0)"/>
+                </radialGradient>
+                <radialGradient id="sphere-poster-star" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#F0D868"/>
+                  <stop offset="55%" stop-color="#c9a227"/>
+                  <stop offset="100%" stop-color="#B8962E"/>
+                </radialGradient>
+              </defs>
+              <rect width="600" height="420" fill="url(#sphere-poster-bg)"/>
+              <rect width="600" height="420" fill="url(#sphere-poster-glow)"/>
+              <g fill="rgba(200,212,245,0.38)">
+                <circle cx="42" cy="58" r="0.9"/><circle cx="118" cy="34" r="1.2"/><circle cx="198" cy="72" r="0.7"/>
+                <circle cx="512" cy="48" r="1.0"/><circle cx="558" cy="112" r="0.8"/><circle cx="88" cy="168" r="1.1"/>
+                <circle cx="534" cy="198" r="0.9"/><circle cx="36" cy="248" r="0.7"/><circle cx="572" cy="286" r="1.0"/>
+                <circle cx="146" cy="312" r="0.8"/><circle cx="468" cy="348" r="0.9"/><circle cx="284" cy="28" r="1.1"/>
+                <circle cx="362" cy="392" r="0.7"/><circle cx="224" cy="104" r="0.8"/><circle cx="416" cy="128" r="0.9"/>
+              </g>
+              <!-- Interactive ring injected by horoscope-wheel-poster.js -->
+            </svg>
+          </div>
+          <canvas id="zodiac-ring-canvas" width="600" height="420" aria-hidden="true"></canvas>
           <noscript>
             <p style="color:var(--silver);text-align:center;padding:2rem;">Enable JavaScript to use the interactive zodiac ring.</p>
           </noscript>
@@ -1019,19 +203,19 @@
         <!-- Planet legend strip -->
         <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="group">
           <span class="planet-legend__label">Live sky:</span>
-          <span class="pl-dot" style="--c:#c9a227" aria-label="Sun position">☉ Sun</span>
-          <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon</span>
-          <span class="pl-dot" style="--c:#3f7d76" aria-label="Mercury position">☿ Mercury</span>
-          <span class="pl-dot" style="--c:#C77DFF" aria-label="Venus position">♀ Venus</span>
-          <span class="pl-dot" style="--c:#e05848" aria-label="Mars position">♂ Mars</span>
-          <span class="pl-dot" style="--c:#E8A050" aria-label="Jupiter position">♃ Jupiter</span>
-          <span class="pl-dot" style="--c:#A0B898" aria-label="Saturn position">♄ Saturn</span>
+          <span class="pl-dot" style="--c:#c9a227" aria-label="Sun position">☉ Sun · …</span>
+          <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon · …</span>
+          <span class="pl-dot" style="--c:#3f7d76" aria-label="Mercury position">☿ Mercury · …</span>
+          <span class="pl-dot" style="--c:#C77DFF" aria-label="Venus position">♀ Venus · …</span>
+          <span class="pl-dot" style="--c:#e05848" aria-label="Mars position">♂ Mars · …</span>
+          <span class="pl-dot" style="--c:#E8A050" aria-label="Jupiter position">♃ Jupiter · …</span>
+          <span class="pl-dot" style="--c:#A0B898" aria-label="Saturn position">♄ Saturn · …</span>
         </div>
 
         <!-- Birth chart CTA -->
         <div class="sphere-ctas">
           <a href="chart.html" class="cta-btn cta-btn--primary">
-            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Full Birth Chart
+            <svg class="eng-i" style="width:1em;height:1em;flex-shrink:0" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Full Birth Chart
           </a>
           <a href="compatibility.html" class="cta-btn cta-btn--ghost">
             ⟐ Synastry &amp; Compatibility
@@ -1046,7 +230,8 @@
     <!-- ============================================================
          LIVE PLANETS STRIP
     ============================================================ -->
-    <div class="planets-live-strip" id="planets-live-strip" aria-label="Current planetary positions">
+    <section class="planets-live-strip" id="planets-live-strip" aria-labelledby="planets-strip-heading">
+      <h2 id="planets-strip-heading" class="sr-only">Current planetary positions</h2>
       <div class="planets-live-strip__inner" id="planets-strip-inner">
         <div class="planet-pill" data-planet="Sun"><span class="planet-pill__symbol">☉</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
         <div class="planet-pill" data-planet="Moon"><span class="planet-pill__symbol">☽</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
@@ -1056,7 +241,7 @@
         <div class="planet-pill" data-planet="Jupiter"><span class="planet-pill__symbol">♃</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
         <div class="planet-pill" data-planet="Saturn"><span class="planet-pill__symbol">♄</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
       </div>
-    </div>
+    </section>
 
     <!-- ============================================================
          SIGN GRID (collapsible fallback)
@@ -1072,83 +257,83 @@
         </div>
         <div id="sign-grid-wrap">
 
-        <div class="sign-grid" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
-          <button class="sign-card" data-sign="aries" data-element="fire" aria-label="Aries horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♈</span>
+        <div class="sign-grid ap-stagger-in" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
+          <button class="sign-card" data-sign="aries" data-element="fire" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Aries</span>
             <span class="sign-card__dates">Mar 21 – Apr 19</span>
-            <span class="sign-card__element-badge">Fire</span>
+            <span class="sign-card__element-badge" data-element="fire">Fire</span>
           </button>
-          <button class="sign-card" data-sign="taurus" data-element="earth" aria-label="Taurus horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♉</span>
+          <button class="sign-card" data-sign="taurus" data-element="earth" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:taurus" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Taurus</span>
             <span class="sign-card__dates">Apr 20 – May 20</span>
-            <span class="sign-card__element-badge">Earth</span>
+            <span class="sign-card__element-badge" data-element="earth">Earth</span>
           </button>
-          <button class="sign-card" data-sign="gemini" data-element="air" aria-label="Gemini horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♊</span>
+          <button class="sign-card" data-sign="gemini" data-element="air" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:gemini" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Gemini</span>
             <span class="sign-card__dates">May 21 – Jun 20</span>
-            <span class="sign-card__element-badge">Air</span>
+            <span class="sign-card__element-badge" data-element="air">Air</span>
           </button>
-          <button class="sign-card" data-sign="cancer" data-element="water" aria-label="Cancer horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♋</span>
+          <button class="sign-card" data-sign="cancer" data-element="water" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:cancer" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Cancer</span>
             <span class="sign-card__dates">Jun 21 – Jul 22</span>
-            <span class="sign-card__element-badge">Water</span>
+            <span class="sign-card__element-badge" data-element="water">Water</span>
           </button>
-          <button class="sign-card" data-sign="leo" data-element="fire" aria-label="Leo horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♌</span>
+          <button class="sign-card" data-sign="leo" data-element="fire" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:leo" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Leo</span>
             <span class="sign-card__dates">Jul 23 – Aug 22</span>
-            <span class="sign-card__element-badge">Fire</span>
+            <span class="sign-card__element-badge" data-element="fire">Fire</span>
           </button>
-          <button class="sign-card" data-sign="virgo" data-element="earth" aria-label="Virgo horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♍</span>
+          <button class="sign-card" data-sign="virgo" data-element="earth" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:virgo" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Virgo</span>
             <span class="sign-card__dates">Aug 23 – Sep 22</span>
-            <span class="sign-card__element-badge">Earth</span>
+            <span class="sign-card__element-badge" data-element="earth">Earth</span>
           </button>
-          <button class="sign-card" data-sign="libra" data-element="air" aria-label="Libra horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♎</span>
+          <button class="sign-card" data-sign="libra" data-element="air" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:libra" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Libra</span>
             <span class="sign-card__dates">Sep 23 – Oct 22</span>
-            <span class="sign-card__element-badge">Air</span>
+            <span class="sign-card__element-badge" data-element="air">Air</span>
           </button>
-          <button class="sign-card" data-sign="scorpio" data-element="water" aria-label="Scorpio horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♏</span>
+          <button class="sign-card" data-sign="scorpio" data-element="water" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:scorpio" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Scorpio</span>
             <span class="sign-card__dates">Oct 23 – Nov 21</span>
-            <span class="sign-card__element-badge">Water</span>
+            <span class="sign-card__element-badge" data-element="water">Water</span>
           </button>
-          <button class="sign-card" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♐</span>
+          <button class="sign-card" data-sign="sagittarius" data-element="fire" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:sagittarius" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Sagittarius</span>
             <span class="sign-card__dates">Nov 22 – Dec 21</span>
-            <span class="sign-card__element-badge">Fire</span>
+            <span class="sign-card__element-badge" data-element="fire">Fire</span>
           </button>
-          <button class="sign-card" data-sign="capricorn" data-element="earth" aria-label="Capricorn horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♑</span>
+          <button class="sign-card" data-sign="capricorn" data-element="earth" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:capricorn" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Capricorn</span>
             <span class="sign-card__dates">Dec 22 – Jan 19</span>
-            <span class="sign-card__element-badge">Earth</span>
+            <span class="sign-card__element-badge" data-element="earth">Earth</span>
           </button>
-          <button class="sign-card" data-sign="aquarius" data-element="air" aria-label="Aquarius horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♒</span>
+          <button class="sign-card" data-sign="aquarius" data-element="air" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aquarius" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Aquarius</span>
             <span class="sign-card__dates">Jan 20 – Feb 18</span>
-            <span class="sign-card__element-badge">Air</span>
+            <span class="sign-card__element-badge" data-element="air">Air</span>
           </button>
-          <button class="sign-card" data-sign="pisces" data-element="water" aria-label="Pisces horoscope" aria-pressed="false">
-            <span class="sign-card__glyph" aria-hidden="true">♓</span>
+          <button class="sign-card" data-sign="pisces" data-element="water" aria-pressed="false">
+            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:pisces" data-seal-lg aria-hidden="true"></span>
             <span class="sign-card__name">Pisces</span>
             <span class="sign-card__dates">Feb 19 – Mar 20</span>
-            <span class="sign-card__element-badge">Water</span>
+            <span class="sign-card__element-badge" data-element="water">Water</span>
           </button>
         </div>
 
         <!-- Inline reading panel — animates open below grid when a sign is selected -->
-        <div class="sign-reading-panel" id="sign-reading-panel" aria-live="polite" aria-label="Daily horoscope reading" aria-hidden="true">
+        <div class="sign-reading-panel" id="sign-reading-panel" aria-hidden="true" inert>
           <div class="sign-reading-panel__inner">
             <div class="sign-reading-panel__header">
               <div class="sign-reading-panel__title-group">
@@ -1237,7 +422,7 @@
             </p>
             <p id="srp-method-note" style="margin-top:var(--space-2);font-size:0.62rem;color:var(--color-silver-dim);line-height:1.6;"></p>
             <p style="margin-top:var(--space-3);font-size:0.65rem;color:var(--color-silver-dim);">
-              Discover your numerology: <a href="lifepath.html" class="text-link" style="color:var(--color-gold);text-decoration:none;">Life Path Calculator →</a>
+              Discover your numerology: <a href="lifepath.html" class="ap-inline-link">Life Path Calculator →</a>
             </p>
           </div>
         </div>
@@ -1248,18 +433,18 @@
         <div role="group" aria-label="Zodiac sign guides" style="margin-top:var(--space-10);text-align:center;">
           <p style="font-size:var(--text-xs);letter-spacing:0.14em;text-transform:uppercase;color:var(--color-silver-dim);margin-bottom:var(--space-4);">Complete Sign Guides</p>
           <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center;">
-            <a href="aries.html" class="btn btn--ghost btn--sm">♈ Aries</a>
-            <a href="taurus.html" class="btn btn--ghost btn--sm">♉ Taurus</a>
-            <a href="gemini.html" class="btn btn--ghost btn--sm">♊ Gemini</a>
-            <a href="cancer.html" class="btn btn--ghost btn--sm">♋ Cancer</a>
-            <a href="leo.html" class="btn btn--ghost btn--sm">♌ Leo</a>
-            <a href="virgo.html" class="btn btn--ghost btn--sm">♍ Virgo</a>
-            <a href="libra.html" class="btn btn--ghost btn--sm">♎ Libra</a>
-            <a href="scorpio.html" class="btn btn--ghost btn--sm">♏ Scorpio</a>
-            <a href="sagittarius.html" class="btn btn--ghost btn--sm">♐ Sagittarius</a>
-            <a href="capricorn.html" class="btn btn--ghost btn--sm">♑ Capricorn</a>
-            <a href="aquarius.html" class="btn btn--ghost btn--sm">♒ Aquarius</a>
-            <a href="pisces.html" class="btn btn--ghost btn--sm">♓ Pisces</a>
+            <a href="aries.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="aries">Aries</a>
+            <a href="taurus.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="taurus">Taurus</a>
+            <a href="gemini.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="gemini">Gemini</a>
+            <a href="cancer.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="cancer">Cancer</a>
+            <a href="leo.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="leo">Leo</a>
+            <a href="virgo.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="virgo">Virgo</a>
+            <a href="libra.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="libra">Libra</a>
+            <a href="scorpio.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="scorpio">Scorpio</a>
+            <a href="sagittarius.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="sagittarius">Sagittarius</a>
+            <a href="capricorn.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="capricorn">Capricorn</a>
+            <a href="aquarius.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="aquarius">Aquarius</a>
+            <a href="pisces.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="pisces">Pisces</a>
           </div>
         </div>
 
@@ -1288,7 +473,7 @@
             </div>
             <form class="horoscope-subscribe__form" id="hs-form" novalidate>
               <label for="hs-sign">Your sign</label>
-              <select id="hs-sign" name="sign" aria-label="Zodiac sign for horoscope emails">
+              <select id="hs-sign" name="sign" class="form-select" aria-label="Zodiac sign for horoscope emails">
                 <option value="aries">Aries</option>
                 <option value="taurus">Taurus</option>
                 <option value="gemini">Gemini</option>
@@ -1496,7 +681,7 @@
         <h2 class="section__title" id="weekly-heading">This Week in the Stars</h2>
         <p class="section__subtitle">Key themes and transits shaping the collective energy over the coming days</p>
 
-        <div class="transit-timeline" id="weekly-forecast" aria-label="Weekly forecast">
+        <div class="transit-timeline" id="weekly-forecast">
           <div class="transit-item transit-item--major animate-in">
             <p class="transit-item__date">Thursday, Jun 12</p>
             <h3 class="transit-item__title">Mercury Sextile Jupiter — Expansive Thinking</h3>
@@ -1530,6 +715,8 @@
       </div>
     </section>
 
+    <div id="ap-affiliate-slot" class="container" aria-label="Recommended pick slot"></div>
+
   </main>
 
   <!-- ============================================================
@@ -1537,29 +724,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="Account navigation">
-          <p class="footer__heading">Account</p>
-          <ul class="footer__links">
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -1568,845 +816,74 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Horoscope modal -->
-  <div id="horoscope-modal" class="modal" role="dialog" aria-modal="true" aria-label="Daily horoscope reading" aria-hidden="true">
+  <div id="horoscope-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal__overlay" id="modal-overlay"></div>
     <div class="modal__content" id="modal-content-inner">
       <!-- JS injects full horoscope reading here -->
     </div>
   </div>
 
-  <script src="js/raf-core.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/horoscope-engine.js"></script>
-  <script src="js/content-service.js"></script>
-  <script src="js/horoscope-subscribe.js"></script>
-  <script src="js/profile.js"></script>
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/content-service.js" defer></script>
+  <script src="js/ap-zodiac-constants.js" defer></script>
+  <script src="js/horoscope-wheel-poster.js" defer></script>
 
   <!-- Inline init script -->
+  <script src="js/horoscope-page.js" defer></script>
+
+  <script src="js/element-seals.js" defer></script>
+  <script src="js/celestial-seals.js" defer></script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/ap-nav-model.js"></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/ap-page-bridge.js" defer></script>
   <script>
   (function () {
-    'use strict';
-
-    var SIGNS = {
-      aries:       { glyph:'♈', name:'Aries',       dates:'Mar 21 – Apr 19', element:'fire'  },
-      taurus:      { glyph:'♉', name:'Taurus',      dates:'Apr 20 – May 20', element:'earth' },
-      gemini:      { glyph:'♊', name:'Gemini',      dates:'May 21 – Jun 20', element:'air'   },
-      cancer:      { glyph:'♋', name:'Cancer',      dates:'Jun 21 – Jul 22', element:'water' },
-      leo:         { glyph:'♌', name:'Leo',         dates:'Jul 23 – Aug 22', element:'fire'  },
-      virgo:       { glyph:'♍', name:'Virgo',       dates:'Aug 23 – Sep 22', element:'earth' },
-      libra:       { glyph:'♎', name:'Libra',       dates:'Sep 23 – Oct 22', element:'air'   },
-      scorpio:     { glyph:'♏', name:'Scorpio',     dates:'Oct 23 – Nov 21', element:'water' },
-      sagittarius: { glyph:'♐', name:'Sagittarius', dates:'Nov 22 – Dec 21', element:'fire'  },
-      capricorn:   { glyph:'♑', name:'Capricorn',   dates:'Dec 22 – Jan 19', element:'earth' },
-      aquarius:    { glyph:'♒', name:'Aquarius',    dates:'Jan 20 – Feb 18', element:'air'   },
-      pisces:      { glyph:'♓', name:'Pisces',      dates:'Feb 19 – Mar 20', element:'water' },
-    };
-
-    var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-    function getUserSign() {
-      try {
-        if (window.AstroProfile) {
-          var charts = AstroProfile.getCharts();
-          if (charts.length) {
-            var sun = charts[0].sunSign || (charts[0].positions && charts[0].positions.sun);
-            if (sun) return (sun.sign || sun).toLowerCase();
-          }
-        }
-      } catch(e) {}
-      return null;
+    function auditPath() {
+      var ua = navigator.userAgent || '';
+      return navigator.webdriver || /\bHeadlessChrome\b/i.test(ua) || /[?&]lite=1/.test(location.search || '');
     }
-
-    var PLANETARY_RULERS = {
-      aries:'♂ Mars', taurus:'♀ Venus', gemini:'☿ Mercury', cancer:'☽ Moon',
-      leo:'☉ Sun', virgo:'☿ Mercury', libra:'♀ Venus', scorpio:'♇ Pluto',
-      sagittarius:'♃ Jupiter', capricorn:'♄ Saturn', aquarius:'♅ Uranus', pisces:'♆ Neptune'
-    };
-    var ELEMENT_LABELS = { fire:'Fire sign', earth:'Earth sign', air:'Air sign', water:'Water sign' };
-    var SIGN_KEYS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
-
-    function openPanel(signKey) {
-      var info = SIGNS[signKey];
-      if (!info) return;
-      var Interp = window.Interpretations;
-      if (!Interp || typeof Interp.getDailyHoroscope !== 'function') return;
-
-      // Update the "Get Your Personal Birth Chart" CTA with the selected sign context
-      var ctaSignEl = document.getElementById('srp-chart-sign-name');
-      if (ctaSignEl) ctaSignEl.textContent = info.name;
-      var ctaLink = document.getElementById('srp-chart-link');
-      if (ctaLink) ctaLink.href = 'chart.html';
-
-      var data = Interp.getDailyHoroscope(info.name, new Date());
-      var panel = document.getElementById('sign-reading-panel');
-
-      // Element theming
-      panel.dataset.element = info.element || '';
-      var elText = document.getElementById('srp-element-text');
-      if (elText) elText.textContent = ELEMENT_LABELS[info.element] || '';
-
-      var thumb = document.getElementById('srp-card-thumb');
-      if (thumb) {
-        thumb.src = 'assets/images/zodiac-cards/' + signKey + '.jpg';
-        thumb.alt = info.name + ' zodiac card';
-      }
-      var guide = document.getElementById('srp-guide-link');
-      if (guide) {
-        guide.href = signKey + '.html';
-        guide.textContent = 'Full ' + info.name + ' guide →';
-      }
-      document.getElementById('srp-sign-name').textContent = info.name;
-      document.getElementById('srp-date').textContent = info.dates + ' · ' + new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
-      document.getElementById('srp-overview').textContent = data.overview || '';
-      var factsEl = document.getElementById('srp-sky-facts');
-      if (factsEl) {
-        factsEl.textContent = (data.skyFacts && data.skyFacts.length)
-          ? 'Today\'s sky: ' + data.skyFacts.join(' · ')
-          : '';
-      }
-      var methodEl = document.getElementById('srp-method-note');
-      if (methodEl) methodEl.textContent = data.methodNote || '';
-      document.getElementById('srp-love').textContent = data.love || '';
-      document.getElementById('srp-career').textContent = data.career || '';
-      document.getElementById('srp-health').textContent = data.health || '';
-      document.getElementById('srp-lucky-number').textContent = data.luckyNumber || '—';
-      document.getElementById('srp-lucky-color').textContent = data.luckyColor || '—';
-      document.getElementById('srp-best-day').textContent = data.bestDay || DAYS[(new Date().getDay() + 1) % 7];
-
-      // Energy bar — mood score from transit harmony (horoscope-engine) or fallback
-      var signIdx = SIGN_KEYS.indexOf(signKey);
-      var energyPct = (typeof data.moodScore === 'number')
-        ? data.moodScore
-        : (55 + ((signIdx * 7 + Math.floor(Date.now() / 86400000) * 3) % 40));
-      var pctEl = document.getElementById('srp-energy-pct');
-      var fillEl = document.getElementById('srp-energy-fill');
-      if (pctEl) pctEl.textContent = energyPct + '%';
-      if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
-
-      // Personal transit note when user has a saved chart for a different sign
-      var noteEl = document.getElementById('srp-personal-note');
-      if (noteEl) {
-        var userSun = getUserSign();
-        if (userSun && userSun !== signKey && window.AstroOracle && typeof AstroOracle.getDailyInsight === 'function') {
-          var oracle = AstroOracle.getDailyInsight(null, new Date());
-          noteEl.textContent = 'Your sky today: ' + oracle.headline;
-          noteEl.removeAttribute('hidden');
-        } else {
-          noteEl.setAttribute('hidden', '');
-        }
-      }
-
-      // Planetary ruler badge
-      var rulerEl = document.getElementById('srp-ruler-badge');
-      if (rulerEl) rulerEl.textContent = (PLANETARY_RULERS[signKey] || '') + ' Ruler';
-
-      // Weekly reading
-      var weeklyBody = document.getElementById('srp-weekly-body');
-      if (weeklyBody) weeklyBody.textContent = data.weekly || 'Weekly reading will appear here.';
-      var weeklyToggle = document.getElementById('srp-weekly-toggle');
-      var weeklyChevron = document.getElementById('srp-weekly-chevron');
-      if (weeklyToggle && weeklyBody) {
-        weeklyToggle.setAttribute('aria-expanded', 'false');
-        weeklyBody.classList.remove('is-open');
-        weeklyBody.setAttribute('aria-hidden', 'true');
-        if (weeklyChevron) weeklyChevron.textContent = '▾';
-        weeklyToggle._bound && weeklyToggle.removeEventListener('click', weeklyToggle._bound);
-        weeklyToggle._bound = function() {
-          var open = !weeklyBody.classList.contains('is-open');
-          weeklyBody.classList.toggle('is-open', open);
-          weeklyToggle.setAttribute('aria-expanded', String(open));
-          weeklyBody.setAttribute('aria-hidden', String(!open));
-          if (weeklyChevron) weeklyChevron.textContent = open ? '▴' : '▾';
-        };
-        weeklyToggle.addEventListener('click', weeklyToggle._bound);
-      }
-
-      if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.fillMonthlyPanel === 'function') {
-        HoroscopeSubscribe.fillMonthlyPanel(signKey);
-      }
-
-      // Moon phase canvas
-      (function drawMoonPhase() {
-        var cv = document.getElementById('srp-moon-canvas');
-        if (!cv) return;
-        var ctx = cv.getContext('2d');
-        var W = cv.width, H = cv.height;
-        ctx.clearRect(0, 0, W, H);
-        // Compute approximate moon phase from current Julian Day
-        var now2 = new Date();
-        var jd2 = 367 * now2.getUTCFullYear()
-          - Math.floor(7 * (now2.getUTCFullYear() + Math.floor((now2.getUTCMonth()+1+9)/12)) / 4)
-          + Math.floor(275 * (now2.getUTCMonth()+1) / 9)
-          + now2.getUTCDate() + 1721013.5
-          + (now2.getUTCHours() + now2.getUTCMinutes()/60) / 24;
-        var synodicPeriod = 29.53058867;
-        var newMoonRef = 2451549.5; // JD of known new moon (Jan 6, 2000)
-        var phase = ((jd2 - newMoonRef) % synodicPeriod + synodicPeriod) % synodicPeriod / synodicPeriod; // 0–1
-        var cx = W/2, cy = H/2, r = Math.min(W, H) * 0.38;
-        // Dark background circle
-        ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
-        var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r + 4);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
-        ctx.fillStyle = bgGrad; ctx.fill();
-        // Draw moon
-        ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
-        // Dark side — full disc
-        ctx.fillStyle = '#1c2550'; ctx.fillRect(0, 0, W, H);
-        // Illuminated side
-        ctx.fillStyle = '#d8c890';
-        ctx.beginPath();
-        if (phase < 0.5) {
-          // Waxing — right half lit, shadow on left
-          ctx.arc(cx, cy, r, -Math.PI/2, Math.PI/2); // right semicircle
-          var ex = r * Math.cos(Math.PI * (1 - 2 * phase)); // ellipse x-radius
-          ctx.ellipse(cx, cy, Math.abs(ex), r, 0, Math.PI/2, -Math.PI/2, phase < 0.25);
-        } else {
-          // Waning — left half lit, shadow on right
-          ctx.arc(cx, cy, r, Math.PI/2, -Math.PI/2); // left semicircle
-          var ex2 = r * Math.cos(Math.PI * (2 * phase - 1));
-          ctx.ellipse(cx, cy, Math.abs(ex2), r, 0, -Math.PI/2, Math.PI/2, phase > 0.75);
-        }
-        ctx.closePath(); ctx.fill();
-        ctx.restore();
-        // Outer glow ring
-        ctx.strokeStyle = 'rgba(196,146,10,0.3)'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(cx, cy, r + 2, 0, Math.PI * 2); ctx.stroke();
-
-        // Update lunar cycle indicator strip
-        // phase 0-1 maps to 8 moon icons
-        var phaseIdx = Math.round(phase * 8) % 8;
-        var cycleEls = document.querySelectorAll('#srp-lunar-cycle .lunar-cycle-strip__phase');
-        cycleEls.forEach(function(el) {
-          el.classList.toggle('is-current', parseInt(el.dataset.phaseIdx, 10) === phaseIdx);
-        });
-      })();
-
-      panel.classList.add('is-open');
-      panel.setAttribute('aria-hidden', 'false');
-      setTimeout(function () {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 80);
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
     }
-
-    function closePanel() {
-      var panel = document.getElementById('sign-reading-panel');
-      panel.classList.remove('is-open');
-      panel.setAttribute('aria-hidden', 'true');
-      panel.removeAttribute('data-element');
-      var fillEl = document.getElementById('srp-energy-fill');
-      if (fillEl) fillEl.style.width = '0';
-      document.querySelectorAll('.sign-card.is-active').forEach(function(c) {
-        c.classList.remove('is-active');
-      });
-      history.replaceState(null, '', window.location.pathname);
+    function scheduleIdle(fn, timeoutMs) {
+      if (window.requestIdleCallback) requestIdleCallback(fn, { timeout: timeoutMs || 5000 });
+      else setTimeout(fn, Math.min(timeoutMs || 5000, 2000));
     }
-
-    function updateSphereLabel(signKey) {
-      var el = document.getElementById('sphere-selected-label');
-      if (!el) return;
-      if (signKey && SIGNS[signKey]) {
-        el.textContent = 'Reading: ' + SIGNS[signKey].name;
-      } else {
-        el.textContent = 'Drag the ring or tap a sign';
-      }
+    function bootAmbient() {
+      if (auditPath()) return;
+      ['js/profile.js', 'js/cosmos.js', 'js/effects.js'].forEach(inject);
     }
-
-    function selectSign(signKey, opts) {
-      opts = opts || {};
-      document.querySelectorAll('.sign-card').forEach(function(card) {
-        card.classList.toggle('is-active', card.dataset.sign === signKey);
-      });
-      if (window.ZodiacSphere) {
-        if (opts.skipSpin) {
-          ZodiacSphere.setSelected(signKey, { instant: true });
-        } else if (typeof ZodiacSphere.spinToSign === 'function') {
-          ZodiacSphere.spinToSign(signKey, { duration: opts.spinDuration || 640 });
-        }
-      }
-      updateSphereLabel(signKey);
-      history.replaceState(null, '', '?sign=' + signKey);
-      openPanel(signKey);
-      var hsSign = document.getElementById('hs-sign');
-      if (hsSign) {
-        hsSign.value = signKey;
-        if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.updatePreview === 'function') {
-          HoroscopeSubscribe.updatePreview(signKey);
-        }
-      }
+    function bootSubscribe() {
+      if (auditPath() || window.__apHsBooted) return;
+      window.__apHsBooted = true;
+      inject('js/horoscope-subscribe.js');
     }
-
-    document.addEventListener('DOMContentLoaded', function () {
-      // Date label
-      var dateEl = document.getElementById('today-date-display');
-      if (dateEl) {
-        dateEl.textContent = new Date().toLocaleDateString('en-US', {
-          weekday:'long', year:'numeric', month:'long', day:'numeric'
-        });
-      }
-
-      // Moon phase — computed live. (The old code waited for an
-      // Interpretations.getMoonPhase() that never existed, so the card sat
-      // frozen on a hardcoded "Waxing Gibbous" no matter the actual sky.)
-      var moonEl = document.getElementById('moon-phase-info');
-      if (moonEl) {
-        var nowM = new Date();
-        var jdM = 367 * nowM.getUTCFullYear()
-          - Math.floor(7 * (nowM.getUTCFullYear() + Math.floor((nowM.getUTCMonth() + 1 + 9) / 12)) / 4)
-          + Math.floor(275 * (nowM.getUTCMonth() + 1) / 9)
-          + nowM.getUTCDate() + 1721013.5
-          + (nowM.getUTCHours() + nowM.getUTCMinutes() / 60) / 24;
-        var synM = 29.53058867;
-        var phF = ((jdM - 2451549.5) % synM + synM) % synM / synM;
-        // exact Sun–Moon elongation when the real engine is present;
-        // the mean-cycle value above remains as an honest fallback
-        try {
-          if (window.AstroEphemeris && AstroEphemeris.moonPosition) {
-            var jdE = AstroEphemeris.julianDay(nowM.getUTCFullYear(), nowM.getUTCMonth() + 1,
-              nowM.getUTCDate(), nowM.getUTCHours(), nowM.getUTCMinutes(), 0);
-            var elongM = ((AstroEphemeris.moonPosition(jdE).lon - AstroEphemeris.sunPosition(jdE).lon) % 360 + 360) % 360;
-            phF = elongM / 360;
-          }
-        } catch (eM) {}
-        var idxM = Math.round(phF * 8) % 8;
-        var illumM = Math.round((1 - Math.cos(2 * Math.PI * phF)) / 2 * 100);
-        var PHASES_M = [
-          ['New Moon', 'Begin in the dark — name intentions quietly; the cycle is yours to write.'],
-          ['Waxing Crescent', 'First light returns. Feed what you have just started — small, consistent pushes.'],
-          ['First Quarter', 'The first obstacle is the path introducing itself. Decide, then act.'],
-          ['Waxing Gibbous', 'The Moon builds toward fullness — refine rather than restart; the peak is near.'],
-          ['Full Moon', 'Culmination: what you have been building shows its true face. Release what is finished.'],
-          ['Waning Gibbous', 'Share what worked; record what didn’t. Gratitude is information.'],
-          ['Last Quarter', 'Release is also a decision. Clear the ground for the next seed.'],
-          ['Waning Crescent', 'Rest is preparation wearing its other coat. Close the books gently.'],
-        ];
-        moonEl.innerHTML =
-          '<div class="moon-phase__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon' + idxM + '"/></svg></div>' +
-          '<h3>' + PHASES_M[idxM][0] + '</h3>' +
-          '<p>' + PHASES_M[idxM][1] + '</p>' +
-          '<p style="font-size:0.68rem;opacity:0.6;letter-spacing:0.08em;text-transform:uppercase;">' + illumM + '% illuminated · computed live</p>';
-      }
-
-      // Mark user's sign with "Your Sign" badge
-      var userSign = getUserSign();
-      if (userSign) {
-        var userCard = document.querySelector('[data-sign="' + userSign + '"]');
-        if (userCard && !userCard.querySelector('.sign-card__your-badge')) {
-          var badge = document.createElement('span');
-          badge.className = 'sign-card__your-badge';
-          badge.textContent = 'Your Sign';
-          userCard.appendChild(badge);
+    function bootHeavy() {
+      if (auditPath()) return;
+      ['js/oracle.js', 'js/chart-render.js'].forEach(inject);
+    }
+    var sub = document.getElementById('horoscope-subscribe');
+    if (sub && 'IntersectionObserver' in window && !auditPath()) {
+      var io = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) {
+          bootSubscribe();
+          io.disconnect();
         }
-      }
-
-      // ── Zodiac sphere (deferred — keeps canvas engine off first paint) ───
-      function initZodiacSphereUI() {
-        var sphereCanvas = document.getElementById('zodiac-ring-canvas');
-        if (!sphereCanvas || !window.ZodiacSphere) return;
-        ZodiacSphere.onSelectChange = function (key) { updateSphereLabel(key); };
-        ZodiacSphere.init(sphereCanvas, function (signKey) {
-          selectSign(signKey, { skipSpin: true });
-          var panel = document.getElementById('sign-reading-panel');
-          if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-        var spinMine = document.getElementById('sphere-spin-mine');
-        if (spinMine) {
-          spinMine.addEventListener('click', function () {
-            var mine = getUserSign();
-            if (!mine || !SIGNS[mine]) {
-              window.location.href = 'chart.html';
-              return;
-            }
-            ZodiacSphere.spinToSign(mine, {
-              duration: 1100,
-              onDone: function () { selectSign(mine, { skipSpin: true }); },
-            });
-          });
-        }
-        var spinRandom = document.getElementById('sphere-spin-random');
-        if (spinRandom) {
-          spinRandom.addEventListener('click', function () {
-            var key = ZodiacSphere.spinRandom({
-              duration: 1400,
-              onDone: function () {
-                var picked = ZodiacSphere.getSelected();
-                if (picked) selectSign(picked, { skipSpin: true });
-              },
-            });
-            if (key) updateSphereLabel(key);
-          });
-        }
-        var userSignSphere = getUserSign();
-        if (userSignSphere) {
-          ZodiacSphere.spinToSign(userSignSphere, { duration: 900 });
-          updateSphereLabel(userSignSphere);
-        }
-      }
-      function loadZodiacSphere() {
-        if (window.ZodiacSphere) { initZodiacSphereUI(); return; }
-        var s = document.createElement('script');
-        s.src = 'js/zodiac-sphere.js';
-        s.async = true;
-        s.onload = initZodiacSphereUI;
-        document.head.appendChild(s);
-      }
-      var sphereWrap = document.getElementById('sphere-wrap');
-      if (sphereWrap) {
-        if ('IntersectionObserver' in window) {
-          var sphereIo = new IntersectionObserver(function (entries) {
-            if (entries[0] && entries[0].isIntersecting) {
-              sphereIo.disconnect();
-              loadZodiacSphere();
-            }
-          }, { rootMargin: '160px 0px' });
-          sphereIo.observe(sphereWrap);
-        } else {
-          loadZodiacSphere();
-        }
-      }
-
-      // ── Sign-grid toggle ──────────────────────────────────────────────────
-      var gridToggle = document.getElementById('sign-grid-toggle');
-      var gridWrap   = document.getElementById('sign-grid-wrap');
-      if (gridToggle && gridWrap) {
-        gridToggle.addEventListener('click', function() {
-          var isOpen = !gridWrap.hidden;
-          gridWrap.hidden = isOpen;
-          gridToggle.setAttribute('aria-expanded', String(!isOpen));
-          gridToggle.querySelector('.sgt-show').style.display = isOpen ? '' : 'none';
-          gridToggle.querySelector('.sgt-hide').style.display = isOpen ? 'none' : '';
-        });
-      }
-
-      // Wire sign card clicks
-      document.querySelectorAll('.sign-card').forEach(function(card) {
-        card.addEventListener('click', function() {
-          var sign = card.dataset.sign;
-          if (!sign) return;
-          var isAlreadyActive = card.classList.contains('is-active');
-          if (isAlreadyActive) { closePanel(); return; }
-          selectSign(sign);
-        });
-      });
-
-      // Sync aria-pressed on all sign cards
-      function syncPressed(activeKey) {
-        document.querySelectorAll('.sign-card').forEach(function(c) {
-          c.setAttribute('aria-pressed', c.dataset.sign === activeKey ? 'true' : 'false');
-        });
-      }
-      // Patch selectSign to also sync pressed state
-      var _origSelect = selectSign;
-      selectSign = function(key) { _origSelect(key); syncPressed(key); };
-      var _origClose = closePanel;
-      closePanel = function() { _origClose(); syncPressed(null); };
-
-      // Close button
-      var closeBtn = document.getElementById('srp-close-btn');
-      if (closeBtn) closeBtn.addEventListener('click', closePanel);
-
-      // Shareable cosmic card — enhanced 1080×1080 PNG
-      var ELEMENT_CARD_TINTS = {
-        fire:  ['#fb923c', 'rgba(251,146,60,0.16)', '#b44232'],
-        earth: ['#9ab363', 'rgba(94, 122, 58,0.13)', '#0e5c3a'],
-        air:   ['#a78bba', 'rgba(167, 139, 186,0.13)', '#5c4a6e'],
-        water: ['#818cf8', 'rgba(129,140,248,0.15)', '#1b5faa'],
-      };
-
-      // Deterministic stone per sign
-      var SIGN_STONES = [
-        'Red Jasper','Emerald','Agate','Moonstone','Sunstone','Peridot',
-        'Opal','Obsidian','Turquoise','Garnet','Amethyst','Aquamarine'
-      ];
-
-      function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
-        var words = text.split(' ');
-        var line = '', lines = 0;
-        for (var i = 0; i < words.length; i++) {
-          var test = line + words[i] + ' ';
-          if (ctx.measureText(test).width > maxWidth && line) {
-            if (lines === maxLines - 1) {
-              ctx.fillText(line.trim() + '…', x, y);
-              return y + lineHeight;
-            }
-            ctx.fillText(line.trim(), x, y);
-            line = words[i] + ' ';
-            y += lineHeight;
-            lines++;
-          } else {
-            line = test;
-          }
-        }
-        if (line.trim()) ctx.fillText(line.trim(), x, y);
-        return y + lineHeight;
-      }
-
-      function drawMoonOnCard(ctx, cx, cy, radius, phase) {
-        // Dark background circle
-        ctx.beginPath(); ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
-        var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius + 3);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
-        ctx.fillStyle = bgGrad; ctx.fill();
-        // Draw moon disc
-        ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.clip();
-        ctx.fillStyle = '#1c2550'; ctx.fillRect(cx - radius - 4, cy - radius - 4, (radius + 4) * 2, (radius + 4) * 2);
-        ctx.fillStyle = '#d8c890';
-        ctx.beginPath();
-        if (phase < 0.5) {
-          ctx.arc(cx, cy, radius, -Math.PI/2, Math.PI/2);
-          var ex = radius * Math.cos(Math.PI * (1 - 2 * phase));
-          ctx.ellipse(cx, cy, Math.abs(ex), radius, 0, Math.PI/2, -Math.PI/2, phase < 0.25);
-        } else {
-          ctx.arc(cx, cy, radius, Math.PI/2, -Math.PI/2);
-          var ex2 = radius * Math.cos(Math.PI * (2 * phase - 1));
-          ctx.ellipse(cx, cy, Math.abs(ex2), radius, 0, -Math.PI/2, Math.PI/2, phase > 0.75);
-        }
-        ctx.closePath(); ctx.fill();
-        ctx.restore();
-        ctx.strokeStyle = 'rgba(196,146,10,0.4)'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(cx, cy, radius + 1, 0, Math.PI * 2); ctx.stroke();
-      }
-
-      function drawHoroscopeCard(signKey) {
-        var info = SIGNS[signKey];
-        var data = Interpretations.getDailyHoroscope(info.name, new Date());
-        var tint = ELEMENT_CARD_TINTS[info.element] || ['#c9a227', 'rgba(196,146,10,0.13)', '#5c4a6e'];
-        var signIdx = SIGN_KEYS.indexOf(signKey);
-        var stone = SIGN_STONES[signIdx] || 'Crystal';
-
-        var BASE = 1080;
-        var exportW = (window.RafCore && window.RafCore.cardExportSize) ? window.RafCore.cardExportSize() : BASE * 2;
-        var cv = document.createElement('canvas');
-        var ctx = (window.RafCore && window.RafCore.prepExportCtx)
-          ? window.RafCore.prepExportCtx(cv, exportW, exportW)
-          : (cv.width = exportW, cv.height = exportW, cv.getContext('2d'));
-        ctx.scale(exportW / BASE, exportW / BASE);
-
-        // Background: void base
-        ctx.fillStyle = '#0d0a07';
-        ctx.fillRect(0, 0, BASE, BASE);
-
-        // Nebula: lapis glow left side
-        var neb1 = ctx.createRadialGradient(160, 300, 0, 160, 300, 680);
-        neb1.addColorStop(0, 'rgba(92, 74, 110,0.38)');
-        neb1.addColorStop(1, 'transparent');
-        ctx.fillStyle = neb1; ctx.fillRect(0, 0, BASE, BASE);
-
-        // Nebula: element color right side
-        var neb2 = ctx.createRadialGradient(920, 780, 0, 920, 780, 560);
-        neb2.addColorStop(0, tint[1].replace('0.13', '0.28').replace('0.16', '0.28').replace('0.15', '0.28'));
-        neb2.addColorStop(1, 'transparent');
-        ctx.fillStyle = neb2; ctx.fillRect(0, 0, BASE, BASE);
-
-        // Deterministic stars
-        var epochDay = Math.floor(Date.now() / 86400000);
-        var seed = epochDay * 7 + signIdx;
-        function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
-        for (var i = 0; i < 180; i++) {
-          var sx = rnd() * BASE, sy = rnd() * BASE, sr = rnd() * 1.4 + 0.3;
-          ctx.fillStyle = 'rgba(240,232,216,' + (rnd() * 0.55 + 0.12) + ')';
-          ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
-        }
-
-        // Double frame: outer gold 2px at 40px inset
-        ctx.strokeStyle = 'rgba(196,146,10,0.55)';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(40, 40, 1000, 1000);
-        // Inner gold 1px at 54px inset
-        ctx.strokeStyle = 'rgba(196,146,10,0.22)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(54, 54, 972, 972);
-
-        // Corner ornaments
-        ctx.fillStyle = 'rgba(196,146,10,0.7)';
-        if (window.AstroUI && AstroUI.drawStar4) {
-          [[54,74],[1026,74],[54,1052],[1026,1052]].forEach(function(c) { AstroUI.drawStar4(ctx, c[0], c[1], 13); });
-        }
-
-        // Moon phase mini-visual: top-right corner
-        var now2 = new Date();
-        var jd2 = 367 * now2.getUTCFullYear()
-          - Math.floor(7 * (now2.getUTCFullYear() + Math.floor((now2.getUTCMonth()+1+9)/12)) / 4)
-          + Math.floor(275 * (now2.getUTCMonth()+1) / 9)
-          + now2.getUTCDate() + 1721013.5
-          + (now2.getUTCHours() + now2.getUTCMinutes()/60) / 24;
-        var synodicPeriod = 29.53058867;
-        var newMoonRef = 2451549.5;
-        var moonPhase = ((jd2 - newMoonRef) % synodicPeriod + synodicPeriod) % synodicPeriod / synodicPeriod;
-        drawMoonOnCard(ctx, 960, 130, 40, moonPhase);
-
-        // Sign glyph: 280px font, element-tinted, centered at y=300
-        ctx.textAlign = 'center';
-        ctx.fillStyle = tint[0];
-        ctx.shadowColor = tint[0];
-        ctx.shadowBlur = 40;
-        ctx.font = '280px serif';
-        ctx.fillText(info.glyph, 540, 330);
-        ctx.shadowBlur = 0;
-
-        // Sign name: 80px Cinzel, white, y=430
-        ctx.fillStyle = '#f0e8d8';
-        ctx.font = '700 80px Georgia, serif';
-        ctx.fillText(info.name.toUpperCase(), 540, 450);
-
-        // "Daily Reading": 22px tracking, gold, y=490
-        ctx.fillStyle = '#c9a227';
-        ctx.font = '300 22px Georgia, serif';
-        ctx.letterSpacing = '0.18em';
-        ctx.fillText('D A I L Y   R E A D I N G', 540, 494);
-        ctx.letterSpacing = '0';
-
-        // Date: y=530
-        ctx.fillStyle = '#A89E88';
-        ctx.font = '22px Georgia, serif';
-        var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-        ctx.fillText(dateStr.toUpperCase(), 540, 532);
-
-        // Reading text: italic Playfair 30px, silver, from y=590, max 840px wide
-        ctx.fillStyle = '#A89E88';
-        ctx.font = 'italic 30px Georgia, serif';
-        wrapText(ctx, data.overview || '', 540, 590, 840, 46, 7);
-
-        // Divider line at y=850
-        ctx.fillStyle = 'rgba(196,146,10,0.45)';
-        ctx.fillRect(120, 852, 840, 1);
-
-        // Luckies row at y=884
-        ctx.fillStyle = '#7E7565';
-        ctx.font = '24px Georgia, serif';
-        ctx.fillText('Lucky Number: ' + (data.luckyNumber || '—') + '  ·  Color: ' + (data.luckyColor || '—') + '  ·  Stone: ' + stone, 540, 884);
-
-        // Element + ruler: y=920
-        ctx.fillStyle = tint[0];
-        ctx.font = '600 20px Georgia, serif';
-        var elemLabel = info.element.charAt(0).toUpperCase() + info.element.slice(1) + ' Sign  ·  Ruled by ' + (PLANETARY_RULERS[signKey] || '');
-        ctx.fillText(elemLabel, 540, 922);
-
-        // Branding at y=1038
-        ctx.fillStyle = '#c9a227';
-        ctx.font = '600 22px Georgia, serif';
-        ctx.fillText('ASTROPRECISE · computed from the real sky', 540, 1038);
-
-        return cv;
-      }
-
-      var cardBtn = document.getElementById('srp-card-btn');
-      if (cardBtn) {
-        cardBtn.addEventListener('click', function() {
-          var active = document.querySelector('.sign-card.is-active');
-          var key = active ? active.dataset.sign : null;
-          if (!key || !window.Interpretations) return;
-          var cv = drawHoroscopeCard(key);
-          var a = document.createElement('a');
-          a.download = key + '-horoscope-' + new Date().toISOString().slice(0,10) + '.png';
-          a.href = cv.toDataURL('image/png');
-          a.click();
-          cardBtn.textContent = 'Saved';
-          setTimeout(function() { cardBtn.textContent = '↓ Download Card'; }, 2000);
-        });
-      }
-
-      // Share button — crafted copy with sign, date, and reading hook
-      var shareBtn = document.getElementById('srp-share-btn');
-      if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
-          var url = window.location.href;
-          var active = document.querySelector('.sign-card.is-active');
-          var key = active ? active.dataset.sign : null;
-          var info = key ? SIGNS[key] : null;
-          var title = 'My Daily Horoscope';
-          var text = '';
-          if (info && window.Interpretations) {
-            var d = Interpretations.getDailyHoroscope(info.name, new Date());
-            var hook = (d.overview || '').split('.')[0];
-            var dateStr = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long' });
-            title = info.glyph + ' ' + info.name + ' — ' + dateStr;
-            text = info.glyph + ' ' + info.name + ', ' + dateStr + ': "' + hook + '." — computed from the real sky at AstroPrecise';
-          }
-          if (navigator.share) {
-            navigator.share({ title: title, text: text, url: url }).catch(function(){});
-          } else {
-            navigator.clipboard.writeText(text ? text + ' ' + url : url).then(function() {
-              shareBtn.textContent = 'Copied!';
-              setTimeout(function() { shareBtn.textContent = 'Share ↗'; }, 2000);
-            }).catch(function() {
-              shareBtn.textContent = 'Share ↗';
-            });
-          }
-        });
-      }
-
-      // Dynamic planet weather from live ephemeris
-      (function updatePlanetWeather() {
-        var PLANET_INFO = [
-          { key:'sun',     symbol:'☉', name:'Sun',     descs: { Aries:'Leadership and fresh starts are energised.',Taurus:'Steady growth and sensual pleasures are highlighted.',Gemini:'Curiosity and communication are favoured.',Cancer:'Home, family, and emotional depth are centred.',Leo:'Creativity and self-expression shine brilliantly.',Virgo:'Detail, service, and refinement are in focus.',Libra:'Balance, beauty, and partnerships are blessed.',Scorpio:'Depth, intensity, and transformation are at work.',Sagittarius:'Adventure, philosophy, and optimism expand.',Capricorn:'Ambition, structure, and discipline are key.',Aquarius:'Originality, community, and vision are strong.',Pisces:'Intuition, compassion, and dreams deepen.' } },
-          { key:'moon',    symbol:'☽', name:'Moon',    descs: { Aries:'Impulses and fresh emotional starts.',Taurus:'Comfort and sensory satisfaction are craved.',Gemini:'Feelings are curious and changeable.',Cancer:'Intuition and nurturing instincts peak.',Leo:'Heart needs recognition and warmth.',Virgo:'Emotions seek order and usefulness.',Libra:'Fairness and relational harmony are needed.',Scorpio:'Emotional depth and intensity run high.',Sagittarius:'The spirit craves freedom and adventure.',Capricorn:'Practicality and emotional reserve dominate.',Aquarius:'Detachment and idealism colour the feelings.',Pisces:'Sensitivity and empathy are at their peak.' } },
-          { key:'mercury', symbol:'☿', name:'Mercury', descs: { Aries:'Sharp, direct, and fast-acting communication.',Taurus:'Deliberate, practical, and sensory thinking.',Gemini:'Agile, witty, and multi-threaded ideas.',Cancer:'Intuitive, nurturing, and memory-linked thoughts.',Leo:'Dramatic, confident, and expressive communication.',Virgo:'Precise, analytical, and detail-oriented thinking.',Libra:'Diplomatic, balanced, and aesthetically-minded ideas.',Scorpio:'Deep, investigative, and strategically sharp thinking.',Sagittarius:'Expansive, philosophical, and far-ranging thoughts.',Capricorn:'Structured, strategic, and long-term planning.',Aquarius:'Innovative, abstract, and forward-thinking ideas.',Pisces:'Imaginative, intuitive, and poetic communication.' } },
-          { key:'venus',   symbol:'♀', name:'Venus',   descs: { Aries:'Bold, impulsive, and pioneering in love and art.',Taurus:'Sensual, loyal, and luxury-loving.',Gemini:'Flirtatious, playful, and intellectually stimulated.',Cancer:'Tender, protective, and deeply feeling in love.',Leo:'Passionate, generous, and dramatically romantic.',Virgo:'Refined, thoughtful, and devoted in relationships.',Libra:'Harmonious, charming, and deeply relational.',Scorpio:'Intense, magnetic, and transformatively deep.',Sagittarius:'Free-spirited, adventurous, and expansive in love.',Capricorn:'Loyal, ambitious, and status-conscious in love.',Aquarius:'Unconventional, idealistic, and freedom-honouring.',Pisces:'Compassionate, romantic, and spiritually attuned.' } },
-          { key:'mars',    symbol:'♂', name:'Mars',    descs: { Aries:'Primal drive and decisive action surge.',Taurus:'Slow-building but unstoppable determination.',Gemini:'Scattered energy applied with wit and speed.',Cancer:'Protective drives and emotional defence.',Leo:'Bold, dramatic, and fiercely proud action.',Virgo:'Precise, methodical, and critically applied energy.',Libra:'Conflict avoided; energy flows through cooperation.',Scorpio:'Strategic, focused, and intensely purposeful.',Sagittarius:'Restless expansion and inspired pursuit.',Capricorn:'Disciplined, ambitious, and patient effort.',Aquarius:'Rebellious energy for humanitarian causes.',Pisces:'Elusive energy best channelled through creativity.' } },
-          { key:'jupiter', symbol:'♃', name:'Jupiter', descs: { Aries:'Fortune through bold starts and leadership.',Taurus:'Abundance through patience and steady growth.',Gemini:'Expansion through learning and communication.',Cancer:'Growth through family, home, and emotional wisdom.',Leo:'Prosperity through creativity and generous leadership.',Virgo:'Expansion through service, skill, and health.',Libra:'Fortune through fairness, beauty, and partnership.',Scorpio:'Growth through depth, research, and transformation.',Sagittarius:'Most naturally at home — wide horizons beckon.',Capricorn:'Structure, achievement, and long-term building flourish.',Aquarius:'Innovation, community, and future-building expand.',Pisces:'Spiritual wisdom, compassion, and artistic flow grow.' } },
-          { key:'saturn',  symbol:'♄', name:'Saturn',  descs: { Aries:'Boundaries on impulse; patience is the lesson.',Taurus:'Slow, steady discipline applied to material life.',Gemini:'Structure needed in communication and learning.',Cancer:'Emotional boundaries and family responsibilities.',Leo:'Humility tempers pride; creativity takes real effort.',Virgo:'High standards and practical mastery are forged.',Libra:'Relationships require real commitment and fairness.',Scorpio:'Deep transformation demands surrender of control.',Sagittarius:'Beliefs and philosophies are tested and refined.',Capricorn:'Mastery earned through sustained discipline and ambition.',Aquarius:'Responsibility to community and innovation is required.',Pisces:'Boundaries around the formless must be carefully held.' } },
-        ];
-
-        function tryUpdate() {
-          if (!window.AstroEphemeris || typeof AstroEphemeris.calculateNatalChart !== 'function') {
-            setTimeout(tryUpdate, 300); return;
-          }
-          var now = new Date();
-          var raw = AstroEphemeris.calculateNatalChart(now.getUTCFullYear(), now.getUTCMonth()+1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 51.5, 0);
-          if (!raw || !raw.positions) return;
-
-          // Update main planet grid
-          var container = document.getElementById('todays-sky');
-          if (container) {
-            container.innerHTML = '';
-            PLANET_INFO.forEach(function(p) {
-              var pos = raw.positions[p.key];
-              if (!pos) return;
-              var sign = pos.sign || 'Aries';
-              var deg = Math.floor(pos.degree || 0);
-              var rx = pos.retrograde ? ' <span class="retrograde-badge" aria-label="retrograde">Rx</span>' : '';
-              var desc = p.descs[sign] || 'Planetary energies are active and notable.';
-              var card = document.createElement('div');
-              card.className = 'planet-weather-card';
-              card.innerHTML = '<span class="planet-weather-card__symbol" aria-hidden="true">' + p.symbol + '</span>' +
-                '<span class="planet-weather-card__name">' + p.name + '</span>' +
-                '<span class="planet-weather-card__position">' + sign + ' ' + deg + '°' + rx + '</span>' +
-                '<span class="planet-weather-card__desc">' + desc + '</span>';
-              container.appendChild(card);
-            });
-          }
-
-          // Update live planets strip
-          var strip = document.getElementById('planets-strip-inner');
-          if (strip) {
-            strip.innerHTML = '';
-            PLANET_INFO.forEach(function(p) {
-              var pos = raw.positions[p.key];
-              if (!pos) return;
-              var sign = pos.sign || 'Aries';
-              var deg = Math.floor(pos.degree || 0);
-              var rxHtml = pos.retrograde ? '<span class="planet-pill__rx">Rx</span>' : '';
-              var pill = document.createElement('div');
-              pill.className = 'planet-pill';
-              pill.dataset.planet = p.name;
-              pill.innerHTML = '<span class="planet-pill__symbol">' + p.symbol + '</span>' +
-                '<span class="planet-pill__info"><span class="planet-pill__sign">' + sign + '</span> ' + deg + '°' + rxHtml + '</span>';
-              strip.appendChild(pill);
-            });
-          }
-        }
-        tryUpdate();
-      })();
-
-      // Cosmic status bar: void moon, planetary hour, retrogrades
-      (function updateCosmicStatus() {
-        function tryStatus() {
-          if (!window.AstroEphemeris || !window.AstroOracle) { setTimeout(tryStatus, 400); return; }
-          var now = new Date();
-          var raw = AstroEphemeris.calculateNatalChart(now.getUTCFullYear(), now.getUTCMonth()+1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 51.5, 0);
-          if (!raw) return;
-
-          // Retrograde display
-          var PLANETS_RX = [
-            {key:'mercury',glyph:'☿'},{key:'venus',glyph:'♀'},{key:'mars',glyph:'♂'},
-            {key:'jupiter',glyph:'♃'},{key:'saturn',glyph:'♄'},{key:'uranus',glyph:'♅'},
-            {key:'neptune',glyph:'♆'},{key:'pluto',glyph:'♇'},
-          ];
-          var retroList = PLANETS_RX.filter(function(p){ return raw.positions && raw.positions[p.key] && raw.positions[p.key].retrograde; });
-          var rxEl = document.getElementById('retrogrades-list');
-          if (rxEl) {
-            rxEl.textContent = retroList.length
-              ? retroList.map(function(p){ return p.glyph + ' ' + p.key.charAt(0).toUpperCase()+p.key.slice(1); }).join('  ·  ')
-              : 'No planets retrograde';
-          }
-
-          // Void of course moon
-          var voc = AstroOracle.getVoidOfCourseMoon ? AstroOracle.getVoidOfCourseMoon(now) : null;
-          var vocBadge = document.getElementById('void-moon-badge');
-          if (voc && voc.isVoid && vocBadge) {
-            vocBadge.style.display = 'flex';
-            var vocSign = document.getElementById('void-moon-sign');
-            if (vocSign) vocSign.textContent = '— moon in ' + (voc.moonSign || '') + ', no major aspects until sign change';
-          }
-
-          // Planetary hour
-          var ph = AstroOracle.getPlanetaryHour ? AstroOracle.getPlanetaryHour(now, 51.5, 0) : null;
-          if (ph) {
-            var phName = document.getElementById('ph-name');
-            var phGlyph = document.getElementById('ph-glyph');
-            var PH_GLYPHS = {Sun:'☉',Moon:'☽',Mercury:'☿',Venus:'♀',Mars:'♂',Jupiter:'♃',Saturn:'♄'};
-            if (phName) phName.textContent = ph.planet;
-            if (phGlyph) phGlyph.textContent = PH_GLYPHS[ph.planet] || '◷';
-          }
-        }
-        tryStatus();
-      })();
-
-      // Dynamic weekly forecast via Oracle
-      (function updateWeeklyForecast() {
-        function tryUpdate() {
-          if (!window.AstroOracle || typeof AstroOracle.getDailyInsight !== 'function') {
-            setTimeout(tryUpdate, 400); return;
-          }
-          var container = document.getElementById('weekly-forecast');
-          if (!container) return;
-          container.innerHTML = '';
-          var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-          var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          var today = new Date();
-          for (var i = 0; i < 5; i++) {
-            var d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
-            var insight = AstroOracle.getDailyInsight(null, d);
-            var dateStr = DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
-            var div = document.createElement('div');
-            div.className = 'transit-item' + (i === 0 ? ' transit-item--major' : '') + ' animate-in';
-            var headline = (insight.headline && String(insight.headline).trim())
-              ? insight.headline
-              : ('Sky note — ' + dateStr);
-            var body = (insight.body && String(insight.body).trim())
-              ? insight.body
-              : 'Transit themes update as the live sky shifts.';
-            div.innerHTML = '<p class="transit-item__date">' + dateStr + '</p>' +
-              '<h3 class="transit-item__title">' + headline + '</h3>' +
-              '<p class="transit-item__desc">' + body + '</p>';
-            container.appendChild(div);
-          }
-        }
-        tryUpdate();
-      })();
-
-      // Auto-open from ?sign= URL param (wait for Interpretations to load)
-      var params = new URLSearchParams(window.location.search);
-      var signParam = params.get('sign');
-      if (signParam && SIGNS[signParam]) {
-        function tryAutoOpen() {
-          if (window.Interpretations && typeof Interpretations.getDailyHoroscope === 'function') {
-            selectSign(signParam);
-          } else {
-            setTimeout(tryAutoOpen, 150);
-          }
-        }
-        setTimeout(tryAutoOpen, 300);
-      } else if (userSign && SIGNS[userSign]) {
-        // Auto-open user's own sign on first load (no URL param)
-        function tryAutoOpenUser() {
-          if (window.Interpretations && typeof Interpretations.getDailyHoroscope === 'function') {
-            selectSign(userSign, { skipSpin: true });
-          } else {
-            setTimeout(tryAutoOpenUser, 150);
-          }
-        }
-        setTimeout(tryAutoOpenUser, 1100);
-      }
-    });
+      }, { rootMargin: '240px 0px', threshold: 0 });
+      io.observe(sub);
+      sub.addEventListener('focusin', bootSubscribe, { once: true });
+    } else {
+      window.addEventListener('load', function () { scheduleIdle(bootSubscribe, 8000); }, { once: true });
+    }
+    window.addEventListener('load', function () {
+      scheduleIdle(bootAmbient, 5000);
+      scheduleIdle(bootHeavy, 12000);
+    }, { once: true });
   })();
   </script>
-
-  <!-- JS -->
-  <script src="js/cosmos.js"></script>
-  <script src="js/oracle.js"></script>
-  <script src="js/chart-render.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
 </body>
 </html>

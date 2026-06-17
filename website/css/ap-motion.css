@@ -1,0 +1,430 @@
+/**
+ * AstroPrecise — Motion token system + GPU-safe animation utilities (ap-v314)
+ * transform/opacity only · respects prefers-reduced-motion · no layout thrash
+ */
+
+/* ── 1. Motion tokens ───────────────────────────────────────────────────── */
+:root {
+  --ap-motion-instant:  120ms;
+  --ap-motion-fast:     200ms;
+  --ap-motion-base:     350ms;
+  --ap-motion-slow:     550ms;
+  --ap-motion-dramatic: 900ms;
+  --ap-motion-ambient:  5s;
+  --ap-motion-loop:     9s;
+
+  --ap-ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ap-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ap-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ap-ease-linear: linear;
+
+  --ap-rise-sm: 12px;
+  --ap-rise-md: 18px;
+  --ap-rise-lg: 28px;
+
+  --ap-stagger-1: 70ms;
+  --ap-stagger-2: 140ms;
+  --ap-stagger-3: 210ms;
+  --ap-stagger-4: 280ms;
+  --ap-stagger-5: 350ms;
+  --ap-stagger-6: 420ms;
+}
+
+/* ── 2. Global reduced-motion gate ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ap-motion-instant:  1ms;
+    --ap-motion-fast:     1ms;
+    --ap-motion-base:     1ms;
+    --ap-motion-slow:     1ms;
+    --ap-motion-dramatic: 1ms;
+    --ap-motion-ambient:  1ms;
+    --ap-motion-loop:     1ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .reveal-init > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ── 3. Core keyframes (compositor-only) ───────────────────────────────── */
+@keyframes ap-rise-in {
+  from { opacity: 0; transform: translate3d(0, var(--ap-rise-md), 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes ap-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ap-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes ap-gold-gleam {
+  0%, 100% { background-position: 0% center; }
+  50%      { background-position: 100% center; }
+}
+
+@keyframes ap-ring-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.85; transform: scale(1.03); }
+}
+
+@keyframes ap-draw-ring {
+  from { stroke-dashoffset: 1; opacity: 0.35; }
+  to   { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes ap-pulse-gold {
+  0%, 100% { opacity: 0.65; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes ap-tab-glow {
+  from { opacity: 0; transform: scaleX(0.6); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes ap-ticker-shimmer {
+  0%   { transform: translate3d(-100%, 0, 0); opacity: 0; }
+  12%  { opacity: 0.55; }
+  88%  { opacity: 0.55; }
+  100% { transform: translate3d(200%, 0, 0); opacity: 0; }
+}
+
+/* ── 4. Utility classes (apply or compose) ─────────────────────────────── */
+.ap-rise-in {
+  opacity: 0;
+  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+  will-change: transform, opacity;
+}
+
+.ap-fade-in {
+  opacity: 0;
+  animation: ap-fade-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+}
+
+.ap-scale-in {
+  opacity: 0;
+  animation: ap-scale-in var(--ap-motion-slow) var(--ap-ease-out) forwards;
+  will-change: transform, opacity;
+}
+
+.ap-gold-gleam {
+  background-image: linear-gradient(
+    110deg,
+    #8c6a2f 0%, #c9a227 22%, #f2dfa7 42%, #c9a227 58%, #c8b88f 85%, #9db36a 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ap-gold-gleam {
+    animation: ap-gold-gleam var(--ap-motion-loop) var(--ap-ease-in-out) infinite;
+  }
+}
+
+.ap-ring-breathe {
+  animation: ap-ring-breathe var(--ap-motion-loop) var(--ap-ease-in-out) infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.ap-draw-ring {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ap-draw-ring var(--ap-motion-dramatic) var(--ap-ease-out) forwards;
+}
+
+.ap-pulse-gold {
+  animation: ap-pulse-gold 2.2s var(--ap-ease-in-out) infinite;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* Stagger children — parent gets .ap-stagger-in, delays via nth-child */
+.ap-stagger-in > * {
+  opacity: 0;
+  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+}
+.ap-stagger-in > *:nth-child(1) { animation-delay: var(--ap-stagger-1); }
+.ap-stagger-in > *:nth-child(2) { animation-delay: var(--ap-stagger-2); }
+.ap-stagger-in > *:nth-child(3) { animation-delay: var(--ap-stagger-3); }
+.ap-stagger-in > *:nth-child(4) { animation-delay: var(--ap-stagger-4); }
+.ap-stagger-in > *:nth-child(5) { animation-delay: var(--ap-stagger-5); }
+.ap-stagger-in > *:nth-child(6) { animation-delay: var(--ap-stagger-6); }
+
+.ap-delay-1 { animation-delay: var(--ap-stagger-1) !important; }
+.ap-delay-2 { animation-delay: var(--ap-stagger-2) !important; }
+.ap-delay-3 { animation-delay: var(--ap-stagger-3) !important; }
+.ap-delay-4 { animation-delay: var(--ap-stagger-4) !important; }
+
+/* chart.html uses .animate-in before main.css idle-loads — alias here */
+.animate-in {
+  opacity: 0;
+  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+}
+.animate-in--delay-1 { animation-delay: var(--ap-stagger-1); }
+.animate-in--delay-2 { animation-delay: var(--ap-stagger-2); }
+.animate-in--delay-3 { animation-delay: var(--ap-stagger-3); }
+.animate-in--delay-4 { animation-delay: var(--ap-stagger-4); }
+
+/* ── 5. effects.js companions (main.css may defer) ─────────────────────── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 10000;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, var(--gold, #c9a227), var(--gold-pale, #e8e0d0), var(--gold, #c9a227));
+  box-shadow: 0 0 8px rgba(201, 162, 39, 0.5);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.has-spotlight { position: relative; }
+
+.spotlight-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ap-motion-slow) var(--ap-ease-out);
+  background: radial-gradient(
+    380px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(212, 168, 32, 0.08),
+    rgba(91, 127, 199, 0.05) 35%,
+    transparent 65%);
+}
+
+.has-spotlight:hover .spotlight-layer { opacity: 1; }
+
+.reveal-init {
+  position: relative;
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-init > * {
+  opacity: 0;
+  transform: translate3d(0, var(--ap-rise-md), 0);
+  transition:
+    opacity var(--ap-motion-slow) var(--ap-ease-out),
+    transform var(--ap-motion-slow) var(--ap-ease-out);
+  will-change: transform, opacity;
+}
+
+.reveal-init.revealed > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── 6. Zone hooks (no HTML changes required) ──────────────────────────── */
+
+/* Homepage lite — instrument rail (opt-in: .ap-stagger-in on track) */
+html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile {
+  opacity: 0;
+  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+}
+html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(1) { animation-delay: 0.08s; }
+html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(2) { animation-delay: 0.16s; }
+html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(3) { animation-delay: 0.24s; }
+html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(4) { animation-delay: 0.32s; }
+html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(5) { animation-delay: 0.40s; }
+html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(6) { animation-delay: 0.48s; }
+
+html.ap-lite-hero .ap-lite-rail__tile {
+  transition: transform var(--ap-motion-fast) var(--ap-ease-out);
+}
+html.ap-lite-hero .ap-lite-rail__tile:hover,
+html.ap-lite-hero .ap-lite-rail__tile:focus-visible {
+  transform: translate3d(0, -3px, 0);
+}
+
+/* Sky dock — one-shot rise when panel carries utility class */
+html.ap-lite-hero .hero__sky-dock .live-sky-dock-panel.ap-rise-in {
+  opacity: 0;
+  transform: translate3d(0, var(--ap-rise-sm), 0);
+  animation: ap-rise-in var(--ap-motion-slow) var(--ap-ease-out) 0.2s forwards;
+}
+
+/* Chart — big-three stagger when results mount */
+.page-chart .big-three-grid.ap-stagger-in > .big-three-card,
+.page-chart #chart-result:not(.hidden) .big-three-grid > .big-three-card {
+  opacity: 0;
+  animation: ap-scale-in var(--ap-motion-slow) var(--ap-ease-out) forwards;
+}
+.page-chart #chart-result:not(.hidden) .big-three-grid > .big-three-card:nth-child(1) { animation-delay: var(--ap-stagger-1); }
+.page-chart #chart-result:not(.hidden) .big-three-grid > .big-three-card:nth-child(2) { animation-delay: var(--ap-stagger-2); }
+.page-chart #chart-result:not(.hidden) .big-three-grid > .big-three-card:nth-child(3) { animation-delay: var(--ap-stagger-3); }
+
+.page-chart .chart-wheel-stage__halo {
+  animation: ap-ring-breathe var(--ap-motion-loop) var(--ap-ease-in-out) infinite;
+}
+
+.page-chart .tab-trigger[aria-selected="true"]::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold, #c9a227), transparent);
+  animation: ap-tab-glow var(--ap-motion-base) var(--ap-ease-out) forwards;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.page-chart .tab-trigger { position: relative; }
+
+/* Horoscope — sign pick + reading panel (opt-in stagger on .sign-grid.ap-stagger-in) */
+.sign-grid.ap-stagger-in > .sign-card {
+  opacity: 0;
+  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+}
+.sign-grid.ap-stagger-in > .sign-card:nth-child(1)  { animation-delay: calc(var(--ap-stagger-1) * 0.5); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(2)  { animation-delay: calc(var(--ap-stagger-1) * 1); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(3)  { animation-delay: calc(var(--ap-stagger-1) * 1.5); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(4)  { animation-delay: calc(var(--ap-stagger-1) * 2); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(5)  { animation-delay: calc(var(--ap-stagger-2) * 1.5); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(6)  { animation-delay: calc(var(--ap-stagger-2) * 2); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(7)  { animation-delay: calc(var(--ap-stagger-3) * 1.5); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(8)  { animation-delay: calc(var(--ap-stagger-3) * 2); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(9)  { animation-delay: calc(var(--ap-stagger-4) * 1.5); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(10) { animation-delay: calc(var(--ap-stagger-4) * 2); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(11) { animation-delay: calc(var(--ap-stagger-5) * 1.5); }
+.sign-grid.ap-stagger-in > .sign-card:nth-child(12) { animation-delay: calc(var(--ap-stagger-5) * 2); }
+
+.sign-card.is-active .sign-card__glyph,
+.sign-card.is-active .sign-card__name {
+  animation: ap-pulse-gold 2.4s var(--ap-ease-in-out) infinite;
+  display: inline-block;
+  transform-origin: center;
+}
+
+.sign-reading-panel.is-open .sign-reading-panel__inner {
+  animation: ap-scale-in var(--ap-motion-slow) var(--ap-ease-out) forwards;
+}
+
+.sign-reading-panel.is-open .reading-card {
+  opacity: 0;
+  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+}
+.sign-reading-panel.is-open .reading-card:nth-child(1) { animation-delay: var(--ap-stagger-1); }
+.sign-reading-panel.is-open .reading-card:nth-child(2) { animation-delay: var(--ap-stagger-2); }
+.sign-reading-panel.is-open .reading-card:nth-child(3) { animation-delay: var(--ap-stagger-3); }
+.sign-reading-panel.is-open .reading-card:nth-child(4) { animation-delay: var(--ap-stagger-4); }
+
+/* Shop — card lift uses transform only (CLS-safe) */
+.page-shop .shop-card,
+.page-shop .shopc-card {
+  transition:
+    transform var(--ap-motion-fast) var(--ap-ease-out),
+    opacity var(--ap-motion-fast) var(--ap-ease-out);
+  will-change: transform;
+}
+
+.page-shop .shopc-grid.ap-stagger-in > .shop-card,
+.page-shop .shopc-grid.ap-stagger-in > .shopc-card,
+.page-shop .shop-grid.ap-stagger-in > .shop-card {
+  opacity: 0;
+  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+}
+
+.page-shop .shop-card__img::before,
+.page-shop .shopc-card__art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 248, 230, 0.14) 50%,
+    transparent 62%);
+  transform: translate3d(-120%, 0, 0);
+  opacity: 0;
+}
+
+.page-shop .shop-card:hover .shop-card__img::before,
+.page-shop .shopc-card:hover .shopc-card__art::before {
+  animation: ap-ticker-shimmer 0.85s var(--ap-ease-out) forwards;
+}
+
+/* Instrument / ephemeris — planetary hour wheel rim draw */
+#ph-wheel circle:first-of-type {
+  stroke-dasharray: 1350;
+  stroke-dashoffset: 1350;
+  animation: ap-draw-ring 1.4s var(--ap-ease-out) forwards;
+}
+
+#ph-readout {
+  opacity: 0;
+  animation: ap-fade-in var(--ap-motion-base) var(--ap-ease-out) 0.5s forwards;
+}
+
+/* Transits ticker accent (ephemeris-adjacent instrument pages) */
+.transit-ticker,
+.planet-ticker-strip {
+  position: relative;
+  overflow: hidden;
+}
+
+.transit-ticker::after,
+.planet-ticker-strip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 162, 39, 0.08),
+    transparent);
+  transform: translate3d(-100%, 0, 0);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .transit-ticker::after,
+  .planet-ticker-strip::after {
+    animation: ap-ticker-shimmer 6s var(--ap-ease-linear) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress { display: none; }
+
+  html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile,
+  html.ap-lite-hero .hero__sky-dock .live-sky-dock-panel.ap-rise-in,
+  .sign-grid.ap-stagger-in > .sign-card,
+  .page-chart #chart-result:not(.hidden) .big-three-grid > .big-three-card,
+  .sign-reading-panel.is-open .sign-reading-panel__inner,
+  .sign-reading-panel.is-open .reading-card,
+  #ph-wheel circle:first-of-type,
+  #ph-readout {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

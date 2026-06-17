@@ -72,9 +72,9 @@ window.AstroToolCards = (() => {
       id: 'instrument',
       href: 'ephemeris.html',
       label: 'Signature Feature',
-      title: 'The Instrument',
-      desc: 'Your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, field weather, and a precession engine. Unique to AstroPrecise.',
-      cta: 'Open The Instrument',
+      title: 'Sky',
+      desc: 'The Instrument — your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, field weather, and a precession engine. Unique to AstroPrecise.',
+      cta: 'Open Sky',
       icon: 'orb',
       glyph: '⬡',
       visual: 'lightcone',
@@ -119,7 +119,7 @@ window.AstroToolCards = (() => {
           <circle cx="88" cy="52" r="8" fill="rgba(201,162,39,0.12)" stroke="#C9A227" stroke-width="0.8"/>
           <text x="88" y="55" text-anchor="middle" font-size="10" fill="#E8C872">☽</text>
           <circle cx="32" cy="68" r="5" fill="rgba(176,74,82,0.2)" stroke="#b04a52" stroke-width="0.6"/>
-          <text x="32" y="71" text-anchor="middle" font-size="7" fill="#E8C872">♈</text>
+          <image href="assets/images/seals/zodiac/aries.svg" x="27" y="62" width="10" height="12" preserveAspectRatio="xMidYMid meet"/>
         </svg>`;
       case 'numerology':
         return `<div class="ap-tool-viz ap-tool-viz--nums" aria-hidden="true">
@@ -158,7 +158,8 @@ window.AstroToolCards = (() => {
       ? `<span class="ap-tool-card__glyph" aria-hidden="true">${t.glyph}</span>`
       : `<span class="ap-tool-card__glyph" aria-hidden="true">${icon(t.icon)}</span>`;
     return `
-      <a href="${esc(t.href)}" class="ap-tool-card${t.wide ? ' ap-tool-card--wide' : ''}" role="listitem" aria-label="${esc(t.title)}">
+      <li>
+      <a href="${esc(t.href)}" class="ap-tool-card${t.wide ? ' ap-tool-card--wide' : ''}">
         <div class="ap-tool-card__visual">${visualHtml(t.visual)}</div>
         <div class="ap-tool-card__body">
           ${glyph}
@@ -168,17 +169,18 @@ window.AstroToolCards = (() => {
           <span class="ap-tool-card__badge">${esc(t.badge)}</span>
           <span class="ap-tool-card__cta" aria-hidden="true">${esc(t.cta)} &rarr;</span>
         </div>
-      </a>`;
+      </a>
+      </li>`;
   }
 
   function render(host) {
     if (!host) return;
     host.innerHTML = `
       <header class="ap-free-core__head">
-        <p class="shop-section-title" style="justify-content:center;"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Free core — cast before you buy</p>
+        <h2 class="shop-section-title" style="justify-content:center;"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Free core — cast before you buy</h2>
         <p class="ap-free-core__sub">Every paid piece is generated from a chart you calculate here. These instruments are free, offline-capable, and never send birth data to a server.</p>
       </header>
-      <div class="ap-tools-bento sacred-geo" role="list">${TOOLS.map(cardHtml).join('')}</div>`;
+      <ul class="ap-tools-bento sacred-geo">${TOOLS.map(cardHtml).join('')}</ul>`;
   }
 
   function init() {

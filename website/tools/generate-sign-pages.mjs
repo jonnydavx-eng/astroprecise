@@ -9,6 +9,7 @@ import { writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { CONSTELLATIONS } from './constellations.mjs';
+import { footerBlockHtml } from './footer-model.mjs';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE_URL = 'https://astroprecise.app';
@@ -189,7 +190,7 @@ const SIGN_LIST = SIGNS.map(s => ({ key: s.key, name: s.name, glyph: s.glyph }))
 function navShell() {
   return `
         <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -197,7 +198,51 @@ function navShell() {
           </button>
         </div>
       </div>
-      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation" aria-hidden="true"></div>`;
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>`;
+}
+
+function faqSection(s) {
+  const items = [
+    {
+      q: `What are the ${s.name} zodiac dates?`,
+      a: `${s.name} season runs ${s.dates}. People born in this window have their Sun in ${s.name}.`,
+    },
+    {
+      q: `What element and ruling planet is ${s.name}?`,
+      a: `${s.name} is a ${s.element} sign of the ${s.modality} modality, ruled by ${s.ruler}. Its symbol is ${s.symbol}.`,
+    },
+    {
+      q: `Which signs are most compatible with ${s.name}?`,
+      a: `${s.name} is traditionally most compatible with ${s.matches.join(', ')}. Full synastry depends on the complete birth charts of both people, not Sun signs alone.`,
+    },
+    {
+      q: `What are the main ${s.name} personality traits?`,
+      a: `${s.name} is known for being ${s.strengths.slice(0, 3).map(t => t.toLowerCase()).join(', ')}. Its growth edges include ${s.challenges.slice(0, 2).map(t => t.toLowerCase()).join(' and ')}. As a ${s.modality} ${s.element} sign ruled by ${s.ruler}, ${s.name} carries the keyword "${s.keyword}".`,
+    },
+    {
+      q: `Is ${s.name} rare?`,
+      a: `No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but ${s.name} is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind.`,
+    },
+    {
+      q: `What is the ${s.name} symbol and ruling body?`,
+      a: `The symbol of ${s.name} is ${s.symbol}, and it is ruled by ${s.ruler}. Its polarity is ${s.polarity.toLowerCase()}, it is traditionally associated with ${s.bodyPart.toLowerCase()}, and its corresponding tarot card is ${s.tarot}.`,
+    },
+  ];
+  return `
+    <section class="section" aria-labelledby="faq-heading">
+      <div class="container">
+        <h2 class="section__title" id="faq-heading">${s.name} — Frequently Asked Questions</h2>
+        <div class="sign-faq">
+          <div class="sign-faq__list">
+            ${items.map(item => `
+            <details class="sign-faq__item">
+              <summary>${item.q}</summary>
+              <p>${item.a}</p>
+            </details>`).join('')}
+          </div>
+        </div>
+      </div>
+    </section>`;
 }
 
 function page(s) {
@@ -265,7 +310,7 @@ function page(s) {
       {
         '@type': 'Question',
         name: `What is the ${s.name} symbol and ruling body?`,
-        acceptedAnswer: { '@type': 'Answer', text: `The symbol of ${s.name} is ${s.symbol} (glyph ${s.glyph}), and it is ruled by ${s.ruler}. Its polarity is ${s.polarity.toLowerCase()}, it is traditionally associated with ${s.bodyPart.toLowerCase()}, and its corresponding tarot card is ${s.tarot}.` },
+        acceptedAnswer: { '@type': 'Answer', text: `The symbol of ${s.name} is ${s.symbol}, and it is ruled by ${s.ruler}. Its polarity is ${s.polarity.toLowerCase()}, it is traditionally associated with ${s.bodyPart.toLowerCase()}, and its corresponding tarot card is ${s.tarot}.` },
       },
     ],
   };
@@ -278,7 +323,6 @@ function page(s) {
   <meta name="description" content="${desc}" />
   <title>${title}</title>
   <link rel="canonical" href="${url}" />
-  <link rel="stylesheet" href="css/fonts.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <meta property="og:type" content="article" />
@@ -292,128 +336,98 @@ function page(s) {
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
   <meta name="theme-color" content="#050406" />
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="preload" href="assets/images/zodiac-cards/${s.key}.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/sign-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <style>
+    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    /* Constellation reserve — sign-page.css is audit-deferred */
+    .sign-hero__constellation{max-width:280px;margin:0 auto 1rem;min-height:175px;contain:layout style}
+    .sign-hero__constellation svg{display:block;width:100%;height:auto;aspect-ratio:320/200}
+    /* LCP shell — system fonts paint before deferred webfonts (h1 + card are LCP candidates) */
+    .sign-hero h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 700;
+      color: #e8e6e3;
+      line-height: 1.1;
+      margin: 0 0 0.5rem;
+    }
+    .sign-hero__dates {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 0.875rem;
+      color: #c9a227;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .sign-hero__card-picture {
+      width: clamp(150px, 22vw, 230px);
+    }
+    .sign-hero__card-img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+    }
+    /* Hero seal — celestial-seals.css audit-deferred */
+    .sign-hero__seal:not(:has(.ap-seal)) {
+      display: inline-block;
+      min-height: 4.5rem;
+      min-width: 4.5rem;
+    }
+    /* Today section — sign-page.css audit-deferred; boot paints full grid */
+    #today-date { min-height: 1.35rem; }
+    #today-reading {
+      min-height: 520px;
+      contain: layout style;
+    }
+    .today-reading.is-loading .card { min-height: 460px; }
+    /* FAQ accordion — sign-page.css audit-deferred */
+    .sign-faq__list {
+      min-height: 400px;
+      contain: layout style;
+    }
+    .sign-faq__item summary { min-height: 44px; }
+    /* Thumb grid — 12 cards, ~3 rows on mobile */
+    .sign-thumb-grid {
+      min-height: 480px;
+      contain: layout style;
+    }
+    .sign-thumb img {
+      display: block;
+      width: 100%;
+      max-width: 92px;
+      height: auto;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+    }
+    /* Footer — main.css grid audit-deferred */
+    .footer .footer-inner {
+      min-height: 540px;
+      contain: layout style;
+    }
+  </style>
+  <script src="js/defer-page-css.js" defer></script>
+  <script src="js/ap-sign-defer-boot.js" defer></script>
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   <script type="application/ld+json">${JSON.stringify(breadcrumbLd)}</script>
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
-  <style>
-    .sign-hero { text-align: center; padding: calc(var(--nav-height,72px) + 2.5rem) var(--space-4) var(--space-10); position: relative; z-index: 1; }
-    .sign-hero__inner { display: flex; gap: clamp(1.5rem,4vw,3.5rem); align-items: center; justify-content: center; max-width: 860px; margin: 0 auto; }
-    .sign-hero__card-img {
-      flex-shrink: 0; width: clamp(150px, 22vw, 230px);
-      border-radius: 14px; display: block;
-      border: 1px solid rgba(201,162,39,0.38);
-      box-shadow: 0 12px 48px rgba(0,0,0,0.65), 0 0 0 1px rgba(201,162,39,0.14),
-                  0 0 40px rgba(201,162,39,0.12);
-      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
-    }
-    .sign-hero__card-img:hover { transform: translateY(-6px) rotate(-1deg); box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,162,39,0.3), 0 0 48px rgba(201,162,39,0.22); }
-    .sign-hero__content { text-align: center; }
-    @media (max-width: 640px) { .sign-hero__inner { flex-direction: column; gap: 1.5rem; } .sign-hero__card-img { width: clamp(130px, 50vw, 190px); } }
-    .sign-hero__glyph { font-size: 4.5rem; line-height: 1; display: block; margin-bottom: var(--space-4);
-      background: linear-gradient(180deg, #f2dfa7 0%, #c9a227 60%, #8c6a2f 100%);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 18px rgba(196,146,10,0.4)); }
-    .sign-hero__constellation { max-width: 280px; margin: 0 auto var(--space-4); }
-    .sign-hero__constellation svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 14px rgba(201,162,39,0.38)); }
-    .sign-hero h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.6rem); color: var(--color-white); margin-bottom: var(--space-2); }
-    .sign-hero__dates { color: var(--color-gold); font-size: var(--text-sm); letter-spacing: 0.14em; text-transform: uppercase; }
-    .sign-hero__keyword {
-      font-family: var(--font-display); font-style: italic; font-size: 1.05rem;
-      color: rgba(239, 227, 192, 0.82); margin: var(--space-3) 0 0; letter-spacing: 0.04em;
-    }
-    body[data-element="fire"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(180, 66, 50, 0.08) 0%, transparent 70%);
-    }
-    body[data-element="earth"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(14, 92, 58, 0.08) 0%, transparent 70%);
-    }
-    body[data-element="air"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(168, 142, 88, 0.07) 0%, transparent 70%);
-    }
-    body[data-element="water"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(74, 122, 138, 0.09) 0%, transparent 70%);
-    }
-    .sign-hero__inner, .sign-hero h1 { position: relative; z-index: 1; }
-    .sign-facts { display: flex; justify-content: center; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-6); }
-    .sign-fact { text-align: center; }
-    .sign-fact__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 4px; }
-    .sign-fact__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: var(--text-base); }
-    .today-reading { max-width: 760px; margin: 0 auto; }
-    .trait-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); max-width: 760px; margin: 0 auto; }
-    @media (max-width: 640px) { .trait-cols { grid-template-columns: 1fr; } }
-    .trait-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
-    .trait-list li { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.6; padding-left: var(--space-5); position: relative; }
-    .trait-list li::before { position: absolute; left: 0; }
-    .trait-list--plus li::before {
-      content: ''; top: 0.55em; width: 5px; height: 5px;
-      background: var(--color-gold);
-      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-    }
-    .trait-list--minus li::before {
-      content: ''; top: 0.55em; width: 5px; height: 5px;
-      background: var(--crimson-light, #b04a52);
-      transform: rotate(45deg); border-radius: 1px;
-    }
-    .prose-block { max-width: 760px; margin: 0 auto; color: var(--color-silver); line-height: 1.85; font-size: var(--text-base); }
-    .match-chips { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-top: var(--space-5); }
-    .sign-thumb-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
-      gap: var(--space-3); max-width: 820px; margin: 0 auto;
-    }
-    .sign-thumb {
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      text-decoration: none; transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    .sign-thumb img {
-      width: 100%; max-width: 92px; aspect-ratio: 2 / 3; object-fit: cover; object-position: center top;
-      border-radius: 9px; border: 1px solid rgba(201,162,39,0.28);
-      box-shadow: 0 6px 22px rgba(0,0,0,0.5), 0 0 16px rgba(201,162,39,0.06);
-      transition: border-color 0.22s, box-shadow 0.22s;
-    }
-    .sign-thumb:hover { transform: translateY(-4px); }
-    .sign-thumb:hover img {
-      border-color: rgba(201,162,39,0.55);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.58), 0 0 22px rgba(201,162,39,0.14);
-    }
-    .sign-thumb__label {
-      font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--color-silver-dim); text-align: center; line-height: 1.3;
-    }
-    .sign-thumb:hover .sign-thumb__label { color: var(--color-gold-pale); }
-    .sign-thumb--current img { border-color: rgba(201,162,39,0.65); box-shadow: 0 0 20px rgba(201,162,39,0.2); }
-    .daily-reading__overview { color: var(--color-silver); line-height: 1.85; font-size: 1.05rem; margin-bottom: var(--space-6); font-family: var(--font-display); }
-    .daily-reading__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5); }
-    .daily-reading__tile {
-      padding: var(--space-4); background: rgba(201,162,39,0.06);
-      border: 1px solid rgba(201,162,39,0.18); border-radius: var(--radius-lg);
-    }
-    .daily-reading__tile-label {
-      font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--color-gold); margin-bottom: 6px; display: block;
-    }
-    .daily-reading__tile-text { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.65; margin: 0; }
-    .daily-reading__meta { display: flex; gap: var(--space-6); flex-wrap: wrap; font-size: var(--text-sm); color: var(--color-silver-dim); }
-    .daily-reading__meta strong { color: var(--color-gold); font-weight: 600; }
-    .daily-reading__note { font-size: 0.62rem; letter-spacing: 0.08em; color: var(--color-silver-dim); margin-top: var(--space-4); text-align: center; }
-    .glance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-4); max-width: 760px; margin: 0 auto; }
-    .glance-cell { padding: var(--space-4); background: rgba(201,162,39,0.06); border: 1px solid rgba(201,162,39,0.18); border-radius: var(--radius-lg); }
-    .glance-cell__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 6px; }
-    .glance-cell__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: var(--text-base); line-height: 1.4; }
-  </style>
 </head>
-<body data-element="${s.element.toLowerCase()}">
-  <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true"></canvas>
+<body class="ap-no-nav-enter" data-element="${s.element.toLowerCase()}" data-sign="${s.name}">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
+    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
+    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+  </svg>
 
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
         ${navShell()}
@@ -421,14 +435,25 @@ function page(s) {
   </header>
 
   <main id="main-content">
+    <nav class="sign-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="horoscope.html">Daily</a></li>
+        <li aria-current="page">${s.name}</li>
+      </ol>
+    </nav>
 
     <section class="sign-hero" aria-labelledby="page-title">
       <div class="sign-hero__inner">
-        <img class="sign-hero__card-img" src="assets/images/zodiac-cards/${s.key}.jpg"
-          alt="${s.name} — AstroPrecise engraved zodiac card"
-          width="230" height="345" loading="eager" decoding="async" />
+        <picture class="sign-hero__card-picture">
+          <source srcset="assets/images/zodiac-cards/${s.key}.webp" type="image/webp" />
+          <img class="sign-hero__card-img" src="assets/images/zodiac-cards/${s.key}.jpg"
+            alt="${s.name} — AstroPrecise engraved zodiac card"
+            width="230" height="345" loading="eager" decoding="async" fetchpriority="high" />
+        </picture>
         <div class="sign-hero__content">
-          <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ('<span class="sign-hero__glyph" aria-hidden="true">' + s.glyph + '</span>')}</div>
+          <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:${s.key}" data-seal-lg aria-hidden="true"></span>
+          <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ''}</div>
           <h1 id="page-title">${s.name}</h1>
           <p class="sign-hero__dates">${s.dates}</p>
           <p class="sign-hero__keyword" aria-label="Sign keyword">“${s.keyword}”</p>
@@ -437,6 +462,10 @@ function page(s) {
             <div class="sign-fact"><span class="sign-fact__label">Modality</span><span class="sign-fact__value">${s.modality}</span></div>
             <div class="sign-fact"><span class="sign-fact__label">Ruler</span><span class="sign-fact__value">${s.ruler}</span></div>
             <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">${s.symbol}</span></div>
+          </div>
+          <div class="sign-hero__actions">
+            <a href="horoscope.html?sign=${s.key}" class="btn btn--primary btn--sm">Open in Daily Hub</a>
+            <a href="chart.html" class="btn btn--outline btn--sm">Birth Chart</a>
           </div>
         </div>
       </div>
@@ -447,7 +476,7 @@ function page(s) {
         <h2 class="section__title" id="today-heading">${s.name} Horoscope Today</h2>
         <p class="section__subtitle" id="today-date" aria-live="polite"></p>
         <p class="section__subtitle" style="font-size:0.78rem;opacity:0.75;margin-top:var(--space-2);">Computed from live planetary positions — same VSOP87 engine as the orrery</p>
-        <div class="today-reading" id="today-reading" aria-live="polite">
+        <div class="today-reading is-loading" id="today-reading" aria-live="polite">
           <div class="card" style="padding:var(--space-8);">
             <p style="color:var(--color-silver);line-height:1.85;">
               Today's ${s.name} reading is calculated in your browser from real planetary positions.
@@ -491,7 +520,7 @@ function page(s) {
         <h2 class="section__title" id="love-heading">${s.name} in Love</h2>
         <p class="prose-block">${s.love}</p>
         <div class="match-chips">
-          ${s.matches.map(m => `<a class="btn btn--outline btn--sm" href="compatibility.html">Best match: ${m} →</a>`).join('\n          ')}
+          ${s.matches.map(m => `<a class="btn btn--outline btn--sm" href="compatibility.html?a=${s.key}&amp;b=${m.toLowerCase()}">Best match: ${m} →</a>`).join('\n          ')}
         </div>
       </div>
     </section>
@@ -528,7 +557,7 @@ function page(s) {
       <div class="container">
         <h2 class="section__title" id="glance-heading">${s.name} at a Glance</h2>
         <div class="glance-grid">
-          <div class="glance-cell"><span class="glance-cell__label">Symbol</span><span class="glance-cell__value">${s.glyph} &nbsp;${s.symbol}</span></div>
+          <div class="glance-cell"><span class="glance-cell__label">Symbol</span><span class="glance-cell__value"><span class="glance-cell__seal" data-celestial-seal="zodiac:${s.key}" data-seal-sm aria-hidden="true"></span>${s.symbol}</span></div>
           <div class="glance-cell"><span class="glance-cell__label">Dates</span><span class="glance-cell__value">${s.dates}</span></div>
           <div class="glance-cell"><span class="glance-cell__label">Element</span><span class="glance-cell__value">${s.element}</span></div>
           <div class="glance-cell"><span class="glance-cell__label">Modality</span><span class="glance-cell__value">${s.modality}</span></div>
@@ -541,11 +570,17 @@ function page(s) {
       </div>
     </section>
 
+    ${faqSection(s)}
+
     <section class="section section--alt" aria-labelledby="cta-heading">
       <div class="container" style="text-align:center;">
         <h2 class="section__title" id="cta-heading">Your Sun sign is one of dozens of placements</h2>
         <p class="section__subtitle">Your Moon, Rising, and every planet shape who you are. Calculate your complete birth chart — free, private, in your browser.</p>
         <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Birth Chart</a>
+        <div class="sign-cta-row">
+          <a href="shop.html#deep-reading" class="btn btn--outline">Explore Deep Reading</a>
+          <a href="shop.html" class="btn btn--outline">Visit the Cosmic Shop</a>
+        </div>
       </div>
     </section>
 
@@ -553,72 +588,21 @@ function page(s) {
       <div class="container">
         <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
-        <div class="sign-thumb-grid" role="list">
-          ${SIGNS.map(o => `<a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}" role="listitem" aria-label="${o.name} horoscope and guide${o.key === s.key ? ' (current page)' : ''}"><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="${o.name}" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a>`).join('\n          ')}
-        </div>
+        <ul class="sign-thumb-grid" aria-label="All zodiac signs">
+          ${SIGNS.map(o => `<li><a href="${o.key}.html" class="sign-thumb${o.key === s.key ? ' sign-thumb--current' : ''}"${o.key === s.key ? ' aria-current="page"' : ''}><img src="assets/images/zodiac-cards/${o.key}.jpg" alt="${o.name}" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">${o.name}</span></a></li>`).join('\n          ')}
+        </ul>
       </div>
     </section>
 
   </main>
 
-  <footer class="footer" role="contentinfo">
-    <div class="container">
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected</p>
-      </div>
-    </div>
-  </footer>
+${footerBlockHtml({ footerClass: 'footer' })}
 
-  <script src="js/raf-core.js"></script>
-  <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/horoscope-engine.js"></script>
   <script src="js/content-service.js"></script>
   <script src="js/sign-daily.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
-  <script>
-  (function() {
-    'use strict';
-    var dateEl = document.getElementById('today-date');
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
-    function paint(d) {
-      var el = document.getElementById('today-reading');
-      if (!el || !d) return;
-      el.innerHTML =
-        '<div class="card" style="padding:var(--space-8);">' +
-        '<p class="daily-reading__overview">' + d.overview + '</p>' +
-        '<div class="daily-reading__grid">' +
-        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Love</span><p class="daily-reading__tile-text">' + d.love + '</p></div>' +
-        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Career</span><p class="daily-reading__tile-text">' + d.career + '</p></div>' +
-        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Wellness</span><p class="daily-reading__tile-text">' + d.health + '</p></div>' +
-        '</div>' +
-        '<div class="daily-reading__meta">' +
-        '<span>Lucky Number <strong>' + d.luckyNumber + '</strong></span>' +
-        '<span>Lucky Color <strong>' + d.luckyColor + '</strong></span>' +
-        '</div>' +
-        '<p class="daily-reading__note">Deterministic for this date — refresh tomorrow for a new reading</p>' +
-        '</div>';
-    }
-    function render() {
-      var sign = '${s.name}';
-      var ready = window.ContentService || (window.Interpretations && Interpretations.getDailyHoroscope);
-      if (!ready) { setTimeout(render, 200); return; }
-      var run = function() {
-        var d = window.ContentService
-          ? ContentService.resolveDailyHoroscope(sign, new Date())
-          : Interpretations.getDailyHoroscope(sign, new Date());
-        paint(d);
-      };
-      if (window.ContentService && ContentService.ensureDaily) {
-        ContentService.ensureDaily(new Date()).then(run).catch(run);
-      } else run();
-    }
-    render();
-  })();
-  </script>
+  <script src="js/ap-zodiac-constants.js"></script>
+  <script src="js/sign-page-boot.js"></script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>
 `;

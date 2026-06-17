@@ -1,0 +1,15 @@
+SUBREDDIT: r/SideProject
+
+TITLE:
+I built a free birth-chart tool that computes real astronomy in your browser — no account, no tracking, no data ever leaves your device
+
+BODY:
+Two things bugged me about astrology apps: black-box math and uploading exact birth time to someone's server behind a subscription.
+
+AstroPrecise computes client-side with VSOP87/ELP2000 (~arcminute, 1800–2200). No backend, no account, no analytics. Vanilla JS static PWA, works offline.
+
+Instrument page: zenith star, birth light-cone, time-travel orrery. Chart is free forever.
+
+Feedback on (1) zero-backend approach (2) anywhere numbers look off.
+
+https://astroprecise.app/chart.html

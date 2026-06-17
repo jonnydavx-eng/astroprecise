@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="What is a synastry chart? A plain-English guide to relationship astrology — how two birth charts are overlaid, which aspects matter, and how to read compatibility. Then build your free synastry chart from the real sky." />
+  <title>Synastry Chart: Relationship Astrology Explained | AstroPrecise</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Synastry Chart: Relationship Astrology Explained | AstroPrecise" />
+  <meta property="og:description" content="Learn what a synastry chart is, which inter-aspects matter, and how to read relationship compatibility — then build your free synastry chart from real planetary positions." />
+  <meta property="og:url" content="https://astroprecise.app/synastry.html" />
+  <link rel="canonical" href="https://astroprecise.app/synastry.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Synastry Chart: Relationship Astrology Explained" />
+  <meta name="twitter:description" content="Learn what a synastry chart is, which inter-aspects matter, and how to read relationship compatibility — then build your free synastry chart." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Synastry Chart: Relationship Astrology Explained","description":"A plain-English guide to synastry — how two birth charts are overlaid to read relationship compatibility, which inter-aspects matter, and how to build your own synastry chart from the real sky.","url":"https://astroprecise.app/synastry.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Synastry"},{"@type":"Thing","name":"Relationship astrology"},{"@type":"Thing","name":"Compatibility"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Synastry Chart","item":"https://astroprecise.app/synastry.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a synastry chart?","acceptedAnswer":{"@type":"Answer","text":"A synastry chart overlays two people's birth charts to study the angles their planets make to each other. These inter-aspects describe the chemistry, friction, and rhythm between the two people across love, communication, drive, and commitment."}},{"@type":"Question","name":"What is the difference between synastry and a composite chart?","acceptedAnswer":{"@type":"Answer","text":"Synastry compares two separate charts to each other, planet by planet. A composite chart instead merges the two charts into a single new chart that represents the relationship itself as a third entity. Both are valid lenses; synastry is the more common starting point."}},{"@type":"Question","name":"Do I need both people's birth times for synastry?","acceptedAnswer":{"@type":"Answer","text":"Birth times sharpen the picture — they fix the Moon precisely and unlock the Ascendant, house overlays, and angle contacts. Synastry can still be read from dates alone using the slower-moving planets, but exact times make it far more specific."}},{"@type":"Question","name":"Which synastry aspects matter most?","acceptedAnswer":{"@type":"Answer","text":"Sun, Moon, Venus, and Mars contacts are the heart of romantic synastry. Conjunctions, trines, and sextiles tend to flow easily; squares and oppositions create tension that can be either charged attraction or recurring friction depending on the planets involved."}}]}</script>
+  <style>
+    /* ── Synastry page premium overrides (scoped, mirrors accuracy.html) ── */
+    :root {
+      --syn-gold: var(--gold, #C9A227);
+      --syn-gold-light: var(--gold-light, #EFE3C0);
+      --syn-rose: #c77da6;
+      --syn-border: rgba(232, 224, 208, 0.10);
+    }
+    .syn-hero {
+      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .syn-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(110, 26, 38, 0.20) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .syn-hero__eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--syn-gold); margin-bottom: 1.1rem;
+    }
+    .syn-hero h1 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(2rem, 5.2vw, 3.3rem);
+      font-weight: 700; line-height: 1.1; letter-spacing: 0.02em;
+      color: var(--white, #E8E0D0); margin-bottom: 1rem;
+    }
+    .syn-hero__sub {
+      font-size: 1.02rem; color: var(--silver, #A89E88);
+      line-height: 1.75; max-width: 640px; margin: 0 auto 1.75rem;
+    }
+    .syn-section { padding: 2.75rem 0; position: relative; z-index: 1; }
+    .syn-section--alt { background: var(--color-bg-2, rgba(13, 10, 7,0.5)); }
+    .syn-section__label {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700;
+      color: var(--white, #E8E0D0); text-align: center;
+      margin-bottom: 0.6rem; letter-spacing: 0.02em;
+    }
+    .syn-section__intro {
+      text-align: center; color: var(--silver, #A89E88);
+      font-size: 1rem; line-height: 1.75; max-width: 680px; margin: 0 auto 2rem;
+    }
+    .syn-prose { max-width: 740px; margin: 0 auto; }
+    .syn-prose p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.85; margin-bottom: 1.1rem; }
+    .syn-prose strong { color: var(--syn-gold-light); }
+
+    /* ── Aspect / planet cards ── */
+    .syn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.1rem; max-width: 940px; margin: 0 auto; }
+    .syn-card { padding: 1.6rem 1.5rem; }
+    .syn-card__glyph { font-size: 1.6rem; color: var(--syn-gold); display: block; margin-bottom: 0.6rem; line-height: 1; }
+    .syn-card h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.06rem; color: var(--syn-gold-light); margin-bottom: 0.5rem; letter-spacing: 0.01em;
+    }
+    .syn-card p { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
+
+    /* ── Aspect legend rows ── */
+    .syn-aspects { max-width: 760px; margin: 0 auto; display: grid; gap: 0.8rem; }
+    .syn-aspect-row {
+      display: flex; gap: 1.1rem; align-items: flex-start; padding: 1.2rem 1.4rem;
+    }
+    .syn-aspect-row__mark {
+      flex: 0 0 auto; width: 38px; height: 38px; display: inline-flex;
+      align-items: center; justify-content: center; border-radius: 50%;
+      border: 1px solid var(--syn-border); color: var(--syn-gold);
+      background: rgba(201, 162, 39, 0.08); font-size: 1.05rem;
+    }
+    .syn-aspect-row__body h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1rem; color: var(--syn-gold-light); margin-bottom: 0.3rem;
+    }
+    .syn-aspect-row__body p { font-size: 0.9rem; color: var(--silver, #A89E88); line-height: 1.65; }
+
+    /* ── Steps ── */
+    .syn-steps { max-width: 720px; margin: 0 auto; display: grid; gap: 0.9rem; counter-reset: step; }
+    .syn-step { display: flex; gap: 1.1rem; align-items: flex-start; padding: 1.2rem 1.4rem; }
+    .syn-step__num {
+      flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(201, 162, 39, 0.12); color: var(--syn-gold);
+      font-family: var(--font-display, 'Cinzel', serif); font-weight: 700; font-size: 0.95rem;
+      border: 1px solid rgba(201, 162, 39, 0.3);
+    }
+    .syn-step__body p { font-size: 0.93rem; color: var(--silver, #A89E88); line-height: 1.65; }
+    .syn-step__body strong { color: var(--syn-gold-light); }
+
+    /* ── FAQ ── */
+    .syn-faq { max-width: 740px; margin: 0 auto; display: grid; gap: 0.9rem; }
+    .syn-faq__item { padding: 1.3rem 1.5rem; }
+    .syn-faq__q { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.02rem; color: var(--syn-gold-light); margin-bottom: 0.5rem; }
+    .syn-faq__a { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
+
+    /* ── CTA ── */
+    .syn-cta { text-align: center; max-width: 660px; margin: 0 auto; padding: 2.75rem 2rem; }
+    .syn-cta h2 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.6rem, 3.6vw, 2.3rem); color: var(--white, #E8E0D0);
+      margin-bottom: 0.9rem; letter-spacing: 0.02em;
+    }
+    .syn-cta p { font-size: 1.02rem; color: var(--silver, #A89E88); line-height: 1.7; margin-bottom: 1.75rem; }
+    .syn-cta__note { font-size: 0.78rem; color: var(--silver-dim, #6E6658); margin-top: 1.1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="syn-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="syn-hero__eyebrow"><span aria-hidden="true">&#9793;</span> Relationship Astrology</p>
+        <h1 id="page-title">The Synastry Chart, Explained</h1>
+        <p class="syn-hero__sub">
+          A <strong>synastry chart</strong> lays two birth charts over one another to read the chemistry
+          between two people &mdash; the easy currents, the friction, and the deep gravitational pulls.
+          Here's how it works, which aspects matter, and how to cast your own from the real sky.
+        </p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Two full charts overlaid — measured aspects, not Sun-sign shortcuts</span></a></p>
+        <a href="compatibility.html" class="btn btn--primary btn--lg">Build Your Free Synastry Chart &rarr;</a>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHAT IS SYNASTRY
+    ============================================================ -->
+    <section class="syn-section" aria-labelledby="what-heading">
+      <div class="container">
+        <h2 class="syn-section__label" id="what-heading">What Is a Synastry Chart?</h2>
+        <p class="syn-section__intro">
+          Two complete charts, compared planet by planet &mdash; the oldest and most detailed technique in relationship astrology.
+        </p>
+        <div class="syn-prose">
+          <p>
+            A natal chart is a snapshot of the sky at one person's birth. <strong>Synastry</strong>
+            (from the Greek for &ldquo;star alignment&rdquo;) takes two of these snapshots and overlays
+            them, measuring the angles &mdash; the <em>inter-aspects</em> &mdash; that one person's planets
+            make to the other's. When your Venus sits close to their Moon, or your Mars squares their
+            Saturn, those contacts describe a specific, repeatable dynamic between you.
+          </p>
+          <p>
+            Where a single horoscope generalises across millions of people who share a Sun sign,
+            synastry is about <strong>the space between two specific charts</strong>. It doesn't predict
+            whether a relationship will &ldquo;work&rdquo; &mdash; no honest astrology does &mdash; but it
+            maps where connection comes easily, where you'll have to do conscious work, and what keeps
+            pulling you back toward each other.
+          </p>
+          <p>
+            The result is far richer than &ldquo;a Leo and a Scorpio.&rdquo; It's a portrait of how two
+            whole skies meet: your communication styles, your emotional needs, your drives, and your
+            long-term wiring, all measured against each other.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE KEY PLANETS
+    ============================================================ -->
+    <section class="syn-section syn-section--alt" aria-labelledby="planets-heading">
+      <div class="container">
+        <h2 class="syn-section__label" id="planets-heading">The Planets That Carry a Relationship</h2>
+        <p class="syn-section__intro">
+          Every planet plays a role, but four do the heavy lifting in romantic synastry.
+        </p>
+        <div class="syn-grid">
+          <div class="glass-card engraved syn-card">
+            <span class="syn-card__glyph" aria-hidden="true">&#9728;</span>
+            <h3>Sun &mdash; Identity</h3>
+            <p>How your core selves recognise and energise one another. Strong Sun contacts bring
+            mutual respect, visibility, and a sense of being seen for who you really are.</p>
+          </div>
+          <div class="glass-card engraved syn-card">
+            <span class="syn-card__glyph" aria-hidden="true">&#9789;</span>
+            <h3>Moon &mdash; Emotional Safety</h3>
+            <p>The single most important factor for lasting closeness. Moon contacts govern comfort,
+            instinctive understanding, and whether you feel at home with each other.</p>
+          </div>
+          <div class="glass-card engraved syn-card">
+            <span class="syn-card__glyph" aria-hidden="true">&#9792;</span>
+            <h3>Venus &mdash; Affection</h3>
+            <p>Love languages, tenderness, taste, and what you each find beautiful. Venus contacts are
+            the warmth and the romance &mdash; the pleasure of simply being together.</p>
+          </div>
+          <div class="glass-card engraved syn-card">
+            <span class="syn-card__glyph" aria-hidden="true">&#9794;</span>
+            <h3>Mars &mdash; Drive &amp; Spark</h3>
+            <p>Desire, initiative, and the friction that becomes either passion or conflict. Mars
+            contacts supply the heat; the aspect decides whether it warms or burns.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE ASPECTS
+    ============================================================ -->
+    <section class="syn-section" aria-labelledby="aspects-heading">
+      <div class="container">
+        <h2 class="syn-section__label" id="aspects-heading">Reading the Inter-Aspects</h2>
+        <p class="syn-section__intro">
+          An aspect is the angle between two planets. The angle &mdash; not just the planets &mdash; sets the tone.
+        </p>
+        <div class="syn-aspects">
+          <div class="glass-card engraved syn-aspect-row">
+            <span class="syn-aspect-row__mark" aria-hidden="true">&#9737;</span>
+            <div class="syn-aspect-row__body">
+              <h3>Conjunction &middot; 0&deg;</h3>
+              <p>Two planets fused together. Intense and unmistakable &mdash; their energies merge for
+              better or worse, depending on which planets meet.</p>
+            </div>
+          </div>
+          <div class="glass-card engraved syn-aspect-row">
+            <span class="syn-aspect-row__mark" aria-hidden="true">&#9651;</span>
+            <div class="syn-aspect-row__body">
+              <h3>Trine &middot; 120&deg; &nbsp;&amp;&nbsp; Sextile &middot; 60&deg;</h3>
+              <p>The flowing aspects. Ease, support, and natural harmony &mdash; gifts that can be taken
+              for granted precisely because they feel effortless.</p>
+            </div>
+          </div>
+          <div class="glass-card engraved syn-aspect-row">
+            <span class="syn-aspect-row__mark" aria-hidden="true">&#9633;</span>
+            <div class="syn-aspect-row__body">
+              <h3>Square &middot; 90&deg;</h3>
+              <p>Dynamic tension. Friction that demands growth &mdash; often the source of both the
+              strongest attraction and the most repeated arguments.</p>
+            </div>
+          </div>
+          <div class="glass-card engraved syn-aspect-row">
+            <span class="syn-aspect-row__mark" aria-hidden="true">&#9737;&#8211;&#9737;</span>
+            <div class="syn-aspect-row__body">
+              <h3>Opposition &middot; 180&deg;</h3>
+              <p>Polarity and magnetism. You see in each other what you lack &mdash; a balancing act that
+              can feel like completion or like a tug-of-war.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         HOW TO BUILD ONE
+    ============================================================ -->
+    <section class="syn-section syn-section--alt" aria-labelledby="how-heading">
+      <div class="container">
+        <h2 class="syn-section__label" id="how-heading">How to Build Your Synastry Chart</h2>
+        <p class="syn-section__intro">
+          AstroPrecise computes both charts and their inter-aspects from real planetary positions &mdash; free, and entirely in your browser.
+        </p>
+        <div class="syn-steps">
+          <div class="glass-card engraved syn-step">
+            <span class="syn-step__num">1</span>
+            <div class="syn-step__body">
+              <p>Open the <strong>Compatibility tool</strong> and enter the first person's birth date,
+              time, and place. Exact times unlock the Moon, Ascendant, and house overlays.</p>
+            </div>
+          </div>
+          <div class="glass-card engraved syn-step">
+            <span class="syn-step__num">2</span>
+            <div class="syn-step__body">
+              <p>Enter the second person's details the same way. Each chart is calculated independently
+              from the same precise astronomy engine.</p>
+            </div>
+          </div>
+          <div class="glass-card engraved syn-step">
+            <span class="syn-step__num">3</span>
+            <div class="syn-step__body">
+              <p>Read the overlay: the strongest inter-aspects, where the two charts harmonise, and where
+              they challenge each other &mdash; then <strong>share the result</strong> with a private link.</p>
+            </div>
+          </div>
+        </div>
+        <p style="text-align:center;margin-top:2rem;">
+          <a href="compatibility.html" class="btn btn--primary btn--lg">Open the Compatibility Tool &rarr;</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ
+    ============================================================ -->
+    <section class="syn-section" aria-labelledby="faq-heading">
+      <div class="container">
+        <h2 class="syn-section__label" id="faq-heading">Synastry FAQ</h2>
+        <div class="syn-faq">
+          <div class="glass-card engraved syn-faq__item">
+            <p class="syn-faq__q">What is a synastry chart?</p>
+            <p class="syn-faq__a">A synastry chart overlays two people's birth charts to study the angles their planets make to each other. These inter-aspects describe the chemistry, friction, and rhythm between the two people across love, communication, drive, and commitment.</p>
+          </div>
+          <div class="glass-card engraved syn-faq__item">
+            <p class="syn-faq__q">What is the difference between synastry and a composite chart?</p>
+            <p class="syn-faq__a">Synastry compares two separate charts to each other, planet by planet. A composite chart instead merges the two charts into a single new chart that represents the relationship itself as a third entity. Both are valid lenses; synastry is the more common starting point.</p>
+          </div>
+          <div class="glass-card engraved syn-faq__item">
+            <p class="syn-faq__q">Do I need both people's birth times for synastry?</p>
+            <p class="syn-faq__a">Birth times sharpen the picture — they fix the Moon precisely and unlock the Ascendant, house overlays, and angle contacts. Synastry can still be read from dates alone using the slower-moving planets, but exact times make it far more specific.</p>
+          </div>
+          <div class="glass-card engraved syn-faq__item">
+            <p class="syn-faq__q">Which synastry aspects matter most?</p>
+            <p class="syn-faq__a">Sun, Moon, Venus, and Mars contacts are the heart of romantic synastry. Conjunctions, trines, and sextiles tend to flow easily; squares and oppositions create tension that can be either charged attraction or recurring friction depending on the planets involved.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CTA
+    ============================================================ -->
+    <section class="syn-section syn-section--alt" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="glass-card engraved syn-cta">
+          <h2 id="cta-heading">See Your Two Charts Meet</h2>
+          <p>
+            Cast a full synastry chart from real planetary positions &mdash; two complete charts, their
+            strongest inter-aspects, and a shareable compatibility reading. Free, with nothing to sign up for.
+          </p>
+          <a href="compatibility.html" class="btn btn--primary btn--lg">Build Your Free Synastry Chart &rarr;</a>
+          <p class="syn-cta__note">No account &middot; No tracking &middot; Computed on your device</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <p class="footer__logo">&#10022; AstroPrecise</p>
+          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+        </div>
+        <div role="group" aria-label="Tools navigation">
+          <p class="footer__heading">Tools</p>
+          <ul class="footer__links">
+            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
+            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
+            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+            <li><a href="transits.html" class="footer__link">Transits</a></li>
+          </ul>
+        </div>
+        <div role="group" aria-label="About">
+          <p class="footer__heading">About</p>
+          <ul class="footer__links">
+            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
+            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+</body>
+</html>

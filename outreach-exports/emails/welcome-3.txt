@@ -1,0 +1,18 @@
+ID: welcome-3
+SECTION: welcome
+DELAY: day 5
+SUBJECT: Three free tools you haven't tried yet 🔭
+Everything below is free, runs in your browser, and uses real astronomy (VSOP87/ELP2000).
+
+1. YOUR HOROSCOPE — live sky, not a recycled column.
+   https://astroprecise.app/horoscope.html
+
+2. COMPATIBILITY — two charts, real synastry, shareable private link.
+   https://astroprecise.app/compatibility.html
+
+3. TRANSITS — what the sky is doing to YOUR chart right now.
+   https://astroprecise.app/transits.html
+
+Take one for a spin and hit reply with what surprised you.
+
+— AstroPrecise

@@ -1,30 +1,41 @@
 /**
  * Homepage — interactive zodiac sign card picker + daily reading preview.
- * Depends: sign-daily.js, element-orbs.js, icons.js (AstroElementOrbs / AstroIcons).
+ * Depends: sign-daily.js, element-seals.js, icons.js (AstroElementSeals / AstroIcons).
  */
 (function () {
   'use strict';
 
-  var SIGNS = {
-    aries:       { name: 'Aries',       dates: 'Mar 21 – Apr 19', element: 'fire' },
-    taurus:      { name: 'Taurus',      dates: 'Apr 20 – May 20', element: 'earth' },
-    gemini:      { name: 'Gemini',      dates: 'May 21 – Jun 20', element: 'air' },
-    cancer:      { name: 'Cancer',      dates: 'Jun 21 – Jul 22', element: 'water' },
-    leo:         { name: 'Leo',         dates: 'Jul 23 – Aug 22', element: 'fire' },
-    virgo:       { name: 'Virgo',       dates: 'Aug 23 – Sep 22', element: 'earth' },
-    libra:       { name: 'Libra',       dates: 'Sep 23 – Oct 22', element: 'air' },
-    scorpio:     { name: 'Scorpio',     dates: 'Oct 23 – Nov 21', element: 'water' },
-    sagittarius: { name: 'Sagittarius', dates: 'Nov 22 – Dec 21', element: 'fire' },
-    capricorn:   { name: 'Capricorn',   dates: 'Dec 22 – Jan 19', element: 'earth' },
-    aquarius:    { name: 'Aquarius',    dates: 'Jan 20 – Feb 18', element: 'air' },
-    pisces:      { name: 'Pisces',      dates: 'Feb 19 – Mar 20', element: 'water' },
-  };
+  var SIGNS = (function () {
+    var Z = window.AP_ZODIAC;
+    var out = {};
+    if (Z && Z.SIGNS) {
+      Z.SIGNS.forEach(function (s) {
+        out[s.key] = { name: s.name, dates: s.dates, element: s.element };
+      });
+      return out;
+    }
+    return {
+      aries:       { name: 'Aries',       dates: 'Mar 21 – Apr 19', element: 'fire' },
+      taurus:      { name: 'Taurus',      dates: 'Apr 20 – May 20', element: 'earth' },
+      gemini:      { name: 'Gemini',      dates: 'May 21 – Jun 20', element: 'air' },
+      cancer:      { name: 'Cancer',      dates: 'Jun 21 – Jul 22', element: 'water' },
+      leo:         { name: 'Leo',         dates: 'Jul 23 – Aug 22', element: 'fire' },
+      virgo:       { name: 'Virgo',       dates: 'Aug 23 – Sep 22', element: 'earth' },
+      libra:       { name: 'Libra',       dates: 'Sep 23 – Oct 22', element: 'air' },
+      scorpio:     { name: 'Scorpio',     dates: 'Oct 23 – Nov 21', element: 'water' },
+      sagittarius: { name: 'Sagittarius', dates: 'Nov 22 – Dec 21', element: 'fire' },
+      capricorn:   { name: 'Capricorn',   dates: 'Dec 22 – Jan 19', element: 'earth' },
+      aquarius:    { name: 'Aquarius',    dates: 'Jan 20 – Feb 18', element: 'air' },
+      pisces:      { name: 'Pisces',      dates: 'Feb 19 – Mar 20', element: 'water' },
+    };
+  })();
 
   var ELEMENT_LABELS = { fire: 'Fire', earth: 'Earth', air: 'Air', water: 'Water' };
 
-  function elementScene(el, opts) {
-    if (window.AstroElementOrbs && typeof AstroElementOrbs.scene === 'function') {
-      return AstroElementOrbs.scene(el, opts);
+  function elementSeal(el, opts) {
+    opts = opts || {};
+    if (window.AstroElementSeals && typeof AstroElementSeals.seal === 'function') {
+      return AstroElementSeals.seal(el, Object.assign({ live: true }, opts));
     }
     if (window.AstroIcons && typeof AstroIcons.element === 'function') {
       return AstroIcons.element(el, opts);
@@ -51,22 +62,22 @@
     return Interpretations.getDailyHoroscope(info.name, new Date());
   }
 
-  function wireFilterOrbs(filters) {
+  function wireFilterSeals(filters) {
     filters.forEach(function (btn) {
-      var slot = btn.querySelector('.home-sign-filter__orb');
+      var slot = btn.querySelector('.home-sign-filter__seal');
       var key = btn.dataset.filter || 'all';
-      if (slot) slot.innerHTML = elementScene(key, { sm: true });
+      if (slot) slot.innerHTML = elementSeal(key, { sm: false, live: true });
     });
   }
 
-  function wireCardElementOrbs(cards) {
+  function wireCardElementSeals(cards) {
     cards.forEach(function (card) {
       var el = card.dataset.element;
-      if (!el || card.querySelector('.home-sign-card__el-orb')) return;
+      if (!el || card.querySelector('.home-sign-card__el-seal')) return;
       var span = document.createElement('span');
-      span.className = 'home-sign-card__el-orb';
+      span.className = 'home-sign-card__el-seal';
       span.setAttribute('aria-hidden', 'true');
-      span.innerHTML = elementScene(el, { sm: true, static: true });
+      span.innerHTML = elementSeal(el, { sm: true, static: true, hidden: true });
       card.appendChild(span);
     });
   }
@@ -90,8 +101,11 @@
     var filters = document.querySelectorAll('.home-sign-filter');
     var activeKey = null;
 
-    wireFilterOrbs(filters);
-    wireCardElementOrbs(cards);
+    wireFilterSeals(filters);
+    wireCardElementSeals(cards);
+    if (window.AstroCelestialSeals && typeof AstroCelestialSeals.bindSlots === 'function') {
+      AstroCelestialSeals.bindSlots();
+    }
     setPickerAmbience(section, 'all');
 
     function setActive(signKey) {
@@ -120,8 +134,9 @@
       var guideLink = document.getElementById('hsp-guide');
 
       if (thumb) {
-        thumb.src = 'assets/images/zodiac-cards/' + signKey + '.jpg';
-        thumb.alt = info.name + ' zodiac card';
+        thumb.src = 'assets/images/seals/zodiac/' + signKey + '.svg';
+        thumb.alt = info.name + ' zodiac seal';
+        thumb.classList.add('home-sign-preview__thumb--seal');
       }
       if (nameEl) nameEl.textContent = info.name;
       if (dateEl) {
@@ -130,7 +145,7 @@
         });
       }
       if (elEl) {
-        elEl.innerHTML = elementScene(info.element, { sm: true })
+        elEl.innerHTML = elementSeal(info.element, { sm: true, static: true })
           + '<span class="home-sign-preview__element-label">' + (ELEMENT_LABELS[info.element] || '') + '</span>';
       }
       if (overview) overview.textContent = data.overview || 'Select a sign to read today\'s sky.';

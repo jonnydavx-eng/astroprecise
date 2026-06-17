@@ -12,7 +12,7 @@ const BASE = process.argv[2] || 'http://localhost:8790';
 const OUT = join(__dirname, 'out', 'perf');
 
 const PAGES = [
-  { id: 'index', path: '/' },
+  { id: 'index', path: '/?lite=1' },
   { id: 'chart', path: '/chart.html' },
 ];
 

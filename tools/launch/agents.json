@@ -1,0 +1,95 @@
+{
+  "project": "AstroPrecise",
+  "canonical": "C:\\Users\\jonny\\OneDrive\\astroprecise",
+  "site": "https://astroprecise.app",
+  "bioLink": "https://astroprecise.app/links.html",
+  "chartLink": "https://astroprecise.app/chart.html",
+  "phases": [
+    {
+      "id": "lightwork",
+      "name": "Lightwork — prep & copy packs",
+      "owner": "any agent",
+      "run": "node tools/launch/build-copy-pack.mjs && node tools/launch/lightwork-check.mjs",
+      "blocks": ["spike", "compound", "paid"]
+    },
+    {
+      "id": "owner-social",
+      "name": "Owner — create @astroprecise accounts",
+      "owner": "Jonny",
+      "guide": "marketing/SOCIAL-ACCOUNTS-SETUP.md",
+      "pasteFrom": "launch-output/social-bios/",
+      "blocks": ["postiz", "spike"]
+    },
+    {
+      "id": "owner-search",
+      "name": "Owner — GSC + Bing Webmaster",
+      "owner": "Jonny",
+      "pasteFrom": "launch-output/search-engines/CHECKLIST.md",
+      "blocks": ["seo-content"]
+    },
+    {
+      "id": "seo-content",
+      "name": "SEO squad — new landing pages",
+      "owner": "Grok / Claude",
+      "tasks": [
+        "website/what-is-my-moon-sign.html",
+        "website/big-three-astrology.html",
+        "website/mercury-retrograde-2026.html"
+      ],
+      "dependsOn": ["lightwork"],
+      "parallel": true
+    },
+    {
+      "id": "postiz",
+      "name": "Social squad — wire Postiz + schedule week 1",
+      "owner": "Hermes / Grok",
+      "run": "tools/schedule-free-traffic.ps1",
+      "dependsOn": ["owner-social"]
+    },
+    {
+      "id": "directories",
+      "name": "Launch squad — directory batch submit",
+      "owner": "any agent",
+      "pasteFrom": "launch-output/directories/",
+      "dependsOn": ["lightwork"],
+      "parallel": true
+    },
+    {
+      "id": "spike",
+      "name": "Spike squad — HN + Reddit week 1",
+      "owner": "Jonny + Grok",
+      "pasteFrom": "launch-output/spike/",
+      "dependsOn": ["owner-social", "lightwork"],
+      "calendar": "LAUNCH-WEEK-PLAYBOOK.md"
+    },
+    {
+      "id": "compound",
+      "name": "Compound — daily social + community",
+      "owner": "Hermes schedule + Grok content",
+      "dependsOn": ["spike"],
+      "calendar": "marketing/MISSION-CONTROL-CAMPAIGN.md"
+    },
+    {
+      "id": "product-hunt",
+      "name": "PH squad — 30-day prep then launch",
+      "owner": "Jonny",
+      "pasteFrom": "launch-output/product-hunt/",
+      "dependsOn": ["spike"],
+      "offsetDays": 22
+    },
+    {
+      "id": "paid",
+      "name": "Paid ads — ONLY after 1 organic sale",
+      "owner": "Jonny",
+      "gate": "lemonsqueezy_first_organic_order",
+      "dependsOn": ["compound"]
+    }
+  ],
+  "parallelSquads": {
+    "lightwork_batch": [
+      { "agent": "copy-pack", "script": "node tools/launch/build-copy-pack.mjs" },
+      { "agent": "prep-check", "script": "node tools/launch/lightwork-check.mjs" },
+      { "agent": "outreach-export", "script": "node tools/export-outreach.mjs" }
+    ]
+  }
+}

@@ -68,11 +68,11 @@ export function chartRulerNarrative(ruler, pos, rulerName, pInterp, hMeaning) {
   return `Because your Ascendant is ruled by <strong>${rulerName}</strong>, the whole chart routes through ${rulerName} at ${fmt(r.lon)} in ${r.sign} (${ord(r.house)} house — ${hMeaning(r.house).keyword}). ${sents(pInterp(rulerName, r.sign), 2)} This planet is your chart's conductor: when it is honoured, the rest of the orchestra follows.`;
 }
 
-export function mcCareerBlock(M, mcLon, pInterp, hMeaning, sentsFn) {
+export function mcCareerBlock(M, mcLon, sunSign, pInterp, hMeaning, sentsFn) {
   const hm = hMeaning(10);
   return `
   <h3>MC · Midheaven in ${M.sign} — ${hm.keyword}</h3>
-  <p>Your Midheaven at ${fmt(mcLon)} is the chart's public apex — the direction your life is seen to climb. ${sentsFn(pInterp('Sun', M.sign), 2)} ${sentsFn(hm.meaning, 1)}</p>`;
+  <p>Your Midheaven at ${fmt(mcLon)} is the chart's public apex — the direction your life is seen to climb. Your <strong>Sun in ${sunSign}</strong> fuels that climb — ${sentsFn(pInterp('Sun', sunSign), 2)} ${sentsFn(hm.meaning, 1)}</p>`;
 }
 
 export function loveValuesBlock(pos, pInterp, hMeaning, sentsFn, PGL) {

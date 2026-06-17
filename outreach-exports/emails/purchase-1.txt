@@ -1,0 +1,11 @@
+ID: purchase-1
+SECTION: postPurchase
+DELAY: instant
+SUBJECT: It's yours — order confirmed 🌌
+Thank you — genuinely.
+
+Your order is confirmed. Digital PDFs arrive within 24 hours; physical pieces ship when printed.
+
+This was made for your chart and no one else's.
+
+— AstroPrecise

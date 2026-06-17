@@ -1,0 +1,17 @@
+{
+  "generated": "2026-06-17T11:35:39.488Z",
+  "site": "https://astroprecise.app",
+  "outputDir": "launch-output",
+  "files": {
+    "directories": 11,
+    "socialBios": 8,
+    "spike": 6
+  },
+  "nextSteps": [
+    "Jonny: search-engines/CHECKLIST.md",
+    "Jonny: social-bios/ in order",
+    "Agent: directories/ batch on L+1",
+    "Jonny: spike/show-hn on L0 Monday",
+    "node tools/launch/lightwork-check.mjs"
+  ]
+}

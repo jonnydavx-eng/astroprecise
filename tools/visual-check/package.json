@@ -1,6 +1,7 @@
 {
   "name": "astroprecise-visual-check",
   "version": "1.0.0",
+  "description": "Visual-check toolkit; lighthouse:production:ci runs 10-page mobile batch (perf ≥85)",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,10 +10,14 @@
     "all": "node run-all.mjs",
     "a11y": "node audit-a11y.mjs",
     "lighthouse": "node audit-lighthouse.mjs",
+    "lighthouse:production": "node lighthouse-production.mjs",
+    "lighthouse:production:ci": "node lighthouse-production.mjs --ci",
     "perf": "node audit-perf.mjs",
     "baseline:save": "node save-baseline.mjs",
     "baseline:diff": "node diff-baseline.mjs",
-    "audit": "node run-audit.mjs"
+    "audit": "node run-audit.mjs",
+    "phone:collect": "node serve-phone-collector.mjs",
+    "phone:audit": "node serve-phone-collector.mjs"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",

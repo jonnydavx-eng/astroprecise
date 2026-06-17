@@ -1,29 +1,29 @@
 {
   "base": "http://localhost:8790",
-  "capturedAt": "2026-06-15T21:25:32.647Z",
+  "capturedAt": "2026-06-16T18:49:46.947Z",
   "pages": [
     {
       "id": "index",
-      "path": "/",
-      "loadMs": 1319,
+      "path": "/?lite=1",
+      "loadMs": 431,
       "metrics": {
-        "domContentLoaded": 769,
-        "loadEvent": 1177,
-        "fcp": 388,
+        "domContentLoaded": 427,
+        "loadEvent": 428,
+        "fcp": null,
         "lcp": null,
-        "transferSize": 203220
+        "transferSize": 4866
       }
     },
     {
       "id": "chart",
       "path": "/chart.html",
-      "loadMs": 665,
+      "loadMs": 180,
       "metrics": {
-        "domContentLoaded": 546,
-        "loadEvent": 660,
-        "fcp": 448,
+        "domContentLoaded": 162,
+        "loadEvent": 178,
+        "fcp": null,
         "lcp": null,
-        "transferSize": 0
+        "transferSize": 10619
       }
     }
   ],

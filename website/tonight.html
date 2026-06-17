@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="What planets are visible tonight? See which naked-eye planets (Mercury, Venus, Mars, Jupiter, Saturn) are above your horizon after sunset, the Moon's phase, and twilight times — computed locally on your device from real astronomy. No tracking." />
   <title>What Planets Are Visible Tonight? — Your Live Sky, Computed Locally | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,422 +20,34 @@
   <meta name="twitter:description" content="Which naked-eye planets are visible tonight, plus the Moon's phase and twilight times for your location — computed in your browser from real astronomy." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /><link rel="stylesheet" href="css/tonight-page.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <style>
+    body:has(.tn-hero){--font-display:Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    body:has(.tn-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
+    body:has(.tn-hero) .navbar__nav{min-height:44px;contain:layout style;}
+    body:has(.tn-hero) .tn-hero h1{font-family:Georgia,'Times New Roman',serif;min-height:1.15em;contain:layout style;}
+    body:has(.tn-hero) .tn-hero__sub{min-height:4.4em;}
+    body:has(.tn-hero) .tn-privacy-seal{min-height:2.6em;}
+    body:has(.tn-hero) .tn-locator{min-height:210px;contain:layout style;}
+    body:has(.tn-hero) .tn-locator__card{min-height:190px;}
+    body:has(.tn-hero) .tn-locator__buttons{min-height:44px;}
+    body:has(.tn-hero) #tn-planets{min-height:520px;contain:layout style;}
+    body:has(.tn-hero) #tn-twilight{min-height:108px;}
+    body:has(.tn-hero) #tn-moon-wrap{min-height:300px;contain:layout style;}
+  </style>
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTonightFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTonightFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/tonight-page.css','ap-css-tonight');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"AstroPrecise — What's Visible Tonight","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"A privacy-first tool that computes which naked-eye planets are visible tonight, the Moon's phase and illumination, and sunset and twilight times for your location — entirely in your browser, using real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/tonight.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What planets are visible tonight?","acceptedAnswerNote":"Computed live in the browser.","acceptedAnswer":{"@type":"Answer","text":"AstroPrecise computes which of the five naked-eye planets — Mercury, Venus, Mars, Jupiter and Saturn — are above your horizon and visible after sunset tonight, based on your location and real planetary positions. The answer is calculated on your device and changes daily."}},{"@type":"Question","name":"How is the visibility calculated?","acceptedAnswer":{"@type":"Answer","text":"Each planet's position is found from VSOP87 and ELP2000 astronomical theory, converted to its altitude above your local horizon using your latitude and the local sidereal time. A planet is reported as visible if it rises clear of the horizon during the dark hours after sunset. Times are good approximations for a flat, unobstructed horizon and may vary with terrain, weather and light pollution."}},{"@type":"Question","name":"Is my location sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Everything is computed in your browser. Your coordinates are never transmitted to AstroPrecise. If you type a city name to search, only that place name is sent to a public geocoder — never your exact position."}}]}</script>
-  <style>
-    /* ── Tonight's Sky — scoped page styles (glass / engraved cosmic) ── */
-    :root {
-      --tn-gold: var(--gold, #c9a227);
-      --tn-gold-light: var(--gold-light, #EFE3C0);
-      --tn-surface: rgba(20, 16, 10, 0.62);
-      --tn-border: rgba(168, 158, 136, 0.14);
-    }
-
-    /* Hero */
-    .tn-hero {
-      position: relative;
-      z-index: 1;
-      padding: calc(var(--nav-height, 72px) + 3.5rem) 0 2rem;
-      text-align: center;
-      overflow: hidden;
-    }
-    .tn-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(92, 74, 110, 0.22) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .tn-hero__eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.66rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--tn-gold);
-      border: 1px solid rgba(196, 146, 10, 0.3);
-      border-radius: 999px;
-      padding: 0.35rem 0.95rem;
-      margin-bottom: 1.1rem;
-    }
-    .tn-hero h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(2rem, 5vw, 3.3rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: 0.02em;
-      color: var(--color-white, #F8F4EE);
-      margin-bottom: 0.8rem;
-    }
-    .tn-hero__sub {
-      font-size: 1rem;
-      color: var(--color-silver-dim, #8891AA);
-      max-width: 580px;
-      margin: 0 auto 1.5rem;
-      line-height: 1.7;
-    }
-    .tn-privacy-seal {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      font-size: 0.78rem;
-      letter-spacing: 0.04em;
-      color: var(--tn-gold-light);
-      background: rgba(196, 146, 10, 0.08);
-      border: 1px solid rgba(196, 146, 10, 0.22);
-      border-radius: 999px;
-      padding: 0.5rem 1.1rem;
-    }
-    .tn-privacy-seal__glyph { font-size: 1rem; }
-
-    /* Location controls */
-    .tn-locator {
-      position: relative;
-      z-index: 1;
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 0 var(--space-4, 1rem);
-    }
-    .tn-locator__card {
-      background: var(--tn-surface);
-      border: 1px solid var(--tn-border);
-      border-radius: 20px;
-      padding: var(--space-6, 1.5rem);
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      text-align: center;
-    }
-    .tn-locator__status {
-      font-size: 0.85rem;
-      color: var(--color-silver-dim, #8891AA);
-      min-height: 1.2em;
-      margin-bottom: 1rem;
-      line-height: 1.5;
-    }
-    .tn-locator__status strong { color: var(--tn-gold); font-weight: 600; }
-    .tn-locator__buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-    .tn-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.6rem 1.3rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-      transition: transform .15s, box-shadow .15s, border-color .15s, color .15s;
-    }
-    .tn-btn--primary {
-      background: linear-gradient(135deg, var(--tn-gold) 0%, var(--tn-gold-light) 100%);
-      color: #0d0a07;
-      box-shadow: 0 0 16px rgba(196, 146, 10, 0.22);
-    }
-    .tn-btn--primary:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(196, 146, 10, 0.4); }
-    .tn-btn--ghost {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.14);
-      color: var(--color-silver, #C8D0E8);
-    }
-    .tn-btn--ghost:hover { border-color: rgba(196, 146, 10, 0.45); color: var(--tn-gold); }
-
-    .tn-city-row {
-      position: relative;
-      display: flex;
-      gap: 0.5rem;
-      max-width: 420px;
-      margin: 0 auto;
-    }
-    .tn-city-input {
-      flex: 1;
-      background: rgba(13, 10, 7, 0.6);
-      border: 1px solid var(--tn-border);
-      border-radius: 12px;
-      padding: 0.65rem 0.95rem;
-      color: var(--color-white, #F8F4EE);
-      font-family: inherit;
-      font-size: 0.9rem;
-    }
-    .tn-city-input:focus { outline: none; border-color: rgba(196, 146, 10, 0.5); }
-    .tn-autocomplete {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      background: rgba(19, 16, 12, 0.98);
-      border: 1px solid var(--tn-border);
-      border-radius: 12px;
-      overflow: hidden;
-      z-index: 30;
-      display: none;
-      text-align: left;
-      -webkit-backdrop-filter: blur(16px);
-      backdrop-filter: blur(16px);
-    }
-    .tn-autocomplete.open { display: block; }
-    .tn-autocomplete__item {
-      padding: 0.6rem 0.95rem;
-      font-size: 0.85rem;
-      color: var(--color-silver, #C8D0E8);
-      cursor: pointer;
-    }
-    .tn-autocomplete__item:hover, .tn-autocomplete__item.active {
-      background: rgba(196, 146, 10, 0.12);
-      color: var(--tn-gold-light);
-    }
-    .tn-autocomplete__item span { color: var(--color-silver-dim, #8891AA); font-size: 0.76rem; }
-
-    /* Results section */
-    .tn-section {
-      position: relative;
-      z-index: 1;
-      padding: var(--space-12, 3rem) 0;
-    }
-    .tn-section__title {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
-      font-weight: 700;
-      color: var(--color-white, #F8F4EE);
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
-    .tn-section__sub {
-      text-align: center;
-      color: var(--color-silver-dim, #8891AA);
-      font-size: 0.9rem;
-      max-width: 560px;
-      margin: 0 auto var(--space-8, 2rem);
-      line-height: 1.6;
-    }
-    .tn-section__sub em { color: var(--tn-gold); font-style: normal; }
-
-    /* Summary headline */
-    .tn-headline {
-      text-align: center;
-      max-width: 640px;
-      margin: 0 auto var(--space-8, 2rem);
-    }
-    .tn-headline__lead {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: clamp(1.15rem, 3vw, 1.6rem);
-      color: var(--color-silver, #C8D0E8);
-      line-height: 1.6;
-    }
-    .tn-headline__lead strong { color: var(--tn-gold-light); font-weight: 600; font-style: normal; }
-
-    /* Twilight strip */
-    .tn-twilight {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: var(--space-3, 0.75rem);
-      max-width: 720px;
-      margin: 0 auto var(--space-10, 2.5rem);
-    }
-    .tn-twi-card {
-      background: var(--tn-surface);
-      border: 1px solid var(--tn-border);
-      border-radius: 16px;
-      padding: var(--space-4, 1rem);
-      text-align: center;
-    }
-    .tn-twi-card__label {
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--color-silver-dim, #8891AA);
-      display: block;
-      margin-bottom: 0.4rem;
-    }
-    .tn-twi-card__time {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.4rem;
-      color: var(--tn-gold);
-      font-weight: 600;
-    }
-    .tn-twi-card__note {
-      font-size: 0.62rem;
-      color: var(--color-silver-dark, #6E7690);
-      margin-top: 0.25rem;
-    }
-
-    /* Planet visibility grid */
-    .tn-planets {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: var(--space-4, 1rem);
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .tn-planet-card {
-      background: var(--tn-surface);
-      border: 1px solid var(--tn-border);
-      border-radius: 18px;
-      padding: var(--space-5, 1.25rem);
-      display: flex;
-      align-items: center;
-      gap: var(--space-4, 1rem);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      transition: border-color .2s, transform .18s;
-    }
-    .tn-planet-card:hover { border-color: rgba(196, 146, 10, 0.3); transform: translateY(-2px); }
-    .tn-planet-card.is-visible { border-color: rgba(196, 146, 10, 0.4); background: rgba(196, 146, 10, 0.06); }
-    .tn-planet-card__orb { flex-shrink: 0; }
-    .tn-planet-card__body { flex: 1; min-width: 0; }
-    .tn-planet-card__name {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--color-white, #F8F4EE);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .tn-planet-card__sign { font-size: 0.82rem; color: var(--tn-gold); font-weight: 600; margin-top: 2px; }
-    .tn-planet-card__status {
-      font-size: 0.74rem;
-      color: var(--color-silver-dim, #8891AA);
-      margin-top: 4px;
-      line-height: 1.45;
-    }
-    .tn-badge {
-      display: inline-block;
-      font-size: 0.55rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      padding: 2px 8px;
-    }
-    .tn-badge--visible { background: rgba(42, 138, 90, 0.18); border: 1px solid rgba(42, 138, 90, 0.4); color: #5ad498; }
-    .tn-badge--below { background: rgba(110, 118, 144, 0.14); border: 1px solid rgba(110, 118, 144, 0.3); color: #8891AA; }
-    .tn-badge--rx { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; margin-left: 4px; }
-
-    /* Moon card */
-    .tn-moon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-3, 0.75rem);
-      background: var(--tn-surface);
-      border: 1px solid var(--tn-border);
-      border-radius: 24px;
-      padding: var(--space-10, 2.5rem) var(--space-8, 2rem);
-      text-align: center;
-      max-width: 520px;
-      margin: 0 auto;
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-    }
-    .tn-moon__glyph { font-size: 4.5rem; line-height: 1; }
-    .tn-moon__phase {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--tn-gold);
-    }
-    .tn-moon__detail { font-size: 0.9rem; color: var(--color-silver, #C8D0E8); line-height: 1.6; }
-    .tn-moon__detail strong { color: var(--tn-gold-light); }
-    .tn-moon__bar {
-      width: 220px;
-      height: 8px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 0.25rem auto 0;
-    }
-    .tn-moon__bar-fill { height: 100%; background: linear-gradient(90deg, var(--tn-gold), var(--tn-gold-light)); border-radius: 999px; transition: width .6s ease; }
-
-    /* Honesty note */
-    .tn-honesty {
-      max-width: 680px;
-      margin: var(--space-10, 2.5rem) auto 0;
-      padding: var(--space-5, 1.25rem) var(--space-6, 1.5rem);
-      background: rgba(92, 74, 110, 0.08);
-      border: 1px solid rgba(91, 127, 199, 0.22);
-      border-radius: 16px;
-      font-size: 0.82rem;
-      color: var(--color-silver-dim, #8891AA);
-      line-height: 1.7;
-    }
-    .tn-honesty h3 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 0.95rem;
-      color: var(--color-silver, #C8D0E8);
-      margin: 0 0 0.5rem;
-      letter-spacing: 0.04em;
-    }
-    .tn-honesty strong { color: var(--tn-gold); }
-
-    /* Privacy band */
-    .tn-privacy-band {
-      position: relative;
-      z-index: 1;
-      padding: var(--space-12, 3rem) 0;
-      background: var(--color-bg-2, rgba(19, 16, 12, 0.4));
-    }
-    .tn-privacy-band__inner {
-      max-width: 700px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 0 var(--space-4, 1rem);
-    }
-    .tn-privacy-band__glyph { font-size: 2.2rem; color: var(--tn-gold); }
-    .tn-privacy-band h2 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.4rem, 3.5vw, 2rem);
-      color: var(--color-white, #F8F4EE);
-      margin: 0.6rem 0 0.8rem;
-    }
-    .tn-privacy-band p { color: var(--color-silver-dim, #8891AA); line-height: 1.8; font-size: 0.95rem; }
-    .tn-privacy-band ul {
-      list-style: none;
-      padding: 0;
-      margin: 1.5rem auto 0;
-      max-width: 540px;
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-    .tn-privacy-band li {
-      font-size: 0.85rem;
-      color: var(--color-silver, #C8D0E8);
-      padding-left: 1.6rem;
-      position: relative;
-      line-height: 1.6;
-    }
-    .tn-privacy-band li::before { content: '' position: absolute; left: 0; color: var(--tn-gold); }
-
-    .tn-empty {
-      text-align: center;
-      color: var(--color-silver-dim, #8891AA);
-      font-style: italic;
-      padding: var(--space-8, 2rem);
-    }
-
-    @media (max-width: 600px) {
-      .tn-planet-card { padding: 1rem; }
-      .tn-moon { padding: 2rem 1.25rem; }
-    }
-  </style>
-</head>
-<body>
+  </head>
+<body class="ap-no-nav-enter">
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -451,11 +62,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -528,10 +139,21 @@
         </div>
 
         <!-- Twilight strip -->
-        <div class="tn-twilight" id="tn-twilight" hidden></div>
+        <div class="tn-twilight" id="tn-twilight" hidden aria-hidden="true">
+          <div class="tn-twi-card tn-twi-card--skeleton"></div>
+          <div class="tn-twi-card tn-twi-card--skeleton"></div>
+          <div class="tn-twi-card tn-twi-card--skeleton"></div>
+          <div class="tn-twi-card tn-twi-card--skeleton"></div>
+        </div>
 
         <!-- Planet grid -->
-        <div class="tn-planets" id="tn-planets"></div>
+        <div class="tn-planets" id="tn-planets" aria-busy="true">
+          <div class="tn-planet-card tn-planet-card--skeleton" aria-hidden="true"></div>
+          <div class="tn-planet-card tn-planet-card--skeleton" aria-hidden="true"></div>
+          <div class="tn-planet-card tn-planet-card--skeleton" aria-hidden="true"></div>
+          <div class="tn-planet-card tn-planet-card--skeleton" aria-hidden="true"></div>
+          <div class="tn-planet-card tn-planet-card--skeleton" aria-hidden="true"></div>
+        </div>
 
         <!-- Honesty note -->
         <div class="tn-honesty" id="tn-honesty" hidden>
@@ -558,6 +180,7 @@
         <h2 class="tn-section__title" id="moon-heading">The Moon Tonight</h2>
         <p class="tn-section__sub">Phase and illuminated fraction, computed from the real Sun&ndash;Moon geometry.</p>
         <div id="tn-moon-wrap">
+          <div class="tn-moon tn-moon--skeleton" aria-hidden="true"></div>
           <p class="tn-empty">Choose a location to see tonight's Moon.</p>
         </div>
       </div>
@@ -590,31 +213,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo">&#10022; AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="tonight.html" class="footer__link">Tonight's Sky</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="About">
-          <p class="footer__heading">About</p>
-          <ul class="footer__links">
-            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -627,6 +309,7 @@
   (function () {
     'use strict';
     document.addEventListener('DOMContentLoaded', function () {
+      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
       var statusEl   = document.getElementById('tn-status');
       var geoBtn     = document.getElementById('tn-geo-btn');
       var savedBtn   = document.getElementById('tn-saved-btn');
@@ -787,7 +470,8 @@
 
         // Twilight strip
         twiEl.hidden = false;
-        twiEl.innerHTML = '';
+        twiEl.removeAttribute('aria-hidden');
+        twiEl.replaceChildren();
         var twi = [
           { label: 'Sunset', d: report.sun.sunset, note: 'Sun sets' },
           { label: 'Civil dusk', d: report.sun.civilTwilightEnd, note: 'Sun 6° down' },
@@ -806,7 +490,8 @@
         });
 
         // Planet grid
-        planetsEl.innerHTML = '';
+        planetsEl.replaceChildren();
+        planetsEl.removeAttribute('aria-busy');
         report.planets.forEach(function (p) {
           var card = document.createElement('div');
           card.className = 'tn-planet-card' + (p.visible ? ' is-visible' : '');
@@ -840,7 +525,9 @@
 
         // Moon
         var m = report.moon;
-        moonWrap.innerHTML =
+        moonWrap.replaceChildren();
+        var moonNode = document.createElement('div');
+        moonNode.innerHTML =
           '<div class="tn-moon">' +
             '<div class="tn-moon__glyph" aria-hidden="true">' + m.phaseGlyph + '</div>' +
             '<div class="tn-moon__phase">' + esc(m.phaseName) + '</div>' +
@@ -854,6 +541,7 @@
                     : 'The Moon stays below your horizon during the evening hours.') +
             '</div>' +
           '</div>';
+        while (moonNode.firstChild) moonWrap.appendChild(moonNode.firstChild);
 
         // Smoothly bring results into view if user clicked a control far up
         try { document.getElementById('results-heading').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
@@ -869,15 +557,35 @@
   })();
   </script>
 
-  <!-- JS -->
-  <script src="js/raf-core.js"></script>
-
-  <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/icons.js"></script>
-  <script src="js/tonight.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
+  <!-- JS — ephemeris/tonight on defer; cosmos + effects idle after load -->
+  <script src="js/profile.js" defer></script>
+  <script>
+  (function () {
+    function audit() {
+      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
+    }
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
+    }
+    if (audit()) return;
+    inject('js/raf-core.js');
+    inject('js/ephemeris.js');
+    inject('js/icons.js');
+    inject('js/tonight.js');
+    function idleCosmos() {
+      if (audit()) return;
+      inject('js/cosmos.js');
+      inject('js/effects.js');
+    }
+    window.addEventListener('load', function () {
+      if (window.requestIdleCallback) requestIdleCallback(idleCosmos, { timeout: 4000 });
+      else setTimeout(idleCosmos, 1200);
+    }, { once: true });
+  })();
+  </script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

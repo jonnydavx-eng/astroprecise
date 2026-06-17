@@ -15,22 +15,15 @@
 
 (function () {
 
-  // ── Data ──────────────────────────────────────────────────────────────────
+  // ── Data (AP_ZODIAC.SIGNS — seal keys, not Unicode glyphs) ───────────────
 
-  const SIGNS = [
-    { key: 'aries',       name: 'Aries',       glyph: '♈', el: 'fire',  lon:   0 },
-    { key: 'taurus',      name: 'Taurus',       glyph: '♉', el: 'earth', lon:  30 },
-    { key: 'gemini',      name: 'Gemini',       glyph: '♊', el: 'air',   lon:  60 },
-    { key: 'cancer',      name: 'Cancer',       glyph: '♋', el: 'water', lon:  90 },
-    { key: 'leo',         name: 'Leo',          glyph: '♌', el: 'fire',  lon: 120 },
-    { key: 'virgo',       name: 'Virgo',        glyph: '♍', el: 'earth', lon: 150 },
-    { key: 'libra',       name: 'Libra',        glyph: '♎', el: 'air',   lon: 180 },
-    { key: 'scorpio',     name: 'Scorpio',      glyph: '♏', el: 'water', lon: 210 },
-    { key: 'sagittarius', name: 'Sagittarius',  glyph: '♐', el: 'fire',  lon: 240 },
-    { key: 'capricorn',   name: 'Capricorn',    glyph: '♑', el: 'earth', lon: 270 },
-    { key: 'aquarius',    name: 'Aquarius',     glyph: '♒', el: 'air',   lon: 300 },
-    { key: 'pisces',      name: 'Pisces',       glyph: '♓', el: 'water', lon: 330 },
-  ];
+  const Z = window.AP_ZODIAC;
+  const SIGNS = (Z && Z.SIGNS ? Z.SIGNS : []).map(function (s) {
+    return { key: s.key, name: s.name, el: s.element, lon: s.lon };
+  });
+  if (!SIGNS.length) {
+    console.warn('[ZodiacSphere] AP_ZODIAC.SIGNS missing — load ap-zodiac-constants.js first');
+  }
 
   // Element colours (RGB components for easy alpha composition)
   const EL = {
@@ -64,9 +57,11 @@
   let spinDoneCb = null;
 
   let hovered  = null;
+  let hoveredPlanet = null;
   let selected = null;
   let selectCb = null;
   let onSelectChange = null;
+  let tooltipEl = null;
 
   let planetLons = {};           // signKey → ecliptic lon (degrees, 0–360)
   let stars      = [];
@@ -123,10 +118,75 @@
     }
   }
 
+  function lonToSignName(lon) {
+    const idx = Math.floor((((lon % 360) + 360) % 360) / 30);
+    return SIGNS[idx] ? SIGNS[idx].name : '';
+  }
+
+  function projectRaw(lonDeg, rad) {
+    const theta = (lonDeg * Math.PI / 180) + rotation;
+    const x3 = rad * Math.cos(theta);
+    const y3d = rad * Math.sin(theta);
+    const y3 = y3d * Math.cos(TILT);
+    const z3 = y3d * Math.sin(TILT);
+    const sc = FOCAL / (FOCAL + z3);
+    return { x: cx + x3 * sc, y: cy + y3 * sc };
+  }
+
+  function drawElementSectors() {
+    const R = ringRadius();
+    const r0 = R * 0.72;
+    const r1 = R * 1.04;
+    const steps = 10;
+    for (const s of SIGNS) {
+      const el = EL[s.el];
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const lon = s.lon - 15 + (30 * i / steps);
+        const p = projectRaw(lon, r1);
+        i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+      }
+      for (let i = steps; i >= 0; i--) {
+        const lon = s.lon - 15 + (30 * i / steps);
+        const p = projectRaw(lon, r0);
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = `rgba(${el[0]},${el[1]},${el[2]},0.07)`;
+      ctx.fill();
+    }
+  }
+
+  function drawTickMarks() {
+    const R = ringRadius();
+    for (let t = 0; t < 360; t += 30) {
+      const theta = (t * Math.PI / 180) + rotation;
+      const x3a = (R * 0.76) * Math.cos(theta);
+      const y3da = (R * 0.76) * Math.sin(theta);
+      const x3b = (R * 0.92) * Math.cos(theta);
+      const y3db = (R * 0.92) * Math.sin(theta);
+      const ya = y3da * Math.cos(TILT);
+      const za = y3da * Math.sin(TILT);
+      const yb = y3db * Math.cos(TILT);
+      const zb = y3db * Math.sin(TILT);
+      const sa = FOCAL / (FOCAL + za);
+      const sb = FOCAL / (FOCAL + zb);
+      ctx.beginPath();
+      ctx.moveTo(cx + x3a * sa, cy + ya * sa);
+      ctx.lineTo(cx + x3b * sb, cy + yb * sb);
+      ctx.strokeStyle = t % 90 === 0 ? 'rgba(201,162,39,0.32)' : 'rgba(201,162,39,0.16)';
+      ctx.lineWidth = t % 90 === 0 ? 1.4 : 0.7;
+      ctx.stroke();
+    }
+  }
+
   // ── Ecliptic ring ─────────────────────────────────────────────────────────
 
   function drawRing() {
     const STEPS = ringSteps();
+
+    drawElementSectors();
+    drawTickMarks();
 
     // Outer dashed gold ring
     ctx.beginPath();
@@ -164,6 +224,21 @@
 
   // ── Planets ───────────────────────────────────────────────────────────────
 
+  function hitPlanet(px, py) {
+    const baseR = 14;
+    const visible = PLANETS
+      .filter(pl => planetLons[pl.key] != null)
+      .map(pl => ({ pl, pt: project(planetLons[pl.key]) }))
+      .sort((a, b) => b.pt.z - a.pt.z);
+    for (const { pl, pt } of visible) {
+      const r = Math.max(10, baseR * pt.s);
+      const dx = px - pt.x;
+      const dy = py - pt.y;
+      if (dx * dx + dy * dy < r * r) return pl.key;
+    }
+    return null;
+  }
+
   function drawPlanets() {
     // Sort back-to-front
     const visible = PLANETS
@@ -172,7 +247,8 @@
       .sort((a, b) => a.pt.z - b.pt.z);
 
     for (const { pl, pt } of visible) {
-      const r     = 5 * pt.s;
+      const isHov = hoveredPlanet === pl.key;
+      const r     = (isHov ? 6.2 : 5) * pt.s;
       const alpha = 0.45 + 0.55 * pt.depth;
 
       // Glow halo
@@ -200,6 +276,33 @@
       ctx.fillText(pl.sym + '︎', pt.x, pt.y - r - 1);  // FE0E = force text glyph, not emoji
 
       ctx.globalAlpha = 1;
+    }
+
+    if (hoveredPlanet) {
+      const pl = PLANETS.find(p => p.key === hoveredPlanet);
+      const lon = planetLons[hoveredPlanet];
+      if (pl && lon != null) {
+        const pt = project(lon);
+        const label = pl.name + ' · ' + lonToSignName(lon);
+        ctx.font = `${Math.max(9, 10 * pt.s)}px Inter, system-ui, sans-serif`;
+        const tw = ctx.measureText(label).width;
+        const bx = pt.x - tw / 2 - 6;
+        const by = pt.y - 28 * pt.s;
+        ctx.fillStyle = 'rgba(8,12,18,0.88)';
+        ctx.strokeStyle = 'rgba(201,162,39,0.45)';
+        ctx.lineWidth = 1;
+        const bw = tw + 12;
+        const bh = 18;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 4);
+        else ctx.rect(bx, by, bw, bh);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = pl.col;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, pt.x, by + bh / 2);
+      }
     }
   }
 
@@ -252,14 +355,19 @@
       ctx.lineWidth = isSel || isHov ? 1.8 : 0.9;
       ctx.stroke();
 
-      // Zodiac glyph. Append U+FE0E (text-presentation selector) so Android/mobile
-      // canvas renders the engraved serif glyph instead of the colour-emoji square
-      // (zodiac signs U+2648–2653 default to emoji presentation otherwise).
-      ctx.font         = `${r * 0.92}px 'AstroGlyph', Georgia, serif`;
-      ctx.fillStyle    = isSel ? '#c9a227' : isHov ? `rgb(${el[0]},${el[1]},${el[2]})` : '#C8BFA6';
-      ctx.textAlign    = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(s.glyph + '︎', s.x, s.y);
+      // Engraved zodiac seal (APCanvasSeals) — keyed by sign slug, not Unicode.
+      const sealCol = isSel ? '#c9a227' : `rgb(${el[0]},${el[1]},${el[2]})`;
+      const drewSeal = window.APCanvasSeals && (
+        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, s.key, s.x, s.y, r * 0.82, sealCol)) ||
+        (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, s.key, s.x, s.y, r * 1.45))
+      );
+      if (!drewSeal) {
+        ctx.font         = `${Math.max(8, r * 0.55)}px Inter, system-ui, sans-serif`;
+        ctx.fillStyle    = isSel ? '#c9a227' : isHov ? sealCol : '#C8BFA6';
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText((s.name || s.key || '?').charAt(0), s.x, s.y);
+      }
 
       // Name label — visible for near-side signs, always for hovered/selected
       const labelFade = Math.max(0, (s.depth - 0.35) / 0.35 + (isHov || isSel ? 1 : 0));
@@ -355,6 +463,15 @@
   // ── Animation loop ────────────────────────────────────────────────────────
 
   let lastT = 0;
+  let readyFired = false;
+
+  function signalReady() {
+    if (readyFired) return;
+    readyFired = true;
+    try {
+      document.dispatchEvent(new CustomEvent('ap-zodiac-sphere-ready', { detail: { canvas: cvs } }));
+    } catch (e) { /* IE11 guard */ }
+  }
 
   function frame(ts) {
     const dt = Math.min((ts - lastT) / 1000, 0.05);
@@ -385,6 +502,7 @@
       rotVel   *= 0.91;
     }
 
+    signalReady();
     requestAnimationFrame(frame);
   }
 
@@ -406,9 +524,10 @@
   function onMove(clientX, clientY) {
     const { x, y } = canvasCoords(clientX, clientY);
     hovered   = hitSign(x, y);
+    hoveredPlanet = hitPlanet(x, y);
     const onC = hitCentre(x, y);
-    cvs.style.cursor = (hovered || onC) ? 'pointer' : (dragging ? 'grabbing' : 'grab');
-    autoSpin = !hovered && !onC && !dragging;
+    cvs.style.cursor = (hovered || onC || hoveredPlanet) ? 'pointer' : (dragging ? 'grabbing' : 'grab');
+    autoSpin = !hovered && !onC && !hoveredPlanet && !dragging;
   }
 
   function onDrag(clientX) {
@@ -459,7 +578,7 @@
       cvs_touchstart, cvs_touchmove, cvs_touchend;
 
   cvs_mousemove  = (e) => { onMove(e.clientX, e.clientY); onDrag(e.clientX); };
-  cvs_mouseleave = ()  => { hovered = null; autoSpin = !dragging; cvs.style.cursor = ''; };
+  cvs_mouseleave = ()  => { hovered = null; hoveredPlanet = null; autoSpin = !dragging; cvs.style.cursor = ''; };
   cvs_mousedown  = (e) => onPress(e.clientX, e.clientY);
   win_mouseup    = (e) => onRelease(e.clientX, e.clientY);
 
@@ -538,6 +657,36 @@
 
   // ── Public API ────────────────────────────────────────────────────────────
 
+  function onKeyDown(e) {
+    if (!cvs || document.activeElement !== cvs) return;
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      rotation -= 0.12;
+      autoSpin = false;
+      rotVel = 0;
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      rotation += 0.12;
+      autoSpin = false;
+      rotVel = 0;
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (hovered) {
+        spinToSign(hovered, { duration: 520, onDone: () => { if (selectCb) selectCb(hovered); } });
+      } else if (hitCentre(cx, cy)) {
+        window.location.href = 'chart.html';
+      }
+    }
+  }
+
+  function setRotation(rad) {
+    rotation = rad;
+    autoSpin = false;
+    rotVel = 0;
+  }
+
+  function getRotation() { return rotation; }
+
   function init(canvasEl, cb) {
     cvs      = canvasEl;
     if (!cvs) return;
@@ -545,11 +694,21 @@
     if (!ctx) return;
     selectCb = cb;
 
+    cvs.setAttribute('tabindex', '0');
+    cvs.setAttribute('role', 'application');
+    cvs.setAttribute('aria-roledescription', '3D zodiac wheel');
+    cvs.setAttribute('aria-label', 'Zodiac ring — drag to spin, arrow keys to rotate, Enter to select a sign');
+
     resize();
     window.addEventListener('resize', resize);
 
     fetchPlanets();
 
+    if (window.APCanvasSeals && typeof APCanvasSeals.preload === 'function') {
+      APCanvasSeals.preload();
+    }
+
+    cvs.addEventListener('keydown', onKeyDown);
     cvs.addEventListener('mousemove',  cvs_mousemove);
     cvs.addEventListener('mouseleave', cvs_mouseleave);
     cvs.addEventListener('mousedown',  cvs_mousedown);
@@ -618,6 +777,8 @@
     spinToSign,
     spinRandom,
     getSelected,
+    setRotation,
+    getRotation,
     get onSelectChange() { return onSelectChange; },
     set onSelectChange(fn) { onSelectChange = typeof fn === 'function' ? fn : null; },
   };

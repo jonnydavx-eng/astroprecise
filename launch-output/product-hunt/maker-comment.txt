@@ -1,0 +1,8 @@
+Hey Product Hunt — I'm Jonny, solo maker from the UK.
+
+Built this because I wanted arcminute positions I could verify, without handing my birth minute to another app's database.
+
+Would love feedback on accuracy vs desktop ephemeris software, and whether the privacy model matters to you.
+
+Try it: https://astroprecise.app/chart.html
+All free tools: https://astroprecise.app/links.html

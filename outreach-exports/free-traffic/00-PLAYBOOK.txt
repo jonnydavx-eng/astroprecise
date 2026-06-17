@@ -1,0 +1,82 @@
+ASTROPRECISE — FREE TRAFFIC PLAYBOOK (2026-06-14)
+=================================================
+
+WHAT GROK CANNOT DO FOR YOU
+---------------------------
+I cannot log into your X, Pinterest, Reddit, TikTok, or Facebook accounts.
+Posting requires YOUR login (or Postiz, which you connect once).
+
+WHAT IS READY NOW
+-----------------
+- tools/social-pack/posters.html — 4 branded posters (open in Chrome, screenshot)
+- tools/social-pack/images/ — 2 AI pin/square images
+- outreach-exports/x-posts/ — 14 ready X posts
+- outreach-exports/free-traffic/ — copy for Pinterest, Reddit, Facebook groups
+- CONTENT-CALENDAR.md — 14-day video + pin schedule
+- Site share cards: chart.html → Save image (1080² / story / print poster)
+
+FUNNEL (every post)
+-------------------
+Caption → astroprecise.app/links.html → chart.html (cast) → email signup / Ko-fi tip
+Never link checkout from social until Lemon Squeezy URLs are live.
+
+CHANNELS RANKED BY FREE ROI (astrology niche)
+---------------------------------------------
+1. PINTEREST — evergreen SEO; pins rank for months. Best for: birth chart, rising sign, moon phase.
+2. TIKTOK / REELS — screen-record chart cast (15s). #AstroTok still strong.
+3. REDDIT r/astrology — ONE value post/week max; reply-heavy for 48h (no spam).
+4. X — 20–30 substantive replies/day on big accounts; bio → links.html only.
+5. FACEBOOK GROUPS — "astrology beginners", "natal chart help" — answer questions, soft link in profile.
+6. FREE DIRECTORIES — low traffic but zero cost backlinks (list below).
+
+PINTEREST KEYWORDS (use in pin title + description)
+---------------------------------------------------
+free birth chart calculator
+natal chart free no signup
+what is my rising sign calculator
+moon sign calculator birth time
+synastry compatibility free
+VSOP87 birth chart
+accurate horoscope today
+life path number calculator
+
+REDDIT POST IDEAS (value-first, not ads)
+----------------------------------------
+Title: "I built a birth chart tool that never uploads your data — feedback welcome"
+Body: Explain VSOP87, privacy, link to chart.html. Ask: "What feature would you trust?"
+
+Title: "Sun sign vs Big Three — quick explainer + free tool"
+Body: Educational, link links.html at end only.
+
+FACEBOOK / COMMUNITY
+--------------------
+Join: Astrology Learning, Natal Chart Reading (search; pick active groups).
+Post: Help someone interpret ONE placement; mention you use a free browser tool if asked.
+
+FREE DIRECTORY SUBMISSIONS (owner, ~30 min total)
+--------------------------------------------------
+Submit https://astroprecise.app/ with description from llms.txt:
+- Uneed.best (Product Hunt alt, free tier)
+- AlternativeTo.net (category: astrology / horoscope)
+- SaaSHub / Launching Next (if they accept lifestyle tools)
+- Curlie.org (dmoz successor) — Religion/Spirituality/Astrology
+- Power Fortunes astro directory
+- Find Your Fate astro directory
+
+DISCLAIMER (append to reading posts)
+----------------------------------
+For entertainment. Astronomy computed in-browser to roughly an arcminute (1800–2200 CE).
+Your birth data never leaves your device.
+
+HASHTAGS
+--------
+Always: #WearYourSky #AstroPrecise
+Platform: #birthchart #natalchart #risingsign #moonsign #astrology #zodiac #AstroTok
+
+30-MINUTE "DO IT NOW" SPRINT
+----------------------------
+1. Open tools/social-pack/posters.html → save 2 images
+2. Pinterest: create 3 pins (birth chart, rising sign, Big Three) → link links.html
+3. X: paste outreach-exports/x-posts/x-01.txt
+4. Reddit: save draft of reddit-value-post.txt for next week
+5. Screen-record 15s chart cast for TikTok tomorrow

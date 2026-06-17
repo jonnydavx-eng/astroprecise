@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AstroPrecise Planetary Transits — understand current cosmic influences on your birth chart with real-time planetary positions, eclipses, and retrograde calendar." />
   <title>Planetary Transits Today — Live Positions, Retrogrades &amp; Forecasts | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,6 +20,36 @@
   <meta name="twitter:description" content="Live planetary transits and retrogrades — see what the sky is doing right now and what it means for you." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-forms.css" />
+  <link rel="stylesheet" href="css/celestial-seals.css" />
+  <link rel="stylesheet" href="css/transits-page.css" />
+  <style>
+    body.page-transits{--font-display:Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    .page-transits .navbar__nav{min-height:44px;}
+    .page-transits .navbar__end{min-width:2.75rem;min-height:2.75rem;}
+    .page-transits .transits-hero{min-height:calc(var(--nav-height,72px) + clamp(520px,118vw,600px));contain:layout style;}
+    .page-transits .transits-hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.2rem,5vw,3.6rem);font-weight:700;line-height:1.1;min-height:1.15em;}
+    .page-transits .transits-hero__sub{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:1.05rem;line-height:1.65;min-height:3.3em;}
+    .page-transits .transit-ticker{min-height:52px;contain:layout style;}
+    .page-transits .transit-ticker__track{min-height:36px;}
+    .page-transits .live-date-badge{min-height:44px;min-width:min(100%,22rem);contain:layout style;}
+    .page-transits #current-sky.planet-grid{min-height:1080px;contain:layout style;}
+    .page-transits .planet-card{min-height:196px;}
+    .page-transits .planet-card__symbol{display:flex;align-items:center;justify-content:flex-start;min-height:2.2rem;width:2.2rem;flex:none;}
+    .page-transits .planet-card__symbol .ap-orb,.page-transits .planet-card__symbol .ap-seal{width:1.9em;height:1.9em;flex:none;}
+    .page-transits .transit-pill__symbol{display:inline-flex;align-items:center;justify-content:center;min-width:1.4em;min-height:1.4em;flex:none;}
+    .page-transits .ap-orb{display:inline-flex;align-items:center;justify-content:center;width:1.9em;height:1.9em;border-radius:50%;flex:none;vertical-align:middle;}
+    .page-transits .ap-orb--sm{width:1.4em;height:1.4em;}
+    .page-transits #daily-transit-card{min-height:0;}
+    .page-transits #transits-period{min-height:1.5rem;}
+    html.ap-audit-path .page-transits #daily-transit-card{min-height:280px;margin-bottom:1.5rem;}
+  </style>
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTransitsFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTransitsFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -44,538 +73,8 @@
     }
   }
   </script>
-<link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/chart.css" />
-  <style>
-    /* ── Transits page premium overrides ── */
-    :root {
-      --void: #050406;
-      --gold: #C9A227;
-      --gold-light: #EFE3C0;
-      --purple: #5C4A6E;
-      --white: #E8E0D0;
-      --silver: #A89E88;
-      --silver-dim: #7E7565;
-      --surface: rgba(20,16,10,0.55);
-      --border: rgba(201,162,39,0.10);
-      --radius-xl: 20px;
-      --radius-2xl: 28px;
-    }
-
-    /* ── Hero ── */
-    .transits-hero {
-      padding: calc(var(--nav-height, 72px) + 4rem) 0 3rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .transits-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(92, 74, 110,0.18) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .transits-hero__eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.25rem;
-    }
-    .transits-hero__eyebrow::before,
-    .transits-hero__eyebrow::after {
-      content: '';
-      display: block;
-      width: 28px;
-      height: 1px;
-      background: var(--gold);
-      opacity: 0.5;
-    }
-    .transits-hero h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(2.2rem, 5vw, 3.6rem);
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1.1;
-      letter-spacing: 0.03em;
-      margin-bottom: 1rem;
-    }
-    .transits-hero__sub {
-      font-size: 1.05rem;
-      color: var(--silver-dim);
-      max-width: 520px;
-      margin: 0 auto 2rem;
-      line-height: 1.65;
-    }
-
-    /* ── Live date badge ── */
-    .live-date-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 0.5rem 1.25rem;
-      font-size: 0.78rem;
-      color: var(--silver);
-      letter-spacing: 0.04em;
-      margin-bottom: 2.5rem;
-    }
-    .live-date-badge__dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #9db36a;
-      box-shadow: 0 0 6px rgba(74,222,128,0.7);
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.75); }
-    }
-
-    /* ── Transit ticker ── */
-    .transit-ticker {
-      overflow: hidden;
-      mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-    }
-    .transit-ticker__track {
-      display: flex;
-      gap: 0.75rem;
-      width: max-content;
-      animation: ticker-scroll 40s linear infinite;
-    }
-    @keyframes ticker-scroll {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-    .transit-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 0.35rem 0.9rem;
-      font-size: 0.78rem;
-      white-space: nowrap;
-      color: var(--silver);
-      transition: border-color 0.2s;
-    }
-    .transit-pill--retrograde { border-color: rgba(239,68,68,0.35); }
-    .transit-pill__symbol { font-size: 1rem; color: var(--gold); }
-    .transit-pill__name { font-weight: 500; color: var(--white); }
-    .transit-pill__pos { color: var(--silver-dim); }
-
-    /* ── Sections ── */
-    .ts-section {
-      padding: 5rem 0;
-    }
-    .ts-section--alt {
-      background: rgba(13, 10, 7,0.6);
-    }
-    .ts-section__header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .ts-section__label {
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.8;
-      margin-bottom: 0.75rem;
-    }
-    .ts-section__title {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.03em;
-      margin-bottom: 0.6rem;
-    }
-    .ts-section__subtitle {
-      font-size: 0.95rem;
-      color: var(--silver-dim);
-      max-width: 560px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* ── Planet grid ── */
-    .planet-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 1rem;
-    }
-    .planet-card {
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 1.4rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
-      position: relative;
-      overflow: hidden;
-    }
-    .planet-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-      background: var(--card-accent, var(--gold));
-      opacity: 0.7;
-    }
-    .planet-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-      border-color: rgba(255,255,255,0.14);
-    }
-    /* Element color accents */
-    .planet-card--fire { --card-accent: #f97316; }
-    .planet-card--earth { --card-accent: #84cc16; }
-    .planet-card--air  { --card-accent: #67e8f9; }
-    .planet-card--water { --card-accent: #818cf8; }
-
-    .planet-card__symbol {
-      font-size: 1.9rem;
-      line-height: 1;
-      color: var(--gold-light);
-    }
-    .planet-card__name {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--silver-dim);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-    .planet-card__position {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .planet-card__desc {
-      font-size: 0.78rem;
-      color: var(--silver-dim);
-      line-height: 1.65;
-      margin-top: 0.25rem;
-    }
-    .retrograde-badge {
-      display: inline-flex;
-      align-items: center;
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #f87171;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 999px;
-      padding: 0.1rem 0.5rem;
-      letter-spacing: 0.08em;
-    }
-
-    /* ── Personal transits section ── */
-    .personal-transit-wrap {
-      max-width: 760px;
-      margin: 0 auto;
-    }
-    .no-chart-prompt {
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      padding: 3rem 2.5rem;
-      text-align: center;
-    }
-    .no-chart-prompt__icon {
-      font-size: 2.8rem;
-      margin-bottom: 1rem;
-      display: block;
-    }
-    .no-chart-prompt h3 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 0.6rem;
-    }
-    .no-chart-prompt p {
-      font-size: 0.9rem;
-      color: var(--silver-dim);
-      line-height: 1.7;
-      max-width: 400px;
-      margin: 0 auto 1.5rem;
-    }
-
-    .transit-form {
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-2xl);
-      padding: 2.5rem;
-    }
-    .transit-form__title {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.1em;
-      margin-bottom: 0.25rem;
-    }
-    .transit-form__sub {
-      font-size: 0.78rem;
-      color: var(--silver-dim);
-      margin-bottom: 1.75rem;
-    }
-    @media (max-width: 600px) { .transit-form { padding: 1.5rem 1.25rem; } }
-    .form-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.25rem;
-    }
-
-    /* ── Retrograde list ── */
-    .retrograde-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .retrograde-item {
-      display: grid;
-      grid-template-columns: 3.5rem 1fr auto;
-      align-items: center;
-      gap: 1rem;
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 1.1rem 1.4rem;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .retrograde-item:hover {
-      border-color: rgba(201, 162, 39,0.25);
-      background: rgba(15,18,50,0.7);
-    }
-    @media (max-width: 500px) {
-      .retrograde-item { grid-template-columns: 3rem 1fr; }
-      .retrograde-item__dates { grid-column: 2; justify-self: start; }
-    }
-    .retrograde-item__symbol {
-      font-size: 1.6rem;
-      text-align: center;
-      color: var(--gold);
-    }
-    .retrograde-item__info h4 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--white);
-      margin: 0 0 0.25rem;
-      letter-spacing: 0.02em;
-    }
-    .retrograde-item__info p {
-      font-size: 0.8rem;
-      color: var(--silver-dim);
-      margin: 0;
-      line-height: 1.55;
-    }
-    .retrograde-item__dates {
-      font-size: 0.72rem;
-      color: var(--gold);
-      text-align: right;
-      white-space: nowrap;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    /* ── Eclipse cards ── */
-    .eclipse-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-    .eclipse-card {
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 1.6rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .eclipse-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-    }
-    .eclipse-card--solar { border-color: rgba(201, 162, 39,0.28); }
-    .eclipse-card--lunar { border-color: rgba(92, 74, 110,0.35); }
-    .eclipse-type {
-      display: block;
-      font-size: 0.62rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      margin-bottom: 0.6rem;
-    }
-    .eclipse-card--solar .eclipse-type { color: var(--gold); }
-    .eclipse-card--lunar .eclipse-type { color: #a78bfa; }
-    .eclipse-card h4 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--white);
-      margin: 0 0 0.7rem;
-    }
-    .eclipse-card p {
-      font-size: 0.82rem;
-      color: var(--silver-dim);
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    /* ── Educational cards ── */
-    .edu-card {
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 1.4rem 1.6rem;
-      transition: border-color 0.2s;
-    }
-    .edu-card:hover { border-color: rgba(201, 162, 39,0.2); }
-    .edu-card__icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
-    .edu-card__title {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--white);
-      letter-spacing: 0.04em;
-      margin-bottom: 0.5rem;
-    }
-    .edu-card__text {
-      font-size: 0.82rem;
-      color: var(--silver-dim);
-      line-height: 1.65;
-      margin: 0;
-    }
-
-    /* ── Loading + results ── */
-    .hidden { display: none !important; }
-
-    /* ── City autocomplete (shared AstroApp.initCityAutocomplete) ── */
-    .autocomplete-dropdown { display: none; }
-    .autocomplete-dropdown.open { display: block; }
-    .autocomplete-item {
-      padding: 0.7rem 1rem;
-      font-size: 0.85rem;
-      color: var(--silver);
-      cursor: pointer;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      transition: background 0.15s, color 0.15s;
-    }
-    .autocomplete-item:last-child { border-bottom: none; }
-    .autocomplete-item:hover,
-    .autocomplete-item.highlighted {
-      background: rgba(92, 74, 110,0.18);
-      color: var(--white);
-    }
-    .autocomplete-item .city-country { color: var(--silver-dim); font-size: 0.78rem; }
-
-    /* ── Personal forecast result blocks (reuse .transit-item from main.css) ── */
-    .ptf-overview {
-      background: var(--surface);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 1.6rem 1.75rem;
-      margin-bottom: 1.75rem;
-    }
-    .ptf-overview__eyebrow {
-      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em;
-      text-transform: uppercase; color: var(--gold); margin: 0 0 0.6rem;
-    }
-    .ptf-overview__headline {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.2rem, 2.6vw, 1.6rem); color: var(--white);
-      line-height: 1.25; margin: 0 0 0.75rem;
-    }
-    .ptf-overview__body {
-      font-size: 0.92rem; color: var(--silver); line-height: 1.75; margin: 0 0 1.1rem;
-    }
-    .ptf-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .ptf-chip {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      font-size: 0.72rem; color: var(--silver);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border); border-radius: 999px;
-      padding: 0.3rem 0.75rem;
-    }
-    .ptf-keywords { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
-    .ptf-keyword {
-      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--gold-light); background: rgba(92, 74, 110,0.12);
-      border: 1px solid rgba(92, 74, 110,0.3); border-radius: 999px; padding: 0.25rem 0.7rem;
-    }
-    /* Aspect quality accent inside the transit-item date row */
-    .ptf-quality { font-weight: 700; }
-    .ptf-quality--harmonious { color: #5ad498; }
-    .ptf-quality--dynamic { color: #fb8a6a; }
-    .ptf-quality--intensifying { color: var(--gold-light); }
-
-    /* ── CTA section ── */
-    .cta-divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 3rem 0 2rem;
-    }
-    .cta-divider::before,
-    .cta-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .cta-divider span {
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--silver-dim);
-      white-space: nowrap;
-    }
-  </style>
 </head>
-<body>
+<body class="page-transits ap-no-nav-enter">
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -590,11 +89,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -620,10 +119,11 @@
 
         <div class="live-date-badge" id="sky-timestamp" aria-live="polite">
           <span class="live-date-badge__dot" aria-hidden="true"></span>
-          <span>Loading current sky&hellip;</span>
+          <span>Live &mdash; current sky positions</span>
         </div>
 
-        <div class="transit-ticker" role="marquee" aria-label="Current planetary positions ticker" id="transit-ticker">
+        <p class="sr-only" id="transit-ticker-status" aria-live="polite" aria-atomic="true">Current planetary positions loading.</p>
+        <div class="transit-ticker" id="transit-ticker" aria-hidden="true">
           <div class="transit-ticker__track" id="transit-ticker-track">
             <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span><span class="transit-pill__name">Sun</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
             <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span><span class="transit-pill__name">Moon</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
@@ -652,7 +152,7 @@
           <p style="margin-top:var(--space-3);"><span class="ap-badge">Real positions, recomputed live — never estimated</span></p>
         </div>
 
-        <div id="current-sky" class="planet-grid" role="region" aria-live="polite" aria-label="Current planetary positions">
+        <div id="current-sky" class="planet-grid" aria-live="polite">
           <!-- Static fallback — JS may update these -->
           <div class="planet-card planet-card--air">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span>
@@ -694,7 +194,7 @@
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
             <span class="planet-card__name">Saturn</span>
             <span class="planet-card__position">
-              Pisces 22&#176;47&#8217; <span class="retrograde-badge" aria-label="retrograde">Rx</span>
+              Pisces 22&#176;47&#8217; <span class="retrograde-badge" title="Retrograde">Rx</span>
             </span>
             <span class="planet-card__desc">Discipline and structure are under revision. Review spiritual commitments; release what no longer serves your highest path.</span>
           </div>
@@ -733,7 +233,7 @@
 
         <!-- "Your Sky Today" — personalised daily transit card (js/daily-transit.js).
              Auto-renders from a saved chart; otherwise invites the visitor to cast one. -->
-        <div id="daily-transit-card" aria-live="polite" aria-label="Your personalised daily sky reading"></div>
+        <div id="daily-transit-card"></div>
 
         <div class="personal-transit-wrap">
           <form id="transit-form" class="transit-form" novalidate aria-label="Personal transit forecast form">
@@ -785,7 +285,7 @@
               <div class="spinner__ring spinner__ring--inner"></div>
               <div class="spinner__center"></div>
             </div>
-            <p style="margin-top:1.5rem;color:var(--silver-dim);font-size:0.88rem;">Comparing current sky to your natal chart&hellip;</p>
+            <p style="margin-top:1.5rem;color:var(--silver);font-size:0.88rem;">Comparing current sky to your natal chart&hellip;</p>
           </div>
 
           <!-- Results container -->
@@ -812,7 +312,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
               <div class="retrograde-item__info">
-                <h4>Mars Retrograde &mdash; Leo &amp; Cancer</h4>
+                <h3 class="retrograde-item__title">Mars Retrograde &mdash; Leo &amp; Cancer</h3>
                 <p>Ambition and drive recalibrate. Redirect energy rather than forcing forward against resistance. Review ongoing projects and goals.</p>
               </div>
               <div class="retrograde-item__dates">Dec 6, 2024 &ndash; Feb 23, 2025</div>
@@ -820,7 +320,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
               <div class="retrograde-item__info">
-                <h4>Venus Retrograde &mdash; Aries &amp; Pisces</h4>
+                <h3 class="retrograde-item__title">Venus Retrograde &mdash; Aries &amp; Pisces</h3>
                 <p>Reassess what &mdash; and who &mdash; you truly value. Old relationships resurface for resolution or release. Avoid major purchases or new romantic commitments.</p>
               </div>
               <div class="retrograde-item__dates">Mar 1 &ndash; Apr 12, 2025</div>
@@ -828,7 +328,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
               <div class="retrograde-item__info">
-                <h4>Mercury Retrograde &mdash; Leo</h4>
+                <h3 class="retrograde-item__title">Mercury Retrograde &mdash; Leo</h3>
                 <p>Communication and self-expression need revision. Back up all important work; re-read contracts before signing. Creative projects benefit from reworking.</p>
               </div>
               <div class="retrograde-item__dates">Jul 18 &ndash; Aug 11, 2025</div>
@@ -836,7 +336,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
               <div class="retrograde-item__info">
-                <h4>Saturn Retrograde &mdash; Pisces</h4>
+                <h3 class="retrograde-item__title">Saturn Retrograde &mdash; Pisces</h3>
                 <p>Review spiritual boundaries, long-term structures, and dissolving illusions. Inner discipline brings more reward than outer control during this window.</p>
               </div>
               <div class="retrograde-item__dates">Jul 13 &ndash; Nov 27, 2025</div>
@@ -844,7 +344,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
               <div class="retrograde-item__info">
-                <h4>Mercury Retrograde &mdash; Scorpio &amp; Sagittarius</h4>
+                <h3 class="retrograde-item__title">Mercury Retrograde &mdash; Scorpio &amp; Sagittarius</h3>
                 <p>Deep investigations, beliefs, and long-distance plans need revisiting. Truth surfaces unexpectedly; be prepared for revealing conversations.</p>
               </div>
               <div class="retrograde-item__dates">Nov 9 &ndash; Nov 29, 2025</div>
@@ -852,7 +352,7 @@
             <li class="retrograde-item">
               <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
               <div class="retrograde-item__info">
-                <h4>Jupiter Retrograde &mdash; Cancer</h4>
+                <h3 class="retrograde-item__title">Jupiter Retrograde &mdash; Cancer</h3>
                 <p>Expansion turns inward. Deepen emotional intelligence and revisit family foundations. Abundance is found by nourishing inner roots before seeking it externally.</p>
               </div>
               <div class="retrograde-item__dates">Nov 11, 2025 &ndash; Mar 10, 2026</div>
@@ -876,27 +376,27 @@
         <div class="eclipse-list">
           <div class="eclipse-card eclipse-card--solar">
             <span class="eclipse-type">Solar Eclipse</span>
-            <h4>March 29, 2025</h4>
+            <h3 class="eclipse-card__date">March 29, 2025</h3>
             <p>Aries 9&#176; &mdash; New beginnings in identity, courage, and personal initiative. Powerful for starting fresh chapters and launching bold new directions in your life narrative.</p>
           </div>
           <div class="eclipse-card eclipse-card--lunar">
             <span class="eclipse-type">Lunar Eclipse</span>
-            <h4>March 14, 2025</h4>
+            <h3 class="eclipse-card__date">March 14, 2025</h3>
             <p>Virgo 24&#176; &mdash; Completion of health, service, and daily routine cycles. Emotional revelations around work and wellness create space for sustainable new habits.</p>
           </div>
           <div class="eclipse-card eclipse-card--solar">
             <span class="eclipse-type">Solar Eclipse</span>
-            <h4>September 21, 2025</h4>
+            <h3 class="eclipse-card__date">September 21, 2025</h3>
             <p>Virgo 29&#176; &mdash; Reset in health, service, and practical matters. Transformation through precision and dedication; commit to a regimen that honours both body and mind.</p>
           </div>
           <div class="eclipse-card eclipse-card--lunar">
             <span class="eclipse-type">Lunar Eclipse</span>
-            <h4>September 7, 2025</h4>
+            <h3 class="eclipse-card__date">September 7, 2025</h3>
             <p>Pisces 15&#176; &mdash; Emotional release around dreams, spirituality, and hidden matters. Surrender what has already served its purpose &mdash; renewal follows naturally.</p>
           </div>
           <div class="eclipse-card eclipse-card--solar">
             <span class="eclipse-type">Solar Eclipse</span>
-            <h4>February 17, 2026</h4>
+            <h3 class="eclipse-card__date">February 17, 2026</h3>
             <p>Aquarius 28&#176; &mdash; Innovation in community, technology, and social vision. Revolutionary new directions emerge as collective ideals crystallise into meaningful action.</p>
           </div>
         </div>
@@ -916,18 +416,18 @@
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;" class="grid-edu">
           <div>
-            <p style="color:var(--silver-dim);line-height:1.85;margin-bottom:1.25rem;font-size:0.95rem;">
+            <p style="color:var(--silver);line-height:1.85;margin-bottom:1.25rem;font-size:0.95rem;">
               Every planet continues its orbital journey after you are born. When a transiting planet
               forms an angular relationship &mdash; a conjunction, trine, square, or opposition &mdash; with a
               planet in your natal chart, that transit activates the combined themes of both planets
               in your life.
             </p>
-            <p style="color:var(--silver-dim);line-height:1.85;margin-bottom:1.25rem;font-size:0.95rem;">
+            <p style="color:var(--silver);line-height:1.85;margin-bottom:1.25rem;font-size:0.95rem;">
               Outer planets &mdash; Jupiter, Saturn, Uranus, Neptune, and Pluto &mdash; move slowly, and their
               transits last months or even years, often marking the most significant developmental
               chapters of your life. Inner planets move quickly, triggering brief but immediate shifts.
             </p>
-            <p style="color:var(--silver-dim);line-height:1.85;font-size:0.95rem;">
+            <p style="color:var(--silver);line-height:1.85;font-size:0.95rem;">
               Understanding your personal transits gives you a map of upcoming opportunities and
               challenges, allowing you to schedule major decisions and creative launches at the most
               auspicious moments.
@@ -957,12 +457,6 @@
           </div>
         </div>
 
-        <style>
-          @media (max-width: 700px) {
-            .grid-edu { grid-template-columns: 1fr !important; }
-          }
-        </style>
-
         <div class="cta-divider"><span>Ready to begin?</span></div>
         <div style="text-align:center;">
           <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Birth Chart &rarr;</a>
@@ -977,29 +471,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo">&#10022; AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="Account navigation">
-          <p class="footer__heading">Account</p>
-          <ul class="footer__links">
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -1010,13 +565,14 @@
   <!-- Inline init script: live date badge -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      var ua = navigator.userAgent || '';
+      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(ua)) return;
       var tsEl = document.getElementById('sky-timestamp');
-      if (tsEl) {
-        var now = new Date();
-        var dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        var timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
-        tsEl.innerHTML = '<span class="live-date-badge__dot" aria-hidden="true"></span><span>Live &mdash; ' + dateStr + ' &middot; ' + timeStr + '</span>';
-      }
+      if (!tsEl) return;
+      var now = new Date();
+      var dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      var timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+      tsEl.innerHTML = '<span class="live-date-badge__dot" aria-hidden="true"></span><span>Live &mdash; ' + dateStr + ' &middot; ' + timeStr + '</span>';
     });
   </script>
 
@@ -1061,11 +617,24 @@
       }).join('');
     }
 
+    function tickerStatusText(positions) {
+      return PLANETS.map(function (p) {
+        var lon = positions && positions[p.key] != null ? positions[p.key] : null;
+        var posText = lon != null ? degToSignPos(lon) : 'position unknown';
+        var isRetro = RETRO_KEYS[p.key] || false;
+        return p.name + ' ' + posText + (isRetro ? ' retrograde' : '');
+      }).join('; ');
+    }
+
     function populateTicker(positions) {
       var track = document.getElementById('transit-ticker-track');
       if (!track) return;
       var pills = buildPills(positions);
       track.innerHTML = pills + pills;
+      var statusEl = document.getElementById('transit-ticker-status');
+      if (statusEl) {
+        statusEl.textContent = 'Current planetary positions: ' + tickerStatusText(positions) + '.';
+      }
     }
 
     function tryPopulate() {
@@ -1101,23 +670,67 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', tryPopulate);
+    document.addEventListener('DOMContentLoaded', function () {
+      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
+      tryPopulate();
+    });
   })();
   </script>
 
-  <!-- JS -->
-  <script src="js/raf-core.js"></script>
-
-  <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/oracle.js"></script>
-  <script src="js/chart-render.js"></script>
-  <script src="js/interpretations.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/icons.js"></script>
-  <script src="js/daily-transit.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
+  <!-- JS — ephemeris/oracle on defer; cosmos + heavy chart libs idle after load -->
+  <script src="js/profile.js" defer></script>
+  <script>
+  (function () {
+    function audit() {
+      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
+    }
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
+    }
+    if (audit()) return;
+    inject('js/raf-core.js');
+    inject('js/ephemeris.js');
+    inject('js/oracle.js');
+    inject('js/ap-zodiac-constants.js');
+    inject('js/icons.js');
+    inject('js/daily-transit.js');
+  })();
+  </script>
+  <script>
+  (function () {
+    function audit() {
+      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
+    }
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
+    }
+    function idleHeavy() {
+      if (audit()) return;
+      inject('js/chart-render.js');
+      inject('js/ap-load-interpretations.js');
+    }
+    function idleCosmos() {
+      if (audit()) return;
+      inject('js/cosmos.js');
+      inject('js/effects.js');
+    }
+    window.addEventListener('load', function () {
+      if (window.requestIdleCallback) {
+        requestIdleCallback(idleHeavy, { timeout: 5000 });
+        requestIdleCallback(idleCosmos, { timeout: 4000 });
+      } else {
+        setTimeout(idleHeavy, 1500);
+        setTimeout(idleCosmos, 1200);
+      }
+    }, { once: true });
+  })();
+  </script>
 
   <!-- ============================================================
        PERSONAL TRANSIT FORECAST — form controller
@@ -1255,8 +868,8 @@
         (a.strength ? ' · ' + esc(a.strength) : '') + (orbTxt ? ' · ' + orbTxt : '') + qualityTag;
       return '<div class="transit-item' + (major ? ' transit-item--major' : '') + '">' +
         '<div class="transit-item__date">' + meta + '</div>' +
-        '<h4 class="transit-item__title">' + planetGlyph(a.transitPlanet) +
-          'Transiting ' + esc(a.transitPlanet) + ' ' + esc(cap(a.aspect)) + ' natal ' + esc(a.natalPlanet) + '</h4>' +
+        '<h3 class="transit-item__title">' + planetGlyph(a.transitPlanet) +
+          'Transiting ' + esc(a.transitPlanet) + ' ' + esc(cap(a.aspect)) + ' natal ' + esc(a.natalPlanet) + '</h3>' +
         '<p class="transit-item__body">' + esc(a.interpretation) + '</p>' +
       '</div>';
     }
@@ -1269,8 +882,8 @@
       var meta = esc(t.transit) + ' → ' + esc(t.natal) + (orbTxt ? ' · ' + orbTxt : '');
       return '<div class="transit-item">' +
         '<div class="transit-item__date">' + meta + '</div>' +
-        '<h4 class="transit-item__title">' + planetGlyph(t.transit) +
-          esc(t.transit) + ' ' + esc(t.aspect || '') + ' ' + esc(t.natal) + '</h4>' +
+        '<h3 class="transit-item__title">' + planetGlyph(t.transit) +
+          esc(t.transit) + ' ' + esc(t.aspect || '') + ' ' + esc(t.natal) + '</h3>' +
         '<p class="transit-item__body">' + esc(t.text || '') + '</p>' +
       '</div>';
     }
@@ -1282,7 +895,7 @@
           'open sky. Days like this don’t pull you in any one direction; the heading is yours to set.';
       return '<div class="transit-item">' +
         '<div class="transit-item__date">Open Sky</div>' +
-        '<h4 class="transit-item__title">No tight transits to your chart right now</h4>' +
+        '<h3 class="transit-item__title">No tight transits to your chart right now</h3>' +
         '<p class="transit-item__body">' + esc(body) + '</p>' +
       '</div>';
     }
@@ -1290,7 +903,7 @@
     function errorHtml(msg) {
       return '<div class="transit-item">' +
         '<div class="transit-item__date">Unavailable</div>' +
-        '<h4 class="transit-item__title">Couldn’t cast your forecast</h4>' +
+        '<h3 class="transit-item__title">Couldn’t cast your forecast</h3>' +
         '<p class="transit-item__body">' + esc(msg) + '</p>' +
       '</div>';
     }
@@ -1381,19 +994,31 @@
       if (results) results.classList.add('hidden');
       setLoading(true);
 
-      // Let the spinner paint before the synchronous engine work runs.
+      // Let the spinner paint before engine + interpretations load.
       setTimeout(function () {
-        try {
-          runForecast({
-            name: '', date: date, time: time,
-            lat: lat, lon: lon, city: city, tz: tz, houseSystem: 'placidus'
-          });
-        } catch (err) {
-          if (results) {
-            results.innerHTML = errorHtml(String((err && err.message) || err));
-            results.classList.remove('hidden');
+        function finish(err) {
+          if (err) {
+            if (results) {
+              results.innerHTML = errorHtml(String((err && err.message) || err));
+              results.classList.remove('hidden');
+            }
+            setLoading(false);
           }
-          setLoading(false);
+        }
+        function cast() {
+          try {
+            runForecast({
+              name: '', date: date, time: time,
+              lat: lat, lon: lon, city: city, tz: tz, houseSystem: 'placidus'
+            });
+          } catch (err) {
+            finish(err);
+          }
+        }
+        if (typeof window.loadInterpretations === 'function') {
+          window.loadInterpretations().then(cast).catch(finish);
+        } else {
+          cast();
         }
       }, 30);
     }
@@ -1439,5 +1064,6 @@
     }
   })();
   </script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

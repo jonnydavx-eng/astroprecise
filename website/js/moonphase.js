@@ -273,7 +273,7 @@
     out.innerHTML =
       '<article class="mp-card" id="mp-share-card">' +
         '<div class="mp-card__brand">' +
-          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>' +
+          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold-text,#D9BC5C);"></span>' +
           '<span class="mp-card__brand-name">AstroPrecise</span>' +
         '</div>' +
         '<div class="mp-card__moon">' + moonSVG(phase, 120) + '</div>' +
@@ -402,7 +402,7 @@
     out.innerHTML =
       '<article class="mp-card mp-card--compat" id="mp-compat-share-card">' +
         '<div class="mp-card__brand">' +
-          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>' +
+          '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold-text,#D9BC5C);"></span>' +
           '<span class="mp-card__brand-name">AstroPrecise</span>' +
         '</div>' +
         '<div class="mp-compat-grid">' +

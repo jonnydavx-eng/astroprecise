@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="AstroPrecise — genuinely accurate astrology, computed privately in your browser. Free birth chart, today's sky, compatibility, and the Instrument. Start here." />
   <title>AstroPrecise — Start Here</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -18,51 +17,16 @@
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/links-page.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
   <meta name="mobile-web-app-capable" content="yes" />
-  <link rel="stylesheet" href="css/main.css" />
-  <style>
-    body { background: #050406; }
-    .lib {
-      max-width: 480px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem;
-      text-align: center; position: relative; z-index: 1;
-    }
-    .lib__banner {
-      max-width: 100%; margin: 0 auto 1.25rem;
-      border-radius: 16px; overflow: hidden;
-      border: 1px solid rgba(201,162,39,0.28);
-      box-shadow: 0 14px 44px rgba(0,0,0,0.5), 0 0 28px rgba(201,162,39,0.08);
-    }
-    .lib__banner img {
-      width: 100%; display: block;
-      filter: sepia(0.15) brightness(0.9);
-    }
-    .lib__seal { font-size: 2.4rem; color: var(--gold, #C9A227); text-shadow: 0 0 40px rgba(201,162,39,0.5); }
-    .lib__title {
-      font-family: 'Cinzel', serif; font-size: 1.9rem; letter-spacing: 0.14em;
-      margin: 0.3rem 0 0.2rem;
-      background: linear-gradient(160deg,#F0E8D8 18%,#E6C24A 50%,#F0E8D8 82%);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .lib__tag { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.05rem; color: var(--silver, #C8D0E8); margin: 0 0 1.6rem; }
-    .lib__group-label { font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--silver-dim, #8891AA); margin: 1.6rem 0 0.6rem; }
-    .lib-link {
-      display: block; text-decoration: none; text-align: center;
-      background: rgba(20, 16, 10,0.55); border: 1px solid rgba(201,162,39,0.28);
-      border-radius: 16px; padding: 0.95rem 1rem; margin: 0.6rem 0;
-      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-      transition: border-color 0.2s, transform 0.2s, background 0.2s;
-    }
-    .lib-link:hover { border-color: var(--gold, #C9A227); transform: translateY(-1px); background: rgba(201,162,39,0.07); }
-    .lib-link__label { display: block; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--white, #F8F4EE); letter-spacing: 0.02em; }
-    .lib-link__sub { display: block; font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; color: var(--silver-dim, #8891AA); margin-top: 2px; }
-    .lib-link--primary { border-color: rgba(201,162,39,0.55); background: rgba(201,162,39,0.10); }
-    .lib__social { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: center; }
-    .lib-social { font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold, #C9A227); text-decoration: none; }
-    .lib-social:hover { color: var(--gold-light, #E8C872); }
-    .lib__foot { margin-top: 2rem; font-size: 0.62rem; letter-spacing: 0.08em; color: var(--silver-dim, #8891AA); line-height: 1.7; }
-    .lib__foot a { color: var(--gold, #C9A227); text-decoration: none; }
-  </style>
-</head>
+  </head>
 <body>
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
@@ -73,7 +37,7 @@
     </div>
     <div class="lib__seal" aria-hidden="true">&#10022;</div>
     <h1 class="lib__title">AstroPrecise</h1>
-    <p class="lib__tag">Genuinely accurate astrology &mdash; your real sky, computed privately. &#10022;</p>
+    <p class="lib__tag">Mission Control for your sky &mdash; genuinely accurate, computed privately. &#10022;</p>
 
     <p class="lib__group-label">Free, and unusually good</p>
     <a class="lib-link lib-link--primary" href="chart.html">
@@ -89,7 +53,7 @@
       <span class="lib-link__sub">Two charts, the real aspects between them. Shareable.</span>
     </a>
     <a class="lib-link" href="ephemeris.html">
-      <span class="lib-link__label">&#9728; The Instrument</span>
+      <span class="lib-link__label">&#9728; Sky</span>
       <span class="lib-link__sub">Your birth as an event in spacetime &mdash; light-cone, zenith star, live sky.</span>
     </a>
 
@@ -122,8 +86,7 @@
 
 
   <script src="js/cosmos.js"></script>
-  <script src="js/app.js"></script>
-  <script>
+<script>
   /* Render the dormant (paid/email/shop) links + social — only those configured in
      AP_MON / AP_SOCIAL, so a visitor never meets a dead link. */
   (function () {
@@ -154,5 +117,6 @@
     })();
   })();
   </script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

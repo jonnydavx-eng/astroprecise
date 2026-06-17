@@ -230,6 +230,8 @@ const AstroQuiz = (() => {
 
   // ── Render: a single question ──────────────────────────────
   function renderQuestion() {
+    clearMountBoot();
+    container.classList.remove('aq-mount--result');
     if (step >= QUESTIONS.length) { showResult(); return; }
     const Q = QUESTIONS[step];
     const pct = Math.round((step / QUESTIONS.length) * 100);
@@ -414,10 +416,21 @@ const AstroQuiz = (() => {
     });
   }
 
+  function clearMountBoot() {
+    if (!container) return;
+    container.classList.remove('is-booting', 'is-revealing');
+  }
+
+  function primeResultLayout() {
+    if (!container) return;
+    container.classList.add('aq-mount--result');
+  }
+
   // ── Render: the result card ────────────────────────────────
   function showResult() {
     const arch = resolveArchetype();
     chosenArchetypeId = arch.id;
+    primeResultLayout();
 
     // Persist (deterministic, shareable).
     try {
@@ -435,6 +448,7 @@ const AstroQuiz = (() => {
 
     const shareText = `My cosmic archetype is ${arch.name} (${arch.tagline}) — Discover yours at ${SHARE_NAME}`;
 
+    clearMountBoot();
     container.innerHTML = `
       <div class="aq-result" data-element="${arch.element}">
         <div class="aq-result__eyebrow">Your Cosmic Archetype</div>
@@ -518,10 +532,51 @@ const AstroQuiz = (() => {
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function wireIntro(saved) {
+    const startBtn = container.querySelector('#aq-start-btn');
+    if (startBtn && !startBtn.dataset.wired) {
+      startBtn.dataset.wired = '1';
+      startBtn.addEventListener('click', () => {
+        reset();
+        renderQuestion();
+      });
+    }
+    const resumeBtn = container.querySelector('#aq-resume-btn');
+    if (resumeBtn && !resumeBtn.dataset.wired) {
+      resumeBtn.dataset.wired = '1';
+      resumeBtn.addEventListener('click', () => {
+        const arch = ARCHETYPES.find(a => a.id === saved.id);
+        if (arch) {
+          reset();
+          elementScores[arch.element] = 10;
+          modalityScores[arch.modality] = 10;
+          step = QUESTIONS.length;
+          showResult();
+        }
+      });
+    }
+  }
+
   // ── Intro screen with optional "resume last result" ────────
   function renderIntro() {
+    clearMountBoot();
+    container.classList.remove('aq-mount--result');
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (_) {}
+
+    const existingIntro = container.querySelector('.aq-intro');
+    if (existingIntro) {
+      if (saved && saved.name && !container.querySelector('#aq-resume-btn')) {
+        const resume = document.createElement('button');
+        resume.className = 'aq-resume';
+        resume.id = 'aq-resume-btn';
+        resume.type = 'button';
+        resume.innerHTML = 'Last time you were <strong>' + esc(saved.name) + '</strong> — view it again';
+        existingIntro.appendChild(resume);
+      }
+      wireIntro(saved);
+      return;
+    }
 
     const resumeRow = (saved && saved.name) ? `
       <button class="aq-resume" id="aq-resume-btn" type="button">
@@ -543,24 +598,7 @@ const AstroQuiz = (() => {
       </div>
     `;
 
-    container.querySelector('#aq-start-btn').addEventListener('click', () => {
-      reset();
-      renderQuestion();
-    });
-    const resumeBtn = container.querySelector('#aq-resume-btn');
-    if (resumeBtn) {
-      resumeBtn.addEventListener('click', () => {
-        const arch = ARCHETYPES.find(a => a.id === saved.id);
-        if (arch) {
-          reset();
-          // Seed scores so resolveArchetype reproduces the saved result.
-          elementScores[arch.element] = 10;
-          modalityScores[arch.modality] = 10;
-          step = QUESTIONS.length;
-          showResult();
-        }
-      });
-    }
+    wireIntro(saved);
   }
 
   // ── Init ───────────────────────────────────────────────────

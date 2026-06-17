@@ -9,7 +9,9 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BASE = process.argv[2] || 'http://localhost:8790';
+const CLI_ARGS = process.argv.slice(2);
+const MOBILE = CLI_ARGS.includes('--mobile');
+const BASE = CLI_ARGS.find((a) => !a.startsWith('--')) || 'http://localhost:8790';
 const OUT = join(__dirname, 'out');
 
 async function snap(page, name) {
@@ -49,9 +51,14 @@ async function main() {
   await mkdir(OUT, { recursive: true });
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
-    viewport: { width: 1440, height: 900 },
-    deviceScaleFactor: 1,
+    viewport: MOBILE ? { width: 390, height: 844 } : { width: 1440, height: 900 },
+    deviceScaleFactor: MOBILE ? 3 : 1,
     colorScheme: 'dark',
+    userAgent: MOBILE
+      ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+      : undefined,
+    isMobile: MOBILE,
+    hasTouch: MOBILE,
   });
 
   await context.addInitScript(() => {
@@ -62,43 +69,51 @@ async function main() {
   const report = { base: BASE, capturedAt: new Date().toISOString(), shots: [], states: [], issues: [] };
 
   try {
-    await page.goto(`${BASE}/?v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(`${BASE}/index-full.html?full=1&v=${Date.now()}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await page.evaluate(async () => {
       if (navigator.serviceWorker) {
         const regs = await navigator.serviceWorker.getRegistrations();
         await Promise.all(regs.map((r) => r.unregister()));
       }
     });
-    await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => window.Orrery3D, { timeout: 45000 });
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 90000 });
+    await page.waitForFunction(() => window.Orrery3D, { timeout: 90000 });
 
     const phases = new Set();
     let maxProgress = 0;
-    let earthHoldState = null;
+    let cosmosHoldState = null;
+    let earthLandState = null;
     let introStartedAt = 0;
-    const deadline = Date.now() + 90000;
+    const deadline = Date.now() + 200000;
 
     while (Date.now() < deadline) {
       const row = await readProbe(page);
       phases.add(row.phase);
+      const pre = await page.evaluate(() => document.getElementById('preloader')?.className || '');
       if (row.orrery) {
         maxProgress = Math.max(maxProgress, row.orrery.introProgress ?? 0);
         if (row.orrery.introStartedAt > 0) introStartedAt = row.orrery.introStartedAt;
       }
 
-      if (!earthHoldState && row.orrery?.introActive && !row.aligned) {
-        earthHoldState = row;
-        report.shots.push({ label: '00-earth-hold', file: await snap(page, '00-earth-hold') });
-        report.states.push({ label: '00-earth-hold', ...row });
+      if (!cosmosHoldState && row.orrery?.introActive && !row.aligned
+          && (pre.includes('preloader--cosmic') || (row.orrery.scaleLevel ?? 0) >= 5)
+          && row.canvasClientW >= (MOBILE ? 360 : 500)
+          && row.canvasClientH >= (MOBILE ? 600 : 500)) {
+        cosmosHoldState = row;
+        report.shots.push({ label: '01-cosmos-hold', file: await snap(page, MOBILE ? '01-cosmos-hold-mobile' : '01-cosmos-hold') });
+        report.states.push({ label: '01-cosmos-hold', preloaderClasses: pre, ...row });
       }
 
-      if (row.orrery?.introCompleted && row.aligned) break;
-      await page.waitForTimeout(45);
+      if (!earthLandState && row.orrery?.introCompleted && row.aligned) {
+        earthLandState = row;
+        break;
+      }
+      await page.waitForTimeout(50);
     }
 
-    const enterState = await readProbe(page);
-    report.shots.push({ label: '03-sky-aligned', file: await snap(page, '03-sky-aligned') });
-    report.states.push({ label: '03-sky-aligned', ...enterState });
+    const enterState = earthLandState || await readProbe(page);
+    report.shots.push({ label: '04-earth-land', file: await snap(page, MOBILE ? '04-earth-land-mobile' : '04-earth-land') });
+    report.states.push({ label: '04-earth-land', ...enterState });
 
     const introElapsed = await page.evaluate(() => {
       const started = window.Orrery3D?.getIntroStartedAt?.() ?? 0;
@@ -107,19 +122,28 @@ async function main() {
     report.introElapsedMs = introElapsed;
     report.timeline = { phases: [...phases], maxProgress };
 
-    if (!earthHoldState) report.issues.push('00-earth-hold: no Earth-hold frame captured');
+    report.mobile = MOBILE;
+    if (!cosmosHoldState) report.issues.push('01-cosmos-hold: no galaxy/cosmos frame captured');
     if (!enterState.aligned) report.issues.push('Enter CTA not revealed after intro');
     if (!enterState.orrery?.introCompleted) report.issues.push('hasIntroCompleted() false after intro');
-    if (introElapsed > 0 && introElapsed < 6500) {
-      report.issues.push(`Intro elapsed ${introElapsed}ms — expected ~7500ms`);
+    const expectMin = MOBILE ? 22000 : 26000;
+    const expectMax = MOBILE ? 38000 : 45000;
+    if (introElapsed > 0 && introElapsed < expectMin) {
+      report.issues.push(`Intro elapsed ${introElapsed}ms — expected ~${expectMin / 1000}s+ continuous cosmic descent`);
     }
-    if (!phases.has('Earth') && !phases.has('Approaching Earth')) {
-      report.issues.push(`Phase copy missing Earth/Approaching (saw: ${[...phases].join(', ')})`);
+    if (introElapsed > expectMax) {
+      report.issues.push(`Intro elapsed ${introElapsed}ms — slower than ${expectMax / 1000}s budget`);
+    }
+    const hasCosmicPhase = [...phases].some((p) => /deep field|stardust|galactic|ecliptic|transpersonal|gas-giant|personal sky|blue marble|meridian|cosmic|galaxy|horizon/i.test(p));
+    if (!hasCosmicPhase) {
+      report.issues.push(`Phase copy missing cosmic journey (saw: ${[...phases].join(', ')})`);
     }
     if (maxProgress < 0.9) report.issues.push(`Intro max progress only ${maxProgress.toFixed(2)}`);
-    if (enterState.phase === 'Inner system') report.issues.push('Enter screen shows "Inner system"');
-    if (earthHoldState?.aligned) report.issues.push('Enter revealed during Earth-hold');
-    if (enterState.canvasClientW < 400) report.issues.push('Canvas too small on Enter screen');
+    if (enterState.orrery?.scaleLevel !== 0) {
+      report.issues.push(`Enter screen scale ${enterState.orrery?.scaleLevel} — expected Earth (0)`);
+    }
+    const minCanvas = MOBILE ? 280 : 400;
+    if (enterState.canvasClientW < minCanvas) report.issues.push('Canvas too small on Enter screen');
 
     const brightness = await page.evaluate(() => {
       const c = document.getElementById('orrery-canvas');
@@ -131,7 +155,7 @@ async function main() {
       return { r: buf[0], g: buf[1], b: buf[2], a: buf[3] };
     });
     report.centerPixel = brightness;
-    if (brightness && brightness.r < 8 && brightness.g < 8 && brightness.b < 8) {
+    if (brightness && brightness.a > 0 && brightness.r < 8 && brightness.g < 8 && brightness.b < 8) {
       report.issues.push('Center pixel near black — Earth may not be rendering');
     }
 

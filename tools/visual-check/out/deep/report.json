@@ -1,0 +1,251 @@
+{
+  "base": "http://localhost:8790",
+  "capturedAt": "2026-06-16T21:00:07.527Z",
+  "pages": [
+    {
+      "id": "index",
+      "path": "/?lite=1",
+      "url": "http://localhost:8790/?lite=1",
+      "scores": {
+        "performance": 96,
+        "accessibility": 96,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perfPlaywright": 96
+      },
+      "metrics": {
+        "fcp": 592,
+        "lcp": null,
+        "cls": 0,
+        "tbt": 169.5,
+        "si": 2630.4343090999746,
+        "loadMs": 635
+      },
+      "lighthouse": {
+        "performance": 96,
+        "accessibility": 96,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "axe": {
+        "violations": [],
+        "passes": 46
+      },
+      "state": {
+        "title": "AstroPrecise — Your Cosmic Blueprint | Free Birth Chart & Precise Astrology",
+        "h1": "Your personal universe, beautifully revealed.",
+        "bodyClass": "page-home ap-cinematic-2026 ap-skip-intro",
+        "htmlClass": "ap-lite-hero",
+        "liteHero": true,
+        "orreryReady": false
+      }
+    },
+    {
+      "id": "chart",
+      "path": "/chart.html",
+      "url": "http://localhost:8790/chart.html",
+      "scores": {
+        "performance": 98,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perfPlaywright": 98
+      },
+      "metrics": {
+        "fcp": 192,
+        "lcp": null,
+        "cls": 0.02153542377629021,
+        "tbt": 0,
+        "si": 2218.529568303899,
+        "loadMs": 216
+      },
+      "lighthouse": {
+        "performance": 98,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "axe": {
+        "violations": [],
+        "passes": 46
+      },
+      "state": {
+        "title": "Free Birth Chart Calculator — Natal Chart, Rising Sign & Houses | AstroPrecise",
+        "h1": "Your Natal Blueprint",
+        "bodyClass": "page-chart ap-cinematic-2026 ap-no-nav-enter",
+        "htmlClass": "",
+        "liteHero": false,
+        "orreryReady": false
+      }
+    },
+    {
+      "id": "horoscope",
+      "path": "/horoscope.html",
+      "url": "http://localhost:8790/horoscope.html",
+      "scores": {
+        "performance": 96,
+        "accessibility": 93,
+        "best-practices": 96,
+        "seo": 100,
+        "axe": 100,
+        "perfPlaywright": 96
+      },
+      "metrics": {
+        "fcp": 336,
+        "lcp": null,
+        "cls": 0.001659274887093274,
+        "tbt": 0,
+        "si": 3338.354210285672,
+        "loadMs": 384
+      },
+      "lighthouse": {
+        "performance": 96,
+        "accessibility": 93,
+        "best-practices": 96,
+        "seo": 100
+      },
+      "axe": {
+        "violations": [],
+        "passes": 47
+      },
+      "state": {
+        "title": "Daily Horoscope for All 12 Zodiac Signs — Free & Computed from the Real Sky | AstroPrecise",
+        "h1": "Spin to Your Sign",
+        "bodyClass": "page-horoscope ap-cinematic-2026 ap-no-nav-enter",
+        "htmlClass": "",
+        "liteHero": false,
+        "orreryReady": false
+      }
+    },
+    {
+      "id": "compatibility",
+      "path": "/compatibility.html",
+      "url": "http://localhost:8790/compatibility.html",
+      "scores": {
+        "performance": 93,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perfPlaywright": 93
+      },
+      "metrics": {
+        "fcp": 260,
+        "lcp": null,
+        "cls": 0.1214729122975574,
+        "tbt": 5,
+        "si": 2514.8708158385775,
+        "loadMs": 327
+      },
+      "lighthouse": {
+        "performance": 93,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "axe": {
+        "violations": [],
+        "passes": 54
+      },
+      "state": {
+        "title": "Zodiac Compatibility Calculator — Free Synastry Report | AstroPrecise",
+        "h1": "Cosmic Compatibility",
+        "bodyClass": "page-compat ap-cinematic-2026 ap-no-nav-enter",
+        "htmlClass": "",
+        "liteHero": false,
+        "orreryReady": false
+      }
+    },
+    {
+      "id": "ephemeris",
+      "path": "/ephemeris.html",
+      "url": "http://localhost:8790/ephemeris.html",
+      "scores": {
+        "performance": 97,
+        "accessibility": 96,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perfPlaywright": 97
+      },
+      "metrics": {
+        "fcp": 284,
+        "lcp": null,
+        "cls": 0,
+        "tbt": 24,
+        "si": 2163.723028421843,
+        "loadMs": 302
+      },
+      "lighthouse": {
+        "performance": 97,
+        "accessibility": 96,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "axe": {
+        "violations": [],
+        "passes": 46
+      },
+      "state": {
+        "title": "The Instrument | AstroPrecise",
+        "h1": "The Instrument",
+        "bodyClass": "page-instrument ap-cinematic-2026 ap-no-nav-enter",
+        "htmlClass": "",
+        "liteHero": false,
+        "orreryReady": false
+      }
+    },
+    {
+      "id": "shop",
+      "path": "/shop.html",
+      "url": "http://localhost:8790/shop.html",
+      "scores": {
+        "performance": 92,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100,
+        "axe": 100,
+        "perfPlaywright": 92
+      },
+      "metrics": {
+        "fcp": 580,
+        "lcp": null,
+        "cls": 0,
+        "tbt": 3,
+        "si": 1696.9999199375993,
+        "loadMs": 681
+      },
+      "lighthouse": {
+        "performance": 92,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "axe": {
+        "violations": [],
+        "passes": 49
+      },
+      "state": {
+        "title": "Cosmic Shop — Personalised Chart Products | AstroPrecise",
+        "h1": "Your sky, made tangible",
+        "bodyClass": "page-shop ap-cinematic-2026 ap-no-nav-enter",
+        "htmlClass": "",
+        "liteHero": false,
+        "orreryReady": false
+      }
+    }
+  ],
+  "summary": {
+    "performance": 95,
+    "accessibility": 96,
+    "best-practices": 99,
+    "seo": 100,
+    "axe": 100,
+    "overall": 98,
+    "pageCount": 6
+  },
+  "issues": [],
+  "ok": true
+}

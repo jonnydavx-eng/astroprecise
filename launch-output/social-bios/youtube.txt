@@ -1,0 +1,18 @@
+Platform: YouTube
+Handle: @astroprecise
+Display name: AstroPrecise
+Website / link: https://astroprecise.app/links.html
+Banner: marketing/social/banner-youtube-2560x1440.jpg
+
+
+
+
+--- BIO (paste) ---
+(mirror Instagram)
+
+--- PINNED POST (X only) ---
+I built a birth-chart tool that never uploads your birth data.
+
+VSOP87 astronomy. Free chart. Your sky as wallpaper.
+
+Start here → https://astroprecise.app/links.html

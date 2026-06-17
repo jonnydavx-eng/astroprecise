@@ -7,7 +7,8 @@ points to the shop. Pairs with `GTM-LADDER.md` (the ladder), `GROWTH.md` (channe
 - **Platform:** Beacons.ai or Linktree (free tier works) — or, since the site is already great, just
   link straight to the live tool and skip the middleman where you can.
 - **URL:** `beacons.ai/astroprecise` / `linktr.ee/astroprecise`
-- **Live site:** `https://jonnydavx-eng.github.io/astroprecise/`
+- **Live site:** `https://astroprecise.app/`
+- **On-site link-in-bio (preferred):** `https://astroprecise.app/links.html` — no Linktree needed
 - **Purpose:** turn AstroTok/Pinterest/IG attention into (1) a free chart, (2) an email, (3) a sale —
   in that order. **Lead with the free, genuinely accurate tool** — it's the differentiator and the hook.
 
@@ -21,21 +22,21 @@ step for people who already got value.
 ### 1. Avatar + headline
 - **AVATAR:** AstroPrecise mark (gold on void `#090b16`)
 - **HEADLINE:** AstroPrecise
-- **SUBHEADLINE:** Genuinely accurate astrology — your real sky, computed privately. ✦
+- **SUBHEADLINE:** Mission Control for your sky — genuinely accurate, computed privately. ✦
 
 ### 2. Primary links (in order — free tool first)
 
 ✦ **[FREE BIRTH CHART — Your Real Sky]**
-→ `https://jonnydavx-eng.github.io/astroprecise/chart.html`
+→ `https://astroprecise.app/chart.html`
 _Every number is real (VSOP87/ELP2000). Computed in your browser — your birth data never leaves your
 device. Free to cast._
 
 ☉ **[TODAY'S SKY & YOUR HOROSCOPE]**
-→ `https://jonnydavx-eng.github.io/astroprecise/horoscope.html`
+→ `https://astroprecise.app/horoscope.html`
 _Live planetary weather + your sign's reading. Free._
 
 ❤ **[COMPATIBILITY / SYNASTRY]**
-→ `https://jonnydavx-eng.github.io/astroprecise/compatibility.html`
+→ `https://astroprecise.app/compatibility.html`
 _Two charts, the real aspects between them. Shareable. Free._
 
 📩 **[FREE CHART WALLPAPER — to your inbox]**
@@ -74,17 +75,26 @@ _Your real natal chart as a framed print, tee, or mug. Made to order from your b
 
 ### Instagram bio (≤150 chars)
 ```
-AstroPrecise ✦
-Genuinely accurate astrology. Your real sky, computed privately.
-Free birth chart ↓
-[link-in-bio URL]
+AstroPrecise ✦ Mission Control
+Genuinely accurate · private · free birth chart
+VSOP87 ephemeris — every number is real
+↓
+https://astroprecise.app/links.html
 ```
 
 ### TikTok bio (≤80 chars)
 ```
-Real, accurate astrology ✦
-Free birth chart ↓
-[link-in-bio URL]
+Mission Control for your sky ✦
+Real math · free chart ↓
+astroprecise.app/links
+```
+
+### X bio (160 chars)
+```
+Mission Control for your sky ✦
+Real ephemeris · computed in your browser
+Birth data never uploaded
+Free chart ↓
 ```
 
 ### Pinterest bio

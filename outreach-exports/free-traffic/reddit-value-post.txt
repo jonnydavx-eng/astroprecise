@@ -1,0 +1,27 @@
+PLATFORM: Reddit
+SUBREDDIT: r/astrology (post once, max 1/week)
+FLAIR: Tool / Discussion (pick what fits)
+
+TITLE:
+I built a free birth chart tool that computes everything in-browser — would love feedback from this community
+
+BODY:
+I've been working on AstroPrecise — a birth chart site that uses VSOP87/ELP2000 ephemeris (roughly arcminute accuracy for 1800–2200 CE) and runs the entire calculation client-side. Birth data never gets sent to a server.
+
+What's live and free:
+- Full natal chart (houses: Placidus / Whole / Equal / Porphyry)
+- Daily sign horoscopes tied to live sky positions
+- Synastry / compatibility overlay
+- Transits to a saved chart
+- Rising sign + life path tools
+
+I'm not trying to replace professional astrologers — it's a precision map + honest interpretations. Entertainment only, clearly labelled.
+
+I'd genuinely value feedback from people who actually read charts:
+1. What would make you trust a free online tool?
+2. Is the Placidus implementation useful or would you default to Whole Sign?
+3. Anything obviously wrong in how aspects are presented?
+
+Link: https://astroprecise.app/chart.html
+
+Happy to answer questions in the comments. If this breaks sub rules, mods please remove — just looking for real critique.

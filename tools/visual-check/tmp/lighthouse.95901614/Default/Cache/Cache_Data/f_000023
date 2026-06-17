@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free name numerology calculator. Enter your full name to compute your Expression (Destiny), Soul Urge, and Personality numbers using the Pythagorean system — with master numbers and a transparent, deterministic breakdown of every step." />
+  <title>Name Numerology Calculator — Expression, Soul Urge &amp; Personality | AstroPrecise</title>
+<link rel="stylesheet" href="css/fonts.css" />
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AstroPrecise" />
+  <meta property="og:title" content="Name Numerology Calculator — Expression, Soul Urge &amp; Personality | AstroPrecise" />
+  <meta property="og:description" content="Compute your Expression, Soul Urge, and Personality numbers from your full name with the Pythagorean system. Transparent, deterministic, computed in your browser." />
+  <meta property="og:url" content="https://astroprecise.app/name-numerology.html" />
+  <link rel="canonical" href="https://astroprecise.app/name-numerology.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Name Numerology Calculator | AstroPrecise" />
+  <meta name="twitter:description" content="Your Expression, Soul Urge, and Personality numbers from your full name — Pythagorean, transparent, deterministic." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#050406" />
+
+  <!-- FAQPage structured data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is name numerology?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Name numerology assigns a number to each letter of your name and reduces the totals to reveal core numbers. The Pythagorean system maps A=1 through I=9, then repeats J=1 through R=9 and S=1 through Z=8. From your full name it derives your Expression (Destiny) number from all letters, your Soul Urge from the vowels, and your Personality number from the consonants."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do you calculate your numerology number from your name?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Convert each letter of your full name to its Pythagorean value, add them up, then reduce the total by summing its digits until you reach a single digit (1 to 9) or a master number (11, 22, or 33). For the Soul Urge use only the vowels; for the Personality number use only the consonants. The AstroPrecise calculator shows every step so you can verify the arithmetic yourself."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between the Expression, Soul Urge, and Personality numbers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Expression (or Destiny) number comes from all the letters of your full name and describes your natural talents and life direction. The Soul Urge (or Heart's Desire) number comes from the vowels and reflects your inner motivations and what you truly want. The Personality number comes from the consonants and describes the impression you make on others."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are master numbers in numerology?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "11, 22, and 33 are master numbers. When a total reduces to one of these, it is left unreduced rather than being collapsed to a single digit, because master numbers are considered to carry a heightened, more demanding vibration. 11 is the Illuminator, 22 the Master Builder, and 33 the Master Teacher."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which name should I use for numerology?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most numerologists use the full name given at birth as it appears on the birth certificate, because it is considered the blueprint of your potential. You can also calculate the numbers for a name you currently use to see the energy that name carries day to day. The calculator is deterministic, so the same name always returns the same numbers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this name numerology calculator free and private?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The calculator is completely free and runs entirely in your browser. Your name and birth date are never sent to a server, never stored, and never shared. Every calculation is plain arithmetic, so the results are reproducible and contain no random fortune-telling."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    :root {
+      --nn-gold: #c9a227;
+      --nn-gold-pale: #e8c96a;
+      --nn-white: #f0e8d8;
+      --nn-silver: #A89E88;
+      --nn-silver-dim: #8891aa;
+      --nn-surface: rgba(20, 16, 10,0.68);
+      --nn-border: rgba(168, 158, 136,0.12);
+      --nn-radius-xl: 20px;
+      --nn-radius-2xl: 28px;
+    }
+
+    /* ── Hero ── */
+    .nn-hero {
+      padding: var(--space-16) 0 var(--space-10);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      background: transparent;
+    }
+    .nn-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      letter-spacing: 0.04em;
+      color: var(--white);
+      margin-bottom: var(--space-4);
+    }
+    .nn-hero__sub {
+      max-width: 560px;
+      margin: 0 auto var(--space-10);
+      color: var(--nn-silver-dim);
+      font-size: var(--text-lg);
+      line-height: 1.7;
+    }
+
+    /* ── Calculator card ── */
+    .nn-form-card {
+      background: var(--nn-surface);
+      border: 2px solid rgba(196,146,10,0.45);
+      border-radius: var(--nn-radius-2xl);
+      padding: var(--space-10);
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 0 0 1px rgba(168, 158, 136,0.08) inset,
+        0 32px 80px rgba(0,0,0,0.45),
+        0 0 60px rgba(196,146,10,0.06);
+    }
+    .nn-form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.8), transparent);
+    }
+    .nn-form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+    }
+    .nn-submit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      color: #0d0a07;
+      background: linear-gradient(135deg, #C9A227 0%, #EFE3C0 100%);
+      border: none;
+      border-radius: 999px;
+      padding: 0.85rem 2.2rem;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 0 18px rgba(201, 162, 39,0.22);
+    }
+    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(201, 162, 39,0.45); }
+    .nn-form-hint {
+      font-size: 0.68rem;
+      color: var(--nn-silver-dim);
+      margin-top: var(--space-2);
+    }
+
+    /* ── Results ── */
+    #nn-results { display: none; }
+    #nn-results.is-visible { display: block; }
+
+    .nn-result-name {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      color: var(--nn-gold-pale);
+      margin-bottom: var(--space-2);
+      letter-spacing: 0.04em;
+    }
+    .nn-result-sub {
+      text-align: center;
+      color: var(--nn-silver-dim);
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-10);
+    }
+
+    .nn-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-5);
+      margin-bottom: var(--space-10);
+    }
+
+    .nn-card {
+      background: var(--nn-surface);
+      border: 1px solid var(--nn-border);
+      border-top: 3px solid var(--nn-gold);
+      border-radius: var(--nn-radius-xl);
+      padding: var(--space-6) var(--space-5);
+      text-align: center;
+      position: relative;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .nn-card__label {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--nn-gold);
+      font-weight: 700;
+    }
+    .nn-card__from {
+      font-size: 0.6rem;
+      color: var(--nn-silver-dim);
+      letter-spacing: 0.06em;
+    }
+    .nn-card__digit {
+      font-family: var(--font-display);
+      font-size: 3.6rem;
+      line-height: 1;
+      font-weight: 700;
+      color: var(--nn-white);
+      margin: var(--space-2) 0;
+    }
+    .nn-card__master {
+      display: inline-block;
+      font-size: 0.55rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0d0a07;
+      background: var(--nn-gold);
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-weight: 700;
+      align-self: center;
+    }
+    .nn-card__title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--nn-gold-pale);
+    }
+    .nn-card__keyword {
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--nn-silver);
+    }
+    .nn-card__text {
+      font-size: var(--text-sm);
+      color: var(--nn-silver);
+      line-height: 1.65;
+      text-align: left;
+      margin: 0;
+    }
+
+    /* ── Transparent breakdown ── */
+    .nn-breakdown {
+      background: rgba(13, 10, 7,0.55);
+      border: 1px solid var(--nn-border);
+      border-radius: var(--nn-radius-xl);
+      padding: var(--space-7) var(--space-6);
+      margin-bottom: var(--space-10);
+    }
+    .nn-breakdown__title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--nn-white);
+      text-align: center;
+      margin-bottom: var(--space-2);
+    }
+    .nn-breakdown__note {
+      text-align: center;
+      font-size: var(--text-xs);
+      color: var(--nn-silver-dim);
+      margin-bottom: var(--space-6);
+      max-width: 540px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+    .nn-letters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: var(--space-6);
+    }
+    .nn-letter {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 32px;
+      border-radius: 10px;
+      padding: 6px 4px 4px;
+      background: rgba(92, 74, 110,0.10);
+      border: 1px solid var(--nn-border);
+    }
+    .nn-letter--vowel {
+      background: rgba(196,146,10,0.12);
+      border-color: rgba(196,146,10,0.35);
+    }
+    .nn-letter__char {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--nn-white);
+      line-height: 1;
+    }
+    .nn-letter__val {
+      font-size: 0.62rem;
+      color: var(--nn-silver-dim);
+      margin-top: 3px;
+    }
+    .nn-letter--vowel .nn-letter__val { color: var(--nn-gold-pale); }
+
+    .nn-legend {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+      font-size: 0.66rem;
+      color: var(--nn-silver-dim);
+      margin-bottom: var(--space-6);
+    }
+    .nn-legend__swatch {
+      display: inline-block;
+      width: 11px; height: 11px;
+      border-radius: 3px;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .nn-calc-rows { display: flex; flex-direction: column; gap: var(--space-4); }
+    .nn-calc-row {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: var(--space-4);
+    }
+    .nn-calc-row__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-3);
+      margin-bottom: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .nn-calc-row__name {
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--nn-gold);
+      font-weight: 700;
+    }
+    .nn-calc-row__result { font-size: 0.66rem; color: var(--nn-silver-dim); }
+    .nn-calc-row__result strong { color: var(--nn-gold-pale); font-size: 0.95rem; }
+    .nn-calc-row__math {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      color: var(--nn-silver);
+      line-height: 1.7;
+      word-break: break-word;
+    }
+    .nn-calc-row__math .nn-eq { color: var(--nn-gold-pale); font-weight: 600; }
+
+    /* ── Life path mini card ── */
+    .nn-lifepath-card {
+      background: rgba(92, 74, 110,0.10);
+      border: 1px solid rgba(91,127,199,0.25);
+      border-radius: var(--nn-radius-xl);
+      padding: var(--space-6) var(--space-6);
+      margin-bottom: var(--space-10);
+      text-align: center;
+    }
+    .nn-lifepath-card__digit {
+      font-family: var(--font-display);
+      font-size: 2.6rem;
+      color: var(--nn-gold-pale);
+      line-height: 1;
+      margin: var(--space-2) 0;
+    }
+
+    /* ── Number meanings reference ── */
+    .nn-meanings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+    .nn-meaning {
+      background: var(--nn-surface);
+      border: 1px solid var(--nn-border);
+      border-radius: var(--nn-radius-xl);
+      padding: var(--space-5);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .nn-meaning__num {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--nn-gold);
+      line-height: 1;
+    }
+    .nn-meaning__title {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      color: var(--nn-white);
+      margin: var(--space-1) 0;
+    }
+    .nn-meaning__essence {
+      font-size: var(--text-xs);
+      color: var(--nn-silver-dim);
+      line-height: 1.55;
+    }
+    .nn-meaning--master { border-color: rgba(196,146,10,0.4); }
+
+    /* ── FAQ ── */
+    .nn-faq { max-width: 760px; margin: 0 auto; }
+    .nn-faq__item {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: var(--space-5) 0;
+    }
+    .nn-faq__q {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--nn-gold-pale);
+      margin-bottom: var(--space-3);
+    }
+    .nn-faq__a {
+      color: var(--nn-silver);
+      line-height: 1.75;
+      font-size: var(--text-base);
+      margin: 0;
+    }
+
+    /* ── Funnel CTA ── */
+    .nn-funnel {
+      text-align: center;
+    }
+    .nn-funnel__inner {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .nn-error {
+      color: #fb8a6a;
+      font-size: var(--text-sm);
+      text-align: center;
+      margin-top: var(--space-4);
+      min-height: 1.2em;
+    }
+    @media (max-width: 600px) {
+      .nn-form-card { padding: var(--space-7) var(--space-5); }
+      .nn-legend { flex-direction: column; gap: var(--space-2); align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated starfield -->
+  <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO + CALCULATOR
+    ============================================================ -->
+    <section class="nn-hero">
+      <div class="container">
+        <p class="eyebrow">Pythagorean Numerology</p>
+        <h1 class="gradient-text">Name Numerology Calculator</h1>
+        <p class="nn-hero__sub">
+          Every letter of your name carries a number. Enter your full name to reveal your
+          <strong style="color:var(--nn-gold-pale);">Expression</strong>,
+          <strong style="color:var(--nn-gold-pale);">Soul Urge</strong>, and
+          <strong style="color:var(--nn-gold-pale);">Personality</strong> numbers —
+          calculated with the Pythagorean system, master numbers preserved, every step shown.
+        </p>
+
+        <div class="nn-form-card">
+          <h2 class="section-title" style="font-size:var(--text-xl);margin-bottom:var(--space-6);text-align:center;">Calculate Your Numbers</h2>
+          <form id="nn-form" novalidate>
+            <div class="nn-form-grid">
+              <div class="form-group">
+                <label for="nn-name" class="form-label">Full Name <span style="color:var(--crimson-light)">*</span></label>
+                <input type="text" id="nn-name" class="form-input" placeholder="e.g. Jane Elizabeth Smith" maxlength="120" autocomplete="name" required />
+                <p class="nn-form-hint">Numerologists traditionally use the full name given at birth. Your name never leaves your browser.</p>
+              </div>
+              <div class="form-group">
+                <label for="nn-birthdate" class="form-label">Date of Birth <span style="color:var(--silver-dim);font-weight:400;">(optional — adds your Life Path)</span></label>
+                <input type="date" id="nn-birthdate" class="form-input" max="2025-12-31" min="1900-01-01" />
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:var(--space-7);">
+              <button type="submit" class="nn-submit-btn">
+                <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span> Reveal My Numbers
+              </button>
+            </div>
+            <p class="nn-error" id="nn-error" role="alert"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RESULTS
+    ============================================================ -->
+    <section id="nn-results" class="section" aria-live="polite" aria-atomic="true">
+      <div class="container" style="max-width:980px;">
+
+        <p class="nn-result-name" id="nn-result-name">—</p>
+        <p class="nn-result-sub">Your core name numbers, computed with the Pythagorean system</p>
+
+        <div class="nn-card-grid" id="nn-card-grid"></div>
+
+        <!-- Optional Life Path -->
+        <div class="nn-lifepath-card" id="nn-lifepath-card" style="display:none;">
+          <span class="nn-card__label">Life Path Number</span>
+          <div class="nn-lifepath-card__digit" id="nn-lifepath-digit">—</div>
+          <p class="nn-card__text" id="nn-lifepath-text" style="text-align:center;max-width:560px;margin:0 auto;"></p>
+          <p style="margin-top:var(--space-4);">
+            <a href="lifepath.html" class="btn btn--outline">Explore your full Life Path reading →</a>
+          </p>
+        </div>
+
+        <!-- Transparent breakdown -->
+        <div class="nn-breakdown" id="nn-breakdown">
+          <h2 class="nn-breakdown__title">The Calculation, Step by Step</h2>
+          <p class="nn-breakdown__note">
+            Numerology should never be a black box. Below is the exact arithmetic — the
+            Pythagorean value of every letter and how the totals reduce. The same name
+            always produces the same numbers.
+          </p>
+
+          <div class="nn-letters" id="nn-letters"></div>
+
+          <div class="nn-legend">
+            <span><span class="nn-legend__swatch" style="background:rgba(196,146,10,0.5);border:1px solid rgba(196,146,10,0.6);"></span>Vowel → Soul Urge</span>
+            <span><span class="nn-legend__swatch" style="background:rgba(92, 74, 110,0.4);border:1px solid var(--nn-border);"></span>Consonant → Personality</span>
+          </div>
+
+          <div class="nn-calc-rows" id="nn-calc-rows"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         NUMBER MEANINGS REFERENCE
+    ============================================================ -->
+    <section class="section section--alt" aria-labelledby="nn-meanings-heading">
+      <div class="container" style="max-width:980px;">
+        <h2 class="section-title" id="nn-meanings-heading" style="text-align:center;">What Every Number Means</h2>
+        <p class="section-subtitle" style="text-align:center;max-width:600px;margin:0 auto var(--space-8);color:var(--nn-silver-dim);">
+          Numbers 1–9 are the foundation. The master numbers 11, 22, and 33 are never
+          reduced — they carry an amplified, more demanding vibration.
+        </p>
+        <div class="nn-meanings-grid" id="nn-meanings-grid"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FUNNEL — Life Path + Deep Reading
+    ============================================================ -->
+    <section class="section instrument-teaser nn-funnel">
+      <div class="container">
+        <div class="nn-funnel__inner">
+          <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Go Deeper</div>
+          <h2 class="instrument-teaser__title">Your Name Is Only Half the Story</h2>
+          <p class="instrument-teaser__body" style="margin:0 auto var(--space-6);">
+            Your name numbers describe your gifts and your inner motivations. Your
+            <strong style="color:var(--nn-gold-pale);">birth date</strong> reveals your Life Path —
+            the road you are here to walk. And a full natal chart adds the living sky on the
+            day you were born. Combine all three for the complete picture.
+          </p>
+          <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
+            <a href="lifepath.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Life Path</a>
+            <a href="chart.html" class="btn btn--outline btn--lg">Your Full Birth Chart</a>
+          </div>
+          <div id="nn-deep-reading" style="margin-top:var(--space-8);"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ (matches FAQPage JSON-LD above)
+    ============================================================ -->
+    <section class="section section--alt" aria-labelledby="nn-faq-heading">
+      <div class="container">
+        <h2 class="section-title" id="nn-faq-heading" style="text-align:center;margin-bottom:var(--space-8);">Name Numerology — Frequently Asked Questions</h2>
+        <div class="nn-faq">
+          <div class="nn-faq__item">
+            <h3 class="nn-faq__q">What is name numerology?</h3>
+            <p class="nn-faq__a">Name numerology assigns a number to each letter of your name and reduces the totals to reveal core numbers. The Pythagorean system maps A=1 through I=9, then repeats J=1 through R=9 and S=1 through Z=8. From your full name it derives your Expression (Destiny) number from all letters, your Soul Urge from the vowels, and your Personality number from the consonants.</p>
+          </div>
+          <div class="nn-faq__item">
+            <h3 class="nn-faq__q">How do you calculate your numerology number from your name?</h3>
+            <p class="nn-faq__a">Convert each letter of your full name to its Pythagorean value, add them up, then reduce the total by summing its digits until you reach a single digit (1 to 9) or a master number (11, 22, or 33). For the Soul Urge use only the vowels; for the Personality number use only the consonants. This calculator shows every step so you can verify the arithmetic yourself.</p>
+          </div>
+          <div class="nn-faq__item">
+            <h3 class="nn-faq__q">What is the difference between the Expression, Soul Urge, and Personality numbers?</h3>
+            <p class="nn-faq__a">The Expression (or Destiny) number comes from all the letters of your full name and describes your natural talents and life direction. The Soul Urge (or Heart's Desire) number comes from the vowels and reflects your inner motivations and what you truly want. The Personality number comes from the consonants and describes the impression you make on others.</p>
+          </div>
+          <div class="nn-faq__item">
+            <h3 class="nn-faq__q">What are master numbers in numerology?</h3>
+            <p class="nn-faq__a">11, 22, and 33 are master numbers. When a total reduces to one of these, it is left unreduced rather than being collapsed to a single digit, because master numbers are considered to carry a heightened, more demanding vibration. 11 is the Illuminator, 22 the Master Builder, and 33 the Master Teacher.</p>
+          </div>
+          <div class="nn-faq__item">
+            <h3 class="nn-faq__q">Which name should I use for numerology?</h3>
+            <p class="nn-faq__a">Most numerologists use the full name given at birth as it appears on the birth certificate, because it is considered the blueprint of your potential. You can also calculate the numbers for a name you currently use to see the energy that name carries day to day. The calculator is deterministic, so the same name always returns the same numbers.</p>
+          </div>
+          <div class="nn-faq__item">
+            <h3 class="nn-faq__q">Is this name numerology calculator free and private?</h3>
+            <p class="nn-faq__a">Yes. The calculator is completely free and runs entirely in your browser. Your name and birth date are never sent to a server, never stored, and never shared. Every calculation is plain arithmetic, so the results are reproducible and contain no random fortune-telling.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
+            <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
+            <span>AstroPrecise</span>
+          </a>
+          <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
+          <p style="margin-top:var(--space-3);"><span class="ap-badge">Computed locally · Deterministic</span></p>
+        </div>
+        <div class="footer-nav" role="group" aria-label="Footer">
+          <h3 class="footer-nav__heading">Navigate</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="chart.html">Birth Chart</a></li>
+            <li><a href="horoscope.html">Horoscope</a></li>
+            <li><a href="compatibility.html">Compatibility</a></li>
+            <li><a href="lifepath.html">Life Path</a></li>
+            <li><a href="transits.html">Transits</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav">
+          <h3 class="footer-nav__heading">Tools</h3>
+          <ul>
+            <li><a href="ephemeris.html">The Instrument</a></li>
+            <li><a href="chart.html">Natal Chart</a></li>
+            <li><a href="lifepath.html">Life Path</a></li>
+            <li><a href="name-numerology.html">Name Numerology</a></li>
+            <li><a href="shop.html">Cosmic Shop</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <p class="footer-copyright">
+          &copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/raf-core.js"></script>
+
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/name-numerology.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
+
+  <script>
+  'use strict';
+  (function () {
+    var NN = window.NameNumerology;
+    if (!NN) { console.error('NameNumerology engine failed to load'); return; }
+
+    var form = document.getElementById('nn-form');
+    var nameInput = document.getElementById('nn-name');
+    var dateInput = document.getElementById('nn-birthdate');
+    var errorEl = document.getElementById('nn-error');
+    var results = document.getElementById('nn-results');
+
+    var cardGrid = document.getElementById('nn-card-grid');
+    var lettersEl = document.getElementById('nn-letters');
+    var calcRows = document.getElementById('nn-calc-rows');
+    var resultNameEl = document.getElementById('nn-result-name');
+    var lpCard = document.getElementById('nn-lifepath-card');
+    var lpDigit = document.getElementById('nn-lifepath-digit');
+    var lpText = document.getElementById('nn-lifepath-text');
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    /* ── Render the number-meanings reference (static, deterministic) ── */
+    function renderMeanings() {
+      var grid = document.getElementById('nn-meanings-grid');
+      if (!grid) return;
+      var order = [1, 2, 3, 4, 5, 6, 7, 8, 13, 10, 7, 33];
+      var html = '';
+      for (var i = 0; i < order.length; i++) {
+        var n = order[i];
+        var m = NN.meaning(n);
+        if (!m) continue;
+        html += '<div class="nn-meaning' + (m.master ? ' nn-meaning--master' : '') + '">' +
+          '<div class="nn-meaning__num">' + n + (m.master ? ' <span style="font-size:0.7rem;color:var(--nn-gold-pale);">Master</span>' : '') + '</div>' +
+          '<div class="nn-meaning__title">' + esc(m.title) + '</div>' +
+          '<p class="nn-meaning__essence">' + esc(m.essence.charAt(0).toUpperCase() + m.essence.slice(1)) + '.</p>' +
+          '</div>';
+      }
+      grid.innerHTML = html;
+    }
+
+    /* ── Render the per-number result cards ── */
+    function numberCard(label, from, num, angle) {
+      if (!num) {
+        return '<div class="nn-card"><span class="nn-card__label">' + esc(label) + '</span>' +
+          '<span class="nn-card__from">' + esc(from) + '</span>' +
+          '<div class="nn-card__digit">—</div>' +
+          '<p class="nn-card__text">No qualifying letters for this number.</p></div>';
+      }
+      var m = NN.meaning(num.value) || {};
+      var text = m[angle] || m.expression || '';
+      return '<div class="nn-card">' +
+        '<span class="nn-card__label">' + esc(label) + '</span>' +
+        '<span class="nn-card__from">' + esc(from) + '</span>' +
+        '<div class="nn-card__digit">' + num.value + '</div>' +
+        (num.isMaster ? '<span class="nn-card__master">Master Number</span>' : '') +
+        '<div class="nn-card__title">' + esc(m.title || '') + '</div>' +
+        '<div class="nn-card__keyword">' + esc(m.keyword || '') + '</div>' +
+        '<p class="nn-card__text">' + esc(text) + '</p>' +
+        '</div>';
+    }
+
+    /* ── Render the letter chips ── */
+    function renderLetters(breakdown) {
+      var html = '';
+      for (var i = 0; i < breakdown.length; i++) {
+        var l = breakdown[i];
+        html += '<span class="nn-letter' + (l.vowel ? ' nn-letter--vowel' : '') + '">' +
+          '<span class="nn-letter__char">' + esc(l.letter) + '</span>' +
+          '<span class="nn-letter__val">' + l.value + '</span>' +
+          '</span>';
+      }
+      lettersEl.innerHTML = html;
+    }
+
+    /* ── Build the reduction math string, e.g. "5 + 9 + 5 = 19 → 1 + 9 = 10 → 1" ── */
+    function reductionMath(num) {
+      var sum = num.letters.map(function (l) { return l.value; }).join(' + ');
+      var line = sum + ' <span class="nn-eq">= ' + num.total + '</span>';
+      var running = num.total;
+      for (var s = 0; s < num.steps.length; s++) {
+        line += ' → <span class="nn-eq">' + num.steps[s] + '</span>';
+        running = num.steps[s];
+      }
+      return line;
+    }
+
+    function calcRow(label, num) {
+      if (!num) return '';
+      var resultLabel = num.isMaster ? num.value + ' (Master)' : num.value;
+      return '<div class="nn-calc-row">' +
+        '<div class="nn-calc-row__head">' +
+          '<span class="nn-calc-row__name">' + esc(label) + '</span>' +
+          '<span class="nn-calc-row__result">reduces to <strong>' + resultLabel + '</strong></span>' +
+        '</div>' +
+        '<div class="nn-calc-row__math">' + reductionMath(num) + '</div>' +
+        '</div>';
+    }
+
+    /* ── Life path ── */
+    function renderLifePath(lp) {
+      if (!lp) { lpCard.style.display = 'none'; return; }
+      var m = NN.meaning(lp.value) || {};
+      lpDigit.textContent = lp.value + (lp.isMaster ? ' · Master' : '');
+      lpText.innerHTML = '<strong style="color:var(--nn-white);">' + esc(m.title || '') + '</strong> — ' +
+        esc(m.essence ? (m.essence.charAt(0).toUpperCase() + m.essence.slice(1) + '.') : '') +
+        ' Your Life Path comes from your birth date: month ' + lp.month + ' → ' + lp.monthReduced.value +
+        ', day ' + lp.day + ' → ' + lp.dayReduced.value +
+        ', year ' + lp.year + ' → ' + lp.yearReduced.value +
+        ', summing to ' + lp.componentSum + ' → <strong style="color:var(--nn-gold-pale);">' + lp.value + '</strong>.';
+      lpCard.style.display = 'block';
+    }
+
+    /* ── Deep Reading funnel (honours AP_MON dormant-by-default rule) ── */
+    function renderDeepReading() {
+      var wrap = document.getElementById('nn-deep-reading');
+      if (!wrap) return;
+      var M = window.AP_MON || {};
+      var url = M.deepReadingUrl;
+      var isUrl = typeof url === 'string' && /^https?:\/\//i.test(url.trim());
+      if (isUrl) {
+        wrap.innerHTML = '<a href="' + esc(url.trim()) + '" class="btn btn--primary" target="_blank" rel="noopener">' +
+          '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Deep Personal Reading</a>' +
+          '<p style="font-size:0.7rem;color:var(--nn-silver-dim);margin-top:var(--space-3);">' +
+          'A written reading that weaves your name numbers, Life Path, and natal chart into one narrative.</p>';
+      } else {
+        // Dormant: never show a fake checkout. Point to the on-site instrument instead.
+        wrap.innerHTML = '<a href="ephemeris.html" class="btn btn--outline">Explore The Instrument — a deeper reading of your sky</a>';
+      }
+    }
+
+    function run() {
+      errorEl.textContent = '';
+      var name = nameInput.value.trim();
+      var result = NN.fromName(name);
+      if (!result.hasLetters) {
+        errorEl.textContent = 'Please enter a name with at least one letter.';
+        return;
+      }
+
+      resultNameEl.textContent = result.name;
+
+      cardGrid.innerHTML =
+        numberCard('Expression', 'Destiny — all letters', result.expression, 'expression') +
+        numberCard('Soul Urge', "Heart's Desire — vowels", result.soulUrge, 'soulUrge') +
+        numberCard('Personality', 'Outer self — consonants', result.personality, 'personality');
+
+      renderLetters(result.breakdown);
+      calcRows.innerHTML =
+        calcRow('Expression (all letters)', result.expression) +
+        calcRow('Soul Urge (vowels only)', result.soulUrge) +
+        calcRow('Personality (consonants only)', result.personality);
+
+      // Optional life path
+      var lp = null;
+      if (dateInput.value) {
+        lp = NN.fromBirthDate(dateInput.value);
+        if (!lp) errorEl.textContent = 'That birth date could not be read — name numbers still shown.';
+      }
+      renderLifePath(lp);
+
+      results.classList.add('is-visible');
+      if (results.scrollIntoView) {
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      run();
+    });
+
+    renderMeanings();
+    renderDeepReading();
+  })();
+  </script>
+</body>
+</html>

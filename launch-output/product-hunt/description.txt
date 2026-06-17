@@ -1,0 +1,13 @@
+Most astrology apps hide the math and upload your birth time to their servers.
+
+AstroPrecise is the opposite:
+• VSOP87 + ELP2000 ephemeris (~arcminute, 1800–2200 CE)
+• 100% client-side — birth data never leaves your device
+• No account, no subscription on free tools
+• PWA — install on iOS/Android/desktop, offline capable
+
+Free chart forever. Optional one-time Deep Reading PDF + shop (external checkout).
+
+Entertainment only — not professional advice. Verify privacy: DevTools → Network while casting.
+
+https://astroprecise.app/chart.html
