@@ -419,3 +419,34 @@ html.ap-lite-hero .lite-poster-vignette {
     opacity: 0;
   }
 }
+
+/* ── Wave 3: flat-hero cinematic glow ─────────────────────────────────
+   Lift the ~17 flat page heroes toward the premium chart/horoscope look.
+   SAFE technique only: color + text-shadow (no reflow → CLS-safe).
+   Deliberately NO font-family (preserves each page's tuned LCP min-heights)
+   and NO ::before/::after vignettes (box-coupled, structure-risky).
+   Glow values mirror the static peak of the cinematic h1-glow keyframe
+   (gold rgba(201,162,39,...) + parchment light text), without animating —
+   these heroes have no animation hook, so a steady glow is the safe match. */
+.syn-hero h1,
+.tn-hero h1,
+.mp-hero h1,
+.retro-hero h1,
+.rs-hero h1,
+.sat-hero h1,
+.sr-hero h1,
+.compat-hero h1,
+.why-hero h1,
+.acc-hero h1,
+.mc-hero h1,
+.lp-hero h1,
+.nn-hero h1,
+.an-hero h1,
+.sign-hero h1 {
+  color: var(--gold-hero-light, #EFE3C0);
+  text-shadow:
+    0 2px 24px rgba(5, 4, 6, 0.94),
+    0 0 34px rgba(201, 162, 39, 0.20),
+    0 0 1px rgba(232, 224, 208, 0.4),
+    0 1px 0 rgba(0, 0, 0, 0.3);
+}

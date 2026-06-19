@@ -140,7 +140,7 @@
     }
     .ap-email-cta__sub {
       font-size: var(--text-sm, 0.875rem);
-      color: var(--silver, #C8D0E8);
+      color: var(--silver, var(--ap-text-secondary, #C8D0E8));
       margin: 0;
       line-height: 1.65;
       max-width: 36ch;
@@ -180,13 +180,13 @@
     }
     .ap-email-cta__hint {
       font-size: 0.62rem;
-      color: var(--silver-dim, #8891AA);
+      color: var(--silver-dim, var(--ap-text-muted, #8891AA));
       margin: 0;
       line-height: 1.5;
     }
     .ap-email-cta__msg {
       font-size: 0.78rem;
-      color: var(--silver, #C8D0E8);
+      color: var(--silver, var(--ap-text-secondary, #C8D0E8));
       margin: 0;
       min-height: 1.2em;
     }
@@ -201,7 +201,7 @@
       position: relative;
       padding-left: 1.1rem;
       font-size: 0.8rem;
-      color: var(--silver, #C8D0E8);
+      color: var(--silver, var(--ap-text-secondary, #C8D0E8));
       line-height: 1.5;
     }
     .ap-email-cta__perks li::before {

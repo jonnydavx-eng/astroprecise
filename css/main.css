@@ -4830,7 +4830,7 @@ button.sign-card[data-sign],
 
 .ap-email-cta__sub {
   font-size: var(--text-sm, 0.875rem);
-  color: var(--silver, #C8D0E8);
+  color: var(--silver, var(--ap-text-secondary, #C8D0E8));
   margin: 0;
   line-height: 1.65;
   max-width: 36ch;
@@ -4865,7 +4865,7 @@ button.sign-card[data-sign],
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.ap-email-cta__input::placeholder { color: var(--silver-dim, #8891AA); }
+.ap-email-cta__input::placeholder { color: var(--silver-dim, var(--ap-text-muted, #8891AA)); }
 
 .ap-email-cta__input:focus {
   border-color: var(--gold, #C9A227);
@@ -4894,14 +4894,14 @@ button.sign-card[data-sign],
 
 .ap-email-cta__hint {
   font-size: 0.62rem;
-  color: var(--silver-dim, #8891AA);
+  color: var(--silver-dim, var(--ap-text-muted, #8891AA));
   margin: 0;
   line-height: 1.5;
 }
 
 .ap-email-cta__msg {
   font-size: 0.78rem;
-  color: var(--silver, #C8D0E8);
+  color: var(--silver, var(--ap-text-secondary, #C8D0E8));
   margin: 0;
   min-height: 1.2em;
 }
@@ -5000,7 +5000,7 @@ button.sign-card[data-sign],
   border: none;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
-  color: var(--silver-dim, #8891AA);
+  color: var(--silver-dim, var(--ap-text-muted, #8891AA));
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
@@ -5066,7 +5066,7 @@ button.sign-card[data-sign],
   position: relative;
   padding-left: 1.1rem;
   font-size: 0.8rem;
-  color: var(--silver, #C8D0E8);
+  color: var(--silver, var(--ap-text-secondary, #C8D0E8));
   line-height: 1.5;
 }
 
@@ -5094,7 +5094,7 @@ button.sign-card[data-sign],
 
 .ap-email-modal__sub {
   font-size: 0.88rem;
-  color: var(--silver, #C8D0E8);
+  color: var(--silver, var(--ap-text-secondary, #C8D0E8));
   line-height: 1.65;
   margin: 0 0 var(--space-4);
 }
@@ -6299,7 +6299,7 @@ body.has-email-sticky { padding-bottom: 72px; }
 /* Compat form column header accents */
 .compat-person:first-of-type h3 { color: var(--lapis-bright); }
 .compat-person:last-of-type  h3 { color: var(--gold-light); }
-.compat-person:first-of-type .form-label { color: rgba(146,180,238,0.75); }
+.compat-person:first-of-type .form-label { color: var(--ap-gold-a22, rgba(146,180,238,0.75)); }
 .compat-person:last-of-type  .form-label { color: rgba(212,168,32,0.75); }
 
 /* Compat form divider glow */
@@ -6670,7 +6670,7 @@ body.preloader-active .privacy-banner {
   border-radius: 8px;
   border: 1px solid rgba(201, 162, 39, 0.22);
   background: rgba(255, 255, 255, 0.04);
-  color: var(--silver, #C8D0E8) !important;
+  color: var(--silver, var(--ap-text-secondary, #C8D0E8)) !important;
   text-decoration: none !important;
   flex-shrink: 0;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
