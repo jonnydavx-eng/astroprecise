@@ -113,7 +113,8 @@
         <p class="shop-hero-lede">At the moment you were born, the sky was arranged in a pattern that never repeats. We render that pattern with the same planetary mathematics astronomers use — privately, on your device — then translate it into readings, prints, and keepsakes.</p>
         <p class="shop-hero-turnaround">Rendered to your birth data · prints &amp; apparel ship in 2–7 business days</p>
         <div class="shop-hero-stat" role="group" aria-label="Shop highlights">
-          <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">13</span><span class="shop-hero-stat__l">Live pieces</span></div>
+          <!-- Live-piece count: single source of truth is the count of AP_MON.commerce.products with isLive (fulfilUrl set). Currently 13 of 17 catalogue SKUs are live (4 jewellery pieces are fulfilUrl:'' placeholders). The `13` literal is the correct fallback; js/shop-commerce.js overwrites [data-live-count] elements with the derived live count so it never drifts. -->
+          <div class="shop-hero-stat__item"><span class="shop-hero-stat__n" data-live-count>13</span><span class="shop-hero-stat__l">Live pieces</span></div>
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n shopc-rating" role="img" aria-label="5 out of 5 stars">★★★★★</span><span class="shop-hero-stat__l">Brand standard</span></div>
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">VSOP87</span><span class="shop-hero-stat__l">Arcminute sky</span></div>
         </div>
@@ -124,7 +125,8 @@
     <section class="shop-live-section" id="shopc-featured" aria-label="Available now">
       <div class="container">
         <div class="shopc-featured__intro">
-          <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — 17 live pieces (incl. new Jewellery)</h2>
+          <!-- Count derived from live (fulfilUrl-set) products — see [data-live-count] note in the hero. 13 live; jewellery is on the loom (coming soon), not yet live. -->
+          <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — <span data-live-count>13</span> live pieces</h2>
           <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h; prints &amp; apparel rendered to your data, shipped in 2–7 business days. Secure Lemon Squeezy checkout.</p>
         </div>
         <div class="shopc-featured__grid shopc-featured__grid--equal">
@@ -230,7 +232,8 @@
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> PDFs in 24–48 hours</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data never on this site</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Jewellery &amp; prints: 5–12 day POD turnaround (placeholder)</li>
-          <li class="shopc-trust__item">2,400+ charts cast into keepsakes</li>
+          <!-- Honesty: "2,400+" was an unsupported hard sales figure. Reworded to a qualitative, defensible claim (no fabricated count). -->
+          <li class="shopc-trust__item">Every keepsake cast from a real birth chart</li>
         </ul>
         <p class="shop-live-note"><a href="why.html"><span class="ap-badge">Chart tools stay free — shop pieces keep the instrument lit</span></a></p>
       </div>
@@ -482,7 +485,8 @@
           </article>
         </div>
         <p style="text-align:center;color:var(--silver-dim);font-size:0.68rem;line-height:1.7;max-width:560px;margin:var(--space-8) auto 0;">
-          All pieces (now 17 incl. Jewellery collection) are live — PDFs deliver in 24–48 hours; prints, apparel, jewellery &amp; gift boxes are made to order after checkout.
+          <!-- Single source of truth for the live count is [data-live-count] (see hero note): 13 live of 17 catalogue SKUs; the 4 jewellery pieces are coming soon, not live. -->
+          <span data-live-count>13</span> pieces are live now — PDFs deliver in 24–48 hours; prints, apparel &amp; gift boxes are made to order after checkout. The jewellery collection is on the loom (coming soon).
           Gifts ship as a PDF voucher — the recipient redeems with their own birth details, so no birth data is entered here.
           One-time purchases only — your cart is saved on this device.
         </p>

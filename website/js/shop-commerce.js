@@ -611,6 +611,23 @@ window.AstroShop = (() => {
     renderPersonalBanner();
   }
 
+  // Single source of truth for the user-facing "live pieces" count.
+  // Counts products that are buyable RIGHT NOW (available && isLive, i.e.
+  // fulfilUrl set) — the same gate the buy buttons / cart / schema use — and
+  // writes it into every [data-live-count] element in the page. The static
+  // HTML ships the correct literal (13) as a no-JS fallback; this keeps it from
+  // drifting when products go live or a fulfilUrl is added/removed in AP_MON.
+  function liveProductCount() {
+    return products().filter(p => p.available !== false && isLive(p)).length;
+  }
+  function updateLiveCounts() {
+    const nodes = document.querySelectorAll('[data-live-count]');
+    if (!nodes.length) return;
+    const n = liveProductCount();
+    if (!n) return; // never blank the fallback if config failed to load
+    nodes.forEach(el => { el.textContent = String(n); });
+  }
+
   function renderPersonalBanner() {
     const el = document.getElementById('shopc-personal');
     if (!el) return;
@@ -1042,6 +1059,7 @@ window.AstroShop = (() => {
 
   function init() {
     cart = new Cart();
+    updateLiveCounts();
     renderFeatured();
     renderFilters();
     deferRenderGrid();
