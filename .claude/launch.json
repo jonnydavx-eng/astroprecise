@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8794", "--directory", "C:/Users/jonny/OneDrive/astroprecise/website"],
       "port": 8794
+    },
+    {
+      "name": "astroprecise-dist",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "serve:dist"],
+      "port": 8796
     }
   ]
 }

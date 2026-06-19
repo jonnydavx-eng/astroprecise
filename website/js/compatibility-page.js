@@ -2,6 +2,8 @@
   (function () {
     'use strict';
 
+    var esc = (window.AP_SAFE && window.AP_SAFE.esc) ? function (s) { return window.AP_SAFE.esc(s); } : function (s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
+
     var ASPECT_GLYPHS = { conjunction:'☌', trine:'△', sextile:'✶', square:'□', opposition:'☍' };
 
     /* Aspect type classifier — harmony / tension / neutral */
@@ -379,12 +381,12 @@
         '</div>' +
         '<div class="chart-whats-next__grid" role="list">' +
         tiles.map(function(s) {
-          return '<a href="' + s.href + '" class="chart-next-card' + (s.external ? ' chart-next-card--paid' : '') + '" role="listitem"' +
+          return '<a href="' + esc(s.href) + '" class="chart-next-card' + (s.external ? ' chart-next-card--paid' : '') + '" role="listitem"' +
             (s.external ? ' target="_blank" rel="noopener"' : '') + '>' +
-            '<span class="chart-next-card__tag">' + s.tag + '</span>' +
-            '<h4 class="chart-next-card__title">' + s.title + '</h4>' +
-            '<p class="chart-next-card__desc">' + s.desc + '</p>' +
-            '<span class="chart-next-card__cta">' + s.cta + '</span></a>';
+            '<span class="chart-next-card__tag">' + esc(s.tag) + '</span>' +
+            '<h4 class="chart-next-card__title">' + esc(s.title) + '</h4>' +
+            '<p class="chart-next-card__desc">' + esc(s.desc) + '</p>' +
+            '<span class="chart-next-card__cta">' + esc(s.cta) + '</span></a>';
         }).join('') +
         '</div>';
       host.hidden = false;
@@ -689,7 +691,7 @@
         var formHeading = document.getElementById('form-heading');
         if (formHeading && p1name) {
           formHeading.innerHTML = '<div class="chart-form-panel__title-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></div>' +
-            p1name + ' invited you — add your details';
+            esc(p1name) + ' invited you — add your details';
         }
         var p2date = document.getElementById('person2-date');
         if (p2date) setTimeout(function() {

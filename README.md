@@ -12,7 +12,7 @@ sources labelled and unavailable feeds honestly marked.
 | Path | What it is |
 |---|---|
 | `website/` | **The product.** Static PWA — no build step, vanilla JS modules, hand-written HTML. See `CLAUDE.md` for module map and conventions. |
-| `ephemeris-package/` | Standalone NPM package of the astronomy engine (VSOP87/ELP2000). `cd ephemeris-package && node test.mjs` to test, `node build.mjs` to build `dist/`. |
+| `ephemeris-package/` | Standalone NPM package of the astronomy engine (VSOP87/ELP2000). `cd ephemeris-package && npm test` to test, `npm run sync` to regenerate `ephemeris.cjs` from `website/js/ephemeris.js`. |
 | `app/` + `build.gradle.kts`, `gradle/`, `gradlew*` | Android app (Kotlin 2.0, Jetpack Compose, Hilt). `./gradlew assembleDebug` — needs JDK 17+ and the Android SDK. |
 | `landing/` | Single-file landing page from the Android-app era (pre-dates `website/`). Previewed via `./preview.sh --landing`. Not deployed anywhere. |
 | `AstroPrecise-Desktop/` | End-user launcher kit (double-click shortcuts to the live site / local preview). |

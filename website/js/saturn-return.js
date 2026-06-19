@@ -12,6 +12,8 @@
 (function () {
   'use strict';
 
+  var esc = (window.AP_SAFE && window.AP_SAFE.esc) ? function (s) { return window.AP_SAFE.esc(s); } : function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); };
+
   var SAT_PERIOD = 29.4571;            // mean years between Saturn returns
 
   function signSeal(sign, opts) {
@@ -223,7 +225,7 @@
       if (errEl) errEl.style.display = 'none';
       var date = document.getElementById('sat-date').value;
       var time = (document.getElementById('sat-time').value) || '12:00';
-      var name = (document.getElementById('sat-name').value || '').trim().slice(0, 40);
+      var name = esc((document.getElementById('sat-name').value || '').trim().slice(0, 40));
       if (!date) { fail('Please enter your birth date.'); return; }
       if (!window.AstroEphemeris) { fail('The astronomy engine is still loading — try again in a moment.'); return; }
       var dp = date.split('-').map(Number), tp = time.split(':').map(Number);

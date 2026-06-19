@@ -8,21 +8,19 @@ require('./ephemeris.cjs');
 const E = globalThis.window.AstroEphemeris;
 
 // Normalize a position to `{ lon, ... }`:
-// - sunPosition / moonPosition return { lon, lat, distance } — preserved as-is
-// - geocentricPlanetLongitude / chironPosition / lunarNode return plain
-//   numbers (degrees) — wrapped as { lon }
+// - sunPosition / moonPosition / <planet>Position return { lon, lat, distance }
+// - chironPosition / lunarNode return plain numbers (degrees) — wrapped as { lon }
 function normalize(value) {
   return typeof value === 'number' ? { lon: E.mod360(value) } : { ...value };
 }
 
+// Adds Chiron + NorthNode to the engine's 10-body set and guarantees `lon` on
+// every entry. Uses the engine's per-planet functions (the old single
+// `geocentricPlanetLongitude(name, jd)` entry point was refactored away).
 function allPlanetPositions(jd) {
-  const out = {
-    Sun:  normalize(E.sunPosition(jd)),
-    Moon: normalize(E.moonPosition(jd)),
-  };
-  for (const name of ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto']) {
-    out[name] = normalize(E.geocentricPlanetLongitude(name, jd));
-  }
+  const base = E.allPlanetPositions(jd); // Sun, Moon, Mercury…Pluto ({ lon, … })
+  const out = {};
+  for (const name of Object.keys(base)) out[name] = normalize(base[name]);
   out.Chiron    = normalize(E.chironPosition(jd));
   out.NorthNode = normalize(E.lunarNode(jd));
   return out;

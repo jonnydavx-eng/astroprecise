@@ -41,7 +41,6 @@ const JS_EXCLUDE = new Set([
   'orrery3d.js',
   'ephemeris-lazy-modules.js',
   'interpretations.js',
-  'element-orbs.js',
   'ap-load-interpretations.js',
 ]);
 

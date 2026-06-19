@@ -1,0 +1,28 @@
+{
+  "name": "astroprecise",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AstroPrecise — static astrology PWA (website/), ephemeris engine + npm package, dormant Android app. See OVERHAUL-PLAN.md.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-content-bank.mjs && node test-art-themes.mjs && npm --prefix ephemeris-package test",
+    "test:engine": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs",
+    "build": "node tools/build.mjs",
+    "serve:dist": "node tools/serve-dist.mjs",
+    "check:syntax": "node tools/check-syntax.mjs",
+    "lint": "eslint website/js test-*.mjs ephemeris-package",
+    "lint:fix": "eslint --fix website/js test-*.mjs ephemeris-package",
+    "format": "prettier --write \"website/js/**/*.js\" \"test-*.mjs\" \"*.md\"",
+    "format:check": "prettier --check \"website/js/**/*.js\" \"test-*.mjs\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "esbuild": "^0.28.1",
+    "eslint": "^9.13.0",
+    "globals": "^15.11.0",
+    "prettier": "^3.3.3"
+  }
+}

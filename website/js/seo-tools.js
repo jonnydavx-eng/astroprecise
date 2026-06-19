@@ -16,6 +16,8 @@
 (function () {
   'use strict';
 
+  const esc = (window.AP_SAFE && window.AP_SAFE.esc) ? s => window.AP_SAFE.esc(s) : s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
   function E() { return window.AstroEphemeris; }
 
   // ── Timezone: local civil time -> Universal Time ───────────────────────────
@@ -67,7 +69,7 @@
           item.className = 'autocomplete-option';
           item.setAttribute('role', 'option');
           const region = city.admin ? `${city.admin}, ${city.country}` : city.country;
-          item.innerHTML = `${city.name} <span class="city-country">${region}</span>`;
+          item.innerHTML = `${esc(city.name)} <span class="city-country">${esc(region)}</span>`;
           item.addEventListener('mousedown', ev => {
             ev.preventDefault();
             inputEl.value = city.admin

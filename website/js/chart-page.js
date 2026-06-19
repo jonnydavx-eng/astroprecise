@@ -430,10 +430,15 @@
       lonInput.value = pos.coords.longitude.toFixed(4);
       cityInput.value = 'My current location';
       try {
-        const r2 = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latInput.value}&longitude=${lonInput.value}&timezone=auto&forecast_days=1`);
-        const j = await r2.json();
-        if (j.timezone) tzInput.value = j.timezone;
-      } catch (e) {}
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 6000);
+        const r2 = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latInput.value}&longitude=${lonInput.value}&timezone=auto&forecast_days=1`, { signal: ctl.signal });
+        clearTimeout(timer);
+        if (r2.ok) {
+          const j = await r2.json();
+          if (j.timezone) tzInput.value = j.timezone;
+        }
+      } catch (e) { /* timezone lookup failed — leave tz blank, never fake it */ }
       document.dispatchEvent(new CustomEvent('astro:city-selected'));
       window.AstroApp?.showToast('Location set', 'Using your current position — fine for "born near where you live now".', 'success');
     }, () => window.AstroApp?.showToast('Declined', 'Location permission declined — search by name instead.', 'warning'));

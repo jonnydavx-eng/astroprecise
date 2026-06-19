@@ -54,7 +54,7 @@
         ${chartNote}
       </header>
       ${renderPackTabs(packs, packId)}
-      <div class="ap-art-grid" id="ap-art-theme-panel" role="tabpanel" aria-labelledby="ap-art-pack-${packId}" tabindex="0">${themes.map(t => renderThemeCard(t, selected.id, recommendedId)).join('')}</div>
+      <div class="ap-art-grid" id="ap-art-theme-panel" role="tabpanel" aria-labelledby="ap-art-pack-${AP_ART.esc(packId)}" tabindex="0">${themes.map(t => renderThemeCard(t, selected.id, recommendedId)).join('')}</div>
       <div class="ap-art-library__foot">
         <p class="ap-art-library__selected" id="ap-art-selected-label">
           Selected: <strong>${AP_ART.esc((AP_ART.themeById(selected.id) || {}).name || selected.id)}</strong>

@@ -193,7 +193,37 @@ function porphyryCusps(ascDeg, mcDeg) {
   ];
 }
 
-// House-system dispatcher. Default Placidus (with graceful quadrant fallback).
+// Equal houses from the Ascendant — always 12 valid 30° cusps.
+function equalCusps(ascDeg) {
+  return Array.from({ length: 12 }, (_, i) => mod360(ascDeg + i * 30));
+}
+
+// 12 cusps that advance once around the circle with sane, distinct spans? Above the
+// polar circle the quadrant arcs Placidus/Porphyry rely on collapse or invert,
+// producing duplicate/zero-width houses (the duplicate cusps can be non-adjacent),
+// so reject those and degrade to equal houses (standard at high latitude).
+function cuspsValid(c) {
+  if (!c || c.length !== 12) return false;
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    const gap = mod360(c[(i + 1) % 12] - c[i]);
+    if (gap < 1 || gap > 179) return false;  // zero-width or inverted span
+    sum += gap;
+  }
+  if (Math.abs(sum - 360) > 1) return false;  // must wind exactly once (no double-cover)
+  for (let i = 0; i < 12; i++)                 // belt-and-braces: all cusps distinct
+    for (let j = i + 1; j < 12; j++)
+      if (mod360(c[i] - c[j]) < 1 || mod360(c[j] - c[i]) < 1) return false;
+  return true;
+}
+
+// Porphyry trisection, falling back to equal houses when it degenerates (polar).
+function porphyryOrEqual(ascDeg, mcDeg) {
+  const p = porphyryCusps(ascDeg, mcDeg);
+  return cuspsValid(p) ? p : equalCusps(ascDeg);
+}
+
+// House-system dispatcher. Default Placidus (Porphyry → equal-house fallback chain).
 function houseCusps(system, lst, lat, eps, ascDeg, mcDeg) {
   switch ((system || 'placidus').toLowerCase()) {
     case 'whole': {
@@ -201,12 +231,14 @@ function houseCusps(system, lst, lat, eps, ascDeg, mcDeg) {
       return Array.from({ length: 12 }, (_, i) => mod360(s0 + i * 30));
     }
     case 'equal':
-      return Array.from({ length: 12 }, (_, i) => mod360(ascDeg + i * 30));
+      return equalCusps(ascDeg);
     case 'porphyry':
-      return porphyryCusps(ascDeg, mcDeg);
+      return porphyryOrEqual(ascDeg, mcDeg);
     case 'placidus':
-    default:
-      return placidusCusps(lst, ascDeg, mcDeg, lat, eps) || porphyryCusps(ascDeg, mcDeg);
+    default: {
+      const pl = placidusCusps(lst, ascDeg, mcDeg, lat, eps);
+      return cuspsValid(pl) ? pl : porphyryOrEqual(ascDeg, mcDeg);
+    }
   }
 }
 
@@ -214,7 +246,8 @@ function houseCusps(system, lst, lat, eps, ascDeg, mcDeg) {
 function placidusHouses(mc_lon, asc_lon, lat, eps) {
   const ramc = mod360(toDeg(Math.atan2(
     Math.sin(toRad(mc_lon)) * Math.cos(toRad(eps)), Math.cos(toRad(mc_lon)))));
-  return placidusCusps(ramc, asc_lon, mc_lon, lat, eps) || porphyryCusps(asc_lon, mc_lon);
+  const pl = placidusCusps(ramc, asc_lon, mc_lon, lat, eps);
+  return cuspsValid(pl) ? pl : porphyryOrEqual(asc_lon, mc_lon);
 }
 
 // ---------------------------------------------------------------------------
@@ -982,7 +1015,17 @@ function vsop87(terms, tau) {
 const normalizeAngle = mod360;
 
 // Convert heliocentric to geocentric ecliptic longitude
-function helioToGeo(lon_h, lat_h, r, sun_lon, sun_lat, sun_r) {
+// General precession in ecliptic longitude, J2000 → ecliptic of date (degrees).
+// IAU 2006: p = 5028.796195"·T + 1.1054348"·T² (T = Julian centuries from J2000).
+// The planet series here are in the J2000 ecliptic; the Sun and Moon are already
+// referred to the equinox of date, so adding this to the planets makes the whole
+// chart tropical/of-date and internally consistent (fixes the ~0.35°/2024 offset).
+function precessionToDate(jd) {
+    const T = (jd - 2451545.0) / 36525.0;
+    return (5028.796195 * T + 1.1054348 * T * T) / 3600.0;
+}
+
+function helioToGeo(lon_h, lat_h, r, sun_lon, sun_lat, sun_r, jd) {
     // Rectangular heliocentric
     const x = r * Math.cos(toRad(lat_h)) * Math.cos(toRad(lon_h));
     const y = r * Math.cos(toRad(lat_h)) * Math.sin(toRad(lon_h));
@@ -991,10 +1034,12 @@ function helioToGeo(lon_h, lat_h, r, sun_lon, sun_lat, sun_r) {
     const xs = sun_r * Math.cos(toRad(sun_lat)) * Math.cos(toRad(sun_lon));
     const ys = sun_r * Math.cos(toRad(sun_lat)) * Math.sin(toRad(sun_lon));
     const zs = sun_r * Math.sin(toRad(sun_lat));
-    // Geocentric
+    // Geocentric (J2000 ecliptic)
     const xg = x + xs; const yg = y + ys; const zg = z + zs;
+    // Rotate J2000 → ecliptic of date so planets match the of-date Sun/Moon.
+    const prec = (jd === undefined) ? 0 : precessionToDate(jd);
     return {
-        lon: normalizeAngle(toDeg(Math.atan2(yg, xg))),
+        lon: normalizeAngle(toDeg(Math.atan2(yg, xg)) + prec),
         lat: toDeg(Math.atan2(zg, Math.sqrt(xg*xg + yg*yg))),
         distance: Math.sqrt(xg*xg + yg*yg + zg*zg)
     };
@@ -1059,7 +1104,7 @@ function mercuryPosition(jd) {
     const R   = (R0 + R1 * tau) / 1e8;
 
     const sun = sunPosition(jd);
-    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1120,7 +1165,7 @@ function venusPosition(jd) {
     const R   = (R0 + R1 * tau) / 1e8;
 
     const sun = sunPosition(jd);
-    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1189,7 +1234,7 @@ function marsPosition(jd) {
     const R   = (R0 + R1 * tau) / 1e8;
 
     const sun = sunPosition(jd);
-    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1256,7 +1301,7 @@ function jupiterPosition(jd) {
     const R   = (R0 + R1 * tau) / 1e8;
 
     const sun = sunPosition(jd);
-    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1325,7 +1370,7 @@ function saturnPosition(jd) {
     const R   = (R0 + R1 * tau) / 1e8;
 
     const sun = sunPosition(jd);
-    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1389,7 +1434,7 @@ function uranusPosition(jd) {
     const R   = (R0 + R1 * tau) / 1e8;
 
     const sun = sunPosition(jd);
-    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1453,7 +1498,7 @@ function neptunePosition(jd) {
     const R   = (R0 + R1 * tau) / 1e8;
 
     const sun = sunPosition(jd);
-    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance);
+    return helioToGeo(normalizeAngle(L), B, R, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1474,7 +1519,9 @@ const PLUTO_ELEM = {
   wbar: [224.06891629, -0.04062942],
   Om: [110.30393684, -0.01183482],
 };
-function plutoPosition(jd) {
+// Keplerian-element Pluto (JPL 1800–2050 elements) — fallback outside the
+// 1885–2099 range where the Meeus periodic series below is valid.
+function plutoPositionKepler(jd) {
   const T  = (jd - 2451545.0) / 36525.0;
   const el = k => PLUTO_ELEM[k][0] + PLUTO_ELEM[k][1] * T;
   const a = el('a'), e = el('e'), I = el('I'), L = el('L'), wbar = el('wbar'), Om = el('Om');
@@ -1501,7 +1548,36 @@ function plutoPosition(jd) {
   const lat = toDeg(Math.atan2(z, Math.sqrt(x * x + y * y)));
   const r   = Math.sqrt(x * x + y * y + z * z);
   const sun = sunPosition(jd);
-  return helioToGeo(lon, lat, r, sun.lon, 0, sun.distance);
+  return helioToGeo(lon, lat, r, sun.lon, 0, sun.distance, jd);
+}
+
+// Pluto periodic series — Meeus Ch.37 (Table 37.A), valid 1885–2099 to ~0.07°.
+// Coefficients verified to reproduce Meeus's worked example exactly
+// (1992-10-13.0 → heliocentric L 232.74071°, B 14.58782°, r 29.711111 AU).
+const PLUTO_ARG = [[0,0,1],[0,0,2],[0,0,3],[0,0,4],[0,0,5],[0,0,6],[0,1,-1],[0,1,0],[0,1,1],[0,1,2],[0,1,3],[0,2,-2],[0,2,-1],[0,2,0],[1,-1,0],[1,-1,1],[1,0,-3],[1,0,-2],[1,0,-1],[1,0,0],[1,0,1],[1,0,2],[1,0,3],[1,0,4],[1,1,-3],[1,1,-2],[1,1,-1],[1,1,0],[1,1,1],[1,1,3],[2,0,-6],[2,0,-5],[2,0,-4],[2,0,-3],[2,0,-2],[2,0,-1],[2,0,0],[2,0,1],[2,0,2],[2,0,3],[3,0,-2],[3,0,-1],[3,0,0]];
+const PLUTO_LON = [[-19799805,19850055],[897144,-4954829],[611149,1211027],[-341243,-189585],[129287,-34992],[-38164,30893],[20442,-9987],[-4063,-5071],[-6016,-3336],[-3956,3039],[-667,3572],[1276,501],[1152,-917],[630,-1277],[2571,-459],[899,-1449],[-1016,1043],[-2343,-1012],[7042,788],[1199,-338],[418,-67],[120,-274],[-60,-159],[-82,-29],[-36,-29],[-40,7],[-14,22],[4,13],[5,2],[-1,0],[2,0],[-4,5],[4,-7],[14,24],[-49,-34],[163,-48],[9,-24],[-4,1],[-3,1],[1,3],[-3,-1],[5,-3],[0,0]];
+const PLUTO_LAT = [[-5452852,-14974862],[3527812,1672790],[-1050748,327647],[178690,-292153],[18650,100340],[-30697,-25823],[4878,11248],[226,-64],[2030,-836],[69,-604],[-247,-567],[-57,1],[-122,175],[-49,-164],[-197,199],[-25,217],[589,-248],[-269,711],[185,193],[315,807],[-130,-43],[5,3],[2,17],[2,5],[2,3],[3,1],[2,-1],[1,-1],[0,-1],[0,0],[0,-2],[2,2],[-7,0],[10,-8],[-3,20],[6,5],[14,17],[-2,0],[0,0],[0,0],[0,1],[0,0],[1,0]];
+const PLUTO_RAD = [[66865439,68951812],[-11827535,-332538],[1593179,-1438890],[-18444,483220],[-65977,-85431],[31174,-6032],[-5794,22161],[4601,4032],[-1729,234],[-415,702],[239,723],[67,-67],[1034,-451],[-129,504],[480,-231],[2,-441],[-3359,265],[7856,-7832],[36,45763],[8663,8547],[-809,-769],[263,-144],[-126,32],[-35,-16],[-19,-4],[-15,8],[-4,12],[5,6],[3,1],[6,-2],[2,2],[-2,-2],[14,13],[-63,13],[136,-236],[273,1065],[251,149],[-25,-9],[9,-2],[-8,7],[2,-10],[19,35],[10,3]];
+
+function plutoHelioMeeus(T) {
+  const J = 34.35 + 3034.9057 * T, S = 50.08 + 1222.1138 * T, P = 238.96 + 144.96 * T;
+  let cl = 0, cb = 0, cr = 0;
+  for (let n = 0; n < PLUTO_ARG.length; n++) {
+    const a = PLUTO_ARG[n], al = toRad(mod360(a[0] * J + a[1] * S + a[2] * P));
+    const sa = Math.sin(al), ca = Math.cos(al);
+    cl += PLUTO_LON[n][0] * sa + PLUTO_LON[n][1] * ca;
+    cb += PLUTO_LAT[n][0] * sa + PLUTO_LAT[n][1] * ca;
+    cr += PLUTO_RAD[n][0] * sa + PLUTO_RAD[n][1] * ca;
+  }
+  return { lon: 238.958116 + 144.96 * T + cl / 1e6, lat: -3.908239 + cb / 1e6, r: 40.7241346 + cr / 1e7 };
+}
+
+function plutoPosition(jd) {
+  const yr = 2000 + (jd - 2451545.0) / 365.25;
+  if (yr < 1885 || yr > 2099) return plutoPositionKepler(jd);
+  const h = plutoHelioMeeus((jd - 2451545.0) / 36525.0);
+  const sun = sunPosition(jd);
+  return helioToGeo(h.lon, h.lat, h.r, sun.lon, 0, sun.distance, jd);
 }
 
 // ---------------------------------------------------------------------------
@@ -1533,4 +1609,10 @@ window.AstroEphemeris.saturnPosition     = saturnPosition;
 window.AstroEphemeris.uranusPosition     = uranusPosition;
 window.AstroEphemeris.neptunePosition    = neptunePosition;
 window.AstroEphemeris.plutoPosition      = plutoPosition;
+window.AstroEphemeris.plutoHelioMeeus    = plutoHelioMeeus;
+window.AstroEphemeris.precessionToDate   = precessionToDate;
 window.AstroEphemeris.allPlanetPositions = allPlanetPositions;
+window.AstroEphemeris.mod360             = mod360;
+window.AstroEphemeris.chironPosition     = chironPosition;
+window.AstroEphemeris.lunarNode          = lunarNode;
+window.AstroEphemeris.nodePosition       = nodePosition;
