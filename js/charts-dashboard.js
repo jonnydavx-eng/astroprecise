@@ -66,8 +66,8 @@
 
   function signOrb(sign, opts) {
     if (I && typeof I.sign === 'function' && sign) return I.sign(sign, opts);
-    return '<span class="ap-orb ap-orb--air ' + (opts && opts.sm ? 'ap-orb--sm' : '') +
-      '" aria-hidden="true"><i class="ap-orb__glyph">?</i></span>';
+    return '<span class="ap-orb ap-orb--art ap-orb--air' + (opts && opts.sm ? ' ap-orb--sm' : '') +
+      '" aria-hidden="true"><img class="ap-orb__img" src="assets/images/seals/elements/all.svg" alt="" loading="lazy" decoding="async" width="96" height="112" /></span>';
   }
 
   // ── date / place formatting ────────────────────────────────────────────────

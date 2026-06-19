@@ -6,7 +6,6 @@
   <meta name="description" content="Free Sagittarius horoscope for today, calculated from real planetary positions. Plus the complete Sagittarius guide: element, ruling planet, love, career, and compatibility." />
   <title>Sagittarius Horoscope Today — Daily Reading & Sign Guide | AstroPrecise</title>
   <link rel="canonical" href="https://astroprecise.app/sagittarius.html" />
-  <link rel="stylesheet" href="css/fonts.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <meta property="og:type" content="article" />
@@ -20,132 +19,103 @@
   <meta name="twitter:description" content="Free Sagittarius horoscope for today, calculated from real planetary positions. Plus the complete Sagittarius guide: element, ruling planet, love, career, and compatibility." />
   <meta name="twitter:image" content="https://astroprecise.app/assets/images/zodiac-cards/sagittarius.jpg" />
   <meta name="theme-color" content="#050406" />
-  <link rel="stylesheet" href="css/main.css" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Sagittarius Horoscope Today","description":"Free Sagittarius horoscope for today, calculated from real planetary positions. Plus the complete Sagittarius guide: element, ruling planet, love, career, and compatibility.","url":"https://astroprecise.app/sagittarius.html","inLanguage":"en","isAccessibleForFree":true,"keywords":"Sagittarius, Sagittarius horoscope, Sagittarius horoscope today, Sagittarius zodiac sign, Sagittarius dates, Sagittarius personality, Sagittarius traits, Sagittarius compatibility, Sagittarius love, Sagittarius career, Fire sign, Mutable sign","publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":{"@type":"Thing","name":"Sagittarius (astrology)"}}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Sagittarius","item":"https://astroprecise.app/sagittarius.html"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the Sagittarius zodiac dates?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius season runs November 22 – December 21. People born in this window have their Sun in Sagittarius."}},{"@type":"Question","name":"What element and ruling planet is Sagittarius?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius is a Fire sign of the Mutable modality, ruled by Jupiter. Its symbol is The Archer."}},{"@type":"Question","name":"Which signs are most compatible with Sagittarius?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius is traditionally most compatible with Aries, Leo, Aquarius. Full synastry depends on the complete birth charts of both people, not Sun signs alone."}},{"@type":"Question","name":"What are the main Sagittarius personality traits?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius is known for being optimism with evidence or without, honesty (whether requested or not), a genuine philosophical mind. Its growth edges include tactlessness in the name of truth and commitment-shyness — to plans, places, people. As a Mutable Fire sign ruled by Jupiter, Sagittarius carries the keyword \"I seek\"."}},{"@type":"Question","name":"Is Sagittarius rare?","acceptedAnswer":{"@type":"Answer","text":"No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but Sagittarius is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind."}},{"@type":"Question","name":"What is the Sagittarius symbol and ruling body?","acceptedAnswer":{"@type":"Answer","text":"The symbol of Sagittarius is The Archer (glyph ♐), and it is ruled by Jupiter. Its polarity is masculine / yang, it is traditionally associated with the hips and thighs, and its corresponding tarot card is Temperance."}}]}</script>
+  <link rel="preload" href="assets/images/zodiac-cards/sagittarius.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/sign-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
   <style>
-    .sign-hero { text-align: center; padding: calc(var(--nav-height,72px) + 2.5rem) var(--space-4) var(--space-10); position: relative; z-index: 1; }
-    .sign-hero__inner { display: flex; gap: clamp(1.5rem,4vw,3.5rem); align-items: center; justify-content: center; max-width: 860px; margin: 0 auto; }
+    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+    /* Constellation reserve — sign-page.css is audit-deferred */
+    .sign-hero__constellation{max-width:280px;margin:0 auto 1rem;min-height:175px;contain:layout style}
+    .sign-hero__constellation svg{display:block;width:100%;height:auto;aspect-ratio:320/200}
+    /* LCP shell — system fonts paint before deferred webfonts (h1 + card are LCP candidates) */
+    .sign-hero h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 700;
+      color: #e8e6e3;
+      line-height: 1.1;
+      margin: 0 0 0.5rem;
+    }
+    .sign-hero__dates {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 0.875rem;
+      color: #c9a227;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .sign-hero__card-picture {
+      width: clamp(150px, 22vw, 230px);
+    }
     .sign-hero__card-img {
-      flex-shrink: 0; width: clamp(150px, 22vw, 230px);
-      border-radius: 14px; display: block;
-      border: 1px solid rgba(201,162,39,0.38);
-      box-shadow: 0 12px 48px rgba(0,0,0,0.65), 0 0 0 1px rgba(201,162,39,0.14),
-                  0 0 40px rgba(201,162,39,0.12);
-      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
     }
-    .sign-hero__card-img:hover { transform: translateY(-6px) rotate(-1deg); box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,162,39,0.3), 0 0 48px rgba(201,162,39,0.22); }
-    .sign-hero__content { text-align: center; }
-    @media (max-width: 640px) { .sign-hero__inner { flex-direction: column; gap: 1.5rem; } .sign-hero__card-img { width: clamp(130px, 50vw, 190px); } }
-    .sign-hero__glyph { font-size: 4.5rem; line-height: 1; display: block; margin-bottom: var(--space-4);
-      background: linear-gradient(180deg, #f2dfa7 0%, #c9a227 60%, #8c6a2f 100%);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 18px rgba(196,146,10,0.4)); }
-    .sign-hero__constellation { max-width: 280px; margin: 0 auto var(--space-4); }
-    .sign-hero__constellation svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 14px rgba(201,162,39,0.38)); }
-    .sign-hero h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.6rem); color: var(--color-white); margin-bottom: var(--space-2); }
-    .sign-hero__dates { color: var(--color-gold); font-size: var(--text-sm); letter-spacing: 0.14em; text-transform: uppercase; }
-    .sign-hero__keyword {
-      font-family: var(--font-display); font-style: italic; font-size: 1.05rem;
-      color: rgba(239, 227, 192, 0.82); margin: var(--space-3) 0 0; letter-spacing: 0.04em;
+    /* Hero seal — celestial-seals.css audit-deferred */
+    .sign-hero__seal:not(:has(.ap-seal)) {
+      display: inline-block;
+      min-height: 4.5rem;
+      min-width: 4.5rem;
     }
-    body[data-element="fire"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(180, 66, 50, 0.08) 0%, transparent 70%);
+    /* Today section — sign-page.css audit-deferred; boot paints full grid */
+    #today-date { min-height: 1.35rem; }
+    #today-reading {
+      min-height: 520px;
+      contain: layout style;
     }
-    body[data-element="earth"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(14, 92, 58, 0.08) 0%, transparent 70%);
+    .today-reading.is-loading .card { min-height: 460px; }
+    /* FAQ accordion — sign-page.css audit-deferred */
+    .sign-faq__list {
+      min-height: 400px;
+      contain: layout style;
     }
-    body[data-element="air"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(168, 142, 88, 0.07) 0%, transparent 70%);
-    }
-    body[data-element="water"] .sign-hero::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(74, 122, 138, 0.09) 0%, transparent 70%);
-    }
-    .sign-hero__inner, .sign-hero h1 { position: relative; z-index: 1; }
-    .sign-facts { display: flex; justify-content: center; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-6); }
-    .sign-fact { text-align: center; }
-    .sign-fact__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 4px; }
-    .sign-fact__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: var(--text-base); }
-    .today-reading { max-width: 760px; margin: 0 auto; }
-    .trait-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); max-width: 760px; margin: 0 auto; }
-    @media (max-width: 640px) { .trait-cols { grid-template-columns: 1fr; } }
-    .trait-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-3); }
-    .trait-list li { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.6; padding-left: var(--space-5); position: relative; }
-    .trait-list li::before { position: absolute; left: 0; }
-    .trait-list--plus li::before {
-      content: ''; top: 0.55em; width: 5px; height: 5px;
-      background: var(--color-gold);
-      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-    }
-    .trait-list--minus li::before {
-      content: ''; top: 0.55em; width: 5px; height: 5px;
-      background: var(--crimson-light, #b04a52);
-      transform: rotate(45deg); border-radius: 1px;
-    }
-    .prose-block { max-width: 760px; margin: 0 auto; color: var(--color-silver); line-height: 1.85; font-size: var(--text-base); }
-    .match-chips { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-top: var(--space-5); }
+    .sign-faq__item summary { min-height: 44px; }
+    /* Thumb grid — 12 cards, ~3 rows on mobile */
     .sign-thumb-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
-      gap: var(--space-3); max-width: 820px; margin: 0 auto;
-    }
-    .sign-thumb {
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      text-decoration: none; transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+      min-height: 480px;
+      contain: layout style;
     }
     .sign-thumb img {
-      width: 100%; max-width: 92px; aspect-ratio: 2 / 3; object-fit: cover; object-position: center top;
-      border-radius: 9px; border: 1px solid rgba(201,162,39,0.28);
-      box-shadow: 0 6px 22px rgba(0,0,0,0.5), 0 0 16px rgba(201,162,39,0.06);
-      transition: border-color 0.22s, box-shadow 0.22s;
+      display: block;
+      width: 100%;
+      max-width: 92px;
+      height: auto;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
     }
-    .sign-thumb:hover { transform: translateY(-4px); }
-    .sign-thumb:hover img {
-      border-color: rgba(201,162,39,0.55);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.58), 0 0 22px rgba(201,162,39,0.14);
+    /* Footer — main.css grid audit-deferred */
+    .footer .footer-inner {
+      min-height: 540px;
+      contain: layout style;
     }
-    .sign-thumb__label {
-      font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--color-silver-dim); text-align: center; line-height: 1.3;
-    }
-    .sign-thumb:hover .sign-thumb__label { color: var(--color-gold-pale); }
-    .sign-thumb--current img { border-color: rgba(201,162,39,0.65); box-shadow: 0 0 20px rgba(201,162,39,0.2); }
-    .daily-reading__overview { color: var(--color-silver); line-height: 1.85; font-size: 1.05rem; margin-bottom: var(--space-6); font-family: var(--font-display); }
-    .daily-reading__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5); }
-    .daily-reading__tile {
-      padding: var(--space-4); background: rgba(201,162,39,0.06);
-      border: 1px solid rgba(201,162,39,0.18); border-radius: var(--radius-lg);
-    }
-    .daily-reading__tile-label {
-      font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--color-gold); margin-bottom: 6px; display: block;
-    }
-    .daily-reading__tile-text { font-size: var(--text-sm); color: var(--color-silver); line-height: 1.65; margin: 0; }
-    .daily-reading__meta { display: flex; gap: var(--space-6); flex-wrap: wrap; font-size: var(--text-sm); color: var(--color-silver-dim); }
-    .daily-reading__meta strong { color: var(--color-gold); font-weight: 600; }
-    .daily-reading__note { font-size: 0.62rem; letter-spacing: 0.08em; color: var(--color-silver-dim); margin-top: var(--space-4); text-align: center; }
-    .glance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-4); max-width: 760px; margin: 0 auto; }
-    .glance-cell { padding: var(--space-4); background: rgba(201,162,39,0.06); border: 1px solid rgba(201,162,39,0.18); border-radius: var(--radius-lg); }
-    .glance-cell__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 6px; }
-    .glance-cell__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: var(--text-base); line-height: 1.4; }
   </style>
+  <script src="js/defer-page-css.js" defer></script>
+  <script src="js/ap-sign-defer-boot.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Sagittarius Horoscope Today","description":"Free Sagittarius horoscope for today, calculated from real planetary positions. Plus the complete Sagittarius guide: element, ruling planet, love, career, and compatibility.","url":"https://astroprecise.app/sagittarius.html","inLanguage":"en","isAccessibleForFree":true,"keywords":"Sagittarius, Sagittarius horoscope, Sagittarius horoscope today, Sagittarius zodiac sign, Sagittarius dates, Sagittarius personality, Sagittarius traits, Sagittarius compatibility, Sagittarius love, Sagittarius career, Fire sign, Mutable sign","publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":{"@type":"Thing","name":"Sagittarius (astrology)"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Sagittarius","item":"https://astroprecise.app/sagittarius.html"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are the Sagittarius zodiac dates?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius season runs November 22 – December 21. People born in this window have their Sun in Sagittarius."}},{"@type":"Question","name":"What element and ruling planet is Sagittarius?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius is a Fire sign of the Mutable modality, ruled by Jupiter. Its symbol is The Archer."}},{"@type":"Question","name":"Which signs are most compatible with Sagittarius?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius is traditionally most compatible with Aries, Leo, Aquarius. Full synastry depends on the complete birth charts of both people, not Sun signs alone."}},{"@type":"Question","name":"What are the main Sagittarius personality traits?","acceptedAnswer":{"@type":"Answer","text":"Sagittarius is known for being optimism with evidence or without, honesty (whether requested or not), a genuine philosophical mind. Its growth edges include tactlessness in the name of truth and commitment-shyness — to plans, places, people. As a Mutable Fire sign ruled by Jupiter, Sagittarius carries the keyword \"I seek\"."}},{"@type":"Question","name":"Is Sagittarius rare?","acceptedAnswer":{"@type":"Answer","text":"No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but Sagittarius is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind."}},{"@type":"Question","name":"What is the Sagittarius symbol and ruling body?","acceptedAnswer":{"@type":"Answer","text":"The symbol of Sagittarius is The Archer, and it is ruled by Jupiter. Its polarity is masculine / yang, it is traditionally associated with the hips and thighs, and its corresponding tarot card is Temperance."}}]}</script>
 </head>
-<body data-element="fire">
-  <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true"></canvas>
+<body class="ap-no-nav-enter" data-element="fire" data-sign="Sagittarius">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
+    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
+    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+  </svg>
 
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -158,13 +128,24 @@
   </header>
 
   <main id="main-content">
+    <nav class="sign-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="horoscope.html">Daily</a></li>
+        <li aria-current="page">Sagittarius</li>
+      </ol>
+    </nav>
 
     <section class="sign-hero" aria-labelledby="page-title">
       <div class="sign-hero__inner">
-        <img class="sign-hero__card-img" src="assets/images/zodiac-cards/sagittarius.jpg"
-          alt="Sagittarius — AstroPrecise engraved zodiac card"
-          width="230" height="345" loading="eager" decoding="async" />
+        <picture class="sign-hero__card-picture">
+          <source srcset="assets/images/zodiac-cards/sagittarius.webp" type="image/webp" />
+          <img class="sign-hero__card-img" src="assets/images/zodiac-cards/sagittarius.jpg"
+            alt="Sagittarius — AstroPrecise engraved zodiac card"
+            width="230" height="345" loading="eager" decoding="async" fetchpriority="high" />
+        </picture>
         <div class="sign-hero__content">
+          <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:sagittarius" data-seal-lg aria-hidden="true"></span>
           <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-sagittarius d-sagittarius"><title id="t-sagittarius">The constellation of Sagittarius</title><desc id="d-sagittarius">The Teapot asterism of Sagittarius, traced in gold over a faint warm void glow.</desc><defs><radialGradient id="g-sagittarius" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#4a2820" stop-opacity="0.18"/><stop offset="100%" stop-color="#4a2820" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="100" rx="120" ry="70" fill="url(#g-sagittarius)"/><g stroke="#c9a227" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" fill="none"><polyline points="118,118 138,72 178,72 198,118 118,118"/><polyline points="138,72 158,46 178,72"/><polyline points="118,118 84,100 118,90"/><polyline points="198,118 234,108 214,150 198,118"/></g><g fill="#f7ecc4"><circle cx="118" cy="118" r="2"/><circle cx="138" cy="72" r="1.9"/><circle cx="178" cy="72" r="1.8"/><circle cx="198" cy="118" r="2"/><circle cx="158" cy="46" r="1.7"/><circle cx="84" cy="100" r="1.6"/><circle cx="234" cy="108" r="1.6"/><circle cx="214" cy="150" r="1.5"/></g><circle cx="118" cy="90" r="6" fill="#ffe6b0" opacity="0.16"/><circle cx="118" cy="90" r="3.1" fill="#ffe6b0"/><circle cx="178" cy="118" r="6" fill="#ffffff" opacity="0.14"/><circle cx="178" cy="118" r="2.8" fill="#ffffff"/><g fill="#f2dfa7" opacity="0.4"><circle cx="60" cy="56" r="0.7"/><circle cx="262" cy="64" r="0.6"/><circle cx="100" cy="160" r="0.7"/><circle cx="250" cy="170" r="0.6"/><circle cx="40" cy="130" r="0.5"/><circle cx="288" cy="130" r="0.6"/><circle cx="160" cy="178" r="0.5"/></g></svg></div>
           <h1 id="page-title">Sagittarius</h1>
           <p class="sign-hero__dates">November 22 – December 21</p>
@@ -175,6 +156,10 @@
             <div class="sign-fact"><span class="sign-fact__label">Ruler</span><span class="sign-fact__value">Jupiter</span></div>
             <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">The Archer</span></div>
           </div>
+          <div class="sign-hero__actions">
+            <a href="horoscope.html?sign=sagittarius" class="btn btn--primary btn--sm">Open in Daily Hub</a>
+            <a href="chart.html" class="btn btn--outline btn--sm">Birth Chart</a>
+          </div>
         </div>
       </div>
     </section>
@@ -184,7 +169,7 @@
         <h2 class="section__title" id="today-heading">Sagittarius Horoscope Today</h2>
         <p class="section__subtitle" id="today-date" aria-live="polite"></p>
         <p class="section__subtitle" style="font-size:0.78rem;opacity:0.75;margin-top:var(--space-2);">Computed from live planetary positions — same VSOP87 engine as the orrery</p>
-        <div class="today-reading" id="today-reading" aria-live="polite">
+        <div class="today-reading is-loading" id="today-reading" aria-live="polite">
           <div class="card" style="padding:var(--space-8);">
             <p style="color:var(--color-silver);line-height:1.85;">
               Today's Sagittarius reading is calculated in your browser from real planetary positions.
@@ -234,9 +219,9 @@
         <h2 class="section__title" id="love-heading">Sagittarius in Love</h2>
         <p class="prose-block">Sagittarius needs a co-adventurer, not a keeper. This sign loves with enthusiasm and humour and absolute candour — and bolts at the first scent of a cage. The partner who keeps a Sagittarius is the one who never tries to: shared freedom, shared journeys, and a home that feels like a base camp, not a terminus.</p>
         <div class="match-chips">
-          <a class="btn btn--outline btn--sm" href="compatibility.html">Best match: Aries →</a>
-          <a class="btn btn--outline btn--sm" href="compatibility.html">Best match: Leo →</a>
-          <a class="btn btn--outline btn--sm" href="compatibility.html">Best match: Aquarius →</a>
+          <a class="btn btn--outline btn--sm" href="compatibility.html?a=sagittarius&amp;b=aries">Best match: Aries →</a>
+          <a class="btn btn--outline btn--sm" href="compatibility.html?a=sagittarius&amp;b=leo">Best match: Leo →</a>
+          <a class="btn btn--outline btn--sm" href="compatibility.html?a=sagittarius&amp;b=aquarius">Best match: Aquarius →</a>
         </div>
       </div>
     </section>
@@ -273,7 +258,7 @@
       <div class="container">
         <h2 class="section__title" id="glance-heading">Sagittarius at a Glance</h2>
         <div class="glance-grid">
-          <div class="glance-cell"><span class="glance-cell__label">Symbol</span><span class="glance-cell__value">♐ &nbsp;The Archer</span></div>
+          <div class="glance-cell"><span class="glance-cell__label">Symbol</span><span class="glance-cell__value"><span class="glance-cell__seal" data-celestial-seal="zodiac:sagittarius" data-seal-sm aria-hidden="true"></span>The Archer</span></div>
           <div class="glance-cell"><span class="glance-cell__label">Dates</span><span class="glance-cell__value">November 22 – December 21</span></div>
           <div class="glance-cell"><span class="glance-cell__label">Element</span><span class="glance-cell__value">Fire</span></div>
           <div class="glance-cell"><span class="glance-cell__label">Modality</span><span class="glance-cell__value">Mutable</span></div>
@@ -286,11 +271,51 @@
       </div>
     </section>
 
+    
+    <section class="section" aria-labelledby="faq-heading">
+      <div class="container">
+        <h2 class="section__title" id="faq-heading">Sagittarius — Frequently Asked Questions</h2>
+        <div class="sign-faq">
+          <div class="sign-faq__list">
+            
+            <details class="sign-faq__item">
+              <summary>What are the Sagittarius zodiac dates?</summary>
+              <p>Sagittarius season runs November 22 – December 21. People born in this window have their Sun in Sagittarius.</p>
+            </details>
+            <details class="sign-faq__item">
+              <summary>What element and ruling planet is Sagittarius?</summary>
+              <p>Sagittarius is a Fire sign of the Mutable modality, ruled by Jupiter. Its symbol is The Archer.</p>
+            </details>
+            <details class="sign-faq__item">
+              <summary>Which signs are most compatible with Sagittarius?</summary>
+              <p>Sagittarius is traditionally most compatible with Aries, Leo, Aquarius. Full synastry depends on the complete birth charts of both people, not Sun signs alone.</p>
+            </details>
+            <details class="sign-faq__item">
+              <summary>What are the main Sagittarius personality traits?</summary>
+              <p>Sagittarius is known for being optimism with evidence or without, honesty (whether requested or not), a genuine philosophical mind. Its growth edges include tactlessness in the name of truth and commitment-shyness — to plans, places, people. As a Mutable Fire sign ruled by Jupiter, Sagittarius carries the keyword "I seek".</p>
+            </details>
+            <details class="sign-faq__item">
+              <summary>Is Sagittarius rare?</summary>
+              <p>No zodiac sign is truly rare — every sign covers about a month, so each accounts for roughly one twelfth of birthdays. Small global birth-rate variations by season make some signs marginally more common than others, but Sagittarius is no rarer than any other Sun sign. Your full birth chart, however, is genuinely one of a kind.</p>
+            </details>
+            <details class="sign-faq__item">
+              <summary>What is the Sagittarius symbol and ruling body?</summary>
+              <p>The symbol of Sagittarius is The Archer, and it is ruled by Jupiter. Its polarity is masculine / yang, it is traditionally associated with the hips and thighs, and its corresponding tarot card is Temperance.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section section--alt" aria-labelledby="cta-heading">
       <div class="container" style="text-align:center;">
         <h2 class="section__title" id="cta-heading">Your Sun sign is one of dozens of placements</h2>
         <p class="section__subtitle">Your Moon, Rising, and every planet shape who you are. Calculate your complete birth chart — free, private, in your browser.</p>
         <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Birth Chart</a>
+        <div class="sign-cta-row">
+          <a href="shop.html#deep-reading" class="btn btn--outline">Explore Deep Reading</a>
+          <a href="shop.html" class="btn btn--outline">Visit the Cosmic Shop</a>
+        </div>
       </div>
     </section>
 
@@ -298,20 +323,20 @@
       <div class="container">
         <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
-        <div class="sign-thumb-grid" role="list">
-          <a href="aries.html" class="sign-thumb" role="listitem" aria-label="Aries horoscope and guide"><img src="assets/images/zodiac-cards/aries.jpg" alt="Aries" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a>
-          <a href="taurus.html" class="sign-thumb" role="listitem" aria-label="Taurus horoscope and guide"><img src="assets/images/zodiac-cards/taurus.jpg" alt="Taurus" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a>
-          <a href="gemini.html" class="sign-thumb" role="listitem" aria-label="Gemini horoscope and guide"><img src="assets/images/zodiac-cards/gemini.jpg" alt="Gemini" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a>
-          <a href="cancer.html" class="sign-thumb" role="listitem" aria-label="Cancer horoscope and guide"><img src="assets/images/zodiac-cards/cancer.jpg" alt="Cancer" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a>
-          <a href="leo.html" class="sign-thumb" role="listitem" aria-label="Leo horoscope and guide"><img src="assets/images/zodiac-cards/leo.jpg" alt="Leo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a>
-          <a href="virgo.html" class="sign-thumb" role="listitem" aria-label="Virgo horoscope and guide"><img src="assets/images/zodiac-cards/virgo.jpg" alt="Virgo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a>
-          <a href="libra.html" class="sign-thumb" role="listitem" aria-label="Libra horoscope and guide"><img src="assets/images/zodiac-cards/libra.jpg" alt="Libra" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a>
-          <a href="scorpio.html" class="sign-thumb" role="listitem" aria-label="Scorpio horoscope and guide"><img src="assets/images/zodiac-cards/scorpio.jpg" alt="Scorpio" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a>
-          <a href="sagittarius.html" class="sign-thumb sign-thumb--current" role="listitem" aria-label="Sagittarius horoscope and guide (current page)"><img src="assets/images/zodiac-cards/sagittarius.jpg" alt="Sagittarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a>
-          <a href="capricorn.html" class="sign-thumb" role="listitem" aria-label="Capricorn horoscope and guide"><img src="assets/images/zodiac-cards/capricorn.jpg" alt="Capricorn" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a>
-          <a href="aquarius.html" class="sign-thumb" role="listitem" aria-label="Aquarius horoscope and guide"><img src="assets/images/zodiac-cards/aquarius.jpg" alt="Aquarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a>
-          <a href="pisces.html" class="sign-thumb" role="listitem" aria-label="Pisces horoscope and guide"><img src="assets/images/zodiac-cards/pisces.jpg" alt="Pisces" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a>
-        </div>
+        <ul class="sign-thumb-grid" aria-label="All zodiac signs">
+          <li><a href="aries.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aries.jpg" alt="Aries" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a></li>
+          <li><a href="taurus.html" class="sign-thumb"><img src="assets/images/zodiac-cards/taurus.jpg" alt="Taurus" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a></li>
+          <li><a href="gemini.html" class="sign-thumb"><img src="assets/images/zodiac-cards/gemini.jpg" alt="Gemini" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a></li>
+          <li><a href="cancer.html" class="sign-thumb"><img src="assets/images/zodiac-cards/cancer.jpg" alt="Cancer" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a></li>
+          <li><a href="leo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/leo.jpg" alt="Leo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a></li>
+          <li><a href="virgo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/virgo.jpg" alt="Virgo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a></li>
+          <li><a href="libra.html" class="sign-thumb"><img src="assets/images/zodiac-cards/libra.jpg" alt="Libra" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a></li>
+          <li><a href="scorpio.html" class="sign-thumb"><img src="assets/images/zodiac-cards/scorpio.jpg" alt="Scorpio" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a></li>
+          <li><a href="sagittarius.html" class="sign-thumb sign-thumb--current" aria-current="page"><img src="assets/images/zodiac-cards/sagittarius.jpg" alt="Sagittarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a></li>
+          <li><a href="capricorn.html" class="sign-thumb"><img src="assets/images/zodiac-cards/capricorn.jpg" alt="Capricorn" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a></li>
+          <li><a href="aquarius.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aquarius.jpg" alt="Aquarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a></li>
+          <li><a href="pisces.html" class="sign-thumb"><img src="assets/images/zodiac-cards/pisces.jpg" alt="Pisces" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a></li>
+        </ul>
       </div>
     </section>
 
@@ -319,61 +344,98 @@
 
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
 
-  <script src="js/raf-core.js"></script>
-  <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/horoscope-engine.js"></script>
   <script src="js/content-service.js"></script>
   <script src="js/sign-daily.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
-  <script>
-  (function() {
-    'use strict';
-    var dateEl = document.getElementById('today-date');
-    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-
-    function paint(d) {
-      var el = document.getElementById('today-reading');
-      if (!el || !d) return;
-      el.innerHTML =
-        '<div class="card" style="padding:var(--space-8);">' +
-        '<p class="daily-reading__overview">' + d.overview + '</p>' +
-        '<div class="daily-reading__grid">' +
-        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Love</span><p class="daily-reading__tile-text">' + d.love + '</p></div>' +
-        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Career</span><p class="daily-reading__tile-text">' + d.career + '</p></div>' +
-        '<div class="daily-reading__tile"><span class="daily-reading__tile-label">Wellness</span><p class="daily-reading__tile-text">' + d.health + '</p></div>' +
-        '</div>' +
-        '<div class="daily-reading__meta">' +
-        '<span>Lucky Number <strong>' + d.luckyNumber + '</strong></span>' +
-        '<span>Lucky Color <strong>' + d.luckyColor + '</strong></span>' +
-        '</div>' +
-        '<p class="daily-reading__note">Deterministic for this date — refresh tomorrow for a new reading</p>' +
-        '</div>';
-    }
-    function render() {
-      var sign = 'Sagittarius';
-      var ready = window.ContentService || (window.Interpretations && Interpretations.getDailyHoroscope);
-      if (!ready) { setTimeout(render, 200); return; }
-      var run = function() {
-        var d = window.ContentService
-          ? ContentService.resolveDailyHoroscope(sign, new Date())
-          : Interpretations.getDailyHoroscope(sign, new Date());
-        paint(d);
-      };
-      if (window.ContentService && ContentService.ensureDaily) {
-        ContentService.ensureDaily(new Date()).then(run).catch(run);
-      } else run();
-    }
-    render();
-  })();
-  </script>
+  <script src="js/ap-zodiac-constants.js"></script>
+  <script src="js/sign-page-boot.js"></script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

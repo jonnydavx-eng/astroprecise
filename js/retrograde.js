@@ -117,28 +117,43 @@
   // -------------------------------------------------------------------------
   // Status grid for all relevant planets
   // -------------------------------------------------------------------------
+  function statusCardHtml(p, jd) {
+    var retro = window.AstroEphemeris.isRetrograde(p.key, jd);
+    var lon = window.AstroEphemeris.planetLongitude(p.key, jd);
+    var pos = formatSignPos(lon);
+    var orbHtml = window.AstroIcons
+      ? window.AstroIcons.planet(p.name)
+      : '<span class="ap-orb ap-orb--' + p.key + '" aria-hidden="true"></span>';
+    var statusClass = retro ? 'status-card--retro' : 'status-card--direct';
+    var statusLabel = retro
+      ? '<span class="status-badge status-badge--retro">℞ Retrograde</span>'
+      : '<span class="status-badge status-badge--direct">Direct</span>';
+    return '' +
+      '<span class="status-card__orb" aria-hidden="true">' + orbHtml + '</span>' +
+      '<span class="status-card__name">' + p.name + '</span>' +
+      '<span class="status-card__pos">' + pos + '</span>' +
+      statusLabel;
+  }
+
   function renderGrid(jd) {
     var grid = $('status-grid');
     if (!grid) return;
+    var skeletons = grid.querySelectorAll('.status-card--skeleton');
+    if (skeletons.length >= GRID_PLANETS.length) {
+      GRID_PLANETS.forEach(function (p, i) {
+        var card = skeletons[i];
+        var retro = window.AstroEphemeris.isRetrograde(p.key, jd);
+        card.className = 'status-card ' + (retro ? 'status-card--retro' : 'status-card--direct');
+        card.removeAttribute('aria-hidden');
+        card.innerHTML = statusCardHtml(p, jd);
+      });
+      return;
+    }
     var html = '';
     GRID_PLANETS.forEach(function (p) {
       var retro = window.AstroEphemeris.isRetrograde(p.key, jd);
-      var lon = window.AstroEphemeris.planetLongitude(p.key, jd);
-      var pos = formatSignPos(lon);
-      var orbHtml = window.AstroIcons
-        ? window.AstroIcons.planet(p.name)
-        : '<span class="ap-orb ap-orb--' + p.key + '" aria-hidden="true"></span>';
-      var statusClass = retro ? 'status-card--retro' : 'status-card--direct';
-      var statusLabel = retro
-        ? '<span class="status-badge status-badge--retro">℞ Retrograde</span>'
-        : '<span class="status-badge status-badge--direct">Direct</span>';
-      html += '' +
-        '<div class="status-card ' + statusClass + '">' +
-          '<span class="status-card__orb" aria-hidden="true">' + orbHtml + '</span>' +
-          '<span class="status-card__name">' + p.name + '</span>' +
-          '<span class="status-card__pos">' + pos + '</span>' +
-          statusLabel +
-        '</div>';
+      html += '<div class="status-card ' + (retro ? 'status-card--retro' : 'status-card--direct') + '">' +
+        statusCardHtml(p, jd) + '</div>';
     });
     grid.innerHTML = html;
   }

@@ -18,8 +18,8 @@
   }
 
   root.AP_OUTREACH = {
-    version: 'ap-v118', // outreach toolkit + X research
-    updated: '2026-06-14',
+    version: 'ap-v308', // Mission Control campaign + social pack
+    updated: '2026-06-16',
     siteUrl: SITE,
     linksUrl: LINKS,
 
@@ -53,15 +53,19 @@
       },
       profile: {
         handle: '@astroprecise',
+        displayName: 'AstroPrecise ✦ Mission Control',
         bio:
-          'Real birth charts — computed in your browser, never on a server.\n'
-          + 'VSOP87 astronomy · privacy-first · free chart ↓\n'
+          'Mission Control for your sky ✦\n'
+          + 'Real ephemeris · computed in your browser\n'
+          + 'Birth data never uploaded · free chart ↓\n'
           + LINKS,
         pinnedPost:
-          'I built a birth-chart tool that never uploads your birth data.\n\n'
-          + 'Real ephemeris math. Free chart. Your sky as wallpaper.\n\n'
+          'Mission Control for your sky.\n\n'
+          + 'VSOP87 ephemeris. Computed in your browser. Birth data never uploaded.\n'
+          + 'Free chart · Deep Reading £12 · posters from £6\n\n'
           + 'Start here → ' + LINKS,
-        bannerHint: 'Screenshot: chart wheel + tagline "Every number is real"',
+        bannerHint: 'marketing/social/banner-x-1500x500.jpg',
+        avatarHint: 'marketing/social/avatar-400.jpg',
       },
       funnel: [
         'X post or reply → profile → links.html (never raw Gumroad)',
@@ -337,6 +341,22 @@
             'Try it: {{linksUrl}}\n\nWhat would make you trust an astrology app?',
           ],
         },
+      ],
+      missionControlSingles: [
+        { id: 'mc-x-01', day: 1, text: 'FLIGHT READINESS: knowing only your Sun sign is like launching with one telemetry channel.\n\nMoon = inner weather. Rising = first impression.\n\nAll three free → {{linksUrl}}' },
+        { id: 'mc-x-02', day: 2, text: 'PRECESSION ALERT: your magazine zodiac dates are ~2,000 years out of sync with the actual sky.\n\nReal positions at your birth minute → {{linksUrl}}/chart.html' },
+        { id: 'mc-x-03', day: 3, text: 'LIVE TELEMETRY: a horoscope that ignores where the Moon actually is today is a fortune cookie.\n\nToday\'s real sky → {{linksUrl}}/horoscope.html' },
+        { id: 'mc-x-04', day: 4, text: 'ZENITH STAR LOCK: one real named star was directly overhead at your birth place and minute.\n\nFind yours (free) → {{linksUrl}}/ephemeris.html' },
+        { id: 'mc-x-05', day: 5, text: 'TELEMETRY NOTE: the 3am-feelings channel is your Moon — not your Sun.\n\nWhat\'s yours? → {{linksUrl}}' },
+        { id: 'mc-x-06', day: 6, text: 'MERCURY STATUS: it never moves backward — but the station dates are real.\n\nVerify live → {{linksUrl}}/transits.html' },
+        { id: 'mc-x-07', day: 7, text: 'GO/NO-GO on birth time: Rising shifts every ~2 hours. Wrong time = wrong houses.\n\nDo you have your certificate?' },
+        { id: 'mc-x-08', day: 8, text: 'SATURN INGRESS: ~29-year orbit. The vibe is everyone\'s; the house it lands in is yours.\n\nCheck your chart → {{linksUrl}}/transits.html' },
+        { id: 'mc-x-09', day: 9, text: 'SYNASTRY OVERLAY: "are our Suns compatible" is a party trick.\n\nTwo full charts → {{linksUrl}}/compatibility.html' },
+        { id: 'mc-x-10', day: 10, text: 'T-MINUS to your birth minute: that planetary configuration never repeated.\n\nWind the orrery → {{linksUrl}}' },
+        { id: 'mc-x-11', day: 11, text: 'GROUND STATION: your birth data never leaves your device. Local compute only.\n\nNo account. No upload. → {{linksUrl}}' },
+        { id: 'mc-x-12', day: 12, text: 'Monthly cosmic weather for YOUR chart — one email. Only your address is ever sent.\n\n{{linksUrl}}' },
+        { id: 'mc-x-13', day: 13, text: 'POV: Mission Control just downloaded your full chart.\n\nMoon = 3am spiral. Rising = the misread. → {{linksUrl}}' },
+        { id: 'mc-x-14', day: 14, text: 'Mission Control for your sky.\n\n✦ Real ephemeris\n✦ In-browser compute\n✦ Free chart · £12 reading · posters from £6\n\n{{linksUrl}}' },
       ],
       replyTemplates: [
         { id: 'reply-transit', template: 'Worth checking the actual station dates — Mercury\'s status changes on a schedule, not a vibe. I use live ephemeris for this.' },

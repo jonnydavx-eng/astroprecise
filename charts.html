@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="My Charts — your saved AstroPrecise birth charts in one place. View the Big Three (Sun, Moon, Rising) for everyone you've cast, rename, delete, or set a chart as today's daily transit reading. Private, in-browser, free." />
   <title>My Charts — Saved Birth Charts Dashboard | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,12 +20,18 @@
   <meta name="twitter:description" content="Your saved birth charts, all in one place — the Big Three at a glance, with view, rename, delete, and set-as-today's-chart." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/charts-page.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
-
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -45,228 +50,10 @@
   }
   </script>
 
-  <style>
-    /* ── My Charts page ── */
-    :root {
-      --mc-surface: rgba(16, 18, 34, 0.55);
-      --mc-border:  rgba(255, 255, 255, 0.09);
-    }
-
-    /* Hero */
-    .mc-hero {
-      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
-      text-align: center;
-      position: relative;
-    }
-    .mc-hero__eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.1rem;
-    }
-    .mc-hero__eyebrow::before,
-    .mc-hero__eyebrow::after {
-      content: '';
-      display: block;
-      width: 26px;
-      height: 1px;
-      background: var(--gold);
-      opacity: 0.5;
-    }
-    .mc-hero h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(2.1rem, 5vw, 3.4rem);
-      font-weight: 700;
-      color: var(--gold-pale, #f0e8d8);
-      line-height: 1.1;
-      letter-spacing: 0.03em;
-      margin-bottom: 0.9rem;
-    }
-    .mc-hero__sub {
-      font-size: 1.02rem;
-      color: var(--silver, #A89E88);
-      max-width: 540px;
-      margin: 0 auto 1.5rem;
-      line-height: 1.65;
-    }
-    .mc-stat {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 0.4rem;
-      background: var(--mc-surface);
-      -webkit-backdrop-filter: blur(18px);
-      backdrop-filter: blur(18px);
-      border: 1px solid var(--mc-border);
-      border-radius: 999px;
-      padding: 0.45rem 1.15rem;
-      font-size: 0.78rem;
-      letter-spacing: 0.04em;
-      color: var(--silver, #A89E88);
-    }
-    .mc-stat__num {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--gold);
-    }
-
-    .mc-section { padding: 1rem 0 5rem; }
-
-    /* Grid */
-    .mc-grid--cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.25rem;
-    }
-
-    /* Card */
-    .mc-card {
-      padding: 1.5rem 1.5rem 1.35rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.15rem;
-    }
-    .mc-card--active {
-      border-color: rgba(201, 162, 39, 0.45) !important;
-      box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.18), 0 14px 40px rgba(0, 0, 0, 0.4);
-    }
-    .mc-card__head {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.85rem;
-      position: relative;
-    }
-    .mc-card__avatar {
-      flex: 0 0 auto;
-      width: 44px;
-      height: 44px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--gold-pale, #f0e8d8);
-      background: radial-gradient(circle at 30% 28%, rgba(201, 162, 39, 0.4), rgba(110, 26, 38, 0.35));
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .mc-card__id { min-width: 0; flex: 1; }
-    .mc-card__name {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--gold-pale, #f0e8d8);
-      line-height: 1.2;
-      margin: 0 0 0.3rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .mc-card__birth {
-      font-size: 0.78rem;
-      color: var(--silver, #A89E88);
-      line-height: 1.5;
-      margin: 0;
-    }
-    .mc-card__active {
-      flex: 0 0 auto;
-      align-self: flex-start;
-      font-size: 0.56rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold);
-      background: rgba(201, 162, 39, 0.12);
-      border: 1px solid rgba(201, 162, 39, 0.35);
-      border-radius: 999px;
-      padding: 0.25rem 0.6rem;
-      white-space: nowrap;
-    }
-
-    /* Big Three */
-    .mc-big3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.6rem;
-      padding: 0.9rem 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .mc-big3__cell {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      min-width: 0;
-    }
-    .mc-big3__orb { flex: 0 0 auto; line-height: 0; }
-    .mc-big3__meta { display: flex; flex-direction: column; min-width: 0; }
-    .mc-big3__label {
-      font-size: 0.56rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.85;
-    }
-    .mc-big3__sign {
-      font-size: 0.84rem;
-      font-weight: 600;
-      color: var(--gold-pale, #f0e8d8);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* Actions */
-    .mc-card__actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .mc-card__actions .btn { flex: 1 1 auto; text-align: center; }
-    .mc-card__actions .btn[disabled] { opacity: 0.55; cursor: default; pointer-events: none; }
-
-    /* Empty / fallback state */
-    .mc-empty {
-      grid-column: 1 / -1;
-      max-width: 560px;
-      margin: 1rem auto 0;
-      padding: 3rem 2.5rem;
-      text-align: center;
-    }
-    .mc-empty__glyph {
-      display: block;
-      font-size: 2.6rem;
-      color: var(--gold);
-      margin-bottom: 1rem;
-      line-height: 1;
-    }
-    .mc-empty__title {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--gold-pale, #f0e8d8);
-      margin: 0 0 0.7rem;
-    }
-    .mc-empty__text {
-      font-size: 0.92rem;
-      color: var(--silver, #A89E88);
-      line-height: 1.75;
-      max-width: 420px;
-      margin: 0 auto 1.75rem;
-    }
-
-    @media (max-width: 600px) {
-      .mc-grid--cards { grid-template-columns: 1fr; }
-      .mc-empty { padding: 2.25rem 1.5rem; }
-    }
-  </style>
-</head>
+  </head>
 <body>
+
+  <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -281,11 +68,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -316,9 +103,10 @@
       <!-- ============================================================
            CHART GRID
       ============================================================ -->
-      <section class="mc-section" aria-labelledby="page-title">
+      <section class="mc-section" aria-label="Saved charts collection">
         <div class="container">
-          <div id="charts-grid" role="region" aria-label="Saved charts" aria-live="polite">
+          <h2 id="charts-section-title" class="sr-only">Saved charts</h2>
+          <div id="charts-grid" aria-live="polite" aria-labelledby="charts-section-title">
             <!-- js/charts-dashboard.js renders glass cards or the empty state here -->
             <div class="glass-card mc-empty">
               <span class="mc-empty__glyph eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>
@@ -339,30 +127,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo">&#10022; AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="Account navigation">
-          <p class="footer__heading">Account</p>
-          <ul class="footer__links">
-            <li><a href="charts.html" class="footer__link">My Charts</a></li>
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -377,9 +225,9 @@
   <script src="js/ephemeris.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/icons.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
+<script src="js/effects.js"></script>
   <script src="js/charts-dashboard.js"></script>
 
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

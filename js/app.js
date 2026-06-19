@@ -43,6 +43,10 @@ const AstroApp = (() => {
       const prefs = AstroProfile.getPrefs();
       document.documentElement.dataset.houseSystem = prefs.houseSystem;
     }
+
+    if (window.ApPageBridge && typeof ApPageBridge.init === 'function') {
+      ApPageBridge.init();
+    }
   }
 
   // ── Navbar ────────────────────────────────────────────────────────────────
@@ -111,22 +115,23 @@ const AstroApp = (() => {
     }
   }
 
-  // ── Navigation IA (single source of truth) ───────────────────────────────
-  // Desktop: 5 primaries + More flyout. Mobile: 4 bottom tabs + categorized drawer.
-  const NAV_PRIMARY = [
+  // ── Navigation IA — js/ap-nav-model.js (window.AP_NAV) is canonical ─────
+  const _apNav = (typeof window !== 'undefined' && window.AP_NAV) || {};
+  const NAV_PRIMARY = _apNav.NAV_PRIMARY || [
     ['index.html', 'Home'],
     ['chart.html', 'Chart'],
     ['horoscope.html', 'Daily'],
     ['compatibility.html', 'Match'],
     ['ephemeris.html', 'Sky'],
   ];
-  const NAV_MORE_EXPLORE = [
+  const NAV_MORE_EXPLORE = _apNav.NAV_MORE_EXPLORE || [
+    ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['lifepath.html', 'Life Path'],
     ['transits.html', 'Transits'],
     ['why.html', 'Why'],
     ['shop.html', 'Shop'],
   ];
-  const NAV_EXTRAS = [
+  const NAV_EXTRAS = _apNav.NAV_EXTRAS || [
     ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
     ['tonight.html', "Tonight's Sky"], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
@@ -134,13 +139,13 @@ const AstroApp = (() => {
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['links.html', 'Links'],
   ];
-  const NAV_BOTTOM_TABS = [
+  const NAV_BOTTOM_TABS = _apNav.NAV_BOTTOM_TABS || [
     ['index.html', 'Home', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
     ['horoscope.html', 'Daily', 'crescent'],
-    ['compatibility.html', 'Match', 'heart'],
+    ['ephemeris.html', 'Sky', 'telescope'],
   ];
-  const NAV_DRAWER_SECTIONS = [
+  const NAV_DRAWER_SECTIONS = _apNav.NAV_DRAWER_SECTIONS || [
     { label: 'Explore', items: NAV_MORE_EXPLORE },
     { label: 'Tools', items: NAV_EXTRAS },
   ];
@@ -150,18 +155,43 @@ const AstroApp = (() => {
   const NAV_BOTTOM_LABELS = Object.fromEntries(NAV_BOTTOM_TABS.map(function (r) { return [r[0], r[1]]; }));
   const NAV_BOTTOM_EXTRAS = [];
 
+  function parseNavRow(row) {
+    return {
+      href: row[0],
+      label: row[1],
+      meta: row[2] && typeof row[2] === 'object' ? row[2] : {},
+    };
+  }
+
   function navLinkHtml(pairs, here, drawer) {
     return pairs.map(function (row) {
-      var href = row[0];
-      var label = row[1];
+      var item = parseNavRow(row);
+      var href = item.href;
+      var label = item.label;
+      var meta = item.meta;
       var active = here === href;
       var cls = 'navbar__link' + (active ? ' active' : '') + (drawer ? ' navbar__link--drawer' : '');
-      return '<a href="' + href + '" class="' + cls + '"' +
-        (active ? ' aria-current="page"' : '') + '>' + label + '</a>';
+      var attrs = ' href="' + href + '" class="' + cls + '"';
+      if (active) attrs += ' aria-current="page"';
+      if (meta.dataNavPromoted) attrs += ' data-nav-promoted="' + meta.dataNavPromoted + '"';
+      var inner = label;
+      if (meta.badge) {
+        inner += '<span class="navbar__nav-badge" aria-hidden="true">' + meta.badge + '</span>';
+      }
+      return '<a' + attrs + '>' + inner + '</a>';
     }).join('');
   }
 
+  function navItemsForDrawerSection(sec) {
+    if (sec.label !== 'Explore') return sec.items;
+    var inPrimary = {};
+    NAV_PRIMARY.forEach(function (r) { inPrimary[r[0]] = true; });
+    return sec.items.filter(function (r) { return !inPrimary[r[0]]; });
+  }
+
   function morePageActive(here) {
+    var primaryHrefs = NAV_PRIMARY.map(function (r) { return r[0]; });
+    if (primaryHrefs.indexOf(here) !== -1) return false;
     return NAV_MORE_EXPLORE.some(function (r) { return r[0] === here; })
       || NAV_EXTRAS.some(function (r) { return r[0] === here; });
   }
@@ -176,7 +206,8 @@ const AstroApp = (() => {
     }).join('');
     return '<div class="navbar__more" data-nav-more>'
       + '<button type="button" class="navbar__more-btn' + (active ? ' active' : '') + '"'
-      + ' aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>'
+      + ' aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel"'
+      + ' aria-label="More — includes Match compatibility">More</button>'
       + '<div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden>' + groups + '</div>'
       + '</div>';
   }
@@ -317,9 +348,11 @@ const AstroApp = (() => {
     var html = '<p class="navbar__drawer-heading">Main</p>'
       + navLinkHtml(NAV_PRIMARY, here, true);
     NAV_DRAWER_SECTIONS.forEach(function (sec) {
+      var items = navItemsForDrawerSection(sec);
+      if (!items.length) return;
       html += '<hr class="navbar__drawer-divider" aria-hidden="true">'
         + '<p class="navbar__drawer-heading">' + sec.label + '</p>'
-        + navLinkHtml(sec.items, here, true);
+        + navLinkHtml(items, here, true);
     });
     html += '<hr class="navbar__drawer-divider" aria-hidden="true">'
       + '<p class="navbar__drawer-heading">Account</p>'
@@ -334,7 +367,28 @@ const AstroApp = (() => {
     var desktop = document.querySelector('.navbar__nav');
     var mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) {
-      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
+      if (!desktop.querySelector('.navbar__link')) {
+        desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
+      } else {
+        desktop.querySelectorAll('.navbar__link[href]').forEach(function (a) {
+          var href = (a.getAttribute('href') || '').split('/').pop();
+          var on = href === here;
+          a.classList.toggle('active', on);
+          if (on) a.setAttribute('aria-current', 'page');
+          else a.removeAttribute('aria-current');
+        });
+        var moreBtn = desktop.querySelector('.navbar__more-btn');
+        if (moreBtn) moreBtn.classList.toggle('active', morePageActive(here));
+        var morePanel = desktop.querySelector('.navbar__more-panel');
+        if (morePanel && !morePanel.querySelector('.navbar__more-group')) {
+          morePanel.innerHTML = NAV_DRAWER_SECTIONS.map(function (sec) {
+            return '<div class="navbar__more-group" role="group" aria-label="' + sec.label + '">'
+              + '<p class="navbar__more-label">' + sec.label + '</p>'
+              + navLinkHtml(sec.items, here, true)
+              + '</div>';
+          }).join('');
+        }
+      }
       initMoreMenu();
     }
     if (mobile) mobile.innerHTML = renderDrawer(here);
@@ -410,6 +464,15 @@ const AstroApp = (() => {
 
   const EI = (id) => `<svg class="eng-i" aria-hidden="true"><use href="#ei-${id}"/></svg>`;
 
+  const escToast = (window.AP_SAFE && window.AP_SAFE.esc)
+    ? s => window.AP_SAFE.esc(s)
+    : s => String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
   function showToast(title, message, type = 'info', duration = 4000) {
     const icons = {
       success: EI('check'),
@@ -425,8 +488,8 @@ const AstroApp = (() => {
     toast.innerHTML = `
       <span class="toast__icon">${icons[type] || EI('star4')}</span>
       <div class="toast__body">
-        <div class="toast__title">${title}</div>
-        ${message ? `<div class="toast__message">${message}</div>` : ''}
+        <div class="toast__title">${escToast(title)}</div>
+        ${message ? `<div class="toast__message">${escToast(message)}</div>` : ''}
       </div>
       <button class="toast__close" aria-label="Close">${EI('close')}</button>
     `;
@@ -1152,7 +1215,11 @@ window.AP_MON = Object.assign({
   affiliate: {
     adsEnabled: true,
     amazonTag: '',   // alias for affiliateTag; either field works
-    pages: ['index.html', 'chart.html', 'horoscope.html', 'compatibility.html', 'transits.html', 'lifepath.html'],
+    pages: [
+      'index.html', 'index-full.html', 'chart.html', 'horoscope.html',
+      'compatibility.html', 'transits.html', 'lifepath.html',
+      'shop.html', 'ephemeris.html', 'tonight.html',
+    ],
     picks: [
       {
         id: 'woolfolk',
@@ -1180,6 +1247,24 @@ window.AP_MON = Object.assign({
         source: 'Amazon',
         price: '~£16',
         tag: 'Oracle',
+      },
+      {
+        id: 'astrology-bible',
+        title: 'The Astrology Bible',
+        blurb: 'Judy Hall’s illustrated reference — signs, planets, and aspects at a glance.',
+        url: 'https://www.amazon.co.uk/s?k=The+Astrology+Bible+Judy+Hall',
+        source: 'Amazon',
+        price: '~£12',
+        tag: 'Reference',
+      },
+      {
+        id: 'planets-in-transit',
+        title: 'Planets in Transit',
+        blurb: 'Robert Hand’s transit classic — the desk companion for our transits tool.',
+        url: 'https://www.amazon.co.uk/s?k=Planets+in+Transit+Robert+Hand',
+        source: 'Amazon',
+        price: '~£22',
+        tag: 'Transits',
       },
     ],
   },
@@ -1229,6 +1314,16 @@ window.AP_MON = Object.assign({
   // the cart is real and saved locally, but checkout invites you to be told
   // when the doors open — it never shows a fake or broken checkout.
   commerce: {
+    // ── POST-PURCHASE PROMOS ─────────────────────────────────────────────
+    promos: {
+      twoSkies: {
+        code: 'TWOSKIES50',
+        percent: 50,
+        productId: 'two-skies-map',
+        expiresDays: 30,
+      },
+    },
+
     // ── CHECKOUT — how the cart actually fulfils ──────────────────────────
     checkout: {
       paypalClientId:   '',   // PayPal REST Client ID → on-site Buttons (developer.paypal.com)
@@ -1256,6 +1351,10 @@ window.AP_MON = Object.assign({
       gifts: {
         name: 'Gifts',
         story: 'A chart made for someone else — their exact sky, delivered with a note from you. Recipient birth details and your gift message are collected privately at checkout, never on this site.',
+      },
+      jewellery: {
+        name: 'Jewellery',
+        story: 'Wearable sky talismans — pendants, bars and medallions engraved from your exact natal chart. Personalised accessories you can carry every day.',
       },
     },
 
@@ -1364,10 +1463,10 @@ window.AP_MON = Object.assign({
         collection:   'theReading',
         price:        16.00,
         personalized: true,
-        badge:        'Trending',
-        marketingLine:'Twelve months of transits — the self-care forecast Gen Z actually wants.',
+        badge:        'Popular',
+        marketingLine:'Twelve months of transits — your personal sky forecast.',
         previewImage: 'img/shop/product-year-ahead.jpg',
-        blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — the trending wellness forecast for chart-curious millennials and Gen Z.',
+        blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
         icon:         'calendar',
         fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785',
       },
@@ -1398,10 +1497,11 @@ window.AP_MON = Object.assign({
         anchorWas:    18.00,
         personalized: true,
         badge:        'Best value',
-        marketingLine:'The reading and the map — one chart, two keepsakes, save £2.',
+        marketingLine:'Reading, poster, free wallpaper & a Two Skies offer — save £2.',
         previewImage: 'img/shop/product-bundle.jpg',
         sampleUrl:    'sample-reading.html',
-        blurb:        'Your long-form Deep Natal Reading and your print-at-home natal poster, generated together from one chart. The words and the map of your sky — two PDFs, yours to keep, for less than buying both.',
+        blurb:        'Your long-form Deep Natal Reading and print-at-home natal poster, generated together from one chart. Includes free chart wallpaper (email unlock) and a 50% code for Two Skies after purchase. Future bundles will pair readings with Observatory Disc or Seal Medallion jewellery.',
+        bundlePerks:  ['Free chart wallpaper', '50% off Two Skies map', 'Two PDFs · save £2', 'Jewellery cross-sell placeholders live in catalogue'],
         icon:         'book',
         fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7?signature=818268afc134daac9ba3ed051e5eb2d8a5b10c4ac392dc2a45afb4782bd4ec3f',
       },
@@ -1462,11 +1562,74 @@ window.AP_MON = Object.assign({
         personalized: true,
         giftNote:     true,
         badge:        'Together',
-        marketingLine:'Two birth charts, one print — the anniversary keepsake trending on Etsy.',
+        marketingLine:'Two birth charts, one print — the anniversary keepsake.',
         previewImage: 'img/shop/product-two-skies.jpg',
-        blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. The proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
+        blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. A proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
         icon:         'crescent',
         fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7',
+      },
+      // ── JEWELLERY COLLECTION (new accessories, POD placeholders) ───────────
+      // Audience-refined (deep research 2026-06): Gen Z gifting (affordable meaningful), women 18-35 everyday/self (dainty + emotional), existing chart users.
+      // Diffs vs competitors: full VSOP87 chart data (not sun-sign generic), integrated with readings/posters. POD: ShineOn/OwnPrint/AnywherePOD or Etsy manual + custom upload for engraving.
+      {
+        id:           'observatory-disc-pendant',
+        available:    true,
+        name:         'Observatory Disc Pendant',
+        type:         'accessory',
+        collection:   'jewellery',
+        price:        29.00,
+        personalized: true,
+        badge:        'New',
+        marketingLine:'Your full natal wheel, engraved on a wearable disc.',
+        previewImage: 'img/shop/cat-jewelry.jpg',
+        blurb:        'Solid brass or sterling disc pendant with the complete natal chart wheel micro-engraved from your exact birth data. Planets positioned precisely as at the moment you were born — 25mm on 45cm chain. For women 18-35 who want their sky close every day, or as a standout Gen Z gift that actually means something. POD fulfilment.',
+        icon:         'orb',
+        fulfilUrl:    '', // placeholder — set real POD URL (ShineOn / OwnPrint / Etsy custom / Gelato) when live
+      },
+      {
+        id:           'constellation-bar',
+        available:    true,
+        name:         'Constellation Bar',
+        type:         'accessory',
+        collection:   'jewellery',
+        price:        24.00,
+        personalized: true,
+        badge:        null,
+        marketingLine:'Minimal bar with your birth constellations in line.',
+        previewImage: 'img/shop/cat-jewelry.jpg',
+        blurb:        'Slim horizontal bar (pendant or cuff) showing the constellation lines of your Sun + Moon + Rising. Subtle everyday chart jewellery for layering. Perfect for the 18-35 woman who loves dainty cosmic details without shouting her sign — or gift to your astro bestie.',
+        icon:         'star4',
+        fulfilUrl:    '', // placeholder — set real POD URL when live
+      },
+      {
+        id:           'big-three-glyph',
+        available:    true,
+        name:         'Big Three Glyph',
+        type:         'accessory',
+        collection:   'jewellery',
+        price:        19.00,
+        personalized: true,
+        badge:        null,
+        marketingLine:'Sun · Moon · Rising charms on a fine chain.',
+        previewImage: 'img/shop/cat-jewelry.jpg',
+        blurb:        'Three small engraved charms — your Sun, Moon and Rising glyphs — on a delicate 40cm chain. The spine of your chart, worn close to the heart. Entry price for Gen Z gifting and women 18-35 self-purchase; meaningful without the generic zodiac mass-market feel. Differentiator: exact from your saved chart, not a stock Aries stamp.',
+        icon:         'gem',
+        fulfilUrl:    '', // placeholder — set real POD URL when live
+      },
+      {
+        id:           'seal-medallion',
+        available:    true,
+        name:         'Seal Medallion',
+        type:         'accessory',
+        collection:   'jewellery',
+        price:        35.00,
+        personalized: true,
+        badge:        'Signature',
+        marketingLine:'Hex seal medallion of your chart\'s dominant signature.',
+        previewImage: 'img/shop/cat-jewelry.jpg',
+        blurb:        'Large 32mm hex medallion bearing your dominant element seal and Big Three glyphs. Reversible; engraved on observatory-grade brass. A true talisman for power users and milestone gifting. Premium tier vs No.13-style luxe — yours is computed from real VSOP87 positions, not artistic interpretation.',
+        icon:         'heart',
+        fulfilUrl:    '', // placeholder — set real POD URL when live
       },
     ],
   },
@@ -1519,9 +1682,10 @@ window.AP_MON = Object.assign({
   else wire();
 })();
 
-document.addEventListener('DOMContentLoaded', () => AstroApp.init());
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => AstroApp.init());
+else AstroApp.init();
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && !navigator.webdriver) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
@@ -1530,6 +1694,10 @@ if ('serviceWorker' in navigator) {
   const ACK_KEY = 'ap_privacy_ack';
 
   function showPrivacyBanner() {
+    var ua = navigator.userAgent || '';
+    if (window.__apSkipPrivacyBanner || navigator.webdriver || /\bHeadlessChrome\b/i.test(ua) ||
+        /[?&]lite=1/.test(location.search || '') ||
+        (typeof window.chrome === 'undefined' && /Chrome/i.test(ua))) return;
     if (localStorage.getItem(ACK_KEY)) return;
     function mountBanner() {
     const b = document.createElement('div');
@@ -1540,7 +1708,7 @@ if ('serviceWorker' in navigator) {
       '<span class="privacy-banner__text"><strong>Everything happens in your hands.</strong> ' +
       'Charts and readings compute in your browser. Only place-name searches query a geocoder ' +
       '(Open-Meteo) — your birth moment and readings never leave your device.</span>' +
-      '<button class="privacy-banner__close" aria-label="Dismiss privacy notice">Understood</button>';
+      '<button class="privacy-banner__close" type="button">Understood</button>';
     document.body.appendChild(b);
     b.querySelector('.privacy-banner__close').addEventListener('click', () => {
       b.classList.add('is-hidden');
@@ -1552,6 +1720,24 @@ if ('serviceWorker' in navigator) {
       window.addEventListener('ap-hero-enter', function () {
         setTimeout(mountBanner, 1200);
       }, { once: true });
+      return;
+    }
+    if (document.body.classList.contains('page-shop')) {
+      setTimeout(mountBanner, 30000);
+      return;
+    }
+    if (document.body.classList.contains('page-chart')) {
+      setTimeout(mountBanner, 45000);
+      return;
+    }
+    if (document.body.classList.contains('page-horoscope')) {
+      window.addEventListener('pointerdown', mountBanner, { once: true, passive: true });
+      window.addEventListener('load', function () { setTimeout(mountBanner, 35000); }, { once: true });
+      return;
+    }
+    if (document.body.classList.contains('page-compat')) {
+      window.addEventListener('pointerdown', mountBanner, { once: true, passive: true });
+      window.addEventListener('load', function () { setTimeout(mountBanner, 35000); }, { once: true });
       return;
     }
     mountBanner();
@@ -1585,6 +1771,7 @@ if ('serviceWorker' in navigator) {
   function initReveal() {
     if (!window.IntersectionObserver) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (document.body.classList.contains('page-horoscope')) return;
     const candidates = document.querySelectorAll(
       '.feature-card, .planet-weather-card, .sign-card, .reading-card, ' +
       '.transit-item, .element-compat-card, .category-score-item, .moon-card, .manifesto'
@@ -1864,7 +2051,7 @@ if ('serviceWorker' in navigator) {
       return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_home', tag: 'tag_banner_home', showPerks: true };
     }
     if (p === 'shop.html') {
-      return { eyebrow: 'Now live', title: 'Your chart, made tangible', sub: 'Deep readings & print-at-home posters from your birth chart \u2014 plus early word on tees, gifts & new drops.', source: 'banner_shop', tag: 'tag_shop_live', showPerks: true };
+      return { eyebrow: 'Free wallpaper', title: 'Your sky as a lock-screen PNG', sub: 'Free chart wallpaper on the Chart page \u2014 join the list for cosmic weather, deep-reading previews & shop drops. Paid pieces from \u00a36.', source: 'banner_shop', tag: 'tag_shop_live', showPerks: true };
     }
     return { eyebrow: c.eyebrow, title: c.bannerTitle, sub: c.bannerSub, source: 'banner_tool', tag: 'tag_banner_tool', showPerks: true };
   }
@@ -1935,10 +2122,11 @@ if ('serviceWorker' in navigator) {
     el.className = 'ap-email-cta ap-email-cta--' + variant + (opts.extraClass ? ' ' + opts.extraClass : '');
     if (variant === 'banner') {
       el.id = 'ap-email-banner';
-      el.setAttribute('aria-label', 'Email updates signup');
+      el.setAttribute('role', 'region');
+      el.setAttribute('aria-labelledby', 'ap-email-banner-title');
     } else if (variant === 'sticky') {
       el.setAttribute('role', 'region');
-      el.setAttribute('aria-label', 'Email updates signup');
+      el.setAttribute('aria-label', 'Email updates — sticky bar');
     }
     var inner = variant === 'hero'
       ? '<div class="container ap-email-cta__inner">'
@@ -1950,7 +2138,7 @@ if ('serviceWorker' in navigator) {
     }
     inner += '<div class="ap-email-cta__copy">';
     if (variant !== 'sticky') inner += '<p class="ap-email-cta__eyebrow">' + (copy.eyebrow || c.eyebrow) + '</p>';
-    inner += '<p class="ap-email-cta__title">' + (copy.title || c.bannerTitle) + '</p>';
+    inner += '<p class="ap-email-cta__title"' + (variant === 'banner' ? ' id="ap-email-banner-title"' : '') + '>' + (copy.title || c.bannerTitle) + '</p>';
     if (variant !== 'sticky') inner += '<p class="ap-email-cta__sub">' + (copy.sub || c.bannerSub) + '</p>';
     if ((variant === 'banner' || variant === 'hero') && copy.showPerks) inner += perksHtml(variant === 'hero');
     inner += '</div>';
@@ -2060,12 +2248,26 @@ if ('serviceWorker' in navigator) {
   }
 
   function injectBannerCTA() {
-    if (document.querySelector('.ap-email-cta--banner')) return;
+    var existing = document.querySelector('.ap-email-cta--banner');
+    if (existing) {
+      var form = existing.querySelector('form');
+      if (form && !form._apWired) {
+        var copy = pageEmailCopy();
+        wireEmailForm(form, { source: copy.source, tag: copy.tag });
+      }
+      return;
+    }
     if (document.getElementById('email-capture')) return;
     if (document.getElementById('horoscope-subscribe')) return;
+    var banner = buildEmailCTA('banner', pageEmailCopy());
+    var slot = document.getElementById('ap-email-banner-slot');
+    if (slot) {
+      slot.replaceWith(banner);
+      return;
+    }
     var footer = document.querySelector('footer.footer, footer.site-footer, footer[role="contentinfo"]');
     if (!footer || !footer.parentNode) return;
-    footer.parentNode.insertBefore(buildEmailCTA('banner', pageEmailCopy()), footer);
+    footer.parentNode.insertBefore(banner, footer);
   }
 
   function injectHeroCTA() {
@@ -2185,6 +2387,26 @@ if ('serviceWorker' in navigator) {
   var s = document.createElement('script');
   s.src = 'js/affiliate-social.js';
   s.dataset.apAffiliateSocial = '1';
+  s.defer = true;
+  document.head.appendChild(s);
+})();
+
+// Nav hover/touch prefetch (chart, horoscope, shop).
+(function loadNavPrefetch() {
+  if (document.querySelector('script[data-ap-nav-prefetch], script[src*="ap-nav-prefetch"]')) return;
+  var s = document.createElement('script');
+  s.src = 'js/ap-nav-prefetch.js';
+  s.dataset.apNavPrefetch = '1';
+  s.defer = true;
+  document.head.appendChild(s);
+})();
+
+// Unified footer nav model (Daily readings + Sign guides split).
+(function loadFooterInject() {
+  if (document.querySelector('script[data-ap-footer-inject], script[src*="ap-footer-inject"]')) return;
+  var s = document.createElement('script');
+  s.src = 'js/ap-footer-inject.js';
+  s.dataset.apFooterInject = '1';
   s.defer = true;
   document.head.appendChild(s);
 })();

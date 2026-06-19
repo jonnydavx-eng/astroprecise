@@ -66,8 +66,26 @@ body.landing-gate-exiting .email-sticky {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 100% 88% at 50% 44%, rgba(5, 4, 6, 0.08) 0%, rgba(5, 4, 6, 0.72) 68%, rgba(3, 2, 4, 0.94) 100%),
-    linear-gradient(180deg, rgba(5, 4, 6, 0.82) 0%, rgba(5, 4, 6, 0.35) 22%, rgba(5, 4, 6, 0.35) 78%, rgba(5, 4, 6, 0.88) 100%);
+    radial-gradient(ellipse 102% 90% at 50% 44%, rgba(5, 4, 6, 0.04) 0%, rgba(5, 4, 6, 0.48) 72%, rgba(3, 2, 4, 0.78) 100%),
+    linear-gradient(180deg, rgba(5, 4, 6, 0.55) 0%, rgba(5, 4, 6, 0.18) 24%, rgba(5, 4, 6, 0.18) 76%, rgba(5, 4, 6, 0.62) 100%);
+}
+
+body.preloader-intro-playing #preloader.has-real:not(.preloader--system-view):not(.aligned) .landing-gate-scrim {
+  background:
+    radial-gradient(ellipse 108% 94% at 50% 46%, transparent 42%, rgba(5, 4, 6, 0.18) 78%, rgba(3, 2, 4, 0.42) 100%),
+    linear-gradient(180deg, rgba(5, 4, 6, 0.22) 0%, rgba(5, 4, 6, 0.06) 26%, rgba(5, 4, 6, 0.06) 74%, rgba(5, 4, 6, 0.28) 100%);
+}
+
+/* Cosmic descent: no horizontal letterbox scrims — galaxy is edge-to-edge */
+#preloader.preloader--cosmic:not(.aligned):not(.preloader--earth-land) .landing-gate-scrim,
+body.preloader-intro-playing #preloader.preloader--cosmic:not(.aligned):not(.preloader--earth-land) .landing-gate-scrim {
+  background: transparent !important;
+  opacity: 0 !important;
+}
+
+#preloader.preloader--cosmic:not(.aligned):not(.preloader--earth-land).has-real::after,
+body.preloader-intro-playing #preloader.preloader--cosmic:not(.aligned):not(.preloader--earth-land).has-real::after {
+  background: radial-gradient(ellipse 118% 108% at 50% 50%, transparent 80%, rgba(5, 4, 6, 0.05) 100%) !important;
 }
 
 #preloader.fallback-css .landing-gate-scrim {
@@ -76,6 +94,126 @@ body.landing-gate-exiting .email-sticky {
 
 body.landing-gate-exiting #preloader {
   pointer-events: none;
+}
+
+/* Seamless preloader → home: one canvas, crossfade chrome while hero UI rises in */
+body.landing-gate-seamless.landing-gate-exiting #main-content,
+body.landing-gate-seamless.landing-gate-exiting .site-footer {
+  visibility: visible !important;
+  opacity: 0;
+  pointer-events: none !important;
+  transition: opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+}
+
+body.landing-gate-seamless.landing-gate-open.landing-gate-exiting #main-content,
+body.landing-gate-seamless.landing-gate-open.landing-gate-exiting .site-footer {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.landing-gate-seamless.landing-gate-exiting .site-header {
+  opacity: 0;
+  visibility: visible;
+  pointer-events: none;
+  transition: opacity 0.85s ease 0.18s;
+}
+
+body.landing-gate-seamless.landing-gate-open.landing-gate-exiting .site-header {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.landing-gate-seamless.landing-gate-exiting .hero__entrance,
+body.landing-gate-seamless.landing-gate-exiting .hero__sky-dock,
+body.landing-gate-seamless.landing-gate-exiting .hero__scroll-cue,
+body.landing-gate-seamless.landing-gate-exiting .hero__chronicle {
+  opacity: 0 !important;
+  visibility: visible !important;
+  transform: translateY(14px) !important;
+  transition: opacity 0.82s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.82s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__entrance,
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__sky-dock,
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__scroll-cue,
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__chronicle {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__entrance--1 { transition-delay: 0.06s !important; }
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__entrance--2 { transition-delay: 0.14s !important; }
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__entrance--3 { transition-delay: 0.22s !important; }
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__entrance--4 { transition-delay: 0.30s !important; }
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__entrance--5 { transition-delay: 0.38s !important; }
+
+body.landing-gate-seamless.landing-gate-exiting .hero__sky-dock .live-sky-label,
+body.landing-gate-seamless.landing-gate-exiting .hero__sky-dock #live-sky-strip,
+body.landing-gate-seamless.landing-gate-exiting .hero__sky-dock .live-sky-note {
+  opacity: 0 !important;
+  visibility: visible !important;
+  transition: opacity 0.75s ease 0.28s !important;
+}
+
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__sky-dock .live-sky-label,
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__sky-dock #live-sky-strip,
+body.landing-gate-seamless.landing-home-reveal.landing-gate-exiting .hero--entered .hero__sky-dock .live-sky-note {
+  opacity: 1 !important;
+}
+
+body.landing-gate-seamless #preloader.preloader--seamless-handoff,
+body.landing-gate-seamless #preloader.preloader--seamless-handoff.fade-out {
+  background: transparent !important;
+}
+
+body.landing-gate-seamless #preloader.preloader--seamless-handoff .landing-gate-scrim,
+body.landing-gate-seamless #preloader.preloader--seamless-handoff::after {
+  opacity: 0 !important;
+  transition: opacity 0.55s ease !important;
+}
+
+body.landing-gate-seamless #preloader.preloader--seamless-handoff .apl-intro-header,
+body.landing-gate-seamless #preloader.preloader--seamless-handoff .preloader-content,
+body.landing-gate-seamless #preloader.preloader--seamless-handoff .preloader-skip-intro {
+  opacity: 0 !important;
+  transition: opacity 0.32s ease !important;
+  pointer-events: none !important;
+}
+
+body.landing-gate-seamless.landing-gate-exiting .hero__constellation,
+body.landing-gate-seamless.landing-gate-exiting .hero::before,
+body.landing-gate-seamless.landing-gate-exiting .hero::after {
+  visibility: visible !important;
+}
+
+body.landing-gate-seamless.landing-gate-exiting #starfield-canvas {
+  opacity: 1;
+  transition: opacity 0.9s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.landing-gate-seamless.landing-gate-exiting #main-content,
+  body.landing-gate-seamless.landing-gate-exiting .site-footer,
+  body.landing-gate-seamless.landing-gate-exiting .hero__entrance,
+  body.landing-gate-seamless.landing-gate-exiting .site-header {
+    transition: none !important;
+  }
+}
+
+body.landing-gate-exiting .hero__orrery-layer {
+  visibility: visible !important;
+  opacity: 1;
+}
+
+body.landing-gate-exiting #preloader.fade-out {
+  background: transparent;
+}
+
+body.landing-gate-exiting #preloader.fade-out .landing-gate-scrim,
+body.landing-gate-exiting #preloader.fade-out::after {
+  opacity: 0;
+  transition: opacity 0.72s ease;
 }
 
 body.landing-gate-open.landing-home-reveal .hero--entered .hero__entrance {

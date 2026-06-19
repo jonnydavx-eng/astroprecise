@@ -25,6 +25,12 @@
 
 window.AstroShop = (() => {
 
+  const esc = (window.AP_SAFE && window.AP_SAFE.esc)
+    ? s => window.AP_SAFE.esc(s)
+    : s => String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
   const CART_KEY = 'ap_cart';
 
   // ── Config access ──────────────────────────────────────────────────────
@@ -34,8 +40,32 @@ window.AstroShop = (() => {
   const checkout   = () => cfg().checkout || {};
   const isUrl      = u => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
 
+  const CURRENCY_SYM = { GBP: '£', USD: '$', EUR: '€' };
+  function formatPrice(n) {
+    const code = String(checkout().currency || 'GBP').toUpperCase();
+    const sym = CURRENCY_SYM[code] || (code + ' ');
+    return `${sym}${Number(n).toFixed(2)}`;
+  }
+
   function productById(id) { return products().find(p => p.id === id) || null; }
   function isLive(p) { return !!(p && isUrl(p.fulfilUrl)); }
+
+  // JSON-LD ItemAvailability — must match UI buy/dormant gate (isLive / isUrl(fulfilUrl)).
+  // Buy buttons, featured CTAs, and cart checkout all use isLive(p); schema must not
+  // advertise InStock when the UI would show Coming soon or hide the SKU.
+  const SCHEMA_AVAIL = {
+    InStock:    'https://schema.org/InStock',
+    OnlineOnly: 'https://schema.org/OnlineOnly',
+    PreOrder:   'https://schema.org/PreOrder',
+    OutOfStock: 'https://schema.org/OutOfStock',
+  };
+  function schemaAvailability(p) {
+    if (!p || p.available === false) return SCHEMA_AVAIL.OutOfStock;
+    if (!isLive(p)) return SCHEMA_AVAIL.PreOrder;
+    const override = p.schemaAvailability && SCHEMA_AVAIL[p.schemaAvailability];
+    if (override) return override;
+    return p.type === 'digital' ? SCHEMA_AVAIL.OnlineOnly : SCHEMA_AVAIL.InStock;
+  }
   function sortProducts(list) {
     return list.slice().sort((a, b) => {
       const la = isLive(a) ? 0 : 1;
@@ -75,9 +105,67 @@ window.AstroShop = (() => {
 
   function chartLabel(c) {
     if (!c) return '';
-    const bits = [c.sunSign && `☉ ${c.sunSign}`, c.moonSign && `☽ ${c.moonSign}`, c.risingSign && `↑ ${c.risingSign}`]
-      .filter(Boolean);
+    const bits = [
+      c.sunSign && `☉ ${esc(c.sunSign)}`,
+      c.moonSign && `☽ ${esc(c.moonSign)}`,
+      c.risingSign && `↑ ${esc(c.risingSign)}`,
+    ].filter(Boolean);
     return bits.join('   ·   ');
+  }
+
+  // ── Dynamic mini-chart preview (simplified from saved profile; falls back to seals)
+  // Uses AstroChartRender.renderNatalChart(wheelOnly) when the module is present (lazy),
+  // otherwise a compact Big-Three seal strip from the saved chart (no extra deps).
+  // This powers jewellery + other personalised cards with live "your sky" visual.
+  function miniChartPreviewHtml(p) {
+    if (!p || !p.personalized) return '';
+    const c = savedChart();
+    if (!c) return '';
+    const seals = (sign) => {
+      if (!sign) return '';
+      const Z = (window.AP_ZODIAC && window.AP_ZODIAC.SIGN_SLUG) || {};
+      const slug = Z[sign] || sign.toLowerCase().replace(/\s+/g,'');
+      return `<img src="assets/images/seals/zodiac/${slug}.svg" alt="${esc(sign)}" width="22" height="22" loading="lazy" />`;
+    };
+    const big3 = `
+      <span class="shop-mini-seal" title="Sun">${seals(c.sunSign)}<small>☉</small></span>
+      <span class="shop-mini-seal" title="Moon">${seals(c.moonSign)}<small>☽</small></span>
+      <span class="shop-mini-seal" title="Rising">${seals(c.risingSign)}<small>↑</small></span>
+    `;
+    // Container for optional full render (chart-render driven mini wheel)
+    return `
+      <div class="shop-mini-chart-preview" data-product="${esc(p.id)}" data-has-chart="1">
+        <div class="shop-mini-chart__big3">${big3}</div>
+        <div class="shop-mini-chart__wheel" data-mini-wheel="${esc(p.id)}" aria-hidden="true"></div>
+        <span class="shop-mini-chart__label">Live preview from your saved chart</span>
+      </div>`;
+  }
+
+  // After grid render, optionally hydrate a true mini wheel via existing chart-render.js
+  function hydrateMiniChartPreviews() {
+    const wheels = document.querySelectorAll('[data-mini-wheel]');
+    if (!wheels.length) return;
+    const chart = savedChart();
+    if (!chart || !chart.positions) return; // needs full data from AstroEphemeris shape
+    if (!window.AstroChartRender || typeof AstroChartRender.renderNatalChart !== 'function') {
+      // Not loaded on this page (perf); simplified seals above are sufficient for shop.
+      return;
+    }
+    wheels.forEach(w => {
+      const pid = w.dataset.miniWheel;
+      // unique id per card to avoid collision with main chart page
+      const tmpId = 'shop-mini-' + pid + '-' + Math.random().toString(36).slice(2);
+      w.id = tmpId;
+      try {
+        AstroChartRender.renderNatalChart(
+          { positions: chart.positions, houses: chart.houses || [], aspects: chart.aspects || [], name: chart.name },
+          tmpId,
+          { wheelOnly: true }
+        );
+        w.style.width = '72px';
+        w.style.height = '72px';
+      } catch (e) { /* keep seals fallback */ }
+    });
   }
 
   // The note shown on a personalised product: if a chart is saved we name it;
@@ -88,10 +176,12 @@ window.AstroShop = (() => {
     if (!p || !p.personalized) return '';
     const c = savedChart();
     if (c) {
+      const mini = miniChartPreviewHtml(p);
       return `
         <div class="shopc-personal">
           <div class="shopc-personal__head">${icon('star4')} Made from your chart</div>
-          <p class="shopc-personal__chart">${c.name ? c.name + ' — ' : ''}${chartLabel(c) || 'your saved chart'}</p>
+          <p class="shopc-personal__chart">${c.name ? esc(c.name) + ' — ' : ''}${chartLabel(c) || 'your saved chart'}</p>
+          ${mini}
           <p class="shopc-personal__note">This piece is generated from your saved birth chart. Your birth details never leave this device — only the finished art is produced when you order.</p>
         </div>`;
     }
@@ -111,6 +201,35 @@ window.AstroShop = (() => {
         <div class="shopc-personal__head">${icon('heart')} A gift for someone else</div>
         <p class="shopc-personal__note">At checkout you'll add your gift message and choose a delivery date. We send a PDF gift voucher — the recipient redeems it by email and gives us <em>their own</em> birth details, so no birth data is ever entered here. Their sky, their privacy.</p>
       </div>`;
+  }
+
+  function bundlePerksHtml(p) {
+    if (!p || !p.bundlePerks || !p.bundlePerks.length) return '';
+    const items = p.bundlePerks.map(perk =>
+      `<li class="shopc-perks__item">${icon('star4')} ${esc(perk)}</li>`
+    ).join('');
+    return `
+      <ul class="shopc-perks" aria-label="Bundle includes">
+        ${items}
+      </ul>`;
+  }
+
+  function readingPrefsHtml(p) {
+    if (!p || !p.personalized) return '';
+    if (!window.APReadingPrefs || typeof APReadingPrefs.prefsFormHtml !== 'function') return '';
+    return APReadingPrefs.prefsFormHtml();
+  }
+
+  function checkoutHref(p) {
+    if (!p || !isUrl(p.fulfilUrl)) return '';
+    let url = p.fulfilUrl;
+    if (window.APReadingPrefs && APReadingPrefs.appendToCheckoutUrl) {
+      url = APReadingPrefs.appendToCheckoutUrl(url, p.id);
+    }
+    if (window.APPostPurchase && APPostPurchase.markPurchase) {
+      /* purchase intent recorded on click via wireCheckoutTracking */
+    }
+    return url;
   }
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -190,7 +309,7 @@ window.AstroShop = (() => {
 
       const itemsEl = document.getElementById('shopc-cart-items');
       const totalEl = document.getElementById('shopc-cart-total');
-      if (totalEl) totalEl.textContent = `£${this.total().toFixed(2)}`;
+      if (totalEl) totalEl.textContent = formatPrice(this.total());
       if (!itemsEl) return;
 
       if (this.items.length === 0) {
@@ -207,13 +326,13 @@ window.AstroShop = (() => {
               <div class="shopc-cart__name">${esc(i.name)}</div>
               <div class="shopc-cart__meta">${i.personalized ? 'From your chart · ' : ''}${TYPE_LABEL[i.type] || ''}${i.variant ? ' · ' + esc(i.variant) : ''}</div>
               <div class="shopc-cart__qtyrow">
-                <button class="shopc-qty" data-qty-dec="${i.key}" aria-label="Decrease quantity">−</button>
+                <button class="shopc-qty" data-qty-dec="${esc(i.key)}" aria-label="Decrease quantity">−</button>
                 <span class="shopc-qty__n">${i.qty}</span>
-                <button class="shopc-qty" data-qty-inc="${i.key}" aria-label="Increase quantity">+</button>
-                <span class="shopc-cart__price">£${(i.price * i.qty).toFixed(2)}</span>
+                <button class="shopc-qty" data-qty-inc="${esc(i.key)}" aria-label="Increase quantity">+</button>
+                <span class="shopc-cart__price">${formatPrice(i.price * i.qty)}</span>
               </div>
             </div>
-            <button class="shopc-cart__remove" data-remove-key="${i.key}" aria-label="Remove ${esc(i.name)}">×</button>
+            <button class="shopc-cart__remove" data-remove-key="${esc(i.key)}" aria-label="Remove ${esc(i.name)}">×</button>
           </div>`;
       }).join('');
     }
@@ -249,7 +368,10 @@ window.AstroShop = (() => {
 
       if (liveItems.length === 1 && dormantItems.length === 0) {
         const p = productById(liveItems[0].id);
-        if (p) window.open(p.fulfilUrl, '_blank', 'noopener');
+        if (p) {
+          if (window.APPostPurchase && APPostPurchase.markPurchase) APPostPurchase.markPurchase(p.id);
+          window.open(checkoutHref(p), '_blank', 'noopener');
+        }
         return;
       }
       if (liveItems.length > 0) {
@@ -272,9 +394,9 @@ window.AstroShop = (() => {
     liveCheckoutModal(liveItems, dormantItems) {
       const rows = liveItems.map(i => {
         const p = productById(i.id);
-        const url = p && p.fulfilUrl;
-        return `<div class="shopc-checkout__row"><span>${esc(i.name)} × ${i.qty}</span><span>£${(i.price * i.qty).toFixed(2)}</span></div>
-          ${url ? `<p class="shopc-modal__note" style="margin:-2px 0 10px;"><a href="${esc(url)}" target="_blank" rel="noopener">Secure checkout →</a></p>` : ''}`;
+        const url = p ? checkoutHref(p) : '';
+        return `<div class="shopc-checkout__row"><span>${esc(i.name)} × ${i.qty}</span><span>${formatPrice(i.price * i.qty)}</span></div>
+          ${url ? `<p class="shopc-modal__note" style="margin:-2px 0 10px;"><a href="${esc(url)}" target="_blank" rel="noopener" data-ap-product="${esc(i.id)}">Secure checkout →</a></p>` : ''}`;
       }).join('');
       const dormantNote = dormantItems.length
         ? `<p class="shopc-modal__note" style="color:var(--oxblood,#b04a52);">${dormantItems.length} coming-soon item${dormantItems.length === 1 ? '' : 's'} in your cart — checkout those when they launch.</p>`
@@ -283,14 +405,14 @@ window.AstroShop = (() => {
         title: 'Complete your order',
         body: `
           <div class="shopc-checkout">${rows}
-            <div class="shopc-checkout__row shopc-checkout__total"><span>Live items</span><span>£${liveItems.reduce((s, i) => s + i.price * i.qty, 0).toFixed(2)}</span></div>
+            <div class="shopc-checkout__row shopc-checkout__total"><span>Live items</span><span>${formatPrice(liveItems.reduce((s, i) => s + i.price * i.qty, 0))}</span></div>
           </div>
           <p class="shopc-modal__note">Each live piece checks out securely on Lemon Squeezy — birth details are collected there, never on this site. Personalised PDFs are generated from your chart after purchase.</p>
           ${dormantNote}`,
         actions: liveItems.map(i => {
           const p = productById(i.id);
           return p && isLive(p)
-            ? { label: `Buy ${i.name.split('—')[0].trim()}`, primary: true, href: p.fulfilUrl, external: true }
+            ? { label: `Buy ${i.name.split('—')[0].trim()}`, primary: true, href: checkoutHref(p), external: true, productId: p.id }
             : null;
         }).filter(Boolean).slice(0, 3),
       });
@@ -302,7 +424,7 @@ window.AstroShop = (() => {
       modal({
         title: 'Coming soon',
         body: `
-          <p>Your cart is saved on this device — <strong>${n} item${n === 1 ? '' : 's'} · £${this.total().toFixed(2)}</strong>.</p>
+          <p>Your cart is saved on this device — <strong>${n} item${n === 1 ? '' : 's'} · ${formatPrice(this.total())}</strong>.</p>
           <p class="shopc-modal__note">These pieces aren't live yet. ${anyPersonal ? 'Every personalised piece is generated from your own chart — your birth details never leave your device. ' : ''}Leave your email and we'll tell you when they launch.</p>
           ${emailInviteHtml()}
         `,
@@ -328,8 +450,8 @@ window.AstroShop = (() => {
         title: 'Checkout',
         body: `
           <div class="shopc-checkout">
-            ${this.items.map(i => `<div class="shopc-checkout__row"><span>${esc(i.name)}${i.variant ? ' (' + esc(i.variant) + ')' : ''} × ${i.qty}</span><span>£${(i.price * i.qty).toFixed(2)}</span></div>`).join('')}
-            <div class="shopc-checkout__row shopc-checkout__total"><span>Total</span><span>£${itemTotal.toFixed(2)}</span></div>
+            ${this.items.map(i => `<div class="shopc-checkout__row"><span>${esc(i.name)}${i.variant ? ' (' + esc(i.variant) + ')' : ''} × ${i.qty}</span><span>${formatPrice(i.price * i.qty)}</span></div>`).join('')}
+            <div class="shopc-checkout__row shopc-checkout__total"><span>Total</span><span>${formatPrice(itemTotal)}</span></div>
           </div>
           <p class="shopc-modal__note">Personalised pieces are produced from your saved chart after purchase. Your birth details never leave your device.</p>
           <div id="shopc-paypal"><p class="shopc-modal__note">Loading secure checkout…</p></div>`,
@@ -398,9 +520,9 @@ window.AstroShop = (() => {
     const live = isLive(p);
     if (!live) return `<span class="shopc-card__price shopc-card__price--soon">Coming soon</span>`;
     if (p.anchorWas && p.anchorWas > p.price) {
-      return `<span class="shopc-card__price"><s class="shopc-card__was">£${p.anchorWas.toFixed(2)}</s> £${p.price.toFixed(2)}</span>`;
+      return `<span class="shopc-card__price"><s class="shopc-card__was">${formatPrice(p.anchorWas)}</s> ${formatPrice(p.price)}</span>`;
     }
-    return `<span class="shopc-card__price">£${p.price.toFixed(2)}</span>`;
+    return `<span class="shopc-card__price">${formatPrice(p.price)}</span>`;
   }
 
   function featuredCard(p, opts = {}) {
@@ -409,25 +531,27 @@ window.AstroShop = (() => {
     const cols = collections();
     const colName = cols[p.collection] ? cols[p.collection].name : '';
     const cta = live
-      ? `<a class="btn btn--primary shopc-featured__cta" href="${esc(p.fulfilUrl)}" target="_blank" rel="noopener">Get yours — £${p.price.toFixed(2)}</a>`
+      ? `<a class="btn btn--primary shopc-featured__cta" href="${esc(checkoutHref(p))}" target="_blank" rel="noopener" data-ap-product="${esc(p.id)}">Get yours — ${formatPrice(p.price)}</a>`
       : `<button class="btn btn--outline shopc-featured__cta" data-quickview="${p.id}">Preview piece</button>`;
     const sample = p.sampleUrl
       ? `<a class="shopc-featured__sample" href="${esc(p.sampleUrl)}" target="_blank" rel="noopener">See sample layout →</a>`
       : '';
     const save = (p.anchorWas && p.anchorWas > p.price)
-      ? `<span class="shopc-featured__save">Save £${(p.anchorWas - p.price).toFixed(2)}</span>`
+      ? `<span class="shopc-featured__save">Save ${formatPrice(p.anchorWas - p.price)}</span>`
       : '';
     return `
       <article class="shopc-featured__card ${hero ? 'shopc-featured__card--hero' : ''}" data-product-id="${p.id}">
-        <div class="shopc-featured__visual" role="button" tabindex="0" data-quickview="${p.id}" aria-label="Quick view ${esc(p.name)}">
+        <button type="button" class="shopc-featured__visual" data-quickview="${p.id}">
+          <span class="sr-only">Quick view ${esc(p.name)}</span>
           ${cardArt(p)}
           ${p.badge ? `<span class="shopc-card__badge">${esc(p.badge)}</span>` : ''}
           ${save}
-        </div>
+        </button>
         <div class="shopc-featured__copy">
           <p class="shopc-featured__kicker">${esc(colName)} · ${live ? 'Available now' : 'Coming soon'}</p>
           <h3 class="shopc-featured__name">${esc(p.name)}</h3>
           ${p.marketingLine ? `<p class="shopc-featured__hook">${esc(p.marketingLine)}</p>` : ''}
+          ${bundlePerksHtml(p)}
           <p class="shopc-featured__blurb">${esc(p.blurb)}</p>
           <div class="shopc-featured__foot">
             ${priceHtml(p)}
@@ -467,7 +591,7 @@ window.AstroShop = (() => {
     const others = featured.filter(p => p.id !== 'reading-poster-bundle');
     host.innerHTML = `<div class="container">
       <div class="shopc-featured__intro">
-        <p class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — ${products().filter(p => p.available !== false && isLive(p)).length} live pieces</p>
+        <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — ${products().filter(p => p.available !== false && isLive(p)).length} live pieces</h2>
         <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order. Secure Lemon Squeezy checkout.</p>
       </div>
       <div class="shopc-featured__grid shopc-featured__grid--equal">
@@ -475,13 +599,13 @@ window.AstroShop = (() => {
         ${bundle ? featuredCard(bundle, { hero: true }) : ''}
         ${others[1] ? featuredCard(others[1]) : ''}
       </div>
-      <div class="shopc-trust" role="list">
-        <span class="shopc-trust__item shopc-trust__item--stars" role="listitem" aria-label="5 star brand standard"><span class="shopc-rating">★★★★★</span> 5-star deliverables</span>
-        <span class="shopc-trust__item" role="listitem">${icon('star4')} VSOP87 + ELP2000 engine</span>
-        <span class="shopc-trust__item" role="listitem">${icon('orb')} Secure Lemon Squeezy checkout</span>
-        <span class="shopc-trust__item" role="listitem">${icon('map')} PDFs in 24–48 hours</span>
-        <span class="shopc-trust__item" role="listitem">${icon('heart')} Birth data never on this site</span>
-      </div>
+      <ul class="shopc-trust">
+        <li class="shopc-trust__item shopc-trust__item--stars" aria-label="5 star brand standard"><span class="shopc-rating">★★★★★</span> 5-star deliverables</li>
+        <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
+        <li class="shopc-trust__item">${icon('orb')} Secure Lemon Squeezy checkout</li>
+        <li class="shopc-trust__item">${icon('map')} PDFs in 24–48 hours</li>
+        <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
+      </ul>
     </div>`;
     bindFeatured(host);
     renderPersonalBanner();
@@ -561,6 +685,7 @@ window.AstroShop = (() => {
   }
 
   function renderGrid() {
+    gridHydrated = true;
     const grid = document.getElementById('shopc-grid');
     if (!grid) return;
     const all = products();
@@ -580,16 +705,17 @@ window.AstroShop = (() => {
       const colName = cols[p.collection] ? cols[p.collection].name : '';
       const live = isLive(p);
       const cta = live
-        ? `<a class="btn btn--primary shopc-card__cta" href="${esc(p.fulfilUrl)}" target="_blank" rel="noopener">Buy now</a>`
+        ? `<a class="btn btn--primary shopc-card__cta" href="${esc(checkoutHref(p))}" target="_blank" rel="noopener" data-ap-product="${esc(p.id)}">Buy now</a>`
         : `<button class="btn btn--outline shopc-card__cta" data-quickview="${p.id}">Notify me</button>`;
       const hook = p.marketingLine ? `<p class="shopc-card__hook">${esc(p.marketingLine)}</p>` : '';
       return `
         <article class="shopc-card ${live ? 'shopc-card--live' : 'shopc-card--soon'}" data-product-id="${p.id}">
-          <div class="shopc-card__art" role="button" tabindex="0" data-quickview="${p.id}" aria-label="Quick view ${esc(p.name)}">
+          <button type="button" class="shopc-card__art" data-quickview="${p.id}">
+            <span class="sr-only">Quick view ${esc(p.name)}</span>
             ${cardArt(p)}
             ${p.badge ? `<span class="shopc-card__badge">${esc(p.badge)}</span>` : ''}
             ${p.personalized ? `<span class="shopc-card__personal" title="Generated from your chart">${icon('star4')} Your chart</span>` : ''}
-          </div>
+          </button>
           <div class="shopc-card__body">
             <div class="shopc-card__kicker">${esc(colName)}${p.type ? ' · ' + (TYPE_LABEL[p.type] || '') : ''}${live ? ' · Live' : ''}</div>
             <div class="shopc-card__top">
@@ -597,6 +723,7 @@ window.AstroShop = (() => {
               ${priceHtml(p)}
             </div>
             ${hook}
+            ${(p.personalized && (p.type === 'accessory' || p.collection === 'jewellery')) ? miniChartPreviewHtml(p) : ''}
             <p class="shopc-card__blurb">${esc(p.blurb)}</p>
             ${cta}
           </div>
@@ -605,10 +732,10 @@ window.AstroShop = (() => {
 
     const sections = [];
     if (liveList.length) {
-      sections.push(`<div class="shopc-subhead">More live pieces</div>${liveList.map(renderCard).join('')}`);
+      sections.push(`<h3 class="shopc-subhead">More live pieces</h3>${liveList.map(renderCard).join('')}`);
     }
     if (soonList.length) {
-      sections.push(`<div class="shopc-subhead shopc-subhead--soon">On the loom — coming soon</div>${soonList.map(renderCard).join('')}`);
+      sections.push(`<h3 class="shopc-subhead shopc-subhead--soon">On the loom — coming soon</h3>${soonList.map(renderCard).join('')}`);
     }
     grid.innerHTML = sections.length ? sections.join('') : `<p class="shopc-empty">Nothing in this collection yet. Try another filter.</p>`;
 
@@ -621,6 +748,9 @@ window.AstroShop = (() => {
         });
       }
     });
+
+    // Dynamic mini-chart previews (seals + optional chart-render wheelOnly for saved profiles)
+    try { hydrateMiniChartPreviews(); } catch (_) {}
   }
 
   function openQuickView(id) {
@@ -637,8 +767,8 @@ window.AstroShop = (() => {
       : '';
     const priceBlock = live
       ? (p.anchorWas && p.anchorWas > p.price
-        ? `<div class="shopc-qv__price"><s>£${p.anchorWas.toFixed(2)}</s> £${p.price.toFixed(2)}</div>`
-        : `<div class="shopc-qv__price">£${p.price.toFixed(2)}</div>`)
+        ? `<div class="shopc-qv__price"><s>${formatPrice(p.anchorWas)}</s> ${formatPrice(p.price)}</div>`
+        : `<div class="shopc-qv__price">${formatPrice(p.price)}</div>`)
       : `<div class="shopc-qv__price shopc-qv__price--soon">Coming soon</div>`;
 
     modal({
@@ -649,13 +779,15 @@ window.AstroShop = (() => {
           <div class="shopc-qv__kicker">${esc(colName)}${p.type ? ' · ' + (TYPE_LABEL[p.type] || '') : ''}</div>
           ${priceBlock}
           ${p.marketingLine ? `<p class="shopc-qv__hook">${esc(p.marketingLine)}</p>` : ''}
+          ${bundlePerksHtml(p)}
           <p class="shopc-qv__blurb">${esc(p.blurb)}</p>
           ${sample}
+          ${p.personalized ? readingPrefsHtml(p) : ''}
           ${p.giftNote ? giftNoteHtml() : personalNote(p)}
         </div>`,
       actions: live
         ? [
-            { label: 'Buy now', primary: true, href: p.fulfilUrl, external: true },
+            { label: 'Buy now', primary: true, href: checkoutHref(p), external: true, productId: p.id },
             { label: 'Add to cart', onClick: () => cart.add(p) },
           ]
         : [
@@ -699,6 +831,8 @@ window.AstroShop = (() => {
     const el = ensureModal();
     el.querySelector('.shopc-modal__title').textContent = title || '';
     el.querySelector('.shopc-modal__body').innerHTML = body || '';
+    // Re-hydrate any mini previews that were injected into qv body (e.g. jewellery)
+    try { hydrateMiniChartPreviews(); } catch (_) {}
     const actsEl = el.querySelector('.shopc-modal__actions');
     actsEl.innerHTML = '';
     actions.forEach(a => {
@@ -708,8 +842,12 @@ window.AstroShop = (() => {
       if (a.href) {
         node.href = a.href;
         if (a.external) { node.target = '_blank'; node.rel = 'noopener'; }
+        if (a.productId) node.dataset.apProduct = a.productId;
       }
       node.addEventListener('click', () => {
+        if (a.productId && window.APPostPurchase && APPostPurchase.markPurchase) {
+          APPostPurchase.markPurchase(a.productId);
+        }
         if (!a.keepOpen) closeModal();
         if (a.onClick) a.onClick();
       });
@@ -718,6 +856,10 @@ window.AstroShop = (() => {
     el.classList.add('open');
     document.body.style.overflow = 'hidden';
     if (typeof onMount === 'function') onMount(el);
+    const prefsRoot = el.querySelector('#ap-reading-prefs');
+    if (prefsRoot && window.APReadingPrefs && APReadingPrefs.bindForm) {
+      APReadingPrefs.bindForm(prefsRoot);
+    }
   }
 
   function closeModal() {
@@ -773,12 +915,6 @@ window.AstroShop = (() => {
   // ═══════════════════════════════════════════════════════════════════════
   // Helpers
   // ═══════════════════════════════════════════════════════════════════════
-  function esc(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-
   function toast(msg) {
     if (window.AstroApp && window.AstroApp.showToast) { window.AstroApp.showToast(msg, '', 'success'); return; }
     // minimal fallback
@@ -827,13 +963,15 @@ window.AstroShop = (() => {
           '@type': 'Product',
           name: p.name,
           description: p.blurb,
+          brand: { '@type': 'Brand', name: 'AstroPrecise' },
           image: p.previewImage ? new URL(p.previewImage, location.href).href : undefined,
           offers: {
             '@type': 'Offer',
             price: p.price.toFixed(2),
             priceCurrency: (checkout().currency || 'GBP'),
-            availability: isLive(p) ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+            availability: schemaAvailability(p),
             url: isLive(p) ? p.fulfilUrl : undefined,
+            seller: { '@type': 'Organization', name: 'AstroPrecise' }
           },
         },
       })),
@@ -873,14 +1011,47 @@ window.AstroShop = (() => {
   }
 
   // ── Init ────────────────────────────────────────────────────────────────
+  let gridHydrated = false;
+
+  function deferRenderGrid() {
+    const grid = document.getElementById('shopc-grid');
+    if (!grid) return;
+
+    const run = () => {
+      if (gridHydrated) return;
+      gridHydrated = true;
+      renderGrid();
+    };
+
+    const section = document.getElementById('wear-your-sky');
+    if (!section || !('IntersectionObserver' in window)) {
+      run();
+      return;
+    }
+
+    let started = false;
+    const io = new IntersectionObserver(entries => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      io.disconnect();
+      if (started) return;
+      started = true;
+      run();
+    }, { rootMargin: '240px 0px', threshold: 0 });
+    io.observe(section);
+  }
+
   function init() {
     cart = new Cart();
     renderFeatured();
     renderFilters();
-    renderGrid();
+    deferRenderGrid();
     bindCartChrome();
     cart.render();
     injectCatalogSchema();
+    if (window.APPostPurchase) {
+      APPostPurchase.wireCheckoutTracking();
+      setTimeout(() => APPostPurchase.maybeShowPromo(), 600);
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -894,7 +1065,9 @@ window.AstroShop = (() => {
     init,
     get cart() { return cart; },
     openQuickView,
+    showModal: modal,
     addToCart: (id, opts) => { const p = productById(id); if (p) cart.add(p, opts); },
     productById,
+    checkoutHref,
   };
 })();

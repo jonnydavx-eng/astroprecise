@@ -6,39 +6,62 @@
   <title>Terms of Use | AstroPrecise</title>
   <meta name="description" content="Terms of Use for AstroPrecise — an informational astronomy/astrology tool. Includes the digital-goods purchase and refund policy." />
   <link rel="canonical" href="https://astroprecise.app/terms.html" />
-<link rel="stylesheet" href="css/fonts.css" />
+  <link rel="preload" href="fonts/cormorant-garamond-normal-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/cinzel-normal-600.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <meta name="theme-color" content="#050406" />
   <style>
+    /* Critical fonts — block display prevents lede/h1 reflow CLS */
+    @font-face{font-family:'Cinzel';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cinzel-normal-400.woff2) format('woff2');}
+    @font-face{font-family:'Cinzel';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cinzel-normal-600.woff2) format('woff2');}
+    @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-normal-400.woff2) format('woff2');}
+    @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cormorant-garamond-normal-600.woff2) format('woff2');}
+    @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-italic-400.woff2) format('woff2');}
+    @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:block;src:url(fonts/inter-normal-400.woff2) format('woff2');}
     :root{ --gold:#C9A227; --gold-light:#EFE3C0; --ink:#E8E0D0; --dim:#A89E88; --void:#070608; }
     *{box-sizing:border-box;}
     body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#0D0A07 0%,#070608 55%,#040305 100%);
-      color:var(--ink);font-family:'Cormorant Garamond',Georgia,serif;font-size:1.12rem;line-height:1.8;
+      color:var(--ink);font-family:Georgia,'Times New Roman',serif;font-size:1.12rem;line-height:1.8;
       -webkit-font-smoothing:antialiased;padding:0 24px 80px;}
     .legal-doc{max-width:720px;margin:0 auto;}
     .legal-top{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-bottom:1px solid rgba(201,162,39,.18);margin-bottom:40px;}
     .legal-top a{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
     .legal-top a:hover{color:var(--gold-light);}
+    .legal-brand{display:flex;align-items:center;gap:9px;}
     .legal-brand span{font-family:'Cinzel',serif;letter-spacing:.28em;color:var(--gold-light);font-size:.9rem;}
     h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light);font-size:clamp(1.6rem,4vw,2.3rem);
-      text-shadow:0 0 34px rgba(201,162,39,.18);margin:0 0 6px;}
-    .legal-sub{font-style:italic;color:var(--dim);margin:0 0 36px;}
+      text-shadow:0 0 34px rgba(201,162,39,.18);margin:0 0 6px;min-height:1.2em;contain:layout style;}
+    .legal-sub{font-style:italic;color:var(--dim);margin:0 0 36px;min-height:1.5em;}
     h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;
       color:var(--gold);margin:38px 0 12px;display:flex;align-items:center;gap:12px;}
     h2::before{content:'';flex:0 0 18px;height:1px;background:var(--gold);opacity:.5;}
-    p,li{color:var(--ink);} ul{padding-left:22px;} li{margin-bottom:8px;}
+    p,li{color:var(--ink);}
     a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(201,162,39,.45);}
     a:hover{text-decoration-color:var(--gold);}
     strong{color:var(--gold-light);font-weight:600;}
     .placeholder{color:#c98e6a;font-family:'Inter',sans-serif;font-size:.85em;}
-    .lede{font-size:1.2rem;border-left:2px solid rgba(201,162,39,.4);padding-left:18px;}
+    .lede{font-family:Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(201,162,39,.4);padding-left:18px;min-height:12em;contain:layout style;}
     .callout{border:1px solid rgba(201,162,39,.3);background:linear-gradient(135deg,rgba(201,162,39,.06),transparent);
       border-radius:12px;padding:16px 20px;margin:18px 0;}
+    .legal-footer,.ap-legal-footer{max-width:720px;margin:0 auto;padding:0 0 48px;text-align:center;min-height:168px;contain:layout style;}
+    .ap-social-row{padding:1.25rem 0 0;}
+    .ap-social-row__head{margin-bottom:0.75rem;}
+    .ap-social-row__label{display:block;font-family:Inter,system-ui,sans-serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#A89E88;}
+    .ap-social-row__note{font-family:Inter,system-ui,sans-serif;font-size:0.58rem;letter-spacing:0.08em;color:#7A7268;}
+    .ap-social-row__icons{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center;}
+    .ap-social-icon{min-width:44px;min-height:44px;width:44px;height:44px;border-radius:10px;background:rgba(14,11,8,0.72);border:1px solid rgba(168,158,136,0.18);display:inline-flex;align-items:center;justify-content:center;color:#9A9084;padding:0;box-sizing:border-box;}
+    .ap-social-icon--soon{opacity:0.42;cursor:default;}
+    ul{padding-left:22px;} li{margin-bottom:8px;}
     .legal-foot{margin-top:54px;padding-top:22px;border-top:1px solid rgba(201,162,39,.18);font-size:.92rem;color:var(--dim);}
+    .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   </style>
 </head>
 <body>
-  <div class="legal-doc">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
+  </svg>
+  <main class="legal-doc">
     <div class="legal-top">
       <a class="legal-brand" href="index.html"><span><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ASTROPRECISE</span></a>
       <a href="privacy.html">Privacy →</a>
@@ -114,6 +137,10 @@
 
     <p class="legal-foot">AstroPrecise &middot; the sky, read honestly.
       &nbsp;<a href="index.html">Return to the sky</a> &middot; <a href="privacy.html">Privacy Policy</a></p>
-  </div>
+  </main>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <main id="main-content" class="legal-doc">
+  <footer class="legal-footer" role="contentinfo"></footer>
+  <script src="js/footer-chrome.js" defer></script>
 </body>
 </html>

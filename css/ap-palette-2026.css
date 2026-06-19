@@ -1,0 +1,112 @@
+/* ==========================================================================
+   AstroPrecise — Observatory Palette 2026
+   Canonical color token layer for lite + critical CSS paths.
+   Import first (main-lite.css @import). Legacy --gold / --void alias here.
+   ========================================================================== */
+
+:root {
+  /* ── Void depths (3 tiers) ── */
+  --ap-void-deep:   #050406; /* deepest warm black — page canvas */
+  --ap-void-mid:    #0D0A07; /* candlelit brown-black — bands */
+  --ap-void-raised: #13100C; /* lifted plate shadow */
+
+  /* ── Engraved gold spectrum (5 stops) ── */
+  --ap-gold-ink:       #6B5420; /* engraved shadow / stroke depth */
+  --ap-gold-shadow:    #8C6A2F; /* recessed rim */
+  --ap-gold-core:      #C9A227; /* canonical engraved gold (single hex source) */
+  --ap-gold-bright:    #D4B84A; /* links & small UI on void — WCAG AA */
+  --ap-gold-parchment: #EFE3C0; /* pale inscription / hero titles */
+
+  /* Gold alpha ramps (derived from core 201,162,39) */
+  --ap-gold-a06: rgba(201, 162, 39, 0.06);
+  --ap-gold-a08: rgba(201, 162, 39, 0.08);
+  --ap-gold-a12: rgba(201, 162, 39, 0.12);
+  --ap-gold-a16: rgba(201, 162, 39, 0.16);
+  --ap-gold-a22: rgba(201, 162, 39, 0.22);
+  --ap-gold-a28: rgba(201, 162, 39, 0.28);
+  --ap-gold-a40: rgba(201, 162, 39, 0.40);
+  --ap-gold-a55: rgba(201, 162, 39, 0.55);
+
+  /* ── Element accents — muted observatory (not neon seal clash) ── */
+  --ap-element-fire:       #B85A42;
+  --ap-element-fire-glow:  rgba(184, 90, 66, 0.10);
+  --ap-element-earth:      #5A7A48;
+  --ap-element-earth-glow: rgba(90, 122, 72, 0.10);
+  --ap-element-air:        #8A7A6A;
+  --ap-element-air-glow:   rgba(138, 122, 106, 0.09);
+  --ap-element-water:      #4A7580;
+  --ap-element-water-glow: rgba(74, 117, 128, 0.10);
+
+  /* ── Unified observatory atmosphere (shop / chart / horoscope heroes) ── */
+  --ap-obs-violet:   rgba(92, 74, 110, 0.14);
+  --ap-obs-burgundy: rgba(110, 26, 38, 0.12);
+  --ap-obs-violet-strong: rgba(92, 74, 110, 0.22);
+
+  /* ── Instrument panel surfaces ── */
+  --ap-ip-void:         var(--ap-void-deep);
+  --ap-ip-surface:      rgba(20, 16, 10, 0.58);
+  --ap-ip-surface-deep: rgba(14, 11, 8, 0.72);
+  --ap-ip-border:       var(--ap-gold-a12);
+  --ap-ip-border-rim:   var(--ap-gold-a22);
+  --ap-ip-engrave-line: rgba(168, 158, 136, 0.14);
+  --ap-ip-gold:         var(--ap-gold-core);
+  --ap-ip-gold-pale:    #E8E0D0;
+  --ap-ip-silver:       #A89E88;
+  --ap-ip-silver-dim:   #9A9084;
+
+  /* ── Text on void — contrast-tuned ── */
+  --ap-text-primary:   #E8E0D0;
+  --ap-text-secondary: #A89E88;
+  --ap-text-muted:     #9A9084; /* ≥4.5:1 on void-deep */
+  --ap-text-faint:     #8A8274; /* ≥4.5:1 small caps on void-deep */
+
+  /* ── Link & focus — WCAG AA on void-deep ── */
+  --ap-link:         var(--ap-gold-bright);
+  --ap-link-hover:   var(--ap-gold-parchment);
+  --ap-link-active:  var(--ap-gold-core);
+  --ap-focus-ring:   var(--ap-gold-core);
+  --ap-focus-shadow: 0 0 0 3px var(--ap-gold-a22);
+
+  /* ── Parchment hairlines ── */
+  --ap-hairline: rgba(232, 224, 208, 0.08);
+  --ap-rim-light: rgba(232, 224, 208, 0.16);
+
+  /* ── Legacy design-system aliases (one gold hex, one void stack) ── */
+  --void:  var(--ap-void-deep);
+  --bg:    var(--ap-void-deep);
+  --bg-2:  var(--ap-void-mid);
+  --bg-3:  var(--ap-void-raised);
+
+  --gold:        var(--ap-gold-core);
+  --gold-light:  var(--ap-gold-parchment);
+  --gold-pale:   var(--ap-text-primary);
+  --gold-dim:    var(--ap-gold-a16);
+  --gold-hero:   var(--ap-gold-core);
+  --gold-hero-light: var(--ap-gold-parchment);
+  --gold-bright: var(--ap-gold-bright);
+  --hermetic-gold: var(--ap-gold-core);
+
+  --white:       var(--ap-text-primary);
+  --silver:      var(--ap-text-secondary);
+  --silver-dim:  var(--ap-text-muted);
+  --silver-dark: var(--ap-text-faint);
+
+  --border:        var(--ap-gold-a16);
+  --border-2:      var(--ap-gold-a28);
+  --border-glow:   var(--ap-gold-a55);
+  --glass-border:  var(--ap-gold-a16);
+
+  --surface:       var(--ap-ip-surface);
+  --glass:         var(--ap-ip-surface);
+  --glass-bg:      var(--ap-ip-surface);
+
+  --purple: #5C4A6E;
+
+  --color-gold:      var(--ap-gold-core);
+  --color-gold-pale: var(--ap-gold-parchment);
+  --color-gold-light: var(--ap-gold-parchment);
+  --color-silver:    var(--ap-text-secondary);
+  --color-silver-dim: var(--ap-text-muted);
+  --color-white:     var(--ap-text-primary);
+}
+

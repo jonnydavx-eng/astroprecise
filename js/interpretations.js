@@ -300,6 +300,19 @@ window.Interpretations = (() => {
       .slice(0, 3);
   }
 
+  /** Truncate prose at sentence boundary within maxChars — never mid-word. */
+  function trimProse(t, maxChars = 200) {
+    if (!t) return '';
+    const raw = String(t).trim();
+    if (raw.length <= maxChars) return /[.!?]$/.test(raw) ? raw : `${raw}.`;
+    const chunk = raw.slice(0, maxChars);
+    const lastStop = Math.max(chunk.lastIndexOf('.'), chunk.lastIndexOf('!'), chunk.lastIndexOf('?'));
+    if (lastStop > maxChars * 0.4) return chunk.slice(0, lastStop + 1).trim();
+    const nextStop = raw.slice(maxChars).search(/[.!?]/);
+    if (nextStop >= 0 && nextStop < 120) return raw.slice(0, maxChars + nextStop + 1).trim();
+    return chunk.trim().replace(/\s+\S*$/, '') + '.';
+  }
+
   // ── analyzeChart ─────────────────────────────────────────────────────────
   function analyzeChart(chart) {
     if (!chart || !chart.positions) return { personality:'', love:'', career:'', challenges:'', lifePurpose:'', keyPlacements:[] };
@@ -314,18 +327,22 @@ window.Interpretations = (() => {
     const saturn=signOf(chart.positions.Saturn?.lon|| 0);
     const node = signOf(chart.positions.NNode?.lon || 0);
 
-    const personality = `With your Sun in ${sun}, Moon in ${moon}, and ${asc} Rising, you embody a unique fusion of ${sun} vitality, ${moon} emotional instincts, and ${asc} outward presentation. Your core identity is shaped by ${sun} themes — ${getPlanetInterpretation('Sun', sun)?.slice(0,120)||'personal power and self-expression'}. ` +
+    const personality = `With your Sun in ${sun}, Moon in ${moon}, and ${asc} Rising, you embody a unique fusion of ${sun} vitality, ${moon} emotional instincts, and ${asc} outward presentation. Your core identity is shaped by ${sun} themes — ${trimProse(getPlanetInterpretation('Sun', sun), 120) || 'personal power and self-expression'}. ` +
       `Emotionally, your ${moon} Moon gives you a ${moon === 'Cancer' || moon === 'Pisces' || moon === 'Scorpio' ? 'deep, intuitive' : moon === 'Aries' || moon === 'Leo' || moon === 'Sagittarius' ? 'fiery, spontaneous' : 'thoughtful, measured'} inner world. ` +
-      `Others experience you first through your ${asc} Ascendant — ${moon === asc ? 'your inner and outer selves are notably aligned' : 'which can sometimes feel at odds with your deeper ${sun} Sun nature, creating the interesting complexity that makes you so compelling'}.`;
+      `Others experience you first through your ${asc} Ascendant — ${moon === asc ? 'your inner and outer selves are notably aligned' : `which can sometimes feel at odds with your deeper ${sun} Sun nature, creating the interesting complexity that makes you so compelling`}.`;
 
-    const love = `Venus in ${venus} describes how you love and what you find beautiful. ${getPlanetInterpretation('Venus', venus)?.slice(0,200)||'You seek harmony and connection in relationships'}. ` +
-      `Your ${asc} Rising shapes your approach to partnership — you attract partners who complement your ${asc} energy. ${chart.planetHouses?.Venus ? `Venus occupies your ${ordinal(chart.planetHouses.Venus)} house, emphasizing ${(getHouseMeaning(chart.planetHouses.Venus)?.meaning || getHouseMeaning(chart.planetHouses.Venus)?.keyword || 'relationship themes').slice(0, 80)}` : ''}.`;
+    const venusHouse = chart.planetHouses?.Venus;
+    const venusHouseBlurb = venusHouse
+      ? trimProse(getHouseMeaning(venusHouse)?.meaning || getHouseMeaning(venusHouse)?.keyword || 'relationship themes', 80)
+      : '';
+    const love = `Venus in ${venus} describes how you love and what you find beautiful. ${trimProse(getPlanetInterpretation('Venus', venus), 200) || 'You seek harmony and connection in relationships'} ` +
+      `Your ${asc} Rising shapes your approach to partnership — you attract partners who complement your ${asc} energy.${venusHouse ? ` Venus occupies your ${ordinal(venusHouse)} house, emphasizing ${venusHouseBlurb}` : ''}`;
 
-    const career = `Your Midheaven in ${mc} points to public recognition through ${mc} themes. ${getPlanetInterpretation('Sun', mc)?.slice(0,120)||'leadership and self-expression'}. ` +
-      `Saturn in ${saturn} describes your relationship with discipline, authority, and long-term achievement: ${getPlanetInterpretation('Saturn', saturn)?.slice(0,150)||'structured growth over time'}. ` +
+    const career = `Your Midheaven in ${mc} points to public recognition through ${mc} themes. Your Sun in ${sun} fuels that public climb — ${trimProse(getPlanetInterpretation('Sun', sun), 120) || 'leadership and self-expression'} ` +
+      `Saturn in ${saturn} describes your relationship with discipline, authority, and long-term achievement: ${trimProse(getPlanetInterpretation('Saturn', saturn), 150) || 'structured growth over time'} ` +
       `The chart ruler (${chart.chartRuler || '?'}) adds its distinctive flavor to how you pursue your calling.`;
 
-    const challenges = `Saturn in ${saturn} marks your primary growth edge — areas where resistance becomes wisdom. ${getPlanetInterpretation('Saturn', saturn)?.slice(0,160)||'Discipline and structure are your teachers'}. ` +
+    const challenges = `Saturn in ${saturn} marks your primary growth edge — areas where resistance becomes wisdom. ${trimProse(getPlanetInterpretation('Saturn', saturn), 160) || 'Discipline and structure are your teachers'} ` +
       `${chart.aspects?.filter(a => a.aspect === 'square' || a.aspect === 'opposition').slice(0,2).map(a => `The ${a.aspect} between your ${a.planet1} and ${a.planet2} (${a.orb.toFixed(1)}° orb) creates productive tension that demands integration.`).join(' ')||'Your chart shows a balance of challenge and support.'}`;
 
     const lifePurpose = `Your North Node in ${node} points toward your soul's evolutionary direction — moving toward ${node} qualities that may feel unfamiliar but deeply fulfilling. ` +

@@ -40,6 +40,24 @@
   const R_INNER       = 80;    // center circle radius
   const R_CENTER_FILL = 78;    // filled center disc
   const R_CORE_DOT    = 5;     // small golden center dot
+  const R_BEZEL_OUT   = 296;   // outer instrument bezel
+  const R_BEZEL_TICK  = 288;   // degree ring outside zodiac
+
+  const SEAL_BASE = 'assets/images/seals/';
+  const Z = window.AP_ZODIAC;
+  const SIGN_SLUG = (Z && Z.SIGN_SLUG) || {
+    Aries:'aries', Taurus:'taurus', Gemini:'gemini', Cancer:'cancer',
+    Leo:'leo', Virgo:'virgo', Libra:'libra', Scorpio:'scorpio',
+    Sagittarius:'sagittarius', Capricorn:'capricorn', Aquarius:'aquarius', Pisces:'pisces'
+  };
+  const PLANET_SLUG = {
+    Sun:'sun', Moon:'moon', Mercury:'mercury', Venus:'venus', Mars:'mars',
+    Jupiter:'jupiter', Saturn:'saturn', Uranus:'uranus', Neptune:'neptune', Pluto:'pluto'
+  };
+  const SIGN_ABBR = {
+    Aries:'AR', Taurus:'TA', Gemini:'GE', Cancer:'CN', Leo:'LE', Virgo:'VI',
+    Libra:'LI', Scorpio:'SC', Sagittarius:'SG', Capricorn:'CP', Aquarius:'AQ', Pisces:'PI'
+  };
 
   // Warm observatory tokens (shop / main.css parity — no cool navy)
   const WARM = {
@@ -56,17 +74,11 @@
     transit:   '#9DB88A'
   };
 
-  // ─── Zodiac data ───────────────────────────────────────────────────────────
-  const ZODIAC_SIGNS = [
+  // ─── Zodiac data (AP_ZODIAC) ───────────────────────────────────────────────
+  const ZODIAC_SIGNS = (Z && Z.SIGN_ORDER) || [
     'Aries','Taurus','Gemini','Cancer','Leo','Virgo',
     'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'
   ];
-
-  const ZODIAC_GLYPHS = {
-    Aries:'♈︎', Taurus:'♉︎', Gemini:'♊︎', Cancer:'♋︎',
-    Leo:'♌︎',   Virgo:'♍︎',  Libra:'♎︎',  Scorpio:'♏︎',
-    Sagittarius:'♐︎', Capricorn:'♑︎', Aquarius:'♒︎', Pisces:'♓︎'
-  };
 
   // Element fill colors — warm observatory palette, kept distinguishable.
   // (Air/water were cool cyan/blue; remapped to warm lilac / muted teal.)
@@ -85,12 +97,40 @@
     water: '#7FB8B0'
   };
 
-  const SIGN_ELEMENT = {
+  const SIGN_ELEMENT = (Z && Z.SIGN_ELEMENT) || {
     Aries:'fire',  Leo:'fire',  Sagittarius:'fire',
     Taurus:'earth', Virgo:'earth', Capricorn:'earth',
     Gemini:'air',   Libra:'air',   Aquarius:'air',
     Cancer:'water', Scorpio:'water', Pisces:'water'
   };
+
+  function zodiacSealImg(signName, w, h) {
+    const slug = SIGN_SLUG[signName];
+    if (!slug) return '';
+    const width = w || 18;
+    const height = h || 21;
+    return `<img class="ap-pt-seal" src="${SEAL_BASE}zodiac/${slug}.svg" alt="" width="${width}" height="${height}" loading="lazy" decoding="async" aria-hidden="true" />`;
+  }
+
+  function planetSealImg(name, w, h) {
+    const slug = PLANET_SLUG[name];
+    const width = w || 18;
+    const height = h || 21;
+    if (slug) {
+      return `<img class="ap-pt-seal ap-pt-seal--planet" src="${SEAL_BASE}planets/${slug}.svg" alt="" width="${width}" height="${height}" loading="lazy" decoding="async" aria-hidden="true" />`;
+    }
+    const glyph = PLANET_GLYPHS[name];
+    if (!glyph) return '';
+    const pColor = PLANET_COLORS[name] || WARM.silver;
+    return `<span class="ap-pt-glyph" style="color:${pColor}">${glyph}</span>`;
+  }
+
+  function elementSealCluster(elementKey) {
+    return ZODIAC_SIGNS
+      .filter(s => SIGN_ELEMENT[s] === elementKey)
+      .map(s => zodiacSealImg(s, 14, 16))
+      .join('');
+  }
 
   // ─── Planet data ───────────────────────────────────────────────────────────
   const PLANET_GLYPHS = {
@@ -180,6 +220,21 @@
   // matching the .ap-orb glass look but rendered natively in SVG. The per-colour
   // radialGradient is created once into the SVG <defs> (deduped by colour+prefix).
   // `svg` is passed explicitly because parentG may not yet be attached when called.
+  function sealImage(parentG, href, cx, cy, w, h, opacity) {
+    const g = el('g', {
+      class: 'ap-chart-seal',
+      transform: `translate(${(cx - w / 2).toFixed(2)} ${(cy - h / 2).toFixed(2)})`
+    });
+    g.appendChild(el('image', {
+      href,
+      x: 0, y: 0,
+      width: w.toFixed(1), height: h.toFixed(1),
+      opacity: (opacity != null ? opacity : 0.94).toFixed(2),
+      preserveAspectRatio: 'xMidYMid meet'
+    }));
+    parentG.appendChild(g);
+  }
+
   function glassDisc(svg, parentG, cx, cy, r, hexColor, idPrefix) {
     let gradId = null;
     if (svg) {
@@ -298,7 +353,69 @@
     });
     defs.appendChild(ringG);
 
+    // Aspect line soft glow
+    const aspGlow = el('filter', { id: idPrefix + 'aglow', x: '-20%', y: '-20%', width: '140%', height: '140%' });
+    const ab = el('feGaussianBlur', { stdDeviation: '1.4', result: 'ab' });
+    const am = el('feMerge');
+    am.appendChild(el('feMergeNode', { in: 'ab' }));
+    am.appendChild(el('feMergeNode', { in: 'SourceGraphic' }));
+    aspGlow.appendChild(ab);
+    aspGlow.appendChild(am);
+    defs.appendChild(aspGlow);
+
+    // Per-element zodiac sector washes
+    ['fire', 'earth', 'air', 'water'].forEach((elem) => {
+      const sg = el('radialGradient', { id: idPrefix + 'seg_' + elem, cx: '50%', cy: '42%', r: '72%' });
+      const base = ELEMENT_FILL[elem];
+      [[0, shade(base, 0.35), 0.55],
+       [0.55, base, 0.38],
+       [1, shade(base, -0.35), 0.22]
+      ].forEach(([o, c, op]) => {
+        sg.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c, 'stop-opacity': op }));
+      });
+      defs.appendChild(sg);
+    });
+
     svg.appendChild(defs);
+  }
+
+  function drawInstrumentBezel(svg, ascLon, idPrefix) {
+    const g = el('g', { class: 'ap-instrument-bezel' });
+
+    g.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_BEZEL_OUT,
+      fill: 'none', stroke: `url(#${idPrefix}ringG)`, 'stroke-width': '1.4',
+      opacity: '0.55', filter: `url(#${idPrefix}rglow)`
+    }));
+    g.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_BEZEL_OUT - 5,
+      fill: 'none', stroke: WARM.goldDim, 'stroke-width': '0.45', opacity: '0.28'
+    }));
+
+    for (let deg = 0; deg < 360; deg += 5) {
+      const isMajor = deg % 10 === 0;
+      const tickAng = lonToAngle(deg, ascLon);
+      const p1 = polar(CX, CY, R_BEZEL_OUT - 1, tickAng);
+      const p2 = polar(CX, CY, R_BEZEL_TICK - (isMajor ? 7 : 4), tickAng);
+      g.appendChild(el('line', {
+        x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
+        x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
+        stroke: WARM.gold, 'stroke-width': isMajor ? '0.75' : '0.4',
+        opacity: isMajor ? '0.55' : '0.28'
+      }));
+    }
+
+    // Cardinal compass roses (AC left · MC top · DC right · IC bottom)
+    [180, 270, 0, 90].forEach((ang) => {
+      const p = polar(CX, CY, R_BEZEL_TICK - 10, ang);
+      const rose = el('g', { transform: `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})` });
+      rose.appendChild(el('circle', { cx: 0, cy: 0, r: 4.5, fill: 'none', stroke: WARM.gold, 'stroke-width': '0.5', opacity: '0.45' }));
+      rose.appendChild(el('line', { x1: -5, y1: 0, x2: 5, y2: 0, stroke: WARM.gold, 'stroke-width': '0.4', opacity: '0.4' }));
+      rose.appendChild(el('line', { x1: 0, y1: -5, x2: 0, y2: 5, stroke: WARM.gold, 'stroke-width': '0.4', opacity: '0.4' }));
+      g.appendChild(rose);
+    });
+
+    svg.appendChild(g);
   }
 
   // ─── Schematic orbital tracks (decorative ecliptic rings — NOT WebGL orrery) ─
@@ -353,8 +470,8 @@
       seed ^= seed >>> 16;
       return (seed >>> 0) / 0xFFFFFFFF;
     }
-    const starG = el('g', { class: 'ap-chart-stars', opacity: '0.85' });
-    for (let i = 0; i < 180; i++) {
+    const starG = el('g', { class: 'ap-chart-stars', opacity: '0.88' });
+    for (let i = 0; i < 280; i++) {
       let sx, sy;
       for (let t = 0; t < 8; t++) {
         sx = CX - R_ZODIAC_OUT + rand() * R_ZODIAC_OUT * 2;
@@ -372,13 +489,24 @@
     }
     svg.appendChild(starG);
 
-    // Faint engraved square (sacred-geo hint)
+    // Sacred geometry — square + hex hint
     const sq = R_ZODIAC_OUT * 0.42;
     svg.appendChild(el('rect', {
       x: (CX - sq).toFixed(1), y: (CY - sq).toFixed(1),
       width: (sq * 2).toFixed(1), height: (sq * 2).toFixed(1),
       fill: 'none', stroke: WARM.gold, 'stroke-width': '0.35',
-      opacity: '0.06', transform: `rotate(45 ${CX} ${CY})`
+      opacity: '0.07', transform: `rotate(45 ${CX} ${CY})`
+    }));
+    const hexR = R_INNER + 14;
+    const hexPts = [];
+    for (let i = 0; i < 6; i++) {
+      const a = (60 * i - 90) * Math.PI / 180;
+      hexPts.push(`${(CX + hexR * Math.cos(a)).toFixed(1)},${(CY + hexR * Math.sin(a)).toFixed(1)}`);
+    }
+    svg.appendChild(el('polygon', {
+      points: hexPts.join(' '),
+      fill: 'none', stroke: WARM.gold, 'stroke-width': '0.4',
+      opacity: '0.12'
     }));
   }
 
@@ -404,28 +532,29 @@
       const d = sectorPath(CX, CY, R_ZODIAC_OUT, R_ZODIAC_IN, startAng, endAng);
       g.appendChild(el('path', {
         d,
-        fill: fillClr,
-        'fill-opacity': '0.30',
-        stroke: '#C9A227',
-        'stroke-width': '0.6'
+        fill: `url(#${idPrefix}seg_${elem})`,
+        stroke: shade(WARM.gold, i % 2 ? 0.1 : 0),
+        'stroke-width': '0.65',
+        opacity: '0.92'
       }));
 
-      // Zodiac glyph centered in segment
       const midAng = lonToAngle(midLon, ascLon);
       const gp     = polar(CX, CY, R_GLYPH, midAng);
-      // Glass orb chip behind the glyph (element colour, brightened)
-      glassDisc(svg, g, gp.x, gp.y, 12, shade(fillClr, 0.18), idPrefix);
-      const glyph  = el('text', {
-        x: gp.x.toFixed(2), y: gp.y.toFixed(2),
+      const slug = SIGN_SLUG[sign];
+      if (slug) {
+        sealImage(g, SEAL_BASE + 'zodiac/' + slug + '.svg', gp.x, gp.y, 30, 34, 0.96);
+      }
+
+      const abbrP = polar(CX, CY, R_ZODIAC_OUT - 16, midAng);
+      const abbr = el('text', {
+        x: abbrP.x.toFixed(2), y: abbrP.y.toFixed(2),
         'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-        fill: '#ffffff',
-        'font-size': '15',
-        'font-family': '"AstroGlyph", "Noto Sans Symbols", serif',
-        'font-weight': 'bold',
-        filter: `url(#${idPrefix}rglow)`
+        fill: WARM.parchment, 'font-size': '6.5',
+        'font-family': 'var(--font-display, "Cinzel", serif), system-ui, sans-serif',
+        'letter-spacing': '0.12em', opacity: '0.55'
       });
-      glyph.textContent = ZODIAC_GLYPHS[sign];
-      g.appendChild(glyph);
+      abbr.textContent = SIGN_ABBR[sign] || '';
+      g.appendChild(abbr);
     }
 
     // Degree tick marks: every 5° (minor) and every 10° (major)
@@ -474,6 +603,22 @@
     }));
 
     const ANGLE_LABELS = { 0:'AC', 3:'IC', 6:'DC', 9:'MC' };
+
+    for (let h = 0; h < 12; h++) {
+      const cuspLonPre = normLon(houses[h]);
+      const nextLonPre = normLon(houses[(h + 1) % 12]);
+      const startAngPre = lonToAngle(cuspLonPre, ascLon);
+      const endAngPre = lonToAngle(nextLonPre, ascLon);
+      if (h % 2 === 0) {
+        const hd = sectorPath(CX, CY, R_HOUSE_OUT - 2, R_HOUSE_IN + 4, startAngPre, endAngPre);
+        g.appendChild(el('path', {
+          d: hd,
+          fill: WARM.plate,
+          'fill-opacity': '0.22',
+          stroke: 'none'
+        }));
+      }
+    }
 
     for (let h = 0; h < 12; h++) {
       const cuspLon   = normLon(houses[h]);
@@ -559,7 +704,7 @@
     });
   }
 
-  function drawAspectLines(svg, aspects, positions, ascLon) {
+  function drawAspectLines(svg, aspects, positions, ascLon, idPrefix) {
     if (!aspects || aspects.length === 0) return;
     const g = el('g', { class: 'aspect-lines' });
 
@@ -585,18 +730,20 @@
       const title = el('title');
       title.textContent = `${p1name} ${aspectName} ${p2name}${orbTxt}`;
 
+      const isMajor = ['Conjunction', 'Opposition', 'Trine', 'Square', 'Sextile'].includes(styleKey);
       const attrs = {
         class: 'aspect-line aspect-line--draw',
         x1: pt1.x.toFixed(2), y1: pt1.y.toFixed(2),
         x2: pt2.x.toFixed(2), y2: pt2.y.toFixed(2),
         stroke: style.color,
-        'stroke-width': style.width,
+        'stroke-width': isMajor ? (style.width + 0.25) : style.width,
         opacity: opacity.toFixed(2),
         'data-aspect-key': aspectKey(asp),
         tabindex: '0',
         role: 'graphics-symbol',
         'aria-label': title.textContent
       };
+      if (isMajor && idPrefix) attrs.filter = `url(#${idPrefix}aglow)`;
       if (style.dash) attrs['stroke-dasharray'] = style.dash;
 
       const line = el('line', attrs);
@@ -685,19 +832,23 @@
 
       // Planet glyph at collision-resolved position
       const gp  = polar(CX, CY, rPlanet, dispAng);
-      // Glass orb chip behind the planet glyph (planet colour)
-      glassDisc(svg, g, gp.x, gp.y, 10, pColor, idPrefix);
-      const txt = el('text', {
-        x: gp.x.toFixed(2), y: gp.y.toFixed(2),
-        'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-        fill: '#ffffff',
-        'font-size': fSize,
-        'font-family': 'serif, "Apple Color Emoji", "Segoe UI Emoji", system-ui',
-        'font-weight': 'bold',
-        filter: `url(#${idPrefix}pglow)`
-      });
-      txt.textContent = glyph;
-      g.appendChild(txt);
+      const pSlug = PLANET_SLUG[name];
+      if (pSlug && !opts.colorOverride) {
+        sealImage(g, SEAL_BASE + 'planets/' + pSlug + '.svg', gp.x, gp.y, 22, 26, 0.98);
+      } else {
+        glassDisc(svg, g, gp.x, gp.y, 11, pColor, idPrefix);
+        const txt = el('text', {
+          x: gp.x.toFixed(2), y: gp.y.toFixed(2),
+          'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
+          fill: '#ffffff',
+          'font-size': fSize,
+          'font-family': 'serif, "Apple Color Emoji", "Segoe UI Emoji", system-ui',
+          'font-weight': 'bold',
+          filter: `url(#${idPrefix}pglow)`
+        });
+        txt.textContent = glyph;
+        g.appendChild(txt);
+      }
 
       // Retrograde symbol ℞ as superscript after the glyph
       if (pos.retrograde) {
@@ -739,15 +890,20 @@
 
   // ─── Center circle with label ─────────────────────────────────────────────
   function drawCenter(svg, label, idPrefix) {
-    // Engraved medallion rings
+    svg.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_INNER + 14,
+      fill: 'none', stroke: WARM.gold, 'stroke-width': '0.45', opacity: '0.14',
+      'stroke-dasharray': '3 6'
+    }));
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_INNER + 6,
-      fill: 'none', stroke: WARM.gold, 'stroke-width': '0.6', opacity: '0.22'
+      fill: 'none', stroke: WARM.gold, 'stroke-width': '0.75', opacity: '0.32',
+      filter: `url(#${idPrefix}rglow)`
     }));
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_CENTER_FILL,
       fill: `url(#${idPrefix}cgrad)`,
-      stroke: WARM.goldDim, 'stroke-width': '1.2', opacity: '0.95'
+      stroke: WARM.gold, 'stroke-width': '1.4', opacity: '0.98'
     }));
 
     const displayName = (label || 'Natal Chart').slice(0, 22);
@@ -827,9 +983,9 @@
       const pColor   = PLANET_COLORS[name] || WARM.silver;
 
       const cells = [
-        `<span class="ap-pt-glyph" style="color:${pColor}">${PLANET_GLYPHS[name] || ''}</span>`,
+        `<span class="ap-pt-seal-wrap">${planetSealImg(name, 18, 21)}</span>`,
         `<span class="ap-pt-name">${name}</span>`,
-        `<span class="ap-pt-glyph" style="color:${elemClr}">${ZODIAC_GLYPHS[signName] || ''}</span>`,
+        `<span class="ap-pt-seal-wrap">${zodiacSealImg(signName)}</span>`,
         `<span style="color:${elemClr}">${signName}</span>`,
         `<span class="ap-pt-deg">${degNum}°${String(minNum).padStart(2,'0')}'</span>`,
         `<span class="ap-pt-house">${houseNum}</span>`,
@@ -889,14 +1045,14 @@
     eDiv.className = 'ap-chart-legend__block';
     eDiv.innerHTML = '<div class="ap-chart-legend__title">Elements</div>';
     [
-      ['Fire',  ELEMENT_FILL.fire,  '♈♌♐'],
-      ['Earth', ELEMENT_FILL.earth, '♉♍♑'],
-      ['Air',   ELEMENT_FILL.air,   '♊♎♒'],
-      ['Water', ELEMENT_FILL.water, '♋♏♓']
-    ].forEach(([n, c, s]) => {
+      ['Fire',  ELEMENT_FILL.fire,  'fire'],
+      ['Earth', ELEMENT_FILL.earth, 'earth'],
+      ['Air',   ELEMENT_FILL.air,   'air'],
+      ['Water', ELEMENT_FILL.water, 'water']
+    ].forEach(([n, c, elemKey]) => {
       const row = document.createElement('div');
       row.className = 'ap-chart-legend__row';
-      row.innerHTML = `<span class="ap-chart-legend__dot" style="background:${c}"></span><span style="color:${ELEMENT_TEXT[n.toLowerCase()] || ELEMENT_TEXT[SIGN_ELEMENT[n]] || c};font-weight:600">${n}</span><span style="font-family:serif;font-size:12px">${s}</span>`;
+      row.innerHTML = `<span class="ap-chart-legend__dot" style="background:${c}"></span><span style="color:${ELEMENT_TEXT[elemKey] || c};font-weight:600">${n}</span><span class="ap-chart-legend__seals">${elementSealCluster(elemKey)}</span>`;
       eDiv.appendChild(row);
     });
     wrap.appendChild(eDiv);
@@ -943,6 +1099,7 @@
   // ─── Create the root SVG element ──────────────────────────────────────────
   function createSVG() {
     return el('svg', {
+      class: 'ap-chart-svg',
       viewBox: `0 0 ${VB_W} ${VB_H}`,
       width: '100%', height: '100%',
       xmlns: SVG_NS,
@@ -954,8 +1111,8 @@
   function getContainer(containerId, wheelOnly) {
     const c = document.getElementById(containerId);
     if (!c) { console.error(`AstroChartRender: #${containerId} not found`); return null; }
-    c.innerHTML = '';
-    c.className = wheelOnly ? 'ap-chart-render' : 'ap-chart-render ap-chart-render--full';
+    c.replaceChildren();
+    c.className = wheelOnly ? 'ap-chart-render natal-wheel-mount' : 'ap-chart-render ap-chart-render--full';
     c.style.background = wheelOnly ? 'transparent' : '';
     c.style.borderRadius = wheelOnly ? '0' : '10px';
     c.style.padding = wheelOnly ? '0' : '14px';
@@ -1004,10 +1161,11 @@
     const svg = createSVG();
     buildDefs(svg, prefix);
     drawBackground(svg, prefix);
+    drawInstrumentBezel(svg, ascLon, prefix);
     drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
     drawHouseWheel(svg, houses, ascLon, prefix);
-    if (showAsp) drawAspectLines(svg, aspects, positions, ascLon);
+    if (showAsp) drawAspectLines(svg, aspects, positions, ascLon, prefix);
     drawPlanets(svg, positions, ascLon, prefix, { showDegrees: showDeg });
     drawCenter(svg, chartData.name || 'Natal Chart', prefix);
 
@@ -1059,10 +1217,11 @@
     const svg = createSVG();
     buildDefs(svg, prefix);
     drawBackground(svg, prefix);
+    drawInstrumentBezel(svg, ascLon, prefix);
     drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
     drawHouseWheel(svg, houses1, ascLon, prefix);
-    if (showAsp) drawAspectLines(svg, chart1.synastryAspects || aspects, pos1, ascLon);
+    if (showAsp) drawAspectLines(svg, chart1.synastryAspects || aspects, pos1, ascLon, prefix);
 
     drawPlanets(svg, pos1, ascLon, prefix, {
       ringRadius:  R_PLANET,
@@ -1149,10 +1308,11 @@
     const svg = createSVG();
     buildDefs(svg, prefix);
     drawBackground(svg, prefix);
+    drawInstrumentBezel(svg, ascLon, prefix);
     drawOrbitalSchematic(svg, ascLon, prefix);
     drawZodiacWheel(svg, ascLon, prefix);
     drawHouseWheel(svg, houses, ascLon, prefix);
-    if (showAsp) drawAspectLines(svg, natalChart.transitAspects || aspects, natalPos, ascLon);
+    if (showAsp) drawAspectLines(svg, natalChart.transitAspects || aspects, natalPos, ascLon, prefix);
 
     drawPlanets(svg, natalPos, ascLon, prefix, {
       ringRadius:  R_PLANET,

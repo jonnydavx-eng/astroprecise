@@ -1,3 +1,5 @@
+@import url('ap-palette-2026.css');
+
 /* ==========================================================================
    AstroPrecise — Premium Cosmic Design System v2
    Void black + luminous gold + electric violet + cosmic cyan
@@ -8,10 +10,10 @@
    -------------------------------------------------------------------------- */
 :root {
   /* ── Core backgrounds — warm ancient observatory black (from preloader) ── */
-  --void:  #050406;          /* deepest warm black */
-  --bg:    #050406;
-  --bg-2:  #0D0A07;          /* candlelit brown-black */
-  --bg-3:  #13100C;
+  --void:  var(--ap-void-deep);
+  --bg:    var(--ap-void-deep);
+  --bg-2:  var(--ap-void-mid);
+  --bg-3:  var(--ap-void-raised);
   --hermetic: #1a1428;       /* deep violet-indigo for subtle mystery */
 
   /* ── Engraved / Plate surfaces (less glass, more ancient metal/parchment) ── */
@@ -47,13 +49,13 @@
   --surface-overlay: rgba(19,16,12,0.90);
 
   /* ── Primary ancient gold (preloader + Celestia match) ── */
-  --gold:        #C9A227;      /* core engraved gold */
-  --gold-light:  #EFE3C0;
-  --gold-pale:   #E8E0D0;      /* parchment */
-  --gold-dim:    rgba(201, 162, 39, 0.18);
-  --gold-hero:   #C9A227;
-  --gold-hero-light: #EFE3C0;
-  --hermetic-gold: #C9A227;  /* ancient engraved gold */
+  --gold:        var(--ap-gold-core);
+  --gold-light:  var(--ap-gold-parchment);
+  --gold-pale:   var(--ap-text-primary);
+  --gold-dim:    var(--ap-gold-a16);
+  --gold-hero:   var(--ap-gold-core);
+  --gold-hero-light: var(--ap-gold-parchment);
+  --hermetic-gold: var(--ap-gold-core);
 
   /* ── Muted warm accents (less electric violet/cyan for mystical edge) ── */
   --violet:        #5C4A6E;      /* subdued deep violet */
@@ -87,11 +89,11 @@
   --amethyst-bright: var(--violet-bright);
 
   /* ── Text — aged parchment on warm black ── */
-  --white:       #E8E0D0;   /* parchment primary */
-  --silver:      #A89E88;
-  --silver-dim:  #9A9084;   /* WCAG AA on void #050406 (was #8F8579) */
-  --silver-dark: #8A8274;   /* WCAG AA small text on void (was #6E6658) */
-  --gold-bright: #D4B84A;   /* WCAG AA gold links on void */
+  --white:       var(--ap-text-primary);
+  --silver:      var(--ap-text-secondary);
+  --silver-dim:  var(--ap-text-muted);
+  --silver-dark: var(--ap-text-faint);
+  --gold-bright: var(--ap-gold-bright);
 
   /* ── Gradients — warmer, engraved feel (gold/black dominant) ── */
   --gradient-primary:  linear-gradient(135deg, #5C4A6E 0%, #4A3A5A 50%, #C9A227 100%);
@@ -1746,7 +1748,7 @@ button.sign-card[data-sign],
 }
 
 .form-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236060808' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c9a227' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right var(--space-3) center;
   padding-right: var(--space-10);
@@ -1793,7 +1795,7 @@ button.sign-card[data-sign],
 .form-input.is-error,
 .form-select.is-error {
   border-color: var(--danger);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 0 3px rgba(176, 74, 82, 0.22);
 }
 
 .form-input.is-success,
@@ -1904,12 +1906,12 @@ button.sign-card[data-sign],
 
 .natal-wheel-container {
   position: relative;
-  max-width: 580px;
+  max-width: 720px;
   margin: 0 auto;
   border-radius: 50%;
   box-shadow:
     0 0 60px rgba(92, 74, 110, 0.3),
-    0 0 120px rgba(92, 74, 110, 0.1);
+    0 0 120px rgba(201, 162, 39, 0.08);
 }
 
 #natal-wheel svg,
@@ -3492,6 +3494,45 @@ button.sign-card[data-sign],
 }
 .ap-affiliate-ad__fine a { color: var(--gold); text-decoration: none; }
 .ap-affiliate-ad__fine a:hover { color: var(--gold-pale); }
+
+/* Inline single-pick affiliate card (horoscope reading area) */
+.ap-affiliate-inline {
+  margin: var(--space-6) 0;
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+}
+.ap-affiliate-inline__disc {
+  display: inline-block;
+  font-size: 0.5rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+  margin-bottom: var(--space-2);
+}
+.ap-affiliate-inline__link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-decoration: none;
+}
+.ap-affiliate-inline__title {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--white);
+  line-height: 1.4;
+}
+.ap-affiliate-inline__blurb {
+  font-size: 0.72rem;
+  color: var(--silver-dim);
+  line-height: 1.55;
+}
+.ap-affiliate-inline__meta {
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+}
 
 /* --------------------------------------------------------------------------
    33. Page-Level Specific: Birth Chart Page
@@ -5509,13 +5550,7 @@ body.has-email-sticky { padding-bottom: 72px; }
   color: var(--white);
 }
 
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  border-color: rgba(201, 162, 39, 0.55);
-  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12), 0 0 16px rgba(176, 74, 82, 0.1);
-  outline: none;
-}
+/* Form focus/error — canonical rules in css/ap-forms.css */
 
 /* ==========================================================================
    61. Navbar Logo — Gold
@@ -6626,8 +6661,10 @@ body.preloader-active .privacy-banner {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   margin: 0;
   border-radius: 8px;
@@ -6887,12 +6924,13 @@ body.preloader-active .bottom-nav {
   box-shadow: 0 6px 20px rgba(176,74,82,0.15);
 }
 
-/* ── Glossy glass-gradient zodiac / planet icon orbs (see js/icons.js) ─────── */
+/* ── Illustrated zodiac / planet / element orbs (see js/icons.js) ─────────── */
 .ap-orb {
   --c1: #efe3c0; --c2: #c9a227;
   display: inline-flex; align-items: center; justify-content: center;
   width: 1.9em; height: 1.9em; border-radius: 50%; position: relative; flex: none;
   vertical-align: middle; isolation: isolate;
+  overflow: hidden;
   background:
     radial-gradient(118% 118% at 32% 24%,
       color-mix(in srgb, var(--c1) 94%, #fff) 0%, var(--c1) 30%, var(--c2) 100%);
@@ -6903,8 +6941,122 @@ body.preloader-active .bottom-nav {
     0 2px 7px rgba(0,0,0,0.45),
     0 0 14px -4px var(--c1);
 }
-/* glossy top highlight */
-.ap-orb::before {
+.ap-orb--art {
+  background: radial-gradient(circle at 35% 28%, rgba(201,162,39,0.22), rgba(5,4,6,0.92) 68%);
+  box-shadow:
+    inset 0 0 0 1px rgba(201,162,39,0.28),
+    0 2px 8px rgba(0,0,0,0.45),
+    0 0 12px -4px rgba(201,162,39,0.35);
+  padding: 0;
+}
+.ap-orb--art::before { display: none; }
+.ap-orb__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  border-radius: 50%;
+}
+.ap-orb--art.ap-orb--sm .ap-orb__img { object-position: center 20%; }
+.ap-orb--art[class*="ap-orb--sun"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--moon"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--mercury"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--venus"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--mars"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--jupiter"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--saturn"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--uranus"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--neptune"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--pluto"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--fire"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--earth"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--air"] .ap-orb__img,
+.ap-orb--art[class*="ap-orb--water"] .ap-orb__img {
+  object-fit: contain;
+  object-position: center;
+  padding: 8%;
+  background: radial-gradient(circle at 50% 42%, rgba(26,18,8,0.15), rgba(5,4,6,0.55));
+}
+/* ── Element seals — hex instrument plates (see js/element-seals.js) ─────── */
+.ap-el-seal {
+  --el-seal-ink: #0a0908;
+  --el-seal-accent: #c9a227;
+  --el-seal-gold: #c9a227;
+  --el-seal-glow: rgba(201, 162, 39, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex: none;
+  line-height: 0;
+}
+.ap-el-seal--fire  { --el-seal-ink: #140a06; --el-seal-accent: #e05a3a; --el-seal-glow: rgba(224, 90, 58, 0.22); }
+.ap-el-seal--earth { --el-seal-ink: #0e1208; --el-seal-accent: #5e8a4a; --el-seal-glow: rgba(94, 138, 74, 0.20); }
+.ap-el-seal--air   { --el-seal-ink: #100c14; --el-seal-accent: #a78bba; --el-seal-glow: rgba(167, 139, 186, 0.20); }
+.ap-el-seal--water { --el-seal-ink: #081210; --el-seal-accent: #3f7d76; --el-seal-glow: rgba(63, 125, 118, 0.22); }
+.ap-el-seal--all   { --el-seal-accent: #c9a227; --el-seal-gold: #efe3c0; }
+.ap-el-seal--sm { width: 1.25rem; height: 1.45rem; }
+.ap-el-seal--md { width: 2rem; height: 2.3rem; }
+.ap-el-seal--lg { width: 2.75rem; height: 3.15rem; }
+.ap-el-seal__plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background:
+    radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, var(--el-seal-ink), #050406);
+  box-shadow:
+    inset 0 0 0 1px rgba(201,162,39,0.35),
+    inset 0 -3px 8px rgba(0,0,0,0.5),
+    0 2px 8px rgba(0,0,0,0.45),
+    0 0 14px -4px var(--el-seal-glow);
+}
+.ap-el-seal__art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.home-sign-filter.is-active .ap-el-seal {
+  filter: drop-shadow(0 0 8px var(--el-seal-glow));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ap-el-seal--live.ap-el-seal--fire .ap-el-seal__plate {
+    animation: el-seal-ember 2.8s ease-in-out infinite;
+  }
+  .ap-el-seal--live.ap-el-seal--air .ap-el-seal__plate {
+    animation: el-seal-drift 3.4s ease-in-out infinite;
+  }
+  .ap-el-seal--live.ap-el-seal--water .ap-el-seal__plate {
+    animation: el-seal-ripple 2.6s ease-in-out infinite;
+  }
+  .ap-el-seal--live.ap-el-seal--all .ap-el-seal__plate {
+    animation: el-seal-shimmer 14s linear infinite;
+  }
+  .home-sign-filter.is-active .ap-el-seal--live .ap-el-seal__plate {
+    animation-duration: 1.8s;
+  }
+}
+@keyframes el-seal-ember {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(201,162,39,0.35), inset 0 -3px 8px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.45), 0 0 10px -4px var(--el-seal-glow); }
+  50% { box-shadow: inset 0 0 0 1px rgba(224,90,58,0.45), inset 0 -3px 8px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.45), 0 0 18px -2px var(--el-seal-glow); }
+}
+@keyframes el-seal-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+@keyframes el-seal-ripple {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+@keyframes el-seal-shimmer {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.08); }
+}
+/* legacy glass highlight (unused on --art) */
+.ap-orb:not(.ap-orb--art)::before {
   content: ''; position: absolute; top: 7%; left: 13%; width: 74%; height: 44%;
   border-radius: 50% 50% 46% 46%; pointer-events: none; z-index: 2;
   background: linear-gradient(rgba(255,255,255,0.62), rgba(255,255,255,0.04) 70%, rgba(255,255,255,0));

@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="css/fonts.css" />
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <style>
-    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;
+    body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;text-align:center;
       background:radial-gradient(ellipse 120% 90% at 50% 30%,#0D0A07 0%,#050406 60%,#030203 100%);color:#E8E0D0;
       font-family:'Cormorant Garamond',serif;padding:24px;}
-    .wrap{max-width:480px;}
+    .wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:480px;}
     .glyph{color:#C9A227;filter:drop-shadow(0 0 40px rgba(201,162,39,.4));margin-bottom:6px;}
     .glyph svg{width:3.2rem;height:3.2rem;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
     h1{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.18em;font-size:1.4rem;color:#EFE3C0;margin:18px 0 10px;}
@@ -23,7 +23,8 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <main id="main-content" class="wrap">
     <div class="glyph" aria-hidden="true">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></svg>
     </div>
@@ -31,6 +32,9 @@
     <p>This page has precessed beyond the visible sky — or never rose at all.
        The instrument, however, is exactly where you left it.</p>
     <a href="./"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></svg> Return to the sky</a>
-  </div>
+  </main>
+  <footer class="legal-footer" role="contentinfo"></footer>
+  <script src="js/footer-chrome.js" defer></script>
+  <script src="js/ap-lite-chrome.js" defer></script>
 </body>
 </html>

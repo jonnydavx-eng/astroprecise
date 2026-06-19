@@ -10,13 +10,87 @@
 }
 
 .page-chart .chart-results-grid .natal-wheel-container {
-  max-width: 100%;
+  max-width: min(100%, 720px);
   margin: 0 auto;
-  border-radius: var(--radius-xl, 16px);
+  border-radius: 50%;
+  padding: clamp(0.35rem, 1.5vw, 0.75rem);
+  position: relative;
+  /* Reserve wheel footprint before SVG inject — keeps chart CLS under 0.05 */
+  min-height: min(78vw, 720px);
   box-shadow:
-    0 0 60px rgba(92, 74, 110, 0.22),
-    0 0 100px rgba(201, 162, 39, 0.06);
-  padding: var(--space-2, 0.5rem);
+    0 0 48px rgba(201, 162, 39, 0.18),
+    0 0 120px rgba(92, 74, 110, 0.2),
+    inset 0 0 60px rgba(5, 4, 6, 0.45);
+}
+
+.page-chart .natal-wheel-container::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 162, 39, 0.28);
+  pointer-events: none;
+  box-shadow: 0 0 24px rgba(201, 162, 39, 0.12);
+}
+
+.page-chart .natal-wheel-container::after {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  border: 1px dashed rgba(201, 162, 39, 0.14);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.page-chart #natal-wheel {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.page-chart #natal-wheel.natal-wheel--loaded {
+  animation: chart-wheel-reveal 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes chart-wheel-reveal {
+  from {
+    opacity: 0.35;
+    filter: brightness(0.88) blur(1px);
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-chart #natal-wheel.natal-wheel--loaded {
+    animation: none;
+  }
+}
+
+.page-chart #natal-wheel:empty::before {
+  content: '';
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(201, 162, 39, 0.1) 0%, rgba(13, 10, 7, 0.55) 52%, transparent 72%);
+  border: 1px solid rgba(201, 162, 39, 0.14);
+  box-shadow: inset 0 0 40px rgba(92, 74, 110, 0.2);
+  animation: ap-wheel-skeleton-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes ap-wheel-skeleton-pulse {
+  0%, 100% { opacity: 0.62; }
+  50% { opacity: 1; }
 }
 
 /* Render target — wheel only; parent card provides the frame */
@@ -30,7 +104,31 @@
   display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--radius-lg, 12px);
+  border-radius: 50%;
+  overflow: visible;
+}
+
+.ap-chart-render svg.ap-chart-svg {
+  filter: drop-shadow(0 8px 28px rgba(0, 0, 0, 0.45));
+}
+
+/* Celestial seals on wheel — engraved instrument glow */
+.ap-chart-render .ap-chart-seal image {
+  filter:
+    drop-shadow(0 0 2px rgba(201, 162, 39, 0.55))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
+}
+
+.ap-chart-render .ap-chart-seal:hover image {
+  filter:
+    drop-shadow(0 0 5px rgba(201, 162, 39, 0.75))
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.page-chart .natal-wheel-container {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(201, 162, 39, 0.06) 0%, transparent 48%),
+    radial-gradient(circle at 50% 50%, rgba(13, 10, 7, 0.35) 0%, transparent 72%);
 }
 
 .ap-chart-render .aspect-line {
@@ -198,6 +296,20 @@
   border-radius: 50%;
   flex-shrink: 0;
   opacity: 0.92;
+}
+
+.ap-chart-legend__seals {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: 0.15rem;
+}
+
+.ap-chart-legend__seals .ap-pt-seal,
+.ap-pt-seal-wrap .ap-pt-seal {
+  display: block;
+  width: 14px;
+  height: auto;
 }
 
 /* Title bar above embedded full charts */

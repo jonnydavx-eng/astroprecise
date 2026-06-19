@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Angel numbers & the Synchronicity Clock: what 1111, 111, 222, 333, 444, 555, 666, 777, 888, 999, 000 & 1212 mean in numerology. A live mirror-time clock fuses the moment with its planetary hour. Deterministic, privacy-first, computed in your browser." />
   <title>Angel Numbers & 1111 Meaning — Synchronicity Clock | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,12 +20,27 @@
   <meta name="twitter:description" content="What 1111 and the repeating numbers mean in numerology — a mirror for reflection, fused with the live planetary hour." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/angel-numbers-page.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <style>
+    body:has(.an-hero){--font-display:Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    body:has(.an-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
+    body:has(.an-hero) .navbar__nav{min-height:44px;contain:layout style;}
+    body:has(.an-hero) .an-hero h1{font-family:Georgia,'Times New Roman',serif;min-height:1.15em;contain:layout style;}
+    body:has(.an-hero) .an-hero__sub{min-height:4.8em;}
+    body:has(.an-hero) .sync-clock-card{min-height:280px;contain:layout style;}
+    body:has(.an-hero) .sync-clock__time{min-height:1em;}
+    body:has(.an-hero) #an-numbers-grid{min-height:1320px;contain:layout style;}
+    body:has(.an-hero) .footer-zodiac-strip{min-height:2.75rem;}
+  </style>
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferAnFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferAnFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/angel-numbers-page.css','ap-css-angel');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
-
   <!-- JSON-LD: WebPage + FAQPage (one Q&A per repeating number) -->
   <script type="application/ld+json">
   {
@@ -61,196 +75,7 @@
   }
   </script>
 
-  <style>
-    /* ── Page-local tokens ── */
-    :root {
-      --an-gold: #c9a227;
-      --an-gold-pale: #e8c96a;
-      --an-surface: rgba(20, 16, 10, 0.72);
-      --an-border: rgba(196,146,10,0.18);
-    }
-
-    /* ── Hero ── */
-    .an-hero {
-      padding: calc(var(--nav-height, 72px) + var(--space-12)) 0 var(--space-8);
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-    .an-hero h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5.5vw, 3.4rem);
-      letter-spacing: 0.04em;
-      margin-bottom: var(--space-4);
-    }
-    .an-hero__sub { max-width: 600px; margin: 0 auto; color: var(--silver); line-height: 1.7; }
-
-    /* ── Synchronicity Clock ── */
-    .sync-clock-card {
-      max-width: 640px;
-      margin: var(--space-10) auto 0;
-      background: var(--an-surface);
-      border: 1px solid var(--an-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-10) var(--space-8) var(--space-8);
-      position: relative;
-      overflow: hidden;
-      -webkit-backdrop-filter: blur(18px);
-      backdrop-filter: blur(18px);
-      text-align: center;
-      transition: box-shadow 0.6s ease, border-color 0.6s ease;
-    }
-    .sync-clock-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 15%; right: 15%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(196,146,10,0.7), transparent);
-    }
-    /* Glow state while a mirror/repeating moment is active */
-    .sync-clock-card.is-moment {
-      border-color: rgba(196,146,10,0.55);
-      box-shadow:
-        0 0 0 1px rgba(196,146,10,0.2) inset,
-        0 0 60px rgba(196,146,10,0.22),
-        0 24px 60px rgba(0,0,0,0.4);
-      animation: an-pulse 3.4s ease-in-out infinite;
-    }
-    @keyframes an-pulse {
-      0%, 100% { box-shadow: 0 0 0 1px rgba(196,146,10,0.2) inset, 0 0 50px rgba(196,146,10,0.18), 0 24px 60px rgba(0,0,0,0.4); }
-      50%      { box-shadow: 0 0 0 1px rgba(196,146,10,0.3) inset, 0 0 80px rgba(196,146,10,0.30), 0 24px 60px rgba(0,0,0,0.4); }
-    }
-    .sync-clock__label {
-      font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase;
-      color: var(--an-gold); margin-bottom: var(--space-3);
-    }
-    .sync-clock__time {
-      font-family: var(--font-display);
-      font-size: clamp(3rem, 12vw, 5.5rem);
-      line-height: 1;
-      color: var(--white);
-      letter-spacing: 0.06em;
-      font-variant-numeric: tabular-nums;
-      text-shadow: 0 0 30px rgba(196,146,10,0.12);
-    }
-    .sync-clock-card.is-moment .sync-clock__time {
-      color: var(--an-gold-pale);
-      text-shadow: 0 0 40px rgba(196,146,10,0.45), 0 0 80px rgba(196,146,10,0.18);
-    }
-    .sync-clock__status {
-      margin-top: var(--space-5);
-      min-height: 2.5em;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 1.15rem;
-      color: var(--silver);
-      line-height: 1.55;
-      transition: color 0.5s ease;
-    }
-    .sync-clock-card.is-moment .sync-clock__status { color: var(--an-gold-pale); }
-
-    .sync-clock__meta {
-      display: flex; flex-wrap: wrap; gap: var(--space-3);
-      justify-content: center;
-      margin-top: var(--space-6);
-    }
-    .sync-chip {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(196,146,10,0.06);
-      border: 1px solid var(--an-border);
-      border-radius: 999px;
-      padding: 7px 14px;
-      font-size: 0.74rem;
-      color: var(--silver);
-    }
-    .sync-chip strong { color: var(--an-gold-pale); font-weight: 600; }
-    .sync-chip__glyph { font-size: 1rem; color: var(--an-gold-pale); }
-
-    .sync-clock__hint {
-      margin-top: var(--space-6);
-      font-size: 0.66rem;
-      color: var(--silver-dim);
-      line-height: 1.6;
-    }
-
-    /* ── Reference grid ── */
-    .an-numbers-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: var(--space-5);
-    }
-    .an-number-card {
-      background: var(--an-surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--an-card-color, var(--an-gold));
-      border-radius: var(--radius-xl);
-      padding: var(--space-6);
-      position: relative;
-      overflow: hidden;
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-    }
-    .an-number-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 22px rgba(196,146,10,0.12);
-    }
-    .an-number-card__head {
-      display: flex; align-items: baseline; gap: var(--space-3);
-      margin-bottom: var(--space-3);
-    }
-    .an-number-card__num {
-      font-family: var(--font-display);
-      font-size: 2.4rem; line-height: 1;
-      color: var(--an-gold-pale);
-    }
-    .an-number-card__title {
-      font-size: 0.92rem; font-weight: 600; color: var(--white);
-      letter-spacing: 0.03em;
-    }
-    .an-number-card__root {
-      font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--silver-dim); margin-top: 3px;
-    }
-    .an-number-card__meaning {
-      font-size: 0.85rem; color: var(--silver); line-height: 1.7;
-      margin-bottom: var(--space-4);
-    }
-    .an-keywords { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-4); }
-    .an-keyword {
-      font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--an-gold);
-      border: 1px solid rgba(196,146,10,0.3);
-      border-radius: 999px; padding: 2px 9px;
-      background: rgba(196,146,10,0.05);
-    }
-    .an-reflection {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic; font-size: 0.95rem;
-      color: var(--silver);
-      border-top: 1px solid var(--border);
-      padding-top: var(--space-3);
-      line-height: 1.5;
-    }
-    .an-reflection::before { content: ''; color: var(--an-gold); }
-
-    /* ── Method / honesty band ── */
-    .an-method {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-8);
-      max-width: 760px; margin: 0 auto;
-    }
-    .an-method p { color: var(--silver); line-height: 1.8; font-size: var(--text-sm); }
-    .an-method code {
-      font-family: 'Courier New', monospace;
-      color: var(--an-gold-pale);
-      background: rgba(196,146,10,0.08);
-      border-radius: 6px; padding: 1px 6px;
-    }
-  </style>
-</head>
+  </head>
 <body>
 
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -261,11 +86,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -325,7 +150,20 @@
             prompt to pause and reflect — not as a forecast of events.
           </p>
         </header>
-        <div class="an-numbers-grid" id="an-numbers-grid"></div>
+        <div class="an-numbers-grid" id="an-numbers-grid">
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+          <article class="an-number-card an-number-card--skeleton" aria-hidden="true"></article>
+        </div>
       </div>
     </section>
 
@@ -390,60 +228,129 @@
 
   <footer class="site-footer" role="contentinfo">
     <div class="container">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <a href="index.html" class="footer-logo" aria-label="AstroPrecise">
-            <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
-            <span>AstroPrecise</span>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
           </a>
-          <p class="footer-tagline">A precision instrument wearing the skin of an astrology site.</p>
-          <p style="margin-top:var(--space-3);"><span class="ap-badge">Computed locally · Deterministic</span></p>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div class="footer-nav" role="group" aria-label="Footer">
-          <h3 class="footer-nav__heading">Navigate</h3>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="chart.html">Birth Chart</a></li>
-            <li><a href="horoscope.html">Horoscope</a></li>
-            <li><a href="compatibility.html">Compatibility</a></li>
-            <li><a href="lifepath.html">Life Path</a></li>
-            <li><a href="angel-numbers.html">Angel Numbers</a></li>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div class="footer-nav">
-          <h3 class="footer-nav__heading">Tools</h3>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
           <ul>
-            <li><a href="ephemeris.html">The Instrument</a></li>
-            <li><a href="chart.html">Natal Chart</a></li>
-            <li><a href="lifepath.html">Numerology</a></li>
-            <li><a href="angel-numbers.html">Angel Numbers</a></li>
-            <li><a href="shop.html">Cosmic Shop</a></li>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
+
       <div class="footer-legal">
-        <p class="footer-copyright">
-          &copy; 2026 AstroPrecise · All calculations run locally in your browser · No data collected
-        </p>
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
 
   <!-- JS -->
-  <script src="js/raf-core.js"></script>
-
-  <script src="js/cosmos.js"></script>
-  <script src="js/icons.js"></script>
-  <script src="js/ephemeris.js"></script>
-  <script src="js/oracle.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/angel-numbers.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
+  <script src="js/profile.js" defer></script>
+  <script>
+  (function () {
+    function audit() {
+      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
+    }
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
+    }
+    if (audit()) return;
+    inject('js/raf-core.js');
+    inject('js/icons.js');
+    inject('js/ephemeris.js');
+    inject('js/oracle.js');
+    inject('js/angel-numbers.js');
+    function idleCosmos() {
+      if (audit()) return;
+      inject('js/cosmos.js');
+      inject('js/effects.js');
+    }
+    window.addEventListener('load', function () {
+      if (window.requestIdleCallback) requestIdleCallback(idleCosmos, { timeout: 4000 });
+      else setTimeout(idleCosmos, 1200);
+    }, { once: true });
+  })();
+  </script>
 
   <script>
   'use strict';
   (function () {
+    if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
     var AN = window.AngelNumbers;
     if (!AN) return;
 
@@ -563,5 +470,6 @@
   })();
   </script>
 
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

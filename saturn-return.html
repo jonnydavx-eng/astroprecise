@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Saturn Return calculator: find the exact dates of your first, second and third Saturn return from the real sky — free — then unlock a full personalised reading and printable PDF. What a Saturn return is, when it happens, and what it matures." />
   <title>Saturn Return Calculator: Your Exact Dates & Reading | AstroPrecise</title>
-  <link rel="stylesheet" href="css/fonts.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,76 +20,24 @@
   <meta name="twitter:description" content="Find the exact dates of your Saturn return from the real sky — free — then unlock a full personalised reading + printable PDF." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/saturn-return-page.css" />
+  <link rel="stylesheet" href="css/celestial-seals.css" />
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferSatFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferSatFonts();deferMainCss();});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Saturn Return Calculator: Your Exact Dates & Reading","description":"A free Saturn Return calculator that finds the exact dates of your first, second and third Saturn return from the real sky (VSOP87), with an optional full personalised reading and printable PDF.","url":"https://astroprecise.app/saturn-return.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Saturn return"},{"@type":"Thing","name":"Astrology"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Saturn Return Calculator","item":"https://astroprecise.app/saturn-return.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a Saturn return?","acceptedAnswer":{"@type":"Answer","text":"A Saturn return is the period when transiting Saturn comes back to the exact ecliptic longitude it held at your birth. Because Saturn takes about 29.5 years to orbit the Sun, this happens around ages 29–30, 58–60 and 87–90. It is read as a maturing, structure-testing passage of life."}},{"@type":"Question","name":"When is my Saturn return?","acceptedAnswer":{"@type":"Answer","text":"Enter your birth date above and AstroPrecise computes the exact dates from the real sky. Your first Saturn return falls around age 29–30; the second around 58–60; the third around 87–90. Because Saturn retrogrades, the return often has up to three exact passes across roughly a year."}},{"@type":"Question","name":"How long does a Saturn return last?","acceptedAnswer":{"@type":"Answer","text":"The exact conjunction is a moment, but the felt passage runs roughly nine to fourteen months — the approach, the exact passes (sometimes three, as Saturn retrogrades back over the point), and the consolidation as Saturn moves on."}},{"@type":"Question","name":"Are the dates accurate?","acceptedAnswer":{"@type":"Answer","text":"Yes. AstroPrecise computes Saturn's position with the VSOP87 planetary theory and solves for the exact moment it returns to your natal longitude, entirely in your browser. The dates are real astronomy; the reading is reflective interpretation, not prediction."}}]}</script>
-  <style>
-    :root { --sat-gold: var(--gold, #C9A227); --sat-line: rgba(232,224,208,0.10); }
-    .sat-hero { padding: calc(var(--nav-height, 72px) + 3.5rem) 0 1.5rem; text-align: center; position: relative; overflow: hidden; }
-    /* Orbital canvas visualization */
-    .sat-orbital-wrap { max-width: 680px; margin: 1.6rem auto 0.4rem; position: relative; }
-    #sat-orbital { display: block; width: 100%; height: auto; border-radius: 16px; opacity: 0.94; }
-    .sat-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,162,39,0.16) 0%, transparent 70%); pointer-events: none; }
-    .sat-hero__eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-size: .64rem; letter-spacing: .24em; text-transform: uppercase; color: var(--sat-gold); margin-bottom: 1rem; }
-    .sat-hero h1 { font-family: var(--font-display, 'Cinzel', serif); font-size: clamp(2rem, 5.2vw, 3.2rem); line-height: 1.1; letter-spacing: .02em; color: var(--white, #E8E0D0); margin-bottom: .9rem; }
-    .sat-hero__glyph { font-size: 2.4rem; color: var(--sat-gold); display: block; margin: 0 auto .6rem; }
-    .sat-hero__sub { font-size: 1.02rem; color: var(--silver, #A89E88); max-width: 38rem; margin: 0 auto; line-height: 1.7; }
-    .sat-calc { max-width: 44rem; margin: 0 auto; padding: clamp(1.4rem, 4vw, 2.4rem); }
-    .sat-calc h2 { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.4rem; color: var(--white); margin-bottom: .4rem; text-align: center; }
-    .sat-calc__lead { color: var(--silver); text-align: center; margin-bottom: 1.4rem; font-size: .95rem; }
-    .sat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .sat-field { display: flex; flex-direction: column; gap: .35rem; }
-    .sat-field--full { grid-column: 1 / -1; }
-    .sat-field label { font-family: 'Cinzel', serif; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--silver); }
-    .sat-field input { background: rgba(20,16,10,0.5); border: 1px solid var(--sat-line); border-radius: var(--radius-md, 8px); padding: .7rem .8rem; color: var(--white); font-size: 1rem; font-family: inherit; }
-    .sat-field input:focus { outline: none; border-color: var(--border-glow, rgba(201,162,39,0.55)); box-shadow: 0 0 0 3px rgba(201,162,39,0.14); }
-    .sat-field__hint { font-size: .72rem; color: var(--silver-dim, #8F8579); }
-    .sat-submit-row { margin-top: 1.3rem; text-align: center; }
-    #sat-error { display: none; color: #e0857c; text-align: center; margin-top: .9rem; font-size: .9rem; }
-    .sat-result { display: none; margin-top: 1.6rem; }
-    .sat-result.is-shown { display: block; }
-    .sat-natal { text-align: center; font-family: 'Cinzel', serif; letter-spacing: .04em; color: var(--gold-light, #EFE3C0); margin-bottom: 1rem; }
-    .sat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
-    .sat-card { position: relative; padding: 1rem .8rem; text-align: center; border: 1px solid var(--sat-line); border-radius: var(--radius-lg, 12px); background: rgba(20,16,10,0.4); }
-    .sat-card--now { border-color: rgba(201,162,39,0.5); box-shadow: 0 0 26px rgba(201,162,39,0.12); }
-    .sat-card__n { font-family: 'Cinzel', serif; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--silver); margin-bottom: .35rem; }
-    .sat-card__date { color: var(--gold-light, #EFE3C0); font-size: 1.02rem; font-weight: 600; }
-    .sat-card__age { font-size: .76rem; color: var(--silver-dim, #8F8579); margin-top: .2rem; }
-    .sat-card__tag { display: inline-block; margin-top: .5rem; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sat-gold); border: 1px solid rgba(201,162,39,0.4); border-radius: 999px; padding: .15rem .55rem; }
-    .sat-reading, .sat-unlock { margin-top: 1.4rem; padding: clamp(1.3rem, 4vw, 2.2rem); }
-    .sat-reading__title, .sat-unlock__eyebrow { font-family: 'Cinzel', serif; }
-    .sat-reading__title { font-size: 1.3rem; color: var(--white); margin-bottom: 1rem; text-align: center; }
-    .sat-reading p, .sat-unlock p { color: #e6ddc8; line-height: 1.75; margin-bottom: .85rem; font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; }
-    .sat-reading strong { color: var(--gold-light, #E8C872); font-weight: 600; }
-    .sat-reading em { color: var(--sat-gold); font-style: normal; }
-    .sat-lead { font-size: 1.15rem; }
-    .sat-orn { display: flex; align-items: center; gap: .7rem; color: var(--sat-gold); margin: 1.3rem 0 .9rem; }
-    .sat-orn::before, .sat-orn::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,162,39,0.5), transparent); }
-    .sat-orn span { font-size: .62rem; letter-spacing: .26em; }
-    .sat-list { list-style: none; padding: 0; margin: .4rem 0; }
-    .sat-list li { padding: .55rem 0; border-bottom: 1px solid rgba(201,162,39,0.14); color: var(--silver); font-family: 'Cormorant Garamond', serif; font-size: 1.02rem; }
-    .sat-list em { color: var(--sat-gold); font-style: normal; }
-    .sat-note { font-size: .9rem !important; color: var(--silver) !important; font-style: italic; }
-    .sat-reading__actions { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; margin-top: 1.4rem; }
-    .sat-unlock { text-align: center; }
-    .sat-unlock__eyebrow { font-size: .64rem; letter-spacing: .2em; text-transform: uppercase; color: var(--sat-gold); margin-bottom: .6rem; }
-    .sat-unlock__teaser { max-width: 32rem; margin: 0 auto 1.1rem; }
-    .sat-unlock__note { font-size: .78rem !important; color: var(--silver-dim, #8F8579) !important; margin-top: .8rem !important; }
-    .sat-content { max-width: 44rem; margin: 2.5rem auto 0; }
-    .sat-content h2 { font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--white); margin: 1.8rem 0 .7rem; }
-    .sat-content p { color: var(--silver); line-height: 1.8; margin-bottom: .9rem; }
-    .sat-content details { border-top: 1px solid var(--sat-line); padding: .9rem 0; }
-    .sat-content summary { cursor: pointer; font-family: 'Cinzel', serif; color: var(--gold-light, #EFE3C0); font-size: 1rem; }
-    .sat-content details p { margin-top: .6rem; }
-    @media (max-width: 560px) { .sat-grid { grid-template-columns: 1fr; } .sat-cards { grid-template-columns: 1fr; } }
-  </style>
-</head>
-<body>
+  </head>
+<body class="ap-no-nav-enter">
 
   <!-- Cosmic background -->
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
@@ -102,11 +49,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -177,50 +124,141 @@
     </section>
   </main>
 
+  <section id="ap-email-banner" class="ap-email-cta ap-email-cta--banner" role="region" aria-labelledby="ap-email-banner-title">
+    <div class="container ap-email-cta__inner">
+      <div class="ap-email-cta__copy">
+        <p class="ap-email-cta__eyebrow">More coming soon</p>
+        <p class="ap-email-cta__title" id="ap-email-banner-title">Sign up &mdash; be first when we ship</p>
+        <p class="ap-email-cta__sub">One email list for everything launching next. No spam, no birth data uploaded &mdash; just your address.</p>
+        <ul class="ap-email-cta__perks">
+          <li>Chart wallpaper &mdash; your exact birth sky as a phone &amp; desktop background</li>
+          <li>Personal cosmic weather &mdash; transits to your chart, in plain English</li>
+          <li>Deep reading previews &mdash; written natal reports before the shop opens</li>
+          <li>Daily &amp; monthly horoscopes &mdash; same real-sky engine as the site, in your inbox</li>
+          <li>Shop early access &mdash; wear-your-sky prints, posters &amp; gift readings first</li>
+          <li>New tools first &mdash; retrograde alerts, synastry unlocks &amp; more as we build them</li>
+        </ul>
+      </div>
+      <form class="ap-email-cta__form" novalidate aria-label="Join the AstroPrecise update list">
+        <div class="ap-email-cta__fields">
+          <input class="ap-email-cta__input" type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Your email address" />
+          <button type="submit" class="ap-email-cta__btn">&#10022; Get updates</button>
+        </div>
+        <p class="ap-email-cta__msg" role="status" aria-live="polite"></p>
+        <p class="ap-email-cta__hint">Only your email is sent &mdash; birth data never leaves your device. Unsubscribe anytime.</p>
+      </form>
+    </div>
+  </section>
+
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo">&#10022; AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="ap-footer-signup ap-footer-signup--compact">
+        <p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">
+          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C9A227);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
+          &mdash; cosmic weather &amp; new features coming soon.
+        </p>
+      </div>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="solar-return.html" class="footer__link">Solar Return</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="About">
-          <p class="footer__heading">About</p>
-          <ul class="footer__links">
-            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
-            <li><a href="why.html" class="footer__link">Why We're Different</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
 
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
+  <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/raf-core.js"></script>
-
-
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/icons.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/celestial-seals.js"></script>
   <script src="js/saturn-return.js"></script>
   <script src="js/effects.js"></script>
-  <script>
-  /* ── Saturn Return Orbital Diagram ── */
-  (function(){
+  <script defer>
+  /* ── Saturn Return Orbital Diagram (deferred — avoids sync paint before reserves lock) ── */
+  document.addEventListener('DOMContentLoaded', function () {
     var cvs = document.getElementById('sat-orbital');
     if(!cvs) return;
     var W=680, H=300, ctx=cvs.getContext('2d');
@@ -353,7 +391,8 @@
     ctx.fillStyle='rgba(168,158,136,0.6)';
     ctx.font='10px sans-serif'; ctx.textAlign='center';
     ctx.fillText('Saturn orbits the Sun once every ~29.5 years · real astronomy, computed in your browser', W/2, H-10);
-  })();
+  });
   </script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

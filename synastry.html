@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="What is a synastry chart? A plain-English guide to relationship astrology — how two birth charts are overlaid, which aspects matter, and how to read compatibility. Then build your free synastry chart from the real sky." />
   <title>Synastry Chart: Relationship Astrology Explained | AstroPrecise</title>
-<link rel="stylesheet" href="css/fonts.css" />
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -21,119 +20,22 @@
   <meta name="twitter:description" content="Learn what a synastry chart is, which inter-aspects matter, and how to read relationship compatibility — then build your free synastry chart." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/synastry-page.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
-  <link rel="stylesheet" href="css/main.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Synastry Chart: Relationship Astrology Explained","description":"A plain-English guide to synastry — how two birth charts are overlaid to read relationship compatibility, which inter-aspects matter, and how to build your own synastry chart from the real sky.","url":"https://astroprecise.app/synastry.html","isPartOf":{"@type":"WebSite","name":"AstroPrecise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"AstroPrecise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Synastry"},{"@type":"Thing","name":"Relationship astrology"},{"@type":"Thing","name":"Compatibility"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Synastry Chart","item":"https://astroprecise.app/synastry.html"}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a synastry chart?","acceptedAnswer":{"@type":"Answer","text":"A synastry chart overlays two people's birth charts to study the angles their planets make to each other. These inter-aspects describe the chemistry, friction, and rhythm between the two people across love, communication, drive, and commitment."}},{"@type":"Question","name":"What is the difference between synastry and a composite chart?","acceptedAnswer":{"@type":"Answer","text":"Synastry compares two separate charts to each other, planet by planet. A composite chart instead merges the two charts into a single new chart that represents the relationship itself as a third entity. Both are valid lenses; synastry is the more common starting point."}},{"@type":"Question","name":"Do I need both people's birth times for synastry?","acceptedAnswer":{"@type":"Answer","text":"Birth times sharpen the picture — they fix the Moon precisely and unlock the Ascendant, house overlays, and angle contacts. Synastry can still be read from dates alone using the slower-moving planets, but exact times make it far more specific."}},{"@type":"Question","name":"Which synastry aspects matter most?","acceptedAnswer":{"@type":"Answer","text":"Sun, Moon, Venus, and Mars contacts are the heart of romantic synastry. Conjunctions, trines, and sextiles tend to flow easily; squares and oppositions create tension that can be either charged attraction or recurring friction depending on the planets involved."}}]}</script>
-  <style>
-    /* ── Synastry page premium overrides (scoped, mirrors accuracy.html) ── */
-    :root {
-      --syn-gold: var(--gold, #C9A227);
-      --syn-gold-light: var(--gold-light, #EFE3C0);
-      --syn-rose: #c77da6;
-      --syn-border: rgba(232, 224, 208, 0.10);
-    }
-    .syn-hero {
-      padding: calc(var(--nav-height, 72px) + 4rem) 0 2.5rem;
-      text-align: center; position: relative; overflow: hidden;
-    }
-    .syn-hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(110, 26, 38, 0.20) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .syn-hero__eyebrow {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--syn-gold); margin-bottom: 1.1rem;
-    }
-    .syn-hero h1 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(2rem, 5.2vw, 3.3rem);
-      font-weight: 700; line-height: 1.1; letter-spacing: 0.02em;
-      color: var(--white, #E8E0D0); margin-bottom: 1rem;
-    }
-    .syn-hero__sub {
-      font-size: 1.02rem; color: var(--silver, #A89E88);
-      line-height: 1.75; max-width: 640px; margin: 0 auto 1.75rem;
-    }
-    .syn-section { padding: 2.75rem 0; position: relative; z-index: 1; }
-    .syn-section--alt { background: var(--color-bg-2, rgba(13, 10, 7,0.5)); }
-    .syn-section__label {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700;
-      color: var(--white, #E8E0D0); text-align: center;
-      margin-bottom: 0.6rem; letter-spacing: 0.02em;
-    }
-    .syn-section__intro {
-      text-align: center; color: var(--silver, #A89E88);
-      font-size: 1rem; line-height: 1.75; max-width: 680px; margin: 0 auto 2rem;
-    }
-    .syn-prose { max-width: 740px; margin: 0 auto; }
-    .syn-prose p { font-size: 1rem; color: var(--silver, #A89E88); line-height: 1.85; margin-bottom: 1.1rem; }
-    .syn-prose strong { color: var(--syn-gold-light); }
-
-    /* ── Aspect / planet cards ── */
-    .syn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.1rem; max-width: 940px; margin: 0 auto; }
-    .syn-card { padding: 1.6rem 1.5rem; }
-    .syn-card__glyph { font-size: 1.6rem; color: var(--syn-gold); display: block; margin-bottom: 0.6rem; line-height: 1; }
-    .syn-card h3 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1.06rem; color: var(--syn-gold-light); margin-bottom: 0.5rem; letter-spacing: 0.01em;
-    }
-    .syn-card p { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
-
-    /* ── Aspect legend rows ── */
-    .syn-aspects { max-width: 760px; margin: 0 auto; display: grid; gap: 0.8rem; }
-    .syn-aspect-row {
-      display: flex; gap: 1.1rem; align-items: flex-start; padding: 1.2rem 1.4rem;
-    }
-    .syn-aspect-row__mark {
-      flex: 0 0 auto; width: 38px; height: 38px; display: inline-flex;
-      align-items: center; justify-content: center; border-radius: 50%;
-      border: 1px solid var(--syn-border); color: var(--syn-gold);
-      background: rgba(201, 162, 39, 0.08); font-size: 1.05rem;
-    }
-    .syn-aspect-row__body h3 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 1rem; color: var(--syn-gold-light); margin-bottom: 0.3rem;
-    }
-    .syn-aspect-row__body p { font-size: 0.9rem; color: var(--silver, #A89E88); line-height: 1.65; }
-
-    /* ── Steps ── */
-    .syn-steps { max-width: 720px; margin: 0 auto; display: grid; gap: 0.9rem; counter-reset: step; }
-    .syn-step { display: flex; gap: 1.1rem; align-items: flex-start; padding: 1.2rem 1.4rem; }
-    .syn-step__num {
-      flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
-      display: inline-flex; align-items: center; justify-content: center;
-      background: rgba(201, 162, 39, 0.12); color: var(--syn-gold);
-      font-family: var(--font-display, 'Cinzel', serif); font-weight: 700; font-size: 0.95rem;
-      border: 1px solid rgba(201, 162, 39, 0.3);
-    }
-    .syn-step__body p { font-size: 0.93rem; color: var(--silver, #A89E88); line-height: 1.65; }
-    .syn-step__body strong { color: var(--syn-gold-light); }
-
-    /* ── FAQ ── */
-    .syn-faq { max-width: 740px; margin: 0 auto; display: grid; gap: 0.9rem; }
-    .syn-faq__item { padding: 1.3rem 1.5rem; }
-    .syn-faq__q { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.02rem; color: var(--syn-gold-light); margin-bottom: 0.5rem; }
-    .syn-faq__a { font-size: 0.92rem; color: var(--silver, #A89E88); line-height: 1.7; }
-
-    /* ── CTA ── */
-    .syn-cta { text-align: center; max-width: 660px; margin: 0 auto; padding: 2.75rem 2rem; }
-    .syn-cta h2 {
-      font-family: var(--font-display, 'Cinzel', serif);
-      font-size: clamp(1.6rem, 3.6vw, 2.3rem); color: var(--white, #E8E0D0);
-      margin-bottom: 0.9rem; letter-spacing: 0.02em;
-    }
-    .syn-cta p { font-size: 1.02rem; color: var(--silver, #A89E88); line-height: 1.7; margin-bottom: 1.75rem; }
-    .syn-cta__note { font-size: 0.78rem; color: var(--silver-dim, #6E6658); margin-top: 1.1rem; }
-  </style>
-</head>
+  </head>
 <body>
 
   <!-- Cosmic background -->
@@ -149,11 +51,11 @@
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
         <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
-          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo.svg" alt="" width="32" height="32" /></div>
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
           <span class="logo-text">AstroPrecise</span>
         </a>
-        <div class="navbar__nav" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Horoscope</a></noscript>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -390,30 +292,90 @@
   ============================================================ -->
   <footer class="footer" role="contentinfo">
     <div class="container">
-      <div class="footer__grid">
-        <div class="footer__brand">
-          <p class="footer__logo">&#10022; AstroPrecise</p>
-          <p class="footer__tagline">Professional astrology powered by precise astronomical calculations.</p>
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">AstroPrecise</span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
         </div>
-        <div role="group" aria-label="Tools navigation">
-          <p class="footer__heading">Tools</p>
-          <ul class="footer__links">
-            <li><a href="chart.html" class="footer__link">Birth Chart</a></li>
-            <li><a href="horoscope.html" class="footer__link">Horoscope</a></li>
-            <li><a href="compatibility.html" class="footer__link">Compatibility</a></li>
-            <li><a href="transits.html" class="footer__link">Transits</a></li>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
           </ul>
         </div>
-        <div role="group" aria-label="About">
-          <p class="footer__heading">About</p>
-          <ul class="footer__links">
-            <li><a href="accuracy.html" class="footer__link">How It's Accurate</a></li>
-            <li><a href="profile.html" class="footer__link">My Profile</a></li>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">
-        <p>&copy; 2026 AstroPrecise. Powered by accurate astronomical calculations.</p>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>
     </div>
   </footer>
@@ -427,7 +389,7 @@
   <script src="js/cosmos.js"></script>
   <script src="js/ephemeris.js"></script>
   <script src="js/icons.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/effects.js"></script>
+<script src="js/effects.js"></script>
+  <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

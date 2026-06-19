@@ -1,0 +1,332 @@
+/* AstroPrecise — structured readings (readability psychology)
+   Chunked prose · primacy leads · ~65ch measure · progressive disclosure */
+
+.ap-reading-flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5, 1.25rem);
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.ap-reading-hero {
+  text-align: center;
+  padding: var(--space-5, 1.25rem) var(--space-4, 1rem) var(--space-4, 1rem);
+  border-radius: var(--radius-xl, 16px);
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(201, 162, 39, 0.09) 0%, transparent 58%),
+    rgba(13, 10, 7, 0.55);
+  border: 1px solid rgba(201, 162, 39, 0.16);
+}
+
+.ap-reading-hero__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold, #c9a227);
+}
+
+.ap-reading-hero__title {
+  margin: 0 0 var(--space-3, 0.75rem);
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: clamp(1.35rem, 3.5vw, 1.75rem);
+  font-weight: 600;
+  color: var(--parchment, #e8e0d0);
+  letter-spacing: 0.03em;
+  line-height: 1.25;
+}
+
+.ap-reading-hero__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-bottom: var(--space-3, 0.75rem);
+}
+
+.ap-reading-chip {
+  display: inline-flex;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-pale, #f0e8d8);
+  background: rgba(201, 162, 39, 0.12);
+  border: 1px solid rgba(201, 162, 39, 0.28);
+}
+
+.ap-reading-hero__hint {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--silver-dim, #7e7565);
+  line-height: 1.5;
+}
+
+.ap-reading-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.55rem;
+  padding: 0.35rem 0;
+}
+
+.ap-reading-toc__link {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--silver, #a89e88);
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 158, 136, 0.14);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.ap-reading-toc__link:hover,
+.ap-reading-toc__link:focus-visible {
+  color: var(--gold-pale, #f0e8d8);
+  border-color: rgba(201, 162, 39, 0.35);
+  background: rgba(201, 162, 39, 0.08);
+}
+
+.ap-reading-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4, 1rem);
+  padding: var(--space-5, 1.25rem) var(--space-4, 1rem);
+  border-radius: var(--radius-lg, 12px);
+  background: rgba(13, 10, 7, 0.62);
+  border: 1px solid rgba(168, 158, 136, 0.1);
+  border-left: 3px solid rgba(201, 162, 39, 0.35);
+  scroll-margin-top: 5rem;
+}
+
+.ap-reading-card--featured {
+  border-left-color: var(--gold, #c9a227);
+  background:
+    linear-gradient(135deg, rgba(201, 162, 39, 0.06) 0%, transparent 55%),
+    rgba(13, 10, 7, 0.68);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.ap-reading-card--placement,
+.ap-reading-card--aspect {
+  grid-template-columns: 1fr;
+}
+
+.ap-reading-card__icon {
+  flex-shrink: 0;
+  width: 2.5rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.15rem;
+}
+
+.ap-reading-card__icon .ap-seal {
+  --ap-seal-size: 40px;
+}
+
+.ap-reading-card__content {
+  min-width: 0;
+  max-width: 65ch;
+}
+
+.ap-reading-card__eyebrow {
+  margin: 0 0 0.25rem;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--silver-dim, #7e7565);
+}
+
+.ap-reading-card__title {
+  margin: 0 0 var(--space-3, 0.75rem);
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--parchment, #e8e0d0);
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+}
+
+.ap-reading-card__meta {
+  margin: -0.35rem 0 var(--space-3, 0.75rem);
+  font-size: 0.78rem;
+  color: var(--silver-dim, #7e7565);
+  line-height: 1.45;
+}
+
+.ap-reading-card__head-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3, 0.75rem);
+}
+
+.ap-reading-card__aspect-glyph {
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--aspect-color, var(--gold));
+  flex-shrink: 0;
+}
+
+.ap-reading-card--aspect {
+  border-left-color: var(--aspect-color, rgba(201, 162, 39, 0.35));
+}
+
+.ap-reading-card--aspect .ap-reading-card__accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--aspect-color, var(--gold));
+  border-radius: 3px 0 0 3px;
+  opacity: 0.85;
+}
+
+.ap-reading__lead {
+  margin: 0 0 var(--space-4, 1rem);
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.12rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--parchment, #e8e0d0);
+  background: rgba(201, 162, 39, 0.06);
+  border-left: 3px solid rgba(201, 162, 39, 0.55);
+  border-radius: 0 var(--radius-md, 8px) var(--radius-md, 8px) 0;
+}
+
+.ap-reading-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+}
+
+.ap-reading__p {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.72;
+  color: var(--silver, #a89e88);
+  letter-spacing: 0.01em;
+}
+
+.ap-reading-details {
+  margin-top: var(--space-2, 0.5rem);
+}
+
+.ap-reading-details__summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold, #c9a227);
+  padding: 0.45rem 0;
+  user-select: none;
+}
+
+.ap-reading-details__summary::-webkit-details-marker {
+  display: none;
+}
+
+.ap-reading-details__summary::after {
+  content: ' ↓';
+  opacity: 0.7;
+}
+
+.ap-reading-details[open] .ap-reading-details__summary::after {
+  content: ' ↑';
+}
+
+.ap-reading-details__content {
+  padding-top: var(--space-2, 0.5rem);
+}
+
+.ap-reading-details--aspect .ap-reading__lead {
+  margin-bottom: var(--space-3, 0.75rem);
+}
+
+/* Pattern / star cards inside reading flow */
+.ap-reading-flow .pattern-card {
+  margin-bottom: 0;
+  max-width: 65ch;
+}
+
+.ap-reading-flow .pattern-card__body {
+  font-size: 0.94rem;
+  line-height: 1.72;
+  max-width: none;
+}
+
+.ap-reading-section-label {
+  margin: var(--space-6, 1.5rem) 0 var(--space-3, 0.75rem);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold, #c9a227);
+}
+
+.ap-reading-section-label::after {
+  content: '';
+  display: block;
+  margin-top: 0.45rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 162, 39, 0.35), transparent);
+}
+
+.page-chart .tab-panel {
+  max-height: min(70vh, 640px);
+  padding: var(--space-6, 1.5rem) var(--space-5, 1.25rem);
+}
+
+.page-chart #planets-table,
+.page-chart #houses-table,
+.page-chart #aspects-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.page-chart .planet-data-row {
+  display: none;
+}
+
+.ap-reading-empty {
+  text-align: center;
+  padding: var(--space-8, 2rem);
+  color: var(--silver-dim, #7e7565);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 560px) {
+  .ap-reading-card {
+    grid-template-columns: 1fr;
+  }
+
+  .ap-reading-card__icon {
+    justify-content: flex-start;
+  }
+
+  .ap-reading__lead {
+    font-size: 1.05rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-reading-toc__link {
+    transition: none;
+  }
+}

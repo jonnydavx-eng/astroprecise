@@ -1,0 +1,719 @@
+/* Engraved icons — before deferred app.js inject (sphere-ctas CLS) */
+    .eng-i {
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      vertical-align: -0.12em;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+/* ── 3D Sphere hero ─────────────────────────────────────────────────── */
+    .sphere-hero {
+      position: relative; z-index: 1;
+      padding: calc(var(--nav-height, 72px) + 2.5rem) 0 2rem;
+      text-align: center;
+      overflow: hidden;
+      contain: layout style;
+      min-height: calc(var(--nav-height, 72px) + clamp(260px, 70vw, 420px) + 10rem);
+    }
+    .page-horoscope .navbar__end {
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+    }
+    /* No hero JPG on critical path — live starfield + aurora orbs are authoritative */
+    .sphere-hero::before {
+      content: '';
+      position: absolute;
+      inset: -5% 0 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 90% 55% at 50% 0%, var(--ap-obs-violet-strong, rgba(92, 74, 110, 0.22)) 0%, transparent 72%);
+      opacity: 0.85;
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.6) 55%, transparent 92%);
+              mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.6) 55%, transparent 92%);
+    }
+    .ap-inline-link {
+      color: var(--ap-link, var(--color-gold));
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 0.18em;
+      text-decoration-thickness: 1px;
+    }
+    .ap-inline-link:hover,
+    .ap-inline-link:focus-visible {
+      color: var(--ap-link-hover, var(--color-gold-pale, #EFE3C0));
+      outline: 2px solid var(--ap-focus-ring, var(--ap-gold-core));
+      outline-offset: 2px;
+    }
+    .sphere-hero .container { position: relative; z-index: 1; }
+    /* Horoscope email subscription */
+    .horoscope-subscribe {
+      background: linear-gradient(180deg, transparent 0%, rgba(92, 74, 110, 0.06) 50%, transparent 100%);
+    }
+    .horoscope-subscribe__inner {
+      max-width: 820px;
+      margin: 0 auto;
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      border-radius: 20px;
+      padding: var(--space-8, 2rem);
+    }
+    .horoscope-subscribe__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6, 1.5rem);
+      margin-top: var(--space-6, 1.5rem);
+    }
+    @media (max-width: 700px) {
+      .horoscope-subscribe__grid { grid-template-columns: 1fr; }
+    }
+    .horoscope-subscribe__preview {
+      background: rgba(5, 4, 6, 0.55);
+      border: 1px solid rgba(168, 158, 136, 0.12);
+      border-radius: 14px;
+      padding: var(--space-5, 1.25rem);
+      font-size: 0.82rem;
+      color: var(--silver, #C8D0E8);
+      line-height: 1.65;
+    }
+    .horoscope-subscribe__preview h3 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.95rem;
+      color: var(--gold, #c9a227);
+      margin: 0 0 0.5rem;
+      letter-spacing: 0.04em;
+    }
+    .horoscope-subscribe__form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .horoscope-subscribe__form label {
+      font-size: 0.72rem;
+      color: var(--silver-dim, #8891AA);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+    .horoscope-subscribe__form select,
+    .horoscope-subscribe__form input[type="email"] {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(168, 158, 136, 0.2);
+      background: rgba(13, 10, 7, 0.7);
+      color: #fff;
+      font-size: 0.85rem;
+    }
+    .horoscope-subscribe__cadence {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      margin: 0.25rem 0;
+    }
+    .horoscope-subscribe__msg {
+      font-size: 0.68rem;
+      color: var(--silver-dim, #8891AA);
+      line-height: 1.55;
+      margin-top: 0.35rem;
+    }
+    .horoscope-subscribe__done {
+      display: none;
+      font-size: 0.82rem;
+      color: var(--gold, #c9a227);
+      line-height: 1.6;
+    }
+    .horoscope-subscribe__done.is-visible { display: block; }
+    .horoscope-subscribe__form.is-hidden { display: none; }
+    .sphere-hero__header { margin-bottom: 1.25rem; }
+    .sphere-hero__header h1 {
+      font-family: Georgia, 'Times New Roman', var(--font-display, serif);
+      font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+      font-weight: 700; line-height: 1.1; letter-spacing: 0.03em;
+      color: var(--ap-gold-parchment, #EFE3C0); margin-bottom: 0.6rem;
+    }
+    .sphere-hero__sub {
+      font-size: 0.95rem; color: var(--ap-text-muted, var(--silver-dim, #9A9084));
+      max-width: 500px; margin: 0 auto; line-height: 1.6;
+    }
+    .sphere-wrap {
+      position: relative; width: 100%; max-width: 700px;
+      height: clamp(260px, 70vw, 420px);
+      min-height: clamp(260px, 70vw, 420px);
+      max-height: 420px;
+      margin: 0 auto; cursor: grab;
+      contain: layout style paint;
+      touch-action: pan-y;
+      overflow: hidden;
+      border-radius: 12px;
+      background: radial-gradient(circle at 50% 45%, #0a1218 0%, #060a10 72%);
+      box-shadow:
+        0 0 0 1px rgba(201, 162, 39, 0.14),
+        0 0 48px rgba(80, 150, 230, 0.12),
+        inset 0 0 32px rgba(0, 0, 0, 0.28);
+    }
+    /* Interactive SVG poster — paints first frame, fully clickable until canvas handoff */
+    .sphere-poster {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: block;
+      opacity: 1;
+      transition: opacity 0.55s ease, visibility 0.55s ease;
+      pointer-events: auto;
+      cursor: grab;
+    }
+    .sphere-wrap.is-dragging { cursor: grabbing; }
+    .sphere-wrap.is-canvas-ready .sphere-poster {
+      pointer-events: none;
+      cursor: default;
+    }
+    .wheel-sign { cursor: pointer; outline: none; }
+    .wheel-sign__hit { pointer-events: all; }
+    .wheel-sign__glyph { pointer-events: none; user-select: none; }
+    .wheel-sign__name { pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
+    .wheel-sign.is-hovered .wheel-sign__name,
+    .wheel-sign.is-selected .wheel-sign__name,
+    .wheel-sign:focus-visible .wheel-sign__name { opacity: 1; }
+    .wheel-sign.is-hovered .wheel-sign__ring,
+    .wheel-sign:focus-visible .wheel-sign__ring {
+      stroke-opacity: 0.95;
+      stroke-width: 2;
+      filter: drop-shadow(0 0 6px rgba(201, 162, 39, 0.35));
+    }
+    .wheel-sign.is-selected .wheel-sign__ring {
+      stroke: #c9a227;
+      stroke-opacity: 1;
+      stroke-width: 2.2;
+      fill: rgba(201, 162, 39, 0.14);
+    }
+    .wheel-sign.is-selected .wheel-sign__glyph { fill: #c9a227; }
+    .wheel-sign.is-hovered .wheel-sign__glow,
+    .wheel-sign.is-selected .wheel-sign__glow { fill-opacity: 0.22; }
+    .wheel-sign:focus-visible { outline: none; }
+    .wheel-sign:focus-visible .wheel-sign__ring {
+      stroke: #c9a227;
+    }
+    .wheel-centre__link { cursor: pointer; }
+    .wheel-centre__link:focus-visible + .wheel-centre__star,
+    .wheel-centre:hover .wheel-centre__star {
+      filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.55));
+    }
+    .wheel-centre__pulse {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: wheel-centre-pulse 3.2s ease-out infinite;
+    }
+    @keyframes wheel-centre-pulse {
+      0% { transform: scale(0.85); opacity: 0.55; }
+      70% { transform: scale(1.35); opacity: 0; }
+      100% { transform: scale(1.35); opacity: 0; }
+    }
+    .wheel-planet__dot { filter: drop-shadow(0 0 4px currentColor); }
+    @media (prefers-reduced-motion: reduce) {
+      .wheel-centre__pulse { animation: none; }
+      .sphere-poster { transition-duration: 0.01ms; }
+    }
+    .sphere-poster__svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .sphere-wrap canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      touch-action: none;
+      transition: opacity 0.55s ease, visibility 0.55s ease;
+    }
+    .sphere-wrap.is-canvas-ready .sphere-poster {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .sphere-wrap.is-canvas-ready canvas {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .sphere-wrap.is-canvas-handoff .sphere-poster {
+      transition-duration: 0.45s;
+    }
+    .sphere-wrap.is-canvas-handoff canvas {
+      transition-duration: 0.45s;
+    }
+    .sphere-controls {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+      gap: 0.65rem 1rem; margin-top: 0.85rem;
+      min-height: 44px;
+      contain: layout style;
+    }
+    .sphere-selected-label {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ap-gold-bright, var(--ap-gold-core)); min-height: 1.2rem;
+    }
+    .sphere-hint {
+      font-size: 0.68rem; color: var(--silver-dim, #8891AA);
+      letter-spacing: 0.04em;
+    }
+
+    /* Planet legend — reserve wrapped row height (pushes sphere-ctas if unset) */
+    .planet-legend {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: center; gap: 0.5rem 0.65rem;
+      margin: 0.9rem auto 0; max-width: 600px;
+      /* Two wrapped rows at LH 364px — wheel poster adds "· Sign" and must not grow block */
+      min-height: 104px;
+      contain: layout style;
+      font-size: 0.72rem; color: var(--silver-dim, #8891AA);
+    }
+    .planet-legend__label {
+      color: var(--gold, #c9a227); font-weight: 600;
+      flex: 0 0 100%;
+      text-align: center;
+      min-height: 1.15rem;
+    }
+    .pl-dot {
+      display: inline-block;
+      color: var(--c); opacity: 0.85; letter-spacing: 0.04em;
+      white-space: nowrap;
+      /* Longest label: "☿ Mercury · Sagittarius" — lock before poster hydrates */
+      min-width: 24ch;
+      box-sizing: border-box;
+      text-align: left;
+      font-family: 'AstroGlyph', Georgia, 'Times New Roman', serif;
+      font-variant-emoji: text;
+    }
+
+    /* Birth chart CTAs under sphere — stacked on mobile from first paint (CLS) */
+    .sphere-ctas {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      min-height: 168px;
+      contain: layout style;
+    }
+    .sphere-ctas .cta-btn {
+      width: 100%;
+      justify-content: center;
+      min-height: 44px;
+      box-sizing: border-box;
+    }
+    @media (min-width: 520px) {
+      .sphere-ctas {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        min-height: 52px;
+      }
+      .sphere-ctas .cta-btn { width: auto; }
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.6rem 1.4rem; border-radius: 999px;
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em;
+      text-decoration: none; transition: transform .15s, box-shadow .15s;
+      box-sizing: border-box;
+    }
+    .cta-btn .eng-i { flex-shrink: 0; width: 1em; height: 1em; }
+    .cta-btn:hover { transform: translateY(-2px); }
+    .cta-btn--primary {
+      background: linear-gradient(135deg, var(--ap-gold-core, #C9A227), var(--ap-gold-parchment, #EFE3C0));
+      color: var(--ap-void-mid, #0D0A07);
+      box-shadow: 0 0 16px var(--ap-gold-a22, rgba(201, 162, 39, 0.25));
+    }
+    .cta-btn--primary:hover { box-shadow: 0 0 28px var(--ap-gold-a40, rgba(201, 162, 39, 0.45)); }
+    .cta-btn--ghost {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--silver, #C8D0E8);
+    }
+    .cta-btn--ghost:hover { border-color: rgba(201, 162, 39,0.4); color: var(--gold, #c9a227); }
+
+    /* Sign-grid toggle row */
+    .sign-grid-toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: var(--space-4, 1rem);
+    }
+    .sign-grid-toggle-row .section__title { margin-bottom: 0; }
+    .sign-grid-toggle {
+      background: none; border: 1px solid rgba(255,255,255,0.12);
+      color: var(--silver-dim, #8891AA); border-radius: 999px;
+      padding: 0.5rem 1.1rem; font-size: 0.78rem; cursor: pointer;
+      min-height: 44px; min-width: 44px;
+      touch-action: manipulation;
+      transition: border-color .15s, color .15s;
+    }
+    .sign-grid-toggle:hover { border-color: var(--gold, #c9a227); color: var(--gold, #c9a227); }
+
+    /* Reading panel chart CTA */
+    .srp-chart-cta {
+      margin-top: var(--space-6, 1.5rem);
+      padding: var(--space-5, 1.25rem) var(--space-6, 1.5rem);
+      background: rgba(92, 74, 110,0.10);
+      border: 1px solid rgba(92, 74, 110,0.25);
+      border-radius: var(--radius-xl, 16px);
+      text-align: center;
+    }
+    .srp-chart-cta__lead {
+      font-size: 0.88rem; color: var(--silver, #C8D0E8);
+      line-height: 1.6; margin-bottom: 0.9rem;
+    }
+    .srp-chart-cta__btn {
+      display: inline-block; padding: 0.6rem 1.6rem;
+      background: linear-gradient(135deg, #C9A227 0%, #EFE3C0 100%);
+      color: #0d0a07; font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 0.04em; border-radius: 999px;
+      text-decoration: none; transition: box-shadow .15s, transform .15s;
+      box-shadow: 0 0 16px rgba(201, 162, 39,0.2);
+    }
+    .srp-chart-cta__btn:hover {
+      box-shadow: 0 0 28px rgba(201, 162, 39,0.45);
+      transform: translateY(-2px);
+    }
+
+    /* ---- Horoscope-page overrides ---- */
+    .starfield-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 1;
+    }
+    .hero--small {
+      position: relative;
+      z-index: 1;
+      padding: var(--space-16) 0 var(--space-12);
+      text-align: center;
+      background: transparent;
+    }
+    .hero--small h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-5xl);
+      font-weight: 900;
+      color: var(--color-white);
+      margin-bottom: var(--space-4);
+      line-height: 1.1;
+    }
+    .hero--small p {
+      font-size: var(--text-lg);
+      color: var(--color-silver-dim);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .today-date {
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--color-gold);
+      padding: var(--space-3) 0 var(--space-6);
+      letter-spacing: 0.03em;
+      position: relative;
+      z-index: 1;
+    }
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: var(--space-16) 0;
+    }
+    .section--alt {
+      background: var(--color-bg-2);
+    }
+    .section__title {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--color-white);
+      text-align: center;
+      margin-bottom: var(--space-3);
+    }
+    .section__subtitle {
+      text-align: center;
+      color: var(--color-silver-dim);
+      font-size: var(--text-base);
+      margin-bottom: var(--space-10);
+    }
+
+    /* ---- Live Planets Strip ---- */
+    .planets-live-strip {
+      position: relative;
+      z-index: 1;
+      padding: var(--space-3) 0 var(--space-5);
+      overflow: hidden;
+    }
+    .planets-live-strip__inner {
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      padding: var(--space-2) var(--space-4);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .planets-live-strip__inner::-webkit-scrollbar { display: none; }
+    .planet-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(20, 16, 10, 0.68);
+      border: 1px solid rgba(168, 158, 136, 0.12);
+      border-radius: 999px;
+      padding: 5px 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .planet-pill:hover {
+      border-color: rgba(196, 146, 10, 0.35);
+      background: rgba(30, 42, 80, 0.8);
+    }
+    .planet-pill__symbol {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.7rem; height: 1.7rem; border-radius: 50%; flex-shrink: 0;
+      font-size: 0.9rem; line-height: 1;
+      font-family: 'AstroGlyph', Georgia, serif; font-variant-emoji: text;
+      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.18), rgba(0,0,0,0.5));
+      border: 1px solid rgba(201,162,39,0.35);
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.25), 0 2px 5px rgba(0,0,0,0.4);
+      color: var(--planet-pill-col, #EFE3C0);
+    }
+    .planet-pill__info {
+      font-size: 0.7rem;
+      color: var(--color-silver-dim);
+      letter-spacing: 0.04em;
+    }
+    .planet-pill__sign {
+      color: var(--color-gold);
+      font-weight: 600;
+    }
+    .planet-pill__rx {
+      font-size: 0.55rem;
+      color: #ef4444;
+      font-weight: 700;
+      vertical-align: super;
+    }
+    /* Per-planet orb colours */
+    .planet-pill[data-planet="Sun"]     .planet-pill__symbol { --planet-pill-col:#FFD700; border-color:rgba(255,215,0,0.5); background:radial-gradient(circle at 35% 30%,#fff5cc,#c9820a 60%,#7a4800); }
+    .planet-pill[data-planet="Moon"]    .planet-pill__symbol { --planet-pill-col:#D2CBB8; border-color:rgba(210,203,184,0.4); background:radial-gradient(circle at 35% 30%,#f0eee8,#b0a898 60%,#6a6060); }
+    .planet-pill[data-planet="Mercury"] .planet-pill__symbol { --planet-pill-col:#BFB39A; border-color:rgba(63,125,118,0.4); background:radial-gradient(circle at 35% 30%,#b0e8e0,#3f7d76 60%,#1a3830); }
+    .planet-pill[data-planet="Venus"]   .planet-pill__symbol { --planet-pill-col:#FFB6C1; border-color:rgba(199,125,255,0.4); background:radial-gradient(circle at 35% 30%,#ffe0f5,#c06090 60%,#6a1840); }
+    .planet-pill[data-planet="Mars"]    .planet-pill__symbol { --planet-pill-col:#FF6644; border-color:rgba(224,88,72,0.45); background:radial-gradient(circle at 35% 30%,#ffa080,#cc3310 60%,#5a0800); }
+    .planet-pill[data-planet="Jupiter"] .planet-pill__symbol { --planet-pill-col:#FFB347; border-color:rgba(232,160,80,0.4); background:radial-gradient(circle at 35% 30%,#ffe0a0,#c87020 60%,#6a3800); }
+    .planet-pill[data-planet="Saturn"]  .planet-pill__symbol { --planet-pill-col:#C8A86B; border-color:rgba(160,184,152,0.4); background:radial-gradient(circle at 35% 30%,#e8d8a0,#a08040 60%,#503810); }
+    .planet-pill[data-planet="Uranus"]  .planet-pill__symbol { --planet-pill-col:#B89AD0; border-color:rgba(80,200,220,0.35); background:radial-gradient(circle at 35% 30%,#c0f0f5,#3090a0 60%,#104858); }
+    .planet-pill[data-planet="Neptune"] .planet-pill__symbol { --planet-pill-col:#7E6BB0; border-color:rgba(60,90,200,0.4); background:radial-gradient(circle at 35% 30%,#90a8f0,#2040a0 60%,#081840); }
+    .planet-pill[data-planet="Pluto"]   .planet-pill__symbol { --planet-pill-col:#CC88AA; border-color:rgba(120,80,160,0.4); background:radial-gradient(circle at 35% 30%,#d0a0c0,#7840a0 60%,#280840); }
+
+    /* ---- Sign grid — zodiac card gallery ---- */
+    .sign-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 900px) { .sign-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .sign-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ---- Sign card — premium zodiac card ---- */
+    .sign-card {
+      appearance: none;
+      -webkit-appearance: none;
+      font: inherit;
+      width: 100%;
+      margin: 0;
+      background-color: #0d0a07;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center 18%;
+      border: 1px solid rgba(201, 162, 39, 0.22);
+      border-radius: 16px;
+      aspect-ratio: 2 / 3;
+      padding: 0 0 1rem;
+      text-align: center;
+      cursor: pointer;
+      color: inherit;
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease, border-color 0.22s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.2rem;
+      position: relative;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    /* Bottom gradient scrim for text legibility */
+    .sign-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top,
+        rgba(5,4,6,0.88) 0%,
+        rgba(5,4,6,0.55) 28%,
+        rgba(5,4,6,0.15) 52%,
+        transparent 70%);
+      z-index: 1; pointer-events: none; border-radius: inherit;
+      transition: opacity 0.25s;
+    }
+    /* Gold border glow on hover */
+    .sign-card:hover, .sign-card:focus-visible {
+      transform: translateY(-5px) scale(1.02);
+      border-color: rgba(201, 162, 39, 0.6);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,162,39,0.3),
+                  0 0 28px rgba(201,162,39,0.18);
+      outline: none;
+    }
+    .sign-card:focus-visible {
+      box-shadow: 0 12px 36px rgba(0,0,0,0.55), 0 0 0 2px rgba(201,162,39,0.65),
+                  0 0 28px rgba(201,162,39,0.22);
+    }
+    .sign-card:hover::before, .sign-card:focus-visible::before {
+      opacity: 0.75;
+    }
+    /* Active — full gold border */
+    .sign-card.is-active {
+      border-color: #c9a227;
+      box-shadow: 0 0 0 2px rgba(201,162,39,0.5), 0 0 32px rgba(201,162,39,0.25);
+    }
+    .sign-card.is-active::before { opacity: 0.82; }
+
+    /* Card art deferred to horoscope-page-deferred.css (12 JPGs off critical path) */
+    .sign-card[data-sign] { background-color: #13100c; }
+
+    /* Legacy unicode glyphs hidden until seals hydrate */
+    .sign-card__glyph:not(.sign-card__seal):not(:has(.ap-seal)) { display: none; }
+    .sign-card__seal:not(:has(.ap-seal)) { min-height: 3.15rem; }
+
+    .sign-card__name {
+      position: relative; z-index: 2;
+      font-family: var(--font-display);
+      font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+      font-weight: 700;
+      color: #EFE3C0;
+      letter-spacing: 0.06em;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    }
+    .sign-card__dates {
+      position: relative; z-index: 2;
+      font-size: 0.62rem;
+      color: rgba(201,162,39,0.75);
+      letter-spacing: 0.04em;
+    }
+
+    /* Element badge pill */
+    .sign-card__element-badge {
+      position: relative; z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      font-size: 0.5rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 2px 8px 2px 4px;
+      margin-top: 2px;
+      background: rgba(5,4,6,0.55);
+      border: 1px solid rgba(201,162,39,0.28);
+      color: rgba(201,162,39,0.85);
+    }
+    .sign-card__element-badge .ap-el-seal--sm {
+      width: 0.95rem;
+      height: 1.1rem;
+    }
+    .sign-card__el-seal {
+      position: absolute;
+      top: 0.35rem;
+      right: 0.35rem;
+      z-index: 3;
+      transform: scale(0.82);
+      transform-origin: top right;
+      opacity: 0.92;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+    }
+    .srp-element-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .srp-element-text .ap-el-seal--sm {
+      width: 1.1rem;
+      height: 1.25rem;
+    }
+
+    .sign-card__your-badge {
+      position: absolute;
+      top: 0.6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: #c9a227;
+      color: #0d0a07;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      white-space: nowrap;
+      z-index: 3;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    /* Reading panel — collapsed before horoscope-page-deferred.css (audit path) */
+    .sign-reading-panel {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      contain: layout style;
+    }
+    .sign-reading-panel.is-open {
+      max-height: 1600px;
+      opacity: 1;
+    }
+
+    /* Live planets strip — reserve wrap height before ephemeris hydrates pills */
+    .planets-live-strip {
+      min-height: 68px;
+      contain: layout style;
+    }
+    .planets-live-strip__inner {
+      min-height: 44px;
+    }
+    .planet-pill__info {
+      min-width: 3.5rem;
+    }
+
+    /* Lunar cycle strip — reserve header row when panel opens */
+    .lunar-cycle-strip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 28px;
+      min-width: 11rem;
+      contain: layout style;
+    }
+    .lunar-cycle-strip__phase {
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* Hero eyebrow — date line stable before font swap */
+    .sphere-hero__header .hero__eyebrow {
+      min-height: 1.25rem;
+    }
+

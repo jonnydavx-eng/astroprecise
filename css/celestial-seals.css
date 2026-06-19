@@ -1,0 +1,208 @@
+/* Engraved hex celestial seals — commissioned hand-drawn instrument plates
+ * Hover gleam & alignment shimmer: css/ap-micro-2026.css */
+.ap-seal {
+  --seal-accent: var(--ap-gold-core, #C9A227);
+  --seal-glow: var(--ap-gold-a16, rgba(201, 162, 39, 0.16));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex: none;
+  line-height: 0;
+}
+.ap-seal--sm { width: 1.35rem; height: 1.55rem; }
+.ap-seal--md { width: 2rem; height: 2.3rem; }
+.ap-seal--lg { width: 2.75rem; height: 3.15rem; }
+.ap-seal--xl { width: 3.5rem; height: 4rem; }
+
+.ap-seal__plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background:
+    radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, #050406);
+  box-shadow:
+    inset 0 0 0 1px rgba(201,162,39,0.35),
+    inset 0 -3px 8px rgba(0,0,0,0.5),
+    0 2px 8px rgba(0,0,0,0.45),
+    0 0 14px -4px var(--seal-glow);
+}
+.ap-seal__art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ap-seal--zodiac.ap-seal--aries,
+.ap-seal--zodiac.ap-seal--leo,
+.ap-seal--zodiac.ap-seal--sagittarius { --seal-accent: var(--ap-element-fire, #B85A42); --seal-glow: var(--ap-element-fire-glow, rgba(184,90,66,0.14)); }
+.ap-seal--zodiac.ap-seal--taurus,
+.ap-seal--zodiac.ap-seal--virgo,
+.ap-seal--zodiac.ap-seal--capricorn { --seal-accent: var(--ap-element-earth, #5A7A48); --seal-glow: var(--ap-element-earth-glow, rgba(90,122,72,0.12)); }
+.ap-seal--zodiac.ap-seal--gemini,
+.ap-seal--zodiac.ap-seal--libra,
+.ap-seal--zodiac.ap-seal--aquarius { --seal-accent: var(--ap-element-air, #8A7A6A); --seal-glow: var(--ap-element-air-glow, rgba(138,122,106,0.12)); }
+.ap-seal--zodiac.ap-seal--cancer,
+.ap-seal--zodiac.ap-seal--scorpio,
+.ap-seal--zodiac.ap-seal--pisces { --seal-accent: var(--ap-element-water, #4A7580); --seal-glow: var(--ap-element-water-glow, rgba(74,117,128,0.14)); }
+
+.ap-seal--planet.ap-seal--sun { --seal-accent: #e8b84a; --seal-glow: rgba(232,184,74,0.28); }
+.ap-seal--planet.ap-seal--moon { --seal-accent: #b8c4d8; --seal-glow: rgba(184,196,216,0.22); }
+
+.tool-card__icon .ap-seal--lg,
+.concept-pill__icon .ap-seal--sm,
+.ap-lite-rail__seal .ap-seal--sm {
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+}
+
+.home-sign-card__seal {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: 58%;
+  max-width: 4.5rem;
+  height: auto;
+  aspect-ratio: 96 / 112;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.55));
+}
+.home-sign-card__seal .ap-seal {
+  width: 100%;
+  height: 100%;
+}
+.home-sign-card__seal .ap-seal--lg {
+  width: 100%;
+  height: 100%;
+}
+
+.sign-hero__glyph.sign-hero__seal,
+.sign-hero__glyph[data-celestial-seal] {
+  display: block;
+  width: clamp(3.5rem, 12vw, 5rem);
+  height: clamp(4rem, 14vw, 5.75rem);
+  margin: 0 auto var(--space-4);
+  background: none;
+  -webkit-text-fill-color: unset;
+  filter: drop-shadow(0 0 18px rgba(196, 146, 10, 0.4));
+}
+.sign-hero__glyph .ap-seal {
+  width: 100%;
+  height: 100%;
+}
+
+.sign-card__seal {
+  display: block;
+  width: 2.75rem;
+  height: 3.15rem;
+  margin: 0 auto var(--space-2);
+  line-height: 0;
+}
+.sign-card__seal .ap-seal {
+  width: 100%;
+  height: 100%;
+}
+
+.footer-zodiac-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-start;
+  margin-top: var(--space-4);
+  line-height: 0;
+}
+.footer-zodiac-strip > span {
+  display: inline-flex;
+}
+
+.ap-guide-link__seal {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-right: 0.15rem;
+}
+.ap-guide-link__seal .ap-seal--sm {
+  width: 1.1rem;
+  height: 1.26rem;
+}
+
+.glance-cell__seal {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-right: 0.35rem;
+}
+.glance-cell__seal .ap-seal--sm {
+  width: 1.35rem;
+  height: 1.55rem;
+}
+
+.sky-pill__seal .ap-seal--sm,
+.sky-pill__placement .ap-seal--sm {
+  width: 1.5rem;
+  height: 1.72rem;
+}
+
+.compat-matrix__seal {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-right: 0.15rem;
+  line-height: 0;
+}
+.compat-matrix__seal .ap-seal--sm {
+  width: 1.1rem;
+  height: 1.26rem;
+}
+.compat-orb__core .ap-seal--lg {
+  width: 2.5rem;
+  height: 2.88rem;
+}
+
+.home-sign-preview__thumb--seal {
+  width: 72px;
+  height: 84px;
+  object-fit: contain;
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background: #0d0a07;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ap-seal--live .ap-seal__plate {
+    animation: ap-seal-breathe 3.2s ease-in-out infinite;
+  }
+}
+@keyframes ap-seal-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.08); }
+}
+
+/* Legacy orb compat — route illustrated art through seals */
+.ap-orb.ap-orb--art .ap-orb__img {
+  object-fit: contain;
+  padding: 6%;
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+}
+/* Hide stray unicode in pickers until bindSlots runs */
+[data-celestial-seal]:not(:has(.ap-seal)) {
+  display: inline-flex;
+  min-width: 1.35rem;
+  min-height: 1.55rem;
+}
+.compat-matrix th > span[aria-hidden="true"]:not(.compat-matrix__seal):not(.compat-sign-abbr):not(.ap-seal) {
+  display: none;
+}
+
+.ap-orb.ap-orb--art {
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background:
+    radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.06), transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, #050406);
+  box-shadow:
+    inset 0 0 0 1px rgba(201,162,39,0.32),
+    0 2px 8px rgba(0,0,0,0.45);
+}

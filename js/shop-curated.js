@@ -33,7 +33,12 @@
           t.classList.toggle('active', on);
           t.setAttribute('aria-selected', on ? 'true' : 'false');
         });
-        panels.forEach(p => p.classList.toggle('active', p.dataset.curatedPanel === id));
+        panels.forEach(p => {
+          const on = p.dataset.curatedPanel === id;
+          p.classList.toggle('active', on);
+          if (on) p.removeAttribute('hidden');
+          else p.setAttribute('hidden', '');
+        });
       });
     });
   }
@@ -69,16 +74,22 @@
     if (!bar || !shelf) return;
 
     bar.setAttribute('role', 'tablist');
+    bar.setAttribute('aria-label', 'Curated product categories');
     bar.innerHTML = TABS.map((t, i) =>
       `<button type="button" class="shop-curated-tab${i === 0 ? ' active' : ''}" role="tab"
+        id="curated-tab-${t.id}"
         data-curated-tab="${t.id}" aria-selected="${i === 0 ? 'true' : 'false'}"
         aria-controls="curated-${t.id}">${icon(t.icon)} ${esc(t.label)}</button>`
     ).join('');
 
     shelf.querySelectorAll('[data-curated-panel]').forEach((panel, i) => {
-      panel.id = `curated-${panel.dataset.curatedPanel}`;
+      const pid = panel.dataset.curatedPanel;
+      panel.id = `curated-${pid}`;
       panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', `curated-tab-${pid}`);
       panel.classList.toggle('active', i === 0);
+      if (i === 0) panel.removeAttribute('hidden');
+      else panel.setAttribute('hidden', '');
     });
 
     bindTabs(shelf.parentElement);

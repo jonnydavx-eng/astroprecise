@@ -4,7 +4,7 @@
  * city autocomplete, timezone-correct UT conversion, shareable links, a
  * downloadable natal poster, and a premium Big Three share card.
  *
- * Requires: ephemeris.js, chart-render.js, interpretations.js, profile.js, app.js
+ * Requires: ephemeris.js, chart-render.js, ap-load-interpretations.js, profile.js, app.js
  */
 
 (function () {
@@ -16,11 +16,7 @@
 
   // ── Glyph / display maps ──────────────────────────────────────────────────
 
-  const SIGN_GLYPHS = {
-    Aries:'♈︎', Taurus:'♉︎', Gemini:'♊︎', Cancer:'♋︎',
-    Leo:'♌︎', Virgo:'♍︎', Libra:'♎︎', Scorpio:'♏︎',
-    Sagittarius:'♐︎', Capricorn:'♑︎', Aquarius:'♒︎', Pisces:'♓︎',
-  };
+
   const PLANET_GLYPHS = {
     Sun:'☉︎', Moon:'☽︎', Mercury:'☿︎', Venus:'♀︎', Mars:'♂︎', Jupiter:'♃︎',
     Saturn:'♄︎', Uranus:'♅︎', Neptune:'♆︎', Pluto:'♇︎', Chiron:'⚷︎', Lilith:'⚸︎',
@@ -87,8 +83,10 @@
   const tzInput   = document.getElementById('tz-input');
   let activeIdx   = -1;
 
-  const esc = s => String(s).replace(/[&<>"']/g,
-    ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+  const esc = (window.AP_SAFE && window.AP_SAFE.esc)
+    ? s => window.AP_SAFE.esc(s)
+    : s => String(s == null ? '' : s).replace(/[&<>"']/g,
+      ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
 
   const regionOf = c => c.admin ? `${c.admin}, ${c.country}` : c.country;
 
@@ -345,9 +343,17 @@
       resetCalcBtn();
       return;
     }
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
+        if (typeof window.loadInterpretations === 'function') {
+          await window.loadInterpretations();
+        }
         currentChart = calculate(input);
+        if (window.APCanvasSeals && !window._apSealsPreloaded) {
+          window._apSealsPreloaded = true;
+          var sealSigns = (window.AP_ZODIAC && AP_ZODIAC.SIGN_ORDER) || [];
+          window.APCanvasSeals.preload(sealSigns);
+        }
         renderResults(currentChart);
         updateShareURL(input);
         // Pin this sky onto the home orrery (Celestia's payoff, ported):
@@ -424,10 +430,15 @@
       lonInput.value = pos.coords.longitude.toFixed(4);
       cityInput.value = 'My current location';
       try {
-        const r2 = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latInput.value}&longitude=${lonInput.value}&timezone=auto&forecast_days=1`);
-        const j = await r2.json();
-        if (j.timezone) tzInput.value = j.timezone;
-      } catch (e) {}
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), 6000);
+        const r2 = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latInput.value}&longitude=${lonInput.value}&timezone=auto&forecast_days=1`, { signal: ctl.signal });
+        clearTimeout(timer);
+        if (r2.ok) {
+          const j = await r2.json();
+          if (j.timezone) tzInput.value = j.timezone;
+        }
+      } catch (e) { /* timezone lookup failed — leave tz blank, never fake it */ }
       document.dispatchEvent(new CustomEvent('astro:city-selected'));
       window.AstroApp?.showToast('Location set', 'Using your current position — fine for "born near where you live now".', 'success');
     }, () => window.AstroApp?.showToast('Declined', 'Location permission declined — search by name instead.', 'warning'));
@@ -484,7 +495,11 @@
     }
     wrapEl.classList.remove('hidden');
 
-    document.getElementById('result-name').textContent = `${chart.name} — Natal Chart`;
+    const resultNameEl = document.getElementById('result-name');
+    if (resultNameEl) {
+      resultNameEl.textContent = `${chart.name} — Natal Chart`;
+      resultNameEl.removeAttribute('aria-hidden');
+    }
     document.getElementById('result-date').textContent =
       `${chart.birthDate}${chart.birthTime ? ' at ' + chart.birthTime : ' (time unknown — houses approximate)'} · ${chart.city}`;
 
@@ -500,6 +515,14 @@
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function bundleUpsellProduct() {
+    const products = (window.AP_MON && window.AP_MON.commerce && window.AP_MON.commerce.products) || [];
+    const bundle = products.find(p => p.id === 'reading-poster-bundle');
+    if (!bundle || bundle.available === false) return null;
+    const url = typeof bundle.fulfilUrl === 'string' ? bundle.fulfilUrl.trim() : '';
+    return /^https?:\/\//i.test(url) ? bundle : null;
+  }
+
   function renderWhatsNext(chart) {
     const host = document.getElementById('chart-whats-next');
     if (!host || !chart) { if (host) host.hidden = true; return; }
@@ -507,6 +530,7 @@
     const sunSign = chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
     const riseSign = chart.risingSign;
     const name = chart.name ? String(chart.name).split(/\s+/)[0] : 'your';
+    const bundle = bundleUpsellProduct();
 
     const steps = [
       {
@@ -534,15 +558,26 @@
       },
     ];
 
+    const paidTile = bundle ? {
+      tag: '£16 · Your chart',
+      title: 'Deep Reading + Poster',
+      desc: `The long-form reading and print-at-home poster — two keepsakes from ${name}'s chart, generated together. Save £2 vs buying both.`,
+      href: bundle.fulfilUrl,
+      cta: 'Get the bundle — £16 →',
+      external: true,
+    } : null;
+
+    const tiles = paidTile ? [paidTile, ...steps] : steps;
+
     host.innerHTML = `
       <div class="chart-whats-next__head">
         <p class="chart-whats-next__eyebrow">What to explore next</p>
         <h3 class="chart-whats-next__title">Your chart is cast — where now?</h3>
-        <p class="chart-whats-next__sub">Three free tools that build on the sky you just calculated. Everything still runs in your browser.</p>
+        <p class="chart-whats-next__sub">${paidTile ? 'One personalised keepsake from your chart, plus three free tools — everything else still runs in your browser.' : 'Three free tools that build on the sky you just calculated. Everything still runs in your browser.'}</p>
       </div>
-      <div class="chart-whats-next__grid" role="list">
-        ${steps.map(s => `
-          <a href="${esc(s.href)}" class="chart-next-card" role="listitem">
+      <div class="chart-whats-next__grid${paidTile ? ' chart-whats-next__grid--quad' : ''}" role="list">
+        ${tiles.map(s => `
+          <a href="${esc(s.href)}" class="chart-next-card${s.external ? ' chart-next-card--paid' : ''}" role="listitem"${s.external ? ' target="_blank" rel="noopener"' : ''}>
             <span class="chart-next-card__tag">${esc(s.tag)}</span>
             <h4 class="chart-next-card__title">${esc(s.title)}</h4>
             <p class="chart-next-card__desc">${esc(s.desc)}</p>
@@ -556,17 +591,17 @@
     const el = document.getElementById('big-three');
     if (!el) return;
     const items = [
-      { planet:'☉ Sun',    sub:'Core Identity',  sign: chart.positions.Sun.sign,  glyph: SIGN_GLYPHS[chart.positions.Sun.sign] || '?', deg: fmtDeg(chart.positions.Sun) },
-      { planet:'☽ Moon',   sub:'Inner World',    sign: chart.positions.Moon.sign, glyph: SIGN_GLYPHS[chart.positions.Moon.sign] || '?', deg: fmtDeg(chart.positions.Moon) },
-      { planet:'↑ Rising', sub:'Outward Self',   sign: chart.risingSign,          glyph: SIGN_GLYPHS[chart.risingSign] || '?', deg: '' },
+      { planet:'☉ Sun',    sub:'Core Identity',  sign: chart.positions.Sun.sign,  glyph: (chart.positions.Sun.sign || '?').charAt(0), deg: fmtDeg(chart.positions.Sun) },
+      { planet:'☽ Moon',   sub:'Inner World',    sign: chart.positions.Moon.sign, glyph: (chart.positions.Moon.sign || '?').charAt(0), deg: fmtDeg(chart.positions.Moon) },
+      { planet:'↑ Rising', sub:'Outward Self',   sign: chart.risingSign,          glyph: (chart.risingSign || '?').charAt(0), deg: '' },
     ];
     el.innerHTML = items.map(it => `
-      <div class="big-three-card">
+      <article class="big-three-card" aria-label="${esc(it.planet)} in ${esc(it.sign)}">
         <p class="big-three-card__planet">${it.planet} · ${it.sub}</p>
-        ${(window.AstroIcons && AstroIcons.SIGN_GLYPH[it.sign]) ? AstroIcons.sign(it.sign,{lg:true,class:'big-three-card__orb'}) : '<span class="big-three-card__glyph" aria-hidden="true">'+it.glyph+'</span>'}
-        <h3 class="big-three-card__sign">${it.sign}</h3>
+        ${(window.AstroIcons && AstroIcons.sign) ? AstroIcons.sign(it.sign,{lg:true,class:'big-three-card__orb',hidden:true}) : '<span class="big-three-card__glyph" aria-hidden="true">'+it.glyph+'</span>'}
+        <h3 class="big-three-card__sign">${esc(it.sign)}</h3>
         <p class="big-three-card__desc">${it.deg ? it.deg + ' · ' : ''}${ELEMENT_MAP[it.sign] ? cap(ELEMENT_MAP[it.sign]) + ' · ' + cap(MODALITY_MAP[it.sign] || '') : ''}</p>
-      </div>`).join('');
+      </article>`).join('');
   }
 
   function renderWheel(chart) {
@@ -577,16 +612,42 @@
       el.innerHTML = '<p style="text-align:center;color:var(--silver-dim,#8F8579);padding:2rem;">The chart renderer didn\'t load — please refresh the page.</p>';
       return;
     }
-    el.innerHTML = '';
+    el.classList.add('natal-wheel--loading');
     AstroChartRender.renderNatalChart(
       { positions: chart.positions, houses: chart.houses, aspects: chart.renderAspects,
         name: chart.name, dominant: chart.dominant, chartRuler: chart.chartRuler },
       'natal-wheel',
       { title: null, wheelOnly: true, showTable: false, showLegend: false });
+    el.classList.remove('natal-wheel--loading');
+    el.classList.add('natal-wheel--loaded');
+    const wrap = document.getElementById('natal-wheel-wrap');
+    if (wrap) wrap.removeAttribute('aria-busy');
+  }
+
+  const RF = () => window.ReadingFormat;
+
+  function capAspectName(a) {
+    const s = String(a || '');
+    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  }
+
+  function aspectInterpretation(I, asp) {
+    if (!I || !asp) return '';
+    const type = capAspectName(asp.aspect);
+    const via = I.getAspectMeaning && I.getAspectMeaning(type, asp.planet1, asp.planet2);
+    if (via && via.indexOf('adds texture') === -1) return via;
+    return `${asp.planet1} ${type.toLowerCase()} ${asp.planet2} colours how these two parts of your chart speak to each other — notice when both themes show up in the same story.`;
+  }
+
+  function planetIcon(name) {
+    return (window.AstroIcons && AstroIcons.planet)
+      ? AstroIcons.planet(name, { sm: true, hidden: true })
+      : '<span aria-hidden="true">' + (PLANET_GLYPHS[name] || '') + '</span>';
   }
 
   function renderTabs(chart) {
     const I = window.AstroInterpretations;
+    const fmt = RF();
 
     // Overview
     const ov = document.getElementById('analysis-content');
@@ -594,16 +655,52 @@
       let a = null;
       try { a = I && I.analyzeChartDetailed ? I.analyzeChartDetailed(chart) : null; } catch (e) { a = null; }
       const blocks = [];
-      blocks.push(analysisSection('Dominant Energy',
-        `Your chart leads with <strong>${chart.dominantElement}</strong> energy in the <strong>${chart.dominantModality}</strong> mode. ` +
-        `The chart ruler is <strong>${cap(chart.chartRuler || '—')}</strong>, lord of your ${chart.risingSign} Ascendant.`));
-      if (a) {
-        if (a.personality) blocks.push(analysisSection('Personality', a.personality));
-        if (a.love)        blocks.push(analysisSection('Love & Connection', a.love));
-        if (a.career)      blocks.push(analysisSection('Career & Calling', a.career));
-        if (a.challenges)  blocks.push(analysisSection('Growth Edges', a.challenges));
-        if (a.lifePurpose) blocks.push(analysisSection('Life Purpose', a.lifePurpose));
+      const tocItems = [];
+      let readText = '';
+
+      if (fmt) {
+        const chips = [
+          cap(chart.dominantElement) + ' · dominant element',
+          cap(chart.dominantModality) + ' · modality',
+          'Ruler ' + cap(chart.chartRuler || '—'),
+        ];
+        if (a) {
+          ['personality', 'love', 'career', 'challenges', 'lifePurpose'].forEach(function (k) {
+            if (a[k]) readText += a[k] + ' ';
+          });
+        }
+        blocks.push(fmt.hero({
+          name: chart.name || 'Your natal chart',
+          chips: chips,
+          readMin: fmt.estimateReadMin(readText || 'reading'),
+        }));
       }
+
+      const dominantText =
+        `Your chart leads with ${chart.dominantElement} energy in a ${chart.dominantModality} mode. ` +
+        `Chart ruler ${cap(chart.chartRuler || '—')} steers your ${chart.risingSign} Ascendant — the lens others meet first.`;
+      blocks.push(analysisSection('Dominant Energy', dominantText, { featured: true, eyebrow: 'Start here' }));
+      tocItems.push({ title: 'Dominant Energy' });
+
+      if (a) {
+        const sections = [
+          ['Personality', a.personality, 'Core self', true],
+          ['Love & Connection', a.love, 'Relationships', false],
+          ['Career & Calling', a.career, 'Public path', false],
+          ['Growth Edges', a.challenges, 'Lessons', false],
+          ['Life Purpose', a.lifePurpose, 'Direction', false],
+        ];
+        sections.forEach(function (row) {
+          if (!row[1]) return;
+          blocks.push(analysisSection(row[0], row[1], { eyebrow: row[2], featured: row[3], collapsed: !row[3] }));
+          tocItems.push({ title: row[0] });
+        });
+      }
+
+      if (fmt && tocItems.length > 1) {
+        blocks.splice(1, 0, fmt.toc(tocItems));
+      }
+
       const patterns = I && I.detectChartPatterns
         ? I.detectChartPatterns(chart.positions, chart.aspects)
         : [];
@@ -611,16 +708,13 @@
         const patternCards = patterns.map(patt => `
           <div class="pattern-card">
             <div class="pattern-card__head">
-              <span class="pattern-card__glyph">${patt.glyph}</span>
-              <strong class="pattern-card__name">${patt.name}</strong>
+              <span class="pattern-card__glyph">${esc(patt.glyph)}</span>
+              <strong class="pattern-card__name">${esc(patt.name)}</strong>
               ${patt.strength === 'major' ? '<span class="pattern-card__badge">Major</span>' : ''}
             </div>
-            <p class="pattern-card__body">${patt.description}</p>
+            <p class="pattern-card__body">${esc(patt.description)}</p>
           </div>`).join('');
-        blocks.push(`<div class="analysis-section">
-          <h4 class="analysis-section__title">Chart Patterns</h4>
-          ${patternCards}
-        </div>`);
+        blocks.push('<p class="ap-reading-section-label">Chart patterns</p>' + patternCards);
       }
 
       // Part of Fortune — needs a real Ascendant, so only when birth time is
@@ -652,101 +746,124 @@
           <div class="pattern-card pattern-card--star">
             <div class="pattern-card__head">
               <span class="eng-star-mark" style="color:#c9a88a;"></span>
-              <strong class="pattern-card__name pattern-card__name--star">${fs.point} conjunct ${fs.star}</strong>
-              <span class="pattern-card__meta">${fs.orb.toFixed(1)}° orb · ${fs.constellation}</span>
-              ${fs.royal ? `<span class="pattern-card__badge" style="color:var(--gold);">★ Royal Star — ${fs.royal}</span>` : ''}
+              <strong class="pattern-card__name pattern-card__name--star">${esc(fs.point)} conjunct ${esc(fs.star)}</strong>
+              <span class="pattern-card__meta">${esc(fs.orb.toFixed(1))}° orb · ${esc(fs.constellation)}</span>
+              ${fs.royal ? `<span class="pattern-card__badge" style="color:var(--gold);">★ Royal Star — ${esc(fs.royal)}</span>` : ''}
             </div>
-            <p class="pattern-card__body">${fs.meaning}</p>
+            <p class="pattern-card__body">${esc(fs.meaning)}</p>
           </div>`).join('');
-        blocks.push(`<div class="analysis-section">
-          <h4 class="analysis-section__title">Fixed Star Conjunctions</h4>
-          <p style="font-size:0.85em;color:var(--silver-dim);margin-bottom:var(--space-3);">Natal points within 1° of the major named stars, precession-corrected to your birth year.</p>
-          ${starCards}
-        </div>`);
+        blocks.push('<p class="ap-reading-section-label">Fixed star conjunctions</p>' +
+          '<p class="ap-reading-card__meta" style="margin:0 0 var(--space-4);max-width:65ch;">Natal points within 1° of major named stars, precession-corrected to your birth year.</p>' +
+          starCards);
       }
 
-      ov.innerHTML = blocks.join('');
+      ov.innerHTML = '<div class="ap-reading-flow">' + blocks.join('') + '</div>';
     }
 
-    // Planets
+    // Planets — placement cards with chunked interpretations
     const pt = document.getElementById('planets-table');
-    if (pt) {
+    if (pt && fmt) {
       const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','Lilith','NorthNode','SouthNode'];
       const DISPLAY_NAME = { NorthNode:'North Node', SouthNode:'South Node', Lilith:'Lilith' };
       pt.innerHTML = order.filter(k => chart.positions[k]).map(k => {
         const p = chart.positions[k];
         const h = chart.planetHouses[k];
-        const planetName = DISPLAY_NAME[k] ? DISPLAY_NAME[k].toLowerCase() : k.toLowerCase();
-        const signName = (p.sign || '').toLowerCase();
-        const dignity = I && I.getDignity ? I.getDignity(planetName, signName) : null;
-        const dignityHtml = dignity && dignity.status !== 'peregrine'
-          ? `<span class="dignity-badge dignity-badge--${dignity.status}" title="${dignity.note}" style="display:inline-block;margin-left:var(--space-2);font-size:0.7em;padding:1px 5px;border-radius:3px;vertical-align:middle;background:rgba(201, 162, 39,0.15);color:var(--gold);border:1px solid rgba(201, 162, 39,0.3);">${dignity.glyph} ${dignity.label}</span>`
+        const label = DISPLAY_NAME[k] || k;
+        const signName = p.sign || '';
+        const interp = I && I.getPlanetInterpretation
+          ? I.getPlanetInterpretation(label, signName)
           : '';
-        const decan = I && I.getDecan && typeof p.lon === 'number' ? I.getDecan(p.lon) : null;
-        const decanHtml = decan
-          ? ` · <span title="${decan.label} of ${p.sign} (triplicity sub-ruler)" style="cursor:help;">D${decan.index} ${decan.glyph}</span>`
+        const houseInterp = h && I && I.getPlanetInHouse ? (I.getPlanetInHouse(label, h) || '') : '';
+        const fullText = [interp, houseInterp].filter(Boolean).join(' ');
+        const meta = signName + (h ? ' · House ' + h : '') + ' · ' + fmtDeg(p) +
+          (p.retrograde ? ' · ℞ retrograde' : '');
+        const dignity = I && I.getDignity ? I.getDignity(label.toLowerCase(), signName.toLowerCase()) : null;
+        const dignityMeta = dignity && dignity.status !== 'peregrine'
+          ? ' · ' + dignity.label
           : '';
-        return `<div class="planet-data-row">
-          ${(window.AstroIcons && AstroIcons.PLANET_GLYPH[k]) ? AstroIcons.planet(k,{lg:true,class:'planet-data-row__orb'}) : '<span class="planet-data-row__glyph">'+(PLANET_GLYPHS[k]||'')+'</span>'}
-          <div>
-            <div class="planet-data-row__name">${DISPLAY_NAME[k] || k}${p.retrograde ? ' <span style="color:var(--crimson-light);font-size:0.7em;">℞</span>' : ''}</div>
-            <div class="planet-data-row__sign">${window.AstroIcons ? AstroIcons.sign(p.sign,{sm:true})+' ' : (SIGN_GLYPHS[p.sign]||'')+' '}${p.sign}${h ? ` · H${h}` : ''}${decanHtml}${dignityHtml}</div>
-          </div>
-          <span class="planet-data-row__deg">${fmtDeg(p)}</span>
-        </div>`;
+        return fmt.placement({
+          title: label + ' in ' + signName,
+          meta: meta + dignityMeta,
+          text: fullText.trim(),
+          icon: planetIcon(k),
+        });
       }).join('');
-      // Honest disclosure of which lunar-node model produced the nodes shown.
       if (chart.nodeMode) {
         const modeLabel = chart.nodeMode === 'true' ? 'True (osculating) node' : 'Mean node';
-        pt.innerHTML += `<p style="margin:var(--space-3) var(--space-4) 0;font-size:0.66rem;color:var(--silver-dim);letter-spacing:0.04em;">
-          Lunar nodes: <strong style="color:var(--gold-pale);">${modeLabel}</strong> · Lilith = mean Black Moon (lunar apogee). South Node = North Node + 180°.</p>`;
+        pt.innerHTML += '<p class="ap-reading-card__meta" style="text-align:center;margin-top:var(--space-4);">' +
+          'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180°</p>';
       }
+    } else if (pt) {
+      pt.innerHTML = '<p class="ap-reading-empty">Reading formatter loading — refresh if this persists.</p>';
     }
 
     // Houses
     const ht = document.getElementById('houses-table');
-    if (ht) {
+    if (ht && fmt) {
+      const planetsByHouse = {};
+      Object.keys(chart.positions || {}).forEach(function (k) {
+        const hh = chart.planetHouses && chart.planetHouses[k];
+        if (!hh) return;
+        planetsByHouse[hh] = planetsByHouse[hh] || [];
+        planetsByHouse[hh].push(k);
+      });
       ht.innerHTML = chart.houses.map((cusp, i) => {
         const sign = E().signOf(cusp);
         const deg  = cusp % 30;
         const dg = Math.floor(deg), mn = Math.round((deg - dg) * 60);
-        return `<div class="planet-data-row">
-          <span class="planet-data-row__glyph" style="font-size:0.75rem;color:var(--gold);">${roman(i + 1)}</span>
-          <div>
-            <div class="planet-data-row__name">House ${i + 1}</div>
-            <div class="planet-data-row__sign">${HOUSE_THEMES[i]}</div>
-          </div>
-          <span class="planet-data-row__deg">${window.AstroIcons ? AstroIcons.sign(sign,{sm:true})+' ' : (SIGN_GLYPHS[sign]||'')+' '}${dg}°${String(mn).padStart(2,'0')}′</span>
-        </div>`;
+        const hm = I && I.getHouseMeaning ? I.getHouseMeaning(i + 1) : null;
+        const occupants = (planetsByHouse[i + 1] || []).join(', ');
+        const text = (hm && hm.meaning ? hm.meaning + ' ' : '') +
+          (occupants ? 'Planets here: ' + occupants + '.' : 'No major planets in this house — the theme runs in the background until transits or progressions activate it.');
+        return fmt.placement({
+          title: 'House ' + (i + 1) + ' · ' + (HOUSE_THEMES[i] || ''),
+          meta: (hm && hm.keyword ? hm.keyword + ' · ' : '') + sign + ' ' + dg + '°' + String(mn).padStart(2, '0') + '′ on the cusp',
+          text: text,
+          icon: '<span class="ap-reading-card__aspect-glyph" style="font-size:0.85rem;color:var(--gold);">' + roman(i + 1) + '</span>',
+        });
       }).join('');
     }
 
     // Aspects
     const at = document.getElementById('aspects-table');
-    if (at) {
+    if (at && fmt) {
       const main = chart.aspects
         .filter(x => !['Ascendant','Midheaven','SouthNode'].includes(x.planet1) &&
                      !['Ascendant','Midheaven','SouthNode'].includes(x.planet2))
         .sort((x, y) => x.orb - y.orb)
         .slice(0, 18);
-      at.innerHTML = main.map(x => {
-        const d = ASPECT_DISPLAY[x.aspect] || { name: x.aspect, glyph: '·', color: 'var(--silver)' };
-        return `<div class="planet-data-row" style="border-left:3px solid ${d.color};padding-left:var(--space-3);">
-          <span class="planet-data-row__glyph" style="color:${d.color};">${d.glyph}</span>
-          <div>
-            <div class="planet-data-row__name">${x.planet1} ${d.name} ${x.planet2}</div>
-            <div class="planet-data-row__sign">${x.applying ? 'Applying' : 'Separating'}</div>
-          </div>
-          <span class="planet-data-row__deg">${x.orb.toFixed(1)}° orb</span>
-        </div>`;
-      }).join('') || '<p style="color:var(--silver-dim);padding:var(--space-4);">No major aspects within orb.</p>';
+      at.innerHTML = main.length
+        ? main.map(x => {
+          const d = ASPECT_DISPLAY[x.aspect] || { name: x.aspect, glyph: '·', color: 'var(--silver)' };
+          return fmt.aspect({
+            planet1: x.planet1,
+            planet2: x.planet2,
+            aspect: x.aspect,
+            display: d,
+            applying: x.applying,
+            orb: x.orb,
+            interpretation: aspectInterpretation(I, x),
+          });
+        }).join('')
+        : '<p class="ap-reading-empty">No major aspects within orb for this chart.</p>';
     }
   }
 
-  function analysisSection(title, html) {
+  function analysisSection(title, html, opts) {
+    opts = opts || {};
+    const fmt = RF();
+    if (fmt) {
+      return fmt.card({
+        title: title,
+        html: html,
+        eyebrow: opts.eyebrow || '',
+        featured: opts.featured,
+        collapsed: opts.collapsed,
+      });
+    }
     return `<div class="analysis-section">
-      <h4 class="analysis-section__title">${title}</h4>
-      <p>${html}</p>
+      <h4 class="analysis-section__title">${esc(title)}</h4>
+      <p>${esc(html)}</p>
     </div>`;
   }
   const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
@@ -831,12 +948,17 @@
 
     if (!snippets.length) { host.hidden = true; return; }
 
-    const orbFor = s =>
-      (window.AstroIcons && AstroIcons.SIGN_GLYPH && AstroIcons.SIGN_GLYPH[s.sign])
-        ? (s.planet && AstroIcons.PLANET_GLYPH && AstroIcons.PLANET_GLYPH[s.planet]
-            ? AstroIcons.planet(s.planet, { class: 'deep-snippet__orb' })
-            : AstroIcons.sign(s.sign, { class: 'deep-snippet__orb' }))
-        : '<span class="deep-snippet__orb eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>';
+    const orbFor = s => {
+      if (window.AstroIcons) {
+        if (s.planet && AstroIcons.planet) {
+          return AstroIcons.planet(s.planet, { class: 'deep-snippet__orb', hidden: true });
+        }
+        if (s.sign && AstroIcons.sign) {
+          return AstroIcons.sign(s.sign, { class: 'deep-snippet__orb', hidden: true });
+        }
+      }
+      return '<span class="deep-snippet__orb eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>';
+    };
 
     const cards = snippets.map(s => `
       <div class="deep-snippet">
@@ -911,10 +1033,43 @@
   // use the free chart.
   // ═══════════════════════════════════════════════════════════════════════════
 
+  const WALLPAPER_UNLOCK_KEY = 'ap_wallpaper_unlock';
+  const WALLPAPER_DATE_KEY = 'ap_shop_wallpaper_date';
   let wallpaperLeadWired = false;
+
+  function isValidEmail(e) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || '');
+  }
+
+  function isWallpaperUnlocked() {
+    try { return !!localStorage.getItem(WALLPAPER_UNLOCK_KEY); } catch (e) { return false; }
+  }
+
+  function setWallpaperUnlocked(email) {
+    try { localStorage.setItem(WALLPAPER_UNLOCK_KEY, email); } catch (e) {}
+  }
+
+  function revealWallpaperUnlockUi() {
+    const form = document.getElementById('wallpaper-email-form');
+    const unlocked = document.getElementById('wallpaper-unlocked');
+    if (isWallpaperUnlocked()) {
+      if (form) form.hidden = true;
+      if (unlocked) unlocked.hidden = false;
+    }
+  }
 
   function downloadWallpaper() {
     if (!currentChart) return;
+    if (!isWallpaperUnlocked()) {
+      const host = document.getElementById('wallpaper-lead');
+      if (host) {
+        host.hidden = false;
+        host.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.querySelector('#wallpaper-email-form [name="email"]')?.focus();
+      }
+      if (window.AstroApp) AstroApp.showToast('Email unlock', 'Enter your email once to download your wallpaper.', 'info');
+      return;
+    }
     exportShareImage(currentChart, 'wallpaper', { forceDownload: true });
   }
 
@@ -922,19 +1077,55 @@
     const host = document.getElementById('wallpaper-lead');
     if (!host || !chart) return;
     host.hidden = false;
+    revealWallpaperUnlockUi();
 
     if (wallpaperLeadWired) return;
     wallpaperLeadWired = true;
 
-    document.getElementById('wallpaper-download-btn')?.addEventListener('click', downloadWallpaper);
-    document.getElementById('wallpaper-lead-email')?.addEventListener('click', () => {
-      const ec = document.getElementById('email-capture');
-      if (ec) {
-        ec.hidden = false;
-        ec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        document.getElementById('email-capture-input')?.focus();
+    const form = document.getElementById('wallpaper-email-form');
+    const dateInput = form?.querySelector('[name="birthDate"]');
+    try {
+      const hint = localStorage.getItem(WALLPAPER_DATE_KEY);
+      if (hint && dateInput && !dateInput.value) dateInput.value = hint;
+    } catch (e) {}
+
+    form?.addEventListener('submit', ev => {
+      ev.preventDefault();
+      const email = (form.email?.value || '').trim();
+      const birthDate = (dateInput?.value || '').trim();
+      if (!isValidEmail(email)) {
+        if (window.AstroApp) AstroApp.showToast('Check your email', 'That address looks off.', 'warning');
+        else form.email?.focus();
+        return;
+      }
+      let res = { sent: 'local' };
+      if (window.AstroApp && typeof AstroApp.captureEmail === 'function') {
+        res = AstroApp.captureEmail(email, {
+          source: 'chart_wallpaper_unlock',
+          tag: 'tag_chart_wallpaper',
+          meta: {
+            forName: chart.name ? String(chart.name).split(/\s+/)[0] : null,
+            sunSign: chart.positions?.Sun?.sign || null,
+            hasBirthDate: !!birthDate,
+          },
+        });
+      }
+      if (birthDate) {
+        try { localStorage.setItem(WALLPAPER_DATE_KEY, birthDate); } catch (e) {}
+      }
+      setWallpaperUnlocked(email);
+      revealWallpaperUnlockUi();
+      downloadWallpaper();
+      if (window.AstroApp) {
+        AstroApp.showToast(
+          res.sent === 'provider' ? 'Unlocked' : 'Saved locally',
+          'Your wallpaper is downloading — cosmic weather by email when it ships.',
+          'success'
+        );
       }
     });
+
+    document.getElementById('wallpaper-download-btn')?.addEventListener('click', downloadWallpaper);
   }
 
   let emailCaptureWired = false;
@@ -1273,8 +1464,18 @@ host.classList.add('is-done');
     return px;
   }
 
-  // Sign-glyph helper drawing a small glass orb behind the unicode glyph.
-  function drawSignOrb(x, glyph, cx, cy, r, elemCol) {
+  // Sign seal on a glass orb plate; first letter of sign if seal not ready yet.
+  function drawSignOrb(x, signName, cx, cy, r, elemCol) {
+    const seals = window.APCanvasSeals;
+    if (seals && typeof seals.drawSealPlate === 'function') {
+      if (seals.drawSealPlate(x, signName, cx, cy, r, elemCol)) return;
+      // Plate already painted by drawSealPlate — letter fallback only.
+      x.fillStyle = PAL.parchment;
+      x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.font = `600 ${r * 0.72}px ${FONT_DISPLAY}`;
+      x.fillText((signName || '?').charAt(0), cx, cy + r * 0.04);
+      return;
+    }
     const grad = x.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
     grad.addColorStop(0, 'rgba(255,255,255,0.18)');
     grad.addColorStop(0.4, elemCol + 'cc');
@@ -1284,14 +1485,24 @@ host.classList.add('is-done');
     x.strokeStyle = 'rgba(196,146,10,0.55)';
     x.lineWidth = Math.max(1, r * 0.06);
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
-    // top highlight
     x.strokeStyle = 'rgba(255,255,255,0.28)';
     x.lineWidth = Math.max(1, r * 0.05);
     x.beginPath(); x.arc(cx, cy, r * 0.78, Math.PI * 1.15, Math.PI * 1.85); x.stroke();
     x.fillStyle = PAL.parchment;
     x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.font = `400 ${r * 0.95}px ${FONT_DISPLAY}`;
-    x.fillText(glyph, cx, cy + r * 0.04);
+    x.font = `600 ${r * 0.72}px ${FONT_DISPLAY}`;
+    x.fillText((signName || '?').charAt(0), cx, cy + r * 0.04);
+  }
+
+  function drawWheelSignSeal(x, sign, cx, cy, sizePx) {
+    const seals = window.APCanvasSeals;
+    if (seals && typeof seals.drawSeal === 'function' && seals.drawSeal(x, sign, cx, cy, sizePx)) {
+      return;
+    }
+    x.fillStyle = PAL.gold;
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = `600 ${sizePx * 0.85}px ${FONT_DISPLAY}`;
+    x.fillText((sign || '?').charAt(0), cx, cy);
   }
 
   // ── The natal wheel, drawn in design-space (cx,cy,radius in px) ────────────
@@ -1353,10 +1564,7 @@ host.classList.add('is-done');
 
       const mid = ang(i * 30 + 15);
       const gR  = (rBand + rSignInner) / 2;
-      x.fillStyle = PAL.gold;
-      x.font = `400 ${R * 0.1}px ${FONT_DISPLAY}`;
-      x.textBaseline = 'middle'; x.textAlign = 'center';
-      x.fillText(SIGN_GLYPHS[sign] || '', cx + Math.cos(mid) * gR, cy + Math.sin(mid) * gR);
+      drawWheelSignSeal(x, sign, cx + Math.cos(mid) * gR, cy + Math.sin(mid) * gR, R * 0.1);
     }
 
     // 10° ticks
@@ -1552,7 +1760,7 @@ host.classList.add('is-done');
 
         x.fillStyle = PAL.silver;
         x.font = `400 ${22 * scale}px ${FONT_SANS}`;
-        x.fillText(`${SIGN_GLYPHS[row.p.sign] || ''} ${row.p.sign}`, colX + 56 * scale, ry + 34 * scale);
+        x.fillText(row.p.sign, colX + 56 * scale, ry + 34 * scale);
 
         if (row.h) {
           x.fillStyle = PAL.silverDim;
@@ -1610,13 +1818,10 @@ host.classList.add('is-done');
 
     // Big-three one-liner
     y += 52 * S;
-    const sunG = SIGN_GLYPHS[chart.positions.Sun.sign] || '';
-    const moonG = SIGN_GLYPHS[chart.positions.Moon.sign] || '';
-    const riseG = SIGN_GLYPHS[chart.risingSign] || '';
     x.fillStyle = PAL.goldPale;
     x.font = `500 ${22 * S}px ${FONT_SANS}`;
     x.fillText(
-      `☉ ${sunG} ${chart.positions.Sun.sign}   ·   ☽ ${moonG} ${chart.positions.Moon.sign}   ·   ↑ ${riseG} ${chart.risingSign}`,
+      `☉ ${chart.positions.Sun.sign}   ·   ☽ ${chart.positions.Moon.sign}   ·   ↑ ${chart.risingSign}`,
       W / 2, y);
 
     // Glass orbs row
@@ -1631,7 +1836,7 @@ host.classList.add('is-done');
     trio.forEach((t, i) => {
       const tx = W / 2 + (i - 1) * gap;
       const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
-      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+      drawSignOrb(x, t.sign, tx, y, orbR, elemCol);
       x.fillStyle = PAL.goldPale;
       x.font = `600 ${12 * S}px ${FONT_SANS}`;
       x.textAlign = 'center';
@@ -1706,7 +1911,7 @@ host.classList.add('is-done');
     trio.forEach((t, i) => {
       const tx = W / 2 + (i - 1) * gap;
       const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
-      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+      drawSignOrb(x, t.sign, tx, y, orbR, elemCol);
 
       x.fillStyle = PAL.gold;
       x.font = `600 ${13 * S}px ${FONT_SANS}`;
@@ -1805,7 +2010,7 @@ host.classList.add('is-done');
     trio.forEach((t, i) => {
       const tx = W / 2 + (i - 1) * gap;
       const elemCol = ELEMENT_COLORS[ELEMENT_MAP[t.sign]] || PAL.lapis;
-      drawSignOrb(x, SIGN_GLYPHS[t.sign] || '?', tx, y, orbR, elemCol);
+      drawSignOrb(x, t.sign, tx, y, orbR, elemCol);
       x.fillStyle = PAL.goldPale;
       x.font = `600 ${15 * S}px ${FONT_SANS}`;
       x.textAlign = 'center';

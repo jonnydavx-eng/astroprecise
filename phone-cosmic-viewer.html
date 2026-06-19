@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AstroPrecise — cosmic intro viewer</title>
+  <style>
+    :root { --bg:#050406; --ink:#e8e4f0; --muted:#9a94b0; --accent:#c9a227; --ok:#3fb950; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui,Segoe UI,sans-serif; }
+    main { position:fixed; inset:0; margin:0; padding:0; }
+    .hud { position:fixed; left:0; right:0; bottom:0; z-index:60; padding:12px 14px max(14px, env(safe-area-inset-bottom)); background:linear-gradient(0deg, rgba(5,4,6,.92), rgba(5,4,6,.55) 70%, transparent); pointer-events:none; }
+    .hud h1 { margin:0 0 4px; font-size:14px; letter-spacing:.04em; }
+    .hud p { margin:0; font-size:12px; color:var(--muted); }
+    .tag { display:inline-block; margin-top:6px; border-radius:99px; padding:3px 10px; font-size:11px; font-weight:700; background:rgba(201,162,39,.18); color:var(--accent); }
+    .tag.ok { background:rgba(63,185,80,.18); color:var(--ok); }
+    #probe { position:fixed; inset:0; width:100%; height:100%; border:0; z-index:1; background:var(--bg); }
+    .skip-link { position:absolute; left:-9999px; top:0; z-index:100; padding:10px 16px; background:var(--accent);
+      color:#1a1204; font-size:14px; text-decoration:none; border-radius:4px; }
+    .skip-link:focus { left:12px; top:12px; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <main id="main" aria-labelledby="viewer-title">
+    <iframe id="probe" title="Cosmic intro preview" src="about:blank"></iframe>
+    <div class="hud">
+      <h1 id="viewer-title">Cosmic intro viewer</h1>
+      <p id="phase">Loading…</p>
+      <span class="tag" id="status">watching</span>
+    </div>
+  </main>
+  <script>
+    const HOSTS = { lan: '192.168.30.97', ts: '100.125.139.73' };
+    const params = new URLSearchParams(location.search);
+    const hostIp = /^(\d{1,3}\.){3}\d{1,3}$/.test(location.hostname)
+      ? location.hostname
+      : (params.get('host') || HOSTS.lan);
+    const BASE = (params.get('base') || `http://${hostIp}:8790`).replace(/\/$/, '');
+    const COLLECTOR = (params.get('collector') || `http://${hostIp}:8791`).replace(/\/$/, '');
+    const probe = document.getElementById('probe');
+    const phaseEl = document.getElementById('phase');
+    const statusEl = document.getElementById('status');
+
+    const target = `${BASE}/index-full.html?full=1&v=${Date.now()}`;
+    probe.src = target;
+
+    let lastPhase = '';
+    let reported = false;
+
+    function postReport(payload) {
+      if (reported) return;
+      reported = true;
+      fetch(`${COLLECTOR}/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+    }
+
+    setInterval(() => {
+      try {
+        const doc = probe.contentDocument;
+        const win = probe.contentWindow;
+        if (!doc || !win) return;
+        const phase = doc.getElementById('preloader-phase')?.textContent?.trim() || '';
+        const pre = doc.getElementById('preloader');
+        const O = win.Orrery3D;
+        if (phase && phase !== lastPhase) {
+          lastPhase = phase;
+          phaseEl.textContent = phase;
+        }
+        if (O && pre) {
+          const aligned = pre.classList.contains('aligned');
+          const cosmic = pre.classList.contains('preloader--cosmic');
+          const progress = O.getIntroProgress?.() ?? 0;
+          statusEl.textContent = `${Math.round(progress * 100)}% · scale ${O.getScaleLevel?.() ?? '—'}`;
+          if (aligned && O.hasIntroCompleted?.()) {
+            statusEl.textContent = 'Earth ready — tap Enter';
+            statusEl.classList.add('ok');
+            const canvas = doc.getElementById('orrery-canvas');
+            const starfield = doc.getElementById('starfield-canvas');
+            postReport({
+              source: 'phone-cosmic-viewer',
+              base: BASE,
+              phase,
+              aligned,
+              cosmic,
+              progress,
+              scaleLevel: O.getScaleLevel?.(),
+              canvasW: canvas?.clientWidth || 0,
+              canvasH: canvas?.clientHeight || 0,
+              starfieldW: starfield?.clientWidth || 0,
+              starfieldH: starfield?.clientHeight || 0,
+              viewportW: doc.documentElement?.clientWidth || 0,
+              viewportH: doc.documentElement?.clientHeight || 0,
+              ua: navigator.userAgent,
+              ts: new Date().toISOString(),
+            });
+          }
+        }
+      } catch (_) { /* cross-origin until same host */ }
+    }, 400);
+
+    setTimeout(() => {
+      postReport({ source: 'phone-cosmic-viewer', base: BASE, error: 'timeout', ts: new Date().toISOString() });
+    }, 120000);
+  </script>
+</body>
+</html>

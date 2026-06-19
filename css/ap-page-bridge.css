@@ -1,0 +1,62 @@
+/**
+ * AstroPrecise — page enter fade + cross-document view transitions.
+ * Loaded on lite shell and tool pages before full main.css.
+ */
+
+@view-transition {
+  navigation: auto;
+}
+
+@keyframes ap-nav-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.02); }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+body.ap-nav-enter {
+  opacity: 0;
+}
+
+body.ap-nav-enter.ap-nav-enter--active {
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.35s ease both;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  animation: vt-fade-in 0.35s ease both;
+  z-index: 2;
+}
+
+/* Toasts (from main.css) stay above transition groups when main.css is deferred */
+.toast-container {
+  z-index: 10050;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.ap-nav-enter,
+  body.ap-nav-enter.ap-nav-enter--active {
+    opacity: 1;
+    transition: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+  }
+}

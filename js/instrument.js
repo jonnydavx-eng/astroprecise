@@ -10,6 +10,14 @@
   if (!document.getElementById('sec-lightcone')) return;
 
   const E = () => window.AstroEphemeris;
+  const esc = (window.AP_SAFE && window.AP_SAFE.esc)
+    ? s => window.AP_SAFE.esc(s)
+    : s => String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   const STORE_KEY = 'ap_instrument_event';
   let event_ = null;   // { dt: ISO string, lat, lon, tz, city }
 
@@ -758,13 +766,20 @@
     document.getElementById('daimon-identity').innerHTML = `
       <div class="daimon-card">
         <p class="instrument-eyebrow">Summoned from your chart</p>
-        <p class="daimon-name">${d.name}</p>
-        <p class="daimon-epithet">${d.epithet}</p>
-        <p class="grimoire" style="margin-top:var(--space-4);font-size:1.05rem;">${d.temperament}</p>
+        <p class="daimon-name">${esc(d.name)}</p>
+        <p class="daimon-epithet">${esc(d.epithet)}</p>
+        <p class="grimoire" style="margin-top:var(--space-4);font-size:1.05rem;">${esc(d.temperament)}</p>
       </div>`;
   }
 
+  function withDaimon(fn) {
+    if (window.ApEphemerisLazy) return ApEphemerisLazy.loadDaimon().then(fn);
+    if (window.Daimon) { fn(); return Promise.resolve(); }
+    return Promise.resolve();
+  }
+
   document.getElementById('daimon-read').addEventListener('click', () => {
+    withDaimon(() => {
     if (!window.Daimon) return;
     const btn = document.getElementById('daimon-read');
     const status = document.getElementById('daimon-status');
@@ -776,11 +791,11 @@
         const r = window.Daimon.compose(natal, { aliveText: alive, date: new Date() });
         const el = document.getElementById('daimon-reading');
         el.innerHTML =
-          `<h3 style="font-family:var(--font-display);color:var(--gold-pale);letter-spacing:0.06em;margin-bottom:var(--space-4);">${r.title}</h3>` +
-          r.sections.map(s => `<h4>${s.heading}</h4>` + s.paragraphs.map(p => `<p>${p}</p>`).join('')).join('') +
+          `<h3 style="font-family:var(--font-display);color:var(--gold-pale);letter-spacing:0.06em;margin-bottom:var(--space-4);">${esc(r.title)}</h3>` +
+          r.sections.map(s => `<h4>${esc(s.heading)}</h4>` + s.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')).join('') +
           `<div style="border:1px solid rgba(201, 162, 39,0.3);border-radius:var(--radius-lg);padding:var(--space-5);margin-top:var(--space-6);background:rgba(20, 16, 10,0.4);">
             <p class="instrument-eyebrow" style="margin-bottom:var(--space-2);">The question</p>
-            <p style="font-style:italic;font-size:1.25rem;">${r.question}</p>
+            <p style="font-style:italic;font-size:1.25rem;">${esc(r.question)}</p>
           </div>`;
         document.getElementById('daimon-answer-box').hidden = false;
         status.textContent = r.wordCount + ' words · composed from today\'s sky and your history';
@@ -818,15 +833,18 @@
       }
       btn.disabled = false;
     }, 600);
+    }).catch(() => {});
   });
 
   document.getElementById('daimon-answer-send').addEventListener('click', () => {
+    withDaimon(() => {
     const t = document.getElementById('daimon-answer').value.trim();
     if (!t || !window.Daimon) return;
     window.Daimon.answer(t);
     document.getElementById('daimon-answer').value = '';
     document.getElementById('daimon-answer-box').hidden = true;
     if (window.AstroApp) AstroApp.showToast('Received', 'The daimon will remember.', 'success');
+    }).catch(() => {});
   });
 
   // ── Section 5: Quantum draw ───────────────────────────────────────────────
@@ -1236,8 +1254,11 @@
       const adj = frame === 'sidereal' ? ((lon - ayan) % 360 + 360) % 360 : lon;
       const sign = E().signOf(adj);
       const deg = Math.floor(adj % 30);
+      const orb = (window.AstroIcons && AstroIcons.planet)
+        ? AstroIcons.planet(name, { sm: true })
+        : glyph;
       return `<div class="field-row">
-        <span class="field-row__label">${glyph} ${name}</span>
+        <span class="field-row__label">${orb} ${name}</span>
         <span class="field-row__value">${sign} ${deg}°</span>
         <span class="field-row__src src-computed">${frame}${frame === 'sidereal' ? ` · ayanāṁśa ${ayan.toFixed(2)}°` : ''}</span>
       </div>`;
@@ -1254,14 +1275,33 @@
 
   // ── Section 8: Time travel ────────────────────────────────────────────────
 
-  function initTimeTravel() {
-    const canvas = document.getElementById('tt-canvas');
-    if (window.Orrery3D && canvas) window.Orrery3D.init(canvas);
+  let ttCanvasInited = false;
 
+  function initOrreryCanvas() {
+    if (ttCanvasInited) return;
+    const canvas = document.getElementById('tt-canvas');
+    if (window.Orrery3D && canvas) {
+      window.Orrery3D.init(canvas);
+      ttCanvasInited = true;
+    }
+  }
+
+  function withOrrery3D(fn) {
+    if (window.ApEphemerisLazy) {
+      return ApEphemerisLazy.loadOrrery3D().then(() => { initOrreryCanvas(); fn(); });
+    }
+    initOrreryCanvas();
+    if (window.Orrery3D) { fn(); return Promise.resolve(); }
+    return Promise.resolve();
+  }
+
+  document.addEventListener('ap:orrery3d-ready', initOrreryCanvas);
+
+  function initTimeTravel() {
     document.getElementById('tt-go').addEventListener('click', () => {
       const v = document.getElementById('tt-datetime').value;
       if (!v) return;
-      window.Orrery3D.goTo(new Date(v));
+      withOrrery3D(() => window.Orrery3D.goTo(new Date(v))).catch(() => {});
     });
 
     document.getElementById('tt-read').addEventListener('click', () => {
@@ -1316,9 +1356,12 @@
       PLANETS.forEach(p => {
         const pos = raw.positions[p.k];
         if (!pos) return;
+        const orb = (window.AstroIcons && AstroIcons.planet)
+          ? AstroIcons.planet(p.n, { sm: true })
+          : p.g;
         items.push(
           '<div class="sig-cell">' +
-            '<span class="sig-cell__glyph">' + p.g + '</span>' +
+            '<span class="sig-cell__glyph">' + orb + '</span>' +
             '<span class="sig-cell__label">' + p.n + '</span>' +
             '<span class="sig-cell__value">' + (pos.sign || '?') + ' ' + Math.floor(pos.degree || 0) + '°</span>' +
           '</div>'
@@ -1349,7 +1392,7 @@
     });
     renderLightCone();
     renderZenith();
-    renderDaimonIdentity();
+    withDaimon(renderDaimonIdentity).catch(() => {});
     renderNatalSignature();
     renderWeather();   // re-render personalised
   }
@@ -1364,7 +1407,34 @@
     else renderWeather();     // no event yet — show the generic sky weather
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+  function scheduleBoot() {
+    const hash = (location.hash || '').replace(/^#/, '');
+    if (hash && hash !== 'oracle') {
+      boot();
+      return;
+    }
+    const target = document.getElementById('sec-clock')
+      || document.querySelector('.instrument-section');
+    if (!target || !('IntersectionObserver' in window)) {
+      boot();
+      return;
+    }
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      boot();
+    };
+    const io = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) {
+        io.disconnect();
+        start();
+      }
+    }, { rootMargin: '0px 0px 200px 0px', threshold: 0 });
+    io.observe(target);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleBoot);
+  else scheduleBoot();
 
 })();
