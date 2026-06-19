@@ -56,7 +56,7 @@ body:has(.nn-hero) .eng-i {
 }
 
 :root {
-      --nn-gold: #c9a227;
+      --nn-gold: var(--gold, #c9a227);
       --nn-gold-pale: #e8c96a;
       --nn-white: #f0e8d8;
       --nn-silver: #A89E88;

@@ -28,7 +28,7 @@ body:has(.an-hero) .footer-zodiac-strip {
 
 /* ── Page-local tokens ── */
     :root {
-      --an-gold: #c9a227;
+      --an-gold: var(--gold, #c9a227);
       --an-gold-pale: #e8c96a;
       --an-surface: rgba(20, 16, 10, 0.72);
       --an-border: rgba(196,146,10,0.18);
