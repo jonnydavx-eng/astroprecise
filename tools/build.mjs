@@ -21,7 +21,8 @@ const OUT = join(ROOT, 'dist')
 
 // Dev-only dirs/files that must NOT ship in the deployable output.
 const SKIP_DIRS = new Set(['tools', 'node_modules'])
-const SKIP_FILES = new Set(['serve-preview.mjs'])
+// Internal dev tools — kept in source for local use, never deployed publicly.
+const SKIP_FILES = new Set(['serve-preview.mjs', 'phone-audit.html', 'phone-cosmic-viewer.html'])
 const SKIP_EXT = new Set(['.mjs', '.md'])
 
 // --raw: same deployable file selection, but copy verbatim (no minify / no HTML
