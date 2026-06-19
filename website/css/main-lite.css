@@ -1097,7 +1097,7 @@ body:has(#starfield-canvas) .lib__banner {
   border: none;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
-  color: var(--silver-dim, #8891AA);
+  color: var(--silver-dim, var(--ap-text-muted, #8891AA));
   font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
@@ -1131,7 +1131,7 @@ body:has(#starfield-canvas) .lib__banner {
 
 .ap-email-modal__sub {
   font-size: 0.88rem;
-  color: var(--silver, #C8D0E8);
+  color: var(--silver, var(--ap-text-secondary, #C8D0E8));
   line-height: 1.65;
   margin: 0 0 var(--space-4);
 }
@@ -1432,7 +1432,7 @@ body.preloader-active .privacy-banner {
   border-radius: 8px;
   border: 1px solid rgba(201, 162, 39, 0.22);
   background: rgba(255, 255, 255, 0.04);
-  color: var(--silver, #C8D0E8) !important;
+  color: var(--silver, var(--ap-text-secondary, #C8D0E8)) !important;
   text-decoration: none !important;
   flex-shrink: 0;
   transition: background 0.2s, border-color 0.2s, color 0.2s;

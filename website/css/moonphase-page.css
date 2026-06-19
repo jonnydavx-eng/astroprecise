@@ -294,7 +294,16 @@ body:has(.mp-hero) .moonphase-svg {
       padding: 1.4rem 1.5rem; transition: border-color 0.2s;
     }
     .mp-edu-card:hover { border-color: rgba(201, 162, 39,0.2); }
-    .mp-edu-card__icon { font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
+    /* Engraved icon base — this page lacks the per-page critical .eng-i rule, so
+       define it here. Without it the inline moon discs (and js-injected result
+       moons) would fall back to default black fill / no stroke. */
+    body:has(.mp-hero) .eng-i {
+      display: inline-block; vertical-align: -0.12em;
+      fill: none; stroke: currentColor; stroke-width: 1.6;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .mp-edu-card__icon { margin-bottom: 0.5rem; display: block; line-height: 1; color: var(--gold-text); }
+    .mp-edu-card__icon .eng-i { width: 1.6rem; height: 1.6rem; vertical-align: middle; }
     .mp-edu-card__title {
       font-family: var(--font-display, 'Cinzel', serif);
       font-size: 0.88rem; font-weight: 700; color: var(--white);

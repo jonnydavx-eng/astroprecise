@@ -99,6 +99,15 @@
     <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
     <symbol id="ei-planet" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M4.5 14.8C2.6 13.9 1.6 12.9 2 12c.6-1.4 4.6-1.6 9.4-.4M19.5 9.2c1.9.9 2.9 1.9 2.5 2.8-.6 1.4-4.6 1.6-9.4.4" transform="rotate(-18 12 12)"/></symbol>
     <symbol id="ei-warn" viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4L12 4ZM12 10v4.2M12 16.8v.4"/></symbol>
+    <!-- Moon phase discs (ei-moon0..7) — gold-rimmed lit-disc faces; mirror horoscope.html sprite. Referenced by the educational cards below and by js/moonphase.js result HTML. -->
+    <symbol id="ei-moon0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/></symbol>
+    <symbol id="ei-moon1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6" fill="currentColor" opacity=".85"/><circle cx="12" cy="12" r="7.6"/></symbol>
+    <symbol id="ei-moon5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
   </svg>
 
   <!-- Cosmic background -->
@@ -234,22 +243,22 @@
 
         <div class="mp-edu-grid">
           <div class="mp-edu-card">
-            <span class="mp-edu-card__icon" aria-hidden="true">&#127761;</span>
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon0"/></svg></span>
             <p class="mp-edu-card__title">New Moon</p>
             <p class="mp-edu-card__text">The Moon sits between Earth and Sun, its lit face turned away. A dark sky — traditionally a clean slate for intentions.</p>
           </div>
           <div class="mp-edu-card">
-            <span class="mp-edu-card__icon" aria-hidden="true">&#127762;</span>
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon1"/></svg></span>
             <p class="mp-edu-card__title">Waxing Crescent &amp; First Quarter</p>
             <p class="mp-edu-card__text">Light grows on the right (northern hemisphere). Momentum builds; the half-lit First Quarter is a push-through decision point.</p>
           </div>
           <div class="mp-edu-card">
-            <span class="mp-edu-card__icon" aria-hidden="true">&#127765;</span>
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon4"/></svg></span>
             <p class="mp-edu-card__title">Full Moon</p>
             <p class="mp-edu-card__text">Earth lies between Sun and Moon; the full face is lit and high at midnight. A peak of clarity, feeling, and culmination.</p>
           </div>
           <div class="mp-edu-card">
-            <span class="mp-edu-card__icon" aria-hidden="true">&#127768;</span>
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon7"/></svg></span>
             <p class="mp-edu-card__title">Waning &amp; Last Quarter</p>
             <p class="mp-edu-card__text">Light fades from the right. A season of gratitude, release, and reassessment before the cycle renews at the next New Moon.</p>
           </div>
