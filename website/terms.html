@@ -17,7 +17,7 @@
     @font-face{font-family:'Cinzel';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cinzel-normal-600.woff2) format('woff2');}
     @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-normal-400.woff2) format('woff2');}
     @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cormorant-garamond-normal-600.woff2) format('woff2');}
-    @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-italic-400.woff2) format('woff2');}
+    @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-italic-400.woff2) format('woff2');}
     @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:block;src:url(fonts/inter-normal-400.woff2) format('woff2');}
     :root{ --gold:#C9A227; --gold-light:#EFE3C0; --ink:#E8E0D0; --dim:#A89E88; --void:#070608; }
     *{box-sizing:border-box;}
@@ -58,10 +58,11 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
   </svg>
-  <main class="legal-doc">
+  <main id="main-content" class="legal-doc">
     <div class="legal-top">
       <a class="legal-brand" href="index.html"><span><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ASTROPRECISE</span></a>
       <a href="privacy.html">Privacy →</a>
@@ -138,8 +139,6 @@
     <p class="legal-foot">AstroPrecise &middot; the sky, read honestly.
       &nbsp;<a href="index.html">Return to the sky</a> &middot; <a href="privacy.html">Privacy Policy</a></p>
   </main>
-  <a class="skip-link" href="#main-content">Skip to content</a>
-  <main id="main-content" class="legal-doc">
   <footer class="legal-footer" role="contentinfo"></footer>
   <script src="js/footer-chrome.js" defer></script>
 </body>

@@ -1,6 +1,6 @@
 # STATUS — AstroPrecise · 2026-06-19
 
-**State:** 🚀 **DEPLOYED ap-v446** to production (gh-pages `0d3a4db`, was `61ebe1b`/ap-v277). First live update since ap-v277 — ships the full ap-v278→v446 accumulated work **plus** this session's overhaul (engine precision, security, polar-house fix, build tooling). Deployed **source (unminified)**; the minified build (`npm run build`) is ready but pending browser QA before switching the deploy to it.
+**State:** 🚀 **DEPLOYED ap-v447** to production (gh-pages `bb52729`). v446→v447 = cinematic start sequence (opt-in narration, 26s galaxy→Earth fly-in, satellites removed, HD on high tier). main `3363047`. Rollback to v446: `git push origin 0d3a4db:gh-pages --force`. ⚠ deployed without agent browser-QA. **In progress:** sitewide structure+artwork refinement (45-page audit running). Earlier baseline: ap-v446 (gh-pages `0d3a4db`, was `61ebe1b`/ap-v277). First live update since ap-v277 — ships the full ap-v278→v446 accumulated work **plus** this session's overhaul (engine precision, security, polar-house fix, build tooling). Deployed **source (unminified)**; the minified build (`npm run build`) is ready but pending browser QA before switching the deploy to it.
 
 **Rollback:** `git push origin 61ebe1b:gh-pages --force` restores the prior live state.
 

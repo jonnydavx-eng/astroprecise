@@ -21,6 +21,7 @@
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
   <meta name="theme-color" content="#050406" />
   <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/angel-numbers-page.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <style>
@@ -77,6 +78,7 @@
 
   </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
 
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
@@ -443,7 +445,7 @@
           var body = m.reference ? m.reference.title + ' · ' + m.planetaryHour.ruler + ' hour'
                                  : 'Numerology ' + m.timeRoot + ' · ' + m.planetaryHour.ruler + ' hour';
           if (window.AstroApp && typeof AstroApp.showToast === 'function') {
-            AstroApp.showToast(' + title, body, 'info', 6000);
+            AstroApp.showToast(title, body, 'info', 6000);
           }
         }
       } else {
@@ -471,5 +473,6 @@
   </script>
 
   <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
 </body>
 </html>
