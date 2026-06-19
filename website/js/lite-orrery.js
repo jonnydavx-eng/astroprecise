@@ -382,14 +382,7 @@
     [0.05, 0.12, 0.32], [-0.22, -0.38, 0.1], [0.38, 0.32, 0.15],
   ];
 
-  var LEO_SPECS = [
-    { r: 0.11, speed: 0.0028, phase: 0.2, kind: 'iss' },
-    { r: 0.115, speed: 0.0022, phase: 1.4, kind: 'hub' },
-    { r: 0.108, speed: 0.0032, phase: 2.8, kind: 'train' },
-    { r: 0.16, speed: 0.0009, phase: 0.6, kind: 'gps' },
-    { r: 0.162, speed: 0.00085, phase: 2.1, kind: 'gps' },
-    { r: 0.158, speed: 0.00092, phase: 4.2, kind: 'gps' },
-  ];
+  var LEO_SPECS = [];  // satellites removed — clean blue-marble Earth (parity with the WebGL scene)
 
   var debrisSeeds = null;
   function debrisSeedList() {

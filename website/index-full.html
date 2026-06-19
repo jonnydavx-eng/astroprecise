@@ -1612,10 +1612,11 @@
         <span class="apl-brand__wordmark">AstroPrecise</span>
       </div>
       <div class="apl-intro-progress" aria-hidden="true"><span class="apl-intro-progress__bar" id="preloader-intro-progress"></span></div>
-      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">The deep field</p>
-      <p class="apl-intro-phase-sub" id="preloader-phase-sub" aria-live="polite">Light left its stars long before anyone asked your name.</p>
+      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">Calibrating sky</p>
+      <p class="apl-intro-phase-sub" id="preloader-phase-sub" aria-live="polite">VSOP87 ephemeris warming in your browser.</p>
     </header>
     <button type="button" class="preloader-skip-intro" id="preloader-skip-intro" aria-label="Skip intro">Skip</button>
+    <button type="button" class="preloader-narrate-toggle" id="preloader-narrate" role="switch" aria-checked="false" aria-label="Narrate the journey">Narrate the journey</button>
     <div class="apl-cosmic-art" aria-hidden="true"></div>
     <div class="apl-stars" aria-hidden="true"></div>
     <div class="apl-orr" aria-hidden="true">
@@ -2240,6 +2241,37 @@
       });
     }
 
+    // Story narration is opt-in: the default fly-in is silent; this toggle
+    // enables the poetic chapter captions and persists the choice.
+    var narrateBtn = document.getElementById('preloader-narrate');
+    if (narrateBtn) {
+      var prmNarrate = false;
+      try { prmNarrate = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) {}
+      if (prmNarrate) {
+        narrateBtn.hidden = true;
+      } else {
+        var narrateOn = false;
+        try { narrateOn = (localStorage.getItem('ap_narrate_journey') === '1'); } catch (_) {}
+        var reflectNarrate = function () {
+          narrateBtn.setAttribute('aria-checked', narrateOn ? 'true' : 'false');
+          narrateBtn.classList.toggle('preloader-narrate-toggle--on', narrateOn);
+          narrateBtn.textContent = narrateOn ? 'Narration on' : 'Narrate the journey';
+        };
+        var applyNarrate = function () {
+          if (window.Orrery3D && typeof Orrery3D.setNarrate === 'function') Orrery3D.setNarrate(narrateOn);
+        };
+        reflectNarrate();
+        applyNarrate();
+        narrateBtn.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          narrateOn = !narrateOn;
+          reflectNarrate();
+          applyNarrate();
+        });
+      }
+    }
+
     function pulseEnterArrive() {
       if (!enterBtn || preDone) return;
       enterBtn.classList.remove('preloader-enter-btn--launch');
@@ -2315,6 +2347,7 @@
       if (ev.key !== 'Enter' && ev.key !== ' ') return;
       var tag = ev.target && ev.target.tagName ? ev.target.tagName : '';
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (ev.target === narrateBtn) return;  // let the narration toggle handle its own keypress
       if (!pre.classList.contains('aligned') && ev.target !== enterBtn) return;
       ev.preventDefault();
       enterSite();
