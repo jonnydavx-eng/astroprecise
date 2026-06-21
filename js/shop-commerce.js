@@ -722,7 +722,7 @@ window.AstroShop = (() => {
       const colName = cols[p.collection] ? cols[p.collection].name : '';
       const live = isLive(p);
       const cta = live
-        ? `<a class="btn btn--primary shopc-card__cta" href="${esc(checkoutHref(p))}" target="_blank" rel="noopener" data-ap-product="${esc(p.id)}">Buy now</a>`
+        ? `<div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="${esc(checkoutHref(p))}" target="_blank" rel="noopener" data-ap-product="${esc(p.id)}">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="${p.id}">Add to cart</button></div>`
         : `<button class="btn btn--outline shopc-card__cta" data-quickview="${p.id}">Notify me</button>`;
       const hook = p.marketingLine ? `<p class="shopc-card__hook">${esc(p.marketingLine)}</p>` : '';
       return `
@@ -736,7 +736,7 @@ window.AstroShop = (() => {
           <div class="shopc-card__body">
             <div class="shopc-card__kicker">${esc(colName)}${p.type ? ' · ' + (TYPE_LABEL[p.type] || '') : ''}${live ? ' · Live' : ''}</div>
             <div class="shopc-card__top">
-              <h3 class="shopc-card__name">${esc(p.name)}</h3>
+              <h4 class="shopc-card__name">${esc(p.name)}</h4>
               ${priceHtml(p)}
             </div>
             ${hook}
@@ -764,6 +764,14 @@ window.AstroShop = (() => {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
         });
       }
+    });
+
+    grid.querySelectorAll('[data-add-cart]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const p = productById(el.dataset.addCart);
+        if (p) cart.add(p);
+      });
     });
 
     // Dynamic mini-chart previews (seals + optional chart-render wheelOnly for saved profiles)
