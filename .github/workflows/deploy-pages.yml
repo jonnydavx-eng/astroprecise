@@ -64,7 +64,10 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./website
-          exclude_assets: 'tools'
+          # Match tools/build.mjs SKIP_* exclusions so the Actions deploy and the
+          # manual `build.mjs --raw` deploy publish an identical tree (no internal
+          # phone tools / dev docs leak to production).
+          exclude_assets: 'tools,phone-audit.html,phone-cosmic-viewer.html,CREDITS.md'
 
       - name: Notify search engines (IndexNow)
         if: success()
