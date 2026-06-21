@@ -25,31 +25,29 @@
     return false;
   }
 
-  function inject(src, next) {
-    if (scriptLoaded(src)) {
-      if (next) next();
-      return;
+  // Parallel download, in-order execution. Dynamically-inserted scripts are
+  // async by default; async=false puts them in the in-order-execution list, so
+  // the 6 chrome scripts (zodiac-constants → seals → icons → bridge → nav → app
+  // 116KB) fetch CONCURRENTLY but still run in their required setup order. The
+  // previous serial onload chain paid one round-trip per script — on a throttled
+  // connection that serial latency was the dominant LCP render-delay.
+  function loadChain() {
+    for (var i = 0; i < CHAIN.length; i++) {
+      if (scriptLoaded(CHAIN[i])) continue;
+      var s = document.createElement('script');
+      s.src = CHAIN[i];
+      s.async = false;
+      document.body.appendChild(s);
     }
-    var s = document.createElement('script');
-    s.src = src;
-    s.defer = true;
-    s.onload = function () { if (next) next(); };
-    s.onerror = function () { if (next) next(); };
-    document.body.appendChild(s);
-  }
-
-  function loadChain(index) {
-    if (index >= CHAIN.length) return;
-    inject(CHAIN[index], function () { loadChain(index + 1); });
   }
 
   window.AP_PAGE_BOOT = {
     CHAIN: CHAIN.slice(),
-    load: function () { loadChain(0); },
+    load: function () { loadChain(); },
   };
 
   function start() {
-    loadChain(0);
+    loadChain();
   }
 
   if (document.readyState === 'loading') {
