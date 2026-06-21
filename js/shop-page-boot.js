@@ -9,14 +9,23 @@
   function inject(src, next) {
     var s = document.createElement('script');
     s.src = src;
-    if (src.indexOf('ap-nav-model') < 0) s.defer = true;
+    s.async = false;
     s.onload = function () { if (next) next(); };
     document.body.appendChild(s);
   }
 
-  function chain(list, i) {
-    if (i >= list.length) return;
-    inject(list[i], function () { chain(list, i + 1); });
+  // Parallel download, in-order execution. Dynamically-inserted scripts are
+  // async by default; setting async=false puts them in the in-order-execution
+  // list, so they fetch concurrently but still run in definition order. On a
+  // throttled connection this is far faster than a serial onload chain (which
+  // pays one round-trip per script) while preserving global setup order.
+  function injectOrdered(list) {
+    for (var i = 0; i < list.length; i++) {
+      var s = document.createElement('script');
+      s.src = list[i];
+      s.async = false;
+      document.body.appendChild(s);
+    }
   }
 
   function revealImage(img) {
@@ -61,11 +70,11 @@
   var idle = ['js/tool-cards.js', 'js/art-theme-library.js', 'js/shop-art-themes.js', 'js/shop-curated.js'];
 
   function bootCore() {
-    chain(core, 0);
+    injectOrdered(core);
   }
 
   function bootIdle() {
-    chain(idle, 0);
+    injectOrdered(idle);
   }
 
   if (document.readyState === 'loading') {
