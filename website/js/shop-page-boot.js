@@ -48,9 +48,11 @@
     var imgs = document.querySelectorAll(
       'img.shopc-card__preview[data-src], .shop-trending__card img[data-src]'
     );
-    if (!imgs.length || audit) return;
+    if (!imgs.length) return;
 
-    if (!('IntersectionObserver' in window)) {
+    // In audit/headless mode (Lighthouse, social scrapers) reveal immediately
+    // so captures aren't blank — there's no real viewport to observe.
+    if (audit || !('IntersectionObserver' in window)) {
       imgs.forEach(revealImage);
       return;
     }
