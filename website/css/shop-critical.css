@@ -139,6 +139,54 @@ html.ap-fonts-ready .page-shop .shop-section-title {
   color: var(--ap-text-muted, var(--silver-dim));
 }
 
+/* ── Hero value-prop promise row (above-the-fold; duplicated for first paint) ── */
+.shop-hero-promise {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  justify-content: center;
+  list-style: none;
+  margin: var(--space-4) auto var(--space-5);
+  padding: 0;
+  max-width: 640px;
+}
+.shop-hero-promise__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+}
+.shop-hero-promise__item .eng-i { width: 13px; height: 13px; color: var(--gold); }
+.shop-hero-promise__item strong { color: var(--gold-pale); font-weight: 600; }
+@media (max-width: 560px) {
+  .shop-hero-promise { gap: var(--space-1) var(--space-4); }
+}
+
+/* ── Breadcrumb (top of page; duplicated for first paint) ── */
+.shop-breadcrumb {
+  max-width: var(--container-max, 1200px);
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-6) 0;
+}
+.shop-breadcrumb ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--silver-dim);
+}
+.shop-breadcrumb li + li::before { content: '/'; margin-right: var(--space-2); color: var(--silver-dark); }
+.shop-breadcrumb a { color: var(--silver-dim); text-decoration: none; }
+.shop-breadcrumb a:hover { color: var(--gold); }
+.shop-breadcrumb [aria-current="page"] { color: var(--silver); }
+
 /* ── Sticky section nav ── */
 .shop-sticky-nav {
   position: sticky;
@@ -1011,6 +1059,8 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
 @media (max-width: 640px) { .ap-tools-bento { grid-template-columns: 1fr; } }
 .ap-tool-card {
   display: block;
+  position: relative;
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);

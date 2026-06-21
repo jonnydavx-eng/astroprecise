@@ -57,6 +57,9 @@
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://astroprecise.app/index.html"},{"@type":"ListItem","position":2,"name":"Shop","item":"https://astroprecise.app/shop.html"}]}
+  </script>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/shop-critical.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
@@ -104,11 +107,23 @@
 
   <main id="main-content">
 
+    <nav class="shop-breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="index.html">Home</a></li>
+        <li aria-current="page">Shop</li>
+      </ol>
+    </nav>
+
     <!-- HERO (compact — products immediately below) -->
     <section class="shop-hero shop-hero--compact">
       <div class="container">
         <p class="eyebrow" id="shop-personal-eyebrow">Personalised from your chart</p>
         <h1 class="shop-hero__title">Your sky, made tangible</h1>
+        <ul class="shop-hero-promise" aria-label="What you get">
+          <li class="shop-hero-promise__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Instant PDFs from <strong>£6</strong></li>
+          <li class="shop-hero-promise__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> Prints &amp; apparel ship 2–7 days</li>
+          <li class="shop-hero-promise__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Made from <strong>your</strong> chart</li>
+        </ul>
         <p id="shop-personal-note" class="shop-hero-personal ap-rise-in" hidden aria-live="polite"></p>
         <p class="shop-hero-lede">At the moment you were born, the sky was arranged in a pattern that never repeats. We render that pattern with the same planetary mathematics astronomers use — privately, on your device — then translate it into readings, prints, and keepsakes.</p>
         <p class="shop-hero-turnaround">Rendered to your birth data · prints &amp; apparel ship in 2–7 business days</p>
@@ -357,6 +372,7 @@
             <p class="shop-how__d">Birth details for fulfilment are collected on Lemon Squeezy. PDFs delivered to your inbox.</p>
           </div>
         </div>
+        <p class="shopc-filters__eyebrow">Filter the catalogue</p>
         <div class="shopc-filters" id="shopc-filters" role="group" aria-label="Collections">
           <button type="button" class="shopc-chip active" aria-pressed="true">All</button>
           <button type="button" class="shopc-chip" aria-pressed="false">Wear Your Sky</button>
@@ -365,6 +381,11 @@
           <button type="button" class="shopc-chip" aria-pressed="false">Gifts</button>
           <button type="button" class="shopc-chip" aria-pressed="false">Jewellery</button>
         </div>
+        <ul class="shopc-trust shopc-trust--compact" aria-label="Shop reassurance">
+          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure Lemon Squeezy checkout</li>
+          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> PDFs in 24–48 hours</li>
+          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data never leaves your device</li>
+        </ul>
         <div class="shopc-grid" id="shopc-grid" aria-live="polite">
           <h3 class="shopc-subhead">More live pieces</h3>
           <article class="shopc-card shopc-card--live" data-product-id="natal-poster">
@@ -375,7 +396,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">On Your Wall · Print · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Your Natal Sky — Art Poster</h3>
+                <h4 class="shopc-card__name">Your Natal Sky — Art Poster</h4>
                 <span class="shopc-card__price">£20.00</span>
               </div>
               <p class="shopc-card__hook">Fine-art print of the sky at your first breath.</p>
@@ -390,7 +411,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Wear Your Sky · Apparel · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Your Sky — Tee</h3>
+                <h4 class="shopc-card__name">Your Sky — Tee</h4>
                 <span class="shopc-card__price">£18.00</span>
               </div>
               <p class="shopc-card__hook">Constellations from your birth night — wearable chart.</p>
@@ -404,7 +425,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Wear Your Sky · Apparel · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Your Sky — Heavyweight Hoodie</h3>
+                <h4 class="shopc-card__name">Your Sky — Heavyweight Hoodie</h4>
                 <span class="shopc-card__price">£32.00</span>
               </div>
               <p class="shopc-card__hook">Your natal canopy across the back — 350gsm fleece.</p>
@@ -418,7 +439,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">On Your Wall · Print · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Big Three — Mini Print</h3>
+                <h4 class="shopc-card__name">Big Three — Mini Print</h4>
                 <span class="shopc-card__price">£10.00</span>
               </div>
               <p class="shopc-card__hook">Sun, Moon, Rising — the chart distilled to its spine.</p>
@@ -432,7 +453,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Wear Your Sky · Accessory · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Your Star Map — Mug</h3>
+                <h4 class="shopc-card__name">Your Star Map — Mug</h4>
                 <span class="shopc-card__price">£9.00</span>
               </div>
               <p class="shopc-card__hook">Your birth sky on matte ceramic — morning ritual.</p>
@@ -447,7 +468,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">The Reading · Digital · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Your Year Ahead — Transit Report</h3>
+                <h4 class="shopc-card__name">Your Year Ahead — Transit Report</h4>
                 <span class="shopc-card__price">£16.00</span>
               </div>
               <p class="shopc-card__hook">Twelve months of transits — dated and interpreted for your chart.</p>
@@ -462,7 +483,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">The Reading · Digital · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Solar Return — Your Birthday Year</h3>
+                <h4 class="shopc-card__name">Solar Return — Your Birthday Year</h4>
                 <span class="shopc-card__price">£14.00</span>
               </div>
               <p class="shopc-card__hook">Your birthday sky — the annual ritual, no subscription.</p>
@@ -476,7 +497,7 @@
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Gifts · Print · Live</div>
               <div class="shopc-card__top">
-                <h3 class="shopc-card__name">Two Skies — Couples Star Map</h3>
+                <h4 class="shopc-card__name">Two Skies — Couples Star Map</h4>
                 <span class="shopc-card__price">£24.00</span>
               </div>
               <p class="shopc-card__hook">Two charts, one composition — anniversary keepsake.</p>
@@ -855,12 +876,12 @@
     </section>
 
     <!-- SUGGEST AN ITEM -->
-    <section class="section">
+    <section class="section" aria-labelledby="shop-contribute-title">
       <div class="container shop-contribute">
         <div class="shop-contribute__panel">
-          <p style="font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Contribute</p>
-          <h2 style="font-family:var(--font-display);font-size:var(--text-2xl);color:var(--white);margin-bottom:var(--space-4);">Know Something We Should Carry?</h2>
-          <p style="color:var(--silver);font-size:var(--text-sm);line-height:1.7;margin-bottom:var(--space-6);">
+          <p class="shop-contribute__eyebrow"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Contribute</p>
+          <h2 class="shop-contribute__title" id="shop-contribute-title">Know Something We Should Carry?</h2>
+          <p class="shop-contribute__body">
             If you've found a book, deck, crystal supplier, or artist whose work genuinely serves the practice of astrology, we'd love to hear about it. We review every suggestion personally.
           </p>
           <a href="mailto:hello@astroprecise.app?subject=Shop+suggestion+for+AstroPrecise" class="btn btn--outline">
@@ -977,6 +998,11 @@
     <div class="shopc-cart__items" id="shopc-cart-items"></div>
     <div class="shopc-cart__footer">
       <div class="shopc-cart__totalrow"><span>Total</span><span id="shopc-cart-total">£0.00</span></div>
+      <ul class="shopc-cart__trust" aria-label="Order reassurance">
+        <li><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure Lemon Squeezy</li>
+        <li><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> PDFs in 24–48h</li>
+        <li><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data stays on your device</li>
+      </ul>
       <button class="btn btn--primary shopc-cart__checkout" id="shopc-checkout-btn">Checkout securely</button>
       <p class="shopc-cart__note">One-time purchases · made from your chart · secure Lemon Squeezy checkout.</p>
     </div>

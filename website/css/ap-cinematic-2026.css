@@ -92,7 +92,9 @@ html.ap-lite-hero .hero__h1,
 
 .shopc-featured__card::before,
 .shop-card::before,
-.shopc-card::before {
+.shopc-card::before,
+.ap-tool-card::before,
+.shop-how__step::before {
   content: '';
   position: absolute;
   inset: 8px;
@@ -100,17 +102,24 @@ html.ap-lite-hero .hero__h1,
   border-radius: calc(var(--radius-xl, 20px) - 4px);
   pointer-events: none;
   background:
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) left top / 18px 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) left top / 1px 18px no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) right bottom / 18px 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) right bottom / 1px 18px no-repeat;
+    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) left top / 18px 1px no-repeat,
+    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) left top / 1px 18px no-repeat,
+    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) right bottom / 18px 1px no-repeat,
+    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) right bottom / 1px 18px no-repeat;
   opacity: 0.55;
   transition: opacity 0.25s ease;
 }
 
+/* .shop-how__step lacks position:relative in shop.css — anchor the bracket */
+.shop-how__step {
+  position: relative;
+}
+
 .shopc-featured__card:hover::before,
 .shop-card:hover::before,
-.shopc-card:hover::before {
+.shopc-card:hover::before,
+.ap-tool-card:hover::before,
+.shop-how__step:hover::before {
   opacity: 0.88;
 }
 
@@ -119,13 +128,19 @@ html.ap-lite-hero .hero__h1,
 .shop-card,
 .shopc-card,
 .chart-wheel-card,
-.instrument-hero__panel.instrument-panel {
+.instrument-hero__panel.instrument-panel,
+.ap-tool-card,
+.shop-how__step,
+.feature-card {
   isolation: isolate;
 }
 
 .shopc-featured__card::after,
 .shop-card::after,
-.shopc-card::after {
+.shopc-card::after,
+.ap-tool-card::after,
+.shop-how__step::after,
+.feature-card::after {
   content: '';
   position: absolute;
   inset: -10% -30%;
@@ -146,7 +161,10 @@ html.ap-lite-hero .hero__h1,
 
 .shopc-featured__card:hover::after,
 .shop-card:hover::after,
-.shopc-card:hover::after {
+.shopc-card:hover::after,
+.ap-tool-card:hover::after,
+.shop-how__step:hover::after,
+.feature-card:hover::after {
   transform: translateX(115%) skewX(-8deg);
 }
 
@@ -412,6 +430,9 @@ html.ap-lite-hero .lite-poster-vignette {
   .shopc-featured__card::after,
   .shop-card::after,
   .shopc-card::after,
+  .ap-tool-card::after,
+  .shop-how__step::after,
+  .feature-card::after,
   .page-chart .chart-wheel-stage .chart-wheel-card .natal-wheel-container::after,
   .instrument-hero__panel.instrument-panel .instrument-lede::after {
     transition: none;
@@ -449,4 +470,91 @@ html.ap-lite-hero .lite-poster-vignette {
     0 0 34px rgba(201, 162, 39, 0.20),
     0 0 1px rgba(232, 224, 208, 0.4),
     0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Wave 4 — section display titles + engraved ornaments + cinematic bands
+   All OPT-IN classes: nothing existing reflows. CLS-safe (no font swap on any
+   min-height-tuned title; these are NEW classes the HTML opts into).
+   Literal rgba/hex fallbacks kept on every token.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Large display-title tier — gives sections the cinematic scale of heroes.
+   Opt-in only; must NOT be applied to tuned LCP hero titles. */
+.ap-section-display {
+  font-family: var(--font-display, Georgia, 'Times New Roman', serif);
+  font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: 0.03em;
+  color: var(--ap-gold-parchment, #EFE3C0);
+  background: linear-gradient(
+    135deg,
+    var(--ap-gold-parchment, #EFE3C0) 0%,
+    var(--ap-gold-bright, #D4B84A) 55%,
+    var(--ap-gold-parchment, #EFE3C0) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.35),
+    0 0 28px rgba(201, 162, 39, 0.10);
+  margin: 0 auto var(--space-4, 1rem);
+  max-width: 22ch;
+}
+
+/* Literal-color fallback where background-clip:text is unsupported */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .ap-section-display {
+    -webkit-text-fill-color: currentColor;
+    color: var(--ap-gold-parchment, #EFE3C0);
+  }
+}
+
+/* Centered engraved ornament rule — mirrors the hero eyebrow double-rule */
+.ap-ornament-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, 0.75rem);
+  margin: var(--space-8, 2rem) auto;
+  max-width: 360px;
+  color: var(--ap-gold-core, #C9A227);
+}
+
+.ap-ornament-rule::before,
+.ap-ornament-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ap-gold-a40, rgba(201, 162, 39, 0.40)));
+}
+
+.ap-ornament-rule::after {
+  background: linear-gradient(90deg, var(--ap-gold-a40, rgba(201, 162, 39, 0.40)), transparent);
+}
+
+.ap-ornament-rule__mark {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  opacity: 0.85;
+}
+
+/* Opt-in cinematic band — reuses hero vignette tokens behind any section.
+   Paints below content (z-index:-1), pointer-events:none → fully passive. */
+.ap-cine-band {
+  position: relative;
+  isolation: isolate;
+}
+
+.ap-cine-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 92% 78% at 50% 38%, transparent 56%, var(--_cine-vignette-edge, rgba(5, 4, 6, 0.40)) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 22%, var(--ap-obs-violet, rgba(92, 74, 110, 0.14)) 0%, transparent 72%);
 }

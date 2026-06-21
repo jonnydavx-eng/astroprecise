@@ -122,7 +122,11 @@
   .tool-card:hover .ap-seal__plate::after,
   .ap-lite-rail__tile:hover .ap-seal__plate::after,
   .home-sign-card:hover .ap-seal__plate::after,
-  .sign-card:hover .ap-seal__plate::after {
+  .sign-card:hover .ap-seal__plate::after,
+  .shopc-featured__card:hover .ap-seal__plate::after,
+  .ap-tool-card:hover .ap-seal__plate::after,
+  .feature-card:hover .ap-seal__plate::after,
+  .house-card:hover .ap-seal__plate::after {
     opacity: 1;
     background-position: -30% 0;
     transition:
@@ -136,7 +140,11 @@
   a:hover .ap-seal .ap-seal__plate,
   .sky-pill:hover .ap-seal__plate,
   .tool-card:hover .ap-seal__plate,
-  .ap-lite-rail__tile:hover .ap-seal__plate {
+  .ap-lite-rail__tile:hover .ap-seal__plate,
+  .shopc-featured__card:hover .ap-seal__plate,
+  .ap-tool-card:hover .ap-seal__plate,
+  .feature-card:hover .ap-seal__plate,
+  .house-card:hover .ap-seal__plate {
     box-shadow:
       inset 0 0 0 1px rgba(201, 162, 39, 0.45),
       inset 0 -3px 8px rgba(0, 0, 0, 0.5),
@@ -378,6 +386,11 @@
   }
 }
 
+/* NOTE: a staggered grid-reveal already exists as `.ap-stagger-in` in
+   ap-motion.css (JS/IntersectionObserver-gated, translate+opacity, motion-safe).
+   Reuse that canonical primitive on grid wrappers rather than adding a parallel
+   one here — kept out to avoid a competing, ungated flash-of-invisible-content. */
+
 /* ══════════════════════════════════════════════════════════════════════════
    A11y / motion safety
    ══════════════════════════════════════════════════════════════════════════ */
@@ -415,7 +428,11 @@
   @media (hover: hover) and (pointer: fine) {
     .ap-seal:hover .ap-seal__plate::after,
     a:hover .ap-seal .ap-seal__plate::after,
-    .sky-pill:hover .ap-seal__plate::after {
+    .sky-pill:hover .ap-seal__plate::after,
+    .shopc-featured__card:hover .ap-seal__plate::after,
+    .ap-tool-card:hover .ap-seal__plate::after,
+    .feature-card:hover .ap-seal__plate::after,
+    .house-card:hover .ap-seal__plate::after {
       opacity: 0.65;
       background-position: 50% 0;
     }

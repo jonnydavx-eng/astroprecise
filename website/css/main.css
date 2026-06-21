@@ -7490,3 +7490,64 @@ p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text
   color: var(--gold-bright);
   opacity: 1;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Wave 4 — gold-on-parchment depth utilities (opt-in, additive, CLS-safe)
+   Carries the warm gold/parchment palette down the page beyond the hero.
+   No font swaps; color/spacing/shadow + passive pseudo-edges only.
+   Every token has a literal fallback. Opt-in classes → nothing reflows.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Faint gold top-edge hairline for premium section bands.
+   Mirrors the .feature-card::before / --shimmer-line vocabulary. */
+.ap-cine-edge {
+  position: relative;
+}
+
+.ap-cine-edge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 720px);
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--ap-gold-a40, rgba(201, 162, 39, 0.40)) 35%,
+    var(--ap-gold-a55, rgba(201, 162, 39, 0.55)) 50%,
+    var(--ap-gold-a40, rgba(201, 162, 39, 0.40)) 65%,
+    transparent
+  );
+}
+
+/* Soft parchment top-glow wash for a key mid-page band (sits behind content). */
+.ap-cine-glowband {
+  position: relative;
+  isolation: isolate;
+}
+
+.ap-cine-glowband::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 0%, var(--ap-gold-a08, rgba(201, 162, 39, 0.08)) 0%, transparent 70%);
+}
+
+/* Premium section eyebrow display tint — pairs with .ap-section-display.
+   Opt-in kicker color upgrade; no layout impact. */
+.ap-section-kicker {
+  color: var(--silver-dim, #9A9084);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.ap-section-kicker > strong {
+  color: var(--gold, #C9A227);
+  font-weight: 600;
+}
