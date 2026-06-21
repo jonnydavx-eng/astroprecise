@@ -499,6 +499,10 @@ window.AstroShop = (() => {
   // GRID + QUICK VIEW
   // ═══════════════════════════════════════════════════════════════════════
   let activeCollection = 'all';
+  // True once renderGrid has done a full innerHTML render (replacing the baked
+  // static cards). Until then the 'all' view keeps the static cards and only
+  // wires handlers; a filter change still triggers a full re-render.
+  let gridJsRendered = false;
 
   const PREVIEW_FALLBACK = {
     digital:   'img/shop/product-deep-reading.jpg',
@@ -701,10 +705,46 @@ window.AstroShop = (() => {
       : (cols[activeCollection] && cols[activeCollection].story) || '';
   }
 
+  // Wire the delegated quickview + add-cart click handlers onto whatever
+  // `.shopc-card` elements currently live in the grid. Used both after a full
+  // innerHTML render and on the keep-static fast path (baked cards).
+  function wireGridHandlers(grid) {
+    grid.querySelectorAll('[data-quickview]').forEach(el => {
+      const open = () => openQuickView(el.dataset.quickview);
+      el.addEventListener('click', e => { e.stopPropagation(); open(); });
+      if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+        });
+      }
+    });
+
+    grid.querySelectorAll('[data-add-cart]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const p = productById(el.dataset.addCart);
+        if (p) cart.add(p);
+      });
+    });
+  }
+
   function renderGrid() {
     gridHydrated = true;
     const grid = document.getElementById('shopc-grid');
     if (!grid) return;
+
+    // Keep-static fast path: the 'all' view ships baked `.shopc-card--live`
+    // cards that are already purchasable on first paint. If they haven't been
+    // replaced by a JS render yet, don't rebuild innerHTML — just wire the
+    // delegated handlers on the existing cards and return. A later filter
+    // change still runs the full re-render below (gridJsRendered flips true
+    // whenever an innerHTML render runs).
+    if (activeCollection === 'all' && !gridJsRendered && grid.querySelector('.shopc-card--live')) {
+      wireGridHandlers(grid);
+      try { hydrateMiniChartPreviews(); } catch (_) {}
+      return;
+    }
+
     const all = products();
     if (!all.length) {
       grid.innerHTML = `<p class="shopc-empty">The collection is being prepared. Check back soon.</p>`;
@@ -755,24 +795,9 @@ window.AstroShop = (() => {
       sections.push(`<h3 class="shopc-subhead shopc-subhead--soon">On the loom — coming soon</h3>${soonList.map(renderCard).join('')}`);
     }
     grid.innerHTML = sections.length ? sections.join('') : `<p class="shopc-empty">Nothing in this collection yet. Try another filter.</p>`;
+    gridJsRendered = true;
 
-    grid.querySelectorAll('[data-quickview]').forEach(el => {
-      const open = () => openQuickView(el.dataset.quickview);
-      el.addEventListener('click', e => { e.stopPropagation(); open(); });
-      if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
-        el.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
-        });
-      }
-    });
-
-    grid.querySelectorAll('[data-add-cart]').forEach(el => {
-      el.addEventListener('click', e => {
-        e.stopPropagation();
-        const p = productById(el.dataset.addCart);
-        if (p) cart.add(p);
-      });
-    });
+    wireGridHandlers(grid);
 
     // Dynamic mini-chart previews (seals + optional chart-render wheelOnly for saved profiles)
     try { hydrateMiniChartPreviews(); } catch (_) {}
@@ -940,8 +965,8 @@ window.AstroShop = (() => {
   // ═══════════════════════════════════════════════════════════════════════
   // Helpers
   // ═══════════════════════════════════════════════════════════════════════
-  function toast(msg) {
-    if (window.AstroApp && window.AstroApp.showToast) { window.AstroApp.showToast(msg, '', 'success'); return; }
+  function toast(msg, body = '', type = 'success', duration) {
+    if (window.AstroApp && window.AstroApp.showToast) { window.AstroApp.showToast(msg, body, type, duration); return; }
     // minimal fallback
     const t = document.createElement('div');
     t.className = 'shopc-toast';
@@ -1042,27 +1067,13 @@ window.AstroShop = (() => {
     const grid = document.getElementById('shopc-grid');
     if (!grid) return;
 
-    const run = () => {
-      if (gridHydrated) return;
-      gridHydrated = true;
-      renderGrid();
-    };
-
-    const section = document.getElementById('wear-your-sky');
-    if (!section || !('IntersectionObserver' in window)) {
-      run();
-      return;
-    }
-
-    let started = false;
-    const io = new IntersectionObserver(entries => {
-      if (!entries.some(e => e.isIntersecting)) return;
-      io.disconnect();
-      if (started) return;
-      started = true;
-      run();
-    }, { rootMargin: '240px 0px', threshold: 0 });
-    io.observe(section);
+    // With baked static cards the first render is just cheap handler-wiring
+    // (the keep-static fast path in renderGrid), so there's nothing expensive
+    // to defer — wire it synchronously on init. The full re-render still
+    // happens on filter clicks. The gridHydrated guard keeps this one-shot.
+    if (gridHydrated) return;
+    gridHydrated = true;
+    renderGrid();
   }
 
   function init() {

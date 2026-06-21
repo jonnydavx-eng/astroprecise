@@ -175,8 +175,8 @@
             <button type="button" class="shopc-featured__visual" data-quickview="reading-poster-bundle">
               <span class="sr-only">Quick view Deep Reading + Poster Bundle</span>
               <picture>
-                <source type="image/webp" data-src="img/shop/product-bundle.webp?v=189" />
-                <img class="shopc-card__preview" data-src="img/shop/product-bundle.jpg?v=188" alt="Deep Reading plus print-at-home poster bundle preview" width="800" height="450" decoding="async" />
+                <source type="image/webp" srcset="img/shop/product-bundle.webp?v=189" />
+                <img class="shopc-card__preview" src="img/shop/product-bundle.jpg?v=188" alt="Deep Reading plus print-at-home poster bundle preview" width="800" height="450" loading="eager" decoding="async" />
               </picture>
               <span class="shopc-card__badge">Best value</span>
               <span class="shopc-featured__save">Save £2</span>
@@ -205,8 +205,8 @@
             <button type="button" class="shopc-featured__visual" data-quickview="natal-poster-pdf">
               <span class="sr-only">Quick view Print-at-home Natal Poster PDF</span>
               <picture>
-                <source type="image/webp" data-src="img/shop/product-poster-pdf.webp?v=189" />
-                <img class="shopc-card__preview" data-src="img/shop/product-poster-pdf.jpg?v=188" alt="Print-at-home natal sky poster PDF preview" width="800" height="450" decoding="async" />
+                <source type="image/webp" srcset="img/shop/product-poster-pdf.webp?v=189" />
+                <img class="shopc-card__preview" src="img/shop/product-poster-pdf.jpg?v=188" alt="Print-at-home natal sky poster PDF preview" width="800" height="450" loading="eager" decoding="async" />
               </picture>
               <span class="shopc-card__badge">Instant</span>
             </button>
@@ -230,14 +230,17 @@
           <div class="shop-trending__grid">
             <a class="shop-trending__card" href="https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785" target="_blank" rel="noopener">
               <img data-src="img/shop/product-year-ahead.jpg?v=188" alt="Year Ahead transit report" width="400" height="225" loading="lazy" decoding="async" />
+              <noscript><img src="img/shop/product-year-ahead.jpg?v=188" alt="Year Ahead transit report" width="400" height="225" /></noscript>
               <span class="shop-trending__name">Year Ahead · £16</span>
             </a>
             <a class="shop-trending__card" href="https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7" target="_blank" rel="noopener">
               <img data-src="img/shop/product-two-skies.jpg?v=188" alt="Two Skies couples print" width="400" height="225" loading="lazy" decoding="async" />
+              <noscript><img src="img/shop/product-two-skies.jpg?v=188" alt="Two Skies couples print" width="400" height="225" /></noscript>
               <span class="shop-trending__name">Two Skies · £24</span>
             </a>
             <a class="shop-trending__card" href="https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723" target="_blank" rel="noopener">
               <img data-src="img/shop/product-solar-return.jpg?v=188" alt="Solar Return birthday PDF" width="400" height="225" loading="lazy" decoding="async" />
+              <noscript><img src="img/shop/product-solar-return.jpg?v=188" alt="Solar Return birthday PDF" width="400" height="225" /></noscript>
               <span class="shop-trending__name">Solar Return · £14</span>
             </a>
           </div>
@@ -391,10 +394,11 @@
         <div class="shopc-grid" id="shopc-grid" aria-live="polite">
           <h3 class="shopc-subhead">More live pieces</h3>
           <article class="shopc-card shopc-card--live" data-product-id="natal-poster">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-natal-poster.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+            <button type="button" class="shopc-card__art" data-quickview="natal-poster">
+              <span class="sr-only">Quick view Your Natal Sky — Art Poster</span>
+              <img class="shopc-card__preview" src="img/shop/product-natal-poster.jpg?v=188" alt="Your Natal Sky — Art Poster" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge">Signature</span>
-            </div>
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">On Your Wall · Print · Live</div>
               <div class="shopc-card__top">
@@ -403,13 +407,15 @@
               </div>
               <p class="shopc-card__hook">Fine-art print of the sky at your first breath.</p>
               <p class="shopc-card__blurb">Your full birth chart as a fine-art print — engraved gold on void black, 250gsm museum-grade matte.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/b96ab7e6-5b60-463f-a447-2829c65d1948?signature=aaba0330319df3dabc194a375ea7f37b3da70655687fae87c9b686b84d7882a7" target="_blank" rel="noopener" data-ap-product="natal-poster">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="natal-poster">Add to cart</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="sky-tee">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-sky-tee.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+            <button type="button" class="shopc-card__art" data-quickview="sky-tee">
+              <span class="sr-only">Quick view Your Sky — Tee</span>
+              <img class="shopc-card__preview" src="img/shop/product-sky-tee.jpg?v=188" alt="Your Sky — Tee" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge">New</span>
-            </div>
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Wear Your Sky · Apparel · Live</div>
               <div class="shopc-card__top">
@@ -418,12 +424,14 @@
               </div>
               <p class="shopc-card__hook">Constellations from your birth night — wearable chart.</p>
               <p class="shopc-card__blurb">The constellations overhead at your birth, printed across heavyweight cotton with your big three in gold thread.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/bc99eaab-fe40-4336-84be-4986169b7d4f?signature=7f07cebec6e274b3898992547b0816503b90a83554ca3311ff372714b5dc05c9" target="_blank" rel="noopener" data-ap-product="sky-tee">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="sky-tee">Add to cart</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="sky-hoodie">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-sky-hoodie.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
-            </div>
+            <button type="button" class="shopc-card__art" data-quickview="sky-hoodie">
+              <span class="sr-only">Quick view Your Sky — Heavyweight Hoodie</span>
+              <img class="shopc-card__preview" src="img/shop/product-sky-hoodie.jpg?v=188" alt="Your Sky — Heavyweight Hoodie" width="1600" height="900" loading="lazy" decoding="async" />
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Wear Your Sky · Apparel · Live</div>
               <div class="shopc-card__top">
@@ -432,12 +440,14 @@
               </div>
               <p class="shopc-card__hook">Your natal canopy across the back — 350gsm fleece.</p>
               <p class="shopc-card__blurb">Your natal canopy across the back in fine line-work; big-three glyphs at the cuff. Premium fleece, printed to order.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/e4433127-c65b-481d-8cb9-9b1d5f95006e?signature=82e68c110830134e1d7a986f3ab12414233529ba426f61e01eaf9deaec5f6caa" target="_blank" rel="noopener" data-ap-product="sky-hoodie">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="sky-hoodie">Add to cart</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="big-three-print">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-big-three.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
-            </div>
+            <button type="button" class="shopc-card__art" data-quickview="big-three-print">
+              <span class="sr-only">Quick view Big Three — Mini Print</span>
+              <img class="shopc-card__preview" src="img/shop/product-big-three.jpg?v=188" alt="Big Three — Mini Print" width="1600" height="900" loading="lazy" decoding="async" />
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">On Your Wall · Print · Live</div>
               <div class="shopc-card__top">
@@ -446,12 +456,14 @@
               </div>
               <p class="shopc-card__hook">Sun, Moon, Rising — the chart distilled to its spine.</p>
               <p class="shopc-card__blurb">Sun, Moon and Rising set as a clean typographic print — your three load-bearing placements.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/293d41b4-95b2-49b8-a5dd-933ba8bac28d?signature=ae2e0280080783aee3858dae9dacaa67047fb9043c0f62f96fe2e84409103353" target="_blank" rel="noopener" data-ap-product="big-three-print">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="big-three-print">Add to cart</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="constellation-mug">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-mug.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
-            </div>
+            <button type="button" class="shopc-card__art" data-quickview="constellation-mug">
+              <span class="sr-only">Quick view Your Star Map — Mug</span>
+              <img class="shopc-card__preview" src="img/shop/product-mug.jpg?v=188" alt="Your Star Map — Mug" width="1600" height="900" loading="lazy" decoding="async" />
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Wear Your Sky · Accessory · Live</div>
               <div class="shopc-card__top">
@@ -460,13 +472,15 @@
               </div>
               <p class="shopc-card__hook">Your birth sky on matte ceramic — morning ritual.</p>
               <p class="shopc-card__blurb">The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/1f278c11-0c09-4ea8-9d90-4eec2a168287?signature=c36479767c244cd7173a7a6a218d7aadaabd3bf7c71e4b7450d9a9c1c3270346" target="_blank" rel="noopener" data-ap-product="constellation-mug">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="constellation-mug">Add to cart</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="year-ahead">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-year-ahead.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+            <button type="button" class="shopc-card__art" data-quickview="year-ahead">
+              <span class="sr-only">Quick view Your Year Ahead — Transit Report</span>
+              <img class="shopc-card__preview" src="img/shop/product-year-ahead.jpg?v=188" alt="Your Year Ahead — Transit Report" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge">Trending</span>
-            </div>
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">The Reading · Digital · Live</div>
               <div class="shopc-card__top">
@@ -475,13 +489,15 @@
               </div>
               <p class="shopc-card__hook">Twelve months of transits — dated and interpreted for your chart.</p>
               <p class="shopc-card__blurb">Every major transit to your natal chart for the next twelve months, dated and interpreted.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785" target="_blank" rel="noopener" data-ap-product="year-ahead">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="year-ahead">Add to cart</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="solar-return">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-solar-return.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+            <button type="button" class="shopc-card__art" data-quickview="solar-return">
+              <span class="sr-only">Quick view Solar Return — Your Birthday Year</span>
+              <img class="shopc-card__preview" src="img/shop/product-solar-return.jpg?v=188" alt="Solar Return — Your Birthday Year" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge">Birthday</span>
-            </div>
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">The Reading · Digital · Live</div>
               <div class="shopc-card__top">
@@ -490,12 +506,14 @@
               </div>
               <p class="shopc-card__hook">Your birthday sky — the annual ritual, no subscription.</p>
               <p class="shopc-card__blurb">Your solar-return chart for this birthday — the theme of your coming year, delivered as a PDF.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723" target="_blank" rel="noopener" data-ap-product="solar-return">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="solar-return">Add to cart</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="two-skies-map">
-            <div class="shopc-card__art">
-              <img class="shopc-card__preview" src="img/shop/product-two-skies.jpg?v=188" alt="" width="1600" height="900" loading="lazy" decoding="async" />
-            </div>
+            <button type="button" class="shopc-card__art" data-quickview="two-skies-map">
+              <span class="sr-only">Quick view Two Skies — Couples Star Map</span>
+              <img class="shopc-card__preview" src="img/shop/product-two-skies.jpg?v=188" alt="Two Skies — Couples Star Map" width="1600" height="900" loading="lazy" decoding="async" />
+            </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Gifts · Print · Live</div>
               <div class="shopc-card__top">
@@ -504,6 +522,7 @@
               </div>
               <p class="shopc-card__hook">Two charts, one composition — anniversary keepsake.</p>
               <p class="shopc-card__blurb">Both birth skies overlaid as a single fine-art print — synastry geometry made tangible.</p>
+              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7" target="_blank" rel="noopener" data-ap-product="two-skies-map">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="two-skies-map">Add to cart</button></div>
             </div>
           </article>
         </div>
