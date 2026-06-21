@@ -528,66 +528,69 @@
         </div>
 
         <div id="todays-sky" class="planet-grid" role="region" aria-live="polite" aria-label="Today's planetary positions">
-          <!-- JS populates -->
-          <div class="planet-weather-card">
+          <!-- JS (updatePlanetWeather) replaces these cards with live ephemeris
+               positions once the engine loads. The static fallback below shows
+               only neutral "computing…" placeholders — never a fabricated or
+               dated position — so nothing false is shown under the live-sky badge. -->
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">☉</span>
             <span class="planet-weather-card__name">Sun</span>
-            <span class="planet-weather-card__position">Gemini 21°</span>
-            <span class="planet-weather-card__desc">Curiosity and communication are highlighted. Express your ideas and stay open to new perspectives.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">☽</span>
             <span class="planet-weather-card__name">Moon</span>
-            <span class="planet-weather-card__position">Scorpio 14°</span>
-            <span class="planet-weather-card__desc">Emotional intensity runs deep. Trust your instincts and allow yourself to feel fully.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">☿</span>
             <span class="planet-weather-card__name">Mercury</span>
-            <span class="planet-weather-card__position">Cancer 3°</span>
-            <span class="planet-weather-card__desc">Communication becomes more nurturing and intuitive. Words carry emotional resonance.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">♀</span>
             <span class="planet-weather-card__name">Venus</span>
-            <span class="planet-weather-card__position">Cancer 19°</span>
-            <span class="planet-weather-card__desc">Love is tender and domestic. Nurture your closest bonds and your home environment.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">♂</span>
             <span class="planet-weather-card__name">Mars</span>
-            <span class="planet-weather-card__position">Leo 8°</span>
-            <span class="planet-weather-card__desc">Drive and confidence surge. Bold action and creative leadership are well-starred.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">♃</span>
             <span class="planet-weather-card__name">Jupiter</span>
-            <span class="planet-weather-card__position">Cancer 2°</span>
-            <span class="planet-weather-card__desc">Expansion through emotional intelligence and home life. Family and intuition bring good fortune.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">♄</span>
             <span class="planet-weather-card__name">Saturn</span>
-            <span class="planet-weather-card__position">Pisces 22° <span class="retrograde-badge" aria-label="retrograde">Rx</span></span>
-            <span class="planet-weather-card__desc">Boundaries and spiritual commitments are under review. Release illusions that no longer serve.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">♅</span>
             <span class="planet-weather-card__name">Uranus</span>
-            <span class="planet-weather-card__position">Taurus 28°</span>
-            <span class="planet-weather-card__desc">Disruptions to material security invite innovation. Embrace unconventional approaches to resources.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">♆</span>
             <span class="planet-weather-card__name">Neptune</span>
-            <span class="planet-weather-card__position">Aries 2°</span>
-            <span class="planet-weather-card__desc">Dreams and spirituality take on a pioneering quality. New ideals are beginning to crystallise.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
-          <div class="planet-weather-card">
+          <div class="planet-weather-card is-computing">
             <span class="planet-weather-card__symbol" aria-hidden="true">♇</span>
             <span class="planet-weather-card__name">Pluto</span>
-            <span class="planet-weather-card__position">Aquarius 3°</span>
-            <span class="planet-weather-card__desc">Collective transformation through technology and community. Power structures are being reinvented.</span>
+            <span class="planet-weather-card__position">—</span>
+            <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
         </div>
       </div>
@@ -615,60 +618,22 @@
     ============================================================ -->
     <section class="section section--alt" aria-labelledby="retro-heading">
       <div class="container">
-        <h2 class="section__title" id="retro-heading">Retrograde Calendar 2025–2026</h2>
-        <p class="section__subtitle">Upcoming and active retrograde periods — plan your major decisions around these windows</p>
+        <h2 class="section__title" id="retro-heading">Retrograde Calendar</h2>
+        <p class="section__subtitle">Active and upcoming retrograde windows — computed live, never canned</p>
 
         <div id="retrograde-calendar" aria-live="polite">
-          <ul class="retrograde-list" aria-label="Retrograde schedule">
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">♄</span>
-              <div class="retrograde-item__info">
-                <h3>Saturn Retrograde in Pisces</h3>
-                <p>Review spiritual commitments, dissolve illusions, and restructure long-term boundaries.</p>
-              </div>
-              <div class="retrograde-item__dates">Jul 13 – Nov 27, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">♃</span>
-              <div class="retrograde-item__info">
-                <h3>Jupiter Retrograde in Cancer</h3>
-                <p>Expansion turns inward — deepen emotional intelligence and revisit family foundations.</p>
-              </div>
-              <div class="retrograde-item__dates">Nov 11, 2025 – Mar 10, 2026</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">☿</span>
-              <div class="retrograde-item__info">
-                <h3>Mercury Retrograde in Leo</h3>
-                <p>Communication and self-expression need revision. Back up your work and clarify before committing.</p>
-              </div>
-              <div class="retrograde-item__dates">Jul 18 – Aug 11, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">☿</span>
-              <div class="retrograde-item__info">
-                <h3>Mercury Retrograde in Scorpio/Sagittarius</h3>
-                <p>Revisit beliefs, deep investigations, and long-distance plans. Truth comes to the surface.</p>
-              </div>
-              <div class="retrograde-item__dates">Nov 9 – Nov 29, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">♀</span>
-              <div class="retrograde-item__info">
-                <h3>Venus Retrograde in Aries/Pisces</h3>
-                <p>Reassess what — and who — you truly value. Old relationships resurface for resolution.</p>
-              </div>
-              <div class="retrograde-item__dates">Mar 1 – Apr 12, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true">♂</span>
-              <div class="retrograde-item__info">
-                <h3>Mars Retrograde in Leo/Cancer</h3>
-                <p>Ambition recalibrates — redirect energy rather than forcing ahead against resistance.</p>
-              </div>
-              <div class="retrograde-item__dates">Dec 6, 2024 – Feb 23, 2025</div>
-            </li>
-          </ul>
+          <!-- Honesty: these windows are computed live from the VSOP87 engine on
+               the dedicated retrograde tool. The horoscope page does not run that
+               computation, so it must NOT show specific dated windows here (they
+               would be stale). Show a neutral state that links to the live tool. -->
+          <p class="retrograde-calendar__note" style="text-align:center;color:var(--color-silver-dim);max-width:46ch;margin:0 auto var(--space-5);line-height:1.7;">
+            Retrograde windows shift with the real sky, so we compute them live rather than
+            pinning a list that would go stale. See exactly which planets are retrograde right
+            now — and the next stations — on the live tool.
+          </p>
+          <p style="text-align:center;">
+            <a href="retrograde.html" class="btn btn--outline btn--sm">Live retrograde tracker →</a>
+          </p>
         </div>
       </div>
     </section>
@@ -682,30 +647,34 @@
         <p class="section__subtitle">Key themes and transits shaping the collective energy over the coming days</p>
 
         <div class="transit-timeline" id="weekly-forecast">
-          <div class="transit-item transit-item--major animate-in">
-            <p class="transit-item__date">Thursday, Jun 12</p>
-            <h3 class="transit-item__title">Mercury Sextile Jupiter — Expansive Thinking</h3>
-            <p class="transit-item__desc">Big-picture conversations and inspired plans flow easily. An excellent day for brainstorming, pitching ideas, or beginning a course of study. Say yes to intellectual invitations.</p>
+          <!-- JS (updateWeeklyForecast) replaces these with the next five days of
+               live Oracle transits once the engine loads. The static fallback below
+               carries NO fabricated dates or transit claims — only neutral
+               "computing…" placeholders — so nothing false shows under the live-sky badge. -->
+          <div class="transit-item transit-item--major animate-in is-computing">
+            <p class="transit-item__date">—</p>
+            <h3 class="transit-item__title">Reading this week's sky…</h3>
+            <p class="transit-item__desc">The week's transits are computed live from real planet positions. They will appear here as the engine loads.</p>
           </div>
-          <div class="transit-item animate-in animate-in--delay-1">
-            <p class="transit-item__date">Friday, Jun 13</p>
-            <h3 class="transit-item__title">Full Moon in Sagittarius <svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg></h3>
-            <p class="transit-item__desc">A full moon illuminates your beliefs, adventures, and need for freedom. Release rigid thinking; celebrate how far your faith has brought you. Truth spoken now lands with weight.</p>
+          <div class="transit-item animate-in animate-in--delay-1 is-computing">
+            <p class="transit-item__date">—</p>
+            <h3 class="transit-item__title">Computing transits…</h3>
+            <p class="transit-item__desc">Live sky note loading.</p>
           </div>
-          <div class="transit-item animate-in animate-in--delay-2">
-            <p class="transit-item__date">Saturday, Jun 14</p>
-            <h3 class="transit-item__title">Moon Void of Course (Sagittarius → Capricorn)</h3>
-            <p class="transit-item__desc">A natural rest day after the full moon's peak energy. Avoid launching major plans; focus on integration, reflection, and routine tasks instead.</p>
+          <div class="transit-item animate-in animate-in--delay-2 is-computing">
+            <p class="transit-item__date">—</p>
+            <h3 class="transit-item__title">Computing transits…</h3>
+            <p class="transit-item__desc">Live sky note loading.</p>
           </div>
-          <div class="transit-item animate-in animate-in--delay-3">
-            <p class="transit-item__date">Sunday, Jun 15</p>
-            <h3 class="transit-item__title">Moon Enters Capricorn — Grounded Focus</h3>
-            <p class="transit-item__desc">Practical ambitions and long-term goals come into focus. Set structures, make tangible progress, and honour commitments — the universe rewards disciplined effort.</p>
+          <div class="transit-item animate-in animate-in--delay-3 is-computing">
+            <p class="transit-item__date">—</p>
+            <h3 class="transit-item__title">Computing transits…</h3>
+            <p class="transit-item__desc">Live sky note loading.</p>
           </div>
-          <div class="transit-item animate-in animate-in--delay-4">
-            <p class="transit-item__date">Monday, Jun 16</p>
-            <h3 class="transit-item__title">Venus Trine Saturn — Committed Love</h3>
-            <p class="transit-item__desc">Relationships benefit from honesty and durability. An ideal day to make or renew long-term commitments in love, creative collaboration, or business partnerships.</p>
+          <div class="transit-item animate-in animate-in--delay-4 is-computing">
+            <p class="transit-item__date">—</p>
+            <h3 class="transit-item__title">Computing transits…</h3>
+            <p class="transit-item__desc">Live sky note loading.</p>
           </div>
         </div>
 
