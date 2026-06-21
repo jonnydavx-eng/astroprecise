@@ -153,6 +153,37 @@
   </script>
 </head>
 <body class="page-home">
+<script>
+/* ── Bulletproof loading guard ──────────────────────────────────────────────
+   Guarantees the homepage ALWAYS reveals, independently of the orrery/preloader
+   scripts — so a WebGL error, a stuck fly-in, or a slow asset can never leave the
+   loading screen hanging (the regression that bit us). Runs as the first body
+   script, in its own scope, so it fires even if everything below throws.        */
+(function () {
+  function forceReveal() {
+    try {
+      var b = document.body;
+      if (b.classList.contains('landing-gate-open')) return;       // already entered
+      var pre = document.getElementById('preloader');
+      if (pre && pre.classList.contains('preloader-exit')) return; // normal exit in progress
+      b.classList.remove('preloader-intro-playing', 'preloader-active');
+      b.classList.add('landing-gate-open', 'landing-home-reveal');
+      window.__orreryPreloaderOwns = false;
+      if (pre) { pre.classList.add('preloader-exit'); setTimeout(function () { try { pre.style.display = 'none'; } catch (e) {} }, 700); }
+    } catch (e) {}
+  }
+  // 8s: if the orrery never even loaded (script error / failed fetch), reveal now —
+  // a healthy fly-in always has window.Orrery3D defined by this point.
+  setTimeout(function () {
+    if (typeof window.Orrery3D === 'undefined' && !document.body.classList.contains('landing-gate-open')) forceReveal();
+  }, 8000);
+  // 32s hard cap: longer than the ~26s fly-in, so a healthy intro finishes first;
+  // anything still stuck past here gets revealed unconditionally.
+  setTimeout(function () {
+    if (!document.body.classList.contains('landing-gate-open')) forceReveal();
+  }, 32000);
+})();
+</script>
   <canvas id="starfield-canvas" aria-hidden="true"></canvas>
   <!-- Aurora orbs (subtle background, behind content) -->
   <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
@@ -1612,10 +1643,11 @@
         <span class="apl-brand__wordmark">AstroPrecise</span>
       </div>
       <div class="apl-intro-progress" aria-hidden="true"><span class="apl-intro-progress__bar" id="preloader-intro-progress"></span></div>
-      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">The deep field</p>
-      <p class="apl-intro-phase-sub" id="preloader-phase-sub" aria-live="polite">Light left its stars long before anyone asked your name.</p>
+      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">Calibrating sky</p>
+      <p class="apl-intro-phase-sub" id="preloader-phase-sub" aria-live="polite">VSOP87 ephemeris warming in your browser.</p>
     </header>
     <button type="button" class="preloader-skip-intro" id="preloader-skip-intro" aria-label="Skip intro">Skip</button>
+    <button type="button" class="preloader-narrate-toggle" id="preloader-narrate" role="switch" aria-checked="false" aria-label="Narrate the journey">Narrate the journey</button>
     <div class="apl-cosmic-art" aria-hidden="true"></div>
     <div class="apl-stars" aria-hidden="true"></div>
     <div class="apl-orr" aria-hidden="true">
@@ -1991,12 +2023,17 @@
           return;
         }
 
-        if (typeof window.__scheduleOrreryEngineLoad === 'function') {
-          window.__scheduleOrreryEngineLoad({ urgent: true });
-        }
-        var engineLoad = (typeof window.__loadOrreryEngine === 'function')
-          ? window.__loadOrreryEngine().catch(function () {})
-          : Promise.resolve();
+        // orrery-loader.js (which defines __loadOrreryEngine) loads async and may not
+        // be ready yet — previously this fired before it existed, so the engine never
+        // loaded and the cinematic never played (the loading screen fell back to the
+        // static preloader). Wait for the loader to appear, THEN trigger the load.
+        var engineLoad = (async function () {
+          for (var i = 0; i < 240 && typeof window.__loadOrreryEngine !== 'function'; i++) {
+            await new Promise(function (r) { setTimeout(r, 40); });
+          }
+          if (typeof window.__scheduleOrreryEngineLoad === 'function') window.__scheduleOrreryEngineLoad({ urgent: true });
+          if (typeof window.__loadOrreryEngine === 'function') { try { await window.__loadOrreryEngine(); } catch (e) {} }
+        })();
 
         orrViewport = await waitForOrreryViewport(12000);
         if (!orrViewport || preDone) {
@@ -2240,6 +2277,37 @@
       });
     }
 
+    // Story narration is opt-in: the default fly-in is silent; this toggle
+    // enables the poetic chapter captions and persists the choice.
+    var narrateBtn = document.getElementById('preloader-narrate');
+    if (narrateBtn) {
+      var prmNarrate = false;
+      try { prmNarrate = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) {}
+      if (prmNarrate) {
+        narrateBtn.hidden = true;
+      } else {
+        var narrateOn = false;
+        try { narrateOn = (localStorage.getItem('ap_narrate_journey') === '1'); } catch (_) {}
+        var reflectNarrate = function () {
+          narrateBtn.setAttribute('aria-checked', narrateOn ? 'true' : 'false');
+          narrateBtn.classList.toggle('preloader-narrate-toggle--on', narrateOn);
+          narrateBtn.textContent = narrateOn ? 'Narration on' : 'Narrate the journey';
+        };
+        var applyNarrate = function () {
+          if (window.Orrery3D && typeof Orrery3D.setNarrate === 'function') Orrery3D.setNarrate(narrateOn);
+        };
+        reflectNarrate();
+        applyNarrate();
+        narrateBtn.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          narrateOn = !narrateOn;
+          reflectNarrate();
+          applyNarrate();
+        });
+      }
+    }
+
     function pulseEnterArrive() {
       if (!enterBtn || preDone) return;
       enterBtn.classList.remove('preloader-enter-btn--launch');
@@ -2315,6 +2383,7 @@
       if (ev.key !== 'Enter' && ev.key !== ' ') return;
       var tag = ev.target && ev.target.tagName ? ev.target.tagName : '';
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (ev.target === narrateBtn) return;  // let the narration toggle handle its own keypress
       if (!pre.classList.contains('aligned') && ev.target !== enterBtn) return;
       ev.preventDefault();
       enterSite();

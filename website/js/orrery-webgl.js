@@ -176,7 +176,7 @@ const RadialBlurShader = {
   function orreryDPR() {
     const pre = onPreloaderStage();
     const cap = pre
-      ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.1 : 1.25)
+      ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.1 : 1.6)
       : (perfTier === 'low' ? 1.25 : perfTier === 'mid' ? 2 : 2.5);
     if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(cap);
     const real = window.devicePixelRatio || 1;
@@ -185,7 +185,7 @@ const RadialBlurShader = {
 
   function sphereSegs(hero) {
     if (hero) {
-      if (onPreloaderStage()) return perfTier === 'high' ? 80 : perfTier === 'mid' ? 64 : 48;
+      if (onPreloaderStage()) return perfTier === 'high' ? 112 : perfTier === 'mid' ? 64 : 48;
       return perfTier === 'high' ? 144 : perfTier === 'mid' ? 104 : 64;
     }
     if (onPreloaderStage()) return perfTier === 'high' ? 48 : 36;
@@ -218,16 +218,17 @@ const RadialBlurShader = {
   let preloaderCosmicJourney = false;
   let scaleAnimDurationMs = 1400;
   const INTRO_MS = 6800;
-  const PRELOADER_COSMIC_MS_DESKTOP = 22000;
-  const PRELOADER_COSMIC_MS_MOBILE = 17000;
-  const PRELOADER_COSMIC_HOLD_FRAC = 0.08;
+  const PRELOADER_COSMIC_MS_DESKTOP = 26000;
+  const PRELOADER_COSMIC_MS_MOBILE = 19000;
+  const PRELOADER_COSMIC_HOLD_FRAC = 0.11;
   const PRELOADER_COSMIC_LAND_FRAC = 0.14;
   const COSMIC_DESCENT_KEYS = [
     { t: 0.00, z: 1.00 },
-    { t: 0.06, z: 0.97 },
-    { t: 0.14, z: 0.90 },
+    { t: 0.08, z: 0.985 },
+    { t: 0.16, z: 0.925 },
     { t: 0.24, z: 0.78 },
     { t: 0.36, z: 0.64 },
+    { t: 0.44, z: 0.55 },
     { t: 0.48, z: 0.50 },
     { t: 0.58, z: 0.38 },
     { t: 0.68, z: 0.26 },
@@ -244,10 +245,16 @@ const RadialBlurShader = {
     { t: 0.50, title: 'Transpersonal tides', sub: 'Neptune, Uranus, Pluto — slow giants that reshape whole generations.' },
     { t: 0.62, title: 'Gas-giant thrones', sub: 'Jupiter expands what Saturn tests; Saturn times what Jupiter promises.' },
     { t: 0.74, title: 'Personal sky', sub: 'Sun, Moon, Mercury, Venus, Mars — the voices in your daily chart.' },
-    { t: 0.84, title: 'Blue marble', sub: 'A thin atmosphere, a silver Moon, silver fleets in low orbit.' },
+    { t: 0.84, title: 'Blue marble', sub: 'A thin blue atmosphere and a silver Moon.' },
     { t: 0.93, title: 'Your meridian', sub: 'The eastern horizon at your coordinates — where your rising sign breaks.' },
   ];
   let preloaderChapterKey = '';
+  // Story narration is OPT-IN. Default = silent cinematic fly-in (honest neutral
+  // labels). The poetic PRELOADER_CHAPTERS only show when the user enables it.
+  let narrateJourney = false;
+  try { narrateJourney = (localStorage.getItem('ap_narrate_journey') === '1'); } catch (e) {}
+  if (PRM) narrateJourney = false;
+  let lastIntroP = 0;
   const PRELOADER_SYSTEM_CAM_DESKTOP = 28;
   const PRELOADER_SYSTEM_CAM_MOBILE = 19;
   const PRELOADER_HOLD_SCALE_DESKTOP = 2;
@@ -558,12 +565,12 @@ const RadialBlurShader = {
       camTarget.set(0, 0, 0);
       if (zc >= 3.2 && zc <= 5.8 && t) {
         const driftMul = (zc - 3) / 2.6;
-        const drift = Math.sin(t * 0.00062) * 58 * driftMul;
-        const lift = Math.cos(t * 0.00052 + 0.6) * 26 * driftMul;
+        const drift = Math.sin(t * 0.00062) * 30 * driftMul;
+        const lift = Math.cos(t * 0.00052 + 0.6) * 14 * driftMul;
         camTarget.x += drift;
         camTarget.y += lift;
-        camTarget.z += Math.sin(t * 0.00044 + 1.2) * 38 * driftMul;
-        camAz += Math.sin(t * 0.00038 + 0.4) * 0.0009 * driftMul;
+        camTarget.z += Math.sin(t * 0.00044 + 1.2) * 20 * driftMul;
+        camAz += Math.sin(t * 0.00038 + 0.4) * 0.0005 * driftMul;
       }
     }
     const fovA = a.camRadius < 12 ? CAM_FOV_CLOSE : (zLo >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID);
@@ -2583,6 +2590,9 @@ const RadialBlurShader = {
 
   function textureCandidates(file) {
     const list = [];
+    // During the preloader ALL tiers use the small map so the Earth-ready handshake
+    // (which releases the fly-in) fires fast; full-res maps swap in after, on the
+    // interactive orrery. (Loading-safety: never block the preloader on a big texture.)
     if (perfTier === 'low' || onPreloaderStage()) {
       const sm = file.replace(/\.(jpe?g|png)$/i, '_sm.$1');
       if (sm !== file) list.push(sm);
@@ -3247,7 +3257,7 @@ const RadialBlurShader = {
             moonMesh.material.needsUpdate = true;
           }
         });
-        buildEarthOrbitTraffic();
+        if (window.__apShowOrbitTraffic) buildEarthOrbitTraffic();
       }
 
       if (b.ring) {
@@ -3416,6 +3426,7 @@ const RadialBlurShader = {
   }
 
   function updateIntroProgress(introP) {
+    lastIntroP = introP;
     const bar = document.getElementById('preloader-intro-progress');
     if (bar) bar.style.transform = `scaleX(${Math.max(0, Math.min(1, introP)).toFixed(3)})`;
     const phase = document.getElementById('preloader-phase');
@@ -3423,7 +3434,7 @@ const RadialBlurShader = {
     const scaleEl = document.getElementById('orrery-scale-label');
     if (phase) {
       if (onPreloaderStage()) {
-        if (preloaderCosmicJourney) {
+        if (preloaderCosmicJourney && narrateJourney) {
           const descentP = introP < PRELOADER_COSMIC_HOLD_FRAC
             ? 0
             : (introP - PRELOADER_COSMIC_HOLD_FRAC) / (1 - PRELOADER_COSMIC_HOLD_FRAC);
@@ -4617,6 +4628,12 @@ const RadialBlurShader = {
     },
     skipIntro,
     settleFromIntro,
+    setNarrate(on) {
+      narrateJourney = !!on && !PRM;
+      try { localStorage.setItem('ap_narrate_journey', narrateJourney ? '1' : '0'); } catch (e) {}
+      try { updateIntroProgress(lastIntroP); } catch (e) {}
+      try { const pre = document.getElementById('preloader'); if (pre) pre.classList.toggle('preloader--narrate', narrateJourney); } catch (e) {}
+    },
     isIntroActive() { return introActive || preloaderCosmicJourney; },
     isIntroPending() {
       return onPreloaderStage() && !preloaderIntroFinished
