@@ -214,6 +214,30 @@
       margin-top: var(--space-4);
     }
 
+    /* ---- Monthly accordion (mirrors Weekly so it eases open the same way) ---- */
+    #srp-monthly-toggle {
+      width: 100%;
+      justify-content: space-between;
+      margin-bottom: 0;
+    }
+    #srp-monthly-body {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+      opacity: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--color-silver);
+      line-height: 1.75;
+      margin-top: 0;
+    }
+    #srp-monthly-body.is-open {
+      max-height: 600px;
+      opacity: 1;
+      margin-top: var(--space-4);
+    }
+
     /* ---- Planet grid ---- */
     .planet-grid {
       display: grid;

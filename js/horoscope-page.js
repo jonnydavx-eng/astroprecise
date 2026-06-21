@@ -32,6 +32,11 @@
     var enginesReady = false;
     var enginesWaiters = [];
 
+    // The sign whose reading is currently open. Set by openPanel(), cleared by
+    // closePanel(). Share/Download read this instead of querying the DOM for
+    // `.sign-card.is-active`, which can be null or inside a display:none wrapper.
+    var currentOpenSign = null;
+
     function loadScript(src) {
       return new Promise(function (resolve, reject) {
         if (document.querySelector('script[src="' + src + '"]')) {
@@ -133,6 +138,33 @@
       });
     }
 
+    // Fill + reveal the Monthly Outlook accordion, booting horoscope-subscribe.js
+    // on demand if it has not loaded yet (it is otherwise gated behind an
+    // IntersectionObserver far down the page). The Monthly button stays hidden
+    // until its body has real content so it never reads as a dead control.
+    function revealMonthlyWrap() {
+      var wrap = document.getElementById('srp-monthly-wrap');
+      var body = document.getElementById('srp-monthly-body');
+      if (wrap) wrap.hidden = !(body && body.innerHTML.trim());
+    }
+    function ensureMonthlyPanel(signKey) {
+      var wrap = document.getElementById('srp-monthly-wrap');
+      if (wrap) wrap.hidden = true; // hide until filled
+      function fill() {
+        if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.fillMonthlyPanel === 'function') {
+          HoroscopeSubscribe.fillMonthlyPanel(signKey);
+          revealMonthlyWrap();
+        }
+      }
+      if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.fillMonthlyPanel === 'function') {
+        fill();
+        return;
+      }
+      if (auditPath) return;
+      window.__apHsBooted = true; // claim the boot so the IO loader does not double-inject
+      loadScript('js/horoscope-subscribe.js').then(fill).catch(function () {});
+    }
+
     function openPanel(signKey) {
       var info = SIGNS[signKey];
       if (!info) return;
@@ -146,6 +178,7 @@
       if (ctaLink) ctaLink.href = 'chart.html';
 
       var data = Interp.getDailyHoroscope(info.name, new Date());
+      if (!data) return; // a null engine return must not throw mid-render
       var panel = document.getElementById('sign-reading-panel');
 
       // Element theming
@@ -245,9 +278,13 @@
         weeklyToggle.addEventListener('click', weeklyToggle._bound);
       }
 
-      if (window.HoroscopeSubscribe && typeof HoroscopeSubscribe.fillMonthlyPanel === 'function') {
-        HoroscopeSubscribe.fillMonthlyPanel(signKey);
-      }
+      // Monthly Outlook — fillMonthlyPanel + bindCollapsible live in
+      // horoscope-subscribe.js, which is otherwise only booted by an
+      // IntersectionObserver far down the page. If the reading is opened from
+      // the hero (no scroll), that script may not be loaded yet, leaving the
+      // Monthly accordion dead. Ensure it is booted on demand. The Monthly
+      // button stays hidden until its body actually has content.
+      ensureMonthlyPanel(signKey);
 
       // Moon phase canvas
       (function drawMoonPhase() {
@@ -305,6 +342,7 @@
         });
       })();
 
+      currentOpenSign = signKey;
       panel.classList.add('is-open');
       panel.setAttribute('aria-hidden', 'false');
       panel.setAttribute('aria-live', 'polite');
@@ -316,6 +354,7 @@
     }
 
     function closePanel() {
+      currentOpenSign = null;
       var panel = document.getElementById('sign-reading-panel');
       panel.classList.remove('is-open');
       panel.setAttribute('aria-hidden', 'true');
@@ -387,6 +426,23 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       var engineAfterLoad = [];
+
+      // Today's date — the freshness proof for a daily page. The static markup
+      // says "Updated Daily at Midnight UTC"; replace it with the real date.
+      var todayEl = document.getElementById('today-date-display');
+      if (todayEl) {
+        todayEl.textContent = new Date().toLocaleDateString(undefined, {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+      }
+
+      // Retrograde Calendar heading — make the year range track the real clock
+      // instead of a hardcoded "2025–2026" that goes stale.
+      var retroHeadingEl = document.getElementById('retro-heading');
+      if (retroHeadingEl) {
+        var yr = new Date().getFullYear();
+        retroHeadingEl.textContent = 'Retrograde Calendar ' + yr + '–' + (yr + 1);
+      }
 
       function scheduleEngines() {
         if (auditPath) return;
@@ -654,9 +710,11 @@
           c.setAttribute('aria-pressed', c.dataset.sign === activeKey ? 'true' : 'false');
         });
       }
-      // Patch selectSign to also sync pressed state
+      // Patch selectSign to also sync pressed state.
+      // Forward all args (key + opts) — dropping opts loses { skipSpin:true }
+      // and makes the hero re-spin (~640ms) to a sign the user already picked.
       var _origSelect = selectSign;
-      selectSign = function(key) { _origSelect(key); syncPressed(key); };
+      selectSign = function(key, opts) { _origSelect(key, opts); syncPressed(key); };
       var _origClose = closePanel;
       closePanel = function() { _origClose(); syncPressed(null); };
 
@@ -849,19 +907,56 @@
         return cv;
       }
 
+      // Resolve the active sign from the tracked open-panel state, falling back
+      // to the DOM. `.sign-card.is-active` can be null or inside a display:none
+      // wrapper, so the tracked value is the reliable source.
+      function activeReadingSign() {
+        if (currentOpenSign && SIGNS[currentOpenSign]) return currentOpenSign;
+        var active = document.querySelector('.sign-card.is-active');
+        var key = active ? active.dataset.sign : null;
+        return (key && SIGNS[key]) ? key : null;
+      }
+      function toast(title, msg) {
+        if (window.AstroApp && typeof AstroApp.showToast === 'function') {
+          AstroApp.showToast(title, msg, 'info');
+        }
+      }
+
       var cardBtn = document.getElementById('srp-card-btn');
       if (cardBtn) {
         cardBtn.addEventListener('click', function() {
-          var active = document.querySelector('.sign-card.is-active');
-          var key = active ? active.dataset.sign : null;
-          if (!key || !window.Interpretations) return;
-          drawHoroscopeCard(key, function (cv) {
-            var a = document.createElement('a');
-            a.download = key + '-horoscope-' + new Date().toISOString().slice(0,10) + '.png';
-            a.href = cv.toDataURL('image/png');
-            a.click();
-            cardBtn.textContent = 'Saved';
-            setTimeout(function() { cardBtn.textContent = '↓ Download Card'; }, 2000);
+          var key = activeReadingSign();
+          if (!key || !window.Interpretations) {
+            toast('Pick a sign first', 'Open a reading, then download your card.');
+            return;
+          }
+          if (cardBtn.dataset.busy) return;
+          // Paint the loading state before the multi-hundred-ms canvas raster.
+          cardBtn.dataset.busy = '1';
+          cardBtn.disabled = true;
+          cardBtn.setAttribute('aria-busy', 'true');
+          cardBtn.textContent = '↻ Crafting…';
+          function restore() {
+            delete cardBtn.dataset.busy;
+            cardBtn.disabled = false;
+            cardBtn.removeAttribute('aria-busy');
+          }
+          requestAnimationFrame(function () {
+            try {
+              drawHoroscopeCard(key, function (cv) {
+                var a = document.createElement('a');
+                a.download = key + '-horoscope-' + new Date().toISOString().slice(0,10) + '.png';
+                a.href = cv.toDataURL('image/png');
+                a.click();
+                cardBtn.textContent = 'Saved ✓';
+                restore();
+                setTimeout(function() { cardBtn.textContent = '↓ Download Card'; }, 2000);
+              });
+            } catch (e) {
+              cardBtn.textContent = '↓ Download Card';
+              restore();
+              toast('Card unavailable', 'Could not render the card just now.');
+            }
           });
         });
       }
@@ -871,27 +966,45 @@
       if (shareBtn) {
         shareBtn.addEventListener('click', function() {
           var url = window.location.href;
-          var active = document.querySelector('.sign-card.is-active');
-          var key = active ? active.dataset.sign : null;
+          var key = activeReadingSign();
           var info = key ? SIGNS[key] : null;
+          if (!info) {
+            toast('Pick a sign first', 'Open a reading, then share it.');
+            return;
+          }
+          if (shareBtn.dataset.busy) return;
+          shareBtn.dataset.busy = '1';
+          shareBtn.setAttribute('aria-busy', 'true');
+          shareBtn.textContent = '↻ Sharing…';
+          function restore(label) {
+            delete shareBtn.dataset.busy;
+            shareBtn.removeAttribute('aria-busy');
+            shareBtn.textContent = label || 'Share ↗';
+          }
           var title = 'My Daily Horoscope';
           var text = '';
-          if (info && window.Interpretations) {
+          if (window.Interpretations) {
             var d = Interpretations.getDailyHoroscope(info.name, new Date());
-            var hook = (d.overview || '').split('.')[0];
+            var hook = ((d && d.overview) || '').split('.')[0];
             var dateStr = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long' });
             title = info.name + ' — ' + dateStr;
             text = info.name + ', ' + dateStr + ': "' + hook + '." — computed from the real sky at AstroPrecise';
           }
           if (navigator.share) {
-            navigator.share({ title: title, text: text, url: url }).catch(function(){});
-          } else {
+            navigator.share({ title: title, text: text, url: url })
+              .then(function () { restore(); })
+              .catch(function () { restore(); });
+          } else if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text ? text + ' ' + url : url).then(function() {
-              shareBtn.textContent = 'Copied!';
+              restore('Copied! ✓');
               setTimeout(function() { shareBtn.textContent = 'Share ↗'; }, 2000);
             }).catch(function() {
-              shareBtn.textContent = 'Share ↗';
+              restore();
+              toast('Could not share', 'Copy the page link manually to share.');
             });
+          } else {
+            restore();
+            toast('Sharing unavailable', 'Copy the page link manually to share.');
           }
         });
       }
