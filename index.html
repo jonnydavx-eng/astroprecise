@@ -423,6 +423,13 @@
     try { if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
     var c = navigator.connection || {};
     if (c.saveData || /(^|-)2g/.test(c.effectiveType || '')) return;
+    // Skip the ambient video on constrained devices — mirrors orrery-loader.js device
+    // tiering so the decode never contends with the canvas orrery + ephemeris compute on
+    // low-RAM / low-core machines (e.g. ARM ultrabooks under memory pressure).
+    try {
+      if (navigator.deviceMemory && navigator.deviceMemory <= 4) return;
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return;
+    } catch (e) {}
     function go() {
       try {
         var webm = document.createElement('source'); webm.src = 'assets/video/cosmic-hero.webm'; webm.type = 'video/webm';
