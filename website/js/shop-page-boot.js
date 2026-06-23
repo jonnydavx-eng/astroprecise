@@ -31,6 +31,20 @@
   function revealImage(img) {
     var src = img.getAttribute('data-src');
     if (!src || img.getAttribute('src')) return;
+    // Mark this image as lazy-revealed so CSS can fade it in on load. Eager
+    // images (already carrying src at first paint) never get this class, so the
+    // opacity:0 fade rule can't trap them invisible. Reduced-motion users get an
+    // instant show (the .is-revealed end-state is opacity:1; the transition is
+    // suppressed in css/shop.css). Reveal on load OR error so a failed image
+    // can't stick at opacity:0; if it's already complete, reveal now.
+    img.classList.add('shopc-reveal');
+    var show = function () { img.classList.add('is-revealed'); };
+    if (img.complete && img.naturalWidth > 0) {
+      show();
+    } else {
+      img.addEventListener('load', show, { once: true });
+      img.addEventListener('error', show, { once: true });
+    }
     img.setAttribute('src', src);
     img.removeAttribute('data-src');
     var pic = img.closest('picture');

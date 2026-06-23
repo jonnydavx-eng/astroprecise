@@ -33,6 +33,92 @@ window.AstroShop = (() => {
 
   const CART_KEY = 'ap_cart';
 
+  // ── Focus-trap helper (shared by cart drawer + quick-view modal) ─────────
+  // Keeps Tab/Shift+Tab cycling inside `container` while a dialog is open, and
+  // marks the rest of the page inert so screen-reader + keyboard users can't
+  // wander out. Returns a release() that restores everything.
+  const FOCUSABLE_SEL = [
+    'a[href]', 'button:not([disabled])', 'input:not([disabled])',
+    'select:not([disabled])', 'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(',');
+
+  function focusableWithin(container) {
+    if (!container) return [];
+    return Array.prototype.filter.call(
+      container.querySelectorAll(FOCUSABLE_SEL),
+      el => el.offsetParent !== null || el.getClientRects().length > 0
+    );
+  }
+
+  // Page chrome that should become inert while a dialog is open. Excludes the
+  // dialogs + cart chrome themselves so focus can still move within them.
+  function pageChromeRoots(except) {
+    const roots = [
+      document.querySelector('.site-header'),
+      document.getElementById('main-content'),
+      document.querySelector('.site-footer'),
+      document.querySelector('footer'),
+    ];
+    const cart = document.getElementById('shopc-cart');
+    const toggle = document.querySelector('.shopc-cart-toggle');
+    if (except !== cart && cart) roots.push(cart);
+    if (toggle) roots.push(toggle);
+    return roots.filter((el, i, a) => el && el !== except && a.indexOf(el) === i);
+  }
+
+  function setChromeInert(except, on) {
+    pageChromeRoots(except).forEach(el => {
+      if (on) {
+        try { el.inert = true; } catch (e) {}
+        el.setAttribute('aria-hidden', 'true');
+      } else {
+        try { el.inert = false; } catch (e) {}
+        el.removeAttribute('aria-hidden');
+      }
+    });
+  }
+
+  function trapFocus(container, opts = {}) {
+    if (!container) return () => {};
+    const prevFocus = opts.returnTo || document.activeElement;
+    setChromeInert(container, true);
+
+    const initial = opts.initialFocus
+      || focusableWithin(container)[0]
+      || container;
+    try { initial.focus(); } catch (e) {}
+
+    function onKeydown(e) {
+      if (e.key !== 'Tab') return;
+      // If a quick-view modal is open on top of THIS container (e.g. the cart
+      // drawer launches the checkout modal), let the modal's own trap own Tab.
+      const modalEl = document.getElementById('shopc-modal');
+      if (modalEl && modalEl.classList.contains('open') && !modalEl.contains(container)) return;
+      const items = focusableWithin(container);
+      if (!items.length) { e.preventDefault(); return; }
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || !container.contains(active)) {
+          e.preventDefault(); last.focus();
+        }
+      } else if (active === last || !container.contains(active)) {
+        e.preventDefault(); first.focus();
+      }
+    }
+    document.addEventListener('keydown', onKeydown, true);
+
+    return function release() {
+      document.removeEventListener('keydown', onKeydown, true);
+      setChromeInert(container, false);
+      if (prevFocus && typeof prevFocus.focus === 'function') {
+        try { prevFocus.focus(); } catch (e) {}
+      }
+    };
+  }
+
   // ── Config access ──────────────────────────────────────────────────────
   const cfg        = () => (window.AP_MON && window.AP_MON.commerce) || {};
   const products   = () => cfg().products || [];
@@ -276,6 +362,7 @@ window.AstroShop = (() => {
       }
       this.save();
       this.render();
+      flashAddButton(opts.sourceBtn);
       toast(`${product.name}${variant ? ' (' + variant + ')' : ''} added to cart`);
     }
 
@@ -302,9 +389,26 @@ window.AstroShop = (() => {
     // ── Cart drawer rendering ──────────────────────────────────────────────
     render() {
       const count = this.count();
+      const increased = count > (this._lastCount == null ? 0 : this._lastCount);
       document.querySelectorAll('[data-cart-count]').forEach(el => {
         el.textContent = count;
         el.style.display = count > 0 ? '' : 'none';
+        // Re-trigger the bump animation when the count goes up (remove → reflow
+        // → re-add so the keyframe restarts even on consecutive adds).
+        if (increased) {
+          el.classList.remove('is-bumped');
+          void el.offsetWidth;
+          el.classList.add('is-bumped');
+        }
+      });
+      this._lastCount = count;
+
+      // a11y: the numeric badge is aria-hidden, so name the FAB itself with the
+      // live item count — screen-reader users otherwise get only "Open cart".
+      document.querySelectorAll('.shopc-cart-toggle[data-cart-toggle]').forEach(fab => {
+        fab.setAttribute('aria-label', count > 0
+          ? `Open cart, ${count} item${count === 1 ? '' : 's'}`
+          : 'Open cart');
       });
 
       const itemsEl = document.getElementById('shopc-cart-items');
@@ -345,15 +449,21 @@ window.AstroShop = (() => {
     open() {
       const drawer = document.getElementById('shopc-cart');
       const ov = document.getElementById('shopc-cart-overlay');
-      drawer && drawer.classList.add('open');
+      if (!drawer) return;
+      drawer.classList.add('open');
       ov && ov.classList.add('open');
       this.render();
+      // a11y: remember opener, trap focus, move it to the close button.
+      this._opener = document.activeElement;
+      const closeBtn = drawer.querySelector('[data-cart-close]');
+      this._release = trapFocus(drawer, { initialFocus: closeBtn, returnTo: this._opener });
     }
     close() {
       const drawer = document.getElementById('shopc-cart');
       const ov = document.getElementById('shopc-cart-overlay');
       drawer && drawer.classList.remove('open');
       ov && ov.classList.remove('open');
+      if (this._release) { this._release(); this._release = null; }
     }
 
     // ── CHECKOUT (priority chain) ──────────────────────────────────────────
@@ -665,7 +775,7 @@ window.AstroShop = (() => {
     host.querySelectorAll('[data-add-cart]').forEach(el => {
       el.addEventListener('click', () => {
         const p = productById(el.dataset.addCart);
-        if (p) cart.add(p);
+        if (p) cart.add(p, { sourceBtn: el });
       });
     });
   }
@@ -725,7 +835,7 @@ window.AstroShop = (() => {
       el.addEventListener('click', e => {
         e.stopPropagation();
         const p = productById(el.dataset.addCart);
-        if (p) cart.add(p);
+        if (p) cart.add(p, { sourceBtn: el });
       });
     });
   }
@@ -799,6 +909,12 @@ window.AstroShop = (() => {
     grid.innerHTML = sections.length ? sections.join('') : `<p class="shopc-empty">Nothing in this collection yet. Try another filter.</p>`;
     gridJsRendered = true;
 
+    // Stagger the freshly rendered cards in on a filter change. This branch is
+    // only reached on a full re-render (the keep-static first-paint path
+    // returns earlier), so the baked first-paint cards never get the primitive.
+    // The .ap-stagger-in rule is reduced-motion gated in ap-motion.css.
+    grid.classList.add('ap-stagger-in');
+
     wireGridHandlers(grid);
 
     // Dynamic mini-chart previews (seals + optional chart-render wheelOnly for saved profiles)
@@ -857,6 +973,9 @@ window.AstroShop = (() => {
   // ═══════════════════════════════════════════════════════════════════════
   // MODAL (self-contained, glass aesthetic; created on demand)
   // ═══════════════════════════════════════════════════════════════════════
+  let modalRelease = null;   // focus-trap release() for the open quick-view modal
+  let modalTrigger = null;   // element that opened the modal (focus returns here)
+
   function ensureModal() {
     let el = document.getElementById('shopc-modal');
     if (el) return el;
@@ -912,6 +1031,14 @@ window.AstroShop = (() => {
     if (prefsRoot && window.APReadingPrefs && APReadingPrefs.bindForm) {
       APReadingPrefs.bindForm(prefsRoot);
     }
+    // a11y: trap focus inside the dialog and restore it to the trigger on close.
+    // Capture the trigger only on the FIRST open of a chain (a modal action that
+    // opens another modal keeps the original opener so focus lands sensibly).
+    if (!modalRelease) modalTrigger = document.activeElement;
+    const panel = el.querySelector('.shopc-modal');
+    const closeBtn = el.querySelector('[data-modal-close]');
+    if (modalRelease) modalRelease();
+    modalRelease = trapFocus(panel || el, { initialFocus: closeBtn, returnTo: modalTrigger });
   }
 
   function closeModal() {
@@ -919,6 +1046,7 @@ window.AstroShop = (() => {
     if (!el) return;
     el.classList.remove('open');
     document.body.style.overflow = '';
+    if (modalRelease) { modalRelease(); modalRelease = null; modalTrigger = null; }
   }
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -967,6 +1095,31 @@ window.AstroShop = (() => {
   // ═══════════════════════════════════════════════════════════════════════
   // Helpers
   // ═══════════════════════════════════════════════════════════════════════
+  // In-place "Added ✓" feedback on the clicked add-to-cart button (~1.2s),
+  // then restore its original label. Re-entrant-safe: a rapid second click
+  // restarts the timer without losing the true original label.
+  function flashAddButton(btn) {
+    if (!btn || btn.classList.contains('is-added')) {
+      if (btn && btn._addedTimer) {
+        clearTimeout(btn._addedTimer);
+        btn._addedTimer = setTimeout(() => restoreAddButton(btn), 1200);
+      }
+      return;
+    }
+    btn._addedLabel = btn.textContent;
+    btn.classList.add('is-added');
+    btn.setAttribute('aria-label', 'Added to cart');
+    btn.textContent = 'Added ✓';
+    btn._addedTimer = setTimeout(() => restoreAddButton(btn), 1200);
+  }
+  function restoreAddButton(btn) {
+    if (!btn) return;
+    btn.classList.remove('is-added');
+    btn.removeAttribute('aria-label');
+    if (btn._addedLabel != null) btn.textContent = btn._addedLabel;
+    btn._addedTimer = null;
+  }
+
   function toast(msg, body = '', type = 'success', duration) {
     if (window.AstroApp && window.AstroApp.showToast) { window.AstroApp.showToast(msg, body, type, duration); return; }
     // minimal fallback
@@ -1060,6 +1213,13 @@ window.AstroShop = (() => {
 
     const checkoutBtn = document.getElementById('shopc-checkout-btn');
     checkoutBtn && checkoutBtn.addEventListener('click', () => cart.checkoutNow());
+
+    // Escape closes the cart drawer when it's open. The quick-view modal has
+    // its own Escape handler (ensureModal); this is the parallel one for the
+    // cart so keyboard users can dismiss either dialog the same way.
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) cart.close();
+    });
   }
 
   // ── Init ────────────────────────────────────────────────────────────────
