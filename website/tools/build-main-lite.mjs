@@ -94,6 +94,71 @@ out += `
 .ap-social-icon__svg { width: 18px; height: 18px; }
 .ap-social-icon--soon { opacity: 0.42; cursor: default; }
 
+/* ── AP structure utilities (mirrors main.css tail — keep in sync) ── */
+:root {
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+}
+.ap-line-clamp-2,
+.ap-line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(var(--ap-lc-lines, 2) * 1em * var(--ap-lc-lh, 1.55));
+}
+.ap-line-clamp-2 { -webkit-line-clamp: 2; --ap-lc-lines: 2; }
+.ap-line-clamp-3 { -webkit-line-clamp: 3; --ap-lc-lines: 3; }
+.ap-grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--grid-min, 260px), 1fr));
+  gap: var(--space-5, 1.5rem);
+}
+.app-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
+  margin-inline: auto;
+  padding: var(--section-pad-y-tight, 3rem) var(--space-6, 2rem);
+  background: var(--surface, rgba(20, 16, 10, 0.56));
+  border: 1px solid var(--border, var(--ap-gold-a16));
+  border-radius: var(--radius-lg, 16px);
+}
+.app-empty-state__seal {
+  display: block;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--gold, var(--ap-gold-core));
+  margin-bottom: var(--space-4, 1rem);
+}
+.app-empty-state__title {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: var(--display-3, 1.35rem);
+  font-weight: var(--weight-bold, 700);
+  letter-spacing: var(--tracking-tight, 0.01em);
+  color: var(--gold-pale, var(--ap-gold-parchment));
+  margin: 0 0 var(--space-3, 0.7rem);
+}
+.app-empty-state__sub {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--silver, #A89E88);
+  max-width: 42ch;
+  margin: 0 auto var(--space-5, 1.75rem);
+}
+.app-empty-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3, 0.75rem);
+  justify-content: center;
+}
+@media (max-width: 600px) {
+  .app-empty-state { padding: var(--space-8, 2.25rem) var(--space-5, 1.5rem); }
+  .app-empty-state__actions { width: 100%; }
+  .app-empty-state__actions .btn { flex: 1 1 auto; }
+}
+
 /* ── View transitions (active before deferMainCss loads full main.css) ── */
 @view-transition { navigation: auto; }
 ::view-transition-old(root) { animation: ap-vt-out 0.35s ease both; }

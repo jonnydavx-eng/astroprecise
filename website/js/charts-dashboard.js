@@ -154,15 +154,20 @@
       '</article>';
   }
 
+  // GENUINE empty state — only rendered once we've actually read storage and
+  // found no saved charts. Copy states the truth ("No saved charts yet"); it is
+  // never shown as a loading placeholder. Two real, working CTAs.
   function emptyHtml() {
     return '' +
-      '<div class="glass-card mc-empty">' +
-        '<span class="mc-empty__glyph eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>' +
-        '<h2 class="mc-empty__title">No charts saved yet</h2>' +
-        '<p class="mc-empty__text">Cast your first birth chart and save it here to build your ' +
-          'personal collection. Saved charts power your daily transit reading and let you ' +
-          'revisit any chart in one tap.</p>' +
-        '<a class="btn btn--primary btn--lg" href="chart.html">Calculate a Birth Chart →</a>' +
+      '<div class="app-empty-state" data-mc-state="empty">' +
+        '<span class="app-empty-state__seal eng-star-mark" aria-hidden="true"></span>' +
+        '<h2 class="app-empty-state__title">No saved charts yet</h2>' +
+        '<p class="app-empty-state__sub">Cast your first birth chart to start your collection. ' +
+          'Saved charts power your daily transit reading and let you revisit any chart in one tap.</p>' +
+        '<div class="app-empty-state__actions">' +
+          '<a class="btn btn--primary btn--lg" href="chart.html">Cast your first chart</a>' +
+          '<a class="btn btn--outline btn--lg" href="horoscope.html">Read today’s horoscope</a>' +
+        '</div>' +
       '</div>';
   }
 
@@ -184,11 +189,21 @@
     var grid = $('charts-grid');
     if (!grid) return;
 
+    // We have now finished reading storage — the transient LOADING state is over.
+    grid.setAttribute('aria-busy', 'false');
+
     if (!P) {
-      grid.innerHTML = '<div class="glass-card mc-empty">' +
-        '<h2 class="mc-empty__title">Storage unavailable</h2>' +
-        '<p class="mc-empty__text">Your chart store could not be loaded in this browser.</p>' +
-        '<a class="btn btn--primary btn--lg" href="chart.html">Go to the Chart calculator</a></div>';
+      grid.classList.remove('mc-grid--cards');
+      grid.innerHTML = '' +
+        '<div class="app-empty-state" data-mc-state="unavailable">' +
+          '<span class="app-empty-state__seal eng-star-mark" aria-hidden="true"></span>' +
+          '<h2 class="app-empty-state__title">Storage unavailable</h2>' +
+          '<p class="app-empty-state__sub">Your saved charts could not be read in this browser — ' +
+            'private storage may be disabled. You can still cast a new chart.</p>' +
+          '<div class="app-empty-state__actions">' +
+            '<a class="btn btn--primary btn--lg" href="chart.html">Go to the Chart calculator</a>' +
+          '</div>' +
+        '</div>';
       renderStat([]);
       return;
     }
@@ -196,6 +211,7 @@
     var charts = getCharts();
     renderStat(charts);
 
+    // Genuinely EMPTY — storage read OK, but no charts saved. Truthful copy.
     if (!charts.length) {
       grid.classList.remove('mc-grid--cards');
       grid.innerHTML = emptyHtml();

@@ -725,27 +725,142 @@
 
   /* ── Mandala drawing ─────────────────────────────────────────────────────── */
 
-  function drawMandala(canvas, color) {
+  /*
+   * Life-Path Mandala — a deterministic visual ENCODING of the user's real
+   * life-path number. The geometry is seeded ONLY by `lp` (1–9, or the masters
+   * 11/22/33), so the same number always yields the same figure and different
+   * numbers are visibly distinct. Nothing here is random or decorative-only.
+   *
+   *   • fold count     = the reduced digit (1→radial/simple … 9→richest)
+   *   • ring count     = scales with the digit
+   *   • inner rotation = digit-derived phase so each number sits differently
+   *   • masters (11/22/33) get a doubled fold + a fine gold accent ring/glow
+   *
+   * Pure Canvas 2D, one-time draw, no animation loop. Cheap.
+   */
+  function drawMandala(canvas, color, lpNumber) {
     var ctx = canvas.getContext('2d');
-    var W = canvas.width, H = canvas.height;
+    if (!ctx) return;
+
+    // Size the backing store to the rendered box (crisp on HiDPI). The canvas
+    // id/CSS box are never touched — we only set the pixel buffer here.
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var box = canvas.getBoundingClientRect();
+    var cssW = box.width || 240, cssH = box.height || 240;
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var W = cssW, H = cssH;
     ctx.clearRect(0, 0, W, H);
-    var cx = W/2, cy = H/2, r = Math.min(W,H) * 0.45;
-    for (var rot = 0; rot < 3; rot++) {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rot * Math.PI / 6);
+
+    var base = color || 'rgba(196,146,10,0.18)';
+    var goldAccent = 'rgba(201,162,39,0.55)';   // --ap-gold-a55
+    var goldGlow   = 'rgba(201,162,39,0.16)';   // --ap-gold-a16
+
+    // ── Derive geometry purely from the real life-path number ──────────────
+    var n = parseInt(lpNumber, 10);
+    if (!isFinite(n)) n = 1;
+    var isMaster = (n === 11 || n === 22 || n === 33);
+    // Reduced core digit drives the petal/fold count (master → its reduction:
+    // 11→2, 22→4, 33→6 — but masters also get a doubled fold below).
+    var core = n;
+    while (core > 9) {
+      var s = 0, t = core;
+      while (t > 0) { s += t % 10; t = Math.floor(t / 10); }
+      core = s;
+    }
+    // Fold count: 1 → calm radial (3), rising to a rich 11 for 9. Masters double.
+    var folds = core + 2;                 // 3 … 11 across digits 1 … 9
+    if (isMaster) folds *= 2;             // masters feel "doubled"
+    var rings = 2 + Math.round(core / 2); // 2 … 6 nested rings, scales with digit
+    var phase = (core / 9) * (Math.PI / folds); // deterministic rotation per number
+
+    var cx = W / 2, cy = H / 2;
+    var rMax = Math.min(W, H) * 0.46;
+
+    // Master glow: a soft gold aura behind the figure (restrained, low alpha).
+    if (isMaster) {
+      var grad = ctx.createRadialGradient(cx, cy, rMax * 0.1, cx, cy, rMax);
+      grad.addColorStop(0, goldGlow);
+      grad.addColorStop(1, 'rgba(201,162,39,0)');
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      for (var i = 0; i < 4; i++) {
-        var angle = (i / 4) * Math.PI * 2 - Math.PI/4;
-        var x = r * Math.cos(angle), y = r * Math.sin(angle);
+      ctx.arc(cx, cy, rMax, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(phase);
+    ctx.lineJoin = 'round';
+
+    // ── Nested polygon rings (the core sacred-geometry lattice) ────────────
+    for (var ring = 0; ring < rings; ring++) {
+      var rr = rMax * (1 - ring / (rings + 0.6));
+      var ringRot = (ring % 2) * (Math.PI / folds); // alternate offset → star lattice
+      ctx.beginPath();
+      for (var i = 0; i <= folds; i++) {
+        var a = (i / folds) * Math.PI * 2 + ringRot;
+        var x = rr * Math.cos(a), y = rr * Math.sin(a);
         if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       }
       ctx.closePath();
-      ctx.strokeStyle = color || 'rgba(196,146,10,0.18)';
+      ctx.strokeStyle = base;
       ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.9 - ring * 0.12;
       ctx.stroke();
-      ctx.restore();
     }
+    ctx.globalAlpha = 1;
+
+    // ── Radial spokes — one per fold, anchoring the symmetry ───────────────
+    ctx.beginPath();
+    for (var k = 0; k < folds; k++) {
+      var sa = (k / folds) * Math.PI * 2;
+      ctx.moveTo(0, 0);
+      ctx.lineTo(rMax * Math.cos(sa), rMax * Math.sin(sa));
+    }
+    ctx.strokeStyle = base;
+    ctx.lineWidth = 0.6;
+    ctx.globalAlpha = 0.35;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // ── Petal arcs between adjacent points (richness rises with the digit) ──
+    var petalR = rMax * 0.62;
+    for (var p = 0; p < folds; p++) {
+      var pa = (p / folds) * Math.PI * 2;
+      var px = petalR * Math.cos(pa), py = petalR * Math.sin(pa);
+      ctx.beginPath();
+      ctx.arc(px, py, rMax * 0.28, 0, Math.PI * 2);
+      ctx.strokeStyle = base;
+      ctx.lineWidth = 0.7;
+      ctx.globalAlpha = 0.5;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // ── Master treatment: a fine doubled gold ring + central seal ──────────
+    if (isMaster) {
+      ctx.strokeStyle = goldAccent;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(0, 0, rMax * 0.94, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      ctx.arc(0, 0, rMax * 0.88, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    // ── Central node (gold for masters, element for the rest) ──────────────
+    ctx.beginPath();
+    ctx.arc(0, 0, rMax * 0.06, 0, Math.PI * 2);
+    ctx.strokeStyle = isMaster ? goldAccent : base;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.restore();
   }
 
   /* ── Render helpers ─────────────────────────────────────────────────────── */
@@ -882,7 +997,9 @@
 
     const mc = document.getElementById('lp-mandala-canvas');
     if (mc) {
-      drawMandala(mc, mandalaColor);
+      // Seed the mandala with the REAL computed life-path number (`lp`) so the
+      // figure is an honest visual encoding of the user's number, not decoration.
+      drawMandala(mc, mandalaColor, lp);
       display.classList.add('is-mandala-ready');
     }
   }
