@@ -548,7 +548,7 @@ window.AstroShop = (() => {
         <button type="button" class="shopc-featured__visual" data-quickview="${p.id}">
           <span class="sr-only">Quick view ${esc(p.name)}</span>
           ${cardArt(p)}
-          ${p.badge ? `<span class="shopc-card__badge">${esc(p.badge)}</span>` : ''}
+          ${p.badge ? `<span class="shopc-card__badge${hero ? '' : ' shopc-card__badge--quiet'}">${esc(p.badge)}</span>` : ''}
           ${save}
         </button>
         <div class="shopc-featured__copy">
@@ -604,7 +604,7 @@ window.AstroShop = (() => {
         ${others[1] ? featuredCard(others[1]) : ''}
       </div>
       <ul class="shopc-trust">
-        <li class="shopc-trust__item shopc-trust__item--stars" aria-label="5 star brand standard"><span class="shopc-rating">★★★★★</span> 5-star deliverables</li>
+        <li class="shopc-trust__item">${icon('gem')} Museum-grade 250gsm prints</li>
         <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
         <li class="shopc-trust__item">${icon('orb')} Secure Lemon Squeezy checkout</li>
         <li class="shopc-trust__item">${icon('map')} PDFs in 24–48 hours</li>
@@ -674,9 +674,11 @@ window.AstroShop = (() => {
     const bar = document.getElementById('shopc-filters');
     if (!bar) return;
     const cols = collections();
-    // Only show a collection chip if it has at least one fulfillable product.
+    // Only show a collection chip if it has at least one fulfillable (live) product.
+    // A collection of coming-soon placeholders only (e.g. Jewellery) stays hidden so
+    // chips never dead-end on unbuyable SKUs.
     const counts = {};
-    products().filter(p => p.available !== false).forEach(p => { counts[p.collection] = (counts[p.collection] || 0) + 1; });
+    products().filter(p => p.available !== false && isLive(p)).forEach(p => { counts[p.collection] = (counts[p.collection] || 0) + 1; });
     const chips = [['all', 'All']].concat(Object.entries(cols).filter(([k]) => counts[k] > 0).map(([k, c]) => [k, c.name]));
     bar.innerHTML = chips.map(([key, label]) =>
       `<button type="button" class="shopc-chip ${key === activeCollection ? ' active' : ''}" data-collection="${key}" aria-pressed="${key === activeCollection ? 'true' : 'false'}">${esc(label)}</button>`
@@ -770,7 +772,7 @@ window.AstroShop = (() => {
           <button type="button" class="shopc-card__art" data-quickview="${p.id}">
             <span class="sr-only">Quick view ${esc(p.name)}</span>
             ${cardArt(p)}
-            ${p.badge ? `<span class="shopc-card__badge">${esc(p.badge)}</span>` : ''}
+            ${p.badge ? `<span class="shopc-card__badge shopc-card__badge--quiet">${esc(p.badge)}</span>` : ''}
             ${p.personalized ? `<span class="shopc-card__personal" title="Generated from your chart">${icon('star4')} Your chart</span>` : ''}
           </button>
           <div class="shopc-card__body">
