@@ -222,15 +222,26 @@
       document.getElementById('srp-lucky-color').textContent = data.luckyColor || '—';
       document.getElementById('srp-best-day').textContent = data.bestDay || DAYS[(new Date().getDay() + 1) % 7];
 
-      // Energy bar — mood score from transit harmony (horoscope-engine) or fallback
+      // Energy bar — honest: only a real transit-harmony moodScore drives the gauge.
+      // No pseudo-random fallback; when the engine gives no score we dim the gauge
+      // and show no number rather than fabricate one.
       var signIdx = SIGN_KEYS.indexOf(signKey);
-      var energyPct = (typeof data.moodScore === 'number')
-        ? data.moodScore
-        : (55 + ((signIdx * 7 + Math.floor(Date.now() / 86400000) * 3) % 40));
+      var hasMood = (typeof data.moodScore === 'number') && isFinite(data.moodScore);
+      var energyPct = hasMood ? Math.max(0, Math.min(100, Math.round(data.moodScore))) : null;
       var pctEl = document.getElementById('srp-energy-pct');
       var fillEl = document.getElementById('srp-energy-fill');
-      if (pctEl) pctEl.textContent = energyPct + '%';
-      if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
+      var energyWrap = document.getElementById('srp-energy-wrap');
+      var energyTrack = document.getElementById('srp-energy-track');
+      if (energyWrap) energyWrap.classList.toggle('srp-energy--empty', !hasMood);
+      if (hasMood) {
+        if (pctEl) pctEl.textContent = energyPct + '%';
+        if (energyTrack) energyTrack.setAttribute('aria-valuenow', String(energyPct));
+        if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
+      } else {
+        if (pctEl) pctEl.textContent = '—';
+        if (energyTrack) energyTrack.removeAttribute('aria-valuenow');
+        if (fillEl) fillEl.style.width = '0';
+      }
 
       // Personal transit note when user has a saved chart for a different sign
       var noteEl = document.getElementById('srp-personal-note');
@@ -723,11 +734,13 @@
       if (closeBtn) closeBtn.addEventListener('click', closePanel);
 
       // Shareable cosmic card — enhanced 1080×1080 PNG
+      // Muted observatory element palette (ap-palette-2026 --ap-element-*) — not neon.
+      // Canvas needs literal hex; glow alpha keeps 0.13/0.15/0.16 so neb2 replace() still fires.
       var ELEMENT_CARD_TINTS = {
-        fire:  ['#fb923c', 'rgba(251,146,60,0.16)', '#b44232'],
-        earth: ['#9ab363', 'rgba(94, 122, 58,0.13)', '#0e5c3a'],
-        air:   ['#a78bba', 'rgba(167, 139, 186,0.13)', '#5c4a6e'],
-        water: ['#818cf8', 'rgba(129,140,248,0.15)', '#1b5faa'],
+        fire:  ['#B85A42', 'rgba(184, 90, 66,0.16)', '#4a1408'],
+        earth: ['#5A7A48', 'rgba(90, 122, 72,0.13)', '#1e3a24'],
+        air:   ['#8A7A6A', 'rgba(138, 122, 106,0.13)', '#3a342e'],
+        water: ['#4A7580', 'rgba(74, 117, 128,0.15)', '#10282e'],
       };
 
       // Deterministic stone per sign
@@ -1150,7 +1163,7 @@
               } else if (window.AstroIcons) {
                 phGlyph.innerHTML = AstroIcons.planet(ph.planet, { sm: true, hidden: true });
               } else {
-                phGlyph.textContent = '◷';
+                phGlyph.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg>';
               }
             }
           }

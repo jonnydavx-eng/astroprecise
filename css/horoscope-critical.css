@@ -284,8 +284,12 @@
       min-height: 1.15rem;
     }
     .pl-dot {
-      display: inline-block;
-      color: var(--c); opacity: 0.85; letter-spacing: 0.04em;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.4em;
+      /* Label legibility no longer tied to the orb hue — passing parchment token
+         (~6.5:1 on void). Hue --c reserved for the small leading dot only. */
+      color: var(--gold-pale, #E8E0D0); opacity: 1; letter-spacing: 0.04em;
       white-space: nowrap;
       /* Longest label: "☿ Mercury · Sagittarius" — lock before poster hydrates */
       min-width: 24ch;
@@ -293,6 +297,16 @@
       text-align: left;
       font-family: 'AstroGlyph', Georgia, 'Times New Roman', serif;
       font-variant-emoji: text;
+    }
+    .pl-dot::before {
+      content: "";
+      flex: 0 0 auto;
+      width: 0.5em;
+      height: 0.5em;
+      align-self: center;
+      border-radius: 50%;
+      background: var(--c, var(--gold, #C9A227));
+      box-shadow: 0 0 4px var(--c, var(--gold, #C9A227));
     }
 
     /* Birth chart CTAs under sphere — stacked on mobile from first paint (CLS) */
@@ -504,16 +518,39 @@
     }
     .planet-pill__rx {
       font-size: 0.55rem;
-      color: #ef4444;
+      color: var(--crimson-light, #b04a52);
       font-weight: 700;
       vertical-align: super;
     }
+    /* Void-of-course Moon badge — muted observatory burgundy, AA-legible on the
+       translucent burgundy fill over near-black (was inline #b04a52, ~3.x:1). */
+    #void-moon-badge { color: #c9707a; }
+
+    /* ── Tap targets — WCAG 2.5.5 / 2.5.8 on small repeat-tap controls ──
+       The btn--sm padding lands at ~30–33px; bump the interactive minimum to
+       44px. Critical (not deferred) so the size is right at first paint and
+       there is no post-hydration reflow of the sphere controls. */
+    .sphere-controls .btn,
+    .sign-reading-panel__actions .btn,
+    #srp-weekly-toggle,
+    #srp-monthly-toggle {
+      min-height: 44px;
+    }
+    /* Icon-only close — full 44×44 square. */
+    #srp-close-btn {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
     /* Per-planet orb colours */
-    .planet-pill[data-planet="Sun"]     .planet-pill__symbol { --planet-pill-col:#FFD700; border-color:rgba(255,215,0,0.5); background:radial-gradient(circle at 35% 30%,#fff5cc,#c9820a 60%,#7a4800); }
+    .planet-pill[data-planet="Sun"]     .planet-pill__symbol { --planet-pill-col:var(--ap-gold-core,#C9A227); border-color:var(--ap-gold-a40); background:radial-gradient(circle at 35% 30%,#efe3c0,#c9a227 60%,#7a4800); }
     .planet-pill[data-planet="Moon"]    .planet-pill__symbol { --planet-pill-col:#D2CBB8; border-color:rgba(210,203,184,0.4); background:radial-gradient(circle at 35% 30%,#f0eee8,#b0a898 60%,#6a6060); }
     .planet-pill[data-planet="Mercury"] .planet-pill__symbol { --planet-pill-col:#BFB39A; border-color:rgba(63,125,118,0.4); background:radial-gradient(circle at 35% 30%,#b0e8e0,#3f7d76 60%,#1a3830); }
-    .planet-pill[data-planet="Venus"]   .planet-pill__symbol { --planet-pill-col:#FFB6C1; border-color:rgba(199,125,255,0.4); background:radial-gradient(circle at 35% 30%,#ffe0f5,#c06090 60%,#6a1840); }
-    .planet-pill[data-planet="Mars"]    .planet-pill__symbol { --planet-pill-col:#FF6644; border-color:rgba(224,88,72,0.45); background:radial-gradient(circle at 35% 30%,#ffa080,#cc3310 60%,#5a0800); }
+    .planet-pill[data-planet="Venus"]   .planet-pill__symbol { --planet-pill-col:#d8b8c4; border-color:rgba(110,26,38,0.4); background:radial-gradient(circle at 35% 30%,#e8d0d8,#8c4452 60%,#3a0e16); }
+    .planet-pill[data-planet="Mars"]    .planet-pill__symbol { --planet-pill-col:var(--ap-element-fire,#B85A42); border-color:rgba(184,90,66,0.5); background:radial-gradient(circle at 35% 30%,#d98f74,#b85a42 60%,#4a1408); }
     .planet-pill[data-planet="Jupiter"] .planet-pill__symbol { --planet-pill-col:#FFB347; border-color:rgba(232,160,80,0.4); background:radial-gradient(circle at 35% 30%,#ffe0a0,#c87020 60%,#6a3800); }
     .planet-pill[data-planet="Saturn"]  .planet-pill__symbol { --planet-pill-col:#C8A86B; border-color:rgba(160,184,152,0.4); background:radial-gradient(circle at 35% 30%,#e8d8a0,#a08040 60%,#503810); }
     .planet-pill[data-planet="Uranus"]  .planet-pill__symbol { --planet-pill-col:#B89AD0; border-color:rgba(80,200,220,0.35); background:radial-gradient(circle at 35% 30%,#c0f0f5,#3090a0 60%,#104858); }

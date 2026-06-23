@@ -118,6 +118,7 @@
       margin-bottom: var(--space-2);
       display: block;
     }
+    .reading-card__icon .eng-i { width: 1.2rem; height: 1.2rem; color: var(--gold, #c9a227); }
     .reading-card__label {
       font-size: 0.6rem;
       letter-spacing: 0.16em;
@@ -429,24 +430,50 @@
       font-weight: 700;
     }
     .sign-reading-panel[data-element="fire"] .srp-element-text {
-      background: rgba(224, 90, 58, 0.15);
-      border: 1px solid rgba(224, 90, 58, 0.35);
-      color: #fb8a6a;
+      background: var(--ap-element-fire-glow);
+      border: 1px solid var(--ap-element-fire);
+      color: var(--ap-element-fire);
     }
     .sign-reading-panel[data-element="earth"] .srp-element-text {
-      background: rgba(42, 138, 90, 0.15);
-      border: 1px solid rgba(42, 138, 90, 0.35);
-      color: #5ad498;
+      background: var(--ap-element-earth-glow);
+      border: 1px solid var(--ap-element-earth);
+      color: var(--ap-element-earth);
     }
     .sign-reading-panel[data-element="air"] .srp-element-text {
-      background: rgba(91, 127, 199, 0.15);
-      border: 1px solid rgba(91, 127, 199, 0.35);
-      color: #8aaee8;
+      background: var(--ap-element-air-glow);
+      border: 1px solid var(--ap-element-air);
+      color: var(--ap-element-air);
     }
     .sign-reading-panel[data-element="water"] .srp-element-text {
-      background: rgba(58, 122, 212, 0.15);
-      border: 1px solid rgba(58, 122, 212, 0.35);
-      color: #6aaef8;
+      background: var(--ap-element-water-glow);
+      border: 1px solid var(--ap-element-water);
+      color: var(--ap-element-water);
+    }
+
+    /* ── Cosmic-energy gauge (moved off idle-deferred main.css so the sweep
+       animates on the cold-boot path). Track bumped to ~6px with a soft gold
+       glow; --empty dims it when the engine returns no real moodScore. ── */
+    .srp-energy__track {
+      height: 6px;
+      background: rgba(232, 224, 208, 0.07);
+      border-radius: 3px;
+      overflow: hidden;
+      box-shadow: 0 0 8px var(--ap-gold-a12, rgba(201, 162, 39, 0.12)),
+                  inset 0 0 0 1px var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
+    }
+    .srp-energy__fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--lapis-light, #b09a86), var(--el-color, var(--gold, #c9a227)));
+      box-shadow: 0 0 8px var(--ap-gold-a28, rgba(201, 162, 39, 0.28));
+      width: 0;
+      transition: width 0.9s var(--ease-spring, cubic-bezier(0.22, 1, 0.36, 1));
+    }
+    /* No real score — dim the gauge instead of faking a value. */
+    .srp-energy--empty .srp-energy__track { opacity: 0.4; box-shadow: none; }
+    .srp-energy--empty .srp-energy__value { opacity: 0.5; }
+    @media (prefers-reduced-motion: reduce) {
+      .srp-energy__fill { transition: none; }
     }
 
     /* Per-sign card images — idle/deferred (correct path from css/) */
