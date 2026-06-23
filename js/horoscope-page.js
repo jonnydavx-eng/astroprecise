@@ -455,6 +455,10 @@
         retroHeadingEl.textContent = 'Retrograde Calendar ' + yr + '–' + (yr + 1);
       }
 
+      // Personalised "Today, for you" reading (injected on demand, below the
+      // hero, only for visitors with a saved chart — zero cost otherwise).
+      bootPersonalToday();
+
       function scheduleEngines() {
         if (auditPath) return;
         function go() {
@@ -1218,4 +1222,125 @@
         }
       }
     });
+
+    // ── "Today, for you" — personalised daily reading ───────────────────────
+    // Injected on demand, BELOW the full-height sphere hero (so its reveal can
+    // never shift above-the-fold content / regress LCP), and ONLY for visitors
+    // with a saved chart. Nothing here runs on the audit path or for chartless
+    // visitors beyond a light prompt — the page's perf is untouched otherwise.
+    var PT_AREA = {
+      Sun: 'identity and vitality', Moon: 'feelings and home',
+      Mercury: 'your mind and conversations', Venus: 'love and what you value',
+      Mars: 'drive and momentum', Jupiter: 'growth and opportunity',
+      Saturn: 'structure and discipline', Uranus: 'change and freedom',
+      Neptune: 'dreams and intuition', Pluto: 'depth and transformation',
+      Ascendant: 'how you show up', Midheaven: 'your work and direction'
+    };
+    var PT_WORD = { conjunction: 'meets', opposition: 'opposes', square: 'challenges', trine: 'flows with', sextile: 'supports' };
+
+    function ptEsc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+
+    function ptAspectSentence(a) {
+      var asp = String(a.aspect || '').toLowerCase();
+      var word = PT_WORD[asp] || ('forms a ' + asp + ' to');
+      var area = PT_AREA[a.natal] || 'your inner world';
+      var lead;
+      if (asp === 'trine' || asp === 'sextile') lead = 'a flowing day for';
+      else if (asp === 'square' || asp === 'opposition') lead = 'a day that asks something of';
+      else lead = 'a day that draws focus to';
+      return 'Transiting <strong>' + ptEsc(a.transit) + '</strong> ' + word +
+        ' your <strong>' + ptEsc(a.natal) + '</strong> — <em>' + lead + ' ' + area + '</em>.';
+    }
+
+    function ptInjectAfterHero(el) {
+      var hero = document.querySelector('.sphere-hero');
+      var main = document.getElementById('main-content') || document.querySelector('main');
+      if (hero && hero.parentNode) hero.insertAdjacentElement('afterend', el);
+      else if (main) main.insertBefore(el, main.firstChild);
+      else document.body.appendChild(el);
+    }
+
+    function renderPersonalToday(reading) {
+      if (!reading) return false;
+      var name = reading.name ? ptEsc(reading.name) : '';
+      var dateStr = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      var streak = null;
+      try { if (window.DailyTransit && DailyTransit.bumpStreak) streak = DailyTransit.bumpStreak(reading.iso); } catch (e) {}
+      var headline = (reading.insight && reading.insight.headline) ? ptEsc(reading.insight.headline) : 'Your sky today';
+      var mood = (reading.insight && isFinite(reading.insight.moodScore))
+        ? Math.max(0, Math.min(100, Math.round(reading.insight.moodScore))) : null;
+      var aspects = (reading.aspects || []).slice(0, 3);
+
+      var html = '<div class="ptoday-card">' +
+        '<div class="ptoday-card__head"><div>' +
+          '<p class="ptoday-card__eyebrow">Today, for you</p>' +
+          '<h2 class="ptoday-card__who" id="ptoday-who">' + (name ? 'Today, ' + name : 'Today, for you') + '</h2>' +
+          '<p class="ptoday-card__date">' + ptEsc(dateStr) + '</p>' +
+        '</div>' +
+        ((streak && streak.count) ? '<span class="ptoday-streak">Day ' + streak.count + ' of tuning in</span>' : '') +
+        '</div>' +
+        '<p class="ptoday-card__headline">' + headline + '</p>' +
+        (mood != null ? '<div class="ptoday-energy"><span>Energy</span><div class="ptoday-energy__track"><div class="ptoday-energy__fill" style="width:' + mood + '%"></div></div><span>' + mood + '/100</span></div>' : '') +
+        (aspects.length
+          ? '<ul class="ptoday-aspects">' + aspects.map(function (a) { return '<li class="ptoday-aspect">' + ptAspectSentence(a) + '</li>'; }).join('') + '</ul>'
+          : '<p class="ptoday-aspect" style="padding-left:0">A quiet sky today — no exact transits to your chart. A day to simply be.</p>') +
+        ((reading.sunSign || reading.moonSign) ? '<div class="ptoday-chips">' +
+          (reading.sunSign ? '<span class="ptoday-chip">☉ Sun in ' + ptEsc(reading.sunSign) + '</span>' : '') +
+          (reading.moonSign ? '<span class="ptoday-chip">☾ Moon in ' + ptEsc(reading.moonSign) + '</span>' : '') +
+        '</div>' : '') +
+        '<div class="ptoday-card__foot"><a class="ptoday-link" href="transits.html">Read your full transit forecast →</a></div>' +
+      '</div>';
+
+      var sec = document.createElement('section');
+      sec.className = 'personal-today';
+      sec.setAttribute('aria-label', 'Your personal reading for today');
+      sec.innerHTML = html;
+      ptInjectAfterHero(sec);
+      return true;
+    }
+
+    function showPersonalPrompt() {
+      if (auditPath || document.querySelector('.personal-prompt') || document.querySelector('.personal-today')) return;
+      var sec = document.createElement('section');
+      sec.className = 'personal-prompt';
+      sec.innerHTML = '<div class="pprompt-card">' +
+        '<p class="pprompt-card__eyebrow">Make this yours</p>' +
+        '<h2 class="pprompt-card__title">These readings are generic by sun sign</h2>' +
+        '<p class="pprompt-card__text">Cast your free birth chart and your daily reading becomes personal — computed from today’s real sky against <em>your</em> exact placements, every day.</p>' +
+        '<a class="btn btn--primary" href="chart.html">Cast your free chart →</a>' +
+      '</div>';
+      ptInjectAfterHero(sec);
+    }
+
+    function bootPersonalToday() {
+      if (auditPath) return; // never on the audit/Lighthouse path
+      // Personal styling loads on demand — never in the critical render path.
+      if (!document.getElementById('ap-css-horoscope-personal')) {
+        var pl = document.createElement('link');
+        pl.rel = 'stylesheet'; pl.href = 'css/horoscope-personal.css';
+        pl.id = 'ap-css-horoscope-personal';
+        document.head.appendChild(pl);
+      }
+      loadScript('js/profile.js').then(function () {
+        var hasChart = false;
+        try { hasChart = !!(window.AstroProfile && typeof AstroProfile.getCharts === 'function' && AstroProfile.getCharts().length); } catch (e) {}
+        if (!hasChart) { showPersonalPrompt(); return; }
+        loadScript('js/ephemeris.js')
+          .then(function () { return loadScript('js/oracle.js'); })
+          .then(function () { return loadScript('js/ap-zodiac-constants.js'); })
+          .then(function () { return loadScript('js/icons.js'); })
+          .then(function () { return loadScript('js/daily-transit.js'); })
+          .then(function () {
+            var reading = null;
+            try { reading = (window.DailyTransit && DailyTransit.buildReading) ? DailyTransit.buildReading(new Date()) : null; } catch (e) { reading = null; }
+            if (!reading || !reading.hasChart) { showPersonalPrompt(); return; }
+            try { renderPersonalToday(reading); } catch (e) {}
+          })
+          .catch(function () { /* engine unavailable — stay quiet, no fabricated reading */ });
+      }).catch(function () {});
+    }
   })();

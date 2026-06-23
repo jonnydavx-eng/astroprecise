@@ -574,7 +574,9 @@
   window.DailyTransit = {
     mount: mount,
     refresh: refresh,
-    getReading: getReading
+    buildReading: buildReading,
+    getReading: getReading,
+    bumpStreak: bumpStreak
   };
 
   // Auto-mount if the host page provides the container.
