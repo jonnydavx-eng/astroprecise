@@ -890,8 +890,14 @@
       const line = el('line', attrs);
       line.style.setProperty('--aspect-len', len.toFixed(1));
       line.style.setProperty('--aspect-op', opacity.toFixed(2));
-      line.style.strokeDasharray = String(len);
-      line.style.strokeDashoffset = String(len);
+      // Draw-on via dashoffset only for SOLID (major) aspects. Minor aspects
+      // carry a real dash pattern (set above); overriding their dasharray with
+      // the line length would render them solid and kill the minor/major
+      // distinction — so they keep their dash and simply fade in.
+      if (!style.dash) {
+        line.style.strokeDasharray = String(len);
+        line.style.strokeDashoffset = String(len);
+      }
       line.appendChild(title);
       g.appendChild(line);
     }

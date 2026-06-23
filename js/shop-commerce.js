@@ -142,9 +142,10 @@ window.AstroShop = (() => {
   function productById(id) { return products().find(p => p.id === id) || null; }
   function isLive(p) { return !!(p && isUrl(p.fulfilUrl)); }
 
-  // JSON-LD ItemAvailability — must match UI buy/dormant gate (isLive / isUrl(fulfilUrl)).
-  // Buy buttons, featured CTAs, and cart checkout all use isLive(p); schema must not
-  // advertise InStock when the UI would show Coming soon or hide the SKU.
+  // JSON-LD ItemAvailability — gated on a REAL connected checkout (hasCheckout =
+  // a working Payhip URL), NEVER the dead Lemon Squeezy fulfilUrl. Until Payhip is
+  // connected the honest state is PreOrder ("coming soon"), not InStock — and the
+  // offer below advertises no buyable URL, so search engines never see a dead link.
   const SCHEMA_AVAIL = {
     InStock:    'https://schema.org/InStock',
     OnlineOnly: 'https://schema.org/OnlineOnly',
@@ -153,7 +154,7 @@ window.AstroShop = (() => {
   };
   function schemaAvailability(p) {
     if (!p || p.available === false) return SCHEMA_AVAIL.OutOfStock;
-    if (!isLive(p)) return SCHEMA_AVAIL.PreOrder;
+    if (!hasCheckout(p)) return SCHEMA_AVAIL.PreOrder;
     const override = p.schemaAvailability && SCHEMA_AVAIL[p.schemaAvailability];
     if (override) return override;
     return p.type === 'digital' ? SCHEMA_AVAIL.OnlineOnly : SCHEMA_AVAIL.InStock;
@@ -1263,7 +1264,9 @@ window.AstroShop = (() => {
             price: p.price.toFixed(2),
             priceCurrency: (checkout().currency || 'GBP'),
             availability: schemaAvailability(p),
-            url: isLive(p) ? p.fulfilUrl : undefined,
+            // Advertise the real Payhip checkout URL only when connected — never the
+            // dead Lemon Squeezy fulfilUrl. Omitted (undefined) while checkout pends.
+            url: hasCheckout(p) ? payhipUrl(p) : undefined,
             seller: { '@type': 'Organization', name: 'AstroPrecise' }
           },
         },
