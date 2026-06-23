@@ -936,8 +936,8 @@ body:has(#starfield-canvas) .lib__banner {
 /* Icon-only button variant */
 .btn--icon {
   padding: var(--space-3);
+  border-radius: var(--radius-md);
 }
-
 .hero__eyebrow {
   font-family: var(--font-body);
   font-size: 0.72rem;
@@ -947,9 +947,8 @@ body:has(#starfield-canvas) .lib__banner {
   color: var(--gold);
   opacity: 0.85;
   margin-bottom: var(--space-4);
+  display: block;
 }
-
-/* --------------------------------------------------------------------------
    13. Forms
    -------------------------------------------------------------------------- */
 .form-group {
@@ -1064,9 +1063,8 @@ body:has(#starfield-canvas) .lib__banner {
 .form-input.is-success,
 .form-select.is-success {
   border-color: var(--success);
-  margin: 0;
+  box-shadow: 0 0 0 3px rgba(120, 140, 70, 0.12);
 }
-
 .ap-email-cta--sticky .ap-email-cta__sub,
 .ap-email-cta--sticky .ap-email-cta__eyebrow { display: none; }
 
@@ -1109,9 +1107,6 @@ body:has(#starfield-canvas) .lib__banner {
   display: flex;
   align-items: center;
   flex: 0 0 auto;
-  position: absolute;
-  left: 0;
-  color: var(--gold, #C9A227);
   font-size: 0.62rem;
   top: 0.2em;
 }
@@ -1366,6 +1361,7 @@ body:has(#starfield-canvas) .lib__banner {
   vertical-align: middle;
 }
 .ap-badge--deterministic::before { opacity: 0.95; }
+
 /* Safety net: never allow horizontal scroll from stray decorative/pseudo elements on narrow viewports */
 html, body { overflow-x: clip; max-width: 100%; }
 
@@ -1678,16 +1674,6 @@ p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text
 .ap-social-icon__svg { width: 18px; height: 18px; }
 .ap-social-icon--soon { opacity: 0.42; cursor: default; }
 
-/* ── View transitions (active before deferMainCss loads full main.css) ── */
-@view-transition { navigation: auto; }
-::view-transition-old(root) { animation: ap-vt-out 0.35s ease both; }
-::view-transition-new(root) { animation: ap-vt-in 0.35s ease both; }
-@keyframes ap-vt-out { to { opacity: 0; } }
-@keyframes ap-vt-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-}
-
 /* ── AP structure utilities (mirrors main.css tail — keep in sync) ── */
 :root {
   --bp-tablet: 768px;
@@ -1751,4 +1737,14 @@ p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text
   .app-empty-state { padding: var(--space-8, 2.25rem) var(--space-5, 1.5rem); }
   .app-empty-state__actions { width: 100%; }
   .app-empty-state__actions .btn { flex: 1 1 auto; }
+}
+
+/* ── View transitions (active before deferMainCss loads full main.css) ── */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: ap-vt-out 0.35s ease both; }
+::view-transition-new(root) { animation: ap-vt-in 0.35s ease both; }
+@keyframes ap-vt-out { to { opacity: 0; } }
+@keyframes ap-vt-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
