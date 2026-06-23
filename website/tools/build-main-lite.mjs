@@ -12,21 +12,25 @@ const root = join(__dir, '..');
 const src = readFileSync(join(root, 'css', 'main.css'), 'utf8');
 const lines = src.split(/\r?\n/);
 
-/** 1-based inclusive line ranges from main.css */
+/** 1-based inclusive line ranges from main.css.
+ * Re-synced 2026-06-23 (prior ranges had drifted ~13 lines after untracked
+ * main.css edits). Derived by aligning the known-good main-lite.css against
+ * main.css; verified by diffing the regenerated output. If main.css is edited,
+ * re-run and check the validation below — it fails loudly rather than writing
+ * a malformed file. (TODO: migrate to marker-comment anchors to end the drift.) */
 const RANGES = [
-  [1, 948],      // tokens, reset, starfield, aurora, layout, navbar, buttons
-  [981, 991],    // hero__eyebrow (compat/inner heroes)
-  [1687, 1803],  // forms (chart/compat hero inputs)
-  [4970, 5014],  // nav updates cluster
-  [5075, 5157],  // nav responsive + mobile hamburger (hide desktop links <1024px)
+  [1, 950],      // tokens, reset, starfield, aurora, layout, navbar, buttons
+  [983, 993],    // hero__eyebrow (compat/inner heroes)
+  [1690, 1805],  // forms (chart/compat hero inputs) — incl .form-*.is-success close
+  [4973, 5014],  // nav updates cluster
+  [5078, 5157],  // nav responsive + mobile hamburger (hide desktop links <1024px)
   [5306, 5323],  // decorative .orb (compat hero)
-  [6171, 6297],  // compat-orbs hero strip + person labels
-  [6489, 6517],  // ap-badge (engraved instrument badge)
-  [6519, 6570],  // overflow clip + full privacy banner + close btn
-  [6659, 6814],  // navbar__profile-top + bottom-nav + mobile padding (skip manifesto fragment)
-  [7328, 7333],  // .eng-i inline icons (hero, buttons, bottom-nav)
+  [6160, 6286],  // compat-orbs hero strip + person labels
+  [6476, 6557],  // ap-badge + overflow clip + full privacy banner + close btn
+  [6646, 6801],  // navbar__profile-top + bottom-nav + mobile padding (skip manifesto fragment)
+  [7315, 7320],  // .eng-i inline icons (hero, buttons, bottom-nav)
   [3016, 3037],  // skip-link (app.js inject — contrast before deferMainCss)
-  [7443, 7488],  // ap-legal-links / ap-guide-links footer injects (incl. footer-legal close)
+  [7430, 7475],  // ap-legal-links / ap-guide-links footer injects (incl. footer-legal close)
 ];
 
 const chunks = RANGES.map(([start, end]) =>
@@ -181,6 +185,15 @@ if (!out.includes('.eng-i { opacity: 0.92; }')) {
 }
 if (!out.includes('.orb--gold {')) {
   console.error('main-lite.css validation failed — missing .orb rules (check [5306,5323] range)');
+  process.exit(1);
+}
+// Structural integrity: a range that cuts a rule mid-body leaves unbalanced braces
+// and produces broken CSS. Fail loudly rather than write it (the original line-range
+// coupling silently mis-extracts when main.css drifts — this catches it).
+const opens = (out.match(/\{/g) || []).length;
+const closes = (out.match(/\}/g) || []).length;
+if (opens !== closes) {
+  console.error(`main-lite.css validation failed — unbalanced braces (${opens} "{" vs ${closes} "}"). A RANGE end likely cut a rule mid-body; check the range boundaries against main.css.`);
   process.exit(1);
 }
 
