@@ -765,7 +765,8 @@
     if (pt && fmt) {
       const order = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','Chiron','Lilith','NorthNode','SouthNode'];
       const DISPLAY_NAME = { NorthNode:'North Node', SouthNode:'South Node', Lilith:'Lilith' };
-      pt.innerHTML = order.filter(k => chart.positions[k]).map(k => {
+      const renderedPlanets = order.filter(k => chart.positions[k]);
+      pt.innerHTML = renderedPlanets.map(k => {
         const p = chart.positions[k];
         const h = chart.planetHouses[k];
         const label = DISPLAY_NAME[k] || k;
@@ -793,6 +794,22 @@
         pt.innerHTML += '<p class="ap-reading-card__meta" style="text-align:center;margin-top:var(--space-4);">' +
           'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180°</p>';
       }
+      // Tag each placement card AFTER all innerHTML writes (innerHTML += re-parses
+      // and would drop these attributes). data-planet uses the internal key (e.g.
+      // NorthNode) to match the wheel's glyph group; class drives element tint.
+      const placementCards = pt.querySelectorAll('.ap-reading-card--placement');
+      renderedPlanets.forEach((k, i) => {
+        const card = placementCards[i];
+        if (!card) return;
+        const signName = chart.positions[k].sign || '';
+        const elemKey = ELEMENT_MAP[signName] || '';
+        card.setAttribute('data-planet', k);
+        card.setAttribute('tabindex', '0');
+        if (elemKey) {
+          card.classList.add('ap-elem-' + elemKey);
+          card.style.setProperty('--row-elem', 'var(--ap-element-' + elemKey + ')');
+        }
+      });
     } else if (pt) {
       pt.innerHTML = '<p class="ap-reading-empty">Reading formatter loading — refresh if this persists.</p>';
     }
@@ -807,8 +824,10 @@
         planetsByHouse[hh] = planetsByHouse[hh] || [];
         planetsByHouse[hh].push(k);
       });
+      const houseSigns = [];
       ht.innerHTML = chart.houses.map((cusp, i) => {
         const sign = E().signOf(cusp);
+        houseSigns.push(sign);
         const deg  = cusp % 30;
         const dg = Math.floor(deg), mn = Math.round((deg - dg) * 60);
         const hm = I && I.getHouseMeaning ? I.getHouseMeaning(i + 1) : null;
@@ -822,6 +841,18 @@
           icon: '<span class="ap-reading-card__aspect-glyph" style="font-size:0.85rem;color:var(--gold);">' + roman(i + 1) + '</span>',
         });
       }).join('');
+      // Element-tint each house card by its cusp sign (purely visual; the cusp
+      // sign + degree shown in the meta are unchanged engine values).
+      const houseCards = ht.querySelectorAll('.ap-reading-card--placement');
+      houseSigns.forEach((sign, i) => {
+        const card = houseCards[i];
+        if (!card) return;
+        const elemKey = ELEMENT_MAP[sign] || '';
+        if (elemKey) {
+          card.classList.add('ap-elem-' + elemKey);
+          card.style.setProperty('--row-elem', 'var(--ap-element-' + elemKey + ')');
+        }
+      });
     }
 
     // Aspects
@@ -846,7 +877,41 @@
           });
         }).join('')
         : '<p class="ap-reading-empty">No major aspects within orb for this chart.</p>';
+
+      // Tag each rendered aspect card with the SAME key the wheel uses
+      // (`${p1}-${p2}-${type.toLowerCase()}`), so the bidirectional highlight can
+      // pair a card to its line. Cards render in `main` order, so we zip by index.
+      // Re-encoding only — keys are built from the already-displayed planet/aspect.
+      if (main.length) {
+        const cards = at.querySelectorAll('.ap-reading-card--aspect');
+        main.forEach((x, i) => {
+          const card = cards[i];
+          if (!card) return;
+          card.setAttribute('data-aspect-key', aspectKeyOf(x.planet1, x.planet2, x.aspect));
+          card.setAttribute('data-planet1', x.planet1);
+          card.setAttribute('data-planet2', x.planet2);
+          card.setAttribute('tabindex', '0');
+        });
+      }
     }
+
+    // Once both the wheel and the detail tables exist, wire the bidirectional
+    // hover/focus highlight between them (no-op if either is missing).
+    linkChartInteractions();
+  }
+
+  // Wheel↔table key — must byte-match chart-render.js aspectKey():
+  //   `${planet1}-${planet2}-${aspect.toLowerCase()}`
+  function aspectKeyOf(p1, p2, type) {
+    return (p1 || '') + '-' + (p2 || '') + '-' + String(type || '').toLowerCase();
+  }
+
+  function linkChartInteractions() {
+    if (!window.AstroChartRender || typeof AstroChartRender.linkWheelAndTables !== 'function') return;
+    const wheel = document.getElementById('natal-wheel');
+    const tabsRoot = document.querySelector('.chart-detail-tabs') || document;
+    if (!wheel || !wheel.querySelector('svg')) return;
+    AstroChartRender.linkWheelAndTables(wheel, tabsRoot);
   }
 
   function analysisSection(title, html, opts) {

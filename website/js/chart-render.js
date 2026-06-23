@@ -156,20 +156,23 @@
   ];
 
   // ─── Aspect styling (per spec) ─────────────────────────────────────────────
-  // Major aspects: exact color, width, optional dash
+  // Stroke hierarchy reads importance at a glance:
+  //   majors (Conjunction/Opposition/Trine/Square) ~1.8 · Sextile ~1.2 · minors ~0.6.
+  // Colours unchanged (already warm/on-brand); opacity cascade lives in
+  // ASPECT_OPACITY below (majors ~0.75–0.85, minors ~0.38–0.45).
   const ASPECT_STYLE = {
-    Conjunction:     { color:'#FFFFFF', width:1,   dash:null  },
-    Opposition:      { color:'#E0514A', width:1.5, dash:null  },
-    Trine:           { color:'#5FA39A', width:1.5, dash:null  },   /* warm teal (was sky blue) */
-    Square:          { color:'#F97316', width:1.5, dash:null  },
-    Sextile:         { color:'#9DB36A', width:1,   dash:null  },   /* warm sage (was bright green) */
-    // Minor aspects — gray dashed
-    Quincunx:        { color:'#6B7280', width:0.5, dash:'3,3' },
-    SemiSquare:      { color:'#6B7280', width:0.5, dash:'3,3' },
-    Semisextile:     { color:'#6B7280', width:0.5, dash:'3,3' },
-    Sesquiquadrate:  { color:'#6B7280', width:0.5, dash:'3,3' },
-    Quintile:        { color:'#6B7280', width:0.5, dash:'3,3' },
-    BiQuintile:      { color:'#6B7280', width:0.5, dash:'3,3' }
+    Conjunction:     { color:'#FFFFFF', width:1.8, dash:null  },
+    Opposition:      { color:'#E0514A', width:1.8, dash:null  },
+    Trine:           { color:'#5FA39A', width:1.8, dash:null  },   /* warm teal (was sky blue) */
+    Square:          { color:'#F97316', width:1.8, dash:null  },
+    Sextile:         { color:'#9DB36A', width:1.2, dash:null  },   /* warm sage (was bright green) */
+    // Minor aspects — gray dashed, deliberately recessive
+    Quincunx:        { color:'#6B7280', width:0.6, dash:'3,3' },
+    SemiSquare:      { color:'#6B7280', width:0.6, dash:'3,3' },
+    Semisextile:     { color:'#6B7280', width:0.6, dash:'3,3' },
+    Sesquiquadrate:  { color:'#6B7280', width:0.6, dash:'3,3' },
+    Quintile:        { color:'#6B7280', width:0.6, dash:'3,3' },
+    BiQuintile:      { color:'#6B7280', width:0.6, dash:'3,3' }
   };
 
   const ASPECT_OPACITY = {
@@ -545,13 +548,17 @@
         sealImage(g, SEAL_BASE + 'zodiac/' + slug + '.svg', gp.x, gp.y, 30, 34, 0.96);
       }
 
-      const abbrP = polar(CX, CY, R_ZODIAC_OUT - 16, midAng);
+      // Sign abbreviation. Raised 6.5 → 11 viewBox units so it stays legible
+      // when the wheel scales down (≈6.6px at a 360px-rendered wheel, vs the
+      // old ~3.9px). Nudged slightly inward so the larger glyph sits clear of
+      // the degree ring.
+      const abbrP = polar(CX, CY, R_ZODIAC_OUT - 18, midAng);
       const abbr = el('text', {
         x: abbrP.x.toFixed(2), y: abbrP.y.toFixed(2),
         'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-        fill: WARM.parchment, 'font-size': '6.5',
+        fill: WARM.parchment, 'font-size': '11',
         'font-family': 'var(--font-display, "Cinzel", serif), system-ui, sans-serif',
-        'letter-spacing': '0.12em', opacity: '0.55'
+        'letter-spacing': '0.1em', opacity: '0.62', 'font-weight': '600'
       });
       abbr.textContent = SIGN_ABBR[sign] || '';
       g.appendChild(abbr);
@@ -566,12 +573,15 @@
       const tickAng    = lonToAngle(deg, ascLon);
       const tp1 = polar(CX, CY, tOuter, tickAng);
       const tp2 = polar(CX, CY, tInner, tickAng);
+      // Intentional 3-step cascade: sign cusp (boldest) → 10° major → 5° minor
+      // (faintest). Opacity now steps with the width so the hierarchy reads as
+      // one deliberate gradient rather than two near-identical tiers.
       g.appendChild(el('line', {
         x1: tp1.x.toFixed(2), y1: tp1.y.toFixed(2),
         x2: tp2.x.toFixed(2), y2: tp2.y.toFixed(2),
         stroke: '#C9A227',
         'stroke-width': isSignCusp ? '1.4' : isMajor ? '0.9' : '0.5',
-        opacity: isSignCusp ? '0.9' : '0.7'
+        opacity: isSignCusp ? '0.9' : isMajor ? '0.62' : '0.4'
       }));
     }
 
@@ -580,6 +590,14 @@
       cx: CX, cy: CY, r: R_ZODIAC_OUT,
       fill: 'none', stroke: `url(#${idPrefix}ringG)`, 'stroke-width': '2.2',
       filter: `url(#${idPrefix}rglow)`
+    }));
+
+    // Faint gold echo ring just OUTSIDE the zodiac band — a thin engraved
+    // hairline that reinforces the observatory-instrument read without crowding
+    // the bezel ticks (which sit further out, ~288).
+    g.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_ZODIAC_OUT + 3,
+      fill: 'none', stroke: WARM.goldDim, 'stroke-width': '0.5', opacity: '0.3'
     }));
 
     // Inner border of zodiac ring
@@ -645,7 +663,9 @@
           x: lp.x.toFixed(2), y: lp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
           fill: '#C9A227',
-          'font-size': '9',
+          // 9 → 13 units (≈7.8px @360) — angle labels (AC/DC/MC/IC) are
+          // navigational anchors, so they must stay readable on phones.
+          'font-size': '13',
           'font-family': 'system-ui, sans-serif',
           'font-weight': '700',
           'letter-spacing': '0.5'
@@ -662,10 +682,13 @@
       const hnum = el('text', {
         x: np.x.toFixed(2), y: np.y.toFixed(2),
         'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-        fill: WARM.silverDim,
-        'font-size': '10',
+        fill: WARM.silver,
+        // 10 → 15 units (≈9px @360) — the smallest house labels were the worst
+        // offenders at mobile sizes; this is the legibility floor.
+        'font-size': '15',
         'font-family': 'system-ui, sans-serif',
-        opacity: '0.92'
+        'font-weight': '600',
+        opacity: '0.85'
       });
       hnum.textContent = String(h + 1);
       g.appendChild(hnum);
@@ -682,24 +705,130 @@
     return `${p1}-${p2}-${type}`;
   }
 
+  // ─── Shared wheel highlight ───────────────────────────────────────────────
+  // One function drives every highlight, whether triggered from the wheel itself
+  // or from a linked table row. It (a) emphasises the matching aspect line(s),
+  // (b) dims the rest, (c) lights the two planet glyph groups, and (d) emits a
+  // CustomEvent so any linked table can mirror the state. Re-encoding only — it
+  // reads keys already on the DOM, never recomputes a number.
+  function highlightOnWheel(svg, opts) {
+    const o = opts || {};
+    const lines = svg.querySelectorAll('.aspect-line');
+    const glyphs = svg.querySelectorAll('.planet-glyph');
+    const planetSet = o.planets ? new Set(o.planets.filter(Boolean)) : null;
+    const hasFocus = !!(o.aspectKey || (planetSet && planetSet.size));
+
+    lines.forEach(l => {
+      const match = o.aspectKey && l.getAttribute('data-aspect-key') === o.aspectKey;
+      l.classList.toggle('is-highlight', !!match);
+      l.classList.toggle('is-dimmed', hasFocus && !match);
+    });
+    glyphs.forEach(gn => {
+      const on = planetSet && planetSet.has(gn.getAttribute('data-planet'));
+      gn.classList.toggle('is-active', !!on);
+      gn.classList.toggle('is-dimmed', hasFocus && planetSet ? !on : false);
+    });
+  }
+
+  function clearWheelHighlight(svg) {
+    svg.querySelectorAll('.aspect-line').forEach(l => l.classList.remove('is-highlight', 'is-dimmed'));
+    svg.querySelectorAll('.planet-glyph').forEach(g => g.classList.remove('is-active', 'is-dimmed'));
+  }
+
+  // Lightweight styled popover (aspect name + orb + one-line plain meaning).
+  // The native <title> stays in the DOM as the no-JS / screen-reader fallback;
+  // this is additive chrome only.
+  const ASPECT_MEANING = {
+    conjunction:   'two forces fused — they act as one',
+    opposition:    'a tug-of-war seeking balance',
+    trine:         'an easy, flowing talent',
+    square:        'friction that drives growth',
+    sextile:       'an opportunity if you reach for it',
+    quincunx:      'an awkward adjustment between unlike parts',
+    semisquare:    'a minor irritation, a nudge to act',
+    sesquiquadrate:'simmering tension that asks for release',
+    semisextile:   'a quiet, growing connection',
+    quintile:      'a creative, idiosyncratic gift',
+    biquintile:    'a subtle creative undercurrent'
+  };
+  let _apPopover = null;
+  function ensurePopover() {
+    if (_apPopover && document.body.contains(_apPopover)) return _apPopover;
+    const p = document.createElement('div');
+    p.className = 'ap-aspect-popover';
+    p.setAttribute('role', 'tooltip');
+    p.setAttribute('aria-hidden', 'true');
+    p.hidden = true;
+    document.body.appendChild(p);
+    _apPopover = p;
+    return p;
+  }
+  function showPopover(line) {
+    const p = ensurePopover();
+    const p1 = line.getAttribute('data-planet1') || '';
+    const p2 = line.getAttribute('data-planet2') || '';
+    const name = line.getAttribute('data-aspect-name') || '';
+    const orb = line.getAttribute('data-aspect-orb') || '';
+    const meaning = ASPECT_MEANING[name] || '';
+    const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+    // Built with textContent nodes (no innerHTML) — names come from chart data.
+    p.replaceChildren();
+    const h = document.createElement('span');
+    h.className = 'ap-aspect-popover__title';
+    h.textContent = `${p1} ${cap(name)} ${p2}`;
+    p.appendChild(h);
+    if (orb) {
+      const o = document.createElement('span');
+      o.className = 'ap-aspect-popover__orb';
+      o.textContent = `${orb}° orb`;
+      p.appendChild(o);
+    }
+    if (meaning) {
+      const m = document.createElement('span');
+      m.className = 'ap-aspect-popover__meaning';
+      m.textContent = meaning;
+      p.appendChild(m);
+    }
+    p.hidden = false;
+    p.setAttribute('aria-hidden', 'false');
+    const r = line.getBoundingClientRect();
+    const px = r.left + r.width / 2 + window.scrollX;
+    const py = r.top + window.scrollY;
+    p.style.left = px + 'px';
+    p.style.top = py + 'px';
+  }
+  function hidePopover() {
+    if (!_apPopover) return;
+    _apPopover.hidden = true;
+    _apPopover.setAttribute('aria-hidden', 'true');
+  }
+
   function wireAspectHover(svg) {
     const lines = svg.querySelectorAll('.aspect-line');
     if (!lines.length) return;
-    const reset = () => lines.forEach(l => l.classList.remove('is-highlight', 'is-dimmed'));
+    const focusLine = (line) => {
+      highlightOnWheel(svg, {
+        aspectKey: line.getAttribute('data-aspect-key'),
+        planets: [line.getAttribute('data-planet1'), line.getAttribute('data-planet2')]
+      });
+      svg.dispatchEvent(new CustomEvent('ap:wheel-highlight', {
+        bubbles: true,
+        detail: {
+          aspectKey: line.getAttribute('data-aspect-key'),
+          planets: [line.getAttribute('data-planet1'), line.getAttribute('data-planet2')]
+        }
+      }));
+    };
+    const reset = () => {
+      clearWheelHighlight(svg);
+      hidePopover();
+      svg.dispatchEvent(new CustomEvent('ap:wheel-clear', { bubbles: true }));
+    };
     lines.forEach(line => {
-      line.addEventListener('mouseenter', () => {
-        lines.forEach(l => {
-          l.classList.toggle('is-highlight', l === line);
-          l.classList.toggle('is-dimmed', l !== line);
-        });
-      });
+      line.addEventListener('mouseenter', () => { focusLine(line); showPopover(line); });
       line.addEventListener('mouseleave', reset);
-      line.addEventListener('focus', () => {
-        lines.forEach(l => {
-          l.classList.toggle('is-highlight', l === line);
-          l.classList.toggle('is-dimmed', l !== line);
-        });
-      });
+      // Keyboard a11y preserved: focus/blur drive the same highlight (popover too).
+      line.addEventListener('focus', () => { focusLine(line); showPopover(line); });
       line.addEventListener('blur', reset);
     });
   }
@@ -726,7 +855,10 @@
       const pt2 = polar(CX, CY, R_ASPECT, a2);
       const len = Math.hypot(pt2.x - pt1.x, pt2.y - pt1.y);
 
-      const orbTxt = asp.orb !== undefined ? ` (${typeof asp.orb === 'number' ? asp.orb.toFixed(1) : asp.orb}°)` : '';
+      const orbStr = asp.orb !== undefined
+        ? (typeof asp.orb === 'number' ? asp.orb.toFixed(1) : String(asp.orb))
+        : '';
+      const orbTxt = orbStr ? ` (${orbStr}°)` : '';
       const title = el('title');
       title.textContent = `${p1name} ${aspectName} ${p2name}${orbTxt}`;
 
@@ -736,9 +868,18 @@
         x1: pt1.x.toFixed(2), y1: pt1.y.toFixed(2),
         x2: pt2.x.toFixed(2), y2: pt2.y.toFixed(2),
         stroke: style.color,
-        'stroke-width': isMajor ? (style.width + 0.25) : style.width,
+        // ASPECT_STYLE.width is now the final, intentional weight (1.8/1.2/0.6) —
+        // no extra bump; the soft glow filter below already lifts the majors.
+        'stroke-width': style.width,
         opacity: opacity.toFixed(2),
         'data-aspect-key': aspectKey(asp),
+        // The two endpoints + name/orb let the shared highlighter light up the
+        // matching planet glyphs and build the popover — purely re-encoded from
+        // the same asp object that drew the line (no value recomputation).
+        'data-planet1': p1name,
+        'data-planet2': p2name,
+        'data-aspect-name': aspectName,
+        'data-aspect-orb': orbStr,
         tabindex: '0',
         role: 'graphics-symbol',
         'aria-label': title.textContent
@@ -781,14 +922,18 @@
   }
 
   // ─── Planet glyphs ────────────────────────────────────────────────────────
-  // options: { colorOverride, ringRadius, dotRadius, fontSize, groupId, showDegrees, idPrefix }
+  // options: { colorOverride, ringRadius, dotRadius, fontSize, groupId, showDegrees, compact, idPrefix }
+  // `compact` (set on small screens) drops the tiny degree-minute micro-labels —
+  // they are illegible below ~14 viewBox units and the exact figure already
+  // lives in the planets table; the wheel keeps the dot + glyph.
   function drawPlanets(svg, positions, ascLon, idPrefix, options) {
     const opts    = options || {};
     const rPlanet = opts.ringRadius  || R_PLANET;
     const rDot    = opts.dotRadius   || R_PLANET_DOT;
     const fSize   = opts.fontSize    || '14';
     const gId     = opts.groupId     || 'planet-glyphs';
-    const showDeg = opts.showDegrees !== false;
+    const compact = opts.compact === true;
+    const showDeg = opts.showDegrees !== false && !compact;
 
     const g = el('g', { class: gId });
 
@@ -814,10 +959,16 @@
       const trueAng = lonToAngle(pos.lon, ascLon);
       const dispAng = resolved[name];
 
+      // Per-planet group so a table-row hover can highlight all of this planet's
+      // marks (spoke + dot + glyph + ℞ + degree) as one unit. data-planet keys
+      // the bidirectional wheel↔table link (see wireGlyphHighlight).
+      const pg = el('g', { class: 'planet-glyph', 'data-planet': name });
+      g.appendChild(pg);
+
       // Thin spoke from inner zodiac edge to dot
       const spokeOut = polar(CX, CY, R_ZODIAC_IN - 1, trueAng);
       const spokeIn  = polar(CX, CY, rDot + 6,         trueAng);
-      g.appendChild(el('line', {
+      pg.appendChild(el('line', {
         x1: spokeOut.x.toFixed(2), y1: spokeOut.y.toFixed(2),
         x2: spokeIn.x.toFixed(2),  y2: spokeIn.y.toFixed(2),
         stroke: pColor, 'stroke-width': '0.5', opacity: '0.4'
@@ -825,7 +976,8 @@
 
       // Small color-coded dot at the exact ecliptic position
       const dotPt = polar(CX, CY, rDot, trueAng);
-      g.appendChild(el('circle', {
+      pg.appendChild(el('circle', {
+        class: 'planet-glyph__dot',
         cx: dotPt.x.toFixed(2), cy: dotPt.y.toFixed(2),
         r: '2.5', fill: pColor, opacity: '0.95'
       }));
@@ -834,9 +986,9 @@
       const gp  = polar(CX, CY, rPlanet, dispAng);
       const pSlug = PLANET_SLUG[name];
       if (pSlug && !opts.colorOverride) {
-        sealImage(g, SEAL_BASE + 'planets/' + pSlug + '.svg', gp.x, gp.y, 22, 26, 0.98);
+        sealImage(pg, SEAL_BASE + 'planets/' + pSlug + '.svg', gp.x, gp.y, 22, 26, 0.98);
       } else {
-        glassDisc(svg, g, gp.x, gp.y, 11, pColor, idPrefix);
+        glassDisc(svg, pg, gp.x, gp.y, 11, pColor, idPrefix);
         const txt = el('text', {
           x: gp.x.toFixed(2), y: gp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
@@ -847,49 +999,66 @@
           filter: `url(#${idPrefix}pglow)`
         });
         txt.textContent = glyph;
-        g.appendChild(txt);
+        pg.appendChild(txt);
       }
 
-      // Retrograde symbol ℞ as superscript after the glyph
+      // Retrograde symbol ℞ as superscript after the glyph. 8 → 11 units
+      // (≈6.6px @360) so the retrograde state is actually readable on the wheel.
       if (pos.retrograde) {
-        const orp  = polar(CX, CY, rPlanet + 12, dispAng);
+        const orp  = polar(CX, CY, rPlanet + 13, dispAng);
         const rTxt = el('text', {
           x: orp.x.toFixed(2), y: orp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
           fill: '#FF9977',
-          'font-size': '8',
+          'font-size': '11',
           'font-family': 'serif, system-ui',
+          'font-weight': '600',
           opacity: '0.95'
         });
         rTxt.textContent = '℞';
-        g.appendChild(rTxt);
+        pg.appendChild(rTxt);
       }
 
-      // Degree label (tiny, just inside the planet ring)
+      // Degree label (just inside the planet ring). Desktop only (gated by
+      // `compact` via showDeg above): 7 → 9 units so it's not anemic where it
+      // does render. On mobile the exact figure lives in the planets table.
       if (showDeg) {
         const _dv    = pos.degree !== undefined ? pos.degree : (((pos.lon % 30) + 30) % 30);
         const degNum = Math.floor(_dv);
         const minNum = Math.floor((_dv - degNum) * 60);
-        const dlr    = rPlanet - 16;
+        const dlr    = rPlanet - 17;
         const dp     = polar(CX, CY, dlr, dispAng);
         const dl = el('text', {
           x: dp.x.toFixed(2), y: dp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-          fill: WARM.silverDim,
-          'font-size': '7',
+          fill: WARM.silver,
+          'font-size': '9',
           'font-family': 'var(--font-mono, "IBM Plex Mono", ui-monospace, monospace)',
-          'font-variant-numeric': 'tabular-nums'
+          'font-variant-numeric': 'tabular-nums', opacity: '0.85'
         });
         dl.textContent = `${degNum}°${String(minNum).padStart(2,'0')}'`;
-        g.appendChild(dl);
+        pg.appendChild(dl);
       }
     }
 
     svg.appendChild(g);
   }
 
+  // ─── Truncate a display name on a word boundary with a real ellipsis ───────
+  // Presentation-only (the name is a label, not a computed value). Keeps whole
+  // words where it can, falls back to a hard cut for a single long token.
+  function ellipsizeName(label, max) {
+    const s = String(label || 'Natal Chart').trim();
+    if (s.length <= max) return s;
+    const cut = s.slice(0, max - 1);
+    const sp = cut.lastIndexOf(' ');
+    const base = (sp > max * 0.5 ? cut.slice(0, sp) : cut).replace(/[\s.,;:]+$/, '');
+    return base + '…';
+  }
+
   // ─── Center circle with label ─────────────────────────────────────────────
   function drawCenter(svg, label, idPrefix) {
+    // Faint dashed guide ring (unchanged)
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_INNER + 14,
       fill: 'none', stroke: WARM.gold, 'stroke-width': '0.45', opacity: '0.14',
@@ -900,33 +1069,49 @@
       fill: 'none', stroke: WARM.gold, 'stroke-width': '0.75', opacity: '0.32',
       filter: `url(#${idPrefix}rglow)`
     }));
+    // Filled disc
     svg.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_CENTER_FILL,
       fill: `url(#${idPrefix}cgrad)`,
       stroke: WARM.gold, 'stroke-width': '1.4', opacity: '0.98'
     }));
+    // Double-stroke engraved gold border: a brighter outer hairline + a recessed
+    // inner line, echoing an instrument bezel rather than one flat ring.
+    svg.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_CENTER_FILL - 2.5,
+      fill: 'none', stroke: shade(WARM.gold, 0.35), 'stroke-width': '0.6', opacity: '0.55'
+    }));
+    svg.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_CENTER_FILL - 5,
+      fill: 'none', stroke: WARM.goldDim, 'stroke-width': '0.4', opacity: '0.35'
+    }));
 
-    const displayName = (label || 'Natal Chart').slice(0, 22);
+    // Name — larger, ellipsised on a word boundary. Sizes raised so the
+    // person's name reads clearly when the wheel scales down on mobile.
+    const displayName = ellipsizeName(label, 20);
+    const nameSize = displayName.length > 16 ? 11 : displayName.length > 11 ? 13 : 15;
     const lbl = el('text', {
-      x: CX, y: CY - 4,
+      x: CX, y: CY - 5,
       'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
       fill: WARM.parchment,
-      'font-size': displayName.length > 14 ? '9' : '11',
+      'font-size': String(nameSize),
       'font-family': 'var(--font-display, "Cinzel", serif), system-ui, sans-serif',
       'font-weight': '600',
-      opacity: '0.95'
+      opacity: '0.96'
     });
     lbl.textContent = displayName;
     svg.appendChild(lbl);
 
     const sub = el('text', {
-      x: CX, y: CY + 12,
+      x: CX, y: CY + 13,
       'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
       fill: WARM.gold,
-      'font-size': '6.5',
+      // 6.5 → 9 units (≈5.4px @360) — small caps stay readable.
+      'font-size': '9',
       'font-family': 'system-ui, sans-serif',
-      'letter-spacing': '0.18em',
-      opacity: '0.75'
+      'font-weight': '600',
+      'letter-spacing': '0.2em',
+      opacity: '0.78'
     });
     sub.textContent = 'NATAL WHEEL';
     svg.appendChild(sub);
@@ -978,18 +1163,26 @@
       const degNum   = Math.floor(_dv);
       const minNum   = Math.floor((_dv - degNum) * 60);
       const signName = pos.sign || ZODIAC_SIGNS[Math.floor(normLon(pos.lon) / 30)];
-      const elemClr  = ELEMENT_TEXT[SIGN_ELEMENT[signName]] || WARM.silver;
+      const elemKey  = SIGN_ELEMENT[signName] || '';
+      const elemClr  = ELEMENT_TEXT[elemKey] || WARM.silver;
       const houseNum = houses ? getPlanetHouse(pos.lon, houses) : '—';
-      const pColor   = PLANET_COLORS[name] || WARM.silver;
+
+      // Row carries its element so CSS can tint the left edge via --ap-element-*,
+      // and data-planet links it to the wheel glyph (see linkWheelAndTables).
+      tr.setAttribute('data-planet', name);
+      if (elemKey) {
+        tr.className = 'ap-pt-row ap-pt-row--' + elemKey;
+        tr.style.setProperty('--row-elem', 'var(--ap-element-' + elemKey + ', ' + elemClr + ')');
+      }
 
       const cells = [
         `<span class="ap-pt-seal-wrap">${planetSealImg(name, 18, 21)}</span>`,
         `<span class="ap-pt-name">${name}</span>`,
         `<span class="ap-pt-seal-wrap">${zodiacSealImg(signName)}</span>`,
-        `<span style="color:${elemClr}">${signName}</span>`,
+        `<span class="ap-pt-sign" style="color:${elemClr}">${signName}</span>`,
         `<span class="ap-pt-deg">${degNum}°${String(minNum).padStart(2,'0')}'</span>`,
         `<span class="ap-pt-house">${houseNum}</span>`,
-        pos.retrograde ? `<span class="ap-pt-rx">℞</span>` : ''
+        pos.retrograde ? `<span class="ap-pt-rx" title="Retrograde">℞ Rx</span>` : ''
       ];
 
       for (const html of cells) {
@@ -1147,6 +1340,13 @@
     const showDeg   = opts.showDegrees !== false;
     const showTable = opts.showTable !== false && !wheelOnly;
     const showLeg   = opts.showLegend !== false && !wheelOnly;
+    // Compact = drop the wheel's tiny degree-minute micro-labels on small
+    // screens (they'd render illegibly when the 600u viewBox is scaled to ~340px;
+    // the exact figures remain in the planets table). Caller may force either way.
+    const compact   = opts.compact != null
+      ? !!opts.compact
+      : (typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+          && window.matchMedia('(max-width: 600px)').matches);
 
     const ascLon = normLon(
       positions.Ascendant ? positions.Ascendant.lon : houses[0]
@@ -1166,7 +1366,7 @@
     drawZodiacWheel(svg, ascLon, prefix);
     drawHouseWheel(svg, houses, ascLon, prefix);
     if (showAsp) drawAspectLines(svg, aspects, positions, ascLon, prefix);
-    drawPlanets(svg, positions, ascLon, prefix, { showDegrees: showDeg });
+    drawPlanets(svg, positions, ascLon, prefix, { showDegrees: showDeg, compact });
     drawCenter(svg, chartData.name || 'Natal Chart', prefix);
 
     container.appendChild(svg);
@@ -1365,11 +1565,84 @@
     container.appendChild(buildLegend(natalChart.dominant, natalChart.chartRuler));
   }
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BIDIRECTIONAL WHEEL ↔ TABLE LINKING
+  // ----------------------------------------------------------------------------
+  // Called by the page after both the wheel and the detail tables exist. Wiring
+  // is symmetric:
+  //   • hover/focus a wheel aspect → highlight its table row + both planet rows
+  //     (handled wheel-side; this listens for the emitted event to touch tables)
+  //   • hover/focus a table aspect/planet row → highlight the wheel line + glyphs
+  // All linking is keyed on data-aspect-key (identical string both sides) and
+  // data-planet. It re-encodes existing values; it changes no number.
+  // ═══════════════════════════════════════════════════════════════════════════
+  function linkWheelAndTables(wheelContainer, tablesRoot) {
+    const wheel = typeof wheelContainer === 'string'
+      ? document.getElementById(wheelContainer) : wheelContainer;
+    const tables = typeof tablesRoot === 'string'
+      ? document.getElementById(tablesRoot) : (tablesRoot || document);
+    if (!wheel) return;
+    const svg = wheel.querySelector('svg.ap-chart-svg') || wheel.querySelector('svg');
+    if (!svg) return;
+
+    const aspectRows = () => tables.querySelectorAll('[data-aspect-key]');
+    const planetRows = () => tables.querySelectorAll('[data-planet]');
+
+    const setRows = (sel, attr, values) => {
+      const want = values ? new Set(values.filter(Boolean)) : null;
+      sel.forEach(node => {
+        const v = node.getAttribute(attr);
+        const on = want ? want.has(v) : false;
+        node.classList.toggle('is-linked-active', on);
+      });
+    };
+
+    const clearRows = () => {
+      aspectRows().forEach(n => n.classList.remove('is-linked-active'));
+      planetRows().forEach(n => n.classList.remove('is-linked-active'));
+    };
+
+    // ── wheel → tables ──
+    svg.addEventListener('ap:wheel-highlight', (ev) => {
+      const d = ev.detail || {};
+      setRows(aspectRows(), 'data-aspect-key', d.aspectKey ? [d.aspectKey] : []);
+      setRows(planetRows(), 'data-planet', d.planets || []);
+    });
+    svg.addEventListener('ap:wheel-clear', clearRows);
+
+    // ── tables → wheel ──
+    const wireRow = (node) => {
+      const aspectKey = node.getAttribute('data-aspect-key');
+      const planet = node.getAttribute('data-planet');
+      const enter = () => {
+        // Recover the two planets of an aspect row from the matching wheel line
+        // so we can also light the glyphs (no string-splitting on names).
+        let planets = planet ? [planet] : [];
+        if (aspectKey) {
+          const line = svg.querySelector(`.aspect-line[data-aspect-key="${CSS.escape(aspectKey)}"]`);
+          if (line) planets = [line.getAttribute('data-planet1'), line.getAttribute('data-planet2')];
+        }
+        highlightOnWheel(svg, { aspectKey: aspectKey || null, planets });
+        // Mirror onto the sibling rows (both planet rows for an aspect, etc.)
+        setRows(aspectRows(), 'data-aspect-key', aspectKey ? [aspectKey] : []);
+        setRows(planetRows(), 'data-planet', planets);
+      };
+      const leave = () => { clearWheelHighlight(svg); clearRows(); };
+      node.addEventListener('mouseenter', enter);
+      node.addEventListener('mouseleave', leave);
+      node.addEventListener('focusin', enter);
+      node.addEventListener('focusout', leave);
+    };
+    aspectRows().forEach(wireRow);
+    planetRows().forEach(wireRow);
+  }
+
   // ─── Public API ───────────────────────────────────────────────────────────
   window.AstroChartRender = {
     renderNatalChart,
     renderCompatibilityChart,
-    renderTransitChart
+    renderTransitChart,
+    linkWheelAndTables
   };
 
 })();

@@ -155,6 +155,79 @@
   to { stroke-dashoffset: 0; opacity: var(--aspect-op, 0.55); }
 }
 
+/* ── Planet glyph highlight (driven by wheel hover OR a linked table row) ──── */
+.ap-chart-render .planet-glyph {
+  transition: opacity var(--dur-fast, 0.18s) var(--ease-standard, ease);
+}
+.ap-chart-render .planet-glyph.is-dimmed {
+  opacity: 0.28;
+}
+.ap-chart-render .planet-glyph.is-active {
+  opacity: 1;
+}
+.ap-chart-render .planet-glyph.is-active .planet-glyph__dot {
+  r: 3.4;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-chart-render .planet-glyph {
+    transition: none;
+  }
+}
+
+/* ── Styled aspect popover (the native <title> stays as a11y/no-JS fallback) ─ */
+.ap-aspect-popover {
+  position: absolute;
+  z-index: var(--z-popover, 3000);
+  transform: translate(-50%, calc(-100% - 10px));
+  max-width: 240px;
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  pointer-events: none;
+  background: var(--ap-ip-surface-deep, rgba(14, 11, 8, 0.96));
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  border-radius: var(--radius-md, 9px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  font-family: var(--font-body, system-ui, sans-serif);
+  opacity: 0;
+  animation: ap-popover-in var(--dur-fast, 0.18s) var(--ease-standard, ease) forwards;
+}
+.ap-aspect-popover[hidden] { display: none; }
+.ap-aspect-popover__title {
+  font-size: var(--text-data, 0.85rem);
+  font-weight: var(--weight-semibold, 600);
+  color: var(--ap-gold-parchment, #efe3c0);
+  letter-spacing: 0.01em;
+}
+.ap-aspect-popover__orb {
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ap-gold-bright, #d4b84a);
+  letter-spacing: 0.04em;
+}
+.ap-aspect-popover__meaning {
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--ap-text-secondary, #a89e88);
+}
+
+@keyframes ap-popover-in {
+  from { opacity: 0; transform: translate(-50%, calc(-100% - 4px)); }
+  to   { opacity: 1; transform: translate(-50%, calc(-100% - 10px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-aspect-popover {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 .chart-advanced .accordion-content {
   max-height: none;
 }
@@ -190,9 +263,10 @@
 .ap-chart-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.75rem;
+  /* Data text floor — never below the legible minimum (was 0.75rem). */
+  font-size: var(--text-data, 0.82rem);
   background: rgba(13, 10, 7, 0.85);
-  color: var(--silver, #a89e88);
+  color: var(--ap-text-secondary, #a89e88);
   border: 1px solid rgba(201, 162, 39, 0.18);
   border-radius: var(--radius-md, 8px);
   overflow: hidden;
@@ -223,8 +297,35 @@
   background: rgba(5, 4, 6, 0.35);
 }
 
+/* Element-coded left edge — a quiet observatory cue, not a rainbow. The first
+   cell carries an inset bar in the row's --row-elem (set to --ap-element-*). */
+.ap-chart-table tbody tr.ap-pt-row td:first-child {
+  position: relative;
+}
+.ap-chart-table tbody tr.ap-pt-row td:first-child::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12%;
+  bottom: 12%;
+  width: 2.5px;
+  border-radius: 2px;
+  background: var(--row-elem, var(--ap-gold-a40, rgba(201, 162, 39, 0.4)));
+  opacity: 0.7;
+}
+
 .ap-chart-table tbody tr:hover {
   background: rgba(201, 162, 39, 0.04);
+}
+
+/* Linked highlight — when the matching wheel glyph is hovered/focused. */
+.ap-chart-table tbody tr.is-linked-active {
+  background: var(--ap-gold-a12, rgba(201, 162, 39, 0.12));
+  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(201, 162, 39, 0.28));
+}
+.ap-chart-table tbody tr.is-linked-active td:first-child::before {
+  opacity: 1;
+  width: 3px;
 }
 
 .ap-chart-table .ap-pt-glyph {
@@ -252,9 +353,32 @@
   font-weight: 600;
 }
 
+/* Retrograde — a clear small pill rather than a lone tiny ℞. */
 .ap-chart-table .ap-pt-rx {
-  color: #c97a82;
-  font-family: serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15em;
+  padding: 0.1em 0.45em;
+  font-size: 0.62rem;
+  font-weight: var(--weight-semibold, 600);
+  letter-spacing: 0.04em;
+  color: #e6a6ab;
+  background: rgba(176, 74, 82, 0.16);
+  border: 1px solid rgba(176, 74, 82, 0.42);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.ap-chart-table .ap-pt-sign {
+  font-weight: var(--weight-medium, 500);
+}
+
+/* Table text floor — header/data ≥ legible minimum, AA on the void surface. */
+.ap-chart-table td {
+  color: var(--ap-text-secondary, #a89e88);
+}
+.ap-chart-table .ap-pt-name {
+  color: var(--ap-text-primary, #e8e0d0);
 }
 
 /* Legend row */
@@ -412,4 +536,63 @@
 .pattern-card__meta {
   font-size: 0.75em;
   color: var(--silver-dim, #7e7565);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ACTIVE INSTRUMENT TABLES — planet / house / aspect cards as live readouts
+   (chart.html Planets / Houses / Aspects tabs)
+   ── element tinting via --ap-element-* (set inline as --row-elem) ──
+   ── bidirectional link highlight (.is-linked-active) paired to the wheel ──
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Element-coded left rail on placement & aspect cards — muted, never neon. */
+.page-chart .ap-reading-card.ap-elem-fire,
+.page-chart .ap-reading-card.ap-elem-earth,
+.page-chart .ap-reading-card.ap-elem-air,
+.page-chart .ap-reading-card.ap-elem-water {
+  border-left: 3px solid var(--row-elem, var(--ap-gold-a40, rgba(201, 162, 39, 0.4)));
+}
+
+/* The placement card's roman/glyph icon picks up the element accent. */
+.page-chart .ap-reading-card.ap-elem-fire  { --row-elem: var(--ap-element-fire); }
+.page-chart .ap-reading-card.ap-elem-earth { --row-elem: var(--ap-element-earth); }
+.page-chart .ap-reading-card.ap-elem-air   { --row-elem: var(--ap-element-air); }
+.page-chart .ap-reading-card.ap-elem-water { --row-elem: var(--ap-element-water); }
+
+/* Hover/focus a card → it lifts (and the JS lights its wheel glyph/line). */
+.page-chart .ap-reading-card[data-planet],
+.page-chart .ap-reading-card[data-aspect-key] {
+  transition: background var(--dur-fast, 0.18s) var(--ease-standard, ease),
+              box-shadow var(--dur-fast, 0.18s) var(--ease-standard, ease);
+  cursor: default;
+}
+.page-chart .ap-reading-card[data-planet]:hover,
+.page-chart .ap-reading-card[data-aspect-key]:hover,
+.page-chart .ap-reading-card[data-planet]:focus-within,
+.page-chart .ap-reading-card[data-aspect-key]:focus-within,
+.page-chart .ap-reading-card.is-linked-active {
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--row-elem, var(--ap-gold-core)) 14%, transparent) 0%,
+      transparent 60%),
+    var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
+  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(201, 162, 39, 0.28));
+}
+
+/* When a wheel glyph/line is the trigger, the matching card highlights too. */
+.page-chart .ap-reading-card.is-linked-active {
+  outline: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  outline-offset: -1px;
+}
+
+.page-chart .ap-reading-card[tabindex]:focus-visible {
+  outline: 2px solid var(--ap-focus-ring, var(--ap-gold-core));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-chart .ap-reading-card[data-planet],
+  .page-chart .ap-reading-card[data-aspect-key] {
+    transition: none;
+  }
 }
