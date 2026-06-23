@@ -569,6 +569,24 @@
       padding: clamp(1.25rem, 4vw, 2.75rem) clamp(0.5rem, 3vw, 1.5rem);
       min-height: min(88vw, 760px);
     }
+
+    /* ── Mobile wheel sizing (≥50% of traffic) ─────────────────────────────
+       The SVG wheel uses a 600-unit viewBox, so the rendered pixel size sets
+       how legible every label is. On phones we trim the stacked horizontal
+       padding (layout + stage + card) so the wheel renders near full width —
+       target min(92vw, 480px) — keeping the smallest labels above ~9px. */
+    @media (max-width: 600px) {
+      .page-chart .chart-layout { padding-left: var(--space-2, 0.5rem); padding-right: var(--space-2, 0.5rem); }
+      .page-chart .chart-wheel-stage { padding-left: 0; padding-right: 0; }
+      .page-chart .chart-wheel-card { padding-left: 0.5rem; padding-right: 0.5rem; }
+      .page-chart .chart-results-grid #natal-wheel-wrap { padding-left: 0.25rem; padding-right: 0.25rem; }
+      .page-chart .natal-wheel-container,
+      .page-chart #natal-wheel-wrap,
+      .page-chart #natal-wheel,
+      .page-chart #natal-wheel.ap-chart-render {
+        max-width: min(94vw, 480px);
+      }
+    }
     .page-chart .chart-wheel-header {
       display: flex;
       align-items: center;
