@@ -108,5 +108,58 @@
   --color-silver:    var(--ap-text-secondary);
   --color-silver-dim: var(--ap-text-muted);
   --color-white:     var(--ap-text-primary);
+
+  /* ══════════════════════════════════════════════════════════════════════
+     DESIGN SYSTEM 2026 — one type / motion / depth / rhythm language.
+     Added in the foundations wave so every page lifts at once; consumed by
+     the shop, charts and instrument overhauls. Pure additions (no existing
+     rule references these), so they change nothing until applied.
+     ══════════════════════════════════════════════════════════════════════ */
+
+  /* ── Fluid display scale (Cinzel) + data floor ── */
+  --display-1: clamp(2.6rem, 1.55rem + 4.7vw, 4.6rem);  /* hero titles */
+  --display-2: clamp(1.95rem, 1.35rem + 2.7vw, 3.1rem); /* section heads */
+  --display-3: clamp(1.45rem, 1.18rem + 1.25vw, 2.05rem); /* card / sub heads */
+  --text-data: clamp(0.82rem, 0.78rem + 0.2vw, 0.95rem); /* min legible data/labels */
+
+  /* ── Weight scale (prices & key figures never below semibold) ── */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ── Tracking scale ── */
+  --tracking-tight:  -0.012em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.08em;
+  --tracking-caps:   0.22em; /* eyebrows / small-caps */
+
+  /* ── Motion grammar — one easing language (promotes the recurring curve) ── */
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-enter:    cubic-bezier(0.16, 1, 0.30, 1);
+  --ease-exit:     cubic-bezier(0.40, 0, 1, 1);
+  --dur-fast: 0.18s;
+  --dur-base: 0.32s;
+  --dur-slow: 0.60s;
+  --reveal-stagger: 70ms;
+
+  /* ── Z-index bands — documented, replaces the literal sprawl (500…99999) ── */
+  --z-base:    0;
+  --z-canvas:  1;
+  --z-grain:   2;
+  --z-content: 10;
+  --z-nav:     100;
+  --z-overlay: 1000;
+  --z-modal:   2000;
+  --z-popover: 3000;
+  --z-toast:   4000;
+
+  /* ── Branded scrim — one intentional overlay recipe (cart / modal / lightbox) ── */
+  --scrim: radial-gradient(125% 125% at 50% 0%, rgba(22, 15, 8, 0.70), rgba(5, 4, 6, 0.84));
+  --scrim-blur: blur(7px);
+
+  /* ── Section rhythm — single vertical-rhythm source ── */
+  --section-pad-y:       clamp(3.5rem, 2.4rem + 5vw, 7rem);
+  --section-pad-y-tight: clamp(2.25rem, 1.8rem + 2.2vw, 4rem);
 }
 

@@ -53,8 +53,9 @@ html.ap-fonts-ready .page-shop .shop-section-title {
   font-family: var(--font-display);
 }
 
-/* ── Page rhythm (kill huge .section gaps on shop) ── */
-.page-shop .section { padding: var(--space-10) 0; }
+/* ── Page rhythm — use the global vertical-rhythm token so the shop matches
+   the rest of the site instead of feeling compressed (design-system 2026). ── */
+.page-shop .section { padding: var(--section-pad-y-tight, clamp(2.25rem, 1.8rem + 2.2vw, 4rem)) 0; }
 .page-shop #wear-your-sky { padding-top: var(--space-8); }
 
 /* ── Hero ── */

@@ -9,16 +9,22 @@
  * Everything is ONE-TIME purchase, no subscriptions. The cart is real and
  * saved locally (key 'ap_cart'); nothing but a volunteered email ever leaves
  * the device, and NEVER any birth data. Checkout fulfils elsewhere
- * (hosted store / Etsy / Gelato / Gumroad), so the site never takes money —
- * GitHub-Pages-compliant, link-out only until configured.
+ * (hosted Payhip product pages + PayPal), so the site never takes money —
+ * static-host-compliant, link-out only until configured.
  *
- * Checkout priority (honest fallback chain):
- *   1. product.fulfilUrl            — that product's own hosted listing
- *   2. checkout.externalStoreUrl    — whole-cart handoff to a hosted store
- *      / checkout.etsyUrl           — Etsy storefront
+ * CHECKOUT MIGRATION (2026): the previous Lemon Squeezy direct-checkout links
+ * are DEAD (the merchant will not onboard). The LOCAL CART is now the single
+ * primary action across every card. The cart checkout resolves a per-product
+ * Payhip URL from PAYHIP_URLS below; until the owner pastes the real Payhip
+ * links, checkout shows a graceful, on-brand PENDING state (basket is saved,
+ * nothing errors, no dead link is ever opened).
+ *
+ * Checkout resolution (honest, never opens a dead link):
+ *   1. product.payhipUrl / PAYHIP_URLS[id] — that product's hosted Payhip page
+ *   2. checkout.externalStoreUrl / checkout.etsyUrl — whole-cart handoff
  *   3. checkout.paypalClientId      — on-site PayPal Buttons
- *   4. (none set) — DORMANT branded modal that invites email signup.
- *      Never a fake or broken checkout.
+ *   4. (none set) — branded PENDING modal: "Checkout opens once products are
+ *      connected — your basket is saved." Never a fake or broken checkout.
  */
 
 'use strict';
@@ -306,17 +312,52 @@ window.AstroShop = (() => {
     return APReadingPrefs.prefsFormHtml();
   }
 
-  function checkoutHref(p) {
-    if (!p || !isUrl(p.fulfilUrl)) return '';
-    let url = p.fulfilUrl;
+  // ═══════════════════════════════════════════════════════════════════════
+  // PAYHIP CHECKOUT CONFIG
+  // ─────────────────────────────────────────────────────────────────────────
+  // The migration target is hosted Payhip product/checkout pages (+ PayPal).
+  // The old Lemon Squeezy product.fulfilUrl links in AP_MON.commerce are DEAD
+  // and are NEVER opened. Each live product can carry a Payhip URL here, keyed
+  // by product id. A product may also supply its own `payhipUrl` field in
+  // AP_MON.commerce (takes precedence) once that config is updated.
+  //
+  // TODO(owner): paste the real Payhip product URLs below, e.g.
+  //   'deep-reading': 'https://payhip.com/b/XXXXX',
+  // Leaving an entry blank/absent keeps the product honest: the cart shows the
+  // graceful "checkout opens once products are connected" pending state instead
+  // of erroring or opening a dead link. Do NOT invent URLs.
+  const PAYHIP_URLS = {
+    'deep-reading':         '',
+    'reading-poster-bundle':'',
+    'natal-poster-pdf':     '',
+    'natal-poster':         '',
+    'sky-tee':              '',
+    'sky-hoodie':           '',
+    'big-three-print':      '',
+    'constellation-mug':    '',
+    'year-ahead':           '',
+    'solar-return':         '',
+    'two-skies-map':        '',
+  };
+
+  // Resolve a product's live, real checkout URL (Payhip). Returns '' when no
+  // real URL is configured yet — callers MUST treat '' as "pending", never as
+  // a buyable link. The dead Lemon Squeezy fulfilUrl is deliberately ignored.
+  function payhipUrl(p) {
+    if (!p) return '';
+    const raw = (isUrl(p.payhipUrl) && p.payhipUrl)
+      || (isUrl(PAYHIP_URLS[p.id]) && PAYHIP_URLS[p.id])
+      || '';
+    if (!raw) return '';
+    let url = raw;
     if (window.APReadingPrefs && APReadingPrefs.appendToCheckoutUrl) {
       url = APReadingPrefs.appendToCheckoutUrl(url, p.id);
     }
-    if (window.APPostPurchase && APPostPurchase.markPurchase) {
-      /* purchase intent recorded on click via wireCheckoutTracking */
-    }
     return url;
   }
+
+  // True when a product has a real, connected Payhip checkout URL we can open.
+  function hasCheckout(p) { return !!payhipUrl(p); }
 
   // ═══════════════════════════════════════════════════════════════════════
   // CART — localStorage-backed, mirrors the TBP Cart but re-themed.
@@ -466,29 +507,32 @@ window.AstroShop = (() => {
       if (this._release) { this._release(); this._release = null; }
     }
 
-    // ── CHECKOUT (priority chain) ──────────────────────────────────────────
+    // ── CHECKOUT ───────────────────────────────────────────────────────────
+    // The old Lemon Squeezy direct links are DEAD and never opened. We resolve
+    // a real Payhip URL per product; if none is connected yet we fall back to a
+    // whole-cart store/PayPal handoff, and finally to a graceful PENDING modal.
     checkoutNow() {
       if (this.items.length === 0) return;
       const co = checkout();
-      const liveItems = this.items.filter(i => {
-        const p = productById(i.id);
-        return p && isLive(p);
-      });
-      const dormantItems = this.items.filter(i => !liveItems.includes(i));
+      const connectedItems = this.items.filter(i => hasCheckout(productById(i.id)));
+      const pendingItems = this.items.filter(i => !hasCheckout(productById(i.id)));
 
-      if (liveItems.length === 1 && dormantItems.length === 0) {
-        const p = productById(liveItems[0].id);
-        if (p) {
+      // 1. Per-product Payhip pages are connected.
+      if (connectedItems.length === 1 && pendingItems.length === 0) {
+        const p = productById(connectedItems[0].id);
+        const url = payhipUrl(p);
+        if (p && url) {
           if (window.APPostPurchase && APPostPurchase.markPurchase) APPostPurchase.markPurchase(p.id);
-          window.open(checkoutHref(p), '_blank', 'noopener');
+          window.open(url, '_blank', 'noopener');
+          return;
         }
-        return;
       }
-      if (liveItems.length > 0) {
-        this.liveCheckoutModal(liveItems, dormantItems);
+      if (connectedItems.length > 0) {
+        this.connectedCheckoutModal(connectedItems, pendingItems);
         return;
       }
 
+      // 2. Whole-cart hosted-store handoff (set checkout.externalStoreUrl / etsyUrl).
       if (isUrl(co.externalStoreUrl)) {
         window.open(co.externalStoreUrl, '_blank', 'noopener');
         return;
@@ -498,48 +542,57 @@ window.AstroShop = (() => {
         return;
       }
 
-      this.dormantModal();
+      // 3. On-site PayPal Buttons (set checkout.paypalClientId).
+      if (co.paypalClientId) {
+        this.paypalCheckout();
+        return;
+      }
+
+      // 4. Nothing connected yet → graceful, on-brand PENDING state.
+      this.pendingCheckoutModal();
     }
 
-    liveCheckoutModal(liveItems, dormantItems) {
-      const rows = liveItems.map(i => {
+    connectedCheckoutModal(connectedItems, pendingItems) {
+      const rows = connectedItems.map(i => {
         const p = productById(i.id);
-        const url = p ? checkoutHref(p) : '';
+        const url = p ? payhipUrl(p) : '';
         return `<div class="shopc-checkout__row"><span>${esc(i.name)} × ${i.qty}</span><span>${formatPrice(i.price * i.qty)}</span></div>
           ${url ? `<p class="shopc-modal__note" style="margin:-2px 0 10px;"><a href="${esc(url)}" target="_blank" rel="noopener" data-ap-product="${esc(i.id)}">Secure checkout →</a></p>` : ''}`;
       }).join('');
-      const dormantNote = dormantItems.length
-        ? `<p class="shopc-modal__note" style="color:var(--oxblood,#b04a52);">${dormantItems.length} coming-soon item${dormantItems.length === 1 ? '' : 's'} in your cart — checkout those when they launch.</p>`
+      const pendingNote = pendingItems.length
+        ? `<p class="shopc-modal__note">${pendingItems.length} item${pendingItems.length === 1 ? '' : 's'} in your basket ${pendingItems.length === 1 ? 'is' : 'are'} not connected to checkout yet — ${pendingItems.length === 1 ? 'it stays' : 'they stay'} saved on this device until it opens.</p>`
         : '';
       modal({
         title: 'Complete your order',
         body: `
           <div class="shopc-checkout">${rows}
-            <div class="shopc-checkout__row shopc-checkout__total"><span>Live items</span><span>${formatPrice(liveItems.reduce((s, i) => s + i.price * i.qty, 0))}</span></div>
+            <div class="shopc-checkout__row shopc-checkout__total"><span>Connected items</span><span>${formatPrice(connectedItems.reduce((s, i) => s + i.price * i.qty, 0))}</span></div>
           </div>
-          <p class="shopc-modal__note">Each live piece checks out securely on Lemon Squeezy — birth details are collected there, never on this site. Personalised PDFs are generated from your chart after purchase.</p>
-          ${dormantNote}`,
-        actions: liveItems.map(i => {
+          <p class="shopc-modal__note">Each piece checks out securely — birth details are collected there, never on this site. Personalised PDFs are generated from your chart after purchase.</p>
+          ${pendingNote}`,
+        actions: connectedItems.map(i => {
           const p = productById(i.id);
-          return p && isLive(p)
-            ? { label: `Buy ${i.name.split('—')[0].trim()}`, primary: true, href: checkoutHref(p), external: true, productId: p.id }
+          const url = p ? payhipUrl(p) : '';
+          return url
+            ? { label: `Buy ${i.name.split('—')[0].trim()}`, primary: true, href: url, external: true, productId: p.id }
             : null;
         }).filter(Boolean).slice(0, 3),
       });
     }
 
-    dormantModal() {
+    // Graceful pending state — the basket is real and saved; checkout simply
+    // isn't wired to Payhip yet. No error, no dead link, no fake urgency.
+    pendingCheckoutModal() {
       const n = this.count();
-      const anyPersonal = this.items.some(i => i.personalized);
       modal({
-        title: 'Coming soon',
+        title: 'Checkout opening soon',
         body: `
-          <p>Your cart is saved on this device — <strong>${n} item${n === 1 ? '' : 's'} · ${formatPrice(this.total())}</strong>.</p>
-          <p class="shopc-modal__note">These pieces aren't live yet. ${anyPersonal ? 'Every personalised piece is generated from your own chart — your birth details never leave your device. ' : ''}Leave your email and we'll tell you when they launch.</p>
+          <p>Your basket is saved on this device — <strong>${n} item${n === 1 ? '' : 's'} · ${formatPrice(this.total())}</strong>.</p>
+          <p class="shopc-modal__note">Checkout opens once products are connected — your basket is saved, so you can complete your order the moment it goes live. Leave your email and we'll tell you the instant it opens.</p>
           ${emailInviteHtml()}
         `,
         actions: [
-          { label: 'Keep my cart', primary: true },
+          { label: 'Keep my basket', primary: true },
         ],
         onMount: bindEmailInvite,
       });
@@ -633,10 +686,21 @@ window.AstroShop = (() => {
   function priceHtml(p) {
     const live = isLive(p);
     if (!live) return `<span class="shopc-card__price shopc-card__price--soon">Coming soon</span>`;
-    if (p.anchorWas && p.anchorWas > p.price) {
-      return `<span class="shopc-card__price"><s class="shopc-card__was">${formatPrice(p.anchorWas)}</s> ${formatPrice(p.price)}</span>`;
-    }
+    // No strikethrough — the bold current price + "Save £X" pill carry the value
+    // story honestly (the editorial overhaul drops the crossed-out anchor).
     return `<span class="shopc-card__price">${formatPrice(p.price)}</span>`;
+  }
+
+  // Thoughtful empty / zero-filter state with a reset action. Honest copy — no
+  // fake stock, no urgency; just a clear way back to the full catalogue.
+  function emptyStateHtml() {
+    return `
+      <div class="shopc-empty" role="status">
+        <div class="shopc-empty__seal" aria-hidden="true">${icon('orb')}</div>
+        <p class="shopc-empty__title">No pieces match that filter.</p>
+        <p class="shopc-empty__note">Every piece is cast from your own chart — try another collection, or clear the filters to see the full catalogue.</p>
+        <button type="button" class="btn btn--primary shopc-empty__reset" data-clear-filters>Clear filters</button>
+      </div>`;
   }
 
   function featuredCard(p, opts = {}) {
@@ -644,9 +708,12 @@ window.AstroShop = (() => {
     const hero = !!opts.hero;
     const cols = collections();
     const colName = cols[p.collection] ? cols[p.collection].name : '';
+    // Single CTA path: the LOCAL CART is the one primary action. The dead
+    // Lemon Squeezy "Get yours" direct links are gone; checkout happens from
+    // the basket (Payhip or graceful pending).
     const cta = live
-      ? `<a class="btn btn--primary shopc-featured__cta" href="${esc(checkoutHref(p))}" target="_blank" rel="noopener" data-ap-product="${esc(p.id)}">Get yours — ${formatPrice(p.price)}</a>`
-      : `<button class="btn btn--outline shopc-featured__cta" data-quickview="${p.id}">Preview piece</button>`;
+      ? `<button class="btn btn--primary shopc-featured__cart" type="button" data-add-cart="${p.id}">Add to basket</button>`
+      : `<button class="btn btn--outline shopc-featured__cta" type="button" data-quickview="${p.id}">Preview piece</button>`;
     const sample = p.sampleUrl
       ? `<a class="shopc-featured__sample" href="${esc(p.sampleUrl)}" target="_blank" rel="noopener">See sample layout →</a>`
       : '';
@@ -654,7 +721,7 @@ window.AstroShop = (() => {
       ? `<span class="shopc-featured__save">Save ${formatPrice(p.anchorWas - p.price)}</span>`
       : '';
     return `
-      <article class="shopc-featured__card ${hero ? 'shopc-featured__card--hero' : ''}" data-product-id="${p.id}">
+      <article class="shopc-featured__card ${hero ? 'shopc-featured__card--hero engraved-plate' : ''}" data-product-id="${p.id}">
         <button type="button" class="shopc-featured__visual" data-quickview="${p.id}">
           <span class="sr-only">Quick view ${esc(p.name)}</span>
           ${cardArt(p)}
@@ -671,7 +738,6 @@ window.AstroShop = (() => {
             ${priceHtml(p)}
             <div class="shopc-featured__actions">
               ${cta}
-              ${live ? `<button class="btn btn--outline shopc-featured__cart" data-add-cart="${p.id}">Add to cart</button>` : ''}
             </div>
           </div>
           ${sample}
@@ -706,9 +772,9 @@ window.AstroShop = (() => {
     host.innerHTML = `<div class="container">
       <div class="shopc-featured__intro">
         <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — ${products().filter(p => p.available !== false && isLive(p)).length} live pieces</h2>
-        <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order. Secure Lemon Squeezy checkout.</p>
+        <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order. Secure checkout.</p>
       </div>
-      <div class="shopc-featured__grid shopc-featured__grid--equal">
+      <div class="shopc-featured__grid">
         ${others[0] ? featuredCard(others[0]) : ''}
         ${bundle ? featuredCard(bundle, { hero: true }) : ''}
         ${others[1] ? featuredCard(others[1]) : ''}
@@ -716,7 +782,7 @@ window.AstroShop = (() => {
       <ul class="shopc-trust">
         <li class="shopc-trust__item">${icon('gem')} Museum-grade 250gsm prints</li>
         <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
-        <li class="shopc-trust__item">${icon('orb')} Secure Lemon Squeezy checkout</li>
+        <li class="shopc-trust__item">${icon('orb')} Secure checkout</li>
         <li class="shopc-trust__item">${icon('map')} PDFs in 24–48 hours</li>
         <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
       </ul>
@@ -873,9 +939,11 @@ window.AstroShop = (() => {
     const renderCard = p => {
       const colName = cols[p.collection] ? cols[p.collection].name : '';
       const live = isLive(p);
+      // Single CTA: the local basket is the one primary action (no dead Lemon
+      // Squeezy "Buy now" link). Checkout happens from the cart.
       const cta = live
-        ? `<div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="${esc(checkoutHref(p))}" target="_blank" rel="noopener" data-ap-product="${esc(p.id)}">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="${p.id}">Add to cart</button></div>`
-        : `<button class="btn btn--outline shopc-card__cta" data-quickview="${p.id}">Notify me</button>`;
+        ? `<div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="${p.id}">Add to basket</button></div>`
+        : `<button class="btn btn--outline shopc-card__cta" type="button" data-quickview="${p.id}">Notify me</button>`;
       const hook = p.marketingLine ? `<p class="shopc-card__hook">${esc(p.marketingLine)}</p>` : '';
       return `
         <article class="shopc-card ${live ? 'shopc-card--live' : 'shopc-card--soon'}" data-product-id="${p.id}">
@@ -906,8 +974,26 @@ window.AstroShop = (() => {
     if (soonList.length) {
       sections.push(`<h3 class="shopc-subhead shopc-subhead--soon">On the loom — coming soon</h3>${soonList.map(renderCard).join('')}`);
     }
-    grid.innerHTML = sections.length ? sections.join('') : `<p class="shopc-empty">Nothing in this collection yet. Try another filter.</p>`;
+    grid.innerHTML = sections.length ? sections.join('') : emptyStateHtml();
     gridJsRendered = true;
+
+    // Zero-filter reset: wire the "clear filters" action when the empty state shows.
+    const resetBtn = grid.querySelector('[data-clear-filters]');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        activeCollection = 'all';
+        const bar = document.getElementById('shopc-filters');
+        if (bar) {
+          bar.querySelectorAll('.shopc-chip').forEach(c => {
+            const on = c.dataset.collection === 'all';
+            c.classList.toggle('active', on);
+            c.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+        }
+        renderStory();
+        renderGrid();
+      });
+    }
 
     // Stagger the freshly rendered cards in on a filter change. This branch is
     // only reached on a full re-render (the keep-static first-paint path
@@ -933,10 +1019,11 @@ window.AstroShop = (() => {
     const sample = p.sampleUrl
       ? `<p class="shopc-modal__note"><a href="${esc(p.sampleUrl)}" target="_blank" rel="noopener">Open sample layout →</a></p>`
       : '';
+    const save = (live && p.anchorWas && p.anchorWas > p.price)
+      ? ` <span class="shopc-qv__save">Save ${formatPrice(p.anchorWas - p.price)}</span>`
+      : '';
     const priceBlock = live
-      ? (p.anchorWas && p.anchorWas > p.price
-        ? `<div class="shopc-qv__price"><s>${formatPrice(p.anchorWas)}</s> ${formatPrice(p.price)}</div>`
-        : `<div class="shopc-qv__price">${formatPrice(p.price)}</div>`)
+      ? `<div class="shopc-qv__price">${formatPrice(p.price)}${save}</div>`
       : `<div class="shopc-qv__price shopc-qv__price--soon">Coming soon</div>`;
 
     modal({
@@ -955,8 +1042,9 @@ window.AstroShop = (() => {
         </div>`,
       actions: live
         ? [
-            { label: 'Buy now', primary: true, href: checkoutHref(p), external: true, productId: p.id },
-            { label: 'Add to cart', onClick: () => cart.add(p) },
+            // Single primary action: add to the basket, then open the cart so the
+            // visitor can review and check out. No dead Lemon Squeezy direct link.
+            { label: 'Add to basket', primary: true, onClick: () => { cart.add(p); cart.open(); } },
           ]
         : [
             { label: 'Keep browsing', primary: true },
@@ -1267,6 +1355,10 @@ window.AstroShop = (() => {
     showModal: modal,
     addToCart: (id, opts) => { const p = productById(id); if (p) cart.add(p, opts); },
     productById,
-    checkoutHref,
+    payhipUrl,
+    hasCheckout,
+    // Back-compat alias: the old checkoutHref now resolves the live Payhip URL
+    // (never the dead Lemon Squeezy fulfilUrl). Returns '' when not connected.
+    checkoutHref: payhipUrl,
   };
 })();

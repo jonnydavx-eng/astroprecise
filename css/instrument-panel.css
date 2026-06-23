@@ -34,8 +34,11 @@
   display: block;
 }
 
-/* Engraved observatory plate — critical path (main.css deferred on lite pages) */
+/* Engraved observatory plate — critical path (main.css deferred on lite pages).
+   .engraved-plate is now a standalone reusable surface (shop cards, chart tables,
+   tool bento) — no longer requires .glass-card. */
 .instrument-panel,
+.engraved-plate,
 .engraved-plate.glass-card,
 .glass-card.engraved-plate {
   position: relative;
@@ -51,6 +54,7 @@
 }
 
 .instrument-panel::before,
+.engraved-plate::before,
 .engraved-plate.glass-card::before,
 .glass-card.engraved-plate::before {
   content: '';
