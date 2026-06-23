@@ -107,14 +107,21 @@
       <section class="mc-section" aria-label="Saved charts collection">
         <div class="container">
           <h2 id="charts-section-title" class="sr-only">Saved charts</h2>
-          <div id="charts-grid" aria-live="polite" aria-labelledby="charts-section-title">
-            <!-- js/charts-dashboard.js renders glass cards or the empty state here -->
-            <div class="glass-card mc-empty">
-              <span class="mc-empty__glyph eng-star-mark" aria-hidden="true" style="color:var(--gold);"></span>
-              <h2 class="mc-empty__title">Loading your charts…</h2>
-              <p class="mc-empty__text">If this message stays, JavaScript may be disabled — saved charts need it to display.</p>
-              <p style="font-size:0.7rem;opacity:0.85;margin-top:0.6rem;">Every chart you cast is computed from real VSOP87 astronomy — free, and yours to keep.</p>
-              <a class="btn btn--primary btn--lg" href="chart.html">Calculate a Birth Chart →</a>
+          <div id="charts-grid" aria-live="polite" aria-busy="true" aria-labelledby="charts-section-title">
+            <!-- LOADING state (transient): js/charts-dashboard.js replaces this with
+                 either saved-chart cards or the genuine "no saved charts" empty
+                 state. This is NOT the empty state — it makes no claim about how
+                 many charts exist, it only says the collection is being read. -->
+            <div class="app-empty-state" data-mc-state="loading">
+              <span class="app-empty-state__seal eng-star-mark" aria-hidden="true"></span>
+              <h2 class="app-empty-state__title">Opening your collection…</h2>
+              <p class="app-empty-state__sub">Reading your saved charts from this browser. Nothing leaves your device.</p>
+              <noscript>
+                <p class="app-empty-state__sub">Saved charts need JavaScript to display. You can still cast a new chart below.</p>
+                <div class="app-empty-state__actions">
+                  <a class="btn btn--primary btn--lg" href="chart.html">Calculate a Birth Chart</a>
+                </div>
+              </noscript>
             </div>
           </div>
         </div>

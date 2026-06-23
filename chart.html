@@ -84,11 +84,15 @@
       margin: 0 auto;
     }
     .form-glass__sub {
-      min-height: 100px;
-      height: 100px;
-      overflow: hidden;
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       line-height: 1.55;
+      /* Line-clamp (not a hard crop) — localized copy never cut mid-word; floor
+         keeps layout stable. Matches css/chart-critical.css. */
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: calc(5 * 1.55em);
     }
   </style>
   <script src="js/defer-page-css.js" defer></script>
@@ -177,7 +181,7 @@
         <div class="form-glass__header">
           <div class="form-glass__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h2 class="form-glass__title">Your Birth Details</h2>
-          <p class="form-glass__sub" style="min-height:100px;height:100px;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.55">All calculations happen instantly in your browser — nothing is sent to any server.<br><strong class="form-glass__privacy">Private by design</strong> — birth data never leaves your device. No account, no tracking.</p>
+          <p class="form-glass__sub">All calculations happen instantly in your browser — nothing is sent to any server.<br><strong class="form-glass__privacy">Private by design</strong> — birth data never leaves your device. No account, no tracking.</p>
         </div>
 
         <form id="chart-form" novalidate aria-label="Birth chart calculation form">

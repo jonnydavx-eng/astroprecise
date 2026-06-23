@@ -217,9 +217,13 @@
       line-height: 1.55;
       color: var(--silver-dim);
       letter-spacing: 0.04em;
-      min-height: 100px;
-      height: 100px;
+      /* Line-clamp instead of a hard pixel crop so localized copy is never cut
+         mid-word; min-height floors the box (~5 lines) so the layout never jumps. */
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
       overflow: hidden;
+      min-height: calc(5 * 1.55em);
       contain: layout style;
     }
     html.ap-fonts-ready .page-chart .form-glass__sub {
