@@ -1008,9 +1008,9 @@
   </button>
 
   <div class="shopc-cart-overlay" id="shopc-cart-overlay" aria-hidden="true"></div>
-  <aside class="shopc-cart" id="shopc-cart" aria-label="Shopping cart">
+  <aside class="shopc-cart" id="shopc-cart" role="dialog" aria-modal="true" aria-labelledby="shopc-cart-title">
     <div class="shopc-cart__header">
-      <span class="shopc-cart__title">Your Cart</span>
+      <span class="shopc-cart__title" id="shopc-cart-title">Your Cart</span>
       <button class="shopc-cart__close" data-cart-close aria-label="Close cart">×</button>
     </div>
     <div class="shopc-cart__items" id="shopc-cart-items"></div>

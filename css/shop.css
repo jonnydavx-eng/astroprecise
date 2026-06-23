@@ -1207,16 +1207,27 @@ button.ap-art-card {
   text-transform: uppercase;
   margin: 2px 0 6px;
 }
-.shopc-cart__qtyrow { display: flex; align-items: center; gap: 6px; }
+.shopc-cart__qtyrow { display: flex; align-items: center; gap: 10px; }
 .shopc-qty {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  /* 44×44 hit area (WCAG target size) on a narrow drawer; the visible chip
+     stays restrained at ~28px via the gradient/border inset, with the rest of
+     the box transparent padding that still receives the tap. */
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    transparent;
+  border: 8px solid transparent;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px var(--border);
   color: var(--gold-pale);
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 14px;
   cursor: pointer;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .shopc-qty__n { min-width: 18px; text-align: center; color: var(--silver); font-size: var(--text-sm); }
 .shopc-cart__price {
@@ -1425,4 +1436,111 @@ button.ap-art-card {
 /* ── Safe-area / touch targets (iOS + Android) ── */
 @supports (padding: max(0px)) {
   .shopc-cart { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   MOTION & FEEDBACK POLISH (FIX 11 / 12 / 13)
+   This file (css/shop.css) is DEFERRED — not loaded at first paint or during
+   headless audits — so motion lives here safely. Everything below is gated
+   behind prefers-reduced-motion: no-preference, with a reduce block at the end
+   that holds the end-states without animation.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* FIX 12 — Cart count badge "pop" when the count increases (JS toggles
+   .is-bumped with a reflow so it re-fires on consecutive adds). */
+@keyframes ap-cart-bump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* FIX 11 — Quick-view modal entrance (panel slide+scale, backdrop fade). */
+@keyframes ap-modal-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes ap-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Badge pop */
+  [data-cart-count].is-bumped {
+    animation: ap-cart-bump 0.42s var(--ap-ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+
+  /* Modal reveal */
+  .shopc-modal-backdrop.open { animation: ap-backdrop-in 0.22s ease both; }
+  .shopc-modal-backdrop.open .shopc-modal {
+    animation: ap-modal-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* FIX 11 — Image reveal: ONLY lazy-revealed images (JS adds .shopc-reveal)
+     fade in. Eager first-paint images never carry .shopc-reveal, so this can
+     never trap them invisible. .is-revealed (added on load) brings opacity to 1. */
+  .shopc-card__preview.shopc-reveal,
+  .shop-trending__card img.shopc-reveal {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .shopc-card__preview.shopc-reveal.is-revealed,
+  .shop-trending__card img.shopc-reveal.is-revealed {
+    opacity: 1;
+  }
+
+  /* FIX 12 — Add-to-cart in-place feedback: subtle gold flash while .is-added. */
+  [data-add-cart].is-added,
+  .shopc-featured__cart.is-added,
+  .shopc-card__addcart.is-added {
+    color: var(--void, #050406);
+    border-color: var(--gold);
+    background: var(--gold);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+}
+
+/* Safety net (applies regardless of motion pref): a lazy image that has loaded
+   must be visible even if the no-preference rule above didn't set opacity. */
+.shopc-card__preview.shopc-reveal.is-revealed,
+.shop-trending__card img.shopc-reveal.is-revealed { opacity: 1; }
+
+/* FIX 12 — Add-to-cart "Added ✓" state works without motion too (no transition
+   in reduce mode — see block below); colour swap is an affordance, not motion. */
+[data-add-cart].is-added,
+.shopc-featured__cart.is-added,
+.shopc-card__addcart.is-added {
+  color: var(--void, #050406);
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+/* FIX 13 — Reduced-motion: suppress hover transforms/transitions on the
+   interactive shop surfaces, and hold every FIX 11/12 end-state without motion. */
+@media (prefers-reduced-motion: reduce) {
+  .shopc-card,
+  .shopc-featured__card,
+  .shop-trending__card,
+  .ap-tool-card,
+  .shopc-card__preview,
+  .shopc-cart-toggle {
+    transition: none !important;
+  }
+  .shopc-card:hover,
+  .shopc-featured__card:hover,
+  .shop-trending__card:hover,
+  .ap-tool-card:hover,
+  .shopc-cart-toggle:hover,
+  .shopc-card:hover .shopc-card__preview,
+  .shopc-featured__card:hover .shopc-card__preview {
+    transform: none !important;
+  }
+  .shopc-card__preview.shopc-reveal,
+  .shop-trending__card img.shopc-reveal { opacity: 1 !important; transition: none !important; }
+  [data-cart-count].is-bumped { animation: none !important; }
+  .shopc-modal-backdrop.open,
+  .shopc-modal-backdrop.open .shopc-modal { animation: none !important; }
+  [data-add-cart].is-added,
+  .shopc-featured__cart.is-added,
+  .shopc-card__addcart.is-added { transition: none !important; }
 }
