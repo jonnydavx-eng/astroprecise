@@ -174,6 +174,12 @@
   .ap-chart-render .planet-glyph {
     transition: none;
   }
+  /* No draw-on motion; render aspect lines in their final state (visible —
+     not stuck at the hidden dashoffset=len start the inline style sets). */
+  .ap-chart-render .aspect-line--draw {
+    animation: none;
+    stroke-dashoffset: 0 !important;
+  }
 }
 
 /* ── Styled aspect popover (the native <title> stays as a11y/no-JS fallback) ─ */
