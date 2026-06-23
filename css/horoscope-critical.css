@@ -151,10 +151,34 @@
       overflow: hidden;
       border-radius: 12px;
       background: radial-gradient(circle at 50% 45%, #0a1218 0%, #060a10 72%);
+      /* Engraved observatory plate — the 3D ring reads as an instrument under
+         glass. Box-shadow rim + inner top-light survive overflow:hidden/contain. */
       box-shadow:
-        0 0 0 1px rgba(201, 162, 39, 0.14),
-        0 0 48px rgba(80, 150, 230, 0.12),
-        inset 0 0 32px rgba(0, 0, 0, 0.28);
+        0 0 0 1px var(--ap-gold-a16, rgba(201, 162, 39, 0.16)),
+        inset 0 1px 0 rgba(232, 224, 208, 0.05),
+        inset 0 0 32px rgba(0, 0, 0, 0.30),
+        0 18px 48px rgba(0, 0, 0, 0.28),
+        0 0 48px rgba(80, 150, 230, 0.12);
+    }
+    /* Bracket corners — inset so they live inside the clipped box (an
+       "instrument under glass" frame; canvas/IDs/dimensions untouched). */
+    .sphere-wrap::after {
+      content: '';
+      position: absolute;
+      inset: var(--ip-bracket-inset, 10px);
+      z-index: 3;
+      pointer-events: none;
+      border-radius: 8px;
+      background:
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
+      opacity: 0.72;
     }
     /* Interactive SVG poster — paints first frame, fully clickable until canvas handoff */
     .sphere-poster {

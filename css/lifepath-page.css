@@ -381,6 +381,36 @@ html.ap-audit-path .lp-result-skel-panel {
       background: radial-gradient(ellipse at 50% 30%, var(--lp-color-dim, rgba(196,146,10,0.07)) 0%, transparent 65%);
       pointer-events: none;
     }
+    /* Engraved instrument plate — the numerology mandala under glass.
+       Layered depth via box-shadow (survives overflow:hidden); the existing
+       element-tinted border-left stays as the per-instrument accent.
+       --ip-* tokens carry safe fallbacks (instrument-panel.css is deferred). */
+    .lp-number-hero {
+      box-shadow:
+        inset 0 1px 0 rgba(232, 224, 208, 0.05),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+        0 18px 48px rgba(0, 0, 0, 0.28);
+    }
+    /* Inset bracket corners — framed inside the clipped box; the #lp-mandala-canvas
+       itself (id/size/JS) is never touched. */
+    .lp-number-hero::after {
+      content: '';
+      position: absolute;
+      inset: var(--ip-bracket-inset, 10px);
+      z-index: 1;
+      pointer-events: none;
+      border-radius: calc(var(--lp-radius-xl, 20px) - 8px);
+      background:
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
+      opacity: 0.7;
+    }
     .lp-number-hero__master-badge {
       display: none;
       font-size: 0.62rem;
