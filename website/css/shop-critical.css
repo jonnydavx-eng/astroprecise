@@ -238,26 +238,69 @@ html.ap-fonts-ready .page-shop .shop-section-title {
   background: rgba(201, 162, 39, 0.08);
 }
 
-/* ── Section titles ── */
+/* ── Section titles — Cinzel display headline (gradient gold) ── */
 .shop-section-title {
-  font-size: 0.75rem;
-  font-weight: inherit;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold);
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  line-height: 1.18;
+  color: var(--ap-gold-parchment, var(--gold-pale, #EFE3C0));
   margin-top: 0;
   margin-bottom: var(--space-6);
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  background: linear-gradient(
+    135deg,
+    var(--ap-gold-parchment, #EFE3C0) 0%,
+    var(--ap-gold-bright, #D4B84A) 55%,
+    var(--ap-gold-parchment, #EFE3C0) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.35),
+    0 0 28px rgba(201, 162, 39, 0.10);
 }
-.shop-section-title .eng-i { width: 14px; height: 14px; flex-shrink: 0; }
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .shop-section-title {
+    -webkit-text-fill-color: currentColor;
+    color: var(--ap-gold-parchment, #EFE3C0);
+  }
+}
+.shop-section-title .eng-i {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  /* keep the icon a solid gold mark — exempt it from the text-clip */
+  -webkit-text-fill-color: initial;
+  color: var(--ap-gold-bright, #D4B84A);
+}
 .shop-section-title::after {
   content: '';
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, rgba(201, 162, 39, 0.3), transparent);
 }
+
+/* Small all-caps eyebrow that can sit ABOVE a .shop-section-title headline —
+   the old 0.75rem treatment, preserved as an opt-in kicker. */
+.shop-section-eyebrow {
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: inherit;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ap-gold-bright, var(--gold, #D4B84A));
+  margin: 0 0 var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.shop-section-eyebrow .eng-i { width: 14px; height: 14px; flex-shrink: 0; }
 
 /* ── Affiliate disclosure ── */
 .disclosure-banner {
@@ -594,11 +637,13 @@ img.shopc-card__preview:not([src]) {
   top: var(--space-3);
   right: var(--space-3);
   z-index: 2;
-  font-size: 0.52rem;
+  font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--void, #050406);
-  background: #9db36a;
+  /* Outlined-gold pill — never a second filled badge alongside "Best value". */
+  color: var(--ap-gold-bright, #D4B84A);
+  background: rgba(5, 4, 6, 0.72);
+  border: 1px solid rgba(201, 162, 39, 0.55);
   font-weight: 700;
   border-radius: 99px;
   padding: 3px 10px;
@@ -610,10 +655,10 @@ img.shopc-card__preview:not([src]) {
   flex: 1;
 }
 .shopc-featured__kicker {
-  font-size: 0.55rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--ap-gold-bright, #D4B84A);
   margin-bottom: var(--space-2);
 }
 .shopc-featured__name {
@@ -714,6 +759,14 @@ img.shopc-card__preview:not([src]) {
 }
 .shop-trending__card {
   display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  background: var(--surface);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
@@ -992,10 +1045,10 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
 }
 
 .shopc-card__kicker {
-  font-size: 0.55rem;
+  font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--silver-dim);
+  color: var(--silver);
   margin-bottom: var(--space-2);
 }
 .shopc-card__top {
@@ -1228,16 +1281,22 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
   top: var(--space-2);
   right: var(--space-2);
   z-index: 1;
-  font-size: 0.48rem;
+  font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 700;
   border-radius: 99px;
   padding: 2px 8px;
-  background: #9db36a;
+  /* Outlined-gold pill — drops the off-brand sage for the parchment/gold system. */
+  background: rgba(5, 4, 6, 0.72);
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  color: var(--ap-gold-bright, #D4B84A);
+}
+.ap-art-card__badge--sel {
+  background: var(--gold);
+  border-color: var(--gold);
   color: var(--void, #050406);
 }
-.ap-art-card__badge--sel { background: var(--gold); }
 .ap-art-library__foot {
   text-align: center;
   margin-top: var(--space-6);
@@ -1253,13 +1312,33 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
 }
 .ap-art-library__selected { margin-bottom: var(--space-2); }
 
-/* LCP: solid hero title (no gradient paint delay) */
+/* Shop hero title — display-type tier (mirrors .ap-section-display).
+   Scoped to .shop-hero only; NOT applied to tuned LCP hero titles elsewhere. */
 .shop-hero h1, .shop-hero__title {
   color: var(--ap-gold-parchment, var(--gold-pale, #EFE3C0));
   font-family: var(--font-display, Georgia, serif);
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-size: clamp(2.4rem, 6vw, 3.6rem);
   font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-  margin: 0 0 var(--space-4);
+  letter-spacing: 0.02em;
+  line-height: 1.16;
+  margin: 0 0 var(--space-6);
+  background: linear-gradient(
+    135deg,
+    var(--ap-gold-parchment, #EFE3C0) 0%,
+    var(--ap-gold-bright, #D4B84A) 55%,
+    var(--ap-gold-parchment, #EFE3C0) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.35),
+    0 0 28px rgba(201, 162, 39, 0.10);
+}
+/* Literal-color fallback where background-clip:text is unsupported */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .shop-hero h1, .shop-hero__title {
+    -webkit-text-fill-color: currentColor;
+    color: var(--ap-gold-parchment, #EFE3C0);
+  }
 }

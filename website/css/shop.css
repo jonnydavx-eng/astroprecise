@@ -183,11 +183,11 @@
 
 /* ── Section titles ── */
 .shop-section-title {
-  font-size: 0.75rem;
-  font-weight: inherit;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--gold);
+  font-size: clamp(1.5rem, 3.4vw, 2.3rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--ap-gold-parchment, var(--gold-pale, #EFE3C0));
   margin-top: 0;
   margin-bottom: var(--space-6);
   display: flex;
@@ -368,10 +368,10 @@
   top: var(--space-3);
   right: var(--space-3);
   z-index: 2;
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--silver-dark);
+  color: var(--silver);
   background: rgba(13, 10, 7, 0.82);
   border: 1px solid var(--border);
   border-radius: 3px;
@@ -541,11 +541,13 @@ button.ap-art-card {
   top: var(--space-3);
   right: var(--space-3);
   z-index: 2;
-  font-size: 0.52rem;
+  font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--void, #050406);
-  background: #9db36a;
+  /* Outlined-gold pill — never a second filled badge alongside "Best value". */
+  color: var(--ap-gold-bright, #D4B84A);
+  background: rgba(5, 4, 6, 0.72);
+  border: 1px solid rgba(201, 162, 39, 0.55);
   font-weight: 700;
   border-radius: 99px;
   padding: 3px 10px;
@@ -557,10 +559,10 @@ button.ap-art-card {
   flex: 1;
 }
 .shopc-featured__kicker {
-  font-size: 0.55rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--ap-gold-bright, #D4B84A);
   margin-bottom: var(--space-2);
 }
 .shopc-featured__name {
@@ -669,6 +671,14 @@ button.ap-art-card {
 }
 .shop-trending__card {
   display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  background: var(--surface);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
@@ -708,10 +718,10 @@ button.ap-art-card {
   max-width: 620px;
 }
 .shopc-filters__eyebrow {
-  font-size: 0.58rem;
+  font-size: 0.72rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--silver-dim);
+  color: var(--silver);
   text-align: center;
   margin: 0 0 var(--space-3);
 }
@@ -741,7 +751,7 @@ button.ap-art-card {
   top: var(--space-3);
   left: var(--space-3);
   z-index: 2;
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--void, #050406);
@@ -750,12 +760,20 @@ button.ap-art-card {
   border-radius: 99px;
   padding: 2px 9px;
 }
+/* Quiet kicker — reserves the filled-gold badge for the hero/bundle.
+   Outlined/text-only in muted silver so the gold accent stays meaningful. */
+.shopc-card__badge--quiet {
+  color: var(--silver-dim);
+  background: rgba(5, 4, 6, 0.62);
+  border: 1px solid var(--border, rgba(201, 162, 39, 0.18));
+  font-weight: 600;
+}
 .shopc-card__personal {
   position: absolute;
   bottom: var(--space-3);
   right: var(--space-3);
   z-index: 2;
-  font-size: 0.52rem;
+  font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold-pale);
@@ -768,10 +786,10 @@ button.ap-art-card {
   gap: 4px;
 }
 .shopc-card__kicker {
-  font-size: 0.55rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--ap-gold-bright, #D4B84A);
   margin-bottom: var(--space-2);
 }
 .shopc-card__top {
@@ -960,11 +978,12 @@ button.ap-art-card {
 .ap-tool-card__badge {
   display: inline-block;
   align-self: flex-start;
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--emerald-light, #5a9a6a);
-  border: 1px solid rgba(14, 92, 58, 0.35);
+  /* Outlined-gold pill — drops the off-brand emerald. */
+  color: var(--ap-gold-bright, #D4B84A);
+  border: 1px solid rgba(201, 162, 39, 0.35);
   border-radius: 99px;
   padding: 2px 8px;
   margin-bottom: var(--space-3);

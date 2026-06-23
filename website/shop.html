@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Personalised chart products — Deep Reading, Year Ahead transits, Two Skies, jewellery (Observatory Disc, Seal Medallion &amp; more), posters, apparel &amp; gifts. VSOP87 precision, secure Lemon Squeezy checkout." />
+  <meta name="description" content="Personalised chart products — Deep Reading, Year Ahead transits, Two Skies, posters, apparel &amp; gifts. Jewellery coming soon. VSOP87 precision, secure Lemon Squeezy checkout." />
   <meta name="robots" content="index, follow" />
   <title>Cosmic Shop — Personalised Chart Products | AstroPrecise</title>
 <link rel="preload" href="css/main-lite.css" as="style" />
@@ -132,7 +132,7 @@
         <div class="shop-hero-stat" role="group" aria-label="Shop highlights">
           <!-- Live-piece count: single source of truth is the count of AP_MON.commerce.products with isLive (fulfilUrl set). Currently 13 of 17 catalogue SKUs are live (4 jewellery pieces are fulfilUrl:'' placeholders). The `13` literal is the correct fallback; js/shop-commerce.js overwrites [data-live-count] elements with the derived live count so it never drifts. -->
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n" data-live-count>13</span><span class="shop-hero-stat__l">Live pieces</span></div>
-          <div class="shop-hero-stat__item"><span class="shop-hero-stat__n shopc-rating" role="img" aria-label="5 out of 5 stars">★★★★★</span><span class="shop-hero-stat__l">Brand standard</span></div>
+          <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">24–48h</span><span class="shop-hero-stat__l">PDF delivery</span></div>
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">VSOP87</span><span class="shop-hero-stat__l">Arcminute sky</span></div>
         </div>
       </div>
@@ -154,7 +154,7 @@
                 <source type="image/webp" srcset="img/shop/product-deep-reading.webp?v=189" />
                 <img class="shopc-card__preview" src="img/shop/product-deep-reading.jpg?v=188" alt="Deep Natal Reading PDF preview — engraved chart typography on void black" width="960" height="540" fetchpriority="high" loading="eager" decoding="async" />
               </picture>
-              <span class="shopc-card__badge">Bestseller</span>
+              <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-featured__copy">
               <p class="shopc-featured__kicker">The Reading · Available now</p>
@@ -208,7 +208,7 @@
                 <source type="image/webp" srcset="img/shop/product-poster-pdf.webp?v=189" />
                 <img class="shopc-card__preview" src="img/shop/product-poster-pdf.jpg?v=188" alt="Print-at-home natal sky poster PDF preview" width="800" height="450" loading="eager" decoding="async" />
               </picture>
-              <span class="shopc-card__badge">Instant</span>
+              <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-featured__copy">
               <p class="shopc-featured__kicker">On Your Wall · Available now</p>
@@ -228,30 +228,33 @@
         <div class="shop-trending" aria-label="Popular pieces">
           <p class="shop-trending__label">Popular pieces</p>
           <div class="shop-trending__grid">
-            <a class="shop-trending__card" href="https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785" target="_blank" rel="noopener">
+            <button type="button" class="shop-trending__card" data-quickview="year-ahead">
+              <span class="sr-only">Quick view Year Ahead transit report</span>
               <img data-src="img/shop/product-year-ahead.jpg?v=188" alt="Year Ahead transit report" width="400" height="225" loading="lazy" decoding="async" />
               <noscript><img src="img/shop/product-year-ahead.jpg?v=188" alt="Year Ahead transit report" width="400" height="225" /></noscript>
               <span class="shop-trending__name">Year Ahead · £16</span>
-            </a>
-            <a class="shop-trending__card" href="https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7" target="_blank" rel="noopener">
+            </button>
+            <button type="button" class="shop-trending__card" data-quickview="two-skies-map">
+              <span class="sr-only">Quick view Two Skies couples print</span>
               <img data-src="img/shop/product-two-skies.jpg?v=188" alt="Two Skies couples print" width="400" height="225" loading="lazy" decoding="async" />
               <noscript><img src="img/shop/product-two-skies.jpg?v=188" alt="Two Skies couples print" width="400" height="225" /></noscript>
               <span class="shop-trending__name">Two Skies · £24</span>
-            </a>
-            <a class="shop-trending__card" href="https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723" target="_blank" rel="noopener">
+            </button>
+            <button type="button" class="shop-trending__card" data-quickview="solar-return">
+              <span class="sr-only">Quick view Solar Return birthday PDF</span>
               <img data-src="img/shop/product-solar-return.jpg?v=188" alt="Solar Return birthday PDF" width="400" height="225" loading="lazy" decoding="async" />
               <noscript><img src="img/shop/product-solar-return.jpg?v=188" alt="Solar Return birthday PDF" width="400" height="225" /></noscript>
               <span class="shop-trending__name">Solar Return · £14</span>
-            </a>
+            </button>
           </div>
         </div>
         <ul class="shopc-trust">
-          <li class="shopc-trust__item shopc-trust__item--stars"><span class="shopc-rating" role="img" aria-label="5 star brand standard">★★★★★</span> 5-star deliverables</li>
+          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Museum-grade 250gsm prints</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> VSOP87 + ELP2000 engine</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure Lemon Squeezy checkout</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> PDFs in 24–48 hours</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data never on this site</li>
-          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Jewellery &amp; prints: 5–12 day POD turnaround (placeholder)</li>
+          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Prints &amp; apparel ship in 2–7 days; jewellery coming soon</li>
           <!-- Honesty: "2,400+" was an unsupported hard sales figure. Reworded to a qualitative, defensible claim (no fabricated count). -->
           <li class="shopc-trust__item">Every keepsake cast from a real birth chart</li>
         </ul>
@@ -384,20 +387,14 @@
           <button type="button" class="shopc-chip" aria-pressed="false">On Your Wall</button>
           <button type="button" class="shopc-chip" aria-pressed="false">The Reading</button>
           <button type="button" class="shopc-chip" aria-pressed="false">Gifts</button>
-          <button type="button" class="shopc-chip" aria-pressed="false">Jewellery</button>
         </div>
-        <ul class="shopc-trust shopc-trust--compact" aria-label="Shop reassurance">
-          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure Lemon Squeezy checkout</li>
-          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> PDFs in 24–48 hours</li>
-          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data never leaves your device</li>
-        </ul>
         <div class="shopc-grid" id="shopc-grid" aria-live="polite">
           <h3 class="shopc-subhead">More live pieces</h3>
           <article class="shopc-card shopc-card--live" data-product-id="natal-poster">
             <button type="button" class="shopc-card__art" data-quickview="natal-poster">
               <span class="sr-only">Quick view Your Natal Sky — Art Poster</span>
               <img class="shopc-card__preview" src="img/shop/product-natal-poster.jpg?v=188" alt="Your Natal Sky — Art Poster" width="1600" height="900" loading="lazy" decoding="async" />
-              <span class="shopc-card__badge">Signature</span>
+              <span class="shopc-card__badge shopc-card__badge--quiet">Made to order</span>
             </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">On Your Wall · Print · Live</div>
@@ -414,7 +411,7 @@
             <button type="button" class="shopc-card__art" data-quickview="sky-tee">
               <span class="sr-only">Quick view Your Sky — Tee</span>
               <img class="shopc-card__preview" src="img/shop/product-sky-tee.jpg?v=188" alt="Your Sky — Tee" width="1600" height="900" loading="lazy" decoding="async" />
-              <span class="shopc-card__badge">New</span>
+              <span class="shopc-card__badge shopc-card__badge--quiet">Made to order</span>
             </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">Wear Your Sky · Apparel · Live</div>
@@ -479,7 +476,7 @@
             <button type="button" class="shopc-card__art" data-quickview="year-ahead">
               <span class="sr-only">Quick view Your Year Ahead — Transit Report</span>
               <img class="shopc-card__preview" src="img/shop/product-year-ahead.jpg?v=188" alt="Your Year Ahead — Transit Report" width="1600" height="900" loading="lazy" decoding="async" />
-              <span class="shopc-card__badge">Trending</span>
+              <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">The Reading · Digital · Live</div>
@@ -496,7 +493,7 @@
             <button type="button" class="shopc-card__art" data-quickview="solar-return">
               <span class="sr-only">Quick view Solar Return — Your Birthday Year</span>
               <img class="shopc-card__preview" src="img/shop/product-solar-return.jpg?v=188" alt="Solar Return — Your Birthday Year" width="1600" height="900" loading="lazy" decoding="async" />
-              <span class="shopc-card__badge">Birthday</span>
+              <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-card__body">
               <div class="shopc-card__kicker">The Reading · Digital · Live</div>
@@ -526,7 +523,7 @@
             </div>
           </article>
         </div>
-        <p style="text-align:center;color:var(--silver-dim);font-size:0.68rem;line-height:1.7;max-width:560px;margin:var(--space-8) auto 0;">
+        <p style="text-align:center;color:var(--silver);font-size:0.875rem;line-height:1.7;max-width:560px;margin:var(--space-8) auto 0;">
           <!-- Single source of truth for the live count is [data-live-count] (see hero note): 13 live of 17 catalogue SKUs; the 4 jewellery pieces are coming soon, not live. -->
           <span data-live-count>13</span> pieces are live now — PDFs deliver in 24–48 hours; prints, apparel &amp; gift boxes are made to order after checkout. The jewellery collection is on the loom (coming soon).
           Gifts ship as a PDF voucher — the recipient redeems with their own birth details, so no birth data is entered here.
