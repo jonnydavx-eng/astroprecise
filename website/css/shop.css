@@ -1,7 +1,7 @@
 /* AstroPrecise — Cosmic Shop (warm observatory palette) */
 
-/* ── Page rhythm (kill huge .section gaps on shop) ── */
-.page-shop .section { padding: var(--space-10) 0; }
+/* ── Page rhythm — global vertical-rhythm token (matches shop-critical.css) ── */
+.page-shop .section { padding: var(--section-pad-y-tight, clamp(2.25rem, 1.8rem + 2.2vw, 4rem)) 0; }
 .page-shop #wear-your-sky { padding-top: var(--space-8); }
 
 /* ── Hero ── */
@@ -1103,7 +1103,7 @@ button.ap-art-card {
   position: fixed;
   bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
   right: var(--space-6);
-  z-index: 60;
+  z-index: var(--z-nav, 100);
   background: var(--gold);
   color: var(--void, #050406);
   border: none;
@@ -1142,13 +1142,14 @@ button.ap-art-card {
 .shopc-cart-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(5, 4, 6, 0.6);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  /* Branded overlay recipe — one intentional scrim across cart + modal. */
+  background: var(--scrim, rgba(5, 4, 6, 0.84));
+  -webkit-backdrop-filter: var(--scrim-blur, blur(7px));
+  backdrop-filter: var(--scrim-blur, blur(7px));
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-base);
-  z-index: 90;
+  transition: opacity var(--dur-base, 0.32s) var(--ease-standard, ease);
+  z-index: var(--z-overlay, 1000);
 }
 .shopc-cart-overlay.open { opacity: 1; pointer-events: auto; }
 .shopc-cart {
@@ -1160,8 +1161,8 @@ button.ap-art-card {
   background: var(--surface-2);
   border-left: 1px solid var(--border);
   transform: translateX(100%);
-  transition: transform var(--transition-base);
-  z-index: 95;
+  transition: transform var(--dur-base, 0.32s) var(--ease-standard, ease);
+  z-index: calc(var(--z-overlay, 1000) + 1);
   display: flex;
   flex-direction: column;
 }
@@ -1286,13 +1287,14 @@ button.ap-art-card {
 .shopc-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(5, 4, 6, 0.7);
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  /* Branded overlay recipe — same intentional scrim as the cart drawer. */
+  background: var(--scrim, rgba(5, 4, 6, 0.84));
+  -webkit-backdrop-filter: var(--scrim-blur, blur(7px));
+  backdrop-filter: var(--scrim-blur, blur(7px));
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: var(--z-modal, 2000);
   padding: var(--space-4);
 }
 .shopc-modal-backdrop.open { display: flex; }
@@ -1391,7 +1393,7 @@ button.ap-art-card {
   padding: 10px 18px;
   border-radius: 99px;
   font-size: var(--text-sm);
-  z-index: 110;
+  z-index: var(--z-toast, 4000);
   opacity: 0;
   transition: all var(--transition-base);
 }
@@ -1543,4 +1545,310 @@ button.ap-art-card {
   [data-add-cart].is-added,
   .shopc-featured__cart.is-added,
   .shopc-card__addcart.is-added { transition: none !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   EDITORIAL LUXURY OVERHAUL (2026)
+   Single override block at the end of the deferred shop.css. Consumes the
+   design-system 2026 token layer (ap-palette-2026.css) + the engraved-plate
+   surface / bracket-corner tokens (instrument-panel.css). Everything here is
+   transform/opacity-only motion behind a prefers-reduced-motion guard; no new
+   colours outside the muted --ap-element-* + engraved-gold system.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── Type & rhythm — route titles through the fluid display scale ──────────
+   --display-2 for section heads, --display-1 for the hero, --display-3 for
+   card names. Eyebrows take --tracking-caps; prices/labels respect the data
+   floor + semibold weight. */
+.page-shop .shop-hero h1,
+.page-shop .shop-hero__title {
+  font-size: var(--display-1, clamp(2.6rem, 1.55rem + 4.7vw, 4.6rem));
+  letter-spacing: var(--tracking-tight, -0.012em);
+}
+.page-shop .shop-section-title {
+  font-size: var(--display-2, clamp(1.95rem, 1.35rem + 2.7vw, 3.1rem));
+  letter-spacing: var(--tracking-tight, -0.012em);
+}
+.page-shop .shopc-featured__name,
+.page-shop .shopc-card__name,
+.page-shop .ap-tool-card--wide .ap-tool-card__title {
+  font-size: var(--display-3, clamp(1.45rem, 1.18rem + 1.25vw, 2.05rem));
+  letter-spacing: var(--tracking-tight, -0.012em);
+  line-height: 1.2;
+}
+
+/* Eyebrows / kickers / small-caps → caps tracking + legible data floor. */
+.page-shop .eyebrow,
+.page-shop .shopc-featured__kicker,
+.page-shop .shopc-card__kicker,
+.page-shop .shop-trending__label,
+.page-shop .shopc-filters__eyebrow,
+.page-shop .shop-section-eyebrow {
+  letter-spacing: var(--tracking-caps, 0.22em);
+}
+
+/* Prices & key figures — never below the data floor, never under semibold.
+   Brighter gold (AA on void) so the number reads as the anchor. */
+.page-shop .shopc-card__price,
+.page-shop .shop-card__price,
+.page-shop .shopc-featured__foot .shopc-card__price,
+.page-shop .shopc-qv__price {
+  font-size: var(--text-data, clamp(0.82rem, 0.78rem + 0.2vw, 0.95rem));
+  font-weight: var(--weight-semibold, 600);
+  color: var(--ap-gold-bright, #D4B84A);
+  letter-spacing: var(--tracking-normal, 0);
+}
+.page-shop .shopc-featured__foot .shopc-card__price,
+.page-shop .shopc-card .shopc-card__price {
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
+  font-weight: var(--weight-bold, 700);
+}
+/* Card meta / labels respect the legibility floor (WCAG AA small text). */
+.page-shop .shopc-card__meta,
+.page-shop .shopc-cart__meta,
+.page-shop .shopc-trust__item,
+.page-shop .shop-hero-stat__l {
+  font-size: var(--text-data, clamp(0.82rem, 0.78rem + 0.2vw, 0.95rem));
+  color: var(--ap-text-muted, var(--silver-dim));
+}
+
+/* ── Card visuals — one curated, framed set (engraved-plate + brackets) ────
+   Every product visual gets a consistent 4:3 frame, object-fit:cover (already
+   set on the img), an inset engraved rim and gold bracket corners so the cards
+   read as a unified collection rather than mismatched stock. */
+.page-shop .shopc-card__art,
+.page-shop .shopc-featured__visual {
+  aspect-ratio: 4 / 3;
+  height: auto;            /* let aspect-ratio drive height → no CLS */
+  border-radius: var(--radius-lg, 14px);
+  border: 1px solid var(--ap-gold-a16, rgba(201, 162, 39, 0.16));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32);
+}
+.page-shop .shopc-featured__visual { aspect-ratio: 16 / 10; }
+/* Engraved inner rim — the inset hairline that reads as a machined plate. */
+.page-shop .shopc-card__art::after,
+.page-shop .shopc-featured__visual::after {
+  content: '';
+  position: absolute;
+  inset: var(--ip-bracket-inset, 10px);
+  border: 1px solid var(--ip-engrave-line, rgba(168, 158, 136, 0.14));
+  border-radius: calc(var(--radius-lg, 14px) - 6px);
+  pointer-events: none;
+  opacity: 0.8;
+  z-index: 1;
+}
+/* Gold bracket corners (top-left + bottom-right) — instrument framing. */
+.page-shop .shopc-card__art::before,
+.page-shop .shopc-featured__visual::before {
+  content: '';
+  position: absolute;
+  top: var(--ip-bracket-inset, 10px);
+  left: var(--ip-bracket-inset, 10px);
+  width: var(--ip-bracket-size, 22px);
+  height: var(--ip-bracket-size, 22px);
+  border-top: 1.5px solid var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
+  border-left: 1.5px solid var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
+  pointer-events: none;
+  z-index: 2;
+}
+/* Keep the SR-only label out of the bracket pseudo-element layout. */
+.page-shop .shopc-card__art > .sr-only,
+.page-shop .shopc-featured__visual > .sr-only { z-index: 0; }
+
+/* Hover: lift + warm the rim (transform/opacity only). */
+.page-shop .shopc-card:hover .shopc-card__art,
+.page-shop .shopc-featured__card:hover .shopc-featured__visual {
+  border-color: var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
+}
+
+/* ── Art-style + tool cards: engraved-plate, larger seals, selected state ──
+   Move 7 — give the art/theme cards an instrument-plate surface, a larger
+   colour seal, and a clear hover + selected (gold glow + check) state. */
+.page-shop .ap-art-card {
+  background: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
+  border-radius: var(--ip-radius, 20px);
+}
+.page-shop .ap-art-card__preview {
+  width: 116px;
+  height: 116px;
+  border-radius: 14px;
+  box-shadow:
+    inset 0 0 0 1px var(--ap-gold-a22, rgba(201, 162, 39, 0.22)),
+    0 8px 20px rgba(0, 0, 0, 0.28);
+}
+.page-shop .ap-art-card__swatches span {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.page-shop .ap-art-card:hover {
+  border-color: var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
+  box-shadow: 0 0 0 1px var(--ap-gold-a16, rgba(201, 162, 39, 0.16)),
+              0 0 24px var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
+}
+.page-shop .ap-art-card--selected {
+  border-color: var(--ap-gold-a55, rgba(201, 162, 39, 0.55));
+  box-shadow: 0 0 0 1px var(--ap-gold-a40, rgba(201, 162, 39, 0.40)),
+              0 0 28px var(--ap-gold-a16, rgba(201, 162, 39, 0.16));
+}
+/* Selected check — a small bright-gold disc carrying a masked void check. */
+.page-shop .ap-art-card--selected::after {
+  content: '';
+  position: absolute;
+  top: var(--space-2, 8px);
+  right: var(--space-2, 8px);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ap-gold-bright, #D4B84A);
+  box-shadow: 0 0 10px var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
+  z-index: 3;
+}
+/* The check glyph itself — a void tick centred on the disc. */
+.page-shop .ap-art-card--selected::before {
+  content: '✓';
+  position: absolute;
+  top: var(--space-2, 8px);
+  right: var(--space-2, 8px);
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: var(--weight-bold, 700);
+  color: var(--ap-void-deep, #050406);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.page-shop .ap-tool-card:hover {
+  box-shadow: 0 0 0 1px var(--ap-gold-a16, rgba(201, 162, 39, 0.16)),
+              0 14px 36px rgba(0, 0, 0, 0.3),
+              0 0 24px var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
+}
+
+/* ── Featured / catalogue card surface — engraved-plate feel for all ───────
+   Unify every product card on the instrument-panel surface so the set reads
+   curated. (Declared BEFORE the hero rules so the hero override always wins.) */
+.page-shop .shopc-card,
+.page-shop .shopc-featured__card {
+  background: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
+  border-radius: var(--ip-radius, 20px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 14px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* ── Asymmetric hero — give the bundle true editorial weight ────────────────
+   Move 2 — the bundle gets the engraved-plate surface (HTML carries the class)
+   plus a warm gold tint and a 2-column span, instead of a flat 7% wash. The
+   surface/tint applies at all widths; the media queries only handle layout. */
+.page-shop .shopc-featured__card--hero {
+  background: linear-gradient(160deg,
+    var(--ap-gold-a08, rgba(201, 162, 39, 0.08)) 0%,
+    var(--ap-ip-surface, rgba(20, 16, 10, 0.58)) 55%);
+  border-color: var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
+}
+@media (min-width: 901px) {
+  .page-shop .shopc-featured__grid {
+    grid-template-columns: 1fr 1.45fr 1fr;
+    align-items: stretch;
+  }
+  /* Explicitly seat the bundle in the WIDE centre column — grid-column wins over
+     any inherited order:-1 (shop.css:443 / shop-critical.css:536), so the
+     spotlight always lands on the bundle, never a regular card. */
+  .page-shop .shopc-featured__card--hero {
+    order: 0;
+    grid-column: 2;
+  }
+  .page-shop .shopc-featured__card--hero .shopc-featured__visual {
+    aspect-ratio: 16 / 9;
+  }
+  .page-shop .shopc-featured__card--hero .shopc-featured__name {
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+  }
+}
+/* Mobile — the bundle reads coherently in context, not yanked bare to the top.
+   It keeps its engraved-plate framing + gold tint (set above). */
+@media (max-width: 900px) {
+  .page-shop .shopc-featured__card--hero { order: 0; }
+}
+
+/* ── Single-CTA primary button polish ─────────────────────────────────────
+   The lone "Add to basket" action is the primary gold button; ensure it reads
+   as the anchor with semibold weight and full width. */
+.page-shop .shopc-featured__actions { width: 100%; }
+.page-shop .shopc-featured__cart,
+.page-shop .shopc-card__addcart {
+  width: 100%;
+  justify-content: center;
+  font-weight: var(--weight-semibold, 600);
+  letter-spacing: var(--tracking-wide, 0.08em);
+}
+
+/* ── "Save £X" pill — quiet engraved gold, paired with the bold price ──────── */
+.page-shop .shopc-qv__save {
+  display: inline-block;
+  margin-left: var(--space-2, 8px);
+  font-size: var(--text-data, clamp(0.82rem, 0.78rem + 0.2vw, 0.95rem));
+  font-weight: var(--weight-semibold, 600);
+  letter-spacing: var(--tracking-wide, 0.08em);
+  text-transform: uppercase;
+  color: var(--ap-gold-bright, #D4B84A);
+  border: 1px solid var(--ap-gold-a55, rgba(201, 162, 39, 0.55));
+  border-radius: 99px;
+  padding: 2px 9px;
+  vertical-align: middle;
+}
+
+/* ── Thoughtful empty / zero-filter state (Move 7) ─────────────────────────── */
+.page-shop .shopc-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--section-pad-y-tight, clamp(2.25rem, 1.8rem + 2.2vw, 4rem)) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.page-shop .shopc-empty__seal .eng-i {
+  width: 38px;
+  height: 38px;
+  color: var(--ap-gold-bright, #D4B84A);
+  opacity: 0.85;
+}
+.page-shop .shopc-empty__title {
+  font-family: var(--font-display);
+  font-size: var(--display-3, clamp(1.45rem, 1.18rem + 1.25vw, 2.05rem));
+  color: var(--ap-text-primary, var(--gold-pale));
+  margin: 0;
+}
+.page-shop .shopc-empty__note {
+  font-size: var(--text-data, clamp(0.82rem, 0.78rem + 0.2vw, 0.95rem));
+  color: var(--ap-text-muted, var(--silver-dim));
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0;
+}
+.page-shop .shopc-empty__reset {
+  margin-top: var(--space-2);
+  font-weight: var(--weight-semibold, 600);
+  letter-spacing: var(--tracking-wide, 0.08em);
+}
+
+/* ── Motion: reveal the bracket frame + plates on the canonical curve ──────── */
+@media (prefers-reduced-motion: no-preference) {
+  .page-shop .shopc-card__art,
+  .page-shop .shopc-featured__visual,
+  .page-shop .ap-art-card {
+    transition:
+      border-color var(--dur-base, 0.32s) var(--ease-standard, ease),
+      box-shadow var(--dur-base, 0.32s) var(--ease-standard, ease);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-shop .shopc-card__art,
+  .page-shop .shopc-featured__visual,
+  .page-shop .ap-art-card { transition: none !important; }
 }

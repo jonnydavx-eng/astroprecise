@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Personalised chart products — Deep Reading, Year Ahead transits, Two Skies, posters, apparel &amp; gifts. Jewellery coming soon. VSOP87 precision, secure Lemon Squeezy checkout." />
+  <meta name="description" content="Personalised chart products — Deep Reading, Year Ahead transits, Two Skies, posters, apparel &amp; gifts. Jewellery coming soon. VSOP87 precision, secure checkout." />
   <meta name="robots" content="index, follow" />
   <title>Cosmic Shop — Personalised Chart Products | AstroPrecise</title>
 <link rel="preload" href="css/main-lite.css" as="style" />
@@ -39,7 +39,7 @@
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "AggregateOffer", "priceCurrency": "GBP", "lowPrice": "0", "highPrice": "99" },
     "isAccessibleForFree": false,
-    "description": "Personalised chart products — deep natal readings, print-at-home posters, couples prints, and keepsakes generated from your AstroPrecise birth chart. Secure Lemon Squeezy checkout. Uses client-side personalization from saved charts.",
+    "description": "Personalised chart products — deep natal readings, print-at-home posters, couples prints, and keepsakes generated from your AstroPrecise birth chart. Secure checkout. Uses client-side personalization from saved charts.",
     "dateModified": "2026-06-17",
     "isPartOf": {
       "@type": "WebSite",
@@ -64,6 +64,9 @@
   </script>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/shop-critical.css" />
+  <!-- Engraved-plate surface + bracket-corner tokens (--ip-bracket-*); placed before
+       the deferred shop.css so shop.css can override the plate treatment on shop cards. -->
+  <link rel="stylesheet" href="css/instrument-panel.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <noscript><link rel="stylesheet" href="css/ap-affiliate-lite.css" /></noscript>
   <script src="js/defer-page-css.js" defer></script>
@@ -144,9 +147,9 @@
         <div class="shopc-featured__intro">
           <!-- Count derived from live (fulfilUrl-set) products — see [data-live-count] note in the hero. 13 live; jewellery is on the loom (coming soon), not yet live. -->
           <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — <span data-live-count>13</span> live pieces</h2>
-          <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h; prints &amp; apparel rendered to your data, shipped in 2–7 business days. Secure Lemon Squeezy checkout.</p>
+          <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h; prints &amp; apparel rendered to your data, shipped in 2–7 business days. Secure checkout.</p>
         </div>
-        <div class="shopc-featured__grid shopc-featured__grid--equal">
+        <div class="shopc-featured__grid">
           <article class="shopc-featured__card" data-product-id="deep-reading">
             <button type="button" class="shopc-featured__visual" data-quickview="deep-reading">
               <span class="sr-only">Quick view Deep Natal Reading</span>
@@ -164,14 +167,13 @@
               <div class="shopc-featured__foot">
                 <span class="shopc-card__price">£12.00</span>
                 <div class="shopc-featured__actions">
-                  <a class="btn btn--primary shopc-featured__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec" target="_blank" rel="noopener">Get yours — £12.00</a>
-                  <button class="btn btn--outline shopc-featured__cart" data-add-cart="deep-reading" type="button">Add to cart</button>
+                  <button class="btn btn--primary shopc-featured__cart" data-add-cart="deep-reading" type="button">Add to basket</button>
                 </div>
               </div>
               <a class="shopc-featured__sample" href="sample-reading.html" target="_blank" rel="noopener">See sample layout →</a>
             </div>
           </article>
-          <article class="shopc-featured__card shopc-featured__card--hero" data-product-id="reading-poster-bundle">
+          <article class="shopc-featured__card shopc-featured__card--hero engraved-plate" data-product-id="reading-poster-bundle">
             <button type="button" class="shopc-featured__visual" data-quickview="reading-poster-bundle">
               <span class="sr-only">Quick view Deep Reading + Poster Bundle</span>
               <picture>
@@ -192,10 +194,9 @@
               </ul>
               <p class="shopc-featured__blurb">Deep Reading and print-at-home poster from one chart — plus email-unlock wallpaper and a half-price couples map code after purchase.</p>
               <div class="shopc-featured__foot">
-                <span class="shopc-card__price"><s class="shopc-card__was">£18.00</s> £16.00</span>
+                <span class="shopc-card__price">£16.00</span>
                 <div class="shopc-featured__actions">
-                  <a class="btn btn--primary shopc-featured__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7?signature=818268afc134daac9ba3ed051e5eb2d8a5b10c4ac392dc2a45afb4782bd4ec3f" target="_blank" rel="noopener">Get yours — £16.00</a>
-                  <button class="btn btn--outline shopc-featured__cart" data-add-cart="reading-poster-bundle" type="button">Add to cart</button>
+                  <button class="btn btn--primary shopc-featured__cart" data-add-cart="reading-poster-bundle" type="button">Add to basket</button>
                 </div>
               </div>
               <a class="shopc-featured__sample" href="sample-reading.html" target="_blank" rel="noopener">See sample layout →</a>
@@ -218,8 +219,7 @@
               <div class="shopc-featured__foot">
                 <span class="shopc-card__price">£6.00</span>
                 <div class="shopc-featured__actions">
-                  <a class="btn btn--primary shopc-featured__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a" target="_blank" rel="noopener">Get yours — £6.00</a>
-                  <button class="btn btn--outline shopc-featured__cart" data-add-cart="natal-poster-pdf" type="button">Add to cart</button>
+                  <button class="btn btn--primary shopc-featured__cart" data-add-cart="natal-poster-pdf" type="button">Add to basket</button>
                 </div>
               </div>
             </div>
@@ -251,7 +251,7 @@
         <ul class="shopc-trust">
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Museum-grade 250gsm prints</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> VSOP87 + ELP2000 engine</li>
-          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure Lemon Squeezy checkout</li>
+          <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure checkout</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-map"/></svg> PDFs in 24–48 hours</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data never on this site</li>
           <li class="shopc-trust__item"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Prints &amp; apparel ship in 2–7 days; jewellery coming soon</li>
@@ -377,7 +377,7 @@
             <svg class="shop-how__icon eng-i" aria-hidden="true"><use href="#ei-orb"/></svg>
             <p class="shop-how__n">3</p>
             <p class="shop-how__t">Secure checkout</p>
-            <p class="shop-how__d">Birth details for fulfilment are collected on Lemon Squeezy. PDFs delivered to your inbox.</p>
+            <p class="shop-how__d">Birth details for fulfilment are collected at secure checkout. PDFs delivered to your inbox.</p>
           </div>
         </div>
         <p class="shopc-filters__eyebrow">Filter the catalogue</p>
@@ -404,7 +404,7 @@
               </div>
               <p class="shopc-card__hook">Fine-art print of the sky at your first breath.</p>
               <p class="shopc-card__blurb">Your full birth chart as a fine-art print — engraved gold on void black, 250gsm museum-grade matte.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/b96ab7e6-5b60-463f-a447-2829c65d1948?signature=aaba0330319df3dabc194a375ea7f37b3da70655687fae87c9b686b84d7882a7" target="_blank" rel="noopener" data-ap-product="natal-poster">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="natal-poster">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="natal-poster">Add to basket</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="sky-tee">
@@ -421,7 +421,7 @@
               </div>
               <p class="shopc-card__hook">Constellations from your birth night — wearable chart.</p>
               <p class="shopc-card__blurb">The constellations overhead at your birth, printed across heavyweight cotton with your big three in gold thread.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/bc99eaab-fe40-4336-84be-4986169b7d4f?signature=7f07cebec6e274b3898992547b0816503b90a83554ca3311ff372714b5dc05c9" target="_blank" rel="noopener" data-ap-product="sky-tee">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="sky-tee">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="sky-tee">Add to basket</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="sky-hoodie">
@@ -437,7 +437,7 @@
               </div>
               <p class="shopc-card__hook">Your natal canopy across the back — 350gsm fleece.</p>
               <p class="shopc-card__blurb">Your natal canopy across the back in fine line-work; big-three glyphs at the cuff. Premium fleece, printed to order.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/e4433127-c65b-481d-8cb9-9b1d5f95006e?signature=82e68c110830134e1d7a986f3ab12414233529ba426f61e01eaf9deaec5f6caa" target="_blank" rel="noopener" data-ap-product="sky-hoodie">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="sky-hoodie">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="sky-hoodie">Add to basket</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="big-three-print">
@@ -453,7 +453,7 @@
               </div>
               <p class="shopc-card__hook">Sun, Moon, Rising — the chart distilled to its spine.</p>
               <p class="shopc-card__blurb">Sun, Moon and Rising set as a clean typographic print — your three load-bearing placements.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/293d41b4-95b2-49b8-a5dd-933ba8bac28d?signature=ae2e0280080783aee3858dae9dacaa67047fb9043c0f62f96fe2e84409103353" target="_blank" rel="noopener" data-ap-product="big-three-print">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="big-three-print">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="big-three-print">Add to basket</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="constellation-mug">
@@ -469,7 +469,7 @@
               </div>
               <p class="shopc-card__hook">Your birth sky on matte ceramic — morning ritual.</p>
               <p class="shopc-card__blurb">The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/1f278c11-0c09-4ea8-9d90-4eec2a168287?signature=c36479767c244cd7173a7a6a218d7aadaabd3bf7c71e4b7450d9a9c1c3270346" target="_blank" rel="noopener" data-ap-product="constellation-mug">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="constellation-mug">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="constellation-mug">Add to basket</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="year-ahead">
@@ -486,7 +486,7 @@
               </div>
               <p class="shopc-card__hook">Twelve months of transits — dated and interpreted for your chart.</p>
               <p class="shopc-card__blurb">Every major transit to your natal chart for the next twelve months, dated and interpreted.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785" target="_blank" rel="noopener" data-ap-product="year-ahead">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="year-ahead">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="year-ahead">Add to basket</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="solar-return">
@@ -503,7 +503,7 @@
               </div>
               <p class="shopc-card__hook">Your birthday sky — the annual ritual, no subscription.</p>
               <p class="shopc-card__blurb">Your solar-return chart for this birthday — the theme of your coming year, delivered as a PDF.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723" target="_blank" rel="noopener" data-ap-product="solar-return">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="solar-return">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="solar-return">Add to basket</button></div>
             </div>
           </article>
           <article class="shopc-card shopc-card--live" data-product-id="two-skies-map">
@@ -519,7 +519,7 @@
               </div>
               <p class="shopc-card__hook">Two charts, one composition — anniversary keepsake.</p>
               <p class="shopc-card__blurb">Both birth skies overlaid as a single fine-art print — synastry geometry made tangible.</p>
-              <div class="shopc-card__actions"><a class="btn btn--primary shopc-card__cta" href="https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7" target="_blank" rel="noopener" data-ap-product="two-skies-map">Buy now</a><button type="button" class="btn btn--outline shopc-card__addcart" data-add-cart="two-skies-map">Add to cart</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="two-skies-map">Add to basket</button></div>
             </div>
           </article>
         </div>
@@ -1017,12 +1017,12 @@
     <div class="shopc-cart__footer">
       <div class="shopc-cart__totalrow"><span>Total</span><span id="shopc-cart-total">£0.00</span></div>
       <ul class="shopc-cart__trust" aria-label="Order reassurance">
-        <li><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure Lemon Squeezy</li>
+        <li><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure checkout</li>
         <li><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> PDFs in 24–48h</li>
         <li><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data stays on your device</li>
       </ul>
       <button class="btn btn--primary shopc-cart__checkout" id="shopc-checkout-btn">Checkout securely</button>
-      <p class="shopc-cart__note">One-time purchases · made from your chart · secure Lemon Squeezy checkout.</p>
+      <p class="shopc-cart__note">One-time purchases · made from your chart · secure checkout.</p>
     </div>
   </aside>
 
