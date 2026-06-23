@@ -509,6 +509,38 @@ html.ap-lite-hero .hero {
   overflow: hidden;
 }
 
+/* Cinematic ambient backdrop — JS loads the clip on demand and adds .is-playing
+   on canplay; hidden (opacity 0) otherwise, so the existing hero shows. */
+html.ap-lite-hero .hero__cinematic {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+html.ap-lite-hero .hero__cinematic-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+html.ap-lite-hero .hero__cinematic.is-playing .hero__cinematic-video { opacity: 0.5; }
+html.ap-lite-hero .hero__cinematic::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 65% at 50% 38%, transparent 0%, rgba(5, 4, 6, 0.55) 100%),
+    linear-gradient(180deg, rgba(5, 4, 6, 0.45) 0%, transparent 28%, transparent 72%, rgba(5, 4, 6, 0.7) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.ap-lite-hero .hero__cinematic-video { display: none; }
+}
+
 html.ap-lite-hero .hero__stage {
   position: relative;
   z-index: 1;
