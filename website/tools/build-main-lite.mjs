@@ -12,30 +12,35 @@ const root = join(__dir, '..');
 const src = readFileSync(join(root, 'css', 'main.css'), 'utf8');
 const lines = src.split(/\r?\n/);
 
-/** 1-based inclusive line ranges from main.css.
- * Re-synced 2026-06-23 (prior ranges had drifted ~13 lines after untracked
- * main.css edits). Derived by aligning the known-good main-lite.css against
- * main.css; verified by diffing the regenerated output. If main.css is edited,
- * re-run and check the validation below — it fails loudly rather than writing
- * a malformed file. (TODO: migrate to marker-comment anchors to end the drift.) */
-const RANGES = [
-  [1, 950],      // tokens, reset, starfield, aurora, layout, navbar, buttons
-  [983, 993],    // hero__eyebrow (compat/inner heroes)
-  [1690, 1805],  // forms (chart/compat hero inputs) — incl .form-*.is-success close
-  [4973, 5014],  // nav updates cluster
-  [5078, 5157],  // nav responsive + mobile hamburger (hide desktop links <1024px)
-  [5306, 5323],  // decorative .orb (compat hero)
-  [6160, 6286],  // compat-orbs hero strip + person labels
-  [6476, 6557],  // ap-badge + overflow clip + full privacy banner + close btn
-  [6646, 6801],  // navbar__profile-top + bottom-nav + mobile padding (skip manifesto fragment)
-  [7315, 7320],  // .eng-i inline icons (hero, buttons, bottom-nav)
-  [3016, 3037],  // skip-link (app.js inject — contrast before deferMainCss)
-  [7430, 7475],  // ap-legal-links / ap-guide-links footer injects (incl. footer-legal close)
+/** Sections extracted from main.css, in output order. Each is delimited in
+ * main.css by `/* lite:start NAME *​/` … `/* lite:end NAME *​/` marker comments
+ * (the markers move WITH the content, so this never drifts when main.css is
+ * edited — unlike the old hardcoded line ranges). Add/rename a section here and
+ * add the matching marker pair in main.css. Markers themselves are excluded. */
+const SECTIONS = [
+  'shell',             // tokens, reset, starfield, aurora, layout, navbar, buttons
+  'hero-eyebrow',      // hero__eyebrow (compat/inner heroes)
+  'forms',             // forms (chart/compat hero inputs)
+  'nav-updates',       // nav updates cluster
+  'nav-responsive',    // nav responsive + mobile hamburger (hide desktop links <1024px)
+  'orb',               // decorative .orb (compat hero)
+  'compat-orbs',       // compat-orbs hero strip + person labels
+  'badge-privacy',     // ap-badge + overflow clip + full privacy banner + close btn
+  'profile-bottomnav', // navbar__profile-top + bottom-nav + mobile padding
+  'eng-i',             // .eng-i inline icons (hero, buttons, bottom-nav)
+  'skip-link',         // skip-link (app.js inject — contrast before deferMainCss)
+  'footer-links',      // ap-legal-links / ap-guide-links footer injects
 ];
 
-const chunks = RANGES.map(([start, end]) =>
-  lines.slice(start - 1, end).join('\n')
-);
+function extractSection(name) {
+  const s = lines.findIndex(l => l.trim() === `/* lite:start ${name} */`);
+  const e = lines.findIndex(l => l.trim() === `/* lite:end ${name} */`);
+  if (s === -1) { console.error(`build-main-lite: missing "/* lite:start ${name} */" marker in main.css`); process.exit(1); }
+  if (e === -1 || e < s) { console.error(`build-main-lite: missing/misordered "/* lite:end ${name} */" marker in main.css`); process.exit(1); }
+  return lines.slice(s + 1, e).join('\n'); // between the markers, exclusive
+}
+
+const chunks = SECTIONS.map(extractSection);
 
 let out = [
   '/* AUTO-GENERATED — node tools/build-main-lite.mjs — do not edit by hand */',

@@ -1,3 +1,4 @@
+/* lite:start shell */
 @import url('ap-palette-2026.css');
 
 /* ==========================================================================
@@ -948,6 +949,7 @@ body:has(#starfield-canvas) .lib__banner {
   padding: var(--space-3);
   border-radius: var(--radius-md);
 }
+/* lite:end shell */
 
 /* --------------------------------------------------------------------------
    9. Hero Section
@@ -980,6 +982,7 @@ body:has(#starfield-canvas) .lib__banner {
   padding: var(--space-16) var(--space-6);
 }
 
+/* lite:start hero-eyebrow */
 .hero__eyebrow {
   font-family: var(--font-body);
   font-size: 0.72rem;
@@ -991,6 +994,7 @@ body:has(#starfield-canvas) .lib__banner {
   margin-bottom: var(--space-4);
   display: block;
 }
+/* lite:end hero-eyebrow */
 
 .hero h1 {
   font-family: var(--font-display);
@@ -1687,6 +1691,7 @@ button.sign-card[data-sign],
 }
 
 /* --------------------------------------------------------------------------
+/* lite:start forms */
    13. Forms
    -------------------------------------------------------------------------- */
 .form-group {
@@ -1803,6 +1808,7 @@ button.sign-card[data-sign],
   border-color: var(--success);
   box-shadow: 0 0 0 3px rgba(120, 140, 70, 0.12);
 }
+/* lite:end forms */
 
 /* Autocomplete dropdown */
 .autocomplete-wrapper {
@@ -3013,6 +3019,7 @@ button.sign-card[data-sign],
 }
 
 /* Skip link — visible on keyboard focus */
+/* lite:start skip-link */
 .skip-link {
   position: absolute;
   top: -120px;
@@ -3035,6 +3042,7 @@ button.sign-card[data-sign],
   outline: 2px solid var(--white, #f0e8d8);
   outline-offset: 2px;
 }
+/* lite:end skip-link */
 
 #main-content:focus {
   outline: none;
@@ -4970,6 +4978,7 @@ button.sign-card[data-sign],
   margin: 0;
 }
 
+/* lite:start nav-updates */
 .ap-email-cta--sticky .ap-email-cta__sub,
 .ap-email-cta--sticky .ap-email-cta__eyebrow { display: none; }
 
@@ -5012,6 +5021,7 @@ button.sign-card[data-sign],
   display: flex;
   align-items: center;
   flex: 0 0 auto;
+/* lite:end nav-updates */
 }
 
 .ap-nav-updates {
@@ -5075,6 +5085,7 @@ button.sign-card[data-sign],
   position: absolute;
   left: 0;
   color: var(--gold, #C9A227);
+/* lite:start nav-responsive */
   font-size: 0.62rem;
   top: 0.2em;
 }
@@ -5155,6 +5166,7 @@ button.sign-card[data-sign],
     display: none !important;
   }
 }
+/* lite:end nav-responsive */
 
 @media (max-width: 768px) {
   .ap-email-cta--sticky .ap-email-cta__fields { flex-direction: column; }
@@ -5303,6 +5315,7 @@ body.has-email-sticky { padding-bottom: 72px; }
 }
 
 /* Decorative orbs used on chart/compat pages */
+/* lite:start orb */
 .orb {
   position: absolute;
   border-radius: 50%;
@@ -5321,6 +5334,7 @@ body.has-email-sticky { padding-bottom: 72px; }
   height: 300px;
   background: radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, transparent 70%);
 }
+/* lite:end orb */
 
 /* ==========================================================================
    55. Chart Form Panel
@@ -6157,6 +6171,7 @@ body.has-email-sticky { padding-bottom: 72px; }
    HORIZON UNIVERSAL UI FRAMEWORK — 2026 Upgrade
    ═══════════════════════════════════════════════════════════════ */
 
+/* lite:start compat-orbs */
 /* Spring easing tokens */
 :root {
   --ease-spring:  cubic-bezier(0.16, 1, 0.3, 1);
@@ -6284,6 +6299,7 @@ body.has-email-sticky { padding-bottom: 72px; }
 }
 .compat-orb--1 .compat-person-label { color: var(--lapis-bright); }
 .compat-orb--2 .compat-person-label { color: var(--gold-pale); }
+/* lite:end compat-orbs */
 
 /* Compat form column header accents */
 .compat-person:first-of-type h3 { color: var(--lapis-bright); }
@@ -6473,6 +6489,7 @@ body[data-element="water"]::before {
    ═══════════════════════════════════════════════════════════════ */
 
 /* Engraved-brass instrument badge */
+/* lite:start badge-privacy */
 .ap-badge {
   display: inline-flex;
   align-items: center;
@@ -6555,6 +6572,7 @@ body.preloader-active .privacy-banner {
 @media (max-width: 600px) {
   .privacy-banner { flex-direction: column; gap: var(--space-2); text-align: center; }
 }
+/* lite:end badge-privacy */
 
 /* Offline-ready pill (appears once SW is controlling the page) */
 .offline-ready-pill {
@@ -6643,6 +6661,7 @@ body.preloader-active .privacy-banner {
   opacity: 0.7;
 }
 
+/* lite:start profile-bottomnav */
 /* ── Top Profile control (icon-only; injected by app.js) ─── */
 .navbar__profile-top {
   display: inline-flex;
@@ -6799,6 +6818,7 @@ body.preloader-active .bottom-nav {
     bottom: calc(var(--bottom-nav-h, 72px) + 12px + env(safe-area-inset-bottom, 0px));
   }
 }
+/* lite:end profile-bottomnav */
 
 @media (max-width: 480px) {
   .navbar__logo .logo-text { display: none; }
@@ -7312,12 +7332,14 @@ table td, .stat-value, [data-tabular] {
 }
 
 /* engraved icon harmony with text */
+/* lite:start eng-i */
 .eng-i { opacity: 0.92; }
 button .eng-i, a .eng-i { margin-right: 0.35em; }
 .toast__icon .eng-i { width: 1.1em; height: 1.1em; }
 .toast__close .eng-i { width: 0.85em; height: 0.85em; }
 .bottom-nav__icon .eng-i { width: 1.15rem; height: 1.15rem; margin-right: 0; }
 .tool-card__icon .eng-i { width: 1.35rem; height: 1.35rem; }
+/* lite:end eng-i */
 .footer-brand__logo-mark .eng-i,
 .footer-nav-col h4,
 .footer-nav-col__title {
@@ -7427,6 +7449,7 @@ main a:not([class]):hover { text-decoration-color: var(--gold, #C9A227); }
 
 /* Native typographic polish (2026 baseline): balanced headings, tidy paragraphs. */
 h1, h2, h3, .sec-title, .section__title, .hero__title, .chart-hero__title, .form-glass__title { text-wrap: balance; }
+/* lite:start footer-links */
 p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text-wrap: pretty; }
 
 /* ── A11y: footer injects + contrast-safe microcopy (ap-v176) ── */
@@ -7473,6 +7496,7 @@ p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text
 .footer-legal .footer-copyright {
   color: var(--silver-dim);
 }
+/* lite:end footer-links */
 .footer-brand__badge {
   color: var(--gold-bright);
   opacity: 1;
