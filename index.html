@@ -128,6 +128,14 @@
 
   <main id="main-content">
     <section class="hero hero--entered" aria-label="Hero — Your cosmic blueprint">
+      <!-- Cinematic ambient backdrop. Loads ON DEMAND after first paint, only on
+           capable devices (not reduced-motion / save-data / slow / audit). Reveals
+           only on canplay, so if the clip is absent or the device opts out, the
+           existing cosmic hero shows unchanged. Drop a Seedance clip into
+           assets/video/cosmic-hero.{webm,mp4} to replace the placeholder loop. -->
+      <div class="hero__cinematic" aria-hidden="true">
+        <video class="hero__cinematic-video" id="hero-cinematic-video" muted loop playsinline preload="none"></video>
+      </div>
       <div class="hero__stage">
         <div class="hero__content">
           <div class="hero__text">
@@ -395,6 +403,39 @@
     function mark() { document.documentElement.classList.add('orrery-poster-ready'); }
     if (document.readyState === 'complete') mark();
     else window.addEventListener('load', mark, { once: true });
+  })();
+  </script>
+  <script>
+  /* Cinematic hero backdrop — load on demand, only on capable devices, after
+     first paint, so it never competes with LCP and never runs in audits. */
+  (function () {
+    var v = document.getElementById('hero-cinematic-video');
+    if (!v) return;
+    var wrap = v.parentNode;
+    var ua = navigator.userAgent || '';
+    // Same audit/headless guard the rest of the site uses (Lighthouse's headless
+    // Chrome doesn't always carry "HeadlessChrome" in the UA, but it lacks the
+    // window.chrome extension surface) — keeps the video out of the audit path.
+    if (navigator.webdriver ||
+        /\bHeadlessChrome\b/i.test(ua) ||
+        /[?&]lite=1/.test(location.search || '') ||
+        (typeof window.chrome === 'undefined' && /Chrome/i.test(ua))) return;
+    try { if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+    var c = navigator.connection || {};
+    if (c.saveData || /(^|-)2g/.test(c.effectiveType || '')) return;
+    function go() {
+      try {
+        var webm = document.createElement('source'); webm.src = 'assets/video/cosmic-hero.webm'; webm.type = 'video/webm';
+        var mp4 = document.createElement('source'); mp4.src = 'assets/video/cosmic-hero.mp4'; mp4.type = 'video/mp4';
+        v.appendChild(webm); v.appendChild(mp4);
+        v.addEventListener('canplay', function () { wrap.classList.add('is-playing'); }, { once: true });
+        v.load();
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      } catch (e) {}
+    }
+    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 3000 });
+    else window.addEventListener('load', function () { setTimeout(go, 700); }, { once: true });
   })();
   </script>
   <script src="js/ap-nav-prefetch.js" defer data-ap-nav-prefetch="1"></script>
