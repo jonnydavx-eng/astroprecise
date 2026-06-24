@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Ten — Think on paper for ten minutes a day</title>
+  <meta name="description" content="Open it, write for ten minutes, close it. An unstructured place to empty your mind. Everything stays on your device." />
+  <meta name="theme-color" content="#0d0a07" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="stylesheet" href="css/ten.css" />
+</head>
+<body>
+  <noscript><p class="noscript">Ten needs JavaScript to run. It works entirely in your browser — nothing is sent anywhere.</p></noscript>
+
+  <!-- ── HOME ────────────────────────────────────────────────── -->
+  <main id="home" class="screen" hidden>
+    <header class="home-top">
+      <button id="settingsBtn" class="icon-btn" aria-label="Settings" title="Settings">&#9881;</button>
+    </header>
+
+    <section class="home-center">
+      <h1 class="wordmark">Ten</h1>
+      <p class="tagline">Empty your mind. Ten minutes. No one's reading.</p>
+
+      <div class="streak" id="streak" hidden>
+        <span class="streak-num" id="streakNum">0</span>
+        <span class="streak-label" id="streakLabel">day streak</span>
+      </div>
+
+      <button id="beginBtn" class="begin-btn">Begin</button>
+      <p class="micro" id="todayDone" hidden>You've already written today. Come back whenever.</p>
+
+      <button id="reviewBtn" class="text-btn" hidden>The Quiet Review &rsaquo;</button>
+    </section>
+
+    <footer class="home-foot">
+      <span class="privacy-note">&#128274; Everything stays on this device. No account, no servers.</span>
+    </footer>
+  </main>
+
+  <!-- ── WRITE ───────────────────────────────────────────────── -->
+  <main id="write" class="screen" hidden>
+    <header class="write-top">
+      <button id="quitBtn" class="text-btn quiet" aria-label="Stop early">Stop</button>
+      <div class="timer" id="timer" aria-live="off">10:00</div>
+      <button id="doneBtn" class="text-btn" aria-label="I'm done">Done</button>
+    </header>
+
+    <div class="write-stage">
+      <textarea id="pad" class="pad" placeholder="Just start. Anything. The first lines are supposed to be junk."
+        autocomplete="off" autocorrect="on" spellcheck="false" aria-label="Your writing"></textarea>
+      <canvas id="ink" class="ink" hidden aria-label="Handwriting canvas"></canvas>
+    </div>
+
+    <div class="nudge" id="nudge" hidden>Stuck? Just write that you're stuck.</div>
+  </main>
+
+  <!-- ── KEEP OR CLEAR ───────────────────────────────────────── -->
+  <div id="afterModal" class="modal-wrap" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="afterTitle">
+      <h2 id="afterTitle" class="modal-title">Time.</h2>
+      <p class="modal-sub" id="afterSub">It's out of your head now. That was the whole point.</p>
+      <div class="modal-actions">
+        <button id="clearBtn" class="ghost-btn">Clear it</button>
+        <button id="keepBtn" class="solid-btn">Keep it</button>
+      </div>
+      <p class="micro center">Clearing is not losing. The value was in the writing, not the page.</p>
+    </div>
+  </div>
+
+  <!-- ── SETTINGS ────────────────────────────────────────────── -->
+  <div id="settingsModal" class="modal-wrap" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="setTitle">
+      <h2 id="setTitle" class="modal-title">Settings</h2>
+
+      <label class="row">
+        <span>Session length</span>
+        <select id="durSel">
+          <option value="3">3 minutes</option>
+          <option value="5">5 minutes</option>
+          <option value="10" selected>10 minutes</option>
+          <option value="15">15 minutes</option>
+          <option value="20">20 minutes</option>
+        </select>
+      </label>
+
+      <label class="row">
+        <span>How you write</span>
+        <select id="modeSel">
+          <option value="type">Type</option>
+          <option value="ink">Handwrite</option>
+        </select>
+      </label>
+
+      <label class="row">
+        <span>Theme</span>
+        <select id="themeSel">
+          <option value="">Match device</option>
+          <option value="dark">Warm dark</option>
+          <option value="light">Paper</option>
+        </select>
+      </label>
+
+      <label class="row">
+        <span>Daily nudge</span>
+        <input id="reminderTime" type="time" />
+      </label>
+      <p class="micro" id="reminderNote">Reminders use your device's notifications. Works best with Ten installed to your home screen.</p>
+
+      <hr class="rule" />
+      <div class="row">
+        <span>Kept entries</span>
+        <span class="muted" id="entryCount">0</span>
+      </div>
+      <div class="settings-actions">
+        <button id="exportBtn" class="ghost-btn small">Export</button>
+        <button id="wipeBtn" class="ghost-btn small danger">Erase all</button>
+      </div>
+
+      <button id="closeSettings" class="solid-btn wide">Done</button>
+      <p class="micro center version">Ten · v0.1 · made to get out of your way</p>
+    </div>
+  </div>
+
+  <!-- ── REVIEW ──────────────────────────────────────────────── -->
+  <div id="reviewModal" class="modal-wrap" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="revTitle">
+      <h2 id="revTitle" class="modal-title">The Quiet Review</h2>
+      <p class="modal-sub">The words that keep coming back. This is your mind showing you its loops.</p>
+      <div id="reviewBody" class="review-body"></div>
+      <button id="closeReview" class="solid-btn wide">Close</button>
+      <p class="micro center">Computed here, on your device. Nothing was uploaded to make this.</p>
+    </div>
+  </div>
+
+  <script src="js/ten.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
