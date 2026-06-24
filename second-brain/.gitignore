@@ -1,0 +1,8 @@
+# Obsidian workspace/cache (keep the notes, ignore the local UI state)
+.obsidian/workspace*
+.obsidian/cache
+.trash/
+
+# OS noise
+.DS_Store
+Thumbs.db
