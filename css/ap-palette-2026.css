@@ -6,15 +6,17 @@
 
 :root {
   /* ── Void depths (3 tiers) ── */
-  --ap-void-deep:   #050406; /* deepest warm black — page canvas */
-  --ap-void-mid:    #0D0A07; /* candlelit brown-black — bands */
-  --ap-void-raised: #13100C; /* lifted plate shadow */
+  --ap-void-deep:   #040305; /* deepest warm black — page canvas (deepened) */
+  --ap-void-base:   #070509; /* base substrate — Living Observatory 3-tier */
+  --ap-void-mid:    #0D0A09; /* candlelit brown-black — bands */
+  --ap-void-raised: #15110C; /* lifted plate shadow */
 
   /* ── Engraved gold spectrum (5 stops) ── */
   --ap-gold-ink:       #6B5420; /* engraved shadow / stroke depth */
   --ap-gold-shadow:    #8C6A2F; /* recessed rim */
   --ap-gold-core:      #C9A227; /* canonical engraved gold (single hex source) */
   --ap-gold-bright:    #D4B84A; /* links & small UI on void — WCAG AA */
+  --ap-gold-vivid:     #E6C24A; /* vivid gold — modern punch, AA 11.8:1 on void */
   --ap-gold-parchment: #EFE3C0; /* pale inscription / hero titles */
 
   /* Gold alpha ramps (derived from core 201,162,39) */
@@ -55,13 +57,13 @@
   --ap-ip-silver-dim:   #9A9084;
 
   /* ── Text on void — contrast-tuned ── */
-  --ap-text-primary:   #E8E0D0;
-  --ap-text-secondary: #A89E88;
+  --ap-text-primary:   #F0E9DA;
+  --ap-text-secondary: #B0A48C;
   --ap-text-muted:     #9A9084; /* ≥4.5:1 on void-deep */
   --ap-text-faint:     #8A8274; /* ≥4.5:1 small caps on void-deep */
 
   /* ── Link & focus — WCAG AA on void-deep ── */
-  --ap-link:         var(--ap-gold-bright);
+  --ap-link:         var(--ap-gold-vivid);
   --ap-link-hover:   var(--ap-gold-parchment);
   --ap-link-active:  var(--ap-gold-core);
   --ap-focus-ring:   var(--ap-gold-core);
@@ -70,6 +72,19 @@
   /* ── Parchment hairlines ── */
   --ap-hairline: rgba(232, 224, 208, 0.08);
   --ap-rim-light: rgba(232, 224, 208, 0.16);
+
+  /* ── Living Observatory 2026 — cool-silver accent + depth/light system ── */
+  --ap-silver-cool:     #A6AEB8; /* cool UI accent — warm gold pops against it (AA 9.0:1) */
+  --ap-silver-cool-dim: #8A93A0;
+  --ap-glow-gold:    radial-gradient(ellipse 160% 130% at 50% 22%, rgba(201, 162, 39, 0.10) 0%, transparent 68%);
+  --ap-rim-shadow:   inset 0 1px 0 rgba(239, 227, 192, 0.06);
+  --ap-card-surface: linear-gradient(165deg, rgba(21, 17, 12, 0.62) 0%, rgba(7, 5, 9, 0.40) 100%);
+  --ap-card-border:        rgba(201, 162, 39, 0.16);
+  --ap-card-border-strong: rgba(201, 162, 39, 0.28);
+  --ap-shadow-card:   0 10px 36px rgba(0, 0, 0, 0.32);
+  --ap-shadow-raised: 0 16px 52px rgba(0, 0, 0, 0.40);
+  --gold-vivid:       var(--ap-gold-vivid);
+  --silver-cool:      var(--ap-silver-cool);
 
   /* ── Legacy design-system aliases (one gold hex, one void stack) ── */
   --void:  var(--ap-void-deep);
