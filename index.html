@@ -38,6 +38,98 @@
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
   <link rel="preload" href="css/lite-critical.css" as="style" />
   <link rel="stylesheet" href="css/lite-critical.css" id="ap-css-lite-critical" />
+  <style id="ap-lite-cohesion">
+  /* Cohesion + layout-rhythm layer for the below-hero TAIL that lite-shell-boot
+     injects from index-full.html (FAQ + offerings + footer only — the bloated
+     home-sign-picker / cosmic-story / philosophy / duplicate tools are stripped
+     in filterLiteInject). Tiny, inline, non-render-blocking. Scoped under the
+     injected host (#ap-lite-rest) so it never touches the redesigned top, and
+     written to OUTRANK index-home.css (which idle-loads after this) on the few
+     properties we're harmonising. */
+
+  /* One vertical rhythm: the injected tail rides the same section padding token
+     as the redesigned top, so there's no jarring jump between halves. */
+  #ap-lite-rest #faq,
+  #ap-lite-rest #offerings {
+    padding-top: var(--section-pad-y-tight) !important;
+    padding-bottom: var(--section-pad-y-tight) !important;
+  }
+
+  /* Section eyebrows → gold-vivid small caps (matches the hero / steps eyebrows). */
+  #ap-lite-rest .section-eyebrow,
+  #ap-lite-rest #offerings p:first-child {
+    color: var(--gold-vivid) !important;
+  }
+
+  /* Display headings → display type, parchment-white (kills the old gold-only
+     offerings H2 + any hard-coded #EFE3C0). */
+  #ap-lite-rest .section-h2,
+  #ap-lite-rest #offerings h2 {
+    font-family: var(--font-display) !important;
+    color: var(--white) !important;
+  }
+  #ap-lite-rest .section-subtitle,
+  #ap-lite-rest #offerings > div:first-child p:last-child {
+    color: var(--silver) !important;
+  }
+
+  /* FAQ + offerings cards → the new card token system (surface, border, radius,
+     card shadow) instead of the old hand-rolled gradients/hex. */
+  #ap-lite-rest .ap-faq__item,
+  #ap-lite-rest #offerings > div:nth-child(2) > div {
+    background: var(--ap-card-surface) !important;
+    border: 1px solid var(--ap-card-border) !important;
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--ap-shadow-card);
+  }
+  /* Keep the featured Deep-Reading card visibly lifted (stronger rim). */
+  #ap-lite-rest #offerings > div:nth-child(2) > div:nth-child(2) {
+    border-color: var(--ap-card-border-strong) !important;
+    box-shadow: var(--ap-shadow-raised);
+  }
+  #ap-lite-rest .ap-faq__item summary {
+    font-family: var(--font-display) !important;
+    color: var(--gold-hero-light) !important;
+  }
+  #ap-lite-rest .ap-faq__item summary::after { color: var(--gold-vivid) !important; }
+  #ap-lite-rest .ap-faq__item > p { color: var(--silver) !important; }
+  #ap-lite-rest .ap-faq__item > p a,
+  #ap-lite-rest #offerings a[href]:not([data-mon]) { color: var(--gold-vivid) !important; }
+
+  /* AA touch-target floor: the injected offerings CTAs ship at ~42px tall —
+     nudge every offerings button to a ≥44px hit area (centred), no visual jump. */
+  #ap-lite-rest #offerings a[href] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* ── Passive scroll-reveal — each below-hero section/card fades + rises ONCE
+     as it enters view. transform/opacity only; the JS adds .ap-revealed and then
+     disconnects. Targets the lite-shell sections + the injected tail. ── */
+  .ap-reveal {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    transition:
+      opacity var(--dur-slow, 0.6s) var(--ease-standard, cubic-bezier(0.22, 1, 0.36, 1)),
+      transform var(--dur-slow, 0.6s) var(--ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+    will-change: opacity, transform;
+  }
+  .ap-reveal.ap-revealed {
+    opacity: 1;
+    transform: none;
+  }
+  /* Reduced-motion (or no-JS, where .ap-reveal is never added): clean static
+     end-state — fully visible, no motion. */
+  @media (prefers-reduced-motion: reduce) {
+    .ap-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+  </style>
   <link rel="stylesheet" href="css/ap-forms.css" id="ap-css-forms" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="css/ap-forms.css" /></noscript>
   <link rel="stylesheet" href="css/ap-lite-chrome.css" media="print" onload="this.media='all'" id="ap-css-lite-chrome" />
@@ -282,6 +374,9 @@
       <div class="ap-lite-manifesto__beats" aria-label="Core principles">
         <span>Precision</span><span>Honesty</span><span>Privacy</span>
       </div>
+      <p class="ap-lite-manifesto__more">
+        <a href="why.html">Why precision — the full method &rarr;</a>
+      </p>
     </blockquote>
 
     <div id="ap-lite-rest" hidden aria-hidden="true"></div>
@@ -415,6 +510,110 @@
     function mark() { document.documentElement.classList.add('orrery-poster-ready'); }
     if (document.readyState === 'complete') mark();
     else window.addEventListener('load', mark, { once: true });
+  })();
+  </script>
+  <script>
+  /* Passive scroll-reveal — ONE IntersectionObserver. Each below-hero section /
+     card fades + rises (opacity + 16px translateY) ONCE as it enters view, with a
+     ~70ms stagger between siblings revealing in the same frame, then stays put.
+     transform/opacity only (GPU; 0 layout cost). Fully gated under
+     prefers-reduced-motion: when motion is off we never add .ap-reveal, so every
+     element stays at its natural visible end-state (no hidden content, no motion).
+     The hero is intentionally EXCLUDED — it has its own one-shot "awakening"
+     entrance and ap-awoken safety net, which this must not touch. */
+  (function apScrollReveal() {
+    try {
+      var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mq && mq.matches) return;            /* reduced motion → no reveal, content visible */
+      if (!('IntersectionObserver' in window)) return; /* no IO → content visible (never tagged) */
+
+      /* Below-hero reveal targets — never the .hero (it has its own entrance). */
+      var SELECTORS = [
+        '.ap-lite-rail',          /* Observatory */
+        '.ap-lite-steps',         /* Three steps */
+        '.ap-lite-step',          /* …and each step card, staggered */
+        '.ap-lite-manifesto',     /* Manifesto */
+        '#ap-lite-rest #faq',     /* injected: FAQ */
+        '#ap-lite-rest .ap-faq__item',
+        '#ap-lite-rest #offerings',
+        '#ap-lite-rest #offerings > div:nth-child(2) > div'
+      ];
+
+      var tracked = [];                          /* every tagged el — for the safety net */
+      function reveal(el) {
+        if (el.classList.contains('ap-revealed')) return;
+        el.classList.add('ap-revealed');
+      }
+      /* Hard fallback: snap an element to its visible end-state with NO reliance
+         on the opacity/transform transition committing (transitions can stall in
+         backgrounded/headless renderers). Used by the safety net so content is
+         never left invisible even if the compositor never runs the transition. */
+      function snap(el) {
+        el.classList.add('ap-revealed');
+        el.style.transition = 'none';
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        /* Stagger siblings that cross the threshold together (~70ms apart). */
+        var batch = 0;
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          setTimeout(reveal, batch * 70, el);
+          batch++;
+          io.unobserve(el);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+      var seen = (typeof WeakSet !== 'undefined') ? new WeakSet() : null;
+      function tag(root) {
+        (root || document).querySelectorAll(SELECTORS.join(',')).forEach(function (el) {
+          if (el.closest('.hero')) return;       /* never the hero */
+          if (seen) { if (seen.has(el)) return; seen.add(el); }
+          else if (el.classList.contains('ap-reveal')) return;
+          el.classList.add('ap-reveal');
+          tracked.push(el);
+          /* Anything already in (or above) the viewport at tag time reveals on the
+             next frame — the rAF gives the transition a committed "from" frame so
+             opacity/transform actually animate instead of snapping. */
+          var r = el.getBoundingClientRect();
+          if (r.top < (window.innerHeight || document.documentElement.clientHeight)) {
+            requestAnimationFrame(function () { requestAnimationFrame(function () { reveal(el); }); });
+          } else {
+            io.observe(el);
+          }
+        });
+        armSafetyNet();
+      }
+
+      /* Safety net (mirrors the hero's ap-awoken guard): ~2.6s after the most
+         recent tag pass, force every tracked element — including any late-injected
+         tail — to its visible end-state, regardless of IO or a stalled transition.
+         Content can never be left invisible. Re-armed on each tag pass so the
+         deferred FAQ/offerings are covered too. */
+      var netTimer = null;
+      function armSafetyNet() {
+        if (netTimer) clearTimeout(netTimer);
+        netTimer = setTimeout(function () {
+          for (var i = 0; i < tracked.length; i++) snap(tracked[i]);
+        }, 2600);
+      }
+
+      tag(document);
+
+      /* The tail (FAQ / offerings) is injected later by lite-shell-boot into
+         #ap-lite-rest — re-scan once it appears so it reveals too. */
+      var host = document.getElementById('ap-lite-rest');
+      if (host && 'MutationObserver' in window) {
+        var mo = new MutationObserver(function () {
+          if (host.children.length) { tag(host); }
+        });
+        mo.observe(host, { childList: true, subtree: true });
+        setTimeout(function () { mo.disconnect(); }, 30000); /* stop watching eventually */
+      }
+    } catch (e) {}
   })();
   </script>
   <script src="js/ap-nav-prefetch.js" defer data-ap-nav-prefetch="1"></script>

@@ -32,7 +32,9 @@
     'js/sign-daily.js',
     'js/element-seals.js',
     'js/icons.js',
-    'js/home-sign-picker.js',
+    /* home-sign-picker.js dropped from the lite home: the .home-sign-picker
+       markup is now stripped in filterLiteInject() (belongs on horoscope/sign
+       pages), so loading its script here would only fetch a guaranteed no-op. */
     'js/affiliate-social.js',
     'js/effects.js'
   ];
@@ -51,7 +53,27 @@
       var doc = new DOMParser().parseFromString('<div id="ap-wrap">' + html + '</div>', 'text/html');
       var wrap = doc.getElementById('ap-wrap');
       if (!wrap) return html;
-      wrap.querySelectorAll('.features-section, #how-it-works, .manifesto-section').forEach(function (el) {
+      /* Layout sort (2026 final pass): the lite shell already provides a clean,
+         modern flow — HERO → COSMIC SNAPSHOT → OBSERVATORY (tools rail) →
+         THREE STEPS → MANIFESTO. The injected index-full slice below the hero
+         only needs to add the tail: FAQ → OFFERINGS → FOOTER. Everything else in
+         the slice is either a DUPLICATE of the lite top (full how-it-works,
+         features, tools bento, manifesto) or a long old-site essay that bloats
+         the page and reads inconsistent with the new top:
+           • #how-it-works / .features-section / .manifesto-section — duplicates of
+             the lite shell's own steps + manifesto.
+           • .tools-section — duplicates the lite Observatory rail (same links).
+           • .home-sign-picker — a sign-selection widget that belongs on
+             horoscope/sign pages, redundant on the home.
+           • .cosmic-story-section + .philosophy-section — two long editorial
+             essays; their substance (determinism, privacy, honesty, real
+             astronomy) lives in full on why.html, which the manifesto links to.
+         Stripping them leaves NO empty gap (the nodes are removed, not hidden),
+         so the page reads tight with one even editorial rhythm. */
+      wrap.querySelectorAll(
+        '.features-section, #how-it-works, .manifesto-section, ' +
+        '.tools-section, .home-sign-picker, .cosmic-story-section, .philosophy-section'
+      ).forEach(function (el) {
         el.remove();
       });
       return wrap.innerHTML;
