@@ -244,6 +244,15 @@
               <span class="hero__trust-pill">Privacy-first</span>
               <span class="hero__trust-pill">No account</span>
             </p>
+            <div class="hero__firstrun" id="hero-firstrun" hidden>
+              <p class="hero__firstrun-lead"><span class="hero__firstrun-spark" aria-hidden="true">✦</span> New here? Your free chart in 3 easy steps</p>
+              <ol class="hero__firstrun-steps">
+                <li><b>1</b> Enter your birth date above</li>
+                <li><b>2</b> We compute it — real VSOP87, in your browser</li>
+                <li><b>3</b> Explore your cosmic blueprint</li>
+              </ol>
+              <button type="button" class="hero__firstrun-dismiss" id="hero-firstrun-dismiss">Got it</button>
+            </div>
             <p class="hero__secondary">
               <a href="index-full.html?full=1" class="hero__full-link">Full cinematic experience →</a>
             </p>
@@ -414,15 +423,33 @@
   <script>
   (function () {
     var form = document.getElementById('hero-chart-form');
-    if (!form) return;
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var dateInput = document.getElementById('hero-birthdate');
-      var dateVal = dateInput ? dateInput.value : '';
-      var url = 'chart.html';
-      if (dateVal) url += '?date=' + encodeURIComponent(dateVal);
-      window.location.href = url;
-    });
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var dateInput = document.getElementById('hero-birthdate');
+        var dateVal = dateInput ? dateInput.value : '';
+        var url = 'chart.html';
+        if (dateVal) url += '?date=' + encodeURIComponent(dateVal);
+        window.location.href = url;
+      });
+    }
+
+    /* First-run guide — show the "3 easy steps" orientation ONLY to NEW visitors
+       (no saved chart + not previously dismissed). Returning users never see it. */
+    try {
+      var guide = document.getElementById('hero-firstrun');
+      if (!guide) return;
+      var hasChart = false, dismissed = false;
+      try { hasChart = (JSON.parse(localStorage.getItem('ap_charts') || '[]') || []).length > 0; } catch (e) {}
+      try { dismissed = localStorage.getItem('ap_firstrun_done') === '1'; } catch (e) {}
+      if (hasChart || dismissed) return;
+      guide.hidden = false;
+      var btn = document.getElementById('hero-firstrun-dismiss');
+      if (btn) btn.addEventListener('click', function () {
+        guide.hidden = true;
+        try { localStorage.setItem('ap_firstrun_done', '1'); } catch (e) {}
+      });
+    } catch (e) {}
   })();
   </script>
   <!--
