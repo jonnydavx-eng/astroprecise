@@ -46,6 +46,21 @@ body.ap-nav-enter.ap-nav-enter--active {
   z-index: 10050;
 }
 
+/* Wave 3 — cast→chart spatial morph. Naming the orrery viewport (index.html)
+   and the natal-wheel mount (chart.html) with the SAME name upgrades the root
+   cross-fade into a morph across the index→chart navigation: the orrery flies
+   over and becomes the chart wheel. Both are aspect-1:1, size-stable, and
+   appear exactly once on their page (each rule is inert on the page lacking its
+   element; verified no cross-page collision). Gated to no-preference so
+   reduced-motion keeps the plain cross-fade — and the ::view-transition-group(*)
+   1ms override below neutralises the named group as a belt-and-braces guard.
+   If either endpoint is missing/hidden, the engine auto-falls-back to the root
+   cross-fade, so the worst case is exactly today's behaviour. */
+@media (prefers-reduced-motion: no-preference) {
+  #orrery-viewport { view-transition-name: ap-celestial-wheel; }
+  #natal-wheel { view-transition-name: ap-celestial-wheel; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.ap-nav-enter,
   body.ap-nav-enter.ap-nav-enter--active {
