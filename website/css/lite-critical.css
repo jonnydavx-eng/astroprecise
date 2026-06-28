@@ -848,6 +848,14 @@ html.ap-lite-hero .orrery-viewport {
   overflow: visible;
 }
 
+/* Hands-on instrument: drag to explore, wheel/pinch to zoom, hover to illuminate. */
+html.ap-lite-hero .orrery-viewport.orrery-grabbable { cursor: grab; }
+html.ap-lite-hero .orrery-viewport.orrery-grabbing { cursor: grabbing; }
+html.ap-lite-hero .orrery-viewport.orrery-hovering { cursor: pointer; }
+@media (prefers-reduced-motion: reduce) {
+  html.ap-lite-hero .orrery-viewport.orrery-grabbable { cursor: default; }
+}
+
 html.ap-lite-hero #orrery-canvas {
   display: block;
   width: min(92vw, 640px);
