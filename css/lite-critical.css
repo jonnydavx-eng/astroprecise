@@ -748,12 +748,67 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-deck {
   border-top: 1px solid rgba(201, 162, 39, 0.12);
 }
 
-html.ap-lite-hero:not(.orrery-full) .hero__h1,
-html.ap-lite-hero:not(.orrery-full) .hero__entrance {
+/* No-JS / no-awaken fallback: force the title visible at rest (so it never
+   hides if the entrance can't run). When html.ap-awaken is set (pre-paint), this
+   steps aside and the hero plays its one-shot "awakening" entrance below. */
+html.ap-lite-hero:not(.orrery-full):not(.ap-awaken) .hero__h1,
+html.ap-lite-hero:not(.orrery-full):not(.ap-awaken) .hero__entrance {
   opacity: 1 !important;
   visibility: visible !important;
   transform: none !important;
   transition: none !important;
+}
+
+/* ── Hero "awakening" — one elegant one-shot staggered entrance on load.
+   transform/opacity only (GPU), fill both (guaranteed visible end-state),
+   0 CLS (no layout props animate). Gated by html.ap-awaken so JS-off shows
+   the hero at rest; fully disabled under reduced-motion. ── */
+@keyframes ap-hero-rise {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes ap-hero-instrument-in {
+  from { opacity: 0; transform: scale(0.965); }
+  to   { opacity: 1; transform: scale(1); }
+}
+html.ap-awaken.ap-lite-hero .hero__eyebrow,
+html.ap-awaken.ap-lite-hero .hero__h1,
+html.ap-awaken.ap-lite-hero .hero__subtitle,
+html.ap-awaken.ap-lite-hero .hero__cta-form,
+html.ap-awaken.ap-lite-hero .hero__trust {
+  animation: ap-hero-rise 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+html.ap-awaken.ap-lite-hero .hero__eyebrow  { animation-delay: 40ms; }
+html.ap-awaken.ap-lite-hero .hero__h1       { animation-delay: 110ms; }
+html.ap-awaken.ap-lite-hero .hero__subtitle { animation-delay: 210ms; }
+html.ap-awaken.ap-lite-hero .hero__cta-form { animation-delay: 300ms; }
+html.ap-awaken.ap-lite-hero .hero__trust    { animation-delay: 400ms; }
+html.ap-awaken.ap-lite-hero .hero__orrery-layer {
+  animation: ap-hero-instrument-in 760ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.ap-awaken.ap-lite-hero .hero__eyebrow,
+  html.ap-awaken.ap-lite-hero .hero__h1,
+  html.ap-awaken.ap-lite-hero .hero__subtitle,
+  html.ap-awaken.ap-lite-hero .hero__cta-form,
+  html.ap-awaken.ap-lite-hero .hero__trust,
+  html.ap-awaken.ap-lite-hero .hero__orrery-layer {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Guaranteed visible end-state — JS adds .ap-awoken ~1.3s after load (after the
+   entrance has played, or as recovery if it stalled). Content is never hidden. */
+html.ap-awoken.ap-lite-hero .hero__eyebrow,
+html.ap-awoken.ap-lite-hero .hero__h1,
+html.ap-awoken.ap-lite-hero .hero__subtitle,
+html.ap-awoken.ap-lite-hero .hero__cta-form,
+html.ap-awoken.ap-lite-hero .hero__trust,
+html.ap-awoken.ap-lite-hero .hero__orrery-layer {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 .hero__full-link {

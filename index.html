@@ -11,7 +11,20 @@
     var q = location.search || '';
     if (/[?&]full=1(?:&|$)/.test(q)) {
       location.replace('index-full.html' + q + location.hash);
+      return;
     }
+    /* Pre-paint flag → the hero plays its one-shot "awakening" entrance. If this
+       script never runs (JS off), the hero simply shows at rest (no animation). */
+    try {
+      document.documentElement.classList.add('ap-awaken');
+      /* Safety net: guarantee the hero reaches its visible end-state ~1.3s in,
+         even if the entrance animation never advances (stalled/background
+         renderer). setTimeout is unaffected by render/animation freezes, so the
+         hero can never be left hidden. */
+      setTimeout(function () {
+        document.documentElement.classList.add('ap-awoken');
+      }, 1300);
+    } catch (e) {}
   })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
