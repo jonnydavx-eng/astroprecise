@@ -725,6 +725,75 @@ html.ap-lite-hero .hero__secondary {
   margin-bottom: var(--space-6);
 }
 
+/* First-run "3 easy steps" guide — JS shows it only to new visitors (no saved
+   chart, not dismissed). Light, cohesive, on the new card surface. */
+html.ap-lite-hero .hero__firstrun {
+  max-width: 30rem;
+  margin: var(--space-3) 0 var(--space-5);
+  padding: 0.85rem 1rem 0.9rem;
+  background: var(--ap-card-surface, rgba(15, 11, 8, 0.5));
+  border: 1px solid var(--ap-card-border, rgba(201, 162, 39, 0.16));
+  border-radius: 14px;
+  box-shadow: var(--ap-shadow-card, 0 10px 36px rgba(0, 0, 0, 0.32));
+}
+html.ap-lite-hero .hero__firstrun-lead {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  color: var(--gold-vivid, #E6C24A);
+  margin: 0 0 0.55rem;
+}
+html.ap-lite-hero .hero__firstrun-spark { margin-right: 0.2em; opacity: 0.9; }
+html.ap-lite-hero .hero__firstrun-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+html.ap-lite-hero .hero__firstrun-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--silver, #B0A48C);
+}
+html.ap-lite-hero .hero__firstrun-steps b {
+  flex: 0 0 1.45rem;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 50%;
+  border: 1px solid var(--ap-card-border-strong, rgba(201, 162, 39, 0.28));
+  color: var(--gold-vivid, #E6C24A);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+html.ap-lite-hero .hero__firstrun-dismiss {
+  margin-top: 0.7rem;
+  min-height: 40px;
+  padding: 0.45rem 1rem;
+  background: none;
+  border: 1px solid var(--ap-card-border, rgba(201, 162, 39, 0.16));
+  border-radius: var(--radius-full);
+  color: var(--silver, #B0A48C);
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+html.ap-lite-hero .hero__firstrun-dismiss:hover,
+html.ap-lite-hero .hero__firstrun-dismiss:focus-visible {
+  color: var(--gold-vivid, #E6C24A);
+  border-color: var(--ap-card-border-strong, rgba(201, 162, 39, 0.28));
+}
+
 @media (max-width: 520px) {
   html.ap-lite-hero .hero__cast-btn {
     width: 100%;
