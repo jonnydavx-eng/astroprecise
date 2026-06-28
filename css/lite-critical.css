@@ -860,6 +860,32 @@ html.ap-lite-hero .orrery-viewport {
   overflow: visible;
 }
 
+/* Optional Seedance cinematic backdrop (js/ap-seedance.js). INACTIVE by default
+   (display:none, no src) so the page is identical to today; the boot script adds
+   .is-active / .is-playing only once a clip is configured + the device qualifies.
+   Sits BEHIND the orrery instrument (z-index:0) with pointer-events:none so it
+   never touches the drag layer; a ring mask shows it as ambient motion around the
+   jewel and fades it at the edges so it blends into the dock below. */
+html.ap-lite-hero .orrery-seedance {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, transparent 34%, #000 47%, #000 63%, transparent 84%);
+  mask-image: radial-gradient(circle at 50% 45%, transparent 34%, #000 47%, #000 63%, transparent 84%);
+}
+html.ap-lite-hero .orrery-seedance.is-active { display: block; }
+html.ap-lite-hero .orrery-seedance.is-playing { opacity: 0.45; }
+@media (prefers-reduced-motion: reduce) {
+  html.ap-lite-hero .orrery-seedance { display: none !important; }
+}
+
 /* Hands-on instrument: drag to explore, wheel/pinch to zoom, hover to illuminate. */
 html.ap-lite-hero .orrery-viewport.orrery-grabbable { cursor: grab; }
 html.ap-lite-hero .orrery-viewport.orrery-grabbing { cursor: grabbing; }
