@@ -1666,6 +1666,36 @@ html.ap-lite-hero .hero__sky-dock .live-sky-action:focus-visible {
   border: 1px solid rgba(201, 162, 39, 0.16);
   border-radius: var(--radius-full);
 }
+/* Deeper-page link — the consolidated cosmic-story / philosophy essays now live
+   in full on why.html; this carries the depth without bloating the home. */
+.ap-lite-manifesto__more {
+  margin: var(--space-6) 0 0;
+}
+.ap-lite-manifesto__more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-vivid);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(230, 194, 74, 0.32);
+  padding: 0 0 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.ap-lite-manifesto__more a:hover,
+.ap-lite-manifesto__more a:focus-visible {
+  color: var(--gold-hero-light);
+  border-color: var(--gold-vivid);
+}
+.ap-lite-manifesto__more a:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
 
 /* Footer quick links */
 .ap-lite-footer__nav {
