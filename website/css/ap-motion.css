@@ -240,17 +240,14 @@
 
 /* ── 6. Zone hooks (no HTML changes required) ──────────────────────────── */
 
-/* Homepage lite — instrument rail (opt-in: .ap-stagger-in on track) */
+/* Homepage lite — instrument rail.
+   CALMING PASS: the scroll/entrance stagger on the rail tiles is removed so the
+   lobby renders immediately. Tiles are simply shown (opacity:1, no animation).
+   The functional hover/focus lift is kept. */
 html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile {
-  opacity: 0;
-  animation: ap-rise-in var(--ap-motion-base) var(--ap-ease-out) forwards;
+  opacity: 1;
+  animation: none;
 }
-html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(1) { animation-delay: 0.08s; }
-html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(2) { animation-delay: 0.16s; }
-html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(3) { animation-delay: 0.24s; }
-html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(4) { animation-delay: 0.32s; }
-html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(5) { animation-delay: 0.40s; }
-html.ap-lite-hero .ap-lite-rail__track.ap-stagger-in > .ap-lite-rail__tile:nth-child(6) { animation-delay: 0.48s; }
 
 html.ap-lite-hero .ap-lite-rail__tile {
   transition: transform var(--ap-motion-fast) var(--ap-ease-out);
@@ -260,11 +257,11 @@ html.ap-lite-hero .ap-lite-rail__tile:focus-visible {
   transform: translate3d(0, -3px, 0);
 }
 
-/* Sky dock — one-shot rise when panel carries utility class */
+/* Sky dock — CALMING PASS: entrance rise removed; panel renders immediately. */
 html.ap-lite-hero .hero__sky-dock .live-sky-dock-panel.ap-rise-in {
-  opacity: 0;
-  transform: translate3d(0, var(--ap-rise-sm), 0);
-  animation: ap-rise-in var(--ap-motion-slow) var(--ap-ease-out) 0.2s forwards;
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
 
 /* Chart — big-three stagger when results mount */

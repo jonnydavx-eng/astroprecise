@@ -556,26 +556,10 @@ html.ap-lite-hero .hero__eyebrow {
   opacity: 0.9;
 }
 
-@keyframes hero-h1-glow {
-  0%, 100% {
-    text-shadow:
-      0 2px 22px rgba(5, 4, 6, 0.92),
-      0 1px 6px rgba(5, 4, 6, 0.78),
-      0 0 20px rgba(201, 162, 39, 0.1);
-  }
-  50% {
-    text-shadow:
-      0 2px 22px rgba(5, 4, 6, 0.92),
-      0 1px 6px rgba(5, 4, 6, 0.78),
-      0 0 38px rgba(201, 162, 39, 0.32),
-      0 0 52px rgba(245, 240, 232, 0.1);
-  }
-}
-
-@keyframes hero-gold-shimmer {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-}
+/* Hero title glow + gold shimmer FROZEN (calming pass). Both infinite keyframes
+   (hero-h1-glow pulse, hero-gold-shimmer background sweep) deleted; the title now
+   carries a single STILL gold text-shadow and the emphasis word is a still gold
+   gradient (no background-position animation). */
 
 html.ap-lite-hero .hero__h1 {
   font-family: var(--font-display);
@@ -585,9 +569,11 @@ html.ap-lite-hero .hero__h1 {
   letter-spacing: 0.02em;
   color: #f5f0e8;
   margin-bottom: var(--space-5);
-  text-shadow: 0 2px 22px rgba(5, 4, 6, 0.92), 0 1px 6px rgba(5, 4, 6, 0.78);
+  text-shadow:
+    0 2px 22px rgba(5, 4, 6, 0.92),
+    0 1px 6px rgba(5, 4, 6, 0.78),
+    0 0 22px rgba(201, 162, 39, 0.18);
   text-wrap: balance;
-  animation: hero-h1-glow 5s ease-in-out infinite;
 }
 
 html.ap-lite-hero .hero__h1 em:not(.hero-gold-shimmer) {
@@ -598,11 +584,14 @@ html.ap-lite-hero .hero__h1 em:not(.hero-gold-shimmer) {
 html.ap-lite-hero .hero__h1 em.hero-gold-shimmer {
   font-style: italic;
   background: linear-gradient(120deg, #f0e8d8 0%, #e6c24a 38%, #fff4dc 62%, #c9a227 100%);
-  background-size: 220% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: hero-gold-shimmer 9s ease-in-out infinite;
+  /* animation:none with this higher-specificity (html.ap-lite-hero …) selector
+     also FREEZES the duplicate infinite hero-gold-shimmer that orrery-visual.css
+     idle-loads later — the shimmer stays a still gold gradient regardless of
+     stylesheet load order. */
+  animation: none;
 }
 
 html.ap-lite-hero .hero__subtitle {
@@ -1157,29 +1146,13 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   overflow: hidden;
   min-height: 2.1rem;
 }
+/* Live-sky meteors REMOVED (calming pass): the .live-sky-meteor streaks were
+   decorative shooting-star elements that animated across the sky-dock header
+   forever (ap-meteor-pass). They are pointer-events:none, position:absolute,
+   default opacity:0, inside an overflow:hidden + min-height head — never load-
+   bearing — so hiding them shifts no layout and stops the perpetual motion. */
 .live-sky-meteor {
-  position: absolute;
-  top: 38%;
-  left: -12%;
-  width: clamp(3.5rem, 12vw, 5.5rem);
-  height: 1px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.12) 32%, rgba(255, 248, 230, 0.82) 90%, #fff 100%);
-  filter: drop-shadow(0 0 4px rgba(255, 248, 220, 0.5));
-  transform: rotate(-32deg);
-}
-.live-sky-meteor--a { top: 30%; }
-.live-sky-meteor--b { top: 62%; opacity: 0; }
-@media (prefers-reduced-motion: no-preference) {
-  .live-sky-meteor--a { animation: ap-meteor-pass 11s cubic-bezier(0.4, 0, 0.2, 1) infinite 1.8s; }
-  .live-sky-meteor--b { animation: ap-meteor-pass 14s cubic-bezier(0.4, 0, 0.2, 1) infinite 6.4s; }
-}
-@keyframes ap-meteor-pass {
-  0%, 78%, 100% { opacity: 0; transform: rotate(-32deg) translateX(0); }
-  4% { opacity: 0.95; }
-  22% { opacity: 0; transform: rotate(-32deg) translateX(min(110vw, 920px)); }
+  display: none;
 }
 .live-sky-label {
   position: relative;

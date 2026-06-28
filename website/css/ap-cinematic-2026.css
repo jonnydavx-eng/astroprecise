@@ -2,22 +2,12 @@
    Interstellar observatory luxury · perf-safe (static grain, transform-only hovers)
    Tokens: instrument-panel.css (--ip-bracket-*, --ip-cine-*) */
 
-/* ── Film grain (static overlay — no animation) ───────────────────── */
-html.ap-lite-hero::after,
-body.ap-cinematic-2026:not(.page-home)::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9997;
-  pointer-events: none;
-  opacity: var(--ip-cine-grain-opacity, 0.038);
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 180px 180px;
-  mix-blend-mode: overlay;
-}
+/* ── Film grain — REMOVED (calming pass): the body/html ::after SVG-turbulence
+   overlay added perpetual GPU cost + visual noise. Deleted entirely. It was a
+   fixed full-viewport pointer-events:none decorative layer, never load-bearing,
+   so removing it shifts no layout. ─────────────────────────────────────────── */
 
-/* ── Page vignette depth (stacked radials — sits above void, below grain) ── */
+/* ── Page vignette depth (stacked radials — sits above void) ── */
 body.ap-cinematic-2026 {
   --_cine-vignette-edge: var(--ip-cine-vignette, rgba(5, 4, 6, 0.55));
 }
@@ -26,32 +16,21 @@ body.ap-cinematic-2026 main {
   isolation: isolate;
 }
 
-/* ── Hero typography glow (hero-h1-glow evolution) ────────────────── */
-@keyframes ap-cine-h1-glow {
-  0%, 100% {
-    text-shadow:
-      0 2px 24px rgba(5, 4, 6, 0.94),
-      0 1px 8px rgba(5, 4, 6, 0.72),
-      0 0 20px rgba(201, 162, 39, 0.11),
-      0 0 1px rgba(232, 224, 208, 0.35);
-  }
-  50% {
-    text-shadow:
-      0 2px 30px rgba(5, 4, 6, 0.96),
-      0 1px 10px rgba(5, 4, 6, 0.78),
-      0 0 44px rgba(201, 162, 39, 0.3),
-      0 0 68px rgba(245, 240, 232, 0.09),
-      0 0 1px rgba(232, 224, 208, 0.52);
-  }
-}
-
+/* ── Hero typography glow — FROZEN (calming pass) ──────────────────────
+   Was an infinite ap-cine-h1-glow pulse on the hero title. Replaced with a
+   single STILL gold text-shadow (the static mid-point of the old keyframe,
+   minus the pulsing peak). No animation, no keyframe. ─────────────────── */
 .ap-cine-h1-glow,
 html.ap-lite-hero .hero__h1,
 .page-chart .chart-hero__title,
 .page-horoscope .sphere-hero__header h1,
 .page-instrument .instrument-hero .instrument-title,
 .page-shop .shop-hero__title {
-  animation: ap-cine-h1-glow 5.5s ease-in-out infinite;
+  text-shadow:
+    0 2px 24px rgba(5, 4, 6, 0.94),
+    0 1px 8px rgba(5, 4, 6, 0.72),
+    0 0 22px rgba(201, 162, 39, 0.18),
+    0 0 1px rgba(232, 224, 208, 0.4);
 }
 
 /* ── Shared corner bracket / engraved frame system ────────────────── */
@@ -63,33 +42,38 @@ html.ap-lite-hero .hero__h1,
   z-index: 2;
 }
 
+/* Chart-wheel corner brackets calmed (calming pass): the base L-bracket geometry
+   lives in chart-page-deferred.css; here we only DROP this file's cinematic
+   amplification (the gold glow box-shadow + near-opaque render) and let the
+   restrained base brackets stand still. No content/position touched → no shift. */
 .page-chart .chart-wheel-stage .chart-wheel-card::before,
 .page-chart .chart-wheel-stage .chart-wheel-card::after {
-  width: var(--_bs);
-  height: var(--_bs);
   border-color: var(--_bc);
-  opacity: 0.92;
-  box-shadow: 0 0 12px rgba(201, 162, 39, 0.08);
+  opacity: 0.6;
+  box-shadow: none;
 }
 
+/* Engraved 8-gradient corner brackets REMOVED (calming pass).
+   Replaced with a single restrained 1px gold inset border, shown only on hover.
+   ::after kept as the carrier box (was pointer-events:none decoration only —
+   not load-bearing; inset/border-radius preserved so nothing shifts). */
 .instrument-hero__panel.instrument-panel::after {
   content: '';
   position: absolute;
   inset: var(--ip-bracket-inset, 10px);
   border-radius: calc(var(--ip-radius-lg, 28px) - 6px);
   pointer-events: none;
-  background:
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) left top / var(--ip-bracket-size) 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) left top / 1px var(--ip-bracket-size) no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) right top / var(--ip-bracket-size) 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) right top / 1px var(--ip-bracket-size) no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) left bottom / var(--ip-bracket-size) 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) left bottom / 1px var(--ip-bracket-size) no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) right bottom / var(--ip-bracket-size) 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color), var(--ip-bracket-color)) right bottom / 1px var(--ip-bracket-size) no-repeat;
-  opacity: 0.78;
+  border: 1px solid transparent;
+  transition: border-color 0.25s ease;
 }
 
+.instrument-hero__panel.instrument-panel:hover::after {
+  border-color: var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
+}
+
+/* Engraved corner brackets REMOVED (calming pass) → single restrained 1px gold
+   inset border, hover-only. ::before kept as the carrier box (was decoration
+   only, pointer-events:none — not load-bearing; inset/radius preserved). */
 .shopc-featured__card::before,
 .shop-card::before,
 .shopc-card::before,
@@ -101,16 +85,11 @@ html.ap-lite-hero .hero__h1,
   z-index: 2;
   border-radius: calc(var(--radius-xl, 20px) - 4px);
   pointer-events: none;
-  background:
-    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) left top / 18px 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) left top / 1px 18px no-repeat,
-    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) right bottom / 18px 1px no-repeat,
-    linear-gradient(var(--ip-bracket-color, rgba(201, 162, 39, 0.42)), var(--ip-bracket-color, rgba(201, 162, 39, 0.42))) right bottom / 1px 18px no-repeat;
-  opacity: 0.55;
-  transition: opacity 0.25s ease;
+  border: 1px solid transparent;
+  transition: border-color 0.25s ease;
 }
 
-/* .shop-how__step lacks position:relative in shop.css — anchor the bracket */
+/* .shop-how__step lacks position:relative in shop.css — anchor the border box */
 .shop-how__step {
   position: relative;
 }
@@ -120,127 +99,29 @@ html.ap-lite-hero .hero__h1,
 .shopc-card:hover::before,
 .ap-tool-card:hover::before,
 .shop-how__step:hover::before {
-  opacity: 0.88;
+  border-color: var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
 }
 
-/* ── Card specular highlight sweep (transform only on hover) ──────── */
-.shopc-featured__card,
-.shop-card,
-.shopc-card,
-.chart-wheel-card,
-.instrument-hero__panel.instrument-panel,
-.ap-tool-card,
-.shop-how__step,
-.feature-card {
-  isolation: isolate;
-}
-
-.shopc-featured__card::after,
-.shop-card::after,
-.shopc-card::after,
-.ap-tool-card::after,
-.shop-how__step::after,
-.feature-card::after {
-  content: '';
-  position: absolute;
-  inset: -10% -30%;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(
-    105deg,
-    transparent 38%,
-    rgba(255, 248, 235, 0.07) 46%,
-    rgba(201, 162, 39, 0.14) 50%,
-    rgba(255, 248, 235, 0.06) 54%,
-    transparent 62%
-  );
-  transform: translateX(-115%) skewX(-8deg);
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-
-.shopc-featured__card:hover::after,
-.shop-card:hover::after,
-.shopc-card:hover::after,
-.ap-tool-card:hover::after,
-.shop-how__step:hover::after,
-.feature-card:hover::after {
-  transform: translateX(115%) skewX(-8deg);
-}
-
-/* chart-wheel-card ::after is bottom-right bracket — specular on inner mount */
-.page-chart .chart-wheel-stage .chart-wheel-card .natal-wheel-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  background: linear-gradient(
-    108deg,
-    transparent 40%,
-    rgba(255, 248, 235, 0.05) 48%,
-    rgba(201, 162, 39, 0.12) 50%,
-    transparent 58%
-  );
-  transform: translateX(-120%);
-  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.page-chart .chart-wheel-stage .chart-wheel-card:hover .natal-wheel-container::after {
-  transform: translateX(120%);
+/* ── Card specular sweep + lens flares REMOVED (calming pass) ─────────────
+   The animated specular "sweep" ::after highlights (cards, chart inner mount,
+   instrument lede) and the lens-flare ::after glow circles (chart/horoscope/
+   instrument/shop/lite-hero stages) were all pointer-events:none decorative
+   overlays — never load-bearing, so deletion shifts no layout. The .instrument-
+   lede position:relative/overflow and .natal-wheel-container position:relative
+   are retained below (functional containers used elsewhere), just without the
+   sweep pseudo-element. ──────────────────────────────────────────────────── */
+.instrument-hero__panel .instrument-lede {
+  position: relative;
+  overflow: hidden;
 }
 
 .page-chart .natal-wheel-container {
   position: relative;
 }
 
-.instrument-hero__panel.instrument-panel .instrument-lede::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  left: -40%;
-  width: 40%;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    100deg,
-    transparent,
-    rgba(255, 248, 235, 0.06) 45%,
-    rgba(201, 162, 39, 0.1) 50%,
-    transparent 55%
-  );
-  transform: translateX(-200%);
-  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.instrument-hero__panel.instrument-panel:hover .instrument-lede::after {
-  transform: translateX(350%);
-}
-
-.instrument-hero__panel .instrument-lede {
-  position: relative;
-  overflow: hidden;
-}
-
-/* ── Lens flare accents (CSS only, static) ─────────────────────────── */
-.ap-cine-flare,
-.page-chart .chart-wheel-stage::after,
-.page-horoscope .sphere-hero::after,
-.page-instrument .instrument-hero::after,
-.page-shop .shop-hero::after,
-html.ap-lite-hero .hero__stage::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 35%, var(--ip-cine-flare-pale, rgba(245, 240, 232, 0.09)) 0%, transparent 42%),
-    radial-gradient(circle at 50% 50%, var(--ip-cine-flare-gold, rgba(201, 162, 39, 0.14)) 0%, transparent 68%);
-  filter: blur(0.5px);
-  opacity: 0.85;
-}
-
-/* ── Hero / stage vignette depth layers ───────────────────────────── */
+/* ── Hero / stage vignette — collapsed to ONE subtle bottom fade (calming pass).
+   Was a 2-layer stacked radial (full-edge ring + bottom pool); kept only the
+   gentle bottom fade so depth remains without the heavy darkened frame. ──── */
 .ap-cine-vignette::before,
 .page-chart .chart-wheel-stage::before,
 .page-horoscope .sphere-wrap::before,
@@ -253,8 +134,7 @@ html.ap-lite-hero .hero__orrery-layer::before {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 95% 88% at 50% 50%, transparent 52%, var(--_cine-vignette-edge, rgba(5, 4, 6, 0.45)) 100%),
-    radial-gradient(ellipse 70% 55% at 50% 100%, rgba(5, 4, 6, 0.35) 0%, transparent 72%);
+    radial-gradient(ellipse 70% 55% at 50% 100%, rgba(5, 4, 6, 0.32) 0%, transparent 72%);
 }
 
 /* Chart wheel stage — halo + meridian polish */
@@ -268,14 +148,7 @@ html.ap-lite-hero .hero__orrery-layer::before {
   border-radius: 50%;
 }
 
-.page-chart .chart-wheel-stage::after {
-  top: 6%;
-  right: 10%;
-  width: min(28vw, 200px);
-  height: min(28vw, 200px);
-  z-index: 0;
-  opacity: 0.65;
-}
+/* lens-flare ::after removed (calming pass) — positioning rule deleted */
 
 .page-chart .chart-wheel-stage__halo {
   z-index: 0;
@@ -295,14 +168,7 @@ html.ap-lite-hero .hero__orrery-layer::before {
   isolation: isolate;
 }
 
-.page-horoscope .sphere-hero::after {
-  top: 8%;
-  left: 12%;
-  width: 160px;
-  height: 160px;
-  z-index: 0;
-  opacity: 0.55;
-}
+/* lens-flare ::after removed (calming pass) — positioning rule deleted */
 
 .page-horoscope .sphere-wrap {
   position: relative;
@@ -324,40 +190,22 @@ html.ap-lite-hero .hero__orrery-layer::before {
   isolation: isolate;
 }
 
+/* Vignette collapsed to a single subtle bottom fade (calming pass) — the violet
+   + gold mid-glows and the full-edge ring were stacked depth layers, now gone. */
 .page-instrument .instrument-hero::before {
   background:
-    radial-gradient(ellipse 95% 85% at 50% 50%, transparent 48%, rgba(5, 4, 6, 0.42) 100%),
-    radial-gradient(ellipse 55% 40% at 30% 0%, rgba(92, 74, 110, 0.16) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 35% at 80% 20%, rgba(201, 162, 39, 0.09) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(92, 74, 110, 0.08) 0%, transparent 65%);
+    radial-gradient(ellipse 60% 35% at 50% 100%, rgba(5, 4, 6, 0.30) 0%, transparent 70%);
 }
 
-.page-instrument .instrument-hero::after {
-  top: 10%;
-  right: 6%;
-  width: 180px;
-  height: 180px;
-  z-index: 0;
-  border: none;
-  box-shadow: none;
-  opacity: 0.7;
-}
+/* lens-flare ::after removed (calming pass) — positioning rule deleted */
 
-/* Shop hero */
-.page-shop .shop-hero::after {
-  top: 14%;
-  right: 14%;
-  width: 140px;
-  height: 140px;
-  z-index: 0;
-  opacity: 0.5;
-}
-
+/* Shop hero — vignette collapsed to a single subtle bottom fade (calming pass) */
 .page-shop .shop-hero::before {
   background:
-    radial-gradient(ellipse 95% 80% at 50% 40%, transparent 55%, rgba(5, 4, 6, 0.38) 100%),
-    radial-gradient(ellipse 90% 70% at 50% 28%, rgba(92, 74, 110, 0.14) 0%, transparent 72%);
+    radial-gradient(ellipse 60% 35% at 50% 100%, rgba(5, 4, 6, 0.30) 0%, transparent 70%);
 }
+
+/* lens-flare ::after removed (calming pass) — positioning rule deleted */
 
 /* Index lite hero */
 html.ap-lite-hero .hero__stage {
@@ -365,14 +213,7 @@ html.ap-lite-hero .hero__stage {
   isolation: isolate;
 }
 
-html.ap-lite-hero .hero__stage::after {
-  top: 4%;
-  right: 6%;
-  width: min(32vw, 220px);
-  height: min(32vw, 220px);
-  z-index: 1;
-  opacity: 0.45;
-}
+/* lens-flare ::after removed (calming pass) — positioning rule deleted */
 
 html.ap-lite-hero .hero__orrery-layer::before {
   border-radius: 50%;
@@ -386,34 +227,22 @@ html.ap-lite-hero .lite-poster-vignette {
     inset 0 0 120px rgba(5, 4, 6, 0.28);
 }
 
-/* Chart page hero vignette + flare */
-.page-chart .chart-hero::after {
-  content: '';
-  position: absolute;
-  top: 18%;
-  left: 8%;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  pointer-events: none;
-  background:
-    radial-gradient(circle, var(--ip-cine-flare-pale) 0%, transparent 55%),
-    radial-gradient(circle, var(--ip-cine-flare-gold) 0%, transparent 70%);
-  opacity: 0.5;
-  filter: blur(0.5px);
-}
-
+/* Chart page hero — lens-flare ::after REMOVED (calming pass), vignette collapsed
+   to a single subtle bottom fade (was a 2-layer edge-ring + burgundy mid-glow). */
 .page-chart .chart-hero {
   isolation: isolate;
 }
 
 .page-chart .chart-hero__cosmic-art {
   background:
-    radial-gradient(ellipse 95% 82% at 50% 42%, transparent 50%, rgba(5, 4, 6, 0.4) 100%),
-    radial-gradient(ellipse 90% 70% at 50% 35%, rgba(110, 26, 38, 0.12) 0%, transparent 78%);
+    radial-gradient(ellipse 60% 35% at 50% 100%, rgba(5, 4, 6, 0.30) 0%, transparent 70%);
 }
 
-/* ── Reduced motion ───────────────────────────────────────────────── */
+/* ── Reduced motion ───────────────────────────────────────────────────
+   The hero title is now a STILL gold shadow (no animation) and the specular
+   sweep / lens-flare pseudo-elements are gone, so there is no ambient motion
+   left in this file to disable. This block now only normalizes the title
+   shadow under reduced-motion as a belt-and-suspenders guarantee. ──────── */
 @media (prefers-reduced-motion: reduce) {
   .ap-cine-h1-glow,
   html.ap-lite-hero .hero__h1,
@@ -425,19 +254,6 @@ html.ap-lite-hero .lite-poster-vignette {
     text-shadow:
       0 2px 24px rgba(5, 4, 6, 0.94),
       0 0 22px rgba(201, 162, 39, 0.18);
-  }
-
-  .shopc-featured__card::after,
-  .shop-card::after,
-  .shopc-card::after,
-  .ap-tool-card::after,
-  .shop-how__step::after,
-  .feature-card::after,
-  .page-chart .chart-wheel-stage .chart-wheel-card .natal-wheel-container::after,
-  .instrument-hero__panel.instrument-panel .instrument-lede::after {
-    transition: none;
-    transform: none;
-    opacity: 0;
   }
 }
 
