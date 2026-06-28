@@ -58,6 +58,18 @@
   var nextMeteorAt = 0;
   var stars = [];
 
+  // Interactive instrument state (drag-explore / zoom / hover-illuminate).
+  var userPanX = 0;     // user's drag offset, layered on top of focus-centering
+  var userPanY = 0;
+  var dragActive = false;
+  var velX = 0, velY = 0; // inertia velocity (px/frame)
+  var hoverId = null;     // planet under the cursor (illuminated)
+  var planetHits = [];    // [{id,x,y}] screen-space, rebuilt each draw for hit-testing
+  var pinchDist = 0;
+  var ptrWired = false;
+
+  function clampN(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+
   var VALID_FOCUS = ['earth', 'sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'];
 
   var FOCUS_ZOOM = {
@@ -170,15 +182,18 @@
   }
 
   function updateFocusPan(W, H, jd) {
+    var maxPan = Math.min(W, H) * 1.15;
+    userPanX = clampN(userPanX, -maxPan, maxPan);
+    userPanY = clampN(userPanY, -maxPan, maxPan);
     if (!focusId || !VALID_FOCUS.some(function (v) { return v === focusId; })) {
-      targetPanX = 0;
-      targetPanY = 0;
+      targetPanX = userPanX;
+      targetPanY = userPanY;
       return;
     }
     var R = Math.min(W, H) * 0.46 * targetZoom;
     var pos = focusPosition(focusId, jd);
-    targetPanX = -pos.x * R * 0.94;
-    targetPanY = -pos.y * R * 0.94;
+    targetPanX = -pos.x * R * 0.94 + userPanX;
+    targetPanY = -pos.y * R * 0.94 + userPanY;
   }
 
   function syncFocusUi() {
@@ -194,6 +209,7 @@
     id = String(id).toLowerCase();
     if (VALID_FOCUS.indexOf(id) < 0) return;
     focusId = id;
+    userPanX = 0; userPanY = 0; velX = 0; velY = 0; // re-center on the chosen body
     if (FOCUS_ZOOM[id] != null) targetZoom = FOCUS_ZOOM[id];
     syncFocusUi();
     document.dispatchEvent(new CustomEvent('orrery-planet-focus', { detail: { id: focusId } }));
@@ -587,17 +603,37 @@
     ctx.arc(cx, cy, 14, 0, Math.PI * 2);
     ctx.fill();
 
+    planetHits.length = 0;
+    planetHits.push({ id: 'sun', x: cx, y: cy });
     PLANETS.forEach(function (p, i) {
       var pos = helioCached(p.id, jd);
       var px = cx + pos.x * R * 0.94;
       var py = cy + pos.y * R * 0.94;
+      planetHits.push({ id: p.id, x: px, y: py });
+      var spec = planetDrawSpec(p);
       var alpha = 1;
       if (poster.classList.contains('lite-awakening')) {
         alpha = Math.min(1, Math.max(0, (now - awakeningT0 - i * 160) / 520));
       }
-      drawPlanetBody(ctx, px, py, planetDrawSpec(p), alpha);
+      if (hoverId === p.id) {
+        var pulse = 0.42 + 0.18 * Math.sin(now * 0.006);
+        var hg = ctx.createRadialGradient(px, py, 0, px, py, spec.size + 11);
+        hg.addColorStop(0, 'rgba(232, 201, 106, ' + (0.30 * pulse + 0.16).toFixed(3) + ')');
+        hg.addColorStop(1, 'rgba(232, 201, 106, 0)');
+        ctx.fillStyle = hg;
+        ctx.beginPath();
+        ctx.arc(px, py, spec.size + 11, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px, py, spec.size + 5.5, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(244, 223, 150, ' + (0.5 + 0.25 * pulse).toFixed(3) + ')';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        alpha = 1;
+      }
+      drawPlanetBody(ctx, px, py, spec, alpha);
       if (p.id === 'earth') {
-        var earthR = planetDrawSpec(p).size;
+        var earthR = spec.size;
         drawEarthOrbitLite(ctx, px, py, earthR, now);
       }
     });
@@ -606,6 +642,7 @@
       var moonPos = focusPosition('moon', jd);
       var mx = cx + moonPos.x * R * 0.94;
       var my = cy + moonPos.y * R * 0.94;
+      planetHits.push({ id: 'moon', x: mx, y: my });
       var moonSize = focusId === 'moon' ? 3.6 : 2.8;
       drawMoonDetail(ctx, mx, my, moonSize, 1, now);
     } catch (e) {}
@@ -631,10 +668,18 @@
       }
     }
     if (isPosterVisible()) {
+      // Inertia glide after a flick (decays, bounds-clamped in updateFocusPan).
+      var inertia = !dragActive && (Math.abs(velX) > 0.12 || Math.abs(velY) > 0.12);
+      if (inertia) {
+        userPanX += velX; userPanY += velY;
+        velX *= 0.90; velY *= 0.90;
+      } else if (!dragActive) { velX = 0; velY = 0; }
       zoom += (targetZoom - zoom) * 0.038;
       if (Math.abs(targetZoom - zoom) < 0.001) zoom = targetZoom;
-      panX += (targetPanX - panX) * 0.038;
-      panY += (targetPanY - panY) * 0.038;
+      // Track the cursor 1:1 while dragging/gliding; settle gently otherwise.
+      var panLerp = (dragActive || inertia) ? 0.45 : 0.038;
+      panX += (targetPanX - panX) * panLerp;
+      panY += (targetPanY - panY) * panLerp;
       if (Math.abs(targetPanX - panX) < 0.05) panX = targetPanX;
       if (Math.abs(targetPanY - panY) < 0.05) panY = targetPanY;
       drawPoster(now);
@@ -709,6 +754,130 @@
     });
   }
 
+  function nearestPlanet(mx, my) {
+    var best = null, bestD = 26;
+    for (var i = 0; i < planetHits.length; i++) {
+      var h = planetHits[i];
+      var d = Math.sqrt((mx - h.x) * (mx - h.x) + (my - h.y) * (my - h.y));
+      if (d < bestD) { bestD = d; best = h.id; }
+    }
+    return best;
+  }
+
+  function kickRaf() {
+    if (!raf && !destroyed && posterOnScreen) raf = requestAnimationFrame(tick);
+  }
+
+  // Turn the poster into a hands-on instrument: drag-to-explore (with inertia),
+  // wheel / pinch zoom, hover-to-illuminate. Reuses the existing tick() lerp +
+  // target vars; reduced-motion keeps the static poster + focus buttons only.
+  function wireViewportPointer() {
+    if (ptrWired || PRM || AUDIT) return;
+    var vp = document.getElementById('orrery-viewport');
+    if (!vp || !window.PointerEvent) return;
+    ptrWired = true;
+    vp.style.touchAction = 'none';
+    vp.classList.add('orrery-grabbable');
+
+    var pointers = {};
+    var pointerCount = 0;
+    var lastX = 0, lastY = 0, lastT = 0;
+
+    // When the HD 3D orrery takes over, its own controls own the pointer; stand down.
+    function handedOff() { return document.documentElement.classList.contains('orrery-full'); }
+
+    function isControl(t) {
+      return !!(t && t.closest && t.closest(
+        '.lite-vp-btn, .orrery-lite-launch, button, a, input, label, [role="toolbar"]'));
+    }
+
+    vp.addEventListener('pointerdown', function (e) {
+      if (handedOff() || isControl(e.target)) return;
+      if (!pointers[e.pointerId]) pointerCount++;
+      pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+      if (pointerCount === 1) {
+        dragActive = true;
+        velX = 0; velY = 0;
+        lastX = e.clientX; lastY = e.clientY;
+        lastT = e.timeStamp || performance.now();
+        hoverId = null;
+        vp.classList.add('orrery-grabbing');
+        vp.classList.remove('orrery-hovering');
+        try { vp.setPointerCapture(e.pointerId); } catch (err) {}
+      } else if (pointerCount === 2) {
+        var ks = Object.keys(pointers);
+        var a = pointers[ks[0]], b = pointers[ks[1]];
+        pinchDist = Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+      }
+      kickRaf();
+    });
+
+    vp.addEventListener('pointermove', function (e) {
+      if (handedOff()) return;
+      if (pointers[e.pointerId]) pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ks = Object.keys(pointers);
+      if (ks.length >= 2) {
+        var a = pointers[ks[0]], b = pointers[ks[1]];
+        var d = Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+        if (pinchDist > 0) targetZoom = clampN(targetZoom * (d / pinchDist), 0.7, 3.4);
+        pinchDist = d;
+        kickRaf();
+        return;
+      }
+      if (dragActive && pointers[e.pointerId]) {
+        var dx = e.clientX - lastX;
+        var dy = e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY;
+        userPanX += dx; userPanY += dy;
+        var t = e.timeStamp || performance.now();
+        var dt = Math.max(8, t - lastT); lastT = t;
+        velX = dx * (16 / dt); velY = dy * (16 / dt);
+        kickRaf();
+        return;
+      }
+      // Hover-to-illuminate (no button held). planetHits are in canvas CSS px,
+      // and the canvas is inset within the viewport — measure against the canvas.
+      var rect = (liteCanvas || vp).getBoundingClientRect();
+      var hid = nearestPlanet(e.clientX - rect.left, e.clientY - rect.top);
+      if (hid !== hoverId) {
+        hoverId = hid;
+        vp.classList.toggle('orrery-hovering', !!hid);
+        kickRaf();
+      }
+    });
+
+    function endPointer(e) {
+      if (pointers[e.pointerId]) { delete pointers[e.pointerId]; pointerCount = Math.max(0, pointerCount - 1); }
+      if (pointerCount < 2) pinchDist = 0;
+      if (pointerCount === 0) {
+        dragActive = false;
+        vp.classList.remove('orrery-grabbing');
+        try { vp.releasePointerCapture(e.pointerId); } catch (err) {}
+        kickRaf();
+      }
+    }
+    vp.addEventListener('pointerup', endPointer);
+    vp.addEventListener('pointercancel', endPointer);
+    vp.addEventListener('pointerleave', function () {
+      if (!dragActive && hoverId) { hoverId = null; vp.classList.remove('orrery-hovering'); kickRaf(); }
+    });
+
+    vp.addEventListener('wheel', function (e) {
+      if (handedOff()) return;
+      e.preventDefault();
+      var f = 1 - clampN(e.deltaY, -120, 120) * 0.0014;
+      targetZoom = clampN(targetZoom * f, 0.7, 3.4);
+      kickRaf();
+    }, { passive: false });
+
+    vp.addEventListener('dblclick', function (e) {
+      if (handedOff() || isControl(e.target)) return;
+      userPanX = 0; userPanY = 0; velX = 0; velY = 0;
+      if (FOCUS_ZOOM[focusId] != null) targetZoom = FOCUS_ZOOM[focusId];
+      kickRaf();
+    });
+  }
+
   var deckWired = false;
   function wireLiteDeck() {
     if (deckWired) return;
@@ -771,6 +940,7 @@
     syncDateHud();
     wireLiteDeck();
     wireLiteVpControls();
+    wireViewportPointer();
     setupPosterObserver();
     zoom = 1.58;
     targetZoom = 1.58;
@@ -788,6 +958,10 @@
     redraw: function () { drawPoster(performance.now()); },
     focusPlanet: focusPlanet,
     getFocusId: function () { return focusId; },
+    getView: function () {
+      return { zoom: zoom, targetZoom: targetZoom, panX: panX, panY: panY,
+        userPanX: userPanX, userPanY: userPanY, dragActive: dragActive, hoverId: hoverId };
+    },
     tier: tier,
     destroy: function () {
       destroyed = true;
@@ -817,5 +991,12 @@
     if (window.Orrery3D && typeof window.Orrery3D.getDayOffset === 'function') {
       setDayOffset(window.Orrery3D.getDayOffset());
     }
+    // HD 3D now owns the viewport — release the lite instrument's pointer affordances.
+    var vp = document.getElementById('orrery-viewport');
+    if (vp) {
+      vp.classList.remove('orrery-grabbable', 'orrery-grabbing', 'orrery-hovering');
+      vp.style.touchAction = '';
+    }
+    dragActive = false; hoverId = null; velX = 0; velY = 0;
   });
 })();
