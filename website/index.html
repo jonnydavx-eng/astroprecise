@@ -265,6 +265,19 @@
             <div class="orrery-console">
               <div class="hero__orrery-ring">
                 <div class="orrery-viewport" id="orrery-viewport">
+                  <!-- Optional Seedance cinematic backdrop. OFF by default — the page is
+                       identical to today until a clip is added. TO ACTIVATE: drop an ~8s
+                       seamless loop at assets/video/orrery-loop.mp4 and set
+                       data-ap-seedance-src below to "assets/video/orrery-loop.mp4". Then
+                       js/ap-seedance.js lazily plays it BEHIND the live orrery (desktop,
+                       fine-pointer, non-reduced-motion, 4g+ only) and pauses it off-screen.
+                       Generate with: "deep void #040305, engraved-gold #C9A227 astral orrery
+                       rotating gently, cool-silver starlight accents, 35mm cinematic depth,
+                       slow orbital camera, 8s seamless loop, no text" — ffmpeg CRF 24,
+                       1920x1080, faststart, <=4MB. Tune the .orrery-seedance mask in
+                       lite-critical.css if you want more/less of the clip visible. -->
+                  <video class="orrery-seedance" id="orrery-seedance" data-ap-seedance-src=""
+                         muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
                   <div class="orrery-lite-poster" id="orrery-lite-poster" role="img" aria-label="Living sky instrument — VSOP87 positions, recomputed live">
                     <canvas class="lite-poster-canvas" id="lite-poster-canvas" aria-hidden="true"></canvas>
                     <div class="lite-poster-ring" aria-hidden="true"></div>
@@ -650,6 +663,7 @@
   <script src="js/ap-zodiac-constants.js" defer></script>
   <script src="js/celestial-seals.js" defer></script>
   <script src="js/ap-magnetic.js" defer></script>
+  <script src="js/ap-seedance.js" defer></script>
   <script src="js/lite-shell-boot.js" defer></script>
 </body>
 </html>
