@@ -328,6 +328,7 @@ window.AstroShop = (() => {
   // graceful "checkout opens once products are connected" pending state instead
   // of erroring or opening a dead link. Do NOT invent URLs.
   const PAYHIP_URLS = {
+    'cosmic-story':         '',
     'deep-reading':         '',
     'reading-poster-bundle':'',
     'natal-poster-pdf':     '',
