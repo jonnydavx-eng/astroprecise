@@ -22,7 +22,7 @@
   --ap-shadow-raised: 0 16px 52px rgba(0, 0, 0, 0.40);
   --ap-rim-shadow: inset 0 1px 0 rgba(239, 227, 192, 0.06);
   --ap-glow-gold: radial-gradient(ellipse 160% 130% at 50% 22%, rgba(201, 162, 39, 0.10) 0%, transparent 68%);
-  --font-display: Georgia, 'Times New Roman', serif;
+  --font-display: 'Cinzel', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --nav-height: 72px;
   --space-2: 0.5rem;
@@ -1632,6 +1632,16 @@ html.ap-lite-hero .hero__sky-dock .live-sky-action:focus-visible {
   font-weight: 600;
   color: var(--white);
   letter-spacing: 0.04em;
+  text-wrap: balance;
+}
+
+/* Tabular figures so the live time / sky readouts hold a fixed width as their
+   digits tick, instead of jittering with proportional numerals. Id selectors so
+   this wins over the later .orrery-lite-date rule in orrery-visual.css. */
+html.ap-lite-hero #lite-date-display,
+html.ap-lite-hero #live-sky-stamp {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
 }
 .ap-lite-steps__sub {
   margin: 0 auto var(--space-8);

@@ -161,11 +161,17 @@
       done = true;
       SHEETS.forEach(function (p) { link(p[0], p[1]); });
     }
-    function loadSeals() { link('css/celestial-seals.css', 'ap-css-seals'); }
+    function loadEarly() {
+      link('css/celestial-seals.css', 'ap-css-seals');
+      // Brand display fonts (Cinzel/Cormorant, font-display:swap) — loaded early but
+      // OFF the critical path so headings swap from the serif fallback to Cinzel
+      // shortly after first paint without ever blocking render.
+      link('css/fonts.css', 'ap-css-fonts');
+    }
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', loadSeals, { once: true });
+      document.addEventListener('DOMContentLoaded', loadEarly, { once: true });
     } else {
-      loadSeals();
+      loadEarly();
     }
     window.addEventListener('scroll', loadAll, { once: true, passive: true });
     window.addEventListener('pointerdown', loadAll, { once: true, passive: true });
