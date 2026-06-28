@@ -478,8 +478,8 @@ const RadialBlurShader = {
     camera.updateProjectionMatrix();
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
     if (bloomPass && composer) {
-      bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
-      bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
+      bloomPass.strength = perfTier === 'mid' ? 0.18 : 0.23;
+      bloomPass.threshold = perfTier === 'mid' ? 0.86 : 0.82;
     }
     if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.10;
     tunePreloaderSunGlow(true);
@@ -570,7 +570,7 @@ const RadialBlurShader = {
         camTarget.x += drift;
         camTarget.y += lift;
         camTarget.z += Math.sin(t * 0.00044 + 1.2) * 20 * driftMul;
-        camAz += Math.sin(t * 0.00038 + 0.4) * 0.0005 * driftMul;
+        camAz += Math.sin(t * 0.00030 + 0.4) * 0.0003 * driftMul;
       }
     }
     const fovA = a.camRadius < 12 ? CAM_FOV_CLOSE : (zLo >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID);
@@ -2112,10 +2112,10 @@ const RadialBlurShader = {
     syncSunGlowProfile(detail);
     syncPlanetShaderDetail(detail);
     if (sunPointLight) {
-      sunPointLight.intensity = detail ? 2.0 : (perfTier === 'high' ? 3.8 : 3.2);
+      sunPointLight.intensity = detail ? 2.2 : (perfTier === 'high' ? 4.3 : 3.6);
     }
     if (sunDirLight) {
-      sunDirLight.intensity = detail ? 1.55 : (perfTier === 'high' ? 2.4 : 2.0);
+      sunDirLight.intensity = detail ? 1.7 : (perfTier === 'high' ? 2.7 : 2.25);
     }
     return detail;
   }
@@ -2717,7 +2717,7 @@ const RadialBlurShader = {
 
   function buildStars() {
     if (onPreloaderStage() && usesPageStarfield()) return;
-    const N = PRM ? 800 : (perfTier === 'high' ? 2600 : perfTier === 'mid' ? 2000 : 1500);
+    const N = PRM ? 800 : (perfTier === 'high' ? 3400 : perfTier === 'mid' ? 2400 : 1600);
     const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
     const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
     for (let i = 0; i < N; i++) {
@@ -2729,7 +2729,7 @@ const RadialBlurShader = {
       const temp = starTemps[Math.floor(Math.random() * starTemps.length)];
       const w = 0.55 + Math.random() * 0.45;
       col[i * 3] = temp[0] * w; col[i * 3 + 1] = temp[1] * w; col[i * 3 + 2] = temp[2] * w;
-      sizes[i] = Math.random() < 0.06 ? 2.4 + Math.random() * 1.6 : 0.7 + Math.random() * 1.1;
+      sizes[i] = Math.random() < 0.09 ? 2.6 + Math.random() * 1.8 : 0.7 + Math.random() * 1.1;
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -2840,9 +2840,9 @@ const RadialBlurShader = {
         sunGlow.push(sp);
       });
     }
-    sunPointLight = new THREE.PointLight(0xfff4e0, perfTier === 'high' ? 3.8 : 3.2, 0, 1.55);
+    sunPointLight = new THREE.PointLight(0xfff4e0, perfTier === 'high' ? 4.3 : 3.6, 0, 1.55);
     sunMesh.add(sunPointLight);
-    sunDirLight = new THREE.DirectionalLight(0xfff8ec, perfTier === 'high' ? 2.4 : 2.0);
+    sunDirLight = new THREE.DirectionalLight(0xfff8ec, perfTier === 'high' ? 2.7 : 2.25);
     sunDirLight.position.set(0, 0, 0);
     scene.add(sunDirLight);
     sunDirLightTarget = new THREE.Object3D();
@@ -3754,10 +3754,10 @@ const RadialBlurShader = {
     if (!PRM && scaleLevel <= 2 && !introActive) {
       BODIES.forEach((b) => {
         const g = meshes[b.id];
-        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.25;
+        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.16;
       });
-      if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.32;
-      if (moonMesh && moonGroup && moonGroup.visible) moonMesh.rotation.y += 0.018 * dt;
+      if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.20;
+      if (moonMesh && moonGroup && moonGroup.visible) moonMesh.rotation.y += 0.012 * dt;
       if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
     }
     updateEarthOrbitTraffic(t, dt);
