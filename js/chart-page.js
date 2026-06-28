@@ -475,6 +475,20 @@
     form.requestSubmit();
   }
 
+  /* Lightweight handoff from the homepage quick-cast form (chart.html?date=
+     YYYY-MM-DD): pre-fill ONLY the birth date so a first-timer continues their
+     "3 easy steps" — they entered the date on the home, it's already here, and
+     they just add time + place. Distinct from restoreFromURL(), which restores
+     a complete shared chart (?d=&lat=...). */
+  function prefillDateFromURL() {
+    try {
+      const d = new URLSearchParams(location.search).get('date');
+      if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+      const el = document.getElementById('date-input');
+      if (el && !el.value) { el.value = d; el.dispatchEvent(new Event('input', { bubbles: true })); }
+    } catch (e) {}
+  }
+
   // ── Results rendering ─────────────────────────────────────────────────────
 
   function fmtDeg(p) {
@@ -2320,12 +2334,14 @@ host.classList.add('is-done');
     initNodeToggle();
     initAdvancedAccordion();
     restoreFromURL();
+    prefillDateFromURL();
   });
   if (document.readyState !== 'loading') {
     addShareCardButton();
     initNodeToggle();
     initAdvancedAccordion();
     restoreFromURL();
+    prefillDateFromURL();
   }
 
 })();
