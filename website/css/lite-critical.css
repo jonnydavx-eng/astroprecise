@@ -1,15 +1,27 @@
 /* Lite hero LCP shell — layout-stable; system fonts until optional full stack loads */
 :root {
-  --void: #050406;
-  --bg: #050406;
-  --white: #E8E0D0;
-  --silver: #A89E88;
-  --silver-dim: #A89E88;
+  --void: #040305;
+  --void-base: #070509;
+  --bg: #040305;
+  --white: #F0E9DA;
+  --silver: #B0A48C;
+  --silver-dim: #9A9084;
   --silver-dark: #8A8274;
+  --silver-cool: #A6AEB8;
   --gold-hero: #C9A227;
   --gold-bright: #D4B84A;
+  --gold-vivid: #E6C24A;
   --gold-hero-light: #EFE3C0;
   --glass-border-glow: rgba(201, 162, 39, 0.55);
+  --ap-void-mid: #0D0A09;
+  --ap-void-raised: #15110C;
+  --ap-card-surface: linear-gradient(165deg, rgba(21, 17, 12, 0.62) 0%, rgba(7, 5, 9, 0.40) 100%);
+  --ap-card-border: rgba(201, 162, 39, 0.16);
+  --ap-card-border-strong: rgba(201, 162, 39, 0.28);
+  --ap-shadow-card: 0 10px 36px rgba(0, 0, 0, 0.32);
+  --ap-shadow-raised: 0 16px 52px rgba(0, 0, 0, 0.40);
+  --ap-rim-shadow: inset 0 1px 0 rgba(239, 227, 192, 0.06);
+  --ap-glow-gold: radial-gradient(ellipse 160% 130% at 50% 22%, rgba(201, 162, 39, 0.10) 0%, transparent 68%);
   --font-display: Georgia, 'Times New Roman', serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --nav-height: 72px;
@@ -534,13 +546,25 @@ html.ap-lite-hero .hero__content {
 }
 
 html.ap-lite-hero .hero__text {
+  position: relative;
   text-align: center;
-  padding: var(--space-5) var(--space-4);
+  padding: var(--space-6) var(--space-5);
   border-radius: var(--radius-xl);
-  background: rgba(5, 4, 6, 0.52);
+  background: rgba(7, 5, 9, 0.30);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+/* Single atmospheric gold-glow wash behind the hero copy (CSS-only, ~10% peak,
+   no paint cost — it's a static radial-gradient layer, pointer-events none). */
+html.ap-lite-hero .hero__text::before {
+  content: '';
+  position: absolute;
+  inset: -8% -6%;
+  z-index: -1;
+  background: var(--ap-glow-gold);
+  pointer-events: none;
 }
 
 html.ap-lite-hero .hero__eyebrow {
@@ -548,12 +572,12 @@ html.ap-lite-hero .hero__eyebrow {
   align-items: center;
   gap: var(--space-2);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold-hero);
+  color: var(--gold-vivid);
   margin-bottom: var(--space-5);
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
 /* Hero title glow + gold shimmer FROZEN (calming pass). Both infinite keyframes
@@ -566,7 +590,7 @@ html.ap-lite-hero .hero__h1 {
   font-size: clamp(2rem, 4.2vw, 3.15rem);
   font-weight: 600;
   line-height: 1.14;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.015em;
   color: #f5f0e8;
   margin-bottom: var(--space-5);
   text-shadow:
@@ -614,55 +638,91 @@ html.ap-lite-hero .hero__cta-form {
 html.ap-lite-hero .hero__date-input {
   flex: 1;
   min-width: 180px;
-  height: 52px;
+  height: 56px;
   padding: 0 var(--space-5);
   background: rgba(18, 15, 11, 0.7);
-  border: 1px solid var(--glass-border-glow);
+  border: 1px solid var(--ap-card-border-strong);
   border-radius: var(--radius-lg);
   color: var(--white);
   font-family: var(--font-body);
   font-size: 0.95rem;
   -webkit-appearance: none;
   color-scheme: dark;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+html.ap-lite-hero .hero__date-input:focus,
+html.ap-lite-hero .hero__date-input:focus-visible {
+  outline: none;
+  border-color: var(--gold-vivid);
+  box-shadow: 0 0 0 3px rgba(230, 194, 74, 0.22);
 }
 
 html.ap-lite-hero .hero__cast-btn {
-  height: 52px;
+  height: 56px;
   padding: 0 var(--space-7);
-  background: linear-gradient(135deg, var(--gold-hero) 0%, #a8841e 100%);
+  background: linear-gradient(135deg, var(--gold-vivid) 0%, #a8841e 100%);
   border: none;
   border-radius: var(--radius-lg);
   color: #0d0a07;
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
   cursor: pointer;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+  transition: filter var(--transition-fast), box-shadow var(--transition-base), transform var(--transition-fast);
+}
+
+html.ap-lite-hero .hero__cast-btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 8px 22px rgba(201, 162, 39, 0.30);
+}
+
+html.ap-lite-hero .hero__cast-btn:active {
+  transform: translateY(1px);
+}
+
+html.ap-lite-hero .hero__cast-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--void), 0 0 0 4px var(--gold-vivid);
 }
 
 html.ap-lite-hero .hero__trust {
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--silver);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
+/* Trust row → three barely-there outline pills (transparent fill, hairline gold
+   border, small caps). Echoed by the manifesto beats below. */
+html.ap-lite-hero .hero__trust-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.34rem 0.7rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver);
+  background: transparent;
+  border: 1px solid rgba(201, 162, 39, 0.16);
+  border-radius: var(--radius-full);
+}
+
 html.ap-lite-hero .hero__trust-dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--silver-dark);
-  flex-shrink: 0;
+  display: none;
+}
+
+html.ap-lite-hero .hero__secondary {
+  margin-bottom: var(--space-6);
 }
 
 @media (max-width: 520px) {
@@ -690,6 +750,18 @@ html.ap-lite-hero .hero__orrery-wrap {
   max-width: min(92vw, 640px);
   margin: 0 auto;
   pointer-events: auto;
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  background: var(--ap-card-surface);
+  border: 1px solid var(--ap-card-border);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  /* Raised card shadow + an outer gold rim-glow halo so the live instrument
+     reads as a luminous jewel. */
+  box-shadow:
+    var(--ap-shadow-raised),
+    0 0 0 1px rgba(201, 162, 39, 0.20),
+    0 0 64px rgba(201, 162, 39, 0.14);
 }
 
 html.ap-lite-hero .hero__orrery-ring {
@@ -825,6 +897,11 @@ html.ap-awoken.ap-lite-hero .hero__orrery-layer {
 .hero__full-link:focus-visible {
   color: var(--gold-hero-light);
   text-decoration-color: var(--gold-bright);
+}
+.hero__full-link:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
 html.ap-lite-hero:not(.orrery-full) .orrery-lite-poster {
@@ -1008,9 +1085,9 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
 @media (min-width: 900px) {
   html.ap-lite-hero .hero__stage {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     align-items: center;
-    gap: var(--space-8);
+    gap: var(--space-10);
     padding: var(--space-8) var(--space-6);
     min-height: calc(100vh - var(--nav-height, 72px) - 8rem);
   }
@@ -1019,12 +1096,13 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
     text-align: left;
     align-self: center;
     justify-self: start;
-    max-width: 520px;
+    max-width: 540px;
   }
   html.ap-lite-hero .hero__text { text-align: left; }
   html.ap-lite-hero .hero__subtitle { margin-left: 0; margin-right: 0; }
   html.ap-lite-hero .hero__cta-form,
-  html.ap-lite-hero .hero__trust { justify-content: flex-start; }
+  html.ap-lite-hero .hero__trust,
+  html.ap-lite-hero .hero__secondary { justify-content: flex-start; text-align: left; }
   html.ap-lite-hero .hero__orrery-layer {
     order: 2;
     align-self: center;
@@ -1079,9 +1157,15 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   color: var(--gold-hero);
   opacity: 0.85;
 }
+/* Observatory — feature card (Chart) + compact 5-tool grid. */
 .ap-lite-rail__track {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+.ap-lite-rail__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-3);
 }
 .ap-lite-rail__tile {
@@ -1091,25 +1175,69 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   gap: var(--space-2);
   padding: var(--space-4) var(--space-2);
   min-height: 44px;
-  border: 1px solid rgba(201, 162, 39, 0.16);
-  border-radius: var(--radius-lg);
-  background: rgba(12, 10, 8, 0.55);
+  border: 1px solid var(--ap-card-border);
+  border-radius: var(--radius-xl);
+  background: var(--ap-card-surface);
+  box-shadow: var(--ap-shadow-card);
   color: var(--silver);
   text-decoration: none;
   font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 .ap-lite-rail__tile:hover,
 .ap-lite-rail__tile:focus-visible {
-  border-color: rgba(201, 162, 39, 0.42);
+  border-color: var(--ap-card-border-strong);
   color: var(--gold-hero-light);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--ap-shadow-raised);
+}
+.ap-lite-rail__tile:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 2px;
+}
+/* Feature tile (Chart) — larger seal + a descriptive line, eyebrow accent. */
+.ap-lite-rail__tile--feature {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6);
+  text-transform: none;
+  letter-spacing: normal;
+  text-align: left;
+}
+.ap-lite-rail__tile--feature .ap-lite-rail__seal {
+  width: 3.4rem;
+  height: 3.8rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+.ap-lite-rail__feature-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.ap-lite-rail__tile--feature .ap-lite-rail__name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--white);
+  text-align: left;
+}
+.ap-lite-rail__desc {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--silver-dim);
 }
 .ap-lite-rail__glyph {
   font-size: 1.15rem;
-  color: var(--gold-hero);
+  color: var(--gold-vivid);
   line-height: 1;
 }
 .ap-lite-rail__seal {
@@ -1122,26 +1250,23 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
 }
 .ap-lite-rail__seal .ap-seal { width: 100%; height: 100%; }
 .ap-lite-rail__name { text-align: center; }
-@media (max-width: 720px) {
+
+@media (min-width: 720px) {
   .ap-lite-rail__track {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-    padding-bottom: var(--space-2);
-    scrollbar-width: none;
+    grid-template-columns: 1.4fr 1fr;
+    align-items: stretch;
   }
-  .ap-lite-rail__track::-webkit-scrollbar { display: none; }
-  .ap-lite-rail__tile {
-    flex: 0 0 108px;
-    scroll-snap-align: start;
+  .ap-lite-rail__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
   }
 }
 
-/* Lite footer */
+/* Lite footer — floating top rim-light + hairline. */
 .ap-lite-footer {
+  position: relative;
   border-top: 1px solid rgba(201, 162, 39, 0.12);
+  box-shadow: var(--ap-rim-shadow), 0 -24px 48px rgba(0, 0, 0, 0.28);
   padding: var(--space-8) var(--space-4) var(--space-10);
   text-align: center;
 }
@@ -1183,12 +1308,18 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   margin: 0 auto;
   padding: 0 var(--space-4) var(--space-6);
 }
-.live-sky-dock-panel {
-  padding: var(--space-5) var(--space-4) var(--space-4);
+/* Cosmic Snapshot — the live sky promoted to a full-width first-fold insight
+   card. Scoped under html.ap-lite-hero .hero__sky-dock so it outranks the
+   .hero .hero__sky-dock .live-sky-section-inner rule (0,3,0) that index-home.css
+   idle-injects after this sheet. */
+html.ap-lite-hero .hero__sky-dock .live-sky-dock-panel {
+  padding: var(--space-6) var(--space-8) var(--space-5);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(201, 162, 39, 0.14);
-  background: linear-gradient(165deg, rgba(14, 11, 8, 0.72) 0%, rgba(6, 5, 5, 0.55) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 248, 230, 0.04), 0 12px 36px rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--ap-card-border);
+  background: var(--ap-card-surface);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--ap-rim-shadow, inset 0 1px 0 rgba(239, 227, 192, 0.06)), var(--ap-shadow-card);
 }
 .live-sky-dock__head {
   display: flex;
@@ -1214,12 +1345,12 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   z-index: 1;
   margin: 0;
 }
-.live-sky-label__text {
-  font-size: 0.68rem;
-  letter-spacing: 0.34em;
+html.ap-lite-hero .live-sky-label__text {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  font-weight: 600;
-  color: var(--gold-hero);
+  font-weight: 700;
+  color: var(--gold-vivid);
 }
 .live-sky-stamp {
   font-size: 0.58rem;
@@ -1237,6 +1368,21 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   flex-wrap: wrap;
 }
 #live-sky-strip::-webkit-scrollbar { display: none; }
+/* Desktop: lay the live planet pills out as an even grid (insight-card feel);
+   mobile keeps the horizontal scroll strip below. */
+@media (min-width: 720px) {
+  html.ap-lite-hero #live-sky-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-3);
+    overflow-x: visible;
+    flex-wrap: nowrap;
+  }
+  html.ap-lite-hero #live-sky-strip .sky-pill {
+    flex-shrink: 1;
+    width: 100%;
+  }
+}
 .sky-pill {
   display: flex;
   align-items: center;
@@ -1311,18 +1457,26 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   padding-top: var(--space-3);
   border-top: 1px solid rgba(201, 162, 39, 0.1);
 }
-.live-sky-action {
+html.ap-lite-hero .hero__sky-dock .live-sky-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold-hero);
+  color: var(--gold-vivid);
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-full);
   border: 1px solid rgba(201, 162, 39, 0.22);
   background: rgba(201, 162, 39, 0.06);
 }
-.live-sky-action:hover { border-color: rgba(201, 162, 39, 0.45); color: var(--gold-hero-light); }
+html.ap-lite-hero .hero__sky-dock .live-sky-action:hover { border-color: rgba(201, 162, 39, 0.45); color: var(--gold-hero-light); }
+html.ap-lite-hero .hero__sky-dock .live-sky-action:focus-visible {
+  outline: 2px solid var(--gold-vivid);
+  outline-offset: 2px;
+}
 .live-sky-note {
   text-align: center;
   font-size: 0.6rem;
@@ -1350,10 +1504,11 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
 .ap-lite-steps__eyebrow {
   margin: 0 0 var(--space-3);
   font-size: 0.62rem;
+  font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--gold-hero);
-  opacity: 0.85;
+  color: var(--gold-vivid);
+  opacity: 0.92;
 }
 .ap-lite-steps__title {
   margin: 0 0 var(--space-3);
@@ -1371,23 +1526,52 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   color: var(--silver-dim);
 }
 .ap-lite-steps__grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-4);
-  text-align: center;
+  text-align: left;
+}
+/* Subtle decorative connector line behind the step number-circles (desktop
+   only, aria-hidden). Sits behind the cards so it reads as a flow line. */
+.ap-lite-steps__connector {
+  display: none;
+}
+@media (min-width: 721px) {
+  .ap-lite-steps__connector {
+    display: block;
+    position: absolute;
+    top: calc(var(--space-6) + 22px);
+    left: 16.66%;
+    right: 16.66%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.22), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 .ap-lite-step {
-  padding: var(--space-6) var(--space-4);
-  border: 1px solid rgba(201, 162, 39, 0.14);
-  border-radius: var(--radius-lg);
-  background: rgba(12, 10, 8, 0.5);
+  position: relative;
+  z-index: 1;
+  padding: var(--space-6) var(--space-5);
+  border: 1px solid var(--ap-card-border);
+  border-radius: var(--radius-xl);
+  background: var(--ap-card-surface);
+  box-shadow: var(--ap-shadow-card);
+}
+.ap-lite-step__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 .ap-lite-step__num {
   width: 44px;
   height: 44px;
-  margin: 0 auto var(--space-4);
+  flex-shrink: 0;
   border-radius: 50%;
   border: 1.5px solid rgba(201, 162, 39, 0.4);
+  background: rgba(7, 5, 9, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1396,49 +1580,70 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   color: var(--gold-hero-light);
 }
 .ap-lite-step__title {
-  margin: 0 0 var(--space-3);
+  margin: 0;
   font-family: var(--font-display);
-  font-size: 0.92rem;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--white);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 .ap-lite-step__text {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   line-height: 1.6;
   color: var(--silver-dim);
 }
 .ap-lite-steps__cta {
   display: inline-block;
   margin-top: var(--space-8);
-  padding: 12px 28px;
-  font-size: 0.68rem;
+  padding: 14px 32px;
+  font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
   color: #0a0805;
-  background: linear-gradient(160deg, #D9B544, #A8841E);
+  background: linear-gradient(135deg, var(--gold-vivid) 0%, #a8841e 100%);
   border-radius: var(--radius-full);
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(201, 162, 39, 0.16);
+  transition: filter var(--transition-fast), box-shadow var(--transition-base), transform var(--transition-fast);
 }
-.ap-lite-steps__cta:hover { filter: brightness(1.08); }
+.ap-lite-steps__cta:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 10px 28px rgba(201, 162, 39, 0.24);
+}
+.ap-lite-steps__cta:active { transform: translateY(1px); }
+.ap-lite-steps__cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--void), 0 0 0 4px var(--gold-vivid);
+}
 @media (max-width: 720px) {
-  .ap-lite-steps__grid { grid-template-columns: 1fr; }
+  .ap-lite-steps__grid { grid-template-columns: 1fr; text-align: left; }
+  .ap-lite-steps__connector { display: none; }
 }
 
-/* Manifesto teaser */
+/* Manifesto — pre-footer editorial block with a top hairline rule. */
 .ap-lite-manifesto {
-  max-width: 640px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-4) var(--space-8);
+  padding: var(--space-10) var(--space-4) var(--space-8);
   text-align: center;
   border: none;
+  position: relative;
+}
+.ap-lite-manifesto::before {
+  content: '';
+  display: block;
+  width: min(120px, 40%);
+  height: 1px;
+  margin: 0 auto var(--space-8);
+  background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.28), transparent);
 }
 .ap-lite-manifesto p {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
   font-family: var(--font-display);
-  font-size: 0.92rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.8;
   color: var(--silver-dim);
   font-style: italic;
 }
@@ -1446,16 +1651,19 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
 .ap-lite-manifesto__beats {
   display: flex;
   justify-content: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
+/* Beats echo the hero trust pills (transparent fill, hairline gold border). */
 .ap-lite-manifesto__beats span {
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold-hero);
-  padding: 5px 12px;
-  border: 1px solid rgba(201, 162, 39, 0.22);
+  color: var(--silver);
+  background: transparent;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid rgba(201, 162, 39, 0.16);
   border-radius: var(--radius-full);
 }
 
@@ -1473,6 +1681,14 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-launch:not([hidden]) {
   text-transform: uppercase;
   color: var(--silver-dim);
   text-decoration: none;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
-.ap-lite-footer__nav a:hover { color: var(--gold-hero); }
+.ap-lite-footer__nav a:hover,
+.ap-lite-footer__nav a:focus-visible {
+  color: var(--gold-vivid);
+  text-decoration: underline;
+  text-decoration-color: var(--gold-vivid);
+}
 

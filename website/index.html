@@ -147,14 +147,12 @@
               <input type="date" id="hero-birthdate" class="hero__date-input" aria-required="true" aria-describedby="hero-form-hint" max="2099-12-31" min="1900-01-01" />
               <button type="submit" class="hero__cast-btn">✦ Cast My Chart →</button>
             </form>
-            <p id="hero-form-hint" class="hero__trust">
-              <span>Real VSOP87 data</span>
-              <span class="hero__trust-dot" aria-hidden="true"></span>
-              <span>Privacy-first</span>
-              <span class="hero__trust-dot" aria-hidden="true"></span>
-              <span>No account required</span>
+            <p id="hero-form-hint" class="hero__trust" aria-label="Why AstroPrecise">
+              <span class="hero__trust-pill">Real VSOP87</span>
+              <span class="hero__trust-pill">Privacy-first</span>
+              <span class="hero__trust-pill">No account</span>
             </p>
-            <p class="hero__trust">
+            <p class="hero__secondary">
               <a href="index-full.html?full=1" class="hero__full-link">Full cinematic experience →</a>
             </p>
           </div>
@@ -231,12 +229,20 @@
     <nav class="ap-lite-rail" aria-label="Precision instruments">
       <p class="ap-lite-rail__eyebrow">Explore the observatory</p>
       <div class="ap-lite-rail__track ap-stagger-in">
-        <a href="chart.html" class="ap-lite-rail__tile" data-instrument="chart"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Chart</span></a>
-        <a href="horoscope.html" class="ap-lite-rail__tile" data-instrument="horoscope"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Daily</span></a>
-        <a href="compatibility.html" class="ap-lite-rail__tile" data-instrument="compatibility"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Match</span></a>
-        <a href="transits.html" class="ap-lite-rail__tile" data-instrument="transits"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Transits</span></a>
-        <a href="ephemeris.html" class="ap-lite-rail__tile" data-instrument="instrument"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Sky</span></a>
-        <a href="shop.html" class="ap-lite-rail__tile" data-instrument="shop"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Shop</span></a>
+        <a href="chart.html" class="ap-lite-rail__tile ap-lite-rail__tile--feature" data-instrument="chart">
+          <span class="ap-lite-rail__seal" aria-hidden="true"></span>
+          <span class="ap-lite-rail__feature-body">
+            <span class="ap-lite-rail__name">Chart</span>
+            <span class="ap-lite-rail__desc">Your full natal blueprint — planets, houses, aspects, computed to the minute.</span>
+          </span>
+        </a>
+        <div class="ap-lite-rail__grid">
+          <a href="horoscope.html" class="ap-lite-rail__tile" data-instrument="horoscope"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Daily</span></a>
+          <a href="compatibility.html" class="ap-lite-rail__tile" data-instrument="compatibility"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Match</span></a>
+          <a href="transits.html" class="ap-lite-rail__tile" data-instrument="transits"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Transits</span></a>
+          <a href="ephemeris.html" class="ap-lite-rail__tile" data-instrument="instrument"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Sky</span></a>
+          <a href="shop.html" class="ap-lite-rail__tile" data-instrument="shop"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Shop</span></a>
+        </div>
       </div>
     </nav>
 
@@ -245,19 +251,26 @@
       <h2 class="ap-lite-steps__title" id="how-heading">Your chart in three steps</h2>
       <p class="ap-lite-steps__sub">From birth data to complete blueprint in seconds. No account, no waiting, nothing sent anywhere.</p>
       <div class="ap-lite-steps__grid">
+        <span class="ap-lite-steps__connector" aria-hidden="true"></span>
         <div class="ap-lite-step">
-          <div class="ap-lite-step__num" aria-hidden="true">I</div>
-          <h3 class="ap-lite-step__title">Enter your birth data</h3>
+          <div class="ap-lite-step__head">
+            <div class="ap-lite-step__num" aria-hidden="true">I</div>
+            <h3 class="ap-lite-step__title">Enter your birth data</h3>
+          </div>
           <p class="ap-lite-step__text">Date, time, and place. Precision to the minute gives the fullest Ascendant and house reading.</p>
         </div>
         <div class="ap-lite-step">
-          <div class="ap-lite-step__num" aria-hidden="true">II</div>
-          <h3 class="ap-lite-step__title">VSOP87 computes positions</h3>
+          <div class="ap-lite-step__head">
+            <div class="ap-lite-step__num" aria-hidden="true">II</div>
+            <h3 class="ap-lite-step__title">VSOP87 computes positions</h3>
+          </div>
           <p class="ap-lite-step__text">Every planet, Ascendant, and house cusp for your exact moment — instantly, entirely in your browser.</p>
         </div>
         <div class="ap-lite-step">
-          <div class="ap-lite-step__num" aria-hidden="true">III</div>
-          <h3 class="ap-lite-step__title">Explore your blueprint</h3>
+          <div class="ap-lite-step__head">
+            <div class="ap-lite-step__num" aria-hidden="true">III</div>
+            <h3 class="ap-lite-step__title">Explore your blueprint</h3>
+          </div>
           <p class="ap-lite-step__text">Read interpretations, examine aspects, discover dominant elements, and download your chart poster.</p>
         </div>
       </div>
