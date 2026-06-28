@@ -655,7 +655,7 @@ html.ap-lite-hero .hero__date-input:focus,
 html.ap-lite-hero .hero__date-input:focus-visible {
   outline: none;
   border-color: var(--gold-vivid);
-  box-shadow: 0 0 0 3px rgba(230, 194, 74, 0.22);
+  box-shadow: 0 0 0 3px rgba(230, 194, 74, 0.25), 0 6px 24px rgba(230, 194, 74, 0.18);
 }
 
 html.ap-lite-hero .hero__cast-btn {
@@ -690,6 +690,18 @@ html.ap-lite-hero .hero__cast-btn:active {
 html.ap-lite-hero .hero__cast-btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--void), 0 0 0 4px var(--gold-vivid);
+}
+
+/* Magnetic pull toward the cursor (fine-pointer + non-reduced-motion only).
+   Uses the independent `translate` property so it composes with the :active
+   transform; --mx/--my are driven by js/ap-magnetic.js, default 0. */
+@media (prefers-reduced-motion: no-preference) and (pointer: fine) {
+  html.ap-lite-hero .hero__cast-btn {
+    translate: var(--mx, 0px) var(--my, 0px);
+    transition: filter var(--transition-fast), box-shadow var(--transition-base),
+      transform var(--transition-fast), translate 200ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  html.ap-lite-hero .hero__cast-btn:hover { will-change: translate; }
 }
 
 html.ap-lite-hero .hero__trust {
