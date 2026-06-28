@@ -26,39 +26,23 @@
     }
 
     /* ── Utility ── */
-    /* Scroll-reveal: transform/opacity only, routed through the design-system
-       easing token; .visible is toggled by index-full.html's IntersectionObserver. */
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity var(--dur-slow, 0.6s) var(--ease-standard, cubic-bezier(0.22, 1, 0.36, 1)),
-                  transform var(--dur-slow, 0.6s) var(--ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
-      will-change: opacity, transform;
-    }
+    /* Scroll-reveal + stagger REMOVED (calming pass).
+       The home page previously hid every section (.reveal → opacity:0 +
+       translateY(28px)) and faded each in on scroll via an IntersectionObserver,
+       with .reveal-delay-* staggering neighbours. That ambient entrance
+       choreography is gone: .reveal now renders content immediately (opacity:1,
+       no transform, no transition), so sections are present on load whether or
+       not the observer ever fires. The .visible/.reveal-delay-* hooks are kept
+       as inert no-ops so the existing HTML/JS classes don't error. */
+    .reveal,
     .reveal.visible {
       opacity: 1;
       transform: none;
     }
-    /* Staggered entrance — derived from the single --reveal-stagger token (70ms). */
-    .reveal-delay-1 { transition-delay: calc(var(--reveal-stagger, 70ms) * 1.5); }
-    .reveal-delay-2 { transition-delay: calc(var(--reveal-stagger, 70ms) * 3); }
-    .reveal-delay-3 { transition-delay: calc(var(--reveal-stagger, 70ms) * 4.5); }
-    .reveal-delay-4 { transition-delay: calc(var(--reveal-stagger, 70ms) * 6); }
-
-    /* Accessibility: no entrance motion when the user asks for reduced motion —
-       content is shown immediately, no translate, no transition delay. */
-    @media (prefers-reduced-motion: reduce) {
-      .reveal {
-        opacity: 1;
-        transform: none;
-        transition: none;
-        will-change: auto;
-      }
-      .reveal-delay-1,
-      .reveal-delay-2,
-      .reveal-delay-3,
-      .reveal-delay-4 { transition-delay: 0s; }
-    }
+    .reveal-delay-1,
+    .reveal-delay-2,
+    .reveal-delay-3,
+    .reveal-delay-4 { transition-delay: 0s; }
 
     /* =====================================================================
        HERO SECTION
@@ -597,20 +581,13 @@
       font-family: var(--font-display);
     }
 
-    /* Scroll-time rail — desktop instrument edge */
+    /* Scroll-time rail REMOVED (calming pass): the decorative right-edge
+       progress line (track + fill + travelling dot + caps) was ambient
+       ornament. Hidden entirely; it is position:absolute pointer-events:none,
+       never load-bearing, so removing it shifts nothing. */
     .hero__scroll-rail {
-      position: absolute;
-      right: var(--space-4);
-      top: 18%;
-      bottom: 22%;
-      width: 2px;
-      z-index: 3;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.9s ease 0.7s;
+      display: none;
     }
-    .hero--entered .hero__scroll-rail { opacity: 1; }
-    @media (max-width: 900px) { .hero__scroll-rail { display: none; } }
 
     .hero__scroll-rail-track {
       position: absolute;
@@ -660,67 +637,25 @@
     .hero__scroll-rail-cap--top { top: -1.4rem; }
     .hero__scroll-rail-cap--bot { bottom: -1.4rem; }
 
-    /* Scroll cue */
+    /* Scroll cue REMOVED (calming pass): the bouncing chevron scroll-cue
+       (scrollCueBounce, infinite) was ambient motion. Hidden entirely; it is
+       position:absolute pointer-events:none, never load-bearing. The keyframe
+       is deleted with it. */
     .hero__scroll-cue {
-      position: absolute;
-      left: 50%;
-      bottom: max(1.2rem, env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      z-index: 5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.6s ease 1.1s;
-    }
-    .hero--entered .hero__scroll-cue { opacity: 1; }
-    .hero__scroll-cue--hidden {
-      opacity: 0 !important;
-      transition: opacity 0.5s ease !important;
-    }
-    .hero__scroll-cue-text {
-      font-size: 0.52rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(201, 162, 39, 0.62);
-      font-family: var(--font-display);
-    }
-    .hero__scroll-cue-chevron {
-      width: 14px;
-      height: 14px;
-      border-right: 1px solid rgba(201, 162, 39, 0.5);
-      border-bottom: 1px solid rgba(201, 162, 39, 0.5);
-      transform: rotate(45deg);
-      animation: scrollCueBounce 2.2s ease-in-out infinite;
-    }
-    @keyframes scrollCueBounce {
-      0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.5; }
-      50%      { transform: rotate(45deg) translateY(5px); opacity: 1; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .hero__scroll-cue-chevron { animation: none; opacity: 0.7; }
-    }
-    @media (max-width: 900px) {
-      .hero__scroll-cue { bottom: max(0.5rem, env(safe-area-inset-bottom)); }
+      display: none;
     }
 
-    /* Staggered hero copy entrance */
+    /* Staggered hero copy entrance REMOVED (calming pass): the 5-step translate +
+       stagger choreography (and its dependence on the JS-set .hero--entered hook)
+       is gone. Hero copy now renders immediately and unconditionally — no hidden
+       start state, no stagger, no upward translate — so the LCP copy is never
+       gated behind boot JS. A single gentle ~250ms fade-in is kept on initial
+       load via the one-shot .hero--entered hook when present, but the base state
+       is fully visible regardless. */
     .hero__entrance {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .hero--entered .hero__entrance { opacity: 1; transform: none; }
-    .hero--entered .hero__entrance--1 { transition-delay: 0.12s; }
-    .hero--entered .hero__entrance--2 { transition-delay: 0.24s; }
-    .hero--entered .hero__entrance--3 { transition-delay: 0.36s; }
-    .hero--entered .hero__entrance--4 { transition-delay: 0.48s; }
-    .hero--entered .hero__entrance--5 { transition-delay: 0.58s; }
-    @media (prefers-reduced-motion: reduce) {
-      .hero__entrance { opacity: 1; transform: none; transition: none; }
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.25s ease;
     }
 
     /* Repeat visit / lite hero: H1 is LCP — paint immediately, no wait for deferred hero-instrument.js */
@@ -747,44 +682,27 @@
       margin: 0 auto;
       padding: 0 var(--space-6) var(--space-6);
     }
+    /* Sky-dock entrance choreography REMOVED (calming pass): label/strip/note no
+       longer hide-then-rise on the JS .hero--entered hook — they render
+       immediately at their final opacity so the live-sky content is never gated
+       behind boot JS. */
     .hero__sky-dock .live-sky-label {
       margin-bottom: var(--space-3);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.7s ease 0.65s, transform 0.7s ease 0.65s;
-    }
-    .hero--entered .hero__sky-dock .live-sky-label {
       opacity: 0.85;
-      transform: none;
     }
     .hero__sky-dock #live-sky-strip {
       padding: 0;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.8s ease 0.75s, transform 0.8s ease 0.75s;
-    }
-    .hero--entered .hero__sky-dock #live-sky-strip {
       opacity: 1;
-      transform: none;
     }
     .hero__sky-dock .live-sky-note {
-      opacity: 0;
-      transition: opacity 0.6s ease 0.9s;
+      opacity: 0.7;
     }
-    .hero--entered .hero__sky-dock .live-sky-note { opacity: 0.7; }
+    /* Focus pill FROZEN (calming pass): the infinite sky-pill-focus-pulse glow
+       is replaced with a single still gold glow on the focused pill. */
     .sky-pill--focus {
       border-color: rgba(201, 162, 39, 0.65) !important;
       box-shadow: 0 0 18px rgba(201, 162, 39, 0.22);
       background: linear-gradient(145deg, rgba(28, 22, 14, 0.92), rgba(12, 10, 8, 0.88));
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .sky-pill--focus {
-        animation: sky-pill-focus-pulse 2.2s ease-in-out infinite;
-      }
-    }
-    @keyframes sky-pill-focus-pulse {
-      0%, 100% { box-shadow: 0 0 14px rgba(201, 162, 39, 0.18); }
-      50% { box-shadow: 0 0 22px rgba(201, 162, 39, 0.38); }
     }
 
     .live-sky-dock-panel {
@@ -807,80 +725,13 @@
       padding-top: 0.35rem;
       min-height: 2.1rem;
     }
+    /* Live-sky meteors REMOVED (calming pass): the shooting-star streaks that
+       crossed the sky-dock header forever (live-sky-meteor-pass) are gone. They
+       are position:absolute pointer-events:none, default opacity:0, inside an
+       overflow:hidden + min-height head — never load-bearing — so hiding them
+       shifts no layout. The keyframe is deleted with them. */
     .live-sky-meteor {
-      position: absolute;
-      top: 38%;
-      left: -12%;
-      width: clamp(3.5rem, 12vw, 5.5rem);
-      height: 1px;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0;
-      border-radius: 999px;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(201, 162, 39, 0.12) 32%,
-        rgba(255, 248, 230, 0.82) 90%,
-        #fff 100%
-      );
-      filter: drop-shadow(0 0 4px rgba(255, 248, 220, 0.5));
-      transform: rotate(-32deg) translateX(0);
-      will-change: transform, opacity;
-    }
-    .live-sky-meteor::after {
-      content: '';
-      position: absolute;
-      right: -1px;
-      top: 50%;
-      width: 3px;
-      height: 3px;
-      margin-top: -1.5px;
-      border-radius: 50%;
-      background: #fffef5;
-      box-shadow:
-        0 0 6px 1px rgba(255, 248, 220, 0.88),
-        0 0 14px 3px rgba(201, 162, 39, 0.42);
-    }
-    .live-sky-meteor--a {
-      top: 30%;
-      width: clamp(4rem, 14vw, 6.5rem);
-    }
-    .live-sky-meteor--b {
-      top: 62%;
-      width: clamp(2.4rem, 8vw, 3.8rem);
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(176, 210, 255, 0.18) 35%,
-        rgba(220, 235, 255, 0.72) 92%,
-        #eef4ff 100%
-      );
-      filter: drop-shadow(0 0 3px rgba(200, 220, 255, 0.38));
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      .live-sky-meteor--a {
-        animation: live-sky-meteor-pass 11s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        animation-delay: 1.8s;
-      }
-      .live-sky-meteor--b {
-        animation: live-sky-meteor-pass 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        animation-delay: 6.4s;
-      }
-    }
-    @keyframes live-sky-meteor-pass {
-      0%, 78%, 100% {
-        opacity: 0;
-        transform: rotate(-32deg) translateX(0) scaleX(0.55);
-      }
-      4% {
-        opacity: 0.95;
-        transform: rotate(-32deg) translateX(0) scaleX(1);
-      }
-      22% {
-        opacity: 0;
-        transform: rotate(-32deg) translateX(min(110vw, 920px)) scaleX(1.08);
-      }
+      display: none;
     }
     .live-sky-stamp {
       font-size: 0.58rem;
@@ -1431,22 +1282,10 @@
       outline: 2px solid rgba(201, 162, 39, 0.55);
       outline-offset: 2px;
     }
+    /* Retro pill FROZEN (calming pass): the infinite crimson sky-pill-retro-pulse
+       glow is removed; retrograde pills keep a single still crimson border so the
+       state still reads, without the perpetual pulsing. */
     .sky-pill--retro { border-color: rgba(176, 74, 82, 0.3); }
-    @media (prefers-reduced-motion: no-preference) {
-      .sky-pill--retro {
-        animation: sky-pill-retro-pulse 2.6s ease-in-out infinite;
-      }
-    }
-    @keyframes sky-pill-retro-pulse {
-      0%, 100% {
-        border-color: rgba(176, 74, 82, 0.28);
-        box-shadow: none;
-      }
-      50% {
-        border-color: rgba(210, 90, 98, 0.62);
-        box-shadow: 0 0 16px rgba(176, 74, 82, 0.2);
-      }
-    }
 
     .sky-pill__glyph {
       font-size: 1.1rem;
@@ -2047,14 +1886,13 @@
       justify-content: center;
     }
 
+    /* Zodiac wheel FROZEN (calming pass): the decorative SVG no longer spins
+       forever (wheel-slow-spin 80s infinite removed). It renders as a still,
+       elegant wheel — the moving signature stays the hero orrery/instrument. */
     .zodiac-wheel-svg {
       width: 100%;
       max-width: 380px;
-      animation: wheel-slow-spin 80s linear infinite;
       opacity: 0.65;
-    }
-    @keyframes wheel-slow-spin {
-      to { transform: rotate(360deg); }
     }
 
     /* =====================================================================

@@ -245,21 +245,9 @@ body::before {
   animation: nebula-drift 42s ease-in-out infinite alternate;
 }
 
-/* Film grain + faint engraved grid — low z-index, never tints the whole page cool */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0.32;
-  mix-blend-mode: overlay;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    linear-gradient(rgba(201, 162, 39, 0.008) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232, 224, 208, 0.004) 1px, transparent 1px);
-  background-size: 160px 160px, 3px 3px, 5px 5px;
-}
+/* Film grain removed in the simplification pass — the perpetual full-page
+   noise overlay read as "busy". Kept off to match main-lite.css. */
+body::after { content: none; }
 
 @keyframes nebula-drift {
   0%   { opacity: 1; transform: scale(1) translateY(0); }
