@@ -1480,7 +1480,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Instant PDF',
         marketingLine:'Twelve months of transits — your personal sky forecast.',
-        previewImage: 'img/shop/product-year-ahead.jpg',
+        previewImage: 'img/shop/product-year-ahead.svg',
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
         icon:         'calendar',
         fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785',
