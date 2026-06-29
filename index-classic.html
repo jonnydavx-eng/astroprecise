@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en" class="ap-lite-hero">
+<head>
+  <meta charset="UTF-8" />
+  <script src="js/ap-lite-detect.js"></script>
+  <script>
+  /* The fast lite shell is the DEFAULT for everyone — instant access to the
+     chart, no forced intro. The full cinematic experience is OPT-IN only,
+     reachable via ?full=1 (the "View the cosmic journey" link on the hero). */
+  (function () {
+    var q = location.search || '';
+    if (/[?&]full=1(?:&|$)/.test(q)) {
+      location.replace('index-full.html' + q + location.hash);
+      return;
+    }
+    /* Pre-paint flag → the hero plays its one-shot "awakening" entrance. If this
+       script never runs (JS off), the hero simply shows at rest (no animation). */
+    try {
+      document.documentElement.classList.add('ap-awaken');
+      /* Safety net: guarantee the hero reaches its visible end-state ~1.3s in,
+         even if the entrance animation never advances (stalled/background
+         renderer). setTimeout is unaffected by render/animation freezes, so the
+         hero can never be left hidden. */
+      setTimeout(function () {
+        document.documentElement.classList.add('ap-awoken');
+      }, 1300);
+    } catch (e) {}
+  })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AstroPrecise — Free birth chart calculator powered by VSOP87 astronomical precision. Precise natal charts, daily horoscopes, and live planetary positions. Everything computes in your browser." />
+  <meta name="robots" content="index, follow" />
+  <title>AstroPrecise — Your Cosmic Blueprint | Free Birth Chart &amp; Precise Astrology</title>
+  <link rel="canonical" href="https://astroprecise.app/" />
+  <meta name="theme-color" content="#050406" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="preload" href="css/lite-critical.css" as="style" />
+  <link rel="stylesheet" href="css/lite-critical.css" id="ap-css-lite-critical" />
+  <style id="ap-lite-cohesion">
+  /* Cohesion + layout-rhythm layer for the below-hero TAIL that lite-shell-boot
+     injects from index-full.html (FAQ + offerings + footer only — the bloated
+     home-sign-picker / cosmic-story / philosophy / duplicate tools are stripped
+     in filterLiteInject). Tiny, inline, non-render-blocking. Scoped under the
+     injected host (#ap-lite-rest) so it never touches the redesigned top, and
+     written to OUTRANK index-home.css (which idle-loads after this) on the few
+     properties we're harmonising. */
+
+  /* One vertical rhythm: the injected tail rides the same section padding token
+     as the redesigned top, so there's no jarring jump between halves. */
+  #ap-lite-rest #faq,
+  #ap-lite-rest #offerings {
+    padding-top: var(--section-pad-y-tight) !important;
+    padding-bottom: var(--section-pad-y-tight) !important;
+  }
+
+  /* Section eyebrows → gold-vivid small caps (matches the hero / steps eyebrows). */
+  #ap-lite-rest .section-eyebrow,
+  #ap-lite-rest #offerings p:first-child {
+    color: var(--gold-vivid) !important;
+  }
+
+  /* Display headings → display type, parchment-white (kills the old gold-only
+     offerings H2 + any hard-coded #EFE3C0). */
+  #ap-lite-rest .section-h2,
+  #ap-lite-rest #offerings h2 {
+    font-family: var(--font-display) !important;
+    color: var(--white) !important;
+  }
+  #ap-lite-rest .section-subtitle,
+  #ap-lite-rest #offerings > div:first-child p:last-child {
+    color: var(--silver) !important;
+  }
+
+  /* FAQ + offerings cards → the new card token system (surface, border, radius,
+     card shadow) instead of the old hand-rolled gradients/hex. */
+  #ap-lite-rest .ap-faq__item,
+  #ap-lite-rest #offerings > div:nth-child(2) > div {
+    background: var(--ap-card-surface) !important;
+    border: 1px solid var(--ap-card-border) !important;
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--ap-shadow-card);
+  }
+  /* Keep the featured Deep-Reading card visibly lifted (stronger rim). */
+  #ap-lite-rest #offerings > div:nth-child(2) > div:nth-child(2) {
+    border-color: var(--ap-card-border-strong) !important;
+    box-shadow: var(--ap-shadow-raised);
+  }
+  #ap-lite-rest .ap-faq__item summary {
+    font-family: var(--font-display) !important;
+    color: var(--gold-hero-light) !important;
+  }
+  #ap-lite-rest .ap-faq__item summary::after { color: var(--gold-vivid) !important; }
+  #ap-lite-rest .ap-faq__item > p { color: var(--silver) !important; }
+  #ap-lite-rest .ap-faq__item > p a,
+  #ap-lite-rest #offerings a[href]:not([data-mon]) { color: var(--gold-vivid) !important; }
+
+  /* AA touch-target floor: the injected offerings CTAs ship at ~42px tall —
+     nudge every offerings button to a ≥44px hit area (centred), no visual jump. */
+  #ap-lite-rest #offerings a[href] {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* ── Passive scroll-reveal — each below-hero section/card fades + rises ONCE
+     as it enters view. transform/opacity only; the JS adds .ap-revealed and then
+     disconnects. Targets the lite-shell sections + the injected tail. ── */
+  .ap-reveal {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    transition:
+      opacity var(--dur-slow, 0.6s) var(--ease-standard, cubic-bezier(0.22, 1, 0.36, 1)),
+      transform var(--dur-slow, 0.6s) var(--ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+    will-change: opacity, transform;
+  }
+  .ap-reveal.ap-revealed {
+    opacity: 1;
+    transform: none;
+  }
+  /* Reduced-motion (or no-JS, where .ap-reveal is never added): clean static
+     end-state — fully visible, no motion. */
+  @media (prefers-reduced-motion: reduce) {
+    .ap-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+  </style>
+  <link rel="stylesheet" href="css/ap-forms.css" id="ap-css-forms" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/ap-forms.css" /></noscript>
+  <link rel="stylesheet" href="css/ap-lite-chrome.css" media="print" onload="this.media='all'" id="ap-css-lite-chrome" />
+  <noscript><link rel="stylesheet" href="css/ap-lite-chrome.css" /></noscript>
+  <script>
+  (function apLiteDeferCss() {
+    var SHEETS = [
+      ['css/celestial-seals.css', 'ap-css-seals'],
+      ['css/ap-page-bridge.css', 'ap-css-page-bridge'],
+      ['css/ap-motion.css', 'ap-css-motion'],
+      ['css/ap-micro-2026.css', 'ap-css-micro'],
+      ['css/ap-affiliate-lite.css', 'ap-css-affiliate-lite'],
+      ['css/ap-lite-chrome.css', 'ap-css-lite-chrome'],
+      ['css/instrument-panel.css', 'ap-css-instrument-panel'],
+      ['css/ap-cinematic-2026.css', 'ap-css-cinematic-2026'],
+      ['css/ap-scroll-2026.css', 'ap-css-scroll-2026']
+    ];
+    var done = false;
+    function link(href, id) {
+      if (document.getElementById(id)) return;
+      var l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = href;
+      l.id = id;
+      document.head.appendChild(l);
+    }
+    function loadAll() {
+      if (done) return;
+      done = true;
+      SHEETS.forEach(function (p) { link(p[0], p[1]); });
+    }
+    function loadEarly() {
+      link('css/celestial-seals.css', 'ap-css-seals');
+      // Brand display fonts (Cinzel/Cormorant, font-display:swap) — loaded early but
+      // OFF the critical path so headings swap from the serif fallback to Cinzel
+      // shortly after first paint without ever blocking render.
+      link('css/fonts.css', 'ap-css-fonts');
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadEarly, { once: true });
+    } else {
+      loadEarly();
+    }
+    window.addEventListener('scroll', loadAll, { once: true, passive: true });
+    window.addEventListener('pointerdown', loadAll, { once: true, passive: true });
+    window.addEventListener('load', function () { setTimeout(loadAll, 8000); }, { once: true });
+  })();
+  </script>
+  <script>window.__apLiteHero = true; window.__apLiteShell = true;</script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "name":"AstroPrecise",
+    "url":"https://astroprecise.app/",
+    "description":"Free birth chart calculator powered by VSOP87 precision — computed privately in your browser. Client-side adaptive personalization for returning visitors using saved charts.",
+    "dateModified":"2026-06-17",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://astroprecise.app/chart.html?date={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body class="page-home ap-cinematic-2026 ap-skip-intro">
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" decoding="async" fetchpriority="low" /></div>
+          <span class="logo-text">AstroPrecise</span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <a href="index.html" class="navbar__link active" aria-current="page">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="compatibility.html" class="navbar__link">Match</a>
+          <a href="ephemeris.html" class="navbar__link">Sky</a>
+          <div class="navbar__more" data-nav-more>
+            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
+            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
+          </div>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true">
+        <p class="navbar__drawer-heading">Main</p>
+        <a href="index.html" class="navbar__link active" aria-current="page">Home</a>
+        <a href="chart.html" class="navbar__link">Chart</a>
+        <a href="horoscope.html" class="navbar__link">Daily</a>
+        <a href="compatibility.html" class="navbar__link">Match</a>
+        <a href="ephemeris.html" class="navbar__link">Sky</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="hero hero--entered" aria-label="Hero — Your cosmic blueprint">
+      <div class="hero__stage">
+        <div class="hero__content">
+          <div class="hero__text">
+            <p class="hero__eyebrow" aria-label="Powered by VSOP87 Astronomical Precision">Your Cosmic Blueprint</p>
+            <h1 class="hero__h1">Your personal universe, <em class="hero-gold-shimmer">beautifully revealed.</em></h1>
+            <p class="hero__subtitle">VSOP87 positions, computed in your browser. Your birth data never leaves your device.</p>
+            <p id="personal-welcome" class="hero__personal ap-rise-in" hidden aria-live="polite"></p>
+            <form class="hero__cta-form" id="hero-chart-form" novalidate aria-label="Quick birth chart calculator">
+              <label for="hero-birthdate" class="sr-only">Your birth date</label>
+              <input type="date" id="hero-birthdate" class="hero__date-input" aria-required="true" aria-describedby="hero-form-hint" max="2099-12-31" min="1900-01-01" />
+              <button type="submit" class="hero__cast-btn">✦ Cast My Chart →</button>
+            </form>
+            <p id="hero-form-hint" class="hero__trust" aria-label="Why AstroPrecise">
+              <span class="hero__trust-pill">Real VSOP87</span>
+              <span class="hero__trust-pill">Privacy-first</span>
+              <span class="hero__trust-pill">No account</span>
+            </p>
+            <div class="hero__firstrun" id="hero-firstrun" hidden>
+              <p class="hero__firstrun-lead"><span class="hero__firstrun-spark" aria-hidden="true">✦</span> New here? Your free chart in 3 easy steps</p>
+              <ol class="hero__firstrun-steps">
+                <li><b>1</b> Enter your birth date above</li>
+                <li><b>2</b> We compute it — real VSOP87, in your browser</li>
+                <li><b>3</b> Explore your cosmic blueprint</li>
+              </ol>
+              <button type="button" class="hero__firstrun-dismiss" id="hero-firstrun-dismiss">Got it</button>
+            </div>
+            <p class="hero__secondary">
+              <a href="index-full.html?full=1" class="hero__full-link">Full cinematic experience →</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="hero__orrery-layer" aria-hidden="false">
+          <div class="hero__orrery-wrap">
+            <div class="orrery-console">
+              <div class="hero__orrery-ring">
+                <div class="orrery-viewport" id="orrery-viewport">
+                  <!-- Optional Seedance cinematic backdrop. OFF by default — the page is
+                       identical to today until a clip is added. TO ACTIVATE: drop an ~8s
+                       seamless loop at assets/video/orrery-loop.mp4 and set
+                       data-ap-seedance-src below to "assets/video/orrery-loop.mp4". Then
+                       js/ap-seedance.js lazily plays it BEHIND the live orrery (desktop,
+                       fine-pointer, non-reduced-motion, 4g+ only) and pauses it off-screen.
+                       Generate with: "deep void #040305, engraved-gold #C9A227 astral orrery
+                       rotating gently, cool-silver starlight accents, 35mm cinematic depth,
+                       slow orbital camera, 8s seamless loop, no text" — ffmpeg CRF 24,
+                       1920x1080, faststart, <=4MB. Tune the .orrery-seedance mask in
+                       lite-critical.css if you want more/less of the clip visible. -->
+                  <video class="orrery-seedance" id="orrery-seedance" data-ap-seedance-src=""
+                         muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+                  <div class="orrery-lite-poster" id="orrery-lite-poster" role="img" aria-label="Living sky instrument — VSOP87 positions, recomputed live">
+                    <canvas class="lite-poster-canvas" id="lite-poster-canvas" aria-hidden="true"></canvas>
+                    <div class="lite-poster-ring" aria-hidden="true"></div>
+                    <div class="lite-poster-logo" aria-hidden="true"></div>
+                    <div class="lite-poster-vignette" aria-hidden="true"></div>
+                  </div>
+                  <div class="lite-vp-controls" role="toolbar" aria-label="Explore planets on the model">
+                    <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth">⌂ Earth</button>
+                    <button type="button" class="lite-vp-btn" data-lite-planet="sun" aria-label="Focus Sun">☉ Sun</button>
+                    <button type="button" class="lite-vp-btn" data-lite-planet="moon" aria-label="Focus Moon">☽ Moon</button>
+                    <button type="button" class="lite-vp-btn" data-lite-planet="mercury" aria-label="Focus Mercury">☿</button>
+                    <button type="button" class="lite-vp-btn" data-lite-planet="venus" aria-label="Focus Venus">♀</button>
+                    <button type="button" class="lite-vp-btn" data-lite-planet="mars" aria-label="Focus Mars">♂</button>
+                    <button type="button" class="lite-vp-btn" data-lite-planet="jupiter" aria-label="Focus Jupiter">♃</button>
+                    <button type="button" class="lite-vp-btn" data-lite-planet="saturn" aria-label="Focus Saturn">♄</button>
+                  </div>
+                  <button type="button" class="orrery-lite-launch" id="orrery-lite-launch" hidden aria-label="Load the interactive 3D orrery">✦ Launch 3D orrery</button>
+                  <canvas id="orrery-canvas" width="640" height="640" fetchpriority="low" role="img" tabindex="-1" aria-hidden="true" aria-label="The Living Orrery"></canvas>
+                </div>
+              </div>
+              <div class="orrery-lite-deck" id="orrery-lite-deck" aria-label="Lite sky time controls">
+                <p class="orrery-lite-chip">Living sky · drag to explore · scroll or pinch to zoom · live VSOP87</p>
+                <div class="orrery-lite-time">
+                  <span class="orrery-lite-date" id="lite-date-display" aria-live="polite">—</span>
+                  <button type="button" class="orrery-lite-now" id="lite-now-btn" aria-label="Reset sky to now">Now</button>
+                </div>
+                <div class="orrery-lite-scrub">
+                  <label class="sr-only" for="lite-scrub">Scrub through time</label>
+                  <input type="range" id="lite-scrub" min="-2000" max="2000" step="1" value="0" aria-label="Scrub through time — watch planets move in their real paths" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__sky-dock">
+        <div class="live-sky-section-inner live-sky-dock-panel ap-rise-in" aria-labelledby="live-sky-heading">
+          <div class="live-sky-dock__head">
+            <span class="live-sky-meteor live-sky-meteor--a" aria-hidden="true"></span>
+            <span class="live-sky-meteor live-sky-meteor--b" aria-hidden="true"></span>
+            <p class="live-sky-label" id="live-sky-heading" aria-label="Current Planetary Positions">
+              <span class="live-sky-label__text">Now in the sky</span>
+            </p>
+            <span class="live-sky-stamp" id="live-sky-stamp" aria-live="polite">Computing&hellip;</span>
+          </div>
+          <div id="live-sky-strip" role="group" aria-label="Live planetary positions" aria-live="polite">
+            <div class="sky-loading-pill" role="status">
+              <span class="sky-loading-pill__dot" aria-hidden="true"></span>
+              <span>Calculating positions&hellip;</span>
+            </div>
+          </div>
+          <div class="live-sky-actions" role="group" aria-label="Explore the live sky">
+            <a href="tonight.html" class="live-sky-action">Visible tonight</a>
+            <a href="transits.html" class="live-sky-action">Live transits</a>
+            <a href="retrograde.html" class="live-sky-action">Retrogrades</a>
+            <a href="ephemeris.html" class="live-sky-action">Sky</a>
+          </div>
+          <p class="live-sky-note">Tap a planet for detail &middot; VSOP87 positions, recomputed live</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="ap-lite-rail" aria-label="Precision instruments">
+      <p class="ap-lite-rail__eyebrow">Explore the observatory</p>
+      <div class="ap-lite-rail__track ap-stagger-in">
+        <a href="chart.html" class="ap-lite-rail__tile ap-lite-rail__tile--feature" data-instrument="chart">
+          <span class="ap-lite-rail__seal" aria-hidden="true"></span>
+          <span class="ap-lite-rail__feature-body">
+            <span class="ap-lite-rail__name">Chart</span>
+            <span class="ap-lite-rail__desc">Your full natal blueprint — planets, houses, aspects, computed to the minute.</span>
+          </span>
+        </a>
+        <div class="ap-lite-rail__grid">
+          <a href="horoscope.html" class="ap-lite-rail__tile" data-instrument="horoscope"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Daily</span></a>
+          <a href="compatibility.html" class="ap-lite-rail__tile" data-instrument="compatibility"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Match</span></a>
+          <a href="transits.html" class="ap-lite-rail__tile" data-instrument="transits"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Transits</span></a>
+          <a href="ephemeris.html" class="ap-lite-rail__tile" data-instrument="instrument"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Sky</span></a>
+          <a href="shop.html" class="ap-lite-rail__tile" data-instrument="shop"><span class="ap-lite-rail__seal" aria-hidden="true"></span><span class="ap-lite-rail__name">Shop</span></a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="ap-lite-steps" id="how-it-works" aria-labelledby="how-heading">
+      <p class="ap-lite-steps__eyebrow">Getting started</p>
+      <h2 class="ap-lite-steps__title" id="how-heading">Your chart in three steps</h2>
+      <p class="ap-lite-steps__sub">From birth data to complete blueprint in seconds. No account, no waiting, nothing sent anywhere.</p>
+      <div class="ap-lite-steps__grid">
+        <span class="ap-lite-steps__connector" aria-hidden="true"></span>
+        <div class="ap-lite-step">
+          <div class="ap-lite-step__head">
+            <div class="ap-lite-step__num" aria-hidden="true">I</div>
+            <h3 class="ap-lite-step__title">Enter your birth data</h3>
+          </div>
+          <p class="ap-lite-step__text">Date, time, and place. Precision to the minute gives the fullest Ascendant and house reading.</p>
+        </div>
+        <div class="ap-lite-step">
+          <div class="ap-lite-step__head">
+            <div class="ap-lite-step__num" aria-hidden="true">II</div>
+            <h3 class="ap-lite-step__title">VSOP87 computes positions</h3>
+          </div>
+          <p class="ap-lite-step__text">Every planet, Ascendant, and house cusp for your exact moment — instantly, entirely in your browser.</p>
+        </div>
+        <div class="ap-lite-step">
+          <div class="ap-lite-step__head">
+            <div class="ap-lite-step__num" aria-hidden="true">III</div>
+            <h3 class="ap-lite-step__title">Explore your blueprint</h3>
+          </div>
+          <p class="ap-lite-step__text">Read interpretations, examine aspects, discover dominant elements, and download your chart poster.</p>
+        </div>
+      </div>
+      <a href="chart.html" class="ap-lite-steps__cta">Begin your reading &rarr;</a>
+    </section>
+
+    <blockquote class="ap-lite-manifesto" cite="https://astroprecise.app/">
+      <p>You arrived under a particular sky. Most who tell you about it are guessing — <strong>we are not.</strong> Same inputs, same moment, <strong>same answer, always</strong> — computed privately in your browser.</p>
+      <div class="ap-lite-manifesto__beats" aria-label="Core principles">
+        <span>Precision</span><span>Honesty</span><span>Privacy</span>
+      </div>
+      <p class="ap-lite-manifesto__more">
+        <a href="why.html">Why precision — the full method &rarr;</a>
+      </p>
+    </blockquote>
+
+    <div id="ap-lite-rest" hidden aria-hidden="true"></div>
+  </main>
+
+  <nav class="ap-lite-bottom-placeholder" aria-label="Mobile tab bar">
+    <div class="bottom-nav__shell">
+      <div class="bottom-nav__tabs">
+        <a href="index.html" class="bottom-nav__item is-active" aria-current="page"><span class="bottom-nav__icon" aria-hidden="true">⌂</span><span class="bottom-nav__label">Home</span></a>
+        <a href="chart.html" class="bottom-nav__item"><span class="bottom-nav__icon" aria-hidden="true">◎</span><span class="bottom-nav__label">Chart</span></a>
+        <a href="horoscope.html" class="bottom-nav__item"><span class="bottom-nav__icon" aria-hidden="true">☽</span><span class="bottom-nav__label">Daily</span></a>
+        <a href="ephemeris.html" class="bottom-nav__item"><span class="bottom-nav__icon" aria-hidden="true">✦</span><span class="bottom-nav__label">Sky</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <footer class="ap-lite-footer" role="contentinfo">
+    <div class="ap-lite-footer__inner">
+      <a href="index.html" class="ap-lite-footer__brand" aria-label="AstroPrecise home">
+        <img src="img/logo-mark.svg" alt="" width="24" height="24" decoding="async" fetchpriority="low" loading="lazy" aria-hidden="true" />
+        <span>AstroPrecise</span>
+      </a>
+      <p class="ap-lite-footer__tagline">A precision instrument wearing the skin of an astrology site.</p>
+      <nav class="ap-lite-footer__nav" aria-label="Quick links">
+        <a href="chart.html">Chart</a>
+        <a href="horoscope.html">Daily</a>
+        <a href="ephemeris.html">Sky</a>
+        <a href="shop.html">Shop</a>
+        <a href="why.html">Why precision</a>
+      </nav>
+      <p class="ap-lite-footer__badge">Computed locally · VSOP87</p>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    var form = document.getElementById('hero-chart-form');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var dateInput = document.getElementById('hero-birthdate');
+        var dateVal = dateInput ? dateInput.value : '';
+        var url = 'chart.html';
+        if (dateVal) url += '?date=' + encodeURIComponent(dateVal);
+        window.location.href = url;
+      });
+    }
+
+    /* First-run guide — show the "3 easy steps" orientation ONLY to NEW visitors
+       (no saved chart + not previously dismissed). Returning users never see it. */
+    try {
+      var guide = document.getElementById('hero-firstrun');
+      if (!guide) return;
+      var hasChart = false, dismissed = false;
+      try { hasChart = (JSON.parse(localStorage.getItem('ap_charts') || '[]') || []).length > 0; } catch (e) {}
+      try { dismissed = localStorage.getItem('ap_firstrun_done') === '1'; } catch (e) {}
+      if (hasChart || dismissed) return;
+      guide.hidden = false;
+      var btn = document.getElementById('hero-firstrun-dismiss');
+      if (btn) btn.addEventListener('click', function () {
+        guide.hidden = true;
+        try { localStorage.setItem('ap_firstrun_done', '1'); } catch (e) {}
+      });
+    } catch (e) {}
+  })();
+  </script>
+  <!--
+    Orrery / sky boot (Wave 21 — Deferred LCP; see PAGE-FLOW-AUDIT §4, §10 P2).
+
+    index-full lite-hero chain (on load): ephemeris → orrery-loader → lite-orrery.
+    index.html (perf shell):              ephemeris → lite-orrery on load;
+                                          orrery-loader.js only after user engage.
+
+    Won't unify loader-before-lite-orrery on load: orrery-loader schedules
+    intersection/idle tier boot and regressed LCP (~1.5s, perf <100 in Wave 20).
+
+    Ephemeris load order: apSkyDockBoot injects ephemeris.js on window.load (seq with
+    lite-sky-dock deps); apLiteJsBoot reuses window.AstroEphemeris when already present.
+    No <link rel="modulepreload"> for ephemeris here — inject competes with text LCP;
+    lite-orrery adds modulepreload for orrery-webgl.js only after load (idle).
+
+    WebGL upgrade: scroll | pointerdown | #orrery-lite-launch | 12s timeout → orrery-loader.
+  -->
+  <script>
+  (function apSkyDockBoot() {
+    if (window.__apSkipOrreryBoot && window.__apSkipOrreryBoot()) return;
+    var SKY = ['js/ap-zodiac-constants.js', 'js/element-seals.js', 'js/celestial-seals.js', 'js/icons.js', 'js/ephemeris.js', 'js/lite-sky-dock.js'];
+    var skyStarted = false;
+    function inject(src, next) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function () { if (next) next(); };
+      document.body.appendChild(s);
+    }
+    function loadSky() {
+      if (skyStarted) return;
+      skyStarted = true;
+      function seq(i) {
+        if (i >= SKY.length) return;
+        inject(SKY[i], function () { seq(i + 1); });
+      }
+      seq(0);
+    }
+    if (document.readyState === 'complete') loadSky();
+    else window.addEventListener('load', loadSky, { once: true });
+  })();
+  </script>
+  <script>
+  /* Poster path: ephemeris (or reuse from apSkyDockBoot) → lite-orrery — loader deferred to engage. */
+  (function apLiteJsBoot() {
+    if (window.__apSkipOrreryBoot && window.__apSkipOrreryBoot()) return;
+    var liteStarted = false;
+    var loaderQueued = false;
+    function inject(src, next) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = function () { if (next) next(); };
+      document.body.appendChild(s);
+    }
+    function loadLite() {
+      if (liteStarted) return;
+      liteStarted = true;
+      function startOrrery() {
+        inject('js/lite-orrery.js');
+      }
+      if (window.AstroEphemeris && window.AstroEphemeris.julianDay) startOrrery();
+      else inject('js/ephemeris.js', startOrrery);
+    }
+    function queueWebGL() {
+      if (loaderQueued) return;
+      loaderQueued = true;
+      inject('js/orrery-loader.js');
+    }
+    function onEngage() { queueWebGL(); }
+    function schedule() {
+      loadLite();
+      window.addEventListener('scroll', onEngage, { once: true, passive: true });
+      window.addEventListener('pointerdown', onEngage, { once: true, passive: true });
+      var launch = document.getElementById('orrery-lite-launch');
+      if (launch) launch.addEventListener('click', onEngage, { once: true });
+      setTimeout(onEngage, 12000);
+    }
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+  })();
+  </script>
+  <script>
+  (function apDeferPosterLogo() {
+    function mark() { document.documentElement.classList.add('orrery-poster-ready'); }
+    if (document.readyState === 'complete') mark();
+    else window.addEventListener('load', mark, { once: true });
+  })();
+  </script>
+  <script>
+  /* Passive scroll-reveal — ONE IntersectionObserver. Each below-hero section /
+     card fades + rises (opacity + 16px translateY) ONCE as it enters view, with a
+     ~70ms stagger between siblings revealing in the same frame, then stays put.
+     transform/opacity only (GPU; 0 layout cost). Fully gated under
+     prefers-reduced-motion: when motion is off we never add .ap-reveal, so every
+     element stays at its natural visible end-state (no hidden content, no motion).
+     The hero is intentionally EXCLUDED — it has its own one-shot "awakening"
+     entrance and ap-awoken safety net, which this must not touch. */
+  (function apScrollReveal() {
+    try {
+      var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mq && mq.matches) return;            /* reduced motion → no reveal, content visible */
+      if (!('IntersectionObserver' in window)) return; /* no IO → content visible (never tagged) */
+
+      /* Below-hero reveal targets — never the .hero (it has its own entrance). */
+      var SELECTORS = [
+        '.ap-lite-rail',          /* Observatory */
+        '.ap-lite-steps',         /* Three steps */
+        '.ap-lite-step',          /* …and each step card, staggered */
+        '.ap-lite-manifesto',     /* Manifesto */
+        '#ap-lite-rest #faq',     /* injected: FAQ */
+        '#ap-lite-rest .ap-faq__item',
+        '#ap-lite-rest #offerings',
+        '#ap-lite-rest #offerings > div:nth-child(2) > div'
+      ];
+
+      var tracked = [];                          /* every tagged el — for the safety net */
+      function reveal(el) {
+        if (el.classList.contains('ap-revealed')) return;
+        el.classList.add('ap-revealed');
+      }
+      /* Hard fallback: snap an element to its visible end-state with NO reliance
+         on the opacity/transform transition committing (transitions can stall in
+         backgrounded/headless renderers). Used by the safety net so content is
+         never left invisible even if the compositor never runs the transition. */
+      function snap(el) {
+        el.classList.add('ap-revealed');
+        el.style.transition = 'none';
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        /* Stagger siblings that cross the threshold together (~70ms apart). */
+        var batch = 0;
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          setTimeout(reveal, batch * 70, el);
+          batch++;
+          io.unobserve(el);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+      var seen = (typeof WeakSet !== 'undefined') ? new WeakSet() : null;
+      function tag(root) {
+        (root || document).querySelectorAll(SELECTORS.join(',')).forEach(function (el) {
+          if (el.closest('.hero')) return;       /* never the hero */
+          if (seen) { if (seen.has(el)) return; seen.add(el); }
+          else if (el.classList.contains('ap-reveal')) return;
+          el.classList.add('ap-reveal');
+          tracked.push(el);
+          /* Anything already in (or above) the viewport at tag time reveals on the
+             next frame — the rAF gives the transition a committed "from" frame so
+             opacity/transform actually animate instead of snapping. */
+          var r = el.getBoundingClientRect();
+          if (r.top < (window.innerHeight || document.documentElement.clientHeight)) {
+            requestAnimationFrame(function () { requestAnimationFrame(function () { reveal(el); }); });
+          } else {
+            io.observe(el);
+          }
+        });
+        armSafetyNet();
+      }
+
+      /* Safety net (mirrors the hero's ap-awoken guard): ~2.6s after the most
+         recent tag pass, force every tracked element — including any late-injected
+         tail — to its visible end-state, regardless of IO or a stalled transition.
+         Content can never be left invisible. Re-armed on each tag pass so the
+         deferred FAQ/offerings are covered too. */
+      var netTimer = null;
+      function armSafetyNet() {
+        if (netTimer) clearTimeout(netTimer);
+        netTimer = setTimeout(function () {
+          for (var i = 0; i < tracked.length; i++) snap(tracked[i]);
+        }, 2600);
+      }
+
+      tag(document);
+
+      /* The tail (FAQ / offerings) is injected later by lite-shell-boot into
+         #ap-lite-rest — re-scan once it appears so it reveals too. */
+      var host = document.getElementById('ap-lite-rest');
+      if (host && 'MutationObserver' in window) {
+        var mo = new MutationObserver(function () {
+          if (host.children.length) { tag(host); }
+        });
+        mo.observe(host, { childList: true, subtree: true });
+        setTimeout(function () { mo.disconnect(); }, 30000); /* stop watching eventually */
+      }
+    } catch (e) {}
+  })();
+  </script>
+  <script src="js/ap-nav-prefetch.js" defer data-ap-nav-prefetch="1"></script>
+  <script src="js/ap-nav-model.js"></script>
+  <script src="js/element-seals.js" defer></script>
+  <script src="js/ap-zodiac-constants.js" defer></script>
+  <script src="js/celestial-seals.js" defer></script>
+  <script src="js/ap-magnetic.js" defer></script>
+  <script src="js/ap-seedance.js" defer></script>
+  <script src="js/lite-shell-boot.js" defer></script>
+</body>
+</html>
