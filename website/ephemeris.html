@@ -206,7 +206,7 @@
           </svg>
           <div id="ph-readout" style="margin-top:8px;font-family:'Cormorant Garamond',serif;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
           <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
-            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(201,162,39,0.35);color:#C9A227;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
+            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(201,162,39,0.35);color:#C2A05E;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
             <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
           </div>
           <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore • Sunrise-based unequal hours</div>
@@ -765,7 +765,7 @@
       if (isNaN(aligned)) { aligned = null; return; }
       render(aligned);
       nowBtn.style.display = '';
-      readout.innerHTML += `<br><span style="color:#C9A227;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
+      readout.innerHTML += `<br><span style="color:#C2A05E;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
     });
     nowBtn.addEventListener('click', () => { aligned = null; nowBtn.style.display = 'none'; render(new Date()); });
     render(new Date());

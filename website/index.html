@@ -669,7 +669,7 @@
      ============================================================ -->
 <section class="cosmic-story-band section-bleed" aria-labelledby="cosmic-band-heading">
   <div class="page-wrap">
-    <h2 id="cosmic-band-heading">Tonight, the planets stand in your sky.</h2>
+    <h2 id="cosmic-band-heading">Tonight, the planets stand in the sky.</h2>
 
     <!-- Planet stage — positions filled by JS after load -->
     <div class="cs-planet-stage" id="cs-planet-stage" aria-live="polite">
@@ -679,7 +679,7 @@
         <svg viewBox="0 0 140 140" width="140" height="140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
     <!-- Soft outer glow -->
-    <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
+    <radialGradient id="cs-moon-glow" cx="50%" cy="50%" r="50%">
       <stop offset="60%"  stop-color="#D8CEB6" stop-opacity="0"/>
       <stop offset="100%" stop-color="#BFB89A" stop-opacity="0.22"/>
     </radialGradient>
@@ -697,7 +697,7 @@
     <clipPath id="moon-sphere-clip"><circle cx="70" cy="70" r="52"/></clipPath>
   </defs>
   <!-- Outer glow halo -->
-  <circle cx="70" cy="70" r="68" fill="url(#moon-glow)"/>
+  <circle cx="70" cy="70" r="68" fill="url(#cs-moon-glow)"/>
   <!-- Main sphere -->
   <circle cx="70" cy="70" r="52" fill="url(#moon-sphere)"/>
   <!-- Maria patches (darker regions, clipped to sphere) -->
@@ -866,7 +866,7 @@
 
     </div><!-- /cs-planet-stage -->
 
-    <p class="cs-footer">Computed now &middot; in your sky &middot; VSOP87</p>
+    <p class="cs-footer">Computed now &middot; geocentric &middot; VSOP87</p>
   </div>
 </section>
 
