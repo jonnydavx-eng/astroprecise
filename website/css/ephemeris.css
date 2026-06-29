@@ -14,12 +14,18 @@
   --ink:             #1A1B1E;
   --ink-faded:       #55524B;
   --midnight:        #16243A;
+  --warm-midnight:   #2D3F52;
   --paper-on-midnight: #EAE3D3;
   --meridian:        #2F5D8C;
   --terracotta:      #B5532E;
   --brass:           #9A7B3F;
   --sage:            #5A7A48;
   --hairline:        rgba(26, 27, 30, 0.12);
+  /* New cosmic palette */
+  --rose:            #C89A6E;
+  --deep-indigo:     #3A4F6C;
+  --dusk:            #A67C52;
+  --twilight:        #4A5F7F;
 
   /* Typography */
   --font-serif:  'Cormorant Garamond', Georgia, serif;
@@ -372,10 +378,10 @@ a:hover, a:focus-visible {
 }
 
 /* ------------------------------------------------------------
-   10. .night-watch — the single dark band
+   10. .night-watch — the single dark band (now warm-midnight)
    ------------------------------------------------------------ */
 .night-watch {
-  background: var(--midnight);
+  background: var(--warm-midnight);
   color: var(--paper-on-midnight);
 }
 
@@ -920,6 +926,193 @@ a:hover, a:focus-visible {
   margin-right: 0.08em;
   margin-top: 0.06em;
   color: var(--brass);
+}
+
+/* ------------------------------------------------------------
+   20c. Hero depth — radial indigo edge tint
+   ------------------------------------------------------------ */
+.hero-section {
+  position: relative;
+}
+.hero-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 100% at 50% 50%,
+    transparent 40%,
+    rgba(58, 79, 108, 0.07) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-section > .page-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------
+   20d. Cosmic Story dusk band
+   ------------------------------------------------------------ */
+.cosmic-story-band {
+  background: linear-gradient(to top,
+    var(--dusk) 0%,
+    var(--twilight) 45%,
+    var(--deep-indigo) 100%);
+  color: var(--paper-on-midnight);
+  padding-block: var(--sp-13);
+  position: relative;
+  overflow: hidden;
+}
+.cosmic-story-band h2 {
+  font-family: var(--font-serif);
+  color: var(--paper-on-midnight);
+  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--sp-8);
+  text-align: center;
+}
+.cosmic-story-band .cs-footer {
+  font-family: var(--font-mono);
+  font-size: max(12px, 0.7rem);
+  color: var(--paper-on-midnight);
+  opacity: 0.45;
+  text-align: center;
+  margin-top: var(--sp-5);
+  letter-spacing: 0.06em;
+}
+
+/* Planet stage — organic, not a grid */
+.cs-planet-stage {
+  position: relative;
+  min-height: 320px;
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+.cs-planet {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.cs-planet svg {
+  display: block;
+  filter: drop-shadow(0 0 12px rgba(244, 239, 230, 0.12));
+}
+.cs-planet-label {
+  font-family: var(--font-mono);
+  font-size: max(12px, 0.7rem);
+  color: var(--paper-on-midnight);
+  opacity: 0.85;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.cs-planet-epithet {
+  font-family: var(--font-serif);
+  font-size: clamp(0.88rem, 1.1vw, 1rem);
+  font-style: italic;
+  color: var(--paper-on-midnight);
+  opacity: 0.72;
+  white-space: nowrap;
+}
+
+/* Organic positions (desktop) */
+.cs-planet[data-planet="moon"]  { left: 5%;  top: 20px;  }
+.cs-planet[data-planet="sun"]   { left: 28%; top: 100px; }
+.cs-planet[data-planet="venus"] { left: 58%; top: 30px;  }
+.cs-planet[data-planet="mars"]  { left: 76%; top: 110px; }
+
+@media (max-width: 700px) {
+  .cs-planet-stage {
+    min-height: 560px;
+    max-width: 380px;
+  }
+  .cs-planet[data-planet="moon"]  { left: 5%;  top: 10px;  }
+  .cs-planet[data-planet="sun"]   { left: 55%; top: 30px;  }
+  .cs-planet[data-planet="venus"] { left: 8%;  top: 220px; }
+  .cs-planet[data-planet="mars"]  { left: 54%; top: 240px; }
+}
+
+/* ------------------------------------------------------------
+   20e. Why section — indigo left-edge accent + serif body
+   ------------------------------------------------------------ */
+.why-grid-wrap {
+  position: relative;
+}
+.why-grid-wrap::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--deep-indigo);
+  opacity: 0.35;
+  border-radius: 2px;
+}
+.why-plate-desc {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  color: var(--ink-faded);
+  line-height: 1.65;
+  margin-top: var(--sp-1);
+  max-width: none;
+}
+
+/* Rose eyebrow for hero */
+.eyebrow-rose {
+  font-family: var(--font-serif);
+  font-size: clamp(0.88rem, 1.1vw, 1rem);
+  font-style: italic;
+  color: var(--rose);
+  display: block;
+  margin-bottom: var(--sp-2);
+  letter-spacing: 0.01em;
+}
+
+/* Hero label override */
+.hero-form .ui-label {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--ink-faded);
+}
+
+/* ------------------------------------------------------------
+   20f. Animations (reduced-motion gated)
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* (a) ecliptic ring rotation */
+  @keyframes ecliptic-rotate {
+    to { transform: rotate(360deg); }
+  }
+  .hero-ecliptic-ring {
+    transform-origin: 220px 220px;
+    animation: ecliptic-rotate 28s linear infinite;
+  }
+
+  /* (b) star twinkle — opacity only */
+  @keyframes twinkle {
+    0%, 100% { opacity: var(--twinkle-base, 0.45); }
+    50%       { opacity: var(--twinkle-peak, 0.9); }
+  }
+  .twinkle-star {
+    animation: twinkle var(--twinkle-dur, 3.2s) ease-in-out infinite;
+    animation-delay: var(--twinkle-delay, 0s);
+  }
+
+  /* (c) Cosmic Story planet drift */
+  @keyframes planet-drift {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(var(--drift, -4px)); }
+  }
+  .cs-planet {
+    animation: planet-drift var(--drift-dur, 7s) ease-in-out infinite;
+    animation-delay: var(--drift-delay, 0s);
+  }
 }
 
 /* ------------------------------------------------------------
