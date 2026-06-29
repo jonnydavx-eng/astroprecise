@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AstroPrecise — The sky, computed</title>
-  <meta name="description" content="Birth chart calculator, daily sky, and horoscope — VSOP87 precision, computed privately in your browser. No account. No tracking.">
+  <title>AstroPrecise — Your birth chart, written for you</title>
+  <meta name="description" content="AstroPrecise reads your birth chart back to you — your character, your story, the year ahead — calculated from the exact positions of the planets at the moment you were born. Private, precise, and free to start.">
   <meta name="theme-color" content="#F4EFE6">
 
   <!-- iOS web-app -->
@@ -18,8 +18,8 @@
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="AstroPrecise — The sky, computed">
-  <meta property="og:description" content="Birth chart calculator, daily sky, and horoscope — VSOP87 precision, computed privately in your browser.">
+  <meta property="og:title" content="AstroPrecise — Your birth chart, written for you">
+  <meta property="og:description" content="AstroPrecise reads your birth chart back to you — your character, your story, the year ahead — calculated from the exact positions of the planets at the moment you were born.">
   <meta property="og:image" content="img/og-banner.png">
   <meta property="og:type" content="website">
 
@@ -56,19 +56,24 @@
 <!-- ============================================================
      § 2 · HERO / COVER
      ============================================================ -->
-<section class="department section-bleed" style="padding-top: var(--sp-13); padding-bottom: var(--sp-13);">
+<section class="department section-bleed hero-section" style="padding-top: var(--sp-13); padding-bottom: var(--sp-13);">
   <div class="page-wrap">
-    <div class="editorial-grid">
-      <div>
-        <h1 class="display fade-in">
-          The sky,<br>computed —<br>then read<br>to you.
+    <div class="hero-grid">
+
+      <!-- Left: copy + form -->
+      <div class="hero-copy">
+        <span class="dept-eyebrow fade-in" style="font-size: max(13px,0.72rem); letter-spacing:0.1em;">Real Astronomy &middot; Written for You</span>
+
+        <h1 class="display fade-in" style="margin-top: var(--sp-2); animation-delay: 0.07s;">
+          Who you are,<br>written in the exact sky<br>you were born under.
         </h1>
-        <p class="standfirst fade-in" style="margin-top: var(--sp-3); animation-delay: 0.12s;">
-          Every position is calculated in your browser using VSOP87 — the same planetary theory used by observatories. Nothing leaves your device.
+
+        <p class="standfirst fade-in" style="margin-top: var(--sp-3); animation-delay: 0.15s; color: var(--ink-faded); max-width: 52ch;">
+          AstroPrecise reads your birth chart back to you — your character, your patterns, your story, the year ahead — calculated from the real positions of the planets at the moment you were born. Not the same sun-sign horoscope as everyone else. Not your data sold to anyone. Just your sky, computed privately, here in your browser.
         </p>
 
         <!-- Birth-date entry form -->
-        <form id="hero-chart-form" class="hero-form" novalidate aria-label="Cast your natal chart">
+        <form id="hero-chart-form" class="hero-form fade-in" novalidate aria-label="Cast your natal chart" style="animation-delay: 0.22s;">
           <label for="hero-birthdate" class="ui-label" style="font-size:0.85rem; font-weight:500; font-family:var(--font-ui); color:var(--ink-faded);">
             Your date of birth
           </label>
@@ -86,15 +91,406 @@
           </div>
           <p id="hero-form-error" role="alert" style="display:none; font-family:var(--font-ui); font-size:0.82rem; color:var(--terracotta); margin-top:4px; flex-basis:100%;"></p>
         </form>
+
+        <p class="hero-reassurance fade-in" style="animation-delay: 0.28s;">Free &middot; no account &middot; your first chart in under a minute</p>
       </div>
 
-      <!-- Marginalia rail -->
-      <aside class="marginalia" aria-hidden="true" style="padding-top: 0.5rem;">
-        <span class="margin-note">VSOP87 · Bretagnon &amp; Francou 1987</span>
-        <span class="margin-note" style="margin-top:var(--sp-3);">Computed at your device · lat 0° lon 0° for sky positions</span>
-        <span class="margin-note" style="margin-top:var(--sp-3);">No account required</span>
-      </aside>
-    </div>
+      <!-- Right: engraved hero illustration -->
+      <div class="hero-illustration fade-in" style="animation-delay: 0.18s;">
+        <svg
+          viewBox="0 0 440 440"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Antique engraved natal wheel — an ornate celestial chart with zodiac band, degree-tick ring, house lines, central sun, planet marks, and corner flourishes"
+          style="width:100%; max-width:440px; display:block; margin-inline:auto;"
+        >
+          <defs>
+            <style>
+              /* Engraved paper illustration — ink strokes on paper */
+              .eng-bg    { fill: var(--paper-leaf); }
+              .eng-ring  { fill: none; stroke: var(--ink); stroke-width: 0.9; }
+              .eng-ring-med { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+              .eng-ring-heavy { fill: none; stroke: var(--ink); stroke-width: 2; }
+              .eng-brass { fill: none; stroke: var(--brass); stroke-width: 0.8; opacity: 0.7; }
+              .eng-spoke { fill: none; stroke: var(--ink); stroke-width: 0.7; opacity: 0.55; }
+              .eng-house-spoke { fill: none; stroke: var(--ink); stroke-width: 1; opacity: 0.4; }
+              .eng-tick  { stroke: var(--ink); stroke-width: 0.8; }
+              .eng-tick-major { stroke: var(--ink); stroke-width: 1.2; }
+              .eng-glyph { font-family: serif; font-size: 13px; fill: var(--ink); }
+              .eng-glyph-sm { font-family: serif; font-size: 10px; fill: var(--ink); }
+              .eng-mono  { font-family: 'IBM Plex Mono', monospace; font-size: 8px; fill: var(--brass); letter-spacing: 0.05em; }
+              .eng-label { font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; fill: var(--ink); opacity: 0.6; }
+              .eng-hatch { stroke: var(--ink); stroke-width: 0.5; opacity: 0.13; }
+              .eng-planet-dot { fill: var(--ink); }
+              .eng-sun-ray  { stroke: var(--ink); stroke-width: 0.9; opacity: 0.75; }
+              .eng-sun-core { fill: var(--ink); }
+              .eng-flourish { fill: none; stroke: var(--brass); stroke-width: 0.9; opacity: 0.55; }
+              .eng-asp { stroke: var(--ink); stroke-width: 0.7; opacity: 0.22; }
+              .eng-terr { fill: none; stroke: var(--terracotta); stroke-width: 1; opacity: 0.6; }
+              .eng-terr-fill { fill: var(--terracotta); opacity: 0.7; }
+            </style>
+
+            <!-- Stipple / crosshatch pattern for inner sky fill -->
+            <pattern id="hatch-fine" x="0" y="0" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
+              <line x1="0" y1="0" x2="0" y2="5" class="eng-hatch"/>
+            </pattern>
+            <pattern id="hatch-cross" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="0" y2="6" class="eng-hatch"/>
+              <line x1="0" y1="0" x2="6" y2="0" class="eng-hatch"/>
+            </pattern>
+
+            <!-- Clip to chart circle -->
+            <clipPath id="chart-clip">
+              <circle cx="220" cy="220" r="207"/>
+            </clipPath>
+          </defs>
+
+          <!-- Paper background -->
+          <rect width="440" height="440" class="eng-bg"/>
+
+          <!-- ── Subtle sky field hatch inside inner circle ── -->
+          <circle cx="220" cy="220" r="120" fill="url(#hatch-fine)" opacity="0.45"/>
+
+          <!-- ── CORNER FLOURISHES (brass ornamental) ── -->
+          <!-- Top-left -->
+          <g class="eng-flourish">
+            <path d="M 12,12 Q 30,12 30,30"/>
+            <path d="M 12,12 L 26,12 M 12,12 L 12,26"/>
+            <circle cx="12" cy="12" r="3" fill="var(--brass)" opacity="0.4"/>
+            <path d="M 28,12 Q 28,22 18,22"/>
+            <path d="M 12,28 Q 22,28 22,18"/>
+            <!-- small leaf -->
+            <path d="M 35,10 Q 42,6 48,10 Q 42,14 35,10 Z" fill="var(--brass)" opacity="0.3"/>
+            <path d="M 10,35 Q 6,42 10,48 Q 14,42 10,35 Z" fill="var(--brass)" opacity="0.3"/>
+          </g>
+          <!-- Top-right -->
+          <g class="eng-flourish" transform="scale(-1,1) translate(-440,0)">
+            <path d="M 12,12 Q 30,12 30,30"/>
+            <path d="M 12,12 L 26,12 M 12,12 L 12,26"/>
+            <circle cx="12" cy="12" r="3" fill="var(--brass)" opacity="0.4"/>
+            <path d="M 28,12 Q 28,22 18,22"/>
+            <path d="M 12,28 Q 22,28 22,18"/>
+            <path d="M 35,10 Q 42,6 48,10 Q 42,14 35,10 Z" fill="var(--brass)" opacity="0.3"/>
+            <path d="M 10,35 Q 6,42 10,48 Q 14,42 10,35 Z" fill="var(--brass)" opacity="0.3"/>
+          </g>
+          <!-- Bottom-left -->
+          <g class="eng-flourish" transform="scale(1,-1) translate(0,-440)">
+            <path d="M 12,12 Q 30,12 30,30"/>
+            <path d="M 12,12 L 26,12 M 12,12 L 12,26"/>
+            <circle cx="12" cy="12" r="3" fill="var(--brass)" opacity="0.4"/>
+            <path d="M 28,12 Q 28,22 18,22"/>
+            <path d="M 12,28 Q 22,28 22,18"/>
+            <path d="M 35,10 Q 42,6 48,10 Q 42,14 35,10 Z" fill="var(--brass)" opacity="0.3"/>
+            <path d="M 10,35 Q 6,42 10,48 Q 14,42 10,35 Z" fill="var(--brass)" opacity="0.3"/>
+          </g>
+          <!-- Bottom-right -->
+          <g class="eng-flourish" transform="scale(-1,-1) translate(-440,-440)">
+            <path d="M 12,12 Q 30,12 30,30"/>
+            <path d="M 12,12 L 26,12 M 12,12 L 12,26"/>
+            <circle cx="12" cy="12" r="3" fill="var(--brass)" opacity="0.4"/>
+            <path d="M 28,12 Q 28,22 18,22"/>
+            <path d="M 12,28 Q 22,28 22,18"/>
+            <path d="M 35,10 Q 42,6 48,10 Q 42,14 35,10 Z" fill="var(--brass)" opacity="0.3"/>
+            <path d="M 10,35 Q 6,42 10,48 Q 14,42 10,35 Z" fill="var(--brass)" opacity="0.3"/>
+          </g>
+
+          <!-- ── OUTER DEGREE TICK RING (r=207 → 195) ── -->
+          <!-- Heavy outer border -->
+          <circle cx="220" cy="220" r="210" class="eng-ring-heavy" opacity="0.18"/>
+          <circle cx="220" cy="220" r="207" class="eng-ring-med"/>
+          <circle cx="220" cy="220" r="197" class="eng-ring"/>
+
+          <!-- 360 degree ticks — every 1° small, every 5° medium, every 10° large, every 30° major -->
+          <g id="deg-ticks">
+            <!-- We'll draw representative sets: 72 × 5° ticks and subset of majors -->
+            <!-- 5° ticks (72 total; drawn at r=207, length 5px inward) -->
+            <g stroke="var(--ink)" stroke-width="0.6" opacity="0.5">
+              <!-- Using transform rotate for each 5° interval, 72 marks -->
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(0 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(5 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(10 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(15 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(20 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(25 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(30 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(35 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(40 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(45 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(50 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(55 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(60 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(65 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(70 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(75 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(80 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(85 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(90 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(95 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(100 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(105 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(110 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(115 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(120 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(125 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(130 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(135 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(140 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(145 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(150 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(155 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(160 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(165 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(170 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(175 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(180 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(185 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(190 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(195 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(200 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(205 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(210 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(215 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(220 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(225 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(230 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(235 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(240 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(245 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(250 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(255 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(260 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(265 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(270 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(275 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(280 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(285 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(290 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(295 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(300 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(305 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(310 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(315 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(320 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(325 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(330 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(335 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(340 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(345 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(350 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="20" transform="rotate(355 220 220)"/>
+            </g>
+            <!-- 30° major ticks (longer, heavier) -->
+            <g stroke="var(--ink)" stroke-width="1.3" opacity="0.8">
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(0 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(30 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(60 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(90 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(120 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(150 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(180 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(210 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(240 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(270 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(300 220 220)"/>
+              <line x1="220" y1="13" x2="220" y2="25" transform="rotate(330 220 220)"/>
+            </g>
+          </g>
+
+          <!-- ── ZODIAC BAND (r=197 to r=160) ── -->
+          <circle cx="220" cy="220" r="160" class="eng-ring"/>
+
+          <!-- Zodiac band fill — very subtle cross-hatch for texture -->
+          <path d="M 220,23 A 197,197 0 1 1 219.999,23 Z" fill="url(#hatch-cross)" opacity="0.3" clip-path="url(#chart-clip)"/>
+          <!-- White out the inner part to leave only the band hatch -->
+          <circle cx="220" cy="220" r="160" fill="var(--paper-leaf)"/>
+          <circle cx="220" cy="220" r="120" fill="url(#hatch-fine)" opacity="0.35"/>
+          <circle cx="220" cy="220" r="55" fill="var(--paper-leaf)"/>
+
+          <!-- Zodiac band sign dividers (brass, 30° each) -->
+          <g fill="none" stroke="var(--brass)" stroke-width="0.9" opacity="0.65">
+            <!-- 12 division lines from r=160 to r=197 -->
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(0 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(30 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(60 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(90 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(120 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(150 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(180 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(210 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(240 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(270 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(300 220 220)"/>
+            <line x1="220" y1="23" x2="220" y2="60" transform="rotate(330 220 220)"/>
+          </g>
+
+          <!-- 12 Zodiac sign glyphs in the band (midpoints at r≈178) -->
+          <!-- Placed at 15° into each sign, using text at radius ≈178 from centre -->
+          <!-- ♈ Aries midpoint 15° from top = rotate 15° from top = 360-15=-15 from standard = placed manually -->
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(15 220 220)">♈</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(45 220 220)">♉</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(75 220 220)">♊</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(105 220 220)">♋</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(135 220 220)">♌</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(165 220 220)">♍</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(195 220 220)">♎</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(225 220 220)">♏</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(255 220 220)">♐</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(285 220 220)">♑</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(315 220 220)">♒</text>
+          <text x="220" y="48"  class="eng-glyph" text-anchor="middle" transform="rotate(345 220 220)">♓</text>
+
+          <!-- ── INNER HOUSE RING + HOUSE SPOKES (r=160 to r=55) ── -->
+          <circle cx="220" cy="220" r="120" class="eng-ring" opacity="0.5"/>
+          <!-- 12 house lines (every 30°, offset by 15° from signs) — lighter -->
+          <g fill="none" stroke="var(--ink)" stroke-width="0.8" opacity="0.35">
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(0 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(30 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(60 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(90 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(120 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(150 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(180 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(210 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(240 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(270 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(300 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(330 220 220)"/>
+          </g>
+          <!-- 4 cardinal spokes (heavier — ASC/MC axes) -->
+          <g fill="none" stroke="var(--ink)" stroke-width="1.2" opacity="0.6">
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(15 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(105 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(195 220 220)"/>
+            <line x1="220" y1="100" x2="220" y2="165" transform="rotate(285 220 220)"/>
+          </g>
+          <!-- House number labels (I through XII in brass mono) at r≈140 -->
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(15 220 220)">I</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(45 220 220)">II</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(75 220 220)">III</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(105 220 220)">IV</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(135 220 220)">V</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(165 220 220)">VI</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(195 220 220)">VII</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(225 220 220)">VIII</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(255 220 220)">IX</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(285 220 220)">X</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(315 220 220)">XI</text>
+          <text x="220" y="86"  class="eng-mono" text-anchor="middle" transform="rotate(345 220 220)">XII</text>
+
+          <!-- ── ASPECT LINES (inner web) ── -->
+          <!-- A few representative aspects, lightly drawn -->
+          <g class="eng-asp">
+            <!-- Trine: 120° apart -->
+            <line x1="281" y1="107" x2="119" y2="323"/>
+            <line x1="119" y1="323" x2="334" y2="305"/>
+            <line x1="334" y1="305" x2="281" y2="107"/>
+            <!-- Opposition: 180° -->
+            <line x1="155" y1="145" x2="295" y2="315"/>
+            <!-- Sextile -->
+            <line x1="281" y1="107" x2="295" y2="315"/>
+          </g>
+
+          <!-- ── PLANET MARKS (in the chart field, r≈130) ── -->
+          <!-- Sun: terracotta circle with glyph -->
+          <g transform="rotate(98 220 220)">
+            <circle cx="220" cy="108" r="7" fill="none" stroke="var(--terracotta)" stroke-width="1.2" opacity="0.85"/>
+            <circle cx="220" cy="108" r="2.5" fill="var(--terracotta)" opacity="0.8"/>
+            <!-- dot at centre of sun symbol -->
+          </g>
+          <text x="255" y="133" class="eng-glyph-sm" fill="var(--terracotta)" opacity="0.85">☉</text>
+
+          <!-- Moon -->
+          <g transform="rotate(218 220 220)">
+            <circle cx="220" cy="108" r="5.5" fill="var(--ink)" opacity="0.55"/>
+          </g>
+          <text x="139" y="303" class="eng-glyph-sm" opacity="0.7">☽</text>
+
+          <!-- Mercury -->
+          <g transform="rotate(75 220 220)">
+            <circle cx="220" cy="108" r="3.5" fill="var(--ink)" opacity="0.45"/>
+          </g>
+          <text x="261" y="106" class="eng-glyph-sm" opacity="0.65">☿</text>
+
+          <!-- Venus -->
+          <g transform="rotate(142 220 220)">
+            <circle cx="220" cy="108" r="4" fill="var(--ink)" opacity="0.4"/>
+          </g>
+          <text x="149" y="175" class="eng-glyph-sm" opacity="0.65">♀</text>
+
+          <!-- Mars -->
+          <g transform="rotate(305 220 220)">
+            <circle cx="220" cy="108" r="3.5" fill="var(--ink)" opacity="0.4"/>
+          </g>
+          <text x="284" y="313" class="eng-glyph-sm" opacity="0.65">♂</text>
+
+          <!-- Jupiter -->
+          <g transform="rotate(32 220 220)">
+            <circle cx="220" cy="108" r="4.5" fill="var(--ink)" opacity="0.35"/>
+          </g>
+          <text x="254" y="92" class="eng-glyph-sm" opacity="0.6">♃</text>
+
+          <!-- Saturn -->
+          <g transform="rotate(258 220 220)">
+            <circle cx="220" cy="108" r="4" fill="var(--ink)" opacity="0.35"/>
+          </g>
+          <text x="175" y="326" class="eng-glyph-sm" opacity="0.55">♄</text>
+
+          <!-- ── CENTRAL SUN with radiating rays ── -->
+          <!-- Sun glow -->
+          <circle cx="220" cy="220" r="32" fill="var(--paper-leaf)" stroke="var(--ink)" stroke-width="0.7" opacity="0.4"/>
+          <!-- 16 rays — alternating long/short -->
+          <g fill="none" stroke="var(--ink)" stroke-width="0.9" opacity="0.7">
+            <!-- Long rays (8) -->
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(0 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(45 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(90 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(135 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(180 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(225 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(270 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="179" transform="rotate(315 220 220)"/>
+            <!-- Short rays (8) -->
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(22.5 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(67.5 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(112.5 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(157.5 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(202.5 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(247.5 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(292.5 220 220)"/>
+            <line x1="220" y1="188" x2="220" y2="182" transform="rotate(337.5 220 220)"/>
+          </g>
+          <!-- Sun disc rings -->
+          <circle cx="220" cy="220" r="24" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.2" opacity="0.9"/>
+          <circle cx="220" cy="220" r="18" fill="none" stroke="var(--ink)" stroke-width="0.8" opacity="0.5"/>
+          <!-- Engraved sun face stipple suggestion -->
+          <circle cx="220" cy="220" r="10" fill="none" stroke="var(--ink)" stroke-width="0.7" opacity="0.4" stroke-dasharray="1 2"/>
+          <!-- Central point -->
+          <circle cx="220" cy="220" r="3.5" fill="var(--ink)" opacity="0.75"/>
+          <circle cx="220" cy="220" r="1.5" fill="var(--paper)"/>
+
+          <!-- ── CARDINAL DIRECTION LABELS ── -->
+          <text x="220" y="10"  class="eng-label" text-anchor="middle">N</text>
+          <text x="220" y="436" class="eng-label" text-anchor="middle">S</text>
+          <text x="8"   y="224" class="eng-label" text-anchor="middle">W</text>
+          <text x="432" y="224" class="eng-label" text-anchor="middle">E</text>
+
+          <!-- ── INNER ANNOTATION (ecliptic label, mono) ── -->
+          <text x="220" y="200" class="eng-mono" text-anchor="middle" opacity="0.4" style="font-size:7px;">ECLIPTIC</text>
+
+          <!-- ── ORNAMENTAL BORDER DETAIL (four small diamond marks at cardinal points of outer ring) ── -->
+          <g fill="var(--brass)" opacity="0.5">
+            <!-- Top -->
+            <polygon points="220,7 223,12 220,17 217,12"/>
+            <!-- Bottom -->
+            <polygon points="220,423 223,428 220,433 217,428"/>
+            <!-- Left -->
+            <polygon points="7,220 12,223 17,220 12,217"/>
+            <!-- Right -->
+            <polygon points="423,220 428,223 433,220 428,217"/>
+          </g>
+        </svg>
+      </div><!-- /hero-illustration -->
+    </div><!-- /hero-grid -->
   </div>
 </section>
 
@@ -119,6 +515,42 @@
     </div>
   </div>
 </div>
+
+<!-- ============================================================
+     § 3b · WHY ASTROPRECISE — benefit discovery grid
+     ============================================================ -->
+<section class="department section-bleed" aria-labelledby="why-heading">
+  <div class="page-wrap">
+    <span class="dept-eyebrow">Why AstroPrecise</span>
+    <h2 id="why-heading" class="dept-heading" style="max-width:22ch;">Your chart. Not everyone's chart.</h2>
+    <p class="standfirst why-lead" style="max-width:58ch; margin-bottom: var(--sp-5);">
+      Most astrology gives everyone born in the same month the same paragraph. Yours is built from your exact chart — the precise sky over your birthplace, to the minute — and written for you alone.
+    </p>
+
+    <div class="why-grid">
+      <figure class="plate why-plate">
+        <span class="fig-num">01 &middot; Your birth chart</span>
+        <p class="plate-title"><a href="chart.html">Your birth chart</a></p>
+        <p class="why-plate-desc">The exact map of the sky at your first breath: your Sun, Moon, rising, and every planet, drawn as an engraved wheel.</p>
+      </figure>
+      <figure class="plate why-plate">
+        <span class="fig-num">02 &middot; Readings</span>
+        <p class="plate-title"><a href="cosmic-story.html">Your cosmic story</a></p>
+        <p class="why-plate-desc">Your chart retold as a flowing, personal narrative — who you are, in your own constellation of placements.</p>
+      </figure>
+      <figure class="plate why-plate">
+        <span class="fig-num">03 &middot; Daily</span>
+        <p class="plate-title"><a href="horoscope.html">Your daily sky</a></p>
+        <p class="why-plate-desc">Today's real planetary movements, read against your own chart — not a generic sun-sign forecast.</p>
+      </figure>
+      <figure class="plate why-plate">
+        <span class="fig-num">04 &middot; Synastry</span>
+        <p class="plate-title"><a href="compatibility.html">Two charts, one sky</a></p>
+        <p class="why-plate-desc">Compare your chart with someone else's: where you meet, where you spark, where you grow.</p>
+      </figure>
+    </div>
+  </div>
+</section>
 
 <!-- ============================================================
      § 4 · PLATE I — THE SKY TONIGHT (.night-watch)
@@ -256,7 +688,7 @@
           The sky above you,<br>computed to the minute.
         </h2>
         <p style="color: var(--paper-on-midnight); opacity:0.8; max-width:44ch; margin-top: var(--sp-2); line-height:1.65; font-family: var(--font-serif);">
-          Planetary positions, ecliptic longitudes, current transits, and tonight's Moon phase — all derived locally using VSOP87. No lookup table. No cached sky.
+          The sky above you, live — planetary positions, the Moon's exact phase, tonight's transits — all computed fresh in your browser, for the moment you open the page. No cached data. No approximations.
         </p>
         <div style="margin-top: var(--sp-5); display:flex; gap: var(--sp-2); flex-wrap:wrap;">
           <a href="ephemeris.html" class="btn-press" style="background: var(--paper-on-midnight); color: var(--midnight);">
@@ -276,10 +708,10 @@
      ============================================================ -->
 <section class="department section-bleed" aria-labelledby="contents-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">Contents</span>
+    <span class="dept-eyebrow">Everything you can explore</span>
     <h2 id="contents-heading" class="dept-heading">The instruments</h2>
     <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:52ch;">
-      Every tool is built on the same engine — real astronomy, computed in your browser, no account required.
+      Five ways into your sky — all built on real planetary mathematics, free to start, private by design.
     </p>
 
     <ul class="dept-list" role="list">
@@ -353,22 +785,22 @@
 <section class="department section-bleed" style="background: var(--paper-leaf);" aria-labelledby="method-heading">
   <div class="page-wrap">
     <span class="dept-eyebrow">How it works</span>
-    <h2 id="method-heading" class="dept-heading">The method, in three steps</h2>
+    <h2 id="method-heading" class="dept-heading">How your chart is built</h2>
     <div class="method-grid">
       <div class="method-step">
         <span class="step-num">Step 01</span>
-        <h3>Enter birth data</h3>
-        <p>Date, time, and place of birth. The more precise, the more accurate the house cusps and rising sign.</p>
+        <h3>Tell us when and where you arrived</h3>
+        <p>Date, time, and place of birth. The more precise, the more accurate your rising sign and house placements — the parts of the chart most personal to you.</p>
       </div>
       <div class="method-step">
         <span class="step-num">Step 02</span>
-        <h3>VSOP87 computes in your browser</h3>
-        <p>Every planetary longitude is calculated on your device using the VSOP87 planetary theory — the same used by professional observatories.</p>
+        <h3>Your sky is computed, privately</h3>
+        <p>Every planetary position is calculated right here in your browser — no server call, no account, no data stored. The same mathematics used by professional observatories, running silently on your device.</p>
       </div>
       <div class="method-step">
         <span class="step-num">Step 03</span>
-        <h3>Read your blueprint</h3>
-        <p>A full natal wheel, interpreted sign by sign and house by house — grounded in geometry, not guesswork.</p>
+        <h3>Your blueprint, in plain language</h3>
+        <p>A full natal wheel and written interpretation — sign by sign, house by house — that speaks to who you actually are, not a generic paragraph written for your sun sign.</p>
       </div>
     </div>
   </div>
@@ -470,7 +902,7 @@
     <span class="dept-eyebrow">Department 05 &middot; The Library</span>
     <h2 id="library-heading" class="dept-heading">The twelve signs</h2>
     <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:48ch;">
-      Each entry covers the sign's character, ruling planet, element, and modality — plainly.
+      What does it actually mean to be a Scorpio rising, or to have your Moon in Capricorn? Find your signs here — character, planet, element, and what each placement says about you.
     </p>
     <nav aria-label="Zodiac sign library">
       <div class="sign-index" role="list">
@@ -547,7 +979,7 @@
     <span class="dept-eyebrow">Department &middot; The Shop</span>
     <h2 id="shop-heading" class="dept-heading">Editions</h2>
     <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:50ch;">
-      Three products, each built on your exact computed chart. No generic readings.
+      Three ways to go deeper — each built from your exact chart, not a template. Written for you, delivered in minutes.
     </p>
     <ul class="edition-list" role="list">
       <li class="edition-item featured" role="listitem">
