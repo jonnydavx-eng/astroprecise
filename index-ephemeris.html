@@ -129,6 +129,14 @@
     <p class="dateline" id="masthead-dateline" aria-live="polite">
       Vol. MMXXVI &middot; The sky for <time id="dateline-date">29 June 2026</time>
       &mdash; <span id="dateline-sun">Sun in Cancer</span> &middot; <span id="dateline-moon">Moon in Scorpio</span>
+      &thinsp;<svg id="dateline-moon-phase" aria-hidden="true" focusable="false"
+        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+        style="width:1.3em; height:1.3em; vertical-align:middle; display:inline-block;">
+        <!-- background disc -->
+        <circle cx="10" cy="10" r="8" fill="rgba(26,27,30,0.18)" stroke="rgba(26,27,30,0.25)" stroke-width="0.6"/>
+        <!-- lit crescent / disc — drawn by JS after load -->
+        <path id="dateline-moon-lit" fill="rgba(244,239,230,0.88)" d=""/>
+      </svg>
     </p>
 
     <nav aria-label="Site contents">
@@ -153,20 +161,20 @@
 
       <!-- Left: copy + form -->
       <div class="hero-copy">
-        <span class="dept-eyebrow fade-in" style="letter-spacing:0.12em;">Real astronomy &middot; written for you</span>
+        <em class="eyebrow-rose fade-in">You've always sensed your patterns. Here is the sky that named them.</em>
 
         <h1 class="display fade-in" style="margin-top: var(--sp-2); animation-delay: 0.07s;">
-          Who you are,<br>in the exact sky<br>you were born under.
+          The sky held you<br>the moment you arrived.<br><span style="font-style:italic; opacity:0.82;">Here is what it meant.</span>
         </h1>
 
         <p class="standfirst fade-in" style="margin-top: var(--sp-3); animation-delay: 0.15s; max-width: 50ch;">
-          Your birth chart, read back to you — your character, your patterns, the year ahead — built from the real positions of the planets at the moment you arrived. Not a sun-sign paragraph written for a twelfth of humanity. Your sky, computed here in your browser, privately.
+          Not a forecast for millions — a reading computed for you alone, to the exact degree.
         </p>
 
         <!-- Birth-date entry form -->
         <form id="hero-chart-form" class="hero-form fade-in" novalidate aria-label="Cast your natal chart" style="animation-delay: 0.22s;">
-          <label for="hero-birthdate" class="ui-label" style="font-size:0.85rem; font-weight:500; font-family:var(--font-ui); color:var(--ink-faded);">
-            Your date of birth
+          <label for="hero-birthdate" class="ui-label" style="font-size:0.95rem; font-style:italic; font-family:var(--font-serif); color:var(--ink-faded); display:block; margin-bottom:var(--sp-1);">
+            When did your sky begin?
           </label>
           <div style="display:flex; flex-wrap:wrap; gap:var(--sp-2); align-items:center;">
             <input
@@ -178,7 +186,7 @@
               max="2099-12-31"
               required
             >
-            <button type="submit" class="btn-press">Cast my chart</button>
+            <button type="submit" class="btn-press">Discover your sky</button>
           </div>
           <p id="hero-form-error" role="alert" style="display:none; font-family:var(--font-ui); font-size:0.82rem; color:var(--terracotta); margin-top:4px; flex-basis:100%;"></p>
         </form>
@@ -474,49 +482,72 @@
             <line x1="155" y1="145" x2="281" y2="107" opacity="0.12"/>
           </g>
 
-          <!-- ── PLANET MARKS (r≈128 from centre) ── -->
-          <!-- Sun (terracotta) -->
-          <g transform="rotate(98 220 220)">
-            <circle cx="220" cy="110" r="7.5" fill="none" stroke="var(--terracotta)" stroke-width="1.3" opacity="0.88"/>
-            <circle cx="220" cy="110" r="2.8" fill="var(--terracotta)" opacity="0.82"/>
+          <!-- ── PLANET MARKS (r≈128 from centre) — warmed ── -->
+          <!-- Sun (terracotta +30% size, faint glow filter) -->
+          <defs>
+            <filter id="sun-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="moon-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g transform="rotate(98 220 220)" filter="url(#sun-glow)">
+            <circle cx="220" cy="110" r="9.75" fill="none" stroke="var(--terracotta)" stroke-width="1.5" opacity="0.88"/>
+            <circle cx="220" cy="110" r="3.6"  fill="var(--terracotta)" opacity="0.85"/>
           </g>
-          <text x="256" y="131" class="eng-glyph-sm" fill="var(--terracotta)" opacity="0.9">☉</text>
+          <text x="256" y="131" class="eng-glyph-sm" fill="var(--terracotta)" opacity="0.95">☉</text>
 
-          <!-- Moon -->
-          <g transform="rotate(218 220 220)">
-            <circle cx="220" cy="110" r="5.5" fill="var(--ink)" opacity="0.5"/>
+          <!-- Moon — cream + faint indigo glow -->
+          <g transform="rotate(218 220 220)" filter="url(#moon-glow)">
+            <circle cx="220" cy="110" r="6.6" fill="#EAE3D3" opacity="0.75" stroke="#3A4F6C" stroke-width="0.7"/>
           </g>
-          <text x="140" y="305" class="eng-glyph-sm" opacity="0.68">☽</text>
+          <text x="140" y="305" class="eng-glyph-sm" fill="#EAE3D3" opacity="0.82">☽</text>
 
           <!-- Mercury -->
           <g transform="rotate(75 220 220)">
-            <circle cx="220" cy="110" r="3.5" fill="var(--ink)" opacity="0.42"/>
+            <circle cx="220" cy="110" r="4.2" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.55"/>
+            <circle cx="220" cy="110" r="2"   fill="var(--ink)" opacity="0.42"/>
           </g>
           <text x="260" y="108" class="eng-glyph-sm" opacity="0.62">☿</text>
 
           <!-- Venus -->
           <g transform="rotate(142 220 220)">
-            <circle cx="220" cy="110" r="4" fill="var(--ink)" opacity="0.38"/>
+            <circle cx="220" cy="110" r="4.8" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.55"/>
+            <circle cx="220" cy="110" r="2.2" fill="var(--ink)" opacity="0.38"/>
           </g>
           <text x="150" y="177" class="eng-glyph-sm" opacity="0.62">♀</text>
 
           <!-- Mars -->
           <g transform="rotate(305 220 220)">
-            <circle cx="220" cy="110" r="3.5" fill="var(--ink)" opacity="0.38"/>
+            <circle cx="220" cy="110" r="4.2" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.55"/>
+            <circle cx="220" cy="110" r="2"   fill="var(--terracotta)" opacity="0.48"/>
           </g>
-          <text x="283" y="314" class="eng-glyph-sm" opacity="0.62">♂</text>
+          <text x="283" y="314" class="eng-glyph-sm" fill="var(--terracotta)" opacity="0.65">♂</text>
 
           <!-- Jupiter -->
           <g transform="rotate(32 220 220)">
-            <circle cx="220" cy="110" r="4.5" fill="var(--ink)" opacity="0.32"/>
+            <circle cx="220" cy="110" r="5.4" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.48"/>
+            <circle cx="220" cy="110" r="2.5" fill="var(--ink)" opacity="0.32"/>
           </g>
           <text x="253" y="94" class="eng-glyph-sm" opacity="0.58">♃</text>
 
           <!-- Saturn -->
           <g transform="rotate(258 220 220)">
-            <circle cx="220" cy="110" r="4" fill="var(--ink)" opacity="0.32"/>
+            <circle cx="220" cy="110" r="4.8" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.48"/>
+            <circle cx="220" cy="110" r="2.2" fill="var(--ink)" opacity="0.32"/>
           </g>
           <text x="176" y="327" class="eng-glyph-sm" opacity="0.52">♄</text>
+
+          <!-- Seeded edge stars — deterministic positions in indigo-tinted corners, never behind text -->
+          <circle cx="38"  cy="55"  r="1.5" fill="#EAE3D3" opacity="0.14"/>
+          <circle cx="52"  cy="38"  r="1"   fill="#EAE3D3" opacity="0.10"/>
+          <circle cx="395" cy="68"  r="2"   fill="#EAE3D3" opacity="0.12"/>
+          <circle cx="408" cy="42"  r="1.2" fill="#EAE3D3" opacity="0.08"/>
+          <circle cx="42"  cy="385" r="1.8" fill="#EAE3D3" opacity="0.16"/>
+          <circle cx="400" cy="390" r="1.3" fill="#EAE3D3" opacity="0.10"/>
 
           <!-- ── CENTRAL SUN — refined engraved form ── -->
           <!-- Outer glow halo -->
@@ -553,7 +584,9 @@
           <circle cx="220" cy="220" r="4" fill="var(--ink)" opacity="0.78"/>
           <circle cx="220" cy="220" r="2" fill="var(--paper)"/>
 
-          <!-- ── ECLIPTIC ANNOTATION ── -->
+          <!-- ── ECLIPTIC ANNOTATION + rotating ring ── -->
+          <circle cx="220" cy="220" r="90" fill="none" stroke="var(--brass)" stroke-width="0.5" opacity="0.18"
+            stroke-dasharray="3 6" class="hero-ecliptic-ring"/>
           <text x="220" y="198" class="eng-mono" text-anchor="middle" opacity="0.35" style="font-size:6.5px; letter-spacing:0.1em;">ECLIPTIC</text>
 
           <!-- ── CARDINAL LABELS ── -->
@@ -596,33 +629,132 @@
 <section class="department section-bleed" aria-labelledby="why-heading">
   <div class="page-wrap">
     <span class="dept-eyebrow">Why Astro Precise</span>
-    <h2 id="why-heading" class="dept-heading" style="max-width:22ch;">Your chart — not everyone's chart.</h2>
+    <h2 id="why-heading" class="dept-heading" style="max-width:22ch;">You're not one of twelve. This chart is yours alone.</h2>
     <p class="standfirst why-lead" style="max-width:56ch; margin-bottom: var(--sp-5);">
       Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute, and written for you alone.
     </p>
 
-    <div class="why-grid">
-      <figure class="plate why-plate">
-        <span class="fig-num">01 &middot; Your birth chart</span>
-        <p class="plate-title"><a href="chart.html">Your birth chart</a></p>
-        <p class="why-plate-desc">The exact map of the sky at your first breath: your Sun, Moon, rising, and every planet, drawn as an engraved wheel.</p>
-      </figure>
-      <figure class="plate why-plate">
-        <span class="fig-num">02 &middot; Readings</span>
-        <p class="plate-title"><a href="cosmic-story.html">Your cosmic story</a></p>
-        <p class="why-plate-desc">Your chart retold as a flowing, personal narrative — who you are, in your own constellation of placements.</p>
-      </figure>
-      <figure class="plate why-plate">
-        <span class="fig-num">03 &middot; Daily</span>
-        <p class="plate-title"><a href="horoscope.html">Your daily sky</a></p>
-        <p class="why-plate-desc">Today's real planetary movements, read against your own chart — not a generic sun-sign forecast.</p>
-      </figure>
-      <figure class="plate why-plate">
-        <span class="fig-num">04 &middot; Synastry</span>
-        <p class="plate-title"><a href="compatibility.html">Two charts, one sky</a></p>
-        <p class="why-plate-desc">Compare your chart with someone else's: where you meet, where you spark, where you grow.</p>
-      </figure>
+    <div class="why-grid-wrap" style="padding-left: var(--sp-3);">
+      <div class="why-grid">
+        <figure class="plate why-plate">
+          <span class="fig-num">01 &middot; Your birth chart</span>
+          <p class="plate-title"><a href="chart.html">Your birth chart</a></p>
+          <p class="why-plate-desc">The moment you arrived, the sky held a message — here it is, in lines and light.</p>
+        </figure>
+        <figure class="plate why-plate">
+          <span class="fig-num">02 &middot; Readings</span>
+          <p class="plate-title"><a href="cosmic-story.html">Your cosmic story</a></p>
+          <p class="why-plate-desc">A reading written for you, not for millions.</p>
+        </figure>
+        <figure class="plate why-plate">
+          <span class="fig-num">03 &middot; Daily</span>
+          <p class="plate-title"><a href="horoscope.html">Your daily sky</a></p>
+          <p class="why-plate-desc">The planets move. Watch how they speak to your chart, today.</p>
+        </figure>
+        <figure class="plate why-plate">
+          <span class="fig-num">04 &middot; Synastry</span>
+          <p class="plate-title"><a href="compatibility.html">Two charts, one sky</a></p>
+          <p class="why-plate-desc">Where you meet someone — where you spark, where you grow.</p>
+        </figure>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 3c · COSMIC STORY — dusk planet band
+     ============================================================ -->
+<section class="cosmic-story-band section-bleed" aria-labelledby="cosmic-band-heading">
+  <div class="page-wrap">
+    <h2 id="cosmic-band-heading">Tonight, the planets stand in your sky.</h2>
+
+    <!-- Planet stage — positions filled by JS after load -->
+    <div class="cs-planet-stage" id="cs-planet-stage" aria-live="polite">
+
+      <!-- Moon -->
+      <div class="cs-planet" data-planet="moon" style="--drift-dur:8s; --drift-delay:0s; --drift:-3px; opacity:0.9;">
+        <svg viewBox="0 0 140 140" width="140" height="140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="moon-grad" cx="38%" cy="38%" r="62%">
+              <stop offset="0%"   stop-color="#F4EFE6" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#C8BEA8" stop-opacity="1"/>
+            </radialGradient>
+            <clipPath id="moon-clip"><circle cx="70" cy="70" r="54"/></clipPath>
+          </defs>
+          <!-- lit disc -->
+          <circle cx="70" cy="70" r="54" fill="url(#moon-grad)" opacity="0.92"/>
+          <!-- shadow overlay — crescent shape, clipped -->
+          <ellipse cx="82" cy="70" rx="46" ry="54" fill="#2D3F52" opacity="0.72" clip-path="url(#moon-clip)"/>
+          <!-- rim -->
+          <circle cx="70" cy="70" r="54" fill="none" stroke="#EAE3D3" stroke-width="1" opacity="0.35"/>
+        </svg>
+        <span class="cs-planet-label" id="cs-label-moon">Moon &middot; computing&hellip;</span>
+        <span class="cs-planet-epithet">The Moon — your inner tides</span>
+      </div>
+
+      <!-- Sun -->
+      <div class="cs-planet" data-planet="sun" style="--drift-dur:6.5s; --drift-delay:1.2s; --drift:-4px; opacity:1;">
+        <svg viewBox="0 0 160 160" width="160" height="160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="sun-grad" cx="40%" cy="38%" r="62%">
+              <stop offset="0%"   stop-color="#E8C97A" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#B5532E" stop-opacity="1"/>
+            </radialGradient>
+          </defs>
+          <!-- rays -->
+          <g stroke="#E8C97A" stroke-width="1.5" opacity="0.38" stroke-linecap="round">
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(0   80 80)"/>
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(45  80 80)"/>
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(90  80 80)"/>
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(135 80 80)"/>
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(180 80 80)"/>
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(225 80 80)"/>
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(270 80 80)"/>
+            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(315 80 80)"/>
+          </g>
+          <!-- disc -->
+          <circle cx="80" cy="80" r="46" fill="url(#sun-grad)" opacity="0.95"/>
+          <circle cx="80" cy="80" r="46" fill="none" stroke="#E8C97A" stroke-width="1.2" opacity="0.3"/>
+        </svg>
+        <span class="cs-planet-label" id="cs-label-sun">Sun &middot; computing&hellip;</span>
+        <span class="cs-planet-epithet">The Sun — your core self</span>
+      </div>
+
+      <!-- Venus -->
+      <div class="cs-planet" data-planet="venus" style="--drift-dur:7.2s; --drift-delay:0.6s; --drift:-3px; opacity:0.82;">
+        <svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="venus-grad" cx="38%" cy="35%" r="65%">
+              <stop offset="0%"   stop-color="#F4E9C4" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#C8A84B" stop-opacity="1"/>
+            </radialGradient>
+          </defs>
+          <circle cx="60" cy="60" r="44" fill="url(#venus-grad)" opacity="0.9"/>
+          <circle cx="60" cy="60" r="44" fill="none" stroke="#F4E9C4" stroke-width="0.8" opacity="0.3"/>
+        </svg>
+        <span class="cs-planet-label" id="cs-label-venus">Venus &middot; computing&hellip;</span>
+        <span class="cs-planet-epithet">Venus — what you love</span>
+      </div>
+
+      <!-- Mars -->
+      <div class="cs-planet" data-planet="mars" style="--drift-dur:9s; --drift-delay:2s; --drift:-3px; opacity:0.75;">
+        <svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="mars-grad" cx="40%" cy="36%" r="64%">
+              <stop offset="0%"   stop-color="#D97048" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#7A2B12" stop-opacity="1"/>
+            </radialGradient>
+          </defs>
+          <circle cx="60" cy="60" r="40" fill="url(#mars-grad)" opacity="0.9"/>
+          <circle cx="60" cy="60" r="40" fill="none" stroke="#B5532E" stroke-width="0.8" opacity="0.35"/>
+        </svg>
+        <span class="cs-planet-label" id="cs-label-mars">Mars &middot; computing&hellip;</span>
+        <span class="cs-planet-epithet">Mars — how you act</span>
+      </div>
+
+    </div><!-- /cs-planet-stage -->
+
+    <p class="cs-footer">Computed now &middot; in your sky &middot; VSOP87</p>
   </div>
 </section>
 
@@ -630,7 +762,7 @@
      § 4 · PLATE I — THE SKY TONIGHT (.night-watch)
      ============================================================ -->
 <section class="night-watch section-bleed" aria-labelledby="plate-i-heading">
-  <div class="page-wrap" style="padding-block: var(--sp-13);">
+  <div class="page-wrap" style="padding-block: calc(var(--sp-13) + 24px);">
     <div class="editorial-grid">
       <figure class="plate" style="background: transparent; border-color: rgba(234,227,211,0.25);">
         <span class="fig-num" style="color: var(--paper-on-midnight); opacity:0.5;">Plate I</span>
@@ -779,14 +911,14 @@
 
           <!-- Stars — arranged to suggest three loose clusters -->
           <!-- Leo/Virgo region -->
-          <circle cx="310" cy="140" r="3"   class="zc-star"/>
+          <circle cx="310" cy="140" r="3"   class="zc-star twinkle-star" style="--twinkle-base:0.9; --twinkle-peak:0.5; --twinkle-dur:3.8s; --twinkle-delay:0s;"/>
           <circle cx="292" cy="163" r="1.8" class="zc-star-dim"/>
-          <circle cx="338" cy="156" r="1.5" class="zc-star-dim"/>
+          <circle cx="338" cy="156" r="1.5" class="zc-star-dim twinkle-star" style="--twinkle-base:0.32; --twinkle-peak:0.75; --twinkle-dur:5.1s; --twinkle-delay:1.3s;"/>
           <circle cx="320" cy="125" r="1.2" class="zc-star-fnt"/>
           <!-- Scorpio region -->
-          <circle cx="130" cy="292" r="2.5" class="zc-star"/>
+          <circle cx="130" cy="292" r="2.5" class="zc-star twinkle-star" style="--twinkle-base:0.9; --twinkle-peak:0.45; --twinkle-dur:4.4s; --twinkle-delay:0.7s;"/>
           <circle cx="108" cy="308" r="1.7" class="zc-star-dim"/>
-          <circle cx="153" cy="272" r="1.4" class="zc-star-dim"/>
+          <circle cx="153" cy="272" r="1.4" class="zc-star-dim twinkle-star" style="--twinkle-base:0.32; --twinkle-peak:0.8; --twinkle-dur:6.2s; --twinkle-delay:2.1s;"/>
           <circle cx="120" cy="278" r="1.0" class="zc-star-fnt"/>
           <!-- Capricorn region -->
           <circle cx="270" cy="342" r="2.2" class="zc-star"/>
@@ -835,7 +967,8 @@
           <circle cx="220" cy="220" r="0.8" style="fill:rgba(22,36,58,0.9);"/>
         </svg>
 
-        <figcaption class="source-line" style="color:var(--paper-on-midnight); opacity:0.45; margin-top: var(--sp-2);">
+        <figcaption class="source-line" style="color:var(--paper-on-midnight); opacity:0.55; margin-top: var(--sp-2);">
+          <span id="sky-sun-epithet" style="font-style:italic; font-family:var(--font-serif); font-size:0.88rem; opacity:0.85; display:block; margin-bottom:4px;"></span>
           Plate I &middot; Positions computed in your browser &middot; VSOP87
         </figcaption>
       </figure>
@@ -1326,6 +1459,119 @@
       el.style.transform = 'none';
     });
   }
+
+}());
+</script>
+
+<script>
+/* ── Post-load hydration: Cosmic Story planets + moon phase + epithet ── */
+(function () {
+  'use strict';
+
+  function fmtDeg(d) {
+    var deg = Math.floor(d);
+    var min = String(Math.round((d - deg) * 60)).padStart(2, '0');
+    return deg + '°' + min + '′';
+  }
+
+  var SUN_EPITHETS = {
+    'Aries':       'Aries in the sky — the pioneer’s hour',
+    'Taurus':      'Taurus in the sky — the steadfast hour',
+    'Gemini':      'Gemini in the sky — the curious hour',
+    'Cancer':      'Cancer in the sky — the nurturer’s hour',
+    'Leo':         'Leo in the sky — the sovereign’s hour',
+    'Virgo':       'Virgo in the sky — the craftsman’s hour',
+    'Libra':       'Libra in the sky — the diplomat’s hour',
+    'Scorpio':     'Scorpio in the sky — the depths’ hour',
+    'Sagittarius': 'Sagittarius in the sky — the seeker’s hour',
+    'Capricorn':   'Capricorn in the sky — the builder’s hour',
+    'Aquarius':    'Aquarius in the sky — the visionary’s hour',
+    'Pisces':      'Pisces in the sky — the dreamer’s hour'
+  };
+
+  function drawMoonPhase(moonLon, sunLon) {
+    var PI = Math.PI;
+    var elongation = ((moonLon - sunLon) % 360 + 360) % 360;
+    var waxing = elongation < 180;
+    var r = 8, cx = 10, cy = 10;
+    var k = Math.cos(elongation * PI / 180);
+    var tx = Math.abs(k) * r;
+    var topX = cx, topY = cy - r, botX = cx, botY = cy + r;
+    var tSweep;
+    if (waxing) {
+      tSweep = (k > 0) ? 0 : 1;
+      return 'M ' + topX + ' ' + topY +
+             ' A ' + r + ' ' + r + ' 0 0 1 ' + botX + ' ' + botY +
+             ' A ' + tx + ' ' + r + ' 0 0 ' + tSweep + ' ' + topX + ' ' + topY + ' Z';
+    } else {
+      tSweep = (k > 0) ? 1 : 0;
+      return 'M ' + topX + ' ' + topY +
+             ' A ' + r + ' ' + r + ' 0 0 0 ' + botX + ' ' + botY +
+             ' A ' + tx + ' ' + r + ' 0 0 ' + tSweep + ' ' + topX + ' ' + topY + ' Z';
+    }
+  }
+
+  function hydrate() {
+    try {
+      if (!window.AstroEphemeris || typeof window.AstroEphemeris.calculateNatalChart !== 'function') {
+        /* ephemeris.js may not have executed yet — poll briefly rather than give up
+           (otherwise the computed planet labels stay stuck on "computing…"). */
+        if (hydrate._tries == null) hydrate._tries = 0;
+        if (hydrate._tries++ < 80) setTimeout(hydrate, 50);
+        return;
+      }
+      var now = new Date();
+      var raw = window.AstroEphemeris.calculateNatalChart(
+        now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+        12, 0, 0, 0, 'placidus', 'mean'
+      );
+      var pos = raw.positions;
+
+      /* Moon phase crescent */
+      try {
+        var moonLon = pos.moon.longitude;
+        var sunLon  = pos.sun.longitude;
+        if (typeof moonLon === 'number' && typeof sunLon === 'number') {
+          var litEl = document.getElementById('dateline-moon-lit');
+          if (litEl) { litEl.setAttribute('d', drawMoonPhase(moonLon, sunLon)); }
+        }
+      } catch(pe) { /* leave crescent empty */ }
+
+      /* Cosmic Story planet labels */
+      function setLabel(id, key, name) {
+        var el = document.getElementById(id);
+        var p  = pos[key];
+        if (el && p && p.sign && typeof p.degree === 'number') {
+          el.textContent = name + ' in ' + p.sign + ' · ' + fmtDeg(p.degree);
+        }
+      }
+      setLabel('cs-label-moon',  'moon',  'Moon');
+      setLabel('cs-label-sun',   'sun',   'Sun');
+      setLabel('cs-label-venus', 'venus', 'Venus');
+      setLabel('cs-label-mars',  'mars',  'Mars');
+
+      /* Sky Tonight epithet */
+      var epithetEl = document.getElementById('sky-sun-epithet');
+      if (epithetEl && pos.sun && pos.sun.sign) {
+        var ep = SUN_EPITHETS[pos.sun.sign];
+        if (ep) { epithetEl.textContent = ep; }
+      }
+
+    } catch(e) {
+      console.info('AstroPrecise hydration:', e.message);
+    }
+  }
+
+  /* Call hydrate directly (NOT behind requestAnimationFrame — rAF never fires in a
+     backgrounded/headless tab, which would leave the planet labels stuck on
+     "computing…"). The internal retry waits for ephemeris.js. A window-load
+     backstop covers the case where DOMContentLoaded already fired. */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(hydrate, 0); }, { once: true });
+  } else {
+    setTimeout(hydrate, 0);
+  }
+  window.addEventListener('load', function () { setTimeout(hydrate, 0); }, { once: true });
 
 }());
 </script>
