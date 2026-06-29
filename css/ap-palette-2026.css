@@ -69,6 +69,11 @@
   --ap-focus-ring:   var(--ap-gold-core);
   --ap-focus-shadow: 0 0 0 3px var(--ap-gold-a22);
 
+  /* ── Primary CTA — terracotta, shared by homepage + inner pages ── */
+  --ap-cta:       #D97B52; /* terracotta fill (matches homepage btn-press) */
+  --ap-cta-hover: #E2895F;
+  --ap-cta-ink:   #1F1206; /* dark espresso text on terracotta — AA ~6:1 */
+
   /* ── Parchment hairlines ── */
   --ap-hairline: rgba(232, 224, 208, 0.08);
   --ap-rim-light: rgba(232, 224, 208, 0.16);
