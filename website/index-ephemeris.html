@@ -155,26 +155,26 @@
 <!-- ============================================================
      § 2 · HERO / COVER
      ============================================================ -->
-<section class="department section-bleed hero-section" style="padding-top: var(--sp-13); padding-bottom: var(--sp-13);">
+<section class="department section-bleed hero-section" style="padding-top: var(--sp-13);">
   <div class="page-wrap">
     <div class="hero-grid">
 
       <!-- Left: copy + form -->
       <div class="hero-copy">
-        <em class="eyebrow-rose fade-in">You've always sensed your patterns. Here is the sky that named them.</em>
+        <em class="eyebrow-rose fade-in">The sky kept a record. Here's what it says about you.</em>
 
         <h1 class="display fade-in" style="margin-top: var(--sp-2); animation-delay: 0.07s;">
           The sky held you<br>the moment you arrived.<br><span style="font-style:italic; opacity:0.82;">Here is what it meant.</span>
         </h1>
 
         <p class="standfirst fade-in" style="margin-top: var(--sp-3); animation-delay: 0.15s; max-width: 50ch;">
-          Not a forecast for millions — a reading computed for you alone, to the exact degree.
+          Every other app hands you the same paragraph. This one computes a chart born the exact minute you were.
         </p>
 
         <!-- Birth-date entry form -->
         <form id="hero-chart-form" class="hero-form fade-in" novalidate aria-label="Cast your natal chart" style="animation-delay: 0.22s;">
           <label for="hero-birthdate" class="ui-label" style="font-size:0.95rem; font-style:italic; font-family:var(--font-serif); color:var(--ink-faded); display:block; margin-bottom:var(--sp-1);">
-            When did your sky begin?
+            Your arrival time, to the minute
           </label>
           <div style="display:flex; flex-wrap:wrap; gap:var(--sp-2); align-items:center;">
             <input
@@ -186,7 +186,7 @@
               max="2099-12-31"
               required
             >
-            <button type="submit" class="btn-press">Discover your sky</button>
+            <button type="submit" class="btn-press">Calculate my chart</button>
           </div>
           <p id="hero-form-error" role="alert" style="display:none; font-family:var(--font-ui); font-size:0.82rem; color:var(--terracotta); margin-top:4px; flex-basis:100%;"></p>
         </form>
@@ -608,16 +608,16 @@
   <div class="page-wrap">
     <div class="trust-line" role="list" aria-label="Accuracy guarantees">
       <div class="trust-item" role="listitem">
-        <span class="trust-dot" aria-hidden="true"></span>
-        <span>Computed locally &mdash; no server call</span>
+        <svg class="trust-check" viewBox="0 0 16 16" width="10" height="10" aria-hidden="true" focusable="false" style="flex-shrink:0; vertical-align:baseline; position:relative; top:0.05em;"><circle cx="8" cy="8" r="6" fill="var(--sage)" opacity="0.8"/><path d="M5 9 L7 11 L11 7" stroke="var(--void)" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        <span>Your chart stays on your device</span>
       </div>
       <div class="trust-item" role="listitem">
-        <span class="trust-dot" aria-hidden="true"></span>
-        <span>No tracking &middot; no cookies &middot; no account</span>
+        <svg class="trust-check" viewBox="0 0 16 16" width="10" height="10" aria-hidden="true" focusable="false" style="flex-shrink:0; vertical-align:baseline; position:relative; top:0.05em;"><circle cx="8" cy="8" r="6" fill="var(--sage)" opacity="0.8"/><path d="M5 9 L7 11 L11 7" stroke="var(--void)" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        <span>No data collection. No account needed.</span>
       </div>
       <div class="trust-item" role="listitem">
-        <span class="trust-dot" aria-hidden="true"></span>
-        <span>Open math &middot; VSOP87 planetary theory</span>
+        <svg class="trust-check" viewBox="0 0 16 16" width="10" height="10" aria-hidden="true" focusable="false" style="flex-shrink:0; vertical-align:baseline; position:relative; top:0.05em;"><circle cx="8" cy="8" r="6" fill="var(--sage)" opacity="0.8"/><path d="M5 9 L7 11 L11 7" stroke="var(--void)" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        <span>VSOP87 — accurate to the arc-second</span>
       </div>
     </div>
   </div>
@@ -634,27 +634,27 @@
       Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute, and written for you alone.
     </p>
 
-    <div class="why-grid-wrap" style="padding-left: var(--sp-3);">
+    <div class="why-grid-wrap">
       <div class="why-grid">
         <figure class="plate why-plate">
           <span class="fig-num">01 &middot; Your birth chart</span>
           <p class="plate-title"><a href="chart.html">Your birth chart</a></p>
-          <p class="why-plate-desc">The moment you arrived, the sky held a message — here it is, in lines and light.</p>
+          <p class="why-plate-desc">Understand why you were born into these exact planetary positions — your nature, in astronomy.</p>
         </figure>
         <figure class="plate why-plate">
           <span class="fig-num">02 &middot; Readings</span>
           <p class="plate-title"><a href="cosmic-story.html">Your cosmic story</a></p>
-          <p class="why-plate-desc">A reading written for you, not for millions.</p>
+          <p class="why-plate-desc">Stop reading horoscopes written for a twelfth of the world. Read the one written for the sky at your birth.</p>
         </figure>
         <figure class="plate why-plate">
           <span class="fig-num">03 &middot; Daily</span>
           <p class="plate-title"><a href="horoscope.html">Your daily sky</a></p>
-          <p class="why-plate-desc">The planets move. Watch how they speak to your chart, today.</p>
+          <p class="why-plate-desc">The planets move every day. Know when they're working with you — and when to hold still.</p>
         </figure>
         <figure class="plate why-plate">
           <span class="fig-num">04 &middot; Synastry</span>
           <p class="plate-title"><a href="compatibility.html">Two charts, one sky</a></p>
-          <p class="why-plate-desc">Where you meet someone — where you spark, where you grow.</p>
+          <p class="why-plate-desc">See exactly where two charts lock together — shared ground, creative friction, and the line between them.</p>
         </figure>
       </div>
     </div>
