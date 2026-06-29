@@ -128,8 +128,8 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-card__age { font-size: .76rem; color: var(--silver-dim, #8F8579); margin-top: .2rem; }
     .sat-card__tag { display: inline-block; margin-top: .5rem; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sat-gold); border: 1px solid rgba(201,162,39,0.4); border-radius: 999px; padding: .15rem .55rem; }
     .sat-reading, .sat-unlock { margin-top: 1.4rem; padding: clamp(1.3rem, 4vw, 2.2rem); }
-    .sat-reading__title, .sat-unlock__eyebrow { font-family: 'Cinzel', serif; }
-    .sat-reading__title { font-size: 1.3rem; color: var(--white); margin-bottom: 1rem; text-align: center; }
+    .sat-unlock__eyebrow { font-family: 'Cinzel', serif; }
+    .sat-reading__title { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.3rem; color: var(--white); margin-bottom: 1rem; text-align: center; }
     .sat-reading p, .sat-unlock p { color: #e6ddc8; line-height: 1.75; margin-bottom: .85rem; font-family: 'Cormorant Garamond', serif; font-size: 1.08rem; }
     .sat-reading strong { color: var(--gold-light, #E8C872); font-weight: 600; }
     .sat-reading em { color: var(--sat-gold); font-style: normal; }
@@ -147,9 +147,9 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-unlock__teaser { max-width: 32rem; margin: 0 auto 1.1rem; }
     .sat-unlock__note { font-size: .78rem !important; color: var(--silver-dim, #8F8579) !important; margin-top: .8rem !important; }
     .sat-content { max-width: 44rem; margin: 2.5rem auto 0; }
-    .sat-content h2 { font-family: 'Cinzel', serif; font-size: 1.3rem; color: var(--white); margin: 1.8rem 0 .7rem; }
+    .sat-content h2 { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.3rem; color: var(--white); margin: 1.8rem 0 .7rem; }
     .sat-content p { color: var(--silver); line-height: 1.8; margin-bottom: .9rem; }
     .sat-content details { border-top: 1px solid var(--sat-line); padding: .9rem 0; }
-    .sat-content summary { cursor: pointer; font-family: 'Cinzel', serif; color: var(--gold-light, #EFE3C0); font-size: 1rem; }
+    .sat-content summary { cursor: pointer; font-family: var(--font-display, 'Cinzel', serif); color: var(--gold-light, #EFE3C0); font-size: 1rem; }
     .sat-content details p { margin-top: .6rem; }
     @media (max-width: 560px) { .sat-grid { grid-template-columns: 1fr; } .sat-cards { grid-template-columns: 1fr; } }

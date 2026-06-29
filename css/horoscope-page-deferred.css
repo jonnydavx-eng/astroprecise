@@ -432,22 +432,22 @@
     .sign-reading-panel[data-element="fire"] .srp-element-text {
       background: var(--ap-element-fire-glow);
       border: 1px solid var(--ap-element-fire);
-      color: var(--ap-element-fire);
+      color: var(--ap-text-primary);
     }
     .sign-reading-panel[data-element="earth"] .srp-element-text {
       background: var(--ap-element-earth-glow);
       border: 1px solid var(--ap-element-earth);
-      color: var(--ap-element-earth);
+      color: var(--ap-text-primary);
     }
     .sign-reading-panel[data-element="air"] .srp-element-text {
       background: var(--ap-element-air-glow);
       border: 1px solid var(--ap-element-air);
-      color: var(--ap-element-air);
+      color: var(--ap-text-primary);
     }
     .sign-reading-panel[data-element="water"] .srp-element-text {
       background: var(--ap-element-water-glow);
       border: 1px solid var(--ap-element-water);
-      color: var(--ap-element-water);
+      color: var(--ap-text-primary);
     }
 
     /* ── Cosmic-energy gauge (moved off idle-deferred main.css so the sweep
