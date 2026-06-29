@@ -487,6 +487,15 @@ body:has(#starfield-canvas) .lib__banner {
   color: transparent;
 }
 
+/* Brand wordmark accent — brass-italic "Precise" (matches homepage masthead) */
+.logo-text__precise {
+  font-style: italic;
+  font-weight: 300;
+  background: none;
+  -webkit-text-fill-color: var(--ap-gold-core, #C2A05E);
+  color: var(--ap-gold-core, #C2A05E);
+}
+
 .navbar__logo-icon {
   width: 32px;
   height: 32px;

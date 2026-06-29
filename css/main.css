@@ -5567,6 +5567,16 @@ body.has-email-sticky { padding-bottom: 72px; }
   color: transparent;
 }
 
+/* Brand wordmark accent — brass-italic "Precise" matching the homepage masthead.
+   Opts the word out of the parent gradient text-clip with its own solid fill. */
+.logo-text__precise {
+  font-style: italic;
+  font-weight: 300;
+  background: none;
+  -webkit-text-fill-color: var(--ap-gold-core, #C2A05E);
+  color: var(--ap-gold-core, #C2A05E);
+}
+
 .navbar__logo-icon {
   color: var(--gold);
   -webkit-text-fill-color: var(--gold);
@@ -6809,7 +6819,9 @@ body.preloader-active .bottom-nav {
 /* lite:end profile-bottomnav */
 
 @media (max-width: 480px) {
-  .navbar__logo .logo-text { display: none; }
+  /* Shrink (don't hide) so the wordmark + brass-italic "Precise" stays
+     visible on mobile inner pages, matching the homepage masthead. */
+  .navbar__logo .logo-text { font-size: 0.95rem; letter-spacing: 0.04em; }
 }
 
 /* Saturn with ring — appended live by app.js */
