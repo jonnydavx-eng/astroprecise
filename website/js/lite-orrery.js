@@ -345,6 +345,7 @@
 
     var halo = ctx.createRadialGradient(px, py, s * 0.4, px, py, s * 2.2);
     halo.addColorStop(0, p.hi + '58');
+    halo.addColorStop(0.85, p.hi + '0d'); // soft mid-stop so the halo feathers out instead of hard-cutting
     halo.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = halo;
     ctx.beginPath();

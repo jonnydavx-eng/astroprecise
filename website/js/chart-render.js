@@ -263,11 +263,16 @@
       fill: gradId ? `url(#${gradId})` : hexColor,
       stroke: 'rgba(255,255,255,0.28)', 'stroke-width': '0.5'
     }));
-    // Soft white top highlight
+    // Tight convex glass catch (specular peak) + a fainter micro rim-catch above it
     parentG.appendChild(el('ellipse', {
-      cx: cx.toFixed(2), cy: (cy - r * 0.34).toFixed(2),
-      rx: (r * 0.55).toFixed(2), ry: (r * 0.32).toFixed(2),
-      fill: 'rgba(255,255,255,0.40)'
+      cx: cx.toFixed(2), cy: (cy - r * 0.42).toFixed(2),
+      rx: (r * 0.55).toFixed(2), ry: (r * 0.18).toFixed(2),
+      fill: 'rgba(255,255,255,0.28)'
+    }));
+    parentG.appendChild(el('ellipse', {
+      cx: cx.toFixed(2), cy: (cy - r * 0.50).toFixed(2),
+      rx: (r * 0.35).toFixed(2), ry: (r * 0.15).toFixed(2),
+      fill: 'rgba(255,255,255,0.12)'
     }));
   }
 
@@ -598,6 +603,11 @@
     g.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_ZODIAC_OUT + 3,
       fill: 'none', stroke: WARM.goldDim, 'stroke-width': '0.5', opacity: '0.3'
+    }));
+    // Soft depth lip — a faint dark ring just outside the band so it lifts off the void
+    g.appendChild(el('circle', {
+      cx: CX, cy: CY, r: R_ZODIAC_OUT + 8,
+      fill: 'none', stroke: WARM.void, 'stroke-width': '2.4', 'stroke-opacity': '0.35', opacity: '0.45'
     }));
 
     // Inner border of zodiac ring

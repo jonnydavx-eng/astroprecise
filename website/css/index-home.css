@@ -294,7 +294,7 @@
     .hero__cast-btn {
       height: 52px;
       padding: 0 var(--space-7);
-      background: linear-gradient(135deg, var(--gold-hero) 0%, #a8841e 100%);
+      background: linear-gradient(135deg, var(--gold-hero) 0%, #d4b84a 45%, #a8841e 100%);
       border: none;
       border-radius: var(--radius-lg);
       color: #0d0a07;
