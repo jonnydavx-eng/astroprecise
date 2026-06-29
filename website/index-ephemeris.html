@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AstroPrecise — The sky, computed</title>
+  <meta name="description" content="Birth chart calculator, daily sky, and horoscope — VSOP87 precision, computed privately in your browser. No account. No tracking.">
+  <meta name="theme-color" content="#F4EFE6">
+
+  <!-- iOS web-app -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AstroPrecise">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AstroPrecise — The sky, computed">
+  <meta property="og:description" content="Birth chart calculator, daily sky, and horoscope — VSOP87 precision, computed privately in your browser.">
+  <meta property="og:image" content="img/og-banner.png">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts & design system -->
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/ephemeris.css">
+</head>
+<body>
+
+<!-- ============================================================
+     § 1 · MASTHEAD
+     ============================================================ -->
+<header class="masthead section-bleed">
+  <div class="page-wrap">
+    <span class="masthead-wordmark">Ephemeris · AstroPrecise</span>
+    <hr class="masthead-rule">
+    <p class="dateline" id="masthead-dateline" aria-live="polite">
+      Vol. MMXXVI &middot; The sky for <time id="dateline-date">29 June 2026</time>
+      &mdash; <span id="dateline-sun">Sun in Cancer</span> &middot; <span id="dateline-moon">Moon in Scorpio</span>
+    </p>
+    <nav aria-label="Site contents">
+      <ul class="contents-nav">
+        <li><a href="chart.html">Chart</a></li>
+        <li><a href="ephemeris.html">Sky</a></li>
+        <li><a href="horoscope.html">Daily</a></li>
+        <li><a href="cosmic-story.html">Readings</a></li>
+        <li><a href="aries.html">Library</a></li>
+        <li><a href="shop.html">Shop</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================================================
+     § 2 · HERO / COVER
+     ============================================================ -->
+<section class="department section-bleed" style="padding-top: var(--sp-13); padding-bottom: var(--sp-13);">
+  <div class="page-wrap">
+    <div class="editorial-grid">
+      <div>
+        <h1 class="display fade-in">
+          The sky,<br>computed —<br>then read<br>to you.
+        </h1>
+        <p class="standfirst fade-in" style="margin-top: var(--sp-3); animation-delay: 0.12s;">
+          Every position is calculated in your browser using VSOP87 — the same planetary theory used by observatories. Nothing leaves your device.
+        </p>
+
+        <!-- Birth-date entry form -->
+        <form id="hero-chart-form" class="hero-form" novalidate aria-label="Cast your natal chart">
+          <label for="hero-birthdate" class="ui-label" style="font-size:0.85rem; font-weight:500; font-family:var(--font-ui); color:var(--ink-faded);">
+            Your date of birth
+          </label>
+          <div style="display:flex; flex-wrap:wrap; gap:var(--sp-2); align-items:center;">
+            <input
+              type="date"
+              id="hero-birthdate"
+              name="birthdate"
+              aria-label="Date of birth"
+              min="1900-01-01"
+              max="2099-12-31"
+              required
+            >
+            <button type="submit" class="btn-press">Cast my chart</button>
+          </div>
+          <p id="hero-form-error" role="alert" style="display:none; font-family:var(--font-ui); font-size:0.82rem; color:var(--terracotta); margin-top:4px; flex-basis:100%;"></p>
+        </form>
+      </div>
+
+      <!-- Marginalia rail -->
+      <aside class="marginalia" aria-hidden="true" style="padding-top: 0.5rem;">
+        <span class="margin-note">VSOP87 · Bretagnon &amp; Francou 1987</span>
+        <span class="margin-note" style="margin-top:var(--sp-3);">Computed at your device · lat 0° lon 0° for sky positions</span>
+        <span class="margin-note" style="margin-top:var(--sp-3);">No account required</span>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 3 · TRUST LINE
+     ============================================================ -->
+<div class="section-bleed" style="background: var(--paper-leaf);">
+  <div class="page-wrap">
+    <div class="trust-line" role="list" aria-label="Accuracy guarantees">
+      <div class="trust-item" role="listitem">
+        <span class="trust-dot" aria-hidden="true"></span>
+        <span>Computed locally &mdash; no server call</span>
+      </div>
+      <div class="trust-item" role="listitem">
+        <span class="trust-dot" aria-hidden="true"></span>
+        <span>No tracking &middot; no cookies &middot; no account</span>
+      </div>
+      <div class="trust-item" role="listitem">
+        <span class="trust-dot" aria-hidden="true"></span>
+        <span>Open math &middot; VSOP87 planetary theory</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     § 4 · PLATE I — THE SKY TONIGHT (.night-watch)
+     ============================================================ -->
+<section class="night-watch section-bleed" aria-labelledby="plate-i-heading">
+  <div class="page-wrap" style="padding-block: var(--sp-13);">
+    <div class="editorial-grid">
+      <figure class="plate" style="background: transparent; border-color: rgba(234,227,211,0.25);">
+        <span class="fig-num" style="color: var(--paper-on-midnight); opacity:0.5;">Plate I</span>
+        <p id="plate-i-heading" class="plate-title" style="color: var(--paper-on-midnight); margin-bottom: var(--sp-3);">The Sky Tonight</p>
+
+        <!-- Fine-line zodiac SVG — deterministic, cream on midnight -->
+        <svg
+          viewBox="0 0 440 440"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Zodiac ring and ecliptic diagram — 12 sign divisions, ecliptic plane, cardinal points"
+          style="width:100%; max-width:440px; display:block; margin-inline:auto;"
+        >
+          <defs>
+            <style>
+              .zc-ring { fill: none; stroke: rgba(234,227,211,0.18); stroke-width: 1; }
+              .zc-spoke { stroke: rgba(234,227,211,0.12); stroke-width: 0.8; }
+              .zc-ecliptic { fill: none; stroke: rgba(234,227,211,0.35); stroke-width: 1.2; stroke-dasharray: 6 4; }
+              .zc-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; fill: rgba(234,227,211,0.5); }
+              .zc-glyph { font-family: 'AstroGlyph', serif; font-size: 14px; fill: rgba(234,227,211,0.7); }
+              .zc-star { fill: rgba(234,227,211,0.85); }
+              .zc-star-dim { fill: rgba(234,227,211,0.35); }
+              .zc-div { stroke: rgba(154,123,63,0.45); stroke-width: 0.8; }
+              .zc-planet { fill: rgba(234,227,211,0.9); }
+              .zc-sun-mark { fill: none; stroke: rgba(181,83,46,0.8); stroke-width: 1.2; }
+              .zc-moon-mark { fill: rgba(234,227,211,0.6); }
+            </style>
+          </defs>
+
+          <!-- Outer border rings -->
+          <circle cx="220" cy="220" r="210" class="zc-ring"/>
+          <circle cx="220" cy="220" r="195" class="zc-ring"/>
+          <circle cx="220" cy="220" r="155" class="zc-ring"/>
+          <circle cx="220" cy="220" r="80"  class="zc-ring" style="stroke-dasharray:3 3;"/>
+          <circle cx="220" cy="220" r="30"  class="zc-ring" style="opacity:0.5;"/>
+
+          <!-- 12 sign division spokes (every 30°) -->
+          <g>
+            <!-- 0° (Aries) - right, and every 30° -->
+            <line x1="220" y1="220" x2="430" y2="220" class="zc-div"/>
+            <line x1="220" y1="220" x2="325" y2="25.9" class="zc-div"/>
+            <line x1="220" y1="220" x2="115" y2="25.9" class="zc-div"/>
+            <line x1="220" y1="220" x2="10"  y2="220"  class="zc-div"/>
+            <line x1="220" y1="220" x2="115" y2="414.1" class="zc-div"/>
+            <line x1="220" y1="220" x2="325" y2="414.1" class="zc-div"/>
+          </g>
+
+          <!-- Spokes (thin subdivisions — every 10°) -->
+          <g opacity="0.5">
+            <line x1="220" y1="220" x2="393.2" y2="115" class="zc-spoke"/>
+            <line x1="220" y1="220" x2="393.2" y2="325" class="zc-spoke"/>
+            <line x1="220" y1="220" x2="46.8"  y2="115" class="zc-spoke"/>
+            <line x1="220" y1="220" x2="46.8"  y2="325" class="zc-spoke"/>
+            <line x1="220" y1="220" x2="220"   y2="10"  class="zc-spoke"/>
+            <line x1="220" y1="220" x2="220"   y2="430" class="zc-spoke"/>
+          </g>
+
+          <!-- Ecliptic (tilted ellipse ~23.4°) -->
+          <ellipse cx="220" cy="220" rx="130" ry="50" transform="rotate(-23.4 220 220)" class="zc-ecliptic"/>
+
+          <!-- Sign glyphs placed in the zodiac band (r≈175, every 30°) -->
+          <!-- ♈ Aries  0° -->
+          <text x="392" y="224" class="zc-glyph" text-anchor="middle">♈</text>
+          <!-- ♉ Taurus 30° -->
+          <text x="353" y="136" class="zc-glyph" text-anchor="middle">♉</text>
+          <!-- ♊ Gemini 60° -->
+          <text x="263" y="60"  class="zc-glyph" text-anchor="middle">♊</text>
+          <!-- ♋ Cancer 90° -->
+          <text x="166" y="48"  class="zc-glyph" text-anchor="middle">♋</text>
+          <!-- ♌ Leo 120° -->
+          <text x="82"  y="128" class="zc-glyph" text-anchor="middle">♌</text>
+          <!-- ♍ Virgo 150° -->
+          <text x="46"  y="224" class="zc-glyph" text-anchor="middle">♍</text>
+          <!-- ♎ Libra 180° -->
+          <text x="47"  y="316" class="zc-glyph" text-anchor="middle">♎</text>
+          <!-- ♏ Scorpio 210° -->
+          <text x="82"  y="396" class="zc-glyph" text-anchor="middle">♏</text>
+          <!-- ♐ Sagittarius 240° -->
+          <text x="172" y="400" class="zc-glyph" text-anchor="middle">♐</text>
+          <!-- ♑ Capricorn 270° -->
+          <text x="263" y="396" class="zc-glyph" text-anchor="middle">♑</text>
+          <!-- ♒ Aquarius 300° -->
+          <text x="353" y="315" class="zc-glyph" text-anchor="middle">♒</text>
+          <!-- ♓ Pisces 330° -->
+          <text x="393" y="320" class="zc-glyph" text-anchor="middle">♓</text>
+
+          <!-- Cardinal labels -->
+          <text x="220" y="20" class="zc-label" text-anchor="middle">N</text>
+          <text x="220" y="436" class="zc-label" text-anchor="middle">S</text>
+          <text x="8"   y="224" class="zc-label" text-anchor="middle">W</text>
+          <text x="432" y="224" class="zc-label" text-anchor="middle">E</text>
+
+          <!-- Stars (deterministic positions) -->
+          <circle cx="310" cy="140" r="2.5" class="zc-star"/>
+          <circle cx="290" cy="165" r="1.8" class="zc-star-dim"/>
+          <circle cx="340" cy="158" r="1.5" class="zc-star-dim"/>
+          <circle cx="130" cy="290" r="2.2" class="zc-star"/>
+          <circle cx="155" cy="270" r="1.5" class="zc-star-dim"/>
+          <circle cx="110" cy="305" r="1.2" class="zc-star-dim"/>
+          <circle cx="270" cy="340" r="2.0" class="zc-star"/>
+          <circle cx="250" cy="360" r="1.4" class="zc-star-dim"/>
+          <circle cx="190" cy="130" r="1.8" class="zc-star"/>
+          <circle cx="360" cy="250" r="1.6" class="zc-star-dim"/>
+          <circle cx="80"  cy="190" r="1.5" class="zc-star-dim"/>
+
+          <!-- Sun marker (Cancer, roughly 90°+8° ecliptic position) — small terracotta circle -->
+          <circle cx="172" cy="92" r="7" class="zc-sun-mark" stroke-width="1.5"/>
+          <circle cx="172" cy="92" r="2.5" style="fill:rgba(181,83,46,0.7);"/>
+          <text x="172" y="80" class="zc-label" text-anchor="middle" style="fill:rgba(181,83,46,0.8); font-size:9px;">☉</text>
+
+          <!-- Moon marker (Scorpio, ~210°+12°) — small cream disc -->
+          <circle cx="98" cy="345" r="5.5" class="zc-moon-mark"/>
+          <text x="98"  y="333" class="zc-label" text-anchor="middle" style="fill:rgba(234,227,211,0.7); font-size:9px;">☽</text>
+
+          <!-- Centre point -->
+          <circle cx="220" cy="220" r="4" style="fill:rgba(234,227,211,0.3);"/>
+          <circle cx="220" cy="220" r="1.5" style="fill:rgba(234,227,211,0.8);"/>
+        </svg>
+
+        <figcaption class="source-line" style="color:var(--paper-on-midnight); opacity:0.45; margin-top: var(--sp-2);">
+          Plate I &middot; Positions computed in your browser &middot; VSOP87
+        </figcaption>
+      </figure>
+
+      <!-- Night-watch text -->
+      <div style="padding-top: var(--sp-2);">
+        <span class="dept-eyebrow" style="color: rgba(234,227,211,0.4);">Department 02 &middot; The Sky</span>
+        <h2 class="dept-heading" style="color: var(--paper-on-midnight); font-size: clamp(1.8rem,3vw,2.6rem);">
+          The sky above you,<br>computed to the minute.
+        </h2>
+        <p style="color: var(--paper-on-midnight); opacity:0.8; max-width:44ch; margin-top: var(--sp-2); line-height:1.65; font-family: var(--font-serif);">
+          Planetary positions, ecliptic longitudes, current transits, and tonight's Moon phase — all derived locally using VSOP87. No lookup table. No cached sky.
+        </p>
+        <div style="margin-top: var(--sp-5); display:flex; gap: var(--sp-2); flex-wrap:wrap;">
+          <a href="ephemeris.html" class="btn-press" style="background: var(--paper-on-midnight); color: var(--midnight);">
+            Tonight's sky
+          </a>
+          <a href="transits.html" class="btn-quiet" style="border-color: rgba(234,227,211,0.35); color: var(--paper-on-midnight);">
+            Current transits
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 5 · THE CONTENTS (Departments)
+     ============================================================ -->
+<section class="department section-bleed" aria-labelledby="contents-heading">
+  <div class="page-wrap">
+    <span class="dept-eyebrow">Contents</span>
+    <h2 id="contents-heading" class="dept-heading">The instruments</h2>
+    <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:52ch;">
+      Every tool is built on the same engine — real astronomy, computed in your browser, no account required.
+    </p>
+
+    <ul class="dept-list" role="list">
+      <li>
+        <a href="chart.html" class="dept-list-item" aria-label="Department 01 — Your Chart, free">
+          <span class="dept-number">01</span>
+          <div>
+            <span class="dept-title">Your Chart</span>
+            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
+              Natal chart · Rising sign · Aspects · House cusps
+            </span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+      <li>
+        <a href="ephemeris.html" class="dept-list-item" aria-label="Department 02 — The Sky, free">
+          <span class="dept-number">02</span>
+          <div>
+            <span class="dept-title">The Sky</span>
+            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
+              Planetary ephemeris · Tonight's sky · Transits · Moon phase
+            </span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+      <li>
+        <a href="horoscope.html" class="dept-list-item" aria-label="Department 03 — Daily, free">
+          <span class="dept-number">03</span>
+          <div>
+            <span class="dept-title">Daily</span>
+            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
+              Daily horoscope · Life path number · Sign season briefing
+            </span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+      <li>
+        <a href="cosmic-story.html" class="dept-list-item" aria-label="Department 04 — Readings, paid">
+          <span class="dept-number">04</span>
+          <div>
+            <span class="dept-title">Readings</span>
+            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
+              Cosmic Story · Deep Reading report · Natal Sky print
+            </span>
+          </div>
+          <span class="dept-badge">Paid</span>
+        </a>
+      </li>
+      <li>
+        <a href="aries.html" class="dept-list-item" aria-label="Department 05 — The Library, free">
+          <span class="dept-number">05</span>
+          <div>
+            <span class="dept-title">The Library</span>
+            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
+              Sign guides · Planet meanings · House reference
+            </span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 6 · METHOD — three editorial columns
+     ============================================================ -->
+<section class="department section-bleed" style="background: var(--paper-leaf);" aria-labelledby="method-heading">
+  <div class="page-wrap">
+    <span class="dept-eyebrow">How it works</span>
+    <h2 id="method-heading" class="dept-heading">The method, in three steps</h2>
+    <div class="method-grid">
+      <div class="method-step">
+        <span class="step-num">Step 01</span>
+        <h3>Enter birth data</h3>
+        <p>Date, time, and place of birth. The more precise, the more accurate the house cusps and rising sign.</p>
+      </div>
+      <div class="method-step">
+        <span class="step-num">Step 02</span>
+        <h3>VSOP87 computes in your browser</h3>
+        <p>Every planetary longitude is calculated on your device using the VSOP87 planetary theory — the same used by professional observatories.</p>
+      </div>
+      <div class="method-step">
+        <span class="step-num">Step 03</span>
+        <h3>Read your blueprint</h3>
+        <p>A full natal wheel, interpreted sign by sign and house by house — grounded in geometry, not guesswork.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 7 · FEATURED READING — 2-col
+     ============================================================ -->
+<section class="department section-bleed" aria-labelledby="reading-heading">
+  <div class="page-wrap">
+    <span class="dept-eyebrow">Department 04 &middot; Readings</span>
+    <div class="featured-reading" style="margin-top: var(--sp-3);">
+
+      <!-- Natal wheel SVG plate -->
+      <figure class="plate" aria-hidden="true">
+        <span class="fig-num">Fig. I &middot; Natal wheel</span>
+        <svg
+          viewBox="0 0 300 300"
+          xmlns="http://www.w3.org/2000/svg"
+          style="width:100%; display:block;"
+        >
+          <defs>
+            <style>
+              .nw-ring  { fill:none; stroke:var(--hairline); stroke-width:1; }
+              .nw-spoke { stroke:rgba(26,27,30,0.08); stroke-width:0.7; }
+              .nw-glph  { font-family:'AstroGlyph',serif; font-size:12px; fill:var(--ink-faded); }
+              .nw-house { font-family:'IBM Plex Mono',monospace; font-size:8px; fill:var(--brass); }
+              .nw-asp   { stroke:rgba(47,93,140,0.25); stroke-width:0.8; }
+              .nw-planet{ fill:var(--ink); }
+            </style>
+          </defs>
+          <rect width="300" height="300" fill="var(--paper-leaf)"/>
+
+          <!-- Rings -->
+          <circle cx="150" cy="150" r="140" class="nw-ring"/>
+          <circle cx="150" cy="150" r="120" class="nw-ring"/>
+          <circle cx="150" cy="150" r="95"  class="nw-ring"/>
+          <circle cx="150" cy="150" r="40"  class="nw-ring" style="stroke-dasharray:2 3;"/>
+
+          <!-- 12 house spokes -->
+          <g>
+            <line x1="150" y1="150" x2="290" y2="150" class="nw-spoke"/>
+            <line x1="150" y1="150" x2="220" y2="29.7" class="nw-spoke"/>
+            <line x1="150" y1="150" x2="80"  y2="29.7" class="nw-spoke"/>
+            <line x1="150" y1="150" x2="10"  y2="150"  class="nw-spoke"/>
+            <line x1="150" y1="150" x2="80"  y2="270.3" class="nw-spoke"/>
+            <line x1="150" y1="150" x2="220" y2="270.3" class="nw-spoke"/>
+          </g>
+
+          <!-- House numbers -->
+          <text x="240" y="145" class="nw-house" text-anchor="middle">I</text>
+          <text x="208" y="82"  class="nw-house" text-anchor="middle">II</text>
+          <text x="152" y="44"  class="nw-house" text-anchor="middle">III</text>
+          <text x="65"  y="82"  class="nw-house" text-anchor="middle">IV</text>
+          <text x="48"  y="145" class="nw-house" text-anchor="middle">V</text>
+          <text x="65"  y="215" class="nw-house" text-anchor="middle">VI</text>
+          <text x="152" y="258" class="nw-house" text-anchor="middle">VII</text>
+          <text x="208" y="215" class="nw-house" text-anchor="middle">VIII</text>
+
+          <!-- Sample planet glyphs at representative positions -->
+          <text x="263" y="138" class="nw-glph">☉</text>
+          <text x="215" y="64"  class="nw-glph">☽</text>
+          <text x="58"  y="138" class="nw-glph">♂</text>
+          <text x="103" y="56"  class="nw-glph">♃</text>
+          <text x="148" y="270" class="nw-glph">♀</text>
+
+          <!-- A few aspect lines (inner) -->
+          <line x1="258" y1="135" x2="58"  y2="145" class="nw-asp"/>
+          <line x1="210" y1="68"  x2="148" y2="265" class="nw-asp"/>
+          <line x1="55"  y1="145" x2="100" y2="63"  class="nw-asp"/>
+
+          <!-- Centre -->
+          <circle cx="150" cy="150" r="5" style="fill:var(--paper); stroke:var(--hairline); stroke-width:1;"/>
+        </svg>
+        <figcaption class="source-line">Computed in-browser · VSOP87 · Placidus houses</figcaption>
+      </figure>
+
+      <!-- Pull quote + CTA -->
+      <div>
+        <h2 id="reading-heading" style="font-size: clamp(1.4rem,2.2vw,1.9rem); margin-bottom: var(--sp-3);">A Cosmic Story</h2>
+        <blockquote class="pull-quote" style="border-left: 2px solid var(--brass); padding-left: var(--sp-2); margin-bottom: var(--sp-3);">
+          "Your Sun in Cancer in the 10th house pulls public life into emotional territory — authority built on care, not dominance. The Moon in Scorpio sharpens every intuition into an instrument."
+        </blockquote>
+        <p style="font-size:0.92rem; color:var(--ink-faded); margin-bottom: var(--sp-3); max-width:44ch; font-family:var(--font-ui);">
+          A personalised written reading — four pages of plain-language chart interpretation drawn from your exact planetary positions.
+        </p>
+        <a href="cosmic-story.html" class="btn-quiet">Read a cosmic story &rarr;</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 8 · THE SIGN LIBRARY — 12-entry index
+     ============================================================ -->
+<section class="department section-bleed" style="background: var(--paper-leaf);" aria-labelledby="library-heading">
+  <div class="page-wrap">
+    <span class="dept-eyebrow">Department 05 &middot; The Library</span>
+    <h2 id="library-heading" class="dept-heading">The twelve signs</h2>
+    <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:48ch;">
+      Each entry covers the sign's character, ruling planet, element, and modality — plainly.
+    </p>
+    <nav aria-label="Zodiac sign library">
+      <div class="sign-index" role="list">
+        <a href="aries.html"       class="sign-index-entry" role="listitem"><span class="sign-glyph">♈</span><span class="sign-name">Aries</span></a>
+        <a href="taurus.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♉</span><span class="sign-name">Taurus</span></a>
+        <a href="gemini.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♊</span><span class="sign-name">Gemini</span></a>
+        <a href="cancer.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♋</span><span class="sign-name">Cancer</span></a>
+        <a href="leo.html"         class="sign-index-entry" role="listitem"><span class="sign-glyph">♌</span><span class="sign-name">Leo</span></a>
+        <a href="virgo.html"       class="sign-index-entry" role="listitem"><span class="sign-glyph">♍</span><span class="sign-name">Virgo</span></a>
+        <a href="libra.html"       class="sign-index-entry" role="listitem"><span class="sign-glyph">♎</span><span class="sign-name">Libra</span></a>
+        <a href="scorpio.html"     class="sign-index-entry" role="listitem"><span class="sign-glyph">♏</span><span class="sign-name">Scorpio</span></a>
+        <a href="sagittarius.html" class="sign-index-entry" role="listitem"><span class="sign-glyph">♐</span><span class="sign-name">Sagittarius</span></a>
+        <a href="capricorn.html"   class="sign-index-entry" role="listitem"><span class="sign-glyph">♑</span><span class="sign-name">Capricorn</span></a>
+        <a href="aquarius.html"    class="sign-index-entry" role="listitem"><span class="sign-glyph">♒</span><span class="sign-name">Aquarius</span></a>
+        <a href="pisces.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♓</span><span class="sign-name">Pisces</span></a>
+      </div>
+    </nav>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 9 · ON ACCURACY & PRIVACY — journal Q&A
+     ============================================================ -->
+<section class="department section-bleed" aria-labelledby="qa-heading">
+  <div class="page-wrap">
+    <span class="dept-eyebrow">On accuracy &amp; privacy</span>
+    <h2 id="qa-heading" class="dept-heading">Common questions</h2>
+    <ul class="qa-list" role="list">
+      <li class="qa-item" role="listitem">
+        <span class="qa-num">01</span>
+        <div>
+          <p class="qa-q">How accurate are the planetary positions?</p>
+          <p class="qa-a">
+            AstroPrecise uses VSOP87, a truncated series accurate to within one arc-second over several centuries. For chart purposes this exceeds any printed ephemeris.
+          </p>
+        </div>
+      </li>
+      <li class="qa-item" role="listitem">
+        <span class="qa-num">02</span>
+        <div>
+          <p class="qa-q">Does my birth data leave my device?</p>
+          <p class="qa-a">
+            No. All computation happens in your browser. Nothing is sent to a server, stored in a database, or attached to an account. Close the tab and it is gone.
+          </p>
+        </div>
+      </li>
+      <li class="qa-item" role="listitem">
+        <span class="qa-num">03</span>
+        <div>
+          <p class="qa-q">Can I see the code?</p>
+          <p class="qa-a">
+            Yes. The engine is unminified JavaScript — open browser DevTools, find <code style="font-family:var(--font-mono); font-size:0.85em;">js/ephemeris.js</code>, and read it. The math is inline. No black box.
+          </p>
+        </div>
+      </li>
+      <li class="qa-item" role="listitem">
+        <span class="qa-num">04</span>
+        <div>
+          <p class="qa-q">Do I need an account for the free tools?</p>
+          <p class="qa-a">
+            No account is needed for the chart, the sky, or the daily horoscope. Paid readings require an email address so we can deliver the PDF — that is the only data we hold.
+          </p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 10 · THE SHOP — Editions
+     ============================================================ -->
+<section class="department section-bleed" style="background: var(--paper-leaf);" aria-labelledby="shop-heading">
+  <div class="page-wrap">
+    <span class="dept-eyebrow">Department &middot; The Shop</span>
+    <h2 id="shop-heading" class="dept-heading">Editions</h2>
+    <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:50ch;">
+      Three products, each built on your exact computed chart. No generic readings.
+    </p>
+    <ul class="edition-list" role="list">
+      <li class="edition-item featured" role="listitem">
+        <div>
+          <a href="cosmic-story.html" class="edition-title">Cosmic Story &mdash; The Written Reading</a>
+          <p class="edition-desc">Four pages of plain-language chart interpretation, delivered as a PDF within minutes.</p>
+        </div>
+        <span class="edition-price">£12</span>
+      </li>
+      <li class="edition-item" role="listitem">
+        <div>
+          <a href="shop.html" class="edition-title">Deep Reading &mdash; Full Delineation</a>
+          <p class="edition-desc">Twelve pages covering every planet, house, and major aspect in your natal chart.</p>
+        </div>
+        <span class="edition-price">£28</span>
+      </li>
+      <li class="edition-item" role="listitem">
+        <div>
+          <a href="shop.html" class="edition-title">Natal Sky Print &mdash; A4 Letterpress</a>
+          <p class="edition-desc">Your exact sky at birth, plotted as a fine-line print. Printed on 120gsm stock.</p>
+        </div>
+        <span class="edition-price">£18</span>
+      </li>
+    </ul>
+    <div style="margin-top: var(--sp-5);">
+      <a href="shop.html" class="btn-quiet">View the full shop &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     § 11 · COLOPHON FOOTER (.night-watch)
+     ============================================================ -->
+<footer class="night-watch section-bleed" aria-label="Site footer">
+  <div class="page-wrap">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="chart.html">Natal chart</a></li>
+          <li><a href="ephemeris.html">Sky tonight</a></li>
+          <li><a href="transits.html">Current transits</a></li>
+          <li><a href="moonphase.html">Moon phase</a></li>
+          <li><a href="synastry.html">Synastry</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="cosmic-story.html">Cosmic Story</a></li>
+          <li><a href="shop.html">Deep Reading</a></li>
+          <li><a href="shop.html">Natal Sky Print</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="aries.html">Sign library</a></li>
+          <li><a href="horoscope.html">Daily horoscope</a></li>
+          <li><a href="accuracy.html">On accuracy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Meta</h4>
+        <ul>
+          <li><a href="why.html">Why AstroPrecise?</a></li>
+          <li><a href="accuracy.html">The mathematics</a></li>
+          <li><a href="mailto:hello@astroprecise.app">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-colophon">
+      <span class="source-line">
+        Planetary positions &middot; VSOP87 series (Bretagnon &amp; Francou 1987) &middot; Computed in-browser &middot; No server call
+      </span>
+      <span class="copyright">&copy; MMXXVI AstroPrecise &middot; computed, never fabricated</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     Scripts — minimal, end of body
+     ============================================================ -->
+<script src="js/ap-zodiac-constants.js"></script>
+<script src="js/ephemeris.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ── 1. Live dateline: Sun & Moon sign for today ──────────────
+  try {
+    var now = new Date();
+    var y = now.getUTCFullYear();
+    var m = now.getUTCMonth() + 1;
+    var d = now.getUTCDate();
+
+    // Format date for display
+    var monthNames = [
+      'January','February','March','April','May','June',
+      'July','August','September','October','November','December'
+    ];
+    var dateStr = d + ' ' + monthNames[m - 1] + ' ' + y;
+
+    // Calculate chart for today noon UTC, lat 0 lon 0 (sky positions only)
+    if (window.AstroEphemeris && typeof window.AstroEphemeris.calculateNatalChart === 'function') {
+      var chart = window.AstroEphemeris.calculateNatalChart(y, m, d, 12, 0, 0, 0, 'Placidus', 'mean');
+      var sunSign  = chart.positions.sun.sign;
+      var moonSign = chart.positions.moon.sign;
+
+      var dateEl = document.getElementById('dateline-date');
+      var sunEl  = document.getElementById('dateline-sun');
+      var moonEl = document.getElementById('dateline-moon');
+
+      if (dateEl)  { dateEl.textContent  = dateStr; dateEl.setAttribute('datetime', y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0')); }
+      if (sunEl)   { sunEl.textContent   = 'Sun in ' + sunSign; }
+      if (moonEl)  { moonEl.textContent  = 'Moon in ' + moonSign; }
+
+      // Update the SVG planet markers' label text too (best-effort)
+      var nightSun  = document.querySelectorAll('[data-live="sun-sign"]');
+      var nightMoon = document.querySelectorAll('[data-live="moon-sign"]');
+      nightSun.forEach(function(el)  { el.textContent = sunSign; });
+      nightMoon.forEach(function(el) { el.textContent = moonSign; });
+    }
+  } catch (e) {
+    // Graceful fallback — static dateline already in DOM
+    console.info('AstroPrecise ephemeris dateline: ', e.message);
+  }
+
+  // ── 2. Hero chart form submit ─────────────────────────────────
+  var form  = document.getElementById('hero-chart-form');
+  var input = document.getElementById('hero-birthdate');
+  var errEl = document.getElementById('hero-form-error');
+
+  if (form && input) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var val = input.value.trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+        window.location.href = 'chart.html?date=' + encodeURIComponent(val);
+      } else {
+        if (errEl) {
+          errEl.textContent = 'Please enter a valid date (YYYY-MM-DD).';
+          errEl.style.display = 'block';
+        }
+        input.focus();
+      }
+    });
+
+    // Clear error on input
+    input.addEventListener('input', function () {
+      if (errEl) { errEl.style.display = 'none'; }
+    });
+  }
+
+  // ── 3. Fade-in — one-shot, gated on prefers-reduced-motion ───
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced) {
+    var fadeEls = document.querySelectorAll('.fade-in');
+    fadeEls.forEach(function (el, i) {
+      el.style.animationDelay = (i * 0.12) + 's';
+    });
+  } else {
+    // Ensure elements are visible with no animation
+    document.querySelectorAll('.fade-in').forEach(function (el) {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+  }
+
+}());
+</script>
+</body>
+</html>

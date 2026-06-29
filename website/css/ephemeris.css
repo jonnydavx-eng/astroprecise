@@ -1,0 +1,778 @@
+/* ============================================================
+   AstroPrecise — EPHEMERIS design system
+   The Astronomical Almanac: warm paper, ink type, fine line-art.
+   Built 2026 · Replaces the gold-on-black legacy look.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   0. :root — Design tokens
+   ------------------------------------------------------------ */
+:root {
+  /* Palette */
+  --paper:           #F4EFE6;
+  --paper-leaf:      #EBE4D6;
+  --ink:             #1A1B1E;
+  --ink-faded:       #55524B;
+  --midnight:        #16243A;
+  --paper-on-midnight: #EAE3D3;
+  --meridian:        #2F5D8C;
+  --terracotta:      #B5532E;
+  --brass:           #9A7B3F;
+  --sage:            #5A7A48;
+  --hairline:        rgba(26, 27, 30, 0.12);
+
+  /* Typography */
+  --font-serif:  'Cormorant Garamond', Georgia, serif;
+  --font-ui:     'Inter', system-ui, sans-serif;
+  --font-mono:   'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Spacing scale: 8 / 16 / 24 / 40 / 64 / 104 */
+  --sp-1:  8px;
+  --sp-2:  16px;
+  --sp-3:  24px;
+  --sp-5:  40px;
+  --sp-8:  64px;
+  --sp-13: 104px;
+
+  /* Measure */
+  --reading-measure: 66ch;
+  --page-max:        1200px;
+  --col-main:        1fr;
+  --col-margin:      200px;
+}
+
+/* ------------------------------------------------------------
+   1. Base reset & document
+   ------------------------------------------------------------ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 18px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ------------------------------------------------------------
+   2. Layout utility
+   ------------------------------------------------------------ */
+.page-wrap {
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--sp-5);
+}
+
+/* Two-column editorial grid: main text + marginalia rail */
+.editorial-grid {
+  display: grid;
+  grid-template-columns: var(--col-main) var(--col-margin);
+  column-gap: var(--sp-5);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .editorial-grid {
+    grid-template-columns: 1fr;
+  }
+  .marginalia {
+    display: none;
+  }
+}
+
+/* Full-bleed section wrapper */
+.section-bleed {
+  width: 100%;
+}
+
+/* ------------------------------------------------------------
+   3. Typography — headings, serif, mono
+   ------------------------------------------------------------ */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.display {
+  font-size: clamp(2.8rem, 6.5vw, 5.4rem);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.headline-1 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.12;
+}
+
+.headline-2 {
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  font-weight: 400;
+}
+
+.standfirst {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--ink-faded);
+}
+
+.pull-quote {
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* Mono — data, captions, coordinates, figure numbers */
+.mono,
+time.mono,
+figcaption,
+.fig-num,
+.source-line,
+.dept-eyebrow,
+.dateline,
+.margin-note,
+.marginalia {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-faded);
+}
+
+/* Never let mono run too large */
+.mono { font-size: max(13px, 0.78rem); }
+
+/* UI copy */
+.ui-label,
+nav,
+.btn-press,
+.btn-quiet,
+label {
+  font-family: var(--font-ui);
+}
+
+/* Body / reading copy */
+p {
+  font-family: var(--font-serif);
+  line-height: 1.65;
+  max-width: var(--reading-measure);
+}
+
+a {
+  color: var(--meridian);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:hover, a:focus-visible {
+  color: var(--terracotta);
+}
+
+/* ------------------------------------------------------------
+   4. Hairline rules
+   ------------------------------------------------------------ */
+.rule {
+  border: none;
+  border-top: 1px solid var(--hairline);
+  margin: 0;
+}
+
+.rule-brass {
+  border: none;
+  border-top: 1px solid var(--brass);
+  margin: 0;
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------
+   5. .plate — framed figure container
+   ------------------------------------------------------------ */
+.plate {
+  background: var(--paper-leaf);
+  border: 1px solid var(--brass);
+  padding: var(--sp-3);
+  position: relative;
+}
+
+.plate .fig-num {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  letter-spacing: 0.06em;
+  color: var(--brass);
+  display: block;
+  margin-bottom: var(--sp-1);
+  text-transform: uppercase;
+}
+
+.plate .plate-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: var(--sp-1);
+}
+
+.plate figcaption,
+.plate .source-line {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  color: var(--ink-faded);
+  margin-top: var(--sp-2);
+  display: block;
+}
+
+/* ------------------------------------------------------------
+   6. .department — section with eyebrow + hairline
+   ------------------------------------------------------------ */
+.department {
+  padding-top: var(--sp-8);
+  padding-bottom: var(--sp-5);
+}
+
+.department + .department {
+  border-top: 1px solid var(--hairline);
+}
+
+.dept-eyebrow {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  letter-spacing: 0.08em;
+  color: var(--brass);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: var(--sp-2);
+}
+
+.dept-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight: 400;
+  margin-bottom: var(--sp-3);
+}
+
+/* ------------------------------------------------------------
+   7. .trust-line — three mono verify marks
+   ------------------------------------------------------------ */
+.trust-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  align-items: center;
+  padding-block: var(--sp-2);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.trust-line .trust-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.75rem);
+  color: var(--ink-faded);
+}
+
+.trust-line .trust-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: var(--sage);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------
+   8. .marginalia / .margin-note
+   ------------------------------------------------------------ */
+.marginalia,
+.margin-note {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  color: var(--ink-faded);
+  line-height: 1.5;
+}
+
+.margin-note {
+  display: block;
+  padding-top: var(--sp-1);
+  border-top: 1px solid var(--hairline);
+  margin-top: var(--sp-1);
+}
+
+/* ------------------------------------------------------------
+   9. Buttons
+   ------------------------------------------------------------ */
+.btn-press,
+.btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 11px 28px;
+  min-height: 44px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  border: none;
+}
+
+.btn-press {
+  background: var(--terracotta);
+  color: var(--paper);
+}
+.btn-press:hover,
+.btn-press:focus-visible {
+  opacity: 0.88;
+  color: var(--paper);
+}
+
+.btn-quiet {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--brass);
+}
+.btn-quiet:hover,
+.btn-quiet:focus-visible {
+  color: var(--terracotta);
+  border-color: var(--terracotta);
+}
+
+/* ------------------------------------------------------------
+   10. .night-watch — the single dark band
+   ------------------------------------------------------------ */
+.night-watch {
+  background: var(--midnight);
+  color: var(--paper-on-midnight);
+}
+
+.night-watch h1,
+.night-watch h2,
+.night-watch h3,
+.night-watch h4 {
+  color: var(--paper-on-midnight);
+}
+
+.night-watch p {
+  color: var(--paper-on-midnight);
+  opacity: 0.88;
+}
+
+.night-watch a {
+  color: var(--paper-on-midnight);
+  opacity: 0.8;
+}
+.night-watch a:hover {
+  opacity: 1;
+}
+
+.night-watch .rule,
+.night-watch .rule-brass {
+  border-color: rgba(234, 227, 211, 0.15);
+}
+
+.night-watch .mono,
+.night-watch figcaption,
+.night-watch .source-line,
+.night-watch .dept-eyebrow,
+.night-watch .margin-note {
+  color: var(--paper-on-midnight);
+  opacity: 0.6;
+}
+
+/* ------------------------------------------------------------
+   11. Entry form (hero birth-date form)
+   ------------------------------------------------------------ */
+.hero-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+  margin-top: var(--sp-5);
+}
+
+.hero-form input[type="date"] {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid rgba(26,27,30,0.3);
+  border-radius: 4px;
+  padding: 10px 16px;
+  min-width: 180px;
+  height: 44px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.hero-form input[type="date"]:focus {
+  border-color: var(--meridian);
+  box-shadow: 0 0 0 3px rgba(47,93,140,0.15);
+}
+.hero-form input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------
+   12. Masthead
+   ------------------------------------------------------------ */
+.masthead {
+  text-align: center;
+  padding-top: var(--sp-5);
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.masthead-wordmark {
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--brass);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: var(--sp-2);
+}
+
+.masthead-rule {
+  border: none;
+  border-top: 1px solid var(--brass);
+  opacity: 0.4;
+  margin-block: var(--sp-2);
+}
+
+.dateline {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.78rem);
+  color: var(--ink-faded);
+  letter-spacing: 0.04em;
+}
+
+/* contents nav */
+.contents-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-2);
+  list-style: none;
+}
+
+.contents-nav a {
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-faded);
+}
+.contents-nav a:hover {
+  color: var(--terracotta);
+}
+
+/* ------------------------------------------------------------
+   13. Sign library index
+   ------------------------------------------------------------ */
+.sign-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline);
+}
+
+.sign-index-entry {
+  border-right: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding: var(--sp-2) var(--sp-2);
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  transition: background 0.1s;
+}
+.sign-index-entry:hover {
+  background: var(--paper-leaf);
+  text-decoration: none;
+}
+.sign-glyph {
+  font-size: 1rem;
+  color: var(--brass);
+  font-family: var(--font-mono);
+}
+.sign-name {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------
+   14. Contents table / department listing
+   ------------------------------------------------------------ */
+.dept-list {
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+}
+
+.dept-list-item {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding-block: var(--sp-2);
+  border-bottom: 1px solid var(--hairline);
+  text-decoration: none;
+  color: var(--ink);
+}
+.dept-list-item:hover { color: var(--terracotta); text-decoration: none; }
+
+.dept-number {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.75rem);
+  color: var(--brass);
+}
+.dept-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+}
+.dept-badge {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  color: var(--ink-faded);
+  border: 1px solid var(--hairline);
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+.dept-badge.free { color: var(--sage); border-color: var(--sage); }
+
+/* ------------------------------------------------------------
+   15. Method columns (3-up)
+   ------------------------------------------------------------ */
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-5);
+  border-top: 1px solid var(--hairline);
+  padding-top: var(--sp-5);
+}
+
+@media (max-width: 680px) {
+  .method-grid { grid-template-columns: 1fr; }
+}
+
+.method-step .step-num {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  color: var(--brass);
+  display: block;
+  margin-bottom: var(--sp-1);
+  letter-spacing: 0.06em;
+}
+.method-step h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--sp-1);
+}
+.method-step p {
+  font-size: 0.95rem;
+  color: var(--ink-faded);
+  line-height: 1.6;
+}
+
+/* ------------------------------------------------------------
+   16. Featured reading (2-col)
+   ------------------------------------------------------------ */
+.featured-reading {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+@media (max-width: 720px) {
+  .featured-reading { grid-template-columns: 1fr; }
+  .featured-reading .plate { display: none; } /* hide SVG plate on small screens */
+}
+
+/* ------------------------------------------------------------
+   17. Q&A journal
+   ------------------------------------------------------------ */
+.qa-list {
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+}
+
+.qa-item {
+  padding-block: var(--sp-3);
+  border-bottom: 1px solid var(--hairline);
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: var(--sp-2);
+}
+
+.qa-item .qa-q {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: var(--sp-1);
+}
+.qa-item .qa-a {
+  font-size: 0.95rem;
+  color: var(--ink-faded);
+  line-height: 1.6;
+  max-width: 58ch;
+}
+.qa-num {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  color: var(--brass);
+  padding-top: 4px;
+}
+
+/* ------------------------------------------------------------
+   18. Shop editions list
+   ------------------------------------------------------------ */
+.edition-list {
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+}
+
+.edition-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding-block: var(--sp-2);
+  border-bottom: 1px solid var(--hairline);
+}
+.edition-item.featured {
+  background: var(--paper-leaf);
+  padding-inline: var(--sp-2);
+  margin-inline: calc(-1 * var(--sp-2));
+}
+
+.edition-title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+.edition-title:hover { color: var(--terracotta); }
+.edition-desc {
+  font-size: 0.88rem;
+  color: var(--ink-faded);
+  font-family: var(--font-ui);
+  margin-top: 2px;
+}
+.edition-price {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.82rem);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------
+   19. Footer (inside .night-watch)
+   ------------------------------------------------------------ */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-5);
+  padding-block: var(--sp-8);
+}
+
+@media (max-width: 680px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+}
+
+.footer-col h4 {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-on-midnight);
+  opacity: 0.5;
+  margin-bottom: var(--sp-2);
+}
+
+.footer-col ul {
+  list-style: none;
+}
+.footer-col li { margin-bottom: 6px; }
+.footer-col a {
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  color: var(--paper-on-midnight);
+  opacity: 0.75;
+  text-decoration: none;
+}
+.footer-col a:hover { opacity: 1; }
+
+.footer-colophon {
+  border-top: 1px solid rgba(234,227,211,0.15);
+  padding-block: var(--sp-3);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.footer-colophon .source-line {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.7rem);
+  color: var(--paper-on-midnight);
+  opacity: 0.45;
+}
+.footer-colophon .copyright {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--paper-on-midnight);
+  opacity: 0.45;
+}
+
+/* ------------------------------------------------------------
+   20. Reduced-motion: disable fade-in animations
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
