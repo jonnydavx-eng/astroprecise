@@ -6819,7 +6819,9 @@ body.preloader-active .bottom-nav {
 /* lite:end profile-bottomnav */
 
 @media (max-width: 480px) {
-  .navbar__logo .logo-text { display: none; }
+  /* Shrink (don't hide) so the wordmark + brass-italic "Precise" stays
+     visible on mobile inner pages, matching the homepage masthead. */
+  .navbar__logo .logo-text { font-size: 0.95rem; letter-spacing: 0.04em; }
 }
 
 /* Saturn with ring — appended live by app.js */
