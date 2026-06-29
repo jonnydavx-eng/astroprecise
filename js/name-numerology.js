@@ -1,7 +1,7 @@
 /* ===========================================================================
  * name-numerology.js — window.NameNumerology
  * ---------------------------------------------------------------------------
- * Pythagorean name numerology engine for AstroPrecise.
+ * Pythagorean name numerology engine for Astro Precise.
  *
  *   Expression / Destiny  — all letters of the full name
  *   Soul Urge / Heart's Desire — vowels only

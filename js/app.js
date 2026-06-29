@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Main Application Orchestrator
+ * Astro Precise — Main Application Orchestrator
  * Wires together ephemeris, rendering, interpretations, and profile modules.
  */
 
@@ -1168,7 +1168,7 @@ window.AstroUI = (() => {
     if (famLinks.length) {
       var fp = document.createElement('p');
       fp.className = 'ap-family-links';
-      fp.innerHTML = 'A small family of sites — <strong>AstroPrecise</strong> <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
+      fp.innerHTML = 'A small family of sites — <strong>Astro Precise</strong> <span class="ap-footer-sep" aria-hidden="true">&middot;</span> '
         + famLinks.join(' <span class="ap-footer-sep" aria-hidden="true">&middot;</span> ');
       host.appendChild(fp);
     }
@@ -1242,7 +1242,7 @@ window.AP_MON = Object.assign({
       {
         id: 'moonology-oracle',
         title: 'Moonology Oracle Cards',
-        blurb: '44-card lunar oracle — elegant companion to AstroPrecise moon phase data.',
+        blurb: '44-card lunar oracle — elegant companion to Astro Precise moon phase data.',
         url: 'https://www.amazon.co.uk/s?k=Moonology+Oracle+Cards+Yasmin+Boland',
         source: 'Amazon',
         price: '~£16',
@@ -2002,7 +2002,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
       } catch (e) {}
     } else if (Mn.ownerEmail && isEmail(Mn.ownerEmail)) {
       try {
-        var subj = encodeURIComponent('AstroPrecise sign-up' + (opts.list ? ' — ' + opts.list : ''));
+        var subj = encodeURIComponent('Astro Precise sign-up' + (opts.list ? ' — ' + opts.list : ''));
         var bdy = encodeURIComponent('New subscriber: ' + email + (opts.source ? '\nSource: ' + opts.source : ''));
         var a = document.createElement('a');
         a.href = 'mailto:' + Mn.ownerEmail + '?subject=' + subj + '&body=' + bdy;

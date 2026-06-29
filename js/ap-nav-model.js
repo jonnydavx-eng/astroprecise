@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Navigation IA (single source of truth).
+ * Astro Precise — Navigation IA (single source of truth).
  * Load before app.js: <script src="js/ap-nav-model.js"></script>
  * Desktop: 5 primaries + More flyout. Mobile: 4 bottom tabs (Home/Chart/Daily/Sky) + drawer.
  */

@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Birth Chart Page Controller
+ * Astro Precise — Birth Chart Page Controller
  * Wires the chart form to the ephemeris engine, renders results, and adds
  * city autocomplete, timezone-correct UT conversion, shareable links, a
  * downloadable natal poster, and a premium Big Three share card.
@@ -1338,14 +1338,14 @@ host.classList.add('is-done');
         const blob = await canvasToBlob(paintShareImage(currentChart, 'square'));
         const file = blob && new File([blob], `${slugify(currentChart.name)}-natal-square.png`, { type: 'image/png' });
         if (file && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: 'My Birth Chart — AstroPrecise', text, url });
+          await navigator.share({ files: [file], title: 'My Birth Chart — Astro Precise', text, url });
           return;
         }
       } catch (e) { if (e && e.name === 'AbortError') return; /* else fall through */ }
     }
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'My Birth Chart — AstroPrecise', text, url });
+        await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url });
       } else {
         await navigator.clipboard.writeText(`${text}\n${url}`);
         if (window.AstroApp) AstroApp.showToast('Link copied', 'Share link copied to clipboard.', 'success');
@@ -1365,7 +1365,7 @@ host.classList.add('is-done');
     if (!currentChart) return;
     const I = window.AstroInterpretations;
     const data = {
-      generator: 'AstroPrecise (astroprecise ephemeris — truncated VSOP87/ELP2000, ~1′ accuracy)',
+      generator: 'Astro Precise (astroprecise ephemeris — truncated VSOP87/ELP2000, ~1′ accuracy)',
       exported: new Date().toISOString(),
       name: currentChart.name,
       birthDate: currentChart.birthDate,
@@ -2225,7 +2225,7 @@ host.classList.add('is-done');
         if (navigator.canShare({ files: [file] })) {
           await navigator.share({
             files: [file],
-            title: 'My Birth Chart — AstroPrecise',
+            title: 'My Birth Chart — Astro Precise',
             text: `${chart.name}: ☉ ${chart.positions.Sun.sign} · ☽ ${chart.positions.Moon.sign} · ↑ ${chart.risingSign}`,
           });
           return; // shared successfully

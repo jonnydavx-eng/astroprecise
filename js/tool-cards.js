@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — shared free-core tool cards (visuals + links).
+ * Astro Precise — shared free-core tool cards (visuals + links).
  * Used on shop.html; catalog mirrors homepage tool-card copy.
  */
 'use strict';
@@ -73,7 +73,7 @@ window.AstroToolCards = (() => {
       href: 'ephemeris.html',
       label: 'Signature Feature',
       title: 'Sky',
-      desc: 'The Instrument — your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, field weather, and a precession engine. Unique to AstroPrecise.',
+      desc: 'The Instrument — your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, field weather, and a precession engine. Unique to Astro Precise.',
       cta: 'Open Sky',
       icon: 'orb',
       glyph: '⬡',

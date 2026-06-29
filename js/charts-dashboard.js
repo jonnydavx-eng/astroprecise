@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Saved Charts Dashboard ("My Charts")
+ * Astro Precise — Saved Charts Dashboard ("My Charts")
  * ----------------------------------------------------------------------------
  * Renders every chart saved via window.AstroProfile (localStorage `ap_charts`)
  * as a glass card showing name, birth date + place and the Big Three (Sun /

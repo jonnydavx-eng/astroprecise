@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Consciousness Weather
+ * Astro Precise — Consciousness Weather
  * A field-conditions report, not a prediction. Blends:
  *   MEASURED — planetary K-index, solar wind speed/density, interplanetary
  *              magnetic field Bz, GOES X-ray flares, F10.7 solar flux (NOAA SWPC)

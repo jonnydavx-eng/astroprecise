@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — The Light-Cone
+ * Astro Precise — The Light-Cone
  * Your birth as an event in spacetime: light left your birthplace at c and
  * has been expanding outward ever since. Radius in light-years equals your
  * age in years — that identity is exact, and everything here follows from it.

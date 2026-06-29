@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — single source of truth for the 12 zodiac signs.
+ * Astro Precise — single source of truth for the 12 zodiac signs.
  * Seal art uses lowercase `key` (slug), not Unicode emoji.
  */
 (function () {

@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Premium reading / deliverable preferences (local only).
+ * Astro Precise — Premium reading / deliverable preferences (local only).
  * Tone, dedication, house system — appended to checkout URLs as Lemon Squeezy custom fields.
  */
 (function () {

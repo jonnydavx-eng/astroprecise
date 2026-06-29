@@ -1005,7 +1005,7 @@
             var hook = ((d && d.overview) || '').split('.')[0];
             var dateStr = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long' });
             title = info.name + ' — ' + dateStr;
-            text = info.name + ', ' + dateStr + ': "' + hook + '." — computed from the real sky at AstroPrecise';
+            text = info.name + ', ' + dateStr + ': "' + hook + '." — computed from the real sky at Astro Precise';
           }
           if (navigator.share) {
             navigator.share({ title: title, text: text, url: url })

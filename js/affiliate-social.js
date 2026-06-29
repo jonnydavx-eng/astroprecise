@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — footer social icons + affiliate wiring/ads.
+ * Astro Precise — footer social icons + affiliate wiring/ads.
  * Loaded after app.js (reads AP_SOCIAL + AP_MON).
  */
 'use strict';

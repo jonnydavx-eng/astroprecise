@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Safe DOM utilities (XSS defense)
+ * Astro Precise — Safe DOM utilities (XSS defense)
  *
  * esc(s)       — HTML-entity escape for &, <, >, ", '
  * setText(el)  — textContent (preferred for plain strings)

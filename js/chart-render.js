@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — SVG Natal Chart Renderer
+ * Astro Precise — SVG Natal Chart Renderer
  * chart-render.js
  *
  * Exports: window.AstroChartRender = { renderNatalChart, renderCompatibilityChart, renderTransitChart }

@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Shop Commerce (window.AstroShop)
+ * Astro Precise — Shop Commerce (window.AstroShop)
  * ─────────────────────────────────────────────────────────────────────────
  * A config-driven, privacy-clean shop for PERSONALISED-per-chart products
  * ("wear your sky") and digital readings. Ported from The Bigger Picture's
@@ -632,7 +632,7 @@ window.AstroShop = (() => {
           style: { color: 'gold', shape: 'rect', label: 'pay', height: 45 },
           createOrder: (data, actions) => actions.order.create({
             purchase_units: [{
-              description: 'AstroPrecise — order',
+              description: 'Astro Precise — order',
               amount: {
                 value: itemTotal.toFixed(2),
                 currency_code: currency,
@@ -1250,7 +1250,7 @@ window.AstroShop = (() => {
     s.textContent = JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: 'AstroPrecise — Personalised Chart Products',
+      name: 'Astro Precise — Personalised Chart Products',
       itemListElement: list.map((p, i) => ({
         '@type': 'ListItem',
         position: i + 1,
@@ -1258,7 +1258,7 @@ window.AstroShop = (() => {
           '@type': 'Product',
           name: p.name,
           description: p.blurb,
-          brand: { '@type': 'Brand', name: 'AstroPrecise' },
+          brand: { '@type': 'Brand', name: 'Astro Precise' },
           image: p.previewImage ? new URL(p.previewImage, location.href).href : undefined,
           offers: {
             '@type': 'Offer',
@@ -1268,7 +1268,7 @@ window.AstroShop = (() => {
             // Advertise the real Payhip checkout URL only when connected — never the
             // dead Lemon Squeezy fulfilUrl. Omitted (undefined) while checkout pends.
             url: hasCheckout(p) ? payhipUrl(p) : undefined,
-            seller: { '@type': 'Organization', name: 'AstroPrecise' }
+            seller: { '@type': 'Organization', name: 'Astro Precise' }
           },
         },
       })),

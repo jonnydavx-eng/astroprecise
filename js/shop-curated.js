@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — curated affiliate shelf tabs (shop.html)
+ * Astro Precise — curated affiliate shelf tabs (shop.html)
  */
 'use strict';
 

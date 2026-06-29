@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — unified Tier-C page chrome boot.
+ * Astro Precise — unified Tier-C page chrome boot.
  * Ensures: ap-zodiac-constants → celestial-seals → icons → ap-page-bridge → ap-nav-model → app.js
  * Daily/content scripts (sign-page-boot, etc.) stay separate on sign pages.
  */

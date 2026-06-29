@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   AstroPrecise — Cosmic Archetype Quiz
+   Astro Precise — Cosmic Archetype Quiz
    ----------------------------------------------------------------
    A playful 6-question quiz that maps your answers to one of ten
    cosmic archetypes, derived from an element + modality + dominant
@@ -21,7 +21,7 @@
 const AstroQuiz = (() => {
 
   const STORAGE_KEY = 'ap_quiz_archetype';
-  const SHARE_NAME  = 'AstroPrecise';
+  const SHARE_NAME  = 'Astro Precise';
 
   // ── Archetypes ─────────────────────────────────────────────
   // Each is keyed by an element + modality blend, with a representative

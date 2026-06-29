@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — cinematic scale journey chapters (levels 0–6).
+ * Astro Precise — cinematic scale journey chapters (levels 0–6).
  * Compact titles for HUD; full copy in expandable scene notes.
  */
 window.ScaleJourneyChapters = [
@@ -57,6 +57,6 @@ window.ScaleJourneyChapters = [
     tagline: 'Finale · Cosmic horizon',
     narrative: 'Galaxies as ancient light. Every photon began its journey before humans existed. Now we descend — all the way home to the blue marble where your chart begins.',
     fact: 'The observable universe: ~93 billion light-years across.',
-    pitch: 'AstroPrecise — precision astronomy from Earth to the edge of everything.',
+    pitch: 'Astro Precise — precision astronomy from Earth to the edge of everything.',
   },
 ];

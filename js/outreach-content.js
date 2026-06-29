@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — outreach playbook + ready-to-send copy (emails, X posts).
+ * Astro Precise — outreach playbook + ready-to-send copy (emails, X posts).
  * Owner toolkit: open outreach.html or run `node tools/export-outreach.mjs`.
  * Pairs with EMAIL-FUNNEL.md; prices match AP_MON (ap-v116).
  */
@@ -26,7 +26,7 @@
     // ── X (Twitter) traffic research — distilled from 2026 algorithm + astro niche ──
     xTraffic: {
       summary:
-        'X rewards conversation velocity in the first 30 minutes. For AstroPrecise, the winning loop is: '
+        'X rewards conversation velocity in the first 30 minutes. For Astro Precise, the winning loop is: '
         + 'reply-heavy mornings on big astrology accounts → profile click → links.html → free chart or email. '
         + 'Post 3–5 originals/day; spend 30+ minutes/day on substantive replies. Never link checkout from X — bio only.',
       algorithm: {
@@ -53,7 +53,7 @@
       },
       profile: {
         handle: '@astroprecise',
-        displayName: 'AstroPrecise ✦ Mission Control',
+        displayName: 'Astro Precise ✦ Mission Control',
         bio:
           'Mission Control for your sky ✦\n'
           + 'Real ephemeris · computed in your browser\n'
@@ -119,7 +119,7 @@
             + 'This list is for your monthly cosmic weather — what the planets are doing to YOUR '
             + 'chart, in plain language. First one lands soon.\n\n'
             + 'Reply and tell me your Sun sign — I read everything.\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'welcome-2',
@@ -134,7 +134,7 @@
             + 'Two people with the same Sun can feel completely different once you know their Moon '
             + 'and Rising. That\'s why a real chart beats a horoscope column.\n\n'
             + 'SEE MY BIG THREE → {{siteUrl}}/chart.html\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'welcome-3',
@@ -149,7 +149,7 @@
             + '3. TRANSITS — what the sky is doing to YOUR chart right now.\n'
             + '   {{siteUrl}}/transits.html\n\n'
             + 'Take one for a spin and hit reply with what surprised you.\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'welcome-4',
@@ -162,21 +162,21 @@
             + 'A one-time PDF, yours to keep — {{deepReadingPrice}} when the shop is open.\n\n'
             + 'ABOUT THE DEEP READING → {{siteUrl}}/chart.html#deep-reading\n\n'
             + '(If it\'s not open for purchase yet, you\'ll see an honest note — we never run a fake checkout.)\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'welcome-5',
           delay: 'day 10',
           subject: 'Why I built this (and a small ask)',
           body:
-            'Last email in the welcome series — so let me tell you why AstroPrecise exists.\n\n'
+            'Last email in the welcome series — so let me tell you why Astro Precise exists.\n\n'
             + 'Most astrology apps want your birth data on their servers and a subscription on your card. '
             + 'I wanted the opposite: a real chart, computed in your browser. No account. No subscription. '
             + 'Your birth moment never leaves your device.\n\n'
             + 'The small ask: reply and tell me one thing your chart got right about you. Real person here. '
             + 'I read every reply.\n\n'
             + 'From now on: monthly cosmic weather — one email, the sky\'s main moves. Unsubscribe anytime.\n\n'
-            + '— AstroPrecise\n\n'
+            + '— Astro Precise\n\n'
             + 'P.S. Your wallpaper is one tap away on the chart page.',
         },
       ],
@@ -192,7 +192,7 @@
             + 'Computed from real planetary positions, not a recycled column.\n\n'
             + 'Preview anytime (free, no account): {{siteUrl}}/horoscope.html\n\n'
             + 'Only your email was sent. Birth data stays in your browser.\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'horoscope-monthly-welcome',
@@ -204,7 +204,7 @@
             + 'Once a month: a longer outlook for your sign — major transits, themes, dates to watch. '
             + 'Same honest astronomy as the free horoscope page.\n\n'
             + 'Read this month\'s preview: {{siteUrl}}/horoscope.html\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
       ],
       monthly: [
@@ -220,7 +220,7 @@
             + 'See it on your chart, free: {{siteUrl}}/transits.html\n\n'
             + 'Want the map reread in depth? The Deep Reading is {{deepReadingPrice}}, one-time: '
             + '{{siteUrl}}/chart.html#deep-reading\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
       ],
       reEngagement: [
@@ -234,7 +234,7 @@
             + 'click any link below and you\'ll stay on the list. Otherwise we\'ll stop emailing — no hard feelings.\n\n'
             + 'Cast your chart again: {{siteUrl}}/chart.html\n'
             + 'Today\'s transits: {{siteUrl}}/transits.html\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
       ],
       postPurchase: [
@@ -246,7 +246,7 @@
             'Thank you — genuinely.\n\n'
             + 'Your order is confirmed. Digital PDFs arrive within 24 hours; physical pieces ship when printed.\n\n'
             + 'This was made for your chart and no one else\'s.\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'purchase-2',
@@ -257,7 +257,7 @@
             + '→ Read once straight through, then again a week later.\n'
             + '→ Cross-check with live transits: {{siteUrl}}/transits.html\n\n'
             + 'Questions? Reply — I\'ll answer.\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'purchase-3',
@@ -267,7 +267,7 @@
             'Two weeks in — how\'s the reading sitting with you?\n\n'
             + 'Reply with a line of feedback if you have 20 seconds.\n\n'
             + 'Know someone curious about their chart? Send them {{linksUrl}} — the chart tool is free.\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
         {
           id: 'purchase-4',
@@ -277,7 +277,7 @@
             '{{transitHighlight}}\n\n'
             + 'See it live: {{siteUrl}}/transits.html\n\n'
             + 'When you\'re ready for another personalised piece — reading, poster, gift — it\'s one-time, no subscription.\n\n'
-            + '— AstroPrecise',
+            + '— Astro Precise',
         },
       ],
       automation: {
@@ -336,7 +336,7 @@
           title: 'Privacy angle',
           posts: [
             'I keep seeing astrology apps that want your birth time + email + payment details on day one.\n\nWe went the other way.',
-            'AstroPrecise computes your chart entirely in-browser (VSOP87 ephemeris). Birth date, time, place never leave your device.',
+            'Astro Precise computes your chart entirely in-browser (VSOP87 ephemeris). Birth date, time, place never leave your device.',
             'No account. No subscription wall on the chart. If you want more later — a reading, a poster — it\'s one-time.',
             'Try it: {{linksUrl}}\n\nWhat would make you trust an astrology app?',
           ],

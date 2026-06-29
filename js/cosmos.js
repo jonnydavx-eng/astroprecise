@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — CosmosEngine
+ * Astro Precise — CosmosEngine
  * Multi-layer starfield, nebula clouds, shooting stars, and scroll reveal.
  * Self-contained vanilla JS, no dependencies.
  */

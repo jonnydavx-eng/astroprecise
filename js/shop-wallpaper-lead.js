@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Shop free chart wallpaper lead magnet (rung 0).
+ * Astro Precise — Shop free chart wallpaper lead magnet (rung 0).
  * Email → list.astroprecise.app via AstroApp.captureEmail (AP_MON.emailUrl).
  * Wallpaper PNG is generated on chart.html only (no heavy engine on shop).
  * Birth date, if given, stays in localStorage — never posted to the list.

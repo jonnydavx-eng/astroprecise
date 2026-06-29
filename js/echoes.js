@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Echo Dates (Harmonic Returns)
+ * Astro Precise — Echo Dates (Harmonic Returns)
  * The sky never exactly repeats, but it rhymes. This module scans the future
  * ephemeris for the dates when the heavens most closely re-approximate the
  * natal configuration — a weighted angular deviation across the seven

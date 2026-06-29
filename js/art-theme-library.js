@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Art Theme Library (expansion packs for shop + fulfilment)
+ * Astro Precise — Art Theme Library (expansion packs for shop + fulfilment)
  * Loads website/data/art-themes.json · persists selection in localStorage.
  */
 'use strict';

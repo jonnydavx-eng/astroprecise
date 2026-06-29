@@ -274,7 +274,7 @@
       '<article class="mp-card" id="mp-share-card">' +
         '<div class="mp-card__brand">' +
           '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold-text,#D9BC5C);"></span>' +
-          '<span class="mp-card__brand-name">AstroPrecise</span>' +
+          '<span class="mp-card__brand-name">Astro Precise</span>' +
         '</div>' +
         '<div class="mp-card__moon">' + moonSVG(phase, 120) + '</div>' +
         '<p class="mp-card__phase">' + phase.name + '</p>' +
@@ -298,7 +298,7 @@
       copyBtn.addEventListener('click', function () {
         var text = 'On ' + dateLabel + ' the Moon was a ' + phase.name +
           ' (' + phase.illuminationPct + '% illuminated, Moon in ' + phase.moonSign + '). ' +
-          'Real astronomy via AstroPrecise.';
+          'Real astronomy via Astro Precise.';
         copyToClipboard(text, copyBtn);
       });
     }
@@ -403,7 +403,7 @@
       '<article class="mp-card mp-card--compat" id="mp-compat-share-card">' +
         '<div class="mp-card__brand">' +
           '<span class="mp-card__brand-mark eng-star-mark" aria-hidden="true" style="color:var(--gold-text,#D9BC5C);"></span>' +
-          '<span class="mp-card__brand-name">AstroPrecise</span>' +
+          '<span class="mp-card__brand-name">Astro Precise</span>' +
         '</div>' +
         '<div class="mp-compat-grid">' +
           miniCard(pa, labelA) +

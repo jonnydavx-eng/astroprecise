@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Modern Interaction Layer
+ * Astro Precise — Modern Interaction Layer
  * Spotlight hover cards, 3D tilt, scroll reveals, scroll progress,
  * count-up stats. All effects respect prefers-reduced-motion and are
  * pointer-gated so touch devices skip hover-only work.

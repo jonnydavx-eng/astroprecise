@@ -1,5 +1,5 @@
 /**
- * AstroPrecise Content Service — static JSON "backend" for GitHub Pages.
+ * Astro Precise Content Service — static JSON "backend" for GitHub Pages.
  * Pre-generated bank: /data/content-bank/
  * Live ephemeris (HoroscopeEngine) remains the fallback when bank misses a date.
  */

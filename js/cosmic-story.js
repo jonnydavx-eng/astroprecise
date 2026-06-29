@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — "Your Cosmic Story" narrative generator.
+ * Astro Precise — "Your Cosmic Story" narrative generator.
  *
  * Weaves the rich per-placement interpretation corpus (window.AstroInterpretations)
  * into a flowing, second-person NARRATIVE — a story, not a report. Every sentence

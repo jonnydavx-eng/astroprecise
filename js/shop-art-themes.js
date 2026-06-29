@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Shop Art Style Library UI (expansion packs + colour themes)
+ * Astro Precise — Shop Art Style Library UI (expansion packs + colour themes)
  */
 'use strict';
 
