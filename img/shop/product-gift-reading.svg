@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="The Gift of the Stars — gift a personalised astrology reading">
+  <defs>
+    <radialGradient id="gr-void" cx="50%" cy="36%" r="84%">
+      <stop offset="0%" stop-color="#0d0a09"/>
+      <stop offset="50%" stop-color="#070509"/>
+      <stop offset="100%" stop-color="#040305"/>
+    </radialGradient>
+    <radialGradient id="gr-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff6dd"/>
+      <stop offset="26%" stop-color="#f2d27a"/>
+      <stop offset="54%" stop-color="rgba(201,162,39,0.30)"/>
+      <stop offset="100%" stop-color="rgba(201,162,39,0)"/>
+    </radialGradient>
+    <linearGradient id="gr-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3dd97"/>
+      <stop offset="52%" stop-color="#e6c24a"/>
+      <stop offset="100%" stop-color="#b8901f"/>
+    </linearGradient>
+    <linearGradient id="gr-ribbon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3dd97"/>
+      <stop offset="50%" stop-color="#c9a227"/>
+      <stop offset="100%" stop-color="#b8901f"/>
+    </linearGradient>
+    <linearGradient id="gr-card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(13,10,9,0.92)"/>
+      <stop offset="100%" stop-color="rgba(5,4,6,0.92)"/>
+    </linearGradient>
+    <linearGradient id="gr-scrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(4,3,5,0)"/>
+      <stop offset="68%" stop-color="rgba(4,3,5,0.52)"/>
+      <stop offset="100%" stop-color="rgba(4,3,5,0.92)"/>
+    </linearGradient>
+    <filter id="gr-soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#gr-void)"/>
+
+  <!-- faint deterministic starfield -->
+  <g fill="#f0e9da">
+    <circle cx="120" cy="90" r="1.5" opacity="0.6"/>
+    <circle cx="340" cy="70" r="1.1" opacity="0.5"/>
+    <circle cx="560" cy="120" r="1.3" opacity="0.55"/>
+    <circle cx="1050" cy="90" r="1.4" opacity="0.6"/>
+    <circle cx="1280" cy="70" r="1.6" opacity="0.7"/>
+    <circle cx="1470" cy="150" r="1.2" opacity="0.55"/>
+    <circle cx="1530" cy="330" r="1.5" opacity="0.65"/>
+    <circle cx="110" cy="300" r="1.3" opacity="0.55"/>
+    <circle cx="80" cy="480" r="1.5" opacity="0.6"/>
+    <circle cx="1500" cy="500" r="1.2" opacity="0.5"/>
+    <circle cx="1420" cy="250" r="1.1" opacity="0.45"/>
+    <circle cx="230" cy="430" r="1.2" opacity="0.5"/>
+    <circle cx="700" cy="60" r="1.2" opacity="0.5"/>
+    <circle cx="900" cy="150" r="1.1" opacity="0.45"/>
+  </g>
+  <g fill="#a6aeb8">
+    <circle cx="450" cy="200" r="1.1" opacity="0.5"/>
+    <circle cx="990" cy="180" r="1" opacity="0.45"/>
+    <circle cx="1180" cy="220" r="1.2" opacity="0.5"/>
+    <circle cx="190" cy="200" r="1" opacity="0.45"/>
+    <circle cx="1350" cy="420" r="1.1" opacity="0.5"/>
+    <circle cx="640" cy="250" r="1" opacity="0.4"/>
+  </g>
+
+  <!-- small constellation, upper area -->
+  <g stroke="#c9a227" stroke-width="1" fill="none" opacity="0.40">
+    <polyline points="1000,120 1110,90 1190,170 1300,140"/>
+  </g>
+  <g fill="#f3dd97">
+    <circle cx="1000" cy="120" r="2.2"/>
+    <circle cx="1110" cy="90" r="2.2"/>
+    <circle cx="1190" cy="170" r="2.2"/>
+    <circle cx="1300" cy="140" r="2.2"/>
+  </g>
+
+  <!-- =========== THE GIFT OF THE STARS =========== -->
+  <g transform="translate(800 372)">
+
+    <!-- soft golden aura behind the gift -->
+    <circle r="300" fill="url(#gr-glow)"/>
+
+    <!-- ribbon streamers spilling below the bow -->
+    <g fill="url(#gr-ribbon)" opacity="0.9">
+      <path d="M-12,150 C-44,224 -86,250 -132,268 C-96,236 -76,212 -64,160 Z"/>
+      <path d="M12,150 C44,224 86,250 132,268 C96,236 76,212 64,160 Z"/>
+    </g>
+
+    <!-- the celestial gift card / tag -->
+    <g>
+      <rect x="-170" y="-200" width="340" height="350" rx="14" fill="url(#gr-card)" stroke="url(#gr-gold)" stroke-width="2"/>
+      <rect x="-156" y="-186" width="312" height="322" rx="9" fill="none" stroke="rgba(201,162,39,0.30)" stroke-width="1"/>
+
+      <!-- tiny inner constellation on the card -->
+      <g stroke="#c9a227" stroke-width="0.9" fill="none" opacity="0.5">
+        <polyline points="-110,-150 -64,-118 -88,-70 -34,-92 22,-128"/>
+      </g>
+      <g fill="#d8d2cc">
+        <circle cx="-110" cy="-150" r="1.8" opacity="0.8"/>
+        <circle cx="-64" cy="-118" r="1.6" opacity="0.7"/>
+        <circle cx="-88" cy="-70" r="1.6" opacity="0.7"/>
+        <circle cx="-34" cy="-92" r="1.5" opacity="0.65"/>
+        <circle cx="22" cy="-128" r="1.7" opacity="0.75"/>
+      </g>
+      <g fill="#a6aeb8" opacity="0.55">
+        <circle cx="100" cy="-150" r="1.4"/>
+        <circle cx="130" cy="100" r="1.4"/>
+        <circle cx="-130" cy="110" r="1.4"/>
+        <circle cx="80" cy="60" r="1.2"/>
+      </g>
+
+      <!-- radiant 8-point star, centred on the card -->
+      <g filter="url(#gr-soft)" opacity="0.85">
+        <polygon points="0,-150 18,-18 150,0 18,18 0,150 -18,18 -150,0 -18,-18" fill="url(#gr-glow)"/>
+      </g>
+      <polygon points="0,-128 17,-17 128,0 17,17 0,128 -17,17 -128,0 -17,-17" fill="url(#gr-gold)"/>
+      <polygon points="0,-72 28,-28 72,0 28,28 0,72 -28,28 -72,0 -28,-28" fill="none" stroke="#f3dd97" stroke-width="1.1" opacity="0.7"/>
+      <circle r="9" fill="#fff6dd"/>
+    </g>
+
+    <!-- thin gold ribbon crossing the card (vertical + horizontal) -->
+    <g stroke="url(#gr-ribbon)" stroke-width="11" fill="none" opacity="0.92" stroke-linecap="round">
+      <line x1="0" y1="-204" x2="0" y2="154"/>
+      <line x1="-174" y1="-25" x2="174" y2="-25"/>
+    </g>
+    <g stroke="#f3dd97" stroke-width="1" fill="none" opacity="0.45">
+      <line x1="0" y1="-200" x2="0" y2="150"/>
+      <line x1="-170" y1="-25" x2="170" y2="-25"/>
+    </g>
+
+    <!-- elegant bow at the top of the card -->
+    <g transform="translate(0 -198)">
+      <!-- left loop -->
+      <path d="M0,0 C-56,-56 -120,-50 -120,-10 C-120,26 -60,30 0,6 Z" fill="url(#gr-ribbon)" stroke="#b8901f" stroke-width="1" opacity="0.95"/>
+      <!-- right loop -->
+      <path d="M0,0 C56,-56 120,-50 120,-10 C120,26 60,30 0,6 Z" fill="url(#gr-ribbon)" stroke="#b8901f" stroke-width="1" opacity="0.95"/>
+      <!-- inner loop creases -->
+      <path d="M0,0 C-44,-30 -82,-26 -100,-8" fill="none" stroke="#f3dd97" stroke-width="0.9" opacity="0.5"/>
+      <path d="M0,0 C44,-30 82,-26 100,-8" fill="none" stroke="#f3dd97" stroke-width="0.9" opacity="0.5"/>
+      <!-- bow tails -->
+      <path d="M-6,4 C-26,46 -42,62 -58,82 C-40,72 -22,58 -2,18 Z" fill="url(#gr-ribbon)" opacity="0.9"/>
+      <path d="M6,4 C26,46 42,62 58,82 C40,72 22,58 2,18 Z" fill="url(#gr-ribbon)" opacity="0.9"/>
+      <!-- bow knot -->
+      <ellipse cx="0" cy="0" rx="15" ry="19" fill="url(#gr-gold)" stroke="#f3dd97" stroke-width="1"/>
+      <circle r="4" fill="#fff6dd"/>
+    </g>
+  </g>
+
+  <!-- scrim + title -->
+  <rect y="470" width="1600" height="430" fill="url(#gr-scrim)"/>
+  <g text-anchor="middle" font-family="'Cinzel','Cormorant Garamond',Georgia,'Times New Roman',serif">
+    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#e6c24a" opacity="0.85" font-family="'Cinzel',Georgia,serif">&#10022; &#160; A GIFT WRITTEN IN THE STARS</text>
+    <text x="800" y="758" font-size="122" font-weight="600" fill="url(#gr-gold)" letter-spacing="2">Gift a Reading</text>
+    <text x="800" y="816" font-size="40" font-style="italic" fill="#f0e9da" opacity="0.86">Their chart, read and given</text>
+    <text x="800" y="866" font-size="21" letter-spacing="8" fill="#a6aeb8" opacity="0.8" font-family="'Cinzel',Georgia,serif">INSTANT PDF &#183; SENT WITH A NOTE</text>
+  </g>
+
+  <!-- engraved double frame -->
+  <rect x="22" y="22" width="1556" height="856" fill="none" stroke="rgba(201,162,39,0.28)" stroke-width="1.5"/>
+  <rect x="34" y="34" width="1532" height="832" fill="none" stroke="rgba(201,162,39,0.12)" stroke-width="1"/>
+</svg>

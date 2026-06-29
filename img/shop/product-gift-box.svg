@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="The Whole Sky, Boxed — a premium celestial gift box">
+  <defs>
+    <radialGradient id="gb-void" cx="50%" cy="36%" r="84%">
+      <stop offset="0%" stop-color="#0d0a09"/>
+      <stop offset="50%" stop-color="#070509"/>
+      <stop offset="100%" stop-color="#040305"/>
+    </radialGradient>
+    <radialGradient id="gb-burst" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff6dd"/>
+      <stop offset="26%" stop-color="rgba(230,194,74,0.55)"/>
+      <stop offset="60%" stop-color="rgba(201,162,39,0.20)"/>
+      <stop offset="100%" stop-color="rgba(201,162,39,0)"/>
+    </radialGradient>
+    <linearGradient id="gb-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3dd97"/>
+      <stop offset="52%" stop-color="#e6c24a"/>
+      <stop offset="100%" stop-color="#b8901f"/>
+    </linearGradient>
+    <linearGradient id="gb-front" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d0a09"/>
+      <stop offset="100%" stop-color="#050406"/>
+    </linearGradient>
+    <linearGradient id="gb-side" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#070509"/>
+      <stop offset="100%" stop-color="#040305"/>
+    </linearGradient>
+    <linearGradient id="gb-lid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d0a09"/>
+      <stop offset="100%" stop-color="#070509"/>
+    </linearGradient>
+    <linearGradient id="gb-scrim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(4,3,5,0)"/>
+      <stop offset="68%" stop-color="rgba(4,3,5,0.54)"/>
+      <stop offset="100%" stop-color="rgba(4,3,5,0.92)"/>
+    </linearGradient>
+    <filter id="gb-soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+
+  <!-- void -->
+  <rect width="1600" height="900" fill="url(#gb-void)"/>
+
+  <!-- faint starfield (deterministic) -->
+  <g fill="#f0e9da">
+    <circle cx="130" cy="100" r="1.5" opacity="0.65"/>
+    <circle cx="320" cy="70" r="1.1" opacity="0.5"/>
+    <circle cx="560" cy="110" r="1.6" opacity="0.7"/>
+    <circle cx="1050" cy="90" r="1.4" opacity="0.6"/>
+    <circle cx="1280" cy="120" r="1.2" opacity="0.55"/>
+    <circle cx="1470" cy="170" r="1.7" opacity="0.75"/>
+    <circle cx="1520" cy="350" r="1.3" opacity="0.6"/>
+    <circle cx="100" cy="270" r="1.2" opacity="0.5"/>
+    <circle cx="80" cy="460" r="1.5" opacity="0.65"/>
+    <circle cx="1430" cy="450" r="1.2" opacity="0.55"/>
+    <circle cx="1540" cy="520" r="1.1" opacity="0.45"/>
+    <circle cx="210" cy="500" r="1.3" opacity="0.55"/>
+  </g>
+  <g fill="#a6aeb8">
+    <circle cx="440" cy="210" r="1.1" opacity="0.5"/>
+    <circle cx="1170" cy="230" r="1.2" opacity="0.5"/>
+    <circle cx="1330" cy="330" r="1.1" opacity="0.48"/>
+    <circle cx="170" cy="370" r="1.2" opacity="0.5"/>
+  </g>
+
+  <!-- glow released from the open lid -->
+  <ellipse cx="800" cy="300" rx="320" ry="260" fill="url(#gb-burst)" opacity="0.9"/>
+
+  <!-- escaping stars rising from the box -->
+  <g fill="#f3dd97">
+    <circle cx="800" cy="118" r="2.6" opacity="0.95"/>
+    <circle cx="690" cy="178" r="2" opacity="0.8"/>
+    <circle cx="912" cy="166" r="2.2" opacity="0.85"/>
+    <circle cx="612" cy="262" r="1.7" opacity="0.7"/>
+    <circle cx="988" cy="252" r="1.9" opacity="0.75"/>
+    <circle cx="744" cy="92" r="1.6" opacity="0.7"/>
+    <circle cx="862" cy="100" r="1.5" opacity="0.65"/>
+  </g>
+  <g fill="#d8d2cc">
+    <circle cx="660" cy="120" r="1.5" opacity="0.6"/>
+    <circle cx="946" cy="120" r="1.4" opacity="0.6"/>
+    <circle cx="566" cy="190" r="1.3" opacity="0.55"/>
+    <circle cx="1034" cy="196" r="1.3" opacity="0.55"/>
+  </g>
+
+  <!-- four-point sparkle accents in the glow -->
+  <g fill="#fff6dd" opacity="0.9">
+    <path d="M800 70 L805 96 L831 101 L805 106 L800 132 L795 106 L769 101 L795 96 Z"/>
+    <path d="M636 150 L639 168 L657 171 L639 174 L636 192 L633 174 L615 171 L633 168 Z" opacity="0.7"/>
+    <path d="M968 158 L971 175 L988 178 L971 181 L968 198 L965 181 L948 178 L965 175 Z" opacity="0.7"/>
+  </g>
+
+  <!-- the zodiac wheel rising out of the box (the whole sky emerging) -->
+  <g transform="translate(800 286)">
+    <circle r="150" fill="none" stroke="rgba(201,162,39,0.34)" stroke-width="1.6"/>
+    <circle r="124" fill="none" stroke="rgba(201,162,39,0.16)" stroke-width="1"/>
+    <g stroke="#c9a227" stroke-width="1.2" opacity="0.5">
+      <line x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(30)"  x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(60)"  x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(90)"  x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(120)" x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(150)" x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(180)" x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(210)" x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(240)" x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(270)" x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(300)" x1="0" y1="-150" x2="0" y2="-124"/>
+      <line transform="rotate(330)" x1="0" y1="-150" x2="0" y2="-124"/>
+    </g>
+    <circle r="58" fill="none" stroke="rgba(201,162,39,0.18)" stroke-width="0.8" stroke-dasharray="3 7"/>
+    <!-- planet nodes -->
+    <circle cx="26" cy="-130" r="5.5" fill="#e6c24a"/>
+    <circle cx="-116" cy="-58" r="4.5" fill="#f3dd97"/>
+    <circle cx="-92" cy="92" r="4" fill="#caa46a"/>
+    <circle cx="128" cy="50" r="5" fill="#e6c24a"/>
+    <circle r="9" fill="#fff6dd" filter="url(#gb-soft)"/>
+  </g>
+
+  <!-- open celestial gift box (slightly from above/front) -->
+  <g>
+    <!-- right side panel -->
+    <path d="M800 560 L1060 500 L1060 700 L800 770 Z" fill="url(#gb-side)" stroke="rgba(201,162,39,0.45)" stroke-width="1.6"/>
+    <!-- front face -->
+    <path d="M540 500 L800 560 L800 770 L540 706 Z" fill="url(#gb-front)" stroke="rgba(201,162,39,0.55)" stroke-width="1.8"/>
+    <!-- inner rim (top opening) -->
+    <path d="M540 500 L800 440 L1060 500 L800 560 Z" fill="#050406" stroke="rgba(201,162,39,0.5)" stroke-width="1.6"/>
+    <path d="M576 500 L800 472 L1024 500 L800 528 Z" fill="none" stroke="rgba(201,162,39,0.22)" stroke-width="1"/>
+
+    <!-- front-face engraved emblem -->
+    <g stroke="rgba(201,162,39,0.4)" stroke-width="1.1" fill="none">
+      <circle cx="670" cy="628" r="34"/>
+      <circle cx="670" cy="628" r="22" stroke="rgba(201,162,39,0.22)"/>
+    </g>
+    <path d="M670 600 L674 622 L696 626 L674 630 L670 652 L666 630 L644 626 L666 622 Z" fill="#e6c24a" opacity="0.8"/>
+
+    <!-- vertical ribbon down the front -->
+    <path d="M772 552 L828 552 L828 762 L772 776 Z" fill="rgba(201,162,39,0.16)" stroke="rgba(230,194,74,0.6)" stroke-width="1.2"/>
+    <line x1="800" y1="552" x2="800" y2="769" stroke="rgba(243,221,151,0.5)" stroke-width="1"/>
+
+    <!-- the open lid, tilted back behind the opening -->
+    <g>
+      <path d="M548 452 L800 396 L1052 452 L800 512 Z" fill="url(#gb-lid)" stroke="rgba(201,162,39,0.5)" stroke-width="1.6"/>
+      <!-- lid depth / underside edge -->
+      <path d="M548 452 L800 512 L800 532 L548 472 Z" fill="#040305" stroke="rgba(201,162,39,0.3)" stroke-width="1"/>
+      <path d="M1052 452 L800 512 L800 532 L1052 472 Z" fill="#070509" stroke="rgba(201,162,39,0.3)" stroke-width="1"/>
+      <!-- lid top engraved line -->
+      <path d="M588 452 L800 405 L1012 452 L800 499 Z" fill="none" stroke="rgba(201,162,39,0.2)" stroke-width="1"/>
+    </g>
+
+    <!-- refined ribbon bow on the lid -->
+    <g transform="translate(800 452)" stroke="rgba(230,194,74,0.85)" stroke-width="1.6" fill="rgba(201,162,39,0.18)">
+      <path d="M0 0 C-44 -30 -78 -26 -70 -2 C-64 16 -26 14 0 0 Z"/>
+      <path d="M0 0 C44 -30 78 -26 70 -2 C64 16 26 14 0 0 Z"/>
+      <circle cx="0" cy="0" r="7" fill="#e6c24a" stroke="#f3dd97"/>
+    </g>
+  </g>
+
+  <!-- bright core at the box mouth -->
+  <circle cx="800" cy="528" r="10" fill="#fff6dd" filter="url(#gb-soft)"/>
+
+  <!-- scrim for title legibility -->
+  <rect y="470" width="1600" height="430" fill="url(#gb-scrim)"/>
+
+  <!-- title block -->
+  <g text-anchor="middle" font-family="'Cinzel', 'Cormorant Garamond', Georgia, 'Times New Roman', serif">
+    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#e6c24a" opacity="0.85" font-family="'Cinzel', Georgia, serif">&#10022; &#160; A GIFT OF THE HEAVENS</text>
+    <text x="800" y="758" font-size="120" font-weight="600" fill="url(#gb-gold)" letter-spacing="2">The Whole Sky</text>
+    <text x="800" y="816" font-size="38" font-style="italic" fill="#f0e9da" opacity="0.86">Your cosmos, beautifully boxed</text>
+    <text x="800" y="866" font-size="21" letter-spacing="8" fill="#a6aeb8" opacity="0.8" font-family="'Cinzel', Georgia, serif">PREMIUM GIFT SET &#183; MADE TO ORDER</text>
+  </g>
+
+  <!-- engraved frame -->
+  <rect x="22" y="22" width="1556" height="856" fill="none" stroke="rgba(201,162,39,0.28)" stroke-width="1.5"/>
+  <rect x="34" y="34" width="1532" height="832" fill="none" stroke="rgba(201,162,39,0.12)" stroke-width="1"/>
+</svg>
