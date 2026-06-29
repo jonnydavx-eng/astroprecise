@@ -764,6 +764,109 @@ a:hover, a:focus-visible {
 }
 
 /* ------------------------------------------------------------
+   20a. Hero section — two-column grid (copy | illustration)
+   ------------------------------------------------------------ */
+.hero-section {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  column-gap: var(--sp-8);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-illustration {
+    display: none; /* hide on narrow viewports; copy is the priority */
+  }
+}
+
+.hero-copy {
+  max-width: 54ch;
+}
+
+.hero-illustration svg {
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+}
+
+/* Reassurance line below the form */
+.hero-reassurance {
+  font-family: var(--font-mono);
+  font-size: max(13px, 0.72rem);
+  letter-spacing: 0.04em;
+  color: var(--ink-faded);
+  opacity: 0.65;
+  margin-top: var(--sp-2);
+  max-width: none;
+}
+
+/* ------------------------------------------------------------
+   20b. Why AstroPrecise — 4-up discovery grid
+   ------------------------------------------------------------ */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-3);
+}
+
+@media (max-width: 860px) {
+  .why-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.why-plate {
+  padding: var(--sp-3);
+}
+
+.why-plate .plate-title {
+  font-size: 1.05rem;
+  margin-bottom: var(--sp-1);
+}
+
+.why-plate .plate-title a {
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--font-serif);
+}
+.why-plate .plate-title a:hover {
+  color: var(--terracotta);
+}
+
+.why-plate-desc {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  color: var(--ink-faded);
+  line-height: 1.6;
+  margin-top: var(--sp-1);
+  max-width: none;
+}
+
+/* Drop-cap on the Why section lead paragraph */
+.why-lead::first-letter {
+  font-family: var(--font-serif);
+  font-size: 3.2em;
+  font-weight: 300;
+  line-height: 0.82;
+  float: left;
+  margin-right: 0.08em;
+  margin-top: 0.06em;
+  color: var(--brass);
+}
+
+/* ------------------------------------------------------------
    20. Reduced-motion: disable fade-in animations
    ------------------------------------------------------------ */
 @media (prefers-reduced-motion: no-preference) {
