@@ -5,29 +5,29 @@
    ========================================================================== */
 
 :root {
-  /* ── Void depths (3 tiers) ── */
-  --ap-void-deep:   #040305; /* deepest warm black — page canvas (deepened) */
-  --ap-void-base:   #070509; /* base substrate — Living Observatory 3-tier */
-  --ap-void-mid:    #0D0A09; /* candlelit brown-black — bands */
-  --ap-void-raised: #15110C; /* lifted plate shadow */
+  /* ── Void depths (3 tiers) — EPHEMERIS cool blue-black (was warm black) ── */
+  --ap-void-deep:   #0C1016; /* deep blue-black — page canvas (Ephemeris void) */
+  --ap-void-base:   #0C1016; /* base substrate */
+  --ap-void-mid:    #121826; /* night — bands/sections (Ephemeris night) */
+  --ap-void-raised: #1A2230; /* raised plate (Ephemeris night-raised) */
 
-  /* ── Engraved gold spectrum (5 stops) ── */
-  --ap-gold-ink:       #6B5420; /* engraved shadow / stroke depth */
-  --ap-gold-shadow:    #8C6A2F; /* recessed rim */
-  --ap-gold-core:      #C9A227; /* canonical engraved gold (single hex source) */
-  --ap-gold-bright:    #D4B84A; /* links & small UI on void — WCAG AA */
-  --ap-gold-vivid:     #E6C24A; /* vivid gold — modern punch, AA 11.8:1 on void */
-  --ap-gold-parchment: #EFE3C0; /* pale inscription / hero titles */
+  /* ── Engraved BRASS spectrum (5 stops) — EPHEMERIS brass (was bright gold) ── */
+  --ap-gold-ink:       #6B5836; /* engraved shadow / stroke depth */
+  --ap-gold-shadow:    #8C7544; /* recessed rim */
+  --ap-gold-core:      #C2A05E; /* canonical engraved brass (single hex source) */
+  --ap-gold-bright:    #CDAE6A; /* small UI on void — WCAG AA brass */
+  --ap-gold-vivid:     #D8B978; /* vivid brass — modern punch, AA on void */
+  --ap-gold-parchment: #ECE6D8; /* pale inscription / hero titles — cream */
 
-  /* Gold alpha ramps (derived from core 201,162,39) */
-  --ap-gold-a06: rgba(201, 162, 39, 0.06);
-  --ap-gold-a08: rgba(201, 162, 39, 0.08);
-  --ap-gold-a12: rgba(201, 162, 39, 0.12);
-  --ap-gold-a16: rgba(201, 162, 39, 0.16);
-  --ap-gold-a22: rgba(201, 162, 39, 0.22);
-  --ap-gold-a28: rgba(201, 162, 39, 0.28);
-  --ap-gold-a40: rgba(201, 162, 39, 0.40);
-  --ap-gold-a55: rgba(201, 162, 39, 0.55);
+  /* Brass alpha ramps (derived from core 194,160,94) */
+  --ap-gold-a06: rgba(194, 160, 94, 0.06);
+  --ap-gold-a08: rgba(194, 160, 94, 0.08);
+  --ap-gold-a12: rgba(194, 160, 94, 0.12);
+  --ap-gold-a16: rgba(194, 160, 94, 0.16);
+  --ap-gold-a22: rgba(194, 160, 94, 0.22);
+  --ap-gold-a28: rgba(194, 160, 94, 0.28);
+  --ap-gold-a40: rgba(194, 160, 94, 0.40);
+  --ap-gold-a55: rgba(194, 160, 94, 0.55);
 
   /* ── Element accents — muted observatory (not neon seal clash) ── */
   --ap-element-fire:       #B85A42;
@@ -56,11 +56,11 @@
   --ap-ip-silver:       #A89E88;
   --ap-ip-silver-dim:   #9A9084;
 
-  /* ── Text on void — contrast-tuned ── */
-  --ap-text-primary:   #F0E9DA;
-  --ap-text-secondary: #B0A48C;
-  --ap-text-muted:     #9A9084; /* ≥4.5:1 on void-deep */
-  --ap-text-faint:     #8A8274; /* ≥4.5:1 small caps on void-deep */
+  /* ── Text on void — contrast-tuned (EPHEMERIS cream) ── */
+  --ap-text-primary:   #ECE6D8; /* warm cream — Ephemeris ink */
+  --ap-text-secondary: #A7A395; /* dim cream — Ephemeris ink-faded */
+  --ap-text-muted:     #9A9488; /* ≥4.5:1 on void-deep */
+  --ap-text-faint:     #8A867A; /* ≥4.5:1 small caps on void-deep */
 
   /* ── Link & focus — WCAG AA on void-deep ── */
   --ap-link:         var(--ap-gold-vivid);
