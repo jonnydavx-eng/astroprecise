@@ -661,7 +661,7 @@ html.ap-lite-hero .hero__date-input:focus-visible {
 html.ap-lite-hero .hero__cast-btn {
   height: 56px;
   padding: 0 var(--space-7);
-  background: linear-gradient(135deg, var(--gold-vivid) 0%, #a8841e 100%);
+  background: linear-gradient(135deg, var(--gold-vivid) 0%, #d4b84a 45%, #a8841e 100%);
   border: none;
   border-radius: var(--radius-lg);
   color: #0d0a07;
@@ -1727,7 +1727,7 @@ html.ap-lite-hero #live-sky-stamp {
   text-transform: uppercase;
   text-decoration: none;
   color: #0a0805;
-  background: linear-gradient(135deg, var(--gold-vivid) 0%, #a8841e 100%);
+  background: linear-gradient(135deg, var(--gold-vivid) 0%, #d4b84a 45%, #a8841e 100%);
   border-radius: var(--radius-full);
   font-weight: 700;
   box-shadow: 0 8px 24px rgba(201, 162, 39, 0.16);
