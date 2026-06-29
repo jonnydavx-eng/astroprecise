@@ -4,7 +4,7 @@ body:has(.nn-hero) {
   --font-display: Georgia, 'Times New Roman', serif;
 }
 html.ap-fonts-ready body:has(.nn-hero) {
-  --font-display: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-display: 'Cormorant Garamond', serif;
 }
 body:has(.nn-hero) .navbar__nav {
   min-height: 44px;

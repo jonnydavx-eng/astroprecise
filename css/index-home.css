@@ -815,7 +815,7 @@
 
     /* Masterpiece engraved hermetic glyphs — replace emoji-like unicode with carved gold presence */
     .engraved-glyph {
-      font-family: 'Cinzel', 'Cormorant Garamond', serif;
+      font-family: 'Cormorant Garamond', serif;
       color: #C9A227;
       text-shadow: 0 1px 0 rgba(255,255,255,0.08), 0 -1px 1px rgba(0,0,0,0.6), 0 0 9px rgba(201,162,39,0.55);
       letter-spacing: 0.02em;

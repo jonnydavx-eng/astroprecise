@@ -109,7 +109,7 @@
   --gradient-hero:     linear-gradient(160deg, #13100C 0%, #0D0A07 58%, rgba(201, 162, 39, 0.22) 100%);
 
   /* ── Typography ── */
-  --font-display: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-display: 'Cormorant Garamond', serif;
   --font-heading: 'Cormorant Garamond', serif;
   --font-body:    'Inter', sans-serif;
   --font-sans:    'Inter', sans-serif;   /* alias */

@@ -34,7 +34,7 @@ body.page-instrument {
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 html.ap-fonts-ready .page-instrument {
-  --font-display: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-display: 'Cormorant Garamond', serif;
   --font-body: 'Inter', sans-serif;
 }
 
