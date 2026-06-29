@@ -8,24 +8,32 @@
    0. :root — Design tokens
    ------------------------------------------------------------ */
 :root {
-  /* Palette */
-  --paper:           #F4EFE6;
-  --paper-leaf:      #EBE4D6;
-  --ink:             #1A1B1E;
-  --ink-faded:       #55524B;
-  --midnight:        #16243A;
-  --warm-midnight:   #2D3F52;
-  --paper-on-midnight: #EAE3D3;
-  --meridian:        #2F5D8C;
-  --terracotta:      #B5532E;
-  --brass:           #9A7B3F;
-  --sage:            #5A7A48;
-  --hairline:        rgba(26, 27, 30, 0.12);
-  /* New cosmic palette */
-  --rose:            #C89A6E;
-  --deep-indigo:     #3A4F6C;
-  --dusk:            #A67C52;
-  --twilight:        #4A5F7F;
+  /* ── Core surfaces (dark-first) ── */
+  --void:            #0C1016;   /* page base — deep blue-black */
+  --night:           #121826;   /* section/card surface */
+  --night-raised:    #1A2230;   /* raised cards / plates */
+
+  /* ── Semantic aliases — keep old token names so markup never changes ── */
+  --paper:           #0C1016;   /* was warm cream; now the void */
+  --paper-leaf:      #121826;   /* was off-white; now night */
+  --ink:             #ECE6D8;   /* was dark ink; now warm cream */
+  --ink-faded:       #A7A395;   /* was muted ink; now dim cream */
+  --midnight:        #0C1016;   /* stays effectively same — dark base */
+  --warm-midnight:   #121826;   /* dark section bg */
+  --paper-on-midnight: #ECE6D8; /* cream on dark — used in footer/night-watch */
+
+  /* ── Accent palette (brightened for dark bg) ── */
+  --meridian:        #6FA0D8;   /* links — brighter blue for AA on dark */
+  --terracotta:      #D97B52;   /* CTA — brightened rust */
+  --brass:           #C2A05E;   /* accents/marks — brightened gold */
+  --sage:            #8FB36B;   /* verify dots */
+  --rose:            #D4A882;   /* hero eyebrow */
+  --hairline:        rgba(236, 230, 216, 0.10); /* subtle cream lines */
+
+  /* ── Dusk gradient palette (keep for cosmic-story-band) ── */
+  --deep-indigo:     #1E2D45;
+  --dusk:            #3A2E1E;
+  --twilight:        #243040;
 
   /* Typography */
   --font-serif:  'Cormorant Garamond', Georgia, serif;
@@ -72,7 +80,7 @@ html {
 }
 
 body {
-  background: var(--paper);
+  background: var(--void);
   color: var(--ink);
   font-family: var(--font-serif);
   font-weight: 400;
@@ -222,7 +230,7 @@ a:hover, a:focus-visible {
    5. .plate — framed figure container
    ------------------------------------------------------------ */
 .plate {
-  background: var(--paper-leaf);
+  background: var(--night-raised);
   border: 1px solid var(--brass);
   padding: var(--sp-3);
   position: relative;
@@ -358,12 +366,12 @@ a:hover, a:focus-visible {
 
 .btn-press {
   background: var(--terracotta);
-  color: var(--paper);
+  color: #ECE6D8;
 }
 .btn-press:hover,
 .btn-press:focus-visible {
   opacity: 0.88;
-  color: var(--paper);
+  color: #ECE6D8;
 }
 
 .btn-quiet {
@@ -434,8 +442,8 @@ a:hover, a:focus-visible {
   font-family: var(--font-ui);
   font-size: 0.95rem;
   color: var(--ink);
-  background: var(--paper);
-  border: 1px solid rgba(26,27,30,0.3);
+  background: var(--night-raised);
+  border: 1px solid rgba(236,230,216,0.18);
   border-radius: 4px;
   padding: 10px 16px;
   min-width: 180px;
@@ -446,11 +454,12 @@ a:hover, a:focus-visible {
 }
 .hero-form input[type="date"]:focus {
   border-color: var(--meridian);
-  box-shadow: 0 0 0 3px rgba(47,93,140,0.15);
+  box-shadow: 0 0 0 3px rgba(111,160,216,0.18);
 }
 .hero-form input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 0.5;
   cursor: pointer;
+  filter: invert(1) opacity(0.6);
 }
 
 /* ------------------------------------------------------------
@@ -587,7 +596,7 @@ a:hover, a:focus-visible {
   transition: background 0.1s;
 }
 .sign-index-entry:hover {
-  background: var(--paper-leaf);
+  background: var(--night-raised);
   text-decoration: none;
 }
 .sign-glyph {
@@ -740,7 +749,7 @@ a:hover, a:focus-visible {
   border-bottom: 1px solid var(--hairline);
 }
 .edition-item.featured {
-  background: var(--paper-leaf);
+  background: var(--night-raised);
   padding-inline: var(--sp-2);
   margin-inline: calc(-1 * var(--sp-2));
 }
@@ -853,7 +862,7 @@ a:hover, a:focus-visible {
 }
 
 .hero-illustration svg {
-  border: 1px solid var(--hairline);
+  border: 1px solid rgba(236,230,216,0.08);
   border-radius: 2px;
 }
 
@@ -940,7 +949,7 @@ a:hover, a:focus-visible {
   inset: 0;
   background: radial-gradient(ellipse 120% 100% at 50% 50%,
     transparent 40%,
-    rgba(58, 79, 108, 0.07) 100%);
+    rgba(111,160,216,0.05) 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -954,9 +963,9 @@ a:hover, a:focus-visible {
    ------------------------------------------------------------ */
 .cosmic-story-band {
   background: linear-gradient(to top,
-    var(--dusk) 0%,
-    var(--twilight) 45%,
-    var(--deep-indigo) 100%);
+    #2A1E0E 0%,
+    #1E2430 45%,
+    #0F1620 100%);
   color: var(--paper-on-midnight);
   padding-block: var(--sp-13);
   position: relative;

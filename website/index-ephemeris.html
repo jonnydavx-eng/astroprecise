@@ -50,7 +50,7 @@
         <!-- Outer measurement ring -->
         <circle cx="24" cy="24" r="22" fill="none" stroke="#9A7B3F" stroke-width="0.9" opacity="0.9"/>
         <!-- Inner hairline ring -->
-        <circle cx="24" cy="24" r="18.5" fill="none" stroke="#1A1B1E" stroke-width="0.5" opacity="0.35"/>
+        <circle cx="24" cy="24" r="18.5" fill="none" stroke="#ECE6D8" stroke-width="0.5" opacity="0.35"/>
 
         <!-- Degree tick marks: 36 × 10° small, 4 cardinal major -->
         <g stroke="#9A7B3F" stroke-linecap="round" opacity="0.75">
@@ -95,20 +95,20 @@
         </g>
 
         <!-- Crosshair (very faint) -->
-        <line x1="24" y1="8" x2="24" y2="40" stroke="#1A1B1E" stroke-width="0.4" opacity="0.18"/>
-        <line x1="8" y1="24" x2="40" y2="24" stroke="#1A1B1E" stroke-width="0.4" opacity="0.18"/>
+        <line x1="24" y1="8" x2="24" y2="40" stroke="#ECE6D8" stroke-width="0.4" opacity="0.18"/>
+        <line x1="8" y1="24" x2="40" y2="24" stroke="#ECE6D8" stroke-width="0.4" opacity="0.18"/>
 
         <!-- Eight-pointed engraved star — 4 long arms + 4 short diagonal arms -->
         <!-- Long arms (cardinal) -->
-        <polygon points="24,9 25.6,22.4 24,27 22.4,22.4" fill="#1A1B1E" opacity="0.88"/>
-        <polygon points="24,39 25.6,25.6 24,21 22.4,25.6" fill="#1A1B1E" opacity="0.88"/>
-        <polygon points="9,24 22.4,22.4 27,24 22.4,25.6" fill="#1A1B1E" opacity="0.88"/>
-        <polygon points="39,24 25.6,22.4 21,24 25.6,25.6" fill="#1A1B1E" opacity="0.88"/>
+        <polygon points="24,9 25.6,22.4 24,27 22.4,22.4" fill="#ECE6D8" opacity="0.88"/>
+        <polygon points="24,39 25.6,25.6 24,21 22.4,25.6" fill="#ECE6D8" opacity="0.88"/>
+        <polygon points="9,24 22.4,22.4 27,24 22.4,25.6" fill="#ECE6D8" opacity="0.88"/>
+        <polygon points="39,24 25.6,22.4 21,24 25.6,25.6" fill="#ECE6D8" opacity="0.88"/>
         <!-- Short diagonal arms -->
-        <polygon points="13.5,13.5 22.8,22.0 23.5,24.5 21.0,23.5" fill="#1A1B1E" opacity="0.55"/>
-        <polygon points="34.5,13.5 25.2,22.0 24.5,24.5 27.0,23.5" fill="#1A1B1E" opacity="0.55"/>
-        <polygon points="13.5,34.5 22.8,26.0 23.5,23.5 21.0,24.5" fill="#1A1B1E" opacity="0.55"/>
-        <polygon points="34.5,34.5 25.2,26.0 24.5,23.5 27.0,24.5" fill="#1A1B1E" opacity="0.55"/>
+        <polygon points="13.5,13.5 22.8,22.0 23.5,24.5 21.0,23.5" fill="#ECE6D8" opacity="0.55"/>
+        <polygon points="34.5,13.5 25.2,22.0 24.5,24.5 27.0,23.5" fill="#ECE6D8" opacity="0.55"/>
+        <polygon points="13.5,34.5 22.8,26.0 23.5,23.5 21.0,24.5" fill="#ECE6D8" opacity="0.55"/>
+        <polygon points="34.5,34.5 25.2,26.0 24.5,23.5 27.0,24.5" fill="#ECE6D8" opacity="0.55"/>
 
         <!-- Centre ring + dot -->
         <circle cx="24" cy="24" r="3.8" fill="none" stroke="#9A7B3F" stroke-width="0.8" opacity="0.9"/>
@@ -674,20 +674,50 @@
       <!-- Moon -->
       <div class="cs-planet" data-planet="moon" style="--drift-dur:8s; --drift-delay:0s; --drift:-3px; opacity:0.9;">
         <svg viewBox="0 0 140 140" width="140" height="140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <radialGradient id="moon-grad" cx="38%" cy="38%" r="62%">
-              <stop offset="0%"   stop-color="#F4EFE6" stop-opacity="1"/>
-              <stop offset="100%" stop-color="#C8BEA8" stop-opacity="1"/>
-            </radialGradient>
-            <clipPath id="moon-clip"><circle cx="70" cy="70" r="54"/></clipPath>
-          </defs>
-          <!-- lit disc -->
-          <circle cx="70" cy="70" r="54" fill="url(#moon-grad)" opacity="0.92"/>
-          <!-- shadow overlay — crescent shape, clipped -->
-          <ellipse cx="82" cy="70" rx="46" ry="54" fill="#2D3F52" opacity="0.72" clip-path="url(#moon-clip)"/>
-          <!-- rim -->
-          <circle cx="70" cy="70" r="54" fill="none" stroke="#EAE3D3" stroke-width="1" opacity="0.35"/>
-        </svg>
+  <defs>
+    <!-- Soft outer glow -->
+    <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="60%"  stop-color="#D8CEB6" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#BFB89A" stop-opacity="0.22"/>
+    </radialGradient>
+    <!-- Sphere shading: light from upper-left -->
+    <radialGradient id="moon-sphere" cx="34%" cy="32%" r="68%">
+      <stop offset="0%"   stop-color="#F6F2E8" stop-opacity="1"/>
+      <stop offset="45%"  stop-color="#DDD5BE" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#9E9480" stop-opacity="1"/>
+    </radialGradient>
+    <!-- Phase terminator mask -->
+    <radialGradient id="moon-term" cx="72%" cy="50%" r="60%">
+      <stop offset="0%"   stop-color="#0C1828" stop-opacity="0.82"/>
+      <stop offset="100%" stop-color="#0C1828" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="moon-sphere-clip"><circle cx="70" cy="70" r="52"/></clipPath>
+  </defs>
+  <!-- Outer glow halo -->
+  <circle cx="70" cy="70" r="68" fill="url(#moon-glow)"/>
+  <!-- Main sphere -->
+  <circle cx="70" cy="70" r="52" fill="url(#moon-sphere)"/>
+  <!-- Maria patches (darker regions, clipped to sphere) -->
+  <g clip-path="url(#moon-sphere-clip)" opacity="0.28">
+    <ellipse cx="58" cy="62" rx="14" ry="10" fill="#8A8070"/>
+    <ellipse cx="78" cy="75" rx="10" ry="7"  fill="#8A8070"/>
+    <ellipse cx="52" cy="80" rx="8"  ry="5"  fill="#8A8070"/>
+    <circle  cx="85" cy="58" r="6"           fill="#8A8070"/>
+  </g>
+  <!-- Faint crater rims -->
+  <g clip-path="url(#moon-sphere-clip)" fill="none" opacity="0.15">
+    <circle cx="58" cy="62" r="10" stroke="#C8C0A8" stroke-width="0.6"/>
+    <circle cx="82" cy="74" r="6"  stroke="#C8C0A8" stroke-width="0.5"/>
+    <circle cx="50" cy="50" r="4"  stroke="#C8C0A8" stroke-width="0.5"/>
+    <circle cx="88" cy="82" r="3"  stroke="#C8C0A8" stroke-width="0.4"/>
+  </g>
+  <!-- Terminator shadow (crescent) -->
+  <circle cx="70" cy="70" r="52" fill="url(#moon-term)"/>
+  <!-- Specular highlight — small bright spot upper-left -->
+  <ellipse cx="52" cy="50" rx="8" ry="6" fill="white" opacity="0.18"/>
+  <!-- Rim highlight -->
+  <circle cx="70" cy="70" r="52" fill="none" stroke="#EDE8DC" stroke-width="0.8" opacity="0.4"/>
+</svg>
         <span class="cs-planet-label" id="cs-label-moon">Moon &middot; computing&hellip;</span>
         <span class="cs-planet-epithet">The Moon — your inner tides</span>
       </div>
@@ -695,27 +725,51 @@
       <!-- Sun -->
       <div class="cs-planet" data-planet="sun" style="--drift-dur:6.5s; --drift-delay:1.2s; --drift:-4px; opacity:1;">
         <svg viewBox="0 0 160 160" width="160" height="160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <radialGradient id="sun-grad" cx="40%" cy="38%" r="62%">
-              <stop offset="0%"   stop-color="#E8C97A" stop-opacity="1"/>
-              <stop offset="100%" stop-color="#B5532E" stop-opacity="1"/>
-            </radialGradient>
-          </defs>
-          <!-- rays -->
-          <g stroke="#E8C97A" stroke-width="1.5" opacity="0.38" stroke-linecap="round">
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(0   80 80)"/>
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(45  80 80)"/>
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(90  80 80)"/>
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(135 80 80)"/>
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(180 80 80)"/>
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(225 80 80)"/>
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(270 80 80)"/>
-            <line x1="80" y1="14" x2="80" y2="28" transform="rotate(315 80 80)"/>
-          </g>
-          <!-- disc -->
-          <circle cx="80" cy="80" r="46" fill="url(#sun-grad)" opacity="0.95"/>
-          <circle cx="80" cy="80" r="46" fill="none" stroke="#E8C97A" stroke-width="1.2" opacity="0.3"/>
-        </svg>
+  <defs>
+    <!-- Wide corona glow -->
+    <radialGradient id="sun-corona" cx="50%" cy="50%" r="50%">
+      <stop offset="28%"  stop-color="#E8A84A" stop-opacity="0"/>
+      <stop offset="60%"  stop-color="#E8A84A" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#C2501E" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Inner disc: bright warm centre -->
+    <radialGradient id="sun-disc" cx="38%" cy="35%" r="65%">
+      <stop offset="0%"   stop-color="#FFF4D4" stop-opacity="1"/>
+      <stop offset="30%"  stop-color="#F0C860" stop-opacity="1"/>
+      <stop offset="70%"  stop-color="#D4762A" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#8C3010" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <!-- Outer corona -->
+  <circle cx="80" cy="80" r="76" fill="url(#sun-corona)"/>
+  <!-- Delicate rays (8 long + 8 short) -->
+  <g stroke="#E8C060" stroke-linecap="round" opacity="0.35">
+    <!-- Long rays -->
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(0   80 80)"/>
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(45  80 80)"/>
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(90  80 80)"/>
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(135 80 80)"/>
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(180 80 80)"/>
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(225 80 80)"/>
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(270 80 80)"/>
+    <line x1="80" y1="12" x2="80" y2="28" stroke-width="1.4" transform="rotate(315 80 80)"/>
+    <!-- Short rays between -->
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(22.5  80 80)"/>
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(67.5  80 80)"/>
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(112.5 80 80)"/>
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(157.5 80 80)"/>
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(202.5 80 80)"/>
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(247.5 80 80)"/>
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(292.5 80 80)"/>
+    <line x1="80" y1="16" x2="80" y2="24" stroke-width="0.8" transform="rotate(337.5 80 80)"/>
+  </g>
+  <!-- Main disc -->
+  <circle cx="80" cy="80" r="44" fill="url(#sun-disc)"/>
+  <!-- Subtle limb darkening ring -->
+  <circle cx="80" cy="80" r="44" fill="none" stroke="#A04018" stroke-width="1.8" opacity="0.35"/>
+  <!-- Bright highlight upper-left -->
+  <ellipse cx="62" cy="62" rx="10" ry="7" fill="white" opacity="0.22"/>
+</svg>
         <span class="cs-planet-label" id="cs-label-sun">Sun &middot; computing&hellip;</span>
         <span class="cs-planet-epithet">The Sun — your core self</span>
       </div>
@@ -723,15 +777,39 @@
       <!-- Venus -->
       <div class="cs-planet" data-planet="venus" style="--drift-dur:7.2s; --drift-delay:0.6s; --drift:-3px; opacity:0.82;">
         <svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <radialGradient id="venus-grad" cx="38%" cy="35%" r="65%">
-              <stop offset="0%"   stop-color="#F4E9C4" stop-opacity="1"/>
-              <stop offset="100%" stop-color="#C8A84B" stop-opacity="1"/>
-            </radialGradient>
-          </defs>
-          <circle cx="60" cy="60" r="44" fill="url(#venus-grad)" opacity="0.9"/>
-          <circle cx="60" cy="60" r="44" fill="none" stroke="#F4E9C4" stroke-width="0.8" opacity="0.3"/>
-        </svg>
+  <defs>
+    <!-- Glow halo -->
+    <radialGradient id="venus-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="38%"  stop-color="#F0E4B0" stop-opacity="0"/>
+      <stop offset="70%"  stop-color="#E8D890" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#C8B860" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Sphere: creamy gold, smooth cloud layers -->
+    <radialGradient id="venus-sphere" cx="32%" cy="30%" r="70%">
+      <stop offset="0%"   stop-color="#FFF8E2" stop-opacity="1"/>
+      <stop offset="40%"  stop-color="#EDD898" stop-opacity="1"/>
+      <stop offset="80%"  stop-color="#C8A040" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#A07820" stop-opacity="1"/>
+    </radialGradient>
+    <!-- Cloud banding overlay -->
+    <linearGradient id="venus-bands" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="20%" stop-color="#F8EEC0" stop-opacity="0.10"/>
+      <stop offset="50%" stop-color="#E0C060" stop-opacity="0.06"/>
+      <stop offset="80%" stop-color="#F0E4B0" stop-opacity="0.08"/>
+    </linearGradient>
+    <clipPath id="venus-clip"><circle cx="60" cy="60" r="42"/></clipPath>
+  </defs>
+  <!-- Glow -->
+  <circle cx="60" cy="60" r="58" fill="url(#venus-glow)"/>
+  <!-- Sphere -->
+  <circle cx="60" cy="60" r="42" fill="url(#venus-sphere)"/>
+  <!-- Cloud banding -->
+  <rect x="18" y="18" width="84" height="84" fill="url(#venus-bands)" clip-path="url(#venus-clip)"/>
+  <!-- Highlight -->
+  <ellipse cx="45" cy="43" rx="9" ry="6" fill="white" opacity="0.28"/>
+  <!-- Rim -->
+  <circle cx="60" cy="60" r="42" fill="none" stroke="#F0E4B4" stroke-width="0.7" opacity="0.45"/>
+</svg>
         <span class="cs-planet-label" id="cs-label-venus">Venus &middot; computing&hellip;</span>
         <span class="cs-planet-epithet">Venus — what you love</span>
       </div>
@@ -739,15 +817,46 @@
       <!-- Mars -->
       <div class="cs-planet" data-planet="mars" style="--drift-dur:9s; --drift-delay:2s; --drift:-3px; opacity:0.75;">
         <svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <defs>
-            <radialGradient id="mars-grad" cx="40%" cy="36%" r="64%">
-              <stop offset="0%"   stop-color="#D97048" stop-opacity="1"/>
-              <stop offset="100%" stop-color="#7A2B12" stop-opacity="1"/>
-            </radialGradient>
-          </defs>
-          <circle cx="60" cy="60" r="40" fill="url(#mars-grad)" opacity="0.9"/>
-          <circle cx="60" cy="60" r="40" fill="none" stroke="#B5532E" stroke-width="0.8" opacity="0.35"/>
-        </svg>
+  <defs>
+    <!-- Warm rust glow -->
+    <radialGradient id="mars-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="34%"  stop-color="#C05830" stop-opacity="0"/>
+      <stop offset="68%"  stop-color="#A04020" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#802010" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Sphere: rust-terracotta -->
+    <radialGradient id="mars-sphere" cx="35%" cy="32%" r="66%">
+      <stop offset="0%"   stop-color="#E89070" stop-opacity="1"/>
+      <stop offset="40%"  stop-color="#C06040" stop-opacity="1"/>
+      <stop offset="80%"  stop-color="#882818" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#601408" stop-opacity="1"/>
+    </radialGradient>
+    <!-- Surface mottling overlay -->
+    <radialGradient id="mars-mottle" cx="60%" cy="55%" r="40%">
+      <stop offset="0%"   stop-color="#D07050" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#D07050" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="mars-clip"><circle cx="60" cy="60" r="40"/></clipPath>
+  </defs>
+  <!-- Glow halo -->
+  <circle cx="60" cy="60" r="56" fill="url(#mars-glow)"/>
+  <!-- Sphere -->
+  <circle cx="60" cy="60" r="40" fill="url(#mars-sphere)"/>
+  <!-- Surface mottling -->
+  <circle cx="60" cy="60" r="40" fill="url(#mars-mottle)"/>
+  <!-- Subtle darker surface patches -->
+  <g clip-path="url(#mars-clip)" opacity="0.22">
+    <ellipse cx="68" cy="65" rx="12" ry="8" fill="#602010"/>
+    <ellipse cx="48" cy="55" rx="8"  ry="5" fill="#702818"/>
+    <circle  cx="75" cy="50" r="5"          fill="#602010"/>
+  </g>
+  <!-- Polar cap hint (top) -->
+  <ellipse cx="60" cy="23" rx="7" ry="3.5" fill="#E8DDD0" opacity="0.35" clip-path="url(#mars-clip)"/>
+  <!-- Highlight -->
+  <ellipse cx="46" cy="45" rx="8" ry="5" fill="white" opacity="0.20"/>
+  <!-- Rim -->
+  <circle cx="60" cy="60" r="40" fill="none" stroke="#D07850" stroke-width="0.8" opacity="0.4"/>
+</svg>
         <span class="cs-planet-label" id="cs-label-mars">Mars &middot; computing&hellip;</span>
         <span class="cs-planet-epithet">Mars — how you act</span>
       </div>
