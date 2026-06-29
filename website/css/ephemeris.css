@@ -366,12 +366,12 @@ a:hover, a:focus-visible {
 
 .btn-press {
   background: var(--terracotta);
-  color: #ECE6D8;
+  color: #1F1206;
 }
 .btn-press:hover,
 .btn-press:focus-visible {
   opacity: 0.88;
-  color: #ECE6D8;
+  color: #1F1206;
 }
 
 .btn-quiet {
