@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Homepage signature instrument layer.
+ * Astro Precise — Homepage signature instrument layer.
  * Meridian ring, scroll-time rail, chronicle HUD, staggered hero entrance.
  * Depends on RafCore (optional) and Orrery3D on index.html only.
  */

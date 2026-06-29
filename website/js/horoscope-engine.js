@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — transit-based sun-sign horoscope engine.
+ * Astro Precise — transit-based sun-sign horoscope engine.
  * Professional solar-chart readings from live VSOP87 positions (whole-sign houses).
  * Replaces generic/fictional aspect copy in interpretations.js / sign-daily.js.
  * Depends on: window.AstroEphemeris

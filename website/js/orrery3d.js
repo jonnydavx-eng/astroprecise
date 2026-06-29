@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — 3D Solar System Orrery (Enhanced)
+ * Astro Precise — 3D Solar System Orrery (Enhanced)
  * Canvas-based heliocentric 3D view with accurate live planetary positions.
  *
  * Positions are exact per the VSOP87 ephemeris: heliocentric vectors are

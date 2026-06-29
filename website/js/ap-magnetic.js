@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — magnetic micro-interaction for the hero "Cast My Chart" CTA.
+ * Astro Precise — magnetic micro-interaction for the hero "Cast My Chart" CTA.
  * The button drifts gently toward the cursor when it comes near, with an
  * elastic ease-back on leave. Pointer-fine + non-reduced-motion only; writes
  * --mx/--my (consumed by lite-critical.css's `translate`). One rAF-throttled

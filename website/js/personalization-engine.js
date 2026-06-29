@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Client-side Adaptive Personalization Engine (2026)
+ * Astro Precise — Client-side Adaptive Personalization Engine (2026)
  * Uses saved AstroProfile charts + prefs for dynamic hero, shop teasers,
  * "your transits" hints, and art recommendations without any server calls.
  * Privacy-first, runs entirely after profile is available (idle-deferred).

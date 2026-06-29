@@ -1,7 +1,7 @@
 'use strict';
 
 // =============================================================================
-// AstroPrecise Ephemeris Engine
+// Astro Precise Ephemeris Engine
 // Based on Meeus "Astronomical Algorithms" 2nd Edition
 // =============================================================================
 

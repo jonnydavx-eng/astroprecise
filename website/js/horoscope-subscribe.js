@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — daily + monthly horoscope email subscription.
+ * Astro Precise — daily + monthly horoscope email subscription.
  * Uses the same deterministic sign+date model as getDailyHoroscope.
  * Dormant-honest: posts to AP_MON.emailUrl when set, else localStorage + mailto relay.
  */

@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Angel Numbers & Synchronicity Clock
+ * Astro Precise — Angel Numbers & Synchronicity Clock
  * window.AngelNumbers
  *
  * A deterministic numerology reference for repeating / mirror numbers, plus a

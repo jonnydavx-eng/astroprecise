@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — AstroJourney
+ * Astro Precise — AstroJourney
  * Cosmic life journey engine: life chapters, planetary returns, personal year,
  * milestones, and recommendations derived from a birth date.
  * Self-contained vanilla JS, no dependencies.

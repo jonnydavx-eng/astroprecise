@@ -1,5 +1,5 @@
 /**
- * AstroPrecise sign landing pages — lightweight boot (content-service + sign-daily only).
+ * Astro Precise sign landing pages — lightweight boot (content-service + sign-daily only).
  * Replaces inline daily-reading IIFE and heavy ephemeris/cosmos stack on sign pages.
  */
 (function () {

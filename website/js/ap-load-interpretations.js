@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — on-demand interpretations.js loader (~464 KB).
+ * Astro Precise — on-demand interpretations.js loader (~464 KB).
  * Call window.loadInterpretations() before any reading that needs the corpus.
  */
 (function () {

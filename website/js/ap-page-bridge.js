@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — cross-page polish: enter fade, view-transition nav, continue toast.
+ * Astro Precise — cross-page polish: enter fade, view-transition nav, continue toast.
  */
 (function () {
   'use strict';

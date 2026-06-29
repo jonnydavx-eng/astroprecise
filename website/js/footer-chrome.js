@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — lightweight footer social row for legal / error pages.
+ * Astro Precise — lightweight footer social row for legal / error pages.
  * No app.js, ephemeris, or affiliate ads — only the social icon row.
  */
 'use strict';

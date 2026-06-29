@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — The Instrument (page controller)
+ * Astro Precise — The Instrument (page controller)
  * Coordinates the light-cone, zenith star, echo dates, daimon, quantum draw,
  * consciousness weather, precession layer, and time travel sections.
  */

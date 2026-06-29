@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — engraved hex celestial seals (hand-drawn commissioned style).
+ * Astro Precise — engraved hex celestial seals (hand-drawn commissioned style).
  * Replaces glossy circular orbs with observatory instrument plates.
  */
 (function () {

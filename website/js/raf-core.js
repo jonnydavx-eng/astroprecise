@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — RafCore
+ * Astro Precise — RafCore
  * One scroll listener, one rAF dispatcher, one source of truth for
  * device tier / DPR cap / prefers-reduced-motion. Everything that reacts
  * to scroll or needs a pixel-ratio budget should go through here instead

@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Tonight's Sky
+ * Astro Precise — Tonight's Sky
  * ----------------------------------------------------------------------------
  * window.TonightSky — "What's visible tonight" computer.
  *

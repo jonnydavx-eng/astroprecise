@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Reading format utilities
+ * Astro Precise — Reading format utilities
  * Applies readability psychology: chunking, primacy lead, progressive disclosure,
  * optimal measure (~65ch), scannable hierarchy.
  */

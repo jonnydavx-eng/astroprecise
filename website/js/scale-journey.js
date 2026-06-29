@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — guided scale journeys triggered by the orrery zoom dial.
+ * Astro Precise — guided scale journeys triggered by the orrery zoom dial.
  */
 (function () {
   'use strict';

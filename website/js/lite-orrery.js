@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Lite orrery instrument layer.
+ * Astro Precise — Lite orrery instrument layer.
  * Live VSOP87 poster (canvas), micro-journey, lite time deck, sky sync.
  */
 (function () {

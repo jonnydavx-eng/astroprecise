@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Profile & Birth Chart Manager
+ * Astro Precise — Profile & Birth Chart Manager
  * Manages user profiles and birth chart data using localStorage.
  */
 

@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Astrological Interpretations
+ * Astro Precise — Astrological Interpretations
  * Deterministic text generation for planets, signs, houses, and aspects.
  */
 

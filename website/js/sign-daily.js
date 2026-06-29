@@ -1,5 +1,5 @@
 /**
- * AstroPrecise sign-daily — daily horoscope for sign landing pages.
+ * Astro Precise sign-daily — daily horoscope for sign landing pages.
  * Delegates to HoroscopeEngine (transit-based) when ephemeris is loaded;
  * otherwise uses honest generic copy (no fabricated aspects).
  */

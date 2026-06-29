@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — engraved hex element seals (fire / earth / air / water / all).
+ * Astro Precise — engraved hex element seals (fire / earth / air / water / all).
  * Replaces circular element orbs with observatory instrument plates.
  */
 (function () {

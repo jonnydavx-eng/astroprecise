@@ -1,7 +1,7 @@
 'use strict';
 
 // =============================================================================
-// AstroPrecise Star Catalog
+// Astro Precise Star Catalog
 // Real-star catalog powering the "light-cone" view (which stars your birth
 // light has reached) and the "zenith star" lookup (nearest catalog star to a
 // given RA/Dec).

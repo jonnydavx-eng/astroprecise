@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — Post-purchase perks (Two Skies 50% code after any purchase).
+ * Astro Precise — Post-purchase perks (Two Skies 50% code after any purchase).
  */
 (function () {
   'use strict';

@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * AstroPrecise — The Oracle
+ * Astro Precise — The Oracle
  * Deterministic personal astrology engine: daily insights, void-of-course Moon,
  * Chaldean planetary hours, and a seeded question oracle.
  *

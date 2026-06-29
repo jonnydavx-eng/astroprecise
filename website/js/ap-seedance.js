@@ -1,5 +1,5 @@
 /**
- * AstroPrecise — optional Seedance cinematic backdrop for the hero orrery.
+ * Astro Precise — optional Seedance cinematic backdrop for the hero orrery.
  *
  * DROP-IN, OFF BY DEFAULT. The page is byte-identical to today until an owner
  * configures a clip: it does nothing unless #orrery-seedance has a non-empty
