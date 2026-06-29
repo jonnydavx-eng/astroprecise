@@ -107,7 +107,7 @@
   --gradient-hero:     linear-gradient(160deg, #13100C 0%, #0D0A07 58%, rgba(201, 162, 39, 0.22) 100%);
 
   /* ── Typography ── */
-  --font-display: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-display: 'Cormorant Garamond', serif;
   --font-heading: 'Cormorant Garamond', serif;
   --font-body:    'Inter', sans-serif;
   --font-sans:    'Inter', sans-serif;   /* alias */
@@ -1250,7 +1250,7 @@ body:has(#starfield-canvas) .lib__banner {
 }
 .preloader-content, .page-preloader .preloader-content {
   position: relative; z-index: 2; text-align: center; color: #E8E0D0;
-  font-family: 'Cinzel', 'Cormorant Garamond', serif; pointer-events: auto;
+  font-family: 'Cormorant Garamond', serif; pointer-events: auto;
 }
 .preloader-seal, .page-preloader .preloader-seal {
   font-size: 2.8rem; color: #C9A227; margin-bottom: 12px; opacity: 0.9;
@@ -1292,7 +1292,7 @@ body:has(#starfield-canvas) .lib__banner {
 
 /* Enhanced engraved glyphs site-wide — no more emoji-like symbols */
 .engraved-glyph, .sign-hero__glyph, .ticker-glyph, .pbar-g, .pos-g, .sp-glyph, .card-glyph {
-  font-family: 'Cinzel', 'Cormorant Garamond', serif !important;
+  font-family: 'Cormorant Garamond', serif !important;
   color: #C9A227;
   text-shadow: 
     0 1px 0 rgba(255,255,255,0.1),
