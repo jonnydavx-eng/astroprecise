@@ -276,8 +276,12 @@
     const [hh, mm]   = time.split(':').map(Number);
     // Guard against malformed date/time (e.g. a hand-edited share URL): NaN
     // doesn't throw, it would silently render a chart full of NaN°.
+    // Real month-length validation (leap-aware) so an impossible date like
+    // Feb 30 or Apr 31 is rejected, not silently rolled into a WRONG chart by
+    // the raw Julian-day arithmetic. m is range-checked before indexing.
+    const daysInMonth = (yy, mo) => [31, (yy % 4 === 0 && (yy % 100 !== 0 || yy % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mo - 1];
     if (![y, m, d, hh, mm].every(Number.isFinite) ||
-        m < 1 || m > 12 || d < 1 || d > 31 || hh > 23 || mm > 59) {
+        m < 1 || m > 12 || d < 1 || d > daysInMonth(y, m) || hh > 23 || mm > 59) {
       return { error: 'That birth date or time looks malformed.', focus: 'date-input' };
     }
     return {
@@ -547,6 +551,13 @@
     const bundle = bundleUpsellProduct();
 
     const steps = [
+      {
+        tag: 'Free · Your story',
+        title: 'Read your cosmic story',
+        desc: `${name === 'your' ? 'Your' : name + '’s'} chart retold as a flowing narrative — the arc of your Sun, Moon${riseSign ? ', rising' : ''} and the threads between them.`,
+        href: 'cosmic-story.html',
+        cta: 'Read your story →',
+      },
       {
         tag: 'Free · Live sky',
         title: 'See your transits',

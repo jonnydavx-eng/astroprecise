@@ -113,7 +113,10 @@
         name: chart.name || '',
         sun: signFrom(P, 'Sun', 'sun'),
         moon: signFrom(P, 'Moon', 'moon'),
-        rising: chart.risingSign || signFrom(P, 'Ascendant', 'asc'),
+        // Honesty: the Ascendant is only real when a birth TIME was given. With no
+        // time, the rising is a noon-default artifact — omit it rather than present
+        // a value that isn't real (the chart was cast time-unknown).
+        rising: chart.birthTime ? (chart.risingSign || signFrom(P, 'Ascendant', 'asc')) : null,
         mercury: signFrom(P, 'Mercury', 'mercury'),
         venus: signFrom(P, 'Venus', 'venus'),
         mars: signFrom(P, 'Mars', 'mars'),
@@ -137,6 +140,7 @@
         isDemo = true;
         try {
           chart = window.AstroEphemeris.calculateNatalChart(1990, 6, 15, 12, 0, 51.5074, -0.1278, 'placidus', 'mean');
+          if (chart) chart.birthTime = '12:00'; // sample is a known-time (noon) birth → its rising is real
         } catch (e) { chart = null; }
       }
       if (!chart) {
@@ -148,11 +152,11 @@
       if (note) note.hidden = !isDemo;
       var done = function () {
         var html = '';
-        try { html = window.CosmicStory.build(data); } catch (e) { html = ''; }
+        try { html = window.CosmicStory.build(data); } catch (e) { console.error('Cosmic story build failed:', e); html = ''; }
         out.innerHTML = html || '<p class="cstory__p" style="text-align:center">Your story needs a fuller chart — cast one with a birth time to begin.</p>';
       };
       if (window.loadInterpretations) {
-        window.loadInterpretations().then(done).catch(done);
+        window.loadInterpretations().then(done).catch(function (err) { console.error('Failed to load interpretations:', err); done(); });
       } else { done(); }
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go, { once: true });
