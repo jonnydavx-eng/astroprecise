@@ -266,6 +266,15 @@ body {
   color: var(--white);
 }
 
+/* Brand wordmark accent — brass-italic "Precise" (matches homepage masthead) */
+.logo-text__precise {
+  font-style: italic;
+  font-weight: 300;
+  background: none;
+  -webkit-text-fill-color: var(--ap-gold-core, #C2A05E);
+  color: var(--ap-gold-core, #C2A05E);
+}
+
 .navbar__nav {
   display: none;
   align-items: center;

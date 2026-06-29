@@ -5567,6 +5567,16 @@ body.has-email-sticky { padding-bottom: 72px; }
   color: transparent;
 }
 
+/* Brand wordmark accent — brass-italic "Precise" matching the homepage masthead.
+   Opts the word out of the parent gradient text-clip with its own solid fill. */
+.logo-text__precise {
+  font-style: italic;
+  font-weight: 300;
+  background: none;
+  -webkit-text-fill-color: var(--ap-gold-core, #C2A05E);
+  color: var(--ap-gold-core, #C2A05E);
+}
+
 .navbar__logo-icon {
   color: var(--gold);
   -webkit-text-fill-color: var(--gold);
