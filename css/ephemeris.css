@@ -1137,3 +1137,164 @@ a:hover, a:focus-visible {
     to { opacity: 1; transform: translateY(0); }
   }
 }
+
+/* ============================================================
+   21. ELEVATION PACK — copy, craft, depth, art polish
+   ============================================================ */
+
+/* 21a. Section spacing rhythm vars */
+:root {
+  --section-above:   88px;
+  --section-between: 64px;
+  --section-within:  40px;
+}
+
+.hero-section    { padding-bottom: var(--section-between); }
+.trust-line      { margin-block: var(--section-between); }
+.department      {
+  padding-top:    var(--section-above);
+  padding-bottom: var(--section-within);
+}
+
+/* 21b. Focus ring on .btn-press */
+.btn-press:focus-visible {
+  outline: 2px solid var(--meridian);
+  outline-offset: 2px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+
+/* 21c. Hero grid rebalance */
+.hero-grid {
+  grid-template-columns: 1.5fr 1fr;
+  column-gap: var(--sp-5);
+}
+.hero-illustration svg {
+  max-width: 100%;
+  max-height: 520px;
+}
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 21d. Why grid left edge */
+.why-grid-wrap {
+  border-left: 4px solid rgba(30, 45, 69, 0.5);
+  padding-left: var(--sp-5);
+}
+.why-grid {
+  gap: var(--sp-5);
+}
+@media (max-width: 860px) {
+  .why-grid-wrap {
+    border-left-width: 2px;
+  }
+}
+
+/* 21e. Trust dots — hide old dot (SVG now inline in HTML) */
+.trust-line .trust-dot {
+  display: none;
+}
+
+/* 21f. Plate cards inset brass frame */
+.plate {
+  box-shadow: inset 0 0 0 1px rgba(194, 160, 94, 0.22);
+}
+
+/* 21g. Dateline underline + eyebrow rule accent */
+.dateline {
+  border-bottom: 1px solid rgba(194, 160, 94, 0.25);
+  padding-bottom: 4px;
+}
+.dept-eyebrow::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--brass);
+  opacity: 0.4;
+  margin-top: 3px;
+}
+
+/* 21h. Date input polish */
+.hero-form input[type="date"] {
+  color: var(--ink-faded);
+}
+.hero-form input[type="date"]::placeholder {
+  color: rgba(236, 230, 216, 0.35);
+}
+.hero-form input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.7;
+  cursor: pointer;
+  filter: brightness(1) sepia(0.15) hue-rotate(45deg);
+}
+
+/* 21i. Cosmic Story band tighten */
+.cosmic-story-band {
+  padding-block: var(--sp-8);
+}
+.cs-planet-stage {
+  min-height: 280px;
+  position: relative;
+  overflow: visible;
+}
+.cs-planet {
+  gap: 8px;
+}
+.cs-planet svg {
+  filter: drop-shadow(0 0 8px rgba(244, 239, 230, 0.08));
+}
+.cs-planet-epithet {
+  font-size: clamp(0.8rem, 0.95vw, 0.92rem);
+}
+
+/* 21j. Link transition (motion-safe) */
+@media (prefers-reduced-motion: no-preference) {
+  a {
+    transition: color .15s ease;
+  }
+}
+
+/* 21k. Deep-space body vignette */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%,   transparent 55%, rgba(12,16,22,0.55) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 100%,  transparent 55%, rgba(12,16,22,0.55) 100%),
+    radial-gradient(ellipse 40% 100% at 0%   50%, transparent 55%, rgba(12,16,22,0.45) 100%),
+    radial-gradient(ellipse 40% 100% at 100% 50%, transparent 55%, rgba(12,16,22,0.45) 100%);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* 21l. Seeded page-margin star dots */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background-image:
+    radial-gradient(circle 1.5px at  2.2% 11%,  rgba(236,230,216,0.13) 50%, transparent 50%),
+    radial-gradient(circle 1px   at  3.8% 34%,  rgba(236,230,216,0.07) 50%, transparent 50%),
+    radial-gradient(circle 2px   at  1.4% 58%,  rgba(236,230,216,0.10) 50%, transparent 50%),
+    radial-gradient(circle 1px   at  4.2% 79%,  rgba(236,230,216,0.06) 50%, transparent 50%),
+    radial-gradient(circle 1.5px at  2.8% 92%,  rgba(236,230,216,0.09) 50%, transparent 50%),
+    radial-gradient(circle 1px   at 96.2% 7%,   rgba(236,230,216,0.08) 50%, transparent 50%),
+    radial-gradient(circle 2px   at 97.8% 28%,  rgba(236,230,216,0.12) 50%, transparent 50%),
+    radial-gradient(circle 1px   at 95.5% 51%,  rgba(236,230,216,0.06) 50%, transparent 50%),
+    radial-gradient(circle 1.5px at 98.4% 73%,  rgba(236,230,216,0.10) 50%, transparent 50%),
+    radial-gradient(circle 1px   at 96.8% 88%,  rgba(236,230,216,0.07) 50%, transparent 50%),
+    radial-gradient(circle 1.5px at 48.5% 1.2%, rgba(236,230,216,0.09) 50%, transparent 50%),
+    radial-gradient(circle 1px   at 52.1% 0.8%, rgba(236,230,216,0.06) 50%, transparent 50%),
+    radial-gradient(circle 1px   at 44.8% 99.1%,rgba(236,230,216,0.07) 50%, transparent 50%),
+    radial-gradient(circle 1.5px at 56.3% 98.8%,rgba(236,230,216,0.08) 50%, transparent 50%);
+}
+
+/* Planet glow refinement — luminous not blurry */
+.cs-planet svg {
+  filter: drop-shadow(0 0 6px rgba(244,239,230,0.07)) drop-shadow(0 0 2px rgba(194,160,94,0.06));
+}
