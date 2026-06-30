@@ -1008,7 +1008,10 @@
   function runFromBirthDate(dateVal, nameVal, opts) {
     opts = opts || {};
     showResultsPending();
-    window.requestAnimationFrame(function () {
+    /* setTimeout (not requestAnimationFrame): rAF never fires in a backgrounded
+       tab, which would leave the result un-computed; setTimeout defers identically
+       and always runs. */
+    setTimeout(function () {
       const [y, m, d] = dateVal.split('-').map(Number);
       const explained = explainLifePath(y, m, d);
       const lp = explained.lp;
@@ -1279,9 +1282,9 @@
         window._lpCurrentName = '';
         window._lpCurrentBirth = '';
         showResultsPending();
-        window.requestAnimationFrame(function () {
+        setTimeout(function () {
           renderResults(n, null, null, null, null, null, null, { preview: true });
-        });
+        }, 0);
       });
     }
 
