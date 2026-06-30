@@ -12,7 +12,7 @@
     .sign-reading-panel__inner {
       position: relative;
       border-radius: 28px;
-      background: linear-gradient(135deg, rgba(13, 10, 7, 0.97) 0%, rgba(19, 16, 12, 0.97) 60%, rgba(22, 14, 10, 0.97) 100%);
+      background: linear-gradient(135deg, rgba(16, 21, 32, 0.97) 0%, rgba(22, 28, 42, 0.97) 60%, rgba(22, 14, 10, 0.97) 100%);
       padding: var(--space-8);
       margin-top: var(--space-8);
       -webkit-backdrop-filter: blur(24px);
@@ -252,7 +252,7 @@
       flex-direction: column;
       align-items: center;
       gap: var(--space-4);
-      background: rgba(20, 16, 10, 0.68);
+      background: rgba(22, 28, 42, 0.68);
       border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: 28px;
       padding: var(--space-12) var(--space-8);
@@ -307,7 +307,7 @@
       grid-template-columns: 3rem 1fr auto;
       align-items: center;
       gap: var(--space-4);
-      background: rgba(20, 16, 10, 0.68);
+      background: rgba(22, 28, 42, 0.68);
       border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: var(--radius-lg);
       padding: var(--space-4) var(--space-5);
@@ -337,7 +337,7 @@
 
     /* ---- Planetary weather cards ---- */
     .planet-weather-card {
-      background: rgba(20, 16, 10, 0.68);
+      background: rgba(22, 28, 42, 0.68);
       border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: 20px;
       padding: var(--space-5);

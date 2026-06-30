@@ -25,7 +25,7 @@ body { background: #0C1016; }
     .lib__group-label { font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--silver-dim, #8891AA); margin: 1.6rem 0 0.6rem; }
     .lib-link {
       display: block; text-decoration: none; text-align: center;
-      background: rgba(20, 16, 10,0.55); border: 1px solid rgba(194, 160, 94,0.28);
+      background: rgba(22, 28, 42,0.55); border: 1px solid rgba(194, 160, 94,0.28);
       border-radius: 16px; padding: 0.95rem 1rem; margin: 0.6rem 0;
       -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
       transition: border-color 0.2s, transform 0.2s, background 0.2s;

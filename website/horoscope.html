@@ -168,12 +168,12 @@
                   <stop offset="72%" stop-color="#060a10"/>
                 </radialGradient>
                 <radialGradient id="sphere-poster-glow" cx="50%" cy="48%" r="44%">
-                  <stop offset="0%" stop-color="rgba(201,162,39,0.14)"/>
-                  <stop offset="100%" stop-color="rgba(201,162,39,0)"/>
+                  <stop offset="0%" stop-color="rgba(194, 160, 94,0.14)"/>
+                  <stop offset="100%" stop-color="rgba(194, 160, 94,0)"/>
                 </radialGradient>
                 <radialGradient id="sphere-poster-star" cx="50%" cy="50%" r="50%">
                   <stop offset="0%" stop-color="#F0D868"/>
-                  <stop offset="55%" stop-color="#c9a227"/>
+                  <stop offset="55%" stop-color="#C2A05E"/>
                   <stop offset="100%" stop-color="#B8962E"/>
                 </radialGradient>
               </defs>
@@ -204,7 +204,7 @@
         <!-- Planet legend strip -->
         <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="group">
           <span class="planet-legend__label">Live sky:</span>
-          <span class="pl-dot" style="--c:#c9a227" aria-label="Sun position">☉ Sun · …</span>
+          <span class="pl-dot" style="--c:#C2A05E" aria-label="Sun position">☉ Sun · …</span>
           <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon · …</span>
           <span class="pl-dot" style="--c:#3f7d76" aria-label="Mercury position">☿ Mercury · …</span>
           <span class="pl-dot" style="--c:#C77DFF" aria-label="Venus position">♀ Venus · …</span>
@@ -348,7 +348,7 @@
               </div>
               <div class="srp-moon-wrap">
                 <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
-                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(201,162,39,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
+                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(194, 160, 94,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
                 <!-- Lunar cycle indicator -->
                 <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
                   <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
@@ -519,7 +519,7 @@
             <span>Void of Course Moon</span>
             <span id="void-moon-sign" style="color:var(--silver-dim);"></span>
           </div>
-          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(201, 162, 39,0.08);border:1px solid rgba(201, 162, 39,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
+          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(194, 160, 94,0.08);border:1px solid rgba(194, 160, 94,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
             <span id="ph-glyph" style="font-size:1rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>
             <span>Planetary Hour: </span><strong id="ph-name" style="color:var(--gold-light);">loading…</strong>
           </div>

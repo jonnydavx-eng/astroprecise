@@ -57,7 +57,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       --silver: #A89E88;
       --silver-dim: #9A9084;
       --oxblood: #b04a52;
-      --surface: rgba(20,16,10,0.55);
+      --surface: rgba(22, 28, 42,0.55);
       --border: rgba(194, 160, 94,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
@@ -175,7 +175,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
 
     /* ── Sections ── */
     .rg-section { padding: 4.5rem 0; }
-    .rg-section--alt { background: rgba(13, 10, 7,0.6); }
+    .rg-section--alt { background: rgba(16, 21, 32,0.6); }
     .rg-section__header { text-align: center; margin-bottom: 2.75rem; }
     .rg-section__label {
       font-size: 0.62rem;

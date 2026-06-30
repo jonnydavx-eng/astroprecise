@@ -159,7 +159,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
   --white: #E8E0D0;
   --silver: #A89E88;
   --silver-dim: #9A9084;
-  --surface: rgba(20,16,10,0.55);
+  --surface: rgba(22, 28, 42,0.55);
   --border: rgba(194, 160, 94,0.10);
   --radius-xl: 20px;
   --radius-2xl: 28px;
@@ -287,7 +287,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       padding: 5rem 0;
     }
     .ts-section--alt {
-      background: rgba(13, 10, 7,0.6);
+      background: rgba(16, 21, 32,0.6);
     }
     .ts-section__header {
       text-align: center;

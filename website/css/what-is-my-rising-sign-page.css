@@ -90,7 +90,7 @@ body:has(.rs-hero) .eng-i {
       line-height: 1.75; max-width: 620px; margin: 0 auto;
     }
     .rs-section { padding: 2.75rem 0; position: relative; z-index: 1; }
-    .rs-section--alt { background: var(--color-bg-2, rgba(13, 10, 7,0.5)); }
+    .rs-section--alt { background: var(--color-bg-2, rgba(16, 21, 32,0.5)); }
     .rs-section__label {
       font-family: var(--font-display, 'Cinzel', serif);
       font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700;
@@ -121,7 +121,7 @@ body:has(.rs-hero) .eng-i {
     }
     .rs-field input {
       width: 100%; padding: 0.75rem 0.95rem;
-      background: rgba(13, 10, 7, 0.6);
+      background: rgba(16, 21, 32, 0.6);
       border: 1px solid var(--rs-border); border-radius: 12px;
       color: var(--white, #E8E0D0); font-size: 0.95rem; font-family: inherit;
       transition: border-color 0.2s, box-shadow 0.2s;

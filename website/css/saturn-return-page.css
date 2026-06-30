@@ -74,7 +74,7 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
 /* CLS: email banner critical path — main.css deferred under LH audit */
 .ap-email-cta--banner {
   min-height: clamp(300px, 72vw, 360px);
-  background: linear-gradient(135deg, rgba(194, 160, 94, 0.1) 0%, rgba(13, 10, 7, 0.92) 48%, rgba(92, 74, 110, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(194, 160, 94, 0.1) 0%, rgba(16, 21, 32, 0.92) 48%, rgba(92, 74, 110, 0.08) 100%);
   border-top: 1px solid rgba(194, 160, 94, 0.22);
   border-bottom: 1px solid rgba(194, 160, 94, 0.12);
   padding: var(--space-12, 3rem) 0;
@@ -111,7 +111,7 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-field { display: flex; flex-direction: column; gap: .35rem; }
     .sat-field--full { grid-column: 1 / -1; }
     .sat-field label { font-family: 'Cinzel', serif; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--silver); }
-    .sat-field input { background: rgba(20,16,10,0.5); border: 1px solid var(--sat-line); border-radius: var(--radius-md, 8px); padding: .7rem .8rem; color: var(--white); font-size: 1rem; font-family: inherit; }
+    .sat-field input { background: rgba(22, 28, 42,0.5); border: 1px solid var(--sat-line); border-radius: var(--radius-md, 8px); padding: .7rem .8rem; color: var(--white); font-size: 1rem; font-family: inherit; }
     .sat-field input:focus { outline: none; border-color: var(--border-glow, rgba(194, 160, 94,0.55)); box-shadow: 0 0 0 3px rgba(194, 160, 94,0.14); }
     .sat-field__hint { font-size: .72rem; color: var(--silver-dim, #8F8579); }
     .sat-submit-row { margin-top: 1.3rem; text-align: center; }
@@ -121,7 +121,7 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-natal { text-align: center; font-family: 'Cinzel', serif; letter-spacing: .04em; color: var(--gold-light, #EFE3C0); margin-bottom: 1rem; }
     .sat-natal .ap-seal, .sat-lead .ap-seal { display: inline-flex; vertical-align: middle; margin: 0 .15rem; }
     .sat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
-    .sat-card { position: relative; padding: 1rem .8rem; text-align: center; border: 1px solid var(--sat-line); border-radius: var(--radius-lg, 12px); background: rgba(20,16,10,0.4); }
+    .sat-card { position: relative; padding: 1rem .8rem; text-align: center; border: 1px solid var(--sat-line); border-radius: var(--radius-lg, 12px); background: rgba(22, 28, 42,0.4); }
     .sat-card--now { border-color: rgba(194, 160, 94,0.5); box-shadow: 0 0 26px rgba(194, 160, 94,0.12); }
     .sat-card__n { font-family: 'Cinzel', serif; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--silver); margin-bottom: .35rem; }
     .sat-card__date { color: var(--gold-light, #EFE3C0); font-size: 1.02rem; font-weight: 600; }

@@ -3,7 +3,7 @@
     :root {
       --acc-gold: var(--gold, #C2A05E);
       --acc-gold-light: var(--gold-light, #EFE3C0);
-      --acc-surface: rgba(19, 16, 12, 0.55);
+      --acc-surface: rgba(22, 28, 42, 0.55);
       --acc-border: rgba(232, 224, 208, 0.10);
     }
 

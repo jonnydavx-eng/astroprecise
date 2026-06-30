@@ -61,7 +61,7 @@ body:has(.nn-hero) .eng-i {
       --nn-white: #f0e8d8;
       --nn-silver: #A89E88;
       --nn-silver-dim: #8891aa;
-      --nn-surface: rgba(20, 16, 10,0.68);
+      --nn-surface: rgba(22, 28, 42,0.68);
       --nn-border: rgba(168, 158, 136,0.12);
       --nn-radius-xl: 20px;
       --nn-radius-2xl: 28px;
@@ -236,7 +236,7 @@ body:has(.nn-hero) .eng-i {
 
     /* ── Transparent breakdown ── */
     .nn-breakdown {
-      background: rgba(13, 10, 7,0.55);
+      background: rgba(16, 21, 32,0.55);
       border: 1px solid var(--nn-border);
       border-radius: var(--nn-radius-xl);
       padding: var(--space-7) var(--space-6);

@@ -53,7 +53,7 @@
 }
 
 .ap-affiliate-ad__card {
-  background: rgba(14, 11, 8, 0.72);
+  background: rgba(16, 21, 32, 0.72);
   border: 1px solid rgba(168, 158, 136, 0.18);
   border-radius: var(--radius-lg, 14px);
   padding: var(--space-4, 1rem);
@@ -118,7 +118,7 @@
   padding: var(--space-4, 1rem);
   border: 1px solid rgba(168, 158, 136, 0.16);
   border-radius: var(--radius-lg, 14px);
-  background: rgba(14, 11, 8, 0.55);
+  background: rgba(16, 21, 32, 0.55);
 }
 
 .ap-affiliate-inline__disc {

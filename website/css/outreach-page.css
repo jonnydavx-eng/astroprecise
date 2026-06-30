@@ -101,7 +101,7 @@ body {
 .ot-panel[hidden] { display: none !important; }
 
 .ot-card {
-  background: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
+  background: var(--ap-ip-surface, rgba(22, 28, 42, 0.58));
   border: 1px solid var(--ap-gold-a22, rgba(194, 160, 94, 0.22));
   border-radius: 12px;
   padding: 1rem;

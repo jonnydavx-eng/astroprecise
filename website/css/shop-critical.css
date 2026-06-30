@@ -465,7 +465,7 @@ html.ap-fonts-ready .page-shop .shop-section-title {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--silver-dark);
-  background: rgba(13, 10, 7, 0.82);
+  background: rgba(16, 21, 32, 0.82);
   border: 1px solid var(--border);
   border-radius: 3px;
   padding: 2px 6px;
@@ -786,7 +786,7 @@ img.shopc-card__preview:not([src]) {
 }
 .shop-trending__card img:not([src]) {
   visibility: hidden;
-  background: linear-gradient(135deg, rgba(22, 18, 13, 0.9), rgba(10, 9, 8, 0.85));
+  background: linear-gradient(135deg, rgba(22, 28, 42, 0.9), rgba(10, 9, 8, 0.85));
 }
 .shop-trending__name {
   display: block;
@@ -804,7 +804,7 @@ img.shopc-card__preview:not([src]) {
 }
 .shop-wallpaper-lead__panel {
   padding: var(--space-6) var(--space-6) var(--space-5);
-  background: linear-gradient(145deg, rgba(22, 18, 13, 0.92), rgba(8, 7, 6, 0.88));
+  background: linear-gradient(145deg, rgba(22, 28, 42, 0.92), rgba(8, 7, 6, 0.88));
   border: 1px solid rgba(194, 160, 94, 0.35);
   border-radius: var(--radius-xl);
   text-align: center;
@@ -936,7 +936,7 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(194, 160, 94,0.22);
-  background: rgba(13,10,7,0.55);
+  background: rgba(16, 21, 32,0.55);
   text-align: left;
 }
 .ap-reading-prefs__eyebrow {

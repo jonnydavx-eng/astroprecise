@@ -6,14 +6,14 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Astro Precise — cosmic intro viewer</title>
   <style>
-    :root { --bg:#050406; --ink:#e8e4f0; --muted:#9a94b0; --accent:#c9a227; --ok:#3fb950; }
+    :root { --bg:#050406; --ink:#e8e4f0; --muted:#9a94b0; --accent:#C2A05E; --ok:#3fb950; }
     * { box-sizing: border-box; }
     body { margin:0; min-height:100vh; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui,Segoe UI,sans-serif; }
     main { position:fixed; inset:0; margin:0; padding:0; }
     .hud { position:fixed; left:0; right:0; bottom:0; z-index:60; padding:12px 14px max(14px, env(safe-area-inset-bottom)); background:linear-gradient(0deg, rgba(5,4,6,.92), rgba(5,4,6,.55) 70%, transparent); pointer-events:none; }
     .hud h1 { margin:0 0 4px; font-size:14px; letter-spacing:.04em; }
     .hud p { margin:0; font-size:12px; color:var(--muted); }
-    .tag { display:inline-block; margin-top:6px; border-radius:99px; padding:3px 10px; font-size:11px; font-weight:700; background:rgba(201,162,39,.18); color:var(--accent); }
+    .tag { display:inline-block; margin-top:6px; border-radius:99px; padding:3px 10px; font-size:11px; font-weight:700; background:rgba(194, 160, 94,.18); color:var(--accent); }
     .tag.ok { background:rgba(63,185,80,.18); color:var(--ok); }
     #probe { position:fixed; inset:0; width:100%; height:100%; border:0; z-index:1; background:var(--bg); }
     .skip-link { position:absolute; left:-9999px; top:0; z-index:100; padding:10px 16px; background:var(--accent);
