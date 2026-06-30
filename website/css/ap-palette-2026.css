@@ -56,11 +56,11 @@
   --ap-ip-silver:       #A89E88;
   --ap-ip-silver-dim:   #9A9084;
 
-  /* ── Text on void — contrast-tuned (EPHEMERIS cream) ── */
+  /* ── Text on void — contrast-tuned (warm parchment, not grey) ── */
   --ap-text-primary:   #ECE6D8; /* warm cream — Ephemeris ink */
-  --ap-text-secondary: #A7A395; /* dim cream — Ephemeris ink-faded */
-  --ap-text-muted:     #9A9488; /* ≥4.5:1 on void-deep */
-  --ap-text-faint:     #8A867A; /* ≥4.5:1 small caps on void-deep */
+  --ap-text-secondary: #BEB298; /* warm dim parchment (was greyish #A7A395) */
+  --ap-text-muted:     #A89C84; /* warm muted parchment ≥4.5:1 on void */
+  --ap-text-faint:     #968B74; /* warm faint ≥4.5:1 small caps on void */
 
   /* ── Link & focus — WCAG AA on void-deep ── */
   --ap-link:         var(--ap-gold-vivid);
