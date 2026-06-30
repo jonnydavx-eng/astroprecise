@@ -126,7 +126,7 @@
 .ap-gold-gleam {
   background-image: linear-gradient(
     110deg,
-    #8c6a2f 0%, #c9a227 22%, #f2dfa7 42%, #c9a227 58%, #c8b88f 85%, #9db36a 100%);
+    #8c6a2f 0%, #C2A05E 22%, #f2dfa7 42%, #C2A05E 58%, #c8b88f 85%, #9db36a 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -194,8 +194,8 @@
   z-index: 10000;
   transform-origin: left center;
   transform: scaleX(0);
-  background: linear-gradient(90deg, var(--gold, #c9a227), var(--gold-pale, #e8e0d0), var(--gold, #c9a227));
-  box-shadow: 0 0 8px rgba(201, 162, 39, 0.5);
+  background: linear-gradient(90deg, var(--gold, #C2A05E), var(--gold-pale, #e8e0d0), var(--gold, #C2A05E));
+  box-shadow: 0 0 8px rgba(194, 160, 94, 0.5);
   pointer-events: none;
   will-change: transform;
 }
@@ -286,7 +286,7 @@ html.ap-lite-hero .hero__sky-dock .live-sky-dock-panel.ap-rise-in {
   bottom: 0;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold, #c9a227), transparent);
+  background: linear-gradient(90deg, transparent, var(--gold, #C2A05E), transparent);
   animation: ap-tab-glow var(--ap-motion-base) var(--ap-ease-out) forwards;
   transform-origin: center;
   pointer-events: none;
@@ -396,7 +396,7 @@ html.ap-lite-hero .hero__sky-dock .live-sky-dock-panel.ap-rise-in {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(201, 162, 39, 0.08),
+    rgba(194, 160, 94, 0.08),
     transparent);
   transform: translate3d(-100%, 0, 0);
   opacity: 0;

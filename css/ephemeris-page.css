@@ -1,6 +1,6 @@
 /* Ephemeris / Instrument page — extracted from ephemeris.html */
 /* ── Deep Time aesthetic — darker, slower ── */
-    body { background: var(--ap-void-deep, #050406); }
+    body { background: var(--ap-void-deep, #0C1016); }
 
     /* ── Instrument shell ── */
     .instrument-wrap {
@@ -65,7 +65,7 @@
     /* ── Glow button ── */
     .glow-btn {
       background: transparent;
-      border: 1px solid rgba(201, 162, 39,0.4);
+      border: 1px solid rgba(194, 160, 94,0.4);
       color: var(--gold-pale);
       padding: 0.65rem 1.4rem;
       border-radius: 999px;
@@ -75,16 +75,16 @@
       font-family: var(--font-sans, 'Inter', sans-serif);
       cursor: pointer;
       transition: all 0.4s ease;
-      box-shadow: 0 0 0 rgba(201, 162, 39,0);
+      box-shadow: 0 0 0 rgba(194, 160, 94,0);
     }
     .glow-btn:hover {
-      box-shadow: 0 0 24px rgba(201, 162, 39,0.22), inset 0 0 12px rgba(201, 162, 39,0.07);
+      box-shadow: 0 0 24px rgba(194, 160, 94,0.22), inset 0 0 12px rgba(194, 160, 94,0.07);
       border-color: var(--gold);
-      background: rgba(201, 162, 39,0.05);
+      background: rgba(194, 160, 94,0.05);
     }
     .glow-btn:disabled { opacity: 0.4; cursor: wait; }
     .glow-btn.active {
-      background: rgba(201, 162, 39,0.12);
+      background: rgba(194, 160, 94,0.12);
       border-color: var(--gold);
     }
 
@@ -142,7 +142,7 @@
       gap: 1rem;
       align-items: center;
       padding: 1rem 1.25rem;
-      border: 1px solid rgba(201, 162, 39,0.16);
+      border: 1px solid rgba(194, 160, 94,0.16);
       border-radius: var(--radius-xl);
       margin-bottom: 0.75rem;
       background: rgba(20, 16, 10,0.4);
@@ -150,7 +150,7 @@
       -webkit-backdrop-filter: blur(10px);
       transition: border-color 0.2s;
     }
-    .echo-window:hover { border-color: rgba(201, 162, 39,0.3); }
+    .echo-window:hover { border-color: rgba(194, 160, 94,0.3); }
     .resonance-meter {
       height: 3px; width: 110px;
       background: rgba(168, 158, 136,0.12);
@@ -171,7 +171,7 @@
       padding: 2rem;
     }
     .glass-card--gold-rim {
-      border-color: rgba(201, 162, 39,0.22);
+      border-color: rgba(194, 160, 94,0.22);
     }
 
     /* ── 3D canvas heroes framed as instruments under glass ──
@@ -181,7 +181,7 @@
     #sec-lightcone .glass-card,
     #sec-timetravel .glass-card {
       position: relative;
-      border-color: var(--ip-border-rim, rgba(201, 162, 39, 0.24));
+      border-color: var(--ip-border-rim, rgba(194, 160, 94, 0.24));
       box-shadow:
         inset 0 1px 0 rgba(232, 224, 208, 0.05),
         inset 0 -1px 0 rgba(0, 0, 0, 0.35),
@@ -209,14 +209,14 @@
       pointer-events: none;
       border-radius: calc(var(--radius-2xl, 24px) - 8px);
       background:
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
       opacity: 0.75;
     }
     /* Keep the canvas above the frame pseudo-elements (they sit at z-index 0). */
@@ -261,7 +261,7 @@
       transition: border-color 0.2s, background 0.2s;
     }
     .sig-cell:hover {
-      border-color: rgba(201, 162, 39,0.25);
+      border-color: rgba(194, 160, 94,0.25);
       background: rgba(20, 16, 10,0.85);
     }
     .sig-cell__glyph { font-size: 1.5rem; display: block; margin: 0 auto 0.35rem; color: var(--gold-pale); line-height: 0; }
@@ -283,7 +283,7 @@
 
     /* ── Daimon card ── */
     .daimon-card {
-      border: 1px solid rgba(201, 162, 39,0.28);
+      border: 1px solid rgba(194, 160, 94,0.28);
       border-radius: var(--radius-xl);
       padding: 2rem;
       background:
@@ -313,7 +313,7 @@
       text-align: center;
       color: var(--gold-pale);
       line-height: 1;
-      filter: drop-shadow(0 0 18px rgba(201, 162, 39,0.5));
+      filter: drop-shadow(0 0 18px rgba(194, 160, 94,0.5));
     }
     .provenance {
       font-size: 0.6rem;
@@ -347,7 +347,7 @@
       justify-content: center;
       width: 28px;
       height: 28px;
-      border: 1px solid rgba(201, 162, 39,0.35);
+      border: 1px solid rgba(194, 160, 94,0.35);
       border-radius: 50%;
       font-size: 0.65rem;
       font-family: var(--font-display, 'Cinzel', serif);
@@ -371,7 +371,7 @@
       inset: 0;
       background:
         radial-gradient(ellipse 55% 40% at 30% 0%, rgba(92, 74, 110,0.16) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(201, 162, 39,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(194, 160, 94,0.09) 0%, transparent 60%),
         radial-gradient(ellipse 50% 30% at 50% 100%, rgba(92, 74, 110,0.08) 0%, transparent 65%);
       pointer-events: none;
     }
@@ -382,11 +382,11 @@
       right: 8%;
       width: 140px;
       height: 140px;
-      border: 1px solid rgba(201, 162, 39, 0.12);
+      border: 1px solid rgba(194, 160, 94, 0.12);
       border-radius: 50%;
       box-shadow:
-        inset 0 0 0 18px rgba(201, 162, 39, 0.04),
-        0 0 40px rgba(201, 162, 39, 0.06);
+        inset 0 0 0 18px rgba(194, 160, 94, 0.04),
+        0 0 40px rgba(194, 160, 94, 0.06);
       pointer-events: none;
       opacity: 0.7;
     }
@@ -459,15 +459,15 @@
     .cw-unavail { margin: 0; font-size: 0.8rem; color: var(--crimson-light); text-align: center; }
     .cw-info {
       width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%;
-      border: 1px solid rgba(201,162,39,0.4); background: transparent; color: var(--gold);
+      border: 1px solid rgba(194, 160, 94,0.4); background: transparent; color: var(--gold);
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.72rem;
       line-height: 1; cursor: pointer; transition: background 0.2s, border-color 0.2s;
     }
-    .cw-info:hover, .cw-info[aria-expanded="true"] { background: rgba(201,162,39,0.15); border-color: var(--gold); }
+    .cw-info:hover, .cw-info[aria-expanded="true"] { background: rgba(194, 160, 94,0.15); border-color: var(--gold); }
     .cw-gauge { width: 150px; height: 86px; overflow: visible; }
     .cw-gauge__band { fill: none; stroke-width: 9; stroke-linecap: butt; opacity: 0.85; }
     .cw-gauge__band--quiet     { stroke: #3fae7a; }
-    .cw-gauge__band--unsettled { stroke: var(--gold, #c9a227); }
+    .cw-gauge__band--unsettled { stroke: var(--gold, #C2A05E); }
     .cw-gauge__band--storm     { stroke: var(--crimson-light, #f87171); }
     .cw-gauge__needle { stroke: var(--white); stroke-width: 2; stroke-linecap: round; }
     .cw-gauge__hub    { fill: var(--gold-pale, var(--gold)); }
@@ -477,7 +477,7 @@
     .cw-spark-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
     .cw-spark { width: 96px; height: 26px; display: block; }
     .cw-spark__line { stroke: var(--lapis-light, #c8b88f); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
-    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #c9a227); }
+    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #C2A05E); }
     .cw-spark__zero { stroke: var(--crimson-light, #f87171); stroke-width: 0.6; stroke-dasharray: 2 2; opacity: 0.5; }
     .cw-spark--empty { font-size: 0.62rem; color: var(--silver-dim); }
     .cw-spark-cap { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver-dim); }
@@ -492,13 +492,13 @@
     }
     .cw-flare-badge--A, .cw-flare-badge--B { color: #3fae7a; }
     .cw-flare-badge--C { color: var(--lapis-light, #c8b88f); }
-    .cw-flare-badge--M { color: var(--gold, #c9a227); }
+    .cw-flare-badge--M { color: var(--gold, #C2A05E); }
     .cw-flare-badge--X { color: var(--crimson-light, #f87171); }
     .cw-chip {
       display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
       font-size: 1.4rem; color: var(--gold-pale, var(--gold)); padding: 0.15rem 0.7rem;
-      border-radius: 999px; background: rgba(201,162,39,0.1);
-      border: 1px solid rgba(201,162,39,0.28); font-variant-numeric: tabular-nums;
+      border-radius: 999px; background: rgba(194, 160, 94,0.1);
+      border: 1px solid rgba(194, 160, 94,0.28); font-variant-numeric: tabular-nums;
     }
     .cw-chip small { font-size: 0.6rem; color: var(--silver-dim); letter-spacing: 0.1em; }
     .cw-rows { margin: 0.5rem 0 1rem; }
@@ -513,7 +513,7 @@
     .cw-aurora__src { font-size: 0.6rem; }
     .cw-pop {
       position: absolute; z-index: 40; max-width: 300px; padding: 1rem 1.1rem 0.9rem;
-      background: var(--void, #0d0a07); border: 1px solid rgba(201,162,39,0.35);
+      background: var(--void, #0d0a07); border: 1px solid rgba(194, 160, 94,0.35);
       border-radius: var(--radius-xl, 20px); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
       -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
     }

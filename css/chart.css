@@ -3,10 +3,10 @@
 .page-chart .chart-wheel-card,
 .page-chart .tabs-card {
   background: var(--surface-raised, rgba(19, 16, 12, 0.72));
-  border: 1px solid var(--hairline, rgba(201, 162, 39, 0.14));
+  border: 1px solid var(--hairline, rgba(194, 160, 94, 0.14));
   border-top-color: rgba(232, 224, 208, 0.14);
   box-shadow: var(--shadow-raised, 0 16px 40px rgba(0, 0, 0, 0.4)),
-    0 0 48px rgba(201, 162, 39, 0.05);
+    0 0 48px rgba(194, 160, 94, 0.05);
 }
 
 .page-chart .chart-results-grid .natal-wheel-container {
@@ -18,7 +18,7 @@
   /* Reserve wheel footprint before SVG inject — keeps chart CLS under 0.05 */
   min-height: min(78vw, 720px);
   box-shadow:
-    0 0 48px rgba(201, 162, 39, 0.18),
+    0 0 48px rgba(194, 160, 94, 0.18),
     0 0 120px rgba(92, 74, 110, 0.2),
     inset 0 0 60px rgba(5, 4, 6, 0.45);
 }
@@ -28,9 +28,9 @@
   position: absolute;
   inset: -3px;
   border-radius: 50%;
-  border: 1px solid rgba(201, 162, 39, 0.28);
+  border: 1px solid rgba(194, 160, 94, 0.28);
   pointer-events: none;
-  box-shadow: 0 0 24px rgba(201, 162, 39, 0.12);
+  box-shadow: 0 0 24px rgba(194, 160, 94, 0.12);
 }
 
 .page-chart .natal-wheel-container::after {
@@ -38,7 +38,7 @@
   position: absolute;
   inset: 8%;
   border-radius: 50%;
-  border: 1px dashed rgba(201, 162, 39, 0.14);
+  border: 1px dashed rgba(194, 160, 94, 0.14);
   pointer-events: none;
   opacity: 0.7;
 }
@@ -82,8 +82,8 @@
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, rgba(201, 162, 39, 0.1) 0%, rgba(13, 10, 7, 0.55) 52%, transparent 72%);
-  border: 1px solid rgba(201, 162, 39, 0.14);
+    radial-gradient(circle at 50% 50%, rgba(194, 160, 94, 0.1) 0%, rgba(13, 10, 7, 0.55) 52%, transparent 72%);
+  border: 1px solid rgba(194, 160, 94, 0.14);
   box-shadow: inset 0 0 40px rgba(92, 74, 110, 0.2);
   animation: ap-wheel-skeleton-pulse 1.8s ease-in-out infinite;
 }
@@ -115,19 +115,19 @@
 /* Celestial seals on wheel — engraved instrument glow */
 .ap-chart-render .ap-chart-seal image {
   filter:
-    drop-shadow(0 0 2px rgba(201, 162, 39, 0.55))
+    drop-shadow(0 0 2px rgba(194, 160, 94, 0.55))
     drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
 }
 
 .ap-chart-render .ap-chart-seal:hover image {
   filter:
-    drop-shadow(0 0 5px rgba(201, 162, 39, 0.75))
+    drop-shadow(0 0 5px rgba(194, 160, 94, 0.75))
     drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
 .page-chart .natal-wheel-container {
   background:
-    radial-gradient(circle at 50% 42%, rgba(201, 162, 39, 0.06) 0%, transparent 48%),
+    radial-gradient(circle at 50% 42%, rgba(194, 160, 94, 0.06) 0%, transparent 48%),
     radial-gradient(circle at 50% 50%, rgba(13, 10, 7, 0.35) 0%, transparent 72%);
 }
 
@@ -196,7 +196,7 @@
   background: var(--ap-ip-surface-deep, rgba(14, 11, 8, 0.96));
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
-  border: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  border: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
   border-radius: var(--radius-md, 9px);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
   font-family: var(--font-body, system-ui, sans-serif);
@@ -273,20 +273,20 @@
   font-size: var(--text-data, 0.82rem);
   background: rgba(13, 10, 7, 0.85);
   color: var(--ap-text-secondary, #a89e88);
-  border: 1px solid rgba(201, 162, 39, 0.18);
+  border: 1px solid rgba(194, 160, 94, 0.18);
   border-radius: var(--radius-md, 8px);
   overflow: hidden;
 }
 
 .ap-chart-table thead tr {
   background: rgba(19, 16, 12, 0.95);
-  border-bottom: 2px solid rgba(201, 162, 39, 0.35);
+  border-bottom: 2px solid rgba(194, 160, 94, 0.35);
 }
 
 .ap-chart-table th {
   padding: 0.5rem 0.65rem;
   text-align: left;
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
   font-weight: 700;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
@@ -316,18 +316,18 @@
   bottom: 12%;
   width: 2.5px;
   border-radius: 2px;
-  background: var(--row-elem, var(--ap-gold-a40, rgba(201, 162, 39, 0.4)));
+  background: var(--row-elem, var(--ap-gold-a40, rgba(194, 160, 94, 0.4)));
   opacity: 0.7;
 }
 
 .ap-chart-table tbody tr:hover {
-  background: rgba(201, 162, 39, 0.04);
+  background: rgba(194, 160, 94, 0.04);
 }
 
 /* Linked highlight — when the matching wheel glyph is hovered/focused. */
 .ap-chart-table tbody tr.is-linked-active {
-  background: var(--ap-gold-a12, rgba(201, 162, 39, 0.12));
-  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(201, 162, 39, 0.28));
+  background: var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
+  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(194, 160, 94, 0.28));
 }
 .ap-chart-table tbody tr.is-linked-active td:first-child::before {
   opacity: 1;
@@ -355,7 +355,7 @@
 }
 
 .ap-chart-table .ap-pt-house {
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
   font-weight: 600;
 }
 
@@ -399,7 +399,7 @@
 }
 
 .ap-chart-legend__title {
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
   font-weight: 700;
   margin-bottom: 0.35rem;
   letter-spacing: 0.1em;
@@ -450,7 +450,7 @@
 }
 
 .ap-chart-title__main {
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -493,8 +493,8 @@
   padding: var(--space-3) var(--space-4);
   background: rgba(19, 16, 12, 0.55);
   border-radius: var(--radius-md, 8px);
-  border: 1px solid rgba(201, 162, 39, 0.12);
-  border-left: 3px solid var(--gold, #c9a227);
+  border: 1px solid rgba(194, 160, 94, 0.12);
+  border-left: 3px solid var(--gold, #C2A05E);
   box-shadow: var(--shadow-raised, 0 4px 16px rgba(0, 0, 0, 0.25));
 }
 
@@ -514,11 +514,11 @@
 
 .pattern-card__glyph {
   font-size: 1.2em;
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
 }
 
 .pattern-card__name {
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
 }
 
 .pattern-card__name--star {
@@ -556,7 +556,7 @@
 .page-chart .ap-reading-card.ap-elem-earth,
 .page-chart .ap-reading-card.ap-elem-air,
 .page-chart .ap-reading-card.ap-elem-water {
-  border-left: 3px solid var(--row-elem, var(--ap-gold-a40, rgba(201, 162, 39, 0.4)));
+  border-left: 3px solid var(--row-elem, var(--ap-gold-a40, rgba(194, 160, 94, 0.4)));
 }
 
 /* The placement card's roman/glyph icon picks up the element accent. */
@@ -582,12 +582,12 @@
       color-mix(in srgb, var(--row-elem, var(--ap-gold-core)) 14%, transparent) 0%,
       transparent 60%),
     var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
-  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(201, 162, 39, 0.28));
+  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(194, 160, 94, 0.28));
 }
 
 /* When a wheel glyph/line is the trigger, the matching card highlights too. */
 .page-chart .ap-reading-card.is-linked-active {
-  outline: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  outline: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
   outline-offset: -1px;
 }
 

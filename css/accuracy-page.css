@@ -1,7 +1,7 @@
 /* accuracy.html — extracted inline styles */
 /* ── Accuracy page premium overrides (scoped, mirrors transits.html) ── */
     :root {
-      --acc-gold: var(--gold, #C9A227);
+      --acc-gold: var(--gold, #C2A05E);
       --acc-gold-light: var(--gold-light, #EFE3C0);
       --acc-surface: rgba(19, 16, 12, 0.55);
       --acc-border: rgba(232, 224, 208, 0.10);
@@ -84,7 +84,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, transparent, rgba(201, 162, 39, 0.04), transparent);
+      background: linear-gradient(180deg, transparent, rgba(194, 160, 94, 0.04), transparent);
       pointer-events: none;
     }
     .acc-section__header { text-align: center; max-width: 680px; margin: 0 auto 2.5rem; }
@@ -131,7 +131,7 @@
       justify-content: center;
       border-radius: 12px;
       border: 1px solid var(--acc-border);
-      background: rgba(201, 162, 39, 0.08);
+      background: rgba(194, 160, 94, 0.08);
       color: var(--acc-gold);
       font-size: 1.4rem;
       line-height: 1;
@@ -154,7 +154,7 @@
       font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
       font-size: 0.84em;
       color: var(--gold-light, #EFE3C0);
-      background: rgba(201, 162, 39, 0.08);
+      background: rgba(194, 160, 94, 0.08);
       padding: 0.05em 0.4em;
       border-radius: 5px;
     }
@@ -183,7 +183,7 @@
       border-radius: 50%;
       border: 1px solid var(--acc-border);
       color: var(--acc-gold);
-      background: rgba(201, 162, 39, 0.08);
+      background: rgba(194, 160, 94, 0.08);
       font-size: 0.95rem;
     }
     .acc-row__body h3 {

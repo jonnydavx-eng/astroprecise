@@ -56,7 +56,7 @@ body:has(.rs-hero) .eng-i {
 
 /* ── Rising-sign page premium overrides (scoped, mirrors accuracy.html) ── */
     :root {
-      --rs-gold: var(--gold, #C9A227);
+      --rs-gold: var(--gold, #C2A05E);
       --rs-gold-light: var(--gold-light, #EFE3C0);
       --rs-surface: rgba(15, 18, 50, 0.42);
       --rs-border: rgba(232, 224, 208, 0.10);
@@ -127,8 +127,8 @@ body:has(.rs-hero) .eng-i {
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     .rs-field input:focus {
-      outline: none; border-color: rgba(201, 162, 39, 0.5);
-      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
+      outline: none; border-color: rgba(194, 160, 94, 0.5);
+      box-shadow: 0 0 0 3px rgba(194, 160, 94, 0.12);
     }
     .rs-field__hint { font-size: 0.72rem; color: var(--silver-dim, #6E6658); margin-top: 0.4rem; line-height: 1.5; }
     .rs-autocomplete {
@@ -141,13 +141,13 @@ body:has(.rs-hero) .eng-i {
       padding: 0.65rem 0.95rem; cursor: pointer; font-size: 0.9rem;
       color: var(--white, #E8E0D0); transition: background 0.15s;
     }
-    .rs-autocomplete .autocomplete-option:hover { background: rgba(201, 162, 39, 0.1); }
+    .rs-autocomplete .autocomplete-option:hover { background: rgba(194, 160, 94, 0.1); }
     .rs-autocomplete .city-country { color: var(--silver-dim, #6E6658); font-size: 0.78rem; }
     .rs-finder__btn-row { text-align: center; margin-top: 1.6rem; }
     .rs-result {
       margin-top: 1.75rem; padding: 1.75rem 1.5rem; text-align: center;
-      border-radius: 16px; border: 1px solid rgba(201, 162, 39, 0.3);
-      background: rgba(201, 162, 39, 0.07); display: none;
+      border-radius: 16px; border: 1px solid rgba(194, 160, 94, 0.3);
+      background: rgba(194, 160, 94, 0.07); display: none;
     }
     .rs-result.is-shown { display: block; }
     .rs-result__glyph { font-size: 2.6rem; color: var(--rs-gold); line-height: 1; display: block; margin-bottom: 0.5rem; }

@@ -1,5 +1,5 @@
 /* links.html — extracted inline styles */
-body { background: #050406; }
+body { background: #0C1016; }
     .lib {
       max-width: 480px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem;
       text-align: center; position: relative; z-index: 1;
@@ -7,14 +7,14 @@ body { background: #050406; }
     .lib__banner {
       max-width: 100%; margin: 0 auto 1.25rem;
       border-radius: 16px; overflow: hidden;
-      border: 1px solid rgba(201,162,39,0.28);
-      box-shadow: 0 14px 44px rgba(0,0,0,0.5), 0 0 28px rgba(201,162,39,0.08);
+      border: 1px solid rgba(194, 160, 94,0.28);
+      box-shadow: 0 14px 44px rgba(0,0,0,0.5), 0 0 28px rgba(194, 160, 94,0.08);
     }
     .lib__banner img {
       width: 100%; display: block;
       filter: sepia(0.15) brightness(0.9);
     }
-    .lib__seal { font-size: 2.4rem; color: var(--gold, #C9A227); text-shadow: 0 0 40px rgba(201,162,39,0.5); }
+    .lib__seal { font-size: 2.4rem; color: var(--gold, #C2A05E); text-shadow: 0 0 40px rgba(194, 160, 94,0.5); }
     .lib__title {
       font-family: 'Cinzel', serif; font-size: 1.9rem; letter-spacing: 0.14em;
       margin: 0.3rem 0 0.2rem;
@@ -25,17 +25,17 @@ body { background: #050406; }
     .lib__group-label { font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--silver-dim, #8891AA); margin: 1.6rem 0 0.6rem; }
     .lib-link {
       display: block; text-decoration: none; text-align: center;
-      background: rgba(20, 16, 10,0.55); border: 1px solid rgba(201,162,39,0.28);
+      background: rgba(20, 16, 10,0.55); border: 1px solid rgba(194, 160, 94,0.28);
       border-radius: 16px; padding: 0.95rem 1rem; margin: 0.6rem 0;
       -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
       transition: border-color 0.2s, transform 0.2s, background 0.2s;
     }
-    .lib-link:hover { border-color: var(--gold, #C9A227); transform: translateY(-1px); background: rgba(201,162,39,0.07); }
+    .lib-link:hover { border-color: var(--gold, #C2A05E); transform: translateY(-1px); background: rgba(194, 160, 94,0.07); }
     .lib-link__label { display: block; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--white, #F8F4EE); letter-spacing: 0.02em; }
     .lib-link__sub { display: block; font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; color: var(--silver-dim, #8891AA); margin-top: 2px; }
-    .lib-link--primary { border-color: rgba(201,162,39,0.55); background: rgba(201,162,39,0.10); }
+    .lib-link--primary { border-color: rgba(194, 160, 94,0.55); background: rgba(194, 160, 94,0.10); }
     .lib__social { margin-top: 1.6rem; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: center; }
-    .lib-social { font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold, #C9A227); text-decoration: none; }
+    .lib-social { font-family: 'Inter', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold, #C2A05E); text-decoration: none; }
     .lib-social:hover { color: var(--gold-light, #E8C872); }
     .lib__foot { margin-top: 2rem; font-size: 0.62rem; letter-spacing: 0.08em; color: var(--silver-dim, #8891AA); line-height: 1.7; }
-    .lib__foot a { color: var(--gold, #C9A227); text-decoration: none; }
+    .lib__foot a { color: var(--gold, #C2A05E); text-decoration: none; }

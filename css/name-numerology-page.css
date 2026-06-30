@@ -56,7 +56,7 @@ body:has(.nn-hero) .eng-i {
 }
 
 :root {
-      --nn-gold: var(--gold, #c9a227);
+      --nn-gold: var(--gold, #C2A05E);
       --nn-gold-pale: #e8c96a;
       --nn-white: #f0e8d8;
       --nn-silver: #A89E88;
@@ -128,15 +128,15 @@ body:has(.nn-hero) .eng-i {
       letter-spacing: 0.06em;
       font-weight: 600;
       color: #0d0a07;
-      background: linear-gradient(135deg, #C9A227 0%, #EFE3C0 100%);
+      background: linear-gradient(135deg, #C2A05E 0%, #EFE3C0 100%);
       border: none;
       border-radius: 999px;
       padding: 0.85rem 2.2rem;
       cursor: pointer;
       transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 0 18px rgba(201, 162, 39,0.22);
+      box-shadow: 0 0 18px rgba(194, 160, 94,0.22);
     }
-    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(201, 162, 39,0.45); }
+    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(194, 160, 94,0.45); }
     .nn-form-hint {
       font-size: 0.68rem;
       color: var(--nn-silver-dim);

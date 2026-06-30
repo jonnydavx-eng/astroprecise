@@ -1,12 +1,12 @@
 /* Below-fold chrome for lite index — affiliate + footer social (non-blocking load) */
 
 .ap-affiliate-ad__card { text-decoration: none; color: #E8E0D0; }
-.ap-affiliate-ad__tag { color: #C9A227; }
+.ap-affiliate-ad__tag { color: #C2A05E; }
 .ap-affiliate-ad__title { color: #E8E0D0; }
 .ap-affiliate-ad__blurb { color: #9A9084; }
-.ap-affiliate-ad__meta { color: #C9A227; }
+.ap-affiliate-ad__meta { color: #C2A05E; }
 .ap-affiliate-ad__fine { color: #9A9084; }
-.ap-affiliate-ad__fine a { color: #C9A227; text-decoration: underline; text-underline-offset: 2px; }
+.ap-affiliate-ad__fine a { color: #C2A05E; text-decoration: underline; text-underline-offset: 2px; }
 
 .ap-social-row { text-align: center; padding: var(--space-4, 1rem) 0; }
 .ap-social-row__icons { display: flex; flex-wrap: wrap; gap: var(--space-2, 0.5rem); justify-content: center; align-items: center; }

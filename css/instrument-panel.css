@@ -1,12 +1,12 @@
 /* AstroPrecise — shared instrument-panel tokens (ephemeris, transits, moon, tonight) */
 
 :root {
-  --ip-void: var(--ap-ip-void, #050406);
+  --ip-void: var(--ap-ip-void, #0C1016);
   --ip-surface: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
   --ip-surface-deep: var(--ap-ip-surface-deep, rgba(14, 11, 8, 0.72));
-  --ip-border: var(--ap-ip-border, rgba(201, 162, 39, 0.12));
-  --ip-border-rim: var(--ap-ip-border-rim, rgba(201, 162, 39, 0.24));
-  --ip-gold: var(--ap-ip-gold, #C9A227);
+  --ip-border: var(--ap-ip-border, rgba(194, 160, 94, 0.12));
+  --ip-border-rim: var(--ap-ip-border-rim, rgba(194, 160, 94, 0.24));
+  --ip-gold: var(--ap-ip-gold, #C2A05E);
   --ip-gold-pale: var(--ap-ip-gold-pale, #E8E0D0);
   --ip-silver: var(--ap-ip-silver, #A89E88);
   --ip-silver-dim: var(--ap-ip-silver-dim, #9A9084);
@@ -17,10 +17,10 @@
   /* Hollywood 2026 cinematic layer — consumed by ap-cinematic-2026.css */
   --ip-bracket-size: 22px;
   --ip-bracket-inset: 10px;
-  --ip-bracket-color: rgba(201, 162, 39, 0.42);
+  --ip-bracket-color: rgba(194, 160, 94, 0.42);
   --ip-cine-grain-opacity: 0.038;
   --ip-cine-vignette: rgba(5, 4, 6, 0.55);
-  --ip-cine-flare-gold: rgba(201, 162, 39, 0.14);
+  --ip-cine-flare-gold: rgba(194, 160, 94, 0.14);
   --ip-cine-flare-pale: rgba(245, 240, 232, 0.09);
 }
 
@@ -102,8 +102,8 @@
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   color: var(--ip-gold-pale);
-  background: var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
-  border: 1px solid var(--ap-gold-a22, rgba(201, 162, 39, 0.22));
+  background: var(--ap-gold-a08, rgba(194, 160, 94, 0.08));
+  border: 1px solid var(--ap-gold-a22, rgba(194, 160, 94, 0.22));
   border-radius: 999px;
   padding: 0.45rem 1.1rem;
 }
@@ -169,7 +169,7 @@
   background: linear-gradient(
     90deg,
     rgba(168, 158, 136, 0.08) 0%,
-    rgba(201, 162, 39, 0.18) 45%,
+    rgba(194, 160, 94, 0.18) 45%,
     rgba(168, 158, 136, 0.08) 100%
   );
   background-size: 200% 100%;
@@ -203,7 +203,7 @@
   width: 120px;
   height: 68px;
   border-radius: 120px 120px 0 0;
-  border: 2px solid rgba(201, 162, 39, 0.12);
+  border: 2px solid rgba(194, 160, 94, 0.12);
   border-bottom: none;
   opacity: 0.55;
 }

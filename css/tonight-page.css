@@ -83,7 +83,7 @@ body:has(.tn-hero) .footer-zodiac-strip [data-celestial-seal] {
 
 /* ── Tonight's Sky — scoped page styles (glass / engraved cosmic) ── */
     :root {
-      --tn-gold: var(--gold, #c9a227);
+      --tn-gold: var(--gold, #C2A05E);
       --tn-gold-light: var(--gold-light, #EFE3C0);
       --tn-surface: rgba(20, 16, 10, 0.62);
       --tn-border: rgba(168, 158, 136, 0.14);

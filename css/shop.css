@@ -40,8 +40,8 @@
   height: auto;
   margin: var(--space-8) auto var(--space-6);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(201, 162, 39, 0.22);
-  box-shadow: var(--shadow-raised), 0 0 48px rgba(201, 162, 39, 0.06);
+  border: 1px solid rgba(194, 160, 94, 0.22);
+  box-shadow: var(--shadow-raised), 0 0 48px rgba(194, 160, 94, 0.06);
   object-fit: cover;
   aspect-ratio: 8 / 3;
 }
@@ -176,9 +176,9 @@
 .shop-cat-btn:hover, .shop-cat-btn.active,
 .shopc-chip:hover, .shopc-chip.active,
 .shop-curated-tab:hover, .shop-curated-tab.active {
-  border-color: rgba(201, 162, 39, 0.5);
+  border-color: rgba(194, 160, 94, 0.5);
   color: var(--gold-pale);
-  background: rgba(201, 162, 39, 0.08);
+  background: rgba(194, 160, 94, 0.08);
 }
 
 /* ── Section titles ── */
@@ -199,13 +199,13 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, rgba(201, 162, 39, 0.3), transparent);
+  background: linear-gradient(90deg, rgba(194, 160, 94, 0.3), transparent);
 }
 
 /* ── Affiliate disclosure ── */
 .disclosure-banner {
-  background: rgba(201, 162, 39, 0.06);
-  border: 1px solid rgba(201, 162, 39, 0.2);
+  background: rgba(194, 160, 94, 0.06);
+  border: 1px solid rgba(194, 160, 94, 0.2);
   border-radius: var(--radius-lg);
   padding: var(--space-4) var(--space-6);
   font-size: 0.7rem;
@@ -250,7 +250,7 @@
 }
 .shop-card:hover,
 .shopc-card:hover {
-  border-color: rgba(201, 162, 39, 0.35);
+  border-color: rgba(194, 160, 94, 0.35);
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(92, 74, 110, 0.15);
 }
@@ -263,7 +263,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(92, 74, 110, 0.18) 0%, rgba(201, 162, 39, 0.06) 100%);
+  background: linear-gradient(135deg, rgba(92, 74, 110, 0.18) 0%, rgba(194, 160, 94, 0.06) 100%);
 }
 .shop-card__img picture,
 .shop-card__img img,
@@ -295,8 +295,8 @@
 
 .shop-card--books .shop-card__img { --shop-tint: rgba(92, 74, 110, 0.15); }
 .shop-card--crystals .shop-card__img { --shop-tint: rgba(120, 80, 160, 0.12); }
-.shop-card--oracle .shop-card__img { --shop-tint: rgba(201, 162, 39, 0.1); }
-.shop-card--jewelry .shop-card__img { --shop-tint: rgba(201, 162, 39, 0.12); }
+.shop-card--oracle .shop-card__img { --shop-tint: rgba(194, 160, 94, 0.1); }
+.shop-card--jewelry .shop-card__img { --shop-tint: rgba(194, 160, 94, 0.12); }
 .shop-card--prints .shop-card__img { --shop-tint: rgba(110, 26, 38, 0.1); }
 
 .shop-card__body,
@@ -312,7 +312,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold);
-  border: 1px solid rgba(201, 162, 39, 0.3);
+  border: 1px solid rgba(194, 160, 94, 0.3);
   border-radius: 99px;
   padding: 2px 8px;
   margin-bottom: var(--space-3);
@@ -488,11 +488,11 @@
   flex-direction: column;
   transition: all var(--transition-base);
 }
-.shopc-featured__card:hover { border-color: rgba(201, 162, 39, 0.35); transform: translateY(-2px); }
+.shopc-featured__card:hover { border-color: rgba(194, 160, 94, 0.35); transform: translateY(-2px); }
 .shopc-featured__card--hero {
-  border-color: rgba(201, 162, 39, 0.45);
+  border-color: rgba(194, 160, 94, 0.45);
   box-shadow: 0 16px 40px rgba(92, 74, 110, 0.2);
-  background: linear-gradient(160deg, rgba(201, 162, 39, 0.07) 0%, var(--surface) 45%);
+  background: linear-gradient(160deg, rgba(194, 160, 94, 0.07) 0%, var(--surface) 45%);
 }
 .shopc-featured__visual {
   position: relative;
@@ -501,7 +501,7 @@
   min-height: 0;
   overflow: hidden;
   cursor: pointer;
-  background: linear-gradient(135deg, rgba(92, 74, 110, 0.2) 0%, rgba(201, 162, 39, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(92, 74, 110, 0.2) 0%, rgba(194, 160, 94, 0.08) 100%);
 }
 button.shopc-featured__visual,
 button.shopc-card__art {
@@ -547,7 +547,7 @@ button.ap-art-card {
   /* Outlined-gold pill — never a second filled badge alongside "Best value". */
   color: var(--ap-gold-bright, #D4B84A);
   background: rgba(5, 4, 6, 0.72);
-  border: 1px solid rgba(201, 162, 39, 0.55);
+  border: 1px solid rgba(194, 160, 94, 0.55);
   font-weight: 700;
   border-radius: 99px;
   padding: 3px 10px;
@@ -616,7 +616,7 @@ button.ap-art-card {
   list-style: none;
   margin-left: 0;
   margin-right: 0;
-  background: rgba(201, 162, 39, 0.04);
+  background: rgba(194, 160, 94, 0.04);
 }
 .shopc-trust__item {
   display: inline-flex;
@@ -649,9 +649,9 @@ button.ap-art-card {
 .shop-trending {
   margin-top: var(--space-8);
   padding: var(--space-5);
-  border: 1px solid rgba(201, 162, 39, 0.18);
+  border: 1px solid rgba(194, 160, 94, 0.18);
   border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, rgba(110, 26, 38, 0.08) 0%, rgba(201, 162, 39, 0.04) 100%);
+  background: linear-gradient(135deg, rgba(110, 26, 38, 0.08) 0%, rgba(194, 160, 94, 0.04) 100%);
 }
 .shop-trending__label {
   font-size: 0.62rem;
@@ -686,7 +686,7 @@ button.ap-art-card {
   transition: border-color var(--transition-fast), transform var(--transition-fast);
 }
 .shop-trending__card:hover {
-  border-color: rgba(201, 162, 39, 0.45);
+  border-color: rgba(194, 160, 94, 0.45);
   transform: translateY(-2px);
 }
 .shop-trending__card img {
@@ -744,7 +744,7 @@ button.ap-art-card {
   font-size: 3.6rem;
   color: var(--gold);
   line-height: 1;
-  filter: drop-shadow(0 0 14px rgba(201, 162, 39, 0.35));
+  filter: drop-shadow(0 0 14px rgba(194, 160, 94, 0.35));
 }
 .shopc-card__badge {
   position: absolute;
@@ -754,7 +754,7 @@ button.ap-art-card {
   font-size: 0.7rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--void, #050406);
+  color: var(--void, #0C1016);
   background: var(--gold);
   font-weight: 700;
   border-radius: 99px;
@@ -765,7 +765,7 @@ button.ap-art-card {
 .shopc-card__badge--quiet {
   color: var(--silver-dim);
   background: rgba(5, 4, 6, 0.62);
-  border: 1px solid var(--border, rgba(201, 162, 39, 0.18));
+  border: 1px solid var(--border, rgba(194, 160, 94, 0.18));
   font-weight: 600;
 }
 .shopc-card__personal {
@@ -906,7 +906,7 @@ button.ap-art-card {
   .ap-tool-card, .ap-tool-card--wide { grid-column: span 1; grid-template-columns: 1fr; }
 }
 .ap-tool-card:hover {
-  border-color: rgba(201, 162, 39, 0.4);
+  border-color: rgba(194, 160, 94, 0.4);
   transform: translateY(-2px);
   box-shadow: 0 14px 36px rgba(92, 74, 110, 0.18);
 }
@@ -914,7 +914,7 @@ button.ap-art-card {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, rgba(92, 74, 110, 0.24) 0%, rgba(201, 162, 39, 0.08) 100%);
+  background: linear-gradient(160deg, rgba(92, 74, 110, 0.24) 0%, rgba(194, 160, 94, 0.08) 100%);
   border-right: 1px solid var(--border);
   min-height: 128px;
   padding: var(--space-3);
@@ -925,7 +925,7 @@ button.ap-art-card {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 80%, rgba(201, 162, 39, 0.12), transparent 65%);
+  background: radial-gradient(circle at 50% 80%, rgba(194, 160, 94, 0.12), transparent 65%);
   pointer-events: none;
 }
 @media (max-width: 640px) {
@@ -945,7 +945,7 @@ button.ap-art-card {
 }
 .ap-tool-viz__num {
   font-family: var(--font-display);
-  color: rgba(201, 162, 39, 0.45);
+  color: rgba(194, 160, 94, 0.45);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
 }
@@ -983,7 +983,7 @@ button.ap-art-card {
   text-transform: uppercase;
   /* Outlined-gold pill — drops the off-brand emerald. */
   color: var(--ap-gold-bright, #D4B84A);
-  border: 1px solid rgba(201, 162, 39, 0.35);
+  border: 1px solid rgba(194, 160, 94, 0.35);
   border-radius: 99px;
   padding: 2px 8px;
   margin-bottom: var(--space-3);
@@ -1000,7 +1000,7 @@ button.ap-art-card {
 .shopc-personal {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: rgba(201, 162, 39, 0.05);
+  background: rgba(194, 160, 94, 0.05);
   padding: var(--space-4);
   margin-top: var(--space-4);
   text-align: left;
@@ -1067,7 +1067,7 @@ button.ap-art-card {
   font-size: 3rem;
   color: var(--gold);
   margin-bottom: var(--space-3);
-  filter: drop-shadow(0 0 14px rgba(201, 162, 39, 0.3));
+  filter: drop-shadow(0 0 14px rgba(194, 160, 94, 0.3));
 }
 .shopc-qv__kicker {
   font-size: 0.55rem;
@@ -1105,7 +1105,7 @@ button.ap-art-card {
   right: var(--space-6);
   z-index: var(--z-nav, 100);
   background: var(--gold);
-  color: var(--void, #050406);
+  color: var(--void, #0C1016);
   border: none;
   cursor: pointer;
   width: 54px;
@@ -1356,12 +1356,12 @@ button.ap-art-card {
 
 /* ── Free wallpaper lead magnet (deferred polish) ── */
 .shop-wallpaper-lead__panel:hover {
-  border-color: rgba(201, 162, 39, 0.5);
+  border-color: rgba(194, 160, 94, 0.5);
 }
 .shop-wallpaper-lead__input:focus {
-  outline: 2px solid rgba(201, 162, 39, 0.45);
+  outline: 2px solid rgba(194, 160, 94, 0.45);
   outline-offset: 2px;
-  border-color: rgba(201, 162, 39, 0.5);
+  border-color: rgba(194, 160, 94, 0.5);
 }
 .shop-wallpaper-lead__submit .eng-i { width: 14px; height: 14px; margin-right: 4px; }
 .shop-wallpaper-lead__saved .eng-i { width: 12px; height: 12px; margin-right: 4px; color: var(--gold); }
@@ -1495,7 +1495,7 @@ button.ap-art-card {
   [data-add-cart].is-added,
   .shopc-featured__cart.is-added,
   .shopc-card__addcart.is-added {
-    color: var(--void, #050406);
+    color: var(--void, #0C1016);
     border-color: var(--gold);
     background: var(--gold);
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
@@ -1512,7 +1512,7 @@ button.ap-art-card {
 [data-add-cart].is-added,
 .shopc-featured__cart.is-added,
 .shopc-card__addcart.is-added {
-  color: var(--void, #050406);
+  color: var(--void, #0C1016);
   background: var(--gold);
   border-color: var(--gold);
 }
@@ -1621,7 +1621,7 @@ button.ap-art-card {
   aspect-ratio: 4 / 3;
   height: auto;            /* let aspect-ratio drive height → no CLS */
   border-radius: var(--radius-lg, 14px);
-  border: 1px solid var(--ap-gold-a16, rgba(201, 162, 39, 0.16));
+  border: 1px solid var(--ap-gold-a16, rgba(194, 160, 94, 0.16));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     inset 0 -1px 0 rgba(0, 0, 0, 0.32);
@@ -1648,8 +1648,8 @@ button.ap-art-card {
   left: var(--ip-bracket-inset, 10px);
   width: var(--ip-bracket-size, 22px);
   height: var(--ip-bracket-size, 22px);
-  border-top: 1.5px solid var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
-  border-left: 1.5px solid var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
+  border-top: 1.5px solid var(--ip-bracket-color, rgba(194, 160, 94, 0.42));
+  border-left: 1.5px solid var(--ip-bracket-color, rgba(194, 160, 94, 0.42));
   pointer-events: none;
   z-index: 2;
 }
@@ -1660,7 +1660,7 @@ button.ap-art-card {
 /* Hover: lift + warm the rim (transform/opacity only). */
 .page-shop .shopc-card:hover .shopc-card__art,
 .page-shop .shopc-featured__card:hover .shopc-featured__visual {
-  border-color: var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
+  border-color: var(--ap-gold-a40, rgba(194, 160, 94, 0.40));
 }
 
 /* ── Art-style + tool cards: engraved-plate, larger seals, selected state ──
@@ -1675,21 +1675,21 @@ button.ap-art-card {
   height: 116px;
   border-radius: 14px;
   box-shadow:
-    inset 0 0 0 1px var(--ap-gold-a22, rgba(201, 162, 39, 0.22)),
+    inset 0 0 0 1px var(--ap-gold-a22, rgba(194, 160, 94, 0.22)),
     0 8px 20px rgba(0, 0, 0, 0.28);
 }
 .page-shop .ap-art-card__swatches span {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 .page-shop .ap-art-card:hover {
-  border-color: var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
-  box-shadow: 0 0 0 1px var(--ap-gold-a16, rgba(201, 162, 39, 0.16)),
-              0 0 24px var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
+  border-color: var(--ap-gold-a40, rgba(194, 160, 94, 0.40));
+  box-shadow: 0 0 0 1px var(--ap-gold-a16, rgba(194, 160, 94, 0.16)),
+              0 0 24px var(--ap-gold-a08, rgba(194, 160, 94, 0.08));
 }
 .page-shop .ap-art-card--selected {
-  border-color: var(--ap-gold-a55, rgba(201, 162, 39, 0.55));
-  box-shadow: 0 0 0 1px var(--ap-gold-a40, rgba(201, 162, 39, 0.40)),
-              0 0 28px var(--ap-gold-a16, rgba(201, 162, 39, 0.16));
+  border-color: var(--ap-gold-a55, rgba(194, 160, 94, 0.55));
+  box-shadow: 0 0 0 1px var(--ap-gold-a40, rgba(194, 160, 94, 0.40)),
+              0 0 28px var(--ap-gold-a16, rgba(194, 160, 94, 0.16));
 }
 /* Selected check — a small bright-gold disc carrying a masked void check. */
 .page-shop .ap-art-card--selected::after {
@@ -1701,7 +1701,7 @@ button.ap-art-card {
   height: 20px;
   border-radius: 50%;
   background: var(--ap-gold-bright, #D4B84A);
-  box-shadow: 0 0 10px var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
+  box-shadow: 0 0 10px var(--ap-gold-a40, rgba(194, 160, 94, 0.40));
   z-index: 3;
 }
 /* The check glyph itself — a void tick centred on the disc. */
@@ -1716,15 +1716,15 @@ button.ap-art-card {
   text-align: center;
   font-size: 12px;
   font-weight: var(--weight-bold, 700);
-  color: var(--ap-void-deep, #050406);
+  color: var(--ap-void-deep, #0C1016);
   z-index: 4;
   pointer-events: none;
 }
 
 .page-shop .ap-tool-card:hover {
-  box-shadow: 0 0 0 1px var(--ap-gold-a16, rgba(201, 162, 39, 0.16)),
+  box-shadow: 0 0 0 1px var(--ap-gold-a16, rgba(194, 160, 94, 0.16)),
               0 14px 36px rgba(0, 0, 0, 0.3),
-              0 0 24px var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
+              0 0 24px var(--ap-gold-a08, rgba(194, 160, 94, 0.08));
 }
 
 /* ── Featured / catalogue card surface — engraved-plate feel for all ───────
@@ -1746,9 +1746,9 @@ button.ap-art-card {
    surface/tint applies at all widths; the media queries only handle layout. */
 .page-shop .shopc-featured__card--hero {
   background: linear-gradient(160deg,
-    var(--ap-gold-a08, rgba(201, 162, 39, 0.08)) 0%,
+    var(--ap-gold-a08, rgba(194, 160, 94, 0.08)) 0%,
     var(--ap-ip-surface, rgba(20, 16, 10, 0.58)) 55%);
-  border-color: var(--ap-gold-a40, rgba(201, 162, 39, 0.40));
+  border-color: var(--ap-gold-a40, rgba(194, 160, 94, 0.40));
 }
 @media (min-width: 901px) {
   .page-shop .shopc-featured__grid {
@@ -1796,7 +1796,7 @@ button.ap-art-card {
   letter-spacing: var(--tracking-wide, 0.08em);
   text-transform: uppercase;
   color: var(--ap-gold-bright, #D4B84A);
-  border: 1px solid var(--ap-gold-a55, rgba(201, 162, 39, 0.55));
+  border: 1px solid var(--ap-gold-a55, rgba(194, 160, 94, 0.55));
   border-radius: 99px;
   padding: 2px 9px;
   vertical-align: middle;
