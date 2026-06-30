@@ -429,10 +429,18 @@
 
   <script>
   'use strict';
-  (function () {
+  (function init() {
     if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
     var NN = window.NameNumerology;
-    if (!NN) { console.error('NameNumerology engine failed to load'); return; }
+    if (!NN) {
+      /* The engine is injected as an async <script> (defer is ignored on
+         dynamically-created scripts), so it may not be ready yet — wait for it
+         instead of bailing (which left the form unwired). */
+      if (init._tries == null) init._tries = 0;
+      if (init._tries++ < 100) { setTimeout(init, 50); return; }
+      console.error('NameNumerology engine failed to load');
+      return;
+    }
 
     var form = document.getElementById('nn-form');
     var nameInput = document.getElementById('nn-name');

@@ -352,10 +352,16 @@
 
   <script>
   'use strict';
-  (function () {
+  (function init() {
     if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
     var AN = window.AngelNumbers;
-    if (!AN) return;
+    if (!AN) {
+      /* Engine is injected async (defer is ignored on dynamic scripts) — wait
+         for it instead of bailing (which left the grid + form uninitialised). */
+      if (init._tries == null) init._tries = 0;
+      if (init._tries++ < 100) { setTimeout(init, 50); return; }
+      return;
+    }
 
     /* ── Build the reference grid ── */
     (function buildGrid() {
