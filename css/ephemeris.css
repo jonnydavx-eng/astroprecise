@@ -17,7 +17,7 @@
   --paper:           #0C1016;   /* was warm cream; now the void */
   --paper-leaf:      #121826;   /* was off-white; now night */
   --ink:             #ECE6D8;   /* was dark ink; now warm cream */
-  --ink-faded:       #A7A395;   /* was muted ink; now dim cream */
+  --ink-faded:       #BEB298;   /* warm dim parchment (was greyish #A7A395) */
   --midnight:        #0C1016;   /* stays effectively same — dark base */
   --warm-midnight:   #121826;   /* dark section bg */
   --paper-on-midnight: #ECE6D8; /* cream on dark — used in footer/night-watch */
