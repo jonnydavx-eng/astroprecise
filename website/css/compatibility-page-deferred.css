@@ -169,7 +169,7 @@
     .compat-tab:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
     .compat-tab[aria-selected="true"] {
       color: var(--bg);
-      background: linear-gradient(135deg, #c9a227 0%, #e8c96a 100%);
+      background: linear-gradient(135deg, #C2A05E 0%, #e8c96a 100%);
       border-color: transparent;
       box-shadow: 0 4px 18px rgba(196,146,10,0.28);
     }

@@ -52,8 +52,8 @@ body:has(.mp-hero) .moonphase-svg {
 
 /* ── Moon Phase page premium overrides (mirrors transits.html tokens) ── */
     :root {
-      --void: #050406;
-      --gold: #C9A227;
+      --void: #0C1016;
+      --gold: #C2A05E;
       --gold-text: #D9BC5C;
       --gold-light: #EFE3C0;
       --purple: #5C4A6E;
@@ -61,7 +61,7 @@ body:has(.mp-hero) .moonphase-svg {
       --silver: #A89E88;
       --silver-dim: #9A9084;
       --surface: rgba(20,16,10,0.55);
-      --border: rgba(201,162,39,0.10);
+      --border: rgba(194, 160, 94,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
     }
@@ -169,7 +169,7 @@ body:has(.mp-hero) .moonphase-svg {
       padding: 0.55rem 1.3rem; cursor: pointer;
       transition: color 0.2s, border-color 0.2s, background 0.2s;
     }
-    .mp-tab:hover { color: var(--white); border-color: rgba(201, 162, 39,0.3); }
+    .mp-tab:hover { color: var(--white); border-color: rgba(194, 160, 94,0.3); }
     .mp-tab--active {
       color: var(--void); background: var(--gold); border-color: var(--gold);
     }
@@ -233,14 +233,14 @@ body:has(.mp-hero) .moonphase-svg {
       pointer-events: none;
       border-radius: calc(var(--radius-2xl, 24px) - 8px);
       background:
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
       opacity: 0.7;
     }
     /* Card content above the frame layers. */
@@ -272,7 +272,7 @@ body:has(.mp-hero) .moonphase-svg {
       border: 1px solid var(--border); border-radius: 999px;
       padding: 0.3rem 0.8rem; letter-spacing: 0.02em;
     }
-    .mp-chip--gold { color: var(--gold-text); border-color: rgba(201, 162, 39,0.35); background: rgba(201, 162, 39,0.10); }
+    .mp-chip--gold { color: var(--gold-text); border-color: rgba(194, 160, 94,0.35); background: rgba(194, 160, 94,0.10); }
     .mp-card__blurb {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.05rem; color: var(--silver); line-height: 1.6; margin: 0 0 1.1rem;
@@ -328,7 +328,7 @@ body:has(.mp-hero) .moonphase-svg {
       border: 1px solid var(--border); border-radius: var(--radius-xl);
       padding: 1.4rem 1.5rem; transition: border-color 0.2s;
     }
-    .mp-edu-card:hover { border-color: rgba(201, 162, 39,0.2); }
+    .mp-edu-card:hover { border-color: rgba(194, 160, 94,0.2); }
     /* Engraved icon base — this page lacks the per-page critical .eng-i rule, so
        define it here. Without it the inline moon discs (and js-injected result
        moons) would fall back to default black fill / no stroke. */

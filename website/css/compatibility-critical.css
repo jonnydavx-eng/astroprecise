@@ -18,8 +18,8 @@
       left: var(--space-4, 1rem);
       z-index: 10001;
       padding: 0.65rem 1.1rem;
-      background: var(--gold, #c9a227);
-      color: var(--void, #050406);
+      background: var(--gold, #C2A05E);
+      color: var(--void, #0C1016);
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
@@ -64,14 +64,14 @@
 
     /* ---- Compatibility-page design variables ---- */
     :root {
-      --bg: #050406;
-      --gold: #C9A227;
+      --bg: #0C1016;
+      --gold: #C2A05E;
       --gold-pale: #E8E0D0;
       --white: #E8E0D0;
       --silver: #A89E88;
       --silver-dim: #9A9084;
       --surface: rgba(20,16,10,0.68);
-      --border: rgba(201,162,39,0.10);
+      --border: rgba(194, 160, 94,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
       --lapis: #6e1a26;
@@ -186,8 +186,8 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--gold-pale);
-      background: linear-gradient(145deg, rgba(201,162,39,0.1) 0%, rgba(13, 10, 7,0.6) 100%);
-      border: 1px solid rgba(201,162,39,0.3);
+      background: linear-gradient(145deg, rgba(194, 160, 94,0.1) 0%, rgba(13, 10, 7,0.6) 100%);
+      border: 1px solid rgba(194, 160, 94,0.3);
       border-radius: 999px;
       padding: 4px 12px;
       white-space: normal;
@@ -328,10 +328,10 @@
       border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     }
     .compat-person-card--p1::before {
-      background: linear-gradient(90deg, #8b5a3c 0%, #c9a227 60%, transparent 100%);
+      background: linear-gradient(90deg, #8b5a3c 0%, #C2A05E 60%, transparent 100%);
     }
     .compat-person-card--p2::before {
-      background: linear-gradient(90deg, #c9a227 0%, #e8c96a 60%, transparent 100%);
+      background: linear-gradient(90deg, #C2A05E 0%, #e8c96a 60%, transparent 100%);
     }
     @media (max-width: 700px) { .compat-person-card { padding: var(--space-5) var(--space-4); } }
 
@@ -542,7 +542,7 @@
     }
     .score-bar__fill {
       height: 100%;
-      background: linear-gradient(90deg, #5c4a6e 0%, #c9a227 100%);
+      background: linear-gradient(90deg, #5c4a6e 0%, #C2A05E 100%);
       border-radius: 999px;
       transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -703,7 +703,7 @@
     }
     .compat-matrix-scroll:focus,
     .compat-matrix-scroll:focus-visible {
-      outline: 2px solid var(--color-gold, #c9a227);
+      outline: 2px solid var(--color-gold, #C2A05E);
       outline-offset: 2px;
     }
 

@@ -66,7 +66,7 @@ html.ap-audit-path .lp-result-skel-panel {
 /* ── CSS Variables ── */
     :root {
       --lp-bg: #0d0a07;
-      --lp-gold: var(--gold, #c9a227);
+      --lp-gold: var(--gold, #C2A05E);
       --lp-gold-pale: #e8c96a;
       --lp-white: #f0e8d8;
       --lp-silver: #A89E88;
@@ -211,9 +211,9 @@ html.ap-audit-path .lp-result-skel-panel {
     .lp-skel-card {
       min-height: 148px;
       border-radius: var(--lp-radius-xl);
-      border: 1px solid rgba(201, 162, 39, 0.14);
+      border: 1px solid rgba(194, 160, 94, 0.14);
       background:
-        radial-gradient(ellipse 80% 70% at 50% 35%, rgba(201, 162, 39, 0.07), transparent 70%),
+        radial-gradient(ellipse 80% 70% at 50% 35%, rgba(194, 160, 94, 0.07), transparent 70%),
         rgba(20, 16, 10, 0.45);
       display: flex;
       flex-direction: column;
@@ -225,14 +225,14 @@ html.ap-audit-path .lp-result-skel-panel {
     .lp-skel-card__num {
       font-family: var(--font-display);
       font-size: 1.75rem;
-      color: rgba(201, 162, 39, 0.28);
+      color: rgba(194, 160, 94, 0.28);
       letter-spacing: 0.06em;
     }
     .lp-skel-card__bar {
       width: 58%;
       height: 6px;
       border-radius: 99px;
-      background: rgba(201, 162, 39, 0.12);
+      background: rgba(194, 160, 94, 0.12);
     }
     @keyframes lp-shimmer {
       0%, 100% { opacity: 0.72; }
@@ -272,7 +272,7 @@ html.ap-audit-path .lp-result-skel-panel {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: linear-gradient(135deg, #c9a227 0%, #e8c96a 50%, #c9a227 100%);
+      background: linear-gradient(135deg, #C2A05E 0%, #e8c96a 50%, #C2A05E 100%);
       background-size: 200% 100%;
       color: #0d0a07;
       font-family: var(--font-display);
@@ -323,7 +323,7 @@ html.ap-audit-path .lp-result-skel-panel {
       padding: var(--space-14) var(--space-8);
       background: var(--lp-surface);
       border: 1px solid var(--lp-border);
-      border-left: 6px solid rgba(201, 162, 39, 0.35);
+      border-left: 6px solid rgba(194, 160, 94, 0.35);
       border-radius: var(--lp-radius-xl);
       margin-bottom: var(--space-6);
       min-height: 280px;
@@ -338,12 +338,12 @@ html.ap-audit-path .lp-result-skel-panel {
       width: 5.5rem;
       height: 5.5rem;
       border-radius: 50%;
-      background: rgba(201, 162, 39, 0.14);
+      background: rgba(194, 160, 94, 0.14);
     }
     .lp-result-skel-line {
       height: 10px;
       border-radius: 99px;
-      background: rgba(201, 162, 39, 0.12);
+      background: rgba(194, 160, 94, 0.12);
     }
     .lp-result-skel-line--title { width: min(240px, 55vw); }
     .lp-result-skel-line--tag { width: min(320px, 72vw); height: 8px; }
@@ -357,7 +357,7 @@ html.ap-audit-path .lp-result-skel-panel {
     .lp-result-skel-panel {
       min-height: 148px;
       border-radius: var(--lp-radius-xl);
-      border: 1px solid rgba(201, 162, 39, 0.14);
+      border: 1px solid rgba(194, 160, 94, 0.14);
       background: rgba(20, 16, 10, 0.45);
       animation: lp-shimmer 2.2s ease-in-out infinite;
     }
@@ -368,7 +368,7 @@ html.ap-audit-path .lp-result-skel-panel {
       padding: var(--space-14) var(--space-8);
       background: var(--lp-surface);
       border: 1px solid var(--lp-border);
-      border-left: 6px solid var(--lp-element-color, #c9a227);
+      border-left: 6px solid var(--lp-element-color, #C2A05E);
       border-radius: var(--lp-radius-xl);
       position: relative;
       overflow: hidden;
@@ -401,14 +401,14 @@ html.ap-audit-path .lp-result-skel-panel {
       pointer-events: none;
       border-radius: calc(var(--lp-radius-xl, 20px) - 8px);
       background:
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(201,162,39,0.42)), var(--ip-bracket-color, rgba(201,162,39,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
       opacity: 0.7;
     }
     .lp-number-hero__master-badge {
@@ -711,7 +711,7 @@ html.ap-audit-path .lp-result-skel-panel {
       flex-shrink: 0;
       width: 52px; height: 52px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #c9a227, #e8c96a);
+      background: linear-gradient(135deg, #C2A05E, #e8c96a);
       display: flex;
       align-items: center;
       justify-content: center;

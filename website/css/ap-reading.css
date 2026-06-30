@@ -14,9 +14,9 @@
   padding: var(--space-5, 1.25rem) var(--space-4, 1rem) var(--space-4, 1rem);
   border-radius: var(--radius-xl, 16px);
   background:
-    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(201, 162, 39, 0.09) 0%, transparent 58%),
+    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(194, 160, 94, 0.09) 0%, transparent 58%),
     rgba(13, 10, 7, 0.55);
-  border: 1px solid rgba(201, 162, 39, 0.16);
+  border: 1px solid rgba(194, 160, 94, 0.16);
 }
 
 .ap-reading-hero__eyebrow {
@@ -25,7 +25,7 @@
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
 }
 
 .ap-reading-hero__title {
@@ -55,8 +55,8 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--gold-pale, #f0e8d8);
-  background: rgba(201, 162, 39, 0.12);
-  border: 1px solid rgba(201, 162, 39, 0.28);
+  background: rgba(194, 160, 94, 0.12);
+  border: 1px solid rgba(194, 160, 94, 0.28);
 }
 
 .ap-reading-hero__hint {
@@ -89,8 +89,8 @@
 .ap-reading-toc__link:hover,
 .ap-reading-toc__link:focus-visible {
   color: var(--gold-pale, #f0e8d8);
-  border-color: rgba(201, 162, 39, 0.35);
-  background: rgba(201, 162, 39, 0.08);
+  border-color: rgba(194, 160, 94, 0.35);
+  background: rgba(194, 160, 94, 0.08);
 }
 
 .ap-reading-card {
@@ -102,14 +102,14 @@
   border-radius: var(--radius-lg, 12px);
   background: rgba(13, 10, 7, 0.62);
   border: 1px solid rgba(168, 158, 136, 0.1);
-  border-left: 3px solid rgba(201, 162, 39, 0.35);
+  border-left: 3px solid rgba(194, 160, 94, 0.35);
   scroll-margin-top: 5rem;
 }
 
 .ap-reading-card--featured {
-  border-left-color: var(--gold, #c9a227);
+  border-left-color: var(--gold, #C2A05E);
   background:
-    linear-gradient(135deg, rgba(201, 162, 39, 0.06) 0%, transparent 55%),
+    linear-gradient(135deg, rgba(194, 160, 94, 0.06) 0%, transparent 55%),
     rgba(13, 10, 7, 0.68);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
@@ -177,7 +177,7 @@
 }
 
 .ap-reading-card--aspect {
-  border-left-color: var(--aspect-color, rgba(201, 162, 39, 0.35));
+  border-left-color: var(--aspect-color, rgba(194, 160, 94, 0.35));
 }
 
 .ap-reading-card--aspect .ap-reading-card__accent {
@@ -199,8 +199,8 @@
   font-style: italic;
   line-height: 1.55;
   color: var(--parchment, #e8e0d0);
-  background: rgba(201, 162, 39, 0.06);
-  border-left: 3px solid rgba(201, 162, 39, 0.55);
+  background: rgba(194, 160, 94, 0.06);
+  border-left: 3px solid rgba(194, 160, 94, 0.55);
   border-radius: 0 var(--radius-md, 8px) var(--radius-md, 8px) 0;
 }
 
@@ -229,7 +229,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
   padding: 0.45rem 0;
   user-select: none;
 }
@@ -273,7 +273,7 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold, #c9a227);
+  color: var(--gold, #C2A05E);
 }
 
 .ap-reading-section-label::after {
@@ -281,7 +281,7 @@
   display: block;
   margin-top: 0.45rem;
   height: 1px;
-  background: linear-gradient(90deg, rgba(201, 162, 39, 0.35), transparent);
+  background: linear-gradient(90deg, rgba(194, 160, 94, 0.35), transparent);
 }
 
 .page-chart .tab-panel {

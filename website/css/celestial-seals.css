@@ -1,8 +1,8 @@
 /* Engraved hex celestial seals — commissioned hand-drawn instrument plates
  * Hover gleam & alignment shimmer: css/ap-micro-2026.css */
 .ap-seal {
-  --seal-accent: var(--ap-gold-core, #C9A227);
-  --seal-glow: var(--ap-gold-a16, rgba(201, 162, 39, 0.16));
+  --seal-accent: var(--ap-gold-core, #C2A05E);
+  --seal-glow: var(--ap-gold-a16, rgba(194, 160, 94, 0.16));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -22,9 +22,9 @@
   clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
-    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, #050406);
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, #0C1016);
   box-shadow:
-    inset 0 0 0 1px rgba(201,162,39,0.40),
+    inset 0 0 0 1px rgba(194, 160, 94,0.40),
     inset 0 -3px 8px rgba(0,0,0,0.5),
     0 2px 8px rgba(0,0,0,0.45),
     0 0 14px -4px var(--seal-glow);
@@ -201,8 +201,8 @@
   clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
   background:
     radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.06), transparent 50%),
-    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, #050406);
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, #0C1016);
   box-shadow:
-    inset 0 0 0 1px rgba(201,162,39,0.32),
+    inset 0 0 0 1px rgba(194, 160, 94,0.32),
     0 2px 8px rgba(0,0,0,0.45);
 }

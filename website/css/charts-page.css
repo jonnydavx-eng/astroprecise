@@ -85,8 +85,8 @@
       gap: 1.15rem;
     }
     .mc-card--active {
-      border-color: rgba(201, 162, 39, 0.45) !important;
-      box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.18), 0 14px 40px rgba(0, 0, 0, 0.4);
+      border-color: rgba(194, 160, 94, 0.45) !important;
+      box-shadow: 0 0 0 1px rgba(194, 160, 94, 0.18), 0 14px 40px rgba(0, 0, 0, 0.4);
     }
     .mc-card__head {
       display: flex;
@@ -105,7 +105,7 @@
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--gold-pale, #f0e8d8);
-      background: radial-gradient(circle at 30% 28%, rgba(201, 162, 39, 0.4), rgba(110, 26, 38, 0.35));
+      background: radial-gradient(circle at 30% 28%, rgba(194, 160, 94, 0.4), rgba(110, 26, 38, 0.35));
       border: 1px solid rgba(255, 255, 255, 0.12);
     }
     .mc-card__id { min-width: 0; flex: 1; }
@@ -133,8 +133,8 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--gold);
-      background: rgba(201, 162, 39, 0.12);
-      border: 1px solid rgba(201, 162, 39, 0.35);
+      background: rgba(194, 160, 94, 0.12);
+      border: 1px solid rgba(194, 160, 94, 0.35);
       border-radius: 999px;
       padding: 0.25rem 0.6rem;
       white-space: nowrap;

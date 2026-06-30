@@ -29,7 +29,7 @@ html.ap-lite-hero .hero__h1,
   text-shadow:
     0 2px 24px rgba(5, 4, 6, 0.94),
     0 1px 8px rgba(5, 4, 6, 0.72),
-    0 0 22px rgba(201, 162, 39, 0.18),
+    0 0 22px rgba(194, 160, 94, 0.18),
     0 0 1px rgba(232, 224, 208, 0.4);
 }
 
@@ -37,7 +37,7 @@ html.ap-lite-hero .hero__h1,
 .page-chart .chart-wheel-stage .chart-wheel-card {
   --_bs: var(--ip-bracket-size, 22px);
   --_bi: var(--ip-bracket-inset, 10px);
-  --_bc: var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
+  --_bc: var(--ip-bracket-color, rgba(194, 160, 94, 0.42));
   overflow: hidden;
   z-index: 2;
 }
@@ -68,7 +68,7 @@ html.ap-lite-hero .hero__h1,
 }
 
 .instrument-hero__panel.instrument-panel:hover::after {
-  border-color: var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
+  border-color: var(--ip-bracket-color, rgba(194, 160, 94, 0.42));
 }
 
 /* Engraved corner brackets REMOVED (calming pass) → single restrained 1px gold
@@ -99,7 +99,7 @@ html.ap-lite-hero .hero__h1,
 .shopc-card:hover::before,
 .ap-tool-card:hover::before,
 .shop-how__step:hover::before {
-  border-color: var(--ip-bracket-color, rgba(201, 162, 39, 0.42));
+  border-color: var(--ip-bracket-color, rgba(194, 160, 94, 0.42));
 }
 
 /* ── Card specular sweep + lens flares REMOVED (calming pass) ─────────────
@@ -154,13 +154,13 @@ html.ap-lite-hero .hero__orrery-layer::before {
   z-index: 0;
   box-shadow:
     inset 0 0 80px rgba(5, 4, 6, 0.45),
-    0 0 120px rgba(201, 162, 39, 0.06);
+    0 0 120px rgba(194, 160, 94, 0.06);
 }
 
 .page-chart .chart-wheel-stage__meridian {
   z-index: 0;
   opacity: 0.62;
-  filter: drop-shadow(0 0 18px rgba(201, 162, 39, 0.12));
+  filter: drop-shadow(0 0 18px rgba(194, 160, 94, 0.12));
 }
 
 /* Horoscope sphere hero */
@@ -253,7 +253,7 @@ html.ap-lite-hero .lite-poster-vignette {
     animation: none;
     text-shadow:
       0 2px 24px rgba(5, 4, 6, 0.94),
-      0 0 22px rgba(201, 162, 39, 0.18);
+      0 0 22px rgba(194, 160, 94, 0.18);
   }
 }
 
@@ -263,7 +263,7 @@ html.ap-lite-hero .lite-poster-vignette {
    Deliberately NO font-family (preserves each page's tuned LCP min-heights)
    and NO ::before/::after vignettes (box-coupled, structure-risky).
    Glow values mirror the static peak of the cinematic h1-glow keyframe
-   (gold rgba(201,162,39,...) + parchment light text), without animating —
+   (gold rgba(194, 160, 94,...) + parchment light text), without animating —
    these heroes have no animation hook, so a steady glow is the safe match. */
 .syn-hero h1,
 .tn-hero h1,
@@ -283,7 +283,7 @@ html.ap-lite-hero .lite-poster-vignette {
   color: var(--gold-hero-light, #EFE3C0);
   text-shadow:
     0 2px 24px rgba(5, 4, 6, 0.94),
-    0 0 34px rgba(201, 162, 39, 0.20),
+    0 0 34px rgba(194, 160, 94, 0.20),
     0 0 1px rgba(232, 224, 208, 0.4),
     0 1px 0 rgba(0, 0, 0, 0.3);
 }
@@ -315,7 +315,7 @@ html.ap-lite-hero .lite-poster-vignette {
   -webkit-text-fill-color: transparent;
   text-shadow:
     0 1px 0 rgba(0, 0, 0, 0.35),
-    0 0 28px rgba(201, 162, 39, 0.10);
+    0 0 28px rgba(194, 160, 94, 0.10);
   margin: 0 auto var(--space-4, 1rem);
   max-width: 22ch;
 }
@@ -336,7 +336,7 @@ html.ap-lite-hero .lite-poster-vignette {
   gap: var(--space-3, 0.75rem);
   margin: var(--space-8, 2rem) auto;
   max-width: 360px;
-  color: var(--ap-gold-core, #C9A227);
+  color: var(--ap-gold-core, #C2A05E);
 }
 
 .ap-ornament-rule::before,
@@ -344,11 +344,11 @@ html.ap-lite-hero .lite-poster-vignette {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--ap-gold-a40, rgba(201, 162, 39, 0.40)));
+  background: linear-gradient(90deg, transparent, var(--ap-gold-a40, rgba(194, 160, 94, 0.40)));
 }
 
 .ap-ornament-rule::after {
-  background: linear-gradient(90deg, var(--ap-gold-a40, rgba(201, 162, 39, 0.40)), transparent);
+  background: linear-gradient(90deg, var(--ap-gold-a40, rgba(194, 160, 94, 0.40)), transparent);
 }
 
 .ap-ornament-rule__mark {

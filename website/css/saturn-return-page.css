@@ -74,9 +74,9 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
 /* CLS: email banner critical path — main.css deferred under LH audit */
 .ap-email-cta--banner {
   min-height: clamp(300px, 72vw, 360px);
-  background: linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(13, 10, 7, 0.92) 48%, rgba(92, 74, 110, 0.08) 100%);
-  border-top: 1px solid rgba(201, 162, 39, 0.22);
-  border-bottom: 1px solid rgba(201, 162, 39, 0.12);
+  background: linear-gradient(135deg, rgba(194, 160, 94, 0.1) 0%, rgba(13, 10, 7, 0.92) 48%, rgba(92, 74, 110, 0.08) 100%);
+  border-top: 1px solid rgba(194, 160, 94, 0.22);
+  border-bottom: 1px solid rgba(194, 160, 94, 0.12);
   padding: var(--space-12, 3rem) 0;
   position: relative;
   overflow: hidden;
@@ -94,12 +94,12 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
   .ap-email-cta__inner { grid-template-columns: 1fr; text-align: center; gap: var(--space-6, 1.5rem); }
 }
 
-:root { --sat-gold: var(--gold, #C9A227); --sat-line: rgba(232,224,208,0.10); }
+:root { --sat-gold: var(--gold, #C2A05E); --sat-line: rgba(232,224,208,0.10); }
     .sat-hero { padding: calc(var(--nav-height, 72px) + 3.5rem) 0 1.5rem; text-align: center; position: relative; overflow: hidden; }
     /* Orbital canvas visualization */
     .sat-orbital-wrap { max-width: 680px; margin: 1.6rem auto 0.4rem; position: relative; }
     #sat-orbital { display: block; width: 100%; height: auto; border-radius: 16px; opacity: 0.94; }
-    .sat-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,162,39,0.16) 0%, transparent 70%); pointer-events: none; }
+    .sat-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(194, 160, 94,0.16) 0%, transparent 70%); pointer-events: none; }
     .sat-hero__eyebrow { display: inline-flex; align-items: center; gap: .5rem; font-size: .64rem; letter-spacing: .24em; text-transform: uppercase; color: var(--sat-gold); margin-bottom: 1rem; }
     .sat-hero h1 { font-family: var(--font-display, 'Cinzel', serif); font-size: clamp(2rem, 5.2vw, 3.2rem); line-height: 1.1; letter-spacing: .02em; color: var(--white, #E8E0D0); margin-bottom: .9rem; }
     .sat-hero__glyph { font-size: 2.4rem; color: var(--sat-gold); display: block; margin: 0 auto .6rem; }
@@ -112,7 +112,7 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-field--full { grid-column: 1 / -1; }
     .sat-field label { font-family: 'Cinzel', serif; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--silver); }
     .sat-field input { background: rgba(20,16,10,0.5); border: 1px solid var(--sat-line); border-radius: var(--radius-md, 8px); padding: .7rem .8rem; color: var(--white); font-size: 1rem; font-family: inherit; }
-    .sat-field input:focus { outline: none; border-color: var(--border-glow, rgba(201,162,39,0.55)); box-shadow: 0 0 0 3px rgba(201,162,39,0.14); }
+    .sat-field input:focus { outline: none; border-color: var(--border-glow, rgba(194, 160, 94,0.55)); box-shadow: 0 0 0 3px rgba(194, 160, 94,0.14); }
     .sat-field__hint { font-size: .72rem; color: var(--silver-dim, #8F8579); }
     .sat-submit-row { margin-top: 1.3rem; text-align: center; }
     #sat-error { display: none; color: #e0857c; text-align: center; margin-top: .9rem; font-size: .9rem; }
@@ -122,11 +122,11 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-natal .ap-seal, .sat-lead .ap-seal { display: inline-flex; vertical-align: middle; margin: 0 .15rem; }
     .sat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
     .sat-card { position: relative; padding: 1rem .8rem; text-align: center; border: 1px solid var(--sat-line); border-radius: var(--radius-lg, 12px); background: rgba(20,16,10,0.4); }
-    .sat-card--now { border-color: rgba(201,162,39,0.5); box-shadow: 0 0 26px rgba(201,162,39,0.12); }
+    .sat-card--now { border-color: rgba(194, 160, 94,0.5); box-shadow: 0 0 26px rgba(194, 160, 94,0.12); }
     .sat-card__n { font-family: 'Cinzel', serif; font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--silver); margin-bottom: .35rem; }
     .sat-card__date { color: var(--gold-light, #EFE3C0); font-size: 1.02rem; font-weight: 600; }
     .sat-card__age { font-size: .76rem; color: var(--silver-dim, #8F8579); margin-top: .2rem; }
-    .sat-card__tag { display: inline-block; margin-top: .5rem; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sat-gold); border: 1px solid rgba(201,162,39,0.4); border-radius: 999px; padding: .15rem .55rem; }
+    .sat-card__tag { display: inline-block; margin-top: .5rem; font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sat-gold); border: 1px solid rgba(194, 160, 94,0.4); border-radius: 999px; padding: .15rem .55rem; }
     .sat-reading, .sat-unlock { margin-top: 1.4rem; padding: clamp(1.3rem, 4vw, 2.2rem); }
     .sat-unlock__eyebrow { font-family: 'Cinzel', serif; }
     .sat-reading__title { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.3rem; color: var(--white); margin-bottom: 1rem; text-align: center; }
@@ -135,10 +135,10 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-reading em { color: var(--sat-gold); font-style: normal; }
     .sat-lead { font-size: 1.15rem; }
     .sat-orn { display: flex; align-items: center; gap: .7rem; color: var(--sat-gold); margin: 1.3rem 0 .9rem; }
-    .sat-orn::before, .sat-orn::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(201,162,39,0.5), transparent); }
+    .sat-orn::before, .sat-orn::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(194, 160, 94,0.5), transparent); }
     .sat-orn span { font-size: .62rem; letter-spacing: .26em; }
     .sat-list { list-style: none; padding: 0; margin: .4rem 0; }
-    .sat-list li { padding: .55rem 0; border-bottom: 1px solid rgba(201,162,39,0.14); color: var(--silver); font-family: 'Cormorant Garamond', serif; font-size: 1.02rem; }
+    .sat-list li { padding: .55rem 0; border-bottom: 1px solid rgba(194, 160, 94,0.14); color: var(--silver); font-family: 'Cormorant Garamond', serif; font-size: 1.02rem; }
     .sat-list em { color: var(--sat-gold); font-style: normal; }
     .sat-note { font-size: .9rem !important; color: var(--silver) !important; font-style: italic; }
     .sat-reading__actions { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; margin-top: 1.4rem; }

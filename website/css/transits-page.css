@@ -152,15 +152,15 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
 
 /* ── Transits page premium overrides (scoped — wins over deferred main.css) ── */
 .page-transits {
-  --void: #050406;
-  --gold: #C9A227;
+  --void: #0C1016;
+  --gold: #C2A05E;
   --gold-light: #EFE3C0;
   --purple: #5C4A6E;
   --white: #E8E0D0;
   --silver: #A89E88;
   --silver-dim: #9A9084;
   --surface: rgba(20,16,10,0.55);
-  --border: rgba(201,162,39,0.10);
+  --border: rgba(194, 160, 94,0.10);
   --radius-xl: 20px;
   --radius-2xl: 28px;
 }
@@ -484,7 +484,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       transition: border-color 0.2s, background 0.2s;
     }
     .retrograde-item:hover {
-      border-color: rgba(201, 162, 39,0.25);
+      border-color: rgba(194, 160, 94,0.25);
       background: rgba(15,18,50,0.7);
     }
     @media (max-width: 500px) {
@@ -539,7 +539,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
-    .eclipse-card--solar { border-color: rgba(201, 162, 39,0.28); }
+    .eclipse-card--solar { border-color: rgba(194, 160, 94,0.28); }
     .eclipse-card--lunar { border-color: rgba(92, 74, 110,0.35); }
     .eclipse-type {
       display: block;
@@ -576,7 +576,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       padding: 1.4rem 1.6rem;
       transition: border-color 0.2s;
     }
-    .edu-card:hover { border-color: rgba(201, 162, 39,0.2); }
+    .edu-card:hover { border-color: rgba(194, 160, 94,0.2); }
     .edu-card__icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
     .edu-card__title {
       font-family: var(--font-display, 'Cinzel', serif);

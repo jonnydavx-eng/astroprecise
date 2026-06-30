@@ -49,8 +49,8 @@ html.ap-fonts-ready .retro-hero .hero-answer {
 
 /* ── Retrograde page premium overrides (matches transits palette) ── */
     :root {
-      --void: #050406;
-      --gold: #C9A227;
+      --void: #0C1016;
+      --gold: #C2A05E;
       --gold-light: #EFE3C0;
       --purple: #5C4A6E;
       --white: #E8E0D0;
@@ -58,7 +58,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       --silver-dim: #9A9084;
       --oxblood: #b04a52;
       --surface: rgba(20,16,10,0.55);
-      --border: rgba(201,162,39,0.10);
+      --border: rgba(194, 160, 94,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
     }
@@ -308,7 +308,7 @@ html.ap-fonts-ready .retro-hero .hero-answer {
       transition: border-color 0.2s, background 0.2s;
     }
     .window-item:hover {
-      border-color: rgba(201, 162, 39,0.25);
+      border-color: rgba(194, 160, 94,0.25);
       background: rgba(15,18,50,0.7);
     }
     .window-item--empty {

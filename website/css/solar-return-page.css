@@ -1,7 +1,7 @@
 /* solar-return.html — extracted inline styles */
 /* ── Solar-return page premium overrides (scoped, mirrors accuracy.html) ── */
     :root {
-      --sr-gold: var(--gold, #C9A227);
+      --sr-gold: var(--gold, #C2A05E);
       --sr-gold-light: var(--gold-light, #EFE3C0);
       --sr-border: rgba(232, 224, 208, 0.10);
     }
@@ -39,7 +39,7 @@
     }
     .sr-prose a:not(.btn),
     .sr-calc noscript a {
-      color: var(--sr-gold, #C9A227);
+      color: var(--sr-gold, #C2A05E);
       text-decoration: underline;
       text-underline-offset: 0.15em;
       font-weight: 600;
@@ -71,13 +71,13 @@
       color: var(--white, #E8E0D0); font-size: 0.95rem; font-family: inherit;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .sr-field input:focus { outline: none; border-color: rgba(201, 162, 39, 0.5); box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12); }
+    .sr-field input:focus { outline: none; border-color: rgba(194, 160, 94, 0.5); box-shadow: 0 0 0 3px rgba(194, 160, 94, 0.12); }
     .sr-field__hint { font-size: 0.72rem; color: var(--silver-dim, #6E6658); margin-top: 0.4rem; line-height: 1.5; }
     .sr-calc__btn-row { text-align: center; margin-top: 1.6rem; }
     .sr-result {
       margin-top: 1.75rem; padding: 1.75rem 1.5rem; text-align: center;
-      border-radius: 16px; border: 1px solid rgba(201, 162, 39, 0.3);
-      background: rgba(201, 162, 39, 0.07); display: none;
+      border-radius: 16px; border: 1px solid rgba(194, 160, 94, 0.3);
+      background: rgba(194, 160, 94, 0.07); display: none;
     }
     .sr-result.is-shown { display: block; }
     .sr-result__glyph { font-size: 2.6rem; color: var(--sr-gold); line-height: 1; display: block; margin-bottom: 0.5rem; }

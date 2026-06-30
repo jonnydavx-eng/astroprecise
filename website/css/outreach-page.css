@@ -43,7 +43,7 @@ html.ap-fonts-ready .ot h1 {
 }
 
 body {
-  background: var(--ap-void-deep, #050406);
+  background: var(--ap-void-deep, #0C1016);
   color: var(--ap-text-primary, #E8E0D0);
 }
 
@@ -83,7 +83,7 @@ body {
 .ot-tab {
   padding: 0.45rem 0.85rem;
   border-radius: 999px;
-  border: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  border: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
   background: transparent;
   color: var(--ap-text-secondary, #A89E88);
   font-size: 0.75rem;
@@ -91,8 +91,8 @@ body {
 }
 
 .ot-tab.is-on {
-  background: var(--ap-gold-a12, rgba(201, 162, 39, 0.12));
-  border-color: var(--ap-gold-core, #C9A227);
+  background: var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
+  border-color: var(--ap-gold-core, #C2A05E);
   color: var(--ap-gold-parchment, #EFE3C0);
 }
 
@@ -102,7 +102,7 @@ body {
 
 .ot-card {
   background: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
-  border: 1px solid var(--ap-gold-a22, rgba(201, 162, 39, 0.22));
+  border: 1px solid var(--ap-gold-a22, rgba(194, 160, 94, 0.22));
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 0.85rem;
@@ -140,7 +140,7 @@ body {
 .ot-btn {
   padding: 0.4rem 0.8rem;
   border-radius: 8px;
-  border: 1px solid var(--ap-gold-a40, rgba(201, 162, 39, 0.4));
+  border: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
   background: var(--ap-void-mid, #0D0A07);
   color: var(--ap-gold-bright, #D4B84A);
   font-size: 0.75rem;
@@ -149,7 +149,7 @@ body {
 }
 
 .ot-btn:hover {
-  border-color: var(--ap-gold-core, #C9A227);
+  border-color: var(--ap-gold-core, #C2A05E);
   color: var(--ap-gold-parchment, #EFE3C0);
 }
 
@@ -169,7 +169,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   background: var(--ap-void-mid, #0D0A07);
-  border: 1px solid var(--ap-gold-core, #C9A227);
+  border: 1px solid var(--ap-gold-core, #C2A05E);
   color: var(--ap-gold-parchment, #EFE3C0);
   padding: 0.5rem 1rem;
   border-radius: 8px;

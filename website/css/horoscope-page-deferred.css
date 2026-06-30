@@ -26,7 +26,7 @@
       inset: 0;
       border-radius: inherit;
       padding: 1.5px;
-      background: linear-gradient(135deg, #c9a227 0%, rgba(201, 162, 39, 0.55) 25%, rgba(110, 26, 38, 0.35) 55%, rgba(168, 142, 88, 0.35) 80%, #c9a227 100%);
+      background: linear-gradient(135deg, #C2A05E 0%, rgba(194, 160, 94, 0.55) 25%, rgba(110, 26, 38, 0.35) 55%, rgba(168, 142, 88, 0.35) 80%, #C2A05E 100%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -46,7 +46,7 @@
       gap: var(--space-4);
       margin-bottom: var(--space-6);
       padding-bottom: var(--space-5);
-      border-bottom: 1px solid rgba(201, 162, 39, 0.15);
+      border-bottom: 1px solid rgba(194, 160, 94, 0.15);
     }
     .sign-reading-panel__title-group {
       display: flex;
@@ -55,14 +55,14 @@
     }
     .srp-card-thumb {
       flex-shrink: 0; width: 68px; height: auto; aspect-ratio: 2 / 3;
-      border-radius: 8px; border: 1px solid rgba(201,162,39,0.38);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 16px rgba(201,162,39,0.1);
+      border-radius: 8px; border: 1px solid rgba(194, 160, 94,0.38);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 16px rgba(194, 160, 94,0.1);
       object-fit: cover; object-position: center top;
     }
     .srp-guide-link {
       display: inline-block; margin-top: 6px;
       font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(201,162,39,0.88); font-weight: 600;
+      color: rgba(194, 160, 94,0.88); font-weight: 600;
       text-decoration: underline; text-underline-offset: 0.2em;
       transition: color 0.2s;
     }
@@ -70,7 +70,7 @@
     .sign-reading-panel__glyph {
       font-size: 2.8rem;
       line-height: 1;
-      filter: drop-shadow(0 0 10px rgba(201, 162, 39, 0.55));
+      filter: drop-shadow(0 0 10px rgba(194, 160, 94, 0.55));
     }
     .sign-reading-panel__sign-name {
       font-family: var(--font-display);
@@ -108,8 +108,8 @@
       .sign-reading-panel__inner { padding: var(--space-5) var(--space-4); }
     }
     .reading-card {
-      background: rgba(201, 162, 39, 0.06);
-      border: 1px solid rgba(201, 162, 39, 0.18);
+      background: rgba(194, 160, 94, 0.06);
+      border: 1px solid rgba(194, 160, 94, 0.18);
       border-radius: var(--radius-lg);
       padding: var(--space-5);
     }
@@ -118,7 +118,7 @@
       margin-bottom: var(--space-2);
       display: block;
     }
-    .reading-card__icon .eng-i { width: 1.2rem; height: 1.2rem; color: var(--gold, #c9a227); }
+    .reading-card__icon .eng-i { width: 1.2rem; height: 1.2rem; color: var(--gold, #C2A05E); }
     .reading-card__label {
       font-size: 0.6rem;
       letter-spacing: 0.16em;
@@ -458,14 +458,14 @@
       background: rgba(232, 224, 208, 0.07);
       border-radius: 3px;
       overflow: hidden;
-      box-shadow: 0 0 8px var(--ap-gold-a12, rgba(201, 162, 39, 0.12)),
-                  inset 0 0 0 1px var(--ap-gold-a08, rgba(201, 162, 39, 0.08));
+      box-shadow: 0 0 8px var(--ap-gold-a12, rgba(194, 160, 94, 0.12)),
+                  inset 0 0 0 1px var(--ap-gold-a08, rgba(194, 160, 94, 0.08));
     }
     .srp-energy__fill {
       height: 100%;
       border-radius: 3px;
-      background: linear-gradient(90deg, var(--lapis-light, #b09a86), var(--el-color, var(--gold, #c9a227)));
-      box-shadow: 0 0 8px var(--ap-gold-a28, rgba(201, 162, 39, 0.28));
+      background: linear-gradient(90deg, var(--lapis-light, #b09a86), var(--el-color, var(--gold, #C2A05E)));
+      box-shadow: 0 0 8px var(--ap-gold-a28, rgba(194, 160, 94, 0.28));
       width: 0;
       transition: width 0.9s var(--ease-spring, cubic-bezier(0.22, 1, 0.36, 1));
     }

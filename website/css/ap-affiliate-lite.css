@@ -6,7 +6,7 @@
   z-index: 2;
   padding: var(--space-8, 2rem) var(--space-4, 1rem);
   border-top: 1px solid rgba(168, 158, 136, 0.14);
-  background: linear-gradient(180deg, transparent 0%, rgba(201, 162, 39, 0.04) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(194, 160, 94, 0.04) 100%);
 }
 
 .ap-affiliate-ad__inner {
@@ -19,7 +19,7 @@
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-hero, #C9A227);
+  color: var(--gold-hero, #C2A05E);
   margin-bottom: var(--space-2, 0.5rem);
 }
 
@@ -65,7 +65,7 @@
 }
 
 .ap-affiliate-ad__card:hover {
-  border-color: rgba(201, 162, 39, 0.38);
+  border-color: rgba(194, 160, 94, 0.38);
   transform: translateY(-1px);
 }
 
@@ -73,7 +73,7 @@
   font-size: 0.48rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold-hero, #C9A227);
+  color: var(--gold-hero, #C2A05E);
 }
 
 .ap-affiliate-ad__title {
@@ -92,7 +92,7 @@
 
 .ap-affiliate-ad__meta {
   font-size: 0.62rem;
-  color: var(--gold-hero, #C9A227);
+  color: var(--gold-hero, #C2A05E);
   letter-spacing: 0.05em;
 }
 
@@ -104,7 +104,7 @@
 }
 
 .ap-affiliate-ad__fine a {
-  color: var(--gold-hero, #C9A227);
+  color: var(--gold-hero, #C2A05E);
   text-decoration: none;
 }
 
@@ -152,5 +152,5 @@
 
 .ap-affiliate-inline__meta {
   font-size: 0.65rem;
-  color: var(--gold-hero, #C9A227);
+  color: var(--gold-hero, #C2A05E);
 }
