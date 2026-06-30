@@ -243,7 +243,7 @@ body {
 .navbar__mobile-menu .navbar__link.active,
 .navbar__mobile-menu .navbar__link:focus-visible {
   color: var(--gold-hero-light);
-  background: rgba(20, 16, 10, 0.58);
+  background: rgba(22, 28, 42, 0.58);
   border-left: 2px solid var(--gold-hero);
   padding-left: calc(var(--space-3) - 2px);
 }
@@ -411,7 +411,7 @@ body {
   left: 0;
   right: 0;
   z-index: 8990;
-  background: rgba(13, 10, 7, 0.96);
+  background: rgba(16, 21, 32, 0.96);
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   border-top: 1px solid rgba(194, 160, 94, 0.22);
@@ -490,7 +490,7 @@ body {
     left: 0;
     right: 0;
     z-index: 8990;
-    background: rgba(13, 10, 7, 0.96);
+    background: rgba(16, 21, 32, 0.96);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
     border-top: 1px solid rgba(194, 160, 94, 0.22);
@@ -1101,7 +1101,7 @@ html.ap-lite-hero .lite-vp-btn {
   padding: 0.32rem 0.55rem;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.22);
-  background: rgba(8, 6, 5, 0.55);
+  background: rgba(12, 16, 24, 0.55);
   color: rgba(232, 224, 208, 0.82);
   cursor: pointer;
   white-space: nowrap;
@@ -1512,7 +1512,7 @@ html.ap-lite-hero .live-sky-label__text {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  background: linear-gradient(145deg, rgba(22, 18, 13, 0.88), rgba(10, 9, 8, 0.82));
+  background: linear-gradient(145deg, rgba(22, 28, 42, 0.88), rgba(10, 9, 8, 0.82));
   border: 1px solid rgba(194, 160, 94, 0.16);
   border-radius: var(--radius-full);
   white-space: nowrap;

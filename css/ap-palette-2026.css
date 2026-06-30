@@ -46,8 +46,8 @@
 
   /* ── Instrument panel surfaces ── */
   --ap-ip-void:         var(--ap-void-deep);
-  --ap-ip-surface:      rgba(20, 16, 10, 0.58);
-  --ap-ip-surface-deep: rgba(14, 11, 8, 0.72);
+  --ap-ip-surface:      rgba(22, 28, 42, 0.58);
+  --ap-ip-surface-deep: rgba(16, 21, 32, 0.72);
   --ap-ip-border:       var(--ap-gold-a12);
   --ap-ip-border-rim:   var(--ap-gold-a22);
   --ap-ip-engrave-line: rgba(168, 158, 136, 0.14);
@@ -83,7 +83,7 @@
   --ap-silver-cool-dim: #8A93A0;
   --ap-glow-gold:    radial-gradient(ellipse 160% 130% at 50% 22%, rgba(194, 160, 94, 0.10) 0%, transparent 68%);
   --ap-rim-shadow:   inset 0 1px 0 rgba(239, 227, 192, 0.06);
-  --ap-card-surface: linear-gradient(165deg, rgba(21, 17, 12, 0.62) 0%, rgba(7, 5, 9, 0.40) 100%);
+  --ap-card-surface: linear-gradient(165deg, rgba(22, 28, 42, 0.62) 0%, rgba(7, 5, 9, 0.40) 100%);
   --ap-card-border:        rgba(194, 160, 94, 0.16);
   --ap-card-border-strong: rgba(194, 160, 94, 0.28);
   --ap-shadow-card:   0 10px 36px rgba(0, 0, 0, 0.32);
@@ -175,7 +175,7 @@
   --z-toast:   4000;
 
   /* ── Branded scrim — one intentional overlay recipe (cart / modal / lightbox) ── */
-  --scrim: radial-gradient(125% 125% at 50% 0%, rgba(22, 15, 8, 0.70), rgba(5, 4, 6, 0.84));
+  --scrim: radial-gradient(125% 125% at 50% 0%, rgba(16, 20, 30, 0.70), rgba(5, 4, 6, 0.84));
   --scrim-blur: blur(7px);
 
   /* ── Section rhythm — single vertical-rhythm source ── */

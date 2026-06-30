@@ -16,7 +16,7 @@
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md, 10px);
-  background: rgba(14, 11, 8, 0.72);
+  background: rgba(16, 21, 32, 0.72);
   border: 1px solid rgba(168, 158, 136, 0.18);
   display: inline-flex;
   align-items: center;

@@ -165,7 +165,7 @@
 
       <div class="ap-footer-signup ap-footer-signup--compact">
         <p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">
-          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C9A227);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
+          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C2A05E);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
           &mdash; cosmic weather &amp; new features coming soon.
         </p>
       </div>
@@ -273,7 +273,7 @@
     if(!cvs) return;
     var W=680, H=300, ctx=cvs.getContext('2d');
     var CX=W*0.36, CY=H*0.54;
-    var GOLD='#C9A227', GOLD_L='#EFE3C0', GOLD_D='rgba(201,162,39,0.25)';
+    var GOLD='#C2A05E', GOLD_L='#EFE3C0', GOLD_D='rgba(194, 160, 94,0.25)';
 
     // Background
     ctx.fillStyle='#050406'; ctx.fillRect(0,0,W,H);
@@ -349,7 +349,7 @@
     function dot(x,y,label,age,glow){
       // Halo
       var hg=ctx.createRadialGradient(x,y,0,x,y,22);
-      hg.addColorStop(0,'rgba(201,162,39,'+( glow?0.7:0.45)+')'); hg.addColorStop(1,'rgba(201,162,39,0)');
+      hg.addColorStop(0,'rgba(194, 160, 94,'+( glow?0.7:0.45)+')'); hg.addColorStop(1,'rgba(194, 160, 94,0)');
       ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2); ctx.fillStyle=hg; ctx.fill();
       // Dot
       ctx.beginPath(); ctx.arc(x,y,5.5,0,Math.PI*2);
@@ -395,7 +395,7 @@
     });
 
     // Title + label
-    ctx.fillStyle='rgba(201,162,39,0.9)';
+    ctx.fillStyle='rgba(194, 160, 94,0.9)';
     ctx.font='bold 12px Cinzel,serif'; ctx.textAlign='left';
     ctx.fillText('Astro Precise  ·  The Saturn Cycle', 18, 24);
     ctx.fillStyle='rgba(168,158,136,0.6)';

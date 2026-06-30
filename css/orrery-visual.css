@@ -720,7 +720,7 @@ body.landing-gate-open .hero__orrery-ring #orrery-canvas {
   padding: 0.32rem 0.55rem;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.22);
-  background: rgba(8, 6, 5, 0.55);
+  background: rgba(12, 16, 24, 0.55);
   color: rgba(232, 224, 208, 0.82);
   cursor: pointer;
   white-space: nowrap;
@@ -1428,7 +1428,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
   padding: 9px 18px;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.38);
-  background: rgba(8, 6, 5, 0.55);
+  background: rgba(12, 16, 24, 0.55);
   color: rgba(240, 232, 216, 0.88);
   font-family: Inter, system-ui, sans-serif;
   font-size: 0.68rem;
@@ -1510,7 +1510,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
   overflow: visible;
   font-size: 0.72rem;
   padding: 11px 26px;
-  background: rgba(8, 6, 5, 0.42);
+  background: rgba(12, 16, 24, 0.42);
   border: 1px solid rgba(194, 160, 94, 0.38);
   color: #f0e8d8;
   font-family: 'Cinzel', serif;
@@ -1623,7 +1623,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
   padding: 9px 18px;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.30);
-  background: rgba(8, 6, 5, 0.55);
+  background: rgba(12, 16, 24, 0.55);
   color: rgba(240, 232, 216, 0.78);
   font-family: Inter, system-ui, sans-serif;
   font-size: 0.68rem;
@@ -2072,7 +2072,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
 
 .orrery-btn--journey-primary {
   border-color: rgba(194, 160, 94, 0.62) !important;
-  background: linear-gradient(165deg, rgba(28, 22, 12, 0.82), rgba(8, 6, 5, 0.92)) !important;
+  background: linear-gradient(165deg, rgba(28, 22, 12, 0.82), rgba(12, 16, 24, 0.92)) !important;
   color: var(--gold-pale, #f0e8d8) !important;
   font-family: 'Cinzel', serif;
   letter-spacing: 0.12em;

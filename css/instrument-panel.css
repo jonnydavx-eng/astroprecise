@@ -2,8 +2,8 @@
 
 :root {
   --ip-void: var(--ap-ip-void, #0C1016);
-  --ip-surface: var(--ap-ip-surface, rgba(20, 16, 10, 0.58));
-  --ip-surface-deep: var(--ap-ip-surface-deep, rgba(14, 11, 8, 0.72));
+  --ip-surface: var(--ap-ip-surface, rgba(22, 28, 42, 0.58));
+  --ip-surface-deep: var(--ap-ip-surface-deep, rgba(16, 21, 32, 0.72));
   --ip-border: var(--ap-ip-border, rgba(194, 160, 94, 0.12));
   --ip-border-rim: var(--ap-ip-border-rim, rgba(194, 160, 94, 0.24));
   --ip-gold: var(--ap-ip-gold, #C2A05E);

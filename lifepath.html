@@ -514,7 +514,7 @@
       strengths: ['Natural leadership and executive ability','Innovative, original thinking','Drive and determined follow-through','Self-reliance under pressure','Courage to initiate the untried'],
       challenges: ['Tendency toward self-absorption','Impatience with slower paces','Difficulty delegating control','Vulnerability masked by strength'],
       compatibles: [3,5,9], keywords: ['Leadership','Originality','Ambition','Independence','Courage'],
-      color: '#c9a227',
+      color: '#C2A05E',
     },
     2: {
       title: 'The Diplomat', glyph: '☽', element: 'water',
@@ -586,7 +586,7 @@
       strengths: ['Universal compassion that transcends personal agenda','Deep, cross-cultural wisdom','Genuine generosity of spirit and resources','Creative and artistic range','Ability to see the whole where others see parts'],
       challenges: ['Giving so much there is little left for self','Difficulty releasing the past and its sorrows','Scattered idealism that lacks executable form','Emotional volatility when ideals meet reality'],
       compatibles: [3,6,9], keywords: ['Compassion','Universal Love','Service','Wisdom','Completion'],
-      color: '#c9a227',
+      color: '#C2A05E',
     },
     11: {
       title: 'The Illuminator', glyph: '⊙', element: 'air', master: true,
@@ -604,7 +604,7 @@
       strengths: ['Grand visionary thinking paired with execution ability','Exceptional, patient discipline','Leadership operating at a world-historical scale','Mastery of complex systems and organisations','Transformative impact that outlasts the person'],
       challenges: ['The crushing weight of unrealised potential','Paralysing perfectionism that prevents the first step','Difficulty trusting others enough to delegate','Fear of the full magnitude of the 22 frequency'],
       compatibles: [4,11,22], keywords: ['Master Builder','Vision','Manifestation','Legacy','Power'],
-      color: '#c9a227',
+      color: '#C2A05E',
     },
     33: {
       title: 'The Master Teacher', glyph: '', element: 'water', master: true,
@@ -626,7 +626,7 @@
   const LP_ORDER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
 
   const ELEMENT_THEME = {
-    fire:  { stripe: '#c9a227', dim: 'rgba(196,100,50,0.12)',  mandala: 'rgba(196,100,50,0.2)' },
+    fire:  { stripe: '#C2A05E', dim: 'rgba(196,100,50,0.12)',  mandala: 'rgba(196,100,50,0.2)' },
     earth: { stripe: '#0e5c3a', dim: 'rgba(14,92,58,0.12)',    mandala: 'rgba(14,92,58,0.2)' },
     air:   { stripe: '#5b7fc7', dim: 'rgba(91,127,199,0.12)',  mandala: 'rgba(91,127,199,0.2)' },
     water: { stripe: '#6a8a82', dim: 'rgba(63,125,118,0.12)',  mandala: 'rgba(63,125,118,0.18)' },
@@ -755,8 +755,8 @@
     ctx.clearRect(0, 0, W, H);
 
     var base = color || 'rgba(196,146,10,0.18)';
-    var goldAccent = 'rgba(201,162,39,0.55)';   // --ap-gold-a55
-    var goldGlow   = 'rgba(201,162,39,0.16)';   // --ap-gold-a16
+    var goldAccent = 'rgba(194, 160, 94,0.55)';   // --ap-gold-a55
+    var goldGlow   = 'rgba(194, 160, 94,0.16)';   // --ap-gold-a16
 
     // ── Derive geometry purely from the real life-path number ──────────────
     var n = parseInt(lpNumber, 10);
@@ -783,7 +783,7 @@
     if (isMaster) {
       var grad = ctx.createRadialGradient(cx, cy, rMax * 0.1, cx, cy, rMax);
       grad.addColorStop(0, goldGlow);
-      grad.addColorStop(1, 'rgba(201,162,39,0)');
+      grad.addColorStop(1, 'rgba(194, 160, 94,0)');
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(cx, cy, rMax, 0, Math.PI * 2);
@@ -1102,8 +1102,8 @@
     }
 
     // Element color accent stripe — left edge 12px wide
-    const elementColorMap = {fire:'#c9a227',earth:'#0e5c3a',air:'#9db36a',water:'#6a8a82'};
-    const stripeColor = elementColorMap[data.element] || '#c9a227';
+    const elementColorMap = {fire:'#C2A05E',earth:'#0e5c3a',air:'#9db36a',water:'#6a8a82'};
+    const stripeColor = elementColorMap[data.element] || '#C2A05E';
     ctx.fillStyle = stripeColor;
     ctx.fillRect(40, 40, 12, H - 80);
 
@@ -1248,7 +1248,7 @@
     if (grid) {
       const placeholder = document.getElementById('lp-grid-placeholder');
       const elementCardColors = {
-        fire: { border: '#c9a227', glow: 'rgba(196,146,10,0.15)' },
+        fire: { border: '#C2A05E', glow: 'rgba(196,146,10,0.15)' },
         earth: { border: '#0e5c3a', glow: 'rgba(14,92,58,0.15)' },
         air: { border: '#9db36a', glow: 'rgba(91,127,199,0.15)' },
         water: { border: '#6a8a82', glow: 'rgba(63,125,118,0.15)' }

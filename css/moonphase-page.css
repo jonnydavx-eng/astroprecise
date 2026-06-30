@@ -60,7 +60,7 @@ body:has(.mp-hero) .moonphase-svg {
       --white: #E8E0D0;
       --silver: #A89E88;
       --silver-dim: #9A9084;
-      --surface: rgba(20,16,10,0.55);
+      --surface: rgba(22, 28, 42,0.55);
       --border: rgba(194, 160, 94,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
@@ -139,7 +139,7 @@ body:has(.mp-hero) .moonphase-svg {
 
     /* ── Sections ── */
     .mp-section { padding: 3.5rem 0; }
-    .mp-section--alt { background: rgba(13, 10, 7,0.6); }
+    .mp-section--alt { background: rgba(16, 21, 32,0.6); }
     .mp-section__header { text-align: center; margin-bottom: 2.25rem; }
     .mp-section__label {
       font-size: 0.62rem; font-weight: 600; letter-spacing: 0.28em;
@@ -203,7 +203,7 @@ body:has(.mp-hero) .moonphase-svg {
       max-width: 460px; margin: 0 auto; text-align: center;
       background:
         radial-gradient(ellipse 80% 50% at 50% 0%, rgba(92, 74, 110,0.22) 0%, transparent 70%),
-        linear-gradient(160deg, rgba(20,24,58,0.92) 0%, rgba(13, 10, 7,0.96) 100%);
+        linear-gradient(160deg, rgba(20,24,58,0.92) 0%, rgba(16, 21, 32,0.96) 100%);
       border: 1px solid var(--ip-border-rim, var(--border));
       border-radius: var(--radius-2xl);
       padding: 2.25rem 2rem 1.75rem;

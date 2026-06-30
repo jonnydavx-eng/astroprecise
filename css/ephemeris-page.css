@@ -145,7 +145,7 @@
       border: 1px solid rgba(194, 160, 94,0.16);
       border-radius: var(--radius-xl);
       margin-bottom: 0.75rem;
-      background: rgba(20, 16, 10,0.4);
+      background: rgba(22, 28, 42,0.4);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       transition: border-color 0.2s;
@@ -254,7 +254,7 @@
       min-height: 520px;
     }
     .sig-cell {
-      background: rgba(20, 16, 10,0.7);
+      background: rgba(22, 28, 42,0.7);
       border: 1px solid rgba(168, 158, 136,0.12);
       border-radius: var(--radius-xl);
       padding: 1.1rem 1.25rem;
@@ -262,7 +262,7 @@
     }
     .sig-cell:hover {
       border-color: rgba(194, 160, 94,0.25);
-      background: rgba(20, 16, 10,0.85);
+      background: rgba(22, 28, 42,0.85);
     }
     .sig-cell__glyph { font-size: 1.5rem; display: block; margin: 0 auto 0.35rem; color: var(--gold-pale); line-height: 0; }
     .sig-cell__glyph .ap-orb { vertical-align: middle; }

@@ -7,7 +7,7 @@
     @media (max-width: 600px) { .element-compat-grid { grid-template-columns: 1fr; } }
 
     .element-compat-card {
-      background: rgba(20, 16, 10,0.62);
+      background: rgba(22, 28, 42,0.62);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-6) var(--space-6);
@@ -92,7 +92,7 @@
 
     /* ---- Synastry sidebar premium ---- */
     .synastry-sidebar-card {
-      background: rgba(20, 16, 10,0.68);
+      background: rgba(22, 28, 42,0.68);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-7);
@@ -152,7 +152,7 @@
       margin-bottom: var(--space-8);
     }
     .compat-tab {
-      background: rgba(20, 16, 10,0.55);
+      background: rgba(22, 28, 42,0.55);
       border: 1px solid var(--border);
       border-radius: 999px;
       color: var(--silver);
@@ -181,7 +181,7 @@
 
     /* ---- Explanatory note for composite / davison ---- */
     .compat-method-note {
-      background: rgba(20, 16, 10,0.62);
+      background: rgba(22, 28, 42,0.62);
       border: 1px solid var(--border);
       border-left: 3px solid var(--gold);
       border-radius: var(--radius-xl);
@@ -220,7 +220,7 @@
       gap: var(--space-3);
     }
     .midchart-cell {
-      background: rgba(20, 16, 10,0.62);
+      background: rgba(22, 28, 42,0.62);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: var(--space-4) var(--space-5);

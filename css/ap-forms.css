@@ -9,7 +9,7 @@
 .horoscope-subscribe__form input[type="email"] {
   min-height: 44px;
   background:
-    linear-gradient(180deg, rgba(28, 22, 14, 0.92) 0%, rgba(14, 11, 8, 0.88) 100%);
+    linear-gradient(180deg, rgba(28, 35, 50, 0.92) 0%, rgba(16, 21, 32, 0.88) 100%);
   border: 1px solid rgba(168, 158, 136, 0.22);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
@@ -128,7 +128,7 @@ html.ap-lite-hero .hero__date-input {
 @media (hover: hover) and (pointer: fine) {
   html.ap-lite-hero .hero__date-input:hover {
     border-color: rgba(194, 160, 94, 0.38);
-    background: rgba(22, 17, 12, 0.88);
+    background: rgba(22, 28, 42, 0.88);
   }
 }
 
