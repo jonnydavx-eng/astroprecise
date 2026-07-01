@@ -456,7 +456,7 @@
     }
     .cw-unit { font-size: 0.75rem; color: var(--silver-dim); }
     .cw-note { margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--silver); text-align: center; }
-    .cw-unavail { margin: 0; font-size: 0.8rem; color: var(--crimson-light); text-align: center; }
+    .cw-unavail { margin: 0; font-size: 0.8rem; color: #f87171; text-align: center; }
     .cw-info {
       width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%;
       border: 1px solid rgba(194, 160, 94,0.4); background: transparent; color: var(--gold);
@@ -493,7 +493,8 @@
     .cw-flare-badge--A, .cw-flare-badge--B { color: #3fae7a; }
     .cw-flare-badge--C { color: var(--lapis-light, #c8b88f); }
     .cw-flare-badge--M { color: var(--gold, #C2A05E); }
-    .cw-flare-badge--X { color: var(--crimson-light, #f87171); }
+    /* Explicit — --crimson-light (#b04a52) fails 4.5:1 on instrument-panel void */
+    .cw-flare-badge--X { color: #f87171; }
     .cw-chip {
       display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
       font-size: 1.4rem; color: var(--gold-pale, var(--gold)); padding: 0.15rem 0.7rem;

@@ -16,6 +16,7 @@
     "baseline:save": "node save-baseline.mjs",
     "baseline:diff": "node diff-baseline.mjs",
     "audit": "node run-audit.mjs",
+    "contract": "node homepage-contract-eval.mjs",
     "phone:collect": "node serve-phone-collector.mjs",
     "phone:audit": "node serve-phone-collector.mjs"
   },

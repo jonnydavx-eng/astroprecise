@@ -1,0 +1,26 @@
+{
+  "version": "ap-v529",
+  "capturedAt": "2026-07-01",
+  "storyId": "retrograde-survival",
+  "assertions": [
+    "All .ap-chapter sections opacity 1 on load",
+    "Zero backdrop-filter on homepage chrome",
+    "Sky guides render >= 8 cards",
+    "No pageerror in console",
+    "Index axe: zero violations",
+    "Chart finder opens with 5 direct links; Escape closes",
+    "Float nav hidden on hero (display:none when hero visible)",
+    "Float nav does not use left overlap on hero copy",
+    "Hero h1 opacity 1 after load",
+    "Guide reader opens and deep link works (retrograde-survival)",
+    "Invalid guide hash scrolls to catalogue with toast",
+    "Plate I lives inside #skyChapter (no orphan night-watch in main flow)",
+    "Float nav does not overlap dept-list badges when visible (padding-inline-end >= 100px)",
+    "All main sections use ap-chapter-head (zero dept-heading)",
+    "Float nav scroll-spy sets is-active + aria-current on scroll",
+    "Method + shop trust strips present",
+    "Sky guides lazy-load when section nears viewport",
+    "Featured guide badge on hero card",
+    "Sticky sky-guide filter bar while scrolling catalogue"
+  ]
+}

@@ -210,6 +210,18 @@ a:hover, a:focus-visible {
   color: var(--brass);
 }
 
+/* Links inside prose blocks — distinguishable without color alone (axe link-in-text-block) */
+p a[href],
+li a[href]:not(.dept-list-item):not(.sign-index-entry):not(.contents-nav a),
+.standfirst a,
+.qa-a a,
+.instrument-lede a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  font-weight: 600;
+}
+
 /* ------------------------------------------------------------
    4. Hairline rules
    ------------------------------------------------------------ */
@@ -424,7 +436,19 @@ a:hover, a:focus-visible {
 .night-watch .dept-eyebrow,
 .night-watch .margin-note {
   color: var(--paper-on-midnight);
-  opacity: 0.6;
+  opacity: 0.78;
+}
+
+.sky-plate-caption { margin-top: var(--sp-2); }
+
+.sky-sun-epithet {
+  font-style: italic;
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--paper-on-midnight);
+  opacity: 0.88;
 }
 
 /* ------------------------------------------------------------
@@ -570,9 +594,9 @@ a:hover, a:focus-visible {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--paper-on-midnight);
-  opacity: 0.45;
+  opacity: 0.72;
 }
-.footer-logo:hover .footer-logo-wordmark { opacity: 0.7; }
+.footer-logo:hover .footer-logo-wordmark { opacity: 0.92; }
 
 /* ------------------------------------------------------------
    13. Sign library index
@@ -583,7 +607,12 @@ a:hover, a:focus-visible {
   gap: 0;
   border-top: 1px solid var(--hairline);
   border-left: 1px solid var(--hairline);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
+
+.sign-index > li { display: contents; }
 
 .sign-index-entry {
   border-right: 1px solid var(--hairline);
@@ -788,13 +817,14 @@ a:hover, a:focus-visible {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
 }
 
+.footer-col h3,
 .footer-col h4 {
   font-family: var(--font-mono);
   font-size: max(13px, 0.72rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--paper-on-midnight);
-  opacity: 0.5;
+  opacity: 0.72;
   margin-bottom: var(--sp-2);
 }
 
@@ -825,13 +855,13 @@ a:hover, a:focus-visible {
   font-family: var(--font-mono);
   font-size: max(13px, 0.7rem);
   color: var(--paper-on-midnight);
-  opacity: 0.45;
+  opacity: 0.72;
 }
 .footer-colophon .copyright {
   font-family: var(--font-ui);
   font-size: 0.8rem;
   color: var(--paper-on-midnight);
-  opacity: 0.45;
+  opacity: 0.72;
 }
 
 /* ------------------------------------------------------------
@@ -984,7 +1014,7 @@ a:hover, a:focus-visible {
   font-family: var(--font-mono);
   font-size: max(12px, 0.7rem);
   color: var(--paper-on-midnight);
-  opacity: 0.6;
+  opacity: 0.82;
   text-align: center;
   margin-top: var(--sp-5);
   letter-spacing: 0.06em;
@@ -1014,7 +1044,6 @@ a:hover, a:focus-visible {
   font-family: var(--font-mono);
   font-size: max(12px, 0.7rem);
   color: var(--paper-on-midnight);
-  opacity: 0.85;
   letter-spacing: 0.04em;
   white-space: nowrap;
 }
@@ -1023,7 +1052,7 @@ a:hover, a:focus-visible {
   font-size: clamp(0.88rem, 1.1vw, 1rem);
   font-style: italic;
   color: var(--paper-on-midnight);
-  opacity: 0.72;
+  opacity: 0.88;
   white-space: nowrap;
 }
 
