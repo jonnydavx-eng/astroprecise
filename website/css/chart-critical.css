@@ -692,6 +692,11 @@
     .page-chart #analysis-content {
       min-height: 240px;
     }
+    /* Fallback until chart-page-deferred.css idle-loads — prevents stacked tabs */
+    .page-chart .tab-panel[aria-hidden="true"],
+    .page-chart .tabs__panel[aria-hidden="true"] { display: none; }
+    .page-chart .tab-panel[aria-hidden="false"],
+    .page-chart .tabs__panel[aria-hidden="false"] { display: block; }
     /* ap-motion.css idle-load must not y-translate above-fold shell (CLS) */
     .page-chart .animate-in,
     .page-chart #chart-form-wrapper {

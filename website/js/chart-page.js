@@ -511,6 +511,11 @@
         'Could not compute this chart — please check the birth details.', 'error');
       return;
     }
+    /* Chart deferred CSS idle-loads on pointerdown — results need tabs, wheel,
+       and reading styles immediately after calculate (no scroll required). */
+    if (typeof window.ensureChartResultsCss === 'function') {
+      window.ensureChartResultsCss();
+    }
     wrapEl.classList.remove('hidden');
 
     const resultNameEl = document.getElementById('result-name');
