@@ -29,13 +29,16 @@
   <!-- Fonts & design system -->
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/ephemeris.css">
+  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=529">
+  <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
-<body>
+<body class="ap-award-511">
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <!-- ============================================================
      § 1 · MASTHEAD
      ============================================================ -->
-<header class="masthead section-bleed">
+<header class="masthead section-bleed" id="apMasthead">
   <div class="page-wrap">
 
     <!-- ── LOGO LOCKUP ── -->
@@ -155,10 +158,25 @@
   </div>
 </header>
 
+<nav class="ap-float-nav ap-float-nav--extended" id="apFloatNav" aria-label="Jump to section" hidden>
+  <a class="ap-float-nav__link" href="#heroChapter" data-ap-jump="heroChapter">Hero</a>
+  <a class="ap-float-nav__link" href="#trustChapter" data-ap-jump="trustChapter">Trust</a>
+  <a class="ap-float-nav__link" href="#whyChapter" data-ap-jump="whyChapter">Why</a>
+  <a class="ap-float-nav__link" href="#skyChapter" data-ap-jump="skyChapter">Tonight</a>
+  <a class="ap-float-nav__link" href="#instrumentsChapter" data-ap-jump="instrumentsChapter">Tools</a>
+  <a class="ap-float-nav__link" href="#methodChapter" data-ap-jump="methodChapter">Method</a>
+  <a class="ap-float-nav__link" href="#skyGuidesWrap" data-ap-jump="skyGuidesWrap">Guides</a>
+  <a class="ap-float-nav__link" href="#libraryChapter" data-ap-jump="libraryChapter">Signs</a>
+  <a class="ap-float-nav__link" href="#qaChapter" data-ap-jump="qaChapter">Q&amp;A</a>
+  <a class="ap-float-nav__link" href="#shopChapter" data-ap-jump="shopChapter">Shop</a>
+</nav>
+
+<main class="ap-flow" id="main-content" tabindex="-1">
+
 <!-- ============================================================
      § 2 · HERO / COVER
      ============================================================ -->
-<section class="department section-bleed hero-section" style="padding-top: var(--sp-13);">
+<section class="department section-bleed hero-section ap-chapter ap-chapter--hero" id="heroChapter" style="padding-top: var(--sp-13);">
   <div class="page-wrap">
     <div class="hero-grid">
 
@@ -167,7 +185,7 @@
         <em class="eyebrow-rose fade-in">The sky kept a record. Here's what it says about you.</em>
 
         <h1 class="display fade-in" style="margin-top: var(--sp-2); animation-delay: 0.07s;">
-          The sky held you<br>the moment you arrived.<br><span style="font-style:italic; opacity:0.82;">Here is what it meant.</span>
+          The sky held you<br>the moment you arrived.<br><span class="display-accent">Here is what it meant.</span>
         </h1>
 
         <p class="standfirst fade-in" style="margin-top: var(--sp-3); animation-delay: 0.15s; max-width: 50ch;">
@@ -176,7 +194,7 @@
 
         <!-- Birth-date entry form -->
         <form id="hero-chart-form" class="hero-form fade-in" novalidate aria-label="Cast your natal chart" style="animation-delay: 0.22s;">
-          <label for="hero-birthdate" class="ui-label" style="font-size:0.95rem; font-style:italic; font-family:var(--font-serif); color:var(--ink-faded); display:block; margin-bottom:var(--sp-1);">
+          <label for="hero-birthdate" class="ui-label">
             Your arrival time, to the minute
           </label>
           <div style="display:flex; flex-wrap:wrap; gap:var(--sp-2); align-items:center;">
@@ -197,8 +215,41 @@
         <p class="hero-reassurance fade-in" style="animation-delay: 0.28s;">Free &middot; no account &middot; your first chart in under a minute</p>
       </div>
 
-      <!-- Right: engraved hero illustration -->
-      <div class="hero-illustration fade-in" style="animation-delay: 0.18s;">
+      <!-- Right: live 3D orrery (canvas poster → WebGL) with engraved SVG fallback -->
+      <div class="hero-illustration ap-hero-instrument fade-in" style="animation-delay: 0.18s;">
+        <div class="ap-award-orrery-wrap" id="apAwardOrreryWrap" hidden>
+          <div class="ap-award-orrery-frame">
+            <div class="orrery-viewport" id="orrery-viewport">
+              <div class="orrery-lite-poster" id="orrery-lite-poster" role="img" aria-label="Living sky orrery — VSOP87 positions recomputed live in your browser">
+                <canvas class="lite-poster-canvas" id="lite-poster-canvas" aria-hidden="true"></canvas>
+                <div class="lite-poster-ring" aria-hidden="true"></div>
+                <div class="lite-poster-vignette" aria-hidden="true"></div>
+              </div>
+              <div class="lite-vp-controls" role="toolbar" aria-label="Focus planets on the model">
+                <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth">⌂ Earth</button>
+                <button type="button" class="lite-vp-btn" data-lite-planet="sun" aria-label="Focus Sun">☉ Sun</button>
+                <button type="button" class="lite-vp-btn" data-lite-planet="moon" aria-label="Focus Moon">☽ Moon</button>
+                <button type="button" class="lite-vp-btn" data-lite-planet="mercury" aria-label="Focus Mercury">☿</button>
+                <button type="button" class="lite-vp-btn" data-lite-planet="venus" aria-label="Focus Venus">♀</button>
+                <button type="button" class="lite-vp-btn" data-lite-planet="mars" aria-label="Focus Mars">♂</button>
+                <button type="button" class="lite-vp-btn" data-lite-planet="jupiter" aria-label="Focus Jupiter">♃</button>
+                <button type="button" class="lite-vp-btn" data-lite-planet="saturn" aria-label="Focus Saturn">♄</button>
+              </div>
+              <button type="button" class="orrery-lite-launch" id="orrery-lite-launch" hidden aria-label="Load the interactive 3D orrery">✦ Launch 3D sky</button>
+              <canvas id="orrery-canvas" width="640" height="640" fetchpriority="low" aria-hidden="true" tabindex="-1"></canvas>
+            </div>
+          </div>
+          <div class="ap-orrery-deck" id="orrery-lite-deck" aria-label="Sky time controls">
+            <p class="ap-orrery-chip">Living sky · drag to explore · scroll or pinch to zoom · VSOP87 live</p>
+            <div class="ap-orrery-time">
+              <span class="ap-orrery-date" id="lite-date-display" aria-live="polite">Computing…</span>
+              <button type="button" class="ap-orrery-now" id="lite-now-btn" aria-label="Reset sky to now">Now</button>
+            </div>
+            <label class="sr-only" for="lite-scrub">Scrub through time</label>
+            <input type="range" id="lite-scrub" class="ap-orrery-scrub" min="-2000" max="2000" step="1" value="0" aria-label="Scrub through time — watch planets move in their real paths" />
+          </div>
+        </div>
+        <div class="ap-hero-wheel-fallback" id="apHeroWheelFallback">
         <svg
           viewBox="0 0 440 440"
           xmlns="http://www.w3.org/2000/svg"
@@ -215,10 +266,10 @@
               .eng-glyph   { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 13px; fill: var(--ink); }
               .eng-glyph-sm{ font-family: 'Cormorant Garamond', Georgia, serif; font-size: 10.5px; fill: var(--ink); }
               .eng-mono    { font-family: 'IBM Plex Mono', monospace; font-size: 7.5px; fill: var(--brass); letter-spacing: 0.06em; }
-              .eng-label   { font-family: 'IBM Plex Mono', monospace; font-size: 8px; fill: var(--ink); opacity: 0.55; letter-spacing: 0.05em; }
-              .eng-hatch   { stroke: var(--ink); stroke-width: 0.45; opacity: 0.11; }
-              .eng-asp     { stroke: var(--ink); stroke-width: 0.65; opacity: 0.18; }
-              .eng-flourish{ fill: none; stroke: var(--brass); stroke-width: 0.85; opacity: 0.5; }
+              .eng-label   { font-family: 'IBM Plex Mono', monospace; font-size: 8px; fill: var(--ink); opacity: 0.82; letter-spacing: 0.05em; }
+              .eng-hatch   { stroke: var(--ink); stroke-width: 0.45; opacity: 0.22; }
+              .eng-asp     { stroke: var(--ink); stroke-width: 0.75; opacity: 0.38; }
+              .eng-flourish{ fill: none; stroke: var(--brass); stroke-width: 0.95; opacity: 0.78; }
             </style>
 
             <!-- Fine diagonal hatch — sky field texture -->
@@ -286,8 +337,8 @@
 
           <!-- ── OUTER DEGREE RING ── -->
           <!-- Decorative outer shadow ring -->
-          <circle cx="220" cy="220" r="211" fill="none" stroke="var(--ink)" stroke-width="3" opacity="0.07"/>
-          <circle cx="220" cy="220" r="208" class="eng-ring-hvy" opacity="0.22"/>
+          <circle cx="220" cy="220" r="211" fill="none" stroke="var(--ink)" stroke-width="3" opacity="0.16"/>
+          <circle cx="220" cy="220" r="208" class="eng-ring-hvy" opacity="0.42"/>
           <circle cx="220" cy="220" r="207" class="eng-ring-med"/>
           <circle cx="220" cy="220" r="198" class="eng-ring"/>
           <!-- Fine sub-ring for depth -->
@@ -295,7 +346,7 @@
 
           <!-- Degree ticks: 1° (every 1° = 360 lines, drawn as 5° batches via pattern) -->
           <!-- 5° ticks -->
-          <g stroke="var(--ink)" stroke-width="0.55" opacity="0.45" stroke-linecap="round">
+          <g stroke="var(--ink)" stroke-width="0.55" opacity="0.62" stroke-linecap="round">
             <line x1="220" y1="12" x2="220" y2="18" transform="rotate(5 220 220)"/>
             <line x1="220" y1="12" x2="220" y2="18" transform="rotate(10 220 220)"/>
             <line x1="220" y1="12" x2="220" y2="18" transform="rotate(15 220 220)"/>
@@ -384,14 +435,14 @@
           <circle cx="220" cy="220" r="160" class="eng-ring"/>
 
           <!-- Zodiac band hatch fill -->
-          <circle cx="220" cy="220" r="197" fill="url(#h-cross)" opacity="0.28"/>
+          <circle cx="220" cy="220" r="197" fill="url(#h-cross)" opacity="0.42"/>
           <!-- Paper mask for inner area -->
           <circle cx="220" cy="220" r="160" fill="var(--paper-leaf)"/>
 
           <!-- Sky field hatching inside chart area -->
-          <circle cx="220" cy="220" r="120" fill="url(#h-fine)" opacity="0.4"/>
+          <circle cx="220" cy="220" r="120" fill="url(#h-fine)" opacity="0.28"/>
           <!-- Tighter stipple ring between r=80 and r=120 for depth gradient feel -->
-          <circle cx="220" cy="220" r="80"  fill="url(#h-stipple)" opacity="0.6"/>
+          <circle cx="220" cy="220" r="80"  fill="url(#h-stipple)" opacity="0.38"/>
           <!-- Clear the central disc -->
           <circle cx="220" cy="220" r="58" fill="var(--paper-leaf)"/>
 
@@ -429,11 +480,11 @@
 
           <!-- ── INNER RINGS ── -->
           <!-- House band outer boundary -->
-          <circle cx="220" cy="220" r="120" fill="none" stroke="var(--ink)" stroke-width="0.6" opacity="0.5"/>
+          <circle cx="220" cy="220" r="120" fill="none" stroke="var(--ink)" stroke-width="0.6" opacity="0.68"/>
           <!-- Additional concentric detail rings for engraving depth -->
-          <circle cx="220" cy="220" r="112" fill="none" stroke="var(--ink)" stroke-width="0.35" opacity="0.22"/>
-          <circle cx="220" cy="220" r="90"  fill="none" stroke="var(--ink)" stroke-width="0.35" opacity="0.18"/>
-          <circle cx="220" cy="220" r="72"  fill="none" stroke="var(--brass)" stroke-width="0.4" opacity="0.3"/>
+          <circle cx="220" cy="220" r="112" fill="none" stroke="var(--ink)" stroke-width="0.35" opacity="0.38"/>
+          <circle cx="220" cy="220" r="90"  fill="none" stroke="var(--ink)" stroke-width="0.35" opacity="0.32"/>
+          <circle cx="220" cy="220" r="72"  fill="none" stroke="var(--brass)" stroke-width="0.4" opacity="0.48"/>
 
           <!-- House spokes (every 30°, lighter) -->
           <g fill="none" stroke="var(--ink)" stroke-width="0.7" opacity="0.28">
@@ -514,14 +565,14 @@
             <circle cx="220" cy="110" r="4.2" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.55"/>
             <circle cx="220" cy="110" r="2"   fill="var(--ink)" opacity="0.42"/>
           </g>
-          <text x="260" y="108" class="eng-glyph-sm" opacity="0.62">☿</text>
+          <text x="260" y="108" class="eng-glyph-sm" opacity="0.88">☿</text>
 
           <!-- Venus -->
           <g transform="rotate(142 220 220)">
             <circle cx="220" cy="110" r="4.8" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.55"/>
             <circle cx="220" cy="110" r="2.2" fill="var(--ink)" opacity="0.38"/>
           </g>
-          <text x="150" y="177" class="eng-glyph-sm" opacity="0.62">♀</text>
+          <text x="150" y="177" class="eng-glyph-sm" opacity="0.88">♀</text>
 
           <!-- Mars -->
           <g transform="rotate(305 220 220)">
@@ -535,14 +586,14 @@
             <circle cx="220" cy="110" r="5.4" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.48"/>
             <circle cx="220" cy="110" r="2.5" fill="var(--ink)" opacity="0.32"/>
           </g>
-          <text x="253" y="94" class="eng-glyph-sm" opacity="0.58">♃</text>
+          <text x="253" y="94" class="eng-glyph-sm" opacity="0.88">♃</text>
 
           <!-- Saturn -->
           <g transform="rotate(258 220 220)">
             <circle cx="220" cy="110" r="4.8" fill="none" stroke="#3A4F6C" stroke-width="0.9" opacity="0.48"/>
             <circle cx="220" cy="110" r="2.2" fill="var(--ink)" opacity="0.32"/>
           </g>
-          <text x="176" y="327" class="eng-glyph-sm" opacity="0.52">♄</text>
+          <text x="176" y="327" class="eng-glyph-sm" opacity="0.85">♄</text>
 
           <!-- Seeded edge stars — deterministic positions in indigo-tinted corners, never behind text -->
           <circle cx="38"  cy="55"  r="1.5" fill="#EAE3D3" opacity="0.14"/>
@@ -599,6 +650,7 @@
           <text x="433" y="224" class="eng-label" text-anchor="middle">E</text>
 
         </svg>
+        </div><!-- /ap-hero-wheel-fallback -->
       </div><!-- /hero-illustration -->
     </div><!-- /hero-grid -->
   </div>
@@ -607,8 +659,12 @@
 <!-- ============================================================
      § 3 · TRUST LINE
      ============================================================ -->
-<div class="section-bleed" style="background: var(--paper-leaf);">
+<section class="section-bleed ap-chapter ap-chapter--trust" id="trustChapter" style="background: var(--paper-leaf);" aria-labelledby="trust-heading">
   <div class="page-wrap">
+    <header class="ap-chapter-head ap-chapter-head--trust">
+      <p class="ap-display-kicker">Accuracy &amp; privacy</p>
+      <h2 id="trust-heading" class="ap-chapter-title ap-chapter-title--sm">Built on verifiable precision</h2>
+    </header>
     <div class="trust-line" role="list" aria-label="Accuracy guarantees">
       <div class="trust-item" role="listitem">
         <svg class="trust-check" viewBox="0 0 16 16" width="10" height="10" aria-hidden="true" focusable="false" style="flex-shrink:0; vertical-align:baseline; position:relative; top:0.05em;"><circle cx="8" cy="8" r="6" fill="var(--sage)" opacity="0.8"/><path d="M5 9 L7 11 L11 7" stroke="var(--void)" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
@@ -624,18 +680,20 @@
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ============================================================
      § 3b · WHY ASTROPRECISE — benefit discovery grid
      ============================================================ -->
-<section class="department section-bleed" aria-labelledby="why-heading">
+<section class="department section-bleed ap-chapter" id="whyChapter" aria-labelledby="why-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">Why Astro Precise</span>
-    <h2 id="why-heading" class="dept-heading" style="max-width:22ch;">You're not one of twelve. This chart is yours alone.</h2>
-    <p class="standfirst why-lead" style="max-width:56ch; margin-bottom: var(--sp-5);">
-      Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute, and written for you alone.
-    </p>
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">Why Astro Precise</p>
+      <h2 id="why-heading" class="ap-chapter-title" style="max-width:22ch;">You're not one of twelve. This chart is yours alone.</h2>
+      <p class="ap-chapter-lead why-lead" style="max-width:56ch;">
+        Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute, and written for you alone.
+      </p>
+    </header>
 
     <div class="why-grid-wrap">
       <div class="why-grid">
@@ -667,15 +725,19 @@
 <!-- ============================================================
      § 3c · COSMIC STORY — dusk planet band
      ============================================================ -->
-<section class="cosmic-story-band section-bleed" aria-labelledby="cosmic-band-heading">
+<section class="cosmic-story-band section-bleed ap-chapter" id="skyChapter" aria-labelledby="cosmic-band-heading">
   <div class="page-wrap">
-    <h2 id="cosmic-band-heading">Tonight, the planets stand in the sky.</h2>
+    <header class="ap-chapter-head ap-chapter-head--center">
+      <p class="ap-display-kicker">Department 02 &middot; The Sky</p>
+      <h2 id="cosmic-band-heading" class="ap-chapter-title">Tonight, the planets stand in the sky.</h2>
+      <p class="ap-chapter-lead">Live geocentric positions — computed in your browser, refreshed every time you open the page.</p>
+    </header>
 
     <!-- Planet stage — positions filled by JS after load -->
     <div class="cs-planet-stage" id="cs-planet-stage" aria-live="polite">
 
       <!-- Moon -->
-      <div class="cs-planet" data-planet="moon" style="--drift-dur:8s; --drift-delay:0s; --drift:-3px; opacity:0.9;">
+      <div class="cs-planet" data-planet="moon" style="--drift-dur:8s; --drift-delay:0s; --drift:-3px;">
         <svg viewBox="0 0 140 140" width="140" height="140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
     <!-- Soft outer glow -->
@@ -867,18 +929,12 @@
     </div><!-- /cs-planet-stage -->
 
     <p class="cs-footer">Computed now &middot; geocentric &middot; VSOP87</p>
-  </div>
-</section>
 
-<!-- ============================================================
-     § 4 · PLATE I — THE SKY TONIGHT (.night-watch)
-     ============================================================ -->
-<section class="night-watch section-bleed" aria-labelledby="plate-i-heading">
-  <div class="page-wrap" style="padding-block: calc(var(--sp-13) + 24px);">
-    <div class="editorial-grid">
+    <hr class="sky-chapter-rule" aria-hidden="true">
+
+    <div class="sky-tonight-plate editorial-grid" aria-labelledby="plate-i-heading">
       <figure class="plate" style="background: transparent; border-color: rgba(234,227,211,0.25);">
-        <span class="fig-num" style="color: var(--paper-on-midnight); opacity:0.5;">Plate I</span>
-        <p id="plate-i-heading" class="plate-title" style="color: var(--paper-on-midnight); margin-bottom: var(--sp-3);">The Sky Tonight</p>
+        <span class="fig-num">Plate I &middot; The Sky Tonight</span>
 
         <!-- Fine-line zodiac SVG — deterministic, cream on midnight -->
         <svg
@@ -890,35 +946,35 @@
         >
           <defs>
             <style>
-              .zc-ring    { fill: none; stroke: rgba(234,227,211,0.16); stroke-width: 0.9; }
-              .zc-ring-md { fill: none; stroke: rgba(234,227,211,0.28); stroke-width: 1.4; }
-              .zc-spoke   { stroke: rgba(234,227,211,0.09); stroke-width: 0.7; fill:none; }
-              .zc-ecliptic{ fill: none; stroke: rgba(234,227,211,0.32); stroke-width: 1.1; stroke-dasharray: 7 4; }
-              .zc-label   { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: rgba(234,227,211,0.48); letter-spacing:0.05em; }
-              .zc-glyph   { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 14px; fill: rgba(234,227,211,0.72); }
-              .zc-star    { fill: rgba(234,227,211,0.9); }
-              .zc-star-dim{ fill: rgba(234,227,211,0.32); }
-              .zc-star-fnt{ fill: rgba(234,227,211,0.18); }
-              .zc-div     { stroke: rgba(154,123,63,0.42); stroke-width: 0.9; fill:none; }
-              .zc-sun-mark{ fill: none; stroke: rgba(181,83,46,0.82); stroke-width: 1.3; }
-              .zc-moon-mk { fill: rgba(234,227,211,0.62); }
-              .zc-tick    { stroke: rgba(234,227,211,0.22); stroke-width:0.6; stroke-linecap:round; }
-              .zc-tick-maj{ stroke: rgba(234,227,211,0.42); stroke-width:1; stroke-linecap:round; }
+              .zc-ring    { fill: none; stroke: rgba(234,227,211,0.28); stroke-width: 0.9; }
+              .zc-ring-md { fill: none; stroke: rgba(234,227,211,0.42); stroke-width: 1.4; }
+              .zc-spoke   { stroke: rgba(234,227,211,0.18); stroke-width: 0.7; fill:none; }
+              .zc-ecliptic{ fill: none; stroke: rgba(234,227,211,0.48); stroke-width: 1.1; stroke-dasharray: 7 4; }
+              .zc-label   { font-family: 'IBM Plex Mono', monospace; font-size: 10px; fill: rgba(234,227,211,0.72); letter-spacing:0.05em; }
+              .zc-glyph   { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 14px; fill: rgba(234,227,211,0.88); }
+              .zc-star    { fill: rgba(234,227,211,0.95); }
+              .zc-star-dim{ fill: rgba(234,227,211,0.48); }
+              .zc-star-fnt{ fill: rgba(234,227,211,0.28); }
+              .zc-div     { stroke: rgba(194,160,94,0.58); stroke-width: 0.9; fill:none; }
+              .zc-sun-mark{ fill: none; stroke: rgba(181,83,46,0.92); stroke-width: 1.3; }
+              .zc-moon-mk { fill: rgba(234,227,211,0.78); }
+              .zc-tick    { stroke: rgba(234,227,211,0.36); stroke-width:0.6; stroke-linecap:round; }
+              .zc-tick-maj{ stroke: rgba(234,227,211,0.58); stroke-width:1; stroke-linecap:round; }
             </style>
           </defs>
 
           <!-- Concentric rings — three outer, three inner, for depth -->
-          <circle cx="220" cy="220" r="213" class="zc-ring" style="opacity:0.5;"/>
+          <circle cx="220" cy="220" r="213" class="zc-ring" style="opacity:0.78;"/>
           <circle cx="220" cy="220" r="210" class="zc-ring-md"/>
           <circle cx="220" cy="220" r="196" class="zc-ring"/>
           <circle cx="220" cy="220" r="158" class="zc-ring"/>
-          <circle cx="220" cy="220" r="150" class="zc-ring" style="opacity:0.5;"/>
+          <circle cx="220" cy="220" r="150" class="zc-ring" style="opacity:0.78;"/>
           <!-- Mid zodiac band hairline -->
           <circle cx="220" cy="220" r="177" fill="none" stroke="rgba(154,123,63,0.22)" stroke-width="0.5"/>
           <!-- Inner rings -->
           <circle cx="220" cy="220" r="90"  class="zc-ring" style="stroke-dasharray:4 4;"/>
-          <circle cx="220" cy="220" r="60"  class="zc-ring" style="opacity:0.4;"/>
-          <circle cx="220" cy="220" r="32"  class="zc-ring" style="opacity:0.35;"/>
+          <circle cx="220" cy="220" r="60"  class="zc-ring" style="opacity:0.62;"/>
+          <circle cx="220" cy="220" r="32"  class="zc-ring" style="opacity:0.55;"/>
 
           <!-- Degree ticks on outer ring (every 5°, majors at 30°) -->
           <g>
@@ -1079,28 +1135,22 @@
           <circle cx="220" cy="220" r="0.8" style="fill:rgba(22,36,58,0.9);"/>
         </svg>
 
-        <figcaption class="source-line" style="color:var(--paper-on-midnight); opacity:0.55; margin-top: var(--sp-2);">
-          <span id="sky-sun-epithet" style="font-style:italic; font-family:var(--font-serif); font-size:0.88rem; opacity:0.85; display:block; margin-bottom:4px;"></span>
+        <figcaption class="source-line sky-plate-caption">
+          <span id="sky-sun-epithet" class="sky-sun-epithet"></span>
           Plate I &middot; Positions computed in your browser &middot; VSOP87
         </figcaption>
       </figure>
 
-      <!-- Night-watch text -->
-      <div style="padding-top: var(--sp-2);">
-        <span class="dept-eyebrow" style="color: rgba(234,227,211,0.4);">Department 02 &middot; The Sky</span>
-        <h2 class="dept-heading" style="color: var(--paper-on-midnight); font-size: clamp(1.8rem,3vw,2.6rem);">
-          The sky above you,<br>computed to the minute.
-        </h2>
-        <p style="color: var(--paper-on-midnight); opacity:0.82; max-width:42ch; margin-top: var(--sp-2); line-height:1.7; font-family: var(--font-serif); font-size: clamp(1rem, 1.4vw, 1.15rem);">
+      <!-- Plate I copy -->
+      <div class="sky-tonight-copy">
+        <p class="ap-display-kicker">Plate I</p>
+        <h3 id="plate-i-heading" class="ap-chapter-title">The sky above you, computed to the minute.</h3>
+        <p class="ap-chapter-lead">
           Planetary positions, the Moon's exact phase, tonight's transits — all computed fresh in your browser, for the moment you open the page. No cached data. No server call. No approximations.
         </p>
-        <div style="margin-top: var(--sp-5); display:flex; gap: var(--sp-2); flex-wrap:wrap;">
-          <a href="ephemeris.html" class="btn-press" style="background: var(--paper-on-midnight); color: var(--midnight);">
-            Tonight's sky
-          </a>
-          <a href="transits.html" class="btn-quiet" style="border-color: rgba(234,227,211,0.35); color: var(--paper-on-midnight);">
-            Current transits
-          </a>
+        <div class="sky-tonight-ctas">
+          <a href="ephemeris.html" class="btn-press sky-tonight-btn">Tonight's sky</a>
+          <a href="transits.html" class="btn-quiet sky-tonight-btn sky-tonight-btn--ghost">Current transits</a>
         </div>
       </div>
     </div>
@@ -1110,13 +1160,15 @@
 <!-- ============================================================
      § 5 · THE CONTENTS (Departments)
      ============================================================ -->
-<section class="department section-bleed" aria-labelledby="contents-heading">
+<section class="department section-bleed ap-chapter" id="instrumentsChapter" aria-labelledby="contents-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">Everything you can explore</span>
-    <h2 id="contents-heading" class="dept-heading">The instruments</h2>
-    <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:52ch;">
-      Five ways into your sky — all built on real planetary mathematics, free to start, private by design.
-    </p>
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">Everything you can explore</p>
+      <h2 id="contents-heading" class="ap-chapter-title">The instruments</h2>
+      <p class="ap-chapter-lead" style="max-width:52ch;">
+        Five ways into your sky — all built on real planetary mathematics, free to start, private by design.
+      </p>
+    </header>
 
     <ul class="dept-list" role="list">
       <li>
@@ -1124,9 +1176,7 @@
           <span class="dept-number">01</span>
           <div>
             <span class="dept-title">Your Chart</span>
-            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
-              Natal chart · Rising sign · Aspects · House cusps
-            </span>
+            <span class="dept-list-dek">Natal chart · Rising sign · Aspects · House cusps</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
@@ -1136,9 +1186,7 @@
           <span class="dept-number">02</span>
           <div>
             <span class="dept-title">The Sky</span>
-            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
-              Planetary ephemeris · Tonight's sky · Transits · Moon phase
-            </span>
+            <span class="dept-list-dek">Planetary ephemeris · Tonight's sky · Transits · Moon phase</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
@@ -1148,9 +1196,7 @@
           <span class="dept-number">03</span>
           <div>
             <span class="dept-title">Daily</span>
-            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
-              Daily horoscope · Life path number · Sign season briefing
-            </span>
+            <span class="dept-list-dek">Daily horoscope · Life path number · Sign season briefing</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
@@ -1160,9 +1206,7 @@
           <span class="dept-number">04</span>
           <div>
             <span class="dept-title">Readings</span>
-            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
-              Cosmic Story · Deep Reading report · Natal Sky print
-            </span>
+            <span class="dept-list-dek">Cosmic Story · Deep Reading report · Natal Sky print</span>
           </div>
           <span class="dept-badge">Paid</span>
         </a>
@@ -1172,9 +1216,7 @@
           <span class="dept-number">05</span>
           <div>
             <span class="dept-title">The Library</span>
-            <span style="display:block; font-family:var(--font-ui); font-size:0.82rem; color:var(--ink-faded); margin-top:2px;">
-              Sign guides · Planet meanings · House reference
-            </span>
+            <span class="dept-list-dek">Sign guides · Planet meanings · House reference</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
@@ -1186,10 +1228,13 @@
 <!-- ============================================================
      § 6 · METHOD — three editorial columns
      ============================================================ -->
-<section class="department section-bleed" style="background: var(--paper-leaf);" aria-labelledby="method-heading">
+<section class="department section-bleed ap-chapter ap-chapter--method" id="methodChapter" style="background: var(--paper-leaf);" aria-labelledby="method-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">How it works</span>
-    <h2 id="method-heading" class="dept-heading">How your chart is built</h2>
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">How it works</p>
+      <h2 id="method-heading" class="ap-chapter-title">How your chart is built</h2>
+      <p class="ap-chapter-lead">Three steps from birth data to a chart computed privately on your device — no account, no server call.</p>
+    </header>
     <div class="method-grid">
       <div class="method-step">
         <span class="step-num">Step 01</span>
@@ -1207,16 +1252,34 @@
         <p>A full natal wheel and written interpretation — sign by sign, house by house — that speaks to who you actually are, not a generic paragraph written for your sun sign.</p>
       </div>
     </div>
+    <div class="ap-mini-trust" role="list" aria-label="Computation guarantees">
+      <div class="ap-mini-trust__item" role="listitem">
+        <span class="ap-mini-trust__mark" aria-hidden="true">✓</span>
+        <span>VSOP87 ephemeris — arc-second accuracy</span>
+      </div>
+      <div class="ap-mini-trust__item" role="listitem">
+        <span class="ap-mini-trust__mark" aria-hidden="true">✓</span>
+        <span>Computed in-browser — birth data never uploaded</span>
+      </div>
+      <div class="ap-mini-trust__item" role="listitem">
+        <span class="ap-mini-trust__mark" aria-hidden="true">✓</span>
+        <span>Open engine — inspect <code>js/ephemeris.js</code> in DevTools</span>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ============================================================
      § 7 · FEATURED READING — 2-col
      ============================================================ -->
-<section class="department section-bleed" aria-labelledby="reading-heading">
+<section class="department section-bleed ap-chapter" id="readingChapter" aria-labelledby="reading-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">Department 04 &middot; Readings</span>
-    <div class="featured-reading" style="margin-top: var(--sp-3);">
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">Readings</p>
+      <h2 id="reading-heading" class="ap-chapter-title">A cosmic story</h2>
+      <p class="ap-chapter-lead">A personalised written reading — four pages of plain-language chart interpretation drawn from your exact planetary positions.</p>
+    </header>
+    <div class="featured-reading ap-reading-grid">
 
       <!-- Natal wheel SVG plate -->
       <figure class="plate" aria-hidden="true">
@@ -1230,7 +1293,7 @@
             <style>
               .nw-ring  { fill:none; stroke:var(--hairline); stroke-width:1; }
               .nw-spoke { stroke:rgba(26,27,30,0.08); stroke-width:0.7; }
-              .nw-glph  { font-family:'AstroGlyph',serif; font-size:12px; fill:var(--ink-faded); }
+              .nw-glph  { font-family:'AstroGlyph',serif; font-size:12px; fill:var(--ink); opacity:0.9; }
               .nw-house { font-family:'IBM Plex Mono',monospace; font-size:8px; fill:var(--brass); }
               .nw-asp   { stroke:rgba(47,93,140,0.25); stroke-width:0.8; }
               .nw-planet{ fill:var(--ink); }
@@ -1283,14 +1346,10 @@
       </figure>
 
       <!-- Pull quote + CTA -->
-      <div>
-        <h2 id="reading-heading" style="font-size: clamp(1.4rem,2.2vw,1.9rem); margin-bottom: var(--sp-3);">A Cosmic Story</h2>
+      <div class="ap-reading-copy">
         <blockquote class="pull-quote" style="border-left: 2px solid var(--brass); padding-left: var(--sp-2); margin-bottom: var(--sp-3);">
           "Your Sun in Cancer in the 10th house pulls public life into emotional territory — authority built on care, not dominance. The Moon in Scorpio sharpens every intuition into an instrument."
         </blockquote>
-        <p style="font-size:0.92rem; color:var(--ink-faded); margin-bottom: var(--sp-3); max-width:44ch; font-family:var(--font-ui);">
-          A personalised written reading — four pages of plain-language chart interpretation drawn from your exact planetary positions.
-        </p>
         <a href="cosmic-story.html" class="btn-quiet">Read a cosmic story &rarr;</a>
       </div>
 
@@ -1299,30 +1358,51 @@
 </section>
 
 <!-- ============================================================
+     § SKY GUIDES — editorial (Travel Radar parity)
+     ============================================================ -->
+<section class="department section-bleed sky-guides-block ap-chapter" id="skyGuidesWrap" aria-labelledby="sky-guides-heading">
+  <div class="page-wrap">
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">Sky intelligence</p>
+      <h2 id="sky-guides-heading" class="ap-chapter-title">Sky guides</h2>
+      <p class="ap-chapter-lead">Short guides on chart accuracy, transits, and reading your sky — each links to computed tools, never generic sun-sign filler.</p>
+    </header>
+    <p class="sg-trust-note" id="skyGuidesTrust">VSOP87 ephemeris · computed on your device · no generic sun-sign filler</p>
+    <div id="skyGuidesFilter" class="sg-filter-slot"></div>
+    <div class="sg-layout">
+      <div id="skyGuidesHero" class="sg-hero-slot"></div>
+      <div id="skyGuidesOut" class="sg-out" aria-live="polite"><p class="sg-loading" role="status">Loading sky guides…</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      § 8 · THE SIGN LIBRARY — 12-entry index
      ============================================================ -->
-<section class="department section-bleed" style="background: var(--paper-leaf);" aria-labelledby="library-heading">
+<section class="department section-bleed ap-chapter" id="libraryChapter" style="background: var(--paper-leaf);" aria-labelledby="library-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">Department 05 &middot; The Library</span>
-    <h2 id="library-heading" class="dept-heading">The twelve signs</h2>
-    <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:48ch;">
-      What does it actually mean to be a Scorpio rising, or to have your Moon in Capricorn? Find your signs here — character, planet, element, and what each placement says about you.
-    </p>
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">The library</p>
+      <h2 id="library-heading" class="ap-chapter-title">The twelve signs</h2>
+      <p class="ap-chapter-lead" style="max-width:48ch;">
+        What does it actually mean to be a Scorpio rising, or to have your Moon in Capricorn? Find your signs here — character, planet, element, and what each placement says about you.
+      </p>
+    </header>
     <nav aria-label="Zodiac sign library">
-      <div class="sign-index" role="list">
-        <a href="aries.html"       class="sign-index-entry" role="listitem"><span class="sign-glyph">♈</span><span class="sign-name">Aries</span></a>
-        <a href="taurus.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♉</span><span class="sign-name">Taurus</span></a>
-        <a href="gemini.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♊</span><span class="sign-name">Gemini</span></a>
-        <a href="cancer.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♋</span><span class="sign-name">Cancer</span></a>
-        <a href="leo.html"         class="sign-index-entry" role="listitem"><span class="sign-glyph">♌</span><span class="sign-name">Leo</span></a>
-        <a href="virgo.html"       class="sign-index-entry" role="listitem"><span class="sign-glyph">♍</span><span class="sign-name">Virgo</span></a>
-        <a href="libra.html"       class="sign-index-entry" role="listitem"><span class="sign-glyph">♎</span><span class="sign-name">Libra</span></a>
-        <a href="scorpio.html"     class="sign-index-entry" role="listitem"><span class="sign-glyph">♏</span><span class="sign-name">Scorpio</span></a>
-        <a href="sagittarius.html" class="sign-index-entry" role="listitem"><span class="sign-glyph">♐</span><span class="sign-name">Sagittarius</span></a>
-        <a href="capricorn.html"   class="sign-index-entry" role="listitem"><span class="sign-glyph">♑</span><span class="sign-name">Capricorn</span></a>
-        <a href="aquarius.html"    class="sign-index-entry" role="listitem"><span class="sign-glyph">♒</span><span class="sign-name">Aquarius</span></a>
-        <a href="pisces.html"      class="sign-index-entry" role="listitem"><span class="sign-glyph">♓</span><span class="sign-name">Pisces</span></a>
-      </div>
+      <ul class="sign-index">
+        <li><a href="aries.html"       class="sign-index-entry"><span class="sign-glyph">♈</span><span class="sign-name">Aries</span></a></li>
+        <li><a href="taurus.html"      class="sign-index-entry"><span class="sign-glyph">♉</span><span class="sign-name">Taurus</span></a></li>
+        <li><a href="gemini.html"      class="sign-index-entry"><span class="sign-glyph">♊</span><span class="sign-name">Gemini</span></a></li>
+        <li><a href="cancer.html"      class="sign-index-entry"><span class="sign-glyph">♋</span><span class="sign-name">Cancer</span></a></li>
+        <li><a href="leo.html"         class="sign-index-entry"><span class="sign-glyph">♌</span><span class="sign-name">Leo</span></a></li>
+        <li><a href="virgo.html"       class="sign-index-entry"><span class="sign-glyph">♍</span><span class="sign-name">Virgo</span></a></li>
+        <li><a href="libra.html"       class="sign-index-entry"><span class="sign-glyph">♎</span><span class="sign-name">Libra</span></a></li>
+        <li><a href="scorpio.html"     class="sign-index-entry"><span class="sign-glyph">♏</span><span class="sign-name">Scorpio</span></a></li>
+        <li><a href="sagittarius.html" class="sign-index-entry"><span class="sign-glyph">♐</span><span class="sign-name">Sagittarius</span></a></li>
+        <li><a href="capricorn.html"   class="sign-index-entry"><span class="sign-glyph">♑</span><span class="sign-name">Capricorn</span></a></li>
+        <li><a href="aquarius.html"    class="sign-index-entry"><span class="sign-glyph">♒</span><span class="sign-name">Aquarius</span></a></li>
+        <li><a href="pisces.html"      class="sign-index-entry"><span class="sign-glyph">♓</span><span class="sign-name">Pisces</span></a></li>
+      </ul>
     </nav>
   </div>
 </section>
@@ -1330,10 +1410,13 @@
 <!-- ============================================================
      § 9 · ON ACCURACY & PRIVACY — journal Q&A
      ============================================================ -->
-<section class="department section-bleed" aria-labelledby="qa-heading">
+<section class="department section-bleed ap-chapter" id="qaChapter" aria-labelledby="qa-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">On accuracy &amp; privacy</span>
-    <h2 id="qa-heading" class="dept-heading">Common questions</h2>
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">On accuracy &amp; privacy</p>
+      <h2 id="qa-heading" class="ap-chapter-title">Common questions</h2>
+      <p class="ap-chapter-lead">How we compute your chart, what stays on your device, and what you can verify yourself.</p>
+    </header>
     <ul class="qa-list" role="list">
       <li class="qa-item" role="listitem">
         <span class="qa-num">01</span>
@@ -1378,13 +1461,29 @@
 <!-- ============================================================
      § 10 · THE SHOP — Editions
      ============================================================ -->
-<section class="department section-bleed" style="background: var(--paper-leaf);" aria-labelledby="shop-heading">
+<section class="department section-bleed ap-chapter ap-chapter--shop" id="shopChapter" style="background: var(--paper-leaf);" aria-labelledby="shop-heading">
   <div class="page-wrap">
-    <span class="dept-eyebrow">Department &middot; The Shop</span>
-    <h2 id="shop-heading" class="dept-heading">Editions</h2>
-    <p class="standfirst" style="margin-bottom: var(--sp-5); max-width:50ch;">
-      Three ways to go deeper — each built from your exact chart, not a template. Written for you, delivered in minutes.
-    </p>
+    <header class="ap-chapter-head">
+      <p class="ap-display-kicker">The shop</p>
+      <h2 id="shop-heading" class="ap-chapter-title">Editions</h2>
+      <p class="ap-chapter-lead" style="max-width:50ch;">
+        Three ways to go deeper — each built from your exact chart, not a template. Written for you, delivered in minutes.
+      </p>
+    </header>
+    <div class="ap-shop-trust" role="list" aria-label="Shop guarantees">
+      <div class="ap-shop-trust__item" role="listitem">
+        <span class="ap-shop-trust__mark" aria-hidden="true">✓</span>
+        <span>Every edition plotted from your VSOP87 natal chart</span>
+      </div>
+      <div class="ap-shop-trust__item" role="listitem">
+        <span class="ap-shop-trust__mark" aria-hidden="true">✓</span>
+        <span>Digital readings delivered as PDF within minutes</span>
+      </div>
+      <div class="ap-shop-trust__item" role="listitem">
+        <span class="ap-shop-trust__mark" aria-hidden="true">✓</span>
+        <span>No template filler — written for your placements alone</span>
+      </div>
+    </div>
     <ul class="edition-list" role="list">
       <li class="edition-item featured" role="listitem">
         <div>
@@ -1417,11 +1516,13 @@
 <!-- ============================================================
      § 11 · COLOPHON FOOTER (.night-watch)
      ============================================================ -->
+</main>
+
 <footer class="night-watch section-bleed" aria-label="Site footer">
   <div class="page-wrap">
     <div class="footer-grid">
       <div class="footer-col">
-        <h4>Tools</h4>
+        <h3>Tools</h3>
         <ul>
           <li><a href="chart.html">Natal chart</a></li>
           <li><a href="ephemeris.html">Sky tonight</a></li>
@@ -1431,7 +1532,7 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Shop</h4>
+        <h3>Shop</h3>
         <ul>
           <li><a href="cosmic-story.html">Cosmic Story</a></li>
           <li><a href="shop.html">Deep Reading</a></li>
@@ -1439,7 +1540,7 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Learn</h4>
+        <h3>Learn</h3>
         <ul>
           <li><a href="aries.html">Sign library</a></li>
           <li><a href="horoscope.html">Daily horoscope</a></li>
@@ -1447,7 +1548,7 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Meta</h4>
+        <h3>Meta</h3>
         <ul>
           <li><a href="why.html">Why Astro Precise?</a></li>
           <li><a href="accuracy.html">The mathematics</a></li>
@@ -1486,14 +1587,29 @@
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script src="js/ap-zodiac-constants.js"></script>
-<script src="js/ephemeris.js"></script>
-<script>
+<script defer src="js/ap-zodiac-constants.js?v=529"></script>
+<script defer src="js/ephemeris.js"></script>
+<script defer>
 (function () {
   'use strict';
 
+  function whenReady(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  whenReady(function () {
   // ── 1. Live dateline: Sun & Moon sign for today ──────────────
+  function fillDateline(tries) {
+  tries = tries || 0;
   try {
+    if (!window.AstroEphemeris || typeof window.AstroEphemeris.calculateNatalChart !== "function") {
+      if (tries < 60) return setTimeout(function () { fillDateline(tries + 1); }, 40);
+      return;
+    }
     var now = new Date();
     var y = now.getUTCFullYear();
     var m = now.getUTCMonth() + 1;
@@ -1507,7 +1623,6 @@
     var dateStr = d + ' ' + monthNames[m - 1] + ' ' + y;
 
     // Calculate chart for today noon UTC, lat 0 lon 0 (sky positions only)
-    if (window.AstroEphemeris && typeof window.AstroEphemeris.calculateNatalChart === 'function') {
       var chart = window.AstroEphemeris.calculateNatalChart(y, m, d, 12, 0, 0, 0, 'Placidus', 'mean');
       var sunSign  = chart.positions.sun.sign;
       var moonSign = chart.positions.moon.sign;
@@ -1525,11 +1640,12 @@
       var nightMoon = document.querySelectorAll('[data-live="moon-sign"]');
       nightSun.forEach(function(el)  { el.textContent = sunSign; });
       nightMoon.forEach(function(el) { el.textContent = moonSign; });
-    }
   } catch (e) {
     // Graceful fallback — static dateline already in DOM
     console.info('Astro Precise ephemeris dateline: ', e.message);
   }
+  }
+  fillDateline();
 
   // ── 2. Hero chart form submit ─────────────────────────────────
   var form  = document.getElementById('hero-chart-form');
@@ -1572,10 +1688,11 @@
     });
   }
 
+  });
 }());
 </script>
 
-<script>
+<script defer>
 /* ── Post-load hydration: Cosmic Story planets + moon phase + epithet ── */
 (function () {
   'use strict';
@@ -1687,6 +1804,73 @@
 
 }());
 </script>
+
+<div id="apToast" role="status" aria-live="polite"></div>
+
+<div id="sgOverlay" class="sg-overlay" hidden role="dialog" aria-modal="true" aria-label="Sky guide reader">
+  <div class="sg-overlay-scrim" id="sgOverlayScrim"></div>
+  <div class="sg-overlay-sheet">
+    <div class="sg-overlay-head">
+      <button type="button" class="sg-overlay-close" id="sgOverlayClose" aria-label="Close guide">✕</button>
+    </div>
+    <div id="sgOverlayBody"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var V = "529";
+  function prefetchGuidesData() {
+    if (prefetchGuidesData.done) return;
+    prefetchGuidesData.done = true;
+    var link = document.createElement("link");
+    link.rel = "prefetch";
+    link.href = "data/sky_guides.json";
+    link.as = "fetch";
+    document.head.appendChild(link);
+  }
+  function loadSkyGuides() {
+    if (loadSkyGuides.done) return;
+    loadSkyGuides.done = true;
+    prefetchGuidesData();
+    var s = document.createElement("script");
+    s.src = "js/sky-guides.js?v=" + V;
+    s.defer = true;
+    document.body.appendChild(s);
+  }
+  var eager = /guides|story=/.test((location.hash || "") + (location.search || ""));
+  function watch() {
+    if (eager) { loadSkyGuides(); return; }
+    var guideMount = document.getElementById("skyGuidesWrap");
+    var prefetchMount = document.getElementById("methodChapter");
+    if (!guideMount || typeof IntersectionObserver === "undefined") {
+      loadSkyGuides();
+      return;
+    }
+    if (prefetchMount) {
+      var prefetchObs = new IntersectionObserver(function (entries) {
+        if (entries[0] && entries[0].isIntersecting) {
+          prefetchGuidesData();
+          prefetchObs.disconnect();
+        }
+      }, { rootMargin: "320px 0px" });
+      prefetchObs.observe(prefetchMount);
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      if (entries[0] && entries[0].isIntersecting) { loadSkyGuides(); obs.disconnect(); }
+    }, { rootMargin: "280px 0px" });
+    obs.observe(guideMount);
+    setTimeout(loadSkyGuides, 6000);
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", watch, { once: true });
+  } else {
+    watch();
+  }
+})();
+</script>
+<script defer src="js/ap-award-orrery.js?v=529"></script>
+<script defer src="js/ap-horizon-features.js?v=529"></script>
 
 <script>
 /* Service worker — registered here because this standalone homepage does not load

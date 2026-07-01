@@ -259,6 +259,18 @@ body::after { content: none; }
 img, svg  { display: block; max-width: 100%; }
 a         { color: var(--ap-link); text-decoration: none; transition: color var(--transition-fast); }
 a:hover   { color: var(--gold-light); }
+
+/* Prose links — distinguishable without color alone (axe link-in-text-block) */
+p a[href],
+li a[href],
+.lede a,
+.instrument-lede a,
+.standfirst a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  font-weight: 600;
+}
 button    { cursor: pointer; font-family: inherit; }
 input, select, textarea { font-family: inherit; }
 ul, ol    { list-style: none; }

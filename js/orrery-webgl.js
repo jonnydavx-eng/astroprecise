@@ -90,6 +90,10 @@ const RadialBlurShader = {
   const TEX = 'assets/textures/';
   const D2R = Math.PI / 180;
 
+  function isAwardMode() {
+    return !!(document.body && document.body.classList.contains('ap-award-511'));
+  }
+
   // ── Body definitions: schematic orbit radius + display size + texture ──────
   // colour = fallback tint until the texture loads (and night-side ambient base)
   const BODIES = [
@@ -2126,7 +2130,11 @@ const RadialBlurShader = {
     const detail = syncDetailLighting();
     if (scene && scene.fog) {
       scene.fog.density = 0.00045 + galaxyT * 0.00085;
-      scene.fog.color.set(z >= 5.2 ? 0x04020c : z >= 4 ? 0x06041a : z >= 3 ? 0x050c18 : 0x050406);
+      if (isAwardMode()) {
+        scene.fog.color.set(z >= 5.2 ? 0x0c1016 : z >= 4 ? 0x121826 : z >= 3 ? 0x1a2230 : 0x0c1016);
+      } else {
+        scene.fog.color.set(z >= 5.2 ? 0x04020c : z >= 4 ? 0x06041a : z >= 3 ? 0x050c18 : 0x050406);
+      }
     }
     if (renderer) {
       let exp = 1.32 - galaxyT * 0.16 - (1 - earthT) * 0.08;
@@ -2134,8 +2142,13 @@ const RadialBlurShader = {
       renderer.toneMappingExposure = exp;
     }
     if (hemiLight) {
-      hemiLight.color.setHex(galaxyT > 0.35 ? 0x8090b8 : 0x4a6088);
-      hemiLight.intensity = (perfTier === 'high' ? 0.48 : 0.40) * (0.85 + earthT * 0.15);
+      if (isAwardMode()) {
+        hemiLight.color.setHex(galaxyT > 0.35 ? 0x8a9ab8 : 0x5a6a88);
+        hemiLight.intensity = (perfTier === 'high' ? 0.52 : 0.44) * (0.88 + earthT * 0.14);
+      } else {
+        hemiLight.color.setHex(galaxyT > 0.35 ? 0x8090b8 : 0x4a6088);
+        hemiLight.intensity = (perfTier === 'high' ? 0.48 : 0.40) * (0.85 + earthT * 0.15);
+      }
     }
     if (bloomPass) {
       if (detail && z <= 2.4) {
