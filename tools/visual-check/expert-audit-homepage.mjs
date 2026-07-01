@@ -13,7 +13,7 @@ const OUT = join(__dir, "out");
 mkdirSync(OUT, { recursive: true });
 
 const BASE = process.env.AP_PREVIEW || "http://localhost:8790";
-const VERSION = process.env.AP_VERSION || "ap-v532";
+const VERSION = process.env.AP_VERSION || "ap-v533";
 
 const WEIGHTS = {
   visualClarity: 15,

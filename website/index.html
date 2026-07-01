@@ -29,7 +29,7 @@
   <!-- Fonts & design system -->
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/ephemeris.css">
-  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=529">
+  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=533">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
 <body class="ap-award-511">
@@ -1291,15 +1291,15 @@
         >
           <defs>
             <style>
-              .nw-ring  { fill:none; stroke:var(--hairline); stroke-width:1; }
-              .nw-spoke { stroke:rgba(26,27,30,0.08); stroke-width:0.7; }
-              .nw-glph  { font-family:'AstroGlyph',serif; font-size:12px; fill:var(--ink); opacity:0.9; }
-              .nw-house { font-family:'IBM Plex Mono',monospace; font-size:8px; fill:var(--brass); }
-              .nw-asp   { stroke:rgba(47,93,140,0.25); stroke-width:0.8; }
-              .nw-planet{ fill:var(--ink); }
+              .nw-ring  { fill:none; stroke:rgba(194,160,94,0.28); stroke-width:1; }
+              .nw-spoke { stroke:rgba(236,230,216,0.12); stroke-width:0.7; }
+              .nw-glph  { font-family:'AstroGlyph',serif; font-size:12px; fill:#ECE6D8; opacity:0.95; }
+              .nw-house { font-family:'IBM Plex Mono',monospace; font-size:8px; fill:#C2A05E; }
+              .nw-asp   { stroke:rgba(111,160,216,0.38); stroke-width:0.8; }
+              .nw-planet{ fill:#ECE6D8; }
             </style>
           </defs>
-          <rect width="300" height="300" fill="var(--paper-leaf)"/>
+          <rect width="300" height="300" fill="#121721"/>
 
           <!-- Rings -->
           <circle cx="150" cy="150" r="140" class="nw-ring"/>
@@ -1347,7 +1347,7 @@
 
       <!-- Pull quote + CTA -->
       <div class="ap-reading-copy">
-        <blockquote class="pull-quote" style="border-left: 2px solid var(--brass); padding-left: var(--sp-2); margin-bottom: var(--sp-3);">
+        <blockquote class="pull-quote ap-pull-quote">
           "Your Sun in Cancer in the 10th house pulls public life into emotional territory — authority built on care, not dominance. The Moon in Scorpio sharpens every intuition into an instrument."
         </blockquote>
         <a href="cosmic-story.html" class="btn-quiet">Read a cosmic story &rarr;</a>
@@ -1587,7 +1587,7 @@
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-zodiac-constants.js?v=529"></script>
+<script defer src="js/ap-zodiac-constants.js?v=533"></script>
 <script defer src="js/ephemeris.js"></script>
 <script defer>
 (function () {
@@ -1819,7 +1819,7 @@
 
 <script>
 (function () {
-  var V = "529";
+  var V = "533";
   function prefetchGuidesData() {
     if (prefetchGuidesData.done) return;
     prefetchGuidesData.done = true;
@@ -1869,8 +1869,8 @@
   }
 })();
 </script>
-<script defer src="js/ap-award-orrery.js?v=529"></script>
-<script defer src="js/ap-horizon-features.js?v=529"></script>
+<script defer src="js/ap-award-orrery.js?v=533"></script>
+<script defer src="js/ap-horizon-features.js?v=533"></script>
 
 <script>
 /* Service worker — registered here because this standalone homepage does not load
