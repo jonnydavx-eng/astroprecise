@@ -65,11 +65,33 @@
   }
   </script>
 
+  <!-- CRITICAL PALETTE — inlined so the award layout paints on-brand from the
+       first frame. ap-horizon-2026.css consumes these tokens (--void/--brass/
+       --night/--paper-leaf/…) but does NOT define them; the full definitions
+       live in css/ephemeris.css, which the homepage only lazy-loads at
+       #skyChapter. Without this block the hero renders on a transparent (white)
+       background with black text until scroll. Keep in sync with the :root in
+       css/ephemeris.css. -->
+  <style id="ap-award-critical-palette">
+:root{
+  --void:#0C1016;--night:#121826;--night-raised:#1A2230;
+  --paper:#0C1016;--paper-leaf:#121826;--ink:#ECE6D8;--ink-faded:#BEB298;
+  --midnight:#0C1016;--warm-midnight:#121826;--paper-on-midnight:#ECE6D8;
+  --meridian:#6FA0D8;--terracotta:#D97B52;--brass:#C2A05E;--sage:#8FB36B;
+  --rose:#D4A882;--hairline:rgba(236,230,216,0.10);
+  --deep-indigo:#1E2D45;--dusk:#3A2E1E;--twilight:#243040;
+  --font-serif:'Cormorant Garamond',Georgia,serif;--font-ui:'Inter',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --sp-1:8px;--sp-2:16px;--sp-3:24px;--sp-4:32px;--sp-5:40px;--sp-6:48px;--sp-8:64px;--sp-13:104px;
+  --reading-measure:66ch;--page-max:1200px;--col-main:1fr;--col-margin:200px;
+}
+html,body{background:#0C1016;}
+  </style>
+
   <!-- Fonts & design system -->
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="preload" href="css/ap-horizon-2026.css?v=564" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=564"></noscript>
+  <link rel="preload" href="css/ap-horizon-2026.css?v=567" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=567"></noscript>
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
@@ -1724,7 +1746,7 @@
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-home-bootstrap.js?v=564"></script>
+<script defer src="js/ap-home-bootstrap.js?v=567"></script>
 <script defer>
 (function () {
   'use strict';
