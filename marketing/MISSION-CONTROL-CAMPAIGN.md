@@ -88,7 +88,7 @@ We never use SpaceX logos, fonts, or trademarked phrases ("Occupy Mars", etc.). 
 ## The funnel (every day, every post)
 
 ```
-Social hook → links.html → free chart (chart.html) → email capture → shop (Lemon Squeezy)
+Social hook → links.html → free chart (chart.html) → email capture → shop (PayPal direct)
 ```
 
 **Honesty rule:** product CTAs only when checkout is live. Shop is **LIVE** (13 SKUs). Newsletter is **LIVE**. Lead with free tools always.
@@ -178,7 +178,7 @@ Goal: first sales. Deep Reading + poster; gift angle for birthdays.
 | Website | https://astroprecise.app | LIVE |
 | Link-in-bio | https://astroprecise.app/links.html | LIVE |
 | Newsletter | https://list.astroprecise.app/subscribe | LIVE |
-| Shop | https://astroprecise.app/shop.html | LIVE (Lemon Squeezy) |
+| Shop | https://astroprecise.app/shop.html | DORMANT until PayPal links pasted (PAYPAL-SETUP.md) |
 | Tips | https://ko-fi.com/astroprecise | LIVE |
 | TikTok | @astroprecise | **CREATE** |
 | Instagram | @astroprecise | **CREATE** |
@@ -214,7 +214,7 @@ Goal: first sales. Deep Reading + poster; gift angle for birthdays.
 | Paid orders | 3 | 30 |
 | Reddit post upvotes (value post) | 50+ | — |
 
-Track via: MailerLite/list dashboard, Lemon Squeezy orders, `?utm_source=` on bio link (add when analytics ready — site has no tracking by design).
+Track via: MailerLite/list dashboard, PayPal Activity (per-SKU payment-link names), `?utm_source=` on bio link (add when analytics ready — site has no tracking by design).
 
 ---
 

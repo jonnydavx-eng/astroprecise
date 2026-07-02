@@ -1,0 +1,320 @@
+{
+  "capturedAt": "2026-07-02T20:38:16.565Z",
+  "base": "http://localhost:8790",
+  "version": "562",
+  "auditLabel": "v548",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "method": "Playwright headless UX journey — full homepage scroll, horoscope dial/reading/chords, chart form+validation+sample tabs, guide overlay scroll lock",
+  "v547FixesExcluded": [
+    "sky skeleton",
+    "go-to-sign prompt",
+    "sky board expand",
+    "chart compact hero",
+    "inline validation",
+    "guides trust dup",
+    "badge glyph",
+    "nav 2col",
+    "scroll lock"
+  ],
+  "v558FixesExcluded": [
+    "sticky reading panel",
+    "collapse planet legend",
+    "hover tooltip",
+    "canvas/svg hover",
+    "explore tabs",
+    "featured product",
+    "centre star",
+    "pulse animation",
+    "personalise chip",
+    "float nav",
+    "icon-only",
+    "vsop87",
+    "ephemeris",
+    "scroll for more",
+    "empty-submit",
+    "is-error",
+    "compare section",
+    "shop chapter",
+    "chart cta",
+    "collective reading"
+  ],
+  "v559FixesExcluded": [
+    "reading mode",
+    "reading-open",
+    "collapse sky",
+    "sky board",
+    "centre-star",
+    "centre hint",
+    "dial-ready",
+    "tabs hint",
+    "pin toast",
+    "sample chart",
+    "esc exit",
+    "r replay",
+    "twelve.this",
+    "hero h1",
+    "typography glitch",
+    "sg-sheet-scrolled",
+    "srp-chart-cta",
+    "ap-gloss",
+    "duplicate feedback",
+    "duplicate toast",
+    "journey probe"
+  ],
+  "v560FixesExcluded": [
+    "ephemeris.css",
+    "onchordhover",
+    "chord hover",
+    "twelve.this",
+    "hero h1",
+    "load 89",
+    "deferred ephemeris"
+  ],
+  "v561FixesExcluded": [
+    "hiddenonhero",
+    "float nav at hero",
+    "dial-ready",
+    "notify",
+    "performance 100",
+    "navux 100",
+    "all dimensions",
+    "backlog"
+  ],
+  "manualBacklogShipped": true,
+  "pages": [
+    {
+      "url": "http://localhost:8790/?v=562",
+      "journey": "homepage-full-scroll+cosmic-flight",
+      "issues": [],
+      "positives": [
+        "Hero H1 readable: \"You're not one of twelve. This chart is yours alone.\"",
+        "Hero instrument 440×440px",
+        "Compare section: 2 column cards",
+        "Sky dateline: Sun in Cancer",
+        "10 sky guide cards loaded",
+        "Guides trust copy not duplicated",
+        "Shop section present (3 items/cards)",
+        "Cosmic flight launch control in hero",
+        "Cosmic flight entry in instruments band",
+        "Cosmic flight overlay opens from hero",
+        "Descent + Space zoom mode toggles present",
+        "Space zoom mode updates toolbar copy",
+        "Cosmic flight closes on Escape"
+      ],
+      "meta": {
+        "guideCards": 10,
+        "h1": "You're not one of twelve. This chart is yours alone.",
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "screenshots": {
+          "hero": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-hero.png",
+          "compare": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-compare.png",
+          "why": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-why.png",
+          "sky": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-sky.png",
+          "guides": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-guides.png",
+          "shop": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-shop.png",
+          "screenshotOpen": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-cosmic-flight-open.png",
+          "screenshotClosed": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-cosmic-flight-closed.png"
+        },
+        "cosmicFlight": {
+          "screenshotOpen": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-cosmic-flight-open.png",
+          "screenshotClosed": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-cosmic-flight-closed.png"
+        }
+      }
+    },
+    {
+      "url": "http://localhost:8790/horoscope.html?v=562",
+      "journey": "horoscope-dial-reading-chords",
+      "issues": [],
+      "positives": [
+        "Sky headline resolved: \"☉ 10° Cancer · ☽ 12° Aquarius\"",
+        "Planet legend populated with sign/degree",
+        "Sky board auto-expanded after dial ready (v547 fix verified)",
+        "Reading panel opened for \"Leo\"",
+        "Reading overview populated",
+        "Love/career reading cards populated",
+        "Canvas transit chords active (3 chords on live dial)",
+        "Go to my sign shows inline chart-first prompt (v547 fix verified)",
+        "Horoscope H1: \"Today's Live Ecliptic\""
+      ],
+      "meta": {
+        "consoleErrors": [],
+        "interactions": {
+          "dial": {
+            "panelOpen": true,
+            "panelAriaHidden": "false",
+            "signName": "Leo",
+            "overviewLen": 315,
+            "loveLen": 189,
+            "selectedLabel": "Reading: Leo",
+            "chordLines": 0,
+            "canvasChords": 3,
+            "transitChordsVisible": true,
+            "transitChordItems": 3,
+            "wheelSvg": true,
+            "interactiveRing": 0,
+            "sphereSelected": "leo"
+          },
+          "dialShot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\horoscope-reading-panel.png",
+          "goToSign": {
+            "noteVisible": true,
+            "noteText": "We need your birth chart first to find your sign.\n            Calculate your chart →",
+            "url": "/horoscope.html"
+          }
+        },
+        "screenshots": {
+          "aboveFold": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\horoscope-above-fold.png",
+          "readingPanel": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\horoscope-reading-panel.png"
+        }
+      }
+    },
+    {
+      "url": "http://localhost:8790/chart.html?v=562",
+      "journey": "chart-form-sample-validation",
+      "issues": [],
+      "positives": [
+        "Chart compact hero verified (hero ~234px)",
+        "Birth city field visible above fold",
+        "Empty submit marks 1 field(s) with .is-error (v547 fix verified)",
+        "Sample chart results visible for \"Sample: Frida Kahlo — Natal Chart\"",
+        "Natal wheel SVG rendered",
+        "Big three: Cancer / Taurus / Leo",
+        "Results tabs switch panels correctly (4/4)"
+      ],
+      "meta": {
+        "consoleErrors": [],
+        "interactions": {
+          "fieldPositions": {
+            "name": {
+              "top": 336,
+              "aboveFold": true
+            },
+            "date": {
+              "top": 459,
+              "aboveFold": true
+            },
+            "city": {
+              "top": 336,
+              "aboveFold": true
+            },
+            "submit": {
+              "top": 811,
+              "aboveFold": true
+            }
+          },
+          "screenshotAboveFold": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\chart-above-fold.png",
+          "emptySubmit": {
+            "errorGroups": 1,
+            "errorMsgs": 3,
+            "toastVisible": false,
+            "firstErrorField": "name-input"
+          },
+          "screenshotValidation": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\chart-empty-validation.png",
+          "sampleChart": {
+            "resultVisible": true,
+            "wheelSvg": true,
+            "bigThree": [
+              "Cancer",
+              "Taurus",
+              "Leo"
+            ],
+            "resultName": "Sample: Frida Kahlo — Natal Chart",
+            "tabs": [
+              {
+                "text": "Overview",
+                "selected": true
+              },
+              {
+                "text": "Planets",
+                "selected": false
+              },
+              {
+                "text": "Houses",
+                "selected": false
+              },
+              {
+                "text": "Aspects",
+                "selected": false
+              }
+            ],
+            "tabPanels": 4
+          },
+          "tabClicks": [
+            {
+              "label": "Overview",
+              "expectedPanel": "tab-overview",
+              "activeId": "tab-overview",
+              "matchesExpected": true,
+              "selected": true,
+              "hasContent": true
+            },
+            {
+              "label": "Planets",
+              "expectedPanel": "tab-planets",
+              "activeId": "tab-planets",
+              "matchesExpected": true,
+              "selected": true,
+              "hasContent": true
+            },
+            {
+              "label": "Houses",
+              "expectedPanel": "tab-houses",
+              "activeId": "tab-houses",
+              "matchesExpected": true,
+              "selected": true,
+              "hasContent": true
+            },
+            {
+              "label": "Aspects",
+              "expectedPanel": "tab-aspects",
+              "activeId": "tab-aspects",
+              "matchesExpected": true,
+              "selected": true,
+              "hasContent": true
+            }
+          ],
+          "screenshotResults": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\chart-sample-results.png"
+        },
+        "screenshots": {
+          "aboveFold": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\chart-above-fold.png",
+          "validation": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\chart-empty-validation.png",
+          "results": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\chart-sample-results.png"
+        }
+      }
+    },
+    {
+      "url": "http://localhost:8790/?v=562#guides",
+      "journey": "sky-guide-overlay-scroll-lock",
+      "issues": [],
+      "positives": [
+        "Sky guide overlay opened on card click",
+        "Body scroll locked (sg-reader-open + overflow:hidden — v547 fix verified)",
+        "Background page did not scroll behind overlay"
+      ],
+      "meta": {
+        "interactions": {
+          "overlay": {
+            "overlayOpen": true,
+            "bodyScrollLock": true,
+            "bodyClass": true,
+            "bodyOverflow": "hidden",
+            "scrollY": 0,
+            "overlayTitle": "Why your rising sign needs your birth time",
+            "bodyLen": 1207
+          },
+          "scrollAttempt": {
+            "before": 7419,
+            "afterAttempt": 0,
+            "locked": true
+          },
+          "screenshotOverlay": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-guide-overlay.png"
+        },
+        "screenshot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\home-guide-overlay.png"
+      }
+    }
+  ],
+  "topFixes": []
+}

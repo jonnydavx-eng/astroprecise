@@ -13,10 +13,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const WEB = join(__dirname, '..', 'website');
 const BASE = process.env.AP_BASE || 'http://localhost:8790';
 
-// Must match tools/commerce-urls.json checkout links (custom Typeform redirect URLs).
-const LS_DEEP = 'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67';
-const LS_POSTER = 'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594';
-const LS_BUNDLE = 'https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7';
+// PayPal-direct migration (2026-07-02): Lemon Squeezy is DEAD and must never
+// reappear in live config. Checkout URLs are per-SKU PayPal payment links in
+// fulfilUrl (may legitimately be '' = dormant); the invariants below assert
+// the config SHAPE, not specific URLs. See PAYPAL-SETUP.md.
+const DEAD_HOST = 'lemonsqueezy.com';
 
 let passed = 0;
 let failed = 0;
@@ -108,12 +109,16 @@ function auditStaticFiles() {
   console.log('\n2. Chart page buttons + commerce config (static)');
 
   const appJs = readFileSync(join(WEB, 'js', 'app.js'), 'utf8');
-  if (!appJs.includes(LS_DEEP)) fail('AP_MON deepReadingUrl', 'missing');
-  else ok('AP_MON deepReadingUrl → Lemon Squeezy Deep Reading');
-  if (!appJs.includes(LS_POSTER)) fail('AP_MON posterUrl');
-  else ok('AP_MON posterUrl → Lemon Squeezy Poster PDF');
-  if (!appJs.includes(LS_BUNDLE)) fail('commerce bundle fulfilUrl');
-  else ok('commerce bundle fulfilUrl → Lemon Squeezy Bundle');
+  if (appJs.includes(DEAD_HOST)) fail('app.js free of dead Lemon Squeezy URLs', 'lemonsqueezy.com found');
+  else ok('app.js free of dead Lemon Squeezy URLs');
+  if (!/paypal:\s*\{\s*me:/.test(appJs)) fail('AP_MON.paypal config present');
+  else ok('AP_MON.paypal config present');
+  for (const field of ['deepReadingUrl:', 'posterUrl:', 'reportUrl:', 'giftUrl:']) {
+    if (!appJs.includes(field)) fail('AP_MON field ' + field.replace(':', ''));
+    else ok('AP_MON field ' + field.replace(':', ''));
+  }
+  if (!appJs.includes('detailsForm:')) fail('per-SKU detailsForm (post-payment Typeform) wiring');
+  else ok('per-SKU detailsForm (post-payment Typeform) wiring');
 
   const chartPage = readFileSync(join(WEB, 'js', 'chart-page.js'), 'utf8');
   for (const id of ['save-btn', 'share-btn', 'print-btn', 'json-btn', 'app-btn', 'poster-btn']) {
@@ -148,8 +153,8 @@ async function auditLivePreview() {
     }
 
     const app = await fetchText(BASE + '/js/app.js');
-    if (!app.body.includes(LS_DEEP)) fail('served app.js deepReadingUrl');
-    else ok('served app.js has live deepReadingUrl');
+    if (app.body.includes(DEAD_HOST)) fail('served app.js free of Lemon Squeezy');
+    else ok('served app.js free of Lemon Squeezy');
 
     const shop = await fetchText(BASE + '/shop.html');
     if (shop.status !== 200) fail('shop.html HTTP');

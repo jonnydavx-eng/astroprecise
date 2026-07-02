@@ -1,0 +1,141 @@
+{
+  "capturedAt": "2026-07-01T20:16:00.000Z",
+  "base": "http://localhost:8790",
+  "version": "546",
+  "viewport": { "width": 1440, "height": 900 },
+  "method": "Playwright headless UX journey — screenshots, scroll sections, console capture, interaction probes",
+  "pages": [
+    {
+      "url": "http://localhost:8790/?v=546",
+      "issues": [
+        "Float section nav (HERO/DIFFERENT/TRUST/…) consumes ~120px right rail; four-column Why cards and compare copy feel cramped against the sidebar",
+        "Compare section layout imbalance: four gold-bullet differentiators sit below only the left card, not aligned in a second row under both columns",
+        "Sky guides section has stray duplicate trust copy above filter chips ('links to computed tools…' + 'VSOP87 ephemeris · computed on your device') — reads like a leaked hero fragment",
+        "Jargon (VSOP87/ephemeris) appears in body cards without an immediate plain-language gloss for first-time visitors",
+        "Hero solar badge renders as 'O EXPERT SOLAR MODEL' — leading glyph looks like a broken/zero character rather than a deliberate icon",
+        "Guide overlay opens on card click but body scroll is not locked (overlayOpen=true, scroll lock false) — background may scroll behind modal"
+      ],
+      "positives": [
+        "Hero sky instrument visible (440×470px) — Expert Solar Model WebGL with live VSOP87 orbits; drag instruction clear",
+        "Hero H1 and standfirst readable on first paint (opacity 1); no scroll-reveal hiding on fresh load",
+        "Live dateline populated: Sun in Cancer · Moon in Capricorn",
+        "Compare section copy is sharp and differentiated (generic apps vs Astro Precise)",
+        "Why section four pillars (chart, readings, daily, synastry) scan well with numbered badges",
+        "Sky chapter shows live planet positions with sign/degree labels and Plate I instrument",
+        "10 sky guide cards load after scroll; filter chips (All guides, Chart, Rising, etc.) functional",
+        "Float nav scroll-spy works (active 'Different' on compare scroll); padding-inline-end 120px when nav visible",
+        "Zero console errors on homepage"
+      ],
+      "meta": {
+        "orreryState": "solar-model-webgl",
+        "guideCards": 10,
+        "h1": "You're not one of twelve.This chart is yours alone.",
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "screenshots": {
+          "hero": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v547\\home-hero.png",
+          "compare": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v547\\home-compare.png",
+          "why": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v547\\home-why.png",
+          "sky": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v547\\home-sky.png",
+          "guides": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v547\\home-guides.png"
+        }
+      }
+    },
+    {
+      "url": "http://localhost:8790/horoscope.html?v=546",
+      "issues": [
+        "'Computing today's sky…' and planet legend placeholders (☉ Sun · …) visible for several seconds on first paint — feels broken before ephemeris resolves",
+        "Planet positions strip and scrolling sky board are collapsed/hidden by default (aria-expanded=false); live data easy to miss",
+        "Sky board toggle shows both labels in accessibility tree ('▾ Scrolling sky board' + '▴ Hide sky board') even when collapsed — confusing screen-reader label",
+        "'Go to my sign' silently redirects to chart.html when no saved natal chart — no inline explanation before navigation",
+        "'Centre star → your natal chart' hint is subtle; new users may not understand dial centre vs sign selection",
+        "Primary daily value (today's reading) is below the large dial + controls — requires extra scroll after picking a sign"
+      ],
+      "positives": [
+        "Horoscope title 'Today's Live Ecliptic' clear above fold with date stamp",
+        "Interactive zodiac dial renders with 12 sign glyphs and drag/tap affordance",
+        "'Go to my sign' and 'Explore a sign' CTAs present and enabled",
+        "Sky data resolves within ~6s with no console errors",
+        "REAL TRANSITS badge reinforces differentiation from generic horoscopes",
+        "Zero console errors after full load"
+      ],
+      "meta": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "screenshot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v547\\horoscope-above-fold.png",
+        "orreryState": "zodiac-dial-canvas (horoscope-wheel-poster, not full 3D orrery)"
+      }
+    },
+    {
+      "url": "http://localhost:8790/chart.html?v=546",
+      "issues": [
+        "Required birth city field is ~1250px below top — not visible above fold; users only see name (+ partial date) on landing",
+        "Calculate My Chart submit button is ~1930px down — more than two viewport scrolls from hero",
+        "Form validation uses toast-only feedback (no .is-error on fields); empty submit easy to miss if toast is off-screen",
+        "Hero subtitle is dense VSOP87/arcminute jargon before user has entered any data",
+        "Large empty vertical space between marketing hero and form card — feels like a dead zone",
+        "Natal wheel mount in DOM with aria-busy=true in results area can imply a chart is loading before any input"
+      ],
+      "positives": [
+        "Birth chart form present with clear section labels (Identity, Moment of Birth, Place of Birth)",
+        "Privacy messaging prominent: 'birth data never leaves your device'",
+        "Place field exists with autocomplete + 'use my current location' once scrolled into view",
+        "Sample chart button available for try-before-you-enter",
+        "Zero console errors on chart page"
+      ],
+      "meta": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "screenshot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v547\\chart-above-fold.png",
+        "fieldPositions": {
+          "name-input": { "top": 767, "aboveFold": true },
+          "date-input": { "top": 953, "aboveFold": false },
+          "city-input": { "top": 1253, "aboveFold": false },
+          "calculate-btn": { "top": 1933, "aboveFold": false }
+        }
+      }
+    }
+  ],
+  "topFixes": [
+    {
+      "priority": 1,
+      "issue": "Chart page buries required birth city (~1250px) and submit (~1930px) below fold — users land on name-only and cannot complete a chart without extensive scrolling",
+      "fix": "Collapse hero on chart.html to a single-line title; move Identity + Moment + Place + submit into one compact above-fold card; sticky 'Calculate' bar on mobile."
+    },
+    {
+      "priority": 1,
+      "issue": "Horoscope shows 'Computing today's sky…' and 'Sun · …' placeholders for several seconds — first impression feels broken",
+      "fix": "SSR or inline-cache yesterday's positions as skeleton; swap to live VSOP87 values with a subtle 'Updated just now' tick; hide legend until coords resolve."
+    },
+    {
+      "priority": 1,
+      "issue": "'Go to my sign' redirects to chart.html without warning when no saved chart — abrupt context switch",
+      "fix": "If !getUserSign(), open inline prompt: 'We need your birth chart first' with CTA to chart.html; only redirect on confirm."
+    },
+    {
+      "priority": 2,
+      "issue": "Chart validation is toast-only — empty submit does not highlight fields",
+      "fix": "On readForm() error, add .is-error to form-group, show .form-error-msg, scrollIntoView the first invalid field."
+    },
+    {
+      "priority": 2,
+      "issue": "Horoscope planet positions and sky board hidden by default — live sky data easy to miss",
+      "fix": "Auto-expand planet legend once ephemeris loads; default sky board open on desktop; simplify toggle to single dynamic label."
+    },
+    {
+      "priority": 2,
+      "issue": "Sky guides section has stray duplicate VSOP87 trust lines above filter chips",
+      "fix": "Remove or relocate #skyGuidesTrust duplicate; keep one trust line inside .ap-chapter-lead only."
+    },
+    {
+      "priority": 3,
+      "issue": "Homepage float nav compresses compare/why four-column grids against right rail",
+      "fix": "Reduce nav to icons-only under 1280px; or stack cards 2×2 when ap-award-511--nav-visible."
+    },
+    {
+      "priority": 3,
+      "issue": "Guide overlay does not lock body scroll — background scrolls behind modal",
+      "fix": "On #sgOverlay open add body.sg-overlay-open { overflow: hidden } and focus trap; remove on close."
+    }
+  ]
+}

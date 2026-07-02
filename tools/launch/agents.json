@@ -81,7 +81,7 @@
       "id": "paid",
       "name": "Paid ads — ONLY after 1 organic sale",
       "owner": "Jonny",
-      "gate": "lemonsqueezy_first_organic_order",
+      "gate": "paypal_first_organic_order",
       "dependsOn": ["compound"]
     }
   ],

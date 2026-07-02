@@ -1,0 +1,97 @@
+{
+  "ok": true,
+  "version": "ap-v562",
+  "checks": [
+    {
+      "name": "chapters opacity 1",
+      "pass": true,
+      "detail": "12 sections"
+    },
+    {
+      "name": "no backdrop-filter",
+      "pass": true,
+      "detail": "0 elements"
+    },
+    {
+      "name": "hero h1 opacity",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "name": "float nav hidden on hero",
+      "pass": true,
+      "detail": "hidden"
+    },
+    {
+      "name": "ap-chapter-head unified",
+      "pass": true,
+      "detail": "0 dept-heading"
+    },
+    {
+      "name": "trust strips",
+      "pass": true,
+      "detail": "method + shop"
+    },
+    {
+      "name": "sky guides >=8 cards",
+      "pass": true,
+      "detail": "10"
+    },
+    {
+      "name": "featured guide badge",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "sticky guide filters",
+      "pass": true,
+      "detail": "sticky"
+    },
+    {
+      "name": "chart finder 5 links",
+      "pass": true,
+      "detail": "open"
+    },
+    {
+      "name": "finder escape closes",
+      "pass": true,
+      "detail": "closed"
+    },
+    {
+      "name": "float nav rail padding",
+      "pass": true,
+      "detail": "120px navVisible=false"
+    },
+    {
+      "name": "scroll-spy",
+      "pass": true,
+      "detail": "is-active + aria-current"
+    },
+    {
+      "name": "Plate I in skyChapter",
+      "pass": true,
+      "detail": "present"
+    },
+    {
+      "name": "guide deep link",
+      "pass": true,
+      "detail": "retrograde-survival"
+    },
+    {
+      "name": "invalid guide hash",
+      "pass": true,
+      "detail": "toast or closed overlay"
+    },
+    {
+      "name": "index axe 0",
+      "pass": true,
+      "detail": "clean"
+    },
+    {
+      "name": "no pageerror",
+      "pass": true,
+      "detail": "clean"
+    }
+  ],
+  "errors": []
+}

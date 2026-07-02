@@ -1,0 +1,137 @@
+{
+  "version": "ap-v523",
+  "capturedAt": "2026-07-01T17:01:06.985Z",
+  "checks": {
+    "chapters": {
+      "count": 11,
+      "ids": [
+        "heroChapter",
+        "trustChapter",
+        "whyChapter",
+        "skyChapter",
+        "instrumentsChapter",
+        "methodChapter",
+        "readingChapter",
+        "skyGuidesWrap",
+        "libraryChapter",
+        "qaChapter",
+        "shopChapter"
+      ],
+      "h1": 1,
+      "h2": 9
+    },
+    "chapterIds": [
+      "heroChapter",
+      "trustChapter",
+      "whyChapter",
+      "skyChapter",
+      "instrumentsChapter",
+      "methodChapter",
+      "readingChapter",
+      "skyGuidesWrap",
+      "libraryChapter",
+      "qaChapter",
+      "shopChapter"
+    ],
+    "chapterHeadCount": 9,
+    "deptHeadingCount": 0,
+    "deptEyebrowCount": 0,
+    "plateInSkyChapter": true,
+    "floatNav": {
+      "hiddenOnHero": true,
+      "linkCount": 9,
+      "scrollSpy": true,
+      "activeLink": "Guides",
+      "badgeOverlap": true,
+      "ariaCurrent": "location"
+    },
+    "backdrop": 0,
+    "guideCards": 10,
+    "trustStrip": true,
+    "qaChapter": true,
+    "methodTrust": true,
+    "shopTrust": true,
+    "sgFeaturedBadge": true,
+    "sgFilterContrast": true,
+    "lazySkyGuides": true,
+    "prefetchGuides": true,
+    "sgStickyFilter": true,
+    "inkFadedBodyInMain": 0,
+    "contrast": [
+      {
+        "color": "rgb(236, 230, 216)",
+        "opacity": "1",
+        "fontSize": "76.8px"
+      },
+      {
+        "color": "rgb(236, 230, 216)",
+        "opacity": "1",
+        "fontSize": "18.9px"
+      },
+      {
+        "color": "rgb(236, 230, 216)",
+        "opacity": "1",
+        "fontSize": "18px"
+      },
+      {
+        "color": "rgb(236, 230, 216)",
+        "opacity": "0.92",
+        "fontSize": "17.1px"
+      },
+      {
+        "color": "rgb(236, 230, 216)",
+        "opacity": "0.92",
+        "fontSize": "17.1px"
+      },
+      {
+        "color": "rgb(236, 230, 216)",
+        "opacity": "0.92",
+        "fontSize": "15.84px"
+      }
+    ],
+    "heroH1Opacity": "1",
+    "consoleErrors": [],
+    "perf": {
+      "dcl": 202,
+      "load": 239,
+      "resources": 18
+    },
+    "mobile": {
+      "heroOverflow": false,
+      "floatNav": "flex",
+      "floatNavVisible": true,
+      "heroGridCols": "310px",
+      "heroIllustrationVisible": true,
+      "deptBadgeWrap": "2 auto",
+      "navActiveIndicator": true
+    },
+    "axe": {
+      "violations": 0,
+      "ids": []
+    }
+  },
+  "scores": {
+    "visualClarity": 95,
+    "a11y": 92,
+    "structure": 96,
+    "navUx": 96,
+    "contentHierarchy": 96,
+    "guides": 96,
+    "mobile": 96,
+    "performance": 90,
+    "trustCredibility": 94,
+    "total": 95
+  },
+  "weights": {
+    "visualClarity": 15,
+    "a11y": 15,
+    "structure": 12,
+    "navUx": 10,
+    "contentHierarchy": 12,
+    "guides": 10,
+    "mobile": 12,
+    "performance": 8,
+    "trustCredibility": 6
+  },
+  "issues": []
+}

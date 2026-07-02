@@ -136,8 +136,8 @@
         <p class="shop-hero-lede">At the moment you were born, the sky was arranged in a pattern that never repeats. We render that pattern with the same planetary mathematics astronomers use — privately, on your device — then translate it into readings, prints, and keepsakes.</p>
         <p class="shop-hero-turnaround">Rendered to your birth data · prints &amp; apparel ship in 2–7 business days</p>
         <div class="shop-hero-stat" role="group" aria-label="Shop highlights">
-          <!-- Live-piece count: single source of truth is the count of AP_MON.commerce.products with isLive (fulfilUrl set). Currently 13 of 17 catalogue SKUs are live (4 jewellery pieces are fulfilUrl:'' placeholders). The `13` literal is the correct fallback; js/shop-commerce.js overwrites [data-live-count] elements with the derived live count so it never drifts. -->
-          <div class="shop-hero-stat__item"><span class="shop-hero-stat__n" data-live-count>13</span><span class="shop-hero-stat__l">Live pieces</span></div>
+          <!-- Catalogue size is count-independent and always true; the buyable count lives in the section title below via [data-live-count] + the data-when-live/-dormant toggles (js/shop-commerce.js updateLiveCounts). Since the PayPal migration (2026-07-02) ZERO live is a real state — never claim pieces are buyable statically. -->
+          <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">17</span><span class="shop-hero-stat__l">Personalised pieces</span></div>
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">24–48h</span><span class="shop-hero-stat__l">PDF delivery</span></div>
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">VSOP87</span><span class="shop-hero-stat__l">Arcminute sky</span></div>
         </div>
@@ -148,9 +148,9 @@
     <section class="shop-live-section" id="shopc-featured" aria-label="Available now">
       <div class="container">
         <div class="shopc-featured__intro">
-          <!-- Count derived from live (fulfilUrl-set) products — see [data-live-count] note in the hero. 13 live; jewellery is on the loom (coming soon), not yet live. -->
-          <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — <span data-live-count>13</span> live pieces</h2>
-          <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h; prints &amp; apparel rendered to your data, shipped in 2–7 business days. Secure checkout.</p>
+          <!-- Dual copy: JS (updateLiveCounts) shows data-when-live when any SKU is buyable, data-when-dormant when none are. Static default = dormant (the truthful state until PayPal links are pasted — PAYPAL-SETUP.md). -->
+          <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> <span data-when-live hidden>Available now — <span data-live-count>0</span> live pieces</span><span data-when-dormant>The collection — checkout opening soon</span></h2>
+          <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h; prints &amp; apparel rendered to your data, shipped in 2–7 business days.<span data-when-live hidden> Secure checkout.</span><span data-when-dormant> Save your basket and leave your email — we&rsquo;ll tell you the instant checkout opens.</span></p>
         </div>
         <div class="shopc-featured__grid">
           <article class="shopc-featured__card" data-product-id="deep-reading">
@@ -539,8 +539,8 @@
           </article>
         </div>
         <p style="text-align:center;color:var(--silver);font-size:0.875rem;line-height:1.7;max-width:560px;margin:var(--space-8) auto 0;">
-          <!-- Single source of truth for the live count is [data-live-count] (see hero note): 13 live of 17 catalogue SKUs; the 4 jewellery pieces are coming soon, not live. -->
-          <span data-live-count>13</span> pieces are live now — PDFs deliver in 24–48 hours; prints, apparel &amp; gift boxes are made to order after checkout. The jewellery collection is on the loom (coming soon).
+          <!-- Dual copy toggled by updateLiveCounts(); static default = dormant (truthful until PayPal links land — PAYPAL-SETUP.md). -->
+          <span data-when-live hidden><span data-live-count>0</span> pieces are live now — PDFs deliver in 24–48 hours; prints, apparel &amp; gift boxes are made to order after checkout.</span><span data-when-dormant>Checkout is opening soon — once live, PDFs deliver in 24–48 hours; prints, apparel &amp; gift boxes are made to order after checkout.</span> The jewellery collection is on the loom (coming soon).
           Gifts ship as a PDF voucher — the recipient redeems with their own birth details, so no birth data is entered here.
           One-time purchases only — your cart is saved on this device.
         </p>

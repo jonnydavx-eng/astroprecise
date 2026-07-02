@@ -853,8 +853,8 @@ window.AstroShop = (() => {
     const others = featured.filter(p => p.id !== 'reading-poster-bundle');
     host.innerHTML = `<div class="container">
       <div class="shopc-featured__intro">
-        <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — ${products().filter(p => p.available !== false && isLive(p)).length} live pieces</h2>
-        <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order. Secure checkout.</p>
+        <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ${liveProductCount() > 0 ? `Available now — ${liveProductCount()} live pieces` : 'The collection — checkout opening soon'}</h2>
+        <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}</p>
       </div>
       <div class="shopc-featured__grid">
         ${others[0] ? featuredCard(others[0]) : ''}
@@ -876,18 +876,20 @@ window.AstroShop = (() => {
   // Single source of truth for the user-facing "live pieces" count.
   // Counts products that are buyable RIGHT NOW (available && isLive, i.e.
   // fulfilUrl set) — the same gate the buy buttons / cart / schema use — and
-  // writes it into every [data-live-count] element in the page. The static
-  // HTML ships the correct literal (13) as a no-JS fallback; this keeps it from
-  // drifting when products go live or a fulfilUrl is added/removed in AP_MON.
+  // writes it into every [data-live-count] element in the page. Zero live is
+  // a REAL state since the PayPal migration (2026-07-02): the page then swaps
+  // to its dormant copy via [data-when-live]/[data-when-dormant] toggles
+  // instead of ever claiming pieces are buyable.
   function liveProductCount() {
     return products().filter(p => p.available !== false && isLive(p)).length;
   }
   function updateLiveCounts() {
-    const nodes = document.querySelectorAll('[data-live-count]');
-    if (!nodes.length) return;
+    if (!products().length) return; // config failed to load — keep static fallback
     const n = liveProductCount();
-    if (!n) return; // never blank the fallback if config failed to load
-    nodes.forEach(el => { el.textContent = String(n); });
+    document.querySelectorAll('[data-live-count]').forEach(el => { el.textContent = String(n); });
+    document.body.classList.toggle('shop--dormant', n === 0);
+    document.querySelectorAll('[data-when-live]').forEach(el => { el.hidden = n === 0; });
+    document.querySelectorAll('[data-when-dormant]').forEach(el => { el.hidden = n !== 0; });
   }
 
   function renderPersonalBanner() {

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// ⚠ 2026-07-02: Lemon Squeezy is DEAD (PayPal direct now — see PAYPAL-SETUP.md). LS halves of this tool are historical; the URL-wiring/Typeform halves remain usable with PayPal links in tools/commerce-urls.json.
 /**
  * Wire Lemon Squeezy checkout URLs + generator status into website/js/app.js.
  *

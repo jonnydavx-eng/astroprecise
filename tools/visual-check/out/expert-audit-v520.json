@@ -1,0 +1,104 @@
+{
+  "version": "ap-v520",
+  "capturedAt": "2026-07-01T16:31:40.655Z",
+  "checks": {
+    "chapters": {
+      "count": 7,
+      "ids": [
+        "heroChapter",
+        "anon",
+        "whyChapter",
+        "skyChapter",
+        "instrumentsChapter",
+        "skyGuidesWrap",
+        "libraryChapter"
+      ],
+      "h1": 1,
+      "h2": 9
+    },
+    "floatNav": {
+      "hiddenOnHero": true,
+      "linkCount": 6
+    },
+    "backdrop": 0,
+    "guideCards": 10,
+    "axe": {
+      "violations": 0,
+      "ids": []
+    },
+    "perf": {
+      "dcl": 280.80000000074506,
+      "load": 283.2000000011176,
+      "resources": 17
+    },
+    "consoleErrors": [],
+    "contrast": [
+      {
+        "sel": "h1.display",
+        "color": "rgb(236, 230, 216)",
+        "opacity": "1",
+        "fontSize": "76.8px"
+      },
+      {
+        "sel": ".standfirst",
+        "color": "rgb(236, 230, 216)",
+        "opacity": "1",
+        "fontSize": "18.9px"
+      },
+      {
+        "sel": ".sg-card-dek",
+        "color": "rgb(236, 230, 216)",
+        "opacity": "0.92",
+        "fontSize": "14.04px"
+      },
+      {
+        "sel": ".dept-list-item span",
+        "color": "rgb(194, 160, 94)",
+        "opacity": "1",
+        "fontSize": "13.5px"
+      },
+      {
+        "sel": ".ap-chapter-lead",
+        "color": "rgb(236, 230, 216)",
+        "opacity": "1",
+        "fontSize": "18px"
+      },
+      {
+        "sel": ".trust-item",
+        "color": "rgb(236, 230, 216)",
+        "opacity": "1",
+        "fontSize": "13.5px"
+      }
+    ],
+    "mobile": {
+      "heroOverflow": false,
+      "floatNav": "none",
+      "heroGridCols": "310px",
+      "deptBadgeWrap": "83.375px 29.4375px"
+    }
+  },
+  "scores": {
+    "visualClarity": 88,
+    "a11y": 92,
+    "structure": 85,
+    "navUx": 82,
+    "contentHierarchy": 78,
+    "guides": 86,
+    "mobile": 80,
+    "performance": 84,
+    "trustCredibility": 80,
+    "total": 84
+  },
+  "issues": [],
+  "weights": {
+    "visualClarity": 15,
+    "a11y": 15,
+    "structure": 12,
+    "navUx": 10,
+    "contentHierarchy": 12,
+    "guides": 10,
+    "mobile": 12,
+    "performance": 8,
+    "trustCredibility": 6
+  }
+}
