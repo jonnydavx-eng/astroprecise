@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="This week's sky: exact Moon phases, planet sign changes, retrograde stations and exact aspects — computed in your browser from real astronomy." />
+  <title>This Week's Sky — Moon Phases, Ingresses &amp; Stations</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="This Week's Sky | Astro Precise" />
+  <meta property="og:description" content="The week's Moon phases, planet sign changes, retrograde stations and exact aspects — dated, honest, and computed in your browser from real astronomy." />
+  <meta property="og:url" content="https://astroprecise.app/this-weeks-sky.html" />
+  <link rel="canonical" href="https://astroprecise.app/this-weeks-sky.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image:width" content="2400" />
+  <meta property="og:image:height" content="1260" />
+  <meta property="og:image:alt" content="Astro Precise — precise birth charts computed from the real sky" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="This Week's Sky | Astro Precise" />
+  <meta name="twitter:description" content="The week's Moon phases, ingresses, stations and exact aspects — computed in your browser from real astronomy." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="theme-color" content="#0C1016" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/weekly-sky-page.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <!-- static, not deferred: events render immediately on load (no user gesture gates them) -->
+  <link rel="stylesheet" href="css/celestial-seals.css" />
+  <link rel="stylesheet" href="css/weekly-sky-page.css" />
+  <style>
+    body:has(.wk-hero){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    body:has(.wk-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
+    body:has(.wk-hero) .navbar__nav{min-height:44px;contain:layout style;}
+    body:has(.wk-hero) .wk-hero h1{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;min-height:1.15em;contain:layout style;}
+    body:has(.wk-hero) .wk-hero__sub{min-height:3.3em;}
+    body:has(.wk-hero) .wk-privacy-seal{min-height:2.6em;}
+    body:has(.wk-hero) .wk-switch{min-height:48px;contain:layout style;}
+    body:has(.wk-hero) #wk-events{min-height:520px;contain:layout style;}
+    body:has(.wk-hero) #wk-moonstrip{min-height:52px;}
+    body:has(.wk-hero) .wk-honesty{min-height:180px;contain:layout style;}
+  </style>
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferWkFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferWkFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Astro Precise — This Week's Sky","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"isAccessibleForFree":true,"description":"A privacy-first weekly sky calendar: exact Moon phases, planet sign ingresses, retrograde stations and exact aspects, computed entirely in your browser from real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/this-weeks-sky.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are this week's sky events computed?","acceptedAnswer":{"@type":"Answer","text":"Every event is solved numerically in your browser from the VSOP87 planetary theory and the ELP2000 lunar theory — the week is scanned for Moon-phase instants, sign ingresses, retrograde stations and exact aspects, then each event time is refined by bisection. Nothing is fetched from a server and nothing about you is sent anywhere."}},{"@type":"Question","name":"How accurate are the event times?","acceptedAnswer":{"@type":"Answer","text":"Moon-phase instants are good to a few minutes. Ingress and station times for the outer planets ride truncated series, so they are shown as approximate — right to within hours, occasionally a day for Pluto. The week itself is anchored to UTC so every visitor sees the same list; only the displayed clock times are converted to your local zone."}},{"@type":"Question","name":"Why does a week sometimes look quiet?","acceptedAnswer":{"@type":"Answer","text":"Because some weeks are quiet. The page reports what the sky is actually doing rather than padding the list with minor contacts — if there is no ingress, station or tight aspect, it says so."}}]}</script>
+</head>
+<body class="ap-no-nav-enter">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
+    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+  </svg>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="wk-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="wk-hero__eyebrow">&#10022; The sky, seven days at a time &#10022;</p>
+        <h1 id="page-title">This Week's Sky</h1>
+        <p class="wk-hero__sub">
+          Every Moon phase, sign change, retrograde station and exact aspect for
+          <em id="wk-hero-range">this week</em> &mdash; dated, honest, and computed
+          on your device from real astronomy.
+        </p>
+        <span class="wk-privacy-seal">
+          <span class="wk-privacy-seal__glyph" aria-hidden="true">&#9919;</span>
+          Computed locally on your device &middot; no tracking &middot; real astronomy
+        </span>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WEEK SWITCHER
+    ============================================================ -->
+    <div class="wk-switch" role="group" aria-label="Choose a week">
+      <button class="wk-switch__btn" id="wk-prev" aria-label="Previous week">&larr; Previous</button>
+      <span class="wk-switch__label" id="wk-label" aria-live="polite">This week</span>
+      <button class="wk-switch__btn" id="wk-this" aria-pressed="true">This week</button>
+      <button class="wk-switch__btn" id="wk-next" aria-label="Next week">Next &rarr;</button>
+    </div>
+
+    <!-- ============================================================
+         EVENTS
+    ============================================================ -->
+    <section class="wk-section" aria-labelledby="events-heading">
+      <div class="container">
+        <h2 class="wk-section__title" id="events-heading">The Week's Events</h2>
+        <p class="wk-section__sub" id="wk-events-sub">Times are shown in your local time zone; the week itself is anchored in UT.</p>
+        <div id="wk-events" aria-busy="true">
+          <p class="wk-empty">Computing this week's sky on your device&hellip;</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MOON THIS WEEK
+    ============================================================ -->
+    <section class="wk-section" aria-labelledby="moon-heading">
+      <div class="container">
+        <h2 class="wk-section__title" id="moon-heading">The Moon This Week</h2>
+        <p class="wk-section__sub">Sign-to-sign, as it happens &mdash; the Moon changes sign every two to three days.</p>
+        <div class="wk-moonstrip" id="wk-moonstrip"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         HONESTY PANEL
+    ============================================================ -->
+    <section class="wk-section" aria-labelledby="honesty-heading">
+      <div class="container">
+        <div class="wk-honesty">
+          <h3 id="honesty-heading">How honest is this?</h3>
+          <p>
+            Every event above is solved numerically from the <strong>VSOP87 planetary theory</strong>
+            and the <strong>ELP2000 lunar theory</strong>, in your browser &mdash; the week is scanned,
+            each event bracketed, then refined by bisection. Nothing is fetched from a server;
+            nothing about you leaves this page.
+          </p>
+          <p>
+            <strong>Moon-phase instants are good to a few minutes.</strong> Ingresses and stations of the
+            outer planets ride truncated series, so they carry a <strong>&asymp;</strong> mark &mdash; right
+            to within hours, occasionally a day for Pluto. The week is anchored to the UTC Monday, so
+            every visitor sees the same list for the same civil week; only the clock times are local.
+            Quiet weeks are shown as quiet &mdash; the list is never padded.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Page controller -->
+  <script>
+  (function () {
+    'use strict';
+    document.addEventListener('DOMContentLoaded', function () {
+      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
+
+      var eventsEl  = document.getElementById('wk-events');
+      var stripEl   = document.getElementById('wk-moonstrip');
+      var rangeEl   = document.getElementById('wk-hero-range');
+      var labelEl   = document.getElementById('wk-label');
+      var prevBtn   = document.getElementById('wk-prev');
+      var thisBtn   = document.getElementById('wk-this');
+      var nextBtn   = document.getElementById('wk-next');
+
+      var PHASE_GLYPHS = { 'New Moon': '●', 'First Quarter': '◐', 'Full Moon': '○', 'Last Quarter': '◑' };
+      var anchor = null; // Date inside the shown week
+
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+      function fmtTime(d) { return new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(d); }
+      function fmtDayHead(d) { return new Intl.DateTimeFormat(undefined, { weekday: 'long', day: 'numeric', month: 'long' }).format(d); }
+      function fmtRange(a, b) {
+        // the week is UTC-anchored, so its identity label must be too
+        var f = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', timeZone: 'UTC' });
+        return f.format(a) + ' – ' + f.format(b);
+      }
+
+      function orbFor(ev) {
+        if (ev.kind === 'phase') return '<span aria-hidden="true">' + (PHASE_GLYPHS[ev.name] || '☽') + '</span>';
+        var name = ev.planet || ev.planetA;
+        if (window.AstroIcons && AstroIcons.planet) return AstroIcons.planet(name, { sm: true });
+        return '<span aria-hidden="true">✦</span>';
+      }
+
+      function weekFromQuery() {
+        try {
+          var m = (location.search || '').match(/[?&]week=(\d{4}-\d{2}-\d{2})/);
+          if (m) {
+            var d = new Date(m[1] + 'T12:00:00Z');
+            if (!isNaN(d)) return d;
+          }
+        } catch (e) {}
+        return new Date();
+      }
+
+      function render(date) {
+        if (!window.WeeklySky || !window.AstroEphemeris) {
+          setTimeout(function () { render(date); }, 300);
+          return;
+        }
+        anchor = date;
+        var report;
+        try { report = WeeklySky.buildWeekReport(date); }
+        catch (e) {
+          eventsEl.innerHTML = '<p class="wk-empty">Could not compute this week: ' + esc(e.message) + '</p>';
+          return;
+        }
+
+        var thisWeekStart = WeeklySky.computeWeek(new Date()).start.getTime();
+        var isThisWeek = report.weekStart.getTime() === thisWeekStart;
+        rangeEl.textContent = fmtRange(report.weekStart, report.weekEnd);
+        labelEl.textContent = isThisWeek ? 'This week' : fmtRange(report.weekStart, report.weekEnd);
+        thisBtn.setAttribute('aria-pressed', isThisWeek ? 'true' : 'false');
+        try {
+          var iso = report.weekStart.toISOString().slice(0, 10);
+          var url = isThisWeek ? location.pathname : location.pathname + '?week=' + iso;
+          history.replaceState(null, '', url);
+        } catch (e) {}
+
+        eventsEl.replaceChildren();
+        eventsEl.removeAttribute('aria-busy');
+        if (report.empty) {
+          eventsEl.innerHTML = '<p class="wk-empty">A settled sky &mdash; no sign changes, stations or exact major aspects this week. The Moon still keeps its rhythm below.</p>';
+        } else {
+          var byDay = {};
+          report.events.forEach(function (ev) {
+            var d = new Date(ev.tDate);
+            var key = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+            (byDay[key] = byDay[key] || { date: d, items: [] }).items.push(ev);
+          });
+          Object.keys(byDay).sort(function (a, b) { return byDay[a].date - byDay[b].date; }).forEach(function (key) {
+            var group = byDay[key];
+            var dayEl = document.createElement('div');
+            dayEl.className = 'wk-day';
+            dayEl.innerHTML = '<h3 class="wk-day__head">' + esc(fmtDayHead(group.date)) + '</h3>';
+            group.items.forEach(function (ev) {
+              var row = document.createElement('div');
+              row.className = 'wk-event';
+              var t = new Date(ev.tDate);
+              var chip = (ev.approx ? '≈ ' : '') + fmtTime(t);
+              row.innerHTML =
+                '<span class="wk-event__orb">' + orbFor(ev) + '</span>' +
+                '<div class="wk-event__body">' +
+                  '<div class="wk-event__title">' + esc(ev.title) +
+                    ' <span class="wk-event__time">' + chip + '</span></div>' +
+                  '<p class="wk-event__note">' + esc(ev.note) + '</p>' +
+                '</div>';
+              dayEl.appendChild(row);
+            });
+            eventsEl.appendChild(dayEl);
+          });
+        }
+
+        stripEl.replaceChildren();
+        report.moonStrip.forEach(function (m) {
+          var d = new Date(m.tDate);
+          var chip = document.createElement('span');
+          chip.className = 'wk-moonstrip__chip';
+          chip.innerHTML = '<span aria-hidden="true">☽</span> <strong>' + esc(m.sign) + '</strong> ' +
+            esc(new Intl.DateTimeFormat(undefined, { weekday: 'short' }).format(d)) + ' ' + fmtTime(d);
+          stripEl.appendChild(chip);
+        });
+      }
+
+      prevBtn.addEventListener('click', function () {
+        render(new Date((anchor || new Date()).getTime() - 7 * 86400000));
+      });
+      nextBtn.addEventListener('click', function () {
+        render(new Date((anchor || new Date()).getTime() + 7 * 86400000));
+      });
+      thisBtn.addEventListener('click', function () { render(new Date()); });
+
+      render(weekFromQuery());
+    });
+  })();
+  </script>
+
+  <!-- JS — engines on inject; cosmos + effects idle after load -->
+  <script>
+  (function () {
+    function audit() {
+      return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
+    }
+    function inject(src) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      document.body.appendChild(s);
+    }
+    if (audit()) return;
+    inject('js/raf-core.js');
+    inject('js/ephemeris.js');
+    inject('js/icons.js');
+    inject('js/weekly-sky.js');
+    function idleCosmos() {
+      if (audit()) return;
+      inject('js/cosmos.js');
+      inject('js/effects.js');
+    }
+    window.addEventListener('load', function () {
+      if (window.requestIdleCallback) requestIdleCallback(idleCosmos, { timeout: 4000 });
+      else setTimeout(idleCosmos, 1200);
+    }, { once: true });
+  })();
+  </script>
+  <script src="js/ap-page-boot.js" defer></script>
+</body>
+</html>

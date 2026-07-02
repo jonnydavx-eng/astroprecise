@@ -28,7 +28,7 @@ const HTML_INCLUDE = new Set([
     'ephemeris.html', 'lifepath.html', 'shop.html', 'accuracy.html', 'why.html',
     'links.html', 'outreach.html', 'charts.html', 'retrograde.html', 'moonphase.html',
     'what-is-my-rising-sign.html', 'synastry.html', 'solar-return.html', 'saturn-return.html',
-    'quiz.html', 'angel-numbers.html', 'tonight.html', 'name-numerology.html',
+    'quiz.html', 'angel-numbers.html', 'tonight.html', 'this-weeks-sky.html', 'name-numerology.html',
     'privacy.html', 'terms.html', 'profile.html', 'sample-reading.html',
     ...SIGN_KEYS.map((k) => `${k}.html`),
     'manifest.json', 'robots.txt', 'sitemap.xml', 'llms.txt',
@@ -112,11 +112,11 @@ function collectCanonical() {
 }
 
 function bumpVersion(swText) {
-  const m = swText.match(/const V = '(ap-v\d+)'/);
+  const m = swText.match(/const V = ["'](ap-v\d+)["']/);
   if (!m) throw new Error('sw.js: could not parse const V');
   const n = parseInt(m[1].replace('ap-v', ''), 10);
   const next = `ap-v${n + 1}`;
-  return swText.replace(/const V = 'ap-v\d+'/, `const V = '${next}'`);
+  return swText.replace(/const V = ["']ap-v\d+["']/, `const V = "${next}"`);
 }
 
 function formatPrecache(entries) {
@@ -146,7 +146,7 @@ function main() {
   sw = replacePrecache(sw, formatPrecache(entries));
   writeFileSync(SW_PATH, sw, 'utf8');
 
-  const ver = sw.match(/const V = '(ap-v\d+)'/)?.[1] ?? '?';
+  const ver = sw.match(/const V = ["'](ap-v\d+)["']/)?.[1] ?? '?';
   console.log(`sw.js updated — ${ver}, ${entries.length} precache entries`);
 }
 

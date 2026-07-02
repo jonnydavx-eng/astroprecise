@@ -1612,12 +1612,14 @@
                 pill = document.createElement('div');
                 pill.className = 'planet-pill';
                 pill.dataset.planet = p.name;
-                pill.innerHTML = '<span class="planet-pill__symbol">' + p.symbol + '</span>' +
+                var symHtml = (window.AstroIcons && AstroIcons.planet) ? AstroIcons.planet(p.name, { sm: true }) : p.symbol;
+                pill.innerHTML = '<span class="planet-pill__symbol" aria-hidden="true">' + symHtml + '</span>' +
                   '<span class="planet-pill__info"><span class="planet-pill__sign"></span></span>';
                 strip.appendChild(pill);
               }
               var sym = pill.querySelector('.planet-pill__symbol');
-              if (sym && sym.textContent !== p.symbol) sym.textContent = p.symbol;
+              // Never clobber an upgraded seal (or its pre-upgrade .ap-orb) with raw glyph text
+              if (sym && !sym.querySelector('.ap-seal') && !sym.querySelector('.ap-orb') && sym.textContent !== p.symbol) sym.textContent = p.symbol;
               var info = pill.querySelector('.planet-pill__info');
               if (!info) return;
               var signEl = info.querySelector('.planet-pill__sign');

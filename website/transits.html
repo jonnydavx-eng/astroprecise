@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Astro Precise Planetary Transits — understand current cosmic influences on your birth chart with real-time planetary positions, eclipses, and retrograde calendar." />
-  <title>Planetary Transits Today — Live Positions, Retrogrades &amp; Forecasts | Astro Precise</title>
+  <title>Planetary Transits Today — Live Positions &amp; Retrogrades</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -15,6 +15,9 @@
   <meta property="og:url" content="https://astroprecise.app/transits.html" />
   <link rel="canonical" href="https://astroprecise.app/transits.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image:width" content="2400" />
+  <meta property="og:image:height" content="1260" />
+  <meta property="og:image:alt" content="Astro Precise — precise birth charts computed from the real sky" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Planetary Transits | Astro Precise" />
   <meta name="twitter:description" content="Live planetary transits and retrogrades — see what the sky is doing right now and what it means for you." />
@@ -65,7 +68,7 @@
     "url": "https://astroprecise.app/transits.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
     "description": "See how current planetary transits aspect your natal chart — dated, orb-aware, and computed privately in your browser.",
     "isPartOf": {
@@ -611,7 +614,8 @@
         var lon = positions && positions[p.key] != null ? positions[p.key] : null;
         var posText = lon != null ? degToSignPos(lon) : '—°';
         var isRetro = RETRO_KEYS[p.key] || false;
-        var symHtml = window.AstroIcons ? AstroIcons.planet(p.name, { sm: true }) : p.sym;
+        var symHtml = window.AstroIcons ? AstroIcons.planet(p.name, { sm: true }) :
+          '<span class="ap-orb ap-orb--sm ap-orb--' + p.key + '" aria-hidden="true"><i class="ap-orb__glyph">' + p.sym + '</i></span>';
         return '<span class="transit-pill' + (isRetro ? ' transit-pill--retrograde' : '') + '">' +
           '<span class="transit-pill__symbol" aria-hidden="true">' + symHtml + '</span>' +
           '<span class="transit-pill__name">' + p.name + '</span>' +
@@ -640,8 +644,14 @@
       }
     }
 
+    var iconWaitTries = 0;
     function tryPopulate() {
       if (!window.AstroEphemeris || typeof AstroEphemeris.julianDay !== 'function') {
+        setTimeout(tryPopulate, 300);
+        return;
+      }
+      // Prefer seals over raw glyphs: wait briefly for icons.js, then proceed regardless
+      if (!window.AstroIcons && iconWaitTries++ < 10) {
         setTimeout(tryPopulate, 300);
         return;
       }

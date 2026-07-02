@@ -1664,7 +1664,7 @@ window.AP_MON = Object.assign({
       const url = keyToUrl(el.dataset.mon);
       const mode = el.dataset.monMode || 'hide';
       if (isUrl(url)) {
-        if (el.tagName === 'A') { el.href = url; el.target = '_blank'; el.rel = 'noopener'; }
+        if (el.tagName === 'A') { el.href = url; el.target = '_blank'; el.rel = 'noopener sponsored'; }
         else el.addEventListener('click', () => window.open(url, '_blank', 'noopener'));
         el.removeAttribute('aria-disabled');
         el.style.removeProperty('display');

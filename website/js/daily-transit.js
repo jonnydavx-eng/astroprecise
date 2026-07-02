@@ -522,7 +522,7 @@
       'these transits land the way they do.';
     if (hasUrl) {
       return '<p class="dt-tease">' + line +
-        ' <a href="' + esc(url) + '" target="_blank" rel="noopener" data-mon="report">' +
+        ' <a href="' + esc(url) + '" target="_blank" rel="noopener sponsored" data-mon="report">' +
         'Explore the Deep Reading →</a></p>';
     }
     // Dormant-safe: visible quiet line, link hidden until AP_MON is configured.

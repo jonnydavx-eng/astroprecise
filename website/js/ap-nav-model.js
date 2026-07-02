@@ -32,7 +32,8 @@
 
   var NAV_EXTRAS = [
     ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
-    ['tonight.html', "Tonight's Sky"], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
+    ['tonight.html', "Tonight's Sky"], ['this-weeks-sky.html', "This Week's Sky"],
+    ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
     ['what-is-my-rising-sign.html', 'Rising Sign'], ['synastry.html', 'Synastry'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],

@@ -559,7 +559,7 @@ window.AstroShop = (() => {
         const p = productById(i.id);
         const url = p ? payhipUrl(p) : '';
         return `<div class="shopc-checkout__row"><span>${esc(i.name)} × ${i.qty}</span><span>${formatPrice(i.price * i.qty)}</span></div>
-          ${url ? `<p class="shopc-modal__note" style="margin:-2px 0 10px;"><a href="${esc(url)}" target="_blank" rel="noopener" data-ap-product="${esc(i.id)}">Secure checkout →</a></p>` : ''}`;
+          ${url ? `<p class="shopc-modal__note" style="margin:-2px 0 10px;"><a href="${esc(url)}" target="_blank" rel="noopener sponsored" data-ap-product="${esc(i.id)}">Secure checkout →</a></p>` : ''}`;
       }).join('');
       const pendingNote = pendingItems.length
         ? `<p class="shopc-modal__note">${pendingItems.length} item${pendingItems.length === 1 ? '' : 's'} in your basket ${pendingItems.length === 1 ? 'is' : 'are'} not connected to checkout yet — ${pendingItems.length === 1 ? 'it stays' : 'they stay'} saved on this device until it opens.</p>`
@@ -1102,7 +1102,7 @@ window.AstroShop = (() => {
       node.textContent = a.label;
       if (a.href) {
         node.href = a.href;
-        if (a.external) { node.target = '_blank'; node.rel = 'noopener'; }
+        if (a.external) { node.target = '_blank'; node.rel = 'noopener sponsored'; }
         if (a.productId) node.dataset.apProduct = a.productId;
       }
       node.addEventListener('click', () => {
@@ -1163,6 +1163,7 @@ window.AstroShop = (() => {
       form.action = action;
       form.method = 'post';
       form.target = '_blank';
+      form.rel = 'noopener';
       form.addEventListener('submit', () => {
         toast('You are on the list — we will be in touch.');
       });

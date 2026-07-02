@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Astro Precise — You're not one of twelve. Your chart alone.</title>
-  <meta name="description" content="You're not one of twelve. Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute — written for you alone.">
+  <meta name="description" content="You’re not one of twelve. Your chart is built from the precise sky over your birthplace, to the minute — free, private, computed in your browser.">
   <meta name="theme-color" content="#0C1016">
   <link rel="canonical" href="https://astroprecise.app/">
 
@@ -24,6 +24,9 @@
   <meta property="og:title" content="Astro Precise — You're not one of twelve">
   <meta property="og:description" content="Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute, and written for you alone.">
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg">
+  <meta property="og:image:width" content="2400">
+  <meta property="og:image:height" content="1260">
+  <meta property="og:image:alt" content="Astro Precise — precise birth charts computed from the real sky">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://astroprecise.app/">
   <meta name="twitter:card" content="summary_large_image">
@@ -65,8 +68,8 @@
   <!-- Fonts & design system -->
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="preload" href="css/ap-horizon-2026.css?v=562" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=562"></noscript>
+  <link rel="preload" href="css/ap-horizon-2026.css?v=564" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=564"></noscript>
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
@@ -1480,18 +1483,18 @@
     </header>
     <nav aria-label="Zodiac sign library">
       <ul class="sign-index">
-        <li><a href="aries.html"       class="sign-index-entry"><span class="sign-glyph">♈</span><span class="sign-name">Aries</span></a></li>
-        <li><a href="taurus.html"      class="sign-index-entry"><span class="sign-glyph">♉</span><span class="sign-name">Taurus</span></a></li>
-        <li><a href="gemini.html"      class="sign-index-entry"><span class="sign-glyph">♊</span><span class="sign-name">Gemini</span></a></li>
-        <li><a href="cancer.html"      class="sign-index-entry"><span class="sign-glyph">♋</span><span class="sign-name">Cancer</span></a></li>
-        <li><a href="leo.html"         class="sign-index-entry"><span class="sign-glyph">♌</span><span class="sign-name">Leo</span></a></li>
-        <li><a href="virgo.html"       class="sign-index-entry"><span class="sign-glyph">♍</span><span class="sign-name">Virgo</span></a></li>
-        <li><a href="libra.html"       class="sign-index-entry"><span class="sign-glyph">♎</span><span class="sign-name">Libra</span></a></li>
-        <li><a href="scorpio.html"     class="sign-index-entry"><span class="sign-glyph">♏</span><span class="sign-name">Scorpio</span></a></li>
-        <li><a href="sagittarius.html" class="sign-index-entry"><span class="sign-glyph">♐</span><span class="sign-name">Sagittarius</span></a></li>
-        <li><a href="capricorn.html"   class="sign-index-entry"><span class="sign-glyph">♑</span><span class="sign-name">Capricorn</span></a></li>
-        <li><a href="aquarius.html"    class="sign-index-entry"><span class="sign-glyph">♒</span><span class="sign-name">Aquarius</span></a></li>
-        <li><a href="pisces.html"      class="sign-index-entry"><span class="sign-glyph">♓</span><span class="sign-name">Pisces</span></a></li>
+        <li><a href="aries.html"       class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:aries" data-seal-sm aria-hidden="true">♈</span><span class="sign-name">Aries</span></a></li>
+        <li><a href="taurus.html"      class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true">♉</span><span class="sign-name">Taurus</span></a></li>
+        <li><a href="gemini.html"      class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:gemini" data-seal-sm aria-hidden="true">♊</span><span class="sign-name">Gemini</span></a></li>
+        <li><a href="cancer.html"      class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:cancer" data-seal-sm aria-hidden="true">♋</span><span class="sign-name">Cancer</span></a></li>
+        <li><a href="leo.html"         class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:leo" data-seal-sm aria-hidden="true">♌</span><span class="sign-name">Leo</span></a></li>
+        <li><a href="virgo.html"       class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:virgo" data-seal-sm aria-hidden="true">♍</span><span class="sign-name">Virgo</span></a></li>
+        <li><a href="libra.html"       class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:libra" data-seal-sm aria-hidden="true">♎</span><span class="sign-name">Libra</span></a></li>
+        <li><a href="scorpio.html"     class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:scorpio" data-seal-sm aria-hidden="true">♏</span><span class="sign-name">Scorpio</span></a></li>
+        <li><a href="sagittarius.html" class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:sagittarius" data-seal-sm aria-hidden="true">♐</span><span class="sign-name">Sagittarius</span></a></li>
+        <li><a href="capricorn.html"   class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:capricorn" data-seal-sm aria-hidden="true">♑</span><span class="sign-name">Capricorn</span></a></li>
+        <li><a href="aquarius.html"    class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:aquarius" data-seal-sm aria-hidden="true">♒</span><span class="sign-name">Aquarius</span></a></li>
+        <li><a href="pisces.html"      class="sign-index-entry"><span class="sign-glyph" data-celestial-seal="zodiac:pisces" data-seal-sm aria-hidden="true">♓</span><span class="sign-name">Pisces</span></a></li>
       </ul>
     </nav>
   </div>
@@ -1721,7 +1724,7 @@
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-home-bootstrap.js?v=562"></script>
+<script defer src="js/ap-home-bootstrap.js?v=564"></script>
 <script defer>
 (function () {
   'use strict';

@@ -382,7 +382,7 @@
         '<div class="chart-whats-next__grid" role="list">' +
         tiles.map(function(s) {
           return '<a href="' + esc(s.href) + '" class="chart-next-card' + (s.external ? ' chart-next-card--paid' : '') + '" role="listitem"' +
-            (s.external ? ' target="_blank" rel="noopener"' : '') + '>' +
+            (s.external ? ' target="_blank" rel="noopener sponsored"' : '') + '>' +
             '<span class="chart-next-card__tag">' + esc(s.tag) + '</span>' +
             '<h4 class="chart-next-card__title">' + esc(s.title) + '</h4>' +
             '<p class="chart-next-card__desc">' + esc(s.desc) + '</p>' +

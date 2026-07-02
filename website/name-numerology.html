@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free name numerology calculator. Enter your full name to compute your Expression (Destiny), Soul Urge, and Personality numbers using the Pythagorean system — with master numbers and a transparent, deterministic breakdown of every step." />
-  <title>Name Numerology Calculator — Expression, Soul Urge &amp; Personality | Astro Precise</title>
+  <meta name="description" content="Free name numerology calculator — your Expression, Soul Urge and Personality numbers via the Pythagorean system, with a transparent step-by-step breakdown." />
+  <title>Name Numerology Calculator — Expression &amp; Soul Urge</title>
 <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
@@ -15,6 +15,9 @@
   <meta property="og:url" content="https://astroprecise.app/name-numerology.html" />
   <link rel="canonical" href="https://astroprecise.app/name-numerology.html" />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image:width" content="2400" />
+  <meta property="og:image:height" content="1260" />
+  <meta property="og:image:alt" content="Astro Precise — precise birth charts computed from the real sky" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Name Numerology Calculator | Astro Precise" />
   <meta name="twitter:description" content="Your Expression, Soul Urge, and Personality numbers from your full name — Pythagorean, transparent, deterministic." />
@@ -561,7 +564,7 @@
       var url = M.deepReadingUrl;
       var isUrl = typeof url === 'string' && /^https?:\/\//i.test(url.trim());
       if (isUrl) {
-        wrap.innerHTML = '<a href="' + esc(url.trim()) + '" class="btn btn--primary" target="_blank" rel="noopener">' +
+        wrap.innerHTML = '<a href="' + esc(url.trim()) + '" class="btn btn--primary" target="_blank" rel="noopener sponsored">' +
           '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Deep Personal Reading</a>' +
           '<p style="font-size:0.7rem;color:var(--nn-silver-dim);margin-top:var(--space-3);">' +
           'A written reading that weaves your name numbers, Life Path, and natal chart into one narrative.</p>';

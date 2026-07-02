@@ -41,6 +41,7 @@ AstroPrecise is a professional-grade astrology web app and installable PWA at ht
 - [Angel Numbers](https://astroprecise.app/angel-numbers.html): Repeating-number meanings
 - [Cosmic Quiz](https://astroprecise.app/quiz.html): Personality / archetype quiz
 - [Tonight's Sky](https://astroprecise.app/tonight.html): What's visible after dark
+- [This Week's Sky](https://astroprecise.app/this-weeks-sky.html): The week's Moon phases, ingresses, stations & exact aspects
 
 ## Trust & methodology
 

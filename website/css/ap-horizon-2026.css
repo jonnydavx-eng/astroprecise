@@ -1677,6 +1677,12 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 #libraryChapter .sign-glyph {
   font-size: 1.35rem;
   filter: drop-shadow(0 0 6px rgba(194, 160, 94, 0.22));
+  /* Reserve the sm-seal box so the glyph→seal upgrade causes zero layout shift */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  min-height: 1.55rem;
 }
 
 .ap-award-511 #libraryChapter .sign-index-entry:hover,

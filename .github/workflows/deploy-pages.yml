@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, test-engine.mjs, test-horoscope.mjs, test-compat.mjs, test-art-themes.mjs, tools/e2e-profile-save-audit.mjs]
+    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-horoscope.mjs, test-compat.mjs, test-art-themes.mjs, test-weekly-sky.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
 permissions:
@@ -34,6 +34,9 @@ jobs:
 
       - name: Art theme library
         run: node test-art-themes.mjs
+
+      - name: Weekly sky determinism
+        run: node test-weekly-sky.mjs
 
       - name: Profile save e2e audit
         run: |
@@ -69,17 +72,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Faithful minify-in-place (tools/build.mjs): same paths, -27% JS / -29% CSS.
+      # build.mjs already skips tools/, the phone-* dev pages and all *.md, so no
+      # exclude_assets is needed — dist/ IS the deployable tree (CNAME, .nojekyll,
+      # .well-known, sw.js precache all included).
+      - name: Build minified dist/
+        run: |
+          npm ci
+          npm run build
+
       # Pages is configured to serve the gh-pages branch from its root,
-      # so publish website/ there instead of using actions/deploy-pages.
-      - name: Publish website/ to gh-pages
+      # so publish the built tree there instead of using actions/deploy-pages.
+      - name: Publish dist/ to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./website
-          # Match tools/build.mjs SKIP_* exclusions so the Actions deploy and the
-          # manual `build.mjs --raw` deploy publish an identical tree (no internal
-          # phone tools / dev docs leak to production).
-          exclude_assets: 'tools,phone-audit.html,phone-cosmic-viewer.html,CREDITS.md'
+          publish_dir: ./dist
 
       - name: Notify search engines (IndexNow)
         if: success()

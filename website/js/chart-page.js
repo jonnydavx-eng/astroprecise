@@ -660,7 +660,7 @@
       </div>
       <div class="chart-whats-next__grid${paidTile ? ' chart-whats-next__grid--quad' : ''}" role="list">
         ${tiles.map(s => `
-          <a href="${esc(s.href)}" class="chart-next-card${s.external ? ' chart-next-card--paid' : ''}" role="listitem"${s.external ? ' target="_blank" rel="noopener"' : ''}>
+          <a href="${esc(s.href)}" class="chart-next-card${s.external ? ' chart-next-card--paid' : ''}" role="listitem"${s.external ? ' target="_blank" rel="noopener sponsored"' : ''}>
             <span class="chart-next-card__tag">${esc(s.tag)}</span>
             <h4 class="chart-next-card__title">${esc(s.title)}</h4>
             <p class="chart-next-card__desc">${esc(s.desc)}</p>
@@ -1130,7 +1130,7 @@
     const priceBit = price ? ` — <strong>${esc(price)}</strong>` : '';
     const ctaHtml = configured
       ? `<p class="deep-teaser__format">A personalised 13-page PDF — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, ten tightest aspects, and a full reference — drawn from the same engine as your free chart${priceBit}. One-time; yours to keep, no subscription.</p>
-         <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
+         <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener sponsored">
            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>
          <p class="deep-teaser__honest">Opens a secure checkout on our partner store. The chart you cast here never leaves your browser — your reading is hand-prepared from the birth details you enter at checkout.</p>`

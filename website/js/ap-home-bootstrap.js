@@ -2,7 +2,7 @@
 /* Award homepage — lazy ephemeris + hero instrument bundle (perf) */
 
 (function () {
-  var V = "562";
+  var V = "564";
 
   window.__loadEphemeris = function (cb) {
     if (window.AstroEphemeris) {
@@ -118,6 +118,25 @@
 
   window.addEventListener("load", function () {
     setTimeout(function () { window.__loadEphemeris(); }, 800);
+  }, { once: true });
+
+  // Sign-library seals: upgrade the 12 glyph slots (data-celestial-seal) after
+  // load, off the critical path. Skipped on the audit path like icons.js.
+  window.addEventListener("load", function () {
+    if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || "")) return;
+    function loadSeals() {
+      if (window.AstroCelestialSeals) return;
+      injectCss("css/celestial-seals.css?v=" + V, "ap-css-seals");
+      var s = document.createElement("script");
+      s.src = "js/celestial-seals.js?v=" + V;
+      s.defer = true;
+      document.head.appendChild(s);
+    }
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(loadSeals, { timeout: 2500 });
+    } else {
+      setTimeout(loadSeals, 600);
+    }
   }, { once: true });
 
   window.addEventListener("pointerdown", function () {
