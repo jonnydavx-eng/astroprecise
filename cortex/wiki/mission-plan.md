@@ -38,6 +38,15 @@ work: launch-week content support from CONTENT-CALENDAR.md, conversion checks.
 `davit_sat_dashboard.py` is a blank Streamlit template. Awaiting a mission brief from
 the owner; treat as greenfield. See [davit-sat-dashboard.md](davit-sat-dashboard.md).
 
+## Mission 6 — Palette token hygiene sweep (open, small-medium)
+
+The verifier found warm hexes (`#050406`, `#C9A227`) hardcoded as canvas/WebGL/SVG
+paint colors in shipped JS on chart, ephemeris, and compatibility pages (full list in
+[index.md](../index.md) lint finding 2). Decide with owner whether these are
+intentional render aesthetics or leftovers; if leftovers, sweep them to `--ap-*`
+token reads (canvas can read tokens via `getComputedStyle`). Visual QA required —
+these change pixels on flagship pages. Bump `sw.js` cache if shipped.
+
 ## Standing orders
 
 - Query the wiki before complex work; ingest after significant missions.

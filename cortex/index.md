@@ -22,6 +22,13 @@ update it whenever a wiki page is added, renamed, or retired.
 1. **STATUS.md behind git history** — snapshot says ap-v563; `main` history shows
    ap-v566 (PayPal direct replaced Lemon Squeezy, e2e PayPal gate, LS tooling archived).
    Fix tracked as Mission 3 in [mission-plan.md](wiki/mission-plan.md).
+2. **Warm hexes still hardcoded outside the token system** (verifier, 2026-07-02) —
+   `#050406`/`#C9A227` live on as literal canvas/WebGL/SVG paint colors in
+   `js/chart-render.js:64,320`, `js/chart-page.js:1488`, `js/instrument.js:238,358`,
+   `js/orrery-webgl.js:2415,4673`, `js/compatibility-page.js:109`,
+   `js/tool-cards.js` (6 spots), `css/main.css:5825` (SVG data-URI),
+   `saturn-return.html:282`, plus inert `var(--gold,#C9A227)` fallbacks in `js/app.js`.
+   Also: 7 utility/dev pages carry no theme-color meta. Tracked as Mission 6.
 
 ### Resolved
 

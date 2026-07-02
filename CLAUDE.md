@@ -165,7 +165,11 @@ attached to `window`, one stylesheet, hand-written HTML pages.
   token source of truth is `css/ap-palette-2026.css`; `css/main.css` `:root` maps all
   legacy vars onto it. Voids `#0C1016` (deep/base) / `#121826` (mid) / `#1A2230` (raised);
   brass core `#C2A05E`, bright `#CDAE6A`, vivid `#D8B978`, parchment `#ECE6D8`;
-  theme-color `#0C1016` on all pages. Both earlier palettes are RETIRED: the original
-  COOL set (lapis `#2a4a94`, violet, cyan, `#D4AF37`) and the 2026-06-14 WARM set
-  (`#C9A227` on `#050406`). Never hardcode hex — use the `--ap-*` tokens; see DESIGN.md.
+  theme-color `#0C1016` on all indexed pages + manifest. Both earlier palettes are
+  RETIRED from the token system: the original COOL set (lapis `#2a4a94`, violet, cyan,
+  `#D4AF37`) and the 2026-06-14 WARM set (`#C9A227` on `#050406`). Caveat (verified
+  2026-07-02): warm hexes still survive as hardcoded canvas/WebGL/SVG paint colors
+  outside CSS — e.g. `chart-render.js`, `instrument.js`, `orrery-webgl.js`,
+  `tool-cards.js` — so grep before assuming a page is token-pure. Never hardcode hex
+  in new code — use the `--ap-*` tokens; see DESIGN.md.
 - Service worker `sw.js` precaches the shell; bump cache version `V` when changing cached assets.
