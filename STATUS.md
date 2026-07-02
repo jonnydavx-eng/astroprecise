@@ -1,55 +1,28 @@
-# STATUS — AstroPrecise · 2026-06-19
+# STATUS — AstroPrecise · 2026-07-02
 
-**State:** 🚀 **DEPLOYED ap-v450** to production. All 6 sitewide-refinement waves shipped (+ the v447 cinematic start sequence + the engine/security overhaul earlier today). main `ce4b617`. Rollback to v449: `git push origin 6568ff5:gh-pages --force`.
+**State:** 🚀 **ap-v563 pushed to `main` (`f87126d`)** — Grok's full award-homepage arc (v535–v562: Cosmic Flight, horoscope ecliptic dial, ap-home-bootstrap perf work) **plus** Claude's v563 SEO/social hardening, deployed via gh-pages Actions. Live: https://astroprecise.app (apex canonical; www 301s).
 
-**Sitewide refinement — ALL WAVES LIVE (code-verified; visual waves NOT agent-browser-verified):**
-- v448 — Wave 0 (6 correctness bugs) + Wave 1 (skip-links ~35 pages, #ei icon-sprite fix 7 pages, palette links)
-- v449 — Wave 2-structural (palette aliasing, fallbacks) + Wave 5 (shop count → 13 config-derived, legal OG/Twitter/JSON-LD, phone tools noindex)
-- v450 — Wave 2 color warm-up (cold→warm text, fallbacks) + **Wave 3 flat-hero cinematic glow** (CLS-safe text-shadow, ~17 heroes) + Wave 4 (moonphase emoji→SVG discs) + phone tools now 404 (excluded from deploy)
-- ⚠ The visual waves (2-color, 3-hero-glow, 4-discs) are deployed but I could not browser-verify the render — **recommend a glance at the live site**; rollback to v449 is one command.
-- Long-tail polish NOT done (lower priority): Wave 4 remaining glyph→seal swaps (transits ticker, rising Big Three, etc.); Wave 5 inline-style migration on the heavy tool pages; the full box-coupled hero vignette/flare (deliberately skipped — too DOM-coupled to do blind). v446→v447 = cinematic start sequence (opt-in narration, 26s galaxy→Earth fly-in, satellites removed, HD on high tier). main `3363047`. Rollback to v446: `git push origin 0d3a4db:gh-pages --force`. ⚠ deployed without agent browser-QA. **In progress:** sitewide structure+artwork refinement (45-page audit running). Earlier baseline: ap-v446 (gh-pages `0d3a4db`, was `61ebe1b`/ap-v277). First live update since ap-v277 — ships the full ap-v278→v446 accumulated work **plus** this session's overhaul (engine precision, security, polar-house fix, build tooling). Deployed **source (unminified)**; the minified build (`npm run build`) is ready but pending browser QA before switching the deploy to it.
+## What shipped 2026-07-02 (ap-v563, Claude)
+- **Homepage head**: JSON-LD (WebSite + WebApplication), Twitter card set, `og:image` fixed relative→absolute (`og-banner-improved.jpg`), `og:site_name`
+- **cosmic-story.html**: Twitter cards + og:image + WebApplication JSON-LD (was the only indexed page missing social meta)
+- **sitemap.xml rebuilt**: removed noindexed pages (404, fulfil-redirect, outreach, phone-tools, sample-reading) + homepage duplicates (index-full/-lite); added missing cosmic-story.html; bare-root URL; tiered priorities (/ 1.0 → legal 0.3); fresh lastmod. 38 URLs
+- **manifest.json**: theme/background `#050406`→`#0C1016` (matches the sitewide cool-void theme-color on all 41 pages)
+- **index-full.html**: broken anchor `ephemeris.html#oracle` → `#sec-daimon`
+- **sw.js**: cache `ap-v563`
 
-**Rollback:** `git push origin 61ebe1b:gh-pages --force` restores the prior live state.
-
-## Overhaul shipped this session (2026-06-19)
-- **Engine:** Meeus Ch.37 Pluto series (verified to the worked example) + general precession J2000→of-date — all planets now tropical/of-date consistent with Sun/Moon; **Pluto Aquarius ingress now lands 2024-11-19** (was the lagging "finding"). Polar-house degeneracy fixed (12 distinct cusps above the polar circle). Engine test coverage **16 → 139 assertions**.
-- **Security:** reflected/stored XSS hardening across 6 modules (incl. an invite-link injection); subscribe-worker hardening (constant-time token, rate-limit, export pagination fix, CSV-injection guard).
-- **Tooling:** `npm test`/lint/prettier/syntax gate; esbuild build (`npm run build` → `dist/`, −25% JS / −28% CSS) + `serve:dist`.
-- **Note:** the precession change shifts every displayed planet position ≤~0.35° today (more correct, agrees with standard ephemerides).
-
-## QA gates
-- Full test gate green: **139 engine assertions** + horoscope/compat/content/art + ephemeris-package smoke; `node --check` 77/77.
-- ⚠ **No browser QA performed by the agent** (preview env was bound to another project) — recommend a live smoke of chart/shop/compatibility now that it's deployed.
+## QA gates (all green pre-push)
+- `npm test`: 98 engine assertions + horoscope/compat/content/art + ephemeris-package smoke — **all pass**
+- Playwright suite: expert **100/100**, user journey **0 issues**, axe a11y **8/8 ok / 0 violations**, homepage contract **18/18**
+- Link check: 0 broken internal links, 0 broken anchors (custom sweep, all 45 pages)
+- Browser QA: homepage boots clean on :8794 preview, JSON-LD parses, zero console errors
 
 ## Open / ongoing
-- **Source-of-record:** `main` not yet committed (overhaul lives in the working tree) — commit + push `main` when ready.
-- Browser-QA the live site; if good, optionally switch deploy to the minified `dist/` build (bundling/hashing/ESM still staged).
-- **Owner (unchanged):** TWOSKIES50 in LS, GSC/Bing, social accounts + Postiz, one checkout smoke-test, email verify
+- **`_headers` (CSP etc.) is INERT on GitHub Pages** — security headers don't apply on the live host. Options: move hosting to Cloudflare Pages (file already written for it), or accept GH Pages defaults. Decision for Jonny.
+- Verify live after Actions: `curl https://astroprecise.app/sw.js | grep ap-v` should show **ap-v563**; hard-refresh/unregister SW for stale shells
+- **Owner (unchanged):** TWOSKIES50 in LS, GSC/Bing verify, social accounts + Postiz, one checkout smoke-test, email verify
+- Untracked `tools/visual-check/out/**` audit artifacts left uncommitted by design (Grok's call — commit if Jonny wants them)
 
 ## Roadmap (deferred)
-- Play Store TWA; astrocartography map; on-site Stripe
+- Play Store TWA; astrocartography map; on-site Stripe; blog/content engine for SEO (see AGENT-HANDOFF 2026-07-02 Claude entry for the prioritized roadmap)
 
-*Updated 2026-06-19 (ap-v446 LIVE). Full history: AGENT-HANDOFF.md; overhaul detail: OVERHAUL-PLAN.md*
-
-## Shipped locally (Wave 25–26 audit closure)
-- **Perf outliers fixed:** terms 57→**100**, tonight 66→**98**, transits 66→**95**, profile 77→**97**, angel-numbers/moonphase/name-numerology 83→**95–98**
-- **CLS fixes:** rising-sign 0.058→**0.001**, outreach 0.28→**0**, transits 0.098→**0.007**, quiz 0.052→**0.001**, moonphase CLS restored (blocking page CSS)
-- **icons.js:** skip seal upgrade on audit path (transits CLS root cause)
-- **Preview:** `serve-preview.mjs` on :8790 (Brotli)
-
-## QA gates (local ap-v430)
-- 10-page Lighthouse CI: **pass** (index 100, chart/horoscope 94–97, all perf ≥85)
-- 8-page axe: **0 violations**
-- Engine tests: **16/16 + 5/5 + 9/9**
-- 23-page remaining audit: overall **87**, perf avg **95**, a11y **100** (`capturedAt` 2026-06-17T18:34Z)
-- **All 23 pages perf ≥84** (retrograde **84** — sole borderline); **all CLS ≤0.05**
-- Visual baseline: **saved** (25 preloader + 13 pages)
-
-## Open / ongoing
-- **Push blocked by Jonny** — single commit ap-v278→v430 when ready
-- **Owner (unchanged):** TWOSKIES50 in LS, GSC/Bing, social accounts + Postiz, one checkout smoke-test, email verify
-
-## Roadmap (deferred)
-- Play Store TWA; astrocartography map; on-site Stripe
-
-*Updated 2026-06-17 (ap-v430 local). Full history: AGENT-HANDOFF.md*
+*Updated 2026-07-02 (Claude). Full history: AGENT-HANDOFF.md*
