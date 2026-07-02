@@ -140,6 +140,28 @@
       font-size: 0.95rem; color: var(--ap-text-muted, var(--silver-dim, #9A9084));
       max-width: 500px; margin: 0 auto; line-height: 1.6;
     }
+    .sphere-space-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: #060a10 url('../assets/images/ecliptic-space-bg.jpg') center / cover no-repeat;
+      opacity: 1;
+      transform: translate3d(var(--space-pan-x, 0px), var(--space-pan-y, 0px), 0) scale(1.08);
+      transform-origin: center center;
+      will-change: transform;
+    }
+    .sphere-space-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(ellipse 88% 72% at 50% 42%, transparent 22%, rgba(6, 10, 16, 0.45) 68%, rgba(6, 10, 16, 0.92) 100%),
+        radial-gradient(ellipse 120% 80% at 50% 50%, rgba(111, 160, 216, 0.06) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(6, 10, 16, 0.35) 0%, transparent 38%, rgba(6, 10, 16, 0.5) 100%);
+    }
     .sphere-wrap {
       position: relative; width: 100%; max-width: 700px;
       height: clamp(260px, 70vw, 420px);
@@ -150,7 +172,7 @@
       touch-action: pan-y;
       overflow: hidden;
       border-radius: 12px;
-      background: radial-gradient(circle at 50% 45%, #0a1218 0%, #060a10 72%);
+      background: #060a10;
       /* Engraved observatory plate — the 3D ring reads as an instrument under
          glass. Box-shadow rim + inner top-light survive overflow:hidden/contain. */
       box-shadow:
@@ -190,6 +212,11 @@
       transition: opacity 0.55s ease, visibility 0.55s ease;
       pointer-events: auto;
       cursor: grab;
+      background: transparent;
+    }
+    .sphere-poster__svg rect:first-of-type,
+    .sphere-poster__svg rect:nth-of-type(2) {
+      fill: transparent;
     }
     .sphere-wrap.is-dragging { cursor: grabbing; }
     .sphere-wrap.is-canvas-ready .sphere-poster {
@@ -199,10 +226,9 @@
     .wheel-sign { cursor: pointer; outline: none; }
     .wheel-sign__hit { pointer-events: all; }
     .wheel-sign__glyph { pointer-events: none; user-select: none; }
-    .wheel-sign__name { pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
-    .wheel-sign.is-hovered .wheel-sign__name,
-    .wheel-sign.is-selected .wheel-sign__name,
-    .wheel-sign:focus-visible .wheel-sign__name { opacity: 1; }
+    .wheel-sign__abbr { pointer-events: none; opacity: 0.88; }
+    .wheel-sign.is-selected .wheel-sign__abbr { fill: #ECE6D8; opacity: 1; }
+    .wheel-meridian { transform-box: fill-box; transform-origin: center; }
     .wheel-sign.is-hovered .wheel-sign__ring,
     .wheel-sign:focus-visible .wheel-sign__ring {
       stroke-opacity: 0.95;
@@ -241,11 +267,79 @@
     @media (prefers-reduced-motion: reduce) {
       .wheel-centre__pulse { animation: none; }
       .sphere-poster { transition-duration: 0.01ms; }
+      .sphere-dial-loading__ring { animation: none; border-top-color: rgba(194, 160, 94, 0.5); }
     }
     .sphere-poster__svg {
       display: block;
       width: 100%;
       height: 100%;
+    }
+    .sphere-dial-loading {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.85rem;
+      pointer-events: none;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
+    }
+    .ap-canvas-primary .sphere-wrap.is-canvas-primary:not(.is-canvas-ready):not(.is-canvas-fallback) .sphere-dial-loading {
+      display: flex;
+    }
+    .sphere-dial-loading__ring {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(194, 160, 94, 0.22);
+      border-top-color: rgba(194, 160, 94, 0.78);
+      animation: sphere-dial-spin 1.1s linear infinite;
+    }
+    .sphere-dial-loading__label {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(194, 160, 94, 0.62);
+    }
+    @keyframes sphere-dial-spin {
+      to { transform: rotate(360deg); }
+    }
+    .sphere-wrap.is-canvas-ready .sphere-dial-loading,
+    .sphere-wrap.is-canvas-fallback .sphere-dial-loading {
+      opacity: 0;
+      visibility: hidden;
+    }
+    /* Canvas-primary: one live renderer — poster hidden, canvas owns the dial */
+    .ap-canvas-primary .sphere-wrap {
+      cursor: default;
+    }
+    .ap-canvas-primary .sphere-wrap.is-canvas-primary .sphere-poster {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    .ap-canvas-primary .sphere-wrap.is-canvas-primary canvas {
+      opacity: 0;
+      visibility: visible;
+      pointer-events: none;
+      background: transparent;
+    }
+    .ap-canvas-primary .sphere-wrap.is-canvas-primary.is-canvas-ready canvas {
+      opacity: 1;
+    }
+    .ap-canvas-primary .sphere-wrap.is-canvas-primary.is-canvas-ready canvas {
+      pointer-events: auto;
+      cursor: grab;
+    }
+    .ap-canvas-primary .sphere-wrap.is-canvas-primary.is-canvas-ready {
+      cursor: grab;
+    }
+    .ap-canvas-primary .sphere-wrap.is-canvas-fallback .sphere-poster {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
     }
     .sphere-wrap canvas {
       position: absolute;
@@ -253,12 +347,12 @@
       display: block;
       width: 100%;
       height: 100%;
-      z-index: 2;
+      z-index: 3;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
       touch-action: none;
-      transition: opacity 0.55s ease, visibility 0.55s ease;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
     }
     .sphere-wrap.is-canvas-ready .sphere-poster {
       opacity: 0;
@@ -268,6 +362,14 @@
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
+      background: transparent;
+    }
+    .sphere-wrap.is-canvas-ready {
+      box-shadow:
+        0 0 0 1px rgba(194, 160, 94, 0.22),
+        inset 0 0 48px rgba(6, 10, 16, 0.25),
+        0 22px 56px rgba(0, 0, 0, 0.38),
+        0 0 64px rgba(111, 160, 216, 0.1);
     }
     .sphere-wrap.is-canvas-handoff .sphere-poster {
       transition-duration: 0.45s;
@@ -289,6 +391,263 @@
     .sphere-hint {
       font-size: 0.68rem; color: var(--silver-dim, #8891AA);
       letter-spacing: 0.04em;
+    }
+
+    .ecliptic-sky-headline {
+      margin: 0.65rem auto 0;
+      max-width: 520px;
+      font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+      font-size: max(11px, 0.68rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold, #C2A05E);
+      min-height: 1.2rem;
+    }
+
+    .ecliptic-personal-note {
+      margin: 0.45rem auto 0;
+      max-width: 520px;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: var(--silver-dim, #8891AA);
+      text-align: center;
+      line-height: 1.5;
+    }
+    .sphere-no-chart-note {
+      margin: 0.35rem 0 0;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(194, 160, 94, 0.35);
+      background: rgba(12, 16, 22, 0.75);
+      font-size: 0.72rem;
+      color: var(--gold-pale, #E8E0D0);
+      line-height: 1.5;
+      text-align: center;
+      max-width: 420px;
+    }
+
+    .ecliptic-personal-note .epn-mark {
+      display: inline-block;
+      color: #6FA0D8;
+      font-size: 0.85em;
+      transform: rotate(45deg);
+      margin: 0 0.15em;
+      vertical-align: middle;
+    }
+    .epn-transits {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.45rem;
+      justify-content: center;
+      vertical-align: middle;
+    }
+    .epn-transit {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(194, 160, 94, 0.28);
+      background: rgba(12, 16, 22, 0.55);
+      color: var(--silver-dim, #8891AA);
+      font-size: 0.68rem;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .epn-transit:hover,
+    .epn-transit.is-active {
+      color: var(--gold-pale, #E8E0D0);
+      border-color: rgba(194, 160, 94, 0.55);
+      box-shadow: 0 0 12px rgba(194, 160, 94, 0.15);
+    }
+    .epn-transit--harmony { border-color: rgba(111, 160, 216, 0.35); }
+    .epn-transit--harmony.is-active,
+    .epn-transit--harmony:hover { border-color: rgba(111, 160, 216, 0.65); }
+    .epn-transit--challenge { border-color: rgba(184, 90, 66, 0.35); }
+    .epn-transit--challenge.is-active,
+    .epn-transit--challenge:hover { border-color: rgba(184, 90, 66, 0.65); }
+    .ecliptic-personal-note.is-flash {
+      animation: epn-flash 1.2s ease;
+    }
+    @keyframes epn-flash {
+      0%, 100% { box-shadow: none; }
+      35% { box-shadow: 0 0 0 2px rgba(194, 160, 94, 0.35); border-radius: 8px; }
+    }
+
+    .srp-transit-chords {
+      margin: 0 0 var(--space-3);
+      padding: var(--space-3);
+      border: 1px solid rgba(194, 160, 94, 0.18);
+      border-radius: 10px;
+      background: rgba(8, 12, 18, 0.45);
+    }
+    .srp-transit-chords__label {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold, #C2A05E);
+      margin-bottom: 0.55rem;
+    }
+    .srp-transit-chords__list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .srp-transit-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(194, 160, 94, 0.25);
+      background: rgba(12, 16, 22, 0.6);
+      color: var(--silver-dim, #8891AA);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+    .srp-transit-chip:hover,
+    .srp-transit-chip.is-active {
+      color: var(--gold-pale, #E8E0D0);
+      transform: translateY(-1px);
+    }
+    .srp-transit-chip--harmony { border-color: rgba(111, 160, 216, 0.4); }
+    .srp-transit-chip--harmony.is-active,
+    .srp-transit-chip--harmony:hover { border-color: rgba(111, 160, 216, 0.7); }
+    .srp-transit-chip--challenge { border-color: rgba(184, 90, 66, 0.4); }
+    .srp-transit-chip--challenge.is-active,
+    .srp-transit-chip--challenge:hover { border-color: rgba(184, 90, 66, 0.7); }
+    .stc-glyph { font-family: 'AstroGlyph', sans-serif; opacity: 0.9; }
+
+    .sky-board-toggle {
+      display: block;
+      margin: 0.55rem auto 0;
+      padding: 0.35rem 0.85rem;
+      border: 1px solid rgba(194, 160, 94, 0.22);
+      border-radius: 999px;
+      background: rgba(12, 16, 22, 0.55);
+      color: var(--silver-dim, #8891AA);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .sky-board-toggle:hover {
+      border-color: rgba(194, 160, 94, 0.45);
+      color: var(--gold-pale, #E8E0D0);
+    }
+    #weather-grid-toggle {
+      margin-bottom: 0.75rem;
+    }
+    .wheel-poster-chords .wheel-poster-chord-hit {
+      pointer-events: stroke;
+      cursor: pointer;
+    }
+    .wheel-poster-chords .wheel-poster-chord-vis {
+      pointer-events: none;
+    }
+    .wheel-poster-chords .wheel-poster-chord-vis.is-highlighted {
+      filter: drop-shadow(0 0 4px rgba(194, 160, 94, 0.45));
+    }
+    .wheel-chord-tooltip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -100%);
+      padding: 0.28rem 0.55rem;
+      border-radius: 4px;
+      background: rgba(8, 12, 18, 0.92);
+      border: 1px solid rgba(194, 160, 94, 0.45);
+      color: rgba(236, 230, 216, 0.95);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 6;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .wheel-chord-tooltip.is-visible {
+      opacity: 1;
+    }
+
+    .sign-reading-panel--hero {
+      max-width: 720px;
+      margin: 0.65rem auto 0;
+      text-align: left;
+    }
+
+    .sign-reading-panel--hero.is-open {
+      margin-top: 0.85rem;
+    }
+
+    @media (min-width: 901px) {
+      .sign-reading-panel--hero.is-open {
+        position: sticky;
+        top: 4.5rem;
+        z-index: 18;
+        scroll-margin-top: 5rem;
+        max-height: calc(100vh - 5.5rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
+    }
+
+    body.horoscope--reading-open .sky-board-toggle {
+      opacity: 0.55;
+    }
+    body.horoscope--reading-open .ecliptic-sky-headline {
+      margin-bottom: 0.35rem;
+    }
+
+    .planet-legend--compact {
+      min-height: 52px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      justify-content: flex-start;
+      max-width: 100%;
+      padding-inline: 0.25rem;
+    }
+    .planet-legend--compact::-webkit-scrollbar { display: none; }
+    .planet-legend--compact .planet-legend__label {
+      display: none;
+    }
+    .planet-legend--compact .pl-dot {
+      min-width: 0;
+      font-size: 0.62rem;
+      flex: 0 0 auto;
+    }
+
+    .sphere-hint--pulse {
+      animation: sphere-hint-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes sphere-hint-pulse {
+      0%, 100% { opacity: 0.72; }
+      50% { opacity: 1; }
+    }
+
+    .srp-personalise-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold-pale, #E8E0D0);
+      text-decoration: none;
+      border: 1px solid rgba(194, 160, 94, 0.35);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      margin-top: 0.35rem;
+    }
+    .srp-personalise-chip:hover {
+      border-color: rgba(194, 160, 94, 0.6);
+      color: var(--gold, #C2A05E);
     }
 
     /* Planet legend — reserve wrapped row height (pushes sphere-ctas if unset) */

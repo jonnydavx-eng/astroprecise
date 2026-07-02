@@ -147,7 +147,8 @@ const page = await context.newPage();
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
 
-await page.goto(`${BASE}/index.html?v=529`, { waitUntil: "networkidle" });
+const ver = (VERSION || "533").replace(/^ap-v/, "");
+await page.goto(`${BASE}/?v=${ver}`, { waitUntil: "domcontentloaded" });
 await page.evaluate(() => {
   localStorage.setItem("ap_intro_complete", "1");
   document.querySelectorAll(".ap-reveal").forEach((el) => {
@@ -155,8 +156,16 @@ await page.evaluate(() => {
     el.style.opacity = "1";
   });
 });
-await page.reload({ waitUntil: "networkidle" });
-await page.waitForTimeout(800);
+await page.reload({ waitUntil: "domcontentloaded" });
+await page.waitForFunction(
+  () => {
+    const sun = document.getElementById("dateline-sun");
+    return !!(sun && /^Sun in [A-Za-z]+/.test((sun.textContent || "").trim()));
+  },
+  null,
+  { timeout: 6000 },
+).catch(() => {});
+await page.waitForTimeout(200);
 
 const checks = await page.evaluate(() => {
   const chapters = [...document.querySelectorAll(".ap-flow .ap-chapter, .ap-flow > .ap-chapter")];
@@ -210,7 +219,11 @@ const checks = await page.evaluate(() => {
       badgeOverlap: paddingEnd < 80 && !document.body.classList.contains("ap-award-511--nav-visible"),
       trustLink: !!floatNav?.querySelector('[data-ap-jump="trustChapter"]'),
     },
-    deferredEphemeris: [...document.querySelectorAll('script[src*="ephemeris.js"]')].every((s) => s.defer),
+    deferredEphemeris: (() => {
+      const scripts = [...document.querySelectorAll('script[src*="ephemeris.js"]')];
+      if (!scripts.length) return true;
+      return scripts.every((s) => s.defer);
+    })(),
     deferredZodiac: [...document.querySelectorAll('script[src*="ap-zodiac-constants"]')].every((s) => s.defer),
     trustIsSection: document.getElementById("trustChapter")?.tagName === "SECTION",
     liveDateline: (() => {

@@ -1,0 +1,271 @@
+{
+  "version": 1,
+  "updated": "2026-07-01",
+  "editorial_note": "Curated sky guides tied to real VSOP87 calculations — never generic horoscope filler.",
+  "stories": [
+    {
+      "id": "birth-chart-basics",
+      "title": "Your birth chart is not your sun sign",
+      "dek": "Most apps stop at one placement. A real natal chart computes every planet, house, and aspect for the exact minute you arrived — that's what makes it yours alone.",
+      "body": [
+        "Your sun sign is one line in a document with dozens. The moon moves sign every two and a half days; the rising sign changes every two hours. A chart born at 14:02 is not the same chart as one born at 18:47 on the same day.",
+        "Astro Precise uses VSOP87 — the same planetary mathematics observatories use — entirely in your browser. No server stores your birth data; the calculation stays on your device.",
+        "Start with date, time, and place. The more precise your birth time, the more accurate your rising sign and house cusps — the parts of the chart most personal to you."
+      ],
+      "tips": [
+        "If birth time is unknown, still cast — but treat the rising as approximate.",
+        "Save your chart locally; return visits personalise the homepage.",
+        "Compare your Big Three (Sun, Moon, Rising) before reading planet-by-planet."
+      ],
+      "category": "chart",
+      "theme": "gold",
+      "read_mins": 3,
+      "trend_tag": "Getting started",
+      "signals": ["natal", "VSOP87"],
+      "links": [
+        {"href": "chart.html", "label": "Cast your chart", "hook": "Free natal wheel"},
+        {"href": "what-is-my-rising-sign.html", "label": "Rising sign", "hook": "Why time matters"}
+      ]
+    },
+    {
+      "id": "rising-sign-guide",
+      "title": "Why your rising sign needs your birth time",
+      "dek": "The ascendant is the eastern horizon at your first breath — it moves a degree every four minutes. Without a time, you're reading someone else's chart.",
+      "body": [
+        "The rising sign (ascendant) is the zodiac degree on the eastern horizon at birth. It sets the whole house system — which life areas each planet rules in your chart.",
+        "A noon-default chart can show a rising sign that never existed at your birthplace. Astro Precise labels uncertain placements honestly when time is missing.",
+        "If you only know morning or evening, narrow the window and note the uncertainty. Family records, birth certificates, and hospital notes are worth chasing."
+      ],
+      "tips": [
+        "Rectification is advanced — start with the best time you have.",
+        "The rising colours first impressions; the moon colours emotional life.",
+        "House cusps shift with latitude — place of birth matters."
+      ],
+      "category": "rising",
+      "theme": "meridian",
+      "read_mins": 3,
+      "trend_tag": "Accuracy",
+      "signals": ["ascendant", "houses"],
+      "links": [
+        {"href": "what-is-my-rising-sign.html", "label": "Rising explainer", "hook": "Ascendant primer"},
+        {"href": "chart.html", "label": "Chart calculator", "hook": "Cast with time"}
+      ]
+    },
+    {
+      "id": "moon-phase-living",
+      "title": "Living with the moon's rhythm",
+      "dek": "The moon changes sign every 2–3 days and phase every 29.5 days. Tracking both beats generic 'new moon manifestation' posts.",
+      "body": [
+        "Moon sign colours the emotional weather; moon phase colours momentum. A waxing moon in earth signs favours building; a waning moon in water signs favours release — but your natal moon always filters the story.",
+        "Astro Precise computes tonight's moon from the same ephemeris as your natal chart, so daily sky and personal chart speak the same language.",
+        "Pair moon phase with transits to your natal moon for timing that is actually about your chart, not a collective meme."
+      ],
+      "tips": [
+        "Check moon sign before important conversations.",
+        "Void-of-course moon is a pause signal, not a superstition.",
+        "Natal moon sign is your baseline; transiting moon is the weather."
+      ],
+      "category": "moon",
+      "theme": "silver",
+      "read_mins": 2,
+      "trend_tag": "Daily rhythm",
+      "signals": ["moon-phase", "transit"],
+      "links": [
+        {"href": "moonphase.html", "label": "Moon phase", "hook": "Tonight's disc"},
+        {"href": "tonight.html", "label": "Sky tonight", "hook": "Live positions"}
+      ]
+    },
+    {
+      "id": "transit-timing",
+      "title": "Transits: when the sky touches your chart",
+      "dek": "A transit is a planet in today's sky aspecting a planet in your natal chart. Generic forecasts ignore which houses they hit — yours don't.",
+      "body": [
+        "Saturn squaring your natal Venus means something different at 22 than at 52 because your chart's house structure differs. Transit reports must know your chart.",
+        "Astro Precise dates major transits to your saved chart using real ephemeris positions — not approximations from sun-sign columns.",
+        "Outer-planet transits are slow; inner-planet transits are the weekly weather. Both matter, on different clocks."
+      ],
+      "tips": [
+        "Save your chart once — transits reference it automatically.",
+        "Note exact dates when a transit peaks; the feeling often lags.",
+        "Retrograde periods re-hit the same degrees three times."
+      ],
+      "category": "transits",
+      "theme": "violet",
+      "read_mins": 3,
+      "trend_tag": "Timing",
+      "signals": ["transits", "aspects"],
+      "links": [
+        {"href": "transits.html", "label": "Your transits", "hook": "Dated to your chart"},
+        {"href": "retrograde.html", "label": "Retrograde radar", "hook": "Station dates"}
+      ]
+    },
+    {
+      "id": "synastry-honest",
+      "title": "Synastry without the soulmate myth",
+      "dek": "Comparing two charts shows where energies meet — harmony, friction, and blind spots. It is a map, not a verdict.",
+      "body": [
+        "Synastry overlays two natal wheels and measures aspects between them. Conjunctions fuse; squares demand work; trines flow easily — all of them teach something.",
+        "Astro Precise computes both charts with VSOP87, then scores aspect patterns honestly. No fabricated compatibility percentages.",
+        "Composite charts (the relationship as its own entity) are a second lens — useful for long partnerships, not a replacement for individual charts."
+      ],
+      "tips": [
+        "Compare Big Three before diving into every minor aspect.",
+        "Friction aspects are not 'bad' — they show growth edges.",
+        "Both birth times improve house-overlay accuracy."
+      ],
+      "category": "compatibility",
+      "theme": "rose",
+      "read_mins": 3,
+      "trend_tag": "Relationships",
+      "signals": ["synastry", "composite"],
+      "links": [
+        {"href": "compatibility.html", "label": "Compatibility", "hook": "Two-chart compare"},
+        {"href": "synastry.html", "label": "Synastry deep dive", "hook": "Aspect grid"}
+      ]
+    },
+    {
+      "id": "retrograde-survival",
+      "title": "Retrograde seasons — what actually shifts",
+      "dek": "When a planet appears to move backward, astrologers track review, delay, and revision themes. The astronomy is real; the meaning is chart-specific.",
+      "body": [
+        "Mercury retrograde is the famous one, but Mars, Venus, and the outer planets retrograde too — each on its own schedule. The key is which natal houses and planets they touch in your chart.",
+        "Astro Precise lists station dates from the ephemeris and flags when retrograde planets aspect your saved chart — not a one-size-fits-all warning.",
+        "Retrograde is not 'don't do anything.' It is 'double-check, revisit, and finish what you started.'"
+      ],
+      "tips": [
+        "Note the pre-shadow and post-shadow dates, not just the middle.",
+        "Back up devices before Mercury stations — practical, not mystical.",
+        "Contracts signed on the station day deserve extra review."
+      ],
+      "category": "retrograde",
+      "theme": "indigo",
+      "read_mins": 2,
+      "trend_tag": "Retrograde",
+      "signals": ["retrograde", "mercury"],
+      "links": [
+        {"href": "retrograde.html", "label": "Retrograde calendar", "hook": "Station dates"},
+        {"href": "transits.html", "label": "Your hits", "hook": "Personal transits"}
+      ]
+    },
+    {
+      "id": "season-briefing",
+      "title": "Zodiac season is more than a meme",
+      "dek": "When the Sun enters a new sign, the collective tone shifts — but how it lands in your chart depends on which house the Sun transits for you.",
+      "body": [
+        "Sun in Cancer season warms home and family themes globally; for you it might activate career or partnerships depending on your house cusps.",
+        "Read the season briefing, then check transits to your natal Sun and Ascendant for the personal layer.",
+        "Astro Precise sign pages pair daily horoscope text with real planetary positions — not recycled paragraphs."
+      ],
+      "tips": [
+        "Read your rising-sign horoscope for daily tone.",
+        "Season ingress is a good day to set one intention.",
+        "Compare season themes to your solar return chart."
+      ],
+      "category": "season",
+      "theme": "coral",
+      "read_mins": 2,
+      "trend_tag": "Seasonal",
+      "signals": ["sun-sign", "ingress"],
+      "links": [
+        {"href": "horoscope.html", "label": "Daily horoscope", "hook": "Live sky text"},
+        {"href": "cancer.html", "label": "Cancer season", "hook": "Sign deep dive"}
+      ]
+    },
+    {
+      "id": "cosmic-story-read",
+      "title": "From chart to story — not a report",
+      "dek": "Your Cosmic Story weaves six movements from your real placements using the interpretation corpus — a narrative, not a bullet list.",
+      "body": [
+        "Most apps dump planet-in-sign snippets. A story connects Sun, Moon, rising, and temperament into something you can feel and remember.",
+        "Astro Precise builds the narrative from your saved chart or a live demo — every sentence traces to a computed placement.",
+        "Read the sample before buying any reading; the shop is honest about what is digital vs print vs pending checkout."
+      ],
+      "tips": [
+        "Save your chart first for a fully personal story.",
+        "Share the sample link — it uses a real demo chart.",
+        "Six movements map to Sun, Moon, Ascendant, mind/heart, temperament, North Node."
+      ],
+      "category": "readings",
+      "theme": "dusk",
+      "read_mins": 3,
+      "trend_tag": "Featured reading",
+      "signals": ["cosmic-story", "narrative"],
+      "links": [
+        {"href": "cosmic-story.html", "label": "Read sample", "hook": "Six-movement story"},
+        {"href": "shop.html", "label": "Shop editions", "hook": "Keepsake PDF"}
+      ]
+    },
+    {
+      "id": "privacy-first-astro",
+      "title": "Privacy-first astrology is possible",
+      "dek": "Your birth data is intimate. Astro Precise keeps charts in local storage — no account, no cloud upload, no data sale.",
+      "body": [
+        "Many astrology apps ship birth data to servers for 'personalisation.' Here the ephemeris runs client-side; saved charts stay in your browser's storage.",
+        "Clearing site data removes saved charts — export or screenshot what you want to keep. We do not have a copy to restore.",
+        "That trade-off is deliberate: your sky, your device, your choice."
+      ],
+      "tips": [
+        "Screenshot your chart wheel if you clear browser data often.",
+        "PWA install keeps the app shell offline — charts still local.",
+        "Read the privacy page for the full data posture."
+      ],
+      "category": "beginner",
+      "theme": "sage",
+      "read_mins": 2,
+      "trend_tag": "Trust",
+      "signals": ["privacy", "on-device"],
+      "links": [
+        {"href": "privacy.html", "label": "Privacy policy", "hook": "Full posture"},
+        {"href": "accuracy.html", "label": "Accuracy", "hook": "VSOP87 method"}
+      ]
+    },
+    {
+      "id": "saturn-return-prep",
+      "title": "Saturn return — the chart's coming-of-age",
+      "dek": "Around age 29–30 Saturn returns to its natal position. The dates are astronomical; the themes are personal to your Saturn sign and house.",
+      "body": [
+        "Saturn return is not a punishment — it is a structural audit. Career, boundaries, and what you are building long-term surface for review.",
+        "Exact dates depend on your natal Saturn degree and whether Saturn retrogrades over it three times.",
+        "Astro Precise computes your Saturn placement and transit hits from the ephemeris — check your chart's Saturn sign and house first."
+      ],
+      "tips": [
+        "Note exact hit dates in transits — the process can span months.",
+        "Saturn sign shows the flavour; Saturn house shows the life area.",
+        "Journal commitments you are ready to keep vs release."
+      ],
+      "category": "transits",
+      "theme": "slate",
+      "read_mins": 3,
+      "trend_tag": "Life passage",
+      "signals": ["saturn", "return"],
+      "links": [
+        {"href": "saturn-return.html", "label": "Saturn return", "hook": "Dates & meaning"},
+        {"href": "transits.html", "label": "Transit list", "hook": "When it peaks"}
+      ]
+    },
+    {
+      "id": "mercury-mind",
+      "title": "Mercury in your chart — how you think",
+      "dek": "Mercury sign and house describe communication style and mental habits. Transit Mercury retrograde reactivates those natal themes.",
+      "body": [
+        "Mercury never travels far from the Sun — your Mercury sign is often the same element as your Sun or one sign away. That is astronomy, not a flaw.",
+        "Mercury house shows where you think and talk most: third house is local, ninth is big picture, tenth is public voice.",
+        "When Mercury retrogrades, notice which natal houses it crosses — that is the personal retrograde story."
+      ],
+      "tips": [
+        "Mercury aspects to Moon affect feeling-thought balance.",
+        "Keep a retrograde re-read list — emails, drafts, old projects.",
+        "Mercury speed varies; ephemeris shows exact station times."
+      ],
+      "category": "chart",
+      "theme": "air",
+      "read_mins": 2,
+      "trend_tag": "Planets",
+      "signals": ["mercury", "communication"],
+      "links": [
+        {"href": "chart.html", "label": "Your Mercury", "hook": "In your wheel"},
+        {"href": "retrograde.html", "label": "Mercury RX", "hook": "Station calendar"}
+      ]
+    }
+  ]
+}

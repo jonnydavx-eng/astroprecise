@@ -163,9 +163,7 @@
         <p class="chart-hero__eyebrow" aria-hidden="true">Natal Chart Engine</p>
         <h1 class="chart-hero__title" id="page-title">Your Natal Blueprint</h1>
         <p class="chart-hero__subtitle">
-          Precision astronomy for the moment of your birth — VSOP87 planetary
-          algorithms accurate to roughly an arcminute (1800&ndash;2200 CE), with your
-          Ascendant, twelve houses, and every aspect computed privately in your browser.
+          VSOP87 precision — computed privately in your browser. Enter your details below.
         </p>
       </div>
     </section>
@@ -186,10 +184,10 @@
 
         <form id="chart-form" novalidate aria-label="Birth chart calculation form">
 
-          <!-- ── I · Identity ─────────────────────────────────────── -->
-          <div class="form-section-label">
-            <div class="form-section-label__num">I</div>
-            <span class="form-section-label__text">Identity</span>
+          <div class="chart-form__essentials">
+          <div class="form-section-label chart-form__essentials-label">
+            <div class="form-section-label__num" aria-hidden="true">✦</div>
+            <span class="form-section-label__text">Birth details</span>
           </div>
 
           <div class="form-group" id="group-name">
@@ -210,81 +208,6 @@
             <span class="form-group__check" aria-hidden="true"></span>
             <p class="form-error-msg" role="alert">Please enter your name.</p>
             <p class="form-hint" id="name-hint">Used to label your saved chart.</p>
-          </div>
-
-          <!-- ── II · Moment ──────────────────────────────────────── -->
-          <div class="form-section-label">
-            <div class="form-section-label__num">II</div>
-            <span class="form-section-label__text">Moment of Birth</span>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group" id="group-date">
-              <label for="date-input" class="form-label">
-                Birth Date <span class="required" aria-hidden="true">*</span>
-              </label>
-              <input
-                type="date"
-                id="date-input"
-                name="birth-date"
-                class="form-input"
-                required
-                aria-required="true"
-                aria-describedby="date-hint"
-              />
-              <span class="form-group__check" aria-hidden="true"></span>
-              <p class="form-error-msg" role="alert">Please enter your birth date.</p>
-              <p class="form-hint" id="date-hint">Your date of birth.</p>
-            </div>
-
-            <div class="form-group" id="group-time">
-              <label for="time-input" class="form-label">
-                Birth Time
-                <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — optional</span>
-              </label>
-              <input
-                type="time"
-                id="time-input"
-                name="birth-time"
-                class="form-input"
-                aria-describedby="time-hint"
-              />
-              <p class="form-hint" id="time-hint">Needed for your Ascendant &amp; houses.</p>
-            </div>
-          </div>
-
-          <!-- Time-of-day quick picks -->
-          <div style="margin-bottom:var(--space-6);">
-            <p class="form-label" style="margin-bottom:var(--space-3);">
-              Time of Day
-              <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — tap to approximate if exact time is unknown</span>
-            </p>
-            <div class="time-selector" role="group" aria-label="Time of day selector">
-              <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM">
-                <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Dawn
-              </button>
-              <button type="button" class="time-btn" data-time="09:00" aria-label="Morning, around 9:00 AM">
-                <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Morning
-              </button>
-              <button type="button" class="time-btn" data-time="12:00" aria-label="Noon, 12:00 PM">
-                <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Noon
-              </button>
-              <button type="button" class="time-btn" data-time="15:30" aria-label="Afternoon, around 3:30 PM">
-                <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Afternoon
-              </button>
-              <button type="button" class="time-btn" data-time="20:00" aria-label="Evening, around 8:00 PM">
-                <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunset"/></svg></span>Evening
-              </button>
-              <button type="button" class="time-btn" data-time="23:30" aria-label="Night, around 11:30 PM">
-                <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>Night
-              </button>
-            </div>
-          </div>
-
-          <!-- ── III · Place ──────────────────────────────────────── -->
-          <div class="form-section-label">
-            <div class="form-section-label__num">III</div>
-            <span class="form-section-label__text">Place of Birth</span>
           </div>
 
           <div class="form-group" id="group-city" style="position:relative;">
@@ -321,6 +244,42 @@
             </p>
           </div>
 
+          <div class="form-row">
+            <div class="form-group" id="group-date">
+              <label for="date-input" class="form-label">
+                Birth Date <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="date"
+                id="date-input"
+                name="birth-date"
+                class="form-input"
+                required
+                aria-required="true"
+                aria-describedby="date-hint"
+              />
+              <span class="form-group__check" aria-hidden="true"></span>
+              <p class="form-error-msg" role="alert">Please enter your birth date.</p>
+              <p class="form-hint" id="date-hint">Your date of birth.</p>
+            </div>
+
+            <div class="form-group" id="group-time">
+              <label for="time-input" class="form-label">
+                Birth Time
+                <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — optional</span>
+              </label>
+              <input
+                type="time"
+                id="time-input"
+                name="birth-time"
+                class="form-input"
+                aria-describedby="time-hint"
+              />
+              <p class="form-hint" id="time-hint">Needed for your Ascendant &amp; houses.</p>
+            </div>
+          </div>
+          </div><!-- /.chart-form__essentials -->
+
           <!-- Hidden coordinate / tz fields -->
           <input type="hidden" id="lat-input" name="latitude" />
           <input type="hidden" id="lon-input" name="longitude" />
@@ -328,13 +287,39 @@
 
           <!-- ── Advanced options (accordion on mobile) ───────────── -->
           <div class="chart-advanced accordion" id="chart-advanced" style="margin-top:var(--space-8);">
-            <div class="accordion-item is-open" id="chart-advanced-item">
-              <button type="button" class="accordion-trigger" id="chart-advanced-trigger" aria-expanded="true" aria-controls="chart-advanced-panel">
+            <div class="accordion-item" id="chart-advanced-item">
+              <button type="button" class="accordion-trigger" id="chart-advanced-trigger" aria-expanded="false" aria-controls="chart-advanced-panel">
                 <span>Advanced chart options</span>
                 <svg class="accordion-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               </button>
               <div class="accordion-content" id="chart-advanced-panel" role="region" aria-labelledby="chart-advanced-trigger">
                 <div class="accordion-content__inner">
+                  <div class="chart-form__time-picks" style="margin-bottom:var(--space-6);">
+                    <p class="form-label" style="margin-bottom:var(--space-3);">
+                      Time of Day
+                      <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — tap to approximate if exact time is unknown</span>
+                    </p>
+                    <div class="time-selector" role="group" aria-label="Time of day selector">
+                      <button type="button" class="time-btn" data-time="04:30" aria-label="Dawn, around 4:30 AM">
+                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Dawn
+                      </button>
+                      <button type="button" class="time-btn" data-time="09:00" aria-label="Morning, around 9:00 AM">
+                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunrise"/></svg></span>Morning
+                      </button>
+                      <button type="button" class="time-btn" data-time="12:00" aria-label="Noon, 12:00 PM">
+                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Noon
+                      </button>
+                      <button type="button" class="time-btn" data-time="15:30" aria-label="Afternoon, around 3:30 PM">
+                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunhigh"/></svg></span>Afternoon
+                      </button>
+                      <button type="button" class="time-btn" data-time="20:00" aria-label="Evening, around 8:00 PM">
+                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-sunset"/></svg></span>Evening
+                      </button>
+                      <button type="button" class="time-btn" data-time="23:30" aria-label="Night, around 11:30 PM">
+                        <span class="time-btn__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>Night
+                      </button>
+                    </div>
+                  </div>
                   <div class="form-section-label">
                     <div class="form-section-label__num" aria-hidden="true">☏</div>
                     <span class="form-section-label__text">House System</span>
@@ -967,12 +952,19 @@
     const form    = document.getElementById('chart-form');
     if (form && calcBtn) {
       form.addEventListener('submit', () => {
-        calcBtn.classList.add('is-loading');
-        calcBtn.disabled = true;
-        setTimeout(() => {
-          calcBtn.classList.remove('is-loading');
-          calcBtn.disabled = false;
-        }, 8000);
+        requestAnimationFrame(function () {
+          if (form.querySelector('.form-group.is-error')) {
+            calcBtn.classList.remove('is-loading');
+            calcBtn.disabled = false;
+            return;
+          }
+          calcBtn.classList.add('is-loading');
+          calcBtn.disabled = true;
+          setTimeout(function () {
+            calcBtn.classList.remove('is-loading');
+            calcBtn.disabled = false;
+          }, 8000);
+        });
       });
     }
 

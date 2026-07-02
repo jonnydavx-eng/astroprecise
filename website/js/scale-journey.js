@@ -21,6 +21,7 @@
     var ch = chapter(lv);
     if (!els.hud || !ch) return;
     els.hud.hidden = false;
+    els.hud.classList.remove('journey-hud--silent');
     els.viewport && els.viewport.classList.add('orrery-journey-active');
     if (els.tagline) els.tagline.textContent = ch.tagline;
     if (els.title) els.title.textContent = ch.title;
@@ -39,6 +40,26 @@
       els.more.hidden = false;
       els.more.setAttribute('aria-expanded', 'false');
       els.more.textContent = window.matchMedia && window.matchMedia('(max-width: 720px)').matches ? 'Notes' : 'Scene notes';
+    }
+  }
+
+  function showSilentFlightHud(progress) {
+    if (!els.hud) return;
+    els.hud.hidden = false;
+    els.hud.classList.add('journey-hud--silent');
+    if (els.viewport) els.viewport.classList.add('orrery-journey-active');
+    if (els.tagline) els.tagline.textContent = '';
+    if (els.title) els.title.textContent = '';
+    if (els.narrative) els.narrative.textContent = '';
+    if (els.fact) els.fact.textContent = '';
+    if (els.pitch) els.pitch.textContent = '';
+    if (els.more) els.more.hidden = true;
+    if (els.detail) {
+      els.detail.hidden = true;
+      els.detail.classList.remove('is-open');
+    }
+    if (els.progress && progress != null) {
+      els.progress.style.width = Math.round(Math.max(0, Math.min(1, progress)) * 100) + '%';
     }
   }
 
@@ -160,10 +181,20 @@
     if (els.skip) {
       els.skip.addEventListener('click', function () {
         var O = window.Orrery3D;
-        if (O && typeof O.cancelScaleJourney === 'function') O.cancelScaleJourney(true);
+        if (O && typeof O.isSpaceFlightActive === 'function' && O.isSpaceFlightActive()) {
+          if (typeof O.cancelSpaceFlight === 'function') O.cancelSpaceFlight(true);
+        } else if (O && typeof O.isCosmicFlightActive === 'function' && O.isCosmicFlightActive()) {
+          if (typeof O.cancelCosmicFlight === 'function') O.cancelCosmicFlight(true);
+        } else if (O && typeof O.cancelScaleJourney === 'function') O.cancelScaleJourney(true);
         else hideHud();
       });
     }
+
+    document.addEventListener('orrery-journey-progress', function (e) {
+      var p = e.detail && e.detail.progress;
+      if (p == null || !els.progress) return;
+      els.progress.style.width = Math.round(Math.max(0, Math.min(1, p)) * 100) + '%';
+    });
 
     document.addEventListener('orrery-journey-step', function (e) {
       var lv = e.detail && e.detail.level;
@@ -173,7 +204,24 @@
       if (preloader) return;
       active = true;
       if (!preloader) setJourneyChrome(true);
-      showChapter(lv);
+      if (e.detail && e.detail.cosmicFlight && e.detail.narrate && els.hud) {
+        els.hud.hidden = false;
+        els.hud.classList.remove('journey-hud--silent');
+        if (els.viewport) els.viewport.classList.add('orrery-journey-active');
+        if (els.tagline) els.tagline.textContent = e.detail.subtitle || '';
+        if (els.title) els.title.textContent = e.detail.title || '';
+        if (els.narrative) els.narrative.textContent = e.detail.subtitle || '';
+        if (els.fact) els.fact.textContent = '';
+        if (els.pitch) els.pitch.textContent = '';
+        if (els.progress && e.detail.progress != null) {
+          els.progress.style.width = Math.round(e.detail.progress * 100) + '%';
+        }
+        if (els.more) els.more.hidden = false;
+      } else if (e.detail && (e.detail.cosmicFlight || e.detail.spaceFlight) && !e.detail.narrate) {
+        showSilentFlightHud(e.detail.progress);
+      } else {
+        showChapter(lv);
+      }
       if (els.hud) els.hud.hidden = false;
       if (els.viewport) els.viewport.classList.add('orrery-journey-active');
       if (els.skip) els.skip.hidden = !!preloader;
@@ -199,6 +247,9 @@
         if (els.hud) els.hud.hidden = true;
         if (els.viewport) els.viewport.classList.remove('orrery-journey-active');
         active = false;
+        return;
+      }
+      if (window.APCosmicFlight && typeof window.APCosmicFlight.isOpen === 'function' && window.APCosmicFlight.isOpen()) {
         return;
       }
       hideHud();
@@ -372,6 +423,7 @@
     },
     chapter: chapter,
     isActive: function () { return active; },
+    rebind: bind,
   };
 
   if (document.readyState === 'loading') {

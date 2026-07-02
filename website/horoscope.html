@@ -78,6 +78,7 @@
       (typeof window.chrome === 'undefined' && /Chrome/i.test(ua))
     );
     if (window.__apHoroscopeAudit) window.__apSkipPrivacyBanner = true;
+    if (!window.__apHoroscopeAudit) document.documentElement.classList.add('ap-canvas-primary');
   })();
   </script>
   <script src="js/defer-page-css.js" defer></script>
@@ -153,13 +154,18 @@
       <div class="container">
         <div class="sphere-hero__header">
           <p class="hero__eyebrow" id="today-date-display" aria-live="polite">Updated Daily at Midnight UTC</p>
-          <h1 id="page-title">Spin to Your Sign</h1>
-          <p class="sphere-hero__sub">The live sky above — real planet positions on the ecliptic ring. Drag to explore, click your sign for today's reading.</p>
+          <h1 id="page-title">Today's Live Ecliptic</h1>
+          <p class="sphere-hero__sub">Seven planets on the real sky right now — VSOP87 positions, updated live. Pick your sign on the dial for today's reading.</p>
           <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Real transits — not generic Sun-sign filler</span></a></p>
         </div>
 
         <!-- The 3D canvas -->
         <div class="sphere-wrap" id="sphere-wrap" role="region" aria-label="Interactive 3D zodiac ring">
+          <div class="sphere-space-bg" aria-hidden="true"></div>
+          <div class="sphere-dial-loading" id="sphere-dial-loading" aria-hidden="true">
+            <span class="sphere-dial-loading__ring"></span>
+            <span class="sphere-dial-loading__label">Loading live dial…</span>
+          </div>
           <div class="sphere-poster" id="sphere-poster" role="img" aria-label="Zodiac ring — drag to spin, tap a sign for today's reading">
             <svg class="sphere-poster__svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
               <defs>
@@ -195,15 +201,122 @@
           </noscript>
         </div>
         <div class="sphere-controls" aria-live="polite">
-          <p class="sphere-selected-label" id="sphere-selected-label">Drag the ring or tap a sign</p>
-          <button type="button" class="btn btn--gold btn--sm" id="sphere-spin-mine">Spin to my sign</button>
-          <button type="button" class="btn btn--outline btn--sm" id="sphere-spin-random">Lucky spin</button>
-          <span class="sphere-hint">Tap centre star for your birth chart</span>
+          <p class="sphere-selected-label" id="sphere-selected-label">Drag the dial or tap a sign</p>
+          <p class="sphere-no-chart-note" id="sphere-no-chart-note" hidden role="status">
+            We need your birth chart first to find your sign.
+            <a href="chart.html" class="ap-inline-link">Calculate your chart →</a>
+          </p>
+          <button type="button" class="btn btn--gold btn--sm" id="sphere-spin-mine">Go to my sign</button>
+          <button type="button" class="btn btn--outline btn--sm" id="sphere-spin-random">Explore a sign</button>
+          <span class="sphere-hint sphere-hint--pulse">Tap the centre star to overlay your birth chart on the dial</span>
         </div>
+
+        <!-- Reading dock — directly under dial controls -->
+        <div class="sign-reading-panel sign-reading-panel--hero" id="sign-reading-panel" aria-hidden="true" inert>
+          <div class="sign-reading-panel__inner">
+            <div class="sign-reading-panel__header">
+              <div class="sign-reading-panel__title-group">
+                <img class="srp-card-thumb" id="srp-card-thumb" src="assets/images/zodiac-cards/aries.jpg" alt="" width="68" height="102" decoding="async" />
+                <div>
+                  <p class="sign-reading-panel__sign-name" id="srp-sign-name">Daily reading</p>
+                  <p class="sign-reading-panel__date" id="srp-date"></p>
+                  <span class="srp-element-text" id="srp-element-text"></span>
+                  <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide →</a>
+                </div>
+              </div>
+              <div class="srp-moon-wrap">
+                <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
+                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(194, 160, 94,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
+                <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon1"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="2" title="First Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon2"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="3" title="Waxing Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon3"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="4" title="Full Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="5" title="Waning Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon5"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="6" title="Last Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon6"/></svg></span>
+                  <span class="lunar-cycle-strip__phase" data-phase-idx="7" title="Waning Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon7"/></svg></span>
+                </div>
+              </div>
+              <div class="sign-reading-panel__actions">
+                <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">↓ Download Card</button>
+                <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
+                <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
+              </div>
+              <a href="chart.html" class="srp-personalise-chip" id="srp-personalise-chip" hidden>Personalise with your birth chart →</a>
+              <div class="srp-chart-cta" id="srp-chart-cta" hidden>
+                <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. Your personal birth chart reveals how this energy plays out <em>for you specifically</em>.</p>
+                <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Personal Birth Chart →</a>
+              </div>
+            </div>
+            <p class="sign-reading-panel__overview" id="srp-overview"></p>
+            <p class="srp-sky-facts" id="srp-sky-facts" style="font-size:0.72rem;color:var(--color-silver-dim);line-height:1.55;margin:0 0 var(--space-3);"></p>
+            <div class="srp-transit-chords" id="srp-transit-chords" hidden>
+              <span class="srp-transit-chords__label">Transits to your chart today</span>
+              <div class="srp-transit-chords__list" id="srp-transit-chords-list" role="list"></div>
+            </div>
+            <div class="srp-energy" id="srp-energy-wrap">
+              <div class="srp-energy__label">
+                <span id="srp-energy-name">Cosmic Energy Today</span>
+                <span class="srp-energy__value" id="srp-energy-pct" aria-hidden="true">—</span>
+              </div>
+              <div class="srp-energy__track" id="srp-energy-track" role="progressbar" aria-labelledby="srp-energy-name" aria-valuemin="0" aria-valuemax="100"><div class="srp-energy__fill" id="srp-energy-fill"></div></div>
+            </div>
+            <div class="sign-reading-panel__grid">
+              <div class="reading-card">
+                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
+                <span class="reading-card__label">Love &amp; Relationships</span>
+                <p class="reading-card__text" id="srp-love"></p>
+              </div>
+              <div class="reading-card">
+                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
+                <span class="reading-card__label">Career &amp; Purpose</span>
+                <p class="reading-card__text" id="srp-career"></p>
+              </div>
+              <div class="reading-card">
+                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
+                <span class="reading-card__label">Wellness &amp; Energy</span>
+                <p class="reading-card__text" id="srp-health"></p>
+              </div>
+            </div>
+            <div class="sign-reading-panel__luckies">
+              <span class="lucky-item">Lucky Number <strong id="srp-lucky-number"></strong></span>
+              <span class="lucky-item">Lucky Color <strong id="srp-lucky-color"></strong></span>
+              <span class="lucky-item">Best Day <strong id="srp-best-day"></strong></span>
+            </div>
+            <div id="srp-weekly-wrap">
+              <button id="srp-weekly-toggle" class="btn btn--ghost btn--sm" aria-expanded="false">
+                <span><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Weekly Outlook</span>
+                <span id="srp-weekly-chevron">▾</span>
+              </button>
+              <div id="srp-weekly-body" aria-live="polite" aria-hidden="true"></div>
+            </div>
+            <div id="srp-monthly-wrap" style="margin-top:var(--space-3);">
+              <button id="srp-monthly-toggle" class="btn btn--ghost btn--sm" aria-expanded="false">
+                <span><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg> Monthly Outlook</span>
+                <span id="srp-monthly-chevron">▾</span>
+              </button>
+              <div id="srp-monthly-body" aria-live="polite" aria-hidden="true"></div>
+            </div>
+            <p class="srp-personal-note" id="srp-personal-note" hidden></p>
+            <p style="margin-top:var(--space-4);">
+              <span class="ap-badge ap-badge--deterministic">Solar-chart reading — <abbr class="ap-gloss" title="NASA-grade planetary theory — computed privately on your device">VSOP87</abbr> sky at local noon</span>
+            </p>
+            <p id="srp-method-note" style="margin-top:var(--space-2);font-size:0.62rem;color:var(--color-silver-dim);line-height:1.6;"></p>
+            <p style="margin-top:var(--space-3);font-size:0.65rem;color:var(--color-silver-dim);">
+              Discover your numerology: <a href="lifepath.html" class="ap-inline-link">Life Path Calculator →</a>
+            </p>
+          </div>
+        </div>
+
+        <p class="ecliptic-sky-headline" id="ecliptic-sky-headline" aria-live="polite">Computing today's sky…</p>
+        <p class="ecliptic-personal-note" id="ecliptic-personal-note" hidden>
+          Your natal placements marked on the dial — <span class="epn-mark" aria-hidden="true">◆</span> Sun, Moon, Ascendant
+        </p>
 
         <!-- Planet legend strip -->
         <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="group">
-          <span class="planet-legend__label">Live sky:</span>
+          <span class="planet-legend__label">Planet positions (ecliptic longitude):</span>
           <span class="pl-dot" style="--c:#C2A05E" aria-label="Sun position">☉ Sun · …</span>
           <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon · …</span>
           <span class="pl-dot" style="--c:#3f7d76" aria-label="Mercury position">☿ Mercury · …</span>
@@ -212,6 +325,10 @@
           <span class="pl-dot" style="--c:#E8A050" aria-label="Jupiter position">♃ Jupiter · …</span>
           <span class="pl-dot" style="--c:#A0B898" aria-label="Saturn position">♄ Saturn · …</span>
         </div>
+        <button type="button" class="sky-board-toggle" id="sky-board-toggle" aria-expanded="false" aria-controls="planets-live-strip">
+          <span class="sbt-show">▾ Scrolling sky board</span>
+          <span class="sbt-hide" style="display:none">▴ Hide sky board</span>
+        </button>
 
         <!-- Birth chart CTA -->
         <div class="sphere-ctas">
@@ -231,7 +348,7 @@
     <!-- ============================================================
          LIVE PLANETS STRIP
     ============================================================ -->
-    <section class="planets-live-strip" id="planets-live-strip" aria-labelledby="planets-strip-heading">
+    <section class="planets-live-strip" id="planets-live-strip" aria-labelledby="planets-strip-heading" hidden>
       <h2 id="planets-strip-heading" class="sr-only">Current planetary positions</h2>
       <div class="planets-live-strip__inner" id="planets-strip-inner">
         <div class="planet-pill" data-planet="Sun"><span class="planet-pill__symbol">☉</span><span class="planet-pill__info"><span class="planet-pill__sign">—</span></span></div>
@@ -250,13 +367,13 @@
     <section class="section" aria-labelledby="sign-grid-heading">
       <div class="container">
         <div class="sign-grid-toggle-row">
-          <h2 class="section__title" id="sign-grid-heading">Pick your sign</h2>
-          <button class="sign-grid-toggle" id="sign-grid-toggle" aria-expanded="true" aria-controls="sign-grid-wrap">
-            <span class="sgt-show" style="display:none">▾ Show sign grid</span>
-            <span class="sgt-hide">▴ Hide sign grid</span>
+          <h2 class="section__title" id="sign-grid-heading">Prefer a list?</h2>
+          <button class="sign-grid-toggle" id="sign-grid-toggle" aria-expanded="false" aria-controls="sign-grid-wrap">
+            <span class="sgt-show">▾ Show sign grid</span>
+            <span class="sgt-hide" style="display:none">▴ Hide sign grid</span>
           </button>
         </div>
-        <div id="sign-grid-wrap">
+        <div id="sign-grid-wrap" hidden>
 
         <div class="sign-grid ap-stagger-in" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
           <button class="sign-card" data-sign="aries" data-element="fire" aria-pressed="false">
@@ -331,101 +448,6 @@
             <span class="sign-card__dates">Feb 19 – Mar 20</span>
             <span class="sign-card__element-badge" data-element="water">Water</span>
           </button>
-        </div>
-
-        <!-- Inline reading panel — animates open below grid when a sign is selected -->
-        <div class="sign-reading-panel" id="sign-reading-panel" aria-hidden="true" inert>
-          <div class="sign-reading-panel__inner">
-            <div class="sign-reading-panel__header">
-              <div class="sign-reading-panel__title-group">
-                <img class="srp-card-thumb" id="srp-card-thumb" src="assets/images/zodiac-cards/aries.jpg" alt="" width="68" height="102" decoding="async" />
-                <div>
-                  <p class="sign-reading-panel__sign-name" id="srp-sign-name">Daily reading</p>
-                  <p class="sign-reading-panel__date" id="srp-date"></p>
-                  <span class="srp-element-text" id="srp-element-text"></span>
-                  <a href="aries.html" class="srp-guide-link" id="srp-guide-link">Full sign guide →</a>
-                </div>
-              </div>
-              <div class="srp-moon-wrap">
-                <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
-                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(194, 160, 94,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
-                <!-- Lunar cycle indicator -->
-                <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon1"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="2" title="First Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon2"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="3" title="Waxing Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon3"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="4" title="Full Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="5" title="Waning Gibbous"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon5"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="6" title="Last Quarter"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon6"/></svg></span>
-                  <span class="lunar-cycle-strip__phase" data-phase-idx="7" title="Waning Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon7"/></svg></span>
-                </div>
-              </div>
-              <div class="sign-reading-panel__actions">
-                <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">↓ Download Card</button>
-                <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
-                <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
-              </div>
-              <!-- Chart pathway CTA -->
-              <div class="srp-chart-cta" id="srp-chart-cta">
-                <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. Your personal birth chart reveals how this energy plays out <em>for you specifically</em>.</p>
-                <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Personal Birth Chart →</a>
-              </div>
-            </div>
-            <p class="sign-reading-panel__overview" id="srp-overview"></p>
-            <p class="srp-sky-facts" id="srp-sky-facts" style="font-size:0.72rem;color:var(--color-silver-dim);line-height:1.55;margin:0 0 var(--space-3);"></p>
-            <div class="srp-energy" id="srp-energy-wrap">
-              <div class="srp-energy__label">
-                <span id="srp-energy-name">Cosmic Energy Today</span>
-                <span class="srp-energy__value" id="srp-energy-pct" aria-hidden="true">—</span>
-              </div>
-              <div class="srp-energy__track" id="srp-energy-track" role="progressbar" aria-labelledby="srp-energy-name" aria-valuemin="0" aria-valuemax="100"><div class="srp-energy__fill" id="srp-energy-fill"></div></div>
-            </div>
-            <div class="sign-reading-panel__grid">
-              <div class="reading-card">
-                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
-                <span class="reading-card__label">Love &amp; Relationships</span>
-                <p class="reading-card__text" id="srp-love"></p>
-              </div>
-              <div class="reading-card">
-                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg></span>
-                <span class="reading-card__label">Career &amp; Purpose</span>
-                <p class="reading-card__text" id="srp-career"></p>
-              </div>
-              <div class="reading-card">
-                <span class="reading-card__icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
-                <span class="reading-card__label">Wellness &amp; Energy</span>
-                <p class="reading-card__text" id="srp-health"></p>
-              </div>
-            </div>
-            <div class="sign-reading-panel__luckies">
-              <span class="lucky-item">Lucky Number <strong id="srp-lucky-number"></strong></span>
-              <span class="lucky-item">Lucky Color <strong id="srp-lucky-color"></strong></span>
-              <span class="lucky-item">Best Day <strong id="srp-best-day"></strong></span>
-            </div>
-            <div id="srp-weekly-wrap">
-              <button id="srp-weekly-toggle" class="btn btn--ghost btn--sm" aria-expanded="false">
-                <span><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Weekly Outlook</span>
-                <span id="srp-weekly-chevron">▾</span>
-              </button>
-              <div id="srp-weekly-body" aria-live="polite" aria-hidden="true"></div>
-            </div>
-            <div id="srp-monthly-wrap" style="margin-top:var(--space-3);">
-              <button id="srp-monthly-toggle" class="btn btn--ghost btn--sm" aria-expanded="false">
-                <span><svg class="eng-i" aria-hidden="true"><use href="#ei-moon4"/></svg> Monthly Outlook</span>
-                <span id="srp-monthly-chevron">▾</span>
-              </button>
-              <div id="srp-monthly-body" aria-live="polite" aria-hidden="true"></div>
-            </div>
-            <p class="srp-personal-note" id="srp-personal-note" hidden></p>
-            <p style="margin-top:var(--space-4);">
-              <span class="ap-badge ap-badge--deterministic">Solar-chart reading — VSOP87 sky at local noon</span>
-            </p>
-            <p id="srp-method-note" style="margin-top:var(--space-2);font-size:0.62rem;color:var(--color-silver-dim);line-height:1.6;"></p>
-            <p style="margin-top:var(--space-3);font-size:0.65rem;color:var(--color-silver-dim);">
-              Discover your numerology: <a href="lifepath.html" class="ap-inline-link">Life Path Calculator →</a>
-            </p>
-          </div>
         </div>
 
         </div><!-- /#sign-grid-wrap -->
@@ -528,6 +550,11 @@
           </div>
         </div>
 
+        <button type="button" class="sky-board-toggle" id="weather-grid-toggle" aria-expanded="false" aria-controls="todays-sky-wrap">
+          <span class="wgt-show">▾ Full planetary weather grid</span>
+          <span class="wgt-hide" style="display:none">▴ Hide weather grid</span>
+        </button>
+        <div id="todays-sky-wrap" hidden>
         <div id="todays-sky" class="planet-grid" role="region" aria-live="polite" aria-label="Today's planetary positions">
           <!-- JS (updatePlanetWeather) replaces these cards with live ephemeris
                positions once the engine loads. The static fallback below shows
@@ -593,6 +620,7 @@
             <span class="planet-weather-card__position">—</span>
             <span class="planet-weather-card__desc">Computing today's position from the live sky…</span>
           </div>
+        </div>
         </div>
       </div>
     </section>
@@ -796,7 +824,20 @@
   <script src="js/raf-core.js" defer></script>
   <script src="js/content-service.js" defer></script>
   <script src="js/ap-zodiac-constants.js" defer></script>
-  <script src="js/horoscope-wheel-poster.js" defer></script>
+  <script src="js/ecliptic-dial-data.js?v=551" defer></script>
+  <script src="js/sign-daily.js" defer></script>
+  <script>
+  (function () {
+    if (!window.__apHoroscopeAudit) return;
+    var s = document.createElement('script');
+    s.src = 'js/horoscope-wheel-poster.js?v=551';
+    s.defer = true;
+    document.head.appendChild(s);
+  })();
+  </script>
+  <link rel="preload" href="assets/images/ecliptic-space-bg.jpg" as="image" />
+  <link rel="preload" href="js/ap-canvas-seals.js" as="script" />
+  <link rel="preload" href="js/zodiac-sphere.js?v=551" as="script" />
 
   <!-- Inline init script -->
   <script src="js/horoscope-page.js" defer></script>

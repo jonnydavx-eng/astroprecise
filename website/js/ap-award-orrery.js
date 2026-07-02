@@ -42,18 +42,45 @@
     })();
   }
 
+  function isCapableDevice() {
+    try {
+      if (navigator.deviceMemory && navigator.deviceMemory <= 4) return false;
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return false;
+    } catch (e) { return true; }
+    return true;
+  }
+
   var loaderQueued = false;
+  function promoteToWebGL() {
+    if (!isCapableDevice()) return;
+    if (window.__requestFullOrrery) {
+      window.__requestFullOrrery({ urgent: true, showLoading: false }).catch(function () {});
+      return;
+    }
+    var tries = 0;
+    (function wait() {
+      if (window.__requestFullOrrery) {
+        window.__requestFullOrrery({ urgent: true, showLoading: false }).catch(function () {});
+        return;
+      }
+      if (++tries < 40) setTimeout(wait, 50);
+    })();
+  }
+
   function queueWebGL() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=533");
+    inject("js/orrery-loader.js?v=562", function () {
+      setTimeout(promoteToWebGL, 500);
+    });
   }
 
   showInstrument();
 
   waitEphemeris(function () {
-    inject("js/lite-orrery.js?v=533", function () {
+    inject("js/lite-orrery.js?v=562", function () {
       document.documentElement.classList.add("orrery-poster-ready");
+      if (isCapableDevice()) setTimeout(queueWebGL, 400);
     });
   });
 
@@ -73,7 +100,7 @@
     io.observe(wrap);
   }
 
-  setTimeout(queueWebGL, 12000);
+  setTimeout(queueWebGL, 8000);
 
   var poster = document.getElementById("orrery-lite-poster");
   if (poster) {

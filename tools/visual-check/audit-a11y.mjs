@@ -30,6 +30,7 @@ async function main() {
     try { sessionStorage.setItem('ap_intro_complete', '1'); } catch (_) {}
     try { localStorage.setItem('ap_privacy_ack', '1'); } catch (_) {}
   });
+  const version = process.env.AP_VERSION?.replace(/^ap-v/, '') || '562';
 
   const report = { base: BASE, capturedAt: new Date().toISOString(), pages: [], issues: [] };
 
@@ -37,8 +38,12 @@ async function main() {
     const page = await context.newPage();
     const entry = { id: p.id, path: p.path, violations: [], incomplete: [] };
     try {
-      await page.goto(`${BASE}${p.path}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await page.waitForTimeout(1000);
+      const qs = p.id === 'index' ? `?v=${version}` : '';
+      await page.goto(`${BASE}${p.path}${qs}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.evaluate(() => {
+        document.querySelectorAll('.ap-reveal').forEach((el) => el.classList.add('ap-revealed'));
+      });
+      await page.waitForTimeout(1200);
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'best-practice'])
         .analyze();

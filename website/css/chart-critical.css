@@ -82,9 +82,23 @@
     /* ── Hero: compact ──────────────────────────────────────────── */
     .chart-hero {
       position: relative;
-      padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-12);
+      padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-5);
       text-align: center;
       overflow: hidden;
+    }
+    @media (min-width: 1024px) {
+      .page-chart .chart-hero {
+        padding: calc(var(--nav-height) + var(--space-5)) 0 var(--space-3);
+      }
+      .page-chart .chart-hero__title {
+        font-size: clamp(2rem, 3.5vw, 3.2rem);
+        margin-bottom: var(--space-3);
+      }
+      .page-chart .form-glass__sub br { display: none; }
+      .page-chart .form-glass__sub {
+        min-height: 0;
+        font-size: 0.82rem;
+      }
     }
     .chart-hero__cosmic-art {
       position: absolute;
@@ -153,6 +167,11 @@
       max-width: 960px;
       margin: 0 auto;
       padding: 0 var(--space-6) var(--space-24);
+    }
+    @media (min-width: 768px) {
+      .page-chart .chart-layout {
+        margin-top: calc(-1 * var(--space-4));
+      }
     }
 
     /* ── Premium glassmorphism form card ───────────────────────── */
@@ -232,6 +251,82 @@
     .form-glass__privacy {
       color: var(--gold-pale);
       font-weight: 600;
+    }
+
+    @media (min-width: 1024px) {
+      .page-chart .form-glass {
+        padding: var(--space-8) var(--space-10);
+      }
+      .page-chart .chart-hero__eyebrow {
+        margin-bottom: var(--space-3);
+      }
+      .page-chart .form-glass__header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-bottom: var(--space-4);
+      }
+      .page-chart .form-glass__icon {
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        flex-shrink: 0;
+      }
+      .page-chart .form-glass__title {
+        margin: 0;
+        font-size: 1.35rem;
+      }
+      .page-chart .form-glass__sub {
+        display: none;
+      }
+      .page-chart .chart-form__essentials {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: var(--space-6);
+        row-gap: var(--space-3);
+        align-items: start;
+      }
+      .page-chart .chart-form__essentials > .form-section-label {
+        display: none;
+      }
+      .page-chart .chart-form__essentials > #group-name {
+        grid-column: 1;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials > #group-city {
+        grid-column: 2;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials > .form-row {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials .form-hint {
+        font-size: 0.65rem;
+      }
+      .page-chart #chart-advanced {
+        margin-top: var(--space-5) !important;
+      }
+      .page-chart .form-cta {
+        position: sticky;
+        bottom: var(--space-4);
+        z-index: 12;
+        margin-top: var(--space-5);
+        padding: var(--space-4) 0;
+        background: linear-gradient(180deg, transparent, rgba(12, 14, 20, 0.94) 32%);
+      }
+    }
+
+    .chart-tabs-hint {
+      margin: 0 0 var(--space-5);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(194, 160, 94, 0.22);
+      background: rgba(194, 160, 94, 0.06);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--silver-dim);
+      text-align: center;
     }
 
     /* ── Section labels inside form ─────────────────────────────── */

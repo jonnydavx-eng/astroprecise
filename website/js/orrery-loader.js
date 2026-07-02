@@ -331,7 +331,7 @@
     opts = opts || {};
     var mode = opts.mode || 'tier';
     if (mode === 'tier') {
-      mode = localPerfTier() === 'high' ? 'webgl' : 'canvas';
+      mode = localPerfTier() === 'low' ? 'canvas' : 'webgl';
     }
 
     if (opts.showLoading !== false) {
@@ -391,6 +391,8 @@
       if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
       if (navigator.deviceMemory && navigator.deviceMemory <= 4) return 'low';
       if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return 'low';
+      if (navigator.deviceMemory && navigator.deviceMemory <= 6) return 'mid';
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 6) return 'mid';
     } catch (e) { return 'high'; }
     return 'high';
   }

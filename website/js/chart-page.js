@@ -262,6 +262,33 @@
 
   const form = document.getElementById('chart-form');
 
+  const FOCUS_GROUPS = {
+    'name-input': 'group-name',
+    'date-input': 'group-date',
+    'city-input': 'group-city',
+  };
+
+  function clearFormErrors() {
+    document.querySelectorAll('.form-group.is-error').forEach(function (g) {
+      g.classList.remove('is-error');
+    });
+  }
+
+  function showFormError(focusId, message) {
+    clearFormErrors();
+    const group = document.getElementById(FOCUS_GROUPS[focusId] || '');
+    if (group) {
+      group.classList.add('is-error');
+      const msg = group.querySelector('.form-error-msg');
+      if (msg && message) msg.textContent = message;
+    }
+    const el = document.getElementById(focusId);
+    if (el) {
+      el.focus();
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   function readForm() {
     const name = document.getElementById('name-input').value.trim();
     const date = document.getElementById('date-input').value;
@@ -342,11 +369,11 @@
     ev.preventDefault();
     const input = readForm();
     if (input.error) {
-      if (window.AstroApp) AstroApp.showToast('Missing details', input.error, 'warning');
-      document.getElementById(input.focus)?.focus();
+      showFormError(input.focus, input.error);
       resetCalcBtn();
       return;
     }
+    clearFormErrors();
     setTimeout(async () => {
       try {
         if (typeof window.loadInterpretations === 'function') {
@@ -374,8 +401,11 @@
             points: pts,
             savedAt: Date.now(),
           }));
-          if (window.AstroApp) AstroApp.showToast('Pinned to the heavens',
-            'Your Sun, Moon' + (input.timeKnown ? ' & Ascendant' : '') + ' now mark the home orrery’s zodiac ring.', 'success');
+          var isSample = /^sample:/i.test(input.name || '');
+          if (window.AstroApp && !isSample) {
+            AstroApp.showToast('Pinned to the heavens',
+              'Your Sun, Moon' + (input.timeKnown ? ' & Ascendant' : '') + ' now mark the home orrery’s zodiac ring.', 'success');
+          }
         } catch (e) {}
       } catch (err) {
         if (window.AstroApp) AstroApp.showToast('Calculation failed', String(err.message || err), 'error');
@@ -518,6 +548,21 @@
     }
     wrapEl.classList.remove('hidden');
 
+    var tabsHint = document.getElementById('chart-tabs-hint');
+    if (!tabsHint) {
+      tabsHint = document.createElement('p');
+      tabsHint.id = 'chart-tabs-hint';
+      tabsHint.className = 'chart-tabs-hint';
+      tabsHint.textContent = 'Explore Overview, Planets, Houses, and Aspects — each tab opens a different layer of your chart.';
+      var tabsHost = wrapEl.querySelector('.tabs-card, .chart-tabs');
+      if (tabsHost && tabsHost.parentNode) {
+        tabsHost.parentNode.insertBefore(tabsHint, tabsHost);
+      } else {
+        wrapEl.insertBefore(tabsHint, wrapEl.firstChild.nextSibling);
+      }
+    }
+    tabsHint.removeAttribute('hidden');
+
     const resultNameEl = document.getElementById('result-name');
     if (resultNameEl) {
       resultNameEl.textContent = `${chart.name} — Natal Chart`;
@@ -536,6 +581,14 @@
     initEmailCapture(chart);
 
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var firstTab = wrapEl.querySelector('[role="tab"]');
+        if (firstTab && typeof firstTab.focus === 'function') {
+          try { firstTab.focus({ preventScroll: true }); } catch (e) { firstTab.focus(); }
+        }
+      });
+    });
   }
 
   function bundleUpsellProduct() {
@@ -1300,6 +1353,8 @@ host.classList.add('is-done');
         btn.setAttribute('aria-selected', 'true');
         const panel = document.getElementById(btn.getAttribute('aria-controls'));
         if (panel) panel.setAttribute('aria-hidden', 'false');
+        var hint = document.getElementById('chart-tabs-hint');
+        if (hint) hint.setAttribute('hidden', '');
       });
     });
   }
@@ -1573,8 +1628,9 @@ host.classList.add('is-done');
     }
     const grad = x.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
     grad.addColorStop(0, 'rgba(255,255,255,0.18)');
-    grad.addColorStop(0.4, elemCol + 'cc');
-    grad.addColorStop(1, elemCol + '33');
+    var alphaFn = (window.APCanvasSeals && APCanvasSeals.withAlpha) ? APCanvasSeals.withAlpha.bind(APCanvasSeals) : null;
+    grad.addColorStop(0.4, alphaFn ? alphaFn(elemCol, 'cc') : elemCol);
+    grad.addColorStop(1, alphaFn ? alphaFn(elemCol, '33') : elemCol);
     x.fillStyle = grad;
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
     x.strokeStyle = 'rgba(196,146,10,0.55)';
@@ -2321,19 +2377,12 @@ host.classList.add('is-done');
     if (mq.matches) item.classList.remove('is-open');
 
     const sync = () => {
-      if (!mq.matches) {
-        item.classList.add('is-open');
-        trigger.setAttribute('aria-expanded', 'true');
-        panel.style.maxHeight = '';
-        return;
-      }
       const open = item.classList.contains('is-open');
       trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
       panel.style.maxHeight = open ? `${panel.scrollHeight}px` : '0';
     };
 
     trigger.addEventListener('click', () => {
-      if (!mq.matches) return;
       item.classList.toggle('is-open');
       sync();
     });

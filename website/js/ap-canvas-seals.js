@@ -65,11 +65,31 @@
     return true;
   }
 
+  function withAlpha(col, hexAlpha) {
+    var a = String(hexAlpha || 'ff');
+    var alpha = (parseInt(a, 16) / 255);
+    if (!isFinite(alpha)) alpha = 1;
+    var base = col || '#c9a227';
+    if (/^#[0-9a-f]{3,8}$/i.test(base)) {
+      var h = base.slice(1);
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      return 'rgba(' +
+        parseInt(h.slice(0, 2), 16) + ',' +
+        parseInt(h.slice(2, 4), 16) + ',' +
+        parseInt(h.slice(4, 6), 16) + ',' + alpha.toFixed(3) + ')';
+    }
+    var rgb = base.match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+    if (rgb) {
+      return 'rgba(' + rgb[1] + ',' + rgb[2] + ',' + rgb[3] + ',' + alpha.toFixed(3) + ')';
+    }
+    return base;
+  }
+
   function drawSealPlate(ctx, sign, cx, cy, r, elemCol) {
     var grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
     grad.addColorStop(0, 'rgba(255,255,255,0.18)');
-    grad.addColorStop(0.4, (elemCol || '#c9a227') + 'cc');
-    grad.addColorStop(1, (elemCol || '#c9a227') + '33');
+    grad.addColorStop(0.4, withAlpha(elemCol, 'cc'));
+    grad.addColorStop(1, withAlpha(elemCol, '33'));
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -89,5 +109,6 @@
     ready: ready,
     drawSeal: drawSeal,
     drawSealPlate: drawSealPlate,
+    withAlpha: withAlpha,
   };
 })();

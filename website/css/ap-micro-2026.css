@@ -11,6 +11,14 @@
   --ap-micro-lift-ease: 0.22s cubic-bezier(0.34, 1.2, 0.64, 1);
 }
 
+.ap-gloss,
+abbr.ap-gloss {
+  text-decoration: underline dotted rgba(194, 160, 94, 0.65);
+  text-underline-offset: 0.18em;
+  cursor: help;
+  border-bottom: none;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    1. Button press depth — scale 0.98 + shadow sink
    ══════════════════════════════════════════════════════════════════════════ */

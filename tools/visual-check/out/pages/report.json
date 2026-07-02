@@ -1,183 +1,97 @@
 {
-  "base": "http://localhost:8790",
-  "capturedAt": "2026-06-17T10:59:56.818Z",
+  "base": "--grep",
+  "capturedAt": "2026-07-01T19:44:27.482Z",
   "pages": [
     {
       "id": "index",
       "path": "/?lite=1",
       "note": "Home lite shell LCP",
-      "ok": true,
-      "state": {
-        "title": "AstroPrecise — Your Cosmic Blueprint | Free Birth Chart & Precise Astrology",
-        "hasStarfield": false,
-        "starfieldOpacity": null,
-        "hasCosmicArt": false,
-        "bodyClass": "page-home ap-cinematic-2026 ap-skip-intro",
-        "h1": "Your personal universe, beautifully revealed."
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\index.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/?lite=1?v=1782935067704\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "chart",
       "path": "/chart.html",
       "note": "Birth chart form + wheel mount",
-      "ok": true,
-      "state": {
-        "title": "Free Birth Chart Calculator — Natal Chart, Rising Sign & Houses | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "page-chart ap-cinematic-2026 ap-no-nav-enter",
-        "h1": "Your Natal Blueprint"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\chart.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/chart.html?v=1782935067869\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "horoscope",
       "path": "/horoscope.html",
       "note": "Daily horoscope hub",
-      "ok": true,
-      "state": {
-        "title": "Daily Horoscope for All 12 Zodiac Signs — Free & Computed from the Real Sky | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "page-horoscope ap-cinematic-2026 ap-no-nav-enter",
-        "h1": "Spin to Your Sign"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\horoscope.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/horoscope.html?v=1782935068020\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "compatibility",
       "path": "/compatibility.html",
       "note": "Synastry / match UI",
-      "ok": true,
-      "state": {
-        "title": "Zodiac Compatibility Calculator — Free Synastry Report | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "page-compat ap-cinematic-2026 ap-no-nav-enter",
-        "h1": "Cosmic Compatibility"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\compatibility.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/compatibility.html?v=1782935068169\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "ephemeris",
       "path": "/ephemeris.html",
       "note": "Sky instrument + ephemeris",
-      "ok": true,
-      "state": {
-        "title": "Sky | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "page-instrument ap-cinematic-2026 ap-no-nav-enter",
-        "h1": "The Instrument"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\ephemeris.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/ephemeris.html?v=1782935068318\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "lifepath",
       "path": "/lifepath.html",
       "note": "Life path numerology",
-      "ok": true,
-      "state": {
-        "title": "Life Path Calculator — Numerology Blueprint | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "page-lifepath ap-no-nav-enter",
-        "h1": "Life Path Calculator"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\lifepath.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/lifepath.html?v=1782935068452\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "shop",
       "path": "/shop.html",
       "note": "Shop / readings",
-      "ok": true,
-      "state": {
-        "title": "Cosmic Shop — Personalised Chart Products | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "page-shop ap-cinematic-2026 ap-no-nav-enter",
-        "h1": "Your sky, made tangible"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\shop.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/shop.html?v=1782935068604\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "sign-aries",
       "path": "/aries.html",
       "note": "Sign page template",
-      "ok": true,
-      "state": {
-        "title": "Aries Horoscope Today — Daily Reading & Sign Guide | AstroPrecise",
-        "hasStarfield": false,
-        "starfieldOpacity": null,
-        "hasCosmicArt": false,
-        "bodyClass": "ap-no-nav-enter",
-        "h1": "Aries"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\sign-aries.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/aries.html?v=1782935068754\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "moonphase",
       "path": "/moonphase.html",
       "note": "Moon phase tool",
-      "ok": true,
-      "state": {
-        "title": "Moon Phase on Your Birthday — Real Astronomy, Free & Shareable | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "",
-        "h1": "Moon Phase On Your Birthday"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\moonphase.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/moonphase.html?v=1782935068906\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "angel-numbers",
       "path": "/angel-numbers.html",
       "note": "Synchronicity clock",
-      "ok": true,
-      "state": {
-        "title": "Angel Numbers & 1111 Meaning — Synchronicity Clock | AstroPrecise",
-        "hasStarfield": true,
-        "starfieldOpacity": "1",
-        "hasCosmicArt": false,
-        "bodyClass": "",
-        "h1": "Angel Numbers & the Synchronicity Clock"
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\angel-numbers.png"
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/angel-numbers.html?v=1782935069055\", waiting until \"domcontentloaded\"\n"
     },
     {
       "id": "hero-entered",
       "path": "/?lite=1",
       "note": "Lite home shell with orrery mount",
-      "state": {
-        "title": "AstroPrecise — Your Cosmic Blueprint | Free Birth Chart & Precise Astrology",
-        "hasStarfield": false,
-        "starfieldOpacity": null,
-        "hasCosmicArt": false,
-        "bodyClass": "page-home ap-cinematic-2026 ap-skip-intro",
-        "h1": "Your personal universe, beautifully revealed.",
-        "orreryCanvas": {
-          "w": 640,
-          "h": 640,
-          "inDom": true
-        }
-      },
-      "shot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\pages\\hero-entered.png",
-      "canvasBox": {
-        "w": 640,
-        "h": 640,
-        "inDom": true
-      },
-      "ok": true
+      "ok": false,
+      "error": "Error: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/?lite=1&v=1782935069202\", waiting until \"domcontentloaded\"\n"
     }
   ],
-  "issues": [],
-  "ok": true
+  "issues": [
+    "index: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/?lite=1?v=1782935067704\", waiting until \"domcontentloaded\"\n",
+    "chart: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/chart.html?v=1782935067869\", waiting until \"domcontentloaded\"\n",
+    "horoscope: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/horoscope.html?v=1782935068020\", waiting until \"domcontentloaded\"\n",
+    "compatibility: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/compatibility.html?v=1782935068169\", waiting until \"domcontentloaded\"\n",
+    "ephemeris: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/ephemeris.html?v=1782935068318\", waiting until \"domcontentloaded\"\n",
+    "lifepath: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/lifepath.html?v=1782935068452\", waiting until \"domcontentloaded\"\n",
+    "shop: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/shop.html?v=1782935068604\", waiting until \"domcontentloaded\"\n",
+    "sign-aries: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/aries.html?v=1782935068754\", waiting until \"domcontentloaded\"\n",
+    "moonphase: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/moonphase.html?v=1782935068906\", waiting until \"domcontentloaded\"\n",
+    "angel-numbers: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/angel-numbers.html?v=1782935069055\", waiting until \"domcontentloaded\"\n",
+    "hero-entered: page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"--grep/?lite=1&v=1782935069202\", waiting until \"domcontentloaded\"\n"
+  ],
+  "ok": false
 }

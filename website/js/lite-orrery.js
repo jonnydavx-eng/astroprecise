@@ -120,6 +120,7 @@
 
   function meteorsEnabled() {
     var t = tier();
+    if (isAward() && t === 'mid') return !PRM && !AUDIT;
     return !PRM && !AUDIT && t !== 'low' && t !== 'mid';
   }
 
@@ -326,7 +327,9 @@
       m.life -= 0.028;
       if (m.life <= 0) { meteors.splice(i, 1); continue; }
       var tail = 22 * m.life;
-      var col = m.gold ? '201, 162, 39' : '140, 190, 255';
+      var col = m.gold
+        ? (isAward() ? '194, 160, 94' : '201, 162, 39')
+        : '140, 190, 255';
       var grad = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * 8, m.y - m.vy * 8);
       grad.addColorStop(0, 'rgba(' + col + ',' + (0.85 * m.life) + ')');
       grad.addColorStop(1, 'rgba(' + col + ',0)');
@@ -541,15 +544,20 @@
     initStars(W, H);
     var award = isAward();
     stars.forEach(function (st) {
-      var tw = 0.75 + 0.25 * Math.sin(now * 0.0012 + st.tw);
-      var alpha = st.a * tw * (award ? 1.12 : 1);
+      var tw = award
+        ? 0.62 + 0.38 * Math.sin(now * 0.0018 + st.tw)
+        : 0.75 + 0.25 * Math.sin(now * 0.0012 + st.tw);
+      var alpha = st.a * tw * (award ? 1.18 : 1);
       if (award) {
-        ctx.fillStyle = 'rgba(236, 230, 216, ' + Math.min(1, alpha) + ')';
+        var brass = (st.tw * 3.7) % 1 < 0.38;
+        ctx.fillStyle = brass
+          ? 'rgba(194, 160, 94, ' + Math.min(1, alpha * 1.08) + ')'
+          : 'rgba(236, 230, 216, ' + Math.min(1, alpha) + ')';
       } else {
         ctx.fillStyle = 'rgba(240, 236, 255, ' + alpha + ')';
       }
       ctx.beginPath();
-      ctx.arc(st.x, st.y, award ? st.r * 1.08 : st.r, 0, Math.PI * 2);
+      ctx.arc(st.x, st.y, award ? st.r * (1.05 + 0.06 * tw) : st.r, 0, Math.PI * 2);
       ctx.fill();
     });
   }
@@ -613,6 +621,36 @@
       ctx.arc(cx, cy, dist, 0, Math.PI * 2);
       ctx.stroke();
     });
+
+    if (award) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = 'rgba(111, 160, 216, 0.07)';
+      ctx.lineWidth = 4;
+      PLANETS.forEach(function (p) {
+        var pos = helioCached(p.id, jd);
+        var dist = Math.sqrt(pos.x * pos.x + pos.y * pos.y) * R * 0.94;
+        if (dist < 4) return;
+        ctx.beginPath();
+        ctx.arc(cx, cy, dist, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    if (award) {
+      var sunPulse = 0.82 + 0.18 * Math.sin(now * 0.0022);
+      var coronaR = 24 + 5 * sunPulse;
+      var coronaG = ctx.createRadialGradient(cx, cy, 6, cx, cy, coronaR);
+      coronaG.addColorStop(0, 'rgba(255, 248, 228, ' + (0.22 * sunPulse).toFixed(3) + ')');
+      coronaG.addColorStop(0.42, 'rgba(232, 201, 106, ' + (0.12 * sunPulse).toFixed(3) + ')');
+      coronaG.addColorStop(0.72, 'rgba(194, 160, 94, ' + (0.05 * sunPulse).toFixed(3) + ')');
+      coronaG.addColorStop(1, 'rgba(194, 160, 94, 0)');
+      ctx.fillStyle = coronaG;
+      ctx.beginPath();
+      ctx.arc(cx, cy, coronaR, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     var sunG = ctx.createRadialGradient(cx - 4, cy - 4, 0, cx, cy, award ? 20 : 18);
     if (award) {

@@ -173,8 +173,14 @@ const RadialBlurShader = {
   };
 
   function getPerfTier() {
-    return (window.RafCore && window.RafCore.tier)
-      || ((navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4) ? 'low' : 'high');
+    try {
+      if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
+      if (navigator.deviceMemory != null && navigator.deviceMemory <= 4) return 'low';
+      if (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 4) return 'low';
+      if (navigator.deviceMemory != null && navigator.deviceMemory <= 6) return 'mid';
+      if (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency <= 6) return 'mid';
+    } catch (e) { /* fall through */ }
+    return 'high';
   }
 
   function orreryDPR() {
@@ -220,6 +226,8 @@ const RadialBlurShader = {
   let preloaderIntroWatchdog = null;
   let introStartedAt = 0;
   let preloaderCosmicJourney = false;
+  let cosmicFlightToolActive = false;
+  let lastCosmicFlightChapterLevel = '';
   let scaleAnimDurationMs = 1400;
   const INTRO_MS = 6800;
   const PRELOADER_COSMIC_MS_DESKTOP = 26000;
@@ -392,6 +400,14 @@ const RadialBlurShader = {
       honesty: 'Decorative galaxy sprites · not a measured survey' },
   ];
   let scaleLevel = 2;
+  let masterclassZoom = 2;
+  let masterclassMode = false;
+  let spaceFlightMode = false;
+  let spaceFlightToolActive = false;
+  let masterclassIntroActive = false;
+  let masterclassIntroStart = 0;
+  const SPACE_FLIGHT_MS = 54000;
+  const SPACE_FLIGHT_TO = 5;
   let scaleAnimActive = false, scaleAnimStart = 0;
   const scaleAnimFrom = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
   const scaleAnimTo = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
@@ -451,6 +467,178 @@ const RadialBlurShader = {
   let useDomLabels = false;
 
   function scalePreset(n) { return SCALE_LEVELS[Math.max(0, Math.min(6, n | 0))] || SCALE_LEVELS[0]; }
+
+  function lerpScale(a, b, t) {
+    return {
+      camRadius: a.camRadius + (b.camRadius - a.camRadius) * t,
+      camEl: a.camEl + (b.camEl - a.camEl) * t,
+      camAz: a.camAz + (b.camAz - a.camAz) * t,
+      targetEarth: t < 0.5 ? a.targetEarth : b.targetEarth,
+    };
+  }
+
+  function spaceFlightZoomAt(p) {
+    const hold = 0.22, toInner = 0.40, toSystem = 0.60;
+    if (p < hold) return 0;
+    if (p < toInner) return easeInOut((p - hold) / (toInner - hold));
+    if (p < toSystem) return 1 + easeInOut((p - toInner) / (toSystem - toInner)) * 1.12;
+    return 2.12 + easeInOut((p - toSystem) / (1 - toSystem)) * (SPACE_FLIGHT_TO - 2.12);
+  }
+
+  function applySpacePalette(z) {
+    if (!spaceFlightMode || !renderer) return;
+    const earthT = Math.max(0, Math.min(1, (1.6 - z) / 1.6));
+    const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
+    const sky = earthT > 0.5 ? 0x03050c : 0x010108;
+    renderer.setClearColor(sky, 1);
+    if (scene.fog) {
+      scene.fog.color.setHex(sky);
+      scene.fog.density = 0.00045 + galaxyT * 0.0007;
+    }
+    renderer.toneMappingExposure = 1.38 - galaxyT * 0.14 - (1 - earthT) * 0.06;
+    if (hemiLight) {
+      hemiLight.intensity = 0.22 + earthT * 0.18;
+      hemiLight.color.setHex(galaxyT > 0.4 ? 0x7080a0 : 0x4a6088);
+      hemiLight.groundColor.setHex(0x020408);
+    }
+
+    if (bloomPass) {
+      bloomPass.strength = 0.08 + earthT * 0.32;
+      bloomPass.threshold = 0.96 - earthT * 0.08;
+      bloomPass.radius = 0.28 + earthT * 0.16;
+    }
+  }
+
+  function setMasterclassZoom(z, animate, silent) {
+    masterclassZoom = Math.max(0, Math.min(6, z));
+    const i0 = Math.floor(masterclassZoom);
+    const i1 = Math.min(6, i0 + 1);
+    const frac = masterclassZoom - i0;
+    const p0 = scalePreset(i0);
+    const p1 = scalePreset(i1);
+    const e = easeInOut(frac);
+    const blend = lerpScale(p0, p1, e);
+
+    if (animate && !PRM) {
+      scaleAnimFrom.radius = camRadius;
+      scaleAnimFrom.el = camEl;
+      scaleAnimFrom.az = camAz;
+      scaleAnimFrom.tx = camTarget.x;
+      scaleAnimFrom.ty = camTarget.y;
+      scaleAnimFrom.tz = camTarget.z;
+      scaleAnimTo.radius = blend.camRadius;
+      scaleAnimTo.el = blend.camEl;
+      scaleAnimTo.az = blend.camAz;
+      if (blend.targetEarth) {
+        const ep = new THREE.Vector3();
+        earthTargetVec(ep);
+        scaleAnimTo.tx = ep.x; scaleAnimTo.ty = ep.y; scaleAnimTo.tz = ep.z;
+      } else { scaleAnimTo.tx = 0; scaleAnimTo.ty = 0; scaleAnimTo.tz = 0; }
+      scaleAnimActive = true;
+      scaleAnimStart = performance.now();
+      scaleAnimFromLevel = scaleLevel;
+      scaleAnimToLevel = Math.round(masterclassZoom);
+    } else {
+      camRadius = blend.camRadius;
+      camEl = blend.camEl;
+      camAz = blend.camAz;
+      if (blend.targetEarth) earthTargetVec(camTarget);
+      else camTarget.set(0, 0, 0);
+      scaleAnimActive = false;
+      applyCamera();
+    }
+
+    scaleLevel = Math.round(masterclassZoom);
+    if (!silent) updateScaleHUD();
+    updateScaleVisualsContinuous(masterclassZoom);
+    if (spaceFlightMode) applySpacePalette(masterclassZoom);
+  }
+
+  function finishSpaceFlightTool() {
+    masterclassIntroActive = false;
+    spaceFlightMode = false;
+    spaceFlightToolActive = false;
+    masterclassMode = false;
+    lastCosmicFlightChapterLevel = '';
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-journey-end', {
+        detail: { level: Math.round(masterclassZoom), spaceFlight: true, outbound: true },
+      }));
+    } catch (e) { /* optional */ }
+  }
+
+  function cancelSpaceFlight(jumpToGalaxy) {
+    if (!spaceFlightToolActive && !masterclassIntroActive) return;
+    masterclassIntroActive = false;
+    spaceFlightMode = false;
+    spaceFlightToolActive = false;
+    masterclassMode = false;
+    lastCosmicFlightChapterLevel = '';
+    if (jumpToGalaxy) setMasterclassZoom(SPACE_FLIGHT_TO, true);
+    else setMasterclassZoom(scaleLevel, false);
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-journey-end', {
+        detail: { level: scaleLevel, skipped: !!jumpToGalaxy, spaceFlight: true, outbound: true },
+      }));
+    } catch (e) { /* optional */ }
+  }
+
+  function startSpaceFlight(opts) {
+    opts = opts || {};
+    if (PRM) return;
+    if (opts.narrate != null) {
+      narrateJourney = !!opts.narrate;
+      try { localStorage.setItem('ap_narrate_journey', narrateJourney ? '1' : '0'); } catch (e) {}
+    }
+    if (journeyActive) cancelScaleJourney(false);
+    if (preloaderCosmicJourney) cancelCosmicFlight(false);
+    spaceFlightMode = true;
+    spaceFlightToolActive = true;
+    masterclassMode = true;
+    masterclassIntroActive = true;
+    masterclassIntroStart = performance.now();
+    introActive = false;
+    preloaderCosmicJourney = false;
+    cosmicFlightToolActive = false;
+    daysPerSec = 0;
+    flicking = false;
+    showLabels = false;
+    showOrbits = false;
+    lastCosmicFlightChapterLevel = '';
+    ensureGalaxyLayers();
+    buildRemainingPlanets();
+    setMasterclassZoom(0, false, true);
+    earthTargetVec(camTarget);
+    camRadius = 2.85;
+    camEl = 12 * D2R;
+    camAz = -0.38;
+    applyCamera();
+    applySpacePalette(0);
+    requestAnimationFrame(forceResize);
+  }
+
+  function tickSpaceFlightTool(t, dt) {
+    const dur = SPACE_FLIGHT_MS;
+    const p = Math.min(1, (t - masterclassIntroStart) / dur);
+    const z = spaceFlightZoomAt(p);
+    setMasterclassZoom(z, false, true);
+    camAz += 0.018 * dt;
+    const chLv = Math.max(0, Math.min(6, Math.round(z)));
+    const stepKey = chLv + '|sf|' + Math.floor(p * 50);
+    const sfDetail = { level: chLv, spaceFlight: true, outbound: true, progress: p };
+    if (narrateJourney) sfDetail.narrate = true;
+    if (stepKey !== lastCosmicFlightChapterLevel) {
+      lastCosmicFlightChapterLevel = stepKey;
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-journey-step', { detail: sfDetail }));
+      } catch (e) { /* optional */ }
+    } else {
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-journey-progress', { detail: { progress: p, spaceFlight: true } }));
+      } catch (e) { /* optional */ }
+    }
+    if (p >= 1) finishSpaceFlightTool();
+  }
 
   function earthTargetVec(out) {
     if (meshes.earth) return out.copy(meshes.earth.position);
@@ -542,13 +730,45 @@ const RadialBlurShader = {
     scaleAnimDurationMs = SCALE_ANIM_MS;
     introActive = false;
     syncPreloaderIntroClass(false);
-    preloaderIntroFinished = true;
-    preloaderIntroScheduled = false;
-    holdPreloaderEarthFrame();
+    const toolFlight = cosmicFlightToolActive;
+    if (toolFlight) {
+      cosmicFlightToolActive = false;
+      lastCosmicFlightChapterLevel = '';
+      setDefaultEarthFrame();
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: 0, cosmicFlight: true } }));
+      } catch (e) { /* optional */ }
+    } else {
+      preloaderIntroFinished = true;
+      preloaderIntroScheduled = false;
+      holdPreloaderEarthFrame();
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: 0, preloader: true } }));
+      } catch (e) { /* optional */ }
+      if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
+    }
+    preloaderCosmicJourney = false;
+  }
+
+  function cancelCosmicFlight(jumpToEarth) {
+    if (spaceFlightToolActive) cancelSpaceFlight(false);
+    if (!preloaderCosmicJourney && !cosmicFlightToolActive) return;
+    if (preloaderIntroWatchdog) { clearTimeout(preloaderIntroWatchdog); preloaderIntroWatchdog = null; }
+    disposePreloaderComets();
+    syncPreloaderWarpClass(false);
+    preloaderCosmicJourney = false;
+    introActive = false;
+    cosmicFlightToolActive = false;
+    lastCosmicFlightChapterLevel = '';
+    scaleAnimDurationMs = SCALE_ANIM_MS;
+    syncPreloaderIntroClass(false);
+    if (jumpToEarth) setDefaultEarthFrame();
+    else settleToSystemHeroFrame(false);
     try {
-      document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: 0, preloader: true } }));
+      document.dispatchEvent(new CustomEvent('orrery-journey-end', {
+        detail: { level: scaleLevel, skipped: !!jumpToEarth, cosmicFlight: true },
+      }));
     } catch (e) { /* optional */ }
-    if (onIntroDone) { const f = onIntroDone; onIntroDone = null; f(); }
   }
 
   function interpolatePreloaderCosmicCamera(z, t) {
@@ -664,17 +884,51 @@ const RadialBlurShader = {
     if (z <= 3.2 && !allPlanetsBuilt) buildRemainingPlanets();
     updatePreloaderComets(p, z, t);
     updateIntroProgress(p);
+    if (cosmicFlightToolActive) {
+      const chLv = Math.max(0, Math.min(6, Math.round(z)));
+      const descentP = p < PRELOADER_COSMIC_HOLD_FRAC
+        ? 0
+        : (p - PRELOADER_COSMIC_HOLD_FRAC) / (1 - PRELOADER_COSMIC_HOLD_FRAC);
+      const detail = { level: chLv, cosmicFlight: true, progress: p };
+      let narrKey = '';
+      if (narrateJourney) {
+        const ch = preloaderChapterForProgress(descentP);
+        detail.narrate = true;
+        detail.title = ch.title;
+        detail.subtitle = ch.sub;
+        narrKey = ch.title;
+      }
+      const stepKey = chLv + '|' + narrKey;
+      if (stepKey !== lastCosmicFlightChapterLevel) {
+        lastCosmicFlightChapterLevel = stepKey;
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-journey-step', { detail }));
+        } catch (e) { /* optional */ }
+      } else {
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-journey-progress', { detail: { progress: p, cosmicFlight: true } }));
+        } catch (e) { /* optional */ }
+      }
+    }
     if (elapsed >= dur) finishPreloaderCosmicJourney();
   }
 
-  function startPreloaderCosmicJourney() {
-    if (destroyed || !onPreloaderStage()) return;
+  function beginCosmicJourney(opts) {
+    opts = opts || {};
+    if (destroyed) return;
+    if (journeyActive) cancelScaleJourney(false);
     if (preloaderIntroWatchdog) clearTimeout(preloaderIntroWatchdog);
+    const watchdogMs = preloaderCosmicDurationMs() + 3000;
     preloaderIntroWatchdog = setTimeout(() => {
       preloaderIntroWatchdog = null;
-      if (!destroyed && onPreloaderStage() && !preloaderIntroFinished) recoverPreloaderIntro();
-    }, preloaderCosmicDurationMs() + 3000);
+      if (!destroyed && preloaderCosmicJourney) {
+        if (opts.tool) cancelCosmicFlight(true);
+        else if (onPreloaderStage() && !preloaderIntroFinished) recoverPreloaderIntro();
+      }
+    }, watchdogMs);
 
+    cosmicFlightToolActive = !!opts.tool;
+    lastCosmicFlightChapterLevel = '';
     preloaderCosmicJourney = true;
     preloaderChapterKey = '';
     preloaderIntroScheduled = false;
@@ -682,7 +936,7 @@ const RadialBlurShader = {
     introStart = performance.now();
     introStartedAt = introStart;
     syncPreloaderIntroClass(true);
-    syncPreloaderCosmicClass(true);
+    if (!opts.tool) syncPreloaderCosmicClass(true);
     syncHeroReplayClass(false);
     daysPerSec = 0;
     flicking = false;
@@ -703,7 +957,7 @@ const RadialBlurShader = {
 
     if (perfTier !== 'low' && !PRM) {
       requestAnimationFrame(function () {
-        if (!destroyed && onPreloaderStage()) ensureComposer();
+        if (!destroyed && preloaderCosmicJourney) ensureComposer();
       });
     }
 
@@ -716,6 +970,27 @@ const RadialBlurShader = {
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', forceResize, { passive: true, once: true });
     }
+  }
+
+  function startCosmicFlight(opts) {
+    opts = opts || {};
+    if (spaceFlightToolActive) cancelSpaceFlight(false);
+    if (PRM) {
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: 0, cosmicFlight: true, reducedMotion: true } }));
+      } catch (e) { /* optional */ }
+      return;
+    }
+    if (opts.narrate != null) {
+      narrateJourney = !!opts.narrate;
+      try { localStorage.setItem('ap_narrate_journey', narrateJourney ? '1' : '0'); } catch (e) {}
+    }
+    beginCosmicJourney({ tool: true });
+  }
+
+  function startPreloaderCosmicJourney() {
+    if (destroyed || !onPreloaderStage()) return;
+    beginCosmicJourney({ preloader: true });
   }
 
   function holdPreloaderSystemFrame() {
@@ -2125,6 +2400,10 @@ const RadialBlurShader = {
   }
 
   function applyCinematicLighting(z) {
+    if (spaceFlightMode) {
+      applySpacePalette(z);
+      return;
+    }
     const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
     const earthT = Math.max(0, Math.min(1, (2.2 - z) / 2.2));
     const detail = syncDetailLighting();
@@ -2209,7 +2488,9 @@ const RadialBlurShader = {
     if (moonHaloMesh && moonGroup && moonGroup.visible) {
       moonHaloMesh.material.opacity = 0.04 + Math.max(0, (earthDetailZ - z) / earthDetailZ) * 0.08;
     }
-    orbitLines.forEach((o) => { o.visible = showOrbits && z <= 3.2; });
+    orbitLines.forEach((o) => {
+      o.visible = (showOrbits || (spaceFlightMode && z >= 0.85 && z <= 2.65)) && z <= 3.2;
+    });
     if (asteroidPoints) asteroidPoints.visible = showAsteroids && z <= 3.2;
     if (halleyGroup) halleyGroup.visible = z <= 3.2;
     if (labels.halley) labels.halley.visible = showLabels && z >= 1 && z <= 3.2;
@@ -3824,14 +4105,22 @@ const RadialBlurShader = {
       earthTargetVec(camTarget);
     }
 
+    if (masterclassIntroActive && spaceFlightMode && spaceFlightToolActive) {
+      tickSpaceFlightTool(t, dt);
+      if (!PRM && meshes.earth && masterclassZoom < 0.95) {
+        const g = meshes.earth.userData.mesh;
+        if (g) g.rotation.y += 0.42 * dt;
+      }
+    }
+
     if (introActive && preloaderCosmicJourney && introStart > 0) {
       tickPreloaderCosmicJourney(t);
       camAz += 0.018 * dt;
-      if (bloomPass && composer && onPreloaderStage()) {
+      if (bloomPass && composer && (onPreloaderStage() || cosmicFlightToolActive)) {
         bloomPass.strength = perfTier === 'mid' ? 0.22 : 0.28;
         bloomPass.threshold = perfTier === 'mid' ? 0.82 : 0.78;
       }
-      if (renderer && onPreloaderStage()) {
+      if (renderer && (onPreloaderStage() || cosmicFlightToolActive)) {
         renderer.toneMappingExposure = (perfTier === 'high' ? 1.18 : 1.12) + Math.sin(t * 0.00035) * 0.02;
       }
     }
@@ -3898,10 +4187,10 @@ const RadialBlurShader = {
         updateDomLabels(p);
         if (elapsed >= introMs) finishIntro();
       }
-    } else if (!dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && (t - userTouched) > 1200) {
+    } else if (!dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
       camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
     }
-    if (!introActive && !scaleAnimActive) clampCamToLevel();
+    if (!introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive) clampCamToLevel();
     applyEclipseVisuals();
     applyCamera();
 
@@ -4004,6 +4293,21 @@ const RadialBlurShader = {
   }
 
   function canvasBox() {
+    if (cosmicFlightToolActive || spaceFlightToolActive) {
+      try {
+        const stage = document.getElementById('ap-cosmic-flight-stage');
+        if (stage) {
+          const r = stage.getBoundingClientRect();
+          const w = Math.round(r.width);
+          const h = Math.round(r.height);
+          if (w > 1 && h > 1) return { w, h };
+        }
+        const vv = window.visualViewport;
+        const w = Math.round(vv?.width || window.innerWidth || 390);
+        const h = Math.round(vv?.height || window.innerHeight || 844);
+        if (w > 1 && h > 1) return { w, h };
+      } catch (_) {}
+    }
     if (preloaderCosmicJourney && onPreloaderStage()) {
       try {
         const pre = document.getElementById('preloader');
@@ -4366,6 +4670,7 @@ const RadialBlurShader = {
     renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.08;
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(isAwardMode() ? 0x0c1016 : 0x050406, 0.00045);
     camera = new THREE.PerspectiveCamera(45, 1, 0.05, 8000);
     texLoader = new THREE.TextureLoader();
 
@@ -4671,7 +4976,13 @@ const RadialBlurShader = {
     setScaleLevel(n) { applyScalePreset(n, true); },
     startScaleJourney,
     cancelScaleJourney,
-    isJourneyActive() { return journeyActive; },
+    startCosmicFlight,
+    cancelCosmicFlight,
+    startSpaceFlight,
+    cancelSpaceFlight,
+    isCosmicFlightActive() { return cosmicFlightToolActive; },
+    isSpaceFlightActive() { return spaceFlightToolActive; },
+    isJourneyActive() { return journeyActive || preloaderCosmicJourney || masterclassIntroActive; },
     focusPlanet,
     set onIntroDone(fn) {
       onIntroDone = fn;
