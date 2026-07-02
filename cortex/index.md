@@ -11,6 +11,7 @@ update it whenever a wiki page is added, renamed, or retired.
 
 | Page | Covers | Last updated |
 |---|---|---|
+| [mission-plan.md](wiki/mission-plan.md) | **Active mission plan** — current missions, status, standing orders | 2026-07-02 |
 | [operations.md](wiki/operations.md) | How the Cortex system works: environment reality, delegation policy, goals/loops rules, ingest/query/lint procedures | 2026-07-02 |
 | [astroprecise-state.md](wiki/astroprecise-state.md) | Current technical state of the AstroPrecise site + app: deployment truth, palette, versioning, known doc contradictions | 2026-07-02 |
 | [astroprecise-business.md](wiki/astroprecise-business.md) | Launch/monetization strategy synthesized from the 21 root planning docs, with phase gates and doc map | 2026-07-02 |
@@ -18,15 +19,17 @@ update it whenever a wiki page is added, renamed, or retired.
 
 ## Open lint findings
 
-1. **CLAUDE.md vs STATUS.md/DESIGN.md palette contradiction** — CLAUDE.md declares the
-   WARM gold palette live and the COOL values retired (2026-06-14); STATUS.md and
-   DESIGN.md (2026-07-02, newer) describe the live theme as cool-void `#0C1016` with
-   brass. See [astroprecise-state.md](wiki/astroprecise-state.md).
-2. **CLAUDE.md deployment section stale** — describes manual gh-pages mirroring and the
-   Actions workflow as inert; STATUS.md says ap-v563 deployed *via gh-pages Actions*
-   and the live URL is `https://astroprecise.app` (apex canonical), not the github.io URL.
-3. **STATUS.md behind git history** — snapshot says ap-v563; `main` history shows
+1. **STATUS.md behind git history** — snapshot says ap-v563; `main` history shows
    ap-v566 (PayPal direct replaced Lemon Squeezy, e2e PayPal gate, LS tooling archived).
+   Fix tracked as Mission 3 in [mission-plan.md](wiki/mission-plan.md).
+
+### Resolved
+
+- ~~CLAUDE.md palette contradiction~~ — fixed 2026-07-02: section rewritten to the live
+  `ap-palette-2026.css` cool-void + brass tokens (verified against `css/main.css` `:root`).
+- ~~CLAUDE.md deployment section stale~~ — fixed 2026-07-02: rewritten to the automated
+  gh-pages Actions pipeline + `astroprecise.app` (verified against
+  `.github/workflows/deploy-pages.yml` and `website/CNAME`).
 
 ## Conventions
 
