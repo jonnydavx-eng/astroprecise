@@ -1206,9 +1206,14 @@ window.AP_SOCIAL = window.AP_SOCIAL || {
 window.AP_MON = Object.assign({
   family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
   tipUrl:       'https://ko-fi.com/astroprecise',   // tips/support — Ko-fi (0% on tips). LIVE 2026-06-14.
-  reportUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
-  posterUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
-  giftUrl:      'https://astroprecise.lemonsqueezy.com/checkout/custom/2fd63e38-78d6-4096-b0b5-db3ae68a8287?signature=05153867779b0dba4aba5b1e2349cc3af3252c65c047a9e906a366d3bf158f15',   // gift a reading — hosted product
+  // PayPal direct (2026-07-02 — Lemon Squeezy dropped; category not accepted).
+  // Optional global handle: set me to your PayPal.Me URL ('https://paypal.me/YourHandle')
+  // to enable amount-links (e.g. the Two Skies post-purchase offer). Per-SKU checkout
+  // uses each product's fulfilUrl — paste PayPal payment links there (PAYPAL-SETUP.md).
+  paypal: { me: '', currency: 'GBP' },
+  reportUrl:    '',   // premium written natal report — PayPal payment link (PAYPAL-SETUP.md)
+  posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
+  giftUrl:      '',   // gift a reading — hosted product
   newsletterUrl:'https://list.astroprecise.app/subscribe',   // LIVE — CF Worker + KV (ap-subscribe)
   affiliateTag: '',   // Amazon Associates tag — auto-appended to amazon.* links site-wide (e.g. astroprecise-21)
   // Editorial affiliate picks — disclosed ad strip before footer on key pages (js/affiliate-social.js).
@@ -1272,14 +1277,14 @@ window.AP_MON = Object.assign({
   // Same rule as the rest: a hosted product page (Gumroad / Ko-fi Shop / Lemon
   // Squeezy). Empty '' = DORMANT: the teaser button falls back to email capture,
   // never a fake checkout.
-  deepReadingUrl: 'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',
+  deepReadingUrl: '',
   // Price shown on the chart-page Deep Reading CTA — e.g. '£29'. Blank = no price
   // displayed (honesty: never show a price until the product is live and it matches
   // the storefront listing exactly).
   deepReadingPrice: '£12',
   // Compatibility "Full Synastry" unlock — the compatibility page keeps the top 8
   // cross-chart aspects + category scores + overview FREE; the rest unlock here.
-  // Hosted checkout (Lemon Squeezy) that redirects back to compatibility.html?unlocked=1.
+  // A PayPal payment link (PAYPAL-SETUP.md) that redirects back to compatibility.html?unlocked=1.
   // Empty '' = DORMANT: everything stays free (no downgrade pre-launch). When set,
   // the "Show all aspects" toggle becomes an "Unlock — <price>" button.
   compatUnlockUrl: '',
@@ -1376,7 +1381,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-natal-poster.svg',
         blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
         icon:         'map',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/b96ab7e6-5b60-463f-a447-2829c65d1948?signature=aaba0330319df3dabc194a375ea7f37b3da70655687fae87c9b686b84d7882a7',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'MKutUmwh',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'sky-tee',
@@ -1391,7 +1397,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-sky-tee.jpg',
         blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
         icon:         'star4',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/bc99eaab-fe40-4336-84be-4986169b7d4f?signature=7f07cebec6e274b3898992547b0816503b90a83554ca3311ff372714b5dc05c9',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'jymyb9t2',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'sky-hoodie',
@@ -1406,7 +1413,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-sky-hoodie.jpg',
         blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
         icon:         'crescent',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/e4433127-c65b-481d-8cb9-9b1d5f95006e?signature=82e68c110830134e1d7a986f3ab12414233529ba426f61e01eaf9deaec5f6caa',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'ItYwTtZw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'big-three-print',
@@ -1421,7 +1429,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-big-three.jpg',
         blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
         icon:         'sunhigh',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/293d41b4-95b2-49b8-a5dd-933ba8bac28d?signature=ae2e0280080783aee3858dae9dacaa67047fb9043c0f62f96fe2e84409103353',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'l3BHnRFG',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'constellation-mug',
@@ -1436,7 +1445,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-mug.jpg',
         blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
         icon:         'orb',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/1f278c11-0c09-4ea8-9d90-4eec2a168287?signature=c36479767c244cd7173a7a6a218d7aadaabd3bf7c71e4b7450d9a9c1c3270346',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'cQgoY4h4',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'cosmic-story',
@@ -1469,7 +1479,8 @@ window.AP_MON = Object.assign({
         sampleUrl:    'sample-reading.html',
         blurb:        'Thirteen pages from the same engine as your free chart — every planet, all twelve houses, love/career/wellbeing chapters, chart patterns, and ten tightest aspects. Typeset as a beautifully set PDF, yours to keep forever.',
         icon:         'book',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'JVU3Atfm',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'year-ahead',
@@ -1484,7 +1495,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-year-ahead.svg',
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
         icon:         'calendar',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'QMcr0Ldw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'natal-poster-pdf',
@@ -1500,7 +1512,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-natal-poster.svg',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
         icon:         'map',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'sL9V4PTk',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'reading-poster-bundle',
@@ -1519,7 +1532,8 @@ window.AP_MON = Object.assign({
         blurb:        'Your long-form Deep Natal Reading and print-at-home natal poster, generated together from one chart. Includes free chart wallpaper (email unlock) and a 50% code for Two Skies after purchase. Future bundles will pair readings with Observatory Disc or Seal Medallion jewellery.',
         bundlePerks:  ['Free chart wallpaper', '50% off Two Skies map', 'Two PDFs · save £2', 'Jewellery cross-sell placeholders live in catalogue'],
         icon:         'book',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7?signature=818268afc134daac9ba3ed051e5eb2d8a5b10c4ac392dc2a45afb4782bd4ec3f',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'Iasu4Sia',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'solar-return',
@@ -1534,7 +1548,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-solar-return.svg',
         blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
         icon:         'sunhigh',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'vp60QAiN',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'gift-reading',
@@ -1550,7 +1565,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-gift-reading.svg',
         blurb:        'A Deep Natal Reading for someone you love — sent as a PDF gift voucher with a redemption code. They redeem by email and give us their own birth details; we generate the reading and deliver it with your note. Choose a delivery date at checkout.',
         icon:         'heart',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2fd63e38-78d6-4096-b0b5-db3ae68a8287?signature=05153867779b0dba4aba5b1e2349cc3af3252c65c047a9e906a366d3bf158f15',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'VvzhK6Kj',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'gift-box-whole-sky',
@@ -1566,7 +1582,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-gift-box.svg',
         blurb:        'The complete gift: a Deep Natal Reading PDF plus an A4 foil natal print, shipped, with a personalised gift card carrying your note. They redeem the reading by email with their own birth details — their sky, never our server. Choose a delivery date at checkout, for less than the two bought separately.',
         icon:         'star4',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/0c1e9679-cde4-45b3-8e64-bf4137efa236?signature=fe0c7290321dec98d7d726bee69ed6e2152cf9f9a4acc8b3ccfe9dce5dcbedba',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'uHADD51y',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'two-skies-map',
@@ -1582,7 +1599,8 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-two-skies.svg',
         blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. A proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
         icon:         'crescent',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'ZOp9A1OW',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       // ── JEWELLERY COLLECTION (new accessories, POD placeholders) ───────────
       // Audience-refined (deep research 2026-06): Gen Z gifting (affordable meaningful), women 18-35 everyday/self (dainty + emotional), existing chart users.

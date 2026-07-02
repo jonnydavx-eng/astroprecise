@@ -1,4 +1,6 @@
 # AstroPrecise — Email Funnel
+
+> **⚠ 2026-07-02 — payment provider changed:** Lemon Squeezy is DROPPED (would not onboard the store). Checkout is now **PayPal direct** — hosted payment links pasted per-SKU into AP_MON (see **PAYPAL-SETUP.md** for setup, VAT notes and guardrails). References to Lemon Squeezy below are historical.
 # ============================
 # Lead capture, welcome sequence, post-purchase sequence, automation.
 # Re-themed for astrology. Honesty + privacy first (see PRIVACY note at the end).
