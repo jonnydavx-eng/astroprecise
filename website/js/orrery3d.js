@@ -663,8 +663,10 @@ window.Orrery3D = (() => {
       resize._armed = true;
       requestAnimationFrame(function () { resize._armed = false; resize(); });
     }
-    // Match intended hero presence: up to 580px logical (CSS sets 580 on desktop, scales down responsively)
-    const sizeCap = (window.RafCore && RafCore.tier === 'high') ? 760 : 640;
+    // Match intended hero presence. The unboxed full-viewport hero wrap runs
+    // ~774-940px logical, so let capable tiers fill it; keep low tiers cheap.
+    const tier = (window.RafCore && RafCore.tier) || 'mid';
+    const sizeCap = tier === 'high' ? 960 : tier === 'mid' ? 760 : 640;
     const size = Math.min(Math.max(rect.width, 280), sizeCap);
     W = H = size;
     canvas.width = size * dpr;

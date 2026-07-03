@@ -866,7 +866,9 @@
     var vp = document.getElementById('orrery-viewport');
     if (!vp || !window.PointerEvent) return;
     ptrWired = true;
-    vp.style.touchAction = 'none';
+    // pan-y: horizontal drags rotate the model, vertical swipes still scroll
+    // the page — the hero is full-viewport, so it must never trap scrolling.
+    vp.style.touchAction = 'pan-y';
     vp.classList.add('orrery-grabbable');
 
     var pointers = {};
@@ -954,6 +956,9 @@
 
     vp.addEventListener('wheel', function (e) {
       if (handedOff()) return;
+      // plain wheel scrolls the page past the full-viewport hero; ctrl/cmd+
+      // wheel (and trackpad pinch, which reports ctrlKey) zooms the model
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       var f = 1 - clampN(e.deltaY, -120, 120) * 0.0014;
       targetZoom = clampN(targetZoom * f, 0.7, 3.4);

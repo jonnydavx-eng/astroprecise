@@ -55,6 +55,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://astroprecise.app/guides.html</loc>
+    <lastmod>2026-07-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://astroprecise.app/moonphase.html</loc>
     <lastmod>2026-07-02</lastmod>
     <changefreq>daily</changefreq>

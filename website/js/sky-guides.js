@@ -24,6 +24,12 @@
   let readerOpenId = null;
   let overlayTrap = null;
   let readerLastFocus = null;
+  /* Render mode — set via data-sg-mode on the #skyGuidesWrap mount:
+     "full" (default): filter chips + hero + complete card grid (library page).
+     "teaser": featured hero + TEASER_CARDS cards + browse-all link (homepage). */
+  let sectionMode = "full";
+  const TEASER_CARDS = 3;
+  const DOC_TITLE = document.title;
 
   function $(id) { return document.getElementById(id); }
 
@@ -255,6 +261,25 @@
     const filterSlot = $("skyGuidesFilter");
     if (!wrap || !gridOut) return;
 
+    if (sectionMode === "teaser") {
+      const teaserHero = guidesFeatured || guidesCache[0] || null;
+      const teaserGrid = guidesCache
+        .filter(g => !teaserHero || g.id !== teaserHero.id)
+        .slice(0, TEASER_CARDS);
+      if (filterSlot) filterSlot.innerHTML = "";
+      if (heroSlot) {
+        heroSlot.innerHTML = teaserHero
+          ? heroHTML(teaserHero, { featured: !!(guidesFeatured && teaserHero.id === guidesFeatured.id) })
+          : "";
+      }
+      gridOut.innerHTML =
+        `<div class="sg-grid">${teaserGrid.map(cardHTML).join("")}</div>` +
+        `<p class="sg-browse-all-row"><a class="sg-browse-all" href="guides.html">` +
+        `Browse all ${guidesCache.length} sky guides →</a></p>`;
+      wrap.hidden = false;
+      return;
+    }
+
     const cats = [...new Set(guidesCache.map(g => g.category).filter(Boolean))];
     const counts = categoryCounts(guidesCache);
     if (filterSlot) filterSlot.innerHTML = filterHTML(cats, counts);
@@ -352,7 +377,7 @@
     document.body.classList.remove("sg-reader-open");
     if (overlayTrap) overlayTrap();
     readerOpenId = null;
-    document.title = "Astro Precise — Your birth chart, written for you";
+    document.title = DOC_TITLE;
     if (!opts.fromHash) syncGuideHash(null, true);
     if (readerLastFocus && typeof readerLastFocus.focus === "function") {
       try { readerLastFocus.focus(); } catch (e) { /* */ }
@@ -470,6 +495,7 @@
     const mount = $("skyGuidesWrap");
     const gridOut = $("skyGuidesOut");
     if (!mount) return;
+    sectionMode = mount.dataset.sgMode === "teaser" ? "teaser" : "full";
     wireEvents();
     if (gridOut) gridOut.innerHTML = '<p class="sg-loading" role="status">Loading sky guides…</p>';
     try {

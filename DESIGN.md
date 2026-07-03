@@ -50,3 +50,13 @@ Bespoke engraved-SVG system, NOT a stock icon library: `js/celestial-seals.js` +
 4. Bump `sw.js` `V` (`ap-vNNN`) whenever cached assets change.
 5. Nav/footer are injected single-source (`app.js` `renderNav()`, `ap-footer-inject.js`) — never hand-edit per-page nav.
 6. Before any deploy: `npm test` + the `tools/visual-check/` suite (expert-audit, user-journey, audit-a11y, homepage-contract) must be green.
+
+
+## Homepage hero & tile system (ap-v570–v574, 2026-07-03 redesign)
+
+- **Hero:** the orrery is the homepage. `#heroChapter` is a full-viewport flex stage (`min-height clamp(620px, 100svh - 200px, 950px)`, border-box, bottom 96px reserved for the HUD). `.hero-solar-stage` is an absolute full-bleed backdrop (z1) with the readability scrim as its `::after` (z2); the copy `.page-wrap` sits at z2 on the section (above the stage subtree); the HUD deck `#orrery-lite-deck` is a stage child at z3, pinned bottom. CSS layers `v570*` at the end of `ap-horizon-2026.css`. Mobile (≤1023px): flow order eyebrow → H1 → standfirst → model+HUD → form → trust via `display:contents` + `order`.
+- **Hero operation:** wheel-zoom needs ctrl/cmd (or pinch) so the page always scrolls — hero-scoped in both engines; `touch-action: pan-y`; no scroll-triggered WebGL load (IO + pointer + 8s idle only); the engraved-wheel fallback cross-fades only after `lite-poster-ready` (force-hidden on `ap-orrery-ready`); the 2D fallback engine (orrery3d) caps at 640/760/960 by RafCore tier.
+- **Masthead is critical-path:** the logomark SVG carries `width="46" height="46"` attributes and the masthead structural rules are duplicated in the inline critical `<style>` in index.html (ephemeris.css lazy-loads — never rely on it above the fold). Keep both in sync with ephemeris.css.
+- **Tile system (v571 layer):** one recipe — radius 16px, surface `--night-raised`, border `rgba(194,160,94,.22)` → hover `.45` + `translateY(-2px)` + `0 14px 36px rgba(0,0,0,.4)`. Card innards: Cinzel eyebrow 0.72rem/0.16em → 1.25rem/600 title → 0.9rem dek. `.ap-chapter-title` = `clamp(2rem, 3.4vw, 2.75rem)`; major chapters `padding-block: 5.5rem` (4.5rem <768px).
+- **Guides:** homepage `#skyGuidesWrap` runs `data-sg-mode="teaser"` (hero + 3 cards + browse-all); the full catalogue + sticky filter live on `guides.html` (`body.sg-library`). Contract: teaser ≥3 on home, ≥8 on guides.html.
+- **Rail padding:** content `.page-wrap`s reserve `max(108px, gutter + --ap-rail-w)` for the float nav at ≥761px; `#apMasthead .page-wrap` is exempt (nav never overlaps the header).

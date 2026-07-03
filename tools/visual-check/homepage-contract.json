@@ -1,11 +1,11 @@
 {
-  "version": "ap-v562",
-  "capturedAt": "2026-07-01",
+  "version": "ap-v574",
+  "capturedAt": "2026-07-03",
   "storyId": "retrograde-survival",
   "assertions": [
     "All .ap-chapter sections opacity 1 on load",
     "Zero backdrop-filter on homepage chrome",
-    "Sky guides render >= 8 cards",
+    "Homepage guide TEASER renders featured hero + >=3 cards + browse-all link to guides.html",
     "No pageerror in console",
     "Index axe: zero violations",
     "Chart finder opens with 5 direct links; Escape closes",
@@ -21,6 +21,6 @@
     "Method + shop trust strips present",
     "Sky guides lazy-load when section nears viewport",
     "Featured guide badge on hero card",
-    "Sticky sky-guide filter bar while scrolling catalogue"
+    "guides.html full grid >=8 cards with sticky filter bar"
   ]
 }

@@ -1438,6 +1438,32 @@ body.sg-reader-open {
   opacity: 0.82;
 }
 
+/* Teaser mode (data-sg-mode="teaser") — link to the full guides.html library */
+.sg-browse-all-row { margin: 14px 0 0; text-align: right; }
+.sg-browse-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(194, 160, 94, 0.35);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--brass);
+  text-decoration: none;
+  background: rgba(194, 160, 94, 0.08);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.sg-browse-all:hover, .sg-browse-all:focus-visible {
+  border-color: rgba(194, 160, 94, 0.6);
+  background: rgba(194, 160, 94, 0.14);
+  color: var(--ink);
+  outline: none;
+}
+
 .sg-empty { padding: 28px; text-align: center; color: var(--ink); opacity: 0.85; }
 .sg-reset {
   font-family: inherit;
@@ -3028,7 +3054,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 @media (max-width: 1280px) {
   body.ap-award-511--nav-visible .page-wrap {
-    padding-inline-end: max(88px, calc(var(--layout-gutter) + 48px));
+    padding-inline-end: max(108px, calc(var(--layout-gutter) + var(--ap-rail-w)));
   }
 
   .ap-float-nav--extended .ap-float-nav__link {
@@ -3063,4 +3089,832 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   height: 1em;
   color: var(--brass);
   vertical-align: middle;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   v570 — Orrery-centred full-viewport hero (redesign 2026-07-03)
+   The living solar model IS the homepage: full-bleed stage behind a
+   left copy rail, HUD time-rail pinned to the hero's bottom edge.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ap-award-511 #heroChapter {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: clamp(620px, calc(100svh - 200px), 950px);
+  /* bottom padding reserves the HUD rail zone so it can never overlap copy */
+  padding-block: var(--sp-3) 96px;
+}
+
+.ap-award-511 #heroChapter .page-wrap.hero-grid {
+  display: block;
+  width: 100%;
+  max-width: var(--page-max);
+  /* above the stage AND its scrim so the copy always reads */
+  position: relative;
+  z-index: 2;
+}
+
+/* Stage becomes the section's full-bleed backdrop */
+.ap-award-511 #heroChapter .hero-solar-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background:
+    radial-gradient(ellipse 60% 55% at 63% 45%, rgba(111, 160, 216, 0.10) 0%, transparent 64%),
+    radial-gradient(ellipse 110% 60% at 50% 110%, rgba(194, 160, 94, 0.06) 0%, transparent 58%);
+}
+
+/* Un-cage the instrument */
+.ap-award-511 #heroChapter .ap-hero-instrument { max-width: none; }
+
+.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  position: absolute;
+  left: 63%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: min(86vh, 900px);
+  max-width: 94vw;
+  display: block;
+}
+
+.ap-award-511 #heroChapter .ap-award-orrery-frame,
+.ap-award-511 #heroChapter .hero-solar-instrument .ap-award-orrery-frame {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  animation: none;
+}
+.ap-award-511 #heroChapter .ap-award-orrery-frame::after { content: none; }
+
+/* Engraved wheel fallback overlays the model's spot; cross-fades, never snaps */
+.ap-award-511 #heroChapter .ap-hero-wheel-fallback {
+  position: absolute;
+  left: 63%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: min(64vh, 560px);
+  max-width: 88vw;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+.ap-award-511 #heroChapter .ap-hero-wheel-fallback svg { max-width: none !important; }
+.ap-award-511 #heroChapter .ap-hero-wheel-fallback--hidden {
+  display: block !important;
+  opacity: 0;
+}
+
+/* Readability scrim lives INSIDE the stage: above the canvas (z1),
+   below the HUD deck (z3) and below the copy page-wrap (z2 on the section). */
+.ap-award-511 #heroChapter .hero-solar-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(12, 16, 22, 0.92) 0%, rgba(12, 16, 22, 0.62) 28%, transparent 52%);
+}
+
+.ap-award-511 #heroChapter .hero-copy {
+  position: relative;
+  z-index: 3;
+  max-width: 500px;
+  padding-block: var(--sp-2) var(--sp-2);
+}
+
+.ap-award-511 #heroChapter .hero-copy .display {
+  font-size: clamp(2.3rem, 4vw, 3.2rem);
+  line-height: 1.08;
+  text-shadow: 0 1px 14px rgba(12, 16, 22, 0.85);
+}
+
+.ap-award-511 #heroChapter .hero-copy .standfirst {
+  max-width: 44ch;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  text-shadow: 0 1px 10px rgba(12, 16, 22, 0.8);
+}
+
+/* HUD time-rail pinned to the hero's bottom edge */
+.ap-award-511 #heroChapter .ap-orrery-deck {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: min(1180px, calc(100vw - 48px));
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: var(--sp-4);
+  row-gap: 4px;
+  padding: 10px 4px 10px;
+  border-top: 1px solid var(--hairline);
+  background: linear-gradient(180deg, transparent, rgba(12, 16, 22, 0.55));
+}
+/* the hint chip only earns its keep on mobile — on desktop the grab cursor
+   and pills carry the affordance, and the left cell must stay clear of the
+   copy rail's trust chips */
+.ap-award-511 #heroChapter .ap-orrery-chip { display: none; }
+.ap-award-511 #heroChapter .ap-orrery-time { justify-content: flex-end; }
+.ap-award-511 #heroChapter .ap-orrery-scrub { grid-column: 1 / -1; }
+
+/* PRM / boot failure: the wrap stays [hidden] — hide the HUD with it */
+.ap-award-511 #heroChapter .ap-award-orrery-wrap[hidden] ~ .ap-orrery-deck { display: none; }
+
+/* Tablet & below: stacked flow — copy, then model, then rail */
+@media (max-width: 1023px) {
+  .ap-award-511 #heroChapter {
+    display: block;
+    min-height: 0;
+    padding-block: var(--sp-4) var(--sp-6);
+  }
+  .ap-award-511 #heroChapter .hero-solar-stage::after { content: none; }
+  .ap-award-511 #heroChapter .hero-solar-stage {
+    position: relative;
+    inset: auto;
+  }
+  .ap-award-511 #heroChapter .hero-copy {
+    max-width: 620px;
+    margin-inline: auto;
+    text-align: center;
+    padding-block: var(--sp-4) var(--sp-2);
+  }
+  .ap-award-511 #heroChapter .hero-copy .standfirst { margin-inline: auto; }
+  .ap-award-511 #heroChapter .hero-form-row { justify-content: center; }
+  .ap-award-511 #heroChapter .ap-award-orrery-wrap {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: min(92vw, 460px);
+    margin: var(--sp-3) auto 0;
+  }
+  /* JS path: the poster reserves its square in flow, so the engraved wheel
+     never renders (no cross-fade needed, no CLS). PRM / no-JS path keeps
+     the wheel in flow. */
+  html.ap-lite-hero .ap-award-511 #heroChapter .ap-hero-wheel-fallback {
+    display: none !important;
+  }
+  .ap-award-511 #heroChapter .ap-hero-wheel-fallback {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: min(80vw, 400px);
+    margin: var(--sp-3) auto 0;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-deck {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: min(92vw, 460px);
+    grid-template-columns: 1fr;
+    margin: var(--sp-2) auto 0;
+    background: none;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-chip { text-align: center; }
+  .ap-award-511 #heroChapter .ap-orrery-time { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-award-511 #heroChapter .ap-hero-wheel-fallback { transition: none; }
+}
+
+/* ── v570b — HUD rail contents, hero form, trust chips ── */
+
+/* HUD grid: chip · planet pills · time+flight; scrub spans below */
+.ap-award-511 #heroChapter .ap-orrery-deck {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+.ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls {
+  position: static;
+  transform: none;
+  z-index: auto;
+  max-width: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+}
+.ap-award-511 #heroChapter .ap-orrery-time {
+  justify-content: flex-end;
+  grid-row: 1;
+  grid-column: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.ap-award-511 #heroChapter .ap-orrery-cosmic-flight {
+  grid-row: 1;
+  grid-column: 3;
+  justify-self: end;
+  margin-right: 0;
+}
+/* keep date+Now and flight from stacking on one another: date+Now right-
+   aligned with the flight pill sitting after them */
+.ap-award-511 #heroChapter .ap-orrery-time { margin-right: 150px; }
+.ap-award-511 #heroChapter .ap-orrery-chip { grid-row: 1; grid-column: 1; }
+.ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls { grid-row: 1; grid-column: 2; }
+.ap-award-511 #heroChapter .ap-orrery-scrub { grid-row: 2; grid-column: 1 / -1; }
+
+/* When the HD engine takes over it renders its own time console on the
+   canvas — drop the duplicated lite time controls, keep pills + flight */
+html.orrery-full .ap-award-511 #heroChapter .ap-orrery-time,
+html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
+  display: none;
+}
+
+/* Hero form — critical path: these styles must not wait for ephemeris.css */
+.ap-award-511 #heroChapter .hero-form { margin-top: var(--sp-2); }
+.ap-award-511 #heroChapter .hero-form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+.ap-award-511 #heroChapter .hero-form input[type="date"] {
+  min-height: 52px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(194, 160, 94, 0.35);
+  background: rgba(18, 24, 38, 0.85);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color-scheme: dark;
+}
+.ap-award-511 #heroChapter .hero-form .btn-press {
+  min-height: 52px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 0;
+  background: linear-gradient(180deg, #E08A60, var(--terracotta));
+  color: #1F1206;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(217, 123, 82, 0.26);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.ap-award-511 #heroChapter .hero-form .btn-press:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(217, 123, 82, 0.34);
+}
+
+/* Trust chips live under the reassurance line in the copy rail */
+.ap-award-511 #heroChapter .hero-copy .hero-solar-trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px var(--sp-3);
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-faded);
+}
+.ap-award-511 #heroChapter .hero-copy .hero-solar-trust span { color: var(--brass); }
+
+@media (max-width: 1023px) {
+  .ap-award-511 #heroChapter .ap-orrery-deck { grid-template-columns: 1fr; }
+  .ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls,
+  .ap-award-511 #heroChapter .ap-orrery-chip,
+  .ap-award-511 #heroChapter .ap-orrery-time,
+  .ap-award-511 #heroChapter .ap-orrery-cosmic-flight,
+  .ap-award-511 #heroChapter .ap-orrery-scrub {
+    grid-row: auto;
+    grid-column: 1;
+    justify-self: center;
+    margin-right: 0;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls { flex-wrap: wrap; justify-content: center; }
+  .ap-award-511 #heroChapter .ap-orrery-chip { display: block; text-align: center; font-size: 0.6rem; }
+  .ap-award-511 #heroChapter .hero-copy .hero-solar-trust { justify-content: center; }
+}
+
+/* ── v570c — blend the engine canvas into the void, console spacing ── */
+
+/* The WebGL canvas clears to its own near-void shade; on the unboxed stage
+   its rectangle reads as a seam. Fade it out radially into the page. */
+.ap-award-511 #heroChapter #orrery-canvas {
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 74%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 74%);
+}
+
+/* Engine canvas fills the unboxed stage (lite-critical caps it at 640px) */
+html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
+.ap-award-511 #heroChapter #orrery-canvas {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+/* HD engine's own time console — one tidy pill row over the canvas foot */
+.ap-award-511 #heroChapter .orrery-viewport .orrery-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 16%;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(194, 160, 94, 0.28);
+  background: rgba(12, 16, 22, 0.82);
+}
+.ap-award-511 #heroChapter .orrery-viewport .orrery-controls .orrery-date {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--brass);
+  margin-left: 8px;
+}
+
+/* 2D-fallback engine centres its capped canvas in the big stage */
+.ap-award-511 #heroChapter .orrery-viewport {
+  display: grid;
+  place-items: center;
+}
+.ap-award-511 #heroChapter .orrery-viewport > #orrery-canvas {
+  position: static;
+  grid-area: 1 / 1;
+}
+.ap-award-511 #heroChapter .orrery-viewport > .orrery-lite-poster,
+.ap-award-511 #heroChapter .orrery-viewport > .orrery-lite-launch {
+  grid-area: 1 / 1;
+}
+
+/* ── v570d — mobile: denser masthead, model right after the headline ── */
+
+@media (max-width: 640px) {
+  .ap-award-511 .masthead { padding-top: var(--sp-3); padding-bottom: var(--sp-2); }
+  .ap-award-511 .masthead-logo { margin-bottom: 8px; }
+  .ap-award-511 .masthead .dateline { font-size: 11px; }
+  .ap-award-511 .masthead-rule { margin-block: 10px; }
+  .ap-award-511 .contents-nav { gap: var(--sp-2) var(--sp-3); padding-top: 10px; }
+  .ap-award-511 .contents-nav a { font-size: 0.72rem; }
+}
+
+@media (max-width: 1023px) {
+  /* Order: eyebrow → headline → standfirst → living model + HUD → form → trust.
+     display:contents lifts the copy's children into the flex flow. */
+  .ap-award-511 #heroChapter .page-wrap.hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ap-award-511 #heroChapter .hero-copy { display: contents; }
+  .ap-award-511 #heroChapter .hero-copy > .eyebrow-rose { order: 1; text-align: center; }
+  .ap-award-511 #heroChapter .hero-copy > .display {
+    order: 2;
+    text-align: center;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .ap-award-511 #heroChapter .hero-copy > .standfirst {
+    order: 3;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .ap-award-511 #heroChapter .hero-solar-stage { order: 4; }
+  .ap-award-511 #heroChapter .hero-copy > .hero-form {
+    order: 5;
+    width: 100%;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+  .ap-award-511 #heroChapter .hero-copy > .hero-solar-trust {
+    order: 6;
+    justify-content: center;
+  }
+}
+
+/* ═══ v571 — chapter consolidation + unified tile system ═══ */
+
+/* ── Section rhythm: flow gap → per-chapter padding (hero untouched) ── */
+.ap-award-511 .ap-flow {
+  gap: 0;
+}
+
+.ap-award-511 .ap-flow > .ap-chapter:not(.ap-chapter--hero) {
+  padding-block: 5.5rem;
+}
+
+@media (max-width: 767px) {
+  .ap-award-511 .ap-flow > .ap-chapter:not(.ap-chapter--hero) {
+    padding-block: 4.5rem;
+  }
+}
+
+/* ── Chapter head rhythm: eyebrow→title 0.75rem, title→lead 1.25rem, lead→content 3rem ── */
+.ap-award-511 .ap-chapter-title {
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+}
+
+.ap-award-511 .ap-chapter-head .ap-display-kicker {
+  margin: 0 0 0.75rem;
+}
+
+.ap-award-511 .ap-chapter-head .ap-chapter-lead {
+  margin-top: 1.25rem;
+}
+
+.ap-award-511 .ap-chapter-head {
+  margin-bottom: 3rem;
+}
+
+/* ── Unified tile system ── */
+.ap-award-511 .sg-card,
+.ap-award-511 .why-plate,
+.ap-award-511 .method-step,
+.ap-award-511 .ap-shop-featured__card,
+.ap-award-511 .sign-tile,
+.ap-award-511 .cs-chip {
+  border-radius: 16px;
+  border: 1px solid rgba(194, 160, 94, 0.22);
+  background: var(--night-raised, #1A2230);
+  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ap-award-511 .sg-card:hover,
+.ap-award-511 .sg-card:focus-visible,
+.ap-award-511 .why-plate:hover,
+.ap-award-511 .why-plate:focus-within,
+.ap-award-511 .method-step:hover,
+.ap-award-511 .ap-shop-featured__card:hover,
+.ap-award-511 .ap-shop-featured__card:focus-within,
+.ap-award-511 .sign-tile:hover,
+.ap-award-511 .sign-tile:focus-visible,
+.ap-award-511 .cs-chip:hover {
+  border-color: rgba(194, 160, 94, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4);
+}
+
+/* Card innards — eyebrow / title / dek */
+.ap-award-511 .why-plate .fig-num,
+.ap-award-511 .method-step .step-num,
+.ap-award-511 .sg-card .sg-cat,
+.ap-award-511 .sign-tile .sign-tile-element {
+  display: block;
+  font-family: 'Cinzel', var(--font-serif);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.ap-award-511 .why-plate .plate-title,
+.ap-award-511 .method-step h3,
+.ap-award-511 .sg-card .sg-card-title,
+.ap-award-511 .ap-shop-featured__name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.ap-award-511 .why-plate .plate-title a,
+.ap-award-511 .ap-shop-featured__name a {
+  color: var(--ink);
+}
+
+.ap-award-511 .why-plate-desc,
+.ap-award-511 .method-step p,
+.ap-award-511 .sg-card .sg-card-dek,
+.ap-award-511 .ap-shop-featured__hook {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ink-faded);
+  opacity: 1;
+}
+
+/* Method steps are cards everywhere now */
+.ap-award-511 .method-step {
+  padding: var(--sp-4);
+}
+
+/* ── Sky chapter: compact planet chips (replaces the giant spheres) ── */
+.ap-award-511 .cs-chip-row {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+  max-width: 1040px;
+}
+
+.ap-award-511 .cs-chip {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  row-gap: 3px;
+  align-items: center;
+  padding: 14px 20px;
+  min-width: 220px;
+  background: rgba(26, 34, 48, 0.72);
+}
+
+.ap-award-511 .cs-chip-glyph {
+  grid-row: 1 / span 2;
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--brass);
+}
+
+.ap-award-511 .cs-chip-value {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  color: var(--paper-on-midnight, #ECE6D8);
+}
+
+.ap-award-511 .cs-chip-epithet {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--ink-faded);
+}
+
+.ap-award-511 .sky-born-cta {
+  margin: var(--sp-6) 0 0;
+  text-align: center;
+}
+
+.ap-award-511 .sky-born-cta a,
+.ap-award-511 .sg-all-link,
+.ap-award-511 .sg-browse-all {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  color: var(--brass);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(194, 160, 94, 0.4);
+  padding-bottom: 2px;
+}
+
+.ap-award-511 .sky-born-cta a:hover,
+.ap-award-511 .sky-born-cta a:focus-visible,
+.ap-award-511 .sg-all-link:hover,
+.ap-award-511 .sg-all-link:focus-visible,
+.ap-award-511 .sg-browse-all:hover,
+.ap-award-511 .sg-browse-all:focus-visible {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.ap-award-511 .sg-all-link-row {
+  margin: 1.25rem 0 0;
+}
+
+.ap-award-511 .sg-browse-all-row {
+  margin: var(--sp-4) 0 0;
+}
+
+/* ── Compare chapter: merged "what you get" 3-up row + trust strip ── */
+.ap-award-511 .ap-merged-why {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+.ap-award-511 .ap-merged-why .why-plate {
+  margin: 0;
+  padding: var(--sp-4);
+}
+
+.ap-award-511 .ap-merged-why .why-plate .plate-title {
+  margin: 10px 0 8px;
+}
+
+.ap-award-511 .ap-merged-why .why-plate-desc {
+  margin: 0;
+}
+
+.ap-award-511 .ap-compare-grid + .ap-why-use {
+  margin-top: var(--sp-5);
+}
+
+.ap-award-511 #compareChapter .ap-mini-trust {
+  margin-top: 3rem;
+}
+
+@media (max-width: 900px) {
+  .ap-award-511 .ap-merged-why {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Method chapter: featured pull-quote + CTA row ── */
+.ap-award-511 .method-quote {
+  margin: 3rem 0 0;
+  padding: var(--sp-4) var(--sp-5);
+  border-left: 2px solid var(--brass);
+  border-radius: 0 16px 16px 0;
+  background: rgba(194, 160, 94, 0.05);
+}
+
+.ap-award-511 .method-quote .ap-pull-quote {
+  margin: 0 0 var(--sp-3);
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.ap-award-511 .method-cta-row {
+  margin-top: var(--sp-5);
+}
+
+/* ── Sign library: 6/4/3/2 portrait tile grid with element hairline ── */
+.ap-award-511 .sign-tile-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+@media (max-width: 1200px) {
+  .ap-award-511 .sign-tile-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .ap-award-511 .sign-tile-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .ap-award-511 .sign-tile-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-2);
+  }
+}
+
+.ap-award-511 .sign-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  aspect-ratio: 4 / 5;
+  padding: var(--sp-3);
+  overflow: hidden;
+  text-align: center;
+  text-decoration: none;
+}
+
+.ap-award-511 .sign-tile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--sign-element-accent, var(--brass));
+}
+
+.ap-award-511 .sign-tile--fire  { --sign-element-accent: var(--ap-element-fire,  #B85A42); }
+.ap-award-511 .sign-tile--earth { --sign-element-accent: var(--ap-element-earth, #5A7A48); }
+.ap-award-511 .sign-tile--air   { --sign-element-accent: var(--ap-element-air,   #8A7A6A); }
+.ap-award-511 .sign-tile--water { --sign-element-accent: var(--ap-element-water, #4A7580); }
+
+.ap-award-511 .sign-tile .sign-glyph {
+  font-family: 'AstroGlyph', var(--font-serif);
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--brass);
+}
+
+.ap-award-511 .sign-tile .sign-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Retired hex #13100c (index-home.css .home-sign-card) — token override.
+   html prefix outranks the idle-loaded index-home.css rule of equal class count. */
+html .home-sign-card[data-sign] {
+  background-color: var(--night-raised, #1A2230);
+}
+
+/* ── v571 compaction — shorter chapters without cutting content ── */
+
+/* Sky guides teaser: hero left, 3 compact horizontal cards right */
+.ap-award-511 #skyGuidesWrap[data-sg-mode="teaser"] .sg-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.ap-award-511 #skyGuidesWrap[data-sg-mode="teaser"] .sg-card {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  align-items: stretch;
+  height: auto;
+}
+
+.ap-award-511 #skyGuidesWrap[data-sg-mode="teaser"] .sg-card-media {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 104px;
+}
+
+.ap-award-511 #skyGuidesWrap[data-sg-mode="teaser"] .sg-card-body {
+  padding: 14px 16px;
+  justify-content: center;
+}
+
+/* Instruments list — tighter rows */
+.ap-award-511 #instrumentsChapter .dept-list-item {
+  padding: 16px 20px 16px 24px;
+}
+
+/* Sky chapter — slimmer divider + chip row breathing space */
+.ap-award-511 .sky-chapter-rule {
+  margin: var(--sp-5) 0 var(--sp-4);
+}
+
+.ap-award-511 .cs-chip-row {
+  margin-bottom: var(--sp-2);
+}
+
+/* Compare chapter — tighter merged blocks */
+.ap-award-511 .ap-merged-why {
+  margin-top: 2rem;
+}
+
+.ap-award-511 #compareChapter .ap-mini-trust {
+  margin-top: 2rem;
+}
+
+/* Method chapter — leaner pull-quote */
+.ap-award-511 .method-quote {
+  margin-top: 2rem;
+  padding: var(--sp-3) var(--sp-4);
+}
+
+.ap-award-511 .method-quote .ap-pull-quote {
+  font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+  margin-bottom: var(--sp-2);
+}
+
+.ap-award-511 .method-cta-row {
+  margin-top: var(--sp-4);
+}
+
+/* QA — slightly tighter item padding (all questions kept) */
+.ap-award-511 .qa-item {
+  padding-block: 18px;
+}
+
+/* guides.html library page shares the homepage's sticky filter behavior */
+body.sg-library .sg-filter-slot {
+  position: sticky;
+  top: 12px;
+  z-index: 48;
+  padding: 10px 0 12px;
+  margin-bottom: 10px;
+  background: linear-gradient(180deg, var(--void) 78%, rgba(12, 16, 22, 0));
+}
+
+/* The float-nav rail never reaches the masthead — keep the header centred */
+@media (min-width: 761px) {
+  body.ap-award-511 #apMasthead .page-wrap,
+  body.ap-award-511--nav-visible #apMasthead .page-wrap {
+    padding-inline-end: var(--layout-gutter);
+  }
 }

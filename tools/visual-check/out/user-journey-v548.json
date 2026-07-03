@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-07-02T20:38:16.565Z",
+  "capturedAt": "2026-07-03T11:43:46.343Z",
   "base": "http://localhost:8790",
   "version": "562",
   "auditLabel": "v548",
@@ -91,21 +91,21 @@
       "issues": [],
       "positives": [
         "Hero H1 readable: \"You're not one of twelve. This chart is yours alone.\"",
-        "Hero instrument 440×440px",
+        "Hero instrument 760×760px",
+        "Float nav visible; content pad-inline-end=120px",
         "Compare section: 2 column cards",
         "Sky dateline: Sun in Cancer",
-        "10 sky guide cards loaded",
+        "3 sky guide cards loaded",
         "Guides trust copy not duplicated",
-        "Shop section present (3 items/cards)",
+        "Shop section present (0 items/cards)",
         "Cosmic flight launch control in hero",
-        "Cosmic flight entry in instruments band",
         "Cosmic flight overlay opens from hero",
         "Descent + Space zoom mode toggles present",
         "Space zoom mode updates toolbar copy",
         "Cosmic flight closes on Escape"
       ],
       "meta": {
-        "guideCards": 10,
+        "guideCards": 3,
         "h1": "You're not one of twelve. This chart is yours alone.",
         "consoleErrors": [],
         "consoleWarnings": [],
@@ -130,13 +130,13 @@
       "journey": "horoscope-dial-reading-chords",
       "issues": [],
       "positives": [
-        "Sky headline resolved: \"☉ 10° Cancer · ☽ 12° Aquarius\"",
+        "Sky headline resolved: \"☉ 11° Cancer · ☽ 20° Aquarius\"",
         "Planet legend populated with sign/degree",
         "Sky board auto-expanded after dial ready (v547 fix verified)",
-        "Reading panel opened for \"Leo\"",
+        "Reading panel opened for \"Capricorn\"",
         "Reading overview populated",
         "Love/career reading cards populated",
-        "Canvas transit chords active (3 chords on live dial)",
+        "Canvas transit chords active (2 chords on live dial)",
         "Go to my sign shows inline chart-first prompt (v547 fix verified)",
         "Horoscope H1: \"Today's Live Ecliptic\""
       ],
@@ -146,17 +146,17 @@
           "dial": {
             "panelOpen": true,
             "panelAriaHidden": "false",
-            "signName": "Leo",
-            "overviewLen": 315,
-            "loveLen": 189,
-            "selectedLabel": "Reading: Leo",
+            "signName": "Capricorn",
+            "overviewLen": 215,
+            "loveLen": 184,
+            "selectedLabel": "Reading: Capricorn",
             "chordLines": 0,
-            "canvasChords": 3,
+            "canvasChords": 2,
             "transitChordsVisible": true,
-            "transitChordItems": 3,
+            "transitChordItems": 2,
             "wheelSvg": true,
             "interactiveRing": 0,
-            "sphereSelected": "leo"
+            "sphereSelected": "capricorn"
           },
           "dialShot": "C:\\Users\\jonny\\OneDrive\\astroprecise\\tools\\visual-check\\out\\user-journey-v548\\horoscope-reading-panel.png",
           "goToSign": {
@@ -201,7 +201,7 @@
               "aboveFold": true
             },
             "submit": {
-              "top": 811,
+              "top": 679,
               "aboveFold": true
             }
           },
@@ -306,7 +306,7 @@
             "bodyLen": 1207
           },
           "scrollAttempt": {
-            "before": 7419,
+            "before": 5792,
             "afterAttempt": 0,
             "locked": true
           },

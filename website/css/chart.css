@@ -234,30 +234,10 @@
   }
 }
 
-.chart-advanced .accordion-content {
-  max-height: none;
-}
-
-@media (max-width: 768px) {
-  .chart-advanced .accordion-item:not(.is-open) .accordion-content {
-    max-height: 0;
-  }
-
-  .chart-advanced .accordion-item.is-open .accordion-content {
-    max-height: 1200px;
-  }
-}
-
-@media (min-width: 769px) {
-  .chart-advanced .accordion-trigger {
-    display: none;
-  }
-
-  .chart-advanced .accordion-content__inner {
-    border-top: none;
-    padding-top: 0;
-  }
-}
+/* Advanced-options accordion: styled + wired eagerly in chart.html's inline
+   <style>/<script> (single source of truth — this file is deferred-loaded and
+   never loads on the audit path, so no accordion rules may live here). The
+   disclosure behaves identically at every viewport width. */
 
 /* Planet table (compat/transit/accuracy pages that embed full render) */
 .ap-chart-table-wrap {

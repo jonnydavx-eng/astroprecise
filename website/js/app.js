@@ -2147,11 +2147,35 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     });
   }
 
+  // Critical positioning for the sticky bar, injected with the element itself.
+  // The full rules live in main.css, but main.css is idle/deferred-loaded on
+  // several pages (chart, horoscope, …) — without these the bar sits unstyled
+  // in flow and its absolutely-positioned close "×" escapes to the viewport
+  // top-right as an orphaned button. Values mirror main.css so there is no
+  // conflict once it loads; visibility gating keeps every child (incl. the ×)
+  // hidden until the bar is deliberately shown.
+  function ensureStickyCtaCss() {
+    if (document.getElementById('ap-email-sticky-critical')) return;
+    var st = document.createElement('style');
+    st.id = 'ap-email-sticky-critical';
+    st.textContent =
+      '.ap-email-cta--sticky{position:fixed;left:0;right:0;bottom:0;z-index:9000;padding:12px 16px;' +
+      'background:var(--ap-void-deep,#0C1016);border-top:1px solid rgba(194,160,94,0.35);' +
+      'transform:translateY(110%);visibility:hidden;' +
+      'transition:transform .45s cubic-bezier(.22,1,.36,1),visibility 0s .45s;}' +
+      '.ap-email-cta--sticky.is-visible{transform:translateY(0);visibility:visible;' +
+      'transition:transform .45s cubic-bezier(.22,1,.36,1);}' +
+      '.ap-email-cta--sticky .ap-email-cta__inner{position:relative;}' +
+      '@media (prefers-reduced-motion: reduce){.ap-email-cta--sticky{transition:none;}}';
+    document.head.appendChild(st);
+  }
+
   function buildEmailCTA(variant, copy, opts) {
     copy = copy || pageEmailCopy();
     opts = opts || {};
     var c = window.AP_COPY;
     var btn = variant === 'sticky' ? c.btnShort : c.btnLabel;
+    if (variant === 'sticky') ensureStickyCtaCss();
     var el = document.createElement(variant === 'banner' ? 'section' : 'div');
     el.className = 'ap-email-cta ap-email-cta--' + variant + (opts.extraClass ? ' ' + opts.extraClass : '');
     if (variant === 'banner') {

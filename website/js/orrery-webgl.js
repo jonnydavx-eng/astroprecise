@@ -4535,6 +4535,11 @@ const RadialBlurShader = {
       try { canvas.style.cursor = 'grab'; } catch (_) {}
     };
     const onWheel = (e) => {
+      // In the full-viewport homepage hero a bare wheel must scroll the page;
+      // ctrl/cmd+wheel (trackpad pinch reports ctrlKey) zooms. Elsewhere
+      // (ephemeris instrument) the boxed canvas keeps plain-wheel zoom.
+      const heroCtx = !!(canvas.closest && canvas.closest('#apAwardOrreryWrap'));
+      if (heroCtx && !e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       if (onPreloaderStage() && introActive) return;
       zoomCamRadius(1 + Math.sign(e.deltaY) * 0.08);

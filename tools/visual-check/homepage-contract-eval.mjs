@@ -76,21 +76,40 @@ const shopTrust = await page.evaluate(() => !!document.querySelector(".ap-shop-t
 if (!methodTrust || !shopTrust) fail("trust strips", `method=${methodTrust} shop=${shopTrust}`);
 else pass("trust strips", "method + shop");
 
+// v574 redesign: the homepage hosts a TEASER (featured hero + 3 cards + a
+// browse-all link); the full grid + sticky filter moved to guides.html.
 await page.locator("#skyGuidesWrap").scrollIntoViewIfNeeded();
-await page.waitForFunction(() => document.querySelectorAll(".sg-card").length >= 8, null, { timeout: 12000 }).catch(() => {});
+await page.waitForFunction(() => document.querySelectorAll(".sg-card").length >= 3, null, { timeout: 12000 }).catch(() => {});
 await page.waitForTimeout(600);
 
 const guideCards = await page.locator(".sg-card").count();
-if (guideCards < 8) fail("sky guides >=8 cards", String(guideCards));
-else pass("sky guides >=8 cards", String(guideCards));
+if (guideCards < 3) fail("sky guides teaser >=3 cards", String(guideCards));
+else pass("sky guides teaser >=3 cards", String(guideCards));
 
 const featured = await page.evaluate(() => !!document.querySelector(".sg-featured-badge"));
 if (!featured) fail("featured guide badge", "missing");
 else pass("featured guide badge", "present");
 
-const stickyFilter = await page.evaluate(() => getComputedStyle(document.querySelector(".sg-filter-slot")).position === "sticky");
-if (!stickyFilter) fail("sticky guide filters", "not sticky");
-else pass("sticky guide filters", "sticky");
+const browseAll = await page.evaluate(() =>
+  document.querySelectorAll('#skyGuidesWrap a[href*="guides.html"]').length > 0);
+if (!browseAll) fail("teaser links to guides.html", "missing");
+else pass("teaser links to guides.html", "present");
+
+{
+  const gp = await context.newPage();
+  await gp.goto(BASE.replace(/\/(\?.*)?$/, "/") + `guides.html?v=${VERSION}`, { waitUntil: "networkidle" });
+  await gp.waitForFunction(() => document.querySelectorAll(".sg-card").length >= 8, null, { timeout: 12000 }).catch(() => {});
+  const fullCards = await gp.locator(".sg-card").count();
+  if (fullCards < 8) fail("guides.html full grid >=8 cards", String(fullCards));
+  else pass("guides.html full grid >=8 cards", String(fullCards));
+  const stickyFilter = await gp.evaluate(() => {
+    const slot = document.querySelector(".sg-filter-slot");
+    return slot ? getComputedStyle(slot).position === "sticky" : false;
+  });
+  if (!stickyFilter) fail("guides.html sticky filters", "not sticky");
+  else pass("guides.html sticky filters", "sticky");
+  await gp.close();
+}
 
 await page.locator("#apFinderFab").click();
 await page.waitForTimeout(200);
@@ -107,7 +126,8 @@ else pass("finder escape closes", "closed");
 await page.locator("#instrumentsChapter").scrollIntoViewIfNeeded();
 await page.waitForTimeout(400);
 const paddingEnd = await page.evaluate(() => {
-  const wrap = document.querySelector(".page-wrap");
+  // the rail reservation protects CONTENT sections; the masthead is exempt
+  const wrap = document.querySelector("#instrumentsChapter .page-wrap") || document.querySelector("main .page-wrap");
   return wrap ? parseFloat(getComputedStyle(wrap).paddingInlineEnd) : 0;
 });
 const navVisible = await page.evaluate(() => document.body.classList.contains("ap-award-511--nav-visible"));
@@ -133,7 +153,7 @@ await page.waitForTimeout(2000);
 const overlayOpen = await page.evaluate(() => !document.getElementById("sgOverlay").hidden);
 if (!overlayOpen) {
   await page.locator("#skyGuidesWrap").scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => document.querySelectorAll(".sg-card").length >= 8, null, { timeout: 8000 }).catch(() => {});
+  await page.waitForFunction(() => document.querySelectorAll(".sg-card").length >= 3, null, { timeout: 8000 }).catch(() => {});
   await page.evaluate((id) => { location.hash = `guides?story=${id}`; }, STORY_ID);
   await page.waitForTimeout(1500);
 }

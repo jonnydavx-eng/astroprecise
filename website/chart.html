@@ -97,6 +97,105 @@
       overflow: hidden;
       min-height: calc(5 * 1.55em);
     }
+
+    /* ── Advanced-options accordion (eager — the base .accordion-* rules live
+       in main.css/chart.css which are idle/deferred-loaded, so without these
+       the disclosure paints as an unstyled white button). Scoped to
+       .chart-advanced so no other page is affected; ≥2-class specificity so
+       the later-injected main.css base rules never override them. ── */
+    .chart-advanced .accordion-item {
+      background: var(--ap-void-raised, #1A2230);
+      border: 1px solid var(--ap-card-border, rgba(194, 160, 94, 0.22));
+      border-radius: var(--radius-lg, 12px);
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+    .chart-advanced .accordion-item.is-open {
+      border-color: rgba(194, 160, 94, 0.42);
+    }
+    .chart-advanced .accordion-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3, 0.75rem);
+      padding: var(--space-4, 1rem) var(--space-5, 1.25rem);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--ap-gold-bright, #CDAE6A);
+      font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-align: left;
+      transition: color 0.2s ease;
+    }
+    .chart-advanced .accordion-trigger:hover {
+      color: var(--ap-gold-parchment, #ECE6D8);
+    }
+    .chart-advanced .accordion-trigger:focus-visible {
+      outline: 2px solid var(--ap-focus-ring, #CDAE6A);
+      outline-offset: -2px;
+    }
+    .chart-advanced .accordion-chevron {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      color: var(--ap-gold-core, #C2A05E);
+      transition: transform 0.25s ease;
+    }
+    .chart-advanced .accordion-item.is-open .accordion-chevron {
+      transform: rotate(180deg);
+      color: var(--ap-gold-bright, #CDAE6A);
+    }
+    .chart-advanced .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .chart-advanced .accordion-item.is-open .accordion-content {
+      max-height: 2200px;
+    }
+    .chart-advanced .accordion-content__inner {
+      padding: var(--space-4, 1rem) var(--space-5, 1.25rem) var(--space-5, 1.25rem);
+      border-top: 1px solid rgba(194, 160, 94, 0.14);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .chart-advanced .accordion-item,
+      .chart-advanced .accordion-trigger,
+      .chart-advanced .accordion-chevron,
+      .chart-advanced .accordion-content {
+        transition: none;
+      }
+    }
+
+    /* ── CTA row stays in flow — chart-critical.css makes .form-cta sticky at
+       ≥1024px which paints the button over the advanced-options content. ── */
+    @media (min-width: 1024px) {
+      .page-chart .form-cta {
+        position: static;
+        padding: 0;
+        background: none;
+      }
+    }
+
+    /* ── Calculate CTA — terracotta primary tokens (overrides the retired
+       warm-gold gradient + #0d0a07 ink in chart-critical.css). ── */
+    .page-chart .btn--calculate {
+      background: var(--ap-cta, #D97B52);
+      color: var(--ap-cta-ink, #1F1206);
+      box-shadow: 0 8px 28px rgba(217, 123, 82, 0.26), 0 0 0 1px rgba(217, 123, 82, 0.42);
+    }
+    .page-chart .btn--calculate:hover {
+      background: var(--ap-cta-hover, #E2895F);
+      box-shadow: 0 12px 36px rgba(217, 123, 82, 0.34), 0 0 0 1px rgba(217, 123, 82, 0.52);
+    }
+    .page-chart .btn--calculate .btn-spinner {
+      border-color: rgba(31, 18, 6, 0.3);
+      border-top-color: var(--ap-cta-ink, #1F1206);
+    }
   </style>
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferChartFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferChartFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/chart-page-deferred.css','ap-css-chart-deferred');deferPageCss('css/ap-reading.css','ap-css-reading');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
@@ -875,6 +974,16 @@
   <script>
   /* ── Chart page interaction enhancements ── */
   (function () {
+
+    // Advanced-options accordion (base accordion JS is not wired anywhere else)
+    var advItem = document.getElementById('chart-advanced-item');
+    var advTrigger = document.getElementById('chart-advanced-trigger');
+    if (advItem && advTrigger) {
+      advTrigger.addEventListener('click', function () {
+        var open = advItem.classList.toggle('is-open');
+        advTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
 
     // Time-of-day selector
     document.querySelectorAll('.time-btn').forEach(btn => {

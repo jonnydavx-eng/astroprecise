@@ -1,13 +1,13 @@
 {
   "base": "http://localhost:8790",
-  "capturedAt": "2026-07-02T19:47:46.647Z",
+  "capturedAt": "2026-07-03T11:41:44.938Z",
   "pages": [
     {
       "id": "index",
       "path": "/",
       "violations": [],
       "incomplete": 2,
-      "passes": 48
+      "passes": 46
     },
     {
       "id": "chart",

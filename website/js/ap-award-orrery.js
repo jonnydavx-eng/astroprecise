@@ -11,13 +11,14 @@
   window.__apLiteHero = true;
   document.documentElement.classList.add("ap-lite-hero");
 
-  function hideFallback() {
+  function hideFallback(force) {
     if (!fallback) return;
-    var canvas = document.getElementById("lite-poster-canvas");
     var poster = document.getElementById("orrery-lite-poster");
     var ready = poster && poster.classList.contains("lite-poster-ready");
-    var sized = canvas && canvas.width > 0 && canvas.height > 0;
-    if (ready || sized) {
+    // Only cross-fade the engraved wheel once something has actually drawn —
+    // the old canvas.width check passed on the 300x150 default, hiding the
+    // wheel over a blank viewport when ephemeris never arrived.
+    if (force === true || ready) {
       fallback.classList.add("ap-hero-wheel-fallback--hidden");
     }
   }
@@ -85,7 +86,6 @@
   });
 
   wrap.addEventListener("pointerdown", queueWebGL, { once: true, passive: true });
-  window.addEventListener("scroll", queueWebGL, { once: true, passive: true });
 
   var launch = document.getElementById("orrery-lite-launch");
   if (launch) launch.addEventListener("click", queueWebGL, { once: true });
@@ -113,6 +113,6 @@
     mo.observe(poster, { attributes: true, attributeFilter: ["class"] });
   }
 
-  document.addEventListener("ap-orrery-ready", hideFallback);
+  document.addEventListener("ap-orrery-ready", function () { hideFallback(true); });
   setTimeout(hideFallback, 4500);
 })();
