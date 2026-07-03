@@ -34,6 +34,20 @@ ephemeral remote containers.
 
 ## Episodes  (append-only; Leader prunes into Learnings)
 
+### 2026-07-03 · M9–M11 · cross-model verdict caught 3 real bugs I shipped
+- did: had the verifier (Sonnet tier) adversarially review the 10x build after I
+  pushed it.
+- failed (mine): (1) CI MCP smoke-test grepped `'"pass": true'` which never matches
+  escaped JSON — the checks job would've been red every run; (2) `secrets.X` in a
+  job-level `if:` is unsupported by GitHub; (3) cortex trend ended at 2 vs real 1.
+- worked: fixes were mechanical once named; added a validator invariant so a stale
+  trend can NEVER be committed again (endpoint must equal live count).
+- lesson: my own tests being green ≠ correct — I tested the MCP server directly but
+  not the CI *step* that wraps it. Verify the wrapper, not just the unit. And gate
+  real: I set M9/M11 gated:true so the verdicts are enforced, not decorative.
+- confirmed-by: validator rejects injected stale trend; mcp-smoke.mjs green;
+  check-verdicts green with gated M9/M11 + verdict files present.
+
 ### 2026-07-03 · M9–M11 · shipped 10x across all three waves
 - did: dashboard v3, 3-tier memory, contracts, trajectories, Actions maintenance
   workflow, verdict+state validators, evals, dependency-free MCP server.
