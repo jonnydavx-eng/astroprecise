@@ -26,6 +26,8 @@
   --meridian:        #6FA0D8;   /* links — brighter blue for AA on dark */
   --terracotta:      #D97B52;   /* CTA — brightened rust */
   --brass:           #C2A05E;   /* accents/marks — brightened gold */
+  --brass-bright:    #CDAE6A;   /* small brass UI on void — AA (= --ap-gold-bright) */
+  --brass-vivid:     #D8B978;   /* hover/emphasis brass (= --ap-gold-vivid) */
   --sage:            #8FB36B;   /* verify dots */
   --rose:            #D4A882;   /* hero eyebrow */
   --hairline:        rgba(236, 230, 216, 0.10); /* subtle cream lines */
@@ -505,8 +507,12 @@ li a[href]:not(.dept-list-item):not(.sign-index-entry):not(.contents-nav a),
   margin-bottom: var(--sp-2);
 }
 .masthead-logo:hover { text-decoration: none; }
-.masthead-logo:hover .wordmark-astro,
-.masthead-logo:hover .wordmark-precise { opacity: 0.75; }
+/* Hover never dims — "Precise" brightens and the mark's glow strengthens */
+.masthead-logo:hover .wordmark-precise { color: var(--brass-vivid); }
+.masthead-logo:hover .logo-mark,
+.masthead-logo:focus-visible .logo-mark {
+  filter: drop-shadow(0 0 14px rgba(194, 160, 94, 0.42)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+}
 
 /* SVG logomark */
 .logo-mark {
@@ -520,27 +526,26 @@ li a[href]:not(.dept-list-item):not(.sign-index-entry):not(.contents-nav a),
 .masthead-wordmark {
   display: flex;
   align-items: baseline;
-  gap: 0.22em;
+  gap: 0.26em;
   line-height: 1;
 }
 .wordmark-astro {
   font-family: var(--font-serif);
   font-size: clamp(1.35rem, 3vw, 1.9rem);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.12em;
   color: var(--ink);
   text-transform: uppercase;
-  transition: opacity 0.15s;
 }
 .wordmark-precise {
   font-family: var(--font-serif);
   font-size: clamp(1.35rem, 3vw, 1.9rem);
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
-  letter-spacing: 0.08em;
-  color: var(--brass);
+  letter-spacing: 0.055em;
+  color: var(--brass-bright);
   text-transform: uppercase;
-  transition: opacity 0.15s;
+  transition: color 0.15s;
 }
 
 .masthead-rule {

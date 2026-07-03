@@ -1778,6 +1778,13 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 /* Masthead logomark */
 .ap-award-511 .masthead-logo .logo-mark {
   filter: drop-shadow(0 0 12px rgba(194, 160, 94, 0.28)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  transition: filter 0.15s;
+}
+
+/* Hover never dims — the mark's brass glow strengthens instead */
+.ap-award-511 .masthead-logo:hover .logo-mark,
+.ap-award-511 .masthead-logo:focus-visible .logo-mark {
+  filter: drop-shadow(0 0 16px rgba(194, 160, 94, 0.44)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -4215,4 +4222,78 @@ html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-t
 }
 html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-scrub {
   display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   v576 — mobile conversion fold + hero form note (2026-07-03)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Friction-killer microcopy under the hero form row */
+.ap-award-511 #heroChapter .hero-form-note {
+  margin: 6px 0 0;
+  max-width: none;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--ap-text-faint, var(--ink-faded, #968B74));
+}
+
+/* v576 — mobile conversion fold
+   ≤640px: the date input + CTA sat ~500px below the 844px fold because the
+   stage takes order 4 in the v570d flex flow. Reorder so the ask comes
+   before the model — eyebrow(1) → H1(2) → standfirst(3) → form(4, with the
+   note) → trust chips(5) → stage(6) → HUD deck(7) — trim the hero's top
+   padding, drop the v575 desktop min-height, and collapse the HUD deck
+   spacing so eyebrow + H1 + standfirst + form all render inside the first
+   844px. Desktop (>640px) is untouched: v570d/v575 rules apply unchanged. */
+@media (max-width: 640px) {
+  .ap-award-511 #heroChapter {
+    min-height: 0;
+    padding-block: var(--sp-1) var(--sp-5);
+  }
+  .ap-award-511 #heroChapter .page-wrap.hero-grid { gap: 12px; }
+  /* eyebrow(1) / display(2) / standfirst(3) inherited from v570d */
+  .ap-award-511 #heroChapter .hero-copy > .hero-form {
+    order: 4;
+    margin-top: 4px;
+  }
+  .ap-award-511 #heroChapter .hero-copy > .hero-solar-trust {
+    order: 5;
+    margin-top: 6px;
+  }
+  .ap-award-511 #heroChapter .hero-solar-stage { order: 6; }
+  .ap-award-511 #heroChapter .ap-award-orrery-wrap { margin-top: var(--sp-2); }
+  .ap-award-511 #heroChapter .ap-orrery-deck {
+    order: 7;
+    margin-top: var(--sp-1);
+    row-gap: 2px;
+    padding: 4px 4px 6px;
+  }
+}
+
+/* ── v577 — desktop fold rebalance: the v576 copy additions (form note +
+   third trust chip + longer standfirst) grew the rail ~120px; recover the
+   budget so the HUD rail sits at the fold again at 1440x900. ── */
+@media (min-width: 1024px) {
+  .ap-award-511 #heroChapter { padding-block: 12px 96px; }
+  .ap-award-511 #heroChapter .hero-copy {
+    max-width: 560px;
+    padding-block: 8px 8px;
+  }
+  .ap-award-511 #heroChapter .hero-copy .standfirst {
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 48ch;
+  }
+  .ap-award-511 #heroChapter .hero-form-note { margin-top: 4px; font-size: 0.68rem; }
+  .ap-award-511 #heroChapter .hero-copy .hero-solar-trust {
+    margin-top: 10px;
+    gap: 6px var(--sp-3);
+    font-size: 0.7rem;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-deck {
+    row-gap: 2px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
 }

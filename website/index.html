@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Astro Precise &mdash; The Sky, Live. Your Chart, Exact.</title>
-  <meta name="description" content="Watch the solar system move, live in your browser &mdash; then wind it back to your birth minute. Free, precise natal charts, private, computed on your device.">
+  <meta name="description" content="The planets on this page are real &mdash; computed live in your browser, accurate to about an arcminute. Free precise birth charts: no account, private, computed on your device.">
   <meta name="theme-color" content="#0C1016">
   <link rel="canonical" href="https://astroprecise.app/">
 
@@ -13,26 +13,29 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Astro Precise">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 
   <!-- Open Graph -->
   <meta property="og:site_name" content="Astro Precise">
   <meta property="og:title" content="Astro Precise &mdash; The Sky, Live. Your Chart, Exact.">
-  <meta property="og:description" content="Watch the solar system move, live in your browser &mdash; then wind it back to your birth minute. Free, precise natal charts, private, computed on your device.">
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg">
-  <meta property="og:image:width" content="2400">
-  <meta property="og:image:height" content="1260">
-  <meta property="og:image:alt" content="Astro Precise — precise birth charts computed from the real sky">
+  <meta property="og:description" content="The planets on this page are real &mdash; computed live in your browser, accurate to about an arcminute. Free precise birth charts: no account, private, computed on your device.">
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://astroprecise.app/">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Astro Precise &mdash; The Sky, Live. Your Chart, Exact.">
-  <meta name="twitter:description" content="Watch the solar system move, live in your browser &mdash; then wind it back to your birth minute. Free, precise natal charts, private, computed on your device.">
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg">
+  <meta name="twitter:description" content="The planets on this page are real &mdash; computed live in your browser, accurate to about an arcminute. Free precise birth charts: no account, private, computed on your device.">
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -77,7 +80,7 @@
   --void:#0C1016;--night:#121826;--night-raised:#1A2230;
   --paper:#0C1016;--paper-leaf:#121826;--ink:#ECE6D8;--ink-faded:#BEB298;
   --midnight:#0C1016;--warm-midnight:#121826;--paper-on-midnight:#ECE6D8;
-  --meridian:#6FA0D8;--terracotta:#D97B52;--brass:#C2A05E;--sage:#8FB36B;
+  --meridian:#6FA0D8;--terracotta:#D97B52;--brass:#C2A05E;--brass-bright:#CDAE6A;--brass-vivid:#D8B978;--sage:#8FB36B;
   --rose:#D4A882;--hairline:rgba(236,230,216,0.10);
   --deep-indigo:#1E2D45;--dusk:#3A2E1E;--twilight:#243040;
   --font-serif:'Cormorant Garamond',Georgia,serif;--font-ui:'Inter',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,monospace;
@@ -91,9 +94,10 @@ html,body{background:#0C1016;}
 .masthead{text-align:center;padding-top:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--hairline);}
 .masthead-logo{display:inline-flex;align-items:center;gap:14px;text-decoration:none;margin-bottom:var(--sp-2);}
 .logo-mark{width:46px;height:46px;flex-shrink:0;display:block;}
-.masthead-wordmark{display:flex;align-items:baseline;gap:0.22em;line-height:1;}
-.wordmark-astro{font-family:var(--font-serif);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:400;letter-spacing:0.12em;color:var(--ink);text-transform:uppercase;}
-.wordmark-precise{font-family:var(--font-serif);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:300;font-style:italic;letter-spacing:0.08em;color:var(--brass);text-transform:uppercase;}
+.masthead-wordmark{display:flex;align-items:baseline;gap:0.26em;line-height:1;}
+.wordmark-astro{font-family:var(--font-serif);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:500;letter-spacing:0.12em;color:var(--ink);text-transform:uppercase;}
+.wordmark-precise{font-family:var(--font-serif);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:400;font-style:italic;letter-spacing:0.055em;color:var(--brass-bright);text-transform:uppercase;transition:color 0.15s;}
+.masthead-logo:hover .wordmark-precise{color:var(--brass-vivid);}
 .masthead-rule{border:none;border-top:1px solid var(--brass);opacity:0.35;margin-block:var(--sp-2);}
 .dateline{font-family:var(--font-mono);font-size:max(13px,0.75rem);color:var(--ink-faded);letter-spacing:0.05em;}
 .contents-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-3);padding-top:var(--sp-2);list-style:none;margin:0;padding-left:0;}
@@ -110,10 +114,10 @@ html,body{background:#0C1016;}
   </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="preload" href="css/ap-horizon-2026.css?v=575" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=575"></noscript>
-  <link rel="stylesheet" href="css/ap-motion.css?v=575">
-  <link rel="stylesheet" href="css/ap-micro-2026.css?v=575">
+  <link rel="preload" href="css/ap-horizon-2026.css?v=576" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=576"></noscript>
+  <link rel="stylesheet" href="css/ap-motion.css?v=576">
+  <link rel="stylesheet" href="css/ap-micro-2026.css?v=576">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
@@ -130,7 +134,9 @@ html,body{background:#0C1016;}
     <!-- ── LOGO LOCKUP ── -->
     <a href="/" class="masthead-logo" aria-label="Astro Precise — home">
 
-      <!-- LOGOMARK: engraved star inside degree-tick measurement ring -->
+      <!-- LOGOMARK: eight-point star inside a degree-ring — v576 rebuild,
+           tuned for 46px raster legibility (8 ticks, no sub-pixel strokes,
+           single-path star). Large master: img/logo-mark.svg. -->
       <svg
         class="logo-mark"
         viewBox="0 0 48 48"
@@ -141,87 +147,47 @@ html,body{background:#0C1016;}
         focusable="false"
       >
         <!-- Outer measurement ring -->
-        <circle cx="24" cy="24" r="22" fill="none" stroke="#9A7B3F" stroke-width="0.9" opacity="0.9"/>
-        <!-- Inner hairline ring -->
-        <circle cx="24" cy="24" r="18.5" fill="none" stroke="#ECE6D8" stroke-width="0.5" opacity="0.35"/>
+        <circle cx="24" cy="24" r="21" fill="none" stroke="#C2A05E" stroke-width="1.1" opacity="0.95"/>
 
-        <!-- Degree tick marks: 36 × 10° small, 4 cardinal major -->
-        <g stroke="#9A7B3F" stroke-linecap="round" opacity="0.75">
-          <!-- Small ticks every 10° (skip cardinal 0/90/180/270) -->
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(10 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(20 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(30 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(40 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(50 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(60 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(70 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(80 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(100 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(110 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(120 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(130 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(140 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(150 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(160 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(170 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(190 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(200 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(210 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(220 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(230 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(240 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(250 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(260 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(280 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(290 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(300 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(310 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(320 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(330 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(340 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="4.5"  stroke-width="0.7" transform="rotate(350 24 24)"/>
-          <!-- Cardinal major ticks (N/E/S/W) -->
-          <line x1="24" y1="2" x2="24" y2="6.5"  stroke-width="1.1" transform="rotate(0 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="6.5"  stroke-width="1.1" transform="rotate(90 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="6.5"  stroke-width="1.1" transform="rotate(180 24 24)"/>
-          <line x1="24" y1="2" x2="24" y2="6.5"  stroke-width="1.1" transform="rotate(270 24 24)"/>
+        <!-- Eight degree ticks: 4 cardinal (long) + 4 intercardinal (short), gapped off the ring -->
+        <g stroke="#C2A05E" stroke-linecap="round">
+          <line x1="24" y1="6.2" x2="24" y2="10.2" stroke-width="1.3"/>
+          <line x1="24" y1="6.2" x2="24" y2="10.2" stroke-width="1.3" transform="rotate(90 24 24)"/>
+          <line x1="24" y1="6.2" x2="24" y2="10.2" stroke-width="1.3" transform="rotate(180 24 24)"/>
+          <line x1="24" y1="6.2" x2="24" y2="10.2" stroke-width="1.3" transform="rotate(270 24 24)"/>
+          <line x1="24" y1="4.8" x2="24" y2="7.6" stroke-width="0.9" transform="rotate(45 24 24)"/>
+          <line x1="24" y1="4.8" x2="24" y2="7.6" stroke-width="0.9" transform="rotate(135 24 24)"/>
+          <line x1="24" y1="4.8" x2="24" y2="7.6" stroke-width="0.9" transform="rotate(225 24 24)"/>
+          <line x1="24" y1="4.8" x2="24" y2="7.6" stroke-width="0.9" transform="rotate(315 24 24)"/>
         </g>
 
-        <!-- Crosshair (very faint) -->
-        <line x1="24" y1="8" x2="24" y2="40" stroke="#ECE6D8" stroke-width="0.4" opacity="0.18"/>
-        <line x1="8" y1="24" x2="40" y2="24" stroke="#ECE6D8" stroke-width="0.4" opacity="0.18"/>
+        <!-- Four brass diamonds straddling the ring at the cardinals -->
+        <g fill="#CDAE6A">
+          <path d="M24 1.5 L25.15 3 L24 4.5 L22.85 3 Z"/>
+          <path d="M24 1.5 L25.15 3 L24 4.5 L22.85 3 Z" transform="rotate(90 24 24)"/>
+          <path d="M24 1.5 L25.15 3 L24 4.5 L22.85 3 Z" transform="rotate(180 24 24)"/>
+          <path d="M24 1.5 L25.15 3 L24 4.5 L22.85 3 Z" transform="rotate(270 24 24)"/>
+        </g>
 
-        <!-- Eight-pointed engraved star — 4 long arms + 4 short diagonal arms -->
-        <!-- Long arms (cardinal) -->
-        <polygon points="24,9 25.6,22.4 24,27 22.4,22.4" fill="#ECE6D8" opacity="0.88"/>
-        <polygon points="24,39 25.6,25.6 24,21 22.4,25.6" fill="#ECE6D8" opacity="0.88"/>
-        <polygon points="9,24 22.4,22.4 27,24 22.4,25.6" fill="#ECE6D8" opacity="0.88"/>
-        <polygon points="39,24 25.6,22.4 21,24 25.6,25.6" fill="#ECE6D8" opacity="0.88"/>
-        <!-- Short diagonal arms -->
-        <polygon points="13.5,13.5 22.8,22.0 23.5,24.5 21.0,23.5" fill="#ECE6D8" opacity="0.55"/>
-        <polygon points="34.5,13.5 25.2,22.0 24.5,24.5 27.0,23.5" fill="#ECE6D8" opacity="0.55"/>
-        <polygon points="13.5,34.5 22.8,26.0 23.5,23.5 21.0,24.5" fill="#ECE6D8" opacity="0.55"/>
-        <polygon points="34.5,34.5 25.2,26.0 24.5,23.5 27.0,24.5" fill="#ECE6D8" opacity="0.55"/>
+        <!-- Eight-point star: one symmetric path, 4 long cardinal arms + 4 short diagonal arms -->
+        <path fill="#ECE6D8" d="M24 12.2 L25.84 19.57 L30.51 17.49 L28.43 22.16 L35.8 24 L28.43 25.84 L30.51 30.51 L25.84 28.43 L24 35.8 L22.16 28.43 L17.49 30.51 L19.57 25.84 L12.2 24 L19.57 22.16 L17.49 17.49 L22.16 19.57 Z"/>
 
-        <!-- Centre ring + dot -->
-        <circle cx="24" cy="24" r="3.8" fill="none" stroke="#9A7B3F" stroke-width="0.8" opacity="0.9"/>
-        <circle cx="24" cy="24" r="1.4" fill="#9A7B3F" opacity="0.95"/>
-
-        <!-- Tiny brass diamond marks at cardinal intercepts with outer ring -->
-        <polygon points="24,2.2 24.9,3.8 24,5.4 23.1,3.8" fill="#9A7B3F" opacity="0.85"/>
+        <!-- Centre hub: ring + brass dot -->
+        <circle cx="24" cy="24" r="3.6" fill="none" stroke="#C2A05E" stroke-width="0.9"/>
+        <circle cx="24" cy="24" r="1.3" fill="#CDAE6A"/>
       </svg>
 
       <!-- WORDMARK -->
       <span class="masthead-wordmark" aria-label="Astro Precise">
-        <span class="wordmark-astro">Astro</span><span class="wordmark-precise"> Precise</span>
+        <span class="wordmark-astro">Astro</span><span class="wordmark-precise">Precise</span>
       </span>
     </a>
 
     <hr class="masthead-rule">
 
-    <p class="dateline" id="masthead-dateline" aria-live="polite">
-      Vol. MMXXVI &middot; The sky for <time id="dateline-date">29 June 2026</time>
-      &mdash; <span id="dateline-sun">Sun in Cancer</span> &middot; <span id="dateline-moon">Moon in Scorpio</span>
+    <p class="dateline" id="masthead-dateline" aria-live="polite" title="Recomputed in your browser on every load">
+      Vol. MMXXVI &middot; The sky right now &mdash; <time id="dateline-date">29 June 2026</time>
+      &middot; <span id="dateline-sun">Sun in Cancer</span> &middot; <span id="dateline-moon">Moon in Scorpio</span>
       &thinsp;<svg id="dateline-moon-phase" aria-hidden="true" focusable="false"
         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
         style="width:1.3em; height:1.3em; vertical-align:middle; display:inline-block;">
@@ -271,20 +237,21 @@ html,body{background:#0C1016;}
           You're not one of twelve. <br><span class="display-accent">This chart is yours alone.</span>
         </h1>
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
-          The planets behind this page are real &mdash; positions computed live in your browser. Your chart is where they stood the minute you were born.
+          The planets behind this page are real &mdash; computed live in your browser, accurate to roughly an arcminute. Your birth chart is where they stood the minute you were born.
         </p>
         <form id="hero-chart-form" class="hero-form" novalidate aria-label="Cast your natal chart">
-          <label for="hero-birthdate" class="ui-label">Your arrival date</label>
+          <label for="hero-birthdate" class="ui-label">Your date of birth</label>
           <div class="hero-form-row">
             <input type="date" id="hero-birthdate" name="birthdate" aria-label="Date of birth" min="1900-01-01" max="2099-12-31" required>
             <button type="submit" class="btn-press">Calculate my chart</button>
           </div>
           <p id="hero-form-error" role="alert" class="hero-form-error" hidden></p>
+          <p class="hero-form-note">Just your date starts it &mdash; time and place sharpen it on the next step.</p>
         </form>
         <ul class="hero-solar-trust" aria-label="Why you can trust this">
-          <li><span aria-hidden="true">✓</span> Free &mdash; no account</li>
-          <li><span aria-hidden="true">✓</span> VSOP87 ephemeris</li>
-          <li><span aria-hidden="true">✓</span> Computed on your device</li>
+          <li><span aria-hidden="true">&#10003;</span> Free &mdash; no account</li>
+          <li><span aria-hidden="true">&#10003;</span> Accurate to about an arcminute (<abbr class="ap-gloss" title="VSOP87 &mdash; a published planetary theory, computed privately on your device">VSOP87</abbr>)</li>
+          <li><span aria-hidden="true">&#10003;</span> Private &mdash; computed on your device</li>
         </ul>
       </div>
 
@@ -307,6 +274,7 @@ html,body{background:#0C1016;}
               </div>
               <button type="button" class="orrery-lite-launch" id="orrery-lite-launch" hidden aria-label="Load the interactive 3D orrery">✦ Launch 3D sky</button>
               <canvas id="orrery-canvas" width="640" height="640" fetchpriority="low" aria-hidden="true" tabindex="-1"></canvas>
+              <div class="orrery-dom-labels" id="orrery-dom-labels" aria-hidden="true"></div>
             </div>
           </div>
         </div>
@@ -526,18 +494,18 @@ html,body{background:#0C1016;}
           <circle cx="220" cy="220" r="178" fill="none" stroke="var(--brass)" stroke-width="0.4" opacity="0.35"/>
 
           <!-- Zodiac glyphs at r≈178 -->
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(15 220 220)">♈</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(45 220 220)">♉</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(75 220 220)">♊</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(105 220 220)">♋</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(135 220 220)">♌</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(165 220 220)">♍</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(195 220 220)">♎</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(225 220 220)">♏</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(255 220 220)">♐</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(285 220 220)">♑</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(315 220 220)">♒</text>
-          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(345 220 220)">♓</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(15 220 220)">♈&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(45 220 220)">♉&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(75 220 220)">♊&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(105 220 220)">♋&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(135 220 220)">♌&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(165 220 220)">♍&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(195 220 220)">♎&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(225 220 220)">♏&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(255 220 220)">♐&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(285 220 220)">♑&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(315 220 220)">♒&#xFE0E;</text>
+          <text x="220" y="48" class="eng-glyph" text-anchor="middle" transform="rotate(345 220 220)">♓&#xFE0E;</text>
 
           <!-- ── INNER RINGS ── -->
           <!-- House band outer boundary -->
@@ -776,8 +744,8 @@ html,body{background:#0C1016;}
   <div class="page-wrap">
     <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
       <p class="ap-display-kicker">Department 02 &middot; The Sky</p>
-      <h2 id="cosmic-band-heading" class="ap-chapter-title">Tonight, the planets stand in the sky.</h2>
-      <p class="ap-chapter-lead">The same engine turning the model above, read from where you stand &mdash; recomputed every time you open the page.</p>
+      <h2 id="cosmic-band-heading" class="ap-chapter-title">Tonight, the planets stand where we say they do.</h2>
+      <p class="ap-chapter-lead">Step outside and check &mdash; or open any planetarium app. The same engine turning the model above, read from where you stand, recomputed every time you open the page.</p>
     </header>
 
     <!-- Planet chip row — positions filled by JS after load (ids cs-label-*) -->

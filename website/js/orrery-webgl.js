@@ -146,6 +146,9 @@ const RadialBlurShader = {
   let sunVisualsMinimal = false;
   let focusPlanetId = null;
   let focusPlanetUntil = 0;
+  let focusFrameId = null;      // v576: persists past the 2.8s highlight — camera framing ownership
+  let moonFrameActive = false;  // v576: Earth+Moon shared frame from focusPlanet('moon')
+  let moonFrameAzBase = 0;
   let focusBloomBase = 0.2;
   let sunFocusRing = null;
   let moonFocusRing = null;
@@ -661,6 +664,8 @@ const RadialBlurShader = {
     scaleLevel = 0;
     scaleAnimActive = false;
     introActive = false;
+    focusFrameId = null;
+    moonFrameActive = false;
     updateScaleVisuals(0);
     updateScaleHUD();
     needRecompute = true;
@@ -1061,6 +1066,7 @@ const RadialBlurShader = {
       if (minimal) {
         sp.visible = false;
         sp.material.opacity = 0;
+        sp.userData.baseOpa = 0;
         return;
       }
       sp.visible = true;
@@ -1121,6 +1127,10 @@ const RadialBlurShader = {
     starField.visible = true;
     if (starField.material.uniforms) {
       starField.material.uniforms.uFade.value = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
+      // v576: lift point size at Earth/Inner scales — stars present, never competing with the copy rail
+      if (starField.material.uniforms.uSizeMul) {
+        starField.material.uniforms.uSizeMul.value = lv <= 1 ? 1.35 : 1;
+      }
     }
   }
 
@@ -1148,6 +1158,28 @@ const RadialBlurShader = {
     camEl = Math.asin(Math.max(-1, Math.min(1, _camOff.y / camRadius)));
     const horiz = Math.cos(camEl) * camRadius;
     camAz = horiz > 1e-6 ? Math.atan2(_camOff.z, _camOff.x) : 0;
+  }
+
+  /* v576: Earth+Moon shared frame — camera target rides between the two bodies,
+     base azimuth ~43° off the Earth→Moon axis so they sit side by side in shot.
+     The off-axis side is chosen SUNWARD so the pair shows lit faces and the sun
+     stays behind the camera instead of blowing out the middle of the frame. */
+  function syncMoonFrameTarget() {
+    if (!moonGroup || !meshes.earth) return;
+    const ep = meshes.earth.position, mp = moonGroup.position;
+    camTarget.set(
+      ep.x + (mp.x - ep.x) * 0.66,
+      ep.y + (mp.y - ep.y) * 0.66,
+      ep.z + (mp.z - ep.z) * 0.66
+    );
+    const azEM = Math.atan2(mp.z - ep.z, mp.x - ep.x);
+    let side = 0.75;
+    if (sunMesh) {
+      let d = Math.atan2(sunMesh.position.z - ep.z, sunMesh.position.x - ep.x) - azEM;
+      d = Math.atan2(Math.sin(d), Math.cos(d));
+      side = d >= 0 ? 0.75 : -0.75;
+    }
+    moonFrameAzBase = azEM + side;
   }
 
   function syncCosmosBlend(level) {
@@ -1194,6 +1226,8 @@ const RadialBlurShader = {
     userTouched = performance.now();
     daysPerSec = 0;
     flicking = false;
+    focusFrameId = null;
+    moonFrameActive = false;
     scaleLevel = 0;
     updateScaleVisuals(0);
     needRecompute = true;
@@ -1271,8 +1305,12 @@ const RadialBlurShader = {
     sunVisualsMinimal = false;
     buildSunCoronaShell();
     buildSunCorona();
+    // v576: on the award homepage the inner halo uses brass-family stops so the
+    // resting sun glow sits in the ENGRAVED BRASS palette (other pages unchanged).
     const layers = [
-      { tex: makeGlowTexture('rgba(255,252,235,0.95)', 'rgba(255,205,85,0.52)'), scale: SUN_SIZE * 6.2 },
+      { tex: isAwardMode()
+          ? makeGlowTexture('rgba(236,214,164,0.9)', 'rgba(194,160,94,0.4)')
+          : makeGlowTexture('rgba(255,252,235,0.95)', 'rgba(255,205,85,0.52)'), scale: SUN_SIZE * 6.2 },
       { tex: makeGlowTexture('rgba(255,218,125,0.48)', 'rgba(240,135,35,0.14)'), scale: SUN_SIZE * 12 },
       { tex: makeGlowTexture('rgba(255,175,55,0.16)', 'rgba(215,85,12,0.04)'), scale: SUN_SIZE * 19 },
     ];
@@ -1479,6 +1517,8 @@ const RadialBlurShader = {
 
   function applyScalePreset(preset, animate) {
     const p = scalePreset(typeof preset === 'number' ? preset : (preset.id != null ? preset.id : preset));
+    focusFrameId = null;      // v576: any scale change releases camera framing ownership
+    moonFrameActive = false;
     const prevLevel = scaleLevel;
     scaleLevel = p.id;
     scaleAnimFromLevel = prevLevel;
@@ -1525,6 +1565,17 @@ const RadialBlurShader = {
 
   function clampCamToLevel() {
     const p = scalePreset(scaleLevel);
+    if (moonFrameActive) {
+      // v576: Earth+Moon frame sits closer than the Earth preset's camMin
+      camRadius = Math.max(2.2, Math.min(8, camRadius));
+      return;
+    }
+    if (focusFrameId) {
+      // v576: planet portraits park well inside the level's camMin — don't shove
+      // the camera back out to a distant speck once the focus anim lands
+      camRadius = Math.max(3.5, Math.min(p.camMax, camRadius));
+      return;
+    }
     camRadius = Math.max(p.camMin, Math.min(p.camMax, camRadius));
   }
 
@@ -2343,7 +2394,7 @@ const RadialBlurShader = {
     if (detailLightingUser !== null) return detailLightingUser;
     if (scaleLevel >= 3) return false;
     if (focusPlanetId === 'sun') return false;
-    if (focusPlanetId) return true;
+    if (focusPlanetId || focusFrameId) return true; // v576: detail lighting persists while parked at a focused body
     return scaleLevel <= 1;
   }
 
@@ -2370,11 +2421,14 @@ const RadialBlurShader = {
   function syncSunGlowProfile(detail) {
     if (!sunGlow.length || !composer) return;
     const tier = perfTier;
+    // v576: while parked at an outer-planet portrait, pull the glare down ~60%
+    // so Saturn reads as a textured ringed portrait, not a speck against sun glow.
+    const outerFocus = focusFrameId && /^(jupiter|saturn|uranus|neptune)$/.test(focusFrameId);
     sunGlow.forEach((sp, i) => {
       if (!sp.material) return;
       if (detail) {
         sp.visible = i === 0;
-        sp.material.opacity = i === 0 ? 0.18 : 0;
+        sp.material.opacity = i === 0 ? (outerFocus ? 0.07 : 0.18) : 0;
       } else if (tier === 'high' && i >= 1) {
         sp.visible = false;
       } else {
@@ -2383,6 +2437,7 @@ const RadialBlurShader = {
           ? (i === 0 ? 0.38 : i === 1 ? 0.18 : 0.08)
           : (i === 0 ? 0.28 : 0);
       }
+      sp.userData.baseOpa = sp.material.opacity;
     });
   }
 
@@ -2422,8 +2477,10 @@ const RadialBlurShader = {
     }
     if (hemiLight) {
       if (isAwardMode()) {
-        hemiLight.color.setHex(galaxyT > 0.35 ? 0x8a9ab8 : 0x5a6a88);
-        hemiLight.intensity = (perfTier === 'high' ? 0.52 : 0.44) * (0.88 + earthT * 0.14);
+        // v576: at close (Earth) scales, drop the ambient fill so the night limb
+        // falls off to darkness instead of glowing eggshell; cooler tint up close.
+        hemiLight.color.setHex(galaxyT > 0.35 ? 0x8a9ab8 : (earthT > 0.55 ? 0x46586e : 0x5a6a88));
+        hemiLight.intensity = (perfTier === 'high' ? 0.52 : 0.44) * (0.88 + earthT * 0.14) * (1 - earthT * 0.45);
       } else {
         hemiLight.color.setHex(galaxyT > 0.35 ? 0x8090b8 : 0x4a6088);
         hemiLight.intensity = (perfTier === 'high' ? 0.48 : 0.40) * (0.85 + earthT * 0.15);
@@ -2560,7 +2617,8 @@ const RadialBlurShader = {
       sunGlow.forEach((sp, i) => {
         if (!sp.material) return;
         sp.visible = i === 0;
-        sp.material.opacity = 0.18;
+        sp.material.opacity = 0.12; // v576: quieter resting halo (was 0.18)
+        sp.userData.baseOpa = sp.material.opacity;
       });
     }
 
@@ -2605,7 +2663,11 @@ const RadialBlurShader = {
     const k = 1 - eclipseDim * 0.72;
     sunGlow.forEach((sp, i) => {
       if (!sp.visible || !sp.material) return;
-      const base = i === 0 ? 0.6 : i === 1 ? 0.3 : 0.15;
+      // v576: respect the tuned per-sprite base (detail/rest/focus profiles) —
+      // this ran every frame with hardcoded 0.6/0.3/0.15, stomping every profile.
+      const base = sp.userData.baseOpa != null
+        ? sp.userData.baseOpa
+        : (i === 0 ? 0.6 : i === 1 ? 0.3 : 0.15);
       sp.material.opacity = base * k;
     });
     if (sunMaterial && sunMaterial.uniforms) {
@@ -3021,7 +3083,7 @@ const RadialBlurShader = {
       pos[i * 3 + 1] = r * Math.cos(ph);
       pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
       const temp = starTemps[Math.floor(Math.random() * starTemps.length)];
-      const w = 0.55 + Math.random() * 0.45;
+      const w = 0.72 + Math.random() * 0.28; // v576: floor lifted 0.55→0.72 — Earth no longer floats in starless felt
       col[i * 3] = temp[0] * w; col[i * 3 + 1] = temp[1] * w; col[i * 3 + 2] = temp[2] * w;
       sizes[i] = Math.random() < 0.09 ? 2.6 + Math.random() * 1.8 : 0.7 + Math.random() * 1.1;
     }
@@ -3031,16 +3093,17 @@ const RadialBlurShader = {
     g.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
     const m = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, vertexColors: true,
-      uniforms: { uTime: { value: 0 }, uFade: { value: 1 } },
+      uniforms: { uTime: { value: 0 }, uFade: { value: 1 }, uSizeMul: { value: 1 } },
       vertexShader: `
         attribute float size;
         varying vec3 vColor;
         uniform float uTime;
+        uniform float uSizeMul;
         void main() {
           vColor = color;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
           float tw = 0.85 + 0.15 * sin(uTime * 0.0015 + position.x * 0.04);
-          gl_PointSize = size * tw * (280.0 / -mv.z);
+          gl_PointSize = size * tw * uSizeMul * (280.0 / -mv.z);
           gl_Position = projectionMatrix * mv;
         }`,
       fragmentShader: `
@@ -3122,7 +3185,9 @@ const RadialBlurShader = {
       buildSunCoronaShell();
       buildSunCorona();
       const layers = [
-        { tex: makeGlowTexture('rgba(255,252,235,0.88)', 'rgba(255,205,85,0.38)'), scale: SUN_SIZE * 4.6 },
+        { tex: isAwardMode()
+            ? makeGlowTexture('rgba(236,214,164,0.85)', 'rgba(194,160,94,0.32)') // v576 brass halo
+            : makeGlowTexture('rgba(255,252,235,0.88)', 'rgba(255,205,85,0.38)'), scale: SUN_SIZE * 4.6 },
         { tex: makeGlowTexture('rgba(255,218,125,0.36)', 'rgba(240,135,35,0.10)'), scale: SUN_SIZE * 8.2 },
         { tex: makeGlowTexture('rgba(255,175,55,0.12)', 'rgba(215,85,12,0.03)'), scale: SUN_SIZE * 13.5 },
       ];
@@ -3161,7 +3226,7 @@ const RadialBlurShader = {
       if (tier === 'high' && i >= 1) { sp.visible = false; return; }
       sp.visible = true;
       const op = tier === 'mid' ? (i === 0 ? 0.38 : i === 1 ? 0.18 : 0.08) : (i === 0 ? 0.28 : 0);
-      if (sp.material) sp.material.opacity = op;
+      if (sp.material) { sp.material.opacity = op; sp.userData.baseOpa = op; }
     });
   }
 
@@ -3338,7 +3403,9 @@ const RadialBlurShader = {
       .replace('#include <output_fragment>',
         `#include <output_fragment>
         {
-          float ndl = dot(normalize(normal), normalize(uSunDir));
+          // v576: 'normal' is VIEW-space here — bring the world-space sun dir into
+          // view space, else the wash terminator rotates with the camera.
+          float ndl = dot(normalize(normal), normalize((viewMatrix * vec4(uSunDir, 0.0)).xyz));
           float day = smoothstep(-0.14, 0.62, ndl);
           float twilight = smoothstep(-0.35, 0.08, ndl);
           float rim = pow(1.0 - max(ndl, 0.0), 2.6);
@@ -3497,13 +3564,17 @@ const RadialBlurShader = {
             new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0, depthWrite: false, roughness: 1.0, metalness: 0.0 })
           );
           if (perfTier === 'high') {
+            // v576: gate cloud brightness by sun direction — the shell must not stay
+            // lit on the night side (the lavender "eggshell" limb ring). uSunW shares
+            // earthUniforms.uSunDirWorld by reference (fed every frame).
             earthCloud.material.onBeforeCompile = (sh) => { try {
+              sh.uniforms.uSunW = earthUniforms.uSunDirWorld;
               sh.vertexShader = sh.vertexShader
-                .replace('#include <common>', '#include <common>\n varying vec3 vCN; varying vec3 vCV;')
-                .replace('#include <begin_vertex>', '#include <begin_vertex>\n vec4 _cmv = modelViewMatrix * vec4(position,1.0);\n vCN = normalize(normalMatrix * normal);\n vCV = normalize(-_cmv.xyz);');
+                .replace('#include <common>', '#include <common>\n varying vec3 vCN; varying vec3 vCV; varying vec3 vCW;')
+                .replace('#include <begin_vertex>', '#include <begin_vertex>\n vec4 _cmv = modelViewMatrix * vec4(position,1.0);\n vCN = normalize(normalMatrix * normal);\n vCV = normalize(-_cmv.xyz);\n vCW = normalize(mat3(modelMatrix) * normal);');
               sh.fragmentShader = sh.fragmentShader
-                .replace('#include <common>', '#include <common>\n varying vec3 vCN; varying vec3 vCV;')
-                .replace('#include <opaque_fragment>', '#include <opaque_fragment>\n {\n   float fres = pow(1.0 - max(dot(normalize(vCN), normalize(vCV)), 0.0), 3.0);\n   gl_FragColor.a *= (0.85 + 0.5 * fres);\n   gl_FragColor.rgb += vec3(0.12) * fres;\n }');
+                .replace('#include <common>', '#include <common>\n uniform vec3 uSunW; varying vec3 vCN; varying vec3 vCV; varying vec3 vCW;')
+                .replace('#include <opaque_fragment>', '#include <opaque_fragment>\n {\n   float fres = pow(1.0 - max(dot(normalize(vCN), normalize(vCV)), 0.0), 3.0);\n   float dayM = smoothstep(-0.25, 0.1, dot(normalize(vCW), normalize(uSunW)));\n   gl_FragColor.a *= (0.85 + 0.5 * fres) * mix(0.04, 1.0, dayM);\n   gl_FragColor.rgb += vec3(0.12) * fres * dayM;\n }');
             } catch (e) { console.warn('[orrery] cloud patch skipped', e); } };
           }
           group.add(earthCloud);
@@ -3685,7 +3756,8 @@ const RadialBlurShader = {
         alpha = introLabelAlpha(b.id, introP);
       } else if (focusPlanetId === b.id && performance.now() < focusPlanetUntil) {
         alpha = 1;
-      } else if (showLabels && scaleLevel <= 2) {
+      } else if (showLabels && scaleLevel >= 1 && scaleLevel <= 2) {
+        // v576: labels live at INNER/SYSTEM scales — the Earth rest frame stays clean
         alpha = 1;
       }
 
@@ -3810,6 +3882,7 @@ const RadialBlurShader = {
         if (!sp.material) return;
         sp.visible = i === 0 || (i === 1 && perfTier === 'high');
         sp.material.opacity = i === 0 ? 0.22 : i === 1 ? 0.1 : 0.04;
+        sp.userData.baseOpa = sp.material.opacity;
       });
     }
 
@@ -3937,7 +4010,11 @@ const RadialBlurShader = {
     if (sunDirLight && sunMesh) {
       sunDirLight.position.copy(sunMesh.position);
       if (sunDirLightTarget) {
-        if (meshes.earth) sunDirLightTarget.position.copy(meshes.earth.position);
+        // v576: while a planet portrait is framed, the key light must aim at THAT
+        // body — aiming at Earth lit the wrong hemisphere of far-side planets.
+        const focusBody = focusFrameId && focusFrameId !== 'moon' && meshes[focusFrameId];
+        if (focusBody) sunDirLightTarget.position.copy(focusBody.position);
+        else if (meshes.earth) sunDirLightTarget.position.copy(meshes.earth.position);
         else sunDirLightTarget.position.set(0, 0, 0);
       }
     }
@@ -4080,7 +4157,9 @@ const RadialBlurShader = {
       const zoomZ = scaleAnimFromLevel + (scaleAnimToLevel - scaleAnimFromLevel) * e;
       updateScaleVisualsContinuous(zoomZ);
       const fovFrom = scaleAnimFrom.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimFromLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID);
-      const fovTo = scaleAnimTo.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimToLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID);
+      const fovTo = moonFrameActive ? CAM_FOV_CLOSE
+        : focusFrameId ? CAM_FOV_MID // v576: planet-focus portraits animate to the mid FOV
+        : (scaleAnimTo.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimToLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID));
       camera.fov = fovFrom + (fovTo - fovFrom) * e;
       camera.updateProjectionMatrix();
       if (radialBlurPass) {
@@ -4089,18 +4168,27 @@ const RadialBlurShader = {
       if (p >= 1) {
         if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
         scaleAnimActive = false;
-        if (scalePreset(scaleLevel).targetEarth) {
+        if (moonFrameActive) {
+          // v576: land on the Earth+Moon composition — no terminator snap
+          syncMoonFrameTarget();
+          camera.fov = CAM_FOV_CLOSE;
+          camera.updateProjectionMatrix();
+          updateDomLabels(1);
+          updateScaleVisuals(scaleLevel);
+        } else if (scalePreset(scaleLevel).targetEarth) {
           const ep = scalePreset(scaleLevel);
           setEarthTerminatorCamera(ep.camRadius, ep.camEl);
         } else {
-          const innerFocus = focusPlanetId && (focusPlanetId === 'mercury' || focusPlanetId === 'venus' || focusPlanetId === 'mars');
-          camera.fov = innerFocus ? CAM_FOV_MID : (scaleLevel >= 2 ? CAM_FOV_WIDE : CAM_FOV_MID);
+          // v576: any focused planet lands on the portrait FOV, not the wide system FOV
+          camera.fov = focusFrameId ? CAM_FOV_MID : (scaleLevel >= 2 ? CAM_FOV_WIDE : CAM_FOV_MID);
           camera.updateProjectionMatrix();
           updateDomLabels(1);
           updateScaleVisuals(scaleLevel);
         }
         if (focusPlanetId) forceResize();
       }
+    } else if (moonFrameActive && !introActive) {
+      syncMoonFrameTarget();
     } else if (scalePreset(scaleLevel).targetEarth && !introActive) {
       earthTargetVec(camTarget);
     }
@@ -4188,7 +4276,29 @@ const RadialBlurShader = {
         if (elapsed >= introMs) finishIntro();
       }
     } else if (!dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
-      camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
+      if (scaleLevel === 0 && !moonFrameActive && scalePreset(0).targetEarth && meshes.earth && sunMesh) {
+        // v576: bounded idle — breathe around the terminator money-shot instead of
+        // orbiting off it into the dark hemisphere. Eases back after user drags.
+        const prevAz = camAz, prevEl = camEl, keepRadius = camRadius;
+        setEarthTerminatorCamera(scalePreset(0).camRadius, scalePreset(0).camEl);
+        const azTerm = camAz, elTerm = camEl;
+        camRadius = keepRadius; // never fight user zoom
+        const wantAz = azTerm + Math.sin(t * 0.00016) * 0.22;
+        const wantEl = elTerm + Math.cos(t * 0.00013) * 0.02;
+        const k = Math.min(1, dt * 1.6);
+        let dAz = wantAz - prevAz;
+        dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+        camAz = prevAz + dAz * k;
+        camEl = prevEl + (wantEl - prevEl) * k;
+      } else if (moonFrameActive) {
+        // hold the Earth+Moon composition with the same gentle breathing
+        const wantAz = moonFrameAzBase + Math.sin(t * 0.00016) * 0.1;
+        let dAz = wantAz - camAz;
+        dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+        camAz += dAz * Math.min(1, dt * 1.6);
+      } else {
+        camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
+      }
     }
     if (!introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive) clampCamToLevel();
     applyEclipseVisuals();
@@ -4784,6 +4894,9 @@ const RadialBlurShader = {
 
     lastT = 0; raf = requestAnimationFrame(frame);
     webglBooted = true;
+    // v576: the 2D engine announces its first frame; the WebGL engine now does too,
+    // so the loader can cross-fade the poster→HD handoff deterministically.
+    try { document.dispatchEvent(new Event('ap-orrery-first-frame')); } catch (e) { /* optional */ }
   }
 
   function setSpeed(s) {
@@ -4843,6 +4956,8 @@ const RadialBlurShader = {
     daysPerSec = 0;
     flicking = false;
     scrollDriveLocked = true;
+    focusFrameId = null;
+    moonFrameActive = false;
 
     if (id === 'earth') {
       setFocusHighlight('earth');
@@ -4863,8 +4978,39 @@ const RadialBlurShader = {
     }
 
     if (id === 'moon') {
+      // v576: a REAL Moon frame — Earth and Moon share the shot (was: Earth preset reused, no Moon in sight)
       setFocusHighlight('moon');
-      applyScalePreset(0, true);
+      if (!moonGroup || !meshes.earth) { applyScalePreset(0, true); return; }
+      const prevLevel = scaleLevel;
+      scaleLevel = 0;
+      scaleAnimFromLevel = prevLevel;
+      scaleAnimToLevel = 0;
+      updateScaleHUD();
+      updateScaleVisuals(0);
+
+      scaleAnimFrom.radius = camRadius;
+      scaleAnimFrom.el = camEl;
+      scaleAnimFrom.az = camAz;
+      scaleAnimFrom.tx = camTarget.x;
+      scaleAnimFrom.ty = camTarget.y;
+      scaleAnimFrom.tz = camTarget.z;
+
+      syncMoonFrameTarget(); // computes camTarget + sunward moonFrameAzBase (anim overwrites camTarget next frame)
+      scaleAnimTo.radius = 2.6;
+      scaleAnimTo.el = 8 * D2R;
+      let azD = moonFrameAzBase - scaleAnimFrom.az;
+      azD = Math.atan2(Math.sin(azD), Math.cos(azD));
+      scaleAnimTo.az = scaleAnimFrom.az + azD; // shortest swing to the frame
+      scaleAnimTo.tx = camTarget.x;
+      scaleAnimTo.ty = camTarget.y;
+      scaleAnimTo.tz = camTarget.z;
+
+      focusFrameId = 'moon';
+      moonFrameActive = true;
+      scaleAnimActive = true;
+      scaleAnimStart = performance.now();
+      camera.fov = CAM_FOV_CLOSE;
+      camera.updateProjectionMatrix();
       return;
     }
 
@@ -4874,7 +5020,9 @@ const RadialBlurShader = {
 
     const inner = (id === 'mercury' || id === 'venus' || id === 'mars');
     const preset = scalePreset(inner ? 1 : 2);
+    scaleAnimFromLevel = scaleLevel;
     scaleLevel = preset.id;
+    scaleAnimToLevel = preset.id;
     updateScaleHUD();
     updateScaleVisuals(scaleLevel);
 
@@ -4886,18 +5034,25 @@ const RadialBlurShader = {
     scaleAnimFrom.tz = camTarget.z;
 
     const pos = g.position;
-    const orbitR = Math.hypot(pos.x, pos.z) || body.R;
-    scaleAnimTo.radius = inner ? Math.max(body.size * 7.5, 12) : Math.max(orbitR * 0.44, preset.camRadius * 0.4);
-    scaleAnimTo.el = inner ? 16 * D2R : preset.camEl;
-    scaleAnimTo.az = Math.atan2(pos.z, pos.x);
+    // v576: outer bodies get a textured PORTRAIT (camera close to the body),
+    // not a distant speck framed against the sun glare (was orbitR * 0.44).
+    // Camera sits SUNWARD of the planet (az + π, nudged off-axis for modelling
+    // shadow) so the lit hemisphere faces the lens and the sun stays behind it.
+    scaleAnimTo.radius = inner ? Math.max(body.size * 7.5, 12) : Math.max(body.size * 9, 8);
+    scaleAnimTo.el = inner ? 16 * D2R : 14 * D2R;
+    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
+    let azD = azWant - camAz;
+    azD = Math.atan2(Math.sin(azD), Math.cos(azD));
+    scaleAnimTo.az = camAz + azD; // shortest swing
     scaleAnimTo.tx = pos.x;
     scaleAnimTo.ty = pos.y;
     scaleAnimTo.tz = pos.z;
 
     setFocusHighlight(id);
+    focusFrameId = id;
     scaleAnimActive = true;
     scaleAnimStart = performance.now();
-    camera.fov = inner ? CAM_FOV_MID : CAM_FOV_WIDE;
+    camera.fov = CAM_FOV_MID;
     camera.updateProjectionMatrix();
   }
 

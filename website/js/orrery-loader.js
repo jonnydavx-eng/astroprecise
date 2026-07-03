@@ -172,20 +172,53 @@
     });
   }
 
+  /* v576: the WebGL takeover cross-fades like the 2D path instead of snapping.
+     promoteLiteToFull() now only BEGINS the handoff — the poster stays live under
+     a transparent canvas; finishLiteToFullHandoff() fades the HD frame in once
+     the engine has real pixels, then retires the poster + LiteOrrery. */
   function promoteLiteToFull() {
-    document.documentElement.classList.add('orrery-full');
-    document.documentElement.classList.remove('orrery-canvas');
     window.__apLiteHero = false;
-    var poster = document.getElementById('orrery-lite-poster');
     var btn = document.getElementById('orrery-lite-launch');
-    if (poster) poster.setAttribute('aria-hidden', 'true');
     if (btn) {
       btn.hidden = true;
       btn.setAttribute('aria-hidden', 'true');
     }
-    if (window.LiteOrrery && typeof window.LiteOrrery.destroy === 'function') {
-      window.LiteOrrery.destroy();
+    if (document.documentElement.classList.contains('orrery-canvas') && window.__orreryReady) {
+      teardownCanvasEngine();
     }
+    document.documentElement.classList.remove('orrery-canvas');
+    return beginCanvasHandoff();
+  }
+
+  function finishLiteToFullHandoff(viewport) {
+    var O = window.Orrery3D;
+    var settle = new Promise(function (resolve) {
+      var t = window.setTimeout(resolve, 1400); // cap the poster hold
+      try {
+        if (O && typeof O.whenEarthReady === 'function') {
+          O.whenEarthReady().then(function () { window.clearTimeout(t); resolve(); });
+        }
+      } catch (e) { window.clearTimeout(t); resolve(); }
+    });
+    return waitFirstOrreryFrame().then(function () { return settle; }).then(function () {
+      var canvas = document.getElementById('orrery-canvas');
+      if (canvas) {
+        canvas.style.transition = 'opacity 0.48s ease';
+        canvas.style.opacity = '0';
+        void canvas.offsetWidth;
+        canvas.style.opacity = '1'; // fades in OVER the still-visible poster
+      }
+      window.setTimeout(function () {
+        document.documentElement.classList.add('orrery-full');
+        var poster = document.getElementById('orrery-lite-poster');
+        if (poster) poster.setAttribute('aria-hidden', 'true');
+        if (window.LiteOrrery && typeof window.LiteOrrery.destroy === 'function') {
+          window.LiteOrrery.destroy();
+        }
+        if (viewport) viewport.classList.remove('orrery-viewport--handoff');
+        if (canvas) { canvas.style.transition = ''; canvas.style.opacity = ''; }
+      }, 520);
+    });
   }
 
   function setLaunchButtonState(state, message) {
@@ -348,6 +381,13 @@
     var touched = false;
     wrap.addEventListener('pointerdown', function () { touched = true; }, { passive: true });
 
+    /* v576: resurrect planet-name typography — engraved DOM labels (Cinzel, brass
+       under-shadow, styled by .orrery-dom-label) at INNER/SYSTEM scales; the engine
+       keeps the Earth rest frame clean. Feature-detected: 2D fallback has no layer. */
+    if (typeof O.setShowLabels === 'function' && document.getElementById('orrery-dom-labels')) {
+      try { O.setShowLabels(true); } catch (e) { /* engine optional */ }
+    }
+
     function markActive(target) {
       document.querySelectorAll('.lite-vp-btn[data-lite-planet]').forEach(function (b) {
         b.classList.toggle('active', b === target);
@@ -493,9 +533,17 @@
         });
       }
 
-      promoteLiteToFull();
+      var viewport = promoteLiteToFull();
       scheduleEngineLoad({ urgent: !!opts.urgent });
       return initOrreryIfNeeded(true).then(function (O) {
+        if (document.documentElement.classList.contains('orrery-canvas')) {
+          // 2D fallback won inside initOrreryIfNeeded — its own handoff choreography ran
+          window.setTimeout(function () {
+            if (viewport) viewport.classList.remove('orrery-viewport--handoff');
+          }, 560);
+        } else {
+          finishLiteToFullHandoff(viewport);
+        }
         setLaunchButtonState('ready');
         booting = false;
         return O;
@@ -503,6 +551,8 @@
     }).catch(function (err) {
       booting = false;
       window.__orreryBootPromise = null;
+      var vp = document.getElementById('orrery-viewport');
+      if (vp) vp.classList.remove('orrery-viewport--handoff');
       setLaunchButtonState('error', 'Tap to retry 3D orrery');
       throw err;
     });
