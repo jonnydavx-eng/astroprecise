@@ -14,8 +14,9 @@ Newest entries first. Every entry states what was done and the **proof artifact*
   items blocked on the owner; redundant status encoding (color + shape + word,
   WCAG 1.4.1); freshness badge (snapshot age → amber when stale); progressive-
   disclosure `<details>` mission cards; honest burn-down sparklines from real mission
-  data; de-weighted chrome; mobile thumb-bar; inline actions. Screenshotted desktop +
-  mobile.
+  data; de-weighted chrome; mobile thumb-bar; inline actions. Rendered + visually
+  verified in-session via headless Chromium (screenshots reviewed in-session, not
+  committed to the repo).
 - **state.js v3**: freshness timestamp, project `trend` arrays (real cortex burn-down,
   not fabricated), `blockedOn` precision, task `contract` + `action` fields.
 - **3-tier memory**: Episodes/Learnings/Procedures with hard size caps, verified-
@@ -35,8 +36,39 @@ Newest entries first. Every entry states what was done and the **proof artifact*
   contract, log trajectories, validate state, cross-model verdicts, branch-per-mission.
 - Cross-model verdict recorded via the verifier worker (different model tier).
 
-**Proof:** this commit; validators + MCP smoke test exit 0; dashboard screenshots;
-`cortex/verdicts/` verdict files.
+**Proof:** this commit; validators + MCP smoke test exit 0; dashboard rendered +
+visually verified in-session (headless Chromium, not committed); `cortex/verdicts/`
+verdict files. Hardened after a 5-agent independent audit (see next entry).
+
+---
+
+## 2026-07-03 — Independent audit round: gate teeth + XSS + honesty (M9/M11 hardening)
+
+**Mission:** Under ultracode, ran a 5-agent audit workflow over the just-shipped 10x
+fixes (they'd only had my own deterministic checks). It found real defects; all fixed.
+
+**Fixed:**
+- **Verdict gate had no teeth** — `check-verdicts.mjs` only checked file existence, so
+  a self-authored verdict passed. Now it parses `reviewer:` and rejects a reviewer that
+  matches the mission owner (self-review). Also `gated` is now type-checked (a string
+  `"true"` used to silently bypass the gate).
+- **Validation drift** — the MCP `cortex_validate` tool reimplemented a weak subset of
+  the CLI checks. Refactored all validation into one shared `tools/state-lib.mjs` that
+  the CLI, the verdict gate, and the MCP server import — they can no longer disagree.
+- **Dashboard XSS** — `now[].link` was written into an href with only HTML-entity
+  escaping; a `javascript:` value would have been clickable. Added a scheme allow-list
+  (`safeHref`) in the dashboard AND a `now[].link` scheme check in the validator.
+- **Workflow perms** — the maintenance agent job needs `contents: write` to open PRs;
+  added it at job level (top level stays least-privilege `contents: read`).
+- **Honesty misses (our own rule)** — the "PR watch loop" now-entry was vague/
+  unverifiable → made specific and checkable (names PR #7 + link); this log's
+  "screenshots" proof claim corrected (they were in-session, never committed); the
+  "3 bugs" tally corrected to 4.
+- Robustness: validators no longer crash on missing arrays; MCP returns -32700 on
+  malformed input; dashboard renders a "✓ verified" badge on gated missions.
+
+**Proof:** this commit; `validate-state`, `check-verdicts` (with new self-review +
+gated-type tests), `mcp-smoke` all green; audit findings in the session record.
 
 ---
 

@@ -11,15 +11,13 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { createInterface } from 'node:readline';
+import { loadState as loadStateFile, validateState } from '../tools/state-lib.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const cortexRoot = join(here, '..');
 const PROTOCOL = '2024-11-05';
 
-function loadState() {
-  const src = readFileSync(join(cortexRoot, 'state.js'), 'utf8');
-  const w = {}; new Function('window', src)(w); return w.CORTEX_STATE;
-}
+function loadState() { return loadStateFile(join(cortexRoot, 'state.js')); }
 function readDoc(rel) {
   const p = join(cortexRoot, rel);
   return existsSync(p) ? readFileSync(p, 'utf8') : `(missing: ${rel})`;
@@ -51,15 +49,11 @@ const TOOLS = [
   { name: 'cortex_shared_learnings', description: 'The distilled cross-agent knowledge every agent should read first.',
     inputSchema: { type: 'object', properties: {} },
     run() { return { markdown: readDoc('memory/shared-learnings.md') }; } },
-  { name: 'cortex_validate', description: 'Validate state.js structural integrity; returns pass/fail and any problems.',
+  { name: 'cortex_validate', description: 'Validate state.js integrity (same checks as CI); returns pass/fail and any problems.',
     inputSchema: { type: 'object', properties: {} },
     run() {
       try {
-        const S = loadState();
-        const problems = [];
-        const ok = new Set(['done', 'running', 'waiting-owner', 'open']);
-        S.missions.forEach(m => { if (!ok.has(m.status)) problems.push(`${m.id}: bad status`); });
-        if (isNaN(Date.parse(S.meta.generatedAt))) problems.push('meta.generatedAt unparseable');
+        const problems = validateState(loadState()); // shared with CI — cannot drift
         return { pass: problems.length === 0, problems };
       } catch (e) { return { pass: false, problems: [e.message] }; }
     } }
@@ -98,6 +92,6 @@ rl.on('line', line => {
   line = line.trim();
   if (!line) return;
   let msg;
-  try { msg = JSON.parse(line); } catch { return; }
+  try { msg = JSON.parse(line); } catch { return send({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error' } }); }
   try { handle(msg); } catch (e) { if (msg?.id !== undefined) error(msg.id, -32603, e.message); }
 });

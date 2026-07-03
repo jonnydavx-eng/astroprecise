@@ -13,10 +13,9 @@ on:
     branches: [main]
     paths: ['cortex/state.js', 'cortex/**']
 
+# Least privilege at the top; the agent job widens to contents:write for PRs.
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
 
 concurrency:
   group: cortex-maintenance
@@ -69,6 +68,13 @@ jobs:
   agent:
     needs: [checks, gate]
     runs-on: ubuntu-latest
+    # contents:write is required to push a branch for the mechanical-fix PRs this
+    # job may open (e.g. a regenerated INDEX.md); pull-requests:write alone doesn't
+    # cover the git push. issues:write for the findings issue.
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     # Activates only once the owner adds the ANTHROPIC_API_KEY repo secret.
     if: ${{ github.event_name != 'push' && needs.gate.outputs.has_key == 'true' }}
     steps:

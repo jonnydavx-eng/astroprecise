@@ -20,7 +20,7 @@ window.CORTEX_STATE = {
   // kind: running | waiting
   now: [
     { label: "Cortex hub is PERMANENT", detail: "PR #6 merged into main (14b1dbb) — every session inherits the hub, memory, skills", kind: "running" },
-    { label: "PR watch loop", detail: "Hourly self check-in; auto-acts on comments/CI/conflicts on the open cortex PR", kind: "running" },
+    { label: "PR #7 watch", detail: "Subscribed to PR #7 review/CI activity + periodic self check-in; responds until it merges or closes", kind: "running", link: "https://github.com/jonnydavx-eng/astroprecise/pull/7" },
     { label: "Site deploy pipeline", detail: "Actions auto-deploys website/** pushes on main to astroprecise.app (ap-v566 live)", kind: "running", link: "https://astroprecise.app" }
   ],
 
@@ -100,7 +100,8 @@ window.CORTEX_STATE = {
 
   // Prepend newest first; keep <= 12 entries, prune the tail.
   activity: [
-    { date: "2026-07-03", who: "verifier + Claude", what: "Cross-model verdict on the 10x build caught 3 real bugs (CI smoke-test grep, secret-in-if, stale trend) — all fixed; verdicts recorded, gate now enforced on M9/M11" },
+    { date: "2026-07-03", who: "5-agent audit + Claude", what: "Independent audit workflow found more real defects — verdict gate had no author check, gated not type-checked, dashboard href XSS, workflow perms, 2 honesty misses — all fixed; validation refactored to one shared lib" },
+    { date: "2026-07-03", who: "verifier + Claude", what: "Cross-model verdict on the 10x build caught 4 real defects (CI smoke-test grep, secret-in-if, stale trend, unrendered fields) — all fixed; verdicts recorded, gate enforced on M9/M11" },
     { date: "2026-07-03", who: "Claude", what: "10x SHIPPED (all 3 waves): dashboard v3, 3-tier compounding memory, task contracts, trajectory logs, Actions maintenance agent, verdict gate, evals, MCP server (M9–M11)" },
     { date: "2026-07-03", who: "Claude + 3 researchers", what: "10x roadmap researched and written across three pillars (M9 planned)" },
     { date: "2026-07-03", who: "Claude", what: "Memory + skills layer: per-agent memory, shared-learnings, 4 playbooks (M8)" },

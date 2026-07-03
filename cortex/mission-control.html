@@ -151,6 +151,7 @@
   details.mission[open] summary::after{transform:rotate(90deg)}
   .m-id{font:700 11px/1.7 ui-monospace,Menlo,monospace; color:var(--faint); flex:none}
   .m-title{font-weight:600; font-size:14.5px; text-wrap:balance}
+  .vbadge{font-size:10px; font-weight:700; letter-spacing:.04em; color:var(--run); border:1px solid var(--run); border-radius:4px; padding:0 5px; flex:none; align-self:center; white-space:nowrap}
   .m-body{padding:0 15px 14px; display:flex; flex-direction:column; gap:5px}
   .m-owner{font-size:12px; color:var(--muted)} .m-owner b{color:var(--brass-bright); font-weight:600}
   .kv{font-size:13px; display:flex; gap:7px}
@@ -273,6 +274,9 @@
   if(!S){ root.textContent='state.js missing or invalid.'; return; }
   function el(t,c,h){var e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  // href allow-list: http(s), root-relative, or in-page anchor only — blocks javascript:/data:
+  function safeHref(u){ return /^(https?:\/\/|\/[^/]|#)/.test(String(u||'')) ? esc(u) : '#'; }
+  function link(u,label){ return u ? '<a href="'+safeHref(u)+'">'+esc(label)+'</a>' : esc(label); }
 
   // status vocabulary: color + shape + word (redundant encoding)
   var STATUS = {
@@ -327,7 +331,7 @@
     var c=el('div','now-card');
     c.appendChild(el('span','pdot '+esc(n.kind)));
     var b=el('div');
-    b.appendChild(el('div','label',n.link?'<a href="'+esc(n.link)+'">'+esc(n.label)+'</a>':esc(n.label)));
+    b.appendChild(el('div','label',link(n.link,n.label)));
     b.appendChild(el('div','detail',esc(n.detail)));
     c.appendChild(b); now.appendChild(c);
   });
@@ -352,6 +356,7 @@
       var sum=el('summary');
       sum.appendChild(el('span','m-id',esc(m.id)));
       sum.appendChild(el('span','m-title',esc(m.title)));
+      if(m.gated) sum.appendChild(el('span','vbadge','✓ verified'));
       d.appendChild(sum);
       var body=el('div','m-body');
       body.appendChild(el('div','m-owner','lead <b>'+esc(m.owner)+'</b> · '+esc(m.project)));
