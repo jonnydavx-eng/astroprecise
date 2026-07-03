@@ -4297,3 +4297,98 @@ html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-s
     padding-bottom: 8px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   v580 — Intro polish: no "old model" flash on WebGL-bound devices.
+   ap-award-orrery.js sets html.ap-await-webgl synchronously when it will
+   boot the photoreal engine; until orrery-full arrives we show a calm
+   Earth loading placeholder instead of the engraved wheel / 2D dot-orrery,
+   and the live Earth cross-fades in over it.
+   ═══════════════════════════════════════════════════════════════ */
+
+.orrery-earth-loader { display: none; }
+
+/* Reveal the orrery wrap before JS removes [hidden], so the Earth loader inside
+   the viewport shows from the first frame (the canvas stays visibility:hidden
+   until orrery-full, so nothing empty paints). The wrap keeps the [hidden]
+   attribute, so the "~ .ap-orrery-deck" hide rule still suppresses the HUD
+   until the engine is actually live. Desktop wrap is position:absolute, so no CLS. */
+html.ap-await-webgl .ap-award-511 #heroChapter .ap-award-orrery-wrap[hidden] {
+  display: block;
+}
+
+/* Hide the old-model surfaces the instant we commit to WebGL */
+html.ap-await-webgl:not(.orrery-full) .ap-award-511 #heroChapter .ap-hero-wheel-fallback,
+html.ap-await-webgl:not(.orrery-full) .ap-award-511 #heroChapter .orrery-lite-poster {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Geometry persists across the orrery-full flip so the fade-out can play */
+html.ap-await-webgl .ap-award-511 #heroChapter .orrery-earth-loader {
+  display: block;
+  position: absolute;
+  inset: 7%;
+  grid-area: 1 / 1;
+  border-radius: 50%;
+  z-index: 1;                 /* below #orrery-canvas, above the void */
+  pointer-events: none;
+  isolation: isolate;
+  opacity: 1;
+  transition: opacity 0.55s ease;
+}
+
+/* The planet disc: lit ocean/day toward top-left, falling to night; a thin
+   blue atmosphere rim so it reads unmistakably as Earth resolving into focus */
+.orrery-earth-loader__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 37% 38%, #22374f 0%, #16273b 34%, #0c1626 62%, #070c15 82%);
+  box-shadow:
+    inset -18px -14px 46px rgba(0, 0, 0, 0.6),
+    inset 10px 8px 30px rgba(111, 160, 216, 0.10),
+    0 0 0 1px rgba(111, 160, 216, 0.16),
+    0 0 44px rgba(111, 160, 216, 0.20);
+  animation: ap-earth-loader-breathe 2.6s ease-in-out infinite;
+}
+
+/* A slow brass "instrument acquiring" sweep around the limb */
+.orrery-earth-loader__scan {
+  position: absolute;
+  inset: -2%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(194, 160, 94, 0) 250deg,
+    rgba(194, 160, 94, 0.28) 320deg,
+    rgba(236, 214, 164, 0.5) 350deg,
+    transparent 360deg);
+  -webkit-mask: radial-gradient(circle, transparent 62%, #000 64%, #000 71%, transparent 73%);
+          mask: radial-gradient(circle, transparent 62%, #000 64%, #000 71%, transparent 73%);
+  animation: ap-earth-loader-scan 2.8s linear infinite;
+  opacity: 0.9;
+}
+
+@keyframes ap-earth-loader-breathe {
+  0%, 100% { box-shadow: inset -18px -14px 46px rgba(0,0,0,0.6), inset 10px 8px 30px rgba(111,160,216,0.10), 0 0 0 1px rgba(111,160,216,0.16), 0 0 40px rgba(111,160,216,0.16); }
+  50%      { box-shadow: inset -18px -14px 46px rgba(0,0,0,0.6), inset 10px 8px 30px rgba(111,160,216,0.14), 0 0 0 1px rgba(111,160,216,0.22), 0 0 54px rgba(111,160,216,0.26); }
+}
+@keyframes ap-earth-loader-scan {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Once any engine is live (WebGL orrery-full, or the 2D fallback's orrery-live),
+   retire the placeholder with a soft fade */
+html.ap-await-webgl.orrery-full .ap-award-511 #heroChapter .orrery-earth-loader,
+html.ap-await-webgl.orrery-live .ap-award-511 #heroChapter .orrery-earth-loader {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orrery-earth-loader__disc,
+  .orrery-earth-loader__scan { animation: none; }
+  .orrery-earth-loader__scan { opacity: 0.4; }
+}

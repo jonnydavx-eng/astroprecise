@@ -256,7 +256,8 @@ body::before {
   animation: none;
 }
 
-/* Film grain + faint engraved grid — low z-index, never tints the whole page cool */
+/* Film grain removed in the simplification pass — the perpetual full-page
+   noise overlay read as "busy". Kept off to match main-lite.css. */
 body::after { content: none; }
 
 @keyframes nebula-drift {

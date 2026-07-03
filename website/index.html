@@ -102,7 +102,28 @@ html,body{background:#0C1016;}
 .dateline{font-family:var(--font-mono);font-size:max(13px,0.75rem);color:var(--ink-faded);letter-spacing:0.05em;}
 .contents-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-3);padding-top:var(--sp-2);list-style:none;margin:0;padding-left:0;}
 .contents-nav a{font-family:var(--font-ui);font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--ink-faded);}
+/* Critical intro insurance: suppress the engraved no-JS wheel + reveal the wrap
+   the instant ap-await-webgl is set, so a slow async ap-horizon-2026.css can
+   never let the old wheel paint on a WebGL-bound device (full loader look loads
+   with that sheet; worst case here is a brief dark hero, never the wheel). */
+html.ap-await-webgl #apHeroWheelFallback{display:none!important}
+html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   </style>
+
+  <!-- Intro gate — runs before first paint so the hero never flashes the
+       engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
+       frame 1). On WebGL-bound devices we set ap-await-webgl NOW; CSS then
+       hides the wheel, reveals the wrap, and shows the calm Earth loader the
+       photoreal Earth fades in over. No-JS / reduced-motion keep the wheel. -->
+  <script>
+  (function(){try{
+    var mm=window.matchMedia;
+    if(mm&&mm('(prefers-reduced-motion: reduce)').matches)return;
+    var capable=(mm&&mm('(pointer: fine) and (min-width: 1024px)').matches)||
+      ((navigator.hardwareConcurrency||8)>2&&(navigator.deviceMemory||8)>2);
+    if(capable)document.documentElement.classList.add('ap-await-webgl');
+  }catch(e){}})();
+  </script>
 
   <!-- Fonts & design system -->
   <!-- Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
@@ -261,6 +282,13 @@ html,body{background:#0C1016;}
         <div class="ap-award-orrery-wrap" id="apAwardOrreryWrap" hidden>
           <div class="ap-award-orrery-frame">
             <div class="orrery-viewport" id="orrery-viewport">
+              <!-- WebGL-bound devices show this calm Earth placeholder instead of
+                   the engraved wheel / 2D dot-orrery, so the intro never flashes
+                   the old model — the photoreal Earth fades in over it. -->
+              <div class="orrery-earth-loader" id="orreryEarthLoader" aria-hidden="true">
+                <span class="orrery-earth-loader__disc"></span>
+                <span class="orrery-earth-loader__scan"></span>
+              </div>
               <div class="orrery-lite-poster" id="orrery-lite-poster" role="img" aria-label="Living sky orrery — VSOP87 positions recomputed live in your browser">
                 <canvas class="lite-poster-canvas" id="lite-poster-canvas" aria-hidden="true"></canvas>
                 <div class="lite-poster-ring" aria-hidden="true"></div>

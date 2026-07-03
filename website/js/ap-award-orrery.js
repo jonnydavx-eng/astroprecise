@@ -85,7 +85,13 @@
   // Capable devices start the HD chain immediately, in parallel with the
   // ephemeris wait — orrery-loader has its own AstroEphemeris waitFor, so
   // this only removes dead time before the photoreal engine appears.
-  if (isCapableDevice()) queueWebGL();
+  if (isCapableDevice()) {
+    // Suppress the engraved wheel + 2D dot-orrery so the intro never flashes
+    // the "old model" — CSS shows the calm Earth loader instead, and the
+    // photoreal Earth fades in over it. Set synchronously = no wheel on frame 1.
+    document.documentElement.classList.add("ap-await-webgl");
+    queueWebGL();
+  }
 
   waitEphemeris(function () {
     inject("js/lite-orrery.js?v=578", function () {
@@ -122,6 +128,11 @@
     mo.observe(poster, { attributes: true, attributeFilter: ["class"] });
   }
 
-  document.addEventListener("ap-orrery-ready", function () { hideFallback(true); });
+  // Retire the Earth loading placeholder once ANY engine is live (WebGL adds
+  // orrery-full; the 2D canvas fallback only fires ap-orrery-ready) — plus a
+  // hard safety so the loader can never stay stuck over a dead boot.
+  function markLive() { document.documentElement.classList.add("orrery-live"); }
+  document.addEventListener("ap-orrery-ready", function () { hideFallback(true); markLive(); });
   setTimeout(hideFallback, 4500);
+  setTimeout(markLive, 12000);
 })();
