@@ -51,11 +51,15 @@ first run. Paste this after the bootstrap:
 
 ```
 Your mission is M3 (see cortex/state.js). Contract:
-- objective: bring STATUS.md in sync with shipped reality (the site is at ap-v566).
-- deliverable: edited STATUS.md; resolve the AGENT-HANDOFF.md pointer (that file
-  doesn't exist — see cortex/index.md lint findings; point it at cortex/ instead).
+- objective: bring STATUS.md in sync with shipped reality. Current live version is
+  ap-v568 (verified from website/sw.js `const V`); STATUS.md still says ap-v563.
+- facts to reflect (from git log): v564 This Week's Sky + minified deploys; v565 drop
+  Lemon Squeezy → PayPal direct; v566 PayPal e2e gate + honest shop copy; v567 fix
+  white homepage (inline critical palette); v568 fix NOAA solar-wind feeds 404.
+- deliverable: edited STATUS.md updated to ap-v568; resolve the AGENT-HANDOFF.md
+  pointer (that file doesn't exist — point it at cortex/ instead).
 - scope: STATUS.md only. Do NOT touch site/app code.
-- done when: STATUS.md's version, date, and open-items match `git log` + the lint
+- done when: STATUS.md's version, date, and open-items match git log + the lint
   findings in cortex/index.md.
 Steps: read STATUS.md and `git log --oneline -8`; edit STATUS.md; then set M3 to
 status "done" in state.js with a proof (the commit), and do the handoff in step 1.

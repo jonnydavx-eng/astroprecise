@@ -21,8 +21,9 @@ wrong. Fixed in this PR, facts verified against the repo:
 
 ## Mission 3 — STATUS.md refresh (open, small)
 
-STATUS.md says ap-v563; `main` is at ap-v566 (v564 Weekly Sky + minified deploys,
-v565 PayPal direct, v566 PayPal e2e gate + honest shop copy). Refresh the snapshot on
+STATUS.md says ap-v563; `main` is at ap-v568 (v564 Weekly Sky + minified deploys,
+v565 PayPal direct, v566 PayPal e2e gate + honest shop copy, v567 white-homepage fix,
+v568 NOAA feeds fix). Refresh the snapshot on
 the next mission that touches the site, or as a standalone quick fix. Owner tasks
 listed in STATUS.md §Open still stand (GSC/Bing, social + Postiz, PayPal smoke-test).
 

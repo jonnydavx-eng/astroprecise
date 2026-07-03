@@ -21,7 +21,7 @@ window.CORTEX_STATE = {
   now: [
     { label: "Cortex hub is PERMANENT", detail: "PR #6 merged into main (14b1dbb) — every session inherits the hub, memory, skills", kind: "running" },
     { label: "PR #7 watch", detail: "Subscribed to PR #7 review/CI activity + periodic self check-in; responds until it merges or closes", kind: "running", link: "https://github.com/jonnydavx-eng/astroprecise/pull/7" },
-    { label: "Site deploy pipeline", detail: "Actions auto-deploys website/** pushes on main to astroprecise.app (ap-v566 live)", kind: "running", link: "https://astroprecise.app" }
+    { label: "Site deploy pipeline", detail: "Actions auto-deploys website/** pushes on main to astroprecise.app (ap-v568 live)", kind: "running", link: "https://astroprecise.app" }
   ],
 
   // trend = count of unfinished missions (open+waiting-owner+running) for this
@@ -33,7 +33,7 @@ window.CORTEX_STATE = {
     {
       id: "astro-web", name: "AstroPrecise — Website",
       summary: "Static astrology site, in-browser engine, live at astroprecise.app. Launch phase 1: traction + first revenue via PayPal direct.",
-      status: "active", version: "ap-v566", health: "green",
+      status: "active", version: "ap-v568", health: "green",
       trend: [3, 3, 3, 3]
     },
     {
@@ -64,9 +64,9 @@ window.CORTEX_STATE = {
       step: "PR #6 merged into main", next: "—", proof: "merge commit 14b1dbb" },
     { id: "M2", title: "Instruction-layer repair (CLAUDE.md)", project: "astro-web", status: "done", owner: "Claude", blockedOn: null,
       step: "Deployment + palette sections rewritten, verifier-confirmed", next: "Shipped in PR #6", proof: "PR #6 diff; verifier verdicts in cortex/log.md" },
-    { id: "M3", title: "STATUS.md refresh to ap-v566", project: "astro-web", status: "open", owner: "any agent", blockedOn: null,
-      step: "Not started", next: "Update snapshot on next site-touching mission", proof: "—",
-      contract: { objective: "Bring STATUS.md in sync with shipped reality (ap-v566)", deliverable: "Edited STATUS.md + AGENT-HANDOFF pointer resolved", scope: "STATUS.md only; do not touch site code", done: "Version, date, and open-items match git history + index.md lint findings" } },
+    { id: "M3", title: "STATUS.md refresh to ap-v568", project: "astro-web", status: "open", owner: "any agent (Hermes candidate)", blockedOn: null,
+      step: "Facts gathered: site is ap-v568 (sw.js), STATUS.md says v563. Ready for Hermes — see HERMES-START.md", next: "Hermes: update STATUS.md to ap-v568 + fix AGENT-HANDOFF pointer", proof: "—",
+      contract: { objective: "Bring STATUS.md in sync with shipped reality (ap-v568)", deliverable: "Edited STATUS.md + AGENT-HANDOFF pointer resolved (file doesn't exist → point to cortex/)", scope: "STATUS.md only; do not touch site code", done: "Version, date, and open-items match git history + index.md lint findings" } },
     { id: "M4", title: "Phase-1 traction support", project: "astro-web", status: "waiting-owner", owner: "Claude + Grok", blockedOn: "owner",
       step: "Plans ready (content calendar, playbook)", next: "Owner: PayPal links into app.js AP_MON, social accounts + Postiz", proof: "PAYPAL-SETUP.md, CONTENT-CALENDAR.md",
       action: "Open PAYPAL-SETUP.md → create the 13 payment links → paste into website/js/app.js (AP_MON)" },
@@ -100,6 +100,7 @@ window.CORTEX_STATE = {
 
   // Prepend newest first; keep <= 12 entries, prune the tail.
   activity: [
+    { date: "2026-07-03", who: "Claude", what: "Hermes onboarding (HERMES-START.md) + free/low-credit mode; verifying facts caught the brain saying ap-v566 when the live site is ap-v568 (sw.js) — corrected across cortex docs" },
     { date: "2026-07-03", who: "5-agent audit + Claude", what: "Independent audit workflow found more real defects — verdict gate had no author check, gated not type-checked, dashboard href XSS, workflow perms, 2 honesty misses — all fixed; validation refactored to one shared lib" },
     { date: "2026-07-03", who: "verifier + Claude", what: "Cross-model verdict on the 10x build caught 4 real defects (CI smoke-test grep, secret-in-if, stale trend, unrendered fields) — all fixed; verdicts recorded, gate enforced on M9/M11" },
     { date: "2026-07-03", who: "Claude", what: "10x SHIPPED (all 3 waves): dashboard v3, 3-tier compounding memory, task contracts, trajectory logs, Actions maintenance agent, verdict gate, evals, MCP server (M9–M11)" },
@@ -109,6 +110,6 @@ window.CORTEX_STATE = {
     { date: "2026-07-03", who: "Claude", what: "Mission Control v2: shared state, graphical dashboard, agent wiring protocol (M7)" },
     { date: "2026-07-02", who: "Claude", what: "CLAUDE.md deployment + palette sections repaired; verifier confirmed against repo (M2)" },
     { date: "2026-07-02", who: "Claude", what: "Cortex hub bootstrapped: wiki, log, workers; PR #6 opened (M1)" },
-    { date: "2026-07-02", who: "Grok + Claude", what: "ap-v563–v566 shipped on main: homepage arc, SEO hardening, PayPal direct, e2e gate" }
+    { date: "2026-07-02", who: "Grok + Claude", what: "ap-v563–v568 shipped on main: homepage arc, SEO hardening, PayPal direct, e2e gate, white-homepage + NOAA fixes" }
   ]
 };

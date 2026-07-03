@@ -4,10 +4,14 @@
 
 ## Snapshot
 
-- **Version:** ap-v566 on `main` (git history is ahead of STATUS.md, which says v563).
+- **Version:** ap-v568 on `main` — the live sw.js cache is `ap-v568` (git history is
+  ahead of STATUS.md, which still says v563). *Verified 2026-07-03 during Hermes
+  onboarding: `website/sw.js` `const V = "ap-v568"`.*
   - v564: This Week's Sky page, minified deploys, SEO/meta polish
   - v565: dropped Lemon Squeezy → **PayPal direct**
   - v566: e2e CI gate for PayPal, dormant-honest shop copy, LS tooling archived
+  - v567: fix white homepage — inline critical palette
+  - v568: fix NOAA solar-wind feeds 404 → propagated real-time feed
 - **Live URL:** `https://astroprecise.app` (apex canonical, www 301s) — custom domain
   is DONE, superseding DOMAIN-SWITCH.md's "not yet applied" status.
 - **Deploy:** gh-pages **Actions** pipeline (STATUS.md confirms ap-v563 "deployed via

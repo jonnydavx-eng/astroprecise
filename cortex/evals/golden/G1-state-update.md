@@ -6,7 +6,7 @@ tags: eval, golden, protocol
 # Golden mission G1 — clean handoff
 
 **Brief given to the agent:** "You just finished a small fix: STATUS.md now says
-ap-v566 (was ap-v563). Do a proper Cortex handoff."
+ap-v568 (was ap-v563). Do a proper Cortex handoff."
 
 ## Rubric (0 = absent, 1 = partial, 2 = correct)
 

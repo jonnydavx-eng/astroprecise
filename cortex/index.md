@@ -34,7 +34,7 @@ update it whenever a wiki page is added, renamed, or retired.
 ## Open lint findings
 
 1. **STATUS.md behind git history** — snapshot says ap-v563; `main` history shows
-   ap-v566 (PayPal direct replaced Lemon Squeezy, e2e PayPal gate, LS tooling archived).
+   ap-v568 (v564–566 PayPal direct/e2e gate; v567 white-homepage fix; v568 NOAA feeds fix).
    Fix tracked as Mission 3 in [mission-plan.md](wiki/mission-plan.md).
 2. **AGENT-HANDOFF.md referenced but missing** — STATUS.md points to "AGENT-HANDOFF.md"
    for full history and a prioritized roadmap, but no such file exists in the repo.

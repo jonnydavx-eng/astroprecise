@@ -32,7 +32,7 @@ then open only the files you need (progressive disclosure).*
 | `verdicts/README.md` | Cross-model verdicts — a different model than the mission owner must review before a mission is trusted done. | quality, verdict, verification, protocol |
 | `wiki/10x-roadmap.md` | mission-control dashboard design, multi-agent orchestration — 2024–2026 web sources) |  |
 | `wiki/astroprecise-business.md` | catalog pass, spot-checked against STATUS.md and git history). |  |
-| `wiki/astroprecise-state.md` | - **Version:** ap-v566 on `main` (git history is ahead of STATUS.md, which says v563). |  |
+| `wiki/astroprecise-state.md` | - **Version:** ap-v568 on `main` — the live sw.js cache is `ap-v568` (git history is |  |
 | `wiki/davit-sat-dashboard.md` | Separate repo (`jonnydavx-eng/davit_sat_dashboard.py`), currently an **untouched |  |
 | `wiki/mission-plan.md` | as missions complete (move them to log.md with proof) or priorities change.* |  |
 | `wiki/operations.md` | Cortex sessions run in **ephemeral remote containers** (Claude Code on the web / |  |
