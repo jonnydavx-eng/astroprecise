@@ -326,7 +326,7 @@
                 id="city-input"
                 name="birth-city"
                 class="form-input"
-                placeholder="Any town or village on Earth — start typing"
+                placeholder="Start typing your birth city or town"
                 autocomplete="off"
                 required
                 aria-required="true"
@@ -380,7 +380,9 @@
                 class="form-input"
                 aria-describedby="time-hint"
               />
-              <p class="form-hint" id="time-hint">Needed for your Ascendant &amp; houses.</p>
+              <p class="form-hint" id="time-hint">Needed for your Ascendant &amp; houses. Left blank, we assume noon — your Rising sign &amp; houses become approximate.
+                <button type="button" id="time-unknown-btn" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 2px;">Don't know it? Pick a time of day</button>
+              </p>
             </div>
           </div>
           </div><!-- /.chart-form__essentials -->
@@ -433,7 +435,7 @@
                   <div class="house-cards" role="radiogroup" aria-label="House system selection">
                     <div class="house-card active" data-value="equal" tabindex="0" role="radio" aria-checked="true">
                       <div class="house-card__name">Equal</div>
-                      <div class="house-card__desc">Each house spans exactly 30°. Simplest and most widely recommended for beginners.</div>
+                      <div class="house-card__desc">Each house spans exactly 30° from your Ascendant. Robust even when your birth time is approximate — the default here.</div>
                     </div>
                     <div class="house-card" data-value="placidus" tabindex="0" role="radio" aria-checked="false">
                       <div class="house-card__name">Placidus</div>
@@ -514,27 +516,26 @@
               <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000</span>
             </div>
             <div class="result-actions" id="result-actions-row">
-              <button id="wallpaper-btn" class="action-btn action-btn--gold" aria-label="Download free phone wallpaper of your chart">
-                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Free Wallpaper
-              </button>
-              <button id="poster-btn" class="action-btn action-btn--ghost" aria-label="Download natal chart poster image">
-                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Download Poster
-              </button>
-              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
-                ↗ Share Chart
-              </button>
               <button id="save-btn" class="action-btn action-btn--primary" aria-label="Save chart to your profile">
                 ⊕ Save to Profile
               </button>
-              <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">
-                ◈ Big Three Card
+              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
+                ↗ Share
               </button>
-              <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">
-                ⤓ Export JSON
+              <button id="poster-btn" class="action-btn action-btn--ghost" aria-label="Download your chart as an image — wallpaper, square, story or print">
+                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Download image
               </button>
-              <button id="app-btn" class="action-btn action-btn--ghost" aria-label="Open chart in the Astro Precise app">
-                ⬡ Open in App
+              <button id="wallpaper-btn" class="action-btn action-btn--gold" aria-label="Get a free phone wallpaper of your chart">
+                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Free wallpaper
               </button>
+              <details class="result-actions__more">
+                <summary class="result-actions__more-toggle">More options</summary>
+                <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
+                  <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">◈ Big Three card</button>
+                  <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">⤓ Export JSON</button>
+                  <button id="app-btn" class="action-btn action-btn--ghost" aria-label="Open chart in the Astro Precise app">⬡ Open in App</button>
+                </div>
+              </details>
             </div>
           </div>
         </div>
@@ -562,36 +563,6 @@
               <p class="big-three-card__desc">—</p>
             </article>
           </div>
-        </section>
-
-        <!-- Wallpaper lead magnet — free with email unlock -->
-        <section id="wallpaper-lead" class="wallpaper-lead animate-in animate-in--delay-1" aria-label="Free phone wallpaper of your chart" hidden>
-          <p class="wallpaper-lead__eyebrow">Wear your sky</p>
-          <h3 class="wallpaper-lead__title">Free phone wallpaper of <em>your</em> chart</h3>
-          <p class="wallpaper-lead__sub">Your natal wheel, centred for lock screen — generated from the chart you just cast. Enter your email once to unlock the download; optional birth date stays on this device.</p>
-          <form id="wallpaper-email-form" class="wallpaper-lead__form" novalidate>
-            <div class="wallpaper-lead__fields">
-              <label class="wallpaper-lead__field">
-                <span class="wallpaper-lead__label">Email</span>
-                <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" class="wallpaper-lead__input" aria-describedby="wallpaper-lead-disclosure">
-              </label>
-              <label class="wallpaper-lead__field wallpaper-lead__field--optional">
-                <span class="wallpaper-lead__label">Birth date <span class="wallpaper-lead__opt">(optional)</span></span>
-                <input type="date" name="birthDate" class="wallpaper-lead__input" aria-label="Birth date optional — stays on your device">
-              </label>
-            </div>
-            <button type="submit" class="wallpaper-lead__download" aria-label="Unlock free phone wallpaper">
-              <svg class="eng-i" aria-hidden="true" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><use href="#ei-star4"/></svg>
-              Unlock free wallpaper
-            </button>
-          </form>
-          <div id="wallpaper-unlocked" class="wallpaper-lead__actions" hidden>
-            <button type="button" id="wallpaper-download-btn" class="wallpaper-lead__download" aria-label="Download phone wallpaper PNG">
-              <svg class="eng-i" aria-hidden="true" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><use href="#ei-star4"/></svg>
-              Download wallpaper
-            </button>
-          </div>
-          <p class="wallpaper-lead__honest" id="wallpaper-lead-disclosure">1080×1920 PNG · computed in your browser · we only use your email for cosmic weather &amp; shop drops</p>
         </section>
 
         <!-- Wheel hero + detail tabs -->
@@ -718,6 +689,38 @@
 
           </div><!-- /.tabs-card -->
         </div><!-- /.chart-results-grid -->
+
+        <!-- Wallpaper lead magnet — free with email unlock. Sits AFTER the wheel
+             so nothing gates the reading: the visitor sees their chart first,
+             then the "wear your sky" offer. -->
+        <section id="wallpaper-lead" class="wallpaper-lead animate-in animate-in--delay-1" aria-label="Free phone wallpaper of your chart" hidden>
+          <p class="wallpaper-lead__eyebrow">Wear your sky</p>
+          <h3 class="wallpaper-lead__title">Free phone wallpaper of <em>your</em> chart</h3>
+          <p class="wallpaper-lead__sub">Your natal wheel, centred for lock screen — generated from the chart you just cast. Enter your email once to unlock the download; optional birth date stays on this device.</p>
+          <form id="wallpaper-email-form" class="wallpaper-lead__form" novalidate>
+            <div class="wallpaper-lead__fields">
+              <label class="wallpaper-lead__field">
+                <span class="wallpaper-lead__label">Email</span>
+                <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" class="wallpaper-lead__input" aria-describedby="wallpaper-lead-disclosure">
+              </label>
+              <label class="wallpaper-lead__field wallpaper-lead__field--optional">
+                <span class="wallpaper-lead__label">Birth date <span class="wallpaper-lead__opt">(optional)</span></span>
+                <input type="date" name="birthDate" class="wallpaper-lead__input" aria-label="Birth date optional — stays on your device">
+              </label>
+            </div>
+            <button type="submit" class="wallpaper-lead__download" aria-label="Unlock free phone wallpaper">
+              <svg class="eng-i" aria-hidden="true" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><use href="#ei-star4"/></svg>
+              Unlock free wallpaper
+            </button>
+          </form>
+          <div id="wallpaper-unlocked" class="wallpaper-lead__actions" hidden>
+            <button type="button" id="wallpaper-download-btn" class="wallpaper-lead__download" aria-label="Download phone wallpaper PNG">
+              <svg class="eng-i" aria-hidden="true" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;"><use href="#ei-star4"/></svg>
+              Download wallpaper
+            </button>
+          </div>
+          <p class="wallpaper-lead__honest" id="wallpaper-lead-disclosure">1080×1920 PNG · computed in your browser · we only use your email for cosmic weather &amp; shop drops</p>
+        </section>
 
         <!-- ── WHAT'S NEXT (post-chart guidance) ───────────────────────
              JS (chart-page.js → renderWhatsNext) fills personalised links
@@ -978,13 +981,25 @@
   /* ── Chart page interaction enhancements ── */
   (function () {
 
-    // Advanced-options accordion (base accordion JS is not wired anywhere else)
-    var advItem = document.getElementById('chart-advanced-item');
-    var advTrigger = document.getElementById('chart-advanced-trigger');
-    if (advItem && advTrigger) {
-      advTrigger.addEventListener('click', function () {
-        var open = advItem.classList.toggle('is-open');
-        advTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    // NOTE: the advanced-options accordion is owned solely by chart-page.js
+    // (initAdvancedAccordion — handles max-height + the mobile media query). A
+    // second handler used to live here and double-toggled the panel; removed.
+
+    // "Don't know your birth time?" → open Advanced options and jump to the
+    // time-of-day approximations (they're the graceful fallback for the most
+    // common real-world data gap, otherwise buried in the accordion).
+    var timeUnknownBtn = document.getElementById('time-unknown-btn');
+    if (timeUnknownBtn) {
+      timeUnknownBtn.addEventListener('click', function () {
+        var item = document.getElementById('chart-advanced-item');
+        var trig = document.getElementById('chart-advanced-trigger');
+        if (item && trig && !item.classList.contains('is-open')) trig.click();
+        var picks = document.querySelector('.chart-form__time-picks') || document.querySelector('.time-selector');
+        if (picks) {
+          picks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          var firstBtn = picks.querySelector('.time-btn');
+          if (firstBtn) setTimeout(function () { try { firstBtn.focus({ preventScroll: true }); } catch (e) { firstBtn.focus(); } }, 400);
+        }
       });
     }
 

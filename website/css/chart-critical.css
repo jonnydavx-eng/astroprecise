@@ -253,6 +253,25 @@
       font-weight: 600;
     }
 
+    /* Homepage → chart date-handoff acknowledgement (injected by chart-page.js
+       prefillDateFromURL). Above the fold, so styled in the critical sheet. */
+    .chart-handoff-note {
+      margin: 0 0 var(--space-5);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg, 12px);
+      border: 1px solid rgba(194, 160, 94, 0.30);
+      background: rgba(194, 160, 94, 0.07);
+      color: var(--ap-text-secondary, #BEB298);
+      font-size: 0.82rem;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+    }
+    .chart-handoff-note__mark {
+      color: var(--ap-gold-bright, #CDAE6A);
+      margin-right: 0.4em;
+      font-weight: 600;
+    }
+
     @media (min-width: 1024px) {
       .page-chart .form-glass {
         padding: var(--space-8) var(--space-10);
@@ -725,7 +744,7 @@
     }
     .page-chart .chart-wheel-sublabel {
       margin: 0;
-      font-family: Georgia, 'Times New Roman', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 0.82rem;
       font-style: italic;
       line-height: 1.35;

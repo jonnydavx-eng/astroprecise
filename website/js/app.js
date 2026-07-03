@@ -367,28 +367,12 @@ const AstroApp = (() => {
     var desktop = document.querySelector('.navbar__nav');
     var mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) {
-      if (!desktop.querySelector('.navbar__link')) {
-        desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
-      } else {
-        desktop.querySelectorAll('.navbar__link[href]').forEach(function (a) {
-          var href = (a.getAttribute('href') || '').split('/').pop();
-          var on = href === here;
-          a.classList.toggle('active', on);
-          if (on) a.setAttribute('aria-current', 'page');
-          else a.removeAttribute('aria-current');
-        });
-        var moreBtn = desktop.querySelector('.navbar__more-btn');
-        if (moreBtn) moreBtn.classList.toggle('active', morePageActive(here));
-        var morePanel = desktop.querySelector('.navbar__more-panel');
-        if (morePanel && !morePanel.querySelector('.navbar__more-group')) {
-          morePanel.innerHTML = NAV_DRAWER_SECTIONS.map(function (sec) {
-            return '<div class="navbar__more-group" role="group" aria-label="' + sec.label + '">'
-              + '<p class="navbar__more-label">' + sec.label + '</p>'
-              + navLinkHtml(sec.items, here, true)
-              + '</div>';
-          }).join('');
-        }
-      }
+      // Single source of truth: ALWAYS rebuild the primary bar from NAV_PRIMARY.
+      // (Previously it only rebuilt when empty, so pages that shipped live static
+      //  nav links — chart/shop/compatibility/ephemeris/horoscope — kept a stale
+      //  vocabulary and the menu changed under the visitor. The static markup is
+      //  now purely a no-JS fallback.)
+      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
       initMoreMenu();
     }
     if (mobile) mobile.innerHTML = renderDrawer(here);

@@ -4392,3 +4392,68 @@ html.ap-await-webgl.orrery-live .ap-award-511 #heroChapter .orrery-earth-loader 
   .orrery-earth-loader__scan { animation: none; }
   .orrery-earth-loader__scan { opacity: 0.4; }
 }
+
+/* v581 — story bridges + beginner gloss */
+/* Spine bridges: one-sentence handoffs that carry the reader from one chapter
+   to the next. Quiet body ink, brass link, generous breathing room. */
+.ap-award-511 .ap-spine-bridge {
+  font-family: var(--font-serif);
+  font-size: clamp(1.02rem, 1.4vw, 1.18rem);
+  line-height: 1.5;
+  color: var(--ink-faded);
+  max-width: 56ch;
+  margin-top: var(--sp-4);
+}
+
+.ap-award-511 .ap-spine-bridge--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.ap-award-511 .ap-spine-bridge em {
+  font-style: italic;
+  color: var(--ink);
+}
+
+.ap-award-511 .ap-spine-bridge a {
+  color: var(--brass-vivid);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(216, 185, 120, 0.4);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.ap-award-511 .ap-spine-bridge a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.ap-award-511 .hero-spine-bridge {
+  margin-top: var(--sp-3);
+  font-size: 1rem;
+}
+
+/* Instruments path: the next-step line under each dek — brass, small-caps,
+   reads as the forward motion of a guided path rather than a directory. */
+.ap-award-511 #instrumentsChapter .dept-list-next {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brass-bright);
+}
+
+.ap-award-511 #instrumentsChapter .dept-list-item:hover .dept-list-next {
+  color: var(--brass-vivid);
+}
+
+/* Restore ordered-list default spacing removed by the reset, and keep the
+   step numbers driven by our explicit .dept-number (no double numbering). */
+.ap-award-511 #instrumentsChapter ol.dept-list {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+  counter-reset: none;
+}

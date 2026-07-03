@@ -47,7 +47,7 @@ SKU = {
         "eyebrow": "The Reading",
         "title": "Deep Natal Reading",
         "hook": "13 pages written for your chart alone",
-        "badge": "Bestseller",
+        "badge": "Personalised",   # was "Bestseller" — no sales data; honest descriptor (honesty rule)
         "accent": (72, 52, 98),
         "accent2": (110, 26, 38),
     },
@@ -135,7 +135,7 @@ SKU = {
         "eyebrow": "12 months ahead",
         "title": "Year Ahead",
         "hook": "Every major transit — dated for your chart",
-        "badge": "Trending",
+        "badge": "12 months",   # was "Trending" — no sales data; use the factual scope (honesty rule)
         "accent": (38, 62, 78),
         "accent2": (95, 174, 138),
     },

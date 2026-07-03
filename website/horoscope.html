@@ -162,6 +162,7 @@
           <p class="hero__eyebrow" id="today-date-display" aria-live="polite">Updated Daily at Midnight UTC</p>
           <h1 id="page-title">Today's sky, still moving</h1>
           <p class="sphere-hero__sub">Seven planets in their real positions right now &mdash; computed live, never cached. Pick your sign on the dial for today's reading.</p>
+          <p class="sphere-hero__sub" style="margin-top:var(--space-2);">This is a real reading of today&rsquo;s sky &mdash; the actual <abbr class="ap-gloss" title="Transits — where the planets are in the sky today, and the angles they make to your chart right now">transits</abbr> against the live planets, not a generic Sun-sign column written weeks ahead.</p>
           <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Real transits — not generic Sun-sign filler</span></a></p>
         </div>
 
@@ -322,7 +323,7 @@
 
         <!-- Planet legend strip -->
         <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="group">
-          <span class="planet-legend__label">Planet positions (ecliptic longitude):</span>
+          <span class="planet-legend__label">Planet positions (<abbr class="ap-gloss" title="Ecliptic longitude — a planet's position measured along the Sun's yearly path through the zodiac, 0–360°">ecliptic longitude</abbr>):</span>
           <span class="pl-dot" style="--c:#C2A05E" aria-label="Sun position">☉ Sun · …</span>
           <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon · …</span>
           <span class="pl-dot" style="--c:#3f7d76" aria-label="Mercury position">☿ Mercury · …</span>
@@ -654,7 +655,7 @@
     <section class="section section--alt" aria-labelledby="retro-heading">
       <div class="container">
         <h2 class="section__title" id="retro-heading">Retrograde Calendar</h2>
-        <p class="section__subtitle">Active and upcoming retrograde windows — computed live, never canned</p>
+        <p class="section__subtitle">Active and upcoming <abbr class="ap-gloss" title="Retrograde — the weeks when a planet appears to move backward through the zodiac as seen from Earth (an optical effect of our orbits, not a real reversal)">retrograde</abbr> windows — computed live, never canned</p>
 
         <div id="retrograde-calendar" aria-live="polite">
           <!-- Honesty: these windows are computed live from the VSOP87 engine on
@@ -715,6 +716,26 @@
 
         <div style="text-align:center;margin-top:var(--space-12);">
           <a href="transits.html" class="btn btn--primary btn--lg">View My Personal Transits →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DEEP READING CLOSER — hand off toward the paid reading
+    ============================================================ -->
+    <section class="section section--alt" aria-labelledby="deep-reading-closer-heading">
+      <div class="container" style="text-align:center;">
+        <h2 class="section__title" id="deep-reading-closer-heading">Today's sky is the surface</h2>
+        <p class="section__subtitle" style="margin-bottom:var(--space-6);">
+          The daily reading shows what the sky is doing for everyone today. The <strong>Deep Reading</strong>
+          reads the whole pattern behind every day &mdash; how each transit lands on <em>your</em> chart,
+          drawn from the 10 planets, your Rising, and the houses.
+        </p>
+        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-2);">
+          <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast your free chart
+        </a>
+        <div class="sign-cta-row" style="display:flex;gap:var(--space-3);flex-wrap:wrap;justify-content:center;margin-top:var(--space-5);">
+          <a href="shop.html#deep-reading" class="btn btn--outline">Get your Deep Reading &rarr;</a>
         </div>
       </div>
     </section>

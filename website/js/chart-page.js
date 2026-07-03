@@ -520,7 +520,41 @@
       const d = new URLSearchParams(location.search).get('date');
       if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
       const el = document.getElementById('date-input');
-      if (el && !el.value) { el.value = d; el.dispatchEvent(new Event('input', { bubbles: true })); }
+      if (!el || el.value) return;
+      el.value = d;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      const dateGroup = document.getElementById('group-date');
+      if (dateGroup) dateGroup.classList.add('is-valid');
+
+      // Honour the homepage promise ("time and place sharpen it on the next
+      // step"): acknowledge the carried-over date inline, bring the form into
+      // view, and move focus to the next thing the visitor actually needs — the
+      // birth place (or time, if a place is already set). No silent handoff.
+      const wrap = document.getElementById('chart-form-wrapper');
+      if (wrap && !document.getElementById('chart-handoff-note')) {
+        const note = document.createElement('p');
+        note.id = 'chart-handoff-note';
+        note.className = 'chart-handoff-note';
+        note.setAttribute('role', 'status');
+        note.innerHTML = '<span class="chart-handoff-note__mark" aria-hidden="true">✦</span> ' +
+          'Your birth date carried over from the homepage — add your birth place and time below to sharpen the chart.';
+        const header = wrap.querySelector('.form-glass__header');
+        if (header && header.parentNode) header.parentNode.insertBefore(note, header.nextSibling);
+        else wrap.insertBefore(note, wrap.firstChild);
+      }
+
+      const form = document.getElementById('chart-form');
+      if (form && typeof form.scrollIntoView === 'function') {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      const cityEl = document.getElementById('city-input');
+      const nextField = (cityEl && !cityEl.value) ? cityEl : document.getElementById('time-input');
+      if (nextField) {
+        // Focus after the smooth scroll settles; preventScroll so we don't fight it.
+        setTimeout(function () {
+          try { nextField.focus({ preventScroll: true }); } catch (e) { nextField.focus(); }
+        }, 360);
+      }
     } catch (e) {}
   }
 
@@ -677,7 +711,7 @@
     const items = [
       { planet:'☉ Sun',    sub:'Core Identity',  sign: chart.positions.Sun.sign,  glyph: (chart.positions.Sun.sign || '?').charAt(0), deg: fmtDeg(chart.positions.Sun) },
       { planet:'☽ Moon',   sub:'Inner World',    sign: chart.positions.Moon.sign, glyph: (chart.positions.Moon.sign || '?').charAt(0), deg: fmtDeg(chart.positions.Moon) },
-      { planet:'↑ Rising', sub:'Outward Self',   sign: chart.risingSign,          glyph: (chart.risingSign || '?').charAt(0), deg: '' },
+      { planet:'↑ Rising', sub:'Outward Self',   sign: chart.risingSign,          glyph: (chart.risingSign || '?').charAt(0), deg: (typeof chart.asc === 'number') ? fmtDeg({ degree: chart.asc % 30 }) : '' },
     ];
     el.innerHTML = items.map(it => `
       <article class="big-three-card" aria-label="${esc(it.planet)} in ${esc(it.sign)}">
@@ -706,6 +740,104 @@
     el.classList.add('natal-wheel--loaded');
     const wrap = document.getElementById('natal-wheel-wrap');
     if (wrap) wrap.removeAttribute('aria-busy');
+    paintWheelSky(chart);
+  }
+
+  // ── "Your sky" backdrop behind the wheel (ART-DIRECTION-2026 motif #3) ──────
+  // A dimmed, engine-captured System-preset frame of the birth moment sits behind
+  // the wheel. If a live Orrery3D is mounted (it is not on this page today), we
+  // capture its frame; otherwise we paint a deterministic cool sky seeded from the
+  // birth data — same "your sky, computed in your browser" honesty as the share
+  // card. A still, not a live loop: CLS-safe and reduced-motion-safe by nature.
+  function captureBirthSky(chart) {
+    try {
+      const O = window.Orrery3D;
+      if (!O || typeof O.captureFrame !== 'function' || O.isWebGL === undefined) return null;
+      // Drive the engine to the birth date if it exposes the timeline hook.
+      if (typeof O.setTimelineDays === 'function' && typeof chart.jd === 'number') {
+        const nowJd = E().julianDay(
+          new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate(), 12, 0, 0);
+        O.setTimelineDays(Math.round(chart.jd - nowJd));
+      }
+      const frame = O.captureFrame({ scale: 1 });
+      return (frame && frame.width) ? frame : null;
+    } catch (e) { return null; }
+  }
+
+  function paintDeterministicSky(x, W, H, chart) {
+    const seed = seedFromChart(chart);
+    const elem = (chart.dominant && chart.dominant.element) || 'water';
+    const tint = { fire: '184,90,66', earth: '90,122,72', air: '138,122,106', water: '74,117,128' }[elem] || '74,117,128';
+    // Faint element-tinted glow — the one personalised, non-fabricated cue.
+    const g = x.createRadialGradient(W * 0.5, H * 0.44, 0, W * 0.5, H * 0.5, W * 0.62);
+    g.addColorStop(0, 'rgba(' + tint + ',0.20)');
+    g.addColorStop(0.55, 'rgba(' + tint + ',0.06)');
+    g.addColorStop(1, 'transparent');
+    x.fillStyle = g;
+    x.fillRect(0, 0, W, H);
+    drawStars(x, W, H, 240, seed, W / 1080);
+  }
+
+  function paintWheelSky(chart) {
+    try {
+      const stage = document.querySelector('.chart-wheel-stage');
+      if (!stage || !chart) return;
+      let cv = stage.querySelector('.chart-wheel-stage__sky');
+      if (!cv) {
+        cv = document.createElement('canvas');
+        cv.className = 'chart-wheel-stage__sky';
+        cv.setAttribute('aria-hidden', 'true');
+        stage.insertBefore(cv, stage.firstChild);
+      }
+      const W = 900, H = 900;
+      cv.width = W; cv.height = H;
+      const x = (window.RafCore && window.RafCore.prepExportCtx)
+        ? window.RafCore.prepExportCtx(cv, W, H) : cv.getContext('2d');
+      x.clearRect(0, 0, W, H);
+      const frame = captureBirthSky(chart);
+      if (frame) x.drawImage(frame, 0, 0, W, H);
+      else paintDeterministicSky(x, W, H, chart);
+      stage.classList.add('has-sky');
+    } catch (e) { /* wheel still renders on its own plate */ }
+  }
+
+  const HOUSE_SYSTEM_NAMES = { equal: 'Equal', placidus: 'Placidus', whole: 'Whole Sign' };
+
+  // Rebuild a calculate() input from an already-computed chart so the results-level
+  // house-system switcher works for both fresh casts and restored shared charts
+  // (no dependency on the live form). Same birth moment, new house framework.
+  function inputFromChart(chart, houseSystem) {
+    const parts = String(chart.birthDate || '').split('-').map(Number);
+    let hh = 12, mm = 0, timeKnown = false;
+    if (chart.birthTime && /^\d{1,2}:\d{2}/.test(chart.birthTime)) {
+      const t = chart.birthTime.split(':');
+      hh = parseInt(t[0], 10); mm = parseInt(t[1], 10); timeKnown = true;
+    }
+    return {
+      y: parts[0], m: parts[1], d: parts[2], hh, mm, timeKnown,
+      lat: chart.lat, lon: chart.lon, tz: chart.tz,
+      houseSystem, nodeMode: chart.nodeMode || 'mean',
+      name: chart.name, city: chart.city,
+    };
+  }
+
+  // Recompute this chart under a different house system, in place, without
+  // scrolling away or losing the Houses tab. Only the house cusps, house
+  // occupancy and the wheel's house layer change — the birth data is untouched.
+  function switchHouseSystem(sys) {
+    if (!currentChart || !HOUSE_SYSTEM_NAMES[sys]) return;
+    if (sys === (currentChart.houseSystem || 'equal')) return;
+    try {
+      const next = calculate(inputFromChart(currentChart, sys));
+      if (!next || !next.positions || !next.positions.Sun) return;
+      currentChart = next;
+      renderWheel(currentChart);
+      renderTabs(currentChart); // re-fills tables + re-wires wheel↔table linking
+      if (window.AstroApp) {
+        AstroApp.showToast('House system updated',
+          HOUSE_SYSTEM_NAMES[sys] + ' houses — your planets and signs are unchanged; only the house cusps moved.', 'success');
+      }
+    } catch (e) { /* leave the current chart intact on any failure */ }
   }
 
   const RF = () => window.ReadingFormat;
@@ -909,7 +1041,23 @@
         planetsByHouse[hh].push(k);
       });
       const houseSigns = [];
-      ht.innerHTML = chart.houses.map((cusp, i) => {
+      const curSys = chart.houseSystem || 'equal';
+      const approxNote = chart.birthTime
+        ? ''
+        : ' <span class="house-system-switch__approx">· approximate without a birth time</span>';
+      const switcherHtml =
+        '<div class="house-system-switch" role="group" aria-label="House system — the framework that divides your chart into twelve life areas">' +
+          '<p class="house-system-switch__label"><span class="house-system-switch__name">' +
+            (HOUSE_SYSTEM_NAMES[curSys] || 'Equal') + ' houses</span> — switchable' + approxNote + '</p>' +
+          '<div class="house-system-switch__opts">' +
+            ['equal', 'placidus', 'whole'].map(function (s) {
+              return '<button type="button" class="house-system-switch__btn' +
+                (s === curSys ? ' is-active' : '') + '" data-house-system="' + s +
+                '" aria-pressed="' + (s === curSys) + '">' + HOUSE_SYSTEM_NAMES[s] + '</button>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+      ht.innerHTML = switcherHtml + chart.houses.map((cusp, i) => {
         const sign = E().signOf(cusp);
         houseSigns.push(sign);
         const deg  = cusp % 30;
@@ -925,6 +1073,9 @@
           icon: '<span class="ap-reading-card__aspect-glyph" style="font-size:0.85rem;color:var(--gold);">' + roman(i + 1) + '</span>',
         });
       }).join('');
+      ht.querySelectorAll('[data-house-system]').forEach(function (btn) {
+        btn.addEventListener('click', function () { switchHouseSystem(btn.dataset.houseSystem); });
+      });
       // Element-tint each house card by its cusp sign (purely visual; the cusp
       // sign + degree shown in the meta are unchanged engine values).
       const houseCards = ht.querySelectorAll('.ap-reading-card--placement');
@@ -1282,7 +1433,20 @@
   function initEmailCapture(chart) {
     const host = document.getElementById('email-capture');
     if (!host) return;
+
+    // Honesty + no double-ask: the default headline ("Unlocked your wallpaper?…")
+    // presupposes the visitor already joined via the wallpaper gate above. If they
+    // did, don't ask a second time; if they didn't, swap in a neutral headline so
+    // we never assert a false premise.
+    if (isWallpaperUnlocked()) {
+      host.hidden = true;
+      return;
+    }
     host.hidden = false;            // reveal alongside a cast chart
+    const capTitle = host.querySelector('.email-capture__title');
+    const capSub = host.querySelector('.email-capture__sub');
+    if (capTitle) capTitle.textContent = 'Get cosmic weather for your chart';
+    if (capSub) capSub.innerHTML = 'Monthly transit notes for <em>your</em> chart, deep-reading previews, shop drops &amp; horoscopes when they ship — no spam, unsubscribe anytime. Your birth data stays on your device.';
 
     if (emailCaptureWired) return;  // wire the form exactly once
     emailCaptureWired = true;
@@ -2395,20 +2559,24 @@ host.classList.add('is-done');
   }
 
   // ── Boot ──────────────────────────────────────────────────────────────────
-
-  document.addEventListener('DOMContentLoaded', () => {
+  // Run exactly once. This script is `defer`, so when it executes readyState is
+  // already 'interactive' — without the guard BOTH the readyState branch and the
+  // later DOMContentLoaded listener fired, double-wiring the accordion/node toggle
+  // and calling restoreFromURL()→requestSubmit() twice.
+  let booted = false;
+  function boot() {
+    if (booted) return;
+    booted = true;
     addShareCardButton();
     initNodeToggle();
     initAdvancedAccordion();
     restoreFromURL();
     prefillDateFromURL();
-  });
-  if (document.readyState !== 'loading') {
-    addShareCardButton();
-    initNodeToggle();
-    initAdvancedAccordion();
-    restoreFromURL();
-    prefillDateFromURL();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
   }
 
 })();

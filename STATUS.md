@@ -1,3 +1,25 @@
+# STATUS — AstroPrecise · 2026-07-04 (story architecture, ap-v582)
+
+**State:** 📖 **NARRATIVE SPINE SHIPPED (ap-v582)** — the "scattered" site is now one story a beginner follows toward the Deep Reading. Research fleet (IA/funnel + beginner-comprehension + sign-content + competitor-story + monetization + critic) → 4-agent build.
+
+**THE SPINE — "one moving sky, read at five zooms, each more about you":** (1) the sky is real & moving now (hero + Sky) → (2) your sign is your first slice of it (Signs) → (3) your whole chart is that sky frozen at birth (free Chart) → (4) the sky keeps touching your chart daily (Daily) → (5) one story that ties it together (paid Deep Reading).
+
+**Root cause of "scatter" — FIXED: three different navigations.** Homepage/tool/sign pages each had a different menu + vocabulary; "Readings/Shop/Library" vanished off the homepage. Now ONE unified bar everywhere — **Chart · Sky · Daily · Readings · Library · Shop** (secondary tools in the More flyout). renderNav() in app.js now ALWAYS rebuilds the primary bar from NAV_PRIMARY (was: only when empty, so 5 tool pages kept stale "Home·Chart·Daily·Match·Sky") — single source of truth for real.
+
+**Shipped:**
+- **Nav unified** (js/ap-nav-model.js NAV_PRIMARY + app.js renderNav always-rebuild); verified identical on all pages, 0 errors.
+- **cosmic-story.html de-orphaned** — was a cold dead-end with NO global nav; now loads the shared masthead + footer, relabeled as a FREE SAMPLE (vs the paid Deep Reading), CTAs → chart + shop#deep-reading.
+- **Homepage story pass** — "The instruments" reframed from a tool-dump into a numbered spine path (01 Sky→05 Deep Reading with "why open/next-step" lines); 4 spine bridge lines connect chapters; 17 beginner glosses (rising/house/transit/aspect/natal); HONEST-PRICE FIX (removed fake "Bestseller" DOM badge, prices → "From £X · opening soon" since checkout is dormant).
+- **Sign pages (generator)** — Layer-2 precise astronomy (element/modality/ruling planet/exact 30° ecliptic band/approx dates), Layer-3 "this sign as your Sun vs Moon vs Rising" (the beginner bridge), Layer-4 closer (free chart → Deep Reading); "one of dozens" → precise "ten planets plus Rising and houses". All 12 regenerated.
+- **horoscope + ephemeris** — added the missing Deep Reading closer (beat 4→5); stabilized ephemeris's 4 names → "The Sky"; beginner on-ramps + glosses.
+- **shop.html** — added the id="deep-reading" anchor every CTA depends on; **fake "Bestseller" removed from the baked product image** (regenerated the pill as "PERSONALISED" via PIL; generator badges retokened: Bestseller→Personalised, Trending→12 months).
+
+**QA:** contract 20/20 · npm test green · 9-page sweep: 0 console errors + 0 honesty violations (no arcsecond/fake-badge/privacy-overclaim). SW **ap-v582**, 461 entries.
+
+**Coordination:** chart.html (beat 3→5 conversion) left to the owner's parallel chart-page session; main-lite re-sync to the other parallel session. Deferred: when products go live, set deepReadingUrl/fulfilUrl in js/app.js to flip every dormant CTA to a real checkout.
+
+---
+
 # STATUS — AstroPrecise · 2026-07-04 (first-paint fix, ap-v579)
 
 **State:** ⚡ **FIRST-PAINT BUG FAMILY CLOSED (ap-v579)** — pages that deferred their ENTIRE layout CSS via defer-page-css.js showed unstyled controls + masthead collisions to first-time visitors AND permanently to headless renderers (Googlebot). Audited all 37 deferring pages at worst-case (webdriver = deferred CSS never loads); fixed 16 broken + a site-wide component:

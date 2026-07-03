@@ -1459,7 +1459,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:4px"></span><span style="color:#FFD700;font-weight:600">${name1}</span></span>` +
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#CDAE6A;vertical-align:middle;margin-right:4px"></span><span style="color:#CDAE6A;font-weight:600">${name1}</span></span>` +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.synastry};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.synastry};font-weight:600">${name2}</span></span>`;
     container.appendChild(keyRow);
 
@@ -1478,7 +1478,7 @@
       return div;
     };
 
-    tables.appendChild(makeTableBlock(name1, '#FFD700', pos1, houses1));
+    tables.appendChild(makeTableBlock(name1, '#CDAE6A', pos1, houses1));
     tables.appendChild(makeTableBlock(name2, WARM.synastry, pos2, houses2));
     container.appendChild(tables);
   }
@@ -1550,7 +1550,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:4px"></span><span style="color:#FFD700;font-weight:600">Natal</span></span>' +
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#CDAE6A;vertical-align:middle;margin-right:4px"></span><span style="color:#CDAE6A;font-weight:600">Natal</span></span>' +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.transit};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.transit};font-weight:600">Transits</span></span>`;
     container.appendChild(keyRow);
 
@@ -1569,7 +1569,7 @@
       return div;
     };
 
-    tables.appendChild(makeBlock('NATAL PLANETS',   '#FFD700', natalPos, houses));
+    tables.appendChild(makeBlock('NATAL PLANETS',   '#CDAE6A', natalPos, houses));
     tables.appendChild(makeBlock('TRANSIT PLANETS', WARM.transit, tPos,
       (transitPositions && transitPositions.houses) || houses));
     container.appendChild(tables);

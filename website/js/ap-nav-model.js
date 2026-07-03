@@ -1,44 +1,56 @@
 /**
  * Astro Precise — Navigation IA (single source of truth).
  * Load before app.js: <script src="js/ap-nav-model.js"></script>
- * Desktop: 5 primaries + More flyout. Mobile: 4 bottom tabs (Home/Chart/Daily/Sky) + drawer.
+ *
+ * LOCKED UNIFIED VOCABULARY (same on every page — homepage, tool pages, sign pages):
+ *   Chart · Sky · Daily · Readings · Library · Shop
+ * Targets:
+ *   Chart    → chart.html
+ *   Sky      → ephemeris.html   (the "Sky" instrument; label is always "Sky")
+ *   Daily    → horoscope.html
+ *   Readings → cosmic-story.html (the FREE sample narrative reading)
+ *   Library  → guides.html
+ *   Shop     → shop.html
+ * Secondary tools live in the "More" menu (NAV_EXTRAS), never in the primary bar.
+ * Desktop: 6 primaries + More flyout. Mobile: 4 bottom tabs (Chart/Daily/Sky/Readings) + drawer.
  */
 'use strict';
 
 (function () {
   var NAV_PRIMARY = [
-    ['index.html', 'Home'],
     ['chart.html', 'Chart'],
-    ['horoscope.html', 'Daily'],
-    ['compatibility.html', 'Match'],
     ['ephemeris.html', 'Sky'],
+    ['horoscope.html', 'Daily'],
+    ['cosmic-story.html', 'Readings'],
+    ['guides.html', 'Library'],
+    ['shop.html', 'Shop'],
   ];
 
+  // Secondary tools surfaced in the "More" flyout, grouped.
   var NAV_MORE_EXPLORE = [
-    ['transits.html', 'Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
+    ['transits.html', 'Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
+    ['profile.html', 'Profile'],
     ['charts.html', 'My Charts'],
-    ['lifepath.html', 'Life Path'],
-    ['shop.html', 'Shop'],
-    ['why.html', 'Why'],
   ];
 
   var NAV_BOTTOM_TABS = [
-    ['index.html', 'Home', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
     ['horoscope.html', 'Daily', 'crescent'],
     ['ephemeris.html', 'Sky', 'telescope'],
+    ['cosmic-story.html', 'Readings', 'star4'],
   ];
 
+  // Everything else — the tool sprawl — collapses here, into the "More" drawer/flyout.
   var NAV_EXTRAS = [
-    ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
-    ['guides.html', 'Sky Guides'],
-    ['tonight.html', "Tonight's Sky"], ['this-weeks-sky.html', "This Week's Sky"],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
-    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
-    ['what-is-my-rising-sign.html', 'Rising Sign'], ['synastry.html', 'Synastry'],
+    ['this-weeks-sky.html', "This Week's Sky"], ['tonight.html', "Tonight's Sky"],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
-    ['links.html', 'Links'],
+    ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
+    ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
+    ['lifepath.html', 'Life Path'],
+    ['quiz.html', 'Cosmic Quiz'], ['accuracy.html', 'Accuracy'],
+    ['why.html', 'Why'], ['links.html', 'Links'],
   ];
 
   window.AP_NAV = {

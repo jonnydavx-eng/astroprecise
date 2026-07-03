@@ -135,8 +135,8 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="preload" href="css/ap-horizon-2026.css?v=576" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=576"></noscript>
+  <link rel="preload" href="css/ap-horizon-2026.css?v=581" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=581"></noscript>
   <link rel="stylesheet" href="css/ap-motion.css?v=576">
   <link rel="stylesheet" href="css/ap-micro-2026.css?v=576">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
@@ -274,6 +274,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
           <li><span aria-hidden="true">&#10003;</span> Accurate to about an arcminute (<abbr class="ap-gloss" title="VSOP87 &mdash; a published planetary theory, computed privately on your device">VSOP87</abbr>)</li>
           <li><span aria-hidden="true">&#10003;</span> Private &mdash; computed on your device</li>
         </ul>
+        <p class="ap-spine-bridge hero-spine-bridge">New here? Start with the sky above you tonight &mdash; then watch it become your chart. <a href="#skyChapter" data-ap-jump="skyChapter">See tonight's sky &rarr;</a></p>
       </div>
 
       <!-- Living 3D solar model — lite poster → WebGL upgrade -->
@@ -1059,7 +1060,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         <h3 class="ap-compare-label">Most astrology apps</h3>
         <ul class="ap-compare-list">
           <li>Same paragraph for everyone born in your month</li>
-          <li>Sun sign only &mdash; ignores rising, Moon, and houses</li>
+          <li>Sun sign only &mdash; ignores <abbr class="ap-gloss" title="Your rising sign (ascendant) — the sign climbing the eastern horizon at your birth minute; it shifts every two hours">rising</abbr>, Moon, and <abbr class="ap-gloss" title="Houses — twelve life areas (self, money, relationships…) set by your exact birth time and place">houses</abbr></li>
           <li>Editor-written copy, not your sky</li>
         </ul>
       </article>
@@ -1067,7 +1068,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         <h3 class="ap-compare-label">Astro Precise</h3>
         <ul class="ap-compare-list">
           <li>One chart for your exact minute and birthplace</li>
-          <li>Full natal wheel &mdash; Sun, Moon, rising, aspects, houses</li>
+          <li>Full <abbr class="ap-gloss" title="Natal wheel — the map of where every planet stood at your birth; natal simply means &lsquo;at birth&rsquo;">natal wheel</abbr> &mdash; Sun, Moon, rising, <abbr class="ap-gloss" title="Aspects — the angles planets make to each other (a trine, a square…); they colour how two parts of you interact">aspects</abbr>, houses</li>
           <li><abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> positions computed on your device, written for you</li>
         </ul>
       </article>
@@ -1075,7 +1076,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
     <ul class="ap-why-use" aria-label="Why you should use Astro Precise">
       <li class="ap-reveal" style="--ap-reveal-i: 3"><strong>Your rising changes every two hours.</strong> A monthly horoscope cannot know yours.</li>
       <li class="ap-reveal" style="--ap-reveal-i: 4"><strong>Place matters.</strong> The same birth minute in two cities is a different chart.</li>
-      <li class="ap-reveal" style="--ap-reveal-i: 5"><strong>Minute matters.</strong> Four minutes can shift your ascendant &mdash; precision is personal.</li>
+      <li class="ap-reveal" style="--ap-reveal-i: 5"><strong>Minute matters.</strong> Four minutes can shift your <abbr class="ap-gloss" title="Ascendant — another word for your rising sign; the exact degree of the horizon at your birth minute">ascendant</abbr> &mdash; precision is personal.</li>
       <li class="ap-reveal" style="--ap-reveal-i: 6"><strong>No template filler.</strong> Readings and tools start from your placements, not a sun-sign bucket.</li>
     </ul>
 
@@ -1094,7 +1095,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
       <figure class="plate why-plate ap-reveal" style="--ap-reveal-i: 3" role="listitem">
         <span class="fig-num">03 &middot; Daily</span>
         <p class="plate-title"><a href="horoscope.html">Your daily sky</a></p>
-        <p class="why-plate-desc">Transits measured against your chart &mdash; not a generic forecast. Know when the sky is working with you personally.</p>
+        <p class="why-plate-desc"><abbr class="ap-gloss" title="Transits — where the planets are moving today, measured against your birth chart; how the live sky touches you now">Transits</abbr> measured against your chart &mdash; not a generic forecast. Know when the sky is working with you personally.</p>
       </figure>
     </div>
 
@@ -1113,6 +1114,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         <span><abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> &mdash; positions good to roughly an arcminute (1800&ndash;2200 CE)</span>
       </div>
     </div>
+    <p class="ap-spine-bridge ap-spine-bridge--center">So the only real question is where the sky stood for <em>you</em>. <a href="chart.html">Cast your free chart &rarr;</a></p>
   </div>
 </section>
 
@@ -1179,65 +1181,70 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 <section class="department section-bleed ap-chapter" id="instrumentsChapter" aria-labelledby="contents-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
-      <p class="ap-display-kicker">Everything you can explore</p>
+      <p class="ap-display-kicker">A path, not a menu</p>
       <h2 id="contents-heading" class="ap-chapter-title">The instruments</h2>
-      <p class="ap-chapter-lead" style="max-width:52ch;">
-        Five instruments pointed at the same moving sky &mdash; each starts from your placements, never a template. Free to start, private by design.
+      <p class="ap-chapter-lead" style="max-width:54ch;">
+        Follow them in order and the sky becomes yours: look up tonight, find your sign in it, freeze the whole sky at your birth, then watch it move on you daily &mdash; ending in one reading that ties it together. Free to start, private by design.
       </p>
     </header>
 
-    <ul class="dept-list" role="list">
+    <ol class="dept-list" role="list">
       <li class="ap-reveal" style="--ap-reveal-i: 1">
-        <a href="chart.html" class="dept-list-item" aria-label="Department 01 — Your Chart, free">
+        <a href="ephemeris.html" class="dept-list-item" aria-label="Step 01 — Tonight's sky, free">
           <span class="dept-number">01</span>
           <div>
-            <span class="dept-title">Your Chart</span>
-            <span class="dept-list-dek">Natal chart · Rising sign · Aspects · House cusps</span>
+            <span class="dept-title">Tonight's sky</span>
+            <span class="dept-list-dek">Start here &mdash; see where the planets, Moon phase, and today's <abbr class="ap-gloss" title="Transits — where the planets are moving right now; the live sky overhead">transits</abbr> really are. You'll get the live <abbr class="ap-gloss" title="Live sky positions — computed on your device, not cached">ephemeris</abbr> read from where you stand.</span>
+            <span class="dept-list-next">Open the sky &rarr;</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
       </li>
       <li class="ap-reveal" style="--ap-reveal-i: 2">
-        <a href="ephemeris.html" class="dept-list-item" aria-label="Department 02 — The Sky, free">
+        <a href="aries.html" class="dept-list-item" aria-label="Step 02 — The twelve signs, free">
           <span class="dept-number">02</span>
           <div>
-            <span class="dept-title">The Sky</span>
-            <span class="dept-list-dek">Planetary <abbr class="ap-gloss" title="Live sky positions — computed on your device, not cached">ephemeris</abbr> · Tonight's sky · Transits · Moon phase</span>
+            <span class="dept-title">The twelve signs</span>
+            <span class="dept-list-dek">Your Sun sign is your first slice of that sky. Open a guide to learn what your sign, its planet, and its element actually mean &mdash; before your full chart adds the rest.</span>
+            <span class="dept-list-next">Browse the sign library &rarr;</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
       </li>
       <li class="ap-reveal" style="--ap-reveal-i: 3">
-        <a href="horoscope.html" class="dept-list-item" aria-label="Department 03 — Daily, free">
+        <a href="chart.html" class="dept-list-item" aria-label="Step 03 — Your chart, free">
           <span class="dept-number">03</span>
           <div>
-            <span class="dept-title">Daily</span>
-            <span class="dept-list-dek">Daily horoscope · Life path number · Sign season briefing</span>
+            <span class="dept-title">Your chart</span>
+            <span class="dept-list-dek">The whole sky, frozen at your birth minute. You'll get all ten planets plus your <abbr class="ap-gloss" title="Rising sign (ascendant) — the sign on the eastern horizon at your birth; it changes every two hours">Rising</abbr> and <abbr class="ap-gloss" title="Houses — twelve life areas set by your exact birth time and place">houses</abbr> &mdash; the parts a sun sign can't reach.</span>
+            <span class="dept-list-next">Cast your chart &rarr;</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
       </li>
       <li class="ap-reveal" style="--ap-reveal-i: 4">
-        <a href="cosmic-story.html" class="dept-list-item" aria-label="Department 04 — Readings, paid">
+        <a href="horoscope.html" class="dept-list-item" aria-label="Step 04 — Your daily sky, free">
           <span class="dept-number">04</span>
           <div>
-            <span class="dept-title">Readings</span>
-            <span class="dept-list-dek">Cosmic Story · Deep Reading report · Natal Sky print</span>
-          </div>
-          <span class="dept-badge">Paid</span>
-        </a>
-      </li>
-      <li class="ap-reveal" style="--ap-reveal-i: 5">
-        <a href="aries.html" class="dept-list-item" aria-label="Department 05 — The Library, free">
-          <span class="dept-number">05</span>
-          <div>
-            <span class="dept-title">The Library</span>
-            <span class="dept-list-dek">Sign guides · Planet meanings · House reference</span>
+            <span class="dept-title">Your daily sky</span>
+            <span class="dept-list-dek">The sky keeps touching your chart. Come back for a daily reading measured against <em>your</em> placements &mdash; today's transits, not a generic forecast for a twelfth of the world.</span>
+            <span class="dept-list-next">Read today's sky &rarr;</span>
           </div>
           <span class="dept-badge free">Free</span>
         </a>
       </li>
-    </ul>
+      <li class="ap-reveal" style="--ap-reveal-i: 5">
+        <a href="shop.html#deep-reading" class="dept-list-item" aria-label="Step 05 — The Deep Reading, paid">
+          <span class="dept-number">05</span>
+          <div>
+            <span class="dept-title">The Deep Reading</span>
+            <span class="dept-list-dek">The culmination: every placement in your chart named and interpreted into one keepsake reading. A free Cosmic Story sample shows the voice first; this keeps the whole sky.</span>
+            <span class="dept-list-next">See the Deep Reading &rarr;</span>
+          </div>
+          <span class="dept-badge">Paid</span>
+        </a>
+      </li>
+    </ol>
   </div>
 </section>
 
@@ -1288,6 +1295,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         <li><a href="pisces.html"      class="sign-tile sign-tile--water ap-reveal" style="--ap-reveal-i: 12"><span class="sign-glyph" data-celestial-seal="zodiac:pisces" data-seal-sm aria-hidden="true">&#9811;</span><span class="sign-name">Pisces</span><span class="sign-tile-element">Water</span></a></li>
       </ul>
     </nav>
+    <p class="ap-spine-bridge ap-spine-bridge--center">Your Sun sign is just one of ten planets in your sky &mdash; see them all in your free chart. <a href="chart.html">Cast your chart &rarr;</a></p>
   </div>
 </section>
 
@@ -1359,31 +1367,31 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
     <header class="ap-chapter-head ap-reveal">
       <p class="ap-display-kicker">The shop</p>
       <h2 id="shop-heading" class="ap-chapter-title">Your chart, made tangible</h2>
-      <p class="ap-chapter-lead" style="max-width:50ch;">
-        Readings, prints, and keepsakes plotted from your natal wheel &mdash; the sky above, stopped at your minute and made to keep. Digital editions in minutes; prints ship in days.
+      <p class="ap-chapter-lead" style="max-width:52ch;">
+        Readings, prints, and keepsakes plotted from your <abbr class="ap-gloss" title="Natal wheel — the map of where every planet stood at your birth">natal wheel</abbr> &mdash; the sky above, stopped at your minute and made to keep. The shop is opening soon; the free tools work today.
       </p>
     </header>
     <div class="ap-shop-featured" aria-label="Featured editions">
       <article class="ap-shop-featured__card ap-reveal" style="--ap-reveal-i: 1">
         <a href="cosmic-story.html" class="ap-shop-featured__visual">
           <img src="img/shop/product-cosmic-story.svg?v=492" alt="Cosmic Story — personalised written reading from your chart" width="800" height="450" loading="lazy" decoding="async" />
-          <span class="ap-shop-featured__badge">Instant PDF</span>
+          <span class="ap-shop-featured__badge">Free sample</span>
         </a>
         <div class="ap-shop-featured__copy">
           <h3 class="ap-shop-featured__name"><a href="cosmic-story.html">Cosmic Story</a></h3>
-          <p class="ap-shop-featured__hook">Four pages of plain-language chart interpretation — written for you alone.</p>
-          <span class="ap-shop-featured__price">£12</span>
+          <p class="ap-shop-featured__hook">Four pages of plain-language chart interpretation, written for you alone. Read a free sample now.</p>
+          <span class="ap-shop-featured__price">From £12 &middot; opening soon</span>
         </div>
       </article>
       <article class="ap-shop-featured__card ap-reveal" style="--ap-reveal-i: 2">
-        <a href="shop.html" class="ap-shop-featured__visual">
-          <img src="img/shop/product-deep-reading.jpg?v=188" alt="Deep Natal Reading — full delineation PDF" width="960" height="540" loading="lazy" decoding="async" />
-          <span class="ap-shop-featured__badge ap-shop-featured__badge--best">Bestseller</span>
+        <a href="shop.html#deep-reading" class="ap-shop-featured__visual">
+          <img src="img/shop/product-deep-reading.jpg?v=580" alt="Deep Natal Reading — full delineation PDF" width="960" height="540" loading="lazy" decoding="async" />
+          <span class="ap-shop-featured__badge">The full sky</span>
         </a>
         <div class="ap-shop-featured__copy">
-          <h3 class="ap-shop-featured__name"><a href="shop.html">Deep Reading</a></h3>
-          <p class="ap-shop-featured__hook">Every planet, house, and major aspect — thirteen pages from your exact sky.</p>
-          <span class="ap-shop-featured__price">£28</span>
+          <h3 class="ap-shop-featured__name"><a href="shop.html#deep-reading">Deep Reading</a></h3>
+          <p class="ap-shop-featured__hook">Every planet, house, and major aspect named and interpreted &mdash; your whole chart in one keepsake PDF.</p>
+          <span class="ap-shop-featured__price">From £28 &middot; opening soon</span>
         </div>
       </article>
       <article class="ap-shop-featured__card ap-reveal" style="--ap-reveal-i: 3">
@@ -1394,7 +1402,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         <div class="ap-shop-featured__copy">
           <h3 class="ap-shop-featured__name"><a href="shop.html">Natal Sky Print</a></h3>
           <p class="ap-shop-featured__hook">Your sky at birth, engraved as a letterpress-style A4 keepsake.</p>
-          <span class="ap-shop-featured__price">£18</span>
+          <span class="ap-shop-featured__price">From £18 &middot; opening soon</span>
         </div>
       </article>
     </div>
@@ -1405,14 +1413,15 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
       </div>
       <div class="ap-shop-trust__item" role="listitem">
         <span class="ap-shop-trust__mark" aria-hidden="true">✓</span>
-        <span>Digital readings delivered as PDF within minutes</span>
+        <span>Digital readings will arrive as a PDF &mdash; checkout opening soon</span>
       </div>
       <div class="ap-shop-trust__item" role="listitem">
         <span class="ap-shop-trust__mark" aria-hidden="true">✓</span>
         <span>No template filler — written for your placements alone</span>
       </div>
     </div>
-    <div class="shop-browse-row" style="margin-top: var(--sp-5);">
+    <p class="ap-spine-bridge ap-spine-bridge--center">Everything so far has been the sky in pieces &mdash; the Deep Reading is the one story that ties them together. <a href="shop.html#deep-reading">See the Deep Reading &rarr;</a></p>
+    <div class="shop-browse-row" style="margin-top: var(--sp-4);">
       <a href="shop.html" class="btn-quiet">Browse the shop &rarr;</a>
     </div>
   </div>
@@ -1440,7 +1449,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         <h3>Shop</h3>
         <ul>
           <li><a href="cosmic-story.html">Cosmic Story</a></li>
-          <li><a href="shop.html">Deep Reading</a></li>
+          <li><a href="shop.html#deep-reading">Deep Reading</a></li>
           <li><a href="shop.html">Natal Sky Print</a></li>
         </ul>
       </div>
