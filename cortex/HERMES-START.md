@@ -20,6 +20,22 @@ catch anything weak. This file is everything you need to start.
      its edits yourself. Works with plain Ollama/LM Studio chat. Start here.
    - **Agent mode** (Hermes inside Aider / Cline / Continue / Open Interpreter, etc.):
      Hermes reads/edits files and runs commands itself. More setup, more autonomous.
+     For MCP-capable harnesses, the repo ships **`.mcp.json`** at the root registering
+     the cortex tools server (`cortex_status`, `cortex_missions`, `cortex_validate`,
+     `cortex_shared_learnings`) — point your harness at the project root and it loads
+     automatically. Requires Node 18+ on the machine. Smoke-test it any time with
+     `node cortex/tools/mcp-smoke.mjs`.
+
+## Desktop-side checklist (verify on YOUR machine — I can't see it from the repo)
+
+Most Hermes "glitches" are one of these local things:
+- [ ] **Node 18+ installed** — `node -v`. The tools + MCP server need it.
+- [ ] **Repo cloned + on the branch** — `git rev-parse --abbrev-ref HEAD`.
+- [ ] **Model reachable** — Ollama running (`ollama list`), or the free API key/endpoint
+      set and not rate-limited. A stalling/looping model is usually here.
+- [ ] **Harness working dir = repo root** — so relative paths (`cortex/...`, `.mcp.json`)
+      resolve. Wrong cwd = "file not found" glitches.
+- [ ] **Harness model = Nemotron** and (agent mode) MCP enabled so `.mcp.json` loads.
 
 ## 1. Give Hermes the bootstrap prompt
 
