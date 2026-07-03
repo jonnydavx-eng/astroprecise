@@ -26,6 +26,8 @@ then open only the files you need (progressive disclosure).*
 | `skills/ship-website-change.md` | The full path from edit to verified-live for anything under website/** — tokens, sw.js, test gates, Actions deploy, live check. | skill, astro-web, deploy |
 | `skills/verify-before-claiming.md` | Before recording a conclusion, marking a mission done, or trusting a doc — attempt to refute it against the actual repo first. | skill, verification, quality |
 | `trajectories/README.md` | Append-only per-mission decision logs (JSONL) — queryable telemetry with jq, no server. | telemetry, trajectory, protocol |
+| `verdicts/M11.md` | - reviewer: verifier worker (Sonnet tier) — different model than owner (Claude/Opus) |  |
+| `verdicts/M9.md` | - reviewer: verifier worker (Sonnet tier) — different model than owner (Claude/Opus) |  |
 | `verdicts/README.md` | Cross-model verdicts — a different model than the mission owner must review before a mission is trusted done. | quality, verdict, verification, protocol |
 | `wiki/10x-roadmap.md` | mission-control dashboard design, multi-agent orchestration — 2024–2026 web sources) |  |
 | `wiki/astroprecise-business.md` | catalog pass, spot-checked against STATUS.md and git history). |  |
@@ -34,4 +36,4 @@ then open only the files you need (progressive disclosure).*
 | `wiki/mission-plan.md` | as missions complete (move them to log.md with proof) or priorities change.* |  |
 | `wiki/operations.md` | Cortex sessions run in **ephemeral remote containers** (Claude Code on the web / |  |
 
-*28 documents indexed.*
+*30 documents indexed.*

@@ -46,18 +46,31 @@ jobs:
           echo "Memory file sizes (caps: per-agent Learnings ~60, shared ~120):"
           wc -l cortex/memory/*.md || true
       - name: MCP server smoke test
+        run: node cortex/tools/mcp-smoke.mjs
+
+  # Secrets can't be referenced in a job-level `if:` (GitHub limitation), so a
+  # tiny gate job reads the secret into an output the `agent` job can test.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      has_key: ${{ steps.k.outputs.has_key }}
+    steps:
+      - id: k
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          printf '%s\n' \
-            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
-            '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"cortex_validate"}}' \
-            | node cortex/mcp/cortex-server.mjs | grep -q '"pass": true' \
-            && echo "MCP server OK" || (echo "::error::MCP server smoke test failed" && exit 1)
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "has_key=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_key=false" >> "$GITHUB_OUTPUT"
+            echo "ANTHROPIC_API_KEY not set — maintenance agent stays dormant (validators still ran)."
+          fi
 
   agent:
-    needs: checks
+    needs: [checks, gate]
     runs-on: ubuntu-latest
     # Activates only once the owner adds the ANTHROPIC_API_KEY repo secret.
-    if: ${{ github.event_name != 'push' && secrets.ANTHROPIC_API_KEY != '' }}
+    if: ${{ github.event_name != 'push' && needs.gate.outputs.has_key == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

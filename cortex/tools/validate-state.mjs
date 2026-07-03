@@ -34,11 +34,26 @@ else {
   }
   // projects
   const projectIds = new Set((S.projects || []).map(p => p.id));
+  // current unfinished-mission count per project (open + waiting-owner + running)
+  const UNFINISHED = new Set(['open', 'waiting-owner', 'running']);
+  const unfinishedByProject = {};
+  (S.missions || []).forEach(m => {
+    if (UNFINISHED.has(m.status)) unfinishedByProject[m.project] = (unfinishedByProject[m.project] || 0) + 1;
+  });
   (S.projects || []).forEach((p, i) => {
     if (!p.id) errors.push(`project[${i}] missing id`);
-    if (p.trend && (!Array.isArray(p.trend) || p.trend.some(n => typeof n !== 'number')))
-      errors.push(`project ${p.id}: trend must be an array of numbers`);
     if (!['green', 'amber', 'grey'].includes(p.health)) errors.push(`project ${p.id}: bad health "${p.health}"`);
+    if (p.trend) {
+      if (!Array.isArray(p.trend) || p.trend.some(n => typeof n !== 'number'))
+        errors.push(`project ${p.id}: trend must be an array of numbers`);
+      else {
+        // honesty invariant: the trend's endpoint must equal the real current count
+        const last = p.trend[p.trend.length - 1];
+        const actual = unfinishedByProject[p.id] || 0;
+        if (last !== actual)
+          errors.push(`project ${p.id}: trend ends at ${last} but current unfinished missions = ${actual} (stale/fabricated trend)`);
+      }
+    }
   });
   // missions
   const ids = new Set();

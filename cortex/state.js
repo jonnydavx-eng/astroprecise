@@ -26,7 +26,9 @@ window.CORTEX_STATE = {
 
   // trend = count of unfinished missions (open+waiting-owner+running) for this
   // project at each recorded snapshot, oldest first. Burn-down: lower is better.
-  // Honest — derived from this session's real mission log.
+  // Honest — derived from the real mission log. INVARIANT (enforced by
+  // validate-state.mjs): the LAST element must equal the project's current
+  // unfinished-mission count, so a stale trend can't be committed.
   projects: [
     {
       id: "astro-web", name: "AstroPrecise — Website",
@@ -50,7 +52,7 @@ window.CORTEX_STATE = {
       id: "cortex", name: "Cortex — Mission Control",
       summary: "The multi-agent brain: shared state, memory, skills, autonomy. Coordinates Claude, Grok, Hermes through git files, no server.",
       status: "active", version: "v3", health: "green",
-      trend: [5, 4, 3, 2]
+      trend: [5, 4, 2, 1]
     }
   ],
 
@@ -78,13 +80,13 @@ window.CORTEX_STATE = {
       step: "Shared state + graphical dashboard + agent wiring protocol", next: "Superseded by v3 (M9)", proof: "merged in 14b1dbb" },
     { id: "M8", title: "Agent memory + skills layer", project: "cortex", status: "done", owner: "Claude", blockedOn: null,
       step: "Per-agent memory, shared-learnings, 4 skill playbooks; protocol updated", next: "Restructured to 3-tier in M9", proof: "cortex/memory/*, cortex/skills/*" },
-    { id: "M9", title: "10x Wave 1 — dashboard v3, 3-tier memory, contracts, trajectories", project: "cortex", status: "done", owner: "Claude", blockedOn: null,
-      step: "Shipped: exception-first dashboard, redundant status, freshness, sparklines, progressive disclosure; 3-tier memory + INDEX; task contracts; trajectory logs", next: "In this PR", proof: "cortex/mission-control.html, memory/*, trajectories/, INDEX.md" },
+    { id: "M9", title: "10x Wave 1 — dashboard v3, 3-tier memory, contracts, trajectories", project: "cortex", status: "done", owner: "Claude", blockedOn: null, gated: true,
+      step: "Shipped + cross-model verified: exception-first dashboard, redundant status, freshness, sparklines, progressive disclosure; 3-tier memory + INDEX; contracts; trajectories. Verifier found 2 issues, both fixed.", next: "In this PR", proof: "verdicts/M9.md; mission-control.html, memory/*, trajectories/" },
     { id: "M10", title: "10x Wave 2 — Actions autonomy + verdict gate", project: "cortex", status: "waiting-owner", owner: "Claude", blockedOn: "owner",
       step: "Workflow + maintenance playbook + verdict/validate scripts written and committed", next: "Owner: add repo secret ANTHROPIC_API_KEY, then the weekly maintenance agent goes live", proof: ".github/workflows/cortex-maintenance.yml, cortex/tools/*",
       action: "GitHub → repo Settings → Secrets and variables → Actions → add ANTHROPIC_API_KEY. That activates the autonomous weekly maintenance agent." },
-    { id: "M11", title: "10x Wave 3 — evals, branch-per-mission, MCP server", project: "cortex", status: "done", owner: "Claude", blockedOn: null,
-      step: "Shipped: cortex/evals golden missions + rubric, branch-per-mission convention, stdio MCP server (no deps), decay/eviction skill", next: "Agents adopt conventions on next missions", proof: "cortex/evals/, cortex/mcp/cortex-server.mjs, skills/memory-distill.md" }
+    { id: "M11", title: "10x Wave 3 — evals, branch-per-mission, MCP server", project: "cortex", status: "done", owner: "Claude", blockedOn: null, gated: true,
+      step: "Shipped + cross-model verified: evals golden missions + rubric, branch-per-mission, stdio MCP server (no deps), decay skill. Verifier found a CI smoke-test bug + secret-gating bug, both fixed.", next: "Agents adopt conventions on next missions", proof: "verdicts/M11.md; cortex/mcp/cortex-server.mjs, tools/mcp-smoke.mjs, evals/" }
   ],
 
   agents: [
@@ -98,6 +100,7 @@ window.CORTEX_STATE = {
 
   // Prepend newest first; keep <= 12 entries, prune the tail.
   activity: [
+    { date: "2026-07-03", who: "verifier + Claude", what: "Cross-model verdict on the 10x build caught 3 real bugs (CI smoke-test grep, secret-in-if, stale trend) — all fixed; verdicts recorded, gate now enforced on M9/M11" },
     { date: "2026-07-03", who: "Claude", what: "10x SHIPPED (all 3 waves): dashboard v3, 3-tier compounding memory, task contracts, trajectory logs, Actions maintenance agent, verdict gate, evals, MCP server (M9–M11)" },
     { date: "2026-07-03", who: "Claude + 3 researchers", what: "10x roadmap researched and written across three pillars (M9 planned)" },
     { date: "2026-07-03", who: "Claude", what: "Memory + skills layer: per-agent memory, shared-learnings, 4 playbooks (M8)" },
