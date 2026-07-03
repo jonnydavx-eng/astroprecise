@@ -53,7 +53,8 @@ window.CORTEX_STATE = {
     { id: "M5", title: "Satellite dashboard build", project: "sat-dash", status: "open", owner: "unassigned", step: "Greenfield", next: "Owner: define what the dashboard should show", proof: "—" },
     { id: "M6", title: "Palette token hygiene sweep", project: "astro-web", status: "open", owner: "any agent", step: "Warm hexes catalogued in shipped JS renderers", next: "Owner call: intentional aesthetics or leftovers? Then sweep + visual QA", proof: "cortex/index.md lint finding" },
     { id: "M7", title: "Mission Control v2", project: "cortex", status: "done", owner: "Claude", step: "Shared state + graphical dashboard + agent wiring protocol", next: "All agents adopt the state protocol (see agents.md)", proof: "cortex/state.js, mission-control.html, agents.md; merged in 14b1dbb" },
-    { id: "M8", title: "Agent memory + skills layer", project: "cortex", status: "done", owner: "Claude", step: "Per-agent memory, shared-learnings distill spot, 4 skill playbooks; protocol + bootstrap prompt updated", next: "Grok/Hermes start writing their own memory files via the bootstrap prompt", proof: "cortex/memory/*, cortex/skills/*" }
+    { id: "M8", title: "Agent memory + skills layer", project: "cortex", status: "done", owner: "Claude", step: "Per-agent memory, shared-learnings distill spot, 4 skill playbooks; protocol + bootstrap prompt updated", next: "Grok/Hermes start writing their own memory files via the bootstrap prompt", proof: "cortex/memory/*, cortex/skills/*" },
+    { id: "M9", title: "Cortex 10x — Wave 1", project: "cortex", status: "open", owner: "Claude", step: "Researched (3 expert passes) + roadmap written", next: "Owner: approve roadmap; then ship Wave 1 (dashboard v3, 3-tier memory, task contracts, trajectory logs)", proof: "cortex/wiki/10x-roadmap.md" }
   ],
 
   agents: [
@@ -66,6 +67,7 @@ window.CORTEX_STATE = {
 
   // Prepend newest first; keep ≤ 12 entries, prune the tail.
   activity: [
+    { date: "2026-07-03", who: "Claude + 3 researchers", what: "10x roadmap researched and written: dashboard v3, compounding memory, Actions autonomy (M9 opened)" },
     { date: "2026-07-03", who: "Claude", what: "Memory + skills layer: per-agent memory, shared-learnings, 4 playbooks; agents now learn across sessions (M8)" },
     { date: "2026-07-03", who: "jonnydavx + Claude", what: "PR #6 MERGED — cortex hub permanent on main (14b1dbb); M1 done" },
     { date: "2026-07-03", who: "Claude", what: "Mission Control v2: shared state file, graphical dashboard, agent wiring protocol (M7)" },

@@ -19,6 +19,7 @@ update it whenever a wiki page is added, renamed, or retired.
 | Page | Covers | Last updated |
 |---|---|---|
 | [mission-plan.md](wiki/mission-plan.md) | **Active mission plan** — current missions, status, standing orders | 2026-07-02 |
+| [10x-roadmap.md](wiki/10x-roadmap.md) | Researched 10x upgrade plan: dashboard v3, compounding memory, autonomy via Actions — 3 waves | 2026-07-03 |
 | [operations.md](wiki/operations.md) | How the Cortex system works: environment reality, delegation policy, goals/loops rules, ingest/query/lint procedures | 2026-07-02 |
 | [astroprecise-state.md](wiki/astroprecise-state.md) | Current technical state of the AstroPrecise site + app: deployment truth, palette, versioning, known doc contradictions | 2026-07-02 |
 | [astroprecise-business.md](wiki/astroprecise-business.md) | Launch/monetization strategy synthesized from the 21 root planning docs, with phase gates and doc map | 2026-07-02 |
