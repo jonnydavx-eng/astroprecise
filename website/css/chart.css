@@ -20,7 +20,7 @@
   box-shadow:
     0 0 48px rgba(194, 160, 94, 0.18),
     0 0 120px rgba(92, 74, 110, 0.2),
-    inset 0 0 60px rgba(5, 4, 6, 0.45);
+    inset 0 0 60px rgba(12, 16, 22, 0.45);
 }
 
 .page-chart .natal-wheel-container::before {
@@ -280,7 +280,7 @@
 }
 
 .ap-chart-table tbody tr:nth-child(even) {
-  background: rgba(5, 4, 6, 0.35);
+  background: rgba(12, 16, 22, 0.35);
 }
 
 /* Element-coded left edge — a quiet observatory cue, not a rainbow. The first

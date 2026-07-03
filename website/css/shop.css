@@ -137,7 +137,7 @@
   z-index: 40;
   padding: var(--space-2) 0;
   margin-bottom: var(--space-4);
-  background: linear-gradient(180deg, rgba(5, 4, 6, 0.92) 0%, rgba(5, 4, 6, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(12, 16, 22, 0.92) 0%, rgba(12, 16, 22, 0.78) 100%);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
@@ -282,7 +282,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(5, 4, 6, 0.55) 100%);
+  background: linear-gradient(180deg, transparent 55%, rgba(12, 16, 22, 0.55) 100%);
   pointer-events: none;
 }
 .shop-card__img-glyph {
@@ -546,7 +546,7 @@ button.ap-art-card {
   text-transform: uppercase;
   /* Outlined-gold pill — never a second filled badge alongside "Best value". */
   color: var(--ap-gold-bright, #D4B84A);
-  background: rgba(5, 4, 6, 0.72);
+  background: rgba(12, 16, 22, 0.72);
   border: 1px solid rgba(194, 160, 94, 0.55);
   font-weight: 700;
   border-radius: 99px;
@@ -702,7 +702,7 @@ button.ap-art-card {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold-pale);
-  background: rgba(5, 4, 6, 0.65);
+  background: rgba(12, 16, 22, 0.65);
 }
 
 /* ── Catalogue section ── */
@@ -764,7 +764,7 @@ button.ap-art-card {
    Outlined/text-only in muted silver so the gold accent stays meaningful. */
 .shopc-card__badge--quiet {
   color: var(--silver-dim);
-  background: rgba(5, 4, 6, 0.62);
+  background: rgba(12, 16, 22, 0.62);
   border: 1px solid var(--border, rgba(194, 160, 94, 0.18));
   font-weight: 600;
 }
@@ -1143,7 +1143,7 @@ button.ap-art-card {
   position: fixed;
   inset: 0;
   /* Branded overlay recipe — one intentional scrim across cart + modal. */
-  background: var(--scrim, rgba(5, 4, 6, 0.84));
+  background: var(--scrim, rgba(12, 16, 22, 0.84));
   -webkit-backdrop-filter: var(--scrim-blur, blur(7px));
   backdrop-filter: var(--scrim-blur, blur(7px));
   opacity: 0;
@@ -1288,7 +1288,7 @@ button.ap-art-card {
   position: fixed;
   inset: 0;
   /* Branded overlay recipe — same intentional scrim as the cart drawer. */
-  background: var(--scrim, rgba(5, 4, 6, 0.84));
+  background: var(--scrim, rgba(12, 16, 22, 0.84));
   -webkit-backdrop-filter: var(--scrim-blur, blur(7px));
   backdrop-filter: var(--scrim-blur, blur(7px));
   display: none;

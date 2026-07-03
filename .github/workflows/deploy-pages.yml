@@ -87,11 +87,25 @@ jobs:
 
       # Pages is configured to serve the gh-pages branch from its root,
       # so publish the built tree there instead of using actions/deploy-pages.
+      #
+      # force_orphan (added 2026-07-03): GitHub's INTERNAL "pages build and
+      # deployment" run (legacy branch pipeline, build_type=legacy) failed
+      # intermittently with a bare "Page build failed." at ap-v566 (07-02),
+      # ap-v568 and ap-v574 (07-03, two errored builds 12:01/12:02Z), leaving
+      # the old build live until a manual POST /repos/.../pages/builds retry.
+      # Audit found .nojekyll present, no symlinks, no oversized files — the
+      # one anomaly was unbounded gh-pages history (199 deploy commits), a
+      # known trigger for slow/flaky legacy Pages builds. force_orphan keeps
+      # gh-pages a single fresh commit per deploy. Safe for the custom domain:
+      # CNAME + .nojekyll live in website/ and ship inside dist/ every build.
+      # Rollback (per STATUS.md 2026-07-02): remove force_orphan; if deploys
+      # break entirely, revert publish_dir to ./website + restore exclude_assets.
       - name: Publish dist/ to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          force_orphan: true
 
       - name: Notify search engines (IndexNow)
         if: success()

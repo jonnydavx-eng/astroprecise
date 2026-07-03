@@ -514,7 +514,7 @@
     .cw-aurora__src { font-size: 0.6rem; }
     .cw-pop {
       position: absolute; z-index: 40; max-width: 300px; padding: 1rem 1.1rem 0.9rem;
-      background: var(--void, #0d0a07); border: 1px solid rgba(194, 160, 94,0.35);
+      background: var(--void, #0C1016); border: 1px solid rgba(194, 160, 94,0.35);
       border-radius: var(--radius-xl, 20px); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
       -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
     }

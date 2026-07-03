@@ -195,7 +195,7 @@ html.ap-fonts-ready .page-shop .shop-section-title {
   z-index: 40;
   padding: var(--space-2) 0;
   margin-bottom: var(--space-4);
-  background: linear-gradient(180deg, rgba(5, 4, 6, 0.92) 0%, rgba(5, 4, 6, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(12, 16, 22, 0.92) 0%, rgba(12, 16, 22, 0.78) 100%);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
@@ -375,7 +375,7 @@ html.ap-fonts-ready .page-shop .shop-section-title {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 55%, rgba(5, 4, 6, 0.55) 100%);
+  background: linear-gradient(180deg, transparent 55%, rgba(12, 16, 22, 0.55) 100%);
   pointer-events: none;
 }
 .shop-card__img-glyph {
@@ -643,7 +643,7 @@ img.shopc-card__preview:not([src]) {
   text-transform: uppercase;
   /* Outlined-gold pill — never a second filled badge alongside "Best value". */
   color: var(--ap-gold-bright, #D4B84A);
-  background: rgba(5, 4, 6, 0.72);
+  background: rgba(12, 16, 22, 0.72);
   border: 1px solid rgba(194, 160, 94, 0.55);
   font-weight: 700;
   border-radius: 99px;
@@ -971,7 +971,7 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
   padding: 8px 10px;
   border-radius: var(--radius-md);
   border: 1px solid rgba(168,158,136,0.28);
-  background: rgba(5,4,6,0.8);
+  background: rgba(12,16,22,0.8);
   color: var(--gold-pale);
   font-family: var(--font-body);
   font-size: 0.78rem;
@@ -1289,7 +1289,7 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
   border-radius: 99px;
   padding: 2px 8px;
   /* Outlined-gold pill — drops the off-brand sage for the parchment/gold system. */
-  background: rgba(5, 4, 6, 0.72);
+  background: rgba(12, 16, 22, 0.72);
   border: 1px solid rgba(194, 160, 94, 0.55);
   color: var(--ap-gold-bright, #D4B84A);
 }

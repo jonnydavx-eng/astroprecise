@@ -46,11 +46,9 @@
       --font-serif:'Cormorant Garamond',Georgia,serif;--font-ui:'Inter',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,monospace;
       --sp-1:8px;--sp-2:16px;--sp-3:24px;--sp-4:32px;--sp-5:40px;--sp-6:48px;--sp-8:64px;
     }
-    /* Lift page content above the opaque fixed body::before vignette in
-       main-lite.css (z-index:0) — static-flow text otherwise paints UNDER it.
-       (Same latent issue swallows the hero eyebrow/standfirst on
-       this-weeks-sky.html; its h1 only survives via contain:layout.) */
-    main#main-content{position:relative;z-index:1;}
+    /* (2026-07-03) Former main#main-content z-index workaround removed — the
+       body::before vignette is fixed at the source in main-lite.css
+       (body{z-index:0} + body::before{z-index:-1}), so content paints above it. */
     /* Page hero — compact library masthead */
     .gd-hero{text-align:center;padding:clamp(44px,7vw,76px) 16px 4px;}
     .gd-hero__eyebrow{font-family:'Cinzel',var(--font-ui);font-size:max(12px,0.74rem);font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:var(--brass);margin:0 0 10px;}
@@ -111,7 +109,7 @@
     <!-- ============================================================
          HERO — compact library masthead
     ============================================================ -->
-    <section class="gd-hero" aria-labelledby="page-title">
+    <section class="gd-hero">
       <div class="container">
         <p class="gd-hero__eyebrow">The Library</p>
         <h1 id="page-title">Sky Guides</h1>
@@ -126,7 +124,8 @@
     <!-- ============================================================
          SKY GUIDES — full library grid (rendered by js/sky-guides.js)
     ============================================================ -->
-    <section class="sky-guides-block" id="skyGuidesWrap" aria-labelledby="page-title">
+    <section class="sky-guides-block" id="skyGuidesWrap" aria-labelledby="guides-catalogue-title">
+      <h2 id="guides-catalogue-title" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">All sky guides</h2>
       <div class="container">
         <div id="skyGuidesFilter" class="sg-filter-slot"></div>
         <div class="sg-layout">

@@ -141,7 +141,7 @@ body {
   padding: 0.4rem 0.8rem;
   border-radius: 8px;
   border: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
-  background: var(--ap-void-mid, #0D0A07);
+  background: var(--ap-void-mid, #121826);
   color: var(--ap-gold-bright, #D4B84A);
   font-size: 0.75rem;
   font-weight: 600;
@@ -168,7 +168,7 @@ body {
   bottom: 1.25rem;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--ap-void-mid, #0D0A07);
+  background: var(--ap-void-mid, #121826);
   border: 1px solid var(--ap-gold-core, #C2A05E);
   color: var(--ap-gold-parchment, #EFE3C0);
   padding: 0.5rem 1rem;

@@ -1,3 +1,18 @@
+# STATUS — AstroPrecise · 2026-07-04 (fix round, ap-v578)
+
+**State:** 🧹 **BUG-FIX ROUND SHIPPED (ap-v578)** — every known open defect closed; full-site sweep clean (all ~50 pages: zero console errors, zero page errors, zero failed local requests).
+
+- **Invisible-text vignette bug FIXED AT SOURCE** (was LIVE on this-weeks-sky.html AND — newly discovered — tonight.html): main.css/main-lite.css `body::before` opaque wash painted over static-flow text. Fix: `body{z-index:0}` + `body::before{z-index:-1}` (the pair is load-bearing — never revert one without the other). All 38 main-lite pages pass a bright-pixel paint audit; guides.html workaround removed (0-pixel diff). ⚠ main-lite.css has drifted from main.css lite markers — do NOT regen via build-main-lite.mjs without re-syncing (chip filed).
+- **GitHub Pages deploy flake root-caused**: legacy Pages pipeline + 199 commits of unbounded gh-pages history (the v574 incident's two `errored` internal builds visible in the API; .nojekyll/file-size suspects ruled out). deploy-pages.yml now ships `force_orphan: true` — single-commit gh-pages from this deploy onward.
+- **Retired warm hexes retokened** in 21 CSS files (117/101 lines): chart-critical dead gold rules deleted, email sticky bar + modals + scrims + inks all cool-void; archive pages (index-classic/full) deliberately keep their look; JS canvas paints out of scope as documented. Verified visually identical apart from intended warm→cool scrim shifts.
+- **guides.html axe → 0 violations** (heading order + landmark uniqueness). Stale `?v=562/567` cache-busters aligned to v578 (they bypassed the SW precache — no ignoreSearch).
+
+**QA:** contract 20/20 · npm test green · 50-page sweep clean · builder audits: 38-page paint check, before/after retoken parity, orphan-push safety pre-verified (CNAME + .nojekyll ship inside every dist commit). SW **ap-v578**, 461 entries.
+
+**Note:** this deploy's gh-pages push is the FIRST orphan push (history rewrite — deploy snapshots only, source history lives on main).
+
+---
+
 # STATUS — AstroPrecise · 2026-07-03 (night)
 
 **State:** ✨ **MASTERPIECE PASS SHIPPED (ap-v577)** — research-driven brand + model + copy elevation. A 6-agent research fleet (competitor brand analysis, public-sentiment mining, logo craft, conversion-copy evidence, 3D craft audit, completeness critic) fed three parallel builders. Verified integrated: contract 20/20, npm green, zero console errors, HUD above the 1440×900 fold.

@@ -72,7 +72,7 @@
       .horoscope-subscribe__grid { grid-template-columns: 1fr; }
     }
     .horoscope-subscribe__preview {
-      background: rgba(5, 4, 6, 0.55);
+      background: rgba(12, 16, 22, 0.55);
       border: 1px solid rgba(168, 158, 136, 0.12);
       border-radius: 14px;
       padding: var(--space-5, 1.25rem);
@@ -729,7 +729,7 @@
     .cta-btn:hover { transform: translateY(-2px); }
     .cta-btn--primary {
       background: linear-gradient(135deg, var(--ap-gold-core, #C2A05E), var(--ap-gold-parchment, #EFE3C0));
-      color: var(--ap-void-mid, #0D0A07);
+      color: var(--ap-void-mid, #121826);
       box-shadow: 0 0 16px var(--ap-gold-a22, rgba(194, 160, 94, 0.25));
     }
     .cta-btn--primary:hover { box-shadow: 0 0 28px var(--ap-gold-a40, rgba(194, 160, 94, 0.45)); }
@@ -772,7 +772,7 @@
     .srp-chart-cta__btn {
       display: inline-block; padding: 0.6rem 1.6rem;
       background: linear-gradient(135deg, #C2A05E 0%, #EFE3C0 100%);
-      color: #0d0a07; font-weight: 700; font-size: 0.85rem;
+      color: #0C1016; font-weight: 700; font-size: 0.85rem;
       letter-spacing: 0.04em; border-radius: 999px;
       text-decoration: none; transition: box-shadow .15s, transform .15s;
       box-shadow: 0 0 16px rgba(194, 160, 94,0.2);
@@ -956,7 +956,7 @@
       font: inherit;
       width: 100%;
       margin: 0;
-      background-color: #0d0a07;
+      background-color: #0C1016;
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center 18%;
@@ -982,9 +982,9 @@
       content: '';
       position: absolute; inset: 0;
       background: linear-gradient(to top,
-        rgba(5,4,6,0.88) 0%,
-        rgba(5,4,6,0.55) 28%,
-        rgba(5,4,6,0.15) 52%,
+        rgba(12,16,22,0.88) 0%,
+        rgba(12,16,22,0.55) 28%,
+        rgba(12,16,22,0.15) 52%,
         transparent 70%);
       z-index: 1; pointer-events: none; border-radius: inherit;
       transition: opacity 0.25s;
@@ -1012,7 +1012,7 @@
     .sign-card.is-active::before { opacity: 0.82; }
 
     /* Card art deferred to horoscope-page-deferred.css (12 JPGs off critical path) */
-    .sign-card[data-sign] { background-color: #13100c; }
+    .sign-card[data-sign] { background-color: #1A2230; }
 
     /* Legacy unicode glyphs hidden until seals hydrate */
     .sign-card__glyph:not(.sign-card__seal):not(:has(.ap-seal)) { display: none; }
@@ -1047,7 +1047,7 @@
       border-radius: 999px;
       padding: 2px 8px 2px 4px;
       margin-top: 2px;
-      background: rgba(5,4,6,0.55);
+      background: rgba(12,16,22,0.55);
       border: 1px solid rgba(194, 160, 94,0.28);
       color: rgba(194, 160, 94,0.85);
     }
@@ -1084,7 +1084,7 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       background: #C2A05E;
-      color: #0d0a07;
+      color: #0C1016;
       padding: 2px 10px;
       border-radius: 999px;
       font-weight: 700;

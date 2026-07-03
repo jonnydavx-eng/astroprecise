@@ -195,7 +195,7 @@ body:has(.tn-hero) .footer-zodiac-strip [data-celestial-seal] {
     }
     .tn-btn--primary {
       background: linear-gradient(135deg, var(--tn-gold) 0%, var(--tn-gold-light) 100%);
-      color: #0d0a07;
+      color: #0C1016;
       box-shadow: 0 0 16px rgba(196, 146, 10, 0.22);
     }
     .tn-btn--primary:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(196, 146, 10, 0.4); }

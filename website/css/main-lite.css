@@ -105,8 +105,8 @@
   --gradient-amethyst: linear-gradient(135deg, #5C4A6E, #4A3A5A);
   --gradient-lapis:    linear-gradient(135deg, #3f3530, #5a4a52);
   --gradient-ritual:   linear-gradient(135deg, #6e1a26, #b04a52);
-  --gradient-cosmic:   linear-gradient(180deg, #0C1016 0%, #0D0A07 100%);
-  --gradient-hero:     linear-gradient(160deg, #13100C 0%, #0D0A07 58%, rgba(194, 160, 94, 0.22) 100%);
+  --gradient-cosmic:   linear-gradient(180deg, #0C1016 0%, #121826 100%);
+  --gradient-hero:     linear-gradient(160deg, #1A2230 0%, #121826 58%, rgba(194, 160, 94, 0.22) 100%);
 
   /* ── Typography ── */
   --font-display: 'Cormorant Garamond', serif;
@@ -221,6 +221,12 @@ body {
   min-height: calc(var(--ap-vh, 1vh) * 100);
   overflow-x: hidden;
   position: relative;
+  /* z-index:0 makes body a stacking context so the ::before sky wash can sit at
+     z-index:-1 — above body's own background, below ALL content. Without this,
+     a negative-z ::before escapes to the root context and vanishes under the
+     opaque body background; at z-index:0 it painted OVER static-flow text
+     (the 2026-07-03 invisible hero-text bug on this-weeks-sky/tonight). */
+  z-index: 0;
   -webkit-tap-highlight-color: transparent;   /* no grey flash on tap (mobile polish) */
 }
 /* Keyboard-only focus ring — visible for a11y, invisible on mouse/touch */
@@ -230,18 +236,21 @@ body {
   border-radius: 2px;
 }
 
-/* One warm sky wash — sits behind content, lets the starfield read through */
+/* One warm sky wash — sits behind content, lets the starfield read through.
+   z-index MUST stay -1 (paired with body{z-index:0} above): the final gradient
+   layer is fully opaque, so at z-index:0 this fixed plate paints over every
+   static-flow text node — only content inside stacking contexts escaped. */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
   background:
     radial-gradient(ellipse 85% 65% at 15% 10%, rgba(194, 160, 94, 0.05) 0%, transparent 70%),
     radial-gradient(ellipse 70% 55% at 85% 80%, rgba(176, 74, 82, 0.035) 0%, transparent 65%),
     radial-gradient(ellipse 50% 40% at 50% 92%, rgba(194, 160, 94, 0.03) 0%, transparent 60%),
-    radial-gradient(ellipse 92% 82% at 50% 46%, transparent 68%, rgba(5, 4, 6, 0.12) 100%),
+    radial-gradient(ellipse 92% 82% at 50% 46%, transparent 68%, rgba(12, 16, 22, 0.12) 100%),
     linear-gradient(180deg, var(--void) 0%, var(--bg-2) 100%);
   background-size: cover;
   animation: none;
@@ -900,7 +909,7 @@ body:has(#starfield-canvas) .lib__banner {
 
 .btn--gold {
   background: var(--gradient-gold);
-  color: #0d0a07;
+  color: #0C1016;
   font-weight: 700;
   box-shadow: 0 0 20px rgba(194, 160, 94, 0.45);
 }
@@ -908,7 +917,7 @@ body:has(#starfield-canvas) .lib__banner {
 .btn--gold:hover {
   box-shadow: 0 0 36px rgba(194, 160, 94, 0.65);
   transform: translateY(-2px);
-  color: #0d0a07;
+  color: #0C1016;
 }
 
 .btn--ghost {
@@ -1032,7 +1041,7 @@ body:has(#starfield-canvas) .lib__banner {
 }
 
 .form-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c9a227' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23C2A05E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right var(--space-3) center;
   padding-right: var(--space-10);

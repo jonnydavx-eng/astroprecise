@@ -127,7 +127,7 @@ body:has(.nn-hero) .eng-i {
       font-size: 1rem;
       letter-spacing: 0.06em;
       font-weight: 600;
-      color: #0d0a07;
+      color: #0C1016;
       background: linear-gradient(135deg, #C2A05E 0%, #EFE3C0 100%);
       border: none;
       border-radius: 999px;
@@ -208,7 +208,7 @@ body:has(.nn-hero) .eng-i {
       font-size: 0.55rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #0d0a07;
+      color: #0C1016;
       background: var(--nn-gold);
       border-radius: 999px;
       padding: 2px 9px;

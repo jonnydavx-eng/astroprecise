@@ -175,7 +175,7 @@
   --z-toast:   4000;
 
   /* ── Branded scrim — one intentional overlay recipe (cart / modal / lightbox) ── */
-  --scrim: radial-gradient(125% 125% at 50% 0%, rgba(16, 20, 30, 0.70), rgba(5, 4, 6, 0.84));
+  --scrim: radial-gradient(125% 125% at 50% 0%, rgba(16, 20, 30, 0.70), rgba(12, 16, 22, 0.84));
   --scrim-blur: blur(7px);
 
   /* ── Section rhythm — single vertical-rhythm source ── */

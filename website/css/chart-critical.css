@@ -579,11 +579,12 @@
     .house-cards {
       margin-bottom: var(--space-2);
     }
+    /* Paint (bg / ink / shadows / spinner colors) comes from the terracotta
+       --ap-cta override in chart.html — the retired warm-gold declarations
+       were deleted in the retoken pass. Structure/layout only here. */
     .btn--calculate {
       flex: 1;
       min-width: 220px;
-      background: linear-gradient(135deg, #C2A05E 0%, #8a5f00 100%);
-      color: #0d0a07;
       font-family: Georgia, 'Times New Roman', var(--font-display), serif;
       font-weight: 700;
       font-size: 0.85rem;
@@ -596,7 +597,6 @@
       position: relative;
       overflow: hidden;
       transition: all var(--transition-base);
-      box-shadow: 0 8px 32px rgba(194, 160, 94,0.35), 0 0 0 1px rgba(194, 160, 94,0.4);
     }
     .btn--calculate::before {
       content: '';
@@ -609,7 +609,6 @@
     .btn--calculate:hover::before { opacity: 1; }
     .btn--calculate:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 40px rgba(194, 160, 94,0.45), 0 0 0 1px rgba(194, 160, 94,0.5);
     }
     .btn--calculate:active { transform: translateY(0); }
     .btn--calculate .btn-idle { display: flex; align-items: center; gap: var(--space-2); }
@@ -628,7 +627,6 @@
     .btn-spinner {
       width: 14px; height: 14px;
       border: 2px solid rgba(16, 21, 32,0.3);
-      border-top-color: #0d0a07;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }

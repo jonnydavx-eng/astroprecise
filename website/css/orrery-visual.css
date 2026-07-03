@@ -26,7 +26,7 @@
   pointer-events: none;
   z-index: 2;
   background:
-    radial-gradient(circle at 50% 48%, transparent 0%, transparent 68%, rgba(5, 4, 6, 0.08) 84%, rgba(5, 4, 6, 0.22) 96%, transparent 100%);
+    radial-gradient(circle at 50% 48%, transparent 0%, transparent 68%, rgba(12, 16, 22, 0.08) 84%, rgba(12, 16, 22, 0.22) 96%, transparent 100%);
   box-shadow: none;
 }
 
@@ -104,8 +104,8 @@
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 88% 72% at 50% 42%, transparent 48%, rgba(5, 4, 6, 0.22) 78%, rgba(3, 2, 3, 0.55) 100%),
-    linear-gradient(180deg, rgba(5, 4, 6, 0.28) 0%, transparent 20%, transparent 80%, rgba(5, 4, 6, 0.4) 100%);
+    radial-gradient(ellipse 88% 72% at 50% 42%, transparent 48%, rgba(12, 16, 22, 0.22) 78%, rgba(3, 2, 3, 0.55) 100%),
+    linear-gradient(180deg, rgba(12, 16, 22, 0.28) 0%, transparent 20%, transparent 80%, rgba(12, 16, 22, 0.4) 100%);
 }
 
 .apl-cine-grain {
@@ -360,8 +360,8 @@ body.preloader-intro-playing #preloader:not(.preloader--system-view):not(.aligne
 
 body.preloader-intro-playing #preloader.has-real:not(.preloader--system-view):not(.aligned)::after {
   background:
-    radial-gradient(ellipse 94% 86% at 50% 46%, transparent 48%, rgba(5, 4, 6, 0.12) 82%, rgba(3, 2, 4, 0.32) 100%),
-    linear-gradient(180deg, rgba(5, 4, 6, 0.1) 0%, transparent 26%, transparent 72%, rgba(5, 4, 6, 0.18) 100%);
+    radial-gradient(ellipse 94% 86% at 50% 46%, transparent 48%, rgba(12, 16, 22, 0.12) 82%, rgba(3, 2, 4, 0.32) 100%),
+    linear-gradient(180deg, rgba(12, 16, 22, 0.1) 0%, transparent 26%, transparent 72%, rgba(12, 16, 22, 0.18) 100%);
 }
 
 body.preloader-intro-playing #preloader.has-real:not(.preloader--system-view):not(.aligned) .orrery-viewport {
@@ -450,12 +450,12 @@ body.preloader-intro-playing #preloader.has-real:not(.preloader--system-view):no
 
 #preloader.preloader--cosmic::after {
   background:
-    radial-gradient(ellipse 110% 100% at 50% 50%, transparent 68%, rgba(5, 4, 6, 0.08) 88%, rgba(3, 2, 4, 0.18) 100%);
+    radial-gradient(ellipse 110% 100% at 50% 50%, transparent 68%, rgba(12, 16, 22, 0.08) 88%, rgba(3, 2, 4, 0.18) 100%);
   opacity: 0.85;
 }
 
 #preloader.preloader--cosmic:not(.aligned):not(.preloader--earth-land)::after {
-  background: radial-gradient(ellipse 120% 105% at 50% 50%, transparent 78%, rgba(5, 4, 6, 0.06) 100%);
+  background: radial-gradient(ellipse 120% 105% at 50% 50%, transparent 78%, rgba(12, 16, 22, 0.06) 100%);
   opacity: 0.55;
 }
 
@@ -606,8 +606,8 @@ body.landing-gate-open .hero__orrery-ring #orrery-canvas {
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 96% 80% at 50% 44%, transparent 36%, rgba(5, 4, 6, 0.28) 74%, rgba(3, 2, 4, 0.58) 100%),
-    linear-gradient(180deg, rgba(5, 4, 6, 0.22) 0%, transparent 20%, transparent 74%, rgba(5, 4, 6, 0.38) 100%);
+    radial-gradient(ellipse 96% 80% at 50% 44%, transparent 36%, rgba(12, 16, 22, 0.28) 74%, rgba(3, 2, 4, 0.58) 100%),
+    linear-gradient(180deg, rgba(12, 16, 22, 0.22) 0%, transparent 20%, transparent 74%, rgba(12, 16, 22, 0.38) 100%);
 }
 
 #preloader.aligned .apl-live-orr {
@@ -698,7 +698,7 @@ body.landing-gate-open .hero__orrery-ring #orrery-canvas {
   padding: 0.28rem 0.35rem;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.14);
-  background: rgba(5, 4, 6, 0.42);
+  background: rgba(12, 16, 22, 0.42);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   pointer-events: auto;
@@ -857,7 +857,7 @@ body.landing-gate-open .hero__orrery-ring #orrery-canvas {
   position: absolute;
   inset: -3%;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 48%, transparent 58%, rgba(5, 4, 6, 0.35) 100%);
+  background: radial-gradient(circle at 50% 48%, transparent 58%, rgba(12, 16, 22, 0.35) 100%);
 }
 
 #preloader.fallback-css .apl-earth-poster,
@@ -978,7 +978,7 @@ body.landing-gate-open .hero__orrery-ring #orrery-canvas {
   position: absolute;
   inset: -2%;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 48%, transparent 62%, rgba(5, 4, 6, 0.2) 100%);
+  background: radial-gradient(circle at 50% 48%, transparent 62%, rgba(12, 16, 22, 0.2) 100%);
   z-index: 3;
   pointer-events: none;
 }
@@ -1044,7 +1044,7 @@ html.ap-lite-hero.orrery-canvas:not(.orrery-full) .orrery-lite-poster {
   padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.35);
-  background: linear-gradient(rgba(12, 10, 7, 0.88), rgba(5, 4, 6, 0.92));
+  background: linear-gradient(rgba(12, 16, 22, 0.88), rgba(12, 16, 22, 0.92));
   box-shadow: 0 0 20px rgba(194, 160, 94, 0.12);
   pointer-events: none;
   max-width: 88%;
@@ -1111,7 +1111,7 @@ html.lite-entry-active .lite-poster-logo {
   padding: 12px 22px;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.55);
-  background: linear-gradient(rgba(28, 22, 12, 0.92), rgba(12, 10, 7, 0.96));
+  background: linear-gradient(rgba(26, 34, 48, 0.92), rgba(12, 16, 22, 0.96));
   color: #f0e8d8;
   font-family: 'Cinzel', serif;
   font-size: 0.72rem;
@@ -1238,7 +1238,7 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-deck {
   padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid rgba(194, 160, 94, 0.4);
-  background: rgba(12, 10, 7, 0.85);
+  background: rgba(12, 16, 22, 0.85);
   color: #f0e8d8;
   font-family: 'Cinzel', serif;
   font-size: 0.62rem;
@@ -1819,7 +1819,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
 /* ── Scale journey HUD (zoom dial activates guided fly-through) ── */
 .orrery-viewport.orrery-journey-active .orrery-cine-vignette {
   background:
-    radial-gradient(circle at 50% 42%, transparent 52%, rgba(5, 4, 6, 0.06) 78%, rgba(5, 4, 6, 0.18) 100%);
+    radial-gradient(circle at 50% 42%, transparent 52%, rgba(12, 16, 22, 0.06) 78%, rgba(12, 16, 22, 0.18) 100%);
 }
 
 .journey-hud {
@@ -2072,7 +2072,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
 
 .orrery-btn--journey-primary {
   border-color: rgba(194, 160, 94, 0.62) !important;
-  background: linear-gradient(165deg, rgba(28, 22, 12, 0.82), rgba(12, 16, 24, 0.92)) !important;
+  background: linear-gradient(165deg, rgba(26, 34, 48, 0.82), rgba(12, 16, 24, 0.92)) !important;
   color: var(--gold-pale, #f0e8d8) !important;
   font-family: 'Cinzel', serif;
   letter-spacing: 0.12em;
