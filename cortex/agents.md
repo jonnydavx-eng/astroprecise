@@ -20,7 +20,13 @@ How every agent connects to the shared brain. There are two wiring types:
 | verifier | native worker | Adversarial claim checking (`.claude/agents/verifier.md`) |
 | Maintenance agent | github actions | Weekly cron repo-health sweep; write-gated (issues/PRs only). Needs `ANTHROPIC_API_KEY` |
 | Grok | state protocol | Site feature waves (shipped homepage arc v535–v562) |
-| Hermes | state protocol | Local offline model + sleep-time memory distiller |
+| Hermes | state protocol | Local **free/offline** workhorse + sleep-time distiller. To onboard: **[HERMES-START.md](HERMES-START.md)** |
+
+**Free / low-credit mode:** the validators, verdict gate, index builder, MCP server,
+and the maintenance `checks` job are dependency-free — they need no model and no
+credits, so the integrity + honesty layer runs for free forever. On top of that floor,
+run Hermes (local, free) for the mechanical/playbook labor via
+[HERMES-START.md](HERMES-START.md). Spend Claude credits only on judgment-heavy work.
 
 ## The protocol (all agents, both wirings)
 

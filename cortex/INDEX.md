@@ -5,6 +5,7 @@ then open only the files you need (progressive disclosure).*
 
 | File | What it is | Tags |
 |---|---|---|
+| `HERMES-START.md` | One-file onboarding to run Hermes (local, free) as a Cortex agent — setup, bootstrap prompt, and a first mission. | hermes, free-mode, onboarding |
 | `agents.md` | How every agent connects to the shared brain. |  |
 | `evals/README.md` | Golden missions + rubrics that gate changes to the agent instruction layer (skills, bootstrap prompt). | evals, quality, agents |
 | `evals/golden/G1-state-update.md` | Golden mission — does an agent correctly update the shared state and memory on handoff? | eval, golden, protocol |
@@ -36,4 +37,4 @@ then open only the files you need (progressive disclosure).*
 | `wiki/mission-plan.md` | as missions complete (move them to log.md with proof) or priorities change.* |  |
 | `wiki/operations.md` | Cortex sessions run in **ephemeral remote containers** (Claude Code on the web / |  |
 
-*30 documents indexed.*
+*31 documents indexed.*
