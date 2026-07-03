@@ -45,8 +45,12 @@
 
   function isCapableDevice() {
     try {
-      if (navigator.deviceMemory && navigator.deviceMemory <= 4) return false;
-      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return false;
+      // Desktop-class (fine pointer, wide screen) always gets the HD engine —
+      // it has its own perf tiers + _sm textures. The old 4-core/4GB cutoff
+      // excluded most mid phones AND many capable laptops.
+      if (window.matchMedia && window.matchMedia("(pointer: fine) and (min-width: 1024px)").matches) return true;
+      if (navigator.deviceMemory && navigator.deviceMemory <= 2) return false;
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2) return false;
     } catch (e) { return true; }
     return true;
   }
@@ -77,6 +81,11 @@
   }
 
   showInstrument();
+
+  // Capable devices start the HD chain immediately, in parallel with the
+  // ephemeris wait — orrery-loader has its own AstroEphemeris waitFor, so
+  // this only removes dead time before the photoreal engine appears.
+  if (isCapableDevice()) queueWebGL();
 
   waitEphemeris(function () {
     inject("js/lite-orrery.js?v=562", function () {

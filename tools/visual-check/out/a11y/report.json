@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:8790",
-  "capturedAt": "2026-07-03T11:41:44.938Z",
+  "capturedAt": "2026-07-03T14:10:43.910Z",
   "pages": [
     {
       "id": "index",
@@ -55,10 +55,12 @@
       "id": "lifepath",
       "path": "/lifepath.html",
       "violations": [],
-      "incomplete": 2,
-      "passes": 44
+      "incomplete": [],
+      "error": "Error: page.goto: net::ERR_INSUFFICIENT_RESOURCES at http://localhost:8790/lifepath.html\nCall log:\n\u001b[2m  - navigating to \"http://localhost:8790/lifepath.html\", waiting until \"domcontentloaded\"\u001b[22m\n"
     }
   ],
-  "issues": [],
-  "ok": true
+  "issues": [
+    "lifepath: page.goto: net::ERR_INSUFFICIENT_RESOURCES at http://localhost:8790/lifepath.html\nCall log:\n\u001b[2m  - navigating to \"http://localhost:8790/lifepath.html\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  ],
+  "ok": false
 }

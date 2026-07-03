@@ -4411,6 +4411,10 @@ const RadialBlurShader = {
   function bindControls() {
     try {
       canvas.setAttribute('tabindex', '0');
+      // The canvas ships aria-hidden="true" as a decorative fallback; once this
+      // engine makes it a focusable, labeled instrument, clear that flag so it
+      // isn't an aria-hidden focusable element (axe: aria-hidden-focus).
+      canvas.removeAttribute('aria-hidden');
       if (!canvas.getAttribute('aria-label')) {
         canvas.setAttribute('aria-label', 'The Living Orrery — drag to scrub time, Shift+drag to orbit, scroll or pinch to zoom, double-click a planet to focus');
       }

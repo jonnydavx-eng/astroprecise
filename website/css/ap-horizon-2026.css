@@ -3918,3 +3918,301 @@ body.sg-library .sg-filter-slot {
     padding-inline-end: var(--layout-gutter);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   v575 — hero HUD: seals + scale strip (2026-07-03)
+   Engraved seal pills, EARTH→COSMOS scale strip wired to the WebGL
+   engine's presets, Cosmic journey pill, lite time row restored
+   under html.orrery-full (the WebGL engine renders no DOM console
+   on the homepage). Deck rows: [strip] / [pills · date+Now ·
+   journey · flight] / [scrub].
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Reserved HUD zone grows to fit the strip row (was 96px, v570). The
+   min-height gives back the extra 36px so the full HUD — scrub included —
+   still lands above the fold at 1440x900 (measured: deck bottom ≈ 898). */
+.ap-award-511 #heroChapter {
+  min-height: clamp(620px, calc(100svh - 232px), 950px);
+  padding-block: var(--sp-3) 136px;
+}
+
+/* The deck is now a page-wrap child AFTER the stage (see index.html) — the
+   v570 `[hidden] ~` PRM/no-JS guard no longer matches, so re-express it: if
+   the orrery wrap never un-hides, hide the whole HUD rail with it. */
+.ap-award-511 #heroChapter .page-wrap:has(.ap-award-orrery-wrap[hidden]) .ap-orrery-deck {
+  display: none;
+}
+
+/* ── Seal pills — engraved plates replace unicode glyphs ──
+   Self-sufficient: css/celestial-seals.css idle-loads after window.load
+   (and never on the audit path), but the HUD is visible immediately —
+   so the plate look for these pills is carried here. When the seal
+   library later hydrates, its lower-specificity rules defer to these. */
+.ap-award-511 #heroChapter .lite-vp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 6px;
+}
+.ap-award-511 #heroChapter .lite-vp-btn--sealonly { padding: 3px 6px; }
+.ap-award-511 #heroChapter .lite-vp-btn__seal {
+  display: inline-flex;
+  flex: none;
+  line-height: 0;
+}
+.ap-award-511 #heroChapter .lite-vp-btn .ap-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  line-height: 0;
+  width: 1.35rem;
+  height: 1.55rem;
+}
+.ap-award-511 #heroChapter .lite-vp-btn__label .ap-seal,
+.ap-award-511 #heroChapter .lite-vp-btn .ap-seal__plate {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ap-award-511 #heroChapter .lite-vp-btn .ap-seal__plate {
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background:
+    radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255, 255, 255, 0.08), transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0908, var(--void));
+  box-shadow:
+    inset 0 0 0 1px rgba(194, 160, 94, 0.4),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.5);
+}
+.ap-award-511 #heroChapter .lite-vp-btn .ap-seal__art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* Active pill: brass inset ring + subtle glow (tokens) */
+.ap-award-511 #heroChapter .lite-vp-btn.active {
+  border-color: rgba(194, 160, 94, 0.62);
+  box-shadow:
+    inset 0 0 0 1px rgba(194, 160, 94, 0.5),
+    0 0 12px rgba(194, 160, 94, 0.22);
+}
+.ap-award-511 #heroChapter .lite-vp-btn.active .ap-seal__plate {
+  box-shadow:
+    inset 0 0 0 1px rgba(216, 185, 120, 0.65),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(194, 160, 94, 0.26);
+}
+
+/* ── Scale strip — 7 stations on a brass hairline track ── */
+.ap-award-511 #heroChapter .ap-scale-strip {
+  min-width: 0;
+}
+.ap-award-511 #heroChapter .ap-scale-strip__track {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: clamp(2px, 1.4vw, 18px);
+}
+/* brass hairline the ticks hang from */
+.ap-award-511 #heroChapter .ap-scale-strip__track::before {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 3px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(194, 160, 94, 0.42) 12%, rgba(194, 160, 94, 0.42) 88%, transparent);
+  pointer-events: none;
+}
+.ap-award-511 #heroChapter .ap-scale-btn {
+  position: relative;
+  padding: 3px 8px 12px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: 'Cinzel', var(--font-serif);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+  transition: color 0.18s ease, text-shadow 0.18s ease;
+}
+/* engraved tick per station */
+.ap-award-511 #heroChapter .ap-scale-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 1px;
+  height: 7px;
+  transform: translateX(-50%);
+  background: rgba(194, 160, 94, 0.55);
+  box-shadow: 1px 0 0 rgba(0, 0, 0, 0.6);
+}
+.ap-award-511 #heroChapter .ap-scale-btn:hover,
+.ap-award-511 #heroChapter .ap-scale-btn:focus-visible {
+  color: var(--brass);
+  outline: none;
+}
+.ap-award-511 #heroChapter .ap-scale-btn:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+.ap-award-511 #heroChapter .ap-scale-btn.active {
+  color: var(--ap-gold-vivid, #D8B978);
+  text-shadow: 0 0 12px rgba(216, 185, 120, 0.35);
+}
+.ap-award-511 #heroChapter .ap-scale-btn.active::after {
+  width: 2px;
+  height: 9px;
+  background: var(--ap-gold-vivid, #D8B978);
+  box-shadow: 0 0 8px rgba(216, 185, 120, 0.5);
+}
+.ap-award-511 #heroChapter .ap-scale-btn:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+/* honesty caption — verbatim engine wording, mono, faint
+   (max-width:none — the global p reading-measure capped it at ~428px
+   and broke the centering under the full-width strip) */
+.ap-award-511 #heroChapter .ap-scale-strip__caption {
+  margin: 2px 0 0;
+  max-width: none;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--ap-text-faint, #968B74);
+}
+
+/* ── Cosmic journey — ghost brass pill, same family as flight ── */
+.ap-award-511 .ap-orrery-cosmic-journey {
+  min-height: 40px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(194, 160, 94, 0.4);
+  background: rgba(12, 16, 22, 0.85);
+  color: var(--brass);
+  font-family: var(--font-ui, system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+.ap-award-511 .ap-orrery-cosmic-journey:hover,
+.ap-award-511 .ap-orrery-cosmic-journey:focus-visible {
+  border-color: rgba(216, 185, 120, 0.7);
+  color: var(--ap-gold-vivid, #D8B978);
+  box-shadow: 0 0 16px rgba(194, 160, 94, 0.16);
+}
+.ap-award-511 .ap-orrery-cosmic-journey:focus-visible {
+  outline: 2px solid var(--brass, #c2a05e);
+  outline-offset: 2px;
+}
+.ap-award-511 .ap-orrery-cosmic-journey.is-running {
+  border-color: rgba(216, 185, 120, 0.7);
+  color: var(--ap-gold-vivid, #D8B978);
+  box-shadow: inset 0 0 0 1px rgba(194, 160, 94, 0.35);
+}
+
+/* ── Deck grid v575: [strip] / [pills | date·Now | journey | flight] / [scrub] ── */
+@media (min-width: 1024px) {
+  .ap-award-511 #heroChapter .ap-orrery-deck {
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    column-gap: var(--sp-2);
+    /* v570 anchored the deck's BOTTOM to the stage (= page-wrap) bottom, so a
+       taller deck grew upward into the copy's trust chips. Anchor its TOP to
+       the page-wrap bottom instead — it drops into the section's reserved
+       padding zone, fully clear of the copy at every viewport. */
+    top: 100%;
+    bottom: auto;
+    padding: 6px 4px 8px;
+    row-gap: 3px;
+  }
+  /* copy-fit: shave spacing (not type) so copy + slimmer deck clear 900px */
+  .ap-award-511 #heroChapter .hero-copy { padding-block: var(--sp-2) 4px; }
+  .ap-award-511 #heroChapter .hero-form { margin-top: 10px; }
+  .ap-award-511 #heroChapter .hero-copy .hero-solar-trust { margin-top: 8px; }
+  .ap-award-511 #heroChapter .ap-scale-btn { padding-bottom: 10px; }
+  .ap-award-511 #heroChapter .ap-scale-strip { grid-row: 1; grid-column: 1 / -1; }
+  .ap-award-511 #heroChapter .ap-scale-stepper { display: none; }
+  .ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls {
+    grid-row: 2;
+    grid-column: 1;
+    justify-self: start;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-time {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: end;
+    margin-right: 0;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-cosmic-journey { grid-row: 2; grid-column: 3; justify-self: end; }
+  .ap-award-511 #heroChapter .ap-orrery-cosmic-flight { grid-row: 2; grid-column: 4; justify-self: end; }
+  .ap-award-511 #heroChapter .ap-orrery-scrub { grid-row: 3; grid-column: 1 / -1; }
+}
+
+/* ── Mobile ≤1023px: strip collapses to the ‹ EARTH › stepper ── */
+@media (max-width: 1023px) {
+  .ap-award-511 #heroChapter .ap-scale-strip {
+    grid-row: auto;
+    grid-column: 1;
+    justify-self: center;
+    width: 100%;
+  }
+  .ap-award-511 #heroChapter .ap-scale-strip__track { display: none; }
+  .ap-award-511 #heroChapter .ap-scale-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+  }
+  .ap-award-511 #heroChapter .ap-scale-stepper__btn {
+    min-width: 36px;
+    min-height: 32px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(194, 160, 94, 0.35);
+    background: rgba(18, 24, 38, 0.8);
+    color: var(--brass);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .ap-award-511 #heroChapter .ap-scale-stepper__label {
+    min-width: 6.5em;
+    font-family: 'Cinzel', var(--font-serif);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--ap-gold-vivid, #D8B978);
+  }
+  .ap-award-511 #heroChapter .ap-orrery-cosmic-journey {
+    grid-row: auto;
+    grid-column: 1;
+    justify-self: center;
+    margin-right: 0;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls { flex-wrap: wrap; justify-content: center; }
+  /* v570d turns the page-wrap into a column flex (copy children lifted via
+     display:contents; stage order 4, form 5, trust 6). The deck — now a
+     page-wrap child after the stage — keeps its place under the model. */
+  .ap-award-511 #heroChapter .ap-orrery-deck { order: 4; }
+}
+
+/* ── Time visibility: the WebGL engine injects no console on this page —
+     when the loader marks the deck, restore the lite time row + scrub
+     (they already forward to Orrery3D.setTimelineDays / snapToNow). ── */
+html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-time {
+  display: inline-flex;
+}
+html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-scrub {
+  display: block;
+}

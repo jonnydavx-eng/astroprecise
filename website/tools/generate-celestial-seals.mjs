@@ -1,7 +1,7 @@
 /**
  * Generates hand-drawn engraved celestial seal SVGs:
  *   assets/images/seals/zodiac/*.svg   (12 signs)
- *   assets/images/seals/planets/*.svg  (10 bodies)
+ *   assets/images/seals/planets/*.svg  (11 bodies — incl. Earth, v575)
  *   assets/images/seals/instruments/*.svg (8 homepage tools)
  * Run: node tools/generate-celestial-seals.mjs
  */
@@ -158,6 +158,15 @@ const PLANETS = {
   moon: `<g stroke="${GOLD}" stroke-width="2">
     <path d="M48 34c-14 0-22 12-22 24s8 24 22 24c-10-6-14-16-10-26 4-10 14-16 24-14-6-4-12-6-14-8z" fill="${INK}" fill-opacity="0.38"/>
     <circle cx="56" cy="48" r="2" fill="${GOLD_LIGHT}" stroke="none" opacity="0.55"/>
+  </g>`,
+  earth: `<g stroke="${GOLD}" stroke-width="2">
+    <circle cx="48" cy="56" r="15" fill="${INK}" fill-opacity="0.35"/>
+    <line x1="33" y1="56" x2="63" y2="56" stroke-width="1.6"/>
+    <line x1="48" y1="41" x2="48" y2="71" stroke-width="1.6"/>
+    <ellipse cx="48" cy="56" rx="7" ry="15" stroke-width="1.1" opacity="0.6"/>
+    <ellipse cx="48" cy="56" rx="15" ry="6" stroke-width="1.1" opacity="0.5"/>
+    <path d="M37 47c7-5 15-5 22 0" stroke-width="1" stroke="${GOLD_LIGHT}" opacity="0.55"/>
+    <circle cx="42" cy="49" r="1.4" fill="${GOLD_LIGHT}" stroke="none" opacity="0.7"/>
   </g>`,
   mercury: `<g stroke="${GOLD}" stroke-width="2">
     <circle cx="48" cy="52" r="12" fill="${INK}" fill-opacity="0.32"/>

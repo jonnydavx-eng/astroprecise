@@ -1,3 +1,21 @@
+# STATUS — AstroPrecise · 2026-07-03 (evening)
+
+**State:** 🌍 **PHOTOREAL ORRERY HERO LIVE-READY (ap-v575)** — the homepage now actually runs the textured 3D engine and rests on a photoreal Earth. Root cause of "planets are dots": js/orrery-webgl.js uses bare `import 'three'` but the redesigned index.html had **no import map**, so the dynamic import silently rejected for 100% of visitors → everyone got the 2D dot fallback while the page believed it upgraded. Fixed: restored the three.js import map + modulepreload in index.html head (kept in sync with index-full.html).
+
+**Hero now:** boots WebGL on all capable devices (relaxed isCapableDevice — desktop always upgrades; old 4-core/4GB cutoff excluded capable phones+laptops), eager-boots in parallel with the ephemeris wait, and dives to the photoreal Earth close-up (`focusPlanet('earth')`, clouds+terminator+atmosphere+specular sun-glint) as the resting frame via setupHeroPhotorealFrame() in orrery-loader.js. Planet pills now drive `Orrery3D.focusPlanet` (they were wired to the destroyed lite poster).
+
+**HUD (v575):** engraved **seal icons** replace unicode planet glyphs (bespoke — new Earth seal generated; 10 seal pills incl. Uranus/Neptune); **EARTH→COSMOS scale strip** (7 stations, drives setScaleLevel, live honesty caption "Positions live (VSOP87) · distances schematic", mobile `‹ EARTH ›` stepper); **✦ Cosmic journey** narrated scale-tour button beside Cosmic flight; time row (date/Now/scrub) restored after WebGL handoff. Feature-detected — hidden on the 2D fallback. a11y: engine now clears the canvas's decorative aria-hidden when it becomes a focusable instrument (fixed aria-hidden-focus).
+
+**Copy (orbit-anchored + honesty):** removed every hard-rule violation site-wide — "arc-second" (→ "roughly an arcminute, 1800–2200 CE"), "same mathematics used by professional observatories" (→ "published VSOP87 planetary theory"), all "NASA-grade" abbr titles, and the daimon voice line. New hero standfirst captions the living Earth; chapter leads, chart/horoscope/guides heros, and index/horoscope meta all rebuilt around the living-sky idea. index title → "Astro Precise — The Sky, Live. Your Chart, Exact."
+
+**QA (all green):** contract **20/20** (incl. index axe 0), expert audit **94/100, 0 issues** (a11y 100, visual 99), focused axe **0 serious** on home/chart/horoscope/guides, **npm test** all suites pass. SW **ap-v575**, 460 precache entries (+ earth.svg seal).
+
+**Roadmap preserved:** ART-DIRECTION-2026.md holds the approved backlog (seal rollout P1–P3, orbit-as-design-language motifs, art-debt swaps like the horoscope nebula) — spawned as a background task chip. cosmic-hero.mp4 is a branded ambient clip (observatory + zodiac wheel, baked-in text), NOT a solar-system movie — the real "movie" is the engine's Cosmic journey/flight; the mp4 stays archived.
+
+**Owner:** hard-refresh once to drop the old SW shell. The GitHub-Pages-build-flake follow-up chip still stands (each recent deploy needed a manual rebuild kick).
+
+---
+
 # STATUS — AstroPrecise · 2026-07-03
 
 **State:** 🎨 **FULL SITE REDESIGN SHIPPED (ap-v574)** — orrery-centred homepage + structural consolidation + P0 masthead fix. Expert-panel redesign (3 critique agents → synthesis → implementation): the living solar model is now THE homepage — full-viewport unboxed stage, copy rail left over a readability scrim, HUD time-rail pinned to the hero's bottom edge (planet-focus pills + engine console + Cosmic flight). Chapters consolidated 12→9 (~12,700px → ~10,700px full-render desktop): trust+why merged into compare, reading merged into method, planet spheres → live chips, guide grid → teaser + new guides.html library page, shop trimmed, sign grid rebuilt (6/4/3/2 portrait tiles, element hairlines).

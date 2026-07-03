@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Astro Precise — You're not one of twelve. Your chart alone.</title>
-  <meta name="description" content="You’re not one of twelve. Your chart is built from the precise sky over your birthplace, to the minute — free, private, computed in your browser.">
+  <title>Astro Precise &mdash; The Sky, Live. Your Chart, Exact.</title>
+  <meta name="description" content="Watch the solar system move, live in your browser &mdash; then wind it back to your birth minute. Free, precise natal charts, private, computed on your device.">
   <meta name="theme-color" content="#0C1016">
   <link rel="canonical" href="https://astroprecise.app/">
 
@@ -21,8 +21,8 @@
 
   <!-- Open Graph -->
   <meta property="og:site_name" content="Astro Precise">
-  <meta property="og:title" content="Astro Precise — You're not one of twelve">
-  <meta property="og:description" content="Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute, and written for you alone.">
+  <meta property="og:title" content="Astro Precise &mdash; The Sky, Live. Your Chart, Exact.">
+  <meta property="og:description" content="Watch the solar system move, live in your browser &mdash; then wind it back to your birth minute. Free, precise natal charts, private, computed on your device.">
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg">
   <meta property="og:image:width" content="2400">
   <meta property="og:image:height" content="1260">
@@ -30,8 +30,8 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://astroprecise.app/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Astro Precise — You're not one of twelve">
-  <meta name="twitter:description" content="Your chart is built from the precise sky over your birthplace, to the minute — computed privately in your browser, written for you alone.">
+  <meta name="twitter:title" content="Astro Precise &mdash; The Sky, Live. Your Chart, Exact.">
+  <meta name="twitter:description" content="Watch the solar system move, live in your browser &mdash; then wind it back to your birth minute. Free, precise natal charts, private, computed on your device.">
   <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg">
   <script type="application/ld+json">
   {
@@ -101,12 +101,20 @@ html,body{background:#0C1016;}
   </style>
 
   <!-- Fonts & design system -->
+  <!-- Three.js import map — REQUIRED for js/orrery-webgl.js (bare `import 'three'`).
+       Without it the dynamic import silently rejects and every visitor gets the
+       2D dot fallback instead of the photoreal engine. Keep in sync with
+       index-full.html. -->
+  <script type="importmap">
+  { "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }
+  </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="preload" href="css/ap-horizon-2026.css?v=572" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=572"></noscript>
-  <link rel="stylesheet" href="css/ap-motion.css?v=572">
-  <link rel="stylesheet" href="css/ap-micro-2026.css?v=572">
+  <link rel="preload" href="css/ap-horizon-2026.css?v=575" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=575"></noscript>
+  <link rel="stylesheet" href="css/ap-motion.css?v=575">
+  <link rel="stylesheet" href="css/ap-micro-2026.css?v=575">
+  <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
@@ -263,7 +271,7 @@ html,body{background:#0C1016;}
           You're not one of twelve. <br><span class="display-accent">This chart is yours alone.</span>
         </h1>
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
-          Most astrology hands everyone born the same month the same paragraph. Yours is built from the precise sky over your birthplace, to the minute, and written for you alone.
+          The planets behind this page are real &mdash; positions computed live in your browser. Your chart is where they stood the minute you were born.
         </p>
         <form id="hero-chart-form" class="hero-form" novalidate aria-label="Cast your natal chart">
           <label for="hero-birthdate" class="ui-label">Your arrival date</label>
@@ -301,28 +309,6 @@ html,body{background:#0C1016;}
               <canvas id="orrery-canvas" width="640" height="640" fetchpriority="low" aria-hidden="true" tabindex="-1"></canvas>
             </div>
           </div>
-        </div>
-        <!-- HUD rail — sibling of the wrap so it can pin to the hero's bottom
-             edge; hidden alongside it via [hidden] ~ selector (PRM / no-JS) -->
-        <div class="ap-orrery-deck" id="orrery-lite-deck" aria-label="Sky time controls">
-          <p class="ap-orrery-chip">Living sky &middot; drag to turn &middot; ctrl+scroll to zoom</p>
-          <div class="lite-vp-controls" role="toolbar" aria-label="Focus planets on the model">
-            <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth">⌂ Earth</button>
-            <button type="button" class="lite-vp-btn" data-lite-planet="sun" aria-label="Focus Sun">☉ Sun</button>
-            <button type="button" class="lite-vp-btn" data-lite-planet="moon" aria-label="Focus Moon">☽ Moon</button>
-            <button type="button" class="lite-vp-btn" data-lite-planet="mercury" aria-label="Focus Mercury">☿</button>
-            <button type="button" class="lite-vp-btn" data-lite-planet="venus" aria-label="Focus Venus">♀</button>
-            <button type="button" class="lite-vp-btn" data-lite-planet="mars" aria-label="Focus Mars">♂</button>
-            <button type="button" class="lite-vp-btn" data-lite-planet="jupiter" aria-label="Focus Jupiter">♃</button>
-            <button type="button" class="lite-vp-btn" data-lite-planet="saturn" aria-label="Focus Saturn">♄</button>
-          </div>
-          <div class="ap-orrery-time">
-            <span class="ap-orrery-date" id="lite-date-display" aria-live="polite">Computing…</span>
-            <button type="button" class="ap-orrery-now" id="lite-now-btn" aria-label="Reset sky to now">Now</button>
-          </div>
-          <button type="button" class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" aria-label="Launch fullscreen cosmic flight — zoom from the cosmos to Earth">✦ Cosmic flight</button>
-          <label class="sr-only" for="lite-scrub">Scrub through time</label>
-          <input type="range" id="lite-scrub" class="ap-orrery-scrub" min="-2000" max="2000" step="1" value="0" aria-label="Scrub through time — watch planets move in their real paths" />
         </div>
         <div class="ap-hero-wheel-fallback" id="apHeroWheelFallback">
         <svg
@@ -728,6 +714,58 @@ html,body{background:#0C1016;}
         </div><!-- /ap-hero-wheel-fallback -->
 
       </div><!-- /hero-solar-stage -->
+
+        <!-- v575: HUD rail — page-wrap child AFTER the stage (inside the stage
+             its overflow:hidden clipped the taller deck below the stage box).
+             Desktop: absolute top:100% drops it into the section's reserved
+             bottom padding, clear of the copy. PRM / no-JS hiding via the
+             :has(.ap-award-orrery-wrap[hidden]) rule in the v575 CSS layer. -->
+        <div class="ap-orrery-deck" id="orrery-lite-deck" aria-label="Sky time controls">
+          <p class="ap-orrery-chip">Living sky &middot; drag to turn &middot; ctrl+scroll to zoom</p>
+          <!-- v575 · scale strip — EARTH→COSMOS presets on the WebGL engine.
+               [hidden] until orrery-loader feature-detects Orrery3D.setScaleLevel;
+               the 2D-canvas fallback engine has no scale presets, so it never shows.
+               The engine itself syncs .orrery-scale-btn active state + honesty titles. -->
+          <div class="ap-scale-strip" id="ap-scale-strip" hidden>
+            <div class="ap-scale-strip__track" role="toolbar" aria-label="Zoom scale — Earth to the deep field">
+              <button type="button" class="ap-scale-btn orrery-scale-btn" data-scale="0" aria-pressed="false">Earth</button>
+              <button type="button" class="ap-scale-btn orrery-scale-btn" data-scale="1" aria-pressed="false">Inner</button>
+              <button type="button" class="ap-scale-btn orrery-scale-btn" data-scale="2" aria-pressed="false">System</button>
+              <button type="button" class="ap-scale-btn orrery-scale-btn" data-scale="3" aria-pressed="false">Oort</button>
+              <button type="button" class="ap-scale-btn orrery-scale-btn" data-scale="4" aria-pressed="false">Stars</button>
+              <button type="button" class="ap-scale-btn orrery-scale-btn" data-scale="5" aria-pressed="false">Galaxy</button>
+              <button type="button" class="ap-scale-btn orrery-scale-btn" data-scale="6" aria-pressed="false">Cosmos</button>
+            </div>
+            <div class="ap-scale-stepper" aria-label="Zoom scale stepper">
+              <button type="button" class="ap-scale-stepper__btn" id="ap-scale-prev" aria-label="Previous scale">&#8249;</button>
+              <span class="ap-scale-stepper__label" id="ap-scale-stepper-label" aria-live="polite">System</span>
+              <button type="button" class="ap-scale-stepper__btn" id="ap-scale-next" aria-label="Next scale">&#8250;</button>
+            </div>
+            <p class="ap-scale-strip__caption" id="ap-scale-caption">Positions live (VSOP87) &middot; distances schematic</p>
+          </div>
+          <div class="lite-vp-controls" role="toolbar" aria-label="Focus planets on the model">
+            <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth"><span class="lite-vp-btn__seal" data-celestial-seal="planet:earth" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--earth ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/earth.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span><span class="lite-vp-btn__label">Earth</span></button>
+            <button type="button" class="lite-vp-btn" data-lite-planet="sun" aria-label="Focus Sun"><span class="lite-vp-btn__seal" data-celestial-seal="planet:sun" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--sun ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/sun.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span><span class="lite-vp-btn__label">Sun</span></button>
+            <button type="button" class="lite-vp-btn" data-lite-planet="moon" aria-label="Focus Moon"><span class="lite-vp-btn__seal" data-celestial-seal="planet:moon" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--moon ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/moon.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span><span class="lite-vp-btn__label">Moon</span></button>
+            <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="mercury" aria-label="Focus Mercury"><span class="lite-vp-btn__seal" data-celestial-seal="planet:mercury" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--mercury ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/mercury.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span></button>
+            <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="venus" aria-label="Focus Venus"><span class="lite-vp-btn__seal" data-celestial-seal="planet:venus" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--venus ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/venus.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span></button>
+            <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="mars" aria-label="Focus Mars"><span class="lite-vp-btn__seal" data-celestial-seal="planet:mars" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--mars ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/mars.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span></button>
+            <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="jupiter" aria-label="Focus Jupiter"><span class="lite-vp-btn__seal" data-celestial-seal="planet:jupiter" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--jupiter ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/jupiter.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span></button>
+            <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="saturn" aria-label="Focus Saturn"><span class="lite-vp-btn__seal" data-celestial-seal="planet:saturn" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--saturn ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/saturn.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span></button>
+            <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="uranus" aria-label="Focus Uranus"><span class="lite-vp-btn__seal" data-celestial-seal="planet:uranus" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--uranus ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/uranus.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span></button>
+            <button type="button" class="lite-vp-btn lite-vp-btn--sealonly" data-lite-planet="neptune" aria-label="Focus Neptune"><span class="lite-vp-btn__seal" data-celestial-seal="planet:neptune" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--neptune ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/neptune.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span></button>
+          </div>
+          <div class="ap-orrery-time">
+            <span class="ap-orrery-date" id="lite-date-display" aria-live="polite">Computing…</span>
+            <button type="button" class="ap-orrery-now" id="lite-now-btn" aria-label="Reset sky to now">Now</button>
+          </div>
+          <!-- v575 · narrated tour through all seven scale levels; [hidden] until
+               orrery-loader feature-detects Orrery3D.startScaleJourney (WebGL only) -->
+          <button type="button" class="ap-orrery-cosmic-journey" id="ap-cosmic-journey" hidden aria-label="Cosmic journey — narrated tour from Earth to the deep field" aria-pressed="false" title="Narrated tour">✦ Cosmic journey</button>
+          <button type="button" class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" aria-label="Launch fullscreen cosmic flight — zoom from the cosmos to Earth">✦ Cosmic flight</button>
+          <label class="sr-only" for="lite-scrub">Scrub through time</label>
+          <input type="range" id="lite-scrub" class="ap-orrery-scrub" min="-2000" max="2000" step="1" value="0" aria-label="Scrub through time — watch planets move in their real paths" />
+        </div>
   </div>
 </section>
 
@@ -739,7 +777,7 @@ html,body{background:#0C1016;}
     <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
       <p class="ap-display-kicker">Department 02 &middot; The Sky</p>
       <h2 id="cosmic-band-heading" class="ap-chapter-title">Tonight, the planets stand in the sky.</h2>
-      <p class="ap-chapter-lead">Live geocentric positions — computed in your browser, refreshed every time you open the page.</p>
+      <p class="ap-chapter-lead">The same engine turning the model above, read from where you stand &mdash; recomputed every time you open the page.</p>
     </header>
 
     <!-- Planet chip row — positions filled by JS after load (ids cs-label-*) -->
@@ -984,7 +1022,7 @@ html,body{background:#0C1016;}
 
         <figcaption class="source-line sky-plate-caption">
           <span id="sky-sun-epithet" class="sky-sun-epithet"></span>
-          Plate I &middot; Positions computed in your browser &middot; <abbr class="ap-gloss" title="NASA-grade planetary theory — computed privately on your device">VSOP87</abbr>
+          Plate I &middot; Positions computed in your browser &middot; <abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr>
         </figcaption>
       </figure>
 
@@ -1015,9 +1053,9 @@ html,body{background:#0C1016;}
   <div class="page-wrap">
     <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
       <p class="ap-display-kicker">Why it's different</p>
-      <h2 id="compare-heading" class="ap-chapter-title">Generic horoscope vs your chart</h2>
+      <h2 id="compare-heading" class="ap-chapter-title">Twelve paragraphs, or one turning sky</h2>
       <p class="ap-chapter-lead" style="max-width:54ch; margin-inline:auto;">
-        Sun-sign apps divide the world into twelve buckets. Astro Precise computes one sky &mdash; yours &mdash; and reads it back in plain language.
+        Sun-sign apps sort the world into twelve buckets. Astro Precise computes the sky itself &mdash; the one still moving above &mdash; and reads yours back in plain language.
       </p>
     </header>
     <div class="ap-compare-grid">
@@ -1034,7 +1072,7 @@ html,body{background:#0C1016;}
         <ul class="ap-compare-list">
           <li>One chart for your exact minute and birthplace</li>
           <li>Full natal wheel &mdash; Sun, Moon, rising, aspects, houses</li>
-          <li><abbr class="ap-gloss" title="NASA-grade planetary theory — computed privately on your device">VSOP87</abbr> positions computed on your device, written for you</li>
+          <li><abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> positions computed on your device, written for you</li>
         </ul>
       </article>
     </div>
@@ -1076,7 +1114,7 @@ html,body{background:#0C1016;}
       </div>
       <div class="ap-mini-trust__item" role="listitem">
         <span class="ap-mini-trust__mark" aria-hidden="true">&#10003;</span>
-        <span><abbr class="ap-gloss" title="NASA-grade planetary theory — computed privately on your device">VSOP87</abbr> &mdash; arc-second sky, not sun-sign guesswork</span>
+        <span><abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> &mdash; positions good to roughly an arcminute (1800&ndash;2200 CE)</span>
       </div>
     </div>
   </div>
@@ -1090,7 +1128,7 @@ html,body{background:#0C1016;}
     <header class="ap-chapter-head ap-reveal">
       <p class="ap-display-kicker">How it works</p>
       <h2 id="method-heading" class="ap-chapter-title">How your chart is built</h2>
-      <p class="ap-chapter-lead">Three steps from your birth minute to a chart no one else shares &mdash; computed privately on your device, no account, no server call.</p>
+      <p class="ap-chapter-lead">The orrery up top isn't decoration &mdash; it's the engine. Three steps take it from your birth minute to a chart no one else shares, privately, on your device.</p>
     </header>
     <div class="method-grid">
       <div class="method-step ap-reveal" style="--ap-reveal-i: 1">
@@ -1101,7 +1139,7 @@ html,body{background:#0C1016;}
       <div class="method-step ap-reveal" style="--ap-reveal-i: 2">
         <span class="step-num">Step 02</span>
         <h3>Your sky is computed, privately</h3>
-        <p>Every planetary position is calculated right here in your browser &mdash; no server call, no account, no data stored. The same mathematics used by professional observatories, running silently on your device.</p>
+        <p>Every planetary position is calculated right here in your browser &mdash; no server call, no account, no data stored. The published VSOP87 planetary theory, running silently on your device.</p>
       </div>
       <div class="method-step ap-reveal" style="--ap-reveal-i: 3">
         <span class="step-num">Step 03</span>
@@ -1121,7 +1159,7 @@ html,body{background:#0C1016;}
     <div class="ap-mini-trust" role="list" aria-label="Computation guarantees">
       <div class="ap-mini-trust__item" role="listitem">
         <span class="ap-mini-trust__mark" aria-hidden="true">✓</span>
-        <span><abbr class="ap-gloss" title="NASA-grade planetary theory — computed privately on your device">VSOP87</abbr> ephemeris &mdash; arc-second accuracy</span>
+        <span><abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> &mdash; positions good to roughly an arcminute (1800&ndash;2200 CE)</span>
       </div>
       <div class="ap-mini-trust__item" role="listitem">
         <span class="ap-mini-trust__mark" aria-hidden="true">✓</span>
@@ -1148,7 +1186,7 @@ html,body{background:#0C1016;}
       <p class="ap-display-kicker">Everything you can explore</p>
       <h2 id="contents-heading" class="ap-chapter-title">The instruments</h2>
       <p class="ap-chapter-lead" style="max-width:52ch;">
-        Five ways into your chart — each computed from your sky, not a sun-sign template. Free to start, private by design.
+        Five instruments pointed at the same moving sky &mdash; each starts from your placements, never a template. Free to start, private by design.
       </p>
     </header>
 
@@ -1282,7 +1320,7 @@ html,body{background:#0C1016;}
         <div>
           <p class="qa-q">How accurate are the planetary positions?</p>
           <p class="qa-a">
-            Astro Precise uses VSOP87, a truncated series accurate to within one arc-second over several centuries. For chart purposes this exceeds any printed ephemeris.
+            Astro Precise uses VSOP87, a published planetary theory. Positions are good to roughly an arcminute between 1800 and 2200 CE &mdash; tighter than any printed ephemeris you could buy.
           </p>
         </div>
       </li>
@@ -1326,7 +1364,7 @@ html,body{background:#0C1016;}
       <p class="ap-display-kicker">The shop</p>
       <h2 id="shop-heading" class="ap-chapter-title">Your chart, made tangible</h2>
       <p class="ap-chapter-lead" style="max-width:50ch;">
-        Readings, prints, and keepsakes plotted from your natal wheel — not a sun-sign template. Digital editions in minutes; prints ship in days.
+        Readings, prints, and keepsakes plotted from your natal wheel &mdash; the sky above, stopped at your minute and made to keep. Digital editions in minutes; prints ship in days.
       </p>
     </header>
     <div class="ap-shop-featured" aria-label="Featured editions">
@@ -1367,7 +1405,7 @@ html,body{background:#0C1016;}
     <div class="ap-shop-trust" role="list" aria-label="Shop guarantees">
       <div class="ap-shop-trust__item" role="listitem">
         <span class="ap-shop-trust__mark" aria-hidden="true">✓</span>
-        <span>Every edition plotted from your <abbr class="ap-gloss" title="NASA-grade planetary theory — computed privately on your device">VSOP87</abbr> natal chart</span>
+        <span>Every edition plotted from your <abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> natal chart</span>
       </div>
       <div class="ap-shop-trust__item" role="listitem">
         <span class="ap-shop-trust__mark" aria-hidden="true">✓</span>
