@@ -1,6 +1,8 @@
 /**
  * Sign landing pages — chart.html defer discipline.
- * Blocking shell: main-lite.css only. Everything else interaction/idle gated.
+ * Blocking shell: main-lite.css + sign-page.css (page-own CSS is eager —
+ * deferred CSS never loads under webdriver/headless, so anything needed for
+ * a correct first paint must not live here). Enhancements idle/interaction gated.
  */
 document.addEventListener('DOMContentLoaded', function () {
   function deferSignFonts() {
@@ -27,6 +29,5 @@ document.addEventListener('DOMContentLoaded', function () {
   deferPageCss('css/ap-micro-2026.css', 'ap-css-micro');
   deferMainCss();
   deferPageCss('css/ap-page-bridge.css', 'ap-css-bridge');
-  deferPageCss('css/sign-page.css', 'ap-css-sign-page');
   deferPageCss('css/celestial-seals.css', 'ap-css-seals');
 });

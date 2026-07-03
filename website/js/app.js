@@ -2170,11 +2170,38 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     document.head.appendChild(st);
   }
 
+  // Base skeleton for every CTA variant (banner/hero/inline). The full rules
+  // live in main.css, but main.css is idle/deferred-loaded on most pages and
+  // NEVER loads under webdriver/headless — without these the email input and
+  // button paint as naked native controls for the whole first impression (and
+  // permanently for search-engine renderers). Values mirror main.css so the
+  // full stylesheet simply refines them when it arrives.
+  function ensureEmailCtaBaseCss() {
+    if (document.getElementById('ap-email-cta-critical')) return;
+    var st = document.createElement('style');
+    st.id = 'ap-email-cta-critical';
+    st.textContent =
+      '.ap-email-cta--banner{background:linear-gradient(135deg,rgba(194,160,94,0.1) 0%,rgba(16,21,32,0.92) 48%,rgba(92,74,110,0.08) 100%);border-top:1px solid rgba(194,160,94,0.22);border-bottom:1px solid rgba(194,160,94,0.12);padding:48px 0;}' +
+      '.ap-email-cta__inner{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;}' +
+      '@media (max-width:768px){.ap-email-cta__inner{grid-template-columns:1fr;text-align:center;gap:24px;}}' +
+      '.ap-email-cta__eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold,#C2A05E);margin:0 0 8px;font-weight:600;}' +
+      '.ap-email-cta__title{font-family:var(--font-display,\'Cormorant Garamond\',serif);font-size:clamp(1.35rem,3vw,1.85rem);font-weight:600;color:var(--white,#fff);margin:0 0 12px;line-height:1.25;}' +
+      '.ap-email-cta__sub{font-size:0.875rem;color:var(--silver,var(--ap-text-secondary,#C8D0E8));margin:0;line-height:1.65;}' +
+      '.ap-email-cta__form{display:flex;flex-direction:column;gap:8px;}' +
+      '.ap-email-cta__fields{display:flex;gap:12px;flex-wrap:wrap;}' +
+      '.ap-email-cta__input{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid rgba(194,160,94,0.28);background:rgba(12,16,22,0.75);color:var(--white,#fff);font-size:0.88rem;outline:none;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__btn{padding:12px 22px;border-radius:12px;border:1px solid var(--gold,#C2A05E);background:linear-gradient(180deg,rgba(194,160,94,0.28) 0%,rgba(194,160,94,0.12) 100%);color:var(--gold-pale,#EFE3C0);font-size:0.82rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;white-space:nowrap;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__hint{font-size:0.62rem;color:var(--silver-dim,var(--ap-text-muted,#8891AA));margin:0;line-height:1.5;}' +
+      '.ap-email-cta__msg{font-size:0.78rem;color:var(--silver,var(--ap-text-secondary,#C8D0E8));margin:0;min-height:1.2em;}';
+    document.head.appendChild(st);
+  }
+
   function buildEmailCTA(variant, copy, opts) {
     copy = copy || pageEmailCopy();
     opts = opts || {};
     var c = window.AP_COPY;
     var btn = variant === 'sticky' ? c.btnShort : c.btnLabel;
+    ensureEmailCtaBaseCss();
     if (variant === 'sticky') ensureStickyCtaCss();
     var el = document.createElement(variant === 'banner' ? 'section' : 'div');
     el.className = 'ap-email-cta ap-email-cta--' + variant + (opts.extraClass ? ' ' + opts.extraClass : '');
@@ -2236,6 +2263,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
 
   function injectEmailModal() {
     if (document.getElementById('ap-email-modal')) return;
+    ensureEmailCtaBaseCss();
     var c = window.AP_COPY;
     var wrap = document.createElement('div');
     wrap.id = 'ap-email-modal';

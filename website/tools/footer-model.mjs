@@ -79,9 +79,9 @@ export function footerBrandColHtml() {
   ).join('\n');
   return `
         <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
             <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">AstroPrecise</span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
           </a>
           <p class="footer-brand__tagline">
             A precision instrument wearing the skin of an astrology site.
@@ -101,7 +101,7 @@ ${seals}
 export function footerLegalHtml() {
   return `
       <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
         <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>`;
 }

@@ -28,8 +28,9 @@
   <meta name="theme-color" content="#0C1016" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/profile-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/profile-page.css" id="ap-css-profile" />
   <style>
     body:has(#setup-section){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(#setup-section) .site-header,body:has(#dashboard-section) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -51,7 +52,7 @@
   <script>try{if(localStorage.getItem('ap_profile_v2'))document.documentElement.classList.add('has-profile');}catch(e){}</script>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
   <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferProfileFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferProfileFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/profile-page.css','ap-css-profile');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferProfileFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferProfileFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

@@ -170,7 +170,10 @@ html.ap-fonts-ready .page-shop .shop-section-title {
 .shop-breadcrumb {
   max-width: var(--container-max, 1200px);
   margin: 0 auto;
-  padding: var(--space-4) var(--space-6) 0;
+  /* clear the fixed 72px .site-header — the breadcrumb is the first child of
+     main, so without this it renders under the logo (same calc(nav-height + gap)
+     pattern the hero pages use) */
+  padding: calc(var(--nav-height, 72px) + var(--space-3)) var(--space-6) 0;
 }
 .shop-breadcrumb ol {
   list-style: none;

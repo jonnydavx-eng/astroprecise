@@ -1,3 +1,20 @@
+# STATUS — AstroPrecise · 2026-07-04 (first-paint fix, ap-v579)
+
+**State:** ⚡ **FIRST-PAINT BUG FAMILY CLOSED (ap-v579)** — pages that deferred their ENTIRE layout CSS via defer-page-css.js showed unstyled controls + masthead collisions to first-time visitors AND permanently to headless renderers (Googlebot). Audited all 37 deferring pages at worst-case (webdriver = deferred CSS never loads); fixed 16 broken + a site-wide component:
+- **tonight / profile / name-numerology / angel-numbers**: their own page CSS flipped from deferred → eager `<link>` (page-specific CSS isn't shared render weight — safe).
+- **12 sign pages**: fixed in the GENERATOR (tools/generate-sign-pages.mjs emits eager sign-page.css) + regenerated. ⚠ **the generator had DRIFTED from live v577** — running it as-was would have regressed branding/favicons/palette on all 12; the v577 pass was backported into generate-sign-pages.mjs + footer-model.mjs + constellations.mjs, output now byte-identical to live except the fix. Generator is safe to run again.
+- **Email CTA (site-wide)**: js/app.js ensureEmailCtaBaseCss() injects the input/button skeleton with the widget (base styles previously lived only in deferred main.css) — fixes every deferring page's newsletter bar at once.
+- **shop.html breadcrumb** overlapped the logo even with full CSS (first child of main under the fixed 72px .site-header) — cleared with calc(nav-height + gap) top padding, the same pattern the hero pages use.
+- Bonus live fix: sign breadcrumb's margin-top collapsed onto body, floating the skip-link pill into view → padding-top instead.
+
+**19 pages classified OK** (already carry eager/critical layout): accuracy, chart, compatibility, ephemeris, guides, horoscope, lifepath, links, moonphase, outreach, retrograde, saturn-return, shop(hero), solar-return, synastry, this-weeks-sky, transits, what-is-my-rising-sign, why.
+
+**QA:** contract 20/20 · npm test green · all fixed pages pass worst-case webdriver first-paint (no collisions, styled controls, zero console errors). SW **ap-v579**, 461 entries. Audit tool: tools/visual-check/firstpaint-audit.mjs (reusable).
+
+**Everything known is now closed** — this is the last of the bug backlog. Deferred (chips): chart-page elevation, orbit design-language rollout, main-lite.css marker re-sync.
+
+---
+
 # STATUS — AstroPrecise · 2026-07-04 (fix round, ap-v578)
 
 **State:** 🧹 **BUG-FIX ROUND SHIPPED (ap-v578)** — every known open defect closed; full-site sweep clean (all ~50 pages: zero console errors, zero page errors, zero failed local requests).

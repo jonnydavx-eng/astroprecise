@@ -28,12 +28,13 @@
   <meta name="theme-color" content="#0C1016" />
   <link rel="preload" href="assets/images/zodiac-cards/pisces.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/sign-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/sign-page.css" id="ap-css-sign-page" />
   <style>
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-    /* Constellation reserve — sign-page.css is audit-deferred */
+    /* Constellation reserve — pre-CSS paint + CLS guard */
     .sign-hero__constellation{max-width:280px;margin:0 auto 1rem;min-height:175px;contain:layout style}
     .sign-hero__constellation svg{display:block;width:100%;height:auto;aspect-ratio:320/200}
     /* LCP shell — system fonts paint before deferred webfonts (h1 + card are LCP candidates) */
@@ -41,14 +42,14 @@
       font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: clamp(2.4rem, 6vw, 3.6rem);
       font-weight: 700;
-      color: #ECE6D8;
+      color: var(--ap-text-primary, #e8e6e3);
       line-height: 1.1;
       margin: 0 0 0.5rem;
     }
     .sign-hero__dates {
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
-      color: #C2A05E;
+      color: var(--gold-vivid, #E6C24A);
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
@@ -69,14 +70,14 @@
       min-height: 4.5rem;
       min-width: 4.5rem;
     }
-    /* Today section — sign-page.css audit-deferred; boot paints full grid */
+    /* Today section — CLS reserve; boot paints full grid */
     #today-date { min-height: 1.35rem; }
     #today-reading {
       min-height: 520px;
       contain: layout style;
     }
     .today-reading.is-loading .card { min-height: 460px; }
-    /* FAQ accordion — sign-page.css audit-deferred */
+    /* FAQ accordion — CLS reserve */
     .sign-faq__list {
       min-height: 400px;
       contain: layout style;

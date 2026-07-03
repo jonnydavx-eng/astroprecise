@@ -7,11 +7,14 @@ body.ap-no-nav-enter.ap-nav-enter.ap-nav-enter--active {
   transition: none;
 }
 
-/* Visible breadcrumb trail */
+/* Visible breadcrumb trail.
+   padding-top (not margin-top) so the nav offset can't margin-collapse through
+   <main> onto <body> — the collapsed 84px shifted body down and let the
+   absolutely-positioned .skip-link (top:-120px off body) peek into view. */
 .sign-breadcrumb {
   max-width: 860px;
-  margin: calc(var(--nav-height, 72px) + var(--space-3)) auto 0;
-  padding: 0 var(--space-4);
+  margin: 0 auto;
+  padding: calc(var(--nav-height, 72px) + var(--space-3)) var(--space-4) 0;
 }
 .sign-breadcrumb ol {
   display: flex;

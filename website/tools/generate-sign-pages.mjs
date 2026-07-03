@@ -189,7 +189,7 @@ const SIGN_LIST = SIGNS.map(s => ({ key: s.key, name: s.name, glyph: s.glyph }))
 
 function navShell() {
   return `
-        <div class="navbar__nav" aria-label="Primary">
+        <div class="navbar__nav" role="group" aria-label="Primary">
           <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
         </div>
         <div class="navbar__end">
@@ -247,7 +247,7 @@ function faqSection(s) {
 
 function page(s) {
   const others = SIGN_LIST.filter(o => o.key !== s.key);
-  const title = `${s.name} Horoscope Today — Daily Reading & Sign Guide | AstroPrecise`;
+  const title = `${s.name} Horoscope Today — Daily Reading & Sign Guide | Astro Precise`;
   const desc = `Free ${s.name} horoscope for today, calculated from real planetary positions. Plus the complete ${s.name} guide: element, ruling planet, love, career, and compatibility.`;
   const url = `${BASE_URL}/${s.key}.html`;
 
@@ -265,7 +265,7 @@ function page(s) {
       `${s.name} traits`, `${s.name} compatibility`, `${s.name} love`, `${s.name} career`,
       `${s.element} sign`, `${s.modality} sign`,
     ].join(', '),
-    publisher: { '@type': 'Organization', name: 'AstroPrecise', url: BASE_URL },
+    publisher: { '@type': 'Organization', name: 'Astro Precise', url: BASE_URL },
     about: { '@type': 'Thing', name: `${s.name} (astrology)` },
   };
 
@@ -324,40 +324,49 @@ function page(s) {
   <title>${title}</title>
   <link rel="canonical" href="${url}" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="AstroPrecise" />
-  <meta property="og:title" content="${s.name} Horoscope Today | AstroPrecise" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="${s.name} Horoscope Today | Astro Precise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="1800" />
+  <meta property="og:image:alt" content="${s.name} — engraved zodiac artwork by Astro Precise" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${s.name} Horoscope Today | AstroPrecise" />
+  <meta name="twitter:title" content="${s.name} Horoscope Today | Astro Precise" />
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
-  <meta name="theme-color" content="#050406" />
+  <meta name="theme-color" content="#0C1016" />
   <link rel="preload" href="assets/images/zodiac-cards/${s.key}.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/sign-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/sign-page.css" id="ap-css-sign-page" />
   <style>
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-    /* Constellation reserve — sign-page.css is audit-deferred */
+    /* Constellation reserve — pre-CSS paint + CLS guard */
     .sign-hero__constellation{max-width:280px;margin:0 auto 1rem;min-height:175px;contain:layout style}
     .sign-hero__constellation svg{display:block;width:100%;height:auto;aspect-ratio:320/200}
     /* LCP shell — system fonts paint before deferred webfonts (h1 + card are LCP candidates) */
     .sign-hero h1 {
-      font-family: Georgia, 'Times New Roman', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: clamp(2.4rem, 6vw, 3.6rem);
       font-weight: 700;
-      color: #e8e6e3;
+      color: var(--ap-text-primary, #e8e6e3);
       line-height: 1.1;
       margin: 0 0 0.5rem;
     }
     .sign-hero__dates {
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
-      color: #c9a227;
+      color: var(--gold-vivid, #E6C24A);
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
@@ -378,14 +387,14 @@ function page(s) {
       min-height: 4.5rem;
       min-width: 4.5rem;
     }
-    /* Today section — sign-page.css audit-deferred; boot paints full grid */
+    /* Today section — CLS reserve; boot paints full grid */
     #today-date { min-height: 1.35rem; }
     #today-reading {
       min-height: 520px;
       contain: layout style;
     }
     .today-reading.is-loading .card { min-height: 460px; }
-    /* FAQ accordion — sign-page.css audit-deferred */
+    /* FAQ accordion — CLS reserve */
     .sign-faq__list {
       min-height: 400px;
       contain: layout style;
@@ -417,6 +426,7 @@ function page(s) {
   <script type="application/ld+json">${JSON.stringify(faqLd)}</script>
 </head>
 <body class="ap-no-nav-enter" data-element="${s.element.toLowerCase()}" data-sign="${s.name}">
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
@@ -426,9 +436,9 @@ function page(s) {
   <header class="site-header" role="banner">
     <nav class="navbar" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="index.html" class="navbar__logo" aria-label="AstroPrecise home">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
           <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
-          <span class="logo-text">AstroPrecise</span>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         ${navShell()}
     </nav>
@@ -448,7 +458,7 @@ function page(s) {
         <picture class="sign-hero__card-picture">
           <source srcset="assets/images/zodiac-cards/${s.key}.webp" type="image/webp" />
           <img class="sign-hero__card-img" src="assets/images/zodiac-cards/${s.key}.jpg"
-            alt="${s.name} — AstroPrecise engraved zodiac card"
+            alt="${s.name} — Astro Precise engraved zodiac card"
             width="230" height="345" loading="eager" decoding="async" fetchpriority="high" />
         </picture>
         <div class="sign-hero__content">
