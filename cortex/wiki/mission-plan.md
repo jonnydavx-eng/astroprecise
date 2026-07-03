@@ -56,6 +56,17 @@ machine-readable brain (missions, projects, agents, activity, "running now");
 a paste-ready bootstrap prompt. Keep `state.js` in sync with this page — this page is
 the narrative detail, `state.js` is what the dashboard shows.
 
+## Mission 8 — Agent memory + skills layer ✅ (2026-07-03)
+
+Made the system learn. `cortex/memory/` gives every agent a persistent memory file
+plus `shared-learnings.md` — the one clean spot the Leader distills verified
+cross-agent knowledge into. `cortex/skills/` encodes the Leader's methods as
+playbooks any model can run, online or offline: verify-before-claiming,
+capability-delegation, ship-website-change, ingest-knowledge. The agent protocol and
+external bootstrap prompt (agents.md) now require reading shared-learnings + own
+memory on start and writing memory on handoff. Hub itself became permanent the same
+day: PR #6 merged to main (`14b1dbb`).
+
 ## Standing orders
 
 - Query the wiki before complex work; ingest after significant missions.

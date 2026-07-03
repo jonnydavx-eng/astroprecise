@@ -5,6 +5,31 @@ Newest entries first. Every entry states what was done and the **proof artifact*
 
 ---
 
+## 2026-07-03 — Permanence + memory & skills layer (M1 closed, M8)
+
+**Mission:** Owner ordered: make it permanent; give every agent memory and learning
+that feeds back clean into one spot; encode the Leader's knowledge/skills for use
+online and offline.
+
+**Done:**
+- PR #6 marked ready and **merged into `main`** — merge commit `14b1dbb`. The hub,
+  dashboard, state, and workers are now inherited by every future session (M1 done).
+- `cortex/memory/` — README (rules), per-agent files (claude, grok, hermes; seeded),
+  and `shared-learnings.md`: the single distilled spot, Leader-curated, verified
+  entries only. Agents write their own file each session; Leader distills.
+- `cortex/skills/` — 4 playbooks encoding the Leader's methods so any model can run
+  them without special tooling: verify-before-claiming, capability-delegation,
+  ship-website-change (repo-specific, verified against deploy-pages.yml),
+  ingest-knowledge.
+- `agents.md` protocol + external bootstrap prompt updated: read shared-learnings +
+  own memory on start; write memory on handoff; leader-only distill rule.
+- `state.js`: M1→done, M8 added (done), activity entries, stateVersion 2.
+
+**Proof:** merge commit `14b1dbb` on main; this branch's commit for the memory/skills
+files; `cortex/memory/` and `cortex/skills/` exist and are cross-linked.
+
+---
+
 ## 2026-07-03 — Mission Control v2: shared state, dashboard, agent wiring (M7)
 
 **Mission:** Owner asked for a smarter, more graphical, clearer mission control, with

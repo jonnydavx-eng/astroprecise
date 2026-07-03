@@ -7,13 +7,13 @@ window.CORTEX_STATE = {
   meta: {
     updated: "2026-07-03",
     updatedBy: "Claude (Cortex Leader)",
-    stateVersion: 1
+    stateVersion: 2
   },
 
   // What is live/armed RIGHT NOW — keep this list short and true.
   now: [
-    { label: "PR #6 — cortex hub bootstrap", detail: "Open draft, mergeable clean, awaiting owner review/merge", kind: "waiting", link: "https://github.com/jonnydavx-eng/astroprecise/pull/6" },
-    { label: "PR watch loop", detail: "Hourly self check-in armed; auto-acts on comments/CI/conflicts until PR #6 merges or closes", kind: "running" },
+    { label: "Cortex hub is PERMANENT", detail: "PR #6 merged into main (14b1dbb) — every session now inherits the hub, memory, and skills", kind: "running" },
+    { label: "PR watch loop", detail: "Hourly self check-in; auto-acts on comments/CI/conflicts on the open cortex PR", kind: "running" },
     { label: "Site deploy pipeline", detail: "Actions auto-deploys website/** pushes on main to astroprecise.app (ap-v566 live)", kind: "running", link: "https://astroprecise.app" }
   ],
 
@@ -46,13 +46,14 @@ window.CORTEX_STATE = {
 
   // status: done | running | waiting-owner | open
   missions: [
-    { id: "M1", title: "Hub bootstrap", project: "astro-web", status: "waiting-owner", owner: "Claude", step: "Built + pushed as PR #6", next: "Owner: review and merge PR #6", proof: "PR #6, commits 7b3cd3d…f7b6ae3" },
+    { id: "M1", title: "Hub bootstrap", project: "cortex", status: "done", owner: "Claude", step: "PR #6 merged into main", next: "—", proof: "merge commit 14b1dbb" },
     { id: "M2", title: "Instruction-layer repair (CLAUDE.md)", project: "astro-web", status: "done", owner: "Claude", step: "Deployment + palette sections rewritten, verifier-confirmed", next: "Ships with PR #6", proof: "PR #6 diff; verifier verdicts in cortex/log.md" },
     { id: "M3", title: "STATUS.md refresh to ap-v566", project: "astro-web", status: "open", owner: "any agent", step: "Not started", next: "Update snapshot on next site-touching mission", proof: "—" },
     { id: "M4", title: "Phase-1 traction support", project: "astro-web", status: "waiting-owner", owner: "Claude + Grok", step: "Plans ready (content calendar, playbook)", next: "Owner: PayPal links into app.js AP_MON, social accounts + Postiz", proof: "PAYPAL-SETUP.md, CONTENT-CALENDAR.md" },
     { id: "M5", title: "Satellite dashboard build", project: "sat-dash", status: "open", owner: "unassigned", step: "Greenfield", next: "Owner: define what the dashboard should show", proof: "—" },
     { id: "M6", title: "Palette token hygiene sweep", project: "astro-web", status: "open", owner: "any agent", step: "Warm hexes catalogued in shipped JS renderers", next: "Owner call: intentional aesthetics or leftovers? Then sweep + visual QA", proof: "cortex/index.md lint finding" },
-    { id: "M7", title: "Mission Control v2 (this upgrade)", project: "cortex", status: "done", owner: "Claude", step: "Shared state + graphical dashboard + agent wiring protocol", next: "All agents adopt the state protocol (see agents.md)", proof: "cortex/state.js, mission-control.html, agents.md" }
+    { id: "M7", title: "Mission Control v2", project: "cortex", status: "done", owner: "Claude", step: "Shared state + graphical dashboard + agent wiring protocol", next: "All agents adopt the state protocol (see agents.md)", proof: "cortex/state.js, mission-control.html, agents.md; merged in 14b1dbb" },
+    { id: "M8", title: "Agent memory + skills layer", project: "cortex", status: "done", owner: "Claude", step: "Per-agent memory, shared-learnings distill spot, 4 skill playbooks; protocol + bootstrap prompt updated", next: "Grok/Hermes start writing their own memory files via the bootstrap prompt", proof: "cortex/memory/*, cortex/skills/*" }
   ],
 
   agents: [
@@ -65,6 +66,8 @@ window.CORTEX_STATE = {
 
   // Prepend newest first; keep ≤ 12 entries, prune the tail.
   activity: [
+    { date: "2026-07-03", who: "Claude", what: "Memory + skills layer: per-agent memory, shared-learnings, 4 playbooks; agents now learn across sessions (M8)" },
+    { date: "2026-07-03", who: "jonnydavx + Claude", what: "PR #6 MERGED — cortex hub permanent on main (14b1dbb); M1 done" },
     { date: "2026-07-03", who: "Claude", what: "Mission Control v2: shared state file, graphical dashboard, agent wiring protocol (M7)" },
     { date: "2026-07-02", who: "Claude", what: "CLAUDE.md deployment + palette sections repaired; verifier confirmed against repo (M2)" },
     { date: "2026-07-02", who: "Claude", what: "Cortex hub bootstrapped: wiki, log, workers; PR #6 opened as draft (M1)" },

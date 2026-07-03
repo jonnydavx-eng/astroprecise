@@ -23,16 +23,22 @@ How every agent connects to the shared brain. There are two wiring types:
 
 ## The protocol (all agents, both wirings)
 
-1. **On start:** read `cortex/index.md`, `cortex/state.js`, and the wiki pages relevant
-   to your mission. Do not re-derive documented knowledge.
-2. **While working:** claims need proof artifacts (commit hash, test output, file:line).
-   Follow repo ground rules: honesty (no fake data), determinism, `--ap-*` tokens only,
-   bump `sw.js` cache when shipping cached assets.
+1. **On start:** read `cortex/index.md`, `cortex/state.js`,
+   `cortex/memory/shared-learnings.md`, and your own `cortex/memory/<you>.md`, plus
+   the wiki pages relevant to your mission. Do not re-derive documented knowledge.
+2. **While working:** use the playbooks in `cortex/skills/` (verification, delegation,
+   shipping, ingest). Claims need proof artifacts (commit hash, test output,
+   file:line). Repo ground rules: honesty (no fake data), determinism, `--ap-*`
+   tokens only, bump `sw.js` cache when shipping cached assets.
 3. **Before handing off:** update `cortex/state.js` — `meta.updated`/`updatedBy`, the
-   missions you touched, one new `activity` entry (newest first, keep ≤ 12). If you
+   missions you touched, one new `activity` entry (newest first, keep ≤ 12) — AND
+   append what you learned to `cortex/memory/<you>.md` (dated, concrete). If you
    completed a mission, append a `cortex/log.md` entry with proof. Commit these with
-   your work — the handoff IS the state update.
-4. **Never** mark a mission `done` without a proof artifact from your own run.
+   your work — the handoff IS the state + memory update.
+4. **Never** mark a mission `done` without a proof artifact from your own run
+   (see `skills/verify-before-claiming.md`).
+5. **Leader only:** periodically distill per-agent memory into
+   `memory/shared-learnings.md` — verify entries before folding them in.
 
 ## Bootstrap prompt for external agents (paste-ready)
 
@@ -40,17 +46,23 @@ Give Grok or Hermes this block at the start of any session on this repo:
 
 ```
 You are working inside the AstroPrecise repo, which is coordinated through a shared
-mission-control state. Before doing anything else, read these files in order:
-1. cortex/index.md        (knowledge-base index + open lint findings)
-2. cortex/state.js        (current missions, projects, what is running)
-3. cortex/wiki/mission-plan.md  (mission detail and standing orders)
-Then do your assigned mission. Hard rules: never fake data; same inputs must give the
-same outputs; use --ap-* CSS tokens, never hardcoded hex; bump the sw.js cache version
-if you change cached site assets. Before you finish: update cortex/state.js
-(meta.updated, meta.updatedBy = your name, the missions you touched, and prepend one
-activity entry), and if you completed a mission, append an entry to cortex/log.md with
-a proof artifact (commit hash / test output). Commit the state update together with
-your work.
+mission-control state, shared memory, and skill playbooks. Before doing anything
+else, read these files in order:
+1. cortex/index.md                    (knowledge-base index + open lint findings)
+2. cortex/state.js                    (current missions, projects, what is running)
+3. cortex/memory/shared-learnings.md  (everything all agents have learned so far)
+4. cortex/memory/<your-name>.md       (your own memory from past sessions)
+5. cortex/wiki/mission-plan.md        (mission detail and standing orders)
+While working, follow the playbooks in cortex/skills/ — especially
+verify-before-claiming.md: never state a conclusion you haven't checked against the
+actual repo. Hard rules: never fake data; same inputs must give the same outputs;
+use --ap-* CSS tokens, never hardcoded hex; bump the sw.js cache version if you
+change cached site assets. Before you finish: (a) update cortex/state.js
+(meta.updated, meta.updatedBy = your name, the missions you touched, prepend one
+activity entry), (b) append what you learned this session to cortex/memory/<your-name>.md
+(dated, concrete — failures included), and (c) if you completed a mission, append a
+cortex/log.md entry with a proof artifact (commit hash / test output). Commit the
+state + memory updates together with your work.
 ```
 
 ## Dashboard

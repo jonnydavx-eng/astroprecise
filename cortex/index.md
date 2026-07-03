@@ -6,6 +6,10 @@ update it whenever a wiki page is added, renamed, or retired.
 - `mission-control.html` — **graphical dashboard** (open directly in a browser)
 - `state.js` — machine-readable shared state every agent reads/updates (the live brain)
 - `agents.md` — agent registry + wiring protocol (incl. bootstrap prompt for Grok/Hermes)
+- `memory/` — per-agent persistent memory + `shared-learnings.md` (the one clean
+  distilled spot every agent reads first)
+- `skills/` — executable playbooks (verify, delegate, ship, ingest) usable by any
+  agent, online or offline
 - `wiki/` — synthesized, cross-referenced knowledge pages (the durable layer)
 - `raw/` — unprocessed source material awaiting ingest
 - `log.md` — mission log (what was done, when, with what proof)
