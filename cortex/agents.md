@@ -18,51 +18,65 @@ How every agent connects to the shared brain. There are two wiring types:
 | Claude — Fable (Cortex Leader) | native | Synthesis, judgment, final quality; owns instruction-layer files and `state.js` schema |
 | scout | native worker | Cheap read-only recon (`.claude/agents/scout.md`) |
 | verifier | native worker | Adversarial claim checking (`.claude/agents/verifier.md`) |
+| Maintenance agent | github actions | Weekly cron repo-health sweep; write-gated (issues/PRs only). Needs `ANTHROPIC_API_KEY` |
 | Grok | state protocol | Site feature waves (shipped homepage arc v535–v562) |
-| Hermes | state protocol | Local model on the owner's machine |
+| Hermes | state protocol | Local offline model + sleep-time memory distiller |
 
 ## The protocol (all agents, both wirings)
 
-1. **On start:** read `cortex/index.md`, `cortex/state.js`,
-   `cortex/memory/shared-learnings.md`, and your own `cortex/memory/<you>.md`, plus
-   the wiki pages relevant to your mission. Do not re-derive documented knowledge.
-2. **While working:** use the playbooks in `cortex/skills/` (verification, delegation,
-   shipping, ingest). Claims need proof artifacts (commit hash, test output,
-   file:line). Repo ground rules: honesty (no fake data), determinism, `--ap-*`
-   tokens only, bump `sw.js` cache when shipping cached assets.
-3. **Before handing off:** update `cortex/state.js` — `meta.updated`/`updatedBy`, the
-   missions you touched, one new `activity` entry (newest first, keep ≤ 12) — AND
-   append what you learned to `cortex/memory/<you>.md` (dated, concrete). If you
-   completed a mission, append a `cortex/log.md` entry with proof. Commit these with
-   your work — the handoff IS the state + memory update.
-4. **Never** mark a mission `done` without a proof artifact from your own run
-   (see `skills/verify-before-claiming.md`).
-5. **Leader only:** periodically distill per-agent memory into
-   `memory/shared-learnings.md` — verify entries before folding them in.
+1. **On start:** grep `cortex/INDEX.md` (the progressive-disclosure map), then read
+   `cortex/state.js`, `cortex/memory/shared-learnings.md`, and your own
+   `cortex/memory/<you>.md`. Open only the wiki/skill files your mission needs — don't
+   re-derive documented knowledge.
+2. **Take the contract.** If your mission has a `contract` in `state.js`, echo back its
+   objective / deliverable / done-criteria before starting, and work only within its
+   scope. Vague handoffs are the #1 cause of wasted multi-agent work.
+3. **While working:** use the playbooks in `cortex/skills/`. Claims need proof
+   artifacts (commit, test output, file:line). Repo ground rules: honesty (no fake
+   data), determinism, `--ap-*` tokens only, bump `sw.js` cache when shipping cached
+   assets. Log non-obvious decisions to `cortex/trajectories/M<id>.jsonl` (decisions,
+   not just success — agents fail *quietly*).
+4. **Before handing off:** run `node cortex/tools/validate-state.mjs`; update
+   `state.js` (`meta.generatedAt`/`updatedBy`, missions touched, project `trend`, one
+   `activity` entry ≤ 12); append a dated reflection to `cortex/memory/<you>.md`
+   Episodes (template in memory/README.md, with `confirmed-by:`); if a mission
+   completed, add a `cortex/log.md` entry with proof. Ship memory edits as their own
+   `mem(<you>): …` commit. The handoff IS the state + memory update.
+5. **Never** mark a mission `done` without a proof artifact from your own run
+   (`skills/verify-before-claiming.md`). A mission tagged `gated: true` also needs a
+   cross-model verdict in `cortex/verdicts/M<id>.md` (a *different* model than the
+   owner). Historical missions are grandfathered — see verdicts/README.md.
+6. **Branch per mission.** Work a mission on its own `claude/<slug>` branch; merges are
+   gated by CI. Two agents never share a working tree.
+7. **Leader only:** periodically distill per-agent memory into
+   `memory/shared-learnings.md` (`skills/memory-distill.md`) — verify before folding
+   in, evict/archive to stay under budget. Regenerate `INDEX.md` after adding docs
+   (`node cortex/tools/build-index.mjs`).
 
 ## Bootstrap prompt for external agents (paste-ready)
 
 Give Grok or Hermes this block at the start of any session on this repo:
 
 ```
-You are working inside the AstroPrecise repo, which is coordinated through a shared
-mission-control state, shared memory, and skill playbooks. Before doing anything
-else, read these files in order:
-1. cortex/index.md                    (knowledge-base index + open lint findings)
-2. cortex/state.js                    (current missions, projects, what is running)
-3. cortex/memory/shared-learnings.md  (everything all agents have learned so far)
-4. cortex/memory/<your-name>.md       (your own memory from past sessions)
-5. cortex/wiki/mission-plan.md        (mission detail and standing orders)
-While working, follow the playbooks in cortex/skills/ — especially
-verify-before-claiming.md: never state a conclusion you haven't checked against the
-actual repo. Hard rules: never fake data; same inputs must give the same outputs;
-use --ap-* CSS tokens, never hardcoded hex; bump the sw.js cache version if you
-change cached site assets. Before you finish: (a) update cortex/state.js
-(meta.updated, meta.updatedBy = your name, the missions you touched, prepend one
-activity entry), (b) append what you learned this session to cortex/memory/<your-name>.md
-(dated, concrete — failures included), and (c) if you completed a mission, append a
-cortex/log.md entry with a proof artifact (commit hash / test output). Commit the
-state + memory updates together with your work.
+You are working inside the AstroPrecise repo, coordinated through a shared
+mission-control state, shared memory, and skill playbooks. Before anything else:
+1. grep cortex/INDEX.md                  (map of everything; open only what you need)
+2. read cortex/state.js                  (missions, projects, what is running)
+3. read cortex/memory/shared-learnings.md (everything all agents have learned)
+4. read cortex/memory/<your-name>.md      (your own memory from past sessions)
+If your mission has a `contract` in state.js, restate its objective/deliverable/
+done-criteria and stay inside its scope. Follow the playbooks in cortex/skills/ —
+especially verify-before-claiming.md: never state a conclusion you haven't checked
+against the actual repo. Hard rules: never fake data (no invented stats/trends);
+same inputs must give the same outputs; use --ap-* CSS tokens, never hardcoded hex;
+bump the sw.js cache version if you change cached site assets. Log non-obvious
+decisions to cortex/trajectories/M<id>.jsonl. Before you finish: (a) run
+`node cortex/tools/validate-state.mjs` and update cortex/state.js (meta.generatedAt,
+meta.updatedBy = your name, missions touched, project trend, prepend one activity
+entry ≤12); (b) append a dated reflection to cortex/memory/<your-name>.md Episodes
+using the template in memory/README.md, filling confirmed-by (or marking UNVERIFIED);
+(c) if you completed a mission, append a cortex/log.md entry with a proof artifact.
+Commit memory edits as their own `mem(<your-name>): …` commit alongside your work.
 ```
 
 ## Dashboard

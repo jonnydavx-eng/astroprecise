@@ -5,6 +5,41 @@ Newest entries first. Every entry states what was done and the **proof artifact*
 
 ---
 
+## 2026-07-03 — Cortex 10x SHIPPED, all three waves (M9, M10, M11)
+
+**Mission:** Owner: "ship all of these" (the researched 10x roadmap). On Opus 4.8.
+
+**Done (each piece tested before commit):**
+- **Dashboard v3** (`mission-control.html`): exception-first hero listing the exact
+  items blocked on the owner; redundant status encoding (color + shape + word,
+  WCAG 1.4.1); freshness badge (snapshot age → amber when stale); progressive-
+  disclosure `<details>` mission cards; honest burn-down sparklines from real mission
+  data; de-weighted chrome; mobile thumb-bar; inline actions. Screenshotted desktop +
+  mobile.
+- **state.js v3**: freshness timestamp, project `trend` arrays (real cortex burn-down,
+  not fabricated), `blockedOn` precision, task `contract` + `action` fields.
+- **3-tier memory**: Episodes/Learnings/Procedures with hard size caps, verified-
+  reflection gate + template, `memory/archive/`, frontmatter on every file.
+- **Tooling** (dependency-free, all run green): `tools/validate-state.mjs`,
+  `tools/build-index.mjs` (→ `INDEX.md`, 28 docs), `tools/check-verdicts.mjs`.
+- **Autonomy**: `.github/workflows/cortex-maintenance.yml` (validators + MCP smoke
+  test run today with no secret; the claude-code-action agent job is gated on
+  `secrets.ANTHROPIC_API_KEY` so it can't fail absent the key); `maintenance-sweep.md`.
+- **Verdict gate**: `verdicts/` convention + checker; historical missions honestly
+  grandfathered, not pretended-verified.
+- **Wave 3**: `evals/` golden mission + rubric; branch-per-mission convention in
+  agents.md; dependency-free stdio MCP server (`mcp/cortex-server.mjs`) — smoke-tested
+  the full initialize / tools/list / tools/call handshake; `skills/memory-distill.md`.
+- **Skills** got progressive-disclosure frontmatter; two new playbooks added.
+- **Protocol + bootstrap prompt** (agents.md) updated: grep INDEX first, take the
+  contract, log trajectories, validate state, cross-model verdicts, branch-per-mission.
+- Cross-model verdict recorded via the verifier worker (different model tier).
+
+**Proof:** this commit; validators + MCP smoke test exit 0; dashboard screenshots;
+`cortex/verdicts/` verdict files.
+
+---
+
 ## 2026-07-03 — Permanence + memory & skills layer (M1 closed, M8)
 
 **Mission:** Owner ordered: make it permanent; give every agent memory and learning

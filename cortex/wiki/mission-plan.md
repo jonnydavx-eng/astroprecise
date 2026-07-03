@@ -67,6 +67,25 @@ external bootstrap prompt (agents.md) now require reading shared-learnings + own
 memory on start and writing memory on handoff. Hub itself became permanent the same
 day: PR #6 merged to main (`14b1dbb`).
 
+## Missions 9–11 — Cortex 10x, all three waves ✅ (2026-07-03)
+
+Shipped the full researched roadmap ([10x-roadmap.md](10x-roadmap.md)):
+
+- **M9 (Wave 1):** dashboard v3 (exception-first hero, redundant color+shape+word
+  status, freshness badge, collapsible cards, honest burn-down sparklines, mobile
+  thumb-bar); 3-tier memory with budgets + verified-reflection gate + `archive/`;
+  generated `INDEX.md`; task contracts; trajectory logs.
+- **M10 (Wave 2):** `.github/workflows/cortex-maintenance.yml` (validators live now;
+  autonomous weekly agent activates on owner's `ANTHROPIC_API_KEY`); maintenance-sweep
+  playbook; cross-model verdict gate + `tools/` validators; Hermes sleep-time distill.
+  **Owner-gated on the API-key secret.**
+- **M11 (Wave 3):** `evals/` golden missions + rubric; branch-per-mission convention;
+  dependency-free stdio MCP server (`mcp/cortex-server.mjs`, smoke-tested);
+  eviction/decay pass.
+
+New tooling any agent runs: `node cortex/tools/validate-state.mjs`,
+`build-index.mjs`, `check-verdicts.mjs`, and the MCP server for shared tools.
+
 ## Standing orders
 
 - Query the wiki before complex work; ingest after significant missions.

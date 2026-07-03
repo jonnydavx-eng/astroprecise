@@ -1,0 +1,6 @@
+{"ts":"2026-07-03T11:20:00Z","agent":"Claude","mission":"M9","event":"start","what":"ship 10x waves 1-3 on owner's 'ship all' directive"}
+{"ts":"2026-07-03T11:22:00Z","agent":"Claude","mission":"M9","event":"decision","what":"build state.js v3 schema before rewriting the dashboard","why":"the view depends on the data shape; schema-first keeps the rewrite clean","files":["cortex/state.js"]}
+{"ts":"2026-07-03T11:25:00Z","agent":"Claude","mission":"M9","event":"decision","what":"derive sparkline trend from the real cortex mission burn-down, not seeded data","why":"honesty rule forbids fabricated series","files":["cortex/state.js","cortex/mission-control.html"]}
+{"ts":"2026-07-03T11:32:00Z","agent":"Claude","mission":"M9","event":"gate","gate":"validate-state: pass","what":"node cortex/tools/validate-state.mjs"}
+{"ts":"2026-07-03T11:34:00Z","agent":"Claude","mission":"M9","event":"edit","what":"dashboard v3: exception hero, redundant status, freshness, progressive disclosure, sparklines, thumb bar","files":["cortex/mission-control.html"]}
+{"ts":"2026-07-03T11:36:00Z","agent":"Claude","mission":"M9","event":"gate","gate":"visual-qa: pass (desktop+mobile screenshots)","what":"headless chromium render both themes"}

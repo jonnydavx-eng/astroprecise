@@ -1,3 +1,10 @@
+---
+name: ingest-knowledge
+description: Turn raw material and finished-mission insight into durable, findable wiki knowledge; includes the lint pass.
+when_to_use: after significant work, or when files land in cortex/raw/
+tags: skill, wiki, ingest
+---
+
 # Skill: Ingest knowledge into the wiki
 
 Turns raw material and finished-mission insights into durable, findable knowledge.

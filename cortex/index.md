@@ -3,13 +3,19 @@
 Master index of the LLM-Wiki knowledge base. **Read this first** before complex work;
 update it whenever a wiki page is added, renamed, or retired.
 
-- `mission-control.html` — **graphical dashboard** (open directly in a browser)
-- `state.js` — machine-readable shared state every agent reads/updates (the live brain)
+- `INDEX.md` — **grep this first**: auto-generated progressive-disclosure map of every
+  cortex doc (regenerate with `tools/build-index.mjs`)
+- `mission-control.html` — **graphical dashboard v3** (exception-first; open in a browser)
+- `state.js` — machine-readable shared state every agent reads/updates (the live brain);
+  validate with `tools/validate-state.mjs`
 - `agents.md` — agent registry + wiring protocol (incl. bootstrap prompt for Grok/Hermes)
-- `memory/` — per-agent persistent memory + `shared-learnings.md` (the one clean
-  distilled spot every agent reads first)
-- `skills/` — executable playbooks (verify, delegate, ship, ingest) usable by any
-  agent, online or offline
+- `memory/` — 3-tier per-agent memory + `shared-learnings.md` (the one clean distilled
+  spot) + `archive/`
+- `skills/` — executable playbooks (verify, delegate, ship, ingest, distill, maintain)
+  with progressive-disclosure frontmatter; usable by any agent, online or offline
+- `tools/` — dependency-free validators (state, verdicts, index)
+- `trajectories/` — per-mission decision logs (JSONL) · `verdicts/` — cross-model
+  reviews · `evals/` — golden missions · `mcp/` — stdio MCP server for shared tools
 - `wiki/` — synthesized, cross-referenced knowledge pages (the durable layer)
 - `raw/` — unprocessed source material awaiting ingest
 - `log.md` — mission log (what was done, when, with what proof)

@@ -1,3 +1,10 @@
+---
+name: ship-website-change
+description: The full path from edit to verified-live for anything under website/** — tokens, sw.js, test gates, Actions deploy, live check.
+when_to_use: any change under website/**
+tags: skill, astro-web, deploy
+---
+
 # Skill: Ship a website change (repo-specific)
 
 The full path from edit to verified-live for anything under `website/**`.

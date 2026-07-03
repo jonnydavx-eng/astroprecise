@@ -95,19 +95,27 @@ instead of a passive test gate.
 
 ---
 
-## Build order
+## Build order — SHIPPED 2026-07-03 (all three waves)
 
-**Wave 1 — quick wins, one session, no new infrastructure:**
-Dashboard v3 (A1–A4, A6, A8) + memory restructure (B1–B3, B5) + task-contract
-schema and trajectory-log convention (C3, C4). Pure file/format work.
+**Wave 1 ✅ — shipped:** Dashboard v3 (exception hero, redundant status glyphs,
+freshness badge, progressive-disclosure `<details>` cards, honest burn-down
+sparklines, de-weighted chrome, mobile thumb-bar, inline actions). 3-tier memory
+(Episodes/Learnings/Procedures + budgets + reflection gate + `archive/`). Generated
+`INDEX.md`. Task contracts in state.js. Trajectory logs (`trajectories/`).
 
-**Wave 2 — the autonomy jump (needs owner: repo secret `ANTHROPIC_API_KEY`):**
-Cron maintenance agent (C1), verdict gate in Actions (C2), sparkline history (A5),
-sleep-time distill routine for Hermes (B6), memory-commit convention (B7).
+**Wave 2 ✅ — built; the agent job needs owner's `ANTHROPIC_API_KEY` to activate:**
+`.github/workflows/cortex-maintenance.yml` (validators run today with no secret; the
+autonomous agent job activates on the key). `maintenance-sweep.md` playbook. Verdict
+gate + convention (`verdicts/`, `tools/check-verdicts.mjs`). State validator
+(`tools/validate-state.mjs`). Sleep-time distill routine for Hermes
+(`skills/memory-distill.md`). Memory-commit convention (agents.md).
 
-**Wave 3 — compounding quality:**
-Evals for playbooks (C6), branch-per-mission (C5), eviction/decay passes (B4),
-mobile thumb bar (A7), stdio MCP server (C7).
+**Wave 3 ✅ — shipped:** Evals (`evals/` golden missions + rubric). Branch-per-mission
+convention (agents.md). Dependency-free stdio MCP server (`mcp/cortex-server.mjs`,
+smoke-tested). Eviction/decay pass (`skills/memory-distill.md`).
+
+**Only remaining owner action:** add the `ANTHROPIC_API_KEY` repo secret to flip the
+weekly maintenance agent from armed to live (mission M10).
 
 **Success criteria (how we know it's 10x, not just more):**
 - Owner answers "do I need to act?" from the dashboard in <5 seconds.

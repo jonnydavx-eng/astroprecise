@@ -1,3 +1,10 @@
+---
+name: verify-before-claiming
+description: Before recording a conclusion, marking a mission done, or trusting a doc — attempt to refute it against the actual repo first.
+when_to_use: any claim, completion, or doc-trust decision
+tags: skill, verification, quality
+---
+
 # Skill: Verify before claiming
 
 Every claim gets an attempt at refutation before it's recorded or acted on.

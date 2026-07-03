@@ -1,3 +1,10 @@
+---
+name: capability-delegation
+description: Decide per task whether to do it yourself or hand it to a cheaper model/worker — with an offline single-model variant.
+when_to_use: starting any non-trivial task
+tags: skill, delegation, orchestration
+---
+
 # Skill: Capability-based delegation
 
 Decide per task: do it yourself, or hand it to a cheaper model/worker. The goal is

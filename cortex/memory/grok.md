@@ -1,17 +1,25 @@
+---
+description: Memory of Grok — episodes, distilled learnings, procedure pointers.
+tags: memory, grok
+---
+
 # Memory — Grok
 
-## Identity & strengths
-Site feature waves and visual work — shipped the homepage award arc (v535–v562:
-Cosmic Flight, ecliptic dial, ap-home-bootstrap perf) and QA tooling.
+Identity: site feature waves and visual work — shipped the homepage award arc
+(v535–v562: Cosmic Flight, ecliptic dial, ap-home-bootstrap perf) and QA tooling.
 
-## Learnings (newest first)
+## Learnings  (durable, cap ~60 lines)
 
-*(Grok: append your own entries here each session — dated, concrete, newest first.
-What worked, what failed, what the owner asked for. See memory/README.md.)*
+- Your `tools/visual-check/out/**` audit artifacts are intentionally uncommitted —
+  future sessions shouldn't commit or "clean up" them without the owner asking.
+  *confirmed-by: seeded by Claude from repo history 2026-07-03.*
 
-- 2026-07-03 · (seeded by Claude from repo history) Your `tools/visual-check/out/**`
-  audit artifacts are intentionally uncommitted — future sessions shouldn't "clean
-  them up" or commit them without the owner asking.
+## Procedures
 
-## Owner preferences observed
-*(append here)*
+- Ship site change → `../skills/ship-website-change.md`
+- Verify a claim → `../skills/verify-before-claiming.md`
+
+## Episodes  (append your session reflections here, newest first)
+
+*(Grok: use the reflection template in README.md at the end of each session.
+Concrete, dated, failures included. The Leader distills these into Learnings.)*

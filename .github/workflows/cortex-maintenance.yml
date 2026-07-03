@@ -1,0 +1,76 @@
+name: Cortex Maintenance
+
+# Weekly autonomous repo-health sweep + always-on state validators.
+# Two jobs:
+#   checks  — dependency-free validators; run today, no secret needed.
+#   agent   — the autonomous maintenance agent; activates when the repo secret
+#             ANTHROPIC_API_KEY is present. Write-gated: opens issues/PRs only.
+on:
+  schedule:
+    - cron: '17 8 * * 1'      # Mondays 08:17 UTC
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['cortex/state.js', 'cortex/**']
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: cortex-maintenance
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Validate shared state
+        run: node cortex/tools/validate-state.mjs
+      - name: Cross-model verdict gate
+        run: node cortex/tools/check-verdicts.mjs
+      - name: Index freshness (fails if INDEX.md is stale)
+        run: |
+          node cortex/tools/build-index.mjs
+          if ! git diff --quiet -- cortex/INDEX.md; then
+            echo "::error::cortex/INDEX.md is stale — run: node cortex/tools/build-index.mjs"
+            git --no-pager diff -- cortex/INDEX.md
+            exit 1
+          fi
+      - name: Memory budget report (non-blocking)
+        run: |
+          echo "Memory file sizes (caps: per-agent Learnings ~60, shared ~120):"
+          wc -l cortex/memory/*.md || true
+      - name: MCP server smoke test
+        run: |
+          printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"cortex_validate"}}' \
+            | node cortex/mcp/cortex-server.mjs | grep -q '"pass": true' \
+            && echo "MCP server OK" || (echo "::error::MCP server smoke test failed" && exit 1)
+
+  agent:
+    needs: checks
+    runs-on: ubuntu-latest
+    # Activates only once the owner adds the ANTHROPIC_API_KEY repo secret.
+    if: ${{ github.event_name != 'push' && secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Autonomous maintenance sweep
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: >
+            Run the Cortex maintenance sweep. Read cortex/skills/maintenance-sweep.md
+            and follow it exactly. You are WRITE-GATED: your only outputs are a GitHub
+            issue (findings) or a pull request (mechanical safe fixes like a regenerated
+            cortex/INDEX.md). Never push to main. If everything is clean, open no issue.
+            Always append a one-line entry to cortex/state.js activity noting the sweep,
+            and include that in your PR if you open one.
+          claude_args: '--allowedTools Read,Grep,Glob,Bash'
