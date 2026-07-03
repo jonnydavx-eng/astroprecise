@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cortex Mission Control</title>
+<style>
+  :root{
+    --bg:#0C1016; --card:#121826; --raised:#1A2230;
+    --line:rgba(194,160,94,.16); --line-strong:rgba(194,160,94,.34);
+    --text:#ECE6D8; --muted:#8B95A6;
+    --brass:#C2A05E; --brass-bright:#CDAE6A;
+    --run:#6FAF8B; --wait:#C08552; --done:#C2A05E; --open:#7E8BA0;
+    --run-ink:#0C1016;
+    --shadow:0 1px 0 rgba(0,0,0,.4);
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#F0EBDF; --card:#F8F5EC; --raised:#FFFFFF;
+      --line:rgba(107,88,54,.22); --line-strong:rgba(107,88,54,.4);
+      --text:#232A35; --muted:#5E6878;
+      --brass:#8C7544; --brass-bright:#6B5836;
+      --run:#3E7A5C; --wait:#9A5B2E; --done:#8C7544; --open:#5B6980;
+      --run-ink:#F0EBDF;
+      --shadow:0 1px 2px rgba(35,42,53,.08);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0C1016; --card:#121826; --raised:#1A2230;
+    --line:rgba(194,160,94,.16); --line-strong:rgba(194,160,94,.34);
+    --text:#ECE6D8; --muted:#8B95A6;
+    --brass:#C2A05E; --brass-bright:#CDAE6A;
+    --run:#6FAF8B; --wait:#C08552; --done:#C2A05E; --open:#7E8BA0;
+    --run-ink:#0C1016;
+    --shadow:0 1px 0 rgba(0,0,0,.4);
+  }
+  :root[data-theme="light"]{
+    --bg:#F0EBDF; --card:#F8F5EC; --raised:#FFFFFF;
+    --line:rgba(107,88,54,.22); --line-strong:rgba(107,88,54,.4);
+    --text:#232A35; --muted:#5E6878;
+    --brass:#8C7544; --brass-bright:#6B5836;
+    --run:#3E7A5C; --wait:#9A5B2E; --done:#8C7544; --open:#5B6980;
+    --run-ink:#F0EBDF;
+    --shadow:0 1px 2px rgba(35,42,53,.08);
+  }
+
+  *{box-sizing:border-box; margin:0}
+  html{color-scheme: dark light}
+  body{
+    background:var(--bg); color:var(--text);
+    font:15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding:0 20px 72px;
+  }
+  .wrap{max-width:1080px; margin:0 auto}
+  a{color:var(--brass-bright)}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-variant-numeric:tabular-nums}
+
+  /* ---- masthead ---- */
+  header{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 18px;
+    padding:30px 0 16px; border-bottom:1px solid var(--line-strong);
+  }
+  h1{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:26px; font-weight:600; letter-spacing:.06em; text-wrap:balance;
+  }
+  h1 .rule{color:var(--brass)}
+  .stamp{color:var(--muted); font-size:13px}
+  .stamp b{color:var(--text); font-weight:600}
+
+  /* ---- section headings ---- */
+  h2{
+    font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--brass); margin:36px 0 14px; display:flex; align-items:center; gap:10px;
+  }
+  h2::after{content:""; flex:1; height:1px; background:var(--line)}
+  h2 .count{color:var(--muted); letter-spacing:0; text-transform:none; font-weight:400}
+
+  /* ---- NOW strip ---- */
+  .now{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px}
+  .now-card{
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:13px 15px; box-shadow:var(--shadow); display:flex; gap:11px; align-items:flex-start;
+  }
+  .dot{width:9px; height:9px; border-radius:50%; margin-top:5px; flex:none}
+  .dot.running{background:var(--run); animation:pulse 2.2s ease-in-out infinite}
+  .dot.waiting{background:var(--wait)}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--run) 45%,transparent)}50%{box-shadow:0 0 0 6px transparent}}
+  @media (prefers-reduced-motion: reduce){ .dot.running{animation:none} }
+  .now-card .label{font-weight:600; font-size:14.5px}
+  .now-card .detail{color:var(--muted); font-size:13px; margin-top:2px}
+
+  /* ---- mission board ---- */
+  .lane{margin-bottom:22px}
+  .lane-title{
+    font-size:13px; font-weight:600; margin-bottom:10px;
+    display:flex; align-items:center; gap:8px; color:var(--text);
+  }
+  .lane-title .swatch{width:10px; height:10px; border-radius:2px; flex:none}
+  .board{display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:12px}
+  .mission{
+    background:var(--card); border:1px solid var(--line); border-left-width:3px;
+    border-radius:6px; padding:14px 16px; box-shadow:var(--shadow);
+  }
+  .mission .top{display:flex; align-items:baseline; gap:8px; margin-bottom:6px}
+  .mid{font-size:11px; font-weight:700; color:var(--muted)}
+  .mission .title{font-weight:600; font-size:15px; text-wrap:balance}
+  .tag{
+    display:inline-block; font-size:11px; letter-spacing:.05em; color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:1px 9px; margin-left:auto; flex:none;
+  }
+  .kv{font-size:13px; margin-top:4px; display:flex; gap:7px}
+  .kv .k{color:var(--muted); flex:none; width:44px}
+  .next .v{color:var(--text)}
+  .next .v::before{content:"→ "; color:var(--brass)}
+  .proof{font-size:12px; color:var(--muted); margin-top:8px; padding-top:8px; border-top:1px dashed var(--line)}
+  .owner{font-size:12px; color:var(--muted)}
+  .owner b{color:var(--brass-bright); font-weight:600}
+
+  /* ---- projects ---- */
+  .projects{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:12px}
+  .project{
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:16px; box-shadow:var(--shadow);
+  }
+  .project .head{display:flex; align-items:center; gap:9px; margin-bottom:7px}
+  .health{width:10px; height:10px; border-radius:50%; flex:none}
+  .health.green{background:var(--run)} .health.amber{background:var(--wait)} .health.grey{background:var(--open)}
+  .project .name{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    font-size:17px; font-weight:600;
+  }
+  .project .summary{color:var(--muted); font-size:13.5px}
+  .project .meta{margin-top:10px; display:flex; gap:8px; align-items:center}
+  .pill{
+    font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    border-radius:3px; padding:2px 8px;
+  }
+  .pill.active{background:var(--run); color:var(--run-ink)}
+  .pill.paused{background:transparent; color:var(--wait); border:1px solid var(--wait)}
+  .pill.idea{background:transparent; color:var(--open); border:1px solid var(--open)}
+  .ver{font-size:12px; color:var(--muted)}
+
+  /* ---- agents ---- */
+  .agents{display:flex; flex-direction:column; gap:0; background:var(--card); border:1px solid var(--line); border-radius:6px; overflow:hidden}
+  .agent{display:grid; grid-template-columns:16px 1fr auto; gap:12px; align-items:center; padding:12px 16px}
+  .agent + .agent{border-top:1px solid var(--line)}
+  .agent .glyph{color:var(--brass); font-size:13px}
+  .agent .who{font-weight:600; font-size:14px}
+  .agent .role{color:var(--muted); font-size:13px}
+  .wiring{font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; border-radius:3px; padding:2px 8px; white-space:nowrap}
+  .wiring.native{background:var(--brass); color:var(--bg)}
+  .wiring.worker{border:1px solid var(--brass); color:var(--brass-bright)}
+  .wiring.protocol{border:1px solid var(--open); color:var(--open)}
+
+  /* ---- activity ---- */
+  .feed{border-left:2px solid var(--line-strong); padding-left:18px; display:flex; flex-direction:column; gap:12px; max-width:70ch}
+  .entry{position:relative}
+  .entry::before{
+    content:""; position:absolute; left:-23.5px; top:6px; width:9px; height:9px;
+    border-radius:50%; background:var(--bg); border:2px solid var(--brass);
+  }
+  .entry .when{font-size:12px; color:var(--muted)}
+  .entry .when b{color:var(--brass-bright); font-weight:600}
+  .entry .what{font-size:14px}
+
+  footer{margin-top:44px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:12.5px; max-width:72ch}
+  footer code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12px; color:var(--brass-bright)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>CORTEX <span class="rule">·</span> MISSION CONTROL</h1>
+    <span class="stamp" id="stamp"></span>
+  </header>
+
+  <h2>Running now</h2>
+  <div class="now" id="now"></div>
+
+  <h2>Mission board <span class="count" id="mission-count"></span></h2>
+  <div id="missions"></div>
+
+  <h2>Projects</h2>
+  <div class="projects" id="projects"></div>
+
+  <h2>Agents wired into the brain</h2>
+  <div class="agents" id="agents"></div>
+
+  <h2>Recent activity</h2>
+  <div class="feed" id="feed"></div>
+
+  <footer>
+    This board renders <code>cortex/state.js</code> — the shared brain every agent reads on
+    session start and updates before handing off. To wire an external agent (Grok, Hermes),
+    give it the bootstrap prompt in <code>cortex/agents.md</code>. Open this file directly in a
+    browser; no server needed.
+  </footer>
+</div>
+
+<script src="state.js"></script>
+<script>
+(function(){
+  var S = window.CORTEX_STATE;
+  if(!S){ document.getElementById('now').textContent = 'state.js missing or invalid.'; return; }
+  function el(tag, cls, html){ var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  document.getElementById('stamp').innerHTML =
+    'state updated <b>' + esc(S.meta.updated) + '</b> by <b>' + esc(S.meta.updatedBy) + '</b>';
+
+  /* Running now */
+  var now = document.getElementById('now');
+  S.now.forEach(function(n){
+    var c = el('div','now-card');
+    c.appendChild(el('span','dot '+esc(n.kind)));
+    var body = el('div');
+    var label = n.link ? '<a href="'+esc(n.link)+'">'+esc(n.label)+'</a>' : esc(n.label);
+    body.appendChild(el('div','label',label));
+    body.appendChild(el('div','detail',esc(n.detail)));
+    c.appendChild(body);
+    now.appendChild(c);
+  });
+
+  /* Mission board, grouped so what needs the owner comes first */
+  var lanes = [
+    {key:'waiting-owner', label:'Waiting on you', color:'var(--wait)'},
+    {key:'running',       label:'In progress',    color:'var(--run)'},
+    {key:'open',          label:'Open queue',     color:'var(--open)'},
+    {key:'done',          label:'Done',           color:'var(--done)'}
+  ];
+  var missionsRoot = document.getElementById('missions');
+  var total = 0;
+  lanes.forEach(function(lane){
+    var items = S.missions.filter(function(m){ return m.status===lane.key; });
+    if(!items.length) return;
+    total += items.length;
+    var wrap = el('div','lane');
+    var t = el('div','lane-title');
+    var sw = el('span','swatch'); sw.style.background = lane.color;
+    t.appendChild(sw); t.appendChild(document.createTextNode(lane.label+' ('+items.length+')'));
+    wrap.appendChild(t);
+    var board = el('div','board');
+    items.forEach(function(m){
+      var card = el('div','mission');
+      card.style.borderLeftColor = lane.color;
+      var top = el('div','top');
+      top.appendChild(el('span','mid mono',esc(m.id)));
+      top.appendChild(el('span','title',esc(m.title)));
+      top.appendChild(el('span','tag',esc(m.project)));
+      card.appendChild(top);
+      card.appendChild(el('div','owner','lead: <b>'+esc(m.owner)+'</b>'));
+      card.appendChild(el('div','kv','<span class="k">step</span><span class="v">'+esc(m.step)+'</span>'));
+      card.appendChild(el('div','kv next','<span class="k">next</span><span class="v">'+esc(m.next)+'</span>'));
+      if(m.proof && m.proof!=='—') card.appendChild(el('div','proof mono','proof: '+esc(m.proof)));
+      board.appendChild(card);
+    });
+    wrap.appendChild(board);
+    missionsRoot.appendChild(wrap);
+  });
+  document.getElementById('mission-count').textContent = '— '+total+' missions';
+
+  /* Projects */
+  var projects = document.getElementById('projects');
+  S.projects.forEach(function(p){
+    var c = el('div','project');
+    var head = el('div','head');
+    head.appendChild(el('span','health '+esc(p.health)));
+    head.appendChild(el('span','name',esc(p.name)));
+    c.appendChild(head);
+    c.appendChild(el('div','summary',esc(p.summary)));
+    var meta = el('div','meta');
+    meta.appendChild(el('span','pill '+esc(p.status),esc(p.status)));
+    meta.appendChild(el('span','ver mono',esc(p.version)));
+    c.appendChild(meta);
+    projects.appendChild(c);
+  });
+
+  /* Agents */
+  var wiringCls = {'native':'native','native worker':'worker','state protocol':'protocol'};
+  var agents = document.getElementById('agents');
+  S.agents.forEach(function(a){
+    var row = el('div','agent');
+    row.appendChild(el('span','glyph','◆'));
+    var mid = el('div');
+    mid.appendChild(el('div','who',esc(a.name)));
+    mid.appendChild(el('div','role',esc(a.role)));
+    row.appendChild(mid);
+    row.appendChild(el('span','wiring '+(wiringCls[a.wiring]||'protocol'),esc(a.wiring)));
+    agents.appendChild(row);
+  });
+
+  /* Activity */
+  var feed = document.getElementById('feed');
+  S.activity.forEach(function(ev){
+    var e = el('div','entry');
+    e.appendChild(el('div','when mono',esc(ev.date)+' · <b>'+esc(ev.who)+'</b>'));
+    e.appendChild(el('div','what',esc(ev.what)));
+    feed.appendChild(e);
+  });
+})();
+</script>
+</body>
+</html>

@@ -3,6 +3,9 @@
 Master index of the LLM-Wiki knowledge base. **Read this first** before complex work;
 update it whenever a wiki page is added, renamed, or retired.
 
+- `mission-control.html` — **graphical dashboard** (open directly in a browser)
+- `state.js` — machine-readable shared state every agent reads/updates (the live brain)
+- `agents.md` — agent registry + wiring protocol (incl. bootstrap prompt for Grok/Hermes)
 - `wiki/` — synthesized, cross-referenced knowledge pages (the durable layer)
 - `raw/` — unprocessed source material awaiting ingest
 - `log.md` — mission log (what was done, when, with what proof)
@@ -22,6 +25,10 @@ update it whenever a wiki page is added, renamed, or retired.
 1. **STATUS.md behind git history** — snapshot says ap-v563; `main` history shows
    ap-v566 (PayPal direct replaced Lemon Squeezy, e2e PayPal gate, LS tooling archived).
    Fix tracked as Mission 3 in [mission-plan.md](wiki/mission-plan.md).
+2. **AGENT-HANDOFF.md referenced but missing** — STATUS.md points to "AGENT-HANDOFF.md"
+   for full history and a prioritized roadmap, but no such file exists in the repo.
+   Its role is now covered by `cortex/` (state.js + log.md + agents.md); either restore
+   the file or update STATUS.md's pointer when doing Mission 3.
 2. **Warm hexes still hardcoded outside the token system** (verifier, 2026-07-02) —
    `#050406`/`#C9A227` live on as literal canvas/WebGL/SVG paint colors in
    `js/chart-render.js:64,320`, `js/chart-page.js:1488`, `js/instrument.js:238,358`,

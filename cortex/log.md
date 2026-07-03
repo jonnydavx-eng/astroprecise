@@ -5,6 +5,28 @@ Newest entries first. Every entry states what was done and the **proof artifact*
 
 ---
 
+## 2026-07-03 — Mission Control v2: shared state, dashboard, agent wiring (M7)
+
+**Mission:** Owner asked for a smarter, more graphical, clearer mission control, with
+Grok and Hermes wired into the brain.
+
+**Done:**
+- `cortex/state.js` — machine-readable shared state (missions, projects, agents,
+  activity, "running now"); every agent reads it on start, updates it on handoff.
+- `cortex/mission-control.html` — self-contained graphical dashboard rendering
+  state.js: running-now strip, mission board grouped by "waiting on you / in progress /
+  open / done", project health cards, agent registry, activity timeline. Dark/light,
+  brand tokens (cool void + brass, verdigris/copper status scale). No server needed.
+- `cortex/agents.md` — registry + wiring protocol. Grok/Hermes can't be API-called
+  from this environment, so they wire in at the state layer: a paste-ready bootstrap
+  prompt makes any external agent read the brain on start and write it back on handoff.
+- New lint finding: STATUS.md references AGENT-HANDOFF.md, which doesn't exist in the
+  repo — role now covered by cortex/.
+
+**Proof:** this commit (git history); open `cortex/mission-control.html` in a browser.
+
+---
+
 ## 2026-07-02 — Instruction-layer repair + mission plan (dispatch order)
 
 **Mission:** Owner dispatched the bootstrap findings for implementation into the

@@ -47,6 +47,15 @@ intentional render aesthetics or leftovers; if leftovers, sweep them to `--ap-*`
 token reads (canvas can read tokens via `getComputedStyle`). Visual QA required —
 these change pixels on flagship pages. Bump `sw.js` cache if shipped.
 
+## Mission 7 — Mission Control v2 ✅ (2026-07-03)
+
+Upgraded the hub from prose-only to a live board: `cortex/state.js` is the shared
+machine-readable brain (missions, projects, agents, activity, "running now");
+`cortex/mission-control.html` renders it graphically (open in any browser, no server);
+`cortex/agents.md` wires external agents (Grok, Hermes) in via the state protocol with
+a paste-ready bootstrap prompt. Keep `state.js` in sync with this page — this page is
+the narrative detail, `state.js` is what the dashboard shows.
+
 ## Standing orders
 
 - Query the wiki before complex work; ingest after significant missions.
