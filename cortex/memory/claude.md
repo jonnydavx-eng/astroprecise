@@ -24,6 +24,13 @@ ephemeral remote containers.
   NEW PR; never stack on merged history. *confirmed-by: PR #6→#7 flow.*
 - `window.CORTEX_STATE` loads in Node via `new Function('window', src)(w)` — lets
   tools validate state.js without a browser. *confirmed-by: validate-state.mjs runs.*
+- A security/quality GATE must be adversarially tested against BYPASS, not the happy
+  path — and verify the *wrapper* (CI step), not just the unit. *confirmed-by: the
+  verdict gate passed my tests yet had no author check; a 5-agent audit found it.*
+- Audit my own honesty claims before handoff — I broke the no-fake-data rule twice
+  (vague "PR watch loop", uncommitted screenshots cited as proof) without noticing.
+- Never seed a fake trend/series to fill a chart — derive from the real log or omit;
+  now machine-enforced (validate-state trend endpoint == live count).
 
 ## Procedures
 
@@ -34,27 +41,24 @@ ephemeral remote containers.
 
 ## Episodes  (append-only; Leader prunes into Learnings)
 
-### 2026-07-03 · M9–M11 · cross-model verdict caught 3 real bugs I shipped
-- did: had the verifier (Sonnet tier) adversarially review the 10x build after I
-  pushed it.
-- failed (mine): (1) CI MCP smoke-test grepped `'"pass": true'` which never matches
-  escaped JSON — the checks job would've been red every run; (2) `secrets.X` in a
-  job-level `if:` is unsupported by GitHub; (3) cortex trend ended at 2 vs real 1.
-- worked: fixes were mechanical once named; added a validator invariant so a stale
-  trend can NEVER be committed again (endpoint must equal live count).
-- lesson: my own tests being green ≠ correct — I tested the MCP server directly but
-  not the CI *step* that wraps it. Verify the wrapper, not just the unit. And gate
-  real: I set M9/M11 gated:true so the verdicts are enforced, not decorative.
-- confirmed-by: validator rejects injected stale trend; mcp-smoke.mjs green;
-  check-verdicts green with gated M9/M11 + verdict files present.
+### 2026-07-03 · M9/M11 · a 5-agent audit found my flagship feature had no teeth
+- did: ran an independent audit workflow (4 adversarial auditors + critic) over the
+  10x fixes, since those had only my own deterministic checks.
+- failed (mine): the "machine-enforced verdict gate" only checked file existence —
+  a self-authored verdict passed, and `gated:"true"` (string) silently bypassed it.
+  Also a real href XSS (`javascript:` link), a workflow perms gap, and 2 honesty
+  misses in my own state/log (vague "PR watch loop", uncommitted "screenshots" cited
+  as proof).
+- worked: refactored all validation into one shared `state-lib.mjs` (CLI + gate + MCP
+  can't drift); gate now parses `reviewer:` and rejects self-review.
+- lesson: a security/quality GATE must be adversarially tested against BYPASS, not
+  just the happy path. "I built a gate" ≠ "the gate has teeth." Also: audit your own
+  honesty claims — I broke the no-fake-data rule twice without noticing.
+- confirmed-by: scratch tests show gate rejects self-review + string gated; safeHref
+  blocks javascript:/data:; validators degrade cleanly on missing arrays.
 
-### 2026-07-03 · M9–M11 · shipped 10x across all three waves
-- did: dashboard v3, 3-tier memory, contracts, trajectories, Actions maintenance
-  workflow, verdict+state validators, evals, dependency-free MCP server.
-- worked: parallel research agents gave sourced, non-overlapping findings; building
-  the data schema (state.js v3) before the view kept the dashboard rewrite clean.
-- failed: first sparkline attempt would have fabricated trend data — caught it
-  against the honesty rule and used the real cortex burn-down instead.
-- lesson: when a viz needs history we don't have, derive it honestly from the log or
-  omit it; never seed fake series.
-- confirmed-by: dashboard screenshotted (desktop+mobile), validators exit 0.
+### 2026-07-03 · M9–M11 · shipped 10x (waves 1–3) + first cross-model verdict
+- distilled to Learnings above. Shipped dashboard v3, 3-tier memory, contracts,
+  trajectories, Actions maintenance, validators, evals, MCP server. Verifier (Sonnet)
+  then caught 4 real bugs (CI grep, secret-in-if, stale trend, unrendered fields),
+  all fixed. Full detail: cortex/log.md 2026-07-03 entries; verdicts/M9.md, M11.md.
