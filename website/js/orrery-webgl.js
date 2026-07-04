@@ -148,6 +148,17 @@ const RadialBlurShader = {
   let focusPlanetUntil = 0;
   let focusFrameId = null;      // v576: persists past the 2.8s highlight — camera framing ownership
   let moonFrameActive = false;  // v576: Earth+Moon shared frame from focusPlanet('moon')
+  // ── Portrait mode (v581) ─────────────────────────────────────────────────────
+  // Additive, reversible still-capture mode used ONLY by the graphics-overhaul
+  // capture harness (never the normal homepage boot). While portraitMode is on,
+  // the per-frame updaters are guarded so they cannot re-show distractors, re-set
+  // fog, or drift the camera off the framed planet. exitPortrait() restores state.
+  let portraitMode = false;
+  let portraitId = null;              // currently framed body id (or 'earthmoon')
+  let portraitSun = false;            // capture-only: frame the SUN itself (light source) as a golden hero disc
+  let portraitMoonOnly = false;       // capture-only: frame the MOON alone (Cancer's ruler) as a lit gibbous disc
+  let portraitRestore = null;         // snapshot for a clean, non-destructive exit
+  let portraitAtmoBase = null;        // per-body atmosphere-intensity baseline (restore)
   let moonFrameAzBase = 0;
   let focusBloomBase = 0.2;
   let sunFocusRing = null;
@@ -494,7 +505,7 @@ const RadialBlurShader = {
     const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
     const sky = earthT > 0.5 ? 0x03050c : 0x010108;
     renderer.setClearColor(sky, 1);
-    if (scene.fog) {
+    if (scene.fog && !portraitMode) {
       scene.fog.color.setHex(sky);
       scene.fog.density = 0.00045 + galaxyT * 0.0007;
     }
@@ -2462,7 +2473,7 @@ const RadialBlurShader = {
     const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
     const earthT = Math.max(0, Math.min(1, (2.2 - z) / 2.2));
     const detail = syncDetailLighting();
-    if (scene && scene.fog) {
+    if (scene && scene.fog && !portraitMode) {
       scene.fog.density = 0.00045 + galaxyT * 0.00085;
       if (isAwardMode()) {
         scene.fog.color.set(z >= 5.2 ? 0x0c1016 : z >= 4 ? 0x121826 : z >= 3 ? 0x1a2230 : 0x0c1016);
@@ -2749,6 +2760,8 @@ const RadialBlurShader = {
         uTime: { value: 0 },
         uEclipse: { value: 0 },
         uQuality: { value: quality },
+        uGain: { value: 1.0 },  // capture-only: portrait mode drops this to keep the
+                                // no-bloom still a GOLDEN disc, not a blown-out white one
       },
       vertexShader: `
         varying vec3 vNormal;
@@ -2769,6 +2782,7 @@ const RadialBlurShader = {
         uniform float uTime;
         uniform float uEclipse;
         uniform float uQuality;
+        uniform float uGain;
         ${SUN_NOISE_GLSL}
         void main() {
           vec3 n = normalize(vNormal);
@@ -2801,7 +2815,7 @@ const RadialBlurShader = {
           float coronaHint = pow(1.0 - mu, 1.6);
           col += vec3(1.0, 0.52, 0.10) * coronaHint * 0.20;
           col *= mix(1.0, 0.26, uEclipse);
-          col *= 1.78;
+          col *= 1.78 * uGain;
           gl_FragColor = vec4(col, 1.0);
         }`,
     });
@@ -3531,6 +3545,7 @@ const RadialBlurShader = {
         const atmoSegs = Math.max(24, Math.floor(segs * 0.65));
         const atmo = new THREE.Mesh(new THREE.SphereGeometry(b.size * vis.atmoS, atmoSegs, atmoSegs), atmoMat);
         group.add(atmo);
+        group.userData.atmo = atmo;   // handle so portrait mode can soften the rim
       }
 
       if (b.hero) {
@@ -4187,9 +4202,11 @@ const RadialBlurShader = {
         }
         if (focusPlanetId) forceResize();
       }
-    } else if (moonFrameActive && !introActive) {
+    } else if (moonFrameActive && !introActive && !portraitMode) {
       syncMoonFrameTarget();
-    } else if (scalePreset(scaleLevel).targetEarth && !introActive) {
+    } else if (scalePreset(scaleLevel).targetEarth && !introActive && !portraitMode) {
+      // portrait mode owns camTarget (may be a far planet); the scaleLevel-0 preset
+      // otherwise snaps the target back to Earth every frame.
       earthTargetVec(camTarget);
     }
 
@@ -4275,7 +4292,7 @@ const RadialBlurShader = {
         updateDomLabels(p);
         if (elapsed >= introMs) finishIntro();
       }
-    } else if (!dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
+    } else if (!portraitMode && !dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
       if (scaleLevel === 0 && !moonFrameActive && scalePreset(0).targetEarth && meshes.earth && sunMesh) {
         // v576: bounded idle — breathe around the terminator money-shot instead of
         // orbiting off it into the dark hemisphere. Eases back after user drags.
@@ -4300,8 +4317,21 @@ const RadialBlurShader = {
         camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
       }
     }
-    if (!introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive) clampCamToLevel();
+    if (!portraitMode && !introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive) clampCamToLevel();
     applyEclipseVisuals();
+
+    // Portrait mode (capture harness only): re-assert the framed camera + the
+    // hidden-distractor state every frame so nothing the per-frame updaters touched
+    // can leak back into the still. Feed the framed body's sun direction directly
+    // (updatePlanetSunLighting bails above scaleLevel 2), then render + return early.
+    if (portraitMode) {
+      applyPortraitState();
+      applyCamera();
+      if (composer) composer.render();
+      else renderer.render(scene, camera);
+      return;
+    }
+
     applyCamera();
 
     // slow asteroid belt drift
@@ -4946,6 +4976,428 @@ const RadialBlurShader = {
     syncHeroReplayClass(false);
     updateDateUI();
   }
+
+  // ── Portrait mode (v581) — clean, transparent single-body stills ─────────────
+  // The whole graphics overhaul (sign heroes, product art, icons) depends on this
+  // producing premium, lit, distractor-free planet portraits with a genuinely
+  // transparent void. It is ADDITIVE and REVERSIBLE and is called ONLY by the
+  // capture harness — the normal homepage boot never touches it.
+
+  const _portTarget = new THREE.Vector3();
+  const _portToSun = new THREE.Vector3();
+  const _portSide = new THREE.Vector3();
+  const _portUp = new THREE.Vector3(0, 1, 0);
+  const _portOff = new THREE.Vector3();
+
+  // Hide every object that is not the framed body (+ its own rings/atmosphere/clouds).
+  // Re-run every frame while portraitMode is on so per-frame updaters can't leak
+  // distractors back into the still.
+  function applyPortraitHiding() {
+    const keepMoon = portraitId === 'earthmoon';
+    const earthFrame = (portraitId === 'earth' || keepMoon) && !portraitMoonOnly;
+    // Planets: only the framed body (Earth for the earthmoon frame) stays visible.
+    // For the SUN portrait, EVERY planet is hidden — the sun disc is the whole shot.
+    // For the MOON-only portrait, every planet (incl. Earth) is hidden — Moon only.
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
+      const isTarget = (portraitSun || portraitMoonOnly) ? false : (earthFrame ? (b.id === 'earth') : (b.id === portraitId));
+      g.visible = isTarget;
+      if (isTarget) g.scale.setScalar(1);
+      // clear any lingering focus/selection ring on every body
+      if (g.userData && g.userData.focusRing) g.userData.focusRing.visible = false;
+    });
+    // Sun + its glare stack. Capture-only SUN portrait keeps the disc + a controlled
+    // inner glow so it reads as a premium golden star (not a blown-out white disc);
+    // the discrete god-ray corona + the widest halo layers stay OFF (they read as
+    // spokes / opaque haze that would fog the transparent corners).
+    if (sunMesh) sunMesh.visible = portraitSun;
+    sunGlow.forEach((sp, i) => { if (sp) sp.visible = portraitSun && i === 0; });
+    if (sunCoronaGroup) sunCoronaGroup.visible = false;
+    if (sunCoronaMesh) sunCoronaMesh.visible = portraitSun;
+    if (sunPromGroup) sunPromGroup.visible = false;
+    if (sunMarker) sunMarker.visible = false;
+    if (sunFocusRing) sunFocusRing.visible = false;
+    if (moonFocusRing) moonFocusRing.visible = false;
+    // Orbit lines, asteroid belt, comet
+    orbitLines.forEach((o) => { if (o) o.visible = false; });
+    if (asteroidPoints) asteroidPoints.visible = false;
+    if (halleyGroup) halleyGroup.visible = false;
+    // Labels (canvas sprites) — DOM labels handled via updateDomLabels(0)
+    Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
+    // Deep-space / starfield / galaxy layers
+    if (starField) starField.visible = false;
+    if (oortShell) oortShell.visible = false;
+    if (localStarsGroup) localStarsGroup.visible = false;
+    if (catalogStarsGroup) catalogStarsGroup.visible = false;
+    if (milkyWayDisk) milkyWayDisk.visible = false;
+    if (galacticCore) galacticCore.visible = false;
+    if (galacticHalo) galacticHalo.visible = false;
+    if (cosmicField) cosmicField.visible = false;
+    // Earth extras
+    if (earthCloud) earthCloud.visible = earthFrame;   // keep clouds for Earth portraits
+    if (moonGroup) moonGroup.visible = keepMoon || portraitMoonOnly;  // earthmoon frame OR moon-only portrait
+    if (earthOrbitGroup) earthOrbitGroup.visible = false;
+    if (leoOrbitRing) leoOrbitRing.visible = false;
+    if (geoOrbitRing) geoOrbitRing.visible = false;
+    if (moonHaloMesh) moonHaloMesh.visible = keepMoon;  // halo only in the composed frame, not the clean moon disc
+    // Portrait stills rely on the real moon.jpg texture; the low-poly crater DISH
+    // overlays stick out as jagged silhouettes at the rim + float as dark blobs
+    // (depthWrite:false), so hide them in ANY portrait moon frame (moon-only OR the
+    // composed earthmoon). The live hero (not portraitMode) keeps them.
+    if (moonCraterGroup) moonCraterGroup.visible = !(portraitMoonOnly || keepMoon);
+    // Retrograde glow sprites (rebuilt onto planet groups)
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      const sprite = g && g.userData && g.userData.retroSprite;
+      if (sprite) sprite.visible = false;
+    });
+  }
+
+  // Point the framed body's shader sun-direction at the sun manually. The normal
+  // updatePlanetSunLighting() bails above scaleLevel 2 and skips hidden bodies, so
+  // portrait mode (sun hidden) must drive the lit hemisphere itself.
+  function applyPortraitSunLighting() {
+    const ids = portraitId === 'earthmoon' ? ['earth'] : [portraitId];
+    ids.forEach((pid) => {
+      const g = meshes[pid];
+      if (!g) return;
+      // Sun sits at the scene origin; lit hemisphere faces the origin.
+      _portToSun.copy(g.position).multiplyScalar(-1);
+      if (_portToSun.lengthSq() < 1e-6) _portToSun.set(1, 0, 0);
+      else _portToSun.normalize();
+      const mat = g.userData && g.userData.mat;
+      if (mat && mat.userData && mat.userData.planetShader && mat.userData.planetShader.uniforms.uSunDir) {
+        mat.userData.planetShader.uniforms.uSunDir.value.copy(_portToSun);
+      }
+    });
+    // HD Earth uses world/object sun-dir uniforms fed elsewhere; feed them here too.
+    if ((portraitId === 'earth' || portraitId === 'earthmoon') && earthMat && meshes.earth) {
+      const em = meshes.earth.userData.mesh;
+      em.updateWorldMatrix(true, false);
+      _earthWorld.setFromMatrixPosition(em.matrixWorld);
+      _sunWorld.copy(ORIGIN).sub(_earthWorld).normalize();
+      earthUniforms.uSunDirWorld.value.copy(_sunWorld);
+      _earthInv.setFromMatrix4(em.matrixWorld).invert();
+      earthUniforms.uSunDir.value.copy(_sunWorld).applyMatrix3(_earthInv).normalize();
+      if (earthAtmoMat) earthAtmoMat.uniforms.uCamPos.value.copy(camera.position);
+    }
+  }
+
+  // Compute the portrait camera: place the lens on the SUN-LIT side of the planet
+  // (offset toward the sun from the planet) with a small lateral + elevation nudge
+  // for a lit, slightly-tilted 3/4 face. Sizes camRadius so the body fills the
+  // requested fraction of the vertical FOV.
+  function computePortraitCamera(pid, fillFrac) {
+    if (pid === 'earthmoon') {
+      // Reuse the Earth+Moon composition framing.
+      if (moonGroup && meshes.earth) {
+        syncMoonFrameTarget();          // sets camTarget + moonFrameAzBase (sunward side)
+        camAz = moonFrameAzBase;
+        camEl = 8 * D2R;
+        camRadius = 3.0;
+        camera.fov = CAM_FOV_CLOSE;
+        camera.updateProjectionMatrix();
+        return;
+      }
+      pid = 'earth';
+    }
+    const g = meshes[pid];
+    if (!g) return;
+    const body = g.userData.b;
+    _portTarget.copy(g.position);
+    camTarget.copy(_portTarget);
+
+    // Direction from the planet toward the sun (origin).
+    _portToSun.copy(_portTarget).multiplyScalar(-1);
+    if (_portToSun.lengthSq() < 1e-8) _portToSun.set(-1, 0, 0);
+    _portToSun.normalize();
+    // Lateral axis for the 3/4 offset.
+    _portSide.crossVectors(_portUp, _portToSun);
+    if (_portSide.lengthSq() < 1e-8) _portSide.set(0, 0, 1);
+    _portSide.normalize();
+
+    // Fit distance: half-height of the body should span fillFrac of the frame.
+    const fov = (CAM_FOV_MID || 42) * D2R;
+    const radius = body.size;
+    const fit = radius / Math.max(0.05, Math.min(0.95, fillFrac)) / Math.tan(fov / 2);
+    const dist = Math.max(radius * 3.2, fit);
+
+    // Sun-side camera offset: mostly toward the sun, nudged laterally + up so the
+    // lit hemisphere faces the lens with a gentle terminator and a 3/4 tilt.
+    const el = 14 * D2R;
+    const ce = Math.cos(el), se = Math.sin(el);
+    _portOff.copy(_portToSun).multiplyScalar(0.90 * ce);
+    _portOff.addScaledVector(_portSide, 0.42 * ce);
+    _portOff.y += se;
+    _portOff.normalize().multiplyScalar(dist);
+
+    camRadius = _portOff.length();
+    camEl = Math.asin(Math.max(-1, Math.min(1, _portOff.y / camRadius)));
+    const horiz = Math.cos(camEl) * camRadius;
+    camAz = horiz > 1e-6 ? Math.atan2(_portOff.z, _portOff.x) : 0;
+    camera.fov = CAM_FOV_MID;
+    camera.updateProjectionMatrix();
+  }
+
+  // Capture-only: frame the MOON alone on its sun-lit side (lit gibbous face toward
+  // the lens) with a small 3/4 tilt, fitted so the disc fills fillFrac of the frame.
+  function computePortraitCameraMoon(fillFrac) {
+    if (!moonGroup) return;
+    const moonRad = 0.26;
+    _portTarget.copy(moonGroup.position);
+    camTarget.copy(_portTarget);
+    _portToSun.copy(_portTarget).multiplyScalar(-1);
+    if (_portToSun.lengthSq() < 1e-8) _portToSun.set(-1, 0, 0);
+    _portToSun.normalize();
+    _portSide.crossVectors(_portUp, _portToSun);
+    if (_portSide.lengthSq() < 1e-8) _portSide.set(0, 0, 1);
+    _portSide.normalize();
+    const fov = (CAM_FOV_MID || 42) * D2R;
+    const ff = Math.max(0.05, Math.min(0.95, fillFrac));
+    const fit = moonRad / ff / Math.tan(fov / 2);
+    const dist = Math.max(moonRad * 3.2, fit);
+    const el = 12 * D2R;
+    const ce = Math.cos(el), se = Math.sin(el);
+    _portOff.copy(_portToSun).multiplyScalar(0.92 * ce);
+    _portOff.addScaledVector(_portSide, 0.36 * ce);
+    _portOff.y += se;
+    _portOff.normalize().multiplyScalar(dist);
+    camRadius = _portOff.length();
+    camEl = Math.asin(Math.max(-1, Math.min(1, _portOff.y / camRadius)));
+    const horiz = Math.cos(camEl) * camRadius;
+    camAz = horiz > 1e-6 ? Math.atan2(_portOff.z, _portOff.x) : 0;
+    camera.fov = CAM_FOV_MID;
+    camera.updateProjectionMatrix();
+  }
+
+  // Capture-only: frame the SUN. It lives at the scene origin and is self-lit, so
+  // just sit the lens straight in front of it (small elevation for a hero tilt) and
+  // fit the distance so the glowing disc fills fillFrac of the frame. The inner glow
+  // sprite extends ~2× the disc, so fillFrac ~0.44 keeps the corners transparent.
+  function computePortraitCameraSun(fillFrac) {
+    camTarget.set(0, 0, 0);
+    const fov = (CAM_FOV_MID || 42) * D2R;
+    const radius = SUN_SIZE;
+    const ff = Math.max(0.05, Math.min(0.95, fillFrac));
+    const fit = radius / ff / Math.tan(fov / 2);
+    camRadius = Math.max(radius * 3.0, fit);
+    camEl = 6 * D2R;
+    camAz = 0;
+    camera.fov = CAM_FOV_MID;
+    camera.updateProjectionMatrix();
+  }
+
+  // Aim the real key lights at the framed body so its SUN-FACING hemisphere is the
+  // lit one. The directional light otherwise targets Earth (its default focus), so
+  // a far planet like Mars/Saturn gets lit from the wrong side and reads as a dark
+  // silhouette with only a rim sliver — the exact lit-face bug.
+  function applyPortraitLighting() {
+    const pid = portraitId === 'earthmoon' ? 'earth' : portraitId;
+    const g = meshes[pid];
+    if (!g) return;
+    // Sun sits at the scene origin; keep the sun mesh + point light there.
+    if (sunMesh) sunMesh.position.set(0, 0, 0);
+    if (sunDirLight) sunDirLight.position.set(0, 0, 0);
+    if (sunDirLightTarget) {
+      sunDirLightTarget.position.copy(g.position);
+      sunDirLightTarget.updateMatrixWorld();
+    }
+    // Favour the DIRECTIONAL key (even, hotspot-free) over the point light, whose
+    // tight specular blows a distracting white glare into the middle of the disc.
+    if (sunPointLight) sunPointLight.intensity = 0.9;
+    if (sunDirLight) sunDirLight.intensity = perfTier === 'high' ? 3.0 : 2.6;
+    if (hemiLight) hemiLight.intensity = perfTier === 'high' ? 0.30 : 0.26;
+    // Soften the atmosphere fresnel rim (a hard bright outline reads as a sticker
+    // edge in a print-grade still). Earth keeps its dedicated Rayleigh shell.
+    if (pid !== 'earth' && g.userData && g.userData.atmo) {
+      const am = g.userData.atmo.material;
+      if (am && am.uniforms && am.uniforms.uIntensity) {
+        if (portraitAtmoBase == null) portraitAtmoBase = {};
+        if (portraitAtmoBase[pid] == null) portraitAtmoBase[pid] = am.uniforms.uIntensity.value;
+        am.uniforms.uIntensity.value = portraitAtmoBase[pid] * 0.4;
+      }
+    }
+    // Hide Saturn's ring-shadow band (it mis-projects as grey rectangles on the disc).
+    if (saturnShadowBand) saturnShadowBand.visible = false;
+  }
+
+  // Re-assert framing + hiding + lit-face every frame while portrait mode is on.
+  function applyPortraitState() {
+    if (scene && scene.fog) scene.fog.density = 0;
+    applyPortraitHiding();
+    // keep DOM labels off
+    try { updateDomLabels(0); } catch (e) {}
+    if (portraitSun) { applyPortraitSunSelf(); return; }
+    if (portraitMoonOnly) { applyPortraitMoonSelf(); return; }
+    applyPortraitLighting();
+    applyPortraitSunLighting();
+  }
+
+  // Capture-only: light the MOON alone for its portrait. Point its shader sun-dir at
+  // the sun (origin) and aim the real key light at the moon so the lit gibbous
+  // hemisphere faces the lens instead of reading as a silhouette.
+  function applyPortraitMoonSelf() {
+    if (!moonGroup || !moonMesh) return;
+    _portToSun.copy(moonGroup.position).multiplyScalar(-1);
+    if (_portToSun.lengthSq() < 1e-6) _portToSun.set(1, 0, 0); else _portToSun.normalize();
+    const mm = moonMesh.material;
+    if (mm && mm.userData && mm.userData.planetShader && mm.userData.planetShader.uniforms.uSunDir) {
+      mm.userData.planetShader.uniforms.uSunDir.value.copy(_portToSun);
+    }
+    if (sunDirLight) { sunDirLight.position.set(0, 0, 0); sunDirLight.intensity = perfTier === 'high' ? 3.0 : 2.6; }
+    if (sunDirLightTarget) { sunDirLightTarget.position.copy(moonGroup.position); sunDirLightTarget.updateMatrixWorld(); }
+    if (sunPointLight) sunPointLight.intensity = 0.9;
+    if (hemiLight) hemiLight.intensity = perfTier === 'high' ? 0.22 : 0.18;
+  }
+
+  // Capture-only: dress the sun itself for its hero portrait. It is the light source,
+  // so it needs no external key — just keep its shader time animating and its inner
+  // glow tuned so the disc looks like a living golden star, not a flat sticker.
+  function applyPortraitSunSelf() {
+    if (sunMesh) sunMesh.position.set(0, 0, 0);
+    // Without the bloom composer the disc's own 1.78× gain clips to pure white. Drop
+    // the gain so the surface keeps its golden granulation + limb falloff, reading as
+    // a premium star rather than a blown white sticker.
+    if (sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uGain) {
+      sunMaterial.uniforms.uGain.value = 0.46;
+    }
+    // The one visible inner glow sprite carries the soft golden corona halo.
+    if (sunGlow[0] && sunGlow[0].material) {
+      sunGlow[0].material.opacity = 0.5;
+    }
+  }
+
+  /**
+   * enterPortrait(id, opts) — freeze the engine on a clean, lit, transparent-void
+   * single-body still. Capture-harness ONLY. Additive + reversible via exitPortrait().
+   * @param {string} id  'mercury'…'neptune' | 'earth'
+   * @param {object} [opts] { date?:Date|string, radiusMul?:number,
+   *                          frame?:'portrait'|'earthmoon', fillFrac?:number }
+   */
+  function enterPortrait(id, opts) {
+    if (!id || destroyed || !renderer) return false;
+    opts = opts || {};
+    id = String(id).toLowerCase();
+    const isSun = id === 'sun' || opts.frame === 'sun';
+    const isMoonOnly = (id === 'moon' && opts.frame !== 'earthmoon') || opts.frame === 'moon';
+    const frame = opts.frame === 'earthmoon' ? 'earthmoon'
+      : isSun ? 'sun'
+      : isMoonOnly ? 'moon'
+      : 'portrait';
+    const pid = frame === 'earthmoon' ? 'earthmoon'
+      : isSun ? 'sun'
+      : isMoonOnly ? 'moon'
+      : id;
+
+    // Snapshot for a non-destructive exit.
+    if (!portraitMode) {
+      portraitRestore = {
+        scaleLevel, camRadius, camAz, camEl,
+        camTarget: camTarget.clone(),
+        fov: camera.fov,
+        showOrbits, showLabels, showAsteroids,
+        fogDensity: (scene && scene.fog) ? scene.fog.density : null,
+        dayOffset, daysPerSec,
+        focusPlanetId, focusFrameId, moonFrameActive,
+        running,
+      };
+    }
+
+    // Build all planets so the target exists (esp. outer bodies).
+    if (!allPlanetsBuilt) { buildRemainingPlanets(); }
+    // SUN portrait needs the full corona shell + glow layers (they arrive lazily
+    // via upgradeSunVisuals in the normal settle path); force them up now so the
+    // capture isn't a bare minimal disc.
+    if (isSun) { try { upgradeSunVisuals(); } catch (e) {} }
+    // Optional deterministic date, then recompute positions.
+    if (opts.date != null) {
+      try {
+        const d = opts.date instanceof Date ? opts.date : new Date(opts.date);
+        if (!isNaN(+d)) setDate(d);
+      } catch (e) {}
+    }
+    daysPerSec = 0; flicking = false;
+    needRecompute = true;
+    updatePositions();
+
+    // Clear any transient selection ring + release focus/scale ownership.
+    clearFocusHighlight();
+    focusPlanetId = null;
+    focusFrameId = null;
+    moonFrameActive = false;
+    scaleAnimActive = false;
+    introActive = false;
+
+    portraitMode = true;
+    portraitId = pid;
+    portraitSun = isSun;
+    portraitMoonOnly = isMoonOnly;
+    // Portrait sits at the close scale so detail lighting + textures are hero-grade.
+    scaleLevel = 0;
+    showOrbits = false; showLabels = false; showAsteroids = false;
+    if (scene && scene.fog) scene.fog.density = 0;
+    // Fill fraction: ~0.70 default (68–75%); radiusMul lets the harness fine-tune.
+    let fillFrac = typeof opts.fillFrac === 'number' ? opts.fillFrac : 0.70;
+    if (typeof opts.radiusMul === 'number' && opts.radiusMul > 0) fillFrac /= opts.radiusMul;
+
+    if (isSun) computePortraitCameraSun(fillFrac);
+    else if (isMoonOnly) computePortraitCameraMoon(fillFrac);
+    else computePortraitCamera(pid, fillFrac);
+    applyPortraitState();
+    applyCamera();
+    // Render straight through the renderer (no composer) so the still is transparent.
+    renderer.render(scene, camera);
+    return true;
+  }
+
+  /** exitPortrait() — restore the pre-portrait engine state (reversible). */
+  function exitPortrait() {
+    if (!portraitMode) return false;
+    portraitMode = false;
+    portraitSun = false;
+    portraitMoonOnly = false;
+    // Restore the live-hero sun brightness (portrait dropped it for a no-bloom still).
+    if (sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uGain) {
+      sunMaterial.uniforms.uGain.value = 1.0;
+    }
+    const r = portraitRestore;
+    portraitId = null;
+    portraitRestore = null;
+    // Restore any atmosphere-rim intensities the portrait dampened.
+    if (portraitAtmoBase) {
+      Object.keys(portraitAtmoBase).forEach((pid) => {
+        const g = meshes[pid];
+        const am = g && g.userData && g.userData.atmo && g.userData.atmo.material;
+        if (am && am.uniforms && am.uniforms.uIntensity && portraitAtmoBase[pid] != null) {
+          am.uniforms.uIntensity.value = portraitAtmoBase[pid];
+        }
+      });
+      portraitAtmoBase = null;
+    }
+    // Restore Saturn's ring-shadow band.
+    if (saturnShadowBand) saturnShadowBand.visible = true;
+    if (r) {
+      scaleLevel = r.scaleLevel;
+      showOrbits = r.showOrbits;
+      showLabels = r.showLabels;
+      showAsteroids = r.showAsteroids;
+      focusPlanetId = r.focusPlanetId;
+      focusFrameId = r.focusFrameId;
+      moonFrameActive = r.moonFrameActive;
+      if (scene && scene.fog && r.fogDensity != null) scene.fog.density = r.fogDensity;
+      camTarget.copy(r.camTarget);
+      camRadius = r.camRadius; camAz = r.camAz; camEl = r.camEl;
+      camera.fov = r.fov; camera.updateProjectionMatrix();
+    }
+    // Rebuild the normal scene visibility + lighting for the restored scale.
+    needRecompute = true;
+    updatePositions();
+    updateScaleVisuals(scaleLevel);
+    applyCamera();
+    return true;
+  }
+
   function focusPlanet(id) {
     if (!id || destroyed) return;
     id = String(id).toLowerCase();
@@ -5148,6 +5600,9 @@ const RadialBlurShader = {
     isSpaceFlightActive() { return spaceFlightToolActive; },
     isJourneyActive() { return journeyActive || preloaderCosmicJourney || masterclassIntroActive; },
     focusPlanet,
+    enterPortrait,
+    exitPortrait,
+    isPortraitMode() { return portraitMode; },
     set onIntroDone(fn) {
       onIntroDone = fn;
       if (PRM && fn && !introActive && !preloaderIntroScheduled) { onIntroDone = null; fn(); }
@@ -5179,13 +5634,18 @@ const RadialBlurShader = {
       try {
         renderer.setPixelRatio(exportDpr);
         renderer.setSize(cssW, cssH, false);
-        if (composer) {
+        applyCamera();
+        // Portrait stills must be TRUE-transparent for compositing behind engraved
+        // frames. The bloom/OutputPass composer bakes a constant background alpha
+        // (~92) across the frame, so portrait mode renders straight through the
+        // renderer (setClearColor 0,0 + premultiplied alpha → genuine alpha-0 void).
+        if (composer && !portraitMode) {
           composer.setPixelRatio(exportDpr);
           composer.setSize(cssW, cssH);
+          composer.render();
+        } else {
+          renderer.render(scene, camera);
         }
-        applyCamera();
-        if (composer) composer.render();
-        else renderer.render(scene, camera);
         const off = document.createElement('canvas');
         off.width = Math.round(cssW * exportDpr);
         off.height = Math.round(cssH * exportDpr);

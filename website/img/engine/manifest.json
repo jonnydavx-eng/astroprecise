@@ -1,0 +1,155 @@
+{
+  "generated": "2026-07-04T08:03:25.763Z",
+  "size": 1024,
+  "quality": 0.85,
+  "stills": [
+    {
+      "id": "earth",
+      "file": "earth.webp",
+      "rulerOfSigns": [],
+      "kb": 91.2,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "mars",
+      "file": "mars.webp",
+      "rulerOfSigns": [
+        "Aries",
+        "Scorpio (traditional)"
+      ],
+      "kb": 62.8,
+      "date": "2025-01-16T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "jupiter",
+      "file": "jupiter.webp",
+      "rulerOfSigns": [
+        "Sagittarius",
+        "Pisces (traditional)"
+      ],
+      "kb": 48,
+      "date": "2025-12-07T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "saturn",
+      "file": "saturn.webp",
+      "rulerOfSigns": [
+        "Capricorn",
+        "Aquarius (traditional)"
+      ],
+      "kb": 195.7,
+      "date": "2025-09-21T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": true,
+      "note": "over 120KB budget: ring/high-frequency detail sets a webp floor at 1024²; lazy-cached (not in install shell)"
+    },
+    {
+      "id": "mercury",
+      "file": "mercury.webp",
+      "rulerOfSigns": [
+        "Gemini",
+        "Virgo"
+      ],
+      "kb": 63.9,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "venus",
+      "file": "venus.webp",
+      "rulerOfSigns": [
+        "Taurus",
+        "Libra"
+      ],
+      "kb": 32.7,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "uranus",
+      "file": "uranus.webp",
+      "rulerOfSigns": [
+        "Aquarius (modern)"
+      ],
+      "kb": 21.9,
+      "date": "2025-11-21T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "neptune",
+      "file": "neptune.webp",
+      "rulerOfSigns": [
+        "Pisces (modern)"
+      ],
+      "kb": 26.5,
+      "date": "2025-09-23T12:00:00Z",
+      "frame": "portrait",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "sun",
+      "file": "sun.webp",
+      "rulerOfSigns": [
+        "Leo"
+      ],
+      "kb": 42.3,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "sun",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "moon",
+      "file": "moon.webp",
+      "rulerOfSigns": [
+        "Cancer"
+      ],
+      "kb": 46.4,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "moon",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "earth-moon",
+      "file": "earth-moon.webp",
+      "rulerOfSigns": [],
+      "kb": 89.6,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "earthmoon",
+      "generated": false,
+      "overBudget": false
+    },
+    {
+      "id": "pluto",
+      "file": "pluto.webp",
+      "rulerOfSigns": [
+        "Scorpio (modern)"
+      ],
+      "kb": 22.7,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "generated",
+      "generated": true,
+      "overBudget": false,
+      "note": "engine has no Pluto mesh — generated disc; Scorpio falls back to Mars"
+    }
+  ],
+  "totalKB": 743.6
+}
