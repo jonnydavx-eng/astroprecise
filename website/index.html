@@ -102,6 +102,26 @@ html,body{background:#0C1016;}
 .dateline{font-family:var(--font-mono);font-size:max(13px,0.75rem);color:var(--ink-faded);letter-spacing:0.05em;}
 .contents-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-3);padding-top:var(--sp-2);list-style:none;margin:0;padding-left:0;}
 .contents-nav a{font-family:var(--font-ui);font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--ink-faded);}
+/* Hero freshness chip — brass, date-stamped, jumps to #today. Whole-sky wording
+   for anonymous visitors; personalised only when a chart is saved (see JS). */
+.hero-today-chip{display:inline-flex;align-items:center;gap:.5em;margin-top:var(--sp-3);padding:.45rem .95rem;border:1px solid rgba(194,160,94,.4);border-radius:999px;background:rgba(26,34,48,.55);font-family:var(--font-mono);font-size:.74rem;letter-spacing:.06em;color:var(--brass-bright);text-decoration:none;transition:border-color .2s,background .2s;order:6;justify-self:start;}
+.hero-today-chip:hover{border-color:var(--brass-vivid);background:rgba(194,160,94,.14);}
+.hero-today-chip[hidden]{display:none;}
+/* Mobile fold fix — the ~300px masthead pushed the sole CTA off the first
+   812px screen (2026-07-04 walkthrough). Compact it: dateline hidden, tighter
+   paddings, smaller mark. The dateline stays on ≥641px where it earns its keep. */
+@media (max-width:640px){
+  .masthead{padding-top:var(--sp-3);padding-bottom:var(--sp-2);}
+  .masthead .dateline{display:none;}
+  .masthead-rule{margin-block:var(--sp-1);}
+  .logo-mark{width:34px;height:34px;}
+  .contents-nav{gap:var(--sp-2);padding-top:var(--sp-1);}
+  .contents-nav a{font-size:0.72rem;}
+  /* …and trim the hero head so the date form + CTA land inside the first
+     812px screen (the sole conversion action was measured below the fold). */
+  #heroChapter h1{font-size:clamp(1.55rem,7.5vw,2.1rem);}
+  #heroChapter .hero-why-lead{font-size:0.9rem;margin-top:var(--sp-1)!important;}
+}
 /* Critical intro insurance: suppress the engraved no-JS wheel + reveal the wrap
    the instant ap-await-webgl is set, so a slow async ap-horizon-2026.css can
    never let the old wheel paint on a WebGL-bound device (full loader look loads
@@ -223,7 +243,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
       <ul class="contents-nav">
         <li><a href="chart.html">Chart</a></li>
         <li><a href="ephemeris.html">Sky</a></li>
-        <li><a href="horoscope.html">Daily</a></li>
+        <li><a href="#today">Daily</a></li>
         <li><a href="cosmic-story.html">Readings</a></li>
         <li><a href="aries.html">Library</a></li>
         <li><a href="shop.html">Shop</a></li>
@@ -234,8 +254,8 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 
 <nav class="ap-float-nav ap-float-nav--extended" id="apFloatNav" aria-label="Jump to section" hidden>
   <a class="ap-float-nav__link" href="#heroChapter" data-ap-jump="heroChapter" data-short="Hero">Hero</a>
-  <a class="ap-float-nav__link" href="#skyChapter" data-ap-jump="skyChapter" data-short="Sky">Tonight</a>
   <a class="ap-float-nav__link" href="#dailyChapter" data-ap-jump="dailyChapter" data-short="Today">Today</a>
+  <a class="ap-float-nav__link" href="#skyChapter" data-ap-jump="skyChapter" data-short="Sky">Tonight</a>
   <a class="ap-float-nav__link" href="#compareChapter" data-ap-jump="compareChapter" data-short="Diff">Different</a>
   <a class="ap-float-nav__link" href="#methodChapter" data-ap-jump="methodChapter" data-short="Math">Method</a>
   <a class="ap-float-nav__link" href="#instrumentsChapter" data-ap-jump="instrumentsChapter" data-short="Tools">Tools</a>
@@ -276,6 +296,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
           <li><span aria-hidden="true">&#10003;</span> Accurate to about an arcminute, 1800&ndash;2200&nbsp;CE (<abbr class="ap-gloss" title="VSOP87 &mdash; a published planetary theory, computed privately on your device">VSOP87</abbr>)</li>
           <li><span aria-hidden="true">&#10003;</span> Private &mdash; computed on your device</li>
         </ul>
+        <a class="hero-today-chip" id="heroTodayChip" href="#today" hidden></a>
         <p class="ap-spine-bridge hero-spine-bridge">New here? Start with the sky above you tonight &mdash; then watch it become your chart. <a href="#skyChapter" data-ap-jump="skyChapter">See tonight's sky &rarr;</a></p>
       </div>
 
@@ -769,6 +790,29 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 </section>
 
 <!-- ============================================================
+     § 2a · DAILY SKY — today's transit reading (preview -> your chart)
+     Sits directly under the hero: the page's only daily-changing asset
+     leads (research 2026-07-04 — Chani pattern; #today is the stable
+     bookmarkable anchor the masthead Daily link + hero chip jump to).
+     ============================================================ -->
+<section class="department section-bleed ap-chapter" id="dailyChapter" aria-labelledby="daily-heading">
+  <span id="today" aria-hidden="true"></span>
+  <div class="page-wrap">
+    <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
+      <p class="ap-display-kicker">Today</p>
+      <h2 id="daily-heading" class="ap-chapter-title">Your daily sky</h2>
+      <p class="ap-chapter-lead" style="max-width:52ch; margin-inline:auto;">
+        The sky is still moving. Pick your sign for today&rsquo;s reading &mdash; computed live from the real planets, not a paragraph written weeks ahead &mdash; then see how it lands on <em>your</em> chart.
+      </p>
+    </header>
+    <div id="daily-tool-root" class="ap-reveal" style="--ap-reveal-i:1">
+      <p class="home-daily__prompt" style="text-align:center;color:rgba(236,230,216,.6)">Loading today&rsquo;s sky&hellip;</p>
+    </div>
+    <p class="ap-spine-bridge ap-spine-bridge--center">The daily reading shows what the sky is doing today; the <a href="shop.html#deep-reading">Deep Reading</a> traces the whole pattern behind every day. <a href="chart.html">Cast your free chart &rarr;</a></p>
+  </div>
+</section>
+
+<!-- ============================================================
      § 3c · COSMIC STORY — dusk planet band
      ============================================================ -->
 <section class="cosmic-story-band section-bleed ap-chapter" id="skyChapter" aria-labelledby="cosmic-band-heading">
@@ -1042,25 +1086,6 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
     <p class="sky-born-cta ap-reveal">
       <a href="chart.html">See tonight's sky as it stood when you were born &rarr;</a>
     </p>
-  </div>
-</section>
-
-<!-- ============================================================
-     § 2a · DAILY SKY — today's transit reading (preview -> your chart)
-     ============================================================ -->
-<section class="department section-bleed ap-chapter" id="dailyChapter" aria-labelledby="daily-heading">
-  <div class="page-wrap">
-    <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
-      <p class="ap-display-kicker">Today</p>
-      <h2 id="daily-heading" class="ap-chapter-title">Your daily sky</h2>
-      <p class="ap-chapter-lead" style="max-width:52ch; margin-inline:auto;">
-        The sky is still moving. Pick your sign for today&rsquo;s reading &mdash; computed live from the real planets, not a paragraph written weeks ahead &mdash; then see how it lands on <em>your</em> chart.
-      </p>
-    </header>
-    <div id="daily-tool-root" class="ap-reveal" style="--ap-reveal-i:1">
-      <p class="home-daily__prompt" style="text-align:center;color:rgba(236,230,216,.6)">Loading today&rsquo;s sky&hellip;</p>
-    </div>
-    <p class="ap-spine-bridge ap-spine-bridge--center">The daily reading shows what the sky is doing today; the <a href="shop.html#deep-reading">Deep Reading</a> traces the whole pattern behind every day. <a href="chart.html">Cast your free chart &rarr;</a></p>
   </div>
 </section>
 
@@ -1373,7 +1398,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         <div>
           <p class="qa-q">Does my birth data leave my device?</p>
           <p class="qa-a">
-            No. All computation happens in your browser. Nothing is sent to a server, stored in a database, or attached to an account. Close the tab and it is gone.
+            Your birth moment is computed on your device. The only outbound request is the place-name lookup &mdash; the place text you type goes to a geocoder to find its coordinates; your birth date and time never do. Nothing is stored in a database or attached to an account. Close the tab and it is gone.
           </p>
         </div>
       </li>
@@ -1542,8 +1567,8 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
      Scripts — minimal, end of body
      ============================================================ -->
 <script defer src="js/ap-home-bootstrap.js?v=578"></script>
-<script defer src="js/home-daily.js?v=620"></script>
-<script defer src="js/home-match.js?v=620"></script>
+<script defer src="js/home-daily.js?v=621"></script>
+<script defer src="js/home-match.js?v=621"></script>
 <script defer>
 (function () {
   'use strict';
@@ -1601,6 +1626,69 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   }
   }
   fillDateline();
+
+  // ── 1b. Hero freshness chip — date + today's tightest whole-sky aspect.
+  // Anonymous visitors get whole-sky wording only (no possessives, no sign
+  // claims — honesty rule); a saved chart earns a personalised line. Jumps
+  // to #today (the daily tool). Same lazy-ephemeris retry as the dateline.
+  function fillHeroChip(tries) {
+    tries = tries || 0;
+    var chip = document.getElementById('heroTodayChip');
+    if (!chip) return;
+    var now = new Date();
+    var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var moNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var stamp = dayNames[now.getDay()] + ' ' + now.getDate() + ' ' + moNames[now.getMonth()];
+
+    var savedName = null;
+    try {
+      var pins = JSON.parse(localStorage.getItem('ap_natal_pins') || 'null');
+      var charts = JSON.parse(localStorage.getItem('ap_charts') || '[]');
+      if (charts && charts.length) savedName = charts[0].name || '';
+      else if (pins && pins.points && pins.points.sun != null) savedName = pins.name || '';
+    } catch (e) {}
+
+    if (savedName !== null) {
+      chip.textContent = stamp + ' · ' + (savedName ? savedName + ', your' : 'Your') + ' daily reading is ready ↓';
+      chip.hidden = false;
+      return;
+    }
+
+    var E = window.AstroEphemeris;
+    if (!E || typeof E.calculateNatalChart !== 'function') {
+      if (tries < 60) return setTimeout(function () { fillHeroChip(tries + 1); }, 60);
+      chip.textContent = stamp + ' · today’s sky, computed live — see it ↓';
+      chip.hidden = false;
+      return;
+    }
+    try {
+      // Tightest major aspect between the classical planets, geocentric, today.
+      var c = E.calculateNatalChart(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), 12, 0, 0, 0, 'Placidus', 'mean');
+      var P = c.positions;
+      var names = ['sun','moon','mercury','venus','mars','jupiter','saturn'];
+      var label = { sun:'Sun', moon:'Moon', mercury:'Mercury', venus:'Venus', mars:'Mars', jupiter:'Jupiter', saturn:'Saturn' };
+      var ASPECTS = [[0,'conjunct',6],[60,'sextile',4],[90,'square',5],[120,'trine',5],[180,'opposite',6]];
+      var best = null;
+      for (var i = 0; i < names.length; i++) for (var j = i + 1; j < names.length; j++) {
+        var a = P[names[i]], b = P[names[j]];
+        if (!a || !b) continue;
+        var diff = Math.abs(a.longitude - b.longitude) % 360;
+        if (diff > 180) diff = 360 - diff;
+        for (var k = 0; k < ASPECTS.length; k++) {
+          var orb = Math.abs(diff - ASPECTS[k][0]);
+          if (orb <= ASPECTS[k][2] && (!best || orb < best.orb)) {
+            best = { orb: orb, text: label[names[i]] + ' ' + ASPECTS[k][1] + ' ' + label[names[j]] };
+          }
+        }
+      }
+      chip.textContent = stamp + ' · ' + (best ? best.text + ' — see today’s sky ↓' : 'today’s sky, computed live — see it ↓');
+      chip.hidden = false;
+    } catch (e) {
+      chip.textContent = stamp + ' · today’s sky, computed live — see it ↓';
+      chip.hidden = false;
+    }
+  }
+  fillHeroChip();
 
   // ── 2. Hero chart form submit ─────────────────────────────────
   var form  = document.getElementById('hero-chart-form');

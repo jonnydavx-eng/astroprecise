@@ -1,0 +1,605 @@
+{
+  "base": "http://localhost:8794",
+  "size": 1024,
+  "portraits": [
+    {
+      "id": "earth",
+      "ok": true,
+      "file": "earth.webp",
+      "kb": 90.7,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 74,
+      "maxLum": 229,
+      "litSamples": 35,
+      "opaqueSamples": 75,
+      "lit": true,
+      "centerPx": [
+        9,
+        19,
+        40,
+        255
+      ]
+    },
+    {
+      "id": "mars",
+      "ok": true,
+      "file": "mars.webp",
+      "kb": 58.4,
+      "date": "2025-01-16T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 89,
+      "maxLum": 168,
+      "litSamples": 50,
+      "opaqueSamples": 69,
+      "lit": true,
+      "centerPx": [
+        181,
+        89,
+        62,
+        255
+      ]
+    },
+    {
+      "id": "jupiter",
+      "ok": true,
+      "file": "jupiter.webp",
+      "kb": 44.8,
+      "date": "2025-12-07T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 170,
+      "maxLum": 218,
+      "litSamples": 68,
+      "opaqueSamples": 69,
+      "lit": true,
+      "centerPx": [
+        206,
+        177,
+        143,
+        255
+      ]
+    },
+    {
+      "id": "saturn",
+      "ok": true,
+      "file": "saturn.webp",
+      "kb": 187.9,
+      "date": "2025-09-21T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 89,
+      "maxLum": 220,
+      "litSamples": 27,
+      "opaqueSamples": 56,
+      "lit": true,
+      "centerPx": [
+        209,
+        192,
+        157,
+        255
+      ]
+    },
+    {
+      "id": "mercury",
+      "ok": true,
+      "file": "mercury.webp",
+      "kb": 63.2,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 127,
+      "maxLum": 189,
+      "litSamples": 68,
+      "opaqueSamples": 69,
+      "lit": true,
+      "centerPx": [
+        117,
+        114,
+        107,
+        255
+      ]
+    },
+    {
+      "id": "venus",
+      "ok": true,
+      "file": "venus.webp",
+      "kb": 31.2,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 180,
+      "maxLum": 210,
+      "litSamples": 69,
+      "opaqueSamples": 69,
+      "lit": true,
+      "centerPx": [
+        220,
+        197,
+        149,
+        255
+      ]
+    },
+    {
+      "id": "uranus",
+      "ok": true,
+      "file": "uranus.webp",
+      "kb": 22.1,
+      "date": "2025-11-21T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 184,
+      "maxLum": 216,
+      "litSamples": 68,
+      "opaqueSamples": 69,
+      "lit": true,
+      "centerPx": [
+        192,
+        212,
+        210,
+        255
+      ]
+    },
+    {
+      "id": "neptune",
+      "ok": true,
+      "file": "neptune.webp",
+      "kb": 26.5,
+      "date": "2025-09-23T12:00:00Z",
+      "frame": "portrait",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 89,
+      "maxLum": 155,
+      "litSamples": 51,
+      "opaqueSamples": 69,
+      "lit": true,
+      "centerPx": [
+        81,
+        115,
+        191,
+        255
+      ]
+    },
+    {
+      "id": "sun",
+      "ok": true,
+      "file": "sun.webp",
+      "kb": 44.8,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "sun",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 216,
+      "maxLum": 252,
+      "litSamples": 37,
+      "opaqueSamples": 37,
+      "lit": true,
+      "centerPx": [
+        209,
+        203,
+        180,
+        255
+      ]
+    },
+    {
+      "id": "moon",
+      "ok": true,
+      "file": "moon.webp",
+      "kb": 46,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "moon",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 130,
+      "maxLum": 188,
+      "litSamples": 67,
+      "opaqueSamples": 69,
+      "lit": true,
+      "centerPx": [
+        170,
+        165,
+        162,
+        255
+      ]
+    },
+    {
+      "id": "earth-moon",
+      "ok": true,
+      "file": "earth-moon.webp",
+      "kb": 89.9,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "earthmoon",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 75,
+      "maxLum": 203,
+      "litSamples": 28,
+      "opaqueSamples": 50,
+      "lit": true,
+      "centerPx": [
+        34,
+        42,
+        58,
+        255
+      ]
+    },
+    {
+      "id": "pluto",
+      "ok": true,
+      "file": "pluto.webp",
+      "kb": 22.7,
+      "date": "2026-03-20T12:00:00Z",
+      "frame": "generated",
+      "w": 1024,
+      "h": 1024,
+      "cornerAlphaMax": 0,
+      "corners": {
+        "tl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "tr": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "bl": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "br": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "transparentCorners": true,
+      "meanLum": 105,
+      "maxLum": 170,
+      "litSamples": 51,
+      "opaqueSamples": 61,
+      "lit": true,
+      "centerPx": [
+        177,
+        157,
+        133,
+        255
+      ]
+    }
+  ],
+  "homepageReload": {
+    "ok": true,
+    "heroState": {
+      "isWebGL": true,
+      "isPortraitMode": false,
+      "orreryFull": true
+    },
+    "pageErrorsDuringReload": []
+  },
+  "pageErrorsTotal": [],
+  "totalKB": 728
+}

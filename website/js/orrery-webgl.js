@@ -66,6 +66,48 @@ const RadialBlurShader = {
     }`,
 };
 
+// Finish pass (always the last pass before OutputPass): a hash-based ordered dither
+// that kills banding in the near-black void gradients, a wide soft vignette, and a
+// whisper of a grade (teal-leaning shadows → brass-leaning highlights). STATIC by
+// design — no time uniform, so nothing shimmers or crawls frame to frame.
+const FinishShader = {
+  name: 'FinishShader',
+  uniforms: {
+    tDiffuse: { value: null },
+    uVignette: { value: 0.15 },
+    uGrade: { value: 1.0 },
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+  fragmentShader: `
+    precision highp float;
+    uniform sampler2D tDiffuse;
+    uniform float uVignette;
+    uniform float uGrade;
+    varying vec2 vUv;
+    void main() {
+      vec4 tex = texture2D(tDiffuse, vUv);
+      vec3 col = tex.rgb;
+      float lum = dot(col, vec3(0.2126, 0.7152, 0.0722));
+      // (a) static screen-space hash dither, darks only. We run BEFORE OutputPass
+      // (linear light, pre-ACES): the ACES toe compresses dark steps ~4×, so
+      // 0.66/255 linear lands at ~±1.5 display steps in the void gradients; the
+      // smoothstep fades it out by the midtones so planet discs stay noise-free.
+      float h = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+      col += (h - 0.5) * (0.66 / 255.0) * (1.0 - smoothstep(0.02, 0.30, lum));
+      // (b) wide soft vignette — anchors the frame without darkening the hero
+      float vig = 1.0 - uVignette * smoothstep(0.35, 0.85, length(vUv - 0.5));
+      // (c) whisper grade: teal-leaning shadows → brass-leaning highlights (±2%)
+      vec3 tint = mix(vec3(0.985, 1.005, 1.02), vec3(1.02, 1.005, 0.982), smoothstep(0.05, 0.6, lum));
+      col *= mix(vec3(vig), tint * vig, uGrade);
+      gl_FragColor = vec4(col, tex.a);
+    }`,
+};
+
 (function () {
   'use strict';
 
@@ -111,12 +153,12 @@ const RadialBlurShader = {
   // Per-planet visual tuning (atmosphere rim + surface response)
   // Gas giants: tiny atmo shells + low atmoI — large additive shells read as ugly "rings".
   const PLANET_VIS = {
-    mercury: { roughness: 0.82, metalness: 0.14, atmo: 0x9a9088, atmoS: 1.02, atmoI: 0.14, rim: 0x6a8090 },
+    mercury: { roughness: 0.82, metalness: 0.0,  atmo: 0x9a9088, atmoS: 1.02, atmoI: 0.14, rim: 0x6a8090 },
     venus:   { roughness: 0.72, metalness: 0.0,  atmo: 0xffc878, atmoS: 1.038, atmoI: 0.48, rim: 0xffa060 },
     earth:   { roughness: 0.76, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.018, atmoI: 1.0, rim: 0x5090d8 },
     mars:    { roughness: 0.78, metalness: 0.02, atmo: 0xff5533, atmoS: 1.032, atmoI: 0.42, rim: 0xc06040 },
-    jupiter: { roughness: 0.52, metalness: 0.0,  atmo: 0xe0a858, atmoS: 1.018, atmoI: 0.30, rim: 0xd09050 },
-    saturn:  { roughness: 0.56, metalness: 0.0,  atmo: 0xf0d8a0, atmoS: 1.014, atmoI: 0.24, rim: 0xc8a868 },
+    jupiter: { roughness: 0.86, metalness: 0.0,  atmo: 0xe0a858, atmoS: 1.018, atmoI: 0.30, rim: 0xd09050 },
+    saturn:  { roughness: 0.86, metalness: 0.0,  atmo: 0xf0d8a0, atmoS: 1.014, atmoI: 0.24, rim: 0xc8a868 },
     uranus:  { roughness: 0.68, metalness: 0.0,  atmo: 0x7ec8e8, atmoS: 1.022, atmoI: 0.26, rim: 0x68b8d8 },
     neptune: { roughness: 0.66, metalness: 0.0,  atmo: 0x5a8fd8, atmoS: 1.022, atmoI: 0.28, rim: 0x4888c8 },
   };
@@ -141,6 +183,7 @@ const RadialBlurShader = {
   let composer = null;
   let bloomPass = null;
   let radialBlurPass = null;
+  let finishPass = null;      // static dither + vignette + whisper grade (last before OutputPass)
   let perfTier = 'high';
   let allPlanetsBuilt = false;
   let sunVisualsMinimal = false;
@@ -171,7 +214,8 @@ const RadialBlurShader = {
 
   // ── HD Earth (shader-injected) state ──────────────────────────────────────
   let earthMat = null;        // hero surface MeshStandardMaterial (onBeforeCompile-patched)
-  let earthAtmoMat = null;    // dedicated Rayleigh atmosphere shell material
+  let earthAtmoMat = null;    // dedicated Rayleigh atmosphere shell material (inner)
+  let earthAtmoMatOuter = null; // second, softer scatter shell (sunset wrap past the terminator)
   const ORIGIN = new THREE.Vector3();
   const _earthWorld = new THREE.Vector3();
   const _sunWorld = new THREE.Vector3();
@@ -1301,12 +1345,18 @@ const RadialBlurShader = {
         radialBlurPass = tryCreateRadialBlurPass(1);
         if (radialBlurPass) composer.addPass(radialBlurPass);
       }
+      // Static finish pass (dither + vignette + whisper grade) — the ONE extra
+      // fullscreen pass, always last before OutputPass. The low tier never gets a
+      // composer at all (early return above), so it is skipped there for free.
+      finishPass = tryCreateFinishPass();
+      if (finishPass) composer.addPass(finishPass);
       composer.addPass(new OutputPass());
       resize();
     } catch (e) {
       composer = null;
       bloomPass = null;
       radialBlurPass = null;
+      finishPass = null;
       console.warn('[orrery] post-processing deferred init failed:', e.message);
     }
   }
@@ -3373,15 +3423,25 @@ const RadialBlurShader = {
   // Dedicated Earth atmosphere: cyan-blue Rayleigh day-limb + terminator sunset band.
   // Uses WORLD-space sun dir + world normal (the shell shares the group tilt but does
   // NOT spin with the textured surface, so object-space would swim).
-  function earthAtmosphereMaterial() {
+  // Parametrized so ONE shader drives BOTH limb shells (bright inner Rayleigh rim +
+  // faint outer scatter veil with a warm sunset wrap past the terminator). uEdge
+  // normalizes the BackSide horizon depth for the shell's scale so the glow peaks at
+  // the planet limb and FADES to the shell edge — the previous 1-max(dot(N,V),0)
+  // fresnel was ~1 across the whole visible rim, which is exactly why the limb read
+  // as a flat whiteish line instead of a soft blue gradient.
+  function earthAtmosphereMaterial(opts) {
+    opts = opts || {};
     return new THREE.ShaderMaterial({
       uniforms: {
         uSunDir: earthUniforms.uSunDirWorld,            // shared world-space dir (by reference)
         uCamPos: { value: new THREE.Vector3() },
-        uIntensity: { value: composer ? 0.5 : 0.8 }, // kept low so the rim stays a thin glow, not a bloomed halo
+        uIntensity: { value: opts.intensity != null ? opts.intensity : 0.9 },
+        uEdge:    { value: opts.edge    != null ? opts.edge    : 5.3 },  // 1/horizon-depth for the shell scale (1.018 → ~5.3, 1.045 → ~3.4)
+        uFalloff: { value: opts.falloff != null ? opts.falloff : 1.5 },  // glow profile exponent — higher hugs the limb tighter
+        uWrap:    { value: opts.wrap    != null ? opts.wrap    : 0.0 },  // 0 = inner Rayleigh shell, 1 = outer veil w/ sunset wrap
       },
       vertexShader: 'varying vec3 vWN; varying vec3 vWP;\n void main(){ vec4 wp = modelMatrix * vec4(position,1.0); vWP = wp.xyz; vWN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * wp; }',
-      fragmentShader: 'uniform vec3 uSunDir; uniform vec3 uCamPos; uniform float uIntensity; varying vec3 vWN; varying vec3 vWP;\n void main(){\n   vec3 V = normalize(uCamPos - vWP);\n   vec3 N = normalize(vWN);\n   float fres = pow(1.0 - max(dot(N,V),0.0), 4.5);\n   float ndl = dot(N, normalize(uSunDir));\n   float dayMask = smoothstep(-0.2, 0.4, ndl);\n   float band = smoothstep(0.0, 0.3, 1.0 - abs(ndl));\n   vec3 rayleigh = vec3(0.20, 0.42, 0.9);\n   vec3 sunset   = vec3(0.9, 0.42, 0.16);\n   vec3 col = mix(rayleigh, sunset, band * 0.55);\n   float a = clamp(fres * dayMask * uIntensity, 0.0, 1.0);\n   gl_FragColor = vec4(col * (0.35 + fres * 0.4), a * 0.7);\n }',
+      fragmentShader: 'uniform vec3 uSunDir; uniform vec3 uCamPos; uniform float uIntensity; uniform float uEdge; uniform float uFalloff; uniform float uWrap; varying vec3 vWN; varying vec3 vWP;\n void main(){\n   vec3 V = normalize(uCamPos - vWP);\n   vec3 N = normalize(vWN);\n   float fres = pow(clamp(-dot(N,V) * uEdge, 0.0, 1.0), uFalloff);\n   float ndl = dot(N, normalize(uSunDir));\n   float dayMask = smoothstep(-0.2 - uWrap * 0.15, 0.4, ndl);\n   float band = smoothstep(0.0, 0.3 + uWrap * 0.2, 1.0 - abs(ndl));\n   /* sunset only reads when the terminator is viewed side-on (hero rest frame);\n      from a sun-aligned lens (portrait stills) the WHOLE limb sits near ndl=0 and\n      an ungated band paints the rim pink-white — full-disc Earth reads BLUE. */\n   float termView = 1.0 - smoothstep(0.5, 0.85, clamp(dot(normalize(uSunDir), V), 0.0, 1.0));\n   vec3 rayleigh = vec3(0.10, 0.32, 0.95);\n   vec3 sunset   = vec3(0.95, 0.42, 0.14);\n   vec3 col = mix(rayleigh, sunset, band * (0.55 + uWrap * 0.35) * termView);\n   float a = clamp(fres * dayMask * uIntensity, 0.0, 1.0);\n   gl_FragColor = vec4(col * (0.35 + fres * 0.55), a * 0.7);\n }',
       blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
     });
   }
@@ -3518,7 +3578,10 @@ const RadialBlurShader = {
         earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
       } else {
         const isGiant = b.id === 'jupiter' || b.id === 'saturn' || b.id === 'uranus' || b.id === 'neptune';
-        const clearcoat = (b.id === 'jupiter' ? 0.36 : b.id === 'saturn' ? 0.30 : b.id === 'venus' ? 0.20
+        // Gas-giant cloud tops are matte — no clearcoat lacquer on jupiter/saturn
+        // (the coat lobe read as a centered plastic blob no base roughness can kill);
+        // venus keeps its thick-haze sheen, the ice giants keep a whisper.
+        const clearcoat = (b.id === 'venus' ? 0.20
           : (b.id === 'uranus' || b.id === 'neptune') ? 0.14 : 0);
         const giantGlow = b.id === 'jupiter' ? 0x2a1808 : b.id === 'saturn' ? 0x1e1608 : 0x000000;
         const giantEmissiveI = b.id === 'jupiter' ? 0.10 : b.id === 'saturn' ? 0.08
@@ -3566,7 +3629,7 @@ const RadialBlurShader = {
       if (vis.atmo) {
         let atmoMat;
         if (b.hero && perfTier !== 'low' && !PRM) {
-          atmoMat = earthAtmosphereMaterial();
+          atmoMat = earthAtmosphereMaterial({ intensity: 0.9, edge: 5.3, falloff: 1.5, wrap: 0.0 });
           earthAtmoMat = atmoMat;
         } else {
           const atmoI = vis.atmoI != null ? vis.atmoI : (b.hero ? 1.0 : 0.4);
@@ -3576,6 +3639,18 @@ const RadialBlurShader = {
         const atmo = new THREE.Mesh(new THREE.SphereGeometry(b.size * vis.atmoS, atmoSegs, atmoSegs), atmoMat);
         group.add(atmo);
         group.userData.atmo = atmo;   // handle so portrait mode can soften the rim
+        // Second Earth shell: a faint outer scatter veil (SAME shader, different
+        // uniforms) that carries a warm sunset wrap just past the terminator.
+        // Gated exactly like the dedicated inner shell (never on low tier / PRM).
+        if (b.hero && atmoMat === earthAtmoMat) {
+          const atmo2 = new THREE.Mesh(
+            new THREE.SphereGeometry(b.size * 1.045, atmoSegs, atmoSegs),
+            earthAtmosphereMaterial({ intensity: 0.15, edge: 3.4, falloff: 1.3, wrap: 1.0 })
+          );
+          earthAtmoMatOuter = atmo2.material;
+          group.add(atmo2);
+          group.userData.atmoOuter = atmo2;   // portrait soften handle (outer veil)
+        }
       }
 
       if (b.hero) {
@@ -4075,6 +4150,7 @@ const RadialBlurShader = {
       earthUniforms.uSunDir.value.copy(_sunWorld).applyMatrix3(_earthInv).normalize();
     }
     if (earthAtmoMat) earthAtmoMat.uniforms.uCamPos.value.copy(camera.position);
+    if (earthAtmoMatOuter) earthAtmoMatOuter.uniforms.uCamPos.value.copy(camera.position);
     updatePlanetSunLighting();
     if (scaleLevel <= 2 && orbitLines.length) {
       orbitLines.forEach((o) => {
@@ -4458,6 +4534,15 @@ const RadialBlurShader = {
       return pass;
     } catch (e) {
       console.warn('[orrery] radial blur shader unavailable:', e.message);
+      return null;
+    }
+  }
+
+  function tryCreateFinishPass() {
+    try {
+      return new ShaderPass(FinishShader);
+    } catch (e) {
+      console.warn('[orrery] finish shader unavailable:', e.message);
       return null;
     }
   }
@@ -4948,6 +5033,7 @@ const RadialBlurShader = {
           console.warn('[orrery] post-processing unavailable after radial blur removal:', e2.message);
           composer = null;
           bloomPass = null;
+          finishPass = null;
         }
       }
     }
@@ -5111,6 +5197,7 @@ const RadialBlurShader = {
       _earthInv.setFromMatrix4(em.matrixWorld).invert();
       earthUniforms.uSunDir.value.copy(_sunWorld).applyMatrix3(_earthInv).normalize();
       if (earthAtmoMat) earthAtmoMat.uniforms.uCamPos.value.copy(camera.position);
+      if (earthAtmoMatOuter) earthAtmoMatOuter.uniforms.uCamPos.value.copy(camera.position);
     }
   }
 
@@ -5239,13 +5326,28 @@ const RadialBlurShader = {
     if (sunDirLight) sunDirLight.intensity = perfTier === 'high' ? 3.0 : 2.6;
     if (hemiLight) hemiLight.intensity = perfTier === 'high' ? 0.30 : 0.26;
     // Soften the atmosphere fresnel rim (a hard bright outline reads as a sticker
-    // edge in a print-grade still). Earth keeps its dedicated Rayleigh shell.
+    // edge in a print-grade still). Earth's dedicated Rayleigh shells get their own
+    // gentler ratio below (their new hero-rest base is brighter by design).
     if (pid !== 'earth' && g.userData && g.userData.atmo) {
       const am = g.userData.atmo.material;
       if (am && am.uniforms && am.uniforms.uIntensity) {
         if (portraitAtmoBase == null) portraitAtmoBase = {};
         if (portraitAtmoBase[pid] == null) portraitAtmoBase[pid] = am.uniforms.uIntensity.value;
         am.uniforms.uIntensity.value = portraitAtmoBase[pid] * 0.4;
+      }
+    }
+    // Earth two-shell soften: portrait renders WITHOUT the bloom composer, so the
+    // 0.9 / 0.15 hero-rest intensities read hot in a raw still — damp both shells
+    // relative to the new base (restored via portraitAtmoBase in exitPortrait).
+    if (pid === 'earth') {
+      if (portraitAtmoBase == null) portraitAtmoBase = {};
+      if (earthAtmoMat && earthAtmoMat.uniforms.uIntensity && portraitAtmoBase.earth == null) {
+        portraitAtmoBase.earth = earthAtmoMat.uniforms.uIntensity.value;
+        earthAtmoMat.uniforms.uIntensity.value = portraitAtmoBase.earth * 0.72;
+      }
+      if (earthAtmoMatOuter && earthAtmoMatOuter.uniforms.uIntensity && portraitAtmoBase.earthOuter == null) {
+        portraitAtmoBase.earthOuter = earthAtmoMatOuter.uniforms.uIntensity.value;
+        earthAtmoMatOuter.uniforms.uIntensity.value = portraitAtmoBase.earthOuter * 0.72;
       }
     }
     // Hide Saturn's ring-shadow band (it mis-projects as grey rectangles on the disc).
@@ -5396,6 +5498,11 @@ const RadialBlurShader = {
     portraitRestore = null;
     // Restore any atmosphere-rim intensities the portrait dampened.
     if (portraitAtmoBase) {
+      // Earth's outer veil is keyed separately (there is no meshes['earthOuter']).
+      if (portraitAtmoBase.earthOuter != null && earthAtmoMatOuter && earthAtmoMatOuter.uniforms.uIntensity) {
+        earthAtmoMatOuter.uniforms.uIntensity.value = portraitAtmoBase.earthOuter;
+        delete portraitAtmoBase.earthOuter;
+      }
       Object.keys(portraitAtmoBase).forEach((pid) => {
         const g = meshes[pid];
         const am = g && g.userData && g.userData.atmo && g.userData.atmo.material;

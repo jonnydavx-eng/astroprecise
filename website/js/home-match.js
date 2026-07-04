@@ -160,12 +160,15 @@
     update();
   }
 
+  // Lazy boot with a timed fallback (boot() is idempotent via `booted`) so the
+  // tool can never stay blank if the observer callback is starved.
   var section = document.getElementById('matchChapter') || root;
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) { if (en.isIntersecting) { io.disconnect(); boot(); } });
     }, { rootMargin: '200px' });
     io.observe(section);
+    setTimeout(boot, 10000);
   } else {
     boot();
   }

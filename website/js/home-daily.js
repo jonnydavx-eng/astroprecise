@@ -100,6 +100,7 @@
       '.home-daily__note{font-size:.78rem;color:rgba(236,230,216,.68);line-height:1.55;border-left:2px solid rgba(194,160,94,.4);padding-left:.7rem;margin:0 0 1.1rem}' +
       '.home-daily__cta-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}' +
       '.home-daily__return{font-size:.74rem;color:rgba(236,230,216,.55);margin:1rem 0 0;font-style:italic}' +
+      '.home-daily__save-hint{font-size:.76rem;color:rgba(205,174,106,.75);line-height:1.5;margin:.8rem 0 0}' +
       '.home-daily__prompt{color:rgba(236,230,216,.7);text-align:center;margin:.2rem 0 0;font-size:.9rem}';
     var st = document.createElement('style');
     st.id = 'home-daily-css';
@@ -159,7 +160,8 @@
           '<a class="btn-press" href="chart.html">See how today lands on <em>your</em> chart &rarr;</a>' +
           '<a class="btn-quiet" href="horoscope.html">All twelve signs</a>' +
         '</div>' +
-        '<p class="home-daily__return">The sky moves — a new reading is computed for each calendar day. Check back tomorrow.</p>' +
+        '<p class="home-daily__save-hint">Cast your chart once and this card becomes <em>yours</em> — read against your own placements, saved in your browser, no account.</p>' +
+        '<p class="home-daily__return" id="daily-return-cue">The sky moves — a new reading is computed for each calendar day. Check back tomorrow.</p>' +
       '</div>';
   }
 
@@ -179,12 +181,30 @@
       Array.prototype.forEach.call(btns, function (b) { b.setAttribute('aria-pressed', b.dataset.sign === sign ? 'true' : 'false'); });
       try { localStorage.setItem('ap_home_sign', sign); } catch (e) {}
       slot.innerHTML = '<p class="home-daily__prompt">Reading today’s sky…</p>';
-      getReading(sign).then(function (r) { slot.innerHTML = renderReading(sign, r); });
+      getReading(sign).then(function (r) { slot.innerHTML = renderReading(sign, r); fillTomorrow(sign); });
     }
     Array.prototype.forEach.call(btns, function (b) {
       b.addEventListener('click', function () { pick(b.dataset.sign); });
     });
     if (preselect) pick(preselect);
+  }
+
+  // "Tomorrow:" teaser — names tomorrow's strongest transit for the chosen
+  // sign (the engine genuinely computes it, so the tease is honest). Cheapest
+  // return-visit cue on the site.
+  function fillTomorrow(sign) {
+    try {
+      var el = document.getElementById('daily-return-cue');
+      if (!el || !window.HoroscopeEngine || !HoroscopeEngine.getDailyHoroscope) return;
+      var t = new Date(); t.setDate(t.getDate() + 1);
+      var r = HoroscopeEngine.getDailyHoroscope(sign, t);
+      var top = r && r.transits && r.transits[0];
+      if (top && top.planet && top.aspect) {
+        // Solar-chart transits aspect the sign's Sun point, so "your Sun" is accurate.
+        var p = String(top.planet); p = p.charAt(0).toUpperCase() + p.slice(1);
+        el.textContent = 'Tomorrow: ' + p + ' ' + top.aspect + ' your Sun — the reading recomputes at midnight. Check back.';
+      }
+    } catch (e) {}
   }
 
   // ── PERSONALISED (saved chart): real transit-to-natal card ────────────────
@@ -239,13 +259,16 @@
   });
   window.addEventListener('ap-chart-saved', onChartSaved);
 
-  // Lazy boot on scroll.
+  // Lazy boot on scroll — with a timed fallback so the tool can never stay
+  // blank if the observer callback is starved (seen under heavy WebGL load).
+  // boot() is idempotent via the `booted` flag, so belt-and-braces is safe.
   var section = document.getElementById('dailyChapter') || root;
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) { if (en.isIntersecting) { io.disconnect(); boot(); } });
     }, { rootMargin: '200px' });
     io.observe(section);
+    setTimeout(boot, 8000);
   } else {
     boot();
   }
