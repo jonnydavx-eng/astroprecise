@@ -109,11 +109,16 @@ attached to `window`, one stylesheet, hand-written HTML pages.
 ## Branches & Deployment
 
 - **Development**: `main` (or feature branches); site source lives in `website/`
-- **Deploy (verified 2026-07-02)**: fully automated via `.github/workflows/deploy-pages.yml` —
+- **Deploy (migrated 2026-07-04)**: fully automated via `.github/workflows/deploy-pages.yml` —
   every push to `main` touching `website/**` runs the test gates (engine, horoscope,
   compat, art themes, weekly sky, profile-save e2e), builds a minified `dist/` with
-  `tools/build.mjs`, and publishes it to the **`gh-pages` branch root**, which Pages
-  serves. No manual gh-pages copying — never mirror by hand.
+  `tools/build.mjs`, and deploys it via the **official GitHub Actions Pages path**
+  (`actions/upload-pages-artifact` → `actions/deploy-pages`; jobs `test → build → deploy`;
+  Pages `build_type=workflow`). There is **no `gh-pages` branch** and **no manual
+  `POST /pages/builds` kick** — the flaky legacy branch builder (which failed with a
+  bare "Page build failed." at v566/v568/v574/v590) was retired. Custom domain
+  (`astroprecise.app`) + HTTPS persist at the Pages level; `dist/` ships CNAME +
+  `.nojekyll` every build. Rollback recipe is in the workflow's header comment.
 - Live URL: `https://astroprecise.app` (apex canonical, www 301s; CNAME in `website/`)
 - Local preview: `./launch.sh` (or `launch.bat` on Windows) from repo root — serves
   `website/` on http://localhost:8790, `PORT` env overrides; `--install` adds a
