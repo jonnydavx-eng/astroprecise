@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AstroPrecise logo">
+  <defs>
+    <linearGradient id="ap-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D8B978"/>
+      <stop offset="0.55" stop-color="#C2A05E"/>
+      <stop offset="1" stop-color="#8C6F3B"/>
+    </linearGradient>
+    <linearGradient id="ap-amethyst" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#CDAE6A"/>
+      <stop offset="1" stop-color="#8C6F3B"/>
+    </linearGradient>
+    <radialGradient id="ap-planet" cx="0.35" cy="0.35" r="1">
+      <stop offset="0" stop-color="#CDAE6A"/>
+      <stop offset="1" stop-color="#6E5930"/>
+    </radialGradient>
+    <radialGradient id="ap-inner-planet" cx="0.35" cy="0.35" r="1">
+      <stop offset="0" stop-color="#D8B978"/>
+      <stop offset="1" stop-color="#C2A05E"/>
+    </radialGradient>
+  </defs>
+
+  <style>
+    /* The chassis (ring, ticks, star, sun) is still; only the sky moves.
+       All motion is CSS so it runs when embedded via img tags AND can honour
+       the reduced-motion preference below — SMIL could not be switched off. */
+    .ap-anim { transform-box: view-box; transform-origin: 0 0; }
+    .ap-precess { animation: ap-precess 90s linear infinite; }
+    .ap-orbit-a { animation: ap-orbit-a 14s linear infinite; }
+    .ap-orbit-b { animation: ap-orbit-b 5.5s linear infinite; }
+    .ap-pulse   { opacity: 0; animation: ap-pulse 7s cubic-bezier(0.2, 0.6, 0.4, 1) infinite; }
+    .ap-pulse--late { animation-delay: 3.5s; }
+    .ap-breathe { animation: ap-breathe 4s ease-in-out infinite; }
+    .ap-sun-glow { animation: ap-sun-glow 4s ease-in-out infinite; }
+
+    @keyframes ap-precess { from { transform: translate(32px, 32px) rotate(0turn); }
+                            to   { transform: translate(32px, 32px) rotate(1turn); } }
+    /* Ellipse travel as translate waypoints (every 30°): the planet stays a
+       perfect circle — a rotate inside a squashed frame would shear it. */
+    @keyframes ap-orbit-a {
+      0%       { transform: translate(27px, 0); }
+      8.333%   { transform: translate(23.38px, 4.75px); }
+      16.667%  { transform: translate(13.5px, 8.23px); }
+      25%      { transform: translate(0, 9.5px); }
+      33.333%  { transform: translate(-13.5px, 8.23px); }
+      41.667%  { transform: translate(-23.38px, 4.75px); }
+      50%      { transform: translate(-27px, 0); }
+      58.333%  { transform: translate(-23.38px, -4.75px); }
+      66.667%  { transform: translate(-13.5px, -8.23px); }
+      75%      { transform: translate(0, -9.5px); }
+      83.333%  { transform: translate(13.5px, -8.23px); }
+      91.667%  { transform: translate(23.38px, -4.75px); }
+      100%     { transform: translate(27px, 0); }
+    }
+    @keyframes ap-orbit-b { from { transform: translate(32px, 32px) rotate(0turn); }
+                            to   { transform: translate(32px, 32px) rotate(1turn); } }
+    @keyframes ap-pulse {
+      0%   { transform: translate(32px, 32px) scale(0.10); opacity: 0.55; }
+      70%  { opacity: 0.14; }
+      100% { transform: translate(32px, 32px) scale(1);    opacity: 0; }
+    }
+    @keyframes ap-breathe  { 0%, 100% { opacity: 0.7;  } 50% { opacity: 0.25; } }
+    @keyframes ap-sun-glow { 0%, 100% { opacity: 0.28; } 50% { opacity: 0.10; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ap-precess, .ap-orbit-a, .ap-orbit-b, .ap-pulse, .ap-breathe, .ap-sun-glow {
+        animation: none;
+      }
+      /* pulses stay invisible; planets rest at their composed positions */
+    }
+  </style>
+
+  <!-- Hex instrument frame -->
+  <path d="M32 3 L57 17.5 L57 46.5 L32 61 L7 46.5 L7 17.5 Z" fill="none" stroke="url(#ap-gold)" stroke-width="1.2" opacity="0.78"/>
+  <!-- Celestial ring -->
+  <circle cx="32" cy="32" r="27" fill="none" stroke="url(#ap-gold)" stroke-width="1.2" opacity="0.82"/>
+
+  <!-- Precision degree ticks (every 30°, longer at cardinal points) -->
+  <g stroke="url(#ap-gold)" stroke-width="1" opacity="0.75">
+    <line x1="32" y1="2"  x2="32" y2="6.5"/>
+    <line x1="32" y1="62" x2="32" y2="57.5"/>
+    <line x1="2"  y1="32" x2="6.5" y2="32"/>
+    <line x1="62" y1="32" x2="57.5" y2="32"/>
+  </g>
+  <g stroke="#C2A05E" stroke-width="0.7" opacity="0.45">
+    <line x1="47" y1="6.02"  x2="45.5" y2="8.62"/>
+    <line x1="57.98" y1="17" x2="55.38" y2="18.5"/>
+    <line x1="57.98" y1="47" x2="55.38" y2="45.5"/>
+    <line x1="47" y1="57.98" x2="45.5" y2="55.38"/>
+    <line x1="17" y1="57.98" x2="18.5" y2="55.38"/>
+    <line x1="6.02" y1="47"  x2="8.62" y2="45.5"/>
+    <line x1="6.02" y1="17"  x2="8.62" y2="18.5"/>
+    <line x1="17" y1="6.02"  x2="18.5" y2="8.62"/>
+  </g>
+
+  <!-- Inner dashed meridian -->
+  <circle cx="32" cy="32" r="24.5" fill="none" stroke="#C2A05E" stroke-width="0.5" opacity="0.3" stroke-dasharray="1.2 3.4"/>
+
+  <!-- Light-cone wavefront — two staggered, eased pulses of birth-light -->
+  <g class="ap-anim ap-pulse" aria-hidden="true">
+    <circle cx="0" cy="0" r="29" fill="none" stroke="#C2A05E" stroke-width="0.8"/>
+  </g>
+  <g class="ap-anim ap-pulse ap-pulse--late" aria-hidden="true">
+    <circle cx="0" cy="0" r="29" fill="none" stroke="#C2A05E" stroke-width="0.8"/>
+  </g>
+
+  <!-- Outer orbit: the planet truly travels the ellipse (14 s) while the
+       whole orbit precesses slowly (90 s) — the 25,772-year wobble, scaled -->
+  <g class="ap-anim ap-precess">
+    <g transform="rotate(-28)">
+      <ellipse cx="0" cy="0" rx="27" ry="9.5" fill="none" stroke="url(#ap-amethyst)" stroke-width="1.1" opacity="0.8"/>
+      <!-- attribute transform = resting pose when reduced-motion disables the animation -->
+      <g class="ap-anim ap-orbit-a" transform="translate(27 0)">
+        <circle cx="0" cy="0" r="4.6" fill="url(#ap-planet)" opacity="0.22"/>
+        <circle cx="0" cy="0" r="2.8" fill="url(#ap-planet)"/>
+        <circle cx="0" cy="0" r="2.8" fill="none" stroke="#CDAE6A" stroke-width="0.5" opacity="0.5"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Inner orbit: small swift body, silver-lapis (5.5 s) -->
+  <circle cx="32" cy="32" r="12.5" fill="none" stroke="#C2A05E" stroke-width="0.4" opacity="0.22"/>
+  <g class="ap-anim ap-orbit-b">
+    <g transform="rotate(140) translate(12.5 0)">
+      <circle cx="0" cy="0" r="1.7" fill="url(#ap-inner-planet)"/>
+    </g>
+  </g>
+
+  <!-- Eight-point compass star — the fixed instrument (v576 single-path mark star) -->
+  <path d="M32 12 L34.03 27.1 L40.91 23.09 L36.9 29.97 L52 32 L36.9 34.03 L40.91 40.91 L34.03 36.9 L32 52 L29.97 36.9 L23.09 40.91 L27.1 34.03 L12 32 L27.1 29.97 L23.09 23.09 L29.97 27.1 Z" fill="#ECE6D8" opacity="0.95"/>
+
+  <!-- Center jewel — the sun, breathing -->
+  <circle class="ap-sun-glow" cx="32" cy="32" r="5.2" fill="#C2A05E" opacity="0.28"/>
+  <circle cx="32" cy="32" r="2.2" fill="#ECE6D8"/>
+  <circle class="ap-breathe" cx="32" cy="32" r="3.4" fill="none" stroke="#C2A05E" stroke-width="0.6" opacity="0.7"/>
+</svg>

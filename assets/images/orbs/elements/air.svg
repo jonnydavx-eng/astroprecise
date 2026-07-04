@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Air element">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="30%" r="72%">
+      <stop offset="0%" stop-color="#2a2218"/>
+      <stop offset="55%" stop-color="#120e0a"/>
+      <stop offset="100%" stop-color="#050406"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="#c9a227" stop-opacity="0.18"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="62" fill="url(#bg)" stroke="#c9a227" stroke-width="1.2" opacity="0.85"/>
+  <circle cx="64" cy="64" r="62" fill="url(#glow)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#c9a227" vector-effect="non-scaling-stroke">
+    <path d="M40 58c12-8 28-4 36 6s4 22-8 28" stroke-width="2"/>
+    <path d="M44 72c14-6 30-2 40 8" stroke-width="1.6" opacity="0.75"/>
+    <path d="M48 48c10-10 26-8 34 4" stroke-width="1.4" opacity="0.55"/>
+    <circle cx="46" cy="46" r="1.2" fill="#efe3c0" stroke="none"/>
+    <circle cx="82" cy="54" r="1" fill="#efe3c0" stroke="none" opacity="0.7"/>
+  </g>
+</svg>

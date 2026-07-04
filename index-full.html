@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>(function(){function t(){try{if(/[?&]full=1(?:&|$)/.test(location.search))return!1;if(/[?&](lite|nosplash)=1/.test(location.search)||navigator.webdriver||window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return!0;var e=navigator.connection||navigator.mozConnection||navigator.webkitConnection;if(e&&e.saveData)return!0}catch{}return!1}t()&&(document.documentElement.classList.add("ap-lite-hero"),window.__apLiteHero=!0)})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Astro Precise — Free birth chart calculator powered by VSOP87 astronomical precision. Precise natal charts, daily horoscopes, compatibility reports, and live planetary positions. Everything computes in your browser." />
+  <meta name="keywords" content="birth chart, natal chart, astrology, horoscope, VSOP87, planetary positions, free birth chart, zodiac, compatibility, numerology, life path" />
+  <meta name="robots" content="noindex, follow" />
+  <title>Astro Precise — Your Cosmic Blueprint | Free Birth Chart &amp; Precise Astrology</title>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="Astro Precise — Your Cosmic Blueprint" />
+  <meta property="og:description" content="Free professional birth chart analysis powered by VSOP87 astronomical precision. Precise natal charts, daily horoscopes, and live planetary positions — all computed privately in your browser." />
+  <meta property="og:url" content="https://astroprecise.app/" />
+  <link rel="alternate" type="text/plain" href="llms.txt" title="LLM site summary" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Astro Precise — Your Cosmic Blueprint" />
+  <meta name="twitter:description" content="Free professional birth chart analysis powered by VSOP87 astronomical precision. Everything computes in your browser — no data sent anywhere." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+
+  <!-- App / PWA -->
+  <meta name="theme-color" content="#0C1016" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <!-- Lite LCP shell — rules scoped to html.ap-lite-hero; harmless when class absent -->
+  <link rel="preload" href="css/lite-critical.css" as="style" />
+  <link rel="preload" href="assets/textures/earth_sm.jpg" as="image" type="image/jpeg" />
+  <link rel="preload" href="assets/textures/earth.jpg" as="image" type="image/jpeg" />
+  <link rel="stylesheet" href="css/lite-critical.css" id="ap-css-lite-critical" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-page-bridge" />
+
+  <!-- Full stack: sync on standard path; lite idle-loads after scroll/timeout (no fonts = no swap CLS) -->
+  <script>(function(){var c=[["css/main.css","ap-css-main"],["css/orrery-visual.css","ap-css-orrery"],["css/landing-gate.css","ap-css-gate"],["css/index-home.css","ap-css-index"],["css/celestial-seals.css","ap-css-seals"],["css/ap-forms.css","ap-css-forms"],["css/ap-micro-2026.css","ap-css-micro"]],o=[["css/fonts.css","ap-css-fonts"]].concat(c);function a(s,t){var e=document.createElement("link");return e.rel="stylesheet",e.href=s,e.id=t,document.head.appendChild(e),e}if(window.__apLiteHero){let s=function(){c.forEach(function(e){a(e[0],e[1])})},t=function(){var e=!1;function n(){e||(e=!0,window.requestIdleCallback?requestIdleCallback(s,{timeout:5e3}):setTimeout(s,100))}window.addEventListener("scroll",n,{once:!0,passive:!0}),window.addEventListener("pointerdown",n,{once:!0,passive:!0}),navigator.webdriver||setTimeout(n,15e3)};var r=s,d=t;document.readyState==="complete"?t():window.addEventListener("load",t,{once:!0})}else o.forEach(function(s){a(s[0],s[1])})})();</script>
+
+  <!-- Structured data — WebSite + FAQPage (answers match the visible FAQ verbatim; honesty rule) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Astro Precise",
+    "url": "https://astroprecise.app/",
+    "description": "Genuinely accurate astrology — your real birth chart computed privately in your browser from VSOP87/ELP2000. Free to cast; the full personalised reading is a one-time export."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is it really free?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Your birth chart, daily horoscope, compatibility, transits and the Instrument are all free to use — no account, no sign-up. The one thing you can pay for is the full personalised Deep Reading: a one-time PDF export drawn from your exact chart. It's never a subscription." }
+      },
+      {
+        "@type": "Question",
+        "name": "What's in the paid Deep Reading?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A 13-page written interpretation — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, and your ten tightest aspects — drawn from the same interpretations engine as the free chart tools, and set as a PDF that's yours to keep." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my birth data private?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your chart is computed entirely in your browser — your birth moment is never sent to any server, and there's no account or tracking. The only outbound calls are public sky-data feeds and a place-name lookup (the typed place only, never your birth time)." }
+      },
+      {
+        "@type": "Question",
+        "name": "How accurate is it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Positions come from real astronomy — VSOP87 for the planets, ELP2000 for the Moon — accurate to roughly an arcminute for dates between 1800 and 2200 CE. Every figure on the site is labelled measured or computed, never invented." }
+      }
+    ]
+  }
+  </script>
+  <!-- Orrery import map only in head — Three.js module loads after first paint via orrery-loader.js -->
+  <script type="importmap">{ "imports": { "three": "./js/vendor/three/three.module.min.js", "three/addons/": "./js/vendor/three/jsm/" } }</script>
+</head>
+<body class="page-home">
+<script>(function(){function t(){try{var n=document.body;if(n.classList.contains("landing-gate-open"))return;var e=document.getElementById("preloader");if(e&&e.classList.contains("preloader-exit"))return;n.classList.remove("preloader-intro-playing","preloader-active"),n.classList.add("landing-gate-open","landing-home-reveal"),window.__orreryPreloaderOwns=!1,e&&(e.classList.add("preloader-exit"),setTimeout(function(){try{e.style.display="none"}catch{}},700))}catch{}}setTimeout(function(){typeof window.Orrery3D>"u"&&!document.body.classList.contains("landing-gate-open")&&t()},8e3),setTimeout(function(){document.body.classList.contains("landing-gate-open")||t()},32e3)})();</script>
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <!-- Aurora orbs (subtle background, behind content) -->
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════════════════════════════════════════ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         HERO — Full viewport, two-column
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="hero" aria-label="Hero — Your cosmic blueprint">
+      <div class="hero__cosmic-art" aria-hidden="true"></div>
+      <svg class="hero__constellation" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g stroke-width="1" fill="none">
+          <line x1="120" y1="180" x2="200" y2="140"/><line x1="200" y1="140" x2="280" y2="200"/><line x1="280" y1="200" x2="240" y2="280"/><line x1="240" y1="280" x2="120" y2="180"/>
+          <circle r="3" cx="120" cy="180"/><circle r="3" cx="200" cy="140"/><circle r="3" cx="280" cy="200"/><circle r="3" cx="240" cy="280"/>
+          <line x1="1080" y1="120" x2="1160" y2="80"/><line x1="1160" y1="80" x2="1240" y2="140"/><line x1="1240" y1="140" x2="1180" y2="220"/><line x1="1180" y1="220" x2="1080" y2="120"/>
+          <circle r="2.5" cx="1080" cy="120"/><circle r="2.5" cx="1160" cy="80"/><circle r="2.5" cx="1240" cy="140"/><circle r="2.5" cx="1180" cy="220"/>
+          <line x1="180" y1="620" x2="260" y2="580"/><line x1="260" y1="580" x2="340" y2="640"/><line x1="340" y1="640" x2="300" y2="720"/><line x1="300" y1="720" x2="200" y2="700"/><line x1="200" y1="700" x2="180" y2="620"/>
+          <circle r="2" cx="180" cy="620"/><circle r="2" cx="260" cy="580"/><circle r="2" cx="340" cy="640"/><circle r="2" cx="300" cy="720"/><circle r="2" cx="200" cy="700"/>
+        </g>
+      </svg>
+      <div class="hero__stage">
+
+        <!-- Orrery floats on the sky behind the copy -->
+        <div class="hero__content">
+        <div class="hero__text">
+          <p class="hero__eyebrow hero__entrance hero__entrance--1" aria-label="Powered by VSOP87 Astronomical Precision">
+            Your Cosmic Blueprint
+          </p>
+
+          <h1 class="hero__h1 hero__entrance hero__entrance--2">
+            Your personal universe, <em class="hero-gold-shimmer">beautifully revealed.</em>
+          </h1>
+
+          <p class="hero__subtitle hero__entrance hero__entrance--3">
+            VSOP87 positions, computed in your browser. Your birth data never leaves your device.
+          </p>
+
+          <!-- Quick chart CTA form -->
+          <form class="hero__cta-form hero__entrance hero__entrance--4" id="hero-chart-form" novalidate aria-label="Quick birth chart calculator">
+            <label for="hero-birthdate" class="sr-only">Your birth date</label>
+            <input
+              type="date"
+              id="hero-birthdate"
+              class="hero__date-input"
+              aria-required="true"
+              aria-describedby="hero-form-hint"
+              max="2099-12-31"
+              min="1900-01-01"
+            />
+            <button type="submit" class="hero__cast-btn">
+              <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast My Chart &rarr;
+            </button>
+          </form>
+          <p id="hero-form-hint" class="hero__trust hero__entrance hero__entrance--5">
+            <span>Real VSOP87 data</span>
+            <span class="hero__trust-dot" aria-hidden="true"></span>
+            <span>Privacy-first</span>
+            <span class="hero__trust-dot" aria-hidden="true"></span>
+            <span>No account required</span>
+            <span class="hero__trust-dot" aria-hidden="true"></span>
+            <span>Free chart</span>
+          </p>
+
+          <p class="hero__trust hero__entrance hero__entrance--5" style="margin-bottom:var(--space-6);">
+            <a href="accuracy.html" style="color:inherit;text-decoration:none;">Arcminute precision</a>
+            <span class="hero__trust-dot" aria-hidden="true"></span>
+            <span>Private · no account</span>
+          </p>
+        </div>
+        </div>
+
+        <div class="hero__orrery-layer" aria-hidden="false">
+        <div class="hero__orrery-wrap">
+          <div class="orrery-console">
+            <div class="hero__orrery-ring" style="position:relative;">
+              <svg class="hero__meridian" viewBox="0 0 200 200" aria-hidden="true">
+                <g class="hero__meridian-drift" id="hero-meridian">
+                <circle class="meridian-ring" cx="100" cy="100" r="94"/>
+                <circle class="meridian-ring" cx="100" cy="100" r="78" stroke-dasharray="2 14" opacity="0.4"/>
+                <line class="meridian-axis" x1="100" y1="12" x2="100" y2="188"/>
+                <line class="meridian-axis" x1="12" y1="100" x2="188" y2="100"/>
+                <g class="meridian-ticks">
+                  <line x1="100" y1="6" x2="100" y2="16"/><line x1="100" y1="184" x2="100" y2="194"/>
+                  <line x1="6" y1="100" x2="16" y2="100"/><line x1="184" y1="100" x2="194" y2="100"/>
+                  <line x1="147" y1="24" x2="141" y2="33"/><line x1="53" y1="167" x2="59" y2="158"/>
+                  <line x1="176" y1="53" x2="167" y2="59"/><line x1="24" y1="147" x2="33" y2="141"/>
+                  <line x1="176" y1="147" x2="167" y2="141"/><line x1="24" y1="53" x2="33" y2="59"/>
+                  <line x1="147" y1="176" x2="141" y2="167"/><line x1="53" y1="24" x2="59" y2="33"/>
+                </g>
+                </g>
+              </svg>
+              <div class="hero__chronicle" aria-live="polite">
+                <span class="hero__chronicle-label">Sky chronicle</span>
+                <span class="hero__chronicle-date" id="hero-chronicle-date">—</span>
+                <span class="hero__chronicle-offset" id="hero-chronicle-offset">Now</span>
+              </div>
+              <div class="orrery-canvas-placeholder" aria-hidden="true"></div>
+              <div class="orrery-viewport" id="orrery-viewport">
+                <div class="orrery-lite-poster" id="orrery-lite-poster" role="img" aria-label="Living sky instrument — VSOP87 positions, recomputed live">
+                  <canvas class="lite-poster-canvas" id="lite-poster-canvas" aria-hidden="true"></canvas>
+                  <div class="lite-poster-ring" aria-hidden="true"></div>
+                  <div class="lite-poster-logo" aria-hidden="true"></div>
+                  <div class="lite-poster-vignette" aria-hidden="true"></div>
+                  <span class="lite-poster-meteor lite-poster-meteor--a" aria-hidden="true"></span>
+                  <span class="lite-poster-meteor lite-poster-meteor--b" aria-hidden="true"></span>
+                  <div class="lite-micro-hud" id="lite-micro-hud" hidden>
+                    <span class="lite-micro-hud__act" id="lite-micro-act"></span>
+                    <span class="lite-micro-hud__title" id="lite-micro-title"></span>
+                  </div>
+                </div>
+                <button type="button" class="orrery-lite-launch" id="orrery-lite-launch" hidden aria-label="Load the interactive 3D orrery">✦ Launch 3D orrery</button>
+                <canvas
+                  id="orrery-canvas"
+                  width="640"
+                  height="640"
+                  fetchpriority="low"
+                  role="img"
+                  tabindex="0"
+                  aria-label="The Living Orrery — drag to scrub time, arrow keys step days, 0–6 zoom scale, Space pause"
+                ></canvas>
+                <div class="orrery-cine-vignette" aria-hidden="true"></div>
+                <div class="orrery-cine-grain" aria-hidden="true"></div>
+                <div class="orrery-viewport-controls" role="toolbar" aria-label="Orrery quick controls on the model">
+                  <div class="orrery-vp-row orrery-vp-row--focus">
+                    <button type="button" class="orrery-vp-btn active" id="orrery-vp-earth" aria-label="Jump to Earth close-up">⌂ Earth</button>
+                    <button type="button" class="orrery-vp-btn" id="orrery-vp-system" aria-label="View full solar system">☉ System</button>
+                    <button type="button" class="orrery-vp-btn" id="orrery-vp-inner" aria-label="Inner planets scale">Inner</button>
+                    <button type="button" class="orrery-vp-btn" id="orrery-vp-sun" aria-label="Focus on the Sun">Sun</button>
+                    <button type="button" class="orrery-vp-btn" id="orrery-vp-moon" aria-label="Focus on the Moon">Moon</button>
+                  </div>
+                  <div class="orrery-vp-row orrery-vp-row--planets">
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--glyph" id="orrery-vp-mercury" aria-label="Focus Mercury" data-planet="mercury">☿</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--glyph" id="orrery-vp-venus" aria-label="Focus Venus" data-planet="venus">♀</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--glyph" id="orrery-vp-mars" aria-label="Focus Mars" data-planet="mars">♂</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--glyph" id="orrery-vp-jupiter" aria-label="Focus Jupiter" data-planet="jupiter">♃</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--glyph" id="orrery-vp-saturn" aria-label="Focus Saturn" data-planet="saturn">♄</button>
+                  </div>
+                  <div class="orrery-vp-row orrery-vp-row--tools">
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--tool active" id="orrery-vp-detail" aria-pressed="true" aria-label="Detail lighting — reveals planet surface texture (cycles auto, on, cinematic)">Detail</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--tool" id="orrery-vp-orbits" aria-pressed="false" aria-label="Toggle orbit lines">Orbits</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--tool" id="orrery-vp-labels" aria-pressed="false" aria-label="Toggle planet labels">Labels</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--tool" id="orrery-vp-capture" aria-label="Capture sky image">Capture</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--tool" id="orrery-vp-now" aria-label="Reset to now">Now</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--journey" id="orrery-vp-inward" aria-label="Fly inward from cosmos to Earth">↓ Inward</button>
+                    <button type="button" class="orrery-vp-btn orrery-vp-btn--journey" id="orrery-vp-pause" hidden aria-label="Pause scale journey">⏸</button>
+                  </div>
+                </div>
+                <div class="orrery-dom-labels" id="orrery-dom-labels" aria-hidden="true"></div>
+                <div class="journey-hud" id="orrery-journey-hud" hidden aria-live="polite">
+                  <div class="journey-hud__progress" aria-hidden="true"><span id="journey-progress-fill"></span></div>
+                  <p class="journey-hud__tagline" id="journey-tagline"></p>
+                  <h3 class="journey-hud__title" id="journey-title"></h3>
+                  <button type="button" class="journey-hud__more" id="journey-more" aria-expanded="false" hidden>Scene notes</button>
+                  <div class="journey-hud__detail" id="journey-detail" hidden>
+                    <p class="journey-hud__narrative" id="journey-narrative"></p>
+                    <p class="journey-hud__fact" id="journey-fact"></p>
+                    <p class="journey-hud__pitch" id="journey-pitch"></p>
+                  </div>
+                  <button type="button" class="journey-hud__skip" id="journey-skip">Skip</button>
+                </div>
+              </div>
+              <div class="orrery-hint" aria-hidden="true">tap a scale to fly there &middot; drag through time &middot; scroll page to advance</div>
+            </div>
+
+            <div class="orrery-lite-deck" id="orrery-lite-deck" aria-label="Lite sky time controls">
+              <p class="orrery-lite-chip">Living sky instrument · VSOP87 · distances schematic</p>
+              <div class="orrery-lite-time">
+                <span class="orrery-lite-date" id="lite-date-display" aria-live="polite">—</span>
+                <button type="button" class="orrery-lite-now" id="lite-now-btn" aria-label="Reset sky to now">Now</button>
+              </div>
+              <div class="orrery-lite-scrub">
+                <label class="sr-only" for="lite-scrub">Scrub through time</label>
+                <input type="range" id="lite-scrub" min="-2000" max="2000" step="1" value="0" aria-label="Scrub through time — watch planets move in their real paths">
+              </div>
+            </div>
+
+            <div class="orrery-console__deck">
+              <p class="orrery-honesty-chip" id="orrery-honesty-chip">Solar system instrument · positions live (VSOP87) · distances schematic</p>
+              <div class="orrery-scale-block" role="group" aria-label="Zoom scale for the living orrery">
+                <span class="orrery-scale-label" id="orrery-scale-label">Full solar system</span>
+                <div class="orrery-scale-dial">
+                  <button type="button" class="orrery-scale-btn" data-scale="0" aria-pressed="false">Earth</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="1" aria-pressed="false">Inner</button>
+                  <button type="button" class="orrery-scale-btn active" data-scale="2" aria-pressed="true">System</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="3" aria-pressed="false">Oort</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="4" aria-pressed="false">Stars</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="5" aria-pressed="false">Galaxy</button>
+                  <button type="button" class="orrery-scale-btn" data-scale="6" aria-pressed="false">Cosmos</button>
+                </div>
+              </div>
+              <div class="orrery-aux-row">
+                <button type="button" class="orrery-btn orrery-btn--journey orrery-btn--journey-primary" id="orrery-start-journey" aria-label="Start the guided cosmic journey with scene notes">Start your journey here</button>
+                <button type="button" class="orrery-btn orrery-btn--journey" id="orrery-full-tour" aria-label="Fly from Earth through every scale to the edge of the observable universe">✦ Cosmic Journey</button>
+                <button type="button" class="orrery-btn" id="orrery-replay-intro" aria-label="Replay the Earth to solar system intro">Replay intro</button>
+                <div class="orrery-layer-toggles" role="group" aria-label="Orrery layer toggles">
+                  <button type="button" class="orrery-toggle" data-layer="orbits" aria-pressed="false">Orbits</button>
+                  <button type="button" class="orrery-toggle" data-layer="labels" aria-pressed="false">Labels</button>
+                  <button type="button" class="orrery-toggle" data-layer="asteroids" aria-pressed="false">Asteroids</button>
+                </div>
+              </div>
+              <div class="orrery-controls" role="group" aria-label="Time controls for the living orrery">
+                <button class="orrery-btn active" data-speed="0" id="orrery-pause" aria-label="Pause">Pause</button>
+                <button class="orrery-btn" data-speed="1" id="orrery-1x" aria-label="Real time">1×</button>
+                <button class="orrery-btn" data-speed="30" id="orrery-30x" aria-label="30× speed">30×</button>
+                <button class="orrery-btn" data-speed="365" id="orrery-365x" aria-label="1 year per second">Year</button>
+                <span class="orrery-date" id="orrery-date-display" aria-live="polite" aria-label="Current date in the orrery"></span>
+                <span id="orrery-moon-phase" aria-live="polite" style="font-size:0.72rem;color:rgba(194, 160, 94,0.72);letter-spacing:0.04em;padding-left:0.5rem;white-space:nowrap;"></span>
+                <button class="orrery-btn" id="orrery-capture" aria-label="Capture the current sky as an image" style="margin-left:auto;">Capture</button>
+              </div>
+
+              <div class="orrery-timeline">
+                <div class="orrery-timeline__label">
+                  <span>TIMELINE</span>
+                  <button class="orrery-btn" id="orrery-reset" style="padding:1px 6px; font-size:0.58rem;">Now</button>
+                </div>
+                <input type="range" id="orrery-scrub" min="-2000" max="2000" step="1" value="0" style="flex:1; accent-color:#C2A05E;" aria-label="Scrub through time – watch the planets move in their real paths">
+              </div>
+            </div>
+          </div>
+
+          <div id="planet-info-panel" class="planet-info-panel hidden" role="dialog" aria-label="Planet information" aria-live="polite">
+            <button class="planet-info-panel__close" id="planet-panel-close" aria-label="Close planet information">&times;</button>
+            <span class="planet-info-panel__glyph" id="pip-glyph" aria-hidden="true">☉</span>
+            <p class="planet-info-panel__name" id="pip-name">Sun</p>
+            <p class="planet-info-panel__sign" id="pip-sign">in Gemini</p>
+            <p class="planet-info-panel__degree" id="pip-degree">21°34′</p>
+            <p class="planet-info-panel__meaning" id="pip-meaning"></p>
+            <div class="planet-info-panel__actions" id="pip-actions"></div>
+          </div>
+        </div>
+        </div>
+
+        <div class="hero__scroll-rail" aria-hidden="true">
+          <span class="hero__scroll-rail-cap hero__scroll-rail-cap--top">Now</span>
+          <div class="hero__scroll-rail-track">
+            <div class="hero__scroll-rail-fill" id="hero-scroll-rail-fill"></div>
+            <div class="hero__scroll-rail-dot" id="hero-scroll-rail-dot"></div>
+          </div>
+          <span class="hero__scroll-rail-cap hero__scroll-rail-cap--bot">+120d</span>
+        </div>
+
+        <div class="hero__scroll-cue" id="hero-scroll-cue" aria-hidden="true">
+          <span class="hero__scroll-cue-text">Scroll to advance the sky</span>
+          <span class="hero__scroll-cue-chevron"></span>
+        </div>
+
+      </div>
+
+      <!-- Live sky dock — tied to the instrument, not a separate band -->
+      <div class="hero__sky-dock">
+        <div class="live-sky-section-inner live-sky-dock-panel" aria-labelledby="live-sky-heading">
+          <div class="live-sky-dock__head">
+            <span class="live-sky-meteor live-sky-meteor--a" aria-hidden="true"></span>
+            <span class="live-sky-meteor live-sky-meteor--b" aria-hidden="true"></span>
+            <p class="live-sky-label" id="live-sky-heading" aria-label="Current Planetary Positions">
+              <span class="live-sky-label__text">Now in the sky</span>
+            </p>
+            <span class="live-sky-stamp" id="live-sky-stamp" aria-live="polite">Computing&hellip;</span>
+          </div>
+          <div id="live-sky-strip" role="group" aria-label="Live planetary positions" aria-live="polite">
+            <div class="sky-loading-pill" role="status">
+              <span class="loading-spinner" aria-hidden="true"></span>
+              <span>Calculating positions&hellip;</span>
+            </div>
+          </div>
+          <div class="live-sky-actions" role="group" aria-label="Explore the live sky">
+            <a href="tonight.html" class="live-sky-action">Visible tonight</a>
+            <a href="transits.html" class="live-sky-action">Live transits</a>
+            <a href="retrograde.html" class="live-sky-action">Retrogrades</a>
+            <a href="ephemeris.html" class="live-sky-action">Sky</a>
+          </div>
+          <p class="live-sky-note" style="text-align:center;font-size:0.6rem;letter-spacing:0.08em;color:rgba(168,158,136,0.75);margin-top:0.6rem;">Tap a planet for detail and where to read more &middot; VSOP87 positions, recomputed live</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ap-below-hero -->
+    <section class="how-it-works" id="how-it-works" aria-labelledby="how-heading">
+      <div class="container">
+        <header style="text-align:center;">
+          <p class="section-eyebrow">Getting started</p>
+          <h2 class="section-h2" id="how-heading">Your chart in three steps</h2>
+          <p class="section-subtitle">From birth data to complete blueprint in seconds. No account, no waiting, nothing sent anywhere.</p>
+        </header>
+
+        <div class="steps-grid sacred-geo">
+          <div class="step-card reveal">
+            <div class="step-card__number" aria-hidden="true">I</div>
+            <span class="step-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-calendar"/></svg></span>
+            <h3 class="step-card__title">Enter Your Birth Data</h3>
+            <p class="step-card__text">
+              Provide your date, time, and place of birth. The more precise your birth time,
+              the more accurate your Ascendant and house placements. Accuracy to the minute
+              gives the fullest, most personal reading.
+            </p>
+          </div>
+
+          <div class="step-card reveal reveal-delay-2">
+            <div class="step-card__number" aria-hidden="true">II</div>
+            <span class="step-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-gear"/></svg></span>
+            <h3 class="step-card__title">VSOP87 Computes Precise Positions</h3>
+            <p class="step-card__text">
+              Our VSOP87-derived astronomical engine computes every planet's position,
+              the Ascendant, Midheaven, and all twelve house cusps for the precise moment
+              and coordinates of your birth — instantly, entirely in your browser.
+            </p>
+          </div>
+
+          <div class="step-card reveal reveal-delay-4">
+            <div class="step-card__number" aria-hidden="true">III</div>
+            <span class="step-card__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-spiral"/></svg></span>
+            <h3 class="step-card__title">Explore Your Complete Blueprint</h3>
+            <p class="step-card__text">
+              Navigate the full chart wheel, read interpretations for every placement,
+              examine house rulerships, measure aspect orbs, discover dominant elements,
+              and share or download your chart poster. Your cosmic map, complete.
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-12);">
+          <a href="chart.html" class="btn btn--primary btn--lg" aria-label="Begin your birth chart reading">
+            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Begin Your Reading
+          </a>
+        </div>
+      </div>
+    </section>
+
+<section class="tools-section" id="all-tools" aria-labelledby="tools-heading">
+      <div class="container">
+        <header style="text-align:center;">
+          <p class="section-eyebrow">Everything in one place</p>
+          <h2 class="section-h2" id="tools-heading">Explore all instruments</h2>
+          <p class="section-subtitle">
+            Eight precision instruments — free to use, offline-capable, nothing sent to any server. The full personalised reading is a one-time export.
+          </p>
+          <p style="margin-top:0.9rem;"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Every figure is real — labelled measured or computed, never faked</span></a></p>
+        </header>
+
+        <div class="tools-bento sacred-geo" role="group" aria-label="All tools">
+          <!-- Birth Chart — wide -->
+          <a href="chart.html" class="tool-card tool-card--wide reveal" data-instrument="chart" aria-label="Birth Chart — full natal chart">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Core Tool</p>
+            <h3 class="tool-card__title">Birth Chart</h3>
+            <p class="tool-card__desc">Full natal chart with VSOP87 planetary positions, house cusps, all Ptolemaic aspects with orbs, and deep interpretations. Includes a downloadable poster at print resolution.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Open chart calculator &rarr;</span>
+          </a>
+
+          <!-- Horoscope -->
+          <a href="horoscope.html" class="tool-card reveal reveal-delay-1" data-instrument="horoscope" aria-label="Daily Horoscope">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Daily</p>
+            <h3 class="tool-card__title">Daily Horoscope</h3>
+            <p class="tool-card__desc">Element, modality, and planetary ruler-informed readings for each sign. Deterministic — same day, same sign, same reading, always.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Read yours &rarr;</span>
+          </a>
+
+          <!-- Life Path -->
+          <a href="lifepath.html" class="tool-card reveal reveal-delay-1" data-instrument="lifepath" aria-label="Life Path numerology">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Numerology</p>
+            <h3 class="tool-card__title">Life Path</h3>
+            <p class="tool-card__desc">Pythagorean numerology with all master numbers (11, 22, 33). Life Path, Expression, Soul Urge, and Personal Year — with a downloadable reading card.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Calculate &rarr;</span>
+          </a>
+
+          <!-- Compatibility -->
+          <a href="compatibility.html" class="tool-card reveal reveal-delay-2" data-instrument="compatibility" aria-label="Compatibility synastry">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Synastry</p>
+            <h3 class="tool-card__title">Compatibility</h3>
+            <p class="tool-card__desc">Two charts overlaid in synastry — inter-chart aspects with precise orbs, compatibility score, and shareable invite links so partners can calculate together.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Compare charts &rarr;</span>
+          </a>
+
+          <!-- Transits -->
+          <a href="transits.html" class="tool-card reveal reveal-delay-2" data-instrument="transits" aria-label="Current Transits">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Live Sky</p>
+            <h3 class="tool-card__title">Current Transits</h3>
+            <p class="tool-card__desc">Real-time sky versus your natal chart. See exactly which natal planets are being activated by current transits, with interpretations and a personal forecast.</p>
+            <span class="tool-card__arrow" aria-hidden="true">View transits &rarr;</span>
+          </a>
+
+          <!-- The Instrument — wide -->
+          <a href="ephemeris.html" class="tool-card tool-card--wide reveal reveal-delay-3" data-instrument="instrument" aria-label="Sky — Astro Precise's signature feature">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Signature Feature</p>
+            <h3 class="tool-card__title">Sky</h3>
+            <p class="tool-card__desc">Your birth as an event in spacetime. VSOP87 light-cone wavefront, zenith stars, echo dates, daimon reading-voice, quantum oracle draw, field weather via live NOAA SWPC feeds, and a precession engine. Unique to Astro Precise — there is nothing else like it.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Open Sky &rarr;</span>
+          </a>
+
+          <!-- Shop -->
+          <a href="shop.html" class="tool-card reveal reveal-delay-3" data-instrument="shop" aria-label="Cosmic Shop">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Curated</p>
+            <h3 class="tool-card__title">Shop</h3>
+            <p class="tool-card__desc">Curated books, crystals, oracle card decks, and ritual tools — chosen for depth and craft, not mass market volume.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Browse shop &rarr;</span>
+          </a>
+
+          <!-- Divination Oracle -->
+          <a href="ephemeris.html#sec-daimon" class="tool-card reveal reveal-delay-3" data-instrument="oracle" aria-label="Divination Oracle">
+            <span class="tool-card__icon" aria-hidden="true"></span>
+            <p class="tool-card__label">Oracle</p>
+            <h3 class="tool-card__title">Divination Oracle</h3>
+            <p class="tool-card__desc">Today's oracle insight seeded by live astronomical data. Ask one question — the sky answers once per day. The same question returns the same truth until the planets turn.</p>
+            <span class="tool-card__arrow" aria-hidden="true">Consult oracle &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+<section class="home-sign-picker" id="home-sign-picker" aria-labelledby="home-sign-heading">
+      <div class="container">
+        <header class="home-sign-picker__header">
+          <p class="section-eyebrow">Daily horoscope</p>
+          <h2 class="home-sign-picker__title" id="home-sign-heading">Choose your sign</h2>
+          <p class="home-sign-picker__sub">Hand-drawn zodiac seals &middot; tap once for today&rsquo;s preview, tap again for the full reading on the horoscope page.</p>
+        </header>
+        <div class="home-sign-filters" role="group" aria-label="Filter by element">
+          <button type="button" class="home-sign-filter is-active" data-filter="all" aria-pressed="true">
+            <span class="home-sign-filter__seal" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">All</span><span class="home-sign-filter__count">12 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="fire" aria-pressed="false">
+            <span class="home-sign-filter__seal" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Fire</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="earth" aria-pressed="false">
+            <span class="home-sign-filter__seal" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Earth</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="air" aria-pressed="false">
+            <span class="home-sign-filter__seal" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Air</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
+          <button type="button" class="home-sign-filter" data-filter="water" aria-pressed="false">
+            <span class="home-sign-filter__seal" aria-hidden="true"></span>
+            <span class="home-sign-filter__text"><span class="home-sign-filter__label">Water</span><span class="home-sign-filter__count">3 signs</span></span>
+          </button>
+        </div>
+        <div class="home-sign-scroll" id="home-sign-grid" role="group" aria-label="Zodiac sign cards">
+          <button type="button" class="home-sign-card" data-sign="aries" data-element="fire" aria-label="Aries daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Aries</span><span class="home-sign-card__dates">Mar 21 – Apr 19</span></button>
+          <button type="button" class="home-sign-card" data-sign="taurus" data-element="earth" aria-label="Taurus daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:taurus" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Taurus</span><span class="home-sign-card__dates">Apr 20 – May 20</span></button>
+          <button type="button" class="home-sign-card" data-sign="gemini" data-element="air" aria-label="Gemini daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:gemini" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Gemini</span><span class="home-sign-card__dates">May 21 – Jun 20</span></button>
+          <button type="button" class="home-sign-card" data-sign="cancer" data-element="water" aria-label="Cancer daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:cancer" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Cancer</span><span class="home-sign-card__dates">Jun 21 – Jul 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="leo" data-element="fire" aria-label="Leo daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:leo" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Leo</span><span class="home-sign-card__dates">Jul 23 – Aug 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="virgo" data-element="earth" aria-label="Virgo daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:virgo" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Virgo</span><span class="home-sign-card__dates">Aug 23 – Sep 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="libra" data-element="air" aria-label="Libra daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:libra" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Libra</span><span class="home-sign-card__dates">Sep 23 – Oct 22</span></button>
+          <button type="button" class="home-sign-card" data-sign="scorpio" data-element="water" aria-label="Scorpio daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:scorpio" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Scorpio</span><span class="home-sign-card__dates">Oct 23 – Nov 21</span></button>
+          <button type="button" class="home-sign-card" data-sign="sagittarius" data-element="fire" aria-label="Sagittarius daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:sagittarius" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Sagittarius</span><span class="home-sign-card__dates">Nov 22 – Dec 21</span></button>
+          <button type="button" class="home-sign-card" data-sign="capricorn" data-element="earth" aria-label="Capricorn daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:capricorn" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Capricorn</span><span class="home-sign-card__dates">Dec 22 – Jan 19</span></button>
+          <button type="button" class="home-sign-card" data-sign="aquarius" data-element="air" aria-label="Aquarius daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:aquarius" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Aquarius</span><span class="home-sign-card__dates">Jan 20 – Feb 18</span></button>
+          <button type="button" class="home-sign-card" data-sign="pisces" data-element="water" aria-label="Pisces daily horoscope" aria-pressed="false"><span class="home-sign-card__seal" data-celestial-seal="zodiac:pisces" data-seal-lg aria-hidden="true"></span><span class="home-sign-card__name">Pisces</span><span class="home-sign-card__dates">Feb 19 – Mar 20</span></button>
+        </div>
+        <div class="home-sign-preview" id="home-sign-preview" hidden aria-live="polite">
+          <div class="home-sign-preview__inner">
+            <img class="home-sign-preview__thumb" id="hsp-thumb" data-src="assets/images/zodiac-cards/aries.jpg" alt="" width="72" height="108" decoding="async" loading="lazy" />
+            <div>
+              <h3 class="home-sign-preview__name" id="hsp-name">Aries</h3>
+              <p class="home-sign-preview__meta"><span id="hsp-date"></span><span class="home-sign-preview__element" id="hsp-element"></span></p>
+              <p class="home-sign-preview__overview" id="hsp-overview"></p>
+              <div class="home-sign-preview__actions">
+                <a href="horoscope.html" class="btn btn--gold btn--sm" id="hsp-full">Read full horoscope &rarr;</a>
+                <a href="aries.html" class="btn btn--ghost btn--sm" id="hsp-guide">Sign guide</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="home-sign-preview__hint">Same sign + same day = same reading &middot; computed from live transits</p>
+      </div>
+    </section>
+
+<section class="cosmic-story-section" id="about" aria-labelledby="story-heading">
+      <div class="container">
+        <div class="cosmic-story__grid">
+
+          <!-- Left: Storytelling text -->
+          <div class="cosmic-story__text reveal">
+            <p class="section-eyebrow" style="justify-content:flex-start;">What astrology actually is</p>
+            <h2 id="story-heading">
+              Not prediction.<br /><em>Pattern recognition across time.</em>
+            </h2>
+
+            <p>
+              Astrology is not fortune-telling. It is an ancient symbolic language
+              for describing the qualities of time — the specific flavors of energy
+              present at any given moment. Your birth chart is a <strong>snapshot of the
+              precise positions of every planet</strong> at the exact second you arrived in the world.
+              Not a generalized sign column — real positions computed from the same planetary
+              theories professional astronomy is built on (VSOP87 and ELP2000), to within roughly an arcminute.
+            </p>
+
+            <p>
+              That snapshot is a map — not of your fate, but of your <strong>nature</strong>.
+              The Sun describes your essential self and creative drive. The Moon reveals
+              your emotional landscape and instinctive responses. The Ascendant (Rising sign)
+              shapes how you meet the world. Each planet in each sign in each house
+              adds a layer of nuance to an extraordinarily complex portrait. Astro Precise
+              renders all of it, with interpretations rooted in classical tradition.
+            </p>
+
+            <p>
+              <strong>Transits</strong> show where the current sky connects to your natal chart —
+              which natal planets are being activated right now, and what themes those
+              activations historically correlate with. <strong>Numerology</strong> adds a complementary
+              layer: the mathematical resonance of your birth date and name, compressed
+              into archetypal numbers that describe your soul's purpose, expression,
+              and the rhythm of your personal years.
+            </p>
+
+            <div class="cosmic-story__concepts" role="group" aria-label="Core concepts">
+              <a href="chart.html" class="concept-pill" data-instrument="chart" aria-label="Calculate your natal chart">
+                <span class="concept-pill__icon" aria-hidden="true"></span>
+                <div class="concept-pill__text">
+                  <h3 class="concept-pill__title">Natal Chart</h3>
+                  <p>A character map — the symbolic architecture of your psyche, frozen at birth.</p>
+                </div>
+              </a>
+              <a href="transits.html" class="concept-pill" data-instrument="transits" aria-label="Explore current transits">
+                <span class="concept-pill__icon" aria-hidden="true"></span>
+                <div class="concept-pill__text">
+                  <h3 class="concept-pill__title">Transits</h3>
+                  <p>The timing layer — how the moving sky activates dormant themes in your chart.</p>
+                </div>
+              </a>
+              <a href="lifepath.html" class="concept-pill" data-instrument="lifepath" aria-label="Calculate your life path number">
+                <span class="concept-pill__icon" aria-hidden="true"></span>
+                <div class="concept-pill__text">
+                  <h3 class="concept-pill__title">Numerology</h3>
+                  <p>Your soul's path number — the mathematical resonance of the date you chose to arrive.</p>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right: Decorative zodiac wheel SVG -->
+          <div class="cosmic-story__wheel-wrap reveal reveal-delay-2" aria-hidden="true">
+            <svg class="zodiac-wheel-svg" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decorative zodiac wheel">
+              <!-- Outer ring -->
+              <circle cx="200" cy="200" r="190" stroke="rgba(194, 160, 94,0.15)" stroke-width="1.5" fill="none"/>
+              <!-- Middle ring -->
+              <circle cx="200" cy="200" r="155" stroke="rgba(194, 160, 94,0.1)" stroke-width="1" fill="none"/>
+              <!-- Inner ring -->
+              <circle cx="200" cy="200" r="120" stroke="rgba(63, 125, 118,0.12)" stroke-width="1" fill="none"/>
+              <!-- Innermost -->
+              <circle cx="200" cy="200" r="80" stroke="rgba(92, 74, 110,0.15)" stroke-width="1" fill="none"/>
+              <!-- Center sun -->
+              <circle cx="200" cy="200" r="12" fill="rgba(194, 160, 94,0.25)" stroke="rgba(194, 160, 94,0.5)" stroke-width="1"/>
+              <!-- 12 spoke lines -->
+              <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(194, 160, 94,0.07)" stroke-width="1"/>
+              <line x1="10" y1="200" x2="390" y2="200" stroke="rgba(194, 160, 94,0.07)" stroke-width="1"/>
+              <line x1="62" y1="62" x2="338" y2="338" stroke="rgba(194, 160, 94,0.07)" stroke-width="1"/>
+              <line x1="338" y1="62" x2="62" y2="338" stroke="rgba(194, 160, 94,0.07)" stroke-width="1"/>
+              <line x1="10" y1="131" x2="390" y2="269" stroke="rgba(194, 160, 94,0.05)" stroke-width="0.5"/>
+              <line x1="10" y1="269" x2="390" y2="131" stroke="rgba(194, 160, 94,0.05)" stroke-width="0.5"/>
+              <line x1="131" y1="10" x2="269" y2="390" stroke="rgba(194, 160, 94,0.05)" stroke-width="0.5"/>
+              <line x1="269" y1="10" x2="131" y2="390" stroke="rgba(194, 160, 94,0.05)" stroke-width="0.5"/>
+              <!-- Zodiac seals at 30° intervals (decorative ring) -->
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/aries.svg" x="186" y="8" width="20" height="23" opacity="0.72" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/taurus.svg" x="265" y="30" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/gemini.svg" x="336" y="100" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/cancer.svg" x="360" y="180" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/leo.svg" x="336" y="262" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/virgo.svg" x="265" y="334" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/libra.svg" x="186" y="358" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/scorpio.svg" x="108" y="334" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/sagittarius.svg" x="36" y="262" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/capricorn.svg" x="12" y="185" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/aquarius.svg" x="36" y="100" width="20" height="23" opacity="0.68" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/zodiac/pisces.svg" x="108" y="30" width="20" height="23" opacity="0.68" />
+              <!-- Planet seals inside (decorative) -->
+              <image class="cosmic-wheel__seal" href="assets/images/seals/planets/sun.svg" x="192" y="156" width="16" height="19" opacity="0.55" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/planets/moon.svg" x="222" y="202" width="14" height="17" opacity="0.5" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/planets/mercury.svg" x="163" y="218" width="12" height="15" opacity="0.48" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/planets/venus.svg" x="192" y="233" width="12" height="15" opacity="0.48" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/planets/mars.svg" x="168" y="184" width="12" height="15" opacity="0.48" />
+              <image class="cosmic-wheel__seal" href="assets/images/seals/planets/jupiter.svg" x="218" y="174" width="14" height="17" opacity="0.5" />
+            </svg>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         FEATURE SHOWCASE — Bento grid (4 cards)
+         ══════════════════════════════════════════════════════════════════════ -->
+    
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         YOUR COSMIC STORY — Storytelling section
+         ══════════════════════════════════════════════════════════════════════ -->
+    
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         HOW IT WORKS — 3 steps
+         ══════════════════════════════════════════════════════════════════════ -->
+    
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         ALL TOOLS — Bento grid of 8 tools
+         ══════════════════════════════════════════════════════════════════════ -->
+    
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         PHILOSOPHY — Why precision matters
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="philosophy-section" id="philosophy" aria-labelledby="philosophy-heading">
+      <div class="container">
+        <header style="text-align:center;">
+          <p class="section-eyebrow">Our principles</p>
+          <h2 class="section-h2" id="philosophy-heading">Why precision matters</h2>
+          <p class="section-subtitle">
+            Three values that set Astro Precise apart from every other astrology platform.
+          </p>
+        </header>
+
+        <div class="philosophy-grid sacred-geo">
+          <div class="philosophy-card reveal">
+            <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
+              <span style="font-size:1.2rem;">⊕</span>
+            </div>
+            <h3 class="philosophy-card__title">Deterministic</h3>
+            <p class="philosophy-card__body">
+              Same inputs always produce the same outputs. There is no randomness in our readings.
+              Your birth chart is computed from the same ephemeris every time. Your horoscope
+              for a given sign on a given date is always the same reading. This is not a limitation —
+              it is honesty. The sky is deterministic; our engine mirrors it.
+            </p>
+          </div>
+
+          <div class="philosophy-card reveal reveal-delay-2">
+            <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
+              <span style="font-size:1.2rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-lock"/></svg></span>
+            </div>
+            <h3 class="philosophy-card__title">Privacy-First</h3>
+            <p class="philosophy-card__body">
+              Everything computes in your browser. Your birth data never leaves your device.
+              We have no analytics, no user accounts (unless you choose to save locally),
+              no third-party trackers, and no subscription model. The sky was free the night
+              you were born; reading it should be too.
+            </p>
+          </div>
+
+          <div class="philosophy-card reveal reveal-delay-4">
+            <div class="philosophy-card__accent philosophy-card__accent--gold" aria-hidden="true">
+              <span style="font-size:1.2rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-eye"/></svg></span>
+            </div>
+            <h3 class="philosophy-card__title">Honest</h3>
+            <p class="philosophy-card__body">
+              Live feeds are labeled as live. When a data source is unavailable, we say so —
+              we never substitute fake or placeholder data. Our Schumann resonance display,
+              our solar weather feed, our field weather reports: all sourced from real NOAA SWPC
+              data, with honest-fallback patterns when feeds are temporarily unavailable.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         MANIFESTO
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="manifesto-section" aria-label="Astro Precise manifesto">
+      <div class="container">
+        <div class="manifesto-card reveal">
+          <span class="manifesto-card__quote-mark" aria-hidden="true">&ldquo;</span>
+          <p>
+            You arrived under a particular sky. Most of the people who tell you about it are
+            guessing — <strong>we are not.</strong> This site keeps the actual mathematics
+            of the heavens: planetary theory accurate to roughly an arcminute, 253 real catalogued stars,
+            the geometry of light itself. Give it the moment you were born and it rebuilds
+            that sky exactly — then reads it to you in the old language.
+          </p>
+          <p>
+            Same question, same moment, <strong>same answer, always</strong> — no random flattery,
+            no shuffled cards, no probabilistic fudging. And everything happens here, in your hands:
+            nothing sent anywhere, no account, no tracking, no subscription.
+          </p>
+          <div class="manifesto-beats" role="group" aria-label="Core principles">
+            <span class="manifesto-beat">Precision</span>
+            <span class="manifesto-beat">Honesty</span>
+            <span class="manifesto-beat">Privacy</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         FAQ — objection handling before the offer (honesty-safe: verifiable claims only)
+         ══════════════════════════════════════════════════════════════════════ -->
+    <style>.ap-faq__item{border:1px solid rgba(194,160,94,.18);border-radius:12px;margin-bottom:10px;background:linear-gradient(160deg,#14100a66,#0a080699);overflow:hidden}.ap-faq__item summary{cursor:pointer;list-style:none;padding:15px 20px;font-family:Cinzel,serif;font-size:.92rem;color:var(--gold-light,#EFE3C0);display:flex;justify-content:space-between;align-items:center;gap:12px}.ap-faq__item summary::-webkit-details-marker{display:none}.ap-faq__item summary:after{content:"+";color:var(--gold,#C2A05E);font-size:1.1rem;transition:transform .25s ease}.ap-faq__item[open] summary:after{transform:rotate(45deg)}.ap-faq__item>p{margin:0;padding:0 20px 18px;font-family:Cormorant Garamond,serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88)}.ap-faq__item>p a{color:var(--gold,#C2A05E)}</style>
+    <section id="faq" aria-labelledby="faq-heading" style="padding:var(--section-pad-y) 0;">
+      <div class="container" style="max-width:760px;">
+        <header style="text-align:center;margin-bottom:var(--space-10);">
+          <p class="section-eyebrow">Good to know</p>
+          <h2 class="section-h2" id="faq-heading">Questions, answered honestly</h2>
+        </header>
+        <div class="ap-faq">
+          <details class="ap-faq__item"><summary>Is it really free?</summary>
+            <p>Your birth chart, daily horoscope, compatibility, transits and the Instrument are all free to use — no account, no sign-up. The one thing you can pay for is the full personalised <strong>Deep Reading</strong>: a one-time PDF export drawn from your exact chart. It's never a subscription.</p>
+          </details>
+          <details class="ap-faq__item"><summary>What's in the paid Deep Reading?</summary>
+            <p>A 13-page written interpretation — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, and your ten tightest aspects — drawn from the same engine as the free chart tools, and set as a PDF that's yours to keep. <a href="sample-reading.html">See a sample →</a></p>
+          </details>
+          <details class="ap-faq__item"><summary>Is my birth data private?</summary>
+            <p>Yes. Your chart is computed entirely in your browser — your birth moment is never sent to any server, and there's no account or tracking. The only outbound calls are public sky-data feeds and a place-name lookup (the typed place only, never your birth time).</p>
+          </details>
+          <details class="ap-faq__item"><summary>How accurate is it?</summary>
+            <p>Positions come from real astronomy — VSOP87 for the planets, ELP2000 for the Moon — accurate to roughly an arcminute for dates between 1800 and 2200 CE. Every figure on the site is labelled <em>measured</em> or <em>computed</em>, never invented. <a href="why.html">See exactly how &rarr;</a></p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         OFFERINGS / SUPPORT — wired to the AP_MON engine (app.js).
+         Cards are dormant ("coming soon") until the owner pastes real URLs.
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section id="offerings" aria-label="Support and offerings"
+             style="max-width:1080px;margin:0 auto;padding:var(--section-pad-y) 24px;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <p style="font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold,#C2A05E);opacity:.85;margin:0 0 .5em;">&middot;&nbsp; Support the instrument &nbsp;&middot;</p>
+        <h2 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light,#EFE3C0);font-size:clamp(1.5rem,3.4vw,2.2rem);margin:0 0 .4em;text-wrap:balance;text-shadow:0 0 34px rgba(194, 160, 94,.18);">The chart is free. The deep reading is yours to keep.</h2>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1.14rem;line-height:1.75;color:var(--silver,#A89E88);max-width:580px;margin:0 auto;text-wrap:pretty;">Every chart is computed privately in your browser, free to cast. When you want the whole story, the full personalised reading exports as a one-time PDF pack — no subscription, yours forever. If the free chart served you, you can also just keep it lit.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(264px,1fr));gap:18px;">
+        <div style="border:1px solid rgba(194, 160, 94,.18);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(20,16,10,.55),rgba(10,8,6,.72));">
+          <div style="font-size:1.8rem;color:var(--gold,#C2A05E);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-heart"/></svg></div>
+          <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">Support the Instrument</h3>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Buy the maker a coffee. Keeps the free chart private, ad-free, and open to all.</p>
+          <a data-mon="tip" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C2A05E);border:1px solid rgba(194, 160, 94,.4);border-radius:30px;padding:11px 26px;text-decoration:none;"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support</a>
+        </div>
+        <div style="border:1px solid rgba(194, 160, 94,.4);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(194, 160, 94,.08),rgba(10,8,6,.78));box-shadow:0 0 40px rgba(194, 160, 94,.08);">
+          <div style="font-size:1.8rem;color:var(--gold,#C2A05E);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-star4"/></svg></div>
+          <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">The Deep Reading</h3>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Thirteen pages &mdash; every planet, all houses, life areas &amp; patterns &mdash; from the same engine as your free chart. <a href="sample-reading.html" style="color:var(--gold,#C2A05E);">Sample →</a></p>
+          <a data-mon="deepReading" data-mon-mode="dormant" href="#" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:#0a0805;background:linear-gradient(160deg,#D9B544,#A8841E);border:none;border-radius:30px;padding:12px 28px;text-decoration:none;font-weight:700;">Get the PDF</a>
+        </div>
+        <div style="border:1px solid rgba(194, 160, 94,.18);border-radius:13px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,rgba(20,16,10,.55),rgba(10,8,6,.72));">
+          <div style="font-size:1.8rem;color:var(--gold,#C2A05E);margin-bottom:12px;"><svg class="eng-i" style="width:1.8rem;height:1.8rem;" aria-hidden="true"><use href="#ei-chat"/></svg></div>
+          <h3 style="font-family:'Cinzel',serif;font-weight:600;letter-spacing:.06em;font-size:1rem;color:var(--gold-light,#EFE3C0);margin:0 0 10px;">Gift a Reading</h3>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;line-height:1.7;color:var(--silver,#A89E88);margin:0 0 20px;">Give someone their sky &mdash; a personalised chart reading, delivered for them.</p>
+          <a href="shop.html" style="display:inline-block;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold,#C2A05E);border:1px solid rgba(194, 160, 94,.4);border-radius:30px;padding:11px 26px;text-decoration:none;">Browse gifts</a>
+        </div>
+      </div>
+      <p class="offerings-footnote" style="text-align:center;font-family:'Inter',system-ui,sans-serif;font-size:.62rem;letter-spacing:.1em;margin-top:26px;">Digital goods &middot; prices shown at checkout &middot; processed securely off-site</p>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════════════════ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner" data-ap-footer-model="1">
+        <!-- Brand -->
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <!-- Tools nav -->
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+
+        <!-- Daily readings -->
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+
+        <!-- Sign guides -->
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SCRIPTS — load order matters
+       ══════════════════════════════════════════════════════════════════════ -->
+  <!-- raf-core + ephemeris + orrery-loader at top of <body>; orrery-webgl loads after first paint -->
+  <script src="js/oracle.js" defer></script>
+  <script src="js/profile.js" defer></script>
+  <script src="js/personalization-engine.js" defer></script>
+  <script src="js/journey.js" defer></script>
+  <script src="js/sign-daily.js" defer></script>
+  <script src="js/ap-zodiac-constants.js" defer></script>
+  <script src="js/ap-canvas-seals.js" defer></script>
+  <script src="js/element-seals.js" defer></script>
+  <script src="js/celestial-seals.js" defer></script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/home-sign-picker.js" defer></script>
+  <script src="js/ap-nav-model.js"></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/ap-page-bridge.js" defer></script>
+  <script src="js/effects.js" defer></script>
+  <script src="js/hero-instrument.js" defer></script>
+  <script src="js/scale-journey-chapters.js" defer></script>
+  <script src="js/scale-journey.js" defer></script>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       INLINE CONTROLLER SCRIPT
+       ══════════════════════════════════════════════════════════════════════ -->
+  <script>(function(){"use strict";const h=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"],v=[{id:"sun",label:"Sun",glyph:"\u2609",color:"#f0c040"},{id:"moon",label:"Moon",glyph:"\u263D",color:"#d0d8e8"},{id:"mercury",label:"Mercury",glyph:"\u263F",color:"#9a9090"},{id:"venus",label:"Venus",glyph:"\u2640",color:"#c8b07a"},{id:"mars",label:"Mars",glyph:"\u2642",color:"#b84232"},{id:"jupiter",label:"Jupiter",glyph:"\u2643",color:"#c08858"},{id:"saturn",label:"Saturn",glyph:"\u2644",color:"#c8b48a"},{id:"uranus",label:"Uranus",glyph:"\u2645",color:"#7de8e8"},{id:"neptune",label:"Neptune",glyph:"\u2646",color:"#4469f5"}],g={sun:"Core identity, creative drive, will",moon:"Emotional nature, instinct, memory",mercury:"Mind, communication, perception",venus:"Love, beauty, values, attraction",mars:"Drive, action, desire, assertion",jupiter:"Expansion, wisdom, opportunity",saturn:"Structure, discipline, karma, time",uranus:"Innovation, liberation, the unexpected",neptune:"Dreams, dissolution, transcendence",pluto:"Power, transformation, the unconscious",earth:"Your vantage point \u2014 the chart is cast from here"};function w(o){document.readyState!=="loading"?o():document.addEventListener("DOMContentLoaded",o)}function S(o,r,e){return new Promise(function(t,n){var l=setTimeout(function(){n("timeout")},r||8e3),s=setInterval(function(){o()&&(clearTimeout(l),clearInterval(s),t())},e||80)})}function D(o){o=(o%360+360)%360;var r=Math.floor(o/30),e=o-r*30,t=Math.floor(e)+"\xB0"+Math.floor(e%1*60).toString().padStart(2,"0")+"\u2032";return{signIdx:r,degStr:t}}function O(o,r,e){var t=r?r.toLowerCase():"",n={sun:{href:t?"horoscope.html?sign="+t:"horoscope.html",label:t?r+" horoscope today":"Daily horoscopes"},moon:{href:"moonphase.html",label:"Moon phase tonight"},mercury:{href:e?"retrograde.html":"transits.html",label:e?"Mercury retrograde":"Current transits"},venus:{href:e?"retrograde.html":"transits.html",label:e?"Venus retrograde":"Current transits"},mars:{href:e?"retrograde.html":"tonight.html",label:e?"Mars retrograde":"Visible tonight"},jupiter:{href:"tonight.html",label:"Jupiter in the sky"},saturn:{href:e?"saturn-return.html":"tonight.html",label:e?"Saturn cycles":"Saturn tonight"},uranus:{href:"ephemeris.html",label:"Sky"},neptune:{href:"ephemeris.html",label:"Sky"},pluto:{href:"transits.html",label:"Current transits"},earth:{href:"chart.html",label:"Cast your chart"}};return n[o]||{href:"transits.html",label:"Live transits"}}function p(o){window.HomeSkyDock&&window.HomeSkyDock.focusPill&&window.HomeSkyDock.focusPill(o)}(function(){var o=document.querySelector(".site-header");if(o){var r=function(){o.classList.toggle("scrolled",window.scrollY>20)};if(window.RafCore){window.RafCore.onScroll(r);return}window.addEventListener("scroll",r,{passive:!0}),r()}})(),(function(){var o=document.getElementById("hero-chart-form");o&&o.addEventListener("submit",function(r){r.preventDefault();var e=document.getElementById("hero-birthdate"),t=e?e.value:"",n="chart.html";t&&(n+="?date="+encodeURIComponent(t)),window.location.href=n})})(),(function(){var o=document.querySelectorAll(".orrery-btn[data-speed]");o.forEach(function(r){r.addEventListener("click",function(){var e=parseFloat(r.dataset.speed);window.Orrery3D&&typeof Orrery3D.setSpeed=="function"&&Orrery3D.setSpeed(e),o.forEach(function(t){t.classList.remove("active")}),r.classList.add("active")})}),(function(){var r="";function e(){if(document.visibilityState==="visible"&&!(!window.Orrery3D||typeof Orrery3D.getDate!="function"))try{var t=Orrery3D.getDate().toISOString();t!==r&&(r=t,localStorage.setItem("astro_current_demo_time",t))}catch{}}setInterval(e,2e3),document.addEventListener("visibilitychange",e)})(),document.addEventListener("orrery-speed-change",function(r){var e=r&&r.detail?r.detail.speed:null;e!=null&&document.querySelectorAll(".orrery-btn[data-speed]").forEach(function(t){var n=parseFloat(t.dataset.speed)===e;t.classList.toggle("active",n)})}),(function(){var r=document.getElementById("orrery-scrub"),e=document.getElementById("orrery-reset");r&&(r.addEventListener("input",function(){var t=parseInt(r.value,10)||0;window.Orrery3D&&typeof Orrery3D.setTimelineDays=="function"&&Orrery3D.setTimelineDays(t)}),e&&e.addEventListener("click",function(){r.value=0,window.Orrery3D&&(typeof Orrery3D.snapToNow=="function"?Orrery3D.snapToNow():(typeof Orrery3D.resetScrollDrive=="function"&&Orrery3D.resetScrollDrive(),typeof Orrery3D.setTimelineDays=="function"&&Orrery3D.setTimelineDays(0),typeof Orrery3D.setSpeed=="function"&&Orrery3D.setSpeed(0))),document.querySelectorAll(".orrery-btn[data-speed]").forEach(function(t){t.classList.toggle("active",t.dataset.speed==="0")})}))})(),(function(){function e(i){window.Orrery3D&&(typeof Orrery3D.setShowOrbits=="function"&&Orrery3D.setShowOrbits(i.orbits),typeof Orrery3D.setShowLabels=="function"&&Orrery3D.setShowLabels(i.labels),typeof Orrery3D.setShowAsteroids=="function"&&Orrery3D.setShowAsteroids(i.asteroids),typeof Orrery3D.setShowParticles=="function"&&Orrery3D.setShowParticles(!1))}var t={orbits:!1,labels:!1,asteroids:!1};document.querySelectorAll(".orrery-toggle").forEach(function(i){var a=i.dataset.layer;a&&(i.classList.toggle("active",!!t[a]),i.setAttribute("aria-pressed",t[a]?"true":"false"),i.addEventListener("click",function(){t[a]=!t[a],i.classList.toggle("active",t[a]),i.setAttribute("aria-pressed",t[a]?"true":"false"),e(t)}))}),document.querySelectorAll(".orrery-scale-btn").forEach(function(i){i.addEventListener("click",function(){var a=parseInt(i.dataset.scale,10);window.ScaleJourney&&typeof ScaleJourney.start=="function"?ScaleJourney.start(a):window.Orrery3D&&typeof Orrery3D.setScaleLevel=="function"&&Orrery3D.setScaleLevel(a)})});var n=document.getElementById("orrery-replay-intro");n&&n.addEventListener("click",function(){window.Orrery3D&&typeof Orrery3D.restartIntro=="function"&&Orrery3D.restartIntro()});function l(){e(t),window.Orrery3D&&typeof Orrery3D.getScaleLevel=="function"&&document.querySelectorAll(".orrery-scale-btn").forEach(function(i){var a=parseInt(i.dataset.scale,10),c=Orrery3D.getScaleLevel()===a;i.classList.toggle("active",c),i.setAttribute("aria-pressed",c?"true":"false")})}if(document.addEventListener("orrery-scale-change",function(i){var a=i&&i.detail?i.detail.level:null;a!=null&&document.querySelectorAll(".orrery-scale-btn").forEach(function(c){var u=parseInt(c.dataset.scale,10)===a;c.classList.toggle("active",u),c.setAttribute("aria-pressed",u?"true":"false")})}),window.Orrery3D)l();else var s=0,d=setInterval(function(){(window.Orrery3D||++s>80)&&(clearInterval(d),l())},100)})()})(),(function(){var o=document.getElementById("orrery-capture");o&&o.addEventListener("click",function(){var r=document.getElementById("orrery-canvas");if(r){var e=window.Orrery3D&&typeof Orrery3D.captureFrame=="function"?Orrery3D.captureFrame({scale:2}):null;if(!e){e=document.createElement("canvas"),e.width=r.width,e.height=r.height;var t=e.getContext("2d");t.fillStyle="#050406",t.fillRect(0,0,e.width,e.height);try{t.drawImage(r,0,0)}catch{return}}var n=e.width,l=e.height,s=e.getContext("2d"),d=Math.max(11,Math.round(l*.022));s.font="600 "+d+"px Cinzel, serif",s.fillStyle="rgba(194, 160, 94,0.55)",s.textAlign="right",s.textBaseline="bottom",s.fillText("Astro Precise",n-14,l-10);var i=document.getElementById("orrery-date-display"),a=i?i.textContent.trim():"";a&&(s.font="400 "+Math.max(9,Math.round(l*.016))+"px Cinzel, serif",s.fillStyle="rgba(194, 160, 94,0.4)",s.fillText(a,n-14,l-10-d-4)),e.toBlob(function(c){var u=(a||"now").replace(/[^a-z0-9]/gi,"-").toLowerCase(),f="sky-"+u+".png",y=new File([c],f,{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[y]}))navigator.share({files:[y],title:"My Sky \u2014 Astro Precise",text:"The living sky \xB7 "+a}).catch(function(){});else{var m=document.createElement("a");m.href=URL.createObjectURL(c),m.download=f,document.body.appendChild(m),m.click(),document.body.removeChild(m),setTimeout(function(){URL.revokeObjectURL(m.href)},2e3)}},"image/png")}})})(),(function(){var o=document.getElementById("planet-info-panel"),r=document.getElementById("planet-panel-close");if(!o)return;function e(n){var l=(n.id||n.name||"").toLowerCase(),s=document.getElementById("pip-glyph");s&&(window.AstroIcons&&n.name&&window.AstroIcons.PLANET_GLYPH[n.name]?s.innerHTML=window.AstroIcons.planet(n.name):s.textContent=n.glyph||"\u2609");var d=document.getElementById("pip-name");d&&(d.textContent=n.name||"");var i=document.getElementById("pip-sign");i&&(n.signName&&window.AstroIcons?i.innerHTML=window.AstroIcons.sign(n.signName,{sm:!0})+" in "+n.signName+(n.retro?' <span style="color:var(--crimson-light,#e07a82);">\u211E</span>':""):i.textContent=n.signName?"in "+n.signName:"");var a=document.getElementById("pip-degree");a&&(a.textContent=n.degree||"");var c=document.getElementById("pip-meaning");c&&(c.textContent=n.meaning||"");var u=document.getElementById("pip-actions");if(u){var f=O(l,n.signName,n.retro),y='<a class="pip-action pip-action--primary" href="'+f.href+'">'+f.label+" &rarr;</a>";n.retro&&f.href!=="retrograde.html"&&(y+='<a class="pip-action" href="retrograde.html">Retrograde calendar &rarr;</a>'),l!=="sun"&&n.signName&&(y+='<a class="pip-action" href="'+n.signName.toLowerCase()+'.html">'+n.signName+" sign guide &rarr;</a>"),u.innerHTML=y}p(l),window.Orrery3D&&typeof Orrery3D.focusPlanet=="function"&&Orrery3D.focusPlanet(l),o.classList.remove("hidden")}function t(){o.classList.add("hidden"),p(null)}r&&r.addEventListener("click",t),document.addEventListener("orrery-planet-click",function(n){var l=n.detail||{},s=l.id||(l.name||"").toLowerCase(),d=v.find(function(c){return c.id===s})||{},i=l.longitude!==void 0&&l.longitude!==null,a=i?D(l.longitude):null;e({id:s,name:l.name||s,glyph:s==="earth"?"\u2295":d.glyph||"?",signName:a?h[a.signIdx]:"",degree:a?a.degStr:"",retro:!!l.retro,meaning:g[s]||""})})})(),(function(){if(!window.IntersectionObserver){document.querySelectorAll(".reveal").forEach(function(r){r.classList.add("visible")});return}var o=new IntersectionObserver(function(r){r.forEach(function(e){e.isIntersecting&&(e.target.classList.add("visible"),o.unobserve(e.target))})},{threshold:.12});document.querySelectorAll(".reveal").forEach(function(r){o.observe(r)})})(),w(async function(){var o=window.__apLiteHero&&!document.documentElement.classList.contains("orrery-full");if(o)document.addEventListener("ap-orrery-ready",function e(){document.removeEventListener("ap-orrery-ready",e);try{typeof Orrery3D.setSpeed=="function"&&Orrery3D.setSpeed(0),Orrery3D.onScrub=function(t){window.refreshLiveSkyStrip&&window.refreshLiveSkyStrip(t)},document.querySelectorAll(".orrery-btn[data-speed]").forEach(function(t){t.classList.toggle("active",t.dataset.speed==="0")})}catch{}});else try{if(typeof window.__loadOrreryEngine=="function")try{await window.__loadOrreryEngine()}catch{}await S(function(){return window.Orrery3D},6e3),!window.__orreryReady&&!window.__orreryPreloaderOwns&&(window.Orrery3D.init(document.getElementById("orrery-canvas")),window.__orreryReady=!0),typeof Orrery3D.setSpeed=="function"&&Orrery3D.setSpeed(0),Orrery3D.onScrub=function(e){window.refreshLiveSkyStrip&&window.refreshLiveSkyStrip(e)},document.querySelectorAll(".orrery-btn[data-speed]").forEach(function(e){e.classList.toggle("active",e.dataset.speed==="0")})}catch{if(!window.Orrery3D&&!window.__orreryReady&&!window.__orreryPreloaderOwns){var r=document.createElement("script");r.src="js/orrery3d.js",r.onload=function(){try{var t=document.getElementById("orrery-canvas");window.Orrery3D&&t&&!window.__orreryReady&&!window.__orreryPreloaderOwns&&(window.Orrery3D.init(t),window.__orreryReady=!0,typeof Orrery3D.setSpeed=="function"&&Orrery3D.setSpeed(0))}catch{}},document.head.appendChild(r)}}})})();</script>
+
+  <!-- ═════════════════════════════════════════════════════════════════════
+       CINEMATIC PRELOADER — "The Spheres Align"
+       Hermetic orrery + sacred geometry awakening. Celestia-inspired engraved observatory meets Astro Precise cosmic precision.
+       Masterpiece entry: never seen before immersive threshold.
+  ═════════════════════════════════════════════════════════════════════ -->
+  <style>#preloader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:all;padding:max(24px,env(safe-area-inset-top)) 20px max(28px,env(safe-area-inset-bottom));background:#050406}#preloader:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:none}.apl-cosmic-art{display:none}#preloader.fade-out{opacity:0;transition:opacity .9s cubic-bezier(.22,1,.36,1);pointer-events:none}#preloader.preloader-exit .apl-intro-header,#preloader.preloader-exit .preloader-content,#preloader.preloader-exit .preloader-skip-intro{opacity:0;transition:opacity .4s ease;pointer-events:none}body.preloader-active.hero-reveal #starfield-canvas{opacity:1;transition:opacity 1.1s ease}.apl-stars{background-image:radial-gradient(1.4px 1.4px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 28% 68%,#EFE3C0,transparent),radial-gradient(1.2px 1.2px at 47% 12%,#fff,transparent),radial-gradient(1px 1px at 66% 78%,#fff,transparent),radial-gradient(1.3px 1.3px at 82% 34%,#ffe9b8,transparent),radial-gradient(1px 1px at 91% 62%,#fff,transparent),radial-gradient(1px 1px at 58% 48%,#EFE3C0,transparent),radial-gradient(1px 1px at 38% 88%,#fff,transparent),radial-gradient(1px 1px at 8% 52%,#fff,transparent),radial-gradient(1px 1px at 73% 18%,#fff,transparent)}.apl-orr{display:none;position:absolute;top:40%;left:50%;width:min(60vmin,440px);height:min(60vmin,440px);transform:translate(-50%,-50%) scaleY(.34);pointer-events:none}.apl-ring{position:absolute;top:50%;left:50%;border:1px solid rgba(194,160,94,.22);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 22px #c2a05e2e,inset 0 0 34px #c2a05e14}.apl-r1{width:36%;height:36%}.apl-r2{width:60%;height:60%}.apl-r3{width:86%;height:86%}.apl-spin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;animation:apl-orbit linear infinite}.apl-s1{width:36%;height:36%;animation-duration:20s}.apl-s2{width:60%;height:60%;animation-duration:34s}.apl-s3{width:86%;height:86%;animation-duration:52s}@keyframes apl-orbit{to{transform:translate(-50%,-50%) rotate(360deg)}}.apl-pl{position:absolute;top:-9px;left:50%;margin-left:-9px;width:18px;height:18px;border-radius:50%;transform:scaleY(2.94)}.apl-earth{background:radial-gradient(118% 118% at 32% 24%,#bfeaff,#2f86cf 70%,#1c4f86);box-shadow:inset 0 1px 1px #fff9,inset 0 -3px 5px #00000073,0 0 10px #50a0ff80}.apl-mars{background:radial-gradient(118% 118% at 32% 24%,#ff8a64,#a82414 75%);box-shadow:inset 0 1px 1px #ffffff80,inset 0 -3px 5px #00000073,0 0 9px #c83c1e73}.apl-goldp{background:radial-gradient(118% 118% at 32% 24%,#ffe27a,#c47a0a 75%);box-shadow:inset 0 1px 1px #fff9,inset 0 -3px 5px #0006,0 0 9px #dca02880}.apl-core{display:none;position:absolute;top:46%;left:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#fff7e0,#ffd24a 38%,#f0900f 72%,#b85a08);box-shadow:0 0 18px #ffd26ed9,0 0 54px #f0961e8c,inset 0 -6px 12px #783c0080;animation:apl-pulse 3.4s ease-in-out infinite}@keyframes apl-pulse{0%,to{box-shadow:0 0 18px #ffd26ecc,0 0 50px #f0961e80,inset 0 -6px 12px #783c0080}50%{box-shadow:0 0 26px #ffe196f2,0 0 80px #f5aa32b3,inset 0 -6px 12px #783c0080}}@keyframes seal-pulse{0%,to{opacity:.8}50%{opacity:1}}@media(prefers-reduced-motion:reduce){.apl-spin,.apl-core{animation:none}}#preloader-enter{opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1)}#preloader.aligned #preloader-enter,#preloader.preloader--enter-ready #preloader-enter{opacity:1;transform:none;pointer-events:auto}.preloader-join-optional{display:block;margin:10px auto 0;padding:0;border:none;background:transparent;color:#a89f8ad1;font-family:Inter,system-ui,sans-serif;font-size:.62rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .45s ease}#preloader.aligned .preloader-join-optional{opacity:1;pointer-events:auto}#preloader.gate-open .preloader-content{opacity:0;pointer-events:none;transition:opacity .35s ease}#preloader.gate-open .apl-live-orr,#preloader.gate-open .apl-live-orr canvas{pointer-events:none!important}.preloader-email-gate{position:absolute;inset:0;z-index:20;display:none!important;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none!important;transition:opacity .35s ease,visibility .35s ease}.preloader-email-gate.is-open{display:flex!important;opacity:1;visibility:visible;pointer-events:auto!important}.preloader-email-gate__backdrop{position:absolute;inset:0;z-index:0;background:#04030685;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer}.preloader-email-gate__panel{position:relative;z-index:1;width:min(22rem,92vw);padding:22px 20px 18px;border-radius:18px;border:1px solid rgba(194,160,94,.38);background:linear-gradient(165deg,#120e0af0,#080605f7);box-shadow:0 18px 48px #0000008c,0 0 32px #c2a05e1f;text-align:center;color:#e8e0d0;transform:translateY(12px) scale(.97);transition:transform .45s cubic-bezier(.22,1,.36,1);pointer-events:auto}.preloader-email-gate.is-open .preloader-email-gate__panel{transform:none}.preloader-email-gate__close{position:absolute;top:8px;right:8px;width:44px;height:44px;border:none;border-radius:50%;background:#c2a05e2e;color:#f0e8d8;font-size:1.5rem;line-height:1;cursor:pointer;transition:background .2s ease,color .2s ease;touch-action:manipulation;z-index:2}.preloader-email-gate__close:hover,.preloader-email-gate__close:focus-visible{background:#c2a05e47;color:#fff}.preloader-email-gate__title{font-family:Cinzel,serif;font-size:1rem;letter-spacing:.14em;text-transform:uppercase;margin:0 0 10px;color:#f0e8d8}.preloader-email-gate__hint{font-family:Cormorant Garamond,serif;font-size:.82rem;line-height:1.5;color:#a89f8a;margin:0 0 14px;font-style:italic}.preloader-email-gate__input{width:100%;padding:11px 14px;border-radius:999px;border:1px solid rgba(194,160,94,.32);background:#0504068c;color:#f0e8d8;font-size:.84rem;font-family:Inter,system-ui,sans-serif;outline:none;margin-bottom:10px}.preloader-email-gate__input::placeholder{color:#a89f8abf}.preloader-email-gate__input:focus{border-color:#c2a05ea6;box-shadow:0 0 0 3px #c2a05e1f}.preloader-email-gate__join{width:100%;padding:11px 18px;border-radius:999px;border:1px solid rgba(194,160,94,.55);background:linear-gradient(#1c160cb8,#0c0a07d1);color:#f0e8d8;font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:box-shadow .25s ease,border-color .25s ease}.preloader-email-gate__join:hover,.preloader-email-gate__join:focus-visible{border-color:#c2a05ed9;box-shadow:0 0 18px #c2a05e47}.preloader-email-gate__skip{display:block;width:100%;margin-top:10px;padding:8px 12px;border:none;background:transparent;color:#a89f8af2;font-family:Inter,system-ui,sans-serif;font-size:.72rem;letter-spacing:.04em;cursor:pointer;text-decoration:underline;text-underline-offset:3px}.preloader-email-gate__skip:hover,.preloader-email-gate__skip:focus-visible{color:#e8e0d0}.apl-cine-vignette,.apl-cine-grain{pointer-events:none}</style>
+  <div id="preloader" aria-label="Astral alignment in progress" role="dialog" aria-modal="true">
+    <div class="landing-gate-scrim" aria-hidden="true"></div>
+    <div class="apl-cine-vignette" aria-hidden="true"></div>
+    <div class="apl-cine-grain" aria-hidden="true"></div>
+    <header class="apl-intro-header">
+      <div class="apl-brand">
+        <span class="apl-brand__mark" aria-hidden="true">
+          <img src="img/logo-mark.svg" alt="" width="40" height="40" decoding="async" fetchpriority="high" />
+        </span>
+        <span class="apl-brand__wordmark">Astro Precise</span>
+      </div>
+      <div class="apl-intro-progress" aria-hidden="true"><span class="apl-intro-progress__bar" id="preloader-intro-progress"></span></div>
+      <p class="apl-intro-phase" id="preloader-phase" aria-live="polite">Calibrating sky</p>
+      <p class="apl-intro-phase-sub" id="preloader-phase-sub" aria-live="polite">VSOP87 ephemeris warming in your browser.</p>
+    </header>
+    <button type="button" class="preloader-skip-intro" id="preloader-skip-intro" aria-label="Skip intro">Skip</button>
+    <button type="button" class="preloader-narrate-toggle" id="preloader-narrate" role="switch" aria-checked="false" aria-label="Narrate the journey">Narrate the journey</button>
+    <div class="apl-cosmic-art" aria-hidden="true"></div>
+    <div class="apl-stars" aria-hidden="true"></div>
+    <div class="apl-orr" aria-hidden="true">
+      <div class="apl-ring apl-r1"></div><div class="apl-ring apl-r2"></div><div class="apl-ring apl-r3"></div>
+      <div class="apl-spin apl-s1"><span class="apl-pl apl-earth"></span></div>
+      <div class="apl-spin apl-s2"><span class="apl-pl apl-mars"></span></div>
+      <div class="apl-spin apl-s3"><span class="apl-pl apl-goldp"></span></div>
+    </div>
+    <div class="apl-core" aria-hidden="true"></div>
+    <div class="apl-earth-poster" aria-hidden="true"></div>
+    <!-- The real 3D orrery is relocated here from the hero during loading -->
+    <div class="apl-live-orr" id="preloader-orrery-slot" aria-hidden="true"></div>
+    <div class="preloader-content">
+      <div class="preloader-title">Your Meridian</div>
+      <button type="button" id="preloader-enter" class="preloader-skip preloader-enter-btn" aria-label="Open your birth chart and enter Astro Precise">Open your chart</button>
+      <button type="button" id="preloader-join-optional" class="preloader-join-optional">Join update list</button>
+    </div>
+    <div id="preloader-email-gate" class="preloader-email-gate" aria-hidden="true">
+      <div class="preloader-email-gate__backdrop" aria-hidden="true"></div>
+      <div class="preloader-email-gate__panel" role="dialog" aria-labelledby="preloader-gate-title" aria-modal="true">
+        <button type="button" class="preloader-email-gate__close" id="preloader-gate-close" aria-label="Close and continue without email">&times;</button>
+        <h2 class="preloader-email-gate__title" id="preloader-gate-title">Stay in the loop</h2>
+        <p class="preloader-email-gate__hint">Optional: join for chart wallpapers, cosmic weather, deep readings &amp; shop drops when they ship. Free to skip.</p>
+        <input type="email" id="preloader-gate-email" class="preloader-email-gate__input" name="email" placeholder="you@example.com (optional)" autocomplete="email" aria-label="Email for launch updates (optional)" />
+        <button type="button" class="preloader-email-gate__join" id="preloader-gate-join">Join list</button>
+        <button type="button" class="preloader-email-gate__skip" id="preloader-gate-skip">Continue without email</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/raf-core.js" defer></script>
+  <script>(function(){var i=["js/ephemeris.js","js/orrery-loader.js","js/lite-orrery.js"],a=["js/ephemeris.js","js/orrery-loader.js"];function t(e,o,r){if(o>=e.length)return r&&r();var s=document.createElement("script");s.src=e[o],s.onload=function(){t(e,o+1,r)},document.body.appendChild(s)}function n(){function e(){if(!document.getElementById("ap-cosmos-lite")){var o=document.createElement("script");o.id="ap-cosmos-lite",o.src="js/cosmos.js",document.body.appendChild(o)}}window.requestIdleCallback?requestIdleCallback(e,{timeout:12e3}):setTimeout(e,4e3)}window.__apLiteHero?window.addEventListener("load",function(){var e=navigator.webdriver?35e3:0;setTimeout(function(){t(i,0)},e),navigator.webdriver?setTimeout(n,35e3):n()},{once:!0}):t(a,0)})();</script>
+  <script src="js/lazy-zodiac-cards.js" defer></script>
+  <script src="js/starcatalog.js" defer></script>
+
+  <script>(function(){if(!window.__apLiteHero){var e=document.createElement("script");e.src="js/lite-sky-dock.js",e.defer=!0,document.body.appendChild(e);var r=document.createElement("script");r.src="js/cosmos.js",r.defer=!0,document.head.appendChild(r)}})();</script>
+
+  <!-- Preloader script moved early for immediate execution -->
+  <script>(function(){const n=document.getElementById("preloader");if(!n)return;let S=!1;try{S=sessionStorage.getItem("ap_intro_complete")==="1"}catch{}var B=!!window.__apLiteHero;if(S||B){let e=function(){typeof window.__apHeroEnter=="function"&&window.__apHeroEnter(),window.dispatchEvent(new Event("ap-hero-enter"));var t=document.getElementById("preloader");t&&t.parentNode&&t.parentNode.removeChild(t),requestAnimationFrame(function(){window.Orrery3D&&typeof Orrery3D.forceResize=="function"&&Orrery3D.forceResize()})};var me=e;n.style.display="none",document.body.classList.remove("preloader-active"),document.body.classList.add("ap-skip-intro"),window.__apHeroEntered=!0;var F=document.querySelector(".hero");F&&F.classList.add("hero--entered"),document.readyState==="loading"?document.addEventListener("DOMContentLoaded",function(){requestAnimationFrame(e)}):requestAnimationFrame(e);return}document.body.classList.add("preloader-active"),window.__orreryPreloaderOwns=!0;var ue=document.querySelector(".apl-earth-poster");function R(){n&&n.classList.add("preloader--earth-ready")}document.addEventListener("ap-earth-texture-ready",R,{once:!0}),document.addEventListener("ap-preloader-ready",R,{once:!0});let C=null,y=null,U=null,v=null,A=!1;const s=document.getElementById("preloader-enter");function X(){var e=document.getElementById("main-content");e&&(e.setAttribute("aria-hidden","true"),"inert"in HTMLElement.prototype&&(e.inert=!0));var t=document.querySelector(".site-footer");t&&t.setAttribute("aria-hidden","true")}function q(){var e=document.getElementById("main-content");e&&(e.removeAttribute("aria-hidden"),"inert"in HTMLElement.prototype&&(e.inert=!1));var t=document.querySelector(".site-footer");t&&t.removeAttribute("aria-hidden")}X();var M=(function(){function t(r){if(!(r.key!=="Tab"||i)&&n.style.display!=="none"){var a=Array.prototype.slice.call(n.querySelectorAll('button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter(function(L){return!L.hidden&&L.getAttribute("aria-hidden")!=="true"});if(a.length){var p=a[0],E=a[a.length-1];r.shiftKey&&document.activeElement===p?(r.preventDefault(),E.focus()):!r.shiftKey&&document.activeElement===E&&(r.preventDefault(),p.focus())}}}return document.addEventListener("keydown",t),function(){document.removeEventListener("keydown",t)}})();function $(){try{if(window.RafCore&&window.RafCore.tier)return window.RafCore.tier;if(navigator.deviceMemory&&navigator.deviceMemory<=4||navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)return"low"}catch{return"high"}return"high"}function Q(){try{if(B||window.__apLiteHero)return!1;if(window.__preloaderWebGLSafe&&typeof window.__preloaderWebGLSafe=="function")return window.__preloaderWebGLSafe();if(window.matchMedia("(prefers-reduced-motion: reduce)").matches||$()==="low"||/[?&](lite|nosplash)=1/.test(location.search))return!1}catch{return!1}return!0}function g(){i||(n.classList.add("fallback-css"),setTimeout(function(){l(!0)},900))}const O=document.getElementById("preloader-orrery-slot");let c=null,w=null,_=!1;function Y(e,t){return new Promise(function(r){var a=Date.now();(function p(){try{if(e())return r(!0)}catch{}if(Date.now()-a>t)return r(!1);setTimeout(p,40)})()})}function Z(){return new Promise(function(e){requestAnimationFrame(function(){requestAnimationFrame(e)})})}var i=!1;function H(){try{if(window.matchMedia("(prefers-reduced-motion: reduce)").matches||n.classList.contains("fallback-css")||!n.classList.contains("has-real"))return!1}catch{return!1}return!0}function b(){v&&(clearTimeout(v),v=null)}function ee(){if(!(!H()||i||d)){b(),A=!0,n.classList.add("preloader--seamless-ready");var e=2400;try{e=window.matchMedia("(max-width: 768px)").matches?3e3:2400}catch{}v=setTimeout(function(){v=null,!i&&!d&&h({seamless:!0})},e)}}function h(e){e=e||{};var t=!!e.seamless||A;if(i)return;i=!0,b(),typeof M=="function"&&M(),C&&cancelAnimationFrame(C),document.body.classList.remove("preloader-intro-playing"),n.classList.remove("preloader--cosmic","preloader--seamless-ready"),window.Orrery3D&&typeof window.Orrery3D.clearPreloaderCosmic=="function"&&window.Orrery3D.clearPreloaderCosmic(),window.__orreryPreloaderOwns=!1,document.body.classList.add("landing-gate-exiting"),t&&document.body.classList.add("landing-gate-seamless"),n.classList.add("preloader-exit"),t&&n.classList.add("preloader--seamless-handoff");var r=document.querySelector(".hero");if(t&&r&&r.classList.add("hero--entered"),_&&c&&w){let D=function(){window.Orrery3D&&typeof window.Orrery3D.forceResize=="function"?window.Orrery3D.forceResize():window.dispatchEvent(new Event("resize"))};var we=D,a=document.getElementById("orrery-canvas");if(a&&(a.style.width="",a.style.height="",a.removeAttribute("width"),a.removeAttribute("height")),w.appendChild(c),w.classList.remove("orrery-canvas-away"),c.classList.add("orrery-viewport--hero-enter"),setTimeout(function(){c.classList.remove("orrery-viewport--hero-enter")},1400),window.Orrery3D&&typeof window.Orrery3D.settleFromIntro=="function"&&window.Orrery3D.settleFromIntro(),requestAnimationFrame(function(){requestAnimationFrame(D)}),setTimeout(D,400),window.visualViewport){var p=function(){D()};window.visualViewport.addEventListener("resize",p,{passive:!0,once:!0})}window.Orrery3D&&typeof window.Orrery3D.setSpeed=="function"&&window.Orrery3D.setSpeed(0)}try{sessionStorage.setItem("ap_intro_complete","1")}catch{}window.CosmosEngine&&typeof window.CosmosEngine.setPreloaderPause=="function"&&window.CosmosEngine.setPreloaderPause(!1),n.classList.add("fade-out");var E=t?1100:920;t&&(q(),window.__apHeroEntered=!0,document.body.classList.add("landing-gate-open","landing-home-reveal"),typeof window.__apHeroEnter=="function"&&window.__apHeroEnter(),window.dispatchEvent(new Event("ap-hero-enter"))),setTimeout(function(){n.style.display="none",n.setAttribute("aria-hidden","true"),document.body.classList.remove("preloader-active"),document.body.classList.remove("landing-gate-exiting"),document.body.classList.remove("landing-gate-seamless"),t?setTimeout(function(){document.body.classList.remove("landing-home-reveal")},1400):(q(),window.__apHeroEntered=!0,document.body.classList.add("landing-gate-open"),typeof window.__apHeroEnter=="function"&&window.__apHeroEnter(),window.dispatchEvent(new Event("ap-hero-enter")),requestAnimationFrame(function(){document.body.classList.add("landing-home-reveal"),setTimeout(function(){document.body.classList.remove("landing-home-reveal")},1400)}))},E);const L=document.getElementById("orrery-canvas");L&&(L.style.transition="filter 1.2s ease, opacity 1.2s")}function u(){window.Orrery3D&&typeof window.Orrery3D.forceResize=="function"&&window.Orrery3D.forceResize()}window.visualViewport&&window.visualViewport.addEventListener("resize",function(){!i&&_&&u()},{passive:!0}),window.addEventListener("orientationchange",function(){!i&&_&&(setTimeout(u,80),setTimeout(u,320))},{passive:!0});async function te(e){for(var t=Date.now()+e;Date.now()<t;){var r=document.getElementById("orrery-viewport");if(r&&r.parentElement)return r;await new Promise(function(a){setTimeout(a,40)})}return null}function x(){(async function(){if(!(!O||i)){if(!Q()){g();return}var e=(async function(){for(var r=0;r<240&&typeof window.__loadOrreryEngine!="function";r++)await new Promise(function(a){setTimeout(a,40)});if(typeof window.__scheduleOrreryEngineLoad=="function"&&window.__scheduleOrreryEngineLoad({urgent:!0}),typeof window.__loadOrreryEngine=="function")try{await window.__loadOrreryEngine()}catch{}})();if(c=await te(12e3),!c||i){i||g();return}await e;var t=await Y(function(){return!window.Orrery3D||!window.AstroEphemeris||typeof Orrery3D.init!="function"?!1:window.__orreryEngineIsWebGL?window.__orreryEngineIsWebGL():typeof Orrery3D.getIntroDurationMs=="function"&&Orrery3D.getIntroDurationMs()>=1e3},3e4);if(!t||i){i||g();return}if(w=c.parentElement,w&&w.classList.add("orrery-canvas-away"),O.appendChild(c),_=!0,n.classList.add("has-live-orr"),await Z(),!i)try{if(window.__orreryReady||(window.Orrery3D.init(document.getElementById("orrery-canvas")),window.__orreryReady=!0),u(),typeof window.Orrery3D.setSpeed=="function"&&window.Orrery3D.setSpeed(0),typeof window.Orrery3D.whenEarthReady=="function"&&await Promise.race([window.Orrery3D.whenEarthReady(),new Promise(function(r){setTimeout(r,3500)})]),i)return;T(),u(),requestAnimationFrame(function(){u(),setTimeout(u,200)}),typeof window.Orrery3D.startPreloaderIntro=="function"?(window.Orrery3D.startPreloaderIntro(l),k()):typeof window.Orrery3D.restartIntro=="function"&&(window.Orrery3D.onIntroDone=l,window.Orrery3D.restartIntro(),k()),n.classList.add("has-real"),window.CosmosEngine&&typeof window.CosmosEngine.setPreloaderPause=="function"&&window.CosmosEngine.setPreloaderPause(!0),O.setAttribute("aria-hidden","false"),u(),requestAnimationFrame(function(){requestAnimationFrame(function(){u(),setTimeout(u,120),setTimeout(u,400)})})}catch{i||g()}}})()}setTimeout(function(){!i&&!n.classList.contains("has-real")&&!n.classList.contains("fallback-css")&&g()},14e3),document.readyState==="loading"?document.addEventListener("DOMContentLoaded",x):x();var o=document.getElementById("preloader-email-gate"),le=document.getElementById("preloader-gate-close"),ce=document.getElementById("preloader-gate-skip"),fe=document.getElementById("preloader-gate-join"),d=!1;o&&(o.classList.remove("is-open"),o.setAttribute("aria-hidden","true"));function re(e){if(window.AstroApp&&typeof window.AstroApp.captureEmail=="function"){window.AstroApp.captureEmail(e,{source:"intro_entry",tag:"tag_intro_entry"});return}try{var t=new FormData;t.append("email",e),t.append("tags","tag_intro_entry"),fetch("https://list.astroprecise.app/subscribe",{method:"POST",mode:"no-cors",body:t})}catch{}}function ne(){var e=document.getElementById("preloader-gate-email");if(!e)return!0;var t=(e.value||"").trim();return t?/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t)?(re(t),!0):(window.AstroApp&&typeof AstroApp.showToast=="function"&&AstroApp.showToast("Check your email","That address looks off.","warning"),!1):(window.AstroApp&&typeof AstroApp.showToast=="function"&&AstroApp.showToast("Add your email","Or tap Continue without email.","warning"),!1)}function I(e){i||e&&!ne()||(o&&(o.classList.remove("is-open"),o.setAttribute("aria-hidden","true")),n.classList.remove("gate-open"),d=!1,h())}function G(){i||(b(),d&&(o&&(o.classList.remove("is-open"),o.setAttribute("aria-hidden","true")),n.classList.remove("gate-open"),d=!1),s&&s.classList.add("preloader-enter-btn--launch"),h({seamless:A}))}function ie(){T()}function T(){!s||i||s.dataset.wired==="1"||(s.dataset.wired="1",s.addEventListener("click",function(e){e.preventDefault(),G()}))}function oe(){i||d||!o||(d=!0,n.classList.add("gate-open"),o.setAttribute("aria-hidden","false"),o.classList.add("is-open"))}function P(e,t){e&&(e.preventDefault(),e.stopPropagation()),I(t)}function ae(){if(!(!o||o.dataset.wired)){o.dataset.wired="1",n.addEventListener("click",function(t){if(!(!d||i)){var r=t.target;if(r){if(r.id==="preloader-gate-close"||r.id==="preloader-gate-skip"){P(t,!1);return}if(r.id==="preloader-gate-join"){P(t,!0);return}r.classList&&r.classList.contains("preloader-email-gate__backdrop")&&P(t,!1)}}},!0);var e=document.getElementById("preloader-gate-email");e&&e.addEventListener("keydown",function(t){t.key==="Enter"&&(t.preventDefault(),I(!0))}),document.addEventListener("keydown",function(t){!d||i||t.key==="Escape"&&(t.preventDefault(),I(!1))})}}ae(),window.addEventListener("pageshow",function(e){if(!(!e.persisted||i)){if(d){o&&(o.classList.remove("is-open"),o.setAttribute("aria-hidden","true")),n.classList.remove("gate-open"),d=!1,h();return}ie()}});function se(){i||(window.Orrery3D&&typeof Orrery3D.skipIntro=="function"?Orrery3D.skipIntro():l(!0))}var z=document.getElementById("preloader-skip-intro");z&&z.addEventListener("click",function(e){e.preventDefault(),e.stopPropagation(),se()});var f=document.getElementById("preloader-narrate");if(f){var V=!1;try{V=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches}catch{}if(V)f.hidden=!0;else{var m=!1;try{m=localStorage.getItem("ap_narrate_journey")==="1"}catch{}var W=function(){f.setAttribute("aria-checked",m?"true":"false"),f.classList.toggle("preloader-narrate-toggle--on",m),f.textContent=m?"Narration on":"Narrate the journey"},j=function(){window.Orrery3D&&typeof Orrery3D.setNarrate=="function"&&Orrery3D.setNarrate(m)};W(),j(),f.addEventListener("click",function(e){e.preventDefault(),e.stopPropagation(),m=!m,W(),j()})}}function N(){if(!(!s||i)){s.classList.remove("preloader-enter-btn--launch"),s.style.pointerEvents="auto",s.style.opacity="1",s.classList.remove("preloader-enter-btn--arrive"),s.offsetWidth,s.classList.add("preloader-enter-btn--arrive");try{s.focus({preventScroll:!0})}catch{}}}function J(){y&&(clearTimeout(y),y=null)}function k(){J();var e=0,t=8e3;try{window.Orrery3D&&(typeof Orrery3D.getIntroStartedAt=="function"&&(e=Orrery3D.getIntroStartedAt()),typeof Orrery3D.getIntroDurationMs=="function"&&(t=Orrery3D.getIntroDurationMs()))}catch{}if(e>0){var r=Math.max(400,e+t+2200-performance.now());y=setTimeout(function(){l(!1)},r)}else y=setTimeout(k,400)}function l(e){if(!e){if(document.body.classList.contains("preloader-intro-playing")){requestAnimationFrame(function(){l(!1)});return}if(window.Orrery3D){if(typeof Orrery3D.isIntroPending=="function"&&Orrery3D.isIntroPending()){requestAnimationFrame(function(){l(!1)});return}if(typeof Orrery3D.isIntroActive=="function"&&Orrery3D.isIntroActive()){requestAnimationFrame(function(){l(!1)});return}}}J(),document.body.classList.remove("preloader-intro-playing"),n.classList.add("orrery-expanded","aligned","preloader--enter-ready"),T(),H()&&(s&&s.setAttribute("aria-label","Enter now (optional)"),ee()),N()}document.addEventListener("ap-preloader-ready",function(){l(!0)}),U=setTimeout(function(){!i&&!n.classList.contains("aligned")&&l(!0)},45e3),setTimeout(h,9e4),document.addEventListener("keydown",function(e){if(!(i||d)&&!(e.key!=="Enter"&&e.key!==" ")){var t=e.target&&e.target.tagName?e.target.tagName:"";t==="INPUT"||t==="TEXTAREA"||e.target!==f&&(!n.classList.contains("aligned")&&e.target!==s||(e.preventDefault(),G()))}});var K=document.getElementById("preloader-join-optional");K&&K.addEventListener("click",function(e){e.preventDefault(),oe()})})();</script>
+
+</body>
+</html>

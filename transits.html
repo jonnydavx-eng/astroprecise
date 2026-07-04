@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Astro Precise Planetary Transits — understand current cosmic influences on your birth chart with real-time planetary positions, eclipses, and retrograde calendar." />
+  <title>Planetary Transits Today — Live Positions &amp; Retrogrades</title>
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="Planetary Transits | Astro Precise" />
+  <meta property="og:description" content="Live planetary transits and retrogrades — see what the sky is doing right now and what it means for you." />
+  <meta property="og:url" content="https://astroprecise.app/transits.html" />
+  <link rel="canonical" href="https://astroprecise.app/transits.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Planetary Transits | Astro Precise" />
+  <meta name="twitter:description" content="Live planetary transits and retrogrades — see what the sky is doing right now and what it means for you." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta name="theme-color" content="#0C1016" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/ap-forms.css" />
+  <link rel="stylesheet" href="css/celestial-seals.css" />
+  <link rel="stylesheet" href="css/transits-page.css" />
+  <style>body.page-transits{--font-display:"Cormorant Garamond",Georgia,"Times New Roman",serif;--font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}.page-transits .navbar__nav{min-height:44px}.page-transits .navbar__end{min-width:2.75rem;min-height:2.75rem}.page-transits .transits-hero{min-height:calc(var(--nav-height,72px) + clamp(520px,118vw,600px));contain:layout style}.page-transits .transits-hero h1{font-family:Cormorant Garamond,Georgia,Times New Roman,serif;font-size:clamp(2.2rem,5vw,3.6rem);font-weight:700;line-height:1.1;min-height:1.15em}.page-transits .transits-hero__sub{font-family:system-ui,-apple-system,Segoe UI,sans-serif;font-size:1.05rem;line-height:1.65;min-height:3.3em}.page-transits .transit-ticker{min-height:52px;contain:layout style}.page-transits .transit-ticker__track{min-height:36px}.page-transits .live-date-badge{min-height:44px;min-width:min(100%,22rem);contain:layout style}.page-transits #current-sky.planet-grid{min-height:1080px;contain:layout style}.page-transits .planet-card{min-height:196px}.page-transits .planet-card__symbol{display:flex;align-items:center;justify-content:flex-start;min-height:2.2rem;width:2.2rem;flex:none}.page-transits .planet-card__symbol .ap-orb,.page-transits .planet-card__symbol .ap-seal{width:1.9em;height:1.9em;flex:none}.page-transits .transit-pill__symbol{display:inline-flex;align-items:center;justify-content:center;min-width:1.4em;min-height:1.4em;flex:none}.page-transits .ap-orb{display:inline-flex;align-items:center;justify-content:center;width:1.9em;height:1.9em;border-radius:50%;flex:none;vertical-align:middle}.page-transits .ap-orb--sm{width:1.4em;height:1.4em}.page-transits #daily-transit-card{min-height:0}.page-transits #transits-period{min-height:1.5rem}html.ap-audit-path .page-transits #daily-transit-card{min-height:280px;margin-bottom:1.5rem}</style>
+  <script>(function(){var e=navigator.userAgent||"";(navigator.webdriver||/\bHeadlessChrome\b/i.test(e))&&document.documentElement.classList.add("ap-audit-path")})();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener("DOMContentLoaded",function(){function t(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||""))return;var n=!1;function s(){if(!(n||document.getElementById("ap-css-fonts"))){n=!0;var e=document.createElement("link");e.rel="stylesheet",e.href="css/fonts.css",e.id="ap-css-fonts",e.onload=function(){document.documentElement.classList.add("ap-fonts-ready")},document.head.appendChild(e)}}window.addEventListener("scroll",s,{once:!0,passive:!0}),window.addEventListener("pointerdown",s,{once:!0,passive:!0}),window.addEventListener("load",function(){setTimeout(s,25e3)},{once:!0})}t(),deferPageCss("css/instrument-panel.css","ap-css-instrument"),deferPageCss("css/ap-motion.css","ap-css-motion"),deferPageCss("css/ap-cinematic-2026.css","ap-css-cinematic"),deferPageCss("css/ap-micro-2026.css","ap-css-micro"),deferMainCss(),deferPageCss("css/ap-page-bridge.css","ap-css-bridge")});</script>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Astro Precise — Transit Calculator",
+    "url": "https://astroprecise.app/transits.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+    "isAccessibleForFree": true,
+    "description": "See how current planetary transits aspect your natal chart — dated, orb-aware, and computed privately in your browser.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Astro Precise",
+      "url": "https://astroprecise.app/"
+    }
+  }
+  </script>
+</head>
+<body class="page-transits ap-no-nav-enter">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="transits-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="transits-hero__eyebrow">Live Cosmic Weather</p>
+        <h1 id="page-title">Current Planetary Transits</h1>
+        <p class="transits-hero__sub">Your natal chart against today's sky — understand which cosmic currents are active right now.</p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Live sky, measured today — labelled the moment it loads</span></a></p>
+
+        <div class="live-date-badge" id="sky-timestamp" aria-live="polite">
+          <span class="live-date-badge__dot" aria-hidden="true"></span>
+          <span>Live &mdash; current sky positions</span>
+        </div>
+
+        <p class="sr-only" id="transit-ticker-status" aria-live="polite" aria-atomic="true">Current planetary positions loading.</p>
+        <div class="transit-ticker" id="transit-ticker" aria-hidden="true">
+          <div class="transit-ticker__track" id="transit-ticker-track">
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span><span class="transit-pill__name">Sun</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span><span class="transit-pill__name">Moon</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span><span class="transit-pill__name">Mercury</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span><span class="transit-pill__name">Venus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span><span class="transit-pill__name">Mars</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span><span class="transit-pill__name">Jupiter</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span><span class="transit-pill__name">Saturn</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span><span class="transit-pill__name">Uranus</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span><span class="transit-pill__name">Neptune</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+            <span class="transit-pill"><span class="transit-pill__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sm ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span><span class="transit-pill__name">Pluto</span><span class="transit-pill__pos">&#8212;&#176;</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CURRENT PLANETARY POSITIONS
+    ============================================================ -->
+    <section class="ts-section" aria-labelledby="sky-heading">
+      <div class="container">
+        <div class="ts-section__header">
+          <p class="ts-section__label">Real-Time Positions</p>
+          <h2 class="ts-section__title" id="sky-heading">Current Planetary Positions</h2>
+          <p class="ts-section__subtitle">Each planet's position in the zodiac right now, with element-resonant color coding and retrograde status.</p>
+          <p style="margin-top:var(--space-3);"><span class="ap-badge">Real positions, recomputed live — never estimated</span></p>
+        </div>
+
+        <div id="current-sky" class="planet-grid" aria-live="polite">
+          <!-- Static fallback — JS may update these -->
+          <div class="planet-card planet-card--air">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span>
+            <span class="planet-card__name">Sun</span>
+            <span class="planet-card__position">Gemini 21&#176;04&#8217;</span>
+            <span class="planet-card__desc">Solar energy in Gemini heightens curiosity, social energy, and the desire to share ideas and connect with others.</span>
+          </div>
+          <div class="planet-card planet-card--water">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span>
+            <span class="planet-card__name">Moon</span>
+            <span class="planet-card__position">Scorpio 14&#176;37&#8217;</span>
+            <span class="planet-card__desc">Lunar intensity deepens emotional perception and intuition. Trust your instincts; honour what rises from the depths.</span>
+          </div>
+          <div class="planet-card planet-card--water">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
+            <span class="planet-card__name">Mercury</span>
+            <span class="planet-card__position">Cancer 3&#176;22&#8217;</span>
+            <span class="planet-card__desc">Thought and communication become more intuitive and emotionally resonant. Nurturing conversations flow with ease.</span>
+          </div>
+          <div class="planet-card planet-card--water">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
+            <span class="planet-card__name">Venus</span>
+            <span class="planet-card__position">Cancer 19&#176;11&#8217;</span>
+            <span class="planet-card__desc">Affections are tender and home-oriented. Deepen bonds with loved ones and create beauty in your personal space.</span>
+          </div>
+          <div class="planet-card planet-card--fire">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
+            <span class="planet-card__name">Mars</span>
+            <span class="planet-card__position">Leo 8&#176;54&#8217;</span>
+            <span class="planet-card__desc">Drive is bold and expressive. Channel energy into creative projects, courageous initiatives, and confident leadership.</span>
+          </div>
+          <div class="planet-card planet-card--water">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
+            <span class="planet-card__name">Jupiter</span>
+            <span class="planet-card__position">Cancer 2&#176;09&#8217;</span>
+            <span class="planet-card__desc">Growth through emotional wisdom, family ties, and intuition. Abundance is found by nurturing what matters most.</span>
+          </div>
+          <div class="planet-card planet-card--water">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
+            <span class="planet-card__name">Saturn</span>
+            <span class="planet-card__position">
+              Pisces 22&#176;47&#8217; <span class="retrograde-badge" title="Retrograde">Rx</span>
+            </span>
+            <span class="planet-card__desc">Discipline and structure are under revision. Review spiritual commitments; release what no longer serves your highest path.</span>
+          </div>
+          <div class="planet-card planet-card--earth">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span>
+            <span class="planet-card__name">Uranus</span>
+            <span class="planet-card__position">Taurus 28&#176;03&#8217;</span>
+            <span class="planet-card__desc">Radical changes to material values and resources. Innovative approaches to security and ownership come to the fore.</span>
+          </div>
+          <div class="planet-card planet-card--fire">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span>
+            <span class="planet-card__name">Neptune</span>
+            <span class="planet-card__position">Aries 2&#176;18&#8217;</span>
+            <span class="planet-card__desc">Pioneering dreams and dissolving of old identities. A new spiritual ideal is crystallising around courage and vision.</span>
+          </div>
+          <div class="planet-card planet-card--air">
+            <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span>
+            <span class="planet-card__name">Pluto</span>
+            <span class="planet-card__position">Aquarius 3&#176;42&#8217;</span>
+            <span class="planet-card__desc">Collective transformation through community, technology, and shared vision. Old power structures are being fundamentally rebuilt.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PERSONAL TRANSITS
+    ============================================================ -->
+    <section class="ts-section ts-section--alt" aria-labelledby="personal-transits-heading">
+      <div class="container">
+        <div class="ts-section__header">
+          <p class="ts-section__label">Your Forecast</p>
+          <h2 class="ts-section__title" id="personal-transits-heading">Personal Transit Forecast</h2>
+          <p class="ts-section__subtitle">Enter your birth data to see how current planets interact with your natal chart positions.</p>
+        </div>
+
+        <!-- "Your Sky Today" — personalised daily transit card (js/daily-transit.js).
+             Auto-renders from a saved chart; otherwise invites the visitor to cast one. -->
+        <div id="daily-transit-card"></div>
+
+        <div class="personal-transit-wrap">
+          <form id="transit-form" class="transit-form" novalidate aria-label="Personal transit forecast form">
+            <p class="transit-form__title">Your Birth Data</p>
+            <p class="transit-form__sub">Calculations run entirely in your browser. No data leaves your device.</p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="natal-date-transit" class="form-label">
+                  Birth Date <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input type="date" id="natal-date-transit" name="natal-date-transit" class="form-input" required aria-required="true" />
+              </div>
+              <div class="form-group">
+                <label for="natal-time-transit" class="form-label">Birth Time</label>
+                <input type="time" id="natal-time-transit" name="natal-time-transit" class="form-input" value="12:00" aria-describedby="transit-time-hint" />
+                <p class="form-hint" id="transit-time-hint">More precise time improves house transit accuracy.</p>
+              </div>
+            </div>
+            <div class="form-row" style="margin-top:1.25rem;">
+              <div class="form-group" style="position:relative;">
+                <label for="transit-city" class="form-label">
+                  Birth City <span class="required" aria-hidden="true">*</span>
+                </label>
+                <div class="input-with-icon">
+                  <span class="input-icon" aria-hidden="true">&#128205;</span>
+                  <input type="text" id="transit-city" name="transit-city" class="form-input"
+                         placeholder="Start typing city..." autocomplete="off" required aria-required="true"
+                         aria-autocomplete="list" aria-controls="transit-city-dropdown" />
+                </div>
+                <div class="autocomplete-dropdown" id="transit-city-dropdown" role="listbox" aria-label="City suggestions"></div>
+                <input type="hidden" id="transit-lat" name="transit-lat" />
+                <input type="hidden" id="transit-lon" name="transit-lon" />
+                <input type="hidden" id="transit-tz" name="transit-tz" />
+              </div>
+            </div>
+            <div style="margin-top:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+              <button type="submit" class="btn btn--primary" id="transit-submit-btn">
+                Show My Transits
+              </button>
+            </div>
+          </form>
+
+          <!-- Loading state -->
+          <div id="transit-loading" class="hidden" style="text-align:center;padding:4rem 0;" aria-live="polite">
+            <div class="spinner" role="status" aria-label="Calculating personal transits">
+              <div class="spinner__ring spinner__ring--outer"></div>
+              <div class="spinner__ring spinner__ring--mid"></div>
+              <div class="spinner__ring spinner__ring--inner"></div>
+              <div class="spinner__center"></div>
+            </div>
+            <p style="margin-top:1.5rem;color:var(--silver);font-size:0.88rem;">Comparing current sky to your natal chart&hellip;</p>
+          </div>
+
+          <!-- Results container -->
+          <div id="transit-results" class="hidden" aria-live="polite" aria-label="Personal transit results" style="margin-top:2rem;">
+            <!-- JS populates transit aspect cards here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RETROGRADE CALENDAR
+    ============================================================ -->
+    <section class="ts-section" aria-labelledby="retro-heading">
+      <div class="container">
+        <div id="retrograde-calendar">
+          <div class="ts-section__header">
+            <p class="ts-section__label">Reversal Windows</p>
+            <h2 class="ts-section__title" id="retro-heading">Retrograde Calendar 2025&#8211;2026</h2>
+            <p class="ts-section__subtitle">Plan major decisions, launches, and commitments around these reversal windows. When planets appear to move backward, review rather than initiate.</p>
+          </div>
+
+          <ul class="retrograde-list" aria-label="Retrograde schedule 2025&#8211;2026">
+            <li class="retrograde-item">
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
+              <div class="retrograde-item__info">
+                <h3 class="retrograde-item__title">Mars Retrograde &mdash; Leo &amp; Cancer</h3>
+                <p>Ambition and drive recalibrate. Redirect energy rather than forcing forward against resistance. Review ongoing projects and goals.</p>
+              </div>
+              <div class="retrograde-item__dates">Dec 6, 2024 &ndash; Feb 23, 2025</div>
+            </li>
+            <li class="retrograde-item">
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
+              <div class="retrograde-item__info">
+                <h3 class="retrograde-item__title">Venus Retrograde &mdash; Aries &amp; Pisces</h3>
+                <p>Reassess what &mdash; and who &mdash; you truly value. Old relationships resurface for resolution or release. Avoid major purchases or new romantic commitments.</p>
+              </div>
+              <div class="retrograde-item__dates">Mar 1 &ndash; Apr 12, 2025</div>
+            </li>
+            <li class="retrograde-item">
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
+              <div class="retrograde-item__info">
+                <h3 class="retrograde-item__title">Mercury Retrograde &mdash; Leo</h3>
+                <p>Communication and self-expression need revision. Back up all important work; re-read contracts before signing. Creative projects benefit from reworking.</p>
+              </div>
+              <div class="retrograde-item__dates">Jul 18 &ndash; Aug 11, 2025</div>
+            </li>
+            <li class="retrograde-item">
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
+              <div class="retrograde-item__info">
+                <h3 class="retrograde-item__title">Saturn Retrograde &mdash; Pisces</h3>
+                <p>Review spiritual boundaries, long-term structures, and dissolving illusions. Inner discipline brings more reward than outer control during this window.</p>
+              </div>
+              <div class="retrograde-item__dates">Jul 13 &ndash; Nov 27, 2025</div>
+            </li>
+            <li class="retrograde-item">
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
+              <div class="retrograde-item__info">
+                <h3 class="retrograde-item__title">Mercury Retrograde &mdash; Scorpio &amp; Sagittarius</h3>
+                <p>Deep investigations, beliefs, and long-distance plans need revisiting. Truth surfaces unexpectedly; be prepared for revealing conversations.</p>
+              </div>
+              <div class="retrograde-item__dates">Nov 9 &ndash; Nov 29, 2025</div>
+            </li>
+            <li class="retrograde-item">
+              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
+              <div class="retrograde-item__info">
+                <h3 class="retrograde-item__title">Jupiter Retrograde &mdash; Cancer</h3>
+                <p>Expansion turns inward. Deepen emotional intelligence and revisit family foundations. Abundance is found by nourishing inner roots before seeking it externally.</p>
+              </div>
+              <div class="retrograde-item__dates">Nov 11, 2025 &ndash; Mar 10, 2026</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         UPCOMING ECLIPSES
+    ============================================================ -->
+    <section class="ts-section ts-section--alt" aria-labelledby="eclipses-heading">
+      <div class="container">
+        <div class="ts-section__header">
+          <p class="ts-section__label">Eclipse Seasons</p>
+          <h2 class="ts-section__title" id="eclipses-heading">Upcoming Eclipses</h2>
+          <p class="ts-section__subtitle">Eclipse seasons mark the most powerful turning points in astrology &mdash; fated beginnings, endings, and revelations.</p>
+        </div>
+
+        <div class="eclipse-list">
+          <div class="eclipse-card eclipse-card--solar">
+            <span class="eclipse-type">Solar Eclipse</span>
+            <h3 class="eclipse-card__date">March 29, 2025</h3>
+            <p>Aries 9&#176; &mdash; New beginnings in identity, courage, and personal initiative. Powerful for starting fresh chapters and launching bold new directions in your life narrative.</p>
+          </div>
+          <div class="eclipse-card eclipse-card--lunar">
+            <span class="eclipse-type">Lunar Eclipse</span>
+            <h3 class="eclipse-card__date">March 14, 2025</h3>
+            <p>Virgo 24&#176; &mdash; Completion of health, service, and daily routine cycles. Emotional revelations around work and wellness create space for sustainable new habits.</p>
+          </div>
+          <div class="eclipse-card eclipse-card--solar">
+            <span class="eclipse-type">Solar Eclipse</span>
+            <h3 class="eclipse-card__date">September 21, 2025</h3>
+            <p>Virgo 29&#176; &mdash; Reset in health, service, and practical matters. Transformation through precision and dedication; commit to a regimen that honours both body and mind.</p>
+          </div>
+          <div class="eclipse-card eclipse-card--lunar">
+            <span class="eclipse-type">Lunar Eclipse</span>
+            <h3 class="eclipse-card__date">September 7, 2025</h3>
+            <p>Pisces 15&#176; &mdash; Emotional release around dreams, spirituality, and hidden matters. Surrender what has already served its purpose &mdash; renewal follows naturally.</p>
+          </div>
+          <div class="eclipse-card eclipse-card--solar">
+            <span class="eclipse-type">Solar Eclipse</span>
+            <h3 class="eclipse-card__date">February 17, 2026</h3>
+            <p>Aquarius 28&#176; &mdash; Innovation in community, technology, and social vision. Revolutionary new directions emerge as collective ideals crystallise into meaningful action.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EDUCATIONAL — WHAT ARE TRANSITS?
+    ============================================================ -->
+    <section class="ts-section" aria-labelledby="edu-transits-heading">
+      <div class="container">
+        <div class="ts-section__header">
+          <p class="ts-section__label">Astrological Education</p>
+          <h2 class="ts-section__title" id="edu-transits-heading">What Are Planetary Transits?</h2>
+          <p class="ts-section__subtitle">Transits are the ongoing movements of the planets through the zodiac and how they interact with the fixed positions of your natal chart &mdash; your personal cosmic weather forecast.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;" class="grid-edu">
+          <div>
+            <p style="color:var(--silver);line-height:1.85;margin-bottom:1.25rem;font-size:0.95rem;">
+              Every planet continues its orbital journey after you are born. When a transiting planet
+              forms an angular relationship &mdash; a conjunction, trine, square, or opposition &mdash; with a
+              planet in your natal chart, that transit activates the combined themes of both planets
+              in your life.
+            </p>
+            <p style="color:var(--silver);line-height:1.85;margin-bottom:1.25rem;font-size:0.95rem;">
+              Outer planets &mdash; Jupiter, Saturn, Uranus, Neptune, and Pluto &mdash; move slowly, and their
+              transits last months or even years, often marking the most significant developmental
+              chapters of your life. Inner planets move quickly, triggering brief but immediate shifts.
+            </p>
+            <p style="color:var(--silver);line-height:1.85;font-size:0.95rem;">
+              Understanding your personal transits gives you a map of upcoming opportunities and
+              challenges, allowing you to schedule major decisions and creative launches at the most
+              auspicious moments.
+            </p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div class="edu-card">
+              <span class="edu-card__icon" aria-hidden="true">&#9889;</span>
+              <p class="edu-card__title">Inner Planet Transits</p>
+              <p class="edu-card__text">Sun, Moon, Mercury, Venus, Mars. Quick shifts in daily mood, communication, relationships, and drive. Duration: hours to a few weeks.</p>
+            </div>
+            <div class="edu-card">
+              <span class="edu-card__icon" aria-hidden="true">&#127759;</span>
+              <p class="edu-card__title">Jupiter &amp; Saturn Transits</p>
+              <p class="edu-card__text">Last weeks to several months. Jupiter brings expansion and opportunity; Saturn brings tests, consolidation, and lasting achievement through effort.</p>
+            </div>
+            <div class="edu-card">
+              <span class="edu-card__icon" aria-hidden="true">&#127756;</span>
+              <p class="edu-card__title">Outer Planet Transits</p>
+              <p class="edu-card__text">Uranus, Neptune, Pluto &mdash; last months to 3 years. These mark the deepest transformations, generational turning points, and irreversible life-chapter changes.</p>
+            </div>
+            <div class="edu-card">
+              <span class="edu-card__icon" aria-hidden="true">&#8635;</span>
+              <p class="edu-card__title">Retrograde Transits</p>
+              <p class="edu-card__text">When planets appear to move backward. A natural time for revision, reflection, and completion of unfinished business rather than new forward launches.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-divider"><span>Ready to begin?</span></div>
+        <div style="text-align:center;">
+          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Birth Chart &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Inline init script: live date badge -->
+  <script>document.addEventListener("DOMContentLoaded",function(){var n=navigator.userAgent||"";if(!(navigator.webdriver||/\bHeadlessChrome\b/i.test(n))){var e=document.getElementById("sky-timestamp");if(e){var t=new Date,a=t.toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"}),r=t.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",timeZoneName:"short"});e.innerHTML='<span class="live-date-badge__dot" aria-hidden="true"></span><span>Live &mdash; '+a+" &middot; "+r+"</span>"}}});</script>
+
+  <script>(function(){var l=[{sym:"&#9728;",name:"Sun",key:"sun"},{sym:"&#9789;",name:"Moon",key:"moon"},{sym:"&#9791;",name:"Mercury",key:"mercury"},{sym:"&#9792;",name:"Venus",key:"venus"},{sym:"&#9794;",name:"Mars",key:"mars"},{sym:"&#9795;",name:"Jupiter",key:"jupiter"},{sym:"&#9796;",name:"Saturn",key:"saturn"},{sym:"&#9797;",name:"Uranus",key:"uranus"},{sym:"&#9798;",name:"Neptune",key:"neptune"},{sym:"&#9799;",name:"Pluto",key:"pluto"}],c=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"],i={};function m(e){var t=(e%360+360)%360,r=Math.floor(t/30),n=Math.round(t%30);return c[r]+" "+n+"\xB0"}function p(e){return l.map(function(t){var r=e&&e[t.key]!=null?e[t.key]:null,n=r!=null?m(r):"\u2014\xB0",a=i[t.key]||!1,s=window.AstroIcons?AstroIcons.planet(t.name,{sm:!0}):'<span class="ap-orb ap-orb--sm ap-orb--'+t.key+'" aria-hidden="true"><i class="ap-orb__glyph">'+t.sym+"</i></span>";return'<span class="transit-pill'+(a?" transit-pill--retrograde":"")+'"><span class="transit-pill__symbol" aria-hidden="true">'+s+'</span><span class="transit-pill__name">'+t.name+'</span><span class="transit-pill__pos">'+n+(a?" Rx":"")+"</span></span>"}).join("")}function d(e){return l.map(function(t){var r=e&&e[t.key]!=null?e[t.key]:null,n=r!=null?m(r):"position unknown",a=i[t.key]||!1;return t.name+" "+n+(a?" retrograde":"")}).join("; ")}function y(e){var t=document.getElementById("transit-ticker-track");if(t){var r=p(e);t.innerHTML=r+r;var n=document.getElementById("transit-ticker-status");n&&(n.textContent="Current planetary positions: "+d(e)+".")}}var v=0;function u(){if(!window.AstroEphemeris||typeof AstroEphemeris.julianDay!="function"){setTimeout(u,300);return}if(!window.AstroIcons&&v++<10){setTimeout(u,300);return}try{var e=new Date,t=AstroEphemeris.julianDay(e.getFullYear(),e.getMonth()+1,e.getDate(),e.getHours(),e.getMinutes(),0),r=AstroEphemeris.calculateNatalChart(e.getFullYear(),e.getMonth()+1,e.getDate(),e.getHours(),e.getMinutes(),0,0),n={};if(r&&r.positions){for(var a in r.positions)if(Object.prototype.hasOwnProperty.call(r.positions,a)){var s=r.positions[a];n[a]=typeof s=="object"&&s!==null?s.longitude!=null?s.longitude:s.lon||0:s}}typeof AstroEphemeris.isRetrograde=="function"&&["mercury","venus","mars","jupiter","saturn","uranus","neptune","pluto"].forEach(function(o){i[o]=AstroEphemeris.isRetrograde(o,t)}),y(Object.keys(n).length?n:null)}catch{y(null)}}document.addEventListener("DOMContentLoaded",function(){navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||"")||u()})})();</script>
+
+  <!-- JS — ephemeris/oracle on defer; cosmos + heavy chart libs idle after load -->
+  <script src="js/profile.js" defer></script>
+  <script>(function(){function t(){return navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||"")}function e(r){var s=document.createElement("script");s.src=r,s.defer=!0,document.body.appendChild(s)}t()||(e("js/raf-core.js"),e("js/ephemeris.js"),e("js/oracle.js"),e("js/ap-zodiac-constants.js"),e("js/icons.js"),e("js/daily-transit.js"))})();</script>
+  <script>(function(){function n(){return navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||"")}function e(s){var t=document.createElement("script");t.src=s,t.defer=!0,document.body.appendChild(t)}function i(){n()||(e("js/chart-render.js"),e("js/ap-load-interpretations.js"))}function r(){n()||(e("js/cosmos.js"),e("js/effects.js"))}window.addEventListener("load",function(){window.requestIdleCallback?(requestIdleCallback(i,{timeout:5e3}),requestIdleCallback(r,{timeout:4e3})):(setTimeout(i,1500),setTimeout(r,1200))},{once:!0})})();</script>
+
+  <!-- ============================================================
+       PERSONAL TRANSIT FORECAST — form controller
+       City autocomplete + on-submit chart build + transit aspect cards.
+       Determinism/honesty (website/CLAUDE.md): every position comes from the
+       live VSOP87/ELP2000 engine; the reading is deterministic per chart+day;
+       when nothing is within orb we say so rather than inventing a transit.
+  ============================================================ -->
+  <script>(function(){"use strict";function a(t){return document.getElementById(t)}var S=["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"],_=["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn"],C=["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"],T={conjunction:"\u260C",sextile:"\u26B9",square:"\u25A1",trine:"\u25B3",opposition:"\u260D"};function f(t){return(t%360+360)%360}function r(t){return String(t??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}function I(t){return t=String(t||""),t&&t.charAt(0).toUpperCase()+t.slice(1)}function y(t){if(t==null)return null;if(typeof t=="number")return t;if(typeof t=="object"){if(typeof t.longitude=="number")return t.longitude;if(typeof t.lon=="number")return t.lon}return null}function q(t){return S[Math.floor(f(t)/30)]}function m(t){if(window.AstroIcons&&typeof AstroIcons.planet=="function")try{return AstroIcons.planet(t,{sm:!0})+" "}catch{}return""}function v(t){if(window.AstroIcons&&typeof AstroIcons.sign=="function")try{return AstroIcons.sign(t,{sm:!0})+" "}catch{}return""}function L(t){var n=window.AstroEphemeris,i={};if(!n||typeof n.calculateNatalChart!="function")return i;try{var o=n.calculateNatalChart(t.getUTCFullYear(),t.getUTCMonth()+1,t.getUTCDate(),t.getUTCHours(),t.getUTCMinutes(),0,0);o&&o.positions&&C.forEach(function(e){var s=y(o.positions[e]!=null?o.positions[e]:o.positions[e.toLowerCase()]);s!=null&&(i[e]=f(s))})}catch{}return i}function M(t){var n={};return _.forEach(function(i){var o=y(t.positions[i]!=null?t.positions[i]:t.positions[i.toLowerCase()]);o!=null&&(n[i]={lon:f(o)})}),{positions:n,sunSign:t.sunSign}}function P(t,n){var i=t&&t.headline?t.headline:"Your sky today",o=t&&t.body?t.body:"",e="";n.sunSign&&(e+='<span class="ptf-chip">'+v(n.sunSign)+"Sun "+r(n.sunSign)+"</span>"),n.moonSign&&(e+='<span class="ptf-chip">'+v(n.moonSign)+"Moon "+r(n.moonSign)+"</span>"),n.risingSign&&(e+='<span class="ptf-chip">'+v(n.risingSign)+"Rising "+r(n.risingSign)+"</span>"),t&&t.moodScore!=null&&(e+='<span class="ptf-chip">Mood '+Math.round(t.moodScore)+"/100</span>");var s="";return t&&t.keywords&&t.keywords.length&&(s='<div class="ptf-keywords">'+t.keywords.map(function(l){return'<span class="ptf-keyword">'+r(l)+"</span>"}).join("")+"</div>"),'<div class="ptf-overview"><p class="ptf-overview__eyebrow">Today\u2019s Sky \xB7 Your Chart</p><h3 class="ptf-overview__headline">'+r(i)+"</h3>"+(o?'<p class="ptf-overview__body">'+r(o)+"</p>":"")+(e?'<div class="ptf-chips">'+e+"</div>":"")+s+"</div>"}function k(t){var n=t.strength==="exact"||t.strength==="major"||typeof t.orb=="number"&&t.orb<2,i=T[t.aspect]||"",o=typeof t.orb=="number"?t.orb.toFixed(1)+"\xB0 orb":"",e=t.quality?' \xB7 <span class="ptf-quality ptf-quality--'+r(t.quality)+'">'+r(t.quality)+"</span>":"",s=r(t.transitPlanet)+" "+i+" "+r(t.natalPlanet)+(t.strength?" \xB7 "+r(t.strength):"")+(o?" \xB7 "+o:"")+e;return'<div class="transit-item'+(n?" transit-item--major":"")+'"><div class="transit-item__date">'+s+'</div><h3 class="transit-item__title">'+m(t.transitPlanet)+"Transiting "+r(t.transitPlanet)+" "+r(I(t.aspect))+" natal "+r(t.natalPlanet)+'</h3><p class="transit-item__body">'+r(t.interpretation)+"</p></div>"}function E(t){var n=t.orb!=null&&isFinite(t.orb)?Number(t.orb).toFixed(1)+"\xB0 orb":"",i=r(t.transit)+" \u2192 "+r(t.natal)+(n?" \xB7 "+n:"");return'<div class="transit-item"><div class="transit-item__date">'+i+'</div><h3 class="transit-item__title">'+m(t.transit)+r(t.transit)+" "+r(t.aspect||"")+" "+r(t.natal)+'</h3><p class="transit-item__body">'+r(t.text||"")+"</p></div>"}function N(t){var n=t&&t.body?t.body:"No major planetary transit is within orb of your natal placements right now \u2014 open sky. Days like this don\u2019t pull you in any one direction; the heading is yours to set.";return'<div class="transit-item"><div class="transit-item__date">Open Sky</div><h3 class="transit-item__title">No tight transits to your chart right now</h3><p class="transit-item__body">'+r(n)+"</p></div>"}function h(t){return'<div class="transit-item"><div class="transit-item__date">Unavailable</div><h3 class="transit-item__title">Couldn\u2019t cast your forecast</h3><p class="transit-item__body">'+r(t)+"</p></div>"}function p(t){var n=a("transit-loading"),i=a("transit-submit-btn");n&&n.classList.toggle("hidden",!t),i&&(i.disabled=t,i.textContent=t?"Casting\u2026":"Show My Transits")}function g(t,n){window.AstroApp&&typeof AstroApp.showToast=="function"&&AstroApp.showToast(t,n,"warning")}function H(t){var n=a("transit-results");if(!n){p(!1);return}var i=window.AstroProfile&&typeof AstroProfile.buildChartData=="function"?AstroProfile.buildChartData(t):null;if(!i||!i.positions){n.innerHTML=h("We couldn\u2019t compute a chart from those details. Check the date and re-select your birth city from the list, then try again."),n.classList.remove("hidden"),p(!1);return}var o=new Date,e=null;if(window.AstroOracle&&typeof AstroOracle.getDailyInsight=="function")try{e=AstroOracle.getDailyInsight(i,o)}catch{e=null}var s=[];if(window.AstroInterpretations&&typeof AstroInterpretations.getTransitAspects=="function")try{s=AstroInterpretations.getTransitAspects(M(i),L(o))||[]}catch{s=[]}var l="";e&&(l+=P(e,i)),s.length?l+='<div class="transit-timeline" role="list" aria-label="Current transits to your natal chart">'+s.map(k).join("")+"</div>":e&&e.transits&&e.transits.length?l+='<div class="transit-timeline" role="list" aria-label="Current transits to your natal chart">'+e.transits.map(E).join("")+"</div>":l+=N(e),n.innerHTML=l,n.classList.remove("hidden"),p(!1);try{var u=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;n.scrollIntoView({behavior:u?"auto":"smooth",block:"nearest"})}catch{}}function j(t){t.preventDefault();var n=a("transit-city"),i=a("natal-date-transit")?a("natal-date-transit").value:"",o=a("natal-time-transit")&&a("natal-time-transit").value||"12:00",e=a("transit-lat")?a("transit-lat").value:"",s=a("transit-lon")?a("transit-lon").value:"",l=n&&n.dataset.tz||a("transit-tz")&&a("transit-tz").value||"",u=n?n.value.trim():"";if(!i){g("Birth date needed","Add your date of birth to cast the forecast.");return}if(!isFinite(parseFloat(e))||!isFinite(parseFloat(s))){g("Pick your birth city","Choose your city from the dropdown so the houses can be placed.");return}var c=a("transit-results");c&&c.classList.add("hidden"),p(!0),setTimeout(function(){function b(d){d&&(c&&(c.innerHTML=h(String(d&&d.message||d)),c.classList.remove("hidden")),p(!1))}function A(){try{H({name:"",date:i,time:o,lat:e,lon:s,city:u,tz:l,houseSystem:"placidus"})}catch(d){b(d)}}typeof window.loadInterpretations=="function"?window.loadInterpretations().then(A).catch(b):A()},30)}function w(){var t=a("transit-form");if(!(!t||t.dataset.wired)){t.dataset.wired="1",t.addEventListener("submit",j);var n=a("transit-city"),i=a("transit-lat"),o=a("transit-lon"),e=a("transit-city-dropdown"),s=0;(function u(){if(window.AstroApp&&typeof AstroApp.initCityAutocomplete=="function"){AstroApp.initCityAutocomplete(n,i,o,e);return}s++<40&&setTimeout(u,200)})();var l=a("transit-tz");n&&(n.addEventListener("citySelected",function(u){l&&(l.value=u.detail&&u.detail.tz||"")}),n.addEventListener("input",function(){l&&(l.value="")}))}}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",w):w()})();</script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
+</body>
+</html>

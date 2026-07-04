@@ -1,0 +1,1 @@
+(function(){"use strict";function n(t){return String(t??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}function c(t,e){t&&(t.textContent=e==null?"":String(e))}function i(t,e){t&&(t.innerHTML=e)}window.AP_SAFE={esc:n,setText:c,setHtml:i}})();

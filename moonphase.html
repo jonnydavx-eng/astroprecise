@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Find the exact Moon phase on your birthday — computed from real Sun and Moon positions, never guessed. Illumination, meaning and a shareable card. Free." />
+  <title>Moon Phase on Your Birthday — Free &amp; Shareable</title>
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="Moon Phase on Your Birthday | Astro Precise" />
+  <meta property="og:description" content="See the exact phase of the Moon on the day you were born — real astronomy, beautifully drawn, free to share." />
+  <meta property="og:url" content="https://astroprecise.app/moonphase.html" />
+  <link rel="canonical" href="https://astroprecise.app/moonphase.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Moon Phase on Your Birthday | Astro Precise" />
+  <meta name="twitter:description" content="See the exact phase of the Moon on the day you were born — real astronomy, beautifully drawn, free to share." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta name="theme-color" content="#0C1016" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /><link rel="stylesheet" href="css/moonphase-page.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/moonphase-page.css" />
+  <style>body:has(.mp-hero){--font-display:"Cormorant Garamond",Georgia,"Times New Roman",serif;--font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}body:has(.mp-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style}body:has(.mp-hero) .mp-hero h1{font-family:Cormorant Garamond,Georgia,Times New Roman,serif;min-height:1.15em;contain:layout style}body:has(.mp-hero) .navbar__nav{min-height:44px;contain:layout style}body:has(.mp-hero) .mp-hero__sub{min-height:3.8em}body:has(.mp-hero) .mp-section__subtitle{min-height:2.4em}body:has(.mp-hero) .mp-hero__honest{min-height:1.2em}body:has(.mp-hero) .mp-tabs{min-height:44px}body:has(.mp-hero) .mp-form-wrap{min-height:220px;contain:layout style}body:has(.mp-hero) .footer-zodiac-strip{min-height:2.75rem;contain:layout style}body:has(.mp-hero) #moonphase-result:not(:empty),body:has(.mp-hero) #moonphase-compat-result:not(:empty){min-height:420px}</style>
+  <script>(function(){var e=navigator.userAgent||"";(navigator.webdriver||/\bHeadlessChrome\b/i.test(e))&&document.documentElement.classList.add("ap-audit-path")})();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener("DOMContentLoaded",function(){function t(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||""))return;var s=!1;function n(){if(!(s||document.getElementById("ap-css-fonts"))){s=!0;var e=document.createElement("link");e.rel="stylesheet",e.href="css/fonts.css",e.id="ap-css-fonts",e.onload=function(){document.documentElement.classList.add("ap-fonts-ready")},document.head.appendChild(e)}}window.addEventListener("pointerdown",n,{once:!0,passive:!0}),window.addEventListener("load",function(){setTimeout(n,25e3)},{once:!0})}t(),deferPageCss("css/instrument-panel.css","ap-css-instrument"),deferPageCss("css/ap-motion.css","ap-css-motion"),deferPageCss("css/ap-cinematic-2026.css","ap-css-cinematic"),deferPageCss("css/ap-micro-2026.css","ap-css-micro"),deferMainCss(),deferPageCss("css/ap-page-bridge.css","ap-css-bridge")});</script>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  <!-- JSON-LD: WebApplication + FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Moon Phase on Your Birthday",
+    "url": "https://astroprecise.app/moonphase.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+    "description": "Compute the exact lunar phase for any birthday from real Sun and Moon positions (VSOP87 / ELP2000). Shows illumination, waxing/waning side, the Moon's zodiac sign, and a shareable card. Everything is calculated privately in your browser.",
+    "publisher": { "@type": "Organization", "name": "Astro Precise" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is the moon phase on my birthday calculated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We compute the real geocentric positions of the Sun and Moon for your date using VSOP87 and a truncated ELP2000 lunar series, then take the elongation between them. Illumination = (1 - cos(elongation)) / 2. The phase name follows the standard angle windows (New, Waxing Crescent, First Quarter, Waxing Gibbous, Full, Waning Gibbous, Last Quarter, Waning Crescent). It is genuine astronomy, not a generic chart."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is the moon-phase compatibility a real percentage?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. We do not invent a compatibility percentage. We show both real birth Moons side by side and describe their genuine angular relationship as resonance — honest and astronomical, never a fabricated score."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my birthday stored or sent anywhere?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Every calculation runs entirely in your browser. Nothing about your birth date leaves your device."
+        }
+      }
+    ]
+  }
+  </script>
+
+  </head>
+<body class="ap-no-nav-enter">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
+    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+    <symbol id="ei-planet" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M4.5 14.8C2.6 13.9 1.6 12.9 2 12c.6-1.4 4.6-1.6 9.4-.4M19.5 9.2c1.9.9 2.9 1.9 2.5 2.8-.6 1.4-4.6 1.6-9.4.4" transform="rotate(-18 12 12)"/></symbol>
+    <symbol id="ei-warn" viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4L12 4ZM12 10v4.2M12 16.8v.4"/></symbol>
+    <!-- Moon phase discs (ei-moon0..7) — gold-rimmed lit-disc faces; mirror horoscope.html sprite. Referenced by the educational cards below and by js/moonphase.js result HTML. -->
+    <symbol id="ei-moon0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/></symbol>
+    <symbol id="ei-moon1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 1 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6" fill="currentColor" opacity=".85"/><circle cx="12" cy="12" r="7.6"/></symbol>
+    <symbol id="ei-moon5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 0 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+    <symbol id="ei-moon7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6"/><path d="M12 4.4a7.6 7.6 0 0 0 0 15.2A10.4 10.4 0 0 1 12 4.4Z" fill="currentColor" stroke="none" opacity=".8"/></symbol>
+  </svg>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="mp-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="mp-hero__eyebrow">Lunar Astronomy</p>
+        <h1 id="page-title">Moon Phase On Your Birthday</h1>
+        <p class="mp-hero__sub">The Moon you were born under, drawn exactly as it appeared — its real illumination, its waxing or waning side, and the sign it travelled through.</p>
+        <p class="mp-hero__honest">Computed from real Sun &amp; Moon positions, not a generic graphic.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TOOL
+    ============================================================ -->
+    <section class="mp-section" aria-labelledby="tool-heading">
+      <div class="container">
+        <div class="mp-section__header">
+          <p class="mp-section__label">Your Birth Moon</p>
+          <h2 class="mp-section__title" id="tool-heading">Reveal Your Moon</h2>
+          <p class="mp-section__subtitle">Pick a date to see its true lunar phase, or compare two birth Moons for an honest note on how your inner skies resonate.</p>
+        </div>
+
+        <div class="mp-tabs" role="tablist" aria-label="Moon phase modes">
+          <button type="button" class="mp-tab mp-tab--active" id="mp-tab-single" role="tab" aria-selected="true" aria-controls="mp-mode-single">My Moon Phase</button>
+          <button type="button" class="mp-tab" id="mp-tab-compat" role="tab" aria-selected="false" aria-controls="mp-mode-compat">Moon Compatibility</button>
+        </div>
+
+        <!-- ── Mode: single date ── -->
+        <div class="mp-form-wrap" id="mp-mode-single" role="tabpanel" aria-labelledby="mp-tab-single">
+          <form id="moonphase-form" class="mp-form" novalidate aria-label="Moon phase on a date">
+            <p class="mp-form__title">Choose a Date</p>
+            <p class="mp-form__sub">Calculations run entirely in your browser. Nothing leaves your device.</p>
+            <div class="mp-form-row">
+              <div class="form-group">
+                <label for="moonphase-date" class="form-label">
+                  Date <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input type="date" id="moonphase-date" name="moonphase-date" class="form-input" required aria-required="true" />
+              </div>
+            </div>
+            <div class="mp-form__actions">
+              <button type="submit" class="btn btn--primary" id="moonphase-submit">Show My Moon</button>
+              <button type="button" class="btn btn--secondary hidden" id="mp-use-saved">Use my saved birthday</button>
+            </div>
+          </form>
+
+          <div id="moonphase-result" role="status" aria-live="polite" aria-label="Your moon phase result"></div>
+        </div>
+
+        <!-- ── Mode: compatibility ── -->
+        <div class="mp-form-wrap hidden" id="mp-mode-compat" role="tabpanel" aria-labelledby="mp-tab-compat">
+          <form id="moonphase-compat-form" class="mp-form" novalidate aria-label="Moon phase compatibility">
+            <p class="mp-form__title">Compare Two Birth Moons</p>
+            <p class="mp-form__sub">No fabricated percentage — just both real Moons and an honest note on their resonance.</p>
+            <div class="mp-form-row">
+              <div class="form-group">
+                <label for="mp-compat-name-a" class="form-label">First Name (optional)</label>
+                <input type="text" id="mp-compat-name-a" name="mp-compat-name-a" class="form-input" placeholder="Person A" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label for="mp-compat-date-a" class="form-label">
+                  Birth Date <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input type="date" id="mp-compat-date-a" name="mp-compat-date-a" class="form-input" required aria-required="true" />
+              </div>
+            </div>
+            <div class="mp-form-row" style="margin-top:1.25rem;">
+              <div class="form-group">
+                <label for="mp-compat-name-b" class="form-label">Second Name (optional)</label>
+                <input type="text" id="mp-compat-name-b" name="mp-compat-name-b" class="form-input" placeholder="Person B" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label for="mp-compat-date-b" class="form-label">
+                  Birth Date <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input type="date" id="mp-compat-date-b" name="mp-compat-date-b" class="form-input" required aria-required="true" />
+              </div>
+            </div>
+            <div class="mp-form__actions">
+              <button type="submit" class="btn btn--primary" id="moonphase-compat-submit">Compare Our Moons</button>
+            </div>
+          </form>
+
+          <div id="moonphase-compat-result" role="status" aria-live="polite" aria-label="Moon compatibility result"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         EDUCATIONAL — THE PHASES
+    ============================================================ -->
+    <section class="mp-section mp-section--alt" aria-labelledby="phases-heading">
+      <div class="container">
+        <div class="mp-section__header">
+          <p class="mp-section__label">The Four Turning Points</p>
+          <h2 class="mp-section__title" id="phases-heading">The Lunar Cycle</h2>
+          <p class="mp-section__subtitle">The Moon completes one cycle of phases roughly every 29.5 days as it moves around the Earth relative to the Sun.</p>
+        </div>
+
+        <div class="mp-edu-grid">
+          <div class="mp-edu-card">
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon0"/></svg></span>
+            <p class="mp-edu-card__title">New Moon</p>
+            <p class="mp-edu-card__text">The Moon sits between Earth and Sun, its lit face turned away. A dark sky — traditionally a clean slate for intentions.</p>
+          </div>
+          <div class="mp-edu-card">
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon1"/></svg></span>
+            <p class="mp-edu-card__title">Waxing Crescent &amp; First Quarter</p>
+            <p class="mp-edu-card__text">Light grows on the right (northern hemisphere). Momentum builds; the half-lit First Quarter is a push-through decision point.</p>
+          </div>
+          <div class="mp-edu-card">
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon4"/></svg></span>
+            <p class="mp-edu-card__title">Full Moon</p>
+            <p class="mp-edu-card__text">Earth lies between Sun and Moon; the full face is lit and high at midnight. A peak of clarity, feeling, and culmination.</p>
+          </div>
+          <div class="mp-edu-card">
+            <span class="mp-edu-card__icon" aria-hidden="true"><svg class="eng-i"><use href="#ei-moon7"/></svg></span>
+            <p class="mp-edu-card__title">Waning &amp; Last Quarter</p>
+            <p class="mp-edu-card__text">Light fades from the right. A season of gratitude, release, and reassessment before the cycle renews at the next New Moon.</p>
+          </div>
+        </div>
+
+        <!-- How it works — honesty -->
+        <div style="max-width:720px;margin:2.5rem auto 0;background:var(--surface);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius-xl);padding:1.75rem 1.9rem;">
+          <p class="mp-edu-card__title" style="margin-bottom:0.75rem;">How this tool computes your Moon</p>
+          <p style="color:var(--silver);line-height:1.8;font-size:0.9rem;margin:0 0 0.9rem;">
+            We take the real geocentric longitudes of the Sun and Moon for your date (VSOP87 for the Sun, a
+            truncated ELP2000 series for the Moon), evaluated at 12:00&nbsp;UT. The angle between them — the
+            <em>elongation</em> — determines everything: the illuminated fraction is
+            <strong>(1&nbsp;&minus;&nbsp;cos&nbsp;elongation)&nbsp;/&nbsp;2</strong>, and the phase name follows the
+            standard windows around 0&deg;, 90&deg;, 180&deg;, and 270&deg;.
+          </p>
+          <p style="color:var(--silver);line-height:1.8;font-size:0.9rem;margin:0;">
+            That is genuine astronomy. The same date always gives the same Moon, and for the compatibility mode we
+            never invent a score — we show both real Moons and describe their true angular relationship.
+          </p>
+        </div>
+
+        <div class="cta-divider"><span>Go deeper</span></div>
+        <div style="text-align:center;">
+          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Full Birth Chart &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- JS -->
+  <script src="js/profile.js" defer></script>
+  <script>(function(){function t(){return navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||"")}function e(o){var s=document.createElement("script");s.src=o,s.defer=!0,document.body.appendChild(s)}if(t())return;e("js/raf-core.js"),e("js/ephemeris.js"),e("js/icons.js"),e("js/moonphase.js");function n(){t()||(e("js/cosmos.js"),e("js/effects.js"))}window.addEventListener("load",function(){window.requestIdleCallback?requestIdleCallback(n,{timeout:4e3}):setTimeout(n,1200)},{once:!0})})();</script>
+
+  <script src="js/ap-page-boot.js" defer></script>
+</body>
+</html>

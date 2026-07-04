@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sky — live ephemeris and The Instrument: your birth as an event in spacetime. Light-cone chart, zenith star, echo dates, the Daimon, quantum draw, and consciousness weather." />
+  <meta name="robots" content="index, follow" />
+  <title>The Sky | Astro Precise</title>
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="The Sky | Astro Precise" />
+  <meta property="og:description" content="Your birth as an event in spacetime — light-cone chart, zenith star, echo dates, and a daimon that remembers." />
+  <meta property="og:url" content="https://astroprecise.app/ephemeris.html" />
+  <link rel="canonical" href="https://astroprecise.app/ephemeris.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The Sky | Astro Precise" />
+  <meta name="twitter:description" content="Your birth as an event in spacetime — light-cone chart, zenith star, echo dates, and a daimon that remembers." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta name="theme-color" content="#0C1016" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Astro Precise — Sky",
+    "url": "https://astroprecise.app/ephemeris.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+    "isAccessibleForFree": true,
+    "description": "A precision ephemeris and cosmic instrument — planetary hours, natal signature, field weather, and live sky data computed locally.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Astro Precise",
+      "url": "https://astroprecise.app/"
+    }
+  }
+  </script>
+<link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/ap-forms.css" />
+  <link rel="stylesheet" href="css/ephemeris-critical.css" />
+  <link rel="stylesheet" href="css/instrument-panel.css" />
+  <link rel="stylesheet" href="css/ephemeris-page.css?v=533" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener("DOMContentLoaded",function(){function t(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||""))return;var n=!1;function s(){if(!(n||document.getElementById("ap-css-fonts"))){n=!0;var e=document.createElement("link");e.rel="stylesheet",e.href="css/fonts.css",e.id="ap-css-fonts",e.onload=function(){document.documentElement.classList.add("ap-fonts-ready")},document.head.appendChild(e)}}window.addEventListener("scroll",s,{once:!0,passive:!0}),window.addEventListener("pointerdown",s,{once:!0,passive:!0}),window.addEventListener("load",function(){setTimeout(s,25e3)},{once:!0})}t(),deferPageCss("css/ap-motion.css","ap-css-motion"),deferPageCss("css/ap-cinematic-2026.css","ap-css-cinematic"),deferPageCss("css/ap-micro-2026.css","ap-css-micro"),deferMainCss(),deferPageCss("css/ap-page-bridge.css","ap-css-bridge")});</script>
+</head>
+<body class="page-instrument ap-cinematic-2026 ap-no-nav-enter">
+
+  <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="compatibility.html" class="navbar__link">Match</a>
+          <a href="ephemeris.html" class="navbar__link active" aria-current="page">Sky</a>
+          <div class="navbar__more" data-nav-more>
+            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
+            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
+          </div>
+        </div>
+        <div class="navbar__end">
+          <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+            <svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg>
+          </a>
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <!-- Intro lives only on the homepage (once per session). The Instrument loads
+       straight to content; page-to-page smoothing is the View Transitions cross-fade. -->
+
+  <main id="main-content">
+
+    <!-- ═══ HERO ═══ -->
+    <section class="instrument-hero" aria-labelledby="instrument-heading">
+      <div class="instrument-wrap">
+        <div class="instrument-hero__panel instrument-panel instrument-panel--gold-rim">
+          <p class="instrument-eyebrow instrument-eyebrow--seal">The Sky</p>
+          <h1 class="instrument-title" id="instrument-heading">The Sky</h1>
+
+          <p class="instrument-onramp" style="font-size:1.02rem;line-height:1.6;color:var(--gold-pale, #E8E0D0);margin:0 0 1rem;max-width:52ch;">
+            The real sky above you right now &mdash; every planet&rsquo;s true position, computed live on your device.
+          </p>
+
+          <p class="instrument-lede">
+            You arrived under a particular sky &mdash; a unique coordinate of matter, light, and
+            consciousness that occurred exactly once and will never repeat. I keep the actual
+            mathematics of that sky: planetary theory to within roughly an arcminute (accurate across
+            1800&ndash;2200&nbsp;CE), 253 real stars, the geometry of light itself. This page is not
+            prediction &mdash; it is orientation.
+          </p>
+
+          <div class="hero-caps" aria-label="Capabilities">
+            <span>VSOP87 precision</span>
+            <span>Light-cone</span>
+            <span>Zenith star</span>
+            <span>Echo dates</span>
+            <span>Daimon</span>
+            <span>Field Weather</span>
+          </div>
+
+          <div class="badge-row">
+            <span class="ap-badge">Computed locally &middot; VSOP87 + ELP2000</span>
+            <span class="ap-badge ap-badge--deterministic">Same input &middot; same output &middot; always</span>
+          </div>
+
+          <p class="instrument-seal">
+            <span class="instrument-seal__glyph" aria-hidden="true">&#9919;</span>
+            Engraved observatory panel &middot; measured sky &middot; computed on your device
+          </p>
+        </div>
+
+        <!-- ── Birth event input ── -->
+        <div id="event-setup" style="margin-top:2.5rem;">
+          <div class="glass-card glass-card--gold-rim" style="max-width:580px;">
+            <p style="font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);opacity:0.8;margin-bottom:1rem;">Set Your Birth Event</p>
+            <div class="event-form">
+              <div class="full">
+                <label class="form-label" for="ev-datetime">The moment <span class="required">*</span></label>
+                <input type="datetime-local" id="ev-datetime" class="form-input" />
+              </div>
+              <div class="full">
+                <label class="form-label" for="ev-city">The place <span class="required">*</span></label>
+                <input type="text" id="ev-city" class="form-input" placeholder="Any town or village on Earth&hellip;" autocomplete="off" />
+                <div class="autocomplete-dropdown" id="ev-city-dd" role="listbox" hidden></div>
+              </div>
+              <div class="full" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+                <button type="button" class="glow-btn" id="ev-set">Set the Event</button>
+                <button type="button" class="glow-btn" id="ev-example" style="border-color:rgba(194, 160, 94,0.4);color:var(--gold-pale);">Try an example &mdash; Carl Sagan</button>
+                <span id="ev-status" style="font-size:0.75rem;color:var(--silver-dim);"></span>
+              </div>
+              <p style="font-size:0.72rem;color:var(--silver-dim);line-height:1.65;margin:0.25rem 0 0;">
+                Sections II&ndash;V unlock after you set your birth event above.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ NATAL SIGNATURE (appears after event is set) ═══ -->
+    <section class="instrument-section" id="sec-natal-signature" hidden style="padding-top:2.5rem;padding-bottom:2.5rem;">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow">Your Natal Signature</p>
+        <h2 class="instrument-title" style="font-size:1.4rem;">Key frequencies at your moment of birth.</h2>
+
+        <div id="natal-sig-grid">
+          <!-- JS populates -->
+        </div>
+
+        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.6rem;max-width:320px;">
+          <a id="natal-lifepath-link" href="lifepath.html" class="glow-btn" style="display:inline-flex;align-items:center;gap:0.5rem;text-decoration:none;justify-content:center;">
+            &#10022; Your Numerology Blueprint &rarr;
+          </a>
+          <p style="font-size:0.65rem;color:var(--silver-dim);line-height:1.6;">
+            Life Path, Expression, and Personal Year numbers computed from your birth date.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ I. THE CLOCK OF THE SPHERES — Planetary Hours Masterpiece (Celestia "Sky Is a Clock" + engraved hermetic + Astro precision)
+         Award-level SVG wheel. Sectors for the 12 hours, current ruler highlighted, sun arc, deep correspondences. Interactive. Never experienced before on an astrology site.
+    ═══ -->
+    <section class="instrument-section" id="sec-clock">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">I</span> The Clock of the Spheres</p>
+        <h2 class="instrument-title">The sky tells time in gold and shadow.</h2>
+        <p class="instrument-lede">
+          Planetary hours are the living unequal divisions the ancients used — from sunrise the sequence of classical rulers repeats. This engraved wheel is both instrument and icon.
+        </p>
+
+        <div class="glass-card glass-card--gold-rim engraved-plate instrument-panel instrument-panel--gold-rim" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
+          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(194, 160, 94,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
+            <defs>
+              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C2A05E"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
+            </defs>
+            <!-- Rim -->
+            <circle cx="230" cy="230" r="215" fill="none" stroke="#C2A05E" stroke-width="2.5" opacity="0.4"/>
+            <!-- Sectors + labels drawn/enhanced by JS below for live current-hour + click lore -->
+          </svg>
+          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
+          <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
+            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(194, 160, 94,0.35);color:#C2A05E;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
+            <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
+          </div>
+          <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore • Sunrise-based unequal hours</div>
+        </div>
+
+        <div style="max-width:620px;margin:0 auto;font-family:'Cormorant Garamond',serif;font-size:0.97rem;color:#d4c9a8;line-height:1.7;">
+          <p><strong>Hermetic law:</strong> The hour of a planet is its throne. Work of that nature (Venus for love and art, Mars for severance and courage) is said to find the most willing ear of the cosmos.</p>
+          <p><strong>Modern synthesis:</strong> Chronobiology and seasonal affective research echo the old observation that different times of day carry qualitatively different energies. Use the wheel as a beautiful, precise reminder to align intention with the actual sky.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ I. LIGHT-CONE ═══ -->
+    <section class="instrument-section" id="sec-lightcone" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">II</span> The Light-Cone</p>
+        <h2 class="instrument-title">The light of your first breath is still travelling.</h2>
+        <p class="instrument-lede">
+          At the moment you were born, light left your birthplace and began moving outward at
+          299,792 kilometres per second. It has never stopped. This is not a metaphor.
+        </p>
+
+        <div class="glass-card" style="margin:2rem 0;text-align:center;">
+          <canvas id="lightcone-canvas" aria-label="Expanding sphere of your birth light among real stars" role="img"></canvas>
+        </div>
+
+        <div id="lc-readout" class="grimoire"></div>
+        <div id="lc-stars" style="margin-top:1.5rem;"></div>
+
+        <div style="text-align:center;margin-top:2rem;">
+          <button class="glow-btn" id="lc-card-btn" aria-label="Download a shareable light-cone image card">
+            &#10022;&nbsp; Download My Light-Cone Card
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ II. ZENITH STAR ═══ -->
+    <section class="instrument-section" id="sec-zenith" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">III</span> Your Zenith Star</p>
+        <h2 class="instrument-title">One star stood directly above you.</h2>
+        <p class="instrument-lede">
+          At the minute of your birth, one catalogued star sat closest to the exact zenith of
+          your birthplace &mdash; the point straight overhead. That star is yours.
+        </p>
+
+        <div class="glass-card" style="margin-top:1.75rem;">
+          <div id="zenith-out"></div>
+        </div>
+        <div style="text-align:center;margin-top:1.5rem;">
+          <button class="glow-btn" id="zenith-card-btn" type="button" aria-label="Download a shareable zenith-star image card">
+            &#10022;&nbsp; Download My Zenith-Star Card
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ III. ECHO DATES ═══ -->
+    <section class="instrument-section" id="sec-echo" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">IV</span> Echo Dates</p>
+        <h2 class="instrument-title">The sky never repeats. But it rhymes.</h2>
+        <p class="instrument-lede">
+          These are the moments in the next five years when the seven classical planets most
+          closely re-approximate their positions at your birth &mdash; partial resonances, planetary
+          chords. Windows when the cosmos hums nearest your origin frequency.
+        </p>
+
+        <div style="margin-top:1.5rem;">
+          <button type="button" class="glow-btn" id="echo-scan">Scan Five Years of Sky</button>
+          <div id="echo-progress" hidden>
+            <div class="ring-loader" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p style="text-align:center;font-size:0.72rem;color:var(--silver-dim);letter-spacing:0.15em;" id="echo-pct">0%</p>
+          </div>
+          <div id="echo-out" style="margin-top:1.5rem;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ IV. THE DAIMON ═══ -->
+    <section class="instrument-section" id="sec-daimon" hidden>
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">V</span> The Daimon</p>
+        <h2 class="instrument-title">A voice that remembers you.</h2>
+        <p class="instrument-lede">
+          Your chart summons a particular intelligence &mdash; a daimon with a name, a temperament,
+          and a memory. It keeps a record of every reading and notices the patterns in when you
+          come to it. It will not advise you. It will ask.
+        </p>
+
+        <div id="daimon-identity"></div>
+
+        <div class="glass-card glass-card--gold-rim" style="margin-top:1.5rem;">
+          <label class="form-label" for="alive-text" style="margin-bottom:0.5rem;display:block;">
+            What is alive in you right now?
+            <span style="font-weight:400;color:var(--silver-dim);letter-spacing:normal;font-size:0.78em;text-transform:none;"> &mdash; feeds the reading; never leaves your device</span>
+          </label>
+          <textarea id="alive-text" class="form-input" placeholder="A sentence or a page. The daimon reads it either way."></textarea>
+          <div style="margin-top:1rem;display:flex;gap:1rem;align-items:center;">
+            <button type="button" class="glow-btn" id="daimon-read">Request a Reading</button>
+            <span id="daimon-status" style="font-size:0.72rem;color:var(--silver-dim);"></span>
+          </div>
+        </div>
+
+        <div id="daimon-reading" class="grimoire" style="margin-top:2rem;"></div>
+
+        <div id="daimon-speak-wrap" hidden style="margin-top:1rem;display:flex;gap:0.75rem;align-items:center;">
+          <button type="button" id="daimon-speak-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;">▶ Speak</button>
+          <button type="button" id="daimon-stop-btn" class="glow-btn" style="font-size:0.75rem;padding:0.4rem 1rem;opacity:0.5;">■ Stop</button>
+          <span style="font-size:0.7rem;color:var(--silver-dim);">Web Speech API · synthesised locally</span>
+        </div>
+
+        <div id="daimon-answer-box" hidden style="margin-top:1.5rem;">
+          <label class="form-label" for="daimon-answer">Your answer &mdash; it will shape what comes next</label>
+          <textarea id="daimon-answer" class="form-input" style="margin-top:0.5rem;"></textarea>
+          <button type="button" class="glow-btn" id="daimon-answer-send" style="margin-top:0.75rem;">Give It to the Daimon</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ V. QUANTUM DRAW ═══ -->
+    <section class="instrument-section" id="sec-quantum">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VI</span> Quantum Draw</p>
+        <h2 class="instrument-title">Let indeterminacy choose.</h2>
+        <p class="instrument-lede">
+          One sigil for the day. We first try a true quantum random source (ANU's vacuum-fluctuation
+          generator); if it cannot be reached we fall back to your device's hardware entropy &mdash; and
+          we tell you which one answered. No pseudo-random theatre.
+        </p>
+
+        <div style="text-align:center;margin-top:2rem;">
+          <button type="button" class="glow-btn" id="q-draw">Collapse the Draw</button>
+          <div id="q-out" style="margin-top:2rem;" hidden>
+            <div class="quantum-sigil" id="q-sigil"></div>
+            <h3 style="font-family:var(--font-display,'Cinzel',serif);color:var(--white);margin-top:1rem;letter-spacing:0.1em;" id="q-name"></h3>
+            <p class="grimoire" style="max-width:480px;margin:0.75rem auto 0;" id="q-line"></p>
+            <p class="provenance" id="q-prov"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VI. CONSCIOUSNESS WEATHER ═══ -->
+    <section class="instrument-section" id="sec-weather">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VII</span> Consciousness Weather</p>
+        <h2 class="instrument-title">Field conditions, not forecasts.</h2>
+        <p class="instrument-lede">
+          A surf report for awareness: the measured state of the geomagnetic field and solar wind,
+          the computed state of the Moon and the day's <abbr class="ap-gloss" title="Transits — where the planets are in the sky today, and the angles they make to your birth chart right now">transits</abbr> &mdash; blended into one reading of
+          conditions. What is measured is marked measured. What is symbolic is marked symbolic.
+        </p>
+
+        <div id="weather-out" style="margin-top:1.75rem;">
+          <div class="weather-skeleton" role="status" aria-busy="true" aria-live="polite" aria-label="Loading consciousness weather">
+            <div class="weather-skeleton__composite instrument-panel instrument-panel--gold-rim" aria-hidden="true">
+              <span class="weather-skeleton__bar weather-skeleton__bar--eyebrow"></span>
+              <span class="weather-skeleton__bar weather-skeleton__bar--score"></span>
+              <span class="weather-skeleton__bar weather-skeleton__bar--line"></span>
+              <span class="weather-skeleton__bar weather-skeleton__bar--line-short"></span>
+            </div>
+            <div class="weather-skeleton__grid cw-grid" aria-hidden="true">
+              <div class="weather-skeleton__tile glass-card cw-tile"><span class="weather-skeleton__gauge"></span><span class="weather-skeleton__bar weather-skeleton__bar--line-short"></span></div>
+              <div class="weather-skeleton__tile glass-card cw-tile"><span class="weather-skeleton__bar weather-skeleton__bar--score"></span><span class="weather-skeleton__bar weather-skeleton__bar--line-short"></span></div>
+              <div class="weather-skeleton__tile glass-card cw-tile"><span class="weather-skeleton__bar weather-skeleton__bar--score"></span><span class="weather-skeleton__bar weather-skeleton__bar--line-short"></span></div>
+              <div class="weather-skeleton__tile glass-card cw-tile"><span class="weather-skeleton__bar weather-skeleton__bar--eyebrow"></span><span class="weather-skeleton__bar weather-skeleton__bar--line-short"></span></div>
+              <div class="weather-skeleton__tile glass-card cw-tile"><span class="weather-skeleton__bar weather-skeleton__bar--eyebrow"></span><span class="weather-skeleton__bar weather-skeleton__bar--line-short"></span></div>
+              <div class="weather-skeleton__tile glass-card cw-tile"><span class="weather-skeleton__bar weather-skeleton__bar--eyebrow"></span><span class="weather-skeleton__bar weather-skeleton__bar--line-short"></span></div>
+            </div>
+            <p class="weather-skeleton__label">Loading field data&hellip;</p>
+          </div>
+        </div>
+        <p style="text-align:center;font-size:0.62rem;letter-spacing:0.12em;color:var(--silver-dim);margin-top:0.6rem;">Measured feeds from NOAA SWPC — if a feed is down, we say so rather than fake it.</p>
+        <div style="text-align:center;margin-top:1.25rem;">
+          <button class="glow-btn" id="dailysky-card-btn" type="button" aria-label="Download today's daily-sky postcard">
+            &#10022;&nbsp; Download Today's Daily-Sky Postcard
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VII. PRECESSION LAYER ═══ -->
+    <section class="instrument-section" id="sec-precession">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">VIII</span> The Precession Layer</p>
+        <h2 class="instrument-title">The sky has drifted. We will not hide it.</h2>
+        <p class="instrument-lede">
+          Earth's axis wobbles once every ~25,772 years &mdash; this slow drift is called
+          <abbr class="ap-gloss" title="Precession — the slow ~25,772-year wobble of Earth's axis that gradually shifts the sky's alignment">precession</abbr>
+          &mdash; so the zodiac signs and the constellations they were named for have drifted about
+          24&deg; apart since the system was fixed. Most apps ignore this. Here it is a lens you can change.
+        </p>
+
+        <div class="precession-toggle" role="group" aria-label="Zodiac frame">
+          <button type="button" class="glow-btn active" data-frame="tropical">Tropical</button>
+          <button type="button" class="glow-btn" data-frame="sidereal"><abbr class="ap-gloss" title="Sidereal — the zodiac measured against the actual constellations in the sky, rather than the seasons">Sidereal</abbr></button>
+          <button type="button" class="glow-btn" data-frame="raw">The Raw Sky</button>
+        </div>
+
+        <div class="glass-card" style="margin-top:1rem;">
+          <p id="frame-explain" class="grimoire" style="font-size:1.05rem;margin:0;"></p>
+          <div id="frame-table" style="margin-top:1.25rem;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VIII. TIME TRAVEL ═══ -->
+    <section class="instrument-section" id="sec-timetravel" style="border-bottom:none;">
+      <div class="instrument-wrap">
+        <p class="instrument-eyebrow"><span class="section-num">IX</span> True-Sky Time Travel</p>
+        <h2 class="instrument-title">Stand under any sky.</h2>
+        <p class="instrument-lede">
+          Fly the solar system to any moment &mdash; a birth, a first kiss, a goodbye &mdash; and read the
+          sky that held it. Memories become charts.
+        </p>
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:flex-end;margin:1.5rem 0;">
+          <div>
+            <label class="form-label" for="tt-datetime">Destination</label>
+            <input type="datetime-local" id="tt-datetime" class="form-input" style="margin-top:0.4rem;" />
+          </div>
+          <button type="button" class="glow-btn" id="tt-go">Fly There</button>
+          <button type="button" class="glow-btn" id="tt-read">Read This Sky</button>
+        </div>
+
+        <div class="glass-card" style="max-width:580px;margin:0 auto;padding:1.5rem;">
+          <canvas id="tt-canvas" aria-label="Time-travelling 3D solar system" role="img"></canvas>
+        </div>
+
+        <div id="tt-reading" class="grimoire" style="margin-top:1.75rem;"></div>
+      </div>
+    </section>
+
+    <!-- ═══ CLOSER — hand to the chart, then the Deep Reading ═══ -->
+    <section class="instrument-section instrument-closer" aria-labelledby="sky-closer-heading" style="border-bottom:none;">
+      <div class="instrument-wrap" style="text-align:center;">
+        <p class="instrument-eyebrow"><span class="section-num">&#10022;</span> Make it yours</p>
+        <h2 class="instrument-title" id="sky-closer-heading">This is the sky for everyone tonight.</h2>
+        <p class="instrument-lede" style="margin-left:auto;margin-right:auto;">
+          See it for <strong>your</strong> birth minute &mdash; the 10 planets, your Rising, and the houses,
+          placed to the minute &mdash; then read what it means for you.
+        </p>
+        <div class="sign-cta-row" style="display:flex;gap:0.9rem;flex-wrap:wrap;justify-content:center;margin-top:1.75rem;">
+          <a href="chart.html" class="glow-btn" style="text-decoration:none;">Cast your chart &rarr;</a>
+          <a href="shop.html#deep-reading" class="glow-btn" style="text-decoration:none;border-color:rgba(194, 160, 94,0.4);color:var(--gold-pale);">&hellip; then read what it means for you &mdash; Deep Reading &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/starcatalog.js" defer></script>
+  <script src="js/lightcone.js" defer></script>
+  <script src="js/echoes.js" defer></script>
+  <script src="js/fieldweather.js" defer></script>
+  <script src="js/oracle.js" defer></script>
+  <script src="js/profile.js" defer></script>
+  <script src="js/ap-nav-model.js"></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/ephemeris-lazy-modules.js" defer></script>
+  <script></script>
+  <script>(function(){const L=document.getElementById("ph-wheel"),T=document.getElementById("ph-readout"),F=document.getElementById("ph-align"),z=document.getElementById("ph-now"),B=document.getElementById("ph-note");if(!L||!T)return;const f=230,y=230,w=206,C=142,I=174,v=["saturn","jupiter","mars","sun","venus","mercury","moon"],E=[3,6,2,5,1,4,0],b={saturn:{g:"\u2644",n:"Saturn",c:"#9b8b6a",lore:"Lead, boundaries, the long account. The old books give Saturn\u2019s hour to endings, debts honoured, vows and foundations. Modern reading: do the disciplined thing \u2014 it compounds."},jupiter:{g:"\u2643",n:"Jupiter",c:"#c9a05a",lore:"Tin and increase. The hour of judges, oaths and fortune asked for openly. Modern reading: negotiate, apply, publish \u2014 generosity moves."},mars:{g:"\u2642",n:"Mars",c:"#c87858",lore:"Iron severs. Courage, surgery, contest \u2014 the blade\u2019s hour, for cutting what must be cut. Modern reading: confrontations scheduled here end cleaner than ones that ambush you."},sun:{g:"\u2609",n:"the Sun",c:"#E8C872",lore:"Gold and sovereignty. Audiences with power, the work that bears your name. Modern reading: visibility \u2014 present, launch, be seen."},venus:{g:"\u2640",n:"Venus",c:"#d4a0a0",lore:"Copper binds. Love, art, alliance, the sweetening of things. Modern reading: reconcile, design, court \u2014 the social grain runs smooth."},mercury:{g:"\u263F",n:"Mercury",c:"#b8bcc4",lore:"Quicksilver runs. Letters, trade, travel, the crossroads god. Modern reading: write, send, sign, learn \u2014 the channels are open."},moon:{g:"\u263D",n:"the Moon",c:"#cfc8b8",lore:"Silver remembers. The tide\u2019s hour \u2014 home, water, dreams, the public mood. Modern reading: rest, nourish, listen; begin nothing loud."}};function G(){try{const e=JSON.parse(localStorage.getItem("ap_instrument_event")||"null");if(e&&e.lat!==""&&e.lon!==""&&Number.isFinite(+e.lat)&&Number.isFinite(+e.lon)&&Math.abs(+e.lat)<=90&&Math.abs(+e.lon)<=180)return{lat:+e.lat,lon:+e.lon,city:e.city||"",tz:e.tz||null}}catch{}return null}function N(e,t){if(!t)return e.getUTCDay();try{const s=new Intl.DateTimeFormat("en-US",{timeZone:t,weekday:"short"}).format(e),i=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(s);return i<0?e.getUTCDay():i}catch{return e.getUTCDay()}}function S(e,t,s){const i=Math.PI/180,m=Math.floor((e-new Date(Date.UTC(e.getUTCFullYear(),0,0)))/864e5),r=i*(360/365)*(m-81),d=9.87*Math.sin(2*r)-7.53*Math.cos(r)-1.5*Math.sin(r),h=-23.44*Math.cos(i*(360/365)*(m+10)),n=(Math.sin(-.833*i)-Math.sin(t*i)*Math.sin(h*i))/(Math.cos(t*i)*Math.cos(h*i));if(n<-1||n>1)return null;const o=Math.acos(n)/i,a=720-4*s-d,u=$=>{const x=new Date(Date.UTC(e.getUTCFullYear(),e.getUTCMonth(),e.getUTCDate()));return x.setUTCMinutes(Math.round($)),x};return{rise:u(a-4*o),set:u(a+4*o)}}function R(e,t){if(t){const r=S(e,t.lat,t.lon),d=S(new Date(e.getTime()-864e5),t.lat,t.lon),h=S(new Date(e.getTime()+864e5),t.lat,t.lon);if(r&&d&&h){let n,o,a;e<r.rise?(n=d.rise,o=d.set,a=r.rise):(n=r.rise,o=r.set,a=h.rise);const u=N(new Date(n),t.tz),$=[],x=(o-n)/12,A=(a-o)/12;for(let c=0;c<12;c++)$.push({start:new Date(+n+c*x),end:new Date(+n+(c+1)*x),rulerKey:v[(E[u]+c)%7],kind:"day"});for(let c=0;c<12;c++)$.push({start:new Date(+o+c*A),end:new Date(+o+(c+1)*A),rulerKey:v[(E[u]+12+c)%7],kind:"night"});return{slots:$,dow:u,approx:!1,rise:n,set:o}}}const s=new Date(e);s.setHours(6,0,0,0),e<s&&s.setDate(s.getDate()-1);const i=s.getDay(),m=[];for(let r=0;r<24;r++)m.push({start:new Date(+s+r*36e5),end:new Date(+s+(r+1)*36e5),rulerKey:v[(E[i]+r)%7],kind:r<12?"day":"night"});return{slots:m,dow:i,approx:!0}}const g=(e,t)=>{const s=e*Math.PI/180;return[f+t*Math.cos(s),y-t*Math.sin(s)]};let U=null;const M=e=>e.toLocaleTimeString([],Object.assign({hour:"2-digit",minute:"2-digit"},U?{timeZone:U}:{}));let p=null,l=null;function K(){if(!l)return;const{slot:e}=l,t=b[e.rulerKey];T.innerHTML=`Hour of <strong style="color:${t.c}">${t.g} ${t.n}</strong> \xB7 ${M(e.start)} \u2013 ${M(e.end)}<br><span style="opacity:.75;font-size:.9em;">${t.lore}</span>`}function k(e){const t=G();U=t?t.tz:null;const{slots:s,dow:i,approx:m}=R(e,t),r=s.findIndex(n=>e>=n.start&&e<n.end);l=r>=0?{slot:s[r],idx:r}:null;let d='<defs><linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C2A05E"/><stop offset="100%" stop-color="#A8841E"/></linearGradient></defs>';if(d+=`<circle cx="${f}" cy="${y}" r="${w+9}" fill="none" stroke="#C2A05E" stroke-width="2.5" opacity="0.4"/>`,d+=`<circle cx="${f}" cy="${y}" r="${C-8}" fill="none" stroke="#C2A05E" stroke-width="0.8" opacity="0.3"/>`,s.forEach((n,o)=>{const a=180-o*15,u=180-(o+1)*15,[$,x]=g(a,w),[A,c]=g(u,w),[O,Y]=g(u,C),[_,j]=g(a,C),D=o===r,H=b[n.rulerKey],q=D?"rgba(194, 160, 94,0.22)":n.kind==="day"?"rgba(194, 160, 94,0.055)":"rgba(40,36,52,0.45)";d+=`<g class="ph-sec" data-i="${o}" style="cursor:pointer">
+          <path d="M${$},${x} A${w},${w} 0 0 1 ${A},${c} L${O},${Y} A${C},${C} 0 0 0 ${_},${j} Z"
+            fill="${q}" stroke="rgba(194, 160, 94,${D?"0.8":"0.22"})" stroke-width="${D?1.6:.6}"/>
+          <text x="${g(a-7.5,I)[0]}" y="${g(a-7.5,I)[1]}" text-anchor="middle" dominant-baseline="central"
+            font-size="${D?17:13}" fill="${D?"#EFE3C0":H.c}" font-family="AstroGlyph, serif" ${D?'filter="drop-shadow(0 0 5px rgba(194, 160, 94,.9))"':""}>${H.g}\uFE0E</text>
+        </g>`}),l){const n=l.idx,o=(e-l.slot.start)/(l.slot.end-l.slot.start),[a,u]=g(180-(n+o)*15,w+9);d+=`<circle cx="${a}" cy="${u}" r="5" fill="#EFE3C0" opacity="0.95"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite"/></circle>`}const h=l?b[l.slot.rulerKey]:b.sun;d+=`<text x="${f}" y="${y-26}" text-anchor="middle" font-size="44" fill="${h.c}" font-family="AstroGlyph, serif" filter="drop-shadow(0 0 10px rgba(194, 160, 94,.45))">${h.g}\uFE0E</text>
+        <text x="${f}" y="${y+8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#E8E0D0" font-family="Cinzel,serif">HOUR OF ${h.n.replace("the ","").toUpperCase()}</text>
+        <text x="${f}" y="${y+28}" text-anchor="middle" font-size="10" fill="#A89E88" font-family="Cormorant Garamond,serif" font-style="italic">${l?M(l.slot.start)+" \u2013 "+M(l.slot.end):""}</text>
+        <text x="${f}" y="${y+46}" text-anchor="middle" font-size="9" letter-spacing="2" fill="#A89E88" font-family="Cinzel,serif">DAY OF ${b[v[E[i]]].n.replace("the ","").toUpperCase()}</text>`,L.innerHTML=d,L.querySelectorAll(".ph-sec").forEach(n=>{n.addEventListener("click",()=>{const o=s[+n.dataset.i],a=b[o.rulerKey];T.innerHTML=`${o.kind==="day"?"Day":"Night"} hour ${+n.dataset.i%12+1} \u2014 <strong style="color:${a.c}">${a.g} ${a.n}</strong> \xB7 ${M(o.start)} \u2013 ${M(o.end)}<br><span style="opacity:.75;font-size:.9em;">${a.lore}</span>`})}),K(),B.textContent=m?"Tap a sector for hermetic lore \u2022 equal-hour approximation \u2014 set your event below for true sunrise hours":`Tap a sector for hermetic lore \u2022 true unequal hours${t&&t.city?" for "+t.city:""} (sunrise-based)`}F.addEventListener("click",()=>{const e=localStorage.getItem("astro_current_demo_time");if(!e){T.innerHTML="The home orrery has not set a shared time yet \u2014 visit the homepage and move the time scrubber first.";return}if(p=new Date(e),isNaN(p)){p=null;return}k(p),z.style.display="",T.innerHTML+=`<br><span style="color:#C2A05E;font-size:.85em;">\u27D0 Aligned with the home orrery\u2019s sky \u2014 ${p.toLocaleString()}</span>`}),z.addEventListener("click",()=>{p=null,z.style.display="none",k(new Date)}),k(new Date),setInterval(()=>{p||k(new Date)},6e4)})();</script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/ap-page-bridge.js" defer></script>
+  <script src="js/instrument.js" defer></script>
+  <script>(function(){function t(i){var e=document.createElement("script");e.src=i,e.defer=!0,document.body.appendChild(e)}function n(){navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||"")||(t("js/cosmos.js"),t("js/effects.js"))}window.addEventListener("load",function(){window.requestIdleCallback?requestIdleCallback(n,{timeout:4e3}):setTimeout(n,1200)},{once:!0})})();</script>
+</body>
+</html>

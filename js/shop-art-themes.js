@@ -1,0 +1,22 @@
+"use strict";(function(){const h="shop-art-library";function l(a){return`<svg class="eng-i" aria-hidden="true"><use href="#ei-${a||"star4"}"/></svg>`}function A(a,t){const s=`<button type="button" class="ap-art-pack${t==="all"?" active":""}" role="tab" id="ap-art-pack-all" data-art-pack="all" aria-controls="ap-art-theme-panel" aria-selected="${t==="all"?"true":"false"}">All styles</button>`,r=a.map(e=>`<button type="button" class="ap-art-pack${e.id===t?" active":""}" role="tab" id="ap-art-pack-${e.id}" data-art-pack="${e.id}" aria-controls="ap-art-theme-panel" aria-selected="${e.id===t?"true":"false"}">${l(e.icon)} ${AP_ART.esc(e.name)}</button>`).join("");return`<div class="ap-art-packs" role="tablist" aria-label="Art expansion packs">${s}${r}</div>`}function _(a,t,s){const r=a.id===t,e=a.id===s;return`<button type="button" class="ap-art-card${r?" ap-art-card--selected":""}" data-art-theme="${a.id}" aria-pressed="${r?"true":"false"}" aria-label="${AP_ART.esc(a.name)} \u2014 ${AP_ART.esc(a.tagline)}">
+      <span class="ap-art-card__preview">${AP_ART.previewSvg(a.id,100)}</span>
+      <span class="ap-art-card__swatches">${AP_ART.swatchHtml(a)}</span>
+      <span class="ap-art-card__name">${AP_ART.esc(a.name)}</span>
+      <span class="ap-art-card__tag">${AP_ART.esc(a.tagline)}</span>
+      ${e?'<span class="ap-art-card__badge">Recommended</span>':""}
+      ${r?'<span class="ap-art-card__badge ap-art-card__badge--sel">Selected</span>':""}
+    </button>`}function i(a,t){const s=AP_ART.packs(),r=s.find(p=>p.id===t),e=AP_ART.themesForPack(t),n=AP_ART.savedChart(),c=AP_ART.recommend(n,t==="all"?null:t),d=AP_ART.getSelected(),b=r?AP_ART.esc(r.lede):"Browse every colour theme \u2014 natal, sun sign, horoscope, life path, couples, and tailored masculine &amp; feminine palettes.",y=n&&n.sunSign?`<p class="ap-art-library__chart-note">${l("star4")} Your saved chart: <strong>${AP_ART.esc(n.name||"My chart")}</strong> \u2014 Sun in ${AP_ART.esc(n.sunSign)}. We highlight styles that suit your sky.</p>`:`<p class="ap-art-library__chart-note">${l("map")} <a href="chart.html">Cast &amp; save your chart</a> first \u2014 we'll recommend sun-sign palettes automatically.</p>`;a.innerHTML=`
+      <header class="ap-art-library__head">
+        <h2 class="shop-section-title">${l("orb")} Art Style Library</h2>
+        <p class="ap-art-library__lede">${b}</p>
+        ${y}
+      </header>
+      ${A(s,t)}
+      <div class="ap-art-grid" id="ap-art-theme-panel" role="tabpanel" aria-labelledby="ap-art-pack-${AP_ART.esc(t)}" tabindex="0">${e.map(p=>_(p,d.id,c)).join("")}</div>
+      <div class="ap-art-library__foot">
+        <p class="ap-art-library__selected" id="ap-art-selected-label">
+          Selected: <strong>${AP_ART.esc((AP_ART.themeById(d.id)||{}).name||d.id)}</strong>
+          \u2014 tell us this name in the Typeform after checkout, or we'll use your sun-sign default.
+        </p>
+        <p class="ap-art-library__note">Every theme applies to posters, PDFs, readings, apparel &amp; couples prints. Fulfilment honours your choice within 24\u201348h.</p>
+      </div>`,m(a,t)}function m(a,t){a.querySelectorAll("[data-art-theme]").forEach(s=>{const r=()=>{const e=s.dataset.artTheme;AP_ART.setSelected(e),i(a,t);const n=a.querySelector("#ap-art-selected-label");if(n){const c=AP_ART.themeById(e);n.innerHTML=`Selected: <strong>${AP_ART.esc(c?c.name:e)}</strong> \u2014 saved on this device. Mention <em>${AP_ART.esc(e)}</em> in checkout notes.`}};s.addEventListener("click",r)}),a.querySelectorAll("[data-art-pack]").forEach(s=>{s.addEventListener("click",()=>{const r=s.dataset.artPack;a.querySelectorAll("[data-art-pack]").forEach(e=>{const n=e.dataset.artPack===r;e.classList.toggle("active",n),e.setAttribute("aria-selected",n?"true":"false")}),i(a,r)})})}function o(){const a=document.getElementById(h);!a||!window.AP_ART||AP_ART.load().then(()=>{const t=(location.hash||"").replace("#",""),s=t.startsWith("art-")?t.slice(4):"all",r=s==="all"||AP_ART.packs().some(e=>e.id===s);i(a,r?s:"all")})}function u(){const a=document.getElementById("art-library"),t=(location.hash||"").replace(/^#/,"");if(t==="art-library"||t&&t.startsWith("art-")){o();return}if(!a||!("IntersectionObserver"in window)){o();return}let s=!1;const r=()=>{s||(s=!0,o())},e=new IntersectionObserver(n=>{n.some(c=>c.isIntersecting)&&(e.disconnect(),r())},{rootMargin:"0px 0px 240px 0px",threshold:0});e.observe(a)}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",u):u()})();

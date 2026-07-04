@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free Life Path calculator — your Life Path, Expression and Personal Year numbers from precise birth-date arithmetic. Deterministic, never random." />
+  <title>Life Path Calculator — Numerology Blueprint | Astro Precise</title>
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="Life Path Calculator — Numerology Blueprint | Astro Precise" />
+  <meta property="og:description" content="Discover your Life Path number and full numerology blueprint. Always deterministic — same birth date, same answer, always." />
+  <meta property="og:url" content="https://astroprecise.app/lifepath.html" />
+  <link rel="canonical" href="https://astroprecise.app/lifepath.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Astro Precise — Life Path Calculator",
+    "url": "https://astroprecise.app/lifepath.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+    "isAccessibleForFree": true,
+    "description": "Free Life Path numerology calculator with Expression, Soul Urge, and Personal Year numbers — deterministic Pythagorean arithmetic, computed locally in your browser.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Astro Precise",
+      "url": "https://astroprecise.app/"
+    }
+  }
+  </script>
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0C1016" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/lifepath-page.css" />
+  <script>(function(){var e=navigator.userAgent||"";(navigator.webdriver||/\bHeadlessChrome\b/i.test(e))&&document.documentElement.classList.add("ap-audit-path")})();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener("DOMContentLoaded",function(){function t(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||""))return;var n=!1;function s(){if(!(n||document.getElementById("ap-css-fonts"))){n=!0;var e=document.createElement("link");e.rel="stylesheet",e.href="css/fonts.css",e.id="ap-css-fonts",e.onload=function(){document.documentElement.classList.add("ap-fonts-ready")},document.head.appendChild(e)}}window.addEventListener("scroll",s,{once:!0,passive:!0}),window.addEventListener("pointerdown",s,{once:!0,passive:!0}),window.addEventListener("load",function(){setTimeout(s,25e3)},{once:!0})}t(),deferPageCss("css/ap-motion.css","ap-css-motion"),deferPageCss("css/ap-cinematic-2026.css","ap-css-cinematic"),deferPageCss("css/ap-micro-2026.css","ap-css-micro"),deferMainCss(),deferPageCss("css/ap-page-bridge.css","ap-css-bridge")});</script>
+  </head>
+<body class="page-lifepath ap-no-nav-enter">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- HERO -->
+    <section class="hero--small lp-hero">
+      <div class="container">
+        <p class="eyebrow">Numerology Blueprint</p>
+        <h1 class="gradient-text">Life Path Calculator</h1>
+        <p class="hero-subtitle" style="max-width:540px;margin:0 auto var(--space-10);">
+          Your birth date encodes a precise number — not a random fortune, but an arithmetic
+          truth derived from the moment you entered the world. Discover what it reveals.
+        </p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge ap-badge--deterministic">Arithmetic, not fortune — same birth date, same number, always</span></a></p>
+
+        <!-- Calculator form card -->
+        <div class="lp-form-card">
+          <svg class="lp-form-card__art" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-width="0.65" opacity="0.9">
+              <circle cx="100" cy="100" r="88"/><circle cx="100" cy="100" r="62"/><circle cx="100" cy="100" r="36"/>
+              <path d="M100 12v176M12 100h176M35 35l130 130M165 35L35 165"/>
+              <text x="100" y="28" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">9</text>
+              <text x="168" y="106" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">3</text>
+              <text x="100" y="182" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">6</text>
+              <text x="32" y="106" text-anchor="middle" font-size="11" fill="currentColor" stroke="none" opacity="0.55">1</text>
+            </g>
+          </svg>
+          <div class="lp-form-card__inner-border" aria-hidden="true"></div>
+          <div class="lp-form-card__corner lp-form-card__corner--tl" aria-hidden="true"></div>
+          <div class="lp-form-card__corner lp-form-card__corner--tr" aria-hidden="true"></div>
+          <div class="lp-form-card__corner lp-form-card__corner--bl" aria-hidden="true"></div>
+          <div class="lp-form-card__corner lp-form-card__corner--br" aria-hidden="true"></div>
+
+          <h2 class="section-title" style="font-size:var(--text-xl);margin-bottom:var(--space-6);">Calculate Your Numbers</h2>
+          <form id="lp-form" novalidate>
+            <div class="lp-form-grid">
+              <div class="form-group full-width">
+                <label for="lp-birthdate" class="form-label">Date of Birth <span style="color:var(--crimson-light)">*</span></label>
+                <input type="date" id="lp-birthdate" class="form-input" required min="1900-01-01" />
+                <p class="lp-profile-hint" id="lp-profile-hint">Saved birth date available — <button type="button" id="lp-use-saved">use profile chart</button></p>
+              </div>
+              <div class="form-group full-width">
+                <label for="lp-name" class="form-label">Full Name at Birth <span style="color:var(--silver-dim);font-weight:400;">(optional — for Expression &amp; Soul Urge)</span></label>
+                <input type="text" id="lp-name" class="form-input" placeholder="e.g. Jane Elizabeth Smith" maxlength="100" autocomplete="name" />
+                <p class="form-hint" style="font-size:0.68rem;color:var(--silver-dim);margin-top:var(--space-2);">Name never leaves your browser. Used only for local calculation.</p>
+                <p style="margin-top:var(--space-2);"><span class="ap-badge">Computed locally — your name never leaves your browser</span></p>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:var(--space-8);">
+              <button type="submit" class="lp-submit-btn">
+                <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span> Reveal My Numbers
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="lp-results" class="section" aria-live="polite" aria-atomic="true">
+      <div class="lp-results__skeleton" aria-hidden="true">
+        <div class="lp-result-skel-hero">
+          <div class="lp-result-skel-digit"></div>
+          <div class="lp-result-skel-line lp-result-skel-line--title"></div>
+          <div class="lp-result-skel-line lp-result-skel-line--tag"></div>
+        </div>
+        <div class="lp-result-skel-grid">
+          <div class="lp-result-skel-panel"></div>
+          <div class="lp-result-skel-panel"></div>
+          <div class="lp-result-skel-panel"></div>
+          <div class="lp-result-skel-panel"></div>
+        </div>
+      </div>
+      <div class="container lp-results__body" style="max-width:900px;">
+
+        <!-- Big number display with mandala -->
+        <div class="lp-number-hero" id="lp-main-display">
+          <svg class="lp-number-hero__ring-art" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.85">
+              <circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="68"/><circle cx="100" cy="100" r="44"/>
+              <path d="M100 10v180M10 100h180M30 30l140 140M170 30L30 170"/>
+            </g>
+          </svg>
+          <canvas id="lp-mandala-canvas" aria-hidden="true"></canvas>
+          <div class="lp-number-hero__master-badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Master Number</div>
+          <div class="lp-number-hero__digit" id="lp-digit">—</div>
+          <div class="lp-number-hero__title" id="lp-title">—</div>
+          <div class="lp-number-hero__tagline" id="lp-tagline">—</div>
+          <div class="lp-keywords" id="lp-keywords"></div>
+        </div>
+
+        <!-- Secondary numbers: Expression, Soul Urge, Personal Year -->
+        <div class="lp-secondary-grid" id="lp-secondary"></div>
+
+        <!-- Transparent calculation breakdown -->
+        <div class="lp-panel lp-math-panel" id="lp-math-panel">
+          <p class="lp-panel__title">Your Calculation</p>
+          <div class="lp-math-steps" id="lp-math-steps"></div>
+        </div>
+
+        <!-- Name Numbers: Expression, Soul Urge, Personality, Birthday -->
+        <div id="name-numbers-section" aria-live="polite">
+          <p class="name-numbers-header"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Name Numbers</p>
+          <div class="lp-name-numbers-grid" id="lp-name-numbers-grid"></div>
+        </div>
+
+        <!-- Reading panels -->
+        <div class="lp-reading-grid">
+          <div class="lp-panel">
+            <p class="lp-panel__title">Overview</p>
+            <p class="lp-overview" id="lp-overview">—</p>
+          </div>
+          <div class="lp-panel">
+            <p class="lp-panel__title">Core Strengths</p>
+            <ul class="lp-trait-list" id="lp-strengths"></ul>
+          </div>
+          <div class="lp-panel">
+            <p class="lp-panel__title">Growth Areas</p>
+            <ul class="lp-trait-list lp-trait-list--challenges" id="lp-challenges"></ul>
+          </div>
+          <div class="lp-panel">
+            <p class="lp-panel__title">Most Compatible Numbers</p>
+            <div class="lp-compat-strip" id="lp-compatibles"></div>
+            <p style="font-size:0.65rem;color:var(--silver-dim);margin-top:var(--space-4);line-height:1.5;">
+              Compatibility is calculated from life path vibration resonance, not personalities alone.
+            </p>
+          </div>
+        </div>
+
+        <!-- Cross-links -->
+        <div class="lp-crosslinks" id="lp-crosslinks"></div>
+
+        <!-- Download card -->
+        <div class="lp-download-wrap">
+          <button id="lp-download-btn" class="btn btn--gold">
+            ↓ Download Numerology Card
+          </button>
+          <p style="font-size:0.65rem;color:var(--silver-dim);margin-top:var(--space-3);">
+            PNG · up to 2160×2160 · Computed locally · <span class="ap-badge">Deterministic</span>
+          </p>
+        </div>
+
+        <!-- Hidden canvas for download -->
+        <canvas id="lp-card-canvas" width="1080" height="1080" style="display:none;"></canvas>
+
+      </div>
+    </section>
+
+    <!-- EDUCATION: all numbers -->
+    <section class="section" id="all-numbers">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">The Nine Paths + Masters</p>
+          <h2 class="section-title">Every Life Path Number</h2>
+          <p class="section-subtitle">
+            Each number carries a distinct vibration and life purpose. The Master Numbers
+            (11, 22, 33) are not reduced — they carry amplified potential.
+          </p>
+        </header>
+
+        <div class="lp-numbers-grid" id="all-numbers-grid">
+          <div class="lp-grid-placeholder" id="lp-grid-placeholder" aria-hidden="true">
+            <div class="lp-skel-card"><span class="lp-skel-card__num">1</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">2</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">3</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">4</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">5</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">6</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">7</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">8</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">9</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">11</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">22</span><span class="lp-skel-card__bar"></span></div>
+            <div class="lp-skel-card"><span class="lp-skel-card__num">33</span><span class="lp-skel-card__bar"></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW NUMEROLOGY WORKS -->
+    <section class="section" style="background:linear-gradient(180deg,transparent 0%,rgba(92, 74, 110,0.04) 50%,transparent 100%);">
+      <div class="container" style="max-width:760px;">
+        <header class="section-header">
+          <p class="eyebrow">The Method</p>
+          <h2 class="section-title">How It Works</h2>
+        </header>
+
+        <div class="lp-timeline" role="list" aria-label="Numerology calculation method">
+          <div class="lp-timeline-step" role="listitem">
+            <div class="lp-timeline-marker" aria-hidden="true">I</div>
+            <div class="lp-timeline-content">
+              <h3>Reduce Each Component</h3>
+              <p>
+                The month, day, and year of your birth are each reduced to a single digit
+                by summing their component numbers. A birth on 29 January: day 2+9=11
+                (a Master Number — held here, not reduced further).
+              </p>
+            </div>
+          </div>
+          <div class="lp-timeline-step" role="listitem">
+            <div class="lp-timeline-marker" aria-hidden="true">II</div>
+            <div class="lp-timeline-content">
+              <h3>Honour Master Numbers</h3>
+              <p>
+                11, 22, and 33 are Master Numbers. They carry higher vibrational intensity
+                and are never reduced to 2, 4, or 6 in the final calculation.
+                If they appear at any stage of reduction, they are preserved.
+              </p>
+            </div>
+          </div>
+          <div class="lp-timeline-step" role="listitem">
+            <div class="lp-timeline-marker" aria-hidden="true">III</div>
+            <div class="lp-timeline-content">
+              <h3>Sum and Reduce Again</h3>
+              <p>
+                The three reduced components are added together. If the result exceeds 9
+                (and is not 11, 22, or 33), sum the digits again. The final single digit
+                or Master Number is your Life Path.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);margin-top:var(--space-8);">
+          <p style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:var(--space-3);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Example Calculation</p>
+          <p style="font-family:'Courier New',monospace;font-size:var(--text-sm);color:var(--silver);line-height:2;">
+            Birth date: <strong style="color:var(--white);">14 April 1992</strong><br>
+            Month: <strong style="color:var(--gold-pale);">4</strong><br>
+            Day: 1+4 = <strong style="color:var(--gold-pale);">5</strong><br>
+            Year: 1+9+9+2 = 21 → 2+1 = <strong style="color:var(--gold-pale);">3</strong><br>
+            Life Path: 4 + 5 + 3 = 12 → 1+2 = <strong style="color:var(--gold-pale);">3</strong><br>
+            <strong style="color:var(--white);">Life Path 3 — The Creator</strong>
+          </p>
+        </div>
+        <div style="text-align:center;margin-top:var(--space-8);">
+          <p style="font-size:0.65rem;letter-spacing:0.12em;color:var(--silver-dim);">
+            <span class="ap-badge">Deterministic</span>&nbsp; Same birth date → same number, always.
+            No random generation. All computation runs locally in your browser.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RELATED TOOLS -->
+    <section class="section instrument-teaser">
+      <div class="container">
+        <div class="instrument-teaser__inner">
+          <div class="instrument-teaser__badge"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Go Deeper</div>
+          <h2 class="instrument-teaser__title">Pair with Your Birth Chart</h2>
+          <p class="instrument-teaser__body" style="max-width:580px;margin:0 auto var(--space-6);">
+            Your Life Path number works alongside your natal chart to reveal the full picture.
+            A Life Path 7 with Scorpio rising reads very differently from one with Aries rising.
+            Combine both for a complete cosmic blueprint.
+          </p>
+          <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;justify-content:center;">
+            <a href="chart.html" class="btn btn--primary btn--lg"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate Your Birth Chart</a>
+            <a href="name-numerology.html" class="btn btn--outline btn--lg">Name Numerology Deep Dive</a>
+            <a href="compatibility.html" class="btn btn--outline btn--lg">Synastry &amp; Compatibility</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/profile.js" defer></script>
+  <script>(function(){function i(){return navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||"")}function t(o){var e=document.createElement("script");e.src=o,e.defer=!0,document.body.appendChild(e)}function n(){i()||(t("js/cosmos.js"),t("js/effects.js"))}window.addEventListener("load",function(){window.requestIdleCallback?requestIdleCallback(n,{timeout:4e3}):setTimeout(n,1200)},{once:!0})})();</script>
+
+  <script>"use strict";const PYTHAGOREAN={A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8},VOWELS=new Set(["A","E","I","O","U"]);function sumDigits(t){return String(Math.abs(t)).split("").reduce((i,r)=>i+parseInt(r,10),0)}function toNumeroNum(t){for(;t>9&&t!==11&&t!==22&&t!==33;)t=sumDigits(t);return t}function calcLifePath(t,i,r){const n=toNumeroNum(i),s=toNumeroNum(r),c=toNumeroNum(sumDigits(t));return toNumeroNum(n+s+c)}function calcExpression(t){const i=t.toUpperCase().replace(/[^A-Z]/g,"").split("");return i.length?toNumeroNum(i.reduce((r,n)=>r+(PYTHAGOREAN[n]||0),0)):null}function calcSoulUrge(t){const i=t.toUpperCase().replace(/[^A-Z]/g,"").split("").filter(r=>VOWELS.has(r));return i.length?toNumeroNum(i.reduce((r,n)=>r+(PYTHAGOREAN[n]||0),0)):null}function calcPersonality(t){const i=t.toUpperCase().replace(/[^A-Z]/g,"").split("").filter(r=>!VOWELS.has(r));return i.length?toNumeroNum(i.reduce((r,n)=>r+(PYTHAGOREAN[n]||0),0)):null}function calcBirthdayNumber(t){return toNumeroNum(t)}function calcPersonalYear(t,i,r){return toNumeroNum(toNumeroNum(t)+toNumeroNum(i)+toNumeroNum(sumDigits(r)))}const LP={1:{title:"The Pioneer",glyph:"\u2299",element:"fire",tagline:"Leadership, independence, and the courage to forge new paths",overview:"Life Path 1 carries the vibration of pure origination \u2014 radiant, singular, self-directed. You are here to lead. Your purpose unfolds through developing independence, originality, and the courage to stand alone when the moment demands it. The 1 is not arrogance; it is the necessary force of a new idea meeting a world that hasn't yet imagined it.",strengths:["Natural leadership and executive ability","Innovative, original thinking","Drive and determined follow-through","Self-reliance under pressure","Courage to initiate the untried"],challenges:["Tendency toward self-absorption","Impatience with slower paces","Difficulty delegating control","Vulnerability masked by strength"],compatibles:[3,5,9],keywords:["Leadership","Originality","Ambition","Independence","Courage"],color:"#C2A05E"},2:{title:"The Diplomat",glyph:"\u263D",element:"water",tagline:"Cooperation, sensitivity, and the gift of harmony",overview:"Life Path 2 vibrates with the Moon \u2014 intuitive, receptive, and deeply attuned to the currents between people. Your gift is the ability to bring opposing forces into balance. Where others see conflict, you perceive the bridge. You are the hidden power behind every great collaboration.",strengths:["Deep empathy and emotional intelligence","Diplomatic and peacemaking skill","Patience in complex situations","Supportive, loyal nature","Intuitive perception of others' needs"],challenges:["Over-sensitivity to criticism","Indecision when outcomes are unclear","Self-doubt in solo endeavours","Avoidance of necessary confrontation"],compatibles:[4,6,8],keywords:["Harmony","Partnership","Intuition","Balance","Cooperation"],color:"#6a8a82"},3:{title:"The Creator",glyph:"",element:"air",tagline:"Creative expression, joy, and the power of imagination",overview:"Life Path 3 pulses with creative energy \u2014 the joy of self-expression, communication, and artistic vision. You are meant to lift others through beauty, laughter, and inspired ideas. The world receives your vibration as warmth. Your purpose is to make real what imagination sees first.",strengths:["Creative talent and artistic sensitivity","Charismatic, magnetic communication","Optimism that transmits to others","Gift with language, words, and story","Social ease and genuine charm"],challenges:["Scattered focus and inconsistency","Emotional volatility under pressure","Procrastination disguised as perfectionism","Superficiality when depth is needed"],compatibles:[1,5,9],keywords:["Creativity","Expression","Joy","Communication","Optimism"],color:"#c08858"},4:{title:"The Builder",glyph:"\u2295",element:"earth",tagline:"Foundation, discipline, and the mastery of form",overview:"Life Path 4 carries the energy of the earth itself \u2014 solid, dependable, and built to last. Your purpose is to create enduring structures: in business, family, or the architecture of ideas. You are the one who ensures that what was dreamed yesterday becomes the reality others can stand on tomorrow.",strengths:["Reliability \u2014 people build lives around the 4","Methodical thinking and precision","Practical wisdom earned through work","Extraordinary discipline","Loyalty that does not waver"],challenges:["Rigidity and resistance to change","Tendency toward workaholism","Difficulty with spontaneous expression","Fear of risk beyond the known plan"],compatibles:[2,6,8],keywords:["Stability","Order","Foundation","Practicality","Discipline"],color:"#0e5c3a"},5:{title:"The Explorer",glyph:"\u2729",element:"air",tagline:"Freedom, adventure, and the alchemy of change",overview:"Life Path 5 breathes with the winds of change \u2014 freedom-seeking, sensory-rich, and endlessly curious. Your soul requires variety and movement, not as escape but as a genuine mode of being. You teach others that liberation lies in adaptation, not certainty. Every ending you encounter opens a door the world didn't know existed.",strengths:["Extraordinary adaptability","Magnetic, dynamic presence","Resourcefulness in any environment","Insatiable, generative curiosity","Capacity for profound personal reinvention"],challenges:["Commitment issues masking deeper fears","Restlessness that prevents deep roots","Tendency toward sensory excess","Difficulty sustaining routine disciplines"],compatibles:[1,3,7],keywords:["Freedom","Adventure","Change","Versatility","Sensuality"],color:"#9db36a"},6:{title:"The Nurturer",glyph:"",element:"earth",tagline:"Love, responsibility, and the healing power of service",overview:"Life Path 6 vibrates with Venus \u2014 the love of home, beauty, and deep care for the people who matter. Your path is one of service, healing, and creating harmony in the lives of those around you. You were not given tenderness as a weakness; you were given it as the most powerful tool for transformation.",strengths:["Deep, healing compassion","Extraordinary sense of responsibility","Natural counsellor and guide","Aesthetic sensitivity and beauty sense","Fierce loyalty in love and friendship"],challenges:["Martyrdom \u2014 giving until there is nothing left","Over-protectiveness that limits others' growth","Difficulty receiving help and care","Perfectionism applied mercilessly to home and self"],compatibles:[2,4,9],keywords:["Service","Compassion","Family","Healing","Harmony"],color:"#b04a52"},7:{title:"The Seeker",glyph:"\u2B21",element:"water",tagline:"Wisdom, spiritual depth, and the pursuit of inner truth",overview:"Life Path 7 resonates with the deep waters of the unconscious \u2014 introspective, analytical, and drawn to mystery. You are pulled toward the hidden laws beneath visible reality, toward what cannot be easily named. Solitude is not loneliness for you; it is where you find the signal beneath the noise.",strengths:["Analytical brilliance and precision","Spiritual depth that few can match","Exceptional research and synthesis","Intuitive intelligence bordering on prescient","Philosophical insight that advances understanding"],challenges:["Isolation as a default rather than a choice","Difficulty with sustained emotional intimacy","Perfectionism that delays completion","Occasional cynicism when faith is tested"],compatibles:[5,7,9],keywords:["Analysis","Wisdom","Spirituality","Introspection","Mystery"],color:"#5c4a6e"},8:{title:"The Achiever",glyph:"\u25C9",element:"earth",tagline:"Power, abundance, and the mastery of material reality",overview:"Life Path 8 carries the frequency of Saturn \u2014 discipline, ambition, and the mastery of material form. Yours is the path of power used wisely: authority that does not lord itself over others but directs energy toward lasting outcomes. When you align your inner authority with outer action, the material world responds.",strengths:["Executive vision and leadership","Ambition calibrated to long-term outcomes","Financial and organisational intelligence","Resilience in the face of repeated setbacks","Authority that others trust instinctively"],challenges:["Workaholism that erodes personal life","Controlling tendencies in relationships","Vulnerability around perceived weakness","Material attachment that obscures deeper purpose"],compatibles:[2,4,6],keywords:["Power","Success","Abundance","Authority","Manifestation"],color:"#6e1a26"},9:{title:"The Humanitarian",glyph:"\u25C8",element:"fire",tagline:"Universal love, compassion, and the vibration of completion",overview:"Life Path 9 vibrates at the highest frequency of the single digits \u2014 the universal current of love, completion, and transcendence. You carry wisdom from many lifetimes and feel called to serve humanity in sweeping, impersonal ways. The 9 does not ask for credit; it asks only that the light it carries reaches those who need it.",strengths:["Universal compassion that transcends personal agenda","Deep, cross-cultural wisdom","Genuine generosity of spirit and resources","Creative and artistic range","Ability to see the whole where others see parts"],challenges:["Giving so much there is little left for self","Difficulty releasing the past and its sorrows","Scattered idealism that lacks executable form","Emotional volatility when ideals meet reality"],compatibles:[3,6,9],keywords:["Compassion","Universal Love","Service","Wisdom","Completion"],color:"#C2A05E"},11:{title:"The Illuminator",glyph:"\u2299",element:"air",master:!0,tagline:"Master Intuitive \u2014 the bridge between the visible and invisible",overview:"Life Path 11 is the first Master Number \u2014 a doubled vibration of 1 carrying tremendous spiritual potential. You are the Illuminator: a bridge between the rational and the mystical, the seen and the unseen. Your intuitive gifts border on the psychic. The 11 is both blessing and burden; the sensitivity that grants you vision also demands extraordinary grounding.",strengths:["Profound intuition that operates ahead of logic","Inspirational, charismatic presence","Visionary capacity that others follow instinctively","Spiritual sensitivity as a genuine instrument","Creative and artistic genius"],challenges:["Overwhelming sensitivity to environment and others","Anxiety and self-doubt that undermines the gift","Tendency toward extremes with no middle ground","Difficulty grounding high-frequency awareness in daily life"],compatibles:[2,6,22],keywords:["Intuition","Inspiration","Enlightenment","Vision","Sensitivity"],color:"#d4a820"},22:{title:"The Master Builder",glyph:"\u2295",element:"earth",master:!0,tagline:"Master Builder \u2014 turning grand vision into enduring form",overview:"Life Path 22 is the most powerful number \u2014 the Master Builder. You possess both the visionary insight of the 11 and the disciplined practicality of the 4. You are designed to accomplish things of lasting significance: structures, systems, movements that serve not just a generation but many. The 22 is rare because the responsibility it carries is extraordinary.",strengths:["Grand visionary thinking paired with execution ability","Exceptional, patient discipline","Leadership operating at a world-historical scale","Mastery of complex systems and organisations","Transformative impact that outlasts the person"],challenges:["The crushing weight of unrealised potential","Paralysing perfectionism that prevents the first step","Difficulty trusting others enough to delegate","Fear of the full magnitude of the 22 frequency"],compatibles:[4,11,22],keywords:["Master Builder","Vision","Manifestation","Legacy","Power"],color:"#C2A05E"},33:{title:"The Master Teacher",glyph:"",element:"water",master:!0,tagline:"Master Teacher \u2014 unconditional love and the highest healing",overview:"Life Path 33 is the rarest and highest vibration \u2014 the Master Teacher. The 33 is only genuinely operative when the 11 and 22 are present in the full chart. You are called to uplift humanity through unconditional love, inspired creative expression, and spiritual healing. The 33 asks everything of the person who carries it \u2014 and returns everything transformed.",strengths:["Profound, cellular healing energy","Capacity for unconditional love in full expression","Visionary compassion that sees suffering's source","Inspiring others through lived example, not instruction","Spiritual mastery in the service of others' freedom"],challenges:["The unbearable weight of the 33 frequency ungrounded","Self-sacrifice that becomes quiet martyrdom","Grounding the frequency in the ordinary days of life","Maintaining personal boundaries while radiating universal love"],compatibles:[6,11,22],keywords:["Master Teacher","Healing","Service","Love","Inspiration"],color:"#b04a52"}},LP_TITLES={1:"Pioneer",2:"Diplomat",3:"Creator",4:"Builder",5:"Explorer",6:"Nurturer",7:"Seeker",8:"Achiever",9:"Humanitarian",11:"Illuminator",22:"Master Builder",33:"Master Teacher"},LP_ORDER=[1,2,3,4,5,6,7,8,9,11,22,33],ELEMENT_THEME={fire:{stripe:"#C2A05E",dim:"rgba(196,100,50,0.12)",mandala:"rgba(196,100,50,0.2)"},earth:{stripe:"#0e5c3a",dim:"rgba(14,92,58,0.12)",mandala:"rgba(14,92,58,0.2)"},air:{stripe:"#5b7fc7",dim:"rgba(91,127,199,0.12)",mandala:"rgba(91,127,199,0.2)"},water:{stripe:"#6a8a82",dim:"rgba(63,125,118,0.12)",mandala:"rgba(63,125,118,0.18)"}},MONTHS_LONG=["January","February","March","April","May","June","July","August","September","October","November","December"],MONTHS_SHORT=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];function savedBirthProfile(){try{if(window.AstroProfile&&typeof AstroProfile.getCharts=="function"){const t=AstroProfile.getCharts();if(t&&t.length&&t[0])return{date:t[0].birthDate||null,name:t[0].name||""}}}catch{}return null}function formatReduceLine(t,i){const r=toNumeroNum(i);if(i===r)return i===11||i===22||i===33?`${t}: <span class="lp-math-val">${i}</span> <em class="lp-math-note">Master \u2014 held</em>`:`${t}: <span class="lp-math-val">${i}</span>`;const n=[i];let s=i;for(;s>9&&s!==11&&s!==22&&s!==33;)s=sumDigits(s),n.push(s);const c=n.join(" \u2192 ");return`${t}: ${c} = <span class="lp-math-val">${s}</span>${s===11||s===22||s===33?' <em class="lp-math-note">Master \u2014 held</em>':""}`}function explainLifePath(t,i,r){const n=toNumeroNum(i),s=toNumeroNum(r),c=sumDigits(t),e=toNumeroNum(c),a=n+s+e,o=toNumeroNum(a),u=LP[o],d=`${r} ${MONTHS_LONG[i-1]} ${t}`;let m=`Sum: ${n} + ${s} + ${e} = <span class="lp-math-val">${a}</span>`;return a!==o&&(m+=` \u2192 ${sumDigits(a)} = <span class="lp-math-val">${o}</span>`),{html:[`Birth date: <strong>${d}</strong>`,formatReduceLine("Month",i),formatReduceLine("Day",r),formatReduceLine("Year",c)+` <span style="opacity:0.65">(${String(t).split("").join("+")})</span>`,m,`<div class="lp-math-result">Life Path <span class="lp-math-val">${o}</span> \u2014 ${u?u.title:""}</div>`].join("<br>"),lp:o,birthLabel:d}}function applyElementTheme(t,i){const r=ELEMENT_THEME[i]||ELEMENT_THEME.fire;return t.style.setProperty("--lp-element-color",r.stripe),t.style.setProperty("--lp-color-dim",r.dim),r.mandala}function renderCrosslinks(t){const i=document.getElementById("lp-crosslinks");if(!i)return;if(!t||t.preview){i.classList.remove("is-visible"),i.innerHTML="";return}const r=[];t.birthDate&&r.push(`<a class="lp-crosslink" href="chart.html?date=${encodeURIComponent(t.birthDate)}${t.name?"&name="+encodeURIComponent(t.name):""}">Birth chart for this date</a>`),t.name&&r.push(`<a class="lp-crosslink" href="name-numerology.html?name=${encodeURIComponent(t.name)}">Name numerology breakdown</a>`),r.push('<a class="lp-crosslink" href="ephemeris.html">Sky on your birth day</a>'),r.push('<a class="lp-crosslink" href="compatibility.html">Compare with a partner</a>'),i.innerHTML=r.join(""),i.classList.add("is-visible")}function drawMandala(t,i,r){var n=t.getContext("2d");if(n){var s=Math.min(window.devicePixelRatio||1,2),c=t.getBoundingClientRect(),e=c.width||240,a=c.height||240;t.width=Math.round(e*s),t.height=Math.round(a*s),n.setTransform(s,0,0,s,0,0);var o=e,u=a;n.clearRect(0,0,o,u);var d=i||"rgba(196,146,10,0.18)",m="rgba(194, 160, 94,0.55)",v="rgba(194, 160, 94,0.16)",f=parseInt(r,10);isFinite(f)||(f=1);for(var p=f===11||f===22||f===33,b=f;b>9;){for(var I=0,x=b;x>0;)I+=x%10,x=Math.floor(x/10);b=I}var w=b+2;p&&(w*=2);var P=2+Math.round(b/2),A=b/9*(Math.PI/w),C=o/2,l=u/2,g=Math.min(o,u)*.46;if(p){var k=n.createRadialGradient(C,l,g*.1,C,l,g);k.addColorStop(0,v),k.addColorStop(1,"rgba(194, 160, 94,0)"),n.fillStyle=k,n.beginPath(),n.arc(C,l,g,0,Math.PI*2),n.fill()}n.save(),n.translate(C,l),n.rotate(A),n.lineJoin="round";for(var M=0;M<P;M++){var L=g*(1-M/(P+.6)),B=M%2*(Math.PI/w);n.beginPath();for(var h=0;h<=w;h++){var y=h/w*Math.PI*2+B,T=L*Math.cos(y),E=L*Math.sin(y);h===0?n.moveTo(T,E):n.lineTo(T,E)}n.closePath(),n.strokeStyle=d,n.lineWidth=1,n.globalAlpha=.9-M*.12,n.stroke()}n.globalAlpha=1,n.beginPath();for(var S=0;S<w;S++){var R=S/w*Math.PI*2;n.moveTo(0,0),n.lineTo(g*Math.cos(R),g*Math.sin(R))}n.strokeStyle=d,n.lineWidth=.6,n.globalAlpha=.35,n.stroke(),n.globalAlpha=1;for(var _=g*.62,$=0;$<w;$++){var D=$/w*Math.PI*2,H=_*Math.cos(D),N=_*Math.sin(D);n.beginPath(),n.arc(H,N,g*.28,0,Math.PI*2),n.strokeStyle=d,n.lineWidth=.7,n.globalAlpha=.5,n.stroke()}n.globalAlpha=1,p&&(n.strokeStyle=m,n.lineWidth=1,n.beginPath(),n.arc(0,0,g*.94,0,Math.PI*2),n.stroke(),n.globalAlpha=.6,n.beginPath(),n.arc(0,0,g*.88,0,Math.PI*2),n.stroke(),n.globalAlpha=1),n.beginPath(),n.arc(0,0,g*.06,0,Math.PI*2),n.strokeStyle=p?m:d,n.lineWidth=1,n.stroke(),n.restore()}}function showResultsPending(){const t=document.getElementById("lp-results");t&&(t.classList.remove("is-visible"),t.classList.add("is-pending"))}function renderResults(t,i,r,n,s,c,e,a){a=a||{};const o=LP[t];if(!o)return;const u=document.getElementById("lp-results"),d=document.getElementById("lp-main-display");document.getElementById("lp-digit").textContent=t,document.getElementById("lp-title").textContent=o.title,document.getElementById("lp-tagline").textContent=o.tagline,d.classList.toggle("is-master",!!o.master);const m=applyElementTheme(d,o.element),v=document.getElementById("lp-keywords");v.innerHTML=o.keywords.map(l=>`<span class="lp-keyword">${l}</span>`).join(""),document.getElementById("lp-overview").textContent=o.overview,document.getElementById("lp-strengths").innerHTML=o.strengths.map(l=>`<li>${l}</li>`).join(""),document.getElementById("lp-challenges").innerHTML=o.challenges.map(l=>`<li>${l}</li>`).join("");const f=document.getElementById("lp-compatibles");f.innerHTML=o.compatibles.map(l=>{const g=LP_TITLES[l]||"";return`<div class="lp-compat-num"><span class="lp-compat-num__digit">${l}</span><span class="lp-compat-num__label">${g}</span></div>`}).join("");const p=[];if(p.push({label:"Life Path",number:t,name:o.title,desc:"The overarching vibration of your life's journey and purpose"}),c!=null){const l=LP[c];p.push({label:"Personal Year",number:c,name:l?l.title:"",desc:l?l.tagline:"The numerological theme governing your current year"})}if(e!=null){const l=LP[e];p.push({label:"Personal Month",number:e,name:l&&LP_TITLES[e]||"",desc:l?l.keywords.slice(0,3).join(" \xB7 "):"This month's energetic focus within your personal year cycle"})}const b=document.getElementById("lp-secondary");b.innerHTML=p.map(l=>`
+      <div class="lp-secondary-card">
+        <p class="lp-secondary-card__label">${l.label}</p>
+        <div class="lp-secondary-card__number">${l.number}</div>
+        ${l.name?`<p class="lp-secondary-card__name">${l.name}</p>`:""}
+        <p class="lp-secondary-card__desc">${l.desc}</p>
+      </div>
+    `).join("");const I=document.getElementById("lp-math-panel"),x=document.getElementById("lp-math-steps");!a.preview&&a.mathHtml?(x.innerHTML=a.mathHtml,I.classList.add("is-visible")):(I.classList.remove("is-visible"),x.innerHTML="");const w=document.getElementById("name-numbers-section"),P=document.getElementById("lp-name-numbers-grid");if(!a.preview&&(i!==null||r!==null||n!==null||s!==null)){const l=[];i!==null&&l.push({label:"Expression",number:i,desc:"How your name's energy shapes the gifts and talents you naturally express to the world"}),r!==null&&l.push({label:"Soul Urge",number:r,desc:"The deep inner desire of your heart \u2014 what your soul truly craves and is motivated by"}),n!==null&&l.push({label:"Personality",number:n,desc:"The outward face you present to the world \u2014 how others perceive you at first encounter"}),s!==null&&l.push({label:"Birthday",number:s,desc:"A special gift or talent indicated by the day of the month you were born"}),P.innerHTML=l.map(g=>`
+        <div class="lp-secondary-card">
+          <p class="lp-secondary-card__label">${g.label}</p>
+          <div class="lp-secondary-card__number" style="background:linear-gradient(135deg,var(--lp-gold-pale),var(--lp-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${g.number}</div>
+          <p class="lp-secondary-card__desc">${g.desc}</p>
+        </div>
+      `).join(""),w.classList.add("is-visible")}else w.classList.remove("is-visible");renderCrosslinks(a),u.classList.remove("is-pending"),u.classList.add("is-visible"),a.scroll!==!1&&u.scrollIntoView({behavior:"smooth",block:"start"});const C=document.getElementById("lp-mandala-canvas");C&&(drawMandala(C,m,t),d.classList.add("is-mandala-ready"))}function runFromBirthDate(t,i,r){return r=r||{},showResultsPending(),setTimeout(function(){const[n,s,c]=t.split("-").map(Number),e=explainLifePath(n,s,c),a=e.lp,o=i?calcExpression(i):null,u=i?calcSoulUrge(i):null,d=i?calcPersonality(i):null,m=calcBirthdayNumber(c),v=new Date,f=calcPersonalYear(s,c,v.getFullYear()),p=toNumeroNum(f+v.getMonth()+1);window._lpCurrentNum=a,window._lpCurrentName=i||"",window._lpCurrentBirth=e.birthLabel,renderResults(a,o,u,d,m,f,p,{mathHtml:e.html,birthDate:t,name:i||"",scroll:r.scroll})}),null}function drawLPCard(t,i,r){const n=document.getElementById("lp-card-canvas");if(!n)return;const s=1080,c=window.RafCore&&window.RafCore.cardExportSize?window.RafCore.cardExportSize():s*2;n.width=c,n.height=c;const e=window.RafCore&&window.RafCore.prepExportCtx?window.RafCore.prepExportCtx(n,c,c):n.getContext("2d");e.scale(c/s,c/s);const a=s,o=s,u=LP[t];if(!u||!e)return;e.clearRect(0,0,a,o);const d=e.createRadialGradient(a/2,o/2,0,a/2,o/2,a*.7);d.addColorStop(0,"#0d1124"),d.addColorStop(.5,"#0d0a07"),d.addColorStop(1,"#06070f"),e.fillStyle=d,e.fillRect(0,0,a,o);const m=e.createRadialGradient(a/2,o*.35,0,a/2,o*.35,a*.45);m.addColorStop(0,"rgba(196,146,10,0.08)"),m.addColorStop(.5,"rgba(92, 74, 110,0.05)"),m.addColorStop(1,"transparent"),e.fillStyle=m,e.fillRect(0,0,a,o);const v=(()=>{let h=t*997+137;return()=>(h=h*1664525+1013904223&4294967295,(h>>>0)/4294967296)})();for(let h=0;h<200;h++){const y=v()*a,T=v()*o,E=v()*1.2,S=.2+v()*.6;e.beginPath(),e.arc(y,T,E,0,Math.PI*2),e.fillStyle=`rgba(240,232,216,${S})`,e.fill()}const p={fire:"rgba(196,100,50,0.15)",earth:"rgba(14,92,58,0.15)",air:"rgba(167,139,186,0.12)",water:"rgba(63,125,118,0.12)"}[u.element]||"rgba(196,146,10,0.15)",b=540,I=380,x=280;for(let h=0;h<3;h++){e.save(),e.translate(b,I),e.rotate(h*Math.PI/6),e.beginPath();for(let y=0;y<4;y++){const T=y/4*Math.PI*2-Math.PI/4,E=x*Math.cos(T),S=x*Math.sin(T);y===0?e.moveTo(E,S):e.lineTo(E,S)}e.closePath(),e.strokeStyle=p,e.lineWidth=1.5,e.stroke(),e.restore()}const P={fire:"#C2A05E",earth:"#0e5c3a",air:"#9db36a",water:"#6a8a82"}[u.element]||"#C2A05E";e.fillStyle=P,e.fillRect(40,40,12,o-80),e.strokeStyle="rgba(196,146,10,0.55)",e.lineWidth=2,e.strokeRect(40,40,a-80,o-80),e.strokeStyle="rgba(196,146,10,0.18)",e.lineWidth=1,e.strokeRect(52,52,a-104,o-104),[[64,64],[a-64,64],[64,o-64],[a-64,o-64]].forEach(([h,y])=>{e.font="20px serif",e.fillStyle="rgba(196,146,10,0.5)",e.textAlign="center",e.textBaseline="middle",window.AstroUI&&AstroUI.drawStar4&&(e.fillStyle="rgba(196,146,10,0.9)",AstroUI.drawStar4(e,h,y,18))}),e.font="700 22px Inter, sans-serif",e.fillStyle="rgba(196,146,10,0.8)",e.textAlign="center",e.textBaseline="middle",e.letterSpacing="0.2em",e.fillText("LIFE PATH NUMBER",a/2,140),e.font=`900 ${t>=10?"280":"340"}px Cinzel, serif`,e.fillStyle="rgba(232,201,106,0.9)",e.textAlign="center",e.textBaseline="middle",e.shadowColor="rgba(196,146,10,0.4)",e.shadowBlur=60,e.fillText(String(t),a/2,390),e.shadowBlur=0,u.master&&(e.font="600 20px Inter, sans-serif",e.fillStyle="rgba(196,146,10,0.7)",e.fillText("MASTER NUMBER",a/2,520)),e.font="600 54px Cinzel, serif",e.fillStyle="#f0e8d8",e.textAlign="center",e.fillText(u.title.toUpperCase(),a/2,590),e.strokeStyle="rgba(196,146,10,0.3)",e.lineWidth=1,e.beginPath(),e.moveTo(a/2-160,620),e.lineTo(a/2+160,620),e.stroke(),e.font="400 26px Inter, sans-serif",e.fillStyle="rgba(196,146,10,0.75)",e.fillText(u.keywords.join("  \xB7  "),a/2,660),i&&(e.font="italic 400 34px Cormorant Garamond, serif",e.fillStyle="rgba(240,232,216,0.75)",e.fillText(i,a/2,730)),r&&(e.font="400 26px Inter, sans-serif",e.fillStyle="rgba(154,166,200,0.7)",e.fillText(r,a/2,770)),e.font="italic 500 28px Cormorant Garamond, serif",e.fillStyle="rgba(154,166,200,0.85)";const C=u.tagline.split(" ");let l="",g=[],k=780;for(const h of C){const y=l?l+" "+h:h;e.measureText(y).width>k?(g.push(l),l=h):l=y}l&&g.push(l);const M=i?820:780;g.forEach((h,y)=>e.fillText(h,a/2,M+y*38)),e.font="400 20px Inter, sans-serif",e.fillStyle="rgba(154,166,200,0.65)",e.textAlign="center";const L=u.strengths.slice(0,3);let B=860;L.forEach((h,y)=>{e.fillText("\u2022 "+h,a/2,B+y*28)}),e.font="700 22px Cinzel, serif",e.fillStyle="rgba(196,146,10,0.55)",e.fillText("astroprecise \xB7 computed locally \xB7 deterministic",a/2,o-80)}document.addEventListener("DOMContentLoaded",()=>{const t=document.getElementById("lp-birthdate"),i=document.getElementById("lp-name"),r=document.getElementById("lp-profile-hint"),n=document.getElementById("lp-use-saved"),s=savedBirthProfile();t&&(t.max=new Date().toISOString().slice(0,10)),s&&s.date&&r&&(r.classList.add("is-visible"),n&&n.addEventListener("click",()=>{s.date&&(t.value=s.date),s.name&&i&&!i.value&&(i.value=s.name),r.classList.remove("is-visible")}));const c=new URLSearchParams(location.search),e=c.get("date"),a=c.get("name");!e&&s&&(s.date&&t&&!t.value&&(t.value=s.date),s.name&&i&&!i.value&&(i.value=s.name)),a&&i&&!i.value&&(i.value=a);const o=document.getElementById("all-numbers-grid");if(o){const d=document.getElementById("lp-grid-placeholder"),m={fire:{border:"#C2A05E",glow:"rgba(196,146,10,0.15)"},earth:{border:"#0e5c3a",glow:"rgba(14,92,58,0.15)"},air:{border:"#9db36a",glow:"rgba(91,127,199,0.15)"},water:{border:"#6a8a82",glow:"rgba(63,125,118,0.15)"}},v=LP_ORDER.map(f=>{const p=LP[f],b=m[p.element]||m.fire;return`<div class="lp-number-card${p.master?" lp-number-card--master":""}" data-n="${f}"
+          style="--lp-card-element-color:${b.border};--lp-card-glow-color:${b.glow};">
+          <div style="display:flex;align-items:center;gap:var(--space-3);">
+            <div class="lp-number-card__num">${f}</div>
+            ${p.master?'<span style="font-size:0.55rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(196,146,10,0.3);border-radius:99px;padding:2px 7px;">Master</span>':""}
+          </div>
+          <div class="lp-number-card__title">${p.title}</div>
+          <div class="lp-number-card__tagline">${p.tagline}</div>
+        </div>`}).join("");d&&d.classList.add("hidden"),o.insertAdjacentHTML("beforeend",v),o.classList.add("is-ready"),o.addEventListener("click",f=>{const p=f.target.closest("[data-n]");if(!p)return;const b=parseInt(p.dataset.n,10);LP[b]&&(window._lpCurrentNum=b,window._lpCurrentName="",window._lpCurrentBirth="",showResultsPending(),setTimeout(function(){renderResults(b,null,null,null,null,null,null,{preview:!0})},0))})}document.getElementById("lp-form").addEventListener("submit",d=>{d.preventDefault();const m=t.value;if(!m){t.focus();return}runFromBirthDate(m,i.value.trim())}),document.getElementById("lp-download-btn").addEventListener("click",()=>{const d=window._lpCurrentNum;if(!d)return;drawLPCard(d,window._lpCurrentName||"",window._lpCurrentBirth||"");const m=document.getElementById("lp-card-canvas"),v=document.createElement("a");v.download=`lifepath-${d}-numerology.png`,v.href=m.toDataURL("image/png"),v.click()}),e&&(t&&(t.value=e),runFromBirthDate(e,(a||i&&i.value||"").trim(),{scroll:!0}))});</script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Astro Precise Cosmic Compatibility — synastry birth chart comparison and full compatibility report. Discover your astrological dynamics." />
+  <meta name="robots" content="index, follow" />
+  <title>Zodiac Compatibility Calculator — Free Synastry Report | Astro Precise</title>
+<link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="Zodiac Compatibility | Astro Precise" />
+  <meta property="og:description" content="Free synastry and compatibility reports — compare two birth charts and discover your cosmic connection." />
+  <meta property="og:url" content="https://astroprecise.app/compatibility.html" />
+  <link rel="canonical" href="https://astroprecise.app/compatibility.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Zodiac Compatibility | Astro Precise" />
+  <meta name="twitter:description" content="Free synastry and compatibility reports — compare two birth charts and discover your cosmic connection." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta name="theme-color" content="#0C1016" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Astro Precise — Synastry & Compatibility",
+    "url": "https://astroprecise.app/compatibility.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+    "isAccessibleForFree": true,
+    "description": "Compare two birth charts for synastry aspects, composite themes, and relationship compatibility — computed locally from precise astronomy.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Astro Precise",
+      "url": "https://astroprecise.app/"
+    }
+  }
+  </script>
+  <style>.eng-i{width:1em;height:1em;display:inline-block;vertical-align:-.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.hero--small{padding:calc(72px + 4rem) 0 3rem;min-height:603px}.compat-orbs{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 2.5rem;max-width:560px;position:relative;min-height:200px}.compat-orb{width:148px;height:148px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}.compat-orb__core{width:124px;height:124px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.1rem;line-height:1}.compat-orbs__arc{flex:1;height:40px;display:flex;align-items:center;justify-content:center;min-width:96px;position:relative}@media(max-width:560px){.compat-orbs{max-width:100%;min-height:168px}.compat-orb{width:116px;height:116px}.compat-orb__core{width:96px;height:96px;font-size:2.5rem}}.ap-badge{display:inline-flex;align-items:center;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;border-radius:999px;border:1px solid rgba(194,160,94,.3)}@media(max-width:768px){#compat-form.compat-form{min-height:1680px}.compat-form__grid{grid-template-columns:1fr!important}.compat-form__divider{flex-direction:row!important;padding-top:0!important}.compat-form__divider-line{display:none!important}.compat-form .form-submit{flex-direction:column!important;align-items:stretch!important}.compat-form .form-submit .btn--lg{width:100%!important}}</style>
+  <link rel="stylesheet" href="css/compatibility-critical.css" />
+  <link rel="stylesheet" href="css/ap-forms.css" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener("DOMContentLoaded",function(){function a(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||""))return;var t=!1;function s(){if(!(t||document.getElementById("ap-css-fonts"))){t=!0;var e=document.createElement("link");e.rel="stylesheet",e.href="css/fonts.css",e.id="ap-css-fonts",e.onload=function(){document.documentElement.classList.add("ap-fonts-ready")},document.head.appendChild(e)}}window.addEventListener("scroll",s,{once:!0,passive:!0}),window.addEventListener("pointerdown",s,{once:!0,passive:!0}),window.addEventListener("load",function(){setTimeout(s,25e3)},{once:!0})}a(),deferPageCss("css/celestial-seals.css","ap-css-seals"),deferPageCss("css/ap-motion.css","ap-css-motion"),deferPageCss("css/ap-cinematic-2026.css","ap-css-cinematic"),deferPageCss("css/ap-micro-2026.css","ap-css-micro"),deferMainCss(),deferPageCss("css/ap-page-bridge.css","ap-css-bridge"),deferPageCss("css/chart.css","ap-css-chart"),deferPageCss("css/compatibility-page-deferred.css","ap-css-compat-deferred")});</script>
+</head>
+<body class="page-compat ap-cinematic-2026 ap-no-nav-enter">
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
+    <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+    <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
+    <symbol id="ei-infinity" viewBox="0 0 24 24"><path d="M6 12c0-2.1 1.5-3.4 2.9-3.4 2.7 0 4.5 6.8 7.2 6.8 1.4 0 2.9-1.3 2.9-3.4s-1.5-3.4-2.9-3.4c-2.7 0-4.5 6.8-7.2 6.8C7.5 15.4 6 14.1 6 12Z"/></symbol>
+    <symbol id="ei-pin" viewBox="0 0 24 24"><path d="M12 21c-4-5.3-6-8.4-6-11a6 6 0 1 1 12 0c0 2.6-2 5.7-6 11Z"/><circle cx="12" cy="10" r="2.2"/></symbol>
+  </svg>
+
+  <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <a href="index.html" class="navbar__link">Home</a>
+          <a href="chart.html" class="navbar__link">Chart</a>
+          <a href="horoscope.html" class="navbar__link">Daily</a>
+          <a href="compatibility.html" class="navbar__link active" aria-current="page">Match</a>
+          <a href="ephemeris.html" class="navbar__link">Sky</a>
+          <div class="navbar__more" data-nav-more>
+            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
+            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
+          </div>
+        </div>
+        <div class="navbar__end">
+          <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
+            <svg class="eng-i navbar__profile-top__icon" aria-hidden="true"><use href="#ei-gem"/></svg>
+          </a>
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="hero hero--small" style="padding:calc(72px + 4rem) 0 3rem;min-height:603px" aria-labelledby="page-title">
+      <div class="orb orb--purple" style="top:-60px;left:-80px;" aria-hidden="true"></div>
+      <div class="orb orb--gold" style="top:80px;right:-60px;" aria-hidden="true"></div>
+      <div class="container">
+        <p class="hero__eyebrow">Synastry Analysis</p>
+        <h1 id="page-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cosmic Compatibility</h1>
+        <p>Discover the astrological dynamics between two charts</p>
+        <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Full synastry — inter-chart aspects with measured orbs, not Sun-sign matching</span></a></p>
+
+        <!-- Two luminous orb avatars with connecting arc -->
+        <div class="compat-orbs" style="display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;max-width:560px;min-height:200px" aria-hidden="true">
+          <div class="compat-orb compat-orb--1">
+            <div class="compat-orb__core" id="orb1-core"><span id="orb1-glyph"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span></div>
+            <span class="compat-person-label">Person A</span>
+          </div>
+          <div class="compat-orbs__arc">
+            <svg viewBox="0 0 100 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 2 28 Q 50 4 98 28" stroke="url(#arc-g)" stroke-width="1.2" fill="none" stroke-dasharray="3 3" opacity="0.7"/>
+              <defs>
+                <linearGradient id="arc-g" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0%" stop-color="#9db36a"/>
+                  <stop offset="50%" stop-color="#C2A05E" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#C2A05E"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span class="compat-orbs__arc-label"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
+          </div>
+          <div class="compat-orb compat-orb--2">
+            <div class="compat-orb__core" id="orb2-core"><span id="orb2-glyph"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span></div>
+            <span class="compat-person-label">Person B</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         COMPATIBILITY FORM
+    ============================================================ -->
+    <section class="section" style="padding-top:var(--space-8);" aria-labelledby="form-heading">
+      <div class="container">
+        <form id="compat-form" class="compat-form" style="min-height:1680px" novalidate aria-label="Compatibility calculation form">
+          <h2 class="chart-form-panel__title" id="form-heading" style="text-align:center;margin-bottom:var(--space-8);">
+            <div class="chart-form-panel__title-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-infinity"/></svg></div>
+            Enter Both Birth Details
+          </h2>
+          <p style="text-align:center;font-size:0.68rem;letter-spacing:0.04em;color:#8891AA;margin-bottom:var(--space-4);">Both people's birth data is processed only in your browser — nothing is uploaded.</p>
+
+          <div class="compat-form__grid">
+            <!-- Person One card -->
+            <fieldset class="compat-person-card compat-person-card--p1" style="border:none;padding:var(--space-7);margin:0;">
+              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person A birth details</legend>
+              <h3>
+                <span class="person-icon person-icon--p1" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
+                Person A
+              </h3>
+              <div class="form-group">
+                <label for="person1-name" class="form-label">Name</label>
+                <input type="text" id="person1-name" name="person1-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
+              </div>
+              <div class="form-group">
+                <label for="person1-date" class="form-label">Birth Date <span class="required" aria-hidden="true">*</span></label>
+                <input type="date" id="person1-date" name="person1-date" class="form-input" required aria-required="true" />
+              </div>
+              <div class="form-group">
+                <label for="person1-time" class="form-label">Birth Time</label>
+                <input type="time" id="person1-time" name="person1-time" class="form-input" value="12:00" aria-describedby="p1-time-hint" />
+                <p class="form-hint" id="p1-time-hint">Affects rising sign accuracy.</p>
+              </div>
+              <div class="form-group" style="position:relative;">
+                <label for="person1-city" class="form-label">Birth City <span class="required" aria-hidden="true">*</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span>
+                  <input type="text" id="person1-city" name="person1-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p1-city-dropdown" />
+                </div>
+                <div class="autocomplete-dropdown" id="p1-city-dropdown" role="listbox" aria-label="City suggestions for person A"></div>
+                <input type="hidden" id="person1-lat" name="person1-lat" />
+                <input type="hidden" id="person1-lon" name="person1-lon" />
+                <input type="hidden" id="person1-tz"  name="person1-tz" />
+              </div>
+            </fieldset>
+
+            <!-- Desktop divider -->
+            <div class="compat-form__divider" aria-hidden="true">
+              <div class="compat-form__divider-line"></div>
+              <span class="compat-form__divider-heart"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span>
+              <div class="compat-form__divider-line"></div>
+            </div>
+
+            <!-- Person Two card -->
+            <fieldset class="compat-person-card compat-person-card--p2" style="border:none;padding:var(--space-7);margin:0;">
+              <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Person B birth details</legend>
+              <h3>
+                <span class="person-icon person-icon--p2" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
+                Person B
+              </h3>
+              <div class="form-group">
+                <label for="person2-name" class="form-label">Name</label>
+                <input type="text" id="person2-name" name="person2-name" class="form-input" placeholder="Name (optional)" autocomplete="name" />
+              </div>
+              <div class="form-group">
+                <label for="person2-date" class="form-label">Birth Date <span class="required" aria-hidden="true">*</span></label>
+                <input type="date" id="person2-date" name="person2-date" class="form-input" required aria-required="true" />
+              </div>
+              <div class="form-group">
+                <label for="person2-time" class="form-label">Birth Time</label>
+                <input type="time" id="person2-time" name="person2-time" class="form-input" value="12:00" aria-describedby="p2-time-hint" />
+                <p class="form-hint" id="p2-time-hint">Affects rising sign accuracy.</p>
+              </div>
+              <div class="form-group" style="position:relative;">
+                <label for="person2-city" class="form-label">Birth City <span class="required" aria-hidden="true">*</span></label>
+                <div class="input-with-icon">
+                  <span class="input-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-pin"/></svg></span>
+                  <input type="text" id="person2-city" name="person2-city" class="form-input" placeholder="Start typing…" autocomplete="off" required aria-required="true" aria-autocomplete="list" aria-controls="p2-city-dropdown" />
+                </div>
+                <div class="autocomplete-dropdown" id="p2-city-dropdown" role="listbox" aria-label="City suggestions for person B"></div>
+                <input type="hidden" id="person2-lat" name="person2-lat" />
+                <input type="hidden" id="person2-lon" name="person2-lon" />
+                <input type="hidden" id="person2-tz"  name="person2-tz" />
+              </div>
+            </fieldset>
+          </div><!-- /.compat-form__grid -->
+
+          <div class="form-submit">
+            <button type="submit" class="btn btn--primary btn--lg" id="compat-submit-btn">
+              Calculate Compatibility <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>
+            </button>
+            <button type="button" class="btn btn--outline btn--lg" id="compat-invite-btn">
+              <svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Invite Someone
+            </button>
+          </div>
+          <p class="form-hint" style="text-align:center;margin-top:var(--space-3);">
+            All calculations run in your browser. No birth data is sent to any server.<br/>
+            <span style="opacity:0.8;">"Invite Someone" copies a link with your half pre-filled — they add theirs.</span>
+          </p>
+        </form>
+
+        <!-- ============================================================
+             LOADING STATE
+        ============================================================ -->
+        <div id="compat-loading" class="hidden" style="text-align:center;padding:var(--space-20) 0;" aria-live="polite">
+          <div class="spinner" role="status" aria-label="Calculating compatibility">
+            <div class="spinner__ring spinner__ring--outer"></div>
+            <div class="spinner__ring spinner__ring--mid"></div>
+            <div class="spinner__ring spinner__ring--inner"></div>
+            <div class="spinner__center"></div>
+          </div>
+          <p style="margin-top:var(--space-6);color:var(--color-silver-dim);">Comparing charts and finding aspects…</p>
+          <p style="margin-top:var(--space-4);"><span class="ap-badge ap-badge--deterministic">Same two charts → the same compatibility reading, always</span></p>
+        </div>
+
+        <!-- ============================================================
+             RESULTS (hidden until calculated)
+        ============================================================ -->
+        <section id="compat-result" class="hidden" aria-live="polite" aria-label="Compatibility report results">
+
+          <!-- Headline card -->
+          <div class="compat-result-header animate-in" style="margin-bottom:var(--space-6);">
+            <h2 id="compat-result-title" class="section-header__title" style="margin-bottom:var(--space-2);font-size:var(--text-2xl);"></h2>
+            <p id="compat-result-subtitle" style="color:var(--color-silver-dim);font-size:var(--text-sm);"></p>
+          </div>
+
+          <!-- Method tabs: Synastry / Composite / Davison -->
+          <div class="compat-tabs animate-in" role="tablist" aria-label="Compatibility chart methods">
+            <button class="compat-tab" id="tab-synastry" role="tab" aria-selected="true" aria-controls="panel-synastry" type="button">Synastry</button>
+            <button class="compat-tab" id="tab-composite" role="tab" aria-selected="false" aria-controls="panel-composite" type="button">Composite</button>
+            <button class="compat-tab" id="tab-davison" role="tab" aria-selected="false" aria-controls="panel-davison" type="button">Davison</button>
+          </div>
+
+          <!-- ===== SYNASTRY PANEL ===== -->
+          <div class="compat-tabpanel" id="panel-synastry" role="tabpanel" aria-labelledby="tab-synastry" tabindex="0">
+
+          <!-- Score ring (200px, gradient stroke) -->
+          <div class="compat-score animate-in animate-in--delay-1">
+            <div class="score-ring-wrapper" role="img" aria-label="Overall compatibility score">
+              <svg viewBox="0 0 160 160" class="score-ring-svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="compat-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#5c4a6e" />
+                    <stop offset="100%" stop-color="#C2A05E" />
+                  </linearGradient>
+                </defs>
+                <!-- Track -->
+                <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+                <!-- Progress arc -->
+                <circle id="score-ring" cx="80" cy="80" r="70" fill="none"
+                        stroke="url(#compat-grad)" stroke-width="10"
+                        stroke-linecap="round" stroke-dasharray="0 439.8"
+                        style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1.1s cubic-bezier(0.22,1,0.36,1);" />
+              </svg>
+              <div class="score-ring-label">
+                <span id="overall-score" class="score-number">—</span>
+                <span class="score-label-text">Compatibility</span>
+              </div>
+            </div>
+            <!-- Connection label below ring -->
+            <div id="compat-connection-label" class="score-connection-label"></div>
+          </div>
+
+          <!-- Category score bars -->
+          <div id="category-scores" class="category-scores animate-in animate-in--delay-2">
+            <div class="category-score-item">
+              <div class="category-score-item__header">
+                <span class="category-score-item__label"><span class="category-icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg></span> Romantic Attraction</span>
+                <span class="category-score-item__value">—</span>
+              </div>
+              <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
+            </div>
+            <div class="category-score-item">
+              <div class="category-score-item__header">
+                <span class="category-score-item__label"><span class="category-icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span> Emotional Depth</span>
+                <span class="category-score-item__value">—</span>
+              </div>
+              <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
+            </div>
+            <div class="category-score-item">
+              <div class="category-score-item__header">
+                <span class="category-score-item__label"><span class="category-icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-chat"/></svg></span> Communication</span>
+                <span class="category-score-item__value">—</span>
+              </div>
+              <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
+            </div>
+            <div class="category-score-item">
+              <div class="category-score-item__header">
+                <span class="category-score-item__label"><span class="category-icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span> Long-Term Potential</span>
+                <span class="category-score-item__value">—</span>
+              </div>
+              <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
+            </div>
+            <div class="category-score-item">
+              <div class="category-score-item__header">
+                <span class="category-score-item__label"><span class="category-icon"><svg class="eng-i" aria-hidden="true"><use href="#ei-eye"/></svg></span> Shared Vision</span>
+                <span class="category-score-item__value">—</span>
+              </div>
+              <div class="score-bar__track"><div class="score-bar__fill" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- Synastry aspects (card-style, JS populates) -->
+          <div id="synastry-aspects" class="synastry-aspects animate-in animate-in--delay-3">
+          </div>
+
+          <!-- Overview narrative -->
+          <div id="compat-overview" class="compat-overview animate-in animate-in--delay-4">
+          </div>
+
+          <!-- Download card row -->
+          <div class="compat-download-row">
+            <button id="compat-download-btn" class="btn btn--gold" style="display:none;">&#8659; Download Compatibility Card</button>
+          </div>
+
+          <div id="compat-upsell" class="compat-upsell chart-whats-next" hidden aria-label="Keepsake and next steps"></div>
+
+          </div><!-- /#panel-synastry -->
+
+          <!-- ===== COMPOSITE PANEL ===== -->
+          <div class="compat-tabpanel" id="panel-composite" role="tabpanel" aria-labelledby="tab-composite" tabindex="0" hidden>
+            <div class="compat-method-note">
+              <h3>The Composite Chart</h3>
+              <p>
+                The composite is the <strong>midpoint of positions</strong>: for each planet we take
+                the point exactly halfway between where it sat in each person's chart. The result is a
+                single derived chart that portrays the relationship as a blend of two natures.
+              </p>
+              <p>
+                It is a mathematical average, not a chart cast for any real moment — so it has no true
+                rising sign or houses. For a relationship chart anchored to an actual instant in spacetime,
+                see the <em>Davison</em> tab.
+              </p>
+            </div>
+            <div id="composite-planets" class="midchart-grid"></div>
+          </div><!-- /#panel-composite -->
+
+          <!-- ===== DAVISON PANEL ===== -->
+          <div class="compat-tabpanel" id="panel-davison" role="tabpanel" aria-labelledby="tab-davison" tabindex="0" hidden>
+            <div class="compat-method-note">
+              <h3>The Davison Relationship Chart</h3>
+              <p>
+                The Davison chart is a <strong>real chart cast for the relationship's midpoint in
+                spacetime</strong>: the moment exactly halfway (in Universal Time) between the two birth
+                moments, at the geographic midpoint between the two birthplaces.
+              </p>
+              <p>
+                Because it is an actual chart for an actual instant, it carries a genuine Ascendant,
+                real houses, and the true planetary sky of that moment — which is what distinguishes it
+                from the composite's averaging of positions.
+              </p>
+              <p class="compat-midpoint-line" id="davison-midpoint"></p>
+            </div>
+            <div id="davison-planets" class="midchart-grid"></div>
+            <div id="davison-angles" class="midchart-angles"></div>
+          </div><!-- /#panel-davison -->
+
+        </section><!-- /#compat-result -->
+
+        <!-- Hidden canvas for card export -->
+        <canvas id="compat-card-canvas" width="1080" height="1080" style="display:none;" aria-hidden="true"></canvas>
+
+      </div><!-- /.container -->
+    </section>
+
+    <!-- ============================================================
+         ELEMENT COMPATIBILITY REFERENCE
+    ============================================================ -->
+    <section class="section section--alt" aria-labelledby="element-compat-heading">
+      <div class="container">
+        <h2 class="section__title" id="element-compat-heading">Sign Compatibility by Element</h2>
+        <p class="section__subtitle">
+          Understanding how the four elements interact is the foundation of astrological compatibility.
+          Full synastry goes far deeper — use the calculator above for a complete picture.
+        </p>
+
+        <div class="element-compat-grid">
+          <div class="element-compat-card element-compat-card--fire">
+            <h3><svg class="eng-i" aria-hidden="true"><use href="#ei-flame"/></svg> Fire Signs — Aries, Leo, Sagittarius</h3>
+            <p>
+              Fire signs thrive with fellow Fire (shared passion and drive) and Air signs (Air fans the flames).
+              Water can extinguish Fire's enthusiasm, while Earth may feel too slow or restrictive.
+              Key strengths: vitality, inspiration, spontaneous adventure.
+            </p>
+          </div>
+          <div class="element-compat-card element-compat-card--earth">
+            <h3><svg class="eng-i" aria-hidden="true"><use href="#ei-leaf"/></svg> Earth Signs — Taurus, Virgo, Capricorn</h3>
+            <p>
+              Earth signs blend beautifully with other Earth signs (shared values and groundedness)
+              and Water signs (Water nourishes Earth's growth). Fire can feel restless, and Air may
+              seem ungrounded. Key strengths: loyalty, stability, sensual depth.
+            </p>
+          </div>
+          <div class="element-compat-card element-compat-card--air">
+            <h3><svg class="eng-i" aria-hidden="true"><use href="#ei-wind"/></svg> Air Signs — Gemini, Libra, Aquarius</h3>
+            <p>
+              Air signs connect effortlessly with fellow Air (meeting of minds) and Fire signs
+              (ideas ignite action). Earth may feel heavy or limiting, while Water can be
+              emotionally overwhelming. Key strengths: intellect, wit, adaptability.
+            </p>
+          </div>
+          <div class="element-compat-card element-compat-card--water">
+            <h3><svg class="eng-i" aria-hidden="true"><use href="#ei-wave"/></svg> Water Signs — Cancer, Scorpio, Pisces</h3>
+            <p>
+              Water signs form profound bonds with fellow Water (deep emotional attunement)
+              and Earth signs (Earth holds Water safely). Fire can evaporate Water's sensitivity,
+              and Air may feel too detached. Key strengths: empathy, intuition, transformation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SUN SIGN COMPATIBILITY MATRIX
+    ============================================================ -->
+    <section class="section" aria-labelledby="matrix-heading">
+      <div class="container">
+        <h2 class="section__title" id="matrix-heading">Sun Sign Compatibility Grid</h2>
+        <p class="section__subtitle">
+          A quick elemental overview of Sun sign compatibility, read as an engraved brass plate —
+          the brighter the mark, the higher the natural harmony; the fainter, the more the full chart decides.
+        </p>
+
+        <div class="card compat-matrix-scroll" tabindex="0" aria-label="12-by-12 zodiac sign compatibility matrix">
+          <div style="min-width:600px;">
+            <table class="compat-matrix" aria-label="Sun sign compatibility overview">
+              <caption class="sr-only">Sun sign compatibility, shown as a brass luminance ramp: High (brightest), Medium, Low (faintest), Neutral (depends on the full chart).</caption>
+              <thead>
+                <tr>
+                  <th scope="col" aria-label="Sign" style="background:transparent;border:none;"><span class="compat-sign-abbr">Sign</span></th>
+                  <th scope="col" aria-label="Aries"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aries" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aries">Ari</abbr></th>
+                  <th scope="col" aria-label="Taurus"><span class="compat-matrix__seal" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Taurus">Tau</abbr></th>
+                  <th scope="col" aria-label="Gemini"><span class="compat-matrix__seal" data-celestial-seal="zodiac:gemini" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Gemini">Gem</abbr></th>
+                  <th scope="col" aria-label="Cancer"><span class="compat-matrix__seal" data-celestial-seal="zodiac:cancer" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Cancer">Can</abbr></th>
+                  <th scope="col" aria-label="Leo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:leo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Leo">Leo</abbr></th>
+                  <th scope="col" aria-label="Virgo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:virgo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Virgo">Vir</abbr></th>
+                  <th scope="col" aria-label="Libra"><span class="compat-matrix__seal" data-celestial-seal="zodiac:libra" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Libra">Lib</abbr></th>
+                  <th scope="col" aria-label="Scorpio"><span class="compat-matrix__seal" data-celestial-seal="zodiac:scorpio" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Scorpio">Sco</abbr></th>
+                  <th scope="col" aria-label="Sagittarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:sagittarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Sagittarius">Sag</abbr></th>
+                  <th scope="col" aria-label="Capricorn"><span class="compat-matrix__seal" data-celestial-seal="zodiac:capricorn" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Capricorn">Cap</abbr></th>
+                  <th scope="col" aria-label="Aquarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aquarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aquarius">Aqu</abbr></th>
+                  <th scope="col" aria-label="Pisces"><span class="compat-matrix__seal" data-celestial-seal="zodiac:pisces" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Pisces">Pis</abbr></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row" aria-label="Aries"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aries" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aries">Ari</abbr></th>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Taurus"><span class="compat-matrix__seal" data-celestial-seal="zodiac:taurus" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Taurus">Tau</abbr></th>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Gemini"><span class="compat-matrix__seal" data-celestial-seal="zodiac:gemini" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Gemini">Gem</abbr></th>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Cancer"><span class="compat-matrix__seal" data-celestial-seal="zodiac:cancer" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Cancer">Can</abbr></th>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Leo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:leo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Leo">Leo</abbr></th>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--neutral">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Virgo"><span class="compat-matrix__seal" data-celestial-seal="zodiac:virgo" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Virgo">Vir</abbr></th>
+                  <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Libra"><span class="compat-matrix__seal" data-celestial-seal="zodiac:libra" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Libra">Lib</abbr></th>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Scorpio"><span class="compat-matrix__seal" data-celestial-seal="zodiac:scorpio" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Scorpio">Sco</abbr></th>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Sagittarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:sagittarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Sagittarius">Sag</abbr></th>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Capricorn"><span class="compat-matrix__seal" data-celestial-seal="zodiac:capricorn" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Capricorn">Cap</abbr></th>
+                  <td class="compat-cell--neutral">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td>
+                  <td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Aquarius"><span class="compat-matrix__seal" data-celestial-seal="zodiac:aquarius" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Aquarius">Aqu</abbr></th>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--low">●</td><td class="compat-cell--high">●</td><td class="compat-cell--neutral">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--low">●</td>
+                  <td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td>
+                </tr>
+                <tr>
+                  <th scope="row" aria-label="Pisces"><span class="compat-matrix__seal" data-celestial-seal="zodiac:pisces" data-seal-sm aria-hidden="true"></span><abbr class="compat-sign-abbr" title="Pisces">Pis</abbr></th>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--neutral">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
+                  <td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td><td class="compat-cell--medium">●</td><td class="compat-cell--high">●</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="display:flex;gap:var(--space-6);margin-top:var(--space-5);flex-wrap:wrap;" aria-label="Legend">
+            <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(216,185,120,0.55);box-shadow:inset 0 0 0 1px rgba(216,185,120,0.6);display:inline-block;" aria-hidden="true"></span>High Compatibility
+            </span>
+            <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(194,160,94,0.34);display:inline-block;" aria-hidden="true"></span>Medium Compatibility
+            </span>
+            <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.22);display:inline-block;" aria-hidden="true"></span>Challenging
+            </span>
+            <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.08);box-shadow:inset 0 0 0 1px rgba(140,117,68,0.2);display:inline-block;" aria-hidden="true"></span>Neutral / Depends
+            </span>
+          </div>
+          <p class="form-hint" style="margin-top:var(--space-3);">
+            Based on elemental compatibility only. Every real relationship is far more nuanced — use the full synastry calculator above for an accurate reading.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHAT IS SYNASTRY?
+    ============================================================ -->
+    <section class="section section--alt" aria-labelledby="about-synastry">
+      <div class="container">
+        <div class="grid-2" style="align-items:start;gap:var(--space-12);">
+          <div>
+            <header class="section-header" style="text-align:left;margin-bottom:var(--space-8);">
+              <p class="section-header__label">How It Works</p>
+              <h2 class="section-header__title" id="about-synastry">What Is Synastry?</h2>
+            </header>
+            <p style="color:var(--color-silver-dim);line-height:1.8;margin-bottom:var(--space-5);">
+              Synastry is the branch of astrology that compares two birth charts to analyse the
+              relational dynamics between two people. By overlaying Person A's chart onto Person B's,
+              we reveal every cross-chart planetary aspect — Venus conjunct Mars, Sun trine Moon,
+              Saturn square Mercury — each carrying its own signature of attraction, challenge, or harmony.
+            </p>
+            <p style="color:var(--color-silver-dim);line-height:1.8;margin-bottom:var(--space-5);">
+              Harmonious aspects such as trines (120°) and sextiles (60°) indicate areas of natural
+              flow and mutual support — where each person brings out the best in the other.
+              Dynamic aspects like squares (90°) and oppositions (180°) show points of tension that,
+              when understood, can become powerful engines of growth. Conjunctions (0°) intensify
+              and merge the energies of the planets involved.
+            </p>
+            <p style="color:var(--color-silver-dim);line-height:1.8;">
+              Astro Precise calculates all Ptolemaic aspects with standard orbs — 8° for major aspects,
+              4° for minor ones — giving you a complete and accurate picture of your inter-chart
+              dynamics. The score is derived from a weighted analysis of aspect harmony, elemental
+              balance, and house overlays.
+            </p>
+          </div>
+          <div>
+            <!-- Premium aspect reference card -->
+            <div class="synastry-sidebar-card" style="margin-bottom:var(--space-6);">
+              <h3 style="font-family:var(--font-display);color:var(--gold-pale);font-size:var(--text-lg);font-weight:600;margin-bottom:var(--space-5);">Key Synastry Aspects</h3>
+              <table class="synastry-aspect-table" aria-label="Key synastry aspects and their meaning">
+                <thead>
+                  <tr>
+                    <th scope="col" aria-label="Aspect symbol">Symbol</th>
+                    <th scope="col">Aspect</th>
+                    <th scope="col">Angle</th>
+                    <th scope="col">Nature</th>
+                    <th scope="col">Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--conjunction" aria-hidden="true">☌</span><span class="sr-only">Conjunction</span></td>
+                    <td style="color:var(--white);font-weight:500;">Conjunction</td>
+                    <td>0°</td>
+                    <td><span class="sat-nature sat-nature--intense">Intense</span></td>
+                    <td>Deep merger of energies</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--trine" aria-hidden="true">△</span><span class="sr-only">Trine</span></td>
+                    <td style="color:var(--white);font-weight:500;">Trine</td>
+                    <td>120°</td>
+                    <td><span class="sat-nature sat-nature--harmonic">Harmonic</span></td>
+                    <td>Natural flow &amp; ease</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--sextile" aria-hidden="true">✶</span><span class="sr-only">Sextile</span></td>
+                    <td style="color:var(--white);font-weight:500;">Sextile</td>
+                    <td>60°</td>
+                    <td><span class="sat-nature sat-nature--harmonic">Supportive</span></td>
+                    <td>Opportunity &amp; cooperation</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--square" aria-hidden="true">□</span><span class="sr-only">Square</span></td>
+                    <td style="color:var(--white);font-weight:500;">Square</td>
+                    <td>90°</td>
+                    <td><span class="sat-nature sat-nature--dynamic">Dynamic</span></td>
+                    <td>Tension that drives growth</td>
+                  </tr>
+                  <tr>
+                    <td><span class="sat-glyph sat-glyph--opposition" aria-hidden="true">☍</span><span class="sr-only">Opposition</span></td>
+                    <td style="color:var(--white);font-weight:500;">Opposition</td>
+                    <td>180°</td>
+                    <td><span class="sat-nature sat-nature--polarity">Polarising</span></td>
+                    <td>Attraction &amp; friction</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="synastry-sidebar-card">
+              <h4 style="font-family:var(--font-display);color:var(--gold-pale);font-size:var(--text-base);font-weight:600;margin-bottom:var(--space-4);">Most Significant Synastry Connections</h4>
+              <ul style="color:var(--color-silver-dim);font-size:var(--text-sm);line-height:2.1;padding-left:var(--space-5);margin:0;">
+                <li><strong style="color:var(--white);">Sun–Moon contacts</strong> — core identity meets emotional need</li>
+                <li><strong style="color:var(--white);">Venus–Mars contacts</strong> — romantic and physical attraction</li>
+                <li><strong style="color:var(--white);">Moon–Moon contacts</strong> — emotional resonance and intuitive bond</li>
+                <li><strong style="color:var(--white);">Saturn contacts</strong> — long-term commitment and karmic lessons</li>
+                <li><strong style="color:var(--white);">Jupiter contacts</strong> — mutual growth and shared optimism</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- JS -->
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/ap-zodiac-constants.js" defer></script>
+  <script src="js/chart-render.js" defer></script>
+  <script src="js/ap-load-interpretations.js" defer></script>
+  <script src="js/profile.js" defer></script>
+  <script src="js/celestial-seals.js" defer></script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/ap-nav-model.js"></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/ap-page-bridge.js" defer></script>
+  <script src="js/ap-canvas-seals.js" defer></script>
+  <script>(function(){function t(c){var e=document.createElement("script");e.src=c,e.defer=!0,document.body.appendChild(e)}function n(){t("js/cosmos.js"),t("js/effects.js")}window.addEventListener("load",function(){window.requestIdleCallback?requestIdleCallback(n,{timeout:4e3}):setTimeout(n,1200)},{once:!0})})();</script>
+
+  <script src="js/compatibility-page.js" defer></script>
+</body>
+</html>

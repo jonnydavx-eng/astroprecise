@@ -1,0 +1,1 @@
+(function(t){"use strict";function r(){try{if(t.navigator.webdriver||/HeadlessChrome/i.test(t.navigator.userAgent||""))return!0}catch{}return!1}function e(){return/[?&](lite|nosplash)=1/.test(t.location.search||"")}function n(){return!!(r()||e())}function i(){return e()?!0:r()}t.__apAuditEnv=r,t.__apStayOnLiteShell=n,t.__apSkipOrreryBoot=i})(window);

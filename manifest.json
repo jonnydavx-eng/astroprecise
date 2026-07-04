@@ -1,0 +1,40 @@
+{
+  "name": "Astro Precise — Birth Charts & Horoscopes",
+  "short_name": "Astro Precise",
+  "description": "Free birth chart calculator, daily horoscope, rising sign, synastry & transits — VSOP87 precision, computed privately in your browser. No account required.",
+  "id": "/",
+  "start_url": "index.html?app=1",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0C1016",
+  "theme_color": "#0C1016",
+  "icons": [
+    {
+      "src": "img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["lifestyle", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "./",
+  "shortcuts": [
+    { "name": "Today's Horoscope", "url": "horoscope.html" },
+    { "name": "Cast a Chart", "url": "chart.html" },
+    { "name": "Current Transits", "url": "transits.html" }
+  ]
+}

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How Astro Precise is accurate: real VSOP87 and ELP2000 astronomy, a true Ascendant, authentic house systems — computed entirely in your browser." />
+  <title>How Astro Precise Stays Accurate &amp; Private</title>
+<link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="How Astro Precise Is Accurate | Astro Precise" />
+  <meta property="og:description" content="Real VSOP87 and ELP2000 astronomy, a true Ascendant and Midheaven, authentic house systems, retrograde detection, historical timezones — and a privacy-first engine that runs entirely in your browser." />
+  <meta property="og:url" content="https://astroprecise.app/accuracy.html" />
+  <link rel="canonical" href="https://astroprecise.app/accuracy.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="How Astro Precise Is Accurate | Astro Precise" />
+  <meta name="twitter:description" content="Real VSOP87 and ELP2000 astronomy, a true Ascendant and Midheaven, authentic house systems, and a privacy-first engine that runs entirely in your browser." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta name="theme-color" content="#0C1016" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <link rel="stylesheet" href="css/accuracy-page.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener("DOMContentLoaded",function(){deferPageCss("css/ap-cinematic-2026.css","ap-css-cinematic"),deferMainCss()});</script>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  <link rel="stylesheet" href="css/chart.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"How Astro Precise Is Accurate","description":"How Astro Precise is accurate: real VSOP87 and ELP2000 astronomy, a true Ascendant and Midheaven, authentic house systems, retrograde detection, historical timezone conversion, and a privacy-first engine that computes entirely in your browser.","url":"https://astroprecise.app/accuracy.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Astronomical accuracy"},{"@type":"Thing","name":"Astrology calculation"},{"@type":"Thing","name":"Data privacy"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How Astro Precise Is Accurate","description":"A plain-English explanation of the astronomy behind Astro Precise — VSOP87 planetary theory, ELP2000 lunar theory, Meeus algorithms, a true Ascendant and Midheaven, real house systems, and a privacy-first, in-browser engine where every number is real.","url":"https://astroprecise.app/accuracy.html","image":"https://astroprecise.app/img/og-banner-v576.jpg","author":{"@type":"Organization","name":"Astro Precise"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"mainEntityOfPage":"https://astroprecise.app/accuracy.html"}</script>
+  </head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <!-- Cosmic background -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="acc-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="acc-hero__eyebrow">Built on Real Astronomy</p>
+        <h1 id="page-title">How Astro Precise Is Accurate</h1>
+        <p class="acc-hero__sub">
+          Most astrology apps stop at your Sun sign. Astro Precise computes the actual
+          sky &mdash; the real positions of the Sun, Moon, and planets at your exact birth
+          moment &mdash; using the same astronomical theory professional ephemerides rely on.
+        </p>
+        <span class="acc-hero__seal">
+          <span class="acc-hero__seal-glyph" aria-hidden="true">&#10022;</span>
+          Every number is real
+        </span>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE ENGINE
+    ============================================================ -->
+    <section class="acc-section" aria-labelledby="engine-heading">
+      <div class="container">
+        <div class="acc-section__header">
+          <p class="acc-section__label">The Engine</p>
+          <h2 class="acc-section__title" id="engine-heading">Professional-Grade Astronomy</h2>
+          <p class="acc-section__subtitle">
+            Under the hood, Astro Precise runs a genuine astronomical engine &mdash; not a
+            lookup table of generic horoscopes. Here is exactly how each part of your
+            chart is derived.
+          </p>
+        </div>
+
+        <div class="acc-grid">
+          <article class="glass-card engraved acc-card">
+            <span class="acc-card__icon" aria-hidden="true">&#9737;</span>
+            <h3>Planets via VSOP87</h3>
+            <p>
+              Planetary longitudes come from <strong>VSOP87</strong> &mdash; the same
+              high-precision planetary theory used by serious ephemerides &mdash; giving
+              geocentric ecliptic positions, not rough averages. Pluto is computed from
+              JPL Keplerian orbital elements.
+            </p>
+          </article>
+
+          <article class="glass-card engraved acc-card">
+            <span class="acc-card__icon" aria-hidden="true">&#9789;</span>
+            <h3>Moon via ELP2000</h3>
+            <p>
+              The Moon moves fast and irregularly, so it gets its own dedicated theory:
+              <strong>ELP2000</strong>. That is why your Moon sign and degree are
+              trustworthy even when you were born minutes from a sign boundary.
+            </p>
+          </article>
+
+          <article class="glass-card engraved acc-card">
+            <span class="acc-card__icon" aria-hidden="true">&#8593;</span>
+            <h3>A True Ascendant &amp; Midheaven</h3>
+            <p>
+              Your rising sign and Midheaven are derived from <strong>local sidereal
+              time</strong> and the obliquity of the ecliptic &mdash; real spherical
+              astronomy &mdash; not guessed from your Sun sign. This needs an accurate
+              birth time and place.
+            </p>
+          </article>
+
+          <article class="glass-card engraved acc-card">
+            <span class="acc-card__icon" aria-hidden="true">&#9962;</span>
+            <h3>Authentic House Systems</h3>
+            <p>
+              Choose how the sky is divided: <strong>Placidus</strong> (computed
+              properly via right-ascension semi-arcs), plus <strong>Whole Sign</strong>,
+              <strong>Equal</strong>, and <strong>Porphyry</strong> &mdash; each calculated
+              the way classical and modern astrologers actually use them.
+            </p>
+          </article>
+
+          <article class="glass-card engraved acc-card">
+            <span class="acc-card__icon" aria-hidden="true">&#8635;</span>
+            <h3>Real Retrograde Detection</h3>
+            <p>
+              Retrograde status is not looked up from a list &mdash; it is detected by
+              sampling each planet's true motion across time, so retrogrades and the
+              stations around them reflect the actual sky.
+            </p>
+          </article>
+
+          <article class="glass-card engraved acc-card">
+            <span class="acc-card__icon" aria-hidden="true">&#9201;</span>
+            <h3>Historical Timezone Conversion</h3>
+            <p>
+              Your local birth time is converted to Universal Time using full historical
+              timezone rules &mdash; including past daylight-saving shifts &mdash; so a
+              chart cast for 1974 is as honest as one cast for today.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHAT "ACCURATE" MEANS
+    ============================================================ -->
+    <section class="acc-section acc-section--alt" aria-labelledby="precision-heading">
+      <div class="container">
+        <div class="acc-section__header">
+          <p class="acc-section__label">What "Accurate" Means Here</p>
+          <h2 class="acc-section__title" id="precision-heading">Arcminute Precision, Not Vague Generalities</h2>
+          <p class="acc-section__subtitle">
+            The combination of VSOP87, ELP2000, and Meeus algorithms places bodies to
+            roughly arcminute-to-degree precision &mdash; the difference between a chart
+            you can trust to the degree and a one-size-fits-all Sun-sign blurb.
+          </p>
+        </div>
+
+        <div class="acc-rows">
+          <div class="glass-card acc-row">
+            <span class="acc-row__mark" aria-hidden="true">&#10003;</span>
+            <div class="acc-row__body">
+              <h3>Meeus algorithms throughout</h3>
+              <p>
+                Julian Day conversion, sidereal time, obliquity, and coordinate
+                transforms follow the standard astronomical algorithms documented by
+                Jean Meeus &mdash; the reference practitioners cite when they need it right.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass-card acc-row">
+            <span class="acc-row__mark" aria-hidden="true">&#10003;</span>
+            <div class="acc-row__body">
+              <h3>Real aspects with real orbs</h3>
+              <p>
+                Aspects between planets are measured from the computed longitudes using
+                standard orbs, and "applying versus separating" is determined from each
+                body's actual daily motion &mdash; the same logic that powers your daily
+                transits.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass-card acc-row">
+            <span class="acc-row__mark" aria-hidden="true">&#10003;</span>
+            <div class="acc-row__body">
+              <h3>Deterministic, reproducible readings</h3>
+              <p>
+                The same chart on the same day produces the same reading every time,
+                everywhere. Nothing is randomised behind your back &mdash; the words follow
+                the math.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass-card acc-row">
+            <span class="acc-row__mark" aria-hidden="true">&#10003;</span>
+            <div class="acc-row__body">
+              <h3>Honest about its limits</h3>
+              <p>
+                When no exact transit touches your chart on a given day, Astro Precise
+                says so. When a live feed is unavailable, it tells you instead of
+                inventing a number. Accuracy includes admitting what isn't there.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THE ETHOS
+    ============================================================ -->
+    <section class="acc-section" aria-labelledby="ethos-heading">
+      <div class="container">
+        <div class="glass-card engraved acc-ethos">
+          <p class="acc-section__label" id="ethos-heading">The Ethos</p>
+          <blockquote>&ldquo;Every number on this site is real.&rdquo;</blockquote>
+          <p>
+            That is the rule the whole project is built around. No fabricated data, no
+            decorative figures, no fake precision. Where a value is computed, it is
+            computed for real. Where a live feed (such as space-weather data) cannot be
+            reached, the page says it plainly rather than filling the gap with a guess.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PRIVACY
+    ============================================================ -->
+    <section class="acc-section acc-section--alt" aria-labelledby="privacy-heading">
+      <div class="container">
+        <div class="acc-section__header">
+          <p class="acc-section__label">Privacy by Architecture</p>
+          <h2 class="acc-section__title" id="privacy-heading">Your Birth Moment Never Leaves Your Browser</h2>
+          <p class="acc-section__subtitle">
+            Accuracy and privacy are not a trade-off here. The entire engine runs on
+            your device, so the most personal thing you enter &mdash; the exact moment and
+            place you were born &mdash; stays with you.
+          </p>
+        </div>
+
+        <div class="glass-card engraved acc-privacy">
+          <span class="acc-privacy__glyph" aria-hidden="true">&#9919;</span>
+          <h3>No servers. No accounts. No tracking.</h3>
+          <p>
+            Every chart, transit, and reading is calculated <strong>in your browser</strong>.
+            Astro Precise has no back-end of its own collecting your data, no analytics
+            scripts, and no advertising trackers. Saved charts live in your own browser's
+            local storage, on your device.
+          </p>
+          <ul class="acc-privacy__list">
+            <li>Your birth date, time, and coordinates are processed locally and never transmitted to us.</li>
+            <li>The only outbound requests are clearly-labelled public feeds (such as space-weather data) and a place-search lookup.</li>
+            <li>Place search sends only the place name you type &mdash; for example "Lisbon" &mdash; never your birth moment.</li>
+            <li>No login is required to cast a full, accurate chart.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHY IT MATTERS
+    ============================================================ -->
+    <section class="acc-section" aria-labelledby="why-heading">
+      <div class="container">
+        <div class="acc-ethos">
+          <p class="acc-section__label" id="why-heading">Why It Matters</p>
+          <p style="font-size:1.02rem;color:var(--silver,#A89E88);line-height:1.85;">
+            Sun-sign astrology asks one question &mdash; the month you were born &mdash; and
+            gives everyone born in that month the same answer. A real chart asks for the
+            full picture: the precise time, the place, and the whole sky overhead. The
+            result is specific to you, grounded in astronomy you can verify, and
+            presented with the care the subject deserves &mdash; factual, classy, and
+            free of hype.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CTA
+    ============================================================ -->
+    <section class="acc-section acc-section--alt" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="glass-card engraved acc-cta">
+          <h2 id="cta-heading">See It for Yourself</h2>
+          <p>
+            Cast a complete natal chart from real planetary positions &mdash; free, in your
+            browser, with nothing to sign up for.
+          </p>
+          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Free Birth Chart &rarr;</a>
+          <p class="acc-cta__note">No account &middot; No tracking &middot; Computed on your device</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-inner" data-ap-footer-model="1">
+
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed locally &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+          <div class="footer-zodiac-strip" aria-hidden="true">
+            <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+            <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
+          </div>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
+          <h2 class="footer-nav-col__title">Tools</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
+            <li><a href="compatibility.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Match</a></li>
+            <li><a href="transits.html"><span aria-hidden="true">☿</span> Transits</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html?sign=libra">Libra today</a></li>
+            <li><a href="horoscope.html?sign=scorpio">Scorpio today</a></li>
+            <li><a href="horoscope.html?sign=sagittarius">Sagittarius today</a></li>
+            <li><a href="horoscope.html?sign=capricorn">Capricorn today</a></li>
+            <li><a href="horoscope.html?sign=aquarius">Aquarius today</a></li>
+            <li><a href="horoscope.html?sign=pisces">Pisces today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+            <li><a href="libra.html">Libra profile</a></li>
+            <li><a href="scorpio.html">Scorpio profile</a></li>
+            <li><a href="sagittarius.html">Sagittarius profile</a></li>
+            <li><a href="capricorn.html">Capricorn profile</a></li>
+            <li><a href="aquarius.html">Aquarius profile</a></li>
+            <li><a href="pisces.html">Pisces profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- JS -->
+  <script src="js/raf-core.js"></script>
+
+  <script src="js/cosmos.js"></script>
+  <script src="js/ephemeris.js"></script>
+  <script src="js/ap-zodiac-constants.js"></script>
+  <script src="js/chart-render.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/icons.js"></script>
+<script src="js/effects.js"></script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
+</body>
+</html>
