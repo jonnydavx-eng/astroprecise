@@ -235,11 +235,13 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 <nav class="ap-float-nav ap-float-nav--extended" id="apFloatNav" aria-label="Jump to section" hidden>
   <a class="ap-float-nav__link" href="#heroChapter" data-ap-jump="heroChapter" data-short="Hero">Hero</a>
   <a class="ap-float-nav__link" href="#skyChapter" data-ap-jump="skyChapter" data-short="Sky">Tonight</a>
+  <a class="ap-float-nav__link" href="#dailyChapter" data-ap-jump="dailyChapter" data-short="Today">Today</a>
   <a class="ap-float-nav__link" href="#compareChapter" data-ap-jump="compareChapter" data-short="Diff">Different</a>
   <a class="ap-float-nav__link" href="#methodChapter" data-ap-jump="methodChapter" data-short="Math">Method</a>
   <a class="ap-float-nav__link" href="#instrumentsChapter" data-ap-jump="instrumentsChapter" data-short="Tools">Tools</a>
   <a class="ap-float-nav__link" href="#skyGuidesWrap" data-ap-jump="skyGuidesWrap" data-short="Guide">Guides</a>
   <a class="ap-float-nav__link" href="#libraryChapter" data-ap-jump="libraryChapter" data-short="Sign">Signs</a>
+  <a class="ap-float-nav__link" href="#matchChapter" data-ap-jump="matchChapter" data-short="Love">Couples</a>
   <a class="ap-float-nav__link" href="#qaChapter" data-ap-jump="qaChapter" data-short="Q&amp;A">Q&amp;A</a>
   <a class="ap-float-nav__link" href="#shopChapter" data-ap-jump="shopChapter" data-short="Shop">Shop</a>
 </nav>
@@ -258,7 +260,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
           You're not one of twelve. <br><span class="display-accent">This chart is yours alone.</span>
         </h1>
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
-          The planets behind this page are real &mdash; computed live in your browser, accurate to roughly an arcminute. Your birth chart is where they stood the minute you were born.
+          The planets behind this page are real &mdash; computed live in your browser, accurate to roughly an arcminute (1800&ndash;2200&nbsp;CE). Your birth chart is where they stood the minute you were born.
         </p>
         <form id="hero-chart-form" class="hero-form" novalidate aria-label="Cast your natal chart">
           <label for="hero-birthdate" class="ui-label">Your date of birth</label>
@@ -271,7 +273,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
         </form>
         <ul class="hero-solar-trust" aria-label="Why you can trust this">
           <li><span aria-hidden="true">&#10003;</span> Free &mdash; no account</li>
-          <li><span aria-hidden="true">&#10003;</span> Accurate to about an arcminute (<abbr class="ap-gloss" title="VSOP87 &mdash; a published planetary theory, computed privately on your device">VSOP87</abbr>)</li>
+          <li><span aria-hidden="true">&#10003;</span> Accurate to about an arcminute, 1800&ndash;2200&nbsp;CE (<abbr class="ap-gloss" title="VSOP87 &mdash; a published planetary theory, computed privately on your device">VSOP87</abbr>)</li>
           <li><span aria-hidden="true">&#10003;</span> Private &mdash; computed on your device</li>
         </ul>
         <p class="ap-spine-bridge hero-spine-bridge">New here? Start with the sky above you tonight &mdash; then watch it become your chart. <a href="#skyChapter" data-ap-jump="skyChapter">See tonight's sky &rarr;</a></p>
@@ -1044,6 +1046,25 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 </section>
 
 <!-- ============================================================
+     § 2a · DAILY SKY — today's transit reading (preview -> your chart)
+     ============================================================ -->
+<section class="department section-bleed ap-chapter" id="dailyChapter" aria-labelledby="daily-heading">
+  <div class="page-wrap">
+    <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
+      <p class="ap-display-kicker">Today</p>
+      <h2 id="daily-heading" class="ap-chapter-title">Your daily sky</h2>
+      <p class="ap-chapter-lead" style="max-width:52ch; margin-inline:auto;">
+        The sky is still moving. Pick your sign for today&rsquo;s reading &mdash; computed live from the real planets, not a paragraph written weeks ahead &mdash; then see how it lands on <em>your</em> chart.
+      </p>
+    </header>
+    <div id="daily-tool-root" class="ap-reveal" style="--ap-reveal-i:1">
+      <p class="home-daily__prompt" style="text-align:center;color:rgba(236,230,216,.6)">Loading today&rsquo;s sky&hellip;</p>
+    </div>
+    <p class="ap-spine-bridge ap-spine-bridge--center">The daily reading shows what the sky is doing today; the <a href="shop.html#deep-reading">Deep Reading</a> traces the whole pattern behind every day. <a href="chart.html">Cast your free chart &rarr;</a></p>
+  </div>
+</section>
+
+<!-- ============================================================
      § 2b · WHY IT'S DIFFERENT — sales contrast + trust + what you get
      ============================================================ -->
 <section class="section-bleed ap-chapter ap-chapter--compare" id="compareChapter" aria-labelledby="compare-heading">
@@ -1300,6 +1321,25 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 </section>
 
 <!-- ============================================================
+     § 8a · COUPLES — two-sign sketch -> real synastry
+     ============================================================ -->
+<section class="department section-bleed ap-chapter" id="matchChapter" aria-labelledby="match-heading">
+  <div class="page-wrap">
+    <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
+      <p class="ap-display-kicker">Couples</p>
+      <h2 id="match-heading" class="ap-chapter-title">Two skies, compared</h2>
+      <p class="ap-chapter-lead" style="max-width:52ch; margin-inline:auto;">
+        Pick two signs for a quick element sketch &mdash; then run the real synastry: the actual measured aspects between two whole birth charts, not a made-up match score.
+      </p>
+    </header>
+    <div id="match-tool-root" class="ap-reveal" style="--ap-reveal-i:1">
+      <p class="home-match__prompt" style="text-align:center;color:rgba(236,230,216,.6)">Loading&hellip;</p>
+    </div>
+    <p class="ap-spine-bridge ap-spine-bridge--center">Two charts show the pattern between you; your own chart shows the pattern within you. <a href="chart.html">Cast yours free &rarr;</a></p>
+  </div>
+</section>
+
+<!-- ============================================================
      § 9 · ON ACCURACY & PRIVACY — journal Q&A
      ============================================================ -->
 <section class="department section-bleed ap-chapter" id="qaChapter" aria-labelledby="qa-heading">
@@ -1502,6 +1542,8 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
      Scripts — minimal, end of body
      ============================================================ -->
 <script defer src="js/ap-home-bootstrap.js?v=578"></script>
+<script defer src="js/home-daily.js?v=620"></script>
+<script defer src="js/home-match.js?v=620"></script>
 <script defer>
 (function () {
   'use strict';

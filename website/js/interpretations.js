@@ -2272,7 +2272,7 @@ function calculateCompatibility(chart1, chart2) {
     ? `Your Moon signs share the same element, giving you natural emotional attunement despite individual differences.`
     : `Your Moon signs come from different elements, meaning you will need to learn each other\'s emotional languages — a rewarding journey.`;
 
-  const overview = `${sign1} and ${sign2} — ${baseNarrative} ${moonNarrative} Overall compatibility of ${overall}% reflects both your natural resonance and the specific growth opportunities this pairing offers. ${overall >= 80 ? 'This is a highly compatible combination with natural ease and mutual understanding.' : overall >= 65 ? 'This combination has genuine potential that develops through mutual understanding and respect.' : 'This combination requires conscious effort and genuine appreciation of your differences, but these differences can be your greatest teachers.'}`;
+  const overview = `${sign1} and ${sign2} — ${baseNarrative} ${moonNarrative} ${overall >= 80 ? 'Overall, this is a highly compatible combination with natural ease and mutual understanding.' : overall >= 65 ? 'Overall, this combination has genuine potential that develops through mutual understanding and respect.' : 'Overall, this combination rewards conscious effort and genuine appreciation of your differences — those differences can be your greatest teachers.'}`;
 
   return { overall, love, communication, values, longTerm, passion, synastryAspects, overview };
 }
@@ -2418,6 +2418,21 @@ window.AstroInterpretations = Object.assign({}, window.Interpretations, {
   analyzeChartDetailed,
   ASPECTS,
 });
+
+// ── HONESTY FIX (2026-07-04) ────────────────────────────────────────────────
+// Repoint the LIVE compatibility scorer to this SECTION-4 implementation. The
+// older IIFE version (window.Interpretations.calculateCompatibility) derived the
+// headline % from a Sun/Moon/Venus element matrix + a sine-wave jitter and did
+// NOT consume the measured synastry aspects — while the UI claimed "full synastry
+// analysis ... aspect harmony and house overlays." This version folds the real
+// measured aspects (aspectAdjust) into the result and returns the genuine
+// synastryAspects list, so any UI reading it is truthful. The presentation layer
+// no longer shows a headline % at all (see APSynastry.character) — the aspect
+// list is the substance. House overlays are still NOT computed; copy updated to
+// stop claiming they are.
+if (window.Interpretations) {
+  window.Interpretations.calculateCompatibility = calculateCompatibility;
+}
 
 
 // ═══════════════════════════════════════════════════════════════════════════

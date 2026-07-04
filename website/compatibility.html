@@ -313,7 +313,7 @@
 
           <!-- Score ring (200px, gradient stroke) -->
           <div class="compat-score animate-in animate-in--delay-1">
-            <div class="score-ring-wrapper" role="img" aria-label="Overall compatibility score">
+            <div class="score-ring-wrapper" role="img" aria-label="Harmony of the measured aspects between your two charts">
               <svg viewBox="0 0 160 160" class="score-ring-svg" aria-hidden="true">
                 <defs>
                   <linearGradient id="compat-grad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -331,7 +331,7 @@
               </svg>
               <div class="score-ring-label">
                 <span id="overall-score" class="score-number">—</span>
-                <span class="score-label-text">Compatibility</span>
+                <span class="score-label-text">in harmony</span>
               </div>
             </div>
             <!-- Connection label below ring -->
@@ -643,9 +643,10 @@
             </p>
             <p style="color:var(--color-silver-dim);line-height:1.8;">
               Astro Precise calculates all Ptolemaic aspects with standard orbs — 8° for major aspects,
-              4° for minor ones — giving you a complete and accurate picture of your inter-chart
-              dynamics. The score is derived from a weighted analysis of aspect harmony, elemental
-              balance, and house overlays.
+              4° for minor ones — the real measured contacts between your two charts. The overall
+              character above is read from the balance of those aspects — how many bring ease versus
+              friction — rather than a single number pretending to score a relationship. The area bars
+              show the elemental resonance between your key placements.
             </p>
           </div>
           <div>
@@ -846,6 +847,7 @@
   })();
   </script>
 
+  <script src="js/synastry-shared.js" defer></script>
   <script src="js/compatibility-page.js" defer></script>
 </body>
 </html>
