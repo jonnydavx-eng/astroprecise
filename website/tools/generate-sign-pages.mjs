@@ -216,6 +216,28 @@ const RULER_SEAL = {
   sagittarius: 'jupiter', capricorn: 'saturn', aquarius: 'uranus', pisces: 'neptune',
 };
 
+/* HERO ANCHOR — each sign's ruling planet as a real ENGINE STILL (img/engine/<id>.webp,
+   our own photoreal 3D render, honest). This is the star of the hero, replacing the
+   old painterly zodiac-card JPG. `still` = the engine webp id; `label` = how the body
+   is named in the alt/caption (matches the sign's ruler wording).
+   NOTE Scorpio: the engine's Pluto is a bare generated disc (manifest: generated=true),
+   so we anchor Scorpio on MARS — its stronger photoreal render and traditional ruler
+   (the sign data already reads "Pluto & Mars"). The tiny engraved seal elsewhere stays Pluto. */
+const RULER_STILL = {
+  aries:      { still: 'mars',    label: 'Mars',     rel: 'ruler of Aries' },
+  taurus:     { still: 'venus',   label: 'Venus',    rel: 'ruler of Taurus' },
+  gemini:     { still: 'mercury', label: 'Mercury',  rel: 'ruler of Gemini' },
+  cancer:     { still: 'moon',    label: 'the Moon', rel: 'ruler of Cancer' },
+  leo:        { still: 'sun',     label: 'the Sun',  rel: 'ruler of Leo' },
+  virgo:      { still: 'mercury', label: 'Mercury',  rel: 'ruler of Virgo' },
+  libra:      { still: 'venus',   label: 'Venus',    rel: 'ruler of Libra' },
+  scorpio:    { still: 'mars',    label: 'Mars',     rel: "Scorpio's traditional ruler" },
+  sagittarius:{ still: 'jupiter', label: 'Jupiter',  rel: 'ruler of Sagittarius' },
+  capricorn:  { still: 'saturn',  label: 'Saturn',   rel: 'ruler of Capricorn' },
+  aquarius:   { still: 'uranus',  label: 'Uranus',   rel: 'ruler of Aquarius' },
+  pisces:     { still: 'neptune', label: 'Neptune',  rel: 'ruler of Pisces' },
+};
+
 // Plain one-line meaning of the ruling planet — what it governs (Layer 2).
 const RULER_DEF = {
   aries: 'Mars, the planet of drive, courage and raw initiative.',
@@ -500,7 +522,7 @@ function page(s) {
   <meta name="twitter:description" content="${desc}" />
   <meta name="twitter:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
   <meta name="theme-color" content="#0C1016" />
-  <link rel="preload" href="assets/images/zodiac-cards/${s.key}.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="img/engine/${RULER_STILL[s.key].still}.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
@@ -527,16 +549,49 @@ function page(s) {
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
-    .sign-hero__card-picture {
-      width: clamp(150px, 22vw, 230px);
+    /* Hero planet — the ruling-planet ENGINE STILL is the anchor (photoreal, our render).
+       Deep-void plate, soft radial glow behind the disc, generous reserve box (CLS guard). */
+    .sign-hero__inner {
+      display: flex; gap: clamp(1.5rem, 4vw, 3.5rem);
+      align-items: center; justify-content: center;
+      max-width: 900px; margin: 0 auto;
     }
-    .sign-hero__card-img {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-      border-radius: 14px;
+    .sign-hero__planet {
+      position: relative; flex-shrink: 0;
+      width: clamp(200px, 34vw, 340px);
+      aspect-ratio: 1 / 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* soft brass-cool glow well behind the render (paints instantly, no layout cost) */
+    .sign-hero__planet::before {
+      content: ''; position: absolute; inset: -6%;
+      border-radius: 50%; z-index: 0; pointer-events: none;
+      background: radial-gradient(circle at 50% 46%,
+        color-mix(in srgb, var(--sign-elem, #C2A05E) 26%, transparent) 0%,
+        rgba(12, 16, 22, 0) 62%);
+      filter: blur(6px);
+    }
+    .sign-hero__planet-img {
+      position: relative; z-index: 1;
+      width: 100%; height: 100%;
+      object-fit: contain;
       display: block;
+      filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.62))
+              drop-shadow(0 0 30px color-mix(in srgb, var(--sign-elem, #C2A05E) 22%, transparent));
+    }
+    .sign-hero__planet-caption {
+      position: absolute; z-index: 2; left: 50%; bottom: -1.4rem;
+      transform: translateX(-50%);
+      width: max-content; max-width: min(92vw, 300px); text-align: center;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 0.62rem; line-height: 1.4; letter-spacing: 0.1em; text-transform: uppercase;
+      color: color-mix(in srgb, var(--gold-vivid, #E6C24A) 78%, #ECE6D8);
+      opacity: 0.8;
+    }
+    .sign-hero__figure, figure.sign-hero__planet { margin: 0; }
+    @media (max-width: 640px) {
+      .sign-hero__inner { flex-direction: column; gap: 1.75rem; }
+      .sign-hero__planet { width: clamp(190px, 62vw, 260px); }
     }
     /* Hero seal — celestial-seals.css audit-deferred */
     .sign-hero__seal:not(:has(.ap-seal)) {
@@ -667,12 +722,12 @@ function page(s) {
 
     <section class="sign-hero" aria-labelledby="page-title">
       <div class="sign-hero__inner">
-        <picture class="sign-hero__card-picture">
-          <source srcset="assets/images/zodiac-cards/${s.key}.webp" type="image/webp" />
-          <img class="sign-hero__card-img" src="assets/images/zodiac-cards/${s.key}.jpg"
-            alt="${s.name} — Astro Precise engraved zodiac card"
-            width="230" height="345" loading="eager" decoding="async" fetchpriority="high" />
-        </picture>
+        <figure class="sign-hero__planet">
+          <img class="sign-hero__planet-img" src="img/engine/${RULER_STILL[s.key].still}.webp"
+            alt="${RULER_STILL[s.key].label}, ${RULER_STILL[s.key].rel} — rendered from the Astro Precise engine"
+            width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
+          <figcaption class="sign-hero__planet-caption">${RULER_STILL[s.key].label} · ${RULER_STILL[s.key].rel} · our engine render</figcaption>
+        </figure>
         <div class="sign-hero__content">
           <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:${s.key}" data-seal-lg aria-hidden="true"></span>
           <div class="sign-hero__constellation">${CONSTELLATIONS[s.key] || ''}</div>

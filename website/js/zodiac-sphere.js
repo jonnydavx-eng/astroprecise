@@ -97,20 +97,15 @@
   let planetLons = {};           // signKey → ecliptic lon (degrees, 0–360)
   let stars      = [];
   let cachedPositions = [];      // projected sign positions, updated each frame
-  let spaceBgImg = null;
-  let spaceBgReady = false;
   let spacePanX = 0;
   let spacePanY = 0;
   let natalMarkers = [];
   let natalSunSign = null;
   let transitChords = [];
 
-  (function loadSpaceBg() {
-    var img = new Image();
-    img.onload = function () { spaceBgImg = img; spaceBgReady = true; };
-    img.onerror = function () { spaceBgReady = false; };
-    img.src = 'assets/images/ecliptic-space-bg.jpg';
-  })();
+  // Backdrop is engine-rendered only (ART-DIRECTION hard rule): a deep cool-void
+  // radial gradient + engraved starfield drawn in drawSpaceBackground(). No
+  // photographic sky imagery is loaded.
 
   // 3D ring geometry
   const TILT  = 0.30;            // ~17° — enough depth cue without collapsing too flat
@@ -168,24 +163,15 @@
 
   function drawSpaceBackground() {
     syncSpaceParallax();
-    if (spaceBgReady && spaceBgImg) {
-      const scale = 1.14;
-      const iw = W * scale;
-      const ih = H * scale;
-      const ox = (W - iw) * 0.5 + spacePanX;
-      const oy = (H - ih) * 0.5 + spacePanY;
-      ctx.save();
-      ctx.globalAlpha = 0.94;
-      ctx.drawImage(spaceBgImg, ox, oy, iw, ih);
-      ctx.restore();
-    } else {
-      const g = ctx.createRadialGradient(cx, cy * 0.88, 0, cx, cy, Math.max(W, H) * 0.75);
-      g.addColorStop(0, '#101a28');
-      g.addColorStop(0.55, '#0a1018');
-      g.addColorStop(1, '#060a10');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
-    }
+    // On-system cool-void well (DESIGN.md tokens): raised mid #121826 at the
+    // centre falling to deep base #0C1016 at the rim — engraved-observatory
+    // backdrop, no photographic sky.
+    const g = ctx.createRadialGradient(cx, cy * 0.88, 0, cx, cy, Math.max(W, H) * 0.78);
+    g.addColorStop(0, '#121826');
+    g.addColorStop(0.55, '#0E141E');
+    g.addColorStop(1, '#0C1016');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, ringRadius() * 1.55);
     glow.addColorStop(0, 'rgba(111, 160, 216, 0.1)');
     glow.addColorStop(0.45, 'rgba(194, 160, 94, 0.06)');

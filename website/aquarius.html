@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="Free Aquarius horoscope for today, calculated from real planetary positions. Plus the complete Aquarius guide: element, ruling planet, love, career, and compatibility." />
   <meta name="twitter:image" content="https://astroprecise.app/assets/images/zodiac-cards/aquarius.jpg" />
   <meta name="theme-color" content="#0C1016" />
-  <link rel="preload" href="assets/images/zodiac-cards/aquarius.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="img/engine/uranus.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
@@ -53,16 +53,49 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
-    .sign-hero__card-picture {
-      width: clamp(150px, 22vw, 230px);
+    /* Hero planet — the ruling-planet ENGINE STILL is the anchor (photoreal, our render).
+       Deep-void plate, soft radial glow behind the disc, generous reserve box (CLS guard). */
+    .sign-hero__inner {
+      display: flex; gap: clamp(1.5rem, 4vw, 3.5rem);
+      align-items: center; justify-content: center;
+      max-width: 900px; margin: 0 auto;
     }
-    .sign-hero__card-img {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-      border-radius: 14px;
+    .sign-hero__planet {
+      position: relative; flex-shrink: 0;
+      width: clamp(200px, 34vw, 340px);
+      aspect-ratio: 1 / 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* soft brass-cool glow well behind the render (paints instantly, no layout cost) */
+    .sign-hero__planet::before {
+      content: ''; position: absolute; inset: -6%;
+      border-radius: 50%; z-index: 0; pointer-events: none;
+      background: radial-gradient(circle at 50% 46%,
+        color-mix(in srgb, var(--sign-elem, #C2A05E) 26%, transparent) 0%,
+        rgba(12, 16, 22, 0) 62%);
+      filter: blur(6px);
+    }
+    .sign-hero__planet-img {
+      position: relative; z-index: 1;
+      width: 100%; height: 100%;
+      object-fit: contain;
       display: block;
+      filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.62))
+              drop-shadow(0 0 30px color-mix(in srgb, var(--sign-elem, #C2A05E) 22%, transparent));
+    }
+    .sign-hero__planet-caption {
+      position: absolute; z-index: 2; left: 50%; bottom: -1.4rem;
+      transform: translateX(-50%);
+      width: max-content; max-width: min(92vw, 300px); text-align: center;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 0.62rem; line-height: 1.4; letter-spacing: 0.1em; text-transform: uppercase;
+      color: color-mix(in srgb, var(--gold-vivid, #E6C24A) 78%, #ECE6D8);
+      opacity: 0.8;
+    }
+    .sign-hero__figure, figure.sign-hero__planet { margin: 0; }
+    @media (max-width: 640px) {
+      .sign-hero__inner { flex-direction: column; gap: 1.75rem; }
+      .sign-hero__planet { width: clamp(190px, 62vw, 260px); }
     }
     /* Hero seal — celestial-seals.css audit-deferred */
     .sign-hero__seal:not(:has(.ap-seal)) {
@@ -203,12 +236,12 @@
 
     <section class="sign-hero" aria-labelledby="page-title">
       <div class="sign-hero__inner">
-        <picture class="sign-hero__card-picture">
-          <source srcset="assets/images/zodiac-cards/aquarius.webp" type="image/webp" />
-          <img class="sign-hero__card-img" src="assets/images/zodiac-cards/aquarius.jpg"
-            alt="Aquarius — Astro Precise engraved zodiac card"
-            width="230" height="345" loading="eager" decoding="async" fetchpriority="high" />
-        </picture>
+        <figure class="sign-hero__planet">
+          <img class="sign-hero__planet-img" src="img/engine/uranus.webp"
+            alt="Uranus, ruler of Aquarius — rendered from the Astro Precise engine"
+            width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
+          <figcaption class="sign-hero__planet-caption">Uranus · ruler of Aquarius · our engine render</figcaption>
+        </figure>
         <div class="sign-hero__content">
           <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:aquarius" data-seal-lg aria-hidden="true"></span>
           <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-aquarius d-aquarius"><title id="t-aquarius">The constellation of Aquarius</title><desc id="d-aquarius">The water-bearer: a Y-shaped water-jar asterism above a falling zigzag stream of stars.</desc><defs><radialGradient id="g-aquarius" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#4a2820" stop-opacity="0.18"/><stop offset="100%" stop-color="#4a2820" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="80" rx="120" ry="70" fill="url(#g-aquarius)"/><g stroke="#C2A05E" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" fill="none"><polyline points="150,46 160,38 172,44"/><line x1="160" y1="38" x2="160" y2="56"/><line x1="160" y1="56" x2="120" y2="62"/><line x1="160" y1="56" x2="206" y2="60"/><polyline points="206,60 224,84 210,108 232,128 214,150 238,168"/><line x1="120" y1="62" x2="92" y2="92"/></g><g fill="#f7ecc4"><circle cx="120" cy="62" r="1.8"/><circle cx="92" cy="92" r="1.6"/><circle cx="150" cy="46" r="1.7"/><circle cx="172" cy="44" r="1.7"/><circle cx="160" cy="56" r="2.0"/><circle cx="224" cy="84" r="1.6"/><circle cx="210" cy="108" r="1.7"/><circle cx="232" cy="128" r="1.5"/><circle cx="214" cy="150" r="1.6"/><circle cx="238" cy="168" r="1.5"/></g><circle cx="160" cy="38" r="6" fill="#ffe6b0" opacity="0.18"/><circle cx="160" cy="38" r="3.0" fill="#ffe6b0"/><circle cx="206" cy="60" r="6" fill="#f2dfa7" opacity="0.16"/><circle cx="206" cy="60" r="2.9" fill="#f7ecc4"/><g fill="#ffffff" opacity="0.4"><circle cx="60" cy="40" r="0.6"/><circle cx="270" cy="50" r="0.7"/><circle cx="44" cy="120" r="0.6"/><circle cx="284" cy="110" r="0.6"/><circle cx="100" cy="160" r="0.7"/><circle cx="180" cy="180" r="0.6"/><circle cx="250" cy="170" r="0.5"/></g></svg></div>

@@ -102,9 +102,15 @@ function collectCanonical() {
     join(ROOT, 'img', 'shop'),
   ];
 
+  // Engine-captured planet stills (img/engine/*) are large (~KBs each, MBs total)
+  // and only needed on the pages that show them — keep them OUT of the precache
+  // shell (they lazy-cache at runtime) so the install payload stays lean.
+  const PRECACHE_EXCLUDE = /(^|\/)img\/engine\//i;
+
   for (const dir of staticDirs) {
     for (const f of listFiles(dir)) {
       const rel = toPrecachePath(f);
+      if (PRECACHE_EXCLUDE.test(rel)) continue;
       if (/\.(woff2|json|jpg|jpeg|png|svg|webp)$/i.test(rel)) paths.add(rel);
     }
   }

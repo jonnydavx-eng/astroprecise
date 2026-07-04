@@ -140,13 +140,17 @@
       font-size: 0.95rem; color: var(--ap-text-muted, var(--silver-dim, #9A9084));
       max-width: 500px; margin: 0 auto; line-height: 1.6;
     }
+    /* On-system cool-void backdrop — engine/engraved only, no photographic sky.
+       Deep base #0C1016 well lifting to mid #121826 at the dial centre; the
+       canvas starfield paints over this once zodiac-sphere.js hydrates. */
     .sphere-space-bg {
       position: absolute;
       inset: 0;
       z-index: 0;
       pointer-events: none;
       border-radius: inherit;
-      background: #060a10 url('../assets/images/ecliptic-space-bg.jpg') center / cover no-repeat;
+      background:
+        radial-gradient(ellipse 82% 66% at 50% 44%, #121826 0%, #0E141E 52%, #0C1016 100%);
       opacity: 1;
       transform: translate3d(var(--space-pan-x, 0px), var(--space-pan-y, 0px), 0) scale(1.08);
       transform-origin: center center;
@@ -158,9 +162,14 @@
       inset: 0;
       border-radius: inherit;
       background:
-        radial-gradient(ellipse 88% 72% at 50% 42%, transparent 22%, rgba(6, 10, 16, 0.45) 68%, rgba(6, 10, 16, 0.92) 100%),
         radial-gradient(ellipse 120% 80% at 50% 50%, rgba(111, 160, 216, 0.06) 0%, transparent 55%),
-        linear-gradient(180deg, rgba(6, 10, 16, 0.35) 0%, transparent 38%, rgba(6, 10, 16, 0.5) 100%);
+        radial-gradient(ellipse 88% 72% at 50% 42%, transparent 30%, rgba(12, 16, 22, 0.35) 72%, rgba(12, 16, 22, 0.78) 100%),
+        radial-gradient(1.4px 1.4px at 22% 30%, rgba(236, 230, 216, 0.55) 50%, transparent 51%),
+        radial-gradient(1.2px 1.2px at 68% 22%, rgba(236, 230, 216, 0.42) 50%, transparent 51%),
+        radial-gradient(1.1px 1.1px at 82% 58%, rgba(194, 160, 94, 0.5) 50%, transparent 51%),
+        radial-gradient(1.3px 1.3px at 38% 72%, rgba(236, 230, 216, 0.45) 50%, transparent 51%),
+        radial-gradient(1px 1px at 12% 64%, rgba(236, 230, 216, 0.35) 50%, transparent 51%),
+        radial-gradient(1.1px 1.1px at 56% 84%, rgba(194, 160, 94, 0.4) 50%, transparent 51%);
     }
     .sphere-wrap {
       position: relative; width: 100%; max-width: 700px;
