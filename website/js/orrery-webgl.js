@@ -176,6 +176,11 @@ const FinishShader = {
   const orbitLines = [];
   const labels = {};
   let starField = null;
+  let starFieldFar = null;   // v577: second, more distant Points shell — its smaller
+                            // angular shift under the idle-breathe camera gives real
+                            // depth parallax against the near starField shell.
+  let milkyWayBand = null;  // v577: faint great-circle band of points (a whisper of the
+                            // galactic plane) visible at hero/system scales.
   let sunMaterial = null, sunCoronaGroup = null, sunCoronaMesh = null, sunCoronaMat = null;
   let sunPromGroup = null, sunPointLight = null, sunDirLight = null, sunDirLightTarget = null, hemiLight = null;
   let detailLightingUser = null; // null = auto, true = force detail, false = force cinematic glow
@@ -1177,6 +1182,8 @@ const FinishShader = {
     const lv = level | 0;
     if (usesPageStarfield() && lv < 5) {
       starField.visible = false;
+      if (starFieldFar) starFieldFar.visible = false;
+      if (milkyWayBand) milkyWayBand.visible = false;
       return;
     }
     starField.visible = true;
@@ -1185,6 +1192,23 @@ const FinishShader = {
       // v576: lift point size at Earth/Inner scales — stars present, never competing with the copy rail
       if (starField.material.uniforms.uSizeMul) {
         starField.material.uniforms.uSizeMul.value = lv <= 1 ? 1.35 : 1;
+      }
+    }
+    // v577: the far parallax shell + faint milky-way band track the near shell's gating.
+    // The band carries an extra fade so it always stays a whisper behind the stars.
+    const nearFade = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
+    if (starFieldFar) {
+      starFieldFar.visible = true;
+      if (starFieldFar.material.uniforms) {
+        starFieldFar.material.uniforms.uFade.value = nearFade;
+        starFieldFar.material.uniforms.uSizeMul.value = (lv <= 1 ? 0.95 : 0.72);
+      }
+    }
+    if (milkyWayBand) {
+      milkyWayBand.visible = true;
+      if (milkyWayBand.material.uniforms) {
+        milkyWayBand.material.uniforms.uFade.value = nearFade * 0.7;
+        milkyWayBand.material.uniforms.uSizeMul.value = (lv <= 1 ? 1.3 : 1.15);
       }
     }
   }
@@ -2749,13 +2773,19 @@ const FinishShader = {
     if (ringMat && ringMat.uniforms) {
       ringMat.uniforms.uSunDir.value.copy(lit);
       ringMat.uniforms.uOpacity.value = 0.9 - eclipseDim * 0.1;
+      // Feed the globe's world centre + radius so the ring shader can cast the
+      // planet's shadow across the rings (view-independent → survives portrait
+      // capture, unlike the old flat shadow-band plane below).
+      ringMat.uniforms.uPlanetC.value.copy(saturnPos);
+      const sb = meshes.saturn.userData && meshes.saturn.userData.b;
+      if (sb && ringMat.uniforms.uPlanetR) ringMat.uniforms.uPlanetR.value = sb.size;
     } else if (ringMat) ringMat.opacity = 0.9 - eclipseDim * 0.1;
-    if (saturnShadowBand) {
-      saturnShadowBand.position.copy(lit.clone().multiplyScalar(0.92 * 1.05));
-      saturnShadowBand.lookAt(saturnPos);
-      saturnShadowBand.visible = true;
-      if (saturnShadowBand.material) saturnShadowBand.material.opacity = 0.34 + lit.y * 0.12;
-    }
+    // The globe shadow is now cast physically inside the ring shader (uPlanetC/uPlanetR
+    // above), which renders correctly from every angle — including the portrait capture.
+    // The old flat shadow-band plane only approximated it (and mis-projected as grey
+    // rectangles on the disc, so it was hidden in portraits anyway); it's retired here to
+    // avoid a double shadow. Kept allocated but permanently hidden for a minimal diff.
+    if (saturnShadowBand) saturnShadowBand.visible = false;
   }
 
   // Shared GLSL noise helpers — 3D FBM fireball (Sangil Lee / Altered Qualia pattern, tier-scaled).
@@ -2801,6 +2831,31 @@ const FinishShader = {
         a *= 0.52;
       }
       return v;
+    }
+    // 3D cellular (Worley F1) on a unit sphere direction — returns distance to the
+    // nearest feature point. Low near a cell CENTRE, high on the LANES between cells:
+    // this is what carves the discrete SDO/HMI granule network (bright cores, dark
+    // inter-granular lanes) instead of the old cloudy fBm mottle. Time-warped by a
+    // slow drift vector so cells churn honestly, never shimmer.
+    vec3 sunHash3(vec3 p) {
+      p = vec3(dot(p, vec3(127.1, 311.7, 74.7)),
+               dot(p, vec3(269.5, 183.3, 246.1)),
+               dot(p, vec3(113.5, 271.9, 124.6)));
+      return fract(sin(p) * 43758.5453123);
+    }
+    float sunCellF1(vec3 p, vec3 jitter) {
+      vec3 ip = floor(p);
+      vec3 fp = fract(p);
+      float f1 = 1.0;
+      for (int x = -1; x <= 1; x++)
+      for (int y = -1; y <= 1; y++)
+      for (int z = -1; z <= 1; z++) {
+        vec3 g = vec3(float(x), float(y), float(z));
+        vec3 o = sunHash3(ip + g) * 0.5 + 0.5 * jitter;
+        vec3 d = g + o - fp;
+        f1 = min(f1, dot(d, d));
+      }
+      return sqrt(f1);
     }`;
 
   // ── Animated sun surface — turbulent photosphere + spots + faculae + flares ─
@@ -2808,10 +2863,15 @@ const FinishShader = {
     return new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
+        uTimeSlow: { value: 0 },  // supergranulation + prominence-rise clock (sunT*0.22)
+        uTimeFast: { value: 0 },  // granule-churn clock (sunT*1.6) — cells shimmer-free
         uEclipse: { value: 0 },
         uQuality: { value: quality },
         uGain: { value: 1.0 },  // capture-only: portrait mode drops this to keep the
                                 // no-bloom still a GOLDEN disc, not a blown-out white one
+        uGran: { value: 1.0 },  // granulation-contrast gamma. Portrait raises it so the
+                                // photosphere mottle stays crisp after the gain drop
+                                // (a flat gain cut alone washes the granulation flat).
       },
       vertexShader: `
         varying vec3 vNormal;
@@ -2830,15 +2890,27 @@ const FinishShader = {
         varying vec3 vViewDir;
         varying vec3 vSphere;
         uniform float uTime;
+        uniform float uTimeSlow;
+        uniform float uTimeFast;
         uniform float uEclipse;
         uniform float uQuality;
         uniform float uGain;
+        uniform float uGran;
         ${SUN_NOISE_GLSL}
         void main() {
           vec3 n = normalize(vNormal);
           vec3 v = normalize(vViewDir);
           float mu = max(dot(n, v), 0.001);
           float limb = pow(mu, 0.24);
+          // Physical limb darkening: the photosphere is HOTTEST at disc centre
+          // (mu=1) and dims toward the limb, where the line of sight grazes cooler
+          // high photosphere. pow(mu,0.6) is the classic visual-band profile;
+          // remapped to 0.58..1.0 so the disc reads centre-hot / limb-dim without
+          // going black at the rim. This is a brightness multiplier, applied at the
+          // end — SEPARATE from the edge-to-core colour ramp above (which the flat
+          // pow(mu,0.24) limb term still drives), so the fix is additive and the
+          // former inverted read (dull centre, hot rim) is corrected.
+          float ld = 0.52 + 0.48 * pow(mu, 0.62);
           float t = uTime;
           vec3 drift = vec3(sin(t * 0.32), cos(t * 0.26), sin(t * 0.21)) * 0.09;
           vec3 flow = vSphere + drift;
@@ -2846,24 +2918,109 @@ const FinishShader = {
           float turb = sunFBM(warp, uQuality);
           float turb2 = sunFBM(warp * 1.75 + vec3(4.2, 2.6, 1.4), uQuality);
           float gran = turb * 0.62 + turb2 * 0.38;
+          // Expand granulation contrast around its mid value. uGran is 1.0 in the
+          // live hero (no change) and >1 under portrait capture, restoring the crisp
+          // photosphere mottle the no-bloom gain drop would otherwise flatten.
+          gran = clamp(0.5 + (gran - 0.5) * uGran, 0.0, 1.0);
+          // ── DISCRETE GRANULATION CELLS + DARK INTER-GRANULAR LANES (P0) ──────────
+          // The old cloudy fBm mottle → a real convection network: a Worley cell field
+          // in OBJECT space (vSphere, camera-stable) gives bright granule cores with
+          // dark lanes between them, exactly the SDO/HMI intensitygram signature.
+          // Two clocks: uTimeFast churns the fine cells (boil), uTimeSlow drifts the
+          // low-frequency SUPERGRANULATION envelope beneath them — different honest
+          // rates so the surface evolves without ever shimmering.
+          vec3 cellDrift = vec3(sin(uTimeSlow*0.7), cos(uTimeSlow*0.55), sin(uTimeSlow*0.4)) * 0.06;
+          // ORGANIC granulation, not a lattice. Three tricks turn the clean Worley grid
+          // into a real SDO/HMI photosphere:
+          //  (a) DOMAIN WARP — displace the sample point by low-freq sunFBM before the
+          //      cellular lookup, so lanes go SINUOUS and cells become irregular polygons
+          //      instead of a honeycomb.
+          //  (b) SPATIALLY VARYING CELL SIZE — modulate the Worley frequency by a
+          //      low-freq noise so some patches have big cells, some small (real
+          //      granulation has a size distribution) — kills single-scale uniformity.
+          //  (c) IRREGULAR CORES — break core brightness with a little fBm so cores are
+          //      mottled, not uniform round dots.
+          vec3 baseP = vSphere + cellDrift;
+          // (a) domain warp — a vector warp from independent fBm channels
+          vec3 warpN = vec3(
+            sunFBM(baseP * 4.3 + vec3(11.2, 3.1, 7.4), uQuality),
+            sunFBM(baseP * 4.3 + vec3(1.7, 19.6, 5.2), uQuality),
+            sunFBM(baseP * 4.3 + vec3(8.9, 2.4, 14.7), uQuality)
+          ) - 0.5;
+          vec3 cellP = baseP + warpN * 0.42;               // sinuous displacement
+          // (b) size variation — freq wobbles ~11..17 across the disc (lower dominant
+          //     scale than before → fewer, larger, more varied cells; less "dotty")
+          float sizeVar = sunNoise3(baseP * 2.1 + vec3(4.0, 9.0, 2.0));
+          float cellFreq = mix(11.0, 17.0, sizeVar);
+          float jit = 0.12;   // small jitter amplitude → churn, never strobe
+          float f1 = sunCellF1(cellP * cellFreq, vec3(sin(uTimeFast*0.5), cos(uTimeFast*0.42), sin(uTimeFast*0.31)) * jit);
+          // A second, coarser warped tier = mesogranule clumping (breaks any grid feel).
+          float f1b = sunCellF1((cellP + warpN * 0.25) * (cellFreq * 0.46) + vec3(3.1, 1.7, 5.2), vec3(0.0));
+          // Network position: 0 at bright cores → 1 on the dark inter-granular lanes.
+          // Wide smoothstep bands so cell borders transition SOFTLY (no hard flip); the
+          // contrast is a touch lower than before so it reads mottled, not sequined.
+          float laneW = step(0.5, uQuality);              // full lanes on mid/high only
+          float lane = smoothstep(0.24, 0.78, f1);         // fine lanes (soft, organic)
+          float mlane = smoothstep(0.22, 0.70, f1b);       // meso lanes
+          float netDark = clamp(lane * 0.78 + mlane * 0.30, 0.0, 1.0); // 0=core,1=lane
+          netDark *= (0.55 + 0.45 * laneW);                // gentler on low tier
+          // (c) irregular cores — mottle the core brightness with fine fBm so cores
+          //     aren't identical dots (only bites where netDark is low, i.e. in cores).
+          float coreMottle = sunFBM(baseP * 26.0 + vec3(2.0, 5.0, 8.0), uQuality) - 0.5;
+          // Brightness modulation: cores ~1.05 (hot upflow), lanes ~0.82 (cool sink) —
+          // slightly softened range so the network is present but not a hard mesh.
+          float granBright = mix(1.05, 0.82, netDark) + coreMottle * 0.07 * (1.0 - netDark);
+          // Supergranulation: very-low-freq brightness swell driven by the slow clock.
+          float superg = 0.5 + 0.5 * sunNoise3(vSphere * 3.6 + vec3(uTimeSlow * 0.5));
+          granBright *= (0.97 + 0.06 * superg);
+          // granNet carries the multiplicative brightness; netDark drives the WARM
+          // temperature shift applied to col below (lanes cooler/redder, cores golden).
+          float granNet = granBright;
           float spots = smoothstep(0.70, 0.90, sunNoise3(flow * 1.35 + vec3(2.1, 0.8, 1.6)));
           float spotMask = mix(1.0, 0.62, spots) * (0.82 + limb * 0.18);
           float fac = smoothstep(0.56, 0.92, gran) * smoothstep(0.12, 0.52, turb2);
           float flare = pow(max(0.0,
             sin(flow.x * 11.0 + t * 2.4) * sin(flow.y * 9.0 - t * 1.7) * sin(flow.z * 8.0 + t * 1.2)
           ), 5.0) * 0.32;
-          vec3 core = vec3(1.0, 0.98, 0.90);
-          vec3 mid = vec3(1.0, 0.76, 0.20);
-          vec3 edge = vec3(0.94, 0.36, 0.04);
+          // Warm G2V ramp: a hot golden core (not pure white), amber mid, deep-orange
+          // limb. The former near-white core read ashen once the granulation network
+          // exposed it; pulling the core toward warm gold keeps the star hot-LOOKING.
+          vec3 core = vec3(1.0, 0.93, 0.72);
+          vec3 mid = vec3(1.0, 0.74, 0.24);
+          vec3 edge = vec3(0.95, 0.40, 0.06);
           vec3 col = mix(edge, mid, limb);
           col = mix(col, core, limb * limb * (0.82 + gran * 0.22));
           col *= spotMask;
           col += vec3(1.0, 0.88, 0.48) * fac * limb * 0.38;
           col += vec3(1.0, 0.58, 0.10) * flare * limb;
           float chromo = pow(1.0 - mu, 3.4);
-          col += vec3(1.0, 0.40, 0.06) * chromo * (0.30 + gran * 0.14);
+          // ── CHROMOSPHERE SPICULES (P1) ──────────────────────────────────────────
+          // Break the warm limb rim into fine radial "burning-prairie" structure. A
+          // HIGH-FREQUENCY angular fBM (sampled in vSphere so it's camera-stable),
+          // crept by the slow clock, confined to the pow(1-mu,3.4) limb band ONLY —
+          // it never touches the disc body. Modulates the rim brightness, giving the
+          // spiky chromosphere edge without any disc shimmer.
+          float spic = sunFBM(vSphere * 34.0 + vec3(uTimeSlow * 0.6, -uTimeSlow * 0.4, uTimeSlow * 0.3), uQuality);
+          float spicMod = mix(1.0, 0.55 + 0.95 * spic, step(1.0, uQuality));
+          col += vec3(1.0, 0.40, 0.06) * chromo * (0.22 + gran * 0.12) * spicMod;
           float coronaHint = pow(1.0 - mu, 1.6);
-          col += vec3(1.0, 0.52, 0.10) * coronaHint * 0.20;
+          col += vec3(1.0, 0.52, 0.10) * coronaHint * 0.13;
+          // Fold the discrete granulation network into the disc BEFORE limb darkening.
+          // Confined to the disc body: it eases off toward the limb (smoothstep on mu)
+          // so edge-on cells don't fight the chromosphere/spicule rim.
+          float granFace = smoothstep(0.12, 0.55, mu);
+          // (1) Brightness: cores brighten, lanes darken — the HMI intensitygram signal.
+          col *= mix(1.0, granNet, granFace);
+          // (2) TEMPERATURE: keep the star HOT and GOLDEN, not ashen-grey. Cores get a
+          // faint golden lift; lanes shift toward deep orange (cooler sinking plasma).
+          // This restores the G2V colour the pure-brightness network washed toward grey.
+          float netDarkFace = netDark * granFace;
+          col = mix(col, col * vec3(1.05, 0.97, 0.72), netDarkFace * 0.9);   // lanes → warm/deep
+          col += vec3(0.10, 0.06, 0.015) * (1.0 - smoothstep(0.10, 0.42, f1)) * granFace; // core gold glow
+          // Physical limb darkening (centre-hot / limb-dim). Applied AFTER the thin
+          // chromosphere/corona rim tints so the very edge keeps a faint warm halo,
+          // but the disc body no longer reads brighter at the rim than at centre.
+          col *= ld;
           col *= mix(1.0, 0.26, uEclipse);
           col *= 1.78 * uGain;
           gl_FragColor = vec4(col, 1.0);
@@ -2875,6 +3032,7 @@ const FinishShader = {
     return new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
+        uTimeSlow: { value: 0 },  // prominence rise/settle clock (sunT*0.22)
         uEclipse: { value: 0 },
         uQuality: { value: quality },
       },
@@ -2895,6 +3053,7 @@ const FinishShader = {
         varying vec3 vViewDir;
         varying vec3 vSphere;
         uniform float uTime;
+        uniform float uTimeSlow;
         uniform float uEclipse;
         uniform float uQuality;
         ${SUN_NOISE_GLSL}
@@ -2902,19 +3061,107 @@ const FinishShader = {
           vec3 n = normalize(vNormal);
           vec3 v = normalize(vViewDir);
           float facing = max(dot(n, v), 0.0);
-          float fresnel = pow(1.0 - facing, 2.6);
+          // Corona radial profile. A raw fresnel peaks at 1.0 exactly on the shell
+          // silhouette → a hard "soap-bubble" edge. Instead build a BAND that rises off
+          // the disc limb and FADES to zero BEFORE the silhouette, so the corona melts
+          // into transparency with no hard sphere outline. rim = 1-facing (0 at disc
+          // centre → 1 at silhouette); fade kills the last sliver at extreme grazing.
+          float rim = 1.0 - facing;
+          // Broad corona glow across the grazing annulus (exp 1.4 fills it), then a
+          // GENTLE outer roll-off (not a cliff) so the halo melts into transparency
+          // instead of ending on a hard soap-bubble silhouette. The disc mesh occludes
+          // the inner shell, so this paints the visible outer corona.
+          float fade = 1.0 - smoothstep(0.94, 1.0, rim);    // soft roll-off, more reach
+          float fresnel = pow(rim, 1.2) * (0.5 + 0.5 * fade);  // fuller, further-reaching crown
           float t = uTime;
           float ang = atan(vSphere.y, vSphere.x);
-          float rays = 0.0;
-          for (int i = 0; i < 6; i++) {
+          // SCREEN angle around the limb (camera-stable): the view-space normal's
+          // in-plane direction is the on-screen radial, so atan(n.y,n.x) is the clock
+          // position of this fragment on the limb REGARDLESS of mesh orientation. This
+          // anchors prominences to the visible edge so they always read in the still.
+          float sAng = atan(n.y, n.x);
+          bool rich = uQuality > 0.5;   // desktop mid/high get streamers+prominences
+
+          // ── WHITE-LIGHT STREAMER FILAMENTS (P0) ────────────────────────────────
+          // Replace the 6 hard sin-lobe spokes with domain-warped fBM wisps that
+          // reach RADIALLY outward. Trick: feed the noise an ANISOTROPIC coordinate —
+          // fine detail around the limb (angular) but STRETCHED along the radial
+          // (near-constant) axis — so filaments elongate away from the disc like real
+          // K-corona streamers rather than tiling into blobs. Crept slowly by uTime.
+          float w1 = sunFBM(vSphere * 3.1 + vec3(t * 0.05, -t * 0.04, t * 0.03), uQuality);
+          // Domain warp the sample position by a lower-freq field → sinuous streamers.
+          vec3 sp = vSphere + vec3(w1, w1, w1) * 0.35;
+          // Angular-rich / radial-smooth: multiply the tangential components hard,
+          // leave the dominant axis soft so structure stretches outward.
+          float streamers = sunFBM(sp * vec3(7.5, 7.5, 2.2) + vec3(-t * 0.03, t * 0.02, 0.0), uQuality);
+          streamers = pow(max(0.0, streamers), 1.7) * (rich ? 1.0 : 0.35);
+          // Retain a couple of soft broad lobes for large-scale corona shape (gentle,
+          // not the old hard spokes) so the halo isn't uniformly ringed.
+          float lobes = 0.0;
+          for (int i = 0; i < 3; i++) {
             float fi = float(i);
-            float w = step(fi, 2.0 + uQuality);
-            rays += pow(max(0.0, sin(ang * (4.5 + fi * 1.2) + t * (0.35 + fi * 0.04))), 7.0) * 0.14 * w;
+            float w = step(fi, 1.0 + uQuality);
+            lobes += pow(max(0.0, sin(ang * (2.0 + fi) + t * (0.12 + fi * 0.03) + fi * 2.1)), 3.0) * 0.10 * w;
           }
+
+          // ── LIMB PROMINENCE ARCS (P0) ──────────────────────────────────────────
+          // 3 warm bright lobes anchored at FIXED sphere angles just off the limb.
+          // Each rises and settles over ~20-40s via a slow sine on uTimeSlow, so they
+          // breathe. Localised in angle (narrow gaussian) and in radius (hug the rim
+          // via fresnel) → clear arcing eruptions, not a uniform glow.
+          float prom = 0.0;
+          if (rich) {
+            // Anchor angles on the SCREEN limb (radians) + phase offsets for breathing.
+            // Placed around the visible edge (upper-left, right, lower) so they always
+            // sit in-frame; a slow uTimeSlow drift makes them migrate gently.
+            vec3 pang = vec3(2.3, 0.2, -1.6);
+            vec3 pph  = vec3(0.0, 2.1, 4.2);
+            for (int i = 0; i < 3; i++) {
+              float a0 = pang[i] + uTimeSlow * 0.05;   // slow migration around the limb
+              float dA = sAng - a0;
+              dA = atan(sin(dA), cos(dA));            // wrap to -pi..pi
+              float lobe = exp(-dA * dA * 10.0);       // angular lobe (arc-like spread)
+              // Strong constant presence + breathing on top. Floor 0.6 keeps all three
+              // arcs clearly VISIBLE regardless of the (real-time-seeded) capture phase,
+              // so the deterministic still always shows eruptions; breathing (never to 0)
+              // adds slow life in the live hero without any strobe.
+              float rise = 0.6 + 0.4 * (0.5 + 0.5 * sin(uTimeSlow * 0.9 + pph[i]));
+              // fine internal filamentation so the arc isn't a flat blob
+              float fil = 0.7 + 0.4 * sunFBM(vSphere * 15.0 + vec3(uTimeSlow * 0.5 + float(i) * 3.0), uQuality);
+              prom += lobe * rise * fil;
+            }
+            prom = clamp(prom, 0.0, 1.4);
+          }
+
           float turb = sunFBM(vSphere * 2.8 + vec3(t * 0.12, -t * 0.08, t * 0.05), uQuality);
-          float a = fresnel * (0.48 + turb * 0.42 + rays) * (1.0 - uEclipse * 0.75);
-          vec3 col = mix(vec3(1.0, 0.48, 0.06), vec3(1.0, 0.92, 0.58), turb);
-          gl_FragColor = vec4(col * a * 1.5, clamp(a, 0.0, 0.92));
+          // Streamers modulate the halo: bright wisps where the streamer field is high,
+          // dim lanes between them (contrast-stretched so the corona is STRUCTURED, not
+          // a uniform ring). Broad lobes give large-scale shape; turb softens.
+          // Streamers modulate the halo more strongly now (×1.2) so bright wisps clearly
+          // reach outward against dimmer gaps — a STRUCTURED crown, not a smooth ring.
+          float structure = streamers * 1.2 + lobes + turb * 0.30;
+          // Corona ALPHA (opacity) — raised so the golden crown has real PRESENCE against
+          // the transparent void (it had faded to almost nothing). Higher floor + structure.
+          float a = fresnel * (0.85 + structure * 1.25) * (1.0 - uEclipse * 0.75);
+          // Prominences live in the VISIBLE outer annulus (the inner shell is occluded by
+          // the opaque disc), distinguished from the golden streamers by high local alpha,
+          // narrow angle, and H-alpha pink-red — discrete eruptions arcing off the limb.
+          float promBand = pow(rim, 0.9) * fade;
+          float promA = prom * promBand * (1.0 - uEclipse * 0.75);
+          a += promA * 3.0;                                  // arcs stand off the limb
+          a = clamp(a, 0.0, 0.96);
+          // COLOUR — keep it SATURATED gold (do not over-drive to white). A colour-
+          // preserving brightness keeps the streamers golden; prominences get both a red
+          // hue AND a brightness lift so they read as warm arcs, not just tinted haze.
+          vec3 col = mix(vec3(1.0, 0.58, 0.16), vec3(1.0, 0.82, 0.46), turb);
+          col = mix(col, vec3(1.0, 0.88, 0.66), clamp(streamers * 0.8, 0.0, 1.0));
+          // Prominences WIN locally: where an arc sits (promDom high) the gold streamer
+          // colour is replaced by warm H-alpha pink-red AND brightened, so the additive
+          // gold no longer swallows them. Dominance keys off the arc strength directly.
+          float promDom = clamp(promA * 3.2, 0.0, 1.0);
+          col = mix(col, vec3(1.0, 0.34, 0.20), promDom);
+          col += vec3(0.35, 0.06, 0.02) * promDom;           // warm brightness lift on arcs
+          gl_FragColor = vec4(col * 1.08, a);
         }`,
       blending: THREE.AdditiveBlending,
       side: THREE.BackSide,
@@ -3165,27 +3412,10 @@ const FinishShader = {
     }
   }
 
-  function buildStars() {
-    if (onPreloaderStage() && usesPageStarfield()) return;
-    const N = PRM ? 800 : (perfTier === 'high' ? 3400 : perfTier === 'mid' ? 2400 : 1600);
-    const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
-    const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
-    for (let i = 0; i < N; i++) {
-      const r = 240 + Math.random() * 340;
-      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
-      pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
-      pos[i * 3 + 1] = r * Math.cos(ph);
-      pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
-      const temp = starTemps[Math.floor(Math.random() * starTemps.length)];
-      const w = 0.72 + Math.random() * 0.28; // v576: floor lifted 0.55→0.72 — Earth no longer floats in starless felt
-      col[i * 3] = temp[0] * w; col[i * 3 + 1] = temp[1] * w; col[i * 3 + 2] = temp[2] * w;
-      sizes[i] = Math.random() < 0.09 ? 2.6 + Math.random() * 1.8 : 0.7 + Math.random() * 1.1;
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    g.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-    const m = new THREE.ShaderMaterial({
+  // Shared star-point ShaderMaterial factory (near shell, far shell, milky-way band all
+  // use the same twinkle + soft-disc program so nothing shimmers differently).
+  function makeStarPointsMaterial() {
+    return new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, vertexColors: true,
       uniforms: { uTime: { value: 0 }, uFade: { value: 1 }, uSizeMul: { value: 1 } },
       vertexShader: `
@@ -3212,7 +3442,93 @@ const FinishShader = {
           gl_FragColor = vec4(vColor * (core + halo), core * uFade);
         }`,
     });
-    starField = new THREE.Points(g, m); scene.add(starField);
+  }
+
+  function buildStars() {
+    if (onPreloaderStage() && usesPageStarfield()) return;
+    const N = PRM ? 800 : (perfTier === 'high' ? 3400 : perfTier === 'mid' ? 2400 : 1600);
+    const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
+    const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
+    for (let i = 0; i < N; i++) {
+      const r = 240 + Math.random() * 340;
+      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      pos[i * 3 + 1] = r * Math.cos(ph);
+      pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+      const temp = starTemps[Math.floor(Math.random() * starTemps.length)];
+      const w = 0.72 + Math.random() * 0.28; // v576: floor lifted 0.55→0.72 — Earth no longer floats in starless felt
+      col[i * 3] = temp[0] * w; col[i * 3 + 1] = temp[1] * w; col[i * 3 + 2] = temp[2] * w;
+      sizes[i] = Math.random() < 0.09 ? 2.6 + Math.random() * 1.8 : 0.7 + Math.random() * 1.1;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    g.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    starField = new THREE.Points(g, makeStarPointsMaterial()); scene.add(starField);
+
+    // v577 — SECOND, MORE DISTANT SHELL for depth parallax. All the near stars sat on
+    // one r=240–580 shell, so the idle-breathe camera swing shifted them rigidly with
+    // zero relative motion → the hero read flat. A shell ~2× further out shifts by a
+    // smaller angle under the same camera translation, so the two layers slide past
+    // each other and the scene gains real depth. Fainter + smaller so it reads as
+    // background dust, never competing with the near field. Count is tier-gated (low
+    // mobile gets a cheap version) and PRM keeps it minimal.
+    const NF = PRM ? 300 : (perfTier === 'high' ? 1700 : perfTier === 'mid' ? 1100 : 650);
+    const fp = new Float32Array(NF * 3), fc = new Float32Array(NF * 3), fs = new Float32Array(NF);
+    for (let i = 0; i < NF; i++) {
+      const r = 620 + Math.random() * 520;   // 620–1140: well beyond the near shell
+      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      fp[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      fp[i * 3 + 1] = r * Math.cos(ph);
+      fp[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+      const temp = starTemps[Math.floor(Math.random() * starTemps.length)];
+      const w = 0.42 + Math.random() * 0.22; // dimmer than the near shell (0.72–1.0)
+      fc[i * 3] = temp[0] * w; fc[i * 3 + 1] = temp[1] * w; fc[i * 3 + 2] = temp[2] * w;
+      fs[i] = 0.5 + Math.random() * 0.7;     // uniformly small — distant pinpricks
+    }
+    const gf = new THREE.BufferGeometry();
+    gf.setAttribute('position', new THREE.BufferAttribute(fp, 3));
+    gf.setAttribute('color', new THREE.BufferAttribute(fc, 3));
+    gf.setAttribute('size', new THREE.BufferAttribute(fs, 1));
+    const mf = makeStarPointsMaterial();
+    mf.uniforms.uSizeMul.value = 0.72;       // extra small so the far shell recedes
+    starFieldFar = new THREE.Points(gf, mf); scene.add(starFieldFar);
+
+    // v577 — FAINT MILKY-WAY BAND: a denser great-circle scatter of small points on a
+    // shell between the two star fields, concentrated toward a tilted galactic plane so
+    // it reads as a soft diffuse band across the sky, not a uniform sprinkle. Whisper
+    // faint (well below the near stars) so it never competes with the orrery bodies.
+    const NB = PRM ? 260 : (perfTier === 'high' ? 1400 : perfTier === 'mid' ? 900 : 480);
+    const bp = new Float32Array(NB * 3), bc = new Float32Array(NB * 3), bs = new Float32Array(NB);
+    const bandTilt = 27 * D2R;               // galactic-plane tilt vs the ecliptic-ish frame
+    const ct = Math.cos(bandTilt), st = Math.sin(bandTilt);
+    for (let i = 0; i < NB; i++) {
+      const r = 560 + Math.random() * 120;   // between near (≤580) and far (≥620) shells
+      const lon = Math.random() * Math.PI * 2;
+      // Latitude clustered tightly around the band centre (gaussian-ish via averaged
+      // uniforms) so the ring has a soft thickness, not a razor line.
+      const lat = ((Math.random() + Math.random() + Math.random()) / 3 - 0.5) * 0.44;
+      let x = r * Math.cos(lat) * Math.cos(lon);
+      let y = r * Math.sin(lat);
+      let z = r * Math.cos(lat) * Math.sin(lon);
+      // tilt the band around the X axis
+      const y2 = y * ct - z * st, z2 = y * st + z * ct;
+      bp[i * 3] = x; bp[i * 3 + 1] = y2; bp[i * 3 + 2] = z2;
+      // Cool ivory dust with a faint warm core scatter.
+      const warm = Math.random() < 0.3;
+      const w = 0.16 + Math.random() * 0.12; // FAR below the near stars → a whisper
+      bc[i * 3] = (warm ? 1.0 : 0.86) * w;
+      bc[i * 3 + 1] = (warm ? 0.94 : 0.9) * w;
+      bc[i * 3 + 2] = (warm ? 0.82 : 1.0) * w;
+      bs[i] = 0.5 + Math.random() * 0.5;
+    }
+    const gb = new THREE.BufferGeometry();
+    gb.setAttribute('position', new THREE.BufferAttribute(bp, 3));
+    gb.setAttribute('color', new THREE.BufferAttribute(bc, 3));
+    gb.setAttribute('size', new THREE.BufferAttribute(bs, 1));
+    const mb = makeStarPointsMaterial();
+    mb.uniforms.uSizeMul.value = 1.15;       // slightly bigger soft dust motes
+    milkyWayBand = new THREE.Points(gb, mb); scene.add(milkyWayBand);
   }
 
   function buildSunCoronaShell() {
@@ -3221,7 +3537,9 @@ const FinishShader = {
     const segs = perfTier === 'high' ? 72 : perfTier === 'mid' ? 56 : 36;
     sunCoronaMat = makeSunCoronaShellMaterial(q);
     sunCoronaMesh = new THREE.Mesh(
-      new THREE.SphereGeometry(SUN_SIZE * 1.16, segs, segs),
+      // Wider shell (1.16 → 1.5) so white-light streamers + limb prominences have room
+      // to arc OUTWARD from the limb instead of reading as a thin ring hugging the disc.
+      new THREE.SphereGeometry(SUN_SIZE * 1.5, segs, segs),
       sunCoronaMat
     );
     sunMesh.add(sunCoronaMesh);
@@ -3348,32 +3666,76 @@ const FinishShader = {
     return new THREE.ShaderMaterial({
       uniforms: {
         uMap: { value: null },
-        uSunDir: { value: new THREE.Vector3(1, 0, 0) },
+        uSunDir: { value: new THREE.Vector3(1, 0, 0) },  // world-space sun dir (set by updateSaturnShadow)
         uOpacity: { value: 0.9 },
+        uPlanetC: { value: new THREE.Vector3(0, 0, 0) },  // world-space globe centre
+        uPlanetR: { value: 1.0 },                          // world-space globe radius (for the cast shadow)
       },
       vertexShader: `
         varying vec2 vUv;
         varying vec3 vWorldNormal;
+        varying vec3 vWorldPos;
         void main() {
           vUv = uv;
           vWorldNormal = normalize(mat3(modelMatrix) * normal);
           vec4 wp = modelMatrix * vec4(position, 1.0);
+          vWorldPos = wp.xyz;
           gl_Position = projectionMatrix * viewMatrix * wp;
         }`,
       fragmentShader: `
         uniform sampler2D uMap;
         uniform vec3 uSunDir;
         uniform float uOpacity;
+        uniform vec3 uPlanetC;
+        uniform float uPlanetR;
         varying vec2 vUv;
         varying vec3 vWorldNormal;
+        varying vec3 vWorldPos;
         void main() {
           vec4 tex = texture2D(uMap, vUv);
           float density = tex.a > 0.02 ? tex.a : max(tex.r, max(tex.g, tex.b));
           if (density < 0.03) discard;
           vec3 base = tex.rgb;
           if (length(base) < 0.05) base = vec3(0.92, 0.86, 0.72);
-          float lit = clamp(dot(vWorldNormal, normalize(uSunDir)) * 0.5 + 0.52, 0.36, 1.0);
-          vec3 col = base * lit * vec3(1.04, 1.0, 0.94);
+          vec3 sun = normalize(uSunDir);
+          float lit = clamp(dot(vWorldNormal, sun) * 0.5 + 0.52, 0.36, 1.0);
+          // (b) Sun-side backscatter: ring ice brightens where the view ray is roughly
+          // sun-aligned (forward/back scatter through the icy particles). Gentle, keyed
+          // to how sun-aligned this fragment's view ray is.
+          vec3 viewDir = normalize(cameraPosition - vWorldPos);
+          float backscatter = pow(clamp(dot(viewDir, sun) * 0.5 + 0.5, 0.0, 1.0), 2.0);
+          float scatterGain = 1.0 + backscatter * 0.26;
+          vec3 col = base * lit * scatterGain;
+          // (c) Tame the inner-ring bloom clip: the brightest ring texels (inner B-ring)
+          // read near paper-white. A soft top-end rolloff (Reinhard-ish) preserves the
+          // brightness ORDER while holding the peak well below 1.0, so the bright inner
+          // ring stays luminous ICE, not a blown white halo.
+          col = col / (1.0 + max(vec3(0.0), col - 0.62) * 1.35);
+          // (a) Warm brass/sand tint — applied AFTER the tone-map so the top-end rolloff
+          // (which pulls bright near-white texels back toward neutral) can't wash the
+          // warmth out. A luminance-preserving channel scale nudges the whole ring into
+          // the tan/sand family (photoreal Cassini rings are faintly tan-brown, not vinyl
+          // grey) while the texture's own light/dark banding still reads the Cassini
+          // division. Subtle — sand, not stylised brass.
+          col *= vec3(1.10, 1.005, 0.855);
+          // (d) Cast the GLOBE's shadow across the rings — the detail that sells Saturn.
+          // Project this ring fragment back along the sun ray: if that ray passes through
+          // the planet sphere before reaching the sun, the fragment sits in the globe's
+          // shadow. Physically correct and view-independent, so it renders in the portrait
+          // capture too (unlike the old flat shadow-plane, which mis-projected and had to
+          // be hidden). Penumbra widened so the shadow reads as a soft band, not a razor.
+          vec3 rel = vWorldPos - uPlanetC;
+          float b = dot(rel, sun);
+          float perp2 = dot(rel, rel) - b * b;      // squared distance from the sun-ray axis
+          float perp = sqrt(max(perp2, 0.0));
+          // In shadow only on the far side of the globe from the sun (b < 0) and within a
+          // slightly-widened cross-section (penumbra + the ring's own thickness).
+          float core = 1.0 - smoothstep(uPlanetR * 0.80, uPlanetR * 1.35, perp);
+          float shadow = core * smoothstep(0.04, -0.08 * uPlanetR, b);
+          // Deep but not pure-black: the umbra reads as a distinct dark cut across the
+          // bright inner ring (the detail that sells a photoreal Saturn), while a hint of
+          // ambient skylight keeps it from looking like a hole punched in the rings.
+          col *= 1.0 - shadow * 0.88;
           float edgeFade = smoothstep(0.0, 0.08, vUv.x) * smoothstep(1.0, 0.92, vUv.x);
           gl_FragColor = vec4(col, density * uOpacity * edgeFade);
         }`,
@@ -3987,6 +4349,16 @@ const FinishShader = {
       starField.material.uniforms.uFade.value = 0.72 + orbitFade * 0.28;
       if (!PRM) starField.rotation.y = p * 0.12;
     }
+    // v577: the far shell + band rotate SLOWER than the near shell, so on top of the
+    // camera-translation parallax the layers also differentially rotate — cheap extra depth.
+    if (starFieldFar && starFieldFar.visible && starFieldFar.material.uniforms) {
+      starFieldFar.material.uniforms.uFade.value = 0.55 + orbitFade * 0.28;
+      if (!PRM) starFieldFar.rotation.y = p * 0.06;
+    }
+    if (milkyWayBand && milkyWayBand.visible && milkyWayBand.material.uniforms) {
+      milkyWayBand.material.uniforms.uFade.value = (0.4 + orbitFade * 0.24) * 0.7;
+      if (!PRM) milkyWayBand.rotation.y = p * 0.04;
+    }
 
     if (sunMesh) {
       const pulse = (!onPreloaderStage() && p < 0.22) ? 1 + Math.sin(t * 0.0032) * 0.02 : 1;
@@ -4122,11 +4494,29 @@ const FinishShader = {
       } catch (e) { /* retrograde glow is optional */ }
     }
 
-    // sun surface animation + corona drift
+    // sun surface animation + corona drift. Three honest clocks, all in the calm
+    // slow-drift band (eye-comfort — never strobe): uTime = base churn, uTimeFast =
+    // granule boil (still gentle), uTimeSlow = supergranulation + prominence rise.
+    // PRM scales every rate toward ~0 so reduced-motion users get a near-static star.
     const sunT = t * 0.001;
-    if (sunMaterial && sunMaterial.uniforms) sunMaterial.uniforms.uTime.value = sunT;
-    if (sunCoronaMat && sunCoronaMat.uniforms) sunCoronaMat.uniforms.uTime.value = sunT;
+    const sunRate = PRM ? 0.06 : 1.0;   // reduced-motion: freeze the surface to a crawl
+    const sunTSlow = sunT * 0.22 * sunRate;
+    // Granule churn must CREEP, not boil — real granulation turns over on a minutes
+    // timescale. A modest fast rate keeps the surface visibly alive without any per-cell
+    // strobe/pop (eye-comfort). 0.45 tuned so adjacent frames barely differ.
+    const sunTFast = sunT * 0.45 * sunRate;
+    if (sunMaterial && sunMaterial.uniforms) {
+      sunMaterial.uniforms.uTime.value = sunT * sunRate;
+      if (sunMaterial.uniforms.uTimeSlow) sunMaterial.uniforms.uTimeSlow.value = sunTSlow;
+      if (sunMaterial.uniforms.uTimeFast) sunMaterial.uniforms.uTimeFast.value = sunTFast;
+    }
+    if (sunCoronaMat && sunCoronaMat.uniforms) {
+      sunCoronaMat.uniforms.uTime.value = sunT * sunRate;
+      if (sunCoronaMat.uniforms.uTimeSlow) sunCoronaMat.uniforms.uTimeSlow.value = sunTSlow;
+    }
     if (starField && starField.material.uniforms) starField.material.uniforms.uTime.value = t;
+    if (starFieldFar && starFieldFar.material.uniforms) starFieldFar.material.uniforms.uTime.value = t;
+    if (milkyWayBand && milkyWayBand.material.uniforms) milkyWayBand.material.uniforms.uTime.value = t;
     if (sunDirLight && sunMesh) {
       sunDirLight.position.copy(sunMesh.position);
       if (sunDirLightTarget) {
@@ -5143,6 +5533,8 @@ const FinishShader = {
     Object.keys(labels).forEach((k) => { if (labels[k]) labels[k].visible = false; });
     // Deep-space / starfield / galaxy layers
     if (starField) starField.visible = false;
+    if (starFieldFar) starFieldFar.visible = false;
+    if (milkyWayBand) milkyWayBand.visible = false;
     if (oortShell) oortShell.visible = false;
     if (localStarsGroup) localStarsGroup.visible = false;
     if (catalogStarsGroup) catalogStarsGroup.visible = false;
@@ -5390,9 +5782,17 @@ const FinishShader = {
     if (sunMesh) sunMesh.position.set(0, 0, 0);
     // Without the bloom composer the disc's own 1.78× gain clips to pure white. Drop
     // the gain so the surface keeps its golden granulation + limb falloff, reading as
-    // a premium star rather than a blown white sticker.
+    // a premium star rather than a blown white sticker. The physical limb-darkening
+    // term (ld, centre=1.0 → limb≈0.58) now does the heavy lifting for shape, so the
+    // gain can sit a touch higher (0.52) — a hot centre without clipping — while uGran
+    // expands the granulation contrast that the flat gain cut used to wash out.
     if (sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uGain) {
-      sunMaterial.uniforms.uGain.value = 0.46;
+      sunMaterial.uniforms.uGain.value = 0.56;
+    }
+    if (sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uGran) {
+      // 1.9 over-hardened the organic granulation into a sequined lattice in the
+      // no-bloom still; 1.5 keeps the mottle crisp but ORGANIC (photographic, not a mesh).
+      sunMaterial.uniforms.uGran.value = 1.5;
     }
     // The one visible inner glow sprite carries the soft golden corona halo.
     if (sunGlow[0] && sunGlow[0].material) {
@@ -5493,6 +5893,9 @@ const FinishShader = {
     if (sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uGain) {
       sunMaterial.uniforms.uGain.value = 1.0;
     }
+    if (sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uGran) {
+      sunMaterial.uniforms.uGran.value = 1.0;
+    }
     const r = portraitRestore;
     portraitId = null;
     portraitRestore = null;
@@ -5512,8 +5915,9 @@ const FinishShader = {
       });
       portraitAtmoBase = null;
     }
-    // Restore Saturn's ring-shadow band.
-    if (saturnShadowBand) saturnShadowBand.visible = true;
+    // Saturn's ring shadow is now cast in the ring shader (view-independent), so the
+    // retired flat shadow-band plane stays hidden on exit — nothing to restore.
+    if (saturnShadowBand) saturnShadowBand.visible = false;
     if (r) {
       scaleLevel = r.scaleLevel;
       showOrbits = r.showOrbits;
