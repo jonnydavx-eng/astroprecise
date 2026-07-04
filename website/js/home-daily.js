@@ -101,6 +101,9 @@
       '.home-daily__cta-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}' +
       '.home-daily__return{font-size:.74rem;color:rgba(236,230,216,.55);margin:1rem 0 0;font-style:italic}' +
       '.home-daily__save-hint{font-size:.76rem;color:rgba(205,174,106,.75);line-height:1.5;margin:.8rem 0 0}' +
+      '.home-daily__sky-btn{display:inline-flex;align-items:center;gap:.45em;margin:0 0 1rem;padding:.5rem .9rem;border:1px solid rgba(194,160,94,.4);border-radius:10px;background:rgba(26,34,48,.5);color:var(--brass-bright,#CDAE6A);font:600 .82rem/1 var(--font-ui,Inter),sans-serif;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}' +
+      '.home-daily__sky-btn:hover{border-color:var(--brass-vivid,#D8B978);background:rgba(194,160,94,.14);transform:translateY(-1px)}' +
+      '.home-daily__sky-btn span{color:var(--brass,#C2A05E)}' +
       '.home-daily__prompt{color:rgba(236,230,216,.7);text-align:center;margin:.2rem 0 0;font-size:.9rem}';
     var st = document.createElement('style');
     st.id = 'home-daily-css';
@@ -138,6 +141,8 @@
     return '';
   }
 
+  var BODY_IDS = { sun:1, moon:1, mercury:1, venus:1, mars:1, jupiter:1, saturn:1, uranus:1, neptune:1, pluto:1 };
+
   function renderReading(sign, r) {
     var mood = (r && typeof r.moodScore === 'number') ? Math.max(0, Math.min(100, r.moodScore)) : null;
     var transits = (r && r.transits ? r.transits : []).slice(0, 3).map(function (t) {
@@ -145,12 +150,32 @@
     }).filter(function (x) { return x.indexOf('<li') === 0 && x.length > 40; });
     var facts = (r && r.skyFacts ? r.skyFacts : []).slice(0, 4).join(' · ');
 
+    // "Show me in the sky" — swings the hero orrery to the strongest transit and
+    // draws it on a true-geocentric zodiac ring (focusAspect). The pairing is the
+    // transiting planet ↔ the solar-chart Sun point (honest for a Sun-sign preview).
+    var top = (r && r.transits && r.transits[0]) ? r.transits[0] : null;
+    var skyBody = top && top.planet ? String(top.planet).toLowerCase() : null;
+    var skyAspect = top && top.aspect ? String(top.aspect).toLowerCase() : '';
+    var skyName = skyBody ? skyBody.charAt(0).toUpperCase() + skyBody.slice(1) : '';
+    // Solar-chart "your Sun" point = the sign midpoint (15° of the sign). This is
+    // the assumed Sun the daily reading aspects; focusAspect places it as an
+    // honest, explicitly-labelled solar-chart tick, not the real Sun.
+    var signIdx = -1;
+    for (var _si = 0; _si < SIGNS.length; _si++) { if (SIGNS[_si][0] === sign) { signIdx = _si; break; } }
+    var bLon = signIdx >= 0 ? (signIdx * 30 + 15) : '';
+    var skyBtn = (skyBody && BODY_IDS[skyBody] && skyBody !== 'sun' && bLon !== '')
+      ? '<button type="button" class="home-daily__sky-btn" data-sky-planet="' + esc(skyBody) + '" data-sky-aspect="' + esc(skyAspect) + '" data-sky-blon="' + bLon + '">' +
+          '<span aria-hidden="true">✦</span> Show ' + esc(skyName) + ' ' + esc(skyAspect) + ' your Sun in the sky' +
+        '</button>'
+      : '';
+
     return '' +
       '<div class="home-daily__card" role="group" aria-label="Today’s preview reading for ' + esc(sign) + '">' +
         '<p class="home-daily__eyebrow">' + esc(todayStamp()) + ' · <span class="ap-badge">Preview · solar-chart</span></p>' +
         '<h3 class="home-daily__title">Today’s sky for ' + esc(sign) + '</h3>' +
         (r && r.overview ? '<p class="home-daily__overview">' + esc(r.overview) + '</p>' : '') +
         (transits.length ? '<ul class="home-daily__transits">' + transits.join('') + '</ul>' : '') +
+        skyBtn +
         (mood != null ? '<div class="home-daily__gauge-row"><span>Today’s energy</span><span>' + mood + ' / 100</span></div>' +
           '<div class="home-daily__gauge"><span style="width:' + mood + '%"></span></div>' : '') +
         (facts ? '<p class="home-daily__facts">' + esc(facts) + '</p>' : '') +
@@ -181,7 +206,14 @@
       Array.prototype.forEach.call(btns, function (b) { b.setAttribute('aria-pressed', b.dataset.sign === sign ? 'true' : 'false'); });
       try { localStorage.setItem('ap_home_sign', sign); } catch (e) {}
       slot.innerHTML = '<p class="home-daily__prompt">Reading today’s sky…</p>';
-      getReading(sign).then(function (r) { slot.innerHTML = renderReading(sign, r); fillTomorrow(sign); });
+      getReading(sign).then(function (r) {
+        slot.innerHTML = renderReading(sign, r);
+        fillTomorrow(sign);
+        var sb = slot.querySelector('.home-daily__sky-btn');
+        if (sb) sb.addEventListener('click', function () {
+          showInSky(sb.getAttribute('data-sky-planet'), sb.getAttribute('data-sky-aspect'), parseFloat(sb.getAttribute('data-sky-blon')));
+        });
+      });
     }
     Array.prototype.forEach.call(btns, function (b) {
       b.addEventListener('click', function () { pick(b.dataset.sign); });
@@ -205,6 +237,36 @@
         el.textContent = 'Tomorrow: ' + p + ' ' + top.aspect + ' your Sun — the reading recomputes at midnight. Check back.';
       }
     } catch (e) {}
+  }
+
+  // ── "Show me in the sky" — scroll to the hero, promote the full WebGL
+  // orrery, then draw the transit on a true-geocentric zodiac ring via
+  // focusAspect. Graceful degrade: while focusAspect is unavailable (engine
+  // still loading, or 2D fallback) it focuses the transiting planet so the
+  // button is never dead. The honest geometry (angles true, distances
+  // schematic) lives in the engine's focusAspect overlay + caption.
+  function showInSky(planet, aspect, bLon) {
+    if (!planet) return;
+    var hero = document.getElementById('heroChapter');
+    if (hero) { try { hero.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { hero.scrollIntoView(); } }
+    if (window.__requestFullOrrery) {
+      try { window.__requestFullOrrery({ urgent: true, showLoading: false }).catch(function () {}); } catch (e) {}
+    }
+    var opts = { aspect: aspect, natalMode: 'solar', bLabel: 'your Sun · solar chart' };
+    if (typeof bLon === 'number' && !isNaN(bLon)) opts.bLon = bLon;
+    var didFallback = false;
+    (function poll(n) {
+      var O = window.Orrery3D;
+      if (O && typeof O.focusAspect === 'function') {
+        try { O.focusAspect(planet, 'sun', opts); } catch (e) {}
+        return;
+      }
+      if (!didFallback && O && typeof O.focusPlanet === 'function') {
+        didFallback = true;
+        try { O.focusPlanet(planet); } catch (e) {}
+      }
+      if (n < 50) setTimeout(function () { poll(n + 1); }, 150);
+    })(0);
   }
 
   // ── PERSONALISED (saved chart): real transit-to-natal card ────────────────

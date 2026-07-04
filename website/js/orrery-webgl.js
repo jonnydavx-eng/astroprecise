@@ -196,6 +196,23 @@ const FinishShader = {
   let focusPlanetUntil = 0;
   let focusFrameId = null;      // v576: persists past the 2.8s highlight — camera framing ownership
   let moonFrameActive = false;  // v576: Earth+Moon shared frame from focusPlanet('moon')
+  // ── Aspect view (focusAspect) — HONEST geocentric ecliptic zodiac ring ─────────
+  // The 3D scene's orbit radii are visually COMPRESSED, so an angle between two scene
+  // bodies is geometrically false. focusAspect instead draws an Earth-centred zodiac
+  // ring where each marker sits at the body's TRUE geocentric ecliptic longitude, and
+  // draws the aspect chord between those two ring markers only. The subtended angle is
+  // therefore the real aspect angle. See updateAspectView / buildAspectView below.
+  let aspectGroup = null;       // THREE.Group holding ring + ticks + markers + chord + labels
+  let aspectActive = false;
+  let aspectUntil = 0;          // auto-retire time (parallels focusPlanetUntil)
+  let aspectStart = 0;          // for the gentle fade-in
+  let aspectData = null;        // { idA, idB, aLon, bLon, angle, aspect, ringR, sprites... }
+  const ASPECT_RING_R = 6.4;    // ring radius in scene units — reads clearly around Earth
+  // Framing hold targets so the idle-breathe logic keeps the ring in view (not the
+  // tight Earth terminator frame). Set by frameAspectCamera; read in the idle branch.
+  let aspectFrameRadius = ASPECT_RING_R * 3.1;
+  const aspectFrameEl = 58 * (Math.PI / 180);
+  const aspectFrameAz = -0.6;
   // ── Portrait mode (v581) ─────────────────────────────────────────────────────
   // Additive, reversible still-capture mode used ONLY by the graphics-overhaul
   // capture harness (never the normal homepage boot). While portraitMode is on,
@@ -4679,7 +4696,13 @@ const FinishShader = {
       if (p >= 1) {
         if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
         scaleAnimActive = false;
-        if (moonFrameActive) {
+        if (focusFrameId === 'aspect' && aspectActive) {
+          // Land on the top-down zodiac-ring framing — no Earth-terminator snap.
+          if (aspectData && aspectData.centre) camTarget.copy(aspectData.centre);
+          camera.fov = CAM_FOV_MID;
+          camera.updateProjectionMatrix();
+          updateScaleVisuals(scaleLevel);
+        } else if (moonFrameActive) {
           // v576: land on the Earth+Moon composition — no terminator snap
           syncMoonFrameTarget();
           camera.fov = CAM_FOV_CLOSE;
@@ -4789,7 +4812,16 @@ const FinishShader = {
         if (elapsed >= introMs) finishIntro();
       }
     } else if (!portraitMode && !dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
-      if (scaleLevel === 0 && !moonFrameActive && scalePreset(0).targetEarth && meshes.earth && sunMesh) {
+      if (focusFrameId === 'aspect' && aspectActive) {
+        // Hold the top-down aspect framing with a whisper of az breathing so the
+        // zodiac ring + both markers stay readable (don't snap back to Earth's terminator).
+        camRadius += (aspectFrameRadius - camRadius) * Math.min(1, dt * 1.4);
+        const wantAz = aspectFrameAz + Math.sin(t * 0.00012) * 0.12;
+        let dAz = wantAz - camAz; dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+        camAz += dAz * Math.min(1, dt * 1.4);
+        camEl += (aspectFrameEl - camEl) * Math.min(1, dt * 1.4);
+        if (aspectData && aspectData.centre) camTarget.copy(aspectData.centre);
+      } else if (scaleLevel === 0 && !moonFrameActive && scalePreset(0).targetEarth && meshes.earth && sunMesh) {
         // v576: bounded idle — breathe around the terminator money-shot instead of
         // orbiting off it into the dark hemisphere. Eases back after user drags.
         const prevAz = camAz, prevEl = camEl, keepRadius = camRadius;
@@ -4813,7 +4845,8 @@ const FinishShader = {
         camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
       }
     }
-    if (!portraitMode && !introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive) clampCamToLevel();
+    if (!portraitMode && !introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive
+        && !(focusFrameId === 'aspect' && aspectActive)) clampCamToLevel();
     applyEclipseVisuals();
 
     // Portrait mode (capture harness only): re-assert the framed camera + the
@@ -4837,6 +4870,7 @@ const FinishShader = {
 
     // DOM labels (preferred) or canvas sprites as fallback
     updateFocusHighlight(t);
+    updateAspectView(t);
     if (!introActive) updateDomLabels(1);
     BODIES.forEach((b) => {
       const lab = labels[b.id]; if (!lab) return;
@@ -5095,6 +5129,14 @@ const FinishShader = {
     canvas._orreryKeyHandler = onKey;
     const onDown = (e) => {
       if (onPreloaderStage() && introActive) return;
+      // Aspect view auto-retires on the next user pointer interaction (like the
+      // focusPlanet timed highlight). Dispose visuals; the drag below takes the camera.
+      if (aspectActive) {
+        aspectActive = false; aspectUntil = 0;
+        disposeAspectView(); clearFocusHighlight();
+        if (focusFrameId === 'aspect') focusFrameId = null;
+        try { delete window.__apLastAspect; } catch (_) {}
+      }
       try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
       activePointers.set(e.pointerId, pointerClientXY(e));
       if (activePointers.size >= 2) {
@@ -6049,6 +6091,367 @@ const FinishShader = {
     camera.updateProjectionMatrix();
   }
 
+  // ── Aspect view: the HONEST geocentric ecliptic zodiac ring ──────────────────
+  // Honesty caption shown under the ring, verbatim. Solar charts append a note that
+  // the "your Sun" marker is an ASSUMED sign-midpoint, not a true position.
+  const ASPECT_CAPTION = 'angles true (geocentric) · distances schematic';
+  const SIGN_ABBR = ['Ar', 'Ta', 'Ge', 'Cn', 'Le', 'Vi', 'Li', 'Sc', 'Sg', 'Cp', 'Aq', 'Pi'];
+
+  // The julian day focusAspect uses — the SAME one the daily reading / date UI uses:
+  // baseJd + dayOffset + scrollBias (current scene time). Kept in one place so the
+  // headless geometry assertion can reproduce the exact jd.
+  function currentAspectJd() { return baseJd + dayOffset + scrollBias; }
+
+  // True aspect separation in [0,180] from two ecliptic longitudes (degrees).
+  function angularSeparation(lonA, lonB) {
+    let d = Math.abs(lonA - lonB) % 360;
+    if (d > 180) d = 360 - d;
+    return d;
+  }
+
+  // Small engraved-brass canvas-texture label sprite (mirrors makeLabel's styling but
+  // parameterised for size/colour so the aspect layer reads on the ring). Returns a
+  // THREE.Sprite; caller sets .position + .scale via userData.aspectRatio.
+  function makeAspectLabel(text, opts) {
+    opts = opts || {};
+    const font = opts.font || 30;
+    const col = opts.color || 'rgba(236,230,216,0.96)';   // parchment
+    const pad = 10;
+    const c = document.createElement('canvas');
+    const x = c.getContext('2d');
+    x.font = `600 ${font}px Cinzel, Inter, system-ui, sans-serif`;
+    const w = Math.ceil(x.measureText(text).width) + pad * 2;
+    c.width = w; c.height = font + pad * 2;
+    x.font = `600 ${font}px Cinzel, Inter, system-ui, sans-serif`;
+    x.fillStyle = col; x.textBaseline = 'middle'; x.textAlign = 'center';
+    x.shadowColor = 'rgba(0,0,0,0.85)'; x.shadowBlur = 10;
+    x.fillText(text, c.width / 2, c.height / 2);
+    const tex = new THREE.CanvasTexture(c);
+    tex.anisotropy = 4;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false, opacity: 0 }));
+    const aspectRatio = c.width / c.height;
+    sp.userData.aspectRatio = aspectRatio;
+    sp.userData.baseH = opts.baseH || 0.9;
+    sp.scale.set(sp.userData.baseH * aspectRatio, sp.userData.baseH, 1);
+    return sp;
+  }
+
+  // A small glowing marker disc (a Sprite) placed on the ring at a body's longitude.
+  function makeAspectMarker(hex, size) {
+    const S = 64, c = document.createElement('canvas'); c.width = S; c.height = S;
+    const g = c.getContext('2d');
+    const grad = g.createRadialGradient(S / 2, S / 2, 1, S / 2, S / 2, S / 2);
+    const col = '#' + hex.toString(16).padStart(6, '0');
+    grad.addColorStop(0, col);
+    grad.addColorStop(0.42, col);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = grad; g.beginPath(); g.arc(S / 2, S / 2, S / 2, 0, Math.PI * 2); g.fill();
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false, depthWrite: false, opacity: 0 }));
+    const s = size || 0.9;
+    sp.userData.baseS = s;
+    sp.scale.set(s, s, 1);
+    return sp;
+  }
+
+  // Dispose the aspect group and every geometry/material/texture it owns, then detach.
+  function disposeAspectView() {
+    if (!aspectGroup) return;
+    scene.remove(aspectGroup);
+    aspectGroup.traverse((o) => {
+      if (o.geometry) { try { o.geometry.dispose(); } catch (e) {} }
+      const m = o.material;
+      if (m) {
+        const mats = Array.isArray(m) ? m : [m];
+        mats.forEach((mm) => {
+          if (mm.map) { try { mm.map.dispose(); } catch (e) {} }
+          try { mm.dispose(); } catch (e) {}
+        });
+      }
+    });
+    aspectGroup = null;
+    aspectData = null;
+  }
+
+  // Build the Earth-centred zodiac ring + two true-longitude markers + the aspect chord
+  // + engraved labels + honesty caption. Everything lives under aspectGroup, centred on
+  // Earth's CURRENT scene position (the ring rides with Earth's tiny hero motion).
+  //
+  // GEOMETRY HONESTY: marker positions come ONLY from geocentric ecliptic longitude
+  // (aLon, bLon) via scenePos(R,lon,0). The chord is drawn between those two ring
+  // markers, so the angle it subtends at Earth IS angularSeparation(aLon,bLon).
+  function buildAspectView(idA, idB, aLon, bLon, angle, aspect, bLabel, solar) {
+    disposeAspectView();
+    const R = ASPECT_RING_R;
+    const grp = new THREE.Group();
+    grp.renderOrder = 20;
+
+    // Ring centre = Earth's scene position (Earth-centred ecliptic). Falls back to origin.
+    const centre = new THREE.Vector3();
+    earthTargetVec(centre);
+    grp.position.copy(centre);
+
+    const brass = 0xC2A05E;
+
+    // 1) The 360° zodiac circle — brass hairline, low opacity.
+    const ringPts = [];
+    for (let d = 0; d <= 360; d += 2) ringPts.push(scenePos(R, d, 0));
+    const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts);
+    const ringMat = new THREE.LineBasicMaterial({ color: brass, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+    const ring = new THREE.Line(ringGeo, ringMat);
+    ring.userData.baseOpacity = 0.34;
+    grp.add(ring);
+
+    // 2) Twelve sign-boundary ticks (every 30°) as short radial segments.
+    const tickPts = [];
+    for (let s = 0; s < 12; s++) {
+      const lon = s * 30;
+      tickPts.push(scenePos(R * 0.955, lon, 0));
+      tickPts.push(scenePos(R * 1.045, lon, 0));
+    }
+    const tickGeo = new THREE.BufferGeometry().setFromPoints(tickPts);
+    const tickMat = new THREE.LineBasicMaterial({ color: brass, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+    const ticks = new THREE.LineSegments(tickGeo, tickMat);
+    ticks.userData.baseOpacity = 0.5;
+    grp.add(ticks);
+
+    // 3) Sign abbreviations at each sign's midpoint (engraved, faint).
+    const signSprites = [];
+    for (let s = 0; s < 12; s++) {
+      const lon = s * 30 + 15;
+      const lab = makeAspectLabel(SIGN_ABBR[s], { font: 22, baseH: 0.62, color: 'rgba(194,160,94,0.9)' });
+      lab.position.copy(scenePos(R * 1.14, lon, 0));
+      lab.userData.baseOpacity = 0.62;
+      grp.add(lab); signSprites.push(lab);
+    }
+
+    // 4) The aspect chord — a straight brass line between the two true-longitude markers.
+    const mA = scenePos(R, aLon, 0);
+    const mB = scenePos(R, bLon, 0);
+    const chordGeo = new THREE.BufferGeometry().setFromPoints([mA, mB]);
+    const chordMat = new THREE.LineBasicMaterial({ color: 0xCDAE6A, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+    const chord = new THREE.Line(chordGeo, chordMat);
+    chord.userData.baseOpacity = 0.85;
+    grp.add(chord);
+
+    // 4b) A faint arc hugging the ring between the two markers (shows the swept angle).
+    const arcPts = [];
+    // sweep the SHORT way from aLon toward bLon across `angle` degrees
+    let delta = ((bLon - aLon) % 360 + 360) % 360;
+    if (delta > 180) delta -= 360;        // signed shortest sweep, |delta| === angle
+    const steps = Math.max(2, Math.round(Math.abs(delta)));
+    for (let i = 0; i <= steps; i++) {
+      const lon = aLon + delta * (i / steps);
+      arcPts.push(scenePos(R * 1.0, lon, 0));
+    }
+    const arcGeo = new THREE.BufferGeometry().setFromPoints(arcPts);
+    const arcMat = new THREE.LineBasicMaterial({ color: 0xD8B978, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+    const arc = new THREE.Line(arcGeo, arcMat);
+    arc.userData.baseOpacity = 0.7;
+    grp.add(arc);
+
+    // 5) The two body markers at their TRUE longitudes.
+    const markerA = makeAspectMarker(0xCDAE6A, 0.95);
+    markerA.position.copy(mA);
+    markerA.userData.baseOpacity = 1;
+    grp.add(markerA);
+    const markerB = makeAspectMarker(solar ? 0x9ED1E8 : 0xECE6D8, 0.85);
+    markerB.position.copy(mB);
+    markerB.userData.baseOpacity = 1;
+    grp.add(markerB);
+
+    // 6) Engraved labels: planet names by their markers.
+    const nameA = (CAP[idA] || idA);
+    const labA = makeAspectLabel(nameA, { font: 30, baseH: 0.95 });
+    labA.position.copy(scenePos(R * 0.8, aLon, 0));
+    labA.userData.baseOpacity = 0.98;
+    grp.add(labA);
+
+    const nameB = bLabel || (CAP[idB] || idB) + (solar ? ' · solar chart' : '');
+    const labB = makeAspectLabel(nameB, { font: 26, baseH: 0.82, color: solar ? 'rgba(158,209,232,0.96)' : 'rgba(236,230,216,0.96)' });
+    labB.position.copy(scenePos(R * 0.8, bLon, 0));
+    labB.userData.baseOpacity = 0.96;
+    grp.add(labB);
+
+    // 7) The aspect + REAL computed angle, centred on the chord midpoint.
+    const aspName = aspect ? (aspect.charAt(0).toUpperCase() + aspect.slice(1)) : 'separation';
+    const angLabel = makeAspectLabel(`${aspName} · ${Math.round(angle)}°`, { font: 32, baseH: 1.05, color: 'rgba(216,185,120,0.98)' });
+    const mid = mA.clone().add(mB).multiplyScalar(0.5);
+    angLabel.position.copy(mid);
+    angLabel.userData.baseOpacity = 1;
+    grp.add(angLabel);
+
+    // 8) The honesty caption, engraved BELOW the ring (south point, pushed out + down).
+    const capText = ASPECT_CAPTION + (solar ? '  ·  (solar chart: Sun = assumed sign-midpoint)' : '');
+    const cap = makeAspectLabel(capText, { font: 22, baseH: 0.66, color: 'rgba(236,230,216,0.82)' });
+    cap.position.copy(scenePos(R * 1.3, 270, 0));
+    cap.position.y -= 0.4;
+    cap.userData.baseOpacity = 0.85;
+    grp.add(cap);
+
+    scene.add(grp);
+    aspectGroup = grp;
+    aspectData = { idA, idB, aLon, bLon, angle, aspect, ringR: R, centre };
+    return grp;
+  }
+
+  // Per-frame driver: gentle fade-in, slow marker pulse, keep the group centred on
+  // Earth, sprite-scale the labels for legibility, and auto-retire after ~9s. Called
+  // from frameBody alongside updateFocusHighlight. All motion is SLOW (eye-comfort).
+  function updateAspectView(t) {
+    if (!aspectActive || !aspectGroup) return;
+    if (t >= aspectUntil) { clearAspect(); return; }
+    // fade-in over 900ms, fade-out over the last 900ms
+    const inA = Math.min(1, (t - aspectStart) / 900);
+    const outA = Math.min(1, (aspectUntil - t) / 900);
+    const alpha = Math.max(0, Math.min(inA, outA));
+    // keep the ring centred on Earth as it drifts in the hero rest frame
+    if (aspectData && aspectData.centre) {
+      earthTargetVec(aspectData.centre);
+      aspectGroup.position.copy(aspectData.centre);
+    }
+    const pulse = 0.72 + 0.28 * Math.sin(t * 0.0016);   // slow, calm
+    aspectGroup.traverse((o) => {
+      if (!o.material) return;
+      const base = o.userData.baseOpacity;
+      if (base == null) return;
+      // markers pulse gently; everything else is steady
+      const isMarker = o.isSprite && o.userData.baseS != null;
+      const mul = isMarker ? (0.78 + pulse * 0.22) : 1;
+      o.material.opacity = base * alpha * mul;
+      if (isMarker) {
+        const s = o.userData.baseS * (0.96 + pulse * 0.08);
+        o.scale.set(s, s, 1);
+      }
+    });
+    // label sprites: scale with camera distance so text stays readable (like makeLabel)
+    if (camera) {
+      aspectGroup.traverse((o) => {
+        if (!o.isSprite || o.userData.aspectRatio == null) return;
+        const wp = new THREE.Vector3(); o.getWorldPosition(wp);
+        const d = camera.position.distanceTo(wp);
+        const h = Math.max(0.5, d * 0.03) * o.userData.baseH;
+        o.scale.set(h * o.userData.aspectRatio, h, 1);
+      });
+    }
+  }
+
+  // Frame a gentle top-down-ish view where the whole zodiac ring + both markers read.
+  // Reuses the scale-animation machinery (no jump). Targets Earth; pulls the camera out
+  // to comfortably contain ASPECT_RING_R and lifts elevation to look onto the ecliptic.
+  function frameAspectCamera() {
+    userTouched = performance.now();
+    introActive = false;
+    syncPreloaderIntroClass(false);
+    syncHeroReplayClass(false);
+    daysPerSec = 0;
+    flicking = false;
+    scrollDriveLocked = true;
+    focusFrameId = 'aspect';   // owns camera framing; released on clearAspect / scale change
+    moonFrameActive = false;
+
+    const prevLevel = scaleLevel;
+    scaleLevel = 0;
+    scaleAnimFromLevel = prevLevel;
+    scaleAnimToLevel = 0;
+    updateScaleHUD();
+    updateScaleVisuals(0);
+
+    scaleAnimFrom.radius = camRadius;
+    scaleAnimFrom.el = camEl;
+    scaleAnimFrom.az = camAz;
+    scaleAnimFrom.tx = camTarget.x; scaleAnimFrom.ty = camTarget.y; scaleAnimFrom.tz = camTarget.z;
+
+    const ep = new THREE.Vector3(); earthTargetVec(ep);
+    scaleAnimTo.tx = ep.x; scaleAnimTo.ty = ep.y; scaleAnimTo.tz = ep.z;
+    scaleAnimTo.radius = ASPECT_RING_R * 3.1;   // contain the ring + caption
+    scaleAnimTo.el = 58 * D2R;                    // look down onto the ecliptic plane
+    let azD = (-0.6) - camAz;
+    azD = Math.atan2(Math.sin(azD), Math.cos(azD));
+    scaleAnimTo.az = camAz + azD;
+    scaleAnimActive = true;
+    scaleAnimStart = performance.now();
+    camera.fov = CAM_FOV_MID;
+    camera.updateProjectionMatrix();
+  }
+
+  // PUBLIC: focusAspect — draw a named transit HONESTLY on the geocentric zodiac ring.
+  function focusAspect(idA, idB, opts) {
+    try {
+      opts = opts || {};
+      idA = String(idA || '').toLowerCase();
+      idB = String(idB || 'sun').toLowerCase();
+      const E = window.AstroEphemeris;
+      // Degrade gracefully: no ephemeris → fall back to the timed focus highlight.
+      if (!E || destroyed || !scene) {
+        try { if (idA) focusPlanet(idA); } catch (e) {}
+        return false;
+      }
+      if (!allPlanetsBuilt) {
+        try { buildRemainingPlanets(); needRecompute = true; updatePositions(); } catch (e) {}
+      }
+
+      const jd = currentAspectJd();
+      // TRUE geocentric ecliptic longitude of the transiting body (never a scene angle).
+      const aLon = norm360(geoLonOf(idA, jd));
+      // idB marker: an explicit bLon (the solar-chart "your Sun" sign-midpoint) overrides
+      // the true geocentric longitude of idB.
+      let bLon;
+      const solar = opts.natalMode === 'solar';
+      if (typeof opts.bLon === 'number' && isFinite(opts.bLon)) {
+        bLon = norm360(opts.bLon);
+      } else {
+        const raw = geoLonOf(idB, jd);
+        bLon = raw == null ? 0 : norm360(raw);
+      }
+      // The REAL computed separation, rounded to whole degrees for the engraved label
+      // and the verification stash (astrologers quote transits to the degree). The raw
+      // float is preserved as angleRaw for anyone who wants sub-degree precision.
+      const angleRaw = angularSeparation(aLon, bLon);
+      const angle = Math.round(angleRaw);
+
+      buildAspectView(idA, idB, aLon, bLon, angle, opts.aspect, opts.bLabel, solar);
+      setFocusHighlight(idA);           // brass ring on the transiting body...
+      // ...and a parallel brass ring on idB (unless it's the abstract solar point).
+      if (!solar && meshes[idB]) {
+        const g2 = meshes[idB];
+        const ring2 = ensureFocusRing(g2, (BODIES.find((b) => b.id === idB) || { size: 0.6 }).size * 3.8);
+        ring2.visible = true;
+        g2.userData._aspectRing = ring2;
+      } else if ((idB === 'sun') && !solar && sunMesh) {
+        sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
+        sunFocusRing.visible = true;
+      }
+
+      aspectActive = true;
+      aspectStart = performance.now();
+      aspectUntil = aspectStart + 9000;    // auto-retire ~9s (parallels focusPlanet)
+      frameAspectCamera();
+
+      // Verification hook — stash the values actually placed on the ring.
+      window.__apLastAspect = { idA, idB, aLon, bLon, angle, angleRaw, aspect: opts.aspect || null, jd };
+      return true;
+    } catch (err) {
+      console.warn('[orrery] focusAspect failed — degrading to focusPlanet:', err);
+      try { disposeAspectView(); if (idA) focusPlanet(idA); } catch (e) {}
+      return false;
+    }
+  }
+
+  // PUBLIC: clearAspect — retire the ring/markers/caption + brass rings, return to hero.
+  function clearAspect() {
+    if (!aspectActive && !aspectGroup) return;
+    aspectActive = false;
+    aspectUntil = 0;
+    disposeAspectView();
+    clearFocusHighlight();
+    // release framing ownership and ease back to the hero rest frame
+    if (focusFrameId === 'aspect') focusFrameId = null;
+    if (!destroyed && scene) {
+      try { applyScalePreset(0, true); } catch (e) {}
+    }
+    delete window.__apLastAspect;
+  }
+
   function destroy() {
     destroyed = true; if (raf) cancelAnimationFrame(raf);
     window.removeEventListener('resize', resize);
@@ -6141,6 +6544,8 @@ const FinishShader = {
     isSpaceFlightActive() { return spaceFlightToolActive; },
     isJourneyActive() { return journeyActive || preloaderCosmicJourney || masterclassIntroActive; },
     focusPlanet,
+    focusAspect,
+    clearAspect,
     enterPortrait,
     exitPortrait,
     isPortraitMode() { return portraitMode; },
