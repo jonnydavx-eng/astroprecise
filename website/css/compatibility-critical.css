@@ -260,6 +260,46 @@
       width: 2.5rem;
       height: 2.88rem;
     }
+
+    /* ---- Enlarged A/B seal pairing — the hero's focal image ----
+       Page-scoped (0,2,0) so it beats the 80/64px defaults in main-lite.css
+       regardless of load order. Mirrors the inline <style> + critical sizes
+       to avoid any CLS flash. The person label is lifted out of the orb's flex
+       row (absolute, below) so the core stays a true circle at the larger size. */
+    .page-compat .compat-orbs { max-width: 560px; min-height: 220px; }
+    .page-compat .compat-orb {
+      width: 148px;
+      height: 148px;
+      flex-direction: column;
+    }
+    .page-compat .compat-orb__core {
+      width: 124px;
+      height: 124px;
+      font-size: 3.1rem;
+      flex-shrink: 0;
+    }
+    .page-compat .compat-orb__core .ap-seal--lg { width: 4.4rem; height: 5.06rem; }
+    .page-compat .compat-orbs__arc { min-width: 72px; margin-top: -1.6rem; }
+    .page-compat .compat-orbs__arc-label { font-size: 1.6rem; }
+    .page-compat .compat-person-label {
+      position: absolute;
+      bottom: -1.7rem;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 0;
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      white-space: nowrap;
+    }
+    .page-compat .hero--small .compat-orbs { min-height: 220px; }
+    @media (max-width: 560px) {
+      .page-compat .compat-orbs { max-width: 100%; min-height: 188px; }
+      .page-compat .compat-orb { width: 116px; height: 116px; }
+      .page-compat .compat-orb__core { width: 96px; height: 96px; font-size: 2.5rem; }
+      .page-compat .compat-orb__core .ap-seal--lg { width: 3.5rem; height: 4.03rem; }
+      .page-compat .compat-orbs__arc { min-width: 40px; }
+      .page-compat .hero--small .compat-orbs { min-height: 188px; }
+    }
     .hero--small .compat-orbs { min-height: 120px; }
     @media (max-width: 1023px) {
       body.page-compat {

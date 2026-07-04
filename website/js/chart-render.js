@@ -551,7 +551,10 @@
         fill: `url(#${idPrefix}seg_${elem})`,
         stroke: shade(WARM.gold, i % 2 ? 0.1 : 0),
         'stroke-width': '0.65',
-        opacity: '0.92'
+        // Element accent kept (semantic, per DESIGN.md) but dropped to a faint
+        // hint so the ring reads as a BRASS engraved instrument first, not a
+        // muddy olive/green band. The brass borders + seals carry the ring.
+        opacity: '0.4'
       }));
 
       const midAng = lonToAngle(midLon, ascLon);

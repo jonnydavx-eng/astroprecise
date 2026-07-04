@@ -36,56 +36,43 @@
     #chart-result { margin-top: var(--space-10); }
 
     /* Result header card */
+    /* Tier 1 — the result HERO. Borderless, centered, big bright name. No card:
+       the reveal should read as "here is your chart", not another dark panel. */
     .result-header-card {
-      background: rgba(16, 21, 32,0.72);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(168, 158, 136,0.12);
-      border-top-color: rgba(232,224,208,0.18);
-      border-radius: var(--radius-xl);
-      padding: var(--space-8) var(--space-8);
-      margin-bottom: var(--space-8);
-      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0 0 var(--space-5);
+      margin-bottom: var(--space-6);
+      box-shadow: none;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
-    .result-header-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 8%;
-      right: 8%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(194, 160, 94, 0.55), transparent);
-      pointer-events: none;
-    }
-    .result-header-card::after {
-      content: '';
-      position: absolute;
-      inset: 10px;
-      border: 1px solid rgba(168, 158, 136, 0.1);
-      border-radius: calc(var(--radius-xl) - 6px);
-      pointer-events: none;
-    }
+    .result-header-card::before,
+    .result-header-card::after { display: none; }
     .result-header-inner {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: var(--space-6);
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-4);
     }
-    .result-header-meta {}
+    .result-header-meta { text-align: center; }
     .result-header-meta h2 {
       font-family: var(--font-display);
-      font-size: 1.5rem;
-      color: var(--white);
-      margin-bottom: var(--space-1);
-      letter-spacing: 0.03em;
+      font-size: clamp(2.1rem, 4.6vw, 3.2rem);
+      font-weight: 600;
+      color: var(--ap-gold-parchment, #ECE6D8);
+      margin-bottom: var(--space-2);
+      letter-spacing: 0.005em;
+      line-height: 1.04;
+      text-wrap: balance;
     }
     .result-header-meta p {
-      font-size: var(--text-sm);
-      color: var(--silver-dim);
+      font-size: 0.92rem;
+      color: var(--ap-text-muted, var(--silver-dim));
       margin-bottom: var(--space-3);
+      letter-spacing: 0.02em;
     }
     .result-badge {
       display: inline-flex;
@@ -107,7 +94,8 @@
       display: flex;
       gap: var(--space-3);
       flex-wrap: wrap;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: center;
     }
     .action-btn {
       display: inline-flex;
@@ -156,79 +144,74 @@
     }
 
     /* ── Big Three premium cards ─────────────────────────────────── */
+    /* Big Three — ONE elegant summary strip, not three competing cards. Reads as
+       the chart's headline (Sun · Moon · Rising) directly under the name. */
     .big-three-section {
-      margin-bottom: var(--space-8);
+      margin-bottom: var(--space-7);
     }
     .big-three-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-5);
+      display: flex;
+      align-items: stretch;
+      max-width: 760px;
+      margin: 0 auto;
+      border: 1px solid var(--ap-card-border, rgba(194, 160, 94, 0.16));
+      border-top-color: var(--ap-rim-light, rgba(232, 224, 208, 0.16));
+      border-radius: var(--radius-lg);
+      background: rgba(18, 24, 38, 0.55);
+      overflow: hidden;
     }
     @media (max-width: 560px) {
-      .big-three-grid { grid-template-columns: 1fr; }
+      .big-three-grid { flex-direction: column; }
     }
     .big-three-card {
-      background: var(--ap-ip-surface-deep, rgba(16, 21, 32, 0.72));
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--ap-ip-border, rgba(194, 160, 94, 0.12));
-      border-top-color: var(--ap-rim-light, rgba(232, 224, 208, 0.16));
-      border-radius: var(--radius-xl);
-      padding: var(--space-8) var(--space-6);
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-left: 1px solid rgba(194, 160, 94, 0.12);
+      border-radius: 0;
+      padding: var(--space-6) var(--space-4);
       text-align: center;
       position: relative;
-      overflow: hidden;
-      transition: all var(--transition-base);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      transition: background var(--transition-base);
+      box-shadow: none;
     }
-    .big-three-card::after {
-      content: '';
-      position: absolute;
-      inset: 10px;
-      border: 1px solid var(--ap-ip-engrave-line, rgba(168, 158, 136, 0.14));
-      border-radius: calc(var(--radius-xl) - 8px);
-      pointer-events: none;
+    .big-three-card:first-child { border-left: none; }
+    @media (max-width: 560px) {
+      .big-three-card { border-left: none; border-top: 1px solid rgba(194, 160, 94, 0.12); }
+      .big-three-card:first-child { border-top: none; }
     }
-    .big-three-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 60%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--ap-gold-a40, rgba(194, 160, 94,0.4)), transparent);
-    }
-    .big-three-card:hover {
-      border-color: var(--ap-gold-a22, rgba(194, 160, 94,0.22));
-      box-shadow: 0 20px 48px rgba(0,0,0,0.45), 0 0 24px var(--ap-gold-a08, rgba(194, 160, 94,0.08));
-    }
+    .big-three-card::before,
+    .big-three-card::after { display: none; }
+    .big-three-card:hover { background: rgba(194, 160, 94, 0.05); }
     .big-three-card__planet {
-      font-size: 0.58rem;
+      font-size: 0.56rem;
       font-weight: 700;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--ap-text-muted, var(--silver-dim));
       margin-bottom: var(--space-3);
     }
     .big-three-card__glyph {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       line-height: 1;
-      color: var(--ap-gold-core, var(--gold));
-      margin-bottom: var(--space-3);
-      text-shadow: 0 0 20px var(--ap-gold-a40, rgba(194, 160, 94,0.4));
+      color: var(--ap-gold-bright, var(--gold));
+      margin-bottom: var(--space-2);
+      text-shadow: 0 0 22px var(--ap-gold-a40, rgba(194, 160, 94, 0.45));
       display: block;
     }
+    .big-three-card__orb { margin: 0 auto var(--space-2); }
     .big-three-card__sign {
       font-family: var(--font-display);
-      font-size: 1.45rem;
-      color: var(--ap-text-primary, var(--white));
-      letter-spacing: 0.04em;
-      margin-bottom: var(--space-2);
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--ap-gold-parchment, #ECE6D8);
+      letter-spacing: 0.02em;
+      margin-bottom: var(--space-1);
     }
     .big-three-card__desc {
-      font-size: 0.65rem;
+      font-size: 0.66rem;
       color: var(--ap-text-muted, var(--silver-dim));
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
     }
 
     /* ── Chart wheel hero + tabs below ───────────────────────────── */
@@ -237,7 +220,7 @@
       flex-direction: column;
       gap: var(--space-8);
       margin-bottom: var(--space-8);
-      max-width: 920px;
+      max-width: 1040px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -251,8 +234,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(1.25rem, 4vw, 2.75rem) clamp(0.5rem, 3vw, 1.5rem);
-      min-height: min(88vw, 760px);
+      padding: clamp(0.5rem, 2vw, 1.25rem) clamp(0.25rem, 1.5vw, 0.75rem);
+      min-height: min(94vw, 880px);
     }
 
     /* Deterministic "your sky" backdrop (painted by chart-page.js paintWheelSky),
@@ -265,10 +248,10 @@
       height: 100%;
       object-fit: cover;
       pointer-events: none;
-      opacity: 0.5;
+      opacity: 0.38;
       z-index: 0;
-      -webkit-mask-image: radial-gradient(circle at 50% 47%, #000 45%, transparent 74%);
-      mask-image: radial-gradient(circle at 50% 47%, #000 45%, transparent 74%);
+      -webkit-mask-image: radial-gradient(circle at 50% 47%, #000 40%, transparent 72%);
+      mask-image: radial-gradient(circle at 50% 47%, #000 40%, transparent 72%);
     }
 
     .chart-wheel-stage__halo {
@@ -291,7 +274,7 @@
 
     .chart-wheel-stage__meridian {
       position: absolute;
-      width: min(96%, 780px);
+      width: min(98%, 900px);
       aspect-ratio: 1;
       color: rgba(194, 160, 94, 0.55);
       pointer-events: none;
@@ -307,7 +290,7 @@
     .chart-wheel-card {
       position: relative;
       z-index: 1;
-      width: min(100%, 780px);
+      width: min(100%, 900px);
       background:
         radial-gradient(ellipse 120% 90% at 50% 0%, rgba(194, 160, 94, 0.07) 0%, transparent 55%),
         rgba(16, 21, 32, 0.78);

@@ -74,6 +74,15 @@
 
   let currentChart = null;
 
+  // First name for personalised copy. Strips the demo "Sample:" label and any
+  // stray trailing punctuation so "Sample: Frida Kahlo" → "Frida" (not "Sample:").
+  function firstNameOf(name) {
+    if (!name) return '';
+    const cleaned = String(name).replace(/^\s*sample:\s*/i, '').trim();
+    const tok = (cleaned || '').split(/\s+/)[0] || '';
+    return tok.replace(/[:.,;]+$/, '');
+  }
+
   // ── City autocomplete ─────────────────────────────────────────────────────
 
   const cityInput = document.getElementById('city-input');
@@ -397,7 +406,7 @@
           };
           if (input.timeKnown) pts.asc = currentChart.positions.Ascendant?.lon;
           localStorage.setItem('ap_natal_pins', JSON.stringify({
-            name: input.name.split(/\s+/)[0],
+            name: firstNameOf(input.name) || input.name,
             sunSign: currentChart.positions.Sun?.sign,
             points: pts,
             savedAt: Date.now(),
@@ -600,7 +609,9 @@
 
     const resultNameEl = document.getElementById('result-name');
     if (resultNameEl) {
-      resultNameEl.textContent = `${chart.name} — Natal Chart`;
+      // The hero name stands alone (big Cormorant) — "— Natal Chart" was
+      // redundant and wrapped awkwardly on the em-dash at mobile widths.
+      resultNameEl.textContent = chart.name;
       resultNameEl.removeAttribute('aria-hidden');
     }
     document.getElementById('result-date').textContent =
@@ -640,19 +651,19 @@
 
     const sunSign = chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
     const riseSign = chart.risingSign;
-    const name = chart.name ? String(chart.name).split(/\s+/)[0] : 'your';
+    const name = firstNameOf(chart.name) || 'your';
     const bundle = bundleUpsellProduct();
 
     const steps = [
       {
-        tag: 'Free · Your story',
+        tag: 'Your story',
         title: 'Read your cosmic story',
         desc: `${name === 'your' ? 'Your' : name + '’s'} chart retold as a flowing narrative — the arc of your Sun, Moon${riseSign ? ', rising' : ''} and the threads between them.`,
         href: 'cosmic-story.html',
         cta: 'Read your story →',
       },
       {
-        tag: 'Free · Live sky',
+        tag: 'Live sky',
         title: 'See your transits',
         desc: sunSign
           ? `Watch how today's planets aspect your ${sunSign} Sun and ${riseSign || 'chart'} — computed from the same engine you just used.`
@@ -661,14 +672,14 @@
         cta: 'Open Transits →',
       },
       {
-        tag: 'Free · Two charts',
+        tag: 'Two charts',
         title: 'Compare with a partner',
         desc: `Run a synastry reading for ${name}'s chart against someone else's — cross-chart aspects, element balance, and a shareable card.`,
         href: 'compatibility.html',
         cta: 'Open Compatibility →',
       },
       {
-        tag: 'Free · Deep dive',
+        tag: 'Deep dive',
         title: 'Read the Instrument',
         desc: 'Light-cone, zenith star, planetary hours, field weather, and time-travel — the precision tools behind every chart.',
         href: 'ephemeris.html',
@@ -1404,7 +1415,7 @@
           source: 'chart_wallpaper_unlock',
           tag: 'tag_chart_wallpaper',
           meta: {
-            forName: chart.name ? String(chart.name).split(/\s+/)[0] : null,
+            forName: firstNameOf(chart.name) || null,
             sunSign: chart.positions?.Sun?.sign || null,
             hasBirthDate: !!birthDate,
           },
@@ -1475,7 +1486,7 @@
           source: 'chart_capture',
           tag: 'tag_chart_wallpaper',
           meta: {
-            forName: (chart && chart.name) ? String(chart.name).split(/\s+/)[0] : null,
+            forName: (chart && chart.name) ? (firstNameOf(chart.name) || null) : null,
             sunSign: chart && chart.positions && chart.positions.Sun ? chart.positions.Sun.sign : null,
           },
         });

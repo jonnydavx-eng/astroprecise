@@ -281,8 +281,8 @@
     var CX=W*0.36, CY=H*0.54;
     var GOLD='#C2A05E', GOLD_L='#EFE3C0', GOLD_D='rgba(194, 160, 94,0.25)';
 
-    // Background
-    ctx.fillStyle='#050406'; ctx.fillRect(0,0,W,H);
+    // Background — cool void (brand base, not retired warm)
+    ctx.fillStyle='#0C1016'; ctx.fillRect(0,0,W,H);
 
     // Stars (deterministic)
     var sv=0xA5DEF2B3;
@@ -327,17 +327,17 @@
       ctx.save(); ctx.globalAlpha=0.75;
       ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,Math.PI,0,false);
       ctx.strokeStyle=GOLD; ctx.lineWidth=r*0.32; ctx.stroke(); ctx.restore();
-      // Planet
+      // Planet — engraved-brass sphere on cool void (no honey/orange drift)
       var pg=ctx.createRadialGradient(CX-r*0.28,CY-r*0.28,r*0.08,CX,CY,r);
-      pg.addColorStop(0,'#F8EEC8'); pg.addColorStop(0.3,'#D4A820');
-      pg.addColorStop(0.7,'#8A6808'); pg.addColorStop(1,'#3A2408');
+      pg.addColorStop(0,'#ECE6D8'); pg.addColorStop(0.3,'#CDAE6A');
+      pg.addColorStop(0.7,'#8A7145'); pg.addColorStop(1,'#2A2418');
       ctx.beginPath(); ctx.arc(CX,CY,r,0,Math.PI*2);
       ctx.fillStyle=pg; ctx.fill();
-      // Planet bands
+      // Planet bands (brass light / cool-shadow, not warm amber)
       for(var b=-2;b<=2;b++){
         var by=CY+b*r*0.16, hw=Math.sqrt(Math.max(0,r*r-(by-CY)*(by-CY)));
         ctx.beginPath(); ctx.moveTo(CX-hw,by); ctx.lineTo(CX+hw,by);
-        ctx.strokeStyle=b%2===0?'rgba(255,200,80,0.2)':'rgba(100,70,10,0.18)';
+        ctx.strokeStyle=b%2===0?'rgba(216,185,120,0.22)':'rgba(60,52,34,0.20)';
         ctx.lineWidth=2; ctx.stroke();
       }
       // Ring (front half)

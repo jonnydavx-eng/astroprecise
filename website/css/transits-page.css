@@ -337,27 +337,39 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       position: relative;
       overflow: hidden;
     }
+    /* Engraved brass hairline — the 10-card grid reads as ONE instrument.
+       Element cards carry only a whisper of their element hue over a brass base,
+       so the accent is a subtle engraving, never a rainbow. */
     .planet-card::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
+      height: 2px;
       border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-      background: var(--card-accent, var(--gold));
-      opacity: 0.7;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--card-accent, var(--gold)) 18%,
+        var(--card-accent, var(--gold)) 82%,
+        transparent 100%
+      );
+      opacity: 0.55;
     }
     .planet-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-      border-color: rgba(255,255,255,0.14);
+      border-color: rgba(194, 160, 94,0.28);
     }
-    /* Element color accents */
-    .planet-card--fire { --card-accent: #f97316; }
-    .planet-card--earth { --card-accent: #84cc16; }
-    .planet-card--air  { --card-accent: #67e8f9; }
-    .planet-card--water { --card-accent: #818cf8; }
+    .planet-card:hover::before { opacity: 0.85; }
+    /* Semantic element accents — muted, engraved-brass family (on-brand hexes),
+       NOT the off-brand rainbow. Cards ARE grouped by element in the markup. */
+    .planet-card { --card-accent: #C2A05E; }        /* brass base */
+    .planet-card--fire  { --card-accent: #B85A42; } /* terracotta-fired brass */
+    .planet-card--earth { --card-accent: #5A7A48; } /* patinated earth */
+    .planet-card--air   { --card-accent: #8A7A6A; } /* warm-grey brass */
+    .planet-card--water { --card-accent: #4A7580; } /* oxidised blue-brass */
 
     .planet-card__symbol {
       font-size: 1.9rem;
@@ -366,25 +378,30 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
     }
     .planet-card__name {
       font-family: var(--font-display, 'Cinzel', serif);
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      color: var(--silver);
-      letter-spacing: 0.15em;
+      color: #CDAE6A;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
+    /* The sign/degree readout is the primary datum in each card:
+       larger, parchment-bright, engraved in the display face. */
     .planet-card__position {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--white);
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ECE6D8;
+      letter-spacing: 0.01em;
+      line-height: 1.15;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
     .planet-card__desc {
-      font-size: 0.78rem;
-      color: var(--silver);
-      line-height: 1.65;
-      margin-top: 0.25rem;
+      font-size: 0.82rem;
+      color: #D8D0BE;
+      line-height: 1.7;
+      margin-top: 0.35rem;
     }
     .retrograde-badge {
       display: inline-flex;

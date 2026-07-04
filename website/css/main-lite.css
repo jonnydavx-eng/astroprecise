@@ -1706,6 +1706,20 @@ p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text
 .ap-social-icon__svg { width: 18px; height: 18px; }
 .ap-social-icon--soon { opacity: 0.42; cursor: default; }
 
+/* ── Footer zodiac strip — EAGER flex layout. The flex rule otherwise lives only
+   in the deferred celestial-seals.css, so before it loads (headless/SEO renderers,
+   and real users until first pointerdown) all 12 seals stacked full-width into a
+   ~1300px vertical column, making the footer taller than the page on every page.
+   Decorative + aria-hidden; safe to force. ── */
+.footer-zodiac-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-start;
+  line-height: 0;
+}
+.footer-zodiac-strip > span { display: inline-flex; }
+
 /* ── AP structure utilities (mirrors main.css tail — keep in sync) ── */
 :root {
   --bp-tablet: 768px;

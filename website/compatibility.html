@@ -56,10 +56,15 @@
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
     /* CLS — hero shell + orbs before main-lite spacing tokens parse */
     .hero--small{padding:calc(72px + 4rem) 0 3rem;min-height:603px}
-    .compat-orbs{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 2.5rem;max-width:460px;position:relative;min-height:120px}
-    .compat-orb{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .compat-orb__core{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;line-height:1}
-    .compat-orbs__arc{flex:1;height:40px;display:flex;align-items:center;justify-content:center;min-width:80px;position:relative}
+    .compat-orbs{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 2.5rem;max-width:560px;position:relative;min-height:200px}
+    .compat-orb{width:148px;height:148px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .compat-orb__core{width:124px;height:124px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.1rem;line-height:1}
+    .compat-orbs__arc{flex:1;height:40px;display:flex;align-items:center;justify-content:center;min-width:96px;position:relative}
+    @media (max-width:560px){
+      .compat-orbs{max-width:100%;min-height:168px}
+      .compat-orb{width:116px;height:116px}
+      .compat-orb__core{width:96px;height:96px;font-size:2.5rem}
+    }
     .ap-badge{display:inline-flex;align-items:center;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;padding:4px 12px;border-radius:999px;border:1px solid rgba(194, 160, 94,0.3)}
     @media (max-width: 768px) {
       #compat-form.compat-form { min-height: 1680px; }
@@ -144,7 +149,7 @@
         <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Full synastry — inter-chart aspects with measured orbs, not Sun-sign matching</span></a></p>
 
         <!-- Two luminous orb avatars with connecting arc -->
-        <div class="compat-orbs" style="display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;max-width:460px;min-height:120px" aria-hidden="true">
+        <div class="compat-orbs" style="display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;max-width:560px;min-height:200px" aria-hidden="true">
           <div class="compat-orb compat-orb--1">
             <div class="compat-orb__core" id="orb1-core"><span id="orb1-glyph"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span></div>
             <span class="compat-person-label">Person A</span>
@@ -490,14 +495,14 @@
       <div class="container">
         <h2 class="section__title" id="matrix-heading">Sun Sign Compatibility Grid</h2>
         <p class="section__subtitle">
-          A quick elemental overview of Sun sign compatibility.
-          Green = high harmony, Gold = moderate, Red = challenging, Grey = depends on the full chart.
+          A quick elemental overview of Sun sign compatibility, read as an engraved brass plate —
+          the brighter the mark, the higher the natural harmony; the fainter, the more the full chart decides.
         </p>
 
         <div class="card compat-matrix-scroll" tabindex="0" aria-label="12-by-12 zodiac sign compatibility matrix">
           <div style="min-width:600px;">
             <table class="compat-matrix" aria-label="Sun sign compatibility overview">
-              <caption class="sr-only">Sun sign compatibility: High (green), Medium (gold), Low (red), Neutral (grey).</caption>
+              <caption class="sr-only">Sun sign compatibility, shown as a brass luminance ramp: High (brightest), Medium, Low (faintest), Neutral (depends on the full chart).</caption>
               <thead>
                 <tr>
                   <th scope="col" aria-label="Sign" style="background:transparent;border:none;"><span class="compat-sign-abbr">Sign</span></th>
@@ -593,16 +598,16 @@
           </div>
           <div style="display:flex;gap:var(--space-6);margin-top:var(--space-5);flex-wrap:wrap;" aria-label="Legend">
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(120, 140, 70,0.4);display:inline-block;" aria-hidden="true"></span>High Compatibility
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(216,185,120,0.55);box-shadow:inset 0 0 0 1px rgba(216,185,120,0.6);display:inline-block;" aria-hidden="true"></span>High Compatibility
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(251,191,36,0.4);display:inline-block;" aria-hidden="true"></span>Medium Compatibility
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(194,160,94,0.34);display:inline-block;" aria-hidden="true"></span>Medium Compatibility
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(239,68,68,0.3);display:inline-block;" aria-hidden="true"></span>Challenging
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.22);display:inline-block;" aria-hidden="true"></span>Challenging
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:var(--color-surface-2);display:inline-block;" aria-hidden="true"></span>Neutral / Depends
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.08);box-shadow:inset 0 0 0 1px rgba(140,117,68,0.2);display:inline-block;" aria-hidden="true"></span>Neutral / Depends
             </span>
           </div>
           <p class="form-hint" style="margin-top:var(--space-3);">

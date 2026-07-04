@@ -330,7 +330,10 @@
         var thisWeekStart = WeeklySky.computeWeek(new Date()).start.getTime();
         var isThisWeek = report.weekStart.getTime() === thisWeekStart;
         rangeEl.textContent = fmtRange(report.weekStart, report.weekEnd);
-        labelEl.textContent = isThisWeek ? 'This week' : fmtRange(report.weekStart, report.weekEnd);
+        // Always show the week's date range here — the "This week" reset button
+        // beside it already signals the current week, so a "This week" label too
+        // read as a confusing duplicate.
+        labelEl.textContent = fmtRange(report.weekStart, report.weekEnd);
         thisBtn.setAttribute('aria-pressed', isThisWeek ? 'true' : 'false');
         try {
           var iso = report.weekStart.toISOString().slice(0, 10);

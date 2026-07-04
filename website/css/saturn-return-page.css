@@ -148,8 +148,28 @@ body:has(.sat-hero) .footer-zodiac-strip [data-celestial-seal] {
     .sat-unlock__note { font-size: .78rem !important; color: var(--silver-dim, #8F8579) !important; margin-top: .8rem !important; }
     .sat-content { max-width: 44rem; margin: 2.5rem auto 0; }
     .sat-content h2 { font-family: var(--font-display, 'Cinzel', serif); font-size: 1.3rem; color: var(--white); margin: 1.8rem 0 .7rem; }
-    .sat-content p { color: var(--silver); line-height: 1.8; margin-bottom: .9rem; }
+    .sat-content p { color: var(--parchment, #ECE6D8); line-height: 1.8; margin-bottom: .9rem; }
     .sat-content details { border-top: 1px solid var(--sat-line); padding: .9rem 0; }
     .sat-content summary { cursor: pointer; font-family: var(--font-display, 'Cinzel', serif); color: var(--gold-light, #EFE3C0); font-size: 1rem; }
     .sat-content details p { margin-top: .6rem; }
     @media (max-width: 560px) { .sat-grid { grid-template-columns: 1fr; } .sat-cards { grid-template-columns: 1fr; } }
+
+    /* Mobile hero legibility — lift the type off the bright starfield speckle
+       with a near-solid deep-navy void-scrim, so white stars don't punch
+       through the letters (site eye-comfort rule: text on a lifted well). */
+    body:has(.sat-hero) .sat-hero .container { position: relative; z-index: 1; }
+    @media (max-width: 640px) {
+      body:has(.sat-hero) .sat-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(ellipse 92% 62% at 50% 34%,
+            #0C1016 0%,
+            rgba(12, 16, 22, 0.94) 38%,
+            rgba(12, 16, 22, 0.72) 62%,
+            transparent 84%);
+      }
+    }
