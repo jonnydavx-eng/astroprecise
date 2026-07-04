@@ -513,17 +513,19 @@ function page(s) {
   <meta property="og:title" content="${s.name} Horoscope Today | Astro Precise" />
   <meta property="og:description" content="${desc}" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
+  <meta property="og:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
   <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="1800" />
-  <meta property="og:image:alt" content="${s.name} — engraved zodiac artwork by Astro Precise" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="${s.name} — ${s.dates}, ${/^[AEIOU]/.test(s.element) ? 'an' : 'a'} ${s.element} sign ruled by ${RULER_STILL[s.key].label}, shown as a photoreal render of ${RULER_STILL[s.key].label} on Astro Precise." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${s.name} Horoscope Today | Astro Precise" />
   <meta name="twitter:description" content="${desc}" />
-  <meta name="twitter:image" content="${BASE_URL}/assets/images/zodiac-cards/${s.key}.jpg" />
+  <meta name="twitter:image" content="${BASE_URL}/img/og/sign-${s.key}.jpg" />
   <meta name="theme-color" content="#0C1016" />
   <link rel="preload" href="img/engine/${RULER_STILL[s.key].still}.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
+  <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->
+  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
@@ -593,11 +595,26 @@ function page(s) {
       .sign-hero__inner { flex-direction: column; gap: 1.75rem; }
       .sign-hero__planet { width: clamp(190px, 62vw, 260px); }
     }
-    /* Hero seal — celestial-seals.css audit-deferred */
-    .sign-hero__seal:not(:has(.ap-seal)) {
-      display: inline-block;
-      min-height: 4.5rem;
-      min-width: 4.5rem;
+    /* Hero seal — celestial-seals.css audit-deferred.
+       CLS FIX (v582): reserve the glyph box at its FINAL rendered geometry so the
+       hero column does not drop when celestial-seals.css applies + the .ap-seal art
+       is injected. Must match celestial-seals.css .sign-hero__glyph{width/height/margin}
+       EXACTLY (clamp + space-4) and apply in ALL states — the previous
+       :not(:has(.ap-seal)) + 4.5rem reserve under-reserved by ~40px and dropped once
+       the seal mounted, shifting keyword/dates by ~32px (CLS ~0.059). */
+    .sign-hero__glyph.sign-hero__seal,
+    .sign-hero__glyph[data-celestial-seal] {
+      display: block;
+      width: clamp(3.5rem, 12vw, 5rem);
+      height: clamp(4rem, 14vw, 5.75rem);
+      margin: 0 auto var(--space-4);
+      contain: layout style;
+    }
+    /* Pre-seal placeholder must not inflate the reserved box (main.css sets 4.8rem). */
+    .sign-hero__glyph.sign-hero__seal:not(:has(.ap-seal)) {
+      font-size: clamp(3.5rem, 12vw, 5rem) !important;
+      line-height: 1;
+      overflow: hidden;
     }
     /* Today section — CLS reserve; boot paints full grid */
     #today-date { min-height: 1.35rem; }

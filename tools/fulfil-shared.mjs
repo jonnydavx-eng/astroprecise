@@ -26,6 +26,11 @@ export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', '
 /** Self-hosted fonts — paths resolve from website root (css/fonts.css). */
 export const FONTS = `<link rel="stylesheet" href="css/fonts.css">`;
 
+/** Astrological-symbol font stack for SVG glyph <text> — 'AstroGlyph' (self-hosted
+ *  Noto Sans Symbols 2, from css/fonts.css) covers the zodiac/planet code points so
+ *  they never fall back to tofu boxes or colour-emoji. Same fix chart-render.js uses. */
+export const GLYPH_FONT = "'AstroGlyph', 'Noto Sans Symbols 2', serif";
+
 export const PRINT_CSS = `
 @page{size:A4;margin:0;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -100,15 +105,20 @@ export const sd = (l) => { const s = norm(l); return { sign: SIGNS[Math.floor(s 
 export const fmt = (l) => { const x = sd(l); return `${x.d}°${String(x.m).padStart(2, '0')}′ ${x.sign}`; };
 export const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 export const slug = (name) => String(name || 'order').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'order';
-/** First n complete sentences — never returns a dangling fragment. */
+/** First n complete sentences — never returns a dangling fragment.
+ *  A period between digits (e.g. an orb "1.7°" or a decimal) is NOT a sentence
+ *  boundary — mask it so "orb 0.0°" never splits into "orb 0. 0°". */
 export const sents = (t, n = 2) => {
   if (!t) return '';
-  const m = String(t).match(/[^.!?]+[.!?]+/g);
-  if (m && m.length) return m.slice(0, n).join(' ').trim();
-  const raw = String(t).trim();
+  const DOT = ''; // control-char sentinel — never appears in prose
+  const masked = String(t).replace(/(\d)\.(\d)/g, `$1${DOT}$2`);
+  const unmask = (str) => str.split(DOT).join('.');
+  const m = masked.match(/[^.!?]+[.!?]+/g);
+  if (m && m.length) return unmask(m.slice(0, n).join('').replace(/\s+/g, ' ').trim());
+  const raw = masked.trim();
   if (!raw) return '';
-  return /[.!?]$/.test(raw) ? raw : `${raw}.`;
-};
+  return unmask(/[.!?]$/.test(raw) ? raw : `${raw}.`);
+}
 
 /** Truncate prose at sentence boundary within maxChars (paid fulfilment). */
 export const trimProse = (t, maxChars = 200) => {
@@ -426,7 +436,7 @@ export function natalWheelSvg({
     const [x2, y2] = pt(i * 30, R);
     s += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#C9A227" stroke-width=".65" opacity=".45"/>`;
     const [gx, gy] = pt(i * 30 + 15, (R + rSign) / 2);
-    s += `<text x="${gx.toFixed(1)}" y="${gy.toFixed(1)}" font-size="${size * 0.034}" fill="${ELEMENT_STROKE[elem]}" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="serif">${SGL[i]}</text>`;
+    s += `<text x="${gx.toFixed(1)}" y="${gy.toFixed(1)}" font-size="${size * 0.034}" fill="${ELEMENT_STROKE[elem]}" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="${GLYPH_FONT}">${SGL[i]}</text>`;
   }
 
   s += `<circle cx="${cx}" cy="${cy}" r="${rSign}" fill="none" stroke="#C9A227" stroke-width="1" opacity=".55"/>`;
@@ -455,7 +465,7 @@ export function natalWheelSvg({
     const [tx, ty] = pt(pos[k].lon, rHouse - size * 0.005);
     s += `<line x1="${tx.toFixed(1)}" y1="${ty.toFixed(1)}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="rgba(232,200,114,.35)" stroke-width=".45"/>`;
     s += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${size * 0.024}" fill="rgba(8,6,5,.92)" stroke="#C9A227" stroke-width=".7" filter="url(#${idPrefix}-glow)"/>`;
-    s += `<text x="${px.toFixed(1)}" y="${py.toFixed(1)}" font-size="${size * 0.027}" fill="#EFE3C0" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="serif">${PGL[k]}</text>`;
+    s += `<text x="${px.toFixed(1)}" y="${py.toFixed(1)}" font-size="${size * 0.027}" fill="#EFE3C0" text-anchor="middle" dominant-baseline="middle" alignment-baseline="middle" font-family="${GLYPH_FONT}">${PGL[k]}</text>`;
   });
 
   const [ax, ay] = pt(asc, R + size * 0.02);

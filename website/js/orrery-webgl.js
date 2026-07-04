@@ -2958,16 +2958,46 @@ const RadialBlurShader = {
     t.magFilter = THREE.LinearFilter;
   }
 
+  // ── Mobile texture tier (v582) ─────────────────────────────────────────────
+  // True on genuinely constrained clients so the heavy planet maps stream in at
+  // 512px (_sm) instead of full 2048px. Covers the low/mid perfTier AND phones
+  // that report a "high" tier (many mid-range Androids do) but present a
+  // coarse pointer + narrow viewport — those still can't afford ~2.8MB of maps.
+  function wantsSmallTextures() {
+    if (perfTier === 'low' || perfTier === 'mid') return true;
+    try {
+      const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      const narrow = window.matchMedia && window.matchMedia('(max-width: 820px)').matches;
+      if (coarse && narrow) return true;                       // touch phone/tablet
+      if ((window.innerWidth || 9999) <= 560) return true;     // very narrow viewport
+    } catch (e) { /* fall through */ }
+    return false;
+  }
+
+  // Logical texture names in this file use .jpg/.png; on disk they are WebP
+  // (converted for weight — earth_lights PNG→WebP is a ~6.5× cut). Map to .webp
+  // and keep the original extension only as a last-ditch fallback.
+  function toWebp(name) { return name.replace(/\.(jpe?g|png)$/i, '.webp'); }
+  function smallName(name) { return name.replace(/\.(webp|jpe?g|png)$/i, '_sm.$1'); }
+
   function textureCandidates(file) {
     const list = [];
+    const webp = toWebp(file);
     // During the preloader ALL tiers use the small map so the Earth-ready handshake
     // (which releases the fly-in) fires fast; full-res maps swap in after, on the
     // interactive orrery. (Loading-safety: never block the preloader on a big texture.)
-    if (perfTier === 'low' || onPreloaderStage()) {
-      const sm = file.replace(/\.(jpe?g|png)$/i, '_sm.$1');
-      if (sm !== file) list.push(sm);
+    // On constrained clients (low/mid tier or coarse+narrow) we KEEP the small map
+    // as the interactive texture too — that's the mobile texture diet.
+    if (wantsSmallTextures() || onPreloaderStage()) {
+      list.push(smallName(webp));                              // e.g. mercury_sm.webp
     }
-    list.push(file);
+    list.push(webp);                                           // e.g. mercury.webp
+    // Legacy fallbacks (only hit if a .webp is ever missing) — never 404 to black.
+    if (wantsSmallTextures() || onPreloaderStage()) {
+      const smLegacy = smallName(file);
+      if (smLegacy !== file) list.push(smLegacy);
+    }
+    if (file !== webp) list.push(file);
     return list;
   }
 

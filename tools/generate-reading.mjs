@@ -23,7 +23,7 @@ import {
   skyFactsBlock, lifeAreasChapter, houseTourChapter, planetDossiersChapter, chartPatternsChapter,
 } from './reading-narrative.mjs';
 import {
-  buildAnalyzePayload, detectChartPatterns,
+  buildAnalyzePayload, detectChartPatterns, nodeAxisNarrative,
 } from './reading-data-bridge.mjs';
 
 const win = {};
@@ -219,7 +219,9 @@ function architecture(){
   }
   body += `<p>${PGL.pluto} <strong>Pluto in ${pos.pluto.sign}</strong>, in your ${ord(pos.pluto.house)} house, marks where you transform through depth and repetition — the house of ${hMeaning(pos.pluto.house).keyword}. ${PGL.chiron} <strong>Chiron in ${pos.chiron.sign}</strong> marks the tender place that, tended, becomes a gift for others.</p>`;
   body += `<h3>☊ The North Node in ${pos.northNode.sign} — your growing edge</h3>`;
-  body += `<p>The soul's direction points toward ${pos.northNode.sign} in your ${ord(pos.northNode.house)} house — the house of ${hMeaning(pos.northNode.house).keyword}. Every choice that feels both exposing and strangely inevitable is pointing you up this path.</p>`;
+  const nnAxis = nodeAxisNarrative(pos.northNode.sign);
+  const nnGrow = nnAxis ? nnAxis.text.replace(/^With the North Node in [A-Za-z]+, the direction of growth is to /, '') : '';
+  body += `<p>The soul's direction points toward ${pos.northNode.sign} in your ${ord(pos.northNode.house)} house — the house of ${hMeaning(pos.northNode.house).keyword}. ${nnGrow ? `Here the pull is to ${nnGrow} ` : ''}Every choice that feels both exposing and strangely inevitable is pointing you up this path.</p>`;
   return body;
 }
 
@@ -316,7 +318,7 @@ const reading=`<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>$
 
 <div class="page">
   <p class="eyebrow">X · Chart Patterns</p>
-  ${chartPatternsChapter(chartPatterns)}
+  ${chartPatternsChapter(chartPatterns, { pos, hMeaning, pInterp, sentsFn: sents, ord, PNAME })}
   ${foot('10')}
 </div>
 

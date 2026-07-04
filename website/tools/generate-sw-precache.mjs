@@ -102,10 +102,13 @@ function collectCanonical() {
     join(ROOT, 'img', 'shop'),
   ];
 
-  // Engine-captured planet stills (img/engine/*) are large (~KBs each, MBs total)
-  // and only needed on the pages that show them — keep them OUT of the precache
-  // shell (they lazy-cache at runtime) so the install payload stays lean.
-  const PRECACHE_EXCLUDE = /(^|\/)img\/engine\//i;
+  // Keep the precache install shell lean:
+  //  - img/engine/* — large photoreal stills, only on the pages that show them
+  //  - assets/textures/*.{jpg,png} — the LEGACY raster maps, superseded by .webp
+  //    (the engine loads .webp; the .jpg/.png stay on disk only as a runtime
+  //    fallback). Precaching both formats would double the texture payload.
+  // These lazy-cache at runtime instead.
+  const PRECACHE_EXCLUDE = /(^|\/)img\/engine\/|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$/i;
 
   for (const dir of staticDirs) {
     for (const f of listFiles(dir)) {

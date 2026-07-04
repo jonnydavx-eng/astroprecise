@@ -5,7 +5,7 @@
 import { fmt, ord, sents } from './fulfil-shared.mjs';
 import {
   HOUSE_THEME, buildBirthSkyFacts, detectChartPatterns, synthesizeLifeAreas,
-  planetsInHouse, houseCuspSign,
+  planetsInHouse, houseCuspSign, nodeAxisNarrative,
 } from './reading-data-bridge.mjs';
 
 export const PRODUCT_LABELS = {
@@ -26,24 +26,57 @@ const MODE_BLURB = {
 };
 
 const GENERIC_ASPECT = 'This planetary relationship adds texture and meaning to your chart.';
+// The corpus returns a by-aspect-type `default` string for any pair it doesn't
+// specifically cover. That text is honest but identical across every uncovered
+// pair of the same type — three "Square" paragraphs would read verbatim-alike.
+// Detect those defaults so the pair-specific fallback (which names both planets
+// and the exact orb) takes over and no two aspect entries read the same.
+const GENERIC_DEFAULTS = [
+  GENERIC_ASPECT,
+  'These two planetary principles operate with unusual intensity',
+  'This harmonious trine (120°) indicates',
+  'This sextile (60°) represents an opportunity aspect',
+  'This square (90°) creates productive tension',
+  'This opposition (180°) represents a polarity',
+];
+function isGenericAspectText(text) {
+  if (!text) return true;
+  return GENERIC_DEFAULTS.some((g) => text.startsWith(g) || text === g);
+}
+
+/** Core principle of each body — standard significations, used to make every
+ *  fallback aspect paragraph specific to the two bodies actually involved. */
+const PLANET_PRINCIPLE = {
+  Sun: 'your core will and identity', Moon: 'your emotional needs and instincts',
+  Mercury: 'how you think and communicate', Venus: 'how you love and what you value',
+  Mars: 'your drive and how you assert', Jupiter: 'where you expand and seek meaning',
+  Saturn: 'your discipline and where you build', Uranus: 'your urge to break free and innovate',
+  Neptune: 'your imagination and longing to dissolve', Pluto: 'your drive to transform through depth',
+  Chiron: 'your core wound and the healing you offer', 'North Node': 'your growing edge',
+};
+const principleOf = (name) => PLANET_PRINCIPLE[name] || `${name}'s themes`;
 
 export function aspectProse(I, type, p1, p2, orb) {
   let text = '';
   try {
     if (I?.getAspectMeaning) text = I.getAspectMeaning(type, p1, p2) || '';
   } catch { /* skip */ }
-  if (!text || text === GENERIC_ASPECT) {
+  if (isGenericAspectText(text)) {
     const tight = orb <= 2 ? 'especially close in your chart' : orb <= 4 ? 'a clear signature in your wiring' : 'present but softer in expression';
     const hard = type === 'Square' || type === 'Opposition';
     const soft = type === 'Trine' || type === 'Sextile';
+    const a = principleOf(p1);
+    const b = principleOf(p2);
     if (type === 'Conjunction') {
-      text = `${p1} and ${p2} speak as one voice here (orb ${orb.toFixed(1)}°) — their themes merge so completely that separating them in lived experience is almost impossible. What one planet wants, the other reinforces.`;
+      text = `Here ${a} (${p1}) and ${b} (${p2}) speak as one voice (orb ${orb.toFixed(1)}°) — their themes merge so completely that separating them in lived experience is almost impossible. What one wants, the other reinforces.`;
     } else if (soft) {
-      text = `${p1} ${type.toLowerCase()} ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: a cooperative current you can lean on when you choose to engage it. Gifts like this grow when named and used, not when left on autopilot.`;
+      text = `${p1} ${type.toLowerCase()} ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: ${a} and ${b} cooperate — a current you can lean on when you choose to engage it. Gifts like this grow when named and used, not left on autopilot.`;
+    } else if (type === 'Opposition') {
+      text = `${p1} opposite ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: ${a} and ${b} sit at opposite ends of one axis and each keeps pulling for the other's opposite. The work is holding both at once rather than swinging between them — or casting one pole onto other people.`;
     } else if (hard) {
-      text = `${p1} ${type.toLowerCase()} ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: productive friction between two parts of you that both demand a seat at the table. The pressure is not punishment — it is how this chart builds muscle.`;
+      text = `${p1} square ${p2} (orb ${orb.toFixed(1)}°) is ${tight}: ${a} and ${b} keep crossing each other at an angle, generating friction that both demand you resolve. The pressure is not punishment — it is where this chart builds muscle.`;
     } else {
-      text = `${p1} and ${p2} form a ${type.toLowerCase()} (orb ${orb.toFixed(1)}°) — a recurring conversation between two principles in your chart.`;
+      text = `${p1} and ${p2} form a ${type.toLowerCase()} (orb ${orb.toFixed(1)}°) — an ongoing conversation between ${a} and ${b}.`;
     }
   }
   return sents(text, hardAspect(type) ? 3 : 2);
@@ -131,7 +164,8 @@ export function houseTourChapter(houses, pos, hMeaning, fmtFn, PGL, PNAME, BODIE
   const hotspots = [1, 4, 7, 10].map((n) => {
     const inmates = planetsInHouse(n, pos, BODIES);
     if (!inmates.length) return '';
-    return `<p><strong>${ord(n)} house (${houseCuspSign(houses, n)} cusp):</strong> ${inmates.map((k) => PNAME[k]).join(', ')} concentrate energy in ${HOUSE_THEME[n]}. ${hMeaning(n).meaning ? sents(hMeaning(n).meaning, 1) : ''}</p>`;
+    const verb = inmates.length === 1 ? 'concentrates' : 'concentrate';
+    return `<p><strong>${ord(n)} house (${houseCuspSign(houses, n)} cusp):</strong> ${inmates.map((k) => PNAME[k]).join(', ')} ${verb} energy in ${HOUSE_THEME[n]}. ${hMeaning(n).meaning ? sents(hMeaning(n).meaning, 1) : ''}</p>`;
   }).filter(Boolean).join('');
   body += hotspots || '<p>No angular house stellions — energy distributes across the wheel rather than clustering on the four cardinal doors.</p>';
   return body;
@@ -144,6 +178,16 @@ export function planetDossiersChapter(pos, pInterp, hMeaning, sentsFn, PGL, PNAM
   BODIES.forEach((k) => {
     const rx = pos[k].retro ? ' <span class="r">℞ retrograde</span>' : '';
     body += `<h3>${PGL[k]} ${PNAME[k]} — ${fmt(pos[k].lon)} · ${ord(pos[k].house)} house${rx}</h3>`;
+    if (k === 'northNode') {
+      // No North-Node-in-sign entry exists in the corpus; compose honestly from
+      // the real nodal axis (North Node ↔ opposite South Node) instead of the
+      // generic filler line getPlanetInterpretation would otherwise return.
+      const axis = nodeAxisNarrative(pos[k].sign);
+      body += `<p>${housePlacementLine('The North Node', pos[k].house, pos[k].sign, hMeaning)} `;
+      body += axis ? `${axis.text} Its opposite point, the South Node in ${axis.south}, marks the well-worn strengths you already carry — safe to lean on, but no longer where the growth is.</p>`
+        : 'It marks the direction of growth your chart keeps pointing toward.</p>';
+      return;
+    }
     body += `<p>${housePlacementLine(PNAME[k], pos[k].house, pos[k].sign, hMeaning)} ${sentsFn(pInterp(PNAME[k], pos[k].sign), 3)}`;
     if (pos[k].retro) {
       body += ` Retrograde motion turns ${PNAME[k]}'s expression inward — you metabolise this planet's themes privately before showing them outwardly.`;
@@ -153,14 +197,35 @@ export function planetDossiersChapter(pos, pInterp, hMeaning, sentsFn, PGL, PNAM
   return body;
 }
 
-export function chartPatternsChapter(patterns) {
+export function chartPatternsChapter(patterns, ctx = null) {
+  // ctx (optional): { pos, hMeaning, pInterp, sentsFn, ord: ordFn, PNAME }
+  // enriches each pattern with the real sign/house depth behind it, so this page
+  // is substantive rather than a one-line note on a mostly-empty sheet.
+  const closing = `<p class="note">Patterns are read on top of the individual placements, never instead of them — where a configuration exists, it tells you which themes the rest of the chart keeps circling back to. Where one is absent, it simply means the energy is distributed rather than concentrated; neither is better, only different weather to live inside.</p>`;
   if (!patterns.length) {
-    return `<h1 style="font-size:20pt;">Chart patterns</h1><p>No major stellium, grand trine, or T-square dominates — your chart distributes its weight across multiple stories rather than one loud configuration.</p>`;
+    return `<h1 style="font-size:20pt;">Chart patterns.</h1>
+      <p class="lede">Some charts fire a single loud configuration; others spread their weight evenly. Yours is the second kind.</p>
+      <p>No major stellium, grand trine, or T-square dominates your chart — no three-plus planets pile into one sign, no closed circuit of trines, no locked engine of squares. That is not a lack. It means your story is told across several placements of roughly equal voice, rather than routed through one overriding theme. Read the planet-by-planet and aspect chapters as a chorus rather than a single lead line.</p>
+      ${closing}`;
   }
-  let body = `<h1 style="font-size:20pt;">Patterns the sky repeats.</h1><p class="lede">Beyond individual placements, geometry links planets into recurring life themes.</p>`;
+  const enrich = ctx && ctx.pos && ctx.hMeaning;
+  let body = `<h1 style="font-size:20pt;">Patterns the sky repeats.</h1><p class="lede">Beyond individual placements, geometry links planets into recurring life themes — the configurations your chart returns to again and again.</p>`;
   patterns.forEach((p) => {
     if (p.type === 'stellium') {
-      body += `<h3>${p.sign} stellium</h3><p>${p.planets.join(', ')} gather in ${p.sign} — a concentrated signature the way a horoscope's "dominant transit" would feel, except this is permanent in your natal map.</p>`;
+      body += `<h3>${p.sign} stellium</h3><p>${p.planets.join(', ')} gather in ${p.sign} — a concentrated signature the way a horoscope's "dominant transit" would feel, except this is permanent in your natal map. Where this much weight collects in one sign, that sign's lessons stop being optional: they become the spine the rest of the chart hangs from.</p>`;
+      if (enrich) {
+        const key = p.planets[0] === 'Sun' ? 'Sun' : p.planets[0];
+        const signProse = ctx.sentsFn(ctx.pInterp(key, p.sign), 2);
+        const houses = [...new Set(p.planets.map((nm) => {
+          const bk = Object.keys(ctx.PNAME).find((k) => ctx.PNAME[k] === nm);
+          return bk && ctx.pos[bk] ? ctx.pos[bk].house : null;
+        }).filter(Boolean))].sort((a, b) => a - b);
+        if (signProse) body += `<p>${p.sign}'s character, worn by so many of your planets at once: ${signProse}</p>`;
+        if (houses.length) {
+          const hhs = houses.map((n) => `the ${ctx.ord(n)} (${ctx.hMeaning(n).keyword.toLowerCase()})`).join(houses.length > 1 ? ', ' : '');
+          body += `<p>The cluster falls across ${houses.length > 1 ? 'houses' : 'the house'} of ${hhs} — so this ${p.sign} theme plays out most visibly in ${houses.length > 1 ? 'those areas of life' : 'that area of life'}.</p>`;
+        }
+      }
     } else if (p.type === 'grandTrine') {
       body += `<h3>Grand trine</h3><p>${p.planets.join(', ')} — ${p.note}</p>`;
     } else if (p.type === 'tSquare') {
@@ -169,6 +234,7 @@ export function chartPatternsChapter(patterns) {
       body += `<h3>Mutual reception</h3><p>${p.pairs.join('; ')} — each planet guests in the other's sign, trading strengths like allies covering each other's blind spots.</p>`;
     }
   });
+  body += closing;
   return body;
 }
 
@@ -210,7 +276,7 @@ export function methodologyPage(PERSON, order) {
   <h1 style="font-size:22pt;">Measured sky,<br>not invented copy.</h1>
   <p class="lede">Every longitude in this document is computed from planetary theory (VSOP87 for the planets, ELP2000 for the Moon) for ${PERSON.date} at ${PERSON.time} above ${PERSON.place}. Interpretations are drawn from AstroPrecise's curated corpus — the same <code>interpretations.js</code> engine behind chart analysis, compatibility, and horoscope copy — stitched to <em>your</em> placements, not a generic sign column.</p>
   <h3>Your free instruments</h3>
-  <p>This reading deepens what you can explore free on the site: <strong>chart.html</strong> (your wheel), <strong>horoscope.html</strong> (daily sky against your Sun sign), <strong>transits.html</strong> (live weather on your natal map), <strong>compatibility.html</strong> (synastry), and <strong>ephemeris.html</strong> (raw positions). The PDF is the keptake; the site stays your living observatory.</p>
+  <p>This reading deepens what you can explore free on the site: <strong>chart.html</strong> (your wheel), <strong>horoscope.html</strong> (daily sky against your Sun sign), <strong>transits.html</strong> (live weather on your natal map), <strong>compatibility.html</strong> (synastry), and <strong>ephemeris.html</strong> (raw positions). The PDF is the keepsake; the site stays your living observatory.</p>
   ${timeNote}
   <h3>What astrology is — here</h3>
   <p>This is symbolic pattern recognition, not fortune-telling. The chart describes qualities of time at your first breath: temperament, motivation, recurring themes. It does not diagnose, prescribe, or guarantee outcomes.</p>
@@ -218,6 +284,8 @@ export function methodologyPage(PERSON, order) {
   <p>Read for resonance, not verdict. Highlight what lands true; sit with what irritates — friction often marks growth edges. Return after major life chapters; the sky map stays the same, but you read it with wiser eyes.</p>
   <p style="font-size:9.5pt;color:#A89E88;margin-top:14pt;">Entertainment purposes only · Not medical, financial, or legal advice · astroprecise.app/accuracy.html</p>`;
 }
+
+const artForSign = (sign) => (/^[AEIOU]/i.test(String(sign)) ? 'an' : 'a');
 
 export function closingChapter(name, sunSign, moonSign, ascSign, domEl, domMode, domLineTail) {
   const reflections = [
@@ -228,7 +296,7 @@ export function closingChapter(name, sunSign, moonSign, ascSign, domEl, domMode,
   return `
   <h2>Three questions to carry</h2>
   <ul class="questions">${reflections.map((q) => `<li>${q}</li>`).join('')}</ul>
-  <p>${name}, your chart is led by <strong>${domEl[0].toLowerCase()}</strong> — ${domLineTail.replace(/^a |^an /, '')} — with a <strong>${domMode[0].toLowerCase()}</strong> rhythm: ${MODE_BLURB[domMode[0]]}. Carried on a ${sunSign} Sun, a ${moonSign} Moon, and ${ascSign} rising, it asks you to bring what you privately understand into a form the world can meet.</p>
+  <p>${name}, your chart is led by <strong>${domEl[0].toLowerCase()}</strong> — ${domLineTail.replace(/^a |^an /, '')} — with a <strong>${domMode[0].toLowerCase()}</strong> rhythm: ${MODE_BLURB[domMode[0]]}. Carried on ${artForSign(sunSign)} ${sunSign} Sun, ${artForSign(moonSign)} ${moonSign} Moon, and ${ascSign} rising, it asks you to bring what you privately understand into a form the world can meet.</p>
   <p class="lede" style="margin-top:16pt;">This is not prediction. It is orientation — a map of the sky you were born under, drawn honestly. What you build on it is yours. Thank you for trusting AstroPrecise with your birth moment.</p>
   <p style="font-size:9pt;color:#5E5748;text-align:center;margin-top:12pt;">Questions about your reading? Reply to your delivery email · astroprecise.app</p>`;
 }
