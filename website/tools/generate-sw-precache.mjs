@@ -29,7 +29,7 @@ const HTML_INCLUDE = new Set([
     'links.html', 'outreach.html', 'charts.html', 'retrograde.html', 'moonphase.html',
     'what-is-my-rising-sign.html', 'synastry.html', 'solar-return.html', 'saturn-return.html',
     'quiz.html', 'angel-numbers.html', 'tonight.html', 'this-weeks-sky.html', 'name-numerology.html',
-    'guides.html',
+    'guides.html', 'catalogue.html',
     'privacy.html', 'terms.html', 'profile.html', 'sample-reading.html',
     ...SIGN_KEYS.map((k) => `${k}.html`),
     'manifest.json', 'robots.txt', 'sitemap.xml', 'llms.txt',

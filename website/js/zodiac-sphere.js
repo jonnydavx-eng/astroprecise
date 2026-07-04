@@ -674,14 +674,14 @@
       ctx.stroke();
 
       // Engraved zodiac seal (APCanvasSeals) — keyed by sign slug, not Unicode.
-      const sealCol = isSel ? '#c9a227' : (EL_HEX[s.el] || '#c9a227');
+      const sealCol = isSel ? '#C2A05E' : (EL_HEX[s.el] || '#C2A05E');
       const drewSeal = window.APCanvasSeals && (
         (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, s.key, s.x, s.y, r * 0.82, sealCol)) ||
         (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, s.key, s.x, s.y, r * 1.45))
       );
       if (!drewSeal) {
         ctx.font         = `${Math.max(8, r * 0.55)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle    = isSel ? '#c9a227' : isHov ? sealCol : '#C8BFA6';
+        ctx.fillStyle    = isSel ? '#C2A05E' : isHov ? sealCol : '#C8BFA6';
         ctx.textAlign    = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText((s.name || s.key || '?').charAt(0), s.x, s.y);
@@ -692,7 +692,7 @@
       if (labelFade > 0) {
         ctx.globalAlpha = alpha * Math.min(1, labelFade);
         ctx.font        = `${Math.max(8, 9.5 * s.s)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle   = isSel ? '#c9a227' : 'rgba(200,190,165,0.9)';
+        ctx.fillStyle   = isSel ? '#C2A05E' : 'rgba(200,190,165,0.9)';
         ctx.textAlign   = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(s.name, s.x, s.y + r + 3);

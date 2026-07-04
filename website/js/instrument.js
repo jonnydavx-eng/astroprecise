@@ -235,7 +235,7 @@
       : (cv.width = W, cv.height = H, cv.getContext('2d'));
     x.scale(W / BASE, W / BASE);
 
-    x.fillStyle = '#050406';
+    x.fillStyle = '#0C1016';
     x.fillRect(0, 0, BASE, BASE);
     const neb = x.createRadialGradient(BASE / 2, 430, 0, BASE / 2, 430, 520);
     neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
@@ -309,7 +309,7 @@
 
     // ── text ──
     x.textAlign = 'center';
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#C2A05E';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText('T H E   L I G H T - C O N E', BASE / 2, 130);
 
@@ -325,7 +325,7 @@
     x.font = '28px "AstroGlyph", Georgia, serif';
     x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, BASE / 2, 975);
 
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#C2A05E';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', BASE / 2, 1010);
 
@@ -355,7 +355,7 @@
       : (cv.width = CARD_W, cv.height = CARD_H, cv.getContext('2d'));
     x.scale(S, S);
 
-    x.fillStyle = '#050406';
+    x.fillStyle = '#0C1016';
     x.fillRect(0, 0, CARD_BASE, CARD_BASE);
     const neb = x.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebR);
     neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
@@ -380,14 +380,14 @@
 
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#C2A05E';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText(text, CARD_BASE / 2, y == null ? 130 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#C2A05E';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', CARD_BASE / 2, y == null ? 1010 : y);
   }
@@ -410,7 +410,7 @@
     const dotX = left + padX;
     x.beginPath();
     x.arc(dotX, y, dotR, 0, Math.PI * 2);
-    x.fillStyle = measured ? '#C9A227' : '#A89E88';
+    x.fillStyle = measured ? '#C2A05E' : '#A89E88';
     x.fill();
     x.textAlign = 'left';
     x.fillStyle = measured ? '#EFE3C0' : '#A89E88';

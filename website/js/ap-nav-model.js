@@ -43,6 +43,7 @@
 
   // Everything else — the tool sprawl — collapses here, into the "More" drawer/flyout.
   var NAV_EXTRAS = [
+    ['catalogue.html', 'Lookbook'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['this-weeks-sky.html', "This Week's Sky"], ['tonight.html', "Tonight's Sky"],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],

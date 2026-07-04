@@ -4480,3 +4480,58 @@ html.ap-await-webgl.orrery-live .ap-award-511 #heroChapter .orrery-earth-loader 
   padding-left: 0;
   counter-reset: none;
 }
+
+/* v589 — selector chips + terracotta ------------------------------------
+   Hero orrery planet-selector chips: the seal-only chips (mercury→neptune)
+   used a tiny SVG plate that rendered as near-identical illegible circles.
+   Each chip now carries a legible AstroGlyph planet glyph (.lite-vp-glyph);
+   inside the hero deck we swap the micro-plate for the glyph and give a
+   clearer selected state. data-lite-planet ids + aria-labels are untouched
+   (added spans are aria-hidden), so the orrery JS wiring is unaffected.
+   Terracotta note: the Cosmic journey / Cosmic flight pills are already
+   brass ghost pills (ap-horizon :4122 / ap-cosmic-flight :214) and no
+   decorative terracotta survives in the hero — terracotta stays CTA-only. */
+
+/* Glyph is inert outside the hero deck so other contexts are unaffected. */
+.lite-vp-glyph { display: none; }
+
+/* Inside the hero deck, the glyph is the legible mark on every chip. */
+.ap-award-511 #heroChapter .lite-vp-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  font-family: 'AstroGlyph', var(--font-serif, Georgia, serif);
+  font-variant-emoji: text;
+  -webkit-font-feature-settings: normal;
+  font-size: 1.02rem;
+  line-height: 1;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: var(--brass, #C2A05E);
+  text-rendering: optimizeLegibility;
+  transition: color 0.15s, transform 0.15s, text-shadow 0.15s;
+}
+
+/* Retire the illegible micro-plate seal in favour of the glyph. The seal
+   span stays in the DOM (JS/seal-hydration may read it) but is not painted. */
+.ap-award-511 #heroChapter .lite-vp-btn .lite-vp-btn__seal { display: none; }
+
+/* Seal-only chips are now a clean glyph token, not a text pill. */
+.ap-award-511 #heroChapter .lite-vp-btn--sealonly {
+  padding: 4px 7px;
+  min-width: 34px;
+  justify-content: center;
+}
+
+/* Hover / focus lifts the glyph to bright brass. */
+.ap-award-511 #heroChapter .lite-vp-btn:hover .lite-vp-glyph,
+.ap-award-511 #heroChapter .lite-vp-btn:focus-visible .lite-vp-glyph {
+  color: var(--brass-bright, #CDAE6A);
+}
+
+/* Selected chip: vivid brass glyph with a soft brass halo — unmistakable. */
+.ap-award-511 #heroChapter .lite-vp-btn.active .lite-vp-glyph {
+  color: var(--brass-vivid, #D8B978);
+  text-shadow: 0 0 8px rgba(216, 185, 120, 0.45);
+}

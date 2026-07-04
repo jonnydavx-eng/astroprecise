@@ -19,6 +19,8 @@ Output: website/img/shop/product-*.jpg (1600×900, JPEG q96)
 """
 from __future__ import annotations
 
+import math
+import random
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -54,6 +56,11 @@ SKU = {
     "constellation-mug":dict(eyebrow="Morning ritual",title="Star Map Mug",      hook="Your birthplace sky wrapped around ceramic",      badge="£9",           body="moon",        sky_hero=False),
     "year-ahead":      dict(eyebrow="12 months ahead",title="Year Ahead",        hook="Every major transit — dated for your chart",      badge="12 months",    body="jupiter",     sky_hero=False),
     "solar-return":    dict(eyebrow="Birthday ritual",title="Solar Return",      hook="The sky when your Sun returns — your year theme",  badge="Annual",       body="sun",         sky_hero=False),
+    "cosmic-story":    dict(eyebrow="Written for you", title="Your Cosmic Story", hook="Your chart, retold as a flowing narrative",        badge="Keepsake PDF", body="earth-moon",  sky_hero=False),
+    "observatory-disc-pendant":dict(eyebrow="Jewellery",title="Observatory Disc",hook="Your full natal wheel, engraved on a wearable disc",badge="Made to order",body="saturn",      sky_hero=False),
+    "constellation-bar":dict(eyebrow="Jewellery",     title="Constellation Bar",  hook="Sun · Moon · Rising constellation lines, in brass", badge="Dainty",       body="venus",       sky_hero=False),
+    "big-three-glyph": dict(eyebrow="Jewellery",      title="Big Three Glyph",    hook="Sun · Moon · Rising charms on a fine chain",       badge="Everyday",     body="mercury",     sky_hero=False),
+    "seal-medallion":  dict(eyebrow="Jewellery",      title="Seal Medallion",     hook="Your dominant element seal on a hex medallion",     badge="Talisman",     body="mars",        sky_hero=False),
 }
 
 
@@ -454,6 +461,138 @@ def mock_mug() -> Image.Image:
     return finish(img)
 
 
+# ── COSMIC STORY (narrative reading — open book over engine still) ───────────────
+def mock_cosmic_story() -> Image.Image:
+    img = base_scene("cosmic-story", darken=0.6, cx_frac=0.74)
+    left_scrim(img, 600)
+    hero_copy(img, "cosmic-story")
+    d = ImageDraw.Draw(img)
+    # an open engraved "book" of the story — two facing pages of set text lines
+    bx, by, bw, bh = int(W * 0.52), int(H * 0.26), 560, 400
+    d.rounded_rectangle((bx, by, bx + bw, by + bh), radius=10, fill=(*MID, 245), outline=(*BRASS, 200), width=2)
+    d.line((bx + bw // 2, by + 16, bx + bw // 2, by + bh - 16), fill=(*BRASS, 110), width=1)
+    # engraved chart medallion at the head of the right page
+    paste(img, chart_plate(120), bx + bw - 130, by + 90, shadow=False)
+    # ruled "typeset" lines (parchment ink) — the narrative
+    for side in (0, 1):
+        x0 = bx + 30 + side * (bw // 2)
+        for i in range(9):
+            ln = (bw // 2 - 70) - (26 if i in (0, 5) else 0) - (60 if i == 8 else 0)
+            d.line((x0, by + 60 + i * 34, x0 + ln, by + 60 + i * 34), fill=(*MUTED, 150 if i else 210), width=2 if i == 0 else 1)
+    d.text((bx + 30, by + 24), "The arc of your Sun, Moon & rising —", font=font(16, True), fill=(*BRASS_BRIGHT, 220))
+    d.text((510, H - 92), "Flowing narrative · drawn from your real chart", font=font(16), fill=(*BRASS, 200))
+    sample_caption(img, int(W * 0.62), H - 122)
+    watermark(img, "COSMIC STORY")
+    return finish(img)
+
+
+# ── JEWELLERY (engraved brass talismans on cool velvet) ──────────────────────────
+def _velvet(body: str, darken: float = 0.74) -> Image.Image:
+    """A cool low-lit still as jeweller's velvet — the piece catches the light."""
+    img = engine_backdrop(W, H, body, darken=darken, cx_frac=0.72, cy_frac=0.52, scale=1.25)
+    left_scrim(img, 560)
+    # soft parchment spotlight where the piece sits
+    spot = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ImageDraw.Draw(spot).ellipse((int(W * 0.52), 120, int(W * 0.94), 760), fill=(*PARCHMENT, 18))
+    img.alpha_composite(spot.filter(ImageFilter.GaussianBlur(60)))
+    return img
+
+
+def _chain(d: ImageDraw.ImageDraw, cx: int, top: int, drop: int, spread: int) -> None:
+    """An engraved brass chain arcing down to a pendant hung at (cx, top+drop)."""
+    for side in (-1, 1):
+        prev = (cx - side * 2, top + drop)
+        for i in range(1, 22):
+            t = i / 21
+            x = cx + side * int(spread * (t ** 0.9))
+            y = top + drop - int((drop) * t) + int(28 * math.sin(t * math.pi))
+            d.line((prev[0], prev[1], x, y), fill=(*BRASS, 200 - int(40 * t)), width=3)
+            prev = (x, y)
+
+
+def mock_observatory_disc() -> Image.Image:
+    img = _velvet("saturn")
+    hero_copy(img, "observatory-disc-pendant")
+    d = ImageDraw.Draw(img)
+    cx, cy = int(W * 0.72), int(H * 0.54)
+    _chain(d, cx, 150, cy - 150 - 90, 150)
+    # brass disc with the full engraved natal wheel
+    r = 150
+    d.ellipse((cx - r - 10, cy - r - 10, cx + r + 10, cy + r + 10), fill=(*RAISED, 255), outline=(*BRASS, 235), width=6)
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(*MID, 255), outline=(*BRASS_BRIGHT, 200), width=2)
+    paste(img, chart_plate(2 * r - 20), cx, cy, shadow=False)
+    d.text((int(W * 0.72), H - 108), "Brass or sterling · 25mm on 45cm chain", font=font(16), fill=(*BRASS, 190), anchor="ma")
+    sample_caption(img, int(W * 0.72), H - 76)
+    watermark(img, "OBSERVATORY DISC")
+    return finish(img)
+
+
+def mock_constellation_bar() -> Image.Image:
+    img = _velvet("venus")
+    hero_copy(img, "constellation-bar")
+    d = ImageDraw.Draw(img)
+    cx, cy = int(W * 0.72), int(H * 0.52)
+    _chain(d, cx, 170, cy - 170, 210)
+    # slim horizontal bar with three constellations engraved as star-lines
+    bw2, bh2 = 380, 74
+    d.rounded_rectangle((cx - bw2 // 2, cy - bh2 // 2, cx + bw2 // 2, cy + bh2 // 2),
+                        radius=bh2 // 2, fill=(*RAISED, 255), outline=(*BRASS, 230), width=4)
+    rng = random.Random(7)
+    for seg in range(3):
+        x0 = cx - bw2 // 2 + 34 + seg * 116
+        pts = [(x0 + rng.randint(0, 92), cy + rng.randint(-16, 16)) for _ in range(4)]
+        for i in range(len(pts) - 1):
+            d.line((pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1]), fill=(*BRASS_BRIGHT, 210), width=2)
+        for px_, py_ in pts:
+            d.ellipse((px_ - 3, py_ - 3, px_ + 3, py_ + 3), fill=(*BRASS_VIVID, 255))
+    d.text((int(W * 0.72), H - 108), "Sun · Moon · Rising in line — layering piece", font=font(16), fill=(*BRASS, 190), anchor="ma")
+    sample_caption(img, int(W * 0.72), H - 76)
+    watermark(img, "CONSTELLATION BAR")
+    return finish(img)
+
+
+def mock_big_three_glyph() -> Image.Image:
+    img = _velvet("mercury")
+    hero_copy(img, "big-three-glyph")
+    d = ImageDraw.Draw(img)
+    cx, cy = int(W * 0.72), int(H * 0.52)
+    _chain(d, cx, 170, cy - 170, 190)
+    # three small engraved charms hanging from the chain low-point
+    for i, k in enumerate(("sun", "moon", "ascendant")):
+        chx = cx - 110 + i * 110
+        chy = cy + 8
+        d.line((chx, cy - 150, chx, chy - 34), fill=(*BRASS, 170), width=2)
+        d.ellipse((chx - 40, chy - 40, chx + 40, chy + 40), fill=(*RAISED, 255), outline=(*BRASS_BRIGHT, 220), width=3)
+        paste_seal(img, k, chx, chy, px=56)
+    d.text((int(W * 0.72), H - 108), "Three charms on a fine 40cm chain", font=font(16), fill=(*BRASS, 190), anchor="ma")
+    sample_caption(img, int(W * 0.72), H - 76)
+    watermark(img, "BIG THREE GLYPH")
+    return finish(img)
+
+
+def mock_seal_medallion() -> Image.Image:
+    img = _velvet("mars")
+    hero_copy(img, "seal-medallion")
+    d = ImageDraw.Draw(img)
+    cx, cy = int(W * 0.72), int(H * 0.54)
+    _chain(d, cx, 150, cy - 150 - 96, 130)
+    # large hex medallion (matches the seal plate geometry) bearing element seal
+    s = 300
+    def hexpts(scale_):
+        pts96 = [(48, 6), (86, 28), (86, 84), (48, 106), (10, 84), (10, 28)]
+        return [(cx + (x - 48) / 112 * s * scale_, cy + (y - 56) / 112 * s * scale_) for x, y in pts96]
+    d.polygon(hexpts(1.06), fill=(*BRASS, 235))
+    d.polygon(hexpts(1.0), fill=(*MID, 255), outline=(*BRASS_BRIGHT, 220))
+    d.polygon(hexpts(0.82), outline=(*BRASS, 140))
+    paste_seal(img, "star", cx, cy - 44, px=60)
+    for i, k in enumerate(("sun", "moon", "ascendant")):
+        paste_seal(img, k, cx - 60 + i * 60, cy + 52, px=46)
+    d.text((int(W * 0.72), H - 108), "32mm hex · reversible · observatory brass", font=font(16), fill=(*BRASS, 190), anchor="ma")
+    sample_caption(img, int(W * 0.72), H - 76)
+    watermark(img, "SEAL MEDALLION")
+    return finish(img)
+
+
 PRODUCTS = [
     ("product-deep-reading.jpg", mock_deep_reading),
     ("product-poster-pdf.jpg", mock_poster_pdf),
@@ -468,6 +607,11 @@ PRODUCTS = [
     ("product-mug.jpg", mock_mug),
     ("product-year-ahead.jpg", mock_year_ahead),
     ("product-solar-return.jpg", mock_solar_return),
+    ("product-cosmic-story.jpg", mock_cosmic_story),
+    ("product-observatory-disc.jpg", mock_observatory_disc),
+    ("product-constellation-bar.jpg", mock_constellation_bar),
+    ("product-big-three-glyph.jpg", mock_big_three_glyph),
+    ("product-seal-medallion.jpg", mock_seal_medallion),
 ]
 
 

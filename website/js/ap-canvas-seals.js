@@ -69,7 +69,7 @@
     var a = String(hexAlpha || 'ff');
     var alpha = (parseInt(a, 16) / 255);
     if (!isFinite(alpha)) alpha = 1;
-    var base = col || '#c9a227';
+    var base = col || '#C2A05E';
     if (/^#[0-9a-f]{3,8}$/i.test(base)) {
       var h = base.slice(1);
       if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];

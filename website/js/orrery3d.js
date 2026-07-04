@@ -347,7 +347,7 @@ window.Orrery3D = (() => {
       ctx.globalAlpha = opacity;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.gold ? '#c9a227' : '#d8dce8';
+      ctx.fillStyle = p.gold ? '#C2A05E' : '#d8dce8';
       ctx.fill();
     });
     ctx.globalAlpha = 1;
@@ -902,7 +902,7 @@ window.Orrery3D = (() => {
       ctx.globalAlpha = glyphAlpha;
       const drewSeal = window.APCanvasSeals && (
         (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, signName, g.x, g.y, sealSize)) ||
-        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, signName, g.x, g.y, sealSize * 0.42, '#c9a227'))
+        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, signName, g.x, g.y, sealSize * 0.42, '#C2A05E'))
       );
       if (!drewSeal) {
         ctx.font = `${Math.max(8, 10 * g.f)}px Inter, system-ui, sans-serif`;

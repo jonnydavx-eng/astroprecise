@@ -1362,7 +1362,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Made to order',
         marketingLine:'Fine-art print of the sky at your first breath.',
-        previewImage: 'img/shop/product-natal-poster.svg',
+        previewImage: 'img/shop/product-natal-poster.jpg',
         blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
         icon:         'map',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
@@ -1443,7 +1443,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Written for you',
         marketingLine:'The story of you — told through the exact sky of your first breath.',
-        previewImage: 'img/shop/product-cosmic-story.svg',
+        previewImage: 'img/shop/product-cosmic-story.jpg',
         sampleUrl:    'cosmic-story.html',
         blurb:        'Not a report — a story. Your birth chart retold as a flowing personal narrative: the arc of your Sun, Moon and rising sign, the tensions and gifts written into your aspects, and where your planets are quietly leading you. Drawn entirely from your real VSOP87 chart and written for you alone — a keepsake PDF to read and return to.',
         icon:         'book',
@@ -1476,7 +1476,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Instant PDF',
         marketingLine:'Twelve months of transits — your personal sky forecast.',
-        previewImage: 'img/shop/product-year-ahead.svg',
+        previewImage: 'img/shop/product-year-ahead.jpg',
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
         icon:         'calendar',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
@@ -1493,7 +1493,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Instant PDF',
         marketingLine:'Your exact sky, ready to print tonight.',
-        previewImage: 'img/shop/product-natal-poster.svg',
+        previewImage: 'img/shop/product-poster-pdf.jpg',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
         icon:         'map',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
@@ -1511,7 +1511,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Best value',
         marketingLine:'Reading, poster, free wallpaper & a Two Skies offer — save £2.',
-        previewImage: 'img/shop/product-bundle.svg',
+        previewImage: 'img/shop/product-bundle.jpg',
         sampleUrl:    'sample-reading.html',
         blurb:        'Your long-form Deep Natal Reading and print-at-home natal poster, generated together from one chart. Includes free chart wallpaper (email unlock) and a 50% code for Two Skies after purchase. Future bundles will pair readings with Observatory Disc or Seal Medallion jewellery.',
         bundlePerks:  ['Free chart wallpaper', '50% off Two Skies map', 'Two PDFs · save £2', 'Jewellery cross-sell placeholders live in catalogue'],
@@ -1529,7 +1529,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Instant PDF',
         marketingLine:'Your birthday sky — the annual ritual, no subscription.',
-        previewImage: 'img/shop/product-solar-return.svg',
+        previewImage: 'img/shop/product-solar-return.jpg',
         blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
         icon:         'sunhigh',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
@@ -1546,7 +1546,7 @@ window.AP_MON = Object.assign({
         giftNote:     true,
         badge:        null,
         marketingLine:'A Deep Reading for someone you love — voucher + your note.',
-        previewImage: 'img/shop/product-gift-reading.svg',
+        previewImage: 'img/shop/product-gift-reading.jpg',
         blurb:        'A Deep Natal Reading for someone you love — sent as a PDF gift voucher with a redemption code. They redeem by email and give us their own birth details; we generate the reading and deliver it with your note. Choose a delivery date at checkout.',
         icon:         'heart',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
@@ -1563,7 +1563,7 @@ window.AP_MON = Object.assign({
         giftNote:     true,
         badge:        'Gift',
         marketingLine:'Reading PDF + foil print + gift card — the complete sky.',
-        previewImage: 'img/shop/product-gift-box.svg',
+        previewImage: 'img/shop/product-gift-box.jpg',
         blurb:        'The complete gift: a Deep Natal Reading PDF plus an A4 foil natal print, shipped, with a personalised gift card carrying your note. They redeem the reading by email with their own birth details — their sky, never our server. Choose a delivery date at checkout, for less than the two bought separately.',
         icon:         'star4',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
@@ -1580,7 +1580,7 @@ window.AP_MON = Object.assign({
         giftNote:     true,
         badge:        'Couples',
         marketingLine:'Two birth charts, one print — the anniversary keepsake.',
-        previewImage: 'img/shop/product-two-skies.svg',
+        previewImage: 'img/shop/product-two-skies.jpg',
         blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. A proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
         icon:         'crescent',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
@@ -1599,7 +1599,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Made to order',
         marketingLine:'Your full natal wheel, engraved on a wearable disc.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-observatory-disc.jpg',
         blurb:        'Solid brass or sterling disc pendant with the complete natal chart wheel micro-engraved from your exact birth data. Planets positioned precisely as at the moment you were born — 25mm on 45cm chain. For women 18-35 who want their sky close every day, or as a standout Gen Z gift that actually means something. POD fulfilment.',
         icon:         'orb',
         fulfilUrl:    '', // placeholder — set real POD URL (ShineOn / OwnPrint / Etsy custom / Gelato) when live
@@ -1614,7 +1614,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        null,
         marketingLine:'Minimal bar with your birth constellations in line.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-constellation-bar.jpg',
         blurb:        'Slim horizontal bar (pendant or cuff) showing the constellation lines of your Sun + Moon + Rising. Subtle everyday chart jewellery for layering. Perfect for the 18-35 woman who loves dainty cosmic details without shouting her sign — or gift to your astro bestie.',
         icon:         'star4',
         fulfilUrl:    '', // placeholder — set real POD URL when live
@@ -1629,7 +1629,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        null,
         marketingLine:'Sun · Moon · Rising charms on a fine chain.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-big-three-glyph.jpg',
         blurb:        'Three small engraved charms — your Sun, Moon and Rising glyphs — on a delicate 40cm chain. The spine of your chart, worn close to the heart. Entry price for Gen Z gifting and women 18-35 self-purchase; meaningful without the generic zodiac mass-market feel. Differentiator: exact from your saved chart, not a stock Aries stamp.',
         icon:         'gem',
         fulfilUrl:    '', // placeholder — set real POD URL when live
@@ -1644,7 +1644,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Made to order',
         marketingLine:'Hex seal medallion of your chart\'s dominant signature.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-seal-medallion.jpg',
         blurb:        'Large 32mm hex medallion bearing your dominant element seal and Big Three glyphs. Reversible; engraved on observatory-grade brass. A true talisman for power users and milestone gifting. Premium tier vs No.13-style luxe — yours is computed from real VSOP87 positions, not artistic interpretation.',
         icon:         'heart',
         fulfilUrl:    '', // placeholder — set real POD URL when live
@@ -1690,7 +1690,7 @@ window.AP_MON = Object.assign({
         a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
         a.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support the free chart';
         a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
-          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#C9A227);text-decoration:none;';
+          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#C2A05E);text-decoration:none;';
         host.appendChild(document.createElement('br'));
         host.appendChild(a);
       }
@@ -2392,7 +2392,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     wrap.className = 'ap-footer-signup ap-footer-signup--compact';
     if (hasBanner) {
       wrap.innerHTML = '<p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">'
-        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C9A227);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
+        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C2A05E);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
         + ' \u2014 cosmic weather & new features coming soon.</p>';
       wrap.querySelector('a').addEventListener('click', scrollToEmailCTA);
     } else {

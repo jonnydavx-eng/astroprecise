@@ -702,7 +702,7 @@
         // Dark background circle
         ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
         var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r + 4);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
+        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0C1016');
         ctx.fillStyle = bgGrad; ctx.fill();
         // Draw moon
         ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
@@ -1313,7 +1313,7 @@
         // Dark background circle
         ctx.beginPath(); ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
         var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius + 3);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
+        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0C1016');
         ctx.fillStyle = bgGrad; ctx.fill();
         // Draw moon disc
         ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.clip();
@@ -1338,7 +1338,7 @@
       function drawHoroscopeCard(signKey, callback) {
         var info = SIGNS[signKey];
         var data = Interpretations.getDailyHoroscope(info.name, new Date());
-        var tint = ELEMENT_CARD_TINTS[info.element] || ['#c9a227', 'rgba(196,146,10,0.13)', '#5c4a6e'];
+        var tint = ELEMENT_CARD_TINTS[info.element] || ['#C2A05E', 'rgba(194,160,94,0.13)', '#1A2230'];
         var signIdx = SIGN_KEYS.indexOf(signKey);
         var stone = SIGN_STONES[signIdx] || 'Crystal';
 
@@ -1351,7 +1351,7 @@
         ctx.scale(exportW / BASE, exportW / BASE);
 
         // Background: void base
-        ctx.fillStyle = '#0d0a07';
+        ctx.fillStyle = '#0C1016';
         ctx.fillRect(0, 0, BASE, BASE);
 
         // Nebula: lapis glow left side
@@ -1416,7 +1416,7 @@
           ctx.font = '700 80px Georgia, serif';
           ctx.fillText(info.name.toUpperCase(), 540, 450);
 
-          ctx.fillStyle = '#c9a227';
+          ctx.fillStyle = '#C2A05E';
           ctx.font = '300 22px Georgia, serif';
           ctx.letterSpacing = '0.18em';
           ctx.fillText('D A I L Y   R E A D I N G', 540, 494);
@@ -1443,7 +1443,7 @@
           var elemLabel = info.element.charAt(0).toUpperCase() + info.element.slice(1) + ' Sign  ·  Ruled by ' + (PLANETARY_RULERS[signKey] || '');
           ctx.fillText(elemLabel, 540, 922);
 
-          ctx.fillStyle = '#c9a227';
+          ctx.fillStyle = '#C2A05E';
           ctx.font = '600 22px Georgia, serif';
           ctx.fillText('ASTROPRECISE · computed from the real sky', 540, 1038);
 
