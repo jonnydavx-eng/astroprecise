@@ -131,8 +131,8 @@
       letter-spacing: 0.05em;
       text-align: right;
     }
-    .src-measured { color: #3fae7a; }
-    .src-computed { color: var(--lapis-light); }
+    .src-measured { color: #3fae7a; } /* honest "measured" signal — keep green */
+    .src-computed { color: var(--ap-gold-core, #C2A05E); }
     .src-unavailable { color: #E8A0A0; }
 
     /* ── Echo windows ── */
@@ -158,7 +158,7 @@
     }
     .resonance-meter span {
       display: block; height: 100%;
-      background: linear-gradient(90deg, var(--lapis-light), var(--gold));
+      background: linear-gradient(90deg, var(--ap-gold-core, #C2A05E), var(--ap-gold-vivid, #D8B978));
     }
 
     /* ── Glassmorphism card ── */
@@ -265,6 +265,12 @@
       background: rgba(22, 28, 42,0.85);
     }
     .sig-cell__glyph { font-size: 1.5rem; display: block; margin: 0 auto 0.35rem; color: var(--gold-pale); line-height: 0; }
+    /* Keep planet glyphs in the planetary-hour readout + sigil cells as engraved
+       text, never colour-emoji (serif inline styles would otherwise fall back). */
+    .sig-cell__glyph, #ph-readout {
+      font-family: 'AstroGlyph', 'Cormorant Garamond', Georgia, serif;
+      font-variant-emoji: text;
+    }
     .sig-cell__glyph .ap-orb { vertical-align: middle; }
     .sig-cell__label {
       font-size: 0.58rem;
@@ -476,7 +482,7 @@
     .cw-gauge__hi { text-anchor: end; }
     .cw-spark-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
     .cw-spark { width: 96px; height: 26px; display: block; }
-    .cw-spark__line { stroke: var(--lapis-light, #c8b88f); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+    .cw-spark__line { stroke: var(--ap-gold-core, #C2A05E); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
     .cw-spark--bz .cw-spark__line { stroke: var(--gold, #C2A05E); }
     .cw-spark__zero { stroke: var(--crimson-light, #f87171); stroke-width: 0.6; stroke-dasharray: 2 2; opacity: 0.5; }
     .cw-spark--empty { font-size: 0.62rem; color: var(--silver-dim); }
@@ -491,7 +497,7 @@
       border-radius: 999px; border: 1px solid currentColor;
     }
     .cw-flare-badge--A, .cw-flare-badge--B { color: #3fae7a; }
-    .cw-flare-badge--C { color: var(--lapis-light, #c8b88f); }
+    .cw-flare-badge--C { color: var(--ap-gold-core, #C2A05E); }
     .cw-flare-badge--M { color: var(--gold, #C2A05E); }
     /* Explicit — --crimson-light (#b04a52) fails 4.5:1 on instrument-panel void */
     .cw-flare-badge--X { color: #f87171; }

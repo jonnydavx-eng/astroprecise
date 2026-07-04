@@ -1794,3 +1794,17 @@ p, li, .lede, .instrument-lede, .section__subtitle, blockquote, .grimoire { text
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* ── Engraved-text astro glyphs (never colour-emoji) — first-paint guard ──────
+   main-lite.css is render-blocking on all lite pages; the full guard in main.css
+   is idle/audit-deferred there, so mirror it here. Zodiac (U+2648–2653) and
+   several planet glyphs default to emoji presentation on Android; font-family
+   alone doesn't override it — font-variant-emoji:text does. (Canvas-drawn glyphs
+   append U+FE0E at the draw site instead.) */
+.ap-orb__glyph, .sign-card__glyph, .pl-dot, .planet-pill__symbol, .sky-pill__glyph,
+.sky-pill__placement, .category-icon, .planet-ticker__sym, .planet-weather-card__symbol,
+.transit-pill__pos, .dt-aspect__rel, .ecliptic-sky-headline,
+[class*="glyph"], [class*="__symbol"] {
+  font-family: 'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  font-variant-emoji: text;
+}

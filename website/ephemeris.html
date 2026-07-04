@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/ephemeris-critical.css" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ephemeris-page.css?v=532" />
+  <link rel="stylesheet" href="css/ephemeris-page.css?v=533" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferInstrumentFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferInstrumentFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
@@ -215,7 +215,7 @@
             <circle cx="230" cy="230" r="215" fill="none" stroke="#C2A05E" stroke-width="2.5" opacity="0.4"/>
             <!-- Sectors + labels drawn/enhanced by JS below for live current-hour + click lore -->
           </svg>
-          <div id="ph-readout" style="margin-top:8px;font-family:'Cormorant Garamond',serif;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
+          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
           <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
             <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(194, 160, 94,0.35);color:#C2A05E;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
             <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
@@ -761,7 +761,7 @@
           <path d="M${x1},${y1} A${R1},${R1} 0 0 1 ${x2},${y2} L${x3},${y3} A${R2},${R2} 0 0 0 ${x4},${y4} Z"
             fill="${fill}" stroke="rgba(194, 160, 94,${isNow ? '0.8' : '0.22'})" stroke-width="${isNow ? 1.6 : 0.6}"/>
           <text x="${pt(a0 - 7.5, RG)[0]}" y="${pt(a0 - 7.5, RG)[1]}" text-anchor="middle" dominant-baseline="central"
-            font-size="${isNow ? 17 : 13}" fill="${isNow ? '#EFE3C0' : p.c}" font-family="serif" ${isNow ? 'filter="drop-shadow(0 0 5px rgba(194, 160, 94,.9))"' : ''}>${p.g}</text>
+            font-size="${isNow ? 17 : 13}" fill="${isNow ? '#EFE3C0' : p.c}" font-family="AstroGlyph, serif" ${isNow ? 'filter="drop-shadow(0 0 5px rgba(194, 160, 94,.9))"' : ''}>${p.g}︎</text>
         </g>`;
       });
       if (current) {
@@ -770,7 +770,7 @@
         s += `<circle cx="${mx}" cy="${my}" r="5" fill="#EFE3C0" opacity="0.95"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite"/></circle>`;
       }
       const cp = current ? P[current.slot.rulerKey] : P.sun;
-      s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="serif" filter="drop-shadow(0 0 10px rgba(194, 160, 94,.45))">${cp.g}</text>
+      s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="AstroGlyph, serif" filter="drop-shadow(0 0 10px rgba(194, 160, 94,.45))">${cp.g}︎</text>
         <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#E8E0D0" font-family="Cinzel,serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
         <text x="${CX}" y="${CY + 28}" text-anchor="middle" font-size="10" fill="#A89E88" font-family="Cormorant Garamond,serif" font-style="italic">${current ? fmt(current.slot.start) + ' – ' + fmt(current.slot.end) : ''}</text>
         <text x="${CX}" y="${CY + 46}" text-anchor="middle" font-size="9" letter-spacing="2" fill="#A89E88" font-family="Cinzel,serif">DAY OF ${P[CHALD[DAY_RULER[dow]]].n.replace('the ', '').toUpperCase()}</text>`;

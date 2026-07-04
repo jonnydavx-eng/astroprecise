@@ -32,21 +32,22 @@
     ];
   })();
 
+  // cool-brass system — mirrors css .ap-orb ramp (retinted 2026-07-04)
   var EL_COL = {
-    fire:  '#e05040',
-    earth: '#6b9b5f',
-    air:   '#5c4a6e',
-    water: '#2a6ebd',
+    fire:  '#d89a72',
+    earth: '#9cb27e',
+    air:   '#b8c0cc',
+    water: '#8fb8b6',
   };
 
   var PLANETS = [
-    { key: 'sun',     sym: '☉', col: '#c9a227', name: 'Sun' },
-    { key: 'moon',    sym: '☽', col: '#C8D0E8', name: 'Moon' },
-    { key: 'mercury', sym: '☿', col: '#3f7d76', name: 'Mercury' },
-    { key: 'venus',   sym: '♀', col: '#C77DFF', name: 'Venus' },
-    { key: 'mars',    sym: '♂', col: '#e05848', name: 'Mars' },
-    { key: 'jupiter', sym: '♃', col: '#E8A050', name: 'Jupiter' },
-    { key: 'saturn',  sym: '♄', col: '#A0B898', name: 'Saturn' },
+    { key: 'sun',     sym: '☉', col: '#ead79a', name: 'Sun' },
+    { key: 'moon',    sym: '☽', col: '#e6e0d2', name: 'Moon' },
+    { key: 'mercury', sym: '☿', col: '#cfc7b6', name: 'Mercury' },
+    { key: 'venus',   sym: '♀', col: '#e2c8b4', name: 'Venus' },
+    { key: 'mars',    sym: '♂', col: '#c87e5e', name: 'Mars' },
+    { key: 'jupiter', sym: '♃', col: '#e0c48e', name: 'Jupiter' },
+    { key: 'saturn',  sym: '♄', col: '#d8c289', name: 'Saturn' },
   ];
 
   var RING_R = 228;
@@ -404,15 +405,17 @@
         y: '-8',
         'text-anchor': 'middle',
         'font-size': '9',
+        'font-family': "'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
         fill: pl.col,
-        textContent: pl.sym,
+        textContent: pl.sym + '︎',
       }));
       planetsG.appendChild(g);
     });
   }
 
   function chordStroke(quality) {
-    if (quality === 'h') return 'rgba(111, 160, 216, 0.55)';
+    // cool-brass system: harmonious = teal-brass, challenging = muted terracotta
+    if (quality === 'h') return 'rgba(143, 184, 182, 0.55)';
     if (quality === 'x') return 'rgba(184, 90, 66, 0.48)';
     return 'rgba(194, 160, 94, 0.62)';
   }
@@ -513,9 +516,10 @@
           'text-anchor': 'middle',
           'dominant-baseline': 'middle',
           'font-size': hoveredChord === idx ? '9' : '8',
+          'font-family': "'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
           fill: col,
           'pointer-events': 'none',
-          textContent: ch.glyph,
+          textContent: ch.glyph + '︎',
         }));
       }
     });

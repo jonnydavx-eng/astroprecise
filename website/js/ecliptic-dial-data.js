@@ -12,14 +12,15 @@
       'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
   })();
 
+  // Legend dot colours — muted brass / parchment family, cool (retinted 2026-07-04)
   var PLANETS = [
-    { key: 'sun',     sym: '☉', col: '#c9a227', name: 'Sun' },
-    { key: 'moon',    sym: '☽', col: '#C8D0E8', name: 'Moon' },
-    { key: 'mercury', sym: '☿', col: '#3f7d76', name: 'Mercury' },
-    { key: 'venus',   sym: '♀', col: '#C77DFF', name: 'Venus' },
-    { key: 'mars',    sym: '♂', col: '#e05848', name: 'Mars' },
-    { key: 'jupiter', sym: '♃', col: '#E8A050', name: 'Jupiter' },
-    { key: 'saturn',  sym: '♄', col: '#A0B898', name: 'Saturn' },
+    { key: 'sun',     sym: '☉', col: '#ead79a', name: 'Sun' },
+    { key: 'moon',    sym: '☽', col: '#e6e0d2', name: 'Moon' },
+    { key: 'mercury', sym: '☿', col: '#cfc7b6', name: 'Mercury' },
+    { key: 'venus',   sym: '♀', col: '#e2c8b4', name: 'Venus' },
+    { key: 'mars',    sym: '♂', col: '#c87e5e', name: 'Mars' },
+    { key: 'jupiter', sym: '♃', col: '#e0c48e', name: 'Jupiter' },
+    { key: 'saturn',  sym: '♄', col: '#d8c289', name: 'Saturn' },
   ];
 
   var planetLons = {};

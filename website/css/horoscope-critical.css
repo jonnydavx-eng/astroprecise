@@ -405,7 +405,10 @@
     .ecliptic-sky-headline {
       margin: 0.65rem auto 0;
       max-width: 520px;
-      font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+      /* AstroGlyph first so the ☉/☽ symbols render as engraved text, never emoji;
+         mono handles the degree numerals + sign names. */
+      font-family: 'AstroGlyph', var(--font-mono, 'IBM Plex Mono', monospace);
+      font-variant-emoji: text;
       font-size: max(11px, 0.68rem);
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -938,16 +941,18 @@
       justify-content: center;
     }
     /* Per-planet orb colours */
+    /* planet-pill orbs — cool-brass system, muted brass/parchment + cool blue-grey
+       ice-giants (retinted 2026-07-04; no violet, no bright orange/cyan) */
     .planet-pill[data-planet="Sun"]     .planet-pill__symbol { --planet-pill-col:var(--ap-gold-core,#C2A05E); border-color:var(--ap-gold-a40); background:radial-gradient(circle at 35% 30%,#efe3c0,#C2A05E 60%,#7a4800); }
     .planet-pill[data-planet="Moon"]    .planet-pill__symbol { --planet-pill-col:#D2CBB8; border-color:rgba(210,203,184,0.4); background:radial-gradient(circle at 35% 30%,#f0eee8,#b0a898 60%,#6a6060); }
-    .planet-pill[data-planet="Mercury"] .planet-pill__symbol { --planet-pill-col:#BFB39A; border-color:rgba(63,125,118,0.4); background:radial-gradient(circle at 35% 30%,#b0e8e0,#3f7d76 60%,#1a3830); }
-    .planet-pill[data-planet="Venus"]   .planet-pill__symbol { --planet-pill-col:#d8b8c4; border-color:rgba(110,26,38,0.4); background:radial-gradient(circle at 35% 30%,#e8d0d8,#8c4452 60%,#3a0e16); }
+    .planet-pill[data-planet="Mercury"] .planet-pill__symbol { --planet-pill-col:#C6BCA6; border-color:rgba(150,140,120,0.4); background:radial-gradient(circle at 35% 30%,#ded5c2,#8c8168 60%,#3a352a); }
+    .planet-pill[data-planet="Venus"]   .planet-pill__symbol { --planet-pill-col:#e2c8b4; border-color:rgba(154,110,88,0.4); background:radial-gradient(circle at 35% 30%,#f0e0d2,#b08c74 60%,#4a3628); }
     .planet-pill[data-planet="Mars"]    .planet-pill__symbol { --planet-pill-col:var(--ap-element-fire,#B85A42); border-color:rgba(184,90,66,0.5); background:radial-gradient(circle at 35% 30%,#d98f74,#b85a42 60%,#4a1408); }
-    .planet-pill[data-planet="Jupiter"] .planet-pill__symbol { --planet-pill-col:#FFB347; border-color:rgba(232,160,80,0.4); background:radial-gradient(circle at 35% 30%,#ffe0a0,#c87020 60%,#6a3800); }
+    .planet-pill[data-planet="Jupiter"] .planet-pill__symbol { --planet-pill-col:#D8B978; border-color:rgba(216,185,120,0.4); background:radial-gradient(circle at 35% 30%,#f0dca8,#a8823c 60%,#5a3f18); }
     .planet-pill[data-planet="Saturn"]  .planet-pill__symbol { --planet-pill-col:#C8A86B; border-color:rgba(160,184,152,0.4); background:radial-gradient(circle at 35% 30%,#e8d8a0,#a08040 60%,#503810); }
-    .planet-pill[data-planet="Uranus"]  .planet-pill__symbol { --planet-pill-col:#B89AD0; border-color:rgba(80,200,220,0.35); background:radial-gradient(circle at 35% 30%,#c0f0f5,#3090a0 60%,#104858); }
-    .planet-pill[data-planet="Neptune"] .planet-pill__symbol { --planet-pill-col:#7E6BB0; border-color:rgba(60,90,200,0.4); background:radial-gradient(circle at 35% 30%,#90a8f0,#2040a0 60%,#081840); }
-    .planet-pill[data-planet="Pluto"]   .planet-pill__symbol { --planet-pill-col:#CC88AA; border-color:rgba(120,80,160,0.4); background:radial-gradient(circle at 35% 30%,#d0a0c0,#7840a0 60%,#280840); }
+    .planet-pill[data-planet="Uranus"]  .planet-pill__symbol { --planet-pill-col:#AEBCC6; border-color:rgba(120,140,156,0.4); background:radial-gradient(circle at 35% 30%,#d2dce4,#7c8c9c 60%,#2e3a46); }
+    .planet-pill[data-planet="Neptune"] .planet-pill__symbol { --planet-pill-col:#A2B0C0; border-color:rgba(96,112,128,0.4); background:radial-gradient(circle at 35% 30%,#c4d0dc,#6c7c8e 60%,#28323e); }
+    .planet-pill[data-planet="Pluto"]   .planet-pill__symbol { --planet-pill-col:#B7A9AE; border-color:rgba(110,98,104,0.4); background:radial-gradient(circle at 35% 30%,#cfc2c6,#7c6e74 60%,#33292e); }
 
     /* ---- Sign grid — zodiac card gallery ---- */
     .sign-grid {

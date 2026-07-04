@@ -353,6 +353,8 @@
       transform: translateY(-2px);
     }
     .planet-weather-card__symbol {
+      font-family: 'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+      font-variant-emoji: text;
       font-size: 1.75rem;
       line-height: 1;
     }

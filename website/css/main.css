@@ -2097,11 +2097,6 @@ button.sign-card[data-sign],
   text-transform: uppercase;
 }
 
-.table-badge--purple {
-  background: rgba(92, 74, 110, 0.2);
-  color: var(--purple-bright);
-  border: 1px solid rgba(92, 74, 110, 0.3);
-}
 
 .table-badge--gold {
   background: var(--gold-dim);
@@ -2703,7 +2698,6 @@ button.sign-card[data-sign],
   vertical-align: middle;
 }
 
-.badge--purple   { background: rgba(92, 74, 110, 0.2);  color: var(--purple-bright); }
 .badge--gold     { background: var(--gold-dim);           color: var(--gold-light); }
 .badge--blue     { background: rgba(95, 163, 154, 0.15); color: var(--blue); }
 .badge--green    { background: rgba(120, 140, 70, 0.15);  color: #9db36a; }
@@ -7122,22 +7116,22 @@ body.preloader-active .bottom-nav {
 @media (prefers-reduced-motion: no-preference) {
   .ap-orb { transition: transform var(--transition-fast, 0.2s) ease, box-shadow var(--transition-fast, 0.2s) ease; }
 }
-/* element variants (zodiac) */
-.ap-orb--fire  { --c1: #ffb04a; --c2: #cf2f24; }
-.ap-orb--earth { --c1: #c8da86; --c2: #566e2a; }
-.ap-orb--air   { --c1: #dcc8ec; --c2: #8a6aa8; }
-.ap-orb--water { --c1: #bfe4dd; --c2: #2f6e66; }
-/* planet variants */
-.ap-orb--sun     { --c1: #ffe27a; --c2: #c47a0a; }
-.ap-orb--moon    { --c1: #f2ece0; --c2: #9a9080; }
-.ap-orb--mercury { --c1: #d6cfc2; --c2: #6e655a; }
-.ap-orb--venus   { --c1: #ffd8c2; --c2: #c5765a; }
-.ap-orb--mars    { --c1: #ff8a64; --c2: #a82414; }
-.ap-orb--jupiter { --c1: #f3cf94; --c2: #9a6a2a; }
-.ap-orb--saturn  { --c1: #ecd8a4; --c2: #8a6a30; }
-.ap-orb--uranus  { --c1: #dcc8ec; --c2: #6e5a9a; }
-.ap-orb--neptune { --c1: #c2b4e2; --c2: #4e3f8a; }
-.ap-orb--pluto   { --c1: #dcb6d6; --c2: #5a2a52; }
+/* element variants (zodiac) — cool-brass system, low saturation (retinted 2026-07-04) */
+.ap-orb--fire  { --c1: #d89a72; --c2: #8a4632; }
+.ap-orb--earth { --c1: #9cb27e; --c2: #3e5a34; }
+.ap-orb--air   { --c1: #b8c0cc; --c2: #5a6470; }
+.ap-orb--water { --c1: #8fb8b6; --c2: #2e5860; }
+/* planet variants — muted brass / parchment family, cool ice-giants (no violet) */
+.ap-orb--sun     { --c1: #ead79a; --c2: #a9812e; }
+.ap-orb--moon    { --c1: #e6e0d2; --c2: #9a9488; }
+.ap-orb--mercury { --c1: #cfc7b6; --c2: #6e6658; }
+.ap-orb--venus   { --c1: #e2c8b4; --c2: #9a6e58; }
+.ap-orb--mars    { --c1: #c87e5e; --c2: #7a3a26; }
+.ap-orb--jupiter { --c1: #e0c48e; --c2: #8a6634; }
+.ap-orb--saturn  { --c1: #d8c289; --c2: #7e6432; }
+.ap-orb--uranus  { --c1: #aebcc6; --c2: #556270; }
+.ap-orb--neptune { --c1: #a2b0c0; --c2: #4c5a6c; }
+.ap-orb--pluto   { --c1: #b7a9ae; --c2: #5a4e54; }
 
 /* ── Ticker strip for live planetary positions ───────────────────────────── */
 .planet-ticker-strip {

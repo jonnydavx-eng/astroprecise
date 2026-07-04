@@ -1700,15 +1700,38 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
+/* v588 — sign mark: clean AstroGlyph brass glyph in an element-tinted ring
+   (replaces the retired warm hex-stamp seals the owner disliked). The ring
+   colour encodes the element (fire/earth/air/water via --sign-element-accent). */
 .ap-award-511 #libraryChapter .sign-glyph {
-  font-size: 1.35rem;
-  filter: drop-shadow(0 0 6px rgba(194, 160, 94, 0.22));
-  /* Reserve the sm-seal box so the glyph→seal upgrade causes zero layout shift */
+  font-family: 'AstroGlyph', var(--font-serif);
+  font-variant-emoji: text;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--brass-bright, #CDAE6A);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.35rem;
-  min-height: 1.55rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin-bottom: 0.4rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(194,160,94,0.10) 0%, transparent 70%),
+    var(--night-raised, #1A2230);
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, var(--sign-element-accent, var(--brass)) 62%, transparent),
+    inset 0 1px 0 rgba(236,230,216,0.06),
+    0 0 14px -4px var(--sign-element-accent, rgba(194,160,94,0.4));
+  transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+.ap-award-511 #libraryChapter .sign-tile:hover .sign-glyph,
+.ap-award-511 #libraryChapter .sign-tile:focus-visible .sign-glyph {
+  color: var(--parchment, #ECE6D8);
+  box-shadow:
+    inset 0 0 0 1.5px var(--sign-element-accent, var(--brass)),
+    inset 0 1px 0 rgba(236,230,216,0.08),
+    0 0 20px -4px var(--sign-element-accent, rgba(194,160,94,0.5));
 }
 
 .ap-award-511 #libraryChapter .sign-index-entry:hover,

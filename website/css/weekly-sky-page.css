@@ -14,6 +14,14 @@
   text-transform: uppercase;
   color: var(--ap-gold-vivid, #D8B978);
   margin: 0 0 1rem;
+  font-variant-emoji: text;
+}
+/* keep inline sparkle + astro glyphs (eyebrow, privacy seal, event orbs, moon
+   chips) as engraved text, never colour-emoji */
+.wk-hero__eyebrow, .wk-privacy-seal, .wk-privacy-seal__glyph,
+.wk-event__orb, .wk-moonstrip__chip {
+  font-family: 'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  font-variant-emoji: text;
 }
 .wk-hero h1 {
   font-size: clamp(2.2rem, 5vw, 3.4rem);

@@ -26,18 +26,19 @@
   }
 
   // Element colours (RGB components for easy alpha composition)
+  // Cool-brass system, low saturation — mirrors css .ap-orb ramp --c1 (retinted 2026-07-04)
   const EL = {
-    fire:  [224,  80,  64],
-    earth: [107, 155,  95],
-    air:   [92, 74, 110],
-    water: [ 42, 110, 189],
+    fire:  [216, 154, 114],
+    earth: [156, 178, 126],
+    air:   [184, 192, 204],
+    water: [143, 184, 182],
   };
 
   const EL_HEX = {
-    fire: '#e05040',
-    earth: '#6b9b5f',
-    air: '#5c4a6e',
-    water: '#2a6ebd',
+    fire: '#d89a72',
+    earth: '#9cb27e',
+    air: '#b8c0cc',
+    water: '#8fb8b6',
   };
 
   function withAlpha(col, hexAlpha) {
@@ -58,14 +59,15 @@
     return col || 'rgba(201,162,39,' + a.toFixed(3) + ')';
   }
 
+  // Planet dot colours — muted brass / parchment family, cool (retinted 2026-07-04)
   const PLANETS = [
-    { key: 'sun',     sym: '☉', col: '#c9a227', name: 'Sun'     },
-    { key: 'moon',    sym: '☽', col: '#C8D0E8', name: 'Moon'    },
-    { key: 'mercury', sym: '☿', col: '#3f7d76', name: 'Mercury' },
-    { key: 'venus',   sym: '♀', col: '#C77DFF', name: 'Venus'   },
-    { key: 'mars',    sym: '♂', col: '#e05848', name: 'Mars'    },
-    { key: 'jupiter', sym: '♃', col: '#E8A050', name: 'Jupiter' },
-    { key: 'saturn',  sym: '♄', col: '#A0B898', name: 'Saturn'  },
+    { key: 'sun',     sym: '☉', col: '#ead79a', name: 'Sun'     },
+    { key: 'moon',    sym: '☽', col: '#e6e0d2', name: 'Moon'    },
+    { key: 'mercury', sym: '☿', col: '#cfc7b6', name: 'Mercury' },
+    { key: 'venus',   sym: '♀', col: '#e2c8b4', name: 'Venus'   },
+    { key: 'mars',    sym: '♂', col: '#c87e5e', name: 'Mars'    },
+    { key: 'jupiter', sym: '♃', col: '#e0c48e', name: 'Jupiter' },
+    { key: 'saturn',  sym: '♄', col: '#d8c289', name: 'Saturn'  },
   ];
 
   // ── State ─────────────────────────────────────────────────────────────────
@@ -357,9 +359,10 @@
   }
 
   function chordColor(quality) {
-    if (quality === 'h') return 'rgba(111, 160, 216, 0.82)';
-    if (quality === 'x') return 'rgba(224, 120, 96, 0.78)';
-    return 'rgba(232, 201, 106, 0.88)';
+    // cool-brass system: harmonious = teal-brass, challenging = muted terracotta, else brass
+    if (quality === 'h') return 'rgba(143, 184, 182, 0.82)';
+    if (quality === 'x') return 'rgba(200, 126, 94, 0.78)';
+    return 'rgba(216, 185, 120, 0.88)';
   }
 
   function chordGeometry(ch) {
@@ -437,7 +440,7 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.globalAlpha = Math.min(1, pulse + 0.15);
-        ctx.fillText(ch.glyph, gx, gy);
+        ctx.fillText(ch.glyph + '︎', gx, gy);  // FE0E = force text glyph, not emoji
       }
     });
     ctx.restore();
