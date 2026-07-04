@@ -6,12 +6,24 @@ on:
     paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-horoscope.mjs, test-compat.mjs, test-art-themes.mjs, test-weekly-sky.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
+# 2026-07-04: migrated OFF the legacy gh-pages branch builder onto the official
+# GitHub Actions Pages deployment (actions/deploy-pages). The legacy pipeline
+# flaked repeatedly ("Page build failed.") at v566/v568/v574 and AGAIN at v590
+# even after force_orphan, each needing a manual POST /pages/builds kick. The
+# Actions artifact flow bypasses the legacy builder entirely — no gh-pages
+# branch, no branch-history bloat. Repo Pages source set to build_type=workflow
+# via API. Custom domain (astroprecise.app) + HTTPS persist at the Pages level;
+# CNAME + .nojekyll ship inside dist/.
+# Rollback: PATCH build_type=legacy, restore the peaceiris publish step +
+# contents:write, point Pages source back at gh-pages.
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   test:
@@ -66,7 +78,7 @@ jobs:
           npm run lighthouse:production:ci
         working-directory: tools/visual-check
 
-  deploy:
+  build:
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -77,38 +89,44 @@ jobs:
           node-version: '20'
 
       # Faithful minify-in-place (tools/build.mjs): same paths, -27% JS / -29% CSS.
-      # build.mjs already skips tools/, the phone-* dev pages and all *.md, so no
-      # exclude_assets is needed — dist/ IS the deployable tree (CNAME, .nojekyll,
-      # .well-known, sw.js precache all included).
+      # build.mjs already skips tools/, the phone-* dev pages and all *.md — dist/
+      # IS the deployable tree (CNAME, .nojekyll, .well-known, sw.js precache all
+      # included).
       - name: Build minified dist/
         run: |
           npm ci
           npm run build
 
-      # Pages is configured to serve the gh-pages branch from its root,
-      # so publish the built tree there instead of using actions/deploy-pages.
-      #
-      # force_orphan (added 2026-07-03): GitHub's INTERNAL "pages build and
-      # deployment" run (legacy branch pipeline, build_type=legacy) failed
-      # intermittently with a bare "Page build failed." at ap-v566 (07-02),
-      # ap-v568 and ap-v574 (07-03, two errored builds 12:01/12:02Z), leaving
-      # the old build live until a manual POST /repos/.../pages/builds retry.
-      # Audit found .nojekyll present, no symlinks, no oversized files — the
-      # one anomaly was unbounded gh-pages history (199 deploy commits), a
-      # known trigger for slow/flaky legacy Pages builds. force_orphan keeps
-      # gh-pages a single fresh commit per deploy. Safe for the custom domain:
-      # CNAME + .nojekyll live in website/ and ship inside dist/ every build.
-      # Rollback (per STATUS.md 2026-07-02): remove force_orphan; if deploys
-      # break entirely, revert publish_dir to ./website + restore exclude_assets.
-      - name: Publish dist/ to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          force_orphan: true
+          path: ./dist
+
+  # Official GitHub Pages deployment — replaces the flaky legacy branch builder.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - uses: actions/checkout@v4
+        if: success()
+
+      - uses: actions/setup-node@v4
+        if: success()
+        with:
+          node-version: '20'
 
       - name: Notify search engines (IndexNow)
         if: success()
         run: |
-          sleep 45
+          sleep 30
           node tools/ping-indexnow.mjs
