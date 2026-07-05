@@ -181,3 +181,19 @@
   gap: 0.5rem;
   margin-top: 0.85rem;
 }
+/* ── Point-and-click insight (2026-07-05): preset question chips replace the
+   bare text box; BYOK cloud settings retired. Free, on-device. ─────────────── */
+.ap-ai-quick { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.25rem 0 0.9rem; }
+.ap-ai-chip {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  padding: 0.5rem 0.85rem; border: 1px solid rgba(194,160,94,0.34);
+  border-radius: 999px; background: rgba(26,34,48,0.55);
+  color: var(--ink, #ECE6D8); font: 500 0.82rem/1 var(--font-ui, Inter), sans-serif;
+  cursor: pointer; transition: border-color .18s, background .18s, transform .12s;
+}
+.ap-ai-chip:hover { border-color: var(--brass-bright, #CDAE6A); background: rgba(194,160,94,0.14); transform: translateY(-1px); }
+.ap-ai-chip--primary { border-color: rgba(194,160,94,0.6); background: rgba(194,160,94,0.16); color: var(--brass-bright, #CDAE6A); font-weight: 600; }
+.ap-ai-ownq { display: flex; gap: 0.5rem; align-items: center; margin: 0 0 0.9rem; }
+.ap-ai-ownq .ap-ai-ask-input { flex: 1 1 auto; }
+.ap-ai-ownq .btn--sm { flex: 0 0 auto; padding: 0.5rem 0.9rem; font-size: 0.82rem; }
+@media (max-width: 520px) { .ap-ai-ownq { flex-wrap: wrap; } .ap-ai-ownq .ap-ai-ask-input { flex-basis: 100%; } }

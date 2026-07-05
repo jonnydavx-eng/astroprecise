@@ -1,7 +1,8 @@
 /**
- * Astro Precise — Optional AI assistant (privacy-first, opt-in).
- * Default: high-quality deterministic interpretations from on-device engine.
- * Optional: BYOK OpenAI-compatible API — data sent only on explicit user action.
+ * Astro Precise — Chart Insight assistant (free, private, on-device).
+ * Point-and-click: preset questions + Explain + Today, answered from the real
+ * chart via the on-device interpretation engine. No cloud, no API key, nothing
+ * sent to a server. (A BYOK cloud path was retired 2026-07-05 per owner request.)
  */
 'use strict';
 
@@ -19,15 +20,9 @@ window.APAIAssistant = (function () {
   function getPrefs() {
     try {
       var p = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}');
-      return {
-        enabled: !!p.enabled,
-        tone: TONES[p.tone] ? p.tone : 'gentle',
-        endpoint: p.endpoint || 'https://api.openai.com/v1/chat/completions',
-        model: p.model || 'gpt-4o-mini',
-        apiKey: p.apiKey || '',
-      };
+      return { tone: TONES[p.tone] ? p.tone : 'gentle' };
     } catch (e) {
-      return { enabled: false, tone: 'gentle', endpoint: '', model: 'gpt-4o-mini', apiKey: '' };
+      return { tone: 'gentle' };
     }
   }
 
@@ -83,6 +78,38 @@ window.APAIAssistant = (function () {
     return lines.join('\n');
   }
 
+  // ── Real interpretation tables (so aspects/planets read as genuine meaning,
+  //    not the old "adds texture and meaning" filler). All on-device. ──────────
+  var PLANET_THEME = {
+    Sun: 'your core identity and vitality', Moon: 'your emotional world and sense of safety',
+    Mercury: 'how you think and communicate', Venus: 'how you love and what you find beautiful',
+    Mars: 'your drive and how you assert yourself', Jupiter: 'where you grow and find meaning',
+    Saturn: 'where you build structure and maturity', Uranus: 'where you break patterns and seek freedom',
+    Neptune: 'your imagination and dreams', Pluto: 'where you transform and reclaim power',
+    Ascendant: 'how you meet the world', Midheaven: 'your public path and calling',
+  };
+  var ASPECT_QUALITY = {
+    conjunction: 'fuse and amplify each other', sextile: 'open up easy opportunities together',
+    square: 'create a productive tension that pushes you to grow', trine: 'work together with natural ease',
+    opposition: 'pull in opposite directions, asking you for balance', quincunx: 'ask for constant small adjustments',
+  };
+  // Short labels keep the aspect lines crisp (the long PLANET_THEME reads run-on).
+  var PLANET_SHORT = {
+    Sun: 'your identity', Moon: 'your emotions', Mercury: 'your mind', Venus: 'your love nature',
+    Mars: 'your drive', Jupiter: 'your growth', Saturn: 'your discipline', Uranus: 'your independence',
+    Neptune: 'your imagination', Pluto: 'your power', Ascendant: 'your outer self', Midheaven: 'your calling',
+  };
+  function titleCase(s){ s=String(s||''); return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase(); }
+  function aspectLine(a) {
+    var p1 = titleCase(a.planet1 || a.p1), p2 = titleCase(a.planet2 || a.p2);
+    var asp = String(a.aspect || '').toLowerCase();
+    var s1 = PLANET_SHORT[p1], s2 = PLANET_SHORT[p2], q = ASPECT_QUALITY[asp];
+    var head = p1 + ' ' + asp + ' ' + p2;
+    if (s1 && s2 && q) return head + ' — ' + s1 + ' and ' + s2 + ' ' + q + '.';
+    if (s1 && s2) return head + ' — ' + s1 + ' and ' + s2 + ' are closely linked in your chart.';
+    return head + '.';
+  }
+
   function deterministicExplain(chart, tone) {
     if (!chartHasPlacements(chart)) {
       return 'Calculate or save a chart with planetary positions first.';
@@ -91,37 +118,39 @@ window.APAIAssistant = (function () {
     var t = TONES[tone] || TONES.gentle;
     var I = window.AstroInterpretations;
     var parts = [];
-    var sun = planet(chart, 'Sun');
-    var moon = planet(chart, 'Moon');
     var rising = chart.risingSign;
 
     parts.push(t.prefix + ', here is a reading of ' + (chart.name || 'this chart') + ' — computed on your device with VSOP87 precision.\n');
 
-    var sunSign = (sun && sun.sign) || chart.sunSign;
-    if (sunSign) {
-      var sunText = I && I.getPlanetInterpretation ? I.getPlanetInterpretation('Sun', sunSign) : '';
-      parts.push('☉ Sun in ' + sunSign + (sunText ? '\n' + sunText.split('.')[0] + '.' : '') + '\n');
-    }
-    var moonSign = (moon && moon.sign) || chart.moonSign;
-    if (moonSign) {
-      var moonText = I && I.getPlanetInterpretation ? I.getPlanetInterpretation('Moon', moonSign) : '';
-      parts.push('☽ Moon in ' + moonSign + (moonText ? '\n' + moonText.split('.')[0] + '.' : '') + '\n');
-    }
+    // The Big Three + the personal planets, each with a real one-line meaning.
+    [['Sun','☉'],['Moon','☽'],['Mercury','☿'],['Venus','♀'],['Mars','♂']].forEach(function (row) {
+      var key = row[0], glyph = row[1];
+      var sign = signOf(chart, key);
+      if (!sign) return;
+      var txt = I && I.getPlanetInterpretation ? I.getPlanetInterpretation(key, sign) : '';
+      var line = txt ? txt.split('.')[0] + '.' : (titleCase(key) + ' in ' + sign + ' shapes ' + (PLANET_THEME[key] || 'this part of you') + '.');
+      parts.push(glyph + ' ' + titleCase(key) + ' in ' + sign + '\n' + line + '\n');
+    });
     if (rising) {
       parts.push('↑ Rising in ' + rising + '\nThe Ascendant colours first impressions and the lens through which you meet the world.\n');
     }
 
-    if (chart.aspects && chart.aspects.length && I && I.getAspectMeaning) {
-      parts.push('Notable aspects:\n');
-      chart.aspects.slice(0, 4).forEach(function (a) {
-        var m = I.getAspectMeaning(a.aspect, a.planet1, a.planet2) ||
-          (a.planet1 + ' ' + a.aspect + ' ' + a.planet2);
-        parts.push('· ' + m + '\n');
-      });
+    if (chart.aspects && chart.aspects.length) {
+      parts.push('The strongest conversations in your chart:\n');
+      chart.aspects.slice(0, 4).forEach(function (a) { parts.push('· ' + aspectLine(a) + '\n'); });
     }
 
-    parts.push('\nThis interpretation draws from the site\'s curated placement library — not a live cloud model. Enable AI in settings for a deeper pass with your own API key.');
+    parts.push('\nEvery line here is computed from your real placements on your device — private, and free.');
     return parts.join('\n').trim();
+  }
+
+  function planetAnswer(chart, key, extra) {
+    var sign = signOf(chart, key);
+    if (!sign) return null;
+    var I = window.AstroInterpretations;
+    var txt = I && I.getPlanetInterpretation ? I.getPlanetInterpretation(key, sign) : '';
+    var lead = titleCase(key) + ' in ' + sign + ' shapes ' + (PLANET_THEME[key] || 'this part of you') + '.';
+    return lead + (txt ? ' ' + txt.split('.').slice(0, 2).join('.') + '.' : '') + (extra ? ' ' + extra : '');
   }
 
   function deterministicAsk(chart, question) {
@@ -131,17 +160,45 @@ window.APAIAssistant = (function () {
     var q = (question || '').toLowerCase();
     var sun = signOf(chart, 'Sun');
     var moon = signOf(chart, 'Moon');
-    if (/sun|identity|ego|purpose/.test(q) && sun) {
-      return 'Your Sun in ' + sun + ' describes core identity and vitality — the sign the Sun occupied at your birth, accurate to roughly an arcminute (1800–2200 CE). For house-level nuance, ensure your birth time is as exact as you can make it.';
+    if (/sun|identity|ego|purpose|who am i|core/.test(q) && sun) {
+      return planetAnswer(chart, 'Sun', 'This is the sign the Sun occupied at your birth, accurate to roughly an arcminute (1800–2200 CE).');
     }
-    if (/moon|emotion|feel|inner/.test(q) && moon) {
-      return 'Your Moon in ' + moon + ' speaks to emotional temperament and what helps you feel secure. It changes sign every ~2.5 days — yours is fixed to your birth moment.';
+    if (/moon|emotion|feel|inner|mood|secure/.test(q) && moon) {
+      return planetAnswer(chart, 'Moon', 'The Moon moves quickly, so this placement is very personal to your birth moment.');
     }
-    if (/rising|ascendant|first impression/.test(q) && chart.risingSign) {
-      return 'Rising in ' + chart.risingSign + ' shapes how you meet the world. It depends on birth time and latitude — if your time is approximate, treat this as a working hypothesis.';
+    if (/venus|love|romance|attract|beauty|relationship style/.test(q)) {
+      return planetAnswer(chart, 'Venus') || 'Venus (how you love) needs a full chart — cast one to see its sign.';
     }
-    if (/career|work|vocation/.test(q)) {
-      return 'Career signatures often involve the Midheaven, Saturn, and the 10th house — check the Houses tab for your computed cusps. MC accuracy requires a reliable birth time.';
+    if (/mars|drive|energy|anger|assert|motivat|sex/.test(q)) {
+      return planetAnswer(chart, 'Mars') || 'Mars (your drive) needs a full chart — cast one to see its sign.';
+    }
+    if (/mercury|think|mind|communicat|talk|learn/.test(q)) {
+      return planetAnswer(chart, 'Mercury') || 'Mercury (your mind) needs a full chart — cast one to see its sign.';
+    }
+    if (/jupiter|grow|luck|expand|meaning|opportunit/.test(q)) {
+      return planetAnswer(chart, 'Jupiter') || 'Jupiter (where you grow) shows up best with a full birth chart.';
+    }
+    if (/saturn|challeng|discipline|struggle|hard|lesson|fear/.test(q)) {
+      return planetAnswer(chart, 'Saturn') || 'Saturn (your growth edges) shows up best with a full birth chart.';
+    }
+    if (/strength|good at|gift|best/.test(q)) {
+      var flow = (chart.aspects || []).filter(function (a) { return /trine|sextile/.test(String(a.aspect).toLowerCase()); }).slice(0, 2);
+      if (flow.length) return 'Your natural gifts show in the easy aspects: ' + flow.map(function (a) { return aspectLine(a); }).join(' ');
+      return 'Your ' + (sun || '?') + ' Sun and ' + (moon || '?') + ' Moon are the anchors of your strengths — cast a timed chart to surface the flowing (trine/sextile) aspects that name them precisely.';
+    }
+    if (/challenge|weakness|work on|difficult|tension/.test(q)) {
+      var hard = (chart.aspects || []).filter(function (a) { return /square|opposition/.test(String(a.aspect).toLowerCase()); }).slice(0, 2);
+      if (hard.length) return 'Your growth edges show in the tense aspects: ' + hard.map(function (a) { return aspectLine(a); }).join(' ');
+      return 'Growth edges usually show in square and opposition aspects — cast a timed chart and they’ll appear here named precisely.';
+    }
+    if (/today|now|transit|happening/.test(q)) {
+      return 'For today’s sky against your chart, open the “Today” tab above — it reads the live transits to your ' + (sun || '?') + ' Sun and ' + (moon || '?') + ' Moon.';
+    }
+    if (/rising|ascendant|first impression|come across|appear/.test(q) && chart.risingSign) {
+      return 'Rising in ' + chart.risingSign + ' shapes how you meet the world — first impressions and the lens others see first. It depends on birth time and latitude, so if your time is approximate, treat this as a working hypothesis.';
+    }
+    if (/career|work|vocation|job|purpose/.test(q)) {
+      return 'Career signatures involve the Midheaven, Saturn, and the 10th house — check the Houses tab on the Chart page for your computed cusps. A reliable birth time makes these accurate.';
     }
     if (/synastry|compat|relationship|partner|venus|mars/.test(q)) {
       if (chart.synastryAspects && chart.synastryAspects.length) {
@@ -179,88 +236,19 @@ window.APAIAssistant = (function () {
       '. Cast with astronomical precision on Astro Precise; computed privately on device.';
   }
 
-  function systemPrompt(kind) {
-    return 'You are Astro Precise, a sophisticated privacy-first astrology guide. ' +
-      'Write with intellectual credibility — precise, warm, never gimmicky. ' +
-      'Never claim arc-second accuracy or observatory certification. ' +
-      'Use "roughly an arcminute (1800–2200 CE)" for precision claims. ' +
-      'Never give a numeric compatibility score or percentage — describe measured aspects and their character instead. ' +
-      'Task: ' + kind + '. Keep responses concise (under 220 words unless asked otherwise).';
-  }
-
-  function callAI(userPrompt, tone) {
-    var prefs = getPrefs();
-    if (!prefs.enabled || !prefs.apiKey) return Promise.reject(new Error('AI not configured'));
-
-    var body = {
-      model: prefs.model,
-      messages: [
-        { role: 'system', content: systemPrompt('natal chart insight') + ' Tone: ' + (TONES[tone] || TONES.gentle).label + '.' },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.65,
-      max_tokens: 500,
-    };
-
-    return fetch(prefs.endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + prefs.apiKey,
-      },
-      body: JSON.stringify(body),
-    }).then(function (res) {
-      if (!res.ok) throw new Error('AI request failed (' + res.status + ')');
-      return res.json();
-    }).then(function (json) {
-      var text = json.choices && json.choices[0] && json.choices[0].message && json.choices[0].message.content;
-      if (!text) throw new Error('Empty AI response');
-      return text.trim();
-    });
-  }
-
+  // On-device only (the cloud/BYOK path is retired for now — this is the free,
+  // private, deterministic reader). Kept promise-based so callers are unchanged.
   function explainChart(chart, tone) {
-    tone = tone || getPrefs().tone;
-    var prefs = getPrefs();
-    if (!prefs.enabled || !prefs.apiKey) {
-      return Promise.resolve(deterministicExplain(chart, tone));
-    }
-    return callAI('Explain this natal chart:\n\n' + chartSummary(chart), tone)
-      .catch(function () { return fellBack(deterministicExplain(chart, tone)); });
+    return Promise.resolve(deterministicExplain(chart, tone || getPrefs().tone));
   }
-
-  // Honesty: when the cloud call fails we answer deterministically — say so,
-  // or the "AI on" badge would misattribute the text.
-  function fellBack(text) {
-    return text + '\n\n(Cloud AI was unreachable — this is the on-device deterministic reading.)';
-  }
-
   function askChart(chart, question) {
-    var prefs = getPrefs();
-    if (!prefs.enabled || !prefs.apiKey) {
-      return Promise.resolve(deterministicAsk(chart, question));
-    }
-    return callAI('Chart:\n' + chartSummary(chart) + '\n\nQuestion: ' + question, prefs.tone)
-      .catch(function () { return fellBack(deterministicAsk(chart, question)); });
+    return Promise.resolve(deterministicAsk(chart, question));
   }
-
   function dailyInsight(chart, reading) {
-    var prefs = getPrefs();
-    if (!prefs.enabled || !prefs.apiKey) {
-      return Promise.resolve(deterministicDaily(chart, reading));
-    }
-    var extra = reading && reading.insight ? '\nToday headline: ' + reading.insight.headline : '';
-    return callAI('Give a concise daily insight connecting today\'s transits to this natal chart:\n' + chartSummary(chart) + extra, prefs.tone)
-      .catch(function () { return fellBack(deterministicDaily(chart, reading)); });
+    return Promise.resolve(deterministicDaily(chart, reading));
   }
-
   function shareSummary(chart) {
-    var prefs = getPrefs();
-    if (!prefs.enabled || !prefs.apiKey) {
-      return Promise.resolve(deterministicShareSummary(chart));
-    }
-    return callAI('Write a single elegant sentence (max 35 words) for sharing this chart link. No hashtags.\n' + chartSummary(chart), prefs.tone)
-      .catch(function () { return deterministicShareSummary(chart); });
+    return Promise.resolve(deterministicShareSummary(chart));
   }
 
   function loadScript(src) {
@@ -320,13 +308,13 @@ window.APAIAssistant = (function () {
   var PAGE_PRESETS = {
     'chart-ai-panel': {
       title: 'Understand your chart',
-      subtitle: 'Optional insight layer — off by default. Deterministic readings need no cloud; enable AI only if you add your own API key.',
+      subtitle: 'Plain-language insight from your chart — computed on your device, always free.',
       empty: 'Calculate or save a chart with planetary positions first — then tap Generate.',
       askPlaceholder: 'e.g. What does my Moon in Scorpio mean for relationships?',
     },
     'transits-ai-panel': {
       title: 'How transits touch your chart',
-      subtitle: 'See how today\u2019s sky aspects your saved placements — computed on-device unless you enable optional cloud AI.',
+      subtitle: 'See how today\u2019s sky aspects your saved placements — computed on your device, always free.',
       empty: 'Save a birth chart first, then return here for transit-aware insight. Cast one on the Chart page.',
       askPlaceholder: 'e.g. What should I watch for when Saturn squares my Moon?',
     },
@@ -338,7 +326,7 @@ window.APAIAssistant = (function () {
     },
     'ephemeris-ai-panel': {
       title: 'Tonight\u2019s sky, explained',
-      subtitle: 'Connect the live ephemeris to your natal chart — optional, privacy-first, on-device by default.',
+      subtitle: 'Connect the live ephemeris to your natal chart — computed on your device, private.',
       empty: 'Save a chart to compare tonight\u2019s planetary positions with your birth sky.',
       askPlaceholder: 'e.g. What does tonight\u2019s Moon phase mean for my chart?',
     },
@@ -356,25 +344,25 @@ window.APAIAssistant = (function () {
     },
     'synastry-ai-panel': {
       title: 'Read your synastry',
-      subtitle: 'Bridge this guide with your saved chart — optional, on-device by default.',
+      subtitle: 'Bridge this guide with your saved chart — computed on your device.',
       empty: 'Build a synastry chart on the Match page, or save your natal chart to explore relationship themes here.',
       askPlaceholder: 'e.g. Which inter-aspects matter most for long-term commitment?',
     },
     'lifepath-ai-panel': {
       title: 'Your numbers, in context',
-      subtitle: 'Pair Life Path themes with your saved birth chart — optional, on-device by default.',
+      subtitle: 'Pair Life Path themes with your saved birth chart — computed on your device.',
       empty: 'Calculate your Life Path above, or save a natal chart to see how numerology and placements weave together.',
       askPlaceholder: 'e.g. How does a Life Path 7 pair with Scorpio rising?',
     },
     'profile-ai-panel': {
       title: 'Your cosmic dashboard',
-      subtitle: 'Ask about saved charts and preferences — optional insight, privacy-first.',
+      subtitle: 'Ask about saved charts and preferences — computed on your device, private.',
       empty: 'Create your profile and save a chart first — then ask about placements, houses, or what to explore next.',
       askPlaceholder: 'e.g. What should I read next from my saved charts?',
     },
     'moonphase-ai-panel': {
       title: 'Tonight\u2019s Moon, explained',
-      subtitle: 'Connect lunar phase to your natal chart — computed on-device unless you enable optional cloud AI.',
+      subtitle: 'Connect lunar phase to your natal chart — computed on your device, always free.',
       empty: 'Pick a date above, or save a birth chart to compare tonight\u2019s Moon with your natal placements.',
       askPlaceholder: 'e.g. What does a waxing gibbous Moon mean for my chart?',
     },
@@ -407,6 +395,26 @@ window.APAIAssistant = (function () {
     return panelPreset({ pageKey: 'horoscope-ai-panel' }).empty;
   }
 
+  // Pre-clickable questions per page. Each string is worded to hit the
+  // deterministicAsk router so a tap returns a real, chart-specific answer.
+  var DEFAULT_QUESTIONS = [
+    'How do I come across?', "What's my emotional style?", 'How do I love?',
+    'What drives me?', 'What are my strengths?', 'What should I work on?',
+  ];
+  var PRESET_QUESTIONS = {
+    'chart-ai-panel': DEFAULT_QUESTIONS,
+    'profile-ai-panel': DEFAULT_QUESTIONS,
+    'horoscope-ai-panel': ["What's today's sky for me?", 'How does today touch my Sun?', "What's my emotional style?", 'What are my strengths?'],
+    'transits-ai-panel': ["What's hitting my chart now?", 'What should I watch for?', 'How do I love?', 'What drives me?'],
+    'ephemeris-ai-panel': ["What's tonight's sky mean for me?", "What's my emotional style?", 'How do I come across?'],
+    'moonphase-ai-panel': ["What's my emotional style?", "What's today's sky for me?", 'What are my strengths?'],
+    'compatibility-ai-panel': ["What's our chemistry?", 'How do I love?', 'What drives me?', 'Where might we clash?'],
+    'synastry-ai-panel': ['How do I love?', 'What drives me?', "What's my emotional style?"],
+    'cosmic-story-ai-panel': ["What's my core identity?", "What's my emotional style?", 'What are my strengths?', 'What should I work on?'],
+    'lifepath-ai-panel': ["What's my core identity?", 'What are my strengths?', 'How do I come across?'],
+  };
+  function questionsFor(key) { return PRESET_QUESTIONS[key] || DEFAULT_QUESTIONS; }
+
   function mountPanel(container, chartGetter, options) {
     if (!container) return;
     if (container.dataset.apAiMounted) {
@@ -429,21 +437,25 @@ window.APAIAssistant = (function () {
       copy = panelPreset(container, options);
       container.hidden = false;
       container.className = 'ap-ai-panel ap-reveal-smooth';
+      var qs = questionsFor((options && options.pageKey) || container.id);
       container.innerHTML =
         '<div class="ap-ai-panel__head">' +
           '<div>' +
             '<h3 class="ap-ai-panel__title">' + esc(copy.title) + '</h3>' +
             '<p class="ap-ai-panel__sub">' + esc(copy.subtitle) + '</p>' +
           '</div>' +
-          '<span class="ap-ai-panel__badge' + (prefs.enabled && prefs.apiKey ? '' : ' ap-ai-panel__badge--off') + '">' +
-            (prefs.enabled && prefs.apiKey ? 'AI optional · on' : 'On-device · default') +
-          '</span>' +
+          '<span class="ap-ai-panel__badge ap-ai-panel__badge--off">Computed on your device</span>' +
         '</div>' +
-        '<div class="ap-ai-tabs" role="tablist">' +
-          ['explain', 'ask', 'daily'].map(function (id) {
-            var labels = { explain: 'Explain', ask: 'Ask', daily: 'Today' };
-            return '<button type="button" class="ap-ai-tab" role="tab" data-tab="' + id + '" aria-selected="' + (activeTab === id) + '">' + labels[id] + '</button>';
-          }).join('') +
+        // Point-and-click: a primary "explain", a "today" shortcut, then the
+        // page-relevant preset questions. Each returns a real chart-based answer.
+        '<div class="ap-ai-quick">' +
+          '<button type="button" class="ap-ai-chip ap-ai-chip--primary" data-action="explain">✦ Explain my chart</button>' +
+          '<button type="button" class="ap-ai-chip" data-action="today">Today for me</button>' +
+          qs.map(function (q) { return '<button type="button" class="ap-ai-chip" data-q="' + esc(q) + '">' + esc(q) + '</button>'; }).join('') +
+        '</div>' +
+        '<div class="ap-ai-ownq">' +
+          '<input type="text" id="ap-ai-ask-input" class="ap-ai-ask-input" placeholder="' + esc(copy.askPlaceholder) + '" maxlength="280" />' +
+          '<button type="button" class="btn btn--outline btn--sm" id="ap-ai-ask-btn">Ask</button>' +
         '</div>' +
         '<div class="ap-ai-tone-row">' +
           '<label for="ap-ai-tone">Tone</label>' +
@@ -453,24 +465,11 @@ window.APAIAssistant = (function () {
             }).join('') +
           '</select>' +
         '</div>' +
-        '<div id="ap-ai-ask-row" hidden>' +
-          '<input type="text" id="ap-ai-ask-input" class="ap-ai-ask-input" placeholder="' + esc(copy.askPlaceholder) + '" maxlength="280" />' +
-        '</div>' +
-        '<div id="ap-ai-output" class="ap-ai-output" aria-live="polite">Choose a tab and tap Generate — nothing is sent until you do.</div>' +
+        '<div id="ap-ai-output" class="ap-ai-output" aria-live="polite">Tap a question above — your answer is computed from your real chart, right here on your device.</div>' +
         '<div class="ap-ai-actions">' +
-          '<button type="button" class="btn btn--primary" id="ap-ai-generate">Generate</button>' +
           '<button type="button" class="btn btn--outline" id="ap-ai-copy" hidden>Copy</button>' +
         '</div>' +
-        '<details class="ap-ai-settings">' +
-          '<summary>Optional cloud AI (bring your own key)</summary>' +
-          '<div class="ap-ai-settings__grid">' +
-            '<div><label><input type="checkbox" id="ap-ai-enabled"' + (prefs.enabled ? ' checked' : '') + '> Enable cloud AI</label></div>' +
-            '<div><label>API endpoint</label><input type="text" id="ap-ai-endpoint" value="' + esc(prefs.endpoint) + '" autocomplete="off" /></div>' +
-            '<div><label>Model</label><input type="text" id="ap-ai-model" value="' + esc(prefs.model) + '" autocomplete="off" /></div>' +
-            '<div><label>API key (stored only on this device)</label><input type="password" id="ap-ai-key" value="' + esc(prefs.apiKey) + '" autocomplete="off" placeholder="sk-…" /></div>' +
-          '</div>' +
-        '</details>' +
-        '<p class="ap-ai-privacy">Privacy: with AI enabled, tapping Generate sends your name, birth date, time, place and chart placements to the API endpoint you configured above (e.g. OpenAI) — nothing is sent until you tap. Core calculations always stay on your device. You can edit or delete AI output before sharing.</p>';
+        '<p class="ap-ai-privacy">Free &middot; computed on your device &mdash; this reading never leaves your browser.</p>';
       bindPanel();
     }
 
@@ -489,60 +488,36 @@ window.APAIAssistant = (function () {
       if (copy) copy.hidden = !text;
     }
 
+    function runInsight(kind, question) {
+      var chart = getChart();
+      if (!chartHasPlacements(chart)) {
+        if (container.id === 'horoscope-ai-panel' && kind !== 'explain') { setOutput(horoscopeFallbackText()); return; }
+        setOutput(copy.empty);
+        return;
+      }
+      var tone = (document.getElementById('ap-ai-tone') || {}).value || 'gentle';
+      setOutput('', true);
+      var p;
+      if (kind === 'explain') p = explainChart(chart, tone);
+      else if (kind === 'today') p = fetchDailyReading(chart).then(function (reading) { return dailyInsight(chart, reading); });
+      else p = askChart(chart, question || 'What stands out in my chart?');
+      Promise.resolve(p).then(function (text) { setOutput(text); });
+    }
+
     function bindPanel() {
-      container.querySelectorAll('.ap-ai-tab').forEach(function (btn) {
+      container.querySelectorAll('.ap-ai-chip').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          activeTab = btn.getAttribute('data-tab');
-          container.querySelectorAll('.ap-ai-tab').forEach(function (b) {
-            b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
-          });
-          var askRow = document.getElementById('ap-ai-ask-row');
-          if (askRow) askRow.hidden = activeTab !== 'ask';
+          var act = btn.getAttribute('data-action');
+          if (act === 'explain') runInsight('explain');
+          else if (act === 'today') runInsight('today');
+          else runInsight('ask', btn.getAttribute('data-q'));
         });
       });
-
-      document.getElementById('ap-ai-enabled')?.addEventListener('change', function (e) {
-        setPrefs({ enabled: e.target.checked });
-        render();
-      });
-      document.getElementById('ap-ai-endpoint')?.addEventListener('change', function (e) {
-        setPrefs({ endpoint: e.target.value.trim() });
-      });
-      document.getElementById('ap-ai-model')?.addEventListener('change', function (e) {
-        setPrefs({ model: e.target.value.trim() });
-      });
-      document.getElementById('ap-ai-key')?.addEventListener('change', function (e) {
-        setPrefs({ apiKey: e.target.value.trim() });
-      });
-      document.getElementById('ap-ai-tone')?.addEventListener('change', function (e) {
-        setPrefs({ tone: e.target.value });
-      });
-
-      document.getElementById('ap-ai-generate')?.addEventListener('click', function () {
-        var chart = getChart();
-        if (!chartHasPlacements(chart)) {
-          if (container.id === 'horoscope-ai-panel' && activeTab !== 'explain') {
-            setOutput(horoscopeFallbackText());
-            return;
-          }
-          setOutput(copy.empty);
-          return;
-        }
-        var tone = (document.getElementById('ap-ai-tone') || {}).value || 'gentle';
-        setOutput('', true);
-        var p;
-        if (activeTab === 'explain') p = explainChart(chart, tone);
-        else if (activeTab === 'ask') {
-          var q = (document.getElementById('ap-ai-ask-input') || {}).value || '';
-          p = askChart(chart, q || 'What stands out in my chart?');
-        } else {
-          p = fetchDailyReading(chart).then(function (reading) {
-            return dailyInsight(chart, reading);
-          });
-        }
-        Promise.resolve(p).then(function (text) { setOutput(text); });
-      });
-
+      var askInput = document.getElementById('ap-ai-ask-input');
+      function askOwn() { var q = (askInput && askInput.value || '').trim(); if (q) runInsight('ask', q); }
+      document.getElementById('ap-ai-ask-btn')?.addEventListener('click', askOwn);
+      if (askInput) askInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); askOwn(); } });
+      document.getElementById('ap-ai-tone')?.addEventListener('change', function (e) { setPrefs({ tone: e.target.value }); });
       document.getElementById('ap-ai-copy')?.addEventListener('click', function () {
         var text = (document.getElementById('ap-ai-output') || {}).textContent || '';
         navigator.clipboard.writeText(text).then(function () {
@@ -551,9 +526,6 @@ window.APAIAssistant = (function () {
           if (window.AstroApp) AstroApp.showToast('Copy failed', 'Select and copy the text manually.', 'warning');
         });
       });
-
-      var askRow = document.getElementById('ap-ai-ask-row');
-      if (askRow) askRow.hidden = activeTab !== 'ask';
     }
 
     render();
