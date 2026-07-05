@@ -166,68 +166,68 @@
         </div>
 
         <div id="current-sky" class="planet-grid" aria-live="polite">
-          <!-- Static fallback — JS may update these -->
-          <div class="planet-card planet-card--air">
+          <!-- Positions + descriptions fill LIVE from AstroEphemeris on load
+               (populateCurrentSky, below). Pre-JS these show a neutral placeholder —
+               never a fabricated position. (v627 honesty fix) -->
+          <div class="planet-card" data-planet="sun">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span>
             <span class="planet-card__name">Sun</span>
-            <span class="planet-card__position">Gemini 21&#176;04&#8217;</span>
-            <span class="planet-card__desc">Solar energy in Gemini heightens curiosity, social energy, and the desire to share ideas and connect with others.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="moon">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span>
             <span class="planet-card__name">Moon</span>
-            <span class="planet-card__position">Scorpio 14&#176;37&#8217;</span>
-            <span class="planet-card__desc">Lunar intensity deepens emotional perception and intuition. Trust your instincts; honour what rises from the depths.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="mercury">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
             <span class="planet-card__name">Mercury</span>
-            <span class="planet-card__position">Cancer 3&#176;22&#8217;</span>
-            <span class="planet-card__desc">Thought and communication become more intuitive and emotionally resonant. Nurturing conversations flow with ease.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="venus">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
             <span class="planet-card__name">Venus</span>
-            <span class="planet-card__position">Cancer 19&#176;11&#8217;</span>
-            <span class="planet-card__desc">Affections are tender and home-oriented. Deepen bonds with loved ones and create beauty in your personal space.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--fire">
+          <div class="planet-card" data-planet="mars">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
             <span class="planet-card__name">Mars</span>
-            <span class="planet-card__position">Leo 8&#176;54&#8217;</span>
-            <span class="planet-card__desc">Drive is bold and expressive. Channel energy into creative projects, courageous initiatives, and confident leadership.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="jupiter">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
             <span class="planet-card__name">Jupiter</span>
-            <span class="planet-card__position">Cancer 2&#176;09&#8217;</span>
-            <span class="planet-card__desc">Growth through emotional wisdom, family ties, and intuition. Abundance is found by nurturing what matters most.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="saturn">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
             <span class="planet-card__name">Saturn</span>
-            <span class="planet-card__position">
-              Pisces 22&#176;47&#8217; <span class="retrograde-badge" title="Retrograde">Rx</span>
-            </span>
-            <span class="planet-card__desc">Discipline and structure are under revision. Review spiritual commitments; release what no longer serves your highest path.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--earth">
+          <div class="planet-card" data-planet="uranus">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span>
             <span class="planet-card__name">Uranus</span>
-            <span class="planet-card__position">Taurus 28&#176;03&#8217;</span>
-            <span class="planet-card__desc">Radical changes to material values and resources. Innovative approaches to security and ownership come to the fore.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--fire">
+          <div class="planet-card" data-planet="neptune">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span>
             <span class="planet-card__name">Neptune</span>
-            <span class="planet-card__position">Aries 2&#176;18&#8217;</span>
-            <span class="planet-card__desc">Pioneering dreams and dissolving of old identities. A new spiritual ideal is crystallising around courage and vision.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--air">
+          <div class="planet-card" data-planet="pluto">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span>
             <span class="planet-card__name">Pluto</span>
-            <span class="planet-card__position">Aquarius 3&#176;42&#8217;</span>
-            <span class="planet-card__desc">Collective transformation through community, technology, and shared vision. Old power structures are being fundamentally rebuilt.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
         </div>
       </div>
@@ -618,6 +618,34 @@
       return SIGNS[idx] + ' ' + within + '°';
     }
 
+    // v627 honesty fix — fill the "Current Planetary Positions" grid LIVE from the
+    // ephemeris (it was previously hardcoded under a "recomputed live" badge).
+    var SIGN_ELEMENT = { Aries:'fire', Leo:'fire', Sagittarius:'fire', Taurus:'earth', Virgo:'earth', Capricorn:'earth', Gemini:'air', Libra:'air', Aquarius:'air', Cancer:'water', Scorpio:'water', Pisces:'water' };
+    var SIGN_TRAIT = { Aries:'bold, direct momentum', Taurus:'steady, grounded patience', Gemini:'quick, curious exchange', Cancer:'tender, protective feeling', Leo:'warm, expressive confidence', Virgo:'precise, discerning focus', Libra:'balancing, relational grace', Scorpio:'deep, transformative intensity', Sagittarius:'expansive, questing optimism', Capricorn:'disciplined, patient ambition', Aquarius:'inventive, independent vision', Pisces:'dreamy, compassionate flow' };
+    var PLANET_DOMAIN = { sun:'core vitality and where you shine', moon:'emotional tides and inner needs', mercury:'thinking and how you communicate', venus:'love, what you value and pleasure', mars:'drive and how you take action', jupiter:'growth and where luck opens up', saturn:'discipline and long-term structure', uranus:'change, freedom and originality', neptune:'imagination, dreams and intuition', pluto:'depth, power and transformation' };
+
+    function signOfLon(lon) { return SIGNS[Math.floor((((lon % 360) + 360) % 360) / 30)]; }
+
+    function populateCurrentSky(positions) {
+      if (!positions) return;
+      var cards = document.querySelectorAll('#current-sky .planet-card');
+      cards.forEach(function (card) {
+        var key = card.getAttribute('data-planet');
+        if (!key || positions[key] == null) return;
+        var lon = positions[key];
+        var sign = signOfLon(lon);
+        var retro = RETRO_KEYS[key] || false;
+        var nameEl = card.querySelector('.planet-card__name');
+        var pname = nameEl ? nameEl.textContent.trim() : key;
+        var posEl = card.querySelector('.planet-card__position');
+        var descEl = card.querySelector('.planet-card__desc');
+        if (posEl) posEl.innerHTML = degToSignPos(lon) + (retro ? ' <span class="retrograde-badge" title="Retrograde">Rx</span>' : '');
+        if (descEl) descEl.textContent = pname + ' in ' + sign + ' colours ' + (PLANET_DOMAIN[key] || 'this part of life') + ' with ' + (SIGN_TRAIT[sign] || 'its own tone') + '.';
+        var el = SIGN_ELEMENT[sign];
+        if (el) card.className = 'planet-card planet-card--' + el;
+      });
+    }
+
     function buildPills(positions) {
       return PLANETS.map(function (p) {
         var lon = positions && positions[p.key] != null ? positions[p.key] : null;
@@ -686,7 +714,9 @@
           ['mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']
             .forEach(function (pk) { RETRO_KEYS[pk] = AstroEphemeris.isRetrograde(pk, jd); });
         }
-        populateTicker(Object.keys(pos).length ? pos : null);
+        var livePos = Object.keys(pos).length ? pos : null;
+        populateTicker(livePos);
+        populateCurrentSky(livePos);
       } catch (e) {
         populateTicker(null);
       }
