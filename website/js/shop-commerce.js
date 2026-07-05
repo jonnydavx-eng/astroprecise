@@ -132,6 +132,20 @@ window.AstroShop = (() => {
   // ── Config access ──────────────────────────────────────────────────────
   const cfg        = () => (window.AP_MON && window.AP_MON.commerce) || {};
   const products   = () => cfg().products || [];
+  const cataloguePhase = () => String(cfg().cataloguePhase || 'full');
+  const isPdfOnly  = () => cataloguePhase() === 'pdf-only';
+  const catalogueSkus = () => {
+    const raw = cfg().catalogueSkus;
+    return Array.isArray(raw) ? raw.map(String) : [];
+  };
+  // SKUs that may appear on shop.html — respects cataloguePhase without
+  // deleting dormant products from config (flip phase to 'full' to restore).
+  function catalogueProducts() {
+    const all = products();
+    if (!isPdfOnly()) return all;
+    const allow = new Set(catalogueSkus());
+    return all.filter(p => allow.has(p.id));
+  }
   const collections = () => cfg().collections || {};
   const checkout   = () => cfg().checkout || {};
   const isUrl      = u => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
@@ -827,7 +841,11 @@ window.AstroShop = (() => {
       </article>`;
   }
 
-  const FEATURED_ORDER = ['deep-reading', 'reading-poster-bundle', 'natal-poster-pdf'];
+  function featuredOrder() {
+    return isPdfOnly()
+      ? ['deep-reading', 'natal-poster-pdf']
+      : ['deep-reading', 'reading-poster-bundle', 'natal-poster-pdf'];
+  }
 
   function renderFeatured() {
     const host = document.getElementById('shopc-featured');
@@ -840,34 +858,52 @@ window.AstroShop = (() => {
       return;
     }
 
-    const featured = FEATURED_ORDER
+    const featured = featuredOrder()
       .map(id => productById(id))
-      .filter(p => p && p.available !== false && isLive(p));
+      .filter(p => p && p.available !== false);
     if (!featured.length) {
       host.innerHTML = '';
       host.hidden = true;
       return;
     }
     host.hidden = false;
-    const bundle = featured.find(p => p.id === 'reading-poster-bundle');
+    const pdfOnly = isPdfOnly();
+    const bundle = pdfOnly ? null : featured.find(p => p.id === 'reading-poster-bundle');
     const others = featured.filter(p => p.id !== 'reading-poster-bundle');
-    host.innerHTML = `<div class="container">
-      <div class="shopc-featured__intro">
-        <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ${liveProductCount() > 0 ? `Available now — ${liveProductCount()} live pieces` : 'The collection — checkout opening soon'}</h2>
-        <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}</p>
-      </div>
-      <div class="shopc-featured__grid">
-        ${others[0] ? featuredCard(others[0]) : ''}
-        ${bundle ? featuredCard(bundle, { hero: true }) : ''}
-        ${others[1] ? featuredCard(others[1]) : ''}
-      </div>
-      <ul class="shopc-trust">
+    const gridClass = pdfOnly
+      ? 'shopc-featured__grid shopc-featured__grid--pdf'
+      : 'shopc-featured__grid';
+    const lede = pdfOnly
+      ? `Two personalised PDFs from <strong>your</strong> birth chart — a deep written reading and a print-at-home poster.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}`
+      : `Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}`;
+    const trust = pdfOnly
+      ? `<ul class="shopc-trust">
+        <li class="shopc-trust__item">${icon('book')} 13-page reading · print-ready poster</li>
+        <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
+        <li class="shopc-trust__item">${icon('map')} Delivered as PDF — yours to keep</li>
+        <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
+      </ul>`
+      : `<ul class="shopc-trust">
         <li class="shopc-trust__item">${icon('gem')} Museum-grade 250gsm prints</li>
         <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
         <li class="shopc-trust__item">${icon('orb')} Secure checkout</li>
         <li class="shopc-trust__item">${icon('map')} PDFs in 24–48 hours</li>
         <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
-      </ul>
+      </ul>`;
+    host.innerHTML = `<div class="container">
+      <div class="shopc-featured__intro">
+        <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ${liveProductCount() > 0 ? `Available now — ${liveProductCount()} live pieces` : (pdfOnly ? 'Digital readings — checkout opening soon' : 'The collection — checkout opening soon')}</h2>
+        <p class="shopc-featured__lede">${lede}</p>
+      </div>
+      <div class="${gridClass}">
+        ${pdfOnly
+          ? `${featuredCard(others[0], { hero: true })}
+             ${others[1] ? featuredCard(others[1]) : ''}`
+          : `${others[0] ? featuredCard(others[0]) : ''}
+             ${bundle ? featuredCard(bundle, { hero: true }) : ''}
+             ${others[1] ? featuredCard(others[1]) : ''}`}
+      </div>
+      ${trust}
     </div>`;
     bindFeatured(host);
     renderPersonalBanner();
@@ -881,10 +917,11 @@ window.AstroShop = (() => {
   // to its dormant copy via [data-when-live]/[data-when-dormant] toggles
   // instead of ever claiming pieces are buyable.
   function liveProductCount() {
-    return products().filter(p => p.available !== false && isLive(p)).length;
+    return catalogueProducts().filter(p => p.available !== false && isLive(p)).length;
   }
   function updateLiveCounts() {
     if (!products().length) return; // config failed to load — keep static fallback
+    applyPdfOnlyChrome();
     const n = liveProductCount();
     document.querySelectorAll('[data-live-count]').forEach(el => { el.textContent = String(n); });
     document.body.classList.toggle('shop--dormant', n === 0);
@@ -939,7 +976,7 @@ window.AstroShop = (() => {
     // A collection of coming-soon placeholders only (e.g. Jewellery) stays hidden so
     // chips never dead-end on unbuyable SKUs.
     const counts = {};
-    products().filter(p => p.available !== false && isLive(p)).forEach(p => { counts[p.collection] = (counts[p.collection] || 0) + 1; });
+    catalogueProducts().filter(p => p.available !== false && isLive(p)).forEach(p => { counts[p.collection] = (counts[p.collection] || 0) + 1; });
     const chips = [['all', 'All']].concat(Object.entries(cols).filter(([k]) => counts[k] > 0).map(([k, c]) => [k, c.name]));
     bar.innerHTML = chips.map(([key, label]) =>
       `<button type="button" class="shopc-chip ${key === activeCollection ? ' active' : ''}" data-collection="${key}" aria-pressed="${key === activeCollection ? 'true' : 'false'}">${esc(label)}</button>`
@@ -1010,7 +1047,17 @@ window.AstroShop = (() => {
       return;
     }
 
-    const all = products();
+    if (isPdfOnly()) {
+      grid.innerHTML = '';
+      grid.hidden = true;
+      const filters = document.getElementById('shopc-filters');
+      if (filters) filters.hidden = true;
+      const filtersEyebrow = document.querySelector('.shopc-filters__eyebrow');
+      if (filtersEyebrow) filtersEyebrow.hidden = true;
+      return;
+    }
+
+    const all = catalogueProducts();
     if (!all.length) {
       grid.innerHTML = `<p class="shopc-empty">The collection is being prepared. Check back soon.</p>`;
       return;
@@ -1022,7 +1069,7 @@ window.AstroShop = (() => {
     const list = activeCollection === 'all' ? sellable : sellable.filter(p => p.collection === activeCollection);
     const skipFeaturedInAll = activeCollection === 'all';
     const liveList = list.filter(p => isLive(p) && !(skipFeaturedInAll && p.featured));
-    const soonList = list.filter(p => !isLive(p) && !(skipFeaturedInAll && (p.featured || FEATURED_ORDER.includes(p.id))));
+    const soonList = list.filter(p => !isLive(p) && !(skipFeaturedInAll && (p.featured || featuredOrder().includes(p.id))));
 
     const renderCard = p => {
       const colName = cols[p.collection] ? cols[p.collection].name : '';
@@ -1335,7 +1382,7 @@ window.AstroShop = (() => {
   // ═══════════════════════════════════════════════════════════════════════
   function injectCatalogSchema() {
     if (document.getElementById('shopc-catalog-ld')) return;
-    const list = sortProducts(products().filter(p => p.available !== false));
+    const list = sortProducts(catalogueProducts().filter(p => p.available !== false));
     if (!list.length) return;
     const s = document.createElement('script');
     s.type = 'application/ld+json';
@@ -1407,6 +1454,32 @@ window.AstroShop = (() => {
     });
   }
 
+  // PDF-only phase: hide deferred catalogue chrome (prints, affiliate, art library).
+  function applyPdfOnlyChrome() {
+    if (!isPdfOnly()) return;
+    document.body.classList.add('shop--pdf-only');
+    [
+      '#art-library',
+      '#shop-affiliate-editorial',
+      '#shop-curated',
+      '.shop-contribute',
+      '.shop-trending',
+      '.shop-lookbook-link',
+      '.shopc-filters__eyebrow',
+      '#shopc-filters',
+      '#shopc-grid',
+      '.shop-wallpaper-lead',
+    ].forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => { el.hidden = true; });
+    });
+    document.querySelectorAll(
+      '.shop-sticky-nav a[href="#art-library"],'
+      + '.shop-sticky-nav a[href="#wear-your-sky"],'
+      + '.shop-sticky-nav a[href="#shop-affiliate-editorial"],'
+      + '.shop-sticky-nav a[href="#shop-curated"]'
+    ).forEach(el => { el.hidden = true; });
+  }
+
   // ── Init ────────────────────────────────────────────────────────────────
   let gridHydrated = false;
 
@@ -1425,6 +1498,7 @@ window.AstroShop = (() => {
 
   function init() {
     cart = new Cart();
+    applyPdfOnlyChrome();
     updateLiveCounts();
     renderFeatured();
     renderFilters();

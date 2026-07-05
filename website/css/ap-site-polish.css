@@ -61,9 +61,11 @@ body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab):focus-visi
 #ap-horoscope-sky-bridge { min-height: 8rem; }
 #daily-transit-card { min-height: 10rem; }
 
-/* ── Shop dormant: one honest catalogue, no affiliate noise ── */
+/* ── Shop dormant / PDF-only: honest catalogue, no affiliate noise ── */
 body.shop--dormant #shop-affiliate-editorial,
-body.shop--dormant #shop-curated {
+body.shop--dormant #shop-curated,
+body.shop--pdf-only #shop-affiliate-editorial,
+body.shop--pdf-only #shop-curated {
   display: none;
 }
 body.shop--dormant .shop-sticky-nav a[href="#shop-affiliate-editorial"],

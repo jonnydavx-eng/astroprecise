@@ -49,9 +49,14 @@ await ctx.addInitScript(() => {
         return dorm ? !dorm.hidden : false;
       })(),
       sticky: !!document.querySelector('.ap-email-cta--sticky.is-visible'),
+      pdfOnly: document.body.classList.contains('shop--pdf-only'),
+      featuredCount: document.querySelectorAll('#shopc-featured [data-product-id]').length,
+      noBundle: !document.querySelector('[data-product-id="reading-poster-bundle"]'),
+      hasCompare: !!document.getElementById('shop-compare'),
     };
   });
   rec('shop:dormant-catalogue', shop.dormantTitle && shop.dormantBody && shop.noLiveInGrid && shop.noTrending && shop.artHidden && shop.affiliateHidden && shop.howDormant, JSON.stringify(shop));
+  rec('shop:pdf-only', shop.pdfOnly && shop.featuredCount === 2 && shop.noBundle && shop.hasCompare, JSON.stringify(shop));
   rec('shop:no-sticky-cta', !shop.sticky, `stickyVisible=${shop.sticky}`);
   await page.close();
 }

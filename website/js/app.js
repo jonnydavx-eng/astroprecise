@@ -1322,6 +1322,12 @@ window.AP_MON = Object.assign({
       etsyUrl:          '',    // Etsy storefront ("Browse on Etsy" path)
     },
 
+    // ── CATALOGUE PHASE — which SKUs surface on shop.html ────────────────
+    // 'pdf-only' = Deep Reading + print-at-home poster PDF for now.
+    // Flip to 'full' when prints, apparel, gifts & jewellery return.
+    cataloguePhase: 'pdf-only',
+    catalogueSkus:  ['deep-reading', 'natal-poster-pdf'],
+
     // ── COLLECTIONS — the architecture of the sky ─────────────────────────
     // Every piece belongs to one collection. Re-themed from TBP's tree to
     // the chart: what you were born under, what you wear, what you keep.
@@ -1355,7 +1361,7 @@ window.AP_MON = Object.assign({
     products: [
       {
         id:           'natal-poster',
-        available:    true,
+        available:    false,
         name:         'Your Natal Sky — Art Poster',
         type:         'print',
         collection:   'onYourWall',
@@ -1371,7 +1377,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'sky-tee',
-        available:    true,
+        available:    false,
         name:         'Your Sky — Tee',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -1387,7 +1393,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'sky-hoodie',
-        available:    true,
+        available:    false,
         name:         'Your Sky — Heavyweight Hoodie',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -1403,7 +1409,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'big-three-print',
-        available:    true,
+        available:    false,
         name:         'Big Three — Mini Print',
         type:         'print',
         collection:   'onYourWall',
@@ -1419,7 +1425,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'constellation-mug',
-        available:    true,
+        available:    false,
         name:         'Your Star Map — Mug',
         type:         'accessory',
         collection:   'wearYourSky',
@@ -1435,8 +1441,8 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'cosmic-story',
-        available:    true,
-        featured:     true,
+        available:    false,
+        featured:     false,
         name:         'Your Cosmic Story — Personalised Narrative',
         type:         'digital',
         collection:   'theReading',
@@ -1469,7 +1475,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'year-ahead',
-        available:    true,
+        available:    false,
         name:         'Your Year Ahead — Transit Report',
         type:         'digital',
         collection:   'theReading',
@@ -1502,8 +1508,8 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'reading-poster-bundle',
-        available:    true,
-        featured:     true,
+        available:    false,
+        featured:     false,
         name:         'Deep Reading + Poster — Bundle',
         type:         'digital',
         collection:   'theReading',
@@ -1522,7 +1528,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'solar-return',
-        available:    true,
+        available:    false,
         name:         'Solar Return — Your Birthday Year',
         type:         'digital',
         collection:   'theReading',
@@ -1538,7 +1544,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'gift-reading',
-        available:    true,
+        available:    false,
         name:         'Gift a Reading',
         type:         'digital',
         collection:   'gifts',
@@ -1555,7 +1561,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'gift-box-whole-sky',
-        available:    true,
+        available:    false,
         name:         'The Whole Sky — Gift Box',
         type:         'print',
         collection:   'gifts',
@@ -1572,7 +1578,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'two-skies-map',
-        available:    true,
+        available:    false,
         name:         'Two Skies — Couples Star Map',
         type:         'print',
         collection:   'gifts',
@@ -1592,7 +1598,7 @@ window.AP_MON = Object.assign({
       // Diffs vs competitors: full VSOP87 chart data (not sun-sign generic), integrated with readings/posters. POD: ShineOn/OwnPrint/AnywherePOD or Etsy manual + custom upload for engraving.
       {
         id:           'observatory-disc-pendant',
-        available:    true,
+        available:    false,
         name:         'Observatory Disc Pendant',
         type:         'accessory',
         collection:   'jewellery',
@@ -1607,7 +1613,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'constellation-bar',
-        available:    true,
+        available:    false,
         name:         'Constellation Bar',
         type:         'accessory',
         collection:   'jewellery',
@@ -1622,7 +1628,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'big-three-glyph',
-        available:    true,
+        available:    false,
         name:         'Big Three Glyph',
         type:         'accessory',
         collection:   'jewellery',
@@ -1637,7 +1643,7 @@ window.AP_MON = Object.assign({
       },
       {
         id:           'seal-medallion',
-        available:    true,
+        available:    false,
         name:         'Seal Medallion',
         type:         'accessory',
         collection:   'jewellery',
