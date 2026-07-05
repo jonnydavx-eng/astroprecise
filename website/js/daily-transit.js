@@ -379,7 +379,15 @@
       '.dt-empty h3{font-family:var(--font-display,"Cinzel",serif);font-size:1.3rem;font-weight:700;' +
       'color:var(--white,#F8F4EE);margin:0 0 0.6rem;}' +
       '.dt-empty p{font-size:0.9rem;color:var(--silver-dim,#8891AA);line-height:1.7;' +
-      'max-width:420px;margin:0 auto 1.6rem;}';
+      'max-width:420px;margin:0 auto 1.6rem;}' +
+      // v628 — "what's next" rhythm (tomorrow + this week), the come-back loop
+      '.dt-rhythm{list-style:none;margin:1.1rem 0 0;padding:0.9rem 0 0;' +
+      'border-top:1px solid rgba(194,160,94,0.16);display:flex;flex-direction:column;gap:0.5rem;}' +
+      '.dt-rhythm__row{display:flex;gap:0.7rem;align-items:baseline;font-size:0.86rem;line-height:1.4;}' +
+      '.dt-rhythm__when{flex:none;min-width:5.4em;font-family:var(--font-mono,monospace);' +
+      'font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-gold,#C2A05E);}' +
+      '.dt-rhythm__what{color:var(--silver,#C8D0E8);}' +
+      '.dt-rhythm__note{margin:0.6rem 0 0;font-size:0.72rem;color:var(--silver-dim,#8891AA);font-style:italic;}';
     var el = document.createElement('style');
     el.id = STYLE_ID;
     el.textContent = css;
@@ -447,6 +455,46 @@
       '</span>' +
       '<span class="dt-aspect__orb">' + a.orb.toFixed(1) + '°</span>' +
     '</div>';
+  }
+
+  // Top transit-to-natal aspect on a given date (pure — does not clobber _reading).
+  function topAspectOn(date, natalFlat) {
+    if (!natalFlat) return null;
+    var t = transitLongitudes(date);
+    if (!t) return null;
+    var rows = scanAspects(t, natalFlat);
+    return rows.length ? rows[0] : null;
+  }
+
+  // The next dated event this civil week from the deterministic weekly engine.
+  function nextWeekEvent(date) {
+    if (!(window.WeeklySky && typeof WeeklySky.buildWeekReport === 'function')) return null;
+    try {
+      var rep = WeeklySky.buildWeekReport(date);
+      if (!rep || rep.empty || !rep.events || !rep.events.length) return null;
+      return rep.events[0];
+    } catch (e) { return null; }
+  }
+
+  // "What's next" — an honest come-back loop: tomorrow's top transit + this week's
+  // next real event. All values are genuinely computed; empty sky is stated plainly.
+  function renderRhythm(date, natalFlat) {
+    var rows = [];
+    var tomorrow = new Date(date.getTime() + 86400000);
+    var ta = topAspectOn(tomorrow, natalFlat);
+    var tText = ta
+      ? esc(ta.transit) + ' ' + esc(ta.aspect.toLowerCase()) + ' your ' + esc(ta.natal)
+      : 'open sky — no exact transits to your chart';
+    rows.push('<li class="dt-rhythm__row"><span class="dt-rhythm__when">Tomorrow</span>' +
+      '<span class="dt-rhythm__what">' + tText + '</span></li>');
+    var ev = nextWeekEvent(date);
+    if (ev && ev.title) {
+      rows.push('<li class="dt-rhythm__row"><span class="dt-rhythm__when">This week</span>' +
+        '<span class="dt-rhythm__what">' + esc(ev.title) + '</span></li>');
+    }
+    if (!rows.length) return '';
+    return '<ul class="dt-rhythm" aria-label="What comes next">' + rows.join('') + '</ul>' +
+      '<p class="dt-rhythm__note">The sky moves — your reading recomputes each day.</p>';
   }
 
   function renderReading(target, reading, date) {
@@ -518,6 +566,9 @@
         '<span class="dt-card__streak-dot" aria-hidden="true"></span>' + esc(line) + '</span>';
     }
 
+    // "What's next" — tomorrow + this week (only for saved-chart readers).
+    var rhythmHtml = reading.natal ? renderRhythm(date, reading.natal) : '';
+
     // Deep-Reading tease — dormant-safe via AP_MON. Renders a plain line if no
     // URL is configured (never an invented price or broken link).
     var teaseHtml = renderTease();
@@ -537,6 +588,7 @@
         skyBtnHtml +
         metaChips +
         keywordsHtml +
+        rhythmHtml +
         teaseHtml +
       '</div>';
 
