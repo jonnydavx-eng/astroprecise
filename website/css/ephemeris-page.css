@@ -529,3 +529,369 @@
     .cw-pop__title { margin: 0 0 0.4rem; font-family: var(--font-display, 'Cinzel', serif); font-size: 0.9rem; letter-spacing: 0.06em; color: var(--gold-pale, var(--gold)); }
     .cw-pop__body { margin: 0 0 0.6rem; font-family: 'Cormorant Garamond', serif; font-size: 0.98rem; line-height: 1.6; color: var(--silver, #C8D0E8); }
     .cw-pop__src { margin: 0; font-size: 0.62rem; letter-spacing: 0.06em; color: #3fae7a; }
+
+    /* ── Sky page — beginner-first layout (Tonight → Your sky → Go deeper) ── */
+    .instrument-lede--short {
+      font-size: 1.02rem;
+      line-height: 1.65;
+      max-width: 560px;
+    }
+
+    .sky-hero-caps { margin-top: 1.25rem; }
+
+    .sky-hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .sky-ev-status {
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--silver-dim);
+      letter-spacing: 0.04em;
+      min-height: 1.2em;
+    }
+
+    .sky-tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.65rem;
+      margin-top: 1.35rem;
+    }
+    .sky-tools-row__link {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--silver);
+      padding: 0.4rem 0.85rem;
+      border: 1px solid rgba(168, 158, 136, 0.18);
+      border-radius: 999px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .sky-tools-row__link:hover {
+      color: var(--gold-pale);
+      border-color: rgba(194, 160, 94, 0.4);
+      background: rgba(194, 160, 94, 0.06);
+    }
+
+    .sky-birth-panel {
+      margin-top: 1.5rem;
+      animation: sky-panel-in 0.35s ease;
+    }
+    @keyframes sky-panel-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .sky-birth-panel__label {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0 0 0.5rem;
+    }
+    .sky-birth-panel__actions { margin-top: 0.25rem; }
+    .sky-birth-panel__note {
+      margin: 0.75rem 0 0;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: var(--silver-dim);
+    }
+
+    .sky-jump-nav {
+      position: sticky;
+      top: var(--nav-height, 72px);
+      z-index: 20;
+      background: rgba(12, 16, 22, 0.92);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168, 158, 136, 0.08);
+    }
+    .sky-jump-nav__inner {
+      display: flex;
+      gap: 0.5rem 1.25rem;
+      padding: 0.65rem 1.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sky-jump-nav__inner::-webkit-scrollbar { display: none; }
+    .sky-jump-nav__link {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--silver-dim);
+      white-space: nowrap;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .sky-jump-nav__link:hover,
+    .sky-jump-nav__link:focus-visible {
+      color: var(--gold-pale);
+      border-bottom-color: rgba(194, 160, 94, 0.45);
+    }
+
+    .sky-card-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 640px) {
+      .sky-card-row { grid-template-columns: 1fr; }
+    }
+    .sky-card {
+      padding: 1.1rem 1.15rem;
+      border: 1px solid rgba(168, 158, 136, 0.12);
+      border-radius: var(--radius-xl, 20px);
+      background: rgba(22, 28, 42, 0.55);
+    }
+    .sky-card--skeleton .sky-card__bar {
+      display: block;
+      height: 0.65rem;
+      border-radius: 4px;
+      background: rgba(168, 158, 136, 0.12);
+      margin-bottom: 0.5rem;
+      animation: sky-pulse 1.4s ease-in-out infinite;
+    }
+    .sky-card--skeleton .sky-card__bar--short { width: 55%; }
+    @keyframes sky-pulse {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.9; }
+    }
+    .sky-card__label {
+      margin: 0;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+    .sky-card__value {
+      margin: 0.35rem 0 0;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.15rem;
+      color: var(--gold-pale);
+      line-height: 1.25;
+    }
+    .sky-card__sub {
+      margin: 0.25rem 0 0;
+      font-size: 0.78rem;
+      color: var(--silver);
+      line-height: 1.4;
+    }
+
+    .sky-panel__title {
+      margin: 0 0 0.85rem;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+    .sky-panel__tag {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--silver-dim);
+      font-weight: 400;
+      text-transform: none;
+    }
+    .sky-panel__foot {
+      margin: 0.85rem 0 0;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+    .sky-panel__foot a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .sky-panel__foot a:hover { text-decoration: underline; }
+    .sky-panel__empty {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--silver-dim);
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .sky-planets-panel { margin-top: 0.5rem; padding: 1.25rem 1.35rem; }
+    .sky-planets-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .sky-planets-table th,
+    .sky-planets-table td {
+      padding: 0.55rem 0.65rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(168, 158, 136, 0.08);
+    }
+    .sky-planets-table thead th {
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      font-weight: 400;
+    }
+    .sky-planets-table tbody th[scope="row"] {
+      font-weight: 400;
+      color: var(--white);
+      font-family: 'AstroGlyph', 'Cormorant Garamond', serif;
+      font-variant-emoji: text;
+    }
+    .sky-planets-table tbody td { color: var(--silver); }
+    .sky-planets-table tbody tr:last-child th,
+    .sky-planets-table tbody tr:last-child td { border-bottom: none; }
+
+    .sky-weather-summary {
+      margin-top: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+    .sky-weather-summary__label {
+      margin: 0;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .sky-weather-summary__text {
+      margin: 0.65rem 0 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.12rem;
+      line-height: 1.65;
+      color: var(--white);
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sky-weather-summary__prov {
+      margin: 0.5rem 0 0;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--silver-dim);
+    }
+
+    .sky-big-three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 720px) {
+      .sky-big-three { grid-template-columns: 1fr; }
+    }
+    .sky-big-three__cell {
+      padding: 1.25rem 1.1rem;
+      text-align: center;
+      border: 1px solid rgba(194, 160, 94, 0.2);
+      border-radius: var(--radius-xl, 20px);
+      background: rgba(194, 160, 94, 0.04);
+    }
+    .sky-big-three__glyph {
+      display: block;
+      font-size: 1.6rem;
+      color: var(--gold-pale);
+      margin-bottom: 0.35rem;
+      font-family: 'AstroGlyph', 'Cormorant Garamond', serif;
+      font-variant-emoji: text;
+    }
+    .sky-big-three__name {
+      margin: 0;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      color: var(--white);
+    }
+    .sky-big-three__hint {
+      margin: 0.4rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--silver-dim);
+    }
+
+    .sky-natal-block { margin-top: 2rem; }
+    .sky-natal-links {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+    .sky-natal-links__btn {
+      text-decoration: none;
+      font-size: 0.68rem;
+    }
+
+    .sky-fold {
+      padding: 0;
+      border-bottom: 1px solid rgba(168, 158, 136, 0.07);
+    }
+    .sky-fold > .sky-fold__summary,
+    details.sky-fold > summary.sky-fold__summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      transition: background 0.2s;
+    }
+    .sky-fold > .sky-fold__summary::-webkit-details-marker,
+    details.sky-fold > summary::-webkit-details-marker { display: none; }
+    .sky-fold > .sky-fold__summary::before,
+    details.sky-fold > summary.sky-fold__summary::before {
+      content: '▸';
+      color: var(--gold);
+      font-size: 0.75rem;
+      margin-right: 0.25rem;
+      transition: transform 0.2s;
+    }
+    .sky-fold[open] > .sky-fold__summary::before,
+    details.sky-fold[open] > summary.sky-fold__summary::before {
+      transform: rotate(90deg);
+    }
+    .sky-fold > .sky-fold__summary:hover,
+    details.sky-fold > summary.sky-fold__summary:hover {
+      background: rgba(194, 160, 94, 0.04);
+    }
+    .sky-fold__summary--inset {
+      padding-left: calc((100% - 900px) / 2 + 1.5rem);
+      padding-right: calc((100% - 900px) / 2 + 1.5rem);
+    }
+    @media (max-width: 960px) {
+      .sky-fold__summary--inset { padding-left: 1.5rem; padding-right: 1.5rem; }
+    }
+    .sky-fold__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
+    .sky-fold__hint {
+      font-size: 0.72rem;
+      color: var(--silver-dim);
+      flex: 1 1 100%;
+      padding-left: 1.1rem;
+    }
+    .sky-fold__body.instrument-section,
+    .sky-fold .sky-fold__body {
+      padding-top: 0;
+      border-bottom: none;
+    }
+    #sec-clock-wrap.sky-fold { border-bottom: 1px solid rgba(168, 158, 136, 0.07); }
+    #sec-clock-wrap .instrument-eyebrow { margin: 0; }
+
+    .sky-explore .instrument-wrap:first-child {
+      padding-bottom: 0.5rem;
+    }
+    .sky-explore > .sky-fold:last-of-type {
+      border-bottom: none;
+    }
+
+    #sky-your[hidden],
+    #sky-your-deep[hidden] { display: none !important; }

@@ -135,10 +135,30 @@
   });
   cityIn.addEventListener('blur', () => setTimeout(() => { cityDd.hidden = true; }, 150));
 
+  function openBirthPanel() {
+    const panel = document.getElementById('sky-birth-panel');
+    const toggle = document.getElementById('ev-personalize-toggle');
+    if (panel) panel.hidden = false;
+    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+  }
+
+  const personalizeToggle = document.getElementById('ev-personalize-toggle');
+  if (personalizeToggle) {
+    personalizeToggle.addEventListener('click', () => {
+      const panel = document.getElementById('sky-birth-panel');
+      if (!panel) return;
+      const open = panel.hidden;
+      panel.hidden = !open;
+      personalizeToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) document.getElementById('ev-datetime')?.focus();
+    });
+  }
+
   document.getElementById('ev-set').addEventListener('click', () => {
     const dt = document.getElementById('ev-datetime').value;
     if (!dt || !pickedCity) {
-      document.getElementById('ev-status').textContent = 'Both the moment and the place are needed.';
+      document.getElementById('ev-status').textContent = 'Both date and birth place are needed — pick a town from the list.';
+      openBirthPanel();
       return;
     }
     event_ = { dt, lat: pickedCity.lat, lon: pickedCity.lon, tz: pickedCity.tz, city: pickedCity.name };
@@ -154,11 +174,15 @@
       dt: '1934-11-09T17:05', lat: 40.6782, lon: -73.9442,
       tz: 'America/New_York', city: 'Brooklyn, New York', example: true,
     };
-    // persist only if the visitor has no real event saved
     if (!localStorage.getItem(STORE_KEY)) saveEvent(event_);
+    const dtIn = document.getElementById('ev-datetime');
+    const cityInEl = document.getElementById('ev-city');
+    if (dtIn) dtIn.value = event_.dt;
+    if (cityInEl) cityInEl.value = 'Brooklyn, New York';
+    pickedCity = { lat: event_.lat, lon: event_.lon, tz: event_.tz, name: 'Brooklyn' };
     activate();
     document.getElementById('ev-status').textContent =
-      'Example — Carl Sagan, 9 Nov 1934, Brooklyn. Set your own event any time.';
+      'Example loaded — Carl Sagan, 9 Nov 1934, Brooklyn. Replace with your own details any time.';
   });
 
   // ── Section 1: Light-cone ─────────────────────────────────────────────────
@@ -1025,11 +1049,73 @@
       '" aria-label="Explain this measurement" aria-expanded="false">i</button>';
   }
 
+  const BIG_THREE_HINT = {
+    Sun: 'your core identity and life force',
+    Moon: 'your emotional nature and instincts',
+    Rising: 'how you meet the world — your outer style',
+  };
+
+  function renderTonightPlanets() {
+    const host = document.getElementById('sky-tonight-planets');
+    if (!host || !E()) return;
+    try {
+      const now = new Date();
+      const jd = E().julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
+        now.getHours(), now.getMinutes(), 0);
+      const planets = [
+        ['Sun', '☉', E().sunPosition(jd).lon],
+        ['Moon', '☽', E().moonPosition(jd).lon],
+        ['Mercury', '☿', E().mercuryPosition(jd).lon],
+        ['Venus', '♀', E().venusPosition(jd).lon],
+        ['Mars', '♂', E().marsPosition(jd).lon],
+        ['Jupiter', '♃', E().jupiterPosition(jd).lon],
+        ['Saturn', '♄', E().saturnPosition(jd).lon],
+      ];
+      host.innerHTML = '<table class="sky-planets-table"><thead><tr><th scope="col">Planet</th><th scope="col">Sign</th><th scope="col">Degree</th></tr></thead><tbody>' +
+        planets.map(([name, glyph, lon]) => {
+          const sign = E().signOf(lon);
+          const deg = Math.floor(lon % 30);
+          const orb = (window.AstroIcons && AstroIcons.planet)
+            ? AstroIcons.planet(name, { sm: true })
+            : glyph;
+          return '<tr><th scope="row">' + orb + ' ' + name + '</th><td>' + esc(sign) + '</td><td>' + deg + '°</td></tr>';
+        }).join('') + '</tbody></table>';
+    } catch (e) {
+      host.innerHTML = '<p class="sky-panel__empty">Planet positions could not be computed.</p>';
+    }
+  }
+
+  function renderTonightSummary(w) {
+    const strip = document.getElementById('sky-tonight-strip');
+    const summary = document.getElementById('sky-weather-summary');
+    if (!strip && !summary) return;
+    try {
+      const c = w.components;
+      const comp = w.composite;
+      const moonPct = Math.round((c.lunar.illumination || 0) * 100);
+      if (strip) {
+        strip.innerHTML =
+          '<article class="sky-card"><p class="sky-card__label">Moon</p><p class="sky-card__value">' + esc(c.lunar.phaseName) + '</p><p class="sky-card__sub">' + moonPct + '% lit</p></article>' +
+          '<article class="sky-card"><p class="sky-card__label">Sky mood</p><p class="sky-card__value">' + (comp.score != null ? comp.score + '/100' : '—') + '</p><p class="sky-card__sub">' + esc(comp.label) + '</p></article>' +
+          '<article class="sky-card"><p class="sky-card__label">Transits</p><p class="sky-card__value">' + (c.transits.basis === 'natal' ? 'Personal' : 'General') + '</p><p class="sky-card__sub">' + (c.transits.basis === 'natal' ? 'Weighed against your chart' : 'Add birth details to personalise') + '</p></article>';
+      }
+      if (summary) {
+        summary.innerHTML =
+          '<p class="sky-weather-summary__label">Today in one sentence</p>' +
+          '<p class="sky-weather-summary__text">' + esc(comp.summary) + '</p>' +
+          (comp.provenance ? '<p class="sky-weather-summary__prov">' + esc(comp.provenance) + '</p>' : '');
+      }
+    } catch (e) {
+      if (strip) strip.innerHTML = '<p class="sky-panel__empty">Tonight summary unavailable.</p>';
+    }
+  }
+
   async function renderWeather() {
     const out = document.getElementById('weather-out');
     try {
       const natal = event_ ? natalFor(event_) : null;
       const w = await window.FieldWeather.assemble(natal, new Date());
+      renderTonightSummary(w);
       const c = w.components;
 
       const comp = w.composite;
@@ -1324,10 +1410,41 @@
   // Rendered here (not in an inline page script) so it uses the event's real
   // IANA timezone + birthplace via natalFor(), and runs for the example event.
 
+  function renderBigThree(raw) {
+    const el = document.getElementById('natal-big-three');
+    if (!el || !raw || !E()) return;
+    const sun = raw.positions && raw.positions.sun;
+    const moon = raw.positions && raw.positions.moon;
+    const risingSign = Number.isFinite(raw.ascendant) ? E().signOf(raw.ascendant) : null;
+    const cells = [];
+    if (sun) {
+      cells.push(
+        '<article class="sky-big-three__cell"><span class="sky-big-three__glyph">☉</span>' +
+        '<h3 class="sky-big-three__name">Sun in ' + esc(sun.sign) + '</h3>' +
+        '<p class="sky-big-three__hint">' + BIG_THREE_HINT.Sun + '</p></article>'
+      );
+    }
+    if (moon) {
+      cells.push(
+        '<article class="sky-big-three__cell"><span class="sky-big-three__glyph">☽</span>' +
+        '<h3 class="sky-big-three__name">Moon in ' + esc(moon.sign) + '</h3>' +
+        '<p class="sky-big-three__hint">' + BIG_THREE_HINT.Moon + '</p></article>'
+      );
+    }
+    if (risingSign) {
+      cells.push(
+        '<article class="sky-big-three__cell"><span class="sky-big-three__glyph">↑</span>' +
+        '<h3 class="sky-big-three__name">Rising in ' + esc(risingSign) + '</h3>' +
+        '<p class="sky-big-three__hint">' + BIG_THREE_HINT.Rising + '</p></article>'
+      );
+    }
+    el.innerHTML = cells.join('');
+  }
+
   function renderNatalSignature() {
-    const sig = document.getElementById('sec-natal-signature');
+    const your = document.getElementById('sky-your');
     const grid = document.getElementById('natal-sig-grid');
-    if (!sig || !grid || !event_) return;
+    if (!grid || !event_) return;
 
     const sumDigits = n => String(Math.abs(n)).split('').reduce((a, d) => a + parseInt(d, 10), 0);
     const reduce = n => { while (n > 9 && n !== 11 && n !== 22 && n !== 33) n = sumDigits(n); return n; };
@@ -1341,7 +1458,7 @@
     const link = document.getElementById('natal-lifepath-link');
     if (link) {
       link.href = 'lifepath.html?date=' + event_.dt.split('T')[0];
-      link.textContent = '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path ' + lp + ' — ' + title + ' →';
+      link.textContent = 'Life Path ' + lp + ' — ' + title + ' →';
     }
 
     const items = [];
@@ -1376,7 +1493,10 @@
       '</div>'
     );
     grid.innerHTML = items.join('');
-    sig.removeAttribute('hidden');
+    renderBigThree(raw);
+    if (your) your.removeAttribute('hidden');
+    const deep = document.getElementById('sky-your-deep');
+    if (deep) deep.removeAttribute('hidden');
   }
 
   // ── Activation ────────────────────────────────────────────────────────────
@@ -1384,27 +1504,29 @@
   function activate() {
     if (!event_) return;
     document.getElementById('ev-status').textContent =
-      `Event set: ${event_.dt.replace('T', ' · ')} · ${event_.city}`;
+      'Personalised for ' + event_.dt.replace('T', ' · ') + ' · ' + event_.city;
     document.getElementById('ev-datetime').value = event_.dt;
     if (event_.city && !cityIn.value) cityIn.value = event_.city;
     ['sec-lightcone', 'sec-zenith', 'sec-echo', 'sec-daimon'].forEach(id => {
-      document.getElementById(id).hidden = false;
+      const el = document.getElementById(id);
+      if (el) el.hidden = false;
     });
     renderLightCone();
     renderZenith();
     withDaimon(renderDaimonIdentity).catch(() => {});
     renderNatalSignature();
-    renderWeather();   // re-render personalised
+    renderWeather();
   }
 
   function boot() {
     event_ = loadEvent();
+    renderTonightPlanets();
     renderFrame('tropical');
     initTimeTravel();
     wireZenithCardBtn();
     wireDailySkyCardBtn();
-    if (event_) activate();   // activate() renders the personalised weather
-    else renderWeather();     // no event yet — show the generic sky weather
+    if (event_) activate();
+    else renderWeather();
   }
 
   function scheduleBoot() {
@@ -1413,7 +1535,8 @@
       boot();
       return;
     }
-    const target = document.getElementById('sec-clock')
+    const target = document.getElementById('sky-tonight')
+      || document.getElementById('sec-clock')
       || document.querySelector('.instrument-section');
     if (!target || !('IntersectionObserver' in window)) {
       boot();
