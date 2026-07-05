@@ -1167,3 +1167,49 @@
       min-height: 1.25rem;
     }
 
+    /* ── v625 daily-flow redesign — LIST-FIRST, READING-FIRST ────────────────
+       The sign grid is now the primary control at the top of the hero; the 3D
+       dial floats BELOW the reading via flex order (grid → reading → dial).
+       Every hero element shares one .container parent, so order is safe and
+       predictable. align-items stays stretch (children keep full width as before);
+       the dial gets align-self:center so it stays centred at its capped size. */
+    .sphere-hero .container { display: flex; flex-direction: column; }
+    .sphere-hero .container > * { order: 5; }              /* dial's sky headline / legend / sky-board default here, just under the dial */
+    .sphere-hero .container > .sphere-hero__header { order: 0; }
+    .sphere-hero .container > #sign-picker-primary       { order: 1; }
+    .sphere-hero .container > #sign-reading-panel        { order: 2; }
+    .sphere-hero .container > #sphere-wrap                { order: 3; align-self: center; }
+    .sphere-hero .container > .sphere-controls           { order: 4; }
+    .sphere-hero .container > .sphere-ctas               { order: 9; }
+
+    /* Primary sign picker — the obvious, expected control, list-first */
+    .sign-picker-primary { margin: 0 0 1.4rem; }
+    .sign-picker-primary__lead {
+      text-align: center;
+      font-size: 0.98rem;
+      letter-spacing: 0.01em;
+      color: var(--color-silver, #C8D0E8);
+      margin: 0 0 0.9rem;
+    }
+    /* Dial intro — sits between the reading (order 2) and the dial (order 3);
+       same order as the dial, placed just before it in the DOM so it wins the tie. */
+    .sphere-hero .container > #dial-intro { order: 3; }
+    .dial-intro {
+      text-align: center;
+      margin: 2.25rem auto 0.75rem;
+      max-width: 40rem;
+    }
+    .dial-intro__label {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.15rem;
+      letter-spacing: 0.02em;
+      color: var(--color-gold, #C2A05E);
+      margin: 0 0 0.35rem;
+    }
+    .dial-intro__sub {
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--color-silver-dim, #8a93a8);
+      margin: 0;
+    }
+

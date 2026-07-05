@@ -163,10 +163,102 @@
       <div class="container">
         <div class="sphere-hero__header">
           <p class="hero__eyebrow" id="today-date-display" aria-live="polite">Updated Daily at Midnight UTC</p>
-          <h1 id="page-title">Today's sky, still moving</h1>
-          <p class="sphere-hero__sub">Seven planets in their real positions right now &mdash; computed live, never cached. Pick your sign on the dial for today's reading.</p>
+          <h1 id="page-title">Your horoscope today</h1>
+          <p class="sphere-hero__sub">Pick your sign below &mdash; today's reading is computed live from where the planets really are right now.</p>
           <p class="sphere-hero__sub" style="margin-top:var(--space-2);">This is a real reading of today&rsquo;s sky &mdash; the actual <abbr class="ap-gloss" title="Transits — where the planets are in the sky today, and the angles they make to your chart right now">transits</abbr> against the live planets, not a generic Sun-sign column written weeks ahead.</p>
           <p style="margin-top:var(--space-3);"><a href="why.html" class="sphere-hero__badge-link"><span class="ap-badge">Real transits — not generic Sun-sign filler</span></a></p>
+        </div>
+
+        <!-- ============================================================
+             PRIMARY SIGN PICKER — list-first (v625 daily-flow redesign).
+             The obvious, expected control: 12 signs, always visible, at the
+             top. Tap a sign → reading opens below (scrollIntoView). The 3D
+             dial stays right beneath the reading as a beautiful secondary
+             (floated there via flex order on .sphere-hero__stack).
+        ============================================================ -->
+        <div class="sign-picker-primary" id="sign-picker-primary">
+          <p class="sign-picker-primary__lead">Tap your sign for today&rsquo;s reading</p>
+          <div class="sign-grid ap-stagger-in" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
+            <button class="sign-card" data-sign="aries" data-element="fire" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Aries</span>
+              <span class="sign-card__dates">Mar 21 – Apr 19</span>
+              <span class="sign-card__element-badge" data-element="fire">Fire</span>
+            </button>
+            <button class="sign-card" data-sign="taurus" data-element="earth" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:taurus" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Taurus</span>
+              <span class="sign-card__dates">Apr 20 – May 20</span>
+              <span class="sign-card__element-badge" data-element="earth">Earth</span>
+            </button>
+            <button class="sign-card" data-sign="gemini" data-element="air" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:gemini" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Gemini</span>
+              <span class="sign-card__dates">May 21 – Jun 20</span>
+              <span class="sign-card__element-badge" data-element="air">Air</span>
+            </button>
+            <button class="sign-card" data-sign="cancer" data-element="water" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:cancer" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Cancer</span>
+              <span class="sign-card__dates">Jun 21 – Jul 22</span>
+              <span class="sign-card__element-badge" data-element="water">Water</span>
+            </button>
+            <button class="sign-card" data-sign="leo" data-element="fire" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:leo" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Leo</span>
+              <span class="sign-card__dates">Jul 23 – Aug 22</span>
+              <span class="sign-card__element-badge" data-element="fire">Fire</span>
+            </button>
+            <button class="sign-card" data-sign="virgo" data-element="earth" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:virgo" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Virgo</span>
+              <span class="sign-card__dates">Aug 23 – Sep 22</span>
+              <span class="sign-card__element-badge" data-element="earth">Earth</span>
+            </button>
+            <button class="sign-card" data-sign="libra" data-element="air" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:libra" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Libra</span>
+              <span class="sign-card__dates">Sep 23 – Oct 22</span>
+              <span class="sign-card__element-badge" data-element="air">Air</span>
+            </button>
+            <button class="sign-card" data-sign="scorpio" data-element="water" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:scorpio" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Scorpio</span>
+              <span class="sign-card__dates">Oct 23 – Nov 21</span>
+              <span class="sign-card__element-badge" data-element="water">Water</span>
+            </button>
+            <button class="sign-card" data-sign="sagittarius" data-element="fire" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:sagittarius" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Sagittarius</span>
+              <span class="sign-card__dates">Nov 22 – Dec 21</span>
+              <span class="sign-card__element-badge" data-element="fire">Fire</span>
+            </button>
+            <button class="sign-card" data-sign="capricorn" data-element="earth" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:capricorn" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Capricorn</span>
+              <span class="sign-card__dates">Dec 22 – Jan 19</span>
+              <span class="sign-card__element-badge" data-element="earth">Earth</span>
+            </button>
+            <button class="sign-card" data-sign="aquarius" data-element="air" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aquarius" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Aquarius</span>
+              <span class="sign-card__dates">Jan 20 – Feb 18</span>
+              <span class="sign-card__element-badge" data-element="air">Air</span>
+            </button>
+            <button class="sign-card" data-sign="pisces" data-element="water" aria-pressed="false">
+              <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:pisces" data-seal-lg aria-hidden="true"></span>
+              <span class="sign-card__name">Pisces</span>
+              <span class="sign-card__dates">Feb 19 – Mar 20</span>
+              <span class="sign-card__element-badge" data-element="water">Water</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dial intro — the 3D dial is now a secondary "explore" layer below the
+             reading (floated here via flex order). This label gives it context. -->
+        <div class="dial-intro" id="dial-intro">
+          <p class="dial-intro__label">Explore the live sky</p>
+          <p class="dial-intro__sub">Where the seven planets really are right now &mdash; drag to spin, or tap the centre star to lay your own chart over it.</p>
         </div>
 
         <!-- The 3D canvas -->
@@ -218,7 +310,6 @@
           </p>
           <button type="button" class="btn btn--gold btn--sm" id="sphere-spin-mine">Go to my sign</button>
           <button type="button" class="btn btn--outline btn--sm" id="sphere-spin-random">Explore a sign</button>
-          <span class="sphere-hint sphere-hint--pulse">Tap the centre star to overlay your birth chart on the dial</span>
         </div>
 
         <!-- Reading dock — directly under dial controls -->
@@ -374,93 +465,11 @@
     <!-- ============================================================
          SIGN GRID (collapsible fallback)
     ============================================================ -->
-    <section class="section" aria-labelledby="sign-grid-heading">
+    <section class="section" aria-labelledby="sign-guides-heading">
       <div class="container">
-        <div class="sign-grid-toggle-row">
-          <h2 class="section__title" id="sign-grid-heading">Prefer a list?</h2>
-          <button class="sign-grid-toggle" id="sign-grid-toggle" aria-expanded="false" aria-controls="sign-grid-wrap">
-            <span class="sgt-show">▾ Show sign grid</span>
-            <span class="sgt-hide" style="display:none">▴ Hide sign grid</span>
-          </button>
-        </div>
-        <div id="sign-grid-wrap" hidden>
-
-        <div class="sign-grid ap-stagger-in" id="sign-grid" role="group" aria-label="Zodiac sign horoscope cards">
-          <button class="sign-card" data-sign="aries" data-element="fire" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Aries</span>
-            <span class="sign-card__dates">Mar 21 – Apr 19</span>
-            <span class="sign-card__element-badge" data-element="fire">Fire</span>
-          </button>
-          <button class="sign-card" data-sign="taurus" data-element="earth" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:taurus" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Taurus</span>
-            <span class="sign-card__dates">Apr 20 – May 20</span>
-            <span class="sign-card__element-badge" data-element="earth">Earth</span>
-          </button>
-          <button class="sign-card" data-sign="gemini" data-element="air" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:gemini" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Gemini</span>
-            <span class="sign-card__dates">May 21 – Jun 20</span>
-            <span class="sign-card__element-badge" data-element="air">Air</span>
-          </button>
-          <button class="sign-card" data-sign="cancer" data-element="water" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:cancer" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Cancer</span>
-            <span class="sign-card__dates">Jun 21 – Jul 22</span>
-            <span class="sign-card__element-badge" data-element="water">Water</span>
-          </button>
-          <button class="sign-card" data-sign="leo" data-element="fire" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:leo" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Leo</span>
-            <span class="sign-card__dates">Jul 23 – Aug 22</span>
-            <span class="sign-card__element-badge" data-element="fire">Fire</span>
-          </button>
-          <button class="sign-card" data-sign="virgo" data-element="earth" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:virgo" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Virgo</span>
-            <span class="sign-card__dates">Aug 23 – Sep 22</span>
-            <span class="sign-card__element-badge" data-element="earth">Earth</span>
-          </button>
-          <button class="sign-card" data-sign="libra" data-element="air" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:libra" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Libra</span>
-            <span class="sign-card__dates">Sep 23 – Oct 22</span>
-            <span class="sign-card__element-badge" data-element="air">Air</span>
-          </button>
-          <button class="sign-card" data-sign="scorpio" data-element="water" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:scorpio" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Scorpio</span>
-            <span class="sign-card__dates">Oct 23 – Nov 21</span>
-            <span class="sign-card__element-badge" data-element="water">Water</span>
-          </button>
-          <button class="sign-card" data-sign="sagittarius" data-element="fire" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:sagittarius" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Sagittarius</span>
-            <span class="sign-card__dates">Nov 22 – Dec 21</span>
-            <span class="sign-card__element-badge" data-element="fire">Fire</span>
-          </button>
-          <button class="sign-card" data-sign="capricorn" data-element="earth" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:capricorn" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Capricorn</span>
-            <span class="sign-card__dates">Dec 22 – Jan 19</span>
-            <span class="sign-card__element-badge" data-element="earth">Earth</span>
-          </button>
-          <button class="sign-card" data-sign="aquarius" data-element="air" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:aquarius" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Aquarius</span>
-            <span class="sign-card__dates">Jan 20 – Feb 18</span>
-            <span class="sign-card__element-badge" data-element="air">Air</span>
-          </button>
-          <button class="sign-card" data-sign="pisces" data-element="water" aria-pressed="false">
-            <span class="sign-card__glyph sign-card__seal" data-celestial-seal="zodiac:pisces" data-seal-lg aria-hidden="true"></span>
-            <span class="sign-card__name">Pisces</span>
-            <span class="sign-card__dates">Feb 19 – Mar 20</span>
-            <span class="sign-card__element-badge" data-element="water">Water</span>
-          </button>
-        </div>
-
-        </div><!-- /#sign-grid-wrap -->
+        <!-- Primary sign grid moved to the hero (list-first). This section now
+             holds only the crawlable deep-dive guide links. -->
+        <h2 class="section__title" id="sign-guides-heading" style="text-align:center;">Explore every sign in depth</h2>
 
         <!-- Crawlable deep-dive guides -->
         <div role="group" aria-label="Zodiac sign guides" style="margin-top:var(--space-10);text-align:center;">
