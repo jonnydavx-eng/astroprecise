@@ -608,8 +608,19 @@ window.APAIAssistant = (function () {
     return activeChartGetter();
   }
 
+  function ephemerisChartGetter() {
+    var saved = activeChartGetter();
+    if (saved && chartHasPlacements(saved)) return saved;
+    if (window.APInstrument && typeof APInstrument.chartForAI === 'function') {
+      var inst = APInstrument.chartForAI();
+      if (inst && chartHasPlacements(inst)) return inst;
+    }
+    return saved;
+  }
+
   var PANEL_GETTERS = {
     'compatibility-ai-panel': compatibilityChartGetter,
+    'ephemeris-ai-panel': ephemerisChartGetter,
   };
 
   var AUTO_PANEL_IDS = [
@@ -648,6 +659,13 @@ window.APAIAssistant = (function () {
       }
     }, 100);
   }
+
+  document.addEventListener('ap-instrument-activated', function () {
+    var el = document.getElementById('ephemeris-ai-panel');
+    if (el && el.dataset.apAiMounted) {
+      el._apAiChartGetter = ephemerisChartGetter;
+    }
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bootAutoMount);

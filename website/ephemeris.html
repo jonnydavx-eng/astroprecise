@@ -40,7 +40,7 @@
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
-    "description": "A precision ephemeris and cosmic instrument — planetary hours, natal signature, field weather, and live sky data computed locally.",
+    "description": "What's in the sky tonight — Moon, planets, and today's sky mood. Personalise with your birth details for Sun, Moon, Rising, and deeper readings. Computed locally.",
     "isPartOf": {
       "@type": "WebSite",
       "name": "Astro Precise",
@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/ephemeris-critical.css" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ephemeris-page.css?v=612" />
+  <link rel="stylesheet" href="css/ephemeris-page.css?v=613" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=597" />
   <script src="js/defer-page-css.js" defer></script>
@@ -175,7 +175,7 @@
     <nav class="sky-jump-nav" id="sky-jump-nav" aria-label="Sky page sections">
       <div class="instrument-wrap sky-jump-nav__inner">
         <a href="#sky-tonight" class="sky-jump-nav__link">Tonight</a>
-        <a href="#sky-your" class="sky-jump-nav__link">Your sky</a>
+        <a href="#ev-personalize-toggle" class="sky-jump-nav__link" id="sky-jump-your">Add your sky</a>
         <a href="#sky-explore" class="sky-jump-nav__link">Go deeper</a>
       </div>
     </nav>
@@ -224,40 +224,6 @@
         <div id="ephemeris-ai-panel" hidden aria-label="Optional sky insight"></div>
       </div>
     </section>
-
-    <details class="sky-fold instrument-section" id="sec-clock-wrap" open>
-      <summary class="sky-fold__summary">
-        <span class="instrument-eyebrow">Ancient clock</span>
-        <span class="sky-fold__title">Planetary hour right now</span>
-        <span class="sky-fold__hint">Tap the wheel for hermetic lore</span>
-      </summary>
-    <section class="instrument-section sky-fold__body" id="sec-clock">
-      <div class="instrument-wrap">
-        <h2 class="instrument-title" style="font-size:1.25rem;">Which planet rules this hour?</h2>
-        <p class="instrument-lede instrument-lede--short">
-          An old way to read the day: each hour belongs to a planet. The wheel shows which ruler is active now.
-        </p>
-
-        <div class="glass-card glass-card--gold-rim engraved-plate instrument-panel instrument-panel--gold-rim" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
-          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(194, 160, 94,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
-            <defs>
-              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C2A05E"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
-            </defs>
-            <!-- Rim -->
-            <circle cx="230" cy="230" r="215" fill="none" stroke="#C2A05E" stroke-width="2.5" opacity="0.4"/>
-            <!-- Sectors + labels drawn/enhanced by JS below for live current-hour + click lore -->
-          </svg>
-          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
-          <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
-            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(194, 160, 94,0.35);color:#C2A05E;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
-            <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
-          </div>
-          <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore • Sunrise-based unequal hours</div>
-        </div>
-
-      </div>
-    </section>
-    </details>
 
     <div class="instrument-wrap sky-your-deep" id="sky-your-deep" hidden>
     <!-- ═══ LIGHT-CONE (birth) ═══ -->
@@ -369,8 +335,38 @@
       <div class="instrument-wrap">
         <p class="instrument-eyebrow">Advanced</p>
         <h2 class="instrument-title" id="sky-explore-title" style="font-size:1.5rem;">Go deeper into the sky</h2>
-        <p class="instrument-lede instrument-lede--short">Space weather, sidereal frames, quantum draw, and time travel &mdash; for when you want the full instrument.</p>
+        <p class="instrument-lede instrument-lede--short">Planetary hours, space weather, sidereal frames, and more &mdash; for when you want the full instrument.</p>
       </div>
+
+    <details class="sky-fold" id="sec-clock-wrap">
+      <summary class="sky-fold__summary sky-fold__summary--inset">
+        <span class="sky-fold__title">Planetary hour right now</span>
+        <span class="sky-fold__hint">An old clock &mdash; tap the wheel for hermetic lore</span>
+      </summary>
+    <section class="instrument-section sky-fold__body" id="sec-clock">
+      <div class="instrument-wrap">
+        <h2 class="instrument-title" style="font-size:1.25rem;">Which planet rules this hour?</h2>
+        <p class="instrument-lede instrument-lede--short">
+          An old way to read the day: each hour belongs to a planet. The wheel shows which ruler is active now.
+        </p>
+
+        <div class="glass-card glass-card--gold-rim engraved-plate instrument-panel instrument-panel--gold-rim" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
+          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(194, 160, 94,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
+            <defs>
+              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C2A05E"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
+            </defs>
+            <circle cx="230" cy="230" r="215" fill="none" stroke="#C2A05E" stroke-width="2.5" opacity="0.4"/>
+          </svg>
+          <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
+          <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
+            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(194, 160, 94,0.35);color:#C2A05E;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
+            <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
+          </div>
+          <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore &middot; Sunrise-based unequal hours</div>
+        </div>
+      </div>
+    </section>
+    </details>
 
     <details class="sky-fold">
       <summary class="sky-fold__summary sky-fold__summary--inset">
@@ -614,89 +610,7 @@
   <script src="js/ap-nav-model.js"></script>
   <script src="js/app.js" defer></script>
   <script src="js/ephemeris-lazy-modules.js" defer></script>
-  <script>
-  /* Natal signature — populates when event is set via the Instrument form */
-  (function () {
-    function sumDigits(n) {
-      return String(Math.abs(n)).split('').reduce(function(a,d){return a+parseInt(d,10);},0);
-    }
-    function toNumeroNum(n) {
-      while (n > 9 && n !== 11 && n !== 22 && n !== 33) n = sumDigits(n);
-      return n;
-    }
-    function calcLifePath(y,m,d) {
-      return toNumeroNum(toNumeroNum(m)+toNumeroNum(d)+toNumeroNum(sumDigits(y)));
-    }
-    var LP_TITLES={1:'Pioneer',2:'Diplomat',3:'Creator',4:'Builder',5:'Explorer',6:'Nurturer',7:'Seeker',8:'Achiever',9:'Humanitarian',11:'Illuminator',22:'Master Builder',33:'Master Teacher'};
 
-    function tryWireEventSet() {
-      var btn = document.getElementById('ev-set');
-      if (!btn) { setTimeout(tryWireEventSet, 300); return; }
-      btn.addEventListener('click', function () {
-        setTimeout(function () {
-          var sig = document.getElementById('sec-natal-signature');
-          var dtInput = document.getElementById('ev-datetime');
-          if (!sig || !dtInput || !dtInput.value) return;
-          var dt = new Date(dtInput.value);
-          if (isNaN(dt.getTime())) return;
-          var y = dt.getFullYear(), m = dt.getMonth()+1, d = dt.getDate();
-          var lp = calcLifePath(y,m,d);
-          var title = LP_TITLES[lp] || '';
-          // Life Path link
-          var link = document.getElementById('natal-lifepath-link');
-          if (link) {
-            var iso = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-            link.href = 'lifepath.html?date=' + iso;
-            link.textContent = '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path ' + lp + ' — ' + title + ' →';
-          }
-          // Compact planet grid
-          var grid = document.getElementById('natal-sig-grid');
-          if (grid) {
-            var E = window.AstroEphemeris;
-            var items = [];
-            if (E && typeof E.calculateNatalChart === 'function') {
-              try {
-                var raw = E.calculateNatalChart(y,m,d,dt.getUTCHours()||12,dt.getUTCMinutes()||0,0,0);
-                if (raw && raw.positions) {
-                  var PLANETS = [
-                    {k:'sun',g:'☉',n:'Sun'},{k:'moon',g:'☽',n:'Moon'},
-                    {k:'mercury',g:'☿',n:'Mercury'},{k:'venus',g:'♀',n:'Venus'},
-                    {k:'mars',g:'♂',n:'Mars'},{k:'jupiter',g:'♃',n:'Jupiter'}
-                  ];
-                  PLANETS.forEach(function(p) {
-                    var pos = raw.positions[p.k];
-                    if (!pos) return;
-                    items.push(
-                      '<div class="sig-cell">' +
-                        '<span class="sig-cell__glyph">' + p.g + '</span>' +
-                        '<span class="sig-cell__label">' + p.n + '</span>' +
-                        '<span class="sig-cell__value">' + (pos.sign||'?') + ' ' + Math.floor(pos.degree||0) + '°</span>' +
-                      '</div>'
-                    );
-                  });
-                }
-              } catch(e) {}
-            }
-            items.push(
-              '<div class="sig-cell" style="border-color:rgba(194, 160, 94,0.22);background:rgba(194, 160, 94,0.06);">' +
-                '<span class="sig-cell__glyph eng-star-mark" style="color:var(--gold);"></span>' +
-                '<span class="sig-cell__label">Life Path</span>' +
-                '<span class="sig-cell__value" style="color:var(--gold-pale);">' + lp + ' — ' + title + '</span>' +
-              '</div>'
-            );
-            grid.innerHTML = items.join('');
-          }
-          sig.removeAttribute('hidden');
-        }, 600);
-      });
-    }
-    /* Disabled — the natal signature is now rendered by js/instrument.js
-       (renderNatalSignature) with the correct timezone + birthplace, and for the
-       example event too. This inline path duplicated the #ev-set handler and
-       computed positions in the wrong timezone with lat/lon 0,0. */
-    void tryWireEventSet;
-  })();
-  </script>
   <script>
   // ═══ THE CLOCK OF THE SPHERES — planetary hours wheel ═══
   // True unequal hours (sunrise→sunset twelfths) when the Instrument's saved

@@ -163,7 +163,7 @@
     }
     event_ = { dt, lat: pickedCity.lat, lon: pickedCity.lon, tz: pickedCity.tz, city: pickedCity.name };
     saveEvent(event_);
-    activate();
+    activate({ scrollToYour: true });
   });
 
   // Example event so first-time visitors see the instrument working immediately.
@@ -180,7 +180,7 @@
     if (dtIn) dtIn.value = event_.dt;
     if (cityInEl) cityInEl.value = 'Brooklyn, New York';
     pickedCity = { lat: event_.lat, lon: event_.lon, tz: event_.tz, name: 'Brooklyn' };
-    activate();
+    activate({ scrollToYour: true });
     document.getElementById('ev-status').textContent =
       'Example loaded — Carl Sagan, 9 Nov 1934, Brooklyn. Replace with your own details any time.';
   });
@@ -1096,7 +1096,7 @@
       if (strip) {
         strip.innerHTML =
           '<article class="sky-card"><p class="sky-card__label">Moon</p><p class="sky-card__value">' + esc(c.lunar.phaseName) + '</p><p class="sky-card__sub">' + moonPct + '% lit</p></article>' +
-          '<article class="sky-card"><p class="sky-card__label">Sky mood</p><p class="sky-card__value">' + (comp.score != null ? comp.score + '/100' : '—') + '</p><p class="sky-card__sub">' + esc(comp.label) + '</p></article>' +
+          '<article class="sky-card"><p class="sky-card__label">Sky mood <a href="#sec-weather" class="sky-card__gloss" title="A composite score from the Moon, transits, and space weather">what&rsquo;s this?</a></p><p class="sky-card__value">' + (comp.score != null ? comp.score + '/100' : '—') + '</p><p class="sky-card__sub">' + esc(comp.label) + '</p></article>' +
           '<article class="sky-card"><p class="sky-card__label">Transits</p><p class="sky-card__value">' + (c.transits.basis === 'natal' ? 'Personal' : 'General') + '</p><p class="sky-card__sub">' + (c.transits.basis === 'natal' ? 'Weighed against your chart' : 'Add birth details to personalise') + '</p></article>';
       }
       if (summary) {
@@ -1501,21 +1501,76 @@
 
   // ── Activation ────────────────────────────────────────────────────────────
 
-  function activate() {
+  function updateJumpNav() {
+    const link = document.getElementById('sky-jump-your');
+    const your = document.getElementById('sky-your');
+    if (!link) return;
+    if (your && !your.hidden) {
+      link.href = '#sky-your';
+      link.textContent = 'Your sky';
+    } else {
+      link.href = '#ev-personalize-toggle';
+      link.textContent = 'Add your sky';
+    }
+  }
+
+  function chartForAI() {
+    if (!event_ || !E()) return null;
+    const raw = natalFor(event_);
+    if (!raw || !raw.positions) return null;
+    const pos = {};
+    const MAP = {
+      sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus',
+      mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn',
+    };
+    Object.keys(MAP).forEach(k => {
+      const p = raw.positions[k];
+      if (p) pos[MAP[k]] = { lon: p.lon, sign: p.sign, degree: p.degree };
+    });
+    const risingSign = Number.isFinite(raw.ascendant) ? E().signOf(raw.ascendant) : null;
+    const [birthDate, birthTime] = event_.dt.split('T');
+    return {
+      name: event_.city || 'Your birth sky',
+      birthDate,
+      birthTime: birthTime || '',
+      city: event_.city,
+      lat: event_.lat,
+      lon: event_.lon,
+      tz: event_.tz,
+      risingSign,
+      sunSign: raw.positions.sun && raw.positions.sun.sign,
+      moonSign: raw.positions.moon && raw.positions.moon.sign,
+      positions: pos,
+    };
+  }
+
+  function activate(opts) {
     if (!event_) return;
     document.getElementById('ev-status').textContent =
       'Personalised for ' + event_.dt.replace('T', ' · ') + ' · ' + event_.city;
     document.getElementById('ev-datetime').value = event_.dt;
     if (event_.city && !cityIn.value) cityIn.value = event_.city;
+    renderNatalSignature();
+    renderWeather();
     ['sec-lightcone', 'sec-zenith', 'sec-echo', 'sec-daimon'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.hidden = false;
     });
-    renderLightCone();
-    renderZenith();
+    try { renderLightCone(); } catch (e) {}
+    try { renderZenith(); } catch (e) {}
     withDaimon(renderDaimonIdentity).catch(() => {});
-    renderNatalSignature();
-    renderWeather();
+    updateJumpNav();
+    if (opts && opts.scrollToYour) {
+      const your = document.getElementById('sky-your');
+      if (your) {
+        requestAnimationFrame(() => {
+          your.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+    try {
+      window.dispatchEvent(new CustomEvent('ap-instrument-activated'));
+    } catch (e) {}
   }
 
   function boot() {
@@ -1525,6 +1580,7 @@
     initTimeTravel();
     wireZenithCardBtn();
     wireDailySkyCardBtn();
+    updateJumpNav();
     if (event_) activate();
     else renderWeather();
   }
@@ -1532,6 +1588,10 @@
   function scheduleBoot() {
     const hash = (location.hash || '').replace(/^#/, '');
     if (hash && hash !== 'oracle') {
+      boot();
+      return;
+    }
+    if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) {
       boot();
       return;
     }
@@ -1555,7 +1615,10 @@
       }
     }, { rootMargin: '0px 0px 200px 0px', threshold: 0 });
     io.observe(target);
+    setTimeout(start, 2500);
   }
+
+  window.APInstrument = { chartForAI, getEvent: () => event_ };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleBoot);
   else scheduleBoot();
