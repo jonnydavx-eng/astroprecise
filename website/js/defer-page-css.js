@@ -69,3 +69,33 @@
     window.addEventListener('load', function () { setTimeout(load, 30000); }, { once: true });
   };
 })();
+
+/* One-time gentle reload when an UPDATED service worker takes control
+   mid-session (sw.js uses skipWaiting + clients.claim): without this, the
+   page keeps running the previous version's CSS/JS against the new cache —
+   the mobile "flashes of old version". Guards: never on first install (no
+   prior controller), never twice, never while the visitor is typing or has
+   unsaved form input. Same flag-guarded block lives in app.js, index.html
+   and ap-page-boot.js — window.__apSwReloadGuard makes overlaps a no-op. */
+(function () {
+  if (!('serviceWorker' in navigator) || navigator.webdriver) return;
+  if (window.__apSwReloadGuard) return;
+  window.__apSwReloadGuard = 1;
+  var hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (!hadController) { hadController = true; return; }
+    if (window.__apSwReloaded) return;
+    var el = document.activeElement;
+    if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+    var dirty = false;
+    try {
+      var fields = document.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]), textarea');
+      for (var i = 0; i < fields.length; i++) {
+        if (fields[i].value !== fields[i].defaultValue) { dirty = true; break; }
+      }
+    } catch (err) {}
+    if (dirty) return;
+    window.__apSwReloaded = 1;
+    location.reload();
+  });
+})();

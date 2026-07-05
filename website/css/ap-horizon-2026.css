@@ -3539,6 +3539,11 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
     order: 6;
     justify-content: center;
   }
+  /* Without an explicit order these default to 0 and jump ABOVE the headline on
+     mobile (the funnel bridge appearing before the pitch). Keep them last,
+     matching the desktop column order: trust list → today chip → spine bridge. */
+  .ap-award-511 #heroChapter .hero-copy > .hero-today-chip { order: 7; }
+  .ap-award-511 #heroChapter .hero-copy > .hero-spine-bridge { order: 8; }
 }
 
 /* ═══ v571 — chapter consolidation + unified tile system ═══ */
