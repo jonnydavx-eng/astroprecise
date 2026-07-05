@@ -11,7 +11,12 @@ window.APDailyBridge = (function () {
   }
 
   function buildChartFromSaved(chart) {
-    if (!chart || !window.AstroProfile || !AstroProfile.buildChartData) return null;
+    if (!chart) return null;
+    if (window.AstroProfile && typeof AstroProfile.hydrateChartFromSaved === 'function') {
+      var hydrated = AstroProfile.hydrateChartFromSaved(chart);
+      if (hydrated) return hydrated;
+    }
+    if (!window.AstroProfile || !AstroProfile.buildChartData) return null;
     if (!chart.birthDate && !chart.date) return null;
     try {
       return AstroProfile.buildChartData({

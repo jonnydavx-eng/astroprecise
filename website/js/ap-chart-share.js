@@ -66,7 +66,7 @@ window.APChartShare = (function () {
     var sun = planetSign(chart, 'Sun');
     var moon = planetSign(chart, 'Moon');
     var rising = chart.risingSign || '—';
-    return (chart.name || 'Chart') + ': Sun ' + sun + ' · Moon ' + moon + ' · Rising ' + rising;
+    return (chart.name || 'Chart') + ': Sun ' + (sun || '—') + ' · Moon ' + (moon || '—') + ' · Rising ' + rising;
   }
 
   function ensureSaveConfirmation(container) {

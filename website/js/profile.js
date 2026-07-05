@@ -355,6 +355,63 @@ window.AstroProfile = (() => {
     };
   }
 
+  const SAVE_POSITION_KEYS = [
+    'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn',
+    'Uranus', 'Neptune', 'Pluto', 'Ascendant', 'Midheaven', 'NorthNode',
+  ];
+
+  /** Slim positions blob for localStorage (ap-v608+). */
+  function packPositionsForSave(positions) {
+    if (!positions) return null;
+    const out = {};
+    for (const k of SAVE_POSITION_KEYS) {
+      const p = positions[k];
+      if (!p) continue;
+      out[k] = {
+        lon: p.lon,
+        sign: p.sign || null,
+        degree: p.degree != null ? p.degree : null,
+        retrograde: !!p.retrograde,
+      };
+    }
+    return Object.keys(out).length ? out : null;
+  }
+
+  /** Rebuild AI/shop chart object from a saved row without ephemeris. */
+  function hydrateChartFromSaved(row) {
+    if (!row) return null;
+    const base = {
+      name: row.name,
+      birthDate: row.birthDate,
+      birthTime: row.birthTime,
+      birthCity: row.birthCity || row.city,
+      city: row.city || row.birthCity,
+      lat: row.lat,
+      lon: row.lon,
+      tz: row.tz,
+      houseSystem: row.houseSystem,
+      sunSign: row.sunSign,
+      moonSign: row.moonSign,
+      risingSign: row.risingSign,
+      aspects: row.aspects || [],
+    };
+    if (!row.positions || !Object.keys(row.positions).length) return null;
+    base.positions = { ...row.positions };
+    if (base.positions.Sun && !base.positions.Sun.sign && row.sunSign) {
+      base.positions.Sun.sign = row.sunSign;
+    }
+    if (base.positions.Moon && !base.positions.Moon.sign && row.moonSign) {
+      base.positions.Moon.sign = row.moonSign;
+    }
+    if (!base.positions.Sun && row.sunSign) {
+      base.positions.Sun = { sign: row.sunSign };
+    }
+    if (!base.positions.Moon && row.moonSign) {
+      base.positions.Moon = { sign: row.moonSign };
+    }
+    return base;
+  }
+
   // ── App sync (generate QR data string) ────────────────────────────────────
   function generateAppSyncData() {
     const user   = getUser();
@@ -365,6 +422,7 @@ window.AstroProfile = (() => {
   return {
     getUser, saveUser, isLoggedIn, login, register, logout, updateProfile,
     getCharts, getChart, getActiveChart, saveChart, deleteChart, buildChartData,
+    packPositionsForSave, hydrateChartFromSaved,
     chartToDashboardRow, syncChartToDashboard,
     getComparisons, saveComparison, deleteComparison,
     getPrefs, savePrefs,

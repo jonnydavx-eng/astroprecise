@@ -1556,6 +1556,9 @@ host.classList.add('is-done');
         sunSign: currentChart.positions.Sun.sign,
         moonSign: currentChart.positions.Moon.sign,
         risingSign: currentChart.risingSign,
+        positions: window.AstroProfile && AstroProfile.packPositionsForSave
+          ? AstroProfile.packPositionsForSave(currentChart.positions) : null,
+        aspects: (currentChart.aspects || []).slice(0, 16),
         engineV: 2,
       });
     } else if (window.AstroProfile) {
@@ -1572,6 +1575,9 @@ host.classList.add('is-done');
         sunSign: currentChart.positions.Sun.sign,
         moonSign: currentChart.positions.Moon.sign,
         risingSign: currentChart.risingSign,
+        positions: AstroProfile.packPositionsForSave
+          ? AstroProfile.packPositionsForSave(currentChart.positions) : null,
+        aspects: (currentChart.aspects || []).slice(0, 16),
         engineV: 2,
       });
       if (window.AstroApp) {

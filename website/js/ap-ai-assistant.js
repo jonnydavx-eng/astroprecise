@@ -58,6 +58,12 @@ window.APAIAssistant = (function () {
     return null;
   }
 
+  function chartHasPlacements(chart) {
+    if (!chart) return false;
+    if (chart.positions && Object.keys(chart.positions).length) return true;
+    return !!(chart.sunSign || chart.moonSign);
+  }
+
   function chartSummary(chart) {
     if (!chart || !chart.positions) return '';
     var lines = [];
@@ -78,7 +84,7 @@ window.APAIAssistant = (function () {
   }
 
   function deterministicExplain(chart, tone) {
-    if (!chart || !chart.positions) {
+    if (!chartHasPlacements(chart)) {
       return 'Calculate or save a chart with planetary positions first.';
     }
     tone = tone || getPrefs().tone;
@@ -91,13 +97,15 @@ window.APAIAssistant = (function () {
 
     parts.push(t.prefix + ', here is a reading of ' + (chart.name || 'this chart') + ' — computed on your device with VSOP87 precision.\n');
 
-    if (sun && sun.sign) {
-      var sunText = I && I.getPlanetInterpretation ? I.getPlanetInterpretation('Sun', sun.sign) : '';
-      parts.push('☉ Sun in ' + sun.sign + (sunText ? '\n' + sunText.split('.')[0] + '.' : '') + '\n');
+    var sunSign = (sun && sun.sign) || chart.sunSign;
+    if (sunSign) {
+      var sunText = I && I.getPlanetInterpretation ? I.getPlanetInterpretation('Sun', sunSign) : '';
+      parts.push('☉ Sun in ' + sunSign + (sunText ? '\n' + sunText.split('.')[0] + '.' : '') + '\n');
     }
-    if (moon && moon.sign) {
-      var moonText = I && I.getPlanetInterpretation ? I.getPlanetInterpretation('Moon', moon.sign) : '';
-      parts.push('☽ Moon in ' + moon.sign + (moonText ? '\n' + moonText.split('.')[0] + '.' : '') + '\n');
+    var moonSign = (moon && moon.sign) || chart.moonSign;
+    if (moonSign) {
+      var moonText = I && I.getPlanetInterpretation ? I.getPlanetInterpretation('Moon', moonSign) : '';
+      parts.push('☽ Moon in ' + moonSign + (moonText ? '\n' + moonText.split('.')[0] + '.' : '') + '\n');
     }
     if (rising) {
       parts.push('↑ Rising in ' + rising + '\nThe Ascendant colours first impressions and the lens through which you meet the world.\n');
@@ -117,7 +125,7 @@ window.APAIAssistant = (function () {
   }
 
   function deterministicAsk(chart, question) {
-    if (!chart || !chart.positions) {
+    if (!chartHasPlacements(chart)) {
       return 'Calculate a chart first — then ask about a specific placement.';
     }
     var q = (question || '').toLowerCase();
@@ -249,7 +257,7 @@ window.APAIAssistant = (function () {
   }
 
   function loadScript(src) {
-    return new Promise(function (resolve) {
+    return new Promise(function (resolve, reject) {
       if (document.querySelector('script[src="' + src + '"]')) {
         resolve();
         return;
@@ -258,7 +266,7 @@ window.APAIAssistant = (function () {
       s.src = src;
       s.defer = true;
       s.onload = function () { resolve(); };
-      s.onerror = function () { resolve(); };
+      s.onerror = function () { reject(new Error('Failed to load ' + src)); };
       document.body.appendChild(s);
     });
   }
@@ -272,7 +280,7 @@ window.APAIAssistant = (function () {
           try { reading.insight = AstroOracle.getDailyInsight(forChart.positions); } catch (e) {}
         }
         return reading;
-      });
+      }).catch(function () { return null; });
     }
     return new Promise(function (resolve) {
       function build() {
@@ -287,7 +295,8 @@ window.APAIAssistant = (function () {
       }
       loadScript('js/oracle.js')
         .then(function () { return loadScript('js/daily-transit.js'); })
-        .then(build);
+        .then(build)
+        .catch(function () { resolve(null); });
     });
   }
 
@@ -494,7 +503,7 @@ window.APAIAssistant = (function () {
 
       document.getElementById('ap-ai-generate')?.addEventListener('click', function () {
         var chart = getChart();
-        if (!chart || !chart.positions) {
+        if (!chartHasPlacements(chart)) {
           if (container.id === 'horoscope-ai-panel' && activeTab !== 'explain') {
             setOutput(horoscopeFallbackText());
             return;
@@ -521,6 +530,8 @@ window.APAIAssistant = (function () {
         var text = (document.getElementById('ap-ai-output') || {}).textContent || '';
         navigator.clipboard.writeText(text).then(function () {
           if (window.AstroApp) AstroApp.showToast('Copied', 'Insight copied to clipboard.', 'success');
+        }).catch(function () {
+          if (window.AstroApp) AstroApp.showToast('Copy failed', 'Select and copy the text manually.', 'warning');
         });
       });
 
@@ -550,6 +561,26 @@ window.APAIAssistant = (function () {
     return null;
   }
 
+  function compatPositionsFrom(c1) {
+    var raw = (c1 && c1.positions) || {};
+    var signs = {
+      Sun: c1.sunSign,
+      Moon: c1.moonSign,
+      Mercury: c1.mercurySign,
+      Venus: c1.venusSign,
+      Mars: c1.marsSign,
+    };
+    var out = {};
+    ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn'].forEach(function (k) {
+      var r = raw[k];
+      var sign = (r && r.sign) || signs[k] || null;
+      if (r || sign) {
+        out[k] = { lon: r && r.lon, sign: sign, degree: r && r.degree };
+      }
+    });
+    return out;
+  }
+
   function compatibilityChartGetter() {
     var last = window._compatLastResult;
     if (last && last.chart1) {
@@ -558,7 +589,7 @@ window.APAIAssistant = (function () {
         sunSign: last.chart1.sunSign,
         moonSign: last.chart1.moonSign,
         risingSign: last.chart1.rising,
-        positions: last.chart1.positions,
+        positions: compatPositionsFrom(last.chart1),
         synastryAspects: last.result ? last.result.synastryAspects : null,
         partnerSun: last.chart2 ? last.chart2.sunSign : null,
         partnerMoon: last.chart2 ? last.chart2.moonSign : null,
