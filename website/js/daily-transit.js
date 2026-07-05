@@ -387,7 +387,20 @@
       '.dt-rhythm__when{flex:none;min-width:5.4em;font-family:var(--font-mono,monospace);' +
       'font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-gold,#C2A05E);}' +
       '.dt-rhythm__what{color:var(--silver,#C8D0E8);}' +
-      '.dt-rhythm__note{margin:0.6rem 0 0;font-size:0.72rem;color:var(--silver-dim,#8891AA);font-style:italic;}';
+      '.dt-rhythm__note{margin:0.6rem 0 0;font-size:0.72rem;color:var(--silver-dim,#8891AA);font-style:italic;}' +
+      // v629 — honest Deep-Reading teaser (real excerpt of this chart's reading)
+      '.dt-tease--rich{margin:1.2rem 0 0;padding:1rem 1.1rem;border:1px solid rgba(194,160,94,0.22);' +
+      'border-radius:12px;background:linear-gradient(180deg,rgba(194,160,94,0.06),rgba(194,160,94,0.02));}' +
+      '.dt-tease__eyebrow{margin:0 0 0.4rem;font-family:var(--font-mono,monospace);font-size:0.62rem;' +
+      'letter-spacing:0.16em;text-transform:uppercase;color:var(--color-gold,#C2A05E);}' +
+      '.dt-tease__excerpt{margin:0 0 0.5rem;font-size:0.92rem;line-height:1.55;color:var(--white,#F8F4EE);}' +
+      '.dt-tease__lock{position:relative;margin:0 0 0.8rem;font-size:0.85rem;line-height:1.5;' +
+      'color:var(--silver-dim,#8891AA);-webkit-mask-image:linear-gradient(90deg,#000 55%,transparent);' +
+      'mask-image:linear-gradient(90deg,#000 55%,transparent);}' +
+      '.dt-tease__cta{margin:0;font-size:0.82rem;}' +
+      '.dt-tease__soon{color:var(--silver-dim,#8891AA);}' +
+      '.dt-tease__link{color:var(--color-gold,#C2A05E);font-weight:600;text-decoration:none;}' +
+      '.dt-tease__link:hover{text-decoration:underline;}';
     var el = document.createElement('style');
     el.id = STYLE_ID;
     el.textContent = css;
@@ -607,21 +620,77 @@
     }
   }
 
+  function firstSentence(text) {
+    if (!text) return '';
+    var m = String(text).match(/^[\s\S]*?[.!?](?=\s|$)/);
+    return (m ? m[0] : String(text)).trim();
+  }
+
+  // Lazy-load the (heavy) interpretation engine ONCE, only when a saved-chart
+  // reader's card actually renders — keeps 424KB off the homepage first paint.
+  var _interpState = 0; // 0 untried · 1 loading · 2 done/failed
+  function ensureInterp(cb) {
+    if (window.AstroInterpretations) { cb(); return; }
+    if (_interpState !== 0) return;
+    _interpState = 1;
+    var s = document.createElement('script');
+    s.src = 'js/interpretations.js';
+    s.async = true;
+    s.onload = function () { _interpState = 2; cb(); };
+    s.onerror = function () { _interpState = 2; };
+    document.head.appendChild(s);
+  }
+
+  // A REAL excerpt of this chart's Deep Reading, tied to today's strongest transit:
+  // the first sentence of the genuine interpretation for the natal placement being
+  // aspected. Same engine that writes the paid 13-page PDF — honest by construction.
+  function deepTeaserSnippet(reading) {
+    var I = window.AstroInterpretations;
+    if (!I || typeof I.getPlanetInterpretation !== 'function') return null;
+    var topA = reading && reading.aspects && reading.aspects.length ? reading.aspects[0] : null;
+    if (!topA || !reading.natal) return null;
+    var natName = topA.natal;
+    var lon = reading.natal[natName];
+    if (typeof lon !== 'number') return null;
+    var sign = signOf(lon);
+    var full = '';
+    try { full = I.getPlanetInterpretation(natName, sign); } catch (e) { full = ''; }
+    var open = firstSentence(full);
+    if (!open) return null;
+    return { natName: natName, sign: sign, open: open };
+  }
+
   function renderTease() {
+    var reading = _reading;
     var M = window.AP_MON || {};
-    var url = typeof M.reportUrl === 'string' ? M.reportUrl.trim() : '';
+    var url = typeof M.deepReadingUrl === 'string' ? M.deepReadingUrl.trim()
+            : (typeof M.reportUrl === 'string' ? M.reportUrl.trim() : '');
     var hasUrl = /^https?:\/\//i.test(url);
+    // Price renders ONLY if the owner sets it (honesty — never a fabricated number).
+    var price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
+    var ctaLink = hasUrl
+      ? ' <a class="dt-tease__link" href="' + esc(url) + '" target="_blank" rel="noopener sponsored" data-mon="report">Unlock your Deep Reading' + (price ? ' — ' + esc(price) : '') + ' →</a>'
+      : ' <a class="dt-tease__link" href="#" data-mon="report" data-mon-mode="hide" style="display:none">Unlock your Deep Reading →</a>';
+    var soon = hasUrl ? '' : '<span class="dt-tease__soon">Full written readings open soon.</span> ';
+
+    var snip = reading ? deepTeaserSnippet(reading) : null;
+    if (snip) {
+      return '<div class="dt-tease dt-tease--rich">' +
+        '<p class="dt-tease__eyebrow">From your Deep Reading</p>' +
+        '<p class="dt-tease__excerpt">' + esc(snip.natName) + ' in ' + esc(snip.sign) + ' &mdash; ' + esc(snip.open) + '</p>' +
+        '<p class="dt-tease__lock">Your full reading unpacks how your ' + esc(snip.sign) + ' ' + esc(snip.natName) +
+          ' plays out across love, work and the year ahead&hellip;</p>' +
+        '<p class="dt-tease__cta">' + soon + ctaLink + '</p>' +
+      '</div>';
+    }
+
+    // No engine yet — lazy-load it once for a saved-chart reader, re-render on ready.
+    if (reading && reading.natal && reading.aspects && reading.aspects.length && !window.AstroInterpretations) {
+      ensureInterp(function () { try { refresh(); } catch (e) {} });
+    }
     var line = 'This is the surface. Your Deep Reading goes pages deeper into why ' +
       'these transits land the way they do.';
-    if (hasUrl) {
-      return '<p class="dt-tease">' + line +
-        ' <a href="' + esc(url) + '" target="_blank" rel="noopener sponsored" data-mon="report">' +
-        'Explore the Deep Reading →</a></p>';
-    }
-    // Dormant-safe: visible quiet line, link hidden until AP_MON is configured.
-    return '<p class="dt-tease">' + line +
-      ' <a href="#" data-mon="report" data-mon-mode="hide" style="display:none">' +
-      'Explore the Deep Reading →</a></p>';
+    return '<p class="dt-tease">' + line + ctaLink + '</p>';
   }
 
   // ── mount / refresh ────────────────────────────────────────────────────────
