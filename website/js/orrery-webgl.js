@@ -1597,9 +1597,12 @@ const FinishShader = {
       flicking = false;
 
       if (opts.fullTour) {
+        // #6: the outward "Earth → deep field" tour now eases BACK to the System
+        // rest (…,6,2) instead of leaving the viewer stranded at the Cosmos deep
+        // field when narration ends. The inward tour already rests at Earth (0).
         journeySteps = opts.direction === 'in'
           ? [6, 5, 4, 3, 2, 1, 0]
-          : [0, 1, 2, 3, 4, 5, 6];
+          : [0, 1, 2, 3, 4, 5, 6, 2];
       } else if (from === to) {
         applyScalePreset(to, true);
         try {
@@ -4629,6 +4632,14 @@ const FinishShader = {
 
   function updateDomLabels(introP) {
     if (!ensureDomLabels() || !camera || !canvas) return;
+    // Cosmic-flight tool: hide DOM labels entirely. The fullscreen cinematic zoom
+    // reuses this intro label path, whose intro-tuned alphas + projection desync
+    // from the bodies across Oort/Stars/Cosmos (labels strewn over empty space and
+    // the Sun). Hiding them keeps the flight clean; the intro/journey still label.
+    if (cosmicFlightToolActive || spaceFlightToolActive) {
+      BODIES.forEach((b) => { const el = domLabelEls[b.id]; if (el) el.style.opacity = '0'; });
+      return;
+    }
     const canvasRect = canvas.getBoundingClientRect();
     const layerRect = domLabelLayer.getBoundingClientRect();
     if (!canvasRect.width || !canvasRect.height) return;
@@ -4647,6 +4658,11 @@ const FinishShader = {
         alpha = 0;
       } else if (introActive) {
         alpha = introLabelAlpha(b.id, introP);
+      } else if (focusFrameId && focusFrameId !== 'aspect') {
+        // Single-body focus frame (planet/moon portrait): label ONLY the framed
+        // body. Otherwise every planet's label lights up (scale 1–2 branch below)
+        // and the off-screen ones overprint the Sun / scene during the portrait.
+        alpha = (focusFrameId === b.id) ? 1 : 0;
       } else if (focusPlanetId === b.id && performance.now() < focusPlanetUntil) {
         alpha = 1;
       } else if (showLabels && scaleLevel >= 1 && scaleLevel <= 2) {
@@ -6513,6 +6529,12 @@ const FinishShader = {
     scaleAnimToLevel = preset.id;
     updateScaleHUD();
     updateScaleVisuals(scaleLevel);
+    // #7: focusPlanet changes the scale level, so fire the same event applyScalePreset
+    // does — otherwise the loader's mobile stepper label goes stale (updateScaleHUD
+    // only syncs the .orrery-scale-btn strip, not the stepper).
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-scale-change', { detail: { level: scaleLevel, preset: preset } }));
+    } catch (e) { /* optional */ }
 
     scaleAnimFrom.radius = camRadius;
     scaleAnimFrom.el = camEl;
@@ -6528,7 +6550,11 @@ const FinishShader = {
     // shadow) so the lit hemisphere faces the lens and the sun stays behind it.
     scaleAnimTo.radius = inner ? Math.max(body.size * 7.5, 12) : Math.max(body.size * 9, 8);
     scaleAnimTo.el = inner ? 16 * D2R : 14 * D2R;
-    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
+    // Camera SUNWARD of the body (az + π, nudged −0.35 off-axis for a terminator)
+    // so the LIT hemisphere faces the lens and the Sun stays behind the camera.
+    // (Inner planets used to omit this flip → they framed their unlit night side
+    // against the Sun glare, a black speck eclipsing the disc. Now unified.)
+    const azWant = Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
     let azD = azWant - camAz;
     azD = Math.atan2(Math.sin(azD), Math.cos(azD));
     scaleAnimTo.az = camAz + azD; // shortest swing

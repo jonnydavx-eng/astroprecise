@@ -269,3 +269,21 @@ body.ap-cosmic-flight-open {
     max-width: none;
   }
 }
+/* #4 (2026-07-05): don't render an empty framed HUD box before narration lands.
+   The tagline/title/notes are populated per-scene by scale-journey.js; while a
+   field is still empty it collapses (self-heals the instant textContent is set),
+   so the flight never opens onto a blank bordered rectangle. */
+.journey-hud__tagline:empty,
+.journey-hud__title:empty,
+.journey-hud__narrative:empty,
+.journey-hud__fact:empty,
+.journey-hud__pitch:empty { display: none; }
+
+/* #3 (2026-07-05): the fullscreen flight reuses the intro DOM-label path, whose
+   intro-tuned alphas + projection desync from the bodies across the zoom (labels
+   strewn over the Sun / empty space — an illusion-breaker). Hide the engraved DOM
+   labels entirely while the flight overlay is open; the engine's in-scene render
+   carries the look. (Engine also guards via cosmicFlightToolActive, but labels can
+   orphan in the flight's tail when updateDomLabels stops being called — this is the
+   bulletproof cover, tied to the overlay body class set by ap-cosmic-flight-tool.js.) */
+body.ap-cosmic-flight-open #orrery-dom-labels { display: none !important; }

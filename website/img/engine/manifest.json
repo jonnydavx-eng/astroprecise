@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-05T13:05:09.678Z",
+  "generated": "2026-07-05T13:41:40.372Z",
   "size": 1024,
   "quality": 0.85,
   "stills": [
@@ -7,7 +7,7 @@
       "id": "earth",
       "file": "earth.webp",
       "rulerOfSigns": [],
-      "kb": 90.7,
+      "kb": 90.2,
       "date": "2026-03-20T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -20,7 +20,7 @@
         "Aries",
         "Scorpio (traditional)"
       ],
-      "kb": 58.4,
+      "kb": 58.6,
       "date": "2025-01-16T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -33,7 +33,7 @@
         "Sagittarius",
         "Pisces (traditional)"
       ],
-      "kb": 45.2,
+      "kb": 44.6,
       "date": "2025-12-07T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -46,7 +46,7 @@
         "Capricorn",
         "Aquarius (traditional)"
       ],
-      "kb": 191.6,
+      "kb": 191.4,
       "date": "2025-09-21T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -60,7 +60,7 @@
         "Gemini",
         "Virgo"
       ],
-      "kb": 65.7,
+      "kb": 63.3,
       "date": "2026-03-20T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -73,7 +73,7 @@
         "Taurus",
         "Libra"
       ],
-      "kb": 31.2,
+      "kb": 31.1,
       "date": "2026-03-20T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -85,7 +85,7 @@
       "rulerOfSigns": [
         "Aquarius (modern)"
       ],
-      "kb": 22,
+      "kb": 22.1,
       "date": "2025-11-21T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -97,7 +97,7 @@
       "rulerOfSigns": [
         "Pisces (modern)"
       ],
-      "kb": 26.5,
+      "kb": 26.4,
       "date": "2025-09-23T12:00:00Z",
       "frame": "portrait",
       "generated": false,
@@ -109,7 +109,7 @@
       "rulerOfSigns": [
         "Leo"
       ],
-      "kb": 130.6,
+      "kb": 130.1,
       "date": "2026-03-20T12:00:00Z",
       "frame": "sun",
       "generated": false,
@@ -122,7 +122,7 @@
       "rulerOfSigns": [
         "Cancer"
       ],
-      "kb": 46,
+      "kb": 46.1,
       "date": "2026-03-20T12:00:00Z",
       "frame": "moon",
       "generated": false,
@@ -152,5 +152,5 @@
       "note": "engine has no Pluto mesh — generated disc; Scorpio falls back to Mars"
     }
   ],
-  "totalKB": 820.1
+  "totalKB": 816.2
 }
