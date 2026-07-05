@@ -649,7 +649,7 @@
       var energyTrack = document.getElementById('srp-energy-track');
       if (energyWrap) energyWrap.classList.toggle('srp-energy--empty', !hasMood);
       if (hasMood) {
-        if (pctEl) pctEl.textContent = energyPct + '%';
+        if (pctEl) pctEl.textContent = energyPct + ' / 100'; // a 0–100 gauge, not a % precision claim (matches daily-transit.js)
         if (energyTrack) energyTrack.setAttribute('aria-valuenow', String(energyPct));
         if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
       } else {

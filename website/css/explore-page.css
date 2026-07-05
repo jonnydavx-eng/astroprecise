@@ -1,0 +1,268 @@
+/* explore.html — full-viewport galaxy explorer.
+   Cool void (#0C1016) + engraved brass (#C2A05E), eye-comfort: no flicker,
+   lifted deep-navy wells, body ink ~90%. Deck + engine styling is inherited
+   from ap-horizon-2026.css + orrery-visual.css; this file only lays the page
+   out full-screen and skins the explore-only chrome (legend, return nav). */
+
+:root { color-scheme: dark; }
+
+html, body.page-explore {
+  background: var(--ap-void-deep, #0C1016);
+  min-height: 100%;
+}
+
+body.page-explore {
+  margin: 0;
+  overflow-x: hidden;
+  color: var(--ap-parchment, #ECE6D8);
+}
+
+/* Masthead stays above the stage; the stage fills the rest of the viewport. */
+body.page-explore .site-header {
+  position: relative;
+  z-index: 30;
+}
+
+.explore-main { display: block; }
+
+/* ── The stage: everything below the masthead, full-bleed ── */
+.explore-stage {
+  position: relative;
+  width: 100%;
+  /* fill the viewport under the masthead; dvh handles mobile URL-bar chrome */
+  height: calc(100svh - var(--explore-nav-h, 64px));
+  min-height: 30rem;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 8%, #121826 0%, #0C1016 62%, #090C12 100%);
+  isolation: isolate;
+}
+
+/* Make the reused orrery wrap fill the stage instead of its square hero box. */
+.explore-stage .explore-orrery-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  max-width: none;
+  z-index: 1;
+}
+.explore-stage .explore-orrery-wrap .ap-award-orrery-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: none;
+}
+/* Override orrery-visual.css's square aspect-ratio: the explorer is landscape. */
+.explore-stage .orrery-viewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+  max-width: none;
+}
+.explore-stage .orrery-viewport #orrery-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  display: block;
+}
+
+/* Roaming hint — quiet, bottom-center, above the deck. */
+.explore-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 0.75rem;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.3rem 0.85rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
+  color: rgba(236, 230, 216, 0.6);
+  background: rgba(12, 16, 22, 0.42);
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 6;
+  transition: opacity 0.4s ease;
+}
+html.orrery-full .explore-hint { opacity: 0.5; }
+
+/* ── Loading / no-WebGL fallback ── */
+.explore-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  text-align: center;
+  z-index: 2;
+  transition: opacity 0.6s ease;
+}
+.explore-fallback--hidden { opacity: 0; pointer-events: none; }
+.explore-fallback__inner { max-width: 34rem; }
+.explore-fallback__eyebrow {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ap-brass, #C2A05E);
+  margin: 0 0 0.6rem;
+}
+.explore-fallback__lead {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(236, 230, 216, 0.82);
+  margin: 0;
+}
+
+/* ── Corner legend ── */
+.explore-legend {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  z-index: 8;
+  width: min(21rem, calc(100vw - 1.8rem));
+  background: rgba(18, 24, 38, 0.82);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(194, 160, 94, 0.28);
+  border-radius: 12px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+.explore-legend__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ap-parchment, #ECE6D8);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.02rem;
+  letter-spacing: 0.02em;
+}
+.explore-legend__title { font-weight: 600; }
+.explore-legend__chev { color: var(--ap-brass, #C2A05E); transition: transform 0.25s ease; font-size: 0.8rem; }
+.explore-legend[data-collapsed="true"] .explore-legend__chev { transform: rotate(-90deg); }
+.explore-legend__body {
+  padding: 0 0.9rem 0.9rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(236, 230, 216, 0.86);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.explore-legend[data-collapsed="true"] .explore-legend__body { display: none; }
+.explore-legend__body p { margin: 0 0 0.6rem; }
+.explore-legend__body strong { color: var(--ap-parchment, #ECE6D8); }
+.explore-legend__ladder {
+  list-style: none;
+  margin: 0 0 0.6rem;
+  padding: 0.4rem 0 0.5rem;
+  border-top: 1px solid rgba(194, 160, 94, 0.16);
+  border-bottom: 1px solid rgba(194, 160, 94, 0.16);
+}
+.explore-legend__ladder li { padding: 0.14rem 0; }
+.explore-legend__ladder b { color: var(--ap-brass-bright, #CDAE6A); font-weight: 600; }
+.explore-legend__ladder em { font-style: italic; color: rgba(236, 230, 216, 0.92); }
+.explore-legend__foot {
+  font-size: 0.76rem;
+  color: rgba(236, 230, 216, 0.66);
+  margin-bottom: 0 !important;
+}
+
+/* ── Deck: pin to the bottom of the stage, full width, above the canvas ── */
+.explore-stage .explore-deck {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: auto;
+  z-index: 10;
+  margin: 0 auto;
+  max-width: min(64rem, calc(100vw - 1.2rem));
+  padding: 0.6rem 0.9rem 0.9rem;
+  background: linear-gradient(to top, rgba(9, 12, 18, 0.9) 0%, rgba(9, 12, 18, 0.72) 60%, rgba(9, 12, 18, 0) 100%);
+  border-radius: 16px 16px 0 0;
+}
+.explore-deck__journeys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+/* ── Return nav ── */
+.explore-return {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  z-index: 8;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 60vw;
+}
+.explore-return a {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  color: rgba(236, 230, 216, 0.82);
+  text-decoration: none;
+  padding: 0.32rem 0.7rem;
+  background: rgba(18, 24, 38, 0.72);
+  border: 1px solid rgba(194, 160, 94, 0.22);
+  border-radius: 999px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.explore-return a:hover,
+.explore-return a:focus-visible {
+  color: var(--ap-parchment, #ECE6D8);
+  border-color: rgba(194, 160, 94, 0.55);
+}
+
+/* ── Mobile (≤600px) — deck must stay usable at 375px ── */
+@media (max-width: 600px) {
+  .explore-stage { height: calc(100svh - var(--explore-nav-h, 56px)); }
+  .explore-legend {
+    top: auto;
+    bottom: calc(var(--explore-deck-h, 8.5rem) + 0.6rem);
+    left: 0.6rem;
+    width: min(20rem, calc(100vw - 1.2rem));
+  }
+  /* Collapse the legend by default on small screens to keep the model clear. */
+  .explore-return {
+    top: 0.6rem;
+    right: 0.6rem;
+    max-width: calc(100vw - 1.2rem);
+  }
+  .explore-return a { font-size: 0.64rem; padding: 0.28rem 0.55rem; }
+  .explore-hint { font-size: 0.6rem; bottom: 0.5rem; }
+  .explore-stage .explore-deck {
+    max-width: 100vw;
+    border-radius: 0;
+    padding: 0.5rem 0.5rem 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explore-hint, .explore-fallback, .explore-legend__chev { transition: none; }
+}
