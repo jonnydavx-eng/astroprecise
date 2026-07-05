@@ -6,7 +6,7 @@
       "id": "earth",
       "ok": true,
       "file": "earth.webp",
-      "kb": 90.6,
+      "kb": 90.7,
       "date": "2026-03-20T12:00:00Z",
       "frame": "portrait",
       "w": 1024,
@@ -39,15 +39,15 @@
         ]
       },
       "transparentCorners": true,
-      "meanLum": 75,
-      "maxLum": 221,
-      "litSamples": 36,
+      "meanLum": 74,
+      "maxLum": 229,
+      "litSamples": 35,
       "opaqueSamples": 75,
       "lit": true,
       "centerPx": [
         9,
         19,
-        39,
+        40,
         255
       ]
     },
@@ -55,7 +55,7 @@
       "id": "mars",
       "ok": true,
       "file": "mars.webp",
-      "kb": 58.1,
+      "kb": 58.4,
       "date": "2025-01-16T12:00:00Z",
       "frame": "portrait",
       "w": 1024,
@@ -88,15 +88,15 @@
         ]
       },
       "transparentCorners": true,
-      "meanLum": 88,
-      "maxLum": 168,
-      "litSamples": 50,
+      "meanLum": 87,
+      "maxLum": 170,
+      "litSamples": 49,
       "opaqueSamples": 69,
       "lit": true,
       "centerPx": [
-        186,
-        90,
-        62,
+        180,
+        92,
+        64,
         255
       ]
     },
@@ -104,7 +104,7 @@
       "id": "jupiter",
       "ok": true,
       "file": "jupiter.webp",
-      "kb": 44.6,
+      "kb": 45.2,
       "date": "2025-12-07T12:00:00Z",
       "frame": "portrait",
       "w": 1024,
@@ -137,15 +137,15 @@
         ]
       },
       "transparentCorners": true,
-      "meanLum": 170,
-      "maxLum": 218,
+      "meanLum": 169,
+      "maxLum": 217,
       "litSamples": 68,
       "opaqueSamples": 69,
       "lit": true,
       "centerPx": [
-        204,
-        178,
-        147,
+        200,
+        167,
+        129,
         255
       ]
     },
@@ -153,7 +153,7 @@
       "id": "saturn",
       "ok": true,
       "file": "saturn.webp",
-      "kb": 191.5,
+      "kb": 191.6,
       "date": "2025-09-21T12:00:00Z",
       "frame": "portrait",
       "w": 1024,
@@ -192,9 +192,9 @@
       "opaqueSamples": 56,
       "lit": true,
       "centerPx": [
-        208,
-        191,
-        156,
+        209,
+        193,
+        159,
         255
       ]
     },
@@ -300,7 +300,7 @@
       "id": "uranus",
       "ok": true,
       "file": "uranus.webp",
-      "kb": 22.1,
+      "kb": 22,
       "date": "2025-11-21T12:00:00Z",
       "frame": "portrait",
       "w": 1024,
@@ -398,7 +398,7 @@
       "id": "sun",
       "ok": true,
       "file": "sun.webp",
-      "kb": 129.8,
+      "kb": 130.6,
       "date": "2026-03-20T12:00:00Z",
       "frame": "sun",
       "w": 1024,
@@ -432,14 +432,14 @@
       },
       "transparentCorners": true,
       "meanLum": 229,
-      "maxLum": 251,
+      "maxLum": 250,
       "litSamples": 69,
       "opaqueSamples": 69,
       "lit": true,
       "centerPx": [
-        236,
-        206,
-        128,
+        255,
+        255,
+        183,
         255
       ]
     },
@@ -447,7 +447,7 @@
       "id": "moon",
       "ok": true,
       "file": "moon.webp",
-      "kb": 46.3,
+      "kb": 46,
       "date": "2026-03-20T12:00:00Z",
       "frame": "moon",
       "w": 1024,
@@ -480,15 +480,15 @@
         ]
       },
       "transparentCorners": true,
-      "meanLum": 130,
-      "maxLum": 188,
+      "meanLum": 131,
+      "maxLum": 189,
       "litSamples": 67,
       "opaqueSamples": 69,
       "lit": true,
       "centerPx": [
-        169,
-        164,
-        161,
+        170,
+        165,
+        162,
         255
       ]
     },
@@ -529,15 +529,15 @@
         ]
       },
       "transparentCorners": true,
-      "meanLum": 68,
-      "maxLum": 203,
-      "litSamples": 23,
+      "meanLum": 65,
+      "maxLum": 204,
+      "litSamples": 22,
       "opaqueSamples": 50,
       "lit": true,
       "centerPx": [
-        53,
-        62,
-        74,
+        55,
+        63,
+        76,
         255
       ]
     },
@@ -601,5 +601,5 @@
     "pageErrorsDuringReload": []
   },
   "pageErrorsTotal": [],
-  "totalKB": 818.7
+  "totalKB": 820.1
 }

@@ -2234,6 +2234,25 @@ const FinishShader = {
     return new THREE.CanvasTexture(c);
   }
 
+  // Shared soft round-dot map for every galaxy point cloud. Without a map,
+  // PointsMaterial renders naked square gl.POINTS — the "blocky staircase" defect.
+  // Same soft-disc falloff idea as the starfield shader (makeStarPointsMaterial).
+  let _galaxyDotTex = null;
+  function galaxySoftDotTexture() {
+    if (_galaxyDotTex) return _galaxyDotTex;
+    const c = document.createElement('canvas');
+    c.width = c.height = 64;
+    const x = c.getContext('2d');
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, 'rgba(255,255,255,1)');
+    g.addColorStop(0.35, 'rgba(255,255,255,0.65)');
+    g.addColorStop(0.7, 'rgba(255,255,255,0.16)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+    _galaxyDotTex = new THREE.CanvasTexture(c);
+    return _galaxyDotTex;
+  }
+
   // OrbitLab 2026-07-05 port — Gaia DR3 / ESA 2025 barred-spiral model:
   // 4 major arms, inclined bar, Orion spur.
   const MILKY_R0 = 44;
@@ -2298,6 +2317,15 @@ const FinishShader = {
     g.addColorStop(1, 'rgba(0,0,0,0)');
     x.fillStyle = g;
     x.fillRect(0, 0, 256, 64);
+    // Soften the long edges too — without a cross-axis falloff the ribbons render
+    // as hard-edged rectangles ("brush stroke" smears) instead of soft arm glow.
+    x.globalCompositeOperation = 'destination-in';
+    const v = x.createLinearGradient(0, 0, 0, 64);
+    v.addColorStop(0, 'rgba(255,255,255,0)');
+    v.addColorStop(0.5, 'rgba(255,255,255,1)');
+    v.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = v;
+    x.fillRect(0, 0, 256, 64);
     return new THREE.CanvasTexture(c);
   }
 
@@ -2320,8 +2348,9 @@ const FinishShader = {
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     oortShell = new THREE.Points(g, new THREE.PointsMaterial({
-      size: perfTier === 'high' ? 0.35 : 0.28, vertexColors: true, transparent: true,
-      opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending,
+      map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.42 : 0.34,
+      vertexColors: true, transparent: true,
+      opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
     }));
     oortShell.visible = false;
     galaxyGroup.add(oortShell);
@@ -2333,7 +2362,8 @@ const FinishShader = {
       const d = new THREE.Vector3(s.dir[0], s.dir[1], s.dir[2]).normalize().multiplyScalar(s.dist);
       const core = new THREE.Sprite(new THREE.SpriteMaterial({
         map: makeGlowTexture('rgba(255,245,220,0.95)', 'rgba(180,200,255,0.0)'),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, color: s.color,
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+        color: s.color, fog: false,
       }));
       core.scale.set(3.2, 3.2, 1);
       core.position.copy(d);
@@ -2342,7 +2372,8 @@ const FinishShader = {
       localStarsGroup.add(core);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({
         map: makeGlowTexture('rgba(200,220,255,0.25)', 'rgba(80,120,200,0.0)'),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.5,
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+        opacity: 0.5, fog: false,
       }));
       halo.scale.set(9, 9, 1);
       halo.position.copy(d);
@@ -2355,7 +2386,7 @@ const FinishShader = {
     });
     const sysDot = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeGlowTexture('rgba(255,220,120,0.9)', 'rgba(255,160,40,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, fog: false,
     }));
     sysDot.scale.set(2.4, 2.4, 1);
     sysDot.position.set(0, 0, 0);
@@ -2373,7 +2404,9 @@ const FinishShader = {
   // core ring + edge-on halo disk). Everything galaxy-shaped goes into milkyWayGroup
   // so the galactic tilt is shared and the ecliptic-aligned layers stay upright.
   function buildMilkyWaySpiral() {
-    const diskCount = perfTier === 'low' ? 22000 : perfTier === 'mid' ? 42000 : 72000;
+    // Denser + finer than the OrbitLab source: small soft points reading as
+    // continuous star dust (the upstream build used fewer, larger, square points).
+    const diskCount = perfTier === 'low' ? 28000 : perfTier === 'mid' ? 54000 : 88000;
     const bulgeCount = perfTier === 'low' ? 3200 : perfTier === 'mid' ? 5800 : 9500;
     const dustCount = perfTier === 'low' ? 4200 : perfTier === 'mid' ? 8200 : 14000;
     const barCount = perfTier === 'low' ? 1800 : perfTier === 'mid' ? 3200 : 5200;
@@ -2404,8 +2437,11 @@ const FinishShader = {
       while (idx < count) {
         const arm = MILKY_ARMS[Math.floor(Math.random() * MILKY_ARMS.length)];
         const t = Math.pow(Math.random(), 0.62);
-        const rad = MILKY_R0 + t * 560 + (Math.random() - 0.5) * 18;
-        const armScatter = (Math.random() - 0.5) * (0.09 + t * 0.14);
+        // Triangular jitter both radially and across the arm — the upstream
+        // uniform narrow scatter left points marching in single-file "staircase"
+        // chains along the spiral instead of reading as diffuse dust.
+        const rad = MILKY_R0 + t * 560 + (Math.random() + Math.random() - 1) * 26;
+        const armScatter = (Math.random() + Math.random() - 1) * (0.10 + t * 0.16);
         const p = milkySpiralXY(arm.phase, rad, armScatter);
         const diskH = (8 + t * 16) * (1 - t * 0.35);
         const y = (Math.random() - 0.5) * diskH;
@@ -2436,8 +2472,10 @@ const FinishShader = {
         .setAttribute('position', new THREE.BufferAttribute(bulgeOnly.pos, 3))
         .setAttribute('color', new THREE.BufferAttribute(bulgeOnly.col, 3)),
       new THREE.PointsMaterial({
-        size: perfTier === 'high' ? 0.82 : 0.62, vertexColors: true, transparent: true,
-        opacity: 0.92, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+        map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.66 : 0.52,
+        vertexColors: true, transparent: true,
+        opacity: 0.92, depthWrite: false, blending: THREE.AdditiveBlending,
+        sizeAttenuation: true, fog: false,
       })
     );
     milkyWayBulge.visible = false;
@@ -2449,9 +2487,11 @@ const FinishShader = {
         .setAttribute('position', new THREE.BufferAttribute(disk.pos, 3))
         .setAttribute('color', new THREE.BufferAttribute(disk.col, 3)),
       new THREE.PointsMaterial({
-        size: perfTier === 'high' ? 0.72 : perfTier === 'mid' ? 0.56 : 0.48,
+        map: galaxySoftDotTexture(),
+        size: perfTier === 'high' ? 0.55 : perfTier === 'mid' ? 0.45 : 0.38,
         vertexColors: true, transparent: true, opacity: 0.9,
-        depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+        depthWrite: false, blending: THREE.AdditiveBlending,
+        sizeAttenuation: true, fog: false,
       })
     );
     milkyWayDisk.visible = false;
@@ -2462,44 +2502,53 @@ const FinishShader = {
     for (let i = 0; i < dustCount; i++) {
       const arm = MILKY_ARMS[Math.floor(Math.random() * MILKY_ARMS.length)];
       const t = 0.12 + Math.random() * 0.82;
-      const rad = MILKY_R0 + t * 520;
-      const laneOffset = (Math.random() < 0.5 ? -1 : 1) * (0.11 + Math.random() * 0.09);
+      // Jittered lane: the upstream two fixed angular offsets made the dust march
+      // in discrete parallel chains of dark squares ("staircase streaks").
+      const rad = MILKY_R0 + t * 520 + (Math.random() + Math.random() - 1) * 22;
+      const laneOffset = (Math.random() < 0.5 ? -1 : 1) * (0.06 + (Math.random() + Math.random()) * 0.07);
       const p = milkySpiralXY(arm.phase, rad, laneOffset);
       dPos[i * 3] = p.x;
-      dPos[i * 3 + 1] = (Math.random() - 0.5) * (6 + t * 8);
+      dPos[i * 3 + 1] = (Math.random() - 0.5) * (5 + t * 7);
       dPos[i * 3 + 2] = p.z;
       const w = 0.35 + Math.random() * 0.45;
       dCol[i * 3] = 0.18 * w; dCol[i * 3 + 1] = 0.14 * w; dCol[i * 3 + 2] = 0.12 * w;
     }
+    // Dust MODULATES (soft, translucent smoke over the bright disk) — never an
+    // opaque dark occluder over the page void.
     milkyWayDust = new THREE.Points(
       new THREE.BufferGeometry()
         .setAttribute('position', new THREE.BufferAttribute(dPos, 3))
         .setAttribute('color', new THREE.BufferAttribute(dCol, 3)),
       new THREE.PointsMaterial({
-        size: perfTier === 'high' ? 1.15 : 0.88, vertexColors: true, transparent: true,
-        opacity: 0.42, depthWrite: false, blending: THREE.NormalBlending, sizeAttenuation: true,
+        map: galaxySoftDotTexture(), size: perfTier === 'high' ? 1.7 : 1.3,
+        vertexColors: true, transparent: true,
+        opacity: 0.18, depthWrite: false, blending: THREE.NormalBlending,
+        sizeAttenuation: true, fog: false,
       })
     );
     milkyWayDust.visible = false;
     milkyWayGroup.add(milkyWayDust);
 
+    // HII knots: small round nebula glows on the arms. The upstream build reused
+    // the RIBBON texture here (hard-edged rectangles, screen-space rotated) which
+    // rendered as huge crossing smears.
     milkyWayHII = new THREE.Group();
     const hiiN = perfTier === 'low' ? 48 : perfTier === 'mid' ? 88 : 140;
+    const hiiTexBlue = galaxySpriteTexture('rgba(150,195,255,0.5)', 'rgba(70,110,190,0.05)', 128, 128);
+    const hiiTexPink = galaxySpriteTexture('rgba(255,190,225,0.5)', 'rgba(180,90,140,0.05)', 128, 128);
     for (let i = 0; i < hiiN; i++) {
       const arm = MILKY_ARMS[i % MILKY_ARMS.length];
       const t = 0.08 + Math.random() * 0.58;
       const rad = MILKY_R0 + t * 380 + Math.random() * 24;
       const p = milkySpiralXY(arm.phase, rad, (Math.random() - 0.5) * 0.05);
-      const hue = Math.random() < 0.35 ? 'pink' : 'blue';
-      const tex = galaxyArmRibbonTexture(hue);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: tex, blending: THREE.AdditiveBlending, transparent: true,
-        depthWrite: false, opacity: 0.55 + Math.random() * 0.35,
+        map: Math.random() < 0.35 ? hiiTexPink : hiiTexBlue,
+        blending: THREE.AdditiveBlending, transparent: true,
+        depthWrite: false, opacity: 0.26 + Math.random() * 0.24, fog: false,
       }));
-      const sc = 18 + Math.random() * 32;
-      sp.scale.set(sc * 1.6, sc, 1);
-      sp.position.set(p.x, (Math.random() - 0.5) * 6, p.z);
-      sp.material.rotation = p.th + Math.PI / 2;
+      const sc = 7 + Math.random() * 13;
+      sp.scale.set(sc, sc, 1);
+      sp.position.set(p.x, (Math.random() - 0.5) * 5, p.z);
       sp.userData.baseOpa = sp.material.opacity;
       sp.userData.tw = 0.5 + Math.random();
       milkyWayHII.add(sp);
@@ -2507,6 +2556,10 @@ const FinishShader = {
     milkyWayHII.visible = false;
     milkyWayGroup.add(milkyWayHII);
 
+    // Arm-glow plates. These were billboarded Sprites with a screen-space rotation
+    // guess — from the oblique gallery camera they smeared ACROSS the disk as giant
+    // crossing rectangles. Flat planes lying IN the galactic plane co-rotate with
+    // the group, so the glow always hugs the spiral from any camera angle.
     milkyWayArmRibbons = new THREE.Group();
     const ribbonPerArm = perfTier === 'low' ? 5 : perfTier === 'mid' ? 8 : 12;
     MILKY_ARMS.forEach((arm, ai) => {
@@ -2516,16 +2569,22 @@ const FinishShader = {
         const t = 0.18 + (ri / ribbonPerArm) * 0.78;
         const rad = MILKY_R0 + t * 500;
         const p = milkySpiralXY(arm.phase, rad, 0);
-        const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-          map: tex, blending: THREE.AdditiveBlending, transparent: true,
-          depthWrite: false, opacity: 0.22 + t * 0.18,
-        }));
         const len = 55 + t * 90;
-        sp.scale.set(len, len * 0.22, 1);
-        sp.position.set(p.x, 0, p.z);
-        sp.material.rotation = p.th + Math.PI / 2;
-        sp.userData.baseOpa = sp.material.opacity;
-        milkyWayArmRibbons.add(sp);
+        const mesh = new THREE.Mesh(
+          new THREE.PlaneGeometry(len, len * 0.3),
+          new THREE.MeshBasicMaterial({
+            map: tex, blending: THREE.AdditiveBlending, transparent: true,
+            depthWrite: false, opacity: 0.14 + t * 0.12,
+            side: THREE.DoubleSide, fog: false,
+          })
+        );
+        // log-spiral tangent in the XZ plane is (th + 90° − pitch)
+        mesh.rotation.order = 'YXZ';
+        mesh.rotation.y = -(p.th + Math.PI / 2 - MILKY_PITCH);
+        mesh.rotation.x = -Math.PI / 2;
+        mesh.position.set(p.x, 0, p.z);
+        mesh.userData.baseOpa = mesh.material.opacity;
+        milkyWayArmRibbons.add(mesh);
       }
     });
     milkyWayArmRibbons.visible = false;
@@ -2538,7 +2597,8 @@ const FinishShader = {
     ].forEach((sat) => {
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
         map: galaxySpriteTexture(sat.col, 'rgba(40,50,80,0.04)', 256, 256),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.65,
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+        opacity: 0.65, fog: false,
       }));
       sp.scale.set(sat.sc, sat.sc * 0.85, 1);
       sp.position.set(sat.pos[0], sat.pos[1], sat.pos[2]);
@@ -2557,7 +2617,7 @@ const FinishShader = {
     const sunPos = new THREE.Vector3(sunP.x, 2.8, sunP.z);
     const sm = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeGlowTexture('rgba(255,230,160,0.95)', 'rgba(255,180,60,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, fog: false,
     }));
     sm.scale.set(5.5, 5.5, 1);
     sm.position.copy(sunPos);
@@ -2571,7 +2631,8 @@ const FinishShader = {
 
     galacticCore = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeGlowTexture('rgba(255,252,235,0.72)', 'rgba(255,210,130,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.82,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+      opacity: 0.82, fog: false,
     }));
     galacticCore.scale.set(62, 62, 1);
     galacticCore.position.set(0, 1.8, 0);
@@ -2580,37 +2641,52 @@ const FinishShader = {
 
     galacticCoreRing = new THREE.Sprite(new THREE.SpriteMaterial({
       map: galaxySpriteTexture('rgba(255,220,160,0.22)', 'rgba(180,120,60,0.0)', 512, 512),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.48,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+      opacity: 0.48, fog: false,
     }));
     galacticCoreRing.scale.set(118, 118, 1);
     galacticCoreRing.position.set(0, 1.2, 0);
     galacticCoreRing.visible = false;
     milkyWayGroup.add(galacticCoreRing);
 
-    galacticBar = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: galaxyBarTexture(),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.68,
-    }));
-    galacticBar.scale.set(128, 26, 1);
-    galacticBar.rotation.z = MILKY_BAR_ANG;
+    // The bar was a billboarded Sprite whose Object3D rotation.z is a NO-OP for
+    // sprites — it drew as a misaligned screen-space streak. A flat plane lying
+    // in the disk plane co-rotates with the point bar correctly.
+    galacticBar = new THREE.Mesh(
+      new THREE.PlaneGeometry(128, 30),
+      new THREE.MeshBasicMaterial({
+        map: galaxyBarTexture(),
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+        opacity: 0.58, side: THREE.DoubleSide, fog: false,
+      })
+    );
+    galacticBar.rotation.order = 'YXZ';
+    galacticBar.rotation.y = -MILKY_BAR_ANG;
+    galacticBar.rotation.x = -Math.PI / 2;
     galacticBar.position.set(0, 0.6, 0);
     galacticBar.visible = false;
     milkyWayGroup.add(galacticBar);
 
     galacticHalo = new THREE.Sprite(new THREE.SpriteMaterial({
       map: galaxySpriteTexture('rgba(90,120,200,0.16)', 'rgba(25,35,70,0.0)', 1024, 512),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.38,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+      opacity: 0.38, fog: false,
     }));
     galacticHalo.scale.set(1120, 320, 1);
     galacticHalo.visible = false;
     milkyWayGroup.add(galacticHalo);
 
-    galacticHaloDisk = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: galaxySpriteTexture('rgba(70,95,160,0.12)', 'rgba(20,28,55,0.0)', 1400, 180),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.32,
-    }));
-    galacticHaloDisk.scale.set(1180, 48, 1);
-    galacticHaloDisk.rotation.x = Math.PI / 2;
+    // In-plane ambient disk sheen (was a Sprite with an ignored rotation.x that
+    // rendered as an arbitrary horizontal streak). Ties the arms together softly.
+    galacticHaloDisk = new THREE.Mesh(
+      new THREE.PlaneGeometry(1150, 1150),
+      new THREE.MeshBasicMaterial({
+        map: galaxySpriteTexture('rgba(120,140,190,0.10)', 'rgba(40,55,95,0.03)', 512, 512),
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+        opacity: 0.26, side: THREE.DoubleSide, fog: false,
+      })
+    );
+    galacticHaloDisk.rotation.x = -Math.PI / 2;
     galacticHaloDisk.visible = false;
     milkyWayGroup.add(galacticHaloDisk);
   }
@@ -2652,8 +2728,10 @@ const FinishShader = {
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     catalogStarsGroup = new THREE.Points(g, new THREE.PointsMaterial({
-      size: perfTier === 'high' ? 0.72 : 0.54, vertexColors: true, transparent: true,
-      opacity: 0.88, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+      map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.72 : 0.54,
+      vertexColors: true, transparent: true,
+      opacity: 0.88, depthWrite: false, blending: THREE.AdditiveBlending,
+      sizeAttenuation: true, fog: false,
     }));
     catalogStarsGroup.visible = false;
     catalogStarsGroup.userData.baseOpa = 0.88;
@@ -2673,7 +2751,8 @@ const FinishShader = {
       const pal = palettes[i % palettes.length];
       const tex = galaxySpriteTexture(pal[0], pal[1], 640, 360);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.55,
+        map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+        opacity: 0.55, fog: false,
       }));
       const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
       const r = 900 + Math.random() * 1400;
@@ -2705,8 +2784,10 @@ const FinishShader = {
     dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
     dGeo.setAttribute('color', new THREE.BufferAttribute(dCol, 3));
     const deep = new THREE.Points(dGeo, new THREE.PointsMaterial({
-      size: perfTier === 'high' ? 0.58 : 0.48, vertexColors: true, transparent: true,
-      opacity: 0.38, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
+      map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.58 : 0.48,
+      vertexColors: true, transparent: true,
+      opacity: 0.38, depthWrite: false, blending: THREE.AdditiveBlending,
+      sizeAttenuation: true, fog: false,
     }));
     deep.userData.baseOpa = 0.38;
     cosmicField.add(deep);
@@ -2946,24 +3027,28 @@ const FinishShader = {
     }
     const galF = scaleFade(z, 5, 0.85);
     const galDeep = scaleFade(z, 5.2, 1.1);
+    // Deep-field linger: the spiral used to fade to ZERO by COSMOS scale, leaving
+    // the whole (opaque, CSS-masked) canvas an empty black frame — the "black blob".
+    // Keep a dim Milky Way portrait alive at the centre of the deep field instead.
+    const galHold = Math.max(galF, scaleFade(z, 6.4, 2.4) * 0.38);
     // OrbitLab 2026-07-05 port: fade wiring for the multi-layer barred spiral
     if (milkyWayBulge) {
-      milkyWayBulge.visible = galF > 0.02;
-      if (milkyWayBulge.material) milkyWayBulge.material.opacity = 0.9 * galF;
+      milkyWayBulge.visible = galHold > 0.02;
+      if (milkyWayBulge.material) milkyWayBulge.material.opacity = 0.9 * galHold;
     }
     if (milkyWayDisk) {
-      milkyWayDisk.visible = galF > 0.02;
-      if (milkyWayDisk.material) milkyWayDisk.material.opacity = 0.88 * galF;
+      milkyWayDisk.visible = galHold > 0.02;
+      if (milkyWayDisk.material) milkyWayDisk.material.opacity = 0.88 * galHold;
     }
     if (milkyWayDust) {
       milkyWayDust.visible = galF > 0.12;
-      if (milkyWayDust.material) milkyWayDust.material.opacity = 0.4 * galF;
+      if (milkyWayDust.material) milkyWayDust.material.opacity = 0.18 * galF;
     }
     if (milkyWayArmRibbons) {
-      milkyWayArmRibbons.visible = galF > 0.18;
+      milkyWayArmRibbons.visible = galHold > 0.1;
       milkyWayArmRibbons.children.forEach((ch) => {
         if (!ch.material) return;
-        ch.material.opacity = (ch.userData.baseOpa ?? 0.3) * galF;
+        ch.material.opacity = (ch.userData.baseOpa ?? 0.2) * galHold;
       });
     }
     if (milkyWayHII) {
@@ -2982,16 +3067,16 @@ const FinishShader = {
     }
     if (sunMarker) sunMarker.visible = galF > 0.35 && z < 5.8;
     if (galacticCore) {
-      galacticCore.visible = galF > 0.2;
-      if (galacticCore.material) galacticCore.material.opacity = 0.78 * galF;
+      galacticCore.visible = galHold > 0.12;
+      if (galacticCore.material) galacticCore.material.opacity = 0.78 * galHold;
     }
     if (galacticCoreRing) {
-      galacticCoreRing.visible = galF > 0.25;
-      if (galacticCoreRing.material) galacticCoreRing.material.opacity = 0.46 * galF;
+      galacticCoreRing.visible = galHold > 0.15;
+      if (galacticCoreRing.material) galacticCoreRing.material.opacity = 0.46 * galHold;
     }
     if (galacticBar) {
-      galacticBar.visible = galF > 0.28;
-      if (galacticBar.material) galacticBar.material.opacity = 0.66 * galF;
+      galacticBar.visible = galHold > 0.18;
+      if (galacticBar.material) galacticBar.material.opacity = 0.58 * galHold;
     }
     if (galacticHalo) {
       const haloF = Math.max(galF, z >= 4.8 ? scaleFade(z, 5.4, 1.2) : 0);
@@ -4945,13 +5030,15 @@ const FinishShader = {
         galacticCore.rotation.z += dt * 0.016 * galSwirlMul;
       }
       if (scaleLevel >= 5 || preloaderGalSwirl) {
-        galacticCore.material.opacity = 0.72 + Math.sin(t * 0.0006) * 0.05;
+        // dim at the COSMOS level so the linger fade in updateScaleVisuals holds
+        const coreHold = scaleLevel >= 6 ? 0.4 : 1;
+        galacticCore.material.opacity = (0.72 + Math.sin(t * 0.0006) * 0.05) * coreHold;
         galacticCore.scale.setScalar(54 + Math.sin(t * 0.0005) * 1.4);
       }
     }
     if (galacticCoreRing && galacticCoreRing.visible && !PRM && scaleLevel >= 5 && galacticCoreRing.material) {
       galacticCoreRing.rotation.z += dt * 0.0016;
-      galacticCoreRing.material.opacity = 0.42 + Math.sin(t * 0.0005) * 0.05;
+      galacticCoreRing.material.opacity = (0.42 + Math.sin(t * 0.0005) * 0.05) * (scaleLevel >= 6 ? 0.4 : 1);
     }
     if (localStarsGroup && localStarsGroup.visible && !PRM && scaleLevel >= 4) {
       localStarsGroup.children.forEach((ch) => {
@@ -4965,7 +5052,7 @@ const FinishShader = {
       catalogStarsGroup.material.opacity = catBase * (0.96 + Math.sin(t * 0.0008) * 0.03);
     }
     if (galacticBar && galacticBar.visible && !PRM && scaleLevel >= 5 && galacticBar.material) {
-      galacticBar.material.opacity = 0.58 + Math.sin(t * 0.00045) * 0.04;
+      galacticBar.material.opacity = (0.58 + Math.sin(t * 0.00045) * 0.04) * (scaleLevel >= 6 ? 0.4 : 1);
     }
     if (galacticHalo && galacticHalo.visible && !PRM) {
       if (preloaderGalSwirl) galacticHalo.rotation.z += dt * 0.008 * galSwirlMul;
