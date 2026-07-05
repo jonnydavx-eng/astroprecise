@@ -4545,3 +4545,22 @@ html.ap-await-webgl.orrery-live .ap-award-511 #heroChapter .orrery-earth-loader 
   color: var(--brass-vivid, #D8B978);
   text-shadow: 0 0 8px rgba(216, 185, 120, 0.45);
 }
+
+/* ── Large / high-DPI display alignment (2026-07-05) ──────────────────────────
+   The hero orrery is position:absolute, sized by 86vh and pinned at left:63%.
+   On tall+wide monitors (owner reported a 3638×1251 display) it balloons to its
+   900px cap, drifts right of the page-centred control deck, and overflows the
+   copy column. Scope a corrective to large viewports only so normal laptops keep
+   the tuned framing: pull it back toward the deck's centre and cap its size so it
+   reads as the hero centrepiece with the deck aligned beneath it. */
+@media (min-width: 1500px) {
+  .ap-award-511 #heroChapter .ap-award-orrery-wrap {
+    left: 56%;
+    width: min(72vh, 780px);
+  }
+}
+@media (min-width: 2200px) {
+  /* ultra-wide / 4K: keep the whole hero from spreading — the deck is page-
+     centred, so centre the orrery over it and hold it to a sane size. */
+  .ap-award-511 #heroChapter .ap-award-orrery-wrap { left: 52%; width: 680px; }
+}
