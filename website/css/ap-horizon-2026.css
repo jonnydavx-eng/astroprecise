@@ -3495,11 +3495,16 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
 
 @media (max-width: 640px) {
   .ap-award-511 .masthead { padding-top: var(--sp-3); padding-bottom: var(--sp-2); }
-  .ap-award-511 .masthead-logo { margin-bottom: 8px; }
+  .ap-award-511 .masthead-logo { margin-bottom: 8px; min-height: 44px; padding-block: 5px; }
   .ap-award-511 .masthead .dateline { font-size: 11px; }
   .ap-award-511 .masthead-rule { margin-block: 10px; }
-  .ap-award-511 .contents-nav { gap: var(--sp-2) var(--sp-3); padding-top: 10px; }
-  .ap-award-511 .contents-nav a { font-size: 0.72rem; }
+  .ap-award-511 .contents-nav { gap: var(--sp-1) var(--sp-2); padding-top: 10px; }
+  .ap-award-511 .contents-nav a {
+    font-size: 0.72rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 12px;
+  }
 }
 
 @media (max-width: 1023px) {

@@ -505,6 +505,10 @@ li a[href]:not(.dept-list-item):not(.sign-index-entry):not(.contents-nav a),
   gap: 14px;
   text-decoration: none;
   margin-bottom: var(--sp-2);
+  min-height: 44px;
+  padding-block: 5px;
+  box-sizing: border-box;
+  touch-action: manipulation;
 }
 .masthead-logo:hover { text-decoration: none; }
 /* Hover never dims — "Precise" brightens and the mark's glow strengthens */
@@ -571,6 +575,10 @@ li a[href]:not(.dept-list-item):not(.sign-index-entry):not(.contents-nav a),
   padding-top: var(--sp-2);
   list-style: none;
 }
+.contents-nav li {
+  display: flex;
+}
+
 .contents-nav a {
   font-family: var(--font-ui);
   font-size: 0.8rem;
@@ -579,6 +587,14 @@ li a[href]:not(.dept-list-item):not(.sign-index-entry):not(.contents-nav a),
   text-transform: uppercase;
   text-decoration: none;
   color: var(--ink-faded);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  touch-action: manipulation;
 }
 .contents-nav a:hover {
   color: var(--terracotta);

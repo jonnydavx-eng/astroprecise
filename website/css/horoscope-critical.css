@@ -20,9 +20,24 @@
       contain: layout style;
       min-height: calc(var(--nav-height, 72px) + clamp(260px, 70vw, 420px) + 10rem);
     }
+    .page-horoscope .navbar__logo {
+      min-height: 44px;
+      align-items: center;
+      padding-block: 6px;
+      box-sizing: border-box;
+    }
     .page-horoscope .navbar__end {
       min-width: 2.75rem;
       min-height: 2.75rem;
+    }
+    .sphere-hero__badge-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 6px 4px;
+      text-decoration: none;
+      box-sizing: border-box;
     }
     /* No hero JPG on critical path — live starfield + aurora orbs are authoritative */
     .sphere-hero::before {
@@ -232,7 +247,8 @@
       pointer-events: none;
       cursor: default;
     }
-    .wheel-sign { cursor: pointer; outline: none; }
+    /* Pointer-only dial segments — poster/canvas owns a11y; tilt squashes bbox < 44px */
+    .wheel-sign { cursor: pointer; outline: none; pointer-events: all; }
     .wheel-sign__hit { pointer-events: all; }
     .wheel-sign__glyph { pointer-events: none; user-select: none; }
     .wheel-sign__abbr { pointer-events: none; opacity: 0.88; }

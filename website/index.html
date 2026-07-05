@@ -109,7 +109,7 @@ a:hover,a:focus-visible{color:var(--brass);}
    lazy-loads on scroll; without them the logomark SVG renders at full viewport
    width and the nav is an unstyled list. Keep in sync with ephemeris.css. */
 .masthead{text-align:center;padding-top:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--hairline);}
-.masthead-logo{display:inline-flex;align-items:center;gap:14px;text-decoration:none;margin-bottom:var(--sp-2);}
+.masthead-logo{display:inline-flex;align-items:center;gap:14px;text-decoration:none;margin-bottom:var(--sp-2);min-height:44px;padding-block:5px;box-sizing:border-box;touch-action:manipulation;}
 .logo-mark{width:46px;height:46px;flex-shrink:0;display:block;}
 .masthead-wordmark{display:flex;align-items:baseline;gap:0.26em;line-height:1;}
 .wordmark-astro{font-family:var(--font-serif);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:500;letter-spacing:0.12em;color:var(--ink);text-transform:uppercase;}
@@ -118,7 +118,8 @@ a:hover,a:focus-visible{color:var(--brass);}
 .masthead-rule{border:none;border-top:1px solid var(--brass);opacity:0.35;margin-block:var(--sp-2);}
 .dateline{font-family:var(--font-mono);font-size:max(13px,0.75rem);color:var(--ink-faded);letter-spacing:0.05em;}
 .contents-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-3);padding-top:var(--sp-2);list-style:none;margin:0;padding-left:0;}
-.contents-nav a{font-family:var(--font-ui);font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--ink-faded);}
+.contents-nav li{display:flex;}
+.contents-nav a{font-family:var(--font-ui);font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--ink-faded);display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 12px;box-sizing:border-box;touch-action:manipulation;}
 /* Hero freshness chip — brass, date-stamped, jumps to #today. Whole-sky wording
    for anonymous visitors; personalised only when a chart is saved (see JS). */
 .hero-today-chip{display:inline-flex;align-items:center;gap:.5em;margin-top:var(--sp-3);padding:.45rem .95rem;border:1px solid rgba(194,160,94,.4);border-radius:999px;background:rgba(26,34,48,.55);font-family:var(--font-mono);font-size:.74rem;letter-spacing:.06em;color:var(--brass-bright);text-decoration:none;transition:border-color .2s,background .2s;order:6;justify-self:start;}
@@ -132,8 +133,8 @@ a:hover,a:focus-visible{color:var(--brass);}
   .masthead .dateline{display:none;}
   .masthead-rule{margin-block:var(--sp-1);}
   .logo-mark{width:34px;height:34px;}
-  .contents-nav{gap:var(--sp-2);padding-top:var(--sp-1);}
-  .contents-nav a{font-size:0.72rem;}
+  .contents-nav{gap:var(--sp-1) var(--sp-2);padding-top:var(--sp-1);}
+  .contents-nav a{font-size:0.72rem;min-height:44px;min-width:44px;padding:10px 12px;}
   /* …and trim the hero head so the date form + CTA land inside the first
      812px screen (the sole conversion action was measured below the fold). */
   #heroChapter h1{font-size:clamp(1.55rem,7.5vw,2.1rem);}

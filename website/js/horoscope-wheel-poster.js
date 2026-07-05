@@ -152,7 +152,6 @@
     rotator.querySelectorAll('.wheel-sign').forEach(function (g) {
       var on = g.dataset.sign === selected;
       g.classList.toggle('is-selected', on);
-      g.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   }
 
@@ -264,10 +263,8 @@
         'data-sign': s.key,
         'data-el': s.el,
         transform: 'rotate(' + ang + ') translate(0,' + (-SIGN_R * 0.9) + ')',
-        role: 'button',
-        tabindex: '0',
-        'aria-label': s.name + ' — tap for today\'s reading',
-        'aria-pressed': 'false',
+        'aria-hidden': 'true',
+        focusable: 'false',
       });
       g.appendChild(ns('circle', {
         class: 'wheel-sign__glow',
@@ -277,7 +274,7 @@
       }));
       g.appendChild(ns('circle', {
         class: 'wheel-sign__hit',
-        r: '28',
+        r: '36',
         fill: 'transparent',
         stroke: 'none',
       }));
@@ -566,12 +563,6 @@
         e.stopPropagation();
         onSignPointer(key);
       });
-      g.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onSignPointer(key);
-        }
-      });
       g.addEventListener('mouseenter', function () {
         hovered = key;
         g.classList.add('is-hovered');
@@ -580,16 +571,6 @@
       g.addEventListener('mouseleave', function () {
         if (hovered === key) hovered = null;
         g.classList.remove('is-hovered');
-        autoSpin = !dragging;
-      });
-      g.addEventListener('focus', function () {
-        hovered = key;
-        g.classList.add('is-hovered');
-        autoSpin = false;
-      });
-      g.addEventListener('blur', function () {
-        g.classList.remove('is-hovered');
-        if (hovered === key) hovered = null;
         autoSpin = !dragging;
       });
     });
