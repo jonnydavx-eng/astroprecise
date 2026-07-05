@@ -4128,6 +4128,81 @@ body.sg-library .sg-filter-slot {
   color: var(--ap-text-faint, #968B74);
 }
 
+/* ── v592 · Orbits toggle — tiny engraved-brass pill under the scale caption ── */
+.ap-award-511 #heroChapter .ap-orbits-toggle {
+  display: inline-block;
+  margin: 4px auto 0;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(194, 160, 94, 0.34);
+  background: rgba(12, 16, 22, 0.6);
+  color: var(--ap-text-faint, #968B74);
+  font-family: 'Cinzel', var(--font-serif);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.ap-award-511 #heroChapter .ap-orbits-toggle:hover,
+.ap-award-511 #heroChapter .ap-orbits-toggle:focus-visible {
+  color: var(--brass, #c2a05e);
+  border-color: rgba(194, 160, 94, 0.6);
+  outline: none;
+}
+.ap-award-511 #heroChapter .ap-orbits-toggle:focus-visible {
+  outline: 2px solid var(--brass, #c2a05e);
+  outline-offset: 2px;
+}
+.ap-award-511 #heroChapter .ap-orbits-toggle[aria-pressed="true"] {
+  color: var(--ap-gold-vivid, #D8B978);
+  border-color: rgba(216, 185, 120, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(194, 160, 94, 0.28), 0 0 10px rgba(194, 160, 94, 0.12);
+}
+
+/* ── v592 · Live readout — compact engraved-brass card; body · sign · note ── */
+.ap-award-511 #heroChapter .ap-orrery-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(194, 160, 94, 0.3);
+  background: linear-gradient(180deg, rgba(18, 24, 38, 0.82), rgba(12, 16, 22, 0.82));
+  box-shadow: inset 0 1px 0 rgba(236, 230, 216, 0.05);
+  white-space: nowrap;
+  max-width: max-content;
+  margin-inline: auto;
+  animation: apReadoutIn 0.5s ease both;
+}
+@keyframes apReadoutIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+.ap-award-511 #heroChapter .ap-orrery-readout__body {
+  font-family: 'Cinzel', var(--font-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ap-gold-vivid, #D8B978);
+}
+.ap-award-511 #heroChapter .ap-orrery-readout__sign {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--parchment, #ECE6D8);
+}
+.ap-award-511 #heroChapter .ap-orrery-readout.is-retro .ap-orrery-readout__sign {
+  color: #d8a0a0;
+}
+.ap-award-511 #heroChapter .ap-orrery-readout__note {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.04em;
+  color: var(--ap-text-faint, #968B74);
+}
+
 /* ── Cosmic journey — ghost brass pill, same family as flight ── */
 .ap-award-511 .ap-orrery-cosmic-journey {
   min-height: 40px;

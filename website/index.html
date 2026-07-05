@@ -176,8 +176,8 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="preload" href="css/ap-horizon-2026.css?v=623" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=623"></noscript>
+  <link rel="preload" href="css/ap-horizon-2026.css?v=625" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=625"></noscript>
   <link rel="stylesheet" href="css/ap-motion.css?v=576">
   <link rel="stylesheet" href="css/ap-micro-2026.css?v=576">
   <link rel="stylesheet" href="css/ap-palette-2026.css?v=595">
@@ -785,6 +785,18 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
               <button type="button" class="ap-scale-stepper__btn" id="ap-scale-next" aria-label="Next scale">&#8250;</button>
             </div>
             <p class="ap-scale-strip__caption" id="ap-scale-caption">Positions live (VSOP87) &middot; distances schematic</p>
+            <!-- v592 · orbits affordance — the ONE deck toggle for the enriched orrery.
+                 [hidden] until orrery-loader feature-detects Orrery3D.setShowOrbits; default
+                 ON at System/Inner scale (progressive reveal). WebGL only. -->
+            <button type="button" class="ap-orbits-toggle" id="ap-orbits-toggle" hidden aria-pressed="true" aria-label="Toggle orbit rings">Orbits</button>
+          </div>
+          <!-- v592 · live readout — compact engraved-brass panel; appears on planet focus
+               (or at System scale). Shows the focused body's true geocentric sign + degree
+               from the engine's own ephemeris. [hidden] until wired (WebGL only). -->
+          <div class="ap-orrery-readout" id="ap-orrery-readout" hidden aria-live="polite">
+            <span class="ap-orrery-readout__body" id="ap-orrery-readout-body">Earth</span>
+            <span class="ap-orrery-readout__sign" id="ap-orrery-readout-sign"></span>
+            <span class="ap-orrery-readout__note">geocentric &middot; live</span>
           </div>
           <div class="lite-vp-controls" role="toolbar" aria-label="Focus planets on the model">
             <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth"><span class="lite-vp-btn__seal" data-celestial-seal="planet:earth" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--earth ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/earth.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span><span class="lite-vp-glyph" aria-hidden="true">♁&#xFE0E;</span><span class="lite-vp-btn__label">Earth</span></button>

@@ -150,6 +150,17 @@ const FinishShader = {
   ];
   const SUN_SIZE = 2.35;
 
+  // ── Extra bodies (dwarf planets) ────────────────────────────────────────────
+  // OrbitLab carries no moon/dwarf data (verified 2026-07-05), so these are NOT ported
+  // from it — Pluto reuses the SITE ephemeris's own real Kepler series (plutoPosition,
+  // returns {lon,lat,distance} like the majors). Rendered as a small lit point beyond
+  // Neptune with a faint orbit ring, tier-gated (high/mid only, off on low/phones).
+  // Honest: schematic radius, TRUE heliocentric position. (Chiron was considered but its
+  // ephemeris is a bare geocentric mean longitude — not scene-placeable — so it's skipped.)
+  const EXTRA_BODIES = [
+    { id: 'pluto', name: 'Pluto', R: 32.5, size: 0.28, color: 0xbfa98c, minTier: 'mid' },
+  ];
+
   // Per-planet visual tuning (atmosphere rim + surface response)
   // Gas giants: tiny atmo shells + low atmoI — large additive shells read as ugly "rings".
   const PLANET_VIS = {
@@ -520,6 +531,15 @@ const FinishShader = {
   let milkyWayBulge = null, milkyWayDust = null, milkyWayHII = null, milkyWayArmRibbons = null, milkyWaySatellites = null;
   let galacticCore = null, galacticCoreRing = null, galacticBar = null, galacticHalo = null, galacticHaloDisk = null;
   let sunMarker = null, solarDim = 1;
+  // Extra bodies (Pluto) + motion trails (time-scrub)
+  let extraBodiesGroup = null;      // holds the dwarf-planet points + their orbit rings
+  const extraMeshes = {};           // id → { dot, ring, label }
+  let trailsGroup = null;           // per-planet motion trails (fade behind moving planets)
+  const trailState = {};            // id → { positions: Float32Array, line, head, count }
+  let trailsActive = false;         // true only while the visitor is scrubbing time
+  let trailLastJd = 0;              // last sampled dayOffset (detect motion)
+  let trailIdle = 0;                // seconds since time last moved (fade-out timer)
+  const TRAIL_LEN = 64;             // ring-buffer sample count per body
 
   // ── Helpers ──────────────────────────────────────────────────────────────
   const norm360 = (d) => ((d % 360) + 360) % 360;
@@ -547,6 +567,33 @@ const FinishShader = {
   }
   const easeInOut = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  // ── Live zodiac readout ─────────────────────────────────────────────────────
+  // Ported concept from OrbitLab's orrery-instrument (its readout displays a
+  // pre-computed sign token + degree). Here we compute the GEOCENTRIC ecliptic
+  // longitude from the engine's own AstroEphemeris and split it into sign + degree,
+  // exactly as the natal engine does (signOf = SIGNS[floor(lon/30)], degree = lon%30).
+  // This is the true astrological placement — honest, not the schematic scene radius.
+  function bodyReadout(id, jd) {
+    const E = window.AstroEphemeris;
+    if (!E || !E.planetLongitude) return null;
+    const key = id === 'earth' ? 'sun' : id; // Earth's sky-position IS the Sun's sign
+    let lon;
+    try { lon = E.planetLongitude(key, jd); } catch (e) { return null; }
+    if (lon == null || !isFinite(lon)) return null;
+    const sign = E.signOf ? E.signOf(lon) : null;
+    const deg = E.degreeInSign ? E.degreeInSign(lon) : (((lon % 30) + 30) % 30);
+    let retro = false;
+    try { retro = id !== 'earth' && E.isRetrograde ? !!E.isRetrograde(key, jd) : false; } catch (e) {}
+    const body = BODIES.find((b) => b.id === id) || EXTRA_BODIES.find((b) => b.id === id);
+    const name = body ? body.name : (id.charAt(0).toUpperCase() + id.slice(1));
+    // Plain label e.g. "Mars in Gemini · 14°" (Earth reads as "the Sun's sign")
+    const degWhole = Math.floor(deg);
+    const label = id === 'earth'
+      ? `Sun in ${sign} · ${degWhole}°`
+      : `${name} in ${sign} · ${degWhole}°${retro ? ' ℞' : ''}`;
+    return { id, name, lon, sign, degree: deg, degreeWhole: degWhole, retro, label };
+  }
   const _projLabel = new THREE.Vector3();
   let domLabelLayer = null;
   const domLabelEls = {};
@@ -3000,6 +3047,17 @@ const FinishShader = {
       o.visible = (showOrbits || (spaceFlightMode && z >= 0.85 && z <= 2.65)) && z <= 3.2;
     });
     if (asteroidPoints) asteroidPoints.visible = showAsteroids && z <= 3.2;
+    // Extra bodies (Pluto): visible with the outer system + Oort (2..3.2), never in the
+    // Earth rest frame. Its faint orbit ring rides showOrbits like the majors.
+    if (extraBodiesGroup) {
+      const exVis = z >= 1.6 && z <= 3.2;
+      extraBodiesGroup.visible = exVis;
+      Object.keys(extraMeshes).forEach((id) => {
+        const em = extraMeshes[id];
+        if (em.ring) em.ring.visible = exVis && (showOrbits || (spaceFlightMode && z >= 0.85 && z <= 2.65));
+        if (em.label) em.label.visible = exVis && showPlanetLabels;
+      });
+    }
     if (halleyGroup) halleyGroup.visible = z <= 3.2;
     if (labels.halley) labels.halley.visible = showLabels && z >= 1 && z <= 3.2;
     Object.keys(labels).forEach((k) => {
@@ -4592,6 +4650,115 @@ const FinishShader = {
       labels[b.id] = makeLabel(b.name); labels[b.id].visible = false; scene.add(labels[b.id]);
     });
     if (!earthOnly) allPlanetsBuilt = true;
+    buildExtraBodies();
+    buildTrails();
+  }
+
+  // Small dwarf-planet points (Pluto) + faint orbit ring. Tier-gated: skipped entirely on
+  // low tier (phones stay light). Position is set each frame in updatePositions().
+  function buildExtraBodies() {
+    if (extraBodiesGroup || perfTier === 'low') return;
+    extraBodiesGroup = new THREE.Group();
+    extraBodiesGroup.visible = false;
+    EXTRA_BODIES.forEach((b) => {
+      if (b.minTier === 'high' && perfTier !== 'high') return;
+      // dot — a soft additive point sprite (cheap, reads at System/Oort scale)
+      const c = document.createElement('canvas'); c.width = c.height = 64;
+      const g = c.getContext('2d');
+      const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      const hex = '#' + b.color.toString(16).padStart(6, '0');
+      grad.addColorStop(0, hex);
+      grad.addColorStop(0.4, hex);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = grad; g.beginPath(); g.arc(32, 32, 32, 0, Math.PI * 2); g.fill();
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+      const dot = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, opacity: 0.92 }));
+      dot.scale.setScalar(b.size * 2.4);
+      extraBodiesGroup.add(dot);
+      // faint engraved orbit ring (non-hero styling)
+      const rw = 0.02, inner = Math.max(0.01, b.R - rw * 0.5), outer = b.R + rw * 0.5;
+      const segs = perfTier === 'high' ? 192 : 128;
+      const ring = new THREE.Mesh(new THREE.RingGeometry(inner, outer, segs, 1), makeOrbitRingMaterial(false));
+      ring.material.uniforms.uOpacity.value = 0.24;
+      ring.rotation.x = -Math.PI / 2; ring.renderOrder = -2;
+      ring.userData = { baseOpacity: 0.24 };
+      extraBodiesGroup.add(ring);
+      const label = makeLabel(b.name); label.visible = false;
+      extraBodiesGroup.add(label);
+      extraMeshes[b.id] = { dot, ring, label, b };
+    });
+    scene.add(extraBodiesGroup);
+  }
+
+  // Motion trails — short fading polylines behind each planet, drawn only while the
+  // visitor scrubs time so movement reads. A ring-buffer of recent scene positions per
+  // body; alpha ramps head→tail. Cleared on reset. Additive, calm (no strobe).
+  function buildTrails() {
+    if (trailsGroup || perfTier === 'low') return;
+    trailsGroup = new THREE.Group();
+    trailsGroup.visible = false;
+    BODIES.forEach((b) => {
+      if (b.id === 'earth') { /* earth trail too — it's the hero */ }
+      const positions = new Float32Array(TRAIL_LEN * 3);
+      const colors = new Float32Array(TRAIL_LEN * 3);
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      const cr = ((b.color >> 16) & 255) / 255, cg = ((b.color >> 8) & 255) / 255, cb = (b.color & 255) / 255;
+      const mat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.72, depthWrite: false, blending: THREE.AdditiveBlending });
+      const line = new THREE.Line(geo, mat);
+      line.frustumCulled = false;
+      line.visible = false;
+      trailsGroup.add(line);
+      trailState[b.id] = { positions, colors, line, count: 0, head: 0, base: [cr, cg, cb] };
+    });
+    scene.add(trailsGroup);
+  }
+
+  function resetTrails() {
+    Object.keys(trailState).forEach((id) => {
+      const s = trailState[id];
+      s.count = 0; s.head = 0;
+      if (s.line) {
+        s.line.visible = false;
+        if (s.line.material) s.line.material.opacity = 0.72; // restore after any fade-out
+      }
+    });
+    trailsActive = false;
+    trailIdle = 0;
+    if (trailsGroup) trailsGroup.visible = false;
+  }
+
+  // Push the current scene position of every planet into its trail ring buffer and
+  // rebuild the polyline (newest→oldest, alpha fading to tail). Called while scrubbing.
+  function updateTrails() {
+    if (!trailsGroup || perfTier === 'low') return;
+    trailsGroup.visible = trailsActive && scaleLevel <= 3;
+    if (!trailsActive) return;
+    BODIES.forEach((b) => {
+      const g = meshes[b.id]; const s = trailState[b.id];
+      if (!g || !s) return;
+      const p = g.position;
+      s.positions[s.head * 3] = p.x; s.positions[s.head * 3 + 1] = p.y; s.positions[s.head * 3 + 2] = p.z;
+      s.head = (s.head + 1) % TRAIL_LEN;
+      if (s.count < TRAIL_LEN) s.count++;
+      // rebuild vertex order oldest→newest with a fade ramp
+      const line = s.line, geo = line.geometry;
+      const pos = geo.attributes.position.array, col = geo.attributes.color.array;
+      const n = s.count;
+      for (let i = 0; i < n; i++) {
+        const idx = (s.head - n + i + TRAIL_LEN * 2) % TRAIL_LEN;
+        pos[i * 3] = s.positions[idx * 3];
+        pos[i * 3 + 1] = s.positions[idx * 3 + 1];
+        pos[i * 3 + 2] = s.positions[idx * 3 + 2];
+        const a = i / Math.max(1, n - 1); // 0 tail → 1 head
+        col[i * 3] = s.base[0] * a; col[i * 3 + 1] = s.base[1] * a; col[i * 3 + 2] = s.base[2] * a;
+      }
+      geo.setDrawRange(0, n);
+      geo.attributes.position.needsUpdate = true;
+      geo.attributes.color.needsUpdate = true;
+      line.visible = n > 2;
+    });
   }
 
   function makeLabel(text) {
@@ -4845,6 +5012,20 @@ const FinishShader = {
       g.position.copy(p);
       g.userData.lon = ll.lon;
     });
+    // Extra bodies (Pluto) — same helio→scene mapping as the majors
+    if (extraBodiesGroup) {
+      EXTRA_BODIES.forEach((b) => {
+        const em = extraMeshes[b.id];
+        if (!em) return;
+        try {
+          const ll = helioLonLat(b.id, jd);
+          const p = scenePos(b.R, ll.lon, ll.lat);
+          em.dot.position.copy(p);
+          em.label.position.set(p.x, p.y + b.size * 3 + 0.5, p.z);
+          em.b._lon = ll.lon;
+        } catch (e) { /* ephemeris optional */ }
+      });
+    }
     // Moon around Earth
     try {
       const E = window.AstroEphemeris, m = E.moonPosition(jd);
@@ -4900,6 +5081,31 @@ const FinishShader = {
     if (needRecompute) {
       updatePositions(); needRecompute = false; updateDateUI();
       if (onScrub) { try { onScrub(baseJd + dayOffset); } catch (e) {} }
+    }
+
+    // Motion trails — sample when the sim time is actually moving (scrub or play).
+    // A small idle timer lets a scrubbed trail linger, then fade + clear on rest.
+    if (trailsGroup && perfTier !== 'low') {
+      const moved = Math.abs(dayOffset - trailLastJd) > 0.25;
+      if (moved) {
+        trailLastJd = dayOffset;
+        trailIdle = 0;
+        if (!trailsActive) trailsActive = true;
+        updateTrails();
+      } else if (trailsActive) {
+        trailIdle += dt;
+        // hold ~1.6s after motion stops, then fade the trail out and clear
+        const holdT = 1.6, fadeT = 1.2;
+        if (trailIdle > holdT + fadeT) {
+          resetTrails();
+        } else if (trailIdle > holdT) {
+          const k = Math.max(0, 1 - (trailIdle - holdT) / fadeT);
+          Object.keys(trailState).forEach((id) => {
+            const s = trailState[id];
+            if (s && s.line && s.line.material) s.line.material.opacity = 0.72 * k;
+          });
+        }
+      }
     }
 
     // retrograde glow — throttled (ephemeris + sprite updates every 6 frames)
@@ -5965,6 +6171,8 @@ const FinishShader = {
     needRecompute = true;
     introActive = false;
     syncHeroReplayClass(false);
+    resetTrails();          // "Now" clears any motion trails from a scrub
+    trailLastJd = 0;
     updateDateUI();
   }
   function setDate(date) {
@@ -6964,6 +7172,21 @@ const FinishShader = {
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
     nowJd: () => baseJd + dayOffset,
     getPlanets: () => BODIES.map((b) => ({ ...b, lon: meshes[b.id] && meshes[b.id].userData.lon })),
+    // Live geocentric zodiac readout for a body at the current sim time — reuses the
+    // engine's own AstroEphemeris (true VSOP87/ELP2000 longitude → sign + degree-in-sign).
+    // Honest: sign/degree are the real geocentric ecliptic position, NOT the schematic
+    // scene radius. Returns null if the ephemeris can't place the body.
+    getBodyReadout(id) {
+      try { return bodyReadout(id, baseJd + dayOffset); } catch (e) { return null; }
+    },
+    getFocusedBody: () => focusPlanetId,
+    getExtraBodies: () => EXTRA_BODIES.map((x) => x.id),
+    __trailDebug: () => ({
+      active: trailsActive,
+      groupVisible: !!(trailsGroup && trailsGroup.visible),
+      marsCount: (trailState.mars && trailState.mars.count) || 0,
+      marsVisible: !!(trailState.mars && trailState.mars.line && trailState.mars.line.visible),
+    }),
     setBodies: () => {},
     setShowAspects: () => {},
     setShowParticles: () => {},

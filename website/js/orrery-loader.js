@@ -505,6 +505,110 @@
         setJourneyRunning(false);
       });
     }
+
+    /* ── v592 · ENRICHED ORRERY — progressive reveal (homepage embed) ──
+       The hero stays a calm Earth rest frame on load. The rich layers appear only
+       as the visitor engages: orbit rings fade in at System/Inner scale, the live
+       readout appears on planet focus, trails appear when time is scrubbed. All
+       feature-detected — the 2D fallback (no setShowOrbits/getBodyReadout) skips it. */
+    setupEnrichedOrrery(O);
+  }
+
+  /* Orbits toggle + live readout + scale-driven reveal. Split out for clarity;
+     everything here is additive and no-ops if the engine lacks the API. */
+  function setupEnrichedOrrery(O) {
+    var hasOrbits = typeof O.setShowOrbits === 'function';
+    var hasReadout = typeof O.getBodyReadout === 'function';
+    var hasScale = typeof O.getScaleLevel === 'function';
+
+    // --- Orbits: default ON at System/Inner (>=1), OFF in the Earth rest frame (0) ---
+    var orbitsBtn = document.getElementById('ap-orbits-toggle');
+    var userOrbitPref = null; // null = follow scale; true/false = explicit user choice
+    function orbitsWantedAtLevel(lv) {
+      if (userOrbitPref !== null) return userOrbitPref;
+      return lv >= 1 && lv <= 3; // Inner / System / Oort read as an orrery
+    }
+    function applyOrbits(lv) {
+      if (!hasOrbits) return;
+      var on = orbitsWantedAtLevel(lv);
+      try { O.setShowOrbits(on); } catch (e) {}
+      if (orbitsBtn) orbitsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    if (orbitsBtn && hasOrbits) {
+      orbitsBtn.hidden = false;
+      orbitsBtn.addEventListener('click', function () {
+        var next = !(orbitsBtn.getAttribute('aria-pressed') === 'true');
+        userOrbitPref = next;
+        try { O.setShowOrbits(next); } catch (e) {}
+        orbitsBtn.setAttribute('aria-pressed', next ? 'true' : 'false');
+      });
+    }
+
+    // --- Live readout — compact panel; true geocentric sign+degree from the ephemeris ---
+    var readoutEl = document.getElementById('ap-orrery-readout');
+    var readoutBody = document.getElementById('ap-orrery-readout-body');
+    var readoutSign = document.getElementById('ap-orrery-readout-sign');
+    var readoutId = 'earth';
+    var readoutTimer = null;
+    function paintReadout() {
+      if (!readoutEl || !hasReadout) return;
+      var r;
+      try { r = O.getBodyReadout(readoutId); } catch (e) { r = null; }
+      if (!r || !r.sign) { readoutEl.hidden = true; return; }
+      if (readoutBody) readoutBody.textContent = r.id === 'earth' ? 'Sun' : r.name;
+      if (readoutSign) readoutSign.textContent = 'in ' + r.sign + ' · ' + r.degreeWhole + '°' + (r.retro ? ' ℞' : '');
+      readoutEl.hidden = false;
+      readoutEl.classList.toggle('is-retro', !!r.retro);
+    }
+    function showReadoutFor(id) {
+      readoutId = id || 'earth';
+      paintReadout();
+    }
+    // Repaint while time moves (scrub) so the degree ticks live.
+    function ensureReadoutTicker() {
+      if (readoutTimer) return;
+      readoutTimer = setInterval(function () {
+        if (readoutEl && !readoutEl.hidden) paintReadout();
+      }, 900);
+    }
+
+    // Planet focus → readout tracks the focused body. But keep the Earth REST frame
+    // (level 0) clean: the auto-focus-earth settle timer must not pop a readout on a
+    // hero the visitor hasn't engaged. Suppress at level 0; show at Inner+ or on a
+    // deliberate non-earth focus.
+    document.addEventListener('orrery-planet-focus', function (e) {
+      var id = e && e.detail && e.detail.id;
+      if (!id) return;
+      var lv = 0; try { lv = O.getScaleLevel() | 0; } catch (err) {}
+      if (lv === 0 && id === 'earth') { if (readoutEl) readoutEl.hidden = true; return; }
+      showReadoutFor(id);
+    });
+
+    // Scale change → drive orbit reveal + readout visibility policy.
+    function onLevel(lv) {
+      applyOrbits(lv);
+      if (readoutEl) {
+        if (lv === 0) {
+          // clean Earth rest frame — no readout clutter unless a body is explicitly focused
+          readoutEl.hidden = true;
+        } else {
+          ensureReadoutTicker();
+          paintReadout();
+        }
+      }
+    }
+    document.addEventListener('orrery-scale-change', function (e) {
+      var d = e && e.detail; if (!d || d.level == null) return;
+      onLevel(d.level);
+    });
+
+    // Now button also resets trails (engine clears on snapToNow via idle-fade, but reset
+    // the readout time immediately).
+    var nowBtn = document.getElementById('lite-now-btn');
+    if (nowBtn) nowBtn.addEventListener('click', function () { setTimeout(paintReadout, 60); });
+
+    // Initial sync to current level.
+    if (hasScale) { try { onLevel(O.getScaleLevel() | 0); } catch (e) {} }
   }
 
   /**
