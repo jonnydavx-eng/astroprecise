@@ -890,6 +890,7 @@ window.AstroShop = (() => {
     document.body.classList.toggle('shop--dormant', n === 0);
     document.querySelectorAll('[data-when-live]').forEach(el => { el.hidden = n === 0; });
     document.querySelectorAll('[data-when-dormant]').forEach(el => { el.hidden = n !== 0; });
+    if (n === 0 && gridHydrated) renderGrid();
   }
 
   function renderPersonalBanner() {
@@ -971,6 +972,8 @@ window.AstroShop = (() => {
   // `.shopc-card` elements currently live in the grid. Used both after a full
   // innerHTML render and on the keep-static fast path (baked cards).
   function wireGridHandlers(grid) {
+    if (grid.dataset.wired === '1') return;
+    grid.dataset.wired = '1';
     grid.querySelectorAll('[data-quickview]').forEach(el => {
       const open = () => openQuickView(el.dataset.quickview);
       el.addEventListener('click', e => { e.stopPropagation(); open(); });
@@ -1001,7 +1004,7 @@ window.AstroShop = (() => {
     // delegated handlers on the existing cards and return. A later filter
     // change still runs the full re-render below (gridJsRendered flips true
     // whenever an innerHTML render runs).
-    if (activeCollection === 'all' && !gridJsRendered && grid.querySelector('.shopc-card--live')) {
+    if (activeCollection === 'all' && !gridJsRendered && liveProductCount() > 0 && grid.querySelector('.shopc-card--live')) {
       wireGridHandlers(grid);
       try { hydrateMiniChartPreviews(); } catch (_) {}
       return;
@@ -1017,8 +1020,9 @@ window.AstroShop = (() => {
     // Mark unbuildable SKUs `available:false` in AP_MON.commerce.products.
     const sellable = sortProducts(all.filter(p => p.available !== false));
     const list = activeCollection === 'all' ? sellable : sellable.filter(p => p.collection === activeCollection);
-    const liveList = list.filter(p => isLive(p) && !(activeCollection === 'all' && p.featured));
-    const soonList = list.filter(p => !isLive(p));
+    const skipFeaturedInAll = activeCollection === 'all';
+    const liveList = list.filter(p => isLive(p) && !(skipFeaturedInAll && p.featured));
+    const soonList = list.filter(p => !isLive(p) && !(skipFeaturedInAll && (p.featured || FEATURED_ORDER.includes(p.id))));
 
     const renderCard = p => {
       const colName = cols[p.collection] ? cols[p.collection].name : '';
@@ -1085,6 +1089,7 @@ window.AstroShop = (() => {
     // The .ap-stagger-in rule is reduced-motion gated in ap-motion.css.
     grid.classList.add('ap-stagger-in');
 
+    delete grid.dataset.wired;
     wireGridHandlers(grid);
 
     // Dynamic mini-chart previews (seals + optional chart-render wheelOnly for saved profiles)

@@ -1103,7 +1103,7 @@ button.ap-art-card {
   position: fixed;
   bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
   right: var(--space-6);
-  z-index: var(--z-nav, 100);
+  z-index: 9010;
   background: var(--gold);
   color: var(--void, #0C1016);
   border: none;
@@ -1149,7 +1149,7 @@ button.ap-art-card {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--dur-base, 0.32s) var(--ease-standard, ease);
-  z-index: var(--z-overlay, 1000);
+  z-index: 9011;
 }
 .shopc-cart-overlay.open { opacity: 1; pointer-events: auto; }
 .shopc-cart {
@@ -1162,7 +1162,7 @@ button.ap-art-card {
   border-left: 1px solid var(--border);
   transform: translateX(100%);
   transition: transform var(--dur-base, 0.32s) var(--ease-standard, ease);
-  z-index: calc(var(--z-overlay, 1000) + 1);
+  z-index: 9012;
   display: flex;
   flex-direction: column;
 }

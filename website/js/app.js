@@ -24,6 +24,7 @@ const AstroApp = (() => {
   }
 
   function init() {
+    document.documentElement.classList.add('ap-enchanted');
     // Preload the astrological symbol font (AstroGlyph) so canvas-drawn glyphs
     // (orrery, zodiac ring, share cards) never paint in the fallback colour-emoji
     // font on Android — and force a redraw once it's ready.
@@ -2160,6 +2161,15 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
   // button paint as naked native controls for the whole first impression (and
   // permanently for search-engine renderers). Values mirror main.css so the
   // full stylesheet simply refines them when it arrives.
+  function ensureSitePolishCss() {
+    if (document.getElementById('ap-css-site-polish')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-site-polish.css?v=607';
+    l.id = 'ap-css-site-polish';
+    document.head.appendChild(l);
+  }
+
   function ensureEmailCtaBaseCss() {
     if (document.getElementById('ap-email-cta-critical')) return;
     var st = document.createElement('style');
@@ -2345,6 +2355,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
   }
 
   function injectStickyCTA() {
+    if (pageSlug() === 'shop.html') return;
     if (document.querySelector('.ap-email-cta--sticky')) return;
     if (document.body.classList.contains('preloader-active')) {
       window.addEventListener('ap-hero-enter', injectStickyCTA, { once: true });
@@ -2440,6 +2451,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     window.addEventListener('pageshow', function (ev) {
       if (ev.persisted) resetEmailModalState();
     });
+    ensureSitePolishCss();
     injectNavCTA();
     injectHeroCTA();
     injectBannerCTA();

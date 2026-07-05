@@ -1,0 +1,287 @@
+/* ==========================================================================
+   Astro Precise — Enchanted Shop Experience
+   Premium product presentation & free→paid journey. No orrery styling.
+   ========================================================================== */
+
+.page-shop {
+  --shop-glow: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(72, 58, 120, 0.22) 0%, transparent 65%);
+}
+
+/* ── Hero — observatory entrance ── */
+.page-shop .shop-hero {
+  padding: clamp(3rem, 2rem + 4vw, 5.5rem) 0 clamp(2rem, 1.5rem + 2vw, 3rem);
+}
+
+.page-shop .shop-hero::before {
+  background:
+    var(--shop-glow),
+    radial-gradient(ellipse 60% 40% at 20% 60%, rgba(194, 160, 94, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 35% at 80% 30%, rgba(58, 92, 140, 0.1) 0%, transparent 50%);
+}
+
+.page-shop .shop-hero__title {
+  font-size: var(--display-1, clamp(2.6rem, 1.55rem + 4.7vw, 4.2rem));
+  font-weight: 400;
+  color: var(--ap-gold-parchment, #ECE6D8);
+  text-shadow: 0 0 48px rgba(212, 184, 122, 0.12);
+  margin-bottom: 1rem;
+  line-height: 1.12;
+}
+
+.page-shop .shop-hero-lede {
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--ap-text-secondary, #BEB298);
+  max-width: 58ch;
+  margin-inline: auto;
+}
+
+.page-shop .shop-hero-promise {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.5rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.page-shop .shop-hero-promise__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--ap-gold-a16, rgba(194, 160, 94, 0.16));
+  background: rgba(18, 24, 43, 0.5);
+  font-size: 0.82rem;
+  color: var(--ap-text-primary, #ECE6D8);
+  box-shadow: inset 0 1px 0 rgba(236, 230, 216, 0.04);
+}
+
+.page-shop .shop-hero-stat {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 640px;
+  margin: 2rem auto 0;
+}
+
+.page-shop .shop-hero-stat__item {
+  padding: 1.1rem 0.75rem;
+  border-radius: var(--ap-enchant-radius, 14px);
+  border: 1px solid var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
+  background: linear-gradient(165deg, rgba(22, 28, 48, 0.65), rgba(10, 14, 26, 0.5));
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+}
+
+.page-shop .shop-hero-stat__n {
+  display: block;
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size: 1.65rem;
+  color: var(--ap-gold-vivid, #D8B978);
+  font-weight: 500;
+}
+
+.page-shop .shop-hero-stat__l {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ap-text-muted, #A89C84);
+  margin-top: 0.25rem;
+}
+
+/* ── Free → paid journey strip ── */
+.shop-journey {
+  margin: 2.5rem auto 0;
+  max-width: 720px;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--ap-enchant-radius-lg, 20px);
+  border: 1px solid var(--ap-gold-a22, rgba(194, 160, 94, 0.22));
+  background: linear-gradient(135deg, rgba(26, 35, 64, 0.55), rgba(10, 14, 26, 0.7));
+  text-align: center;
+}
+
+.shop-journey__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ap-gold-vivid, #D8B978);
+  margin: 0 0 0.75rem;
+}
+
+.shop-journey__steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--ap-text-secondary, #BEB298);
+}
+
+.shop-journey__steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.shop-journey__steps li:not(:last-child)::after {
+  content: '→';
+  margin-left: 0.35rem;
+  color: var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
+  font-size: 0.75rem;
+}
+
+.shop-journey__steps a {
+  color: var(--ap-gold-parchment, #ECE6D8);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.shop-journey__steps a:hover {
+  color: var(--ap-gold-vivid, #D8B978);
+  border-bottom-color: var(--ap-gold-a28, rgba(194, 160, 94, 0.28));
+}
+
+.shop-journey__steps .is-destination {
+  color: var(--ap-cta, #D97B52);
+  font-weight: 600;
+}
+
+/* ── Featured products — luxury cards ── */
+.page-shop .shopc-featured__grid {
+  gap: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+}
+
+.page-shop .shopc-featured__card {
+  overflow: hidden;
+  border-radius: var(--ap-enchant-radius-lg, 20px);
+  background: linear-gradient(168deg, rgba(22, 28, 48, 0.78) 0%, rgba(10, 14, 26, 0.62) 100%);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(236, 230, 216, 0.04);
+  transition: transform 0.35s var(--ease-standard, ease), box-shadow 0.35s ease;
+}
+
+.page-shop .shopc-featured__card:hover {
+  transform: translateY(-4px);
+}
+
+.page-shop .shopc-featured__card--hero {
+  border-color: var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
+  box-shadow: 0 0 0 1px rgba(212, 184, 122, 0.15), 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.page-shop .shopc-featured__visual {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-shop .shopc-featured__visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(6, 8, 16, 0.65) 100%);
+  pointer-events: none;
+}
+
+.page-shop .shopc-featured__name {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem);
+  color: var(--ap-gold-parchment, #ECE6D8);
+  line-height: 1.2;
+}
+
+.page-shop .shopc-featured__hook {
+  font-size: 1rem;
+  color: var(--ap-gold-vivid, #D8B978);
+  font-style: italic;
+  margin: 0.35rem 0 0.65rem;
+}
+
+.page-shop .shopc-card__price {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ap-gold-parchment, #ECE6D8);
+}
+
+.page-shop .shopc-card__badge {
+  background: rgba(18, 24, 43, 0.85);
+  border: 1px solid var(--ap-gold-a28, rgba(194, 160, 94, 0.28));
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Sticky nav — refined tabs ── */
+.page-shop .shop-sticky-nav {
+  background: rgba(10, 14, 26, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
+}
+
+.page-shop .shop-cat-btn {
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.page-shop .shop-cat-btn.active,
+.page-shop .shop-cat-btn:hover {
+  background: rgba(194, 160, 94, 0.12);
+  box-shadow: inset 0 0 0 1px var(--ap-gold-a22, rgba(194, 160, 94, 0.22));
+}
+
+/* ── Trust strip ── */
+.page-shop .shopc-trust {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border-radius: var(--ap-enchant-radius, 14px);
+  border: 1px solid var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
+  background: rgba(10, 14, 26, 0.45);
+}
+
+.page-shop .shopc-trust__item {
+  color: var(--ap-text-secondary, #BEB298);
+}
+
+/* ── Art library cards ── */
+.page-shop .ap-art-card {
+  border-radius: var(--ap-enchant-radius, 14px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.page-shop .ap-art-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ap-enchant-gold-glow, 0 0 32px rgba(212, 184, 122, 0.18));
+}
+
+/* ── Section titles ── */
+.page-shop .shop-section-title {
+  font-size: var(--display-3, clamp(1.45rem, 1.18rem + 1.25vw, 2.05rem));
+  color: var(--ap-gold-parchment, #ECE6D8);
+}
+
+@media (max-width: 640px) {
+  .page-shop .shop-hero-stat {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+  }
+  .page-shop .shop-journey__steps {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .page-shop .shop-journey__steps li:not(:last-child)::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-shop .shopc-featured__card:hover,
+  .page-shop .ap-art-card:hover { transform: none; }
+}

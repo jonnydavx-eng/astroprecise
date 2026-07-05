@@ -626,6 +626,9 @@
     initWallpaperLead(chart);
     initEmailCapture(chart);
 
+    if (window.APChartShare) APChartShare.updateShareStrip(chart, null);
+    mountChartAI(chart);
+
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -1539,7 +1542,23 @@ host.classList.add('is-done');
 
   document.getElementById('save-btn')?.addEventListener('click', () => {
     if (!currentChart) return;
-    if (window.AstroProfile) {
+    if (window.APChartShare) {
+      APChartShare.saveWithFeedback(currentChart, {
+        name: currentChart.name,
+        birthDate: currentChart.birthDate,
+        birthTime: currentChart.birthTime,
+        birthCity: currentChart.city,
+        city: currentChart.city,
+        lat: currentChart.lat,
+        lon: currentChart.lon,
+        tz: currentChart.tz,
+        houseSystem: currentChart.houseSystem || 'equal',
+        sunSign: currentChart.positions.Sun.sign,
+        moonSign: currentChart.positions.Moon.sign,
+        risingSign: currentChart.risingSign,
+        engineV: 2,
+      });
+    } else if (window.AstroProfile) {
       AstroProfile.saveChart({
         name: currentChart.name,
         birthDate: currentChart.birthDate,
@@ -1562,32 +1581,42 @@ host.classList.add('is-done');
     }
   });
 
-  // Share Chart → one-tap share of the polished square image (Web Share API with
-  // an image file where supported), falling back to a copied link otherwise.
+  // Share Chart → beautiful chart-view link (preferred) or image via Web Share API.
   document.getElementById('share-btn')?.addEventListener('click', async () => {
     if (!currentChart) return;
-    const url  = location.href;
-    const text = `${currentChart.name}: ☉ ${currentChart.positions.Sun.sign} · ☽ ${currentChart.positions.Moon.sign} · ↑ ${currentChart.risingSign}`;
+    const shareUrl = window.APChartShare
+      ? APChartShare.buildShareUrl(currentChart, null, { interactive: false })
+      : location.href;
+    const text = window.APChartShare
+      ? APChartShare.bigThreeLine(currentChart)
+      : `${currentChart.name}: ☉ ${currentChart.positions.Sun.sign} · ☽ ${currentChart.positions.Moon.sign} · ↑ ${currentChart.risingSign}`;
+    if (window.APChartShare) APChartShare.updateShareStrip(currentChart, null);
     // Prefer sharing the generated image (richer than a bare link) on capable devices.
     if (navigator.canShare && navigator.share) {
       try {
         const blob = await canvasToBlob(paintShareImage(currentChart, 'square'));
         const file = blob && new File([blob], `${slugify(currentChart.name)}-natal-square.png`, { type: 'image/png' });
         if (file && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: 'My Birth Chart — Astro Precise', text, url });
+          await navigator.share({ files: [file], title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
           return;
         }
       } catch (e) { if (e && e.name === 'AbortError') return; /* else fall through */ }
     }
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url });
+        await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
+      } else if (window.APChartShare) {
+        await APChartShare.copyShareLink(currentChart, null);
       } else {
-        await navigator.clipboard.writeText(`${text}\n${url}`);
+        await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
         if (window.AstroApp) AstroApp.showToast('Link copied', 'Share link copied to clipboard.', 'success');
       }
     } catch (e) { /* user cancelled */ }
   });
+
+  if (window.APChartShare) {
+    APChartShare.wireCopyButton(function () { return currentChart; }, function () { return null; });
+  }
 
   // Big Three Card → dedicated Sun/Moon/Rising square (no full natal wheel).
   document.getElementById('print-btn')?.addEventListener('click', () => {
@@ -2575,12 +2604,42 @@ host.classList.add('is-done');
   // later DOMContentLoaded listener fired, double-wiring the accordion/node toggle
   // and calling restoreFromURL()→requestSubmit() twice.
   let booted = false;
+  function initPersonalMemory() {
+    if (!window.APPersonalMemory) return;
+    var restored = APPersonalMemory.applyDraftToForm();
+    if (restored && window.AstroApp) {
+      AstroApp.showToast('Welcome back', 'Your last chart details were restored from this device.', 'success');
+    }
+    APPersonalMemory.watchChartForm(form);
+    function refreshTimeGuide() {
+      var guide = document.getElementById('time-accuracy-guide');
+      if (!guide) return;
+      APPersonalMemory.renderTimeAccuracyGuide(guide, {
+        hasTime: !!document.getElementById('time-input')?.value,
+        approximate: false,
+      });
+    }
+    refreshTimeGuide();
+    document.getElementById('time-input')?.addEventListener('input', refreshTimeGuide);
+    document.getElementById('time-input')?.addEventListener('change', refreshTimeGuide);
+  }
+
+  function mountChartAI(chart) {
+    if (!window.APAIAssistant) return;
+    var panel = document.getElementById('chart-ai-panel');
+    if (!panel) return;
+    var getter = function () { return chart || currentChart; };
+    APAIAssistant.mountPanel(panel, getter, { pageKey: 'chart-ai-panel' });
+  }
+
   function boot() {
     if (booted) return;
     booted = true;
     addShareCardButton();
     initNodeToggle();
     initAdvancedAccordion();
+    initPersonalMemory();
+    mountChartAI(null);
     restoreFromURL();
     prefillDateFromURL();
   }

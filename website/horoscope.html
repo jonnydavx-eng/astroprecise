@@ -55,6 +55,8 @@
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
   <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=597" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=597" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <link rel="stylesheet" href="css/celestial-seals.css" />
@@ -128,15 +130,14 @@
           <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <a href="index.html" class="navbar__link">Home</a>
-          <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="horoscope.html" class="navbar__link active" aria-current="page">Daily</a>
-          <a href="compatibility.html" class="navbar__link">Match</a>
-          <a href="ephemeris.html" class="navbar__link">Sky</a>
-          <div class="navbar__more" data-nav-more>
-            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
-            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
-          </div>
+          <noscript>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="ephemeris.html" class="navbar__link">Sky</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
+            <a href="cosmic-story.html" class="navbar__link">Readings</a>
+            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+          </noscript>
         </div>
         <div class="navbar__end">
           <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
@@ -720,6 +721,11 @@
       </div>
     </section>
 
+    <!-- Optional insight layer (BYOK off by default) -->
+    <section class="container" aria-label="Optional chart insight" style="margin-top:var(--space-8);">
+      <div id="horoscope-ai-panel" hidden></div>
+    </section>
+
     <!-- ============================================================
          DEEP READING CLOSER — hand off toward the paid reading
     ============================================================ -->
@@ -892,7 +898,7 @@
     }
     function bootAmbient() {
       if (auditPath()) return;
-      ['js/profile.js', 'js/cosmos.js', 'js/effects.js'].forEach(inject);
+      ['js/cosmos.js', 'js/effects.js'].forEach(inject);
     }
     function bootSubscribe() {
       if (auditPath() || window.__apHsBooted) return;
@@ -922,5 +928,10 @@
     }, { once: true });
   })();
   </script>
+  <script src="js/profile.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
 </body>
 </html>

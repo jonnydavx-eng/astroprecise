@@ -1,0 +1,91 @@
+/**
+ * AstroPrecise — site-wide polish layer (2026).
+ * Injected on all app.js pages; linked eagerly on index.html.
+ * Scoped overrides only — does not replace page-specific design systems.
+ */
+
+/* ── Readable body ink on enchanted tool pages ── */
+html.ap-enchanted,
+body.ap-enchanted {
+  color: var(--ink, #ECE6D8);
+}
+
+body.ap-enchanted .section-header__sub,
+body.ap-enchanted .compat-overview,
+body.ap-enchanted .shopc-card__blurb,
+body.ap-enchanted .ap-ai-panel__sub {
+  color: var(--ink-faded, #BEB298);
+}
+
+/* ── Primary actions: terracotta (not pale brass) ── */
+body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab) {
+  background: var(--terracotta, #D97B52);
+  border-color: var(--terracotta, #D97B52);
+  color: #0C1016;
+}
+body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab):hover,
+body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab):focus-visible {
+  background: #e88a62;
+  border-color: #e88a62;
+  color: #0C1016;
+}
+
+/* ── Chapter hierarchy (homepage + long tool pages) ── */
+.ap-chapter--tier2 {
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+}
+.ap-chapter--tier2 .ap-chapter-title {
+  font-size: clamp(1.55rem, 3.2vw, 2.15rem);
+}
+.ap-chapter--tier2 .ap-display-kicker {
+  opacity: 0.82;
+}
+
+/* ── Footer zodiac strip — backup eager flex ── */
+.footer-zodiac-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 2.75rem;
+  line-height: 0;
+}
+.footer-zodiac-strip > span {
+  display: inline-flex;
+}
+
+/* ── Collapsed live-panel void guards ── */
+#compat-loading:not(.hidden) { min-height: 12rem; }
+#shopc-grid { min-height: 20rem; }
+#ap-horoscope-sky-bridge { min-height: 8rem; }
+#daily-transit-card { min-height: 10rem; }
+
+/* ── Shop dormant: one honest catalogue, no affiliate noise ── */
+body.shop--dormant #shop-affiliate-editorial,
+body.shop--dormant #shop-curated {
+  display: none;
+}
+body.shop--dormant .shop-sticky-nav a[href="#shop-affiliate-editorial"],
+body.shop--dormant .shop-sticky-nav a[href="#shop-curated"] {
+  display: none;
+}
+body.shop--dormant .shopc-featured .shopc-card__price,
+body.shop--dormant .shopc-card__price:not(.shopc-card__price--soon) {
+  color: var(--silver, #9A9A9A);
+  font-size: 0.82rem;
+}
+body.shop--dormant .shopc-featured .shopc-card__price::after,
+body.shop--dormant .shopc-card__price:not(.shopc-card__price--soon)::after {
+  content: ' · Opening soon';
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold, #C4920A);
+}
+
+/* ── AI panel spacing on tool pages ── */
+.ap-ai-panel {
+  margin: var(--space-6, 2rem) auto;
+  max-width: 920px;
+}

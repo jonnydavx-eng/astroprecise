@@ -425,6 +425,7 @@
       setupResultTabs();
 
       // Store sign data for download card + hero orb seals
+      window._compatLastResult = { result: result, chart1: chart1, chart2: chart2, name1: name1, name2: name2 };
       window._p1SunSign = result.chart1SunSign || '';
       window._p2SunSign = result.chart2SunSign || '';
       setHeroOrbSeal('orb1-glyph', window._p1SunSign);

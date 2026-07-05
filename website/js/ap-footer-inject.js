@@ -129,6 +129,22 @@
       + '</div>';
   }
 
+  function patchZodiacStrip() {
+    var brandCol = document.querySelector('footer .footer-brand-col');
+    if (!brandCol || brandCol.querySelector('.footer-zodiac-strip')) return;
+    var seals = ZODIAC_SIGNS.map(function (s) {
+      return '<span data-celestial-seal="zodiac:' + s.key + '" data-seal-sm></span>';
+    }).join('');
+    var strip = document.createElement('div');
+    strip.className = 'footer-zodiac-strip';
+    strip.setAttribute('aria-hidden', 'true');
+    strip.innerHTML = seals;
+    brandCol.appendChild(strip);
+    if (window.AstroCelestialSeals && typeof AstroCelestialSeals.bindSlots === 'function') {
+      AstroCelestialSeals.bindSlots();
+    }
+  }
+
   function inject() {
     if (!needsFooterUpgrade()) return;
 
@@ -163,9 +179,14 @@
     document.dispatchEvent(new CustomEvent('ap:footer-injected'));
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inject);
-  } else {
+  function boot() {
     inject();
+    patchZodiacStrip();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
   }
 })();

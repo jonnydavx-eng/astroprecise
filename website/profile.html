@@ -418,6 +418,10 @@
       </div>
     </section>
 
+    <div class="container" style="max-width:920px;margin:var(--space-8) auto;">
+      <div id="profile-ai-panel" hidden aria-label="Optional profile insight"></div>
+    </div>
+
   </main>
 
   <section id="ap-email-banner" class="ap-email-cta ap-email-cta--banner" role="region" aria-labelledby="ap-email-banner-title">
@@ -565,7 +569,6 @@
     }
     if (audit()) return;
     inject('js/raf-core.js');
-    inject('js/ephemeris.js');
     inject('js/ap-zodiac-constants.js');
     function idleCosmos() {
       if (audit()) return;
@@ -1461,6 +1464,11 @@
   })();
   </script>
 
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=607" />
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/ap-page-boot.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
 </body>

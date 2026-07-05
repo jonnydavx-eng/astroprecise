@@ -853,13 +853,17 @@
       const pos2 = positions[p2name];
       if (!pos1 || !pos2) continue;
 
+      const lon1 = readLon(pos1);
+      const lon2 = readLon(pos2);
+      if (lon1 == null || lon2 == null) continue;
+
       const aspectName = (asp.aspect || asp.type || '').toLowerCase();
       const styleKey = aspectName.charAt(0).toUpperCase() + aspectName.slice(1);
       const style   = ASPECT_STYLE[styleKey] || ASPECT_STYLE[aspectName] || ASPECT_STYLE.Quincunx;
       const opacity = ASPECT_OPACITY[styleKey] || ASPECT_OPACITY[aspectName] || 0.35;
 
-      const a1 = lonToAngle(pos1.lon, ascLon);
-      const a2 = lonToAngle(pos2.lon, ascLon);
+      const a1 = lonToAngle(lon1, ascLon);
+      const a2 = lonToAngle(lon2, ascLon);
       const pt1 = polar(CX, CY, R_ASPECT, a1);
       const pt2 = polar(CX, CY, R_ASPECT, a2);
       const len = Math.hypot(pt2.x - pt1.x, pt2.y - pt1.y);
@@ -956,7 +960,9 @@
     const entries = [];
     for (const name of PLANET_ORDER) {
       if (!positions[name]) continue;
-      const ang = lonToAngle(positions[name].lon, ascLon);
+      const lon = readLon(positions[name]);
+      if (lon == null) continue;
+      const ang = lonToAngle(lon, ascLon);
       entries.push({ name, angle: ang });
     }
 
@@ -971,7 +977,9 @@
       if (!glyph) continue;
 
       const pColor  = opts.colorOverride || PLANET_COLORS[name] || '#CCCCCC';
-      const trueAng = lonToAngle(pos.lon, ascLon);
+      const trueLon = readLon(pos);
+      if (trueLon == null) continue;
+      const trueAng = lonToAngle(trueLon, ascLon);
       const dispAng = resolved[name];
 
       // Per-planet group so a table-row hover can highlight all of this planet's
@@ -1038,7 +1046,7 @@
       // `compact` via showDeg above): 7 → 9 units so it's not anemic where it
       // does render. On mobile the exact figure lives in the planets table.
       if (showDeg) {
-        const _dv    = pos.degree !== undefined ? pos.degree : (((pos.lon % 30) + 30) % 30);
+        const _dv    = pos.degree !== undefined ? pos.degree : (((trueLon % 30) + 30) % 30);
         const degNum = Math.floor(_dv);
         const minNum = Math.floor((_dv - degNum) * 60);
         const dlr    = rPlanet - 17;
@@ -1332,6 +1340,79 @@
   let _chartSeq = 0;
   function nextPrefix() { return 'arc' + (++_chartSeq) + '_'; }
 
+  const ENGINE_KEY_MAP = {
+    sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
+    jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune',
+    pluto: 'Pluto', chiron: 'Chiron', lilith: 'Lilith',
+    northNode: 'NorthNode', southNode: 'SouthNode',
+    asc: 'Ascendant', mc: 'Midheaven',
+  };
+
+  /** Read ecliptic longitude from engine (.longitude) or render (.lon) shapes. */
+  function readLon(pos) {
+    if (pos == null) return null;
+    if (typeof pos === 'number' && isFinite(pos)) return pos;
+    if (typeof pos.lon === 'number' && isFinite(pos.lon)) return pos.lon;
+    if (typeof pos.longitude === 'number' && isFinite(pos.longitude)) return pos.longitude;
+    return null;
+  }
+
+  /** Accept raw AstroEphemeris output (chart-view, share URLs) or chart-page shape. */
+  function normalizeChartData(chartData) {
+    const raw = chartData.positions || {};
+    const positions = {};
+    const engineShape = raw.sun != null || raw.moon != null;
+
+    if (engineShape) {
+      for (const [k, cap] of Object.entries(ENGINE_KEY_MAP)) {
+        const p = raw[k];
+        if (!p) continue;
+        const lon = readLon(p);
+        if (lon == null) continue;
+        positions[cap] = {
+          lon: lon,
+          sign: p.sign,
+          degree: p.degree,
+          minute: p.minute,
+          retrograde: p.retrograde,
+        };
+      }
+    } else {
+      for (const [k, v] of Object.entries(raw)) {
+        const lon = readLon(v);
+        if (lon == null) continue;
+        positions[k] = typeof v === 'object' ? Object.assign({}, v, { lon: lon }) : { lon: lon };
+      }
+    }
+
+    if (positions.NorthNode) positions.NNode = positions.NorthNode;
+    if (positions.Midheaven) positions.MC = positions.Midheaven;
+
+    const mapPlanet = function (n) { return ENGINE_KEY_MAP[n] || n; };
+    const aspects = (chartData.aspects || []).map(function (a) {
+      return {
+        planet1: mapPlanet(a.planet1 || a.p1),
+        planet2: mapPlanet(a.planet2 || a.p2),
+        aspect: a.aspect || a.type,
+        orb: a.orb,
+        applying: a.applying,
+      };
+    });
+
+    const ascLon = readLon(positions.Ascendant)
+      ?? (typeof chartData.ascendant === 'number' ? chartData.ascendant : null);
+
+    let risingSign = chartData.risingSign;
+    if (!risingSign && positions.Ascendant && positions.Ascendant.sign) {
+      risingSign = positions.Ascendant.sign;
+    } else if (!risingSign && ascLon != null && typeof window !== 'undefined'
+      && window.AstroEphemeris && typeof AstroEphemeris.signOf === 'function') {
+      risingSign = AstroEphemeris.signOf(ascLon);
+    }
+
+    return Object.assign({}, chartData, { positions: positions, aspects: aspects, risingSign: risingSign });
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // renderNatalChart
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1348,6 +1429,7 @@
     const container = getContainer(containerId, wheelOnly);
     if (!container) return;
 
+    chartData = normalizeChartData(chartData || {});
     const positions = chartData.positions || {};
     const houses    = chartData.houses    || Array.from({ length: 12 }, (_, i) => i * 30);
     const aspects   = chartData.aspects   || [];
@@ -1364,7 +1446,10 @@
           && window.matchMedia('(max-width: 600px)').matches);
 
     const ascLon = normLon(
-      positions.Ascendant ? positions.Ascendant.lon : houses[0]
+      readLon(positions.Ascendant)
+        ?? (typeof chartData.ascendant === 'number' ? chartData.ascendant : null)
+        ?? houses[0]
+        ?? 0
     );
 
     const prefix = nextPrefix();

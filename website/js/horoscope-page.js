@@ -112,14 +112,27 @@
         typeof window.AstroEphemeris.julianDay === 'function');
     }
 
+    function getActiveSavedChart() {
+      if (!window.AstroProfile) return null;
+      if (typeof AstroProfile.getActiveChart === 'function') return AstroProfile.getActiveChart();
+      var charts = AstroProfile.getCharts();
+      if (!charts.length) return null;
+      try {
+        var activeId = localStorage.getItem('ap_active_chart');
+        if (activeId) {
+          var hit = charts.filter(function (x) { return String(x.id) === String(activeId); })[0];
+          if (hit) return hit;
+        }
+      } catch (e) {}
+      return charts[0];
+    }
+
     function getUserSign() {
       try {
-        if (window.AstroProfile) {
-          var charts = AstroProfile.getCharts();
-          if (charts.length) {
-            var sun = charts[0].sunSign || (charts[0].positions && charts[0].positions.sun);
-            if (sun) return (sun.sign || sun).toLowerCase();
-          }
+        var c = getActiveSavedChart();
+        if (c) {
+          var sun = c.sunSign || (c.positions && c.positions.sun);
+          if (sun) return (sun.sign || sun).toLowerCase();
         }
       } catch(e) {}
       return null;
@@ -130,10 +143,19 @@
         if (!window.AstroProfile || typeof AstroProfile.getCharts !== 'function') {
           return { markers: [], sunSign: null };
         }
-        var charts = AstroProfile.getCharts();
-        if (!charts.length) return { markers: [], sunSign: null };
-        var c = charts[0];
+        var c = getActiveSavedChart();
+        if (!c) return { markers: [], sunSign: null };
         var pos = c.positions || {};
+        if ((!pos.sun || pos.sun.longitude == null) && c.birthDate && typeof AstroProfile.buildChartData === 'function') {
+          try {
+            var full = AstroProfile.buildChartData({
+              name: c.name, date: c.birthDate, time: c.birthTime,
+              lat: c.lat, lon: c.lon, city: c.birthCity || c.city,
+              tz: c.tz, houseSystem: c.houseSystem,
+            });
+            if (full && full.positions) pos = full.positions;
+          } catch (e) {}
+        }
         var markers = [];
         if (pos.sun && pos.sun.longitude != null && isFinite(pos.sun.longitude)) {
           markers.push({ lon: pos.sun.longitude, label: '☉ Natal', col: '#6FA0D8' });
@@ -231,10 +253,19 @@
         if (!reading || !reading.aspects || !reading.aspects.length || !reading.transits) return [];
         var natalMap = {};
         if (window.AstroProfile && typeof AstroProfile.getCharts === 'function') {
-          var charts = AstroProfile.getCharts();
-          if (charts.length) {
-            var c = charts[0];
+          var c = getActiveSavedChart();
+          if (c) {
             var pos = c.positions || {};
+            if ((!pos.sun || pos.sun.longitude == null) && c.birthDate && typeof AstroProfile.buildChartData === 'function') {
+              try {
+                var full = AstroProfile.buildChartData({
+                  name: c.name, date: c.birthDate, time: c.birthTime,
+                  lat: c.lat, lon: c.lon, city: c.birthCity || c.city,
+                  tz: c.tz, houseSystem: c.houseSystem,
+                });
+                if (full && full.positions) pos = full.positions;
+              } catch (e) {}
+            }
             if (pos.sun && pos.sun.longitude != null) natalMap.Sun = pos.sun.longitude;
             if (pos.moon && pos.moon.longitude != null) natalMap.Moon = pos.moon.longitude;
             if (c.ascendant != null) natalMap.Ascendant = c.ascendant;
@@ -1263,7 +1294,11 @@
       // Forward all args (key + opts) — dropping opts loses { skipSpin:true }
       // and makes the hero re-spin (~640ms) to a sign the user already picked.
       var _origSelect = selectSign;
-      selectSign = function(key, opts) { _origSelect(key, opts); syncPressed(key); };
+      selectSign = function(key, opts) {
+        _origSelect(key, opts);
+        syncPressed(key);
+        if (window.APPersonalMemory && key) APPersonalMemory.saveLastSign(key);
+      };
       var _origClose = closePanel;
       closePanel = function() { _origClose(); syncPressed(null); };
 
@@ -1741,12 +1776,19 @@
         tryUpdate();
       })();
 
-      // Auto-open from ?sign= URL param (wait for Interpretations to load)
+      // Auto-open from ?sign= URL param or last explored sign (device memory)
       if (!auditPath) {
         var params = new URLSearchParams(window.location.search);
         var signParam = params.get('sign');
+        var fromMemory = false;
+        if (!signParam && window.APPersonalMemory) {
+          signParam = APPersonalMemory.getLastSign();
+          fromMemory = !!signParam;
+        }
         if (signParam && SIGNS[signParam]) {
-          whenEngines(function () { selectSign(signParam); });
+          whenEngines(function () {
+            selectSign(signParam, fromMemory ? { skipSpin: true } : undefined);
+          });
         }
       }
     });

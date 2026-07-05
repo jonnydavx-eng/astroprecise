@@ -6,6 +6,18 @@
 (function () {
   'use strict';
 
+  document.documentElement.classList.add('ap-enchanted');
+
+  function ensureSitePolishCss() {
+    if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-site-polish.css?v=607';
+    l.id = 'ap-css-site-polish';
+    document.head.appendChild(l);
+  }
+  ensureSitePolishCss();
+
   var CHAIN = [
     'js/ap-zodiac-constants.js',
     'js/celestial-seals.js',

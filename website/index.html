@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" class="ap-enchanted">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,7 +87,24 @@
   --sp-1:8px;--sp-2:16px;--sp-3:24px;--sp-4:32px;--sp-5:40px;--sp-6:48px;--sp-8:64px;--sp-13:104px;
   --reading-measure:66ch;--page-max:1200px;--col-main:1fr;--col-margin:200px;
 }
-html,body{background:#0C1016;}
+html,body{background:#0C1016;color:var(--ink);}
+/* Base typography — ephemeris.css lazy-loads at #skyChapter; without these rules
+   footer, Q&A, plates, and CTA links paint UA black/blue until scroll. */
+body{font-family:var(--font-serif);}
+a{color:var(--meridian);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;}
+a:hover,a:focus-visible{color:var(--brass);}
+.fig-num,figcaption{font-family:var(--font-mono);font-size:max(13px,0.76rem);letter-spacing:0.03em;color:var(--brass-bright);}
+.plate .fig-num{color:var(--brass-vivid);text-transform:uppercase;}
+.btn-press{display:inline-flex;align-items:center;justify-content:center;background:var(--terracotta);color:#0C1016;border:none;font-family:var(--font-ui);font-weight:600;text-decoration:none;}
+.btn-quiet{display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--ink);border:1px solid var(--brass);font-family:var(--font-ui);font-weight:600;text-decoration:none;}
+.qa-q{color:var(--ink);font-family:var(--font-serif);font-weight:500;}
+.qa-a{color:var(--ink-faded);}
+.night-watch{background:var(--warm-midnight);color:var(--paper-on-midnight);}
+.night-watch h3,.footer-col h3{color:var(--paper-on-midnight);}
+.footer-col a,.footer-logo,.footer-logo-wordmark{color:var(--paper-on-midnight);text-decoration:none;}
+.footer-colophon .source-line,.footer-colophon .copyright{color:var(--paper-on-midnight);}
+.footer-zodiac-strip{display:flex;flex-wrap:wrap;gap:0.35rem 0.5rem;align-items:center;justify-content:center;min-height:2.75rem;margin:var(--sp-4,32px) auto var(--sp-3,24px);max-width:var(--page-max,1200px);}
+.footer-zodiac-strip>span{display:inline-flex;}
 /* Masthead structure — these rules live in css/ephemeris.css, which the homepage
    lazy-loads on scroll; without them the logomark SVG renders at full viewport
    width and the nav is an unstyled list. Keep in sync with ephemeris.css. */
@@ -129,6 +146,7 @@ html,body{background:#0C1016;}
 html.ap-await-webgl #apHeroWheelFallback{display:none!important}
 html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   </style>
+  <link rel="stylesheet" href="css/ap-site-polish.css?v=606" />
 
   <!-- Intro gate — runs before first paint so the hero never flashes the
        engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
@@ -159,11 +177,13 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=581"></noscript>
   <link rel="stylesheet" href="css/ap-motion.css?v=576">
   <link rel="stylesheet" href="css/ap-micro-2026.css?v=576">
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=595">
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=595">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
-<body class="ap-award-511">
+<body class="ap-award-511 ap-enchanted">
 <a class="skip-link" href="#main-content">Skip to content</a>
 
 <!-- ============================================================
@@ -1224,7 +1244,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 <!-- ============================================================
      § 5 · THE CONTENTS (Departments)
      ============================================================ -->
-<section class="department section-bleed ap-chapter" id="instrumentsChapter" aria-labelledby="contents-heading">
+<section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" aria-labelledby="contents-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
       <p class="ap-display-kicker">A path, not a menu</p>
@@ -1297,7 +1317,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 <!-- ============================================================
      § SKY GUIDES — editorial (Travel Radar parity)
      ============================================================ -->
-<section class="department section-bleed sky-guides-block ap-chapter" id="skyGuidesWrap" data-sg-mode="teaser" aria-labelledby="sky-guides-heading">
+<section class="department section-bleed sky-guides-block ap-chapter ap-chapter--tier2" id="skyGuidesWrap" data-sg-mode="teaser" aria-labelledby="sky-guides-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
       <p class="ap-display-kicker">Sky intelligence</p>
@@ -1316,7 +1336,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 <!-- ============================================================
      § 8 · THE SIGN LIBRARY — 12-entry index
      ============================================================ -->
-<section class="department section-bleed ap-chapter" id="libraryChapter" style="background: var(--paper-leaf);" aria-labelledby="library-heading">
+<section class="department section-bleed ap-chapter ap-chapter--tier2" id="libraryChapter" style="background: var(--paper-leaf);" aria-labelledby="library-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
       <p class="ap-display-kicker">The library</p>
@@ -1348,7 +1368,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 <!-- ============================================================
      § 8a · COUPLES — two-sign sketch -> real synastry
      ============================================================ -->
-<section class="department section-bleed ap-chapter" id="matchChapter" aria-labelledby="match-heading">
+<section class="department section-bleed ap-chapter ap-chapter--tier2" id="matchChapter" aria-labelledby="match-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
       <p class="ap-display-kicker">Couples</p>
@@ -1534,6 +1554,21 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
           <li><a href="mailto:hello@astroprecise.app">Contact</a></li>
         </ul>
       </div>
+    </div>
+
+    <div class="footer-zodiac-strip" aria-hidden="true">
+      <span data-celestial-seal="zodiac:aries" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:taurus" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:gemini" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:cancer" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:leo" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:virgo" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:libra" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:scorpio" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:sagittarius" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:capricorn" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:aquarius" data-seal-sm></span>
+      <span data-celestial-seal="zodiac:pisces" data-seal-sm></span>
     </div>
 
     <div class="footer-colophon">

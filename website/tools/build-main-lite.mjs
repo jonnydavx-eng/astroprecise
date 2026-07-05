@@ -219,6 +219,14 @@ if (opens !== closes) {
   process.exit(1);
 }
 
+// Enchanted Observatory layer — loads after palette tokens; scoped via .ap-enchanted
+if (!out.includes("ap-observatory-enchanted.css")) {
+  out = out.replace(
+    "@import url('ap-palette-2026.css');",
+    "@import url('ap-palette-2026.css');\n@import url('ap-observatory-enchanted.css');"
+  );
+}
+
 writeFileSync(join(root, 'css', 'main-lite.css'), out, 'utf8');
 const kb = (Buffer.byteLength(out, 'utf8') / 1024).toFixed(1);
 console.log(`main-lite.css written (${kb} KB, ${out.split('\n').length} lines)`);

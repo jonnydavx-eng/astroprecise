@@ -915,6 +915,35 @@ html.ap-fonts-ready .shop-wallpaper-lead__title {
 /* ── Hydration reserves (CLS) ── */
 #shop-wallpaper-lead { min-height: 280px; }
 
+/* Dormant checkout — truthful first paint + JS toggle via updateLiveCounts() */
+body.shop--dormant .shop-trending { display: none; }
+body.shop--dormant .shopc-subhead:not(.shopc-subhead--soon) { display: none; }
+body.shop--dormant .shopc-card--live .shopc-card__kicker::after { content: none; }
+body.shop--dormant .shop-live-section { position: relative; z-index: 2; isolation: isolate; }
+body.shop--dormant .shop-wallpaper-lead { position: relative; z-index: 1; }
+body.shop--dormant .shopc-card--live .shopc-card__addcart { display: none; }
+body.shop--dormant .shopc-card--live .shopc-card__price:not(.shopc-card__price--soon) {
+  color: var(--silver);
+  font-size: 0.82rem;
+}
+body.shop--dormant .shopc-card--live .shopc-card__price:not(.shopc-card__price--soon)::after {
+  content: ' · Opening soon';
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+body.shop--dormant .shop-art-section { display: none; }
+body.shop--dormant .shop-sticky-nav a[href="#art-library"] { display: none; }
+body.shop--dormant #wear-your-sky .shopc-intro .shop-section-title::after {
+  content: ' — more pieces below';
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--silver);
+  font-size: 0.72em;
+}
+
 /* ── Bundle perks + premium prefs ── */
 .shopc-perks {
   list-style: none;

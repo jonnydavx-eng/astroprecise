@@ -1856,3 +1856,13 @@ html.ap-lite-hero #live-sky-stamp {
   text-decoration-color: var(--gold-vivid);
 }
 
+/* Footer zodiac strip — eager flex (deferred celestial-seals.css loads later) */
+.footer-zodiac-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-start;
+  line-height: 0;
+}
+.footer-zodiac-strip > span { display: inline-flex; }
+

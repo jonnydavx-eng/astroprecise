@@ -52,8 +52,9 @@
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=597" />
   <style>
-    .cstory-wrap { max-width: 760px; margin: 0 auto; padding: clamp(2rem, 6vw, 4.5rem) var(--space-4, 1rem) 4rem; }
+    .cstory-wrap { max-width: 760px; margin: 0 auto; padding: calc(var(--nav-height, 72px) + clamp(1.25rem, 4vw, 2.5rem)) var(--space-4, 1rem) 4rem; }
     .cstory-hero { text-align: center; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
     .cstory-hero__eyebrow {
       font-family: 'Cinzel', Georgia, serif; font-size: 0.72rem; letter-spacing: 0.28em;
@@ -141,6 +142,8 @@
 
     <div id="cstory-out" aria-live="polite"><p class="cstory-skel">Reading the sky…</p></div>
 
+    <div id="cosmic-story-ai-panel" hidden aria-label="Optional reading insight"></div>
+
     <footer class="cstory-foot">
       <p class="cstory-foot__line">Every line above is drawn from your real VSOP87 chart — not a generic horoscope.</p>
       <a class="cstory-cta" href="chart.html">✦ Cast your free chart →</a>
@@ -218,6 +221,7 @@
 
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/ephemeris.js"></script>
+  <script src="js/profile.js" defer></script>
   <script src="js/ap-load-interpretations.js"></script>
   <script src="js/cosmic-story.js"></script>
   <script src="js/effects.js" defer></script>
@@ -255,7 +259,22 @@
       var chart = null, isDemo = false;
       try {
         var arr = JSON.parse(localStorage.getItem('ap_charts') || '[]');
-        if (arr && arr[0] && arr[0].positions) chart = arr[0];
+        if (arr && arr.length) {
+          var activeId = localStorage.getItem('ap_active_chart');
+          var raw = activeId
+            ? arr.filter(function (c) { return String(c.id) === String(activeId); })[0]
+            : null;
+          if (!raw) raw = arr[0];
+          if (raw && window.AstroProfile && typeof AstroProfile.buildChartData === 'function' && raw.birthDate) {
+            chart = AstroProfile.buildChartData({
+              name: raw.name, date: raw.birthDate, time: raw.birthTime,
+              lat: raw.lat, lon: raw.lon, city: raw.birthCity || raw.city,
+              tz: raw.tz, houseSystem: raw.houseSystem,
+            });
+          } else if (raw && raw.positions) {
+            chart = raw;
+          }
+        }
       } catch (e) {}
       if (!chart) {
         isDemo = true;
@@ -285,6 +304,10 @@
   })();
   </script>
 
+  <script src="js/profile.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
   <!-- Shared page chrome: renderNav (masthead) + upgraded footer nav model -->
   <script src="js/ap-page-boot.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>

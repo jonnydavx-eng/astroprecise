@@ -24,7 +24,8 @@ const HTML_INCLUDE = new Set([
   './',
   ...[
     'index.html', 'index-full.html', 'index-lite.html', '404.html',
-    'chart.html', 'horoscope.html', 'compatibility.html', 'transits.html',
+    'chart.html', 'chart-view.html', 'horoscope.html', 'compatibility.html', 'transits.html',
+    'cosmic-story.html',
     'ephemeris.html', 'lifepath.html', 'shop.html', 'accuracy.html', 'why.html',
     'links.html', 'outreach.html', 'charts.html', 'retrograde.html', 'moonphase.html',
     'what-is-my-rising-sign.html', 'synastry.html', 'solar-return.html', 'saturn-return.html',

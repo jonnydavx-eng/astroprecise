@@ -45,7 +45,7 @@
     "operatingSystem": "Any (web browser)",
     "offers": { "@type": "AggregateOffer", "priceCurrency": "GBP", "lowPrice": "0", "highPrice": "99" },
     "isAccessibleForFree": false,
-    "description": "Personalised chart products — deep natal readings, print-at-home posters, couples prints, and keepsakes generated from your Astro Precise birth chart. Secure checkout. Uses client-side personalization from saved charts.",
+    "description": "Personalised chart products — deep natal readings, print-at-home posters, couples prints, and keepsakes generated from your Astro Precise birth chart. Checkout opening soon; save your basket and get notified. Uses client-side personalization from saved charts.",
     "dateModified": "2026-06-17",
     "isPartOf": {
       "@type": "WebSite",
@@ -74,12 +74,15 @@
        the deferred shop.css so shop.css can override the plate treatment on shop cards. -->
   <link rel="stylesheet" href="css/instrument-panel.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=595" />
+  <link rel="stylesheet" href="css/ap-shop-enchanted.css?v=595" />
+  <link rel="stylesheet" href="css/ap-site-polish.css?v=606" />
   <noscript><link rel="stylesheet" href="css/ap-affiliate-lite.css" /></noscript>
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferShopFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferShopFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/ap-affiliate-lite.css','ap-css-affiliate-lite');deferPageCss('css/shop.css','ap-css-shop');});</script>
 
 </head>
-<body class="page-shop ap-cinematic-2026 ap-no-nav-enter">
+<body class="page-shop shop--dormant ap-enchanted ap-cinematic-2026 ap-no-nav-enter">
 
   <a id="skip-to-content" class="skip-link" href="#main-content">Skip to content</a>
 
@@ -93,15 +96,14 @@
           <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <a href="index.html" class="navbar__link">Home</a>
-          <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="horoscope.html" class="navbar__link">Daily</a>
-          <a href="compatibility.html" class="navbar__link">Match</a>
-          <a href="ephemeris.html" class="navbar__link">Sky</a>
-          <div class="navbar__more" data-nav-more>
-            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
-            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
-          </div>
+          <noscript>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="ephemeris.html" class="navbar__link">Sky</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
+            <a href="cosmic-story.html" class="navbar__link">Readings</a>
+            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+          </noscript>
         </div>
         <div class="navbar__end">
           <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
@@ -144,11 +146,20 @@
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">24–48h</span><span class="shop-hero-stat__l">PDF delivery</span></div>
           <div class="shop-hero-stat__item"><span class="shop-hero-stat__n">VSOP87</span><span class="shop-hero-stat__l">Arcminute · 1800&ndash;2200 CE</span></div>
         </div>
+        <nav class="shop-journey" aria-label="From free tools to personalised keepsakes">
+          <p class="shop-journey__label">Your path through the observatory</p>
+          <ol class="shop-journey__steps">
+            <li><a href="chart.html">Cast your chart</a></li>
+            <li><a href="horoscope.html">Daily sky</a></li>
+            <li><a href="cosmic-story.html">Sample reading</a></li>
+            <li><span class="is-destination">Deep Reading &amp; keepsakes</span></li>
+          </ol>
+        </nav>
       </div>
     </section>
 
     <!-- LIVE PRODUCTS — static row (no JS hydration gap) -->
-    <section class="shop-live-section" id="shopc-featured" aria-label="Available now">
+    <section class="shop-live-section" id="shopc-featured" aria-label="Featured pieces">
       <div class="container">
         <div class="shopc-featured__intro">
           <!-- Dual copy: JS (updateLiveCounts) shows data-when-live when any SKU is buyable, data-when-dormant when none are. Static default = dormant (the truthful state until PayPal links are pasted — PAYPAL-SETUP.md). -->
@@ -166,14 +177,14 @@
               <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-featured__copy">
-              <p class="shopc-featured__kicker">The Reading · Available now</p>
+              <p class="shopc-featured__kicker">The Reading · Opening soon</p>
               <h3 class="shopc-featured__name">Deep Natal Reading — Digital</h3>
               <p class="shopc-featured__hook">The words your chart has been waiting for — written for you alone.</p>
               <p class="shopc-featured__blurb">A long-form written reading of your whole chart — every placement and the major aspects, interpreted in depth.</p>
               <div class="shopc-featured__foot">
                 <span class="shopc-card__price">£12.00</span>
                 <div class="shopc-featured__actions">
-                  <button class="btn btn--primary shopc-featured__cart" data-add-cart="deep-reading" type="button">Add to basket</button>
+                  <button class="btn btn--primary shopc-featured__cart" data-ap-open-email="shop_featured" type="button">Notify me</button>
                 </div>
               </div>
               <a class="shopc-featured__sample" href="sample-reading.html" target="_blank" rel="noopener">See sample layout →</a>
@@ -190,7 +201,7 @@
               <span class="shopc-featured__save">Save £2</span>
             </button>
             <div class="shopc-featured__copy">
-              <p class="shopc-featured__kicker">The Reading · Available now</p>
+              <p class="shopc-featured__kicker">The Reading · Opening soon</p>
               <h3 class="shopc-featured__name">Deep Reading + Poster — Bundle</h3>
               <p class="shopc-featured__hook">Reading, poster, free wallpaper &amp; a Two Skies offer — save £2.</p>
               <ul class="shopc-perks" aria-label="Bundle includes">
@@ -202,7 +213,7 @@
               <div class="shopc-featured__foot">
                 <span class="shopc-card__price">£16.00</span>
                 <div class="shopc-featured__actions">
-                  <button class="btn btn--primary shopc-featured__cart" data-add-cart="reading-poster-bundle" type="button">Add to basket</button>
+                  <button class="btn btn--primary shopc-featured__cart" data-ap-open-email="shop_featured" type="button">Notify me</button>
                 </div>
               </div>
               <a class="shopc-featured__sample" href="sample-reading.html" target="_blank" rel="noopener">See sample layout →</a>
@@ -215,14 +226,14 @@
               <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-featured__copy">
-              <p class="shopc-featured__kicker">On Your Wall · Available now</p>
+              <p class="shopc-featured__kicker">On Your Wall · Opening soon</p>
               <h3 class="shopc-featured__name">Your Natal Sky — Print-at-Home PDF</h3>
               <p class="shopc-featured__hook">Your exact sky, ready to print tonight.</p>
               <p class="shopc-featured__blurb">Your full birth chart as a print-ready PDF — engraved gold on void black, any size at home.</p>
               <div class="shopc-featured__foot">
                 <span class="shopc-card__price">£6.00</span>
                 <div class="shopc-featured__actions">
-                  <button class="btn btn--primary shopc-featured__cart" data-add-cart="natal-poster-pdf" type="button">Add to basket</button>
+                  <button class="btn btn--primary shopc-featured__cart" data-ap-open-email="shop_featured" type="button">Notify me</button>
                 </div>
               </div>
             </div>
@@ -267,7 +278,7 @@
 
     <nav class="shop-sticky-nav" aria-label="Shop sections">
       <div class="container shop-sticky-nav__inner">
-        <a href="#shopc-featured" class="shop-cat-btn active" data-shop-section>Available now</a>
+        <a href="#shopc-featured" class="shop-cat-btn active" data-shop-section>Featured</a>
         <a href="#art-library" class="shop-cat-btn" data-shop-section>Art styles</a>
         <a href="#wear-your-sky" class="shop-cat-btn" data-shop-section>Full catalogue</a>
         <a href="#free-tools" class="shop-cat-btn" data-shop-section>Free tools</a>
@@ -380,8 +391,8 @@
           <div class="shop-how__step">
             <svg class="shop-how__icon eng-i" aria-hidden="true"><use href="#ei-orb"/></svg>
             <p class="shop-how__n">3</p>
-            <p class="shop-how__t">Secure checkout</p>
-            <p class="shop-how__d">Birth details for fulfilment are collected at secure checkout. PDFs delivered to your inbox.</p>
+            <p class="shop-how__t"><span data-when-live hidden>Secure checkout</span><span data-when-dormant>Notify &amp; save basket</span></p>
+            <p class="shop-how__d"><span data-when-live hidden>Birth details for fulfilment are collected at secure checkout. PDFs delivered to your inbox.</span><span data-when-dormant>Leave your email — we&rsquo;ll tell you the instant checkout opens. Your basket saves on this device.</span></p>
           </div>
         </div>
         <p class="shopc-filters__eyebrow">Filter the catalogue</p>
@@ -393,155 +404,155 @@
           <button type="button" class="shopc-chip" aria-pressed="false">Gifts</button>
         </div>
         <div class="shopc-grid" id="shopc-grid" aria-live="polite">
-          <h3 class="shopc-subhead">More live pieces</h3>
-          <article class="shopc-card shopc-card--live" id="cosmic-story" data-product-id="cosmic-story">
+          <h3 class="shopc-subhead shopc-subhead--soon">On the loom — coming soon</h3>
+          <article class="shopc-card shopc-card--soon" id="cosmic-story" data-product-id="cosmic-story">
             <button type="button" class="shopc-card__art" data-quickview="cosmic-story">
               <span class="sr-only">Quick view Your Cosmic Story — Personalised Narrative</span>
               <img class="shopc-card__preview" src="img/shop/product-cosmic-story.jpg?v=601" alt="Your Cosmic Story — a personalised narrative read from your real birth chart" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge">Written for you</span>
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">The Reading · Digital · Live</div>
+              <div class="shopc-card__kicker">The Reading · Digital · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Your Cosmic Story</h4>
                 <span class="shopc-card__price">£14.00</span>
               </div>
               <p class="shopc-card__hook">The story of you — written from your real sky.</p>
               <p class="shopc-card__blurb">Not a report — a flowing personal narrative drawn from your exact VSOP87 chart: the arc of your Sun, Moon and rising, the tensions and gifts in your aspects, and where your planets are leading. A keepsake PDF.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="cosmic-story">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="cosmic-story">Notify me</button></div>
               <p class="shopc-card__sample"><a href="cosmic-story.html">✦ Read a sample from a real chart →</a></p>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="natal-poster">
+          <article class="shopc-card shopc-card--soon" data-product-id="natal-poster">
             <button type="button" class="shopc-card__art" data-quickview="natal-poster">
               <span class="sr-only">Quick view Your Natal Sky — Art Poster</span>
               <img class="shopc-card__preview" src="img/shop/product-natal-poster.jpg?v=601" alt="Your Natal Sky — Art Poster" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge shopc-card__badge--quiet">Made to order</span>
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">On Your Wall · Print · Live</div>
+              <div class="shopc-card__kicker">On Your Wall · Print · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Your Natal Sky — Art Poster</h4>
                 <span class="shopc-card__price">£20.00</span>
               </div>
               <p class="shopc-card__hook">Fine-art print of the sky at your first breath.</p>
               <p class="shopc-card__blurb">Your full birth chart as a fine-art print — engraved gold on void black, 250gsm museum-grade matte.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="natal-poster">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="natal-poster">Notify me</button></div>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="sky-tee">
+          <article class="shopc-card shopc-card--soon" data-product-id="sky-tee">
             <button type="button" class="shopc-card__art" data-quickview="sky-tee">
               <span class="sr-only">Quick view Your Sky — Tee</span>
               <img class="shopc-card__preview" src="img/shop/product-sky-tee.jpg?v=601" alt="Your Sky — Tee" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge shopc-card__badge--quiet">Made to order</span>
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">Wear Your Sky · Apparel · Live</div>
+              <div class="shopc-card__kicker">Wear Your Sky · Apparel · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Your Sky — Tee</h4>
                 <span class="shopc-card__price">£18.00</span>
               </div>
               <p class="shopc-card__hook">Constellations from your birth night — wearable chart.</p>
               <p class="shopc-card__blurb">The constellations overhead at your birth, printed across heavyweight cotton with your big three in gold thread.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="sky-tee">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="sky-tee">Notify me</button></div>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="sky-hoodie">
+          <article class="shopc-card shopc-card--soon" data-product-id="sky-hoodie">
             <button type="button" class="shopc-card__art" data-quickview="sky-hoodie">
               <span class="sr-only">Quick view Your Sky — Heavyweight Hoodie</span>
               <img class="shopc-card__preview" src="img/shop/product-sky-hoodie.jpg?v=601" alt="Your Sky — Heavyweight Hoodie" width="1600" height="900" loading="lazy" decoding="async" />
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">Wear Your Sky · Apparel · Live</div>
+              <div class="shopc-card__kicker">Wear Your Sky · Apparel · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Your Sky — Heavyweight Hoodie</h4>
                 <span class="shopc-card__price">£32.00</span>
               </div>
               <p class="shopc-card__hook">Your natal canopy across the back — 350gsm fleece.</p>
               <p class="shopc-card__blurb">Your natal canopy across the back in fine line-work; big-three glyphs at the cuff. Premium fleece, printed to order.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="sky-hoodie">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="sky-hoodie">Notify me</button></div>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="big-three-print">
+          <article class="shopc-card shopc-card--soon" data-product-id="big-three-print">
             <button type="button" class="shopc-card__art" data-quickview="big-three-print">
               <span class="sr-only">Quick view Big Three — Mini Print</span>
               <img class="shopc-card__preview" src="img/shop/product-big-three.jpg?v=601" alt="Big Three — Mini Print" width="1600" height="900" loading="lazy" decoding="async" />
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">On Your Wall · Print · Live</div>
+              <div class="shopc-card__kicker">On Your Wall · Print · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Big Three — Mini Print</h4>
                 <span class="shopc-card__price">£10.00</span>
               </div>
               <p class="shopc-card__hook">Sun, Moon, Rising — the chart distilled to its spine.</p>
               <p class="shopc-card__blurb">Sun, Moon and Rising set as a clean typographic print — your three load-bearing placements.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="big-three-print">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="big-three-print">Notify me</button></div>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="constellation-mug">
+          <article class="shopc-card shopc-card--soon" data-product-id="constellation-mug">
             <button type="button" class="shopc-card__art" data-quickview="constellation-mug">
               <span class="sr-only">Quick view Your Star Map — Mug</span>
               <img class="shopc-card__preview" src="img/shop/product-mug.jpg?v=601" alt="Your Star Map — Mug" width="1600" height="900" loading="lazy" decoding="async" />
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">Wear Your Sky · Accessory · Live</div>
+              <div class="shopc-card__kicker">Wear Your Sky · Accessory · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Your Star Map — Mug</h4>
                 <span class="shopc-card__price">£9.00</span>
               </div>
               <p class="shopc-card__hook">Your birth sky on matte ceramic — morning ritual.</p>
               <p class="shopc-card__blurb">The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="constellation-mug">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="constellation-mug">Notify me</button></div>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="year-ahead">
+          <article class="shopc-card shopc-card--soon" data-product-id="year-ahead">
             <button type="button" class="shopc-card__art" data-quickview="year-ahead">
               <span class="sr-only">Quick view Your Year Ahead — Transit Report</span>
               <img class="shopc-card__preview" src="img/shop/product-year-ahead.jpg?v=601" alt="Your Year Ahead — Transit Report" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">The Reading · Digital · Live</div>
+              <div class="shopc-card__kicker">The Reading · Digital · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Your Year Ahead — Transit Report</h4>
                 <span class="shopc-card__price">£16.00</span>
               </div>
               <p class="shopc-card__hook">Twelve months of transits — dated and interpreted for your chart.</p>
               <p class="shopc-card__blurb">Every major transit to your natal chart for the next twelve months, dated and interpreted.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="year-ahead">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="year-ahead">Notify me</button></div>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="solar-return">
+          <article class="shopc-card shopc-card--soon" data-product-id="solar-return">
             <button type="button" class="shopc-card__art" data-quickview="solar-return">
               <span class="sr-only">Quick view Solar Return — Your Birthday Year</span>
               <img class="shopc-card__preview" src="img/shop/product-solar-return.jpg?v=601" alt="Solar Return — Your Birthday Year" width="1600" height="900" loading="lazy" decoding="async" />
               <span class="shopc-card__badge shopc-card__badge--quiet">Instant PDF</span>
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">The Reading · Digital · Live</div>
+              <div class="shopc-card__kicker">The Reading · Digital · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Solar Return — Your Birthday Year</h4>
                 <span class="shopc-card__price">£14.00</span>
               </div>
               <p class="shopc-card__hook">Your birthday sky — the annual ritual, no subscription.</p>
               <p class="shopc-card__blurb">Your solar-return chart for this birthday — the theme of your coming year, delivered as a PDF.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="solar-return">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="solar-return">Notify me</button></div>
             </div>
           </article>
-          <article class="shopc-card shopc-card--live" data-product-id="two-skies-map">
+          <article class="shopc-card shopc-card--soon" data-product-id="two-skies-map">
             <button type="button" class="shopc-card__art" data-quickview="two-skies-map">
               <span class="sr-only">Quick view Two Skies — Couples Star Map</span>
               <img class="shopc-card__preview" src="img/shop/product-two-skies.jpg?v=601" alt="Two Skies — Couples Star Map" width="1600" height="900" loading="lazy" decoding="async" />
             </button>
             <div class="shopc-card__body">
-              <div class="shopc-card__kicker">Gifts · Print · Live</div>
+              <div class="shopc-card__kicker">Gifts · Print · Opening soon</div>
               <div class="shopc-card__top">
                 <h4 class="shopc-card__name">Two Skies — Couples Star Map</h4>
                 <span class="shopc-card__price">£24.00</span>
               </div>
               <p class="shopc-card__hook">Two charts, one composition — anniversary keepsake.</p>
               <p class="shopc-card__blurb">Both birth skies overlaid as a single fine-art print — synastry geometry made tangible.</p>
-              <div class="shopc-card__actions"><button type="button" class="btn btn--primary shopc-card__addcart" data-add-cart="two-skies-map">Add to basket</button></div>
+              <div class="shopc-card__actions"><button type="button" class="btn btn--outline shopc-card__cta" data-ap-open-email="shop_grid" data-quickview="two-skies-map">Notify me</button></div>
             </div>
           </article>
         </div>
@@ -1039,7 +1050,8 @@
     <div class="shopc-cart__footer">
       <div class="shopc-cart__totalrow"><span>Total</span><span id="shopc-cart-total">£0.00</span></div>
       <ul class="shopc-cart__trust" aria-label="Order reassurance">
-        <li><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure checkout</li>
+        <li data-when-live hidden><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Secure checkout</li>
+        <li data-when-dormant><svg class="eng-i" aria-hidden="true"><use href="#ei-orb"/></svg> Checkout opening soon</li>
         <li><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> PDFs in 24–48h</li>
         <li><svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Birth data stays on your device</li>
       </ul>

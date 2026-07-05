@@ -83,6 +83,22 @@ window.AstroProfile = (() => {
     return getCharts().find(c => c.id === id) || null;
   }
 
+  /** Most recently saved chart, or the one marked active on chart.html / transits. */
+  function getActiveChart() {
+    const charts = getCharts();
+    if (!charts.length) return null;
+    try {
+      const activeId = localStorage.getItem('ap_active_chart');
+      if (activeId) {
+        const found = charts.find(c => String(c.id) === String(activeId));
+        if (found) return found;
+        const byId = getChart(activeId);
+        if (byId) return byId;
+      }
+    } catch (_) {}
+    return charts[0];
+  }
+
   function saveChart(chartData) {
     const charts = getCharts();
     const existing = charts.findIndex(c => c.id === chartData.id);
@@ -348,7 +364,7 @@ window.AstroProfile = (() => {
 
   return {
     getUser, saveUser, isLoggedIn, login, register, logout, updateProfile,
-    getCharts, getChart, saveChart, deleteChart, buildChartData,
+    getCharts, getChart, getActiveChart, saveChart, deleteChart, buildChartData,
     chartToDashboardRow, syncChartToDashboard,
     getComparisons, saveComparison, deleteComparison,
     getPrefs, savePrefs,
