@@ -274,11 +274,21 @@ const FinishShader = {
     return 'high';
   }
 
+  // v627 phone gate — most phones report no deviceMemory/hardwareConcurrency so
+  // getPerfTier() returns 'high'; this coarse+narrow check is what actually protects
+  // real phones from the DPR-2.5 fill-rate overload + per-frame trail cost that read
+  // as flicker. Evaluated once at module init.
+  const IS_PHONE = (function () {
+    try { return !!(window.matchMedia && matchMedia('(pointer: coarse)').matches && matchMedia('(max-width: 820px)').matches); }
+    catch (e) { return false; }
+  })();
+
   function orreryDPR() {
     const pre = onPreloaderStage();
-    const cap = pre
+    let cap = pre
       ? (perfTier === 'low' ? 1 : perfTier === 'mid' ? 1.1 : 1.6)
       : (perfTier === 'low' ? 1.25 : perfTier === 'mid' ? 2 : 2.5);
+    if (IS_PHONE) cap = Math.min(cap, 1.6); // v627 — halve fill-rate on real phones the tier heuristic mislabels 'high'
     if (window.RafCore && window.RafCore.hdDPR) return window.RafCore.hdDPR(cap);
     const real = window.devicePixelRatio || 1;
     return Math.min(real, cap);
@@ -4657,7 +4667,7 @@ const FinishShader = {
   // Small dwarf-planet points (Pluto) + faint orbit ring. Tier-gated: skipped entirely on
   // low tier (phones stay light). Position is set each frame in updatePositions().
   function buildExtraBodies() {
-    if (extraBodiesGroup || perfTier === 'low') return;
+    if (extraBodiesGroup || perfTier === 'low' || IS_PHONE) return; // v627 — Pluto off on phones (fill-rate)
     extraBodiesGroup = new THREE.Group();
     extraBodiesGroup.visible = false;
     EXTRA_BODIES.forEach((b) => {
@@ -4694,7 +4704,7 @@ const FinishShader = {
   // visitor scrubs time so movement reads. A ring-buffer of recent scene positions per
   // body; alpha ramps head→tail. Cleared on reset. Additive, calm (no strobe).
   function buildTrails() {
-    if (trailsGroup || perfTier === 'low') return;
+    if (trailsGroup || perfTier === 'low' || IS_PHONE) return; // v627 — motion trails off on phones (per-frame rebuild cost)
     trailsGroup = new THREE.Group();
     trailsGroup.visible = false;
     BODIES.forEach((b) => {
@@ -4732,7 +4742,7 @@ const FinishShader = {
   // Push the current scene position of every planet into its trail ring buffer and
   // rebuild the polyline (newest→oldest, alpha fading to tail). Called while scrubbing.
   function updateTrails() {
-    if (!trailsGroup || perfTier === 'low') return;
+    if (!trailsGroup || perfTier === 'low' || IS_PHONE) return;
     trailsGroup.visible = trailsActive && scaleLevel <= 3;
     if (!trailsActive) return;
     BODIES.forEach((b) => {
@@ -5085,7 +5095,7 @@ const FinishShader = {
 
     // Motion trails — sample when the sim time is actually moving (scrub or play).
     // A small idle timer lets a scrubbed trail linger, then fade + clear on rest.
-    if (trailsGroup && perfTier !== 'low') {
+    if (trailsGroup && perfTier !== 'low' && !IS_PHONE) {
       const moved = Math.abs(dayOffset - trailLastJd) > 0.25;
       if (moved) {
         trailLastJd = dayOffset;
@@ -5676,12 +5686,19 @@ const FinishShader = {
     return { w, h };
   }
 
+  let _rzW = 0, _rzH = 0, _rzDpr = 0;
   function resize() {
     if (!renderer || !canvas) return;
     const box = canvasBox();
     const w = box.w;
     const h = box.h;
     const dpr = orreryDPR();
+    // v627 — no-op when the layout box + DPR are unchanged. On mobile the URL bar
+    // showing/hiding fires visualViewport events continuously; without this guard
+    // every one reallocated the whole renderer + composer + bloom stack — the #1
+    // mobile flicker source. forceResize() still re-renders regardless of this.
+    if (w === _rzW && h === _rzH && dpr === _rzDpr) return;
+    _rzW = w; _rzH = h; _rzDpr = dpr;
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
     if (composer) {
@@ -6097,8 +6114,11 @@ const FinishShader = {
     window.addEventListener('resize', resize);
     if (window.visualViewport) {
       const vvRefit = () => requestAnimationFrame(resize);
+      // v627 — bind to 'resize' ONLY. Scrolling never changes the layout box, only
+      // animates the mobile URL bar; the old 'scroll' binding fired resize() every
+      // scroll frame (thrashing the composer). resize()'s change-guard absorbs the
+      // remaining URL-bar 'resize' flutter.
       window.visualViewport.addEventListener('resize', vvRefit, { passive: true });
-      window.visualViewport.addEventListener('scroll', vvRefit, { passive: true });
       canvas._orreryVV = vvRefit;
     }
     if ('IntersectionObserver' in window && !window.__orreryPreloaderOwns) {

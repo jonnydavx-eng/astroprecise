@@ -780,7 +780,10 @@
       setPanelLocked(panel, false);
       setTimeout(function () {
         var stickyRead = window.matchMedia && window.matchMedia('(min-width: 901px)').matches;
-        panel.scrollIntoView({ behavior: 'smooth', block: stickyRead ? 'nearest' : 'start' });
+        // v627 — honor reduced-motion (no smooth yank); scroll-margin-top on the panel
+        // keeps its header clear of the sticky masthead on mobile 'start' alignment.
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: stickyRead ? 'nearest' : 'start' });
       }, 80);
     }
 

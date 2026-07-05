@@ -1174,13 +1174,17 @@
        predictable. align-items stays stretch (children keep full width as before);
        the dial gets align-self:center so it stays centred at its capped size. */
     .sphere-hero .container { display: flex; flex-direction: column; }
-    .sphere-hero .container > * { order: 5; }              /* dial's sky headline / legend / sky-board default here, just under the dial */
+    .sphere-hero .container > * { order: 6; }              /* dial's sky headline / legend / sky-board default here, just under the dial */
     .sphere-hero .container > .sphere-hero__header { order: 0; }
     .sphere-hero .container > #sign-picker-primary       { order: 1; }
     .sphere-hero .container > #sign-reading-panel        { order: 2; }
-    .sphere-hero .container > #sphere-wrap                { order: 3; align-self: center; }
-    .sphere-hero .container > .sphere-controls           { order: 4; }
+    .sphere-hero .container > #dial-intro                { order: 3; }  /* v627 — distinct order, no brittle DOM-tie with the dial */
+    .sphere-hero .container > #sphere-wrap                { order: 4; align-self: center; }
+    .sphere-hero .container > .sphere-controls           { order: 5; }
     .sphere-hero .container > .sphere-ctas               { order: 9; }
+    /* v627 — reading panel clears the sticky masthead on select so its header never
+       lands hidden behind the nav (the "misalignment on tap" the owner saw on mobile). */
+    .sphere-hero .container > #sign-reading-panel { scroll-margin-top: 88px; }
 
     /* Primary sign picker — the obvious, expected control, list-first */
     .sign-picker-primary { margin: 0 0 1.4rem; }
