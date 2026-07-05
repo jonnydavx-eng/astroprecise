@@ -222,6 +222,8 @@ window.APChartShare = (function () {
     if (lat) lat.value = q.get('lat');
     if (lon) lon.value = q.get('lon');
     if (tz) tz.value = q.get('tz') || '';
+    var hs = document.getElementById('house-system');
+    if (hs && q.get('hs')) hs.value = q.get('hs');
     if (typeof onReady === 'function') onReady(q);
     return true;
   }

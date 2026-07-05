@@ -271,11 +271,21 @@ window.APAIAssistant = (function () {
     });
   }
 
+  function positionsHaveLons(positions) {
+    if (!positions) return false;
+    var n = 0;
+    Object.keys(positions).forEach(function (k) {
+      var p = positions[k];
+      if (p && (typeof p.lon === 'number' || typeof p.longitude === 'number')) n++;
+    });
+    return n >= 2;
+  }
+
   /** Lazy-load daily transit engine; prefer in-memory chart when it has positions. */
   function fetchDailyReading(forChart) {
-    if (forChart && forChart.positions) {
+    if (forChart && forChart.positions && positionsHaveLons(forChart.positions)) {
       return loadScript('js/oracle.js').then(function () {
-        var reading = { insight: null, aspects: forChart.aspects || [], hasChart: true };
+        var reading = { insight: null, aspects: [], hasChart: true };
         if (window.AstroOracle && typeof AstroOracle.getDailyInsight === 'function') {
           try { reading.insight = AstroOracle.getDailyInsight(forChart.positions); } catch (e) {}
         }

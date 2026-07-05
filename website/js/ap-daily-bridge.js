@@ -12,24 +12,32 @@ window.APDailyBridge = (function () {
 
   function buildChartFromSaved(chart) {
     if (!chart) return null;
+    if (window.AstroProfile && typeof AstroProfile.buildChartData === 'function') {
+      if (chart.birthDate || chart.date) {
+        var lat = parseFloat(chart.lat);
+        var lon = parseFloat(chart.lon);
+        if (isFinite(lat) && isFinite(lon)) {
+          try {
+            var full = AstroProfile.buildChartData({
+              name: chart.name,
+              date: chart.birthDate || chart.date,
+              time: chart.birthTime || chart.time,
+              lat: lat,
+              lon: lon,
+              city: chart.birthCity || chart.city,
+              tz: chart.tz,
+              houseSystem: chart.houseSystem,
+            });
+            if (full && full.positions) return full;
+          } catch (e) {}
+        }
+      }
+    }
     if (window.AstroProfile && typeof AstroProfile.hydrateChartFromSaved === 'function') {
       var hydrated = AstroProfile.hydrateChartFromSaved(chart);
       if (hydrated) return hydrated;
     }
-    if (!window.AstroProfile || !AstroProfile.buildChartData) return null;
-    if (!chart.birthDate && !chart.date) return null;
-    try {
-      return AstroProfile.buildChartData({
-        name: chart.name,
-        date: chart.birthDate || chart.date,
-        time: chart.birthTime || chart.time,
-        lat: chart.lat,
-        lon: chart.lon,
-        city: chart.birthCity || chart.city,
-        tz: chart.tz,
-        houseSystem: chart.houseSystem,
-      });
-    } catch (e) { return null; }
+    return null;
   }
 
   function savedChart() {

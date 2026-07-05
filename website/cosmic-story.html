@@ -265,14 +265,20 @@
             ? arr.filter(function (c) { return String(c.id) === String(activeId); })[0]
             : null;
           if (!raw) raw = arr[0];
-          if (raw && window.AstroProfile && typeof AstroProfile.buildChartData === 'function' && raw.birthDate) {
-            chart = AstroProfile.buildChartData({
-              name: raw.name, date: raw.birthDate, time: raw.birthTime,
-              lat: raw.lat, lon: raw.lon, city: raw.birthCity || raw.city,
-              tz: raw.tz, houseSystem: raw.houseSystem,
-            });
-          } else if (raw && raw.positions) {
-            chart = raw;
+          if (raw) {
+            if (window.AstroProfile && typeof AstroProfile.buildChartData === 'function' && raw.birthDate) {
+              chart = AstroProfile.buildChartData({
+                name: raw.name, date: raw.birthDate, time: raw.birthTime,
+                lat: raw.lat, lon: raw.lon, city: raw.birthCity || raw.city,
+                tz: raw.tz, houseSystem: raw.houseSystem,
+              });
+            }
+            if (!chart && window.AstroProfile && typeof AstroProfile.hydrateChartFromSaved === 'function') {
+              chart = AstroProfile.hydrateChartFromSaved(raw);
+            }
+            if (!chart && raw.positions) {
+              chart = raw;
+            }
           }
         }
       } catch (e) {}

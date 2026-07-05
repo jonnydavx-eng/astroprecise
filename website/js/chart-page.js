@@ -513,6 +513,16 @@
     }
     cityInput.value = q.get('c') || '';
     latInput.value  = q.get('lat'); lonInput.value = q.get('lon'); tzInput.value = q.get('tz') || '';
+    var hs = q.get('hs');
+    if (hs) {
+      var houseInput = document.getElementById('house-system');
+      if (houseInput) houseInput.value = hs;
+      document.querySelectorAll('.house-card').forEach(function (card) {
+        var on = card.dataset.value === hs;
+        card.classList.toggle('active', on);
+        card.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+    }
     document.dispatchEvent(new CustomEvent('astro:city-selected'));
     ['name-input', 'date-input', 'time-input'].forEach(id =>
       document.getElementById(id).dispatchEvent(new Event('input')));
