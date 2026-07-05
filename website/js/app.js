@@ -2168,10 +2168,10 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
   // permanently for search-engine renderers). Values mirror main.css so the
   // full stylesheet simply refines them when it arrives.
   function ensureSitePolishCss() {
-    if (document.getElementById('ap-css-site-polish')) return;
+    if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-site-polish.css?v=607';
+    l.href = 'css/ap-site-polish.css?v=614';
     l.id = 'ap-css-site-polish';
     document.head.appendChild(l);
   }

@@ -1,4 +1,10 @@
 # AstroPrecise — Cloudflare Pages response headers (deployed with the static site).
+# ⚠ INERT ON GITHUB PAGES (the current host — Server: GitHub.com ignores _headers).
+# Nothing user-facing may promise a CSP while we're on GitHub Pages; this file
+# becomes live only after a move to Cloudflare Pages. Note also: the AI panel
+# accepts a free-text BYOK endpoint, so if this CSP ever goes live its
+# connect-src allowlist (api.openai.com / openrouter.ai) will silently block
+# custom endpoints — widen or document at migration time.
 # CSP connect-src mirrors fetch() targets in js/fieldweather.js, js/instrument.js,
 # js/app.js (geocoding), js/chart-page.js (weather), and AP_MON email/checkout endpoints.
 # script-src: 'self' only (no unsafe-eval). Inline boot snippets need 'unsafe-inline'

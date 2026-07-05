@@ -132,7 +132,7 @@ window.APAIAssistant = (function () {
     var sun = signOf(chart, 'Sun');
     var moon = signOf(chart, 'Moon');
     if (/sun|identity|ego|purpose/.test(q) && sun) {
-      return 'Your Sun in ' + sun + ' describes core identity and vitality — the sign the Sun occupied at your birth, accurate to roughly an arcminute. For house-level nuance, ensure your birth time is as exact as you can make it.';
+      return 'Your Sun in ' + sun + ' describes core identity and vitality — the sign the Sun occupied at your birth, accurate to roughly an arcminute (1800–2200 CE). For house-level nuance, ensure your birth time is as exact as you can make it.';
     }
     if (/moon|emotion|feel|inner/.test(q) && moon) {
       return 'Your Moon in ' + moon + ' speaks to emotional temperament and what helps you feel secure. It changes sign every ~2.5 days — yours is fixed to your birth moment.';
@@ -183,7 +183,8 @@ window.APAIAssistant = (function () {
     return 'You are Astro Precise, a sophisticated privacy-first astrology guide. ' +
       'Write with intellectual credibility — precise, warm, never gimmicky. ' +
       'Never claim arc-second accuracy or observatory certification. ' +
-      'Use "roughly an arcminute" for precision claims. ' +
+      'Use "roughly an arcminute (1800–2200 CE)" for precision claims. ' +
+      'Never give a numeric compatibility score or percentage — describe measured aspects and their character instead. ' +
       'Task: ' + kind + '. Keep responses concise (under 220 words unless asked otherwise).';
   }
 
@@ -225,7 +226,13 @@ window.APAIAssistant = (function () {
       return Promise.resolve(deterministicExplain(chart, tone));
     }
     return callAI('Explain this natal chart:\n\n' + chartSummary(chart), tone)
-      .catch(function () { return deterministicExplain(chart, tone); });
+      .catch(function () { return fellBack(deterministicExplain(chart, tone)); });
+  }
+
+  // Honesty: when the cloud call fails we answer deterministically — say so,
+  // or the "AI on" badge would misattribute the text.
+  function fellBack(text) {
+    return text + '\n\n(Cloud AI was unreachable — this is the on-device deterministic reading.)';
   }
 
   function askChart(chart, question) {
@@ -234,7 +241,7 @@ window.APAIAssistant = (function () {
       return Promise.resolve(deterministicAsk(chart, question));
     }
     return callAI('Chart:\n' + chartSummary(chart) + '\n\nQuestion: ' + question, prefs.tone)
-      .catch(function () { return deterministicAsk(chart, question); });
+      .catch(function () { return fellBack(deterministicAsk(chart, question)); });
   }
 
   function dailyInsight(chart, reading) {
@@ -244,7 +251,7 @@ window.APAIAssistant = (function () {
     }
     var extra = reading && reading.insight ? '\nToday headline: ' + reading.insight.headline : '';
     return callAI('Give a concise daily insight connecting today\'s transits to this natal chart:\n' + chartSummary(chart) + extra, prefs.tone)
-      .catch(function () { return deterministicDaily(chart, reading); });
+      .catch(function () { return fellBack(deterministicDaily(chart, reading)); });
   }
 
   function shareSummary(chart) {
@@ -463,7 +470,7 @@ window.APAIAssistant = (function () {
             '<div><label>API key (stored only on this device)</label><input type="password" id="ap-ai-key" value="' + esc(prefs.apiKey) + '" autocomplete="off" placeholder="sk-…" /></div>' +
           '</div>' +
         '</details>' +
-        '<p class="ap-ai-privacy">Privacy: chart placements are sent to your chosen API only when you tap Generate with AI enabled. Core calculations always stay on your device. You can edit or delete AI output before sharing.</p>';
+        '<p class="ap-ai-privacy">Privacy: with AI enabled, tapping Generate sends your name, birth date, time, place and chart placements to the API endpoint you configured above (e.g. OpenAI) — nothing is sent until you tap. Core calculations always stay on your device. You can edit or delete AI output before sharing.</p>';
       bindPanel();
     }
 

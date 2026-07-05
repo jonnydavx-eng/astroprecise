@@ -99,6 +99,7 @@ window.APChartShare = (function () {
       '<button type="button" class="btn btn--outline btn--sm" id="copy-link-btn">Copy link</button>' +
       '<a class="btn btn--ghost btn--sm" id="open-view-btn" href="#" target="_blank" rel="noopener">Open view</a>' +
       '<button type="button" class="btn btn--ghost btn--sm" id="ai-share-summary-btn">AI summary</button>' +
+      '<p class="chart-share-strip__note" style="flex-basis:100%;margin:0.35rem 0 0;font-size:0.68rem;color:rgba(236,230,216,.55);">This link carries the birth details (name, date, time, place) so the chart can be recomputed — share it only with people you trust.</p>' +
       '<textarea id="chart-share-summary" class="ap-ai-ask-input" rows="2" hidden placeholder="Optional share blurb — edit before sending" style="width:100%;margin-top:0.5rem;font-size:0.8rem;"></textarea>';
     var confirm = document.getElementById('chart-save-confirmation');
     if (confirm && confirm.nextSibling) wrap.insertBefore(el, confirm.nextSibling);
