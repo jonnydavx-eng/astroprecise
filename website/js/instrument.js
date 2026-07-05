@@ -109,9 +109,10 @@
         ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
       cityDd.innerHTML = hits.map((c, i) => {
         const region = c.admin ? `${c.admin}, ${c.country}` : c.country;
-        return `<div class="autocomplete-option" data-i="${i}"><strong>${escHtml(c.name)}</strong>&nbsp;<span style="opacity:0.6">${escHtml(region)}</span></div>`;
+        return `<div class="autocomplete-option" role="option" id="ev-city-opt-${i}" data-i="${i}"><strong>${escHtml(c.name)}</strong>&nbsp;<span style="opacity:0.6">${escHtml(region)}</span></div>`;
       }).join('') + note;
       cityDd.hidden = false;
+      cityIn.setAttribute('aria-expanded', 'true');
       cityDd.querySelectorAll('.autocomplete-option').forEach((el, i) => {
         el.addEventListener('mousedown', ev2 => {
           ev2.preventDefault();
@@ -120,6 +121,8 @@
             ? `${hits[i].name}, ${hits[i].admin}`
             : `${hits[i].name}, ${hits[i].country}`;
           cityDd.hidden = true;
+          cityIn.setAttribute('aria-expanded', 'false');
+          cityIn.removeAttribute('aria-activedescendant');
         });
       });
     });
@@ -128,12 +131,19 @@
   cityIn.addEventListener('input', () => {
     pickedCity = null;
     const q = cityIn.value.trim();
-    if (q.length < 2) { citySeq++; cityDd.hidden = true; return; }
+    if (q.length < 2) {
+      citySeq++; cityDd.hidden = true;
+      cityIn.setAttribute('aria-expanded', 'false');
+      return;
+    }
     cityDd.innerHTML = '<div class="autocomplete-note">Searching the gazetteer…</div>';
     cityDd.hidden = false;
     runCitySearch(q);
   });
-  cityIn.addEventListener('blur', () => setTimeout(() => { cityDd.hidden = true; }, 150));
+  cityIn.addEventListener('blur', () => setTimeout(() => {
+    cityDd.hidden = true;
+    cityIn.setAttribute('aria-expanded', 'false');
+  }, 150));
 
   function openBirthPanel() {
     const panel = document.getElementById('sky-birth-panel');
@@ -216,7 +226,10 @@
     }
     tick();
     if (lcTimer) clearInterval(lcTimer);
-    lcTimer = setInterval(tick, 1000);
+    lcTimer = setInterval(() => {
+      if (document.hidden) return;
+      tick();
+    }, 1000);
 
     // reached-stars chips (last 12)
     const m = window.LightCone.milestones(birth);
@@ -1055,22 +1068,37 @@
     Rising: 'how you meet the world — your outer style',
   };
 
+  let _planetsNowCache = null;
+
+  function utcJulianNow() {
+    const now = new Date();
+    return E().julianDay(
+      now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+      now.getUTCHours(), now.getUTCMinutes(), 0
+    );
+  }
+
+  function planetsNow(jd) {
+    if (_planetsNowCache && _planetsNowCache.jd === jd) return _planetsNowCache.planets;
+    const planets = [
+      ['Sun', '☉', E().sunPosition(jd).lon],
+      ['Moon', '☽', E().moonPosition(jd).lon],
+      ['Mercury', '☿', E().mercuryPosition(jd).lon],
+      ['Venus', '♀', E().venusPosition(jd).lon],
+      ['Mars', '♂', E().marsPosition(jd).lon],
+      ['Jupiter', '♃', E().jupiterPosition(jd).lon],
+      ['Saturn', '♄', E().saturnPosition(jd).lon],
+    ];
+    _planetsNowCache = { jd, planets };
+    return planets;
+  }
+
   function renderTonightPlanets() {
     const host = document.getElementById('sky-tonight-planets');
     if (!host || !E()) return;
     try {
-      const now = new Date();
-      const jd = E().julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
-        now.getHours(), now.getMinutes(), 0);
-      const planets = [
-        ['Sun', '☉', E().sunPosition(jd).lon],
-        ['Moon', '☽', E().moonPosition(jd).lon],
-        ['Mercury', '☿', E().mercuryPosition(jd).lon],
-        ['Venus', '♀', E().venusPosition(jd).lon],
-        ['Mars', '♂', E().marsPosition(jd).lon],
-        ['Jupiter', '♃', E().jupiterPosition(jd).lon],
-        ['Saturn', '♄', E().saturnPosition(jd).lon],
-      ];
+      const jd = utcJulianNow();
+      const planets = planetsNow(jd);
       host.innerHTML = '<table class="sky-planets-table"><thead><tr><th scope="col">Planet</th><th scope="col">Sign</th><th scope="col">Degree</th></tr></thead><tbody>' +
         planets.map(([name, glyph, lon]) => {
           const sign = E().signOf(lon);
@@ -1326,16 +1354,10 @@
     if (frame === 'raw') { tbl.innerHTML = ''; return; }
     // ayanamsha (Lahiri): ~23.853° at J2000, drifting +50.29″/yr
     const now = new Date();
-    const yearFrac = now.getFullYear() + now.getMonth() / 12;
+    const yearFrac = now.getUTCFullYear() + now.getUTCMonth() / 12;
     const ayan = 23.853 + (yearFrac - 2000) * (50.29 / 3600);
-    const jd = E().julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
-                             now.getHours(), now.getMinutes(), 0);
-    const planets = [
-      ['Sun', '☉', E().sunPosition(jd).lon], ['Moon', '☽', E().moonPosition(jd).lon],
-      ['Mercury', '☿', E().mercuryPosition(jd).lon], ['Venus', '♀', E().venusPosition(jd).lon],
-      ['Mars', '♂', E().marsPosition(jd).lon], ['Jupiter', '♃', E().jupiterPosition(jd).lon],
-      ['Saturn', '♄', E().saturnPosition(jd).lon],
-    ];
+    const jd = utcJulianNow();
+    const planets = planetsNow(jd);
     tbl.innerHTML = planets.map(([name, glyph, lon]) => {
       const adj = frame === 'sidereal' ? ((lon - ayan) % 360 + 360) % 360 : lon;
       const sign = E().signOf(adj);
@@ -1352,9 +1374,14 @@
   }
 
   document.querySelectorAll('.precession-toggle .glow-btn').forEach(btn => {
+    btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.precession-toggle .glow-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.precession-toggle .glow-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       renderFrame(btn.dataset.frame);
     });
   });
@@ -1525,7 +1552,7 @@
     };
     Object.keys(MAP).forEach(k => {
       const p = raw.positions[k];
-      if (p) pos[MAP[k]] = { lon: p.lon, sign: p.sign, degree: p.degree };
+      if (p) pos[MAP[k]] = { lon: p.longitude, sign: p.sign, degree: p.degree };
     });
     const risingSign = Number.isFinite(raw.ascendant) ? E().signOf(raw.ascendant) : null;
     const [birthDate, birthTime] = event_.dt.split('T');
@@ -1576,7 +1603,6 @@
   function boot() {
     event_ = loadEvent();
     renderTonightPlanets();
-    renderFrame('tropical');
     initTimeTravel();
     wireZenithCardBtn();
     wireDailySkyCardBtn();
@@ -1616,6 +1642,18 @@
     }, { rootMargin: '0px 0px 200px 0px', threshold: 0 });
     io.observe(target);
     setTimeout(start, 2500);
+  }
+
+  const precessionHost = document.getElementById('sec-precession');
+  if (precessionHost && 'IntersectionObserver' in window) {
+    let frameBooted = false;
+    const frameIo = new IntersectionObserver((entries) => {
+      if (frameBooted || !entries.some(e => e.isIntersecting)) return;
+      frameBooted = true;
+      frameIo.disconnect();
+      renderFrame('tropical');
+    }, { rootMargin: '0px 0px 120px 0px', threshold: 0 });
+    frameIo.observe(precessionHost);
   }
 
   window.APInstrument = { chartForAI, getEvent: () => event_ };

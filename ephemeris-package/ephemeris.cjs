@@ -2,7 +2,7 @@
 'use strict';
 
 // =============================================================================
-// AstroPrecise Ephemeris Engine
+// Astro Precise Ephemeris Engine
 // Based on Meeus "Astronomical Algorithms" 2nd Edition
 // =============================================================================
 
@@ -224,9 +224,20 @@ function porphyryOrEqual(ascDeg, mcDeg) {
   return cuspsValid(p) ? p : equalCusps(ascDeg);
 }
 
+// Map UI labels ("Whole Sign", prefs, profile) to engine tokens.
+// Koch and other unsupported systems fall back to Placidus (documented).
+function normalizeHouseSystem(system) {
+  const s = String(system || 'placidus').toLowerCase().replace(/\s+/g, ' ').trim();
+  if (s === 'whole' || s === 'whole sign') return 'whole';
+  if (s === 'equal' || s === 'equal house') return 'equal';
+  if (s === 'porphyry') return 'porphyry';
+  if (s === 'placidus') return 'placidus';
+  return 'placidus';
+}
+
 // House-system dispatcher. Default Placidus (Porphyry → equal-house fallback chain).
 function houseCusps(system, lst, lat, eps, ascDeg, mcDeg) {
-  switch ((system || 'placidus').toLowerCase()) {
+  switch (normalizeHouseSystem(system)) {
     case 'whole': {
       const s0 = Math.floor(ascDeg / 30) * 30;
       return Array.from({ length: 12 }, (_, i) => mod360(s0 + i * 30));

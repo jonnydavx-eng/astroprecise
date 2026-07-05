@@ -67,6 +67,13 @@
       background: transparent;
       border: 1px solid rgba(194, 160, 94,0.4);
       color: var(--gold-pale);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+      touch-action: manipulation;
       padding: 0.65rem 1.4rem;
       border-radius: 999px;
       font-size: 0.72rem;
@@ -81,6 +88,11 @@
       box-shadow: 0 0 24px rgba(194, 160, 94,0.22), inset 0 0 12px rgba(194, 160, 94,0.07);
       border-color: var(--gold);
       background: rgba(194, 160, 94,0.05);
+    }
+    .glow-btn:focus-visible {
+      outline: 2px solid var(--gold, #C2A05E);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 3px rgba(194, 160, 94, 0.22);
     }
     .glow-btn:disabled { opacity: 0.4; cursor: wait; }
     .glow-btn.active {
@@ -464,7 +476,7 @@
     .cw-note { margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--silver); text-align: center; }
     .cw-unavail { margin: 0; font-size: 0.8rem; color: #f87171; text-align: center; }
     .cw-info {
-      width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%;
+      width: 44px; height: 44px; flex: 0 0 44px; border-radius: 50%;
       border: 1px solid rgba(194, 160, 94,0.4); background: transparent; color: var(--gold);
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.72rem;
       line-height: 1; cursor: pointer; transition: background 0.2s, border-color 0.2s;
@@ -566,7 +578,13 @@
       text-transform: uppercase;
       text-decoration: none;
       color: var(--silver);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
       padding: 0.4rem 0.85rem;
+      touch-action: manipulation;
       border: 1px solid rgba(168, 158, 136, 0.18);
       border-radius: 999px;
       transition: border-color 0.2s, color 0.2s, background 0.2s;
@@ -624,7 +642,11 @@
       text-decoration: none;
       color: var(--silver-dim);
       white-space: nowrap;
-      padding: 0.35rem 0;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.35rem 0.75rem;
+      touch-action: manipulation;
       border-bottom: 1px solid transparent;
       transition: color 0.2s, border-color 0.2s;
     }
@@ -905,3 +927,15 @@
 
     #sky-your[hidden],
     #sky-your-deep[hidden] { display: none !important; }
+
+    #sky-tonight,
+    #sky-your,
+    #sky-explore,
+    #ev-personalize-toggle {
+      scroll-margin-top: calc(var(--nav-height, 72px) + 3rem);
+    }
+    @media (max-width: 1023px) {
+      .instrument-section[id] {
+        scroll-margin-bottom: calc(var(--bottom-nav-h, 72px) + env(safe-area-inset-bottom, 0px) + 12px);
+      }
+    }

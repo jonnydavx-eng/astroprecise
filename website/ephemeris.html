@@ -55,7 +55,7 @@
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/ephemeris-critical.css" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ephemeris-page.css?v=613" />
+  <link rel="stylesheet" href="css/ephemeris-page.css?v=614" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=597" />
   <script src="js/defer-page-css.js" defer></script>
@@ -159,7 +159,7 @@
               </div>
               <div class="full">
                 <label class="form-label" for="ev-city">Birth place <span class="required">*</span></label>
-                <input type="text" id="ev-city" class="form-input" placeholder="Town or city&hellip;" autocomplete="off" />
+                <input type="text" id="ev-city" class="form-input" placeholder="Town or city&hellip;" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="ev-city-dd" aria-expanded="false" />
                 <div class="autocomplete-dropdown" id="ev-city-dd" role="listbox" hidden></div>
               </div>
               <div class="full sky-birth-panel__actions">
@@ -607,7 +607,7 @@
   <script src="js/fieldweather.js" defer></script>
   <script src="js/oracle.js" defer></script>
   <script src="js/profile.js" defer></script>
-  <script src="js/ap-nav-model.js"></script>
+  <script src="js/ap-nav-model.js" defer></script>
   <script src="js/app.js" defer></script>
   <script src="js/ephemeris-lazy-modules.js" defer></script>
 

@@ -26,6 +26,13 @@
   .page-instrument .navbar__nav { display: none; }
 }
 
+.page-instrument .navbar__logo {
+  min-height: 44px;
+  align-items: center;
+  padding-block: 6px;
+  box-sizing: border-box;
+}
+
 body.page-instrument {
   --font-display: Georgia, 'Times New Roman', serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

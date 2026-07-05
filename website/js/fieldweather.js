@@ -66,10 +66,23 @@ window.FieldWeather = (() => {
     throw new Error('no parsable Kp data');
   }
 
+  let _windCache = null;
+  let _windInflight = null;
+  async function fetchPropagatedWind() {
+    if (_windCache && Date.now() - _windCache.at < 60000) return _windCache.rows;
+    if (_windInflight) return _windInflight;
+    _windInflight = fetchJson(WIND_URL).then((rows) => {
+      _windCache = { rows, at: Date.now() };
+      _windInflight = null;
+      return rows;
+    }).catch((e) => { _windInflight = null; throw e; });
+    return _windInflight;
+  }
+
   async function getSolarWind() {
     // propagated-solar-wind header: [time_tag, speed, density, temp, bx, by, bz, bt, …]
     // dual-format tolerance: array rows or {speed, density, …} objects.
-    const rows = await fetchJson(WIND_URL);
+    const rows = await fetchPropagatedWind();
     const series = Array.isArray(rows[0]) ? downsampleCol(rows, 1) : [];
     for (let i = rows.length - 1; i >= 0; i--) {
       const r = rows[i];
@@ -88,7 +101,7 @@ window.FieldWeather = (() => {
   async function getBz() {
     // propagated-solar-wind header: [time_tag, speed, density, temp, bx, by, bz, bt, …]
     // Bz (GSM) is the single best geomagnetic-coupling indicator.
-    const rows = await fetchJson(MAG_URL);
+    const rows = await fetchPropagatedWind();
     const series = Array.isArray(rows[0]) ? downsampleCol(rows, 6) : [];
     for (let i = rows.length - 1; i >= 0; i--) {
       const r = rows[i];
@@ -157,8 +170,8 @@ window.FieldWeather = (() => {
 
   function getLunar(date) {
     const E = window.AstroEphemeris;
-    const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(),
-                           date.getHours(), date.getMinutes(), 0);
+    const jd = E.julianDay(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(),
+                           date.getUTCHours(), date.getUTCMinutes(), 0);
     const elong = ((E.moonPosition(jd).lon - E.sunPosition(jd).lon) % 360 + 360) % 360;
     const illum = (1 - Math.cos(elong * Math.PI / 180)) / 2;
     const waxing = elong < 180;

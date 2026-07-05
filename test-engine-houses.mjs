@@ -102,6 +102,13 @@ ok('ASC(LST=0, lat=0) = 90° (0 Cancer)',
      c.houses.every(h => Math.abs(h % 30) < 0.001 || Math.abs((h % 30) - 30) < 0.001));
 }
 
+// Profile UI label "Whole Sign" must map to whole-sign cusps (not Placidus default).
+{
+  const c = E.calculateNatalChart(2000,1,1,18,0,51.5,0,'Whole Sign');
+  ok('Whole Sign label → whole-sign H1',
+     Math.abs(c.houses[0] - Math.floor(c.ascendant/30)*30) < 0.001, c.houses[0]);
+}
+
 // ── Porphyry: cusps 11 & 12 trisect the MC→ASC ecliptic quadrant ────────────
 {
   const c = E.calculateNatalChart(2000,1,1,18,0,51.5,0,'porphyry');

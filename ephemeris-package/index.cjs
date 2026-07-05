@@ -28,4 +28,8 @@ function allPlanetPositions(jd) {
 
 // Spread order matters: this 12-body allPlanetPositions (adds Chiron and
 // NorthNode, guarantees `lon` on every entry) shadows the engine's 10-body one.
-module.exports = { ...E, allPlanetPositions };
+const out = { ...E, allPlanetPositions };
+out.planetLongitude = E.planetLongitude;
+out.geocentricPlanetLongitude = E.planetLongitude;
+out.planetPosition = E.planetLongitude;
+module.exports = out;

@@ -17,6 +17,7 @@ const PAGES = [
   { id: 'shop', path: '/shop.html' },
   { id: 'cosmic-story', path: '/cosmic-story.html' },
   { id: 'transits', path: '/transits.html' },
+  { id: 'ephemeris', path: '/ephemeris.html' },
   { id: 'profile', path: '/profile.html' },
   { id: 'leo', path: '/leo.html' },
 ];

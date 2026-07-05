@@ -16,6 +16,7 @@ export const {
   sunPosition,
   moonPosition,
   moonDistance,
+  planetLongitude,
   geocentricPlanetLongitude,
   planetPosition,
   allPlanetPositions,
