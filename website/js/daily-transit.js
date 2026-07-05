@@ -303,6 +303,7 @@
       mode: natal ? natal.mode : 'sky',
       insight: insight,
       transits: transits,
+      natal: natalFlat,      // REAL natal longitudes { Sun: deg, ... } (chart-computed)
       aspects: aspectRows,
       sunSign: insight && insight.meta ? insight.meta.sunSign : (transits ? signOf(transits.Sun) : ''),
       moonSign: insight && insight.meta ? insight.meta.moonSign : (transits ? signOf(transits.Moon) : '')
@@ -465,6 +466,31 @@
         'Saved Sun &amp; Moon only — cast a full chart for every transit</span></div>';
     }
 
+    // "Show me in the sky" — natal edition. Homepage-only: window.APShowInSky
+    // is exported by home-daily.js (both files load on index; on transits.html
+    // there is no hero orrery, so no button). Draws the TOP transit against the
+    // saved chart's REAL computed natal longitude on the engine's geocentric
+    // zodiac ring. HONESTY: bLon comes from reading.natal (AstroProfile
+    // buildChartData positions, or the ap_natal_pins longitudes) — never a sign
+    // midpoint — and the label says 'natal', not 'solar chart'.
+    var skyBtnHtml = '';
+    var skyApi = window.APShowInSky;
+    var topA = reading.aspects && reading.aspects.length ? reading.aspects[0] : null;
+    if (skyApi && typeof skyApi.show === 'function' && topA &&
+        reading.natal && typeof reading.natal[topA.natal] === 'number') {
+      var natLon = reading.natal[topA.natal]; // real longitude, degrees 0–360
+      var natLabel = 'your ' + topA.natal + ' · natal';
+      try { if (skyApi.ensureCss) skyApi.ensureCss(); } catch (e) {}
+      skyBtnHtml = '<button type="button" class="home-daily__sky-btn" ' +
+        'data-sky-planet="' + esc(topA.transit.toLowerCase()) + '" ' +
+        'data-sky-aspect="' + esc(topA.aspect.toLowerCase()) + '" ' +
+        'data-sky-blon="' + natLon + '" ' +
+        'data-sky-blabel="' + esc(natLabel) + '">' +
+        '<span aria-hidden="true">✦</span> Show ' + esc(topA.transit) + ' ' +
+        esc(topA.aspect.toLowerCase()) + ' your ' + esc(topA.natal) + ' in the sky' +
+      '</button>';
+    }
+
     var metaChips = '';
     if (reading.sunSign || reading.moonSign) {
       metaChips = '<div class="dt-meta">' +
@@ -508,10 +534,25 @@
         '<h3 class="dt-card__headline">' + esc(headline) + '</h3>' +
         (body ? '<p class="dt-card__body">' + esc(body) + '</p>' : '') +
         aspectsHtml +
+        skyBtnHtml +
         metaChips +
         keywordsHtml +
         teaseHtml +
       '</div>';
+
+    if (skyBtnHtml) {
+      var sb = target.querySelector('.home-daily__sky-btn');
+      if (sb) {
+        sb.addEventListener('click', function () {
+          skyApi.show(
+            sb.getAttribute('data-sky-planet'),
+            sb.getAttribute('data-sky-aspect'),
+            parseFloat(sb.getAttribute('data-sky-blon')),
+            { bLabel: sb.getAttribute('data-sky-blabel'), natalMode: 'natal' }
+          );
+        });
+      }
+    }
   }
 
   function renderTease() {

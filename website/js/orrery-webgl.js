@@ -6545,7 +6545,7 @@ const FinishShader = {
   // GEOMETRY HONESTY: marker positions come ONLY from geocentric ecliptic longitude
   // (aLon, bLon) via scenePos(R,lon,0). The chord is drawn between those two ring
   // markers, so the angle it subtends at Earth IS angularSeparation(aLon,bLon).
-  function buildAspectView(idA, idB, aLon, bLon, angle, aspect, bLabel, solar) {
+  function buildAspectView(idA, idB, aLon, bLon, angle, aspect, bLabel, solar, natal) {
     disposeAspectView();
     const R = ASPECT_RING_R;
     const grp = new THREE.Group();
@@ -6647,7 +6647,9 @@ const FinishShader = {
     grp.add(angLabel);
 
     // 8) The honesty caption, engraved BELOW the ring (south point, pushed out + down).
-    const capText = ASPECT_CAPTION + (solar ? '  ·  (solar chart: Sun = assumed sign-midpoint)' : '');
+    const capText = ASPECT_CAPTION
+      + (solar ? '  ·  (solar chart: Sun = assumed sign-midpoint)'
+        : natal ? '  ·  (natal: position computed from your saved chart)' : '');
     const cap = makeAspectLabel(capText, { font: 22, baseH: 0.66, color: 'rgba(236,230,216,0.82)' });
     cap.position.copy(scenePos(R * 1.3, 270, 0));
     cap.position.y -= 0.4;
@@ -6759,11 +6761,13 @@ const FinishShader = {
       const jd = currentAspectJd();
       // TRUE geocentric ecliptic longitude of the transiting body (never a scene angle).
       const aLon = norm360(geoLonOf(idA, jd));
-      // idB marker: an explicit bLon (the solar-chart "your Sun" sign-midpoint) overrides
-      // the true geocentric longitude of idB.
+      // idB marker: an explicit bLon (a solar-chart sign-midpoint or a natal
+      // chart's REAL computed longitude) overrides the true geocentric longitude of idB.
       let bLon;
       const solar = opts.natalMode === 'solar';
-      if (typeof opts.bLon === 'number' && isFinite(opts.bLon)) {
+      const natal = opts.natalMode === 'natal';
+      const bOverride = typeof opts.bLon === 'number' && isFinite(opts.bLon);
+      if (bOverride) {
         bLon = norm360(opts.bLon);
       } else {
         const raw = geoLonOf(idB, jd);
@@ -6775,15 +6779,18 @@ const FinishShader = {
       const angleRaw = angularSeparation(aLon, bLon);
       const angle = Math.round(angleRaw);
 
-      buildAspectView(idA, idB, aLon, bLon, angle, opts.aspect, opts.bLabel, solar);
+      buildAspectView(idA, idB, aLon, bLon, angle, opts.aspect, opts.bLabel, solar, natal);
       setFocusHighlight(idA);           // brass ring on the transiting body...
-      // ...and a parallel brass ring on idB (unless it's the abstract solar point).
-      if (!solar && meshes[idB]) {
+      // ...and a parallel brass ring on idB — but ONLY when the marker really is
+      // idB's live geocentric position. When bLon is overridden (solar midpoint
+      // or natal chart point) the live mesh is NOT the aspect partner, so
+      // ringing it would be dishonest.
+      if (!bOverride && meshes[idB]) {
         const g2 = meshes[idB];
         const ring2 = ensureFocusRing(g2, (BODIES.find((b) => b.id === idB) || { size: 0.6 }).size * 3.8);
         ring2.visible = true;
         g2.userData._aspectRing = ring2;
-      } else if ((idB === 'sun') && !solar && sunMesh) {
+      } else if ((idB === 'sun') && !bOverride && sunMesh) {
         sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
         sunFocusRing.visible = true;
       }
@@ -6794,7 +6801,10 @@ const FinishShader = {
       frameAspectCamera();
 
       // Verification hook — stash the values actually placed on the ring.
-      window.__apLastAspect = { idA, idB, aLon, bLon, angle, angleRaw, aspect: opts.aspect || null, jd };
+      window.__apLastAspect = {
+        idA, idB, aLon, bLon, angle, angleRaw, aspect: opts.aspect || null, jd,
+        bLabel: opts.bLabel || null, natalMode: opts.natalMode || null,
+      };
       return true;
     } catch (err) {
       console.warn('[orrery] focusAspect failed — degrading to focusPlanet:', err);

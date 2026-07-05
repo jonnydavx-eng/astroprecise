@@ -104,6 +104,8 @@
       '.home-daily__sky-btn{display:inline-flex;align-items:center;gap:.45em;margin:0 0 1rem;padding:.5rem .9rem;border:1px solid rgba(194,160,94,.4);border-radius:10px;background:rgba(26,34,48,.5);color:var(--brass-bright,#CDAE6A);font:600 .82rem/1 var(--font-ui,Inter),sans-serif;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}' +
       '.home-daily__sky-btn:hover{border-color:var(--brass-vivid,#D8B978);background:rgba(194,160,94,.14);transform:translateY(-1px)}' +
       '.home-daily__sky-btn span{color:var(--brass,#C2A05E)}' +
+      '.home-daily__save-view{position:fixed;left:50%;bottom:1.1rem;transform:translateX(-50%);z-index:80;margin:0;background:rgba(18,24,38,.92);box-shadow:0 6px 18px rgba(0,0,0,.45)}' +
+      '.home-daily__save-view:hover{transform:translateX(-50%) translateY(-1px)}' +
       '.home-daily__prompt{color:rgba(236,230,216,.7);text-align:center;margin:.2rem 0 0;font-size:.9rem}';
     var st = document.createElement('style');
     st.id = 'home-daily-css';
@@ -245,20 +247,30 @@
   // still loading, or 2D fallback) it focuses the transiting planet so the
   // button is never dead. The honest geometry (angles true, distances
   // schematic) lives in the engine's focusAspect overlay + caption.
-  function showInSky(planet, aspect, bLon) {
+  //
+  // `extra` (optional) lets the personalised natal card reuse this flow:
+  //   { natalMode: 'natal', bLabel: 'your Moon · natal' } — bLon must then be
+  //   the saved chart's REAL computed longitude, never a sign midpoint.
+  function showInSky(planet, aspect, bLon, extra) {
     if (!planet) return;
     var hero = document.getElementById('heroChapter');
     if (hero) { try { hero.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { hero.scrollIntoView(); } }
     if (window.__requestFullOrrery) {
       try { window.__requestFullOrrery({ urgent: true, showLoading: false }).catch(function () {}); } catch (e) {}
     }
-    var opts = { aspect: aspect, natalMode: 'solar', bLabel: 'your Sun · solar chart' };
+    var opts = {
+      aspect: aspect,
+      natalMode: (extra && extra.natalMode) || 'solar',
+      bLabel: (extra && extra.bLabel) || 'your Sun · solar chart'
+    };
     if (typeof bLon === 'number' && !isNaN(bLon)) opts.bLon = bLon;
     var didFallback = false;
     (function poll(n) {
       var O = window.Orrery3D;
       if (O && typeof O.focusAspect === 'function') {
-        try { O.focusAspect(planet, 'sun', opts); } catch (e) {}
+        var ok = false;
+        try { ok = O.focusAspect(planet, 'sun', opts) === true; } catch (e) {}
+        if (ok) showSaveViewBtn();
         return;
       }
       if (!didFallback && O && typeof O.focusPlanet === 'function') {
@@ -267,6 +279,51 @@
       }
       if (n < 50) setTimeout(function () { poll(n + 1); }, 150);
     })(0);
+  }
+
+  // Shared with daily-transit.js (both load on index): the personalised card
+  // reuses this exact scroll → promote → focusAspect flow for natal aspects,
+  // and ensureCss() gives it the .home-daily__sky-btn styling.
+  window.APShowInSky = { show: showInSky, ensureCss: injectCss };
+
+  // ── "Save this view" — while the aspect ring is on screen, offer a one-click
+  // PNG export of the engine's frame. The engine draws the honesty caption and
+  // aspect label IN-SCENE, so the capture is self-labelling — no extra
+  // annotation needed. Feature-detected: skipped entirely on the 2D fallback.
+  function removeSaveViewBtn() {
+    var b = document.getElementById('ap-save-sky-view');
+    if (b) { if (b._apWatch) clearInterval(b._apWatch); b.remove(); }
+  }
+  function showSaveViewBtn() {
+    var O = window.Orrery3D;
+    if (!O || O.isWebGL !== true || typeof O.captureFrame !== 'function') return;
+    injectCss();
+    removeSaveViewBtn();
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.id = 'ap-save-sky-view';
+    b.className = 'home-daily__sky-btn home-daily__save-view';
+    b.innerHTML = '<span aria-hidden="true">✧</span> Save this view';
+    b.addEventListener('click', function () {
+      try {
+        var cnv = O.captureFrame({ scale: 2 });
+        if (!cnv) return;
+        var url = cnv.toDataURL('image/png');
+        var d = new Date();
+        var name = 'astroprecise-sky-' + d.getFullYear() + '-' +
+          ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + '.png';
+        window.__apLastCapture = { bytes: url.length, name: name }; // verification hook
+        var a = document.createElement('a');
+        a.href = url; a.download = name;
+        document.body.appendChild(a); a.click(); a.remove();
+      } catch (e) {}
+    });
+    document.body.appendChild(b);
+    // Visible ONLY while the aspect view is active (the engine auto-retires the
+    // ring after ~9s, deleting window.__apLastAspect — we track that hook).
+    b._apWatch = setInterval(function () {
+      if (!window.__apLastAspect) removeSaveViewBtn();
+    }, 400);
   }
 
   // ── PERSONALISED (saved chart): real transit-to-natal card ────────────────
