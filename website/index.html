@@ -2,6 +2,8 @@
 <html lang="en" dir="ltr" class="ap-enchanted">
 <head>
   <meta charset="UTF-8">
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#0C1016}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Astro Precise &mdash; The Sky, Live. Your Chart, Exact.</title>
   <meta name="description" content="The planets on this page are real &mdash; computed live in your browser, accurate to about an arcminute (1800&ndash;2200 CE). Free precise birth charts: no account, private, computed on your device.">
@@ -1990,7 +1992,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     } catch (err) {}
     if (dirty) return;
     window.__apSwReloaded = 1;
-    location.reload();
+    if (document.visibilityState === 'hidden') location.reload(); /* only refresh backgrounded tabs — never a visible reload flash while the visitor is looking */
   });
 })();
 </script>

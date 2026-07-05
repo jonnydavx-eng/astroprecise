@@ -3831,16 +3831,19 @@ const FinishShader = {
   function makeStarPointsMaterial() {
     return new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, vertexColors: true,
-      uniforms: { uTime: { value: 0 }, uFade: { value: 1 }, uSizeMul: { value: 1 } },
+      uniforms: { uTime: { value: 0 }, uFade: { value: 1 }, uSizeMul: { value: 1 }, uTwinkle: { value: 1 } },
       vertexShader: `
         attribute float size;
         varying vec3 vColor;
         uniform float uTime;
         uniform float uSizeMul;
+        uniform float uTwinkle;
         void main() {
           vColor = color;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          float tw = 0.85 + 0.15 * sin(uTime * 0.0015 + position.x * 0.04);
+          // uTwinkle=1 → stars scintillate; uTwinkle=0 → steady (dust bands must NOT
+          // scintillate — out-of-phase size flicker across a dense band reads as a glitch).
+          float tw = mix(1.0, 0.85 + 0.15 * sin(uTime * 0.0015 + position.x * 0.04), uTwinkle);
           gl_PointSize = size * tw * uSizeMul * (280.0 / -mv.z);
           gl_Position = projectionMatrix * mv;
         }`,
@@ -3942,6 +3945,7 @@ const FinishShader = {
     gb.setAttribute('size', new THREE.BufferAttribute(bs, 1));
     const mb = makeStarPointsMaterial();
     mb.uniforms.uSizeMul.value = 1.15;       // slightly bigger soft dust motes
+    mb.uniforms.uTwinkle.value = 0;          // steady dust — no scintillation shimmer
     milkyWayBand = new THREE.Points(gb, mb); scene.add(milkyWayBand);
   }
 

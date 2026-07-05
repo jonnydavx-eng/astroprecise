@@ -1740,7 +1740,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     } catch (err) {}
     if (dirty) return;
     window.__apSwReloaded = 1;
-    location.reload();
+    if (document.visibilityState === 'hidden') location.reload(); /* only refresh backgrounded tabs — never a visible reload flash while the visitor is looking */
   });
 })();
 
