@@ -279,11 +279,35 @@ window.Interpretations = (() => {
     return HOUSE_MEANINGS.find(h => h.number === number) || HOUSE_MEANINGS[0];
   }
 
+  // Aspect dynamics for the composed fallback — so an aspect with no curated entry
+  // still reads as a real, specific line (naming both planets + the aspect's nature)
+  // instead of the old repeated "adds texture and meaning" filler.
+  const ASPECT_DYNAMIC = {
+    conjunction: 'fuse and intensify one another',
+    sextile: 'open up easy opportunities together',
+    square: 'create a productive tension that pushes you to grow',
+    trine: 'flow together with natural ease',
+    opposition: 'pull in opposite directions, asking you for balance',
+    quincunx: 'ask for constant small adjustments',
+    inconjunct: 'ask for constant small adjustments',
+    semisextile: 'nudge each other in quiet, subtle ways',
+    sesquiquadrate: 'create a low, persistent friction to work through',
+    quintile: 'spark a creative, original edge between them',
+  };
+  function aspectFallback(aspectType, p1, p2) {
+    const cap = (s) => String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1);
+    const dyn = ASPECT_DYNAMIC[String(aspectType || '').toLowerCase()]
+      || 'shape each other in a way that colours your chart';
+    return `${cap(p1)} and ${cap(p2)} ${dyn}.`;
+  }
+
   function getAspectMeaning(aspectType, p1, p2) {
     const key   = `${p1}-${p2}`;
     const group = ASPECT_MEANINGS[aspectType];
-    if (!group) return 'This planetary relationship adds texture and meaning to your chart.';
-    return group[key] || group[`${p2}-${p1}`] || group.default;
+    const specific = group && (group[key] || group[`${p2}-${p1}`] || group.default);
+    // Use curated text only if it's real (never the old generic filler).
+    if (specific && !/adds texture and meaning/i.test(specific)) return specific;
+    return aspectFallback(aspectType, p1, p2);
   }
 
   function getRetrogradePeriods() { return RETROGRADE_SCHEDULE; }
