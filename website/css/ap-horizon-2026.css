@@ -3443,6 +3443,23 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
   .ap-award-511 #heroChapter .hero-copy .hero-solar-trust { justify-content: center; }
 }
 
+/* v633 — phone: stack the trust checks as centred lines; the long "arcminute …
+   (VSOP87)" item was wrapping with its ✓ detached to the far left. Block li +
+   inline ✓ lets the text wrap centred and keeps the tick with its line. */
+@media (max-width: 640px) {
+  .ap-award-511 #heroChapter .hero-copy .hero-solar-trust {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .ap-award-511 #heroChapter .hero-copy .hero-solar-trust li {
+    display: block;
+    text-align: center;
+    max-width: 32ch;
+  }
+  .ap-award-511 #heroChapter .hero-copy .hero-solar-trust li span { margin-right: 4px; }
+}
+
 /* ── v570c — blend the engine canvas into the void, console spacing ── */
 
 /* The WebGL canvas clears to its own near-void shade; on the unboxed stage
