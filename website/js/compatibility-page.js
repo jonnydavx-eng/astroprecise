@@ -832,6 +832,29 @@
             if (d1 && !d1.value && meta.birthDate) d1.value = meta.birthDate.split('T')[0];
             var t1 = document.getElementById('person1-time');
             if (t1 && !t1.value && meta.birthTime) t1.value = meta.birthTime;
+            // v631 — also restore city + coords so Person A is COMPLETE (readPerson
+            // needs lat/lon/tz); without this the visitor was forced to re-type their
+            // own city even though we already hold it. Only their real saved values.
+            var city1 = document.getElementById('person1-city');
+            var lat1 = document.getElementById('person1-lat');
+            var lon1 = document.getElementById('person1-lon');
+            var tz1 = document.getElementById('person1-tz');
+            var cityName = meta.birthCity || meta.city || '';
+            if (city1 && !city1.value && cityName) city1.value = cityName;
+            if (lat1 && !lat1.value && meta.lat != null && meta.lat !== '') lat1.value = meta.lat;
+            if (lon1 && !lon1.value && meta.lon != null && meta.lon !== '') lon1.value = meta.lon;
+            if (tz1 && !tz1.value && meta.tz) tz1.value = meta.tz;
+            // Quiet "this is you" cue so the prefill is understood, not surprising.
+            if (cityName && (lat1 && lat1.value)) {
+              var pcard = document.querySelector('.compat-person-card--p1 h3');
+              if (pcard && !document.getElementById('p1-you-tag')) {
+                var tag = document.createElement('span');
+                tag.id = 'p1-you-tag';
+                tag.textContent = 'This is you — edit if needed';
+                tag.style.cssText = 'display:block;font-size:0.62rem;letter-spacing:0.04em;color:#8891AA;font-weight:400;margin-top:4px;';
+                pcard.appendChild(tag);
+              }
+            }
           }
         }
       } catch(e) {}
