@@ -107,7 +107,9 @@ html.ap-fonts-ready .page-shop .shop-section-title {
   color: var(--silver);
   font-size: var(--text-sm);
   line-height: 1.6;
-  margin: calc(var(--space-3) * -1) auto var(--space-6);
+  /* v633 — was a negative top margin that overlapped the lede's last line on mobile
+     (the compact lede zeroes its own margin-bottom, so the pull-up collided). */
+  margin: var(--space-2) auto var(--space-6);
   max-width: 520px;
   text-align: center;
 }
