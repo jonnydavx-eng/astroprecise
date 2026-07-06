@@ -146,6 +146,12 @@
 
   .ap-float-nav::-webkit-scrollbar { display: none; }
 
+  /* v631 — when the email-capture sticky bar is up, lift the floating section-nav
+     clear of it so the two bottom bars never overlap (mobile misalignment fix). */
+  body.has-email-sticky .ap-float-nav {
+    bottom: calc(env(safe-area-inset-bottom) + 84px);
+  }
+
   .ap-float-nav--extended .ap-float-nav__link {
     flex: 0 0 auto;
     font-size: 0.62rem;
