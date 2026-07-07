@@ -135,13 +135,14 @@ a:hover,a:focus-visible{color:var(--brass);}
   .masthead .dateline{display:none;}
   .masthead-rule{margin-block:var(--sp-1);}
   .logo-mark{width:34px;height:34px;}
-  /* v633 — 6-item nav as a clean 3×2 grid so ALL items stay visible + balanced.
-     (The single-row scroll from v631 pushed Library/Shop off the right edge.) */
-  .contents-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:2px var(--sp-1);
-    padding-top:var(--sp-1);padding-inline:6px;}
-  .contents-nav li{display:flex;}
-  .contents-nav a{width:100%;justify-content:center;font-size:0.72rem;min-height:44px;
-    padding:8px 4px;white-space:nowrap;}
+  /* v636 — 6-item nav as a tidy CENTRED 3×2 grid. Columns size to their content
+     (repeat(3,auto)) and the whole grid centres, so items sit as a neat group
+     instead of being flung to the left/right edges by 1fr columns. */
+  .contents-nav{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;
+    gap:4px var(--sp-4);padding-top:var(--sp-1);padding-inline:6px;}
+  .contents-nav li{display:flex;justify-content:center;}
+  .contents-nav a{justify-content:center;font-size:0.72rem;min-height:44px;
+    padding:8px 6px;white-space:nowrap;}
   /* …and trim the hero head so the date form + CTA land inside the first
      812px screen (the sole conversion action was measured below the fold). */
   #heroChapter h1{font-size:clamp(1.55rem,7.5vw,2.1rem);}
