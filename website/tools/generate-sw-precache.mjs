@@ -110,11 +110,27 @@ function collectCanonical() {
   //    fallback). Precaching both formats would double the texture payload.
   // These lazy-cache at runtime instead.
   const PRECACHE_EXCLUDE = /(^|\/)img\/engine\/|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$/i;
+  const RETIRED_OG = new Set([
+    './img/og-banner-improved.jpg',
+    './img/og-banner-v576.jpg',
+  ]);
+
+  /** Skip legacy raster when WebP (or SVG for shop products) is the shipped format. */
+  function skipLegacyRaster(absPath) {
+    const rel = toPrecachePath(absPath);
+    if (RETIRED_OG.has(rel)) return true;
+    if (!/\.(jpe?g|png)$/i.test(rel)) return false;
+    const base = absPath.replace(/\.(jpe?g|png)$/i, '');
+    if (existsSync(`${base}.webp`)) return true;
+    if (/\/img\/shop\/product-/.test(rel) && existsSync(`${base}.svg`)) return true;
+    return false;
+  }
 
   for (const dir of staticDirs) {
     for (const f of listFiles(dir)) {
       const rel = toPrecachePath(f);
       if (PRECACHE_EXCLUDE.test(rel)) continue;
+      if (skipLegacyRaster(f)) continue;
       if (/\.(woff2|json|jpg|jpeg|png|svg|webp)$/i.test(rel)) paths.add(rel);
     }
   }
