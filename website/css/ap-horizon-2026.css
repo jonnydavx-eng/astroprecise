@@ -3372,15 +3372,27 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
 }
 
 /* Hero form — critical path: these styles must not wait for ephemeris.css */
-.ap-award-511 #heroChapter .hero-form { margin-top: var(--sp-2); }
-.ap-award-511 #heroChapter .hero-form-row {
+.ap-award-511 #heroChapter .hero-form {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: stretch;
+  gap: 6px;
+  margin-top: var(--sp-2);
+  width: 100%;
+  max-width: 100%;
+}
+.ap-award-511 #heroChapter .hero-form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: stretch;
+  width: 100%;
 }
 .ap-award-511 #heroChapter .hero-form input[type="date"] {
   min-height: 52px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
   padding: 10px 14px;
   border-radius: 12px;
   border: 1px solid rgba(194, 160, 94, 0.35);
@@ -3402,6 +3414,7 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
   font-weight: 700;
   letter-spacing: 0.02em;
   cursor: pointer;
+  white-space: nowrap;
   box-shadow: 0 10px 26px rgba(217, 123, 82, 0.26);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -3446,7 +3459,34 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
 /* v636b — phone: a tidy left-aligned checklist, centred as a block. Hanging indent
    via text-indent (NOT grid) so the whole line flows as one — the inline VSOP87
    abbr stays in place and wrapped lines hang under the text, ticks aligned. */
+@media (max-width: 760px) {
+  /* Chart-finder FAB: bottom-left + lifted clear of hero trust chips */
+  .ap-finder-fab {
+    right: auto;
+    left: max(16px, env(safe-area-inset-left));
+    bottom: max(96px, calc(80px + env(safe-area-inset-bottom)));
+  }
+  .ap-finder {
+    right: auto;
+    left: max(16px, env(safe-area-inset-left));
+    bottom: max(152px, calc(136px + env(safe-area-inset-bottom)));
+  }
+  body.ap-award-511--nav-visible .ap-finder-fab {
+    bottom: max(72px, calc(60px + env(safe-area-inset-bottom)));
+  }
+  body.ap-award-511--nav-visible .ap-finder {
+    bottom: max(128px, calc(116px + env(safe-area-inset-bottom)));
+  }
+}
+
 @media (max-width: 640px) {
+  .ap-award-511 #heroChapter .hero-form-row {
+    grid-template-columns: 1fr;
+  }
+  .ap-award-511 #heroChapter .hero-form .btn-press {
+    width: 100%;
+    justify-content: center;
+  }
   .ap-award-511 #heroChapter .hero-copy .hero-solar-trust {
     flex-direction: column;
     align-items: stretch;
@@ -3976,10 +4016,12 @@ body.sg-library .sg-filter-slot {
   background: linear-gradient(180deg, var(--void) 78%, rgba(12, 16, 22, 0));
 }
 
-/* The float-nav rail never reaches the masthead — keep the header centred */
+/* Float-nav rail padding is for scrolled chapters — masthead + hero stay centred */
 @media (min-width: 761px) {
   body.ap-award-511 #apMasthead .page-wrap,
-  body.ap-award-511--nav-visible #apMasthead .page-wrap {
+  body.ap-award-511 #heroChapter .page-wrap,
+  body.ap-award-511--nav-visible #apMasthead .page-wrap,
+  body.ap-award-511--nav-visible #heroChapter .page-wrap {
     padding-inline-end: var(--layout-gutter);
   }
 }
