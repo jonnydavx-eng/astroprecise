@@ -2,7 +2,7 @@
 /* Award homepage — lazy ephemeris + hero instrument bundle (perf) */
 
 (function () {
-  var V = "567";
+  var V = "640";
 
   window.__loadEphemeris = function (cb) {
     if (window.AstroEphemeris) {
@@ -53,7 +53,7 @@
     injectCss("css/orrery-visual.css?v=" + V, "ap-orrery-visual-css");
     loadCosmicFlightTool();
     var s = document.createElement("script");
-    s.src = "js/ap-award-orrery.js?v=" + V;
+    s.src = "js/ap-award-orrery.js?v=640";
     document.body.appendChild(s);
   }
 
@@ -63,10 +63,13 @@
   }
 
   function watchLazy() {
+    // Hero is always above the fold — boot the existing HD stack immediately
+    // so the photoreal Earth appears sooner (no alternate model).
+    loadHeroBundle();
+
     var hero = document.querySelector("#apAwardOrreryWrap, .ap-award-orrery-frame");
     var instruments = document.getElementById("instrumentsChapter");
     if (!("IntersectionObserver" in window)) {
-      loadHeroBundle();
       return;
     }
     var obs = new IntersectionObserver(function (entries) {

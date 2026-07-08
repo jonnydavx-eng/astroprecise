@@ -128,11 +128,28 @@
     mo.observe(poster, { attributes: true, attributeFilter: ["class"] });
   }
 
-  // Retire the Earth loading placeholder once ANY engine is live (WebGL adds
-  // orrery-full; the 2D canvas fallback only fires ap-orrery-ready) — plus a
-  // hard safety so the loader can never stay stuck over a dead boot.
-  function markLive() { document.documentElement.classList.add("orrery-live"); }
-  document.addEventListener("ap-orrery-ready", function () { hideFallback(true); markLive(); });
-  setTimeout(hideFallback, 4500);
-  setTimeout(markLive, 12000);
+  // Retire the Earth loader only once the HD engine owns the canvas (orrery-full).
+  // orrery-live early was fading the loader while the canvas was still opacity ~0.
+  function markLive() {
+    if (!document.documentElement.classList.contains("orrery-full")) return;
+    document.documentElement.classList.add("orrery-live");
+  }
+  document.addEventListener("ap-orrery-ready", function () { hideFallback(true); });
+  var liveObs = new MutationObserver(function () {
+    if (document.documentElement.classList.contains("orrery-full")) {
+      markLive();
+      liveObs.disconnect();
+    }
+  });
+  liveObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+  // Fail-open: if WebGL never reaches orrery-full, restore the engraved wheel
+  // instead of leaving a blank hero (same 2D/SVG fallback — no other engine).
+  setTimeout(function () {
+    if (document.documentElement.classList.contains("orrery-full")) return;
+    document.documentElement.classList.remove("ap-await-webgl");
+    if (fallback) fallback.classList.remove("ap-hero-wheel-fallback--hidden");
+  }, 9000);
+
+  setTimeout(markLive, 14000);
 })();

@@ -3217,7 +3217,14 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(12, 16, 22, 0.92) 0%, rgba(12, 16, 22, 0.62) 28%, transparent 52%);
+  /* v640 — lighter scrim over the Earth (≈63%): copy stays readable, globe stays visible */
+  background: linear-gradient(
+    90deg,
+    rgba(12, 16, 22, 0.94) 0%,
+    rgba(12, 16, 22, 0.58) 30%,
+    rgba(12, 16, 22, 0.14) 46%,
+    transparent 56%
+  );
 }
 
 .ap-award-511 #heroChapter .hero-copy {
@@ -4557,9 +4564,13 @@ html.ap-await-webgl .ap-award-511 #heroChapter .orrery-earth-loader {
 
 /* Once any engine is live (WebGL orrery-full, or the 2D fallback's orrery-live),
    retire the placeholder with a soft fade */
-html.ap-await-webgl.orrery-full .ap-award-511 #heroChapter .orrery-earth-loader,
-html.ap-await-webgl.orrery-live .ap-award-511 #heroChapter .orrery-earth-loader {
+html.ap-await-webgl.orrery-full .ap-award-511 #heroChapter .orrery-earth-loader {
   opacity: 0;
+}
+
+/* v640 — keep loader until orrery-full; orrery-live alone must not blank the hero */
+html.ap-await-webgl.orrery-live:not(.orrery-full) .ap-award-511 #heroChapter .orrery-earth-loader {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -4699,6 +4710,128 @@ html.ap-await-webgl.orrery-live .ap-award-511 #heroChapter .orrery-earth-loader 
   .ap-award-511 #heroChapter .ap-award-orrery-wrap {
     left: 56%;
     width: min(72vh, 780px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   v640 — expert polish: hero chips, live badge, deck glass, readout
+   Same HD WebGL engine — layout + chrome only.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ap-award-511 #heroChapter .hero-action-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--sp-3);
+}
+
+.ap-award-511 #heroChapter .hero-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0.42rem 0.9rem;
+  border: 1px solid rgba(194, 160, 94, 0.35);
+  border-radius: 999px;
+  background: rgba(12, 16, 22, 0.78);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--brass-bright);
+}
+
+.ap-award-511 #heroChapter .hero-live-pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brass-vivid, #CDAE6A);
+  box-shadow: 0 0 10px rgba(194, 160, 94, 0.55);
+  animation: ap-live-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes ap-live-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.92); }
+  50%      { opacity: 1; transform: scale(1); }
+}
+
+.ap-award-511 #heroChapter .hero-explore-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid rgba(111, 160, 216, 0.45);
+  border-radius: 999px;
+  background: rgba(26, 34, 48, 0.55);
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #9ec8e8;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ap-award-511 #heroChapter .hero-explore-chip:hover,
+.ap-award-511 #heroChapter .hero-explore-chip:focus-visible {
+  border-color: rgba(111, 160, 216, 0.75);
+  background: rgba(111, 160, 216, 0.12);
+  box-shadow: 0 0 18px rgba(111, 160, 216, 0.14);
+  outline: none;
+}
+
+/* Live badge — floats over the instrument, not competing with the globe */
+.ap-award-511 #heroChapter .hero-solar-badge {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  z-index: 4;
+  margin: 0;
+  pointer-events: none;
+}
+
+html.orrery-full .ap-award-511 #heroChapter .hero-solar-badge {
+  border-color: rgba(194, 160, 94, 0.55);
+  box-shadow: 0 0 20px rgba(194, 160, 94, 0.18);
+}
+
+/* Deck — engraved glass rail once the engine is live */
+html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
+  border: 1px solid rgba(194, 160, 94, 0.22);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(18, 24, 38, 0.88), rgba(12, 16, 22, 0.92));
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(236, 230, 216, 0.04);
+  padding: 10px 14px 12px;
+}
+
+/* Compact live readout visible on the Earth rest frame (geocentric Sun sign) */
+html.orrery-full .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) {
+  position: absolute;
+  top: max(52px, calc(12px + env(safe-area-inset-top)));
+  right: max(16px, env(safe-area-inset-right));
+  z-index: 4;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .ap-award-511 #heroChapter .hero-solar-badge,
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) {
+    top: auto;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(136px + env(safe-area-inset-bottom));
+  }
+  .ap-award-511 #heroChapter .hero-action-chips {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-award-511 #heroChapter .hero-live-pill__dot {
+    animation: none;
+    opacity: 0.85;
   }
 }
 @media (min-width: 2200px) {

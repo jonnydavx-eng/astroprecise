@@ -154,6 +154,19 @@ a:hover,a:focus-visible{color:var(--brass);}
    with that sheet; worst case here is a brief dark hero, never the wheel). */
 html.ap-await-webgl #apHeroWheelFallback{display:none!important}
 html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
+/* v640 critical — hero layout stable on first paint (same rules as ap-horizon-2026) */
+.ap-award-511 #heroChapter{position:relative;overflow:hidden;display:flex;align-items:center;min-height:clamp(620px,calc(100svh - 232px),950px);padding-block:var(--sp-3) 136px}
+.ap-award-511 #heroChapter .page-wrap.hero-grid{display:block;width:100%;max-width:var(--page-max,1180px);position:relative;z-index:2}
+.ap-award-511 #heroChapter .hero-solar-stage{position:absolute;inset:0;z-index:1;padding:0;border:0}
+.ap-award-511 #heroChapter .hero-copy{position:relative;z-index:3;max-width:500px}
+.ap-award-511 #heroChapter .ap-award-orrery-wrap{position:absolute;left:63%;top:46%;transform:translate(-50%,-50%);width:min(86vh,900px);max-width:94vw;display:block}
+.hero-action-chips{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:var(--sp-3)}
+.hero-live-pill{display:inline-flex;align-items:center;gap:8px;margin:0;padding:.42rem .9rem;border:1px solid rgba(194,160,94,.35);border-radius:999px;background:rgba(12,16,22,.72);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;color:var(--brass-bright)}
+.hero-live-pill__dot{width:7px;height:7px;border-radius:50%;background:var(--brass-vivid,#CDAE6A);box-shadow:0 0 10px rgba(194,160,94,.55);animation:ap-live-pulse 2.2s ease-in-out infinite}
+@keyframes ap-live-pulse{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1)}}
+.hero-explore-chip{display:inline-flex;align-items:center;padding:.45rem .95rem;border:1px solid rgba(111,160,216,.45);border-radius:999px;background:rgba(26,34,48,.55);font-family:var(--font-ui);font-size:.74rem;font-weight:600;letter-spacing:.04em;color:#9ec8e8;text-decoration:none;transition:border-color .2s,background .2s}
+.hero-explore-chip:hover{border-color:rgba(111,160,216,.75);background:rgba(111,160,216,.12)}
+@media (prefers-reduced-motion:reduce){.hero-live-pill__dot{animation:none;opacity:.85}}
   </style>
   <link rel="stylesheet" href="css/ap-site-polish.css?v=614" />
 
@@ -182,8 +195,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="preload" href="css/ap-horizon-2026.css?v=639" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/ap-horizon-2026.css?v=639"></noscript>
+  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=640" />
   <link rel="stylesheet" href="css/ap-motion.css?v=576">
   <link rel="stylesheet" href="css/ap-micro-2026.css?v=576">
   <link rel="stylesheet" href="css/ap-palette-2026.css?v=595">
@@ -325,13 +337,21 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
           <li><span aria-hidden="true">&#10003;</span> Accurate to about an arcminute, 1800&ndash;2200&nbsp;CE (<abbr class="ap-gloss" title="VSOP87 &mdash; a published planetary theory, computed privately on your device">VSOP87</abbr>)</li>
           <li><span aria-hidden="true">&#10003;</span> Private &mdash; computed on your device</li>
         </ul>
-        <a class="hero-today-chip" id="heroTodayChip" href="#today" hidden></a>
+        <div class="hero-action-chips">
+          <p class="hero-live-pill" id="heroLivePill" aria-live="polite"><span class="hero-live-pill__dot" aria-hidden="true"></span><span id="heroLiveText">Live sky &middot; reading positions&hellip;</span></p>
+          <a class="hero-today-chip" id="heroTodayChip" href="#today" hidden></a>
+          <a class="hero-explore-chip" href="explore.html">Explore Earth &rarr; galaxy</a>
+        </div>
         <p class="ap-spine-bridge hero-spine-bridge">New here? Start with the sky above you tonight &mdash; then watch it become your chart. <a href="#skyChapter" data-ap-jump="skyChapter">See tonight's sky &rarr;</a></p>
       </div>
 
       <!-- Living 3D solar model — lite poster → WebGL upgrade -->
       <div class="hero-solar-stage hero-illustration ap-hero-instrument hero-solar-instrument fade-in" aria-labelledby="hero-solar-heading">
         <h2 id="hero-solar-heading" class="sr-only">Expert solar model — live planetary positions</h2>
+        <p class="hero-solar-badge" id="heroSolarBadge" aria-live="polite">
+          <span class="hero-solar-badge__glyph" aria-hidden="true">&#10022;</span>
+          <span class="hero-solar-badge__text" id="heroSolarBadgeText">Live model &middot; VSOP87</span>
+        </p>
         <div class="ap-award-orrery-wrap" id="apAwardOrreryWrap" hidden>
           <div class="ap-award-orrery-frame">
             <div class="orrery-viewport" id="orrery-viewport">
@@ -1622,7 +1642,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-home-bootstrap.js?v=578"></script>
+<script defer src="js/ap-home-bootstrap.js?v=640"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=623"></script>
 <script defer src="js/home-match.js?v=621"></script>
@@ -1671,6 +1691,11 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
       if (dateEl)  { dateEl.textContent  = dateStr; dateEl.setAttribute('datetime', y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0')); }
       if (sunEl)   { sunEl.textContent   = 'Sun in ' + sunSign; }
       if (moonEl)  { moonEl.textContent  = 'Moon in ' + moonSign; }
+
+      var liveEl = document.getElementById('heroLiveText');
+      if (liveEl) liveEl.textContent = 'Sun in ' + sunSign + ' \u00b7 Moon in ' + moonSign + ' \u00b7 live';
+      var badgeEl = document.getElementById('heroSolarBadgeText');
+      if (badgeEl) badgeEl.textContent = 'Live \u00b7 Sun in ' + sunSign;
 
       // Update the SVG planet markers' label text too (best-effort)
       var nightSun  = document.querySelectorAll('[data-live="sun-sign"]');

@@ -572,25 +572,28 @@
       }, 900);
     }
 
-    // Planet focus → readout tracks the focused body. But keep the Earth REST frame
-    // (level 0) clean: the auto-focus-earth settle timer must not pop a readout on a
-    // hero the visitor hasn't engaged. Suppress at level 0; show at Inner+ or on a
-    // deliberate non-earth focus.
+    // Planet focus → readout tracks the focused body.
     document.addEventListener('orrery-planet-focus', function (e) {
       var id = e && e.detail && e.detail.id;
       if (!id) return;
-      var lv = 0; try { lv = O.getScaleLevel() | 0; } catch (err) {}
-      if (lv === 0 && id === 'earth') { if (readoutEl) readoutEl.hidden = true; return; }
       showReadoutFor(id);
     });
+
+    var heroChapter = document.getElementById('heroChapter');
 
     // Scale change → drive orbit reveal + readout visibility policy.
     function onLevel(lv) {
       applyOrbits(lv);
       if (readoutEl) {
         if (lv === 0) {
-          // clean Earth rest frame — no readout clutter unless a body is explicitly focused
-          readoutEl.hidden = true;
+          // v640 — on the homepage hero, show compact geocentric Sun sign at Earth rest.
+          if (heroChapter && document.documentElement.classList.contains('orrery-full')) {
+            readoutId = 'earth';
+            ensureReadoutTicker();
+            paintReadout();
+          } else {
+            readoutEl.hidden = true;
+          }
         } else {
           ensureReadoutTicker();
           paintReadout();
@@ -609,6 +612,17 @@
 
     // Initial sync to current level.
     if (hasScale) { try { onLevel(O.getScaleLevel() | 0); } catch (e) {} }
+
+    // v640 — readout may wire before orrery-full; resync when the HD handoff completes.
+    if (heroChapter && hasReadout) {
+      function heroReadoutSync() {
+        if (!document.documentElement.classList.contains('orrery-full')) return;
+        try { onLevel(O.getScaleLevel() | 0); } catch (e) {}
+      }
+      heroReadoutSync();
+      var hro = new MutationObserver(heroReadoutSync);
+      hro.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    }
   }
 
   /**
