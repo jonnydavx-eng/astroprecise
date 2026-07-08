@@ -3172,12 +3172,13 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 .ap-award-511 #heroChapter .ap-award-orrery-wrap {
   position: absolute;
-  left: 63%;
-  top: 46%;
+  left: 78%;
+  top: 44%;
   transform: translate(-50%, -50%);
-  width: min(86vh, 900px);
-  max-width: 94vw;
+  width: min(56vh, 620px);
+  max-width: 46vw;
   display: block;
+  pointer-events: auto;
 }
 
 .ap-award-511 #heroChapter .ap-award-orrery-frame,
@@ -3194,11 +3195,11 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 /* Engraved wheel fallback overlays the model's spot; cross-fades, never snaps */
 .ap-award-511 #heroChapter .ap-hero-wheel-fallback {
   position: absolute;
-  left: 63%;
-  top: 46%;
+  left: 78%;
+  top: 44%;
   transform: translate(-50%, -50%);
-  width: min(64vh, 560px);
-  max-width: 88vw;
+  width: min(48vh, 480px);
+  max-width: 42vw;
   z-index: 2;
   pointer-events: none;
   transition: opacity 0.7s ease;
@@ -3229,9 +3230,11 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 
 .ap-award-511 #heroChapter .hero-copy {
   position: relative;
-  z-index: 3;
-  max-width: 500px;
+  z-index: 4;
+  max-width: min(480px, 44vw);
   padding-block: var(--sp-2) var(--sp-2);
+  padding-inline-end: var(--sp-4);
+  isolation: isolate;
 }
 
 .ap-award-511 #heroChapter .hero-copy .display {
@@ -3387,6 +3390,8 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
   margin-top: var(--sp-2);
   width: 100%;
   max-width: 100%;
+  position: relative;
+  z-index: 2;
 }
 .ap-award-511 #heroChapter .hero-form-row {
   display: grid;
@@ -4708,8 +4713,13 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .ap-award-511 #heroChapter .or
    reads as the hero centrepiece with the deck aligned beneath it. */
 @media (min-width: 1500px) {
   .ap-award-511 #heroChapter .ap-award-orrery-wrap {
-    left: 56%;
-    width: min(72vh, 780px);
+    left: 76%;
+    width: min(54vh, 600px);
+    max-width: 42vw;
+  }
+  .ap-award-511 #heroChapter .ap-hero-wheel-fallback {
+    left: 76%;
+    width: min(46vh, 460px);
   }
 }
 
@@ -4779,21 +4789,6 @@ html.ap-await-webgl.orrery-live:not(.orrery-full) .ap-award-511 #heroChapter .or
   outline: none;
 }
 
-/* Live badge — floats over the instrument, not competing with the globe */
-.ap-award-511 #heroChapter .hero-solar-badge {
-  position: absolute;
-  top: max(12px, env(safe-area-inset-top));
-  right: max(16px, env(safe-area-inset-right));
-  z-index: 4;
-  margin: 0;
-  pointer-events: none;
-}
-
-html.orrery-full .ap-award-511 #heroChapter .hero-solar-badge {
-  border-color: rgba(194, 160, 94, 0.55);
-  box-shadow: 0 0 20px rgba(194, 160, 94, 0.18);
-}
-
 /* Deck — engraved glass rail once the engine is live */
 html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
   border: 1px solid rgba(194, 160, 94, 0.22);
@@ -4805,24 +4800,21 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
   padding: 10px 14px 12px;
 }
 
-/* Compact live readout visible on the Earth rest frame (geocentric Sun sign) */
-html.orrery-full .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) {
-  position: absolute;
-  top: max(52px, calc(12px + env(safe-area-inset-top)));
-  right: max(16px, env(safe-area-inset-right));
-  z-index: 4;
-  margin: 0;
+/* v641 — readout stays in the deck grid (never floats over the globe/deck) */
+@media (min-width: 1024px) {
+  .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) {
+    grid-row: 2;
+    grid-column: 1;
+    justify-self: start;
+    align-self: center;
+    margin: 0;
+  }
+  .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) ~ .lite-vp-controls {
+    grid-column: 2 / -1;
+  }
 }
 
 @media (max-width: 900px) {
-  .ap-award-511 #heroChapter .hero-solar-badge,
-  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) {
-    top: auto;
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: calc(136px + env(safe-area-inset-bottom));
-  }
   .ap-award-511 #heroChapter .hero-action-chips {
     justify-content: center;
   }

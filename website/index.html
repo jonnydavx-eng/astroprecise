@@ -159,7 +159,8 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 .ap-award-511 #heroChapter .page-wrap.hero-grid{display:block;width:100%;max-width:var(--page-max,1180px);position:relative;z-index:2}
 .ap-award-511 #heroChapter .hero-solar-stage{position:absolute;inset:0;z-index:1;padding:0;border:0}
 .ap-award-511 #heroChapter .hero-copy{position:relative;z-index:3;max-width:500px}
-.ap-award-511 #heroChapter .ap-award-orrery-wrap{position:absolute;left:63%;top:46%;transform:translate(-50%,-50%);width:min(86vh,900px);max-width:94vw;display:block}
+.ap-award-511 #heroChapter .ap-award-orrery-wrap{position:absolute;left:78%;top:44%;transform:translate(-50%,-50%);width:min(56vh,620px);max-width:46vw;display:block}
+.ap-award-511 #heroChapter .hero-copy{max-width:min(480px,44vw)}
 .hero-action-chips{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:var(--sp-3)}
 .hero-live-pill{display:inline-flex;align-items:center;gap:8px;margin:0;padding:.42rem .9rem;border:1px solid rgba(194,160,94,.35);border-radius:999px;background:rgba(12,16,22,.72);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;color:var(--brass-bright)}
 .hero-live-pill__dot{width:7px;height:7px;border-radius:50%;background:var(--brass-vivid,#CDAE6A);box-shadow:0 0 10px rgba(194,160,94,.55);animation:ap-live-pulse 2.2s ease-in-out infinite}
@@ -195,7 +196,7 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
   </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=640" />
+  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=641" />
   <link rel="stylesheet" href="css/ap-motion.css?v=576">
   <link rel="stylesheet" href="css/ap-micro-2026.css?v=576">
   <link rel="stylesheet" href="css/ap-palette-2026.css?v=595">
@@ -348,10 +349,6 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
       <!-- Living 3D solar model — lite poster → WebGL upgrade -->
       <div class="hero-solar-stage hero-illustration ap-hero-instrument hero-solar-instrument fade-in" aria-labelledby="hero-solar-heading">
         <h2 id="hero-solar-heading" class="sr-only">Expert solar model — live planetary positions</h2>
-        <p class="hero-solar-badge" id="heroSolarBadge" aria-live="polite">
-          <span class="hero-solar-badge__glyph" aria-hidden="true">&#10022;</span>
-          <span class="hero-solar-badge__text" id="heroSolarBadgeText">Live model &middot; VSOP87</span>
-        </p>
         <div class="ap-award-orrery-wrap" id="apAwardOrreryWrap" hidden>
           <div class="ap-award-orrery-frame">
             <div class="orrery-viewport" id="orrery-viewport">
@@ -1694,8 +1691,6 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 
       var liveEl = document.getElementById('heroLiveText');
       if (liveEl) liveEl.textContent = 'Sun in ' + sunSign + ' \u00b7 Moon in ' + moonSign + ' \u00b7 live';
-      var badgeEl = document.getElementById('heroSolarBadgeText');
-      if (badgeEl) badgeEl.textContent = 'Live \u00b7 Sun in ' + sunSign;
 
       // Update the SVG planet markers' label text too (best-effort)
       var nightSun  = document.querySelectorAll('[data-live="sun-sign"]');
