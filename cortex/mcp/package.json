@@ -1,0 +1,9 @@
+{
+  "name": "cortex-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dependency-free stdio MCP server exposing the Cortex shared brain as tools.",
+  "bin": { "cortex-mcp": "./cortex-server.mjs" },
+  "engines": { "node": ">=18" }
+}

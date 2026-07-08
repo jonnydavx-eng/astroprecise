@@ -3,9 +3,19 @@
 Master index of the LLM-Wiki knowledge base. **Read this first** before complex work;
 update it whenever a wiki page is added, renamed, or retired.
 
-- `mission-control.html` — **graphical dashboard** (open directly in a browser)
-- `state.js` — machine-readable shared state every agent reads/updates (the live brain)
+- `INDEX.md` — **grep this first**: auto-generated progressive-disclosure map of every
+  cortex doc (regenerate with `tools/build-index.mjs`)
+- `mission-control.html` — **graphical dashboard v3** (exception-first; open in a browser)
+- `state.js` — machine-readable shared state every agent reads/updates (the live brain);
+  validate with `tools/validate-state.mjs`
 - `agents.md` — agent registry + wiring protocol (incl. bootstrap prompt for Grok/Hermes)
+- `memory/` — 3-tier per-agent memory + `shared-learnings.md` (the one clean distilled
+  spot) + `archive/`
+- `skills/` — executable playbooks (verify, delegate, ship, ingest, distill, maintain)
+  with progressive-disclosure frontmatter; usable by any agent, online or offline
+- `tools/` — dependency-free validators (state, verdicts, index)
+- `trajectories/` — per-mission decision logs (JSONL) · `verdicts/` — cross-model
+  reviews · `evals/` — golden missions · `mcp/` — stdio MCP server for shared tools
 - `wiki/` — synthesized, cross-referenced knowledge pages (the durable layer)
 - `raw/` — unprocessed source material awaiting ingest
 - `log.md` — mission log (what was done, when, with what proof)
@@ -15,6 +25,7 @@ update it whenever a wiki page is added, renamed, or retired.
 | Page | Covers | Last updated |
 |---|---|---|
 | [mission-plan.md](wiki/mission-plan.md) | **Active mission plan** — current missions, status, standing orders | 2026-07-02 |
+| [10x-roadmap.md](wiki/10x-roadmap.md) | Researched 10x upgrade plan: dashboard v3, compounding memory, autonomy via Actions — 3 waves | 2026-07-03 |
 | [operations.md](wiki/operations.md) | How the Cortex system works: environment reality, delegation policy, goals/loops rules, ingest/query/lint procedures | 2026-07-02 |
 | [astroprecise-state.md](wiki/astroprecise-state.md) | Current technical state of the AstroPrecise site + app: deployment truth, palette, versioning, known doc contradictions | 2026-07-02 |
 | [astroprecise-business.md](wiki/astroprecise-business.md) | Launch/monetization strategy synthesized from the 21 root planning docs, with phase gates and doc map | 2026-07-02 |
@@ -23,7 +34,7 @@ update it whenever a wiki page is added, renamed, or retired.
 ## Open lint findings
 
 1. **STATUS.md behind git history** — snapshot says ap-v563; `main` history shows
-   ap-v566 (PayPal direct replaced Lemon Squeezy, e2e PayPal gate, LS tooling archived).
+   ap-v568 (v564–566 PayPal direct/e2e gate; v567 white-homepage fix; v568 NOAA feeds fix).
    Fix tracked as Mission 3 in [mission-plan.md](wiki/mission-plan.md).
 2. **AGENT-HANDOFF.md referenced but missing** — STATUS.md points to "AGENT-HANDOFF.md"
    for full history and a prioritized roadmap, but no such file exists in the repo.

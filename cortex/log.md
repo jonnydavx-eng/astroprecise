@@ -5,6 +5,98 @@ Newest entries first. Every entry states what was done and the **proof artifact*
 
 ---
 
+## 2026-07-03 — Cortex 10x SHIPPED, all three waves (M9, M10, M11)
+
+**Mission:** Owner: "ship all of these" (the researched 10x roadmap). On Opus 4.8.
+
+**Done (each piece tested before commit):**
+- **Dashboard v3** (`mission-control.html`): exception-first hero listing the exact
+  items blocked on the owner; redundant status encoding (color + shape + word,
+  WCAG 1.4.1); freshness badge (snapshot age → amber when stale); progressive-
+  disclosure `<details>` mission cards; honest burn-down sparklines from real mission
+  data; de-weighted chrome; mobile thumb-bar; inline actions. Rendered + visually
+  verified in-session via headless Chromium (screenshots reviewed in-session, not
+  committed to the repo).
+- **state.js v3**: freshness timestamp, project `trend` arrays (real cortex burn-down,
+  not fabricated), `blockedOn` precision, task `contract` + `action` fields.
+- **3-tier memory**: Episodes/Learnings/Procedures with hard size caps, verified-
+  reflection gate + template, `memory/archive/`, frontmatter on every file.
+- **Tooling** (dependency-free, all run green): `tools/validate-state.mjs`,
+  `tools/build-index.mjs` (→ `INDEX.md`, 28 docs), `tools/check-verdicts.mjs`.
+- **Autonomy**: `.github/workflows/cortex-maintenance.yml` (validators + MCP smoke
+  test run today with no secret; the claude-code-action agent job is gated on
+  `secrets.ANTHROPIC_API_KEY` so it can't fail absent the key); `maintenance-sweep.md`.
+- **Verdict gate**: `verdicts/` convention + checker; historical missions honestly
+  grandfathered, not pretended-verified.
+- **Wave 3**: `evals/` golden mission + rubric; branch-per-mission convention in
+  agents.md; dependency-free stdio MCP server (`mcp/cortex-server.mjs`) — smoke-tested
+  the full initialize / tools/list / tools/call handshake; `skills/memory-distill.md`.
+- **Skills** got progressive-disclosure frontmatter; two new playbooks added.
+- **Protocol + bootstrap prompt** (agents.md) updated: grep INDEX first, take the
+  contract, log trajectories, validate state, cross-model verdicts, branch-per-mission.
+- Cross-model verdict recorded via the verifier worker (different model tier).
+
+**Proof:** this commit; validators + MCP smoke test exit 0; dashboard rendered +
+visually verified in-session (headless Chromium, not committed); `cortex/verdicts/`
+verdict files. Hardened after a 5-agent independent audit (see next entry).
+
+---
+
+## 2026-07-03 — Independent audit round: gate teeth + XSS + honesty (M9/M11 hardening)
+
+**Mission:** Under ultracode, ran a 5-agent audit workflow over the just-shipped 10x
+fixes (they'd only had my own deterministic checks). It found real defects; all fixed.
+
+**Fixed:**
+- **Verdict gate had no teeth** — `check-verdicts.mjs` only checked file existence, so
+  a self-authored verdict passed. Now it parses `reviewer:` and rejects a reviewer that
+  matches the mission owner (self-review). Also `gated` is now type-checked (a string
+  `"true"` used to silently bypass the gate).
+- **Validation drift** — the MCP `cortex_validate` tool reimplemented a weak subset of
+  the CLI checks. Refactored all validation into one shared `tools/state-lib.mjs` that
+  the CLI, the verdict gate, and the MCP server import — they can no longer disagree.
+- **Dashboard XSS** — `now[].link` was written into an href with only HTML-entity
+  escaping; a `javascript:` value would have been clickable. Added a scheme allow-list
+  (`safeHref`) in the dashboard AND a `now[].link` scheme check in the validator.
+- **Workflow perms** — the maintenance agent job needs `contents: write` to open PRs;
+  added it at job level (top level stays least-privilege `contents: read`).
+- **Honesty misses (our own rule)** — the "PR watch loop" now-entry was vague/
+  unverifiable → made specific and checkable (names PR #7 + link); this log's
+  "screenshots" proof claim corrected (they were in-session, never committed); the
+  "3 bugs" tally corrected to 4.
+- Robustness: validators no longer crash on missing arrays; MCP returns -32700 on
+  malformed input; dashboard renders a "✓ verified" badge on gated missions.
+
+**Proof:** this commit; `validate-state`, `check-verdicts` (with new self-review +
+gated-type tests), `mcp-smoke` all green; audit findings in the session record.
+
+---
+
+## 2026-07-03 — Permanence + memory & skills layer (M1 closed, M8)
+
+**Mission:** Owner ordered: make it permanent; give every agent memory and learning
+that feeds back clean into one spot; encode the Leader's knowledge/skills for use
+online and offline.
+
+**Done:**
+- PR #6 marked ready and **merged into `main`** — merge commit `14b1dbb`. The hub,
+  dashboard, state, and workers are now inherited by every future session (M1 done).
+- `cortex/memory/` — README (rules), per-agent files (claude, grok, hermes; seeded),
+  and `shared-learnings.md`: the single distilled spot, Leader-curated, verified
+  entries only. Agents write their own file each session; Leader distills.
+- `cortex/skills/` — 4 playbooks encoding the Leader's methods so any model can run
+  them without special tooling: verify-before-claiming, capability-delegation,
+  ship-website-change (repo-specific, verified against deploy-pages.yml),
+  ingest-knowledge.
+- `agents.md` protocol + external bootstrap prompt updated: read shared-learnings +
+  own memory on start; write memory on handoff; leader-only distill rule.
+- `state.js`: M1→done, M8 added (done), activity entries, stateVersion 2.
+
+**Proof:** merge commit `14b1dbb` on main; this branch's commit for the memory/skills
+files; `cortex/memory/` and `cortex/skills/` exist and are cross-linked.
+
+---
+
 ## 2026-07-03 — Mission Control v2: shared state, dashboard, agent wiring (M7)
 
 **Mission:** Owner asked for a smarter, more graphical, clearer mission control, with

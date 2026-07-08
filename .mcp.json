@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "cortex": {
+      "command": "node",
+      "args": ["cortex/mcp/cortex-server.mjs"]
+    }
+  }
+}

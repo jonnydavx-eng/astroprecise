@@ -21,8 +21,9 @@ wrong. Fixed in this PR, facts verified against the repo:
 
 ## Mission 3 — STATUS.md refresh (open, small)
 
-STATUS.md says ap-v563; `main` is at ap-v566 (v564 Weekly Sky + minified deploys,
-v565 PayPal direct, v566 PayPal e2e gate + honest shop copy). Refresh the snapshot on
+STATUS.md says ap-v563; `main` is at ap-v568 (v564 Weekly Sky + minified deploys,
+v565 PayPal direct, v566 PayPal e2e gate + honest shop copy, v567 white-homepage fix,
+v568 NOAA feeds fix). Refresh the snapshot on
 the next mission that touches the site, or as a standalone quick fix. Owner tasks
 listed in STATUS.md §Open still stand (GSC/Bing, social + Postiz, PayPal smoke-test).
 
@@ -55,6 +56,36 @@ machine-readable brain (missions, projects, agents, activity, "running now");
 `cortex/agents.md` wires external agents (Grok, Hermes) in via the state protocol with
 a paste-ready bootstrap prompt. Keep `state.js` in sync with this page — this page is
 the narrative detail, `state.js` is what the dashboard shows.
+
+## Mission 8 — Agent memory + skills layer ✅ (2026-07-03)
+
+Made the system learn. `cortex/memory/` gives every agent a persistent memory file
+plus `shared-learnings.md` — the one clean spot the Leader distills verified
+cross-agent knowledge into. `cortex/skills/` encodes the Leader's methods as
+playbooks any model can run, online or offline: verify-before-claiming,
+capability-delegation, ship-website-change, ingest-knowledge. The agent protocol and
+external bootstrap prompt (agents.md) now require reading shared-learnings + own
+memory on start and writing memory on handoff. Hub itself became permanent the same
+day: PR #6 merged to main (`14b1dbb`).
+
+## Missions 9–11 — Cortex 10x, all three waves ✅ (2026-07-03)
+
+Shipped the full researched roadmap ([10x-roadmap.md](10x-roadmap.md)):
+
+- **M9 (Wave 1):** dashboard v3 (exception-first hero, redundant color+shape+word
+  status, freshness badge, collapsible cards, honest burn-down sparklines, mobile
+  thumb-bar); 3-tier memory with budgets + verified-reflection gate + `archive/`;
+  generated `INDEX.md`; task contracts; trajectory logs.
+- **M10 (Wave 2):** `.github/workflows/cortex-maintenance.yml` (validators live now;
+  autonomous weekly agent activates on owner's `ANTHROPIC_API_KEY`); maintenance-sweep
+  playbook; cross-model verdict gate + `tools/` validators; Hermes sleep-time distill.
+  **Owner-gated on the API-key secret.**
+- **M11 (Wave 3):** `evals/` golden missions + rubric; branch-per-mission convention;
+  dependency-free stdio MCP server (`mcp/cortex-server.mjs`, smoke-tested);
+  eviction/decay pass.
+
+New tooling any agent runs: `node cortex/tools/validate-state.mjs`,
+`build-index.mjs`, `check-verdicts.mjs`, and the MCP server for shared tools.
 
 ## Standing orders
 
