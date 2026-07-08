@@ -135,12 +135,12 @@ for (const spec of [
     return {
       host: !!el,
       mounted: !!(el && el.classList.contains('ap-ai-panel')),
-      tabs: el ? el.querySelectorAll('.ap-ai-tab').length : 0,
+      chips: el ? el.querySelectorAll('.ap-ai-chip').length : 0,
       title,
     };
   }, spec.host);
   const pageAware = spec.titleRe.test(ai.title || '');
-  rec(`${spec.id}:ai-panel`, ai.host && ai.mounted && ai.tabs >= 3 && pageAware, JSON.stringify(ai));
+  rec(`${spec.id}:ai-panel`, ai.host && ai.mounted && ai.chips >= 3 && pageAware, JSON.stringify(ai));
   await page.close();
 }
 

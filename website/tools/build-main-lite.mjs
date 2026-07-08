@@ -222,8 +222,8 @@ if (opens !== closes) {
 // Enchanted Observatory layer — loads after palette tokens; scoped via .ap-enchanted
 if (!out.includes("ap-observatory-enchanted.css")) {
   out = out.replace(
-    "@import url('ap-palette-2026.css');",
-    "@import url('ap-palette-2026.css');\n@import url('ap-observatory-enchanted.css');"
+    "@import url('/css/ap-palette-2026.css');",
+    "@import url('/css/ap-palette-2026.css');\n@import url('/css/ap-observatory-enchanted.css');"
   );
 }
 
