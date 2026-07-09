@@ -210,6 +210,7 @@
       }
       window.setTimeout(function () {
         document.documentElement.classList.add('orrery-full');
+        revealHeroDeckHud();
         var poster = document.getElementById('orrery-lite-poster');
         if (poster) poster.setAttribute('aria-hidden', 'true');
         if (window.LiteOrrery && typeof window.LiteOrrery.destroy === 'function') {
@@ -369,6 +370,25 @@
      engine's console). Everything feature-detects, so the 2D-canvas fallback
      (no scale API) keeps strip + journey hidden. */
   var heroFrameDone = false;
+  var deckHudRevealed = false;
+
+  /* Layout-affecting HUD chrome (scale strip, orbits, journey, time row) must
+     land in the same turn as html.orrery-full — revealing them at ap-orrery-ready
+     grew the deck ~150px before v642/v643 padding, overlapping hero copy. */
+  function revealHeroDeckHud() {
+    if (deckHudRevealed) return;
+    deckHudRevealed = true;
+    var deck = document.getElementById('orrery-lite-deck');
+    if (deck) deck.classList.add('ap-deck--time-restored');
+    var O = window.Orrery3D;
+    var strip = document.getElementById('ap-scale-strip');
+    if (strip && O && typeof O.setScaleLevel === 'function') strip.hidden = false;
+    var orbitsBtn = document.getElementById('ap-orbits-toggle');
+    if (orbitsBtn && O && typeof O.setShowOrbits === 'function') orbitsBtn.hidden = false;
+    var journeyBtn = document.getElementById('ap-cosmic-journey');
+    if (journeyBtn && O && typeof O.startScaleJourney === 'function') journeyBtn.hidden = false;
+  }
+
   function setupHeroPhotorealFrame() {
     if (heroFrameDone) return;
     var O = window.Orrery3D;
@@ -426,12 +446,6 @@
       markActive(document.querySelector('.lite-vp-btn[data-lite-planet="earth"]'));
     }, 1100);
 
-    /* ── v575 · time row: WebGL engine draws no console here — un-hide the
-       lite date/Now/scrub (lite-orrery's setDayOffset already forwards to
-       Orrery3D.setTimelineDays; Now also calls snapToNow). ── */
-    var deck = document.getElementById('orrery-lite-deck');
-    if (deck) deck.classList.add('ap-deck--time-restored');
-
     /* ── v575 · scale strip + stepper (feature-detect the preset API) ── */
     var SCALE_NAMES = ['Earth', 'Inner', 'System', 'Oort', 'Stars', 'Galaxy', 'Cosmos'];
     var strip = document.getElementById('ap-scale-strip');
@@ -455,7 +469,6 @@
     }
 
     if (strip && hasScaleApi) {
-      strip.hidden = false;
       strip.querySelectorAll('.orrery-scale-btn[data-scale]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           goToLevel(parseInt(btn.getAttribute('data-scale'), 10));
@@ -481,7 +494,6 @@
     /* ── v575 · Cosmic journey — narrated tour across all seven levels ── */
     var journeyBtn = document.getElementById('ap-cosmic-journey');
     if (journeyBtn && typeof O.startScaleJourney === 'function') {
-      journeyBtn.hidden = false;
       var journeyIdleText = journeyBtn.textContent;
       var setJourneyRunning = function (on) {
         journeyBtn.classList.toggle('is-running', on);
@@ -512,6 +524,7 @@
        readout appears on planet focus, trails appear when time is scrubbed. All
        feature-detected — the 2D fallback (no setShowOrbits/getBodyReadout) skips it. */
     setupEnrichedOrrery(O);
+    if (document.documentElement.classList.contains('orrery-full')) revealHeroDeckHud();
   }
 
   /* Orbits toggle + live readout + scale-driven reveal. Split out for clarity;
@@ -535,7 +548,6 @@
       if (orbitsBtn) orbitsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     if (orbitsBtn && hasOrbits) {
-      orbitsBtn.hidden = false;
       orbitsBtn.addEventListener('click', function () {
         var next = !(orbitsBtn.getAttribute('aria-pressed') === 'true');
         userOrbitPref = next;

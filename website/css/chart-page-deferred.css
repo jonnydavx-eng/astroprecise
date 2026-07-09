@@ -648,6 +648,19 @@
       font-size: var(--text-sm); color: var(--silver-dim); margin: 0 auto;
       max-width: 520px; line-height: 1.65;
     }
+    .chart-whats-next__more {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-5);
+    }
+    @media (max-width: 720px) {
+      .chart-whats-next__more { grid-template-columns: 1fr; }
+    }
+    .chart-next-card--quiet {
+      opacity: 0.88;
+      border-style: dashed;
+    }
     .chart-whats-next__grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4);
     }

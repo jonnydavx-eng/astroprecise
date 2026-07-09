@@ -18,14 +18,14 @@ export const ZODIAC_SIGNS = [
   { key: 'pisces', name: 'Pisces' },
 ];
 
-/** Labels align with app.js NAV vocabulary (Birth Chart, Daily, Match, Sky, …). */
+/** Spine: Cast → Sky → Keep → Daily → Reading → Shop (keep in sync with ap-footer-inject.js). */
 const FOOTER_TOOLS = [
-  { href: 'chart.html', label: 'Birth Chart', icon: '<span aria-hidden="true">⊙</span>' },
-  { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
-  { href: 'lifepath.html', label: 'Life Path', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg>' },
-  { href: 'compatibility.html', label: 'Match', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg>' },
-  { href: 'transits.html', label: 'Transits', icon: '<span aria-hidden="true">☿</span>' },
+  { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
   { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
+  { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">✦</span>' },
+  { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
+  { href: 'cosmic-story.html', label: 'Readings', icon: '<span aria-hidden="true">◇</span>' },
+  { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
 ];
 
 export function footerToolsColHtml() {

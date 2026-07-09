@@ -10,9 +10,11 @@
  *   Daily    → horoscope.html
  *   Readings → cosmic-story.html (the FREE sample narrative reading)
  *   Library  → guides.html
- *   Shop     → shop.html
- * Secondary tools live in the "More" menu (NAV_EXTRAS), never in the primary bar.
- * Desktop: 6 primaries + More flyout. Mobile: 4 bottom tabs (Chart/Daily/Sky/Readings) + drawer.
+ *   Shop     → shop.html  (keepsakes / PDFs — homepage float uses "Shop" not "Keep")
+ * Site spine (product order): Cast → Sky → Keep → Daily → Reading → Shop
+ * Primary bar keeps Chart · Sky · Daily · Readings · Library · Shop.
+ * Moment (Keep) is first in More Explore so it is one tap from every page.
+ * Mobile bottom tabs match spine: Chart · Sky · Daily · Shop.
  */
 'use strict';
 
@@ -26,19 +28,21 @@
     ['shop.html', 'Shop'],
   ];
 
-  // Secondary tools surfaced in the "More" flyout, grouped.
+  // Keep first — same product ladder as home instruments step 03
   var NAV_MORE_EXPLORE = [
+    ['moment.html', 'Moment', { badge: 'Keep' }],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['transits.html', 'Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
     ['profile.html', 'Profile'],
     ['charts.html', 'My Charts'],
   ];
 
+  // Spine order (not Daily-before-Sky)
   var NAV_BOTTOM_TABS = [
     ['chart.html', 'Chart', 'spiral'],
-    ['horoscope.html', 'Daily', 'crescent'],
     ['ephemeris.html', 'Sky', 'telescope'],
-    ['cosmic-story.html', 'Readings', 'star4'],
+    ['horoscope.html', 'Daily', 'crescent'],
+    ['shop.html', 'Shop', 'star4'],
   ];
 
   // Everything else — the tool sprawl — collapses here, into the "More" drawer/flyout.

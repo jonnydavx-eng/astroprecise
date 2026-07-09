@@ -57,7 +57,7 @@
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/ephemeris-critical.css" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ephemeris-page.css?v=614" />
+  <link rel="stylesheet" href="css/ephemeris-page.css?v=656" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=622" />
   <script src="js/defer-page-css.js" defer></script>
@@ -113,41 +113,35 @@
     <section class="instrument-hero" aria-labelledby="instrument-heading">
       <div class="instrument-wrap">
         <div class="instrument-hero__panel instrument-panel instrument-panel--gold-rim">
-          <p class="instrument-eyebrow instrument-eyebrow--seal">The Sky</p>
+          <p class="instrument-eyebrow instrument-eyebrow--seal">Live · free</p>
           <h1 class="instrument-title" id="instrument-heading">The Sky Tonight</h1>
 
-          <p class="instrument-onramp">
-            What&rsquo;s overhead right now &mdash; Moon, planets, and today&rsquo;s sky mood. All computed live on your device; nothing is sent to a server.
+          <p class="instrument-lede instrument-lede--short instrument-onramp">
+            Moon, planets, and today&rsquo;s mood &mdash; computed on your device. Scroll for tonight&rsquo;s strip; add birth details only when you want <strong>your</strong> chart layer.
           </p>
-
-          <p class="instrument-lede instrument-lede--short">
-            Add your birth details when you want <strong>your</strong> chart layer &mdash; Sun, Moon, Rising, and deeper readings. Until then, everything below works for tonight alone.
-          </p>
-
-          <div class="hero-caps sky-hero-caps" aria-label="What you can do here">
-            <span>Tonight&rsquo;s planets</span>
-            <span>Today&rsquo;s Moon</span>
-            <span>Your birth sky</span>
-          </div>
-
-          <nav class="sky-tools-row" aria-label="Related tools">
-            <a href="tonight.html" class="sky-tools-row__link">What&rsquo;s visible tonight</a>
-            <a href="horoscope.html" class="sky-tools-row__link">Daily horoscope</a>
-            <a href="chart.html" class="sky-tools-row__link">Birth chart</a>
-            <a href="transits.html" class="sky-tools-row__link">Your transits</a>
-            <a href="compatibility.html" class="sky-tools-row__link">Match</a>
-          </nav>
 
           <div class="badge-row">
-            <span class="ap-badge">Computed locally &middot; VSOP87 + ELP2000</span>
+            <span class="ap-badge">VSOP87 + ELP2000 · private</span>
           </div>
 
           <div class="sky-hero-actions">
             <button type="button" class="glow-btn" id="ev-personalize-toggle" aria-expanded="false" aria-controls="sky-birth-panel">
               Add your birth details
             </button>
-            <button type="button" class="glow-btn" id="ev-example" style="border-color:rgba(194, 160, 94,0.4);color:var(--gold-pale);">Try Carl Sagan&rsquo;s chart</button>
           </div>
+
+          <details class="sky-tools-details">
+            <summary class="sky-tools-details__sum">More tools &amp; sample</summary>
+            <nav class="sky-tools-row" aria-label="Related tools">
+              <button type="button" class="sky-tools-row__link sky-tools-row__btn" id="ev-example">Example chart</button>
+              <a href="tonight.html" class="sky-tools-row__link">What&rsquo;s visible tonight</a>
+              <a href="horoscope.html" class="sky-tools-row__link">Daily horoscope</a>
+              <a href="chart.html" class="sky-tools-row__link">Birth chart</a>
+              <a href="moment.html" class="sky-tools-row__link">Moment</a>
+              <a href="transits.html" class="sky-tools-row__link">Your transits</a>
+              <a href="compatibility.html" class="sky-tools-row__link">Match</a>
+            </nav>
+          </details>
           <p id="ev-status" class="sky-ev-status" aria-live="polite"></p>
         </div>
 
@@ -174,11 +168,12 @@
       </div>
     </section>
 
-    <nav class="sky-jump-nav" id="sky-jump-nav" aria-label="Sky page sections">
+    <nav class="sky-jump-nav" id="sky-jump-nav" aria-label="Sky page and site path">
       <div class="instrument-wrap sky-jump-nav__inner">
         <a href="#sky-tonight" class="sky-jump-nav__link">Tonight</a>
-        <a href="#ev-personalize-toggle" class="sky-jump-nav__link" id="sky-jump-your">Add your sky</a>
-        <a href="#sky-explore" class="sky-jump-nav__link">Go deeper</a>
+        <a href="chart.html" class="sky-jump-nav__link" id="sky-jump-cast">Cast</a>
+        <a href="moment.html" class="sky-jump-nav__link">Keep</a>
+        <a href="horoscope.html" class="sky-jump-nav__link">Daily</a>
       </div>
     </nav>
 
@@ -195,13 +190,15 @@
           <div class="sky-card sky-card--skeleton" aria-hidden="true"><span class="sky-card__bar"></span><span class="sky-card__bar sky-card__bar--short"></span></div>
         </div>
 
-        <div class="glass-card glass-card--gold-rim sky-planets-panel">
-          <h3 class="sky-panel__title">Planets today <span class="sky-panel__tag">tropical zodiac</span></h3>
-          <div id="sky-tonight-planets" class="sky-tonight-planets" aria-live="polite"></div>
-          <p class="sky-panel__foot"><a href="tonight.html">See which planets are visible after sunset &rarr;</a></p>
-        </div>
-
-        <div id="sky-weather-summary" class="sky-weather-summary glass-card" aria-live="polite"></div>
+        <details class="sky-tonight-more">
+          <summary class="sky-tonight-more__sum">Planets table &amp; sky mood</summary>
+          <div class="glass-card glass-card--gold-rim sky-planets-panel">
+            <h3 class="sky-panel__title">Planets today <span class="sky-panel__tag">tropical zodiac</span></h3>
+            <div id="sky-tonight-planets" class="sky-tonight-planets" aria-live="polite"></div>
+            <p class="sky-panel__foot"><a href="tonight.html">See which planets are visible after sunset &rarr;</a></p>
+          </div>
+          <div id="sky-weather-summary" class="sky-weather-summary glass-card" aria-live="polite"></div>
+        </details>
       </div>
     </section>
 

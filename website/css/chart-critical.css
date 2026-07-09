@@ -308,15 +308,20 @@
       .page-chart .chart-form__essentials > .form-section-label {
         display: none;
       }
-      .page-chart .chart-form__essentials > #group-name {
-        grid-column: 1;
+      /* Date spans full row (priority); city + time side by side; name wrap full */
+      .page-chart .chart-form__essentials > #group-date-first {
+        grid-column: 1 / -1;
         margin-bottom: 0;
       }
       .page-chart .chart-form__essentials > #group-city {
+        grid-column: 1;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials > #group-time {
         grid-column: 2;
         margin-bottom: 0;
       }
-      .page-chart .chart-form__essentials > .form-row {
+      .page-chart .chart-form__essentials > #group-name-wrap {
         grid-column: 1 / -1;
         margin-bottom: 0;
       }
@@ -891,3 +896,142 @@
       line-height: 1.65;
       margin: 0;
     }
+
+/* Keepsake band — post-calc masterpiece path (ap-v649) */
+.chart-keepsake-band{display:flex;align-items:center;gap:1rem;margin:0.85rem 0 1.25rem;padding:0.9rem 1.1rem;border-radius:14px;border:1px solid rgba(194,160,94,.28);background:linear-gradient(145deg,rgba(26,34,48,.75),rgba(12,16,22,.92));box-shadow:0 12px 40px rgba(0,0,0,.28)}
+.chart-keepsake-band__art img{width:72px;height:72px;border-radius:50%;border:1px solid rgba(194,160,94,.35);object-fit:cover;display:block;background:#0C1016}
+.chart-keepsake-band__eyebrow{margin:0 0 .25rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#C2A05E}
+.chart-keepsake-band__lead{margin:0;font-size:.92rem;line-height:1.5;color:#BEB298}
+.chart-keepsake-band__lead strong{color:#ECE6D8}
+.chart-keepsake-band__lead a{color:#D8B978}
+@media (max-width:560px){.chart-keepsake-band{flex-direction:column;text-align:center}}
+
+/* Masterpiece format menu (replaces inline-only styles) */
+#share-format-menu {
+  position: absolute; z-index: 1200; min-width: 260px; padding: 10px;
+  border-radius: 14px; background: rgba(26,34,48,0.98);
+  border: 1px solid rgba(194,160,94,0.35);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+}
+#share-format-menu button {
+  display: block; width: 100%; text-align: left;
+  padding: 12px 12px; margin: 2px 0; border: none; border-radius: 10px;
+  background: transparent; cursor: pointer; color: #ECE6D8;
+  font-family: Inter, system-ui, sans-serif;
+}
+#share-format-menu button:hover,
+#share-format-menu button:focus-visible {
+  background: rgba(194,160,94,0.12);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(194,160,94,0.35);
+}
+#share-format-menu button span:first-child {
+  display: block; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em;
+}
+#share-format-menu button span:last-child {
+  display: block; font-size: 0.66rem; color: #A89C84; margin-top: 2px;
+}
+.big-three-card__seal {
+  display: block; width: 56px; height: 56px; margin: 0.35rem auto;
+}
+
+/* Masterpiece primary = terracotta CTA token */
+#result-actions-row .action-btn--primary {
+  background: var(--ap-cta, #D97B52) !important;
+  color: var(--ap-cta-ink, #1F1206) !important;
+  border-color: transparent !important;
+  font-weight: 600;
+  min-height: 44px;
+}
+#result-actions-row .action-btn {
+  min-height: 44px;
+  font-size: max(0.72rem, 12px);
+}
+@media (max-width: 640px) {
+  #result-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  #result-actions-row .action-btn--primary {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
+
+/* Date-first progressive essentials */
+.chart-form__essentials { display: flex; flex-direction: column; gap: 0; }
+.chart-form__priority .form-input {
+  font-size: 1.05rem;
+  min-height: 48px;
+  border-color: rgba(194,160,94,0.35);
+}
+/* Mobile: form owns first viewport — collapse decorative hero chrome */
+@media (max-width: 640px) {
+  .page-chart .chart-hero--compact {
+    padding-block: 0.65rem 0.35rem;
+    min-height: 0;
+  }
+  .page-chart .chart-hero--compact .chart-hero__subtitle,
+  .page-chart .chart-hero--compact .chart-hero__eyebrow {
+    display: none;
+  }
+  .page-chart .chart-hero--compact .chart-hero__title {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+  .page-chart .chart-hero--compact .chart-hero__cosmic-art,
+  .page-chart .chart-hero--compact .chart-hero__orb-a,
+  .page-chart .chart-hero--compact .chart-hero__orb-b {
+    display: none;
+  }
+  .page-chart .chart-layout {
+    padding-top: 0.35rem;
+  }
+}
+.chart-keepsake-band__honesty {
+  margin: 0.45rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: rgba(168, 158, 136, 0.92);
+}
+
+/* Optional name behind disclosure — first viewport is date/city/time only */
+.chart-form__optional-label {
+  margin: 0.65rem 0 0.25rem;
+  border: 1px solid rgba(194,160,94,0.18);
+  border-radius: 12px;
+  background: rgba(12,16,22,0.28);
+  padding: 0.15rem 0.85rem 0.35rem;
+}
+.chart-form__optional-sum {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: #C2A05E;
+  padding: 0.55rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.chart-form__optional-sum::-webkit-details-marker { display: none; }
+.chart-form__optional-hint {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(190,178,152,0.85);
+  text-transform: none;
+}
+.chart-form__optional-label[open] .chart-form__optional-sum {
+  border-bottom: 1px solid rgba(194,160,94,0.12);
+  margin-bottom: 0.35rem;
+}
+.chart-form__optional-label .form-group { margin-bottom: 0.5rem; }
+.form-glass__sub {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 42ch;
+}

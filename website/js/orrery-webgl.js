@@ -162,16 +162,17 @@ const FinishShader = {
   ];
 
   // Per-planet visual tuning (atmosphere rim + surface response)
-  // Gas giants: tiny atmo shells + low atmoI — large additive shells read as ugly "rings".
+  // Gas giants: tight shells (large additive shells read as ugly "rings") but
+  // warmer/brighter rims so portrait focus feels cinematic, not matte balls.
   const PLANET_VIS = {
     mercury: { roughness: 0.82, metalness: 0.0,  atmo: 0x9a9088, atmoS: 1.02, atmoI: 0.14, rim: 0x6a8090 },
     venus:   { roughness: 0.72, metalness: 0.0,  atmo: 0xffc878, atmoS: 1.038, atmoI: 0.48, rim: 0xffa060 },
-    earth:   { roughness: 0.76, metalness: 0.04, atmo: 0x3d8fff, atmoS: 1.018, atmoI: 1.0, rim: 0x5090d8 },
-    mars:    { roughness: 0.78, metalness: 0.02, atmo: 0xff5533, atmoS: 1.032, atmoI: 0.42, rim: 0xc06040 },
-    jupiter: { roughness: 0.86, metalness: 0.0,  atmo: 0xe0a858, atmoS: 1.018, atmoI: 0.30, rim: 0xd09050 },
-    saturn:  { roughness: 0.86, metalness: 0.0,  atmo: 0xf0d8a0, atmoS: 1.014, atmoI: 0.24, rim: 0xc8a868 },
-    uranus:  { roughness: 0.68, metalness: 0.0,  atmo: 0x7ec8e8, atmoS: 1.022, atmoI: 0.26, rim: 0x68b8d8 },
-    neptune: { roughness: 0.66, metalness: 0.0,  atmo: 0x5a8fd8, atmoS: 1.022, atmoI: 0.28, rim: 0x4888c8 },
+    earth:   { roughness: 0.72, metalness: 0.05, atmo: 0x4a9aff, atmoS: 1.022, atmoI: 1.12, rim: 0x68a8e8 },
+    mars:    { roughness: 0.76, metalness: 0.03, atmo: 0xff6038, atmoS: 1.034, atmoI: 0.48, rim: 0xd07048 },
+    jupiter: { roughness: 0.78, metalness: 0.03, atmo: 0xf4c078, atmoS: 1.028, atmoI: 0.52, rim: 0xe8b070 },
+    saturn:  { roughness: 0.78, metalness: 0.03, atmo: 0xfae6c0, atmoS: 1.024, atmoI: 0.46, rim: 0xe0c498 },
+    uranus:  { roughness: 0.58, metalness: 0.03, atmo: 0xa0e0f8, atmoS: 1.032, atmoI: 0.48, rim: 0x90d8f0 },
+    neptune: { roughness: 0.56, metalness: 0.03, atmo: 0x78a8f0, atmoS: 1.032, atmoI: 0.50, rim: 0x70a8e8 },
   };
 
   // ── Module state ───────────────────────────────────────────────────────────
@@ -1271,7 +1272,8 @@ const FinishShader = {
       starField.material.uniforms.uFade.value = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
       // v576: lift point size at Earth/Inner scales — stars present, never competing with the copy rail
       if (starField.material.uniforms.uSizeMul) {
-        starField.material.uniforms.uSizeMul.value = lv <= 1 ? 1.35 : 1;
+        // Slightly brighter star discs at Earth/Inner so the void reads deep space
+        starField.material.uniforms.uSizeMul.value = lv <= 1 ? 1.48 : lv <= 2 ? 1.12 : 1;
       }
     }
     // v577: the far parallax shell + faint milky-way band track the near shell's gating.
@@ -1367,10 +1369,12 @@ const FinishShader = {
     }
     tuneSunGlowForComposer(perfTier);
     if (bloomPass && composer) {
-      bloomPass.strength = perfTier === 'mid' ? 0.20 : 0.30;
-      bloomPass.threshold = perfTier === 'mid' ? 0.90 : 0.86;
+      // Hero system frame: crisp sun glow without washing planets (ART: no bloom crank)
+      bloomPass.strength = perfTier === 'mid' ? 0.24 : 0.36;
+      bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
+      bloomPass.radius = perfTier === 'mid' ? 0.36 : 0.44;
     }
-    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.10 : 1.06;
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.12 : 1.07;
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
     syncSceneStarfield(2);
     syncCosmosBlend(2);
@@ -1437,9 +1441,9 @@ const FinishShader = {
     try {
       composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
-      const bloomStrength = perfTier === 'mid' ? 0.22 : 0.34;
-      const bloomRadius = perfTier === 'mid' ? 0.38 : 0.46;
-      const bloomThreshold = perfTier === 'mid' ? 0.90 : 0.86;
+      const bloomStrength = perfTier === 'mid' ? 0.26 : 0.38;
+      const bloomRadius = perfTier === 'mid' ? 0.40 : 0.48;
+      const bloomThreshold = perfTier === 'mid' ? 0.88 : 0.84;
       bloomPass = new UnrealBloomPass(
         new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
         bloomStrength, bloomRadius, bloomThreshold
@@ -1974,7 +1978,7 @@ const FinishShader = {
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
       return new THREE.Line(geo, new THREE.LineBasicMaterial({
-        color: 0xc9a227, transparent: true, opacity: 0.14, depthWrite: false,
+        color: 0xc2a05e, transparent: true, opacity: 0.22, depthWrite: false,
       }));
     }
     leoOrbitRing = orbitRingPoints(0.99, 96, 0.52);
@@ -2954,7 +2958,7 @@ const FinishShader = {
     syncSunGlowProfile(detail);
     syncPlanetShaderDetail(detail);
     if (sunPointLight) {
-      sunPointLight.intensity = detail ? 2.2 : (perfTier === 'high' ? 4.3 : 3.6);
+      sunPointLight.intensity = detail ? 2.35 : (perfTier === 'high' ? 4.55 : 3.75);
     }
     if (sunDirLight) {
       sunDirLight.intensity = detail ? 1.7 : (perfTier === 'high' ? 2.7 : 2.25);
@@ -2996,14 +3000,23 @@ const FinishShader = {
     }
     if (bloomPass) {
       if (detail && z <= 2.4) {
+        // Earth close: almost no bloom — preserve night limb and city lights
         bloomPass.strength = perfTier === 'mid' ? 0.05 : 0.08;
         bloomPass.threshold = perfTier === 'mid' ? 0.97 : 0.96;
+        bloomPass.radius = 0.28;
       } else if (z < 0.6) {
-        bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.20;
+        bloomPass.strength = perfTier === 'mid' ? 0.16 : 0.22;
         bloomPass.threshold = perfTier === 'mid' ? 0.90 : 0.86;
+        bloomPass.radius = 0.36;
+      } else if (z < 3.2) {
+        // System / inner rest: match settleToSystemHeroFrame (no thrash)
+        bloomPass.strength = perfTier === 'mid' ? 0.24 : 0.34;
+        bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.85;
+        bloomPass.radius = perfTier === 'mid' ? 0.38 : 0.44;
       } else {
-        bloomPass.strength = z >= 4.8 ? 0.42 : perfTier === 'mid' ? 0.14 : 0.20;
-        bloomPass.threshold = z >= 4.8 ? 0.82 : perfTier === 'mid' ? 0.95 : 0.93;
+        bloomPass.strength = z >= 4.8 ? 0.40 : perfTier === 'mid' ? 0.16 : 0.22;
+        bloomPass.threshold = z >= 4.8 ? 0.82 : perfTier === 'mid' ? 0.94 : 0.90;
+        bloomPass.radius = z >= 4.8 ? 0.48 : 0.40;
       }
     }
   }
@@ -4136,13 +4149,14 @@ const FinishShader = {
         vec4 mv = modelViewMatrix * vec4(position, 1.0);
         vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
         gl_Position = projectionMatrix * mv; }`,
+      // Softer exponent + higher alpha ceiling = readable limb on outer giants in portrait
       fragmentShader: `uniform vec3 uColor; uniform float uIntensity; varying vec3 vN; varying vec3 vV;
         void main(){
           float facing = max(dot(vN, vV), 0.0);
-          float fresnel = pow(1.0 - facing, 5.8);
+          float fresnel = pow(1.0 - facing, 4.6);
           float a = fresnel * uIntensity;
-          vec3 col = uColor * (0.38 + fresnel * 0.62);
-          gl_FragColor = vec4(col, clamp(a, 0.0, 0.65));
+          vec3 col = uColor * (0.42 + fresnel * 0.68);
+          gl_FragColor = vec4(col, clamp(a, 0.0, 0.78));
         }`,
       blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
     });
@@ -4297,7 +4311,7 @@ const FinishShader = {
   function makeOrbitRingMaterial(hero) {
     return new THREE.ShaderMaterial({
       uniforms: {
-        uOpacity: { value: hero ? 0.58 : 0.34 },
+        uOpacity: { value: hero ? 0.64 : 0.42 },
         uTime: { value: 0 },
         uHero: { value: hero ? 1.0 : 0.0 },
       },
@@ -4323,10 +4337,10 @@ const FinishShader = {
           float minorTick = pow(max(0.0, cos(angle * 24.0)), 20.0);
           float microTick = pow(max(0.0, cos(angle * 48.0)), 28.0);
           float ringProfile = smoothstep(0.0, 0.18, vUv.y) * smoothstep(1.0, 0.82, vUv.y);
-          float baseGlow = ringProfile * 0.38;
-          float engraved = ringProfile * (0.28 + majorTick * 0.58 + minorTick * 0.18 + microTick * 0.06);
-          vec3 darkGold = vec3(0.38, 0.28, 0.08);
-          vec3 midGold  = vec3(0.72, 0.58, 0.22);
+          float baseGlow = ringProfile * 0.42;
+          float engraved = ringProfile * (0.32 + majorTick * 0.62 + minorTick * 0.20 + microTick * 0.07);
+          vec3 darkGold = vec3(0.42, 0.32, 0.12);
+          vec3 midGold  = vec3(0.76, 0.63, 0.28);
           vec3 brightGold = vec3(0.98, 0.84, 0.42);
           vec3 col = mix(darkGold, midGold, baseGlow + engraved * 0.4);
           col = mix(col, brightGold, engraved + uHero * 0.14);
@@ -4423,7 +4437,8 @@ const FinishShader = {
         });
         mat.onBeforeCompile = (shader) => { try { injectEarth(shader); } catch (e) { console.warn('[orrery] earth shader patch skipped', e); } };
         earthMat = mat;
-        earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
+        // High tier: slightly quieter cities so terminator/atmosphere carry the drama
+        earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.42;
       } else {
         const isGiant = b.id === 'jupiter' || b.id === 'saturn' || b.id === 'uranus' || b.id === 'neptune';
         // Gas-giant cloud tops are matte — no clearcoat lacquer on jupiter/saturn
@@ -4477,7 +4492,7 @@ const FinishShader = {
       if (vis.atmo) {
         let atmoMat;
         if (b.hero && perfTier !== 'low' && !PRM) {
-          atmoMat = earthAtmosphereMaterial({ intensity: 0.9, edge: 5.3, falloff: 1.5, wrap: 0.0 });
+          atmoMat = earthAtmosphereMaterial({ intensity: 1.0, edge: 5.4, falloff: 1.55, wrap: 0.0 });
           earthAtmoMat = atmoMat;
         } else {
           const atmoI = vis.atmoI != null ? vis.atmoI : (b.hero ? 1.0 : 0.4);
@@ -4493,7 +4508,7 @@ const FinishShader = {
         if (b.hero && atmoMat === earthAtmoMat) {
           const atmo2 = new THREE.Mesh(
             new THREE.SphereGeometry(b.size * 1.045, atmoSegs, atmoSegs),
-            earthAtmosphereMaterial({ intensity: 0.15, edge: 3.4, falloff: 1.3, wrap: 1.0 })
+            earthAtmosphereMaterial({ intensity: 0.21, edge: 3.5, falloff: 1.42, wrap: 1.0 })
           );
           earthAtmoMatOuter = atmo2.material;
           group.add(atmo2);

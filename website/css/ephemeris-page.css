@@ -939,3 +939,101 @@
         scroll-margin-bottom: calc(var(--bottom-nav-h, 72px) + env(safe-area-inset-bottom, 0px) + 12px);
       }
     }
+
+/* First-viewport simplify: tools behind disclosure */
+.sky-tools-details {
+  margin-top: 1rem;
+  border: 1px solid rgba(194, 160, 94, 0.18);
+  border-radius: 12px;
+  background: rgba(12, 16, 22, 0.35);
+  padding: 0.35rem 0.75rem 0.55rem;
+}
+.sky-tools-details__sum {
+  cursor: pointer;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C2A05E;
+  list-style: none;
+  padding: 0.45rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.sky-tools-details__sum::-webkit-details-marker { display: none; }
+.sky-tools-details[open] .sky-tools-details__sum { margin-bottom: 0.35rem; }
+.sky-tools-details .sky-tools-row {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding-bottom: 0.35rem;
+}
+.sky-tools-row__btn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid rgba(194, 160, 94, 0.28);
+  border-radius: 999px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.35rem 0.75rem;
+  min-height: 36px;
+}
+.sky-tools-row__btn:hover,
+.sky-tools-row__btn:focus-visible {
+  border-color: rgba(194, 160, 94, 0.55);
+  color: #D8B978;
+  outline: none;
+}
+.glow-btn--quiet { opacity: 0.85; font-weight: 500; }
+
+/* Tonight first content = strip only; table/mood behind disclosure */
+.sky-tonight-more {
+  margin-top: 1.15rem;
+  border: 1px solid rgba(194, 160, 94, 0.18);
+  border-radius: 14px;
+  background: rgba(12, 16, 22, 0.28);
+  padding: 0.25rem 0.85rem 0.65rem;
+}
+.sky-tonight-more__sum {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C2A05E;
+  padding: 0.55rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.sky-tonight-more__sum::-webkit-details-marker { display: none; }
+.sky-tonight-more[open] .sky-tonight-more__sum {
+  border-bottom: 1px solid rgba(194, 160, 94, 0.12);
+  margin-bottom: 0.75rem;
+}
+.sky-tonight-more .sky-planets-panel,
+.sky-tonight-more .sky-weather-summary {
+  margin-top: 0.75rem;
+}
+
+/* Sky hero: one lede + one primary CTA */
+.instrument-hero .instrument-lede--short {
+  margin-bottom: 0.75rem;
+  max-width: 46ch;
+}
+.instrument-hero .sky-hero-actions {
+  margin-top: 1rem;
+}
+.instrument-hero .badge-row {
+  margin-top: 0.65rem;
+}
+.sky-jump-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(12, 16, 22, 0.78);
+  border-bottom: 1px solid rgba(194, 160, 94, 0.12);
+}

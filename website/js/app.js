@@ -1326,7 +1326,8 @@ window.AP_MON = Object.assign({
     // 'pdf-only' = Deep Reading + print-at-home poster PDF for now.
     // Flip to 'full' when prints, apparel, gifts & jewellery return.
     cataloguePhase: 'pdf-only',
-    catalogueSkus:  ['deep-reading', 'natal-poster-pdf'],
+    // Moment pack is digital keepsake; listed when available + fulfilUrl set.
+    catalogueSkus:  ['deep-reading', 'natal-poster-pdf', 'moment-pack'],
 
     // ── COLLECTIONS — the architecture of the sky ─────────────────────────
     // Every piece belongs to one collection. Re-themed from TBP's tree to
@@ -1488,6 +1489,23 @@ window.AP_MON = Object.assign({
         icon:         'calendar',
         fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
         detailsForm:  'QMcr0Ldw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
+      },
+      {
+        id:           'moment-pack',
+        available:    true,
+        name:         'Moment Pack — Digital Keepsake',
+        type:         'digital',
+        collection:   'onYourWall',
+        price:        8.00,
+        personalized: true,
+        badge:        'New',
+        marketingLine:'Any date’s zenith star + light-cone story as a print-ready pack.',
+        previewImage: 'img/shop/product-moment-pack.jpg',
+        blurb:        'Freeze any night that mattered — birth, anniversary, memorial — into a multi-format digital pack: square share card, story card, and print plate. Same private VSOP87 math as the free Moment studio. Fulfilment opens once checkout is connected; free card is live on Moment now.',
+        icon:         'star4',
+        fulfilUrl:    '',   // paste PayPal/Payhip link when ready; '' = honest coming soon
+        detailsForm:  '',
+        featured:     true,
       },
       {
         id:           'natal-poster-pdf',
@@ -2201,7 +2219,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-site-polish.css?v=614';
+    l.href = 'css/ap-site-polish.css?v=656';
     l.id = 'ap-css-site-polish';
     document.head.appendChild(l);
   }

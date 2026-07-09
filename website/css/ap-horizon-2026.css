@@ -3274,8 +3274,7 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 .ap-award-511 #heroChapter .ap-orrery-time { justify-content: flex-end; }
 .ap-award-511 #heroChapter .ap-orrery-scrub { grid-column: 1 / -1; }
 
-/* PRM / boot failure: the wrap stays [hidden] — hide the HUD with it */
-.ap-award-511 #heroChapter .ap-award-orrery-wrap[hidden] ~ .ap-orrery-deck { display: none; }
+/* PRM / boot failure: deck hide is v575 :has() on page-wrap (deck is not a wrap sibling). */
 
 /* Tablet & below: stacked flow — copy, then model, then rail */
 @media (max-width: 1023px) {
@@ -3345,8 +3344,11 @@ html.ap-lite-hero:not(.orrery-full) .ap-award-511 .lite-poster-ring {
 }
 .ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls {
   position: static;
+  top: auto;
+  left: auto;
   transform: none;
   z-index: auto;
+  max-width: 100%;
   max-width: none;
   background: none;
   border: 0;
@@ -3619,8 +3621,9 @@ html.ap-lite-hero .ap-award-511 #heroChapter #orrery-canvas,
   /* Without an explicit order these default to 0 and jump ABOVE the headline on
      mobile (the funnel bridge appearing before the pitch). Keep them last,
      matching the desktop column order: trust list → today chip → spine bridge. */
-  .ap-award-511 #heroChapter .hero-copy > .hero-today-chip { order: 7; }
-  .ap-award-511 #heroChapter .hero-copy > .hero-spine-bridge { order: 8; }
+  .ap-award-511 #heroChapter .hero-copy > .hero-action-chips { order: 7; }
+  .ap-award-511 #heroChapter .hero-copy > .hero-today-chip { order: 8; }
+  .ap-award-511 #heroChapter .hero-copy > .hero-spine-bridge { order: 9; }
 }
 
 /* ═══ v571 — chapter consolidation + unified tile system ═══ */
@@ -4448,10 +4451,17 @@ html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-s
     order: 5;
     margin-top: 6px;
   }
-  .ap-award-511 #heroChapter .hero-solar-stage { order: 6; }
+  .ap-award-511 #heroChapter .hero-copy > .hero-action-chips {
+    order: 6;
+    justify-content: center;
+    width: 100%;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+  .ap-award-511 #heroChapter .hero-solar-stage { order: 7; }
   .ap-award-511 #heroChapter .ap-award-orrery-wrap { margin-top: var(--sp-2); }
   .ap-award-511 #heroChapter .ap-orrery-deck {
-    order: 7;
+    order: 8;
     margin-top: var(--sp-1);
     row-gap: 2px;
     padding: 4px 4px 6px;
@@ -4462,7 +4472,7 @@ html.orrery-full .ap-award-511 #heroChapter .ap-deck--time-restored .ap-orrery-s
    third trust chip + longer standfirst) grew the rail ~120px; recover the
    budget so the HUD rail sits at the fold again at 1440x900. ── */
 @media (min-width: 1024px) {
-  .ap-award-511 #heroChapter { padding-block: 12px 96px; }
+  .ap-award-511 #heroChapter { padding-block: 12px var(--hero-deck-bay, 136px); }
   .ap-award-511 #heroChapter .hero-copy {
     max-width: 560px;
     padding-block: 8px 8px;
@@ -4830,4 +4840,435 @@ html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
   /* ultra-wide / 4K: keep the whole hero from spreading — the deck is page-
      centred, so centre the orrery over it and hold it to a sane size. */
   .ap-award-511 #heroChapter .ap-award-orrery-wrap { left: 52%; width: 680px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   v643 — hero structure unification (2026-07-08)
+   One deck-bay token, v575 top:100% anchor restored, JS reveal synced to
+   orrery-full, mobile flex order fixed, deck-local pills hardened.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ap-award-511 #heroChapter {
+  --hero-deck-bay: 136px;
+}
+html.orrery-full .ap-award-511 #heroChapter {
+  --hero-deck-bay: clamp(200px, 22vh, 240px);
+}
+
+@media (min-width: 1024px) {
+  .ap-award-511 #heroChapter {
+    padding-block: 12px var(--hero-deck-bay);
+  }
+
+  /* v575 anchor — deck drops into section padding, grows downward only */
+  .ap-award-511 #heroChapter .ap-orrery-deck,
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
+    top: 100%;
+    bottom: auto;
+    z-index: 5;
+  }
+
+  html.orrery-full .ap-award-511 #heroChapter .page-wrap.hero-grid {
+    padding-bottom: 0;
+  }
+
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
+    row-gap: 4px;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    grid-template-rows: auto auto auto;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-scale-strip {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 4px 14px;
+    width: 100%;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-scale-strip__track,
+  html.orrery-full .ap-award-511 #heroChapter .ap-scale-stepper {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-scale-strip__caption {
+    margin: 0;
+    flex: 0 1 auto;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orbits-toggle {
+    display: inline-flex;
+    margin: 0;
+    flex: 0 0 auto;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls {
+    grid-row: 2;
+    grid-column: 1;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: min(560px, 48vw);
+    justify-self: start;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-time {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: end;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-cosmic-journey {
+    grid-row: 2;
+    grid-column: 3;
+    justify-self: end;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-cosmic-flight {
+    grid-row: 2;
+    grid-column: 4;
+    justify-self: end;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-scrub {
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) {
+    grid-row: 3;
+    grid-column: 1;
+    justify-self: start;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-readout:not([hidden]) ~ .lite-vp-controls {
+    grid-column: 1;
+  }
+
+  html.orrery-full .ap-award-511 #heroChapter .hero-spine-bridge,
+  html.orrery-full .ap-award-511 #heroChapter .hero-today-chip {
+    display: none !important;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .hero-action-chips {
+    margin-bottom: 10px;
+  }
+}
+
+/* Tools FAB — desktop: clear fixed HUD; mobile: viewport corner (deck is in-flow) */
+@media (min-width: 1024px) {
+  html.orrery-full .ap-finder-fab {
+    bottom: max(172px, calc(156px + env(safe-area-inset-bottom)));
+  }
+  html.orrery-full .ap-finder {
+    bottom: max(228px, calc(212px + env(safe-area-inset-bottom)));
+  }
+}
+@media (max-width: 1023px) {
+  html.orrery-full .ap-award-511 #heroChapter .hero-spine-bridge {
+    display: none;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-scale-strip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    top: auto;
+    transform: none;
+    width: min(92vw, 460px);
+    margin: var(--sp-2) auto 0;
+    padding: 8px 6px 10px;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .ap-orrery-deck .lite-vp-controls {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .hero-copy > .hero-solar-trust {
+    padding-bottom: 52px;
+  }
+  html.orrery-full .ap-finder-fab {
+    right: max(12px, env(safe-area-inset-right));
+    left: auto;
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  html.orrery-full .ap-finder {
+    right: max(12px, env(safe-area-inset-right));
+    left: auto;
+    bottom: max(68px, calc(56px + env(safe-area-inset-bottom)));
+  }
+}
+
+/* Observatory engine gallery (homepage) */
+.ap-obs-gallery { padding-block: clamp(2.5rem, 6vw, 4rem); }
+.ap-obs-gallery__grid {
+  list-style: none; margin: 1.5rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem;
+}
+@media (min-width: 720px) {
+  .ap-obs-gallery__grid { grid-template-columns: repeat(6, 1fr); gap: 1rem; }
+}
+.ap-obs-gallery__item {
+  text-align: center; margin: 0;
+}
+.ap-obs-gallery__item img {
+  width: 100%; aspect-ratio: 1; object-fit: cover;
+  border-radius: 50%; border: 1px solid rgba(194,160,94,0.28);
+  background: #0C1016; display: block;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+}
+.ap-obs-gallery__item span {
+  display: block; margin-top: 0.45rem;
+  font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #C2A05E;
+}
+
+/* ── Sign library engine tiles (design 10 path) ───────────────────────── */
+.sign-tile-grid--engine {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+@media (min-width: 640px) {
+  .sign-tile-grid--engine { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+}
+@media (min-width: 960px) {
+  .sign-tile-grid--engine { grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+}
+.sign-tile--v2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  padding: 1.1rem 0.85rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(194, 160, 94, 0.22);
+  background: linear-gradient(165deg, rgba(26, 34, 48, 0.72), rgba(12, 16, 22, 0.94));
+  min-height: 11.5rem;
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.sign-tile--v2:hover,
+.sign-tile--v2:focus-visible {
+  border-color: rgba(194, 160, 94, 0.55);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(194, 160, 94, 0.12);
+  outline: none;
+  transform: translateY(-2px);
+}
+.sign-tile__planet {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(194, 160, 94, 0.35);
+  background: #0C1016;
+  display: block;
+  margin-bottom: 0.45rem;
+}
+.sign-tile__seal {
+  display: block;
+  min-height: 2rem;
+  margin-bottom: 0.35rem;
+}
+.sign-tile--v2 .sign-name {
+  font-family: var(--font-display, "Cormorant Garamond", Georgia, serif);
+  font-size: 1.2rem;
+  color: #ECE6D8;
+  letter-spacing: 0.02em;
+}
+.sign-tile--v2 .sign-tile-element {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C2A05E;
+  margin-top: 0.3rem;
+}
+.sign-tile--fire { box-shadow: inset 0 0 0 1px rgba(184, 90, 66, 0.12); }
+.sign-tile--earth { box-shadow: inset 0 0 0 1px rgba(90, 122, 72, 0.12); }
+.sign-tile--air { box-shadow: inset 0 0 0 1px rgba(138, 122, 106, 0.12); }
+.sign-tile--water { box-shadow: inset 0 0 0 1px rgba(74, 117, 128, 0.14); }
+
+/* Secondary chapters: quieter so spine stays primary */
+.ap-chapter--secondary {
+  opacity: 0.92;
+}
+.ap-chapter--secondary .ap-chapter-title {
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+}
+.ap-chapter--secondary .ap-chapter-lead {
+  max-width: 48ch;
+}
+
+/* Compact float-nav (5 items max) */
+.ap-float-nav:not(.ap-float-nav--extended) {
+  max-width: min(92vw, 560px);
+}
+
+/* Secondary chapters after the product path (compare / method) */
+.ap-chapter[data-ap-flow="secondary"] {
+  opacity: 0.96;
+}
+.ap-chapter[data-ap-flow="secondary"] .ap-chapter-title {
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+}
+
+/* Hero: one job — cast first; explore is quiet */
+.hero-explore-chip--quiet,
+.hero-explore-chip.hero-explore-chip--quiet {
+  opacity: 0.72;
+  font-size: 0.78rem;
+  border-color: rgba(194, 160, 94, 0.2);
+}
+.hero-spine-bridge--quiet {
+  font-size: 0.88rem;
+  opacity: 0.88;
+}
+@media (min-width: 1024px) {
+  html.orrery-full .hero-explore-chip--quiet {
+    display: none;
+  }
+}
+
+/* Sign thumbs on sign pages — engine stills (square crop) */
+.sign-thumb img {
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(194, 160, 94, 0.25);
+  background: #0C1016;
+}
+.sign-thumb--current img {
+  border-color: rgba(194, 160, 94, 0.55);
+  box-shadow: 0 0 0 1px rgba(194, 160, 94, 0.2);
+}
+
+/* Orbit-arc chapter dividers (Art Direction motif) */
+.ap-chapter:not(.ap-chapter--hero)::before {
+  content: "";
+  display: block;
+  width: min(220px, 40%);
+  height: 12px;
+  margin: 0 auto 1.25rem;
+  background:
+    radial-gradient(circle at 50% 50%, #C2A05E 0 2px, transparent 2.5px),
+    radial-gradient(ellipse 100% 100% at 50% 100%, transparent 62%, rgba(194,160,94,0.45) 63%, transparent 64%);
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ap-chapter:not(.ap-chapter--hero)::before { opacity: 0.5; }
+}
+
+/* Card orbital hover ring */
+.sign-tile--v2::after,
+.ap-shop-featured__card::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.25s, transform 0.6s ease;
+}
+.sign-tile--v2 { position: relative; }
+.ap-shop-featured__card { position: relative; overflow: hidden; }
+.sign-tile--v2:hover::after,
+.sign-tile--v2:focus-visible::after,
+.ap-shop-featured__card:hover::after {
+  border-color: rgba(194,160,94,0.35);
+  transform: rotate(8deg) scale(1.02);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sign-tile--v2:hover::after,
+  .ap-shop-featured__card:hover::after { transform: none; }
+}
+
+/* Hero instrument polish v651+ */
+.ap-award-511 #heroChapter .hero-solar-trust {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(194,160,94,0.18);
+  border-radius: 12px;
+  padding: 0.55rem 0.85rem;
+  background: rgba(12,16,22,0.42);
+}
+html.orrery-full .ap-award-511 #heroChapter .ap-award-orrery-frame {
+  box-shadow:
+    0 0 0 1px rgba(194,160,94,0.12),
+    0 0 80px rgba(80,140,220,0.08),
+    0 28px 80px rgba(0,0,0,0.45);
+}
+.ap-award-511 .dept-list-item {
+  border-color: rgba(194,160,94,0.16);
+  transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+}
+.ap-award-511 .dept-list-item:hover,
+.ap-award-511 .dept-list-item:focus-visible {
+  border-color: rgba(194,160,94,0.42);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.28);
+  outline: none;
+  transform: translateY(-1px);
+}
+.ap-award-511 .dept-badge.free {
+  border-color: rgba(194,160,94,0.35);
+  color: #D8B978;
+}
+/* Lighter page scrim so Earth stays vivid when full */
+html.orrery-full .ap-award-511 #heroChapter .hero-copy {
+  text-shadow: 0 2px 24px rgba(12,16,22,0.85);
+}
+
+.hero-form--primary .btn-press {
+  min-height: 48px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.hero-form--primary .hero-form-row input[type="date"] {
+  min-height: 48px;
+}
+.hero-action-chips--secondary {
+  opacity: 0.82;
+  margin-top: 0.65rem;
+}
+/* Deferred chips: not competing with cast CTA on first paint */
+.hero-action-chips--defer {
+  margin-top: 0.5rem;
+}
+@media (max-width: 900px) {
+  .hero-action-chips--defer {
+    /* Live status only — explore lives in instruments / explore page */
+    opacity: 0.65;
+  }
+  .hero-action-chips--defer .hero-explore-chip--quiet {
+    display: none;
+  }
+}
+/* Mobile first viewport: cast only */
+@media (max-width: 640px) {
+  .hero-action-chips--secondary {
+    opacity: 0.62;
+    gap: 6px;
+  }
+  .ap-award-511 #heroChapter .hero-solar-trust {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+  }
+  /* Live pill can sit after first paint without owning the fold */
+  .hero-action-chips--defer .hero-live-pill {
+    font-size: 0.72rem;
+  }
+}
+@media (min-width: 1024px) {
+  html.orrery-full .hero-action-chips--secondary {
+    opacity: 0.62;
+  }
+  html.orrery-full .ap-award-511 #heroChapter .hero-form--primary {
+    position: relative;
+    z-index: 5;
+  }
 }

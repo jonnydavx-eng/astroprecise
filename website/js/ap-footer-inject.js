@@ -22,13 +22,14 @@
     { key: 'pisces', name: 'Pisces' },
   ];
 
+  // Spine: Cast → Sky → Keep → Daily → Reading → Shop
   var FOOTER_TOOLS = [
-    { href: 'chart.html', label: 'Birth Chart', icon: '<span aria-hidden="true">⊙</span>' },
-    { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
-    { href: 'lifepath.html', label: 'Life Path', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg>' },
-    { href: 'compatibility.html', label: 'Match', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg>' },
-    { href: 'transits.html', label: 'Transits', icon: '<span aria-hidden="true">☿</span>' },
+    { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
     { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
+    { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">✦</span>' },
+    { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
+    { href: 'cosmic-story.html', label: 'Readings', icon: '<span aria-hidden="true">◇</span>' },
+    { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
   ];
 
   var PRESERVE_SELECTORS = [
@@ -179,8 +180,27 @@
     document.dispatchEvent(new CustomEvent('ap:footer-injected'));
   }
 
+  function toolsListHtml() {
+    return FOOTER_TOOLS.map(function (t) {
+      return '<li><a href="' + t.href + '">' + t.icon + ' ' + t.label + '</a></li>';
+    }).join('');
+  }
+
+  /** Keep Tools column on spine even when footer model already present. */
+  function patchToolsCol() {
+    var cols = document.querySelectorAll('footer .footer-nav-col');
+    for (var i = 0; i < cols.length; i++) {
+      var title = cols[i].querySelector('.footer-nav-col__title');
+      if (!title || !/tools/i.test(title.textContent || '')) continue;
+      var ul = cols[i].querySelector('ul');
+      if (ul) ul.innerHTML = toolsListHtml();
+      return;
+    }
+  }
+
   function boot() {
     inject();
+    patchToolsCol();
     patchZodiacStrip();
   }
 

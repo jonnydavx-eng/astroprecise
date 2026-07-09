@@ -582,3 +582,81 @@
     transition: none;
   }
 }
+/* ── Keepsake band (post-calc masterpiece path) ───────────────────────── */
+.chart-keepsake-band {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.85rem 0 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(194, 160, 94, 0.28);
+  background: linear-gradient(145deg, rgba(26, 34, 48, 0.75), rgba(12, 16, 22, 0.92));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+.chart-keepsake-band__art img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid rgba(194, 160, 94, 0.35);
+  object-fit: cover;
+  display: block;
+  background: #0C1016;
+}
+.chart-keepsake-band__eyebrow {
+  margin: 0 0 0.25rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #C2A05E;
+}
+.chart-keepsake-band__lead {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #BEB298;
+}
+.chart-keepsake-band__lead strong { color: #ECE6D8; }
+.chart-keepsake-band__lead a { color: #D8B978; }
+.chart-keepsake-band__honesty {
+  margin: 0.45rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: rgba(168, 158, 136, 0.92);
+}
+@media (max-width: 560px) {
+  .chart-keepsake-band { flex-direction: column; text-align: center; }
+}
+
+/* Optional name disclosure (mirrors chart-critical) */
+.chart-form__optional-label {
+  margin: 0.65rem 0 0.25rem;
+  border: 1px solid rgba(194,160,94,0.18);
+  border-radius: 12px;
+  background: rgba(12,16,22,0.28);
+  padding: 0.15rem 0.85rem 0.35rem;
+}
+.chart-form__optional-sum {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: #C2A05E;
+  padding: 0.55rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.chart-form__optional-sum::-webkit-details-marker { display: none; }
+.chart-form__optional-hint {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(190,178,152,0.85);
+  text-transform: none;
+}
+.chart-form__optional-label[open] .chart-form__optional-sum {
+  border-bottom: 1px solid rgba(194,160,94,0.12);
+  margin-bottom: 0.35rem;
+}

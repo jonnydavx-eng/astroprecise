@@ -68,7 +68,7 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/chart-critical.css" />
+  <link rel="stylesheet" href="css/chart-critical.css?v=656" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
@@ -263,15 +263,15 @@
     <!-- ============================================================
          HERO — Compact
     ============================================================ -->
-    <section class="chart-hero" aria-labelledby="page-title">
+    <section class="chart-hero chart-hero--compact" aria-labelledby="page-title">
       <div class="chart-hero__cosmic-art" aria-hidden="true"></div>
       <div class="chart-hero__orb-a" aria-hidden="true"></div>
       <div class="chart-hero__orb-b" aria-hidden="true"></div>
       <div class="container">
-        <p class="chart-hero__eyebrow" aria-hidden="true">Instrument 01 &middot; Natal chart</p>
+        <p class="chart-hero__eyebrow" aria-hidden="true">01 · Cast · Natal chart</p>
         <h1 class="chart-hero__title" id="page-title">Your natal chart, to the minute</h1>
         <p class="chart-hero__subtitle">
-          The living sky from the homepage, wound back to your birth minute and drawn as a full wheel &mdash; computed privately in your browser.
+          The living sky, wound back to your birth minute &mdash; computed privately in your browser.
         </p>
       </div>
     </section>
@@ -286,36 +286,34 @@
 
         <div class="form-glass__header">
           <div class="form-glass__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
-          <h2 class="form-glass__title">Your Birth Details</h2>
-          <p class="form-glass__sub">Your chart is computed instantly on your device.<br><strong class="form-glass__privacy">Private by design</strong> — your birth date and time never leave your browser; only the place name you type is sent, to look up its coordinates. No account, no tracking.</p>
+          <h2 class="form-glass__title">Cast your chart</h2>
+          <p class="form-glass__sub">Instant on your device. <strong class="form-glass__privacy">Private</strong> — only the place name leaves the browser (for coordinates). No account.</p>
         </div>
 
         <form id="chart-form" novalidate aria-label="Birth chart calculation form">
 
           <div class="chart-form__essentials">
           <div class="form-section-label chart-form__essentials-label">
-            <div class="form-section-label__num" aria-hidden="true">✦</div>
-            <span class="form-section-label__text">Birth details</span>
+            <div class="form-section-label__num" aria-hidden="true">1</div>
+            <span class="form-section-label__text">Date, place &amp; time</span>
           </div>
 
-          <div class="form-group" id="group-name">
-            <label for="name-input" class="form-label">
-              Your Name <span class="required" aria-hidden="true">*</span>
+          <div class="form-group chart-form__priority" id="group-date-first">
+            <label for="date-input" class="form-label">
+              Birth Date <span class="required" aria-hidden="true">*</span>
             </label>
             <input
-              type="text"
-              id="name-input"
-              name="name"
+              type="date"
+              id="date-input"
+              name="birth-date"
               class="form-input"
-              placeholder="e.g. Jane Doe"
-              autocomplete="name"
               required
               aria-required="true"
-              aria-describedby="name-hint"
+              aria-describedby="date-hint"
             />
             <span class="form-group__check" aria-hidden="true"></span>
-            <p class="form-error-msg" role="alert">Please enter your name.</p>
-            <p class="form-hint" id="name-hint">Used to label your saved chart.</p>
+            <p class="form-error-msg" role="alert">Please enter your birth date.</p>
+            <p class="form-hint" id="date-hint">Start here — the sky on your day.</p>
           </div>
 
           <div class="form-group" id="group-city" style="position:relative;">
@@ -347,48 +345,46 @@
               hidden
             ></div>
             <p class="form-error-msg" role="alert">Please select a city from the dropdown.</p>
-            <p class="form-hint" id="city-hint">Select a result from the dropdown for precise coordinates.
+            <p class="form-hint" id="city-hint">Pick a result for precise coordinates.
               <button type="button" id="geo-btn" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 6px;">◉ or use my current location</button>
             </p>
           </div>
 
-          <div class="form-row">
-            <div class="form-group" id="group-date">
-              <label for="date-input" class="form-label">
-                Birth Date <span class="required" aria-hidden="true">*</span>
-              </label>
+          <div class="form-group" id="group-time">
+            <label for="time-input" class="form-label">
+              Birth Time
+              <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — optional</span>
+            </label>
+            <input
+              type="time"
+              id="time-input"
+              name="birth-time"
+              class="form-input"
+              aria-describedby="time-hint"
+            />
+            <p class="form-hint" id="time-hint">Needed for Ascendant &amp; houses. Blank = noon (Rising approximate).
+              <button type="button" id="time-unknown-btn" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 2px;">Don't know it?</button>
+            </p>
+            <div id="time-accuracy-guide" hidden></div>
+          </div>
+
+          <details class="chart-form__optional-label" id="group-name-wrap">
+            <summary class="chart-form__optional-sum">Name this chart <span class="chart-form__optional-hint">(optional)</span></summary>
+            <div class="form-group" id="group-name">
+              <label for="name-input" class="form-label sr-only">Your Name</label>
               <input
-                type="date"
-                id="date-input"
-                name="birth-date"
+                type="text"
+                id="name-input"
+                name="name"
                 class="form-input"
-                required
-                aria-required="true"
-                aria-describedby="date-hint"
+                placeholder="e.g. Jane Doe"
+                autocomplete="name"
+                aria-describedby="name-hint"
               />
               <span class="form-group__check" aria-hidden="true"></span>
-              <p class="form-error-msg" role="alert">Please enter your birth date.</p>
-              <p class="form-hint" id="date-hint">Your date of birth.</p>
+              <p class="form-hint" id="name-hint">Labels saved charts and exports. Blank = “Birth Chart”.</p>
             </div>
-
-            <div class="form-group" id="group-time">
-              <label for="time-input" class="form-label">
-                Birth Time
-                <span style="font-weight:400;color:var(--silver-dim);font-size:0.75em;letter-spacing:normal;"> — optional</span>
-              </label>
-              <input
-                type="time"
-                id="time-input"
-                name="birth-time"
-                class="form-input"
-                aria-describedby="time-hint"
-              />
-              <p class="form-hint" id="time-hint">Needed for your Ascendant &amp; houses. Left blank, we assume noon — your Rising sign &amp; houses become approximate.
-                <button type="button" id="time-unknown-btn" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 2px;">Don't know it? Pick a time of day</button>
-              </p>
-              <div id="time-accuracy-guide" hidden></div>
-            </div>
-          </div>
+          </details>
           </div><!-- /.chart-form__essentials -->
 
           <!-- Hidden coordinate / tz fields -->
@@ -520,29 +516,46 @@
               <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000</span>
             </div>
             <div class="result-actions" id="result-actions-row">
-              <button id="save-btn" class="action-btn action-btn--primary" aria-label="Save chart to your profile">
-                ⊕ Save to Profile
-              </button>
-              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
-                ↗ Share
-              </button>
-              <button id="poster-btn" class="action-btn action-btn--ghost" aria-label="Download your chart as an image — wallpaper, square, story or print">
-                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Download image
+              <button id="poster-btn" class="action-btn action-btn--primary" aria-label="Download your masterpiece chart plate — print, square, story or wallpaper">
+                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Download masterpiece
               </button>
               <button id="wallpaper-btn" class="action-btn action-btn--gold" aria-label="Get a free phone wallpaper of your chart">
-                <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Free wallpaper
+                Free wallpaper
+              </button>
+              <button id="save-btn" class="action-btn action-btn--ghost" aria-label="Save chart to your profile">
+                Save
+              </button>
+              <button id="share-btn" class="action-btn action-btn--ghost" aria-label="Share this chart">
+                Share link
               </button>
               <details class="result-actions__more">
-                <summary class="result-actions__more-toggle">More options</summary>
+                <summary class="result-actions__more-toggle">More</summary>
                 <div class="result-actions__more-menu" role="group" aria-label="More chart actions">
-                  <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">◈ Big Three card</button>
-                  <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">⤓ Export JSON</button>
-                  <button id="app-btn" class="action-btn action-btn--ghost" aria-label="Open chart in the Astro Precise app">⬡ Open in App</button>
+                  <button id="print-btn" class="action-btn action-btn--ghost" aria-label="Download Big Three card">Big Three card</button>
+                  <button id="json-btn" class="action-btn action-btn--ghost" aria-label="Export chart data as JSON">Export JSON</button>
+                  <button id="app-btn" class="action-btn action-btn--ghost" aria-label="Open chart in the Astro Precise app">Open in App</button>
                 </div>
               </details>
             </div>
           </div>
         </div>
+
+        <aside class="chart-keepsake-band" aria-label="Keep this sky">
+          <div class="chart-keepsake-band__art" aria-hidden="true">
+            <img src="img/marketing-masterpiece-plate.webp?v=655" width="96" height="96" alt="" loading="lazy" decoding="async" />
+          </div>
+          <div class="chart-keepsake-band__copy">
+            <p class="chart-keepsake-band__eyebrow">Your sky · keepsake path</p>
+            <p class="chart-keepsake-band__lead">
+              Download a <strong>masterpiece plate</strong> (real degrees + seals + 3D engine texture),
+              freeze any date as a <a href="moment.html">Moment</a>, or open the
+              <a href="shop.html">Shop</a> for PDF packs when checkout is live.
+            </p>
+            <p class="chart-keepsake-band__honesty">
+              Wheel = your real positions · backdrop = 3D orrery still · free PNG ≠ paid print · not AI art
+            </p>
+          </div>
+        </aside>
 
         <div id="chart-ai-panel" hidden aria-label="Optional chart insight"></div>
 
@@ -552,19 +565,19 @@
           <div id="big-three" class="big-three-grid">
             <article class="big-three-card big-three-card--skeleton" aria-hidden="true">
               <p class="big-three-card__planet">Sun · Core Identity</p>
-              <span class="big-three-card__glyph" aria-hidden="true">☉</span>
+              <span class="big-three-card__seal" data-celestial-seal="planet:sun" data-seal-lg aria-hidden="true"></span>
               <h3 class="big-three-card__sign">—</h3>
               <p class="big-three-card__desc">—</p>
             </article>
             <article class="big-three-card big-three-card--skeleton" aria-hidden="true">
               <p class="big-three-card__planet">Moon · Inner World</p>
-              <span class="big-three-card__glyph" aria-hidden="true">☽</span>
+              <span class="big-three-card__seal" data-celestial-seal="planet:moon" data-seal-lg aria-hidden="true"></span>
               <h3 class="big-three-card__sign">—</h3>
               <p class="big-three-card__desc">—</p>
             </article>
             <article class="big-three-card big-three-card--skeleton" aria-hidden="true">
               <p class="big-three-card__planet">Rising · Outward Self</p>
-              <span class="big-three-card__glyph" aria-hidden="true">↑</span>
+              <span class="big-three-card__seal" data-celestial-seal="zodiac:aries" data-seal-lg aria-hidden="true"></span>
               <h3 class="big-three-card__sign">—</h3>
               <p class="big-three-card__desc">—</p>
             </article>
@@ -1070,7 +1083,7 @@
       });
     }
     watchField('name-input', 'group-name');
-    watchField('date-input', 'group-date');
+    watchField('date-input', 'group-date-first');
     watchField('time-input', 'group-time');
 
     // City validation via custom event

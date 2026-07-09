@@ -407,10 +407,11 @@
       x.fill();
     }
 
-    x.strokeStyle = 'rgba(201, 162, 39,0.55)';
+    // Observatory 2026 brass (core #C2A05E) — not retired warm gold
+    x.strokeStyle = 'rgba(194, 160, 94,0.55)';
     x.lineWidth = 2;
     x.strokeRect(46, 46, CARD_BASE - 92, CARD_BASE - 92);
-    x.strokeStyle = 'rgba(201, 162, 39,0.22)';
+    x.strokeStyle = 'rgba(194, 160, 94,0.22)';
     x.strokeRect(58, 58, CARD_BASE - 116, CARD_BASE - 116);
     return { cv, x, S, CARD_W };
   }
@@ -442,7 +443,7 @@
     x.fillStyle = 'rgba(20, 16, 10,0.55)';
     x.fill();
     x.lineWidth = 1;
-    x.strokeStyle = measured ? 'rgba(201, 162, 39,0.55)' : 'rgba(154,166,200,0.45)';
+    x.strokeStyle = measured ? 'rgba(194, 160, 94,0.55)' : 'rgba(168,158,136,0.45)';
     x.stroke();
     const dotX = left + padX;
     x.beginPath();
@@ -515,7 +516,7 @@
       nameSize -= 4; x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
     }
     x.textAlign = 'center';
-    x.shadowColor = 'rgba(201, 162, 39,0.55)';
+    x.shadowColor = 'rgba(194, 160, 94,0.55)';
     x.shadowBlur = 24;
     x.fillText(s.name.toUpperCase(), CARD_BASE / 2, 296);
     x.shadowBlur = 0;
@@ -533,9 +534,9 @@
     }
     x.beginPath();
     x.arc(CARD_BASE / 2, panelCy, half, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(154,166,200,0.12)';
+    x.strokeStyle = 'rgba(194, 160, 94,0.14)';
     x.lineWidth = 1; x.stroke();
-    x.strokeStyle = 'rgba(201, 162, 39,0.30)';
+    x.strokeStyle = 'rgba(194, 160, 94,0.30)';
     x.beginPath();
     x.moveTo(CARD_BASE / 2 - 16, panelCy); x.lineTo(CARD_BASE / 2 + 16, panelCy);
     x.moveTo(CARD_BASE / 2, panelCy - 16); x.lineTo(CARD_BASE / 2, panelCy + 16);
@@ -545,8 +546,8 @@
       const r = Math.max(1.4, 4.2 - p.st.mag * 0.7);
       x.beginPath();
       x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
-      if (isHero) { x.fillStyle = 'rgba(232,201,106,0.98)'; x.shadowColor = 'rgba(201, 162, 39,0.9)'; x.shadowBlur = 16; }
-      else { x.fillStyle = 'rgba(154,166,200,0.55)'; x.shadowBlur = 0; }
+      if (isHero) { x.fillStyle = 'rgba(216,185,120,0.98)'; x.shadowColor = 'rgba(194, 160, 94,0.9)'; x.shadowBlur = 16; }
+      else { x.fillStyle = 'rgba(190,178,152,0.55)'; x.shadowBlur = 0; }
       x.fill(); x.shadowBlur = 0;
     }
 
