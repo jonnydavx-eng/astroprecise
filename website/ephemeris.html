@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#0C1016}</style>
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="The Sky Tonight — live Moon phase, planet positions, and today's sky mood. Add your birth details for your personal chart layer. Free, computed on your device." />
   <meta name="robots" content="index, follow" />
@@ -20,15 +20,15 @@
   <meta property="og:description" content="What's in the sky tonight — Moon, planets, and a plain-language read of today's sky. Personalise with your birth details when you're ready." />
   <meta property="og:url" content="https://astroprecise.app/ephemeris.html" />
   <link rel="canonical" href="https://astroprecise.app/ephemeris.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="The Sky | Astro Precise" />
   <meta name="twitter:description" content="What's in the sky tonight — Moon, planets, and a plain-language read of today's sky. Personalise with your birth details when you're ready." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   
@@ -53,6 +53,8 @@
 <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=683" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/ephemeris-critical.css" />
@@ -350,15 +352,15 @@
         </p>
 
         <div class="glass-card glass-card--gold-rim engraved-plate instrument-panel instrument-panel--gold-rim" style="margin:1.5rem auto;max-width:580px;text-align:center;position:relative;">
-          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(194, 160, 94,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
+          <svg id="ph-wheel" width="460" height="460" viewBox="0 0 460 460" style="max-width:100%;filter:drop-shadow(0 0 22px rgba(168, 176, 188,0.12));" role="img" aria-label="Planetary Hours Wheel: 12 engraved sectors with planet rulers, current hour glow, sun position arc">
             <defs>
-              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C2A05E"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
+              <linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#A8B0BC"/><stop offset="100%" stop-color="#A8841E"/></linearGradient>
             </defs>
-            <circle cx="230" cy="230" r="215" fill="none" stroke="#C2A05E" stroke-width="2.5" opacity="0.4"/>
+            <circle cx="230" cy="230" r="215" fill="none" stroke="#A8B0BC" stroke-width="2.5" opacity="0.4"/>
           </svg>
           <div id="ph-readout" style="margin-top:8px;font-family:'AstroGlyph','Cormorant Garamond',serif;font-variant-emoji:text;font-size:1.0rem;color:#E8E0D0;min-height:2.8em;line-height:1.5;"></div>
           <div style="display:flex;gap:10px;justify-content:center;margin:10px 0 6px;flex-wrap:wrap;">
-            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(194, 160, 94,0.35);color:#C2A05E;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
+            <button id="ph-align" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168, 176, 188,0.35);color:#A8B0BC;padding:8px 18px;border-radius:20px;cursor:pointer;">⟐ Align with Orrery (Home Sky)</button>
             <button id="ph-now" type="button" style="font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;font-family:'Cinzel',serif;background:none;border:1px solid rgba(168,158,136,0.3);color:#A89E88;padding:8px 18px;border-radius:20px;cursor:pointer;display:none;">↻ Return to Now</button>
           </div>
           <div id="ph-note" style="font-size:0.62rem;letter-spacing:0.16em;color:#A89E88;">Tap a sector for hermetic lore &middot; Sunrise-based unequal hours</div>
@@ -499,7 +501,7 @@
         </p>
         <div class="sign-cta-row" style="display:flex;gap:0.9rem;flex-wrap:wrap;justify-content:center;margin-top:1.75rem;">
           <a href="chart.html" class="glow-btn" style="text-decoration:none;">Cast your chart &rarr;</a>
-          <a href="shop.html#deep-reading" class="glow-btn" style="text-decoration:none;border-color:rgba(194, 160, 94,0.4);color:var(--gold-pale);">&hellip; then read what it means for you &mdash; Deep Reading &rarr;</a>
+          <a href="shop.html#deep-reading" class="glow-btn" style="text-decoration:none;border-color:rgba(168, 176, 188,0.4);color:var(--gold-pale);">&hellip; then read what it means for you &mdash; Deep Reading &rarr;</a>
         </div>
       </div>
     </section>
@@ -541,8 +543,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -702,28 +704,28 @@
       const { slots, dow, approx } = daySlots(t, loc);
       const nowIdx = slots.findIndex(s => t >= s.start && t < s.end);
       current = nowIdx >= 0 ? { slot: slots[nowIdx], idx: nowIdx } : null;
-      let s = `<defs><linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#C2A05E"/><stop offset="100%" stop-color="#A8841E"/></linearGradient></defs>`;
-      s += `<circle cx="${CX}" cy="${CY}" r="${R1 + 9}" fill="none" stroke="#C2A05E" stroke-width="2.5" opacity="0.4"/>`;
-      s += `<circle cx="${CX}" cy="${CY}" r="${R2 - 8}" fill="none" stroke="#C2A05E" stroke-width="0.8" opacity="0.3"/>`;
+      let s = `<defs><linearGradient id="phGold" x1="50%" y1="0%" x2="50%" y2="100%"><stop offset="0%" stop-color="#A8B0BC"/><stop offset="100%" stop-color="#A8841E"/></linearGradient></defs>`;
+      s += `<circle cx="${CX}" cy="${CY}" r="${R1 + 9}" fill="none" stroke="#A8B0BC" stroke-width="2.5" opacity="0.4"/>`;
+      s += `<circle cx="${CX}" cy="${CY}" r="${R2 - 8}" fill="none" stroke="#A8B0BC" stroke-width="0.8" opacity="0.3"/>`;
       slots.forEach((sl, i) => {
         const a0 = 180 - i * 15, a1 = 180 - (i + 1) * 15;
         const [x1, y1] = pt(a0, R1), [x2, y2] = pt(a1, R1), [x3, y3] = pt(a1, R2), [x4, y4] = pt(a0, R2);
         const isNow = i === nowIdx, p = P[sl.rulerKey];
-        const fill = isNow ? 'rgba(194, 160, 94,0.22)' : sl.kind === 'day' ? 'rgba(194, 160, 94,0.055)' : 'rgba(40,36,52,0.45)';
+        const fill = isNow ? 'rgba(168, 176, 188,0.22)' : sl.kind === 'day' ? 'rgba(168, 176, 188,0.055)' : 'rgba(40,36,52,0.45)';
         s += `<g class="ph-sec" data-i="${i}" style="cursor:pointer">
           <path d="M${x1},${y1} A${R1},${R1} 0 0 1 ${x2},${y2} L${x3},${y3} A${R2},${R2} 0 0 0 ${x4},${y4} Z"
-            fill="${fill}" stroke="rgba(194, 160, 94,${isNow ? '0.8' : '0.22'})" stroke-width="${isNow ? 1.6 : 0.6}"/>
+            fill="${fill}" stroke="rgba(168, 176, 188,${isNow ? '0.8' : '0.22'})" stroke-width="${isNow ? 1.6 : 0.6}"/>
           <text x="${pt(a0 - 7.5, RG)[0]}" y="${pt(a0 - 7.5, RG)[1]}" text-anchor="middle" dominant-baseline="central"
-            font-size="${isNow ? 17 : 13}" fill="${isNow ? '#EFE3C0' : p.c}" font-family="AstroGlyph, serif" ${isNow ? 'filter="drop-shadow(0 0 5px rgba(194, 160, 94,.9))"' : ''}>${p.g}︎</text>
+            font-size="${isNow ? 17 : 13}" fill="${isNow ? '#E8EBF0' : p.c}" font-family="AstroGlyph, serif" ${isNow ? 'filter="drop-shadow(0 0 5px rgba(168, 176, 188,.9))"' : ''}>${p.g}︎</text>
         </g>`;
       });
       if (current) {
         const i = current.idx, fr = (t - current.slot.start) / (current.slot.end - current.slot.start);
         const [mx, my] = pt(180 - (i + fr) * 15, R1 + 9);
-        s += `<circle cx="${mx}" cy="${my}" r="5" fill="#EFE3C0" opacity="0.95"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite"/></circle>`;
+        s += `<circle cx="${mx}" cy="${my}" r="5" fill="#E8EBF0" opacity="0.95"><animate attributeName="r" values="4;6;4" dur="3s" repeatCount="indefinite"/></circle>`;
       }
       const cp = current ? P[current.slot.rulerKey] : P.sun;
-      s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="AstroGlyph, serif" filter="drop-shadow(0 0 10px rgba(194, 160, 94,.45))">${cp.g}︎</text>
+      s += `<text x="${CX}" y="${CY - 26}" text-anchor="middle" font-size="44" fill="${cp.c}" font-family="AstroGlyph, serif" filter="drop-shadow(0 0 10px rgba(168, 176, 188,.45))">${cp.g}︎</text>
         <text x="${CX}" y="${CY + 8}" text-anchor="middle" font-size="13" letter-spacing="3" fill="#E8E0D0" font-family="Cinzel,serif">HOUR OF ${cp.n.replace('the ', '').toUpperCase()}</text>
         <text x="${CX}" y="${CY + 28}" text-anchor="middle" font-size="10" fill="#A89E88" font-family="Cormorant Garamond,serif" font-style="italic">${current ? fmt(current.slot.start) + ' – ' + fmt(current.slot.end) : ''}</text>
         <text x="${CX}" y="${CY + 46}" text-anchor="middle" font-size="9" letter-spacing="2" fill="#A89E88" font-family="Cinzel,serif">DAY OF ${P[CHALD[DAY_RULER[dow]]].n.replace('the ', '').toUpperCase()}</text>`;
@@ -746,7 +748,7 @@
       if (isNaN(aligned)) { aligned = null; return; }
       render(aligned);
       nowBtn.style.display = '';
-      readout.innerHTML += `<br><span style="color:#C2A05E;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
+      readout.innerHTML += `<br><span style="color:#A8B0BC;font-size:.85em;">⟐ Aligned with the home orrery’s sky — ${aligned.toLocaleString()}</span>`;
     });
     nowBtn.addEventListener('click', () => { aligned = null; nowBtn.style.display = 'none'; render(new Date()); });
     render(new Date());

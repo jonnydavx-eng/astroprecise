@@ -8,13 +8,13 @@
     <radialGradient id="cs-sun" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#F1EAD6"/>
       <stop offset="22%" stop-color="#f2d27a"/>
-      <stop offset="48%" stop-color="#C2A05E"/>
+      <stop offset="48%" stop-color="#A8B0BC"/>
       <stop offset="78%" stop-color="rgba(194,160,94,0.28)"/>
       <stop offset="100%" stop-color="rgba(194,160,94,0)"/>
     </radialGradient>
     <linearGradient id="cs-gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#D8B978"/>
-      <stop offset="52%" stop-color="#CDAE6A"/>
+      <stop offset="0%" stop-color="#C8CDD6"/>
+      <stop offset="52%" stop-color="#7EC8E8"/>
       <stop offset="100%" stop-color="#A98A4E"/>
     </linearGradient>
     <linearGradient id="cs-scrim" x1="0" y1="0" x2="0" y2="1">
@@ -63,10 +63,10 @@
   </g>
 
   <!-- constellation line (upper right) -->
-  <g stroke="#C2A05E" stroke-width="1" fill="none" opacity="0.42">
+  <g stroke="#A8B0BC" stroke-width="1" fill="none" opacity="0.42">
     <polyline points="980,60 1110,160 1180,110 1290,250 1230,360"/>
   </g>
-  <g fill="#D8B978">
+  <g fill="#C8CDD6">
     <circle cx="980" cy="60" r="2.4"/>
     <circle cx="1110" cy="160" r="2.4"/>
     <circle cx="1180" cy="110" r="2.4"/>
@@ -76,13 +76,13 @@
 
   <!-- ecliptic ring -->
   <g transform="translate(560 380) rotate(-13)">
-    <ellipse rx="640" ry="250" fill="none" stroke="#C2A05E" stroke-width="1.4" stroke-dasharray="3 9" opacity="0.5"/>
+    <ellipse rx="640" ry="250" fill="none" stroke="#A8B0BC" stroke-width="1.4" stroke-dasharray="3 9" opacity="0.5"/>
     <ellipse rx="640" ry="250" fill="none" stroke="rgba(194,160,94,0.10)" stroke-width="22"/>
     <!-- planets riding the ring -->
     <circle cx="-512" cy="-72" r="6" fill="#D6D2C8"/>
-    <circle cx="392" cy="158" r="9" fill="#CDAE6A"/>
+    <circle cx="392" cy="158" r="9" fill="#7EC8E8"/>
     <circle cx="-188" cy="206" r="5" fill="#9AA6B4"/>
-    <circle cx="600" cy="-30" r="7" fill="#C2A05E"/>
+    <circle cx="600" cy="-30" r="7" fill="#A8B0BC"/>
   </g>
 
   <!-- radiant sun -->
@@ -94,7 +94,7 @@
 
   <!-- title block -->
   <g text-anchor="middle" font-family="'Cormorant Garamond', 'Cinzel', Georgia, 'Times New Roman', serif">
-    <text x="800" y="640" font-size="34" letter-spacing="14" fill="#CDAE6A" opacity="0.85" font-family="'Cinzel', Georgia, serif">&#10022; &#160; A PERSONALISED READING</text>
+    <text x="800" y="640" font-size="34" letter-spacing="14" fill="#7EC8E8" opacity="0.85" font-family="'Cinzel', Georgia, serif">&#10022; &#160; A PERSONALISED READING</text>
     <text x="800" y="752" font-size="122" font-weight="600" fill="url(#cs-gold)" letter-spacing="2">Your Cosmic Story</text>
     <text x="800" y="812" font-size="40" font-style="italic" fill="#ECE6D8" opacity="0.86">Written from the exact sky of your first breath</text>
     <text x="800" y="864" font-size="22" letter-spacing="9" fill="#969EAC" opacity="0.8" font-family="'Cinzel', Georgia, serif">REAL VSOP87 &#183; YOURS ALONE &#183; KEEPSAKE PDF</text>

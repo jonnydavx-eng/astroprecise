@@ -11,19 +11,19 @@
        element palette (fire/earth/air/water). */
     .page-compat .element-compat-card {
       background: linear-gradient(158deg, rgba(26, 34, 48, 0.82), rgba(18, 24, 38, 0.9));
-      border: 1px solid rgba(194, 160, 94, 0.16);
+      border: 1px solid rgba(168, 176, 188, 0.16);
       border-radius: var(--radius-xl);
       padding: var(--space-6) var(--space-6);
       border-left-width: 3px;
-      box-shadow: inset 0 1px 0 rgba(236, 230, 216, 0.05), 0 6px 22px rgba(0, 0, 0, 0.28);
+      box-shadow: inset 0 1px 0 rgba(232, 235, 240, 0.05), 0 6px 22px rgba(0, 0, 0, 0.28);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
     .page-compat .element-compat-card:hover {
       transform: translateY(-3px);
-      border-color: rgba(194, 160, 94, 0.3);
-      box-shadow: inset 0 1px 0 rgba(236, 230, 216, 0.06), 0 10px 34px rgba(0, 0, 0, 0.4);
+      border-color: rgba(168, 176, 188, 0.3);
+      box-shadow: inset 0 1px 0 rgba(232, 235, 240, 0.06), 0 10px 34px rgba(0, 0, 0, 0.4);
     }
     .page-compat .element-compat-card--fire  { border-left-color: #B85A42; }
     .page-compat .element-compat-card--earth { border-left-color: #5A7A48; }
@@ -91,13 +91,13 @@
       box-shadow: inset 0 0 0 1px rgba(216, 185, 120, 0.30);
     }
     .page-compat .compat-matrix td.compat-cell--medium {
-      background: rgba(194, 160, 94, 0.15);
-      color: #C2A05E;
-      box-shadow: inset 0 0 0 1px rgba(194, 160, 94, 0.16);
+      background: rgba(168, 176, 188, 0.15);
+      color: #A8B0BC;
+      box-shadow: inset 0 0 0 1px rgba(168, 176, 188, 0.16);
     }
     .page-compat .compat-matrix td.compat-cell--low {
       background: rgba(140, 117, 68, 0.09);
-      color: #8C7544;
+      color: #6A7078;
     }
     .page-compat .compat-matrix td.compat-cell--neutral {
       background: transparent;
@@ -105,7 +105,7 @@
     }
     .page-compat .compat-matrix td:hover {
       background: rgba(216, 185, 120, 0.30);
-      color: #ECE6D8;
+      color: #E8EBF0;
     }
 
     /* ---- Synastry sidebar premium ---- */
@@ -187,7 +187,7 @@
     .compat-tab:hover { border-color: rgba(196,146,10,0.4); color: var(--gold-pale); }
     .compat-tab[aria-selected="true"] {
       color: var(--bg);
-      background: linear-gradient(135deg, #C2A05E 0%, #e8c96a 100%);
+      background: linear-gradient(135deg, #A8B0BC 0%, #e8c96a 100%);
       border-color: transparent;
       box-shadow: 0 4px 18px rgba(196,146,10,0.28);
     }

@@ -38,6 +38,8 @@ const AstroApp = (() => {
     initToastContainer();
     initScrollAnimations();
     initModalHandlers();
+    // Sitewide engine stills / cinema plate (no Three.js — safe)
+    ensureEngineVisuals();
 
     // Load preferences
     if (window.AstroProfile) {
@@ -48,6 +50,78 @@ const AstroApp = (() => {
     if (window.ApPageBridge && typeof ApPageBridge.init === 'function') {
       ApPageBridge.init();
     }
+  }
+
+  /** Load engine stills module once (shared 3D brand art, no WebGL). */
+  function ensureEngineVisuals() {
+    ensurePaletteCss();
+    ensureLogoAuroraCss();
+    ensureVisualClarityCss();
+    ensurePageStructureCss();
+    ensureModelStageCss();
+    if (window.AP_ENGINE_VISUALS) {
+      try { window.AP_ENGINE_VISUALS.boot(); } catch (e) {}
+      return;
+    }
+    if (document.querySelector('script[src*="ap-engine-visuals"]')) return;
+    var s = document.createElement('script');
+    s.src = 'js/ap-engine-visuals.js';
+    s.async = true;
+    s.onload = function () {
+      try {
+        if (window.AP_ENGINE_VISUALS) window.AP_ENGINE_VISUALS.boot();
+      } catch (e) {}
+    };
+    document.body.appendChild(s);
+  }
+
+  /** Jet · Silver · Aurora palette tokens. */
+  function ensurePaletteCss() {
+    if (document.getElementById("ap-css-palette-2026") || document.querySelector('link[href*="ap-palette-2026"]')) return;
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "css/ap-palette-2026.css?v=680";
+    l.id = "ap-css-palette-2026";
+    document.head.appendChild(l);
+  }
+
+  /** Animated silver/aurora logo system. */
+  function ensureLogoAuroraCss() {
+    if (document.getElementById("ap-css-logo-aurora")) return;
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "css/ap-logo-aurora.css?v=680";
+    l.id = "ap-css-logo-aurora";
+    document.head.appendChild(l);
+  }
+
+  /** Visual clarity — Inter body, Cormorant titles, aurora accents. */
+  function ensureVisualClarityCss() {
+    if (document.getElementById('ap-css-visual-clarity')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-visual-clarity.css?v=683';
+    l.id = 'ap-css-visual-clarity';
+    document.head.appendChild(l);
+  }
+
+  /** Model-first stage — glass UI on jet around 3D / engine stills. */
+  function ensurePageStructureCss() {
+    if (document.getElementById('ap-css-page-structure')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-page-structure.css?v=683';
+    l.id = 'ap-css-page-structure';
+    document.head.appendChild(l);
+  }
+
+  function ensureModelStageCss() {
+    if (document.getElementById("ap-css-model-stage")) return;
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "css/ap-model-stage.css?v=683";
+    l.id = "ap-css-model-stage";
+    document.head.appendChild(l);
   }
 
   // ── Navbar ────────────────────────────────────────────────────────────────
@@ -177,7 +251,8 @@ const AstroApp = (() => {
       if (meta.dataNavPromoted) attrs += ' data-nav-promoted="' + meta.dataNavPromoted + '"';
       var inner = label;
       if (meta.badge) {
-        inner += '<span class="navbar__nav-badge" aria-hidden="true">' + meta.badge + '</span>';
+        /* space before badge so labels don't read as My SkyHub / MomentKeep */
+        inner += ' <span class="navbar__nav-badge" aria-hidden="true">' + meta.badge + '</span>';
       }
       return '<a' + attrs + '>' + inner + '</a>';
     }).join('');
@@ -1715,7 +1790,7 @@ window.AP_MON = Object.assign({
         a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
         a.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support the free chart';
         a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
-          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#C2A05E);text-decoration:none;';
+          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#A8B0BC);text-decoration:none;';
         host.appendChild(document.createElement('br'));
         host.appendChild(a);
       }
@@ -2199,7 +2274,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     st.id = 'ap-email-sticky-critical';
     st.textContent =
       '.ap-email-cta--sticky{position:fixed;left:0;right:0;bottom:0;z-index:9000;padding:12px 16px;' +
-      'background:var(--ap-void-deep,#0C1016);border-top:1px solid rgba(194,160,94,0.35);' +
+      'background:var(--ap-void-deep,#07070A);border-top:1px solid rgba(168,176,188,0.35);' +
       'transform:translateY(110%);visibility:hidden;' +
       'transition:transform .45s cubic-bezier(.22,1,.36,1),visibility 0s .45s;}' +
       '.ap-email-cta--sticky.is-visible{transform:translateY(0);visibility:visible;' +
@@ -2219,7 +2294,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-site-polish.css?v=656';
+    l.href = 'css/ap-site-polish.css?v=680';
     l.id = 'ap-css-site-polish';
     document.head.appendChild(l);
   }
@@ -2229,16 +2304,16 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     var st = document.createElement('style');
     st.id = 'ap-email-cta-critical';
     st.textContent =
-      '.ap-email-cta--banner{background:linear-gradient(135deg,rgba(194,160,94,0.1) 0%,rgba(16,21,32,0.92) 48%,rgba(92,74,110,0.08) 100%);border-top:1px solid rgba(194,160,94,0.22);border-bottom:1px solid rgba(194,160,94,0.12);padding:48px 0;}' +
+      '.ap-email-cta--banner{background:linear-gradient(135deg,rgba(94,200,232,0.08) 0%,rgba(5,8,16,0.94) 48%,rgba(61,139,255,0.08) 100%);border-top:1px solid rgba(94,200,232,0.18);border-bottom:1px solid rgba(94,200,232,0.1);padding:48px 0;}' +
       '.ap-email-cta__inner{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;}' +
       '@media (max-width:768px){.ap-email-cta__inner{grid-template-columns:1fr;text-align:center;gap:24px;}}' +
-      '.ap-email-cta__eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold,#C2A05E);margin:0 0 8px;font-weight:600;}' +
-      '.ap-email-cta__title{font-family:var(--font-display,\'Cormorant Garamond\',serif);font-size:clamp(1.35rem,3vw,1.85rem);font-weight:600;color:var(--white,#fff);margin:0 0 12px;line-height:1.25;}' +
-      '.ap-email-cta__sub{font-size:0.875rem;color:var(--silver,var(--ap-text-secondary,#C8D0E8));margin:0;line-height:1.65;}' +
+      '.ap-email-cta__eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--ap-cyan,#5EC8E8);margin:0 0 8px;font-weight:600;}' +
+      '.ap-email-cta__title{font-family:var(--font-display,\'Cormorant Garamond\',serif);font-size:clamp(1.35rem,3vw,1.85rem);font-weight:600;color:var(--ap-text-primary,#E8EEF8);margin:0 0 12px;line-height:1.25;}' +
+      '.ap-email-cta__sub{font-size:0.875rem;color:var(--silver,var(--ap-text-secondary,#B8C4D8));margin:0;line-height:1.65;}' +
       '.ap-email-cta__form{display:flex;flex-direction:column;gap:8px;}' +
       '.ap-email-cta__fields{display:flex;gap:12px;flex-wrap:wrap;}' +
-      '.ap-email-cta__input{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid rgba(194,160,94,0.28);background:rgba(12,16,22,0.75);color:var(--white,#fff);font-size:0.88rem;outline:none;-webkit-appearance:none;appearance:none;}' +
-      '.ap-email-cta__btn{padding:12px 22px;border-radius:12px;border:1px solid var(--gold,#C2A05E);background:linear-gradient(180deg,rgba(194,160,94,0.28) 0%,rgba(194,160,94,0.12) 100%);color:var(--gold-pale,#EFE3C0);font-size:0.82rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;white-space:nowrap;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__input{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid rgba(168,176,188,0.28);background:rgba(12,16,22,0.75);color:var(--white,#fff);font-size:0.88rem;outline:none;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__btn{padding:12px 22px;border-radius:12px;border:1px solid var(--gold,#A8B0BC);background:linear-gradient(180deg,rgba(168,176,188,0.28) 0%,rgba(168,176,188,0.12) 100%);color:var(--gold-pale,#E8EBF0);font-size:0.82rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;white-space:nowrap;-webkit-appearance:none;appearance:none;}' +
       '.ap-email-cta__hint{font-size:0.62rem;color:var(--silver-dim,var(--ap-text-muted,#8891AA));margin:0;line-height:1.5;}' +
       '.ap-email-cta__msg{font-size:0.78rem;color:var(--silver,var(--ap-text-secondary,#C8D0E8));margin:0;min-height:1.2em;}';
     document.head.appendChild(st);
@@ -2393,6 +2468,8 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     }
     if (document.getElementById('email-capture')) return;
     if (document.getElementById('horoscope-subscribe')) return;
+    /* Explore is model-first — no full-width email wall between stage and footer */
+    if (document.body.classList.contains('page-explore')) return;
     var banner = buildEmailCTA('banner', pageEmailCopy());
     var slot = document.getElementById('ap-email-banner-slot');
     if (slot) {
@@ -2409,7 +2486,26 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
   }
 
   function injectStickyCTA() {
-    if (pageSlug() === 'shop.html') return;
+    /* User screenshot audit 2026-07-09 / v678: sticky bar bisects Explore,
+       Daily sign grid, and model pages. Email only as footer banner. */
+    var slug = pageSlug();
+    var noSticky =
+      /^(index\.html|explore\.html|chart\.html|horoscope\.html|ephemeris\.html|mysky\.html|moment\.html|shop\.html|catalogue\.html|transits\.html|compatibility\.html|quiz\.html|)$/i.test(slug) ||
+      !slug ||
+      document.body.classList.contains('ap-award-511') ||
+      document.body.classList.contains('page-home') ||
+      document.body.classList.contains('page-explore') ||
+      document.body.classList.contains('page-chart') ||
+      document.body.classList.contains('page-horoscope') ||
+      document.body.classList.contains('page-instrument') ||
+      document.body.classList.contains('ap-mysky-page') ||
+      document.body.classList.contains('ap-moment-page') ||
+      document.body.classList.contains('page-shop');
+    if (noSticky) {
+      document.querySelectorAll('.ap-email-cta--sticky').forEach(function (n) { n.remove(); });
+      document.body.classList.remove('has-email-sticky');
+      return;
+    }
     if (document.querySelector('.ap-email-cta--sticky')) return;
     if (document.body.classList.contains('preloader-active')) {
       window.addEventListener('ap-hero-enter', injectStickyCTA, { once: true });
@@ -2457,7 +2553,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     wrap.className = 'ap-footer-signup ap-footer-signup--compact';
     if (hasBanner) {
       wrap.innerHTML = '<p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">'
-        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C2A05E);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
+        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#A8B0BC);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
         + ' \u2014 cosmic weather & new features coming soon.</p>';
       wrap.querySelector('a').addEventListener('click', scrollToEmailCTA);
     } else {
@@ -2546,3 +2642,4 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
   s.defer = true;
   document.head.appendChild(s);
 })();
+

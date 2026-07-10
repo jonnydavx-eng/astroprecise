@@ -106,7 +106,7 @@
       var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
       bg.addColorStop(0, '#1A2230');
       bg.addColorStop(0.5, '#121826');
-      bg.addColorStop(1, '#0C1016');
+      bg.addColorStop(1, '#07070A');
       ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
       // Nebula glows — person 1 warm copper, person 2 gold
@@ -160,7 +160,7 @@
 
       function finishCard() {
         drawCompatSeal(sign1, W/2 - 220, 340, '#b87850');
-        drawCompatSeal(sign2, W/2 + 220, 340, '#C2A05E');
+        drawCompatSeal(sign2, W/2 + 220, 340, '#A8B0BC');
 
       // Names
       ctx.font = 'italic 400 42px Cormorant Garamond,serif';

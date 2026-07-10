@@ -1,5 +1,5 @@
 /* explore.html — full-viewport galaxy explorer.
-   Cool void (#0C1016) + engraved brass (#C2A05E), eye-comfort: no flicker,
+   Cool void (#07070A) + engraved brass (#A8B0BC), eye-comfort: no flicker,
    lifted deep-navy wells, body ink ~90%. Deck + engine styling is inherited
    from ap-horizon-2026.css + orrery-visual.css; this file only lays the page
    out full-screen and skins the explore-only chrome (legend, return nav). */
@@ -7,14 +7,14 @@
 :root { color-scheme: dark; }
 
 html, body.page-explore {
-  background: var(--ap-void-deep, #0C1016);
+  background: var(--ap-void-deep, #07070A);
   min-height: 100%;
 }
 
 body.page-explore {
   margin: 0;
   overflow-x: hidden;
-  color: var(--ap-parchment, #ECE6D8);
+  color: var(--ap-parchment, #E8EBF0);
 }
 
 /* Masthead stays above the stage; the stage fills the rest of the viewport. */
@@ -34,7 +34,7 @@ body.page-explore .site-header {
   min-height: 30rem;
   overflow: hidden;
   background:
-    radial-gradient(120% 90% at 50% 8%, #121826 0%, #0C1016 62%, #090C12 100%);
+    radial-gradient(120% 90% at 50% 8%, #101014 0%, #000000 55%, #000000 100%);
   isolation: isolate;
 }
 
@@ -89,8 +89,8 @@ body.page-explore .site-header {
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 0.66rem;
   letter-spacing: 0.05em;
-  color: rgba(236, 230, 216, 0.6);
-  background: rgba(12, 16, 22, 0.42);
+  color: rgba(232, 235, 240, 0.6);
+  background: rgba(0, 0, 0, 0.42);
   border-radius: 999px;
   pointer-events: none;
   z-index: 6;
@@ -116,13 +116,13 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   font-size: 0.7rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ap-brass, #C2A05E);
+  color: var(--ap-brass, #A8B0BC);
   margin: 0 0 0.6rem;
 }
 .explore-fallback__lead {
   font-size: 0.95rem;
   line-height: 1.55;
-  color: rgba(236, 230, 216, 0.82);
+  color: rgba(232, 235, 240, 0.82);
   margin: 0;
 }
 
@@ -133,10 +133,10 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   left: 0.9rem;
   z-index: 8;
   width: min(21rem, calc(100vw - 1.8rem));
-  background: rgba(18, 24, 38, 0.82);
+  background: rgba(0, 0, 0, 0.82);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(194, 160, 94, 0.28);
+  border: 1px solid rgba(200, 205, 214, 0.22);
   border-radius: 12px;
   box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
   overflow: hidden;
@@ -151,38 +151,38 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   background: transparent;
   border: 0;
   cursor: pointer;
-  color: var(--ap-parchment, #ECE6D8);
+  color: var(--ap-parchment, #E8EBF0);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 1.02rem;
   letter-spacing: 0.02em;
 }
 .explore-legend__title { font-weight: 600; }
-.explore-legend__chev { color: var(--ap-brass, #C2A05E); transition: transform 0.25s ease; font-size: 0.8rem; }
+.explore-legend__chev { color: var(--ap-brass, #A8B0BC); transition: transform 0.25s ease; font-size: 0.8rem; }
 .explore-legend[data-collapsed="true"] .explore-legend__chev { transform: rotate(-90deg); }
 .explore-legend__body {
   padding: 0 0.9rem 0.9rem;
   font-size: 0.82rem;
   line-height: 1.5;
-  color: rgba(236, 230, 216, 0.86);
+  color: rgba(232, 235, 240, 0.86);
   max-height: 60vh;
   overflow-y: auto;
 }
 .explore-legend[data-collapsed="true"] .explore-legend__body { display: none; }
 .explore-legend__body p { margin: 0 0 0.6rem; }
-.explore-legend__body strong { color: var(--ap-parchment, #ECE6D8); }
+.explore-legend__body strong { color: var(--ap-parchment, #E8EBF0); }
 .explore-legend__ladder {
   list-style: none;
   margin: 0 0 0.6rem;
   padding: 0.4rem 0 0.5rem;
-  border-top: 1px solid rgba(194, 160, 94, 0.16);
-  border-bottom: 1px solid rgba(194, 160, 94, 0.16);
+  border-top: 1px solid rgba(200, 205, 214, 0.14);
+  border-bottom: 1px solid rgba(200, 205, 214, 0.14);
 }
 .explore-legend__ladder li { padding: 0.14rem 0; }
-.explore-legend__ladder b { color: var(--ap-brass-bright, #CDAE6A); font-weight: 600; }
-.explore-legend__ladder em { font-style: italic; color: rgba(236, 230, 216, 0.92); }
+.explore-legend__ladder b { color: var(--ap-brass-bright, #7EC8E8); font-weight: 600; }
+.explore-legend__ladder em { font-style: italic; color: rgba(232, 235, 240, 0.92); }
 .explore-legend__foot {
   font-size: 0.76rem;
-  color: rgba(236, 230, 216, 0.66);
+  color: rgba(232, 235, 240, 0.66);
   margin-bottom: 0 !important;
 }
 
@@ -223,11 +223,11 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 0.7rem;
   letter-spacing: 0.03em;
-  color: rgba(236, 230, 216, 0.82);
+  color: rgba(232, 235, 240, 0.82);
   text-decoration: none;
   padding: 0.32rem 0.7rem;
   background: rgba(18, 24, 38, 0.72);
-  border: 1px solid rgba(194, 160, 94, 0.22);
+  border: 1px solid rgba(168, 176, 188, 0.22);
   border-radius: 999px;
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
@@ -235,8 +235,8 @@ html.orrery-full .explore-hint { opacity: 0.5; }
 }
 .explore-return a:hover,
 .explore-return a:focus-visible {
-  color: var(--ap-parchment, #ECE6D8);
-  border-color: rgba(194, 160, 94, 0.55);
+  color: var(--ap-parchment, #E8EBF0);
+  border-color: rgba(168, 176, 188, 0.55);
 }
 
 /* ── Mobile (≤600px) — deck must stay usable at 375px ── */

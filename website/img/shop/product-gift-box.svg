@@ -12,8 +12,8 @@
       <stop offset="100%" stop-color="rgba(194,160,94,0)"/>
     </radialGradient>
     <linearGradient id="gb-gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#D8B978"/>
-      <stop offset="52%" stop-color="#CDAE6A"/>
+      <stop offset="0%" stop-color="#C8CDD6"/>
+      <stop offset="52%" stop-color="#7EC8E8"/>
       <stop offset="100%" stop-color="#A98A4E"/>
     </linearGradient>
     <linearGradient id="gb-front" x1="0" y1="0" x2="0" y2="1">
@@ -67,7 +67,7 @@
   <ellipse cx="800" cy="300" rx="320" ry="260" fill="url(#gb-burst)" opacity="0.9"/>
 
   <!-- escaping stars rising from the box -->
-  <g fill="#D8B978">
+  <g fill="#C8CDD6">
     <circle cx="800" cy="118" r="2.6" opacity="0.95"/>
     <circle cx="690" cy="178" r="2" opacity="0.8"/>
     <circle cx="912" cy="166" r="2.2" opacity="0.85"/>
@@ -94,7 +94,7 @@
   <g transform="translate(800 286)">
     <circle r="150" fill="none" stroke="rgba(194,160,94,0.34)" stroke-width="1.6"/>
     <circle r="124" fill="none" stroke="rgba(194,160,94,0.16)" stroke-width="1"/>
-    <g stroke="#C2A05E" stroke-width="1.2" opacity="0.5">
+    <g stroke="#A8B0BC" stroke-width="1.2" opacity="0.5">
       <line x1="0" y1="-150" x2="0" y2="-124"/>
       <line transform="rotate(30)"  x1="0" y1="-150" x2="0" y2="-124"/>
       <line transform="rotate(60)"  x1="0" y1="-150" x2="0" y2="-124"/>
@@ -110,10 +110,10 @@
     </g>
     <circle r="58" fill="none" stroke="rgba(194,160,94,0.18)" stroke-width="0.8" stroke-dasharray="3 7"/>
     <!-- planet nodes -->
-    <circle cx="26" cy="-130" r="5.5" fill="#CDAE6A"/>
-    <circle cx="-116" cy="-58" r="4.5" fill="#D8B978"/>
-    <circle cx="-92" cy="92" r="4" fill="#C2A05E"/>
-    <circle cx="128" cy="50" r="5" fill="#CDAE6A"/>
+    <circle cx="26" cy="-130" r="5.5" fill="#7EC8E8"/>
+    <circle cx="-116" cy="-58" r="4.5" fill="#C8CDD6"/>
+    <circle cx="-92" cy="92" r="4" fill="#A8B0BC"/>
+    <circle cx="128" cy="50" r="5" fill="#7EC8E8"/>
     <circle r="9" fill="#F1EAD6" filter="url(#gb-soft)"/>
   </g>
 
@@ -132,7 +132,7 @@
       <circle cx="670" cy="628" r="34"/>
       <circle cx="670" cy="628" r="22" stroke="rgba(194,160,94,0.22)"/>
     </g>
-    <path d="M670 600 L674 622 L696 626 L674 630 L670 652 L666 630 L644 626 L666 622 Z" fill="#CDAE6A" opacity="0.8"/>
+    <path d="M670 600 L674 622 L696 626 L674 630 L670 652 L666 630 L644 626 L666 622 Z" fill="#7EC8E8" opacity="0.8"/>
 
     <!-- vertical ribbon down the front -->
     <path d="M772 552 L828 552 L828 762 L772 776 Z" fill="rgba(194,160,94,0.16)" stroke="rgba(205,174,106,0.6)" stroke-width="1.2"/>
@@ -152,7 +152,7 @@
     <g transform="translate(800 452)" stroke="rgba(205,174,106,0.85)" stroke-width="1.6" fill="rgba(194,160,94,0.18)">
       <path d="M0 0 C-44 -30 -78 -26 -70 -2 C-64 16 -26 14 0 0 Z"/>
       <path d="M0 0 C44 -30 78 -26 70 -2 C64 16 26 14 0 0 Z"/>
-      <circle cx="0" cy="0" r="7" fill="#CDAE6A" stroke="#D8B978"/>
+      <circle cx="0" cy="0" r="7" fill="#7EC8E8" stroke="#C8CDD6"/>
     </g>
   </g>
 
@@ -164,7 +164,7 @@
 
   <!-- title block -->
   <g text-anchor="middle" font-family="'Cinzel', 'Cormorant Garamond', Georgia, 'Times New Roman', serif">
-    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#CDAE6A" opacity="0.85" font-family="'Cinzel', Georgia, serif">&#10022; &#160; A GIFT OF THE HEAVENS</text>
+    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#7EC8E8" opacity="0.85" font-family="'Cinzel', Georgia, serif">&#10022; &#160; A GIFT OF THE HEAVENS</text>
     <text x="800" y="758" font-size="120" font-weight="600" fill="url(#gb-gold)" letter-spacing="2">The Whole Sky</text>
     <text x="800" y="816" font-size="38" font-style="italic" fill="#ECE6D8" opacity="0.86">Your cosmos, beautifully boxed</text>
     <text x="800" y="866" font-size="21" letter-spacing="8" fill="#969EAC" opacity="0.8" font-family="'Cinzel', Georgia, serif">PREMIUM GIFT SET &#183; MADE TO ORDER</text>

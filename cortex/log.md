@@ -5,6 +5,19 @@ Newest entries first. Every entry states what was done and the **proof artifact*
 
 ---
 
+## 2026-07-08 — Hero/orrery deep study + machine memory (ap-v643 learnings)
+
+**Mission:** Owner confirmed homepage structure fix; asked for deep study on further improvements stored in memory.
+
+**Done:**
+- DEEP-tier research per `CORTEX-RESEARCH-PROTOCOL.md` → `cortex/wiki/hero-orrery-improvements-2026-07-08.md`
+- 7 architecture patterns, boot FSM timeline, ranked top-10 improvements, red-team kills, audit checklist
+- Persisted: `CORTEX-MEMORY.json` (4 lessons), `SHARED-BRAIN.json` (adopted crumb), `AGENT-HANDOFF.md`, `astroprecise-state.md`
+
+**Proof:** ap-v643 audits — overlap 10/10 @1440, `hero-structure-audit.mjs` exit 0 (4 viewports).
+
+---
+
 ## 2026-07-03 — Mission Control v2: shared state, dashboard, agent wiring (M7)
 
 **Mission:** Owner asked for a smarter, more graphical, clearer mission control, with

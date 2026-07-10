@@ -30,7 +30,7 @@
   gap: 0.75rem;
   padding: 0.65rem 1rem;
   background: rgba(6, 8, 14, 0.92);
-  border-bottom: 1px solid rgba(194, 160, 94, 0.18);
+  border-bottom: 1px solid rgba(168, 176, 188, 0.18);
   flex-shrink: 0;
   flex-wrap: wrap;
 }
@@ -43,7 +43,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(194, 160, 94, 0.88);
+  color: rgba(168, 176, 188, 0.88);
   margin: 0;
 }
 
@@ -59,7 +59,7 @@
   gap: 0.25rem;
   padding: 0.2rem;
   border-radius: 8px;
-  border: 1px solid rgba(194, 160, 94, 0.15);
+  border: 1px solid rgba(168, 176, 188, 0.15);
   background: rgba(0, 0, 0, 0.35);
 }
 
@@ -77,21 +77,21 @@
   letter-spacing: 0.06em;
   padding: 0.45rem 0.85rem;
   border-radius: 6px;
-  border: 1px solid rgba(194, 160, 94, 0.28);
+  border: 1px solid rgba(168, 176, 188, 0.28);
   background: rgba(12, 16, 22, 0.85);
-  color: #ece6d8;
+  color: #E8EBF0;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .ap-cf-btn:hover {
-  border-color: rgba(194, 160, 94, 0.55);
+  border-color: rgba(168, 176, 188, 0.55);
   color: #f5efe3;
 }
 
 .ap-cf-btn--primary {
-  border-color: rgba(194, 160, 94, 0.45);
-  color: #d8b978;
+  border-color: rgba(168, 176, 188, 0.45);
+  color: #C8CDD6;
 }
 
 .ap-cf-btn--exit {
@@ -102,7 +102,7 @@
 .ap-cf-btn--mode.active {
   border-color: rgba(216, 185, 120, 0.65);
   color: #f0e6d0;
-  background: rgba(194, 160, 94, 0.12);
+  background: rgba(168, 176, 188, 0.12);
 }
 
 .ap-cf-btn[aria-busy="true"] {
@@ -117,7 +117,7 @@
   flex-wrap: wrap;
   padding: 0.55rem 0.85rem;
   background: rgba(6, 8, 14, 0.94);
-  border-top: 1px solid rgba(194, 160, 94, 0.16);
+  border-top: 1px solid rgba(168, 176, 188, 0.16);
   flex-shrink: 0;
 }
 
@@ -129,7 +129,7 @@
   font-size: 0.58rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(194, 160, 94, 0.7);
+  color: rgba(168, 176, 188, 0.7);
   margin-right: 0.35rem;
 }
 
@@ -138,7 +138,7 @@
   font-size: 0.62rem;
   padding: 0.35rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid rgba(194, 160, 94, 0.22);
+  border: 1px solid rgba(168, 176, 188, 0.22);
   background: transparent;
   color: rgba(232, 226, 216, 0.82);
   cursor: pointer;
@@ -146,8 +146,8 @@
 
 .ap-cf-scale-strip button:hover,
 .ap-cf-scale-strip button.active {
-  border-color: rgba(194, 160, 94, 0.5);
-  color: #d8b978;
+  border-color: rgba(168, 176, 188, 0.5);
+  color: #C8CDD6;
 }
 
 #ap-cosmic-flight-stage {
@@ -215,9 +215,9 @@ body.ap-cosmic-flight-open {
   min-height: 40px;
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(194, 160, 94, 0.55);
-  background: linear-gradient(180deg, rgba(194, 160, 94, 0.14), rgba(12, 16, 22, 0.95));
-  color: #d8b978;
+  border: 1px solid rgba(168, 176, 188, 0.55);
+  background: linear-gradient(180deg, rgba(168, 176, 188, 0.14), rgba(12, 16, 22, 0.95));
+  color: #C8CDD6;
   font-family: var(--font-ui, system-ui, sans-serif);
   font-size: 0.72rem;
   font-weight: 650;
@@ -228,11 +228,11 @@ body.ap-cosmic-flight-open {
 
 .ap-award-511 .ap-orrery-cosmic-flight:hover {
   border-color: rgba(216, 185, 120, 0.75);
-  box-shadow: 0 0 18px rgba(194, 160, 94, 0.18);
+  box-shadow: 0 0 18px rgba(168, 176, 188, 0.18);
 }
 
 .ap-award-511 .ap-orrery-cosmic-flight:focus-visible {
-  outline: 2px solid var(--brass, #c2a05e);
+  outline: 2px solid var(--brass, #A8B0BC);
   outline-offset: 2px;
 }
 
@@ -252,7 +252,7 @@ body.ap-cosmic-flight-open {
 }
 
 .ap-award-511 .dept-list-item--action:focus-visible {
-  outline: 2px solid var(--brass, #c2a05e);
+  outline: 2px solid var(--brass, #A8B0BC);
   outline-offset: 2px;
 }
 

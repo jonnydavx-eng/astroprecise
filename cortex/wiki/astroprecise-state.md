@@ -1,10 +1,11 @@
 # AstroPrecise — Current Technical State
 
-*Last verified: 2026-07-02, from git history (`main` @ 70266a1), STATUS.md, AUDIT-2026-07-02.md*
+*Last verified: 2026-07-08 (hero/orrery study), prior 2026-07-02 baseline below.*
 
 ## Snapshot
 
-- **Version:** ap-v566 on `main` (git history is ahead of STATUS.md, which says v563).
+- **Homepage hero:** ap-v643 shipped locally — overlap 10/10, structure audit exit 0. Deep study + roadmap: `cortex/wiki/hero-orrery-improvements-2026-07-08.md`.
+- **Version:** ap-v643 hero / ap-v566+ site (git may be ahead of STATUS.md).
   - v564: This Week's Sky page, minified deploys, SEO/meta polish
   - v565: dropped Lemon Squeezy → **PayPal direct**
   - v566: e2e CI gate for PayPal, dormant-honest shop copy, LS tooling archived

@@ -141,7 +141,7 @@
 
   var NUMBERS = {
     '111': {
-      title: 'New Beginnings & Focus', root: 1, element: 'fire', color: '#C2A05E',
+      title: 'New Beginnings & Focus', root: 1, element: 'fire', color: '#A8B0BC',
       keywords: ['Initiative', 'Alignment', 'Fresh Start', 'Intention'],
       meaning: 'In numerology, 1 is the number of beginnings, will, and self-direction. Seeing 111 is often read as a nudge to notice what you were just thinking — and to point that attention somewhere worthy. It is a mirror for fresh starts and singular focus, not a forecast.',
       reflection: 'What did your mind land on a moment ago — and is it where you want your energy to flow?',
@@ -197,7 +197,7 @@
       faq: 'In numerology, 888 amplifies 8: cycles, balance, and effort. It is often read as a symbol of reciprocity and steady flow. It is a reflective prompt only — never financial advice or a prediction.'
     },
     '999': {
-      title: 'Completion & Release', root: 9, element: 'fire', color: '#C2A05E',
+      title: 'Completion & Release', root: 9, element: 'fire', color: '#A8B0BC',
       keywords: ['Completion', 'Release', 'Closure', 'Wisdom'],
       meaning: 'Nine is the number of completion and the close of a cycle. 999 is widely read as a mirror for endings — an invitation to release what is finished so the next chapter has room to arrive.',
       reflection: 'What are you ready to let reach its natural ending?',

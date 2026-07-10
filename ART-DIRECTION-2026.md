@@ -2,6 +2,8 @@
 
 *Specialist-panel plan, 2026-07-03 (Claude session: photoreal-engine integration). The hero now rests on the photoreal Earth (orrery-webgl, import map restored). This doc holds the APPROVED remaining roadmap so any agent can pick items up. Tokens/rules: DESIGN.md governs; hard rules at the bottom are binding.*
 
+**2026-07-08 site merger:** Premium Moment lifestyle art (void + brass + photoreal Earth + framed mockups) is the **marketing language for the whole product**. Full phased plan: `docs/SITE-MERGER-PLAN-2026-07-08.md`. Production matrix: Imagine = lifestyle/product · engine capture = sky truth · code = personalised numbers.
+
 ## Shipped in the 2026-07-03 sessions
 - Photoreal WebGL engine actually loads on the homepage (three.js import map restored — it silently failed for 100% of visitors before), rests on Earth close-up via `focusPlanet('earth')`, planet pills drive the HD engine, desktop always upgrades.
 - Hero HUD: engraved seal pills (incl. new Earth seal), EARTH→COSMOS scale strip + honesty caption, Cosmic journey button, time row restored (see AGENT-HANDOFF.md for exact state).

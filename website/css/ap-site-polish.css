@@ -4,30 +4,30 @@
  * Scoped overrides only — does not replace page-specific design systems.
  */
 
-/* ── Readable body ink on enchanted tool pages ── */
+/* ── Readable body ink — silver on jet ── */
 html.ap-enchanted,
 body.ap-enchanted {
-  color: var(--ink, #ECE6D8);
+  color: var(--ap-text-primary, #E8EBF0);
 }
 
 body.ap-enchanted .section-header__sub,
 body.ap-enchanted .compat-overview,
 body.ap-enchanted .shopc-card__blurb,
 body.ap-enchanted .ap-ai-panel__sub {
-  color: var(--ink-faded, #BEB298);
+  color: var(--ap-text-secondary, #C8CDD6);
 }
 
-/* ── Primary actions: terracotta (not pale brass) ── */
+/* ── Primary actions: silver-aurora gradient ── */
 body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab) {
-  background: var(--terracotta, #D97B52);
-  border-color: var(--terracotta, #D97B52);
-  color: #0C1016;
+  background: linear-gradient(135deg, #4A90E0 0%, #7EC8E8 48%, #C8D8E8 100%);
+  border-color: transparent;
+  color: #050508;
 }
 body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab):hover,
 body.ap-enchanted .btn--primary:not(.shopc-card__cta):not(.ap-ai-tab):focus-visible {
-  background: #e88a62;
-  border-color: #e88a62;
-  color: #0C1016;
+  background: linear-gradient(135deg, #5CA0F0 0%, #A8DCF2 50%, #E0E8F0 100%);
+  border-color: transparent;
+  color: #050508;
 }
 
 /* ── Chapter hierarchy (homepage + long tool pages) ── */

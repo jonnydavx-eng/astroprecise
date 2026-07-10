@@ -20,15 +20,15 @@
   <meta property="og:description" content="A full-screen, explorable 3D model: real planetary positions live in your browser, out to a Gaia-style barred-spiral galaxy. Focus any planet, run the Cosmic Flight, scrub time." />
   <meta property="og:url" content="https://astroprecise.app/explore.html" />
   <link rel="canonical" href="https://astroprecise.app/explore.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model, opening out to the Milky Way." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Explore the Living Sky — Earth to the Galaxy" />
   <meta name="twitter:description" content="Roam from Earth to the Milky Way in a live 3D model. Real positions, honest distances, cosmic flight, time you can scrub." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="color-scheme" content="dark" />
@@ -60,15 +60,17 @@
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=595" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=680" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=683" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
   <!-- Deck + engine layers: the v575 EARTH→COSMOS scale strip, planet pills, time row,
        cosmic-journey/flight buttons all live in ap-horizon-2026.css; the WebGL frame
        skin + handoff choreography live in orrery-visual.css; cosmic-flight overlay in
        ap-cosmic-flight.css. Same files the homepage deck + engine use. -->
-  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=655" />
-  <link rel="stylesheet" href="css/orrery-visual.css?v=655" />
-  <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=655" />
-  <link rel="stylesheet" href="css/explore-page.css?v=655" />
+  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=680" />
+  <link rel="stylesheet" href="css/orrery-visual.css?v=680" />
+  <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=680" />
+  <link rel="stylesheet" href="css/explore-page.css?v=680" />
 
   <!-- Warm the engine module early — this page's whole point is the 3D model. -->
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
@@ -249,6 +251,43 @@
 
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
+  <footer class="footer site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner" data-ap-footer-model="1">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro Precise</span>
+          </a>
+          <p class="footer-brand__tagline">The living sky is the product. Explore is the full instrument.</p>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
+          <ul>
+            <li><a href="explore.html"><span aria-hidden="true">✦</span> Explore 3D</a></li>
+            <li><a href="index.html#heroChapter"><span aria-hidden="true">◎</span> Home orrery</a></li>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Chart</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="mysky.html"><span aria-hidden="true">◎</span> My Sky</a></li>
+            <li><a href="shop.html"><span aria-hidden="true">★</span> Shop</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="More">
+          <h2 class="footer-nav-col__title">More</h2>
+          <ul>
+            <li><a href="moment.html">Moment</a></li>
+            <li><a href="accuracy.html">Accuracy</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <p>© 2026 Astro Precise · VSOP87 on-device · No account required</p>
+      </div>
+    </div>
+  </footer>
+
   <!-- ============================================================
        BOOT — same modules, same order the homepage uses, driven directly
        (no marketing hero to lazy-wait on): ephemeris → raf-core → nav →
@@ -261,6 +300,7 @@
   <script src="js/raf-core.js" defer></script>
   <script src="js/ap-nav-model.js" defer></script>
   <script src="js/app.js" defer></script>
-  <script src="js/explore-boot.js?v=655" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
+  <script src="js/explore-boot.js?v=680" defer></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 /* Award homepage — lazy ephemeris + hero instrument bundle (perf) */
 
 (function () {
-  var V = "640";
+  var V = "683";
 
   window.__loadEphemeris = function (cb) {
     if (window.AstroEphemeris) {
@@ -53,7 +53,7 @@
     injectCss("css/orrery-visual.css?v=" + V, "ap-orrery-visual-css");
     loadCosmicFlightTool();
     var s = document.createElement("script");
-    s.src = "js/ap-award-orrery.js?v=640";
+    s.src = "js/ap-award-orrery.js?v=" + V;
     document.body.appendChild(s);
   }
 

@@ -12,11 +12,61 @@
     if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-site-polish.css?v=656';
+    l.href = 'css/ap-site-polish.css?v=683';
     l.id = 'ap-css-site-polish';
     document.head.appendChild(l);
   }
   ensureSitePolishCss();
+
+  function ensurePaletteCss() {
+    if (document.getElementById('ap-css-palette-2026') || document.querySelector('link[href*="ap-palette-2026"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-palette-2026.css?v=683';
+    l.id = 'ap-css-palette-2026';
+    document.head.appendChild(l);
+  }
+  ensurePaletteCss();
+
+  function ensureLogoAuroraCss() {
+    if (document.getElementById('ap-css-logo-aurora')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-logo-aurora.css?v=683';
+    l.id = 'ap-css-logo-aurora';
+    document.head.appendChild(l);
+  }
+  ensureLogoAuroraCss();
+
+  function ensureVisualClarityCss() {
+    if (document.getElementById('ap-css-visual-clarity')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-visual-clarity.css?v=683';
+    l.id = 'ap-css-visual-clarity';
+    document.head.appendChild(l);
+  }
+  ensureVisualClarityCss();
+
+  function ensureModelStageCss() {
+    if (document.getElementById('ap-css-model-stage')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-model-stage.css?v=683';
+    l.id = 'ap-css-model-stage';
+    document.head.appendChild(l);
+  }
+  ensureModelStageCss();
+
+  function ensurePageStructureCss() {
+    if (document.getElementById('ap-css-page-structure')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-page-structure.css?v=683';
+    l.id = 'ap-css-page-structure';
+    document.head.appendChild(l);
+  }
+  ensurePageStructureCss();
 
   var CHAIN = [
     'js/ap-zodiac-constants.js',
@@ -25,6 +75,8 @@
     'js/ap-page-bridge.js',
     'js/ap-nav-model.js',
     'js/app.js',
+    // Engine stills / cinema plate sitewide (no Three.js — safe)
+    'js/ap-engine-visuals.js',
   ];
 
   function scriptLoaded(src) {
@@ -98,3 +150,4 @@
     if (document.visibilityState === 'hidden') location.reload(); /* only refresh backgrounded tabs — never a visible reload flash while the visitor is looking */
   });
 })();
+

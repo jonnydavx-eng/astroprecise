@@ -974,7 +974,7 @@
     const elem = (chart.dominant && chart.dominant.element) || 'water';
     const tint = { fire: '184,90,66', earth: '90,122,72', air: '138,122,106', water: '74,117,128' }[elem] || '74,117,128';
     // Void base
-    x.fillStyle = '#0C1016';
+    x.fillStyle = '#07070A';
     x.fillRect(0, 0, W, H);
     // Engine photoreal plate — chart-keyed ruler still; wheel holds personal geometry
     if (engineImg && engineImg.naturalWidth) {
@@ -1910,16 +1910,16 @@ host.classList.add('is-done');
 
   // Engraved palette (matches css/main.css :root) ────────────────────────────
   const PAL = {
-    void:     '#0C1016',   // --ap-void-deep
+    void:     '#07070A',   // --ap-void-deep
     voidWarm: '#121826',   // --ap-void-mid (name kept; value is cool)
     lapis:    '#4A7580',   // structural/accent lines → water element accent
-    gold:     '#C2A05E',   // --ap-gold-core
-    goldHi:   '#CDAE6A',   // --ap-gold-bright
-    goldPale: '#ECE6D8',   // --ap-gold-parchment
-    parchment:'#ECE6D8',
+    gold:     '#A8B0BC',   // --ap-gold-core
+    goldHi:   '#7EC8E8',   // --ap-gold-bright
+    goldPale: '#E8EBF0',   // --ap-gold-parchment
+    parchment:'#E8EBF0',
     oxblood:  '#4A7580',   // retired oxblood → cool water accent
-    silver:   '#BEB298',   // --ap-text-secondary
-    silverDim:'#A89C84',   // --ap-text-muted
+    silver:   '#C8CDD6',   // --ap-text-secondary
+    silverDim:'#8B919C',   // --ap-text-muted
   };
 
   const SHARE_FORMATS = {
@@ -1945,7 +1945,7 @@ host.classList.add('is-done');
   // Faint dot grid (scaled).
   function drawDotGrid(x, W, H, S) {
     const step = 48 * S;
-    x.fillStyle = 'rgba(194,160,94,0.05)';
+    x.fillStyle = 'rgba(168,176,188,0.05)';
     for (let gx = step; gx < W; gx += step) {
       for (let gy = step; gy < H; gy += step) {
         x.beginPath();
@@ -1992,8 +1992,8 @@ host.classList.add('is-done');
 
     // Brass nebula (top) — token brass only
     const neb1 = x.createRadialGradient(W * 0.72, H * 0.16, 0, W * 0.72, H * 0.16, Math.max(W, H) * 0.75);
-    neb1.addColorStop(0, 'rgba(194,160,94,0.16)');
-    neb1.addColorStop(0.5, 'rgba(194,160,94,0.05)');
+    neb1.addColorStop(0, 'rgba(168,176,188,0.16)');
+    neb1.addColorStop(0.5, 'rgba(168,176,188,0.05)');
     neb1.addColorStop(1, 'transparent');
     x.fillStyle = neb1; x.fillRect(0, 0, W, H);
 
@@ -2021,12 +2021,12 @@ host.classList.add('is-done');
       x.drawImage(eng, wx - dw2 / 2, wy - dh2 / 2, dw2, dh2);
       x.restore();
       // Brass double-ring window (matches marketing plate language)
-      x.strokeStyle = 'rgba(194,160,94,0.48)';
+      x.strokeStyle = 'rgba(168,176,188,0.48)';
       x.lineWidth = Math.max(2.5, 2.5 * S);
       x.beginPath();
       x.arc(wx, wy, wr, 0, Math.PI * 2);
       x.stroke();
-      x.strokeStyle = 'rgba(194,160,94,0.22)';
+      x.strokeStyle = 'rgba(168,176,188,0.22)';
       x.lineWidth = Math.max(1, 1.2 * S);
       x.beginPath();
       x.arc(wx, wy, wr + 6 * S, 0, Math.PI * 2);
@@ -2042,10 +2042,10 @@ host.classList.add('is-done');
 
   // Double gold frame with generous margin (print bleed-friendly).
   function drawFrame(x, W, H, outerInset, innerInset) {
-    x.strokeStyle = 'rgba(194,160,94,0.7)';
+    x.strokeStyle = 'rgba(168,176,188,0.7)';
     x.lineWidth = Math.max(2, outerInset * 0.05);
     x.strokeRect(outerInset, outerInset, W - outerInset * 2, H - outerInset * 2);
-    x.strokeStyle = 'rgba(194,160,94,0.3)';
+    x.strokeStyle = 'rgba(168,176,188,0.3)';
     x.lineWidth = Math.max(1, outerInset * 0.025);
     x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
     // Corner ticks
@@ -2093,7 +2093,7 @@ host.classList.add('is-done');
     grad.addColorStop(1, alphaFn ? alphaFn(elemCol, '33') : elemCol);
     x.fillStyle = grad;
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
-    x.strokeStyle = 'rgba(194,160,94,0.55)';
+    x.strokeStyle = 'rgba(168,176,188,0.55)';
     x.lineWidth = Math.max(1, r * 0.06);
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
     x.strokeStyle = 'rgba(255,255,255,0.28)';
@@ -2141,7 +2141,7 @@ host.classList.add('is-done');
     // Schematic orbital tracks (decorative — matches SVG chart-render layer)
     [0.78, 0.68, 0.58].forEach((frac, i) => {
       x.save();
-      x.strokeStyle = 'rgba(194,160,94,' + (0.1 + i * 0.04) + ')';
+      x.strokeStyle = 'rgba(168,176,188,' + (0.1 + i * 0.04) + ')';
       x.lineWidth = 0.8 * lw;
       x.setLineDash([3 + i, 5 + i * 2]);
       x.beginPath();
@@ -2151,13 +2151,13 @@ host.classList.add('is-done');
     });
 
     // Rings
-    x.strokeStyle = 'rgba(194,160,94,0.75)'; x.lineWidth = 3 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.75)'; x.lineWidth = 3 * lw;
     x.beginPath(); x.arc(cx, cy, rOuter, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(194,160,94,0.45)'; x.lineWidth = 1.5 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.45)'; x.lineWidth = 1.5 * lw;
     x.beginPath(); x.arc(cx, cy, rSignInner, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(194,160,94,0.3)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.3)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rBand, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(194,160,94,0.22)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.22)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rInner, 0, Math.PI * 2); x.stroke();
 
     // Sign sectors
@@ -2168,7 +2168,7 @@ host.classList.add('is-done');
       x.beginPath(); x.moveTo(cx, cy);
       x.arc(cx, cy, rOuter, a1, a2, a1 > a2); x.closePath(); x.fill();
 
-      x.strokeStyle = 'rgba(194,160,94,0.3)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(168,176,188,0.3)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(a1) * rSignInner, cy + Math.sin(a1) * rSignInner);
       x.lineTo(cx + Math.cos(a1) * rOuter,     cy + Math.sin(a1) * rOuter);
@@ -2180,7 +2180,7 @@ host.classList.add('is-done');
     }
 
     // 10° ticks
-    x.strokeStyle = 'rgba(194,160,94,0.4)';
+    x.strokeStyle = 'rgba(168,176,188,0.4)';
     for (let d2 = 0; d2 < 360; d2 += 10) {
       if (d2 % 30 === 0) continue;
       const a = ang(d2);
@@ -2252,7 +2252,7 @@ host.classList.add('is-done');
 
       const haloR = R * 0.07;
       const haloGrad = x.createRadialGradient(px2, py2, 0, px2, py2, haloR);
-      haloGrad.addColorStop(0, 'rgba(194,160,94,0.22)');
+      haloGrad.addColorStop(0, 'rgba(168,176,188,0.22)');
       haloGrad.addColorStop(1, 'transparent');
       x.fillStyle = haloGrad;
       x.beginPath(); x.arc(px2, py2, haloR, 0, Math.PI * 2); x.fill();
@@ -2280,11 +2280,11 @@ host.classList.add('is-done');
     x.textBaseline = 'alphabetic';
 
     // Centre star
-    x.fillStyle = 'rgba(194,160,94,0.95)';
+    x.fillStyle = 'rgba(168,176,188,0.95)';
     x.font = `400 ${R * 0.14}px ${FONT_DISPLAY}`;
     x.textBaseline = 'middle'; x.textAlign = 'center';
     if (window.AstroUI && AstroUI.drawStar4) {
-      x.fillStyle = 'rgba(194,160,94,0.95)';
+      x.fillStyle = 'rgba(168,176,188,0.95)';
       AstroUI.drawStar4(x, cx, cy, R * 0.12);
     }
     x.textBaseline = 'alphabetic';
@@ -2300,7 +2300,7 @@ host.classList.add('is-done');
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('E L E M E N T A L   D I S T R I B U T I O N', x0 + barW / 2, y0);
 
-    x.strokeStyle = 'rgba(194,160,94,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(168,176,188,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 16 * scale); x.lineTo(x0 + barW, y0 + 16 * scale); x.stroke();
 
     const rows = [
@@ -2351,7 +2351,7 @@ host.classList.add('is-done');
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('P L A N E T A R Y   P L A C E M E N T S', x0 + colW, y0);
 
-    x.strokeStyle = 'rgba(194,160,94,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(168,176,188,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 14 * scale); x.lineTo(x0 + colW * 2, y0 + 14 * scale); x.stroke();
 
     const PLANET_ORDER_TABLE = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
@@ -2414,13 +2414,13 @@ host.classList.add('is-done');
 
     // Warm void ground (lighter vignette — clock widgets sit on top)
     const g = x.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#0C1016');
+    g.addColorStop(0, '#07070A');
     g.addColorStop(0.45, PAL.voidWarm);
     g.addColorStop(1, '#121826');
     x.fillStyle = g; x.fillRect(0, 0, W, H);
 
     const neb = x.createRadialGradient(W * 0.5, H * 0.42, 0, W * 0.5, H * 0.42, Math.max(W, H) * 0.85);
-    neb.addColorStop(0, 'rgba(194,160,94,0.14)');
+    neb.addColorStop(0, 'rgba(168,176,188,0.14)');
     neb.addColorStop(0.55, 'rgba(74,117,128,0.08)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, W, H);
@@ -2472,7 +2472,7 @@ host.classList.add('is-done');
     drawWheel(x, chart, W / 2, wheelCY, wheelR);
 
     // Subtle footer (below thumb zone)
-    x.strokeStyle = 'rgba(194,160,94,0.18)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(168,176,188,0.18)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.28, H - safeBot + 36 * S); x.lineTo(W * 0.72, H - safeBot + 36 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${16 * S}px ${FONT_SANS}`;
@@ -2563,7 +2563,7 @@ host.classList.add('is-done');
       x.fillText(dom, W / 2, y);
     }
 
-    x.strokeStyle = 'rgba(194,160,94,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(168,176,188,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 88 * S); x.lineTo(W * 0.8, H - 88 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${17 * S}px ${FONT_SANS}`;
@@ -2697,7 +2697,7 @@ host.classList.add('is-done');
 
     // ── Footer (shared) ──
     x.textAlign = 'center';
-    x.strokeStyle = 'rgba(194,160,94,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(168,176,188,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 108 * S); x.lineTo(W * 0.8, H - 108 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${18 * S}px ${FONT_SANS}`;
@@ -2807,7 +2807,7 @@ host.classList.add('is-done');
     menu.style.cssText =
       'position:absolute;z-index:1200;min-width:240px;padding:8px;border-radius:14px;' +
       'background:rgba(26, 34, 48,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
-      'border:1px solid rgba(194,160,94,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
+      'border:1px solid rgba(168,176,188,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
     const opts = [
       { fmt: 'print',  title: '★ Masterpiece poster · 4960×7016', sub: 'Ultra HD wall plate — seals + engine sky' },
       { fmt: 'square', title: 'Square · 2160×2160 HD', sub: 'Instagram & social — masterpiece quality' },
@@ -2818,10 +2818,10 @@ host.classList.add('is-done');
     ];
     menu.innerHTML = opts.map(o =>
       `<button type="button" role="menuitem" data-fmt="${o.fmt}" style="display:block;width:100%;text-align:left;` +
-      `padding:10px 12px;margin:2px 0;border:none;border-radius:10px;background:transparent;cursor:pointer;color:var(--ap-text-primary,#ECE6D8);` +
+      `padding:10px 12px;margin:2px 0;border:none;border-radius:10px;background:transparent;cursor:pointer;color:var(--ap-text-primary,#E8EBF0);` +
       `font-family:Inter,sans-serif;transition:background .15s;">` +
       `<span style="display:block;font-weight:600;font-size:0.8rem;letter-spacing:0.04em;">${o.title}</span>` +
-      `<span style="display:block;font-size:0.66rem;color:var(--ap-text-muted,#A89C84);margin-top:2px;">${o.sub}</span></button>`
+      `<span style="display:block;font-size:0.66rem;color:var(--ap-text-muted,#8B919C);margin-top:2px;">${o.sub}</span></button>`
     ).join('');
 
     document.body.appendChild(menu);
@@ -2857,7 +2857,7 @@ host.classList.add('is-done');
     }, 0);
 
     menu.querySelectorAll('button[data-fmt]').forEach(b => {
-      b.addEventListener('mouseenter', () => { b.style.background = 'rgba(194,160,94,0.12)'; });
+      b.addEventListener('mouseenter', () => { b.style.background = 'rgba(168,176,188,0.12)'; });
       b.addEventListener('mouseleave', () => { b.style.background = 'transparent'; });
       b.addEventListener('click', () => { const f = b.dataset.fmt; close(); exportShareImage(currentChart, f); });
     });

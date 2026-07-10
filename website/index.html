@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="color-scheme" content="dark">
-  <style>html{background:#0C1016}</style>
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Astro Precise &mdash; The Sky, Live. Your Chart, Exact.</title>
   <meta name="description" content="The planets on this page are real &mdash; computed live in your browser, accurate to about an arcminute (1800&ndash;2200 CE). Free precise birth charts: no account, private, computed on your device.">
-  <meta name="theme-color" content="#0C1016">
+  <meta name="theme-color" content="#07070A">
   <link rel="canonical" href="https://astroprecise.app/">
 
   <!-- iOS / Android web-app -->
@@ -28,7 +28,7 @@
   <meta property="og:site_name" content="Astro Precise">
   <meta property="og:title" content="Astro Precise &mdash; The Sky, Live. Your Chart, Exact.">
   <meta property="og:description" content="The planets on this page are real &mdash; computed live in your browser, accurate to about an arcminute (1800&ndash;2200 CE). Free precise birth charts: no account, private, computed on your device.">
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg">
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'">
@@ -37,7 +37,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Astro Precise &mdash; The Sky, Live. Your Chart, Exact.">
   <meta name="twitter:description" content="The planets on this page are real &mdash; computed live in your browser, accurate to about an arcminute (1800&ndash;2200 CE). Free precise birth charts: no account, private, computed on your device.">
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg">
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -78,26 +78,25 @@
        background with black text until scroll. Keep in sync with the :root in
        css/ephemeris.css. -->
   <style id="ap-award-critical-palette">
+/* Jet · Silver · Aurora critical FOUC palette (rebuild 2026-07-09) */
 :root{
-  --void:#0C1016;--night:#121826;--night-raised:#1A2230;
-  --paper:#0C1016;--paper-leaf:#121826;--ink:#ECE6D8;--ink-faded:#BEB298;
-  --midnight:#0C1016;--warm-midnight:#121826;--paper-on-midnight:#ECE6D8;
-  --meridian:#6FA0D8;--terracotta:#D97B52;--brass:#C2A05E;--brass-bright:#CDAE6A;--brass-vivid:#D8B978;--sage:#8FB36B;
-  --rose:#D4A882;--hairline:rgba(236,230,216,0.10);
-  --deep-indigo:#1E2D45;--dusk:#3A2E1E;--twilight:#243040;
+  --void:#07070A;--night:#101014;--night-raised:#18181E;
+  --paper:#07070A;--paper-leaf:#101014;--ink:#E8EBF0;--ink-faded:#C8CDD6;
+  --midnight:#000000;--warm-midnight:#101014;--paper-on-midnight:#E8EBF0;
+  --meridian:#7EC8E8;--terracotta:#6AB0FF;--brass:#A8B0BC;--brass-bright:#C8CDD6;--brass-vivid:#E8EBF0;--sage:#8FB36B;
+  --rose:#C8A0B0;--hairline:rgba(232,235,240,0.10);
+  --deep-indigo:#14141C;--dusk:#18181E;--twilight:#1C1C28;
   --font-serif:'Cormorant Garamond',Georgia,serif;--font-ui:'Inter',system-ui,sans-serif;--font-mono:'IBM Plex Mono',ui-monospace,monospace;
   --sp-1:8px;--sp-2:16px;--sp-3:24px;--sp-4:32px;--sp-5:40px;--sp-6:48px;--sp-8:64px;--sp-13:104px;
   --reading-measure:66ch;--page-max:1200px;--col-main:1fr;--col-margin:200px;
 }
-html,body{background:#0C1016;color:var(--ink);}
-/* Base typography — ephemeris.css lazy-loads at #skyChapter; without these rules
-   footer, Q&A, plates, and CTA links paint UA black/blue until scroll. */
-body{font-family:var(--font-serif);}
+html,body{background:#000;color:var(--ink);}
+body{font-family:var(--font-ui);}
 a{color:var(--meridian);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;}
-a:hover,a:focus-visible{color:var(--brass);}
+a:hover,a:focus-visible{color:#A8DCF2;}
 .fig-num,figcaption{font-family:var(--font-mono);font-size:max(13px,0.76rem);letter-spacing:0.03em;color:var(--brass-bright);}
 .plate .fig-num{color:var(--brass-vivid);text-transform:uppercase;}
-.btn-press{display:inline-flex;align-items:center;justify-content:center;background:var(--terracotta);color:#0C1016;border:none;font-family:var(--font-ui);font-weight:600;text-decoration:none;}
+.btn-press{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4A90E0,#7EC8E8 48%,#C8D8E8);color:#050508;border:none;font-family:var(--font-ui);font-weight:600;text-decoration:none;}
 .btn-quiet{display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--ink);border:1px solid var(--brass);font-family:var(--font-ui);font-weight:600;text-decoration:none;}
 .qa-q{color:var(--ink);font-family:var(--font-serif);font-weight:500;}
 .qa-a{color:var(--ink-faded);}
@@ -124,8 +123,8 @@ a:hover,a:focus-visible{color:var(--brass);}
 .contents-nav a{font-family:var(--font-ui);font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--ink-faded);display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 12px;box-sizing:border-box;touch-action:manipulation;}
 /* Hero freshness chip — brass, date-stamped, jumps to #today. Whole-sky wording
    for anonymous visitors; personalised only when a chart is saved (see JS). */
-.hero-today-chip{display:inline-flex;align-items:center;gap:.5em;margin-top:var(--sp-3);padding:.45rem .95rem;border:1px solid rgba(194,160,94,.4);border-radius:999px;background:rgba(26,34,48,.55);font-family:var(--font-mono);font-size:.74rem;letter-spacing:.06em;color:var(--brass-bright);text-decoration:none;transition:border-color .2s,background .2s;order:6;justify-self:start;}
-.hero-today-chip:hover{border-color:var(--brass-vivid);background:rgba(194,160,94,.14);}
+.hero-today-chip{display:inline-flex;align-items:center;gap:.5em;margin-top:var(--sp-3);padding:.45rem .95rem;border:1px solid rgba(168,176,188,.4);border-radius:999px;background:rgba(26,34,48,.55);font-family:var(--font-mono);font-size:.74rem;letter-spacing:.06em;color:var(--brass-bright);text-decoration:none;transition:border-color .2s,background .2s;order:6;justify-self:start;}
+.hero-today-chip:hover{border-color:var(--brass-vivid);background:rgba(168,176,188,.14);}
 .hero-today-chip[hidden]{display:none;}
 /* Mobile fold fix — the ~300px masthead pushed the sole CTA off the first
    812px screen (2026-07-04 walkthrough). Compact it: dateline hidden, tighter
@@ -157,20 +156,30 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
 /* v640 critical — hero layout stable on first paint (same rules as ap-horizon-2026) */
 .ap-award-511 #heroChapter{--hero-deck-bay:136px;position:relative;overflow:hidden;display:flex;align-items:center;min-height:clamp(620px,calc(100svh - 232px),950px);padding-block:var(--sp-3) var(--hero-deck-bay)}
 html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240px)}
-.ap-award-511 #heroChapter .page-wrap.hero-grid{display:block;width:100%;max-width:var(--page-max,1180px);position:relative;z-index:2}
-.ap-award-511 #heroChapter .hero-solar-stage{position:absolute;inset:0;z-index:1;padding:0;border:0}
-.ap-award-511 #heroChapter .hero-copy{position:relative;z-index:4;max-width:min(480px,44vw)}
-.ap-award-511 #heroChapter .ap-award-orrery-wrap{position:absolute;left:78%;top:44%;transform:translate(-50%,-50%);width:min(56vh,620px);max-width:46vw;display:block}
-.ap-award-511 #heroChapter .hero-copy{max-width:min(480px,44vw)}
+/* Model-first FOUC: stage bay then form dock (no overlap) */
+.ap-award-511 #heroChapter{min-height:auto;overflow:visible;display:block;padding:0;background:#000}
+.ap-award-511 #heroChapter .page-wrap.hero-grid{display:flex;flex-direction:column;width:100%;max-width:none;position:relative;z-index:2;min-height:0;padding:0;margin:0;gap:0}
+.ap-award-511 #heroChapter .hero-solar-stage{order:1;position:relative;inset:auto;width:100%;height:min(48vh,480px);min-height:300px;z-index:1;padding:0;border:0;pointer-events:auto}
+.ap-award-511 #heroChapter .ap-award-orrery-wrap{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:min(52vh,520px);max-width:min(86vw,560px);display:block;z-index:2}
+.ap-award-511 #heroChapter .hero-copy{order:2;position:relative;z-index:6;max-width:min(520px,94vw);width:calc(100% - 2rem);pointer-events:auto;margin:0.35rem auto 1rem;padding:0.75rem 1.05rem;border-radius:18px;background:rgba(8,8,12,.92);border:1px solid rgba(200,205,214,.2);text-align:center}
+/* v678 load: photoreal Earth still (not schematic dots) while WebGL boots */
+html.ap-await-webgl:not(.orrery-full) #orrery-lite-poster{opacity:1!important;visibility:visible!important;background:url(img/engine/earth.webp) center/cover no-repeat #07070A!important}
+html.ap-await-webgl:not(.orrery-full) .lite-poster-canvas,html.ap-await-webgl:not(.orrery-full) .lite-poster-ring{opacity:0!important;visibility:hidden!important}
+html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important;visibility:hidden!important}
 .hero-action-chips{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:var(--sp-3)}
-.hero-live-pill{display:inline-flex;align-items:center;gap:8px;margin:0;padding:.42rem .9rem;border:1px solid rgba(194,160,94,.35);border-radius:999px;background:rgba(12,16,22,.72);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;color:var(--brass-bright)}
-.hero-live-pill__dot{width:7px;height:7px;border-radius:50%;background:var(--brass-vivid,#CDAE6A);box-shadow:0 0 10px rgba(194,160,94,.55);animation:ap-live-pulse 2.2s ease-in-out infinite}
+.hero-live-pill{display:inline-flex;align-items:center;gap:8px;margin:0;padding:.42rem .9rem;border:1px solid rgba(168,176,188,.35);border-radius:999px;background:rgba(12,16,22,.72);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;color:var(--brass-bright)}
+.hero-live-pill__dot{width:7px;height:7px;border-radius:50%;background:var(--brass-vivid,#7EC8E8);box-shadow:0 0 10px rgba(168,176,188,.55);animation:ap-live-pulse 2.2s ease-in-out infinite}
 @keyframes ap-live-pulse{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1)}}
 .hero-explore-chip{display:inline-flex;align-items:center;padding:.45rem .95rem;border:1px solid rgba(111,160,216,.45);border-radius:999px;background:rgba(26,34,48,.55);font-family:var(--font-ui);font-size:.74rem;font-weight:600;letter-spacing:.04em;color:#9ec8e8;text-decoration:none;transition:border-color .2s,background .2s}
 .hero-explore-chip:hover{border-color:rgba(111,160,216,.75);background:rgba(111,160,216,.12)}
 @media (prefers-reduced-motion:reduce){.hero-live-pill__dot{animation:none;opacity:.85}}
   </style>
-  <link rel="stylesheet" href="css/ap-site-polish.css?v=656" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=680" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-logo-aurora.css?v=680" id="ap-css-logo-aurora" />
+  <link rel="stylesheet" href="css/ap-site-polish.css?v=680" />
+  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=683" id="ap-css-visual-clarity" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=683" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
 
   <!-- Intro gate — runs before first paint so the hero never flashes the
        engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
@@ -197,11 +206,10 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
   </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=656" />
-  <link rel="stylesheet" href="css/ap-motion.css?v=576">
-  <link rel="stylesheet" href="css/ap-micro-2026.css?v=576">
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=595">
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=656">
+  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=680" />
+  <link rel="stylesheet" href="css/ap-motion.css?v=680">
+  <link rel="stylesheet" href="css/ap-micro-2026.css?v=680">
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=680">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
@@ -231,10 +239,10 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
         focusable="false"
       >
         <!-- Outer measurement ring -->
-        <circle cx="24" cy="24" r="21" fill="none" stroke="#C2A05E" stroke-width="1.1" opacity="0.95"/>
+        <circle cx="24" cy="24" r="21" fill="none" stroke="#A8B0BC" stroke-width="1.1" opacity="0.95"/>
 
         <!-- Eight degree ticks: 4 cardinal (long) + 4 intercardinal (short), gapped off the ring -->
-        <g stroke="#C2A05E" stroke-linecap="round">
+        <g stroke="#A8B0BC" stroke-linecap="round">
           <line x1="24" y1="6.2" x2="24" y2="10.2" stroke-width="1.3"/>
           <line x1="24" y1="6.2" x2="24" y2="10.2" stroke-width="1.3" transform="rotate(90 24 24)"/>
           <line x1="24" y1="6.2" x2="24" y2="10.2" stroke-width="1.3" transform="rotate(180 24 24)"/>
@@ -246,7 +254,7 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
         </g>
 
         <!-- Four brass diamonds straddling the ring at the cardinals -->
-        <g fill="#CDAE6A">
+        <g fill="#7EC8E8">
           <path d="M24 1.5 L25.15 3 L24 4.5 L22.85 3 Z"/>
           <path d="M24 1.5 L25.15 3 L24 4.5 L22.85 3 Z" transform="rotate(90 24 24)"/>
           <path d="M24 1.5 L25.15 3 L24 4.5 L22.85 3 Z" transform="rotate(180 24 24)"/>
@@ -254,11 +262,11 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
         </g>
 
         <!-- Eight-point star: one symmetric path, 4 long cardinal arms + 4 short diagonal arms -->
-        <path fill="#ECE6D8" d="M24 12.2 L25.84 19.57 L30.51 17.49 L28.43 22.16 L35.8 24 L28.43 25.84 L30.51 30.51 L25.84 28.43 L24 35.8 L22.16 28.43 L17.49 30.51 L19.57 25.84 L12.2 24 L19.57 22.16 L17.49 17.49 L22.16 19.57 Z"/>
+        <path fill="#E8EBF0" d="M24 12.2 L25.84 19.57 L30.51 17.49 L28.43 22.16 L35.8 24 L28.43 25.84 L30.51 30.51 L25.84 28.43 L24 35.8 L22.16 28.43 L17.49 30.51 L19.57 25.84 L12.2 24 L19.57 22.16 L17.49 17.49 L22.16 19.57 Z"/>
 
         <!-- Centre hub: ring + brass dot -->
-        <circle cx="24" cy="24" r="3.6" fill="none" stroke="#C2A05E" stroke-width="0.9"/>
-        <circle cx="24" cy="24" r="1.3" fill="#CDAE6A"/>
+        <circle cx="24" cy="24" r="3.6" fill="none" stroke="#A8B0BC" stroke-width="0.9"/>
+        <circle cx="24" cy="24" r="1.3" fill="#7EC8E8"/>
       </svg>
 
       <!-- WORDMARK -->
@@ -282,25 +290,25 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
       </svg>
     </p>
 
-    <nav aria-label="Site contents">
+    <nav aria-label="Around the living sky">
       <ul class="contents-nav">
+        <li><a href="explore.html">Explore</a></li>
         <li><a href="chart.html">Chart</a></li>
         <li><a href="ephemeris.html">Sky</a></li>
-        <li><a href="#today">Daily</a></li><!-- homepage-only: jumps to the on-page daily tool (the funnel); the tool links onward to horoscope.html -->
-        <li><a href="cosmic-story.html">Readings</a></li>
-        <li><a href="guides.html">Library</a></li>
+        <li><a href="#today">Daily</a></li>
         <li><a href="shop.html">Shop</a></li>
+        <li><a href="mysky.html">My Sky</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<nav class="ap-float-nav" id="apFloatNav" aria-label="Site path" hidden>
+<nav class="ap-float-nav" id="apFloatNav" aria-label="Around the living sky" hidden>
+  <a class="ap-float-nav__link" href="explore.html" data-short="Explore" title="Full 3D orrery">Explore</a>
   <a class="ap-float-nav__link" href="#heroChapter" data-ap-jump="heroChapter" data-short="Cast">Cast</a>
   <a class="ap-float-nav__link" href="ephemeris.html" data-short="Sky">Sky</a>
-  <a class="ap-float-nav__link" href="moment.html" data-short="Keep">Keep</a>
   <a class="ap-float-nav__link" href="horoscope.html" data-short="Daily">Daily</a>
-  <a class="ap-float-nav__link" href="#shopChapter" data-ap-jump="shopChapter" data-short="Shop" title="Shop &amp; readings">Shop</a>
+  <a class="ap-float-nav__link" href="mysky.html" data-short="Hub" title="My Sky hub">Hub</a>
 </nav>
 
 <main class="ap-flow" id="main-content" tabindex="-1">
@@ -849,15 +857,27 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
 <section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" aria-labelledby="contents-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
-      <p class="ap-display-kicker">One path · free first</p>
+      <p class="ap-display-kicker">Around the living model</p>
       <h2 id="contents-heading" class="ap-chapter-title">How Astro Precise flows</h2>
       <p class="ap-chapter-lead" style="max-width:54ch;">
-        <strong>Cast &rarr; Sky &rarr; Keep &rarr; Daily &rarr; Reading.</strong>
-        Same order everywhere &mdash; nav, chart next steps, and this list. Free to start; private by design.
+        <strong>Explore &rarr; Cast &rarr; Sky &rarr; Keep &rarr; Daily.</strong>
+        The orrery is the product. Tools and tabs orbit it &mdash; same order in the nav and below.
+        Map of everything: <a href="mysky.html">My Sky</a>.
       </p>
     </header>
 
     <ol class="dept-list" role="list">
+      <li class="ap-reveal" style="--ap-reveal-i: 0">
+        <a href="explore.html" class="dept-list-item" aria-label="Step 00 — Explore the live 3D sky">
+          <span class="dept-number">00</span>
+          <div>
+            <span class="dept-title">Explore the 3D sky</span>
+            <span class="dept-list-dek">Full-viewport orrery &mdash; drag, zoom, Earth to Cosmos. Same engine as the hero above.</span>
+            <span class="dept-list-next">Open Explore &rarr;</span>
+          </div>
+          <span class="dept-badge free">Free · 3D</span>
+        </a>
+      </li>
       <li class="ap-reveal" style="--ap-reveal-i: 1">
         <a href="chart.html" class="dept-list-item" aria-label="Step 01 — Cast your chart, free">
           <span class="dept-number">01</span>
@@ -1009,7 +1029,7 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
               .zc-star    { fill: rgba(234,227,211,0.95); }
               .zc-star-dim{ fill: rgba(234,227,211,0.48); }
               .zc-star-fnt{ fill: rgba(234,227,211,0.28); }
-              .zc-div     { stroke: rgba(194,160,94,0.58); stroke-width: 0.9; fill:none; }
+              .zc-div     { stroke: rgba(168,176,188,0.58); stroke-width: 0.9; fill:none; }
               .zc-sun-mark{ fill: none; stroke: rgba(181,83,46,0.92); stroke-width: 1.3; }
               .zc-moon-mk { fill: rgba(234,227,211,0.78); }
               .zc-tick    { stroke: rgba(234,227,211,0.36); stroke-width:0.6; stroke-linecap:round; }
@@ -1613,14 +1633,16 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
 <footer class="night-watch section-bleed" aria-label="Site footer">
   <div class="page-wrap">
     <div class="footer-grid">
-      <div class="footer-col">
-        <h3>Tools</h3>
+      <div class="footer-col" data-ap-footer-spine="1">
+        <h3>Around the model</h3>
         <ul>
-          <li><a href="chart.html">Natal chart</a></li>
-          <li><a href="ephemeris.html">Sky tonight</a></li>
-          <li><a href="transits.html">Current transits</a></li>
-          <li><a href="moonphase.html">Moon phase</a></li>
-          <li><a href="synastry.html">Synastry</a></li>
+          <li><a href="explore.html">Explore 3D</a></li>
+          <li><a href="chart.html">Cast chart</a></li>
+          <li><a href="ephemeris.html">Sky instrument</a></li>
+          <li><a href="moment.html">Moment (Keep)</a></li>
+          <li><a href="horoscope.html">Daily</a></li>
+          <li><a href="mysky.html">My Sky hub</a></li>
+          <li><a href="shop.html">Shop</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1668,18 +1690,18 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
       <!-- Footer logo lockup (compact) -->
       <a href="/" class="footer-logo" aria-label="Astro Precise — home">
         <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="flex-shrink:0;">
-          <circle cx="12" cy="12" r="11" fill="none" stroke="rgba(154,123,63,0.55)" stroke-width="0.9"/>
-          <circle cx="12" cy="12" r="9"  fill="none" stroke="rgba(234,227,211,0.15)" stroke-width="0.5"/>
-          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(154,123,63,0.7)" stroke-width="0.9" stroke-linecap="round"/>
-          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(154,123,63,0.7)" stroke-width="0.9" stroke-linecap="round" transform="rotate(90 12 12)"/>
-          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(154,123,63,0.7)" stroke-width="0.9" stroke-linecap="round" transform="rotate(180 12 12)"/>
-          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(154,123,63,0.7)" stroke-width="0.9" stroke-linecap="round" transform="rotate(270 12 12)"/>
-          <polygon points="12,4.5 12.8,11.2 12,13.5 11.2,11.2" fill="rgba(234,227,211,0.7)"/>
-          <polygon points="12,19.5 12.8,12.8 12,10.5 11.2,12.8" fill="rgba(234,227,211,0.7)"/>
-          <polygon points="4.5,12 11.2,11.2 13.5,12 11.2,12.8" fill="rgba(234,227,211,0.7)"/>
-          <polygon points="19.5,12 12.8,11.2 10.5,12 12.8,12.8" fill="rgba(234,227,211,0.7)"/>
-          <circle cx="12" cy="12" r="1.8" fill="none" stroke="rgba(154,123,63,0.7)" stroke-width="0.7"/>
-          <circle cx="12" cy="12" r="0.7" fill="rgba(154,123,63,0.8)"/>
+          <circle cx="12" cy="12" r="11" fill="none" stroke="rgba(168,176,188,0.55)" stroke-width="0.9"/>
+          <circle cx="12" cy="12" r="9"  fill="none" stroke="rgba(232,235,240,0.15)" stroke-width="0.5"/>
+          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(126,200,232,0.7)" stroke-width="0.9" stroke-linecap="round"/>
+          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(126,200,232,0.7)" stroke-width="0.9" stroke-linecap="round" transform="rotate(90 12 12)"/>
+          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(126,200,232,0.7)" stroke-width="0.9" stroke-linecap="round" transform="rotate(180 12 12)"/>
+          <line x1="12" y1="1"  x2="12" y2="3.2"  stroke="rgba(126,200,232,0.7)" stroke-width="0.9" stroke-linecap="round" transform="rotate(270 12 12)"/>
+          <polygon points="12,4.5 12.8,11.2 12,13.5 11.2,11.2" fill="rgba(232,235,240,0.7)"/>
+          <polygon points="12,19.5 12.8,12.8 12,10.5 11.2,12.8" fill="rgba(232,235,240,0.7)"/>
+          <polygon points="4.5,12 11.2,11.2 13.5,12 11.2,12.8" fill="rgba(232,235,240,0.7)"/>
+          <polygon points="19.5,12 12.8,11.2 10.5,12 12.8,12.8" fill="rgba(232,235,240,0.7)"/>
+          <circle cx="12" cy="12" r="1.8" fill="none" stroke="rgba(126,200,232,0.7)" stroke-width="0.7"/>
+          <circle cx="12" cy="12" r="0.7" fill="rgba(126,200,232,0.8)"/>
         </svg>
         <span class="footer-logo-wordmark">Astro Precise</span>
       </a>
@@ -1694,7 +1716,7 @@ html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-home-bootstrap.js?v=640"></script>
+<script defer src="js/ap-home-bootstrap.js?v=683"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=623"></script>
 <script defer src="js/home-match.js?v=621"></script>

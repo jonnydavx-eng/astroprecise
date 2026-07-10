@@ -1,51 +1,53 @@
 /**
- * Astro Precise — Navigation IA (single source of truth).
+ * Astro Precise — Navigation IA (model-first, single source of truth).
  * Load before app.js: <script src="js/ap-nav-model.js"></script>
  *
- * LOCKED UNIFIED VOCABULARY (same on every page — homepage, tool pages, sign pages):
- *   Chart · Sky · Daily · Readings · Library · Shop
- * Targets:
- *   Chart    → chart.html
- *   Sky      → ephemeris.html   (the "Sky" instrument; label is always "Sky")
- *   Daily    → horoscope.html
- *   Readings → cosmic-story.html (the FREE sample narrative reading)
- *   Library  → guides.html
- *   Shop     → shop.html  (keepsakes / PDFs — homepage float uses "Shop" not "Keep")
- * Site spine (product order): Cast → Sky → Keep → Daily → Reading → Shop
- * Primary bar keeps Chart · Sky · Daily · Readings · Library · Shop.
- * Moment (Keep) is first in More Explore so it is one tap from every page.
- * Mobile bottom tabs match spine: Chart · Sky · Daily · Shop.
+ * MODEL-CENTERED STRUCTURE (2026-07-09 jet rebuild):
+ *   The living orrery is the product. Tabs orbit it.
+ *
+ * Primary bar: Explore · Chart · Sky · Daily · Shop
+ *   Explore = full-viewport 3D (explore.html)
+ *   Chart   = cast natal (chart.html)
+ *   Sky     = sky instrument / ephemeris (ephemeris.html)
+ *   Daily   = horoscope (horoscope.html)
+ *   Shop    = keepsakes
+ *
+ * Bottom tabs (4): Explore · Chart · Sky · Daily
+ * More: My Sky hub, Moment, Readings, Library, Match, tools…
+ *
+ * Site spine: Explore (see) → Chart (cast) → Sky (instrument) → Keep → Daily → Shop
  */
 'use strict';
 
 (function () {
   var NAV_PRIMARY = [
+    ['explore.html', 'Explore'],
     ['chart.html', 'Chart'],
     ['ephemeris.html', 'Sky'],
     ['horoscope.html', 'Daily'],
-    ['cosmic-story.html', 'Readings'],
-    ['guides.html', 'Library'],
     ['shop.html', 'Shop'],
   ];
 
-  // Keep first — same product ladder as home instruments step 03
+  // Hub + keep + story + library first in More
   var NAV_MORE_EXPLORE = [
+    ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
+    ['cosmic-story.html', 'Readings'],
+    ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
     ['transits.html', 'Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
     ['profile.html', 'Profile'],
     ['charts.html', 'My Charts'],
   ];
 
-  // Spine order (not Daily-before-Sky)
+  // Four tabs only — model + cast + sky + daily (distinct icons)
   var NAV_BOTTOM_TABS = [
+    ['explore.html', 'Explore', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
     ['ephemeris.html', 'Sky', 'telescope'],
     ['horoscope.html', 'Daily', 'crescent'],
-    ['shop.html', 'Shop', 'star4'],
   ];
 
-  // Everything else — the tool sprawl — collapses here, into the "More" drawer/flyout.
   var NAV_EXTRAS = [
     ['catalogue.html', 'Lookbook'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
@@ -64,8 +66,8 @@
     NAV_BOTTOM_TABS: NAV_BOTTOM_TABS,
     NAV_EXTRAS: NAV_EXTRAS,
     NAV_DRAWER_SECTIONS: [
-      { label: 'Explore', items: NAV_MORE_EXPLORE },
-      { label: 'Tools', items: NAV_EXTRAS },
+      { label: 'Around the model', items: NAV_MORE_EXPLORE },
+      { label: 'More tools', items: NAV_EXTRAS },
     ],
   };
 })();

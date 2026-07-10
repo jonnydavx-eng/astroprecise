@@ -166,17 +166,17 @@
   function drawSpaceBackground() {
     syncSpaceParallax();
     // On-system cool-void well (DESIGN.md tokens): raised mid #121826 at the
-    // centre falling to deep base #0C1016 at the rim — engraved-observatory
+    // centre falling to deep base #07070A at the rim — engraved-observatory
     // backdrop, no photographic sky.
     const g = ctx.createRadialGradient(cx, cy * 0.88, 0, cx, cy, Math.max(W, H) * 0.78);
     g.addColorStop(0, '#121826');
     g.addColorStop(0.55, '#0E141E');
-    g.addColorStop(1, '#0C1016');
+    g.addColorStop(1, '#07070A');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, ringRadius() * 1.55);
     glow.addColorStop(0, 'rgba(111, 160, 216, 0.1)');
-    glow.addColorStop(0.45, 'rgba(194, 160, 94, 0.06)');
+    glow.addColorStop(0.45, 'rgba(168, 176, 188, 0.06)');
     glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, H);
@@ -194,7 +194,7 @@
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       if (s.brass) {
-        ctx.fillStyle = `rgba(194, 160, 94, ${alpha * 0.95})`;
+        ctx.fillStyle = `rgba(168, 176, 188, ${alpha * 0.95})`;
       } else {
         ctx.fillStyle = `rgba(236, 230, 216, ${alpha})`;
       }
@@ -205,7 +205,7 @@
   function drawMeridian() {
     const R = ringRadius();
     ctx.save();
-    ctx.strokeStyle = 'rgba(194, 160, 94, 0.48)';
+    ctx.strokeStyle = 'rgba(168, 176, 188, 0.48)';
     ctx.setLineDash([4, 6]);
     ctx.lineWidth = 1.2;
     ctx.beginPath();
@@ -213,12 +213,12 @@
     ctx.lineTo(cx, cy + R * 0.42);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = 'rgba(194, 160, 94, 0.9)';
+    ctx.fillStyle = 'rgba(168, 176, 188, 0.9)';
     ctx.beginPath();
     ctx.arc(cx, cy - R * 1.06, 3, 0, Math.PI * 2);
     ctx.fill();
     ctx.font = `600 ${Math.max(7, 7.5 * (W / 600))}px Inter, system-ui, sans-serif`;
-    ctx.fillStyle = 'rgba(194, 160, 94, 0.72)';
+    ctx.fillStyle = 'rgba(168, 176, 188, 0.72)';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText('TODAY', cx, cy - R * 1.14);
@@ -263,7 +263,7 @@
         ctx.lineTo(p.x, p.y);
       }
       ctx.closePath();
-      ctx.fillStyle = 'rgba(194, 160, 94, 0.035)';
+      ctx.fillStyle = 'rgba(168, 176, 188, 0.035)';
       ctx.fill();
     }
   }
@@ -288,7 +288,7 @@
       ctx.beginPath();
       ctx.moveTo(cx + x3a * sa, cy + ya * sa);
       ctx.lineTo(cx + x3b * sb, cy + yb * sb);
-      ctx.strokeStyle = major ? 'rgba(194, 160, 94, 0.38)' : 'rgba(194, 160, 94, 0.14)';
+      ctx.strokeStyle = major ? 'rgba(168, 176, 188, 0.38)' : 'rgba(168, 176, 188, 0.14)';
       ctx.lineWidth = major ? 1.2 : 0.55;
       ctx.stroke();
     }
@@ -311,7 +311,7 @@
       i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(194, 160, 94, 0.42)';
+    ctx.strokeStyle = 'rgba(168, 176, 188, 0.42)';
     ctx.lineWidth   = 1.8;
     ctx.setLineDash([]);
     ctx.stroke();
@@ -479,7 +479,7 @@
     natalMarkers.forEach((m, idx) => {
       if (m.lon == null || !isFinite(m.lon)) return;
       const pt = project(((m.lon % 360) + 360) % 360);
-      const col = m.col || '#C2A05E';
+      const col = m.col || '#A8B0BC';
       const isHov = hoveredNatal === idx;
       const pulse = isHov ? 1 : 0.85 + 0.15 * Math.sin(lastT * 0.002 + (m.lon || 0));
       const hg = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, (isHov ? 22 : 16) * pt.s);
@@ -513,7 +513,7 @@
     const m = natalMarkers[hoveredNatal];
     if (!m || m.lon == null || !isFinite(m.lon)) return;
     const pt = project(((m.lon % 360) + 360) % 360);
-    const col = m.col || '#C2A05E';
+    const col = m.col || '#A8B0BC';
     const name = (m.label || 'Natal').replace(/\s*Natal\s*/i, '').trim() || 'Natal';
     const label = name + ' · ' + lonToSignName(m.lon) + ' ' + degInSign(m.lon) + '°';
     ctx.font = `500 ${Math.max(9, 10)}px Inter, system-ui, sans-serif`;
@@ -644,7 +644,7 @@
 
       // Glow for hovered / selected / natal sun sign
       if (isSel || isHov || isNatal) {
-        const [gr, gg, gb] = isSel ? [194, 160, 94] : isNatal ? [111, 160, 216] : el;
+        const [gr, gg, gb] = isSel ? [168, 176, 188] : isNatal ? [111, 160, 216] : el;
         const glow = ctx.createRadialGradient(s.x, s.y, r * 0.4, s.x, s.y, r * 2.8);
         glow.addColorStop(0, `rgba(${gr},${gg},${gb},0.40)`);
         glow.addColorStop(1, `rgba(${gr},${gg},${gb},0)`);
@@ -658,7 +658,7 @@
       ctx.beginPath();
       ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
       ctx.fillStyle = isSel
-        ? 'rgba(194, 160, 94, 0.24)'
+        ? 'rgba(168, 176, 188, 0.24)'
         : isNatal
           ? 'rgba(111, 160, 216, 0.18)'
           : `rgba(${el[0]},${el[1]},${el[2]},0.14)`;
@@ -674,14 +674,14 @@
       ctx.stroke();
 
       // Engraved zodiac seal (APCanvasSeals) — keyed by sign slug, not Unicode.
-      const sealCol = isSel ? '#C2A05E' : (EL_HEX[s.el] || '#C2A05E');
+      const sealCol = isSel ? '#A8B0BC' : (EL_HEX[s.el] || '#A8B0BC');
       const drewSeal = window.APCanvasSeals && (
         (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, s.key, s.x, s.y, r * 0.82, sealCol)) ||
         (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, s.key, s.x, s.y, r * 1.45))
       );
       if (!drewSeal) {
         ctx.font         = `${Math.max(8, r * 0.55)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle    = isSel ? '#C2A05E' : isHov ? sealCol : '#C8BFA6';
+        ctx.fillStyle    = isSel ? '#A8B0BC' : isHov ? sealCol : '#C8BFA6';
         ctx.textAlign    = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText((s.name || s.key || '?').charAt(0), s.x, s.y);
@@ -692,7 +692,7 @@
       if (labelFade > 0) {
         ctx.globalAlpha = alpha * Math.min(1, labelFade);
         ctx.font        = `${Math.max(8, 9.5 * s.s)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle   = isSel ? '#C2A05E' : 'rgba(200,190,165,0.9)';
+        ctx.fillStyle   = isSel ? '#A8B0BC' : 'rgba(200,190,165,0.9)';
         ctx.textAlign   = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(s.name, s.x, s.y + r + 3);
@@ -713,7 +713,7 @@
     const wA     = Math.max(0, 0.45 - waveR / (R * 5));
     ctx.beginPath();
     ctx.arc(cx, cy, waveR, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(194, 160, 94, ${wA * 0.85})`;
+    ctx.strokeStyle = `rgba(168, 176, 188, ${wA * 0.85})`;
     ctx.lineWidth   = 1.2;
     ctx.stroke();
 
@@ -737,7 +737,7 @@
     starPath(R * pulse, R * 0.38 * pulse, 8);
     const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, R * pulse);
     grad.addColorStop(0,   '#FFF8E4');
-    grad.addColorStop(0.5, '#C2A05E');
+    grad.addColorStop(0.5, '#A8B0BC');
     grad.addColorStop(1,   '#9A7A3A');
     ctx.fillStyle = grad;
     ctx.fill();

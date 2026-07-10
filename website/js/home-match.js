@@ -91,20 +91,20 @@
     var css =
       '.home-match__picks{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:flex-end;margin:0 auto var(--sp-5);max-width:560px}' +
       '.home-match__field{display:flex;flex-direction:column;gap:.35rem;min-width:180px;flex:1}' +
-      '.home-match__field label{font:600 .68rem/1 var(--font-mono,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--brass,#C2A05E)}' +
-      '.home-match__field select{appearance:none;-webkit-appearance:none;background:rgba(26,34,48,.6);color:var(--ink,#ECE6D8);border:1px solid rgba(194,160,94,.3);border-radius:10px;padding:.6rem .8rem;font:500 .95rem/1 var(--font-ui,Inter),sans-serif;cursor:pointer}' +
+      '.home-match__field label{font:600 .68rem/1 var(--font-mono,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--brass,#A8B0BC)}' +
+      '.home-match__field select{appearance:none;-webkit-appearance:none;background:rgba(26,34,48,.6);color:var(--ink,#E8EBF0);border:1px solid rgba(168,176,188,.3);border-radius:10px;padding:.6rem .8rem;font:500 .95rem/1 var(--font-ui,Inter),sans-serif;cursor:pointer}' +
       '.home-match__field select:focus{outline:2px solid rgba(205,174,106,.6);outline-offset:1px}' +
-      '.home-match__amp{font-family:var(--font-serif,serif);color:var(--brass,#C2A05E);font-size:1.4rem;padding-bottom:.5rem}' +
-      '.home-match__card{max-width:560px;margin:0 auto;background:rgba(18,24,38,.66);border:1px solid rgba(194,160,94,.22);border-radius:16px;padding:clamp(1.2rem,3vw,1.9rem);text-align:center}' +
+      '.home-match__amp{font-family:var(--font-serif,serif);color:var(--brass,#A8B0BC);font-size:1.4rem;padding-bottom:.5rem}' +
+      '.home-match__card{max-width:560px;margin:0 auto;background:rgba(18,24,38,.66);border:1px solid rgba(168,176,188,.22);border-radius:16px;padding:clamp(1.2rem,3vw,1.9rem);text-align:center}' +
       '.home-match__orbs{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:.7rem}' +
-      '.home-match__orb{font-family:"AstroGlyph",serif;font-variant-emoji:text;font-size:1.9rem;line-height:1;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(194,160,94,.4)}' +
+      '.home-match__orb{font-family:"AstroGlyph",serif;font-variant-emoji:text;font-size:1.9rem;line-height:1;width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid rgba(168,176,188,.4)}' +
       '.home-match__orb--fire{color:#D89A72}.home-match__orb--earth{color:#9CB27E}.home-match__orb--air{color:#B8C0CC}.home-match__orb--water{color:#8FB8B6}' +
       '.home-match__tone{display:inline-block;font:600 .72rem/1 var(--font-mono,monospace);letter-spacing:.12em;text-transform:uppercase;padding:.32rem .7rem;border-radius:999px;margin-bottom:.6rem}' +
       '.home-match__tone--harmony{color:#9CB27E;background:rgba(156,178,126,.14);border:1px solid rgba(156,178,126,.35)}' +
-      '.home-match__tone--neutral{color:var(--brass-bright,#CDAE6A);background:rgba(194,160,94,.12);border:1px solid rgba(194,160,94,.35)}' +
-      '.home-match__title{font:600 1.35rem/1.2 var(--font-serif,serif);color:var(--ink,#ECE6D8);margin:.1rem 0 .5rem}' +
+      '.home-match__tone--neutral{color:var(--brass-bright,#7EC8E8);background:rgba(168,176,188,.12);border:1px solid rgba(168,176,188,.35)}' +
+      '.home-match__title{font:600 1.35rem/1.2 var(--font-serif,serif);color:var(--ink,#E8EBF0);margin:.1rem 0 .5rem}' +
       '.home-match__narr{color:rgba(236,230,216,.9);line-height:1.65;margin:0 auto 1rem;max-width:44ch}' +
-      '.home-match__note{font-size:.78rem;color:rgba(236,230,216,.62);line-height:1.55;border-top:1px solid rgba(194,160,94,.18);padding-top:.8rem;margin:0 0 1.1rem}' +
+      '.home-match__note{font-size:.78rem;color:rgba(236,230,216,.62);line-height:1.55;border-top:1px solid rgba(168,176,188,.18);padding-top:.8rem;margin:0 0 1.1rem}' +
       '.home-match__cta-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center}' +
       '.home-match__prompt{text-align:center;color:rgba(236,230,216,.7);font-size:.9rem;margin:.4rem 0 0}';
     var st = document.createElement('style'); st.id = 'home-match-css'; st.textContent = css;

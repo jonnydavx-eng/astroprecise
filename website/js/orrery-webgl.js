@@ -1478,7 +1478,7 @@ const FinishShader = {
     // resting sun glow sits in the ENGRAVED BRASS palette (other pages unchanged).
     const layers = [
       { tex: isAwardMode()
-          ? makeGlowTexture('rgba(236,214,164,0.9)', 'rgba(194,160,94,0.4)')
+          ? makeGlowTexture('rgba(236,214,164,0.9)', 'rgba(168,176,188,0.4)')
           : makeGlowTexture('rgba(255,252,235,0.95)', 'rgba(255,205,85,0.52)'), scale: SUN_SIZE * 6.2 },
       { tex: makeGlowTexture('rgba(255,218,125,0.48)', 'rgba(240,135,35,0.14)'), scale: SUN_SIZE * 12 },
       { tex: makeGlowTexture('rgba(255,175,55,0.16)', 'rgba(215,85,12,0.04)'), scale: SUN_SIZE * 19 },
@@ -3052,7 +3052,17 @@ const FinishShader = {
       if (sunCoronaMesh) sunCoronaMesh.visible = showSolar && z <= 2.4;
     }
     const earthDetailZ = preloaderCosmicJourney ? 1.52 : 1.2;
-    if (moonGroup) moonGroup.visible = showSolar && z <= earthDetailZ;
+    /* v683: pure Earth rest (scale 0, not Moon-focus) hides the Moon so it
+       never sits as a large disc on Earth (user live-home bug shot). Moon
+       returns for Moon pill (moonFrameActive) or any zoom past Earth rest. */
+    if (moonGroup) {
+      const wantMoon =
+        moonFrameActive ||
+        focusFrameId === 'moon' ||
+        focusPlanetId === 'moon' ||
+        scaleLevel >= 1;
+      moonGroup.visible = showSolar && z <= earthDetailZ && wantMoon;
+    }
     if (earthCloud) earthCloud.visible = showSolar && z <= earthDetailZ;
     if (earthOrbitGroup) {
       earthOrbitGroup.visible = showSolar && z <= earthDetailZ;
@@ -4097,7 +4107,7 @@ const FinishShader = {
       buildSunCorona();
       const layers = [
         { tex: isAwardMode()
-            ? makeGlowTexture('rgba(236,214,164,0.85)', 'rgba(194,160,94,0.32)') // v576 brass halo
+            ? makeGlowTexture('rgba(236,214,164,0.85)', 'rgba(168,176,188,0.32)') // v576 brass halo
             : makeGlowTexture('rgba(255,252,235,0.88)', 'rgba(255,205,85,0.38)'), scale: SUN_SIZE * 4.6 },
         { tex: makeGlowTexture('rgba(255,218,125,0.36)', 'rgba(240,135,35,0.10)'), scale: SUN_SIZE * 8.2 },
         { tex: makeGlowTexture('rgba(255,175,55,0.12)', 'rgba(215,85,12,0.03)'), scale: SUN_SIZE * 13.5 },
@@ -6944,7 +6954,7 @@ const FinishShader = {
     const signSprites = [];
     for (let s = 0; s < 12; s++) {
       const lon = s * 30 + 15;
-      const lab = makeAspectLabel(SIGN_ABBR[s], { font: 22, baseH: 0.62, color: 'rgba(194,160,94,0.9)' });
+      const lab = makeAspectLabel(SIGN_ABBR[s], { font: 22, baseH: 0.62, color: 'rgba(168,176,188,0.9)' });
       lab.position.copy(scenePos(R * 1.14, lon, 0));
       lab.userData.baseOpacity = 0.62;
       grp.add(lab); signSprites.push(lab);

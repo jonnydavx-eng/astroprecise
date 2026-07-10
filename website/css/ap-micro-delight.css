@@ -20,7 +20,7 @@
   background: linear-gradient(
     90deg,
     rgba(22, 28, 48, 0.5) 0%,
-    rgba(194, 160, 94, 0.08) 50%,
+    rgba(168, 176, 188, 0.08) 50%,
     rgba(22, 28, 48, 0.5) 100%
   );
   background-size: 200% 100%;
@@ -64,7 +64,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--ap-gold-core, #C2A05E);
+  background: var(--ap-gold-core, #A8B0BC);
   animation: ap-pulse-glow 1.2s ease-in-out infinite;
 }
 
@@ -80,36 +80,36 @@
 .ap-progress-meter__track {
   height: 4px;
   border-radius: 999px;
-  background: rgba(236, 230, 216, 0.08);
+  background: rgba(232, 235, 240, 0.08);
   overflow: hidden;
 }
 
 .ap-progress-meter__fill {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--ap-gold-core, #C2A05E), var(--ap-gold-vivid, #D8B978));
+  background: linear-gradient(90deg, #4A90E0, #7EC8E8 55%, #C8D8E8);
   transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ap-progress-meter__label {
   font-size: 0.72rem;
   letter-spacing: 0.08em;
-  color: var(--ap-text-muted, #A89C84);
+  color: var(--ap-text-muted, #8B919C);
 }
 
 .ap-time-accuracy {
   margin-top: 0.65rem;
   padding: 0.75rem 0.9rem;
   border-radius: 10px;
-  border: 1px solid var(--ap-gold-a16, rgba(194, 160, 94, 0.16));
+  border: 1px solid var(--ap-gold-a16, rgba(168, 176, 188, 0.16));
   background: rgba(10, 14, 26, 0.45);
   font-size: 0.82rem;
   line-height: 1.55;
-  color: var(--ap-text-secondary, #BEB298);
+  color: var(--ap-text-secondary, #C8CDD6);
 }
 
 .ap-time-accuracy strong {
-  color: var(--ap-gold-vivid, #D8B978);
+  color: var(--ap-gold-vivid, #C8CDD6);
   font-weight: 600;
 }
 
@@ -122,7 +122,7 @@
   margin: 0 auto 1.5rem;
   padding: 1.1rem 1.25rem;
   border-radius: 14px;
-  border: 1px solid var(--ap-gold-a22, rgba(194, 160, 94, 0.22));
+  border: 1px solid var(--ap-gold-a22, rgba(168, 176, 188, 0.22));
   background: linear-gradient(135deg, rgba(26, 35, 64, 0.55), rgba(10, 14, 26, 0.65));
   box-shadow: 0 0 32px rgba(72, 58, 120, 0.08);
 }
@@ -131,14 +131,14 @@
   font-size: 0.65rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ap-gold-vivid, #D8B978);
+  color: var(--ap-gold-vivid, #C8CDD6);
   margin: 0 0 0.4rem;
 }
 
 .ap-sky-bridge__title {
   font-family: var(--font-display, 'Cormorant Garamond', serif);
   font-size: 1.15rem;
-  color: var(--ap-text-primary, #ECE6D8);
+  color: var(--ap-text-primary, #E8EBF0);
   margin: 0 0 0.5rem;
 }
 
@@ -154,7 +154,7 @@
 .ap-sky-bridge__col {
   padding: 0.65rem 0.75rem;
   border-radius: 10px;
-  border: 1px solid var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
+  border: 1px solid var(--ap-gold-a12, rgba(168, 176, 188, 0.12));
   background: rgba(10, 14, 26, 0.4);
   text-align: center;
 }
@@ -164,12 +164,12 @@
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ap-text-muted, #A89C84);
+  color: var(--ap-text-muted, #8B919C);
   margin-bottom: 0.25rem;
 }
 
 .ap-sky-bridge__arrow {
-  color: var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
+  color: var(--ap-gold-a40, rgba(168, 176, 188, 0.4));
   font-size: 1.1rem;
 }
 

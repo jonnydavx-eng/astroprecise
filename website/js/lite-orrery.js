@@ -328,7 +328,7 @@
       if (m.life <= 0) { meteors.splice(i, 1); continue; }
       var tail = 22 * m.life;
       var col = m.gold
-        ? (isAward() ? '194, 160, 94' : '201, 162, 39')
+        ? (isAward() ? '168, 176, 188' : '201, 162, 39')
         : '140, 190, 255';
       var grad = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * 8, m.y - m.vy * 8);
       grad.addColorStop(0, 'rgba(' + col + ',' + (0.85 * m.life) + ')');
@@ -551,7 +551,7 @@
       if (award) {
         var brass = (st.tw * 3.7) % 1 < 0.38;
         ctx.fillStyle = brass
-          ? 'rgba(194, 160, 94, ' + Math.min(1, alpha * 1.08) + ')'
+          ? 'rgba(168, 176, 188, ' + Math.min(1, alpha * 1.08) + ')'
           : 'rgba(236, 230, 216, ' + Math.min(1, alpha) + ')';
       } else {
         ctx.fillStyle = 'rgba(240, 236, 255, ' + alpha + ')';
@@ -579,14 +579,14 @@
     var R = Math.min(W, H) * 0.46 * zoom;
 
     var award = isAward();
-    ctx.fillStyle = award ? '#0C1016' : '#060a10';
+    ctx.fillStyle = award ? '#07070A' : '#060a10';
     ctx.fillRect(0, 0, W, H);
     drawStarField(ctx, W, H, now);
 
     var edgeGlow = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.25);
     if (award) {
       edgeGlow.addColorStop(0, 'rgba(111, 160, 216, 0.1)');
-      edgeGlow.addColorStop(0.55, 'rgba(194, 160, 94, 0.06)');
+      edgeGlow.addColorStop(0.55, 'rgba(168, 176, 188, 0.06)');
       edgeGlow.addColorStop(1, 'rgba(12, 16, 22, 0.5)');
     } else {
       edgeGlow.addColorStop(0, 'rgba(30, 80, 130, 0.08)');
@@ -605,13 +605,13 @@
       ctx.beginPath();
       ctx.arc(cx, cy, R * 1.1, a0, a1);
       ctx.strokeStyle = active
-        ? (award ? 'rgba(194, 160, 94, 0.88)' : 'rgba(232, 201, 106, 0.78)')
-        : (award ? 'rgba(194, 160, 94, 0.26)' : 'rgba(201, 162, 39, 0.18)');
+        ? (award ? 'rgba(168, 176, 188, 0.88)' : 'rgba(232, 201, 106, 0.78)')
+        : (award ? 'rgba(168, 176, 188, 0.26)' : 'rgba(201, 162, 39, 0.18)');
       ctx.lineWidth = active ? 4 : 1.4;
       ctx.stroke();
     }
 
-    ctx.strokeStyle = award ? 'rgba(194, 160, 94, 0.22)' : 'rgba(150, 190, 240, 0.22)';
+    ctx.strokeStyle = award ? 'rgba(168, 176, 188, 0.22)' : 'rgba(150, 190, 240, 0.22)';
     ctx.lineWidth = award ? 1.1 : 1;
     PLANETS.forEach(function (p) {
       var pos = helioCached(p.id, jd);
@@ -644,8 +644,8 @@
       var coronaG = ctx.createRadialGradient(cx, cy, 6, cx, cy, coronaR);
       coronaG.addColorStop(0, 'rgba(255, 248, 228, ' + (0.22 * sunPulse).toFixed(3) + ')');
       coronaG.addColorStop(0.42, 'rgba(232, 201, 106, ' + (0.12 * sunPulse).toFixed(3) + ')');
-      coronaG.addColorStop(0.72, 'rgba(194, 160, 94, ' + (0.05 * sunPulse).toFixed(3) + ')');
-      coronaG.addColorStop(1, 'rgba(194, 160, 94, 0)');
+      coronaG.addColorStop(0.72, 'rgba(168, 176, 188, ' + (0.05 * sunPulse).toFixed(3) + ')');
+      coronaG.addColorStop(1, 'rgba(168, 176, 188, 0)');
       ctx.fillStyle = coronaG;
       ctx.beginPath();
       ctx.arc(cx, cy, coronaR, 0, Math.PI * 2);
@@ -656,7 +656,7 @@
     if (award) {
       sunG.addColorStop(0, 'rgba(255, 248, 228, 1)');
       sunG.addColorStop(0.28, 'rgba(232, 201, 106, 0.95)');
-      sunG.addColorStop(0.55, 'rgba(194, 160, 94, 0.52)');
+      sunG.addColorStop(0.55, 'rgba(168, 176, 188, 0.52)');
       sunG.addColorStop(0.82, 'rgba(111, 160, 216, 0.12)');
       sunG.addColorStop(1, 'rgba(12, 16, 22, 0)');
     } else {
@@ -686,8 +686,8 @@
         var pulse = 0.42 + 0.18 * Math.sin(now * 0.006);
         var hg = ctx.createRadialGradient(px, py, 0, px, py, spec.size + 11);
         if (award) {
-          hg.addColorStop(0, 'rgba(194, 160, 94, ' + (0.34 * pulse + 0.18).toFixed(3) + ')');
-          hg.addColorStop(1, 'rgba(194, 160, 94, 0)');
+          hg.addColorStop(0, 'rgba(168, 176, 188, ' + (0.34 * pulse + 0.18).toFixed(3) + ')');
+          hg.addColorStop(1, 'rgba(168, 176, 188, 0)');
         } else {
           hg.addColorStop(0, 'rgba(232, 201, 106, ' + (0.30 * pulse + 0.16).toFixed(3) + ')');
           hg.addColorStop(1, 'rgba(232, 201, 106, 0)');
@@ -730,7 +730,7 @@
     ctx.fillRect(0, 0, W, H);
 
     if (award) {
-      ctx.strokeStyle = 'rgba(194, 160, 94, 0.14)';
+      ctx.strokeStyle = 'rgba(168, 176, 188, 0.14)';
       ctx.lineWidth = 0.8;
       for (var t = 0; t < 12; t++) {
         var ta = (t * 30 - 90) * Math.PI / 180;

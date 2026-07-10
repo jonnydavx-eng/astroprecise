@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#07070A" />
+  <title>Offline · Astro Precise</title>
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    html,body{margin:0;min-height:100%;background:#07070A;color:#E8EBF0;font-family:Georgia,serif}
+    main{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;box-sizing:border-box}
+    h1{font-size:1.35rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin:0 0 1rem}
+    p{max-width:36ch;line-height:1.65;color:#C8CDD6;margin:0 0 1.5rem}
+    a{color:#7EC8E8;text-decoration:none;border:1px solid rgba(126,200,232,.35);padding:.75rem 1.25rem;border-radius:999px;font-size:.85rem}
+    a:hover{background:rgba(126,200,232,.08)}
+  </style>
+</head>
+<body>
+  <main id="main-content">
+    <h1>You’re offline</h1>
+    <p>The living sky needs a connection for the first visit. Once cached, the orrery and charts work without the network.</p>
+    <a href="index.html">Try home</a>
+  </main>
+  <script>
+    if (navigator.onLine) location.replace('index.html');
+    window.addEventListener('online', function () { location.replace('index.html'); });
+  </script>
+</body>
+</html>

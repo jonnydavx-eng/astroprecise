@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#0C1016}</style>
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Freeze the real sky of any date — zenith star, light-cone story, free share card. Computed privately in your browser from VSOP87 astronomy. Birth, anniversary, memorial, or any night that mattered." />
   <title>Moment — Freeze any date’s sky | Astro Precise</title>
@@ -27,17 +27,18 @@
   <meta name="twitter:title" content="Moment — Freeze any date’s sky | Astro Precise" />
   <meta name="twitter:description" content="Real zenith star + light-cone story + free share card. Computed in your browser." />
   <meta name="twitter:image" content="https://astroprecise.app/img/og/moment.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
-  <link rel="stylesheet" href="css/moment-page.css?v=656" id="ap-css-moment" />
+  <link rel="stylesheet" href="css/moment-page.css?v=682" id="ap-css-moment" />
   <style>
     body.ap-moment-page{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body.ap-moment-page .site-header{min-height:var(--nav-height,72px);contain:layout style;}
     body.ap-moment-page .mom-hero h1{min-height:1.15em;font-family:var(--font-display);}
-    body.ap-moment-page .mom-plate{min-height:280px;}
+    /* Form-first: no large gallery reserve in hero (art lives under the form) */
+    body.ap-moment-page .mom-plate{min-height:200px;}
   </style>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
   <script src="js/defer-page-css.js" defer></script>
@@ -88,21 +89,14 @@
         <p class="mom-hero__eyebrow">✦ Keep the sky ✦</p>
         <h1 id="page-title">Moment</h1>
         <p class="mom-hero__sub">
-          Freeze the real sky of any night that mattered — birth, first date, wedding, memorial, or a quiet custom date.
-          Free private card on your device. Premium pack when you want it on the wall.
+          Freeze any night that mattered — birth, first date, wedding, memorial.
+          Free private card on your device.
         </p>
         <span class="mom-privacy-seal">
           <span class="mom-privacy-seal__glyph" aria-hidden="true">⌖</span>
           Private · VSOP87 · free card · no account
         </span>
-        <figure class="mom-hero__gallery mom-hero__gallery--solo">
-          <picture>
-            <source type="image/webp" srcset="img/moment/hero-framed.webp?v=656" />
-            <img src="img/moment/hero-framed.jpg?v=656" width="1200" height="900" alt="Framed Moment sky print on a gallery wall — example lifestyle render" decoding="async" fetchpriority="high" />
-          </picture>
-          <figcaption>Free card uses the same void-and-brass + 3D engine texture language.</figcaption>
-        </figure>
-        <p class="mom-hero__jump"><a href="#mom-form-title">Freeze a sky below ↓</a></p>
+        <p class="mom-hero__jump"><a href="#mom-form-title">Start with date &amp; place ↓</a></p>
       </div>
     </section>
 
@@ -114,7 +108,7 @@
       <button type="button" class="mom-chip" data-kind="custom" aria-pressed="false">Custom</button>
     </div>
 
-    <section class="mom-studio" aria-labelledby="mom-form-title">
+    <section class="mom-studio" aria-labelledby="mom-form-title" id="mom-studio">
       <div class="mom-plate">
         <h2 class="mom-plate__title" id="mom-form-title">Build your Moment</h2>
         <p class="mom-plate__hint">Date and place are required. Time defaults to noon if you leave it blank (honest on the card).</p>
@@ -148,6 +142,15 @@
         </form>
       </div>
     </section>
+
+    <!-- Lifestyle teaser AFTER form (v682 form-first — never buries date/place) -->
+    <figure class="mom-gallery-teaser mom-hero__gallery mom-hero__gallery--solo" id="mom-gallery-teaser">
+      <picture>
+        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=682" />
+        <img src="img/moment/hero-framed.jpg?v=682" width="800" height="600" alt="Framed Moment sky print on a gallery wall — example lifestyle render" decoding="async" loading="lazy" />
+      </picture>
+      <figcaption>Free card uses the same void-and-silver + engine plate language.</figcaption>
+    </figure>
 
     <details class="mom-deeper">
       <summary class="mom-deeper__sum">How it works · free vs pack</summary>
@@ -189,7 +192,8 @@
             Separation in degrees is always shown — never claimed as a perfect coincidence.
           </p>
           <div class="mom-engine-window" id="mom-engine-window" hidden>
-            <img id="mom-engine-window-img" src="" alt="" width="160" height="160" />
+            <!-- Placeholder earth.webp until JS sets the occasion plate (empty src was loading moment.html as an image) -->
+            <img id="mom-engine-window-img" src="img/engine/earth.webp" alt="" width="160" height="160" decoding="async" />
             <p class="mom-engine-window__cap" id="mom-engine-window-cap"></p>
           </div>
           <div class="mom-keep">
@@ -223,7 +227,7 @@
   </main>
 
   <footer class="site-footer" role="contentinfo">
-    <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#A89C84);font-size:0.85rem">
+    <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
       <p style="margin:0 0 0.5rem"><a href="index.html">Home</a> · <a href="chart.html">Chart</a> · <a href="ephemeris.html">Sky</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
       <p style="margin:0">© Astro Precise · entertainment &amp; education · astronomy computed in-browser</p>
     </div>

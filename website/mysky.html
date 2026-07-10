@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark" />
+  <style>html{background:#07070A}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Sky — Your Cosmic Dashboard | Astro Precise</title>
+  <meta name="description" content="My Sky hub: cast your chart, watch the sky, keep Moments, open Daily — one dashboard for the Astro Precise spine. Private, free tools first." />
+  <link rel="canonical" href="https://astroprecise.app/mysky.html" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="My Sky — Astro Precise" />
+  <meta property="og:description" content="Your charts, Moments, and live sky in one hub. Free tools first." />
+  <meta property="og:url" content="https://astroprecise.app/mysky.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#07070A" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/mysky-page.css?v=680" id="ap-css-mysky" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=680" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-logo-aurora.css?v=680" id="ap-css-logo-aurora" />
+  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=683" id="ap-css-visual-clarity" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=683" id="ap-css-model-stage" />
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function loadFonts(){if(navigator.webdriver||document.getElementById('ap-css-fonts'))return;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';document.head.appendChild(l);}window.addEventListener('scroll',loadFonts,{once:true,passive:true});window.addEventListener('pointerdown',loadFonts,{once:true,passive:true});if(typeof deferMainCss==='function')deferMainCss();if(typeof deferPageCss==='function'){deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/ap-motion.css','ap-css-motion');}});</script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Astro Precise — My Sky","url":"https://astroprecise.app/mysky.html","applicationCategory":"LifestyleApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Hub for free chart, sky, Moments, and daily sky tools.","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"}}
+  </script>
+</head>
+<!--
+  SAFE INTEGRATION RULES
+  - Uses shared site-header + ap-page-boot (same chrome as Moment/Chart pages)
+  - Does NOT load three.min.js or orrery-cinematic (no dual-Three with home ESM)
+  - Visual: production marketing cinema + engine stills (real brand art)
+  - Live 3D: link to home / explore which own the production WebGL path
+-->
+<body class="ap-no-nav-enter ap-mysky-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="ephemeris.html" class="navbar__link">Sky</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
+            <a href="cosmic-story.html" class="navbar__link">Readings</a>
+            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+          </noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <header class="mysky-hero">
+      <p class="mysky-hero__eyebrow">Observatory · Private on your device</p>
+      <h1>My Sky</h1>
+      <p class="mysky-hero__sub">
+        One hub for the free spine: cast your chart, watch the sky, keep a Moment, return Daily — then go deeper when you want.
+      </p>
+    </header>
+
+    <div class="mysky-grid">
+      <section class="mysky-card" aria-labelledby="mysky-visual-title">
+        <h2 id="mysky-visual-title">The living sky</h2>
+        <p>
+          Same brand art that powers the homepage hero — engine stills and the cinema system plate.
+          Interactive photoreal WebGL lives on Home and Explore (one Three.js stack, no conflicts).
+        </p>
+        <figure class="mysky-cinema">
+          <picture>
+            <source type="image/webp" srcset="img/marketing-system-cinema-silver.jpg" />
+            <img
+              src="img/marketing-system-cinema-silver.jpg"
+              width="1200"
+              height="675"
+              alt="Cinematic solar system still from Astro Precise — Earth with brass orbital rings, outer planets, sun"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </picture>
+          <figcaption class="mysky-cinema__caption">Brand cinema plate · same sky language as the hero</figcaption>
+        </figure>
+
+        <div class="mysky-engine-grid" aria-label="Engine captures">
+          <figure>
+            <img src="img/engine/earth.webp" width="256" height="256" alt="Earth from the Astro Precise engine" loading="lazy" decoding="async" />
+            <figcaption>Earth</figcaption>
+          </figure>
+          <figure>
+            <img src="img/engine/saturn.webp" width="256" height="256" alt="Saturn from the engine" loading="lazy" decoding="async" />
+            <figcaption>Saturn</figcaption>
+          </figure>
+          <figure>
+            <img src="img/engine/jupiter.webp" width="256" height="256" alt="Jupiter from the engine" loading="lazy" decoding="async" />
+            <figcaption>Jupiter</figcaption>
+          </figure>
+          <figure>
+            <img src="img/engine/mars.webp" width="256" height="256" alt="Mars from the engine" loading="lazy" decoding="async" />
+            <figcaption>Mars</figcaption>
+          </figure>
+          <figure>
+            <img src="img/engine/sun.webp" width="256" height="256" alt="Sun from the engine" loading="lazy" decoding="async" />
+            <figcaption>Sun</figcaption>
+          </figure>
+          <figure>
+            <img src="img/engine/earth-moon.webp" width="256" height="256" alt="Earth and Moon from the engine" loading="lazy" decoding="async" />
+            <figcaption>Earth · Moon</figcaption>
+          </figure>
+        </div>
+
+        <div class="btn-row" style="margin-top:1rem">
+          <a class="mysky-cta mysky-cta--primary" href="index.html#heroChapter">Open live hero orrery</a>
+          <a class="mysky-cta mysky-cta--ghost" href="explore.html">Explore 3D model</a>
+        </div>
+        <p class="mysky-note">
+          Why no second WebGL here: the homepage already owns the flagship engine. My Sky is the map; Home/Explore are the instrument.
+        </p>
+      </section>
+
+      <aside class="mysky-side" aria-label="Around the living model">
+        <section class="mysky-card">
+          <h2>00 · Explore</h2>
+          <p>Full-viewport 3D orrery — drag Earth to Cosmos. Same engine as Home.</p>
+          <a class="mysky-cta mysky-cta--primary" href="explore.html">Open Explore 3D</a>
+        </section>
+        <section class="mysky-card">
+          <h2>01 · Cast</h2>
+          <p>Natal chart to the minute — free, private, on your device.</p>
+          <a class="mysky-cta mysky-cta--ghost" href="chart.html">Cast free chart</a>
+        </section>
+        <section class="mysky-card">
+          <h2>02 · Sky</h2>
+          <p>Tonight’s sky instrument — Moon, planets, mood where you are.</p>
+          <a class="mysky-cta mysky-cta--ghost" href="ephemeris.html">Open The Sky</a>
+        </section>
+        <section class="mysky-card">
+          <h2>03 · Keep</h2>
+          <p>Freeze any night that mattered as a Moment card.</p>
+          <a class="mysky-cta mysky-cta--ghost" href="moment.html">Open Moment</a>
+        </section>
+        <section class="mysky-card">
+          <h2>04 · Daily</h2>
+          <p>Today’s real sky weather — not a generic Sun-sign column.</p>
+          <a class="mysky-cta mysky-cta--ghost" href="horoscope.html">Daily horoscope</a>
+        </section>
+        <section class="mysky-card">
+          <h2>05 · Shop</h2>
+          <p>Deep Reading and print-ready plates when you want a keepsake.</p>
+          <a class="mysky-cta mysky-cta--ghost" href="shop.html#deep-reading">Browse shop</a>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
+      <p style="margin:0 0 0.5rem">
+        <a href="explore.html">Explore</a> ·
+        <a href="index.html">Home</a> ·
+        <a href="chart.html">Chart</a> ·
+        <a href="ephemeris.html">Sky</a> ·
+        <a href="horoscope.html">Daily</a> ·
+        <a href="moment.html">Moment</a> ·
+        <a href="shop.html">Shop</a> ·
+        <a href="privacy.html">Privacy</a>
+      </p>
+      <p style="margin:0">© Astro Precise · entertainment &amp; education · astronomy on-device</p>
+    </div>
+  </footer>
+
+  <script src="js/ap-safe-dom.js" defer></script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){if(window.AP_PAGE_BOOT)AP_PAGE_BOOT.load();});</script>
+  <script src="js/cosmos.js" defer></script>
+</body>
+</html>

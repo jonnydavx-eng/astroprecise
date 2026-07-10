@@ -1,0 +1,144 @@
+/**
+ * Astro Precise — Silver / Aurora logo system (rebuild 2026-07-09)
+ * Animated instrument mark + wordmark. PRM-safe.
+ */
+
+/* ── Wordmark ── */
+.logo-text,
+.masthead-wordmark,
+.footer-brand__logo-text {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.logo-text__precise,
+.logo-text i,
+.wordmark-precise {
+  color: var(--ap-aurora, #7EC8E8) !important;
+  font-style: normal !important;
+  font-weight: 500;
+  background: linear-gradient(
+    120deg,
+    #A8B0BC 0%,
+    #7EC8E8 40%,
+    #E8EBF0 55%,
+    #7EC8E8 70%,
+    #A8B0BC 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ap-logo-shimmer 6s ease-in-out infinite;
+}
+.wordmark-astro {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.92em;
+}
+
+/* Homepage masthead wordmark (often separate classes) */
+.masthead-logo .wordmark-astro,
+.masthead-logo .wordmark-precise {
+  font-family: Inter, system-ui, sans-serif;
+}
+.masthead-logo .wordmark-astro {
+  letter-spacing: 0.22em;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ap-silver, #C8CDD6) !important;
+  text-transform: uppercase;
+}
+.masthead-logo .wordmark-precise {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.12em;
+  margin-left: 0.15em;
+}
+
+/* ── Logomark: force silver/aurora on SVG (inline + img) ── */
+.logo-mark,
+.navbar__logo-icon img,
+.footer-brand__logo-mark img,
+.masthead-logo .logo-mark {
+  filter: none;
+}
+/* Inline SVG gold → silver via CSS filters on common hard-coded strokes:
+   when mark uses currentColor, color drives it */
+.masthead-logo .logo-mark,
+.logo-mark {
+  color: var(--ap-chrome, #A8B0BC);
+}
+.masthead-logo .logo-mark [stroke="#A8B0BC"],
+.masthead-logo .logo-mark [stroke="#7EC8E8"],
+.logo-mark [stroke="#A8B0BC"] {
+  stroke: var(--ap-chrome, #A8B0BC) !important;
+}
+.masthead-logo .logo-mark [fill="#7EC8E8"],
+.masthead-logo .logo-mark [fill="#A8B0BC"] {
+  fill: var(--ap-aurora, #7EC8E8) !important;
+}
+.masthead-logo .logo-mark [fill="#E8EBF0"] {
+  fill: var(--ap-silver-bright, #E8EBF0) !important;
+}
+
+/* Soft aurora glow pulse on mark */
+.masthead-logo .logo-mark,
+.navbar__logo-icon,
+.footer-brand__logo-mark {
+  animation: ap-logo-glow 4.5s ease-in-out infinite;
+  transform-origin: center;
+}
+.masthead-logo:hover .logo-mark,
+.navbar__logo:hover .navbar__logo-icon {
+  animation: ap-logo-glow-fast 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(126, 200, 232, 0.45));
+}
+
+/* Slow ring rotate on homepage mark (subtle instrument feel) */
+.masthead-logo .logo-mark {
+  overflow: visible;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .masthead-logo .logo-mark circle:first-of-type {
+    transform-origin: 24px 24px;
+    animation: ap-logo-ring 28s linear infinite;
+  }
+}
+
+@keyframes ap-logo-shimmer {
+  0%, 100% { background-position: 100% 50%; }
+  50% { background-position: 0% 50%; }
+}
+@keyframes ap-logo-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(126, 200, 232, 0.15)); }
+  50% { filter: drop-shadow(0 0 8px rgba(126, 200, 232, 0.4)); }
+}
+@keyframes ap-logo-glow-fast {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(126, 200, 232, 0.3)); }
+  50% { filter: drop-shadow(0 0 14px rgba(126, 200, 232, 0.65)); }
+}
+@keyframes ap-logo-ring {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark-precise,
+  .logo-text__precise,
+  .logo-text i,
+  .masthead-logo .logo-mark,
+  .navbar__logo-icon,
+  .footer-brand__logo-mark,
+  .masthead-logo .logo-mark circle:first-of-type {
+    animation: none !important;
+  }
+  .wordmark-precise,
+  .logo-text__precise,
+  .logo-text i {
+    -webkit-text-fill-color: var(--ap-aurora, #7EC8E8);
+    background: none;
+    color: var(--ap-aurora, #7EC8E8) !important;
+  }
+}

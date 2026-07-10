@@ -7,14 +7,14 @@
     </radialGradient>
     <radialGradient id="sr-sun" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#F1EAD6"/>
-      <stop offset="20%" stop-color="#D8B978"/>
-      <stop offset="44%" stop-color="#CDAE6A"/>
+      <stop offset="20%" stop-color="#C8CDD6"/>
+      <stop offset="44%" stop-color="#7EC8E8"/>
       <stop offset="72%" stop-color="rgba(194,160,94,0.26)"/>
       <stop offset="100%" stop-color="rgba(194,160,94,0)"/>
     </radialGradient>
     <linearGradient id="sr-gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#D8B978"/>
-      <stop offset="52%" stop-color="#CDAE6A"/>
+      <stop offset="0%" stop-color="#C8CDD6"/>
+      <stop offset="52%" stop-color="#7EC8E8"/>
       <stop offset="100%" stop-color="#A98A4E"/>
     </linearGradient>
     <linearGradient id="sr-scrim" x1="0" y1="0" x2="0" y2="1">
@@ -82,7 +82,7 @@
     <!-- faint spine -->
     <line x1="0" y1="120" x2="0" y2="780" stroke="rgba(194,160,94,0.30)" stroke-width="1.4"/>
     <!-- 12 monthly tick marks -->
-    <g stroke="#C2A05E" stroke-width="1.6" opacity="0.6">
+    <g stroke="#A8B0BC" stroke-width="1.6" opacity="0.6">
       <line x1="-12" y1="120" x2="12" y2="120"/>
       <line x1="-12" y1="180" x2="12" y2="180"/>
       <line x1="-12" y1="240" x2="12" y2="240"/>
@@ -98,7 +98,7 @@
     </g>
     <!-- highlighted "return" marker -->
     <line x1="-20" y1="240" x2="20" y2="240" stroke="url(#sr-gold)" stroke-width="3.4"/>
-    <circle cx="0" cy="240" r="9" fill="none" stroke="#CDAE6A" stroke-width="2"/>
+    <circle cx="0" cy="240" r="9" fill="none" stroke="#7EC8E8" stroke-width="2"/>
     <circle cx="0" cy="240" r="3.4" fill="#F1EAD6"/>
   </g>
 
@@ -107,7 +107,7 @@
 
   <!-- title block -->
   <g text-anchor="middle" font-family="'Cinzel', 'Cormorant Garamond', Georgia, 'Times New Roman', serif">
-    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#CDAE6A" opacity="0.85">&#10022; &#160; YOUR BIRTHDAY SKY</text>
+    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#7EC8E8" opacity="0.85">&#10022; &#160; YOUR BIRTHDAY SKY</text>
     <text x="800" y="760" font-size="122" font-weight="600" fill="url(#sr-gold)" letter-spacing="2">Your Solar Return</text>
     <text x="800" y="818" font-size="40" font-style="italic" fill="#ECE6D8" opacity="0.86" font-family="'Cormorant Garamond', Georgia, 'Times New Roman', serif">The sky of your next birthday, read</text>
     <text x="800" y="868" font-size="22" letter-spacing="9" fill="#969EAC" opacity="0.8">INSTANT PDF &#183; REAL VSOP87</text>

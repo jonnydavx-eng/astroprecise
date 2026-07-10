@@ -38,6 +38,16 @@ _June 2026. Paste-ready for scheduling in Postiz. Pairs with `CONTENT-PLAN.md` (
 
 ## Day 1 — "You're not just your Sun sign" (cold-open hook)
 
+## Day NEW — Moment keepsake (gift funnel)
+
+- **Platforms:** TikTok + IG Reels + Pinterest
+- **Hook:** *Keep the night it mattered.*
+- **Format:** 15s — freeze Moment form → zenith star card → framed wall mockup.
+- **CTA:** Free Moment card — link in bio → moment.html
+- **Assets:** img/og/moment.jpg, product-moment-pack, hero-framed
+- **Hashtags:** #AstroPrecise #Moment #WearYourSky #PrivateAstrology
+
+---
 - **Platforms:** TikTok + Instagram Reels
 - **Hook / headline:** *If your Sun sign is all you know, you've read one line of a whole book.*
 - **Format:** Short video (15–20s). Chart wheel draws on screen; three rows highlight in sequence — Sun, Moon, Rising.
@@ -195,6 +205,16 @@ _June 2026. Paste-ready for scheduling in Postiz. Pairs with `CONTENT-PLAN.md` (
 
 ## Day 10 — "Nobody has ever had your sky" + the time-travel orrery (the awe beat)
 
+## Day NEW — Moment keepsake (gift funnel)
+
+- **Platforms:** TikTok + IG Reels + Pinterest
+- **Hook:** *Keep the night it mattered.*
+- **Format:** 15s — freeze Moment form → zenith star card → framed wall mockup.
+- **CTA:** Free Moment card — link in bio → moment.html
+- **Assets:** img/og/moment.jpg, product-moment-pack, hero-framed
+- **Hashtags:** #AstroPrecise #Moment #WearYourSky #PrivateAstrology
+
+---
 - **Platforms:** TikTok + Instagram Reels + Pinterest
 - **Hook / headline:** *At the exact minute you were born, the planets were in an arrangement that has never repeated and never will.*
 - **Format:** Short video (20–25s). Screen-recording of the time-travel orrery (orrery3d) spinning to a specific date/time and freezing, then the chart wheel locking in.
@@ -212,6 +232,16 @@ _June 2026. Paste-ready for scheduling in Postiz. Pairs with `CONTENT-PLAN.md` (
 
 ## Day 11 — "Read me for filth" (POV / spicy, honest)
 
+## Day NEW — Moment keepsake (gift funnel)
+
+- **Platforms:** TikTok + IG Reels + Pinterest
+- **Hook:** *Keep the night it mattered.*
+- **Format:** 15s — freeze Moment form → zenith star card → framed wall mockup.
+- **CTA:** Free Moment card — link in bio → moment.html
+- **Assets:** img/og/moment.jpg, product-moment-pack, hero-framed
+- **Hashtags:** #AstroPrecise #Moment #WearYourSky #PrivateAstrology
+
+---
 - **Platforms:** TikTok + Instagram Reels + X
 - **Hook / headline:** *Cast your full chart and let it read you for filth.*
 - **Format:** Short video (20s), POV / trending-audio. First-person scroll through a freshly cast real chart with reaction text overlays. Entertainment-framed roast of the self, not of the viewer.
@@ -231,6 +261,16 @@ _June 2026. Paste-ready for scheduling in Postiz. Pairs with `CONTENT-PLAN.md` (
 
 ## Day 12 — "Why birth TIME matters" + email capture (the list builder)
 
+## Day NEW — Moment keepsake (gift funnel)
+
+- **Platforms:** TikTok + IG Reels + Pinterest
+- **Hook:** *Keep the night it mattered.*
+- **Format:** 15s — freeze Moment form → zenith star card → framed wall mockup.
+- **CTA:** Free Moment card — link in bio → moment.html
+- **Assets:** img/og/moment.jpg, product-moment-pack, hero-framed
+- **Hashtags:** #AstroPrecise #Moment #WearYourSky #PrivateAstrology
+
+---
 - **Platforms:** TikTok + Instagram Reels + X
 - **Hook / headline:** *Your Sun sign lasts a month. Your Rising changes every two hours. Go find your birth certificate.*
 - **Format:** Short video (15–20s). Clock advances; the Rising sign on a real wheel rotates through signs as the time changes.
@@ -249,6 +289,16 @@ _June 2026. Paste-ready for scheduling in Postiz. Pairs with `CONTENT-PLAN.md` (
 
 ## Day 13 — "Today's sky" daily + synastry tease (variety + share mechanic)
 
+## Day NEW — Moment keepsake (gift funnel)
+
+- **Platforms:** TikTok + IG Reels + Pinterest
+- **Hook:** *Keep the night it mattered.*
+- **Format:** 15s — freeze Moment form → zenith star card → framed wall mockup.
+- **CTA:** Free Moment card — link in bio → moment.html
+- **Assets:** img/og/moment.jpg, product-moment-pack, hero-framed
+- **Hashtags:** #AstroPrecise #Moment #WearYourSky #PrivateAstrology
+
+---
 - **Platforms:** TikTok + Instagram Reels + Pinterest
 - **Hook / headline:** *Real compatibility isn't "are our Suns compatible." It's two whole charts overlaid.*
 - **Format:** Short video (20s). Screen-recording of compatibility.html — two charts in, synastry result, then the shareable private link generated.
@@ -267,6 +317,16 @@ _June 2026. Paste-ready for scheduling in Postiz. Pairs with `CONTENT-PLAN.md` (
 
 ## Day 14 — "This is AstroPrecise" (brand close + soft shop)
 
+## Day NEW — Moment keepsake (gift funnel)
+
+- **Platforms:** TikTok + IG Reels + Pinterest
+- **Hook:** *Keep the night it mattered.*
+- **Format:** 15s — freeze Moment form → zenith star card → framed wall mockup.
+- **CTA:** Free Moment card — link in bio → moment.html
+- **Assets:** img/og/moment.jpg, product-moment-pack, hero-framed
+- **Hashtags:** #AstroPrecise #Moment #WearYourSky #PrivateAstrology
+
+---
 - **Platforms:** TikTok + Instagram Reels + X + Pinterest
 - **Hook / headline:** *We built astrology that respects you: free, real-math, and it never takes your birth data.*
 - **Format:** Short video (20–25s). Slow brand reveal — mark over the orrery, key promises as text beats; end on the "wear your sky" poster mockup (light-cone / chart-art card).
@@ -303,3 +363,4 @@ _June 2026. Paste-ready for scheduling in Postiz. Pairs with `CONTENT-PLAN.md` (
 | 14 | This is AstroPrecise (brand + soft shop) | All | **Email → shop** |
 
 **Mix check:** "today's sky" dailies (Days 3, 13) · zenith-star hook (Day 4) · precession "your real sign" (Day 2) · Reddit value post (Day 6) · Pinterest poster pin (Day 7) · "read me for filth" (Day 11) · 2026 sky tie-in / Saturn in Aries (Day 8) · email capture (Day 12) · brand + shop close (Day 14). Every day routes through `links.html`: free tool → email → shop, in that order.
+

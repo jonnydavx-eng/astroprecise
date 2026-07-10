@@ -1,0 +1,225 @@
+/**
+ * Astro Precise — Visual clarity · Jet Silver Aurora
+ */
+:root {
+  --ap-vc-cream: #E8EBF0;
+  --ap-vc-cream-dim: #C8CDD6;
+  --ap-vc-muted: #8B919C;
+  --ap-vc-accent: #7EC8E8;
+  --ap-vc-brass: #7EC8E8;
+  --ap-vc-sun: #E8DCC8;
+  --ap-vc-void: #07070A;
+  --ap-vc-raised: #18181E;
+  --ap-vc-cta: #6AB0FF;
+  --ap-vc-cta-ink: #050508;
+  --ap-vc-rim: rgba(200, 205, 214, 0.18);
+  --ap-vc-rim-strong: rgba(126, 200, 232, 0.4);
+}
+
+body.ap-enchanted,
+body.page-chart,
+body.page-horoscope,
+body.page-shop,
+body.page-instrument,
+body.page-compat,
+body.ap-moment-page,
+body.ap-mysky-page,
+body.ap-no-nav-enter,
+body.ap-award-511 {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif !important;
+  color: var(--ap-vc-cream);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.ap-enchanted h1,
+body.page-chart h1,
+body.page-horoscope h1,
+body.page-shop h1,
+body.page-instrument h1,
+body.ap-moment-page h1,
+body.ap-mysky-page h1,
+body.ap-enchanted .ap-chapter-title,
+body.ap-enchanted .chart-hero h1,
+body.ap-enchanted .shop-hero h1,
+body.ap-award-511 h1 {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
+  font-weight: 500;
+  color: var(--ap-vc-cream) !important;
+  letter-spacing: 0.02em;
+  line-height: 1.12;
+  text-wrap: balance;
+  font-size: clamp(2rem, 4vw, 3.25rem) !important;
+}
+
+body .ap-display-kicker,
+body .chart-hero__eyebrow,
+body .mom-hero__eyebrow,
+body .mysky-hero__eyebrow,
+body .ap-ev__eyebrow,
+body .shop-hero__eyebrow,
+body .horoscope-hero__eyebrow,
+body [class*="eyebrow"] {
+  font-family: Inter, system-ui, sans-serif !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: var(--ap-vc-accent) !important;
+  opacity: 1 !important;
+}
+
+body.page-chart main p,
+body.page-horoscope main p,
+body.page-shop main p,
+body.page-instrument main p,
+body.ap-moment-page main p,
+body.ap-mysky-page main p,
+body.page-chart .chart-hero__sub,
+body.page-horoscope .hero-sub,
+body.ap-moment-page .mom-hero__sub,
+body.ap-mysky-page .mysky-hero__sub,
+body .ap-chapter-lead,
+body .dept-list-dek {
+  font-family: Inter, system-ui, sans-serif !important;
+  font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  color: var(--ap-vc-cream-dim) !important;
+  max-width: 42rem;
+}
+
+body .ap-ev__lede,
+body .mysky-note,
+body .dept-list-next,
+body .ap-text-muted,
+body .text-muted {
+  color: var(--ap-vc-muted) !important;
+  font-size: 0.94rem !important;
+}
+
+body main a:not(.mysky-cta):not(.ap-ev__btn):not(.btn-press):not(.navbar__link):not(.ap-ev-card) {
+  color: var(--ap-vc-accent);
+  text-underline-offset: 0.15em;
+}
+body main a:not(.mysky-cta):not(.ap-ev__btn):not(.btn-press):hover {
+  color: var(--ap-vc-cream);
+}
+
+body .mysky-card,
+body .ap-card,
+body .chart-form-card,
+body .card,
+body .shopc-card,
+body .dept-list-item {
+  background: linear-gradient(165deg, rgba(22, 22, 30, 0.85) 0%, rgba(0, 0, 0, 0.65) 100%) !important;
+  border: 1px solid var(--ap-vc-rim) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(232, 235, 240, 0.05) !important;
+  backdrop-filter: blur(10px);
+}
+
+body .mysky-card h2,
+body .ap-card h2,
+body .ap-ev__title {
+  color: var(--ap-vc-cream) !important;
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-weight: 500 !important;
+}
+
+body .btn-press,
+body .mysky-cta--primary,
+body .ap-ev__btn--primary,
+body button[type="submit"].primary,
+body .chart-cta-primary,
+body a.btn-primary {
+  background: linear-gradient(135deg, #4A90E0 0%, #7EC8E8 48%, #C8D8E8 100%) !important;
+  color: var(--ap-vc-cta-ink) !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(126, 200, 232, 0.3) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  transition: transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+body .btn-press:hover,
+body .mysky-cta--primary:hover,
+body .ap-ev__btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(126, 200, 232, 0.42) !important;
+}
+
+body .mysky-cta--ghost,
+body .ap-ev__btn--ghost {
+  border: 1px solid var(--ap-vc-rim-strong) !important;
+  color: var(--ap-vc-accent) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+body .navbar__link {
+  letter-spacing: 0.08em !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  color: var(--ap-vc-muted) !important;
+}
+body .navbar__link:hover,
+body .navbar__link.is-active,
+body .navbar__link[aria-current="page"] {
+  color: var(--ap-vc-accent) !important;
+}
+
+body .ap-ev--compact .ap-ev__lede { display: none; }
+body .ap-ev-card {
+  background: rgba(8, 8, 12, 0.94) !important;
+  border-color: var(--ap-vc-rim) !important;
+}
+
+body.page-chart input,
+body.page-chart select,
+body.page-chart textarea,
+body.ap-moment-page input,
+body.ap-moment-page select {
+  color: var(--ap-vc-cream) !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  border-color: rgba(200, 205, 214, 0.22) !important;
+  font-size: 1rem !important;
+}
+body.page-chart input::placeholder {
+  color: var(--ap-vc-muted) !important;
+}
+body.page-chart label,
+body.page-chart .field-label {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.1em !important;
+  color: var(--ap-vc-muted) !important;
+  font-weight: 600 !important;
+}
+
+body.ap-award-511 .hero-copy h1 {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  color: var(--ap-vc-cream) !important;
+}
+body.ap-award-511 .hero-copy p,
+body.ap-award-511 .hero-copy .lede {
+  font-family: Inter, system-ui, sans-serif !important;
+  color: var(--ap-vc-cream-dim) !important;
+  font-size: 1.02rem !important;
+  line-height: 1.55 !important;
+}
+
+body.page-chart main::before,
+body.page-horoscope main::before,
+body.page-shop main::before,
+body.ap-mysky-page main::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(126, 200, 232, 0.07), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 30%, rgba(100, 90, 160, 0.05), transparent 50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .btn-press:hover,
+  body .mysky-cta--primary:hover { transform: none; }
+}

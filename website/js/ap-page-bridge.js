@@ -19,7 +19,10 @@
     'lifepath.html': 'Life Path',
     'moonphase.html': 'Moon',
     'quiz.html': 'Quiz',
-    'profile.html': 'Profile'
+    'profile.html': 'Profile',
+    'mysky.html': 'My Sky',
+    'moment.html': 'Moment',
+    'explore.html': 'Explore'
   };
 
   var bound = false;

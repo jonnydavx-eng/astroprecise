@@ -7,13 +7,13 @@
     </radialGradient>
     <radialGradient id="np-core" cx="50%" cy="50%" r="50%">
       <stop offset="0%" stop-color="#F1EAD6"/>
-      <stop offset="34%" stop-color="#CDAE6A"/>
+      <stop offset="34%" stop-color="#7EC8E8"/>
       <stop offset="70%" stop-color="rgba(194,160,94,0.26)"/>
       <stop offset="100%" stop-color="rgba(194,160,94,0)"/>
     </radialGradient>
     <linearGradient id="np-gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#D8B978"/>
-      <stop offset="52%" stop-color="#CDAE6A"/>
+      <stop offset="0%" stop-color="#C8CDD6"/>
+      <stop offset="52%" stop-color="#7EC8E8"/>
       <stop offset="100%" stop-color="#A98A4E"/>
     </linearGradient>
     <linearGradient id="np-silver" x1="0" y1="0" x2="0" y2="1">
@@ -63,7 +63,7 @@
     <circle r="150" fill="none" stroke="rgba(194,160,94,0.16)" stroke-width="1" stroke-dasharray="3 7"/>
 
     <!-- 12 zodiac division spokes (thin gold ticks) -->
-    <g stroke="#C2A05E" stroke-width="1.2" opacity="0.5">
+    <g stroke="#A8B0BC" stroke-width="1.2" opacity="0.5">
       <line x1="0" y1="-306" x2="0" y2="-210"/>
       <line transform="rotate(30)"  x1="0" y1="-306" x2="0" y2="-210"/>
       <line transform="rotate(60)"  x1="0" y1="-306" x2="0" y2="-210"/>
@@ -79,7 +79,7 @@
     </g>
 
     <!-- aspect connector lines (planet nodes on r=250) -->
-    <g stroke="#C2A05E" stroke-width="1" fill="none" opacity="0.40">
+    <g stroke="#A8B0BC" stroke-width="1" fill="none" opacity="0.40">
       <!-- Sun(15°) -> Saturn(205°) -->
       <line x1="64.7" y1="-241.5" x2="-105.7" y2="226.5"/>
       <!-- Moon(70°) -> Jupiter(255°) -->
@@ -93,19 +93,19 @@
     <!-- planet nodes (geometric gold), positioned on mid-radius r=250 -->
     <g>
       <!-- Sun 15° -->
-      <circle cx="64.7" cy="-241.5" r="9" fill="#CDAE6A" stroke="#D8B978" stroke-width="1"/>
+      <circle cx="64.7" cy="-241.5" r="9" fill="#7EC8E8" stroke="#C8CDD6" stroke-width="1"/>
       <!-- Moon 70° -->
       <circle cx="234.9" cy="-85.5" r="7" fill="#D6D2C8" stroke="#9AA6B4" stroke-width="1"/>
       <!-- Mercury 130° -->
-      <circle cx="191.5" cy="160.7" r="6" fill="#C2A05E"/>
+      <circle cx="191.5" cy="160.7" r="6" fill="#A8B0BC"/>
       <!-- Mars 180° -->
-      <circle cx="0" cy="250" r="7" fill="#CDAE6A"/>
+      <circle cx="0" cy="250" r="7" fill="#7EC8E8"/>
       <!-- Saturn 205° -->
-      <circle cx="-105.7" cy="226.5" r="6.5" fill="#A98A4E" stroke="#C2A05E" stroke-width="1"/>
+      <circle cx="-105.7" cy="226.5" r="6.5" fill="#A98A4E" stroke="#A8B0BC" stroke-width="1"/>
       <!-- Jupiter 255° -->
-      <circle cx="-64.7" cy="241.5" r="8" fill="#D8B978"/>
+      <circle cx="-64.7" cy="241.5" r="8" fill="#C8CDD6"/>
       <!-- Venus 315° -->
-      <circle cx="-176.8" cy="-176.8" r="6.5" fill="#C2A05E"/>
+      <circle cx="-176.8" cy="-176.8" r="6.5" fill="#A8B0BC"/>
     </g>
 
     <!-- soft central glow -->
@@ -114,7 +114,7 @@
     <!-- engraved compass-rose / 4-point star at center -->
     <g opacity="0.95">
       <polygon points="0,-60 11,-11 60,0 11,11 0,60 -11,11 -60,0 -11,-11" fill="url(#np-gold)"/>
-      <polygon points="0,-34 24,-24 34,0 24,24 0,34 -24,24 -34,0 -24,-24" fill="none" stroke="#D8B978" stroke-width="1" opacity="0.6"/>
+      <polygon points="0,-34 24,-24 34,0 24,24 0,34 -24,24 -34,0 -24,-24" fill="none" stroke="#C8CDD6" stroke-width="1" opacity="0.6"/>
       <circle r="5" fill="#F1EAD6"/>
     </g>
   </g>
@@ -122,7 +122,7 @@
   <!-- scrim + title -->
   <rect y="470" width="1600" height="430" fill="url(#np-scrim)"/>
   <g text-anchor="middle" font-family="'Cinzel','Cormorant Garamond',Georgia,'Times New Roman',serif">
-    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#CDAE6A" opacity="0.85" font-family="'Cinzel',Georgia,serif">&#10022; &#160; FINE-ART PRINT</text>
+    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#7EC8E8" opacity="0.85" font-family="'Cinzel',Georgia,serif">&#10022; &#160; FINE-ART PRINT</text>
     <text x="800" y="758" font-size="122" font-weight="600" fill="url(#np-gold)" letter-spacing="2">Your Natal Sky</text>
     <text x="800" y="816" font-size="40" font-style="italic" fill="#ECE6D8" opacity="0.86">The exact wheel of your first breath</text>
     <text x="800" y="866" font-size="21" letter-spacing="8" fill="#969EAC" opacity="0.8" font-family="'Cinzel',Georgia,serif">REAL VSOP87 &#183; 250GSM MUSEUM MATTE</text>

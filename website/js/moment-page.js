@@ -291,7 +291,7 @@
       : (moment.kind === 'birth' ? 'Enter a past birth date for the light-cone story.' : 'Future or “now” moments skip the light-cone age line.');
 
     var preview = $('mom-card-host');
-    preview.innerHTML = '<p class="mom-card-loading" style="color:var(--mom-muted,#A89C84);font-size:0.9rem;">Painting card with engine sky plate…</p>';
+    preview.innerHTML = '<p class="mom-card-loading" style="color:var(--mom-muted,#8B919C);font-size:0.9rem;">Painting card with engine sky plate…</p>';
     state.lastMoment = moment;
 
     // Occasion texture window (3D still library — not live WebGL)

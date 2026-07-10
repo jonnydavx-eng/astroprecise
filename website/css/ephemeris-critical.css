@@ -8,8 +8,8 @@
   left: var(--space-4, 1rem);
   z-index: 10001;
   padding: 0.65rem 1.1rem;
-  background: var(--gold, #C2A05E);
-  color: var(--void, #0C1016);
+  background: var(--gold, #A8B0BC);
+  color: var(--void, #07070A);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;

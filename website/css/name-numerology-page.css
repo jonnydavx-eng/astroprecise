@@ -56,15 +56,15 @@ body:has(.nn-hero) .eng-i {
 }
 
 :root {
-      --nn-gold: var(--gold, #C2A05E);
+      --nn-gold: var(--gold, #A8B0BC);
       --nn-gold-pale: #e8c96a;
       --nn-white: #f0e8d8;
       /* Body ink lifted toward parchment (~90%) so section prose has something
          to push against instead of reading as one muted low-contrast texture. */
-      --nn-ink: #ECE6D8;
+      --nn-ink: #E8EBF0;
       --nn-silver: #C6BEAC;      /* was #A89E88 — raised for readable body copy */
       --nn-silver-dim: #A2A9BE;  /* was #8891aa — raised for captions/labels    */
-      --nn-brass-hair: rgba(194,160,94,0.30); /* single calm brass hairline */
+      --nn-brass-hair: rgba(168,176,188,0.30); /* single calm brass hairline */
       --nn-surface: rgba(22, 28, 42,0.68);
       --nn-border: rgba(168, 158, 136,0.12);
       --nn-radius-xl: 20px;
@@ -131,16 +131,16 @@ body:has(.nn-hero) .eng-i {
       font-size: 1rem;
       letter-spacing: 0.06em;
       font-weight: 600;
-      color: #0C1016;
-      background: linear-gradient(135deg, #C2A05E 0%, #EFE3C0 100%);
+      color: #07070A;
+      background: linear-gradient(135deg, #A8B0BC 0%, #E8EBF0 100%);
       border: none;
       border-radius: 999px;
       padding: 0.85rem 2.2rem;
       cursor: pointer;
       transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 0 18px rgba(194, 160, 94,0.22);
+      box-shadow: 0 0 18px rgba(168, 176, 188,0.22);
     }
-    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(194, 160, 94,0.45); }
+    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(168, 176, 188,0.45); }
     .nn-form-hint {
       font-size: 0.68rem;
       color: var(--nn-silver-dim);
@@ -212,7 +212,7 @@ body:has(.nn-hero) .eng-i {
       font-size: 0.55rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #0C1016;
+      color: #07070A;
       background: var(--nn-gold);
       border-radius: 999px;
       padding: 2px 9px;
@@ -503,16 +503,16 @@ body:has(.nn-hero) .eng-i {
       border-radius: 999px;
       /* Terracotta — reserved for the single primary action on the page */
       color: #FBEFE6;
-      background: linear-gradient(135deg, #D97B52 0%, #E4996F 100%);
+      background: linear-gradient(135deg, #6AB0FF 0%, #E4996F 100%);
       box-shadow:
-        0 10px 26px rgba(217,123,82,0.34),
-        0 0 0 1px rgba(217,123,82,0.35) inset;
+        0 10px 26px rgba(106,176,255,0.34),
+        0 0 0 1px rgba(106,176,255,0.35) inset;
     }
     body:has(.nn-hero) .nn-submit-btn:hover {
       transform: translateY(-2px);
       box-shadow:
-        0 16px 38px rgba(217,123,82,0.48),
-        0 0 0 1px rgba(217,123,82,0.5) inset;
+        0 16px 38px rgba(106,176,255,0.48),
+        0 0 0 1px rgba(106,176,255,0.5) inset;
     }
     body:has(.nn-hero) .nn-submit-btn .eng-i { width: 1.1em; height: 1.1em; }
 
@@ -524,7 +524,7 @@ body:has(.nn-hero) .eng-i {
         0 32px 80px rgba(0,0,0,0.45);
     }
     body:has(.nn-hero) .nn-form-card::before {
-      background: linear-gradient(90deg, transparent, rgba(194,160,94,0.45), transparent);
+      background: linear-gradient(90deg, transparent, rgba(168,176,188,0.45), transparent);
     }
 
     /* ── 3. Mid-page void: the meanings grid reserves 920px for JS-injected

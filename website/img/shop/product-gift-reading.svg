@@ -12,13 +12,13 @@
       <stop offset="100%" stop-color="rgba(194,160,94,0)"/>
     </radialGradient>
     <linearGradient id="gr-gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#D8B978"/>
-      <stop offset="52%" stop-color="#CDAE6A"/>
+      <stop offset="0%" stop-color="#C8CDD6"/>
+      <stop offset="52%" stop-color="#7EC8E8"/>
       <stop offset="100%" stop-color="#A98A4E"/>
     </linearGradient>
     <linearGradient id="gr-ribbon" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#D8B978"/>
-      <stop offset="50%" stop-color="#C2A05E"/>
+      <stop offset="0%" stop-color="#C8CDD6"/>
+      <stop offset="50%" stop-color="#A8B0BC"/>
       <stop offset="100%" stop-color="#A98A4E"/>
     </linearGradient>
     <linearGradient id="gr-card" x1="0" y1="0" x2="0" y2="1">
@@ -64,10 +64,10 @@
   </g>
 
   <!-- small constellation, upper area -->
-  <g stroke="#C2A05E" stroke-width="1" fill="none" opacity="0.40">
+  <g stroke="#A8B0BC" stroke-width="1" fill="none" opacity="0.40">
     <polyline points="1000,120 1110,90 1190,170 1300,140"/>
   </g>
-  <g fill="#D8B978">
+  <g fill="#C8CDD6">
     <circle cx="1000" cy="120" r="2.2"/>
     <circle cx="1110" cy="90" r="2.2"/>
     <circle cx="1190" cy="170" r="2.2"/>
@@ -92,7 +92,7 @@
       <rect x="-156" y="-186" width="312" height="322" rx="9" fill="none" stroke="rgba(194,160,94,0.30)" stroke-width="1"/>
 
       <!-- tiny inner constellation on the card -->
-      <g stroke="#C2A05E" stroke-width="0.9" fill="none" opacity="0.5">
+      <g stroke="#A8B0BC" stroke-width="0.9" fill="none" opacity="0.5">
         <polyline points="-110,-150 -64,-118 -88,-70 -34,-92 22,-128"/>
       </g>
       <g fill="#D6D2C8">
@@ -114,7 +114,7 @@
         <polygon points="0,-150 18,-18 150,0 18,18 0,150 -18,18 -150,0 -18,-18" fill="url(#gr-glow)"/>
       </g>
       <polygon points="0,-128 17,-17 128,0 17,17 0,128 -17,17 -128,0 -17,-17" fill="url(#gr-gold)"/>
-      <polygon points="0,-72 28,-28 72,0 28,28 0,72 -28,28 -72,0 -28,-28" fill="none" stroke="#D8B978" stroke-width="1.1" opacity="0.7"/>
+      <polygon points="0,-72 28,-28 72,0 28,28 0,72 -28,28 -72,0 -28,-28" fill="none" stroke="#C8CDD6" stroke-width="1.1" opacity="0.7"/>
       <circle r="9" fill="#F1EAD6"/>
     </g>
 
@@ -123,7 +123,7 @@
       <line x1="0" y1="-204" x2="0" y2="154"/>
       <line x1="-174" y1="-25" x2="174" y2="-25"/>
     </g>
-    <g stroke="#D8B978" stroke-width="1" fill="none" opacity="0.45">
+    <g stroke="#C8CDD6" stroke-width="1" fill="none" opacity="0.45">
       <line x1="0" y1="-200" x2="0" y2="150"/>
       <line x1="-170" y1="-25" x2="170" y2="-25"/>
     </g>
@@ -135,13 +135,13 @@
       <!-- right loop -->
       <path d="M0,0 C56,-56 120,-50 120,-10 C120,26 60,30 0,6 Z" fill="url(#gr-ribbon)" stroke="#A98A4E" stroke-width="1" opacity="0.95"/>
       <!-- inner loop creases -->
-      <path d="M0,0 C-44,-30 -82,-26 -100,-8" fill="none" stroke="#D8B978" stroke-width="0.9" opacity="0.5"/>
-      <path d="M0,0 C44,-30 82,-26 100,-8" fill="none" stroke="#D8B978" stroke-width="0.9" opacity="0.5"/>
+      <path d="M0,0 C-44,-30 -82,-26 -100,-8" fill="none" stroke="#C8CDD6" stroke-width="0.9" opacity="0.5"/>
+      <path d="M0,0 C44,-30 82,-26 100,-8" fill="none" stroke="#C8CDD6" stroke-width="0.9" opacity="0.5"/>
       <!-- bow tails -->
       <path d="M-6,4 C-26,46 -42,62 -58,82 C-40,72 -22,58 -2,18 Z" fill="url(#gr-ribbon)" opacity="0.9"/>
       <path d="M6,4 C26,46 42,62 58,82 C40,72 22,58 2,18 Z" fill="url(#gr-ribbon)" opacity="0.9"/>
       <!-- bow knot -->
-      <ellipse cx="0" cy="0" rx="15" ry="19" fill="url(#gr-gold)" stroke="#D8B978" stroke-width="1"/>
+      <ellipse cx="0" cy="0" rx="15" ry="19" fill="url(#gr-gold)" stroke="#C8CDD6" stroke-width="1"/>
       <circle r="4" fill="#F1EAD6"/>
     </g>
   </g>
@@ -149,7 +149,7 @@
   <!-- scrim + title -->
   <rect y="470" width="1600" height="430" fill="url(#gr-scrim)"/>
   <g text-anchor="middle" font-family="'Cinzel','Cormorant Garamond',Georgia,'Times New Roman',serif">
-    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#CDAE6A" opacity="0.85" font-family="'Cinzel',Georgia,serif">&#10022; &#160; A GIFT WRITTEN IN THE STARS</text>
+    <text x="800" y="648" font-size="32" letter-spacing="13" fill="#7EC8E8" opacity="0.85" font-family="'Cinzel',Georgia,serif">&#10022; &#160; A GIFT WRITTEN IN THE STARS</text>
     <text x="800" y="758" font-size="122" font-weight="600" fill="url(#gr-gold)" letter-spacing="2">Gift a Reading</text>
     <text x="800" y="816" font-size="40" font-style="italic" fill="#ECE6D8" opacity="0.86">Their chart, read and given</text>
     <text x="800" y="866" font-size="21" letter-spacing="8" fill="#969EAC" opacity="0.8" font-family="'Cinzel',Georgia,serif">INSTANT PDF &#183; SENT WITH A NOTE</text>

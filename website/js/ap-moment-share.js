@@ -1,6 +1,6 @@
 /**
  * Astro Precise — Moment share-card painter
- * Observatory 2026 tokens only (void #0C1016 + brass #C2A05E).
+ * Observatory 2026 tokens only (void #07070A + brass #A8B0BC).
  * Builds square PNG keepsakes: zenith + light-cone story for any civil date.
  * Requires: LightCone, StarCatalog, AstroEphemeris (for JD helpers via caller).
  */
@@ -8,15 +8,15 @@
   'use strict';
 
   var CARD_BASE = 1080;
-  var BRASS = '#C2A05E';
-  var BRASS_A55 = 'rgba(194, 160, 94, 0.55)';
-  var BRASS_A22 = 'rgba(194, 160, 94, 0.22)';
-  var BRASS_A30 = 'rgba(194, 160, 94, 0.30)';
-  var PARCH = '#ECE6D8';
-  var PARCH_DIM = '#BEB298';
-  var PARCH_MUTED = '#A89C84';
-  var VOID = '#0C1016';
-  var GOLD_GLOW = 'rgba(194, 160, 94, 0.55)';
+  var BRASS = '#A8B0BC';
+  var BRASS_A55 = 'rgba(168, 176, 188, 0.55)';
+  var BRASS_A22 = 'rgba(168, 176, 188, 0.22)';
+  var BRASS_A30 = 'rgba(168, 176, 188, 0.30)';
+  var PARCH = '#E8EBF0';
+  var PARCH_DIM = '#C8CDD6';
+  var PARCH_MUTED = '#8B919C';
+  var VOID = '#07070A';
+  var GOLD_GLOW = 'rgba(168, 176, 188, 0.55)';
 
   function cardExportPx() {
     return (global.RafCore && global.RafCore.cardExportSize)
@@ -88,7 +88,7 @@
     x.fillStyle = BRASS;
     x.fill();
     x.textAlign = 'left';
-    x.fillStyle = '#EFE3C0';
+    x.fillStyle = '#E8EBF0';
     x.fillText(label, dotX + dotGap, y + 7);
     x.textAlign = 'center';
   }
@@ -254,7 +254,7 @@
       }
       x.beginPath();
       x.arc(cx, panelCy, half, 0, Math.PI * 2);
-      x.strokeStyle = 'rgba(194, 160, 94, 0.28)';
+      x.strokeStyle = 'rgba(168, 176, 188, 0.28)';
       x.lineWidth = 2;
       x.stroke();
       x.strokeStyle = BRASS_A30;
@@ -282,7 +282,7 @@
     }
 
     // Meta line
-    x.fillStyle = '#EFE3C0';
+    x.fillStyle = '#E8EBF0';
     x.font = '26px Georgia, "Times New Roman", serif';
     var parts = [];
     if (s.con) parts.push(s.con);

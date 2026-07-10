@@ -22,13 +22,14 @@
     { key: 'pisces', name: 'Pisces' },
   ];
 
-  // Spine: Cast → Sky → Keep → Daily → Reading → Shop
+  // Model-first spine: Explore → Cast → Sky → Keep → Daily → Hub → Shop
   var FOOTER_TOOLS = [
+    { href: 'explore.html', label: 'Explore 3D', icon: '<span aria-hidden="true">✦</span>' },
     { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
     { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
-    { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">✦</span>' },
+    { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">◇</span>' },
     { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
-    { href: 'cosmic-story.html', label: 'Readings', icon: '<span aria-hidden="true">◇</span>' },
+    { href: 'mysky.html', label: 'My Sky', icon: '<span aria-hidden="true">◎</span>' },
     { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
   ];
 
@@ -46,7 +47,7 @@
 
   function findFooter() {
     return document.querySelector(
-      'footer.footer, footer.site-footer, footer[role="contentinfo"]:not(.ap-lite-footer)'
+      'footer.footer, footer.site-footer, footer.night-watch, footer[role="contentinfo"]:not(.ap-lite-footer), footer[aria-label*="footer" i]'
     );
   }
 
@@ -59,16 +60,43 @@
     return !!(
       footer.querySelector('.footer__links') ||
       footer.querySelector('.footer__grid') ||
+      footer.querySelector('.footer-grid') ||
       footer.querySelector('.footer-nav') ||
       footer.querySelector('.footer-inner:not([data-ap-footer-model])') ||
       !footer.querySelector('.footer-nav-col')
     );
   }
 
+  /** Homepage night-watch uses .footer-col / h3 — patch spine in place. */
+  function patchNightWatchSpine() {
+    var footer = document.querySelector('footer.night-watch');
+    if (!footer) return;
+    var cols = footer.querySelectorAll('.footer-col');
+    for (var i = 0; i < cols.length; i++) {
+      var h = cols[i].querySelector('h3');
+      if (!h) continue;
+      var t = (h.textContent || '').trim();
+      if (!/tools|around the model/i.test(t)) continue;
+      h.textContent = 'Around the model';
+      var ul = cols[i].querySelector('ul');
+      if (!ul) return;
+      ul.innerHTML =
+        '<li><a href="explore.html">Explore 3D</a></li>' +
+        '<li><a href="chart.html">Cast chart</a></li>' +
+        '<li><a href="ephemeris.html">Sky instrument</a></li>' +
+        '<li><a href="moment.html">Moment (Keep)</a></li>' +
+        '<li><a href="horoscope.html">Daily</a></li>' +
+        '<li><a href="mysky.html">My Sky hub</a></li>' +
+        '<li><a href="shop.html">Shop</a></li>';
+      cols[i].setAttribute('data-ap-footer-spine', '1');
+      return;
+    }
+  }
+
   function toolsColHtml() {
     return ''
-      + '<div class="footer-nav-col" role="group" aria-label="Tools navigation">'
-      + '<h2 class="footer-nav-col__title">Tools</h2><ul>'
+      + '<div class="footer-nav-col" role="group" aria-label="Around the living model">'
+      + '<h2 class="footer-nav-col__title">Around the model</h2><ul>'
       + FOOTER_TOOLS.map(function (t) {
         return '<li><a href="' + t.href + '">' + t.icon + ' ' + t.label + '</a></li>';
       }).join('')
@@ -186,12 +214,15 @@
     }).join('');
   }
 
-  /** Keep Tools column on spine even when footer model already present. */
+  /** Keep Tools column on model spine even when footer model already present. */
   function patchToolsCol() {
     var cols = document.querySelectorAll('footer .footer-nav-col');
     for (var i = 0; i < cols.length; i++) {
       var title = cols[i].querySelector('.footer-nav-col__title');
-      if (!title || !/tools/i.test(title.textContent || '')) continue;
+      var t = (title && title.textContent) || '';
+      if (!title || !/tools|around the model/i.test(t)) continue;
+      title.textContent = 'Around the model';
+      cols[i].setAttribute('aria-label', 'Around the living model');
       var ul = cols[i].querySelector('ul');
       if (ul) ul.innerHTML = toolsListHtml();
       return;
@@ -201,6 +232,7 @@
   function boot() {
     inject();
     patchToolsCol();
+    patchNightWatchSpine();
     patchZodiacStrip();
   }
 

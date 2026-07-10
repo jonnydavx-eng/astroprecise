@@ -63,14 +63,14 @@
   // Kept the WARM.* name to minimise churn; the VALUES are the live cool tokens
   // from css/ap-palette-2026.css (canvas/SVG can't read CSS vars, so mirror them).
   const WARM = {
-    void:      '#0C1016',   // --ap-void-deep
+    void:      '#07070A',   // --ap-void-deep
     plate:     '#1A2230',   // --ap-void-raised
-    gold:      '#C2A05E',   // --ap-gold-core
-    goldDim:   '#8C7544',   // --ap-gold-shadow
-    parchment: '#ECE6D8',   // --ap-gold-parchment / text-primary
-    silver:    '#BEB298',   // --ap-text-secondary
-    silverDim: '#A89C84',   // --ap-text-muted
-    hairline:  'rgba(194,160,94,0.22)',   // brass hairline
+    gold:      '#A8B0BC',   // silver chrome (was brass)
+    goldDim:   '#6A7078',   // silver shadow
+    parchment: '#E8EBF0',   // starlight text
+    silver:    '#C8CDD6',   // --ap-text-secondary
+    silverDim: '#8B919C',   // --ap-text-muted
+    hairline:  'rgba(168,176,188,0.22)',   // brass hairline
     mauve:     '#4A7580',   // was oxblood — now the water element accent (faint nebula rim)
     synastry:  '#B87898',
     transit:   '#9DB88A'
@@ -146,10 +146,10 @@
   // but pulled off the retired hot-gold/electric-violet family. Sun = brass;
   // outers (Uranus/Neptune/Pluto/Lilith) recede to silver-cool / element accents.
   const PLANET_COLORS = {
-    Sun:'#D8B978',      Moon:'#C6BCA4',    Mercury:'#BFB39A', Venus:'#C89BA2',
-    Mars:'#B85A42',     Jupiter:'#C2A05E', Saturn:'#C8A86B',  Uranus:'#A6AEB8',
+    Sun:'#C8CDD6',      Moon:'#C6BCA4',    Mercury:'#BFB39A', Venus:'#C89BA2',
+    Mars:'#B85A42',     Jupiter:'#A8B0BC', Saturn:'#C8A86B',  Uranus:'#A6AEB8',
     Neptune:'#4A7580',  Pluto:'#8A7A6A',   Chiron:'#8E9E78',  Lilith:'#8E86A0',
-    NorthNode:'#CDAE6A', SouthNode:'#A89C84', Ascendant:'#ECE6D8', Midheaven:'#ECE6D8'
+    NorthNode:'#7EC8E8', SouthNode:'#8B919C', Ascendant:'#E8EBF0', Midheaven:'#E8EBF0'
   };
 
   const PLANET_ORDER = [
@@ -164,7 +164,7 @@
   // Colours unchanged (already warm/on-brand); opacity cascade lives in
   // ASPECT_OPACITY below (majors ~0.75–0.85, minors ~0.38–0.45).
   const ASPECT_STYLE = {
-    Conjunction:     { color:'#ECE6D8', width:1.8, dash:null  },   /* parchment (neutral) */
+    Conjunction:     { color:'#E8EBF0', width:1.8, dash:null  },   /* parchment (neutral) */
     Opposition:      { color:'#C25A4E', width:1.8, dash:null  },   /* muted red — element-fire family */
     Trine:           { color:'#4A7580', width:1.8, dash:null  },   /* water accent (harmonious) */
     Square:          { color:'#B0703E', width:1.8, dash:null  },   /* muted amber, clear of the terracotta CTA */
@@ -323,7 +323,7 @@
     const rg = el('radialGradient', { id: idPrefix + 'cgrad', cx:'50%', cy:'50%', r:'50%' });
     [[0,   '#1A2230', 1],
      [0.6, '#121826', 1],
-     [1,   '#0C1016', 1]
+     [1,   '#07070A', 1]
     ].forEach(([o, c, op]) => {
       rg.appendChild(el('stop', { offset: o * 100 + '%', 'stop-color': c, 'stop-opacity': op }));
     });
@@ -362,7 +362,7 @@
 
     // Engraved outer ring gradient
     const ringG = el('linearGradient', { id: idPrefix + 'ringG', x1: '0%', y1: '0%', x2: '100%', y2: '100%' });
-    [[0, '#ECE6D8'], [0.45, WARM.gold], [1, WARM.goldDim]].forEach(([o, c]) => {
+    [[0, '#E8EBF0'], [0.45, WARM.gold], [1, WARM.goldDim]].forEach(([o, c]) => {
       ringG.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c }));
     });
     defs.appendChild(ringG);
@@ -1246,7 +1246,7 @@
     aDiv.className = 'ap-chart-legend__block';
     aDiv.innerHTML = '<div class="ap-chart-legend__title">Aspects</div>';
     [
-      ['Conjunction','☌','#ECE6D8'],['Opposition','☍','#C25A4E'],
+      ['Conjunction','☌','#E8EBF0'],['Opposition','☍','#C25A4E'],
       ['Trine','△','#4A7580'],['Square','□','#B0703E'],
       ['Sextile','⚹','#5A7A48'],['Minor','- -','#6B7280']
     ].forEach(([n, s, c]) => {
@@ -1547,7 +1547,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#CDAE6A;vertical-align:middle;margin-right:4px"></span><span style="color:#CDAE6A;font-weight:600">${name1}</span></span>` +
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7EC8E8;vertical-align:middle;margin-right:4px"></span><span style="color:#7EC8E8;font-weight:600">${name1}</span></span>` +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.synastry};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.synastry};font-weight:600">${name2}</span></span>`;
     container.appendChild(keyRow);
 
@@ -1566,7 +1566,7 @@
       return div;
     };
 
-    tables.appendChild(makeTableBlock(name1, '#CDAE6A', pos1, houses1));
+    tables.appendChild(makeTableBlock(name1, '#7EC8E8', pos1, houses1));
     tables.appendChild(makeTableBlock(name2, WARM.synastry, pos2, houses2));
     container.appendChild(tables);
   }
@@ -1638,7 +1638,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#CDAE6A;vertical-align:middle;margin-right:4px"></span><span style="color:#CDAE6A;font-weight:600">Natal</span></span>' +
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7EC8E8;vertical-align:middle;margin-right:4px"></span><span style="color:#7EC8E8;font-weight:600">Natal</span></span>' +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.transit};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.transit};font-weight:600">Transits</span></span>`;
     container.appendChild(keyRow);
 
@@ -1657,7 +1657,7 @@
       return div;
     };
 
-    tables.appendChild(makeBlock('NATAL PLANETS',   '#CDAE6A', natalPos, houses));
+    tables.appendChild(makeBlock('NATAL PLANETS',   '#7EC8E8', natalPos, houses));
     tables.appendChild(makeBlock('TRANSIT PLANETS', WARM.transit, tPos,
       (transitPositions && transitPositions.houses) || houses));
     container.appendChild(tables);

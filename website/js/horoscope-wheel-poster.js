@@ -163,13 +163,13 @@
     });
     g.appendChild(ns('line', {
       x1: 0, y1: 8, x2: 0, y2: -RING_R * 1.1,
-      stroke: 'rgba(194, 160, 94, 0.5)',
+      stroke: 'rgba(168, 176, 188, 0.5)',
       'stroke-width': '1.2',
       'stroke-dasharray': '3 5',
     }));
     g.appendChild(ns('circle', {
       cx: 0, cy: -RING_R * 1.04, r: 2.8,
-      fill: 'rgba(194, 160, 94, 0.9)',
+      fill: 'rgba(168, 176, 188, 0.9)',
     }));
     g.appendChild(ns('text', {
       y: -RING_R * 1.16,
@@ -177,7 +177,7 @@
       'font-family': 'system-ui,sans-serif',
       'font-size': '6.5',
       'letter-spacing': '0.16em',
-      fill: 'rgba(194, 160, 94, 0.72)',
+      fill: 'rgba(168, 176, 188, 0.72)',
       textContent: 'TODAY',
     }));
     return g;
@@ -190,13 +190,13 @@
     rotator.appendChild(ns('circle', {
       r: RING_R * 1.06,
       fill: 'none',
-      stroke: 'rgba(194, 160, 94, 0.14)',
+      stroke: 'rgba(168, 176, 188, 0.14)',
       'stroke-width': '1',
     }));
     rotator.appendChild(ns('circle', {
       r: RING_R,
       fill: 'rgba(12, 16, 22, 0.35)',
-      stroke: 'rgba(194, 160, 94, 0.42)',
+      stroke: 'rgba(168, 176, 188, 0.42)',
       'stroke-width': '1.8',
       class: 'wheel-poster__outer-ring',
     }));
@@ -219,7 +219,7 @@
       var ty2 = -rOut * Math.cos(rad);
       rotator.appendChild(ns('line', {
         x1: tx1, y1: ty1, x2: tx2, y2: ty2,
-        stroke: major ? 'rgba(194, 160, 94, 0.38)' : 'rgba(194, 160, 94, 0.14)',
+        stroke: major ? 'rgba(168, 176, 188, 0.38)' : 'rgba(168, 176, 188, 0.14)',
         'stroke-width': major ? '1.2' : '0.6',
       }));
     }
@@ -232,8 +232,8 @@
       var sector = ns('path', {
         class: 'wheel-sector',
         'data-el': s.el,
-        fill: 'rgba(194, 160, 94, 0.03)',
-        stroke: 'rgba(194, 160, 94, 0.08)',
+        fill: 'rgba(168, 176, 188, 0.03)',
+        stroke: 'rgba(168, 176, 188, 0.08)',
         'stroke-width': '0.5',
       });
       var x0 = r0 * Math.sin(a0);
@@ -269,7 +269,7 @@
       g.appendChild(ns('circle', {
         class: 'wheel-sign__glow',
         r: '32',
-        fill: 'rgba(194, 160, 94, 0.85)',
+        fill: 'rgba(168, 176, 188, 0.85)',
         'fill-opacity': '0',
       }));
       g.appendChild(ns('circle', {
@@ -282,7 +282,7 @@
         class: 'wheel-sign__ring',
         r: '20',
         fill: 'rgba(12, 16, 22, 0.72)',
-        stroke: 'rgba(194, 160, 94, 0.38)',
+        stroke: 'rgba(168, 176, 188, 0.38)',
         'stroke-width': '1.1',
       }));
       g.appendChild(ns('image', {
@@ -322,8 +322,8 @@
     }));
     g.appendChild(ns('circle', {
       r: '34',
-      fill: 'rgba(194, 160, 94, 0.08)',
-      stroke: 'rgba(194, 160, 94, 0.42)',
+      fill: 'rgba(168, 176, 188, 0.08)',
+      stroke: 'rgba(168, 176, 188, 0.42)',
       'stroke-width': '1.2',
     }));
     var star = ns('polygon', {
@@ -414,7 +414,7 @@
     // cool-brass system: harmonious = teal-brass, challenging = muted terracotta
     if (quality === 'h') return 'rgba(143, 184, 182, 0.55)';
     if (quality === 'x') return 'rgba(184, 90, 66, 0.48)';
-    return 'rgba(194, 160, 94, 0.62)';
+    return 'rgba(168, 176, 188, 0.62)';
   }
 
   function lonToLocal(lon, r) {

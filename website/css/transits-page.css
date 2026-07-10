@@ -79,7 +79,7 @@ html.ap-fonts-ready .page-transits .transits-hero h1 {
   flex: none;
 }
 .page-transits .ap-orb {
-  --c1: #efe3c0; --c2: #C2A05E;
+  --c1: #E8EBF0; --c2: #A8B0BC;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -103,7 +103,7 @@ html.ap-fonts-ready .page-transits .transits-hero h1 {
     0 0 14px -4px var(--c1);
 }
 .page-transits .ap-orb__glyph {
-  position: relative; z-index: 1; color: #0C1016; font-style: normal;
+  position: relative; z-index: 1; color: #07070A; font-style: normal;
   font-family: 'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
   font-variant-emoji: text;
   font-size: 1em; line-height: 1;
@@ -199,15 +199,15 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
 
 /* ── Transits page premium overrides (scoped — wins over deferred main.css) ── */
 .page-transits {
-  --void: #0C1016;
-  --gold: #C2A05E;
-  --gold-light: #EFE3C0;
+  --void: #07070A;
+  --gold: #A8B0BC;
+  --gold-light: #E8EBF0;
   --purple: #5C4A6E;
   --white: #E8E0D0;
   --silver: #A89E88;
   --silver-dim: #9A9084;
   --surface: rgba(22, 28, 42,0.55);
-  --border: rgba(194, 160, 94,0.10);
+  --border: rgba(168, 176, 188,0.10);
   --radius-xl: 20px;
   --radius-2xl: 28px;
 }
@@ -407,12 +407,12 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
     .planet-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-      border-color: rgba(194, 160, 94,0.28);
+      border-color: rgba(168, 176, 188,0.28);
     }
     .planet-card:hover::before { opacity: 0.85; }
     /* Semantic element accents — muted, engraved-brass family (on-brand hexes),
        NOT the off-brand rainbow. Cards ARE grouped by element in the markup. */
-    .planet-card { --card-accent: #C2A05E; }        /* brass base */
+    .planet-card { --card-accent: #A8B0BC; }        /* brass base */
     .planet-card--fire  { --card-accent: #B85A42; } /* terracotta-fired brass */
     .planet-card--earth { --card-accent: #5A7A48; } /* patinated earth */
     .planet-card--air   { --card-accent: #8A7A6A; } /* warm-grey brass */
@@ -427,7 +427,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       font-family: var(--font-display, 'Cinzel', serif);
       font-size: 0.72rem;
       font-weight: 700;
-      color: #CDAE6A;
+      color: #7EC8E8;
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -437,7 +437,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       font-family: var(--font-display, 'Cinzel', serif);
       font-size: 1.35rem;
       font-weight: 700;
-      color: #ECE6D8;
+      color: #E8EBF0;
       letter-spacing: 0.01em;
       line-height: 1.15;
       display: flex;
@@ -548,7 +548,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       transition: border-color 0.2s, background 0.2s;
     }
     .retrograde-item:hover {
-      border-color: rgba(194, 160, 94,0.25);
+      border-color: rgba(168, 176, 188,0.25);
       background: rgba(15,18,50,0.7);
     }
     @media (max-width: 500px) {
@@ -603,7 +603,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.35);
     }
-    .eclipse-card--solar { border-color: rgba(194, 160, 94,0.28); }
+    .eclipse-card--solar { border-color: rgba(168, 176, 188,0.28); }
     .eclipse-card--lunar { border-color: rgba(92, 74, 110,0.35); }
     .eclipse-type {
       display: block;
@@ -640,7 +640,7 @@ html.ap-audit-path .page-transits .live-date-badge__dot {
       padding: 1.4rem 1.6rem;
       transition: border-color 0.2s;
     }
-    .edu-card:hover { border-color: rgba(194, 160, 94,0.2); }
+    .edu-card:hover { border-color: rgba(168, 176, 188,0.2); }
     .edu-card__icon { font-size: 1.3rem; margin-bottom: 0.5rem; display: block; }
     .edu-card__title {
       font-family: var(--font-display, 'Cinzel', serif);

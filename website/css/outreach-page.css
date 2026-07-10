@@ -43,7 +43,7 @@ html.ap-fonts-ready .ot h1 {
 }
 
 body {
-  background: var(--ap-void-deep, #0C1016);
+  background: var(--ap-void-deep, #07070A);
   color: var(--ap-text-primary, #E8E0D0);
 }
 
@@ -57,7 +57,7 @@ body {
 .ot h1 {
   font-family: Cinzel, serif;
   font-size: 1.4rem;
-  color: var(--ap-gold-parchment, #EFE3C0);
+  color: var(--ap-gold-parchment, #E8EBF0);
   letter-spacing: 0.12em;
   margin: 0 0 0.25rem;
 }
@@ -83,7 +83,7 @@ body {
 .ot-tab {
   padding: 0.45rem 0.85rem;
   border-radius: 999px;
-  border: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
+  border: 1px solid var(--ap-gold-a40, rgba(168, 176, 188, 0.4));
   background: transparent;
   color: var(--ap-text-secondary, #A89E88);
   font-size: 0.75rem;
@@ -91,9 +91,9 @@ body {
 }
 
 .ot-tab.is-on {
-  background: var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
-  border-color: var(--ap-gold-core, #C2A05E);
-  color: var(--ap-gold-parchment, #EFE3C0);
+  background: var(--ap-gold-a12, rgba(168, 176, 188, 0.12));
+  border-color: var(--ap-gold-core, #A8B0BC);
+  color: var(--ap-gold-parchment, #E8EBF0);
 }
 
 .ot-panel { display: none; }
@@ -102,7 +102,7 @@ body {
 
 .ot-card {
   background: var(--ap-ip-surface, rgba(22, 28, 42, 0.58));
-  border: 1px solid var(--ap-gold-a22, rgba(194, 160, 94, 0.22));
+  border: 1px solid var(--ap-gold-a22, rgba(168, 176, 188, 0.22));
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 0.85rem;
@@ -110,7 +110,7 @@ body {
 
 .ot-card__title {
   font-size: 0.88rem;
-  color: var(--ap-gold-parchment, #EFE3C0);
+  color: var(--ap-gold-parchment, #E8EBF0);
   margin: 0 0 0.35rem;
   font-weight: 700;
 }
@@ -140,7 +140,7 @@ body {
 .ot-btn {
   padding: 0.4rem 0.8rem;
   border-radius: 8px;
-  border: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
+  border: 1px solid var(--ap-gold-a40, rgba(168, 176, 188, 0.4));
   background: var(--ap-void-mid, #121826);
   color: var(--ap-gold-bright, #D4B84A);
   font-size: 0.75rem;
@@ -149,8 +149,8 @@ body {
 }
 
 .ot-btn:hover {
-  border-color: var(--ap-gold-core, #C2A05E);
-  color: var(--ap-gold-parchment, #EFE3C0);
+  border-color: var(--ap-gold-core, #A8B0BC);
+  color: var(--ap-gold-parchment, #E8EBF0);
 }
 
 .ot-list {
@@ -169,8 +169,8 @@ body {
   left: 50%;
   transform: translateX(-50%);
   background: var(--ap-void-mid, #121826);
-  border: 1px solid var(--ap-gold-core, #C2A05E);
-  color: var(--ap-gold-parchment, #EFE3C0);
+  border: 1px solid var(--ap-gold-core, #A8B0BC);
+  color: var(--ap-gold-parchment, #E8EBF0);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   font-size: 0.75rem;
@@ -203,5 +203,5 @@ body {
 }
 
 .ot-foot a:hover {
-  color: var(--ap-link-hover, var(--ap-gold-parchment, #EFE3C0));
+  color: var(--ap-link-hover, var(--ap-gold-parchment, #E8EBF0));
 }

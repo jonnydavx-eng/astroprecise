@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#0C1016}</style>
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Today's readings for all 12 signs, measured against the real moving sky &mdash; live planetary positions computed in your browser. Free, no account." />
   <title>Daily Horoscope — Free, Computed from the Real Sky</title>
@@ -21,15 +21,15 @@
   <meta property="og:description" content="Today's readings for all 12 signs, measured against the real moving sky &mdash; live planetary positions computed in your browser. Free, no account." />
   <meta property="og:url" content="https://astroprecise.app/horoscope.html" />
   <link rel="canonical" href="https://astroprecise.app/horoscope.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <meta property="og:image:width" content="2560" />
   <meta property="og:image:height" content="1440" />
   <meta property="og:image:alt" content="The night sky computed live — Astro Precise daily horoscope" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Daily Horoscopes | Astro Precise" />
   <meta name="twitter:description" content="Today's readings for all 12 signs, measured against the real moving sky &mdash; live planetary positions computed in your browser. Free, no account." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-v576.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -57,6 +57,9 @@
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
   <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=680" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=683" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
   <link rel="stylesheet" href="css/ap-micro-delight.css?v=597" />
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=622" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
@@ -71,7 +74,7 @@
       font-weight: 700;
       line-height: 1.1;
       letter-spacing: 0.03em;
-      color: var(--ap-text-primary, #EFE3C0);
+      color: var(--ap-text-primary, #E8EBF0);
       margin-bottom: 0.6rem;
     }
     .sphere-selected-label {
@@ -276,12 +279,12 @@
                   <stop offset="72%" stop-color="#060a10"/>
                 </radialGradient>
                 <radialGradient id="sphere-poster-glow" cx="50%" cy="48%" r="44%">
-                  <stop offset="0%" stop-color="rgba(194, 160, 94,0.14)"/>
-                  <stop offset="100%" stop-color="rgba(194, 160, 94,0)"/>
+                  <stop offset="0%" stop-color="rgba(168, 176, 188,0.14)"/>
+                  <stop offset="100%" stop-color="rgba(168, 176, 188,0)"/>
                 </radialGradient>
                 <radialGradient id="sphere-poster-star" cx="50%" cy="50%" r="50%">
                   <stop offset="0%" stop-color="#F0D868"/>
-                  <stop offset="55%" stop-color="#C2A05E"/>
+                  <stop offset="55%" stop-color="#A8B0BC"/>
                   <stop offset="100%" stop-color="#B8962E"/>
                 </radialGradient>
               </defs>
@@ -327,7 +330,7 @@
               </div>
               <div class="srp-moon-wrap">
                 <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
-                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(194, 160, 94,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
+                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(168, 176, 188,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
                 <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
                   <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
                   <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon1"/></svg></span>
@@ -418,7 +421,7 @@
         <!-- Planet legend strip -->
         <div class="planet-legend" id="planet-legend" aria-label="Live planet positions" role="group">
           <span class="planet-legend__label">Planet positions (<abbr class="ap-gloss" title="Ecliptic longitude — a planet's position measured along the Sun's yearly path through the zodiac, 0–360°">ecliptic longitude</abbr>):</span>
-          <span class="pl-dot" style="--c:#C2A05E" aria-label="Sun position">☉ Sun · …</span>
+          <span class="pl-dot" style="--c:#A8B0BC" aria-label="Sun position">☉ Sun · …</span>
           <span class="pl-dot" style="--c:#C8D0E8" aria-label="Moon position">☽ Moon · …</span>
           <span class="pl-dot" style="--c:#3f7d76" aria-label="Mercury position">☿ Mercury · …</span>
           <span class="pl-dot" style="--c:#C77DFF" aria-label="Venus position">♀ Venus · …</span>
@@ -462,18 +465,14 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         SIGN GRID (collapsible fallback)
-    ============================================================ -->
+    <!-- Sign guides + email — collapsed by default (screenshot audit: page too long) -->
+    <details class="ap-more-sky" id="ap-daily-more">
+      <summary class="ap-more-sky__summary">Sign guides &amp; email updates</summary>
+      <div class="ap-more-sky__body">
     <section class="section" aria-labelledby="sign-guides-heading">
       <div class="container">
-        <!-- Primary sign grid moved to the hero (list-first). This section now
-             holds only the crawlable deep-dive guide links. -->
         <h2 class="section__title" id="sign-guides-heading" style="text-align:center;">Explore every sign in depth</h2>
-
-        <!-- Crawlable deep-dive guides -->
-        <div role="group" aria-label="Zodiac sign guides" style="margin-top:var(--space-10);text-align:center;">
-          <p style="font-size:var(--text-xs);letter-spacing:0.14em;text-transform:uppercase;color:var(--color-silver-dim);margin-bottom:var(--space-4);">Complete Sign Guides</p>
+        <div role="group" aria-label="Zodiac sign guides" style="margin-top:var(--space-6);text-align:center;">
           <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center;">
             <a href="aries.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="aries">Aries</a>
             <a href="taurus.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="taurus">Taurus</a>
@@ -489,22 +488,17 @@
             <a href="pisces.html" class="btn btn--ghost btn--sm ap-guide-link" data-sign="pisces">Pisces</a>
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- ============================================================
-         DAILY + MONTHLY EMAIL SUBSCRIPTION
-    ============================================================ -->
     <section class="section horoscope-subscribe" id="horoscope-subscribe" aria-labelledby="hs-heading">
       <div class="container">
         <div class="horoscope-subscribe__inner">
           <header class="section-header" style="margin-bottom:0;">
-            <p class="eyebrow">More coming soon</p>
-            <h2 class="section-title" id="hs-heading">Sign up for horoscopes &amp; what&rsquo;s next</h2>
+            <p class="eyebrow">Optional</p>
+            <h2 class="section-title" id="hs-heading">Email when you want it</h2>
             <p class="section-subtitle" style="margin-bottom:0;">
-              Daily &amp; monthly readings in your inbox — plus early word when wallpapers, deep readings &amp; new tools ship.
-              Only your email is sent; birth data stays on your device.
+              Daily or monthly in your inbox. Only email is sent; birth data stays on your device.
             </p>
           </header>
           <div class="horoscope-subscribe__grid">
@@ -535,18 +529,23 @@
               </div>
               <label for="hs-email">Email</label>
               <input type="email" id="hs-email" name="email" required placeholder="you@example.com" autocomplete="email" />
-              <button type="submit" class="btn btn--gold btn--sm"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get updates</button>
-              <p class="horoscope-subscribe__msg"><span class="ap-badge">Deterministic</span> Unsubscribe anytime. No account required.</p>
+              <button type="submit" class="btn btn--primary btn--sm">Get updates</button>
+              <p class="horoscope-subscribe__msg"><span class="ap-badge">Private</span> Unsubscribe anytime.</p>
             </form>
           </div>
           <p class="horoscope-subscribe__done" id="hs-done" role="status" aria-live="polite"></p>
         </div>
       </div>
     </section>
+      </div>
+    </details>
 
     <!-- ============================================================
          TODAY'S PLANETARY WEATHER
     ============================================================ -->
+    <details class="ap-more-sky" id="ap-daily-weather">
+      <summary class="ap-more-sky__summary">Planetary weather, Moon &amp; week ahead</summary>
+      <div class="ap-more-sky__body">
     <section class="section section--alt" aria-labelledby="sky-heading">
       <div class="container">
         <h2 class="section__title" id="sky-heading">Today's Planetary Weather</h2>
@@ -560,7 +559,7 @@
             <span>Void of Course Moon</span>
             <span id="void-moon-sign" style="color:var(--silver-dim);"></span>
           </div>
-          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(194, 160, 94,0.08);border:1px solid rgba(194, 160, 94,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
+          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(168, 176, 188,0.08);border:1px solid rgba(168, 176, 188,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
             <span id="ph-glyph" style="font-size:1rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>
             <span>Planetary Hour: </span><strong id="ph-name" style="color:var(--gold-light);">loading…</strong>
           </div>
@@ -731,6 +730,8 @@
         </div>
       </div>
     </section>
+      </div>
+    </details>
 
     <!-- Optional insight layer (BYOK off by default) -->
     <section class="container" aria-label="Optional chart insight" style="margin-top:var(--space-8);">
@@ -742,18 +743,19 @@
     ============================================================ -->
     <section class="section section--alt" aria-labelledby="deep-reading-closer-heading">
       <div class="container" style="text-align:center;">
-        <h2 class="section__title" id="deep-reading-closer-heading">Daily is step 04 on the path</h2>
+        <h2 class="section__title" id="deep-reading-closer-heading">Continue around the model</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">
-          <strong>Cast &rarr; Sky &rarr; Keep &rarr; Daily &rarr; Reading.</strong>
-          Today&rsquo;s sky is the habit loop. Freeze a night that mattered, or cast if you haven&rsquo;t yet.
+          <strong>Explore &rarr; Cast &rarr; Sky &rarr; Keep &rarr; Daily.</strong>
+          Today&rsquo;s sky is the habit loop. Open the 3D model, freeze a night, or cast if you haven&rsquo;t yet.
         </p>
         <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-2);">
           <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast your free chart
         </a>
         <div class="sign-cta-row" style="display:flex;gap:var(--space-3);flex-wrap:wrap;justify-content:center;margin-top:var(--space-5);">
+          <a href="explore.html" class="btn btn--primary">Explore 3D</a>
           <a href="moment.html" class="btn btn--outline">Keep a Moment</a>
-          <a href="cosmic-story.html" class="btn btn--ghost">Free reading sample</a>
-          <a href="shop.html#deep-reading" class="btn btn--ghost">Deep Reading</a>
+          <a href="ephemeris.html" class="btn btn--ghost">Sky instrument</a>
+          <a href="mysky.html" class="btn btn--ghost">My Sky hub</a>
         </div>
       </div>
     </section>
@@ -800,8 +802,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>

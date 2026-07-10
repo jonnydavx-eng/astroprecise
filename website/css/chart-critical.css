@@ -26,8 +26,8 @@
       left: var(--space-4, 1rem);
       z-index: 10001;
       padding: 0.65rem 1.1rem;
-      background: var(--gold, #C2A05E);
-      color: var(--void, #0C1016);
+      background: var(--gold, #A8B0BC);
+      color: var(--void, #07070A);
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
@@ -215,12 +215,12 @@
       justify-content: center;
       width: 52px; height: 52px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.2), rgba(92, 74, 110,0.15));
-      border: 1px solid rgba(194, 160, 94,0.35);
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.2), rgba(92, 74, 110,0.15));
+      border: 1px solid rgba(168, 176, 188,0.35);
       font-size: 1.4rem;
       color: var(--gold);
       margin-bottom: var(--space-4);
-      box-shadow: 0 0 24px rgba(194, 160, 94,0.15);
+      box-shadow: 0 0 24px rgba(168, 176, 188,0.15);
     }
     .form-glass__title {
       font-family: Georgia, 'Times New Roman', var(--font-display), serif;
@@ -259,15 +259,15 @@
       margin: 0 0 var(--space-5);
       padding: var(--space-3) var(--space-4);
       border-radius: var(--radius-lg, 12px);
-      border: 1px solid rgba(194, 160, 94, 0.30);
-      background: rgba(194, 160, 94, 0.07);
-      color: var(--ap-text-secondary, #BEB298);
+      border: 1px solid rgba(168, 176, 188, 0.30);
+      background: rgba(168, 176, 188, 0.07);
+      color: var(--ap-text-secondary, #C8CDD6);
       font-size: 0.82rem;
       line-height: 1.55;
       letter-spacing: 0.01em;
     }
     .chart-handoff-note__mark {
-      color: var(--ap-gold-bright, #CDAE6A);
+      color: var(--ap-gold-bright, #7EC8E8);
       margin-right: 0.4em;
       font-weight: 600;
     }
@@ -345,8 +345,8 @@
       margin: 0 0 var(--space-5);
       padding: var(--space-3) var(--space-4);
       border-radius: var(--radius-lg);
-      border: 1px solid rgba(194, 160, 94, 0.22);
-      background: rgba(194, 160, 94, 0.06);
+      border: 1px solid rgba(168, 176, 188, 0.22);
+      background: rgba(168, 176, 188, 0.06);
       font-size: 0.78rem;
       line-height: 1.55;
       color: var(--silver-dim);
@@ -367,8 +367,8 @@
       justify-content: center;
       width: 26px; height: 26px;
       border-radius: 50%;
-      background: rgba(194, 160, 94,0.15);
-      border: 1px solid rgba(194, 160, 94,0.35);
+      background: rgba(168, 176, 188,0.15);
+      border: 1px solid rgba(168, 176, 188,0.35);
       font-size: 0.6rem;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -387,7 +387,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, rgba(194, 160, 94,0.3), transparent);
+      background: linear-gradient(90deg, rgba(168, 176, 188,0.3), transparent);
     }
 
     /* ── Form groups ────────────────────────────────────────────── */
@@ -453,15 +453,15 @@
     }
     .time-btn__icon { font-size: 1.2rem; line-height: 1; }
     .time-btn:hover {
-      border-color: rgba(194, 160, 94,0.35);
+      border-color: rgba(168, 176, 188,0.35);
       background: rgba(28, 35, 50,0.7);
       color: var(--gold-pale);
     }
     .time-btn.active {
       border-color: var(--gold);
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.14), rgba(92, 74, 110,0.1));
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.14), rgba(92, 74, 110,0.1));
       color: var(--gold-pale);
-      box-shadow: 0 0 14px rgba(194, 160, 94,0.18);
+      box-shadow: 0 0 14px rgba(168, 176, 188,0.18);
     }
     @media (max-width: 480px) {
       .time-selector { grid-template-columns: repeat(3, 1fr); }
@@ -483,13 +483,13 @@
       position: relative;
     }
     .house-card:hover {
-      border-color: rgba(194, 160, 94,0.3);
+      border-color: rgba(168, 176, 188,0.3);
       background: rgba(28, 35, 50,0.65);
     }
     .house-card.active {
-      border-color: rgba(194, 160, 94,0.6);
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.1), rgba(92, 74, 110,0.08));
-      box-shadow: 0 0 20px rgba(194, 160, 94,0.1);
+      border-color: rgba(168, 176, 188,0.6);
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.1), rgba(92, 74, 110,0.08));
+      box-shadow: 0 0 20px rgba(168, 176, 188,0.1);
     }
     .house-card.active::after {
       content: '';
@@ -543,16 +543,16 @@
       transition: all var(--transition-fast);
     }
     .node-toggle__opt:hover .node-toggle__pill {
-      border-color: rgba(194, 160, 94,0.3);
+      border-color: rgba(168, 176, 188,0.3);
       background: rgba(28, 35, 50,0.65);
     }
     .node-toggle__opt input:checked + .node-toggle__pill {
-      border-color: rgba(194, 160, 94,0.6);
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.1), rgba(92, 74, 110,0.08));
-      box-shadow: 0 0 20px rgba(194, 160, 94,0.1);
+      border-color: rgba(168, 176, 188,0.6);
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.1), rgba(92, 74, 110,0.08));
+      box-shadow: 0 0 20px rgba(168, 176, 188,0.1);
     }
     .node-toggle__opt input:focus-visible + .node-toggle__pill {
-      box-shadow: 0 0 0 2px rgba(194, 160, 94,0.4);
+      box-shadow: 0 0 0 2px rgba(168, 176, 188,0.4);
     }
     .node-toggle__name {
       display: block;
@@ -577,14 +577,14 @@
       align-items: center;
       gap: var(--space-4);
       margin: var(--space-8) 0;
-      color: rgba(194, 160, 94,0.4);
+      color: rgba(168, 176, 188,0.4);
       font-size: 0.9rem;
     }
     .form-divider::before, .form-divider::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(194, 160, 94,0.2), transparent);
+      background: linear-gradient(90deg, transparent, rgba(168, 176, 188,0.2), transparent);
     }
 
     /* ── CTA buttons row ────────────────────────────────────────── */
@@ -669,9 +669,9 @@
       white-space: nowrap;
     }
     .btn--sample:hover {
-      border-color: rgba(194, 160, 94,0.4);
+      border-color: rgba(168, 176, 188,0.4);
       color: var(--gold-pale);
-      background: rgba(194, 160, 94,0.06);
+      background: rgba(168, 176, 188,0.06);
     }
 
     /* ── CLS reservations — wheel / results before JS paint ─────── */
@@ -898,39 +898,39 @@
     }
 
 /* Keepsake band — post-calc masterpiece path (ap-v649) */
-.chart-keepsake-band{display:flex;align-items:center;gap:1rem;margin:0.85rem 0 1.25rem;padding:0.9rem 1.1rem;border-radius:14px;border:1px solid rgba(194,160,94,.28);background:linear-gradient(145deg,rgba(26,34,48,.75),rgba(12,16,22,.92));box-shadow:0 12px 40px rgba(0,0,0,.28)}
-.chart-keepsake-band__art img{width:72px;height:72px;border-radius:50%;border:1px solid rgba(194,160,94,.35);object-fit:cover;display:block;background:#0C1016}
-.chart-keepsake-band__eyebrow{margin:0 0 .25rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#C2A05E}
-.chart-keepsake-band__lead{margin:0;font-size:.92rem;line-height:1.5;color:#BEB298}
-.chart-keepsake-band__lead strong{color:#ECE6D8}
-.chart-keepsake-band__lead a{color:#D8B978}
+.chart-keepsake-band{display:flex;align-items:center;gap:1rem;margin:0.85rem 0 1.25rem;padding:0.9rem 1.1rem;border-radius:14px;border:1px solid rgba(168,176,188,.28);background:linear-gradient(145deg,rgba(26,34,48,.75),rgba(12,16,22,.92));box-shadow:0 12px 40px rgba(0,0,0,.28)}
+.chart-keepsake-band__art img{width:72px;height:72px;border-radius:50%;border:1px solid rgba(168,176,188,.35);object-fit:cover;display:block;background:#07070A}
+.chart-keepsake-band__eyebrow{margin:0 0 .25rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#A8B0BC}
+.chart-keepsake-band__lead{margin:0;font-size:.92rem;line-height:1.5;color:#C8CDD6}
+.chart-keepsake-band__lead strong{color:#E8EBF0}
+.chart-keepsake-band__lead a{color:#C8CDD6}
 @media (max-width:560px){.chart-keepsake-band{flex-direction:column;text-align:center}}
 
 /* Masterpiece format menu (replaces inline-only styles) */
 #share-format-menu {
   position: absolute; z-index: 1200; min-width: 260px; padding: 10px;
   border-radius: 14px; background: rgba(26,34,48,0.98);
-  border: 1px solid rgba(194,160,94,0.35);
+  border: 1px solid rgba(168,176,188,0.35);
   box-shadow: 0 24px 60px rgba(0,0,0,0.6);
   backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
 }
 #share-format-menu button {
   display: block; width: 100%; text-align: left;
   padding: 12px 12px; margin: 2px 0; border: none; border-radius: 10px;
-  background: transparent; cursor: pointer; color: #ECE6D8;
+  background: transparent; cursor: pointer; color: #E8EBF0;
   font-family: Inter, system-ui, sans-serif;
 }
 #share-format-menu button:hover,
 #share-format-menu button:focus-visible {
-  background: rgba(194,160,94,0.12);
+  background: rgba(168,176,188,0.12);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(194,160,94,0.35);
+  box-shadow: 0 0 0 2px rgba(168,176,188,0.35);
 }
 #share-format-menu button span:first-child {
   display: block; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em;
 }
 #share-format-menu button span:last-child {
-  display: block; font-size: 0.66rem; color: #A89C84; margin-top: 2px;
+  display: block; font-size: 0.66rem; color: #8B919C; margin-top: 2px;
 }
 .big-three-card__seal {
   display: block; width: 56px; height: 56px; margin: 0.35rem auto;
@@ -938,7 +938,7 @@
 
 /* Masterpiece primary = terracotta CTA token */
 #result-actions-row .action-btn--primary {
-  background: var(--ap-cta, #D97B52) !important;
+  background: var(--ap-cta, #6AB0FF) !important;
   color: var(--ap-cta-ink, #1F1206) !important;
   border-color: transparent !important;
   font-weight: 600;
@@ -965,7 +965,7 @@
 .chart-form__priority .form-input {
   font-size: 1.05rem;
   min-height: 48px;
-  border-color: rgba(194,160,94,0.35);
+  border-color: rgba(168,176,188,0.35);
 }
 /* Mobile: form owns first viewport — collapse decorative hero chrome */
 @media (max-width: 640px) {
@@ -1001,7 +1001,7 @@
 /* Optional name behind disclosure — first viewport is date/city/time only */
 .chart-form__optional-label {
   margin: 0.65rem 0 0.25rem;
-  border: 1px solid rgba(194,160,94,0.18);
+  border: 1px solid rgba(168,176,188,0.18);
   border-radius: 12px;
   background: rgba(12,16,22,0.28);
   padding: 0.15rem 0.85rem 0.35rem;
@@ -1011,7 +1011,7 @@
   list-style: none;
   font-size: 0.78rem;
   letter-spacing: 0.06em;
-  color: #C2A05E;
+  color: #A8B0BC;
   padding: 0.55rem 0;
   min-height: 44px;
   display: flex;
@@ -1026,7 +1026,7 @@
   text-transform: none;
 }
 .chart-form__optional-label[open] .chart-form__optional-sum {
-  border-bottom: 1px solid rgba(194,160,94,0.12);
+  border-bottom: 1px solid rgba(168,176,188,0.12);
   margin-bottom: 0.35rem;
 }
 .chart-form__optional-label .form-group { margin-bottom: 0.5rem; }
