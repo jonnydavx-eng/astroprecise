@@ -57,6 +57,12 @@ main > .ap-ev:last-child {
 .ap-ev__lede a {
   color: var(--ap-ev-aurora);
 }
+/* One-line provenance caption for tools/compact modes — small and quiet */
+.ap-ev__lede--provenance {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
 
 /* Cinema banner */
 .ap-ev-cinema {

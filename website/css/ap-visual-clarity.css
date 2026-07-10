@@ -98,11 +98,14 @@ body .text-muted {
   font-size: 0.94rem !important;
 }
 
-body main a:not(.mysky-cta):not(.ap-ev__btn):not(.btn-press):not(.navbar__link):not(.ap-ev-card) {
+/* .explore-return__primary excluded: it is a solid brass pill — accent cyan
+   on that gradient measured ~1.03:1. Its own dark ink (explore-page.css)
+   must win, both at rest and on hover. */
+body main a:not(.mysky-cta):not(.ap-ev__btn):not(.btn-press):not(.navbar__link):not(.ap-ev-card):not(.explore-return__primary) {
   color: var(--ap-vc-accent);
   text-underline-offset: 0.15em;
 }
-body main a:not(.mysky-cta):not(.ap-ev__btn):not(.btn-press):hover {
+body main a:not(.mysky-cta):not(.ap-ev__btn):not(.btn-press):not(.explore-return__primary):hover {
   color: var(--ap-vc-cream);
 }
 

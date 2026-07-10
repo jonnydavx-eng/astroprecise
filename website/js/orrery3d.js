@@ -622,10 +622,25 @@ window.Orrery3D = (() => {
     const skipIntro = !!options.skipIntro || fromLiteHandoff;
 
     if (skipIntro) {
-      yaw = -0.35;
-      pitch = 1.05;
-      targetZoomScale = 1;
-      currentZoomScale = 1;
+      /* Earth-forward opening: the WebGL hero boots at the Earth rest frame,
+         but this 2D fallback used to open on the legacy sun-centred wide
+         view — a divergent first impression when WebGL is unavailable.
+         Modest preset only: rotate so Earth lands in view and zoom to the
+         inner system. (Shared module — OrbitLab gets this port later.) */
+      const earthBoot = bodies.find(b => b.id === 'earth');
+      if (earthBoot) {
+        /* project() rotates points by +yaw — pin Earth at a fixed display
+           angle regardless of today's heliocentric longitude. */
+        yaw = 1.05 - Math.atan2(earthBoot.pos.y, earthBoot.pos.x);
+        pitch = 0.9;
+        targetZoomScale = 2.4;
+        currentZoomScale = 2.4;
+      } else {
+        yaw = -0.35;
+        pitch = 1.05;
+        targetZoomScale = 1;
+        currentZoomScale = 1;
+      }
       introActive = false;
       introProgress = 1;
       autoSpin = true;

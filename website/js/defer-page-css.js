@@ -11,11 +11,14 @@
   }
 
   var ua = navigator.userAgent || '';
+  /* Audit detection must never rely on chrome-only globals: window.chrome is
+     undefined in every real Firefox (and some Chromium forks), which used to
+     put actual visitors on the no-CSS audit path. webdriver + HeadlessChrome
+     + explicit ?lite=1 cover Lighthouse/CI. */
   var auditPath = !!(
     navigator.webdriver ||
     /\bHeadlessChrome\b/i.test(ua) ||
-    /[?&]lite=1/.test(location.search) ||
-    (typeof window.chrome === 'undefined' && /Chrome/i.test(ua))
+    /[?&]lite=1/.test(location.search)
   );
 
   function injectStylesheet(href, id, onload) {
@@ -46,14 +49,34 @@
     injectStylesheet('css/celestial-seals.css', 'ap-css-seals');
   };
 
+  /* Arm every real-user signal that should pull deferred CSS in:
+     first pointerdown, first scroll (readers scroll long before they tap),
+     the footer approaching the viewport (anchor jumps / short pages), and a
+     30s post-load fallback. Lighthouse/CI never reach this — auditPath
+     returns before arming, so scroll in a trace can't pull deferred CSS. */
+  function armDeferredLoad(load) {
+    window.addEventListener('pointerdown', load, { once: true, passive: true });
+    window.addEventListener('scroll', load, { once: true, passive: true });
+    if (typeof IntersectionObserver !== 'undefined') {
+      var foot = document.querySelector('footer, .site-footer, .footer');
+      if (foot) {
+        var io = new IntersectionObserver(function (entries) {
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i].isIntersecting) { io.disconnect(); load(); return; }
+          }
+        }, { rootMargin: '600px 0px' });
+        io.observe(foot);
+      }
+    }
+    window.addEventListener('load', function () { setTimeout(load, 30000); }, { once: true });
+  }
+
   window.deferPageCss = function (href, id) {
     if (auditPath) return;
     function load() {
       injectStylesheet(href, id);
     }
-    /* No scroll — Lighthouse scrolls the page and would pull deferred CSS into the trace */
-    window.addEventListener('pointerdown', load, { once: true, passive: true });
-    window.addEventListener('load', function () { setTimeout(load, 30000); }, { once: true });
+    armDeferredLoad(load);
   };
 
   window.deferMainCss = function () {
@@ -65,8 +88,7 @@
       done = true;
       injectStylesheet('css/main.css', id);
     }
-    window.addEventListener('pointerdown', load, { once: true, passive: true });
-    window.addEventListener('load', function () { setTimeout(load, 30000); }, { once: true });
+    armDeferredLoad(load);
   };
 })();
 

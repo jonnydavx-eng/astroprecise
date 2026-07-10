@@ -134,7 +134,9 @@
       '</h2>' +
       (mode === 'full' || mode === 'cinema'
         ? '<p class="ap-ev__lede">Same 3D engine as the homepage. Drag the orrery on <a href="explore.html">Explore</a> · cast on <a href="chart.html">Chart</a>.</p>'
-        : '') +
+        /* Provenance line must survive in the modes that actually ship
+           (modeForPage only returns tools/compact since v680). */
+        : '<p class="ap-ev__lede ap-ev__lede--provenance">Same 3D engine as the homepage hero.</p>') +
       '</header>';
 
     el.innerHTML =

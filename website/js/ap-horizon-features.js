@@ -15,7 +15,7 @@
       `<a class="ap-finder__link" href="what-is-my-rising-sign.html">Rising sign guide</a>` +
       `<a class="ap-finder__link" href="transits.html">Current transits</a>` +
       `<a class="ap-finder__link" href="cosmic-story.html">Cosmic story sample</a>` +
-      `<a class="ap-finder__link" href="#skyGuidesWrap">Sky guides</a>` +
+      `<a class="ap-finder__link" href="guides.html">Sky guides</a>` +
       `</nav></aside>` +
       `<button type="button" id="apFinderFab" class="ap-finder-fab" aria-label="Open chart finder" aria-expanded="false">` +
       `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/>` +

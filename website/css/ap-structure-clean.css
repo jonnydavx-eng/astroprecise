@@ -489,6 +489,74 @@ body:has(.bottom-nav) #apFloatNav {
   }
 }
 
+/* ── Bottom-nav base bar (home fallback) ─────────────────────────
+   index.html never loads main.css/main-lite, so the tab bar injected by
+   ap-horizon-features.js had NO fixed-bar styles there — it rendered as a
+   plain in-flow link list below the footer. Mirror main.css's fixed bar so
+   home matches every other page. Values identical to main.css; on pages
+   that later load main.css these rules agree, so there is no conflict. */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 8990;
+  background: rgba(16, 21, 32, 0.96);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(168, 176, 188, 0.22);
+  padding: 4px 0 max(4px, env(safe-area-inset-bottom));
+}
+.bottom-nav__shell {
+  display: flex;
+  align-items: stretch;
+  max-width: 100%;
+}
+.bottom-nav__tabs {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-width: 0;
+  padding: 0 4px;
+}
+.bottom-nav__pinned {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 6px 0 4px;
+  border-left: 1px solid rgba(168, 176, 188, 0.28);
+  background: rgba(168, 176, 188, 0.06);
+}
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 12px 6px;
+  text-decoration: none;
+  color: var(--silver-dim, #A8B0BC);
+  border-radius: 8px;
+  min-width: 52px;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+.bottom-nav__icon { font-size: 1.15rem; line-height: 1; }
+.bottom-nav__label {
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bottom-nav__item.is-active {
+  color: var(--gold-pale, #E8EBF0);
+}
+@media (max-width: 900px) {
+  /* Body padding for the bar already handled above (body:has rule). */
+  .bottom-nav { display: block; }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    MOMENT — form-first (Freeze in first viewport)
    ═══════════════════════════════════════════════════════════════ */
@@ -521,11 +589,12 @@ body.ap-moment-page .mom-hero__jump {
 body.ap-moment-page .mom-occasions {
   padding: 0.45rem 0.75rem 0.65rem !important;
   gap: 0.4rem !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  justify-content: flex-start !important;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  /* Wrap, don't side-scroll: the nowrap strip hid "Custom" past 390px and
+     inflated body scrollWidth (chips reached x=405 on a 390 viewport). */
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+  overflow-x: visible !important;
+  justify-content: center !important;
 }
 body.ap-moment-page .mom-occasions::-webkit-scrollbar { display: none; }
 body.ap-moment-page .mom-chip {

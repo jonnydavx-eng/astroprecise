@@ -109,7 +109,12 @@
 
   function resolveMomentDate(m) {
     if (m == null || m === "" || m === "now") return { kind: "now" };
-    var d = new Date(m);
+    var s = String(m);
+    /* Deep links are UTC by contract: a bare "1990-06-14T12:00" would parse
+       as viewer-LOCAL time (a different sky per timezone). Append Z when no
+       timezone designator is present so #m=…T17:46 === #m=…T17:46Z. */
+    if (/^\d{4}-\d{2}-\d{2}T[\d:.]+$/.test(s)) s += "Z";
+    var d = new Date(s);
     if (isNaN(d.getTime())) return null;
     return { kind: "date", date: d };
   }

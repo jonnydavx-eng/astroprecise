@@ -741,6 +741,19 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
+    /* Key Synastry Aspects card: its 5-column reference table is ~500px at
+       min-content — scroll inside the card, never side-scroll the page
+       (compat body scrollWidth measured 516 at 390 before this). */
+    .synastry-sidebar-card {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* Contain the decorative .orb blurs (right:-60px) before main.css lands:
+       main-lite has .hero{position:relative} but not main.css's
+       overflow:hidden, so the gold orb widened the page to x=450 on phones. */
+    .hero--small {
+      overflow: hidden;
+    }
     .compat-matrix-scroll:focus,
     .compat-matrix-scroll:focus-visible {
       outline: 2px solid var(--color-gold, #A8B0BC);

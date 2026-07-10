@@ -296,7 +296,9 @@ body.page-horoscope .horoscope-hero::before,
 body.ap-moment-page .mom-hero::before {
   content: "";
   position: absolute;
-  inset: -10% -5%;
+  /* No horizontal bleed: -5% side inset pushed body scrollWidth to ~105vw on
+     phones (moment measured 410 at 390). Glow ellipses sit inside anyway. */
+  inset: -10% 0;
   z-index: -1;
   background:
     radial-gradient(ellipse 50% 65% at 88% 35%, rgba(126, 200, 232, 0.1), transparent 58%),
