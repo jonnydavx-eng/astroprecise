@@ -180,6 +180,8 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-visual-clarity.css?v=683" id="ap-css-visual-clarity" />
   <link rel="stylesheet" href="css/ap-model-stage.css?v=683" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
+  <!-- Structure clean LAST — wins CSS wars; collapses bloat; first-viewport cast -->
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=702" id="ap-css-structure-clean" />
 
   <!-- Intro gate — runs before first paint so the hero never flashes the
        engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
@@ -857,12 +859,10 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" aria-labelledby="contents-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
-      <p class="ap-display-kicker">Around the living model</p>
-      <h2 id="contents-heading" class="ap-chapter-title">How Astro Precise flows</h2>
-      <p class="ap-chapter-lead" style="max-width:54ch;">
-        <strong>Explore &rarr; Cast &rarr; Sky &rarr; Keep &rarr; Daily.</strong>
-        The orrery is the product. Tools and tabs orbit it &mdash; same order in the nav and below.
-        Map of everything: <a href="mysky.html">My Sky</a>.
+      <p class="ap-display-kicker">Next steps</p>
+      <h2 id="contents-heading" class="ap-chapter-title">Where to go from here</h2>
+      <p class="ap-chapter-lead" style="max-width:48ch;">
+        Cast above, then Explore the model, open Sky, keep a Moment, or return Daily.
       </p>
     </header>
 
@@ -1312,6 +1312,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       </div>
     </div>
     <p class="ap-spine-bridge ap-spine-bridge--center">So the only real question is where the sky stood for <em>you</em>. <a href="chart.html">Cast your free chart &rarr;</a></p>
+    <p class="ap-spine-bridge ap-spine-bridge--center" style="margin-top:0.5rem;opacity:0.92;">Not sure where to start? <a href="quiz.html">Take the 90-second archetype quiz &rarr;</a></p>
   </div>
 </section>
 
@@ -1721,7 +1722,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-home-bootstrap.js?v=685"></script>
+<script defer src="js/ap-home-bootstrap.js?v=700"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=623"></script>
 <script defer src="js/home-match.js?v=621"></script>

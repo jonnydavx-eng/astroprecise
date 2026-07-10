@@ -1,0 +1,974 @@
+/**
+ * STRUCTURE CLEAN — 2026-07-10
+ * Owner: site is not clean or structured. Feature waves stacked on a bloated home.
+ *
+ * Goals (home):
+ *  1. First viewport = living sky + cast form (submit fully on screen)
+ *  2. Scroll budget: only Path + Daily + Shop after hero (secondary chapters off main scroll)
+ *  3. Compact chrome: less masthead/deck noise
+ *
+ * Load LAST after model-stage / horizon / polish so !important wins the CSS war.
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME — chapter spine (hide marketing bloat from main scroll)
+   ═══════════════════════════════════════════════════════════════ */
+body.ap-award-511 #compareChapter,
+body.ap-award-511 #methodChapter,
+body.ap-award-511 #skyGuidesWrap,
+body.ap-award-511 #matchChapter,
+body.ap-award-511 #qaChapter,
+body.ap-award-511 #obsGalleryChapter,
+body.ap-award-511 #libraryChapter,
+body.ap-award-511 #skyChapter {
+  display: none !important;
+}
+
+/* Path list: shorter vertical rhythm */
+body.ap-award-511 #instrumentsChapter {
+  padding-block: 1.75rem !important;
+}
+body.ap-award-511 #instrumentsChapter .ap-chapter-head {
+  margin-bottom: 0.75rem !important;
+}
+body.ap-award-511 #instrumentsChapter .ap-chapter-lead {
+  max-width: 48ch !important;
+  font-size: 0.95rem !important;
+  margin-bottom: 0.85rem !important;
+}
+body.ap-award-511 #instrumentsChapter .dept-list {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.45rem !important;
+  max-width: 40rem !important;
+  margin-inline: auto !important;
+}
+body.ap-award-511 #instrumentsChapter .dept-list-item {
+  padding: 0.7rem 0.95rem !important;
+  min-height: 0 !important;
+  gap: 0.65rem !important;
+}
+body.ap-award-511 #instrumentsChapter .dept-list-dek {
+  display: none !important; /* title + next only — kill essay per row */
+}
+body.ap-award-511 #instrumentsChapter .dept-number {
+  font-size: 0.72rem !important;
+}
+body.ap-award-511 #instrumentsChapter .dept-title {
+  font-size: 0.98rem !important;
+}
+
+/* Daily + shop: tighter padding */
+body.ap-award-511 #dailyChapter,
+body.ap-award-511 #shopChapter {
+  padding-block: 1.75rem !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME HERO — first-viewport cast (desktop + mobile)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Masthead: less vertical waste above the model */
+body.ap-award-511 .masthead {
+  padding-top: 0.55rem !important;
+  padding-bottom: 0.35rem !important;
+}
+body.ap-award-511 .masthead-logo {
+  transform: scale(0.88);
+  transform-origin: center top;
+}
+body.ap-award-511 .ap-sky-ticker,
+body.ap-award-511 .sky-ticker,
+body.ap-award-511 [class*="sky-ticker"],
+body.ap-award-511 .dateline,
+body.ap-award-511 #masthead-dateline {
+  display: none !important;
+}
+body.ap-award-511 .contents-nav {
+  padding: 0.35rem 0.5rem 0.5rem !important;
+  gap: 0.35rem 0.65rem !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+body.ap-award-511 .contents-nav::-webkit-scrollbar { display: none; }
+body.ap-award-511 .contents-nav a {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.08em !important;
+  padding: 0.35rem 0.5rem !important;
+  white-space: nowrap !important;
+}
+
+/* Hero shell: no min-height floor that pushes form off-screen */
+body.ap-award-511 #heroChapter {
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* Model bay — short enough for first-viewport cast, large enough for sharp Earth */
+body.ap-award-511 #heroChapter .hero-solar-stage {
+  height: min(42vh, 420px) !important;
+  min-height: 240px !important;
+  max-height: 460px !important;
+}
+body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  width: min(46vh, 440px) !important;
+  max-width: min(82vw, 480px) !important;
+  top: 48% !important;
+}
+/* Desktop: prefer a larger Earth disc (structure clean still keeps cast on-screen) */
+@media (min-width: 1024px) and (min-height: 820px) {
+  body.ap-award-511 #heroChapter .hero-solar-stage {
+    height: min(46vh, 480px) !important;
+    max-height: 520px !important;
+  }
+  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+    width: min(50vh, 500px) !important;
+    max-width: min(56vw, 540px) !important;
+  }
+}
+
+/* Cast dock — tighter, no trust checklist in the critical path */
+body.ap-award-511 #heroChapter .hero-copy {
+  margin: 0.25rem auto 0.5rem !important;
+  padding: 0.65rem 0.95rem 0.75rem !important;
+  max-width: min(440px, 94vw) !important;
+}
+body.ap-award-511 #heroChapter .hero-copy h1,
+body.ap-award-511 #heroChapter .hero-copy .display {
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem) !important;
+  margin: 0.1rem 0 0.2rem !important;
+}
+body.ap-award-511 #heroChapter .hero-copy .standfirst,
+body.ap-award-511 #heroChapter .hero-copy .hero-why-lead {
+  font-size: 0.82rem !important;
+  margin: 0.15rem auto 0.4rem !important;
+  max-width: 34ch !important;
+}
+body.ap-award-511 #heroChapter .hero-copy .hero-solar-trust,
+body.ap-award-511 #heroChapter .hero-copy .hero-live-pill,
+body.ap-award-511 #heroChapter .hero-copy .hero-form-note,
+body.ap-award-511 #heroChapter .hero-copy .hero-action-chips {
+  display: none !important;
+}
+body.ap-award-511 #heroChapter .hero-form-row {
+  gap: 0.45rem !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+}
+body.ap-award-511 #heroChapter .hero-form-row input[type="date"],
+body.ap-award-511 #heroChapter .hero-form-row .ui-input {
+  min-height: 44px !important;
+  max-width: 11.5rem !important;
+}
+body.ap-award-511 #heroChapter .hero-form-row button,
+body.ap-award-511 #heroChapter .hero-form-row .btn {
+  min-height: 44px !important;
+}
+
+/* Orrery deck: compact single strip — must not dominate first scroll */
+body.ap-award-511 #heroChapter .ap-orrery-deck,
+body.ap-award-511 #heroChapter #orrery-lite-deck {
+  order: 3 !important;
+  padding: 0.35rem 0.5rem 0.55rem !important;
+  max-height: none !important;
+}
+body.ap-award-511 #heroChapter .ap-orrery-chip,
+body.ap-award-511 #heroChapter .ap-scale-strip__caption,
+body.ap-award-511 #heroChapter .ap-orrery-cosmic-journey,
+body.ap-award-511 #heroChapter .ap-orrery-cosmic-flight,
+body.ap-award-511 #heroChapter .lite-vp-controls,
+body.ap-award-511 #heroChapter .ap-orrery-readout,
+body.ap-award-511 #heroChapter #ap-orrery-readout {
+  display: none !important;
+}
+/* Keep only: scale stepper OR a thin scrub — hide full 7-scale track on home */
+body.ap-award-511 #heroChapter .ap-scale-strip__track {
+  display: none !important;
+}
+body.ap-award-511 #heroChapter .ap-scale-stepper {
+  margin-inline: auto !important;
+}
+body.ap-award-511 #heroChapter .ap-orrery-time {
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  font-size: 0.75rem !important;
+}
+body.ap-award-511 #heroChapter .ap-orrery-scrub {
+  max-width: min(280px, 70vw) !important;
+  margin: 0.25rem auto 0 !important;
+  display: block !important;
+}
+
+/* Hide floating Tools FAB on home — clutter vs cast */
+body.ap-award-511 .ap-tools-fab,
+body.ap-award-511 #ap-tools-fab,
+body.ap-award-511 #apFinderFab,
+body.ap-award-511 .ap-finder-fab,
+body.ap-award-511 #apChartFinder,
+body.ap-award-511 .ap-finder {
+  display: none !important;
+}
+
+/* Float nav: don't stack on home if present */
+body.ap-award-511 .ap-float-nav {
+  display: none !important;
+}
+
+/* ── Mobile (≤640) — form must be ON screen with model ── */
+@media (max-width: 640px) {
+  body.ap-award-511 .masthead {
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.2rem !important;
+  }
+  body.ap-award-511 .masthead-logo {
+    transform: scale(0.7);
+  }
+  body.ap-award-511 .contents-nav {
+    padding: 0.2rem 0.35rem 0.35rem !important;
+  }
+  body.ap-award-511 .contents-nav a {
+    font-size: 0.6rem !important;
+    padding: 0.28rem 0.35rem !important;
+  }
+  body.ap-award-511 #heroChapter .hero-solar-stage {
+    height: min(28vh, 230px) !important;
+    min-height: 180px !important;
+    max-height: 240px !important;
+  }
+  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+    width: min(58vw, 210px) !important;
+    top: 50% !important;
+  }
+  body.ap-award-511 #heroChapter .hero-copy {
+    margin: 0.1rem auto 0.25rem !important;
+    padding: 0.5rem 0.7rem 0.55rem !important;
+  }
+  body.ap-award-511 #heroChapter .hero-copy h1 {
+    font-size: 1.08rem !important;
+  }
+  body.ap-award-511 #heroChapter .hero-copy .standfirst {
+    font-size: 0.74rem !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden !important;
+    margin-bottom: 0.3rem !important;
+  }
+  /* Deck below the fold on phone — cast is the job of first viewport */
+  body.ap-award-511 #heroChapter #orrery-lite-deck,
+  body.ap-award-511 #heroChapter .ap-orrery-deck {
+    display: none !important;
+  }
+  body.ap-award-511 #instrumentsChapter .dept-list {
+    max-width: none !important;
+  }
+}
+
+/* Desktop short viewports */
+@media (max-height: 820px) and (min-width: 900px) {
+  body.ap-award-511 #heroChapter .hero-solar-stage {
+    height: min(32vh, 300px) !important;
+    min-height: 200px !important;
+  }
+  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+    width: min(36vh, 320px) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOOL PAGES — density (chart / daily / shop)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Chart: tighter hero + form, hide Tools FAB, Calculate already reordered in HTML */
+body.page-chart .page-hero,
+body.page-chart .chart-hero,
+body.page-chart .hero-section {
+  padding-top: 1.25rem !important;
+  padding-bottom: 0.75rem !important;
+}
+body.page-chart h1 {
+  font-size: clamp(1.55rem, 3.2vw, 2.35rem) !important;
+  margin-bottom: 0.35rem !important;
+}
+body.page-chart .form-glass {
+  padding: 1.15rem 1.25rem 1.35rem !important;
+}
+body.page-chart .form-section-label {
+  margin-bottom: 0.55rem !important;
+}
+body.page-chart .form-group {
+  margin-bottom: 0.85rem !important;
+}
+body.page-chart #apFinderFab,
+body.page-chart .ap-finder-fab,
+body.page-chart #apChartFinder {
+  display: none !important;
+}
+/* De-emphasise sample path so Calculate owns the eye */
+body.page-chart .btn--sample {
+  margin-top: 0.45rem !important;
+  opacity: 0.8 !important;
+}
+
+/* Daily: compact hero, readable sign cards, demote dial chrome */
+body.page-horoscope .sphere-hero {
+  padding-top: 1.1rem !important;
+  padding-bottom: 0.75rem !important;
+}
+body.page-horoscope .sphere-hero__header {
+  margin-bottom: 0.85rem !important;
+}
+body.page-horoscope .sphere-hero__sub + .sphere-hero__sub {
+  display: none !important;
+}
+body.page-horoscope #sign-picker-primary,
+body.page-horoscope .sign-grid,
+body.page-horoscope #sign-grid {
+  gap: 0.65rem !important;
+}
+body.page-horoscope .sign-card {
+  min-height: 6.75rem !important;
+  padding: 0.85rem 0.65rem !important;
+  border: 1px solid rgba(200, 205, 214, 0.28) !important;
+  background: linear-gradient(165deg, rgba(22, 26, 36, 0.95), rgba(8, 10, 16, 0.92)) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+body.page-horoscope .sign-card:hover,
+body.page-horoscope .sign-card:focus-visible,
+body.page-horoscope .sign-card[aria-pressed="true"] {
+  border-color: rgba(126, 200, 232, 0.55) !important;
+  box-shadow: 0 0 0 1px rgba(126, 200, 232, 0.25), 0 10px 28px rgba(0, 0, 0, 0.4) !important;
+}
+body.page-horoscope .sign-card__name {
+  color: #F0F2F5 !important;
+  opacity: 1 !important;
+  font-weight: 600 !important;
+  font-size: 1.05rem !important;
+}
+body.page-horoscope .sign-card__dates {
+  color: #B8C0CC !important;
+  opacity: 1 !important;
+}
+body.page-horoscope .sign-card__element-badge {
+  color: #0B1220 !important;
+  background: rgba(200, 205, 214, 0.92) !important;
+  border: none !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+body.page-horoscope .sign-card__glyph,
+body.page-horoscope .sign-card__seal,
+body.page-horoscope .sign-card [data-celestial-seal] {
+  opacity: 1 !important;
+  filter: none !important;
+}
+/* Dial is secondary — don't own the fold after the grid */
+body.page-horoscope #dial-intro,
+body.page-horoscope .dial-intro {
+  margin-top: 1.25rem !important;
+  opacity: 0.9;
+}
+body.page-horoscope #apFinderFab,
+body.page-horoscope .ap-finder-fab {
+  display: none !important;
+}
+
+/* ── Shop: revenue room = hero + 2–3 featured cards only ── */
+body.page-shop .shop-hero,
+body.shop-page .shop-hero,
+body.page-shop .page-hero {
+  padding-top: 1rem !important;
+  padding-bottom: 0.75rem !important;
+}
+body.page-shop .shop-hero__title {
+  font-size: clamp(1.45rem, 3vw, 2.1rem) !important;
+  margin-bottom: 0.35rem !important;
+}
+body.page-shop .shop-hero-lede {
+  max-width: 40ch !important;
+  font-size: 0.95rem !important;
+  margin-bottom: 0.75rem !important;
+}
+body.page-shop .shop-journey {
+  margin-top: 0.5rem !important;
+  opacity: 0.9;
+}
+/* Kill secondary shop scroll weight (pdf-only dormant phase) */
+body.page-shop #free-tools,
+body.page-shop #how-it-works,
+body.page-shop .shop-sticky-nav,
+body.page-shop #ap-engine-visuals,
+body.page-shop .ap-ev--footer,
+body.page-shop .ap-ev--tools-only,
+body.page-shop #ap-email-banner,
+body.page-shop .ap-email-cta--banner,
+body.page-shop #shopc-cart:not(.is-open):empty,
+body.page-shop .shopc-cart:not(.is-open) {
+  display: none !important;
+}
+/* Compare stays as compact details — already folded */
+body.page-shop #shop-compare {
+  padding-block: 0.75rem !important;
+}
+body.page-shop .shop-compare__sum {
+  font-size: 0.85rem !important;
+}
+/* Featured grid density */
+body.page-shop #shopc-featured {
+  padding-block: 1.25rem !important;
+}
+body.page-shop .shopc-featured__intro {
+  margin-bottom: 0.85rem !important;
+}
+body.page-shop .shopc-featured__lede {
+  font-size: 0.9rem !important;
+  max-width: 48ch !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden !important;
+}
+body.page-shop .shopc-featured__blurb {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden !important;
+  font-size: 0.88rem !important;
+}
+body.page-shop .shopc-featured__hook {
+  font-size: 0.95rem !important;
+}
+body.page-shop .shopc-featured__visual img,
+body.page-shop .shopc-featured__visual {
+  max-height: 200px !important;
+  object-fit: cover !important;
+}
+body.page-shop .shopc-trust {
+  gap: 0.35rem 0.75rem !important;
+  font-size: 0.78rem !important;
+  margin-top: 0.75rem !important;
+}
+body.page-shop .shop-moment-rail,
+body.page-shop #moment-pack {
+  margin-block: 0.75rem !important;
+  padding: 0.85rem !important;
+}
+body.page-shop #apFinderFab,
+body.page-shop .ap-finder-fab {
+  display: none !important;
+}
+
+/* ── Nav chrome: one mobile system — bottom tabs only (no float stack) ── */
+body:has(.bottom-nav) .ap-float-nav,
+body:has(.bottom-nav) #apFloatNav {
+  display: none !important;
+}
+/* Room for bottom tab bar so primary CTAs aren't covered */
+@media (max-width: 900px) {
+  body:has(.bottom-nav) {
+    padding-bottom: calc(var(--bottom-nav-h, 72px) + env(safe-area-inset-bottom, 0px) + 8px) !important;
+  }
+  body:has(.bottom-nav) .bottom-nav {
+    z-index: 40 !important;
+  }
+  .bottom-nav__glyph {
+    font-size: 1.05rem;
+    line-height: 1;
+    display: block;
+  }
+}
+/* Desktop: bottom-nav is phone chrome — keep hidden */
+@media (min-width: 901px) {
+  .bottom-nav {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOMENT — form-first (Freeze in first viewport)
+   ═══════════════════════════════════════════════════════════════ */
+body.ap-moment-page .mom-hero {
+  padding-top: 1rem !important;
+  padding-bottom: 0.65rem !important;
+}
+body.ap-moment-page .mom-hero h1 {
+  font-size: clamp(1.5rem, 4vw, 2.2rem) !important;
+  min-height: 0 !important;
+  margin: 0.15rem 0 0.35rem !important;
+}
+body.ap-moment-page .mom-hero__eyebrow {
+  font-size: 0.68rem !important;
+  margin-bottom: 0.25rem !important;
+}
+body.ap-moment-page .mom-hero__sub {
+  font-size: 0.9rem !important;
+  max-width: 36ch !important;
+  margin: 0 auto 0.5rem !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden !important;
+}
+body.ap-moment-page .mom-privacy-seal,
+body.ap-moment-page .mom-hero__jump {
+  display: none !important;
+}
+body.ap-moment-page .mom-occasions {
+  padding: 0.45rem 0.75rem 0.65rem !important;
+  gap: 0.4rem !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  justify-content: flex-start !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+body.ap-moment-page .mom-occasions::-webkit-scrollbar { display: none; }
+body.ap-moment-page .mom-chip {
+  flex: 0 0 auto !important;
+  padding: 0.4rem 0.75rem !important;
+  font-size: 0.78rem !important;
+}
+body.ap-moment-page .mom-studio,
+body.ap-moment-page .mom-plate {
+  padding: 0.85rem 1rem 1rem !important;
+  min-height: 0 !important;
+}
+body.ap-moment-page .mom-plate__title {
+  font-size: 1.1rem !important;
+  margin-bottom: 0.25rem !important;
+}
+body.ap-moment-page .mom-plate__hint {
+  font-size: 0.8rem !important;
+  margin-bottom: 0.65rem !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden !important;
+}
+body.ap-moment-page .mom-field {
+  margin-bottom: 0.55rem !important;
+}
+body.ap-moment-page .mom-btn--primary {
+  min-height: 48px !important;
+  width: 100% !important;
+}
+/* Lifestyle + essay spine off main path (recover in details / after freeze) */
+body.ap-moment-page .mom-gallery-teaser,
+body.ap-moment-page .mom-spine {
+  display: none !important;
+}
+body.ap-moment-page .mom-deeper {
+  margin: 0.75rem 1rem 1.25rem !important;
+}
+body.ap-moment-page #apFinderFab,
+body.ap-moment-page .ap-finder-fab {
+  display: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPLORE — model stage owns the viewport; quiet chrome
+   ═══════════════════════════════════════════════════════════════ */
+body.page-explore .explore-stage {
+  min-height: calc(100svh - var(--explore-nav-h, 64px)) !important;
+}
+body.page-explore .explore-legend {
+  max-width: min(18rem, 42vw) !important;
+  font-size: 0.78rem !important;
+}
+body.page-explore .explore-legend[data-collapsed="true"] .explore-legend__body {
+  display: none !important;
+}
+body.page-explore .explore-deck {
+  padding: 0.45rem 0.65rem 0.65rem !important;
+}
+body.page-explore .ap-orrery-cosmic-journey,
+body.page-explore .explore-deck .ap-orrery-chip {
+  display: none !important;
+}
+body.page-explore .explore-return {
+  z-index: 12 !important;
+}
+body.page-explore .explore-return__primary {
+  font-weight: 600 !important;
+}
+body.page-explore #apFinderFab,
+body.page-explore .ap-finder-fab {
+  display: none !important;
+}
+/* Footer after stage should not dominate */
+body.page-explore .site-footer,
+body.page-explore footer.footer {
+  padding-block: 1.25rem !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TRANSITS — instrument not essay (kill CLS min-heights + bloat)
+   ═══════════════════════════════════════════════════════════════ */
+body.page-transits #current-sky.planet-grid {
+  min-height: 0 !important;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)) !important;
+  gap: 0.55rem !important;
+}
+body.page-transits .planet-card {
+  min-height: 0 !important;
+  padding: 0.75rem 0.8rem !important;
+  gap: 0.25rem !important;
+}
+body.page-transits .planet-card__position {
+  font-size: 1.05rem !important;
+}
+body.page-transits .planet-card__desc,
+body.page-transits .planet-card p:not(.planet-card__name):not(.planet-card__position) {
+  font-size: 0.75rem !important;
+  line-height: 1.35 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden !important;
+}
+body.page-transits .transits-hero {
+  padding-block: 1.1rem !important;
+}
+body.page-transits .transits-hero h1 {
+  font-size: clamp(1.45rem, 3.5vw, 2.2rem) !important;
+  margin-bottom: 0.35rem !important;
+}
+body.page-transits .transits-hero__sub,
+body.page-transits .transits-hero p {
+  font-size: 0.9rem !important;
+  max-width: 42ch !important;
+  margin-inline: auto !important;
+}
+body.page-transits .ts-section {
+  padding-block: 1.35rem !important;
+}
+/* Education essay off main scroll — link to why/accuracy instead */
+body.page-transits [aria-labelledby="edu-transits-heading"] {
+  display: none !important;
+}
+body.page-transits #ap-email-banner,
+body.page-transits .ap-email-cta--banner,
+body.page-transits #ap-engine-visuals,
+body.page-transits .ap-ev--footer {
+  display: none !important;
+}
+/* AI panel: keep mount host but don't reserve giant empty chrome when closed */
+body.page-transits #transits-ai-panel:not(.is-open):not([data-mounted="1"]) {
+  max-height: 0;
+  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+body.page-transits #apFinderFab,
+body.page-transits .ap-finder-fab {
+  display: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SKY / EPHEMERIS — tonight first; advanced folds stay folds
+   body class is page-instrument on ephemeris.html
+   ═══════════════════════════════════════════════════════════════ */
+body.page-instrument .instrument-hero,
+body.page-ephemeris .instrument-hero {
+  padding-block: 1.1rem !important;
+}
+body.page-instrument .instrument-hero h1,
+body.page-ephemeris .instrument-hero h1 {
+  font-size: clamp(1.45rem, 3.5vw, 2.25rem) !important;
+}
+/* Collapse deep explore folds by default if they use details; else hide email/tools bloat */
+body.page-instrument #sec-weather,
+body.page-instrument #sec-timetravel,
+body.page-instrument #sec-precession,
+body.page-instrument #sec-quantum {
+  /* Keep but denser when open — don't invent display:none on primary instruments */
+  margin-block: 0.35rem !important;
+}
+body.page-instrument .sky-fold__body,
+body.page-ephemeris .sky-fold__body {
+  padding-block: 0.85rem !important;
+}
+body.page-instrument #ap-email-banner,
+body.page-instrument .ap-email-cta--banner,
+body.page-instrument #ap-engine-visuals,
+body.page-instrument .ap-ev--footer,
+body.page-ephemeris #ap-email-banner,
+body.page-ephemeris #ap-engine-visuals {
+  display: none !important;
+}
+body.page-instrument #apFinderFab,
+body.page-instrument .ap-finder-fab {
+  display: none !important;
+}
+/* Weather widget can inflate — soft-cap height with scroll inside */
+body.page-instrument #sec-weather .instrument-panel,
+body.page-instrument #sec-weather .sky-weather,
+body.page-instrument #sec-weather {
+  max-height: none;
+}
+@media (max-width: 640px) {
+  body.page-instrument #sec-weather {
+    max-height: 42vh;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Sitewide: Tools FAB is noise when bottom-nav exists (and often when it doesn't) */
+#apFinderFab,
+.ap-finder-fab {
+  display: none !important;
+}
+
+/* Daily: demote dial + closer bulk on long pages */
+body.page-horoscope #sphere-wrap,
+body.page-horoscope .sphere-wrap {
+  max-width: min(520px, 92vw) !important;
+  margin-inline: auto !important;
+}
+body.page-horoscope [aria-labelledby="deep-reading-closer-heading"] {
+  padding-block: 1.15rem !important;
+}
+body.page-horoscope [aria-labelledby="deep-reading-closer-heading"] .section__subtitle {
+  font-size: 0.9rem !important;
+  max-width: 40ch !important;
+  margin-inline: auto !important;
+}
+body.page-horoscope [aria-labelledby="deep-reading-closer-heading"] .sign-cta-row .btn--ghost {
+  display: none !important; /* keep Cast + Explore + Moment only */
+}
+body.page-horoscope #ap-engine-visuals,
+body.page-horoscope .ap-ev--footer,
+body.page-horoscope #ap-affiliate-slot,
+body.page-horoscope #horoscope-subscribe {
+  display: none !important;
+}
+/* Dial is secondary to list-first reading — collapse below grid on all viewports */
+body.page-horoscope #dial-intro,
+body.page-horoscope #sphere-wrap,
+body.page-horoscope .sphere-controls,
+body.page-horoscope .sphere-ctas,
+body.page-horoscope .sky-board-toggle,
+body.page-horoscope .planet-legend,
+body.page-horoscope .pl-dots {
+  display: none !important;
+}
+/* Compact sign grid — primary job of Daily */
+body.page-horoscope #sign-picker-primary {
+  margin-bottom: 0.75rem !important;
+}
+body.page-horoscope .sign-picker-primary__lead {
+  font-size: 0.85rem !important;
+  margin-bottom: 0.55rem !important;
+}
+body.page-horoscope .sphere-hero {
+  padding-bottom: 1rem !important;
+  min-height: 0 !important;
+}
+body.page-horoscope .sign-grid,
+body.page-horoscope #sign-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 0.45rem !important;
+}
+body.page-horoscope .sign-card {
+  min-height: 0 !important;
+  padding: 0.55rem 0.35rem !important;
+}
+body.page-horoscope .sign-card__name {
+  font-size: 0.88rem !important;
+}
+body.page-horoscope .sign-card__dates {
+  font-size: 0.62rem !important;
+}
+/* Weather/more folds: keep collapsed chrome only */
+body.page-horoscope #ap-daily-weather .ap-more-sky__body,
+body.page-horoscope #ap-daily-more .ap-more-sky__body {
+  /* when open, ok — closed height already small */
+}
+/* Footer was ~1.6k px on phone — brand + one cast link only */
+body.page-horoscope .footer,
+body.page-horoscope footer.footer {
+  padding-block: 1rem !important;
+}
+body.page-horoscope .ap-footer-signup,
+body.page-horoscope .footer-nav-col,
+body.page-horoscope .footer-zodiac-strip,
+body.page-horoscope .footer-col:not(.footer-brand-col),
+body.page-horoscope .footer-bottom-links,
+body.page-horoscope .footer-legal-extra {
+  display: none !important;
+}
+body.page-horoscope .footer-inner,
+body.page-horoscope .footer .footer-inner {
+  display: block !important;
+  gap: 0.5rem !important;
+}
+body.page-horoscope .footer-brand-col {
+  text-align: center !important;
+  max-width: 28rem !important;
+  margin-inline: auto !important;
+}
+@media (max-width: 640px) {
+  body.page-horoscope .sign-grid,
+  body.page-horoscope #sign-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  body.page-horoscope .sign-card {
+    min-height: 4.6rem !important;
+    padding: 0.45rem 0.25rem !important;
+  }
+  body.page-horoscope .sign-card__element-badge {
+    font-size: 0.55rem !important;
+    padding: 1px 5px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Moment mobile: Freeze must clear fold */
+  body.ap-moment-page .mom-hero {
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+  body.ap-moment-page .mom-hero h1 {
+    font-size: 1.35rem !important;
+  }
+  body.ap-moment-page .mom-hero__sub {
+    font-size: 0.8rem !important;
+    -webkit-line-clamp: 1;
+  }
+  body.ap-moment-page .mom-hero__eyebrow {
+    display: none !important;
+  }
+  body.ap-moment-page .mom-occasions {
+    padding: 0.3rem 0.55rem 0.45rem !important;
+  }
+  body.ap-moment-page .mom-studio,
+  body.ap-moment-page .mom-plate {
+    padding: 0.65rem 0.75rem 0.8rem !important;
+  }
+  body.ap-moment-page .mom-plate__hint {
+    display: none !important;
+  }
+  /* Title field is optional decoration — drop on phone first paint */
+  body.ap-moment-page .mom-field:has(#mom-title),
+  body.ap-moment-page label[for="mom-title"],
+  body.ap-moment-page #mom-title {
+    display: none !important;
+  }
+  body.ap-moment-page .mom-grid--2 {
+    gap: 0.45rem !important;
+  }
+  body.ap-moment-page .mom-deeper {
+    margin: 0.5rem 0.65rem 1rem !important;
+  }
+
+  /* Explore mobile: legend collapsed, deck compact */
+  body.page-explore .explore-legend {
+    max-width: min(100%, calc(100vw - 1.2rem)) !important;
+    left: 0.5rem !important;
+    right: auto !important;
+  }
+  body.page-explore .explore-return a {
+    font-size: 0.62rem !important;
+    padding: 0.28rem 0.55rem !important;
+  }
+  body.page-explore .explore-deck__journeys {
+    display: none !important;
+  }
+
+  /* Chart mobile: strip chrome so Calculate lands in first viewport */
+  body.page-chart .chart-hero {
+    padding-top: 0.65rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+  body.page-chart .chart-hero__eyebrow {
+    display: none !important;
+  }
+  body.page-chart .chart-hero__subtitle {
+    display: none !important;
+  }
+  body.page-chart .chart-hero__title {
+    font-size: 1.35rem !important;
+    margin: 0.15rem 0 !important;
+  }
+  body.page-chart .form-glass {
+    padding: 0.75rem 0.8rem 0.9rem !important;
+    margin-top: 0.35rem !important;
+  }
+  body.page-chart .form-glass__header {
+    padding-bottom: 0.35rem !important;
+    margin-bottom: 0.35rem !important;
+    min-height: 0 !important;
+  }
+  body.page-chart .form-glass__icon {
+    display: none !important;
+  }
+  body.page-chart .form-glass__title {
+    font-size: 1.05rem !important;
+    margin: 0 0 0.2rem !important;
+  }
+  body.page-chart .form-glass__sub {
+    font-size: 0.78rem !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden !important;
+  }
+  body.page-chart .chart-form__essentials-label,
+  body.page-chart .form-section-label {
+    display: none !important;
+  }
+  body.page-chart .form-group {
+    margin-bottom: 0.55rem !important;
+  }
+  body.page-chart .form-hint,
+  body.page-chart .form-group__check {
+    display: none !important;
+  }
+  /* Time-unknown education panel eats ~120px — hide on first paint */
+  body.page-chart #group-time .time-unknown,
+  body.page-chart #group-time .precision-meter,
+  body.page-chart #group-time [class*="precision"],
+  body.page-chart #group-time .chart-precision,
+  body.page-chart .time-unknown-panel,
+  body.page-chart #time-unknown-note,
+  body.page-chart #time-accuracy-guide,
+  body.page-chart [id*="precision"] {
+    display: none !important;
+  }
+  /* Optional name is details or field — collapse from first viewport */
+  body.page-chart #group-name,
+  body.page-chart #group-name-wrap {
+    display: none !important;
+  }
+  body.page-chart .btn--sample {
+    display: none !important;
+  }
+  body.page-chart #submit-hint {
+    display: none !important;
+  }
+  body.page-chart .form-divider {
+    margin: 0.4rem 0 !important;
+  }
+  body.page-chart .form-cta {
+    margin-top: 0.25rem !important;
+  }
+  body.page-chart .btn--calculate {
+    min-height: 48px !important;
+  }
+
+  body.page-horoscope .sign-card {
+    min-height: 5.75rem !important;
+  }
+  body.page-horoscope .sign-card__name {
+    font-size: 0.98rem !important;
+  }
+}

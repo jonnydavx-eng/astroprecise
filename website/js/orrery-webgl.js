@@ -1057,6 +1057,18 @@ const FinishShader = {
     return !!(window.__orreryPreloaderOwns && !window.__apHeroEntered);
   }
 
+  /** Homepage / award embed (not OrbitLab instrument, not preloader stage). */
+  function isHomeHeroEmbed() {
+    try {
+      return !!(
+        document.body.classList.contains('ap-award-511') ||
+        document.documentElement.classList.contains('ap-lite-hero')
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
   /** Default hero + enter-screen frame: lit Earth on the terminator — not wide system + labels. */
   function setDefaultEarthFrame() {
     scaleLevel = 0;
@@ -1447,6 +1459,9 @@ const FinishShader = {
       preloaderIntroFinished = true;
       preloaderIntroScheduled = false;
       holdPreloaderEarthFrame();
+    } else if (isHomeHeroEmbed()) {
+      // Structure clean: homepage rest frame is photoreal Earth, not sun-centred system.
+      setDefaultEarthFrame();
     } else {
       settleToSystemHeroFrame(false);
     }
@@ -1826,6 +1841,8 @@ const FinishShader = {
       preloaderIntroFinished = true;
       syncPreloaderCosmicClass(false);
       holdPreloaderEarthFrame();
+    } else if (isHomeHeroEmbed()) {
+      setDefaultEarthFrame();
     } else {
       settleToSystemHeroFrame(false);
     }
@@ -7737,6 +7754,9 @@ const FinishShader = {
       masterclassZoom = 6;
       scaleLevel = 6;
       setMasterclassZoom(6, false, true);
+    } else if (isHomeHeroEmbed()) {
+      // Calm photoreal Earth rest frame on home (structure clean 2026-07-10).
+      setDefaultEarthFrame();
     } else {
       settleToSystemHeroFrame(false);
     }

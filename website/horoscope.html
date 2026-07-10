@@ -60,6 +60,7 @@
   <link rel="stylesheet" href="css/ap-palette-2026.css?v=680" id="ap-css-palette-2026" />
   <link rel="stylesheet" href="css/ap-model-stage.css?v=683" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=702" id="ap-css-structure-clean" />
   <link rel="stylesheet" href="css/ap-micro-delight.css?v=597" />
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=622" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
@@ -167,9 +168,8 @@
         <div class="sphere-hero__header">
           <p class="hero__eyebrow" id="today-date-display" aria-live="polite">Updated Daily at Midnight UTC</p>
           <h1 id="page-title">Your horoscope today</h1>
-          <p class="sphere-hero__sub">Pick your sign below &mdash; today's reading is computed live from where the planets really are right now.</p>
-          <p class="sphere-hero__sub" style="margin-top:var(--space-2);">This is a real reading of today&rsquo;s sky &mdash; the actual <abbr class="ap-gloss" title="Transits — where the planets are in the sky today, and the angles they make to your chart right now">transits</abbr> against the live planets, not a generic Sun-sign column written weeks ahead.</p>
-          <p style="margin-top:var(--space-3);"><a href="why.html" class="sphere-hero__badge-link"><span class="ap-badge">Real transits — not generic Sun-sign filler</span></a></p>
+          <p class="sphere-hero__sub">Pick your sign &mdash; live sky, not a canned column.</p>
+          <p style="margin-top:var(--space-2);"><a href="why.html" class="sphere-hero__badge-link"><span class="ap-badge">Real transits — not generic filler</span></a></p>
         </div>
 
         <!-- ============================================================
@@ -262,6 +262,9 @@
         <div class="dial-intro" id="dial-intro">
           <p class="dial-intro__label">Explore the live sky</p>
           <p class="dial-intro__sub">Where the seven planets really are right now &mdash; drag to spin, or tap the centre star to lay your own chart over it.</p>
+          <p class="dial-intro__model" style="margin:0.55rem 0 0;">
+            <a class="ap-inline-link" id="dial-model-link" href="explore.html#m=now">Open this sky in the 3D model &rarr;</a>
+          </p>
         </div>
 
         <!-- The 3D canvas -->

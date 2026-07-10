@@ -180,32 +180,45 @@
       }
     }
 
-    /* ── CTA row stays in flow — chart-critical.css makes .form-cta sticky at
-       ≥1024px which paints the button over the advanced-options content. ── */
-    @media (min-width: 1024px) {
-      .page-chart .form-cta {
-        position: static;
-        padding: 0;
-        background: none;
-      }
+    /* Calculate CTA is now ABOVE advanced options — keep in document flow (not sticky). */
+    .page-chart .form-cta {
+      position: static !important;
+      padding: 0.25rem 0 0 !important;
+      background: none !important;
+      margin-top: 0.5rem !important;
+    }
+    .page-chart .btn--sample {
+      opacity: 0.85;
+      font-size: 0.85rem;
+    }
+    /* Force advanced closed unless .is-open (deferred CSS sometimes leaks open panels) */
+    .page-chart .chart-advanced .accordion-content {
+      max-height: 0 !important;
+      overflow: hidden !important;
+    }
+    .page-chart .chart-advanced .accordion-item.is-open .accordion-content {
+      max-height: 2200px !important;
     }
 
-    /* ── Calculate CTA — terracotta primary tokens (overrides the retired
-       warm-gold gradient + #0d0a07 ink in chart-critical.css). ── */
+    /* ── Calculate CTA — clear primary (cool blue CTA ink on light fill) ── */
     .page-chart .btn--calculate {
       background: var(--ap-cta, #6AB0FF);
-      color: var(--ap-cta-ink, #1F1206);
-      box-shadow: 0 8px 28px rgba(217, 123, 82, 0.26), 0 0 0 1px rgba(217, 123, 82, 0.42);
+      color: var(--ap-cta-ink, #0B1220);
+      box-shadow: 0 8px 28px rgba(106, 176, 255, 0.28), 0 0 0 1px rgba(106, 176, 255, 0.45);
+      width: 100%;
+      min-height: 52px;
+      font-weight: 600;
     }
     .page-chart .btn--calculate:hover {
-      background: var(--ap-cta-hover, #E2895F);
-      box-shadow: 0 12px 36px rgba(217, 123, 82, 0.34), 0 0 0 1px rgba(217, 123, 82, 0.52);
+      background: var(--ap-cta-hover, #8BC4FF);
+      box-shadow: 0 12px 36px rgba(106, 176, 255, 0.36), 0 0 0 1px rgba(106, 176, 255, 0.55);
     }
     .page-chart .btn--calculate .btn-spinner {
-      border-color: rgba(31, 18, 6, 0.3);
-      border-top-color: var(--ap-cta-ink, #1F1206);
+      border-color: rgba(11, 18, 32, 0.3);
+      border-top-color: var(--ap-cta-ink, #0B1220);
     }
   </style>
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=702" id="ap-css-structure-clean" />
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferChartFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferChartFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/chart-page-deferred.css','ap-css-chart-deferred');deferPageCss('css/ap-reading.css','ap-css-reading');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
 </head>
@@ -394,8 +407,30 @@
           <input type="hidden" id="lon-input" name="longitude" />
           <input type="hidden" id="tz-input" name="timezone" />
 
-          <!-- ── Advanced options (accordion on mobile) ───────────── -->
-          <div class="chart-advanced accordion" id="chart-advanced" style="margin-top:var(--space-8);">
+          <!-- Submit CTA FIRST (structure clean) — advanced options never push Calculate below the fold -->
+          <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
+
+          <div class="form-cta">
+            <div id="spacetime-summary" hidden style="margin:0 0 18px;padding:14px 20px;border:1px solid rgba(168, 176, 188,0.3);border-radius:12px;background:linear-gradient(135deg,rgba(168, 176, 188,0.07),transparent);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.02rem;color:var(--white,#f0e8d8);letter-spacing:0.03em;">
+              <span style="display:block;font-family:var(--font-body,Inter);font-size:0.58rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Your event in spacetime</span>
+              <span id="spacetime-summary-txt"></span>
+            </div>
+            <button type="submit" class="btn--calculate" id="calculate-btn" aria-describedby="submit-hint">
+              <span class="btn-idle"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Chart</span>
+              <span class="btn-loading" aria-hidden="true">
+                <span class="btn-spinner"></span>Calculating…
+              </span>
+            </button>
+            <button type="button" class="btn--sample" id="sample-btn">
+              Sample Chart (Frida Kahlo)
+            </button>
+          </div>
+          <p class="form-hint" id="submit-hint" style="margin-top:var(--space-3);text-align:center;">
+            Instant, private calculation on your device — only the place name you type is sent, to find its coordinates.
+          </p>
+
+          <!-- ── Advanced options AFTER primary CTA (collapsed by default) ───────────── -->
+          <div class="chart-advanced accordion" id="chart-advanced" style="margin-top:var(--space-6);">
             <div class="accordion-item" id="chart-advanced-item">
               <button type="button" class="accordion-trigger" id="chart-advanced-trigger" aria-expanded="false" aria-controls="chart-advanced-panel">
                 <span>Advanced chart options</span>
@@ -478,28 +513,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Submit CTA -->
-          <div class="form-divider" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
-
-          <div class="form-cta">
-            <div id="spacetime-summary" hidden style="margin:0 0 18px;padding:14px 20px;border:1px solid rgba(168, 176, 188,0.3);border-radius:12px;background:linear-gradient(135deg,rgba(168, 176, 188,0.07),transparent);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.02rem;color:var(--white,#f0e8d8);letter-spacing:0.03em;">
-              <span style="display:block;font-family:var(--font-body,Inter);font-size:0.58rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Your event in spacetime</span>
-              <span id="spacetime-summary-txt"></span>
-            </div>
-            <button type="submit" class="btn--calculate" id="calculate-btn" aria-describedby="submit-hint">
-              <span class="btn-idle"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Chart</span>
-              <span class="btn-loading" aria-hidden="true">
-                <span class="btn-spinner"></span>Calculating…
-              </span>
-            </button>
-            <button type="button" class="btn--sample" id="sample-btn">
-              Sample Chart (Frida Kahlo)
-            </button>
-          </div>
-          <p class="form-hint" id="submit-hint" style="margin-top:var(--space-3);text-align:center;">
-            Instant, private calculation on your device — only the place name you type is sent, to find its coordinates.
-          </p>
 
         </form>
       </div><!-- /.form-glass -->

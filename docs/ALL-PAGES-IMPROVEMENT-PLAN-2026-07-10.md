@@ -6,10 +6,10 @@
 
 ~40 pages scored. Strongest: why.html 8.5 · chart/explore/moment/compatibility/accuracy 8. Weakest: auth-redirect & index-classic 2 · sample-reading/transits/mysky/links/guides/offline 5. **45 high-impact fixes** across six groups.
 
-### Wave plan (status 2026-07-10)
+### Wave plan (status 2026-07-10; updated Grok same day)
 - **WAVE 0 — honesty hotfixes: ✅ SHIPPED** commit `3a796f4` (live retro calendar, verified eclipse cards, live Plate I markers, shop delivery claims + unified live-predicates, lifepath reframing, llms.txt, chart claim reconciliation, catalogue fonts.css). Chiron fix shipped separately (`867b4ae`).
-- **WAVE 1 — conversion quick wins (S-effort):** sample-reading close-for-prospect + CTA + 390px overflow · chart-view "cast your own" CTA · charts.html reading-path strip · weekly-sky body CTA · moonphase→Moment bridge · quiz feeder link · fulfil-redirect Typeform whitelist · links.html dead #lib-paid block.
-- **WAVE 2 — model-connection mounts (needs deep-link receiver + Model Window):** #m= receiver on explore/index · deep links from daily-transit, weekly-sky rows, horoscope dial, sign-page heroes (generator!), moment reveal, moonphase card, compatibility Davison tab, lifepath birth-sky, accuracy/why "see the model" mounts · horoscope reading-panel model surface.
+- **WAVE 1 — conversion quick wins: ✅ SHIPPED** commit `c55d514` (+ quiz feeder on index by Grok). sample-reading CTA + 390px · chart-view cast-your-own · charts reading-path · weekly-sky body CTA · moonphase→Moment · fulfil-redirect whitelist · links #lib-paid poll · quiz feeder. Content bank through 2027-01-06: `e8ccd66`.
+- **WAVE 2 — model-connection mounts: 🔄 IN PROGRESS** — `#m=` / `focus=` receiver on explore + first mounts (moment, weekly-sky, horoscope dial/thumb, moonphase). Remaining: daily-transit, sign heroes via generator (after drift back-port), compatibility Davison, lifepath, accuracy/why Model Window.
 - **WAVE 3 — content rebuilds (M/L):** guides crawlable bodies · cosmic-story crawlable copy + shown sky · angel-numbers static render + inbound links · sample-reading dedupe · sign-page magazine pass (via generator, AFTER drift back-port).
 - **WAVE 4 — retirements (Jonny sign-off needed):** auth-redirect retire · index-classic → redirect stub · index-full: salvage FAQ+schema onto index.html then retire-or-merge · index-lite keep as gold-pattern stub · index-ephemeris optional · mysky: fix personalization or merge into profile.
 - **J3-DAY CHECKLIST (commerce):** static featured-card CTA flip machinery · app.js AP_MON legacy 'Instant PDF' config strings (~lines 1543-1630) · moment-pack detailsForm · end-to-end preview test with one real fulfilUrl before pasting all.

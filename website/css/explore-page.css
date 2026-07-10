@@ -238,6 +238,18 @@ html.orrery-full .explore-hint { opacity: 0.5; }
   color: var(--ap-parchment, #E8EBF0);
   border-color: rgba(168, 176, 188, 0.55);
 }
+.explore-return a.explore-return__primary {
+  color: #0B0906;
+  background: linear-gradient(160deg, #E8C872, #C9A227);
+  border-color: transparent;
+  font-weight: 600;
+}
+.explore-return a.explore-return__primary:hover,
+.explore-return a.explore-return__primary:focus-visible {
+  color: #0B0906;
+  border-color: rgba(232, 200, 114, 0.55);
+  filter: brightness(1.05);
+}
 
 /* ── Mobile (≤600px) — deck must stay usable at 375px ── */
 @media (max-width: 600px) {

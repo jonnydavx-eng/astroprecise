@@ -50,11 +50,11 @@ html.ap-fonts-ready .page-transits .transits-hero h1 {
   contain: layout style;
 }
 .page-transits #current-sky.planet-grid {
-  min-height: 1080px;
+  min-height: 0;
   contain: layout style;
 }
 .page-transits .planet-card {
-  min-height: 196px;
+  min-height: 0;
 }
 .page-transits .planet-card__symbol {
   display: flex;

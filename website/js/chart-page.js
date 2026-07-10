@@ -2907,7 +2907,8 @@ host.classList.add('is-done');
     if (!root || !item || !trigger || !panel) return;
 
     const mq = window.matchMedia('(max-width: 768px)');
-    if (mq.matches) item.classList.remove('is-open');
+    // Structure clean: always start collapsed so Calculate stays first-viewport.
+    item.classList.remove('is-open');
 
     const sync = () => {
       const open = item.classList.contains('is-open');

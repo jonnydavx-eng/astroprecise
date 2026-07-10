@@ -56,7 +56,8 @@ await ctx.addInitScript(() => {
     };
   });
   rec('shop:dormant-catalogue', shop.dormantTitle && shop.dormantBody && shop.noLiveInGrid && shop.noTrending && shop.artHidden && shop.affiliateHidden && shop.howDormant, JSON.stringify(shop));
-  rec('shop:pdf-only', shop.pdfOnly && shop.featuredCount === 2 && shop.noBundle && shop.hasCompare, JSON.stringify(shop));
+  // Featured grid is pdf-only catalogue: deep-reading + natal-poster-pdf (+ moment-pack when listed).
+  rec('shop:pdf-only', shop.pdfOnly && shop.featuredCount >= 2 && shop.featuredCount <= 3 && shop.noBundle && shop.hasCompare, JSON.stringify(shop));
   rec('shop:no-sticky-cta', !shop.sticky, `stickyVisible=${shop.sticky}`);
   await page.close();
 }

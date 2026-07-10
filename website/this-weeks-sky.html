@@ -46,6 +46,8 @@
     body:has(.wk-hero) #wk-events{min-height:520px;contain:layout style;}
     body:has(.wk-hero) #wk-moonstrip{min-height:52px;}
     body:has(.wk-hero) .wk-honesty{min-height:180px;contain:layout style;}
+    .wk-event__model{margin-left:0.45rem;font-size:0.82em;letter-spacing:0.04em;color:var(--ap-brass,#C2A05E);text-decoration:none;white-space:nowrap;}
+    .wk-event__model:hover,.wk-event__model:focus-visible{text-decoration:underline;color:var(--ap-parchment,#E8EBF0);}
   </style>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
   <script src="js/defer-page-css.js" defer></script>
@@ -292,7 +294,8 @@
   (function () {
     'use strict';
     document.addEventListener('DOMContentLoaded', function () {
-      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
+      // Always paint the live week (including headless) — model deep-links need rows.
+      // Decorative chrome is still audit-gated via the cosmos/effects inject below.
 
       var eventsEl  = document.getElementById('wk-events');
       var stripEl   = document.getElementById('wk-moonstrip');
@@ -381,11 +384,24 @@
               row.className = 'wk-event';
               var t = new Date(ev.tDate);
               var chip = (ev.approx ? '≈ ' : '') + fmtTime(t);
+              // Deep-link into explore's #m=/focus= receiver (stills+links only — no second 3D).
+              var bodyId = (ev.body || ev.bodyA || '').toLowerCase();
+              var modelHref = '';
+              try {
+                if (!isNaN(t.getTime())) {
+                  var iso = t.toISOString();
+                  modelHref = 'explore.html#m=' + encodeURIComponent(iso) +
+                    (bodyId ? ('&focus=' + encodeURIComponent(bodyId)) : '');
+                }
+              } catch (eM) { modelHref = ''; }
+              var modelBit = modelHref
+                ? ' <a class="wk-event__model" href="' + modelHref + '">→ in the model</a>'
+                : '';
               row.innerHTML =
                 '<span class="wk-event__orb">' + orbFor(ev) + '</span>' +
                 '<div class="wk-event__body">' +
                   '<div class="wk-event__title">' + esc(ev.title) +
-                    ' <span class="wk-event__time">' + chip + '</span></div>' +
+                    ' <span class="wk-event__time">' + chip + '</span>' + modelBit + '</div>' +
                   '<p class="wk-event__note">' + esc(ev.note) + '</p>' +
                 '</div>';
               dayEl.appendChild(row);
@@ -430,7 +446,8 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    if (audit()) return;
+    // Always load the calendar engines — model deep-links and event list are the page.
+    // Decorative starfield/effects stay audit-skipped for Lighthouse/headless.
     inject('js/raf-core.js');
     inject('js/ephemeris.js');
     inject('js/icons.js');

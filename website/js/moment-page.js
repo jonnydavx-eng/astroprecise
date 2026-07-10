@@ -328,6 +328,19 @@
       mountCard(APMomentShare.paintMomentCard(moment));
     }
 
+    // Model deep-link: open this exact night in explore (receiver: #m=<ISO>&focus=).
+    var modelLink = $('mom-model-link');
+    if (modelLink && moment.utc) {
+      try {
+        var iso = moment.utc instanceof Date ? moment.utc.toISOString() : String(moment.utc);
+        modelLink.href = 'explore.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+        modelLink.hidden = false;
+      } catch (eLink) {
+        modelLink.href = 'explore.html#m=now&focus=earth';
+        modelLink.hidden = false;
+      }
+    }
+
     try {
       reveal.scrollIntoView({ behavior: (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'), block: 'start' });
     } catch (e) {}

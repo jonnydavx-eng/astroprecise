@@ -24,10 +24,9 @@
 
   function mountFinder() {
     if ($("apChartFinder")) return;
-    const root = document.createElement("div");
-    root.innerHTML = finderHTML();
-    document.body.appendChild(root.querySelector("#apChartFinder"));
-    document.body.appendChild(root.querySelector("#apFinderFab"));
+    // Structure clean: floating Tools FAB fights bottom-nav + primary CTAs — skip sitewide.
+    // Finder remains available via nav "More" / drawer if needed later.
+    return;
   }
 
   function wireFinder() {
@@ -186,11 +185,78 @@
     });
   }
 
+  /** Home-only bottom tabs — index does not load app.js (no AstroApp.initBottomNav). */
+  function initHomeBottomNav() {
+    if (document.querySelector(".bottom-nav")) return;
+    // Only on award home (masthead path); other pages get tabs from app.js.
+    if (!document.body.classList.contains("ap-award-511")) return;
+    if (!document.querySelector("#apMasthead, .masthead")) return;
+
+    var tabs = (window.AP_NAV && window.AP_NAV.NAV_BOTTOM_TABS) || [
+      ["explore.html", "Explore", "star4"],
+      ["chart.html", "Chart", "spiral"],
+      ["ephemeris.html", "Sky", "telescope"],
+      ["horoscope.html", "Daily", "crescent"],
+    ];
+    var nav = document.createElement("nav");
+    nav.className = "bottom-nav";
+    nav.setAttribute("aria-label", "Mobile tab bar");
+    // Home may lack the global symbol sprite — use compact glyphs that don't depend on <use>.
+    var GLYPH = {
+      star4: "✦",
+      spiral: "◎",
+      telescope: "⌖",
+      crescent: "☽",
+    };
+    function icon(id) {
+      return (
+        '<span class="bottom-nav__glyph" aria-hidden="true">' +
+        (GLYPH[id] || "·") +
+        "</span>"
+      );
+    }
+    var tabsHtml = tabs
+      .map(function (row) {
+        var href = row[0];
+        var label = row[1];
+        var ic = row[2] || "star4";
+        return (
+          '<a href="' +
+          href +
+          '" class="bottom-nav__item">' +
+          '<span class="bottom-nav__icon" aria-hidden="true">' +
+          icon(ic) +
+          "</span>" +
+          '<span class="bottom-nav__label">' +
+          label +
+          "</span></a>"
+        );
+      })
+      .join("");
+    nav.innerHTML =
+      '<div class="bottom-nav__shell">' +
+      '<div class="bottom-nav__tabs">' +
+      tabsHtml +
+      "</div>" +
+      '<div class="bottom-nav__pinned">' +
+      '<a href="chart.html" class="bottom-nav__item bottom-nav__item--cast" aria-label="Cast your chart">' +
+      '<span class="bottom-nav__icon" aria-hidden="true">' +
+      icon("spiral") +
+      "</span>" +
+      '<span class="bottom-nav__label">Cast</span></a></div></div>';
+    document.body.appendChild(nav);
+    requestAnimationFrame(function () {
+      var h = nav.offsetHeight;
+      if (h > 0) document.documentElement.style.setProperty("--bottom-nav-h", h + "px");
+    });
+  }
+
   function init() {
     mountFinder();
     wireFinder();
     initAwardLayout();
     initCompareReveal();
+    initHomeBottomNav();
   }
 
   if (document.readyState === "loading") {

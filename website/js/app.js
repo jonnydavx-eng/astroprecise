@@ -1942,7 +1942,8 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
 
   function initBottomNav() {
     if (document.querySelector('.bottom-nav')) return;
-    if (!document.querySelector('.navbar')) return;
+    // Structure clean: home uses custom masthead (no .navbar) — still give phone tabs.
+    if (!document.querySelector('.navbar, .site-header, #apMasthead, .masthead')) return;
     const here = (location.pathname.split('/').pop() || 'index.html');
     const tabs = (window.AstroApp && AstroApp.NAV_BOTTOM_TABS) || [];
     const nav = document.createElement('nav');

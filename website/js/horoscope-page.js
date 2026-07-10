@@ -508,6 +508,12 @@
       leo:'☉ Sun', virgo:'☿ Mercury', libra:'♀ Venus', scorpio:'♇ Pluto',
       sagittarius:'♃ Jupiter', capricorn:'♄ Saturn', aquarius:'♅ Uranus', pisces:'♆ Neptune'
     };
+    // Engine still per classical/modern ruler — matches sign-page img/engine/* language.
+    var RULER_ENGINE_STILL = {
+      aries: 'mars', taurus: 'venus', gemini: 'mercury', cancer: 'moon',
+      leo: 'sun', virgo: 'mercury', libra: 'venus', scorpio: 'pluto',
+      sagittarius: 'jupiter', capricorn: 'saturn', aquarius: 'uranus', pisces: 'neptune'
+    };
     var ELEMENT_LABELS = { fire:'Fire sign', earth:'Earth sign', air:'Air sign', water:'Water sign' };
     var SIGN_KEYS = (function () {
       var Zk = window.AP_ZODIAC;
@@ -611,8 +617,15 @@
 
       var thumb = document.getElementById('srp-card-thumb');
       if (thumb) {
-        thumb.src = 'assets/images/zodiac-cards/' + signKey + '.jpg';
-        thumb.alt = info.name + ' zodiac card';
+        var bodyStill = RULER_ENGINE_STILL[signKey] || 'earth';
+        thumb.src = 'img/engine/' + bodyStill + '.webp';
+        thumb.alt = info.name + ' — ruled by ' + bodyStill.charAt(0).toUpperCase() + bodyStill.slice(1) + ' (engine still)';
+      }
+      var dialModel = document.getElementById('dial-model-link');
+      if (dialModel) {
+        try {
+          dialModel.href = 'explore.html#m=now&focus=' + encodeURIComponent(RULER_ENGINE_STILL[signKey] || 'earth');
+        } catch (eDial) { dialModel.href = 'explore.html#m=now'; }
       }
       var guide = document.getElementById('srp-guide-link');
       if (guide) {

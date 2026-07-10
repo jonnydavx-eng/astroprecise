@@ -1,142 +1,26 @@
-# STATUS — AstroPrecise · 2026-07-04 (story architecture, ap-v582)
+# STATUS — AstroPrecise · 2026-07-10
 
-**State:** 📖 **NARRATIVE SPINE SHIPPED (ap-v582)** — the "scattered" site is now one story a beginner follows toward the Deep Reading. Research fleet (IA/funnel + beginner-comprehension + sign-content + competitor-story + monetization + critic) → 4-agent build.
+**State:** **LIVE public site** https://astroprecise.app · local preview :8790. Recent agent work through **ap-v702** (structure clean, Earth rest frame, True-Time engine sync from OrbitLab, bottom nav / daily slim, 3D disc sizing). Narrative spine + first-paint fixes from early July still in the base. Checkout for paid Deep Reading remains **dormant** until owner sets real purchase URLs.
 
-**THE SPINE — "one moving sky, read at five zooms, each more about you":** (1) the sky is real & moving now (hero + Sky) → (2) your sign is your first slice of it (Signs) → (3) your whole chart is that sky frozen at birth (free Chart) → (4) the sky keeps touching your chart daily (Daily) → (5) one story that ties it together (paid Deep Reading).
-
-**Root cause of "scatter" — FIXED: three different navigations.** Homepage/tool/sign pages each had a different menu + vocabulary; "Readings/Shop/Library" vanished off the homepage. Now ONE unified bar everywhere — **Chart · Sky · Daily · Readings · Library · Shop** (secondary tools in the More flyout). renderNav() in app.js now ALWAYS rebuilds the primary bar from NAV_PRIMARY (was: only when empty, so 5 tool pages kept stale "Home·Chart·Daily·Match·Sky") — single source of truth for real.
-
-**Shipped:**
-- **Nav unified** (js/ap-nav-model.js NAV_PRIMARY + app.js renderNav always-rebuild); verified identical on all pages, 0 errors.
-- **cosmic-story.html de-orphaned** — was a cold dead-end with NO global nav; now loads the shared masthead + footer, relabeled as a FREE SAMPLE (vs the paid Deep Reading), CTAs → chart + shop#deep-reading.
-- **Homepage story pass** — "The instruments" reframed from a tool-dump into a numbered spine path (01 Sky→05 Deep Reading with "why open/next-step" lines); 4 spine bridge lines connect chapters; 17 beginner glosses (rising/house/transit/aspect/natal); HONEST-PRICE FIX (removed fake "Bestseller" DOM badge, prices → "From £X · opening soon" since checkout is dormant).
-- **Sign pages (generator)** — Layer-2 precise astronomy (element/modality/ruling planet/exact 30° ecliptic band/approx dates), Layer-3 "this sign as your Sun vs Moon vs Rising" (the beginner bridge), Layer-4 closer (free chart → Deep Reading); "one of dozens" → precise "ten planets plus Rising and houses". All 12 regenerated.
-- **horoscope + ephemeris** — added the missing Deep Reading closer (beat 4→5); stabilized ephemeris's 4 names → "The Sky"; beginner on-ramps + glosses.
-- **shop.html** — added the id="deep-reading" anchor every CTA depends on; **fake "Bestseller" removed from the baked product image** (regenerated the pill as "PERSONALISED" via PIL; generator badges retokened: Bestseller→Personalised, Trending→12 months).
-
-**QA:** contract 20/20 · npm test green · 9-page sweep: 0 console errors + 0 honesty violations (no arcsecond/fake-badge/privacy-overclaim). SW **ap-v582**, 461 entries.
-
-**Coordination:** chart.html (beat 3→5 conversion) left to the owner's parallel chart-page session; main-lite re-sync to the other parallel session. Deferred: when products go live, set deepReadingUrl/fulfilUrl in js/app.js to flip every dormant CTA to a real checkout.
-
----
-
-# STATUS — AstroPrecise · 2026-07-04 (first-paint fix, ap-v579)
-
-**State:** ⚡ **FIRST-PAINT BUG FAMILY CLOSED (ap-v579)** — pages that deferred their ENTIRE layout CSS via defer-page-css.js showed unstyled controls + masthead collisions to first-time visitors AND permanently to headless renderers (Googlebot). Audited all 37 deferring pages at worst-case (webdriver = deferred CSS never loads); fixed 16 broken + a site-wide component:
-- **tonight / profile / name-numerology / angel-numbers**: their own page CSS flipped from deferred → eager `<link>` (page-specific CSS isn't shared render weight — safe).
-- **12 sign pages**: fixed in the GENERATOR (tools/generate-sign-pages.mjs emits eager sign-page.css) + regenerated. ⚠ **the generator had DRIFTED from live v577** — running it as-was would have regressed branding/favicons/palette on all 12; the v577 pass was backported into generate-sign-pages.mjs + footer-model.mjs + constellations.mjs, output now byte-identical to live except the fix. Generator is safe to run again.
-- **Email CTA (site-wide)**: js/app.js ensureEmailCtaBaseCss() injects the input/button skeleton with the widget (base styles previously lived only in deferred main.css) — fixes every deferring page's newsletter bar at once.
-- **shop.html breadcrumb** overlapped the logo even with full CSS (first child of main under the fixed 72px .site-header) — cleared with calc(nav-height + gap) top padding, the same pattern the hero pages use.
-- Bonus live fix: sign breadcrumb's margin-top collapsed onto body, floating the skip-link pill into view → padding-top instead.
-
-**19 pages classified OK** (already carry eager/critical layout): accuracy, chart, compatibility, ephemeris, guides, horoscope, lifepath, links, moonphase, outreach, retrograde, saturn-return, shop(hero), solar-return, synastry, this-weeks-sky, transits, what-is-my-rising-sign, why.
-
-**QA:** contract 20/20 · npm test green · all fixed pages pass worst-case webdriver first-paint (no collisions, styled controls, zero console errors). SW **ap-v579**, 461 entries. Audit tool: tools/visual-check/firstpaint-audit.mjs (reusable).
-
-**Everything known is now closed** — this is the last of the bug backlog. Deferred (chips): chart-page elevation, orbit design-language rollout, main-lite.css marker re-sync.
-
----
-
-# STATUS — AstroPrecise · 2026-07-04 (fix round, ap-v578)
-
-**State:** 🧹 **BUG-FIX ROUND SHIPPED (ap-v578)** — every known open defect closed; full-site sweep clean (all ~50 pages: zero console errors, zero page errors, zero failed local requests).
-
-- **Invisible-text vignette bug FIXED AT SOURCE** (was LIVE on this-weeks-sky.html AND — newly discovered — tonight.html): main.css/main-lite.css `body::before` opaque wash painted over static-flow text. Fix: `body{z-index:0}` + `body::before{z-index:-1}` (the pair is load-bearing — never revert one without the other). All 38 main-lite pages pass a bright-pixel paint audit; guides.html workaround removed (0-pixel diff). ⚠ main-lite.css has drifted from main.css lite markers — do NOT regen via build-main-lite.mjs without re-syncing (chip filed).
-- **GitHub Pages deploy flake root-caused**: legacy Pages pipeline + 199 commits of unbounded gh-pages history (the v574 incident's two `errored` internal builds visible in the API; .nojekyll/file-size suspects ruled out). deploy-pages.yml now ships `force_orphan: true` — single-commit gh-pages from this deploy onward.
-- **Retired warm hexes retokened** in 21 CSS files (117/101 lines): chart-critical dead gold rules deleted, email sticky bar + modals + scrims + inks all cool-void; archive pages (index-classic/full) deliberately keep their look; JS canvas paints out of scope as documented. Verified visually identical apart from intended warm→cool scrim shifts.
-- **guides.html axe → 0 violations** (heading order + landmark uniqueness). Stale `?v=562/567` cache-busters aligned to v578 (they bypassed the SW precache — no ignoreSearch).
-
-**QA:** contract 20/20 · npm test green · 50-page sweep clean · builder audits: 38-page paint check, before/after retoken parity, orphan-push safety pre-verified (CNAME + .nojekyll ship inside every dist commit). SW **ap-v578**, 461 entries.
-
-**Note:** this deploy's gh-pages push is the FIRST orphan push (history rewrite — deploy snapshots only, source history lives on main).
-
----
-
-# STATUS — AstroPrecise · 2026-07-03 (night)
-
-**State:** ✨ **MASTERPIECE PASS SHIPPED (ap-v577)** — research-driven brand + model + copy elevation. A 6-agent research fleet (competitor brand analysis, public-sentiment mining, logo craft, conversion-copy evidence, 3D craft audit, completeness critic) fed three parallel builders. Verified integrated: contract 20/20, npm green, zero console errors, HUD above the 1440×900 fold.
-
-**Brand (v576):** masthead logomark REBUILT for 46px craft (8 ticks + 4 cardinal diamonds + single-path star, token brass — the old mark's 32 ticks smeared and its 8-polygon star blotched; raster-proofed at 46/32px); wordmark micro-typography fixed (doubled space removed, Astro w500 / Precise w400 #CDAE6A 0.055em, hover brightens not dims); complete favicon system (favicon.svg + 16/32/48 PNGs + real /favicon.ico + touch/PWA icons — Safari/SERP previously showed NO mark) with head links normalized across all 50 pages; OG image rebuilt from the real engine (img/og-banner-v576.jpg, 89KB, photoreal Earth + "You're not one of twelve." + lockup) rolled to 30 pages with corrected 1200×630 dims. Tool: tools/make-brand-icons.mjs + tools/make-og-banner.mjs (reusable).
-
-**Model craft (v576):** cloud shell sun-gated (lavender "eggshell" night-limb ring killed); resting sun halo brass-aligned (award-mode only); starfield lifted at Earth scales; idle drift now oscillates around the terminator money-shot; MOON pill = real Earth+Moon two-body frame; outer-planet focus = lit textured portraits (fixed TWO engine-wide lighting bugs: sunDirLight always targeted Earth → far-side planets rendered black; view-space normal dotted against world-space sun → terminator rotated with camera); Cinzel planet nameplates at SYSTEM scales; poster→HD handoff now cross-fades (engine finally dispatches ap-orrery-first-frame); eclipse-visuals no longer stomp tuned glow opacities每 frame.
-
-**Copy (critic-reconciled, honesty-safe):** standfirst adds "accurate to roughly an arcminute" + the SEO term "birth chart" above the fold; chips → "Free — no account / Accurate to about an arcminute (VSOP87 gloss) / Private — computed on your device"; label "Your date of birth"; friction note under the form; dateline "The sky right now" + title tooltip; sky chapter dares "Tonight, the planets stand where we say they do." + verify-us lead; reconciled meta description. Critic BLOCKED overclaims ("no paywall ever", "nothing to leak", "it will match" dare). Also purged 2 stray "arcsecond" claims in solar-return.html. Mobile: CTA now ABOVE the 844px fold (bottom 680px; was ~1350). Windows first-paint: VS-15 appended to fallback-wheel zodiac glyphs (no more violet emoji). Desktop fold rebalanced (v577 layer) after the copy grew the rail.
-
-**QA:** contract 20/20 · npm test green · zero pageerrors (WebGL, 2D-fallback, PRM, no-JS paths) · builder-level: 33/33 copy checks, 17/17 craft checks ×2, brand rasters visually proofed.
-
-**Owner actions:** (1) hard-refresh once to drop the old SW; (2) the research's one human step — run the 20-person five-second test (Lyssna/UsabilityHub free tier) on the live hero: "What does this site do?" / "What would the button give you?" — 80% pass keeps Variant A copy, below that swap to the prepared Variant B (in the 2026-07-03 research record). Deferred with chips: chart-page elevation, orbit design language rollout, Pages-build flake, this-weeks-sky vignette, warm-hex retokening.
-
----
-
-# STATUS — AstroPrecise · 2026-07-03 (evening)
-
-**State:** 🌍 **PHOTOREAL ORRERY HERO LIVE-READY (ap-v575)** — the homepage now actually runs the textured 3D engine and rests on a photoreal Earth. Root cause of "planets are dots": js/orrery-webgl.js uses bare `import 'three'` but the redesigned index.html had **no import map**, so the dynamic import silently rejected for 100% of visitors → everyone got the 2D dot fallback while the page believed it upgraded. Fixed: restored the three.js import map + modulepreload in index.html head (kept in sync with index-full.html).
-
-**Hero now:** boots WebGL on all capable devices (relaxed isCapableDevice — desktop always upgrades; old 4-core/4GB cutoff excluded capable phones+laptops), eager-boots in parallel with the ephemeris wait, and dives to the photoreal Earth close-up (`focusPlanet('earth')`, clouds+terminator+atmosphere+specular sun-glint) as the resting frame via setupHeroPhotorealFrame() in orrery-loader.js. Planet pills now drive `Orrery3D.focusPlanet` (they were wired to the destroyed lite poster).
-
-**HUD (v575):** engraved **seal icons** replace unicode planet glyphs (bespoke — new Earth seal generated; 10 seal pills incl. Uranus/Neptune); **EARTH→COSMOS scale strip** (7 stations, drives setScaleLevel, live honesty caption "Positions live (VSOP87) · distances schematic", mobile `‹ EARTH ›` stepper); **✦ Cosmic journey** narrated scale-tour button beside Cosmic flight; time row (date/Now/scrub) restored after WebGL handoff. Feature-detected — hidden on the 2D fallback. a11y: engine now clears the canvas's decorative aria-hidden when it becomes a focusable instrument (fixed aria-hidden-focus).
-
-**Copy (orbit-anchored + honesty):** removed every hard-rule violation site-wide — "arc-second" (→ "roughly an arcminute, 1800–2200 CE"), "same mathematics used by professional observatories" (→ "published VSOP87 planetary theory"), all "NASA-grade" abbr titles, and the daimon voice line. New hero standfirst captions the living Earth; chapter leads, chart/horoscope/guides heros, and index/horoscope meta all rebuilt around the living-sky idea. index title → "Astro Precise — The Sky, Live. Your Chart, Exact."
-
-**QA (all green):** contract **20/20** (incl. index axe 0), expert audit **94/100, 0 issues** (a11y 100, visual 99), focused axe **0 serious** on home/chart/horoscope/guides, **npm test** all suites pass. SW **ap-v575**, 460 precache entries (+ earth.svg seal).
-
-**Roadmap preserved:** ART-DIRECTION-2026.md holds the approved backlog (seal rollout P1–P3, orbit-as-design-language motifs, art-debt swaps like the horoscope nebula) — spawned as a background task chip. cosmic-hero.mp4 is a branded ambient clip (observatory + zodiac wheel, baked-in text), NOT a solar-system movie — the real "movie" is the engine's Cosmic journey/flight; the mp4 stays archived.
-
-**Owner:** hard-refresh once to drop the old SW shell. The GitHub-Pages-build-flake follow-up chip still stands (each recent deploy needed a manual rebuild kick).
-
----
-
-# STATUS — AstroPrecise · 2026-07-03
-
-**State:** 🎨 **FULL SITE REDESIGN SHIPPED (ap-v574)** — orrery-centred homepage + structural consolidation + P0 masthead fix. Expert-panel redesign (3 critique agents → synthesis → implementation): the living solar model is now THE homepage — full-viewport unboxed stage, copy rail left over a readability scrim, HUD time-rail pinned to the hero's bottom edge (planet-focus pills + engine console + Cosmic flight). Chapters consolidated 12→9 (~12,700px → ~10,700px full-render desktop): trust+why merged into compare, reading merged into method, planet spheres → live chips, guide grid → teaser + new guides.html library page, shop trimmed, sign grid rebuilt (6/4/3/2 portrait tiles, element hairlines).
-
-**P0 fixed (was LIVE for every visitor):** the masthead logomark SVG had no width/height and its sizing CSS lives in lazy-loaded ephemeris.css — every homepage visitor saw a ~1300px compass rose + unstyled nav until scroll (regression from the v567 palette hotfix, which inlined tokens but not masthead structure). Fixed via intrinsic SVG size + masthead rules in the inline critical style.
-
-**Operational fixes:** hero never traps scrolling (touch-action pan-y; wheel-zoom requires ctrl/pinch, hero-scoped in orrery-webgl); no scroll-triggered Three.js pull; fallback wheel cross-fades only when the poster actually drew; 2D fallback engine scales to the stage (tier caps 640/760/960); chart.html accordion + sticky-CTA occlusion + terracotta CTA fixed; orphaned email-bar "x" fixed site-wide (app.js ensureStickyCtaCss); float-nav rail padding honest (108px+) with masthead exempt; guides.html sticky filter.
-
-**QA gates (all green pre-push):** contract **20/20** (rewritten for teaser architecture, v574), expert homepage audit **96/100, 0 issues** (a11y 100, navUx 100, visual 99, mobile 98, perf 98), axe **0 serious**, user-journey v548 **0 issues**, npm test all suites. Evidence: tools/visual-check/out/{contract-eval-574,expert-audit-v574}.json, out/redesign/ before/after screenshots (untracked).
-
-**SW:** ap-v574, 459 precache entries (guides.html added).
-
-**Owner notes:** hard-refresh once to drop the old SW shell. Synastry lost its homepage card in the why-merge (footer link remains) — re-add somewhere if it matters. Known follow-up chips: this-weeks-sky.html invisible-text bug (main-lite body::before opaque vignette — pre-existing, live today), chart-critical.css dead warm-gold rules, main.css warm-void sticky-bar background.
-
----
-
-# STATUS — AstroPrecise · 2026-07-02 (late night)
-
-**State:** 🚑 **WHITE-HOMEPAGE HOTFIX LIVE (ap-v567)** + **NOAA feed fix (ap-v568)**. The homepage was rendering **white** (black text on transparent bg): the award palette tokens (`--void`/`--brass`/…) live only in `css/ephemeris.css`, which the homepage lazy-loads on scroll; `ap-horizon-2026.css` consumes them but never defines them, so above-the-fold every token was undefined → `background:var(--void)` = transparent = white. The v557–v562 lazy-ephemeris perf trim went live with today's deploys and exposed it. **Fix:** inlined the ~2KB `:root` palette as critical `<style>` in index.html head (+ `html,body{background:#0C1016}`) — paints on-brand from frame 1, no scroll/JS dependency. Also fixed **NOAA solar-wind feeds** (plasma-7-day/mag-7-day 404 → `propagated-solar-wind-1-hour.json`), clearing the Instrument-page console errors. Both live-verified; expert audit 100/100; full-site white-sweep clean. **Jonny: hard-refresh or unregister the SW once** to drop the cached white shell.
-
----
-
-**Prior state (still current):** 🚀 **ap-v566** — **Lemon Squeezy DROPPED → PayPal direct** (owner instruction). Live site: 0 LS references, PayPal named in privacy, shop honestly dormant ("checkout opening soon") until Jonny pastes PayPal payment links (**guide: PAYPAL-SETUP.md** — steps 1–4, ~45 min). Deploy saga: v565 correctly blocked by the CI e2e gate (still asserted LS URLs); v566 fixed the gate; then GitHub Pages itself sat in status **errored** ("Deployment failed, try again later" ×2) — cleared via API rebuild (`POST /pages/builds`); also re-enabled `https_enforced` which had dropped (http:// was serving plain 200). Earlier today: ap-v564 (This Week's Sky + minified deploys + seals + SEO), ap-v563 (SEO/social + sitemap). Live: https://astroprecise.app
-
-## PayPal migration (ap-v565, Claude)
-- 17 dead LS URLs blanked in AP_MON (13 SKU fulfilUrls + deepReadingUrl/reportUrl/posterUrl/giftUrl) → every consumer CTA (chart teaser, quiz, compat upsell, daily-transit tease, data-mon) reverts to its honest dormant fallback; zero dead links anywhere
-- Checkout resolver accepts PayPal payment links via fulfilUrl/paypalUrl (lemonsqueezy.com hard-ignored); `AP_MON.paypal { me, currency }` added
-- **Two-step flow** (PayPal never redirects back): buy click → "pay on PayPal → send your birth details" modal → per-SKU Typeform via fulfil-redirect.html (all 13 detailsForm IDs wired) + 7-day return reminder
-- Two Skies 50% promo → pre-filled discounted PayPal.Me amount link; only shows when grantable (needs paypal.me set)
-- Fixed pre-existing race that silently disabled purchase tracking + the promo (APPostPurchase loads after shop-commerce; now polled)
-- privacy.html Payments section names PayPal; `_headers` CSP drops *.lemonsqueezy.com; 7 planning docs bannered; commerce-urls.json blanked for rewiring
-- QA: journey 0 / axe ok / contract 18/18 / npm test green; browser-verified on :8794 (clean PayPal URL opens, details modal + reminder work, 0 LS links in DOM on shop + chart)
-
-## Shipped this session (ap-v563 → ap-v564, Claude)
-- **NEW: This Week's Sky** (`this-weeks-sky.html` + `js/weekly-sky.js` + `css/weekly-sky-page.css`) — deterministic weekly sky calendar: Moon phases, sign ingresses, retrograde stations, top-5 exact major aspects; UTC-anchored weeks, ≈-labelled approximate outer-planet times (honesty rule), week switcher with `?week=` deep links. Engine cross-checked: computed Full Moon 2026-06-29 23:58 UTC vs published 23:56–23:57. **21-assertion test** (`test-weekly-sky.mjs`, incl. 2024 eclipse/equinox/Mercury-station goldens) in npm test + CI.
-- **Deploy flip:** Actions workflow now runs `npm ci && npm run build` and publishes **dist/** (was raw website/). Browser-QA'd on 6 pages from the minified tree (0 errors); 458/458 SW precache URLs verified; Three.js MIT header retained (`legalComments: inline`). First deploy makes every returning client refetch the precache once (expected).
-- **Glyph→seal completion (Wave-4 long tail):** transits ticker (20/20 seals, upgradeable `.ap-orb` fallback + bounded icons wait), horoscope live-planet pills (7/7 + clobber-guard in the in-place updater), rising-sign Big Three (Sun/Moon; Rising ▲ has no seal artwork — left), homepage sign library ×12 (idle-loaded `celestial-seals.js` via ap-home-bootstrap post-load, audit-path-skipped, CLS-guarded slots).
-- **SEO/meta:** 9 over-budget titles → ≤60 chars; 15 descriptions → ≤160; `og:image:width/height/alt` on 40 pages (dims verified from the actual files); USD→GBP in 8 JSON-LD offers; index-classic/-full noindexed (archive variants, canonicals removed); `rel="noopener sponsored"` on all 12 JS-built commerce checkout locations; new page registered in nav (NAV_EXTRAS), sitemap (39 URLs), llms.txt, SW precache.
-- **Tooling:** `generate-sw-precache.mjs` quote-bug fixed (V regex now accepts both quote styles); workflow trigger paths extended (build.mjs, package*.json, test-weekly-sky.mjs); `DESIGN.md` created (token/system reference so agents stop grepping for the palette).
-
-## QA gates (all green pre-push)
-- npm test: engine + horoscope + compat + content + art + **weekly-sky 21/21** + ephemeris-package — all pass
-- Expert homepage audit **100/100 total** (v564; perf 96 within its 96–100 band), journey **0 issues**, axe **8/8 ok**, contract **18/18**
-- Dist: 6-page real-browser QA zero console/page errors; 458/458 precache resolve
+## Stack / agents
+- Canonical: `C:\Users\jonny\OneDrive\astroprecise` · site in `website/`
+- AGENTS.md + `website/AGENTS.md` · visual-check: `tools/visual-check`
+- PROJECT-FIRST: `project_first.ps1 -Name AstroPrecise`
+- After UI: visual-check + `after_project_edit.ps1 -Project "AstroPrecise"`
 
 ## Open / ongoing
-- **Verify the first dist deploy** (`08127be` Actions run): live sw.js should say ap-v564 and JS should arrive minified. Rollback if needed: revert `publish_dir` to `./website` + restore `exclude_assets` in deploy-pages.yml (file paths identical both ways).
-- `_headers` CSP still inert on GitHub Pages — Cloudflare Pages move remains the recommendation (Jonny decision).
-- **Owner (unchanged):** GSC/Bing verification, LS checkout smoke-test, social handles, email provider URL, TWOSKIES50 in LS.
+- **Owner:** set `deepReadingUrl` / checkout when products go live
+- **Owner:** phone eye-check structure + 3D after big waves; merge branches only when OK
+- STATUS must stay in sync with SW version in handoff (currently track **ap-v702** area)
+- OrbitLab free-explore galaxy is **not** auto-ported here unless Jonny asks
 
-## Roadmap (deferred)
-- Weekly sky column → shareable OG snapshot per week; Play Store TWA; astrocartography; on-site Stripe after any Cloudflare move. Detail: AUDIT-2026-07-02.md.
+## Suggested next steps
+1. Owner phone pass (home Earth rest, daily, chart, shop)
+2. When selling: wire real checkout URLs sitewide
+3. Agents: no sign-page hand-edits (use generator); run visual-check after CSS/orrery
+4. Keep handoff newest-first; archive when huge
 
-*Updated 2026-07-02 evening (Claude). Full history: AGENT-HANDOFF.md*
+## Older STATUS blocks
+Earlier July STATUS entries (spine ap-v582, first-paint v579, masterpiece v577, etc.) remain valid as history of those ships but are **not** the current tip — see AGENT-HANDOFF.md for newest SW versions.
+
+*Full history: AGENT-HANDOFF.md (+ ARCHIVE) · board: OneDrive\WHERE-IM-UP-TO.md*

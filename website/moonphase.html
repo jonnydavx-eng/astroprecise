@@ -411,7 +411,8 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    if (audit()) return;
+    // Always load the Moon tool — form + result cards (incl. model deep-link).
+    // Decorative starfield stays audit-skipped.
     inject('js/raf-core.js');
     inject('js/icons.js');
     inject('js/moonphase.js');

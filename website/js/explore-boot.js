@@ -12,13 +12,14 @@
  *      engine and wires the deck (scale strip, planet pills, journey button)
  *   4. load ap-cosmic-flight-tool.js                  → #ap-cosmic-flight-launch
  *   5. request the full WebGL engine on capable devices
+ *   6. apply #m=<ISO|now>&focus=<body> deep links (model-moment mounts sitewide)
  *
  * Everything feature-detects: a device that can't run WebGL degrades to the 2D
  * canvas engine, and the scale strip / journey button simply stay hidden.
  */
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var V = "1";
+  var V = "690";
 
   var wrap = document.getElementById("apAwardOrreryWrap");
   var fallback = document.getElementById("apHeroWheelFallback");
@@ -30,6 +31,10 @@
 
   function injectCss(href, id) {
     if (id && document.getElementById(id)) return;
+    // Don't append a second orrery-visual sheet if explore.html already linked one
+    // (stale ?v= injects used to win the cascade after the page's newer link).
+    if (href.indexOf("orrery-visual") >= 0 &&
+        document.querySelector('link[href*="orrery-visual"]')) return;
     var l = document.createElement("link");
     l.rel = "stylesheet";
     l.href = href;
@@ -67,6 +72,123 @@
     if (fallback) fallback.classList.add("explore-fallback--hidden");
   }
 
+  // ── Model deep-link receiver: #m=<ISO|now>&focus=<body> ─────────────────
+  // Sitewide stills + links point here. Invalid hash → silent no-op.
+  var VALID_FOCUS = {
+    earth: 1, sun: 1, moon: 1, mercury: 1, venus: 1, mars: 1,
+    jupiter: 1, saturn: 1, uranus: 1, neptune: 1, pluto: 1
+  };
+  // Lite poster only focuses the classic seven + earth; outer → system frame.
+  var LITE_FOCUS = {
+    earth: 1, sun: 1, moon: 1, mercury: 1, venus: 1, mars: 1, jupiter: 1, saturn: 1
+  };
+
+  function parseModelHash(hash) {
+    var h = String(hash || location.hash || "").replace(/^#/, "");
+    if (!h) return null;
+    // Accept #m=…&focus=… or bare #focus=mars (and optional leading ?).
+    if (h.charAt(0) === "?") h = h.slice(1);
+    var params = {};
+    h.split(/[&;]/).forEach(function (part) {
+      if (!part) return;
+      var i = part.indexOf("=");
+      if (i < 0) {
+        // bare token like "now" is not supported without a key
+        return;
+      }
+      var k = decodeURIComponent(part.slice(0, i).trim()).toLowerCase();
+      var v = decodeURIComponent(part.slice(i + 1).trim());
+      if (k) params[k] = v;
+    });
+    if (params.m == null && params.focus == null) return null;
+    return {
+      m: params.m != null ? params.m : null,
+      focus: params.focus ? String(params.focus).toLowerCase() : null
+    };
+  }
+
+  function resolveMomentDate(m) {
+    if (m == null || m === "" || m === "now") return { kind: "now" };
+    var d = new Date(m);
+    if (isNaN(d.getTime())) return null;
+    return { kind: "date", date: d };
+  }
+
+  function applyTime(resolved) {
+    if (!resolved) return;
+    if (resolved.kind === "now") {
+      if (window.LiteOrrery && typeof LiteOrrery.setDayOffset === "function") {
+        LiteOrrery.setDayOffset(0);
+      }
+      if (window.Orrery3D) {
+        if (typeof Orrery3D.snapToNow === "function") Orrery3D.snapToNow();
+        else if (typeof Orrery3D.setTimelineDays === "function") Orrery3D.setTimelineDays(0);
+      }
+      return;
+    }
+    var date = resolved.date;
+    if (window.Orrery3D && typeof Orrery3D.setDate === "function") {
+      try { Orrery3D.setDate(date); } catch (e) { /* optional */ }
+    }
+    if (window.LiteOrrery && typeof LiteOrrery.setDayOffset === "function") {
+      var off = (date.getTime() - Date.now()) / 86400000;
+      try { LiteOrrery.setDayOffset(off); } catch (e2) { /* optional */ }
+    }
+  }
+
+  function applyFocus(id) {
+    if (!id || !VALID_FOCUS[id]) return;
+    var liteId = LITE_FOCUS[id] ? id : "sun";
+    try {
+      if (window.LiteOrrery && typeof LiteOrrery.focusPlanet === "function") {
+        LiteOrrery.focusPlanet(liteId);
+      }
+    } catch (e) { /* optional */ }
+    try {
+      if (window.Orrery3D && typeof Orrery3D.focusPlanet === "function") {
+        Orrery3D.focusPlanet(id);
+      }
+    } catch (e2) { /* optional */ }
+    try {
+      document.querySelectorAll(".lite-vp-btn[data-lite-planet]").forEach(function (b) {
+        b.classList.toggle("active", (b.getAttribute("data-lite-planet") || "").toLowerCase() === liteId);
+      });
+    } catch (e3) { /* optional */ }
+  }
+
+  var lastAppliedKey = "";
+  function applyModelDeepLink(force) {
+    var parsed = parseModelHash();
+    if (!parsed) return false;
+    var key = (parsed.m || "") + "|" + (parsed.focus || "");
+    if (!force && key === lastAppliedKey) return true;
+    var enginesReady = !!(window.LiteOrrery || window.Orrery3D);
+    if (!enginesReady) return false;
+
+    if (parsed.m != null) {
+      var resolved = resolveMomentDate(parsed.m);
+      if (resolved) applyTime(resolved);
+    }
+    if (parsed.focus) applyFocus(parsed.focus);
+    lastAppliedKey = key;
+    try {
+      document.documentElement.setAttribute("data-ap-model-link", key);
+    } catch (e) { /* optional */ }
+    return true;
+  }
+
+  function scheduleDeepLink() {
+    var tries = 0;
+    (function poll() {
+      if (applyModelDeepLink(true)) return;
+      if (++tries < 120) setTimeout(poll, 50);
+    })();
+  }
+
+  // Public helper for tests / other scripts.
+  window.__apApplyModelDeepLink = function () { return applyModelDeepLink(true); };
+  window.__apParseModelHash = parseModelHash;
+
   // Reveal the model frame.
   wrap.hidden = false;
 
@@ -87,7 +209,7 @@
   function queueLoader() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=685", function () {
+    inject("js/orrery-loader.js?v=700", function () {
       setTimeout(promoteToWebGL, 300);
     });
   }
@@ -101,10 +223,11 @@
 
   // Poster + time-row wiring (date display, Now, scrub → Orrery3D.setTimelineDays).
   waitEphemeris(function () {
-    injectCss("css/orrery-visual.css?v=567", "ap-orrery-visual-css");
+    injectCss("css/orrery-visual.css?v=680", "ap-orrery-visual-css");
     inject("js/lite-orrery.js?v=685", function () {
       document.documentElement.classList.add("orrery-poster-ready");
       queueLoader();
+      scheduleDeepLink();
     });
   });
 
@@ -116,12 +239,20 @@
   document.addEventListener("ap-orrery-ready", function () {
     hideFallback();
     document.documentElement.classList.add("orrery-live");
+    // Re-apply once WebGL owns time/focus (setDate path is richer than dayOffset).
+    setTimeout(function () { applyModelDeepLink(true); }, 80);
   });
   document.addEventListener("orrery-scale-change", hideFallback, { once: true });
+  window.addEventListener("hashchange", function () {
+    lastAppliedKey = "";
+    scheduleDeepLink();
+  });
 
   // Safety nets so the loader can never sit forever over a dead boot.
   setTimeout(queueLoader, 4000);
   setTimeout(hideFallback, 6000);
+  // Late catch if lite boot was slow.
+  setTimeout(scheduleDeepLink, 2500);
 
   // ── Page chrome: masthead height var + collapsible legend ──
   function syncNavHeight() {
@@ -146,13 +277,12 @@
     var el = document.getElementById("explore-legend");
     var toggle = document.getElementById("explore-legend-toggle");
     if (!el || !toggle) return;
-    // Collapse by default on small screens to keep the model clear.
-    var startCollapsed = window.matchMedia && window.matchMedia("(max-width: 600px)").matches;
+    // Structure clean: legend starts collapsed so the model owns first paint (all viewports).
     function setCollapsed(on) {
       el.setAttribute("data-collapsed", on ? "true" : "false");
       toggle.setAttribute("aria-expanded", on ? "false" : "true");
     }
-    setCollapsed(startCollapsed);
+    setCollapsed(true);
     toggle.addEventListener("click", function () {
       setCollapsed(el.getAttribute("data-collapsed") !== "true");
     });
