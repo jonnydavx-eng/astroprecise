@@ -1,3 +1,4 @@
+// GENERATED — canonical source: OrbitLab js/. Edit there, sync via scripts/sync-to-astroprecise.mjs
 /* ============================================================================
  * orrery-webgl.js — Photoreal WebGL solar system hero (Three.js, no build step)
  * ----------------------------------------------------------------------------
@@ -13,6 +14,8 @@
  * Positions are exact: reuses window.AstroEphemeris (VSOP87/ELP2000). Angular
  * positions are live and accurate; orbital radii are schematic (clean concentric
  * orbits) so the whole system reads clearly — the classic orrery convention.
+ * Body config + J2000 Kepler elements: js/orbitlab-bodies.js (guides/education).
+ * Kepler math helpers: js/orbitlab-orbital-math.js (not used for live positions).
  *
  * If WebGL is unavailable, transparently injects the canvas orrery3d.js fallback.
  * ==========================================================================*/
@@ -23,6 +26,16 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { BODIES, PLANET_VIS, SUN_SIZE, ORBITAL_ELEMENTS, SCALE_DOC } from './orbitlab-bodies.js';
+import {
+  helioStateFromEphemeris,
+  estimateHelioSpeedKmS,
+  adaptiveHelioSpeedKmS,
+  moonPhaseFromEphemeris,
+  integrateDayOffset,
+  siderealSpinRadPerSec,
+  keplerGuidePoints,
+} from './orbitlab-orbital-math.js';
 
 const RadialBlurShader = {
   name: 'RadialBlurShader',
@@ -136,44 +149,7 @@ const FinishShader = {
     return !!(document.body && document.body.classList.contains('ap-award-511'));
   }
 
-  // ── Body definitions: schematic orbit radius + display size + texture ──────
-  // colour = fallback tint until the texture loads (and night-side ambient base)
-  const BODIES = [
-    { id: 'mercury', name: 'Mercury', R: 5.0,  size: 0.30, spin: 0.18, color: 0x9a8f86, tex: 'mercury.jpg' },
-    { id: 'venus',   name: 'Venus',   R: 7.0,  size: 0.46, spin: 0.10, color: 0xc8a86a, tex: 'venus.jpg' },
-    { id: 'earth',   name: 'Earth',   R: 9.5,  size: 0.85, spin: 0.55, color: 0x2a6cb0, tex: 'earth.jpg', hero: true },
-    { id: 'mars',    name: 'Mars',    R: 12.5, size: 0.42, spin: 0.52, color: 0xb84a32, tex: 'mars.jpg' },
-    { id: 'jupiter', name: 'Jupiter', R: 17.0, size: 1.25, spin: 1.20, color: 0xc7a06a, tex: 'jupiter.jpg' },
-    { id: 'saturn',  name: 'Saturn',  R: 21.5, size: 1.05, spin: 1.05, color: 0xcdba8e, tex: 'saturn.jpg', ring: 'saturn_ring.png' },
-    { id: 'uranus',  name: 'Uranus',  R: 25.5, size: 0.66, spin: 0.70, color: 0x9ed1e8, tex: 'uranus.jpg' },
-    { id: 'neptune', name: 'Neptune', R: 29.0, size: 0.64, spin: 0.68, color: 0x6f9fd8, tex: 'neptune.jpg' },
-  ];
-  const SUN_SIZE = 2.35;
-
-  // ── Extra bodies (dwarf planets) ────────────────────────────────────────────
-  // OrbitLab carries no moon/dwarf data (verified 2026-07-05), so these are NOT ported
-  // from it — Pluto reuses the SITE ephemeris's own real Kepler series (plutoPosition,
-  // returns {lon,lat,distance} like the majors). Rendered as a small lit point beyond
-  // Neptune with a faint orbit ring, tier-gated (high/mid only, off on low/phones).
-  // Honest: schematic radius, TRUE heliocentric position. (Chiron was considered but its
-  // ephemeris is a bare geocentric mean longitude — not scene-placeable — so it's skipped.)
-  const EXTRA_BODIES = [
-    { id: 'pluto', name: 'Pluto', R: 32.5, size: 0.28, color: 0xbfa98c, minTier: 'mid' },
-  ];
-
-  // Per-planet visual tuning (atmosphere rim + surface response)
-  // Gas giants: tight shells (large additive shells read as ugly "rings") but
-  // warmer/brighter rims so portrait focus feels cinematic, not matte balls.
-  const PLANET_VIS = {
-    mercury: { roughness: 0.82, metalness: 0.0,  atmo: 0x9a9088, atmoS: 1.02, atmoI: 0.14, rim: 0x6a8090 },
-    venus:   { roughness: 0.72, metalness: 0.0,  atmo: 0xffc878, atmoS: 1.038, atmoI: 0.48, rim: 0xffa060 },
-    earth:   { roughness: 0.72, metalness: 0.05, atmo: 0x4a9aff, atmoS: 1.022, atmoI: 1.12, rim: 0x68a8e8 },
-    mars:    { roughness: 0.76, metalness: 0.03, atmo: 0xff6038, atmoS: 1.034, atmoI: 0.48, rim: 0xd07048 },
-    jupiter: { roughness: 0.78, metalness: 0.03, atmo: 0xf4c078, atmoS: 1.028, atmoI: 0.52, rim: 0xe8b070 },
-    saturn:  { roughness: 0.78, metalness: 0.03, atmo: 0xfae6c0, atmoS: 1.024, atmoI: 0.46, rim: 0xe0c498 },
-    uranus:  { roughness: 0.58, metalness: 0.03, atmo: 0xa0e0f8, atmoS: 1.032, atmoI: 0.48, rim: 0x90d8f0 },
-    neptune: { roughness: 0.56, metalness: 0.03, atmo: 0x78a8f0, atmoS: 1.032, atmoI: 0.50, rim: 0x70a8e8 },
-  };
+  // BODIES, PLANET_VIS, ORBITAL_ELEMENTS — js/orbitlab-bodies.js (SCALE_DOC for scale notes)
 
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
@@ -186,6 +162,10 @@ const FinishShader = {
   const leoCraft = [];
   let sunMesh = null, sunGlow = [];
   const orbitLines = [];
+  const eccentricGuides = [];
+  const velocityArrows = {};
+  let showEccentricGuides = false;
+  let showVelocityVectors = false;
   const labels = {};
   let starField = null;
   let starFieldFar = null;   // v577: second, more distant Points shell — its smaller
@@ -196,6 +176,15 @@ const FinishShader = {
   let sunMaterial = null, sunCoronaGroup = null, sunCoronaMesh = null, sunCoronaMat = null;
   let sunPromGroup = null, sunPointLight = null, sunDirLight = null, sunDirLightTarget = null, hemiLight = null;
   let detailLightingUser = null; // null = auto, true = force detail, false = force cinematic glow
+  let instrumentFirstFramePending = false;
+  let instrumentStableFrames = 0;
+  let instrumentSunHandoffReady = false;
+  let instrumentSunRevealStart = 0;
+  const INSTRUMENT_FIRST_FRAME_FRAMES = 4;
+  const INSTRUMENT_SUN_REVEAL_MS = 480;
+  let instrumentIdleAz = null;
+  let instrumentIdleEl = null;
+  let instrumentExposure = 0.94;
 
   let composer = null;
   let bloomPass = null;
@@ -308,7 +297,7 @@ const FinishShader = {
   let baseNowMs = 0, baseJd = 0, dayOffset = 0, daysPerSec = 0;
   let scrollBias = 0;  // days offset from hero scroll position
   let scrollDriveLocked = false;  // manual scrub/speed disables scroll-drive until "Now"
-  let lastT = 0, needRecompute = true;
+  let lastT = 0, lastDt = 0.016, needRecompute = true;
   // drag-to-scrub: horizontal drag advances REAL time (planets walk to where they
   // truly are); a flick keeps time coasting with decay. scrubVel = days/event EMA.
   const SCRUB_SENS = 0.4;          // days of real time per px of horizontal drag
@@ -316,6 +305,23 @@ const FinishShader = {
 
   // camera orbit (spherical around target)
   let camRadius = 48, camAz = -0.6, camEl = 26 * D2R;  // tighter framing — inner system + Earth as the hero (was 82)
+  let camRadiusTarget = null;
+  let zoomSettleUntil = 0;
+  let instrumentBloomZoom = 1;
+  /** Free-explore: continuous zoom across scales, orbit-primary drag, soft global clamps. */
+  let freeExploreMode = false;
+  const FREE_CAM_MIN = 2.0;
+  const FREE_CAM_MAX = 3400;
+  let lastFreeContZ = -1;
+  // Free-explore orbit inertia (spin after release)
+  let orbitVelAz = 0;
+  let orbitVelEl = 0;
+
+  function isInstrumentZoomBusy() {
+    return scaleAnimActive
+      || camRadiusTarget != null
+      || performance.now() < zoomSettleUntil;
+  }
   const camTarget = new THREE.Vector3(0, 0, 0);
   let dragging = false, lastX = 0, lastY = 0, downX = 0, downY = 0, userTouched = 0;
 
@@ -475,7 +481,30 @@ const FinishShader = {
 
   // layer toggles (mirror canvas API)
   let showOrbits = false, showLabels = false, showAsteroids = false;
+  let showAspectsHelio = false;
+  let aspectHelioGroup = null;
+  const HELIO_ASPECTS = [
+    { angle: 0, orb: 8, color: 0xc9a227 },
+    { angle: 60, orb: 4, color: 0x4080c4 },
+    { angle: 90, orb: 6, color: 0xb43232 },
+    { angle: 120, orb: 6, color: 0x32a050 },
+    { angle: 180, orb: 8, color: 0xb43232 },
+  ];
+  let showTrails = false;
+  let instrumentMode = false;
+  let instrumentCosmicVeil = null;
+  let selectedPlanetId = 'venus';
+  const planetTrails = {};
+  const TRAIL_LEN = 56;
   let onPlanetClick = null;
+
+  // Galactic framing — oblique disk view (~34° above plane) toward the core, matching
+  // Gaia Sky / NASA SVS flythroughs; ecliptic–galactic tilt ≈ 60.2° (Swinburne cosmos).
+  const GALACTIC_TILT_X = 62.87 * D2R;
+  const GALACTIC_ECLIPTIC_TILT = 60.2 * D2R;
+  const GALAXY_VIEW_AZ = 0.72;
+  const GALAXY_VIEW_EL = 36 * D2R;
+  const COSMOS_VIEW_EL = 38 * D2R;
 
   // scale levels 0–6 — zoom dial = space, scroll = time
   const SCALE_LEVELS = [
@@ -495,13 +524,12 @@ const FinishShader = {
       camRadius: 310, camMin: 200, camMax: 520, camEl: 24 * D2R, camAz: -0.5, targetEarth: false,
       honesty: 'Directions schematic · not true 3D distances' },
     { id: 5, name: 'Galaxy', hud: 'Milky Way',
-      // OrbitLab 2026-07-05 port: oblique gallery view (36°) — the barred spiral reads as
-      // a galaxy portrait instead of a flat top-down disk.
-      camRadius: 680, camMin: 460, camMax: 1080, camEl: 36 * D2R, camAz: 0.72, targetEarth: false,
-      honesty: 'Gaia-style barred spiral · 4 arms · Sun on Orion–Cygnus spur (~26 kly)' },
+      // Slightly lower elevation + wider band so free look frames a clean spiral
+      camRadius: 720, camMin: 420, camMax: 1200, camEl: 32 * D2R, camAz: GALAXY_VIEW_AZ, targetEarth: false,
+      honesty: 'Gaia-inspired schematic · 4 arms · distances not to scale' },
     { id: 6, name: 'Cosmos', hud: 'Deep field',
-      camRadius: 1950, camMin: 1300, camMax: 3000, camEl: 58 * D2R, camAz: 0.05, targetEarth: false,
-      honesty: 'Decorative galaxy sprites · not a measured survey' },
+      camRadius: 1850, camMin: 1100, camMax: 3200, camEl: 34 * D2R, camAz: 0.18, targetEarth: false,
+      honesty: 'Decorative field · not a measured survey' },
   ];
   let scaleLevel = 2;
   let masterclassZoom = 2;
@@ -510,18 +538,25 @@ const FinishShader = {
   let spaceFlightToolActive = false;
   let masterclassIntroActive = false;
   let masterclassIntroStart = 0;
+  let masterclassIntroFrom = 6;
+  let masterclassIntroTo = 0;
+  const MASTERCLASS_INTRO_MS = 42000;
   const SPACE_FLIGHT_MS = 54000;
   const SPACE_FLIGHT_TO = 5;
   let scaleAnimActive = false, scaleAnimStart = 0;
   const scaleAnimFrom = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
   const scaleAnimTo = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
-  const SCALE_ANIM_MS = 1400;
-  const JOURNEY_HOLD_MS = 2800;
+  const SCALE_ANIM_MS = PRM ? 1200 : 1800;
+  const JOURNEY_ANIM_MS = PRM ? 1600 : 5200;
+  const JOURNEY_HOLD_MS = PRM ? 1200 : 4800;
   scaleAnimDurationMs = SCALE_ANIM_MS;
   let scaleAnimFromLevel = 2;
   let scaleAnimToLevel = 2;
+  let scaleAnimSpiralAz = 0;
+  let scaleAnimSpiralEl = 0;
   let journeyActive = false;
   let journeySteps = [];
+  let journeyTotalLegs = 0;
   let journeyTarget = 2;
   let journeyHoldTimer = null;
 
@@ -534,14 +569,38 @@ const FinishShader = {
   let eclipseDim = 0; // 0 = none, 1 = full eclipse dimming
 
   // Phase 3 galaxy layers (L3–L6)
-  // OrbitLab 2026-07-05 port: Gaia-style barred spiral — the galaxy-shape components live
-  // in milkyWayGroup (shared galactic tilt); Oort/local/catalog/cosmic stay ecliptic-aligned.
-  const GALACTIC_TILT_X = 62.87 * D2R;
   let galaxyGroup = null, milkyWayGroup = null;
   let oortShell = null, localStarsGroup = null, catalogStarsGroup = null, milkyWayDisk = null, cosmicField = null;
   let milkyWayBulge = null, milkyWayDust = null, milkyWayHII = null, milkyWayArmRibbons = null, milkyWaySatellites = null;
+  let milkyWaySoftDisk = null;   // Phase 2: real Mesh plane under points (rigid with group)
+  let milkyWayDustLanes = null;  // Phase 2: co-rotated dark lane mesh
   let galacticCore = null, galacticCoreRing = null, galacticBar = null, galacticHalo = null, galacticHaloDisk = null;
+  let gaiaSamplePoints = null;   // Phase 4: Gaia-inspired dense sample (deterministic)
+  let magellanicStreamLine = null; // Phase 4: schematic Magellanic Stream
+  let magellanicStreamGlow = null;
+  let magellanicStreamLabel = null;
+  let brightGalacticStars = null; // Phase 4b: catalog stars in galactic frame
+  let gaiaSampleBuilt = false;
+  let gaiaWorker = null;
+  let galaxyEdgeOn = false;      // Phase 2: edge-on MW framing
+  let galaxyViewMode = 'full';   // Phase 3/4: 'full' | 'stars' | 'gaia'
+  let galaxyTourActive = false;
+  let galaxyTourTimer = null;
+  let galaxyTourStep = 0;
+  let lastGalacticLB = { l: 0, b: 0 };
+  let galaxyIdleAz = null, galaxyIdleEl = null;
   let sunMarker = null, solarDim = 1;
+
+  // ── Extra bodies (dwarf planets) ────────────────────────────────────────────
+  // Pluto reuses the ephemeris's own real Kepler series (plutoPosition, returns
+  // {lon,lat,distance} like the majors). Rendered as a small lit point beyond
+  // Neptune with a faint orbit ring, tier-gated (high/mid only, off on low/phones).
+  // Honest: schematic radius, TRUE heliocentric position. (Chiron was considered but its
+  // ephemeris is a bare geocentric mean longitude — not scene-placeable — so it's skipped.)
+  const EXTRA_BODIES = [
+    { id: 'pluto', name: 'Pluto', R: 32.5, size: 0.28, color: 0xbfa98c, minTier: 'mid' },
+  ];
+
   // Extra bodies (Pluto) + motion trails (time-scrub)
   let extraBodiesGroup = null;      // holds the dwarf-planet points + their orbit rings
   const extraMeshes = {};           // id → { dot, ring, label }
@@ -550,7 +609,7 @@ const FinishShader = {
   let trailsActive = false;         // true only while the visitor is scrubbing time
   let trailLastJd = 0;              // last sampled dayOffset (detect motion)
   let trailIdle = 0;                // seconds since time last moved (fade-out timer)
-  const TRAIL_LEN = 64;             // ring-buffer sample count per body
+  const MOTION_TRAIL_LEN = 64;      // ring-buffer sample count per body (scrub trails; TRAIL_LEN is the instrument trails)
 
   // ── Helpers ──────────────────────────────────────────────────────────────
   const norm360 = (d) => ((d % 360) + 360) % 360;
@@ -558,17 +617,89 @@ const FinishShader = {
     const lo = lonDeg * D2R, la = latDeg * D2R;
     return { x: r * Math.cos(la) * Math.cos(lo), y: r * Math.cos(la) * Math.sin(lo), z: r * Math.sin(la) };
   }
-  // Heliocentric ecliptic lon/lat for a body at julian day jd (helio = geo − sun)
+  /** VSOP87 heliocentric ecliptic state — authoritative for scene placement. */
   function helioLonLat(id, jd) {
     const E = window.AstroEphemeris;
-    const sun = E.sunPosition(jd);
-    if (id === 'earth') return { lon: norm360(sun.lon + 180), lat: 0 };
-    const g = E[id + 'Position'](jd);
-    const s = rect(sun.lon, 0, sun.distance);
-    const gr = rect(g.lon, g.lat, g.distance);
-    const h = { x: gr.x - s.x, y: gr.y - s.y, z: gr.z - s.z };
-    const r = Math.hypot(h.x, h.y, h.z) || 1e-9;
-    return { lon: norm360(Math.atan2(h.y, h.x) / D2R), lat: Math.asin(h.z / r) / D2R };
+    const st = helioStateFromEphemeris(E, id, jd, norm360);
+    return { lon: st.lon, lat: st.lat, distanceAU: st.distanceAU };
+  }
+
+  function bodySpinRate(b) {
+    if (b.siderealPeriodHours != null) return siderealSpinRadPerSec(b.siderealPeriodHours);
+    return (b.spin || 0) * 0.16;
+  }
+
+  function buildEccentricGuides() {
+    if (eccentricGuides.length) return;
+    BODIES.forEach((b) => {
+      const el = ORBITAL_ELEMENTS[b.id];
+      if (!el || el.e < 0.002) return;
+      const pts = keplerGuidePoints(el, b.R, perfTier === 'high' ? 128 : 80);
+      const geo = new THREE.BufferGeometry().setFromPoints(
+        pts.map((p) => new THREE.Vector3(p.x, p.y, p.z)),
+      );
+      const mat = new THREE.LineDashedMaterial({
+        color: 0x8a7a50,
+        transparent: true,
+        opacity: 0.28,
+        dashSize: 0.35,
+        gapSize: 0.22,
+        depthWrite: false,
+      });
+      const line = new THREE.Line(geo, mat);
+      line.computeLineDistances();
+      line.visible = showEccentricGuides && scaleLevel <= 3;
+      line.userData = { bodyId: b.id };
+      scene.add(line);
+      eccentricGuides.push(line);
+    });
+  }
+
+  function updateVelocityVectors() {
+    if (!showVelocityVectors) {
+      Object.keys(velocityArrows).forEach((k) => { if (velocityArrows[k]) velocityArrows[k].visible = false; });
+      return;
+    }
+    const E = window.AstroEphemeris;
+    if (!E) return;
+    const jd = baseJd + dayOffset + scrollBias;
+    const dt = 0.2;
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g || !g.visible) {
+        if (velocityArrows[b.id]) velocityArrows[b.id].visible = false;
+        return;
+      }
+      const a = helioStateFromEphemeris(E, b.id, jd - dt, norm360);
+      const c = helioStateFromEphemeris(E, b.id, jd + dt, norm360);
+      if (a.helioX == null || c.helioX == null) return;
+      const vx = (c.helioX - a.helioX) / (2 * dt);
+      const vy = (c.helioY - a.helioY) / (2 * dt);
+      const vz = (c.helioZ - a.helioZ) / (2 * dt);
+      const vm = Math.hypot(vx, vy, vz) || 1e-9;
+      const scale = b.R * 1.8 / vm;
+      const tip = new THREE.Vector3(
+        g.position.x + vx * scale,
+        g.position.y + vy * scale * 0.35,
+        g.position.z + vz * scale,
+      );
+      let arrow = velocityArrows[b.id];
+      if (!arrow) {
+        const geo = new THREE.BufferGeometry().setFromPoints([g.position.clone(), tip]);
+        const mat = new THREE.LineBasicMaterial({
+          color: 0x6ec8a0, transparent: true, opacity: 0.55, depthWrite: false,
+        });
+        arrow = new THREE.Line(geo, mat);
+        scene.add(arrow);
+        velocityArrows[b.id] = arrow;
+      } else {
+        const pos = arrow.geometry.attributes.position;
+        pos.setXYZ(0, g.position.x, g.position.y, g.position.z);
+        pos.setXYZ(1, tip.x, tip.y, tip.z);
+        pos.needsUpdate = true;
+        arrow.visible = scaleLevel <= 3;
+      }
+    });
   }
   // scene position on the ecliptic plane (XZ), Y up; latitude gently flattened
   function scenePos(R, lonDeg, latDeg) {
@@ -578,13 +709,17 @@ const FinishShader = {
   }
   const easeInOut = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+  /** Slow start/end — cosmic journey legs feel like a gentle spiral drift. */
+  const easeJourney = (t) => {
+    const x = Math.max(0, Math.min(1, t));
+    return x * x * x * (x * (x * 6 - 15) + 10);
+  };
 
   // ── Live zodiac readout ─────────────────────────────────────────────────────
-  // Ported concept from OrbitLab's orrery-instrument (its readout displays a
-  // pre-computed sign token + degree). Here we compute the GEOCENTRIC ecliptic
-  // longitude from the engine's own AstroEphemeris and split it into sign + degree,
-  // exactly as the natal engine does (signOf = SIGNS[floor(lon/30)], degree = lon%30).
-  // This is the true astrological placement — honest, not the schematic scene radius.
+  // Computes the GEOCENTRIC ecliptic longitude from the engine's own AstroEphemeris
+  // and splits it into sign + degree, exactly as the natal engine does
+  // (signOf = SIGNS[floor(lon/30)], degree = lon%30). This is the true astrological
+  // placement — honest, not the schematic scene radius.
   function bodyReadout(id, jd) {
     const E = window.AstroEphemeris;
     if (!E || !E.planetLongitude) return null;
@@ -693,9 +828,64 @@ const FinishShader = {
     }
 
     scaleLevel = Math.round(masterclassZoom);
-    if (!silent) updateScaleHUD();
+    if (!silent) {
+      updateScaleHUD();
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-masterclass-zoom', { detail: { zoom: masterclassZoom } }));
+      } catch (e) { /* optional */ }
+    }
     updateScaleVisualsContinuous(masterclassZoom);
     if (spaceFlightMode) applySpacePalette(masterclassZoom);
+  }
+
+  function startMasterclassIntro() {
+    if (spaceFlightMode || spaceFlightToolActive) { startSpaceFlight(); return; }
+    masterclassIntroActive = true;
+    masterclassIntroStart = performance.now();
+    masterclassIntroFrom = 6;
+    masterclassIntroTo = 0;
+    setMasterclassZoom(6, false);
+    introActive = false;
+    daysPerSec = 0;
+    userTouched = performance.now() + MASTERCLASS_INTRO_MS;
+  }
+
+  function pauseMasterclassIntro() {
+    masterclassIntroActive = false;
+  }
+
+  function setMasterclassMode(on) {
+    masterclassMode = !!on;
+  }
+
+  function setChapterExposure(v) {
+    if (renderer) renderer.toneMappingExposure = v;
+  }
+
+  function setChapterFog(hex) {
+    if (!scene || !scene.fog) return;
+    try { scene.fog.color.set(hex); } catch (e) {}
+  }
+
+  function setEarthNightIntensity(v) {
+    if (earthUniforms && earthUniforms.uNightInt) {
+      earthUniforms.uNightInt.value = Math.max(0.5, Math.min(2.5, v));
+    }
+  }
+
+  function precompileAllScales() {
+    if (!renderer || !scene || !camera) return;
+    const saved = masterclassZoom;
+    const keyLevels = [0, 2, 4, 6];
+    for (const i of keyLevels) {
+      setMasterclassZoom(i, false, true);
+      applyCamera();
+      try {
+        if (renderer.compile) renderer.compile(scene, camera);
+        if (composer) composer.render(); else renderer.render(scene, camera);
+      } catch (e) { /* best-effort */ }
+    }
+    setMasterclassZoom(saved, false, true);
   }
 
   function finishSpaceFlightTool() {
@@ -1258,9 +1448,16 @@ const FinishShader = {
     syncPreloaderSystemClass(false);
   }
 
-  function syncSceneStarfield(level) {
+  function starfieldShellFade(z) {
+    if (z < 5) return 1;
+    if (z < 6) return 0.45 + (6 - z) * 0.55;
+    return 0.28;
+  }
+
+  function syncSceneStarfield(zOrLevel) {
     if (!starField) return;
-    const lv = level | 0;
+    const z = typeof zOrLevel === 'number' ? zOrLevel : 0;
+    const lv = Math.round(z);
     if (usesPageStarfield() && lv < 5) {
       starField.visible = false;
       if (starFieldFar) starFieldFar.visible = false;
@@ -1268,17 +1465,15 @@ const FinishShader = {
       return;
     }
     starField.visible = true;
+    const shellFade = starfieldShellFade(z);
     if (starField.material.uniforms) {
-      starField.material.uniforms.uFade.value = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
-      // v576: lift point size at Earth/Inner scales — stars present, never competing with the copy rail
+      starField.material.uniforms.uFade.value = shellFade;
       if (starField.material.uniforms.uSizeMul) {
-        // Slightly brighter star discs at Earth/Inner so the void reads deep space
-        starField.material.uniforms.uSizeMul.value = lv <= 1 ? 1.48 : lv <= 2 ? 1.12 : 1;
+        const nearMul = z <= 1.5 ? 1.35 : z <= 2.5 ? 1.35 - (z - 1.5) * 0.35 : 1;
+        starField.material.uniforms.uSizeMul.value = nearMul;
       }
     }
-    // v577: the far parallax shell + faint milky-way band track the near shell's gating.
-    // The band carries an extra fade so it always stays a whisper behind the stars.
-    const nearFade = lv >= 6 ? 0.28 : lv >= 5 ? 0.45 : 1;
+    const nearFade = shellFade;
     if (starFieldFar) {
       starFieldFar.visible = true;
       if (starFieldFar.material.uniforms) {
@@ -1292,6 +1487,23 @@ const FinishShader = {
         milkyWayBand.material.uniforms.uFade.value = nearFade * 0.7;
         milkyWayBand.material.uniforms.uSizeMul.value = (lv <= 1 ? 1.3 : 1.15);
       }
+    }
+    if (instrumentMode && lv <= 2) {
+      if (starField && starField.material.uniforms) {
+        starField.material.uniforms.uFade.value = 1;
+        starField.material.uniforms.uSizeMul.value = perfTier === 'high' ? 1.28 : 1.18;
+      }
+      if (starFieldFar && starFieldFar.material.uniforms) {
+        starFieldFar.material.uniforms.uFade.value = 0.82;
+        starFieldFar.material.uniforms.uSizeMul.value = 0.9;
+      }
+      if (milkyWayBand && milkyWayBand.material.uniforms) {
+        milkyWayBand.material.uniforms.uFade.value = 0.92;
+        milkyWayBand.material.uniforms.uSizeMul.value = 1.38;
+      }
+      if (instrumentCosmicVeil) instrumentCosmicVeil.visible = true;
+    } else if (instrumentCosmicVeil) {
+      instrumentCosmicVeil.visible = false;
     }
   }
 
@@ -1343,12 +1555,12 @@ const FinishShader = {
     moonFrameAzBase = azEM + side;
   }
 
-  function syncCosmosBlend(level) {
+  function syncCosmosBlend(zOrLevel) {
     if (!window.CosmosEngine || typeof window.CosmosEngine.setOrreryBlend !== 'function') return;
-    const lv = level | 0;
+    const z = typeof zOrLevel === 'number' ? zOrLevel : (zOrLevel | 0);
     let blend = 0;
-    if (lv >= 5) blend = Math.min(1, 0.4 + (lv - 4) * 0.6);
-    else if (lv >= 4) blend = (lv - 3) * 0.4;
+    if (z >= 5) blend = Math.min(1, 0.4 + (z - 4) * 0.6);
+    else if (z >= 4) blend = (z - 3) * 0.4;
     window.CosmosEngine.setOrreryBlend(blend);
   }
 
@@ -1368,13 +1580,11 @@ const FinishShader = {
       updateDomLabels(1);
     }
     tuneSunGlowForComposer(perfTier);
-    if (bloomPass && composer) {
-      // Hero system frame: crisp sun glow without washing planets (ART: no bloom crank)
-      bloomPass.strength = perfTier === 'mid' ? 0.24 : 0.36;
-      bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
-      bloomPass.radius = perfTier === 'mid' ? 0.36 : 0.44;
+    if (bloomPass && composer && !instrumentMode) {
+      bloomPass.strength = perfTier === 'mid' ? 0.20 : 0.30;
+      bloomPass.threshold = perfTier === 'mid' ? 0.90 : 0.86;
     }
-    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.12 : 1.07;
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.10 : 1.06;
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
     syncSceneStarfield(2);
     syncCosmosBlend(2);
@@ -1441,9 +1651,9 @@ const FinishShader = {
     try {
       composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
-      const bloomStrength = perfTier === 'mid' ? 0.26 : 0.38;
-      const bloomRadius = perfTier === 'mid' ? 0.40 : 0.48;
-      const bloomThreshold = perfTier === 'mid' ? 0.88 : 0.84;
+      const bloomStrength = perfTier === 'mid' ? 0.22 : 0.34;
+      const bloomRadius = perfTier === 'mid' ? 0.38 : 0.46;
+      const bloomThreshold = perfTier === 'mid' ? 0.90 : 0.86;
       bloomPass = new UnrealBloomPass(
         new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
         bloomStrength, bloomRadius, bloomThreshold
@@ -1478,7 +1688,7 @@ const FinishShader = {
     // resting sun glow sits in the ENGRAVED BRASS palette (other pages unchanged).
     const layers = [
       { tex: isAwardMode()
-          ? makeGlowTexture('rgba(236,214,164,0.9)', 'rgba(168,176,188,0.4)')
+          ? makeGlowTexture('rgba(236,214,164,0.9)', 'rgba(194,160,94,0.4)')
           : makeGlowTexture('rgba(255,252,235,0.95)', 'rgba(255,205,85,0.52)'), scale: SUN_SIZE * 6.2 },
       { tex: makeGlowTexture('rgba(255,218,125,0.48)', 'rgba(240,135,35,0.14)'), scale: SUN_SIZE * 12 },
       { tex: makeGlowTexture('rgba(255,175,55,0.16)', 'rgba(215,85,12,0.04)'), scale: SUN_SIZE * 19 },
@@ -1617,6 +1827,7 @@ const FinishShader = {
   function cancelScaleJourney(jumpToTarget) {
     journeyActive = false;
     journeySteps = [];
+    journeyTotalLegs = 0;
     if (journeyHoldTimer) {
       clearTimeout(journeyHoldTimer);
       journeyHoldTimer = null;
@@ -1643,7 +1854,15 @@ const FinishShader = {
         detail: { level, remaining: journeySteps.length, target: journeyTarget },
       }));
     } catch (e) { /* optional */ }
-    journeyHoldTimer = setTimeout(runJourneyLeg, SCALE_ANIM_MS + JOURNEY_HOLD_MS);
+    journeyHoldTimer = setTimeout(runJourneyLeg, JOURNEY_ANIM_MS + JOURNEY_HOLD_MS);
+  }
+
+  function dispatchJourneyProgress(legIndex, legT) {
+    if (!journeyActive || !journeyTotalLegs) return;
+    const progress = Math.max(0, Math.min(1, (legIndex + legT) / journeyTotalLegs));
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-journey-progress', { detail: { progress, level: scaleLevel } }));
+    } catch (e) { /* optional */ }
   }
 
   function startScaleJourney(target, opts) {
@@ -1658,12 +1877,9 @@ const FinishShader = {
       flicking = false;
 
       if (opts.fullTour) {
-        // #6: the outward "Earth → deep field" tour now eases BACK to the System
-        // rest (…,6,2) instead of leaving the viewer stranded at the Cosmos deep
-        // field when narration ends. The inward tour already rests at Earth (0).
         journeySteps = opts.direction === 'in'
           ? [6, 5, 4, 3, 2, 1, 0]
-          : [0, 1, 2, 3, 4, 5, 6, 2];
+          : [0, 1, 2, 3, 4, 5, 6];
       } else if (from === to) {
         applyScalePreset(to, true);
         try {
@@ -1681,6 +1897,7 @@ const FinishShader = {
 
       if (!journeySteps.length) return;
       journeyActive = true;
+      journeyTotalLegs = journeySteps.length;
       runJourneyLeg();
     };
 
@@ -1691,11 +1908,19 @@ const FinishShader = {
     const p = scalePreset(typeof preset === 'number' ? preset : (preset.id != null ? preset.id : preset));
     focusFrameId = null;      // v576: any scale change releases camera framing ownership
     moonFrameActive = false;
+    camRadiusTarget = null;   // cancel free-zoom coast so preset isn't fought mid-lerp
     const prevLevel = scaleLevel;
     scaleLevel = p.id;
     scaleAnimFromLevel = prevLevel;
     scaleAnimToLevel = p.id;
     if (animate && !PRM) {
+      scaleAnimDurationMs = journeyActive ? JOURNEY_ANIM_MS : SCALE_ANIM_MS;
+      const levelDelta = scaleAnimToLevel - scaleAnimFromLevel;
+      const outward = levelDelta > 0;
+      const mag = Math.abs(levelDelta);
+      scaleAnimSpiralAz = journeyActive ? (outward ? 0.32 : -0.32) * mag : (p.id === 5 ? 0.24 : 0);
+      scaleAnimSpiralEl = journeyActive ? 0.035 * mag : (p.id === 5 ? 0.09 : (p.id === 6 ? 0.05 : 0));
+      if (p.id === 5) { galaxyIdleAz = null; galaxyIdleEl = null; }
       scaleAnimFrom.radius = camRadius;
       scaleAnimFrom.el = camEl;
       scaleAnimFrom.az = camAz;
@@ -1712,8 +1937,13 @@ const FinishShader = {
       } else { scaleAnimTo.tx = 0; scaleAnimTo.ty = 0; scaleAnimTo.tz = 0; }
       scaleAnimActive = true;
       scaleAnimStart = performance.now();
+      camRadiusTarget = null;
+      zoomSettleUntil = performance.now() + scaleAnimDurationMs + 320;
       introActive = false;
+      if (instrumentMode) { instrumentIdleAz = null; instrumentIdleEl = null; }
     } else {
+      scaleAnimSpiralAz = 0;
+      scaleAnimSpiralEl = 0;
       if (p.targetEarth) {
         earthTargetVec(camTarget);
         setEarthTerminatorCamera(p.camRadius, p.camEl);
@@ -1730,12 +1960,103 @@ const FinishShader = {
     }
     updateScaleHUD();
     updateScaleVisuals(scaleLevel);
+    if (instrumentMode) stabilizeInstrumentSunFrame();
     try {
       document.dispatchEvent(new CustomEvent('orrery-scale-change', { detail: { level: scaleLevel, preset: p } }));
     } catch (e) { /* optional */ }
   }
 
+  /** Map camera radius → continuous 0..6 scale (log-blend between presets). */
+  function radiusToContinuousZoom(r) {
+    const rr = Math.max(FREE_CAM_MIN, Math.min(FREE_CAM_MAX, r));
+    if (rr <= SCALE_LEVELS[0].camRadius) return 0;
+    for (let i = 0; i < SCALE_LEVELS.length - 1; i++) {
+      const a = SCALE_LEVELS[i].camRadius;
+      const b = SCALE_LEVELS[i + 1].camRadius;
+      if (rr <= b || i === SCALE_LEVELS.length - 2) {
+        const t = (Math.log(rr) - Math.log(a)) / Math.max(1e-6, Math.log(b) - Math.log(a));
+        return i + Math.max(0, Math.min(1, t));
+      }
+    }
+    return 6;
+  }
+
+  /** Nearest discrete scale badge for HUD / keys (does not snap the camera). */
+  function nearestScaleForRadius(r) {
+    // Hysteresis: keep current badge while radius stays in an expanded band so
+    // the strip / permalink don't thrash at midpoints between presets.
+    const cur = Math.max(0, Math.min(6, scaleLevel | 0));
+    const curP = SCALE_LEVELS[cur];
+    if (curP) {
+      const prevR = cur > 0 ? SCALE_LEVELS[cur - 1].camRadius : FREE_CAM_MIN;
+      const nextR = cur < 6 ? SCALE_LEVELS[cur + 1].camRadius : FREE_CAM_MAX;
+      const lo = Math.sqrt(prevR * curP.camRadius) * 0.92;
+      const hi = Math.sqrt(curP.camRadius * nextR) * 1.08;
+      if (r >= lo && r <= hi) return cur;
+    }
+    let best = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < SCALE_LEVELS.length; i++) {
+      const d = Math.abs(Math.log(r) - Math.log(SCALE_LEVELS[i].camRadius));
+      if (d < bestDist) { bestDist = d; best = i; }
+    }
+    return best;
+  }
+
+  /** Release portrait / moon / scale-anim ownership so free zoom is never fought. */
+  function releaseCameraFraming(opts) {
+    opts = opts || {};
+    if (opts.keepAspect && focusFrameId === 'aspect') return;
+    moonFrameActive = false;
+    if (focusFrameId && focusFrameId !== 'aspect') focusFrameId = null;
+    else if (!opts.keepAspect) focusFrameId = null;
+    if (scaleAnimActive) {
+      scaleAnimActive = false;
+      scaleAnimSpiralAz = 0;
+      scaleAnimSpiralEl = 0;
+    }
+    // Inline journey cancel (avoid order/hoist surprises during wheel storms)
+    if (journeyActive) {
+      journeyActive = false;
+      journeySteps = [];
+      journeyTotalLegs = 0;
+      if (journeyHoldTimer) {
+        clearTimeout(journeyHoldTimer);
+        journeyHoldTimer = null;
+      }
+    }
+  }
+
+  /** Soft-sync discrete scaleLevel + continuous layer fades while free-zooming. */
+  function syncFreeExploreScaleFromRadius(r, opts) {
+    opts = opts || {};
+    const cont = radiusToContinuousZoom(r);
+    const force = !!opts.force;
+    if (force || Math.abs(cont - lastFreeContZ) > 0.02) {
+      lastFreeContZ = cont;
+      updateScaleVisualsContinuous(cont);
+    }
+    const lv = nearestScaleForRadius(r);
+    if (lv !== scaleLevel) {
+      const prev = scaleLevel;
+      scaleLevel = lv;
+      updateScaleHUD();
+      if (opts.dispatch !== false) {
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-scale-change', {
+            detail: { level: scaleLevel, preset: scalePreset(scaleLevel), freeExplore: true, from: prev },
+          }));
+        } catch (e) { /* optional */ }
+      }
+    }
+  }
+
   function clampCamToLevel() {
+    // Free explore: only a soft global envelope — never snap back into a scale band.
+    if (freeExploreMode) {
+      camRadius = Math.max(FREE_CAM_MIN, Math.min(FREE_CAM_MAX, camRadius));
+      return;
+    }
     const p = scalePreset(scaleLevel);
     if (moonFrameActive) {
       // v576: Earth+Moon frame sits closer than the Earth preset's camMin
@@ -1978,7 +2299,7 @@ const FinishShader = {
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
       return new THREE.Line(geo, new THREE.LineBasicMaterial({
-        color: 0xc2a05e, transparent: true, opacity: 0.22, depthWrite: false,
+        color: 0xc9a227, transparent: true, opacity: 0.14, depthWrite: false,
       }));
     }
     leoOrbitRing = orbitRingPoints(0.99, 96, 0.52);
@@ -2280,7 +2601,6 @@ const FinishShader = {
     { name: 'Polaris', dir: [0.05, 0.96, 0.28], dist: 70, color: 0xfff8e8 },
     { name: 'Arcturus', dir: [-0.68, 0.52, 0.52], dist: 80, color: 0xffd8a0 },
     { name: 'Altair', dir: [0.38, 0.62, 0.68], dist: 74, color: 0xf8fcff },
-    // OrbitLab 2026-07-05 port: five more bright anchors for the local-stars scale
     { name: 'Rigel', dir: [-0.62, -0.42, 0.66], dist: 96, color: 0xe8f0ff },
     { name: 'Deneb', dir: [0.22, 0.88, 0.42], dist: 98, color: 0xf0f8ff },
     { name: 'Spica', dir: [-0.48, -0.72, 0.50], dist: 82, color: 0xe0ecff },
@@ -2317,8 +2637,7 @@ const FinishShader = {
     return _galaxyDotTex;
   }
 
-  // OrbitLab 2026-07-05 port — Gaia DR3 / ESA 2025 barred-spiral model:
-  // 4 major arms, inclined bar, Orion spur.
+  // Gaia DR3 / ESA 2025 barred-spiral model — 4 major arms, inclined bar, Orion spur.
   const MILKY_R0 = 44;
   const MILKY_PITCH = 12.8 * D2R;
   const MILKY_BAR_ANG = 32 * D2R;
@@ -2381,21 +2700,104 @@ const FinishShader = {
     g.addColorStop(1, 'rgba(0,0,0,0)');
     x.fillStyle = g;
     x.fillRect(0, 0, 256, 64);
-    // Soften the long edges too — without a cross-axis falloff the ribbons render
-    // as hard-edged rectangles ("brush stroke" smears) instead of soft arm glow.
-    x.globalCompositeOperation = 'destination-in';
-    const v = x.createLinearGradient(0, 0, 0, 64);
-    v.addColorStop(0, 'rgba(255,255,255,0)');
-    v.addColorStop(0.5, 'rgba(255,255,255,1)');
-    v.addColorStop(1, 'rgba(255,255,255,0)');
-    x.fillStyle = v;
-    x.fillRect(0, 0, 256, 64);
     return new THREE.CanvasTexture(c);
+  }
+
+  /** Phase 2: soft radial disk (mesh texture) — lives in milkyWayGroup so free-look stays rigid. */
+  function galaxySoftDiskTexture() {
+    const size = 512;
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const x = c.getContext('2d');
+    const cx = size / 2, cy = size / 2;
+    // Warm core → cool outer (color grade)
+    const g = x.createRadialGradient(cx, cy, 0, cx, cy, size * 0.48);
+    g.addColorStop(0, 'rgba(255, 236, 200, 0.55)');
+    g.addColorStop(0.12, 'rgba(255, 210, 160, 0.38)');
+    g.addColorStop(0.28, 'rgba(180, 160, 200, 0.22)');
+    g.addColorStop(0.55, 'rgba(100, 130, 190, 0.14)');
+    g.addColorStop(0.82, 'rgba(60, 90, 150, 0.06)');
+    g.addColorStop(1, 'rgba(20, 30, 50, 0)');
+    x.fillStyle = g;
+    x.fillRect(0, 0, size, size);
+    // Soft spiral suggestion (low contrast — points carry structure)
+    x.globalCompositeOperation = 'lighter';
+    for (let arm = 0; arm < 4; arm++) {
+      const phase = arm * (Math.PI * 2 / 4) + 0.4;
+      x.strokeStyle = arm % 2 === 0 ? 'rgba(160, 200, 255, 0.07)' : 'rgba(255, 220, 180, 0.06)';
+      x.lineWidth = 10 + arm * 2;
+      x.beginPath();
+      for (let i = 0; i <= 80; i++) {
+        const t = i / 80;
+        const rad = 20 + t * (size * 0.42);
+        const th = phase + Math.log(Math.max(rad, 24) / 24) / Math.tan(12.8 * Math.PI / 180);
+        const px = cx + Math.cos(th) * rad;
+        const py = cy + Math.sin(th) * rad;
+        if (i === 0) x.moveTo(px, py); else x.lineTo(px, py);
+      }
+      x.stroke();
+    }
+    // Fine grain so it doesn't look like a flat sticker
+    x.globalCompositeOperation = 'source-over';
+    const img = x.getImageData(0, 0, size, size);
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 16) {
+      const n = (Math.random() - 0.5) * 12;
+      d[i] = Math.max(0, Math.min(255, d[i] + n));
+      d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + n * 0.9));
+      d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + n * 1.1));
+    }
+    x.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(c);
+    try {
+      if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
+      else if (THREE.sRGBEncoding != null) tex.encoding = THREE.sRGBEncoding;
+    } catch (e) { /* optional */ }
+    return tex;
+  }
+
+  /** Phase 2: dark dust-lane ring texture (multiply / normal dark mesh). */
+  function galaxyDustLaneTexture() {
+    const size = 512;
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const x = c.getContext('2d');
+    const cx = size / 2, cy = size / 2;
+    x.clearRect(0, 0, size, size);
+    for (let arm = 0; arm < 4; arm++) {
+      const phase = arm * (Math.PI * 2 / 4) + 0.55;
+      x.strokeStyle = 'rgba(8, 6, 12, 0.55)';
+      x.lineWidth = 7;
+      x.lineCap = 'round';
+      x.beginPath();
+      for (let i = 0; i <= 70; i++) {
+        const t = 0.12 + (i / 70) * 0.75;
+        const rad = 28 + t * (size * 0.38);
+        const th = phase + Math.log(Math.max(rad, 28) / 28) / Math.tan(12.8 * Math.PI / 180);
+        // Offset slightly to lane side of arm
+        const off = 6;
+        const px = cx + Math.cos(th) * rad + Math.cos(th + Math.PI / 2) * off * 0.15;
+        const py = cy + Math.sin(th) * rad + Math.sin(th + Math.PI / 2) * off * 0.15;
+        if (i === 0) x.moveTo(px, py); else x.lineTo(px, py);
+      }
+      x.stroke();
+    }
+    // Soft radial fade so lanes don't clip hard at edge
+    x.globalCompositeOperation = 'destination-in';
+    const g = x.createRadialGradient(cx, cy, size * 0.08, cx, cy, size * 0.48);
+    g.addColorStop(0, 'rgba(255,255,255,0.15)');
+    g.addColorStop(0.35, 'rgba(255,255,255,0.85)');
+    g.addColorStop(0.85, 'rgba(255,255,255,0.7)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = g;
+    x.fillRect(0, 0, size, size);
+    const tex = new THREE.CanvasTexture(c);
+    return tex;
   }
 
   function buildOortShell() {
     const innerR = 52, outerR = 68;
-    const count = perfTier === 'low' ? 900 : perfTier === 'mid' ? 1400 : 2200;
+    const count = perfTier === 'low' ? 1400 : perfTier === 'mid' ? 2200 : 3600;
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -2412,9 +2814,9 @@ const FinishShader = {
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     oortShell = new THREE.Points(g, new THREE.PointsMaterial({
-      map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.42 : 0.34,
-      vertexColors: true, transparent: true,
-      opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+      map: galaxySoftDotTexture(),
+      size: perfTier === 'high' ? 0.35 : 0.28, vertexColors: true, transparent: true,
+      opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending,
     }));
     oortShell.visible = false;
     galaxyGroup.add(oortShell);
@@ -2426,8 +2828,7 @@ const FinishShader = {
       const d = new THREE.Vector3(s.dir[0], s.dir[1], s.dir[2]).normalize().multiplyScalar(s.dist);
       const core = new THREE.Sprite(new THREE.SpriteMaterial({
         map: makeGlowTexture('rgba(255,245,220,0.95)', 'rgba(180,200,255,0.0)'),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-        color: s.color, fog: false,
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, color: s.color,
       }));
       core.scale.set(3.2, 3.2, 1);
       core.position.copy(d);
@@ -2436,8 +2837,7 @@ const FinishShader = {
       localStarsGroup.add(core);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({
         map: makeGlowTexture('rgba(200,220,255,0.25)', 'rgba(80,120,200,0.0)'),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-        opacity: 0.5, fog: false,
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.5,
       }));
       halo.scale.set(9, 9, 1);
       halo.position.copy(d);
@@ -2450,7 +2850,7 @@ const FinishShader = {
     });
     const sysDot = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeGlowTexture('rgba(255,220,120,0.9)', 'rgba(255,160,40,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, fog: false,
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
     }));
     sysDot.scale.set(2.4, 2.4, 1);
     sysDot.position.set(0, 0, 0);
@@ -2463,17 +2863,12 @@ const FinishShader = {
     galaxyGroup.add(localStarsGroup);
   }
 
-  // OrbitLab 2026-07-05 port — Gaia/VFX Milky Way rebuild: multi-layer barred spiral
-  // (disk/bulge/bar point clouds, dust lanes, HII sprites, arm-glow ribbons, LMC/SMC,
-  // core ring + edge-on halo disk). Everything galaxy-shaped goes into milkyWayGroup
-  // so the galactic tilt is shared and the ecliptic-aligned layers stay upright.
   function buildMilkyWaySpiral() {
-    // Denser + finer than the OrbitLab source: small soft points reading as
-    // continuous star dust (the upstream build used fewer, larger, square points).
-    const diskCount = perfTier === 'low' ? 28000 : perfTier === 'mid' ? 54000 : 88000;
-    const bulgeCount = perfTier === 'low' ? 3200 : perfTier === 'mid' ? 5800 : 9500;
-    const dustCount = perfTier === 'low' ? 4200 : perfTier === 'mid' ? 8200 : 14000;
-    const barCount = perfTier === 'low' ? 1800 : perfTier === 'mid' ? 3200 : 5200;
+    // Phase 1 density: more arm-following points (less empty interarm), still tiered for GPU.
+    const diskCount = perfTier === 'low' ? 28000 : perfTier === 'mid' ? 52000 : 88000;
+    const bulgeCount = perfTier === 'low' ? 3600 : perfTier === 'mid' ? 6400 : 10500;
+    const dustCount = perfTier === 'low' ? 3600 : perfTier === 'mid' ? 7000 : 11000;
+    const barCount = perfTier === 'low' ? 2200 : perfTier === 'mid' ? 3800 : 6200;
 
     function fillDiskPoints(count, bulge, bar) {
       const pos = new Float32Array(count * 3);
@@ -2481,49 +2876,60 @@ const FinishShader = {
       let idx = 0;
       for (let i = 0; i < bulge; i++, idx++) {
         const u = Math.random(), ang = Math.random() * Math.PI * 2;
-        const rad = Math.pow(u, 0.42) * 42;
-        const yScale = 0.55 + Math.random() * 0.85;
+        // Peanut-ish: thicker near midplane, slightly extended along bar later
+        const rad = Math.pow(u, 0.38) * 48;
+        const yScale = 0.45 + Math.random() * 0.7;
         pos[idx * 3] = Math.cos(ang) * rad;
-        pos[idx * 3 + 1] = (Math.random() - 0.5) * 14 * yScale;
+        pos[idx * 3 + 1] = (Math.random() - 0.5) * 11 * yScale;
         pos[idx * 3 + 2] = Math.sin(ang) * rad;
-        const w = 0.5 + Math.random() * 0.5;
+        const w = 0.55 + Math.random() * 0.45;
         col[idx * 3] = 1.0 * w; col[idx * 3 + 1] = 0.9 * w; col[idx * 3 + 2] = 0.68 * w;
       }
       for (let i = 0; i < bar; i++, idx++) {
-        const along = (Math.random() - 0.5) * 86;
-        const across = (Math.random() - 0.5) * 12;
+        const along = (Math.random() - 0.5) * 92;
+        const across = (Math.random() - 0.5) * 11;
         pos[idx * 3] = along * Math.cos(MILKY_BAR_ANG) - across * Math.sin(MILKY_BAR_ANG);
-        pos[idx * 3 + 1] = (Math.random() - 0.5) * 6;
+        pos[idx * 3 + 1] = (Math.random() - 0.5) * 5.5;
         pos[idx * 3 + 2] = along * Math.sin(MILKY_BAR_ANG) + across * Math.cos(MILKY_BAR_ANG);
-        const w = 0.48 + Math.random() * 0.52;
+        const w = 0.52 + Math.random() * 0.48;
         col[idx * 3] = 1.0 * w; col[idx * 3 + 1] = 0.86 * w; col[idx * 3 + 2] = 0.58 * w;
       }
       while (idx < count) {
         const arm = MILKY_ARMS[Math.floor(Math.random() * MILKY_ARMS.length)];
-        const t = Math.pow(Math.random(), 0.62);
-        // Triangular jitter both radially and across the arm — the upstream
-        // uniform narrow scatter left points marching in single-file "staircase"
-        // chains along the spiral instead of reading as diffuse dust.
-        const rad = MILKY_R0 + t * 560 + (Math.random() + Math.random() - 1) * 26;
-        const armScatter = (Math.random() + Math.random() - 1) * (0.10 + t * 0.16);
+        // Bias samples toward mid-arm (t~0.25–0.7) for thicker readable arms
+        let t = Math.pow(Math.random(), 0.55);
+        if (Math.random() < 0.45) t = 0.22 + Math.random() * 0.55;
+        const rad = MILKY_R0 + t * 560 + (Math.random() - 0.5) * 12;
+        // Tight scatter on-arm (Phase 1 density); rare wider fluff
+        const armScatter = Math.random() < 0.82
+          ? (Math.random() - 0.5) * (0.035 + t * 0.05)
+          : (Math.random() - 0.5) * (0.08 + t * 0.1);
         const p = milkySpiralXY(arm.phase, rad, armScatter);
-        const diskH = (8 + t * 16) * (1 - t * 0.35);
+        // Thin disk — kill tall off-plane streaks
+        const diskH = (5.5 + t * 9) * (1 - t * 0.28);
         const y = (Math.random() - 0.5) * diskH;
-        const interarm = Math.abs(armScatter) > 0.06;
-        const young = t < 0.52 && Math.random() < (interarm ? 0.12 : 0.42);
-        const dustLane = interarm && Math.random() < 0.22;
+        const interarm = Math.abs(armScatter) > 0.045;
+        const young = t < 0.55 && Math.random() < (interarm ? 0.1 : 0.48);
+        const dustLane = interarm && Math.random() < 0.18;
         let r, g, b;
         if (dustLane) {
           r = 0.28; g = 0.24; b = 0.2;
         } else if (young) {
+          // Outer arms cooler blue-white; inner younger still warm-tinged
           const wv = Math.random();
-          r = 0.52 + wv * 0.22; g = 0.76 + wv * 0.16; b = 0.98;
+          const cool = 0.55 + t * 0.45;
+          r = (0.52 + wv * 0.18) * (1.05 - cool * 0.15);
+          g = 0.72 + wv * 0.14;
+          b = 0.88 + cool * 0.12 + wv * 0.08;
         } else {
-          const warm = Math.random();
-          r = 0.64 + warm * 0.24; g = 0.7 + warm * 0.18; b = 0.88 + (1 - warm) * 0.1;
+          // Phase 2 grade: warmer near center, cooler outward
+          const warm = Math.random() * (1 - t * 0.55);
+          r = 0.58 + warm * 0.32 + (1 - t) * 0.08;
+          g = 0.66 + warm * 0.2;
+          b = 0.78 + t * 0.18 + (1 - warm) * 0.08;
         }
         pos[idx * 3] = p.x; pos[idx * 3 + 1] = y; pos[idx * 3 + 2] = p.z;
-        const w = 0.38 + Math.random() * 0.62;
+        const w = 0.42 + Math.random() * 0.58;
         col[idx * 3] = r * w; col[idx * 3 + 1] = g * w; col[idx * 3 + 2] = b * w;
         idx++;
       }
@@ -2536,10 +2942,9 @@ const FinishShader = {
         .setAttribute('position', new THREE.BufferAttribute(bulgeOnly.pos, 3))
         .setAttribute('color', new THREE.BufferAttribute(bulgeOnly.col, 3)),
       new THREE.PointsMaterial({
-        map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.66 : 0.52,
-        vertexColors: true, transparent: true,
-        opacity: 0.92, depthWrite: false, blending: THREE.AdditiveBlending,
-        sizeAttenuation: true, fog: false,
+        map: galaxySoftDotTexture(),
+        size: perfTier === 'high' ? 0.82 : 0.62, vertexColors: true, transparent: true,
+        opacity: 0.92, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
       })
     );
     milkyWayBulge.visible = false;
@@ -2552,10 +2957,9 @@ const FinishShader = {
         .setAttribute('color', new THREE.BufferAttribute(disk.col, 3)),
       new THREE.PointsMaterial({
         map: galaxySoftDotTexture(),
-        size: perfTier === 'high' ? 0.55 : perfTier === 'mid' ? 0.45 : 0.38,
+        size: perfTier === 'high' ? 0.72 : perfTier === 'mid' ? 0.56 : 0.48,
         vertexColors: true, transparent: true, opacity: 0.9,
-        depthWrite: false, blending: THREE.AdditiveBlending,
-        sizeAttenuation: true, fog: false,
+        depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
       })
     );
     milkyWayDisk.visible = false;
@@ -2566,64 +2970,53 @@ const FinishShader = {
     for (let i = 0; i < dustCount; i++) {
       const arm = MILKY_ARMS[Math.floor(Math.random() * MILKY_ARMS.length)];
       const t = 0.12 + Math.random() * 0.82;
-      // Jittered lane: the upstream two fixed angular offsets made the dust march
-      // in discrete parallel chains of dark squares ("staircase streaks").
-      const rad = MILKY_R0 + t * 520 + (Math.random() + Math.random() - 1) * 22;
-      const laneOffset = (Math.random() < 0.5 ? -1 : 1) * (0.06 + (Math.random() + Math.random()) * 0.07);
+      const rad = MILKY_R0 + t * 520;
+      // Lanes hug arm spines (was wide offset → vertical dust streaks off-plane)
+      const laneOffset = (Math.random() < 0.5 ? -1 : 1) * (0.05 + Math.random() * 0.05);
       const p = milkySpiralXY(arm.phase, rad, laneOffset);
       dPos[i * 3] = p.x;
-      dPos[i * 3 + 1] = (Math.random() - 0.5) * (5 + t * 7);
+      dPos[i * 3 + 1] = (Math.random() - 0.5) * (3.2 + t * 4.5);
       dPos[i * 3 + 2] = p.z;
       const w = 0.35 + Math.random() * 0.45;
       dCol[i * 3] = 0.18 * w; dCol[i * 3 + 1] = 0.14 * w; dCol[i * 3 + 2] = 0.12 * w;
     }
-    // Dust MODULATES (soft, translucent smoke over the bright disk) — never an
-    // opaque dark occluder over the page void.
     milkyWayDust = new THREE.Points(
       new THREE.BufferGeometry()
         .setAttribute('position', new THREE.BufferAttribute(dPos, 3))
         .setAttribute('color', new THREE.BufferAttribute(dCol, 3)),
       new THREE.PointsMaterial({
-        map: galaxySoftDotTexture(), size: perfTier === 'high' ? 1.7 : 1.3,
-        vertexColors: true, transparent: true,
-        opacity: 0.18, depthWrite: false, blending: THREE.NormalBlending,
-        sizeAttenuation: true, fog: false,
+        map: galaxySoftDotTexture(),
+        size: perfTier === 'high' ? 1.15 : 0.88, vertexColors: true, transparent: true,
+        opacity: 0.42, depthWrite: false, blending: THREE.NormalBlending, sizeAttenuation: true,
       })
     );
     milkyWayDust.visible = false;
     milkyWayGroup.add(milkyWayDust);
 
-    // HII knots: small round nebula glows on the arms. The upstream build reused
-    // the RIBBON texture here (hard-edged rectangles, screen-space rotated) which
-    // rendered as huge crossing smears.
     milkyWayHII = new THREE.Group();
     const hiiN = perfTier === 'low' ? 48 : perfTier === 'mid' ? 88 : 140;
-    const hiiTexBlue = galaxySpriteTexture('rgba(150,195,255,0.5)', 'rgba(70,110,190,0.05)', 128, 128);
-    const hiiTexPink = galaxySpriteTexture('rgba(255,190,225,0.5)', 'rgba(180,90,140,0.05)', 128, 128);
     for (let i = 0; i < hiiN; i++) {
       const arm = MILKY_ARMS[i % MILKY_ARMS.length];
       const t = 0.08 + Math.random() * 0.58;
       const rad = MILKY_R0 + t * 380 + Math.random() * 24;
       const p = milkySpiralXY(arm.phase, rad, (Math.random() - 0.5) * 0.05);
+      const hue = Math.random() < 0.35 ? 'pink' : 'blue';
+      const tex = galaxyArmRibbonTexture(hue);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: Math.random() < 0.35 ? hiiTexPink : hiiTexBlue,
-        blending: THREE.AdditiveBlending, transparent: true,
-        depthWrite: false, opacity: 0.26 + Math.random() * 0.24, fog: false,
+        map: tex, blending: THREE.AdditiveBlending, transparent: true,
+        depthWrite: false, opacity: 0.55 + Math.random() * 0.35,
       }));
-      const sc = 7 + Math.random() * 13;
-      sp.scale.set(sc, sc, 1);
-      sp.position.set(p.x, (Math.random() - 0.5) * 5, p.z);
+      const sc = 12 + Math.random() * 10;
+      sp.scale.set(sc, sc, 1); // circular — no elongated HII smears
+      sp.position.set(p.x, (Math.random() - 0.5) * 4, p.z);
       sp.userData.baseOpa = sp.material.opacity;
       sp.userData.tw = 0.5 + Math.random();
+      sp.userData.hiiSc = sc;
       milkyWayHII.add(sp);
     }
     milkyWayHII.visible = false;
     milkyWayGroup.add(milkyWayHII);
 
-    // Arm-glow plates. These were billboarded Sprites with a screen-space rotation
-    // guess — from the oblique gallery camera they smeared ACROSS the disk as giant
-    // crossing rectangles. Flat planes lying IN the galactic plane co-rotate with
-    // the group, so the glow always hugs the spiral from any camera angle.
     milkyWayArmRibbons = new THREE.Group();
     const ribbonPerArm = perfTier === 'low' ? 5 : perfTier === 'mid' ? 8 : 12;
     MILKY_ARMS.forEach((arm, ai) => {
@@ -2633,22 +3026,17 @@ const FinishShader = {
         const t = 0.18 + (ri / ribbonPerArm) * 0.78;
         const rad = MILKY_R0 + t * 500;
         const p = milkySpiralXY(arm.phase, rad, 0);
-        const len = 55 + t * 90;
-        const mesh = new THREE.Mesh(
-          new THREE.PlaneGeometry(len, len * 0.3),
-          new THREE.MeshBasicMaterial({
-            map: tex, blending: THREE.AdditiveBlending, transparent: true,
-            depthWrite: false, opacity: 0.14 + t * 0.12,
-            side: THREE.DoubleSide, fog: false,
-          })
-        );
-        // log-spiral tangent in the XZ plane is (th + 90° − pitch)
-        mesh.rotation.order = 'YXZ';
-        mesh.rotation.y = -(p.th + Math.PI / 2 - MILKY_PITCH);
-        mesh.rotation.x = -Math.PI / 2;
-        mesh.position.set(p.x, 0, p.z);
-        mesh.userData.baseOpa = mesh.material.opacity;
-        milkyWayArmRibbons.add(mesh);
+        const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: tex, blending: THREE.AdditiveBlending, transparent: true,
+          depthWrite: false, opacity: 0.22 + t * 0.18,
+        }));
+        // Keep ribbon aspect modest so free-orbit doesn't turn arms into smears
+        const len = 42 + t * 58;
+        sp.scale.set(len, len * 0.38, 1);
+        sp.position.set(p.x, 0, p.z);
+        sp.material.rotation = p.th + Math.PI / 2;
+        sp.userData.baseOpa = sp.material.opacity;
+        milkyWayArmRibbons.add(sp);
       }
     });
     milkyWayArmRibbons.visible = false;
@@ -2656,21 +3044,20 @@ const FinishShader = {
 
     milkyWaySatellites = new THREE.Group();
     [
-      { name: 'LMC', pos: [-210, -48, 430], sc: 28, col: 'rgba(255,210,170,0.35)' },
-      { name: 'SMC', pos: [-178, -62, 405], sc: 16, col: 'rgba(200,210,255,0.28)' },
+      { name: 'LMC · Large Magellanic Cloud', short: 'LMC', pos: [-210, -48, 430], sc: 28, col: 'rgba(255,210,170,0.35)' },
+      { name: 'SMC · Small Magellanic Cloud', short: 'SMC', pos: [-178, -62, 405], sc: 16, col: 'rgba(200,210,255,0.28)' },
     ].forEach((sat) => {
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
         map: galaxySpriteTexture(sat.col, 'rgba(40,50,80,0.04)', 256, 256),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-        opacity: 0.65, fog: false,
+        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.72,
       }));
-      sp.scale.set(sat.sc, sat.sc * 0.85, 1);
+      sp.scale.set(sat.sc, sat.sc * 0.9, 1);
       sp.position.set(sat.pos[0], sat.pos[1], sat.pos[2]);
-      sp.userData.baseOpa = 0.65;
+      sp.userData.baseOpa = 0.72;
       milkyWaySatellites.add(sp);
       const lab = makeLabel(sat.name);
-      lab.position.set(sat.pos[0], sat.pos[1] + sat.sc * 0.35, sat.pos[2]);
-      lab.scale.set(0.45, 0.45, 1);
+      lab.position.set(sat.pos[0], sat.pos[1] + sat.sc * 0.42, sat.pos[2]);
+      lab.scale.set(0.62, 0.62, 1);
       milkyWaySatellites.add(lab);
     });
     milkyWaySatellites.visible = false;
@@ -2679,80 +3066,134 @@ const FinishShader = {
     sunMarker = new THREE.Group();
     const sunP = milkySpiralXY(SUN_ARM_PHASE + 0.14, SUN_GALACTIC_R, 0.06);
     const sunPos = new THREE.Vector3(sunP.x, 2.8, sunP.z);
-    const sm = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: makeGlowTexture('rgba(255,230,160,0.95)', 'rgba(255,180,60,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, fog: false,
+    sunMarker.userData.sunLocal = sunPos.clone();
+    // Outer pulse ring (You-are-here)
+    const smRing = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTexture('rgba(120,200,255,0.55)', 'rgba(80,160,255,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.85,
     }));
-    sm.scale.set(5.5, 5.5, 1);
+    smRing.scale.set(14, 14, 1);
+    smRing.position.copy(sunPos);
+    smRing.userData.pulse = true;
+    smRing.userData.baseScale = 14;
+    sunMarker.add(smRing);
+    const sm = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTexture('rgba(255,240,180,1)', 'rgba(255,190,70,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+    }));
+    sm.scale.set(7.2, 7.2, 1);
     sm.position.copy(sunPos);
+    sm.userData.baseScale = 7.2;
     sunMarker.add(sm);
-    const sl = makeLabel('Sun · Orion–Cygnus spur');
-    sl.position.set(sunPos.x, sunPos.y + 4.5, sunPos.z);
-    sl.scale.set(0.68, 0.68, 1);
+    const sl = makeLabel('You are here · Sun');
+    sl.position.set(sunPos.x, sunPos.y + 6.2, sunPos.z);
+    sl.scale.set(0.85, 0.85, 1);
     sunMarker.add(sl);
     sunMarker.visible = false;
     milkyWayGroup.add(sunMarker);
 
+    // Dual-layer core: hot inner + soft outer (both circular sprites)
     galacticCore = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: makeGlowTexture('rgba(255,252,235,0.72)', 'rgba(255,210,130,0.0)'),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-      opacity: 0.82, fog: false,
+      map: makeGlowTexture('rgba(255,252,240,0.9)', 'rgba(255,200,120,0.0)'),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.88,
     }));
-    galacticCore.scale.set(62, 62, 1);
+    galacticCore.scale.set(48, 48, 1);
     galacticCore.position.set(0, 1.8, 0);
     galacticCore.visible = false;
     milkyWayGroup.add(galacticCore);
 
     galacticCoreRing = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: galaxySpriteTexture('rgba(255,220,160,0.22)', 'rgba(180,120,60,0.0)', 512, 512),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-      opacity: 0.48, fog: false,
+      map: galaxySpriteTexture('rgba(255,220,160,0.28)', 'rgba(180,120,60,0.0)', 512, 512),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.42,
     }));
-    galacticCoreRing.scale.set(118, 118, 1);
+    galacticCoreRing.scale.set(96, 96, 1);
     galacticCoreRing.position.set(0, 1.2, 0);
     galacticCoreRing.visible = false;
     milkyWayGroup.add(galacticCoreRing);
 
-    // The bar was a billboarded Sprite whose Object3D rotation.z is a NO-OP for
-    // sprites — it drew as a misaligned screen-space streak. A flat plane lying
-    // in the disk plane co-rotates with the point bar correctly.
-    galacticBar = new THREE.Mesh(
-      new THREE.PlaneGeometry(128, 30),
-      new THREE.MeshBasicMaterial({
-        map: galaxyBarTexture(),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-        opacity: 0.58, side: THREE.DoubleSide, fog: false,
-      })
-    );
-    galacticBar.rotation.order = 'YXZ';
-    galacticBar.rotation.y = -MILKY_BAR_ANG;
-    galacticBar.rotation.x = -Math.PI / 2;
+    galacticBar = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: galaxyBarTexture(),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.62,
+    }));
+    // Milder aspect — extreme 128×26 billboards shear badly under free look.
+    galacticBar.scale.set(96, 38, 1);
+    // Sprite yaw is material.rotation (not Object3D.rotation.z)
+    if (galacticBar.material) galacticBar.material.rotation = MILKY_BAR_ANG;
     galacticBar.position.set(0, 0.6, 0);
     galacticBar.visible = false;
     milkyWayGroup.add(galacticBar);
 
+    // Near-circular halo — prior 1120×320 oval stretched into a smear when the camera orbited.
     galacticHalo = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: galaxySpriteTexture('rgba(90,120,200,0.16)', 'rgba(25,35,70,0.0)', 1024, 512),
-      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-      opacity: 0.38, fog: false,
+      map: galaxySpriteTexture('rgba(90,120,200,0.18)', 'rgba(25,35,70,0.0)', 1024, 1024),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.34,
     }));
-    galacticHalo.scale.set(1120, 320, 1);
+    galacticHalo.scale.set(720, 720, 1);
     galacticHalo.visible = false;
     milkyWayGroup.add(galacticHalo);
 
-    // In-plane ambient disk sheen (was a Sprite with an ignored rotation.x that
-    // rendered as an arbitrary horizontal streak). Ties the arms together softly.
-    galacticHaloDisk = new THREE.Mesh(
-      new THREE.PlaneGeometry(1150, 1150),
-      new THREE.MeshBasicMaterial({
-        map: galaxySpriteTexture('rgba(120,140,190,0.10)', 'rgba(40,55,95,0.03)', 512, 512),
-        blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-        opacity: 0.26, side: THREE.DoubleSide, fog: false,
-      })
-    );
-    galacticHaloDisk.rotation.x = -Math.PI / 2;
+    // Soft outer disk glow (also circular). Do NOT tilt Sprite with rotation.x —
+    // THREE.Sprite always faces the camera; mesh tilt made an unreadable streak.
+    galacticHaloDisk = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: galaxySpriteTexture('rgba(70,95,160,0.14)', 'rgba(20,28,55,0.0)', 1024, 1024),
+      blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.22,
+    }));
+    galacticHaloDisk.scale.set(980, 980, 1);
     galacticHaloDisk.visible = false;
     milkyWayGroup.add(galacticHaloDisk);
+
+    // ── Phase 2: soft disk + dust-lane meshes (rigid children of milkyWayGroup) ──
+    // Real Mesh (not Sprite) so free orbit never billboard-smears the glow.
+    const diskR = 620;
+    const softGeo = new THREE.CircleGeometry(diskR, 64);
+    softGeo.rotateX(-Math.PI / 2); // lie in XZ plane of galactic group
+    const softMat = new THREE.MeshBasicMaterial({
+      map: galaxySoftDiskTexture(),
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      opacity: 0.72,
+    });
+    milkyWaySoftDisk = new THREE.Mesh(softGeo, softMat);
+    milkyWaySoftDisk.position.y = -1.2;
+    milkyWaySoftDisk.renderOrder = -2;
+    milkyWaySoftDisk.visible = false;
+    milkyWayGroup.add(milkyWaySoftDisk);
+
+    const dustGeo = new THREE.CircleGeometry(diskR * 0.98, 64);
+    dustGeo.rotateX(-Math.PI / 2);
+    const dustMat = new THREE.MeshBasicMaterial({
+      map: galaxyDustLaneTexture(),
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.NormalBlending,
+      side: THREE.DoubleSide,
+      opacity: 0.55,
+    });
+    milkyWayDustLanes = new THREE.Mesh(dustGeo, dustMat);
+    milkyWayDustLanes.position.y = -0.4;
+    milkyWayDustLanes.renderOrder = -1;
+    milkyWayDustLanes.visible = false;
+    milkyWayGroup.add(milkyWayDustLanes);
+
+    // Dual-layer core: inner hot point already in galacticCore; add warmer mid glow mesh disc
+    const coreGeo = new THREE.CircleGeometry(48, 32);
+    coreGeo.rotateX(-Math.PI / 2);
+    const coreMat = new THREE.MeshBasicMaterial({
+      map: makeGlowTexture('rgba(255,245,220,0.9)', 'rgba(255,180,100,0.0)'),
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+      opacity: 0.55,
+    });
+    const coreDisk = new THREE.Mesh(coreGeo, coreMat);
+    coreDisk.position.y = 0.4;
+    coreDisk.name = 'mwCoreDisk';
+    coreDisk.visible = false;
+    milkyWayGroup.add(coreDisk);
+    milkyWayGroup.userData.coreDisk = coreDisk;
   }
 
   function spectralClass(type) {
@@ -2764,7 +3205,7 @@ const FinishShader = {
   function buildCatalogStars() {
     const SC = window.StarCatalog;
     if (!SC || !SC.STARS || !galaxyGroup || catalogStarsGroup) return;
-    const starCap = perfTier === 'low' ? 48 : perfTier === 'mid' ? 96 : 140;
+    const starCap = perfTier === 'low' ? 72 : perfTier === 'mid' ? 140 : 210;
     const stars = SC.STARS.slice(0, starCap);
     const count = stars.length;
     const pos = new Float32Array(count * 3);
@@ -2792,10 +3233,9 @@ const FinishShader = {
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
     catalogStarsGroup = new THREE.Points(g, new THREE.PointsMaterial({
-      map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.72 : 0.54,
-      vertexColors: true, transparent: true,
-      opacity: 0.88, depthWrite: false, blending: THREE.AdditiveBlending,
-      sizeAttenuation: true, fog: false,
+      map: galaxySoftDotTexture(),
+      size: perfTier === 'high' ? 0.72 : 0.54, vertexColors: true, transparent: true,
+      opacity: 0.88, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
     }));
     catalogStarsGroup.visible = false;
     catalogStarsGroup.userData.baseOpa = 0.88;
@@ -2804,7 +3244,7 @@ const FinishShader = {
 
   function buildCosmicField() {
     cosmicField = new THREE.Group();
-    const count = perfTier === 'low' ? 6 : 12;
+    const count = perfTier === 'low' ? 10 : 18;
     const palettes = [
       ['rgba(200,160,255,0.42)', 'rgba(90,50,160,0.06)'],
       ['rgba(255,210,160,0.32)', 'rgba(200,120,50,0.05)'],
@@ -2815,8 +3255,7 @@ const FinishShader = {
       const pal = palettes[i % palettes.length];
       const tex = galaxySpriteTexture(pal[0], pal[1], 640, 360);
       const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
-        opacity: 0.55, fog: false,
+        map: tex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.55,
       }));
       const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
       const r = 900 + Math.random() * 1400;
@@ -2832,7 +3271,7 @@ const FinishShader = {
       sp.userData.baseOpa = 0.55;
       cosmicField.add(sp);
     }
-    const deepN = perfTier === 'low' ? 1800 : perfTier === 'mid' ? 3200 : 4800;
+    const deepN = perfTier === 'low' ? 2800 : perfTier === 'mid' ? 5200 : 8200;
     const dPos = new Float32Array(deepN * 3);
     const dCol = new Float32Array(deepN * 3);
     for (let i = 0; i < deepN; i++) {
@@ -2848,10 +3287,9 @@ const FinishShader = {
     dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
     dGeo.setAttribute('color', new THREE.BufferAttribute(dCol, 3));
     const deep = new THREE.Points(dGeo, new THREE.PointsMaterial({
-      map: galaxySoftDotTexture(), size: perfTier === 'high' ? 0.58 : 0.48,
-      vertexColors: true, transparent: true,
-      opacity: 0.38, depthWrite: false, blending: THREE.AdditiveBlending,
-      sizeAttenuation: true, fog: false,
+      map: galaxySoftDotTexture(),
+      size: perfTier === 'high' ? 0.58 : 0.48, vertexColors: true, transparent: true,
+      opacity: 0.38, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true,
     }));
     deep.userData.baseOpa = 0.38;
     cosmicField.add(deep);
@@ -2862,9 +3300,6 @@ const FinishShader = {
   let galaxyBuilt = false;
   let milkySpiralBuilt = false;
 
-  // OrbitLab 2026-07-05 port: the ~100k-point spiral build is deferred to idle time so it
-  // never blocks first paint. When the homepage preloader owns the orrery the galaxy is
-  // visible immediately, so build synchronously there (matches the old site behavior).
   function scheduleMilkyWaySpiral() {
     if (milkySpiralBuilt || !milkyWayGroup || destroyed) return;
     const run = () => {
@@ -2872,9 +3307,189 @@ const FinishShader = {
       milkySpiralBuilt = true;
       try { buildMilkyWaySpiral(); } catch (e) { console.warn('[orrery] milky spiral deferred build failed:', e); }
     };
-    if (window.__orreryPreloaderOwns) { run(); return; }
     const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 60));
     idle(run, { timeout: 1200 });
+  }
+
+  function scheduleGaiaSample() {
+    if (gaiaSampleBuilt || !milkyWayGroup) return;
+    const run = () => {
+      if (gaiaSampleBuilt || !milkyWayGroup || destroyed) return;
+      try { buildGaiaSampleLayer(); } catch (e) {
+        console.warn('[orrery] Gaia sample build failed:', e);
+      }
+    };
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 80));
+    idle(run, { timeout: 1800 });
+  }
+
+  function attachGaiaSampleBuffers(posBuf, colBuf, count, meta) {
+    if (!milkyWayGroup || gaiaSamplePoints) return;
+    const pos = posBuf instanceof Float32Array ? posBuf : new Float32Array(posBuf);
+    const col = colBuf instanceof Float32Array ? colBuf : new Float32Array(colBuf);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    gaiaSamplePoints = new THREE.Points(g, new THREE.PointsMaterial({
+      size: perfTier === 'high' ? 0.52 : 0.4,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.8,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true,
+    }));
+    gaiaSamplePoints.visible = false;
+    gaiaSamplePoints.userData.meta = meta || null;
+    gaiaSamplePoints.userData.count = count;
+    gaiaSamplePoints.userData.baseOpa = 0.8;
+    milkyWayGroup.add(gaiaSamplePoints);
+  }
+
+  function buildMagellanicStream() {
+    const GS = window.GaiaSample;
+    if (!GS || typeof GS.magellanicStreamPath !== 'function' || !milkyWayGroup) return;
+    if (magellanicStreamLine) return;
+    const path = GS.magellanicStreamPath(72);
+    const arr = new Float32Array(path.length * 3);
+    for (let i = 0; i < path.length; i++) {
+      arr[i * 3] = path[i].x;
+      arr[i * 3 + 1] = path[i].y;
+      arr[i * 3 + 2] = path[i].z;
+    }
+    const lg = new THREE.BufferGeometry();
+    lg.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+    magellanicStreamLine = new THREE.Line(
+      lg,
+      new THREE.LineBasicMaterial({
+        color: 0x8eb8e8,
+        transparent: true,
+        opacity: 0.5,
+        depthWrite: false,
+      })
+    );
+    magellanicStreamLine.visible = false;
+    magellanicStreamLine.userData.baseOpa = 0.5;
+    milkyWayGroup.add(magellanicStreamLine);
+
+    // Soft glow twin (slightly thicker look via second translucent line)
+    const lg2 = lg.clone();
+    magellanicStreamGlow = new THREE.Line(
+      lg2,
+      new THREE.LineBasicMaterial({
+        color: 0x5a90d0,
+        transparent: true,
+        opacity: 0.22,
+        depthWrite: false,
+      })
+    );
+    magellanicStreamGlow.visible = false;
+    magellanicStreamGlow.userData.baseOpa = 0.22;
+    milkyWayGroup.add(magellanicStreamGlow);
+
+    const mid = path[Math.floor(path.length * 0.45)];
+    if (mid && typeof makeLabel === 'function') {
+      magellanicStreamLabel = makeLabel('Magellanic Stream');
+      magellanicStreamLabel.position.set(mid.x, mid.y + 18, mid.z);
+      magellanicStreamLabel.scale.set(0.72, 0.72, 1);
+      magellanicStreamLabel.visible = false;
+      milkyWayGroup.add(magellanicStreamLabel);
+    }
+  }
+
+  function buildBrightGalacticStars() {
+    if (brightGalacticStars || !milkyWayGroup) return;
+    const GS = window.GaiaSample;
+    const SC = window.StarCatalog;
+    if (!GS || typeof GS.projectBrightStars !== 'function' || !SC || !SC.STARS) return;
+    // Brightest first
+    const bright = SC.STARS.slice().sort((a, b) => (a.mag ?? 9) - (b.mag ?? 9)).slice(0, 48);
+    const sunP = milkySpiralXY(SUN_ARM_PHASE + 0.14, SUN_GALACTIC_R, 0.06);
+    const proj = GS.projectBrightStars(bright, {
+      sunX: sunP.x, sunY: 2.8, sunZ: sunP.z, maxLy: 120,
+    });
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(proj.pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(proj.col, 3));
+    brightGalacticStars = new THREE.Points(g, new THREE.PointsMaterial({
+      size: perfTier === 'high' ? 1.35 : 1.05,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.95,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true,
+    }));
+    brightGalacticStars.visible = false;
+    brightGalacticStars.userData.names = proj.names;
+    brightGalacticStars.userData.count = proj.count;
+    brightGalacticStars.userData.baseOpa = 0.95;
+    milkyWayGroup.add(brightGalacticStars);
+  }
+
+  function buildGaiaSampleLayer() {
+    if (gaiaSampleBuilt || !milkyWayGroup) return;
+    const GS = window.GaiaSample;
+    if (!GS || typeof GS.generate !== 'function') return;
+    gaiaSampleBuilt = true;
+
+    // Phase 4b budgets — worker path allows a bit more on high tier
+    const count = perfTier === 'low' ? 5000
+      : perfTier === 'mid' ? 12000
+      : (freeExploreMode ? 24000 : 18000);
+
+    buildMagellanicStream();
+    buildBrightGalacticStars();
+
+    const attachMain = () => {
+      if (gaiaSamplePoints || destroyed) return;
+      const sample = GS.generate(count, 20260709);
+      attachGaiaSampleBuffers(sample.pos, sample.col, sample.count, sample.meta);
+    };
+
+    // Prefer Web Worker so spiral paint isn't janked
+    let usedWorker = false;
+    try {
+      if (typeof Worker !== 'undefined') {
+        let workerUrl = 'js/workers/gaia-sample-worker.js';
+        try {
+          workerUrl = new URL('./workers/gaia-sample-worker.js', import.meta.url).href;
+        } catch (e0) {
+          try {
+            workerUrl = new URL('js/workers/gaia-sample-worker.js', location.href).href;
+          } catch (e1) { /* relative */ }
+        }
+
+        gaiaWorker = new Worker(workerUrl);
+        usedWorker = true;
+        const failSafe = setTimeout(() => {
+          if (!gaiaSamplePoints) attachMain();
+          try { gaiaWorker.terminate(); } catch (e) { /* */ }
+          gaiaWorker = null;
+        }, 4000);
+        gaiaWorker.onmessage = (ev) => {
+          clearTimeout(failSafe);
+          const msg = ev.data || {};
+          if (msg.ok && msg.pos && msg.col) {
+            attachGaiaSampleBuffers(msg.pos, msg.col, msg.count, msg.meta);
+          } else if (!gaiaSamplePoints) {
+            attachMain();
+          }
+          try { gaiaWorker.terminate(); } catch (e) { /* */ }
+          gaiaWorker = null;
+        };
+        gaiaWorker.onerror = () => {
+          clearTimeout(failSafe);
+          if (!gaiaSamplePoints) attachMain();
+          try { gaiaWorker.terminate(); } catch (e) { /* */ }
+          gaiaWorker = null;
+        };
+        gaiaWorker.postMessage({ id: 1, count, seed: 20260709 });
+      }
+    } catch (e) {
+      usedWorker = false;
+    }
+    if (!usedWorker) attachMain();
   }
 
   function buildGalaxyLayers() {
@@ -2891,6 +3506,7 @@ const FinishShader = {
     buildCatalogStars();
     buildCosmicField();
     scheduleMilkyWaySpiral();
+    scheduleGaiaSample();
   }
 
   function ensureGalaxyLayers() {
@@ -2930,7 +3546,103 @@ const FinishShader = {
     }
   }
 
+  /** True while the 2D poster owns centre-frame (ready or fading — until --done). */
+  function isEarthPosterBlocking() {
+    if (!instrumentMode) return false;
+    const el = document.getElementById('ol-earth-poster');
+    if (!el) return true;
+    if (el.classList.contains('ol-earth-poster--done')) return false;
+    return true;
+  }
+
+  function instrumentSunRevealT() {
+    if (!instrumentSunRevealStart) return 0;
+    const p = Math.min(1, (performance.now() - instrumentSunRevealStart) / INSTRUMENT_SUN_REVEAL_MS);
+    return p * p * (3 - 2 * p);
+  }
+
+  /** Mark poster handoff complete — glow/bloom applied only in stabilizeInstrumentSunFrame. */
+  function revealInstrumentSun() {
+    if (!instrumentMode) return;
+    instrumentSunHandoffReady = true;
+  }
+
+  /** Hide WebGL sun while the opaque 2D loading poster owns centre-frame. */
+  function syncPosterSunVisibility() {
+    if (!instrumentMode || !sunMesh) return false;
+    if (!isEarthPosterBlocking()) return false;
+    sunMesh.visible = false;
+    sunGlow.forEach((sp) => { sp.visible = false; });
+    if (sunCoronaGroup) sunCoronaGroup.visible = false;
+    if (sunCoronaMesh) sunCoronaMesh.visible = false;
+    return true;
+  }
+
+  /** Single end-of-frame authority for instrument sun + bloom — stops per-frame fights. */
+  function stabilizeInstrumentSunFrame() {
+    if (!instrumentMode) return;
+    if (isEarthPosterBlocking()) {
+      instrumentSunRevealStart = 0;
+      syncPosterSunVisibility();
+      if (bloomPass) {
+        bloomPass.strength = 0;
+        bloomPass.threshold = 1;
+        bloomPass.radius = 0.12;
+      }
+      return;
+    }
+    if (!instrumentSunHandoffReady) instrumentSunHandoffReady = true;
+    if (!instrumentSunRevealStart) instrumentSunRevealStart = performance.now();
+    const reveal = instrumentSunRevealT();
+    const showSolar = solarDim > 0.02;
+    if (sunMesh) sunMesh.visible = showSolar && reveal > 0.04;
+    if (!showSolar || reveal < 0.04) {
+      sunGlow.forEach((sp) => { if (sp) sp.visible = false; });
+      if (bloomPass) {
+        bloomPass.strength = 0;
+        bloomPass.threshold = 1;
+      }
+      return;
+    }
+    syncInstrumentSunGlowState();
+    sunGlow.forEach((sp, i) => {
+      if (!sp || !sp.material || i !== 0) return;
+      const base = sp.userData.baseOpa != null ? sp.userData.baseOpa : sp.material.opacity;
+      sp.material.opacity = base * reveal;
+    });
+    if (sunMaterial && sunMaterial.uniforms && sunMaterial.uniforms.uGain) {
+      const baseGain = selectedPlanetId === 'sun' ? 0.78 : 0.74;
+      sunMaterial.uniforms.uGain.value = baseGain * reveal;
+    }
+    applyInstrumentBloom(reveal);
+  }
+
+  function dispatchOrreryFirstFrame() {
+    try {
+      document.dispatchEvent(new Event('ap-orrery-first-frame'));
+      document.dispatchEvent(new CustomEvent('orrery-first-frame'));
+    } catch (e) { /* optional */ }
+  }
+
+  /** Instrument mode: one stable sun halo — avoids per-frame visibility/opacity fights. */
+  function syncInstrumentSunGlowState() {
+    if (!instrumentMode || !sunGlow.length) return;
+    const sunFocus = selectedPlanetId === 'sun';
+    const coreOp = sunFocus ? 0.10 : 0.08;
+    sunGlow.forEach((sp, i) => {
+      if (!sp.material) return;
+      sp.visible = i === 0;
+      sp.material.opacity = i === 0 ? coreOp : 0;
+      sp.userData.baseOpa = sp.material.opacity;
+      const bs = sp.userData.baseScale || 1;
+      sp.scale.setScalar(i === 0 ? bs : bs * 0.65);
+    });
+    if (sunCoronaGroup) sunCoronaGroup.visible = false;
+    if (sunCoronaMesh) sunCoronaMesh.visible = false;
+  }
+
   function syncSunGlowProfile(detail) {
+    if (instrumentMode) return;
     if (!sunGlow.length || !composer) return;
     const tier = perfTier;
     // v576: while parked at an outer-planet portrait, pull the glare down ~60%
@@ -2954,11 +3666,15 @@ const FinishShader = {
   }
 
   function syncDetailLighting() {
+    if (instrumentMode) {
+      tuneInstrumentPlanetReadability();
+      return true;
+    }
     const detail = wantsDetailLighting();
     syncSunGlowProfile(detail);
     syncPlanetShaderDetail(detail);
     if (sunPointLight) {
-      sunPointLight.intensity = detail ? 2.35 : (perfTier === 'high' ? 4.55 : 3.75);
+      sunPointLight.intensity = detail ? 2.2 : (perfTier === 'high' ? 4.3 : 3.6);
     }
     if (sunDirLight) {
       sunDirLight.intensity = detail ? 1.7 : (perfTier === 'high' ? 2.7 : 2.25);
@@ -2966,9 +3682,39 @@ const FinishShader = {
     return detail;
   }
 
-  function applyCinematicLighting(z) {
+  function applyCinematicLighting(z, dt) {
     if (spaceFlightMode) {
       applySpacePalette(z);
+      return;
+    }
+    if (instrumentMode) {
+      tuneInstrumentPlanetReadability();
+      if (isInstrumentZoomBusy()) return;
+      const outerT = Math.max(0, Math.min(1, (z - 2.2) / 2.8));
+      const fogDensity = (perfTier === 'high' ? 0.00020 : 0.00024) + outerT * 0.0007;
+      const targetExp = (perfTier === 'high' ? 0.94 : 0.90) - outerT * 0.1;
+      const hemiI = (perfTier === 'high' ? 0.38 : 0.32) * (1 - outerT * 0.2);
+      const sunPtI = (perfTier === 'high' ? 2.0 : 1.65) * (1 - outerT * 0.35);
+      const sunDirI = (perfTier === 'high' ? 1.35 : 1.1) * (1 - outerT * 0.25);
+      const k = Math.min(1, (dt || 0.016) * 4.2);
+      if (scene && scene.fog && !portraitMode) {
+        scene.fog.color.setHex(0x040610);
+        scene.fog.density += (fogDensity - scene.fog.density) * k;
+      }
+      if (renderer) {
+        instrumentExposure += (targetExp - instrumentExposure) * k;
+        renderer.toneMappingExposure = instrumentExposure;
+      }
+      if (hemiLight) {
+        hemiLight.color.setHex(0x4a5870);
+        hemiLight.intensity += (hemiI - hemiLight.intensity) * k;
+      }
+      if (sunPointLight) {
+        sunPointLight.intensity += (sunPtI - sunPointLight.intensity) * k;
+      }
+      if (sunDirLight) {
+        sunDirLight.intensity += (sunDirI - sunDirLight.intensity) * k;
+      }
       return;
     }
     const galaxyT = Math.max(0, Math.min(1, (z - 3.8) / 1.2));
@@ -3000,23 +3746,14 @@ const FinishShader = {
     }
     if (bloomPass) {
       if (detail && z <= 2.4) {
-        // Earth close: almost no bloom — preserve night limb and city lights
         bloomPass.strength = perfTier === 'mid' ? 0.05 : 0.08;
         bloomPass.threshold = perfTier === 'mid' ? 0.97 : 0.96;
-        bloomPass.radius = 0.28;
       } else if (z < 0.6) {
-        bloomPass.strength = perfTier === 'mid' ? 0.16 : 0.22;
+        bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.20;
         bloomPass.threshold = perfTier === 'mid' ? 0.90 : 0.86;
-        bloomPass.radius = 0.36;
-      } else if (z < 3.2) {
-        // System / inner rest: match settleToSystemHeroFrame (no thrash)
-        bloomPass.strength = perfTier === 'mid' ? 0.24 : 0.34;
-        bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.85;
-        bloomPass.radius = perfTier === 'mid' ? 0.38 : 0.44;
       } else {
-        bloomPass.strength = z >= 4.8 ? 0.40 : perfTier === 'mid' ? 0.16 : 0.22;
-        bloomPass.threshold = z >= 4.8 ? 0.82 : perfTier === 'mid' ? 0.94 : 0.90;
-        bloomPass.radius = z >= 4.8 ? 0.48 : 0.40;
+        bloomPass.strength = z >= 4.8 ? 0.42 : perfTier === 'mid' ? 0.14 : 0.20;
+        bloomPass.threshold = z >= 4.8 ? 0.82 : perfTier === 'mid' ? 0.95 : 0.93;
       }
     }
   }
@@ -3032,6 +3769,9 @@ const FinishShader = {
       g.visible = showSolar;
       if (showSolar) {
         let s = z <= 2 ? 1 : z <= 3 ? 0.45 + (3 - z) * 0.55 : 0.15;
+        if (instrumentMode && z <= 2) {
+          s *= z <= 1.6 ? 1.65 : 1.42;
+        }
         if (preloaderCosmicJourney && z >= 1.4 && z <= 2.6) {
           s *= 1.06 + Math.sin((2.6 - z) * 1.8) * 0.04;
         }
@@ -3045,24 +3785,16 @@ const FinishShader = {
         }
       }
     });
-    if (sunMesh) {
+    // Free-explore is instrumentMode but still needs sun to fade with continuous scale
+    // (otherwise the disc hangs over the galaxy layers as a glitch).
+    if (sunMesh && (!instrumentMode || freeExploreMode)) {
       sunMesh.visible = showSolar;
-      if (sunGlow.length && showSolar) sunGlow.forEach((sp) => { sp.visible = z <= 2.2; });
+      if (sunGlow.length) sunGlow.forEach((sp) => { sp.visible = showSolar && z <= 2.2; });
       if (sunCoronaGroup) sunCoronaGroup.visible = showSolar && z <= 2.2 && !composer;
       if (sunCoronaMesh) sunCoronaMesh.visible = showSolar && z <= 2.4;
     }
     const earthDetailZ = preloaderCosmicJourney ? 1.52 : 1.2;
-    /* v683: pure Earth rest (scale 0, not Moon-focus) hides the Moon so it
-       never sits as a large disc on Earth (user live-home bug shot). Moon
-       returns for Moon pill (moonFrameActive) or any zoom past Earth rest. */
-    if (moonGroup) {
-      const wantMoon =
-        moonFrameActive ||
-        focusFrameId === 'moon' ||
-        focusPlanetId === 'moon' ||
-        scaleLevel >= 1;
-      moonGroup.visible = showSolar && z <= earthDetailZ && wantMoon;
-    }
+    if (moonGroup) moonGroup.visible = showSolar && z <= earthDetailZ;
     if (earthCloud) earthCloud.visible = showSolar && z <= earthDetailZ;
     if (earthOrbitGroup) {
       earthOrbitGroup.visible = showSolar && z <= earthDetailZ;
@@ -3078,6 +3810,9 @@ const FinishShader = {
     }
     orbitLines.forEach((o) => {
       o.visible = (showOrbits || (spaceFlightMode && z >= 0.85 && z <= 2.65)) && z <= 3.2;
+    });
+    eccentricGuides.forEach((line) => {
+      line.visible = showEccentricGuides && showOrbits && z <= 3.2;
     });
     if (asteroidPoints) asteroidPoints.visible = showAsteroids && z <= 3.2;
     // Extra bodies (Pluto): visible with the outer system + Oort (2..3.2), never in the
@@ -3121,66 +3856,154 @@ const FinishShader = {
     }
     const galF = scaleFade(z, 5, 0.85);
     const galDeep = scaleFade(z, 5.2, 1.1);
-    // Deep-field linger: the spiral used to fade to ZERO by COSMOS scale, leaving
-    // the whole (opaque, CSS-masked) canvas an empty black frame — the "black blob".
-    // Keep a dim Milky Way portrait alive at the centre of the deep field instead.
-    const galHold = Math.max(galF, scaleFade(z, 6.4, 2.4) * 0.38);
-    // OrbitLab 2026-07-05 port: fade wiring for the multi-layer barred spiral
+    // Free-explore / mobile: brighter, larger points for readability
+    const mobileExplore = freeExploreMode && (perfTier === 'low' || isPreloaderMobile());
+    const galBoost = freeExploreMode ? (mobileExplore ? 1.22 : 1.12) : 1;
+    const sizeBoost = freeExploreMode ? (mobileExplore ? 1.28 : 1.1) : 1;
+    // Phase 3/4 compare: 'stars' = local+catalog only; 'gaia' emphasizes sample layer
+    const showMw = galaxyViewMode !== 'stars';
+    const showGaia = galaxyViewMode === 'gaia' || galaxyViewMode === 'full';
     if (milkyWayBulge) {
-      milkyWayBulge.visible = galHold > 0.02;
-      if (milkyWayBulge.material) milkyWayBulge.material.opacity = 0.9 * galHold;
+      milkyWayBulge.visible = showMw && galF > 0.02;
+      if (milkyWayBulge.material) {
+        milkyWayBulge.material.opacity = 0.92 * galF * galBoost;
+        milkyWayBulge.material.size = (perfTier === 'high' ? 0.88 : 0.68) * sizeBoost;
+      }
     }
     if (milkyWayDisk) {
-      milkyWayDisk.visible = galHold > 0.02;
-      if (milkyWayDisk.material) milkyWayDisk.material.opacity = 0.88 * galHold;
+      milkyWayDisk.visible = showMw && galF > 0.02;
+      if (milkyWayDisk.material) {
+        milkyWayDisk.material.opacity = 0.92 * galF * galBoost;
+        milkyWayDisk.material.size = (perfTier === 'high' ? 0.78 : perfTier === 'mid' ? 0.6 : 0.5)
+          * sizeBoost;
+      }
     }
     if (milkyWayDust) {
-      milkyWayDust.visible = galF > 0.12;
-      if (milkyWayDust.material) milkyWayDust.material.opacity = 0.18 * galF;
+      milkyWayDust.visible = showMw && galF > 0.12;
+      if (milkyWayDust.material) milkyWayDust.material.opacity = 0.44 * galF;
     }
+    // Phase 2 soft disk + dust-lane meshes (rigid; free-look safe)
+    if (milkyWaySoftDisk) {
+      milkyWaySoftDisk.visible = showMw && galF > 0.08;
+      if (milkyWaySoftDisk.material) {
+        milkyWaySoftDisk.material.opacity = (freeExploreMode ? 0.62 : 0.72) * galF * galBoost;
+      }
+    }
+    if (milkyWayDustLanes) {
+      milkyWayDustLanes.visible = showMw && galF > 0.18;
+      if (milkyWayDustLanes.material) {
+        milkyWayDustLanes.material.opacity = (freeExploreMode ? 0.42 : 0.55) * galF;
+      }
+    }
+    const coreDisk = milkyWayGroup && milkyWayGroup.userData && milkyWayGroup.userData.coreDisk;
+    if (coreDisk) {
+      coreDisk.visible = showMw && galF > 0.18;
+      if (coreDisk.material) coreDisk.material.opacity = 0.5 * galF * galBoost;
+    }
+    // Arm ribbons stay off (billboard warp). Sparse circular HII OK when not free-explore.
     if (milkyWayArmRibbons) {
-      milkyWayArmRibbons.visible = galHold > 0.1;
-      milkyWayArmRibbons.children.forEach((ch) => {
-        if (!ch.material) return;
-        ch.material.opacity = (ch.userData.baseOpa ?? 0.2) * galHold;
-      });
+      milkyWayArmRibbons.visible = false;
     }
     if (milkyWayHII) {
-      milkyWayHII.visible = galF > 0.22;
-      milkyWayHII.children.forEach((ch) => {
-        if (!ch.material) return;
-        ch.material.opacity = (ch.userData.baseOpa ?? 0.6) * galF;
-      });
+      const hiiOn = showMw && !freeExploreMode && galF > 0.4 && perfTier !== 'low';
+      milkyWayHII.visible = hiiOn;
+      if (hiiOn) {
+        milkyWayHII.children.forEach((ch) => {
+          if (!ch.material) return;
+          // Force near-circular scale so free-look / mid-tier doesn't smear
+          const sc = ch.userData.hiiSc || 14;
+          ch.scale.set(sc, sc, 1);
+          ch.material.opacity = (ch.userData.baseOpa ?? 0.5) * galF * 0.4;
+        });
+      }
     }
     if (milkyWaySatellites) {
-      milkyWaySatellites.visible = galDeep > 0.28;
+      milkyWaySatellites.visible = showMw && galDeep > 0.28;
       milkyWaySatellites.children.forEach((ch) => {
         if (!ch.material) return;
         ch.material.opacity = (ch.userData.baseOpa ?? 0.6) * galDeep;
       });
     }
-    if (sunMarker) sunMarker.visible = galF > 0.35 && z < 5.8;
+    // Phase 4 Gaia sample + Magellanic Stream
+    if (gaiaSamplePoints) {
+      const gShow = showGaia && showMw && galF > 0.1;
+      gaiaSamplePoints.visible = gShow;
+      if (gaiaSamplePoints.material) {
+        // In 'gaia' mode push sample; in 'full' keep as subtle densification
+        const base = gaiaSamplePoints.userData.baseOpa ?? 0.78;
+        gaiaSamplePoints.material.opacity = base * galF * (galaxyViewMode === 'gaia' ? 1.05 : 0.55);
+        gaiaSamplePoints.material.size = (perfTier === 'high' ? 0.55 : 0.42)
+          * (galaxyViewMode === 'gaia' ? 1.15 : 0.9) * sizeBoost;
+      }
+    }
+    if (magellanicStreamLine) {
+      magellanicStreamLine.visible = showMw && galDeep > 0.25;
+      if (magellanicStreamLine.material) {
+        magellanicStreamLine.material.opacity = (magellanicStreamLine.userData.baseOpa ?? 0.5)
+          * Math.min(1, galDeep * 1.2);
+      }
+    }
+    if (magellanicStreamGlow) {
+      magellanicStreamGlow.visible = showMw && galDeep > 0.28;
+      if (magellanicStreamGlow.material) {
+        magellanicStreamGlow.material.opacity = (magellanicStreamGlow.userData.baseOpa ?? 0.22)
+          * Math.min(1, galDeep * 1.1);
+      }
+    }
+    if (magellanicStreamLabel) {
+      magellanicStreamLabel.visible = showMw && galDeep > 0.35 && showLabels !== false;
+    }
+    if (brightGalacticStars) {
+      // Show bright catalog stars in MW frame for full/gaia modes
+      brightGalacticStars.visible = showMw && galF > 0.2;
+      if (brightGalacticStars.material) {
+        brightGalacticStars.material.opacity = (brightGalacticStars.userData.baseOpa ?? 0.95)
+          * galF * (galaxyViewMode === 'gaia' ? 1.05 : 0.9);
+        brightGalacticStars.material.size = (perfTier === 'high' ? 1.35 : 1.05) * sizeBoost;
+      }
+    }
+    // Compare mode "stars": keep local + catalog bright at galaxy scale
+    if (galaxyViewMode === 'stars') {
+      if (localStarsGroup) {
+        localStarsGroup.visible = z >= 3.5;
+        localStarsGroup.children.forEach((ch) => {
+          if (ch.material) ch.material.opacity = (ch.userData.baseOpa ?? 1) * 0.95;
+        });
+      }
+      if (catalogStarsGroup) {
+        catalogStarsGroup.visible = z >= 3.8;
+        if (catalogStarsGroup.material) {
+          catalogStarsGroup.material.opacity = (catalogStarsGroup.userData.baseOpa ?? 0.88) * 0.95;
+        }
+      }
+    }
+    if (sunMarker) {
+      // Phase 1: show You-are-here earlier so free-fly doesn't miss it
+      sunMarker.visible = showMw && galF > 0.22 && z < 5.85;
+    }
     if (galacticCore) {
-      galacticCore.visible = galHold > 0.12;
-      if (galacticCore.material) galacticCore.material.opacity = 0.78 * galHold;
+      galacticCore.visible = showMw && galF > 0.2;
+      if (galacticCore.material) galacticCore.material.opacity = 0.72 * galF;
     }
     if (galacticCoreRing) {
-      galacticCoreRing.visible = galHold > 0.15;
-      if (galacticCoreRing.material) galacticCoreRing.material.opacity = 0.46 * galHold;
+      galacticCoreRing.visible = showMw && galF > 0.3;
+      if (galacticCoreRing.material) galacticCoreRing.material.opacity = 0.32 * galF;
     }
     if (galacticBar) {
-      galacticBar.visible = galHold > 0.18;
-      if (galacticBar.material) galacticBar.material.opacity = 0.58 * galHold;
+      // Soft bar glow only; keep low so it doesn't dominate the spiral points
+      galacticBar.visible = showMw && galF > 0.4 && !freeExploreMode;
+      if (galacticBar.material) galacticBar.material.opacity = 0.38 * galF;
     }
     if (galacticHalo) {
       const haloF = Math.max(galF, z >= 4.8 ? scaleFade(z, 5.4, 1.2) : 0);
-      galacticHalo.visible = haloF > 0.02;
-      if (galacticHalo.material) galacticHalo.material.opacity = 0.36 * haloF;
+      galacticHalo.visible = showMw && haloF > 0.02;
+      if (galacticHalo.material) galacticHalo.material.opacity = (freeExploreMode ? 0.22 : 0.32) * haloF;
     }
     if (galacticHaloDisk) {
       const haloF = Math.max(galF, z >= 4.8 ? scaleFade(z, 5.4, 1.2) : 0);
-      galacticHaloDisk.visible = haloF > 0.08;
-      if (galacticHaloDisk.material) galacticHaloDisk.material.opacity = 0.3 * haloF;
+      // Single soft circular halo is enough; second layer fought the disk points
+      galacticHaloDisk.visible = showMw && !freeExploreMode && haloF > 0.15;
+      if (galacticHaloDisk.material) galacticHaloDisk.material.opacity = 0.18 * haloF;
     }
     const cosF = scaleFade(z, 6, 1.1);
     if (cosmicField) {
@@ -3196,14 +4019,14 @@ const FinishShader = {
       });
     }
 
-    applyCinematicLighting(z);
-    syncSceneStarfield(lv);
-    syncCosmosBlend(lv);
+    applyCinematicLighting(z, lastDt);
+    syncSceneStarfield(z);
+    syncCosmosBlend(z);
 
     if (onPreloaderStage() && !preloaderCosmicJourney) {
       applyPreloaderEarthIsolation(preloaderIntroFinished ? 1 : null);
     }
-    else if (sunGlow.length && z < 0.5) {
+    else if (sunGlow.length && z < 0.5 && !instrumentMode) {
       sunGlow.forEach((sp, i) => {
         if (!sp.material) return;
         sp.visible = i === 0;
@@ -3226,7 +4049,7 @@ const FinishShader = {
         'Full solar system · VSOP87 positions live',
         'Oort cloud scale · illustrative shell',
         'Local star directions · schematic layout',
-        'Milky Way view · Sun marked in the Orion arm',
+        'Milky Way · oblique view toward the galactic core · Sun in Orion spur',
         'Deep field · decorative galaxy sprites',
       ];
       hint.textContent = hints[lv] || hints[2];
@@ -3250,6 +4073,8 @@ const FinishShader = {
   }
 
   function applyEclipseVisuals() {
+    if (isEarthPosterBlocking()) return;
+    if (instrumentMode) return;
     const k = 1 - eclipseDim * 0.72;
     sunGlow.forEach((sp, i) => {
       if (!sp.visible || !sp.material) return;
@@ -3835,7 +4660,296 @@ const FinishShader = {
     return sp;
   }
 
+  const ZODIAC_SIGNS = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
+    'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+  const PLANET_NOTES = {
+    sun: 'The heliocentric anchor — all orbital longitudes are measured from this centre of light.',
+    moon: 'Earth’s companion — fastest-moving body in the chart, governing tides and nocturnal cycles.',
+    mercury: 'Swift messenger — closest to the Sun, extreme temperature swing between day and night hemispheres.',
+    venus: 'Brightest natural object after the Sun and Moon. Thick sulfuric clouds reflect sunlight; surface pressure is crushing.',
+    earth: 'The blue marble — liquid water, protective atmosphere, and the only known harbour of life.',
+    mars: 'The red desert world — thin CO₂ atmosphere, polar ice caps, and the largest volcano in the solar system.',
+    jupiter: 'Gas giant king — a storm wider than Earth has raged for centuries in its banded atmosphere.',
+    saturn: 'Ringed jewel — icy particles in a thin disc, each grain catching sunlight at a glancing angle.',
+    uranus: 'Ice giant tipped on its side — pale cyan methane haze, faint rings, slow solemn rotation.',
+    neptune: 'Deep azure giant — fastest winds in the system, driven by internal heat far from the Sun.',
+  };
+  const PLANET_NAMES = {
+    sun: 'Sun', moon: 'Moon',
+    mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars',
+    jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune',
+  };
+
+  function lonToSignName(lon) {
+    const n = ((lon % 360) + 360) % 360;
+    const i = Math.floor(n / 30) % 12;
+    const deg = (n % 30).toFixed(1);
+    return `${ZODIAC_SIGNS[i]} ${deg}°`;
+  }
+
+  function currentJd() {
+    return baseJd + dayOffset + scrollBias;
+  }
+
+  function getPlanetInfo(id) {
+    const pid = id || selectedPlanetId || 'venus';
+    const b = BODIES.find((x) => x.id === pid);
+    const jd = currentJd();
+    let lon = geoLonOf(pid, jd);
+    if (lon == null) {
+      const g = meshes[pid];
+      lon = g && g.userData.lon != null ? g.userData.lon : 0;
+    }
+    let retro = false;
+    try {
+      const E = window.AstroEphemeris;
+      if (E && E.isRetrograde && pid !== 'sun' && pid !== 'moon' && pid !== 'earth') {
+        retro = !!E.isRetrograde(pid, jd);
+      }
+    } catch (e) { /* optional */ }
+    const simDate = getDate();
+    const signStr = lon != null ? lonToSignName(lon) : '—';
+    const g = meshes[pid];
+    const elements = ORBITAL_ELEMENTS[pid];
+    const distanceAU = g && g.userData.distanceAU != null ? g.userData.distanceAU : null;
+    const speedKmS = g && g.userData.speedKmS != null ? g.userData.speedKmS : null;
+    const helioLat = g && g.userData.lat != null ? g.userData.lat : null;
+    let moonPhase = null;
+    try {
+      const E = window.AstroEphemeris;
+      if (pid === 'moon' || pid === 'earth') moonPhase = moonPhaseFromEphemeris(E, jd);
+    } catch (e) { /* optional */ }
+    return {
+      id: pid,
+      name: (b && b.name) || PLANET_NAMES[pid] || pid,
+      lon: lon != null ? lon : null,
+      sign: signStr,
+      retro,
+      date: simDate,
+      distanceAU,
+      speedKmS,
+      helioLat,
+      moonPhase,
+      orbitalPeriodDays: elements && elements.periodDays,
+      eccentricity: elements && elements.e,
+      scaleNote: SCALE_DOC.positions,
+      precisionNote: SCALE_DOC.positions + ' · computed live in your browser',
+      note: pid === 'earth'
+        ? 'Our home world — the reference point for all geocentric longitudes in this view.'
+        : (PLANET_NOTES[pid] || 'Live geocentric ecliptic longitude from VSOP87 ephemeris.'),
+    };
+  }
+
+  function setSelectedPlanet(id) {
+    if (!id) return;
+    if (id !== 'sun' && id !== 'moon' && !meshes[id]) return;
+    selectedPlanetId = id;
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      if (!g) return;
+      const ring = g.userData.focusRing || ensureFocusRing(g, b.size * (b.id === 'venus' ? 4.6 : 3.6));
+      ring.visible = b.id === id;
+      if (ring.material) ring.material.opacity = b.id === 'venus' ? 0.72 : 0.55;
+    });
+    if (sunFocusRing) sunFocusRing.visible = !instrumentMode && id === 'sun';
+    if (moonFocusRing) moonFocusRing.visible = id === 'moon';
+    if (id === 'sun' && sunMesh && !instrumentMode) {
+      sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
+      sunFocusRing.visible = true;
+    }
+    if (id === 'moon' && moonGroup) {
+      moonFocusRing = moonFocusRing || ensureFocusRing(moonGroup, 1.4);
+      moonFocusRing.visible = true;
+    }
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-planet-select', { detail: { id } }));
+    } catch (e) { /* optional */ }
+  }
+
+  function updateSelectedHighlight(t) {
+    if (!selectedPlanetId || !instrumentMode) return;
+    const b = BODIES.find((x) => x.id === selectedPlanetId);
+    const g = meshes[selectedPlanetId];
+    if (!g || !b) return;
+    const ring = g.userData.focusRing || ensureFocusRing(g, b.size * (b.id === 'venus' ? 4.6 : 3.6));
+    ring.visible = true;
+    const bs = ring.userData.baseScale || 1;
+    ring.scale.set(bs, bs, 1);
+    if (ring.material) ring.material.opacity = b.id === 'venus' ? 0.58 : 0.46;
+    const halo = g.userData.luminousHalo;
+    if (halo) {
+      const hs = halo.userData.baseScale || 1;
+      halo.scale.set(hs, hs, 1);
+      if (halo.material) halo.material.opacity = 0.44;
+    }
+  }
+
+  let trailFrame = 0;
+  const _trailPos = new THREE.Vector3();
+
+  function updatePlanetTrails() {
+    if (!showTrails) {
+      Object.keys(planetTrails).forEach((k) => { if (planetTrails[k].line) planetTrails[k].line.visible = false; });
+      return;
+    }
+    const sample = (trailFrame++ & 1) === 0;
+    BODIES.forEach((b) => {
+      const tr = planetTrails[b.id];
+      const g = meshes[b.id];
+      if (!tr || !g || !g.visible) {
+        if (tr && tr.line) tr.line.visible = false;
+        return;
+      }
+      if (sample) {
+        _trailPos.copy(g.position);
+        tr.hist.push(_trailPos.x, _trailPos.y, _trailPos.z);
+        while (tr.hist.length > TRAIL_LEN * 3) tr.hist.splice(0, 3);
+      }
+      const n = Math.floor(tr.hist.length / 3);
+      for (let i = 0; i < TRAIL_LEN; i++) {
+        const idx = i * 3;
+        const h = i * 3;
+        if (i < n) {
+          tr.pts[idx] = tr.hist[h];
+          tr.pts[idx + 1] = tr.hist[h + 1];
+          tr.pts[idx + 2] = tr.hist[h + 2];
+        } else {
+          tr.pts[idx] = tr.pts[idx + 1] = tr.pts[idx + 2] = 0;
+        }
+      }
+      tr.line.geometry.attributes.position.needsUpdate = true;
+      tr.line.geometry.setDrawRange(0, Math.max(2, n));
+      tr.line.visible = n > 2 && scaleLevel <= 2;
+      if (tr.line.material) tr.line.material.opacity = b.id === selectedPlanetId ? 0.38 : 0.18;
+    });
+  }
+
+  function applyInstrumentBloom(revealMul) {
+    if (!bloomPass || !instrumentMode || scaleLevel > 2) return;
+    const zoomMul = instrumentBloomZoom;
+    if (zoomMul < 0.02) {
+      bloomPass.strength = 0;
+      bloomPass.threshold = 1;
+      bloomPass.radius = 0.12;
+      return;
+    }
+    const ramp = revealMul == null ? 1 : Math.max(0, Math.min(1, revealMul));
+    if (isEarthPosterBlocking() || ramp < 0.04) {
+      bloomPass.strength = 0;
+      bloomPass.threshold = 1;
+      bloomPass.radius = 0.12;
+      return;
+    }
+    const sunSel = selectedPlanetId === 'sun';
+    const baseStrength = perfTier === 'mid' ? 0.055 : 0.08;
+    bloomPass.strength = baseStrength * ramp * zoomMul;
+    bloomPass.threshold = sunSel ? 0.91 + (1 - ramp) * 0.06 : 0.96 + (1 - ramp) * 0.03;
+    bloomPass.radius = 0.18;
+  }
+
+  function tuneInstrumentOrbits() {
+    if (!instrumentMode) return;
+    orbitLines.forEach((o) => {
+      if (!o || !o.material || !o.material.uniforms) return;
+      const base = o.userData.hero ? 0.42 : 0.26;
+      o.userData.baseOpacity = base;
+      o.material.uniforms.uOpacity.value = showOrbits ? base : 0;
+    });
+  }
+
+  function buildInstrumentCosmicVeil() {
+    if (!instrumentMode || instrumentCosmicVeil || !scene) return;
+    instrumentCosmicVeil = new THREE.Group();
+    const palettes = [
+      ['rgba(201,162,39,0.10)', 'rgba(80,55,20,0.025)'],
+      ['rgba(150,110,190,0.08)', 'rgba(45,35,75,0.02)'],
+      ['rgba(180,130,90,0.07)', 'rgba(55,35,25,0.02)'],
+      ['rgba(120,150,210,0.06)', 'rgba(30,45,80,0.018)'],
+    ];
+    const count = perfTier === 'low' ? 8 : perfTier === 'mid' ? 14 : 20;
+    for (let i = 0; i < count; i++) {
+      const pal = palettes[i % palettes.length];
+      const tex = galaxySpriteTexture(pal[0], pal[1], 640, 360);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: tex,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        depthWrite: false,
+        opacity: 0.32,
+      }));
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(2 * Math.random() - 1);
+      const r = 720 + Math.random() * 680;
+      sp.position.set(
+        r * Math.sin(ph) * Math.cos(th),
+        (Math.random() - 0.5) * 320,
+        r * Math.sin(ph) * Math.sin(th)
+      );
+      const sc = 90 + Math.random() * 140;
+      sp.scale.set(sc * (1.2 + Math.random() * 0.9), sc * (0.75 + Math.random() * 0.35), 1);
+      sp.material.rotation = Math.random() * Math.PI;
+      sp.userData.drift = (Math.random() - 0.5) * 0.00006;
+      sp.userData.baseOpa = 0.22 + Math.random() * 0.14;
+      sp.material.opacity = sp.userData.baseOpa;
+      instrumentCosmicVeil.add(sp);
+    }
+    instrumentCosmicVeil.visible = true;
+    scene.add(instrumentCosmicVeil);
+  }
+
+  function tuneInstrumentSpace() {
+    if (!instrumentMode) return;
+    buildInstrumentCosmicVeil();
+    syncSceneStarfield(2);
+    // Free-explore: brighter, less fog so the live sky reads as a viewer (not a dark void).
+    const free = freeExploreMode;
+    if (scene && scene.fog) {
+      scene.fog.color.setHex(free ? 0x050812 : 0x040610);
+      scene.fog.density = free
+        ? (perfTier === 'high' ? 0.00010 : 0.00014)
+        : (perfTier === 'high' ? 0.00020 : 0.00024);
+    }
+    if (hemiLight) {
+      hemiLight.color.setHex(free ? 0x5a6a88 : 0x4a5870);
+      hemiLight.groundColor.setHex(0x0c0a08);
+      hemiLight.intensity = free
+        ? (perfTier === 'high' ? 0.52 : 0.44)
+        : (perfTier === 'high' ? 0.38 : 0.32);
+    }
+    if (sunPointLight) {
+      sunPointLight.intensity = free
+        ? (perfTier === 'high' ? 2.55 : 2.15)
+        : (perfTier === 'high' ? 2.0 : 1.65);
+    }
+    if (sunDirLight) {
+      sunDirLight.intensity = free
+        ? (perfTier === 'high' ? 1.85 : 1.55)
+        : (perfTier === 'high' ? 1.35 : 1.1);
+    }
+    if (renderer) {
+      instrumentExposure = free
+        ? (perfTier === 'high' ? 1.18 : 1.10)
+        : (perfTier === 'high' ? 0.94 : 0.90);
+      renderer.toneMappingExposure = instrumentExposure;
+    }
+    instrumentIdleAz = camAz;
+    instrumentIdleEl = camEl;
+    tuneInstrumentPlanetReadability();
+  }
+
+  function tuneInstrumentPlanetReadability() {
+    if (!instrumentMode) return;
+    BODIES.forEach((b) => {
+      const g = meshes[b.id];
+      const sh = g && g.userData.mat && g.userData.mat.userData.planetShader;
+      if (!sh || !sh.uniforms.uLightWash) return;
+      sh.uniforms.uLightWash.value = 0.02;
+      sh.uniforms.uRimMul.value = 0.14;
+    });
+  }
+
   function clearFocusHighlight() {
+    if (instrumentMode && selectedPlanetId) return;
     focusPlanetId = null;
     focusPlanetUntil = 0;
     if (focusOrbitsRestore === false) {
@@ -3849,7 +4963,7 @@ const FinishShader = {
     });
     if (sunFocusRing) sunFocusRing.visible = false;
     if (moonFocusRing) moonFocusRing.visible = false;
-    if (bloomPass) bloomPass.strength = focusBloomBase;
+    if (bloomPass && !instrumentMode) bloomPass.strength = focusBloomBase;
   }
 
   function setFocusHighlight(id) {
@@ -3868,7 +4982,7 @@ const FinishShader = {
       const ring = ensureFocusRing(g, b.size * 3.8);
       ring.visible = b.id === id;
     });
-    if (id === 'sun' && sunMesh) {
+    if (id === 'sun' && sunMesh && !instrumentMode) {
       sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
       sunFocusRing.visible = true;
     } else if (sunFocusRing) {
@@ -3886,6 +5000,7 @@ const FinishShader = {
   }
 
   function updateFocusHighlight(t) {
+    if (instrumentMode) return;
     if (!focusPlanetId || t >= focusPlanetUntil) {
       if (focusPlanetId) clearFocusHighlight();
       return;
@@ -3912,7 +5027,7 @@ const FinishShader = {
       moonFocusRing.scale.set(s, s, 1);
       if (moonFocusRing.material) moonFocusRing.material.opacity = 0.5 + pulse * 0.32 * fade;
     }
-    if (bloomPass && composer && !wantsDetailLighting()) {
+    if (bloomPass && composer && !instrumentMode && !wantsDetailLighting()) {
       bloomPass.strength = focusBloomBase + pulse * 0.14 * fade;
     }
   }
@@ -3922,19 +5037,17 @@ const FinishShader = {
   function makeStarPointsMaterial() {
     return new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, vertexColors: true,
-      uniforms: { uTime: { value: 0 }, uFade: { value: 1 }, uSizeMul: { value: 1 }, uTwinkle: { value: 1 } },
+      uniforms: { uTime: { value: 0 }, uFade: { value: 1 }, uSizeMul: { value: 1 }, uTwinkleAmp: { value: 1 } },
       vertexShader: `
         attribute float size;
         varying vec3 vColor;
         uniform float uTime;
         uniform float uSizeMul;
-        uniform float uTwinkle;
+        uniform float uTwinkleAmp;
         void main() {
           vColor = color;
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          // uTwinkle=1 → stars scintillate; uTwinkle=0 → steady (dust bands must NOT
-          // scintillate — out-of-phase size flicker across a dense band reads as a glitch).
-          float tw = mix(1.0, 0.85 + 0.15 * sin(uTime * 0.0015 + position.x * 0.04), uTwinkle);
+          float tw = mix(1.0, 0.85 + 0.15 * sin(uTime * 0.0015 + position.x * 0.04), uTwinkleAmp);
           gl_PointSize = size * tw * uSizeMul * (280.0 / -mv.z);
           gl_Position = projectionMatrix * mv;
         }`,
@@ -3946,27 +5059,31 @@ const FinishShader = {
           float d = length(uv);
           if (d > 0.5) discard;
           float core = smoothstep(0.5, 0.0, d);
-          float halo = smoothstep(0.5, 0.12, d) * 0.35;
-          gl_FragColor = vec4(vColor * (core + halo), core * uFade);
+          float halo = smoothstep(0.5, 0.10, d) * 0.42;
+          float spike = max(0.0, 1.0 - abs(uv.x) * 5.5) * max(0.0, 1.0 - abs(uv.y) * 5.5) * 0.08;
+          gl_FragColor = vec4(vColor * (core + halo + spike), (core + spike * 0.5) * uFade);
         }`,
     });
   }
 
   function buildStars() {
     if (onPreloaderStage() && usesPageStarfield()) return;
-    const N = PRM ? 800 : (perfTier === 'high' ? 3400 : perfTier === 'mid' ? 2400 : 1600);
+    const instMul = instrumentMode ? 1.15 : 1;
+    const N = Math.round((PRM ? 800 : (perfTier === 'high' ? 4800 : perfTier === 'mid' ? 3400 : 2200)) * instMul);
     const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), sizes = new Float32Array(N);
     const starTemps = [[1.0, 0.95, 0.88], [0.88, 0.92, 1.0], [1.0, 0.82, 0.62], [0.95, 0.88, 1.0]];
+    const brightChance = instrumentMode ? 0.13 : 0.09;
     for (let i = 0; i < N; i++) {
       const r = 240 + Math.random() * 340;
       const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
       pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
       pos[i * 3 + 1] = r * Math.cos(ph);
       pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
-      const temp = starTemps[Math.floor(Math.random() * starTemps.length)];
-      const w = 0.72 + Math.random() * 0.28; // v576: floor lifted 0.55→0.72 — Earth no longer floats in starless felt
+      const warmBias = instrumentMode && Math.random() < 0.38;
+      const temp = warmBias ? starTemps[2] : starTemps[Math.floor(Math.random() * starTemps.length)];
+      const w = 0.72 + Math.random() * 0.28;
       col[i * 3] = temp[0] * w; col[i * 3 + 1] = temp[1] * w; col[i * 3 + 2] = temp[2] * w;
-      sizes[i] = Math.random() < 0.09 ? 2.6 + Math.random() * 1.8 : 0.7 + Math.random() * 1.1;
+      sizes[i] = Math.random() < brightChance ? 2.8 + Math.random() * 2.0 : 0.7 + Math.random() * 1.1;
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -3981,7 +5098,7 @@ const FinishShader = {
     // each other and the scene gains real depth. Fainter + smaller so it reads as
     // background dust, never competing with the near field. Count is tier-gated (low
     // mobile gets a cheap version) and PRM keeps it minimal.
-    const NF = PRM ? 300 : (perfTier === 'high' ? 1700 : perfTier === 'mid' ? 1100 : 650);
+    const NF = PRM ? 300 : (perfTier === 'high' ? 2600 : perfTier === 'mid' ? 1700 : 980);
     const fp = new Float32Array(NF * 3), fc = new Float32Array(NF * 3), fs = new Float32Array(NF);
     for (let i = 0; i < NF; i++) {
       const r = 620 + Math.random() * 520;   // 620–1140: well beyond the near shell
@@ -4006,9 +5123,9 @@ const FinishShader = {
     // shell between the two star fields, concentrated toward a tilted galactic plane so
     // it reads as a soft diffuse band across the sky, not a uniform sprinkle. Whisper
     // faint (well below the near stars) so it never competes with the orrery bodies.
-    const NB = PRM ? 260 : (perfTier === 'high' ? 1400 : perfTier === 'mid' ? 900 : 480);
+    const NB = Math.round((PRM ? 260 : (perfTier === 'high' ? 2200 : perfTier === 'mid' ? 1400 : 720)) * (instrumentMode ? 1.35 : 1));
     const bp = new Float32Array(NB * 3), bc = new Float32Array(NB * 3), bs = new Float32Array(NB);
-    const bandTilt = 27 * D2R;               // galactic-plane tilt vs the ecliptic-ish frame
+    const bandTilt = GALACTIC_ECLIPTIC_TILT; // ecliptic vs galactic plane (~60.2°)
     const ct = Math.cos(bandTilt), st = Math.sin(bandTilt);
     for (let i = 0; i < NB; i++) {
       const r = 560 + Math.random() * 120;   // between near (≤580) and far (≥620) shells
@@ -4024,7 +5141,7 @@ const FinishShader = {
       bp[i * 3] = x; bp[i * 3 + 1] = y2; bp[i * 3 + 2] = z2;
       // Cool ivory dust with a faint warm core scatter.
       const warm = Math.random() < 0.3;
-      const w = 0.16 + Math.random() * 0.12; // FAR below the near stars → a whisper
+      const w = (instrumentMode ? 0.22 : 0.16) + Math.random() * 0.12;
       bc[i * 3] = (warm ? 1.0 : 0.86) * w;
       bc[i * 3 + 1] = (warm ? 0.94 : 0.9) * w;
       bc[i * 3 + 2] = (warm ? 0.82 : 1.0) * w;
@@ -4036,7 +5153,6 @@ const FinishShader = {
     gb.setAttribute('size', new THREE.BufferAttribute(bs, 1));
     const mb = makeStarPointsMaterial();
     mb.uniforms.uSizeMul.value = 1.15;       // slightly bigger soft dust motes
-    mb.uniforms.uTwinkle.value = 0;          // steady dust — no scintillation shimmer
     milkyWayBand = new THREE.Points(gb, mb); scene.add(milkyWayBand);
   }
 
@@ -4107,7 +5223,7 @@ const FinishShader = {
       buildSunCorona();
       const layers = [
         { tex: isAwardMode()
-            ? makeGlowTexture('rgba(236,214,164,0.85)', 'rgba(168,176,188,0.32)') // v576 brass halo
+            ? makeGlowTexture('rgba(236,214,164,0.85)', 'rgba(194,160,94,0.32)') // v576 brass halo
             : makeGlowTexture('rgba(255,252,235,0.88)', 'rgba(255,205,85,0.38)'), scale: SUN_SIZE * 4.6 },
         { tex: makeGlowTexture('rgba(255,218,125,0.36)', 'rgba(240,135,35,0.10)'), scale: SUN_SIZE * 8.2 },
         { tex: makeGlowTexture('rgba(255,175,55,0.12)', 'rgba(215,85,12,0.03)'), scale: SUN_SIZE * 13.5 },
@@ -4135,6 +5251,7 @@ const FinishShader = {
 
   // Real bloom replaces the outer fake corona; keep a subtle inner halo on all tiers.
   function tuneSunGlowForComposer(tier) {
+    if (instrumentMode) return;
     // With real bloom active, retire the god-ray corona entirely — the soft glow layers
     // + UnrealBloom carry the sun's light, and the discrete rays only read as a hard
     // 12-spoke artifact over the bloom. (On low/PRM tiers the corona stays, now rotated right.)
@@ -4159,7 +5276,7 @@ const FinishShader = {
         vec4 mv = modelViewMatrix * vec4(position, 1.0);
         vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
         gl_Position = projectionMatrix * mv; }`,
-      // Softer exponent + higher alpha ceiling = readable limb on outer giants in portrait
+      // Softer exponent + higher alpha ceiling = readable limb on outer giants (AP 2026-07)
       fragmentShader: `uniform vec3 uColor; uniform float uIntensity; varying vec3 vN; varying vec3 vV;
         void main(){
           float facing = max(dot(vN, vV), 0.0);
@@ -4321,7 +5438,7 @@ const FinishShader = {
   function makeOrbitRingMaterial(hero) {
     return new THREE.ShaderMaterial({
       uniforms: {
-        uOpacity: { value: hero ? 0.64 : 0.42 },
+        uOpacity: { value: hero ? 0.58 : 0.34 },
         uTime: { value: 0 },
         uHero: { value: hero ? 1.0 : 0.0 },
       },
@@ -4347,16 +5464,19 @@ const FinishShader = {
           float minorTick = pow(max(0.0, cos(angle * 24.0)), 20.0);
           float microTick = pow(max(0.0, cos(angle * 48.0)), 28.0);
           float ringProfile = smoothstep(0.0, 0.18, vUv.y) * smoothstep(1.0, 0.82, vUv.y);
-          float baseGlow = ringProfile * 0.42;
-          float engraved = ringProfile * (0.32 + majorTick * 0.62 + minorTick * 0.20 + microTick * 0.07);
-          vec3 darkGold = vec3(0.42, 0.32, 0.12);
-          vec3 midGold  = vec3(0.76, 0.63, 0.28);
+          float baseGlow = ringProfile * 0.38;
+          float engraved = ringProfile * (0.28 + majorTick * 0.58 + minorTick * 0.18 + microTick * 0.06);
+          vec3 darkGold = vec3(0.38, 0.28, 0.08);
+          vec3 midGold  = vec3(0.72, 0.58, 0.22);
           vec3 brightGold = vec3(0.98, 0.84, 0.42);
           vec3 col = mix(darkGold, midGold, baseGlow + engraved * 0.4);
           col = mix(col, brightGold, engraved + uHero * 0.14);
           float pulse = 0.92 + 0.08 * sin(uTime * 1.4 + angle * 2.5);
+          float flow = fract(angle * 4.0 - uTime * 0.22);
+          float spark = smoothstep(0.94, 1.0, flow) * smoothstep(1.0, 0.97, flow);
+          col = mix(col, brightGold, spark * 0.85);
           float depthFade = smoothstep(480.0, 24.0, vDepth);
-          float alpha = (baseGlow * 0.55 + engraved) * uOpacity * depthFade * pulse;
+          float alpha = (baseGlow * 0.55 + engraved + spark * 0.42) * uOpacity * depthFade * pulse;
           if (alpha < 0.008) discard;
           gl_FragColor = vec4(col, alpha);
         }`,
@@ -4367,12 +5487,12 @@ const FinishShader = {
     });
   }
 
-  function injectPlanetSunLighting(shader, rimHex) {
+  function injectPlanetSunLighting(shader, rimHex, rimMul) {
     const rim = new THREE.Color(rimHex || 0x6088b0);
     shader.uniforms.uSunDir = { value: new THREE.Vector3(1, 0, 0) };
     shader.uniforms.uRimTint = { value: rim };
     shader.uniforms.uLightWash = { value: 0.11 };
-    shader.uniforms.uRimMul = { value: 0.08 };
+    shader.uniforms.uRimMul = { value: rimMul != null ? rimMul : 0.08 };
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>',
         '#include <common>\n uniform vec3 uSunDir;\n uniform vec3 uRimTint;\n uniform float uLightWash;\n uniform float uRimMul;')
@@ -4447,19 +5567,20 @@ const FinishShader = {
         });
         mat.onBeforeCompile = (shader) => { try { injectEarth(shader); } catch (e) { console.warn('[orrery] earth shader patch skipped', e); } };
         earthMat = mat;
-        // High tier: slightly quieter cities so terminator/atmosphere carry the drama
-        earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.42;
+        earthUniforms.uNightInt.value = perfTier === 'low' ? 1.85 : perfTier === 'mid' ? 1.45 : 1.6;
       } else {
         const isGiant = b.id === 'jupiter' || b.id === 'saturn' || b.id === 'uranus' || b.id === 'neptune';
         // Gas-giant cloud tops are matte — no clearcoat lacquer on jupiter/saturn
         // (the coat lobe read as a centered plastic blob no base roughness can kill);
         // venus keeps its thick-haze sheen, the ice giants keep a whisper.
-        const clearcoat = (b.id === 'venus' ? 0.20
+        const clearcoat = (b.id === 'venus' ? 0.32
           : (b.id === 'uranus' || b.id === 'neptune') ? 0.14 : 0);
-        const giantGlow = b.id === 'jupiter' ? 0x2a1808 : b.id === 'saturn' ? 0x1e1608 : 0x000000;
-        const giantEmissiveI = b.id === 'jupiter' ? 0.10 : b.id === 'saturn' ? 0.08
+        const giantGlow = b.id === 'venus' ? 0x3a2810
+          : b.id === 'jupiter' ? 0x2a1808 : b.id === 'saturn' ? 0x1e1608 : 0x000000;
+        const giantEmissiveI = b.id === 'venus' ? 0.22
+          : b.id === 'jupiter' ? 0.10 : b.id === 'saturn' ? 0.08
           : b.id === 'uranus' ? 0.05 : b.id === 'neptune' ? 0.05 : 0;
-        const envI = isGiant ? 0.38 : (b.id === 'venus' ? 0.28 : 0.24);
+        const envI = isGiant ? 0.38 : (b.id === 'venus' ? 0.46 : 0.24);
         mat = new THREE.MeshPhysicalMaterial({
           color: b.color, roughness: vis.roughness, metalness: vis.metalness,
           clearcoat, clearcoatRoughness: isGiant ? 0.26 : 0.38,
@@ -4467,9 +5588,10 @@ const FinishShader = {
           envMapIntensity: envI,
         });
         const rimHex = vis.rim || b.color;
+        const rimMul = b.id === 'venus' ? 0.20 : (b.id === 'earth' || b.id === 'mars') ? 0.13 : 0.08;
         mat.onBeforeCompile = (shader) => {
           try {
-            injectPlanetSunLighting(shader, rimHex);
+            injectPlanetSunLighting(shader, rimHex, rimMul);
             mat.userData.planetShader = shader;
           } catch (e) { console.warn('[orrery] planet lighting patch skipped', e); }
         };
@@ -4495,6 +5617,30 @@ const FinishShader = {
       group.add(retroSprite);
       group.userData.retroSprite = retroSprite;
 
+      if (b.luminous || b.id === 'venus') {
+        const lumTex = makeGlowTexture('rgba(255,220,140,0.55)', 'rgba(201,162,39,0.0)');
+        const lumHalo = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: lumTex, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false,
+        }));
+        const lumS = b.size * 6.2;
+        lumHalo.scale.set(lumS, lumS, 1);
+        lumHalo.userData.baseScale = lumS;
+        group.add(lumHalo);
+        group.userData.luminousHalo = lumHalo;
+      }
+
+      const trailGeo = new THREE.BufferGeometry();
+      const trailPts = new Float32Array(TRAIL_LEN * 3);
+      trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPts, 3));
+      const trailLine = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({
+        color: 0xc9a227, transparent: true, opacity: 0.26,
+        blending: THREE.AdditiveBlending, depthWrite: false,
+      }));
+      trailLine.visible = false;
+      trailLine.frustumCulled = false;
+      scene.add(trailLine);
+      planetTrails[b.id] = { line: trailLine, pts: trailPts, hist: [] }; // hist: flat [x,y,z,...]
+
       // textures load async; swap in when ready (no blank-hero blocking)
       // (hero Earth has its own priority-ordered HD swap-in in the b.hero block below)
       if (!b.hero) loadTex(b.tex).then((t) => { if (t) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
@@ -4502,7 +5648,7 @@ const FinishShader = {
       if (vis.atmo) {
         let atmoMat;
         if (b.hero && perfTier !== 'low' && !PRM) {
-          atmoMat = earthAtmosphereMaterial({ intensity: 1.0, edge: 5.4, falloff: 1.55, wrap: 0.0 });
+          atmoMat = earthAtmosphereMaterial({ intensity: 0.9, edge: 5.3, falloff: 1.5, wrap: 0.0 });
           earthAtmoMat = atmoMat;
         } else {
           const atmoI = vis.atmoI != null ? vis.atmoI : (b.hero ? 1.0 : 0.4);
@@ -4518,7 +5664,7 @@ const FinishShader = {
         if (b.hero && atmoMat === earthAtmoMat) {
           const atmo2 = new THREE.Mesh(
             new THREE.SphereGeometry(b.size * 1.045, atmoSegs, atmoSegs),
-            earthAtmosphereMaterial({ intensity: 0.21, edge: 3.5, falloff: 1.42, wrap: 1.0 })
+            earthAtmosphereMaterial({ intensity: 0.15, edge: 3.4, falloff: 1.3, wrap: 1.0 })
           );
           earthAtmoMatOuter = atmo2.material;
           group.add(atmo2);
@@ -4619,8 +5765,8 @@ const FinishShader = {
       }
 
       if (b.ring) {
-        const inner = b.size * 1.35, outer = b.size * 2.35;
-        const ringSegs = perfTier === 'high' ? 160 : perfTier === 'mid' ? 128 : 96;
+        const inner = b.size * 1.28, outer = b.size * 2.02;
+        const ringSegs = perfTier === 'high' ? 256 : perfTier === 'mid' ? 192 : 128;
         const ringGeo = new THREE.RingGeometry(inner, outer, ringSegs, 1);
         // remap UVs so the texture strip maps across the ring radius
         const pos = ringGeo.attributes.position, uv = ringGeo.attributes.uv, v3 = new THREE.Vector3();
@@ -4684,7 +5830,10 @@ const FinishShader = {
       // name label (sprite, optional)
       labels[b.id] = makeLabel(b.name); labels[b.id].visible = false; scene.add(labels[b.id]);
     });
-    if (!earthOnly) allPlanetsBuilt = true;
+    if (!earthOnly) {
+      allPlanetsBuilt = true;
+      buildEccentricGuides();
+    }
     buildExtraBodies();
     buildTrails();
   }
@@ -4734,8 +5883,8 @@ const FinishShader = {
     trailsGroup.visible = false;
     BODIES.forEach((b) => {
       if (b.id === 'earth') { /* earth trail too — it's the hero */ }
-      const positions = new Float32Array(TRAIL_LEN * 3);
-      const colors = new Float32Array(TRAIL_LEN * 3);
+      const positions = new Float32Array(MOTION_TRAIL_LEN * 3);
+      const colors = new Float32Array(MOTION_TRAIL_LEN * 3);
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
       geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
@@ -4775,14 +5924,14 @@ const FinishShader = {
       if (!g || !s) return;
       const p = g.position;
       s.positions[s.head * 3] = p.x; s.positions[s.head * 3 + 1] = p.y; s.positions[s.head * 3 + 2] = p.z;
-      s.head = (s.head + 1) % TRAIL_LEN;
-      if (s.count < TRAIL_LEN) s.count++;
+      s.head = (s.head + 1) % MOTION_TRAIL_LEN;
+      if (s.count < MOTION_TRAIL_LEN) s.count++;
       // rebuild vertex order oldest→newest with a fade ramp
       const line = s.line, geo = line.geometry;
       const pos = geo.attributes.position.array, col = geo.attributes.color.array;
       const n = s.count;
       for (let i = 0; i < n; i++) {
-        const idx = (s.head - n + i + TRAIL_LEN * 2) % TRAIL_LEN;
+        const idx = (s.head - n + i + MOTION_TRAIL_LEN * 2) % MOTION_TRAIL_LEN;
         pos[i * 3] = s.positions[idx * 3];
         pos[i * 3 + 1] = s.positions[idx * 3 + 1];
         pos[i * 3 + 2] = s.positions[idx * 3 + 2];
@@ -4838,14 +5987,6 @@ const FinishShader = {
 
   function updateDomLabels(introP) {
     if (!ensureDomLabels() || !camera || !canvas) return;
-    // Cosmic-flight tool: hide DOM labels entirely. The fullscreen cinematic zoom
-    // reuses this intro label path, whose intro-tuned alphas + projection desync
-    // from the bodies across Oort/Stars/Cosmos (labels strewn over empty space and
-    // the Sun). Hiding them keeps the flight clean; the intro/journey still label.
-    if (cosmicFlightToolActive || spaceFlightToolActive) {
-      BODIES.forEach((b) => { const el = domLabelEls[b.id]; if (el) el.style.opacity = '0'; });
-      return;
-    }
     const canvasRect = canvas.getBoundingClientRect();
     const layerRect = domLabelLayer.getBoundingClientRect();
     if (!canvasRect.width || !canvasRect.height) return;
@@ -4864,11 +6005,6 @@ const FinishShader = {
         alpha = 0;
       } else if (introActive) {
         alpha = introLabelAlpha(b.id, introP);
-      } else if (focusFrameId && focusFrameId !== 'aspect') {
-        // Single-body focus frame (planet/moon portrait): label ONLY the framed
-        // body. Otherwise every planet's label lights up (scale 1–2 branch below)
-        // and the off-screen ones overprint the Sun / scene during the portrait.
-        alpha = (focusFrameId === b.id) ? 1 : 0;
       } else if (focusPlanetId === b.id && performance.now() < focusPlanetUntil) {
         alpha = 1;
       } else if (showLabels && scaleLevel >= 1 && scaleLevel <= 2) {
@@ -4993,7 +6129,7 @@ const FinishShader = {
       if (!PRM) milkyWayBand.rotation.y = p * 0.04;
     }
 
-    if (sunMesh) {
+    if (sunMesh && !instrumentMode) {
       const pulse = (!onPreloaderStage() && p < 0.22) ? 1 + Math.sin(t * 0.0032) * 0.02 : 1;
       sunMesh.scale.setScalar(pulse);
     }
@@ -5002,7 +6138,7 @@ const FinishShader = {
       if (p >= 0.42) showOrbits = true;
       applyPreloaderEarthIsolation(p);
     }
-    else if (sunGlow.length && p < 0.55) {
+    else if (!instrumentMode && sunGlow.length && p < 0.55) {
       sunGlow.forEach((sp, i) => {
         if (!sp.material) return;
         sp.visible = i === 0 || (i === 1 && perfTier === 'high');
@@ -5011,7 +6147,7 @@ const FinishShader = {
       });
     }
 
-    if (bloomPass) {
+    if (bloomPass && !instrumentMode) {
       bloomPass.radius = (perfTier === 'mid' ? 0.34 : 0.38) + orbitFade * 0.08;
       if (p < 0.55) {
         bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
@@ -5030,15 +6166,59 @@ const FinishShader = {
       renderer.toneMappingExposure = (perfTier === 'high' ? 1.12 : 1.08) + Math.min(p, 0.18) * 0.04;
     }
 
-    if (radialBlurPass) {
+    if (radialBlurPass && !instrumentMode) {
       const dof = p < 0.55 ? (1 - p / 0.55) * 0.32 : 0;
       radialBlurPass.uniforms.uStrength.value = dof;
     }
   }
 
+  function disposeHelioAspectLines() {
+    if (!aspectHelioGroup || !scene) return;
+    scene.remove(aspectHelioGroup);
+    aspectHelioGroup.traverse((o) => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) o.material.dispose();
+    });
+    aspectHelioGroup = null;
+  }
+
+  function updateHelioAspectLines() {
+    disposeHelioAspectLines();
+    if (!showAspectsHelio || !scene) return;
+    const z = masterclassMode ? masterclassZoom : scaleLevel;
+    if (z > 3.2) return;
+    aspectHelioGroup = new THREE.Group();
+    const ids = BODIES.map((b) => b.id).filter((id) => id !== 'sun' && meshes[id]);
+    for (let i = 0; i < ids.length; i++) {
+      for (let j = i + 1; j < ids.length; j++) {
+        const g1 = meshes[ids[i]], g2 = meshes[ids[j]];
+        const lon1 = g1.userData.lon, lon2 = g2.userData.lon;
+        if (lon1 == null || lon2 == null) continue;
+        let diff = Math.abs(lon1 - lon2);
+        if (diff > 180) diff = 360 - diff;
+        for (const asp of HELIO_ASPECTS) {
+          if (Math.abs(diff - asp.angle) > asp.orb) continue;
+          const geo = new THREE.BufferGeometry().setFromPoints([g1.position.clone(), g2.position.clone()]);
+          const opa = 0.22 + 0.28 * (1 - Math.abs(diff - asp.angle) / asp.orb);
+          const mat = new THREE.LineDashedMaterial({
+            color: asp.color, transparent: true, opacity: opa,
+            dashSize: 0.12, gapSize: 0.07, depthWrite: false,
+          });
+          const line = new THREE.Line(geo, mat);
+          line.computeLineDistances();
+          aspectHelioGroup.add(line);
+          break;
+        }
+      }
+    }
+    if (aspectHelioGroup.children.length) scene.add(aspectHelioGroup);
+    else { aspectHelioGroup = null; }
+  }
+
   // ── Per-frame position update from the ephemeris ───────────────────────────
   function updatePositions() {
     const jd = baseJd + dayOffset + scrollBias;
+    const E = window.AstroEphemeris;
     BODIES.forEach((b) => {
       const g = meshes[b.id];
       if (!g) return;
@@ -5046,7 +6226,13 @@ const FinishShader = {
       const p = scenePos(b.R, ll.lon, ll.lat);
       g.position.copy(p);
       g.userData.lon = ll.lon;
+      g.userData.lat = ll.lat;
+      g.userData.distanceAU = ll.distanceAU;
+      if (E && (showVelocityVectors || retroTick % 15 === 0)) {
+        try { g.userData.speedKmS = adaptiveHelioSpeedKmS(E, b.id, jd, norm360); } catch (e) { /* optional */ }
+      }
     });
+    updateVelocityVectors();
     // Extra bodies (Pluto) — same helio→scene mapping as the majors
     if (extraBodiesGroup) {
       EXTRA_BODIES.forEach((b) => {
@@ -5074,6 +6260,7 @@ const FinishShader = {
     updateHalley(jd);
     updateEclipseDim(jd);
     updateSaturnShadow(jd);
+    if (showAspectsHelio) updateHelioAspectLines();
   }
 
   // ── Camera ─────────────────────────────────────────────────────────────────
@@ -5092,8 +6279,6 @@ const FinishShader = {
     if (destroyed) return;
     try { frameBody(t); }
     catch (err) { console.warn('[orrery] render error — falling back to canvas orrery:', err); fallbackToCanvas(canvas); }
-    // OrbitLab 2026-07-05 port: only reschedule while running && inView — the IO and
-    // visibilitychange handlers re-arm the loop, so a parked orrery costs zero rAF.
     if (!destroyed && running && inView) raf = requestAnimationFrame(frame);
     else raf = null;
   }
@@ -5104,17 +6289,76 @@ const FinishShader = {
       if ((t - introStart) >= introDurationMs()) finishIntro();
     }
     if (!running || !inView) { lastT = t; return; }
-    const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t;
+    const dt = Math.min(0.05, (t - (lastT || t)) / 1000); lastT = t; lastDt = dt;
+
+    if (camRadiusTarget != null) {
+      const diff = camRadiusTarget - camRadius;
+      const snapEps = freeExploreMode ? 0.12 : 0.06;
+      const lerpK = freeExploreMode ? 14 : 9.5;
+      if (Math.abs(diff) < snapEps) {
+        camRadius = camRadiusTarget;
+        camRadiusTarget = null;
+        zoomSettleUntil = Math.max(zoomSettleUntil, performance.now() + 280);
+      } else {
+        camRadius += diff * Math.min(1, dt * lerpK);
+      }
+    }
+    // Free-explore: coasting orbit after flick + FOV that tracks flight distance
+    if (freeExploreMode && !dragging && !scaleAnimActive && !portraitMode) {
+      if (Math.abs(orbitVelAz) > 1e-5 || Math.abs(orbitVelEl) > 1e-5) {
+        camAz += orbitVelAz * dt;
+        camEl += orbitVelEl * dt;
+        camEl = Math.max(-1.35, Math.min(1.48, camEl));
+        orbitVelAz *= Math.pow(0.12, dt); // ~smooth decay
+        orbitVelEl *= Math.pow(0.14, dt);
+        if (Math.abs(orbitVelAz) < 1e-4) orbitVelAz = 0;
+        if (Math.abs(orbitVelEl) < 1e-4) orbitVelEl = 0;
+      }
+      // Continuous FOV: closer = tighter, galaxy/cosmos = wider but not fish-eyed
+      const contZ = radiusToContinuousZoom(camRadius);
+      const wantFov = contZ < 1.2 ? 34
+        : contZ < 2.5 ? 38
+        : contZ < 4 ? 42
+        : contZ < 5.2 ? 46
+        : 48;
+      camera.fov += (wantFov - camera.fov) * Math.min(1, dt * 4);
+      camera.updateProjectionMatrix();
+    }
+    // Phase 4: galactic (l,b) of camera look for HUD (throttled via lastGalacticLB)
+    if (camera && milkyWayGroup && (scaleLevel >= 4 || camRadius > 220)) {
+      try {
+        const dir = new THREE.Vector3();
+        camera.getWorldDirection(dir);
+        if (window.GaiaSample && typeof window.GaiaSample.lookDirToGalactic === 'function') {
+          lastGalacticLB = window.GaiaSample.lookDirToGalactic(dir, milkyWayGroup);
+        } else {
+          lastGalacticLB = {
+            l: ((Math.atan2(dir.z, dir.x) * 180 / Math.PI) + 360) % 360,
+            b: Math.asin(Math.max(-1, Math.min(1, dir.y))) * 180 / Math.PI,
+          };
+        }
+      } catch (e) { /* optional */ }
+    }
+    if (instrumentMode) {
+      const zoomBusy = isInstrumentZoomBusy();
+      const zoomK = Math.min(1, dt * (zoomBusy ? 5.5 : 3.2));
+      instrumentBloomZoom += ((zoomBusy ? 0 : 1) - instrumentBloomZoom) * zoomK;
+    }
 
     // flick momentum — time coasts after a drag-release, decaying to rest
     if (flicking) {
       daysPerSec *= Math.pow(0.12, dt);
       if (Math.abs(daysPerSec) < 0.5) { daysPerSec = 0; flicking = false; }
     }
-    // advance time
-    if (daysPerSec !== 0) { dayOffset += daysPerSec * dt; needRecompute = true; }
+    // advance time — sub-step for VSOP87 stability at year-per-second speeds
+    if (daysPerSec !== 0) {
+      const maxStep = Math.abs(daysPerSec) > 30 ? 1 : Math.abs(daysPerSec) > 8 ? 2 : 7;
+      dayOffset = integrateDayOffset(dayOffset, daysPerSec, dt, maxStep);
+      needRecompute = true;
+    }
     if (needRecompute) {
       updatePositions(); needRecompute = false; updateDateUI();
+      dispatchDateChange();
       if (onScrub) { try { onScrub(baseJd + dayOffset); } catch (e) {} }
     }
 
@@ -5143,9 +6387,10 @@ const FinishShader = {
       }
     }
 
-    // retrograde glow — throttled (ephemeris + sprite updates every 6 frames)
+    // retrograde glow — throttled harder at high simulation speeds
     retroTick++;
-    if (retroTick % 6 === 0) {
+    const retroInterval = Math.abs(daysPerSec) > 60 ? 18 : Math.abs(daysPerSec) > 10 ? 10 : 6;
+    if (retroTick % retroInterval === 0) {
       try {
         const E = window.AstroEphemeris;
         if (E && E.isRetrograde) {
@@ -5174,7 +6419,8 @@ const FinishShader = {
     // granule boil (still gentle), uTimeSlow = supergranulation + prominence rise.
     // PRM scales every rate toward ~0 so reduced-motion users get a near-static star.
     const sunT = t * 0.001;
-    const sunRate = PRM ? 0.06 : 1.0;   // reduced-motion: freeze the surface to a crawl
+    const sunRevealed = !instrumentMode || (!isEarthPosterBlocking() && instrumentSunRevealT() >= 0.98);
+    const sunRate = PRM ? 0.06 : (instrumentMode ? (sunRevealed ? 0.14 : 0) : 1.0);
     const sunTSlow = sunT * 0.22 * sunRate;
     // Granule churn must CREEP, not boil — real granulation turns over on a minutes
     // timescale. A modest fast rate keeps the surface visibly alive without any per-cell
@@ -5189,9 +6435,13 @@ const FinishShader = {
       sunCoronaMat.uniforms.uTime.value = sunT * sunRate;
       if (sunCoronaMat.uniforms.uTimeSlow) sunCoronaMat.uniforms.uTimeSlow.value = sunTSlow;
     }
-    if (starField && starField.material.uniforms) starField.material.uniforms.uTime.value = t;
-    if (starFieldFar && starFieldFar.material.uniforms) starFieldFar.material.uniforms.uTime.value = t;
-    if (milkyWayBand && milkyWayBand.material.uniforms) milkyWayBand.material.uniforms.uTime.value = t;
+    const starT = instrumentMode ? t * 0.55 : t;
+    const twinkleAmp = instrumentMode ? 0.22 : 1;
+    [starField, starFieldFar, milkyWayBand].forEach((shell) => {
+      if (!shell || !shell.material || !shell.material.uniforms) return;
+      shell.material.uniforms.uTime.value = starT;
+      if (shell.material.uniforms.uTwinkleAmp) shell.material.uniforms.uTwinkleAmp.value = twinkleAmp;
+    });
     if (sunDirLight && sunMesh) {
       sunDirLight.position.copy(sunMesh.position);
       if (sunDirLightTarget) {
@@ -5225,7 +6475,7 @@ const FinishShader = {
       });
     }
 
-    if (sunCoronaGroup && !PRM) {
+    if (sunCoronaGroup && !PRM && !instrumentMode) {
       sunCoronaGroup.rotation.z += dt * 0.08;
       sunCoronaGroup.rotation.y += dt * 0.025;
       const promPulse = 1 + Math.sin(t * 0.0022) * 0.06;
@@ -5235,7 +6485,10 @@ const FinishShader = {
         if (sp.material) sp.material.opacity = 0.42 + Math.sin(t * 0.0025 + i) * 0.08;
       });
     }
-    if (sunGlow.length && !PRM && scaleLevel <= 2) {
+    if (instrumentMode && sunMesh) {
+      sunMesh.scale.setScalar(1);
+    }
+    if (sunGlow.length && !PRM && scaleLevel <= 2 && !instrumentMode) {
       const corePulse = 1 + Math.sin(t * 0.0026) * 0.07;
       sunGlow.forEach((sp, i) => {
         if (!sp.visible || sp.userData.baseScale == null) return;
@@ -5255,29 +6508,36 @@ const FinishShader = {
         : (p - PRELOADER_COSMIC_HOLD_FRAC) / (1 - PRELOADER_COSMIC_HOLD_FRAC);
       galSwirlMul = descentP < 0.28 ? 10.5 - descentP * 8 : Math.max(3.2, 10.5 - descentP * 12);
     }
-    // OrbitLab 2026-07-05 port: differential arm rotation — bulge/disk/dust/ribbons/HII
-    // spin at slightly different rates so the spiral shears like a real disk. All drifts
-    // are slow (minutes-scale periods); no strobe/flicker.
-    if (milkyWayGroup && scaleLevel >= 5 && !PRM) {
-      milkyWayGroup.rotation.y += dt * 0.0014 * galSwirlMul;
-      milkyWayGroup.rotation.x = GALACTIC_TILT_X + Math.sin(t * 0.000028) * 0.008;
+    // Rigid galactic body: ONLY rotate milkyWayGroup as a whole.
+    // Prior differential spin on disk/bulge/dust/ribbons/HII sheared the spiral
+    // apart over time and read as a "distorted galaxy" (esp. free-explore free look).
+    if (milkyWayGroup && (scaleLevel >= 4 || (freeExploreMode && camRadius > 220)) && !PRM) {
+      const swirl = freeExploreMode ? 0.55 : 1;
+      milkyWayGroup.rotation.y += dt * 0.0009 * galSwirlMul * swirl;
+      // Hold ecliptic–galactic tilt steady (tiny breathe only outside free-explore)
+      milkyWayGroup.rotation.x = GALACTIC_TILT_X + (freeExploreMode ? 0 : Math.sin(t * 0.000028) * 0.006);
+      milkyWayGroup.rotation.z = 25 * D2R;
     }
-    if (milkyWayBulge && milkyWayBulge.visible && !PRM) {
-      milkyWayBulge.rotation.y += dt * 0.0028 * galSwirlMul;
+    // Sun "you are here" pulse at galaxy scale
+    if (sunMarker && sunMarker.visible && !PRM) {
+      sunMarker.children.forEach((ch) => {
+        if (!ch.isSprite || !ch.userData) return;
+        const base = ch.userData.baseScale || (ch.scale.x || 8);
+        if (ch.userData.pulse) {
+          const s = base * (1 + Math.sin(t * 0.0032) * 0.18);
+          ch.scale.set(s, s, 1);
+          if (ch.material) ch.material.opacity = 0.55 + Math.sin(t * 0.0032) * 0.25;
+        } else if (ch.userData.baseScale) {
+          const s = base * (1 + Math.sin(t * 0.0024) * 0.06);
+          ch.scale.set(s, s, 1);
+        }
+      });
     }
-    if (milkyWayDisk && milkyWayDisk.visible && !PRM) {
-      const armSpin = scaleLevel >= 5 ? 0.0036 : 0.0052;
-      milkyWayDisk.rotation.y += dt * armSpin * galSwirlMul;
-      if (preloaderGalSwirl) milkyWayDisk.rotation.z += dt * 0.0018 * galSwirlMul;
-    }
-    if (milkyWayDust && milkyWayDust.visible && !PRM) {
-      milkyWayDust.rotation.y += dt * 0.0024 * galSwirlMul;
-    }
-    if (milkyWayArmRibbons && milkyWayArmRibbons.visible && !PRM) {
-      milkyWayArmRibbons.rotation.y += dt * 0.0031 * galSwirlMul;
+    // Optional preloader-only arm swirl (kept subtle; children stay co-rotated with parent)
+    if (preloaderGalSwirl && milkyWayDisk && milkyWayDisk.visible && !PRM) {
+      milkyWayDisk.rotation.y += dt * 0.0012 * galSwirlMul;
     }
     if (milkyWayHII && milkyWayHII.visible && !PRM) {
-      milkyWayHII.rotation.y += dt * 0.0038 * galSwirlMul;
       milkyWayHII.children.forEach((ch) => {
         if (!ch.material || ch.userData.baseOpa == null) return;
         const tw = ch.userData.tw || 1;
@@ -5286,20 +6546,15 @@ const FinishShader = {
     }
     if (oortShell && oortShell.visible && !PRM) oortShell.rotation.y += dt * 0.0032;
     if (galacticCore && galacticCore.visible && !PRM && galacticCore.material) {
-      if (preloaderGalSwirl) {
-        galacticCore.rotation.y += dt * 0.024 * galSwirlMul;
-        galacticCore.rotation.z += dt * 0.016 * galSwirlMul;
-      }
       if (scaleLevel >= 5 || preloaderGalSwirl) {
-        // dim at the COSMOS level so the linger fade in updateScaleVisuals holds
-        const coreHold = scaleLevel >= 6 ? 0.4 : 1;
-        galacticCore.material.opacity = (0.72 + Math.sin(t * 0.0006) * 0.05) * coreHold;
-        galacticCore.scale.setScalar(54 + Math.sin(t * 0.0005) * 1.4);
+        galacticCore.material.opacity = 0.72 + Math.sin(t * 0.0006) * 0.05;
+        const cs = 54 + Math.sin(t * 0.0005) * 1.4;
+        galacticCore.scale.set(cs, cs, 1);
       }
     }
     if (galacticCoreRing && galacticCoreRing.visible && !PRM && scaleLevel >= 5 && galacticCoreRing.material) {
-      galacticCoreRing.rotation.z += dt * 0.0016;
-      galacticCoreRing.material.opacity = (0.42 + Math.sin(t * 0.0005) * 0.05) * (scaleLevel >= 6 ? 0.4 : 1);
+      galacticCoreRing.material.rotation += dt * 0.0016;
+      galacticCoreRing.material.opacity = 0.42 + Math.sin(t * 0.0005) * 0.05;
     }
     if (localStarsGroup && localStarsGroup.visible && !PRM && scaleLevel >= 4) {
       localStarsGroup.children.forEach((ch) => {
@@ -5313,7 +6568,7 @@ const FinishShader = {
       catalogStarsGroup.material.opacity = catBase * (0.96 + Math.sin(t * 0.0008) * 0.03);
     }
     if (galacticBar && galacticBar.visible && !PRM && scaleLevel >= 5 && galacticBar.material) {
-      galacticBar.material.opacity = (0.58 + Math.sin(t * 0.00045) * 0.04) * (scaleLevel >= 6 ? 0.4 : 1);
+      galacticBar.material.opacity = 0.58 + Math.sin(t * 0.00045) * 0.04;
     }
     if (galacticHalo && galacticHalo.visible && !PRM) {
       if (preloaderGalSwirl) galacticHalo.rotation.z += dt * 0.008 * galSwirlMul;
@@ -5351,11 +6606,13 @@ const FinishShader = {
     if (!PRM && scaleLevel <= 2 && !introActive) {
       BODIES.forEach((b) => {
         const g = meshes[b.id];
-        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.16;
+        if (g && g.userData.mesh && g.visible) {
+          g.userData.mesh.rotation.y += bodySpinRate(b) * dt;
+        }
       });
-      if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.20;
-      if (moonMesh && moonGroup && moonGroup.visible) moonMesh.rotation.y += 0.012 * dt;
-      if (sunMesh) sunMesh.rotation.y += 0.04 * dt;
+      if (earthCloud) earthCloud.rotation.y += siderealSpinRadPerSec(23.9345) * dt * 1.05;
+      if (moonMesh && moonGroup && moonGroup.visible) moonMesh.rotation.y += siderealSpinRadPerSec(655.72) * dt;
+      if (sunMesh) sunMesh.rotation.y += 2 * Math.PI / (25.38 * 86400) * dt;
     }
     updateEarthOrbitTraffic(t, dt);
 
@@ -5371,10 +6628,25 @@ const FinishShader = {
 
     // scale-level camera transition (zoom dial) — cinematic crossfade + warp blur
     if (scaleAnimActive) {
-      const p = Math.min(1, (t - scaleAnimStart) / scaleAnimDurationMs), e = easeInOut(p);
+      const p = Math.min(1, (t - scaleAnimStart) / scaleAnimDurationMs);
+      const e = (journeyActive || instrumentMode) ? easeJourney(p) : easeInOut(p);
       camRadius = scaleAnimFrom.radius + (scaleAnimTo.radius - scaleAnimFrom.radius) * e;
-      camEl = scaleAnimFrom.el + (scaleAnimTo.el - scaleAnimFrom.el) * e;
-      camAz = scaleAnimFrom.az + (scaleAnimTo.az - scaleAnimFrom.az) * e;
+      const baseEl = scaleAnimFrom.el + (scaleAnimTo.el - scaleAnimFrom.el) * e;
+      const elArc = scaleAnimSpiralEl ? Math.sin(p * Math.PI) * scaleAnimSpiralEl : 0;
+      camEl = baseEl + elArc;
+      let dAz = scaleAnimTo.az - scaleAnimFrom.az;
+      dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+      const baseAz = scaleAnimFrom.az + dAz * e;
+      const spiral = scaleAnimSpiralAz ? Math.sin(p * Math.PI) * scaleAnimSpiralAz : 0;
+      camAz = baseAz + spiral;
+      if (journeyActive && journeyTotalLegs) {
+        const legIndex = journeyTotalLegs - journeySteps.length - 1;
+        dispatchJourneyProgress(Math.max(0, legIndex), p);
+        if (instrumentCosmicVeil && !PRM) {
+          instrumentCosmicVeil.rotation.y += dt * 0.0012 * (scaleAnimToLevel > scaleAnimFromLevel ? 1 : -1);
+        }
+        if (starField && !PRM) starField.rotation.y += dt * 0.004 * (scaleAnimToLevel > scaleAnimFromLevel ? 1 : -1);
+      }
       camTarget.set(
         scaleAnimFrom.tx + (scaleAnimTo.tx - scaleAnimFrom.tx) * e,
         scaleAnimFrom.ty + (scaleAnimTo.ty - scaleAnimFrom.ty) * e,
@@ -5388,12 +6660,17 @@ const FinishShader = {
         : (scaleAnimTo.radius < 12 ? CAM_FOV_CLOSE : (scaleAnimToLevel >= 3 ? CAM_FOV_WIDE : CAM_FOV_MID));
       camera.fov = fovFrom + (fovTo - fovFrom) * e;
       camera.updateProjectionMatrix();
-      if (radialBlurPass) {
-        radialBlurPass.uniforms.uStrength.value = Math.sin(p * Math.PI) * 0.22;
+      if (radialBlurPass && !instrumentMode) {
+        const blurMax = journeyActive ? 0.14 : 0.22;
+        radialBlurPass.uniforms.uStrength.value = Math.sin(p * Math.PI) * blurMax;
+      } else if (radialBlurPass && instrumentMode) {
+        radialBlurPass.uniforms.uStrength.value = 0;
       }
       if (p >= 1) {
         if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
         scaleAnimActive = false;
+        zoomSettleUntil = Math.max(zoomSettleUntil, performance.now() + 420);
+        camRadiusTarget = null;
         if (focusFrameId === 'aspect' && aspectActive) {
           // Land on the top-down zodiac-ring framing — no Earth-terminator snap.
           if (aspectData && aspectData.centre) camTarget.copy(aspectData.centre);
@@ -5407,23 +6684,26 @@ const FinishShader = {
           camera.updateProjectionMatrix();
           updateDomLabels(1);
           updateScaleVisuals(scaleLevel);
-        } else if (scalePreset(scaleLevel).targetEarth) {
+        } else if (!freeExploreMode && scalePreset(scaleLevel).targetEarth) {
           const ep = scalePreset(scaleLevel);
           setEarthTerminatorCamera(ep.camRadius, ep.camEl);
         } else {
           // v576: any focused planet lands on the portrait FOV, not the wide system FOV
+          // Free-explore: never hard-snap terminator after a scale anim (kills free look).
           camera.fov = focusFrameId ? CAM_FOV_MID : (scaleLevel >= 2 ? CAM_FOV_WIDE : CAM_FOV_MID);
           camera.updateProjectionMatrix();
           updateDomLabels(1);
-          updateScaleVisuals(scaleLevel);
+          if (freeExploreMode) updateScaleVisualsContinuous(radiusToContinuousZoom(camRadius));
+          else updateScaleVisuals(scaleLevel);
         }
         if (focusPlanetId) forceResize();
       }
     } else if (moonFrameActive && !introActive && !portraitMode) {
       syncMoonFrameTarget();
-    } else if (scalePreset(scaleLevel).targetEarth && !introActive && !portraitMode) {
+    } else if (!freeExploreMode && scalePreset(scaleLevel).targetEarth && !introActive && !portraitMode) {
       // portrait mode owns camTarget (may be a far planet); the scaleLevel-0 preset
       // otherwise snaps the target back to Earth every frame.
+      // Free explore: leave camTarget alone so pan / free zoom stays free.
       earthTargetVec(camTarget);
     }
 
@@ -5433,12 +6713,22 @@ const FinishShader = {
         const g = meshes.earth.userData.mesh;
         if (g) g.rotation.y += 0.42 * dt;
       }
+    } else if (masterclassIntroActive && window.__orbitlabMasterclass && !spaceFlightToolActive) {
+      const dur = MASTERCLASS_INTRO_MS;
+      const p = Math.min(1, (t - masterclassIntroStart) / dur);
+      const z = masterclassIntroFrom + (masterclassIntroTo - masterclassIntroFrom) * easeInOut(p);
+      setMasterclassZoom(z, false, false);
+      if (!dragging && !PRM) camAz += 0.06 * dt;
+      if (p >= 1) {
+        masterclassIntroActive = false;
+        try { document.dispatchEvent(new CustomEvent('orrery-masterclass-complete')); } catch (e) { /* optional */ }
+      }
     }
 
     if (introActive && preloaderCosmicJourney && introStart > 0) {
       tickPreloaderCosmicJourney(t);
       camAz += 0.018 * dt;
-      if (bloomPass && composer && (onPreloaderStage() || cosmicFlightToolActive)) {
+      if (bloomPass && composer && !instrumentMode && (onPreloaderStage() || cosmicFlightToolActive)) {
         bloomPass.strength = perfTier === 'mid' ? 0.22 : 0.28;
         bloomPass.threshold = perfTier === 'mid' ? 0.82 : 0.78;
       }
@@ -5491,7 +6781,7 @@ const FinishShader = {
           camEl = termEl + (end.camEl - termEl) * e;
           camAz = termAz * (1 - e) + end.camAz * e;
         }
-        if (bloomPass && composer) {
+        if (bloomPass && composer && !instrumentMode) {
           if (p < 0.55) {
             bloomPass.strength = perfTier === 'mid' ? 0.14 : 0.18;
             bloomPass.threshold = perfTier === 'mid' ? 0.88 : 0.84;
@@ -5501,7 +6791,7 @@ const FinishShader = {
             bloomPass.threshold = perfTier === 'mid' ? 0.88 - e2 * 0.04 : 0.84 - e2 * 0.04;
           }
         }
-        if (!onPreloaderStage() && renderer) {
+        if (!onPreloaderStage() && renderer && !instrumentMode) {
           renderer.toneMappingExposure = (perfTier === 'high' ? 1.12 : 1.08) + Math.min(p, 0.55) * 0.06;
         }
         applyIntroVisuals(p, t);
@@ -5510,7 +6800,10 @@ const FinishShader = {
         if (elapsed >= introMs) finishIntro();
       }
     } else if (!portraitMode && !dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
-      if (focusFrameId === 'aspect' && aspectActive) {
+      if (freeExploreMode) {
+        // Free explore: whisper of spin only — never snap radius/target back to presets.
+        camAz += 0.010 * dt;
+      } else if (focusFrameId === 'aspect' && aspectActive) {
         // Hold the top-down aspect framing with a whisper of az breathing so the
         // zodiac ring + both markers stay readable (don't snap back to Earth's terminator).
         camRadius += (aspectFrameRadius - camRadius) * Math.min(1, dt * 1.4);
@@ -5539,12 +6832,65 @@ const FinishShader = {
         let dAz = wantAz - camAz;
         dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
         camAz += dAz * Math.min(1, dt * 1.6);
+      } else if (scaleLevel === 5) {
+        const gp = scalePreset(5);
+        if (galaxyIdleAz == null) galaxyIdleAz = camAz;
+        if (galaxyIdleEl == null) galaxyIdleEl = camEl;
+        if (dragging) { galaxyIdleAz = camAz; galaxyIdleEl = camEl; }
+        galaxyIdleAz = GALAXY_VIEW_AZ + Math.sin(t * 0.00007) * 0.2;
+        galaxyIdleEl = GALAXY_VIEW_EL + Math.sin(t * 0.00005) * 0.035;
+        const wantRad = gp.camRadius + Math.sin(t * 0.00004) * 32;
+        let dAz = galaxyIdleAz - camAz;
+        dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+        const gk = Math.min(1, dt * 0.85);
+        camAz += dAz * gk;
+        camEl += (galaxyIdleEl - camEl) * gk;
+        camRadius += (wantRad - camRadius) * gk;
+        camTarget.set(0, 0, 0);
+      } else if (scaleLevel === 6) {
+        const gp = scalePreset(6);
+        const wantAz = gp.camAz + Math.sin(t * 0.00006) * 0.14;
+        const wantEl = COSMOS_VIEW_EL + Math.cos(t * 0.00004) * 0.028;
+        let dAz = wantAz - camAz;
+        dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+        const ck = Math.min(1, dt * 0.7);
+        camAz += dAz * ck;
+        camEl += (wantEl - camEl) * ck;
+      } else if (instrumentMode && scaleLevel <= 2) {
+        if (instrumentIdleAz == null) instrumentIdleAz = camAz;
+        if (instrumentIdleEl == null) instrumentIdleEl = camEl;
+        if (dragging) { instrumentIdleAz = camAz; instrumentIdleEl = camEl; }
+        instrumentIdleAz += 0.014 * dt;
+        instrumentIdleEl = scalePreset(scaleLevel).camEl + Math.sin(t * 0.00028) * 0.012;
+        let dAz = instrumentIdleAz - camAz;
+        dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
+        const driftK = Math.min(1, dt * 0.72);
+        camAz += dAz * driftK;
+        camEl += (instrumentIdleEl - camEl) * driftK;
+        if (starField && !PRM) starField.rotation.y += dt * 0.0016;
+        if (starFieldFar && !PRM) starFieldFar.rotation.y -= dt * 0.00075;
+        if (milkyWayBand && !PRM) milkyWayBand.rotation.y += dt * 0.00055;
+        if (instrumentCosmicVeil && !PRM) {
+          instrumentCosmicVeil.rotation.y += dt * 0.00035;
+          instrumentCosmicVeil.children.forEach((ch) => {
+            if (!ch.material) return;
+            if (ch.userData.drift) ch.material.rotation += ch.userData.drift * dt;
+            const base = ch.userData.baseOpa ?? 0.28;
+            ch.material.opacity = base;
+          });
+        }
       } else {
         camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
       }
     }
     if (!portraitMode && !introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive
         && !(focusFrameId === 'aspect' && aspectActive)) clampCamToLevel();
+    // Free explore: keep continuous scale layers honest while the user coasts zoom.
+    // While free-zooming (or coasting camRadiusTarget), keep layers in sync.
+    // Skip during scaleAnim so fly-to / strip jumps aren't visually stomped.
+    if (freeExploreMode && !scaleAnimActive && !introActive && !portraitMode) {
+      syncFreeExploreScaleFromRadius(camRadius, { dispatch: false });
+    }
     applyEclipseVisuals();
 
     // Portrait mode (capture harness only): re-assert the framed camera + the
@@ -5568,6 +6914,19 @@ const FinishShader = {
 
     // DOM labels (preferred) or canvas sprites as fallback
     updateFocusHighlight(t);
+    updateSelectedHighlight(t);
+    updatePlanetTrails();
+    if (instrumentMode) {
+      if (instrumentFirstFramePending) {
+        syncPosterSunVisibility();
+        instrumentStableFrames += 1;
+        if (instrumentStableFrames >= INSTRUMENT_FIRST_FRAME_FRAMES) {
+          instrumentFirstFramePending = false;
+          dispatchOrreryFirstFrame();
+        }
+      }
+      stabilizeInstrumentSunFrame();
+    }
     updateAspectView(t);
     if (!introActive) updateDomLabels(1);
     BODIES.forEach((b) => {
@@ -5602,35 +6961,27 @@ const FinishShader = {
     const tag = Math.abs(off) < 0.5 ? ' · now' : (off > 0 ? ` · +${Math.round(off)}d` : ` · ${Math.round(off)}d`);
     el.textContent = str + tag;
 
-    const scrub = document.getElementById('orrery-scrub');
-    if (scrub && document.activeElement !== scrub) {
-      const rounded = Math.round(off);
-      if (parseInt(scrub.value, 10) !== rounded) scrub.value = String(rounded);
+    const rounded = Math.round(off);
+    ['orrery-scrub', 'ol-deck-scrub', 'lite-scrub'].forEach((id) => {
+      const scrub = document.getElementById(id);
+      if (scrub && document.activeElement !== scrub && parseInt(scrub.value, 10) !== rounded) {
+        scrub.value = String(rounded);
+      }
+    });
+    const deckDate = document.getElementById('ol-deck-date');
+    if (deckDate) {
+      const d = new Date(baseNowMs + off * 86400000);
+      deckDate.textContent = d.toLocaleString(undefined, {
+        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      });
     }
 
     try {
       const E = window.AstroEphemeris;
-      const jd = baseJd + dayOffset + scrollBias;
-      const sunLon = E.sunPosition(jd).lon;
-      const moonLon = E.moonPosition(jd).lon;
-      const phase = ((moonLon - sunLon) % 360 + 360) % 360;
-      const PHASES = [
-        [0,   'New Moon'],
-        [45,  'Waxing Crescent'],
-        [90,  'First Quarter'],
-        [135, 'Waxing Gibbous'],
-        [180, 'Full Moon'],
-        [225, 'Waning Gibbous'],
-        [270, 'Last Quarter'],
-        [315, 'Waning Crescent'],
-        [360, 'New Moon'],
-      ];
-      let phaseLabel = 'New Moon';
-      for (let i = 0; i < PHASES.length - 1; i++) {
-        if (phase >= PHASES[i][0] && phase < PHASES[i + 1][0]) { phaseLabel = PHASES[i][1]; break; }
-      }
+      const phase = moonPhaseFromEphemeris(E, baseJd + dayOffset + scrollBias);
       const moonEl = document.getElementById('orrery-moon-phase');
-      if (moonEl) moonEl.textContent = phaseLabel;
+      if (moonEl) moonEl.textContent = phase.label;
     } catch (e) { /* moon phase is optional */ }
 
     try {
@@ -5711,19 +7062,12 @@ const FinishShader = {
     return { w, h };
   }
 
-  let _rzW = 0, _rzH = 0, _rzDpr = 0;
   function resize() {
     if (!renderer || !canvas) return;
     const box = canvasBox();
     const w = box.w;
     const h = box.h;
     const dpr = orreryDPR();
-    // v627 — no-op when the layout box + DPR are unchanged. On mobile the URL bar
-    // showing/hiding fires visualViewport events continuously; without this guard
-    // every one reallocated the whole renderer + composer + bloom stack — the #1
-    // mobile flicker source. forceResize() still re-renders regardless of this.
-    if (w === _rzW && h === _rzH && dpr === _rzDpr) return;
-    _rzW = w; _rzH = h; _rzDpr = dpr;
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
     if (composer) {
@@ -5739,8 +7083,12 @@ const FinishShader = {
     resize();
     if (renderer && scene && camera) {
       applyCamera();
-      if (composer && !onPreloaderStage()) composer.render();
-      else renderer.render(scene, camera);
+      if (instrumentMode) stabilizeInstrumentSunFrame();
+      const skipRender = instrumentMode && isEarthPosterBlocking();
+      if (!skipRender) {
+        if (composer && !onPreloaderStage()) composer.render();
+        else renderer.render(scene, camera);
+      }
     }
   }
 
@@ -5783,29 +7131,86 @@ const FinishShader = {
   }
 
   function zoomCamRadius(factor) {
-    const p = scalePreset(scaleLevel);
-    camRadius = Math.max(p.camMin, Math.min(p.camMax, camRadius * factor));
+    const cur = camRadiusTarget != null ? camRadiusTarget : camRadius;
+    if (freeExploreMode) {
+      // Continuous zoom across Earth → Cosmos — no per-level camMin/camMax trap.
+      releaseCameraFraming({ keepAspect: false });
+      // Use geometric steps that stay meaningful near the free envelope.
+      const f = Math.max(0.55, Math.min(1.8, factor));
+      const next = Math.max(FREE_CAM_MIN, Math.min(FREE_CAM_MAX, cur * f));
+      camRadiusTarget = next;
+      // Snappier free zoom (less “rubber band” lag that reads as a glitch)
+      if (Math.abs(next - camRadius) > 0.01) {
+        camRadius += (next - camRadius) * 0.35;
+      }
+      syncFreeExploreScaleFromRadius(next, { force: true, dispatch: true });
+    } else {
+      const p = scalePreset(scaleLevel);
+      camRadiusTarget = Math.max(p.camMin, Math.min(p.camMax, cur * factor));
+    }
+    zoomSettleUntil = performance.now() + 680;
     userTouched = performance.now();
     introActive = false;
     syncPreloaderIntroClass(false);
-    scaleAnimActive = false;
+    instrumentIdleAz = null;
+    instrumentIdleEl = null;
   }
 
   // ── Pointer controls ───────────────────────────────────────────────────────
   function bindControls() {
+    if (!window.__orreryPosterHandoffBound) {
+      window.__orreryPosterHandoffBound = true;
+      document.addEventListener('ol-earth-poster-handoff', () => { revealInstrumentSun(); });
+      document.addEventListener('ol-earth-poster-done', () => { stabilizeInstrumentSunFrame(); });
+    }
     try {
       canvas.setAttribute('tabindex', '0');
       // The canvas ships aria-hidden="true" as a decorative fallback; once this
       // engine makes it a focusable, labeled instrument, clear that flag so it
       // isn't an aria-hidden focusable element (axe: aria-hidden-focus).
       canvas.removeAttribute('aria-hidden');
-      if (!canvas.getAttribute('aria-label')) {
-        canvas.setAttribute('aria-label', 'The Living Orrery — drag to scrub time, Shift+drag to orbit, scroll or pinch to zoom, double-click a planet to focus');
+      if (!canvas.getAttribute('aria-label') || freeExploreMode) {
+        canvas.setAttribute('aria-label', freeExploreMode
+          ? 'Space exploration — drag to look, scroll to fly through scales, middle-drag to pan, Shift+drag to scrub time, double-click a body to fly to it'
+          : 'The Living Orrery — drag to scrub time, Shift+drag to orbit, scroll or pinch to zoom, double-click a planet to focus');
       }
     } catch (_) {}
     const onKey = (e) => {
       if (onPreloaderStage() && introActive) return;
       const k = e.key;
+      // Free explore WASD / QZ pan (camera-relative). Avoid E — reserved for engine map.
+      if (freeExploreMode && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const panStep = camRadius * 0.04;
+        let panned = false;
+        if (k === 'w' || k === 'W') {
+          camTarget.x -= Math.cos(camAz) * panStep;
+          camTarget.z -= Math.sin(camAz) * panStep;
+          panned = true;
+        } else if (k === 's' || k === 'S') {
+          camTarget.x += Math.cos(camAz) * panStep;
+          camTarget.z += Math.sin(camAz) * panStep;
+          panned = true;
+        } else if (k === 'a' || k === 'A') {
+          camTarget.x -= Math.sin(camAz) * panStep;
+          camTarget.z += Math.cos(camAz) * panStep;
+          panned = true;
+        } else if ((k === 'd' || k === 'D') && !e.shiftKey) {
+          camTarget.x += Math.sin(camAz) * panStep;
+          camTarget.z -= Math.cos(camAz) * panStep;
+          panned = true;
+        } else if (k === 'q' || k === 'Q' || k === 'PageUp') {
+          camTarget.y += panStep * 0.55;
+          panned = true;
+        } else if (k === 'z' || k === 'Z' || k === 'PageDown') {
+          camTarget.y -= panStep * 0.55;
+          panned = true;
+        }
+        if (panned) {
+          userTouched = performance.now();
+          e.preventDefault();
+          return;
+        }
+      }
       if (k === 'ArrowLeft') {
         scrubDays(-1);
         e.preventDefault();
@@ -5813,10 +7218,10 @@ const FinishShader = {
         scrubDays(1);
         e.preventDefault();
       } else if (k === 'ArrowUp' || k === '+' || k === '=') {
-        zoomCamRadius(0.92);
+        zoomCamRadius(freeExploreMode ? 0.88 : 0.92);
         e.preventDefault();
       } else if (k === 'ArrowDown' || k === '-' || k === '_') {
-        zoomCamRadius(1.08);
+        zoomCamRadius(freeExploreMode ? 1.14 : 1.08);
         e.preventDefault();
       } else if (k >= '0' && k <= '6') {
         applyScalePreset(parseInt(k, 10), true);
@@ -5827,6 +7232,11 @@ const FinishShader = {
       } else if (k === 'd' || k === 'D') {
         const mode = detailLightingUser === null ? 'on' : detailLightingUser ? 'off' : 'auto';
         setDetailLighting(mode);
+        e.preventDefault();
+      } else if (freeExploreMode && (k === 'r' || k === 'R') && !e.metaKey && !e.ctrlKey) {
+        // Recentre on the Sun without leaving free-explore
+        camTarget.set(0, 0, 0);
+        userTouched = performance.now();
         e.preventDefault();
       }
     };
@@ -5849,24 +7259,35 @@ const FinishShader = {
         pinchStartDist = pinchDistance();
         pinchStartRadius = camRadius;
         scrollDriveLocked = true;
-        daysPerSec = 0;
+        setSpeed(0);
         flicking = false;
         scrubVel = 0;
         return;
       }
       dragging = true;
       scrollDriveLocked = true;
-      dragMode = (e.shiftKey || e.button === 2) ? 'orbit' : 'scrub';
+      // Free explore: orbit is primary (look around). Shift/Alt = scrub time. Middle/right = pan.
+      // Classic instrument: scrub primary, Shift/right = orbit.
+      if (freeExploreMode) {
+        if (e.button === 1 || e.button === 2) dragMode = 'pan';
+        else if (e.shiftKey || e.altKey) dragMode = 'scrub';
+        else dragMode = 'orbit';
+      } else {
+        dragMode = (e.shiftKey || e.button === 2) ? 'orbit' : 'scrub';
+      }
       const p = pt(e);
       lastX = downX = p.x;
       lastY = downY = p.y;
       userTouched = performance.now();
       introActive = false;
       syncPreloaderIntroClass(false);
-      daysPerSec = 0;
+      setSpeed(0);
       flicking = false;
       scrubVel = 0;
-      try { canvas.style.cursor = dragMode === 'orbit' ? 'move' : 'grabbing'; } catch (_) {}
+      try {
+        canvas.style.cursor = dragMode === 'orbit' ? 'move'
+          : dragMode === 'pan' ? 'all-scroll' : 'grabbing';
+      } catch (_) {}
     };
     const onMove = (e) => {
       if (!activePointers.has(e.pointerId)) return;
@@ -5875,8 +7296,13 @@ const FinishShader = {
         const dist = pinchDistance();
         if (dist > 0) {
           const ratio = pinchStartDist / dist;
-          const p = scalePreset(scaleLevel);
-          camRadius = Math.max(p.camMin, Math.min(p.camMax, pinchStartRadius * ratio));
+          if (freeExploreMode) {
+            camRadius = Math.max(FREE_CAM_MIN, Math.min(FREE_CAM_MAX, pinchStartRadius * ratio));
+            syncFreeExploreScaleFromRadius(camRadius, { force: true, dispatch: true });
+          } else {
+            const p = scalePreset(scaleLevel);
+            camRadius = Math.max(p.camMin, Math.min(p.camMax, pinchStartRadius * ratio));
+          }
           userTouched = performance.now();
           scaleAnimActive = false;
         }
@@ -5887,16 +7313,32 @@ const FinishShader = {
       const dx = p.x - lastX;
       const dy = p.y - lastY;
       if (dragMode === 'orbit') {
-        camAz -= dx * 0.014;
-        camEl += dy * 0.008;
-        camEl = Math.max(-1.3, Math.min(1.45, camEl));
+        const orbitGain = freeExploreMode ? 0.020 : 0.014;
+        const elGain = freeExploreMode ? 0.012 : 0.008;
+        camAz -= dx * orbitGain;
+        camEl += dy * elGain;
+        camEl = Math.max(-1.35, Math.min(1.48, camEl));
+        if (freeExploreMode) {
+          // Build inertia from recent drag deltas (rad/s-ish)
+          orbitVelAz = orbitVelAz * 0.55 + (-dx * orbitGain) * 55;
+          orbitVelEl = orbitVelEl * 0.55 + (dy * elGain) * 55;
+          orbitVelAz = Math.max(-2.8, Math.min(2.8, orbitVelAz));
+          orbitVelEl = Math.max(-1.6, Math.min(1.6, orbitVelEl));
+        }
+      } else if (dragMode === 'pan') {
+        // Camera-relative pan of the look-at target (fly sideways / up through space)
+        const s = camRadius * 0.0022;
+        const cosEl = Math.cos(camEl);
+        camTarget.x += (-dx * Math.sin(camAz) + dy * Math.sin(camEl) * Math.cos(camAz)) * s;
+        camTarget.y += (dy * cosEl) * s;
+        camTarget.z += (dx * Math.cos(camAz) + dy * Math.sin(camEl) * Math.sin(camAz)) * s;
       } else {
         // Horizontal drag SCRUBS REAL TIME — planets walk to dated positions.
         if (dx) {
-          const dd = dx * SCRUB_SENS;
+          const dd = dx * SCRUB_SENS * (freeExploreMode ? 0.85 : 1);
           dayOffset += dd;
           needRecompute = true;
-          scrubVel = scrubVel * 0.6 + dd * 0.4;
+          scrubVel = scrubVel * 0.6 + dx * 0.4;
         }
         camEl += dy * 0.008;
         camEl = Math.max(-1.3, Math.min(1.45, camEl));
@@ -5920,9 +7362,18 @@ const FinishShader = {
       pinchStartDist = 0;
       if (dragging) {
         const p = pt(e);
-        if (dragMode === 'scrub' && Math.hypot(p.x - downX, p.y - downY) < 5) { pick(p); }
+        const tap = Math.hypot(p.x - downX, p.y - downY) < 5;
+        if (tap && freeExploreMode && dragMode === 'orbit') {
+          // Empty-space tap: clear body focus so free flight continues
+          const hit = resolvePickId(p);
+          if (hit) pick(p);
+          else {
+            releaseCameraFraming();
+            try { document.dispatchEvent(new CustomEvent('orrery-planet-select', { detail: { id: null } })); } catch (err) {}
+          }
+        } else if (tap && (dragMode === 'scrub' || instrumentMode)) pick(p);
         else if (dragMode === 'scrub' && !PRM && Math.abs(scrubVel) > 0.05) {
-          daysPerSec = Math.max(-365, Math.min(365, scrubVel * 40));
+          setSpeed(Math.max(-365, Math.min(365, scrubVel * 40)));
           flicking = true;
         }
       }
@@ -5935,17 +7386,28 @@ const FinishShader = {
       // ctrl/cmd+wheel (trackpad pinch reports ctrlKey) zooms. Elsewhere
       // (ephemeris instrument) the boxed canvas keeps plain-wheel zoom.
       const heroCtx = !!(canvas.closest && canvas.closest('#apAwardOrreryWrap'));
-      if (heroCtx && !e.ctrlKey && !e.metaKey) return;
+      if (heroCtx && !e.ctrlKey && !e.metaKey && !freeExploreMode) return;
       e.preventDefault();
       if (onPreloaderStage() && introActive) return;
-      zoomCamRadius(1 + Math.sign(e.deltaY) * 0.08);
+      if (freeExploreMode) {
+        // Proportional to wheel delta so trackpads fly smoothly Earth → Galaxy
+        const mag = Math.min(0.42, Math.max(0.06, Math.abs(e.deltaY) * 0.00135));
+        zoomCamRadius(1 + Math.sign(e.deltaY || 1) * mag);
+      } else {
+        zoomCamRadius(1 + Math.sign(e.deltaY) * 0.08);
+      }
     };
     const onDbl = (e) => {
       if (onPreloaderStage() && introActive) return;
       const id = resolvePickId(pt(e));
       if (!id) return;
       e.preventDefault();
-      focusPlanet(id);
+      if (freeExploreMode) {
+        // Fly to the body — full space-exploration feel
+        setSelectedPlanet(id);
+        try { focusPlanet(id); } catch (err) { /* optional */ }
+      } else if (instrumentMode) setSelectedPlanet(id);
+      else focusPlanet(id);
     };
     const onCtx = (e) => {
       if (onPreloaderStage() && introActive) return;
@@ -5968,7 +7430,8 @@ const FinishShader = {
     if (mode === 'auto' || mode == null) detailLightingUser = null;
     else if (mode === 'on' || mode === true) detailLightingUser = true;
     else detailLightingUser = false;
-    updateScaleVisuals(scaleLevel);
+    if (instrumentMode) tuneInstrumentPlanetReadability();
+    else updateScaleVisuals(scaleLevel);
     try {
       document.dispatchEvent(new CustomEvent('orrery-detail-lighting', {
         detail: {
@@ -6008,6 +7471,7 @@ const FinishShader = {
   function pick(p) {
     const id = resolvePickId(p);
     if (!id) return;
+    if (instrumentMode && id !== 'earth') setSelectedPlanet(id);
     const jd = baseJd + dayOffset + scrollBias;
     const lon = geoLonOf(id, jd);
     let retro = false;
@@ -6042,8 +7506,48 @@ const FinishShader = {
   }
 
   // ── Public API (matches orrery3d.js) ───────────────────────────────────────
-  function init(canvasEl) {
-    try { _initWebGL(canvasEl); }
+  function init(canvasEl, options) {
+    if (canvasEl && canvasEl.canvas) {
+      options = canvasEl;
+      canvasEl = options.canvas;
+    }
+    options = options || {};
+    if (options.spaceFlight) {
+      spaceFlightMode = true;
+      masterclassMode = true;
+      window.__orbitlabSpaceFlight = true;
+      window.__orbitlabMasterclass = true;
+      showLabels = false;
+      showOrbits = false;
+    } else if (options.instrument) {
+      instrumentMode = true;
+      freeExploreMode = !!options.freeExplore;
+      window.__orbitlabInstrument = true;
+      window.__orbitlabFreeExplore = freeExploreMode;
+      masterclassMode = false;
+      spaceFlightMode = false;
+      showOrbits = options.showOrbits !== false;
+      showLabels = options.showLabels !== false;
+      selectedPlanetId = options.selectedPlanet || (freeExploreMode ? 'sun' : 'venus');
+    } else if (options.masterclass) {
+      masterclassMode = true;
+      window.__orbitlabMasterclass = true;
+    }
+    try {
+      _initWebGL(canvasEl);
+      if (options.showOrbits != null) { showOrbits = !!options.showOrbits; }
+      if (options.showLabels != null) { showLabels = !!options.showLabels; }
+      if (instrumentMode) {
+        setDetailLighting('on');
+        updateScaleVisuals(scaleLevel);
+        tuneInstrumentOrbits();
+        tuneInstrumentSpace();
+        setSelectedPlanet(selectedPlanetId);
+        syncPosterSunVisibility();
+      } else if (masterclassMode) updateScaleVisualsContinuous(masterclassZoom);
+      else if (options.showOrbits != null) updateScaleVisuals(scaleLevel);
+      if (options.date) setDate(options.date instanceof Date ? options.date : new Date(options.date));
+    }
     catch (err) { console.warn('[orrery] WebGL init failed — falling back to canvas orrery:', err); fallbackToCanvas(canvasEl); }
   }
   let webglBooted = false;
@@ -6107,6 +7611,24 @@ const FinishShader = {
       scaleAnimActive = false;
       applyIntroVisuals(0, 0);
       applyCamera();
+    } else if (window.__orbitlabInstrument) {
+      scaleLevel = 2;
+      introActive = false;
+      settleToSystemHeroFrame(false);
+      showOrbits = true;
+      showLabels = true;
+      renderer.setClearColor(0x030408, 1);
+      tuneInstrumentSpace();
+      ensureComposer();
+    } else if (window.__orbitlabSpaceFlight) {
+      masterclassZoom = 0;
+      scaleLevel = 0;
+      setMasterclassZoom(0, false, true);
+      applySpacePalette(0);
+    } else if (masterclassMode || window.__orbitlabMasterclass) {
+      masterclassZoom = 6;
+      scaleLevel = 6;
+      setMasterclassZoom(6, false, true);
     } else {
       settleToSystemHeroFrame(false);
     }
@@ -6139,18 +7661,14 @@ const FinishShader = {
     window.addEventListener('resize', resize);
     if (window.visualViewport) {
       const vvRefit = () => requestAnimationFrame(resize);
-      // v627 — bind to 'resize' ONLY. Scrolling never changes the layout box, only
-      // animates the mobile URL bar; the old 'scroll' binding fired resize() every
-      // scroll frame (thrashing the composer). resize()'s change-guard absorbs the
-      // remaining URL-bar 'resize' flutter.
       window.visualViewport.addEventListener('resize', vvRefit, { passive: true });
+      window.visualViewport.addEventListener('scroll', vvRefit, { passive: true });
       canvas._orreryVV = vvRefit;
     }
     if ('IntersectionObserver' in window && !window.__orreryPreloaderOwns) {
       const io = new IntersectionObserver((ents) => {
         const was = inView;
         inView = ents[0].isIntersecting;
-        // OrbitLab 2026-07-05 port: wake the parked frame loop when scrolled back in
         if (!was && inView && !destroyed && running && !raf) raf = requestAnimationFrame(frame);
       }, { threshold: 0.01 });
       io.observe(canvas); canvas._orreryIO = io;
@@ -6167,12 +7685,16 @@ const FinishShader = {
       fallbackToCanvas(canvas);
     }, false);
 
+    if (instrumentMode) syncPosterSunVisibility();
     // Pre-compile shaders + warm the bloom composer NOW (while the preloader is still
     // static) so the first animated intro frame doesn't hitch on a heavy program link.
     try {
       if (renderer.compile) renderer.compile(scene, camera);
-      if (composer && !onPreloaderStage()) composer.render();
-      else renderer.render(scene, camera);
+      const skipWarmRender = instrumentMode && isEarthPosterBlocking();
+      if (!skipWarmRender) {
+        if (composer && !onPreloaderStage()) composer.render();
+        else renderer.render(scene, camera);
+      }
     } catch (e) {
       if (composer && radialBlurPass) {
         console.warn('[orrery] radial blur broke composer — disabling pass:', e.message);
@@ -6188,9 +7710,14 @@ const FinishShader = {
 
     lastT = 0; raf = requestAnimationFrame(frame);
     webglBooted = true;
-    // v576: the 2D engine announces its first frame; the WebGL engine now does too,
-    // so the loader can cross-fade the poster→HD handoff deterministically.
-    try { document.dispatchEvent(new Event('ap-orrery-first-frame')); } catch (e) { /* optional */ }
+    if (instrumentMode) {
+      instrumentFirstFramePending = true;
+      instrumentStableFrames = 0;
+    } else {
+      // v576: the 2D engine announces its first frame; the WebGL engine now does too,
+      // so the loader can cross-fade the poster→HD handoff deterministically.
+      dispatchOrreryFirstFrame();
+    }
   }
 
   function setSpeed(s) {
@@ -6219,7 +7746,14 @@ const FinishShader = {
     resetTrails();          // "Now" clears any motion trails from a scrub
     trailLastJd = 0;
     updateDateUI();
+    dispatchDateChange();
   }
+  function dispatchDateChange() {
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-date-change', { detail: { date: getDate() } }));
+    } catch (e) { /* optional */ }
+  }
+
   function setDate(date) {
     const E = window.AstroEphemeris;
     const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), 0);
@@ -6227,9 +7761,19 @@ const FinishShader = {
     // "Now" reset passes real-time date — unlock scroll drive when within ~12h of live
     const nowJd = E.julianDay(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate(), new Date().getHours(), new Date().getMinutes(), 0);
     if (Math.abs(jd - nowJd) < 0.5) scrollDriveLocked = false;
+    dispatchDateChange();
   }
   function jumpTo(jd) { dayOffset = jd - baseJd; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
-  function scrubDays(d) { dayOffset += Number(d) || 0; daysPerSec = 0; flicking = false; needRecompute = true; introActive = false; scrollDriveLocked = true; }
+  function scrubDays(d) {
+    dayOffset += Number(d) || 0;
+    daysPerSec = 0;
+    flicking = false;
+    needRecompute = true;
+    introActive = false;
+    scrollDriveLocked = true;
+    updateDateUI();
+    dispatchDateChange();
+  }
   function getDayOffset() { return dayOffset + scrollBias; }
   function setTimelineDays(days) {
     dayOffset = Number(days) || 0;
@@ -6241,6 +7785,7 @@ const FinishShader = {
     introActive = false;
     syncHeroReplayClass(false);
     updateDateUI();
+    dispatchDateChange();
   }
 
   // ── Portrait mode (v581) — clean, transparent single-body stills ─────────────
@@ -6707,9 +8252,190 @@ const FinishShader = {
     return true;
   }
 
+  /**
+   * Free-explore fly-to: ease camera onto a body without locking into a scale band
+   * or forcing Inner/System presets that then fight continuous scroll.
+   */
+  function flyToBody(id) {
+    if (!id || destroyed) return;
+    id = String(id).toLowerCase();
+    userTouched = performance.now();
+    introActive = false;
+    syncPreloaderIntroClass(false);
+    daysPerSec = 0;
+    flicking = false;
+    scrollDriveLocked = true;
+    releaseCameraFraming();
+    camRadiusTarget = null;
+
+    if (id === 'earth') {
+      setSelectedPlanet('earth');
+      setFocusHighlight('earth');
+      if (meshes.earth) {
+        scaleAnimFrom.radius = camRadius;
+        scaleAnimFrom.el = camEl;
+        scaleAnimFrom.az = camAz;
+        scaleAnimFrom.tx = camTarget.x;
+        scaleAnimFrom.ty = camTarget.y;
+        scaleAnimFrom.tz = camTarget.z;
+        earthTargetVec(camTarget);
+        scaleAnimTo.tx = camTarget.x;
+        scaleAnimTo.ty = camTarget.y;
+        scaleAnimTo.tz = camTarget.z;
+        scaleAnimTo.radius = 6.5;
+        scaleAnimTo.el = 12 * D2R;
+        scaleAnimTo.az = camAz;
+        scaleAnimFromLevel = scaleLevel;
+        scaleAnimToLevel = 0;
+        scaleLevel = 0;
+        scaleAnimActive = true;
+        scaleAnimStart = performance.now();
+        scaleAnimDurationMs = PRM ? 900 : 1400;
+        focusFrameId = 'earth';
+        updateScaleHUD();
+      } else {
+        applyScalePreset(0, true);
+      }
+      return;
+    }
+
+    if (id === 'sun') {
+      setSelectedPlanet('sun');
+      setFocusHighlight('sun');
+      scaleAnimFrom.radius = camRadius;
+      scaleAnimFrom.el = camEl;
+      scaleAnimFrom.az = camAz;
+      scaleAnimFrom.tx = camTarget.x;
+      scaleAnimFrom.ty = camTarget.y;
+      scaleAnimFrom.tz = camTarget.z;
+      scaleAnimTo.tx = 0; scaleAnimTo.ty = 0; scaleAnimTo.tz = 0;
+      scaleAnimTo.radius = 28;
+      scaleAnimTo.el = 22 * D2R;
+      scaleAnimTo.az = camAz;
+      scaleAnimFromLevel = scaleLevel;
+      scaleAnimToLevel = 2;
+      scaleLevel = 2;
+      scaleAnimActive = true;
+      scaleAnimStart = performance.now();
+      scaleAnimDurationMs = PRM ? 900 : 1400;
+      focusFrameId = 'sun';
+      updateScaleHUD();
+      return;
+    }
+
+    if (!allPlanetsBuilt) {
+      buildRemainingPlanets();
+      needRecompute = true;
+      updatePositions();
+    }
+
+    if (id === 'moon') {
+      setSelectedPlanet('moon');
+      setFocusHighlight('moon');
+      if (!moonGroup || !meshes.earth) {
+        scaleAnimFrom.radius = camRadius;
+        scaleAnimFrom.el = camEl;
+        scaleAnimFrom.az = camAz;
+        scaleAnimFrom.tx = camTarget.x;
+        scaleAnimFrom.ty = camTarget.y;
+        scaleAnimFrom.tz = camTarget.z;
+        earthTargetVec(camTarget);
+        scaleAnimTo.tx = camTarget.x;
+        scaleAnimTo.ty = camTarget.y;
+        scaleAnimTo.tz = camTarget.z;
+        scaleAnimTo.radius = 4.5;
+        scaleAnimTo.el = 10 * D2R;
+        scaleAnimTo.az = camAz;
+        scaleAnimFromLevel = scaleLevel;
+        scaleAnimToLevel = 0;
+        scaleLevel = 0;
+        scaleAnimActive = true;
+        scaleAnimStart = performance.now();
+        scaleAnimDurationMs = PRM ? 900 : 1400;
+        focusFrameId = 'earth';
+        updateScaleHUD();
+        return;
+      }
+      // Soft Earth+Moon frame (same geometry as focusPlanet moon path, free-explore safe)
+      scaleAnimFrom.radius = camRadius;
+      scaleAnimFrom.el = camEl;
+      scaleAnimFrom.az = camAz;
+      scaleAnimFrom.tx = camTarget.x;
+      scaleAnimFrom.ty = camTarget.y;
+      scaleAnimFrom.tz = camTarget.z;
+      syncMoonFrameTarget();
+      scaleAnimTo.radius = 2.6;
+      scaleAnimTo.el = 8 * D2R;
+      let azDm = moonFrameAzBase - scaleAnimFrom.az;
+      azDm = Math.atan2(Math.sin(azDm), Math.cos(azDm));
+      scaleAnimTo.az = scaleAnimFrom.az + azDm;
+      scaleAnimTo.tx = camTarget.x;
+      scaleAnimTo.ty = camTarget.y;
+      scaleAnimTo.tz = camTarget.z;
+      focusFrameId = 'moon';
+      moonFrameActive = true;
+      scaleAnimFromLevel = scaleLevel;
+      scaleAnimToLevel = 0;
+      scaleLevel = 0;
+      scaleAnimActive = true;
+      scaleAnimStart = performance.now();
+      scaleAnimDurationMs = PRM ? 900 : 1400;
+      camera.fov = CAM_FOV_CLOSE;
+      camera.updateProjectionMatrix();
+      updateScaleHUD();
+      return;
+    }
+
+    const body = BODIES.find((b) => b.id === id);
+    const g = meshes[id];
+    if (!body || !g) return;
+
+    setSelectedPlanet(id);
+    setFocusHighlight(id);
+    focusFrameId = id;
+
+    const pos = g.position;
+    const inner = (id === 'mercury' || id === 'venus' || id === 'mars');
+    scaleAnimFrom.radius = camRadius;
+    scaleAnimFrom.el = camEl;
+    scaleAnimFrom.az = camAz;
+    scaleAnimFrom.tx = camTarget.x;
+    scaleAnimFrom.ty = camTarget.y;
+    scaleAnimFrom.tz = camTarget.z;
+    scaleAnimTo.radius = inner ? Math.max(body.size * 8, 11) : Math.max(body.size * 10, 9);
+    scaleAnimTo.el = inner ? 16 * D2R : 14 * D2R;
+    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
+    let azD = azWant - camAz;
+    azD = Math.atan2(Math.sin(azD), Math.cos(azD));
+    scaleAnimTo.az = camAz + azD;
+    scaleAnimTo.tx = pos.x;
+    scaleAnimTo.ty = pos.y;
+    scaleAnimTo.tz = pos.z;
+    const wantLv = inner ? 1 : 2;
+    scaleAnimFromLevel = scaleLevel;
+    scaleAnimToLevel = wantLv;
+    scaleLevel = wantLv;
+    scaleAnimActive = true;
+    scaleAnimStart = performance.now();
+    scaleAnimDurationMs = PRM ? 900 : 1500;
+    camera.fov = CAM_FOV_MID;
+    camera.updateProjectionMatrix();
+    updateScaleHUD();
+    try {
+      document.dispatchEvent(new CustomEvent('orrery-scale-change', {
+        detail: { level: scaleLevel, preset: scalePreset(scaleLevel), freeExplore: true },
+      }));
+    } catch (e) { /* optional */ }
+  }
+
   function focusPlanet(id) {
     if (!id || destroyed) return;
     id = String(id).toLowerCase();
+    // Free-explore double-click path prefers the soft fly-to (no band trap).
+    if (freeExploreMode) {
+      flyToBody(id);
+      return;
+    }
     userTouched = performance.now();
     introActive = false;
     syncPreloaderIntroClass(false);
@@ -6786,12 +8512,6 @@ const FinishShader = {
     scaleAnimToLevel = preset.id;
     updateScaleHUD();
     updateScaleVisuals(scaleLevel);
-    // #7: focusPlanet changes the scale level, so fire the same event applyScalePreset
-    // does — otherwise the loader's mobile stepper label goes stale (updateScaleHUD
-    // only syncs the .orrery-scale-btn strip, not the stepper).
-    try {
-      document.dispatchEvent(new CustomEvent('orrery-scale-change', { detail: { level: scaleLevel, preset: preset } }));
-    } catch (e) { /* optional */ }
 
     scaleAnimFrom.radius = camRadius;
     scaleAnimFrom.el = camEl;
@@ -6807,11 +8527,7 @@ const FinishShader = {
     // shadow) so the lit hemisphere faces the lens and the sun stays behind it.
     scaleAnimTo.radius = inner ? Math.max(body.size * 7.5, 12) : Math.max(body.size * 9, 8);
     scaleAnimTo.el = inner ? 16 * D2R : 14 * D2R;
-    // Camera SUNWARD of the body (az + π, nudged −0.35 off-axis for a terminator)
-    // so the LIT hemisphere faces the lens and the Sun stays behind the camera.
-    // (Inner planets used to omit this flip → they framed their unlit night side
-    // against the Sun glare, a black speck eclipsing the disc. Now unified.)
-    const azWant = Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
+    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
     let azD = azWant - camAz;
     azD = Math.atan2(Math.sin(azD), Math.cos(azD));
     scaleAnimTo.az = camAz + azD; // shortest swing
@@ -6915,7 +8631,7 @@ const FinishShader = {
   // GEOMETRY HONESTY: marker positions come ONLY from geocentric ecliptic longitude
   // (aLon, bLon) via scenePos(R,lon,0). The chord is drawn between those two ring
   // markers, so the angle it subtends at Earth IS angularSeparation(aLon,bLon).
-  function buildAspectView(idA, idB, aLon, bLon, angle, aspect, bLabel, solar, natal) {
+  function buildAspectView(idA, idB, aLon, bLon, angle, aspect, bLabel, solar) {
     disposeAspectView();
     const R = ASPECT_RING_R;
     const grp = new THREE.Group();
@@ -6954,7 +8670,7 @@ const FinishShader = {
     const signSprites = [];
     for (let s = 0; s < 12; s++) {
       const lon = s * 30 + 15;
-      const lab = makeAspectLabel(SIGN_ABBR[s], { font: 22, baseH: 0.62, color: 'rgba(168,176,188,0.9)' });
+      const lab = makeAspectLabel(SIGN_ABBR[s], { font: 22, baseH: 0.62, color: 'rgba(194,160,94,0.9)' });
       lab.position.copy(scenePos(R * 1.14, lon, 0));
       lab.userData.baseOpacity = 0.62;
       grp.add(lab); signSprites.push(lab);
@@ -7017,9 +8733,7 @@ const FinishShader = {
     grp.add(angLabel);
 
     // 8) The honesty caption, engraved BELOW the ring (south point, pushed out + down).
-    const capText = ASPECT_CAPTION
-      + (solar ? '  ·  (solar chart: Sun = assumed sign-midpoint)'
-        : natal ? '  ·  (natal: position computed from your saved chart)' : '');
+    const capText = ASPECT_CAPTION + (solar ? '  ·  (solar chart: Sun = assumed sign-midpoint)' : '');
     const cap = makeAspectLabel(capText, { font: 22, baseH: 0.66, color: 'rgba(236,230,216,0.82)' });
     cap.position.copy(scenePos(R * 1.3, 270, 0));
     cap.position.y -= 0.4;
@@ -7131,13 +8845,11 @@ const FinishShader = {
       const jd = currentAspectJd();
       // TRUE geocentric ecliptic longitude of the transiting body (never a scene angle).
       const aLon = norm360(geoLonOf(idA, jd));
-      // idB marker: an explicit bLon (a solar-chart sign-midpoint or a natal
-      // chart's REAL computed longitude) overrides the true geocentric longitude of idB.
+      // idB marker: an explicit bLon (the solar-chart "your Sun" sign-midpoint) overrides
+      // the true geocentric longitude of idB.
       let bLon;
       const solar = opts.natalMode === 'solar';
-      const natal = opts.natalMode === 'natal';
-      const bOverride = typeof opts.bLon === 'number' && isFinite(opts.bLon);
-      if (bOverride) {
+      if (typeof opts.bLon === 'number' && isFinite(opts.bLon)) {
         bLon = norm360(opts.bLon);
       } else {
         const raw = geoLonOf(idB, jd);
@@ -7149,18 +8861,15 @@ const FinishShader = {
       const angleRaw = angularSeparation(aLon, bLon);
       const angle = Math.round(angleRaw);
 
-      buildAspectView(idA, idB, aLon, bLon, angle, opts.aspect, opts.bLabel, solar, natal);
+      buildAspectView(idA, idB, aLon, bLon, angle, opts.aspect, opts.bLabel, solar);
       setFocusHighlight(idA);           // brass ring on the transiting body...
-      // ...and a parallel brass ring on idB — but ONLY when the marker really is
-      // idB's live geocentric position. When bLon is overridden (solar midpoint
-      // or natal chart point) the live mesh is NOT the aspect partner, so
-      // ringing it would be dishonest.
-      if (!bOverride && meshes[idB]) {
+      // ...and a parallel brass ring on idB (unless it's the abstract solar point).
+      if (!solar && meshes[idB]) {
         const g2 = meshes[idB];
         const ring2 = ensureFocusRing(g2, (BODIES.find((b) => b.id === idB) || { size: 0.6 }).size * 3.8);
         ring2.visible = true;
         g2.userData._aspectRing = ring2;
-      } else if ((idB === 'sun') && !bOverride && sunMesh) {
+      } else if ((idB === 'sun') && !solar && sunMesh) {
         sunFocusRing = sunFocusRing || ensureFocusRing(sunMesh, SUN_SIZE * 6.5);
         sunFocusRing.visible = true;
       }
@@ -7171,10 +8880,7 @@ const FinishShader = {
       frameAspectCamera();
 
       // Verification hook — stash the values actually placed on the ring.
-      window.__apLastAspect = {
-        idA, idB, aLon, bLon, angle, angleRaw, aspect: opts.aspect || null, jd,
-        bLabel: opts.bLabel || null, natalMode: opts.natalMode || null,
-      };
+      window.__apLastAspect = { idA, idB, aLon, bLon, angle, angleRaw, aspect: opts.aspect || null, jd };
       return true;
     } catch (err) {
       console.warn('[orrery] focusAspect failed — degrading to focusPlanet:', err);
@@ -7199,8 +8905,14 @@ const FinishShader = {
   }
 
   function destroy() {
-    destroyed = true; if (raf) cancelAnimationFrame(raf);
+    destroyed = true;
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
     window.removeEventListener('resize', resize);
+    if (canvas?._orreryVV && window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', canvas._orreryVV);
+      window.visualViewport.removeEventListener('scroll', canvas._orreryVV);
+      delete canvas._orreryVV;
+    }
     if (canvas && canvas._orreryHandlers) { window.removeEventListener('pointermove', canvas._orreryHandlers.onMove); window.removeEventListener('pointerup', canvas._orreryHandlers.onUp); }
     if (canvas && canvas._orreryKeyHandler) canvas.removeEventListener('keydown', canvas._orreryKeyHandler);
     if (canvas && canvas._orreryDblHandler) canvas.removeEventListener('dblclick', canvas._orreryDblHandler);
@@ -7233,11 +8945,20 @@ const FinishShader = {
       marsVisible: !!(trailState.mars && trailState.mars.line && trailState.mars.line.visible),
     }),
     setBodies: () => {},
-    setShowAspects: () => {},
+    setShowAspects(b) {
+      showAspectsHelio = !!b;
+      if (showAspectsHelio) updateHelioAspectLines();
+      else disposeHelioAspectLines();
+    },
     setShowParticles: () => {},
     triggerShootingStar: () => {},
-    setShowOrbits(b) { showOrbits = !!b; updateScaleVisuals(scaleLevel); },
+    setShowOrbits(b) {
+      showOrbits = !!b;
+      updateScaleVisuals(scaleLevel);
+      if (instrumentMode) tuneInstrumentOrbits();
+    },
     setShowLabels(b) { showLabels = !!b; updateScaleVisuals(scaleLevel); },
+    getSpeed() { return daysPerSec; },
     setShowAsteroids(b) { showAsteroids = !!b; updateScaleVisuals(scaleLevel); },
     setDetailLighting,
     getDetailLighting() { return wantsDetailLighting(); },
@@ -7294,7 +9015,7 @@ const FinishShader = {
     whenReady() { return texturesReady ? Promise.resolve() : texturesReadyPromise; },
     whenEarthReady() { return earthMapReady ? Promise.resolve() : earthMapReadyPromise; },
     getScaleLevel() { return scaleLevel; },
-    setScaleLevel(n) { applyScalePreset(n, true); },
+    setScaleLevel(n, animate = true) { applyScalePreset(n, animate !== false); },
     startScaleJourney,
     cancelScaleJourney,
     startCosmicFlight,
@@ -7364,5 +9085,301 @@ const FinishShader = {
       }
     },
     isWebGL: true,
+    getMasterclassZoom: () => masterclassZoom,
+    setMasterclassZoom,
+    setMasterclassMode,
+    startMasterclassIntro,
+    startSpaceFlight,
+    pauseMasterclassIntro,
+    isSpaceFlightMode: () => spaceFlightMode || spaceFlightToolActive,
+    setChapterExposure,
+    setChapterFog,
+    setEarthNightIntensity,
+    precompileAllScales,
+    setShowTrails(b) { showTrails = !!b; },
+    getShowTrails() { return showTrails; },
+    setShowVelocityVectors(b) {
+      showVelocityVectors = !!b;
+      updateVelocityVectors();
+    },
+    getShowVelocityVectors() { return showVelocityVectors; },
+    setShowEccentricGuides(b) {
+      showEccentricGuides = !!b;
+      if (showEccentricGuides && !eccentricGuides.length) buildEccentricGuides();
+      eccentricGuides.forEach((line) => {
+        line.visible = showEccentricGuides && showOrbits && scaleLevel <= 3;
+      });
+    },
+    getShowEccentricGuides() { return showEccentricGuides; },
+    getScaleDocumentation() { return { ...SCALE_DOC }; },
+    getOrbitalElements(id) {
+      const el = ORBITAL_ELEMENTS[id];
+      return el ? { ...el } : null;
+    },
+    setSelectedPlanet,
+    getSelectedPlanet() { return selectedPlanetId; },
+    getSelectedPlanetInfo() { return getPlanetInfo(selectedPlanetId); },
+    getPlanetInfo,
+    isInstrumentMode() { return instrumentMode; },
+    setFreeExplore(on) {
+      freeExploreMode = !!on;
+      window.__orbitlabFreeExplore = freeExploreMode;
+      if (freeExploreMode) {
+        instrumentIdleAz = null;
+        instrumentIdleEl = null;
+        galaxyIdleAz = null;
+        galaxyIdleEl = null;
+        lastFreeContZ = -1;
+        syncFreeExploreScaleFromRadius(camRadius, { force: true, dispatch: true });
+      }
+    },
+    isFreeExplore() { return freeExploreMode; },
+    getCamRadius() { return camRadius; },
+    flyToBody,
+    /**
+     * Galaxy focus: Sun, named arm, or edge-on / face-on framing (schematic).
+     * @param {string} feature 'sun' | arm name | 'edge' | 'face'
+     */
+    focusGalaxyFeature(feature) {
+      if (!feature) return;
+      ensureGalaxyLayers();
+      scheduleMilkyWaySpiral();
+      const key = String(feature).toLowerCase();
+      releaseCameraFraming();
+      camRadiusTarget = null;
+      orbitVelAz = 0;
+      orbitVelEl = 0;
+      userTouched = performance.now();
+
+      // Edge-on / face-on presets (Phase 2)
+      if (key === 'edge' || key === 'edge-on' || key === 'edgeon') {
+        galaxyEdgeOn = true;
+        if (freeExploreMode) {
+          camRadius = 780;
+          camRadiusTarget = 780;
+          camEl = 8 * D2R;
+          camAz = GALAXY_VIEW_AZ + 0.35;
+          camTarget.set(0, 0, 0);
+          scaleLevel = 5;
+          updateScaleHUD();
+          syncFreeExploreScaleFromRadius(780, { force: true, dispatch: true });
+        } else {
+          applyScalePreset(5, false);
+          camEl = 8 * D2R;
+          camRadius = 780;
+        }
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-galaxy-focus', { detail: { feature: 'edge' } }));
+        } catch (e) { /* optional */ }
+        return;
+      }
+      if (key === 'face' || key === 'face-on' || key === 'faceon') {
+        galaxyEdgeOn = false;
+        if (freeExploreMode) {
+          camRadius = 720;
+          camRadiusTarget = 720;
+          camEl = 52 * D2R;
+          camAz = GALAXY_VIEW_AZ;
+          camTarget.set(0, 0, 0);
+          scaleLevel = 5;
+          updateScaleHUD();
+          syncFreeExploreScaleFromRadius(720, { force: true, dispatch: true });
+        } else {
+          applyScalePreset(5, false);
+          camEl = 52 * D2R;
+          camRadius = 720;
+        }
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-galaxy-focus', { detail: { feature: 'face' } }));
+        } catch (e) { /* optional */ }
+        return;
+      }
+
+      galaxyEdgeOn = false;
+      // Enter galaxy framing
+      if (freeExploreMode) {
+        camRadius = 720;
+        camEl = 32 * D2R;
+        camTarget.set(0, 0, 0);
+        scaleLevel = 5;
+        updateScaleHUD();
+        syncFreeExploreScaleFromRadius(720, { force: true, dispatch: true });
+      } else {
+        applyScalePreset(5, true);
+      }
+
+      if (key === 'sun' || key === 'here' || key === 'you') {
+        const sunP = milkySpiralXY(SUN_ARM_PHASE + 0.14, SUN_GALACTIC_R, 0.06);
+        camAz = Math.atan2(sunP.z, sunP.x) + Math.PI * 0.65;
+        camRadius = freeExploreMode ? 620 : camRadius;
+        if (freeExploreMode) camRadiusTarget = 620;
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-galaxy-focus', { detail: { feature: 'sun' } }));
+        } catch (e) { /* optional */ }
+        return;
+      }
+
+      // Magellanic Clouds (match satellite positions in buildMilkyWaySpiral)
+      if (key === 'lmc' || key === 'smc' || key === 'stream') {
+        const clouds = {
+          lmc: { x: -210, y: -48, z: 430 },
+          smc: { x: -178, y: -62, z: 405 },
+          stream: { x: -280, y: -20, z: 320 },
+        };
+        const p = clouds[key] || clouds.lmc;
+        camTarget.set(p.x * 0.35, p.y * 0.35, p.z * 0.35);
+        camAz = Math.atan2(p.z, p.x) + Math.PI * 0.55;
+        camEl = key === 'stream' ? 18 * D2R : 24 * D2R;
+        camRadius = freeExploreMode ? 900 : 820;
+        if (freeExploreMode) camRadiusTarget = camRadius;
+        scaleLevel = 5;
+        updateScaleHUD();
+        if (freeExploreMode) syncFreeExploreScaleFromRadius(camRadius, { force: true, dispatch: true });
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-galaxy-focus', { detail: { feature: key } }));
+        } catch (e) { /* optional */ }
+        return;
+      }
+
+      const armMap = {
+        sagittarius: 0, 'sag-car': 0, sag: 0,
+        scutum: 1, 'scut-cen': 1, scut: 1,
+        norma: 2,
+        perseus: 3, per: 3,
+      };
+      let armIdx = armMap[key];
+      if (armIdx == null) {
+        armIdx = MILKY_ARMS.findIndex((a) => a.name.toLowerCase().includes(key));
+      }
+      if (armIdx < 0) armIdx = 0;
+      const arm = MILKY_ARMS[armIdx];
+      const mid = milkySpiralXY(arm.phase, MILKY_R0 + 0.45 * 560, 0);
+      camAz = Math.atan2(mid.z, mid.x) + Math.PI * 0.55;
+      camEl = 28 * D2R;
+      camRadius = freeExploreMode ? 780 : 720;
+      if (freeExploreMode) camRadiusTarget = 780;
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-galaxy-focus', {
+          detail: { feature: arm.name, armIndex: armIdx },
+        }));
+      } catch (e) { /* optional */ }
+    },
+    getGalaxyArms() {
+      return MILKY_ARMS.map((a, i) => ({ id: i, name: a.name, phase: a.phase }));
+    },
+    setGalaxyEdgeOn(on) {
+      this.focusGalaxyFeature(on ? 'edge' : 'face');
+    },
+    isGalaxyEdgeOn() { return !!galaxyEdgeOn; },
+    /**
+     * Phase 3 compare modes.
+     * @param {'full'|'stars'} mode full schematic MW vs local/catalog stars only
+     */
+    setGalaxyViewMode(mode) {
+      const m = mode === 'stars' ? 'stars' : (mode === 'gaia' ? 'gaia' : 'full');
+      galaxyViewMode = m;
+      ensureGalaxyLayers();
+      scheduleGaiaSample();
+      if (m === 'stars' && scaleLevel < 4) {
+        if (freeExploreMode) {
+          camRadius = 420;
+          camRadiusTarget = 420;
+          scaleLevel = 4;
+          updateScaleHUD();
+          syncFreeExploreScaleFromRadius(420, { force: true, dispatch: true });
+        } else {
+          applyScalePreset(4, true);
+        }
+      } else if ((m === 'full' || m === 'gaia') && scaleLevel < 5) {
+        this.focusGalaxyFeature('face');
+      }
+      updateScaleVisualsContinuous(radiusToContinuousZoom(camRadius));
+      userTouched = performance.now();
+      try {
+        document.dispatchEvent(new CustomEvent('orrery-galaxy-mode', { detail: { mode: m } }));
+      } catch (e) { /* optional */ }
+    },
+    getGalaxyViewMode() { return galaxyViewMode; },
+    getGalacticLB() { return { l: lastGalacticLB.l, b: lastGalacticLB.b }; },
+    getGaiaSampleCount() {
+      return gaiaSamplePoints && gaiaSamplePoints.userData
+        ? (gaiaSamplePoints.userData.count || 0) : 0;
+    },
+    getBrightGalacticCount() {
+      return brightGalacticStars && brightGalacticStars.userData
+        ? (brightGalacticStars.userData.count || 0) : 0;
+    },
+    /** Narrated soft tour: face → Perseus → Sun → edge → face. */
+    startGalaxyTour() {
+      if (galaxyTourTimer) {
+        clearTimeout(galaxyTourTimer);
+        galaxyTourTimer = null;
+      }
+      const steps = [
+        { feature: 'face', hold: 4200, note: 'Barred spiral — schematic face-on' },
+        { feature: 'perseus', hold: 3800, note: 'Perseus arm' },
+        { feature: 'sagittarius', hold: 3600, note: 'Sagittarius–Carina arm' },
+        { feature: 'sun', hold: 4200, note: 'You are here · Sun' },
+        { feature: 'edge', hold: 4000, note: 'Edge-on thin disk' },
+        { feature: 'face', hold: 2800, note: 'Return · free explore' },
+      ];
+      galaxyTourActive = true;
+      galaxyTourStep = 0;
+      const run = () => {
+        if (!galaxyTourActive) return;
+        if (galaxyTourStep >= steps.length) {
+          galaxyTourActive = false;
+          try {
+            document.dispatchEvent(new CustomEvent('orrery-galaxy-tour-end', { detail: {} }));
+          } catch (e) { /* optional */ }
+          return;
+        }
+        const step = steps[galaxyTourStep];
+        this.focusGalaxyFeature(step.feature);
+        try {
+          document.dispatchEvent(new CustomEvent('orrery-galaxy-tour-step', {
+            detail: { step: galaxyTourStep, feature: step.feature, note: step.note, total: steps.length },
+          }));
+        } catch (e) { /* optional */ }
+        galaxyTourStep += 1;
+        galaxyTourTimer = setTimeout(run, PRM ? 1200 : step.hold);
+      };
+      // Ensure full MW visible for tour
+      if (galaxyViewMode !== 'full') this.setGalaxyViewMode('full');
+      run();
+    },
+    cancelGalaxyTour() {
+      galaxyTourActive = false;
+      if (galaxyTourTimer) {
+        clearTimeout(galaxyTourTimer);
+        galaxyTourTimer = null;
+      }
+    },
+    isGalaxyTourActive() { return !!galaxyTourActive; },
+    getPerfTier() { return perfTier; },
+    /** Free-explore: pan the look-at target (forward/back/left/right/up/down). */
+    panCamera(dir, amount) {
+      if (!freeExploreMode) return;
+      const panStep = (amount != null ? amount : 1) * camRadius * 0.04;
+      if (dir === 'forward') {
+        camTarget.x -= Math.cos(camAz) * panStep;
+        camTarget.z -= Math.sin(camAz) * panStep;
+      } else if (dir === 'back') {
+        camTarget.x += Math.cos(camAz) * panStep;
+        camTarget.z += Math.sin(camAz) * panStep;
+      } else if (dir === 'left') {
+        camTarget.x -= Math.sin(camAz) * panStep;
+        camTarget.z += Math.cos(camAz) * panStep;
+      } else if (dir === 'right') {
+        camTarget.x += Math.sin(camAz) * panStep;
+        camTarget.z -= Math.cos(camAz) * panStep;
+      } else if (dir === 'up') {
+        camTarget.y += panStep * 0.55;
+      } else if (dir === 'down') {
+        camTarget.y -= panStep * 0.55;
+      }
+      userTouched = performance.now();
+    },
   };
+  try { document.dispatchEvent(new CustomEvent('orrery-webgl-ready')); } catch (e) { /* optional */ }
 })();

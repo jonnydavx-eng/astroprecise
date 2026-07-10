@@ -87,7 +87,7 @@
   function queueLoader() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=578", function () {
+    inject("js/orrery-loader.js?v=684", function () {
       setTimeout(promoteToWebGL, 300);
     });
   }

@@ -32,6 +32,7 @@ const HTML_INCLUDE = new Set([
     'quiz.html', 'angel-numbers.html', 'tonight.html', 'this-weeks-sky.html', 'name-numerology.html',
     'guides.html', 'catalogue.html', 'explore.html', 'moment.html', 'mysky.html',
     'privacy.html', 'terms.html', 'profile.html', 'sample-reading.html',
+    'offline.html', // sw.js fetch handler falls back to caches.match('./offline.html')
     ...SIGN_KEYS.map((k) => `${k}.html`),
     'manifest.json', 'robots.txt', 'sitemap.xml', 'llms.txt',
   ].map((f) => `./${f}`),
@@ -40,6 +41,12 @@ const HTML_INCLUDE = new Set([
 /** JS omitted from precache (runtime import / optional heavy). */
 const JS_EXCLUDE = new Set([
   'orrery-webgl.js',
+  // Engine-only deps of orrery-webgl.js (OrbitLab sync, Phase 1.6) — the engine
+  // itself is deliberately NOT precached, so its deps lazy-cache at runtime too.
+  'orbitlab-bodies.js',
+  'orbitlab-orbital-math.js',
+  'gaia-sample.js',
+  'gaia-sample-worker.js',
   'orrery3d.js',
   'ephemeris-lazy-modules.js',
   'interpretations.js',
@@ -105,14 +112,16 @@ function collectCanonical() {
 
   // Keep the precache install shell lean:
   //  - img/engine/* — large photoreal stills, only on the pages that show them
+  //  - img/design-targets/* — design-reference mockups, referenced by no page
   //  - assets/textures/*.{jpg,png} — the LEGACY raster maps, superseded by .webp
   //    (the engine loads .webp; the .jpg/.png stay on disk only as a runtime
   //    fallback). Precaching both formats would double the texture payload.
   // These lazy-cache at runtime instead.
-  const PRECACHE_EXCLUDE = /(^|\/)img\/engine\/|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$/i;
+  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets)\/|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$/i;
   const RETIRED_OG = new Set([
     './img/og-banner-improved.jpg',
     './img/og-banner-v576.jpg',
+    './img/og-banner-v576.webp',
   ]);
 
   /** Skip legacy raster when WebP (or SVG for shop products) is the shipped format. */

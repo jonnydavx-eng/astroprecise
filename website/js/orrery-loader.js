@@ -11,8 +11,8 @@
   var booting = false;
   var scriptEl = document.currentScript;
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
-    ? new URL('orrery-webgl.js?v=683', scriptEl.src).href
-    : 'js/orrery-webgl.js?v=683';
+    ? new URL('orrery-webgl.js?v=684', scriptEl.src).href
+    : 'js/orrery-webgl.js?v=684';
 
   function isLiteHero() {
     return !!(window.__apLiteHero ||
