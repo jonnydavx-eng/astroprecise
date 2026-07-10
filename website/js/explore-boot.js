@@ -214,7 +214,7 @@
   function queueLoader() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=700", function () {
+    inject("js/orrery-loader.js?v=703", function () {
       setTimeout(promoteToWebGL, 300);
     });
   }
@@ -228,8 +228,8 @@
 
   // Poster + time-row wiring (date display, Now, scrub → Orrery3D.setTimelineDays).
   waitEphemeris(function () {
-    injectCss("css/orrery-visual.css?v=680", "ap-orrery-visual-css");
-    inject("js/lite-orrery.js?v=685", function () {
+    injectCss("css/orrery-visual.css?v=703", "ap-orrery-visual-css");
+    inject("js/lite-orrery.js?v=703", function () {
       document.documentElement.classList.add("orrery-poster-ready");
       queueLoader();
       scheduleDeepLink();
@@ -237,7 +237,7 @@
   });
 
   // Cosmic-flight tool (wires #ap-cosmic-flight-launch → fullscreen overlay).
-  injectCss("css/ap-cosmic-flight.css?v=567", "ap-cf-css");
+  injectCss("css/ap-cosmic-flight.css?v=703", "ap-cf-css");
   inject("js/ap-cosmic-flight-tool.js?v=567");
 
   // Retire the loading placeholder once any engine is live.

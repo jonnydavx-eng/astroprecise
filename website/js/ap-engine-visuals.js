@@ -9,7 +9,7 @@
 (function (global) {
   'use strict';
 
-  var V = '680';
+  var V = '703';
   var CINEMA = {
     webp: 'img/marketing-system-cinema-silver.jpg',
     jpg: 'img/marketing-system-cinema-silver.jpg',
