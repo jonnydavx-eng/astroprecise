@@ -237,11 +237,12 @@
   <!-- JS -->
   <script src="js/raf-core.js"></script>
 
-  <script src="js/cosmos.js"></script>
-  <script src="js/ephemeris.js"></script>
+  <!-- ephemeris.js intentionally NOT loaded: the dashboard only reads saved
+       records via AstroProfile — View links defer computation to chart.html. -->
+  <script src="js/cosmos.js" defer></script>
   <script src="js/profile.js"></script>
   <script src="js/icons.js"></script>
-<script src="js/effects.js"></script>
+<script src="js/effects.js" defer></script>
   <script src="js/charts-dashboard.js"></script>
 
   <script src="js/ap-page-boot.js" defer></script>

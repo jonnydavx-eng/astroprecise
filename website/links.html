@@ -104,7 +104,6 @@
   /* Render the dormant (paid/email/shop) links + social — only those configured in
      AP_MON / AP_SOCIAL, so a visitor never meets a dead link. */
   (function () {
-    var M = window.AP_MON || {}, S = window.AP_SOCIAL || {};
     var paid = document.getElementById('lib-paid');
     function add(href, label, sub, primary) {
       if (!href || !/^(https?:|mailto:)/.test(href)) return;
@@ -115,11 +114,18 @@
         (sub ? '<span class="lib-link__sub">' + sub + '</span>' : '');
       paid.appendChild(a);
     }
-    add(M.emailUrl || M.newsletterUrl, '&#128233; Free chart wallpaper + cosmic weather', 'One email. Your sky as a wallpaper.');
-    add(M.deepReadingUrl || M.reportUrl, '&#10039; The Deep Reading', 'A 13-page natal reading — every planet, all houses, life areas & aspects.');
-    add(M.posterUrl, '&#128444; Wear Your Sky &mdash; Shop', 'Posters, tees &amp; prints made from your chart.');
-    add(M.giftUrl, '&#127873; Gift a Reading', '');
-    add(M.tipUrl, '&#10084; Support the instrument &mdash; tip', '');
+    // AP_MON is defined by js/app.js, which loads AFTER this inline script via
+    // deferred ap-page-boot.js — poll for it exactly like renderLibSocial below,
+    // or the configured (live) email + tip links never render.
+    (function renderLibPaid() {
+      var M = window.AP_MON;
+      if (!M) { setTimeout(renderLibPaid, 40); return; }
+      add(M.emailUrl || M.newsletterUrl, '&#128233; Free chart wallpaper + cosmic weather', 'One email. Your sky as a wallpaper.');
+      add(M.deepReadingUrl || M.reportUrl, '&#10039; The Deep Reading', 'A 13-page natal reading — every planet, all houses, life areas & aspects.');
+      add(M.posterUrl, '&#128444; Wear Your Sky &mdash; Shop', 'Posters, tees &amp; prints made from your chart.');
+      add(M.giftUrl, '&#127873; Gift a Reading', '');
+      add(M.tipUrl, '&#10084; Support the instrument &mdash; tip', '');
+    })();
 
     var soc = document.getElementById('lib-social');
     (function renderLibSocial() {

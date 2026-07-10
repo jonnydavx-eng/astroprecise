@@ -49,9 +49,30 @@
   </main>
   <script>
     (function () {
+      // SECURITY: only redirect to Typeforms we actually own — an open ?form=
+      // parameter would let anyone bounce victims to a hostile look-alike form
+      // under this domain's trust. Source of truth: tools/typeform-catalog.json
+      // (mirrored in js/app.js AP_MON detailsForm fields). Keep this list in
+      // lockstep when adding a product, or real buyers hit the fallback below.
+      var KNOWN_FORMS = [
+        'JVU3Atfm',  // deep-reading
+        'sL9V4PTk',  // natal-poster-pdf
+        'Iasu4Sia',  // reading-poster-bundle
+        'ZOp9A1OW',  // two-skies-map
+        'VvzhK6Kj',  // gift-reading
+        'h1jYdbGy',  // gift-reading-redeem
+        'uHADD51y',  // gift-box-whole-sky
+        'MKutUmwh',  // natal-poster
+        'l3BHnRFG',  // big-three-print
+        'jymyb9t2',  // sky-tee
+        'ItYwTtZw',  // sky-hoodie
+        'cQgoY4h4',  // constellation-mug
+        'QMcr0Ldw',  // year-ahead
+        'vp60QAiN'   // solar-return
+      ];
       var p = new URLSearchParams(location.search);
       var form = p.get('form');
-      if (!form) {
+      if (!form || KNOWN_FORMS.indexOf(form) === -1) {
         document.body.innerHTML = '<a class="skip-link" href="#main">Skip to content</a><main id="main"><h1 class="sr-only">Missing form reference</h1><p>Missing form reference. <a href="https://astroprecise.app/shop.html">Return to shop</a></p></main>';
         return;
       }

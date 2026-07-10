@@ -217,3 +217,39 @@
       .mc-grid--cards { grid-template-columns: 1fr; }
       .mc-empty { padding: 2.25rem 1.5rem; }
     }
+
+    /* Reading-path strip — rendered by charts-dashboard.js only when saved
+       charts exist. Dormant-safe: info links only (sample + shop), no buy UI. */
+    .mc-reading-path {
+      max-width: 640px;
+      margin: 2.25rem auto 0;
+      padding: 1.5rem 1.75rem;
+      text-align: center;
+    }
+    .mc-reading-path__eyebrow {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+      margin: 0 0 0.4rem;
+    }
+    .mc-reading-path__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gold-pale, #f0e8d8);
+      margin: 0 0 0.55rem;
+    }
+    .mc-reading-path__sub {
+      font-size: 0.88rem;
+      color: var(--silver, #A89E88);
+      line-height: 1.7;
+      margin: 0 auto 0.9rem;
+      max-width: 52ch;
+    }
+    .mc-reading-path__links { font-size: 0.88rem; margin: 0; }
+    .mc-reading-path__links a { color: var(--gold-light, #E8C872); }
+    a.mc-card__active { text-decoration: none; }
+    a.mc-card__active:hover, a.mc-card__active:focus-visible { border-color: var(--gold); }

@@ -52,6 +52,26 @@ ul.questions li{margin-bottom:6pt;}
 p.note{font-size:10.5pt;color:#A89E88;border-left:2px solid rgba(201,162,39,.25);padding-left:12pt;}
 table.placements td,table.placements th{font-size:9.5pt;}
 .r{color:#b06a6a;font-size:9pt;}
+/* ── screen-only conversion band (never printed — the buyer's PDF ends at the reference page) ── */
+.sample-cta{display:flex;flex-direction:column;align-items:center;gap:10pt;text-align:center;padding:30pt 6vw 44pt;max-width:210mm;margin:0 auto;}
+.sample-cta__line{font-family:'Cinzel',serif;font-size:12.5pt;color:#E8EBF0;letter-spacing:.06em;line-height:1.4;}
+.sample-cta__row{display:flex;gap:10pt;flex-wrap:wrap;justify-content:center;}
+.sample-cta__btn{font-family:'Cinzel',serif;font-size:9.5pt;letter-spacing:.14em;text-transform:uppercase;color:#E8C872;border:1px solid rgba(201,162,39,.45);border-radius:999px;padding:9pt 16pt;text-decoration:none;}
+.sample-cta__btn--primary{color:#0B0906;background:linear-gradient(160deg,#E8C872,#C9A227);border-color:transparent;}
+.sample-cta__note{font-size:9.5pt;color:#A89E88;max-width:130mm;line-height:1.6;}
+@media print{.sample-cta{display:none;}}
+/* ── phone/tablet: the A4 plate becomes a fluid column (print rules above untouched) ── */
+@media screen and (max-width:860px){
+  .page{width:auto;min-height:0;padding:8vw 6vw 14vw;}
+  .cover{min-height:0;padding:8vw 0 10vw;}
+  .page [style*="position:absolute"]{position:static !important;margin-top:6vw;}
+  .foot{position:static;left:auto;right:auto;bottom:auto;margin-top:9vw;}
+  .watermark{font-size:16vw;}
+  .big3{flex-wrap:wrap;}
+  .big3 .b{flex:1 1 40%;min-width:128px;}
+  h1{font-size:22pt;}
+  .cover-wheel svg{width:min(300px,80vw);height:auto;}
+}
 </style></head><body><!-- ap-paid-meta:{"product":"reading-poster-bundle","orderId":null,"engine":"VSOP87/ELP2000","houseSystem":"placidus","generated":"2026-07-04T09:49:34.274Z","sun":82.8062,"moon":327.1309,"asc":67.4304,"aspects":15} -->
 <main id="main-content" class="sample-reading" aria-label="Sample deep natal reading">
 <div class="page cover">
@@ -199,8 +219,8 @@ table.placements td,table.placements th{font-size:9.5pt;}
   <h2>Three questions to carry</h2>
   <ul class="questions"><li>Where does your Gemini Sun already lead — even when you doubt yourself?</li><li>What does your Aquarius Moon need to feel safe enough to soften?</li><li>How does Gemini rising show up in first impressions — and is that the doorway you want?</li></ul>
   <p>Aurora Vale, your chart is led by <strong>air</strong> — mind-led nature, alive in language, pattern and connection — with a <strong>cardinal</strong> rhythm: you initiate, open chapters, and meet change at the threshold. Carried on a Gemini Sun, an Aquarius Moon, and Gemini rising, it asks you to bring what you privately understand into a form the world can meet.</p>
-  <p class="lede" style="margin-top:16pt;">This is not prediction. It is orientation — a map of the sky you were born under, drawn honestly. What you build on it is yours. Thank you for trusting AstroPrecise with your birth moment.</p>
-  <p style="font-size:9pt;color:#5E5748;text-align:center;margin-top:12pt;">Questions about your reading? Reply to your delivery email · astroprecise.app</p>
+  <p class="lede" style="margin-top:16pt;">This is not prediction. It is orientation — a map of the sky you were born under, drawn honestly. What you build on it is yours. Every Deep Reading closes this way: with the map in its owner's hands.</p>
+  <p style="font-size:9pt;color:#5E5748;text-align:center;margin-top:12pt;">You are reading Aurora Vale's sample — a real reading, generated from a sample chart · astroprecise.app</p>
   <div class="foot"><span>AstroPrecise · Deep Reading + Poster</span><span>Aurora Vale</span><span>12</span></div>
 </div>
 
@@ -227,6 +247,15 @@ table.placements td,table.placements th{font-size:9.5pt;}
   </table>
   <div class="foot"><span>AstroPrecise · Deep Reading + Poster</span><span>Aurora Vale</span><span>13</span></div>
 </div>
+
+<aside class="sample-cta" aria-label="Cast your own chart">
+  <p class="sample-cta__line">This is Aurora Vale's sky — yours reads differently.</p>
+  <div class="sample-cta__row">
+    <a class="sample-cta__btn sample-cta__btn--primary" href="chart.html">Cast your free chart →</a>
+    <a class="sample-cta__btn" href="shop.html#deep-reading">About the Deep Reading →</a>
+  </div>
+  <p class="sample-cta__note">The free chart computes in your browser in seconds — private, VSOP87-accurate. The Deep Reading is the full 13-page PDF this sample previews, written from your own placements.</p>
+</aside>
 
   <script src="js/ap-safe-dom.js" defer></script>
   <script src="js/ap-page-boot.js" defer></script>

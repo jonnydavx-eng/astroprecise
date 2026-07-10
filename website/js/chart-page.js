@@ -1798,6 +1798,24 @@ host.classList.add('is-done');
         AstroApp.showToast('Saved',
           'Chart saved — view it in My Charts or your Profile.', 'success');
       }
+      // Toasts are text-only, so also surface the dashboard with a real link —
+      // same chip id/classes ap-chart-share.js showSaveConfirmation() uses,
+      // so the existing .chart-save-confirmation styling applies.
+      const row = document.getElementById('result-actions-row');
+      if (row) {
+        let chip = document.getElementById('chart-save-confirmation');
+        if (!chip) {
+          chip = document.createElement('div');
+          chip.id = 'chart-save-confirmation';
+          chip.className = 'chart-save-confirmation';
+          chip.setAttribute('role', 'status');
+          chip.setAttribute('aria-live', 'polite');
+          row.parentNode.insertBefore(chip, row.nextSibling);
+        }
+        chip.hidden = false;
+        chip.innerHTML = '<span class="chart-save-confirmation__mark" aria-hidden="true">✦</span>' +
+          '<span>Saved on this device — <a href="charts.html">open My Charts →</a></span>';
+      }
     }
   });
 

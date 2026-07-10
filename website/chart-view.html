@@ -13,7 +13,7 @@
   <meta property="og:title" content="Birth Chart — Astro Precise" />
   <meta property="og:description" content="A natal chart computed with astronomical precision — free, private, beautiful." />
   <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
-  <meta name="theme-color" content="#0A0E1A" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="icon" href="favicon.ico" sizes="48x48" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
   <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=655" />
@@ -63,7 +63,10 @@
 
     <section class="chart-view-cta" id="view-big-three" hidden>
       <p id="view-summary"></p>
-      <a href="chart.html" class="btn btn--primary" id="view-full-link">Explore the full chart →</a>
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+        <a href="chart.html" class="btn btn--primary" id="view-full-link">Explore the full chart →</a>
+        <a href="chart.html" class="btn btn--outline">Cast your own free chart</a>
+      </div>
       <p style="margin-top:1rem;font-size:0.78rem;color:var(--ap-text-faint);">
         Computed on your device · VSOP87 · accurate to roughly an arcminute (1800–2200 CE)
       </p>
@@ -78,8 +81,8 @@
     </div>
   </footer>
 
-  <script src="js/ephemeris.js"></script>
-  <script src="js/chart-render.js"></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/chart-render.js" defer></script>
   <script src="js/ap-nav-model.js"></script>
   <script src="js/app.js" defer></script>
   <script>

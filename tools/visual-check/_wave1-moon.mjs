@@ -1,0 +1,14 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch();
+const page = await b.newPage({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36' });
+await page.addInitScript(() => Object.defineProperty(navigator, 'webdriver', { get: () => false }));
+await page.goto('http://127.0.0.1:8790/moonphase.html', { waitUntil: 'load' });
+await page.waitForTimeout(3000);
+await page.fill('#moonphase-date', '1990-06-14');
+await page.click('#moonphase-submit');
+await page.waitForTimeout(2000);
+const link = await page.locator('#moonphase-result a[href="moment.html"]').count();
+const txt = link ? await page.locator('#moonphase-result a[href="moment.html"]').textContent() : '';
+console.log(`${link === 1 ? 'PASS' : 'FAIL'}  moonphase->moment bridge (count=${link}, text="${txt.trim()}")`);
+await b.close();
+process.exit(link === 1 ? 0 : 1);

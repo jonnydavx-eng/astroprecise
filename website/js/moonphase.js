@@ -287,8 +287,11 @@
         '<p class="mp-card__blurb">' + phase.blurb + '</p>' +
         '<p class="mp-card__honesty">Computed from real Sun &amp; Moon positions (VSOP87 / ELP2000), evaluated at 12:00&nbsp;UT.</p>' +
       '</article>' +
-      '<div class="mp-actions">' +
+      '<div class="mp-actions" style="gap:0.6rem;flex-wrap:wrap;">' +
         '<button type="button" class="btn btn--secondary" id="mp-copy-btn">Copy shareable text</button>' +
+        // Bridge to Moment — the visitor has already given a meaningful date;
+        // Moment turns that night into a free keepsake card.
+        '<a class="btn btn--outline" href="moment.html">Freeze this night as a keepsake &rarr;</a>' +
       '</div>';
 
     out.classList.remove('hidden');
