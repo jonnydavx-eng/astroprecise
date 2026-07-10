@@ -91,8 +91,7 @@
     /* Model-orbit tools — every page gets the same product ladder around the orrery */
     return (
       '<nav class="ap-ev-tools" aria-label="Tools around the living model">' +
-      '<a class="ap-ev-tools__chip ap-ev-tools__chip--primary" href="explore.html">Explore 3D</a>' +
-      '<a class="ap-ev-tools__chip" href="index.html#heroChapter">Home orrery</a>' +
+      '<a class="ap-ev-tools__chip ap-ev-tools__chip--primary" href="index.html">Observatory</a>' +
       '<a class="ap-ev-tools__chip" href="chart.html">Cast chart</a>' +
       '<a class="ap-ev-tools__chip" href="ephemeris.html">Sky instrument</a>' +
       '<a class="ap-ev-tools__chip" href="horoscope.html">Daily</a>' +

@@ -193,9 +193,9 @@
     if (!document.querySelector("#apMasthead, .masthead")) return;
 
     var tabs = (window.AP_NAV && window.AP_NAV.NAV_BOTTOM_TABS) || [
-      ["explore.html", "Explore", "star4"],
+      ["index.html", "Observatory", "star4"],
       ["chart.html", "Chart", "spiral"],
-      ["ephemeris.html", "Sky", "telescope"],
+      ["ephemeris.html", "The Sky", "telescope"],
       ["horoscope.html", "Daily", "crescent"],
     ];
     var nav = document.createElement("nav");

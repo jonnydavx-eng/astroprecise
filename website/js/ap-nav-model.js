@@ -2,28 +2,29 @@
  * Astro Precise — Navigation IA (model-first, single source of truth).
  * Load before app.js: <script src="js/ap-nav-model.js"></script>
  *
- * MODEL-CENTERED STRUCTURE (2026-07-09 jet rebuild):
- *   The living orrery is the product. Tabs orbit it.
+ * OBSERVATORY STRUCTURE (2026-07-10 — the homepage IS the model):
+ *   The living orrery is the product; index.html is the Observatory.
  *
- * Primary bar: Explore · Chart · Sky · Daily · Shop
- *   Explore = full-viewport 3D (explore.html)
- *   Chart   = cast natal (chart.html)
- *   Sky     = sky instrument / ephemeris (ephemeris.html)
- *   Daily   = horoscope (horoscope.html)
- *   Shop    = keepsakes
+ * Primary bar: Observatory · Chart · The Sky · Daily · Shop
+ *   Observatory = the full-model homepage (index.html)
+ *   Chart       = cast natal (chart.html)
+ *   The Sky     = sky instrument / ephemeris (ephemeris.html)
+ *   Daily       = horoscope (horoscope.html)
+ *   Shop        = keepsakes
  *
- * Bottom tabs (4): Explore · Chart · Sky · Daily
- * More: My Sky hub, Moment, Readings, Library, Match, tools…
+ * Bottom tabs (4): Observatory · Chart · The Sky · Daily
+ * More: My Sky hub, Moment, Cosmic Story, Library, Match, tools…
  *
- * Site spine: Explore (see) → Chart (cast) → Sky (instrument) → Keep → Daily → Shop
+ * Site spine: Observatory (see) → Chart (cast) → The Sky (instrument) → Keep → Daily → Shop
+ * explore.html stays live only as the #m= deep-link receiver room (no nav row).
  */
 'use strict';
 
 (function () {
   var NAV_PRIMARY = [
-    ['explore.html', 'Explore'],
+    ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['ephemeris.html', 'Sky'],
+    ['ephemeris.html', 'The Sky'],
     ['horoscope.html', 'Daily'],
     ['shop.html', 'Shop'],
   ];
@@ -32,26 +33,26 @@
   var NAV_MORE_EXPLORE = [
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
-    ['cosmic-story.html', 'Readings'],
+    ['cosmic-story.html', 'Cosmic Story'],
     ['guides.html', 'Library'],
     ['compatibility.html', 'Compatibility', { badge: 'Match', dataNavPromoted: 'match' }],
-    ['transits.html', 'Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
+    ['transits.html', 'Your Transits', { badge: 'Personal', dataNavPromoted: 'personal' }],
     ['profile.html', 'Profile'],
     ['charts.html', 'My Charts'],
   ];
 
   // Four tabs only — model + cast + sky + daily (distinct icons)
   var NAV_BOTTOM_TABS = [
-    ['explore.html', 'Explore', 'star4'],
+    ['index.html', 'Observatory', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
-    ['ephemeris.html', 'Sky', 'telescope'],
+    ['ephemeris.html', 'The Sky', 'telescope'],
     ['horoscope.html', 'Daily', 'crescent'],
   ];
 
   var NAV_EXTRAS = [
     ['catalogue.html', 'Lookbook'],
     ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
-    ['this-weeks-sky.html', "This Week's Sky"], ['tonight.html', "Tonight's Sky"],
+    ['this-weeks-sky.html', 'This Week'], ['tonight.html', 'Tonight'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
     ['synastry.html', 'Synastry'], ['what-is-my-rising-sign.html', 'Rising Sign'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],

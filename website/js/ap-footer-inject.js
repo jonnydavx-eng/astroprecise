@@ -22,9 +22,9 @@
     { key: 'pisces', name: 'Pisces' },
   ];
 
-  // Model-first spine: Explore → Cast → Sky → Keep → Daily → Hub → Shop
+  // Model-first spine: Observatory → Cast → Sky → Keep → Daily → Hub → Shop
   var FOOTER_TOOLS = [
-    { href: 'explore.html', label: 'Explore 3D', icon: '<span aria-hidden="true">✦</span>' },
+    { href: 'index.html', label: 'Observatory', icon: '<span aria-hidden="true">✦</span>' },
     { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
     { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
     { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">◇</span>' },
@@ -81,7 +81,7 @@
       var ul = cols[i].querySelector('ul');
       if (!ul) return;
       ul.innerHTML =
-        '<li><a href="explore.html">Explore 3D</a></li>' +
+        '<li><a href="index.html">Observatory</a></li>' +
         '<li><a href="chart.html">Cast chart</a></li>' +
         '<li><a href="ephemeris.html">Sky instrument</a></li>' +
         '<li><a href="moment.html">Moment (Keep)</a></li>' +
