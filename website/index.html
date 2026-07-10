@@ -91,12 +91,15 @@
   --reading-measure:66ch;--page-max:1200px;--col-main:1fr;--col-margin:200px;
 }
 html,body{background:#000;color:var(--ink);}
-body{font-family:var(--font-ui);}
+body{font-family:var(--font-ui);margin:0;}
+/* Skip links must never occupy flow (first-paint gate: stage starts at y=0) */
+.skip-link{position:absolute;top:-120px;left:8px;z-index:120;background:#101014;color:#E8EBF0;padding:10px 14px;border-radius:8px;}
+.skip-link:focus,.skip-link:focus-visible{top:8px;}
 a{color:var(--meridian);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;}
 a:hover,a:focus-visible{color:#A8DCF2;}
 .fig-num,figcaption{font-family:var(--font-mono);font-size:max(13px,0.76rem);letter-spacing:0.03em;color:var(--brass-bright);}
 .plate .fig-num{color:var(--brass-vivid);text-transform:uppercase;}
-.btn-press{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4A90E0,#7EC8E8 48%,#C8D8E8);color:#050508;border:none;font-family:var(--font-ui);font-weight:600;text-decoration:none;}
+.btn-press{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#E8C872,#C9A227);color:#0B0906;border:none;font-family:var(--font-ui);font-weight:600;text-decoration:none;}
 .btn-quiet{display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--ink);border:1px solid var(--brass);font-family:var(--font-ui);font-weight:600;text-decoration:none;}
 .qa-q{color:var(--ink);font-family:var(--font-serif);font-weight:500;}
 .qa-a{color:var(--ink-faded);}
@@ -106,46 +109,31 @@ a:hover,a:focus-visible{color:#A8DCF2;}
 .footer-colophon .source-line,.footer-colophon .copyright{color:var(--paper-on-midnight);}
 .footer-zodiac-strip{display:flex;flex-wrap:wrap;gap:0.35rem 0.5rem;align-items:center;justify-content:center;min-height:2.75rem;margin:var(--sp-4,32px) auto var(--sp-3,24px);max-width:var(--page-max,1200px);}
 .footer-zodiac-strip>span{display:inline-flex;}
-/* Masthead structure — these rules live in css/ephemeris.css, which the homepage
-   lazy-loads on scroll; without them the logomark SVG renders at full viewport
-   width and the nav is an unstyled list. Keep in sync with ephemeris.css. */
-.masthead{text-align:center;padding-top:var(--sp-5);padding-bottom:var(--sp-3);border-bottom:1px solid var(--hairline);}
-.masthead-logo{display:inline-flex;align-items:center;gap:14px;text-decoration:none;margin-bottom:var(--sp-2);min-height:44px;padding-block:5px;box-sizing:border-box;touch-action:manipulation;}
-.logo-mark{width:46px;height:46px;flex-shrink:0;display:block;}
+/* Masthead — OBSERVATORY slim overlay bar. Must render as the single-row bar
+   at FIRST PAINT (critical-only gate — no stacked two-row pile, no dead band).
+   The stage runs underneath it by design (main gets no top padding). */
+.masthead{position:absolute;top:0;left:0;right:0;height:56px;z-index:30;display:flex;align-items:center;padding:0 clamp(12px,2vw,32px);background:linear-gradient(to bottom,rgba(0,0,0,0.78),rgba(0,0,0,0));border-bottom:0;text-align:left;}
+.masthead .page-wrap{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:none;padding:0;margin:0;}
+.masthead-logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin:0;min-height:44px;box-sizing:border-box;touch-action:manipulation;}
+.logo-mark{width:30px;height:30px;flex-shrink:0;display:block;}
 .masthead-wordmark{display:flex;align-items:baseline;gap:0.26em;line-height:1;}
-.wordmark-astro{font-family:var(--font-serif);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:500;letter-spacing:0.12em;color:var(--ink);text-transform:uppercase;}
-.wordmark-precise{font-family:var(--font-serif);font-size:clamp(1.35rem,3vw,1.9rem);font-weight:400;font-style:italic;letter-spacing:0.055em;color:var(--brass-bright);text-transform:uppercase;transition:color 0.15s;}
+.wordmark-astro{font-family:var(--font-serif);font-size:clamp(1rem,1.4vw,1.15rem);font-weight:500;letter-spacing:0.12em;color:var(--ink);text-transform:uppercase;}
+.wordmark-precise{font-family:var(--font-serif);font-size:clamp(1rem,1.4vw,1.15rem);font-weight:400;font-style:italic;letter-spacing:0.055em;color:var(--brass-bright);text-transform:uppercase;transition:color 0.15s;}
 .masthead-logo:hover .wordmark-precise{color:var(--brass-vivid);}
-.masthead-rule{border:none;border-top:1px solid var(--brass);opacity:0.35;margin-block:var(--sp-2);}
-.dateline{font-family:var(--font-mono);font-size:max(13px,0.75rem);color:var(--ink-faded);letter-spacing:0.05em;}
-.contents-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-3);padding-top:var(--sp-2);list-style:none;margin:0;padding-left:0;}
+.masthead-rule{display:none;}
+.dateline,#masthead-dateline{display:none;}
+.contents-nav{display:flex;flex-wrap:nowrap;justify-content:flex-end;gap:4px;list-style:none;margin:0;padding:0;}
 .contents-nav li{display:flex;}
-.contents-nav a{font-family:var(--font-ui);font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--ink-faded);display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 12px;box-sizing:border-box;touch-action:manipulation;}
+.contents-nav a{font-family:var(--font-ui);font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;color:var(--ink-faded);display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px;box-sizing:border-box;touch-action:manipulation;white-space:nowrap;}
 /* Hero freshness chip — brass, date-stamped, jumps to #today. Whole-sky wording
    for anonymous visitors; personalised only when a chart is saved (see JS). */
 .hero-today-chip{display:inline-flex;align-items:center;gap:.5em;margin-top:var(--sp-3);padding:.45rem .95rem;border:1px solid rgba(168,176,188,.4);border-radius:999px;background:rgba(26,34,48,.55);font-family:var(--font-mono);font-size:.74rem;letter-spacing:.06em;color:var(--brass-bright);text-decoration:none;transition:border-color .2s,background .2s;order:6;justify-self:start;}
 .hero-today-chip:hover{border-color:var(--brass-vivid);background:rgba(168,176,188,.14);}
 .hero-today-chip[hidden]{display:none;}
-/* Mobile fold fix — the ~300px masthead pushed the sole CTA off the first
-   812px screen (2026-07-04 walkthrough). Compact it: dateline hidden, tighter
-   paddings, smaller mark. The dateline stays on ≥641px where it earns its keep. */
+/* Mobile bar — phone nav is the bottom tab bar; the top bar is logo-only. */
 @media (max-width:640px){
-  .masthead{padding-top:var(--sp-3);padding-bottom:var(--sp-2);}
-  .masthead .dateline{display:none;}
-  .masthead-rule{margin-block:var(--sp-1);}
-  .logo-mark{width:34px;height:34px;}
-  /* v636 — 6-item nav as a tidy CENTRED 3×2 grid. Columns size to their content
-     (repeat(3,auto)) and the whole grid centres, so items sit as a neat group
-     instead of being flung to the left/right edges by 1fr columns. */
-  .contents-nav{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;
-    gap:4px var(--sp-4);padding-top:var(--sp-1);padding-inline:6px;}
-  .contents-nav li{display:flex;justify-content:center;}
-  .contents-nav a{justify-content:center;font-size:0.72rem;min-height:44px;
-    padding:8px 6px;white-space:nowrap;}
-  /* …and trim the hero head so the date form + CTA land inside the first
-     812px screen (the sole conversion action was measured below the fold). */
-  #heroChapter h1{font-size:clamp(1.55rem,7.5vw,2.1rem);}
-  #heroChapter .hero-why-lead{font-size:0.9rem;margin-top:var(--sp-1)!important;}
+  .masthead{height:48px;}
+  .masthead nav,.contents-nav{display:none;}
 }
 /* Critical intro insurance: suppress the engraved no-JS wheel + reveal the wrap
    the instant ap-await-webgl is set, so a slow async ap-horizon-2026.css can
@@ -153,17 +141,26 @@ a:hover,a:focus-visible{color:#A8DCF2;}
    with that sheet; worst case here is a brief dark hero, never the wheel). */
 html.ap-await-webgl #apHeroWheelFallback{display:none!important}
 html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
-/* v640 critical — hero layout stable on first paint (same rules as ap-horizon-2026) */
-.ap-award-511 #heroChapter{--hero-deck-bay:136px;position:relative;overflow:hidden;display:flex;align-items:center;min-height:clamp(620px,calc(100svh - 232px),950px);padding-block:var(--sp-3) var(--hero-deck-bay)}
-html.orrery-full .ap-award-511 #heroChapter{--hero-deck-bay:clamp(200px,22vh,240px)}
-/* Model-first FOUC: stage bay then form dock (no overlap) */
-.ap-award-511 #heroChapter{min-height:auto;overflow:visible;display:block;padding:0;background:#000}
-.ap-award-511 #heroChapter .page-wrap.hero-grid{display:flex;flex-direction:column;width:100%;max-width:none;position:relative;z-index:2;min-height:0;padding:0;margin:0;gap:0}
-.ap-award-511 #heroChapter .hero-solar-stage{order:1;position:relative;inset:auto;width:100%;height:min(48vh,480px);min-height:300px;z-index:1;padding:0;border:0;pointer-events:auto}
-.ap-award-511 #heroChapter .ap-award-orrery-wrap{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:min(52vh,520px);max-width:min(86vw,560px);display:block;z-index:2}
-.ap-award-511 #heroChapter .hero-copy{order:2;position:relative;z-index:6;max-width:min(520px,94vw);width:calc(100% - 2rem);pointer-events:auto;margin:0.35rem auto 1rem;padding:0.75rem 1.05rem;border-radius:18px;background:rgba(8,8,12,.92);border:1px solid rgba(200,205,214,.2);text-align:center}
-/* v678 load: photoreal Earth still (not schematic dots) while WebGL boots */
-html.ap-await-webgl:not(.orrery-full) #orrery-lite-poster{opacity:1!important;visibility:visible!important;background:url(img/engine/earth.webp) center/cover no-repeat #07070A!important}
+/* v705 critical — OBSERVATORY geometry stable on first paint (no FOUC):
+   full-viewport stage, in-flow plinth tray, cast band/rail. */
+.ap-award-511.ap-observatory-home #heroChapter{position:relative;overflow:visible;display:block;min-height:0;padding:0;background:#000}
+.ap-observatory-home #heroChapter .page-wrap.hero-grid{display:flex;flex-direction:column;width:100%;max-width:none;position:relative;z-index:2;min-height:0;padding:0;margin:0;gap:0}
+.ap-observatory-home #heroChapter .hero-solar-stage{order:1;position:relative;inset:auto;width:100%;height:calc(100svh - 168px - var(--bottom-nav-h,0px));min-height:420px;z-index:1;padding:0;border:0;pointer-events:auto;overflow:hidden;background:#000}
+.ap-observatory-home #heroChapter .ap-award-orrery-wrap{position:absolute;inset:0;left:0;top:0;transform:none;width:100%;height:100%;max-width:none;display:block;z-index:1}
+@media (max-width:640px){.ap-observatory-home #heroChapter .ap-award-orrery-wrap{inset:108px 0 6px 0;top:108px;height:auto}}
+.ap-observatory-home #heroChapter .hero-copy{order:2;position:relative;z-index:6;width:100%;max-width:none;pointer-events:auto;margin:0;padding:8px 12px 6px;border-radius:0;background:#000;border:0;border-top:1px solid rgba(200,205,214,.22);text-align:left}
+.ap-observatory-home #heroChapter #orrery-lite-deck{order:3;min-height:96px;background:#000}
+@media (min-width:1280px){
+  .ap-observatory-home #heroChapter .hero-solar-stage{height:calc(100svh - 128px);min-height:560px}
+  .ap-observatory-home #heroChapter .hero-copy{box-sizing:border-box;position:absolute;left:24px;top:calc((100svh - 128px)/2);transform:translateY(-50%);width:340px;max-width:340px;margin:0;padding:1.1rem 1.15rem 1.2rem;background:rgba(10,10,14,.88);border:1px solid rgba(200,205,214,.24);border-radius:16px}
+}
+@media (min-width:1024px){
+  .ap-observatory-home #heroChapter #orrery-lite-deck{border-top:1px solid rgba(200,205,214,.22)}
+}
+/* v678 load: photoreal Earth still (not schematic dots) while WebGL boots —
+   drawn as a DISC matched to the engine's Earth-rest framing (never cover-blur) */
+html.ap-await-webgl:not(.orrery-full) #orrery-lite-poster{opacity:1!important;visibility:visible!important;background:#07070A url(img/engine/earth.webp) no-repeat 50% 41%/min(52vh,520px)!important}
+@media (max-width:640px){html.ap-await-webgl:not(.orrery-full) #orrery-lite-poster{background-position:50% 38%!important;background-size:min(64vw,300px)!important}}
 html.ap-await-webgl:not(.orrery-full) .lite-poster-canvas,html.ap-await-webgl:not(.orrery-full) .lite-poster-ring{opacity:0!important;visibility:hidden!important}
 html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important;visibility:hidden!important}
 .hero-action-chips{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:var(--sp-3)}
@@ -215,12 +212,22 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css
        (and the other !important sheets above); cascade position is load-bearing. -->
   <link rel="stylesheet" href="css/ap-model-window.css?v=704" id="ap-css-model-window">
+  <!-- OBSERVATORY HOMEPAGE — LOAD ORDER LAW: ap-observatory-home.css MUST stay
+       the LAST stylesheet (after ap-model-window.css). It out-cascades the
+       !important sheets above; any sheet appended after it silently reverts
+       the observatory layout (visual-check asserts deck position:static). -->
+  <link rel="stylesheet" href="css/ap-observatory-home.css?v=705" id="ap-css-observatory-home">
+  <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
+  <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=703">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
-<body class="ap-award-511 ap-enchanted">
-<a class="skip-link" href="#main-content">Skip to content</a>
+<body class="ap-award-511 ap-enchanted ap-observatory-home">
+<a class="skip-link" href="#castDock">Skip to cast your chart</a>
+<a class="skip-link" href="#orrery-lite-deck">Skip to the model controls</a>
+<a class="skip-link" href="#site-below">Skip to site content</a>
 
 <!-- ============================================================
      § 1 · MASTHEAD
@@ -297,9 +304,8 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 
     <nav aria-label="Around the living sky">
       <ul class="contents-nav">
-        <li><a href="explore.html">Explore</a></li>
         <li><a href="chart.html">Chart</a></li>
-        <li><a href="ephemeris.html">Sky</a></li>
+        <li><a href="ephemeris.html">The Sky</a></li>
         <li><a href="#today">Daily</a></li>
         <li><a href="shop.html">Shop</a></li>
         <li><a href="mysky.html">My Sky</a></li>
@@ -321,10 +327,10 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <!-- ============================================================
      § 2 · HERO / COVER
      ============================================================ -->
-<section class="department section-bleed hero-section ap-chapter ap-chapter--hero" id="heroChapter">
+<section class="department section-bleed hero-section ap-chapter ap-chapter--hero" id="heroChapter" data-ap-beat="earth">
   <div class="page-wrap hero-grid hero-showstopper">
 
-      <div class="hero-copy fade-in">
+      <div class="hero-copy fade-in" id="castDock" tabindex="-1">
         <em class="eyebrow-rose">Free birth chart</em>
         <h1 class="display" style="margin-top: var(--sp-2);">
           You're not one of twelve. <br><span class="display-accent">This chart is yours alone.</span>
@@ -332,10 +338,10 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
           Enter your date. We compute <em>your</em> sky &mdash; free, private, to about an arcminute.
         </p>
-        <form id="hero-chart-form" class="hero-form hero-form--primary" novalidate aria-label="Cast your natal chart">
+        <form id="hero-chart-form" class="hero-form hero-form--primary" action="chart.html" method="get" novalidate aria-label="Cast your natal chart">
           <label for="hero-birthdate" class="ui-label">Your date of birth</label>
           <div class="hero-form-row">
-            <input type="date" id="hero-birthdate" name="birthdate" aria-label="Date of birth" min="1900-01-01" max="2099-12-31" required>
+            <input type="date" id="hero-birthdate" name="date" aria-label="Date of birth" min="1900-01-01" max="2099-12-31" required>
             <button type="submit" class="btn-press">Calculate my chart</button>
           </div>
           <p id="hero-form-error" role="alert" class="hero-form-error" hidden></p>
@@ -348,7 +354,6 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
         <div class="hero-action-chips hero-action-chips--secondary hero-action-chips--defer" aria-label="Optional next steps">
           <p class="hero-live-pill" id="heroLivePill" aria-live="polite"><span class="hero-live-pill__dot" aria-hidden="true"></span><span id="heroLiveText">Live sky &middot; reading positions&hellip;</span></p>
           <a class="hero-today-chip" id="heroTodayChip" href="#today" hidden></a>
-          <a class="hero-explore-chip hero-explore-chip--quiet" href="explore.html">Full sky tour</a>
         </div>
       </div>
 
@@ -799,6 +804,28 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
           </div>
         </div>
 
+        <!-- ── Honest-model legend (ported from explore.html) — collapsible,
+             starts collapsed (ap-home-bootstrap), top-right starfield corner.
+             Honesty labels are crawlable DOM text — they survive structurally. ── -->
+        <aside class="explore-legend" id="explore-legend" aria-label="About this model">
+          <button type="button" class="explore-legend__toggle" id="explore-legend-toggle" aria-expanded="true" aria-controls="explore-legend-body">
+            <span class="explore-legend__title">The honest model</span>
+            <span class="explore-legend__chev" aria-hidden="true">&#9662;</span>
+          </button>
+          <div class="explore-legend__body" id="explore-legend-body">
+            <p><strong>Positions are live.</strong> Planet positions are computed on your device from VSOP87 &mdash; accurate to roughly an arcminute (1800&ndash;2200&nbsp;CE). The whole model runs in your browser.</p>
+            <p><strong>Distances are schematic.</strong> The scale ladder spaces things so you can see them, not to true distance. Each level says what it is:</p>
+            <ul class="explore-legend__ladder">
+              <li><b>Earth &rarr; System</b> &mdash; positions live, distances schematic</li>
+              <li><b>Oort</b> &mdash; an illustrative shell, not measured</li>
+              <li><b>Stars</b> &mdash; directions schematic, not true 3D distances</li>
+              <li><b>Galaxy</b> &mdash; a <em>Gaia-style barred spiral</em>, not a measured survey</li>
+              <li><b>Cosmos</b> &mdash; decorative deep-field sprites</li>
+            </ul>
+            <p class="explore-legend__foot">Roam freely: drag to scrub time, Shift+drag to orbit, scroll or pinch to zoom. Double-tap a planet to focus it.</p>
+          </div>
+        </aside>
+
       </div><!-- /hero-solar-stage -->
 
         <!-- v575: HUD rail — page-wrap child AFTER the stage (inside the stage
@@ -863,6 +890,9 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
           <button type="button" class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" aria-label="Launch fullscreen cosmic flight — zoom from the cosmos to Earth">✦ Cosmic flight</button>
           <label class="sr-only" for="lite-scrub">Scrub through time</label>
           <input type="range" id="lite-scrub" class="ap-orrery-scrub" min="-2000" max="2000" step="1" value="0" aria-label="Scrub through time — watch planets move in their real paths" />
+          <!-- Scroll affordance — museum-plate language, seated in the plinth
+               band (never over the disc, by construction). -->
+          <a class="ap-mw-scrollcue" href="#site-below" aria-label="Continue to the rest of the site"><span class="ap-mw-scrollcue__line" aria-hidden="true"></span><span class="ap-mw-scrollcue__label">CONTINUE</span></a>
         </div>
   </div>
 </section>
@@ -912,13 +942,14 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
      leads (research 2026-07-04 — Chani pattern; #today is the stable
      bookmarkable anchor the masthead Daily link + hero chip jump to).
      ============================================================ -->
-<section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" aria-labelledby="contents-heading">
+<span id="site-below" aria-hidden="true" tabindex="-1"></span>
+<section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" data-ap-beat="system" aria-labelledby="contents-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
       <p class="ap-display-kicker">Next steps</p>
       <h2 id="contents-heading" class="ap-chapter-title">Where to go from here</h2>
       <p class="ap-chapter-lead" style="max-width:48ch;">
-        Cast above, then Explore the model, open Sky, keep a Moment, or return Daily.
+        Cast in the observatory above, then open The Sky, keep a Moment, or return Daily.
       </p>
     </header>
 
@@ -997,7 +1028,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 </section>
 
 
-<section class="department section-bleed ap-chapter" id="dailyChapter" aria-labelledby="daily-heading">
+<section class="department section-bleed ap-chapter" id="dailyChapter" data-ap-beat="today" aria-labelledby="daily-heading">
   <span id="today" aria-hidden="true"></span>
   <div class="page-wrap">
     <header class="ap-chapter-head ap-chapter-head--center ap-reveal">
@@ -1613,7 +1644,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <!-- ============================================================
      § 10 · THE SHOP — Editions
      ============================================================ -->
-<section class="department section-bleed ap-chapter ap-chapter--shop" id="shopChapter" style="background: var(--ap-void-mid, #121826);" aria-labelledby="shop-heading">
+<section class="department section-bleed ap-chapter ap-chapter--shop" id="shopChapter" data-ap-beat="galaxy" style="background: var(--ap-void-mid, #121826);" aria-labelledby="shop-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
       <p class="ap-display-kicker">The shop</p>
@@ -1698,7 +1729,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       <div class="footer-col" data-ap-footer-spine="1">
         <h3>Around the model</h3>
         <ul>
-          <li><a href="explore.html">Explore 3D</a></li>
+          <li><a href="index.html">Observatory</a></li>
           <li><a href="chart.html">Cast chart</a></li>
           <li><a href="ephemeris.html">Sky instrument</a></li>
           <li><a href="moment.html">Moment (Keep)</a></li>
@@ -1778,7 +1809,9 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-home-bootstrap.js?v=704"></script>
+<script defer src="js/raf-core.js?v=705"></script>
+<script defer src="js/ap-home-bootstrap.js?v=705"></script>
+<script defer src="js/ap-nav-interplay.js?v=705"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=703"></script>
 <script defer src="js/home-match.js?v=703"></script>
@@ -1848,7 +1881,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   // claims — honesty rule); a saved chart earns a personalised line. Jumps
   // to #today (the daily tool). Same lazy-ephemeris retry as the dateline.
   function showHeroTodayChip(chip, text) {
-    if (window.matchMedia && window.matchMedia('(min-width: 1024px)').matches) return;
+    /* Observatory: desktop gets the freshness chip too (it rides in the cast rail). */
     chip.textContent = text;
     chip.hidden = false;
   }
