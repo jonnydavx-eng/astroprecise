@@ -233,7 +233,7 @@
     function syncTrayHeight() {
       var dh = deck ? Math.round(deck.getBoundingClientRect().height) : 0;
       root.style.setProperty("--ap-tray-h", (dh || 128) + "px");
-      var mobile = window.matchMedia && window.matchMedia("(max-width: 1023px)").matches;
+      var mobile = window.matchMedia && window.matchMedia("(max-width: 1279px)").matches;
       var ch = mobile && copy ? Math.round(copy.getBoundingClientRect().height) : 0;
       root.style.setProperty("--ap-tray-h-m", ((dh + ch) || 168) + "px");
       var bar = document.querySelector(".bottom-nav");
