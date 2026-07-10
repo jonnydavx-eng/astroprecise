@@ -26,14 +26,13 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { BODIES, PLANET_VIS, SUN_SIZE, ORBITAL_ELEMENTS, SCALE_DOC } from './orbitlab-bodies.js';
+import { BODIES, PLANET_VIS, SUN_SIZE, ORBITAL_ELEMENTS, SCALE_DOC, ROTATION_MODEL, MOON_TEX_OFFSET_DEG } from './orbitlab-bodies.js';
 import {
   helioStateFromEphemeris,
   estimateHelioSpeedKmS,
   adaptiveHelioSpeedKmS,
   moonPhaseFromEphemeris,
   integrateDayOffset,
-  siderealSpinRadPerSec,
   keplerGuidePoints,
 } from './orbitlab-orbital-math.js';
 
@@ -624,9 +623,77 @@ const FinishShader = {
     return { lon: st.lon, lat: st.lat, distanceAU: st.distanceAU };
   }
 
-  function bodySpinRate(b) {
-    if (b.siderealPeriodHours != null) return siderealSpinRadPerSec(b.siderealPeriodHours);
-    return (b.spin || 0) * 0.16;
+  // ── TRUE-TIME (S1): rotation is a PURE function of jd ─────────────────────
+  // GMST-locked Earth, IAU W0+Wdot elsewhere, exact tidal-locked Moon.
+  // Replaces the old incremental `rotation.y += rate*dt` decorative spin, so
+  // setDate/scrub/Personal Sky show the correct hemisphere and the masterclass
+  // caption 'live terminator' is literally true.
+
+  /** GMST, IAU 1982 polynomial (degrees). jd is UT (engine jd post-UTC fix).
+   *  Validated vs Meeus 12.b: gmstDeg(2446895.30625) = 128.7378732. */
+  function gmstDeg(jd) {
+    const d = jd - 2451545.0, T = d / 36525.0;
+    return norm360(280.46061837 + 360.98564736629 * d
+                   + 0.000387933 * T * T - T * T * T / 38710000.0);
+  }
+
+  /** PURE: absolute spin phase (radians) for a body at jd. No state, no dt. */
+  function rotationPhaseRad(bodyId, jd) {
+    const rm = ROTATION_MODEL[bodyId];
+    if (!rm) return 0;
+    const d = jd - 2451545.0;
+    const deg = rm.gmst ? gmstDeg(jd) : (rm.w0eng + rm.wdot * d);
+    return ((deg + rm.texOffsetDeg) % 360) * D2R; // js % keeps the Euler small; THREE wraps anyway
+  }
+
+  /** Pole quaternion via explicit basis (x̂→node, ŷ→pole, ẑ→node×pole).
+   *  setFromUnitVectors is FORBIDDEN here: its minimal-rotation twist puts an
+   *  uncontrolled azimuth into the frame and silently breaks every W0_eng.
+   *  The node n = pole×ŷ is the engine phase origin (for Earth: exactly the
+   *  of-date equinox +x̂, which is why Earth's phase is plain GMST). */
+  const _Y_UP = new THREE.Vector3(0, 1, 0);
+  function poleQuaternion(poleScene, outQ) {
+    const a = new THREE.Vector3().fromArray(poleScene).normalize();
+    const n = new THREE.Vector3().crossVectors(a, _Y_UP);
+    if (n.lengthSq() < 1e-12) n.set(1, 0, 0); else n.normalize(); // pole ‖ ŷ guard
+    const z = new THREE.Vector3().crossVectors(n, a);
+    return outQ.setFromRotationMatrix(new THREE.Matrix4().makeBasis(n, a, z));
+  }
+
+  // Cinematic/scroll spin offsets (radians, per body + 'cloud'): additive on top
+  // of the pure phase, exp-decay to zero when no writer feeds them — so intro /
+  // preloader-hold / masterclass choreography stays pixel-identical while active,
+  // then glides ~1.5s to truth with no snap.
+  const spinOffset = { earth: 0, cloud: 0 };
+  let spinScrollHoldMs = 0;                       // decay gate while scroll feeds
+  const CLOUD_DRIFT_RAD_PER_DAY = 2 * Math.PI / 20; // cosmetic cloud lead (~old 5%)
+  const SCROLL_SPIN_RAD_PER_FULL = 8 * D2R;       // clamped Earth spin across full hero scroll
+  const wrapPi = (a) => a - 2 * Math.PI * Math.round(a / (2 * Math.PI));
+
+  /** Scroll-drive spin absorber — S1 DELIBERATE DEVIATION from pure true-time
+   *  (product decision, 2026-07-10): the pure phase would whirl Earth ~120
+   *  revolutions across the hero scroll (scrollBias spans 120 days at
+   *  360.99°/day; Jupiter ~290 revs). Owner eye-comfort preference + audited
+   *  hero metrics make whirling unacceptable, so scroll-driven time routes
+   *  through the SAME decaying offset mechanism: each body's offset absorbs the
+   *  jump (wrapped to the shortest arc), Earth gets a small clamped visual spin
+   *  (SCROLL_SPIN_RAD_PER_FULL across the whole scroll — feels alive, never
+   *  whirls), and the truth phase resumes via exp-decay once scrolling rests.
+   *  The date pill still shows the true scrolled date; positions are untouched. */
+  function absorbScrollSpinJump(oldBias, newBias) {
+    const dBias = newBias - oldBias;
+    if (!dBias) return;
+    const jdBase = baseJd + dayOffset;
+    BODIES.forEach((b) => {
+      if (!ROTATION_MODEL[b.id]) return;
+      const comp = rotationPhaseRad(b.id, jdBase + oldBias)
+                 - rotationPhaseRad(b.id, jdBase + newBias)
+                 + (b.id === 'earth' ? SCROLL_SPIN_RAD_PER_FULL * (dBias / 120) : 0);
+      spinOffset[b.id] = wrapPi((spinOffset[b.id] || 0) + comp);
+    });
+    spinOffset.cloud = wrapPi((spinOffset.cloud || 0)
+      - ((CLOUD_DRIFT_RAD_PER_DAY * dBias) % (2 * Math.PI)));
+    spinScrollHoldMs = performance.now() + 260;
   }
 
   function buildEccentricGuides() {
@@ -5599,8 +5666,14 @@ const FinishShader = {
       }
       const segs = sphereSegs(b.hero);
       const mesh = new THREE.Mesh(new THREE.SphereGeometry(b.size, segs, segs), mat);
-      // axial tilt for character
-      group.rotation.z = (b.id === 'uranus' ? 82 : b.id === 'saturn' ? 26.7 : b.id === 'earth' ? 23.4 : 6) * D2R;
+      // TRUE-TIME (S1): real IAU pole orientation — quaternion pins the equator
+      // node to the engine phase origin so W0_eng means what it says (Earth
+      // 23.44°, Saturn 28.05°, Uranus 82.28° from scene-vertical; ring plane +
+      // seasons become real). Axis applied UNCOMPRESSED (no ×0.35 — that
+      // flattening is baked into positions only, never mesh frames).
+      const rmS1 = ROTATION_MODEL[b.id];
+      if (rmS1) poleQuaternion(rmS1.poleScene, group.quaternion);
+      else group.rotation.z = 6 * D2R; // no model — legacy decorative lean
       group.add(mesh);
       meshes[b.id] = group;
       group.userData = { b, mesh, mat };
@@ -6253,6 +6326,7 @@ const FinishShader = {
       const earthPos = meshes.earth.position;
       const dir = rect(m.lon, m.lat, 1);
       moonGroup.position.set(earthPos.x + dir.x * 1.7, earthPos.y + dir.z * 0.6, earthPos.z - dir.y * 1.7);
+      moonGroup.userData.lonDeg = m.lon; // TRUE-TIME: exact tidal lock reads this
     } catch (e) { /* moon optional */ }
     if (earthOrbitGroup && meshes.earth) {
       earthOrbitGroup.position.copy(meshes.earth.position);
@@ -6597,30 +6671,62 @@ const FinishShader = {
 
     // intro spin: keep Earth + clouds turning during the held close-up so cities
     // ignite across the dusk line (the hook). ~2x normal so motion reads in 7.2s.
+    // TRUE-TIME: cinematic writers feed decaying offsets — same look while active,
+    // then a ~1.5s glide to the true phase instead of a snap.
     if (introActive && !PRM && meshes.earth) {
-      meshes.earth.userData.mesh.rotation.y += 0.55 * dt * 0.5;
-      if (earthCloud) earthCloud.rotation.y += 0.55 * dt * 0.62;
+      spinOffset.earth += 0.55 * dt * 0.5;
+      spinOffset.cloud += 0.55 * dt * 0.12; // 0.62−0.5 preserves the old cloud lead
     }
 
-    // self-rotation (liveliness)
-    if (!PRM && scaleLevel <= 2 && !introActive) {
+    // TRUE-TIME rotation (S1): absolute spin phase = pure function of jd.
+    // Runs under PRM and at every scaleLevel (9 sin/cos, zero draw calls) so the
+    // shown hemisphere is always date-true; PRM simply has no cinematic feeds.
+    {
+      const jdSpin = currentAspectJd(); // the one canonical clock
       BODIES.forEach((b) => {
         const g = meshes[b.id];
         if (g && g.userData.mesh && g.visible) {
-          g.userData.mesh.rotation.y += bodySpinRate(b) * dt;
+          g.userData.mesh.rotation.y = rotationPhaseRad(b.id, jdSpin) + (spinOffset[b.id] || 0);
         }
       });
-      if (earthCloud) earthCloud.rotation.y += siderealSpinRadPerSec(23.9345) * dt * 1.05;
-      if (moonMesh && moonGroup && moonGroup.visible) moonMesh.rotation.y += siderealSpinRadPerSec(655.72) * dt;
-      if (sunMesh) sunMesh.rotation.y += 2 * Math.PI / (25.38 * 86400) * dt;
+      if (earthCloud) {
+        earthCloud.rotation.y = rotationPhaseRad('earth', jdSpin)
+          + ((CLOUD_DRIFT_RAD_PER_DAY * (jdSpin - 2451545.0)) % (2 * Math.PI))
+          + (spinOffset.cloud || 0) + (spinOffset.earth || 0);
+      }
+      if (moonMesh && moonGroup && moonGroup.userData.lonDeg != null) {
+        // (no .visible gate: 3 mults, and the lock must already hold the frame
+        // the Moon appears — also lets the T4 self-test run from any view)
+        // exact tidal lock: near side (texture centre = local +x) faces Earth at
+        // every jd. Deliberately suppresses optical libration (see bodies file).
+        moonMesh.rotation.y = (moonGroup.userData.lonDeg + 180) * D2R + MOON_TEX_OFFSET_DEG * D2R;
+      }
+      // decay cinematic/scroll offsets only when no writer is feeding them,
+      // so held cinematics don't fight the decay
+      const spinWriterActive = introActive
+        || (onPreloaderStage() && preloaderIntroFinished && !dragging)
+        || (masterclassIntroActive && spaceFlightToolActive)
+        || performance.now() < spinScrollHoldMs;
+      if (!spinWriterActive) {
+        for (const k in spinOffset) {
+          if (spinOffset[k]) {
+            spinOffset[k] *= Math.exp(-dt / 0.45);
+            if (Math.abs(spinOffset[k]) < 1e-4) spinOffset[k] = 0;
+          }
+        }
+      }
+    }
+    // Sun photosphere drift stays decorative (procedural surface, no truth claim)
+    if (!PRM && scaleLevel <= 2 && !introActive && sunMesh) {
+      sunMesh.rotation.y += 2 * Math.PI / (25.38 * 86400) * dt;
     }
     updateEarthOrbitTraffic(t, dt);
 
-    // Preloader hold: gentle system orbit while Enter awaits
+    // Preloader hold: gentle system orbit while Enter awaits (offset feeds)
     if (!PRM && onPreloaderStage() && !introActive && preloaderIntroFinished && !dragging) {
       BODIES.forEach((b) => {
         const g = meshes[b.id];
-        if (g && g.userData.mesh) g.userData.mesh.rotation.y += b.spin * dt * 0.12;
+        if (g && g.userData.mesh) spinOffset[b.id] = (spinOffset[b.id] || 0) + b.spin * dt * 0.12;
       });
       if (sunMesh) sunMesh.rotation.y += 0.03 * dt;
       camAz += 0.028 * dt;
@@ -6710,8 +6816,8 @@ const FinishShader = {
     if (masterclassIntroActive && spaceFlightMode && spaceFlightToolActive) {
       tickSpaceFlightTool(t, dt);
       if (!PRM && meshes.earth && masterclassZoom < 0.95) {
-        const g = meshes.earth.userData.mesh;
-        if (g) g.rotation.y += 0.42 * dt;
+        // TRUE-TIME: cinematic feed (was a direct += on the mesh) — decays to truth
+        spinOffset.earth += 0.42 * dt;
       }
     } else if (masterclassIntroActive && window.__orbitlabMasterclass && !spaceFlightToolActive) {
       const dur = MASTERCLASS_INTRO_MS;
@@ -7586,7 +7692,9 @@ const FinishShader = {
 
     const now = new Date();
     baseNowMs = now.getTime();
-    baseJd = window.AstroEphemeris.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
+    // TRUE-TIME (S1) bug fix: julianDay expects UT — local components skewed baseJd
+    // by the tz offset (BST = +1h = 15° of Earth rotation, ~0.55° of Moon motion).
+    baseJd = window.AstroEphemeris.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 0);
 
     if (!preloaderMode && !usesPageStarfield()) buildStars();
     buildSun(preloaderMode);
@@ -7734,7 +7842,8 @@ const FinishShader = {
     const now = new Date();
     const E = window.AstroEphemeris;
     baseNowMs = now.getTime();
-    baseJd = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes(), 0);
+    // TRUE-TIME (S1) bug fix: UTC components — julianDay expects UT (see init)
+    baseJd = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), 0);
     dayOffset = 0;
     scrollBias = 0;
     scrollDriveLocked = false;
@@ -7756,10 +7865,13 @@ const FinishShader = {
 
   function setDate(date) {
     const E = window.AstroEphemeris;
-    const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), 0);
+    // TRUE-TIME (S1) bug fix: UTC components — julianDay expects UT, so every
+    // jumpTo caller (Personal Sky / natal beat) lands at the true instant.
+    const jd = E.julianDay(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), 0);
     jumpTo(jd);
     // "Now" reset passes real-time date — unlock scroll drive when within ~12h of live
-    const nowJd = E.julianDay(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate(), new Date().getHours(), new Date().getMinutes(), 0);
+    const nowD = new Date();
+    const nowJd = E.julianDay(nowD.getUTCFullYear(), nowD.getUTCMonth() + 1, nowD.getUTCDate(), nowD.getUTCHours(), nowD.getUTCMinutes(), 0);
     if (Math.abs(jd - nowJd) < 0.5) scrollDriveLocked = false;
     dispatchDateChange();
   }
@@ -8928,6 +9040,32 @@ const FinishShader = {
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },
     nowJd: () => baseJd + dayOffset,
+    // TRUE-TIME (S1) debug hook — calibration + regression probe (spec §4.5;
+    // moonLockDot/poleDotSun added because module internals aren't console-reachable)
+    _trueTime() {
+      const jd = currentAspectJd(), E = window.AstroEphemeris;
+      const s = E.sunPosition(jd);                          // apparent lon, of-date
+      const eps = 23.4392911 * D2R, lr = s.lon * D2R;
+      const raSun = Math.atan2(Math.cos(eps) * Math.sin(lr), Math.cos(lr)) / D2R;
+      let moonLockDot = null, poleDotSun = null;
+      if (moonMesh && moonGroup && meshes.earth) {          // T4: near side · toEarth
+        moonMesh.updateWorldMatrix(true, false);
+        const q = new THREE.Quaternion(); moonMesh.getWorldQuaternion(q);
+        const near = new THREE.Vector3(1, 0, 0).applyQuaternion(q);
+        moonLockDot = near.dot(meshes.earth.position.clone().sub(moonGroup.position).normalize());
+      }
+      if (meshes.earth && sunMesh) {                        // T3: +0.398 June, −0.398 Dec
+        meshes.earth.updateWorldMatrix(true, false);
+        const q = new THREE.Quaternion(); meshes.earth.getWorldQuaternion(q);
+        const pole = new THREE.Vector3(0, 1, 0).applyQuaternion(q);
+        poleDotSun = pole.dot(sunMesh.position.clone().sub(meshes.earth.position).normalize());
+      }
+      return { jd, gmstDeg: gmstDeg(jd),
+               earthRotDeg: meshes.earth ? norm360(meshes.earth.userData.mesh.rotation.y / D2R) : null,
+               subsolarLonE: ((raSun - gmstDeg(jd) + 540) % 360) - 180,
+               subsolarLatN: Math.asin(Math.sin(eps) * Math.sin(lr)) / D2R,
+               moonLockDot, poleDotSun };
+    },
     getPlanets: () => BODIES.map((b) => ({ ...b, lon: meshes[b.id] && meshes[b.id].userData.lon })),
     // Live geocentric zodiac readout for a body at the current sim time — reuses the
     // engine's own AstroEphemeris (true VSOP87/ELP2000 longitude → sign + degree-in-sign).
@@ -9039,10 +9177,15 @@ const FinishShader = {
     setScrollDrive(progress) {
       if (PRM || scrollDriveLocked) return;
       // scroll = time only; zoom dial owns camera space
-      scrollBias = progress * 120;
+      const newBias = progress * 120;
+      // S1 DEVIATION (see absorbScrollSpinJump): clamp the visual whirl —
+      // positions + date pill stay truthful, spin glides back to truth at rest
+      absorbScrollSpinJump(scrollBias, newBias);
+      scrollBias = newBias;
       needRecompute = true;
     },
     resetScrollDrive() {
+      absorbScrollSpinJump(scrollBias, 0); // no phase snap on scroll release either
       scrollBias = 0;
       scrollDriveLocked = false;
       needRecompute = true;

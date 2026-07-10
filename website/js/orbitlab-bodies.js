@@ -42,6 +42,32 @@ export const BODIES = [
   { id: 'neptune', name: 'Neptune', R: 29.0, size: 0.64, spin: 0.68, siderealPeriodHours: 16.11, color: 0x6f9fd8, tex: 'neptune.jpg' },
 ];
 
+/** TRUE-TIME (S1) — IAU/IAG WGCCRE-derived rotation model in ENGINE SCENE FRAME
+ *  (scene = (X_ecl, Z_ecl, −Y_ecl); see TRUE-TIME-EARTH-IMPL-SPEC + s1_compute.py).
+ *  poleScene: unit IAU-north pole vector (UNCOMPRESSED — never ×0.35 an axis);
+ *  w0eng: spin phase at J2000 measured in the body equator from the node
+ *         n = pole×ŷ (deg) — pinned by the makeBasis quaternion, NOT setFromUnitVectors;
+ *  wdot: deg/day (negative = retrograde; matches sign of siderealPeriodHours above);
+ *  texOffsetDeg: empirical map-centering correction (calibrated per spec §1).
+ *  Earth uses GMST (IAU 1982) directly instead of w0eng — its node IS the equinox.
+ *  Honesty: Earth/Moon/Mars/Mercury/Venus phases real; gas-giant feature phases
+ *  illustrative (rate + pole true; map snapshots uncalibratable). */
+export const ROTATION_MODEL = {
+  mercury: { poleScene: [ 0.09138, 0.99247,  0.08160], w0eng: 111.274, wdot:  6.1385108,   texOffsetDeg: 0 },
+  venus:   { poleScene: [ 0.01869, 0.99977, -0.01087], w0eng: 222.551, wdot: -1.4813688,   texOffsetDeg: 0 },
+  earth:   { poleScene: [ 0.0,     0.91748, -0.39778], gmst: true,                          texOffsetDeg: 0 },
+  mars:    { poleScene: [ 0.44616, 0.89323,  0.05551], w0eng: 315.772, wdot: 350.89198226,  texOffsetDeg: 0 },
+  jupiter: { poleScene: [-0.01460, 0.99925,  0.03581], w0eng: 125.363, wdot: 870.5360000,   texOffsetDeg: 0 },
+  saturn:  { poleScene: [ 0.08548, 0.88252, -0.46244], w0eng: 178.934, wdot: 810.7939024,   texOffsetDeg: 0 },
+  uranus:  { poleScene: [-0.21200, 0.13436,  0.96799], w0eng:  28.869, wdot: -501.1600928,  texOffsetDeg: 0 },
+  neptune: { poleScene: [ 0.35588, 0.88273,  0.30681], w0eng:  48.657, wdot: 536.3128492,   texOffsetDeg: 0 },
+};
+
+/** Moon equirectangular map centering: standard maps are near-side-centered → 0.
+ *  Exact tidal lock is computed from geocentric longitude + 180°, not IAU W
+ *  (libration deliberately not modeled — see spec §2.3). */
+export const MOON_TEX_OFFSET_DEG = 0;
+
 /* Visual tuning synced from AstroPrecise orrery-webgl (2026-07-09):
    richer outer-planet atmospheres + softer limb for free-explore portraits. */
 export const PLANET_VIS = {

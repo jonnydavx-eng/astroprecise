@@ -87,7 +87,7 @@
   function queueLoader() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=684", function () {
+    inject("js/orrery-loader.js?v=685", function () {
       setTimeout(promoteToWebGL, 300);
     });
   }
@@ -102,7 +102,7 @@
   // Poster + time-row wiring (date display, Now, scrub → Orrery3D.setTimelineDays).
   waitEphemeris(function () {
     injectCss("css/orrery-visual.css?v=567", "ap-orrery-visual-css");
-    inject("js/lite-orrery.js?v=578", function () {
+    inject("js/lite-orrery.js?v=685", function () {
       document.documentElement.classList.add("orrery-poster-ready");
       queueLoader();
     });
