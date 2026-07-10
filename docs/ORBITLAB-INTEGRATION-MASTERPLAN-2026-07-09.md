@@ -61,6 +61,8 @@ Why this is the right call and why it's cheap:
 
 ## 4. Phase 2 — Light the model up in the product
 
+> **2026-07-10:** the *what* for Phases 2/3 is now specified in detail by the 4-expert panel in `MODEL-MASTERPIECE-SPEC-2026-07-10.md` (Truth/Instrument/Ritual/Frame layers + build order + operational alarms). Jonny's brief: the model is the masterpiece. Read it alongside this section.
+
 Ranked by conversion value, all gated behind Phase 1:
 
 1. **Personal Sky beat** — *the flagship*. After hero form submit (and on chart.html reveal), the orrery flies to the user's exact birth moment: 2–3s camera move, caption "This was your sky — computed to the arcminute", then hands off to the chart. Verified available: `setDate`/`jumpTo`/`goTo` (AP engine 6223/6231/7214), saved profile in localStorage (`ap_profile_v2`/`ap_charts`). **Nothing on the site ever shows the user THEIR sky in 3D today — the brand promise unrealized.** Post-submit only: zero risk to the form-first structure.
