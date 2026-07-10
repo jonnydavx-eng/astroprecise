@@ -133,6 +133,11 @@
   function markLive() {
     if (!document.documentElement.classList.contains("orrery-full")) return;
     document.documentElement.classList.add("orrery-live");
+    // WOW slice 1 — one-shot Model Window curtain-raise (css/ap-model-window.css).
+    // Gated on orrery-full above, so it can never fire on the engraved-wheel
+    // fail-open path (class-add is idempotent; the inline caption snippet's
+    // observer is the explore.html twin of this line).
+    document.documentElement.classList.add("ap-model-revealed");
   }
   document.addEventListener("ap-orrery-ready", function () { hideFallback(true); });
   var liveObs = new MutationObserver(function () {

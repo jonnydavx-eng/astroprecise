@@ -71,7 +71,9 @@
   <link rel="stylesheet" href="css/orrery-visual.css?v=703" />
   <link rel="stylesheet" href="css/ap-cosmic-flight.css?v=703" />
   <link rel="stylesheet" href="css/explore-page.css?v=690" />
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=703" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
+  <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css. -->
+  <link rel="stylesheet" href="css/ap-model-window.css?v=704" id="ap-css-model-window" />
 
   <!-- Warm the engine module early — this page's whole point is the 3D model. -->
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
@@ -152,6 +154,18 @@
             <!-- Engine writes the live honesty caption + roaming hint into these. -->
             <p class="orrery-hint explore-hint" aria-hidden="true">Drag to scrub time &middot; Shift+drag to orbit &middot; scroll or pinch to zoom</p>
           </div>
+        </div>
+      </div>
+
+      <!-- WOW slice 1 · Model Window — museum-plate frame (css/ap-model-window.css).
+           Absolute overlay chrome; hidden until html.ap-model-revealed (gated on
+           orrery-full) — never a LIVE badge over the fallback or 2D path. -->
+      <div class="ap-model-window" id="apModelWindow" aria-hidden="true">
+        <span class="ap-mw-corners ap-mw-corners--top"></span>
+        <span class="ap-mw-corners ap-mw-corners--bottom"></span>
+        <div class="ap-mw-plate">
+          <span class="ap-mw-live"><span class="ap-mw-dot"></span>LIVE</span>
+          <span class="ap-mw-caption" id="apModelCaption">VSOP87 &middot; EARTH</span>
         </div>
       </div>
 
@@ -303,5 +317,40 @@
   <script src="js/app.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
   <script src="js/explore-boot.js?v=703" defer></script>
+  <!-- WOW slice 1 · Model Window live caption + curtain-raise trigger — twin of
+       the index.html snippet (piggybacks orrery-scale-change; reveal gated on
+       html.orrery-full so the fallback/2D path never shows the frame). -->
+  <script>
+  (function () {
+    var NAMES = ["EARTH", "INNER", "SYSTEM", "OORT", "STARS", "GALAXY", "COSMOS"];
+    var el = document.getElementById("apModelCaption");
+    if (!el) return;
+    var dateTxt = "";
+    try {
+      dateTxt = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+    } catch (e) { /* caption date optional */ }
+    var scale = "EARTH";
+    function paint() {
+      el.textContent = "VSOP87 · " + scale + (dateTxt ? " · " + dateTxt : "");
+    }
+    document.addEventListener("orrery-scale-change", function (e) {
+      var d = e && e.detail;
+      if (d && d.level != null && NAMES[d.level]) { scale = NAMES[d.level]; paint(); }
+    });
+    document.addEventListener("ap-orrery-ready", function () {
+      try {
+        var l = window.Orrery3D && typeof Orrery3D.getScaleLevel === "function" ? Orrery3D.getScaleLevel() | 0 : 0;
+        if (NAMES[l]) { scale = NAMES[l]; paint(); }
+      } catch (e2) { /* engine optional */ }
+    });
+    paint();
+    function reveal() { document.documentElement.classList.add("ap-model-revealed"); }
+    if (document.documentElement.classList.contains("orrery-full")) return reveal();
+    var mo = new MutationObserver(function () {
+      if (document.documentElement.classList.contains("orrery-full")) { reveal(); mo.disconnect(); }
+    });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  })();
+  </script>
 </body>
 </html>

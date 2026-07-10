@@ -259,9 +259,15 @@ body.ap-award-511 .ap-float-nav {
     overflow: hidden !important;
     margin-bottom: 0.3rem !important;
   }
-  /* Deck below the fold on phone — cast is the job of first viewport */
-  body.ap-award-511 #heroChapter #orrery-lite-deck,
-  body.ap-award-511 #heroChapter .ap-orrery-deck {
+  /* WOW slice 1: the phone deck is no longer blanket-hidden — ap-model-window.css
+     (which loads AFTER this sheet; cascade order is load-bearing) rebuilds it as
+     the Model Window's plinth tray BELOW the canvas (planet pills + time scrub;
+     DESIGN LAW: controls never overlap the disc). Keep it hidden ONLY on the
+     no-JS / reduced-motion path, where neither boot class ever appears and the
+     deck would be dead chrome (ap-await-webgl = pre-paint head gate;
+     ap-lite-hero = ap-award-orrery boot). */
+  html:not(.ap-await-webgl):not(.ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck,
+  html:not(.ap-await-webgl):not(.ap-lite-hero) body.ap-award-511 #heroChapter .ap-orrery-deck {
     display: none !important;
   }
   body.ap-award-511 #instrumentsChapter .dept-list {

@@ -181,7 +181,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-model-stage.css?v=703" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
   <!-- Structure clean LAST — wins CSS wars; collapses bloat; first-viewport cast -->
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=703" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
 
   <!-- Intro gate — runs before first paint so the hero never flashes the
        engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
@@ -212,6 +212,9 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-motion.css?v=680">
   <link rel="stylesheet" href="css/ap-micro-2026.css?v=680">
   <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=703">
+  <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css
+       (and the other !important sheets above); cascade position is load-bearing. -->
+  <link rel="stylesheet" href="css/ap-model-window.css?v=704" id="ap-css-model-window">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
@@ -782,6 +785,20 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
         </svg>
         </div><!-- /ap-hero-wheel-fallback -->
 
+        <!-- WOW slice 1 · Model Window — museum-plate frame (css/ap-model-window.css).
+             Pure chrome: absolute overlay, ZERO flow height, pointer-events none.
+             Hidden until html.ap-model-revealed (curtain-raise, gated on orrery-full);
+             the LIVE tag additionally waits for html.orrery-full — honesty: never a
+             LIVE badge over the static poster or the engraved-wheel fallback. -->
+        <div class="ap-model-window" id="apModelWindow" aria-hidden="true">
+          <span class="ap-mw-corners ap-mw-corners--top"></span>
+          <span class="ap-mw-corners ap-mw-corners--bottom"></span>
+          <div class="ap-mw-plate">
+            <span class="ap-mw-live"><span class="ap-mw-dot"></span>LIVE</span>
+            <span class="ap-mw-caption" id="apModelCaption">VSOP87 &middot; EARTH</span>
+          </div>
+        </div>
+
       </div><!-- /hero-solar-stage -->
 
         <!-- v575: HUD rail — page-wrap child AFTER the stage (inside the stage
@@ -849,6 +866,45 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
         </div>
   </div>
 </section>
+
+<!-- WOW slice 1 · Model Window live caption + curtain-raise trigger.
+     Piggybacks the engine's existing orrery-scale-change event (the same one
+     orrery-loader syncScaleUi consumes) — caption reads "<SCALE> · <date>"
+     with the deck's honest scale names. Also arms the one-shot reveal when
+     html.orrery-full lands (markLive in ap-award-orrery.js does the same —
+     this observer is the shared fallback and the explore.html twin). -->
+<script>
+(function () {
+  var NAMES = ["EARTH", "INNER", "SYSTEM", "OORT", "STARS", "GALAXY", "COSMOS"];
+  var el = document.getElementById("apModelCaption");
+  if (!el) return;
+  var dateTxt = "";
+  try {
+    dateTxt = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+  } catch (e) { /* caption date optional */ }
+  var scale = "EARTH";
+  function paint() {
+    el.textContent = "VSOP87 · " + scale + (dateTxt ? " · " + dateTxt : "");
+  }
+  document.addEventListener("orrery-scale-change", function (e) {
+    var d = e && e.detail;
+    if (d && d.level != null && NAMES[d.level]) { scale = NAMES[d.level]; paint(); }
+  });
+  document.addEventListener("ap-orrery-ready", function () {
+    try {
+      var l = window.Orrery3D && typeof Orrery3D.getScaleLevel === "function" ? Orrery3D.getScaleLevel() | 0 : 0;
+      if (NAMES[l]) { scale = NAMES[l]; paint(); }
+    } catch (e2) { /* engine optional */ }
+  });
+  paint();
+  function reveal() { document.documentElement.classList.add("ap-model-revealed"); }
+  if (document.documentElement.classList.contains("orrery-full")) return reveal();
+  var mo = new MutationObserver(function () {
+    if (document.documentElement.classList.contains("orrery-full")) { reveal(); mo.disconnect(); }
+  });
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+})();
+</script>
 
 <!-- ============================================================
      § 2a · DAILY SKY — today's transit reading (preview -> your chart)
@@ -1722,7 +1778,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-home-bootstrap.js?v=703"></script>
+<script defer src="js/ap-home-bootstrap.js?v=704"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=703"></script>
 <script defer src="js/home-match.js?v=703"></script>
