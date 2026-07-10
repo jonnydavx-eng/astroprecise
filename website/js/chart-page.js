@@ -1235,7 +1235,8 @@
       if (chart.nodeMode) {
         const modeLabel = chart.nodeMode === 'true' ? 'True (osculating) node' : 'Mean node';
         pt.innerHTML += '<p class="ap-reading-card__meta" style="text-align:center;margin-top:var(--space-4);">' +
-          'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180°</p>';
+          'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180° · ' +
+          'Chiron: Kepler orbit from JPL elements — to the degree 1970–2030, approximate for mid-century births</p>';
       }
       // Tag each placement card AFTER all innerHTML writes (innerHTML += re-parses
       // and would drop these attributes). data-planet uses the internal key (e.g.
