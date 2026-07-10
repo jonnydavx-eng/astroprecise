@@ -28,6 +28,14 @@
 - **Capture→POD (2.2):** captureFrame returns offscreen canvas (DPR-multiplier `scale` cap 3); enterPortrait = true transparent single-body stills; Moment card already accepts `moment.plateImage` (+3-line naturalWidth fix at ap-moment-share.js:142); print truth: starfields print-grade at all sizes NOW, single-planet portraits A4-good, A3 waits for 4k textures; pre-J3 = email-unlock/notify patterns only; orders carry CAPTURE PARAMS (deterministic re-render via tools/make-engine-stills.mjs).
 - **Content pipeline (H3):** SHIPPED e8ccd66 (bank to 2027-01-06, weekly no-secrets Actions cron, precache windowing). Voice pass (quarterly Claude batch + no-fabrication token-whitelist validator) still open; parity test rewrite before first voice batch.
 
+## OWNER DESIGN LAWS (added 2026-07-10 ~23:15, from Jonny live)
+
+1. **Controls never cover the model.** No control, caption, chip or tray may overlap the Earth/model disc on ANY viewport — mobile especially. The Model Window gets a dedicated plinth/tray band BELOW the canvas for controls (museum pattern: art above, plaque below). If vertical budget is tight, shrink the canvas — never overlap the disc. Verification gate: measure disc bounding circle vs every control rect = zero intersection, both breakpoints.
+2. **The model's buttons carry 3D graphics.** Deck planet pills get engine-rendered planet discs as icons (source: `enterPortrait` transparent single-body stills via `tools/make-engine-stills.mjs` — deterministic, honest, same engine that renders the hero; small WebP sprites ~48-64px, `_sm` tier). Scale-strip stops get tiny engine-rendered scale thumbnails (Earth / inner system / system / galaxy). One-Three law untouched — these are pre-rendered stills, not live canvases.
+3. **Utilise 3D graphics more sitewide.** Engine-rendered art becomes the site's icon/thumbnail language wherever imagery appears: nav/path cards, section markers, bottom-nav active states, sign-page heroes (already), shop products (planned), 404/offline pages. New decorative imagery = engine renders, not stock/abstract art.
+
+**→ SLICE 1.5 (new, after Slice 1): "3D controls" wave** — generate the planet-disc + scale-thumb sprite sets via the stills harness, wire into deck pills + scale strip + bottom-nav actives, sweep obvious flat-icon surfaces. Sprites are static assets → SW precache + ?v wave rules apply.
+
 ## SEQUENCE
 
 Fix-wave A (behavior, running) → fix-wave B (version integrity: 14 stale refs, preload mismatch, split-?v unify, orphan precache regen, sw V LAST) → Slice 1 → Slice 2 → Slice 3 (S24 jank test first) → Slice 4-5 → Slice 6/IA. Sky Wheel + Personal Sky implementations join after Slice 1 (they mount INTO the window/beats). Nothing pushes to live before J1 (palette on S24) + J2.
