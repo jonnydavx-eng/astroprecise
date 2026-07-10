@@ -36,6 +36,10 @@
 
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="preload" href="img/shop/product-deep-reading.webp?v=621" as="image" type="image/webp" fetchpriority="high" />
+  <!-- fonts.css must load for JS-enabled visitors too (links.html pattern) —
+       previously it lived only in <noscript>, so the editorial Cinzel/Cormorant
+       typography silently fell back to Georgia for every real visitor. -->
+  <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
 
@@ -323,7 +327,7 @@
 
       <article class="cat-piece cat-piece--flip">
         <div class="cat-piece__art">
-          <span class="cat-piece__badge cat-piece__badge--soft">Instant PDF</span>
+          <span class="cat-piece__badge cat-piece__badge--soft">PDF by email</span>
           <img src="img/shop/product-year-ahead.jpg?v=621" alt="Your Year Ahead transit report — Jupiter still with twelve month markers" width="1600" height="900" loading="lazy" decoding="async" />
         </div>
         <div class="cat-piece__copy">
@@ -345,7 +349,7 @@
 
       <article class="cat-piece">
         <div class="cat-piece__art">
-          <span class="cat-piece__badge cat-piece__badge--soft">Instant PDF</span>
+          <span class="cat-piece__badge cat-piece__badge--soft">PDF by email</span>
           <img src="img/shop/product-solar-return.jpg?v=621" alt="Solar Return PDF — the Sun returning to its natal degree, framed chart over a solar still" width="1600" height="900" loading="lazy" decoding="async" />
         </div>
         <div class="cat-piece__copy">
@@ -399,7 +403,7 @@
 
       <article class="cat-piece cat-piece--flip">
         <div class="cat-piece__art">
-          <span class="cat-piece__badge cat-piece__badge--soft">Instant PDF</span>
+          <span class="cat-piece__badge cat-piece__badge--soft">PDF by email</span>
           <img src="img/shop/product-poster-pdf.jpg?v=621" alt="Print-at-home natal poster PDF — a framed sky still ready to print tonight" width="1600" height="900" loading="lazy" decoding="async" />
         </div>
         <div class="cat-piece__copy">

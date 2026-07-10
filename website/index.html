@@ -1193,15 +1193,20 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
           <text x="8"   y="224" class="zc-label" text-anchor="middle">W</text>
           <text x="432" y="224" class="zc-label" text-anchor="middle">E</text>
 
-          <!-- Sun marker (Cancer) -->
-          <circle cx="172" cy="92" r="7.5" class="zc-sun-mark"/>
-          <circle cx="172" cy="92" r="2.8" style="fill:rgba(181,83,46,0.72);"/>
-          <text x="172" y="79" class="zc-label" text-anchor="middle" style="fill:rgba(181,83,46,0.82); font-size:8.5px; letter-spacing:0;">☉</text>
+          <!-- Sun marker — engraved default; hydrate() translates the group to the
+               Sun's computed ecliptic longitude so the plate matches its caption -->
+          <g id="zc-sun-group">
+            <circle cx="172" cy="92" r="7.5" class="zc-sun-mark"/>
+            <circle cx="172" cy="92" r="2.8" style="fill:rgba(181,83,46,0.72);"/>
+            <text x="172" y="79" class="zc-label" text-anchor="middle" style="fill:rgba(181,83,46,0.82); font-size:8.5px; letter-spacing:0;">☉</text>
+          </g>
 
-          <!-- Moon marker (Scorpio) -->
-          <circle cx="98"  cy="344" r="6"   class="zc-moon-mk"/>
-          <circle cx="100" cy="342" r="4.5" style="fill:rgba(22,36,58,0.85);"/>
-          <text x="98"  y="332" class="zc-label" text-anchor="middle" style="fill:rgba(234,227,211,0.68); font-size:8.5px; letter-spacing:0;">☽</text>
+          <!-- Moon marker — engraved default; hydrate() translates to the live Moon -->
+          <g id="zc-moon-group">
+            <circle cx="98"  cy="344" r="6"   class="zc-moon-mk"/>
+            <circle cx="100" cy="342" r="4.5" style="fill:rgba(22,36,58,0.85);"/>
+            <text x="98"  y="332" class="zc-label" text-anchor="middle" style="fill:rgba(234,227,211,0.68); font-size:8.5px; letter-spacing:0;">☽</text>
+          </g>
 
           <!-- Centre -->
           <circle cx="220" cy="220" r="5"   style="fill:rgba(234,227,211,0.18);"/>
@@ -1916,6 +1921,32 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
     'Pisces':      'Pisces in the sky — the dreamer’s hour'
   };
 
+  /* ── Plate I live markers ────────────────────────────────────────────
+     The zodiac band on the engraving is decorative (glyphs are hand-placed,
+     not evenly spaced), so we map an ecliptic longitude to a screen angle by
+     interpolating between the engraved glyph anchors, then translate each
+     marker group along its own radius. Angles measured CCW from east about
+     the plate centre (220,220), one per sign centre Aries→Pisces. */
+  var PLATE_GLYPH_ANGLES = [-1.33, 32.28, 74.96, 107.43, 146.30, 181.32,
+                            209.53, 232.20, 255.23, 284.19, 324.58, 330.83];
+  function plateAngle(lon) {
+    var s = ((((lon - 15) / 30) % 12) + 12) % 12; // sign-centre space
+    var i = Math.floor(s), f = s - i;
+    var a0 = PLATE_GLYPH_ANGLES[i % 12];
+    var a1 = PLATE_GLYPH_ANGLES[(i + 1) % 12];
+    while (a1 < a0) a1 += 360;
+    return a0 + (a1 - a0) * f;
+  }
+  function movePlateMarker(groupId, bakedX, bakedY, lon) {
+    var g = document.getElementById(groupId);
+    if (!g || typeof lon !== 'number' || !isFinite(lon)) return;
+    var r = Math.sqrt((bakedX - 220) * (bakedX - 220) + (bakedY - 220) * (bakedY - 220));
+    var a = plateAngle(lon) * Math.PI / 180;
+    var tx = 220 + r * Math.cos(a) - bakedX;
+    var ty = 220 - r * Math.sin(a) - bakedY; // SVG y grows downward
+    g.setAttribute('transform', 'translate(' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ')');
+  }
+
   function drawMoonPhase(moonLon, sunLon) {
     var PI = Math.PI;
     var elongation = ((moonLon - sunLon) % 360 + 360) % 360;
@@ -1976,6 +2007,14 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       setLabel('cs-label-sun',   'sun',   'Sun');
       setLabel('cs-label-venus', 'venus', 'Venus');
       setLabel('cs-label-mars',  'mars',  'Mars');
+
+      /* Plate I — move the engraved Sun/Moon markers to their computed
+         longitudes so "Positions computed in your browser" is true of the
+         plate itself, not just the chips. */
+      try {
+        if (pos.sun)  movePlateMarker('zc-sun-group', 172, 92, pos.sun.longitude);
+        if (pos.moon) movePlateMarker('zc-moon-group', 98, 344, pos.moon.longitude);
+      } catch (pm) { /* markers stay at engraved defaults */ }
 
       /* Sky Tonight epithet */
       var epithetEl = document.getElementById('sky-sun-epithet');

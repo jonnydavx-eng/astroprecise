@@ -158,10 +158,15 @@ window.AstroShop = (() => {
   }
 
   function productById(id) { return products().find(p => p.id === id) || null; }
-  function isLive(p) { return !!(p && isUrl(p.fulfilUrl)); }
+  // SINGLE SOURCE OF TRUTH for "buyable right now": a product is live exactly
+  // when it has a real, connected checkout URL (payhipUrl → hasCheckout). The
+  // old split — isLive() reading raw fulfilUrl while schema/cart resolved via
+  // payhipUrl() — let JSON-LD advertise InStock offers while the page stayed
+  // dormant (or vice versa). One predicate, one paste point, no drift.
+  function isLive(p) { return hasCheckout(p); }
 
-  // JSON-LD ItemAvailability — gated on a REAL connected checkout (hasCheckout =
-  // a working Payhip URL), NEVER the dead Lemon Squeezy fulfilUrl. Until Payhip is
+  // JSON-LD ItemAvailability — gated on the same predicate (a REAL connected
+  // checkout URL), NEVER the dead Lemon Squeezy fulfilUrl. Until a checkout is
   // connected the honest state is PreOrder ("coming soon"), not InStock — and the
   // offer below advertises no buyable URL, so search engines never see a dead link.
   const SCHEMA_AVAIL = {
@@ -202,6 +207,15 @@ window.AstroShop = (() => {
     apparel:   'Apparel',
     accessory: 'Accessory',
   };
+
+  // Honesty guard on card badges: nothing in the current pipeline downloads
+  // instantly (PayPal link → birth-details form → PDF by email in 24–48h), so
+  // the legacy 'Instant PDF' badge copy still present in AP_MON config is
+  // rewritten at render time until the config itself is updated.
+  function badgeText(p) {
+    const b = p && p.badge;
+    return b === 'Instant PDF' ? 'PDF by email' : b;
+  }
 
   // ── Saved-chart preview (personalised products) ──────────────────────────
   // Reads only what's already in localStorage via the public AstroProfile API.
@@ -821,7 +835,7 @@ window.AstroShop = (() => {
         <button type="button" class="shopc-featured__visual" data-quickview="${p.id}">
           <span class="sr-only">Quick view ${esc(p.name)}</span>
           ${cardArt(p)}
-          ${p.badge ? `<span class="shopc-card__badge${hero ? '' : ' shopc-card__badge--quiet'}">${esc(p.badge)}</span>` : ''}
+          ${p.badge ? `<span class="shopc-card__badge${hero ? '' : ' shopc-card__badge--quiet'}">${esc(badgeText(p))}</span>` : ''}
           ${save}
         </button>
         <div class="shopc-featured__copy">
@@ -910,8 +924,9 @@ window.AstroShop = (() => {
   }
 
   // Single source of truth for the user-facing "live pieces" count.
-  // Counts products that are buyable RIGHT NOW (available && isLive, i.e.
-  // fulfilUrl set) — the same gate the buy buttons / cart / schema use — and
+  // Counts products that are buyable RIGHT NOW (available && isLive, i.e. a
+  // real connected checkout URL) — the same gate the buy buttons / cart /
+  // schema use — and
   // writes it into every [data-live-count] element in the page. Zero live is
   // a REAL state since the PayPal migration (2026-07-02): the page then swaps
   // to its dormant copy via [data-when-live]/[data-when-dormant] toggles
@@ -1085,7 +1100,7 @@ window.AstroShop = (() => {
           <button type="button" class="shopc-card__art" data-quickview="${p.id}">
             <span class="sr-only">Quick view ${esc(p.name)}</span>
             ${cardArt(p)}
-            ${p.badge ? `<span class="shopc-card__badge shopc-card__badge--quiet">${esc(p.badge)}</span>` : ''}
+            ${p.badge ? `<span class="shopc-card__badge shopc-card__badge--quiet">${esc(badgeText(p))}</span>` : ''}
             ${p.personalized ? `<span class="shopc-card__personal" title="Generated from your chart">${icon('star4')} Your chart</span>` : ''}
           </button>
           <div class="shopc-card__body">
