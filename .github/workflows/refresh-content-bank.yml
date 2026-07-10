@@ -1,0 +1,95 @@
+name: Refresh content bank
+
+# Weekly engine-only rebuild of website/data/content-bank so the daily bank
+# can NEVER dry out again (the pre-pipeline bank ended 2026-09-11; the 12
+# static sign pages have no ephemeris fallback and would have degraded to
+# generic filler under an honest-claim subtitle).
+#
+# What it does: node tools/build-content-bank.mjs regenerates a rolling
+# window (today−7 … today+180 daily, 12 monthlies), prunes stale files, and
+# is idempotent — unchanged days stay byte-identical, so a typical weekly run
+# adds ~7 new files and prunes ~7 old ones. If anything changed, the SW
+# precache window is regenerated (bumps cache V) and the result is committed
+# straight to main. That push intentionally triggers deploy-pages.yml — the
+# fresh bank auto-ships weekly with zero human involvement.
+#
+# NO SECRETS by design: the builder is pure VSOP87 engine text (no API
+# calls). The quarterly LLM voice pass is a separate, local-only process —
+# never add ANTHROPIC_API_KEY (or any key) to this public repo's workflows.
+#
+# NOTE (J2): this workflow only takes effect once this file lands on the
+# default branch — schedules run from main. Merging/pushing ap-v683-wave to
+# main activates the cron. workflow_dispatch is for manual runs (run it from
+# main; it commits to main).
+#
+# If the push races another commit to main, the job rebases and retries; on a
+# genuine conflict (e.g. a concurrent sw.js V bump) it fails cleanly and the
+# next weekly run picks up from the new state.
+
+on:
+  schedule:
+    - cron: '0 4 * * 1' # Mondays 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write # commits the refreshed bank + sw.js back to main
+
+concurrency:
+  group: refresh-content-bank
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Rebuild content bank (engine-only, idempotent)
+        run: node tools/build-content-bank.mjs --days 181 --months 12
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if [ -n "$(git status --porcelain -- website/data/content-bank)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Bank unchanged — nothing to commit."
+          fi
+
+      # Same gate the deploy pipeline trusts, run BEFORE committing: engine
+      # regression, horoscope determinism, content-bank parity/manifest checks
+      # (test-content-bank.mjs), synastry, art themes, weekly sky, ephemeris
+      # package. All plain-node, zero deps — no npm ci needed.
+      - name: Test gate (npm test, includes test-content-bank)
+        if: steps.diff.outputs.changed == 'true'
+        run: npm test
+
+      # Rewrites the today±14d content-bank precache window and bumps cache V
+      # so clients pick up the refreshed bank. Only runs when the bank
+      # actually changed — otherwise sw.js stays untouched (no churn).
+      - name: Regenerate SW precache window
+        if: steps.diff.outputs.changed == 'true'
+        run: node website/tools/generate-sw-precache.mjs
+
+      - name: Commit and push (triggers Pages deploy)
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "astroprecise-bank-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add website/data/content-bank website/sw.js
+          git commit -m "chore(content): weekly bank refresh $(date -u +%F) — engine-generated, idempotent [bot]"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt) — rebasing onto latest main…"
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort; exit 1; }
+            sleep 5
+          done
+          exit 1
