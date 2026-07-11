@@ -79,6 +79,8 @@
   let rotation = -Math.PI / 2;   // Aries at the top initially
   let rotVel   = 0;
   let autoSpin = true;
+  let prefersReduce = false;     // OS reduced-motion → hold a static frame (set in init)
+  let squareLens = false;        // observatory eyepiece → 1:1 canvas fills the circular lens
   const SPIN_SPEED = 0.0018;     // rad/frame at 60fps → ~1 full revolution per ~6 min
   let spinAnim = null;
   let spinDoneCb = null;
@@ -778,6 +780,17 @@
     return dx * dx + dy * dy < r * r;
   }
 
+  // Sign currently at the front of the ring (largest projected scale). This is the
+  // keyboard-selected sign, so Enter matches the canvas's "Enter to select a sign".
+  function frontmostSignKey() {
+    let best = null, bestS = -Infinity;
+    for (let i = 0; i < cachedPositions.length; i++) {
+      const p = cachedPositions[i];
+      if (p && p.s > bestS) { bestS = p.s; best = p.key; }
+    }
+    return best;
+  }
+
   // ── Animation loop ────────────────────────────────────────────────────────
 
   let lastT = 0;
@@ -819,7 +832,7 @@
         spinAnim = null;
         if (spinDoneCb) { const f = spinDoneCb; spinDoneCb = null; f(); }
       }
-    } else if (autoSpin) {
+    } else if (autoSpin && !prefersReduce) {
       rotation += SPIN_SPEED;
     } else if (Math.abs(rotVel) > 0.0001) {
       rotation += rotVel;
@@ -954,7 +967,12 @@
     const wrap = cvs.parentElement;
     const cssW = wrap.clientWidth;
     const maxH = (window.RafCore && window.RafCore.tier === 'high') ? 520 : 460;
-    const cssH = Math.min(Math.round(cssW * 0.65), Math.round(window.innerHeight * 0.52), maxH);
+    // Observatory eyepiece (squareLens): the lens sits in a 1:1 circular clip, so
+    // size the canvas square — the dial fills the whole lens instead of leaving the
+    // lower third as empty black. Banner pages keep the wide 0.65 aspect.
+    const cssH = squareLens
+      ? Math.min(cssW, Math.round(window.innerHeight * 0.9))
+      : Math.min(Math.round(cssW * 0.65), Math.round(window.innerHeight * 0.52), maxH);
 
     if (window.RafCore && window.RafCore.setupCanvas2D) {
       const setup = window.RafCore.setupCanvas2D(cvs, cssW, cssH, 2.5);
@@ -972,7 +990,7 @@
     }
 
     W = cssW; H = cssH;
-    cx = W / 2; cy = H / 2 + 10;
+    cx = W / 2; cy = H / 2 + (squareLens ? 0 : 10);
     initStars();
   }
 
@@ -983,7 +1001,10 @@
     if (!E) { setTimeout(fetchPlanets, 350); return; }
     try {
       const now = new Date();
-      const jd  = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
+      // All components in UTC — julianDay() expects one coherent UT instant. Mixing a
+      // LOCAL date with UTC time offset positions by up to a full day (Moon → wrong sign)
+      // for any viewer whose local date differs from the UTC date.
+      const jd  = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
                                now.getUTCHours(), now.getUTCMinutes(), 0);
       const mod = l => ((l % 360) + 360) % 360;
       for (const pl of PLANETS) {
@@ -1014,11 +1035,11 @@
       rotVel = 0;
     } else if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      if (hovered) {
-        spinToSign(hovered, { duration: 520, onDone: () => { if (selectCb) selectCb(hovered); } });
-      } else if (hitCentre(cx, cy)) {
-        try { document.dispatchEvent(new CustomEvent('ap-horoscope-centre-tap')); } catch (e) { /* */ }
-        window.location.href = 'chart.html';
+      // Keyboard has no pointer `hovered`, so fall back to the frontmost sign — this
+      // makes Enter actually select a sign, as the canvas aria-label promises.
+      const target = hovered || frontmostSignKey();
+      if (target) {
+        spinToSign(target, { duration: 520, onDone: () => { if (selectCb) selectCb(target); } });
       }
     }
   }
@@ -1031,12 +1052,24 @@
 
   function getRotation() { return rotation; }
 
-  function init(canvasEl, cb) {
+  function init(canvasEl, cb, opts) {
     cvs      = canvasEl;
     if (!cvs) return;
     ctx      = cvs.getContext('2d');
     if (!ctx) return;
     selectCb = cb;
+    opts = opts || {};
+    squareLens = !!opts.square;
+    // Honour OS reduced-motion on the headline live dial: hold a static frame
+    // instead of perpetual autospin; user drag/arrow keys still turn it.
+    prefersReduce = !!(window.RafCore && window.RafCore.reducedMotion);
+    if (prefersReduce) autoSpin = false;
+    if (window.RafCore && typeof window.RafCore.onReducedMotionChange === 'function') {
+      window.RafCore.onReducedMotionChange(function (on) {
+        prefersReduce = !!on;
+        if (prefersReduce) { autoSpin = false; rotVel = 0; }
+      });
+    }
 
     cvs.setAttribute('tabindex', '0');
     cvs.setAttribute('role', 'application');

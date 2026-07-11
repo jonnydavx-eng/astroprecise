@@ -79,6 +79,7 @@
 
   // ── The lens (ZodiacSphere on the eyepiece canvas) ──────────────────────
   var lensBooted = false;
+  var opening = false;
   function bootLens() {
     if (lensBooted) return;
     var canvas = document.getElementById('obs-lens');
@@ -93,26 +94,36 @@
         hint.textContent = 'Opening ' + nm + '…';
       }
       window.location.href = signKey + '.html';
-    });
-    try { if (window.ZodiacSphere.startAutoSpin) window.ZodiacSphere.startAutoSpin(); } catch (e) {}
+    }, { square: true });   // eyepiece lens is a 1:1 circle — fill it (no lower-third band)
     return true;
   }
 
   // Retry boot until the deferred deps have all parsed.
   function ensureLens(cb) {
-    if (bootLens()) { cb && cb(); return; }
+    if (bootLens()) { cb && cb(true); return; }
     var tries = 0;
     var iv = setInterval(function () {
       tries++;
-      if (bootLens() || tries > 40) { clearInterval(iv); cb && cb(); }
+      var ok = bootLens();
+      if (ok || tries > 40) { clearInterval(iv); cb && cb(ok); }
     }, 120);
   }
 
   // ── Look-through choreography ───────────────────────────────────────────
   function open() {
-    if (document.body.classList.contains('obs-open')) return;
+    if (opening || document.body.classList.contains('obs-open')) return;
+    opening = true;   // synchronous guard — the lens boots async, so a fast
+                      // double-tap must not run the look-through twice.
     var plate = document.getElementById('obs-plate-text');
-    ensureLens(function () {
+    var hint = document.getElementById('obs-signhint');
+    ensureLens(function (booted) {
+      if (!booted) {
+        // Honesty: never assert LIVE ZODIAC / VSOP87 over a lens that never drew.
+        opening = false;
+        if (plate) plate.textContent = 'LIVE SKY UNAVAILABLE · ' + today();
+        if (hint) hint.textContent = 'The live sky couldn’t load — step inside the observatory.';
+        return;
+      }
       document.body.classList.add('obs-open');
       if (plate) plate.textContent = 'LIVE ZODIAC · VSOP87 · ' + today();
     });

@@ -701,10 +701,10 @@ body.ap-observatory-home .ap-mw-scrollcue {
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 0.6rem;
   letter-spacing: 0.18em;
-  color: rgba(200, 205, 214, 0.55) !important; /* silver — the critical a{} meridian rule must never win here */
+  color: rgba(200, 205, 214, 0.72) !important; /* silver — raised from .55 for AA at 0.6rem (~6:1 on jet). The critical a{} meridian rule must never win here */
   transition: opacity 0.4s ease;
 }
-body.ap-observatory-home .ap-mw-scrollcue .ap-mw-scrollcue__label { color: rgba(200, 205, 214, 0.55) !important; }
+body.ap-observatory-home .ap-mw-scrollcue .ap-mw-scrollcue__label { color: rgba(200, 205, 214, 0.72) !important; }
 body.ap-observatory-home .ap-mw-scrollcue:hover,
 body.ap-observatory-home .ap-mw-scrollcue:focus-visible { color: rgba(232, 235, 240, 0.85) !important; }
 body.ap-observatory-home .ap-mw-scrollcue__line {

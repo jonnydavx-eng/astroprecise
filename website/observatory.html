@@ -203,10 +203,14 @@
 
   <!-- ── The eyepiece + copy ─────────────────────────────────── -->
   <div class="obs-stage">
-    <button class="obs-eyepiece" id="obs-eyepiece" aria-label="Look through the telescope lens">
+    <!-- Not a <button>: the lens canvas becomes a focusable role=application
+         element after boot, and interactive-inside-button is invalid + double
+         focus. Mouse users click the frame (wired in JS); keyboard users use the
+         "Look through the lens" button below — the canvas is then the sole control. -->
+    <div class="obs-eyepiece" id="obs-eyepiece">
       <span class="obs-lens-clip"><canvas id="obs-lens"></canvas></span>
       <span class="obs-reticle"></span>
-    </button>
+    </div>
 
     <div class="obs-plate"><span class="dot"></span><span id="obs-plate-text">The Observatory · loading the sky…</span></div>
 
