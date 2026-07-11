@@ -109,12 +109,18 @@
     return 'high';
   }
 
+  function isAward() {
+    return !!(document.body && document.body.classList.contains('ap-award-511'));
+  }
+
   function starBudget() {
-    return tier() === 'low' ? 40 : 90;
+    var base = tier() === 'low' ? 40 : 90;
+    return isAward() ? base + 18 : base;
   }
 
   function meteorsEnabled() {
     var t = tier();
+    if (isAward() && t === 'mid') return !PRM && !AUDIT;
     return !PRM && !AUDIT && t !== 'low' && t !== 'mid';
   }
 
@@ -321,7 +327,9 @@
       m.life -= 0.028;
       if (m.life <= 0) { meteors.splice(i, 1); continue; }
       var tail = 22 * m.life;
-      var col = m.gold ? '201, 162, 39' : '140, 190, 255';
+      var col = m.gold
+        ? (isAward() ? '168, 176, 188' : '201, 162, 39')
+        : '140, 190, 255';
       var grad = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * 8, m.y - m.vy * 8);
       grad.addColorStop(0, 'rgba(' + col + ',' + (0.85 * m.life) + ')');
       grad.addColorStop(1, 'rgba(' + col + ',0)');
@@ -534,11 +542,22 @@
 
   function drawStarField(ctx, W, H, now) {
     initStars(W, H);
+    var award = isAward();
     stars.forEach(function (st) {
-      var tw = 0.75 + 0.25 * Math.sin(now * 0.0012 + st.tw);
-      ctx.fillStyle = 'rgba(240, 236, 255, ' + (st.a * tw) + ')';
+      var tw = award
+        ? 0.62 + 0.38 * Math.sin(now * 0.0018 + st.tw)
+        : 0.75 + 0.25 * Math.sin(now * 0.0012 + st.tw);
+      var alpha = st.a * tw * (award ? 1.18 : 1);
+      if (award) {
+        var brass = (st.tw * 3.7) % 1 < 0.38;
+        ctx.fillStyle = brass
+          ? 'rgba(168, 176, 188, ' + Math.min(1, alpha * 1.08) + ')'
+          : 'rgba(236, 230, 216, ' + Math.min(1, alpha) + ')';
+      } else {
+        ctx.fillStyle = 'rgba(240, 236, 255, ' + alpha + ')';
+      }
       ctx.beginPath();
-      ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+      ctx.arc(st.x, st.y, award ? st.r * (1.05 + 0.06 * tw) : st.r, 0, Math.PI * 2);
       ctx.fill();
     });
   }
@@ -559,14 +578,21 @@
     var cy = H * 0.5 + panY;
     var R = Math.min(W, H) * 0.46 * zoom;
 
-    ctx.fillStyle = '#060a10';
+    var award = isAward();
+    ctx.fillStyle = award ? '#07070A' : '#060a10';
     ctx.fillRect(0, 0, W, H);
     drawStarField(ctx, W, H, now);
 
     var edgeGlow = ctx.createRadialGradient(cx, cy, R * 0.15, cx, cy, R * 1.25);
-    edgeGlow.addColorStop(0, 'rgba(30, 80, 130, 0.08)');
-    edgeGlow.addColorStop(0.7, 'rgba(20, 50, 90, 0.12)');
-    edgeGlow.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
+    if (award) {
+      edgeGlow.addColorStop(0, 'rgba(111, 160, 216, 0.1)');
+      edgeGlow.addColorStop(0.55, 'rgba(168, 176, 188, 0.06)');
+      edgeGlow.addColorStop(1, 'rgba(12, 16, 22, 0.5)');
+    } else {
+      edgeGlow.addColorStop(0, 'rgba(30, 80, 130, 0.08)');
+      edgeGlow.addColorStop(0.7, 'rgba(20, 50, 90, 0.12)');
+      edgeGlow.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
+    }
     ctx.fillStyle = edgeGlow;
     ctx.fillRect(0, 0, W, H);
 
@@ -578,13 +604,15 @@
       var active = s === signIdx;
       ctx.beginPath();
       ctx.arc(cx, cy, R * 1.1, a0, a1);
-      ctx.strokeStyle = active ? 'rgba(232, 201, 106, 0.78)' : 'rgba(201, 162, 39, 0.18)';
+      ctx.strokeStyle = active
+        ? (award ? 'rgba(168, 176, 188, 0.88)' : 'rgba(232, 201, 106, 0.78)')
+        : (award ? 'rgba(168, 176, 188, 0.26)' : 'rgba(201, 162, 39, 0.18)');
       ctx.lineWidth = active ? 4 : 1.4;
       ctx.stroke();
     }
 
-    ctx.strokeStyle = 'rgba(150, 190, 240, 0.22)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = award ? 'rgba(168, 176, 188, 0.22)' : 'rgba(150, 190, 240, 0.22)';
+    ctx.lineWidth = award ? 1.1 : 1;
     PLANETS.forEach(function (p) {
       var pos = helioCached(p.id, jd);
       var dist = Math.sqrt(pos.x * pos.x + pos.y * pos.y) * R * 0.94;
@@ -594,14 +622,52 @@
       ctx.stroke();
     });
 
-    var sunG = ctx.createRadialGradient(cx - 4, cy - 4, 0, cx, cy, 18);
-    sunG.addColorStop(0, 'rgba(255, 245, 210, 1)');
-    sunG.addColorStop(0.35, 'rgba(255, 210, 90, 0.92)');
-    sunG.addColorStop(0.7, 'rgba(240, 160, 40, 0.45)');
-    sunG.addColorStop(1, 'rgba(200, 100, 20, 0)');
+    if (award) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.strokeStyle = 'rgba(111, 160, 216, 0.07)';
+      ctx.lineWidth = 4;
+      PLANETS.forEach(function (p) {
+        var pos = helioCached(p.id, jd);
+        var dist = Math.sqrt(pos.x * pos.x + pos.y * pos.y) * R * 0.94;
+        if (dist < 4) return;
+        ctx.beginPath();
+        ctx.arc(cx, cy, dist, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    if (award) {
+      var sunPulse = 0.82 + 0.18 * Math.sin(now * 0.0022);
+      var coronaR = 24 + 5 * sunPulse;
+      var coronaG = ctx.createRadialGradient(cx, cy, 6, cx, cy, coronaR);
+      coronaG.addColorStop(0, 'rgba(255, 248, 228, ' + (0.22 * sunPulse).toFixed(3) + ')');
+      coronaG.addColorStop(0.42, 'rgba(232, 201, 106, ' + (0.12 * sunPulse).toFixed(3) + ')');
+      coronaG.addColorStop(0.72, 'rgba(168, 176, 188, ' + (0.05 * sunPulse).toFixed(3) + ')');
+      coronaG.addColorStop(1, 'rgba(168, 176, 188, 0)');
+      ctx.fillStyle = coronaG;
+      ctx.beginPath();
+      ctx.arc(cx, cy, coronaR, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    var sunG = ctx.createRadialGradient(cx - 4, cy - 4, 0, cx, cy, award ? 20 : 18);
+    if (award) {
+      sunG.addColorStop(0, 'rgba(255, 248, 228, 1)');
+      sunG.addColorStop(0.28, 'rgba(232, 201, 106, 0.95)');
+      sunG.addColorStop(0.55, 'rgba(168, 176, 188, 0.52)');
+      sunG.addColorStop(0.82, 'rgba(111, 160, 216, 0.12)');
+      sunG.addColorStop(1, 'rgba(12, 16, 22, 0)');
+    } else {
+      sunG.addColorStop(0, 'rgba(255, 245, 210, 1)');
+      sunG.addColorStop(0.35, 'rgba(255, 210, 90, 0.92)');
+      sunG.addColorStop(0.7, 'rgba(240, 160, 40, 0.45)');
+      sunG.addColorStop(1, 'rgba(200, 100, 20, 0)');
+    }
     ctx.fillStyle = sunG;
     ctx.beginPath();
-    ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+    ctx.arc(cx, cy, award ? 15 : 14, 0, Math.PI * 2);
     ctx.fill();
 
     planetHits.length = 0;
@@ -619,15 +685,22 @@
       if (hoverId === p.id) {
         var pulse = 0.42 + 0.18 * Math.sin(now * 0.006);
         var hg = ctx.createRadialGradient(px, py, 0, px, py, spec.size + 11);
-        hg.addColorStop(0, 'rgba(232, 201, 106, ' + (0.30 * pulse + 0.16).toFixed(3) + ')');
-        hg.addColorStop(1, 'rgba(232, 201, 106, 0)');
+        if (award) {
+          hg.addColorStop(0, 'rgba(168, 176, 188, ' + (0.34 * pulse + 0.18).toFixed(3) + ')');
+          hg.addColorStop(1, 'rgba(168, 176, 188, 0)');
+        } else {
+          hg.addColorStop(0, 'rgba(232, 201, 106, ' + (0.30 * pulse + 0.16).toFixed(3) + ')');
+          hg.addColorStop(1, 'rgba(232, 201, 106, 0)');
+        }
         ctx.fillStyle = hg;
         ctx.beginPath();
         ctx.arc(px, py, spec.size + 11, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
         ctx.arc(px, py, spec.size + 5.5, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(244, 223, 150, ' + (0.5 + 0.25 * pulse).toFixed(3) + ')';
+        ctx.strokeStyle = award
+          ? 'rgba(216, 185, 120, ' + (0.55 + 0.22 * pulse).toFixed(3) + ')'
+          : 'rgba(244, 223, 150, ' + (0.5 + 0.25 * pulse).toFixed(3) + ')';
         ctx.lineWidth = 1.4;
         ctx.stroke();
         alpha = 1;
@@ -652,9 +725,25 @@
 
     var vig = ctx.createRadialGradient(cx, cy, R * 0.5, cx, cy, R * 1.18);
     vig.addColorStop(0, 'rgba(0,0,0,0)');
-    vig.addColorStop(1, 'rgba(5, 4, 6, 0.15)');
+    vig.addColorStop(1, award ? 'rgba(12, 16, 22, 0.22)' : 'rgba(5, 4, 6, 0.15)');
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
+
+    if (award) {
+      ctx.strokeStyle = 'rgba(168, 176, 188, 0.14)';
+      ctx.lineWidth = 0.8;
+      for (var t = 0; t < 12; t++) {
+        var ta = (t * 30 - 90) * Math.PI / 180;
+        var tx0 = cx + Math.cos(ta) * R * 1.02;
+        var ty0 = cy + Math.sin(ta) * R * 1.02;
+        var tx1 = cx + Math.cos(ta) * R * 1.08;
+        var ty1 = cy + Math.sin(ta) * R * 1.08;
+        ctx.beginPath();
+        ctx.moveTo(tx0, ty0);
+        ctx.lineTo(tx1, ty1);
+        ctx.stroke();
+      }
+    }
   }
 
   function tick(now) {
@@ -777,7 +866,9 @@
     var vp = document.getElementById('orrery-viewport');
     if (!vp || !window.PointerEvent) return;
     ptrWired = true;
-    vp.style.touchAction = 'none';
+    // pan-y: horizontal drags rotate the model, vertical swipes still scroll
+    // the page — the hero is full-viewport, so it must never trap scrolling.
+    vp.style.touchAction = 'pan-y';
     vp.classList.add('orrery-grabbable');
 
     var pointers = {};
@@ -865,6 +956,9 @@
 
     vp.addEventListener('wheel', function (e) {
       if (handedOff()) return;
+      // plain wheel scrolls the page past the full-viewport hero; ctrl/cmd+
+      // wheel (and trackpad pinch, which reports ctrlKey) zooms the model
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       var f = 1 - clampN(e.deltaY, -120, 120) * 0.0014;
       targetZoom = clampN(targetZoom * f, 0.7, 3.4);
@@ -915,7 +1009,7 @@
       var loader = document.querySelector('script[src*="orrery-loader"]');
       if (loader && loader.src) base = new URL('./', loader.src).href;
     } catch (e) {}
-    addPreload(base + 'orrery-webgl.js');
+    addPreload(base + 'orrery-webgl.js?v=703');
     addPreload(base + 'vendor/three/three.module.min.js');
   }
 

@@ -26,8 +26,8 @@
       left: var(--space-4, 1rem);
       z-index: 10001;
       padding: 0.65rem 1.1rem;
-      background: var(--gold, #C2A05E);
-      color: var(--void, #0C1016);
+      background: var(--gold, #A8B0BC);
+      color: var(--void, #07070A);
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
@@ -82,9 +82,23 @@
     /* ── Hero: compact ──────────────────────────────────────────── */
     .chart-hero {
       position: relative;
-      padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-12);
+      padding: calc(var(--nav-height) + var(--space-8)) 0 var(--space-5);
       text-align: center;
       overflow: hidden;
+    }
+    @media (min-width: 1024px) {
+      .page-chart .chart-hero {
+        padding: calc(var(--nav-height) + var(--space-5)) 0 var(--space-3);
+      }
+      .page-chart .chart-hero__title {
+        font-size: clamp(2rem, 3.5vw, 3.2rem);
+        margin-bottom: var(--space-3);
+      }
+      .page-chart .form-glass__sub br { display: none; }
+      .page-chart .form-glass__sub {
+        min-height: 0;
+        font-size: 0.82rem;
+      }
     }
     .chart-hero__cosmic-art {
       position: absolute;
@@ -154,6 +168,11 @@
       margin: 0 auto;
       padding: 0 var(--space-6) var(--space-24);
     }
+    @media (min-width: 768px) {
+      .page-chart .chart-layout {
+        margin-top: calc(-1 * var(--space-4));
+      }
+    }
 
     /* ── Premium glassmorphism form card ───────────────────────── */
     .form-glass {
@@ -196,12 +215,12 @@
       justify-content: center;
       width: 52px; height: 52px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.2), rgba(92, 74, 110,0.15));
-      border: 1px solid rgba(194, 160, 94,0.35);
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.2), rgba(92, 74, 110,0.15));
+      border: 1px solid rgba(168, 176, 188,0.35);
       font-size: 1.4rem;
       color: var(--gold);
       margin-bottom: var(--space-4);
-      box-shadow: 0 0 24px rgba(194, 160, 94,0.15);
+      box-shadow: 0 0 24px rgba(168, 176, 188,0.15);
     }
     .form-glass__title {
       font-family: Georgia, 'Times New Roman', var(--font-display), serif;
@@ -234,6 +253,106 @@
       font-weight: 600;
     }
 
+    /* Homepage → chart date-handoff acknowledgement (injected by chart-page.js
+       prefillDateFromURL). Above the fold, so styled in the critical sheet. */
+    .chart-handoff-note {
+      margin: 0 0 var(--space-5);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg, 12px);
+      border: 1px solid rgba(168, 176, 188, 0.30);
+      background: rgba(168, 176, 188, 0.07);
+      color: var(--ap-text-secondary, #C8CDD6);
+      font-size: 0.82rem;
+      line-height: 1.55;
+      letter-spacing: 0.01em;
+    }
+    .chart-handoff-note__mark {
+      color: var(--ap-gold-bright, #7EC8E8);
+      margin-right: 0.4em;
+      font-weight: 600;
+    }
+
+    @media (min-width: 1024px) {
+      .page-chart .form-glass {
+        padding: var(--space-8) var(--space-10);
+      }
+      .page-chart .chart-hero__eyebrow {
+        margin-bottom: var(--space-3);
+      }
+      .page-chart .form-glass__header {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-bottom: var(--space-4);
+      }
+      .page-chart .form-glass__icon {
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        flex-shrink: 0;
+      }
+      .page-chart .form-glass__title {
+        margin: 0;
+        font-size: 1.35rem;
+      }
+      .page-chart .form-glass__sub {
+        display: none;
+      }
+      .page-chart .chart-form__essentials {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: var(--space-6);
+        row-gap: var(--space-3);
+        align-items: start;
+      }
+      .page-chart .chart-form__essentials > .form-section-label {
+        display: none;
+      }
+      /* Date spans full row (priority); city + time side by side; name wrap full */
+      .page-chart .chart-form__essentials > #group-date-first {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials > #group-city {
+        grid-column: 1;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials > #group-time {
+        grid-column: 2;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials > #group-name-wrap {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+      }
+      .page-chart .chart-form__essentials .form-hint {
+        font-size: 0.65rem;
+      }
+      .page-chart #chart-advanced {
+        margin-top: var(--space-5) !important;
+      }
+      .page-chart .form-cta {
+        position: sticky;
+        bottom: var(--space-4);
+        z-index: 12;
+        margin-top: var(--space-5);
+        padding: var(--space-4) 0;
+        background: linear-gradient(180deg, transparent, rgba(12, 14, 20, 0.94) 32%);
+      }
+    }
+
+    .chart-tabs-hint {
+      margin: 0 0 var(--space-5);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(168, 176, 188, 0.22);
+      background: rgba(168, 176, 188, 0.06);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--silver-dim);
+      text-align: center;
+    }
+
     /* ── Section labels inside form ─────────────────────────────── */
     .form-section-label {
       display: flex;
@@ -248,8 +367,8 @@
       justify-content: center;
       width: 26px; height: 26px;
       border-radius: 50%;
-      background: rgba(194, 160, 94,0.15);
-      border: 1px solid rgba(194, 160, 94,0.35);
+      background: rgba(168, 176, 188,0.15);
+      border: 1px solid rgba(168, 176, 188,0.35);
       font-size: 0.6rem;
       font-weight: 700;
       letter-spacing: 0.1em;
@@ -268,7 +387,7 @@
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, rgba(194, 160, 94,0.3), transparent);
+      background: linear-gradient(90deg, rgba(168, 176, 188,0.3), transparent);
     }
 
     /* ── Form groups ────────────────────────────────────────────── */
@@ -334,15 +453,15 @@
     }
     .time-btn__icon { font-size: 1.2rem; line-height: 1; }
     .time-btn:hover {
-      border-color: rgba(194, 160, 94,0.35);
+      border-color: rgba(168, 176, 188,0.35);
       background: rgba(28, 35, 50,0.7);
       color: var(--gold-pale);
     }
     .time-btn.active {
       border-color: var(--gold);
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.14), rgba(92, 74, 110,0.1));
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.14), rgba(92, 74, 110,0.1));
       color: var(--gold-pale);
-      box-shadow: 0 0 14px rgba(194, 160, 94,0.18);
+      box-shadow: 0 0 14px rgba(168, 176, 188,0.18);
     }
     @media (max-width: 480px) {
       .time-selector { grid-template-columns: repeat(3, 1fr); }
@@ -364,13 +483,13 @@
       position: relative;
     }
     .house-card:hover {
-      border-color: rgba(194, 160, 94,0.3);
+      border-color: rgba(168, 176, 188,0.3);
       background: rgba(28, 35, 50,0.65);
     }
     .house-card.active {
-      border-color: rgba(194, 160, 94,0.6);
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.1), rgba(92, 74, 110,0.08));
-      box-shadow: 0 0 20px rgba(194, 160, 94,0.1);
+      border-color: rgba(168, 176, 188,0.6);
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.1), rgba(92, 74, 110,0.08));
+      box-shadow: 0 0 20px rgba(168, 176, 188,0.1);
     }
     .house-card.active::after {
       content: '';
@@ -424,16 +543,16 @@
       transition: all var(--transition-fast);
     }
     .node-toggle__opt:hover .node-toggle__pill {
-      border-color: rgba(194, 160, 94,0.3);
+      border-color: rgba(168, 176, 188,0.3);
       background: rgba(28, 35, 50,0.65);
     }
     .node-toggle__opt input:checked + .node-toggle__pill {
-      border-color: rgba(194, 160, 94,0.6);
-      background: linear-gradient(135deg, rgba(194, 160, 94,0.1), rgba(92, 74, 110,0.08));
-      box-shadow: 0 0 20px rgba(194, 160, 94,0.1);
+      border-color: rgba(168, 176, 188,0.6);
+      background: linear-gradient(135deg, rgba(168, 176, 188,0.1), rgba(92, 74, 110,0.08));
+      box-shadow: 0 0 20px rgba(168, 176, 188,0.1);
     }
     .node-toggle__opt input:focus-visible + .node-toggle__pill {
-      box-shadow: 0 0 0 2px rgba(194, 160, 94,0.4);
+      box-shadow: 0 0 0 2px rgba(168, 176, 188,0.4);
     }
     .node-toggle__name {
       display: block;
@@ -458,14 +577,14 @@
       align-items: center;
       gap: var(--space-4);
       margin: var(--space-8) 0;
-      color: rgba(194, 160, 94,0.4);
+      color: rgba(168, 176, 188,0.4);
       font-size: 0.9rem;
     }
     .form-divider::before, .form-divider::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(194, 160, 94,0.2), transparent);
+      background: linear-gradient(90deg, transparent, rgba(168, 176, 188,0.2), transparent);
     }
 
     /* ── CTA buttons row ────────────────────────────────────────── */
@@ -484,11 +603,12 @@
     .house-cards {
       margin-bottom: var(--space-2);
     }
+    /* Paint (bg / ink / shadows / spinner colors) comes from the terracotta
+       --ap-cta override in chart.html — the retired warm-gold declarations
+       were deleted in the retoken pass. Structure/layout only here. */
     .btn--calculate {
       flex: 1;
       min-width: 220px;
-      background: linear-gradient(135deg, #C2A05E 0%, #8a5f00 100%);
-      color: #0d0a07;
       font-family: Georgia, 'Times New Roman', var(--font-display), serif;
       font-weight: 700;
       font-size: 0.85rem;
@@ -501,7 +621,6 @@
       position: relative;
       overflow: hidden;
       transition: all var(--transition-base);
-      box-shadow: 0 8px 32px rgba(194, 160, 94,0.35), 0 0 0 1px rgba(194, 160, 94,0.4);
     }
     .btn--calculate::before {
       content: '';
@@ -514,7 +633,6 @@
     .btn--calculate:hover::before { opacity: 1; }
     .btn--calculate:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 40px rgba(194, 160, 94,0.45), 0 0 0 1px rgba(194, 160, 94,0.5);
     }
     .btn--calculate:active { transform: translateY(0); }
     .btn--calculate .btn-idle { display: flex; align-items: center; gap: var(--space-2); }
@@ -533,7 +651,6 @@
     .btn-spinner {
       width: 14px; height: 14px;
       border: 2px solid rgba(16, 21, 32,0.3);
-      border-top-color: #0d0a07;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
@@ -552,9 +669,9 @@
       white-space: nowrap;
     }
     .btn--sample:hover {
-      border-color: rgba(194, 160, 94,0.4);
+      border-color: rgba(168, 176, 188,0.4);
       color: var(--gold-pale);
-      background: rgba(194, 160, 94,0.06);
+      background: rgba(168, 176, 188,0.06);
     }
 
     /* ── CLS reservations — wheel / results before JS paint ─────── */
@@ -632,7 +749,7 @@
     }
     .page-chart .chart-wheel-sublabel {
       margin: 0;
-      font-family: Georgia, 'Times New Roman', serif;
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: 0.82rem;
       font-style: italic;
       line-height: 1.35;
@@ -692,6 +809,11 @@
     .page-chart #analysis-content {
       min-height: 240px;
     }
+    /* Fallback until chart-page-deferred.css idle-loads — prevents stacked tabs */
+    .page-chart .tab-panel[aria-hidden="true"],
+    .page-chart .tabs__panel[aria-hidden="true"] { display: none; }
+    .page-chart .tab-panel[aria-hidden="false"],
+    .page-chart .tabs__panel[aria-hidden="false"] { display: block; }
     /* ap-motion.css idle-load must not y-translate above-fold shell (CLS) */
     .page-chart .animate-in,
     .page-chart #chart-form-wrapper {
@@ -774,3 +896,142 @@
       line-height: 1.65;
       margin: 0;
     }
+
+/* Keepsake band — post-calc masterpiece path (ap-v649) */
+.chart-keepsake-band{display:flex;align-items:center;gap:1rem;margin:0.85rem 0 1.25rem;padding:0.9rem 1.1rem;border-radius:14px;border:1px solid rgba(168,176,188,.28);background:linear-gradient(145deg,rgba(26,34,48,.75),rgba(12,16,22,.92));box-shadow:0 12px 40px rgba(0,0,0,.28)}
+.chart-keepsake-band__art img{width:72px;height:72px;border-radius:50%;border:1px solid rgba(168,176,188,.35);object-fit:cover;display:block;background:#07070A}
+.chart-keepsake-band__eyebrow{margin:0 0 .25rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#A8B0BC}
+.chart-keepsake-band__lead{margin:0;font-size:.92rem;line-height:1.5;color:#C8CDD6}
+.chart-keepsake-band__lead strong{color:#E8EBF0}
+.chart-keepsake-band__lead a{color:#C8CDD6}
+@media (max-width:560px){.chart-keepsake-band{flex-direction:column;text-align:center}}
+
+/* Masterpiece format menu (replaces inline-only styles) */
+#share-format-menu {
+  position: absolute; z-index: 1200; min-width: 260px; padding: 10px;
+  border-radius: 14px; background: rgba(26,34,48,0.98);
+  border: 1px solid rgba(168,176,188,0.35);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+}
+#share-format-menu button {
+  display: block; width: 100%; text-align: left;
+  padding: 12px 12px; margin: 2px 0; border: none; border-radius: 10px;
+  background: transparent; cursor: pointer; color: #E8EBF0;
+  font-family: Inter, system-ui, sans-serif;
+}
+#share-format-menu button:hover,
+#share-format-menu button:focus-visible {
+  background: rgba(168,176,188,0.12);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(168,176,188,0.35);
+}
+#share-format-menu button span:first-child {
+  display: block; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em;
+}
+#share-format-menu button span:last-child {
+  display: block; font-size: 0.66rem; color: #8B919C; margin-top: 2px;
+}
+.big-three-card__seal {
+  display: block; width: 56px; height: 56px; margin: 0.35rem auto;
+}
+
+/* Masterpiece primary = terracotta CTA token */
+#result-actions-row .action-btn--primary {
+  background: var(--ap-cta, #6AB0FF) !important;
+  color: var(--ap-cta-ink, #1F1206) !important;
+  border-color: transparent !important;
+  font-weight: 600;
+  min-height: 44px;
+}
+#result-actions-row .action-btn {
+  min-height: 44px;
+  font-size: max(0.72rem, 12px);
+}
+@media (max-width: 640px) {
+  #result-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  #result-actions-row .action-btn--primary {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
+
+/* Date-first progressive essentials */
+.chart-form__essentials { display: flex; flex-direction: column; gap: 0; }
+.chart-form__priority .form-input {
+  font-size: 1.05rem;
+  min-height: 48px;
+  border-color: rgba(168,176,188,0.35);
+}
+/* Mobile: form owns first viewport — collapse decorative hero chrome */
+@media (max-width: 640px) {
+  .page-chart .chart-hero--compact {
+    padding-block: 0.65rem 0.35rem;
+    min-height: 0;
+  }
+  .page-chart .chart-hero--compact .chart-hero__subtitle,
+  .page-chart .chart-hero--compact .chart-hero__eyebrow {
+    display: none;
+  }
+  .page-chart .chart-hero--compact .chart-hero__title {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+  .page-chart .chart-hero--compact .chart-hero__cosmic-art,
+  .page-chart .chart-hero--compact .chart-hero__orb-a,
+  .page-chart .chart-hero--compact .chart-hero__orb-b {
+    display: none;
+  }
+  .page-chart .chart-layout {
+    padding-top: 0.35rem;
+  }
+}
+.chart-keepsake-band__honesty {
+  margin: 0.45rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: rgba(168, 158, 136, 0.92);
+}
+
+/* Optional name behind disclosure — first viewport is date/city/time only */
+.chart-form__optional-label {
+  margin: 0.65rem 0 0.25rem;
+  border: 1px solid rgba(168,176,188,0.18);
+  border-radius: 12px;
+  background: rgba(12,16,22,0.28);
+  padding: 0.15rem 0.85rem 0.35rem;
+}
+.chart-form__optional-sum {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: #A8B0BC;
+  padding: 0.55rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.chart-form__optional-sum::-webkit-details-marker { display: none; }
+.chart-form__optional-hint {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(190,178,152,0.85);
+  text-transform: none;
+}
+.chart-form__optional-label[open] .chart-form__optional-sum {
+  border-bottom: 1px solid rgba(168,176,188,0.12);
+  margin-bottom: 0.35rem;
+}
+.chart-form__optional-label .form-group { margin-bottom: 0.5rem; }
+.form-glass__sub {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 42ch;
+}

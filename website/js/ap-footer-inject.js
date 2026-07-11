@@ -22,13 +22,15 @@
     { key: 'pisces', name: 'Pisces' },
   ];
 
+  // Model-first spine: Observatory → Cast → Sky → Keep → Daily → Hub → Shop
   var FOOTER_TOOLS = [
-    { href: 'chart.html', label: 'Birth Chart', icon: '<span aria-hidden="true">⊙</span>' },
-    { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
-    { href: 'lifepath.html', label: 'Life Path', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg>' },
-    { href: 'compatibility.html', label: 'Match', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg>' },
-    { href: 'transits.html', label: 'Transits', icon: '<span aria-hidden="true">☿</span>' },
+    { href: 'index.html', label: 'Observatory', icon: '<span aria-hidden="true">✦</span>' },
+    { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
     { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
+    { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">◇</span>' },
+    { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
+    { href: 'mysky.html', label: 'My Sky', icon: '<span aria-hidden="true">◎</span>' },
+    { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
   ];
 
   var PRESERVE_SELECTORS = [
@@ -45,7 +47,7 @@
 
   function findFooter() {
     return document.querySelector(
-      'footer.footer, footer.site-footer, footer[role="contentinfo"]:not(.ap-lite-footer)'
+      'footer.footer, footer.site-footer, footer.night-watch, footer[role="contentinfo"]:not(.ap-lite-footer), footer[aria-label*="footer" i]'
     );
   }
 
@@ -58,16 +60,43 @@
     return !!(
       footer.querySelector('.footer__links') ||
       footer.querySelector('.footer__grid') ||
+      footer.querySelector('.footer-grid') ||
       footer.querySelector('.footer-nav') ||
       footer.querySelector('.footer-inner:not([data-ap-footer-model])') ||
       !footer.querySelector('.footer-nav-col')
     );
   }
 
+  /** Homepage night-watch uses .footer-col / h3 — patch spine in place. */
+  function patchNightWatchSpine() {
+    var footer = document.querySelector('footer.night-watch');
+    if (!footer) return;
+    var cols = footer.querySelectorAll('.footer-col');
+    for (var i = 0; i < cols.length; i++) {
+      var h = cols[i].querySelector('h3');
+      if (!h) continue;
+      var t = (h.textContent || '').trim();
+      if (!/tools|around the model/i.test(t)) continue;
+      h.textContent = 'Around the model';
+      var ul = cols[i].querySelector('ul');
+      if (!ul) return;
+      ul.innerHTML =
+        '<li><a href="index.html">Observatory</a></li>' +
+        '<li><a href="chart.html">Cast chart</a></li>' +
+        '<li><a href="ephemeris.html">Sky instrument</a></li>' +
+        '<li><a href="moment.html">Moment (Keep)</a></li>' +
+        '<li><a href="horoscope.html">Daily</a></li>' +
+        '<li><a href="mysky.html">My Sky hub</a></li>' +
+        '<li><a href="shop.html">Shop</a></li>';
+      cols[i].setAttribute('data-ap-footer-spine', '1');
+      return;
+    }
+  }
+
   function toolsColHtml() {
     return ''
-      + '<div class="footer-nav-col" role="group" aria-label="Tools navigation">'
-      + '<h2 class="footer-nav-col__title">Tools</h2><ul>'
+      + '<div class="footer-nav-col" role="group" aria-label="Around the living model">'
+      + '<h2 class="footer-nav-col__title">Around the model</h2><ul>'
       + FOOTER_TOOLS.map(function (t) {
         return '<li><a href="' + t.href + '">' + t.icon + ' ' + t.label + '</a></li>';
       }).join('')
@@ -129,6 +158,22 @@
       + '</div>';
   }
 
+  function patchZodiacStrip() {
+    var brandCol = document.querySelector('footer .footer-brand-col');
+    if (!brandCol || brandCol.querySelector('.footer-zodiac-strip')) return;
+    var seals = ZODIAC_SIGNS.map(function (s) {
+      return '<span data-celestial-seal="zodiac:' + s.key + '" data-seal-sm></span>';
+    }).join('');
+    var strip = document.createElement('div');
+    strip.className = 'footer-zodiac-strip';
+    strip.setAttribute('aria-hidden', 'true');
+    strip.innerHTML = seals;
+    brandCol.appendChild(strip);
+    if (window.AstroCelestialSeals && typeof AstroCelestialSeals.bindSlots === 'function') {
+      AstroCelestialSeals.bindSlots();
+    }
+  }
+
   function inject() {
     if (!needsFooterUpgrade()) return;
 
@@ -163,9 +208,37 @@
     document.dispatchEvent(new CustomEvent('ap:footer-injected'));
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inject);
-  } else {
+  function toolsListHtml() {
+    return FOOTER_TOOLS.map(function (t) {
+      return '<li><a href="' + t.href + '">' + t.icon + ' ' + t.label + '</a></li>';
+    }).join('');
+  }
+
+  /** Keep Tools column on model spine even when footer model already present. */
+  function patchToolsCol() {
+    var cols = document.querySelectorAll('footer .footer-nav-col');
+    for (var i = 0; i < cols.length; i++) {
+      var title = cols[i].querySelector('.footer-nav-col__title');
+      var t = (title && title.textContent) || '';
+      if (!title || !/tools|around the model/i.test(t)) continue;
+      title.textContent = 'Around the model';
+      cols[i].setAttribute('aria-label', 'Around the living model');
+      var ul = cols[i].querySelector('ul');
+      if (ul) ul.innerHTML = toolsListHtml();
+      return;
+    }
+  }
+
+  function boot() {
     inject();
+    patchToolsCol();
+    patchNightWatchSpine();
+    patchZodiacStrip();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
   }
 })();

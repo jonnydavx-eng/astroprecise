@@ -2,28 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="My Cosmic Dashboard — track your astrological journey, save birth charts, and explore your life timeline. All data stored privately on your device." />
   <title>My Cosmic Dashboard | Astro Precise</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="My Cosmic Dashboard | Astro Precise" />
   <meta property="og:description" content="Your personal cosmic journal — birth charts, life milestones, and astrological insights stored privately on your device." />
   <meta property="og:url" content="https://astroprecise.app/profile.html" />
   <link rel="canonical" href="https://astroprecise.app/profile.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="My Cosmic Dashboard | Astro Precise" />
   <meta name="twitter:description" content="Your personal cosmic journal — birth charts, life milestones, and astrological insights stored privately on your device." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/profile-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/profile-page.css" id="ap-css-profile" />
   <style>
     body:has(#setup-section){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(#setup-section) .site-header,body:has(#dashboard-section) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -45,7 +54,7 @@
   <script>try{if(localStorage.getItem('ap_profile_v2'))document.documentElement.classList.add('has-profile');}catch(e){}</script>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
   <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferProfileFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferProfileFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/profile-page.css','ap-css-profile');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferProfileFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferProfileFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -103,7 +112,7 @@
         <div class="profile-setup-card">
           <div class="setup-star-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h2 id="setup-heading">Begin Your Cosmic Record</h2>
-          <p>Your complete astrological journal lives here — birth charts, life milestones, and personal insights. Everything is computed in your browser and never leaves your device.</p>
+          <p>Your complete astrological journal lives here — birth charts, life milestones, and personal insights. Everything is computed on your device and saved locally in your browser.</p>
 
           <form id="setup-form" class="setup-form" novalidate aria-label="Create profile">
             <div class="form-group">
@@ -133,7 +142,7 @@
 
           <p class="privacy-note">
             <span aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-lock"/></svg></span>
-            Your data never leaves this device
+            Computed and stored on your device
           </p>
         </div>
       </div>
@@ -411,6 +420,10 @@
       </div>
     </section>
 
+    <div class="container" style="max-width:920px;margin:var(--space-8) auto;">
+      <div id="profile-ai-panel" hidden aria-label="Optional profile insight"></div>
+    </div>
+
   </main>
 
   <section id="ap-email-banner" class="ap-email-cta ap-email-cta--banner" role="region" aria-labelledby="ap-email-banner-title">
@@ -447,7 +460,7 @@
 
       <div class="ap-footer-signup ap-footer-signup--compact">
         <p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">
-          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C2A05E);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
+          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#A8B0BC);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
           &mdash; cosmic weather &amp; new features coming soon.
         </p>
       </div>
@@ -484,8 +497,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -558,7 +571,6 @@
     }
     if (audit()) return;
     inject('js/raf-core.js');
-    inject('js/ephemeris.js');
     inject('js/ap-zodiac-constants.js');
     function idleCosmos() {
       if (audit()) return;
@@ -1454,6 +1466,11 @@
   })();
   </script>
 
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=703" />
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/ap-page-boot.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
 </body>

@@ -11,8 +11,8 @@
   var booting = false;
   var scriptEl = document.currentScript;
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
-    ? new URL('orrery-webgl.js', scriptEl.src).href
-    : 'js/orrery-webgl.js';
+    ? new URL('orrery-webgl.js?v=703', scriptEl.src).href
+    : 'js/orrery-webgl.js?v=703';
 
   function isLiteHero() {
     return !!(window.__apLiteHero ||
@@ -172,20 +172,54 @@
     });
   }
 
+  /* v576: the WebGL takeover cross-fades like the 2D path instead of snapping.
+     promoteLiteToFull() now only BEGINS the handoff — the poster stays live under
+     a transparent canvas; finishLiteToFullHandoff() fades the HD frame in once
+     the engine has real pixels, then retires the poster + LiteOrrery. */
   function promoteLiteToFull() {
-    document.documentElement.classList.add('orrery-full');
-    document.documentElement.classList.remove('orrery-canvas');
     window.__apLiteHero = false;
-    var poster = document.getElementById('orrery-lite-poster');
     var btn = document.getElementById('orrery-lite-launch');
-    if (poster) poster.setAttribute('aria-hidden', 'true');
     if (btn) {
       btn.hidden = true;
       btn.setAttribute('aria-hidden', 'true');
     }
-    if (window.LiteOrrery && typeof window.LiteOrrery.destroy === 'function') {
-      window.LiteOrrery.destroy();
+    if (document.documentElement.classList.contains('orrery-canvas') && window.__orreryReady) {
+      teardownCanvasEngine();
     }
+    document.documentElement.classList.remove('orrery-canvas');
+    return beginCanvasHandoff();
+  }
+
+  function finishLiteToFullHandoff(viewport) {
+    var O = window.Orrery3D;
+    var settle = new Promise(function (resolve) {
+      var t = window.setTimeout(resolve, 1400); // cap the poster hold
+      try {
+        if (O && typeof O.whenEarthReady === 'function') {
+          O.whenEarthReady().then(function () { window.clearTimeout(t); resolve(); });
+        }
+      } catch (e) { window.clearTimeout(t); resolve(); }
+    });
+    return waitFirstOrreryFrame().then(function () { return settle; }).then(function () {
+      var canvas = document.getElementById('orrery-canvas');
+      if (canvas) {
+        canvas.style.transition = 'opacity 0.48s ease';
+        canvas.style.opacity = '0';
+        void canvas.offsetWidth;
+        canvas.style.opacity = '1'; // fades in OVER the still-visible poster
+      }
+      window.setTimeout(function () {
+        document.documentElement.classList.add('orrery-full');
+        revealHeroDeckHud();
+        var poster = document.getElementById('orrery-lite-poster');
+        if (poster) poster.setAttribute('aria-hidden', 'true');
+        if (window.LiteOrrery && typeof window.LiteOrrery.destroy === 'function') {
+          window.LiteOrrery.destroy();
+        }
+        if (viewport) viewport.classList.remove('orrery-viewport--handoff');
+        if (canvas) { canvas.style.transition = ''; canvas.style.opacity = ''; }
+      }, 520);
+    });
   }
 
   function setLaunchButtonState(state, message) {
@@ -315,11 +349,275 @@
         });
       }
       document.dispatchEvent(new Event('ap-orrery-ready'));
+      setupHeroPhotorealFrame();
       return window.Orrery3D;
     }).catch(function (err) {
       if (window.__orreryPreloaderOwns && !window.__apHeroEntered) throw err;
       return tryCanvasFallback();
     });
+  }
+
+  /* Hero-only: once the HD engine owns the canvas, (1) route the HUD planet
+     pills to Orrery3D.focusPlanet — their original wiring targeted the lite
+     poster, which promoteLiteToFull destroyed — and (2) if the visitor hasn't
+     touched the model yet, dive from the settle frame into the photoreal
+     Earth close-up (terminator + detail lighting) so the resting hero shows
+     real 3D planets, not schematic dots.
+     v575 additions: (3) EARTH→COSMOS scale strip + mobile stepper on the
+     engine's SCALE_LEVELS presets, (4) Cosmic journey pill on the narrated
+     startScaleJourney tour, (5) restore the lite time row — the WebGL engine
+     injects no DOM console on this page (the v570b hide rule assumed the 2D
+     engine's console). Everything feature-detects, so the 2D-canvas fallback
+     (no scale API) keeps strip + journey hidden. */
+  var heroFrameDone = false;
+  var deckHudRevealed = false;
+
+  /* Layout-affecting HUD chrome (scale strip, orbits, journey, time row) must
+     land in the same turn as html.orrery-full — revealing them at ap-orrery-ready
+     grew the deck ~150px before v642/v643 padding, overlapping hero copy. */
+  function revealHeroDeckHud() {
+    if (deckHudRevealed) return;
+    deckHudRevealed = true;
+    var deck = document.getElementById('orrery-lite-deck');
+    if (deck) deck.classList.add('ap-deck--time-restored');
+    var O = window.Orrery3D;
+    var strip = document.getElementById('ap-scale-strip');
+    if (strip && O && typeof O.setScaleLevel === 'function') strip.hidden = false;
+    var orbitsBtn = document.getElementById('ap-orbits-toggle');
+    if (orbitsBtn && O && typeof O.setShowOrbits === 'function') orbitsBtn.hidden = false;
+    var journeyBtn = document.getElementById('ap-cosmic-journey');
+    if (journeyBtn && O && typeof O.startScaleJourney === 'function') journeyBtn.hidden = false;
+  }
+
+  function setupHeroPhotorealFrame() {
+    if (heroFrameDone) return;
+    var O = window.Orrery3D;
+    var canvas = document.getElementById('orrery-canvas');
+    var wrap = document.getElementById('apAwardOrreryWrap');
+    if (!O || typeof O.focusPlanet !== 'function' || O.isWebGL === false) return;
+    if (!canvas || !wrap || !wrap.contains(canvas)) return;
+    heroFrameDone = true;
+
+    var touched = false;
+    wrap.addEventListener('pointerdown', function () { touched = true; }, { passive: true });
+
+    /* v576: resurrect planet-name typography — engraved DOM labels (Cinzel, brass
+       under-shadow, styled by .orrery-dom-label) at INNER/SYSTEM scales; the engine
+       keeps the Earth rest frame clean. Feature-detected: 2D fallback has no layer. */
+    if (typeof O.setShowLabels === 'function' && document.getElementById('orrery-dom-labels')) {
+      try { O.setShowLabels(true); } catch (e) { /* engine optional */ }
+    }
+
+    function markActive(target) {
+      document.querySelectorAll('.lite-vp-btn[data-lite-planet]').forEach(function (b) {
+        b.classList.toggle('active', b === target);
+      });
+    }
+
+    function cancelJourneyIfActive(jumpToTarget) {
+      try {
+        if (typeof O.isJourneyActive === 'function' && O.isJourneyActive() &&
+            typeof O.cancelScaleJourney === 'function') {
+          O.cancelScaleJourney(!!jumpToTarget);
+        }
+      } catch (e) { /* engine optional */ }
+    }
+
+    document.querySelectorAll('.lite-vp-btn[data-lite-planet]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        touched = true;
+        var pid = (btn.getAttribute('data-lite-planet') || '').toLowerCase();
+        cancelJourneyIfActive(false);
+        try { O.focusPlanet(pid); } catch (e) { return; }
+        markActive(btn);
+      });
+    });
+
+    // Engine-initiated focus (canvas dblclick, journey legs) keeps pills honest.
+    document.addEventListener('orrery-planet-focus', function (e) {
+      var id = e && e.detail && e.detail.id;
+      if (!id) return;
+      markActive(document.querySelector('.lite-vp-btn[data-lite-planet="' + id + '"]'));
+    });
+
+    setTimeout(function () {
+      if (touched) return;
+      try { O.focusPlanet('earth'); } catch (e) { return; }
+      markActive(document.querySelector('.lite-vp-btn[data-lite-planet="earth"]'));
+    }, 1100);
+
+    /* ── v575 · scale strip + stepper (feature-detect the preset API) ── */
+    var SCALE_NAMES = ['Earth', 'Inner', 'System', 'Oort', 'Stars', 'Galaxy', 'Cosmos'];
+    var strip = document.getElementById('ap-scale-strip');
+    var stepLabel = document.getElementById('ap-scale-stepper-label');
+    var caption = document.getElementById('ap-scale-caption');
+    var hasScaleApi = typeof O.setScaleLevel === 'function' && typeof O.getScaleLevel === 'function';
+
+    function syncScaleUi(level, preset) {
+      // The engine itself syncs .orrery-scale-btn active/aria-pressed/title
+      // (updateScaleHUD); here: mobile stepper label + live honesty caption.
+      if (stepLabel && SCALE_NAMES[level]) stepLabel.textContent = SCALE_NAMES[level];
+      if (caption && preset && preset.honesty) caption.textContent = preset.honesty;
+    }
+
+    function goToLevel(lv) {
+      if (isNaN(lv)) return;
+      touched = true;
+      cancelJourneyIfActive(false);
+      try { O.setScaleLevel(lv); } catch (e) { return; }
+      if (lv !== 0) markActive(null); // camera left the focused body
+    }
+
+    if (strip && hasScaleApi) {
+      strip.querySelectorAll('.orrery-scale-btn[data-scale]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          goToLevel(parseInt(btn.getAttribute('data-scale'), 10));
+        });
+      });
+      [['ap-scale-prev', -1], ['ap-scale-next', 1]].forEach(function (pair) {
+        var btn = document.getElementById(pair[0]);
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          var lv = 2;
+          try { lv = O.getScaleLevel() | 0; } catch (e) {}
+          goToLevel(Math.max(0, Math.min(6, lv + pair[1])));
+        });
+      });
+      document.addEventListener('orrery-scale-change', function (e) {
+        var d = e && e.detail;
+        if (!d || d.level == null) return;
+        syncScaleUi(d.level, d.preset);
+      });
+      try { syncScaleUi(O.getScaleLevel(), null); } catch (e) {}
+    }
+
+    /* ── v575 · Cosmic journey — narrated tour across all seven levels ── */
+    var journeyBtn = document.getElementById('ap-cosmic-journey');
+    if (journeyBtn && typeof O.startScaleJourney === 'function') {
+      var journeyIdleText = journeyBtn.textContent;
+      var setJourneyRunning = function (on) {
+        journeyBtn.classList.toggle('is-running', on);
+        journeyBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        journeyBtn.textContent = on ? '◼ End journey' : journeyIdleText;
+      };
+      journeyBtn.addEventListener('click', function () {
+        touched = true;
+        var active = false;
+        try { active = typeof O.isJourneyActive === 'function' && O.isJourneyActive(); } catch (e) {}
+        if (active) {
+          cancelJourneyIfActive(true);
+          setJourneyRunning(false);
+          return;
+        }
+        try { O.startScaleJourney(6, { fullTour: true, direction: 'out' }); } catch (e) { return; }
+        markActive(null);
+        setJourneyRunning(true);
+      });
+      document.addEventListener('orrery-journey-end', function () {
+        setJourneyRunning(false);
+      });
+    }
+
+    /* ── v592 · ENRICHED ORRERY — progressive reveal (homepage embed) ──
+       The hero stays a calm Earth rest frame on load. The rich layers appear only
+       as the visitor engages: orbit rings fade in at System/Inner scale, the live
+       readout appears on planet focus, trails appear when time is scrubbed. All
+       feature-detected — the 2D fallback (no setShowOrbits/getBodyReadout) skips it. */
+    setupEnrichedOrrery(O);
+    if (document.documentElement.classList.contains('orrery-full')) revealHeroDeckHud();
+  }
+
+  /* Orbits toggle + live readout + scale-driven reveal. Split out for clarity;
+     everything here is additive and no-ops if the engine lacks the API. */
+  function setupEnrichedOrrery(O) {
+    var hasOrbits = typeof O.setShowOrbits === 'function';
+    var hasReadout = typeof O.getBodyReadout === 'function';
+    var hasScale = typeof O.getScaleLevel === 'function';
+
+    // --- Orbits: default ON at System/Inner (>=1), OFF in the Earth rest frame (0) ---
+    var orbitsBtn = document.getElementById('ap-orbits-toggle');
+    var userOrbitPref = null; // null = follow scale; true/false = explicit user choice
+    function orbitsWantedAtLevel(lv) {
+      if (userOrbitPref !== null) return userOrbitPref;
+      return lv >= 1 && lv <= 3; // Inner / System / Oort read as an orrery
+    }
+    function applyOrbits(lv) {
+      if (!hasOrbits) return;
+      var on = orbitsWantedAtLevel(lv);
+      try { O.setShowOrbits(on); } catch (e) {}
+      if (orbitsBtn) orbitsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    if (orbitsBtn && hasOrbits) {
+      orbitsBtn.addEventListener('click', function () {
+        var next = !(orbitsBtn.getAttribute('aria-pressed') === 'true');
+        userOrbitPref = next;
+        try { O.setShowOrbits(next); } catch (e) {}
+        orbitsBtn.setAttribute('aria-pressed', next ? 'true' : 'false');
+      });
+    }
+
+    // --- Live readout — compact panel; true geocentric sign+degree from the ephemeris ---
+    var readoutEl = document.getElementById('ap-orrery-readout');
+    var readoutBody = document.getElementById('ap-orrery-readout-body');
+    var readoutSign = document.getElementById('ap-orrery-readout-sign');
+    var readoutId = 'earth';
+    var readoutTimer = null;
+    function paintReadout() {
+      if (!readoutEl || !hasReadout) return;
+      var r;
+      try { r = O.getBodyReadout(readoutId); } catch (e) { r = null; }
+      if (!r || !r.sign) { readoutEl.hidden = true; return; }
+      if (readoutBody) readoutBody.textContent = r.id === 'earth' ? 'Sun' : r.name;
+      if (readoutSign) readoutSign.textContent = 'in ' + r.sign + ' · ' + r.degreeWhole + '°' + (r.retro ? ' ℞' : '');
+      readoutEl.hidden = false;
+      readoutEl.classList.toggle('is-retro', !!r.retro);
+    }
+    function showReadoutFor(id) {
+      readoutId = id || 'earth';
+      paintReadout();
+    }
+    // Repaint while time moves (scrub) so the degree ticks live.
+    function ensureReadoutTicker() {
+      if (readoutTimer) return;
+      readoutTimer = setInterval(function () {
+        if (readoutEl && !readoutEl.hidden) paintReadout();
+      }, 900);
+    }
+
+    // Planet focus → readout tracks the focused body. Earth rest frame stays
+    // clean — the hero live pill already shows Sun/Moon (v641 overlap fix).
+    document.addEventListener('orrery-planet-focus', function (e) {
+      var id = e && e.detail && e.detail.id;
+      if (!id) return;
+      var lv = 0; try { lv = O.getScaleLevel() | 0; } catch (err) {}
+      if (lv === 0 && id === 'earth') { if (readoutEl) readoutEl.hidden = true; return; }
+      showReadoutFor(id);
+    });
+
+    // Scale change → drive orbit reveal + readout visibility policy.
+    function onLevel(lv) {
+      applyOrbits(lv);
+      if (readoutEl) {
+        if (lv === 0) {
+          readoutEl.hidden = true;
+        } else {
+          ensureReadoutTicker();
+          paintReadout();
+        }
+      }
+    }
+    document.addEventListener('orrery-scale-change', function (e) {
+      var d = e && e.detail; if (!d || d.level == null) return;
+      onLevel(d.level);
+    });
+
+    // Now button also resets trails (engine clears on snapToNow via idle-fade, but reset
+    // the readout time immediately).
+    var nowBtn = document.getElementById('lite-now-btn');
+    if (nowBtn) nowBtn.addEventListener('click', function () { setTimeout(paintReadout, 60); });
+
+    // Initial sync to current level.
+    if (hasScale) { try { onLevel(O.getScaleLevel() | 0); } catch (e) {} }
   }
 
   /**
@@ -331,7 +629,7 @@
     opts = opts || {};
     var mode = opts.mode || 'tier';
     if (mode === 'tier') {
-      mode = localPerfTier() === 'high' ? 'webgl' : 'canvas';
+      mode = localPerfTier() === 'low' ? 'canvas' : 'webgl';
     }
 
     if (opts.showLoading !== false) {
@@ -348,9 +646,17 @@
         });
       }
 
-      promoteLiteToFull();
+      var viewport = promoteLiteToFull();
       scheduleEngineLoad({ urgent: !!opts.urgent });
       return initOrreryIfNeeded(true).then(function (O) {
+        if (document.documentElement.classList.contains('orrery-canvas')) {
+          // 2D fallback won inside initOrreryIfNeeded — its own handoff choreography ran
+          window.setTimeout(function () {
+            if (viewport) viewport.classList.remove('orrery-viewport--handoff');
+          }, 560);
+        } else {
+          finishLiteToFullHandoff(viewport);
+        }
         setLaunchButtonState('ready');
         booting = false;
         return O;
@@ -358,6 +664,8 @@
     }).catch(function (err) {
       booting = false;
       window.__orreryBootPromise = null;
+      var vp = document.getElementById('orrery-viewport');
+      if (vp) vp.classList.remove('orrery-viewport--handoff');
       setLaunchButtonState('error', 'Tap to retry 3D orrery');
       throw err;
     });
@@ -391,6 +699,8 @@
       if (window.RafCore && window.RafCore.tier) return window.RafCore.tier;
       if (navigator.deviceMemory && navigator.deviceMemory <= 4) return 'low';
       if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) return 'low';
+      if (navigator.deviceMemory && navigator.deviceMemory <= 6) return 'mid';
+      if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 6) return 'mid';
     } catch (e) { return 'high'; }
     return 'high';
   }

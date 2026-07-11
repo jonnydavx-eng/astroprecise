@@ -45,21 +45,24 @@
       if (!el) return;
       slot.innerHTML = seal(el, { sm: slot.hasAttribute('data-seal-sm'), static: true, hidden: slot.getAttribute('aria-hidden') === 'true' });
     });
-    document.querySelectorAll('.sign-card[data-element]').forEach(function (card) {
-      if (card.querySelector('.sign-card__el-seal')) return;
-      var el = card.getAttribute('data-element');
-      if (!el) return;
-      var wrap = document.createElement('span');
-      wrap.className = 'sign-card__el-seal';
-      wrap.setAttribute('aria-hidden', 'true');
-      wrap.innerHTML = seal(el, { sm: true, static: true, hidden: true });
-      card.appendChild(wrap);
+    /* Daily sign cards: keep ONE zodiac seal + text element pill.
+       Do not inject corner .sign-card__el-seal (was triple-stacking glyphs). */
+    document.querySelectorAll('.sign-card__el-seal').forEach(function (n) {
+      n.remove();
     });
     document.querySelectorAll('.sign-card__element-badge[data-element]').forEach(function (badge) {
+      /* Text-only badge — zodiac seal already identifies the sign */
+      if (badge.querySelector('.sign-card__element-label')) return;
       var el = badge.getAttribute('data-element');
-      if (!el || badge.querySelector('.ap-el-seal')) return;
-      var label = badge.textContent.trim();
-      badge.innerHTML = seal(el, { sm: true, static: true }) + '<span class="sign-card__element-label">' + label + '</span>';
+      if (!el) return;
+      var label = (badge.textContent || el).trim().replace(/\s+/g, ' ');
+      /* Strip any injected seal markup; keep readable label */
+      badge.textContent = label;
+      var span = document.createElement('span');
+      span.className = 'sign-card__element-label';
+      span.textContent = label;
+      badge.textContent = '';
+      badge.appendChild(span);
     });
   }
 

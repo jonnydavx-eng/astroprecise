@@ -2,31 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Free Capricorn horoscope for today, calculated from real planetary positions. Plus the complete Capricorn guide: element, ruling planet, love, career, and compatibility." />
   <title>Capricorn Horoscope Today — Daily Reading & Sign Guide | Astro Precise</title>
   <link rel="canonical" href="https://astroprecise.app/capricorn.html" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Capricorn Horoscope Today | Astro Precise" />
   <meta property="og:description" content="Free Capricorn horoscope for today, calculated from real planetary positions. Plus the complete Capricorn guide: element, ruling planet, love, career, and compatibility." />
   <meta property="og:url" content="https://astroprecise.app/capricorn.html" />
-  <meta property="og:image" content="https://astroprecise.app/assets/images/zodiac-cards/capricorn.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og/sign-capricorn.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Capricorn — December 22 – January 19, an Earth sign ruled by Saturn, shown as a photoreal render of Saturn on Astro Precise." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Capricorn Horoscope Today | Astro Precise" />
   <meta name="twitter:description" content="Free Capricorn horoscope for today, calculated from real planetary positions. Plus the complete Capricorn guide: element, ruling planet, love, career, and compatibility." />
-  <meta name="twitter:image" content="https://astroprecise.app/assets/images/zodiac-cards/capricorn.jpg" />
-  <meta name="theme-color" content="#0C1016" />
-  <link rel="preload" href="assets/images/zodiac-cards/capricorn.webp" as="image" type="image/webp" fetchpriority="high" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og/sign-capricorn.jpg" />
+  <meta name="theme-color" content="#07070A" />
+  <link rel="preload" href="img/engine/saturn.webp" as="image" type="image/webp" fetchpriority="high" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/sign-page.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
+  <!-- CLS: preload the hero display face (h1) so Cormorant paints from first paint (no late swap). -->
+  <link rel="preload" href="fonts/cormorant-garamond-normal-600.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/main.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/sign-page.css" id="ap-css-sign-page" />
   <style>
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-    /* Constellation reserve — sign-page.css is audit-deferred */
+    /* Constellation reserve — pre-CSS paint + CLS guard */
     .sign-hero__constellation{max-width:280px;margin:0 auto 1rem;min-height:175px;contain:layout style}
     .sign-hero__constellation svg{display:block;width:100%;height:auto;aspect-ratio:320/200}
     /* LCP shell — system fonts paint before deferred webfonts (h1 + card are LCP candidates) */
@@ -34,42 +46,90 @@
       font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
       font-size: clamp(2.4rem, 6vw, 3.6rem);
       font-weight: 700;
-      color: #ECE6D8;
+      color: var(--ap-text-primary, #e8e6e3);
       line-height: 1.1;
       margin: 0 0 0.5rem;
     }
     .sign-hero__dates {
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
-      color: #C2A05E;
+      color: var(--gold-vivid, #E6C24A);
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
-    .sign-hero__card-picture {
-      width: clamp(150px, 22vw, 230px);
+    /* Hero planet — the ruling-planet ENGINE STILL is the anchor (photoreal, our render).
+       Deep-void plate, soft radial glow behind the disc, generous reserve box (CLS guard). */
+    .sign-hero__inner {
+      display: flex; gap: clamp(1.5rem, 4vw, 3.5rem);
+      align-items: center; justify-content: center;
+      max-width: 900px; margin: 0 auto;
     }
-    .sign-hero__card-img {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-      border-radius: 14px;
+    .sign-hero__planet {
+      position: relative; flex-shrink: 0;
+      width: clamp(200px, 34vw, 340px);
+      aspect-ratio: 1 / 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* soft brass-cool glow well behind the render (paints instantly, no layout cost) */
+    .sign-hero__planet::before {
+      content: ''; position: absolute; inset: -6%;
+      border-radius: 50%; z-index: 0; pointer-events: none;
+      background: radial-gradient(circle at 50% 46%,
+        color-mix(in srgb, var(--sign-elem, #A8B0BC) 26%, transparent) 0%,
+        rgba(12, 16, 22, 0) 62%);
+      filter: blur(6px);
+    }
+    .sign-hero__planet-img {
+      position: relative; z-index: 1;
+      width: 100%; height: 100%;
+      object-fit: contain;
       display: block;
+      filter: drop-shadow(0 18px 46px rgba(0, 0, 0, 0.62))
+              drop-shadow(0 0 30px color-mix(in srgb, var(--sign-elem, #A8B0BC) 22%, transparent));
     }
-    /* Hero seal — celestial-seals.css audit-deferred */
-    .sign-hero__seal:not(:has(.ap-seal)) {
-      display: inline-block;
-      min-height: 4.5rem;
-      min-width: 4.5rem;
+    .sign-hero__planet-caption {
+      position: absolute; z-index: 2; left: 50%; bottom: -1.4rem;
+      transform: translateX(-50%);
+      width: max-content; max-width: min(92vw, 300px); text-align: center;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 0.62rem; line-height: 1.4; letter-spacing: 0.1em; text-transform: uppercase;
+      color: color-mix(in srgb, var(--gold-vivid, #E6C24A) 78%, #E8EBF0);
+      opacity: 0.8;
     }
-    /* Today section — sign-page.css audit-deferred; boot paints full grid */
+    .sign-hero__figure, figure.sign-hero__planet { margin: 0; }
+    @media (max-width: 640px) {
+      .sign-hero__inner { flex-direction: column; gap: 1.75rem; }
+      .sign-hero__planet { width: clamp(190px, 62vw, 260px); }
+    }
+    /* Hero seal — celestial-seals.css audit-deferred.
+       CLS FIX (v582): reserve the glyph box at its FINAL rendered geometry so the
+       hero column does not drop when celestial-seals.css applies + the .ap-seal art
+       is injected. Must match celestial-seals.css .sign-hero__glyph{width/height/margin}
+       EXACTLY (clamp + space-4) and apply in ALL states — the previous
+       :not(:has(.ap-seal)) + 4.5rem reserve under-reserved by ~40px and dropped once
+       the seal mounted, shifting keyword/dates by ~32px (CLS ~0.059). */
+    .sign-hero__glyph.sign-hero__seal,
+    .sign-hero__glyph[data-celestial-seal] {
+      display: block;
+      width: clamp(3.5rem, 12vw, 5rem);
+      height: clamp(4rem, 14vw, 5.75rem);
+      margin: 0 auto var(--space-4);
+      contain: layout style;
+    }
+    /* Pre-seal placeholder must not inflate the reserved box (main.css sets 4.8rem). */
+    .sign-hero__glyph.sign-hero__seal:not(:has(.ap-seal)) {
+      font-size: clamp(3.5rem, 12vw, 5rem) !important;
+      line-height: 1;
+      overflow: hidden;
+    }
+    /* Today section — CLS reserve; boot paints full grid */
     #today-date { min-height: 1.35rem; }
     #today-reading {
       min-height: 520px;
       contain: layout style;
     }
     .today-reading.is-loading .card { min-height: 460px; }
-    /* FAQ accordion — sign-page.css audit-deferred */
+    /* FAQ accordion — CLS reserve */
     .sign-faq__list {
       min-height: 400px;
       contain: layout style;
@@ -88,6 +148,56 @@
       aspect-ratio: 2 / 3;
       object-fit: cover;
     }
+    /* Layer 2 — engraved astronomy fact grid; element-tinted per body[data-element] */
+    body[data-element="fire"]  { --sign-elem: var(--ap-element-fire, #B85A42); --sign-elem-glow: var(--ap-element-fire-glow, rgba(184,90,66,0.10)); }
+    body[data-element="earth"] { --sign-elem: var(--ap-element-earth, #5A7A48); --sign-elem-glow: var(--ap-element-earth-glow, rgba(90,122,72,0.10)); }
+    body[data-element="air"]   { --sign-elem: var(--ap-element-air, #8A7A6A); --sign-elem-glow: var(--ap-element-air-glow, rgba(138,122,106,0.09)); }
+    body[data-element="water"] { --sign-elem: var(--ap-element-water, #4A7580); --sign-elem-glow: var(--ap-element-water-glow, rgba(74,117,128,0.10)); }
+    .sign-astro {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4); max-width: 820px; margin: 0 auto;
+      min-height: 300px; contain: layout style;
+    }
+    .sign-astro__card {
+      display: flex; gap: var(--space-4); align-items: flex-start;
+      padding: var(--space-5);
+      background: var(--ap-card-surface, rgba(22, 28, 42, 0.42));
+      border: 1px solid rgba(168, 176, 188, 0.18);
+      border-radius: var(--radius-lg);
+    }
+    .sign-astro__card--element {
+      border-color: color-mix(in srgb, var(--sign-elem, #A8B0BC) 42%, transparent);
+      background: linear-gradient(180deg, var(--sign-elem-glow, transparent) 0%, var(--ap-card-surface, rgba(22,28,42,0.42)) 70%);
+    }
+    .sign-astro__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
+    .sign-astro__seal .ap-seal { width: 2.4rem; height: 2.4rem; }
+    .sign-astro__seal--element { color: var(--sign-elem, #A8B0BC); font-size: 1.8rem; }
+    .sign-astro__seal--modality { color: var(--color-gold, #A8B0BC); font-size: 1.6rem; }
+    .sign-astro__label { font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-silver-dim); display: block; margin-bottom: 4px; }
+    .sign-astro__value { font-family: var(--font-display); color: var(--color-gold-pale); font-size: 1.15rem; display: block; }
+    .sign-astro__note { font-size: 0.82rem; color: var(--color-silver); line-height: 1.6; margin: var(--space-2) 0 0; }
+    /* Layer 3 — Sun / Moon / Rising placement rows */
+    .sign-inchart {
+      display: flex; flex-direction: column; gap: var(--space-4);
+      max-width: 760px; margin: 0 auto;
+      min-height: 320px; contain: layout style;
+    }
+    .sign-inchart__row {
+      display: flex; gap: var(--space-4); align-items: flex-start;
+      padding: var(--space-5);
+      background: rgba(168, 176, 188, 0.05);
+      border: 1px solid rgba(168, 176, 188, 0.16);
+      border-left: 3px solid color-mix(in srgb, var(--sign-elem, #A8B0BC) 55%, transparent);
+      border-radius: var(--radius-lg);
+    }
+    .sign-inchart__seal { flex-shrink: 0; width: 2.4rem; height: 2.4rem; display: inline-flex; align-items: center; justify-content: center; }
+    .sign-inchart__seal .ap-seal { width: 2.4rem; height: 2.4rem; }
+    .sign-inchart__where { font-family: var(--font-display); color: var(--color-gold-pale); font-size: 1.1rem; display: block; margin-bottom: 4px; }
+    .sign-inchart__text { font-size: 0.9rem; color: var(--color-silver); line-height: 1.7; margin: 0; }
+    /* Layer 4 — chart bridge closer */
+    .sign-bridge__secondary { margin-top: var(--space-4); font-size: 0.92rem; color: var(--color-silver); }
+    .sign-bridge__secondary a { color: var(--color-gold); text-decoration: none; }
+    .sign-bridge__secondary a:hover { color: var(--color-gold-pale); text-decoration: underline; }
     /* Footer — main.css grid audit-deferred */
     .footer .footer-inner {
       min-height: 540px;
@@ -106,6 +216,11 @@
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
     <symbol id="ei-gem" viewBox="0 0 24 24"><path d="M7 4h10l3.5 5L12 20 3.5 9 7 4ZM3.5 9h17M9.5 9 12 19.5 14.5 9M7 4l2.5 5M17 4l-2.5 5"/></symbol>
     <symbol id="ei-heart" viewBox="0 0 24 24"><path d="M12 19.8s-7.3-4.6-9-8.7A5 5 0 0 1 12 7a5 5 0 0 1 9 4.1c-1.7 4.1-9 8.7-9 8.7Z"/></symbol>
+    <symbol id="ei-fire" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5Z"/></symbol>
+    <symbol id="ei-earth" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5ZM6.6 10.2h10.8"/></symbol>
+    <symbol id="ei-air" viewBox="0 0 24 24"><path d="M12 3.5 20 19H4L12 3.5ZM6.6 13.8h10.8"/></symbol>
+    <symbol id="ei-water" viewBox="0 0 24 24"><path d="M12 20.5 4 5h16L12 20.5Z"/></symbol>
+    <symbol id="ei-modality" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></symbol>
   </svg>
 
   <header class="site-header" role="banner">
@@ -117,7 +232,7 @@
         </a>
         
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+          <noscript><a href="chart.html" class="navbar__link">Chart</a><a href="ephemeris.html" class="navbar__link">Sky</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="cosmic-story.html" class="navbar__link">Readings</a><a href="guides.html" class="navbar__link">Library</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
         </div>
         <div class="navbar__end">
           <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
@@ -140,15 +255,15 @@
 
     <section class="sign-hero" aria-labelledby="page-title">
       <div class="sign-hero__inner">
-        <picture class="sign-hero__card-picture">
-          <source srcset="assets/images/zodiac-cards/capricorn.webp" type="image/webp" />
-          <img class="sign-hero__card-img" src="assets/images/zodiac-cards/capricorn.jpg"
-            alt="Capricorn — Astro Precise engraved zodiac card"
-            width="230" height="345" loading="eager" decoding="async" fetchpriority="high" />
-        </picture>
+        <figure class="sign-hero__planet">
+          <img class="sign-hero__planet-img" src="img/engine/saturn.webp"
+            alt="Saturn, ruler of Capricorn — rendered from the Astro Precise engine"
+            width="340" height="340" loading="eager" decoding="async" fetchpriority="high" />
+          <figcaption class="sign-hero__planet-caption">Saturn · ruler of Capricorn · our engine render</figcaption>
+        </figure>
         <div class="sign-hero__content">
           <span class="sign-hero__glyph sign-hero__seal" data-celestial-seal="zodiac:capricorn" data-seal-lg aria-hidden="true"></span>
-          <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-capricorn d-capricorn"><title id="t-capricorn">The constellation of Capricorn</title><desc id="d-capricorn">The sea-goat traced as a broad triangle of stars on a dark cosmic sky.</desc><defs><radialGradient id="g-capricorn" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#4a2820" stop-opacity="0.18"/><stop offset="100%" stop-color="#4a2820" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="104" rx="120" ry="62" fill="url(#g-capricorn)"/><polyline points="48,72 120,150 200,150 272,86 220,60 140,70 48,72" fill="none" stroke="#C2A05E" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="178" r="0.7" fill="#f7ecc4" opacity="0.4"/><circle cx="92" cy="40" r="0.6" fill="#f7ecc4" opacity="0.4"/><circle cx="248" cy="40" r="0.7" fill="#f7ecc4" opacity="0.4"/><circle cx="288" cy="130" r="0.6" fill="#ffffff" opacity="0.4"/><circle cx="36" cy="120" r="0.5" fill="#f7ecc4" opacity="0.4"/><circle cx="170" cy="30" r="0.6" fill="#ffffff" opacity="0.4"/><circle cx="48" cy="72" r="6" fill="#ffe6b0" opacity="0.16"/><circle cx="48" cy="72" r="3.1" fill="#ffe6b0"/><circle cx="272" cy="86" r="6" fill="#f7ecc4" opacity="0.15"/><circle cx="272" cy="86" r="2.9" fill="#f7ecc4"/><circle cx="120" cy="150" r="1.9" fill="#f7ecc4"/><circle cx="200" cy="150" r="2" fill="#ffffff"/><circle cx="220" cy="60" r="1.7" fill="#f7ecc4"/><circle cx="140" cy="70" r="1.6" fill="#ffffff"/><circle cx="160" cy="150" r="1.5" fill="#f7ecc4"/><circle cx="184" cy="106" r="1.4" fill="#f7ecc4"/></svg></div>
+          <div class="sign-hero__constellation"><svg viewBox="0 0 320 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t-capricorn d-capricorn"><title id="t-capricorn">The constellation of Capricorn</title><desc id="d-capricorn">The sea-goat traced as a broad triangle of stars on a dark cosmic sky.</desc><defs><radialGradient id="g-capricorn" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#14141C" stop-opacity="0.18"/><stop offset="100%" stop-color="#14141C" stop-opacity="0"/></radialGradient></defs><ellipse cx="160" cy="104" rx="120" ry="62" fill="url(#g-capricorn)"/><polyline points="48,72 120,150 200,150 272,86 220,60 140,70 48,72" fill="none" stroke="#A8B0BC" stroke-width="0.8" stroke-opacity="0.45" stroke-linecap="round" stroke-linejoin="round"/><circle cx="160" cy="178" r="0.7" fill="#C8CDD6" opacity="0.4"/><circle cx="92" cy="40" r="0.6" fill="#C8CDD6" opacity="0.4"/><circle cx="248" cy="40" r="0.7" fill="#C8CDD6" opacity="0.4"/><circle cx="288" cy="130" r="0.6" fill="#ffffff" opacity="0.4"/><circle cx="36" cy="120" r="0.5" fill="#C8CDD6" opacity="0.4"/><circle cx="170" cy="30" r="0.6" fill="#ffffff" opacity="0.4"/><circle cx="48" cy="72" r="6" fill="#E8EBF0" opacity="0.16"/><circle cx="48" cy="72" r="3.1" fill="#E8EBF0"/><circle cx="272" cy="86" r="6" fill="#C8CDD6" opacity="0.15"/><circle cx="272" cy="86" r="2.9" fill="#C8CDD6"/><circle cx="120" cy="150" r="1.9" fill="#C8CDD6"/><circle cx="200" cy="150" r="2" fill="#ffffff"/><circle cx="220" cy="60" r="1.7" fill="#C8CDD6"/><circle cx="140" cy="70" r="1.6" fill="#ffffff"/><circle cx="160" cy="150" r="1.5" fill="#C8CDD6"/><circle cx="184" cy="106" r="1.4" fill="#C8CDD6"/></svg></div>
           <h1 id="page-title">Capricorn</h1>
           <p class="sign-hero__dates">December 22 – January 19</p>
           <p class="sign-hero__keyword" aria-label="Sign keyword">“I use”</p>
@@ -159,8 +274,8 @@
             <div class="sign-fact"><span class="sign-fact__label">Symbol</span><span class="sign-fact__value">The Sea-Goat</span></div>
           </div>
           <div class="sign-hero__actions">
-            <a href="horoscope.html?sign=capricorn" class="btn btn--primary btn--sm">Open in Daily Hub</a>
-            <a href="chart.html" class="btn btn--outline btn--sm">Birth Chart</a>
+            <a href="chart.html" class="btn btn--primary btn--sm">Cast free chart</a>
+            <a href="horoscope.html?sign=capricorn" class="btn btn--ghost btn--sm">Daily</a>
           </div>
         </div>
       </div>
@@ -186,7 +301,90 @@
     <section class="section section--alt" aria-labelledby="about-heading">
       <div class="container">
         <h2 class="section__title" id="about-heading">About Capricorn</h2>
-        <p class="prose-block">Capricorn is the zodiac's mountain climber — ruled by Saturn, the planet of time, discipline, and earned things. This sign plays the long game by instinct: while others sprint and stall, Capricorn ascends at a pace it can sustain for decades. Beneath the dry wit and the serious surface is the most quietly determined sign of the twelve.</p>
+        <p class="prose-block"><span class="sign-instrument-note">This profile is a sign overview — your real sky is the free chart (Sun through Pluto + Rising). The planet still above is our 3D orrery plate for this sign&rsquo;s ruler. </span>Capricorn is the zodiac's mountain climber — ruled by Saturn, the planet of time, discipline, and earned things. This sign plays the long game by instinct: while others sprint and stall, Capricorn ascends at a pace it can sustain for decades. Beneath the dry wit and the serious surface is the most quietly determined sign of the twelve.</p>
+      </div>
+    </section>
+
+    
+    <section class="section" aria-labelledby="astronomy-heading">
+      <div class="container">
+        <h2 class="section__title" id="astronomy-heading">The Astronomy of Capricorn</h2>
+        <p class="section__subtitle" style="margin-bottom:var(--space-6);">The precise, factual layer beneath the character — where Capricorn actually sits in the sky.</p>
+        <div class="sign-astro">
+          <div class="sign-astro__card sign-astro__card--element">
+            <span class="sign-astro__seal sign-astro__seal--element" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-earth"/></svg></span>
+            <div>
+              <span class="sign-astro__label">Element</span>
+              <span class="sign-astro__value">Earth</span>
+              <p class="sign-astro__note">the element of the tangible — earth signs are grounded, practical and built to last.</p>
+            </div>
+          </div>
+          <div class="sign-astro__card">
+            <span class="sign-astro__seal sign-astro__seal--modality" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-modality"/></svg></span>
+            <div>
+              <span class="sign-astro__label">Modality</span>
+              <span class="sign-astro__value">Cardinal</span>
+              <p class="sign-astro__note">the initiating mode — cardinal signs start things and set the season in motion.</p>
+            </div>
+          </div>
+          <div class="sign-astro__card">
+            <span class="sign-astro__seal" data-celestial-seal="planet:saturn" data-seal-sm aria-hidden="true"></span>
+            <div>
+              <span class="sign-astro__label">Ruling Planet</span>
+              <span class="sign-astro__value">Saturn</span>
+              <p class="sign-astro__note">Saturn, the planet of time, discipline and earned achievement.</p>
+            </div>
+          </div>
+          <div class="sign-astro__card sign-astro__card--band">
+            <span class="sign-astro__seal" data-celestial-seal="zodiac:capricorn" data-seal-sm aria-hidden="true"></span>
+            <div>
+              <span class="sign-astro__label">Position on the Ecliptic</span>
+              <span class="sign-astro__value">270°–300° longitude</span>
+              <p class="sign-astro__note">Capricorn is the 270°–300° band of the zodiac circle. The Sun crosses it around 22 Dec – 19 Jan each year — the exact day shifts by about a day year to year, which is why the dates are approximate.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="section section--alt" aria-labelledby="inchart-heading">
+      <div class="container">
+        <h2 class="section__title" id="inchart-heading">Capricorn in Your Chart</h2>
+        <p class="section__subtitle" style="margin-bottom:var(--space-6);">Most people meet Capricorn as a "star sign". In a real birth chart it can appear in three very different places — and each one means something distinct.</p>
+        <div class="sign-inchart">
+          <div class="sign-inchart__row">
+            <span class="sign-inchart__seal" data-celestial-seal="planet:sun" data-seal-sm aria-hidden="true"></span>
+            <div>
+              <span class="sign-inchart__where">Sun in Capricorn</span>
+              <p class="sign-inchart__text">Your core self — the "Capricorn side" people mean when they ask your sign. It shapes your basic character and what makes you feel most yourself.</p>
+            </div>
+          </div>
+          <div class="sign-inchart__row">
+            <span class="sign-inchart__seal" data-celestial-seal="planet:moon" data-seal-sm aria-hidden="true"></span>
+            <div>
+              <span class="sign-inchart__where">Moon in Capricorn</span>
+              <p class="sign-inchart__text">Your inner, emotional world — how you feel, comfort yourself and respond in private. Two people with a Capricorn Moon share an emotional language, whatever their Sun sign.</p>
+            </div>
+          </div>
+          <div class="sign-inchart__row">
+            <span class="sign-inchart__seal" data-celestial-seal="zodiac:capricorn" data-seal-sm aria-hidden="true"></span>
+            <div>
+              <span class="sign-inchart__where">Rising (Ascendant) in Capricorn</span>
+              <p class="sign-inchart__text">How you meet the world — your outward style and first impression. Your Rising is set by the exact time and place you were born, so it needs your birth time to know.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="section" aria-labelledby="bridge-heading">
+      <div class="container" style="text-align:center;">
+        <h2 class="section__title" id="bridge-heading">Your Sun sign is a third of the picture</h2>
+        <p class="section__subtitle">Your Sun is one of ten planets the engine computes — Sun through Pluto — plus your Rising and your houses. Cast your free chart to find your real Sun, Moon and Rising.</p>
+        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast My Free Chart</a>
+        <p class="sign-bridge__secondary">…then keep the whole story as a <a href="shop.html#deep-reading">Deep Reading →</a></p>
       </div>
     </section>
 
@@ -311,12 +509,12 @@
 
     <section class="section section--alt" aria-labelledby="cta-heading">
       <div class="container" style="text-align:center;">
-        <h2 class="section__title" id="cta-heading">Your Sun sign is one of dozens of placements</h2>
-        <p class="section__subtitle">Your Moon, Rising, and every planet shape who you are. Calculate your complete birth chart — free, private, in your browser.</p>
-        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Calculate My Birth Chart</a>
+        <h2 class="section__title" id="cta-heading">Your Sun sign is one placement of many</h2>
+        <p class="section__subtitle">Your Sun is one of ten planets — Sun through Pluto — plus your Rising and your houses. Calculate your complete birth chart — free, private, in your browser.</p>
+        <a href="chart.html" class="btn btn--primary btn--lg" style="margin-top:var(--space-4);"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast My Free Chart</a>
         <div class="sign-cta-row">
-          <a href="shop.html#deep-reading" class="btn btn--outline">Explore Deep Reading</a>
-          <a href="shop.html" class="btn btn--outline">Visit the Cosmic Shop</a>
+          <a href="moment.html" class="btn btn--outline">Freeze a Moment</a>
+          <a href="horoscope.html" class="btn btn--ghost">Daily sky</a>
         </div>
       </div>
     </section>
@@ -326,18 +524,18 @@
         <h2 class="section__title" style="font-size:var(--text-lg);">Explore Every Sign</h2>
         <p class="section__subtitle" style="margin-bottom:var(--space-6);">Tap a card to open that sign's daily reading and full profile</p>
         <ul class="sign-thumb-grid" aria-label="All zodiac signs">
-          <li><a href="aries.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aries.jpg" alt="Aries" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a></li>
-          <li><a href="taurus.html" class="sign-thumb"><img src="assets/images/zodiac-cards/taurus.jpg" alt="Taurus" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a></li>
-          <li><a href="gemini.html" class="sign-thumb"><img src="assets/images/zodiac-cards/gemini.jpg" alt="Gemini" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a></li>
-          <li><a href="cancer.html" class="sign-thumb"><img src="assets/images/zodiac-cards/cancer.jpg" alt="Cancer" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a></li>
-          <li><a href="leo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/leo.jpg" alt="Leo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a></li>
-          <li><a href="virgo.html" class="sign-thumb"><img src="assets/images/zodiac-cards/virgo.jpg" alt="Virgo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a></li>
-          <li><a href="libra.html" class="sign-thumb"><img src="assets/images/zodiac-cards/libra.jpg" alt="Libra" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a></li>
-          <li><a href="scorpio.html" class="sign-thumb"><img src="assets/images/zodiac-cards/scorpio.jpg" alt="Scorpio" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a></li>
-          <li><a href="sagittarius.html" class="sign-thumb"><img src="assets/images/zodiac-cards/sagittarius.jpg" alt="Sagittarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a></li>
-          <li><a href="capricorn.html" class="sign-thumb sign-thumb--current" aria-current="page"><img src="assets/images/zodiac-cards/capricorn.jpg" alt="Capricorn" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a></li>
-          <li><a href="aquarius.html" class="sign-thumb"><img src="assets/images/zodiac-cards/aquarius.jpg" alt="Aquarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a></li>
-          <li><a href="pisces.html" class="sign-thumb"><img src="assets/images/zodiac-cards/pisces.jpg" alt="Pisces" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a></li>
+          <li><a href="aries.html" class="sign-thumb"><img src="img/engine/mars.webp" alt="Aries" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aries</span></a></li>
+          <li><a href="taurus.html" class="sign-thumb"><img src="img/engine/venus.webp" alt="Taurus" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Taurus</span></a></li>
+          <li><a href="gemini.html" class="sign-thumb"><img src="img/engine/mercury.webp" alt="Gemini" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Gemini</span></a></li>
+          <li><a href="cancer.html" class="sign-thumb"><img src="img/engine/moon.webp" alt="Cancer" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Cancer</span></a></li>
+          <li><a href="leo.html" class="sign-thumb"><img src="img/engine/sun.webp" alt="Leo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Leo</span></a></li>
+          <li><a href="virgo.html" class="sign-thumb"><img src="img/engine/mercury.webp" alt="Virgo" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Virgo</span></a></li>
+          <li><a href="libra.html" class="sign-thumb"><img src="img/engine/venus.webp" alt="Libra" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Libra</span></a></li>
+          <li><a href="scorpio.html" class="sign-thumb"><img src="img/engine/mars.webp" alt="Scorpio" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Scorpio</span></a></li>
+          <li><a href="sagittarius.html" class="sign-thumb"><img src="img/engine/jupiter.webp" alt="Sagittarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Sagittarius</span></a></li>
+          <li><a href="capricorn.html" class="sign-thumb sign-thumb--current" aria-current="page"><img src="img/engine/saturn.webp" alt="Capricorn" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Capricorn</span></a></li>
+          <li><a href="aquarius.html" class="sign-thumb"><img src="img/engine/saturn.webp" alt="Aquarius" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Aquarius</span></a></li>
+          <li><a href="pisces.html" class="sign-thumb"><img src="img/engine/jupiter.webp" alt="Pisces" width="92" height="138" loading="lazy" decoding="async" /><span class="sign-thumb__label">Pisces</span></a></li>
         </ul>
       </div>
     </section>
@@ -379,8 +577,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>

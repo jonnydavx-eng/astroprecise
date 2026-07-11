@@ -1,0 +1,388 @@
+/**
+ * Astro Precise — Model Window (WOW slice 1 · W1/W2)
+ * The museum-plate frame around the live model: jet interior, 1px silver
+ * hairline, corner registration ticks, IBM Plex Mono caption plate, and the
+ * one-shot curtain-raise reveal.
+ *
+ * LOAD ORDER LAW: this sheet MUST load AFTER css/ap-structure-clean.css (and
+ * after ap-model-stage/ap-horizon-2026) on every page that uses it — those are
+ * !important sheets and cascade position is load-bearing. Geometry here is
+ * !important for the same reason (broad house rules re-position stage children).
+ *
+ * States (all set by existing boot code — no new lifecycle):
+ *   html.ap-lite-hero      JS ran, not reduced-motion (ap-award-orrery/explore-boot)
+ *   html.orrery-full       HD WebGL engine owns the canvas (orrery-loader)
+ *   html.ap-model-revealed curtain-raise fired (markLive / inline caption snippet)
+ * HONESTY: the frame + LIVE tag only ever appear once the model is truly live
+ * (ap-model-revealed is gated on orrery-full) — never over the static poster,
+ * never on the engraved-wheel/2D fail-open path.
+ */
+
+/* ── Interior pin: black is for the window, whatever the walls do ── */
+body.ap-award-511 #heroChapter .hero-solar-stage,
+body.page-explore .explore-stage {
+  background-color: var(--ap-jet, #000) !important;
+}
+
+/* ── The window chrome — absolute overlay, ZERO flow height ── */
+.ap-model-window {
+  position: absolute !important;
+  inset: 8px 10px !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 3 !important;
+  pointer-events: none !important;
+  opacity: 0;
+  visibility: hidden;
+}
+html.ap-model-revealed .ap-model-window {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 1px silver hairline (the frame itself) */
+.ap-model-window::before {
+  content: "";
+  position: absolute !important;
+  inset: 0 !important;
+  border: 1px solid rgba(200, 205, 214, 0.30) !important;
+  transform-origin: 50% 50%;
+  pointer-events: none !important;
+}
+html.ap-model-revealed .ap-model-window::before {
+  animation: apMwHairline 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes apMwHairline {
+  from { transform: scaleX(0); opacity: 0.4; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* Corner registration ticks — CSS pseudo-elements, 4 corners */
+.ap-mw-corners {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  pointer-events: none !important;
+}
+.ap-mw-corners::before,
+.ap-mw-corners::after {
+  content: "";
+  position: absolute !important;
+  width: 12px;
+  height: 12px;
+  border: 0 solid rgba(232, 235, 240, 0.55);
+}
+.ap-mw-corners--top::before   { top: -1px; left: -1px;  border-top-width: 1px; border-left-width: 1px; }
+.ap-mw-corners--top::after    { top: -1px; right: -1px; border-top-width: 1px; border-right-width: 1px; }
+.ap-mw-corners--bottom::before { bottom: -1px; left: -1px;  border-bottom-width: 1px; border-left-width: 1px; }
+.ap-mw-corners--bottom::after  { bottom: -1px; right: -1px; border-bottom-width: 1px; border-right-width: 1px; }
+html.ap-model-revealed .ap-mw-corners::before,
+html.ap-model-revealed .ap-mw-corners::after {
+  animation: apMwFade 0.45s ease-out 0.35s both;
+}
+@keyframes apMwFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Caption plate — IBM Plex Mono weight 400 ONLY (museum label) ── */
+.ap-mw-plate {
+  position: absolute !important;
+  left: 16px !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 12px !important;
+  transform: none;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.6em !important;
+  margin: 0 !important;
+  padding: 0.34rem 0.75rem !important;
+  background: var(--ap-jet, #000) !important;
+  border: 1px solid rgba(200, 205, 214, 0.28) !important;
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+  font-weight: 400 !important;
+  font-size: 0.66rem !important;
+  letter-spacing: 0.14em !important;
+  line-height: 1.2 !important;
+  color: var(--ap-silver, #C8CDD6) !important;
+  white-space: nowrap !important;
+}
+.ap-mw-plate * {
+  font-weight: 400 !important;
+  font-family: inherit !important;
+}
+html.ap-model-revealed .ap-mw-plate {
+  animation: apMwPlateIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s both;
+}
+@keyframes apMwPlateIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* LIVE tag + aurora dot — opacity-0 until the HD engine truly owns the canvas.
+   Honesty gate: html.orrery-full only (never over the poster / 2D fallback). */
+.ap-mw-live {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.45em !important;
+  color: var(--ap-aurora, #7EC8E8) !important;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.2s;
+}
+html.orrery-full .ap-mw-live { opacity: 1; }
+.ap-mw-dot {
+  display: inline-block !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: var(--ap-aurora, #7EC8E8) !important;
+  box-shadow: 0 0 8px rgba(126, 200, 232, 0.7) !important;
+  animation: apMwPulse 2.4s ease-in-out infinite; /* ~0.4Hz — calm, ≤2Hz */
+}
+@keyframes apMwPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50%      { opacity: 1;   transform: scale(1); }
+}
+
+/* ── Curtain-raise: deck rises 12px, 150ms staggered (home + explore) ── */
+html.ap-model-revealed #orrery-lite-deck > * {
+  animation: apMwRise 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+html.ap-model-revealed #orrery-lite-deck > :nth-child(2) { animation-delay: 0.15s; }
+html.ap-model-revealed #orrery-lite-deck > :nth-child(3) { animation-delay: 0.3s; }
+html.ap-model-revealed #orrery-lite-deck > :nth-child(n+4) { animation-delay: 0.45s; }
+@keyframes apMwRise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── EXPLORE mount — frame the full-viewport stage ── */
+body.page-explore .explore-stage .ap-model-window {
+  inset: 10px 12px !important;
+  z-index: 6 !important; /* above canvas wrap (1), below legend (8) / deck (10) / return (12) */
+}
+body.page-explore .ap-mw-plate {
+  left: 50% !important;
+  bottom: auto !important;
+  top: 12px !important;
+  transform: translateX(-50%);
+}
+@keyframes apMwPlateInX {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+/* Explore's plate is centred with translateX — its entry animation must keep
+   that translation, so swap the keyframes (higher specificity than the base). */
+html.ap-model-revealed .page-explore .ap-mw-plate {
+  animation-name: apMwPlateInX;
+}
+
+/* ── 390px responsive: caption shrinks, ticks scale ── */
+@media (max-width: 640px) {
+  .ap-model-window { inset: 6px 8px !important; }
+  .ap-mw-corners::before,
+  .ap-mw-corners::after { width: 8px; height: 8px; }
+  .ap-mw-plate {
+    left: 10px !important;
+    right: auto !important;
+    top: 8px !important;
+    bottom: auto !important;
+    padding: 0.24rem 0.55rem !important;
+    font-size: 0.56rem !important;
+    letter-spacing: 0.1em !important;
+    gap: 0.5em !important;
+  }
+  .ap-mw-dot { width: 5px !important; height: 5px !important; }
+  body.page-explore .ap-mw-plate { transform: none; }
+  html.ap-model-revealed .page-explore .ap-mw-plate { animation-name: apMwPlateIn; }
+
+  /* HOME phone — DESIGN LAW: controls/caption NEVER overlap the disc.
+     The window becomes a museum plate: art (canvas) above, plaque band below.
+     Frame sides run down past the canvas into the tray (inset bottom 0); the
+     hairline's bottom edge doubles as the shelf line; bottom ticks retire. */
+  body.ap-award-511 #heroChapter .ap-model-window {
+    inset: 6px 8px 0 8px !important;
+    z-index: 6 !important;              /* plate must paint above the tray band */
+  }
+  body.ap-award-511 #heroChapter .ap-mw-corners--bottom::before,
+  body.ap-award-511 #heroChapter .ap-mw-corners--bottom::after {
+    display: none;
+  }
+  /* Caption = the brass plaque, centred in the tray's reserved top strip —
+     BELOW the canvas viewport, never over the disc. */
+  body.ap-award-511 #heroChapter .ap-mw-plate {
+    left: 50% !important;
+    top: calc(100% + 2px) !important;
+    bottom: auto !important;
+    transform: translateX(-50%);
+    border: 0 !important;               /* the tray band already carries the frame */
+    background: transparent !important;
+    padding: 0.14rem 0.4rem !important;
+    max-width: calc(100vw - 40px) !important;
+    overflow: hidden !important;
+  }
+}
+@keyframes apMwPlateInXHome {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (max-width: 640px) {
+  html.ap-model-revealed body.ap-award-511 #heroChapter .ap-mw-plate {
+    animation-name: apMwPlateInXHome;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE DECK RESTORE (WOW slice 1 W5 — owner's "not enough shown off")
+   ap-structure-clean.css used to blanket-hide the WHOLE deck ≤640px; it now
+   only hides it on the no-JS/PRM path (html:not(.ap-lite-hero)).
+   DESIGN LAW (owner, 2026-07-10): controls must NEVER overlap the Earth disc.
+   So the deck is a dedicated PLINTH TRAY in flow BELOW the canvas viewport —
+   inside the Model Window frame, outside the disc's render area (art above,
+   plaque + controls below). To fund the tray's height the stage/canvas
+   shrinks 230→200px and the disc 210→180px; the cast form stays fully inside
+   viewport 1 at 390x844 (measured — see slice notes). DECISION (this slice):
+   the 7-scale strip/stepper stays hidden ≤640px — a compact segmented scale
+   control is deferred to the Scale Ladder slice. Pills keep their icon slot
+   (.lite-vp-btn__seal, hidden here) for the follow-up 3D-icon wave.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  /* Fund the tray: shrink the art area — disc stays fully visible, uncovered.
+     Disc diameter tracks viewport height (19vh) so it can never outgrow the
+     stage; top 47% lifts it clear of the tray shelf (the wrap's bbox sags
+     ~16px below the visual disc — labels layer). Measured at 390x844:
+     disc bottom → tray top clearance ≈ +18px, plaque ≈ +22px. */
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter .hero-solar-stage {
+    height: clamp(150px, 26vh, 210px) !important;
+    min-height: 150px !important;
+    max-height: 210px !important;
+    /* The plaque (in the stage's window overlay) juts into the tray band below;
+       the stage context must paint above the tray's jet background (deck z4)
+       and must not clip it (the stage ships overflow:hidden). */
+    z-index: 5 !important;
+    overflow: visible !important;
+  }
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+    width: clamp(120px, 19vh, 164px) !important;
+    top: 47% !important;
+  }
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck {
+    box-sizing: border-box !important;  /* main.css never loads on home — pin it */
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    align-items: center !important;
+    column-gap: 8px !important;
+    row-gap: 4px !important;
+    order: 1 !important;              /* stage is order:1 too; DOM keeps deck after it */
+    position: relative !important;
+    z-index: 4 !important;
+    width: calc(100% - 16px) !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 8px !important;         /* flush with the window frame's side hairlines */
+    padding: 22px 10px 8px !important; /* 22px top strip = the caption plaque zone */
+    background: var(--ap-jet, #000) !important;
+    border: 1px solid rgba(200, 205, 214, 0.30) !important;
+    border-top: 0 !important;         /* the window hairline's bottom edge is the shelf */
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    max-height: none !important;
+    overflow: hidden !important;
+  }
+  /* Verbose extras stay off in the compact HUD */
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-chip,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-scale-strip,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-readout,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-cosmic-journey,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-cosmic-flight {
+    display: none !important;
+  }
+  /* Row 1 — planet focus pills: horizontal scroll, 44px+ targets */
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .lite-vp-controls {
+    display: flex !important;
+    box-sizing: border-box !important;
+    grid-row: 1 !important;
+    grid-column: 1 / -1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    padding: 2px 2px 4px !important;
+    justify-content: flex-start !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .lite-vp-controls::-webkit-scrollbar {
+    display: none;
+  }
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .lite-vp-btn {
+    box-sizing: border-box !important;
+    flex: 0 0 auto !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    justify-content: center !important;
+  }
+  /* Seal art plates are too heavy at this size — glyph + label only */
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .lite-vp-btn .lite-vp-btn__seal {
+    display: none !important;
+  }
+  /* Row 2 — time scrub + (date · Now) */
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-scrub {
+    box-sizing: border-box !important;
+    grid-row: 2 !important;
+    grid-column: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    align-self: center !important;
+  }
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-time {
+    box-sizing: border-box !important;
+    grid-row: 2 !important;
+    grid-column: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    font-size: 0.62rem !important;
+  }
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-date {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 34vw !important;
+  }
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter #orrery-lite-deck .ap-orrery-now {
+    box-sizing: border-box !important;
+    min-height: 44px !important;
+    min-width: 48px !important;
+  }
+}
+
+/* ── Reduced motion: instant swap, no pulse, no choreography ── */
+@media (prefers-reduced-motion: reduce) {
+  html.ap-model-revealed .ap-model-window::before,
+  html.ap-model-revealed .ap-mw-corners::before,
+  html.ap-model-revealed .ap-mw-corners::after,
+  html.ap-model-revealed .ap-mw-plate,
+  html.ap-model-revealed #orrery-lite-deck > * {
+    animation: none !important;
+  }
+  .ap-mw-dot { animation: none !important; opacity: 0.85; }
+  .ap-mw-live { transition: none !important; }
+  .ap-model-window { transition: none !important; }
+}

@@ -109,9 +109,10 @@
         ? '<div class="autocomplete-note">Offline — built-in city list only</div>' : '';
       cityDd.innerHTML = hits.map((c, i) => {
         const region = c.admin ? `${c.admin}, ${c.country}` : c.country;
-        return `<div class="autocomplete-option" data-i="${i}"><strong>${escHtml(c.name)}</strong>&nbsp;<span style="opacity:0.6">${escHtml(region)}</span></div>`;
+        return `<div class="autocomplete-option" role="option" id="ev-city-opt-${i}" data-i="${i}"><strong>${escHtml(c.name)}</strong>&nbsp;<span style="opacity:0.6">${escHtml(region)}</span></div>`;
       }).join('') + note;
       cityDd.hidden = false;
+      cityIn.setAttribute('aria-expanded', 'true');
       cityDd.querySelectorAll('.autocomplete-option').forEach((el, i) => {
         el.addEventListener('mousedown', ev2 => {
           ev2.preventDefault();
@@ -120,6 +121,8 @@
             ? `${hits[i].name}, ${hits[i].admin}`
             : `${hits[i].name}, ${hits[i].country}`;
           cityDd.hidden = true;
+          cityIn.setAttribute('aria-expanded', 'false');
+          cityIn.removeAttribute('aria-activedescendant');
         });
       });
     });
@@ -128,22 +131,49 @@
   cityIn.addEventListener('input', () => {
     pickedCity = null;
     const q = cityIn.value.trim();
-    if (q.length < 2) { citySeq++; cityDd.hidden = true; return; }
+    if (q.length < 2) {
+      citySeq++; cityDd.hidden = true;
+      cityIn.setAttribute('aria-expanded', 'false');
+      return;
+    }
     cityDd.innerHTML = '<div class="autocomplete-note">Searching the gazetteer…</div>';
     cityDd.hidden = false;
     runCitySearch(q);
   });
-  cityIn.addEventListener('blur', () => setTimeout(() => { cityDd.hidden = true; }, 150));
+  cityIn.addEventListener('blur', () => setTimeout(() => {
+    cityDd.hidden = true;
+    cityIn.setAttribute('aria-expanded', 'false');
+  }, 150));
+
+  function openBirthPanel() {
+    const panel = document.getElementById('sky-birth-panel');
+    const toggle = document.getElementById('ev-personalize-toggle');
+    if (panel) panel.hidden = false;
+    if (toggle) toggle.setAttribute('aria-expanded', 'true');
+  }
+
+  const personalizeToggle = document.getElementById('ev-personalize-toggle');
+  if (personalizeToggle) {
+    personalizeToggle.addEventListener('click', () => {
+      const panel = document.getElementById('sky-birth-panel');
+      if (!panel) return;
+      const open = panel.hidden;
+      panel.hidden = !open;
+      personalizeToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) document.getElementById('ev-datetime')?.focus();
+    });
+  }
 
   document.getElementById('ev-set').addEventListener('click', () => {
     const dt = document.getElementById('ev-datetime').value;
     if (!dt || !pickedCity) {
-      document.getElementById('ev-status').textContent = 'Both the moment and the place are needed.';
+      document.getElementById('ev-status').textContent = 'Both date and birth place are needed — pick a town from the list.';
+      openBirthPanel();
       return;
     }
     event_ = { dt, lat: pickedCity.lat, lon: pickedCity.lon, tz: pickedCity.tz, city: pickedCity.name };
     saveEvent(event_);
-    activate();
+    activate({ scrollToYour: true });
   });
 
   // Example event so first-time visitors see the instrument working immediately.
@@ -154,11 +184,15 @@
       dt: '1934-11-09T17:05', lat: 40.6782, lon: -73.9442,
       tz: 'America/New_York', city: 'Brooklyn, New York', example: true,
     };
-    // persist only if the visitor has no real event saved
     if (!localStorage.getItem(STORE_KEY)) saveEvent(event_);
-    activate();
+    const dtIn = document.getElementById('ev-datetime');
+    const cityInEl = document.getElementById('ev-city');
+    if (dtIn) dtIn.value = event_.dt;
+    if (cityInEl) cityInEl.value = 'Brooklyn, New York';
+    pickedCity = { lat: event_.lat, lon: event_.lon, tz: event_.tz, name: 'Brooklyn' };
+    activate({ scrollToYour: true });
     document.getElementById('ev-status').textContent =
-      'Example — Carl Sagan, 9 Nov 1934, Brooklyn. Set your own event any time.';
+      'Example loaded — Carl Sagan, 9 Nov 1934, Brooklyn. Replace with your own details any time.';
   });
 
   // ── Section 1: Light-cone ─────────────────────────────────────────────────
@@ -192,7 +226,10 @@
     }
     tick();
     if (lcTimer) clearInterval(lcTimer);
-    lcTimer = setInterval(tick, 1000);
+    lcTimer = setInterval(() => {
+      if (document.hidden) return;
+      tick();
+    }, 1000);
 
     // reached-stars chips (last 12)
     const m = window.LightCone.milestones(birth);
@@ -235,7 +272,7 @@
       : (cv.width = W, cv.height = H, cv.getContext('2d'));
     x.scale(W / BASE, W / BASE);
 
-    x.fillStyle = '#050406';
+    x.fillStyle = '#07070A';
     x.fillRect(0, 0, BASE, BASE);
     const neb = x.createRadialGradient(BASE / 2, 430, 0, BASE / 2, 430, 520);
     neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
@@ -309,7 +346,7 @@
 
     // ── text ──
     x.textAlign = 'center';
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#A8B0BC';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText('T H E   L I G H T - C O N E', BASE / 2, 130);
 
@@ -325,7 +362,7 @@
     x.font = '28px "AstroGlyph", Georgia, serif';
     x.fillText(`and is now ${m.radiusLy.toFixed(2)} light-years from Earth — still travelling`, BASE / 2, 975);
 
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#A8B0BC';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', BASE / 2, 1010);
 
@@ -355,7 +392,7 @@
       : (cv.width = CARD_W, cv.height = CARD_H, cv.getContext('2d'));
     x.scale(S, S);
 
-    x.fillStyle = '#050406';
+    x.fillStyle = '#07070A';
     x.fillRect(0, 0, CARD_BASE, CARD_BASE);
     const neb = x.createRadialGradient(nebX, nebY, 0, nebX, nebY, nebR);
     neb.addColorStop(0, 'rgba(110, 26, 38, 0.22)');
@@ -370,24 +407,25 @@
       x.fill();
     }
 
-    x.strokeStyle = 'rgba(201, 162, 39,0.55)';
+    // Observatory 2026 brass (core #A8B0BC) — not retired warm gold
+    x.strokeStyle = 'rgba(168, 176, 188,0.55)';
     x.lineWidth = 2;
     x.strokeRect(46, 46, CARD_BASE - 92, CARD_BASE - 92);
-    x.strokeStyle = 'rgba(201, 162, 39,0.22)';
+    x.strokeStyle = 'rgba(168, 176, 188,0.22)';
     x.strokeRect(58, 58, CARD_BASE - 116, CARD_BASE - 116);
     return { cv, x, S, CARD_W };
   }
 
   function cardHeader(x, text, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#A8B0BC';
     x.font = '26px "AstroGlyph", Georgia, serif';
     x.fillText(text, CARD_BASE / 2, y == null ? 130 : y);
   }
 
   function cardFooter(x, y) {
     x.textAlign = 'center';
-    x.fillStyle = '#C9A227';
+    x.fillStyle = '#A8B0BC';
     x.font = '22px "AstroGlyph", Georgia, serif';
     x.fillText('astroprecise · the instrument', CARD_BASE / 2, y == null ? 1010 : y);
   }
@@ -405,15 +443,15 @@
     x.fillStyle = 'rgba(20, 16, 10,0.55)';
     x.fill();
     x.lineWidth = 1;
-    x.strokeStyle = measured ? 'rgba(201, 162, 39,0.55)' : 'rgba(154,166,200,0.45)';
+    x.strokeStyle = measured ? 'rgba(168, 176, 188,0.55)' : 'rgba(168,158,136,0.45)';
     x.stroke();
     const dotX = left + padX;
     x.beginPath();
     x.arc(dotX, y, dotR, 0, Math.PI * 2);
-    x.fillStyle = measured ? '#C9A227' : '#A89E88';
+    x.fillStyle = measured ? '#A8B0BC' : '#A89E88';
     x.fill();
     x.textAlign = 'left';
-    x.fillStyle = measured ? '#EFE3C0' : '#A89E88';
+    x.fillStyle = measured ? '#E8EBF0' : '#A89E88';
     x.fillText(label, dotX + dotGap, y + 7);
     x.textAlign = 'center';
   }
@@ -478,7 +516,7 @@
       nameSize -= 4; x.font = `bold ${nameSize}px "AstroGlyph", Georgia, serif`;
     }
     x.textAlign = 'center';
-    x.shadowColor = 'rgba(201, 162, 39,0.55)';
+    x.shadowColor = 'rgba(168, 176, 188,0.55)';
     x.shadowBlur = 24;
     x.fillText(s.name.toUpperCase(), CARD_BASE / 2, 296);
     x.shadowBlur = 0;
@@ -496,9 +534,9 @@
     }
     x.beginPath();
     x.arc(CARD_BASE / 2, panelCy, half, 0, Math.PI * 2);
-    x.strokeStyle = 'rgba(154,166,200,0.12)';
+    x.strokeStyle = 'rgba(168, 176, 188,0.14)';
     x.lineWidth = 1; x.stroke();
-    x.strokeStyle = 'rgba(201, 162, 39,0.30)';
+    x.strokeStyle = 'rgba(168, 176, 188,0.30)';
     x.beginPath();
     x.moveTo(CARD_BASE / 2 - 16, panelCy); x.lineTo(CARD_BASE / 2 + 16, panelCy);
     x.moveTo(CARD_BASE / 2, panelCy - 16); x.lineTo(CARD_BASE / 2, panelCy + 16);
@@ -508,12 +546,12 @@
       const r = Math.max(1.4, 4.2 - p.st.mag * 0.7);
       x.beginPath();
       x.arc(p.px, p.py, isHero ? Math.max(r, 5) : r, 0, Math.PI * 2);
-      if (isHero) { x.fillStyle = 'rgba(232,201,106,0.98)'; x.shadowColor = 'rgba(201, 162, 39,0.9)'; x.shadowBlur = 16; }
-      else { x.fillStyle = 'rgba(154,166,200,0.55)'; x.shadowBlur = 0; }
+      if (isHero) { x.fillStyle = 'rgba(216,185,120,0.98)'; x.shadowColor = 'rgba(168, 176, 188,0.9)'; x.shadowBlur = 16; }
+      else { x.fillStyle = 'rgba(190,178,152,0.55)'; x.shadowBlur = 0; }
       x.fill(); x.shadowBlur = 0;
     }
 
-    x.fillStyle = '#EFE3C0';
+    x.fillStyle = '#E8EBF0';
     x.font = '30px "AstroGlyph", Georgia, serif';
     const parts = [];
     if (s.con) parts.push(s.con);
@@ -571,7 +609,7 @@
     x.fillStyle = '#f0e8d8';
     x.font = 'bold 54px "AstroGlyph", Georgia, serif';
     x.fillText(lunar.phaseName, CARD_BASE / 2, 622);
-    x.fillStyle = '#EFE3C0';
+    x.fillStyle = '#E8EBF0';
     x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(`${Math.round(lunar.illumination * 100)}% illuminated · ${lunar.waxing ? 'waxing' : 'waning'}`, CARD_BASE / 2, 668);
 
@@ -594,7 +632,7 @@
       swLine = 'Live space-weather feed unreachable — not faked';
       measured = false;
     }
-    x.fillStyle = measured ? '#EFE3C0' : '#A89E88';
+    x.fillStyle = measured ? '#E8EBF0' : '#A89E88';
     x.font = '30px "AstroGlyph", Georgia, serif';
     x.fillText(swLine, CARD_BASE / 2, 858);
 
@@ -1025,11 +1063,88 @@
       '" aria-label="Explain this measurement" aria-expanded="false">i</button>';
   }
 
+  const BIG_THREE_HINT = {
+    Sun: 'your core identity and life force',
+    Moon: 'your emotional nature and instincts',
+    Rising: 'how you meet the world — your outer style',
+  };
+
+  let _planetsNowCache = null;
+
+  function utcJulianNow() {
+    const now = new Date();
+    return E().julianDay(
+      now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+      now.getUTCHours(), now.getUTCMinutes(), 0
+    );
+  }
+
+  function planetsNow(jd) {
+    if (_planetsNowCache && _planetsNowCache.jd === jd) return _planetsNowCache.planets;
+    const planets = [
+      ['Sun', '☉', E().sunPosition(jd).lon],
+      ['Moon', '☽', E().moonPosition(jd).lon],
+      ['Mercury', '☿', E().mercuryPosition(jd).lon],
+      ['Venus', '♀', E().venusPosition(jd).lon],
+      ['Mars', '♂', E().marsPosition(jd).lon],
+      ['Jupiter', '♃', E().jupiterPosition(jd).lon],
+      ['Saturn', '♄', E().saturnPosition(jd).lon],
+    ];
+    _planetsNowCache = { jd, planets };
+    return planets;
+  }
+
+  function renderTonightPlanets() {
+    const host = document.getElementById('sky-tonight-planets');
+    if (!host || !E()) return;
+    try {
+      const jd = utcJulianNow();
+      const planets = planetsNow(jd);
+      host.innerHTML = '<table class="sky-planets-table"><thead><tr><th scope="col">Planet</th><th scope="col">Sign</th><th scope="col">Degree</th></tr></thead><tbody>' +
+        planets.map(([name, glyph, lon]) => {
+          const sign = E().signOf(lon);
+          const deg = Math.floor(lon % 30);
+          const orb = (window.AstroIcons && AstroIcons.planet)
+            ? AstroIcons.planet(name, { sm: true })
+            : glyph;
+          return '<tr><th scope="row">' + orb + ' ' + name + '</th><td>' + esc(sign) + '</td><td>' + deg + '°</td></tr>';
+        }).join('') + '</tbody></table>';
+    } catch (e) {
+      host.innerHTML = '<p class="sky-panel__empty">Planet positions could not be computed.</p>';
+    }
+  }
+
+  function renderTonightSummary(w) {
+    const strip = document.getElementById('sky-tonight-strip');
+    const summary = document.getElementById('sky-weather-summary');
+    if (!strip && !summary) return;
+    try {
+      const c = w.components;
+      const comp = w.composite;
+      const moonPct = Math.round((c.lunar.illumination || 0) * 100);
+      if (strip) {
+        strip.innerHTML =
+          '<article class="sky-card"><p class="sky-card__label">Moon</p><p class="sky-card__value">' + esc(c.lunar.phaseName) + '</p><p class="sky-card__sub">' + moonPct + '% lit</p></article>' +
+          '<article class="sky-card"><p class="sky-card__label">Sky mood <a href="#sec-weather" class="sky-card__gloss" title="A composite score from the Moon, transits, and space weather">what&rsquo;s this?</a></p><p class="sky-card__value">' + (comp.score != null ? comp.score + '/100' : '—') + '</p><p class="sky-card__sub">' + esc(comp.label) + '</p></article>' +
+          '<article class="sky-card"><p class="sky-card__label">Transits</p><p class="sky-card__value">' + (c.transits.basis === 'natal' ? 'Personal' : 'General') + '</p><p class="sky-card__sub">' + (c.transits.basis === 'natal' ? 'Weighed against your chart' : 'Add birth details to personalise') + '</p></article>';
+      }
+      if (summary) {
+        summary.innerHTML =
+          '<p class="sky-weather-summary__label">Today in one sentence</p>' +
+          '<p class="sky-weather-summary__text">' + esc(comp.summary) + '</p>' +
+          (comp.provenance ? '<p class="sky-weather-summary__prov">' + esc(comp.provenance) + '</p>' : '');
+      }
+    } catch (e) {
+      if (strip) strip.innerHTML = '<p class="sky-panel__empty">Tonight summary unavailable.</p>';
+    }
+  }
+
   async function renderWeather() {
     const out = document.getElementById('weather-out');
     try {
       const natal = event_ ? natalFor(event_) : null;
       const w = await window.FieldWeather.assemble(natal, new Date());
+      renderTonightSummary(w);
       const c = w.components;
 
       const comp = w.composite;
@@ -1240,16 +1355,10 @@
     if (frame === 'raw') { tbl.innerHTML = ''; return; }
     // ayanamsha (Lahiri): ~23.853° at J2000, drifting +50.29″/yr
     const now = new Date();
-    const yearFrac = now.getFullYear() + now.getMonth() / 12;
+    const yearFrac = now.getUTCFullYear() + now.getUTCMonth() / 12;
     const ayan = 23.853 + (yearFrac - 2000) * (50.29 / 3600);
-    const jd = E().julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
-                             now.getHours(), now.getMinutes(), 0);
-    const planets = [
-      ['Sun', '☉', E().sunPosition(jd).lon], ['Moon', '☽', E().moonPosition(jd).lon],
-      ['Mercury', '☿', E().mercuryPosition(jd).lon], ['Venus', '♀', E().venusPosition(jd).lon],
-      ['Mars', '♂', E().marsPosition(jd).lon], ['Jupiter', '♃', E().jupiterPosition(jd).lon],
-      ['Saturn', '♄', E().saturnPosition(jd).lon],
-    ];
+    const jd = utcJulianNow();
+    const planets = planetsNow(jd);
     tbl.innerHTML = planets.map(([name, glyph, lon]) => {
       const adj = frame === 'sidereal' ? ((lon - ayan) % 360 + 360) % 360 : lon;
       const sign = E().signOf(adj);
@@ -1266,9 +1375,14 @@
   }
 
   document.querySelectorAll('.precession-toggle .glow-btn').forEach(btn => {
+    btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.precession-toggle .glow-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.precession-toggle .glow-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       renderFrame(btn.dataset.frame);
     });
   });
@@ -1324,10 +1438,41 @@
   // Rendered here (not in an inline page script) so it uses the event's real
   // IANA timezone + birthplace via natalFor(), and runs for the example event.
 
+  function renderBigThree(raw) {
+    const el = document.getElementById('natal-big-three');
+    if (!el || !raw || !E()) return;
+    const sun = raw.positions && raw.positions.sun;
+    const moon = raw.positions && raw.positions.moon;
+    const risingSign = Number.isFinite(raw.ascendant) ? E().signOf(raw.ascendant) : null;
+    const cells = [];
+    if (sun) {
+      cells.push(
+        '<article class="sky-big-three__cell"><span class="sky-big-three__glyph">☉</span>' +
+        '<h3 class="sky-big-three__name">Sun in ' + esc(sun.sign) + '</h3>' +
+        '<p class="sky-big-three__hint">' + BIG_THREE_HINT.Sun + '</p></article>'
+      );
+    }
+    if (moon) {
+      cells.push(
+        '<article class="sky-big-three__cell"><span class="sky-big-three__glyph">☽</span>' +
+        '<h3 class="sky-big-three__name">Moon in ' + esc(moon.sign) + '</h3>' +
+        '<p class="sky-big-three__hint">' + BIG_THREE_HINT.Moon + '</p></article>'
+      );
+    }
+    if (risingSign) {
+      cells.push(
+        '<article class="sky-big-three__cell"><span class="sky-big-three__glyph">↑</span>' +
+        '<h3 class="sky-big-three__name">Rising in ' + esc(risingSign) + '</h3>' +
+        '<p class="sky-big-three__hint">' + BIG_THREE_HINT.Rising + '</p></article>'
+      );
+    }
+    el.innerHTML = cells.join('');
+  }
+
   function renderNatalSignature() {
-    const sig = document.getElementById('sec-natal-signature');
+    const your = document.getElementById('sky-your');
     const grid = document.getElementById('natal-sig-grid');
-    if (!sig || !grid || !event_) return;
+    if (!grid || !event_) return;
 
     const sumDigits = n => String(Math.abs(n)).split('').reduce((a, d) => a + parseInt(d, 10), 0);
     const reduce = n => { while (n > 9 && n !== 11 && n !== 22 && n !== 33) n = sumDigits(n); return n; };
@@ -1341,7 +1486,7 @@
     const link = document.getElementById('natal-lifepath-link');
     if (link) {
       link.href = 'lifepath.html?date=' + event_.dt.split('T')[0];
-      link.textContent = '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path ' + lp + ' — ' + title + ' →';
+      link.textContent = 'Life Path ' + lp + ' — ' + title + ' →';
     }
 
     const items = [];
@@ -1376,35 +1521,95 @@
       '</div>'
     );
     grid.innerHTML = items.join('');
-    sig.removeAttribute('hidden');
+    renderBigThree(raw);
+    if (your) your.removeAttribute('hidden');
+    const deep = document.getElementById('sky-your-deep');
+    if (deep) deep.removeAttribute('hidden');
   }
 
   // ── Activation ────────────────────────────────────────────────────────────
 
-  function activate() {
+  function updateJumpNav() {
+    const link = document.getElementById('sky-jump-your');
+    const your = document.getElementById('sky-your');
+    if (!link) return;
+    if (your && !your.hidden) {
+      link.href = '#sky-your';
+      link.textContent = 'Your sky';
+    } else {
+      link.href = '#ev-personalize-toggle';
+      link.textContent = 'Add your sky';
+    }
+  }
+
+  function chartForAI() {
+    if (!event_ || !E()) return null;
+    const raw = natalFor(event_);
+    if (!raw || !raw.positions) return null;
+    const pos = {};
+    const MAP = {
+      sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus',
+      mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn',
+    };
+    Object.keys(MAP).forEach(k => {
+      const p = raw.positions[k];
+      if (p) pos[MAP[k]] = { lon: p.longitude, sign: p.sign, degree: p.degree };
+    });
+    const risingSign = Number.isFinite(raw.ascendant) ? E().signOf(raw.ascendant) : null;
+    const [birthDate, birthTime] = event_.dt.split('T');
+    return {
+      name: event_.city || 'Your birth sky',
+      birthDate,
+      birthTime: birthTime || '',
+      city: event_.city,
+      lat: event_.lat,
+      lon: event_.lon,
+      tz: event_.tz,
+      risingSign,
+      sunSign: raw.positions.sun && raw.positions.sun.sign,
+      moonSign: raw.positions.moon && raw.positions.moon.sign,
+      positions: pos,
+    };
+  }
+
+  function activate(opts) {
     if (!event_) return;
     document.getElementById('ev-status').textContent =
-      `Event set: ${event_.dt.replace('T', ' · ')} · ${event_.city}`;
+      'Personalised for ' + event_.dt.replace('T', ' · ') + ' · ' + event_.city;
     document.getElementById('ev-datetime').value = event_.dt;
     if (event_.city && !cityIn.value) cityIn.value = event_.city;
-    ['sec-lightcone', 'sec-zenith', 'sec-echo', 'sec-daimon'].forEach(id => {
-      document.getElementById(id).hidden = false;
-    });
-    renderLightCone();
-    renderZenith();
-    withDaimon(renderDaimonIdentity).catch(() => {});
     renderNatalSignature();
-    renderWeather();   // re-render personalised
+    renderWeather();
+    ['sec-lightcone', 'sec-zenith', 'sec-echo', 'sec-daimon'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.hidden = false;
+    });
+    try { renderLightCone(); } catch (e) {}
+    try { renderZenith(); } catch (e) {}
+    withDaimon(renderDaimonIdentity).catch(() => {});
+    updateJumpNav();
+    if (opts && opts.scrollToYour) {
+      const your = document.getElementById('sky-your');
+      if (your) {
+        requestAnimationFrame(() => {
+          your.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+    try {
+      window.dispatchEvent(new CustomEvent('ap-instrument-activated'));
+    } catch (e) {}
   }
 
   function boot() {
     event_ = loadEvent();
-    renderFrame('tropical');
+    renderTonightPlanets();
     initTimeTravel();
     wireZenithCardBtn();
     wireDailySkyCardBtn();
-    if (event_) activate();   // activate() renders the personalised weather
-    else renderWeather();     // no event yet — show the generic sky weather
+    updateJumpNav();
+    if (event_) activate();
+    else renderWeather();
   }
 
   function scheduleBoot() {
@@ -1413,7 +1618,12 @@
       boot();
       return;
     }
-    const target = document.getElementById('sec-clock')
+    if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) {
+      boot();
+      return;
+    }
+    const target = document.getElementById('sky-tonight')
+      || document.getElementById('sec-clock')
       || document.querySelector('.instrument-section');
     if (!target || !('IntersectionObserver' in window)) {
       boot();
@@ -1432,7 +1642,22 @@
       }
     }, { rootMargin: '0px 0px 200px 0px', threshold: 0 });
     io.observe(target);
+    setTimeout(start, 2500);
   }
+
+  const precessionHost = document.getElementById('sec-precession');
+  if (precessionHost && 'IntersectionObserver' in window) {
+    let frameBooted = false;
+    const frameIo = new IntersectionObserver((entries) => {
+      if (frameBooted || !entries.some(e => e.isIntersecting)) return;
+      frameBooted = true;
+      frameIo.disconnect();
+      renderFrame('tropical');
+    }, { rootMargin: '0px 0px 120px 0px', threshold: 0 });
+    frameIo.observe(precessionHost);
+  }
+
+  window.APInstrument = { chartForAI, getEvent: () => event_ };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleBoot);
   else scheduleBoot();

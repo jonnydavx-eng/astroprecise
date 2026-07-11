@@ -32,25 +32,33 @@
     ];
   })();
 
+  // cool-brass system — mirrors css .ap-orb ramp (retinted 2026-07-04)
   var EL_COL = {
-    fire:  '#e05040',
-    earth: '#6b9b5f',
-    air:   '#5c4a6e',
-    water: '#2a6ebd',
+    fire:  '#d89a72',
+    earth: '#9cb27e',
+    air:   '#b8c0cc',
+    water: '#8fb8b6',
   };
 
   var PLANETS = [
-    { key: 'sun',     sym: '☉', col: '#c9a227', name: 'Sun' },
-    { key: 'moon',    sym: '☽', col: '#C8D0E8', name: 'Moon' },
-    { key: 'mercury', sym: '☿', col: '#3f7d76', name: 'Mercury' },
-    { key: 'venus',   sym: '♀', col: '#C77DFF', name: 'Venus' },
-    { key: 'mars',    sym: '♂', col: '#e05848', name: 'Mars' },
-    { key: 'jupiter', sym: '♃', col: '#E8A050', name: 'Jupiter' },
-    { key: 'saturn',  sym: '♄', col: '#A0B898', name: 'Saturn' },
+    { key: 'sun',     sym: '☉', col: '#ead79a', name: 'Sun' },
+    { key: 'moon',    sym: '☽', col: '#e6e0d2', name: 'Moon' },
+    { key: 'mercury', sym: '☿', col: '#cfc7b6', name: 'Mercury' },
+    { key: 'venus',   sym: '♀', col: '#e2c8b4', name: 'Venus' },
+    { key: 'mars',    sym: '♂', col: '#c87e5e', name: 'Mars' },
+    { key: 'jupiter', sym: '♃', col: '#e0c48e', name: 'Jupiter' },
+    { key: 'saturn',  sym: '♄', col: '#d8c289', name: 'Saturn' },
   ];
 
   var RING_R = 228;
   var SIGN_R = 228;
+  var TILT_Y = 0.38;
+
+  var SIGN_ABBR = {
+    aries: 'ARI', taurus: 'TAU', gemini: 'GEM', cancer: 'CAN',
+    leo: 'LEO', virgo: 'VIR', libra: 'LIB', scorpio: 'SCO',
+    sagittarius: 'SAG', capricorn: 'CAP', aquarius: 'AQU', pisces: 'PIS',
+  };
   var ROTATION = -90;
   var rotVel = 0;
   var autoSpin = true;
@@ -60,13 +68,17 @@
   var selected = null;
   var hovered = null;
   var rafId = null;
-  var planetLons = {};
-  var planetPoll = null;
 
-  var wrap, poster, svg, rotator, planetsG, centreBtn;
+  var spacePanX = 0;
+  var spacePanY = 0;
+
+  var wrap, poster, svg, rotator, planetsG, chordsG, centreBtn, chordTooltip;
+  var transitChords = [];
+  var hoveredChord = null;
   var onSignSelect = null;
   var onInteract = null;
   var ready = false;
+  var visualEnabled = false;
 
   function ns(tag, attrs) {
     var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -140,42 +152,90 @@
     rotator.querySelectorAll('.wheel-sign').forEach(function (g) {
       var on = g.dataset.sign === selected;
       g.classList.toggle('is-selected', on);
-      g.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   }
 
+  function buildMeridian() {
+    var g = ns('g', {
+      id: 'wheel-poster-meridian',
+      class: 'wheel-meridian',
+      'pointer-events': 'none',
+    });
+    g.appendChild(ns('line', {
+      x1: 0, y1: 8, x2: 0, y2: -RING_R * 1.1,
+      stroke: 'rgba(168, 176, 188, 0.5)',
+      'stroke-width': '1.2',
+      'stroke-dasharray': '3 5',
+    }));
+    g.appendChild(ns('circle', {
+      cx: 0, cy: -RING_R * 1.04, r: 2.8,
+      fill: 'rgba(168, 176, 188, 0.9)',
+    }));
+    g.appendChild(ns('text', {
+      y: -RING_R * 1.16,
+      'text-anchor': 'middle',
+      'font-family': 'system-ui,sans-serif',
+      'font-size': '6.5',
+      'letter-spacing': '0.16em',
+      fill: 'rgba(168, 176, 188, 0.72)',
+      textContent: 'TODAY',
+    }));
+    return g;
+  }
+
   function buildRing() {
-    var tilt = ns('g', { id: 'wheel-poster-tilt', transform: 'scale(1,0.325)' });
+    var tilt = ns('g', { id: 'wheel-poster-tilt', transform: 'scale(1,' + TILT_Y + ')' });
     rotator = ns('g', { id: 'wheel-poster-rotator' });
 
-    var outer = ns('circle', {
-      r: RING_R,
+    rotator.appendChild(ns('circle', {
+      r: RING_R * 1.06,
       fill: 'none',
-      stroke: 'rgba(201,162,39,0.32)',
-      'stroke-width': '2',
-      'stroke-dasharray': '6 10',
-      class: 'wheel-poster__outer-ring',
-    });
-    var inner = ns('circle', {
-      r: RING_R * 0.8,
-      fill: 'none',
-      stroke: 'rgba(92,74,110,0.16)',
+      stroke: 'rgba(168, 176, 188, 0.14)',
       'stroke-width': '1',
-    });
-    rotator.appendChild(outer);
-    rotator.appendChild(inner);
+    }));
+    rotator.appendChild(ns('circle', {
+      r: RING_R,
+      fill: 'rgba(12, 16, 22, 0.35)',
+      stroke: 'rgba(168, 176, 188, 0.42)',
+      'stroke-width': '1.8',
+      class: 'wheel-poster__outer-ring',
+    }));
+    rotator.appendChild(ns('circle', {
+      r: RING_R * 0.68,
+      fill: 'none',
+      stroke: 'rgba(111, 160, 216, 0.12)',
+      'stroke-width': '1',
+      'stroke-dasharray': '2 6',
+    }));
 
-    SIGNS.forEach(function (s, i) {
+    for (var t = 0; t < 360; t += 10) {
+      var rad = t * Math.PI / 180;
+      var major = t % 30 === 0;
+      var rIn = RING_R * (major ? 0.82 : 0.86);
+      var rOut = RING_R * (major ? 0.98 : 0.94);
+      var tx1 = rIn * Math.sin(rad);
+      var ty1 = -rIn * Math.cos(rad);
+      var tx2 = rOut * Math.sin(rad);
+      var ty2 = -rOut * Math.cos(rad);
+      rotator.appendChild(ns('line', {
+        x1: tx1, y1: ty1, x2: tx2, y2: ty2,
+        stroke: major ? 'rgba(168, 176, 188, 0.38)' : 'rgba(168, 176, 188, 0.14)',
+        'stroke-width': major ? '1.2' : '0.6',
+      }));
+    }
+
+    SIGNS.forEach(function (s) {
+      var a0 = (s.lon - 15) * Math.PI / 180;
+      var a1 = (s.lon + 15) * Math.PI / 180;
+      var r0 = RING_R * 0.74;
+      var r1 = RING_R * 1.02;
       var sector = ns('path', {
         class: 'wheel-sector',
         'data-el': s.el,
-        fill: 'rgba(0,0,0,0)',
-        stroke: 'none',
+        fill: 'rgba(168, 176, 188, 0.03)',
+        stroke: 'rgba(168, 176, 188, 0.08)',
+        'stroke-width': '0.5',
       });
-      var a0 = (s.lon - 15) * Math.PI / 180;
-      var a1 = (s.lon + 15) * Math.PI / 180;
-      var r0 = RING_R * 0.72;
-      var r1 = RING_R * 1.04;
       var x0 = r0 * Math.sin(a0);
       var y0 = -r0 * Math.cos(a0);
       var x1 = r1 * Math.sin(a0);
@@ -188,77 +248,61 @@
         'M' + x0 + ',' + y0 + ' L' + x1 + ',' + y1 +
         ' A' + r1 + ',' + r1 + ' 0 0 1 ' + x2 + ',' + y2 +
         ' L' + x3 + ',' + y3 + ' A' + r0 + ',' + r0 + ' 0 0 0 ' + x0 + ',' + y0 + ' Z');
-      sector.setAttribute('fill', EL_COL[s.el] || '#888');
-      sector.setAttribute('fill-opacity', '0.07');
       rotator.appendChild(sector);
     });
 
-    for (var t = 0; t < 360; t += 30) {
-      var rad = t * Math.PI / 180;
-      var tx1 = (RING_R * 0.76) * Math.sin(rad);
-      var ty1 = -(RING_R * 0.76) * Math.cos(rad);
-      var tx2 = (RING_R * 0.92) * Math.sin(rad);
-      var ty2 = -(RING_R * 0.92) * Math.cos(rad);
-      rotator.appendChild(ns('line', {
-        x1: tx1, y1: ty1, x2: tx2, y2: ty2,
-        stroke: 'rgba(201,162,39,0.22)',
-        'stroke-width': t % 90 === 0 ? '1.4' : '0.7',
-      }));
-    }
-
+    chordsG = ns('g', { id: 'wheel-poster-chords', class: 'wheel-poster-chords' });
+    rotator.appendChild(chordsG);
     planetsG = ns('g', { id: 'wheel-poster-planets', class: 'wheel-poster-planets' });
     rotator.appendChild(planetsG);
 
     SIGNS.forEach(function (s) {
-      var ang = s.lon;
+      var ang = s.lon + 15;
       var g = ns('g', {
         class: 'wheel-sign',
         'data-sign': s.key,
         'data-el': s.el,
-        transform: 'rotate(' + ang + ') translate(0,' + (-SIGN_R) + ')',
-        role: 'button',
-        tabindex: '0',
-        'aria-label': s.name + ' — tap for today\'s reading',
-        'aria-pressed': 'false',
+        transform: 'rotate(' + ang + ') translate(0,' + (-SIGN_R * 0.9) + ')',
+        'aria-hidden': 'true',
+        focusable: 'false',
       });
       g.appendChild(ns('circle', {
         class: 'wheel-sign__glow',
-        r: '34',
-        fill: EL_COL[s.el] || '#888',
+        r: '32',
+        fill: 'rgba(168, 176, 188, 0.85)',
         'fill-opacity': '0',
       }));
       g.appendChild(ns('circle', {
         class: 'wheel-sign__hit',
-        r: '30',
+        r: '36',
         fill: 'transparent',
         stroke: 'none',
       }));
       g.appendChild(ns('circle', {
         class: 'wheel-sign__ring',
-        r: '22',
-        fill: 'rgba(12,16,22,0.55)',
-        stroke: EL_COL[s.el] || '#888',
-        'stroke-opacity': '0.45',
-        'stroke-width': '1.2',
+        r: '20',
+        fill: 'rgba(12, 16, 22, 0.72)',
+        stroke: 'rgba(168, 176, 188, 0.38)',
+        'stroke-width': '1.1',
       }));
       g.appendChild(ns('image', {
         class: 'wheel-sign__seal',
         href: 'assets/images/seals/zodiac/' + s.key + '.svg',
-        x: '-18',
-        y: '-26',
-        width: '36',
-        height: '42',
+        x: '-16',
+        y: '-22',
+        width: '32',
+        height: '36',
         'pointer-events': 'none',
       }));
       g.appendChild(ns('text', {
-        class: 'wheel-sign__name',
-        y: '32',
+        class: 'wheel-sign__abbr',
+        y: '14',
         'text-anchor': 'middle',
         'font-family': 'system-ui,sans-serif',
-        'font-size': '8',
-        fill: 'rgba(200,190,165,0.85)',
-        'letter-spacing': '0.06em',
-        textContent: s.name.toUpperCase(),
+        'font-size': '7',
+        fill: 'rgba(236, 230, 216, 0.82)',
+        'letter-spacing': '0.1em',
+        textContent: SIGN_ABBR[s.key] || s.name.slice(0, 3).toUpperCase(),
       }));
       rotator.appendChild(g);
     });
@@ -278,8 +322,8 @@
     }));
     g.appendChild(ns('circle', {
       r: '34',
-      fill: 'rgba(63,125,118,0.12)',
-      stroke: 'rgba(63,125,118,0.4)',
+      fill: 'rgba(168, 176, 188, 0.08)',
+      stroke: 'rgba(168, 176, 188, 0.42)',
       'stroke-width': '1.2',
     }));
     var star = ns('polygon', {
@@ -295,6 +339,9 @@
       tabindex: '0',
     });
     centreBtn.appendChild(ns('circle', { r: '40', fill: 'transparent' }));
+    centreBtn.addEventListener('click', function () {
+      try { document.dispatchEvent(new CustomEvent('ap-horoscope-centre-tap')); } catch (e) { /* */ }
+    });
     g.appendChild(centreBtn);
     g.appendChild(ns('text', {
       y: '48',
@@ -303,13 +350,14 @@
       'font-size': '9',
       'font-family': 'system-ui,sans-serif',
       'letter-spacing': '1.1',
-      textContent: 'BIRTH CHART',
+      textContent: 'YOUR CHART',
     }));
     return g;
   }
 
   function injectSvgStructure() {
     var hub = ns('g', { transform: 'translate(300,218)' });
+    hub.appendChild(buildMeridian());
     hub.appendChild(buildRing());
     hub.appendChild(buildCentre());
     var oldHub = svg.querySelector('g[transform="translate(300,218)"]');
@@ -325,6 +373,7 @@
 
   function drawPlanets() {
     if (!planetsG) return;
+    var planetLons = window.EclipticDialData ? EclipticDialData.getPlanetLons() : {};
     planetsG.innerHTML = '';
     PLANETS.forEach(function (pl) {
       if (planetLons[pl.key] == null) return;
@@ -353,78 +402,141 @@
         y: '-8',
         'text-anchor': 'middle',
         'font-size': '9',
+        'font-family': "'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
         fill: pl.col,
-        textContent: pl.sym,
+        textContent: pl.sym + '︎',
       }));
       planetsG.appendChild(g);
     });
-    updateLegend();
   }
 
-  function updateLegend() {
-    var legend = document.getElementById('planet-legend');
-    if (!legend) return;
-    legend.querySelectorAll('.pl-dot').forEach(function (el) {
-      var label = (el.getAttribute('aria-label') || '').replace(/ position$/i, '');
-      var pl = PLANETS.find(function (p) { return p.name === label; });
-      if (!pl || planetLons[pl.key] == null) return;
-      var sign = lonToSign(planetLons[pl.key]);
-      el.textContent = pl.sym + ' ' + pl.name + (sign ? ' · ' + sign : '');
-      el.style.setProperty('--c', pl.col);
+  function chordStroke(quality) {
+    // cool-brass system: harmonious = teal-brass, challenging = muted terracotta
+    if (quality === 'h') return 'rgba(143, 184, 182, 0.55)';
+    if (quality === 'x') return 'rgba(184, 90, 66, 0.48)';
+    return 'rgba(168, 176, 188, 0.62)';
+  }
+
+  function lonToLocal(lon, r) {
+    var rad = lon * Math.PI / 180;
+    return { x: r * Math.sin(rad), y: -r * Math.cos(rad) };
+  }
+
+  function isHeadlessMode() {
+    return wrap && wrap.classList.contains('is-canvas-primary') && !visualEnabled;
+  }
+
+  function ensureChordTooltip() {
+    if (chordTooltip || !wrap) return;
+    chordTooltip = document.createElement('div');
+    chordTooltip.className = 'wheel-chord-tooltip';
+    chordTooltip.setAttribute('role', 'tooltip');
+    chordTooltip.hidden = true;
+    wrap.appendChild(chordTooltip);
+  }
+
+  function hideChordTooltip() {
+    hoveredChord = null;
+    if (!chordTooltip) return;
+    chordTooltip.classList.remove('is-visible');
+    chordTooltip.hidden = true;
+    drawPosterChords();
+  }
+
+  function showChordTooltip(idx, clientX, clientY) {
+    var ch = transitChords[idx];
+    if (!ch || !wrap) return;
+    ensureChordTooltip();
+    hoveredChord = idx;
+    drawPosterChords();
+    var label = ch.label || ch.glyph || 'Transit aspect';
+    chordTooltip.textContent = label;
+    chordTooltip.hidden = false;
+    var rect = wrap.getBoundingClientRect();
+    chordTooltip.style.left = (clientX - rect.left) + 'px';
+    chordTooltip.style.top = (clientY - rect.top - 8) + 'px';
+    chordTooltip.classList.add('is-visible');
+  }
+
+  function wireChordLine(line, idx) {
+    line.addEventListener('mouseenter', function (e) {
+      showChordTooltip(idx, e.clientX, e.clientY);
+    });
+    line.addEventListener('mousemove', function (e) {
+      if (hoveredChord !== idx) return;
+      if (!chordTooltip || chordTooltip.hidden) return;
+      var rect = wrap.getBoundingClientRect();
+      chordTooltip.style.left = (e.clientX - rect.left) + 'px';
+      chordTooltip.style.top = (e.clientY - rect.top - 8) + 'px';
+    });
+    line.addEventListener('mouseleave', hideChordTooltip);
+    line.addEventListener('focus', function (e) {
+      var box = line.getBoundingClientRect();
+      showChordTooltip(idx, box.left + box.width * 0.5, box.top);
+    });
+    line.addEventListener('blur', hideChordTooltip);
+  }
+
+  function drawPosterChords() {
+    if (!chordsG || (isHeadlessMode() && !AUDIT)) return;
+    while (chordsG.firstChild) chordsG.removeChild(chordsG.firstChild);
+    transitChords.forEach(function (ch, idx) {
+      if (ch.natalLon == null || ch.transitLon == null) return;
+      var n = lonToLocal(((ch.natalLon % 360) + 360) % 360, RING_R * 0.50);
+      var t = lonToLocal(((ch.transitLon % 360) + 360) % 360, RING_R * 0.90);
+      var col = chordStroke(ch.quality);
+      var hit = ns('line', {
+        class: 'wheel-poster-chord-hit',
+        x1: n.x, y1: n.y, x2: t.x, y2: t.y,
+        stroke: 'transparent',
+        'stroke-width': '14',
+        'stroke-linecap': 'round',
+        tabindex: '0',
+        'aria-label': ch.label || 'Transit aspect chord',
+      });
+      wireChordLine(hit, idx);
+      chordsG.appendChild(hit);
+      var vis = ns('line', {
+        class: 'wheel-poster-chord-vis' + (hoveredChord === idx ? ' is-highlighted' : ''),
+        x1: n.x, y1: n.y, x2: t.x, y2: t.y,
+        stroke: col,
+        'stroke-width': hoveredChord === idx ? (ch.quality === 'c' ? '2.2' : '1.8') : (ch.quality === 'c' ? '1.4' : '1.1'),
+        'stroke-dasharray': ch.quality === 'x' ? '4 4' : 'none',
+        'stroke-linecap': 'round',
+        opacity: hoveredChord === idx ? '1' : '0.85',
+      });
+      chordsG.appendChild(vis);
+      if (ch.glyph) {
+        chordsG.appendChild(ns('text', {
+          x: (n.x + t.x) * 0.5,
+          y: (n.y + t.y) * 0.5,
+          'text-anchor': 'middle',
+          'dominant-baseline': 'middle',
+          'font-size': hoveredChord === idx ? '9' : '8',
+          'font-family': "'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
+          fill: col,
+          'pointer-events': 'none',
+          textContent: ch.glyph + '︎',
+        }));
+      }
     });
   }
 
-  function approxPlanets() {
-    var now = new Date();
-    var start = new Date(now.getFullYear(), 0, 0);
-    var doy = (now - start) / 86400000;
-    var yr = now.getFullYear() + (now.getMonth() + 1) / 12;
-    planetLons.sun = (doy / 365.25) * 360;
-    var jd = 367 * now.getUTCFullYear() -
-      Math.floor(7 * (now.getUTCFullYear() + Math.floor((now.getUTCMonth() + 1 + 9) / 12)) / 4) +
-      Math.floor(275 * (now.getUTCMonth() + 1) / 9) + now.getUTCDate() + 1721013.5;
-    var syn = 29.53058867;
-    var ph = ((jd - 2451549.5) % syn + syn) % syn / syn;
-    planetLons.moon = (planetLons.sun + ph * 360) % 360;
-    planetLons.mercury = (planetLons.sun + 50 * Math.sin(yr * 2.1)) % 360;
-    planetLons.venus = (planetLons.sun + 30 * Math.sin(yr * 1.6 + 1)) % 360;
-    planetLons.mars = (planetLons.sun + 120 + 20 * Math.sin(yr * 0.9)) % 360;
-    planetLons.jupiter = (30 * yr + 80) % 360;
-    planetLons.saturn = (12 * yr + 200) % 360;
-    drawPlanets();
+  function setTransitChords(list) {
+    transitChords = Array.isArray(list) ? list.slice() : [];
+    drawPosterChords();
   }
 
-  function fetchPlanets() {
-    var E = window.AstroEphemeris;
-    if (!E) return false;
-    try {
-      var now = new Date();
-      var jd = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
-        now.getUTCHours(), now.getUTCMinutes(), 0);
-      var mod = function (l) { return ((l % 360) + 360) % 360; };
-      PLANETS.forEach(function (pl) {
-        try {
-          var lon;
-          if (pl.key === 'sun') lon = E.sunPosition(jd).lon;
-          else if (pl.key === 'moon') lon = E.moonPosition(jd).lon;
-          else lon = E.planetLongitude(pl.key, jd);
-          planetLons[pl.key] = mod(lon);
-        } catch (e) { /* skip */ }
-      });
-      drawPlanets();
-      return true;
-    } catch (e) {
-      return false;
+  function syncSpaceParallax() {
+    var rad = ROTATION * Math.PI / 180;
+    var targetX = Math.sin(rad) * 22 + rotVel * 0.6;
+    var targetY = Math.cos(rad) * 10 + Math.sin(rad * 0.55) * 5;
+    spacePanX += (targetX - spacePanX) * 0.07;
+    spacePanY += (targetY - spacePanY) * 0.07;
+    if (wrap) {
+      wrap.style.setProperty('--space-pan-x', spacePanX.toFixed(2) + 'px');
+      wrap.style.setProperty('--space-pan-y', spacePanY.toFixed(2) + 'px');
     }
-  }
-
-  function startPlanetPoll() {
-    if (planetPoll) return;
-    approxPlanets();
-    planetPoll = window.setInterval(function () {
-      if (!fetchPlanets()) approxPlanets();
-    }, 60000);
-    fetchPlanets();
   }
 
   function pickSign(key) {
@@ -451,12 +563,6 @@
         e.stopPropagation();
         onSignPointer(key);
       });
-      g.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onSignPointer(key);
-        }
-      });
       g.addEventListener('mouseenter', function () {
         hovered = key;
         g.classList.add('is-hovered');
@@ -465,16 +571,6 @@
       g.addEventListener('mouseleave', function () {
         if (hovered === key) hovered = null;
         g.classList.remove('is-hovered');
-        autoSpin = !dragging;
-      });
-      g.addEventListener('focus', function () {
-        hovered = key;
-        g.classList.add('is-hovered');
-        autoSpin = false;
-      });
-      g.addEventListener('blur', function () {
-        g.classList.remove('is-hovered');
-        if (hovered === key) hovered = null;
         autoSpin = !dragging;
       });
     });
@@ -525,6 +621,7 @@
       rafId = null;
       return;
     }
+    syncSpaceParallax();
     if (autoSpin && !dragging) {
       setRotation(ROTATION + 0.028, { silent: true });
     } else if (!dragging && Math.abs(rotVel) > 0.05) {
@@ -539,24 +636,54 @@
     rafId = requestAnimationFrame(tick);
   }
 
+  function enableVisual() {
+    if (visualEnabled || AUDIT) return;
+    visualEnabled = true;
+    if (!wrap || !poster) return;
+    wrap.classList.remove('is-canvas-primary');
+    poster.removeAttribute('aria-hidden');
+    wireDrag();
+    startAnim();
+    drawPosterChords();
+  }
+
   function init() {
-    if (ready || AUDIT) return;
+    if (ready) return;
     wrap = document.getElementById('sphere-wrap');
     poster = document.getElementById('sphere-poster');
     if (!wrap || !poster) return;
     svg = poster.querySelector('.sphere-poster__svg') || poster.querySelector('svg');
     if (!svg) return;
 
-    poster.setAttribute('role', 'application');
-    poster.setAttribute('aria-roledescription', 'zodiac wheel');
-    poster.setAttribute('aria-label', 'Interactive zodiac ring — drag to spin, tap a sign for today\'s reading');
+    var headless = !AUDIT && (
+      document.documentElement.classList.contains('ap-canvas-primary') ||
+      wrap.classList.contains('is-canvas-primary')
+    );
+
+    if (headless) {
+      poster.setAttribute('aria-hidden', 'true');
+    } else {
+      poster.setAttribute('role', 'application');
+      poster.setAttribute('aria-roledescription', 'live ecliptic dial');
+      poster.setAttribute('aria-label', 'Live ecliptic dial — drag to explore, tap a sign for today\'s reading');
+    }
 
     injectSvgStructure();
+    ensureChordTooltip();
+    if (poster) {
+      poster.addEventListener('mouseleave', hideChordTooltip);
+    }
     wireSigns();
-    wireDrag();
-    startPlanetPoll();
-    startAnim();
+    if (!AUDIT && !headless) {
+      visualEnabled = true;
+      wireDrag();
+      startAnim();
+    }
+    if (window.EclipticDialData) {
+      EclipticDialData.init({ onPlanetsUpdated: drawPlanets });
+    }
     ready = true;
+    try { document.dispatchEvent(new CustomEvent('ap-horoscope-dial-ready')); } catch (e) { /* */ }
 
     document.addEventListener('ap-zodiac-sphere-ready', function () {
       if (window.ZodiacSphere && typeof ZodiacSphere.setRotation === 'function') {
@@ -582,7 +709,14 @@
     getRotationRad: getRotationRad,
     set onSignSelect(fn) { onSignSelect = typeof fn === 'function' ? fn : null; },
     set onInteract(fn) { onInteract = typeof fn === 'function' ? fn : null; },
-    refreshPlanets: function () { fetchPlanets() || approxPlanets(); },
+    refreshPlanets: function () {
+      return window.EclipticDialData ? EclipticDialData.refreshPlanets() : false;
+    },
+    syncLegendLons: function (lons) {
+      if (window.EclipticDialData) EclipticDialData.syncLegendLons(lons);
+    },
+    setTransitChords: setTransitChords,
+    enableVisual: enableVisual,
   };
 
   if (document.readyState === 'loading') {

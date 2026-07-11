@@ -1,0 +1,367 @@
+/**
+ * Page structure density — from user screenshot audit 2026-07-09
+ * Shorter tool pages; model tools first; collapsible secondary.
+ */
+
+/* Collapsed "more sky" blocks */
+.ap-more-sky {
+  max-width: var(--page-max, 1180px);
+  margin: 1.25rem auto 2rem;
+  padding: 0 1rem;
+  border: 1px solid rgba(200, 205, 214, 0.14);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+}
+.ap-more-sky__summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.95rem 1.1rem;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ap-aurora, #7EC8E8);
+  user-select: none;
+}
+.ap-more-sky__summary::-webkit-details-marker { display: none; }
+.ap-more-sky__summary::before {
+  content: "▸ ";
+  opacity: 0.8;
+}
+.ap-more-sky[open] > .ap-more-sky__summary::before {
+  content: "▾ ";
+}
+.ap-more-sky__body {
+  padding: 0 0.5rem 1rem;
+  border-top: 1px solid rgba(200, 205, 214, 0.1);
+}
+.ap-more-sky__body .section {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+/* Daily hero: tighter lead */
+body.page-horoscope .sphere-hero {
+  padding-bottom: 1.5rem;
+}
+body.page-horoscope .sphere-hero__sub {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+body.page-horoscope .sphere-hero__sub + .sphere-hero__sub {
+  font-size: 0.9rem;
+  opacity: 0.88;
+}
+
+/* Engine tools-only on Explore */
+.ap-ev--tools-only {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(200, 205, 214, 0.12);
+}
+.ap-ev--tools-only .ap-ev__title {
+  font-size: 1.25rem !important;
+}
+
+/* Early tools strip (right under hero / explore stage) */
+.ap-ev--early {
+  margin: 0.5rem auto 1.5rem !important;
+  padding: 1rem 1rem 1.25rem !important;
+  border-top: none !important;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), transparent);
+}
+.ap-ev--early .ap-ev__head {
+  margin-bottom: 0.65rem;
+}
+.ap-ev--early.ap-ev--compact .ap-ev-rail {
+  margin-top: 0.75rem;
+}
+/* Explore: tools dock sits under full-viewport stage without huge gap */
+body.page-explore .ap-ev--early,
+body.page-explore .ap-ev--tools-only {
+  max-width: none;
+  margin: 0 !important;
+  padding: 0.85rem 1rem 1.1rem !important;
+  background: rgba(0, 0, 0, 0.85);
+  border-top: 1px solid rgba(200, 205, 214, 0.12);
+  position: relative;
+  z-index: 5;
+}
+body.page-explore .ap-ev--tools-only .ap-ev__title {
+  font-size: 1.05rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Daily hero: one lead, less wall of text */
+body.page-horoscope .sphere-hero__sub + .sphere-hero__sub {
+  display: none;
+}
+body.page-horoscope .sphere-hero {
+  padding-top: 1.5rem;
+  padding-bottom: 1rem;
+}
+body.page-horoscope .sign-picker-primary {
+  margin-top: 0.75rem;
+}
+
+/* Daily: collapse empty weather shells; no huge void under week */
+body.page-horoscope .ap-more-sky:not([open]) {
+  margin-bottom: 0.85rem;
+}
+body.page-horoscope .ap-more-sky + .ap-more-sky {
+  margin-top: 0.65rem;
+}
+body.page-horoscope .section--empty,
+body.page-horoscope .planetary-weather:empty,
+body.page-horoscope .moon-phase:empty {
+  display: none;
+}
+/* Sign grid must stay continuous — no sticky bar paint-over */
+body.page-horoscope .sign-picker,
+body.page-horoscope .sign-picker-primary,
+body.page-horoscope #sign-picker-primary {
+  position: relative;
+  z-index: 2;
+}
+
+/* Chart: tools sit AFTER form — chips only, quiet bar */
+body.page-chart .ap-ev--early,
+body.page-chart .ap-ev--tools-only {
+  margin: 1rem auto 1.5rem !important;
+  max-width: var(--page-max, 1180px);
+  padding: 0.85rem 1rem 1rem !important;
+  border: 1px solid rgba(200, 205, 214, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+}
+body.page-chart .ap-ev--tools-only .ap-ev__title {
+  font-size: 1.05rem !important;
+}
+/* Cast form owns the first content viewport after hero */
+body.page-chart .chart-layout {
+  position: relative;
+  z-index: 2;
+}
+body.page-chart #chart-form-wrapper {
+  scroll-margin-top: 5rem;
+}
+
+/* Daily sign cards: denser, ONE zodiac seal (no corner duplicate + badge triple) */
+body.page-horoscope .sign-card {
+  aspect-ratio: 4 / 5 !important;
+  min-height: 0 !important;
+  padding: 0.75rem 0.45rem 0.65rem !important;
+  justify-content: center !important;
+  gap: 0.3rem !important;
+}
+body.page-horoscope .sign-card__seal,
+body.page-horoscope .sign-card__glyph {
+  position: relative;
+  z-index: 2;
+  margin: 0 auto 0.1rem;
+}
+/* element-seals.js also injects corner .sign-card__el-seal while the badge
+   already shows the element — hide the corner duplicate */
+body.page-horoscope .sign-card__el-seal {
+  display: none !important;
+}
+/* Badge: text only (no second hex inside the pill) — cleaner cards */
+body.page-horoscope .sign-card__element-badge .ap-el-seal {
+  display: none !important;
+}
+body.page-horoscope .sign-card__element-badge {
+  padding: 3px 10px !important;
+}
+body.page-horoscope .sign-grid {
+  gap: 0.65rem !important;
+}
+body.page-horoscope .sign-picker-primary {
+  margin-bottom: 0.5rem;
+}
+/* Daily tools chips after grid — quiet, not a second hero */
+body.page-horoscope .ap-ev--early.ap-ev--tools-only,
+body.page-horoscope .ap-ev--tools-only {
+  margin: 0.75rem auto 1.25rem !important;
+  max-width: var(--page-max, 1180px);
+  padding: 0.75rem 1rem !important;
+  border-radius: 14px;
+  border: 1px solid rgba(200, 205, 214, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Home: cast dock peeks first viewport (v683 expert audit) */
+body.ap-award-511 #heroChapter .hero-solar-stage {
+  height: min(48vh, 480px) !important;
+  min-height: 300px !important;
+  max-height: 520px !important;
+}
+body.ap-award-511 #heroChapter .hero-copy {
+  margin-top: 0.35rem !important;
+}
+
+/* Shop: tools AFTER products — chips only, quiet bar */
+body.page-shop .ap-ev--early,
+body.page-shop .ap-ev--tools-only,
+body.page-instrument .ap-ev--early,
+body.page-instrument .ap-ev--tools-only {
+  margin: 1rem auto 1.5rem !important;
+  max-width: var(--page-max, 1180px);
+  padding: 0.75rem 1rem 0.95rem !important;
+  border: 1px solid rgba(200, 205, 214, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+}
+body.page-shop .ap-ev--tools-only .ap-ev__title,
+body.page-instrument .ap-ev--tools-only .ap-ev__title {
+  font-size: 1.05rem !important;
+  margin-bottom: 0.45rem !important;
+}
+/* Sky instrument: Tonight owns first content after hero */
+body.page-instrument .instrument-hero {
+  margin-bottom: 0.5rem;
+}
+body.page-instrument #sky-tonight {
+  scroll-margin-top: 5rem;
+}
+/* Sign pages: quiet tools strip at end */
+body.page-sign .ap-ev--tools-only,
+body[class*="sign-"] .ap-ev--tools-only {
+  margin: 1.25rem auto 2rem !important;
+  max-width: var(--page-max, 1180px);
+  padding: 0.75rem 1rem !important;
+}
+
+/* Footer tools col title when patched live */
+footer .footer-nav-col__title {
+  letter-spacing: 0.08em;
+}
+
+/* Sign picker cards — cooler jet chrome */
+body.page-horoscope .sign-grid .sign-card,
+body.page-horoscope .sign-picker-primary .sign-card {
+  border-color: rgba(200, 205, 214, 0.14);
+  background: rgba(10, 10, 14, 0.75);
+}
+
+/* Home: after-hero sections tighter */
+body.ap-award-511 #instrumentsChapter {
+  padding-top: 2rem !important;
+}
+
+/* Moment: form-first density (hero lifestyle art is a teaser, not a wall) */
+body.ap-moment-page .mom-hero {
+  max-width: 100%;
+  padding-bottom: 0.5rem !important;
+}
+body.ap-moment-page .ap-ev--early,
+body.ap-moment-page .ap-ev--tools-only {
+  margin: 0.75rem auto 1.25rem !important;
+  max-width: var(--page-max, 1180px);
+  padding: 0.75rem 1rem !important;
+  border-radius: 14px;
+  border: 1px solid rgba(200, 205, 214, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+}
+body.ap-moment-page .ap-ev--tools-only .ap-ev__title {
+  font-size: 1.05rem !important;
+}
+body.ap-moment-page .mom-plate {
+  scroll-margin-top: 5rem;
+}
+
+/* Shop: product cards in first viewport — short hero, tight intro, denser cards
+   (breadcrumb already clears the fixed nav — do not re-add nav-height here) */
+body.page-shop .shop-hero--compact {
+  padding: 0.85rem 0 0.55rem !important;
+}
+body.page-shop .shop-hero--compact .shop-hero__title,
+body.page-shop .shop-hero--compact h1 {
+  font-size: clamp(1.65rem, 4.2vw, 2.35rem) !important;
+  margin-bottom: 0.55rem !important;
+  line-height: 1.15 !important;
+}
+body.page-shop .shop-hero--compact .shop-hero-lede {
+  margin: 0 auto 0.65rem !important;
+  font-size: 0.92rem !important;
+  line-height: 1.45 !important;
+  max-width: 36rem !important;
+}
+body.page-shop .shop-hero-cta {
+  margin-top: 0.65rem !important;
+  gap: 0.5rem !important;
+}
+body.page-shop .shop-journey--quiet {
+  margin-top: 0.75rem !important;
+  margin-bottom: 0 !important;
+}
+body.page-shop .shop-live-section {
+  padding-top: 0.35rem !important;
+  padding-bottom: 1.5rem !important;
+}
+body.page-shop .shopc-featured__intro {
+  margin-bottom: 0.85rem !important;
+}
+body.page-shop .shopc-featured__lede {
+  font-size: 0.88rem !important;
+  line-height: 1.45 !important;
+  margin-top: 0.35rem !important;
+  max-width: 34rem !important;
+}
+body.page-shop .shopc-featured__grid--pdf {
+  gap: 0.85rem !important;
+}
+body.page-shop .shopc-featured__visual {
+  aspect-ratio: 2 / 1 !important;
+  max-height: 200px;
+}
+body.page-shop .shopc-featured__blurb {
+  display: none; /* hook line is enough above the fold */
+}
+body.page-shop .shopc-featured__copy {
+  padding: 0.75rem 0.95rem 0.9rem !important;
+}
+body.page-shop .shop-breadcrumb {
+  padding-top: 0.35rem !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  font-size: 0.78rem;
+}
+@media (max-width: 900px) {
+  body.page-shop .shop-hero-cta .btn--outline {
+    display: none; /* primary "See the pieces" only — products sooner */
+  }
+  body.page-shop .shop-journey--quiet {
+    display: none; /* path chips are redundant under short lede on phone */
+  }
+  body.page-shop .shopc-featured__visual {
+    aspect-ratio: 16 / 9 !important;
+    max-height: 160px;
+  }
+  body.page-shop .shopc-featured__hook {
+    font-size: 0.9rem;
+  }
+  body.page-shop .shopc-featured__grid--pdf {
+    gap: 0.75rem !important;
+  }
+}
+
+/* Mobile chrome: float section-nav clears bottom tab bar (was stacked at bottom:10px) */
+@media (max-width: 1023px) {
+  .ap-float-nav {
+    bottom: calc(var(--bottom-nav-h, 72px) + 10px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  body.has-email-sticky .ap-float-nav {
+    bottom: calc(var(--bottom-nav-h, 72px) + 84px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  /* Homepage Tools FAB also rides above the tab bar */
+  body.ap-award-511 #tools-fab,
+  body.ap-award-511 .tools-chip-fab,
+  #tools-fab {
+    bottom: calc(var(--bottom-nav-h, 72px) + 12px + env(safe-area-inset-bottom, 0px));
+  }
+  body.has-email-sticky #tools-fab,
+  body.has-email-sticky .tools-chip-fab {
+    bottom: calc(var(--bottom-nav-h, 72px) + 90px + env(safe-area-inset-bottom, 0px));
+  }
+}

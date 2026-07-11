@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Freeze the real sky of any date — zenith star, light-cone story, free share card. Computed privately in your browser from VSOP87 astronomy. Birth, anniversary, memorial, or any night that mattered." />
+  <title>Moment — Freeze any date’s sky | Astro Precise</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="Moment — Freeze any date’s sky | Astro Precise" />
+  <meta property="og:description" content="Turn a birth, anniversary, or quiet night into a keepsake: real zenith star, light-cone story, free share card. Private, accurate, beautiful." />
+  <meta property="og:url" content="https://astroprecise.app/moment.html" />
+  <link rel="canonical" href="https://astroprecise.app/moment.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og/moment.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Astro Precise Moment — keep the sky of a night that mattered" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Moment — Freeze any date’s sky | Astro Precise" />
+  <meta name="twitter:description" content="Real zenith star + light-cone story + free share card. Computed in your browser." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og/moment.jpg" />
+  <meta name="theme-color" content="#07070A" />
+  <link rel="preload" href="css/main-lite.css" as="style" />
+  <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/moment-page.css?v=682" id="ap-css-moment" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
+  <style>
+    body.ap-moment-page{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
+    body.ap-moment-page .site-header{min-height:var(--nav-height,72px);contain:layout style;}
+    body.ap-moment-page .mom-hero h1{min-height:1.15em;font-family:var(--font-display);}
+    /* Form-first: no large gallery reserve in hero (art lives under the form) */
+    body.ap-moment-page .mom-plate{min-height:200px;}
+  </style>
+  <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function loadFonts(){if(navigator.webdriver||document.getElementById('ap-css-fonts'))return;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';document.head.appendChild(l);}window.addEventListener('scroll',loadFonts,{once:true,passive:true});window.addEventListener('pointerdown',loadFonts,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(loadFonts,20000);},{once:true});if(typeof deferMainCss==='function')deferMainCss();if(typeof deferPageCss==='function'){deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/ap-motion.css','ap-css-motion');}});</script>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Astro Precise" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Astro Precise — Moment","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"Freeze the real sky of any date into a keepsake: zenith star, light-cone story, and free share card. Computed in-browser with VSOP87 astronomy; birth data never leaves your device.","url":"https://astroprecise.app/moment.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
+</head>
+<body class="ap-no-nav-enter ap-moment-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+  <div class="aurora-orb aurora-orb--1" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--2" aria-hidden="true"></div>
+  <div class="aurora-orb aurora-orb--3" aria-hidden="true"></div>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="ephemeris.html" class="navbar__link">Sky</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
+            <a href="cosmic-story.html" class="navbar__link">Readings</a>
+            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+          </noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="mom-hero" aria-labelledby="page-title">
+      <div class="container">
+        <p class="mom-hero__eyebrow">✦ Keep the sky ✦</p>
+        <h1 id="page-title">Moment</h1>
+        <p class="mom-hero__sub">
+          Freeze any night that mattered — birth, first date, wedding, memorial.
+          Free private card on your device.
+        </p>
+        <span class="mom-privacy-seal">
+          <span class="mom-privacy-seal__glyph" aria-hidden="true">⌖</span>
+          Private · VSOP87 · free card · no account
+        </span>
+        <p class="mom-hero__jump"><a href="#mom-form-title">Start with date &amp; place ↓</a></p>
+      </div>
+    </section>
+
+    <div class="mom-occasions" id="mom-occasions" role="group" aria-label="Occasion">
+      <button type="button" class="mom-chip" data-kind="birth" aria-pressed="true">Birth</button>
+      <button type="button" class="mom-chip" data-kind="met" aria-pressed="false">We met</button>
+      <button type="button" class="mom-chip" data-kind="wedding" aria-pressed="false">Wedding</button>
+      <button type="button" class="mom-chip" data-kind="memorial" aria-pressed="false">Memorial</button>
+      <button type="button" class="mom-chip" data-kind="custom" aria-pressed="false">Custom</button>
+    </div>
+
+    <section class="mom-studio" aria-labelledby="mom-form-title" id="mom-studio">
+      <div class="mom-plate">
+        <h2 class="mom-plate__title" id="mom-form-title">Build your Moment</h2>
+        <p class="mom-plate__hint">Date and place are required. Time defaults to noon if you leave it blank (honest on the card).</p>
+        <form id="mom-form" novalidate>
+          <div class="mom-grid mom-grid--2">
+            <div class="mom-field">
+              <label for="mom-date">Date</label>
+              <input type="date" id="mom-date" name="date" required autocomplete="bday" />
+            </div>
+            <div class="mom-field">
+              <label for="mom-time">Time <span style="opacity:.7;font-weight:400;letter-spacing:0">(optional)</span></label>
+              <input type="time" id="mom-time" name="time" />
+            </div>
+          </div>
+          <div class="mom-grid" style="margin-top:0.9rem">
+            <div class="mom-field mom-place-wrap">
+              <label for="mom-place">Place</label>
+              <input type="text" id="mom-place" name="place" placeholder="City or town (pick from the list)" autocomplete="off" required aria-autocomplete="list" aria-controls="mom-place-list" />
+              <div class="mom-autocomplete" id="mom-place-list" role="listbox" aria-label="Place suggestions"></div>
+            </div>
+            <div class="mom-field">
+              <label for="mom-title">Title on the card</label>
+              <input type="text" id="mom-title" name="title" maxlength="80" placeholder="The night we met" />
+            </div>
+          </div>
+          <div class="mom-actions">
+            <button type="submit" class="mom-btn mom-btn--primary" id="mom-freeze">Freeze this sky</button>
+            <button type="button" class="mom-btn mom-btn--ghost" id="mom-use-chart" hidden>Use my saved chart</button>
+          </div>
+          <p class="mom-status" id="mom-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Lifestyle teaser AFTER form (v682 form-first — never buries date/place) -->
+    <figure class="mom-gallery-teaser mom-hero__gallery mom-hero__gallery--solo" id="mom-gallery-teaser">
+      <picture>
+        <source type="image/webp" srcset="img/moment/hero-framed.webp?v=682" />
+        <img src="img/moment/hero-framed.jpg?v=682" width="800" height="600" alt="Framed Moment sky print on a gallery wall — example lifestyle render" decoding="async" loading="lazy" />
+      </picture>
+      <figcaption>Free card uses the same void-and-silver + engine plate language.</figcaption>
+    </figure>
+
+    <details class="mom-deeper">
+      <summary class="mom-deeper__sum">How it works · free vs pack</summary>
+      <ol class="mom-how__steps">
+        <li><strong>01 · Freeze</strong> Pick occasion, date, place — math runs on your device.</li>
+        <li><strong>02 · See</strong> Real zenith star + light-cone story + 3D engine texture plate.</li>
+        <li><strong>03 · Keep</strong> Save free PNG now; optional pack later in Shop.</li>
+      </ol>
+      <p class="mom-deeper__pack">Free card now · pack from £8 when checkout is live · <a href="shop.html#moment-pack">Shop Moment rail</a></p>
+    </details>
+
+    <section class="mom-reveal" id="mom-reveal" hidden aria-labelledby="mom-reveal-title">
+      <div class="mom-reveal__head">
+        <h2 id="mom-reveal-title">Your Moment</h2>
+        <p class="mom-reveal__sub">Readable facts first — then the share card. Same void-and-brass language as the rest of Astro Precise.</p>
+      </div>
+      <div class="mom-panels">
+        <div class="mom-card-preview" id="mom-card-host" aria-label="Share card preview"></div>
+        <div class="mom-facts">
+          <h3>What this card holds</h3>
+          <div class="mom-fact">
+            <span class="mom-fact__k">When</span>
+            <span class="mom-fact__v" id="mom-fact-when">—</span>
+          </div>
+          <div class="mom-fact">
+            <span class="mom-fact__k">Zenith</span>
+            <span class="mom-fact__v" id="mom-fact-star">—</span>
+          </div>
+          <div class="mom-fact">
+            <span class="mom-fact__k">Star</span>
+            <span class="mom-fact__v" id="mom-fact-meta">—</span>
+          </div>
+          <div class="mom-fact">
+            <span class="mom-fact__k">Light-cone</span>
+            <span class="mom-fact__v" id="mom-fact-cone">—</span>
+          </div>
+          <p class="mom-facts__note">
+            “Zenith star” means the nearest star in our catalogue to the exact overhead point (local sidereal time + latitude).
+            Separation in degrees is always shown — never claimed as a perfect coincidence.
+          </p>
+          <div class="mom-engine-window" id="mom-engine-window" hidden>
+            <!-- Placeholder earth.webp until JS sets the occasion plate (empty src was loading moment.html as an image) -->
+            <img id="mom-engine-window-img" src="img/engine/earth.webp" alt="" width="160" height="160" decoding="async" />
+            <p class="mom-engine-window__cap" id="mom-engine-window-cap"></p>
+          </div>
+          <div class="mom-keep">
+            <button type="button" class="mom-btn mom-btn--primary" id="mom-save">Save free card</button>
+            <a class="mom-btn mom-btn--ghost" href="shop.html#moment-pack" id="mom-pack-cta">Moment Pack · Shop</a>
+            <a class="mom-btn mom-btn--ghost" href="chart.html">Cast full chart</a>
+            <a class="mom-btn mom-btn--ghost" href="explore.html#m=now" id="mom-model-link" hidden>Open this night in the 3D model</a>
+          </div>
+          <div class="mom-upsell">
+            <p><strong>Free now:</strong> this PNG card (zenith + light-cone + engine plate). No account.</p>
+            <p><strong>Optional pack:</strong> print-ready sizes when checkout is live — same math, gift packaging.</p>
+            <p style="margin:0">
+              <a href="ephemeris.html">Sky</a>
+              · <a href="horoscope.html">Daily</a>
+              · <a href="cosmic-story.html">Readings</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mom-spine" aria-labelledby="mom-spine-title">
+      <h2 id="mom-spine-title">How Moment sits in Astro Precise</h2>
+      <ol>
+        <li><strong>1 · Live sky</strong> Feel the system moving — home orrery and <a href="ephemeris.html">Sky</a>.</li>
+        <li><strong>2 · Chart</strong> Cast <em>your</em> birth sky free on <a href="chart.html">Chart</a>.</li>
+        <li><strong>3 · Moment</strong> Keep any date as art (you are here).</li>
+        <li><strong>4 · Daily</strong> Come back for today’s sky on <a href="horoscope.html">Daily</a>.</li>
+        <li><strong>5 · Reading · Shop</strong> Words and paid keepsakes when you want them.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container" style="padding:2rem 1rem;text-align:center;color:var(--ap-text-muted,#8B919C);font-size:0.85rem">
+      <p style="margin:0 0 0.5rem"><a href="index.html">Home</a> · <a href="chart.html">Chart</a> · <a href="ephemeris.html">Sky</a> · <a href="shop.html">Shop</a> · <a href="privacy.html">Privacy</a></p>
+      <p style="margin:0">© Astro Precise · entertainment &amp; education · astronomy computed in-browser</p>
+    </div>
+  </footer>
+
+  <!-- Chrome boot -->
+  <script src="js/ap-safe-dom.js" defer></script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){if(window.AP_PAGE_BOOT)AP_PAGE_BOOT.load();});</script>
+  <!-- Astronomy engines (after chrome) -->
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/starcatalog.js" defer></script>
+  <script src="js/lightcone.js" defer></script>
+  <script src="js/ap-moment-share.js?v=703" defer></script>
+  <script src="js/moment-page.js?v=690" defer></script>
+  <script src="js/cosmos.js" defer></script>
+</body>
+</html>

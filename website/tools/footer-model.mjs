@@ -18,14 +18,14 @@ export const ZODIAC_SIGNS = [
   { key: 'pisces', name: 'Pisces' },
 ];
 
-/** Labels align with app.js NAV vocabulary (Birth Chart, Daily, Match, Sky, …). */
+/** Spine: Cast → Sky → Keep → Daily → Reading → Shop (keep in sync with ap-footer-inject.js). */
 const FOOTER_TOOLS = [
-  { href: 'chart.html', label: 'Birth Chart', icon: '<span aria-hidden="true">⊙</span>' },
-  { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
-  { href: 'lifepath.html', label: 'Life Path', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg>' },
-  { href: 'compatibility.html', label: 'Match', icon: '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg>' },
-  { href: 'transits.html', label: 'Transits', icon: '<span aria-hidden="true">☿</span>' },
+  { href: 'chart.html', label: 'Chart', icon: '<span aria-hidden="true">⊙</span>' },
   { href: 'ephemeris.html', label: 'Sky', icon: '<span aria-hidden="true">⬡</span>' },
+  { href: 'moment.html', label: 'Moment', icon: '<span aria-hidden="true">✦</span>' },
+  { href: 'horoscope.html', label: 'Daily', icon: '<span aria-hidden="true">☽</span>' },
+  { href: 'cosmic-story.html', label: 'Readings', icon: '<span aria-hidden="true">◇</span>' },
+  { href: 'shop.html', label: 'Shop', icon: '<span aria-hidden="true">★</span>' },
 ];
 
 export function footerToolsColHtml() {
@@ -79,9 +79,9 @@ export function footerBrandColHtml() {
   ).join('\n');
   return `
         <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand__logo" aria-label="AstroPrecise home">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
             <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
-            <span class="footer-brand__logo-text">AstroPrecise</span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
           </a>
           <p class="footer-brand__tagline">
             A precision instrument wearing the skin of an astrology site.
@@ -101,7 +101,7 @@ ${seals}
 export function footerLegalHtml() {
   return `
       <div class="footer-legal">
-        <p>&copy; 2026 AstroPrecise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
+        <p>&copy; 2026 Astro Precise &middot; All calculations run locally in your browser &middot; No data collected &middot; No accounts required</p>
         <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
       </div>`;
 }

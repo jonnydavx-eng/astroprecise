@@ -23,7 +23,7 @@
 
 .form-select,
 .horoscope-subscribe__form select.form-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c9a227' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23C2A05E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.85rem center;
   padding-right: 2.5rem;
@@ -36,7 +36,7 @@
   .form-textarea:hover,
   .horoscope-subscribe__form select:hover,
   .horoscope-subscribe__form input[type="email"]:hover {
-    border-color: rgba(194, 160, 94, 0.38);
+    border-color: rgba(168, 176, 188, 0.38);
     background:
       linear-gradient(180deg, rgba(32, 26, 16, 0.94) 0%, rgba(18, 14, 10, 0.9) 100%);
   }
@@ -53,11 +53,11 @@
 .form-textarea:focus-visible,
 .horoscope-subscribe__form select:focus-visible,
 .horoscope-subscribe__form input[type="email"]:focus-visible {
-  outline: 2px solid var(--gold, #C2A05E);
+  outline: 2px solid var(--gold, #A8B0BC);
   outline-offset: 2px;
-  border-color: rgba(194, 160, 94, 0.62);
+  border-color: rgba(168, 176, 188, 0.62);
   box-shadow:
-    0 0 0 3px rgba(194, 160, 94, 0.2),
+    0 0 0 3px rgba(168, 176, 188, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   background:
     linear-gradient(180deg, rgba(34, 26, 16, 0.96) 0%, rgba(20, 15, 10, 0.92) 100%);
@@ -127,16 +127,16 @@ html.ap-lite-hero .hero__date-input {
 
 @media (hover: hover) and (pointer: fine) {
   html.ap-lite-hero .hero__date-input:hover {
-    border-color: rgba(194, 160, 94, 0.38);
+    border-color: rgba(168, 176, 188, 0.38);
     background: rgba(22, 28, 42, 0.88);
   }
 }
 
 html.ap-lite-hero .hero__date-input:focus-visible {
-  outline: 2px solid var(--gold-hero, #C2A05E);
+  outline: 2px solid var(--gold-hero, #A8B0BC);
   outline-offset: 2px;
-  border-color: var(--gold-hero, #C2A05E);
-  box-shadow: 0 0 0 3px rgba(194, 160, 94, 0.22);
+  border-color: var(--gold-hero, #A8B0BC);
+  box-shadow: 0 0 0 3px rgba(168, 176, 188, 0.22);
 }
 
 /* ── Autocomplete / combobox panels (unified) ─────────────────────────── */
@@ -150,7 +150,7 @@ html.ap-lite-hero .hero__date-input:focus-visible {
 .ap-combobox__panel {
   display: none;
   background: rgba(12, 10, 8, 0.98);
-  border: 1px solid rgba(194, 160, 94, 0.28);
+  border: 1px solid rgba(168, 176, 188, 0.28);
   border-radius: var(--radius-lg, 12px);
   position: absolute;
   top: calc(100% + 6px);
@@ -165,7 +165,7 @@ html.ap-lite-hero .hero__date-input:focus-visible {
     0 12px 36px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   scrollbar-width: thin;
-  scrollbar-color: rgba(194, 160, 94, 0.35) transparent;
+  scrollbar-color: rgba(168, 176, 188, 0.35) transparent;
 }
 
 .autocomplete-dropdown:not([hidden]),
@@ -208,16 +208,16 @@ html.ap-lite-hero .hero__date-input:focus-visible {
 .ap-combobox__option--active,
 .tn-autocomplete__item:hover,
 .tn-autocomplete__item.active {
-  background: rgba(194, 160, 94, 0.14);
+  background: rgba(168, 176, 188, 0.14);
   color: var(--white, #f0ece4);
 }
 
 .autocomplete-option.is-selected:focus-visible,
 .autocomplete-item.highlighted:focus-visible,
 .ap-combobox__option--active:focus-visible {
-  outline: 2px solid var(--gold, #C2A05E);
+  outline: 2px solid var(--gold, #A8B0BC);
   outline-offset: -2px;
-  background: rgba(194, 160, 94, 0.2);
+  background: rgba(168, 176, 188, 0.2);
 }
 
 .autocomplete-note,
@@ -249,7 +249,7 @@ html.ap-lite-hero .hero__date-input:focus-visible {
   left: 0.85rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--gold, #C2A05E);
+  color: var(--gold, #A8B0BC);
   opacity: 0.75;
   pointer-events: none;
   line-height: 0;
@@ -258,18 +258,18 @@ html.ap-lite-hero .hero__date-input:focus-visible {
 /* Chart time-of-day + house cards */
 .time-btn:focus-visible,
 .house-card:focus-visible {
-  outline: 2px solid var(--gold, #C2A05E);
+  outline: 2px solid var(--gold, #A8B0BC);
   outline-offset: 2px;
-  border-color: rgba(194, 160, 94, 0.5);
-  box-shadow: 0 0 0 3px rgba(194, 160, 94, 0.18);
+  border-color: rgba(168, 176, 188, 0.5);
+  box-shadow: 0 0 0 3px rgba(168, 176, 188, 0.18);
 }
 
 .time-btn.active,
 .house-card.active {
-  border-color: var(--gold, #C2A05E);
+  border-color: var(--gold, #A8B0BC);
   box-shadow:
-    0 0 0 1px rgba(194, 160, 94, 0.35),
-    0 0 14px rgba(194, 160, 94, 0.16);
+    0 0 0 1px rgba(168, 176, 188, 0.35),
+    0 0 14px rgba(168, 176, 188, 0.16);
 }
 
 /* Horoscope subscribe — align with form system */
@@ -279,19 +279,19 @@ html.ap-lite-hero .hero__date-input:focus-visible {
 }
 
 .horoscope-subscribe__cadence input:focus-visible {
-  outline: 2px solid var(--gold, #C2A05E);
+  outline: 2px solid var(--gold, #A8B0BC);
   outline-offset: 2px;
 }
 
 .form-check input[type="checkbox"]:focus-visible,
 .form-check input[type="radio"]:focus-visible {
-  outline: 2px solid var(--gold, #C2A05E);
+  outline: 2px solid var(--gold, #A8B0BC);
   outline-offset: 2px;
 }
 
 /* Range scrub */
 .orrery-lite-scrub input[type="range"]:focus-visible,
 .orrery-timeline input[type="range"]:focus-visible {
-  outline: 2px solid var(--gold-hero, #C2A05E);
+  outline: 2px solid var(--gold-hero, #A8B0BC);
   outline-offset: 4px;
 }

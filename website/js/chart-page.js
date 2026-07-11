@@ -74,6 +74,15 @@
 
   let currentChart = null;
 
+  // First name for personalised copy. Strips the demo "Sample:" label and any
+  // stray trailing punctuation so "Sample: Frida Kahlo" → "Frida" (not "Sample:").
+  function firstNameOf(name) {
+    if (!name) return '';
+    const cleaned = String(name).replace(/^\s*sample:\s*/i, '').trim();
+    const tok = (cleaned || '').split(/\s+/)[0] || '';
+    return tok.replace(/[:.,;]+$/, '');
+  }
+
   // ── City autocomplete ─────────────────────────────────────────────────────
 
   const cityInput = document.getElementById('city-input');
@@ -262,14 +271,41 @@
 
   const form = document.getElementById('chart-form');
 
+  const FOCUS_GROUPS = {
+    'name-input': 'group-name',
+    'date-input': 'group-date-first',
+    'city-input': 'group-city',
+  };
+
+  function clearFormErrors() {
+    document.querySelectorAll('.form-group.is-error').forEach(function (g) {
+      g.classList.remove('is-error');
+    });
+  }
+
+  function showFormError(focusId, message) {
+    clearFormErrors();
+    const group = document.getElementById(FOCUS_GROUPS[focusId] || '');
+    if (group) {
+      group.classList.add('is-error');
+      const msg = group.querySelector('.form-error-msg');
+      if (msg && message) msg.textContent = message;
+    }
+    const el = document.getElementById(focusId);
+    if (el) {
+      el.focus();
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
   function readForm() {
-    const name = document.getElementById('name-input').value.trim();
+    const name = document.getElementById('name-input').value.trim() || 'Birth Chart';
     const date = document.getElementById('date-input').value;
     const time = document.getElementById('time-input').value || '12:00';
     const lat  = parseFloat(latInput.value);
     const lon  = parseFloat(lonInput.value);
     const tz   = tzInput.value;
-    if (!name) return { error: 'Please enter your name.', focus: 'name-input' };
+    // Name is optional label — defaults to "Birth Chart" for exports
     if (!date) return { error: 'Please enter your birth date.', focus: 'date-input' };
     if (isNaN(lat) || isNaN(lon)) return { error: 'Please pick your birth city from the dropdown.', focus: 'city-input' };
     const [y, m, d]  = date.split('-').map(Number);
@@ -331,6 +367,7 @@
     const raw = E().calculateNatalChart(ut.y, ut.m, ut.d, ut.hh, ut.mm, input.lat, input.lon, input.houseSystem, input.nodeMode);
     return adaptChart(raw, {
       nodeMode: raw.nodeMode,
+      houseSystem: input.houseSystem,
       name: input.name,
       birthDate: `${input.y}-${String(input.m).padStart(2,'0')}-${String(input.d).padStart(2,'0')}`,
       birthTime: input.timeKnown ? `${String(input.hh).padStart(2,'0')}:${String(input.mm).padStart(2,'0')}` : null,
@@ -342,11 +379,11 @@
     ev.preventDefault();
     const input = readForm();
     if (input.error) {
-      if (window.AstroApp) AstroApp.showToast('Missing details', input.error, 'warning');
-      document.getElementById(input.focus)?.focus();
+      showFormError(input.focus, input.error);
       resetCalcBtn();
       return;
     }
+    clearFormErrors();
     setTimeout(async () => {
       try {
         if (typeof window.loadInterpretations === 'function') {
@@ -369,13 +406,16 @@
           };
           if (input.timeKnown) pts.asc = currentChart.positions.Ascendant?.lon;
           localStorage.setItem('ap_natal_pins', JSON.stringify({
-            name: input.name.split(/\s+/)[0],
+            name: firstNameOf(input.name) || input.name,
             sunSign: currentChart.positions.Sun?.sign,
             points: pts,
             savedAt: Date.now(),
           }));
-          if (window.AstroApp) AstroApp.showToast('Pinned to the heavens',
-            'Your Sun, Moon' + (input.timeKnown ? ' & Ascendant' : '') + ' now mark the home orrery’s zodiac ring.', 'success');
+          var isSample = /^sample:/i.test(input.name || '');
+          if (window.AstroApp && !isSample) {
+            AstroApp.showToast('Pinned to the heavens',
+              'Your Sun, Moon' + (input.timeKnown ? ' & Ascendant' : '') + ' now mark the home orrery’s zodiac ring.', 'success');
+          }
         } catch (e) {}
       } catch (err) {
         if (window.AstroApp) AstroApp.showToast('Calculation failed', String(err.message || err), 'error');
@@ -389,9 +429,15 @@
     if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; }
   }
 
+  function openOptionalName() {
+    const wrap = document.getElementById('group-name-wrap');
+    if (wrap) wrap.open = true;
+  }
+
   // Sample chart — Frida Kahlo
   document.getElementById('sample-btn')?.addEventListener('click', () => {
     document.getElementById('name-input').value = 'Sample: Frida Kahlo';
+    openOptionalName();
     document.getElementById('date-input').value = '1907-07-06';
     document.getElementById('time-input').value = '08:30';
     const mex = E().CITIES.find(c => c.name === 'Mexico City');
@@ -463,6 +509,7 @@
     const q = new URLSearchParams(location.search);
     if (!q.get('d') || !q.get('lat')) return;
     document.getElementById('name-input').value = q.get('n') || 'Shared Chart';
+    openOptionalName();
     const [y, m, d] = q.get('d').split('-').map(Number);
     document.getElementById('date-input').value =
       `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -473,6 +520,16 @@
     }
     cityInput.value = q.get('c') || '';
     latInput.value  = q.get('lat'); lonInput.value = q.get('lon'); tzInput.value = q.get('tz') || '';
+    var hs = q.get('hs');
+    if (hs) {
+      var houseInput = document.getElementById('house-system');
+      if (houseInput) houseInput.value = hs;
+      document.querySelectorAll('.house-card').forEach(function (card) {
+        var on = card.dataset.value === hs;
+        card.classList.toggle('active', on);
+        card.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+    }
     document.dispatchEvent(new CustomEvent('astro:city-selected'));
     ['name-input', 'date-input', 'time-input'].forEach(id =>
       document.getElementById(id).dispatchEvent(new Event('input')));
@@ -489,7 +546,41 @@
       const d = new URLSearchParams(location.search).get('date');
       if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
       const el = document.getElementById('date-input');
-      if (el && !el.value) { el.value = d; el.dispatchEvent(new Event('input', { bubbles: true })); }
+      if (!el || el.value) return;
+      el.value = d;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      const dateGroup = document.getElementById('group-date-first');
+      if (dateGroup) dateGroup.classList.add('is-valid');
+
+      // Honour the homepage promise ("time and place sharpen it on the next
+      // step"): acknowledge the carried-over date inline, bring the form into
+      // view, and move focus to the next thing the visitor actually needs — the
+      // birth place (or time, if a place is already set). No silent handoff.
+      const wrap = document.getElementById('chart-form-wrapper');
+      if (wrap && !document.getElementById('chart-handoff-note')) {
+        const note = document.createElement('p');
+        note.id = 'chart-handoff-note';
+        note.className = 'chart-handoff-note';
+        note.setAttribute('role', 'status');
+        note.innerHTML = '<span class="chart-handoff-note__mark" aria-hidden="true">✦</span> ' +
+          'Your birth date carried over from the homepage — add your birth place and time below to sharpen the chart.';
+        const header = wrap.querySelector('.form-glass__header');
+        if (header && header.parentNode) header.parentNode.insertBefore(note, header.nextSibling);
+        else wrap.insertBefore(note, wrap.firstChild);
+      }
+
+      const form = document.getElementById('chart-form');
+      if (form && typeof form.scrollIntoView === 'function') {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      const cityEl = document.getElementById('city-input');
+      const nextField = (cityEl && !cityEl.value) ? cityEl : document.getElementById('time-input');
+      if (nextField) {
+        // Focus after the smooth scroll settles; preventScroll so we don't fight it.
+        setTimeout(function () {
+          try { nextField.focus({ preventScroll: true }); } catch (e) { nextField.focus(); }
+        }, 360);
+      }
     } catch (e) {}
   }
 
@@ -511,11 +602,33 @@
         'Could not compute this chart — please check the birth details.', 'error');
       return;
     }
+    /* Chart deferred CSS idle-loads on pointerdown — results need tabs, wheel,
+       and reading styles immediately after calculate (no scroll required). */
+    if (typeof window.ensureChartResultsCss === 'function') {
+      window.ensureChartResultsCss();
+    }
     wrapEl.classList.remove('hidden');
+
+    var tabsHint = document.getElementById('chart-tabs-hint');
+    if (!tabsHint) {
+      tabsHint = document.createElement('p');
+      tabsHint.id = 'chart-tabs-hint';
+      tabsHint.className = 'chart-tabs-hint';
+      tabsHint.textContent = 'Explore Overview, Planets, Houses, and Aspects — each tab opens a different layer of your chart.';
+      var tabsHost = wrapEl.querySelector('.tabs-card, .chart-tabs');
+      if (tabsHost && tabsHost.parentNode) {
+        tabsHost.parentNode.insertBefore(tabsHint, tabsHost);
+      } else {
+        wrapEl.insertBefore(tabsHint, wrapEl.firstChild.nextSibling);
+      }
+    }
+    tabsHint.removeAttribute('hidden');
 
     const resultNameEl = document.getElementById('result-name');
     if (resultNameEl) {
-      resultNameEl.textContent = `${chart.name} — Natal Chart`;
+      // The hero name stands alone (big Cormorant) — "— Natal Chart" was
+      // redundant and wrapped awkwardly on the em-dash at mobile widths.
+      resultNameEl.textContent = chart.name;
       resultNameEl.removeAttribute('aria-hidden');
     }
     document.getElementById('result-date').textContent =
@@ -529,8 +642,21 @@
     renderDeepTeaser(chart);
     initWallpaperLead(chart);
     initEmailCapture(chart);
+    updateKeepsakeBand(chart);
+    loadEngineSkyPlate(function () { updateKeepsakeBand(chart); }, chart);
+
+    if (window.APChartShare) APChartShare.updateShareStrip(chart, null);
+    mountChartAI(chart);
 
     wrapEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var firstTab = wrapEl.querySelector('[role="tab"]');
+        if (firstTab && typeof firstTab.focus === 'function') {
+          try { firstTab.focus({ preventScroll: true }); } catch (e) { firstTab.focus(); }
+        }
+      });
+    });
   }
 
   function bundleUpsellProduct() {
@@ -547,62 +673,99 @@
 
     const sunSign = chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
     const riseSign = chart.risingSign;
-    const name = chart.name ? String(chart.name).split(/\s+/)[0] : 'your';
+    const name = firstNameOf(chart.name) || 'your';
     const bundle = bundleUpsellProduct();
 
+    // Site spine after cast: Sky → Keep → Daily → Reading (Match/Transits secondary)
     const steps = [
       {
-        tag: 'Free · Your story',
-        title: 'Read your cosmic story',
-        desc: `${name === 'your' ? 'Your' : name + '’s'} chart retold as a flowing narrative — the arc of your Sun, Moon${riseSign ? ', rising' : ''} and the threads between them.`,
-        href: 'cosmic-story.html',
-        cta: 'Read your story →',
-      },
-      {
-        tag: 'Free · Live sky',
-        title: 'See your transits',
-        desc: sunSign
-          ? `Watch how today's planets aspect your ${sunSign} Sun and ${riseSign || 'chart'} — computed from the same engine you just used.`
-          : 'See how the current sky interacts with the chart you just cast.',
-        href: 'transits.html',
-        cta: 'Open Transits →',
-      },
-      {
-        tag: 'Free · Two charts',
-        title: 'Compare with a partner',
-        desc: `Run a synastry reading for ${name}'s chart against someone else's — cross-chart aspects, element balance, and a shareable card.`,
-        href: 'compatibility.html',
-        cta: 'Open Compatibility →',
-      },
-      {
-        tag: 'Free · Deep dive',
-        title: 'Read the Instrument',
-        desc: 'Light-cone, zenith star, planetary hours, field weather, and time-travel — the precision tools behind every chart.',
+        tag: '02 · Sky',
+        title: "Tonight's living sky",
+        desc: 'Same engine as this chart — Moon, planets, and mood computed live on your device.',
         href: 'ephemeris.html',
-        cta: 'Open Instrument →',
+        cta: 'Open Sky →',
+      },
+      {
+        tag: '03 · Keep',
+        title: 'Freeze this sky as a Moment',
+        desc: `Turn ${name === 'your' ? 'your' : name + '’s'} birth sky into a free share card — zenith star, light-cone, private on your device.`,
+        href: 'moment.html',
+        cta: 'Open Moment →',
+      },
+      {
+        tag: '04 · Daily',
+        title: "Today against your chart",
+        desc: sunSign
+          ? `Daily sky for your ${sunSign} placements — not a generic twelfth of the world.`
+          : 'Come back daily; the sky keeps touching the chart you just cast.',
+        href: 'horoscope.html',
+        cta: 'Open Daily →',
+      },
+      {
+        tag: '05 · Reading',
+        title: 'Your cosmic story (free sample)',
+        desc: `${name === 'your' ? 'Your' : name + '’s'} chart retold as prose — then Shop when you want the Deep Reading PDF.`,
+        href: 'cosmic-story.html',
+        cta: 'Read free sample →',
+      },
+    ];
+
+    const more = [
+      {
+        tag: 'More',
+        title: 'Transits',
+        desc: 'How today’s planets aspect this chart.',
+        href: 'transits.html',
+        cta: 'Transits →',
+      },
+      {
+        tag: 'More',
+        title: 'Two charts',
+        desc: 'Synastry with a partner — aspects, not a fake %.',
+        href: 'compatibility.html',
+        cta: 'Match →',
       },
     ];
 
     const paidTile = bundle ? {
-      tag: '£16 · Your chart',
+      tag: 'Paid',
       title: 'Deep Reading + Poster',
-      desc: `The long-form reading and print-at-home poster — two keepsakes from ${name}'s chart, generated together. Save £2 vs buying both.`,
+      desc: `Long-form reading and print-at-home poster from ${name}'s chart.`,
       href: bundle.fulfilUrl,
-      cta: 'Get the bundle — £16 →',
+      cta: 'Get the bundle →',
       external: true,
-    } : null;
-
-    const tiles = paidTile ? [paidTile, ...steps] : steps;
+    } : {
+      tag: 'Shop',
+      title: 'Deep Reading when ready',
+      desc: 'Paid PDF keepsakes from this chart — checkout opening soon.',
+      href: 'shop.html#deep-reading',
+      cta: 'Open Shop →',
+    };
 
     host.innerHTML = `
       <div class="chart-whats-next__head">
-        <p class="chart-whats-next__eyebrow">What to explore next</p>
-        <h3 class="chart-whats-next__title">Your chart is cast — where now?</h3>
-        <p class="chart-whats-next__sub">${paidTile ? 'One personalised keepsake from your chart, plus three free tools — everything else still runs in your browser.' : 'Three free tools that build on the sky you just calculated. Everything still runs in your browser.'}</p>
+        <p class="chart-whats-next__eyebrow">Your path · Cast → Sky → Keep → Daily → Reading</p>
+        <h3 class="chart-whats-next__title">Chart cast — next steps in order</h3>
+        <p class="chart-whats-next__sub">One spine, free first. Everything still runs in your browser.</p>
       </div>
-      <div class="chart-whats-next__grid${paidTile ? ' chart-whats-next__grid--quad' : ''}" role="list">
-        ${tiles.map(s => `
-          <a href="${esc(s.href)}" class="chart-next-card${s.external ? ' chart-next-card--paid' : ''}" role="listitem"${s.external ? ' target="_blank" rel="noopener"' : ''}>
+      <div class="chart-whats-next__grid" role="list">
+        ${steps.map(s => `
+          <a href="${esc(s.href)}" class="chart-next-card" role="listitem">
+            <span class="chart-next-card__tag">${esc(s.tag)}</span>
+            <h4 class="chart-next-card__title">${esc(s.title)}</h4>
+            <p class="chart-next-card__desc">${esc(s.desc)}</p>
+            <span class="chart-next-card__cta">${esc(s.cta)}</span>
+          </a>`).join('')}
+      </div>
+      <div class="chart-whats-next__more" role="list">
+        <a href="${esc(paidTile.href)}" class="chart-next-card chart-next-card--paid" role="listitem"${paidTile.external ? ' target="_blank" rel="noopener sponsored"' : ''}>
+          <span class="chart-next-card__tag">${esc(paidTile.tag)}</span>
+          <h4 class="chart-next-card__title">${esc(paidTile.title)}</h4>
+          <p class="chart-next-card__desc">${esc(paidTile.desc)}</p>
+          <span class="chart-next-card__cta">${esc(paidTile.cta)}</span>
+        </a>
+        ${more.map(s => `
+          <a href="${esc(s.href)}" class="chart-next-card chart-next-card--quiet" role="listitem">
             <span class="chart-next-card__tag">${esc(s.tag)}</span>
             <h4 class="chart-next-card__title">${esc(s.title)}</h4>
             <p class="chart-next-card__desc">${esc(s.desc)}</p>
@@ -616,17 +779,31 @@
     const el = document.getElementById('big-three');
     if (!el) return;
     const items = [
-      { planet:'☉ Sun',    sub:'Core Identity',  sign: chart.positions.Sun.sign,  glyph: (chart.positions.Sun.sign || '?').charAt(0), deg: fmtDeg(chart.positions.Sun) },
-      { planet:'☽ Moon',   sub:'Inner World',    sign: chart.positions.Moon.sign, glyph: (chart.positions.Moon.sign || '?').charAt(0), deg: fmtDeg(chart.positions.Moon) },
-      { planet:'↑ Rising', sub:'Outward Self',   sign: chart.risingSign,          glyph: (chart.risingSign || '?').charAt(0), deg: '' },
+      { key: 'Sun', label: 'Sun', sub: 'Core Identity', sign: chart.positions.Sun.sign, deg: fmtDeg(chart.positions.Sun), seal: 'planet:sun' },
+      { key: 'Moon', label: 'Moon', sub: 'Inner World', sign: chart.positions.Moon.sign, deg: fmtDeg(chart.positions.Moon), seal: 'planet:moon' },
+      { key: 'Rising', label: 'Rising', sub: 'Outward Self', sign: chart.risingSign, deg: (typeof chart.asc === 'number') ? fmtDeg({ degree: chart.asc % 30 }) : '', seal: chart.risingSign ? ('zodiac:' + String(chart.risingSign).toLowerCase()) : '' },
     ];
-    el.innerHTML = items.map(it => `
-      <article class="big-three-card" aria-label="${esc(it.planet)} in ${esc(it.sign)}">
-        <p class="big-three-card__planet">${it.planet} · ${it.sub}</p>
-        ${(window.AstroIcons && AstroIcons.sign) ? AstroIcons.sign(it.sign,{lg:true,class:'big-three-card__orb',hidden:true}) : '<span class="big-three-card__glyph" aria-hidden="true">'+it.glyph+'</span>'}
+    el.innerHTML = items.map(it => {
+      const sealHtml = it.seal
+        ? `<span class="big-three-card__seal" data-celestial-seal="${esc(it.seal)}" data-seal-lg aria-hidden="true"></span>`
+        : '';
+      const fallback = (window.AstroIcons && AstroIcons.sign)
+        ? AstroIcons.sign(it.sign, { lg: true, class: 'big-three-card__orb', hidden: true })
+        : `<span class="big-three-card__glyph" aria-hidden="true">${esc((it.sign || '?').charAt(0))}</span>`;
+      return `
+      <article class="big-three-card" aria-label="${esc(it.label)} in ${esc(it.sign)}">
+        <p class="big-three-card__planet">${esc(it.label)} · ${esc(it.sub)}</p>
+        ${sealHtml || fallback}
         <h3 class="big-three-card__sign">${esc(it.sign)}</h3>
         <p class="big-three-card__desc">${it.deg ? it.deg + ' · ' : ''}${ELEMENT_MAP[it.sign] ? cap(ELEMENT_MAP[it.sign]) + ' · ' + cap(MODALITY_MAP[it.sign] || '') : ''}</p>
-      </article>`).join('');
+      </article>`;
+    }).join('');
+    // Hydrate engraved seals (celestial-seals.js bindSlots)
+    try {
+      if (window.AstroCelestialSeals && typeof AstroCelestialSeals.bindSlots === 'function') {
+        AstroCelestialSeals.bindSlots();
+      }
+    } catch (e) { /* seals optional */ }
   }
 
   function renderWheel(chart) {
@@ -647,6 +824,247 @@
     el.classList.add('natal-wheel--loaded');
     const wrap = document.getElementById('natal-wheel-wrap');
     if (wrap) wrap.removeAttribute('aria-busy');
+    paintWheelSky(chart);
+  }
+
+  // ── "Your sky" backdrop behind the wheel (ART-DIRECTION-2026 motif #3) ──────
+  // A dimmed, engine-captured System-preset frame of the birth moment sits behind
+  // the wheel. If a live Orrery3D is mounted (it is not on this page today), we
+  // capture its frame; otherwise we paint a deterministic cool sky seeded from the
+  // birth data — same "your sky, computed in your browser" honesty as the share
+  // card. A still, not a live loop: CLS-safe and reduced-motion-safe by nature.
+  function captureBirthSky(chart) {
+    try {
+      const O = window.Orrery3D;
+      if (!O || typeof O.captureFrame !== 'function' || O.isWebGL === undefined) return null;
+      // Drive the engine to the birth date if it exposes the timeline hook.
+      if (typeof O.setTimelineDays === 'function' && typeof chart.jd === 'number') {
+        const nowJd = E().julianDay(
+          new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate(), 12, 0, 0);
+        O.setTimelineDays(Math.round(chart.jd - nowJd));
+      }
+      const frame = O.captureFrame({ scale: 1 });
+      return (frame && frame.width) ? frame : null;
+    } catch (e) { return null; }
+  }
+
+  // 3D engine still library (no live WebGL on chart page — ART-DIRECTION hard rule)
+  let _engineSkyImg = null;
+  let _engineSkyLoading = false;
+  let _engineSkySrc = '';
+  const RULER_ENGINE = {
+    sun: 'img/engine/sun.webp', moon: 'img/engine/moon.webp',
+    mercury: 'img/engine/mercury.webp', venus: 'img/engine/venus.webp',
+    mars: 'img/engine/mars.webp', jupiter: 'img/engine/jupiter.webp',
+    saturn: 'img/engine/saturn.webp', uranus: 'img/engine/uranus.webp',
+    neptune: 'img/engine/neptune.webp', pluto: 'img/engine/pluto.webp',
+  };
+  // Export plate policy (honest): prefer Sun-sign traditional ruler so the
+  // photoreal window matches “your sky” marketing for sun-sign visitors.
+  // ASC chart-ruler is fallback when Sun sign is missing. Library still ≠ natal frame.
+  const SUN_SIGN_RULER = {
+    Aries: 'mars', Taurus: 'venus', Gemini: 'mercury', Cancer: 'moon', Leo: 'sun', Virgo: 'mercury',
+    Libra: 'venus', Scorpio: 'mars', Sagittarius: 'jupiter', Capricorn: 'saturn', Aquarius: 'saturn', Pisces: 'jupiter',
+  };
+  function enginePlateSrcForChart(chart) {
+    const sun = chart && chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
+    const sunSlug = SUN_SIGN_RULER[sun];
+    if (sunSlug && RULER_ENGINE[sunSlug]) return RULER_ENGINE[sunSlug];
+    const r = String((chart && (chart.chartRuler || chart.ruler)) || '').toLowerCase();
+    if (RULER_ENGINE[r]) return RULER_ENGINE[r];
+    return 'img/engine/earth-moon.webp';
+  }
+  function enginePlateLabelForChart(chart) {
+    const sun = chart && chart.positions && chart.positions.Sun && chart.positions.Sun.sign;
+    const sunSlug = SUN_SIGN_RULER[sun];
+    if (sunSlug && sun) return sunSlug.charAt(0).toUpperCase() + sunSlug.slice(1) + ' · ' + sun + ' Sun';
+    const r = String((chart && (chart.chartRuler || chart.ruler)) || '').toLowerCase();
+    if (r) return r.charAt(0).toUpperCase() + r.slice(1) + ' · chart ruler';
+    return 'Earth · system plate';
+  }
+  // Queue of waiters when the same plate is already loading
+  let _engineSkyWaiters = [];
+  let _engineSkyGen = 0;
+  function loadEngineSkyPlate(cb, chart) {
+    const src = enginePlateSrcForChart(chart) || 'img/engine/earth-moon.webp';
+    if (_engineSkyImg && _engineSkyImg.complete && _engineSkyImg.naturalWidth && _engineSkySrc === src) {
+      if (cb) cb(_engineSkyImg);
+      return;
+    }
+    if (_engineSkyLoading && _engineSkySrc === src) {
+      if (cb) _engineSkyWaiters.push(cb);
+      return;
+    }
+    // Chart identity changed — invalidate previous plate; bump gen so stale onload is ignored
+    if (_engineSkySrc && _engineSkySrc !== src) {
+      _engineSkyImg = null;
+    }
+    const gen = ++_engineSkyGen;
+    _engineSkyLoading = true;
+    _engineSkySrc = src;
+    _engineSkyWaiters = cb ? [cb] : [];
+    const img = new Image();
+    const finish = function (resolved) {
+      if (gen !== _engineSkyGen) return; // stale load — a newer cast/export won
+      _engineSkyLoading = false;
+      if (resolved) _engineSkyImg = resolved;
+      const waiters = _engineSkyWaiters.slice();
+      _engineSkyWaiters = [];
+      waiters.forEach(function (fn) { try { fn(resolved); } catch (e) { /* ignore */ } });
+    };
+    img.onload = function () { finish(img); };
+    img.onerror = function () {
+      if (gen !== _engineSkyGen) return;
+      if (src !== 'img/engine/earth-moon.webp' && src !== 'img/engine/earth.webp') {
+        // Cascade: planet → earth-moon → earth (same gen until parent finishes)
+        _engineSkyLoading = false;
+        _engineSkySrc = '';
+        loadEngineSkyPlate(function (fb) {
+          if (gen !== _engineSkyGen) return;
+          if (fb) finish(fb);
+          else {
+            const earth = new Image();
+            earth.onload = function () { if (gen === _engineSkyGen) finish(earth); };
+            earth.onerror = function () { if (gen === _engineSkyGen) finish(null); };
+            _engineSkySrc = 'img/engine/earth.webp';
+            _engineSkyLoading = true;
+            earth.src = 'img/engine/earth.webp';
+          }
+        }, null);
+        return;
+      }
+      if (src === 'img/engine/earth-moon.webp') {
+        const earth = new Image();
+        earth.onload = function () { if (gen === _engineSkyGen) finish(earth); };
+        earth.onerror = function () { if (gen === _engineSkyGen) finish(null); };
+        _engineSkySrc = 'img/engine/earth.webp';
+        _engineSkyLoading = true;
+        earth.src = 'img/engine/earth.webp';
+        return;
+      }
+      finish(null);
+    };
+    img.src = src;
+  }
+  function ensureEngineSkyPlate(chart) {
+    return new Promise(function (resolve) {
+      loadEngineSkyPlate(function (img) { resolve(img || null); }, chart);
+    });
+  }
+  function updateKeepsakeBand(chart) {
+    try {
+      const imgEl = document.querySelector('.chart-keepsake-band__art img');
+      const honesty = document.querySelector('.chart-keepsake-band__honesty');
+      const label = enginePlateLabelForChart(chart);
+      const src = enginePlateSrcForChart(chart);
+      if (imgEl && src) {
+        imgEl.src = src + (src.indexOf('?') >= 0 ? '&' : '?') + 'v=656';
+        imgEl.alt = label + ' — 3D engine still';
+      }
+      if (honesty) {
+        honesty.textContent =
+          'Wheel = your real positions · window = ' + label +
+          ' (3D orrery still) · free PNG ≠ paid print · not AI art';
+      }
+    } catch (e) { /* optional UI */ }
+  }
+
+  function paintDeterministicSky(x, W, H, chart, engineImg) {
+    const seed = seedFromChart(chart);
+    const elem = (chart.dominant && chart.dominant.element) || 'water';
+    const tint = { fire: '184,90,66', earth: '90,122,72', air: '138,122,106', water: '74,117,128' }[elem] || '74,117,128';
+    // Void base
+    x.fillStyle = '#07070A';
+    x.fillRect(0, 0, W, H);
+    // Engine photoreal plate — chart-keyed ruler still; wheel holds personal geometry
+    if (engineImg && engineImg.naturalWidth) {
+      x.save();
+      x.globalAlpha = 0.28;
+      const s = Math.max(W / engineImg.naturalWidth, H / engineImg.naturalHeight) * 1.05;
+      const dw = engineImg.naturalWidth * s, dh = engineImg.naturalHeight * s;
+      x.drawImage(engineImg, (W - dw) / 2, (H - dh) / 2 - H * 0.04, dw, dh);
+      x.restore();
+    }
+    // Faint element-tinted glow — the one personalised, non-fabricated cue.
+    const g = x.createRadialGradient(W * 0.5, H * 0.44, 0, W * 0.5, H * 0.5, W * 0.62);
+    g.addColorStop(0, 'rgba(' + tint + ',0.20)');
+    g.addColorStop(0.55, 'rgba(' + tint + ',0.06)');
+    g.addColorStop(1, 'transparent');
+    x.fillStyle = g;
+    x.fillRect(0, 0, W, H);
+    drawStars(x, W, H, 240, seed, W / 1080);
+  }
+
+  function paintWheelSky(chart) {
+    try {
+      const stage = document.querySelector('.chart-wheel-stage');
+      if (!stage || !chart) return;
+      let cv = stage.querySelector('.chart-wheel-stage__sky');
+      if (!cv) {
+        cv = document.createElement('canvas');
+        cv.className = 'chart-wheel-stage__sky';
+        cv.setAttribute('aria-hidden', 'true');
+        stage.insertBefore(cv, stage.firstChild);
+      }
+      const W = 900, H = 900;
+      cv.width = W; cv.height = H;
+      const x = (window.RafCore && window.RafCore.prepExportCtx)
+        ? window.RafCore.prepExportCtx(cv, W, H) : cv.getContext('2d');
+      x.clearRect(0, 0, W, H);
+      const frame = captureBirthSky(chart);
+      if (frame) {
+        x.drawImage(frame, 0, 0, W, H);
+        stage.classList.add('has-sky');
+      } else {
+        paintDeterministicSky(x, W, H, chart, _engineSkyImg);
+        stage.classList.add('has-sky');
+        // Load plate for this chart's ruling body, then repaint
+        loadEngineSkyPlate(function (img) {
+          if (!img || !stage.isConnected) return;
+          x.clearRect(0, 0, W, H);
+          paintDeterministicSky(x, W, H, chart, img);
+        }, chart);
+      }
+    } catch (e) { /* wheel still renders on its own plate */ }
+  }
+
+  const HOUSE_SYSTEM_NAMES = { equal: 'Equal', placidus: 'Placidus', whole: 'Whole Sign' };
+
+  // Rebuild a calculate() input from an already-computed chart so the results-level
+  // house-system switcher works for both fresh casts and restored shared charts
+  // (no dependency on the live form). Same birth moment, new house framework.
+  function inputFromChart(chart, houseSystem) {
+    const parts = String(chart.birthDate || '').split('-').map(Number);
+    let hh = 12, mm = 0, timeKnown = false;
+    if (chart.birthTime && /^\d{1,2}:\d{2}/.test(chart.birthTime)) {
+      const t = chart.birthTime.split(':');
+      hh = parseInt(t[0], 10); mm = parseInt(t[1], 10); timeKnown = true;
+    }
+    return {
+      y: parts[0], m: parts[1], d: parts[2], hh, mm, timeKnown,
+      lat: chart.lat, lon: chart.lon, tz: chart.tz,
+      houseSystem, nodeMode: chart.nodeMode || 'mean',
+      name: chart.name, city: chart.city,
+    };
+  }
+
+  // Recompute this chart under a different house system, in place, without
+  // scrolling away or losing the Houses tab. Only the house cusps, house
+  // occupancy and the wheel's house layer change — the birth data is untouched.
+  function switchHouseSystem(sys) {
+    if (!currentChart || !HOUSE_SYSTEM_NAMES[sys]) return;
+    if (sys === (currentChart.houseSystem || 'equal')) return;
+    try {
+      const next = calculate(inputFromChart(currentChart, sys));
+      if (!next || !next.positions || !next.positions.Sun) return;
+      currentChart = next;
+      renderWheel(currentChart);
+      renderTabs(currentChart); // re-fills tables + re-wires wheel↔table linking
+      if (window.AstroApp) {
+        AstroApp.showToast('House system updated',
+          HOUSE_SYSTEM_NAMES[sys] + ' houses — your planets and signs are unchanged; only the house cusps moved.', 'success');
+      }
+    } catch (e) { /* leave the current chart intact on any failure */ }
   }
 
   const RF = () => window.ReadingFormat;
@@ -817,7 +1235,8 @@
       if (chart.nodeMode) {
         const modeLabel = chart.nodeMode === 'true' ? 'True (osculating) node' : 'Mean node';
         pt.innerHTML += '<p class="ap-reading-card__meta" style="text-align:center;margin-top:var(--space-4);">' +
-          'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180°</p>';
+          'Lunar nodes: ' + modeLabel + ' · Lilith = mean Black Moon · South Node = North Node + 180° · ' +
+          'Chiron: Kepler orbit from JPL elements — to the degree 1970–2030, approximate for mid-century births</p>';
       }
       // Tag each placement card AFTER all innerHTML writes (innerHTML += re-parses
       // and would drop these attributes). data-planet uses the internal key (e.g.
@@ -850,7 +1269,23 @@
         planetsByHouse[hh].push(k);
       });
       const houseSigns = [];
-      ht.innerHTML = chart.houses.map((cusp, i) => {
+      const curSys = chart.houseSystem || 'equal';
+      const approxNote = chart.birthTime
+        ? ''
+        : ' <span class="house-system-switch__approx">· approximate without a birth time</span>';
+      const switcherHtml =
+        '<div class="house-system-switch" role="group" aria-label="House system — the framework that divides your chart into twelve life areas">' +
+          '<p class="house-system-switch__label"><span class="house-system-switch__name">' +
+            (HOUSE_SYSTEM_NAMES[curSys] || 'Equal') + ' houses</span> — switchable' + approxNote + '</p>' +
+          '<div class="house-system-switch__opts">' +
+            ['equal', 'placidus', 'whole'].map(function (s) {
+              return '<button type="button" class="house-system-switch__btn' +
+                (s === curSys ? ' is-active' : '') + '" data-house-system="' + s +
+                '" aria-pressed="' + (s === curSys) + '">' + HOUSE_SYSTEM_NAMES[s] + '</button>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+      ht.innerHTML = switcherHtml + chart.houses.map((cusp, i) => {
         const sign = E().signOf(cusp);
         houseSigns.push(sign);
         const deg  = cusp % 30;
@@ -866,6 +1301,9 @@
           icon: '<span class="ap-reading-card__aspect-glyph" style="font-size:0.85rem;color:var(--gold);">' + roman(i + 1) + '</span>',
         });
       }).join('');
+      ht.querySelectorAll('[data-house-system]').forEach(function (btn) {
+        btn.addEventListener('click', function () { switchHouseSystem(btn.dataset.houseSystem); });
+      });
       // Element-tint each house card by its cusp sign (purely visual; the cusp
       // sign + degree shown in the meta are unchanged engine values).
       const houseCards = ht.querySelectorAll('.ap-reading-card--placement');
@@ -1072,7 +1510,7 @@
     const priceBit = price ? ` — <strong>${esc(price)}</strong>` : '';
     const ctaHtml = configured
       ? `<p class="deep-teaser__format">A personalised 13-page PDF — every planet, all twelve houses, life-area chapters (love, career, wellbeing), chart patterns, ten tightest aspects, and a full reference — drawn from the same engine as your free chart${priceBit}. One-time; yours to keep, no subscription.</p>
-         <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener">
+         <a class="btn--deep" id="deep-cta" href="${esc(url)}" target="_blank" rel="noopener sponsored">
            <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Unlock Your Deep Reading${price ? ' — ' + esc(price) : ''}
          </a>
          <p class="deep-teaser__honest">Opens a secure checkout on our partner store. The chart you cast here never leaves your browser — your reading is hand-prepared from the birth details you enter at checkout.</p>`
@@ -1194,7 +1632,7 @@
           source: 'chart_wallpaper_unlock',
           tag: 'tag_chart_wallpaper',
           meta: {
-            forName: chart.name ? String(chart.name).split(/\s+/)[0] : null,
+            forName: firstNameOf(chart.name) || null,
             sunSign: chart.positions?.Sun?.sign || null,
             hasBirthDate: !!birthDate,
           },
@@ -1223,7 +1661,20 @@
   function initEmailCapture(chart) {
     const host = document.getElementById('email-capture');
     if (!host) return;
+
+    // Honesty + no double-ask: the default headline ("Unlocked your wallpaper?…")
+    // presupposes the visitor already joined via the wallpaper gate above. If they
+    // did, don't ask a second time; if they didn't, swap in a neutral headline so
+    // we never assert a false premise.
+    if (isWallpaperUnlocked()) {
+      host.hidden = true;
+      return;
+    }
     host.hidden = false;            // reveal alongside a cast chart
+    const capTitle = host.querySelector('.email-capture__title');
+    const capSub = host.querySelector('.email-capture__sub');
+    if (capTitle) capTitle.textContent = 'Get cosmic weather for your chart';
+    if (capSub) capSub.innerHTML = 'Monthly transit notes for <em>your</em> chart, deep-reading previews, shop drops &amp; horoscopes when they ship — no spam, unsubscribe anytime. Your birth data stays on your device.';
 
     if (emailCaptureWired) return;  // wire the form exactly once
     emailCaptureWired = true;
@@ -1252,7 +1703,7 @@
           source: 'chart_capture',
           tag: 'tag_chart_wallpaper',
           meta: {
-            forName: (chart && chart.name) ? String(chart.name).split(/\s+/)[0] : null,
+            forName: (chart && chart.name) ? (firstNameOf(chart.name) || null) : null,
             sunSign: chart && chart.positions && chart.positions.Sun ? chart.positions.Sun.sign : null,
           },
         });
@@ -1295,6 +1746,8 @@ host.classList.add('is-done');
         btn.setAttribute('aria-selected', 'true');
         const panel = document.getElementById(btn.getAttribute('aria-controls'));
         if (panel) panel.setAttribute('aria-hidden', 'false');
+        var hint = document.getElementById('chart-tabs-hint');
+        if (hint) hint.setAttribute('hidden', '');
       });
     });
   }
@@ -1303,7 +1756,26 @@ host.classList.add('is-done');
 
   document.getElementById('save-btn')?.addEventListener('click', () => {
     if (!currentChart) return;
-    if (window.AstroProfile) {
+    if (window.APChartShare) {
+      APChartShare.saveWithFeedback(currentChart, {
+        name: currentChart.name,
+        birthDate: currentChart.birthDate,
+        birthTime: currentChart.birthTime,
+        birthCity: currentChart.city,
+        city: currentChart.city,
+        lat: currentChart.lat,
+        lon: currentChart.lon,
+        tz: currentChart.tz,
+        houseSystem: currentChart.houseSystem || 'equal',
+        sunSign: currentChart.positions.Sun.sign,
+        moonSign: currentChart.positions.Moon.sign,
+        risingSign: currentChart.risingSign,
+        positions: window.AstroProfile && AstroProfile.packPositionsForSave
+          ? AstroProfile.packPositionsForSave(currentChart.positions) : null,
+        aspects: (currentChart.aspects || []).slice(0, 16),
+        engineV: 2,
+      });
+    } else if (window.AstroProfile) {
       AstroProfile.saveChart({
         name: currentChart.name,
         birthDate: currentChart.birthDate,
@@ -1313,45 +1785,76 @@ host.classList.add('is-done');
         lat: currentChart.lat,
         lon: currentChart.lon,
         tz: currentChart.tz,
-        houseSystem: currentChart.houseSystem || 'placidus',
+        houseSystem: currentChart.houseSystem || 'equal',
         sunSign: currentChart.positions.Sun.sign,
         moonSign: currentChart.positions.Moon.sign,
         risingSign: currentChart.risingSign,
+        positions: AstroProfile.packPositionsForSave
+          ? AstroProfile.packPositionsForSave(currentChart.positions) : null,
+        aspects: (currentChart.aspects || []).slice(0, 16),
         engineV: 2,
       });
       if (window.AstroApp) {
         AstroApp.showToast('Saved',
           'Chart saved — view it in My Charts or your Profile.', 'success');
       }
+      // Toasts are text-only, so also surface the dashboard with a real link —
+      // same chip id/classes ap-chart-share.js showSaveConfirmation() uses,
+      // so the existing .chart-save-confirmation styling applies.
+      const row = document.getElementById('result-actions-row');
+      if (row) {
+        let chip = document.getElementById('chart-save-confirmation');
+        if (!chip) {
+          chip = document.createElement('div');
+          chip.id = 'chart-save-confirmation';
+          chip.className = 'chart-save-confirmation';
+          chip.setAttribute('role', 'status');
+          chip.setAttribute('aria-live', 'polite');
+          row.parentNode.insertBefore(chip, row.nextSibling);
+        }
+        chip.hidden = false;
+        chip.innerHTML = '<span class="chart-save-confirmation__mark" aria-hidden="true">✦</span>' +
+          '<span>Saved on this device — <a href="charts.html">open My Charts →</a></span>';
+      }
     }
   });
 
-  // Share Chart → one-tap share of the polished square image (Web Share API with
-  // an image file where supported), falling back to a copied link otherwise.
+  // Share Chart → beautiful chart-view link (preferred) or image via Web Share API.
   document.getElementById('share-btn')?.addEventListener('click', async () => {
     if (!currentChart) return;
-    const url  = location.href;
-    const text = `${currentChart.name}: ☉ ${currentChart.positions.Sun.sign} · ☽ ${currentChart.positions.Moon.sign} · ↑ ${currentChart.risingSign}`;
+    const shareUrl = window.APChartShare
+      ? APChartShare.buildShareUrl(currentChart, null, { interactive: false })
+      : location.href;
+    const text = window.APChartShare
+      ? APChartShare.bigThreeLine(currentChart)
+      : `${currentChart.name}: ☉ ${currentChart.positions.Sun.sign} · ☽ ${currentChart.positions.Moon.sign} · ↑ ${currentChart.risingSign}`;
+    if (window.APChartShare) APChartShare.updateShareStrip(currentChart, null);
     // Prefer sharing the generated image (richer than a bare link) on capable devices.
     if (navigator.canShare && navigator.share) {
       try {
         const blob = await canvasToBlob(paintShareImage(currentChart, 'square'));
         const file = blob && new File([blob], `${slugify(currentChart.name)}-natal-square.png`, { type: 'image/png' });
         if (file && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: 'My Birth Chart — Astro Precise', text, url });
+          await navigator.share({ files: [file], title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
           return;
         }
       } catch (e) { if (e && e.name === 'AbortError') return; /* else fall through */ }
     }
     try {
       if (navigator.share) {
-        await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url });
+        await navigator.share({ title: 'My Birth Chart — Astro Precise', text, url: shareUrl });
+      } else if (window.APChartShare) {
+        await APChartShare.copyShareLink(currentChart, null);
       } else {
-        await navigator.clipboard.writeText(`${text}\n${url}`);
+        await navigator.clipboard.writeText(`${text}\n${shareUrl}`);
         if (window.AstroApp) AstroApp.showToast('Link copied', 'Share link copied to clipboard.', 'success');
       }
     } catch (e) { /* user cancelled */ }
   });
+
+  if (window.APChartShare) {
+    APChartShare.wireCopyButton(function () { return currentChart; }, function () { return null; });
+  }
 
   // Big Three Card → dedicated Sun/Moon/Rising square (no full natal wheel).
   document.getElementById('print-btn')?.addEventListener('click', () => {
@@ -1372,6 +1875,7 @@ host.classList.add('is-done');
       birthTime: currentChart.birthTime || null,
       place: { city: currentChart.city, lat: currentChart.lat, lon: currentChart.lon, tz: currentChart.tz },
       risingSign: currentChart.risingSign,
+      houseSystem: currentChart.houseSystem || 'equal',
       positions: currentChart.positions,
       houses: currentChart.houses,
       planetHouses: currentChart.planetHouses,
@@ -1425,16 +1929,16 @@ host.classList.add('is-done');
 
   // Engraved palette (matches css/main.css :root) ────────────────────────────
   const PAL = {
-    void:     '#050406',
-    voidWarm: '#0D0A07',
-    lapis:    '#6e1a26',   // repurposed cool→warm: structural/accent lines are now oxblood, not blue
-    gold:     '#C9A227',
-    goldHi:   '#EFE3C0',
-    goldPale: '#E8E0D0',
-    parchment:'#E8E0D0',
-    oxblood:  '#6e1a26',
-    silver:   '#A89E88',
-    silverDim:'#6E6658',
+    void:     '#07070A',   // --ap-void-deep
+    voidWarm: '#121826',   // --ap-void-mid (name kept; value is cool)
+    lapis:    '#4A7580',   // structural/accent lines → water element accent
+    gold:     '#A8B0BC',   // --ap-gold-core
+    goldHi:   '#7EC8E8',   // --ap-gold-bright
+    goldPale: '#E8EBF0',   // --ap-gold-parchment
+    parchment:'#E8EBF0',
+    oxblood:  '#4A7580',   // retired oxblood → cool water accent
+    silver:   '#C8CDD6',   // --ap-text-secondary
+    silverDim:'#8B919C',   // --ap-text-muted
   };
 
   const SHARE_FORMATS = {
@@ -1460,7 +1964,7 @@ host.classList.add('is-done');
   // Faint dot grid (scaled).
   function drawDotGrid(x, W, H, S) {
     const step = 48 * S;
-    x.fillStyle = 'rgba(201,162,39,0.05)';
+    x.fillStyle = 'rgba(168,176,188,0.05)';
     for (let gx = step; gx < W; gx += step) {
       for (let gy = step; gy < H; gy += step) {
         x.beginPath();
@@ -1479,7 +1983,7 @@ host.classList.add('is-done');
       const alpha = 0.12 + rnd() * 0.55;
       const r     = (rnd() * 1.8 + 0.3) * S;
       x.fillStyle = sparkle
-        ? `rgba(232,201,106,${alpha})`
+        ? `rgba(205,174,106,${alpha})`
         : `rgba(240,232,216,${alpha})`;
       x.beginPath();
       x.arc(rnd() * W, rnd() * H, r, 0, Math.PI * 2);
@@ -1487,49 +1991,84 @@ host.classList.add('is-done');
     }
   }
 
-  // Void → lapis cosmic ground + nebulae (scaled, deterministic).
-  function paintBackground(x, W, H, seed, S) {
-    // Vertical void → lapis gradient
-    const g = x.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, PAL.void);
-    g.addColorStop(0.55, PAL.voidWarm);
-    g.addColorStop(1, '#13100C');
-    x.fillStyle = g; x.fillRect(0, 0, W, H);
+  // Masterpiece ground: void + engine photoreal window + brass atmosphere + stars.
+  // Engine stills from make-engine-stills (3D orrery library) — not stock nebulas.
+  // eng: optional preloaded plate (preferred over global — avoids stale chart race).
+  function paintBackground(x, W, H, seed, S, eng) {
+    x.fillStyle = PAL.void;
+    x.fillRect(0, 0, W, H);
 
-    // Gold nebula (top)
+    // Photoreal 3D engine plate as soft full-field atmosphere (marketing parity)
+    eng = eng || _engineSkyImg;
+    if (eng && eng.naturalWidth) {
+      x.save();
+      x.globalAlpha = 0.28;
+      const s = Math.max(W / eng.naturalWidth, H / eng.naturalHeight) * 1.12;
+      const dw = eng.naturalWidth * s, dh = eng.naturalHeight * s;
+      x.drawImage(eng, (W - dw) / 2, (H - dh) / 2 - H * 0.06, dw, dh);
+      x.restore();
+    }
+
+    // Brass nebula (top) — token brass only
     const neb1 = x.createRadialGradient(W * 0.72, H * 0.16, 0, W * 0.72, H * 0.16, Math.max(W, H) * 0.75);
-    neb1.addColorStop(0, 'rgba(201,162,39,0.20)');
-    neb1.addColorStop(0.5, 'rgba(201,162,39,0.06)');
+    neb1.addColorStop(0, 'rgba(168,176,188,0.16)');
+    neb1.addColorStop(0.5, 'rgba(168,176,188,0.05)');
     neb1.addColorStop(1, 'transparent');
     x.fillStyle = neb1; x.fillRect(0, 0, W, H);
 
-    // Oxblood nebula (lower)
+    // Cool raised void (lower)
     const neb2 = x.createRadialGradient(W * 0.2, H * 0.86, 0, W * 0.2, H * 0.86, Math.max(W, H) * 0.7);
-    neb2.addColorStop(0, 'rgba(110,26,38,0.30)');
-    neb2.addColorStop(0.5, 'rgba(110,26,38,0.08)');
+    neb2.addColorStop(0, 'rgba(26,34,48,0.55)');
+    neb2.addColorStop(0.5, 'rgba(74,117,128,0.10)');
     neb2.addColorStop(1, 'transparent');
     x.fillStyle = neb2; x.fillRect(0, 0, W, H);
 
     drawDotGrid(x, W, H, S);
-    drawStars(x, W, H, Math.round((W * H) / 5200), seed, S);
+    drawStars(x, W, H, Math.round((W * H) / 4800), seed, S);
+
+    // Circular engine “window” behind wheel zone (masterpiece motif — framed keep)
+    if (eng && eng.naturalWidth) {
+      const wx = W / 2, wy = H * 0.48, wr = Math.min(W, H) * 0.30;
+      x.save();
+      x.beginPath();
+      x.arc(wx, wy, wr, 0, Math.PI * 2);
+      x.closePath();
+      x.clip();
+      x.globalAlpha = 0.48;
+      const s2 = Math.max((wr * 2) / eng.naturalWidth, (wr * 2) / eng.naturalHeight);
+      const dw2 = eng.naturalWidth * s2, dh2 = eng.naturalHeight * s2;
+      x.drawImage(eng, wx - dw2 / 2, wy - dh2 / 2, dw2, dh2);
+      x.restore();
+      // Brass double-ring window (matches marketing plate language)
+      x.strokeStyle = 'rgba(168,176,188,0.48)';
+      x.lineWidth = Math.max(2.5, 2.5 * S);
+      x.beginPath();
+      x.arc(wx, wy, wr, 0, Math.PI * 2);
+      x.stroke();
+      x.strokeStyle = 'rgba(168,176,188,0.22)';
+      x.lineWidth = Math.max(1, 1.2 * S);
+      x.beginPath();
+      x.arc(wx, wy, wr + 6 * S, 0, Math.PI * 2);
+      x.stroke();
+    }
 
     // Subtle vignette to focus the eye
     const vig = x.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.max(W, H) * 0.72);
     vig.addColorStop(0, 'transparent');
-    vig.addColorStop(1, 'rgba(5,6,14,0.55)');
+    vig.addColorStop(1, 'rgba(12,16,22,0.62)');
     x.fillStyle = vig; x.fillRect(0, 0, W, H);
   }
 
   // Double gold frame with generous margin (print bleed-friendly).
   function drawFrame(x, W, H, outerInset, innerInset) {
-    x.strokeStyle = 'rgba(196,146,10,0.7)';
+    x.strokeStyle = 'rgba(168,176,188,0.7)';
     x.lineWidth = Math.max(2, outerInset * 0.05);
     x.strokeRect(outerInset, outerInset, W - outerInset * 2, H - outerInset * 2);
-    x.strokeStyle = 'rgba(196,146,10,0.3)';
+    x.strokeStyle = 'rgba(168,176,188,0.3)';
     x.lineWidth = Math.max(1, outerInset * 0.025);
     x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
     // Corner ticks
-    x.strokeStyle = 'rgba(232,201,106,0.55)';
+    x.strokeStyle = 'rgba(205,174,106,0.55)';
     x.lineWidth = Math.max(1.5, outerInset * 0.04);
     const t = (outerInset + innerInset) / 2;
     const len = (innerInset - outerInset) * 1.4;
@@ -1568,11 +2107,12 @@ host.classList.add('is-done');
     }
     const grad = x.createRadialGradient(cx - r * 0.3, cy - r * 0.35, r * 0.1, cx, cy, r);
     grad.addColorStop(0, 'rgba(255,255,255,0.18)');
-    grad.addColorStop(0.4, elemCol + 'cc');
-    grad.addColorStop(1, elemCol + '33');
+    var alphaFn = (window.APCanvasSeals && APCanvasSeals.withAlpha) ? APCanvasSeals.withAlpha.bind(APCanvasSeals) : null;
+    grad.addColorStop(0.4, alphaFn ? alphaFn(elemCol, 'cc') : elemCol);
+    grad.addColorStop(1, alphaFn ? alphaFn(elemCol, '33') : elemCol);
     x.fillStyle = grad;
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
-    x.strokeStyle = 'rgba(196,146,10,0.55)';
+    x.strokeStyle = 'rgba(168,176,188,0.55)';
     x.lineWidth = Math.max(1, r * 0.06);
     x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.stroke();
     x.strokeStyle = 'rgba(255,255,255,0.28)';
@@ -1601,10 +2141,11 @@ host.classList.add('is-done');
     x.lineJoin = 'round';
     const SIGNS_ORDER = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo',
                          'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+    // Observatory element tints (muted — match --ap-element-*)
     const ELEMENT_SECTOR = {
-      Aries:'rgba(216,90,44,0.14)', Taurus:'rgba(94,122,58,0.14)', Gemini:'rgba(167,139,186,0.14)', Cancer:'rgba(63,125,118,0.16)',
-      Leo:'rgba(216,90,44,0.14)', Virgo:'rgba(94,122,58,0.14)', Libra:'rgba(167,139,186,0.14)', Scorpio:'rgba(63,125,118,0.16)',
-      Sagittarius:'rgba(216,90,44,0.14)', Capricorn:'rgba(94,122,58,0.14)', Aquarius:'rgba(167,139,186,0.14)', Pisces:'rgba(63,125,118,0.16)',
+      Aries:'rgba(184,90,66,0.11)', Taurus:'rgba(90,122,72,0.11)', Gemini:'rgba(138,122,106,0.10)', Cancer:'rgba(74,117,128,0.12)',
+      Leo:'rgba(184,90,66,0.11)', Virgo:'rgba(90,122,72,0.11)', Libra:'rgba(138,122,106,0.10)', Scorpio:'rgba(74,117,128,0.12)',
+      Sagittarius:'rgba(184,90,66,0.11)', Capricorn:'rgba(90,122,72,0.11)', Aquarius:'rgba(138,122,106,0.10)', Pisces:'rgba(74,117,128,0.12)',
     };
     const rOuter     = R;
     const rBand      = R * 0.89;
@@ -1619,7 +2160,7 @@ host.classList.add('is-done');
     // Schematic orbital tracks (decorative — matches SVG chart-render layer)
     [0.78, 0.68, 0.58].forEach((frac, i) => {
       x.save();
-      x.strokeStyle = 'rgba(201,162,39,' + (0.1 + i * 0.04) + ')';
+      x.strokeStyle = 'rgba(168,176,188,' + (0.1 + i * 0.04) + ')';
       x.lineWidth = 0.8 * lw;
       x.setLineDash([3 + i, 5 + i * 2]);
       x.beginPath();
@@ -1629,13 +2170,13 @@ host.classList.add('is-done');
     });
 
     // Rings
-    x.strokeStyle = 'rgba(196,146,10,0.75)'; x.lineWidth = 3 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.75)'; x.lineWidth = 3 * lw;
     x.beginPath(); x.arc(cx, cy, rOuter, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(196,146,10,0.45)'; x.lineWidth = 1.5 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.45)'; x.lineWidth = 1.5 * lw;
     x.beginPath(); x.arc(cx, cy, rSignInner, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(196,146,10,0.3)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.3)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rBand, 0, Math.PI * 2); x.stroke();
-    x.strokeStyle = 'rgba(196,146,10,0.22)'; x.lineWidth = 1 * lw;
+    x.strokeStyle = 'rgba(168,176,188,0.22)'; x.lineWidth = 1 * lw;
     x.beginPath(); x.arc(cx, cy, rInner, 0, Math.PI * 2); x.stroke();
 
     // Sign sectors
@@ -1646,7 +2187,7 @@ host.classList.add('is-done');
       x.beginPath(); x.moveTo(cx, cy);
       x.arc(cx, cy, rOuter, a1, a2, a1 > a2); x.closePath(); x.fill();
 
-      x.strokeStyle = 'rgba(196,146,10,0.3)'; x.lineWidth = 1 * lw;
+      x.strokeStyle = 'rgba(168,176,188,0.3)'; x.lineWidth = 1 * lw;
       x.beginPath();
       x.moveTo(cx + Math.cos(a1) * rSignInner, cy + Math.sin(a1) * rSignInner);
       x.lineTo(cx + Math.cos(a1) * rOuter,     cy + Math.sin(a1) * rOuter);
@@ -1658,7 +2199,7 @@ host.classList.add('is-done');
     }
 
     // 10° ticks
-    x.strokeStyle = 'rgba(196,146,10,0.4)';
+    x.strokeStyle = 'rgba(168,176,188,0.4)';
     for (let d2 = 0; d2 < 360; d2 += 10) {
       if (d2 % 30 === 0) continue;
       const a = ang(d2);
@@ -1730,30 +2271,39 @@ host.classList.add('is-done');
 
       const haloR = R * 0.07;
       const haloGrad = x.createRadialGradient(px2, py2, 0, px2, py2, haloR);
-      haloGrad.addColorStop(0, 'rgba(196,146,10,0.22)');
+      haloGrad.addColorStop(0, 'rgba(168,176,188,0.22)');
       haloGrad.addColorStop(1, 'transparent');
       x.fillStyle = haloGrad;
       x.beginPath(); x.arc(px2, py2, haloR, 0, Math.PI * 2); x.fill();
 
-      x.fillStyle = PAL.parchment;
-      x.font = `400 ${R * 0.112}px ${FONT_DISPLAY}`;
-      x.textBaseline = 'middle'; x.textAlign = 'center';
-      x.fillText(PLANET_GLYPHS[k] || '', px2, py2);
+      // Engraved planet seal when preloaded; unicode only as last-resort fallback
+      const seals = window.APCanvasSeals;
+      const sealSz = R * 0.105;
+      let drewSeal = false;
+      if (seals && typeof seals.drawPlanetSeal === 'function') {
+        drewSeal = seals.drawPlanetSeal(x, k, px2, py2, sealSz);
+      }
+      if (!drewSeal) {
+        x.fillStyle = PAL.parchment;
+        x.font = `400 ${R * 0.112}px ${FONT_DISPLAY}`;
+        x.textBaseline = 'middle'; x.textAlign = 'center';
+        x.fillText(PLANET_GLYPHS[k] || k.charAt(0), px2, py2);
+      }
 
       if (p.retrograde) {
         x.fillStyle = '#c97a82';
-        x.font = `500 ${R * 0.04}px ${FONT_SANS}`;
+        x.font = `500 ${R * 0.04}px "IBM Plex Mono", ${FONT_SANS}`;
         x.fillText('℞', px2 + R * 0.055, py2 - R * 0.05);
       }
     });
     x.textBaseline = 'alphabetic';
 
     // Centre star
-    x.fillStyle = 'rgba(196,146,10,0.95)';
+    x.fillStyle = 'rgba(168,176,188,0.95)';
     x.font = `400 ${R * 0.14}px ${FONT_DISPLAY}`;
     x.textBaseline = 'middle'; x.textAlign = 'center';
     if (window.AstroUI && AstroUI.drawStar4) {
-      x.fillStyle = 'rgba(196,146,10,0.95)';
+      x.fillStyle = 'rgba(168,176,188,0.95)';
       AstroUI.drawStar4(x, cx, cy, R * 0.12);
     }
     x.textBaseline = 'alphabetic';
@@ -1769,7 +2319,7 @@ host.classList.add('is-done');
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('E L E M E N T A L   D I S T R I B U T I O N', x0 + barW / 2, y0);
 
-    x.strokeStyle = 'rgba(196,146,10,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(168,176,188,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 16 * scale); x.lineTo(x0 + barW, y0 + 16 * scale); x.stroke();
 
     const rows = [
@@ -1820,7 +2370,7 @@ host.classList.add('is-done');
     x.font = `600 ${22 * scale}px ${FONT_SANS}`;
     x.fillText('P L A N E T A R Y   P L A C E M E N T S', x0 + colW, y0);
 
-    x.strokeStyle = 'rgba(196,146,10,0.22)'; x.lineWidth = 1 * scale;
+    x.strokeStyle = 'rgba(168,176,188,0.22)'; x.lineWidth = 1 * scale;
     x.beginPath(); x.moveTo(x0, y0 + 14 * scale); x.lineTo(x0 + colW * 2, y0 + 14 * scale); x.stroke();
 
     const PLANET_ORDER_TABLE = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
@@ -1883,14 +2433,14 @@ host.classList.add('is-done');
 
     // Warm void ground (lighter vignette — clock widgets sit on top)
     const g = x.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#0A0806');
+    g.addColorStop(0, '#07070A');
     g.addColorStop(0.45, PAL.voidWarm);
-    g.addColorStop(1, '#14100C');
+    g.addColorStop(1, '#121826');
     x.fillStyle = g; x.fillRect(0, 0, W, H);
 
     const neb = x.createRadialGradient(W * 0.5, H * 0.42, 0, W * 0.5, H * 0.42, Math.max(W, H) * 0.85);
-    neb.addColorStop(0, 'rgba(201,162,39,0.14)');
-    neb.addColorStop(0.55, 'rgba(110,26,38,0.08)');
+    neb.addColorStop(0, 'rgba(168,176,188,0.14)');
+    neb.addColorStop(0.55, 'rgba(74,117,128,0.08)');
     neb.addColorStop(1, 'transparent');
     x.fillStyle = neb; x.fillRect(0, 0, W, H);
 
@@ -1941,7 +2491,7 @@ host.classList.add('is-done');
     drawWheel(x, chart, W / 2, wheelCY, wheelR);
 
     // Subtle footer (below thumb zone)
-    x.strokeStyle = 'rgba(196,146,10,0.18)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(168,176,188,0.18)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.28, H - safeBot + 36 * S); x.lineTo(W * 0.72, H - safeBot + 36 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${16 * S}px ${FONT_SANS}`;
@@ -1964,7 +2514,7 @@ host.classList.add('is-done');
     const S = W / 1080;
     const seed = seedFromChart(chart);
 
-    paintBackground(x, W, H, seed, S);
+    paintBackground(x, W, H, seed, S, _engineSkyImg);
     drawFrame(x, W, H, 36 * S, 52 * S);
 
     x.textAlign = 'center';
@@ -2032,7 +2582,7 @@ host.classList.add('is-done');
       x.fillText(dom, W / 2, y);
     }
 
-    x.strokeStyle = 'rgba(196,146,10,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(168,176,188,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 88 * S); x.lineTo(W * 0.8, H - 88 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
     x.font = `400 ${17 * S}px ${FONT_SANS}`;
@@ -2059,11 +2609,12 @@ host.classList.add('is-done');
     const S = W / 1080;                       // scale relative to the 1080-wide baseline
     const seed = seedFromChart(chart);
 
-    paintBackground(x, W, H, seed, S);
+    paintBackground(x, W, H, seed, S, _engineSkyImg);
     drawFrame(x, W, H, 44 * S, 62 * S);
 
     const cityShort = (chart.city || '').split(',')[0];
-    const accLine = 'VSOP87 · ELP2000 · computed privately in your browser';
+    const plateLbl = enginePlateLabelForChart(chart);
+    const accLine = 'VSOP87 · ELP2000 · private browser math · not AI art';
 
     // ── Header (shared) ──
     x.textAlign = 'center';
@@ -2165,11 +2716,14 @@ host.classList.add('is-done');
 
     // ── Footer (shared) ──
     x.textAlign = 'center';
-    x.strokeStyle = 'rgba(196,146,10,0.25)'; x.lineWidth = 1 * S;
+    x.strokeStyle = 'rgba(168,176,188,0.25)'; x.lineWidth = 1 * S;
     x.beginPath(); x.moveTo(W * 0.2, H - 108 * S); x.lineTo(W * 0.8, H - 108 * S); x.stroke();
     x.fillStyle = PAL.silverDim;
-    x.font = `400 ${20 * S}px ${FONT_SANS}`;
-    x.fillText(`astroprecise  ·  ${accLine}`, W / 2, H - 78 * S);
+    x.font = `400 ${18 * S}px ${FONT_SANS}`;
+    x.fillText(`astroprecise  ·  ${accLine}`, W / 2, H - 88 * S);
+    x.fillStyle = 'rgba(168,158,136,0.9)';
+    x.font = `400 ${13 * S}px ${FONT_SANS}`;
+    x.fillText('Wheel = your degrees · window = ' + plateLbl + ' · free PNG ≠ paid print', W / 2, H - 58 * S);
 
     return cv;
   }
@@ -2208,6 +2762,23 @@ host.classList.add('is-done');
   // One-tap export: Web Share (with image file) where supported, else download.
   async function exportShareImage(chart, format, opts) {
     opts = opts || {};
+    // Masterpiece path: preload zodiac + planet seals + engine plate before paint.
+    // Await plate fully (no 900ms race that could paint a prior chart's still).
+    try {
+      const plateP = ensureEngineSkyPlate(chart);
+      if (window.APCanvasSeals) {
+        const signs = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
+        const planets = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+        await Promise.all([
+          APCanvasSeals.preload ? APCanvasSeals.preload(signs) : Promise.resolve(),
+          APCanvasSeals.preloadPlanets ? APCanvasSeals.preloadPlanets(planets) : Promise.resolve(),
+          plateP,
+        ]);
+      } else {
+        await plateP;
+      }
+    } catch (e) { /* paint with fallbacks */ }
+
     const cv = paintShareImage(chart, format);
     const nameMap = {
       print: 'natal-poster',
@@ -2254,22 +2825,22 @@ host.classList.add('is-done');
     menu.setAttribute('role', 'menu');
     menu.style.cssText =
       'position:absolute;z-index:1200;min-width:240px;padding:8px;border-radius:14px;' +
-      'background:rgba(13, 10, 7,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
-      'border:1px solid rgba(196,146,10,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
+      'background:rgba(26, 34, 48,0.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);' +
+      'border:1px solid rgba(168,176,188,0.35);box-shadow:0 24px 60px rgba(0,0,0,0.6);';
     const opts = [
+      { fmt: 'print',  title: '★ Masterpiece poster · 4960×7016', sub: 'Ultra HD wall plate — seals + engine sky' },
+      { fmt: 'square', title: 'Square · 2160×2160 HD', sub: 'Instagram & social — masterpiece quality' },
+      { fmt: 'story',  title: 'Story · 2160×3840 HD',  sub: 'IG / WhatsApp stories' },
       { fmt: 'wallpaper', title: 'Phone wallpaper · 1080×1920', sub: 'Lock screen — your chart' },
       { fmt: 'bigthree',  title: 'Big Three card · 1080×1080', sub: 'Sun, Moon & Rising only' },
-      { fmt: 'square', title: 'Square · 2160×2160 HD', sub: 'Instagram & social posts' },
-      { fmt: 'story',  title: 'Story · 2160×3840 HD',  sub: 'IG / WhatsApp stories' },
-      { fmt: 'print',  title: 'Print poster · 4960×7016', sub: 'Ultra HD, print-ready' },
       { fmt: 'square1x', title: 'Square · 1080×1080', sub: 'Smaller file size' },
     ];
     menu.innerHTML = opts.map(o =>
       `<button type="button" role="menuitem" data-fmt="${o.fmt}" style="display:block;width:100%;text-align:left;` +
-      `padding:10px 12px;margin:2px 0;border:none;border-radius:10px;background:transparent;cursor:pointer;color:#f0e8d8;` +
+      `padding:10px 12px;margin:2px 0;border:none;border-radius:10px;background:transparent;cursor:pointer;color:var(--ap-text-primary,#E8EBF0);` +
       `font-family:Inter,sans-serif;transition:background .15s;">` +
       `<span style="display:block;font-weight:600;font-size:0.8rem;letter-spacing:0.04em;">${o.title}</span>` +
-      `<span style="display:block;font-size:0.66rem;color:var(--silver-dim,#7E7565);margin-top:2px;">${o.sub}</span></button>`
+      `<span style="display:block;font-size:0.66rem;color:var(--ap-text-muted,#8B919C);margin-top:2px;">${o.sub}</span></button>`
     ).join('');
 
     document.body.appendChild(menu);
@@ -2277,12 +2848,35 @@ host.classList.add('is-done');
     menu.style.top  = (r.bottom + window.scrollY + 8) + 'px';
     menu.style.left = (Math.min(r.left + window.scrollX, window.scrollX + window.innerWidth - menu.offsetWidth - 12)) + 'px';
 
-    const close = () => { menu.remove(); document.removeEventListener('click', onDoc, true); };
+    const close = () => {
+      menu.remove();
+      document.removeEventListener('click', onDoc, true);
+      document.removeEventListener('keydown', onKey, true);
+      try { anchorBtn.focus(); } catch (e) {}
+    };
     const onDoc = ev => { if (!menu.contains(ev.target) && ev.target !== anchorBtn) close(); };
-    setTimeout(() => document.addEventListener('click', onDoc, true), 0);
+    const onKey = ev => {
+      if (ev.key === 'Escape') { ev.preventDefault(); close(); return; }
+      if (ev.key === 'Tab') {
+        const btns = menu.querySelectorAll('button[role="menuitem"]');
+        if (!btns.length) return;
+        const first = btns[0], last = btns[btns.length - 1];
+        if (ev.shiftKey && document.activeElement === first) {
+          ev.preventDefault(); last.focus();
+        } else if (!ev.shiftKey && document.activeElement === last) {
+          ev.preventDefault(); first.focus();
+        }
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener('click', onDoc, true);
+      document.addEventListener('keydown', onKey, true);
+      const first = menu.querySelector('button[role="menuitem"]');
+      try { if (first) first.focus(); } catch (e) {}
+    }, 0);
 
     menu.querySelectorAll('button[data-fmt]').forEach(b => {
-      b.addEventListener('mouseenter', () => { b.style.background = 'rgba(196,146,10,0.12)'; });
+      b.addEventListener('mouseenter', () => { b.style.background = 'rgba(168,176,188,0.12)'; });
       b.addEventListener('mouseleave', () => { b.style.background = 'transparent'; });
       b.addEventListener('click', () => { const f = b.dataset.fmt; close(); exportShareImage(currentChart, f); });
     });
@@ -2313,22 +2907,16 @@ host.classList.add('is-done');
     if (!root || !item || !trigger || !panel) return;
 
     const mq = window.matchMedia('(max-width: 768px)');
-    if (mq.matches) item.classList.remove('is-open');
+    // Structure clean: always start collapsed so Calculate stays first-viewport.
+    item.classList.remove('is-open');
 
     const sync = () => {
-      if (!mq.matches) {
-        item.classList.add('is-open');
-        trigger.setAttribute('aria-expanded', 'true');
-        panel.style.maxHeight = '';
-        return;
-      }
       const open = item.classList.contains('is-open');
       trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
       panel.style.maxHeight = open ? `${panel.scrollHeight}px` : '0';
     };
 
     trigger.addEventListener('click', () => {
-      if (!mq.matches) return;
       item.classList.toggle('is-open');
       sync();
     });
@@ -2339,20 +2927,54 @@ host.classList.add('is-done');
   }
 
   // ── Boot ──────────────────────────────────────────────────────────────────
+  // Run exactly once. This script is `defer`, so when it executes readyState is
+  // already 'interactive' — without the guard BOTH the readyState branch and the
+  // later DOMContentLoaded listener fired, double-wiring the accordion/node toggle
+  // and calling restoreFromURL()→requestSubmit() twice.
+  let booted = false;
+  function initPersonalMemory() {
+    if (!window.APPersonalMemory) return;
+    var restored = APPersonalMemory.applyDraftToForm();
+    if (restored && window.AstroApp) {
+      AstroApp.showToast('Welcome back', 'Your last chart details were restored from this device.', 'success');
+    }
+    APPersonalMemory.watchChartForm(form);
+    function refreshTimeGuide() {
+      var guide = document.getElementById('time-accuracy-guide');
+      if (!guide) return;
+      APPersonalMemory.renderTimeAccuracyGuide(guide, {
+        hasTime: !!document.getElementById('time-input')?.value,
+        approximate: false,
+      });
+    }
+    refreshTimeGuide();
+    document.getElementById('time-input')?.addEventListener('input', refreshTimeGuide);
+    document.getElementById('time-input')?.addEventListener('change', refreshTimeGuide);
+  }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  function mountChartAI(chart) {
+    if (!window.APAIAssistant) return;
+    var panel = document.getElementById('chart-ai-panel');
+    if (!panel) return;
+    var getter = function () { return chart || currentChart; };
+    APAIAssistant.mountPanel(panel, getter, { pageKey: 'chart-ai-panel' });
+  }
+
+  function boot() {
+    if (booted) return;
+    booted = true;
     addShareCardButton();
     initNodeToggle();
     initAdvancedAccordion();
+    initPersonalMemory();
+    mountChartAI(null);
     restoreFromURL();
     prefillDateFromURL();
-  });
-  if (document.readyState !== 'loading') {
-    addShareCardButton();
-    initNodeToggle();
-    initAdvancedAccordion();
-    restoreFromURL();
-    prefillDateFromURL();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
   }
 
 })();

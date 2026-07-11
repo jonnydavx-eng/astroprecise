@@ -12,18 +12,22 @@
  * (hosted Payhip product pages + PayPal), so the site never takes money —
  * static-host-compliant, link-out only until configured.
  *
- * CHECKOUT MIGRATION (2026): the previous Lemon Squeezy direct-checkout links
- * are DEAD (the merchant will not onboard). The LOCAL CART is now the single
- * primary action across every card. The cart checkout resolves a per-product
- * Payhip URL from PAYHIP_URLS below; until the owner pastes the real Payhip
- * links, checkout shows a graceful, on-brand PENDING state (basket is saved,
- * nothing errors, no dead link is ever opened).
+ * CHECKOUT MIGRATION (2026-07-02): PAYPAL DIRECT. Lemon Squeezy would not
+ * onboard the store, so checkout is now hosted PayPal payment links — one
+ * per SKU, pasted into each product's fulfilUrl in AP_MON.commerce (see
+ * PAYPAL-SETUP.md). PayPal links never redirect back, so after every buy
+ * click we show the two-step follow-up ("pay on PayPal → send your birth
+ * details") pointing at the product's Typeform via fulfil-redirect.html.
  *
  * Checkout resolution (honest, never opens a dead link):
- *   1. product.payhipUrl / PAYHIP_URLS[id] — that product's hosted Payhip page
- *   2. checkout.externalStoreUrl / checkout.etsyUrl — whole-cart handoff
- *   3. checkout.paypalClientId      — on-site PayPal Buttons
- *   4. (none set) — branded PENDING modal: "Checkout opens once products are
+ *   1. product.payhipUrl / PAYHIP_URLS[id] — optional hosted Payhip page
+ *   2. product.paypalUrl / product.fulfilUrl — PayPal payment link
+ *      (lemonsqueezy.com URLs are explicitly ignored — that account is dead)
+ *   3. checkout.externalStoreUrl / checkout.etsyUrl — whole-cart handoff
+ *   4. checkout.paypalClientId — on-site PayPal Buttons. ⚠ Do NOT set while
+ *      hosted on GitHub Pages: on-site selling breaches the Pages ToS
+ *      (MONETIZATION.md); link-out checkout is the compliant path.
+ *   5. (none set) — branded PENDING modal: "Checkout opens once products are
  *      connected — your basket is saved." Never a fake or broken checkout.
  */
 
@@ -128,6 +132,20 @@ window.AstroShop = (() => {
   // ── Config access ──────────────────────────────────────────────────────
   const cfg        = () => (window.AP_MON && window.AP_MON.commerce) || {};
   const products   = () => cfg().products || [];
+  const cataloguePhase = () => String(cfg().cataloguePhase || 'full');
+  const isPdfOnly  = () => cataloguePhase() === 'pdf-only';
+  const catalogueSkus = () => {
+    const raw = cfg().catalogueSkus;
+    return Array.isArray(raw) ? raw.map(String) : [];
+  };
+  // SKUs that may appear on shop.html — respects cataloguePhase without
+  // deleting dormant products from config (flip phase to 'full' to restore).
+  function catalogueProducts() {
+    const all = products();
+    if (!isPdfOnly()) return all;
+    const allow = new Set(catalogueSkus());
+    return all.filter(p => allow.has(p.id));
+  }
   const collections = () => cfg().collections || {};
   const checkout   = () => cfg().checkout || {};
   const isUrl      = u => typeof u === 'string' && /^https?:\/\//i.test(u.trim());
@@ -140,10 +158,15 @@ window.AstroShop = (() => {
   }
 
   function productById(id) { return products().find(p => p.id === id) || null; }
-  function isLive(p) { return !!(p && isUrl(p.fulfilUrl)); }
+  // SINGLE SOURCE OF TRUTH for "buyable right now": a product is live exactly
+  // when it has a real, connected checkout URL (payhipUrl → hasCheckout). The
+  // old split — isLive() reading raw fulfilUrl while schema/cart resolved via
+  // payhipUrl() — let JSON-LD advertise InStock offers while the page stayed
+  // dormant (or vice versa). One predicate, one paste point, no drift.
+  function isLive(p) { return hasCheckout(p); }
 
-  // JSON-LD ItemAvailability — gated on a REAL connected checkout (hasCheckout =
-  // a working Payhip URL), NEVER the dead Lemon Squeezy fulfilUrl. Until Payhip is
+  // JSON-LD ItemAvailability — gated on the same predicate (a REAL connected
+  // checkout URL), NEVER the dead Lemon Squeezy fulfilUrl. Until a checkout is
   // connected the honest state is PreOrder ("coming soon"), not InStock — and the
   // offer below advertises no buyable URL, so search engines never see a dead link.
   const SCHEMA_AVAIL = {
@@ -184,6 +207,15 @@ window.AstroShop = (() => {
     apparel:   'Apparel',
     accessory: 'Accessory',
   };
+
+  // Honesty guard on card badges: nothing in the current pipeline downloads
+  // instantly (PayPal link → birth-details form → PDF by email in 24–48h), so
+  // the legacy 'Instant PDF' badge copy still present in AP_MON config is
+  // rewritten at render time until the config itself is updated.
+  function badgeText(p) {
+    const b = p && p.badge;
+    return b === 'Instant PDF' ? 'PDF by email' : b;
+  }
 
   // ── Saved-chart preview (personalised products) ──────────────────────────
   // Reads only what's already in localStorage via the public AstroProfile API.
@@ -342,13 +374,17 @@ window.AstroShop = (() => {
     'two-skies-map':        '',
   };
 
-  // Resolve a product's live, real checkout URL (Payhip). Returns '' when no
-  // real URL is configured yet — callers MUST treat '' as "pending", never as
-  // a buyable link. The dead Lemon Squeezy fulfilUrl is deliberately ignored.
+  // Resolve a product's live, real checkout URL (Payhip or a PayPal payment
+  // link in paypalUrl/fulfilUrl). Returns '' when no real URL is configured
+  // yet — callers MUST treat '' as "pending", never as a buyable link. Dead
+  // Lemon Squeezy URLs are deliberately ignored wherever they resurface.
   function payhipUrl(p) {
     if (!p) return '';
+    const notLS = (u) => isUrl(u) && !/lemonsqueezy\.com/i.test(u) && u;
     const raw = (isUrl(p.payhipUrl) && p.payhipUrl)
       || (isUrl(PAYHIP_URLS[p.id]) && PAYHIP_URLS[p.id])
+      || notLS(p.paypalUrl)
+      || notLS(p.fulfilUrl)
       || '';
     if (!raw) return '';
     let url = raw;
@@ -356,6 +392,68 @@ window.AstroShop = (() => {
       url = APReadingPrefs.appendToCheckoutUrl(url, p.id);
     }
     return url;
+  }
+
+  // ── Post-payment birth-details follow-up ─────────────────────────────────
+  // PayPal payment links don't redirect back to the site, so the moment a
+  // buyer heads to checkout we show step 2: the product's fulfilment Typeform
+  // (via fulfil-redirect.html). A pending record nudges them on return.
+  const PENDING_DETAILS_KEY = 'ap_pending_details';
+  function detailsFormUrl(p) {
+    if (!p || !p.detailsForm) return '';
+    return 'fulfil-redirect.html?form=' + encodeURIComponent(p.detailsForm)
+      + '&product_sku=' + encodeURIComponent(p.id);
+  }
+  function pendingDetailsRecord() {
+    try {
+      const rec = JSON.parse(localStorage.getItem(PENDING_DETAILS_KEY) || 'null');
+      if (rec && rec.at && (Date.now() - rec.at) < 7 * 86400000) return rec;
+    } catch (e) {}
+    return null;
+  }
+  function rememberPendingDetails(p) {
+    try { localStorage.setItem(PENDING_DETAILS_KEY, JSON.stringify({ productId: p.id, at: Date.now() })); } catch (e) {}
+  }
+  function clearPendingDetails() {
+    try { localStorage.removeItem(PENDING_DETAILS_KEY); } catch (e) {}
+  }
+  function detailsFollowUp(p) {
+    const formUrl = detailsFormUrl(p);
+    if (!formUrl) return;
+    rememberPendingDetails(p);
+    modal({
+      title: 'One more step after payment',
+      body: `
+        <p><strong>Step 1</strong> — complete your payment on PayPal (it opened in a new tab).</p>
+        <p><strong>Step 2</strong> — send the birth details for <strong>${esc(p.name)}</strong> so your piece is made from the right sky. Keep your PayPal receipt email or transaction ID handy.</p>
+        <p class="shopc-modal__note">Your details go straight to the maker through a secure form — nothing is stored on this site.</p>`,
+      actions: [
+        { label: 'Send my birth details', primary: true, href: formUrl, external: true, onClick: clearPendingDetails },
+        { label: "I'll do it after paying" },
+      ],
+    });
+  }
+  function showDetailsReminder() {
+    const rec = pendingDetailsRecord();
+    if (!rec) return false;
+    try {
+      if (sessionStorage.getItem('ap_details_reminder_shown')) return false;
+      sessionStorage.setItem('ap_details_reminder_shown', '1');
+    } catch (e) {}
+    const p = productById(rec.productId);
+    const formUrl = detailsFormUrl(p);
+    if (!formUrl) { clearPendingDetails(); return false; }
+    modal({
+      title: 'Finish your order',
+      body: `
+        <p>You headed to checkout for <strong>${esc(p.name)}</strong> — if you completed the payment, send your birth details so the work can begin.</p>
+        <p class="shopc-modal__note">Already sent them, or didn't pay? Just dismiss this.</p>`,
+      actions: [
+        { label: 'Send my birth details', primary: true, href: formUrl, external: true, onClick: clearPendingDetails },
+        { label: 'Dismiss', onClick: clearPendingDetails },
+      ],
+    });
+    return true;
   }
 
   // True when a product has a real, connected Payhip checkout URL we can open.
@@ -519,13 +617,14 @@ window.AstroShop = (() => {
       const connectedItems = this.items.filter(i => hasCheckout(productById(i.id)));
       const pendingItems = this.items.filter(i => !hasCheckout(productById(i.id)));
 
-      // 1. Per-product Payhip pages are connected.
+      // 1. Per-product checkout pages (PayPal payment links / Payhip) are connected.
       if (connectedItems.length === 1 && pendingItems.length === 0) {
         const p = productById(connectedItems[0].id);
         const url = payhipUrl(p);
         if (p && url) {
           if (window.APPostPurchase && APPostPurchase.markPurchase) APPostPurchase.markPurchase(p.id);
           window.open(url, '_blank', 'noopener');
+          setTimeout(() => detailsFollowUp(p), 450);
           return;
         }
       }
@@ -559,7 +658,7 @@ window.AstroShop = (() => {
         const p = productById(i.id);
         const url = p ? payhipUrl(p) : '';
         return `<div class="shopc-checkout__row"><span>${esc(i.name)} × ${i.qty}</span><span>${formatPrice(i.price * i.qty)}</span></div>
-          ${url ? `<p class="shopc-modal__note" style="margin:-2px 0 10px;"><a href="${esc(url)}" target="_blank" rel="noopener" data-ap-product="${esc(i.id)}">Secure checkout →</a></p>` : ''}`;
+          ${url ? `<p class="shopc-modal__note" style="margin:-2px 0 10px;"><a href="${esc(url)}" target="_blank" rel="noopener sponsored" data-ap-product="${esc(i.id)}">Secure checkout →</a></p>` : ''}`;
       }).join('');
       const pendingNote = pendingItems.length
         ? `<p class="shopc-modal__note">${pendingItems.length} item${pendingItems.length === 1 ? '' : 's'} in your basket ${pendingItems.length === 1 ? 'is' : 'are'} not connected to checkout yet — ${pendingItems.length === 1 ? 'it stays' : 'they stay'} saved on this device until it opens.</p>`
@@ -570,7 +669,7 @@ window.AstroShop = (() => {
           <div class="shopc-checkout">${rows}
             <div class="shopc-checkout__row shopc-checkout__total"><span>Connected items</span><span>${formatPrice(connectedItems.reduce((s, i) => s + i.price * i.qty, 0))}</span></div>
           </div>
-          <p class="shopc-modal__note">Each piece checks out securely — birth details are collected there, never on this site. Personalised PDFs are generated from your chart after purchase.</p>
+          <p class="shopc-modal__note">Each piece checks out securely on PayPal. Right after paying you'll be asked for the birth details needed to make your piece — never on this site.</p>
           ${pendingNote}`,
         actions: connectedItems.map(i => {
           const p = productById(i.id);
@@ -579,6 +678,15 @@ window.AstroShop = (() => {
             ? { label: `Buy ${i.name.split('—')[0].trim()}`, primary: true, href: url, external: true, productId: p.id }
             : null;
         }).filter(Boolean).slice(0, 3),
+        onMount: (el) => {
+          // Inline "Secure checkout →" row links also get the details follow-up
+          el.querySelectorAll('.shopc-modal__body a[data-ap-product]').forEach(a => {
+            a.addEventListener('click', () => {
+              const p = productById(a.dataset.apProduct);
+              setTimeout(() => detailsFollowUp(p), 450);
+            });
+          });
+        },
       });
     }
 
@@ -727,7 +835,7 @@ window.AstroShop = (() => {
         <button type="button" class="shopc-featured__visual" data-quickview="${p.id}">
           <span class="sr-only">Quick view ${esc(p.name)}</span>
           ${cardArt(p)}
-          ${p.badge ? `<span class="shopc-card__badge${hero ? '' : ' shopc-card__badge--quiet'}">${esc(p.badge)}</span>` : ''}
+          ${p.badge ? `<span class="shopc-card__badge${hero ? '' : ' shopc-card__badge--quiet'}">${esc(badgeText(p))}</span>` : ''}
           ${save}
         </button>
         <div class="shopc-featured__copy">
@@ -747,7 +855,11 @@ window.AstroShop = (() => {
       </article>`;
   }
 
-  const FEATURED_ORDER = ['deep-reading', 'reading-poster-bundle', 'natal-poster-pdf'];
+  function featuredOrder() {
+    return isPdfOnly()
+      ? ['deep-reading', 'natal-poster-pdf']
+      : ['deep-reading', 'reading-poster-bundle', 'natal-poster-pdf'];
+  }
 
   function renderFeatured() {
     const host = document.getElementById('shopc-featured');
@@ -760,54 +872,77 @@ window.AstroShop = (() => {
       return;
     }
 
-    const featured = FEATURED_ORDER
+    const featured = featuredOrder()
       .map(id => productById(id))
-      .filter(p => p && p.available !== false && isLive(p));
+      .filter(p => p && p.available !== false);
     if (!featured.length) {
       host.innerHTML = '';
       host.hidden = true;
       return;
     }
     host.hidden = false;
-    const bundle = featured.find(p => p.id === 'reading-poster-bundle');
+    const pdfOnly = isPdfOnly();
+    const bundle = pdfOnly ? null : featured.find(p => p.id === 'reading-poster-bundle');
     const others = featured.filter(p => p.id !== 'reading-poster-bundle');
-    host.innerHTML = `<div class="container">
-      <div class="shopc-featured__intro">
-        <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Available now — ${products().filter(p => p.available !== false && isLive(p)).length} live pieces</h2>
-        <p class="shopc-featured__lede">Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order. Secure checkout.</p>
-      </div>
-      <div class="shopc-featured__grid">
-        ${others[0] ? featuredCard(others[0]) : ''}
-        ${bundle ? featuredCard(bundle, { hero: true }) : ''}
-        ${others[1] ? featuredCard(others[1]) : ''}
-      </div>
-      <ul class="shopc-trust">
+    const gridClass = pdfOnly
+      ? 'shopc-featured__grid shopc-featured__grid--pdf'
+      : 'shopc-featured__grid';
+    const lede = pdfOnly
+      ? `Two personalised PDFs from <strong>your</strong> birth chart — a deep written reading and a print-at-home poster.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}`
+      : `Every SKU is personalised from <strong>your</strong> birth chart — PDFs in 24–48h, prints &amp; apparel made to order.${liveProductCount() > 0 ? ' Secure checkout.' : ' Save your basket and leave your email — we\'ll tell you the instant checkout opens.'}`;
+    const trust = pdfOnly
+      ? `<ul class="shopc-trust">
+        <li class="shopc-trust__item">${icon('book')} 13-page reading · print-ready poster</li>
+        <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
+        <li class="shopc-trust__item">${icon('map')} Delivered as PDF — yours to keep</li>
+        <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
+      </ul>`
+      : `<ul class="shopc-trust">
         <li class="shopc-trust__item">${icon('gem')} Museum-grade 250gsm prints</li>
         <li class="shopc-trust__item">${icon('star4')} VSOP87 + ELP2000 engine</li>
         <li class="shopc-trust__item">${icon('orb')} Secure checkout</li>
         <li class="shopc-trust__item">${icon('map')} PDFs in 24–48 hours</li>
         <li class="shopc-trust__item">${icon('heart')} Birth data never on this site</li>
-      </ul>
+      </ul>`;
+    host.innerHTML = `<div class="container">
+      <div class="shopc-featured__intro">
+        <h2 class="shop-section-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ${liveProductCount() > 0 ? `Available now — ${liveProductCount()} live pieces` : (pdfOnly ? 'Digital readings — checkout opening soon' : 'The collection — checkout opening soon')}</h2>
+        <p class="shopc-featured__lede">${lede}</p>
+      </div>
+      <div class="${gridClass}">
+        ${pdfOnly
+          ? `${featuredCard(others[0], { hero: true })}
+             ${others[1] ? featuredCard(others[1]) : ''}`
+          : `${others[0] ? featuredCard(others[0]) : ''}
+             ${bundle ? featuredCard(bundle, { hero: true }) : ''}
+             ${others[1] ? featuredCard(others[1]) : ''}`}
+      </div>
+      ${trust}
     </div>`;
     bindFeatured(host);
     renderPersonalBanner();
   }
 
   // Single source of truth for the user-facing "live pieces" count.
-  // Counts products that are buyable RIGHT NOW (available && isLive, i.e.
-  // fulfilUrl set) — the same gate the buy buttons / cart / schema use — and
-  // writes it into every [data-live-count] element in the page. The static
-  // HTML ships the correct literal (13) as a no-JS fallback; this keeps it from
-  // drifting when products go live or a fulfilUrl is added/removed in AP_MON.
+  // Counts products that are buyable RIGHT NOW (available && isLive, i.e. a
+  // real connected checkout URL) — the same gate the buy buttons / cart /
+  // schema use — and
+  // writes it into every [data-live-count] element in the page. Zero live is
+  // a REAL state since the PayPal migration (2026-07-02): the page then swaps
+  // to its dormant copy via [data-when-live]/[data-when-dormant] toggles
+  // instead of ever claiming pieces are buyable.
   function liveProductCount() {
-    return products().filter(p => p.available !== false && isLive(p)).length;
+    return catalogueProducts().filter(p => p.available !== false && isLive(p)).length;
   }
   function updateLiveCounts() {
-    const nodes = document.querySelectorAll('[data-live-count]');
-    if (!nodes.length) return;
+    if (!products().length) return; // config failed to load — keep static fallback
+    applyPdfOnlyChrome();
     const n = liveProductCount();
-    if (!n) return; // never blank the fallback if config failed to load
-    nodes.forEach(el => { el.textContent = String(n); });
+    document.querySelectorAll('[data-live-count]').forEach(el => { el.textContent = String(n); });
+    document.body.classList.toggle('shop--dormant', n === 0);
+    document.querySelectorAll('[data-when-live]').forEach(el => { el.hidden = n === 0; });
+    document.querySelectorAll('[data-when-dormant]').forEach(el => { el.hidden = n !== 0; });
+    if (n === 0 && gridHydrated) renderGrid();
   }
 
   function renderPersonalBanner() {
@@ -856,7 +991,7 @@ window.AstroShop = (() => {
     // A collection of coming-soon placeholders only (e.g. Jewellery) stays hidden so
     // chips never dead-end on unbuyable SKUs.
     const counts = {};
-    products().filter(p => p.available !== false && isLive(p)).forEach(p => { counts[p.collection] = (counts[p.collection] || 0) + 1; });
+    catalogueProducts().filter(p => p.available !== false && isLive(p)).forEach(p => { counts[p.collection] = (counts[p.collection] || 0) + 1; });
     const chips = [['all', 'All']].concat(Object.entries(cols).filter(([k]) => counts[k] > 0).map(([k, c]) => [k, c.name]));
     bar.innerHTML = chips.map(([key, label]) =>
       `<button type="button" class="shopc-chip ${key === activeCollection ? ' active' : ''}" data-collection="${key}" aria-pressed="${key === activeCollection ? 'true' : 'false'}">${esc(label)}</button>`
@@ -889,6 +1024,8 @@ window.AstroShop = (() => {
   // `.shopc-card` elements currently live in the grid. Used both after a full
   // innerHTML render and on the keep-static fast path (baked cards).
   function wireGridHandlers(grid) {
+    if (grid.dataset.wired === '1') return;
+    grid.dataset.wired = '1';
     grid.querySelectorAll('[data-quickview]').forEach(el => {
       const open = () => openQuickView(el.dataset.quickview);
       el.addEventListener('click', e => { e.stopPropagation(); open(); });
@@ -919,13 +1056,23 @@ window.AstroShop = (() => {
     // delegated handlers on the existing cards and return. A later filter
     // change still runs the full re-render below (gridJsRendered flips true
     // whenever an innerHTML render runs).
-    if (activeCollection === 'all' && !gridJsRendered && grid.querySelector('.shopc-card--live')) {
+    if (activeCollection === 'all' && !gridJsRendered && liveProductCount() > 0 && grid.querySelector('.shopc-card--live')) {
       wireGridHandlers(grid);
       try { hydrateMiniChartPreviews(); } catch (_) {}
       return;
     }
 
-    const all = products();
+    if (isPdfOnly()) {
+      grid.innerHTML = '';
+      grid.hidden = true;
+      const filters = document.getElementById('shopc-filters');
+      if (filters) filters.hidden = true;
+      const filtersEyebrow = document.querySelector('.shopc-filters__eyebrow');
+      if (filtersEyebrow) filtersEyebrow.hidden = true;
+      return;
+    }
+
+    const all = catalogueProducts();
     if (!all.length) {
       grid.innerHTML = `<p class="shopc-empty">The collection is being prepared. Check back soon.</p>`;
       return;
@@ -935,8 +1082,9 @@ window.AstroShop = (() => {
     // Mark unbuildable SKUs `available:false` in AP_MON.commerce.products.
     const sellable = sortProducts(all.filter(p => p.available !== false));
     const list = activeCollection === 'all' ? sellable : sellable.filter(p => p.collection === activeCollection);
-    const liveList = list.filter(p => isLive(p) && !(activeCollection === 'all' && p.featured));
-    const soonList = list.filter(p => !isLive(p));
+    const skipFeaturedInAll = activeCollection === 'all';
+    const liveList = list.filter(p => isLive(p) && !(skipFeaturedInAll && p.featured));
+    const soonList = list.filter(p => !isLive(p) && !(skipFeaturedInAll && (p.featured || featuredOrder().includes(p.id))));
 
     const renderCard = p => {
       const colName = cols[p.collection] ? cols[p.collection].name : '';
@@ -952,7 +1100,7 @@ window.AstroShop = (() => {
           <button type="button" class="shopc-card__art" data-quickview="${p.id}">
             <span class="sr-only">Quick view ${esc(p.name)}</span>
             ${cardArt(p)}
-            ${p.badge ? `<span class="shopc-card__badge shopc-card__badge--quiet">${esc(p.badge)}</span>` : ''}
+            ${p.badge ? `<span class="shopc-card__badge shopc-card__badge--quiet">${esc(badgeText(p))}</span>` : ''}
             ${p.personalized ? `<span class="shopc-card__personal" title="Generated from your chart">${icon('star4')} Your chart</span>` : ''}
           </button>
           <div class="shopc-card__body">
@@ -1003,6 +1151,7 @@ window.AstroShop = (() => {
     // The .ap-stagger-in rule is reduced-motion gated in ap-motion.css.
     grid.classList.add('ap-stagger-in');
 
+    delete grid.dataset.wired;
     wireGridHandlers(grid);
 
     // Dynamic mini-chart previews (seals + optional chart-render wheelOnly for saved profiles)
@@ -1102,7 +1251,7 @@ window.AstroShop = (() => {
       node.textContent = a.label;
       if (a.href) {
         node.href = a.href;
-        if (a.external) { node.target = '_blank'; node.rel = 'noopener'; }
+        if (a.external) { node.target = '_blank'; node.rel = 'noopener sponsored'; }
         if (a.productId) node.dataset.apProduct = a.productId;
       }
       node.addEventListener('click', () => {
@@ -1111,6 +1260,11 @@ window.AstroShop = (() => {
         }
         if (!a.keepOpen) closeModal();
         if (a.onClick) a.onClick();
+        // Buy actions (external checkout with a product) chain into the
+        // pay-then-send-details follow-up; PayPal never redirects back.
+        if (a.external && a.productId && !a.noFollowUp) {
+          setTimeout(() => detailsFollowUp(productById(a.productId)), 450);
+        }
       });
       actsEl.appendChild(node);
     });
@@ -1163,6 +1317,7 @@ window.AstroShop = (() => {
       form.action = action;
       form.method = 'post';
       form.target = '_blank';
+      form.rel = 'noopener';
       form.addEventListener('submit', () => {
         toast('You are on the list — we will be in touch.');
       });
@@ -1242,7 +1397,7 @@ window.AstroShop = (() => {
   // ═══════════════════════════════════════════════════════════════════════
   function injectCatalogSchema() {
     if (document.getElementById('shopc-catalog-ld')) return;
-    const list = sortProducts(products().filter(p => p.available !== false));
+    const list = sortProducts(catalogueProducts().filter(p => p.available !== false));
     if (!list.length) return;
     const s = document.createElement('script');
     s.type = 'application/ld+json';
@@ -1314,6 +1469,32 @@ window.AstroShop = (() => {
     });
   }
 
+  // PDF-only phase: hide deferred catalogue chrome (prints, affiliate, art library).
+  function applyPdfOnlyChrome() {
+    if (!isPdfOnly()) return;
+    document.body.classList.add('shop--pdf-only');
+    [
+      '#art-library',
+      '#shop-affiliate-editorial',
+      '#shop-curated',
+      '.shop-contribute',
+      '.shop-trending',
+      '.shop-lookbook-link',
+      '.shopc-filters__eyebrow',
+      '#shopc-filters',
+      '#shopc-grid',
+      '.shop-wallpaper-lead',
+    ].forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => { el.hidden = true; });
+    });
+    document.querySelectorAll(
+      '.shop-sticky-nav a[href="#art-library"],'
+      + '.shop-sticky-nav a[href="#wear-your-sky"],'
+      + '.shop-sticky-nav a[href="#shop-affiliate-editorial"],'
+      + '.shop-sticky-nav a[href="#shop-curated"]'
+    ).forEach(el => { el.hidden = true; });
+  }
+
   // ── Init ────────────────────────────────────────────────────────────────
   let gridHydrated = false;
 
@@ -1332,6 +1513,7 @@ window.AstroShop = (() => {
 
   function init() {
     cart = new Cart();
+    applyPdfOnlyChrome();
     updateLiveCounts();
     renderFeatured();
     renderFilters();
@@ -1339,10 +1521,18 @@ window.AstroShop = (() => {
     bindCartChrome();
     cart.render();
     injectCatalogSchema();
-    if (window.APPostPurchase) {
-      APPostPurchase.wireCheckoutTracking();
-      setTimeout(() => APPostPurchase.maybeShowPromo(), 600);
-    }
+    // ap-post-purchase.js loads AFTER this module in shop-page-boot's inject
+    // order, so poll briefly instead of gating on a one-shot presence check
+    // (the old `if (window.APPostPurchase)` silently disabled tracking + promo).
+    (function nudgeWhenReady(tries) {
+      if (window.APPostPurchase) {
+        APPostPurchase.wireCheckoutTracking();
+        // Unfinished order (paid but details not sent) outranks the promo nudge
+        setTimeout(() => { if (!showDetailsReminder()) APPostPurchase.maybeShowPromo(); }, 600);
+      } else if (tries < 20) {
+        setTimeout(() => nudgeWhenReady(tries + 1), 250);
+      }
+    })(0);
   }
 
   if (document.readyState === 'loading') {

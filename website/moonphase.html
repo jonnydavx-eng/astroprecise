@@ -2,24 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Find the exact Moon phase on your birthday — computed from real Sun and Moon positions (VSOP87 / ELP2000), not guessed. See your birth Moon, its illumination, and a shareable card. Free & private." />
-  <title>Moon Phase on Your Birthday — Real Astronomy, Free &amp; Shareable | Astro Precise</title>
+  <meta name="description" content="Find the exact Moon phase on your birthday — computed from real Sun and Moon positions, never guessed. Illumination, meaning and a shareable card. Free." />
+  <title>Moon Phase on Your Birthday — Free &amp; Shareable</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Moon Phase on Your Birthday | Astro Precise" />
   <meta property="og:description" content="See the exact phase of the Moon on the day you were born — real astronomy, beautifully drawn, free to share." />
   <meta property="og:url" content="https://astroprecise.app/moonphase.html" />
   <link rel="canonical" href="https://astroprecise.app/moonphase.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Moon Phase on Your Birthday | Astro Precise" />
   <meta name="twitter:description" content="See the exact phase of the Moon on the day you were born — real astronomy, beautifully drawn, free to share." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /><link rel="stylesheet" href="css/moonphase-page.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
@@ -54,7 +62,7 @@
     "url": "https://astroprecise.app/moonphase.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "description": "Compute the exact lunar phase for any birthday from real Sun and Moon positions (VSOP87 / ELP2000). Shows illumination, waxing/waning side, the Moon's zodiac sign, and a shareable card. Everything is calculated privately in your browser.",
     "publisher": { "@type": "Organization", "name": "Astro Precise" }
   }
@@ -174,7 +182,7 @@
         <div class="mp-form-wrap" id="mp-mode-single" role="tabpanel" aria-labelledby="mp-tab-single">
           <form id="moonphase-form" class="mp-form" novalidate aria-label="Moon phase on a date">
             <p class="mp-form__title">Choose a Date</p>
-            <p class="mp-form__sub">Calculations run entirely in your browser. Nothing leaves your device.</p>
+            <p class="mp-form__sub">Calculations run entirely on your device.</p>
             <div class="mp-form-row">
               <div class="form-group">
                 <label for="moonphase-date" class="form-label">
@@ -237,7 +245,7 @@
     <section class="mp-section mp-section--alt" aria-labelledby="phases-heading">
       <div class="container">
         <div class="mp-section__header">
-          <p class="mp-section__label">The Eight Faces</p>
+          <p class="mp-section__label">The Four Turning Points</p>
           <h2 class="mp-section__title" id="phases-heading">The Lunar Cycle</h2>
           <p class="mp-section__subtitle">The Moon completes one cycle of phases roughly every 29.5 days as it moves around the Earth relative to the Sun.</p>
         </div>
@@ -288,6 +296,10 @@
       </div>
     </section>
 
+    <div class="container" style="max-width:920px;margin:var(--space-8) auto;">
+      <div id="moonphase-ai-panel" hidden aria-label="Optional moon insight"></div>
+    </div>
+
   </main>
 
   <!-- ============================================================
@@ -328,8 +340,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -399,9 +411,9 @@
       s.defer = true;
       document.body.appendChild(s);
     }
-    if (audit()) return;
+    // Always load the Moon tool — form + result cards (incl. model deep-link).
+    // Decorative starfield stays audit-skipped.
     inject('js/raf-core.js');
-    inject('js/ephemeris.js');
     inject('js/icons.js');
     inject('js/moonphase.js');
     function idleCosmos() {
@@ -416,6 +428,11 @@
   })();
   </script>
 
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=703" />
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

@@ -26,7 +26,7 @@ body:has(.nn-hero) .nn-form-card {
   contain: layout style;
 }
 body:has(.nn-hero) #nn-meanings-grid {
-  min-height: 920px;
+  min-height: 236px;
   contain: layout style;
 }
 body:has(.nn-hero) #nn-deep-reading {
@@ -56,11 +56,15 @@ body:has(.nn-hero) .eng-i {
 }
 
 :root {
-      --nn-gold: var(--gold, #C2A05E);
+      --nn-gold: var(--gold, #A8B0BC);
       --nn-gold-pale: #e8c96a;
       --nn-white: #f0e8d8;
-      --nn-silver: #A89E88;
-      --nn-silver-dim: #8891aa;
+      /* Body ink lifted toward parchment (~90%) so section prose has something
+         to push against instead of reading as one muted low-contrast texture. */
+      --nn-ink: #E8EBF0;
+      --nn-silver: #C6BEAC;      /* was #A89E88 — raised for readable body copy */
+      --nn-silver-dim: #A2A9BE;  /* was #8891aa — raised for captions/labels    */
+      --nn-brass-hair: rgba(168,176,188,0.30); /* single calm brass hairline */
       --nn-surface: rgba(22, 28, 42,0.68);
       --nn-border: rgba(168, 158, 136,0.12);
       --nn-radius-xl: 20px;
@@ -127,16 +131,16 @@ body:has(.nn-hero) .eng-i {
       font-size: 1rem;
       letter-spacing: 0.06em;
       font-weight: 600;
-      color: #0d0a07;
-      background: linear-gradient(135deg, #C2A05E 0%, #EFE3C0 100%);
+      color: #07070A;
+      background: linear-gradient(135deg, #A8B0BC 0%, #E8EBF0 100%);
       border: none;
       border-radius: 999px;
       padding: 0.85rem 2.2rem;
       cursor: pointer;
       transition: transform .15s, box-shadow .15s;
-      box-shadow: 0 0 18px rgba(194, 160, 94,0.22);
+      box-shadow: 0 0 18px rgba(168, 176, 188,0.22);
     }
-    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(194, 160, 94,0.45); }
+    .nn-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(168, 176, 188,0.45); }
     .nn-form-hint {
       font-size: 0.68rem;
       color: var(--nn-silver-dim);
@@ -208,7 +212,7 @@ body:has(.nn-hero) .eng-i {
       font-size: 0.55rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #0d0a07;
+      color: #07070A;
       background: var(--nn-gold);
       border-radius: 999px;
       padding: 2px 9px;
@@ -228,7 +232,7 @@ body:has(.nn-hero) .eng-i {
     }
     .nn-card__text {
       font-size: var(--text-sm);
-      color: var(--nn-silver);
+      color: var(--nn-ink);
       line-height: 1.65;
       text-align: left;
       margin: 0;
@@ -408,9 +412,11 @@ body:has(.nn-hero) .eng-i {
       margin-bottom: var(--space-3);
     }
     .nn-faq__a {
-      color: var(--nn-silver);
+      /* Serif voice at parchment contrast — the FAQ is prose, not a label texture */
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      color: var(--nn-ink);
       line-height: 1.75;
-      font-size: var(--text-base);
+      font-size: 1.12rem;
       margin: 0;
     }
 
@@ -433,3 +439,112 @@ body:has(.nn-hero) .eng-i {
       .nn-form-card { padding: var(--space-7) var(--space-5); }
       .nn-legend { flex-direction: column; gap: var(--space-2); align-items: center; }
     }
+
+    /* =====================================================================
+       AUDIT FIXES (page-scoped via body:has(.nn-hero) so nothing leaks to
+       other pages, and so these win over the late-loading shared main.css)
+       ---------------------------------------------------------------------
+       1. Cinzel small-caps is an ACCENT, not the default voice: keep it for
+          the eyebrow + short labels only; section bodies + FAQ ride in
+          Cormorant at parchment contrast.
+       2. Stronger primary CTA; calmer single brass hairline on the form card.
+       3. Kill the mid-page void under "What Every Number Means".
+       ===================================================================== */
+
+    /* ── 1a. Eyebrow = the deliberate engraved-brass accent voice ── */
+    body:has(.nn-hero) .nn-hero .eyebrow {
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--nn-gold);
+      opacity: 1;
+    }
+
+    /* ── 1b. Section prose in the serif at parchment contrast ──
+       These are the "bodies" the audit wanted lifted out of the muted
+       small-caps texture. Card/breakdown notes + the meanings subtitle. */
+    body:has(.nn-hero) .section-subtitle,
+    body:has(.nn-hero) .nn-breakdown__note {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      color: var(--nn-ink);
+    }
+    body:has(.nn-hero) #nn-meanings-heading + .section-subtitle {
+      font-size: 1.12rem;
+      line-height: 1.7;
+    }
+    body:has(.nn-hero) .instrument-teaser__body {
+      color: var(--nn-ink);
+    }
+    body:has(.nn-hero) .nn-meaning__essence {
+      color: var(--nn-silver);
+    }
+
+    /* ── 1c. Headings stay in the Cormorant display face (not Cinzel caps),
+       overriding shared main.css `h2,h3,.section-title { Cinzel }`. The
+       display serif is the page's voice; Cinzel is reserved for accents. ── */
+    body:has(.nn-hero) .nn-form-card .section-title,
+    body:has(.nn-hero) #nn-meanings-heading,
+    body:has(.nn-hero) .nn-breakdown__title,
+    body:has(.nn-hero) .instrument-teaser__title,
+    body:has(.nn-hero) .nn-faq__q {
+      font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+      text-transform: none;
+    }
+
+    /* ── 2. Primary CTA — larger, weightier, the clear focal action ── */
+    body:has(.nn-hero) .nn-submit-btn {
+      font-family: 'Cinzel', serif;
+      font-size: 1.06rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 1.15rem 3rem;
+      border-radius: 999px;
+      /* Terracotta — reserved for the single primary action on the page */
+      color: #FBEFE6;
+      background: linear-gradient(135deg, #6AB0FF 0%, #E4996F 100%);
+      box-shadow:
+        0 10px 26px rgba(106,176,255,0.34),
+        0 0 0 1px rgba(106,176,255,0.35) inset;
+    }
+    body:has(.nn-hero) .nn-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 16px 38px rgba(106,176,255,0.48),
+        0 0 0 1px rgba(106,176,255,0.5) inset;
+    }
+    body:has(.nn-hero) .nn-submit-btn .eng-i { width: 1.1em; height: 1.1em; }
+
+    /* ── 2b. Calm the form-card frame to a single brass hairline ── */
+    body:has(.nn-hero) .nn-form-card {
+      border: 1px solid var(--nn-brass-hair);
+      box-shadow:
+        0 0 0 1px rgba(168,158,136,0.06) inset,
+        0 32px 80px rgba(0,0,0,0.45);
+    }
+    body:has(.nn-hero) .nn-form-card::before {
+      background: linear-gradient(90deg, transparent, rgba(168,176,188,0.45), transparent);
+    }
+
+    /* ── 3. Mid-page void: the meanings grid reserves 920px for JS-injected
+       tiles. When those tiles render, the reservation collapses to content
+       height; the section padding no longer needs to defend a giant band.
+       Tighten the section rhythm and let the grid size to its content so a
+       short render never reads as a broken empty band. ── */
+    body:has(.nn-hero) section[aria-labelledby="nn-meanings-heading"] {
+      padding-top: var(--space-10);
+      padding-bottom: var(--space-10);
+    }
+    body:has(.nn-hero) #nn-meanings-grid {
+      /* was min-height:920px (a hard CLS reservation that showed as void).
+         Reserve only ~2 rows; real tiles expand it, absence collapses it. */
+      min-height: 236px;
+      align-content: start;
+    }
+    /* On the no-JS audit path the tiles are never injected, so the hidden
+       skeletons would otherwise reserve a large empty band. Collapse them
+       there. On the real path (no .ap-audit-path) they still reserve space
+       for CLS until the real tiles replace them. */
+    html.ap-audit-path body:has(.nn-hero) #nn-meanings-grid { min-height: 0; }
+    html.ap-audit-path body:has(.nn-hero) .nn-meaning--skeleton { display: none; }

@@ -1,0 +1,824 @@
+/**
+ * Astro Precise — OBSERVATORY HOMEPAGE (owner flagship, 2026-07-10)
+ * The homepage IS the model: full-viewport stage in viewport 1, navigation
+ * around the model, an in-flow PLINTH TRAY below the canvas (owner law #1:
+ * controls NEVER over the disc — zero overlap BY CONSTRUCTION at EVERY width,
+ * not just the test breakpoints), cast dock (desktop side rail / mobile band),
+ * slim overlay masthead, honest-model legend (ported from explore).
+ *
+ * LOAD ORDER LAW: this sheet MUST be linked AFTER css/ap-model-window.css
+ * (which itself loads after ap-structure-clean.css). All three are !important
+ * sheets — cascade position is load-bearing. Any sheet appended after this one
+ * (or a stale ?v= re-inject) silently reverts the observatory layout; the
+ * visual-check suite asserts #orrery-lite-deck position:static as a tripwire.
+ *
+ * Scope: body.ap-observatory-home (co-exists with ap-award-511 — every
+ * existing sheet/boot keys off ap-award-511 and must keep working).
+ * Palette: jet interior, silver hairlines rgba(200,205,214,x), parchment ink,
+ * brass CTA = dark ink #0B0906 on linear-gradient(160deg,#E8C872,#C9A227)
+ * (the verified 8.2:1 treatment). NO cyan/aurora on anything in this sheet.
+ * The .ap-mw-dot aurora LIVE lamp is owner-owned; flip via --ap-live-dot in
+ * ap-palette-2026.css (hook below) — do not swap unilaterally.
+ */
+
+/* ═══ §1 · STAGE — full-bleed observatory =============================== */
+/* index never loads main.css — the UA's 8px body margin was live. Kill it
+   (margin only: structure-clean's body padding-bottom for the tab bar stays). */
+html body.ap-observatory-home { margin: 0 !important; }
+html body.ap-observatory-home #heroChapter {
+  position: relative !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  background: #000 !important;
+  overflow: visible !important;
+  display: block !important;
+}
+html body.ap-observatory-home #heroChapter .page-wrap.hero-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: none !important;
+  position: relative !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+}
+html body.ap-observatory-home #heroChapter .hero-solar-stage,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage {
+  order: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  height: calc(100svh - var(--ap-tray-h-m, 168px) - var(--bottom-nav-h, 0px)) !important;
+  min-height: 420px !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  z-index: auto !important;
+  background: radial-gradient(120% 90% at 50% 8%, #101014 0%, #000000 55%, #000000 100%) !important;
+  background-color: var(--ap-jet, #000) !important;
+}
+/* Make the reused orrery wrap fill the stage (kills structure-clean's
+   width:min() sizing AND slice-1's mobile clamp via later cascade). */
+html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+  position: absolute !important;
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  transform: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  z-index: 1 !important;
+}
+html body.ap-observatory-home #heroChapter .ap-award-orrery-frame {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  max-width: none !important;
+}
+html body.ap-observatory-home #heroChapter .orrery-viewport {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  max-width: none !important;
+}
+html body.ap-observatory-home #heroChapter .orrery-viewport #orrery-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: auto !important;
+  display: block;
+}
+/* ≤640 — MEASURED correction (2026-07-11): the engine's Earth-rest disc tops
+   out ~63px from the stage top on phones (the design assumed ≥175px). The
+   canvas therefore starts BELOW the plate/legend row: bar 48 + chrome row
+   ~52 → wrap top 108. Canvas pixels physically cannot reach the top chrome —
+   zero overlap BY CONSTRUCTION, and the disc still renders ~min(76vw, 300px+). */
+@media (max-width: 640px) {
+  html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+    inset: 108px 0 6px 0 !important;
+    top: 108px !important;
+    height: auto !important;
+  }
+}
+/* Engraved wheel (no-JS / PRM path) centres in the stage. */
+html body.ap-observatory-home #heroChapter .ap-hero-wheel-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+/* Model Window frame hugs the full stage (explore mount values). */
+@media (min-width: 641px) {
+  body.ap-observatory-home #heroChapter .ap-model-window { inset: 10px 12px !important; }
+}
+
+/* ═══ §2 · PLINTH TRAY — #orrery-lite-deck in flow BELOW the stage ======= */
+html body.ap-observatory-home #heroChapter #orrery-lite-deck,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck {
+  order: 3 !important;
+  position: static !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: auto !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  /* minmax(0,auto) side columns: track min-content must NEVER exceed the
+     viewport — an overflowing tray widened the mobile layout viewport to
+     429px (the run-1 scrollWidth/fixed-bar bug class). */
+  grid-template-columns: minmax(0, auto) minmax(60px, 1fr) minmax(0, auto) !important;
+  grid-auto-rows: min-content !important;
+  align-items: center !important;
+  gap: 6px 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 8px 12px 6px !important;
+  background: var(--ap-jet, #000) !important;
+  border: 0 !important;
+  border-top: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: visible !important;
+  text-align: left !important;
+}
+/* Row 1 (<1024): planet pills — nowrap scroll strip, 44px targets. */
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-controls,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-controls {
+  display: flex !important;
+  box-sizing: border-box !important;
+  grid-row: 1 !important;
+  grid-column: 1 / -1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 2px 2px 4px !important;
+  justify-content: flex-start !important;
+  position: static !important;
+  transform: none !important;
+  background: none !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-controls::-webkit-scrollbar { display: none; }
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn {
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  justify-content: center !important;
+}
+/* Seals: heavy plates only earn their keep on the wide desktop tray. */
+@media (max-width: 1023px) {
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn .lite-vp-btn__seal { display: none !important; }
+}
+/* Row 2 (<1024): ‹ scale stepper › + scrub + (date · Now).
+   .ap-scale-strip stays [hidden] until orrery-loader detects the engine —
+   display:contents lifts the stepper into the deck grid without DOM moves. */
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-strip:not([hidden]) { display: contents !important; }
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-strip__track,
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-strip__caption { display: none !important; }
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-stepper {
+  grid-row: 2 !important;
+  grid-column: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck #ap-orbits-toggle { display: none !important; }
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-scrub,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-scrub {
+  box-sizing: border-box !important;
+  grid-row: 2 !important;
+  grid-column: 2 !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  align-self: center !important;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-time,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-time {
+  box-sizing: border-box !important;
+  grid-row: 2 !important;
+  grid-column: 3 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  font-size: 0.62rem !important;
+  min-width: 0 !important;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-date {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 30vw !important;
+  min-width: 0 !important;
+  flex: 0 1 auto !important;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-now {
+  box-sizing: border-box !important;
+  min-height: 44px !important;
+  min-width: 48px !important;
+}
+/* Journeys live on the ≥1024 tray only (Scale-Ladder slice may widen this). */
+@media (max-width: 1023px) {
+  html body.ap-observatory-home #heroChapter .ap-orrery-cosmic-journey,
+  html body.ap-observatory-home #heroChapter .ap-orrery-cosmic-flight { display: none !important; }
+}
+
+/* ── ≥1024 · full instrument tray: 7-stop track + caption + orbits, pills
+      with seals, date/Now, scrub, Cosmic journey + flight ── */
+/* ≥1280 the cast dock leaves the flow (rail) — only then does the stage
+   formula drop the band from the tray budget. 1024-1279 keeps the base
+   (band + deck) formula so vp1 still equals the viewport exactly. */
+@media (min-width: 1280px) {
+  html body.ap-observatory-home #heroChapter .hero-solar-stage {
+    height: calc(100svh - var(--ap-tray-h, 128px)) !important;
+    min-height: 560px !important;
+  }
+}
+@media (min-width: 1024px) {
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck {
+    grid-template-columns: auto auto minmax(200px, 1fr) auto auto !important;
+    padding: 10px clamp(16px, 3vw, 40px) 6px !important;
+    border-top: 1px solid rgba(200, 205, 214, 0.22) !important;
+    gap: 6px 14px !important;
+  }
+  /* Row 1: scale strip as a flex shelf — track · caption · orbits toggle. */
+  /* declare EVERY flex property — html.orrery-full horizon rules otherwise
+     leak wrap/center/track-100% into the shelf (run-4 screenshot bug) */
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-strip:not([hidden]) {
+    display: flex !important;
+    grid-row: 1 !important;
+    grid-column: 1 / -1 !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 14px !important;
+    min-height: 44px;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-strip__track {
+    display: flex !important;
+    flex: 0 1 auto !important;
+    width: auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+  }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-stepper { display: none !important; }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-scale-strip__caption {
+    display: block !important;
+    flex: 0 1 auto !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 30vw !important;
+    text-align: left !important;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace !important;
+    font-size: 0.66rem !important;
+    letter-spacing: 0.05em !important;
+    color: rgba(232, 235, 240, 0.6) !important;
+  }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck #ap-orbits-toggle:not([hidden]) {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    margin: 0 0 0 auto !important;
+    min-height: 40px;
+    align-items: center;
+  }
+  /* Row 2: pills · date/Now · scrub · journeys.
+     The :is() variants are REQUIRED: the base rules ship a dual selector with
+     html:is(.ap-await-webgl,.ap-lite-hero) (3 classes) — an equal-important
+     override must match that specificity or it silently loses (run-5 bug). */
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-controls,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-controls {
+    grid-row: 2 !important;
+    grid-column: 1 !important;
+    max-width: 40vw !important;
+  }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-time,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-time {
+    grid-row: 2 !important;
+    grid-column: 2 !important;
+    justify-content: center !important;
+    font-size: 0.72rem !important;
+  }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-date { max-width: 16vw !important; }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-scrub,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-scrub {
+    grid-row: 2 !important;
+    grid-column: 3 !important;
+    min-width: 200px !important;
+    max-width: 420px !important;
+  }
+  html body.ap-observatory-home #heroChapter .ap-orrery-cosmic-journey:not([hidden]) {
+    display: inline-flex !important;
+    grid-row: 2 !important;
+    grid-column: 4 !important;
+    justify-self: end !important;
+    margin: 0 !important;
+  }
+  html body.ap-observatory-home #heroChapter .ap-orrery-cosmic-flight {
+    display: inline-flex !important;
+    grid-row: 2 !important;
+    grid-column: 5 !important;
+    justify-self: end !important;
+    margin: 0 !important;
+  }
+}
+
+/* ═══ §3 · CAST DOCK — band (base, <1280) + desktop rail (≥1280).
+   Rail breakpoint is 1280, not the design's first-candidate 1024: the
+   MEASURED Earth disc (ratio ≈0.67 of the short stage side) leaves only
+   ~313px left of centre at 1024x768 — the 360px rail would cover the disc.
+   Plan-B band (in-flow, zero-overlap by construction) covers 1024-1279. */
+html body.ap-observatory-home #heroChapter .hero-copy {
+  display: block !important; /* horizon-2026 sets display:contents ≤900 — the band must be a real box */
+  box-sizing: border-box !important;
+  order: 2 !important;
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  z-index: 6 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 8px 12px 6px !important;
+  background: var(--ap-jet, #000) !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(200, 205, 214, 0.22) !important;
+  border-radius: 0 !important;
+  text-align: left !important;
+}
+html body.ap-observatory-home #heroChapter .hero-copy h1,
+html body.ap-observatory-home #heroChapter .hero-copy .display {
+  font-size: 0.95rem !important;
+  line-height: 1.25 !important;
+  margin: 0 0 6px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+body.ap-observatory-home #heroChapter .hero-copy h1 br { display: none; }
+body.ap-observatory-home #heroChapter .hero-copy .eyebrow-rose,
+body.ap-observatory-home #heroChapter .hero-copy .standfirst,
+body.ap-observatory-home #heroChapter .hero-copy .hero-why-lead,
+body.ap-observatory-home #heroChapter .hero-copy .ui-label { display: none !important; }
+html body.ap-observatory-home #heroChapter .hero-form { margin-top: 0 !important; gap: 4px !important; }
+html body.ap-observatory-home #heroChapter .hero-form-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  align-items: stretch !important;
+}
+html body.ap-observatory-home #heroChapter .hero-form-row input[type="date"] {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 48px !important;
+}
+/* CTA law: dark ink on brass — the verified 8.2:1 pill. NO cyan. */
+html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"],
+html body.ap-observatory-home #heroChapter .hero-form-row .btn-press {
+  flex: 0 0 auto !important;
+  width: auto !important; /* horizon-2026 ≤mobile forces width:100% — inflates the layout viewport */
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  min-height: 48px !important;
+  padding: 0 1.05rem !important;
+  color: #0B0906 !important;
+  background: linear-gradient(160deg, #E8C872, #C9A227) !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+}
+html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"]:hover,
+html body.ap-observatory-home #heroChapter .hero-form-row .btn-press:hover {
+  color: #0B0906 !important;
+  filter: brightness(1.05);
+}
+/* Returning-user chip (re-parented above the form by ap-home-bootstrap). */
+html body.ap-observatory-home #heroChapter .hero-copy .hero-today-chip {
+  order: 0;
+  margin: 0 0 6px !important;
+  font-size: 0.66rem !important;
+  padding: 0.3rem 0.7rem !important;
+}
+
+@media (min-width: 1280px) {
+  /* Side rail — vertically centred on the stage, clear of the disc
+     (clearance is MEASURED by the gate at every sweep width, not assumed).
+     border-box + 340px: at 1280x800 the measured disc left edge is ~404px —
+     the rail's outer edge must stay ≤380 for the 24px law margin. */
+  html body.ap-observatory-home #heroChapter .hero-copy {
+    box-sizing: border-box !important;
+    position: absolute !important;
+    left: 24px !important;
+    top: calc((100svh - var(--ap-tray-h, 128px)) / 2) !important;
+    transform: translateY(-50%) !important;
+    width: 340px !important;
+    max-width: 340px !important;
+    max-height: 440px;
+    overflow: auto;
+    margin: 0 !important;
+    padding: 1.1rem 1.15rem 1.2rem !important;
+    background: rgba(10, 10, 14, 0.88) !important;
+    border: 1px solid rgba(200, 205, 214, 0.24) !important;
+    border-radius: 16px !important;
+  }
+  html body.ap-observatory-home #heroChapter .hero-copy h1,
+  html body.ap-observatory-home #heroChapter .hero-copy .display {
+    font-size: clamp(1.3rem, 1.8vw, 1.6rem) !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    margin: 0.2rem 0 0.35rem !important;
+  }
+  body.ap-observatory-home #heroChapter .hero-copy h1 br { display: inline; }
+  html body.ap-observatory-home #heroChapter .hero-copy .eyebrow-rose { display: block !important; }
+  html body.ap-observatory-home #heroChapter .hero-copy .standfirst,
+  html body.ap-observatory-home #heroChapter .hero-copy .hero-why-lead {
+    display: block !important;
+    font-size: 0.85rem !important;
+    max-width: 34ch !important;
+    margin: 0 0 0.5rem !important;
+  }
+  html body.ap-observatory-home #heroChapter .hero-form-row { flex-direction: column !important; }
+  html body.ap-observatory-home #heroChapter .hero-form-row input[type="date"],
+  html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"] { width: 100% !important; }
+  html body.ap-observatory-home #heroChapter .hero-copy .hero-form-note {
+    display: block !important;
+    font-size: 0.72rem !important;
+    color: rgba(232, 235, 240, 0.6) !important;
+    margin: 0.4rem 0 0 !important;
+  }
+}
+/* Short laptops: compress the tray + rail so cast stays in viewport 1. */
+@media (min-width: 1280px) and (max-height: 800px) {
+  html body.ap-observatory-home #heroChapter .hero-solar-stage { min-height: 480px !important; }
+  html body.ap-observatory-home #heroChapter #orrery-lite-deck { padding: 6px clamp(16px, 3vw, 40px) 4px !important; gap: 4px 14px !important; }
+  html body.ap-observatory-home #heroChapter .hero-copy { max-height: 380px; padding: 0.85rem 1.1rem 0.95rem !important; }
+}
+
+/* ── Cast dock compress state (scale≥1 / journey / flight only) ── */
+body.ap-observatory-home #heroChapter .ap-cast-pill { display: none; }
+body.ap-observatory-home #heroChapter.ap-cast-compressed .hero-copy > :not(.ap-cast-pill) { display: none !important; }
+body.ap-observatory-home #heroChapter.ap-cast-compressed .ap-cast-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 1.1rem;
+  color: #0B0906;
+  background: linear-gradient(160deg, #E8C872, #C9A227);
+  border: 0;
+  border-radius: 999px;
+  font-weight: 600;
+  font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+@media (min-width: 1280px) {
+  html body.ap-observatory-home #heroChapter.ap-cast-compressed .hero-copy {
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    overflow: visible;
+  }
+}
+
+/* ═══ §4 · MASTHEAD — slim overlay bar =================================== */
+html body.ap-observatory-home .masthead {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 56px !important;
+  z-index: 30 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 clamp(12px, 2vw, 32px) !important;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0)) !important;
+  border-bottom: 0 !important;
+  text-align: left !important;
+}
+html body.ap-observatory-home .masthead .page-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+body.ap-observatory-home .masthead-rule { display: none !important; }
+html body.ap-observatory-home .masthead-logo {
+  transform: none !important;
+  margin: 0 !important;
+  gap: 10px !important;
+  padding-block: 0 !important;
+  min-height: 44px !important;
+}
+body.ap-observatory-home .logo-mark { width: 30px !important; height: 30px !important; }
+body.ap-observatory-home .wordmark-astro,
+body.ap-observatory-home .wordmark-precise { font-size: clamp(1rem, 1.4vw, 1.15rem) !important; }
+html body.ap-observatory-home .contents-nav {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  justify-content: flex-end !important;
+}
+html body.ap-observatory-home .contents-nav a {
+  font-size: 0.72rem !important;
+  letter-spacing: 0.08em !important;
+  min-height: 44px !important;
+  min-width: 44px !important;
+  padding: 10px !important;
+  white-space: nowrap !important;
+}
+body.ap-observatory-home #main-content { padding-top: 0 !important; margin-top: 0 !important; }
+@media (max-width: 640px) {
+  html body.ap-observatory-home .masthead { height: 48px !important; }
+  html body.ap-observatory-home .masthead nav,
+  html body.ap-observatory-home .contents-nav { display: none !important; }
+}
+
+/* ═══ §5 · HONEST-MODEL LEGEND (ported from explore-page.css) ============ */
+body.ap-observatory-home .explore-legend {
+  position: absolute;
+  top: calc(56px + 12px);
+  right: 16px;
+  left: auto;
+  bottom: auto;
+  z-index: 8;
+  width: min(21rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  background: rgba(0, 0, 0, 0.82);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(200, 205, 214, 0.22);
+  border-radius: 12px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+body.ap-observatory-home .explore-legend__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--ap-parchment, #E8EBF0);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.02rem;
+  letter-spacing: 0.02em;
+}
+body.ap-observatory-home .explore-legend__title { font-weight: 600; }
+body.ap-observatory-home .explore-legend__chev { color: var(--ap-brass, #A8B0BC); transition: transform 0.25s ease; font-size: 0.8rem; }
+body.ap-observatory-home .explore-legend[data-collapsed="true"] .explore-legend__chev { transform: rotate(-90deg); }
+body.ap-observatory-home .explore-legend__body {
+  padding: 0 0.9rem 0.9rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(232, 235, 240, 0.86);
+  max-height: 50vh;
+  overflow-y: auto;
+}
+body.ap-observatory-home .explore-legend[data-collapsed="true"] .explore-legend__body { display: none; }
+body.ap-observatory-home .explore-legend__body p { margin: 0 0 0.6rem; }
+body.ap-observatory-home .explore-legend__body strong { color: var(--ap-parchment, #E8EBF0); }
+body.ap-observatory-home .explore-legend__ladder {
+  list-style: none;
+  margin: 0 0 0.6rem;
+  padding: 0.4rem 0 0.5rem;
+  border-top: 1px solid rgba(200, 205, 214, 0.14);
+  border-bottom: 1px solid rgba(200, 205, 214, 0.14);
+}
+body.ap-observatory-home .explore-legend__ladder li { padding: 0.14rem 0; }
+body.ap-observatory-home .explore-legend__ladder b { color: var(--ap-brass-bright, #CDAE6A); font-weight: 600; }
+body.ap-observatory-home .explore-legend__ladder em { font-style: italic; color: rgba(232, 235, 240, 0.92); }
+body.ap-observatory-home .explore-legend__foot { font-size: 0.76rem; color: rgba(232, 235, 240, 0.66); margin-bottom: 0 !important; }
+/* <1280: the collapsed legend is a compact chip (fit-content) so it clears
+   the measured disc; the expanded body takes the full card width. */
+@media (max-width: 1279px) {
+  body.ap-observatory-home .explore-legend[data-collapsed="true"] { width: auto; }
+  body.ap-observatory-home .explore-legend[data-collapsed="true"] .explore-legend__toggle { width: auto; white-space: nowrap; }
+  body.ap-observatory-home .explore-legend[data-collapsed="false"] { width: min(21rem, calc(100vw - 2rem)); }
+}
+@media (max-width: 640px) {
+  body.ap-observatory-home .explore-legend { top: calc(48px + 8px); right: 8px; }
+  body.ap-observatory-home .explore-legend[data-collapsed="false"] { width: min(19rem, calc(100vw - 1rem)); }
+}
+
+/* ═══ §6 · MOBILE PLATE — top-left starfield corner, never below-canvas == */
+@media (max-width: 640px) {
+  body.ap-observatory-home #heroChapter .ap-model-window { inset: 6px 8px !important; }
+  body.ap-observatory-home #heroChapter .ap-mw-corners--bottom::before,
+  body.ap-observatory-home #heroChapter .ap-mw-corners--bottom::after { display: block; }
+  html body.ap-observatory-home #heroChapter .ap-mw-plate {
+    left: 10px !important;
+    right: auto !important;
+    top: calc(48px + 6px) !important;
+    bottom: auto !important;
+    transform: none !important;
+    border: 1px solid rgba(200, 205, 214, 0.28) !important;
+    background: var(--ap-jet, #000) !important;
+    padding: 0.24rem 0.55rem !important;
+    /* share the chrome row with the legend chip (right-anchored ~175px) */
+    max-width: calc(100vw - 200px) !important;
+    overflow: hidden !important;
+  }
+  html body.ap-observatory-home #heroChapter .ap-mw-plate .ap-mw-caption {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    min-width: 0 !important;
+  }
+  html.ap-model-revealed body.ap-observatory-home #heroChapter .ap-mw-plate { animation-name: apMwPlateIn !important; }
+}
+
+/* ═══ §7 · SCROLL CUE + INTERPLAY CHIP (museum-plate language) =========== */
+body.ap-observatory-home .ap-mw-scrollcue {
+  grid-row: 3;
+  grid-column: 1 / -1;
+  justify-self: center;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 2px 14px 0;
+  text-decoration: none !important;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: rgba(200, 205, 214, 0.55) !important; /* silver — the critical a{} meridian rule must never win here */
+  transition: opacity 0.4s ease;
+}
+body.ap-observatory-home .ap-mw-scrollcue .ap-mw-scrollcue__label { color: rgba(200, 205, 214, 0.55) !important; }
+body.ap-observatory-home .ap-mw-scrollcue:hover,
+body.ap-observatory-home .ap-mw-scrollcue:focus-visible { color: rgba(232, 235, 240, 0.85) !important; }
+body.ap-observatory-home .ap-mw-scrollcue__line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 14px;
+  background: rgba(200, 205, 214, 0.45);
+}
+body.ap-observatory-home .ap-mw-scrollcue__line::after {
+  content: "";
+  position: absolute;
+  left: -1.5px;
+  top: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(200, 205, 214, 0.8);
+  animation: apMwCueDrop 2.4s ease-in-out infinite; /* calm, ≤2Hz */
+}
+@keyframes apMwCueDrop {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(11px); opacity: 0; }
+}
+body.ap-observatory-home .ap-mw-scrollcue--seen { opacity: 0 !important; pointer-events: none; }
+/* Interplay chip — engine-derived facts on nav hover; silver only, ephemeral.
+   Bottom-right inside the frame, mirroring the plate (legend owns top-right). */
+body.ap-observatory-home .ap-mw-chip {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.34rem 0.75rem;
+  background: var(--ap-jet, #000);
+  border: 1px solid rgba(200, 205, 214, 0.28);
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-weight: 400;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  color: var(--ap-silver, #C8CDD6);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+body.ap-observatory-home .ap-mw-chip.is-on { opacity: 1; transition: opacity 0.2s ease; }
+@media (max-width: 640px) {
+  body.ap-observatory-home .ap-mw-chip { display: none; }
+}
+
+/* ═══ §8 · CHROME RECESSION — html.ap-chrome-idle (opacity ONLY) ========= */
+html.ap-chrome-idle body.ap-observatory-home .masthead,
+html.ap-chrome-idle body.ap-observatory-home .explore-legend,
+html.ap-chrome-idle body.ap-observatory-home .ap-mw-scrollcue,
+html.ap-chrome-idle body.ap-observatory-home .ap-model-window {
+  opacity: 0.4 !important;
+  transition: opacity 0.8s ease;
+}
+html.ap-chrome-idle body.ap-observatory-home #orrery-lite-deck,
+html.ap-chrome-idle body.ap-observatory-home #heroChapter .hero-copy,
+html.ap-chrome-idle body.ap-observatory-home .bottom-nav {
+  opacity: 0.85;
+  transition: opacity 0.8s ease;
+}
+/* A11y: a focused control's container is ALWAYS full-opacity. */
+html.ap-chrome-idle body.ap-observatory-home .masthead:focus-within,
+html.ap-chrome-idle body.ap-observatory-home #orrery-lite-deck:focus-within,
+html.ap-chrome-idle body.ap-observatory-home #heroChapter .hero-copy:focus-within,
+html.ap-chrome-idle body.ap-observatory-home .bottom-nav:focus-within,
+html.ap-chrome-idle body.ap-observatory-home .explore-legend:focus-within {
+  opacity: 1 !important;
+  transition-duration: 0.15s;
+}
+body.ap-observatory-home .masthead,
+body.ap-observatory-home #orrery-lite-deck,
+body.ap-observatory-home #heroChapter .hero-copy,
+body.ap-observatory-home .explore-legend { transition: opacity 0.3s ease; }
+
+/* The static #apToast pill rendered as an empty floating circle over the
+   bottom tab bar (owner-sighted at 459px). Paint it only while it shows. */
+body.ap-observatory-home #apToast:not(.show) { display: none !important; }
+
+/* ═══ §9 · NO-JS / PRM PATH — cast band only, wheel centred ============= */
+html:not(.ap-await-webgl):not(.ap-lite-hero) body.ap-observatory-home #heroChapter #orrery-lite-deck { display: none !important; }
+html:not(.ap-await-webgl):not(.ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage {
+  height: auto !important;
+  min-height: 420px !important;
+  max-height: 60svh !important;
+}
+html:not(.ap-await-webgl):not(.ap-lite-hero) body.ap-observatory-home #heroChapter .hero-copy {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  width: min(520px, 94vw) !important;
+  margin: 0.5rem auto 1rem !important;
+  border: 1px solid rgba(200, 205, 214, 0.24) !important;
+  border-radius: 16px !important;
+}
+
+/* ═══ §10 · REDUCED MOTION ============================================== */
+@media (prefers-reduced-motion: reduce) {
+  body.ap-observatory-home .ap-mw-scrollcue__line::after { animation: none; }
+  body.ap-observatory-home .ap-mw-chip,
+  body.ap-observatory-home .ap-mw-scrollcue,
+  html.ap-chrome-idle body.ap-observatory-home .masthead,
+  html.ap-chrome-idle body.ap-observatory-home .explore-legend,
+  html.ap-chrome-idle body.ap-observatory-home .ap-model-window,
+  html.ap-chrome-idle body.ap-observatory-home #orrery-lite-deck,
+  html.ap-chrome-idle body.ap-observatory-home #heroChapter .hero-copy,
+  html.ap-chrome-idle body.ap-observatory-home .bottom-nav,
+  body.ap-observatory-home .explore-legend__chev { transition: none !important; }
+}

@@ -31,12 +31,27 @@ window.RafCore = (() => {
   else if (coarse)            tier = 'mid';
   else                        tier = 'high';
 
-  /** Orrery-aligned HD DPR — canonical budget for all canvas/WebGL renderers. */
+  /** Orrery-aligned HD DPR — canonical budget for all canvas/WebGL renderers.
+   *  Honors the caller's explicit cap on every tier (the orrery passes its
+   *  IS_PHONE 1.6 clamp as `base` — OrbitLab law: that clamp must survive).
+   *  Observatory stage pixel budget: when page boot sets
+   *  window.__apStagePixelBudget (+ __apStageCssArea), the result is further
+   *  clamped to sqrt(budget/area) with floors 1.5 desktop / 1.25 coarse so a
+   *  full-viewport canvas never blows the fill budget on hi-DPI desktops.
+   *  Pages that never set the globals are byte-identical in behavior. */
   function hdDPR(base = 2.5) {
     const real = window.devicePixelRatio || 1;
-    if (tier === 'low') return Math.min(real, 1.25);
-    if (tier === 'mid') return Math.min(real, 2);
-    return Math.min(real, base);
+    let d;
+    if (tier === 'low') d = Math.min(real, 1.25, base);
+    else if (tier === 'mid') d = Math.min(real, 2, base);
+    else d = Math.min(real, base);
+    const budget = window.__apStagePixelBudget;
+    if (budget > 0) {
+      const area = window.__apStageCssArea || (window.innerWidth * window.innerHeight) || 1;
+      const floor = coarse ? 1.25 : 1.5;
+      d = Math.min(d, Math.max(floor, Math.sqrt(budget / area)));
+    }
+    return d;
   }
 
   /** Legacy alias — delegates to hdDPR with a 2.0 desktop cap. */

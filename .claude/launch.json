@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "serve:dist"],
       "port": 8796
+    },
+    {
+      "name": "orbitlab-preview",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8795", "--directory", "C:/Users/jonny/Desktop/Project Folders/OrbitLab"],
+      "port": 8795
     }
   ]
 }

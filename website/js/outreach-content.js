@@ -160,7 +160,7 @@
             + 'That\'s the Deep Reading: a written interpretation of YOUR chart — Sun, Moon, Rising, '
             + 'dominant element and mode, tightest aspects, and what your transits are asking of you. '
             + 'A one-time PDF, yours to keep — {{deepReadingPrice}} when the shop is open.\n\n'
-            + 'ABOUT THE DEEP READING → {{siteUrl}}/chart.html#deep-reading\n\n'
+            + 'ABOUT THE DEEP READING → {{siteUrl}}/shop.html#deep-reading\n\n'
             + '(If it\'s not open for purchase yet, you\'ll see an honest note — we never run a fake checkout.)\n\n'
             + '— Astro Precise',
         },
@@ -219,7 +219,7 @@
             + '(Pull this from the live transits page — keep it specific, never generic filler.)\n\n'
             + 'See it on your chart, free: {{siteUrl}}/transits.html\n\n'
             + 'Want the map reread in depth? The Deep Reading is {{deepReadingPrice}}, one-time: '
-            + '{{siteUrl}}/chart.html#deep-reading\n\n'
+            + '{{siteUrl}}/shop.html#deep-reading\n\n'
             + '— Astro Precise',
         },
       ],

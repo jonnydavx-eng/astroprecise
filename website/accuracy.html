@@ -2,24 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="How Astro Precise is accurate: real VSOP87 and ELP2000 astronomy, a true Ascendant and Midheaven, authentic house systems, and a privacy-first engine that computes entirely in your browser. Every number is real." />
-  <title>How Astro Precise Is Accurate — Real Astronomy, Real Privacy | Astro Precise</title>
+  <meta name="description" content="How Astro Precise is accurate: real VSOP87 and ELP2000 astronomy, a true Ascendant, authentic house systems — computed entirely in your browser." />
+  <title>How Astro Precise Stays Accurate &amp; Private</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="How Astro Precise Is Accurate | Astro Precise" />
   <meta property="og:description" content="Real VSOP87 and ELP2000 astronomy, a true Ascendant and Midheaven, authentic house systems, retrograde detection, historical timezones — and a privacy-first engine that runs entirely in your browser." />
   <meta property="og:url" content="https://astroprecise.app/accuracy.html" />
   <link rel="canonical" href="https://astroprecise.app/accuracy.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="How Astro Precise Is Accurate | Astro Precise" />
   <meta name="twitter:description" content="Real VSOP87 and ELP2000 astronomy, a true Ascendant and Midheaven, authentic house systems, and a privacy-first engine that runs entirely in your browser." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
@@ -34,7 +42,7 @@
   <meta name="apple-mobile-web-app-title" content="Astro Precise" />
   <link rel="stylesheet" href="css/chart.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"How Astro Precise Is Accurate","description":"How Astro Precise is accurate: real VSOP87 and ELP2000 astronomy, a true Ascendant and Midheaven, authentic house systems, retrograde detection, historical timezone conversion, and a privacy-first engine that computes entirely in your browser.","url":"https://astroprecise.app/accuracy.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"about":[{"@type":"Thing","name":"Astronomical accuracy"},{"@type":"Thing","name":"Astrology calculation"},{"@type":"Thing","name":"Data privacy"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How Astro Precise Is Accurate","description":"A plain-English explanation of the astronomy behind Astro Precise — VSOP87 planetary theory, ELP2000 lunar theory, Meeus algorithms, a true Ascendant and Midheaven, real house systems, and a privacy-first, in-browser engine where every number is real.","url":"https://astroprecise.app/accuracy.html","image":"https://astroprecise.app/img/og-banner-improved.jpg","author":{"@type":"Organization","name":"Astro Precise"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"mainEntityOfPage":"https://astroprecise.app/accuracy.html"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How Astro Precise Is Accurate","description":"A plain-English explanation of the astronomy behind Astro Precise — VSOP87 planetary theory, ELP2000 lunar theory, Meeus algorithms, a true Ascendant and Midheaven, real house systems, and a privacy-first, in-browser engine where every number is real.","url":"https://astroprecise.app/accuracy.html","image":"https://astroprecise.app/img/og-banner-silver.jpg","author":{"@type":"Organization","name":"Astro Precise"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"},"mainEntityOfPage":"https://astroprecise.app/accuracy.html"}</script>
   </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -180,9 +188,10 @@
           <p class="acc-section__label">What "Accurate" Means Here</p>
           <h2 class="acc-section__title" id="precision-heading">Arcminute Precision, Not Vague Generalities</h2>
           <p class="acc-section__subtitle">
-            The combination of VSOP87, ELP2000, and Meeus algorithms places bodies to
-            roughly arcminute-to-degree precision &mdash; the difference between a chart
-            you can trust to the degree and a one-size-fits-all Sun-sign blurb.
+            The combination of VSOP87, ELP2000, and Meeus algorithms places the Sun
+            through Pluto to roughly arcminute-to-degree precision, and Chiron &mdash;
+            on a Kepler orbit from JPL elements &mdash; to the degree. The difference
+            between a chart you can trust and a one-size-fits-all Sun-sign blurb.
           </p>
         </div>
 
@@ -367,8 +376,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>

@@ -211,7 +211,7 @@ async function analyzePage(page, pageId, pageType) {
     if (['lifepath', 'name-numerology', 'quiz', 'profile'].includes(pageId)) monetization += 15;
     if (pageType === 'legal') monetization = 35;
     if (pageId === '404') monetization = 25;
-    if (document.querySelector('[href*="lemonsqueezy"], [href*="typeform"], .shop-cta, .cta-shop')) monetization += 15;
+    if (document.querySelector('[href*="paypal"], [href*="typeform"], .shop-cta, .cta-shop')) monetization += 15;
     monetization = Math.max(0, Math.min(100, monetization));
 
     return {

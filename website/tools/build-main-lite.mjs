@@ -66,8 +66,11 @@ out = out.replace(
   animation: none;
 }`
 );
-// Film grain is expensive on mobile first paint — full main.css restores it
-out = out.replace(/body::after\s*\{[\s\S]*?\n\}/m, 'body::after { content: none; }');
+// Film grain is expensive on mobile first paint — full main.css restores it.
+// [^}]* (not [\s\S]*?\n\}) so a single-line `body::after { content: none; }`
+// does not run the match on to the next line-start brace and swallow the
+// adjacent @keyframes nebula-drift block (body::after never nests braces).
+out = out.replace(/body::after\s*\{[^}]*\}/, 'body::after { content: none; }');
 // Static compat orbs in lite (animations in full main.css)
 out = out.replace(/animation:\s*orb-breathe-\d[^;]+;/g, 'animation: none;');
 
@@ -89,7 +92,7 @@ out += `
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md, 10px);
-  background: var(--surface, rgba(14, 11, 8, 0.72));
+  background: var(--surface, rgba(16, 21, 32, 0.72));
   border: 1px solid var(--border, rgba(168, 158, 136, 0.18));
   display: inline-flex;
   align-items: center;
@@ -102,6 +105,20 @@ out += `
 }
 .ap-social-icon__svg { width: 18px; height: 18px; }
 .ap-social-icon--soon { opacity: 0.42; cursor: default; }
+
+/* ── Footer zodiac strip — EAGER flex layout. The flex rule otherwise lives only
+   in the deferred celestial-seals.css, so before it loads (headless/SEO renderers,
+   and real users until first pointerdown) all 12 seals stacked full-width into a
+   ~1300px vertical column, making the footer taller than the page on every page.
+   Decorative + aria-hidden; safe to force. ── */
+.footer-zodiac-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-start;
+  line-height: 0;
+}
+.footer-zodiac-strip > span { display: inline-flex; }
 
 /* ── AP structure utilities (mirrors main.css tail — keep in sync) ── */
 :root {
@@ -130,7 +147,7 @@ out += `
   max-width: 560px;
   margin-inline: auto;
   padding: var(--section-pad-y-tight, 3rem) var(--space-6, 2rem);
-  background: var(--surface, rgba(20, 16, 10, 0.56));
+  background: var(--surface, rgba(22, 28, 42, 0.56));
   border: 1px solid var(--border, var(--ap-gold-a16));
   border-radius: var(--radius-lg, 16px);
 }
@@ -200,6 +217,14 @@ const closes = (out.match(/\}/g) || []).length;
 if (opens !== closes) {
   console.error(`main-lite.css validation failed — unbalanced braces (${opens} "{" vs ${closes} "}"). A RANGE end likely cut a rule mid-body; check the range boundaries against main.css.`);
   process.exit(1);
+}
+
+// Enchanted Observatory layer — loads after palette tokens; scoped via .ap-enchanted
+if (!out.includes("ap-observatory-enchanted.css")) {
+  out = out.replace(
+    "@import url('/css/ap-palette-2026.css');",
+    "@import url('/css/ap-palette-2026.css');\n@import url('/css/ap-observatory-enchanted.css');"
+  );
 }
 
 writeFileSync(join(root, 'css', 'main-lite.css'), out, 'utf8');

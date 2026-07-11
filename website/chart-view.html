@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Birth Chart — Astro Precise</title>
+  <meta name="description" content="A privately computed natal chart — VSOP87 precision, rendered on your device." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Astro Precise" />
+  <meta property="og:title" content="Birth Chart — Astro Precise" />
+  <meta property="og:description" content="A natal chart computed with astronomical precision — free, private, beautiful." />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css" />
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=703" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/chart-critical.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <style>
+    .chart-view-loading {
+      font-family: var(--font-mono, ui-monospace, monospace);
+      font-size: 0.85rem;
+      color: var(--ap-text-muted, #8B919C);
+      letter-spacing: 0.08em;
+      text-align: center;
+      padding: 3rem;
+    }
+  </style>
+</head>
+<body class="page-chart-view ap-enchanted ap-nav-enter">
+
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section class="chart-view-hero">
+      <p class="eyebrow">Shared natal chart</p>
+      <h1 class="chart-view-hero__title" id="view-name">Birth Chart</h1>
+      <p class="chart-view-hero__meta" id="view-meta"></p>
+    </section>
+
+    <div class="chart-view-stage">
+      <div class="chart-view-wheel-wrap" id="view-wheel-mount">
+        <p class="chart-view-loading" id="view-loading">Computing chart…</p>
+        <div id="natal-wheel" class="natal-wheel-mount" role="img" aria-label="Natal chart wheel" hidden></div>
+      </div>
+    </div>
+
+    <section class="chart-view-cta" id="view-big-three" hidden>
+      <p id="view-summary"></p>
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+        <a href="chart.html" class="btn btn--primary" id="view-full-link">Explore the full chart →</a>
+        <a href="chart.html" class="btn btn--outline">Cast your own free chart</a>
+      </div>
+      <p style="margin-top:1rem;font-size:0.78rem;color:var(--ap-text-faint);">
+        Computed on your device · VSOP87 · accurate to roughly an arcminute (1800–2200 CE)
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container" style="text-align:center;padding:2rem 1rem;">
+      <p style="font-size:0.75rem;color:var(--ap-text-muted);">
+        <a href="index.html">Astro Precise</a> · Privacy-first astrology
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/chart-render.js" defer></script>
+  <script src="js/ap-nav-model.js"></script>
+  <script src="js/app.js" defer></script>
+  <script>
+  (function () {
+    'use strict';
+    var q = new URLSearchParams(location.search);
+    if (!q.get('d') || !q.get('lat')) {
+      document.getElementById('view-loading').textContent = 'No chart data in this link.';
+      return;
+    }
+
+    var name = q.get('n') || 'Birth Chart';
+    document.getElementById('view-name').textContent = name;
+    document.title = name + ' — Astro Precise';
+    document.querySelector('meta[property="og:title"]').content = name + ' — Astro Precise';
+
+    var meta = q.get('c') || 'Birth place';
+    if (q.get('d')) meta += ' · ' + q.get('d');
+    document.getElementById('view-meta').textContent = meta;
+
+    var fullLink = 'chart.html?' + q.toString();
+    document.getElementById('view-full-link').href = fullLink;
+
+    function civilToUT(y, m, d, hh, mm, zone) {
+      function tzOffsetMin(z, utc) {
+        try {
+          var p = {};
+          new Intl.DateTimeFormat('en-GB', { timeZone: z, year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
+            .formatToParts(utc).forEach(function (x) { p[x.type] = x.value; });
+          return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - utc.getTime()) / 60000;
+        } catch (e) { return 0; }
+      }
+      var u = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
+      for (var i = 0; i < 2; i++) u = new Date(Date.UTC(y, m - 1, d, hh, mm, 0) - tzOffsetMin(zone, u) * 60000);
+      return u;
+    }
+
+    function run() {
+      var E = window.AstroEphemeris;
+      if (!E || !E.calculateNatalChart) {
+        document.getElementById('view-loading').textContent = 'Engine loading…';
+        setTimeout(run, 120);
+        return;
+      }
+      var parts = q.get('d').split('-').map(Number);
+      var y = parts[0], m = parts[1], d = parts[2];
+      var hh = 12, mm = 0;
+      if (q.get('t')) {
+        var t = q.get('t').split(':').map(Number);
+        hh = t[0]; mm = t[1] || 0;
+      }
+      var lat = parseFloat(q.get('lat'));
+      var lon = parseFloat(q.get('lon'));
+      var tz = q.get('tz') || 'UTC';
+      var hs = q.get('hs') || 'equal';
+      var utY = y, utM = m, utD = d, utH = hh, utMin = mm;
+      if (tz) {
+        var u = civilToUT(y, m, d, hh, mm, tz);
+        utY = u.getUTCFullYear(); utM = u.getUTCMonth() + 1; utD = u.getUTCDate();
+        utH = u.getUTCHours(); utMin = u.getUTCMinutes();
+      }
+      var raw;
+      try {
+        raw = E.calculateNatalChart(utY, utM, utD, utH, utMin, lat, lon, hs);
+      } catch (e) {
+        document.getElementById('view-loading').textContent = 'Could not compute this chart.';
+        return;
+      }
+      var chart = {
+        name: name,
+        birthDate: q.get('d'),
+        birthTime: q.get('t') || null,
+        city: q.get('c') || '',
+        lat: lat, lon: lon, tz: tz,
+        houseSystem: hs,
+        positions: raw.positions,
+        houses: raw.houses,
+        planetHouses: raw.planetHouses,
+        aspects: raw.aspects,
+        ascendant: raw.ascendant,
+        risingSign: raw.ascendant != null && window.AstroEphemeris
+          ? AstroEphemeris.signOf(raw.ascendant) : null,
+      };
+      var loading = document.getElementById('view-loading');
+      if (window.AstroChartRender && window.AstroChartRender.renderNatalChart) {
+        loading.hidden = true;
+        var mount = document.getElementById('natal-wheel');
+        mount.hidden = false;
+        window.AstroChartRender.renderNatalChart(
+          { positions: chart.positions, houses: chart.houses, aspects: chart.aspects,
+            name: chart.name, risingSign: chart.risingSign },
+          'natal-wheel',
+          { title: null, wheelOnly: true, showTable: false, showLegend: false });
+      } else {
+        loading.textContent = 'Wheel renderer unavailable.';
+        return;
+      }
+      var sun = (raw.positions.sun && raw.positions.sun.sign) || '—';
+      var moon = (raw.positions.moon && raw.positions.moon.sign) || '—';
+      var rising = chart.risingSign || '—';
+      document.getElementById('view-summary').textContent =
+        'Sun in ' + sun + ' · Moon in ' + moon + ' · Rising ' + rising;
+      document.getElementById('view-big-three').hidden = false;
+      document.body.classList.add('ap-nav-enter--active');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', run);
+    } else {
+      run();
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -59,17 +59,19 @@
     Libra:'LI', Scorpio:'SC', Sagittarius:'SG', Capricorn:'CP', Aquarius:'AQ', Pisces:'PI'
   };
 
-  // Warm observatory tokens (shop / main.css parity — no cool navy)
+  // Observatory Palette 2026 — COOL void + engraved brass (DESIGN.md tokens).
+  // Kept the WARM.* name to minimise churn; the VALUES are the live cool tokens
+  // from css/ap-palette-2026.css (canvas/SVG can't read CSS vars, so mirror them).
   const WARM = {
-    void:      '#050406',
-    plate:     '#13100C',
-    gold:      '#C9A227',
-    goldDim:   '#A8841E',
-    parchment: '#E8E0D0',
-    silver:    '#A89E88',
-    silverDim: '#7E7565',
-    hairline:  'rgba(201,162,39,0.22)',
-    mauve:     '#6E1A26',
+    void:      '#07070A',   // --ap-void-deep
+    plate:     '#1A2230',   // --ap-void-raised
+    gold:      '#A8B0BC',   // silver chrome (was brass)
+    goldDim:   '#6A7078',   // silver shadow
+    parchment: '#E8EBF0',   // starlight text
+    silver:    '#C8CDD6',   // --ap-text-secondary
+    silverDim: '#8B919C',   // --ap-text-muted
+    hairline:  'rgba(168,176,188,0.22)',   // brass hairline
+    mauve:     '#4A7580',   // was oxblood — now the water element accent (faint nebula rim)
     synastry:  '#B87898',
     transit:   '#9DB88A'
   };
@@ -80,21 +82,21 @@
     'Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'
   ];
 
-  // Element fill colors — warm observatory palette, kept distinguishable.
-  // (Air/water were cool cyan/blue; remapped to warm lilac / muted teal.)
+  // Element fill colors — the four semantic element accents (DESIGN.md).
+  // These are deliberately NOT flattened to brass; zodiac keeps its element hue.
   const ELEMENT_FILL = {
-    fire:  '#D85A2C',   /* warm ember */
-    earth: '#5E7A3A',   /* warm olive */
-    air:   '#A78BBA',   /* warm lilac */
-    water: '#3F7D76'    /* muted observatory teal */
+    fire:  '#B85A42',   // --ap-element-fire
+    earth: '#5A7A48',   // --ap-element-earth
+    air:   '#8A7A6A',   // --ap-element-air (muted taupe — replaces retired lilac)
+    water: '#4A7580'    // --ap-element-water
   };
 
-  // Text/stroke accent per element (lighter)
+  // Text/stroke accent per element — a lightened tint of the same accent.
   const ELEMENT_TEXT = {
-    fire:  '#F0A878',
-    earth: '#A8C07A',
-    air:   '#C6AEDA',
-    water: '#7FB8B0'
+    fire:  '#D07E63',
+    earth: '#7E9E68',
+    air:   '#A89A88',
+    water: '#6E9AA5'
   };
 
   const SIGN_ELEMENT = (Z && Z.SIGN_ELEMENT) || {
@@ -140,13 +142,14 @@
     NorthNode:'☊︎', SouthNode:'☋︎', Ascendant:'AC', Midheaven:'MC'
   };
 
-  // Warm palette — Moon/Mercury warmed off cool silver; Uranus/Neptune off
-  // electric cyan/blue to warm lavender/violet.
+  // Planet marker tints — brass-default per ART-DIRECTION, kept distinguishable
+  // but pulled off the retired hot-gold/electric-violet family. Sun = brass;
+  // outers (Uranus/Neptune/Pluto/Lilith) recede to silver-cool / element accents.
   const PLANET_COLORS = {
-    Sun:'#FFD700',      Moon:'#D2CBB8',    Mercury:'#BFB39A', Venus:'#FFB6C1',
-    Mars:'#FF6644',     Jupiter:'#FFB347', Saturn:'#C8A86B',  Uranus:'#B89AD0',
-    Neptune:'#7E6BB0',  Pluto:'#CC88AA',   Chiron:'#AEB389',  Lilith:'#9A6FB0',
-    NorthNode:'#DDCC88', SouthNode:'#BBAA77', Ascendant:'#FFFFFF', Midheaven:'#FFFFFF'
+    Sun:'#C8CDD6',      Moon:'#C6BCA4',    Mercury:'#BFB39A', Venus:'#C89BA2',
+    Mars:'#B85A42',     Jupiter:'#A8B0BC', Saturn:'#C8A86B',  Uranus:'#A6AEB8',
+    Neptune:'#4A7580',  Pluto:'#8A7A6A',   Chiron:'#8E9E78',  Lilith:'#8E86A0',
+    NorthNode:'#7EC8E8', SouthNode:'#8B919C', Ascendant:'#E8EBF0', Midheaven:'#E8EBF0'
   };
 
   const PLANET_ORDER = [
@@ -161,11 +164,11 @@
   // Colours unchanged (already warm/on-brand); opacity cascade lives in
   // ASPECT_OPACITY below (majors ~0.75–0.85, minors ~0.38–0.45).
   const ASPECT_STYLE = {
-    Conjunction:     { color:'#FFFFFF', width:1.8, dash:null  },
-    Opposition:      { color:'#E0514A', width:1.8, dash:null  },
-    Trine:           { color:'#5FA39A', width:1.8, dash:null  },   /* warm teal (was sky blue) */
-    Square:          { color:'#F97316', width:1.8, dash:null  },
-    Sextile:         { color:'#9DB36A', width:1.2, dash:null  },   /* warm sage (was bright green) */
+    Conjunction:     { color:'#E8EBF0', width:1.8, dash:null  },   /* parchment (neutral) */
+    Opposition:      { color:'#C25A4E', width:1.8, dash:null  },   /* muted red — element-fire family */
+    Trine:           { color:'#4A7580', width:1.8, dash:null  },   /* water accent (harmonious) */
+    Square:          { color:'#B0703E', width:1.8, dash:null  },   /* muted amber, clear of the terracotta CTA */
+    Sextile:         { color:'#5A7A48', width:1.2, dash:null  },   /* earth/sage accent */
     // Minor aspects — gray dashed, deliberately recessive
     Quincunx:        { color:'#6B7280', width:0.6, dash:'3,3' },
     SemiSquare:      { color:'#6B7280', width:0.6, dash:'3,3' },
@@ -277,11 +280,14 @@
   }
 
   // ─── Utility: ecliptic longitude → SVG visual angle ──────────────────────
-  // Traditional natal wheel: ASC is at the 9 o'clock (left) position = 180°.
-  // Degrees increase counter-clockwise on the wheel (east = up).
-  // visual_angle = 180 - (eclLon - ascLon)  (mod 360)
+  // Traditional natal wheel: ASC sits at 9 o'clock (due left). polar() below is
+  // 0°=top and increases clockwise, so left = 270°. Ecliptic longitude increases
+  // counter-clockwise on the wheel (east = up), i.e. decreasing screen angle.
+  //   visual_angle = 270 - (eclLon - ascLon)  (mod 360)
+  // ⇒ ASC→270 (left), IC→180 (bottom), DESC→90 (right), MC→0 (top). This matches
+  // both astrological convention and the "ASC at nine o'clock" caption in chart.html.
   function lonToAngle(eclLon, ascLon) {
-    let a = 180 - (eclLon - ascLon);
+    let a = 270 - (eclLon - ascLon);
     return ((a % 360) + 360) % 360;
   }
 
@@ -315,9 +321,9 @@
 
     // Radial gradient: deep space center fill
     const rg = el('radialGradient', { id: idPrefix + 'cgrad', cx:'50%', cy:'50%', r:'50%' });
-    [[0,   '#13100C', 1],
-     [0.6, '#0D0A07', 1],
-     [1,   '#050406', 1]
+    [[0,   '#1A2230', 1],
+     [0.6, '#121826', 1],
+     [1,   '#07070A', 1]
     ].forEach(([o, c, op]) => {
       rg.appendChild(el('stop', { offset: o * 100 + '%', 'stop-color': c, 'stop-opacity': op }));
     });
@@ -343,12 +349,12 @@
     flt2.appendChild(mg2);
     defs.appendChild(flt2);
 
-    // Nebula wash behind the wheel (warm void → oxblood rim)
+    // Nebula wash behind the wheel (cool void → faint water-accent rim)
     const neb = el('radialGradient', { id: idPrefix + 'nebula', cx: '50%', cy: '48%', r: '58%' });
     [[0,   WARM.plate, 0.95],
      [0.55, WARM.void,  1],
-     [0.88, '#1a100c', 0.6],
-     [1,   WARM.mauve, 0.12]
+     [0.88, '#121826', 0.6],
+     [1,   WARM.mauve, 0.10]
     ].forEach(([o, c, op]) => {
       neb.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c, 'stop-opacity': op }));
     });
@@ -356,7 +362,7 @@
 
     // Engraved outer ring gradient
     const ringG = el('linearGradient', { id: idPrefix + 'ringG', x1: '0%', y1: '0%', x2: '100%', y2: '100%' });
-    [[0, '#EFE3C0'], [0.45, WARM.gold], [1, WARM.goldDim]].forEach(([o, c]) => {
+    [[0, '#E8EBF0'], [0.45, WARM.gold], [1, WARM.goldDim]].forEach(([o, c]) => {
       ringG.appendChild(el('stop', { offset: (o * 100) + '%', 'stop-color': c }));
     });
     defs.appendChild(ringG);
@@ -413,7 +419,9 @@
       }));
     }
 
-    // Cardinal compass roses (AC left · MC top · DC right · IC bottom)
+    // Decorative compass roses at the four screen cardinals (top/right/bottom/
+    // left). With the corrected ASC-at-nine-o'clock rotation these now sit under
+    // AC (left) · MC (top) · DC (right) · IC (bottom).
     [180, 270, 0, 90].forEach((ang) => {
       const p = polar(CX, CY, R_BEZEL_TICK - 10, ang);
       const rose = el('g', { transform: `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})` });
@@ -543,7 +551,10 @@
         fill: `url(#${idPrefix}seg_${elem})`,
         stroke: shade(WARM.gold, i % 2 ? 0.1 : 0),
         'stroke-width': '0.65',
-        opacity: '0.92'
+        // Element accent kept (semantic, per DESIGN.md) but dropped to a faint
+        // hint so the ring reads as a BRASS engraved instrument first, not a
+        // muddy olive/green band. The brass borders + seals carry the ring.
+        opacity: '0.4'
       }));
 
       const midAng = lonToAngle(midLon, ascLon);
@@ -552,21 +563,9 @@
       if (slug) {
         sealImage(g, SEAL_BASE + 'zodiac/' + slug + '.svg', gp.x, gp.y, 30, 34, 0.96);
       }
-
-      // Sign abbreviation. Raised 6.5 → 11 viewBox units so it stays legible
-      // when the wheel scales down (≈6.6px at a 360px-rendered wheel, vs the
-      // old ~3.9px). Nudged slightly inward so the larger glyph sits clear of
-      // the degree ring.
-      const abbrP = polar(CX, CY, R_ZODIAC_OUT - 18, midAng);
-      const abbr = el('text', {
-        x: abbrP.x.toFixed(2), y: abbrP.y.toFixed(2),
-        'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-        fill: WARM.parchment, 'font-size': '11',
-        'font-family': 'var(--font-display, "Cinzel", serif), system-ui, sans-serif',
-        'letter-spacing': '0.1em', opacity: '0.62', 'font-weight': '600'
-      });
-      abbr.textContent = SIGN_ABBR[sign] || '';
-      g.appendChild(abbr);
+      // The engraved seal IS the sign label — the old 2-letter SIGN_ABBR text
+      // double-labelled the ring on top of the seal and muddied the engraved read
+      // (audit 2026-07-04). Dropped; the seal + degree ticks carry the ring.
     }
 
     // Degree tick marks: every 5° (minor) and every 10° (major)
@@ -584,7 +583,7 @@
       g.appendChild(el('line', {
         x1: tp1.x.toFixed(2), y1: tp1.y.toFixed(2),
         x2: tp2.x.toFixed(2), y2: tp2.y.toFixed(2),
-        stroke: '#C9A227',
+        stroke: WARM.gold,
         'stroke-width': isSignCusp ? '1.4' : isMajor ? '0.9' : '0.5',
         opacity: isSignCusp ? '0.9' : isMajor ? '0.62' : '0.4'
       }));
@@ -613,7 +612,7 @@
     // Inner border of zodiac ring
     g.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_ZODIAC_IN,
-      fill: 'none', stroke: '#C9A227', 'stroke-width': '1'
+      fill: 'none', stroke: WARM.gold, 'stroke-width': '1'
     }));
 
     svg.appendChild(g);
@@ -627,7 +626,7 @@
     g.appendChild(el('circle', {
       cx: CX, cy: CY, r: R_HOUSE_OUT,
       fill: `url(#${idPrefix}cgrad)`,
-      stroke: '#555540', 'stroke-width': '0.5'
+      stroke: WARM.hairline, 'stroke-width': '0.5'
     }));
 
     const ANGLE_LABELS = { 0:'AC', 3:'IC', 6:'DC', 9:'MC' };
@@ -660,7 +659,7 @@
       g.appendChild(el('line', {
         x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
         x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
-        stroke: isAngle ? '#C9A227' : '#4A4838',
+        stroke: isAngle ? WARM.gold : 'rgba(190,178,152,0.30)',
         'stroke-width': isAngle ? '2' : '0.8',
         opacity: isAngle ? '1' : '0.75'
       }));
@@ -672,7 +671,7 @@
         const lbl = el('text', {
           x: lp.x.toFixed(2), y: lp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-          fill: '#C9A227',
+          fill: WARM.gold,
           // 9 → 13 units (≈7.8px @360) — angle labels (AC/DC/MC/IC) are
           // navigational anchors, so they must stay readable on phones.
           'font-size': '13',
@@ -854,13 +853,17 @@
       const pos2 = positions[p2name];
       if (!pos1 || !pos2) continue;
 
+      const lon1 = readLon(pos1);
+      const lon2 = readLon(pos2);
+      if (lon1 == null || lon2 == null) continue;
+
       const aspectName = (asp.aspect || asp.type || '').toLowerCase();
       const styleKey = aspectName.charAt(0).toUpperCase() + aspectName.slice(1);
       const style   = ASPECT_STYLE[styleKey] || ASPECT_STYLE[aspectName] || ASPECT_STYLE.Quincunx;
       const opacity = ASPECT_OPACITY[styleKey] || ASPECT_OPACITY[aspectName] || 0.35;
 
-      const a1 = lonToAngle(pos1.lon, ascLon);
-      const a2 = lonToAngle(pos2.lon, ascLon);
+      const a1 = lonToAngle(lon1, ascLon);
+      const a2 = lonToAngle(lon2, ascLon);
       const pt1 = polar(CX, CY, R_ASPECT, a1);
       const pt2 = polar(CX, CY, R_ASPECT, a2);
       const len = Math.hypot(pt2.x - pt1.x, pt2.y - pt1.y);
@@ -957,7 +960,9 @@
     const entries = [];
     for (const name of PLANET_ORDER) {
       if (!positions[name]) continue;
-      const ang = lonToAngle(positions[name].lon, ascLon);
+      const lon = readLon(positions[name]);
+      if (lon == null) continue;
+      const ang = lonToAngle(lon, ascLon);
       entries.push({ name, angle: ang });
     }
 
@@ -972,7 +977,9 @@
       if (!glyph) continue;
 
       const pColor  = opts.colorOverride || PLANET_COLORS[name] || '#CCCCCC';
-      const trueAng = lonToAngle(pos.lon, ascLon);
+      const trueLon = readLon(pos);
+      if (trueLon == null) continue;
+      const trueAng = lonToAngle(trueLon, ascLon);
       const dispAng = resolved[name];
 
       // Per-planet group so a table-row hover can highlight all of this planet's
@@ -1025,7 +1032,7 @@
         const rTxt = el('text', {
           x: orp.x.toFixed(2), y: orp.y.toFixed(2),
           'text-anchor': 'middle', 'dominant-baseline': 'middle', 'alignment-baseline': 'middle',
-          fill: '#FF9977',
+          fill: '#C25A4E',
           'font-size': '11',
           'font-family': 'serif, system-ui',
           'font-weight': '600',
@@ -1039,7 +1046,7 @@
       // `compact` via showDeg above): 7 → 9 units so it's not anemic where it
       // does render. On mobile the exact figure lives in the planets table.
       if (showDeg) {
-        const _dv    = pos.degree !== undefined ? pos.degree : (((pos.lon % 30) + 30) % 30);
+        const _dv    = pos.degree !== undefined ? pos.degree : (((trueLon % 30) + 30) % 30);
         const degNum = Math.floor(_dv);
         const minNum = Math.floor((_dv - degNum) * 60);
         const dlr    = rPlanet - 17;
@@ -1239,9 +1246,9 @@
     aDiv.className = 'ap-chart-legend__block';
     aDiv.innerHTML = '<div class="ap-chart-legend__title">Aspects</div>';
     [
-      ['Conjunction','☌','#FFFFFF'],['Opposition','☍','#EF4444'],
-      ['Trine','△','#5fa39a'],['Square','□','#F97316'],
-      ['Sextile','⚹','#9db36a'],['Minor','- -','#6B7280']
+      ['Conjunction','☌','#E8EBF0'],['Opposition','☍','#C25A4E'],
+      ['Trine','△','#4A7580'],['Square','□','#B0703E'],
+      ['Sextile','⚹','#5A7A48'],['Minor','- -','#6B7280']
     ].forEach(([n, s, c]) => {
       const row = document.createElement('div');
       row.className = 'ap-chart-legend__row';
@@ -1333,6 +1340,79 @@
   let _chartSeq = 0;
   function nextPrefix() { return 'arc' + (++_chartSeq) + '_'; }
 
+  const ENGINE_KEY_MAP = {
+    sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
+    jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune',
+    pluto: 'Pluto', chiron: 'Chiron', lilith: 'Lilith',
+    northNode: 'NorthNode', southNode: 'SouthNode',
+    asc: 'Ascendant', mc: 'Midheaven',
+  };
+
+  /** Read ecliptic longitude from engine (.longitude) or render (.lon) shapes. */
+  function readLon(pos) {
+    if (pos == null) return null;
+    if (typeof pos === 'number' && isFinite(pos)) return pos;
+    if (typeof pos.lon === 'number' && isFinite(pos.lon)) return pos.lon;
+    if (typeof pos.longitude === 'number' && isFinite(pos.longitude)) return pos.longitude;
+    return null;
+  }
+
+  /** Accept raw AstroEphemeris output (chart-view, share URLs) or chart-page shape. */
+  function normalizeChartData(chartData) {
+    const raw = chartData.positions || {};
+    const positions = {};
+    const engineShape = raw.sun != null || raw.moon != null;
+
+    if (engineShape) {
+      for (const [k, cap] of Object.entries(ENGINE_KEY_MAP)) {
+        const p = raw[k];
+        if (!p) continue;
+        const lon = readLon(p);
+        if (lon == null) continue;
+        positions[cap] = {
+          lon: lon,
+          sign: p.sign,
+          degree: p.degree,
+          minute: p.minute,
+          retrograde: p.retrograde,
+        };
+      }
+    } else {
+      for (const [k, v] of Object.entries(raw)) {
+        const lon = readLon(v);
+        if (lon == null) continue;
+        positions[k] = typeof v === 'object' ? Object.assign({}, v, { lon: lon }) : { lon: lon };
+      }
+    }
+
+    if (positions.NorthNode) positions.NNode = positions.NorthNode;
+    if (positions.Midheaven) positions.MC = positions.Midheaven;
+
+    const mapPlanet = function (n) { return ENGINE_KEY_MAP[n] || n; };
+    const aspects = (chartData.aspects || []).map(function (a) {
+      return {
+        planet1: mapPlanet(a.planet1 || a.p1),
+        planet2: mapPlanet(a.planet2 || a.p2),
+        aspect: a.aspect || a.type,
+        orb: a.orb,
+        applying: a.applying,
+      };
+    });
+
+    const ascLon = readLon(positions.Ascendant)
+      ?? (typeof chartData.ascendant === 'number' ? chartData.ascendant : null);
+
+    let risingSign = chartData.risingSign;
+    if (!risingSign && positions.Ascendant && positions.Ascendant.sign) {
+      risingSign = positions.Ascendant.sign;
+    } else if (!risingSign && ascLon != null && typeof window !== 'undefined'
+      && window.AstroEphemeris && typeof AstroEphemeris.signOf === 'function') {
+      risingSign = AstroEphemeris.signOf(ascLon);
+    }
+
+    return Object.assign({}, chartData, { positions: positions, aspects: aspects, risingSign: risingSign });
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // renderNatalChart
   // ═══════════════════════════════════════════════════════════════════════════
@@ -1349,6 +1429,7 @@
     const container = getContainer(containerId, wheelOnly);
     if (!container) return;
 
+    chartData = normalizeChartData(chartData || {});
     const positions = chartData.positions || {};
     const houses    = chartData.houses    || Array.from({ length: 12 }, (_, i) => i * 30);
     const aspects   = chartData.aspects   || [];
@@ -1365,7 +1446,10 @@
           && window.matchMedia('(max-width: 600px)').matches);
 
     const ascLon = normLon(
-      positions.Ascendant ? positions.Ascendant.lon : houses[0]
+      readLon(positions.Ascendant)
+        ?? (typeof chartData.ascendant === 'number' ? chartData.ascendant : null)
+        ?? houses[0]
+        ?? 0
     );
 
     const prefix = nextPrefix();
@@ -1463,7 +1547,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:4px"></span><span style="color:#FFD700;font-weight:600">${name1}</span></span>` +
+      `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7EC8E8;vertical-align:middle;margin-right:4px"></span><span style="color:#7EC8E8;font-weight:600">${name1}</span></span>` +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.synastry};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.synastry};font-weight:600">${name2}</span></span>`;
     container.appendChild(keyRow);
 
@@ -1482,7 +1566,7 @@
       return div;
     };
 
-    tables.appendChild(makeTableBlock(name1, '#FFD700', pos1, houses1));
+    tables.appendChild(makeTableBlock(name1, '#7EC8E8', pos1, houses1));
     tables.appendChild(makeTableBlock(name2, WARM.synastry, pos2, houses2));
     container.appendChild(tables);
   }
@@ -1554,7 +1638,7 @@
     const keyRow = document.createElement('div');
     keyRow.style.cssText = 'display:flex;gap:20px;margin:10px 4px 0;font-family:system-ui,sans-serif;font-size:12px';
     keyRow.innerHTML =
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#FFD700;vertical-align:middle;margin-right:4px"></span><span style="color:#FFD700;font-weight:600">Natal</span></span>' +
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7EC8E8;vertical-align:middle;margin-right:4px"></span><span style="color:#7EC8E8;font-weight:600">Natal</span></span>' +
       `<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${WARM.transit};vertical-align:middle;margin-right:4px"></span><span style="color:${WARM.transit};font-weight:600">Transits</span></span>`;
     container.appendChild(keyRow);
 
@@ -1573,7 +1657,7 @@
       return div;
     };
 
-    tables.appendChild(makeBlock('NATAL PLANETS',   '#FFD700', natalPos, houses));
+    tables.appendChild(makeBlock('NATAL PLANETS',   '#7EC8E8', natalPos, houses));
     tables.appendChild(makeBlock('TRANSIT PLANETS', WARM.transit, tPos,
       (transitPositions && transitPositions.houses) || houses));
     container.appendChild(tables);

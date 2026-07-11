@@ -85,8 +85,8 @@
       gap: 1.15rem;
     }
     .mc-card--active {
-      border-color: rgba(194, 160, 94, 0.45) !important;
-      box-shadow: 0 0 0 1px rgba(194, 160, 94, 0.18), 0 14px 40px rgba(0, 0, 0, 0.4);
+      border-color: rgba(168, 176, 188, 0.45) !important;
+      box-shadow: 0 0 0 1px rgba(168, 176, 188, 0.18), 0 14px 40px rgba(0, 0, 0, 0.4);
     }
     .mc-card__head {
       display: flex;
@@ -105,7 +105,7 @@
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--gold-pale, #f0e8d8);
-      background: radial-gradient(circle at 30% 28%, rgba(194, 160, 94, 0.4), rgba(110, 26, 38, 0.35));
+      background: radial-gradient(circle at 30% 28%, rgba(168, 176, 188, 0.4), rgba(110, 26, 38, 0.35));
       border: 1px solid rgba(255, 255, 255, 0.12);
     }
     .mc-card__id { min-width: 0; flex: 1; }
@@ -133,8 +133,8 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--gold);
-      background: rgba(194, 160, 94, 0.12);
-      border: 1px solid rgba(194, 160, 94, 0.35);
+      background: rgba(168, 176, 188, 0.12);
+      border: 1px solid rgba(168, 176, 188, 0.35);
       border-radius: 999px;
       padding: 0.25rem 0.6rem;
       white-space: nowrap;
@@ -217,3 +217,39 @@
       .mc-grid--cards { grid-template-columns: 1fr; }
       .mc-empty { padding: 2.25rem 1.5rem; }
     }
+
+    /* Reading-path strip — rendered by charts-dashboard.js only when saved
+       charts exist. Dormant-safe: info links only (sample + shop), no buy UI. */
+    .mc-reading-path {
+      max-width: 640px;
+      margin: 2.25rem auto 0;
+      padding: 1.5rem 1.75rem;
+      text-align: center;
+    }
+    .mc-reading-path__eyebrow {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+      margin: 0 0 0.4rem;
+    }
+    .mc-reading-path__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gold-pale, #f0e8d8);
+      margin: 0 0 0.55rem;
+    }
+    .mc-reading-path__sub {
+      font-size: 0.88rem;
+      color: var(--silver, #A89E88);
+      line-height: 1.7;
+      margin: 0 auto 0.9rem;
+      max-width: 52ch;
+    }
+    .mc-reading-path__links { font-size: 0.88rem; margin: 0; }
+    .mc-reading-path__links a { color: var(--gold-light, #E8C872); }
+    a.mc-card__active { text-decoration: none; }
+    a.mc-card__active:hover, a.mc-card__active:focus-visible { border-color: var(--gold); }

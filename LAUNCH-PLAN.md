@@ -1,5 +1,7 @@
 # AstroPrecise — The "Over the Line" Master Plan
 
+> **⚠ 2026-07-02 — payment provider changed:** Lemon Squeezy is DROPPED (would not onboard the store). Checkout is now **PayPal direct** — hosted payment links pasted per-SKU into AP_MON (see **PAYPAL-SETUP.md** for setup, VAT notes and guardrails). References to Lemon Squeezy below are historical.
+
 _2026-06-13. The single launch playbook. Ties together the existing docs — `LAUNCH.md` (web push), `MONETIZATION.md` / `GTM-LADDER.md` / `GROWTH.md` (money + market), `LEGAL-LAUNCH.md` (web legal), `LINK-IN-BIO.md` / `CONTENT-PLAN.md` (social) — and adds the **app-store, iOS, payments-mechanics and app-legal research** they were missing. Web facts verified Oct 2025–Jun 2026. **Not legal/tax advice.**_
 
 ---

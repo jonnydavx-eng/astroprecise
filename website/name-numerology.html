@@ -2,29 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Free name numerology calculator. Enter your full name to compute your Expression (Destiny), Soul Urge, and Personality numbers using the Pythagorean system — with master numbers and a transparent, deterministic breakdown of every step." />
-  <title>Name Numerology Calculator — Expression, Soul Urge &amp; Personality | Astro Precise</title>
+  <meta name="description" content="Free name numerology calculator — your Expression, Soul Urge and Personality numbers via the Pythagorean system, with a transparent step-by-step breakdown." />
+  <title>Name Numerology Calculator — Expression &amp; Soul Urge</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Name Numerology Calculator — Expression, Soul Urge &amp; Personality | Astro Precise" />
   <meta property="og:description" content="Compute your Expression, Soul Urge, and Personality numbers from your full name with the Pythagorean system. Transparent, deterministic, computed in your browser." />
   <meta property="og:url" content="https://astroprecise.app/name-numerology.html" />
   <link rel="canonical" href="https://astroprecise.app/name-numerology.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Name Numerology Calculator | Astro Precise" />
   <meta name="twitter:description" content="Your Expression, Soul Urge, and Personality numbers from your full name — Pythagorean, transparent, deterministic." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/name-numerology-page.css" /></noscript>
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/name-numerology-page.css" id="ap-css-nn" />
   <style>
     body:has(.nn-hero){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(.nn-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -32,7 +41,7 @@
     body:has(.nn-hero) .nn-hero h1{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;min-height:2.3em;contain:layout style;}
     body:has(.nn-hero) .nn-hero__sub{min-height:3.6em;}
     body:has(.nn-hero) .nn-form-card{min-height:320px;contain:layout style;}
-    body:has(.nn-hero) #nn-meanings-grid{min-height:920px;contain:layout style;}
+    body:has(.nn-hero) #nn-meanings-grid{min-height:236px;contain:layout style;}
     body:has(.nn-hero) #nn-deep-reading{min-height:3.5rem;}
     body:has(.nn-hero) #nn-results{min-height:0;contain:layout style;}
     body:has(.nn-hero) #nn-results.is-visible{min-height:520px;}
@@ -41,7 +50,7 @@
   </style>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
   <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferNnFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferNnFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/name-numerology-page.css','ap-css-nn');});</script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferNnFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferNnFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
 
   <!-- FAQPage structured data for SEO -->
   <script type="application/ld+json">
@@ -341,8 +350,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -561,7 +570,7 @@
       var url = M.deepReadingUrl;
       var isUrl = typeof url === 'string' && /^https?:\/\//i.test(url.trim());
       if (isUrl) {
-        wrap.innerHTML = '<a href="' + esc(url.trim()) + '" class="btn btn--primary" target="_blank" rel="noopener">' +
+        wrap.innerHTML = '<a href="' + esc(url.trim()) + '" class="btn btn--primary" target="_blank" rel="noopener sponsored">' +
           '<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Deep Personal Reading</a>' +
           '<p style="font-size:0.7rem;color:var(--nn-silver-dim);margin-top:var(--space-3);">' +
           'A written reading that weaves your name numbers, Life Path, and natal chart into one narrative.</p>';

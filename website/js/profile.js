@@ -80,12 +80,28 @@ window.AstroProfile = (() => {
   }
 
   function getChart(id) {
-    return getCharts().find(c => c.id === id) || null;
+    return getCharts().find(c => String(c.id) === String(id)) || null;
+  }
+
+  /** Most recently saved chart, or the one marked active on chart.html / transits. */
+  function getActiveChart() {
+    const charts = getCharts();
+    if (!charts.length) return null;
+    try {
+      const activeId = localStorage.getItem('ap_active_chart');
+      if (activeId) {
+        const found = charts.find(c => String(c.id) === String(activeId));
+        if (found) return found;
+        const byId = getChart(activeId);
+        if (byId) return byId;
+      }
+    } catch (_) {}
+    return charts[0];
   }
 
   function saveChart(chartData) {
     const charts = getCharts();
-    const existing = charts.findIndex(c => c.id === chartData.id);
+    const existing = charts.findIndex(c => String(c.id) === String(chartData.id));
     const now = Date.now();
 
     if (existing >= 0) {
@@ -136,7 +152,7 @@ window.AstroProfile = (() => {
       const row = chartToDashboardRow(savedChart);
       if (!row || !row.date) return null;
       profile.charts = profile.charts || [];
-      const idx = profile.charts.findIndex(c => c.id === row.id);
+      const idx = profile.charts.findIndex(c => String(c.id) === String(row.id));
       if (idx >= 0) profile.charts[idx] = { ...profile.charts[idx], ...row };
       else profile.charts.unshift(row);
       profile.updatedAt = Date.now();
@@ -146,14 +162,14 @@ window.AstroProfile = (() => {
   }
 
   function deleteChart(id) {
-    const charts = getCharts().filter(c => c.id !== id);
+    const charts = getCharts().filter(c => String(c.id) !== String(id));
     localStorage.setItem(STORAGE_KEY_CHARTS, JSON.stringify(charts));
     try {
       const raw = localStorage.getItem(STORAGE_KEY_DASHBOARD);
       if (!raw) return;
       const profile = JSON.parse(raw);
       if (!profile || !Array.isArray(profile.charts)) return;
-      profile.charts = profile.charts.filter(c => c.id !== id);
+      profile.charts = profile.charts.filter(c => String(c.id) !== String(id));
       profile.updatedAt = Date.now();
       localStorage.setItem(STORAGE_KEY_DASHBOARD, JSON.stringify(profile));
     } catch { /* dashboard optional */ }
@@ -339,6 +355,81 @@ window.AstroProfile = (() => {
     };
   }
 
+  const SAVE_POSITION_KEYS = [
+    'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn',
+    'Uranus', 'Neptune', 'Pluto', 'Ascendant', 'Midheaven', 'NorthNode',
+  ];
+
+  const PACK_KEY_ALIASES = {
+    sun: 'Sun', moon: 'Moon', mercury: 'Mercury', venus: 'Venus', mars: 'Mars',
+    jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune',
+    pluto: 'Pluto', asc: 'Ascendant', mc: 'Midheaven', northNode: 'NorthNode',
+  };
+
+  /** Slim positions blob for localStorage (ap-v608+). */
+  function packPositionsForSave(positions) {
+    if (!positions) return null;
+    const out = {};
+    function packOne(cap, p) {
+      if (!p) return;
+      const lon = p.lon != null ? p.lon : p.longitude;
+      if (lon == null && !p.sign) return;
+      out[cap] = {
+        lon: lon != null ? lon : null,
+        sign: p.sign || null,
+        degree: p.degree != null ? p.degree : null,
+        retrograde: !!p.retrograde,
+      };
+    }
+    for (const cap of SAVE_POSITION_KEYS) {
+      packOne(cap, positions[cap]);
+    }
+    for (const [low, cap] of Object.entries(PACK_KEY_ALIASES)) {
+      if (out[cap]) continue;
+      packOne(cap, positions[low]);
+    }
+    return Object.keys(out).length ? out : null;
+  }
+
+  /** Rebuild AI/shop chart object from a saved row without ephemeris. */
+  function hydrateChartFromSaved(row) {
+    if (!row) return null;
+    const base = {
+      name: row.name,
+      birthDate: row.birthDate,
+      birthTime: row.birthTime,
+      birthCity: row.birthCity || row.city,
+      city: row.city || row.birthCity,
+      lat: row.lat,
+      lon: row.lon,
+      tz: row.tz,
+      houseSystem: row.houseSystem,
+      sunSign: row.sunSign,
+      moonSign: row.moonSign,
+      risingSign: row.risingSign,
+      aspects: row.aspects || [],
+    };
+    base.positions = (row.positions && Object.keys(row.positions).length)
+      ? { ...row.positions }
+      : {};
+    if (base.positions.Sun && !base.positions.Sun.sign && row.sunSign) {
+      base.positions.Sun.sign = row.sunSign;
+    }
+    if (base.positions.Moon && !base.positions.Moon.sign && row.moonSign) {
+      base.positions.Moon.sign = row.moonSign;
+    }
+    if (!base.positions.Sun && row.sunSign) {
+      base.positions.Sun = { sign: row.sunSign };
+    }
+    if (!base.positions.Moon && row.moonSign) {
+      base.positions.Moon = { sign: row.moonSign };
+    }
+    const hasPlacements = Object.keys(base.positions).length > 0
+      || row.sunSign || row.moonSign || row.risingSign;
+    if (!hasPlacements) return null;
+    return base;
+  }
+
   // ── App sync (generate QR data string) ────────────────────────────────────
   function generateAppSyncData() {
     const user   = getUser();
@@ -348,7 +439,8 @@ window.AstroProfile = (() => {
 
   return {
     getUser, saveUser, isLoggedIn, login, register, logout, updateProfile,
-    getCharts, getChart, saveChart, deleteChart, buildChartData,
+    getCharts, getChart, getActiveChart, saveChart, deleteChart, buildChartData,
+    packPositionsForSave, hydrateChartFromSaved,
     chartToDashboardRow, syncChartToDashboard,
     getComparisons, saveComparison, deleteComparison,
     getPrefs, savePrefs,

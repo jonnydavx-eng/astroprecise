@@ -27,7 +27,7 @@ lightwork → owner-social + owner-search (parallel)
          → spike (HN + Reddit, Jonny)
          → compound (daily social)
          → product-hunt (L+22)
-         → paid (gate: 1 organic Lemon Squeezy sale)
+         → paid (gate: 1 organic PayPal sale)
 ```
 
 ## Squad ownership

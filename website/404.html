@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lost in the void | Astro Precise</title>
   <meta name="robots" content="noindex" />
@@ -12,31 +14,67 @@
   <meta property="og:title" content="Lost in the void | Astro Precise" />
   <meta property="og:description" content="This page could not be found. The Astro Precise instrument and the rest of the sky are exactly where you left them." />
   <meta property="og:url" content="https://astroprecise.app/404.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Lost in the void | Astro Precise" />
   <meta name="twitter:description" content="This page could not be found. The Astro Precise instrument and the rest of the sky are exactly where you left them." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <link rel="stylesheet" href="css/fonts.css" />
-<link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <!-- Standard tier-C chrome (masthead + footer system), mirroring why.html.
+       Links sit BEFORE the page's own <style> so the bespoke 404 look wins. -->
+  <link rel="stylesheet" href="css/ap-palette-2026.css" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <style>
-    body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;text-align:center;
-      background:radial-gradient(ellipse 120% 90% at 50% 30%,#0D0A07 0%,#050406 60%,#030203 100%);color:#E8E0D0;
-      font-family:'Cormorant Garamond',serif;padding:24px;}
-    .wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:480px;}
-    .glyph{color:#C2A05E;filter:drop-shadow(0 0 40px rgba(194, 160, 94,.4));margin-bottom:6px;}
+    /* Scoped to .wrap so the injected masthead/footer keep site styling */
+    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 30%,#0D0A07 0%,#050406 60%,#030203 100%);color:#E8E0D0;
+      font-family:'Cormorant Garamond',serif;}
+    .wrap{min-height:calc(100vh - 260px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+      max-width:480px;margin:0 auto;padding:calc(var(--nav-height,72px) + 24px) 24px 60px;}
+    .glyph{color:#A8B0BC;filter:drop-shadow(0 0 40px rgba(168, 176, 188,.4));margin-bottom:6px;}
     .glyph svg{width:3.2rem;height:3.2rem;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
-    h1{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.18em;font-size:1.4rem;color:#EFE3C0;margin:18px 0 10px;}
-    p{font-size:1.12rem;line-height:1.8;color:#A89E88;font-style:italic;margin:0 0 28px;}
-    a{display:inline-flex;align-items:center;gap:0.45em;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;
-      color:#C2A05E;text-decoration:none;border:1px solid rgba(194, 160, 94,.4);padding:13px 30px;border-radius:30px;transition:all .3s;}
-    a svg{width:0.75em;height:0.75em;stroke:currentColor;fill:none;stroke-width:1.6;}
-    a:hover{background:rgba(194, 160, 94,.1);box-shadow:0 0 30px rgba(194, 160, 94,.2);}
+    .wrap h1{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.18em;font-size:1.4rem;color:#E8EBF0;margin:18px 0 10px;}
+    .wrap p{font-size:1.12rem;line-height:1.8;color:#A89E88;font-style:italic;margin:0 0 28px;}
+    .wrap a{display:inline-flex;align-items:center;gap:0.45em;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;
+      color:#A8B0BC;text-decoration:none;border:1px solid rgba(168, 176, 188,.4);padding:13px 30px;border-radius:30px;transition:all .3s;}
+    .wrap a svg{width:0.75em;height:0.75em;stroke:currentColor;fill:none;stroke-width:1.6;}
+    .wrap a:hover{background:rgba(168, 176, 188,.1);box-shadow:0 0 30px rgba(168, 176, 188,.2);}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Page not found","description":"This page could not be found. The Astro Precise instrument and the rest of the sky are exactly where you left them.","url":"https://astroprecise.app/404.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
   <main id="main-content" class="wrap">
     <div class="glyph" aria-hidden="true">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></svg>
@@ -46,7 +84,13 @@
        The instrument, however, is exactly where you left it.</p>
     <a href="./"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></svg> Return to the sky</a>
   </main>
-  <footer class="legal-footer" role="contentinfo"></footer>
+  <!-- Standard footer system: ap-footer-inject fills .container with the
+       unified footer-nav model; footer-chrome appends the social row. -->
+  <footer class="footer" role="contentinfo">
+    <div class="container"></div>
+  </footer>
   <script src="js/footer-chrome.js" defer></script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
 </body>
 </html>

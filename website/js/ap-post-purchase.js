@@ -69,7 +69,7 @@
       + '    <code id="ap-promo-code">' + cfg.code + '</code>'
       + '    <button type="button" class="btn btn--outline ap-promo-modal__copy" id="ap-promo-copy">Copy code</button>'
       + '  </div>'
-      + '  <p class="ap-promo-modal__note">Enter at checkout on Two Skies. Valid ' + (cfg.expiresDays || 30) + ' days from your purchase.</p>'
+      + '  <p class="ap-promo-modal__note">The discounted amount is pre-filled on PayPal — just add <em>Two Skies</em> and your code to the payment note. Valid ' + (cfg.expiresDays || 30) + ' days from your purchase.</p>'
       + '</div>';
   }
 
@@ -82,23 +82,25 @@
     var cfg = promoConfig();
     markPromoShown();
 
-    var checkoutUrl = product && product.fulfilUrl ? product.fulfilUrl : 'shop.html#two-skies-map';
-    if (window.APReadingPrefs && APReadingPrefs.appendToCheckoutUrl && product) {
-      checkoutUrl = APReadingPrefs.appendToCheckoutUrl(checkoutUrl, product.id);
-    }
-    if (cfg.code && checkoutUrl.indexOf('lemonsqueezy') >= 0) {
-      try {
-        var u = new URL(checkoutUrl);
-        u.searchParams.set('checkout[discount_code]', cfg.code);
-        checkoutUrl = u.toString();
-      } catch (e) {}
+    // PayPal direct (2026-07-02): no coupon engine, so the discount is granted
+    // as a pre-filled PayPal.Me amount link at the reduced price. Requires
+    // AP_MON.paypal.me — without it we only ever offer the full-price link.
+    var checkoutUrl = '';
+    var discounted = false;
+    var paypalMe = (window.AP_MON && AP_MON.paypal && AP_MON.paypal.me) || '';
+    if (paypalMe && product) {
+      var sale = discountedPrice(product.price, cfg.percent);
+      checkoutUrl = paypalMe.replace(/\/+$/, '') + '/' + sale.toFixed(2) + 'GBP';
+      discounted = true;
+    } else if (product && product.fulfilUrl && !/lemonsqueezy\.com/i.test(product.fulfilUrl)) {
+      checkoutUrl = product.fulfilUrl;
     }
 
     AstroShop.showModal({
       title: 'Your Two Skies offer',
       body: promoModalHtml(),
-      actions: product && product.fulfilUrl ? [
-        { label: 'Get Two Skies — ' + cfg.percent + '% off', primary: true, href: checkoutUrl, external: true },
+      actions: checkoutUrl ? [
+        { label: discounted ? 'Get Two Skies — ' + cfg.percent + '% off' : 'Get Two Skies', primary: true, href: checkoutUrl, external: true, productId: 'two-skies-map' },
         { label: 'Maybe later', onClick: onDone },
       ] : [
         { label: 'Browse shop', primary: true, href: 'shop.html#two-skies-map' },
@@ -125,6 +127,9 @@
 
   function maybeShowPromo() {
     if (!purchaseEligible() || promoShown()) return;
+    // Honesty: never promise a discount we cannot grant. The PayPal-direct
+    // discount needs AP_MON.paypal.me (pre-filled reduced-amount link).
+    if (!(window.AP_MON && AP_MON.paypal && AP_MON.paypal.me)) return;
     if (/[?&]thanks=1/.test(location.search)) {
       showPromoModal();
       return;
@@ -140,7 +145,7 @@
     if (checkoutWired) return;
     checkoutWired = true;
     document.addEventListener('click', function (e) {
-      var a = e.target.closest('a[href*="lemonsqueezy.com/checkout"]');
+      var a = e.target.closest('a[data-ap-product], a[href*="paypal.com"], a[href*="paypal.me"]');
       if (!a) return;
       var card = a.closest('[data-product-id]');
       var id = card ? card.getAttribute('data-product-id') : '';

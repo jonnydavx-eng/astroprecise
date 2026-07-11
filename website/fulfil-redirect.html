@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta name="robots" content="noindex">
   <title>Redirecting to birth details — Astro Precise</title>
   <meta name="description" content="Redirecting you to the birth-details form to complete your Astro Precise order." />
@@ -12,20 +19,23 @@
   <meta property="og:title" content="Redirecting to birth details — Astro Precise" />
   <meta property="og:description" content="Redirecting you to the birth-details form to complete your Astro Precise order." />
   <meta property="og:url" content="https://astroprecise.app/fulfil-redirect.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Redirecting to birth details — Astro Precise" />
   <meta name="twitter:description" content="Redirecting you to the birth-details form to complete your Astro Precise order." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <style>
     body { margin: 0; min-height: 100vh; display: grid; place-items: center;
-      background: #050406; color: #efe3c0; font-family: 'Cormorant Garamond', Georgia, serif; }
+      background: #050406; color: #E8EBF0; font-family: 'Cormorant Garamond', Georgia, serif; }
     p { opacity: .85; }
-    a { color: #C2A05E; }
+    a { color: #A8B0BC; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
     .skip-link { position: absolute; left: -9999px; top: 0; z-index: 100;
-      padding: 10px 16px; background: #C2A05E; color: #1a1204; font-family: system-ui, sans-serif;
+      padding: 10px 16px; background: #A8B0BC; color: #050508; font-family: system-ui, sans-serif;
       font-size: 14px; text-decoration: none; border-radius: 4px; }
     .skip-link:focus { left: 12px; top: 12px; }
   </style>
@@ -39,9 +49,30 @@
   </main>
   <script>
     (function () {
+      // SECURITY: only redirect to Typeforms we actually own — an open ?form=
+      // parameter would let anyone bounce victims to a hostile look-alike form
+      // under this domain's trust. Source of truth: tools/typeform-catalog.json
+      // (mirrored in js/app.js AP_MON detailsForm fields). Keep this list in
+      // lockstep when adding a product, or real buyers hit the fallback below.
+      var KNOWN_FORMS = [
+        'JVU3Atfm',  // deep-reading
+        'sL9V4PTk',  // natal-poster-pdf
+        'Iasu4Sia',  // reading-poster-bundle
+        'ZOp9A1OW',  // two-skies-map
+        'VvzhK6Kj',  // gift-reading
+        'h1jYdbGy',  // gift-reading-redeem
+        'uHADD51y',  // gift-box-whole-sky
+        'MKutUmwh',  // natal-poster
+        'l3BHnRFG',  // big-three-print
+        'jymyb9t2',  // sky-tee
+        'ItYwTtZw',  // sky-hoodie
+        'cQgoY4h4',  // constellation-mug
+        'QMcr0Ldw',  // year-ahead
+        'vp60QAiN'   // solar-return
+      ];
       var p = new URLSearchParams(location.search);
       var form = p.get('form');
-      if (!form) {
+      if (!form || KNOWN_FORMS.indexOf(form) === -1) {
         document.body.innerHTML = '<a class="skip-link" href="#main">Skip to content</a><main id="main"><h1 class="sr-only">Missing form reference</h1><p>Missing form reference. <a href="https://astroprecise.app/shop.html">Return to shop</a></p></main>';
         return;
       }

@@ -122,8 +122,10 @@
 
   function cardHtml(c, isActive) {
     var initial = (c.name && c.name.trim()) ? c.name.trim().charAt(0).toUpperCase() : '★';
+    // The badge links to the daily loop it powers — horoscope.html reads the
+    // active chart (ap_active_chart) for the personal transit reading.
     var activeBadge = isActive
-      ? '<span class="mc-card__active" title="Used for your daily transit reading">Today’s chart</span>'
+      ? '<a class="mc-card__active" href="horoscope.html" title="Powers your daily transit reading — open today’s">Today’s chart →</a>'
       : '';
     return '' +
       '<article class="glass-card mc-card' + (isActive ? ' mc-card--active' : '') + '" data-id="' + esc(c.id) + '">' +
@@ -171,6 +173,37 @@
       '</div>';
   }
 
+  // Reading-path strip — shown only when the visitor actually has saved charts
+  // (the warmest Deep Reading prospects). DORMANT-SAFE (same rule as
+  // chart-page.js renderDeepTeaser's sample line): info links only — the
+  // sample artifact and the shop's Deep Reading section — never a buy button,
+  // never a price, no availability claim.
+  var READING_PATH_ID = 'mc-reading-path';
+
+  function readingPathHtml() {
+    return '' +
+      '<aside class="glass-card mc-reading-path" id="' + READING_PATH_ID + '" aria-label="The Deep Reading">' +
+        '<p class="mc-reading-path__eyebrow">The Deep Reading</p>' +
+        '<h3 class="mc-reading-path__title">There’s more written in these skies</h3>' +
+        '<p class="mc-reading-path__sub">Any chart you’ve saved can go deeper — the Deep Reading interprets ' +
+          'every planet, all twelve houses and the tightest aspects as one 13-page PDF, ' +
+          'drawn from the same engine as your free chart.</p>' +
+        '<p class="mc-reading-path__links">' +
+          '<a href="sample-reading.html" target="_blank" rel="noopener">See a real sample reading →</a>' +
+          '<span aria-hidden="true"> · </span>' +
+          '<a href="shop.html#deep-reading">About the Deep Reading →</a>' +
+        '</p>' +
+      '</aside>';
+  }
+
+  function renderReadingPath(hasCharts) {
+    var existing = document.getElementById(READING_PATH_ID);
+    if (!hasCharts) { if (existing) existing.remove(); return; }
+    if (existing) return;
+    var grid = $('charts-grid');
+    if (grid) grid.insertAdjacentHTML('afterend', readingPathHtml());
+  }
+
   // ── header stat (count) ─────────────────────────────────────────────────────
 
   function renderStat(charts) {
@@ -205,6 +238,7 @@
           '</div>' +
         '</div>';
       renderStat([]);
+      renderReadingPath(false);
       return;
     }
 
@@ -215,6 +249,7 @@
     if (!charts.length) {
       grid.classList.remove('mc-grid--cards');
       grid.innerHTML = emptyHtml();
+      renderReadingPath(false);
       return;
     }
 
@@ -223,6 +258,7 @@
     grid.innerHTML = charts.map(function (c) {
       return cardHtml(c, !!activeId && c.id === activeId);
     }).join('');
+    renderReadingPath(true);
   }
 
   // ── actions ─────────────────────────────────────────────────────────────────

@@ -82,7 +82,7 @@
     imgs.forEach(function (img) { io.observe(img); });
   }
 
-  var core = ['js/ap-nav-model.js', 'js/app.js', 'js/ap-safe-dom.js', 'js/profile.js', 'js/personalization-engine.js', 'js/ap-reading-prefs.js', 'js/shop-commerce.js', 'js/ap-post-purchase.js', 'js/shop-wallpaper-lead.js'];
+  var core = ['js/ap-nav-model.js', 'js/app.js', 'js/ap-engine-visuals.js', 'js/ap-safe-dom.js', 'js/profile.js', 'js/personalization-engine.js', 'js/ap-reading-prefs.js', 'js/shop-commerce.js', 'js/ap-post-purchase.js', 'js/shop-wallpaper-lead.js'];
   var idle = ['js/tool-cards.js', 'js/art-theme-library.js', 'js/shop-art-themes.js', 'js/shop-curated.js'];
 
   function bootCore() {

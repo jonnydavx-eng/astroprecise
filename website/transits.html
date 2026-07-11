@@ -2,24 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Astro Precise Planetary Transits — understand current cosmic influences on your birth chart with real-time planetary positions, eclipses, and retrograde calendar." />
-  <title>Planetary Transits Today — Live Positions, Retrogrades &amp; Forecasts | Astro Precise</title>
+  <title>Planetary Transits Today — Live Positions &amp; Retrogrades</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Planetary Transits | Astro Precise" />
   <meta property="og:description" content="Live planetary transits and retrogrades — see what the sky is doing right now and what it means for you." />
   <meta property="og:url" content="https://astroprecise.app/transits.html" />
   <link rel="canonical" href="https://astroprecise.app/transits.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Planetary Transits | Astro Precise" />
   <meta name="twitter:description" content="Live planetary transits and retrogrades — see what the sky is doing right now and what it means for you." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
@@ -28,6 +36,9 @@
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/celestial-seals.css" />
   <link rel="stylesheet" href="css/transits-page.css" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=703" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=703" />
   <style>
     body.page-transits{--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     .page-transits .navbar__nav{min-height:44px;}
@@ -65,7 +76,7 @@
     "url": "https://astroprecise.app/transits.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
     "description": "See how current planetary transits aspect your natal chart — dated, orb-aware, and computed privately in your browser.",
     "isPartOf": {
@@ -156,68 +167,68 @@
         </div>
 
         <div id="current-sky" class="planet-grid" aria-live="polite">
-          <!-- Static fallback — JS may update these -->
-          <div class="planet-card planet-card--air">
+          <!-- Positions + descriptions fill LIVE from AstroEphemeris on load
+               (populateCurrentSky, below). Pre-JS these show a neutral placeholder —
+               never a fabricated position. (v627 honesty fix) -->
+          <div class="planet-card" data-planet="sun">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--sun" aria-hidden="true"><i class="ap-orb__glyph">&#9737;</i></span></span>
             <span class="planet-card__name">Sun</span>
-            <span class="planet-card__position">Gemini 21&#176;04&#8217;</span>
-            <span class="planet-card__desc">Solar energy in Gemini heightens curiosity, social energy, and the desire to share ideas and connect with others.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="moon">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--moon" aria-hidden="true"><i class="ap-orb__glyph">&#9789;</i></span></span>
             <span class="planet-card__name">Moon</span>
-            <span class="planet-card__position">Scorpio 14&#176;37&#8217;</span>
-            <span class="planet-card__desc">Lunar intensity deepens emotional perception and intuition. Trust your instincts; honour what rises from the depths.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="mercury">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
             <span class="planet-card__name">Mercury</span>
-            <span class="planet-card__position">Cancer 3&#176;22&#8217;</span>
-            <span class="planet-card__desc">Thought and communication become more intuitive and emotionally resonant. Nurturing conversations flow with ease.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="venus">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
             <span class="planet-card__name">Venus</span>
-            <span class="planet-card__position">Cancer 19&#176;11&#8217;</span>
-            <span class="planet-card__desc">Affections are tender and home-oriented. Deepen bonds with loved ones and create beauty in your personal space.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--fire">
+          <div class="planet-card" data-planet="mars">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
             <span class="planet-card__name">Mars</span>
-            <span class="planet-card__position">Leo 8&#176;54&#8217;</span>
-            <span class="planet-card__desc">Drive is bold and expressive. Channel energy into creative projects, courageous initiatives, and confident leadership.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="jupiter">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
             <span class="planet-card__name">Jupiter</span>
-            <span class="planet-card__position">Cancer 2&#176;09&#8217;</span>
-            <span class="planet-card__desc">Growth through emotional wisdom, family ties, and intuition. Abundance is found by nurturing what matters most.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--water">
+          <div class="planet-card" data-planet="saturn">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
             <span class="planet-card__name">Saturn</span>
-            <span class="planet-card__position">
-              Pisces 22&#176;47&#8217; <span class="retrograde-badge" title="Retrograde">Rx</span>
-            </span>
-            <span class="planet-card__desc">Discipline and structure are under revision. Review spiritual commitments; release what no longer serves your highest path.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--earth">
+          <div class="planet-card" data-planet="uranus">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--uranus" aria-hidden="true"><i class="ap-orb__glyph">&#9797;</i></span></span>
             <span class="planet-card__name">Uranus</span>
-            <span class="planet-card__position">Taurus 28&#176;03&#8217;</span>
-            <span class="planet-card__desc">Radical changes to material values and resources. Innovative approaches to security and ownership come to the fore.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--fire">
+          <div class="planet-card" data-planet="neptune">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--neptune" aria-hidden="true"><i class="ap-orb__glyph">&#9798;</i></span></span>
             <span class="planet-card__name">Neptune</span>
-            <span class="planet-card__position">Aries 2&#176;18&#8217;</span>
-            <span class="planet-card__desc">Pioneering dreams and dissolving of old identities. A new spiritual ideal is crystallising around courage and vision.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
-          <div class="planet-card planet-card--air">
+          <div class="planet-card" data-planet="pluto">
             <span class="planet-card__symbol" aria-hidden="true"><span class="ap-orb ap-orb--pluto" aria-hidden="true"><i class="ap-orb__glyph">&#9799;</i></span></span>
             <span class="planet-card__name">Pluto</span>
-            <span class="planet-card__position">Aquarius 3&#176;42&#8217;</span>
-            <span class="planet-card__desc">Collective transformation through community, technology, and shared vision. Old power structures are being fundamentally rebuilt.</span>
+            <span class="planet-card__position">&mdash;</span>
+            <span class="planet-card__desc">Reading today&rsquo;s sky&hellip;</span>
           </div>
         </div>
       </div>
@@ -238,10 +249,12 @@
              Auto-renders from a saved chart; otherwise invites the visitor to cast one. -->
         <div id="daily-transit-card"></div>
 
+        <div id="transits-ai-panel" hidden aria-label="Optional transit insight"></div>
+
         <div class="personal-transit-wrap">
           <form id="transit-form" class="transit-form" novalidate aria-label="Personal transit forecast form">
             <p class="transit-form__title">Your Birth Data</p>
-            <p class="transit-form__sub">Calculations run entirely in your browser. No data leaves your device.</p>
+            <p class="transit-form__sub">Calculations run on your device — your birth date and time stay in your browser; only the place name you type is sent, to look up its coordinates.</p>
 
             <div class="form-row">
               <div class="form-group">
@@ -307,60 +320,16 @@
         <div id="retrograde-calendar">
           <div class="ts-section__header">
             <p class="ts-section__label">Reversal Windows</p>
-            <h2 class="ts-section__title" id="retro-heading">Retrograde Calendar 2025&#8211;2026</h2>
-            <p class="ts-section__subtitle">Plan major decisions, launches, and commitments around these reversal windows. When planets appear to move backward, review rather than initiate.</p>
+            <h2 class="ts-section__title" id="retro-heading">Retrograde Calendar &mdash; the Year Ahead</h2>
+            <p class="ts-section__subtitle">Computed live in your browser: the engine scans each planet&rsquo;s apparent speed and finds every station in the next twelve months, so this list can never go stale. Station dates are approximate to about a day (&asymp;). When a planet appears to move backward &mdash; an optical effect of orbital geometry &mdash; tradition reads it as a review window: revisit and revise rather than initiate.</p>
           </div>
 
-          <ul class="retrograde-list" aria-label="Retrograde schedule 2025&#8211;2026">
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mars" aria-hidden="true"><i class="ap-orb__glyph">&#9794;</i></span></span>
-              <div class="retrograde-item__info">
-                <h3 class="retrograde-item__title">Mars Retrograde &mdash; Leo &amp; Cancer</h3>
-                <p>Ambition and drive recalibrate. Redirect energy rather than forcing forward against resistance. Review ongoing projects and goals.</p>
-              </div>
-              <div class="retrograde-item__dates">Dec 6, 2024 &ndash; Feb 23, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--venus" aria-hidden="true"><i class="ap-orb__glyph">&#9792;</i></span></span>
-              <div class="retrograde-item__info">
-                <h3 class="retrograde-item__title">Venus Retrograde &mdash; Aries &amp; Pisces</h3>
-                <p>Reassess what &mdash; and who &mdash; you truly value. Old relationships resurface for resolution or release. Avoid major purchases or new romantic commitments.</p>
-              </div>
-              <div class="retrograde-item__dates">Mar 1 &ndash; Apr 12, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
-              <div class="retrograde-item__info">
-                <h3 class="retrograde-item__title">Mercury Retrograde &mdash; Leo</h3>
-                <p>Communication and self-expression need revision. Back up all important work; re-read contracts before signing. Creative projects benefit from reworking.</p>
-              </div>
-              <div class="retrograde-item__dates">Jul 18 &ndash; Aug 11, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--saturn" aria-hidden="true"><i class="ap-orb__glyph">&#9796;</i></span></span>
-              <div class="retrograde-item__info">
-                <h3 class="retrograde-item__title">Saturn Retrograde &mdash; Pisces</h3>
-                <p>Review spiritual boundaries, long-term structures, and dissolving illusions. Inner discipline brings more reward than outer control during this window.</p>
-              </div>
-              <div class="retrograde-item__dates">Jul 13 &ndash; Nov 27, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--mercury" aria-hidden="true"><i class="ap-orb__glyph">&#9791;</i></span></span>
-              <div class="retrograde-item__info">
-                <h3 class="retrograde-item__title">Mercury Retrograde &mdash; Scorpio &amp; Sagittarius</h3>
-                <p>Deep investigations, beliefs, and long-distance plans need revisiting. Truth surfaces unexpectedly; be prepared for revealing conversations.</p>
-              </div>
-              <div class="retrograde-item__dates">Nov 9 &ndash; Nov 29, 2025</div>
-            </li>
-            <li class="retrograde-item">
-              <span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--jupiter" aria-hidden="true"><i class="ap-orb__glyph">&#9795;</i></span></span>
-              <div class="retrograde-item__info">
-                <h3 class="retrograde-item__title">Jupiter Retrograde &mdash; Cancer</h3>
-                <p>Expansion turns inward. Deepen emotional intelligence and revisit family foundations. Abundance is found by nourishing inner roots before seeking it externally.</p>
-              </div>
-              <div class="retrograde-item__dates">Nov 11, 2025 &ndash; Mar 10, 2026</div>
-            </li>
-          </ul>
+          <!-- Windows computed on-device by the inline controller below (via WeeklySky
+               station-finder + AstroEphemeris). Static fallback shown when JS is off. -->
+          <ul class="retrograde-list" id="retro-live-list" aria-label="Computed retrograde windows for the next twelve months" hidden></ul>
+          <p class="ts-section__subtitle" id="retro-live-fallback" style="text-align:center;">
+            Retrograde windows are computed on your device by the same VSOP87 engine that powers the rest of this page &mdash; JavaScript is needed to run it. For what&rsquo;s retrograde right now, see the <a href="retrograde.html">retrograde tracker</a>.
+          </p>
         </div>
       </div>
     </section>
@@ -373,34 +342,30 @@
         <div class="ts-section__header">
           <p class="ts-section__label">Eclipse Seasons</p>
           <h2 class="ts-section__title" id="eclipses-heading">Upcoming Eclipses</h2>
-          <p class="ts-section__subtitle">Eclipse seasons mark the most powerful turning points in astrology &mdash; fated beginnings, endings, and revelations.</p>
+          <p class="ts-section__subtitle">An eclipse is exact geometry &mdash; Sun, Moon and Earth in line at the lunar nodes. In the astrological tradition eclipses mark chapter turns: new beginnings at solar eclipses, culminations and releases at lunar ones.</p>
+          <p class="ts-section__subtitle" style="font-size:0.78rem;opacity:0.85;">Curated dates &middot; verified July 2026. Eclipse circumstances need lunar-node geometry the on-site engine doesn&rsquo;t compute, so unlike the live calendars on this page this short list is hand-checked against published astronomical tables &mdash; we list only dates we&rsquo;ve verified.</p>
         </div>
 
         <div class="eclipse-list">
           <div class="eclipse-card eclipse-card--solar">
-            <span class="eclipse-type">Solar Eclipse</span>
-            <h3 class="eclipse-card__date">March 29, 2025</h3>
-            <p>Aries 9&#176; &mdash; New beginnings in identity, courage, and personal initiative. Powerful for starting fresh chapters and launching bold new directions in your life narrative.</p>
+            <span class="eclipse-type">Total Solar Eclipse</span>
+            <h3 class="eclipse-card__date">August 12, 2026</h3>
+            <p>New Moon in Leo crosses the Sun&rsquo;s face. Totality tracks over the high Arctic, western Greenland, Iceland and northern Spain &mdash; the first totality over mainland Europe in a generation. Tradition reads a solar eclipse as a bold chapter opening.</p>
           </div>
           <div class="eclipse-card eclipse-card--lunar">
-            <span class="eclipse-type">Lunar Eclipse</span>
-            <h3 class="eclipse-card__date">March 14, 2025</h3>
-            <p>Virgo 24&#176; &mdash; Completion of health, service, and daily routine cycles. Emotional revelations around work and wellness create space for sustainable new habits.</p>
+            <span class="eclipse-type">Partial Lunar Eclipse</span>
+            <h3 class="eclipse-card__date">August 28, 2026</h3>
+            <p>The Full Moon in Pisces clips Earth&rsquo;s shadow, visible wherever the Moon is above the horizon that night. Lunar eclipses are traditionally read as culminations &mdash; something finishing, surfacing, or being released.</p>
           </div>
           <div class="eclipse-card eclipse-card--solar">
-            <span class="eclipse-type">Solar Eclipse</span>
-            <h3 class="eclipse-card__date">September 21, 2025</h3>
-            <p>Virgo 29&#176; &mdash; Reset in health, service, and practical matters. Transformation through precision and dedication; commit to a regimen that honours both body and mind.</p>
-          </div>
-          <div class="eclipse-card eclipse-card--lunar">
-            <span class="eclipse-type">Lunar Eclipse</span>
-            <h3 class="eclipse-card__date">September 7, 2025</h3>
-            <p>Pisces 15&#176; &mdash; Emotional release around dreams, spirituality, and hidden matters. Surrender what has already served its purpose &mdash; renewal follows naturally.</p>
+            <span class="eclipse-type">Annular Solar Eclipse</span>
+            <h3 class="eclipse-card__date">February 6, 2027</h3>
+            <p>New Moon in Aquarius leaves a ring of Sun &mdash; the Moon is too far from Earth to cover it fully. The annular path crosses the southern Pacific, parts of South America and the Atlantic.</p>
           </div>
           <div class="eclipse-card eclipse-card--solar">
-            <span class="eclipse-type">Solar Eclipse</span>
-            <h3 class="eclipse-card__date">February 17, 2026</h3>
-            <p>Aquarius 28&#176; &mdash; Innovation in community, technology, and social vision. Revolutionary new directions emerge as collective ideals crystallise into meaningful action.</p>
+            <span class="eclipse-type">Total Solar Eclipse</span>
+            <h3 class="eclipse-card__date">August 2, 2027</h3>
+            <p>New Moon in Leo &mdash; one of the century&rsquo;s longest totalities, up to about six minutes, tracking from the Strait of Gibraltar across North Africa and the Arabian Peninsula.</p>
           </div>
         </div>
       </div>
@@ -507,8 +472,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -606,12 +571,41 @@
       return SIGNS[idx] + ' ' + within + '°';
     }
 
+    // v627 honesty fix — fill the "Current Planetary Positions" grid LIVE from the
+    // ephemeris (it was previously hardcoded under a "recomputed live" badge).
+    var SIGN_ELEMENT = { Aries:'fire', Leo:'fire', Sagittarius:'fire', Taurus:'earth', Virgo:'earth', Capricorn:'earth', Gemini:'air', Libra:'air', Aquarius:'air', Cancer:'water', Scorpio:'water', Pisces:'water' };
+    var SIGN_TRAIT = { Aries:'bold, direct momentum', Taurus:'steady, grounded patience', Gemini:'quick, curious exchange', Cancer:'tender, protective feeling', Leo:'warm, expressive confidence', Virgo:'precise, discerning focus', Libra:'balancing, relational grace', Scorpio:'deep, transformative intensity', Sagittarius:'expansive, questing optimism', Capricorn:'disciplined, patient ambition', Aquarius:'inventive, independent vision', Pisces:'dreamy, compassionate flow' };
+    var PLANET_DOMAIN = { sun:'core vitality and where you shine', moon:'emotional tides and inner needs', mercury:'thinking and how you communicate', venus:'love, what you value and pleasure', mars:'drive and how you take action', jupiter:'growth and where luck opens up', saturn:'discipline and long-term structure', uranus:'change, freedom and originality', neptune:'imagination, dreams and intuition', pluto:'depth, power and transformation' };
+
+    function signOfLon(lon) { return SIGNS[Math.floor((((lon % 360) + 360) % 360) / 30)]; }
+
+    function populateCurrentSky(positions) {
+      if (!positions) return;
+      var cards = document.querySelectorAll('#current-sky .planet-card');
+      cards.forEach(function (card) {
+        var key = card.getAttribute('data-planet');
+        if (!key || positions[key] == null) return;
+        var lon = positions[key];
+        var sign = signOfLon(lon);
+        var retro = RETRO_KEYS[key] || false;
+        var nameEl = card.querySelector('.planet-card__name');
+        var pname = nameEl ? nameEl.textContent.trim() : key;
+        var posEl = card.querySelector('.planet-card__position');
+        var descEl = card.querySelector('.planet-card__desc');
+        if (posEl) posEl.innerHTML = degToSignPos(lon) + (retro ? ' <span class="retrograde-badge" title="Retrograde">Rx</span>' : '');
+        if (descEl) descEl.textContent = pname + ' in ' + sign + ' colours ' + (PLANET_DOMAIN[key] || 'this part of life') + ' with ' + (SIGN_TRAIT[sign] || 'its own tone') + '.';
+        var el = SIGN_ELEMENT[sign];
+        if (el) card.className = 'planet-card planet-card--' + el;
+      });
+    }
+
     function buildPills(positions) {
       return PLANETS.map(function (p) {
         var lon = positions && positions[p.key] != null ? positions[p.key] : null;
         var posText = lon != null ? degToSignPos(lon) : '—°';
         var isRetro = RETRO_KEYS[p.key] || false;
-        var symHtml = window.AstroIcons ? AstroIcons.planet(p.name, { sm: true }) : p.sym;
+        var symHtml = window.AstroIcons ? AstroIcons.planet(p.name, { sm: true }) :
+          '<span class="ap-orb ap-orb--sm ap-orb--' + p.key + '" aria-hidden="true"><i class="ap-orb__glyph">' + p.sym + '</i></span>';
         return '<span class="transit-pill' + (isRetro ? ' transit-pill--retrograde' : '') + '">' +
           '<span class="transit-pill__symbol" aria-hidden="true">' + symHtml + '</span>' +
           '<span class="transit-pill__name">' + p.name + '</span>' +
@@ -640,8 +634,14 @@
       }
     }
 
+    var iconWaitTries = 0;
     function tryPopulate() {
       if (!window.AstroEphemeris || typeof AstroEphemeris.julianDay !== 'function') {
+        setTimeout(tryPopulate, 300);
+        return;
+      }
+      // Prefer seals over raw glyphs: wait briefly for icons.js, then proceed regardless
+      if (!window.AstroIcons && iconWaitTries++ < 10) {
         setTimeout(tryPopulate, 300);
         return;
       }
@@ -667,7 +667,9 @@
           ['mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']
             .forEach(function (pk) { RETRO_KEYS[pk] = AstroEphemeris.isRetrograde(pk, jd); });
         }
-        populateTicker(Object.keys(pos).length ? pos : null);
+        var livePos = Object.keys(pos).length ? pos : null;
+        populateTicker(livePos);
+        populateCurrentSky(livePos);
       } catch (e) {
         populateTicker(null);
       }
@@ -680,26 +682,159 @@
   })();
   </script>
 
+  <!-- ============================================================
+       RETROGRADE CALENDAR — computed live (compute-don't-curate)
+       Scans ±months of apparent planetary speed via WeeklySky's
+       station-finder so the "year ahead" list can never expire.
+       Honesty: station instants ride truncated series → shown with ≈.
+  ============================================================ -->
+  <script>
+  (function () {
+    'use strict';
+
+    var GLYPHS = { mercury: '&#9791;', venus: '&#9792;', mars: '&#9794;', jupiter: '&#9795;',
+                   saturn: '&#9796;', uranus: '&#9797;', neptune: '&#9798;', pluto: '&#9799;' };
+    var RETRO_NOTES = {
+      mercury: 'Tradition reads it as a re-check window &mdash; back up work, re-read the fine print, revisit conversations before starting new ones.',
+      venus: 'Traditionally a review of what &mdash; and who &mdash; you value; old attachments resurface for resolution.',
+      mars: 'Drive appears to reverse; tradition favours redirecting energy and reviewing the campaign over forcing forward.',
+      jupiter: 'The long annual arc where growth turns inward &mdash; consolidate before expanding.',
+      saturn: 'Structures and commitments get re-inspected; tradition favours finishing over founding.',
+      uranus: 'A slow annual arc &mdash; change is internalised and rehearsed rather than announced.',
+      neptune: 'The year&rsquo;s long inward stretch for imagination and ideals &mdash; refine the vision.',
+      pluto: 'The slowest review window &mdash; deep, structural themes quietly resurface for another pass.'
+    };
+
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    function fmtDate(d, withYear) {
+      var opts = { month: 'short', day: 'numeric' };
+      if (withYear) opts.year = 'numeric';
+      return d.toLocaleDateString('en-GB', opts);
+    }
+    function fmtRange(a, b) {
+      var sameYear = a.getFullYear() === b.getFullYear();
+      return '&asymp; ' + esc(fmtDate(a, !sameYear)) + ' &ndash; ' + esc(fmtDate(b, true));
+    }
+
+    function buildWindows() {
+      var E = window.AstroEphemeris, W = window.WeeklySky;
+      var now = new Date();
+      var jdNow = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+                              now.getUTCHours(), now.getUTCMinutes(), 0);
+      // Scan back far enough to catch the start of any currently-running
+      // retrograde (outer-planet retrogrades run ~5-6 months) and a year ahead.
+      var span = { jdStart: jdNow - 250, jdEnd: jdNow + 400 };
+      var stations = W._findStations(span).sort(function (a, b) { return a.tJD - b.tJD; });
+      var open = {}, windows = [];
+      stations.forEach(function (ev) {
+        if (ev.toRetro) {
+          open[ev.body] = ev;
+        } else if (open[ev.body]) {
+          windows.push({ body: ev.body, planet: ev.planet, from: open[ev.body], to: ev });
+          delete open[ev.body];
+        }
+        // A direct station with no matching retro start began before the scan
+        // window — skip it rather than invent a start date.
+      });
+      // Retro stations still open at scan end: window runs past the horizon.
+      Object.keys(open).forEach(function (k) {
+        windows.push({ body: k, planet: open[k].planet, from: open[k], to: null });
+      });
+      // Keep only windows still current or upcoming and starting within the
+      // twelve months the heading promises; soonest first.
+      return windows.filter(function (w) {
+                      return w.from.tJD <= jdNow + 365 && (!w.to || w.to.tJD >= jdNow);
+                    })
+                    .sort(function (a, b) { return a.from.tJD - b.from.tJD; })
+                    .map(function (w) { w.underway = w.from.tJD <= jdNow; return w; });
+    }
+
+    function render(windows) {
+      var list = document.getElementById('retro-live-list');
+      var fallback = document.getElementById('retro-live-fallback');
+      if (!list || !windows.length) return;
+      list.innerHTML = windows.map(function (w) {
+        var signs = w.to && w.to.sign !== w.from.sign
+          ? esc(w.from.sign) + ' &amp; ' + esc(w.to.sign)
+          : esc(w.from.sign);
+        var dates = w.to
+          ? fmtRange(w.from.tDate, w.to.tDate)
+          : '&asymp; from ' + esc(fmtDate(w.from.tDate, true));
+        var badge = w.underway
+          ? ' <span class="retrograde-badge" title="Retrograde now">Underway</span>'
+          : '';
+        return '<li class="retrograde-item">' +
+          '<span class="retrograde-item__symbol" aria-hidden="true"><span class="ap-orb ap-orb--' + esc(w.body) + '" aria-hidden="true"><i class="ap-orb__glyph">' + (GLYPHS[w.body] || '') + '</i></span></span>' +
+          '<div class="retrograde-item__info">' +
+          '<h3 class="retrograde-item__title">' + esc(w.planet) + ' Retrograde &mdash; ' + signs + badge + '</h3>' +
+          '<p>' + (RETRO_NOTES[w.body] || 'Apparent backward motion &mdash; an optical effect of orbital geometry.') + '</p>' +
+          '</div>' +
+          '<div class="retrograde-item__dates">' + dates + '</div>' +
+          '</li>';
+      }).join('');
+      list.hidden = false;
+      if (fallback) fallback.hidden = true;
+    }
+
+    var tries = 0;
+    function tryBuild() {
+      if (!window.AstroEphemeris || !window.WeeklySky ||
+          typeof WeeklySky._findStations !== 'function' ||
+          typeof AstroEphemeris.planetLongitude !== 'function') {
+        if (tries++ < 100) setTimeout(tryBuild, 300);
+        return;
+      }
+      try { render(buildWindows()); } catch (e) { /* fallback text stays visible */ }
+    }
+    function start() {
+      if (navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '')) return;
+      if (window.requestIdleCallback) { requestIdleCallback(tryBuild, { timeout: 4000 }); }
+      else { setTimeout(tryBuild, 900); }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start, { once: true });
+    } else { start(); }
+  })();
+  </script>
+
   <!-- JS — ephemeris/oracle on defer; cosmos + heavy chart libs idle after load -->
-  <script src="js/profile.js" defer></script>
   <script>
   (function () {
     function audit() {
       return navigator.webdriver || /\bHeadlessChrome\b/i.test(navigator.userAgent || '');
     }
-    function inject(src) {
+    function injectSeq(list, idx) {
+      if (idx >= list.length) return;
       var s = document.createElement('script');
-      s.src = src;
-      s.defer = true;
+      s.src = list[idx];
+      s.onload = function () { injectSeq(list, idx + 1); };
+      s.onerror = function () { injectSeq(list, idx + 1); };
       document.body.appendChild(s);
     }
-    if (audit()) return;
-    inject('js/raf-core.js');
-    inject('js/ephemeris.js');
-    inject('js/oracle.js');
-    inject('js/ap-zodiac-constants.js');
-    inject('js/icons.js');
-    inject('js/daily-transit.js');
+    if (audit()) {
+      injectSeq([
+        'js/profile.js',
+        'js/ephemeris.js',
+        'js/oracle.js',
+        'js/daily-transit.js',
+        'js/ap-daily-bridge.js',
+        'js/ap-ai-assistant.js',
+      ], 0);
+      return;
+    }
+    injectSeq([
+      'js/profile.js',
+      'js/raf-core.js',
+      'js/ephemeris.js',
+      'js/oracle.js',
+      'js/ap-zodiac-constants.js',
+      'js/icons.js',
+      'js/weekly-sky.js',
+      'js/daily-transit.js',
+      'js/ap-daily-bridge.js',
+      'js/ap-ai-assistant.js',
+    ], 0);
   })();
   </script>
   <script>

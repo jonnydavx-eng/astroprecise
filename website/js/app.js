@@ -24,6 +24,7 @@ const AstroApp = (() => {
   }
 
   function init() {
+    document.documentElement.classList.add('ap-enchanted');
     // Preload the astrological symbol font (AstroGlyph) so canvas-drawn glyphs
     // (orrery, zodiac ring, share cards) never paint in the fallback colour-emoji
     // font on Android — and force a redraw once it's ready.
@@ -37,6 +38,8 @@ const AstroApp = (() => {
     initToastContainer();
     initScrollAnimations();
     initModalHandlers();
+    // Sitewide engine stills / cinema plate (no Three.js — safe)
+    ensureEngineVisuals();
 
     // Load preferences
     if (window.AstroProfile) {
@@ -47,6 +50,78 @@ const AstroApp = (() => {
     if (window.ApPageBridge && typeof ApPageBridge.init === 'function') {
       ApPageBridge.init();
     }
+  }
+
+  /** Load engine stills module once (shared 3D brand art, no WebGL). */
+  function ensureEngineVisuals() {
+    ensurePaletteCss();
+    ensureLogoAuroraCss();
+    ensureVisualClarityCss();
+    ensurePageStructureCss();
+    ensureModelStageCss();
+    if (window.AP_ENGINE_VISUALS) {
+      try { window.AP_ENGINE_VISUALS.boot(); } catch (e) {}
+      return;
+    }
+    if (document.querySelector('script[src*="ap-engine-visuals"]')) return;
+    var s = document.createElement('script');
+    s.src = 'js/ap-engine-visuals.js';
+    s.async = true;
+    s.onload = function () {
+      try {
+        if (window.AP_ENGINE_VISUALS) window.AP_ENGINE_VISUALS.boot();
+      } catch (e) {}
+    };
+    document.body.appendChild(s);
+  }
+
+  /** Jet · Silver · Aurora palette tokens. */
+  function ensurePaletteCss() {
+    if (document.getElementById("ap-css-palette-2026") || document.querySelector('link[href*="ap-palette-2026"]')) return;
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "css/ap-palette-2026.css?v=703";
+    l.id = "ap-css-palette-2026";
+    document.head.appendChild(l);
+  }
+
+  /** Animated silver/aurora logo system. */
+  function ensureLogoAuroraCss() {
+    if (document.getElementById("ap-css-logo-aurora")) return;
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "css/ap-logo-aurora.css?v=703";
+    l.id = "ap-css-logo-aurora";
+    document.head.appendChild(l);
+  }
+
+  /** Visual clarity — Inter body, Cormorant titles, aurora accents. */
+  function ensureVisualClarityCss() {
+    if (document.getElementById('ap-css-visual-clarity')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-visual-clarity.css?v=703';
+    l.id = 'ap-css-visual-clarity';
+    document.head.appendChild(l);
+  }
+
+  /** Model-first stage — glass UI on jet around 3D / engine stills. */
+  function ensurePageStructureCss() {
+    if (document.getElementById('ap-css-page-structure')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-page-structure.css?v=683';
+    l.id = 'ap-css-page-structure';
+    document.head.appendChild(l);
+  }
+
+  function ensureModelStageCss() {
+    if (document.getElementById("ap-css-model-stage")) return;
+    var l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = "css/ap-model-stage.css?v=703";
+    l.id = "ap-css-model-stage";
+    document.head.appendChild(l);
   }
 
   // ── Navbar ────────────────────────────────────────────────────────────────
@@ -133,7 +208,7 @@ const AstroApp = (() => {
   ];
   const NAV_EXTRAS = _apNav.NAV_EXTRAS || [
     ['accuracy.html', 'Accuracy'], ['charts.html', 'My Charts'], ['quiz.html', 'Cosmic Quiz'],
-    ['tonight.html', "Tonight's Sky"], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
+    ['tonight.html', 'Tonight'], ['moonphase.html', 'Moon Phase'], ['retrograde.html', 'Retrograde'],
     ['angel-numbers.html', 'Angel Numbers'], ['name-numerology.html', 'Name Numerology'],
     ['what-is-my-rising-sign.html', 'Rising Sign'], ['synastry.html', 'Synastry'],
     ['solar-return.html', 'Solar Return'], ['saturn-return.html', 'Saturn Return'],
@@ -176,7 +251,8 @@ const AstroApp = (() => {
       if (meta.dataNavPromoted) attrs += ' data-nav-promoted="' + meta.dataNavPromoted + '"';
       var inner = label;
       if (meta.badge) {
-        inner += '<span class="navbar__nav-badge" aria-hidden="true">' + meta.badge + '</span>';
+        /* space before badge so labels don't read as My SkyHub / MomentKeep */
+        inner += ' <span class="navbar__nav-badge" aria-hidden="true">' + meta.badge + '</span>';
       }
       return '<a' + attrs + '>' + inner + '</a>';
     }).join('');
@@ -367,28 +443,12 @@ const AstroApp = (() => {
     var desktop = document.querySelector('.navbar__nav');
     var mobile = document.querySelector('.navbar__mobile-menu');
     if (desktop) {
-      if (!desktop.querySelector('.navbar__link')) {
-        desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
-      } else {
-        desktop.querySelectorAll('.navbar__link[href]').forEach(function (a) {
-          var href = (a.getAttribute('href') || '').split('/').pop();
-          var on = href === here;
-          a.classList.toggle('active', on);
-          if (on) a.setAttribute('aria-current', 'page');
-          else a.removeAttribute('aria-current');
-        });
-        var moreBtn = desktop.querySelector('.navbar__more-btn');
-        if (moreBtn) moreBtn.classList.toggle('active', morePageActive(here));
-        var morePanel = desktop.querySelector('.navbar__more-panel');
-        if (morePanel && !morePanel.querySelector('.navbar__more-group')) {
-          morePanel.innerHTML = NAV_DRAWER_SECTIONS.map(function (sec) {
-            return '<div class="navbar__more-group" role="group" aria-label="' + sec.label + '">'
-              + '<p class="navbar__more-label">' + sec.label + '</p>'
-              + navLinkHtml(sec.items, here, true)
-              + '</div>';
-          }).join('');
-        }
-      }
+      // Single source of truth: ALWAYS rebuild the primary bar from NAV_PRIMARY.
+      // (Previously it only rebuilt when empty, so pages that shipped live static
+      //  nav links — chart/shop/compatibility/ephemeris/horoscope — kept a stale
+      //  vocabulary and the menu changed under the visitor. The static markup is
+      //  now purely a no-JS fallback.)
+      desktop.innerHTML = navLinkHtml(NAV_PRIMARY, here, false) + renderMoreMenu(here);
       initMoreMenu();
     }
     if (mobile) mobile.innerHTML = renderDrawer(here);
@@ -1206,9 +1266,14 @@ window.AP_SOCIAL = window.AP_SOCIAL || {
 window.AP_MON = Object.assign({
   family: { biggerPicture: '', backInTime: '' },  // sibling sites — footer "family of sites" links (dormant until set)
   tipUrl:       'https://ko-fi.com/astroprecise',   // tips/support — Ko-fi (0% on tips). LIVE 2026-06-14.
-  reportUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',   // premium written natal report — hosted product (Gumroad / Ko-fi Shop / Lemon Squeezy)
-  posterUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
-  giftUrl:      'https://astroprecise.lemonsqueezy.com/checkout/custom/2fd63e38-78d6-4096-b0b5-db3ae68a8287?signature=05153867779b0dba4aba5b1e2349cc3af3252c65c047a9e906a366d3bf158f15',   // gift a reading — hosted product
+  // PayPal direct (2026-07-02 — Lemon Squeezy dropped; category not accepted).
+  // Optional global handle: set me to your PayPal.Me URL ('https://paypal.me/YourHandle')
+  // to enable amount-links (e.g. the Two Skies post-purchase offer). Per-SKU checkout
+  // uses each product's fulfilUrl — paste PayPal payment links there (PAYPAL-SETUP.md).
+  paypal: { me: '', currency: 'GBP' },
+  reportUrl:    '',   // premium written natal report — PayPal payment link (PAYPAL-SETUP.md)
+  posterUrl:    '',   // printable / print-on-demand chart poster — hosted store (Gumroad / Etsy / Gelato store)
+  giftUrl:      '',   // gift a reading — hosted product
   newsletterUrl:'https://list.astroprecise.app/subscribe',   // LIVE — CF Worker + KV (ap-subscribe)
   affiliateTag: '',   // Amazon Associates tag — auto-appended to amazon.* links site-wide (e.g. astroprecise-21)
   // Editorial affiliate picks — disclosed ad strip before footer on key pages (js/affiliate-social.js).
@@ -1272,14 +1337,14 @@ window.AP_MON = Object.assign({
   // Same rule as the rest: a hosted product page (Gumroad / Ko-fi Shop / Lemon
   // Squeezy). Empty '' = DORMANT: the teaser button falls back to email capture,
   // never a fake checkout.
-  deepReadingUrl: 'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',
+  deepReadingUrl: '',
   // Price shown on the chart-page Deep Reading CTA — e.g. '£29'. Blank = no price
   // displayed (honesty: never show a price until the product is live and it matches
   // the storefront listing exactly).
   deepReadingPrice: '£12',
   // Compatibility "Full Synastry" unlock — the compatibility page keeps the top 8
   // cross-chart aspects + category scores + overview FREE; the rest unlock here.
-  // Hosted checkout (Lemon Squeezy) that redirects back to compatibility.html?unlocked=1.
+  // A PayPal payment link (PAYPAL-SETUP.md) that redirects back to compatibility.html?unlocked=1.
   // Empty '' = DORMANT: everything stays free (no downgrade pre-launch). When set,
   // the "Show all aspects" toggle becomes an "Unlock — <price>" button.
   compatUnlockUrl: '',
@@ -1332,6 +1397,13 @@ window.AP_MON = Object.assign({
       etsyUrl:          '',    // Etsy storefront ("Browse on Etsy" path)
     },
 
+    // ── CATALOGUE PHASE — which SKUs surface on shop.html ────────────────
+    // 'pdf-only' = Deep Reading + print-at-home poster PDF for now.
+    // Flip to 'full' when prints, apparel, gifts & jewellery return.
+    cataloguePhase: 'pdf-only',
+    // Moment pack is digital keepsake; listed when available + fulfilUrl set.
+    catalogueSkus:  ['deep-reading', 'natal-poster-pdf', 'moment-pack'],
+
     // ── COLLECTIONS — the architecture of the sky ─────────────────────────
     // Every piece belongs to one collection. Re-themed from TBP's tree to
     // the chart: what you were born under, what you wear, what you keep.
@@ -1365,7 +1437,7 @@ window.AP_MON = Object.assign({
     products: [
       {
         id:           'natal-poster',
-        available:    true,
+        available:    false,
         name:         'Your Natal Sky — Art Poster',
         type:         'print',
         collection:   'onYourWall',
@@ -1373,14 +1445,15 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Made to order',
         marketingLine:'Fine-art print of the sky at your first breath.',
-        previewImage: 'img/shop/product-natal-poster.svg',
+        previewImage: 'img/shop/product-natal-poster.jpg',
         blurb:        'Your full birth chart as a fine-art print — the exact planetary geometry of your first breath, drawn in engraved gold on void black. 250gsm museum-grade matte, made to order. Foil and framed options at checkout.',
         icon:         'map',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/b96ab7e6-5b60-463f-a447-2829c65d1948?signature=aaba0330319df3dabc194a375ea7f37b3da70655687fae87c9b686b84d7882a7',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'MKutUmwh',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'sky-tee',
-        available:    true,
+        available:    false,
         name:         'Your Sky — Tee',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -1391,11 +1464,12 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-sky-tee.jpg',
         blurb:        'The constellations overhead at your birth, printed across heavyweight cotton. Your sun, moon and rising marked in gold thread — a chart you can wear.',
         icon:         'star4',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/bc99eaab-fe40-4336-84be-4986169b7d4f?signature=7f07cebec6e274b3898992547b0816503b90a83554ca3311ff372714b5dc05c9',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'jymyb9t2',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'sky-hoodie',
-        available:    true,
+        available:    false,
         name:         'Your Sky — Heavyweight Hoodie',
         type:         'apparel',
         collection:   'wearYourSky',
@@ -1406,11 +1480,12 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-sky-hoodie.jpg',
         blurb:        'Your natal canopy across the back in fine line-work; your big-three glyphs at the cuff. Premium 350 gsm fleece, printed to order from your chart.',
         icon:         'crescent',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/e4433127-c65b-481d-8cb9-9b1d5f95006e?signature=82e68c110830134e1d7a986f3ab12414233529ba426f61e01eaf9deaec5f6caa',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'ItYwTtZw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'big-three-print',
-        available:    true,
+        available:    false,
         name:         'Big Three — Mini Print',
         type:         'print',
         collection:   'onYourWall',
@@ -1421,11 +1496,12 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-big-three.jpg',
         blurb:        'Sun, Moon and Rising — your three load-bearing placements set as a clean typographic print. The chart distilled to its spine.',
         icon:         'sunhigh',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/293d41b4-95b2-49b8-a5dd-933ba8bac28d?signature=ae2e0280080783aee3858dae9dacaa67047fb9043c0f62f96fe2e84409103353',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'l3BHnRFG',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'constellation-mug',
-        available:    true,
+        available:    false,
         name:         'Your Star Map — Mug',
         type:         'accessory',
         collection:   'wearYourSky',
@@ -1436,12 +1512,13 @@ window.AP_MON = Object.assign({
         previewImage: 'img/shop/product-mug.jpg',
         blurb:        'The sky over your birthplace wrapped around matte ceramic, your sun-sign glyph at the rim. The first synchronicity of every morning.',
         icon:         'orb',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/1f278c11-0c09-4ea8-9d90-4eec2a168287?signature=c36479767c244cd7173a7a6a218d7aadaabd3bf7c71e4b7450d9a9c1c3270346',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'cQgoY4h4',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'cosmic-story',
-        available:    true,
-        featured:     true,
+        available:    false,
+        featured:     false,
         name:         'Your Cosmic Story — Personalised Narrative',
         type:         'digital',
         collection:   'theReading',
@@ -1449,7 +1526,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Written for you',
         marketingLine:'The story of you — told through the exact sky of your first breath.',
-        previewImage: 'img/shop/product-cosmic-story.svg',
+        previewImage: 'img/shop/product-cosmic-story.jpg',
         sampleUrl:    'cosmic-story.html',
         blurb:        'Not a report — a story. Your birth chart retold as a flowing personal narrative: the arc of your Sun, Moon and rising sign, the tensions and gifts written into your aspects, and where your planets are quietly leading you. Drawn entirely from your real VSOP87 chart and written for you alone — a keepsake PDF to read and return to.',
         icon:         'book',
@@ -1469,11 +1546,12 @@ window.AP_MON = Object.assign({
         sampleUrl:    'sample-reading.html',
         blurb:        'Thirteen pages from the same engine as your free chart — every planet, all twelve houses, love/career/wellbeing chapters, chart patterns, and ten tightest aspects. Typeset as a beautifully set PDF, yours to keep forever.',
         icon:         'book',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'JVU3Atfm',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'year-ahead',
-        available:    true,
+        available:    false,
         name:         'Your Year Ahead — Transit Report',
         type:         'digital',
         collection:   'theReading',
@@ -1481,10 +1559,28 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Instant PDF',
         marketingLine:'Twelve months of transits — your personal sky forecast.',
-        previewImage: 'img/shop/product-year-ahead.svg',
+        previewImage: 'img/shop/product-year-ahead.jpg',
         blurb:        'Every major transit to your natal chart for the next twelve months, dated and interpreted — an honest forecast drawn from your own placements, not a generic horoscope.',
         icon:         'calendar',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'QMcr0Ldw',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
+      },
+      {
+        id:           'moment-pack',
+        available:    true,
+        name:         'Moment Pack — Digital Keepsake',
+        type:         'digital',
+        collection:   'onYourWall',
+        price:        8.00,
+        personalized: true,
+        badge:        'New',
+        marketingLine:'Any date’s zenith star + light-cone story as a print-ready pack.',
+        previewImage: 'img/shop/product-moment-pack.jpg',
+        blurb:        'Freeze any night that mattered — birth, anniversary, memorial — into a multi-format digital pack: square share card, story card, and print plate. Same private VSOP87 math as the free Moment studio. Fulfilment opens once checkout is connected; free card is live on Moment now.',
+        icon:         'star4',
+        fulfilUrl:    '',   // paste PayPal/Payhip link when ready; '' = honest coming soon
+        detailsForm:  '',
+        featured:     true,
       },
       {
         id:           'natal-poster-pdf',
@@ -1497,15 +1593,16 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Instant PDF',
         marketingLine:'Your exact sky, ready to print tonight.',
-        previewImage: 'img/shop/product-natal-poster.svg',
+        previewImage: 'img/shop/product-poster-pdf.jpg',
         blurb:        'Your full birth chart as a print-ready PDF — the exact planetary geometry of your first breath, set on void black. Print it at home or at any print shop, any size. Delivered as a PDF, yours to keep.',
         icon:         'map',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'sL9V4PTk',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'reading-poster-bundle',
-        available:    true,
-        featured:     true,
+        available:    false,
+        featured:     false,
         name:         'Deep Reading + Poster — Bundle',
         type:         'digital',
         collection:   'theReading',
@@ -1514,16 +1611,17 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Best value',
         marketingLine:'Reading, poster, free wallpaper & a Two Skies offer — save £2.',
-        previewImage: 'img/shop/product-bundle.svg',
+        previewImage: 'img/shop/product-bundle.jpg',
         sampleUrl:    'sample-reading.html',
         blurb:        'Your long-form Deep Natal Reading and print-at-home natal poster, generated together from one chart. Includes free chart wallpaper (email unlock) and a 50% code for Two Skies after purchase. Future bundles will pair readings with Observatory Disc or Seal Medallion jewellery.',
         bundlePerks:  ['Free chart wallpaper', '50% off Two Skies map', 'Two PDFs · save £2', 'Jewellery cross-sell placeholders live in catalogue'],
         icon:         'book',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7?signature=818268afc134daac9ba3ed051e5eb2d8a5b10c4ac392dc2a45afb4782bd4ec3f',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'Iasu4Sia',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'solar-return',
-        available:    true,
+        available:    false,
         name:         'Solar Return — Your Birthday Year',
         type:         'digital',
         collection:   'theReading',
@@ -1531,14 +1629,15 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Instant PDF',
         marketingLine:'Your birthday sky — the annual ritual, no subscription.',
-        previewImage: 'img/shop/product-solar-return.svg',
+        previewImage: 'img/shop/product-solar-return.jpg',
         blurb:        'Your solar-return chart for this birthday — the sky at the exact moment the Sun returns to its natal degree, read as the theme of your coming year. An annual ritual, no subscription. Delivered as a PDF.',
         icon:         'sunhigh',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'vp60QAiN',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'gift-reading',
-        available:    true,
+        available:    false,
         name:         'Gift a Reading',
         type:         'digital',
         collection:   'gifts',
@@ -1547,14 +1646,15 @@ window.AP_MON = Object.assign({
         giftNote:     true,
         badge:        null,
         marketingLine:'A Deep Reading for someone you love — voucher + your note.',
-        previewImage: 'img/shop/product-gift-reading.svg',
+        previewImage: 'img/shop/product-gift-reading.jpg',
         blurb:        'A Deep Natal Reading for someone you love — sent as a PDF gift voucher with a redemption code. They redeem by email and give us their own birth details; we generate the reading and deliver it with your note. Choose a delivery date at checkout.',
         icon:         'heart',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/2fd63e38-78d6-4096-b0b5-db3ae68a8287?signature=05153867779b0dba4aba5b1e2349cc3af3252c65c047a9e906a366d3bf158f15',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'VvzhK6Kj',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'gift-box-whole-sky',
-        available:    true,
+        available:    false,
         name:         'The Whole Sky — Gift Box',
         type:         'print',
         collection:   'gifts',
@@ -1563,14 +1663,15 @@ window.AP_MON = Object.assign({
         giftNote:     true,
         badge:        'Gift',
         marketingLine:'Reading PDF + foil print + gift card — the complete sky.',
-        previewImage: 'img/shop/product-gift-box.svg',
+        previewImage: 'img/shop/product-gift-box.jpg',
         blurb:        'The complete gift: a Deep Natal Reading PDF plus an A4 foil natal print, shipped, with a personalised gift card carrying your note. They redeem the reading by email with their own birth details — their sky, never our server. Choose a delivery date at checkout, for less than the two bought separately.',
         icon:         'star4',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/0c1e9679-cde4-45b3-8e64-bf4137efa236?signature=fe0c7290321dec98d7d726bee69ed6e2152cf9f9a4acc8b3ccfe9dce5dcbedba',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'uHADD51y',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       {
         id:           'two-skies-map',
-        available:    true,
+        available:    false,
         name:         'Two Skies — Couples Star Map',
         type:         'print',
         collection:   'gifts',
@@ -1579,17 +1680,18 @@ window.AP_MON = Object.assign({
         giftNote:     true,
         badge:        'Couples',
         marketingLine:'Two birth charts, one print — the anniversary keepsake.',
-        previewImage: 'img/shop/product-two-skies.svg',
+        previewImage: 'img/shop/product-two-skies.jpg',
         blurb:        'Two birth charts, one print — your sky and theirs, set side by side on void black. A proven anniversary and wedding keepsake. 250gsm museum-grade matte; framed option at checkout.',
         icon:         'crescent',
-        fulfilUrl:    'https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7',
+        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
+        detailsForm:  'ZOp9A1OW',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
       },
       // ── JEWELLERY COLLECTION (new accessories, POD placeholders) ───────────
       // Audience-refined (deep research 2026-06): Gen Z gifting (affordable meaningful), women 18-35 everyday/self (dainty + emotional), existing chart users.
       // Diffs vs competitors: full VSOP87 chart data (not sun-sign generic), integrated with readings/posters. POD: ShineOn/OwnPrint/AnywherePOD or Etsy manual + custom upload for engraving.
       {
         id:           'observatory-disc-pendant',
-        available:    true,
+        available:    false,
         name:         'Observatory Disc Pendant',
         type:         'accessory',
         collection:   'jewellery',
@@ -1597,14 +1699,14 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Made to order',
         marketingLine:'Your full natal wheel, engraved on a wearable disc.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-observatory-disc.jpg',
         blurb:        'Solid brass or sterling disc pendant with the complete natal chart wheel micro-engraved from your exact birth data. Planets positioned precisely as at the moment you were born — 25mm on 45cm chain. For women 18-35 who want their sky close every day, or as a standout Gen Z gift that actually means something. POD fulfilment.',
         icon:         'orb',
         fulfilUrl:    '', // placeholder — set real POD URL (ShineOn / OwnPrint / Etsy custom / Gelato) when live
       },
       {
         id:           'constellation-bar',
-        available:    true,
+        available:    false,
         name:         'Constellation Bar',
         type:         'accessory',
         collection:   'jewellery',
@@ -1612,14 +1714,14 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        null,
         marketingLine:'Minimal bar with your birth constellations in line.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-constellation-bar.jpg',
         blurb:        'Slim horizontal bar (pendant or cuff) showing the constellation lines of your Sun + Moon + Rising. Subtle everyday chart jewellery for layering. Perfect for the 18-35 woman who loves dainty cosmic details without shouting her sign — or gift to your astro bestie.',
         icon:         'star4',
         fulfilUrl:    '', // placeholder — set real POD URL when live
       },
       {
         id:           'big-three-glyph',
-        available:    true,
+        available:    false,
         name:         'Big Three Glyph',
         type:         'accessory',
         collection:   'jewellery',
@@ -1627,14 +1729,14 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        null,
         marketingLine:'Sun · Moon · Rising charms on a fine chain.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-big-three-glyph.jpg',
         blurb:        'Three small engraved charms — your Sun, Moon and Rising glyphs — on a delicate 40cm chain. The spine of your chart, worn close to the heart. Entry price for Gen Z gifting and women 18-35 self-purchase; meaningful without the generic zodiac mass-market feel. Differentiator: exact from your saved chart, not a stock Aries stamp.',
         icon:         'gem',
         fulfilUrl:    '', // placeholder — set real POD URL when live
       },
       {
         id:           'seal-medallion',
-        available:    true,
+        available:    false,
         name:         'Seal Medallion',
         type:         'accessory',
         collection:   'jewellery',
@@ -1642,7 +1744,7 @@ window.AP_MON = Object.assign({
         personalized: true,
         badge:        'Made to order',
         marketingLine:'Hex seal medallion of your chart\'s dominant signature.',
-        previewImage: 'img/shop/cat-jewelry.jpg',
+        previewImage: 'img/shop/product-seal-medallion.jpg',
         blurb:        'Large 32mm hex medallion bearing your dominant element seal and Big Three glyphs. Reversible; engraved on observatory-grade brass. A true talisman for power users and milestone gifting. Premium tier vs No.13-style luxe — yours is computed from real VSOP87 positions, not artistic interpretation.',
         icon:         'heart',
         fulfilUrl:    '', // placeholder — set real POD URL when live
@@ -1664,7 +1766,7 @@ window.AP_MON = Object.assign({
       const url = keyToUrl(el.dataset.mon);
       const mode = el.dataset.monMode || 'hide';
       if (isUrl(url)) {
-        if (el.tagName === 'A') { el.href = url; el.target = '_blank'; el.rel = 'noopener'; }
+        if (el.tagName === 'A') { el.href = url; el.target = '_blank'; el.rel = 'noopener sponsored'; }
         else el.addEventListener('click', () => window.open(url, '_blank', 'noopener'));
         el.removeAttribute('aria-disabled');
         el.style.removeProperty('display');
@@ -1688,7 +1790,7 @@ window.AP_MON = Object.assign({
         a.href = M.tipUrl; a.target = '_blank'; a.rel = 'noopener';
         a.innerHTML = '<svg class="eng-i" aria-hidden="true"><use href="#ei-heart"/></svg> Support the free chart';
         a.style.cssText = 'display:inline-block;margin-top:8px;font-family:Inter,system-ui,sans-serif;'
-          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#C9A227);text-decoration:none;';
+          + 'font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold,#A8B0BC);text-decoration:none;';
         host.appendChild(document.createElement('br'));
         host.appendChild(a);
       }
@@ -1704,6 +1806,36 @@ else AstroApp.init();
 if ('serviceWorker' in navigator && !navigator.webdriver) {
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }
+
+/* One-time gentle reload when an UPDATED service worker takes control
+   mid-session (sw.js uses skipWaiting + clients.claim): without this, the
+   page keeps running the previous version's CSS/JS against the new cache —
+   the mobile "flashes of old version". Guards: never on first install (no
+   prior controller), never twice, never while the visitor is typing or has
+   unsaved form input. Same flag-guarded block lives in index.html,
+   defer-page-css.js and ap-page-boot.js for pages that don't load app.js. */
+(function () {
+  if (!('serviceWorker' in navigator) || navigator.webdriver) return;
+  if (window.__apSwReloadGuard) return;
+  window.__apSwReloadGuard = 1;
+  var hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (!hadController) { hadController = true; return; }
+    if (window.__apSwReloaded) return;
+    var el = document.activeElement;
+    if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+    var dirty = false;
+    try {
+      var fields = document.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]), textarea');
+      for (var i = 0; i < fields.length; i++) {
+        if (fields[i].value !== fields[i].defaultValue) { dirty = true; break; }
+      }
+    } catch (err) {}
+    if (dirty) return;
+    window.__apSwReloaded = 1;
+    if (document.visibilityState === 'hidden') location.reload(); /* only refresh backgrounded tabs — never a visible reload flash while the visitor is looking */
+  });
+})();
 
 /* Horizon: privacy banner (first visit) + offline-ready pill */
 (function () {
@@ -1810,7 +1942,8 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
 
   function initBottomNav() {
     if (document.querySelector('.bottom-nav')) return;
-    if (!document.querySelector('.navbar')) return;
+    // Structure clean: home uses custom masthead (no .navbar) — still give phone tabs.
+    if (!document.querySelector('.navbar, .site-header, #apMasthead, .masthead')) return;
     const here = (location.pathname.split('/').pop() || 'index.html');
     const tabs = (window.AstroApp && AstroApp.NAV_BOTTOM_TABS) || [];
     const nav = document.createElement('nav');
@@ -2129,11 +2262,71 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     });
   }
 
+  // Critical positioning for the sticky bar, injected with the element itself.
+  // The full rules live in main.css, but main.css is idle/deferred-loaded on
+  // several pages (chart, horoscope, …) — without these the bar sits unstyled
+  // in flow and its absolutely-positioned close "×" escapes to the viewport
+  // top-right as an orphaned button. Values mirror main.css so there is no
+  // conflict once it loads; visibility gating keeps every child (incl. the ×)
+  // hidden until the bar is deliberately shown.
+  function ensureStickyCtaCss() {
+    if (document.getElementById('ap-email-sticky-critical')) return;
+    var st = document.createElement('style');
+    st.id = 'ap-email-sticky-critical';
+    st.textContent =
+      '.ap-email-cta--sticky{position:fixed;left:0;right:0;bottom:0;z-index:9000;padding:12px 16px;' +
+      'background:var(--ap-void-deep,#07070A);border-top:1px solid rgba(168,176,188,0.35);' +
+      'transform:translateY(110%);visibility:hidden;' +
+      'transition:transform .45s cubic-bezier(.22,1,.36,1),visibility 0s .45s;}' +
+      '.ap-email-cta--sticky.is-visible{transform:translateY(0);visibility:visible;' +
+      'transition:transform .45s cubic-bezier(.22,1,.36,1);}' +
+      '.ap-email-cta--sticky .ap-email-cta__inner{position:relative;}' +
+      '@media (prefers-reduced-motion: reduce){.ap-email-cta--sticky{transition:none;}}';
+    document.head.appendChild(st);
+  }
+
+  // Base skeleton for every CTA variant (banner/hero/inline). The full rules
+  // live in main.css, but main.css is idle/deferred-loaded on most pages and
+  // NEVER loads under webdriver/headless — without these the email input and
+  // button paint as naked native controls for the whole first impression (and
+  // permanently for search-engine renderers). Values mirror main.css so the
+  // full stylesheet simply refines them when it arrives.
+  function ensureSitePolishCss() {
+    if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-site-polish.css?v=703';
+    l.id = 'ap-css-site-polish';
+    document.head.appendChild(l);
+  }
+
+  function ensureEmailCtaBaseCss() {
+    if (document.getElementById('ap-email-cta-critical')) return;
+    var st = document.createElement('style');
+    st.id = 'ap-email-cta-critical';
+    st.textContent =
+      '.ap-email-cta--banner{background:linear-gradient(135deg,rgba(94,200,232,0.08) 0%,rgba(5,8,16,0.94) 48%,rgba(61,139,255,0.08) 100%);border-top:1px solid rgba(94,200,232,0.18);border-bottom:1px solid rgba(94,200,232,0.1);padding:48px 0;}' +
+      '.ap-email-cta__inner{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;}' +
+      '@media (max-width:768px){.ap-email-cta__inner{grid-template-columns:1fr;text-align:center;gap:24px;}}' +
+      '.ap-email-cta__eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--ap-cyan,#5EC8E8);margin:0 0 8px;font-weight:600;}' +
+      '.ap-email-cta__title{font-family:var(--font-display,\'Cormorant Garamond\',serif);font-size:clamp(1.35rem,3vw,1.85rem);font-weight:600;color:var(--ap-text-primary,#E8EEF8);margin:0 0 12px;line-height:1.25;}' +
+      '.ap-email-cta__sub{font-size:0.875rem;color:var(--silver,var(--ap-text-secondary,#B8C4D8));margin:0;line-height:1.65;}' +
+      '.ap-email-cta__form{display:flex;flex-direction:column;gap:8px;}' +
+      '.ap-email-cta__fields{display:flex;gap:12px;flex-wrap:wrap;}' +
+      '.ap-email-cta__input{flex:1;min-width:200px;padding:12px 16px;border-radius:12px;border:1px solid rgba(168,176,188,0.28);background:rgba(12,16,22,0.75);color:var(--white,#fff);font-size:0.88rem;outline:none;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__btn{padding:12px 22px;border-radius:12px;border:1px solid var(--gold,#A8B0BC);background:linear-gradient(180deg,rgba(168,176,188,0.28) 0%,rgba(168,176,188,0.12) 100%);color:var(--gold-pale,#E8EBF0);font-size:0.82rem;font-weight:700;letter-spacing:0.04em;cursor:pointer;white-space:nowrap;-webkit-appearance:none;appearance:none;}' +
+      '.ap-email-cta__hint{font-size:0.62rem;color:var(--silver-dim,var(--ap-text-muted,#8891AA));margin:0;line-height:1.5;}' +
+      '.ap-email-cta__msg{font-size:0.78rem;color:var(--silver,var(--ap-text-secondary,#C8D0E8));margin:0;min-height:1.2em;}';
+    document.head.appendChild(st);
+  }
+
   function buildEmailCTA(variant, copy, opts) {
     copy = copy || pageEmailCopy();
     opts = opts || {};
     var c = window.AP_COPY;
     var btn = variant === 'sticky' ? c.btnShort : c.btnLabel;
+    ensureEmailCtaBaseCss();
+    if (variant === 'sticky') ensureStickyCtaCss();
     var el = document.createElement(variant === 'banner' ? 'section' : 'div');
     el.className = 'ap-email-cta ap-email-cta--' + variant + (opts.extraClass ? ' ' + opts.extraClass : '');
     if (variant === 'banner') {
@@ -2194,6 +2387,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
 
   function injectEmailModal() {
     if (document.getElementById('ap-email-modal')) return;
+    ensureEmailCtaBaseCss();
     var c = window.AP_COPY;
     var wrap = document.createElement('div');
     wrap.id = 'ap-email-modal';
@@ -2275,6 +2469,8 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     }
     if (document.getElementById('email-capture')) return;
     if (document.getElementById('horoscope-subscribe')) return;
+    /* Explore is model-first — no full-width email wall between stage and footer */
+    if (document.body.classList.contains('page-explore')) return;
     var banner = buildEmailCTA('banner', pageEmailCopy());
     var slot = document.getElementById('ap-email-banner-slot');
     if (slot) {
@@ -2291,6 +2487,26 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
   }
 
   function injectStickyCTA() {
+    /* User screenshot audit 2026-07-09 / v678: sticky bar bisects Explore,
+       Daily sign grid, and model pages. Email only as footer banner. */
+    var slug = pageSlug();
+    var noSticky =
+      /^(index\.html|explore\.html|chart\.html|horoscope\.html|ephemeris\.html|mysky\.html|moment\.html|shop\.html|catalogue\.html|transits\.html|compatibility\.html|quiz\.html|)$/i.test(slug) ||
+      !slug ||
+      document.body.classList.contains('ap-award-511') ||
+      document.body.classList.contains('page-home') ||
+      document.body.classList.contains('page-explore') ||
+      document.body.classList.contains('page-chart') ||
+      document.body.classList.contains('page-horoscope') ||
+      document.body.classList.contains('page-instrument') ||
+      document.body.classList.contains('ap-mysky-page') ||
+      document.body.classList.contains('ap-moment-page') ||
+      document.body.classList.contains('page-shop');
+    if (noSticky) {
+      document.querySelectorAll('.ap-email-cta--sticky').forEach(function (n) { n.remove(); });
+      document.body.classList.remove('has-email-sticky');
+      return;
+    }
     if (document.querySelector('.ap-email-cta--sticky')) return;
     if (document.body.classList.contains('preloader-active')) {
       window.addEventListener('ap-hero-enter', injectStickyCTA, { once: true });
@@ -2338,7 +2554,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     wrap.className = 'ap-footer-signup ap-footer-signup--compact';
     if (hasBanner) {
       wrap.innerHTML = '<p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">'
-        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C9A227);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
+        + '<a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#A8B0BC);text-decoration:none;font-weight:600;">\u2726 Join the update list</a>'
         + ' \u2014 cosmic weather & new features coming soon.</p>';
       wrap.querySelector('a').addEventListener('click', scrollToEmailCTA);
     } else {
@@ -2386,6 +2602,7 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
     window.addEventListener('pageshow', function (ev) {
       if (ev.persisted) resetEmailModalState();
     });
+    ensureSitePolishCss();
     injectNavCTA();
     injectHeroCTA();
     injectBannerCTA();
@@ -2426,3 +2643,4 @@ if ('serviceWorker' in navigator && !navigator.webdriver) {
   s.defer = true;
   document.head.appendChild(s);
 })();
+

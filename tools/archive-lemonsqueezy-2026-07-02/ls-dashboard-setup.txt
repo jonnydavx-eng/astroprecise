@@ -1,0 +1,68 @@
+ASTROPRECISE — LEMON SQUEEZY ↔ TYPEFORM SETUP
+
+FASTEST API ROUTE (recommended — 1 product, 13 checkouts auto-linked to Typeform):
+  1. Dashboard: create ONE product "AstroPrecise Digital" £12 → Publish → Copy variant ID
+  2. Run:
+     LEMONSQUEEZY_API_KEY=... LEMONSQUEEZY_VARIANT_ID=<id> node tools/link-typeform-lemonsqueezy.mjs --apply
+  3. That wires LS pay → Typeform birth-details redirect for every SKU + site Buy Now buttons
+
+MANUAL ROUTE (13 separate products):
+ASTROPRECISE — LEMON SQUEEZY DASHBOARD SETUP
+Store: https://astroprecise.lemonsqueezy.com
+Create each product in the dashboard, then run: node tools/sync-lemonsqueezy.mjs --apply
+
+Per product after publish:
+  1. Files → upload tools/NEXT-STEP.pdf
+  2. Confirmation modal + Receipt email → button URL below
+
+--- deep-reading ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/JVU3Atfm#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=deep-reading
+
+--- natal-poster-pdf ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/sL9V4PTk#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=natal-poster-pdf
+
+--- reading-poster-bundle ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/Iasu4Sia#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=reading-poster-bundle
+
+--- two-skies-map ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/ZOp9A1OW#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=two-skies-map
+
+--- gift-reading ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/VvzhK6Kj#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=gift-reading
+
+--- gift-box-whole-sky ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/uHADD51y#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=gift-box-whole-sky
+
+--- natal-poster ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/MKutUmwh#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=natal-poster
+
+--- big-three-print ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/l3BHnRFG#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=big-three-print
+
+--- sky-tee ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/jymyb9t2#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=sky-tee
+
+--- sky-hoodie ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/ItYwTtZw#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=sky-hoodie
+
+--- constellation-mug ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/cQgoY4h4#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=constellation-mug
+
+--- year-ahead ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/QMcr0Ldw#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=year-ahead
+
+--- solar-return ---
+Typeform button (confirmation + receipt):
+https://form.typeform.com/to/vp60QAiN#email=[email]&buyer_name=[name]&order_id=[order_id]&product_sku=solar-return

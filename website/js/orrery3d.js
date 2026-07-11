@@ -347,7 +347,7 @@ window.Orrery3D = (() => {
       ctx.globalAlpha = opacity;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = p.gold ? '#c9a227' : '#d8dce8';
+      ctx.fillStyle = p.gold ? '#A8B0BC' : '#d8dce8';
       ctx.fill();
     });
     ctx.globalAlpha = 1;
@@ -622,10 +622,25 @@ window.Orrery3D = (() => {
     const skipIntro = !!options.skipIntro || fromLiteHandoff;
 
     if (skipIntro) {
-      yaw = -0.35;
-      pitch = 1.05;
-      targetZoomScale = 1;
-      currentZoomScale = 1;
+      /* Earth-forward opening: the WebGL hero boots at the Earth rest frame,
+         but this 2D fallback used to open on the legacy sun-centred wide
+         view — a divergent first impression when WebGL is unavailable.
+         Modest preset only: rotate so Earth lands in view and zoom to the
+         inner system. (Shared module — OrbitLab gets this port later.) */
+      const earthBoot = bodies.find(b => b.id === 'earth');
+      if (earthBoot) {
+        /* project() rotates points by +yaw — pin Earth at a fixed display
+           angle regardless of today's heliocentric longitude. */
+        yaw = 1.05 - Math.atan2(earthBoot.pos.y, earthBoot.pos.x);
+        pitch = 0.9;
+        targetZoomScale = 2.4;
+        currentZoomScale = 2.4;
+      } else {
+        yaw = -0.35;
+        pitch = 1.05;
+        targetZoomScale = 1;
+        currentZoomScale = 1;
+      }
       introActive = false;
       introProgress = 1;
       autoSpin = true;
@@ -663,8 +678,10 @@ window.Orrery3D = (() => {
       resize._armed = true;
       requestAnimationFrame(function () { resize._armed = false; resize(); });
     }
-    // Match intended hero presence: up to 580px logical (CSS sets 580 on desktop, scales down responsively)
-    const sizeCap = (window.RafCore && RafCore.tier === 'high') ? 760 : 640;
+    // Match intended hero presence. The unboxed full-viewport hero wrap runs
+    // ~774-940px logical, so let capable tiers fill it; keep low tiers cheap.
+    const tier = (window.RafCore && RafCore.tier) || 'mid';
+    const sizeCap = tier === 'high' ? 960 : tier === 'mid' ? 760 : 640;
     const size = Math.min(Math.max(rect.width, 280), sizeCap);
     W = H = size;
     canvas.width = size * dpr;
@@ -900,7 +917,7 @@ window.Orrery3D = (() => {
       ctx.globalAlpha = glyphAlpha;
       const drewSeal = window.APCanvasSeals && (
         (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, signName, g.x, g.y, sealSize)) ||
-        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, signName, g.x, g.y, sealSize * 0.42, '#c9a227'))
+        (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, signName, g.x, g.y, sealSize * 0.42, '#A8B0BC'))
       );
       if (!drewSeal) {
         ctx.font = `${Math.max(8, 10 * g.f)}px Inter, system-ui, sans-serif`;

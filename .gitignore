@@ -34,3 +34,9 @@ desktop.ini
 
 # Python
 __pycache__/
+
+# Visual-check run outputs (screenshots/reports — hundreds of MB, regenerate on demand)
+tools/visual-check/out/
+
+# Stray audit-suite copy inside the served website dir (2026-07-10: 227MB, must never deploy — see docs/ORBITLAB-INTEGRATION-MASTERPLAN-2026-07-09.md)
+website/tools/visual-check/

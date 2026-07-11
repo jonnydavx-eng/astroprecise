@@ -279,11 +279,35 @@ window.Interpretations = (() => {
     return HOUSE_MEANINGS.find(h => h.number === number) || HOUSE_MEANINGS[0];
   }
 
+  // Aspect dynamics for the composed fallback — so an aspect with no curated entry
+  // still reads as a real, specific line (naming both planets + the aspect's nature)
+  // instead of the old repeated "adds texture and meaning" filler.
+  const ASPECT_DYNAMIC = {
+    conjunction: 'fuse and intensify one another',
+    sextile: 'open up easy opportunities together',
+    square: 'create a productive tension that pushes you to grow',
+    trine: 'flow together with natural ease',
+    opposition: 'pull in opposite directions, asking you for balance',
+    quincunx: 'ask for constant small adjustments',
+    inconjunct: 'ask for constant small adjustments',
+    semisextile: 'nudge each other in quiet, subtle ways',
+    sesquiquadrate: 'create a low, persistent friction to work through',
+    quintile: 'spark a creative, original edge between them',
+  };
+  function aspectFallback(aspectType, p1, p2) {
+    const cap = (s) => String(s || '').charAt(0).toUpperCase() + String(s || '').slice(1);
+    const dyn = ASPECT_DYNAMIC[String(aspectType || '').toLowerCase()]
+      || 'shape each other in a way that colours your chart';
+    return `${cap(p1)} and ${cap(p2)} ${dyn}.`;
+  }
+
   function getAspectMeaning(aspectType, p1, p2) {
     const key   = `${p1}-${p2}`;
     const group = ASPECT_MEANINGS[aspectType];
-    if (!group) return 'This planetary relationship adds texture and meaning to your chart.';
-    return group[key] || group[`${p2}-${p1}`] || group.default;
+    const specific = group && (group[key] || group[`${p2}-${p1}`] || group.default);
+    // Use curated text only if it's real (never the old generic filler).
+    if (specific && !/adds texture and meaning/i.test(specific)) return specific;
+    return aspectFallback(aspectType, p1, p2);
   }
 
   function getRetrogradePeriods() { return RETROGRADE_SCHEDULE; }
@@ -2000,7 +2024,7 @@ function getDailyHoroscope(sign, date) {
     Taurus:      [{name:'Forest Green',hex:'#228B22'},{name:'Sage Green',hex:'#8FBC8F'},{name:'Rose Pink',hex:'#FF66B2'},{name:'Earth Brown',hex:'#8B4513'},{name:'Dusty Rose',hex:'#DCAE96'},{name:'Olive Green',hex:'#808000'},{name:'Terracotta',hex:'#E2725B'},{name:'Moss Green',hex:'#8A9A5B'},{name:'Copper',hex:'#B87333'},{name:'Warm Cream',hex:'#FFFDD0'},{name:'Burnt Sienna',hex:'#E97451'},{name:'Pale Gold',hex:'#EAE0C8'}],
     Gemini:      [{name:'Bright Yellow',hex:'#FFD700'},{name:'Electric Blue',hex:'#7DF9FF'},{name:'Lime Green',hex:'#32CD32'},{name:'Silver',hex:'#C0C0C0'},{name:'Periwinkle',hex:'#CCCCFF'},{name:'Lemon',hex:'#FFF44F'},{name:'Cyan',hex:'#00FFFF'},{name:'Light Orange',hex:'#FFB347'},{name:'Mint',hex:'#98FF98'},{name:'Lavender Blue',hex:'#8C92AC'},{name:'Pale Yellow',hex:'#FFFF99'},{name:'Sky Blue',hex:'#87CEEB'}],
     Cancer:      [{name:'Silver',hex:'#C0C0C0'},{name:'Pearl White',hex:'#F0EAD6'},{name:'Sea Blue',hex:'#006994'},{name:'Moonstone White',hex:'#E8E8E8'},{name:'Soft Teal',hex:'#5F9EA0'},{name:'Cream',hex:'#FFFDD0'},{name:'Pale Blue',hex:'#ADD8E6'},{name:'Seafoam',hex:'#9FE2BF'},{name:'Opal',hex:'#A8C5DA'},{name:'Misty Rose',hex:'#FFE4E1'},{name:'Aqua',hex:'#00FFFF'},{name:'Ice Blue',hex:'#D6E8EE'}],
-    Leo:         [{name:'Gold',hex:'#FFD700'},{name:'Royal Orange',hex:'#F97B0E'},{name:'Sunflower Yellow',hex:'#FFDA00'},{name:'Amber',hex:'#FFBF00'},{name:'Bronze',hex:'#CD7F32'},{name:'Bright Gold',hex:'#FCC200'},{name:'Lion Brown',hex:'#C68642'},{name:'Copper Gold',hex:'#CB6D51'},{name:'Marigold',hex:'#EAA221'},{name:'Burnished Gold',hex:'#c9a227'},{name:'Saffron',hex:'#F4C430'},{name:'Rich Crimson',hex:'#C90016'}],
+    Leo:         [{name:'Gold',hex:'#FFD700'},{name:'Royal Orange',hex:'#F97B0E'},{name:'Sunflower Yellow',hex:'#FFDA00'},{name:'Amber',hex:'#FFBF00'},{name:'Bronze',hex:'#CD7F32'},{name:'Bright Gold',hex:'#FCC200'},{name:'Lion Brown',hex:'#C68642'},{name:'Copper Gold',hex:'#CB6D51'},{name:'Marigold',hex:'#EAA221'},{name:'Burnished Gold',hex:'#A8B0BC'},{name:'Saffron',hex:'#F4C430'},{name:'Rich Crimson',hex:'#C90016'}],
     Virgo:       [{name:'Navy Blue',hex:'#000080'},{name:'Forest Green',hex:'#228B22'},{name:'Warm Gray',hex:'#808069'},{name:'Earth Tan',hex:'#D2B48C'},{name:'Sage',hex:'#B2AC88'},{name:'Deep Teal',hex:'#008080'},{name:'Wheat',hex:'#F5DEB3'},{name:'Slate Blue',hex:'#6A5ACD'},{name:'Moss',hex:'#8A9A5B'},{name:'Dusty Blue',hex:'#759DBE'},{name:'Khaki',hex:'#C3B091'},{name:'Pine Green',hex:'#01796F'}],
     Libra:       [{name:'Soft Pink',hex:'#FFB6C1'},{name:'Powder Blue',hex:'#B0E0E6'},{name:'Lavender',hex:'#E6E6FA'},{name:'Rose',hex:'#FF007F'},{name:'Baby Blue',hex:'#89CFF0'},{name:'Blush',hex:'#DE5D83'},{name:'Pale Lilac',hex:'#DCD0FF'},{name:'Dusty Rose',hex:'#DCAE96'},{name:'Periwinkle',hex:'#CCCCFF'},{name:'Champagne',hex:'#FAD6A5'},{name:'Soft Coral',hex:'#F88379'},{name:'Mauve',hex:'#E0B0FF'}],
     Scorpio:     [{name:'Deep Burgundy',hex:'#800020'},{name:'Black',hex:'#1C1C1C'},{name:'Dark Red',hex:'#8B0000'},{name:'Maroon',hex:'#800000'},{name:'Midnight Blue',hex:'#191970'},{name:'Obsidian',hex:'#3D3635'},{name:'Deep Plum',hex:'#4B0082'},{name:'Garnet',hex:'#6B1A1A'},{name:'Blood Orange',hex:'#D1340A'},{name:'Dark Forest',hex:'#1B4332'},{name:'Charcoal',hex:'#36454F'},{name:'Crimson',hex:'#DC143C'}],
@@ -2272,7 +2296,7 @@ function calculateCompatibility(chart1, chart2) {
     ? `Your Moon signs share the same element, giving you natural emotional attunement despite individual differences.`
     : `Your Moon signs come from different elements, meaning you will need to learn each other\'s emotional languages — a rewarding journey.`;
 
-  const overview = `${sign1} and ${sign2} — ${baseNarrative} ${moonNarrative} Overall compatibility of ${overall}% reflects both your natural resonance and the specific growth opportunities this pairing offers. ${overall >= 80 ? 'This is a highly compatible combination with natural ease and mutual understanding.' : overall >= 65 ? 'This combination has genuine potential that develops through mutual understanding and respect.' : 'This combination requires conscious effort and genuine appreciation of your differences, but these differences can be your greatest teachers.'}`;
+  const overview = `${sign1} and ${sign2} — ${baseNarrative} ${moonNarrative} ${overall >= 80 ? 'Overall, this is a highly compatible combination with natural ease and mutual understanding.' : overall >= 65 ? 'Overall, this combination has genuine potential that develops through mutual understanding and respect.' : 'Overall, this combination rewards conscious effort and genuine appreciation of your differences — those differences can be your greatest teachers.'}`;
 
   return { overall, love, communication, values, longTerm, passion, synastryAspects, overview };
 }
@@ -2418,6 +2442,21 @@ window.AstroInterpretations = Object.assign({}, window.Interpretations, {
   analyzeChartDetailed,
   ASPECTS,
 });
+
+// ── HONESTY FIX (2026-07-04) ────────────────────────────────────────────────
+// Repoint the LIVE compatibility scorer to this SECTION-4 implementation. The
+// older IIFE version (window.Interpretations.calculateCompatibility) derived the
+// headline % from a Sun/Moon/Venus element matrix + a sine-wave jitter and did
+// NOT consume the measured synastry aspects — while the UI claimed "full synastry
+// analysis ... aspect harmony and house overlays." This version folds the real
+// measured aspects (aspectAdjust) into the result and returns the genuine
+// synastryAspects list, so any UI reading it is truthful. The presentation layer
+// no longer shows a headline % at all (see APSynastry.character) — the aspect
+// list is the substance. House overlays are still NOT computed; copy updated to
+// stop claiming they are.
+if (window.Interpretations) {
+  window.Interpretations.calculateCompatibility = calculateCompatibility;
+}
 
 
 // ═══════════════════════════════════════════════════════════════════════════

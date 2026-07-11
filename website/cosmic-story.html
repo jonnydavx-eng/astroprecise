@@ -2,28 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Cosmic Story — A Personalised Narrative | Astro Precise</title>
   <meta name="description" content="Your birth chart retold as a flowing personal narrative — the arc of your Sun, Moon and rising, drawn from the real sky of your first breath. By Astro Precise." />
   <link rel="canonical" href="https://astroprecise.app/cosmic-story.html" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="theme-color" content="#07070A" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Astro Precise" />
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Your Cosmic Story | Astro Precise" />
   <meta property="og:description" content="Your birth chart retold as a flowing personal narrative, drawn from the real sky of your first breath." />
   <meta property="og:url" content="https://astroprecise.app/cosmic-story.html" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Your Cosmic Story | Astro Precise" />
+  <meta name="twitter:description" content="Your birth chart retold as a flowing personal narrative, drawn from the real sky of your first breath." />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Your Cosmic Story — Astro Precise",
+    "url": "https://astroprecise.app/cosmic-story.html",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Any (web browser)",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+    "isAccessibleForFree": true,
+    "description": "Your birth chart retold as a flowing personal narrative — the arc of your Sun, Moon and rising, drawn from the real sky of your first breath. Computed privately in your browser.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Astro Precise",
+      "url": "https://astroprecise.app/"
+    }
+  }
+  </script>
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=703" />
   <style>
-    .cstory-wrap { max-width: 760px; margin: 0 auto; padding: clamp(2rem, 6vw, 4.5rem) var(--space-4, 1rem) 4rem; }
+    .cstory-wrap { max-width: 760px; margin: 0 auto; padding: calc(var(--nav-height, 72px) + clamp(1.25rem, 4vw, 2.5rem)) var(--space-4, 1rem) 4rem; }
     .cstory-hero { text-align: center; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
     .cstory-hero__eyebrow {
       font-family: 'Cinzel', Georgia, serif; font-size: 0.72rem; letter-spacing: 0.28em;
@@ -41,7 +74,7 @@
     .cstory-note {
       margin: 0 auto 2.5rem; max-width: 560px; text-align: center; font-size: 0.9rem; line-height: 1.6;
       color: var(--ap-text-secondary, #B0A48C);
-      background: var(--ap-card-surface, rgba(20,16,11,0.5)); border: 1px solid var(--ap-card-border, rgba(194, 160, 94,0.22));
+      background: var(--ap-card-surface, rgba(20,16,11,0.5)); border: 1px solid var(--ap-card-border, rgba(168, 176, 188,0.22));
       border-radius: 14px; padding: 0.9rem 1.2rem;
     }
     .cstory-note b { color: var(--ap-gold-vivid, #E6C24A); }
@@ -55,48 +88,142 @@
       font-size: clamp(1.4rem, 3.4vw, 1.95rem); color: var(--ap-text-primary, #F0E9DA);
       margin: 0 0 0.9rem; line-height: 1.18; text-wrap: balance;
     }
-    .cstory__h::before { content: '✦'; color: var(--ap-gold, #C2A05E); font-size: 0.7em; margin-right: 0.5em; opacity: 0.7; }
+    .cstory__h::before { content: '✦'; color: var(--ap-gold, #A8B0BC); font-size: 0.7em; margin-right: 0.5em; opacity: 0.7; }
     .cstory__p {
       font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(1.08rem, 2.4vw, 1.28rem);
       line-height: 1.72; color: var(--ap-text-primary, #ECE4D4); margin: 0 0 1rem;
     }
     .cstory__p em { color: var(--ap-text-secondary, #C8B89A); }
     .cstory__p strong { color: var(--ap-gold-vivid, #E6C24A); font-weight: 600; }
-    .cstory-foot { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--ap-card-border, rgba(194, 160, 94,0.18)); }
+    .cstory-foot { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--ap-card-border, rgba(168, 176, 188,0.18)); }
     .cstory-foot__line { color: var(--ap-text-secondary, #B0A48C); font-size: 0.98rem; margin: 0 0 1.2rem; }
     .cstory-cta {
       display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0 1.6rem;
       border-radius: 999px; font-weight: 700; font-size: 0.95rem; text-decoration: none; color: #0d0a07;
       background: linear-gradient(135deg, var(--ap-gold-vivid, #E6C24A) 0%, #d4b84a 45%, #a8841e 100%);
     }
-    .cstory-cta--ghost { background: transparent; color: var(--ap-gold-vivid, #E6C24A); border: 1px solid var(--ap-card-border-strong, rgba(194, 160, 94,0.4)); margin-left: 0.6rem; }
+    .cstory-cta--ghost { background: transparent; color: var(--ap-gold-vivid, #E6C24A); border: 1px solid var(--ap-card-border-strong, rgba(168, 176, 188,0.4)); margin-left: 0.6rem; }
     .cstory-skel { opacity: 0.6; text-align: center; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; color: var(--ap-text-secondary, #B0A48C); padding: 2rem 0; }
   </style>
 </head>
-<body class="page-cosmic-story ap-cinematic-2026">
+<body class="page-cosmic-story ap-cinematic-2026 ap-no-nav-enter">
   <a id="skip-to-content" class="skip-link" href="#cstory-out">Skip to content</a>
   <canvas id="starfield-canvas" class="starfield-canvas" aria-hidden="true"></canvas>
 
+  <!-- ============================================================
+       NAVIGATION — shared masthead (renderNav in app.js fills .navbar__nav)
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="chart.html" class="navbar__link">Chart</a><a href="ephemeris.html" class="navbar__link">Sky</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="cosmic-story.html" class="navbar__link">Readings</a><a href="guides.html" class="navbar__link">Library</a><a href="shop.html" class="navbar__link">Shop</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
   <main class="cstory-wrap" id="main-content">
     <header class="cstory-hero">
-      <p class="cstory-hero__eyebrow">✦ A Personalised Reading</p>
+      <p class="cstory-hero__eyebrow">✦ A free sample reading — yours will be personal</p>
       <h1 class="cstory-hero__title" id="cstory-title">Your Cosmic Story</h1>
       <p class="cstory-hero__sub">Your chart, retold as a story — written from the exact sky of your first breath.</p>
     </header>
 
-    <p class="cstory-note" id="cstory-note" hidden>This is a <b>sample</b> woven from a real example chart. <a href="chart.html" style="color:var(--ap-gold-vivid,#E6C24A)">Cast your own chart</a> and your story rewrites itself from your placements.</p>
+    <p class="cstory-note" id="cstory-note" hidden>This is a <b>free sample</b> woven from a real example chart. <a href="chart.html" style="color:var(--ap-gold-vivid,#E6C24A)">Cast your own chart</a> and your story rewrites itself from your placements.</p>
 
     <div id="cstory-out" aria-live="polite"><p class="cstory-skel">Reading the sky…</p></div>
 
+    <div id="cosmic-story-ai-panel" hidden aria-label="Optional reading insight"></div>
+
     <footer class="cstory-foot">
       <p class="cstory-foot__line">Every line above is drawn from your real VSOP87 chart — not a generic horoscope.</p>
-      <a class="cstory-cta" href="chart.html">✦ Cast your own chart</a>
-      <a class="cstory-cta cstory-cta--ghost" href="shop.html#cosmic-story">Get it as a keepsake PDF</a>
+      <a class="cstory-cta" href="chart.html">✦ Cast your free chart →</a>
+      <a class="cstory-cta cstory-cta--ghost" href="shop.html#deep-reading">Get your Deep Reading →</a>
     </footer>
   </main>
 
+  <!-- ============================================================
+       FOOTER — unified footer-nav model (ap-footer-inject upgrades in place)
+  ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner" data-ap-footer-model="1">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand__logo" aria-label="Astro Precise home">
+            <span class="footer-brand__logo-mark" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="28" height="28" decoding="async" /></span>
+            <span class="footer-brand__logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+          </a>
+          <p class="footer-brand__tagline">
+            A precision instrument wearing the skin of an astrology site.
+            Real astronomy, read in the old language.
+          </p>
+          <p>
+            <span class="footer-brand__badge">
+              <span aria-hidden="true">⊙</span> Computed on your device &middot; VSOP87 + ELP2000
+            </span>
+          </p>
+        </div>
+
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
+          <ul>
+            <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
+            <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
+            <li><a href="ephemeris.html"><span aria-hidden="true">⬡</span> Sky</a></li>
+            <li><a href="cosmic-story.html"><span aria-hidden="true">✦</span> Readings</a></li>
+            <li><a href="guides.html"><span aria-hidden="true">☰</span> Library</a></li>
+            <li><a href="shop.html"><span aria-hidden="true">◇</span> Shop</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Daily horoscope readings">
+          <h2 class="footer-nav-col__title">Daily readings</h2>
+          <ul>
+            <li><a href="horoscope.html?sign=aries">Aries today</a></li>
+            <li><a href="horoscope.html?sign=taurus">Taurus today</a></li>
+            <li><a href="horoscope.html?sign=gemini">Gemini today</a></li>
+            <li><a href="horoscope.html?sign=cancer">Cancer today</a></li>
+            <li><a href="horoscope.html?sign=leo">Leo today</a></li>
+            <li><a href="horoscope.html?sign=virgo">Virgo today</a></li>
+            <li><a href="horoscope.html">All signs →</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col" role="group" aria-label="Zodiac sign guides">
+          <h2 class="footer-nav-col__title">Sign guides</h2>
+          <ul>
+            <li><a href="aries.html">Aries profile</a></li>
+            <li><a href="taurus.html">Taurus profile</a></li>
+            <li><a href="gemini.html">Gemini profile</a></li>
+            <li><a href="cancer.html">Cancer profile</a></li>
+            <li><a href="leo.html">Leo profile</a></li>
+            <li><a href="virgo.html">Virgo profile</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        <p>&copy; 2026 Astro Precise &middot; All calculations run on your device &middot; No data collected &middot; No accounts required</p>
+        <p style="font-size:0.6rem;color:var(--silver-dark);">Built with VSOP87 &amp; ELP2000 astronomical algorithms</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
   <script src="js/ap-zodiac-constants.js"></script>
   <script src="js/ephemeris.js"></script>
+  <script src="js/profile.js" defer></script>
   <script src="js/ap-load-interpretations.js"></script>
   <script src="js/cosmic-story.js"></script>
   <script src="js/effects.js" defer></script>
@@ -134,7 +261,28 @@
       var chart = null, isDemo = false;
       try {
         var arr = JSON.parse(localStorage.getItem('ap_charts') || '[]');
-        if (arr && arr[0] && arr[0].positions) chart = arr[0];
+        if (arr && arr.length) {
+          var activeId = localStorage.getItem('ap_active_chart');
+          var raw = activeId
+            ? arr.filter(function (c) { return String(c.id) === String(activeId); })[0]
+            : null;
+          if (!raw) raw = arr[0];
+          if (raw) {
+            if (window.AstroProfile && typeof AstroProfile.buildChartData === 'function' && raw.birthDate) {
+              chart = AstroProfile.buildChartData({
+                name: raw.name, date: raw.birthDate, time: raw.birthTime,
+                lat: raw.lat, lon: raw.lon, city: raw.birthCity || raw.city,
+                tz: raw.tz, houseSystem: raw.houseSystem,
+              });
+            }
+            if (!chart && window.AstroProfile && typeof AstroProfile.hydrateChartFromSaved === 'function') {
+              chart = AstroProfile.hydrateChartFromSaved(raw);
+            }
+            if (!chart && raw.positions) {
+              chart = raw;
+            }
+          }
+        }
       } catch (e) {}
       if (!chart) {
         isDemo = true;
@@ -163,5 +311,12 @@
     else go();
   })();
   </script>
+
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
+  <!-- Shared page chrome: renderNav (masthead) + upgraded footer nav model -->
+  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
 </body>
 </html>

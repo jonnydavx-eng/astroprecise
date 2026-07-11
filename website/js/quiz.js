@@ -305,7 +305,7 @@ const AstroQuiz = (() => {
     // 2) DEEP READING — dormant-safe. Live link if configured, else email-intent.
     if (isUrl(M.deepReadingUrl)) {
       rows.push(`
-        <a class="aq-route" href="${esc(M.deepReadingUrl.trim())}" target="_blank" rel="noopener">
+        <a class="aq-route" href="${esc(M.deepReadingUrl.trim())}" target="_blank" rel="noopener sponsored">
           <span class="aq-route__icon" aria-hidden="true">❧</span>
           <span class="aq-route__body">
             <span class="aq-route__title">Get your Deep Reading</span>
@@ -332,7 +332,7 @@ const AstroQuiz = (() => {
     if (product) {
       const live = isUrl(product.fulfilUrl);
       const href = live ? esc(product.fulfilUrl.trim()) : 'shop.html';
-      const targetAttr = live ? ' target="_blank" rel="noopener"' : '';
+      const targetAttr = live ? ' target="_blank" rel="noopener sponsored"' : '';
       const priceTxt = (typeof product.price === 'number')
         ? '$' + product.price.toFixed(2) : '';
       rows.push(`
@@ -394,6 +394,7 @@ const AstroQuiz = (() => {
           f.method = 'POST';
           f.action = M.emailUrl.trim();
           f.target = '_blank';
+          f.rel = 'noopener';
           const inp = document.createElement('input');
           inp.type = 'hidden'; inp.name = 'email'; inp.value = val;
           f.appendChild(inp);
@@ -410,7 +411,7 @@ const AstroQuiz = (() => {
         } catch (_) { /* ignore storage failures */ }
       }
       note.textContent = 'Saved — you\'re on the list. Thank you.';
-      note.style.color = 'var(--color-gold, #C9A227)';
+      note.style.color = 'var(--color-gold, #A8B0BC)';
       input.disabled = true;
       form.querySelector('button[type="submit"]').disabled = true;
     });

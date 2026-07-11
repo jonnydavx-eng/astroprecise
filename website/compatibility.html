@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Astro Precise Cosmic Compatibility — synastry birth chart comparison and full compatibility report. Discover your astrological dynamics." />
   <meta name="robots" content="index, follow" />
@@ -9,20 +11,26 @@
 <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Zodiac Compatibility | Astro Precise" />
   <meta property="og:description" content="Free synastry and compatibility reports — compare two birth charts and discover your cosmic connection." />
   <meta property="og:url" content="https://astroprecise.app/compatibility.html" />
   <link rel="canonical" href="https://astroprecise.app/compatibility.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Zodiac Compatibility | Astro Precise" />
   <meta name="twitter:description" content="Free synastry and compatibility reports — compare two birth charts and discover your cosmic connection." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -36,7 +44,7 @@
     "url": "https://astroprecise.app/compatibility.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
     "description": "Compare two birth charts for synastry aspects, composite themes, and relationship compatibility — computed locally from precise astronomy.",
     "isPartOf": {
@@ -50,11 +58,16 @@
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
     /* CLS — hero shell + orbs before main-lite spacing tokens parse */
     .hero--small{padding:calc(72px + 4rem) 0 3rem;min-height:603px}
-    .compat-orbs{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 2.5rem;max-width:460px;position:relative;min-height:120px}
-    .compat-orb{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .compat-orb__core{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;line-height:1}
-    .compat-orbs__arc{flex:1;height:40px;display:flex;align-items:center;justify-content:center;min-width:80px;position:relative}
-    .ap-badge{display:inline-flex;align-items:center;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;padding:4px 12px;border-radius:999px;border:1px solid rgba(194, 160, 94,0.3)}
+    .compat-orbs{display:flex;align-items:center;justify-content:center;gap:0;margin:0 auto 2.5rem;max-width:560px;position:relative;min-height:200px}
+    .compat-orb{width:148px;height:148px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .compat-orb__core{width:124px;height:124px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3.1rem;line-height:1}
+    .compat-orbs__arc{flex:1;height:40px;display:flex;align-items:center;justify-content:center;min-width:96px;position:relative}
+    @media (max-width:560px){
+      .compat-orbs{max-width:100%;min-height:168px}
+      .compat-orb{width:116px;height:116px}
+      .compat-orb__core{width:96px;height:96px;font-size:2.5rem}
+    }
+    .ap-badge{display:inline-flex;align-items:center;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;padding:4px 12px;border-radius:999px;border:1px solid rgba(168, 176, 188,0.3)}
     @media (max-width: 768px) {
       #compat-form.compat-form { min-height: 1680px; }
       .compat-form__grid { grid-template-columns: 1fr !important; }
@@ -69,6 +82,8 @@
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=703" />
+  <link rel="stylesheet" href="css/ap-site-polish.css?v=703" />
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferCompatFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferCompatFonts();deferPageCss('css/celestial-seals.css','ap-css-seals');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/compatibility-page-deferred.css','ap-css-compat-deferred');});</script>
 </head>
@@ -100,15 +115,14 @@
           <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
         </a>
         <div class="navbar__nav" role="group" aria-label="Primary">
-          <a href="index.html" class="navbar__link">Home</a>
-          <a href="chart.html" class="navbar__link">Chart</a>
-          <a href="horoscope.html" class="navbar__link">Daily</a>
-          <a href="compatibility.html" class="navbar__link active" aria-current="page">Match</a>
-          <a href="ephemeris.html" class="navbar__link">Sky</a>
-          <div class="navbar__more" data-nav-more>
-            <button type="button" class="navbar__more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="navbar-more-panel">More</button>
-            <div class="navbar__more-panel" id="navbar-more-panel" role="group" aria-label="More tools and pages" hidden></div>
-          </div>
+          <noscript>
+            <a href="chart.html" class="navbar__link">Chart</a>
+            <a href="ephemeris.html" class="navbar__link">Sky</a>
+            <a href="horoscope.html" class="navbar__link">Daily</a>
+            <a href="cosmic-story.html" class="navbar__link">Readings</a>
+            <a href="guides.html" class="navbar__link">Library</a>
+            <a href="shop.html" class="navbar__link">Shop</a>
+          </noscript>
         </div>
         <div class="navbar__end">
           <a href="profile.html" class="navbar__profile-top" aria-label="My Profile">
@@ -138,7 +152,7 @@
         <p style="margin-top:var(--space-3);"><a href="why.html" style="text-decoration:none;"><span class="ap-badge">Full synastry — inter-chart aspects with measured orbs, not Sun-sign matching</span></a></p>
 
         <!-- Two luminous orb avatars with connecting arc -->
-        <div class="compat-orbs" style="display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;max-width:460px;min-height:120px" aria-hidden="true">
+        <div class="compat-orbs" style="display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;max-width:560px;min-height:200px" aria-hidden="true">
           <div class="compat-orb compat-orb--1">
             <div class="compat-orb__core" id="orb1-core"><span id="orb1-glyph"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span></div>
             <span class="compat-person-label">Person A</span>
@@ -149,8 +163,8 @@
               <defs>
                 <linearGradient id="arc-g" x1="0" x2="1" y1="0" y2="0">
                   <stop offset="0%" stop-color="#9db36a"/>
-                  <stop offset="50%" stop-color="#C2A05E" stop-opacity="0.6"/>
-                  <stop offset="100%" stop-color="#C2A05E"/>
+                  <stop offset="50%" stop-color="#A8B0BC" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#A8B0BC"/>
                 </linearGradient>
               </defs>
             </svg>
@@ -302,12 +316,12 @@
 
           <!-- Score ring (200px, gradient stroke) -->
           <div class="compat-score animate-in animate-in--delay-1">
-            <div class="score-ring-wrapper" role="img" aria-label="Overall compatibility score">
+            <div class="score-ring-wrapper" role="img" aria-label="Harmony of the measured aspects between your two charts">
               <svg viewBox="0 0 160 160" class="score-ring-svg" aria-hidden="true">
                 <defs>
                   <linearGradient id="compat-grad" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stop-color="#5c4a6e" />
-                    <stop offset="100%" stop-color="#C2A05E" />
+                    <stop offset="100%" stop-color="#A8B0BC" />
                   </linearGradient>
                 </defs>
                 <!-- Track -->
@@ -320,7 +334,7 @@
               </svg>
               <div class="score-ring-label">
                 <span id="overall-score" class="score-number">—</span>
-                <span class="score-label-text">Compatibility</span>
+                <span class="score-label-text">in harmony</span>
               </div>
             </div>
             <!-- Connection label below ring -->
@@ -421,6 +435,8 @@
             <div id="davison-angles" class="midchart-angles"></div>
           </div><!-- /#panel-davison -->
 
+          <div id="compatibility-ai-panel" hidden aria-label="Optional match insight"></div>
+
         </section><!-- /#compat-result -->
 
         <!-- Hidden canvas for card export -->
@@ -484,14 +500,14 @@
       <div class="container">
         <h2 class="section__title" id="matrix-heading">Sun Sign Compatibility Grid</h2>
         <p class="section__subtitle">
-          A quick elemental overview of Sun sign compatibility.
-          Green = high harmony, Gold = moderate, Red = challenging, Grey = depends on the full chart.
+          A quick elemental overview of Sun sign compatibility, read as an engraved brass plate —
+          the brighter the mark, the higher the natural harmony; the fainter, the more the full chart decides.
         </p>
 
         <div class="card compat-matrix-scroll" tabindex="0" aria-label="12-by-12 zodiac sign compatibility matrix">
           <div style="min-width:600px;">
             <table class="compat-matrix" aria-label="Sun sign compatibility overview">
-              <caption class="sr-only">Sun sign compatibility: High (green), Medium (gold), Low (red), Neutral (grey).</caption>
+              <caption class="sr-only">Sun sign compatibility, shown as a brass luminance ramp: High (brightest), Medium, Low (faintest), Neutral (depends on the full chart).</caption>
               <thead>
                 <tr>
                   <th scope="col" aria-label="Sign" style="background:transparent;border:none;"><span class="compat-sign-abbr">Sign</span></th>
@@ -587,16 +603,16 @@
           </div>
           <div style="display:flex;gap:var(--space-6);margin-top:var(--space-5);flex-wrap:wrap;" aria-label="Legend">
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(120, 140, 70,0.4);display:inline-block;" aria-hidden="true"></span>High Compatibility
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(216,185,120,0.55);box-shadow:inset 0 0 0 1px rgba(216,185,120,0.6);display:inline-block;" aria-hidden="true"></span>High Compatibility
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(251,191,36,0.4);display:inline-block;" aria-hidden="true"></span>Medium Compatibility
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(168,176,188,0.34);display:inline-block;" aria-hidden="true"></span>Medium Compatibility
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(239,68,68,0.3);display:inline-block;" aria-hidden="true"></span>Challenging
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.22);display:inline-block;" aria-hidden="true"></span>Challenging
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:var(--color-surface-2);display:inline-block;" aria-hidden="true"></span>Neutral / Depends
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.08);box-shadow:inset 0 0 0 1px rgba(140,117,68,0.2);display:inline-block;" aria-hidden="true"></span>Neutral / Depends
             </span>
           </div>
           <p class="form-hint" style="margin-top:var(--space-3);">
@@ -632,9 +648,10 @@
             </p>
             <p style="color:var(--color-silver-dim);line-height:1.8;">
               Astro Precise calculates all Ptolemaic aspects with standard orbs — 8° for major aspects,
-              4° for minor ones — giving you a complete and accurate picture of your inter-chart
-              dynamics. The score is derived from a weighted analysis of aspect harmony, elemental
-              balance, and house overlays.
+              4° for minor ones — the real measured contacts between your two charts. The overall
+              character above is read from the balance of those aspects — how many bring ease versus
+              friction — rather than a single number pretending to score a relationship. The area bars
+              show the elemental resonance between your key placements.
             </p>
           </div>
           <div>
@@ -745,8 +762,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -835,6 +852,10 @@
   })();
   </script>
 
+  <script src="js/synastry-shared.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/compatibility-page.js" defer></script>
 </body>
 </html>

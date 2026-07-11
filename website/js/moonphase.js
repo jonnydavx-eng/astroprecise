@@ -287,8 +287,23 @@
         '<p class="mp-card__blurb">' + phase.blurb + '</p>' +
         '<p class="mp-card__honesty">Computed from real Sun &amp; Moon positions (VSOP87 / ELP2000), evaluated at 12:00&nbsp;UT.</p>' +
       '</article>' +
-      '<div class="mp-actions">' +
+      '<div class="mp-actions" style="gap:0.6rem;flex-wrap:wrap;">' +
         '<button type="button" class="btn btn--secondary" id="mp-copy-btn">Copy shareable text</button>' +
+        // Bridge to Moment — the visitor has already given a meaningful date;
+        // Moment turns that night into a free keepsake card.
+        '<a class="btn btn--outline" href="moment.html">Freeze this night as a keepsake &rarr;</a>' +
+        // Open that calendar day at 12:00 UT in the 3D model (explore #m= receiver).
+        (function () {
+          try {
+            var p = phase.parts;
+            if (!p) return '';
+            var iso = new Date(Date.UTC(p.y, p.m - 1, p.d, 12, 0, 0)).toISOString();
+            return '<a class="btn btn--outline" href="explore.html#m=' +
+              encodeURIComponent(iso) + '&focus=moon">See this Moon in the 3D model &rarr;</a>';
+          } catch (e) {
+            return '<a class="btn btn--outline" href="explore.html#m=now&focus=moon">See the Moon in the 3D model &rarr;</a>';
+          }
+        })() +
       '</div>';
 
     out.classList.remove('hidden');

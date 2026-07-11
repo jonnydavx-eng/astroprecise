@@ -2,12 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Discover your Life Path number, Expression number, and Personal Year. Free numerology calculator powered by precise birth-date arithmetic — no random readings, always deterministic." />
+  <meta name="description" content="Free Life Path calculator — your Life Path, Expression and Personal Year numbers from precise birth-date arithmetic. Deterministic, never random." />
   <title>Life Path Calculator — Numerology Blueprint | Astro Precise</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Life Path Calculator — Numerology Blueprint | Astro Precise" />
@@ -22,7 +27,7 @@
     "url": "https://astroprecise.app/lifepath.html",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Any (web browser)",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
     "isAccessibleForFree": true,
     "description": "Free Life Path numerology calculator with Expression, Soul Urge, and Personal Year numbers — deterministic Pythagorean arithmetic, computed locally in your browser.",
     "isPartOf": {
@@ -32,9 +37,12 @@
     }
   }
   </script>
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
@@ -176,6 +184,18 @@
           <div class="lp-name-numbers-grid" id="lp-name-numbers-grid"></div>
         </div>
 
+        <!-- Honesty framing — the arithmetic above is exact; the meanings below
+             are tradition, and are labelled as such (angel-numbers pattern) -->
+        <div class="lp-panel" style="margin-bottom:var(--space-6);">
+          <p class="lp-panel__title">How to read these</p>
+          <p style="font-size:0.85rem;color:var(--silver);line-height:1.7;margin:0;">
+            The calculation above is exact arithmetic &mdash; same date, same number, every time.
+            The meanings below are something different: numerology is a symbolic tradition,
+            and these readings are <em>a mirror for reflection, not a measured property of you</em>.
+            Take what prompts honest self-inquiry and leave the rest.
+          </p>
+        </div>
+
         <!-- Reading panels -->
         <div class="lp-reading-grid">
           <div class="lp-panel">
@@ -194,7 +214,8 @@
             <p class="lp-panel__title">Most Compatible Numbers</p>
             <div class="lp-compat-strip" id="lp-compatibles"></div>
             <p style="font-size:0.65rem;color:var(--silver-dim);margin-top:var(--space-4);line-height:1.5;">
-              Compatibility is calculated from life path vibration resonance, not personalities alone.
+              These are traditional pairings from the Pythagorean tradition &mdash; a starting point for reflection, not a verdict.
+              For the measured version, try the <a href="compatibility.html">synastry calculator</a>.
             </p>
           </div>
         </div>
@@ -333,6 +354,10 @@
       </div>
     </section>
 
+    <div class="container" style="max-width:920px;margin:0 auto var(--space-8);">
+      <div id="lifepath-ai-panel" hidden aria-label="Optional numerology insight"></div>
+    </div>
+
   </main>
 
   <footer class="site-footer" role="contentinfo">
@@ -370,8 +395,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -514,12 +539,12 @@
       strengths: ['Natural leadership and executive ability','Innovative, original thinking','Drive and determined follow-through','Self-reliance under pressure','Courage to initiate the untried'],
       challenges: ['Tendency toward self-absorption','Impatience with slower paces','Difficulty delegating control','Vulnerability masked by strength'],
       compatibles: [3,5,9], keywords: ['Leadership','Originality','Ambition','Independence','Courage'],
-      color: '#C2A05E',
+      color: '#A8B0BC',
     },
     2: {
       title: 'The Diplomat', glyph: '☽', element: 'water',
       tagline: 'Cooperation, sensitivity, and the gift of harmony',
-      overview: 'Life Path 2 vibrates with the Moon — intuitive, receptive, and deeply attuned to the currents between people. Your gift is the ability to bring opposing forces into balance. Where others see conflict, you perceive the bridge. You are the hidden power behind every great collaboration.',
+      overview: 'Life Path 2 is traditionally paired with the Moon — intuitive, receptive, and deeply attuned to the currents between people. Your gift is the ability to bring opposing forces into balance. Where others see conflict, you perceive the bridge. You are the hidden power behind every great collaboration.',
       strengths: ['Deep empathy and emotional intelligence','Diplomatic and peacemaking skill','Patience in complex situations','Supportive, loyal nature','Intuitive perception of others\' needs'],
       challenges: ['Over-sensitivity to criticism','Indecision when outcomes are unclear','Self-doubt in solo endeavours','Avoidance of necessary confrontation'],
       compatibles: [4,6,8], keywords: ['Harmony','Partnership','Intuition','Balance','Cooperation'],
@@ -582,11 +607,11 @@
     9: {
       title: 'The Humanitarian', glyph: '◈', element: 'fire',
       tagline: 'Universal love, compassion, and the vibration of completion',
-      overview: 'Life Path 9 vibrates at the highest frequency of the single digits — the universal current of love, completion, and transcendence. You carry wisdom from many lifetimes and feel called to serve humanity in sweeping, impersonal ways. The 9 does not ask for credit; it asks only that the light it carries reaches those who need it.',
+      overview: 'Life Path 9 sits at the top of the single digits — read in the tradition as the universal current of love, completion, and transcendence. The tradition casts the 9 as an old soul, called to serve humanity in sweeping, impersonal ways. The 9 does not ask for credit; it asks only that the light it carries reaches those who need it.',
       strengths: ['Universal compassion that transcends personal agenda','Deep, cross-cultural wisdom','Genuine generosity of spirit and resources','Creative and artistic range','Ability to see the whole where others see parts'],
       challenges: ['Giving so much there is little left for self','Difficulty releasing the past and its sorrows','Scattered idealism that lacks executable form','Emotional volatility when ideals meet reality'],
       compatibles: [3,6,9], keywords: ['Compassion','Universal Love','Service','Wisdom','Completion'],
-      color: '#C2A05E',
+      color: '#A8B0BC',
     },
     11: {
       title: 'The Illuminator', glyph: '⊙', element: 'air', master: true,
@@ -604,13 +629,13 @@
       strengths: ['Grand visionary thinking paired with execution ability','Exceptional, patient discipline','Leadership operating at a world-historical scale','Mastery of complex systems and organisations','Transformative impact that outlasts the person'],
       challenges: ['The crushing weight of unrealised potential','Paralysing perfectionism that prevents the first step','Difficulty trusting others enough to delegate','Fear of the full magnitude of the 22 frequency'],
       compatibles: [4,11,22], keywords: ['Master Builder','Vision','Manifestation','Legacy','Power'],
-      color: '#C2A05E',
+      color: '#A8B0BC',
     },
     33: {
       title: 'The Master Teacher', glyph: '', element: 'water', master: true,
       tagline: 'Master Teacher — unconditional love and the highest healing',
       overview: 'Life Path 33 is the rarest and highest vibration — the Master Teacher. The 33 is only genuinely operative when the 11 and 22 are present in the full chart. You are called to uplift humanity through unconditional love, inspired creative expression, and spiritual healing. The 33 asks everything of the person who carries it — and returns everything transformed.',
-      strengths: ['Profound, cellular healing energy','Capacity for unconditional love in full expression','Visionary compassion that sees suffering\'s source','Inspiring others through lived example, not instruction','Spiritual mastery in the service of others\' freedom'],
+      strengths: ['A profoundly healing, steadying presence','Capacity for unconditional love in full expression','Visionary compassion that sees suffering\'s source','Inspiring others through lived example, not instruction','Spiritual mastery in the service of others\' freedom'],
       challenges: ['The unbearable weight of the 33 frequency ungrounded','Self-sacrifice that becomes quiet martyrdom','Grounding the frequency in the ordinary days of life','Maintaining personal boundaries while radiating universal love'],
       compatibles: [6,11,22], keywords: ['Master Teacher','Healing','Service','Love','Inspiration'],
       color: '#b04a52',
@@ -626,7 +651,7 @@
   const LP_ORDER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
 
   const ELEMENT_THEME = {
-    fire:  { stripe: '#C2A05E', dim: 'rgba(196,100,50,0.12)',  mandala: 'rgba(196,100,50,0.2)' },
+    fire:  { stripe: '#A8B0BC', dim: 'rgba(196,100,50,0.12)',  mandala: 'rgba(196,100,50,0.2)' },
     earth: { stripe: '#0e5c3a', dim: 'rgba(14,92,58,0.12)',    mandala: 'rgba(14,92,58,0.2)' },
     air:   { stripe: '#5b7fc7', dim: 'rgba(91,127,199,0.12)',  mandala: 'rgba(91,127,199,0.2)' },
     water: { stripe: '#6a8a82', dim: 'rgba(63,125,118,0.12)',  mandala: 'rgba(63,125,118,0.18)' },
@@ -755,8 +780,8 @@
     ctx.clearRect(0, 0, W, H);
 
     var base = color || 'rgba(196,146,10,0.18)';
-    var goldAccent = 'rgba(194, 160, 94,0.55)';   // --ap-gold-a55
-    var goldGlow   = 'rgba(194, 160, 94,0.16)';   // --ap-gold-a16
+    var goldAccent = 'rgba(168, 176, 188,0.55)';   // --ap-gold-a55
+    var goldGlow   = 'rgba(168, 176, 188,0.16)';   // --ap-gold-a16
 
     // ── Derive geometry purely from the real life-path number ──────────────
     var n = parseInt(lpNumber, 10);
@@ -783,7 +808,7 @@
     if (isMaster) {
       var grad = ctx.createRadialGradient(cx, cy, rMax * 0.1, cx, cy, rMax);
       grad.addColorStop(0, goldGlow);
-      grad.addColorStop(1, 'rgba(194, 160, 94,0)');
+      grad.addColorStop(1, 'rgba(168, 176, 188,0)');
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(cx, cy, rMax, 0, Math.PI * 2);
@@ -1105,8 +1130,8 @@
     }
 
     // Element color accent stripe — left edge 12px wide
-    const elementColorMap = {fire:'#C2A05E',earth:'#0e5c3a',air:'#9db36a',water:'#6a8a82'};
-    const stripeColor = elementColorMap[data.element] || '#C2A05E';
+    const elementColorMap = {fire:'#A8B0BC',earth:'#0e5c3a',air:'#9db36a',water:'#6a8a82'};
+    const stripeColor = elementColorMap[data.element] || '#A8B0BC';
     ctx.fillStyle = stripeColor;
     ctx.fillRect(40, 40, 12, H - 80);
 
@@ -1251,7 +1276,7 @@
     if (grid) {
       const placeholder = document.getElementById('lp-grid-placeholder');
       const elementCardColors = {
-        fire: { border: '#C2A05E', glow: 'rgba(196,146,10,0.15)' },
+        fire: { border: '#A8B0BC', glow: 'rgba(196,146,10,0.15)' },
         earth: { border: '#0e5c3a', glow: 'rgba(14,92,58,0.15)' },
         air: { border: '#9db36a', glow: 'rgba(91,127,199,0.15)' },
         water: { border: '#6a8a82', glow: 'rgba(63,125,118,0.15)' }
@@ -1313,6 +1338,11 @@
     }
   });
   </script>
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=703" />
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/ap-page-boot.js" defer></script>
   <script src="js/ap-footer-inject.js" defer></script>
 </body>

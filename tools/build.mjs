@@ -83,7 +83,8 @@ async function run() {
       const code = readFileSync(p, 'utf8')
       jsBefore += code.length
       try {
-        const r = await esbuild.transform(code, { loader: 'js', minify: true, legalComments: 'none' })
+        // legalComments 'inline' keeps /*! license */ headers (Three.js MIT requires notice retention)
+        const r = await esbuild.transform(code, { loader: 'js', minify: true, legalComments: 'inline' })
         writeFileSync(dest, r.code)
         jsAfter += r.code.length
       } catch (e) {

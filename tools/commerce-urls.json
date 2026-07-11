@@ -3,22 +3,23 @@
   "store_slug": "astroprecise",
   "updated_at": "2026-06-15T20:00:00.000Z",
   "checkout": {
-    "deep-reading": "https://astroprecise.lemonsqueezy.com/checkout/custom/26df35e8-84a8-4cb3-b4d0-7142c67b2a67?signature=25e108b98182e113f0045cc9c16fdf883cf2460b0fb5ab6b7af8ce7cecfd88ec",
-    "natal-poster-pdf": "https://astroprecise.lemonsqueezy.com/checkout/custom/42029e1a-1d9c-401d-be71-ab517e3da594?signature=fdafb9c0f633768be80c55b56786ca47f2d63920ca0fed8709ab41e83c78ad8a",
-    "reading-poster-bundle": "https://astroprecise.lemonsqueezy.com/checkout/custom/2c503a60-c01e-4694-9a56-c179f9a8a4b7?signature=818268afc134daac9ba3ed051e5eb2d8a5b10c4ac392dc2a45afb4782bd4ec3f",
-    "two-skies-map": "https://astroprecise.lemonsqueezy.com/checkout/custom/8015c283-98cd-4ed8-9d9b-d145a63a79a3?signature=02880ea1f9ade3063340fb4dd727ab151d3611c7797d6a9062a63851ee0501b7",
-    "gift-reading": "https://astroprecise.lemonsqueezy.com/checkout/custom/2fd63e38-78d6-4096-b0b5-db3ae68a8287?signature=05153867779b0dba4aba5b1e2349cc3af3252c65c047a9e906a366d3bf158f15",
-    "gift-box-whole-sky": "https://astroprecise.lemonsqueezy.com/checkout/custom/0c1e9679-cde4-45b3-8e64-bf4137efa236?signature=fe0c7290321dec98d7d726bee69ed6e2152cf9f9a4acc8b3ccfe9dce5dcbedba",
-    "natal-poster": "https://astroprecise.lemonsqueezy.com/checkout/custom/b96ab7e6-5b60-463f-a447-2829c65d1948?signature=aaba0330319df3dabc194a375ea7f37b3da70655687fae87c9b686b84d7882a7",
-    "big-three-print": "https://astroprecise.lemonsqueezy.com/checkout/custom/293d41b4-95b2-49b8-a5dd-933ba8bac28d?signature=ae2e0280080783aee3858dae9dacaa67047fb9043c0f62f96fe2e84409103353",
-    "sky-tee": "https://astroprecise.lemonsqueezy.com/checkout/custom/bc99eaab-fe40-4336-84be-4986169b7d4f?signature=7f07cebec6e274b3898992547b0816503b90a83554ca3311ff372714b5dc05c9",
-    "sky-hoodie": "https://astroprecise.lemonsqueezy.com/checkout/custom/e4433127-c65b-481d-8cb9-9b1d5f95006e?signature=82e68c110830134e1d7a986f3ab12414233529ba426f61e01eaf9deaec5f6caa",
-    "constellation-mug": "https://astroprecise.lemonsqueezy.com/checkout/custom/1f278c11-0c09-4ea8-9d90-4eec2a168287?signature=c36479767c244cd7173a7a6a218d7aadaabd3bf7c71e4b7450d9a9c1c3270346",
-    "year-ahead": "https://astroprecise.lemonsqueezy.com/checkout/custom/473b0829-db32-4bf7-a275-7d706b31cded?signature=1b06bda8eba8a32013da2c2643d1c555e88f8deca10bad16bcb9354971283785",
-    "solar-return": "https://astroprecise.lemonsqueezy.com/checkout/custom/d81bce29-044a-46e4-83ef-f1350c016fc1?signature=7f8f3aa74c633df77621fedb90186a251ab1cae0b76af1dbb1e0034ad4203723"
+    "deep-reading": "",
+    "natal-poster-pdf": "",
+    "reading-poster-bundle": "",
+    "two-skies-map": "",
+    "gift-reading": "",
+    "gift-box-whole-sky": "",
+    "natal-poster": "",
+    "big-three-print": "",
+    "sky-tee": "",
+    "sky-hoodie": "",
+    "constellation-mug": "",
+    "year-ahead": "",
+    "solar-return": ""
   },
   "store_id": "407645",
   "master_variant_id": "1794298",
   "linked_at": "2026-06-15T23:23:29.091Z",
-  "link_mode": "ls-checkouts-api-typeform-redirect"
+  "link_mode": "ls-checkouts-api-typeform-redirect",
+  "_note": "2026-07-02: Lemon Squeezy dropped (would not onboard). Paste PayPal payment links (https://www.paypal.com/ncp/payment/<id>) per SKU, then run tools/wire-ap-mon.mjs — or paste directly into AP_MON in website/js/app.js. See PAYPAL-SETUP.md."
 }

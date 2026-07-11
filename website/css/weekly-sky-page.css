@@ -1,0 +1,233 @@
+/* ==========================================================================
+   This Week's Sky — page styles (wk-*)
+   Rides the Observatory Palette tokens (ap-palette-2026.css via main-lite).
+   ========================================================================== */
+
+.wk-hero {
+  text-align: center;
+  padding: calc(var(--nav-height, 72px) + clamp(2.5rem, 7vw, 4.5rem)) 1rem clamp(1.5rem, 4vw, 2.5rem);
+}
+.wk-hero__eyebrow {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ap-gold-vivid, #C8CDD6);
+  margin: 0 0 1rem;
+  font-variant-emoji: text;
+}
+/* keep inline sparkle + astro glyphs (eyebrow, privacy seal, event orbs, moon
+   chips) as engraved text, never colour-emoji */
+.wk-hero__eyebrow, .wk-privacy-seal, .wk-privacy-seal__glyph,
+.wk-event__orb, .wk-moonstrip__chip {
+  font-family: 'AstroGlyph', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  font-variant-emoji: text;
+}
+.wk-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ap-gold-parchment, #E8EBF0);
+  margin: 0 0 0.7rem;
+  text-wrap: balance;
+}
+.wk-hero__sub {
+  max-width: 620px;
+  margin: 0 auto 1.1rem;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--ap-text-secondary, #C8CDD6);
+  text-wrap: balance;
+}
+.wk-hero__sub em { color: var(--ap-gold-bright, #7EC8E8); font-style: normal; }
+
+.wk-privacy-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--ap-text-muted, #8B919C);
+  border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  background: var(--ap-card-surface, rgba(22, 28, 42, 0.5));
+}
+.wk-privacy-seal__glyph { color: var(--ap-gold-core, #A8B0BC); }
+
+/* Week switcher */
+.wk-switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
+  min-height: 48px;
+}
+.wk-switch__btn {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--ap-gold-bright, #7EC8E8);
+  background: transparent;
+  border: 1px solid var(--ap-card-border-strong, rgba(168, 176, 188, 0.28));
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.wk-switch__btn:hover,
+.wk-switch__btn:focus-visible {
+  border-color: var(--ap-gold-core, #A8B0BC);
+  color: var(--ap-gold-parchment, #E8EBF0);
+  outline: none;
+}
+.wk-switch__btn[aria-pressed="true"] {
+  background: var(--ap-gold-a12, rgba(168, 176, 188, 0.12));
+  color: var(--ap-gold-parchment, #E8EBF0);
+  border-color: var(--ap-gold-core, #A8B0BC);
+}
+.wk-switch__label {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ap-text-muted, #8B919C);
+  min-width: 15ch;
+  text-align: center;
+}
+
+/* Sections */
+.wk-section { padding: 0 1rem clamp(2rem, 5vw, 3rem); }
+.wk-section .container { max-width: 760px; margin: 0 auto; }
+.wk-section__title {
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  color: var(--ap-gold-parchment, #E8EBF0);
+  margin: 0 0 0.4rem;
+  text-align: center;
+}
+.wk-section__sub {
+  text-align: center;
+  color: var(--ap-text-secondary, #C8CDD6);
+  font-size: 0.95rem;
+  margin: 0 0 1.6rem;
+}
+
+/* Day groups + event rows */
+.wk-day { margin: 0 0 1.4rem; }
+.wk-day__head {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ap-gold-core, #A8B0BC);
+  border-bottom: 1px solid var(--ap-hairline, rgba(232, 224, 208, 0.08));
+  padding-bottom: 0.4rem;
+  margin: 0 0 0.7rem;
+}
+.wk-event {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: 14px;
+  background: var(--ap-card-surface, linear-gradient(165deg, rgba(22, 28, 42, 0.62), rgba(7, 5, 9, 0.4)));
+  box-shadow: var(--ap-rim-shadow, inset 0 1px 0 rgba(239, 227, 192, 0.06));
+  margin: 0 0 0.6rem;
+}
+.wk-event__orb {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  min-height: 2.1rem;
+  font-size: 1.35rem;
+  color: var(--ap-gold-bright, #7EC8E8);
+}
+/* Belt-and-braces: never let a seal exceed its orb slot, whatever loads first */
+.wk-event__orb .ap-seal,
+.wk-event__orb img {
+  max-width: 2.1rem;
+  max-height: 2.4rem;
+  height: auto;
+}
+.wk-event__body { min-width: 0; }
+.wk-event__title {
+  font-weight: 600;
+  color: var(--ap-gold-parchment, #E8EBF0);
+  font-size: 1.02rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+.wk-event__time {
+  font-size: 0.78rem;
+  color: var(--ap-gold-bright, #7EC8E8);
+  border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  white-space: nowrap;
+}
+.wk-event__note {
+  color: var(--ap-text-secondary, #C8CDD6);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0.25rem 0 0;
+}
+.wk-empty {
+  text-align: center;
+  color: var(--ap-text-secondary, #C8CDD6);
+  font-style: italic;
+  padding: 1.6rem 1rem;
+  border: 1px dashed var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: 14px;
+}
+
+/* Moon strip */
+.wk-moonstrip {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.wk-moonstrip__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  color: var(--ap-text-secondary, #C8CDD6);
+  border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  background: var(--ap-card-surface, rgba(22, 28, 42, 0.5));
+}
+.wk-moonstrip__chip strong { color: var(--ap-gold-bright, #7EC8E8); font-weight: 600; }
+
+/* Honesty panel */
+.wk-honesty {
+  border: 1px solid var(--ap-card-border, rgba(168, 176, 188, 0.16));
+  border-radius: 16px;
+  background: var(--ap-card-surface, rgba(22, 28, 42, 0.5));
+  padding: 1.3rem 1.4rem;
+}
+.wk-honesty h3 {
+  color: var(--ap-gold-parchment, #E8EBF0);
+  margin: 0 0 0.6rem;
+  font-size: 1.15rem;
+}
+.wk-honesty p {
+  color: var(--ap-text-secondary, #C8CDD6);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin: 0 0 0.6rem;
+}
+.wk-honesty p:last-child { margin-bottom: 0; }
+.wk-honesty strong { color: var(--ap-gold-bright, #7EC8E8); }
+
+@media (max-width: 560px) {
+  .wk-event { padding: 0.7rem 0.75rem; }
+  .wk-event__orb { width: 1.8rem; font-size: 1.15rem; }
+}

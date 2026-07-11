@@ -90,7 +90,7 @@
       'align-items:center;justify-content:center;color:#9A9084;text-decoration:none;cursor:pointer;padding:0;box-sizing:border-box;}',
       '.ap-social-icon__svg{width:18px;height:18px;}',
       '.ap-social-icon--soon{opacity:0.42;cursor:default;}',
-      '.ap-social-icon--live:hover{color:#C9A227;border-color:rgba(201,162,39,0.35);}',
+      '.ap-social-icon--live:hover{color:#A8B0BC;border-color:rgba(168,176,188,0.35);}',
     ].join('');
     document.head.appendChild(st);
   }

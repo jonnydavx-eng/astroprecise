@@ -17,8 +17,12 @@ window.FieldWeather = (() => {
   'use strict';
 
   const KP_URL     = 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json';
-  const WIND_URL   = 'https://services.swpc.noaa.gov/products/solar-wind/plasma-7-day.json';
-  const MAG_URL    = 'https://services.swpc.noaa.gov/products/solar-wind/mag-7-day.json';
+  // NOAA deprecated the /solar-wind/plasma-7-day + mag-7-day products (all
+  // time-ranges now 404, 2026-07). The propagated real-time solar wind carries
+  // BOTH plasma (speed, density) and mag (bz, bt) in one array-of-arrays feed:
+  // header [time_tag, speed, density, temperature, bx, by, bz, bt, vx, vy, vz, propagated_time_tag].
+  const WIND_URL   = 'https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind-1-hour.json';
+  const MAG_URL    = WIND_URL;
   const XRAY_URL   = 'https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json';
   const F107_URL   = 'https://services.swpc.noaa.gov/products/summary/10cm-flux.json';
   const AURORA_URL = 'https://services.swpc.noaa.gov/json/ovation_aurora_latest.json';
@@ -62,14 +66,28 @@ window.FieldWeather = (() => {
     throw new Error('no parsable Kp data');
   }
 
+  let _windCache = null;
+  let _windInflight = null;
+  async function fetchPropagatedWind() {
+    if (_windCache && Date.now() - _windCache.at < 60000) return _windCache.rows;
+    if (_windInflight) return _windInflight;
+    _windInflight = fetchJson(WIND_URL).then((rows) => {
+      _windCache = { rows, at: Date.now() };
+      _windInflight = null;
+      return rows;
+    }).catch((e) => { _windInflight = null; throw e; });
+    return _windInflight;
+  }
+
   async function getSolarWind() {
-    // dual-format tolerance: [time_tag, density, speed, temp] rows or {speed,…}
-    const rows = await fetchJson(WIND_URL);
-    const series = Array.isArray(rows[0]) ? downsampleCol(rows, 2) : [];
+    // propagated-solar-wind header: [time_tag, speed, density, temp, bx, by, bz, bt, …]
+    // dual-format tolerance: array rows or {speed, density, …} objects.
+    const rows = await fetchPropagatedWind();
+    const series = Array.isArray(rows[0]) ? downsampleCol(rows, 1) : [];
     for (let i = rows.length - 1; i >= 0; i--) {
       const r = rows[i];
-      const speed = parseFloat(Array.isArray(r) ? r[2] : r.speed);
-      const density = parseFloat(Array.isArray(r) ? r[1] : r.density);
+      const speed = parseFloat(Array.isArray(r) ? r[1] : r.speed);
+      const density = parseFloat(Array.isArray(r) ? r[2] : r.density);
       const time = Array.isArray(r) ? r[0] : r.time_tag;
       if (isFinite(speed)) return {
         speedKmS: speed,
@@ -81,17 +99,18 @@ window.FieldWeather = (() => {
   }
 
   async function getBz() {
-    // mag-7-day header: [time_tag, bx_gsm, by_gsm, bz_gsm, lon_gsm, lat_gsm, bt]
+    // propagated-solar-wind header: [time_tag, speed, density, temp, bx, by, bz, bt, …]
     // Bz (GSM) is the single best geomagnetic-coupling indicator.
-    const rows = await fetchJson(MAG_URL);
-    const series = Array.isArray(rows[0]) ? downsampleCol(rows, 3) : [];
+    const rows = await fetchPropagatedWind();
+    const series = Array.isArray(rows[0]) ? downsampleCol(rows, 6) : [];
     for (let i = rows.length - 1; i >= 0; i--) {
       const r = rows[i];
-      if (!Array.isArray(r)) continue;
-      const bz = parseFloat(r[3]), bt = parseFloat(r[6]);
+      const bz = parseFloat(Array.isArray(r) ? r[6] : r.bz);
+      const bt = parseFloat(Array.isArray(r) ? r[7] : r.bt);
+      const time = Array.isArray(r) ? r[0] : r.time_tag;
       if (isFinite(bz)) return {
         bz, bt: isFinite(bt) ? bt : null,
-        series, time: r[0], source: 'NOAA SWPC / DSCOVR (measured)',
+        series, time, source: 'NOAA SWPC / DSCOVR (measured)',
       };
     }
     throw new Error('no Bz data');
@@ -151,8 +170,8 @@ window.FieldWeather = (() => {
 
   function getLunar(date) {
     const E = window.AstroEphemeris;
-    const jd = E.julianDay(date.getFullYear(), date.getMonth() + 1, date.getDate(),
-                           date.getHours(), date.getMinutes(), 0);
+    const jd = E.julianDay(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(),
+                           date.getUTCHours(), date.getUTCMinutes(), 0);
     const elong = ((E.moonPosition(jd).lon - E.sunPosition(jd).lon) % 360 + 360) % 360;
     const illum = (1 - Math.cos(elong * Math.PI / 180)) / 2;
     const waxing = elong < 180;

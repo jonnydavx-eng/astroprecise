@@ -2,21 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Astro Precise — genuinely accurate astrology, computed privately in your browser. Free birth chart, today's sky, compatibility, and the Instrument. Start here." />
   <title>Astro Precise — Start Here</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Astro Precise — Start Here" />
   <meta property="og:description" content="Genuinely accurate astrology, computed privately. Free birth chart ↓" />
   <meta property="og:url" content="https://astroprecise.app/links.html" />
   <link rel="canonical" href="https://astroprecise.app/links.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
   <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
@@ -35,7 +43,7 @@
 
   <main class="lib" id="main-content">
     <div class="lib__banner" aria-hidden="true">
-      <img src="img/hero-cosmic-ref.jpg" alt="" width="480" height="270" loading="eager" decoding="async" />
+      <img src="img/og-banner-silver.jpg?v=647" alt="" width="480" height="270" loading="eager" decoding="async" />
     </div>
     <div class="lib__seal" aria-hidden="true">&#10022;</div>
     <h1 class="lib__title">Astro Precise</h1>
@@ -45,6 +53,10 @@
     <a class="lib-link lib-link--primary" href="chart.html">
       <span class="lib-link__label">&#10022; Free Birth Chart &mdash; Your Real Sky</span>
       <span class="lib-link__sub">Every number is real (VSOP87/ELP2000). Computed in your browser. Free to cast.</span>
+    </a>
+    <a class="lib-link lib-link--primary" href="moment.html">
+      <span class="lib-link__label">&#10022; Moment &mdash; Freeze Any Night</span>
+      <span class="lib-link__sub">Birth, first date, wedding, memorial. Free private card with real zenith star + light-cone story.</span>
     </a>
     <a class="lib-link" href="horoscope.html">
       <span class="lib-link__label">&#9737; Today's Sky &amp; Your Horoscope</span>
@@ -70,8 +82,8 @@
       <h3 style="font-family:'Cinzel',serif;font-size:1.05rem;color:var(--gold-light,#E8C872);margin:0 0 0.4rem;">Cosmic Weather Premium</h3>
       <p style="font-family:'Cormorant Garamond',serif;font-size:0.98rem;line-height:1.6;color:var(--silver,#C8D0E8);margin:0 0 0.7rem;">A monthly, personalised letter &mdash; every major transit to <em>your</em> chart, dated and read in plain language. We're gauging interest before we build it. No charge, no commitment.</p>
       <form class="cw-waitlist__form" novalidate style="display:flex;gap:6px;">
-        <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Email for the premium waitlist" style="flex:1;padding:8px 10px;border-radius:10px;border:1px solid rgba(194, 160, 94,0.4);background:rgba(13, 10, 7,0.7);color:#fff;font-size:0.85rem;">
-        <button type="submit" style="padding:8px 12px;border-radius:10px;border:1px solid var(--gold,#C2A05E);background:rgba(194, 160, 94,0.16);color:var(--gold,#C2A05E);font-weight:600;cursor:pointer;white-space:nowrap;">&#10022; Join</button>
+        <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" aria-label="Email for the premium waitlist" style="flex:1;padding:8px 10px;border-radius:10px;border:1px solid rgba(168, 176, 188,0.4);background:rgba(13, 10, 7,0.7);color:#fff;font-size:0.85rem;">
+        <button type="submit" style="padding:8px 12px;border-radius:10px;border:1px solid var(--gold,#A8B0BC);background:rgba(168, 176, 188,0.16);color:var(--gold,#A8B0BC);font-weight:600;cursor:pointer;white-space:nowrap;">&#10022; Join</button>
       </form>
       <p class="cw-waitlist__privacy" style="font-size:0.62rem;color:var(--silver-dim,#8891AA);margin:0.6rem 0 0;line-height:1.5;">Only your email is stored. Your birth data never leaves your device. We'll only build it (and only ever charge) if enough people want it.</p>
     </aside>
@@ -92,7 +104,6 @@
   /* Render the dormant (paid/email/shop) links + social — only those configured in
      AP_MON / AP_SOCIAL, so a visitor never meets a dead link. */
   (function () {
-    var M = window.AP_MON || {}, S = window.AP_SOCIAL || {};
     var paid = document.getElementById('lib-paid');
     function add(href, label, sub, primary) {
       if (!href || !/^(https?:|mailto:)/.test(href)) return;
@@ -103,11 +114,18 @@
         (sub ? '<span class="lib-link__sub">' + sub + '</span>' : '');
       paid.appendChild(a);
     }
-    add(M.emailUrl || M.newsletterUrl, '&#128233; Free chart wallpaper + cosmic weather', 'One email. Your sky as a wallpaper.');
-    add(M.deepReadingUrl || M.reportUrl, '&#10039; The Deep Reading', 'A 13-page natal reading — every planet, all houses, life areas & aspects.');
-    add(M.posterUrl, '&#128444; Wear Your Sky &mdash; Shop', 'Posters, tees &amp; prints made from your chart.');
-    add(M.giftUrl, '&#127873; Gift a Reading', '');
-    add(M.tipUrl, '&#10084; Support the instrument &mdash; tip', '');
+    // AP_MON is defined by js/app.js, which loads AFTER this inline script via
+    // deferred ap-page-boot.js — poll for it exactly like renderLibSocial below,
+    // or the configured (live) email + tip links never render.
+    (function renderLibPaid() {
+      var M = window.AP_MON;
+      if (!M) { setTimeout(renderLibPaid, 40); return; }
+      add(M.emailUrl || M.newsletterUrl, '&#128233; Free chart wallpaper + cosmic weather', 'One email. Your sky as a wallpaper.');
+      add(M.deepReadingUrl || M.reportUrl, '&#10039; The Deep Reading', 'A 13-page natal reading — every planet, all houses, life areas & aspects.');
+      add(M.posterUrl, '&#128444; Wear Your Sky &mdash; Shop', 'Posters, tees &amp; prints made from your chart.');
+      add(M.giftUrl, '&#127873; Gift a Reading', '');
+      add(M.tipUrl, '&#10084; Support the instrument &mdash; tip', '');
+    })();
 
     var soc = document.getElementById('lib-social');
     (function renderLibSocial() {

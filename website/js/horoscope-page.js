@@ -52,6 +52,28 @@
       });
     }
 
+    var interpPromise = null;
+    function ensureInterpretations() {
+      if (window.Interpretations && typeof Interpretations.getDailyHoroscope === 'function') {
+        return Promise.resolve();
+      }
+      if (interpPromise) return interpPromise;
+      interpPromise = loadScript('js/sign-daily.js').catch(function () {
+        return loadScript('js/ap-load-interpretations.js').then(function () {
+          if (typeof window.loadInterpretations === 'function') {
+            return window.loadInterpretations();
+          }
+        });
+      });
+      return interpPromise;
+    }
+
+    function userHasSavedChart() {
+      try {
+        return !!(window.AstroProfile && typeof AstroProfile.getCharts === 'function' && AstroProfile.getCharts().length);
+      } catch (e) { return false; }
+    }
+
     var auditPath = !!(window.__apHoroscopeAudit ||
       navigator.webdriver ||
       /\bHeadlessChrome\b/i.test(navigator.userAgent || '') ||
@@ -90,23 +112,407 @@
         typeof window.AstroEphemeris.julianDay === 'function');
     }
 
+    function getActiveSavedChart() {
+      if (!window.AstroProfile) return null;
+      if (typeof AstroProfile.getActiveChart === 'function') return AstroProfile.getActiveChart();
+      var charts = AstroProfile.getCharts();
+      if (!charts.length) return null;
+      try {
+        var activeId = localStorage.getItem('ap_active_chart');
+        if (activeId) {
+          var hit = charts.filter(function (x) { return String(x.id) === String(activeId); })[0];
+          if (hit) return hit;
+        }
+      } catch (e) {}
+      return charts[0];
+    }
+
     function getUserSign() {
       try {
-        if (window.AstroProfile) {
-          var charts = AstroProfile.getCharts();
-          if (charts.length) {
-            var sun = charts[0].sunSign || (charts[0].positions && charts[0].positions.sun);
-            if (sun) return (sun.sign || sun).toLowerCase();
-          }
+        var c = getActiveSavedChart();
+        if (c) {
+          var sun = c.sunSign || (c.positions && c.positions.sun);
+          if (sun) return (sun.sign || sun).toLowerCase();
         }
       } catch(e) {}
       return null;
+    }
+
+    function getUserNatalMarkers() {
+      try {
+        if (!window.AstroProfile || typeof AstroProfile.getCharts !== 'function') {
+          return { markers: [], sunSign: null };
+        }
+        var c = getActiveSavedChart();
+        if (!c) return { markers: [], sunSign: null };
+        var pos = c.positions || {};
+        if ((!pos.sun || pos.sun.longitude == null) && c.birthDate && typeof AstroProfile.buildChartData === 'function') {
+          try {
+            var full = AstroProfile.buildChartData({
+              name: c.name, date: c.birthDate, time: c.birthTime,
+              lat: c.lat, lon: c.lon, city: c.birthCity || c.city,
+              tz: c.tz, houseSystem: c.houseSystem,
+            });
+            if (full && full.positions) pos = full.positions;
+          } catch (e) {}
+        }
+        var markers = [];
+        if (pos.sun && pos.sun.longitude != null && isFinite(pos.sun.longitude)) {
+          markers.push({ lon: pos.sun.longitude, label: '☉ Natal', col: '#6FA0D8' });
+        }
+        if (pos.moon && pos.moon.longitude != null && isFinite(pos.moon.longitude)) {
+          markers.push({ lon: pos.moon.longitude, label: '☽ Natal', col: '#C8D0E8' });
+        }
+        if (c.ascendant != null && isFinite(c.ascendant)) {
+          markers.push({ lon: c.ascendant, label: 'ASC', col: '#A8B0BC' });
+        }
+        var sunSign = (c.sunSign || (pos.sun && pos.sun.sign) || '').toLowerCase();
+        return { markers: markers, sunSign: sunSign || null };
+      } catch (e) {
+        return { markers: [], sunSign: null };
+      }
+    }
+
+    function getSkyPlanetLons() {
+      if (window.ZodiacSphere && typeof ZodiacSphere.getPlanetLons === 'function') {
+        return ZodiacSphere.getPlanetLons() || {};
+      }
+      if (window.EclipticDialData && typeof EclipticDialData.getPlanetLons === 'function') {
+        return EclipticDialData.getPlanetLons() || {};
+      }
+      return {};
+    }
+
+    function buildCollectiveChords(signKey) {
+      var info = SIGNS[signKey];
+      if (!info) return [];
+      var signLon = null;
+      var Zk = window.AP_ZODIAC;
+      if (Zk && Zk.SIGNS) {
+        var match = Zk.SIGNS.find(function (s) { return s.key === signKey; });
+        if (match && isFinite(match.lon)) signLon = (match.lon + 15) % 360;
+      }
+      if (signLon == null) {
+        var order = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+        var idx = order.indexOf(signKey);
+        signLon = idx >= 0 ? (idx * 30 + 15) % 360 : 0;
+      }
+      var lons = getSkyPlanetLons();
+      var transitPlanets = [
+        { key: 'sun', name: 'Sun' },
+        { key: 'moon', name: 'Moon' },
+        { key: 'mercury', name: 'Mercury' },
+        { key: 'venus', name: 'Venus' },
+        { key: 'mars', name: 'Mars' },
+        { key: 'jupiter', name: 'Jupiter' },
+        { key: 'saturn', name: 'Saturn' },
+      ];
+      var aspects = [
+        { angle: 0, orb: 10, glyph: '☌', quality: 'c' },
+        { angle: 60, orb: 8, glyph: '⚹', quality: 'h' },
+        { angle: 90, orb: 8, glyph: '□', quality: 'x' },
+        { angle: 120, orb: 8, glyph: '△', quality: 'h' },
+        { angle: 180, orb: 10, glyph: '☍', quality: 'x' },
+      ];
+      function sep(a, b) {
+        var d = Math.abs((((a - b) % 360) + 360) % 360);
+        return d > 180 ? 360 - d : d;
+      }
+      var candidates = [];
+      transitPlanets.forEach(function (pl) {
+        var tLon = lons[pl.key];
+        if (tLon == null || !isFinite(tLon)) return;
+        var diff = sep(tLon, signLon);
+        var best = null;
+        aspects.forEach(function (asp) {
+          var delta = Math.abs(diff - asp.angle);
+          if (delta <= asp.orb && (!best || delta < best.delta)) {
+            best = { asp: asp, delta: delta };
+          }
+        });
+        if (best) {
+          candidates.push({
+            natalLon: signLon,
+            transitLon: tLon,
+            quality: best.asp.quality,
+            glyph: best.asp.glyph,
+            label: 'Transiting ' + pl.name + ' ' + best.asp.glyph + ' ' + info.name,
+            collective: true,
+            delta: best.delta,
+          });
+        }
+      });
+      candidates.sort(function (a, b) { return a.delta - b.delta; });
+      return candidates.slice(0, 3);
+    }
+
+    function buildTransitChordsFromReading() {
+      try {
+        if (!window.DailyTransit || typeof DailyTransit.buildReading !== 'function') return [];
+        var reading = DailyTransit.buildReading(new Date());
+        if (!reading || !reading.aspects || !reading.aspects.length || !reading.transits) return [];
+        var natalMap = {};
+        if (window.AstroProfile && typeof AstroProfile.getCharts === 'function') {
+          var c = getActiveSavedChart();
+          if (c) {
+            var pos = c.positions || {};
+            if ((!pos.sun || pos.sun.longitude == null) && c.birthDate && typeof AstroProfile.buildChartData === 'function') {
+              try {
+                var full = AstroProfile.buildChartData({
+                  name: c.name, date: c.birthDate, time: c.birthTime,
+                  lat: c.lat, lon: c.lon, city: c.birthCity || c.city,
+                  tz: c.tz, houseSystem: c.houseSystem,
+                });
+                if (full && full.positions) pos = full.positions;
+              } catch (e) {}
+            }
+            if (pos.sun && pos.sun.longitude != null) natalMap.Sun = pos.sun.longitude;
+            if (pos.moon && pos.moon.longitude != null) natalMap.Moon = pos.moon.longitude;
+            if (c.ascendant != null) natalMap.Ascendant = c.ascendant;
+            ['mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'].forEach(function (k) {
+              if (pos[k] && pos[k].longitude != null) {
+                natalMap[k.charAt(0).toUpperCase() + k.slice(1)] = pos[k].longitude;
+              }
+            });
+          }
+        }
+        return reading.aspects.slice(0, 4).map(function (a) {
+          return {
+            natalLon: natalMap[a.natal],
+            transitLon: reading.transits[a.transit],
+            quality: a.quality,
+            glyph: a.glyph,
+            label: 'Transiting ' + a.transit + ' ' + a.glyph + ' your ' + a.natal,
+          };
+        }).filter(function (ch) {
+          return ch.natalLon != null && ch.transitLon != null && isFinite(ch.natalLon) && isFinite(ch.transitLon);
+        });
+      } catch (e) {
+        return [];
+      }
+    }
+
+    var lastTransitChords = [];
+
+    function transitQualityClass(q) {
+      if (q === 'h') return 'epn-transit--harmony';
+      if (q === 'x') return 'epn-transit--challenge';
+      return 'epn-transit--conjunction';
+    }
+
+    function chipQualityClass(q) {
+      if (q === 'h') return 'srp-transit-chip--harmony';
+      if (q === 'x') return 'srp-transit-chip--challenge';
+      return 'srp-transit-chip--conjunction';
+    }
+
+    function highlightTransitChord(idx, opts) {
+      opts = opts || {};
+      var activeIdx = (idx != null && idx >= 0) ? idx : -1;
+      if (window.ZodiacSphere && typeof ZodiacSphere.setHighlightedChord === 'function') {
+        ZodiacSphere.setHighlightedChord(activeIdx >= 0 ? activeIdx : null);
+      }
+      document.querySelectorAll('.epn-transit').forEach(function (el) {
+        var ci = parseInt(el.getAttribute('data-chord-idx'), 10);
+        el.classList.toggle('is-active', ci === activeIdx);
+      });
+      document.querySelectorAll('.srp-transit-chip').forEach(function (el) {
+        var ci = parseInt(el.getAttribute('data-chord-idx'), 10);
+        el.classList.toggle('is-active', ci === activeIdx);
+      });
+      if (opts.scroll) {
+        var note = document.getElementById('ecliptic-personal-note');
+        if (note) {
+          note.classList.add('is-flash');
+          note.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          window.setTimeout(function () { note.classList.remove('is-flash'); }, 1200);
+        }
+      }
+    }
+
+    function bindTransitChordButtons(root) {
+      if (!root) return;
+      root.querySelectorAll('[data-chord-idx]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var idx = parseInt(btn.getAttribute('data-chord-idx'), 10);
+          if (!isFinite(idx)) return;
+          highlightTransitChord(idx, { scroll: btn.classList.contains('epn-transit') });
+        });
+      });
+    }
+
+    function updateEclipticPersonalNote(chords) {
+      var el = document.getElementById('ecliptic-personal-note');
+      if (!el) return;
+      var natal = getUserNatalMarkers();
+      var list = (chords && chords.length) ? chords : [];
+      var signKey = currentOpenSign;
+      if (!natal.markers.length) {
+        if (!list.length) {
+          el.setAttribute('hidden', '');
+          return;
+        }
+        el.removeAttribute('hidden');
+        var collectiveItems = list.map(function (ch, i) {
+          return '<button type="button" class="epn-transit ' + transitQualityClass(ch.quality) + '" data-chord-idx="' + i + '">' +
+            (ch.label || '') + '</button>';
+        }).join('');
+        var signLabel = (signKey && SIGNS[signKey]) ? SIGNS[signKey].name : 'this sign';
+        el.innerHTML = '<span class="epn-transits">' + collectiveItems + '</span> — today\'s sky aspects to ' + signLabel;
+        bindTransitChordButtons(el);
+        return;
+      }
+      el.removeAttribute('hidden');
+      if (list.length) {
+        var items = list.map(function (ch, i) {
+          return '<button type="button" class="epn-transit ' + transitQualityClass(ch.quality) + '" data-chord-idx="' + i + '">' +
+            (ch.label || '') + '</button>';
+        }).join('');
+        el.innerHTML = '<span class="epn-transits">' + items + '</span> — <span class="epn-mark" aria-hidden="true">◆</span> Sun, Moon, Ascendant on dial';
+        bindTransitChordButtons(el);
+      } else {
+        el.innerHTML = 'Your natal placements marked on the dial — <span class="epn-mark" aria-hidden="true">◆</span> Sun, Moon, Ascendant';
+      }
+    }
+
+    function updateSrpTransitChords(chords, signKey) {
+      var wrap = document.getElementById('srp-transit-chords');
+      var list = document.getElementById('srp-transit-chords-list');
+      if (!wrap || !list) return;
+      var labelEl = wrap.querySelector('.srp-transit-chords__label');
+      var natal = getUserNatalMarkers();
+      if (!chords || !chords.length) {
+        wrap.setAttribute('hidden', '');
+        list.innerHTML = '';
+        return;
+      }
+      wrap.removeAttribute('hidden');
+      if (labelEl) {
+        labelEl.textContent = natal.markers.length
+          ? 'Transits to your chart today'
+          : 'Today\'s sky aspects to ' + ((signKey && SIGNS[signKey]) ? SIGNS[signKey].name : 'this sign');
+      }
+      list.innerHTML = chords.map(function (ch, i) {
+        return '<button type="button" class="srp-transit-chip ' + chipQualityClass(ch.quality) + '" data-chord-idx="' + i + '">' +
+          (ch.glyph ? '<span class="stc-glyph" aria-hidden="true">' + ch.glyph + '</span> ' : '') +
+          (ch.label || '') + '</button>';
+      }).join('');
+      bindTransitChordButtons(list);
+    }
+
+    function applyTransitChords(signKey) {
+      var chords = buildTransitChordsFromReading();
+      if (!chords.length && signKey) chords = buildCollectiveChords(signKey);
+      lastTransitChords = chords;
+      if (window.ZodiacSphere && typeof ZodiacSphere.setTransitChords === 'function') {
+        ZodiacSphere.setTransitChords(chords);
+      }
+      if (window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.setTransitChords === 'function') {
+        HoroscopeWheelPoster.setTransitChords(chords);
+      }
+      updateEclipticPersonalNote(chords);
+      updateSrpTransitChords(chords, signKey || currentOpenSign);
+    }
+
+    function collapseLegendOnRead(collapsed) {
+      var legend = document.getElementById('planet-legend');
+      if (legend) legend.classList.toggle('planet-legend--compact', !!collapsed);
+    }
+
+    function collapseSkyBoardOnRead(collapsed) {
+      var strip = document.getElementById('planets-live-strip');
+      var toggle = document.getElementById('sky-board-toggle');
+      if (!strip || !toggle) return;
+      document.body.classList.toggle('horoscope--reading-open', !!collapsed);
+      if (collapsed) {
+        strip.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+        var showEl = toggle.querySelector('.sbt-show');
+        var hideEl = toggle.querySelector('.sbt-hide');
+        if (showEl) showEl.style.display = '';
+        if (hideEl) hideEl.style.display = 'none';
+        return;
+      }
+      if (window.matchMedia('(min-width: 901px)').matches) {
+        autoExpandSkyBoard();
+      } else {
+        strip.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+        var showEl2 = toggle.querySelector('.sbt-show');
+        var hideEl2 = toggle.querySelector('.sbt-hide');
+        if (showEl2) showEl2.style.display = '';
+        if (hideEl2) hideEl2.style.display = 'none';
+      }
+    }
+
+    function dismissCentreHint() {
+      try { localStorage.setItem('ap_horoscope_centre_seen', '1'); } catch (e) { /* */ }
+      var hint = document.querySelector('.sphere-hint--pulse');
+      if (hint) hint.classList.remove('sphere-hint--pulse');
+    }
+
+    function initCentreHint() {
+      try {
+        if (localStorage.getItem('ap_horoscope_centre_seen') === '1') dismissCentreHint();
+      } catch (e) { /* */ }
+    }
+    initCentreHint();
+    document.addEventListener('ap-horoscope-centre-tap', dismissCentreHint);
+
+    function syncLegendFromCanvas() {
+      if (!window.ZodiacSphere || typeof ZodiacSphere.getPlanetLons !== 'function') return;
+      var lons = ZodiacSphere.getPlanetLons();
+      if (window.EclipticDialData && typeof EclipticDialData.syncLegendLons === 'function') {
+        EclipticDialData.syncLegendLons(lons);
+      }
+    }
+
+    function dialDataRefresh() {
+      if (window.EclipticDialData && typeof EclipticDialData.refreshPlanets === 'function') {
+        EclipticDialData.refreshPlanets();
+      }
+    }
+
+    function autoExpandSkyBoard() {
+      try {
+        if (!window.matchMedia('(min-width: 901px)').matches) return;
+        if (document.body.classList.contains('horoscope--reading-open')) return;
+        var panel = document.getElementById('planets-live-strip');
+        var btn = document.getElementById('sky-board-toggle');
+        if (!panel || !btn || !panel.hidden) return;
+        panel.hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+        var showEl = btn.querySelector('.sbt-show');
+        var hideEl = btn.querySelector('.sbt-hide');
+        if (showEl) showEl.style.display = 'none';
+        if (hideEl) hideEl.style.display = '';
+      } catch (e) { /* */ }
+    }
+
+    function scheduleAutoExpandSkyBoard() {
+      autoExpandSkyBoard();
+      window.setTimeout(autoExpandSkyBoard, 350);
+      window.setTimeout(autoExpandSkyBoard, 1100);
+    }
+
+    document.addEventListener('ap-zodiac-sphere-ready', scheduleAutoExpandSkyBoard, { once: true });
+    document.addEventListener('ap-horoscope-dial-ready', scheduleAutoExpandSkyBoard);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', scheduleAutoExpandSkyBoard, { once: true });
+    } else {
+      scheduleAutoExpandSkyBoard();
     }
 
     var PLANETARY_RULERS = {
       aries:'♂ Mars', taurus:'♀ Venus', gemini:'☿ Mercury', cancer:'☽ Moon',
       leo:'☉ Sun', virgo:'☿ Mercury', libra:'♀ Venus', scorpio:'♇ Pluto',
       sagittarius:'♃ Jupiter', capricorn:'♄ Saturn', aquarius:'♅ Uranus', pisces:'♆ Neptune'
+    };
+    // Engine still per classical/modern ruler — matches sign-page img/engine/* language.
+    var RULER_ENGINE_STILL = {
+      aries: 'mars', taurus: 'venus', gemini: 'mercury', cancer: 'moon',
+      leo: 'sun', virgo: 'mercury', libra: 'venus', scorpio: 'pluto',
+      sagittarius: 'jupiter', capricorn: 'saturn', aquarius: 'uranus', pisces: 'neptune'
     };
     var ELEMENT_LABELS = { fire:'Fire sign', earth:'Earth sign', air:'Air sign', water:'Water sign' };
     var SIGN_KEYS = (function () {
@@ -168,8 +574,23 @@
     function openPanel(signKey) {
       var info = SIGNS[signKey];
       if (!info) return;
+      ensureInterpretations().then(function () {
+        renderOpenPanel(signKey, info);
+      }).catch(function () {});
+    }
+
+    function renderOpenPanel(signKey, info) {
       var Interp = window.Interpretations;
       if (!Interp || typeof Interp.getDailyHoroscope !== 'function') return;
+
+      var hasChart = userHasSavedChart();
+      var cta = document.getElementById('srp-chart-cta');
+      var chip = document.getElementById('srp-personalise-chip');
+      if (cta) cta.setAttribute('hidden', '');
+      if (chip) {
+        if (hasChart) chip.setAttribute('hidden', '');
+        else chip.removeAttribute('hidden');
+      }
 
       // Update the "Get Your Personal Birth Chart" CTA with the selected sign context
       var ctaSignEl = document.getElementById('srp-chart-sign-name');
@@ -196,8 +617,15 @@
 
       var thumb = document.getElementById('srp-card-thumb');
       if (thumb) {
-        thumb.src = 'assets/images/zodiac-cards/' + signKey + '.jpg';
-        thumb.alt = info.name + ' zodiac card';
+        var bodyStill = RULER_ENGINE_STILL[signKey] || 'earth';
+        thumb.src = 'img/engine/' + bodyStill + '.webp';
+        thumb.alt = info.name + ' — ruled by ' + bodyStill.charAt(0).toUpperCase() + bodyStill.slice(1) + ' (engine still)';
+      }
+      var dialModel = document.getElementById('dial-model-link');
+      if (dialModel) {
+        try {
+          dialModel.href = 'explore.html#m=now&focus=' + encodeURIComponent(RULER_ENGINE_STILL[signKey] || 'earth');
+        } catch (eDial) { dialModel.href = 'explore.html#m=now'; }
       }
       var guide = document.getElementById('srp-guide-link');
       if (guide) {
@@ -234,7 +662,7 @@
       var energyTrack = document.getElementById('srp-energy-track');
       if (energyWrap) energyWrap.classList.toggle('srp-energy--empty', !hasMood);
       if (hasMood) {
-        if (pctEl) pctEl.textContent = energyPct + '%';
+        if (pctEl) pctEl.textContent = energyPct + ' / 100'; // a 0–100 gauge, not a % precision claim (matches daily-transit.js)
         if (energyTrack) energyTrack.setAttribute('aria-valuenow', String(energyPct));
         if (fillEl) { fillEl.style.width = '0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ fillEl.style.width = energyPct + '%'; }); }); }
       } else {
@@ -298,7 +726,7 @@
       ensureMonthlyPanel(signKey);
 
       // Moon phase canvas
-      (function drawMoonPhase() {
+      try { (function drawMoonPhase() {
         var cv = document.getElementById('srp-moon-canvas');
         if (!cv) return;
         var ctx = cv.getContext('2d');
@@ -318,7 +746,7 @@
         // Dark background circle
         ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
         var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r + 4);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
+        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#07070A');
         ctx.fillStyle = bgGrad; ctx.fill();
         // Draw moon
         ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
@@ -351,7 +779,11 @@
         cycleEls.forEach(function(el) {
           el.classList.toggle('is-current', parseInt(el.dataset.phaseIdx, 10) === phaseIdx);
         });
-      })();
+      })(); } catch (e) { /* moon canvas must not block reading panel */ }
+
+      applyTransitChords(signKey);
+      collapseLegendOnRead(true);
+      collapseSkyBoardOnRead(true);
 
       currentOpenSign = signKey;
       panel.classList.add('is-open');
@@ -360,12 +792,18 @@
       panel.setAttribute('aria-label', 'Daily horoscope reading');
       setPanelLocked(panel, false);
       setTimeout(function () {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        var stickyRead = window.matchMedia && window.matchMedia('(min-width: 901px)').matches;
+        // v627 — honor reduced-motion (no smooth yank); scroll-margin-top on the panel
+        // keeps its header clear of the sticky masthead on mobile 'start' alignment.
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        panel.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: stickyRead ? 'nearest' : 'start' });
       }, 80);
     }
 
     function closePanel() {
       currentOpenSign = null;
+      collapseLegendOnRead(false);
+      collapseSkyBoardOnRead(false);
       var panel = document.getElementById('sign-reading-panel');
       panel.classList.remove('is-open');
       panel.setAttribute('aria-hidden', 'true');
@@ -387,7 +825,7 @@
       if (signKey && SIGNS[signKey]) {
         el.textContent = 'Reading: ' + SIGNS[signKey].name;
       } else {
-        el.textContent = 'Drag the ring or tap a sign';
+        el.textContent = 'Drag the dial or tap a sign';
       }
     }
 
@@ -397,7 +835,9 @@
         card.classList.toggle('is-active', card.dataset.sign === signKey);
       });
       var wrapEl = document.getElementById('sphere-wrap');
-      if (window.HoroscopeWheelPoster && wrapEl && !wrapEl.classList.contains('is-canvas-ready')) {
+      if (window.HoroscopeWheelPoster && wrapEl &&
+          !wrapEl.classList.contains('is-canvas-ready') &&
+          wrapEl.classList.contains('is-canvas-fallback')) {
         HoroscopeWheelPoster.setSelected(signKey, { duration: opts.skipSpin ? 0 : (opts.spinDuration || 640), instant: !!opts.skipSpin });
       }
       if (window.ZodiacSphere) {
@@ -476,6 +916,19 @@
 
       scheduleEngines();
 
+      // Ecliptic dial — register expand hook even if poster inited first (audit/lite path)
+      if (window.EclipticDialData && typeof EclipticDialData.init === 'function') {
+        EclipticDialData.init({
+          onPlanetsUpdated: function () {
+            scheduleAutoExpandSkyBoard();
+            if (currentOpenSign) applyTransitChords(currentOpenSign);
+          },
+        });
+      }
+      if (!auditPath) {
+        loadScript('js/ephemeris.js').then(dialDataRefresh).catch(function () {});
+      }
+
       // Moon phase — computed live. (The old code waited for an
       // Interpretations.getMoonPhase() that never existed, so the card sat
       // frozen on a hardcoded "Waxing Gibbous" no matter the actual sky.)
@@ -530,23 +983,63 @@
         }
       }
 
-      // ── Interactive poster (immediate) + canvas sphere (deferred) ─────────
+      // ── Canvas-primary dial (poster = audit/fallback only) ───────────────────
       var sphereWrap = document.getElementById('sphere-wrap');
       var spherePoster = document.getElementById('sphere-poster');
       var sphereLoadQueued = false;
       var sphereUiReady = false;
       var pendingSphereAction = null;
+      var canvasPrimary = !auditPath && document.documentElement.classList.contains('ap-canvas-primary');
+      var canvasLegendPoll = null;
+
+      if (sphereWrap && canvasPrimary) {
+        sphereWrap.classList.add('is-canvas-primary');
+      }
+
+      function enablePosterFallback() {
+        if (!sphereWrap || auditPath || sphereWrap.classList.contains('is-canvas-ready')) return;
+        sphereWrap.classList.remove('is-canvas-primary');
+        sphereWrap.classList.add('is-canvas-fallback');
+        loadScript('js/horoscope-wheel-poster.js?v=703').then(function () {
+          if (window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.enableVisual === 'function') {
+            HoroscopeWheelPoster.enableVisual();
+          } else if (window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.init === 'function') {
+            HoroscopeWheelPoster.init();
+          }
+        }).catch(function () {});
+      }
+
+      function startCanvasLegendPoll() {
+        if (canvasLegendPoll) return;
+        canvasLegendPoll = window.setInterval(function () {
+          syncLegendFromCanvas();
+          if (window.ZodiacSphere && typeof ZodiacSphere.refreshPlanets === 'function') {
+            ZodiacSphere.refreshPlanets();
+          }
+        }, 60000);
+      }
 
       function crossfadeSphereCanvas() {
         if (!sphereWrap || auditPath) return;
         sphereWrap.classList.add('is-canvas-handoff');
         sphereWrap.classList.add('is-canvas-ready');
         var canvas = document.getElementById('zodiac-ring-canvas');
-        if (canvas) canvas.removeAttribute('aria-hidden');
+        if (canvas) {
+          canvas.removeAttribute('aria-hidden');
+          canvas.setAttribute('role', 'application');
+          canvas.setAttribute('aria-roledescription', 'live 3D ecliptic dial');
+          canvas.setAttribute('aria-label', 'Live 3D ecliptic dial — drag to explore, arrow keys to rotate, Enter to select a sign');
+        }
         if (spherePoster) spherePoster.setAttribute('aria-hidden', 'true');
+        if (window.ZodiacSphere && typeof ZodiacSphere.refreshPlanets === 'function') {
+          ZodiacSphere.refreshPlanets();
+        }
+        syncLegendFromCanvas();
+        startCanvasLegendPoll();
+        scheduleAutoExpandSkyBoard();
         window.setTimeout(function () {
           if (sphereWrap) sphereWrap.classList.remove('is-canvas-handoff');
-        }, 520);
+        }, 280);
       }
 
       function runPendingSphereAction() {
@@ -583,27 +1076,85 @@
             crossfadeSphereCanvas();
             runPendingSphereAction();
           }
-        }, 1400);
+        }, 1200);
+        if (canvasPrimary) {
+          window.setTimeout(enablePosterFallback, 3200);
+        }
 
         ZodiacSphere.onSelectChange = function (key) { updateSphereLabel(key); };
-        if (window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.getRotationRad === 'function') {
+        if (!canvasPrimary && window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.getRotationRad === 'function') {
           ZodiacSphere.setRotation(HoroscopeWheelPoster.getRotationRad());
         }
+        ZodiacSphere.onChordClick = function (idx) {
+          highlightTransitChord(idx, { scroll: true });
+        };
+        ZodiacSphere.onChordHover = function (idx) {
+          highlightTransitChord(idx, { scroll: false });
+        };
         ZodiacSphere.init(sphereCanvas, function (signKey) {
           selectSign(signKey, { skipSpin: true });
           var panel = document.getElementById('sign-reading-panel');
           if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
 
-        var userSignSphere = getUserSign();
-        if (userSignSphere) {
-          if (window.HoroscopeWheelPoster) {
-            HoroscopeWheelPoster.setSelected(userSignSphere, { duration: 900, instant: sphereUiReady });
+        function applyNatalMarkers() {
+          var natal = getUserNatalMarkers();
+          if (window.ZodiacSphere && typeof ZodiacSphere.setNatalMarkers === 'function') {
+            ZodiacSphere.setNatalMarkers(natal.markers, natal.sunSign);
           }
-          ZodiacSphere.spinToSign(userSignSphere, { duration: 900 });
-          updateSphereLabel(userSignSphere);
+          return loadScript('js/ephemeris.js')
+            .then(function () { return loadScript('js/daily-transit.js'); })
+            .then(applyTransitChords)
+            .catch(applyTransitChords);
         }
+        loadScript('js/profile.js').then(applyNatalMarkers).catch(function () {
+          updateEclipticPersonalNote([]);
+        });
+
       }
+
+      function bootPersonalizedDial() {
+        if (auditPath) return;
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('sign')) return;
+        var opened = false;
+
+        function run() {
+          if (opened) return;
+          var mine = getUserSign();
+          if (!mine || !SIGNS[mine]) return;
+          opened = true;
+          var hasChart = userHasSavedChart();
+          whenEngines(function () {
+            whenSphereUiReady(function () {
+              if (hasChart) {
+                ZodiacSphere.spinToSign(mine, {
+                  duration: 1000,
+                  onDone: function () { selectSign(mine, { skipSpin: true }); },
+                });
+              } else {
+                ZodiacSphere.spinToSign(mine, { duration: 900 });
+                updateSphereLabel(mine);
+              }
+            });
+          });
+        }
+
+        loadScript('js/profile.js').then(function () {
+          if (canvasPrimary) {
+            document.addEventListener('ap-zodiac-sphere-ready', run, { once: true });
+            window.setTimeout(run, 2200);
+          } else {
+            window.setTimeout(run, 1100);
+          }
+        }).catch(function () {
+          if (!canvasPrimary) {
+            window.setTimeout(run, 1100);
+          }
+        });
+      }
+
+      bootPersonalizedDial();
 
       function injectScript(src, onload) {
         var s = document.createElement('script');
@@ -620,7 +1171,7 @@
           return;
         }
         function loadSphere() {
-          injectScript('js/zodiac-sphere.js', initZodiacSphereUI);
+          injectScript('js/zodiac-sphere.js?v=703', initZodiacSphereUI);
         }
         if (window.APCanvasSeals) {
           loadSphere();
@@ -636,29 +1187,36 @@
       }
 
       if (window.HoroscopeWheelPoster && !auditPath) {
-        HoroscopeWheelPoster.onInteract = scheduleZodiacSphere;
-        HoroscopeWheelPoster.onSignSelect = function (signKey) {
-          updateSphereLabel(signKey);
-          whenEngines(function () {
-            selectSign(signKey, { skipSpin: true });
-            var panel = document.getElementById('sign-reading-panel');
-            if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          });
-        };
-        var posterUserSign = getUserSign();
-        if (posterUserSign) {
-          window.setTimeout(function () {
-            HoroscopeWheelPoster.setSelected(posterUserSign, { duration: 900 });
-            updateSphereLabel(posterUserSign);
-          }, 400);
+        if (!canvasPrimary) {
+          HoroscopeWheelPoster.onInteract = scheduleZodiacSphere;
+          HoroscopeWheelPoster.onSignSelect = function (signKey) {
+            updateSphereLabel(signKey);
+            whenEngines(function () {
+              selectSign(signKey, { skipSpin: true });
+              var panel = document.getElementById('sign-reading-panel');
+              if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+          };
+          var posterUserSign = getUserSign();
+          if (posterUserSign) {
+            window.setTimeout(function () {
+              HoroscopeWheelPoster.setSelected(posterUserSign, { duration: 900 });
+              updateSphereLabel(posterUserSign);
+            }, 400);
+          }
         }
       }
 
       if (sphereWrap && !auditPath) {
-        sphereWrap.addEventListener('pointerdown', scheduleZodiacSphere, { once: true, passive: true });
-        window.addEventListener('load', function () {
-          setTimeout(scheduleZodiacSphere, 28000);
-        }, { once: true });
+        if (canvasPrimary) {
+          scheduleZodiacSphere();
+        } else {
+          sphereWrap.addEventListener('pointerdown', scheduleZodiacSphere, { once: true, passive: true });
+          window.setTimeout(scheduleZodiacSphere, 700);
+          window.addEventListener('load', function () {
+            setTimeout(scheduleZodiacSphere, 2200);
+          }, { once: true });
+        }
       }
 
       var spinMineBtn = document.getElementById('sphere-spin-mine');
@@ -667,10 +1225,15 @@
         spinMineBtn.addEventListener('click', function () {
           whenSphereUiReady(function () {
             var mine = getUserSign();
+            var note = document.getElementById('sphere-no-chart-note');
             if (!mine || !SIGNS[mine]) {
-              window.location.href = 'chart.html';
+              if (note) {
+                note.removeAttribute('hidden');
+                note.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
               return;
             }
+            if (note) note.setAttribute('hidden', '');
             ZodiacSphere.spinToSign(mine, {
               duration: 1100,
               onDone: function () { selectSign(mine, { skipSpin: true }); },
@@ -694,6 +1257,24 @@
           });
         });
       }
+
+      function wireCollapsibleToggle(btnId, panelId, showSel, hideSel) {
+        var btn = document.getElementById(btnId);
+        var panel = document.getElementById(panelId);
+        if (!btn || !panel) return;
+        btn.addEventListener('click', function () {
+          var open = panel.hidden;
+          panel.hidden = !open;
+          btn.setAttribute('aria-expanded', String(open));
+          var showEl = btn.querySelector(showSel);
+          var hideEl = btn.querySelector(hideSel);
+          if (showEl) showEl.style.display = open ? 'none' : '';
+          if (hideEl) hideEl.style.display = open ? '' : 'none';
+        });
+      }
+
+      wireCollapsibleToggle('sky-board-toggle', 'planets-live-strip', '.sbt-show', '.sbt-hide');
+      wireCollapsibleToggle('weather-grid-toggle', 'todays-sky-wrap', '.wgt-show', '.wgt-hide');
 
       // ── Sign-grid toggle ──────────────────────────────────────────────────
       var gridToggle = document.getElementById('sign-grid-toggle');
@@ -729,7 +1310,11 @@
       // Forward all args (key + opts) — dropping opts loses { skipSpin:true }
       // and makes the hero re-spin (~640ms) to a sign the user already picked.
       var _origSelect = selectSign;
-      selectSign = function(key, opts) { _origSelect(key, opts); syncPressed(key); };
+      selectSign = function(key, opts) {
+        _origSelect(key, opts);
+        syncPressed(key);
+        if (window.APPersonalMemory && key) APPersonalMemory.saveLastSign(key);
+      };
       var _origClose = closePanel;
       closePanel = function() { _origClose(); syncPressed(null); };
 
@@ -779,7 +1364,7 @@
         // Dark background circle
         ctx.beginPath(); ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
         var bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius + 3);
-        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#0d0a07');
+        bgGrad.addColorStop(0, '#0d1124'); bgGrad.addColorStop(1, '#07070A');
         ctx.fillStyle = bgGrad; ctx.fill();
         // Draw moon disc
         ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2); ctx.clip();
@@ -804,7 +1389,7 @@
       function drawHoroscopeCard(signKey, callback) {
         var info = SIGNS[signKey];
         var data = Interpretations.getDailyHoroscope(info.name, new Date());
-        var tint = ELEMENT_CARD_TINTS[info.element] || ['#c9a227', 'rgba(196,146,10,0.13)', '#5c4a6e'];
+        var tint = ELEMENT_CARD_TINTS[info.element] || ['#A8B0BC', 'rgba(168,176,188,0.13)', '#1A2230'];
         var signIdx = SIGN_KEYS.indexOf(signKey);
         var stone = SIGN_STONES[signIdx] || 'Crystal';
 
@@ -817,7 +1402,7 @@
         ctx.scale(exportW / BASE, exportW / BASE);
 
         // Background: void base
-        ctx.fillStyle = '#0d0a07';
+        ctx.fillStyle = '#07070A';
         ctx.fillRect(0, 0, BASE, BASE);
 
         // Nebula: lapis glow left side
@@ -882,7 +1467,7 @@
           ctx.font = '700 80px Georgia, serif';
           ctx.fillText(info.name.toUpperCase(), 540, 450);
 
-          ctx.fillStyle = '#c9a227';
+          ctx.fillStyle = '#A8B0BC';
           ctx.font = '300 22px Georgia, serif';
           ctx.letterSpacing = '0.18em';
           ctx.fillText('D A I L Y   R E A D I N G', 540, 494);
@@ -909,7 +1494,7 @@
           var elemLabel = info.element.charAt(0).toUpperCase() + info.element.slice(1) + ' Sign  ·  Ruled by ' + (PLANETARY_RULERS[signKey] || '');
           ctx.fillText(elemLabel, 540, 922);
 
-          ctx.fillStyle = '#c9a227';
+          ctx.fillStyle = '#A8B0BC';
           ctx.font = '600 22px Georgia, serif';
           ctx.fillText('ASTROPRECISE · computed from the real sky', 540, 1038);
 
@@ -1078,12 +1663,14 @@
                 pill = document.createElement('div');
                 pill.className = 'planet-pill';
                 pill.dataset.planet = p.name;
-                pill.innerHTML = '<span class="planet-pill__symbol">' + p.symbol + '</span>' +
+                var symHtml = (window.AstroIcons && AstroIcons.planet) ? AstroIcons.planet(p.name, { sm: true }) : p.symbol;
+                pill.innerHTML = '<span class="planet-pill__symbol" aria-hidden="true">' + symHtml + '</span>' +
                   '<span class="planet-pill__info"><span class="planet-pill__sign"></span></span>';
                 strip.appendChild(pill);
               }
               var sym = pill.querySelector('.planet-pill__symbol');
-              if (sym && sym.textContent !== p.symbol) sym.textContent = p.symbol;
+              // Never clobber an upgraded seal (or its pre-upgrade .ap-orb) with raw glyph text
+              if (sym && !sym.querySelector('.ap-seal') && !sym.querySelector('.ap-orb') && sym.textContent !== p.symbol) sym.textContent = p.symbol;
               var info = pill.querySelector('.planet-pill__info');
               if (!info) return;
               var signEl = info.querySelector('.planet-pill__sign');
@@ -1107,11 +1694,7 @@
           }
         }
         engineAfterLoad.push(tryUpdate);
-        engineAfterLoad.push(function () {
-          if (window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.refreshPlanets === 'function') {
-            HoroscopeWheelPoster.refreshPlanets();
-          }
-        });
+        engineAfterLoad.push(dialDataRefresh);
       })();
 
       // Cosmic status bar: void moon, planetary hour, retrogrades
@@ -1209,16 +1792,19 @@
         tryUpdate();
       })();
 
-      // Auto-open from ?sign= URL param (wait for Interpretations to load)
+      // Auto-open from ?sign= URL param or last explored sign (device memory)
       if (!auditPath) {
         var params = new URLSearchParams(window.location.search);
         var signParam = params.get('sign');
+        var fromMemory = false;
+        if (!signParam && window.APPersonalMemory) {
+          signParam = APPersonalMemory.getLastSign();
+          fromMemory = !!signParam;
+        }
         if (signParam && SIGNS[signParam]) {
-          whenEngines(function () { selectSign(signParam); });
-        } else if (userSign && SIGNS[userSign]) {
-          setTimeout(function () {
-            whenEngines(function () { selectSign(userSign, { skipSpin: true }); });
-          }, 1100);
+          whenEngines(function () {
+            selectSign(signParam, fromMemory ? { skipSpin: true } : undefined);
+          });
         }
       }
     });

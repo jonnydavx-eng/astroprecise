@@ -102,11 +102,11 @@
       ctx.scale(exportW / BASE, exportW / BASE);
       var W = BASE, H = BASE;
 
-      // Background — warm void (matches site palette)
+      // Background — cool void (matches site palette)
       var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*0.7);
-      bg.addColorStop(0, '#13100c');
-      bg.addColorStop(0.5, '#0d0a07');
-      bg.addColorStop(1, '#050406');
+      bg.addColorStop(0, '#1A2230');
+      bg.addColorStop(0.5, '#121826');
+      bg.addColorStop(1, '#07070A');
       ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
 
       // Nebula glows — person 1 warm copper, person 2 gold
@@ -160,7 +160,7 @@
 
       function finishCard() {
         drawCompatSeal(sign1, W/2 - 220, 340, '#b87850');
-        drawCompatSeal(sign2, W/2 + 220, 340, '#c9a227');
+        drawCompatSeal(sign2, W/2 + 220, 340, '#A8B0BC');
 
       // Names
       ctx.font = 'italic 400 42px Cormorant Garamond,serif';
@@ -168,16 +168,21 @@
       if (name1 && name2) ctx.fillText(name1 + ' & ' + name2, W/2, 480);
       else if (name1 || name2) ctx.fillText((name1||'Person A') + ' & ' + (name2||'Person B'), W/2, 480);
 
-      // Score
-      ctx.font = '900 200px Cinzel,serif'; ctx.fillStyle = 'rgba(232,201,106,0.9)';
-      ctx.shadowColor = 'rgba(196,146,10,0.4)'; ctx.shadowBlur = 50;
-      ctx.fillText((score||0)+'%', W/2, 680);
+      // Character label (from the real aspect balance) + harmonious-contact tally
+      // — never a fabricated percentage.
+      var chCard  = window._compatChar || { label: 'Dynamic Balance' };
+      var chStats = window._compatStats || { harmoniousCount: 0, count: 0 };
+      ctx.fillStyle = 'rgba(232,201,106,0.92)';
+      ctx.shadowColor = 'rgba(196,146,10,0.4)'; ctx.shadowBlur = 46;
+      var fs = 112;
+      do { ctx.font = '700 ' + fs + 'px Cinzel,serif'; fs -= 6; }
+      while (fs > 44 && ctx.measureText(chCard.label).width > 900);
+      ctx.fillText(chCard.label, W/2, 700);
       ctx.shadowBlur = 0;
 
-      // Score label
-      var scoreLabel = score >= 80 ? 'A Profound Match' : score >= 65 ? 'Genuine Potential' : score >= 50 ? 'Growth Dynamic' : 'Challenging Beauty';
-      ctx.font = '600 52px Cinzel,serif'; ctx.fillStyle = '#f0e8d8';
-      ctx.fillText(scoreLabel, W/2, 760);
+      // Harmonious-contact tally
+      ctx.font = '600 40px Cinzel,serif'; ctx.fillStyle = '#f0e8d8';
+      ctx.fillText(chStats.harmoniousCount + ' of ' + (chStats.count || 0) + ' aspects in harmony', W/2, 772);
 
       // Divider
       ctx.strokeStyle = 'rgba(196,146,10,0.3)'; ctx.lineWidth = 1;
@@ -359,7 +364,7 @@
         tiles.unshift({
           tag: '£' + (twoSkies.price || 14).toFixed(0) + ' · Keepsake',
           title: 'Two Skies Map',
-          desc: name1 + ' & ' + name2 + ' — a personalised couples chart poster from the synastry you just calculated (' + score + '% match).' + promoHint,
+          desc: name1 + ' & ' + name2 + ' — a personalised couples chart poster from the synastry you just calculated.' + promoHint,
           href: tsUrl,
           cta: 'Get Two Skies Map →',
           external: true,
@@ -382,7 +387,7 @@
         '<div class="chart-whats-next__grid" role="list">' +
         tiles.map(function(s) {
           return '<a href="' + esc(s.href) + '" class="chart-next-card' + (s.external ? ' chart-next-card--paid' : '') + '" role="listitem"' +
-            (s.external ? ' target="_blank" rel="noopener"' : '') + '>' +
+            (s.external ? ' target="_blank" rel="noopener sponsored"' : '') + '>' +
             '<span class="chart-next-card__tag">' + esc(s.tag) + '</span>' +
             '<h4 class="chart-next-card__title">' + esc(s.title) + '</h4>' +
             '<p class="chart-next-card__desc">' + esc(s.desc) + '</p>' +
@@ -404,10 +409,15 @@
 
       var titleEl = document.getElementById('compat-result-title');
       var subEl   = document.getElementById('compat-result-subtitle');
-      var score   = result.overall;
-      var label   = score >= 80 ? 'A Profound Match' : score >= 65 ? 'Genuine Potential' : score >= 50 ? 'Growth Dynamic' : 'Challenging Beauty';
+      // Headline is a CHARACTER LABEL read from the balance of the REAL measured
+      // aspects (APSynastry.character) — never a fabricated percentage.
+      var aspCount = (result.synastryAspects || []).length;
+      var ch = (window.APSynastry && APSynastry.character) ? APSynastry.character(result)
+               : { label: 'Dynamic Balance', tone: 'neutral', blurb: '',
+                   stats: { harmoniousCount: 0, count: aspCount, ratio: 0.5 } };
+      var label = ch.label;
       if (titleEl) titleEl.textContent = personA + ' & ' + personB + ' — ' + label;
-      if (subEl) subEl.textContent = 'Overall compatibility: ' + score + '% · Based on full synastry analysis';
+      if (subEl) subEl.textContent = aspCount + ' measured inter-chart aspects · the same two charts always give the same reading';
 
       // Build the composite + Davison relationship charts for their tabs.
       try { renderComposite(chart1, chart2); } catch (e) {}
@@ -415,6 +425,7 @@
       setupResultTabs();
 
       // Store sign data for download card + hero orb seals
+      window._compatLastResult = { result: result, chart1: chart1, chart2: chart2, name1: name1, name2: name2 };
       window._p1SunSign = result.chart1SunSign || '';
       window._p2SunSign = result.chart2SunSign || '';
       setHeroOrbSeal('orb1-glyph', window._p1SunSign);
@@ -424,20 +435,30 @@
       var connLabel = document.getElementById('compat-connection-label');
       if (connLabel) connLabel.textContent = label;
 
-      // Score ring — radius 70, circumference = 2π×70 ≈ 439.8
+      // Harmony gauge — the ring fills to the SHARE of measured aspects that are
+      // harmonious (a real ratio, not a fabricated score); the centre shows the
+      // harmonious-contact COUNT, never a percentage.
+      var hStats = ch.stats || ((window.APSynastry && APSynastry.harmonyStats)
+                   ? APSynastry.harmonyStats(result.synastryAspects)
+                   : { harmoniousCount: 0, count: aspCount, ratio: 0.5 });
       var ring  = document.getElementById('score-ring');
       var ringWrap = document.querySelector('.score-ring-wrapper');
       var numEl = document.getElementById('overall-score');
       if (ring) {
         var circ = 2 * Math.PI * 70;
-        ring.style.strokeDasharray = ((score / 100) * circ).toFixed(1) + ' ' + circ.toFixed(1);
+        ring.style.strokeDasharray = (hStats.ratio * circ).toFixed(1) + ' ' + circ.toFixed(1);
       }
-      if (numEl) numEl.textContent = score + '%';
+      if (numEl) numEl.textContent = hStats.harmoniousCount;
+      var subLbl = document.querySelector('.score-ring-label .score-label-text');
+      if (subLbl) subLbl.textContent = 'of ' + (hStats.count || aspCount) + ' in harmony';
+      // Remember for the shareable card so it prints the character label, not a %.
+      window._compatChar = ch;
+      window._compatStats = hStats;
       if (ringWrap && !ringWrap.dataset.wired) {
         ringWrap.dataset.wired = '1';
         ringWrap.setAttribute('role', 'button');
         ringWrap.setAttribute('tabindex', '0');
-        ringWrap.setAttribute('aria-label', 'Overall compatibility score — tap to view category breakdown');
+        ringWrap.setAttribute('aria-label', 'Harmony of measured aspects — tap to view the breakdown');
         ringWrap.style.cursor = 'pointer';
         function scrollToBreakdown() {
           var target = document.getElementById('category-scores');
@@ -462,8 +483,11 @@
         var items = catEl.querySelectorAll('.category-score-item');
         cats.forEach(function(cat, i) {
           if (!items[i]) return;
+          // Element-resonance impression by area — qualitative words, not
+          // fake-precise percentages (these bars are elemental, not aspect-measured).
           var v = result[cat.key] || 0;
-          items[i].querySelector('.category-score-item__value').textContent = v + '%';
+          var vw = v >= 75 ? 'Strong' : v >= 60 ? 'Warm' : v >= 45 ? 'Mixed' : 'Growth';
+          items[i].querySelector('.category-score-item__value').textContent = vw;
           items[i].querySelector('.score-bar__fill').style.width = v + '%';
         });
       }
@@ -808,6 +832,29 @@
             if (d1 && !d1.value && meta.birthDate) d1.value = meta.birthDate.split('T')[0];
             var t1 = document.getElementById('person1-time');
             if (t1 && !t1.value && meta.birthTime) t1.value = meta.birthTime;
+            // v631 — also restore city + coords so Person A is COMPLETE (readPerson
+            // needs lat/lon/tz); without this the visitor was forced to re-type their
+            // own city even though we already hold it. Only their real saved values.
+            var city1 = document.getElementById('person1-city');
+            var lat1 = document.getElementById('person1-lat');
+            var lon1 = document.getElementById('person1-lon');
+            var tz1 = document.getElementById('person1-tz');
+            var cityName = meta.birthCity || meta.city || '';
+            if (city1 && !city1.value && cityName) city1.value = cityName;
+            if (lat1 && !lat1.value && meta.lat != null && meta.lat !== '') lat1.value = meta.lat;
+            if (lon1 && !lon1.value && meta.lon != null && meta.lon !== '') lon1.value = meta.lon;
+            if (tz1 && !tz1.value && meta.tz) tz1.value = meta.tz;
+            // Quiet "this is you" cue so the prefill is understood, not surprising.
+            if (cityName && (lat1 && lat1.value)) {
+              var pcard = document.querySelector('.compat-person-card--p1 h3');
+              if (pcard && !document.getElementById('p1-you-tag')) {
+                var tag = document.createElement('span');
+                tag.id = 'p1-you-tag';
+                tag.textContent = 'This is you — edit if needed';
+                tag.style.cssText = 'display:block;font-size:0.62rem;letter-spacing:0.04em;color:#8891AA;font-weight:400;margin-top:4px;';
+                pcard.appendChild(tag);
+              }
+            }
           }
         }
       } catch(e) {}

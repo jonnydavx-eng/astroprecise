@@ -6,6 +6,68 @@
 (function () {
   'use strict';
 
+  document.documentElement.classList.add('ap-enchanted');
+
+  function ensureSitePolishCss() {
+    if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-site-polish.css?v=703';
+    l.id = 'ap-css-site-polish';
+    document.head.appendChild(l);
+  }
+  ensureSitePolishCss();
+
+  function ensurePaletteCss() {
+    if (document.getElementById('ap-css-palette-2026') || document.querySelector('link[href*="ap-palette-2026"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-palette-2026.css?v=703';
+    l.id = 'ap-css-palette-2026';
+    document.head.appendChild(l);
+  }
+  ensurePaletteCss();
+
+  function ensureLogoAuroraCss() {
+    if (document.getElementById('ap-css-logo-aurora')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-logo-aurora.css?v=703';
+    l.id = 'ap-css-logo-aurora';
+    document.head.appendChild(l);
+  }
+  ensureLogoAuroraCss();
+
+  function ensureVisualClarityCss() {
+    if (document.getElementById('ap-css-visual-clarity')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-visual-clarity.css?v=703';
+    l.id = 'ap-css-visual-clarity';
+    document.head.appendChild(l);
+  }
+  ensureVisualClarityCss();
+
+  function ensureModelStageCss() {
+    if (document.getElementById('ap-css-model-stage')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-model-stage.css?v=703';
+    l.id = 'ap-css-model-stage';
+    document.head.appendChild(l);
+  }
+  ensureModelStageCss();
+
+  function ensurePageStructureCss() {
+    if (document.getElementById('ap-css-page-structure')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-page-structure.css?v=683';
+    l.id = 'ap-css-page-structure';
+    document.head.appendChild(l);
+  }
+  ensurePageStructureCss();
+
   var CHAIN = [
     'js/ap-zodiac-constants.js',
     'js/celestial-seals.js',
@@ -13,6 +75,8 @@
     'js/ap-page-bridge.js',
     'js/ap-nav-model.js',
     'js/app.js',
+    // Engine stills / cinema plate sitewide (no Three.js — safe)
+    'js/ap-engine-visuals.js',
   ];
 
   function scriptLoaded(src) {
@@ -56,3 +120,34 @@
     start();
   }
 })();
+
+/* One-time gentle reload when an UPDATED service worker takes control
+   mid-session (sw.js uses skipWaiting + clients.claim): without this, the
+   page keeps running the previous version's CSS/JS against the new cache —
+   the mobile "flashes of old version". Guards: never on first install (no
+   prior controller), never twice, never while the visitor is typing or has
+   unsaved form input. Same flag-guarded block lives in app.js, index.html
+   and defer-page-css.js — window.__apSwReloadGuard makes overlaps a no-op. */
+(function () {
+  if (!('serviceWorker' in navigator) || navigator.webdriver) return;
+  if (window.__apSwReloadGuard) return;
+  window.__apSwReloadGuard = 1;
+  var hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (!hadController) { hadController = true; return; }
+    if (window.__apSwReloaded) return;
+    var el = document.activeElement;
+    if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
+    var dirty = false;
+    try {
+      var fields = document.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]), textarea');
+      for (var i = 0; i < fields.length; i++) {
+        if (fields[i].value !== fields[i].defaultValue) { dirty = true; break; }
+      }
+    } catch (err) {}
+    if (dirty) return;
+    window.__apSwReloaded = 1;
+    if (document.visibilityState === 'hidden') location.reload(); /* only refresh backgrounded tabs — never a visible reload flash while the visitor is looking */
+  });
+})();
+

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The Observatory — Look Through the Lens | Astro Precise</title>
+  <meta name="description" content="Step onto the mountain, look through the telescope, and meet the living star signs — then enter the observatory where your sky is computed to the arcminute.">
+  <meta name="theme-color" content="#171019">
+  <link rel="canonical" href="https://astroprecise.app/observatory.html">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/fonts.css">
+  <style>
+    /* ============================================================
+       The Observatory — a threshold page. Warm-twilight mountain,
+       a telescope eyepiece, and the living zodiac through the lens.
+       Self-contained: no site chrome. Enter → the live model home.
+       ============================================================ */
+    :root{
+      --obs-ink:      #ECE3D2;   /* parchment, ~90% */
+      --obs-ink-soft: rgba(236,227,210,0.60);
+      --obs-brass:    #C9A227;
+      --obs-brass-lo: #8a6f28;
+      --obs-jet:      #0b0a0d;
+      --obs-hair:     rgba(201,162,74,0.55);
+      --obs-mono:     'IBM Plex Mono', ui-monospace, monospace;
+      --obs-serif:    'Cormorant Garamond', 'Georgia', serif;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ margin:0; height:100%; background:#100b12; color:var(--obs-ink);
+      font-family:var(--obs-serif); color-scheme:dark; overscroll-behavior:none; }
+    body{ overflow:hidden; }
+
+    /* ── The vista (fixed full-viewport, warm twilight) ─────────── */
+    .obs-scene{ position:fixed; inset:0; z-index:1; overflow:hidden; }
+    .obs-sky{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+    /* decorative star canvas over the sky gradient, below the ridges */
+    #obs-stars{ position:absolute; inset:0; width:100%; height:100%; z-index:2;
+      pointer-events:none; opacity:0.9; }
+    .obs-ridges{ position:absolute; inset:0; width:100%; height:100%; z-index:3;
+      display:block; pointer-events:none; }
+    /* warm vignette to seat the composition */
+    .obs-scene::after{ content:""; position:absolute; inset:0; z-index:4; pointer-events:none;
+      background:radial-gradient(120% 85% at 50% 30%, transparent 40%, rgba(8,6,10,0.55) 100%); }
+
+    /* ── The eyepiece ──────────────────────────────────────────── */
+    .obs-stage{ position:fixed; inset:0; z-index:6; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:clamp(14px,3.2vh,30px);
+      padding:max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom)); }
+
+    .obs-eyepiece{ position:relative; width:min(74vw,74vh,430px); aspect-ratio:1;
+      border-radius:50%; flex:0 0 auto;
+      /* brass barrel ring — reuses the museum-plate hairline language */
+      background:radial-gradient(circle at 50% 42%, #05060a 0%, #05060a 62%, #0a0910 78%, transparent 79%);
+      box-shadow:
+        0 0 0 2px rgba(10,9,12,0.9),
+        0 0 0 3px var(--obs-hair),
+        0 0 0 12px #141013,
+        0 0 0 13px rgba(201,162,74,0.28),
+        0 0 0 20px #0d0a0e,
+        0 22px 60px -18px rgba(0,0,0,0.85),
+        inset 0 0 60px 8px rgba(0,0,0,0.9);
+      transition:transform 900ms cubic-bezier(.2,.7,.2,1), box-shadow 900ms ease;
+      cursor:pointer;
+    }
+    /* the sky/lens content is clipped to the circle */
+    .obs-lens-clip{ position:absolute; inset:11px; border-radius:50%; overflow:hidden;
+      background:radial-gradient(circle at 50% 44%, #101a2e 0%, #0a0f1c 55%, #05060a 100%); }
+    #obs-lens{ position:absolute; inset:0; width:100%; height:100%; display:block;
+      opacity:0; transition:opacity 700ms ease; }
+    /* faint crosshair reticle before you look through */
+    .obs-reticle{ position:absolute; inset:0; z-index:2; pointer-events:none;
+      opacity:0.5; transition:opacity 600ms ease; }
+    .obs-reticle::before,.obs-reticle::after{ content:""; position:absolute; background:var(--obs-hair); }
+    .obs-reticle::before{ left:50%; top:14%; bottom:14%; width:1px; transform:translateX(-.5px); }
+    .obs-reticle::after{ top:50%; left:14%; right:14%; height:1px; transform:translateY(-.5px); }
+    /* chromatic lens glint */
+    .obs-eyepiece::after{ content:""; position:absolute; inset:11px; border-radius:50%; z-index:3;
+      pointer-events:none; background:radial-gradient(circle at 36% 30%, rgba(255,240,210,0.10), transparent 42%);
+      mix-blend-mode:screen; }
+
+    /* looked-through state */
+    body.obs-open .obs-eyepiece{ transform:scale(1.06); cursor:default;
+      box-shadow:0 0 0 2px rgba(10,9,12,0.9),0 0 0 3px var(--obs-hair),0 0 0 12px #141013,
+        0 0 0 13px rgba(201,162,74,0.4),0 0 0 22px #0d0a0e,0 0 90px 8px rgba(201,162,74,0.10),
+        0 26px 70px -18px rgba(0,0,0,0.85),inset 0 0 60px 8px rgba(0,0,0,0.85); }
+    body.obs-open #obs-lens{ opacity:1; }
+    body.obs-open .obs-reticle{ opacity:0; }
+    body.obs-open .obs-scene{ filter:blur(2px) brightness(0.72); transition:filter 900ms ease; }
+
+    /* ── Caption plate (IBM Plex Mono, museum language) ─────────── */
+    .obs-plate{ font-family:var(--obs-mono); font-size:11px; letter-spacing:0.12em;
+      text-transform:uppercase; color:var(--obs-ink-soft);
+      display:flex; align-items:center; gap:10px; text-align:center; }
+    .obs-plate .dot{ width:6px; height:6px; border-radius:50%; background:var(--obs-brass);
+      box-shadow:0 0 8px 1px rgba(201,162,74,0.7); }
+
+    /* ── Titles + actions ──────────────────────────────────────── */
+    .obs-title{ font-family:var(--obs-serif); font-weight:500; text-align:center;
+      font-size:clamp(1.5rem,4.6vw,2.5rem); line-height:1.12; margin:0; letter-spacing:0.01em; }
+    .obs-title em{ font-style:italic; color:#e9d9b6; }
+    .obs-sub{ font-family:var(--obs-serif); text-align:center; max-width:32ch;
+      font-size:clamp(0.95rem,2.4vw,1.08rem); line-height:1.5; color:var(--obs-ink-soft); margin:0; }
+    .obs-actions{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+
+    .obs-btn{ font-family:var(--obs-mono); font-size:12.5px; letter-spacing:0.14em;
+      text-transform:uppercase; text-decoration:none; cursor:pointer;
+      padding:13px 26px; border-radius:999px; border:1px solid var(--obs-hair);
+      color:#120d05; background:linear-gradient(160deg,#E8C872,#C9A227);
+      box-shadow:0 6px 22px -10px rgba(201,162,74,0.6); transition:transform .18s ease, box-shadow .18s ease; }
+    .obs-btn:hover{ transform:translateY(-1px); box-shadow:0 10px 28px -10px rgba(201,162,74,0.75); }
+    .obs-btn:focus-visible{ outline:2px solid #E8C872; outline-offset:3px; }
+    .obs-btn--ghost{ background:transparent; color:var(--obs-ink-soft); border-color:rgba(236,227,210,0.22);
+      box-shadow:none; font-size:11px; padding:9px 18px; }
+    .obs-btn--ghost:hover{ color:var(--obs-ink); border-color:var(--obs-hair); transform:none; box-shadow:none; }
+
+    /* selected-sign readout, appears after looking through */
+    .obs-signhint{ font-family:var(--obs-mono); font-size:11px; letter-spacing:0.08em;
+      color:var(--obs-ink-soft); min-height:1.2em; text-align:center; opacity:0; transition:opacity .3s ease; }
+    body.obs-open .obs-signhint{ opacity:1; }
+
+    /* skip — always reachable, top-right */
+    .obs-skip{ position:fixed; top:max(14px,env(safe-area-inset-top)); right:16px; z-index:9;
+      font-family:var(--obs-mono); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--obs-ink-soft); text-decoration:none; padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(236,227,210,0.16); background:rgba(10,8,12,0.4); backdrop-filter:blur(4px); }
+    .obs-skip:hover{ color:var(--obs-ink); border-color:var(--obs-hair); }
+    .obs-skip:focus-visible{ outline:2px solid var(--obs-brass); outline-offset:2px; }
+
+    /* brand mark, top-left */
+    .obs-mark{ position:fixed; top:max(14px,env(safe-area-inset-top)); left:18px; z-index:9;
+      font-family:var(--obs-serif); font-size:14px; letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--obs-ink-soft); }
+    .obs-mark b{ color:var(--obs-ink); font-weight:600; }
+
+    /* two content states: before / after looking through */
+    .obs-copy--enter{ display:flex; flex-direction:column; align-items:center; gap:clamp(10px,2vh,18px); }
+    body.obs-open .obs-copy--intro{ display:none; }
+    .obs-copy--through{ display:none; flex-direction:column; align-items:center; gap:clamp(10px,2vh,16px); }
+    body.obs-open .obs-copy--through{ display:flex; }
+
+    @media (max-width:640px){
+      .obs-eyepiece{ width:min(82vw,54vh); }
+      .obs-plate{ font-size:10px; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .obs-eyepiece,#obs-lens,.obs-reticle,.obs-scene{ transition:none !important; }
+      body.obs-open .obs-scene{ filter:brightness(0.72); }
+    }
+    /* no-JS: show the sky + a plain enter link, never a blank page */
+    .obs-nojs{ position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; }
+    .obs-nojs a{ color:var(--obs-brass); }
+  </style>
+</head>
+<body>
+  <!-- ── The mountain vista ──────────────────────────────────── -->
+  <div class="obs-scene" aria-hidden="true">
+    <svg class="obs-sky" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="presentation">
+      <defs>
+        <linearGradient id="obsSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0"    stop-color="#140f1e"/>
+          <stop offset="0.42" stop-color="#241a2c"/>
+          <stop offset="0.68" stop-color="#4a2f3a"/>
+          <stop offset="0.84" stop-color="#7c4a3c"/>
+          <stop offset="1"    stop-color="#9c5f3d"/>
+        </linearGradient>
+        <radialGradient id="obsGlow" cx="0.5" cy="0.92" r="0.6">
+          <stop offset="0" stop-color="#e9a86a" stop-opacity="0.55"/>
+          <stop offset="0.4" stop-color="#c07a48" stop-opacity="0.22"/>
+          <stop offset="1" stop-color="#000" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="obsAlpen" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#8a5238"/><stop offset="1" stop-color="#2c1c26"/>
+        </linearGradient>
+      </defs>
+      <rect width="1440" height="900" fill="url(#obsSky)"/>
+      <rect width="1440" height="900" fill="url(#obsGlow)"/>
+      <!-- far range (alpenglow tops) -->
+      <path d="M0,560 L150,500 L320,548 L470,470 L650,540 L820,462 L1010,536 L1200,478 L1440,540 L1440,900 L0,900 Z" fill="url(#obsAlpen)" opacity="0.55"/>
+    </svg>
+    <canvas id="obs-stars"></canvas>
+    <svg class="obs-ridges" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="presentation">
+      <!-- mid ridge with the observatory dome -->
+      <g fill="#160f18">
+        <path d="M0,640 L180,596 L360,648 L520,560 L700,636 L900,556 L1120,640 L1300,588 L1440,632 L1440,900 L0,900 Z"/>
+      </g>
+      <!-- dome on the 900-peak -->
+      <g transform="translate(870,556)">
+        <path d="M0,0 a30,30 0 0 1 60,0 Z" fill="#0e0a10"/>
+        <rect x="26" y="-30" width="8" height="24" rx="3" fill="#1b1420"/>
+        <rect x="27.5" y="-28" width="5" height="20" rx="2.5" fill="#e9c07a" opacity="0.5"/>
+        <rect x="-8" y="-1" width="76" height="6" rx="2" fill="#0b070d"/>
+      </g>
+      <!-- near ridge (foreground, darkest) -->
+      <g fill="#0a070c">
+        <path d="M0,760 L240,700 L500,772 L760,684 L1040,772 L1280,712 L1440,760 L1440,900 L0,900 Z"/>
+      </g>
+    </svg>
+  </div>
+
+  <a class="obs-mark" href="index.html">Astro <b>Precise</b></a>
+  <a class="obs-skip" href="index.html" data-obs-skip>Skip &rsaquo;</a>
+
+  <!-- ── The eyepiece + copy ─────────────────────────────────── -->
+  <div class="obs-stage">
+    <button class="obs-eyepiece" id="obs-eyepiece" aria-label="Look through the telescope lens">
+      <span class="obs-lens-clip"><canvas id="obs-lens"></canvas></span>
+      <span class="obs-reticle"></span>
+    </button>
+
+    <div class="obs-plate"><span class="dot"></span><span id="obs-plate-text">The Observatory · loading the sky…</span></div>
+
+    <!-- before looking through -->
+    <div class="obs-copy--intro obs-copy--enter">
+      <h1 class="obs-title">You've reached the <em>observatory</em>.</h1>
+      <p class="obs-sub">High on the mountain, under a real sky. Look through the lens — the star signs are turning where they truly stand tonight.</p>
+      <div class="obs-actions">
+        <button class="obs-btn" id="obs-look">Look through the lens</button>
+      </div>
+    </div>
+
+    <!-- after looking through -->
+    <div class="obs-copy--through">
+      <p class="obs-sub" style="max-width:34ch">Drag to turn the sky. Each seal is a constellation of the zodiac; the glowing points are the planets, at their real positions right now.</p>
+      <div class="obs-signhint" id="obs-signhint">Tap a sign to read it — or step inside.</div>
+      <div class="obs-actions">
+        <a class="obs-btn" href="index.html" id="obs-enter">Enter the observatory &rarr;</a>
+        <a class="obs-btn obs-btn--ghost" href="chart.html">Cast your chart</a>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="obs-nojs"><p>The observatory needs JavaScript for the living sky. <a href="index.html">Enter the site &rarr;</a></p></div>
+  </noscript>
+
+  <!-- lens dependencies (the zodiac ring shows REAL live planet positions) -->
+  <script src="js/raf-core.js" defer></script>
+  <script src="js/ap-zodiac-constants.js" defer></script>
+  <script src="js/ap-canvas-seals.js" defer></script>
+  <script src="js/ephemeris.js" defer></script>
+  <script src="js/zodiac-sphere.js" defer></script>
+  <script src="js/ap-observatory-entrance.js" defer></script>
+</body>
+</html>

@@ -2,24 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Saturn Return calculator: find the exact dates of your first, second and third Saturn return from the real sky — free — then unlock a full personalised reading and printable PDF. What a Saturn return is, when it happens, and what it matures." />
+  <meta name="description" content="Saturn Return calculator — find the exact dates of your first, second and third Saturn return from the real sky, free, and what each one matures." />
   <title>Saturn Return Calculator: Your Exact Dates & Reading | Astro Precise</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Saturn Return Calculator: Your Exact Dates & Reading | Astro Precise" />
   <meta property="og:description" content="Find the exact dates of your Saturn return from the real sky — free — then unlock a full personalised reading and a printable PDF keepsake." />
   <meta property="og:url" content="https://astroprecise.app/saturn-return.html" />
   <link rel="canonical" href="https://astroprecise.app/saturn-return.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Saturn Return Calculator: Your Exact Dates & Reading" />
   <meta name="twitter:description" content="Find the exact dates of your Saturn return from the real sky — free — then unlock a full personalised reading + printable PDF." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/ap-palette-2026.css" />
@@ -165,7 +173,7 @@
 
       <div class="ap-footer-signup ap-footer-signup--compact">
         <p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">
-          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#C2A05E);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
+          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#A8B0BC);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
           &mdash; cosmic weather &amp; new features coming soon.
         </p>
       </div>
@@ -202,8 +210,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -273,10 +281,10 @@
     if(!cvs) return;
     var W=680, H=300, ctx=cvs.getContext('2d');
     var CX=W*0.36, CY=H*0.54;
-    var GOLD='#C2A05E', GOLD_L='#EFE3C0', GOLD_D='rgba(194, 160, 94,0.25)';
+    var GOLD='#A8B0BC', GOLD_L='#E8EBF0', GOLD_D='rgba(168, 176, 188,0.25)';
 
-    // Background
-    ctx.fillStyle='#050406'; ctx.fillRect(0,0,W,H);
+    // Background — cool void (brand base, not retired warm)
+    ctx.fillStyle='#07070A'; ctx.fillRect(0,0,W,H);
 
     // Stars (deterministic)
     var sv=0xA5DEF2B3;
@@ -321,17 +329,17 @@
       ctx.save(); ctx.globalAlpha=0.75;
       ctx.beginPath(); ctx.ellipse(CX,CY,r*2.5,r*0.55,0,Math.PI,0,false);
       ctx.strokeStyle=GOLD; ctx.lineWidth=r*0.32; ctx.stroke(); ctx.restore();
-      // Planet
+      // Planet — engraved-brass sphere on cool void (no honey/orange drift)
       var pg=ctx.createRadialGradient(CX-r*0.28,CY-r*0.28,r*0.08,CX,CY,r);
-      pg.addColorStop(0,'#F8EEC8'); pg.addColorStop(0.3,'#D4A820');
-      pg.addColorStop(0.7,'#8A6808'); pg.addColorStop(1,'#3A2408');
+      pg.addColorStop(0,'#E8EBF0'); pg.addColorStop(0.3,'#7EC8E8');
+      pg.addColorStop(0.7,'#8A7145'); pg.addColorStop(1,'#2A2418');
       ctx.beginPath(); ctx.arc(CX,CY,r,0,Math.PI*2);
       ctx.fillStyle=pg; ctx.fill();
-      // Planet bands
+      // Planet bands (brass light / cool-shadow, not warm amber)
       for(var b=-2;b<=2;b++){
         var by=CY+b*r*0.16, hw=Math.sqrt(Math.max(0,r*r-(by-CY)*(by-CY)));
         ctx.beginPath(); ctx.moveTo(CX-hw,by); ctx.lineTo(CX+hw,by);
-        ctx.strokeStyle=b%2===0?'rgba(255,200,80,0.2)':'rgba(100,70,10,0.18)';
+        ctx.strokeStyle=b%2===0?'rgba(216,185,120,0.22)':'rgba(60,52,34,0.20)';
         ctx.lineWidth=2; ctx.stroke();
       }
       // Ring (front half)
@@ -349,7 +357,7 @@
     function dot(x,y,label,age,glow){
       // Halo
       var hg=ctx.createRadialGradient(x,y,0,x,y,22);
-      hg.addColorStop(0,'rgba(194, 160, 94,'+( glow?0.7:0.45)+')'); hg.addColorStop(1,'rgba(194, 160, 94,0)');
+      hg.addColorStop(0,'rgba(168, 176, 188,'+( glow?0.7:0.45)+')'); hg.addColorStop(1,'rgba(168, 176, 188,0)');
       ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2); ctx.fillStyle=hg; ctx.fill();
       // Dot
       ctx.beginPath(); ctx.arc(x,y,5.5,0,Math.PI*2);
@@ -395,7 +403,7 @@
     });
 
     // Title + label
-    ctx.fillStyle='rgba(194, 160, 94,0.9)';
+    ctx.fillStyle='rgba(168, 176, 188,0.9)';
     ctx.font='bold 12px Cinzel,serif'; ctx.textAlign='left';
     ctx.fillText('Astro Precise  ·  The Saturn Cycle', 18, 24);
     ctx.fillStyle='rgba(168,158,136,0.6)';

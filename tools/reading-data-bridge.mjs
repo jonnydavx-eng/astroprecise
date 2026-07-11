@@ -53,6 +53,44 @@ const SIGN_RULER = {
   Sagittarius: 'Jupiter', Capricorn: 'Saturn', Aquarius: 'Saturn', Pisces: 'Jupiter',
 };
 
+const SIGN_OPPOSITE = {
+  Aries: 'Libra', Taurus: 'Scorpio', Gemini: 'Sagittarius', Cancer: 'Capricorn',
+  Leo: 'Aquarius', Virgo: 'Pisces', Libra: 'Aries', Scorpio: 'Taurus',
+  Sagittarius: 'Gemini', Capricorn: 'Cancer', Aquarius: 'Leo', Pisces: 'Virgo',
+};
+
+/**
+ * The lunar-nodal axis — real, standard astrological convention (not per-buyer
+ * invention). The North Node names the growth direction; the South Node (always
+ * the opposite sign) names the over-familiar comfort being released. Each entry
+ * is curated corpus in the same class as interpretations.js's planet-in-sign
+ * bank — this is the honest content that replaces the generic North-Node filler
+ * (getPlanetInterpretation has no North-Node-in-sign entries, so it would
+ * otherwise emit a hollow "blends its principle with the sign" line).
+ */
+export const NODE_AXIS = {
+  Aries: 'grow through plain desire, decisive action, and healthy self-interest — releasing the Libra South Node\'s habit of deference, endless weighing, and defining yourself through others\' approval. The lesson is to want something openly and move on it before consensus arrives.',
+  Taurus: 'grow through steady self-worth, simple security, and owning what is genuinely yours — releasing the Scorpio South Node\'s pull toward crisis, entanglement, and borrowing intensity from other people\'s depths. The lesson is that enough, held calmly, is its own power.',
+  Gemini: 'grow through curiosity, close listening, and the humble gathering of facts — releasing the Sagittarius South Node\'s reflex to already know, to preach the big picture before checking the small one. The lesson is that the right question outranks the confident answer.',
+  Cancer: 'grow through emotional honesty, belonging, and letting yourself be cared for — releasing the Capricorn South Node\'s armor of control, over-responsibility, and achievement as a substitute for feeling. The lesson is that needing people is not weakness but the point.',
+  Leo: 'grow through wholehearted creative courage, warmth, and being seen as an individual — releasing the Aquarius South Node\'s retreat into the group, the abstract, and cool detachment. The lesson is to risk the personal spotlight your gifts have earned.',
+  Virgo: 'grow through practical service, useful craft, and attention to the doable next step — releasing the Pisces South Node\'s drift, escapism, and waiting to be rescued. The lesson is that devotion becomes real only when it takes concrete form.',
+  Libra: 'grow through partnership, fairness, and genuine consideration of the other — releasing the Aries South Node\'s go-it-alone impulse and reflex to win. The lesson is that some things can only be built by two, at the pace of two.',
+  Scorpio: 'grow through depth, honest intimacy, and the willingness to be transformed — releasing the Taurus South Node\'s attachment to comfort, possessions, and the unexamined status quo. The lesson is to let what is finished actually end.',
+  Sagittarius: 'grow through faith, first-hand experience, and the larger meaning — releasing the Gemini South Node\'s scattered data-gathering and second-hand cleverness. The lesson is to commit to a truth and live it, not merely to collect more information.',
+  Capricorn: 'grow through mature responsibility, structure, and stepping into visible authority — releasing the Cancer South Node\'s retreat into old comforts and the safety of the familiar. The lesson is to become the reliable adult you keep looking for.',
+  Aquarius: 'grow through contribution, equality, and serving a circle wider than yourself — releasing the Leo South Node\'s need for the spotlight and personal applause. The lesson is that the future is built with others, and your gift matters most given away.',
+  Pisces: 'grow through trust, compassion, and surrender to something larger than the plan — releasing the Virgo South Node\'s over-analysis, worry, and the belief that more control will finally make it safe. The lesson is to let go where effort has stopped helping.',
+};
+
+/** Honest North-Node-axis prose: real growth direction + the opposite South Node. */
+export function nodeAxisNarrative(nnSign) {
+  const grow = NODE_AXIS[nnSign];
+  const south = SIGN_OPPOSITE[nnSign];
+  if (!grow) return '';
+  return { south, text: `With the North Node in ${nnSign}, the direction of growth is to ${grow}` };
+}
+
 export function planetsInHouse(houseNum, pos, bodies) {
   return bodies.filter((k) => pos[k].house === houseNum).map((k) => k);
 }

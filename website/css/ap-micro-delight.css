@@ -1,0 +1,188 @@
+/* Astro Precise — Micro-interactions & premium loading states */
+
+@keyframes ap-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes ap-pulse-glow {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.85; }
+}
+
+@keyframes ap-reveal-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ap-skeleton {
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(22, 28, 48, 0.5) 0%,
+    rgba(168, 176, 188, 0.08) 50%,
+    rgba(22, 28, 48, 0.5) 100%
+  );
+  background-size: 200% 100%;
+  animation: ap-shimmer 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-skeleton { animation: none; background: rgba(22, 28, 48, 0.5); }
+}
+
+.ap-glow-hover {
+  transition: box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.35s ease,
+              transform 0.25s ease;
+}
+
+.ap-glow-hover:hover,
+.ap-glow-hover:focus-visible {
+  box-shadow: 0 0 28px rgba(212, 184, 122, 0.14), 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+.ap-reveal-smooth {
+  animation: ap-reveal-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ap-reveal-smooth--d1 { animation-delay: 0.08s; }
+.ap-reveal-smooth--d2 { animation-delay: 0.16s; }
+.ap-reveal-smooth--d3 { animation-delay: 0.24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ap-reveal-smooth { animation: none; }
+}
+
+.ap-loading-dots {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.ap-loading-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ap-gold-core, #A8B0BC);
+  animation: ap-pulse-glow 1.2s ease-in-out infinite;
+}
+
+.ap-loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+.ap-loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+.ap-progress-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ap-progress-meter__track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(232, 235, 240, 0.08);
+  overflow: hidden;
+}
+
+.ap-progress-meter__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #4A90E0, #7EC8E8 55%, #C8D8E8);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ap-progress-meter__label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--ap-text-muted, #8B919C);
+}
+
+.ap-time-accuracy {
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--ap-gold-a16, rgba(168, 176, 188, 0.16));
+  background: rgba(10, 14, 26, 0.45);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--ap-text-secondary, #C8CDD6);
+}
+
+.ap-time-accuracy strong {
+  color: var(--ap-gold-vivid, #C8CDD6);
+  font-weight: 600;
+}
+
+.ap-time-accuracy__meter {
+  margin-top: 0.5rem;
+}
+
+.ap-sky-bridge {
+  max-width: 720px;
+  margin: 0 auto 1.5rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid var(--ap-gold-a22, rgba(168, 176, 188, 0.22));
+  background: linear-gradient(135deg, rgba(26, 35, 64, 0.55), rgba(10, 14, 26, 0.65));
+  box-shadow: 0 0 32px rgba(72, 58, 120, 0.08);
+}
+
+.ap-sky-bridge__eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ap-gold-vivid, #C8CDD6);
+  margin: 0 0 0.4rem;
+}
+
+.ap-sky-bridge__title {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size: 1.15rem;
+  color: var(--ap-text-primary, #E8EBF0);
+  margin: 0 0 0.5rem;
+}
+
+.ap-sky-bridge__compare {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+}
+
+.ap-sky-bridge__col {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--ap-gold-a12, rgba(168, 176, 188, 0.12));
+  background: rgba(10, 14, 26, 0.4);
+  text-align: center;
+}
+
+.ap-sky-bridge__col span {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ap-text-muted, #8B919C);
+  margin-bottom: 0.25rem;
+}
+
+.ap-sky-bridge__arrow {
+  color: var(--ap-gold-a40, rgba(168, 176, 188, 0.4));
+  font-size: 1.1rem;
+}
+
+.ap-sky-bridge__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 560px) {
+  .ap-sky-bridge__compare {
+    grid-template-columns: 1fr;
+  }
+  .ap-sky-bridge__arrow { display: none; }
+}

@@ -18,7 +18,7 @@ WHAT IS READY NOW
 FUNNEL (every post)
 -------------------
 Caption → astroprecise.app/links.html → chart.html (cast) → email signup / Ko-fi tip
-Never link checkout from social until Lemon Squeezy URLs are live.
+Never link checkout from social until the PayPal payment links are live (PAYPAL-SETUP.md).
 
 CHANNELS RANKED BY FREE ROI (astrology niche)
 ---------------------------------------------

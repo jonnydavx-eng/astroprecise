@@ -1,5 +1,7 @@
 # AstroPrecise — Monetization Evaluation & Build
 
+> **⚠ 2026-07-02 — payment provider changed:** Lemon Squeezy is DROPPED (would not onboard the store). Checkout is now **PayPal direct** — hosted payment links pasted per-SKU into AP_MON (see **PAYPAL-SETUP.md** for setup, VAT notes and guardrails). References to Lemon Squeezy below are historical.
+
 _Assessed 2026-06-13. Facts web-verified (fees/ToS current as of Oct 2025–2026)._
 
 ## The one constraint that shapes everything

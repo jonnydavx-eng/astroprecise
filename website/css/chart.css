@@ -3,10 +3,10 @@
 .page-chart .chart-wheel-card,
 .page-chart .tabs-card {
   background: var(--surface-raised, rgba(22, 28, 42, 0.72));
-  border: 1px solid var(--hairline, rgba(194, 160, 94, 0.14));
+  border: 1px solid var(--hairline, rgba(168, 176, 188, 0.14));
   border-top-color: rgba(232, 224, 208, 0.14);
   box-shadow: var(--shadow-raised, 0 16px 40px rgba(0, 0, 0, 0.4)),
-    0 0 48px rgba(194, 160, 94, 0.05);
+    0 0 48px rgba(168, 176, 188, 0.05);
 }
 
 .page-chart .chart-results-grid .natal-wheel-container {
@@ -18,9 +18,9 @@
   /* Reserve wheel footprint before SVG inject — keeps chart CLS under 0.05 */
   min-height: min(78vw, 720px);
   box-shadow:
-    0 0 48px rgba(194, 160, 94, 0.18),
+    0 0 48px rgba(168, 176, 188, 0.18),
     0 0 120px rgba(92, 74, 110, 0.2),
-    inset 0 0 60px rgba(5, 4, 6, 0.45);
+    inset 0 0 60px rgba(12, 16, 22, 0.45);
 }
 
 .page-chart .natal-wheel-container::before {
@@ -28,9 +28,9 @@
   position: absolute;
   inset: -3px;
   border-radius: 50%;
-  border: 1px solid rgba(194, 160, 94, 0.28);
+  border: 1px solid rgba(168, 176, 188, 0.28);
   pointer-events: none;
-  box-shadow: 0 0 24px rgba(194, 160, 94, 0.12);
+  box-shadow: 0 0 24px rgba(168, 176, 188, 0.12);
 }
 
 .page-chart .natal-wheel-container::after {
@@ -38,7 +38,7 @@
   position: absolute;
   inset: 8%;
   border-radius: 50%;
-  border: 1px dashed rgba(194, 160, 94, 0.14);
+  border: 1px dashed rgba(168, 176, 188, 0.14);
   pointer-events: none;
   opacity: 0.7;
 }
@@ -82,8 +82,8 @@
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, rgba(194, 160, 94, 0.1) 0%, rgba(16, 21, 32, 0.55) 52%, transparent 72%);
-  border: 1px solid rgba(194, 160, 94, 0.14);
+    radial-gradient(circle at 50% 50%, rgba(168, 176, 188, 0.1) 0%, rgba(16, 21, 32, 0.55) 52%, transparent 72%);
+  border: 1px solid rgba(168, 176, 188, 0.14);
   box-shadow: inset 0 0 40px rgba(92, 74, 110, 0.2);
   animation: ap-wheel-skeleton-pulse 1.8s ease-in-out infinite;
 }
@@ -115,19 +115,19 @@
 /* Celestial seals on wheel — engraved instrument glow */
 .ap-chart-render .ap-chart-seal image {
   filter:
-    drop-shadow(0 0 2px rgba(194, 160, 94, 0.55))
+    drop-shadow(0 0 2px rgba(168, 176, 188, 0.55))
     drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
 }
 
 .ap-chart-render .ap-chart-seal:hover image {
   filter:
-    drop-shadow(0 0 5px rgba(194, 160, 94, 0.75))
+    drop-shadow(0 0 5px rgba(168, 176, 188, 0.75))
     drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
 .page-chart .natal-wheel-container {
   background:
-    radial-gradient(circle at 50% 42%, rgba(194, 160, 94, 0.06) 0%, transparent 48%),
+    radial-gradient(circle at 50% 42%, rgba(168, 176, 188, 0.06) 0%, transparent 48%),
     radial-gradient(circle at 50% 50%, rgba(16, 21, 32, 0.35) 0%, transparent 72%);
 }
 
@@ -196,7 +196,7 @@
   background: var(--ap-ip-surface-deep, rgba(16, 21, 32, 0.96));
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
-  border: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
+  border: 1px solid var(--ap-gold-a40, rgba(168, 176, 188, 0.4));
   border-radius: var(--radius-md, 9px);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
   font-family: var(--font-body, system-ui, sans-serif);
@@ -207,7 +207,7 @@
 .ap-aspect-popover__title {
   font-size: var(--text-data, 0.85rem);
   font-weight: var(--weight-semibold, 600);
-  color: var(--ap-gold-parchment, #efe3c0);
+  color: var(--ap-gold-parchment, #E8EBF0);
   letter-spacing: 0.01em;
 }
 .ap-aspect-popover__orb {
@@ -234,30 +234,10 @@
   }
 }
 
-.chart-advanced .accordion-content {
-  max-height: none;
-}
-
-@media (max-width: 768px) {
-  .chart-advanced .accordion-item:not(.is-open) .accordion-content {
-    max-height: 0;
-  }
-
-  .chart-advanced .accordion-item.is-open .accordion-content {
-    max-height: 1200px;
-  }
-}
-
-@media (min-width: 769px) {
-  .chart-advanced .accordion-trigger {
-    display: none;
-  }
-
-  .chart-advanced .accordion-content__inner {
-    border-top: none;
-    padding-top: 0;
-  }
-}
+/* Advanced-options accordion: styled + wired eagerly in chart.html's inline
+   <style>/<script> (single source of truth — this file is deferred-loaded and
+   never loads on the audit path, so no accordion rules may live here). The
+   disclosure behaves identically at every viewport width. */
 
 /* Planet table (compat/transit/accuracy pages that embed full render) */
 .ap-chart-table-wrap {
@@ -273,20 +253,20 @@
   font-size: var(--text-data, 0.82rem);
   background: rgba(16, 21, 32, 0.85);
   color: var(--ap-text-secondary, #a89e88);
-  border: 1px solid rgba(194, 160, 94, 0.18);
+  border: 1px solid rgba(168, 176, 188, 0.18);
   border-radius: var(--radius-md, 8px);
   overflow: hidden;
 }
 
 .ap-chart-table thead tr {
   background: rgba(22, 28, 42, 0.95);
-  border-bottom: 2px solid rgba(194, 160, 94, 0.35);
+  border-bottom: 2px solid rgba(168, 176, 188, 0.35);
 }
 
 .ap-chart-table th {
   padding: 0.5rem 0.65rem;
   text-align: left;
-  color: var(--gold, #C2A05E);
+  color: var(--gold, #A8B0BC);
   font-weight: 700;
   font-size: 0.75rem;
   letter-spacing: 0.1em;
@@ -300,7 +280,7 @@
 }
 
 .ap-chart-table tbody tr:nth-child(even) {
-  background: rgba(5, 4, 6, 0.35);
+  background: rgba(12, 16, 22, 0.35);
 }
 
 /* Element-coded left edge — a quiet observatory cue, not a rainbow. The first
@@ -316,18 +296,18 @@
   bottom: 12%;
   width: 2.5px;
   border-radius: 2px;
-  background: var(--row-elem, var(--ap-gold-a40, rgba(194, 160, 94, 0.4)));
+  background: var(--row-elem, var(--ap-gold-a40, rgba(168, 176, 188, 0.4)));
   opacity: 0.7;
 }
 
 .ap-chart-table tbody tr:hover {
-  background: rgba(194, 160, 94, 0.04);
+  background: rgba(168, 176, 188, 0.04);
 }
 
 /* Linked highlight — when the matching wheel glyph is hovered/focused. */
 .ap-chart-table tbody tr.is-linked-active {
-  background: var(--ap-gold-a12, rgba(194, 160, 94, 0.12));
-  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(194, 160, 94, 0.28));
+  background: var(--ap-gold-a12, rgba(168, 176, 188, 0.12));
+  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(168, 176, 188, 0.28));
 }
 .ap-chart-table tbody tr.is-linked-active td:first-child::before {
   opacity: 1;
@@ -355,7 +335,7 @@
 }
 
 .ap-chart-table .ap-pt-house {
-  color: var(--gold, #C2A05E);
+  color: var(--gold, #A8B0BC);
   font-weight: 600;
 }
 
@@ -399,7 +379,7 @@
 }
 
 .ap-chart-legend__title {
-  color: var(--gold, #C2A05E);
+  color: var(--gold, #A8B0BC);
   font-weight: 700;
   margin-bottom: 0.35rem;
   letter-spacing: 0.1em;
@@ -450,7 +430,7 @@
 }
 
 .ap-chart-title__main {
-  color: var(--gold, #C2A05E);
+  color: var(--gold, #A8B0BC);
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -493,8 +473,8 @@
   padding: var(--space-3) var(--space-4);
   background: rgba(22, 28, 42, 0.55);
   border-radius: var(--radius-md, 8px);
-  border: 1px solid rgba(194, 160, 94, 0.12);
-  border-left: 3px solid var(--gold, #C2A05E);
+  border: 1px solid rgba(168, 176, 188, 0.12);
+  border-left: 3px solid var(--gold, #A8B0BC);
   box-shadow: var(--shadow-raised, 0 4px 16px rgba(0, 0, 0, 0.25));
 }
 
@@ -514,11 +494,11 @@
 
 .pattern-card__glyph {
   font-size: 1.2em;
-  color: var(--gold, #C2A05E);
+  color: var(--gold, #A8B0BC);
 }
 
 .pattern-card__name {
-  color: var(--gold, #C2A05E);
+  color: var(--gold, #A8B0BC);
 }
 
 .pattern-card__name--star {
@@ -556,7 +536,7 @@
 .page-chart .ap-reading-card.ap-elem-earth,
 .page-chart .ap-reading-card.ap-elem-air,
 .page-chart .ap-reading-card.ap-elem-water {
-  border-left: 3px solid var(--row-elem, var(--ap-gold-a40, rgba(194, 160, 94, 0.4)));
+  border-left: 3px solid var(--row-elem, var(--ap-gold-a40, rgba(168, 176, 188, 0.4)));
 }
 
 /* The placement card's roman/glyph icon picks up the element accent. */
@@ -582,12 +562,12 @@
       color-mix(in srgb, var(--row-elem, var(--ap-gold-core)) 14%, transparent) 0%,
       transparent 60%),
     var(--ap-ip-surface, rgba(22, 28, 42, 0.58));
-  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(194, 160, 94, 0.28));
+  box-shadow: inset 0 0 0 1px var(--ap-gold-a28, rgba(168, 176, 188, 0.28));
 }
 
 /* When a wheel glyph/line is the trigger, the matching card highlights too. */
 .page-chart .ap-reading-card.is-linked-active {
-  outline: 1px solid var(--ap-gold-a40, rgba(194, 160, 94, 0.4));
+  outline: 1px solid var(--ap-gold-a40, rgba(168, 176, 188, 0.4));
   outline-offset: -1px;
 }
 
@@ -601,4 +581,82 @@
   .page-chart .ap-reading-card[data-aspect-key] {
     transition: none;
   }
+}
+/* ── Keepsake band (post-calc masterpiece path) ───────────────────────── */
+.chart-keepsake-band {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.85rem 0 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(168, 176, 188, 0.28);
+  background: linear-gradient(145deg, rgba(26, 34, 48, 0.75), rgba(12, 16, 22, 0.92));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+.chart-keepsake-band__art img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid rgba(168, 176, 188, 0.35);
+  object-fit: cover;
+  display: block;
+  background: #07070A;
+}
+.chart-keepsake-band__eyebrow {
+  margin: 0 0 0.25rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #A8B0BC;
+}
+.chart-keepsake-band__lead {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #C8CDD6;
+}
+.chart-keepsake-band__lead strong { color: #E8EBF0; }
+.chart-keepsake-band__lead a { color: #C8CDD6; }
+.chart-keepsake-band__honesty {
+  margin: 0.45rem 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: rgba(168, 158, 136, 0.92);
+}
+@media (max-width: 560px) {
+  .chart-keepsake-band { flex-direction: column; text-align: center; }
+}
+
+/* Optional name disclosure (mirrors chart-critical) */
+.chart-form__optional-label {
+  margin: 0.65rem 0 0.25rem;
+  border: 1px solid rgba(168,176,188,0.18);
+  border-radius: 12px;
+  background: rgba(12,16,22,0.28);
+  padding: 0.15rem 0.85rem 0.35rem;
+}
+.chart-form__optional-sum {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: #A8B0BC;
+  padding: 0.55rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.chart-form__optional-sum::-webkit-details-marker { display: none; }
+.chart-form__optional-hint {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(190,178,152,0.85);
+  text-transform: none;
+}
+.chart-form__optional-label[open] .chart-form__optional-sum {
+  border-bottom: 1px solid rgba(168,176,188,0.12);
+  margin-bottom: 0.35rem;
 }

@@ -2,32 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="What planets are visible tonight? See which naked-eye planets (Mercury, Venus, Mars, Jupiter, Saturn) are above your horizon after sunset, the Moon's phase, and twilight times — computed locally on your device from real astronomy. No tracking." />
-  <title>What Planets Are Visible Tonight? — Your Live Sky, Computed Locally | Astro Precise</title>
+  <meta name="description" content="What planets are visible tonight? See which naked-eye planets are above your horizon after sunset, plus the Moon’s phase and twilight times — computed locally." />
+  <title>What Planets Are Visible Tonight? Your Live Sky</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="What's Visible Tonight | Astro Precise" />
   <meta property="og:description" content="Which naked-eye planets are visible tonight, the Moon's phase, and twilight times for your location — computed in your browser from real astronomy. No accounts, no tracking." />
   <meta property="og:url" content="https://astroprecise.app/tonight.html" />
   <link rel="canonical" href="https://astroprecise.app/tonight.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="What's Visible Tonight | Astro Precise" />
   <meta name="twitter:description" content="Which naked-eye planets are visible tonight, plus the Moon's phase and twilight times for your location — computed in your browser from real astronomy." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
-  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /><link rel="stylesheet" href="css/tonight-page.css" /></noscript>
+  <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/instrument-panel.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/chart-hero-lcp-fonts.css" />
+  <link rel="stylesheet" href="css/tonight-page.css" id="ap-css-tonight" />
   <style>
     body:has(.tn-hero){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(.tn-hero) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
     body:has(.tn-hero) .navbar__nav{min-height:44px;contain:layout style;}
+    body:has(.tn-hero) .tn-hero__moon{min-height:5rem;}
     body:has(.tn-hero) .tn-hero h1{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;min-height:1.15em;contain:layout style;}
     body:has(.tn-hero) .tn-hero__sub{min-height:4.4em;}
     body:has(.tn-hero) .tn-privacy-seal{min-height:2.6em;}
@@ -40,12 +50,12 @@
   </style>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
   <script src="js/defer-page-css.js" defer></script>
-  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTonightFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTonightFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/tonight-page.css','ap-css-tonight');});</script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){function deferTonightFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferTonightFonts();deferPageCss('css/instrument-panel.css','ap-css-instrument');deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');});</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Astro Precise" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Astro Precise — What's Visible Tonight","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"A privacy-first tool that computes which naked-eye planets are visible tonight, the Moon's phase and illumination, and sunset and twilight times for your location — entirely in your browser, using real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/tonight.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Astro Precise — What's Visible Tonight","applicationCategory":"Astronomy","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"A privacy-first tool that computes which naked-eye planets are visible tonight, the Moon's phase and illumination, and sunset and twilight times for your location — entirely in your browser, using real VSOP87/ELP2000 astronomy.","url":"https://astroprecise.app/tonight.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What planets are visible tonight?","acceptedAnswerNote":"Computed live in the browser.","acceptedAnswer":{"@type":"Answer","text":"Astro Precise computes which of the five naked-eye planets — Mercury, Venus, Mars, Jupiter and Saturn — are above your horizon and visible after sunset tonight, based on your location and real planetary positions. The answer is calculated on your device and changes daily."}},{"@type":"Question","name":"How is the visibility calculated?","acceptedAnswer":{"@type":"Answer","text":"Each planet's position is found from VSOP87 and ELP2000 astronomical theory, converted to its altitude above your local horizon using your latitude and the local sidereal time. A planet is reported as visible if it rises clear of the horizon during the dark hours after sunset. Times are good approximations for a flat, unobstructed horizon and may vary with terrain, weather and light pollution."}},{"@type":"Question","name":"Is my location sent anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. Everything is computed in your browser. Your coordinates are never transmitted to Astro Precise. If you type a city name to search, only that place name is sent to a public geocoder — never your exact position."}}]}</script>
   </head>
 <body class="ap-no-nav-enter">
@@ -93,6 +103,7 @@
     ============================================================ -->
     <section class="tn-hero" aria-labelledby="page-title">
       <div class="container">
+        <span class="tn-hero__moon" aria-hidden="true"><img class="tn-hero__moon-img" src="img/engine/derivatives/moon-window.webp?v=1" width="120" height="120" alt="" decoding="async" fetchpriority="high" /></span>
         <p class="tn-hero__eyebrow">&#10022; Your live sky &#10022;</p>
         <h1 id="page-title">What's Visible Tonight</h1>
         <p class="tn-hero__sub">
@@ -199,7 +210,8 @@
     ============================================================ -->
     <section class="tn-privacy-band" aria-labelledby="privacy-heading">
       <div class="tn-privacy-band__inner">
-        <span class="tn-privacy-band__glyph" aria-hidden="true">&#9919;</span>
+        <span class="tn-privacy-band__seal" data-celestial-seal="instrument:instrument" data-seal-lg aria-hidden="true"></span>
+        <p class="tn-privacy-band__eyebrow">Privacy by design</p>
         <h2 id="privacy-heading">This is the most private sky tool you'll use</h2>
         <p>
           Astro Precise has no back-end collecting your data, no analytics scripts, and no
@@ -254,8 +266,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>

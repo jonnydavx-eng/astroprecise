@@ -26,21 +26,48 @@
   }
 
   // Element colours (RGB components for easy alpha composition)
+  // Cool-brass system, low saturation — mirrors css .ap-orb ramp --c1 (retinted 2026-07-04)
   const EL = {
-    fire:  [224,  80,  64],
-    earth: [107, 155,  95],
-    air:   [92, 74, 110],
-    water: [ 42, 110, 189],
+    fire:  [216, 154, 114],
+    earth: [156, 178, 126],
+    air:   [184, 192, 204],
+    water: [143, 184, 182],
   };
 
+  const EL_HEX = {
+    fire: '#d89a72',
+    earth: '#9cb27e',
+    air: '#b8c0cc',
+    water: '#8fb8b6',
+  };
+
+  function withAlpha(col, hexAlpha) {
+    if (window.APCanvasSeals && typeof APCanvasSeals.withAlpha === 'function') {
+      return APCanvasSeals.withAlpha(col, hexAlpha);
+    }
+    var a = parseInt(hexAlpha || 'ff', 16) / 255;
+    if (/^#[0-9a-f]{3,8}$/i.test(col)) {
+      var h = col.slice(1);
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      return 'rgba(' +
+        parseInt(h.slice(0, 2), 16) + ',' +
+        parseInt(h.slice(2, 4), 16) + ',' +
+        parseInt(h.slice(4, 6), 16) + ',' + a.toFixed(3) + ')';
+    }
+    var rgb = String(col || '').match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+    if (rgb) return 'rgba(' + rgb[1] + ',' + rgb[2] + ',' + rgb[3] + ',' + a.toFixed(3) + ')';
+    return col || 'rgba(201,162,39,' + a.toFixed(3) + ')';
+  }
+
+  // Planet dot colours — muted brass / parchment family, cool (retinted 2026-07-04)
   const PLANETS = [
-    { key: 'sun',     sym: '☉', col: '#c9a227', name: 'Sun'     },
-    { key: 'moon',    sym: '☽', col: '#C8D0E8', name: 'Moon'    },
-    { key: 'mercury', sym: '☿', col: '#3f7d76', name: 'Mercury' },
-    { key: 'venus',   sym: '♀', col: '#C77DFF', name: 'Venus'   },
-    { key: 'mars',    sym: '♂', col: '#e05848', name: 'Mars'    },
-    { key: 'jupiter', sym: '♃', col: '#E8A050', name: 'Jupiter' },
-    { key: 'saturn',  sym: '♄', col: '#A0B898', name: 'Saturn'  },
+    { key: 'sun',     sym: '☉', col: '#ead79a', name: 'Sun'     },
+    { key: 'moon',    sym: '☽', col: '#e6e0d2', name: 'Moon'    },
+    { key: 'mercury', sym: '☿', col: '#cfc7b6', name: 'Mercury' },
+    { key: 'venus',   sym: '♀', col: '#e2c8b4', name: 'Venus'   },
+    { key: 'mars',    sym: '♂', col: '#c87e5e', name: 'Mars'    },
+    { key: 'jupiter', sym: '♃', col: '#e0c48e', name: 'Jupiter' },
+    { key: 'saturn',  sym: '♄', col: '#d8c289', name: 'Saturn'  },
   ];
 
   // ── State ─────────────────────────────────────────────────────────────────
@@ -58,6 +85,12 @@
 
   let hovered  = null;
   let hoveredPlanet = null;
+  let hoveredChord = null;
+  let hoveredNatal = null;
+  let highlightedChord = null;
+  let onChordClick = null;
+  let onChordHover = null;
+  let lastHoverChord = null;
   let selected = null;
   let selectCb = null;
   let onSelectChange = null;
@@ -66,6 +99,15 @@
   let planetLons = {};           // signKey → ecliptic lon (degrees, 0–360)
   let stars      = [];
   let cachedPositions = [];      // projected sign positions, updated each frame
+  let spacePanX = 0;
+  let spacePanY = 0;
+  let natalMarkers = [];
+  let natalSunSign = null;
+  let transitChords = [];
+
+  // Backdrop is engine-rendered only (ART-DIRECTION hard rule): a deep cool-void
+  // radial gradient + engraved starfield drawn in drawSpaceBackground(). No
+  // photographic sky imagery is loaded.
 
   // 3D ring geometry
   const TILT  = 0.30;            // ~17° — enough depth cue without collapsing too flat
@@ -95,32 +137,101 @@
 
   function initStars() {
     stars = [];
-    const n = Math.floor(W * H / 3500);
+    const n = Math.floor(W * H / 2200);
     for (let i = 0; i < n; i++) {
       stars.push({
         x: Math.random() * W,
         y: Math.random() * H,
-        r: Math.random() * 1.1 + 0.15,
-        a: Math.random() * 0.55 + 0.1,
+        r: Math.random() * 1.3 + 0.2,
+        a: Math.random() * 0.65 + 0.12,
         tw: Math.random() * Math.PI * 2,
-        sp: Math.random() * 0.012 + 0.004,
+        sp: Math.random() * 0.014 + 0.004,
+        brass: Math.random() < 0.28,
       });
     }
   }
 
+  function syncSpaceParallax() {
+    const targetX = Math.sin(rotation) * 22 + rotVel * 140;
+    const targetY = Math.cos(rotation) * 10 + Math.sin(rotation * 0.55) * 5;
+    spacePanX += (targetX - spacePanX) * 0.07;
+    spacePanY += (targetY - spacePanY) * 0.07;
+    const wrap = cvs && cvs.parentElement;
+    if (wrap) {
+      wrap.style.setProperty('--space-pan-x', spacePanX.toFixed(2) + 'px');
+      wrap.style.setProperty('--space-pan-y', spacePanY.toFixed(2) + 'px');
+    }
+  }
+
+  function drawSpaceBackground() {
+    syncSpaceParallax();
+    // On-system cool-void well (DESIGN.md tokens): raised mid #121826 at the
+    // centre falling to deep base #07070A at the rim — engraved-observatory
+    // backdrop, no photographic sky.
+    const g = ctx.createRadialGradient(cx, cy * 0.88, 0, cx, cy, Math.max(W, H) * 0.78);
+    g.addColorStop(0, '#121826');
+    g.addColorStop(0.55, '#0E141E');
+    g.addColorStop(1, '#07070A');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, ringRadius() * 1.55);
+    glow.addColorStop(0, 'rgba(111, 160, 216, 0.1)');
+    glow.addColorStop(0.45, 'rgba(168, 176, 188, 0.06)');
+    glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+    const vig = ctx.createRadialGradient(cx, cy, ringRadius() * 0.25, cx, cy, Math.max(W, H) * 0.78);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(0.65, 'rgba(6, 10, 16, 0.38)');
+    vig.addColorStop(1, 'rgba(6, 10, 16, 0.88)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+  }
+
   function drawStars(t) {
     for (const s of stars) {
-      const alpha = s.a * (0.75 + 0.25 * Math.sin(s.tw + t * s.sp));
+      const alpha = s.a * (0.68 + 0.32 * Math.sin(s.tw + t * s.sp));
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(200,212,245,${alpha})`;
+      if (s.brass) {
+        ctx.fillStyle = `rgba(168, 176, 188, ${alpha * 0.95})`;
+      } else {
+        ctx.fillStyle = `rgba(236, 230, 216, ${alpha})`;
+      }
       ctx.fill();
     }
+  }
+
+  function drawMeridian() {
+    const R = ringRadius();
+    ctx.save();
+    ctx.strokeStyle = 'rgba(168, 176, 188, 0.48)';
+    ctx.setLineDash([4, 6]);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - R * 1.14);
+    ctx.lineTo(cx, cy + R * 0.42);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(168, 176, 188, 0.9)';
+    ctx.beginPath();
+    ctx.arc(cx, cy - R * 1.06, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = `600 ${Math.max(7, 7.5 * (W / 600))}px Inter, system-ui, sans-serif`;
+    ctx.fillStyle = 'rgba(168, 176, 188, 0.72)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('TODAY', cx, cy - R * 1.14);
+    ctx.restore();
   }
 
   function lonToSignName(lon) {
     const idx = Math.floor((((lon % 360) + 360) % 360) / 30);
     return SIGNS[idx] ? SIGNS[idx].name : '';
+  }
+
+  function degInSign(lon) {
+    return Math.floor(((lon % 30) + 30) % 30);
   }
 
   function projectRaw(lonDeg, rad) {
@@ -152,19 +263,22 @@
         ctx.lineTo(p.x, p.y);
       }
       ctx.closePath();
-      ctx.fillStyle = `rgba(${el[0]},${el[1]},${el[2]},0.07)`;
+      ctx.fillStyle = 'rgba(168, 176, 188, 0.035)';
       ctx.fill();
     }
   }
 
   function drawTickMarks() {
     const R = ringRadius();
-    for (let t = 0; t < 360; t += 30) {
+    for (let t = 0; t < 360; t += 10) {
+      const major = t % 30 === 0;
       const theta = (t * Math.PI / 180) + rotation;
-      const x3a = (R * 0.76) * Math.cos(theta);
-      const y3da = (R * 0.76) * Math.sin(theta);
-      const x3b = (R * 0.92) * Math.cos(theta);
-      const y3db = (R * 0.92) * Math.sin(theta);
+      const rIn = R * (major ? 0.78 : 0.84);
+      const rOut = R * (major ? 0.96 : 0.92);
+      const x3a = rIn * Math.cos(theta);
+      const y3da = rIn * Math.sin(theta);
+      const x3b = rOut * Math.cos(theta);
+      const y3db = rOut * Math.sin(theta);
       const ya = y3da * Math.cos(TILT);
       const za = y3da * Math.sin(TILT);
       const yb = y3db * Math.cos(TILT);
@@ -174,8 +288,8 @@
       ctx.beginPath();
       ctx.moveTo(cx + x3a * sa, cy + ya * sa);
       ctx.lineTo(cx + x3b * sb, cy + yb * sb);
-      ctx.strokeStyle = t % 90 === 0 ? 'rgba(201,162,39,0.32)' : 'rgba(201,162,39,0.16)';
-      ctx.lineWidth = t % 90 === 0 ? 1.4 : 0.7;
+      ctx.strokeStyle = major ? 'rgba(168, 176, 188, 0.38)' : 'rgba(168, 176, 188, 0.14)';
+      ctx.lineWidth = major ? 1.2 : 0.55;
       ctx.stroke();
     }
   }
@@ -187,8 +301,9 @@
 
     drawElementSectors();
     drawTickMarks();
+    drawOrbitalGlow();
 
-    // Outer dashed gold ring
+    // Outer brass ring
     ctx.beginPath();
     for (let i = 0; i <= STEPS; i++) {
       const lon = (i / STEPS) * 360;
@@ -196,14 +311,13 @@
       i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(201, 162, 39,0.30)';
-    ctx.lineWidth   = 1.5;
-    ctx.setLineDash([5, 9]);
-    ctx.stroke();
+    ctx.strokeStyle = 'rgba(168, 176, 188, 0.42)';
+    ctx.lineWidth   = 1.8;
     ctx.setLineDash([]);
+    ctx.stroke();
 
-    // Inner violet guide ring (80% radius)
-    const Ri = ringRadius() * 0.80;
+    // Inner guide ring (68% radius)
+    const Ri = ringRadius() * 0.68;
     ctx.beginPath();
     for (let i = 0; i <= STEPS; i++) {
       const theta = (i / STEPS) * Math.PI * 2 + rotation;
@@ -217,9 +331,210 @@
       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
     }
     ctx.closePath();
-    ctx.strokeStyle = 'rgba(92, 74, 110,0.14)';
+    ctx.strokeStyle = 'rgba(111, 160, 216, 0.14)';
     ctx.lineWidth   = 1;
+    ctx.setLineDash([2, 5]);
     ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawOrbitalGlow() {
+    const R = ringRadius();
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.strokeStyle = 'rgba(111, 160, 216, 0.06)';
+    ctx.lineWidth = 5;
+    PLANETS.forEach((pl) => {
+      if (planetLons[pl.key] == null) return;
+      const pt = project(planetLons[pl.key]);
+      const dist = Math.sqrt(
+        Math.pow(pt.x - cx, 2) + Math.pow(pt.y - cy, 2)
+      );
+      if (dist < 8) return;
+      ctx.beginPath();
+      ctx.arc(cx, cy, dist, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function chordColor(quality) {
+    // cool-brass system: harmonious = teal-brass, challenging = muted terracotta, else brass
+    if (quality === 'h') return 'rgba(143, 184, 182, 0.82)';
+    if (quality === 'x') return 'rgba(200, 126, 94, 0.78)';
+    return 'rgba(216, 185, 120, 0.88)';
+  }
+
+  function chordGeometry(ch) {
+    const R = ringRadius();
+    const tLon = ch.transitLon != null ? ch.transitLon : planetLons[ch.transitKey];
+    const nLon = ch.natalLon;
+    if (tLon == null || nLon == null || !isFinite(tLon) || !isFinite(nLon)) return null;
+    const nNorm = ((nLon % 360) + 360) % 360;
+    const tNorm = ((tLon % 360) + 360) % 360;
+    const ptN = projectRaw(nNorm, R * 0.50);
+    const ptT = projectRaw(tNorm, R * 0.90);
+    const mx = (ptN.x + ptT.x) * 0.5 + (cx - (ptN.x + ptT.x) * 0.5) * 0.22;
+    const my = (ptN.y + ptT.y) * 0.5 + (cy - (ptN.y + ptT.y) * 0.5) * 0.22;
+    const gx = 0.25 * ptN.x + 0.5 * mx + 0.25 * ptT.x;
+    const gy = 0.25 * ptN.y + 0.5 * my + 0.25 * ptT.y;
+    return { ptN, ptT, mx, my, gx, gy, col: chordColor(ch.quality) };
+  }
+
+  function distToSegment(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len2 = dx * dx + dy * dy;
+    if (len2 < 1) return Math.hypot(px - x1, py - y1);
+    let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+  }
+
+  function hitChord(px, py) {
+    const threshold = 16;
+    for (let i = transitChords.length - 1; i >= 0; i--) {
+      const geom = chordGeometry(transitChords[i]);
+      if (!geom) continue;
+      if (distToSegment(px, py, geom.ptN.x, geom.ptN.y, geom.ptT.x, geom.ptT.y) < threshold) return i;
+      if (Math.hypot(px - geom.gx, py - geom.gy) < 26) return i;
+    }
+    return null;
+  }
+
+  function hitNatalMarker(px, py) {
+    if (!natalMarkers.length) return null;
+    for (let i = natalMarkers.length - 1; i >= 0; i--) {
+      const m = natalMarkers[i];
+      if (m.lon == null || !isFinite(m.lon)) continue;
+      const pt = project(((m.lon % 360) + 360) % 360);
+      const r = Math.max(12, 14 * pt.s);
+      const dx = px - pt.x;
+      const dy = py - pt.y;
+      if (dx * dx + dy * dy < r * r) return i;
+    }
+    return null;
+  }
+
+  function drawTransitChords() {
+    if (!transitChords.length) return;
+    ctx.save();
+    transitChords.forEach((ch, idx) => {
+      const geom = chordGeometry(ch);
+      if (!geom) return;
+      const { ptN, ptT, mx, my, gx, gy, col } = geom;
+      const isHov = hoveredChord === idx || highlightedChord === idx;
+      const pulse = isHov ? 1 : 0.62 + 0.38 * Math.sin(lastT * 0.0014 + (ch.natalLon + ch.transitLon) * 0.017);
+      ctx.globalAlpha = pulse;
+      ctx.strokeStyle = col;
+      ctx.lineWidth = isHov ? (ch.quality === 'c' ? 2.4 : 2) : (ch.quality === 'c' ? 1.7 : 1.15);
+      ctx.setLineDash(ch.quality === 'x' ? [5, 5] : []);
+      ctx.beginPath();
+      ctx.moveTo(ptN.x, ptN.y);
+      ctx.quadraticCurveTo(mx, my, ptT.x, ptT.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      if (ch.glyph) {
+        ctx.font = `${Math.max(8, isHov ? 10 : 9)}px 'AstroGlyph', sans-serif`;
+        ctx.fillStyle = col;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.globalAlpha = Math.min(1, pulse + 0.15);
+        ctx.fillText(ch.glyph + '︎', gx, gy);  // FE0E = force text glyph, not emoji
+      }
+    });
+    ctx.restore();
+  }
+
+  function drawChordTooltip() {
+    if (hoveredChord == null) return;
+    const ch = transitChords[hoveredChord];
+    const geom = chordGeometry(ch);
+    if (!ch || !geom || !ch.label) return;
+    const label = ch.label;
+    ctx.font = `500 ${Math.max(9, 10)}px Inter, system-ui, sans-serif`;
+    const tw = ctx.measureText(label).width;
+    const bx = geom.gx - tw / 2 - 8;
+    const by = geom.gy - 32;
+    const bw = tw + 16;
+    const bh = 20;
+    ctx.fillStyle = 'rgba(8, 12, 18, 0.92)';
+    ctx.strokeStyle = geom.col;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 4);
+    else ctx.rect(bx, by, bw, bh);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(236, 230, 216, 0.95)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, geom.gx, by + bh / 2);
+  }
+
+  function drawNatalMarkers() {
+    if (!natalMarkers.length) return;
+    const R = ringRadius() * 0.5;
+    natalMarkers.forEach((m, idx) => {
+      if (m.lon == null || !isFinite(m.lon)) return;
+      const pt = project(((m.lon % 360) + 360) % 360);
+      const col = m.col || '#A8B0BC';
+      const isHov = hoveredNatal === idx;
+      const pulse = isHov ? 1 : 0.85 + 0.15 * Math.sin(lastT * 0.002 + (m.lon || 0));
+      const hg = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, (isHov ? 22 : 16) * pt.s);
+      hg.addColorStop(0, withAlpha(col, '55'));
+      hg.addColorStop(1, withAlpha(col, '00'));
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, (isHov ? 22 : 16) * pt.s, 0, Math.PI * 2);
+      ctx.fill();
+      const sz = (isHov ? 6.5 : 5) * pt.s * pulse;
+      ctx.save();
+      ctx.translate(pt.x, pt.y);
+      ctx.rotate(Math.PI / 4);
+      ctx.fillStyle = col;
+      ctx.globalAlpha = 0.92;
+      ctx.fillRect(-sz, -sz, sz * 2, sz * 2);
+      ctx.restore();
+      ctx.globalAlpha = 1;
+      if (m.label && hoveredNatal !== idx) {
+        ctx.font = `${Math.max(7, 8 * pt.s)}px Inter, system-ui, sans-serif`;
+        ctx.fillStyle = 'rgba(236, 230, 216, 0.9)';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(m.label, pt.x, pt.y - sz - 3);
+      }
+    });
+  }
+
+  function drawNatalTooltip() {
+    if (hoveredNatal == null) return;
+    const m = natalMarkers[hoveredNatal];
+    if (!m || m.lon == null || !isFinite(m.lon)) return;
+    const pt = project(((m.lon % 360) + 360) % 360);
+    const col = m.col || '#A8B0BC';
+    const name = (m.label || 'Natal').replace(/\s*Natal\s*/i, '').trim() || 'Natal';
+    const label = name + ' · ' + lonToSignName(m.lon) + ' ' + degInSign(m.lon) + '°';
+    ctx.font = `500 ${Math.max(9, 10)}px Inter, system-ui, sans-serif`;
+    const tw = ctx.measureText(label).width;
+    const bx = pt.x - tw / 2 - 8;
+    const by = pt.y - 36 * pt.s;
+    const bw = tw + 16;
+    const bh = 20;
+    ctx.fillStyle = 'rgba(8, 12, 18, 0.92)';
+    ctx.strokeStyle = col;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 4);
+    else ctx.rect(bx, by, bw, bh);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(236, 230, 216, 0.95)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, pt.x, by + bh / 2);
   }
 
   // ── Planets ───────────────────────────────────────────────────────────────
@@ -253,8 +568,8 @@
 
       // Glow halo
       const g = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, r * 3.5);
-      g.addColorStop(0, pl.col + 'AA');
-      g.addColorStop(1, pl.col + '00');
+      g.addColorStop(0, withAlpha(pl.col, 'AA'));
+      g.addColorStop(1, withAlpha(pl.col, '00'));
       ctx.globalAlpha = alpha * 0.55;
       ctx.beginPath();
       ctx.arc(pt.x, pt.y, r * 3.5, 0, Math.PI * 2);
@@ -318,6 +633,7 @@
     for (const s of positions) {
       const isSel  = selected === s.key;
       const isHov  = hovered  === s.key;
+      const isNatal = natalSunSign && natalSunSign === s.key;
       const el     = EL[s.el];
       const alpha  = 0.30 + 0.70 * s.depth;
       const baseR  = Math.max(16, 22 * s.s);
@@ -326,9 +642,9 @@
       ctx.save();
       ctx.globalAlpha = alpha;
 
-      // Glow for hovered / selected
-      if (isSel || isHov) {
-        const [gr, gg, gb] = isSel ? [201, 162, 39] : el;
+      // Glow for hovered / selected / natal sun sign
+      if (isSel || isHov || isNatal) {
+        const [gr, gg, gb] = isSel ? [168, 176, 188] : isNatal ? [111, 160, 216] : el;
         const glow = ctx.createRadialGradient(s.x, s.y, r * 0.4, s.x, s.y, r * 2.8);
         glow.addColorStop(0, `rgba(${gr},${gg},${gb},0.40)`);
         glow.addColorStop(1, `rgba(${gr},${gg},${gb},0)`);
@@ -342,8 +658,10 @@
       ctx.beginPath();
       ctx.arc(s.x, s.y, r, 0, Math.PI * 2);
       ctx.fillStyle = isSel
-        ? 'rgba(201, 162, 39,0.22)'
-        : `rgba(${el[0]},${el[1]},${el[2]},0.14)`;
+        ? 'rgba(168, 176, 188, 0.24)'
+        : isNatal
+          ? 'rgba(111, 160, 216, 0.18)'
+          : `rgba(${el[0]},${el[1]},${el[2]},0.14)`;
       ctx.fill();
 
       // Border ring
@@ -356,14 +674,14 @@
       ctx.stroke();
 
       // Engraved zodiac seal (APCanvasSeals) — keyed by sign slug, not Unicode.
-      const sealCol = isSel ? '#c9a227' : `rgb(${el[0]},${el[1]},${el[2]})`;
+      const sealCol = isSel ? '#A8B0BC' : (EL_HEX[s.el] || '#A8B0BC');
       const drewSeal = window.APCanvasSeals && (
         (typeof APCanvasSeals.drawSealPlate === 'function' && APCanvasSeals.drawSealPlate(ctx, s.key, s.x, s.y, r * 0.82, sealCol)) ||
         (typeof APCanvasSeals.drawSeal === 'function' && APCanvasSeals.drawSeal(ctx, s.key, s.x, s.y, r * 1.45))
       );
       if (!drewSeal) {
         ctx.font         = `${Math.max(8, r * 0.55)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle    = isSel ? '#c9a227' : isHov ? sealCol : '#C8BFA6';
+        ctx.fillStyle    = isSel ? '#A8B0BC' : isHov ? sealCol : '#C8BFA6';
         ctx.textAlign    = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText((s.name || s.key || '?').charAt(0), s.x, s.y);
@@ -374,7 +692,7 @@
       if (labelFade > 0) {
         ctx.globalAlpha = alpha * Math.min(1, labelFade);
         ctx.font        = `${Math.max(8, 9.5 * s.s)}px Inter, system-ui, sans-serif`;
-        ctx.fillStyle   = isSel ? '#c9a227' : 'rgba(200,190,165,0.9)';
+        ctx.fillStyle   = isSel ? '#A8B0BC' : 'rgba(200,190,165,0.9)';
         ctx.textAlign   = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(s.name, s.x, s.y + r + 3);
@@ -395,7 +713,7 @@
     const wA     = Math.max(0, 0.45 - waveR / (R * 5));
     ctx.beginPath();
     ctx.arc(cx, cy, waveR, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(63, 125, 118,${wA})`;
+    ctx.strokeStyle = `rgba(168, 176, 188, ${wA * 0.85})`;
     ctx.lineWidth   = 1.2;
     ctx.stroke();
 
@@ -418,9 +736,9 @@
     // Outer gold star
     starPath(R * pulse, R * 0.38 * pulse, 8);
     const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, R * pulse);
-    grad.addColorStop(0,   '#F0D868');
-    grad.addColorStop(0.5, '#c9a227');
-    grad.addColorStop(1,   '#B8962E');
+    grad.addColorStop(0,   '#FFF8E4');
+    grad.addColorStop(0.5, '#A8B0BC');
+    grad.addColorStop(1,   '#9A7A3A');
     ctx.fillStyle = grad;
     ctx.fill();
 
@@ -437,7 +755,7 @@
     ctx.fillStyle     = 'rgba(201, 162, 39,0.65)';
     ctx.textAlign     = 'center';
     ctx.textBaseline  = 'top';
-    ctx.fillText('BIRTH CHART', cx, cy + R * pulse + 9);
+    ctx.fillText('YOUR CHART', cx, cy + R * pulse + 9);
   }
 
   // ── Hit testing ───────────────────────────────────────────────────────────
@@ -479,9 +797,15 @@
 
     ctx.clearRect(0, 0, W, H);
 
+    drawSpaceBackground();
     drawStars(ts / 1000);
+    drawMeridian();
     drawRing();
     drawPlanets();
+    drawTransitChords();
+    drawChordTooltip();
+    drawNatalMarkers();
+    drawNatalTooltip();
     cachedPositions = buildSignPositions();
     drawSigns(cachedPositions);
     drawCentre(ts / 1000);
@@ -525,9 +849,15 @@
     const { x, y } = canvasCoords(clientX, clientY);
     hovered   = hitSign(x, y);
     hoveredPlanet = hitPlanet(x, y);
+    hoveredChord = hovered || hoveredPlanet ? null : hitChord(x, y);
+    hoveredNatal = hovered || hoveredPlanet || hoveredChord != null ? null : hitNatalMarker(x, y);
+    if (hoveredChord !== lastHoverChord) {
+      lastHoverChord = hoveredChord;
+      if (typeof onChordHover === 'function') onChordHover(hoveredChord);
+    }
     const onC = hitCentre(x, y);
-    cvs.style.cursor = (hovered || onC || hoveredPlanet) ? 'pointer' : (dragging ? 'grabbing' : 'grab');
-    autoSpin = !hovered && !onC && !hoveredPlanet && !dragging;
+    cvs.style.cursor = (hovered || onC || hoveredPlanet || hoveredChord != null || hoveredNatal != null) ? 'pointer' : (dragging ? 'grabbing' : 'grab');
+    autoSpin = !hovered && !onC && !hoveredPlanet && hoveredChord == null && hoveredNatal == null && !dragging;
   }
 
   function onDrag(clientX) {
@@ -558,12 +888,18 @@
     const moved = Math.hypot(clientX - dragStartX, clientY - dragStartY);
 
     if (moved < 14) {
+      if (hoveredChord != null) {
+        const ch = transitChords[hoveredChord];
+        if (typeof onChordClick === 'function') onChordClick(hoveredChord, ch);
+        return;
+      }
       const hit = hitSign(x, y);
       if (hit) {
         spinToSign(hit, { duration: 520, onDone: function () {
           if (selectCb) selectCb(hit);
         } });
       } else if (hitCentre(x, y)) {
+        try { document.dispatchEvent(new CustomEvent('ap-horoscope-centre-tap')); } catch (e) { /* */ }
         window.location.href = 'chart.html';
       }
     }
@@ -578,7 +914,14 @@
       cvs_touchstart, cvs_touchmove, cvs_touchend;
 
   cvs_mousemove  = (e) => { onMove(e.clientX, e.clientY); onDrag(e.clientX); };
-  cvs_mouseleave = ()  => { hovered = null; hoveredPlanet = null; autoSpin = !dragging; cvs.style.cursor = ''; };
+  cvs_mouseleave = ()  => {
+    hovered = null; hoveredPlanet = null; hoveredChord = null; hoveredNatal = null;
+    if (lastHoverChord != null) {
+      lastHoverChord = null;
+      if (typeof onChordHover === 'function') onChordHover(null);
+    }
+    autoSpin = !dragging; cvs.style.cursor = '';
+  };
   cvs_mousedown  = (e) => onPress(e.clientX, e.clientY);
   win_mouseup    = (e) => onRelease(e.clientX, e.clientY);
 
@@ -674,6 +1017,7 @@
       if (hovered) {
         spinToSign(hovered, { duration: 520, onDone: () => { if (selectCb) selectCb(hovered); } });
       } else if (hitCentre(cx, cy)) {
+        try { document.dispatchEvent(new CustomEvent('ap-horoscope-centre-tap')); } catch (e) { /* */ }
         window.location.href = 'chart.html';
       }
     }
@@ -696,8 +1040,8 @@
 
     cvs.setAttribute('tabindex', '0');
     cvs.setAttribute('role', 'application');
-    cvs.setAttribute('aria-roledescription', '3D zodiac wheel');
-    cvs.setAttribute('aria-label', 'Zodiac ring — drag to spin, arrow keys to rotate, Enter to select a sign');
+    cvs.setAttribute('aria-roledescription', 'live 3D ecliptic dial');
+    cvs.setAttribute('aria-label', 'Live 3D ecliptic dial — drag to explore, arrow keys to rotate, Enter to select a sign');
 
     resize();
     window.addEventListener('resize', resize);
@@ -771,6 +1115,27 @@
     spinToSign(key, Object.assign({ duration: 700 }, opts || {}));
   }
 
+  function setNatalMarkers(list, sunSignKey) {
+    natalMarkers = Array.isArray(list) ? list.slice() : [];
+    natalSunSign = sunSignKey || null;
+  }
+
+  function setTransitChords(list) {
+    transitChords = Array.isArray(list) ? list.slice() : [];
+  }
+
+  function setHighlightedChord(idx) {
+    highlightedChord = (idx != null && idx >= 0 && idx < transitChords.length) ? idx : null;
+  }
+
+  function getPlanetLons() {
+    return Object.assign({}, planetLons);
+  }
+
+  function getTransitChordCount() {
+    return transitChords.length;
+  }
+
   window.ZodiacSphere = {
     init,
     setSelected,
@@ -779,6 +1144,16 @@
     getSelected,
     setRotation,
     getRotation,
+    setNatalMarkers,
+    setTransitChords,
+    setHighlightedChord,
+    getPlanetLons,
+    getTransitChordCount,
+    get onChordClick() { return onChordClick; },
+    set onChordClick(fn) { onChordClick = typeof fn === 'function' ? fn : null; },
+    get onChordHover() { return onChordHover; },
+    set onChordHover(fn) { onChordHover = typeof fn === 'function' ? fn : null; },
+    refreshPlanets: fetchPlanets,
     get onSelectChange() { return onSelectChange; },
     set onSelectChange(fn) { onSelectChange = typeof fn === 'function' ? fn : null; },
   };

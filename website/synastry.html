@@ -2,30 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="What is a synastry chart? A plain-English guide to relationship astrology — how two birth charts are overlaid, which aspects matter, and how to read compatibility. Then build your free synastry chart from the real sky." />
+  <meta name="description" content="What is a synastry chart? A plain-English guide to relationship astrology — which aspects matter and how to read compatibility — then build yours free." />
   <title>Synastry Chart: Relationship Astrology Explained | Astro Precise</title>
 <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Astro Precise" />
   <meta property="og:title" content="Synastry Chart: Relationship Astrology Explained | Astro Precise" />
   <meta property="og:description" content="Learn what a synastry chart is, which inter-aspects matter, and how to read relationship compatibility — then build your free synastry chart from real planetary positions." />
   <meta property="og:url" content="https://astroprecise.app/synastry.html" />
   <link rel="canonical" href="https://astroprecise.app/synastry.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Synastry Chart: Relationship Astrology Explained" />
   <meta name="twitter:description" content="Learn what a synastry chart is, which inter-aspects matter, and how to read relationship compatibility — then build your free synastry chart." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
-  <meta name="theme-color" content="#0C1016" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta name="theme-color" content="#07070A" />
   <link rel="preload" href="css/main-lite.css" as="style" />
   <link rel="stylesheet" href="css/fonts.css" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="css/fonts.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" />
   <link rel="stylesheet" href="css/synastry-page.css" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=703" />
+  <link rel="stylesheet" href="css/ap-site-polish.css?v=703" />
   <link rel="stylesheet" href="css/ap-cinematic-2026.css" media="print" onload="this.media='all'" id="ap-css-cinematic" />
   <noscript><link rel="stylesheet" href="css/ap-cinematic-2026.css" /></noscript>
   <script src="js/defer-page-css.js" defer></script>
@@ -277,6 +287,10 @@
       </div>
     </section>
 
+    <div class="container" style="max-width:920px;margin:0 auto var(--space-8,2rem);">
+      <div id="synastry-ai-panel" hidden aria-label="Optional synastry insight"></div>
+    </div>
+
     <!-- ============================================================
          CTA
     ============================================================ -->
@@ -334,8 +348,8 @@
           </div>
         </div>
 
-        <div class="footer-nav-col" role="group" aria-label="Tools navigation">
-          <h2 class="footer-nav-col__title">Tools</h2>
+        <div class="footer-nav-col" role="group" aria-label="Around the living model">
+          <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
@@ -399,6 +413,10 @@
   <script src="js/ephemeris.js"></script>
   <script src="js/icons.js"></script>
 <script src="js/effects.js"></script>
+  <script src="js/profile.js" defer></script>
+  <script src="js/ap-personal-memory.js" defer></script>
+  <script src="js/ap-daily-bridge.js" defer></script>
+  <script src="js/ap-ai-assistant.js" defer></script>
   <script src="js/ap-page-boot.js" defer></script>
 </body>
 </html>

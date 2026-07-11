@@ -303,6 +303,7 @@
       mode: natal ? natal.mode : 'sky',
       insight: insight,
       transits: transits,
+      natal: natalFlat,      // REAL natal longitudes { Sun: deg, ... } (chart-computed)
       aspects: aspectRows,
       sunSign: insight && insight.meta ? insight.meta.sunSign : (transits ? signOf(transits.Sun) : ''),
       moonSign: insight && insight.meta ? insight.meta.moonSign : (transits ? signOf(transits.Moon) : '')
@@ -334,14 +335,14 @@
       'padding:2.5rem;max-width:760px;margin:0 auto 2.5rem;}' +
       '@media(max-width:600px){.dt-card{padding:1.75rem 1.25rem;}}' +
       '.dt-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;' +
-      'background:linear-gradient(90deg,var(--gold,#c9a227),var(--purple,#5c4a6e));opacity:0.8;}' +
+      'background:linear-gradient(90deg,var(--gold,#A8B0BC),var(--brass-shadow,#6A7078));opacity:0.8;}' +
       '.dt-card__top{display:flex;align-items:center;justify-content:space-between;gap:1rem;' +
       'flex-wrap:wrap;margin-bottom:1.25rem;}' +
       '.dt-card__eyebrow{font-size:0.62rem;font-weight:600;letter-spacing:0.28em;' +
-      'text-transform:uppercase;color:var(--gold,#c9a227);margin:0 0 0.4rem;}' +
+      'text-transform:uppercase;color:var(--gold,#A8B0BC);margin:0 0 0.4rem;}' +
       '.dt-card__date{font-size:0.8rem;color:var(--silver-dim,#8891AA);margin:0;letter-spacing:0.04em;}' +
       '.dt-card__streak{display:inline-flex;align-items:center;gap:0.45rem;' +
-      'background:rgba(201, 162, 39,0.1);border:1px solid rgba(201, 162, 39,0.28);border-radius:999px;' +
+      'background:rgba(168, 176, 188,0.1);border:1px solid rgba(168, 176, 188,0.28);border-radius:999px;' +
       'padding:0.35rem 0.85rem;font-size:0.72rem;color:var(--gold-light,#E8C872);' +
       'letter-spacing:0.03em;white-space:nowrap;}' +
       '.dt-card__streak-dot{width:6px;height:6px;border-radius:50%;background:#9db36a;' +
@@ -354,31 +355,52 @@
       '.dt-aspect{display:flex;align-items:center;gap:0.75rem;background:rgba(255,255,255,0.03);' +
       'border:1px solid var(--border,rgba(255,255,255,0.08));border-radius:14px;padding:0.7rem 0.95rem;}' +
       '.dt-aspect__orbs{display:inline-flex;align-items:center;gap:0.3rem;flex-shrink:0;}' +
-      '.dt-aspect__rel{font-size:0.95rem;color:var(--gold,#c9a227);width:1.4rem;text-align:center;flex-shrink:0;}' +
+      '.dt-aspect__rel{font-size:0.95rem;color:var(--gold,#A8B0BC);width:1.4rem;text-align:center;flex-shrink:0;}' +
       '.dt-aspect__text{flex:1;min-width:0;}' +
       '.dt-aspect__name{font-size:0.78rem;font-weight:600;color:var(--white,#F8F4EE);' +
       'letter-spacing:0.02em;margin:0;}' +
       '.dt-aspect__detail{font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0.15rem 0 0;line-height:1.5;}' +
-      '.dt-aspect__orb{font-size:0.68rem;color:var(--gold,#c9a227);white-space:nowrap;flex-shrink:0;opacity:0.85;}' +
+      '.dt-aspect__orb{font-size:0.68rem;color:var(--gold,#A8B0BC);white-space:nowrap;flex-shrink:0;opacity:0.85;}' +
       '.dt-meta{display:flex;flex-wrap:wrap;gap:0.5rem;margin:0 0 1.5rem;}' +
       '.dt-chip{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.72rem;' +
       'color:var(--silver,#C8D0E8);background:rgba(255,255,255,0.04);' +
       'border:1px solid var(--border,rgba(255,255,255,0.08));border-radius:999px;padding:0.3rem 0.75rem;}' +
       '.dt-keywords{display:flex;flex-wrap:wrap;gap:0.4rem;margin:0 0 1.25rem;}' +
       '.dt-keyword{font-size:0.62rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;' +
-      'color:var(--gold-light,#E8C872);background:rgba(92, 74, 110,0.12);' +
-      'border:1px solid rgba(92, 74, 110,0.3);border-radius:999px;padding:0.25rem 0.7rem;}' +
+      'color:var(--gold-light,#E8C872);background:rgba(168, 176, 188,0.10);' +
+      'border:1px solid rgba(168, 176, 188,0.28);border-radius:999px;padding:0.25rem 0.7rem;}' +
       '.dt-tease{border-top:1px solid var(--border,rgba(255,255,255,0.08));padding-top:1.25rem;' +
       'margin-top:0.5rem;font-size:0.82rem;color:var(--silver-dim,#8891AA);line-height:1.7;}' +
-      '.dt-tease a{color:var(--gold,#c9a227);text-decoration:none;border-bottom:1px solid rgba(201, 162, 39,0.4);' +
+      '.dt-tease a{color:var(--gold,#A8B0BC);text-decoration:none;border-bottom:1px solid rgba(168, 176, 188,0.4);' +
       'transition:border-color 0.2s;}' +
-      '.dt-tease a:hover{border-bottom-color:var(--gold,#c9a227);}' +
+      '.dt-tease a:hover{border-bottom-color:var(--gold,#A8B0BC);}' +
       '.dt-empty{text-align:center;}' +
       '.dt-empty__icon{display:block;margin:0 auto 1rem;}' +
       '.dt-empty h3{font-family:var(--font-display,"Cinzel",serif);font-size:1.3rem;font-weight:700;' +
       'color:var(--white,#F8F4EE);margin:0 0 0.6rem;}' +
       '.dt-empty p{font-size:0.9rem;color:var(--silver-dim,#8891AA);line-height:1.7;' +
-      'max-width:420px;margin:0 auto 1.6rem;}';
+      'max-width:420px;margin:0 auto 1.6rem;}' +
+      // v628 — "what's next" rhythm (tomorrow + this week), the come-back loop
+      '.dt-rhythm{list-style:none;margin:1.1rem 0 0;padding:0.9rem 0 0;' +
+      'border-top:1px solid rgba(168,176,188,0.16);display:flex;flex-direction:column;gap:0.5rem;}' +
+      '.dt-rhythm__row{display:flex;gap:0.7rem;align-items:baseline;font-size:0.86rem;line-height:1.4;}' +
+      '.dt-rhythm__when{flex:none;min-width:5.4em;font-family:var(--font-mono,monospace);' +
+      'font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-gold,#A8B0BC);}' +
+      '.dt-rhythm__what{color:var(--silver,#C8D0E8);}' +
+      '.dt-rhythm__note{margin:0.6rem 0 0;font-size:0.72rem;color:var(--silver-dim,#8891AA);font-style:italic;}' +
+      // v629 — honest Deep-Reading teaser (real excerpt of this chart's reading)
+      '.dt-tease--rich{margin:1.2rem 0 0;padding:1rem 1.1rem;border:1px solid rgba(168,176,188,0.22);' +
+      'border-radius:12px;background:linear-gradient(180deg,rgba(168,176,188,0.06),rgba(168,176,188,0.02));}' +
+      '.dt-tease__eyebrow{margin:0 0 0.4rem;font-family:var(--font-mono,monospace);font-size:0.62rem;' +
+      'letter-spacing:0.16em;text-transform:uppercase;color:var(--color-gold,#A8B0BC);}' +
+      '.dt-tease__excerpt{margin:0 0 0.5rem;font-size:0.92rem;line-height:1.55;color:var(--white,#F8F4EE);}' +
+      '.dt-tease__lock{position:relative;margin:0 0 0.8rem;font-size:0.85rem;line-height:1.5;' +
+      'color:var(--silver-dim,#8891AA);-webkit-mask-image:linear-gradient(90deg,#000 55%,transparent);' +
+      'mask-image:linear-gradient(90deg,#000 55%,transparent);}' +
+      '.dt-tease__cta{margin:0;font-size:0.82rem;}' +
+      '.dt-tease__soon{color:var(--silver-dim,#8891AA);}' +
+      '.dt-tease__link{color:var(--color-gold,#A8B0BC);font-weight:600;text-decoration:none;}' +
+      '.dt-tease__link:hover{text-decoration:underline;}';
     var el = document.createElement('style');
     el.id = STYLE_ID;
     el.textContent = css;
@@ -448,6 +470,46 @@
     '</div>';
   }
 
+  // Top transit-to-natal aspect on a given date (pure — does not clobber _reading).
+  function topAspectOn(date, natalFlat) {
+    if (!natalFlat) return null;
+    var t = transitLongitudes(date);
+    if (!t) return null;
+    var rows = scanAspects(t, natalFlat);
+    return rows.length ? rows[0] : null;
+  }
+
+  // The next dated event this civil week from the deterministic weekly engine.
+  function nextWeekEvent(date) {
+    if (!(window.WeeklySky && typeof WeeklySky.buildWeekReport === 'function')) return null;
+    try {
+      var rep = WeeklySky.buildWeekReport(date);
+      if (!rep || rep.empty || !rep.events || !rep.events.length) return null;
+      return rep.events[0];
+    } catch (e) { return null; }
+  }
+
+  // "What's next" — an honest come-back loop: tomorrow's top transit + this week's
+  // next real event. All values are genuinely computed; empty sky is stated plainly.
+  function renderRhythm(date, natalFlat) {
+    var rows = [];
+    var tomorrow = new Date(date.getTime() + 86400000);
+    var ta = topAspectOn(tomorrow, natalFlat);
+    var tText = ta
+      ? esc(ta.transit) + ' ' + esc(ta.aspect.toLowerCase()) + ' your ' + esc(ta.natal)
+      : 'open sky — no exact transits to your chart';
+    rows.push('<li class="dt-rhythm__row"><span class="dt-rhythm__when">Tomorrow</span>' +
+      '<span class="dt-rhythm__what">' + tText + '</span></li>');
+    var ev = nextWeekEvent(date);
+    if (ev && ev.title) {
+      rows.push('<li class="dt-rhythm__row"><span class="dt-rhythm__when">This week</span>' +
+        '<span class="dt-rhythm__what">' + esc(ev.title) + '</span></li>');
+    }
+    if (!rows.length) return '';
+    return '<ul class="dt-rhythm" aria-label="What comes next">' + rows.join('') + '</ul>' +
+      '<p class="dt-rhythm__note">The sky moves — your reading recomputes each day.</p>';
+  }
+
   function renderReading(target, reading, date) {
     var streak = bumpStreak(reading.iso);
     var insight = reading.insight;
@@ -463,6 +525,31 @@
     } else if (reading.mode === 'pins') {
       aspectsHtml = '<div class="dt-meta"><span class="dt-chip">' +
         'Saved Sun &amp; Moon only — cast a full chart for every transit</span></div>';
+    }
+
+    // "Show me in the sky" — natal edition. Homepage-only: window.APShowInSky
+    // is exported by home-daily.js (both files load on index; on transits.html
+    // there is no hero orrery, so no button). Draws the TOP transit against the
+    // saved chart's REAL computed natal longitude on the engine's geocentric
+    // zodiac ring. HONESTY: bLon comes from reading.natal (AstroProfile
+    // buildChartData positions, or the ap_natal_pins longitudes) — never a sign
+    // midpoint — and the label says 'natal', not 'solar chart'.
+    var skyBtnHtml = '';
+    var skyApi = window.APShowInSky;
+    var topA = reading.aspects && reading.aspects.length ? reading.aspects[0] : null;
+    if (skyApi && typeof skyApi.show === 'function' && topA &&
+        reading.natal && typeof reading.natal[topA.natal] === 'number') {
+      var natLon = reading.natal[topA.natal]; // real longitude, degrees 0–360
+      var natLabel = 'your ' + topA.natal + ' · natal';
+      try { if (skyApi.ensureCss) skyApi.ensureCss(); } catch (e) {}
+      skyBtnHtml = '<button type="button" class="home-daily__sky-btn" ' +
+        'data-sky-planet="' + esc(topA.transit.toLowerCase()) + '" ' +
+        'data-sky-aspect="' + esc(topA.aspect.toLowerCase()) + '" ' +
+        'data-sky-blon="' + natLon + '" ' +
+        'data-sky-blabel="' + esc(natLabel) + '">' +
+        '<span aria-hidden="true">✦</span> Show ' + esc(topA.transit) + ' ' +
+        esc(topA.aspect.toLowerCase()) + ' your ' + esc(topA.natal) + ' in the sky' +
+      '</button>';
     }
 
     var metaChips = '';
@@ -492,6 +579,9 @@
         '<span class="dt-card__streak-dot" aria-hidden="true"></span>' + esc(line) + '</span>';
     }
 
+    // "What's next" — tomorrow + this week (only for saved-chart readers).
+    var rhythmHtml = reading.natal ? renderRhythm(date, reading.natal) : '';
+
     // Deep-Reading tease — dormant-safe via AP_MON. Renders a plain line if no
     // URL is configured (never an invented price or broken link).
     var teaseHtml = renderTease();
@@ -508,27 +598,99 @@
         '<h3 class="dt-card__headline">' + esc(headline) + '</h3>' +
         (body ? '<p class="dt-card__body">' + esc(body) + '</p>' : '') +
         aspectsHtml +
+        skyBtnHtml +
         metaChips +
         keywordsHtml +
+        rhythmHtml +
         teaseHtml +
       '</div>';
+
+    if (skyBtnHtml) {
+      var sb = target.querySelector('.home-daily__sky-btn');
+      if (sb) {
+        sb.addEventListener('click', function () {
+          skyApi.show(
+            sb.getAttribute('data-sky-planet'),
+            sb.getAttribute('data-sky-aspect'),
+            parseFloat(sb.getAttribute('data-sky-blon')),
+            { bLabel: sb.getAttribute('data-sky-blabel'), natalMode: 'natal' }
+          );
+        });
+      }
+    }
+  }
+
+  function firstSentence(text) {
+    if (!text) return '';
+    var m = String(text).match(/^[\s\S]*?[.!?](?=\s|$)/);
+    return (m ? m[0] : String(text)).trim();
+  }
+
+  // Lazy-load the (heavy) interpretation engine ONCE, only when a saved-chart
+  // reader's card actually renders — keeps 424KB off the homepage first paint.
+  var _interpState = 0; // 0 untried · 1 loading · 2 done/failed
+  function ensureInterp(cb) {
+    if (window.AstroInterpretations) { cb(); return; }
+    if (_interpState !== 0) return;
+    _interpState = 1;
+    var s = document.createElement('script');
+    s.src = 'js/interpretations.js';
+    s.async = true;
+    s.onload = function () { _interpState = 2; cb(); };
+    s.onerror = function () { _interpState = 2; };
+    document.head.appendChild(s);
+  }
+
+  // A REAL excerpt of this chart's Deep Reading, tied to today's strongest transit:
+  // the first sentence of the genuine interpretation for the natal placement being
+  // aspected. Same engine that writes the paid 13-page PDF — honest by construction.
+  function deepTeaserSnippet(reading) {
+    var I = window.AstroInterpretations;
+    if (!I || typeof I.getPlanetInterpretation !== 'function') return null;
+    var topA = reading && reading.aspects && reading.aspects.length ? reading.aspects[0] : null;
+    if (!topA || !reading.natal) return null;
+    var natName = topA.natal;
+    var lon = reading.natal[natName];
+    if (typeof lon !== 'number') return null;
+    var sign = signOf(lon);
+    var full = '';
+    try { full = I.getPlanetInterpretation(natName, sign); } catch (e) { full = ''; }
+    var open = firstSentence(full);
+    if (!open) return null;
+    return { natName: natName, sign: sign, open: open };
   }
 
   function renderTease() {
+    var reading = _reading;
     var M = window.AP_MON || {};
-    var url = typeof M.reportUrl === 'string' ? M.reportUrl.trim() : '';
+    var url = typeof M.deepReadingUrl === 'string' ? M.deepReadingUrl.trim()
+            : (typeof M.reportUrl === 'string' ? M.reportUrl.trim() : '');
     var hasUrl = /^https?:\/\//i.test(url);
+    // Price renders ONLY if the owner sets it (honesty — never a fabricated number).
+    var price = typeof M.deepReadingPrice === 'string' ? M.deepReadingPrice.trim() : '';
+    var ctaLink = hasUrl
+      ? ' <a class="dt-tease__link" href="' + esc(url) + '" target="_blank" rel="noopener sponsored" data-mon="report">Unlock your Deep Reading' + (price ? ' — ' + esc(price) : '') + ' →</a>'
+      : ' <a class="dt-tease__link" href="#" data-mon="report" data-mon-mode="hide" style="display:none">Unlock your Deep Reading →</a>';
+    var soon = hasUrl ? '' : '<span class="dt-tease__soon">Full written readings open soon.</span> ';
+
+    var snip = reading ? deepTeaserSnippet(reading) : null;
+    if (snip) {
+      return '<div class="dt-tease dt-tease--rich">' +
+        '<p class="dt-tease__eyebrow">From your Deep Reading</p>' +
+        '<p class="dt-tease__excerpt">' + esc(snip.natName) + ' in ' + esc(snip.sign) + ' &mdash; ' + esc(snip.open) + '</p>' +
+        '<p class="dt-tease__lock">Your full reading unpacks how your ' + esc(snip.sign) + ' ' + esc(snip.natName) +
+          ' plays out across love, work and the year ahead&hellip;</p>' +
+        '<p class="dt-tease__cta">' + soon + ctaLink + '</p>' +
+      '</div>';
+    }
+
+    // No engine yet — lazy-load it once for a saved-chart reader, re-render on ready.
+    if (reading && reading.natal && reading.aspects && reading.aspects.length && !window.AstroInterpretations) {
+      ensureInterp(function () { try { refresh(); } catch (e) {} });
+    }
     var line = 'This is the surface. Your Deep Reading goes pages deeper into why ' +
       'these transits land the way they do.';
-    if (hasUrl) {
-      return '<p class="dt-tease">' + line +
-        ' <a href="' + esc(url) + '" target="_blank" rel="noopener" data-mon="report">' +
-        'Explore the Deep Reading →</a></p>';
-    }
-    // Dormant-safe: visible quiet line, link hidden until AP_MON is configured.
-    return '<p class="dt-tease">' + line +
-      ' <a href="#" data-mon="report" data-mon-mode="hide" style="display:none">' +
-      'Explore the Deep Reading →</a></p>';
+    return '<p class="dt-tease">' + line + ctaLink + '</p>';
   }
 
   // ── mount / refresh ────────────────────────────────────────────────────────

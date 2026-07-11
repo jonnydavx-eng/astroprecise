@@ -128,6 +128,10 @@
 
   function appendToCheckoutUrl(url, productId) {
     if (!url || !/^https?:\/\//i.test(url)) return url;
+    // PayPal payment links / PayPal.Me: never append the LS-style
+    // checkout[custom][...] params — PayPal ignores or rejects them. Buyer
+    // preferences travel via the post-payment Typeform instead.
+    if (/https?:\/\/([^/]*\.)?paypal\.(com|me)\//i.test(url)) return url;
     var p = get();
     var u = new URL(url);
     var custom = function (k, v) {

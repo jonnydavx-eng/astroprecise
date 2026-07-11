@@ -223,9 +223,20 @@ function porphyryOrEqual(ascDeg, mcDeg) {
   return cuspsValid(p) ? p : equalCusps(ascDeg);
 }
 
+// Map UI labels ("Whole Sign", prefs, profile) to engine tokens.
+// Koch and other unsupported systems fall back to Placidus (documented).
+function normalizeHouseSystem(system) {
+  const s = String(system || 'placidus').toLowerCase().replace(/\s+/g, ' ').trim();
+  if (s === 'whole' || s === 'whole sign') return 'whole';
+  if (s === 'equal' || s === 'equal house') return 'equal';
+  if (s === 'porphyry') return 'porphyry';
+  if (s === 'placidus') return 'placidus';
+  return 'placidus';
+}
+
 // House-system dispatcher. Default Placidus (Porphyry → equal-house fallback chain).
 function houseCusps(system, lst, lat, eps, ascDeg, mcDeg) {
-  switch ((system || 'placidus').toLowerCase()) {
+  switch (normalizeHouseSystem(system)) {
     case 'whole': {
       const s0 = Math.floor(ascDeg / 30) * 30;
       return Array.from({ length: 12 }, (_, i) => mod360(s0 + i * 30));
@@ -271,7 +282,7 @@ const ASPECT_DEFS = [
 const DAILY_MOTION = {
   sun: 0.9856, moon: 13.176, mercury: 1.383, venus: 1.202, mars: 0.524,
   jupiter: 0.0831, saturn: 0.0335, uranus: 0.0117, neptune: 0.0060,
-  pluto: 0.0040, chiron: 0.014, northnode: -0.053, southnode: 0.053,
+  pluto: 0.0040, chiron: 0.0195, northnode: -0.053, southnode: 0.053,
   lilith: 0.111, asc: 0, mc: 0
 };
 
@@ -447,11 +458,49 @@ function nodePosition(jd, mode) {
 }
 
 function chironPosition(jd) {
-  // Chiron (2060) — approximate mean longitude using orbital period 50.42 yr
-  const epoch_jd  = 2451545.0; // J2000.0
-  const epoch_lon = 209.39;    // approximate ecliptic longitude at J2000.0 (degrees)
-  const period    = 50.42 * 365.25; // days
-  return mod360(epoch_lon + 360 * (jd - epoch_jd) / period);
+  // Chiron (2060) — full two-body Kepler orbit from JPL osculating elements
+  // (heliocentric ecliptic J2000, epoch near the 1996-02-14 perihelion):
+  //   a = 13.6906 AU, e = 0.37945, i = 6.9299°, Ω = 209.29°, ω = 339.36°.
+  // Replaces the old bare linear mean-longitude, which used the ASCENDING NODE
+  // (209.29°) as its epoch longitude — a constant ~90–150° wrong, giving the
+  // wrong zodiac sign in ~89% of years and never showing retrograde (Chiron is
+  // retrograde ~5 months every year). With e = 0.38 a linear model can't work
+  // anyway: true motion runs ~4x faster at perihelion than aphelion.
+  // Two-body accuracy vs JPL: well under 1° for ~1970–2030, degrading to a few
+  // degrees mid-century (planetary perturbations; Saturn approach ~1945 makes
+  // earlier dates unreliable at the degree level).
+  const a  = 13.6906, e = 0.37945;
+  const inc = toRad(6.9299), Om = toRad(209.29), w = toRad(339.36);
+  const TpJD = 2450127.5;                              // 1996-02-14.0 UT perihelion
+  const n = 2 * Math.PI / (365.25 * Math.pow(a, 1.5)); // mean motion, rad/day
+  let M = (n * (jd - TpJD)) % (2 * Math.PI);
+  if (M < 0) M += 2 * Math.PI;
+  // Kepler's equation via Newton–Raphson (converges in a handful of steps)
+  let E = M;
+  for (let k = 0; k < 60; k++) {
+    const d = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+    E -= d;
+    if (Math.abs(d) < 1e-12) break;
+  }
+  const nu = 2 * Math.atan2(Math.sqrt(1 + e) * Math.sin(E / 2),
+                            Math.sqrt(1 - e) * Math.cos(E / 2));
+  const rOrb = a * (1 - e * Math.cos(E));
+  const xo = rOrb * Math.cos(nu), yo = rOrb * Math.sin(nu);
+  // Orbital plane → heliocentric ecliptic J2000 (rotate by ω, i, Ω)
+  const cw = Math.cos(w),  sw = Math.sin(w);
+  const ci = Math.cos(inc), si = Math.sin(inc);
+  const cO = Math.cos(Om), sO = Math.sin(Om);
+  const x = (cO * cw - sO * sw * ci) * xo + (-cO * sw - sO * cw * ci) * yo;
+  const y = (sO * cw + cO * sw * ci) * xo + (-sO * sw + cO * cw * ci) * yo;
+  const z = (sw * si) * xo + (cw * si) * yo;
+  const lonH = mod360(toDeg(Math.atan2(y, x)));
+  const latH = toDeg(Math.atan2(z, Math.sqrt(x * x + y * y)));
+  const rH   = Math.sqrt(x * x + y * y + z * z);
+  // Heliocentric J2000 → geocentric ecliptic of date (helioToGeo precesses),
+  // same path every VSOP87 planet takes. Function declarations are hoisted,
+  // so referencing the later-defined helioToGeo here is safe (cf. _ACCURATE_FNS).
+  const sun = sunPosition(jd);
+  return helioToGeo(lonH, latH, rH, sun.lon, 0, sun.distance, jd).lon;
 }
 
 // ---------------------------------------------------------------------------

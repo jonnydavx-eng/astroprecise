@@ -1,6 +1,6 @@
 /* Ephemeris / Instrument page — extracted from ephemeris.html */
 /* ── Deep Time aesthetic — darker, slower ── */
-    body { background: var(--ap-void-deep, #0C1016); }
+    body { background: var(--ap-void-deep, #07070A); }
 
     /* ── Instrument shell ── */
     .instrument-wrap {
@@ -65,8 +65,15 @@
     /* ── Glow button ── */
     .glow-btn {
       background: transparent;
-      border: 1px solid rgba(194, 160, 94,0.4);
+      border: 1px solid rgba(168, 176, 188,0.4);
       color: var(--gold-pale);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      box-sizing: border-box;
+      touch-action: manipulation;
       padding: 0.65rem 1.4rem;
       border-radius: 999px;
       font-size: 0.72rem;
@@ -75,16 +82,21 @@
       font-family: var(--font-sans, 'Inter', sans-serif);
       cursor: pointer;
       transition: all 0.4s ease;
-      box-shadow: 0 0 0 rgba(194, 160, 94,0);
+      box-shadow: 0 0 0 rgba(168, 176, 188,0);
     }
     .glow-btn:hover {
-      box-shadow: 0 0 24px rgba(194, 160, 94,0.22), inset 0 0 12px rgba(194, 160, 94,0.07);
+      box-shadow: 0 0 24px rgba(168, 176, 188,0.22), inset 0 0 12px rgba(168, 176, 188,0.07);
       border-color: var(--gold);
-      background: rgba(194, 160, 94,0.05);
+      background: rgba(168, 176, 188,0.05);
+    }
+    .glow-btn:focus-visible {
+      outline: 2px solid var(--gold, #A8B0BC);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 3px rgba(168, 176, 188, 0.22);
     }
     .glow-btn:disabled { opacity: 0.4; cursor: wait; }
     .glow-btn.active {
-      background: rgba(194, 160, 94,0.12);
+      background: rgba(168, 176, 188,0.12);
       border-color: var(--gold);
     }
 
@@ -131,8 +143,8 @@
       letter-spacing: 0.05em;
       text-align: right;
     }
-    .src-measured { color: #3fae7a; }
-    .src-computed { color: var(--lapis-light); }
+    .src-measured { color: #3fae7a; } /* honest "measured" signal — keep green */
+    .src-computed { color: var(--ap-gold-core, #A8B0BC); }
     .src-unavailable { color: #E8A0A0; }
 
     /* ── Echo windows ── */
@@ -142,7 +154,7 @@
       gap: 1rem;
       align-items: center;
       padding: 1rem 1.25rem;
-      border: 1px solid rgba(194, 160, 94,0.16);
+      border: 1px solid rgba(168, 176, 188,0.16);
       border-radius: var(--radius-xl);
       margin-bottom: 0.75rem;
       background: rgba(22, 28, 42,0.4);
@@ -150,7 +162,7 @@
       -webkit-backdrop-filter: blur(10px);
       transition: border-color 0.2s;
     }
-    .echo-window:hover { border-color: rgba(194, 160, 94,0.3); }
+    .echo-window:hover { border-color: rgba(168, 176, 188,0.3); }
     .resonance-meter {
       height: 3px; width: 110px;
       background: rgba(168, 158, 136,0.12);
@@ -158,7 +170,7 @@
     }
     .resonance-meter span {
       display: block; height: 100%;
-      background: linear-gradient(90deg, var(--lapis-light), var(--gold));
+      background: linear-gradient(90deg, var(--ap-gold-core, #A8B0BC), var(--ap-gold-vivid, #C8CDD6));
     }
 
     /* ── Glassmorphism card ── */
@@ -171,7 +183,7 @@
       padding: 2rem;
     }
     .glass-card--gold-rim {
-      border-color: rgba(194, 160, 94,0.22);
+      border-color: rgba(168, 176, 188,0.22);
     }
 
     /* ── 3D canvas heroes framed as instruments under glass ──
@@ -181,7 +193,7 @@
     #sec-lightcone .glass-card,
     #sec-timetravel .glass-card {
       position: relative;
-      border-color: var(--ip-border-rim, rgba(194, 160, 94, 0.24));
+      border-color: var(--ip-border-rim, rgba(168, 176, 188, 0.24));
       box-shadow:
         inset 0 1px 0 rgba(232, 224, 208, 0.05),
         inset 0 -1px 0 rgba(0, 0, 0, 0.35),
@@ -209,14 +221,14 @@
       pointer-events: none;
       border-radius: calc(var(--radius-2xl, 24px) - 8px);
       background:
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
-        linear-gradient(var(--ip-bracket-color, rgba(194, 160, 94,0.42)), var(--ip-bracket-color, rgba(194, 160, 94,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) left top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) left top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) right top / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) right top / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) left bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) left bottom / 1px var(--ip-bracket-size, 22px) no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) right bottom / var(--ip-bracket-size, 22px) 1px no-repeat,
+        linear-gradient(var(--ip-bracket-color, rgba(168, 176, 188,0.42)), var(--ip-bracket-color, rgba(168, 176, 188,0.42))) right bottom / 1px var(--ip-bracket-size, 22px) no-repeat;
       opacity: 0.75;
     }
     /* Keep the canvas above the frame pseudo-elements (they sit at z-index 0). */
@@ -261,10 +273,16 @@
       transition: border-color 0.2s, background 0.2s;
     }
     .sig-cell:hover {
-      border-color: rgba(194, 160, 94,0.25);
+      border-color: rgba(168, 176, 188,0.25);
       background: rgba(22, 28, 42,0.85);
     }
     .sig-cell__glyph { font-size: 1.5rem; display: block; margin: 0 auto 0.35rem; color: var(--gold-pale); line-height: 0; }
+    /* Keep planet glyphs in the planetary-hour readout + sigil cells as engraved
+       text, never colour-emoji (serif inline styles would otherwise fall back). */
+    .sig-cell__glyph, #ph-readout {
+      font-family: 'AstroGlyph', 'Cormorant Garamond', Georgia, serif;
+      font-variant-emoji: text;
+    }
     .sig-cell__glyph .ap-orb { vertical-align: middle; }
     .sig-cell__label {
       font-size: 0.58rem;
@@ -283,7 +301,7 @@
 
     /* ── Daimon card ── */
     .daimon-card {
-      border: 1px solid rgba(194, 160, 94,0.28);
+      border: 1px solid rgba(168, 176, 188,0.28);
       border-radius: var(--radius-xl);
       padding: 2rem;
       background:
@@ -313,7 +331,7 @@
       text-align: center;
       color: var(--gold-pale);
       line-height: 1;
-      filter: drop-shadow(0 0 18px rgba(194, 160, 94,0.5));
+      filter: drop-shadow(0 0 18px rgba(168, 176, 188,0.5));
     }
     .provenance {
       font-size: 0.6rem;
@@ -347,7 +365,7 @@
       justify-content: center;
       width: 28px;
       height: 28px;
-      border: 1px solid rgba(194, 160, 94,0.35);
+      border: 1px solid rgba(168, 176, 188,0.35);
       border-radius: 50%;
       font-size: 0.65rem;
       font-family: var(--font-display, 'Cinzel', serif);
@@ -371,7 +389,7 @@
       inset: 0;
       background:
         radial-gradient(ellipse 55% 40% at 30% 0%, rgba(92, 74, 110,0.16) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(194, 160, 94,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 35% at 80% 20%, rgba(168, 176, 188,0.09) 0%, transparent 60%),
         radial-gradient(ellipse 50% 30% at 50% 100%, rgba(92, 74, 110,0.08) 0%, transparent 65%);
       pointer-events: none;
     }
@@ -382,11 +400,11 @@
       right: 8%;
       width: 140px;
       height: 140px;
-      border: 1px solid rgba(194, 160, 94, 0.12);
+      border: 1px solid rgba(168, 176, 188, 0.12);
       border-radius: 50%;
       box-shadow:
-        inset 0 0 0 18px rgba(194, 160, 94, 0.04),
-        0 0 40px rgba(194, 160, 94, 0.06);
+        inset 0 0 0 18px rgba(168, 176, 188, 0.04),
+        0 0 40px rgba(168, 176, 188, 0.06);
       pointer-events: none;
       opacity: 0.7;
     }
@@ -456,18 +474,18 @@
     }
     .cw-unit { font-size: 0.75rem; color: var(--silver-dim); }
     .cw-note { margin: 0; font-size: 0.72rem; line-height: 1.5; color: var(--silver); text-align: center; }
-    .cw-unavail { margin: 0; font-size: 0.8rem; color: var(--crimson-light); text-align: center; }
+    .cw-unavail { margin: 0; font-size: 0.8rem; color: #f87171; text-align: center; }
     .cw-info {
-      width: 18px; height: 18px; flex: 0 0 18px; border-radius: 50%;
-      border: 1px solid rgba(194, 160, 94,0.4); background: transparent; color: var(--gold);
+      width: 44px; height: 44px; flex: 0 0 44px; border-radius: 50%;
+      border: 1px solid rgba(168, 176, 188,0.4); background: transparent; color: var(--gold);
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.72rem;
       line-height: 1; cursor: pointer; transition: background 0.2s, border-color 0.2s;
     }
-    .cw-info:hover, .cw-info[aria-expanded="true"] { background: rgba(194, 160, 94,0.15); border-color: var(--gold); }
+    .cw-info:hover, .cw-info[aria-expanded="true"] { background: rgba(168, 176, 188,0.15); border-color: var(--gold); }
     .cw-gauge { width: 150px; height: 86px; overflow: visible; }
     .cw-gauge__band { fill: none; stroke-width: 9; stroke-linecap: butt; opacity: 0.85; }
     .cw-gauge__band--quiet     { stroke: #3fae7a; }
-    .cw-gauge__band--unsettled { stroke: var(--gold, #C2A05E); }
+    .cw-gauge__band--unsettled { stroke: var(--gold, #A8B0BC); }
     .cw-gauge__band--storm     { stroke: var(--crimson-light, #f87171); }
     .cw-gauge__needle { stroke: var(--white); stroke-width: 2; stroke-linecap: round; }
     .cw-gauge__hub    { fill: var(--gold-pale, var(--gold)); }
@@ -476,8 +494,8 @@
     .cw-gauge__hi { text-anchor: end; }
     .cw-spark-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
     .cw-spark { width: 96px; height: 26px; display: block; }
-    .cw-spark__line { stroke: var(--lapis-light, #c8b88f); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
-    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #C2A05E); }
+    .cw-spark__line { stroke: var(--ap-gold-core, #A8B0BC); stroke-width: 1.4; stroke-linejoin: round; stroke-linecap: round; }
+    .cw-spark--bz .cw-spark__line { stroke: var(--gold, #A8B0BC); }
     .cw-spark__zero { stroke: var(--crimson-light, #f87171); stroke-width: 0.6; stroke-dasharray: 2 2; opacity: 0.5; }
     .cw-spark--empty { font-size: 0.62rem; color: var(--silver-dim); }
     .cw-spark-cap { font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--silver-dim); }
@@ -491,14 +509,15 @@
       border-radius: 999px; border: 1px solid currentColor;
     }
     .cw-flare-badge--A, .cw-flare-badge--B { color: #3fae7a; }
-    .cw-flare-badge--C { color: var(--lapis-light, #c8b88f); }
-    .cw-flare-badge--M { color: var(--gold, #C2A05E); }
-    .cw-flare-badge--X { color: var(--crimson-light, #f87171); }
+    .cw-flare-badge--C { color: var(--ap-gold-core, #A8B0BC); }
+    .cw-flare-badge--M { color: var(--gold, #A8B0BC); }
+    /* Explicit — --crimson-light (#b04a52) fails 4.5:1 on instrument-panel void */
+    .cw-flare-badge--X { color: #f87171; }
     .cw-chip {
       display: inline-block; font-family: var(--font-display, 'Cinzel', serif);
       font-size: 1.4rem; color: var(--gold-pale, var(--gold)); padding: 0.15rem 0.7rem;
-      border-radius: 999px; background: rgba(194, 160, 94,0.1);
-      border: 1px solid rgba(194, 160, 94,0.28); font-variant-numeric: tabular-nums;
+      border-radius: 999px; background: rgba(168, 176, 188,0.1);
+      border: 1px solid rgba(168, 176, 188,0.28); font-variant-numeric: tabular-nums;
     }
     .cw-chip small { font-size: 0.6rem; color: var(--silver-dim); letter-spacing: 0.1em; }
     .cw-rows { margin: 0.5rem 0 1rem; }
@@ -513,7 +532,7 @@
     .cw-aurora__src { font-size: 0.6rem; }
     .cw-pop {
       position: absolute; z-index: 40; max-width: 300px; padding: 1rem 1.1rem 0.9rem;
-      background: var(--void, #0d0a07); border: 1px solid rgba(194, 160, 94,0.35);
+      background: var(--void, #07070A); border: 1px solid rgba(168, 176, 188,0.35);
       border-radius: var(--radius-xl, 20px); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
       -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
     }
@@ -522,3 +541,499 @@
     .cw-pop__title { margin: 0 0 0.4rem; font-family: var(--font-display, 'Cinzel', serif); font-size: 0.9rem; letter-spacing: 0.06em; color: var(--gold-pale, var(--gold)); }
     .cw-pop__body { margin: 0 0 0.6rem; font-family: 'Cormorant Garamond', serif; font-size: 0.98rem; line-height: 1.6; color: var(--silver, #C8D0E8); }
     .cw-pop__src { margin: 0; font-size: 0.62rem; letter-spacing: 0.06em; color: #3fae7a; }
+
+    /* ── Sky page — beginner-first layout (Tonight → Your sky → Go deeper) ── */
+    .instrument-lede--short {
+      font-size: 1.02rem;
+      line-height: 1.65;
+      max-width: 560px;
+    }
+
+    .sky-hero-caps { margin-top: 1.25rem; }
+
+    .sky-hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .sky-ev-status {
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--silver-dim);
+      letter-spacing: 0.04em;
+      min-height: 1.2em;
+    }
+
+    .sky-tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.65rem;
+      margin-top: 1.35rem;
+    }
+    .sky-tools-row__link {
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--silver);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.4rem 0.85rem;
+      touch-action: manipulation;
+      border: 1px solid rgba(168, 158, 136, 0.18);
+      border-radius: 999px;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .sky-tools-row__link:hover {
+      color: var(--gold-pale);
+      border-color: rgba(168, 176, 188, 0.4);
+      background: rgba(168, 176, 188, 0.06);
+    }
+
+    .sky-birth-panel {
+      margin-top: 1.5rem;
+      animation: sky-panel-in 0.35s ease;
+    }
+    @keyframes sky-panel-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .sky-birth-panel__label {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0 0 0.5rem;
+    }
+    .sky-birth-panel__actions { margin-top: 0.25rem; }
+    .sky-birth-panel__note {
+      margin: 0.75rem 0 0;
+      font-size: 0.72rem;
+      line-height: 1.5;
+      color: var(--silver-dim);
+    }
+
+    .sky-jump-nav {
+      position: sticky;
+      top: var(--nav-height, 72px);
+      z-index: 20;
+      background: rgba(12, 16, 22, 0.92);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168, 158, 136, 0.08);
+    }
+    .sky-jump-nav__inner {
+      display: flex;
+      gap: 0.5rem 1.25rem;
+      padding: 0.65rem 1.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sky-jump-nav__inner::-webkit-scrollbar { display: none; }
+    .sky-jump-nav__link {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--silver-dim);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.35rem 0.75rem;
+      touch-action: manipulation;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .sky-jump-nav__link:hover,
+    .sky-jump-nav__link:focus-visible {
+      color: var(--gold-pale);
+      border-bottom-color: rgba(168, 176, 188, 0.45);
+    }
+
+    .sky-card-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 640px) {
+      .sky-card-row { grid-template-columns: 1fr; }
+    }
+    .sky-card {
+      padding: 1.1rem 1.15rem;
+      border: 1px solid rgba(168, 158, 136, 0.12);
+      border-radius: var(--radius-xl, 20px);
+      background: rgba(22, 28, 42, 0.55);
+    }
+    .sky-card--skeleton .sky-card__bar {
+      display: block;
+      height: 0.65rem;
+      border-radius: 4px;
+      background: rgba(168, 158, 136, 0.12);
+      margin-bottom: 0.5rem;
+      animation: sky-pulse 1.4s ease-in-out infinite;
+    }
+    .sky-card--skeleton .sky-card__bar--short { width: 55%; }
+    @keyframes sky-pulse {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.9; }
+    }
+    .sky-card__label {
+      margin: 0;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+    }
+    .sky-card__value {
+      margin: 0.35rem 0 0;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 1.15rem;
+      color: var(--gold-pale);
+      line-height: 1.25;
+    }
+    .sky-card__sub {
+      margin: 0.25rem 0 0;
+      font-size: 0.78rem;
+      color: var(--silver);
+      line-height: 1.4;
+    }
+    .sky-card__gloss {
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+      text-transform: none;
+      color: var(--gold);
+      text-decoration: none;
+      margin-left: 0.35rem;
+      opacity: 0.85;
+    }
+    .sky-card__gloss:hover { text-decoration: underline; opacity: 1; }
+
+    .sky-panel__title {
+      margin: 0 0 0.85rem;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+    .sky-panel__tag {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--silver-dim);
+      font-weight: 400;
+      text-transform: none;
+    }
+    .sky-panel__foot {
+      margin: 0.85rem 0 0;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+    .sky-panel__foot a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .sky-panel__foot a:hover { text-decoration: underline; }
+    .sky-panel__empty {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--silver-dim);
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .sky-planets-panel { margin-top: 0.5rem; padding: 1.25rem 1.35rem; }
+    .sky-planets-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .sky-planets-table th,
+    .sky-planets-table td {
+      padding: 0.55rem 0.65rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(168, 158, 136, 0.08);
+    }
+    .sky-planets-table thead th {
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--silver-dim);
+      font-weight: 400;
+    }
+    .sky-planets-table tbody th[scope="row"] {
+      font-weight: 400;
+      color: var(--white);
+      font-family: 'AstroGlyph', 'Cormorant Garamond', serif;
+      font-variant-emoji: text;
+    }
+    .sky-planets-table tbody td { color: var(--silver); }
+    .sky-planets-table tbody tr:last-child th,
+    .sky-planets-table tbody tr:last-child td { border-bottom: none; }
+
+    .sky-weather-summary {
+      margin-top: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+    .sky-weather-summary__label {
+      margin: 0;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .sky-weather-summary__text {
+      margin: 0.65rem 0 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.12rem;
+      line-height: 1.65;
+      color: var(--white);
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sky-weather-summary__prov {
+      margin: 0.5rem 0 0;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--silver-dim);
+    }
+
+    .sky-big-three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 720px) {
+      .sky-big-three { grid-template-columns: 1fr; }
+    }
+    .sky-big-three__cell {
+      padding: 1.25rem 1.1rem;
+      text-align: center;
+      border: 1px solid rgba(168, 176, 188, 0.2);
+      border-radius: var(--radius-xl, 20px);
+      background: rgba(168, 176, 188, 0.04);
+    }
+    .sky-big-three__glyph {
+      display: block;
+      font-size: 1.6rem;
+      color: var(--gold-pale);
+      margin-bottom: 0.35rem;
+      font-family: 'AstroGlyph', 'Cormorant Garamond', serif;
+      font-variant-emoji: text;
+    }
+    .sky-big-three__name {
+      margin: 0;
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      color: var(--white);
+    }
+    .sky-big-three__hint {
+      margin: 0.4rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--silver-dim);
+    }
+
+    .sky-natal-block { margin-top: 2rem; }
+    .sky-natal-links {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+    .sky-natal-links__btn {
+      text-decoration: none;
+      font-size: 0.68rem;
+    }
+
+    .sky-fold {
+      padding: 0;
+      border-bottom: 1px solid rgba(168, 158, 136, 0.07);
+    }
+    .sky-fold > .sky-fold__summary,
+    details.sky-fold > summary.sky-fold__summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      transition: background 0.2s;
+    }
+    .sky-fold > .sky-fold__summary::-webkit-details-marker,
+    details.sky-fold > summary::-webkit-details-marker { display: none; }
+    .sky-fold > .sky-fold__summary::before,
+    details.sky-fold > summary.sky-fold__summary::before {
+      content: '▸';
+      color: var(--gold);
+      font-size: 0.75rem;
+      margin-right: 0.25rem;
+      transition: transform 0.2s;
+    }
+    .sky-fold[open] > .sky-fold__summary::before,
+    details.sky-fold[open] > summary.sky-fold__summary::before {
+      transform: rotate(90deg);
+    }
+    .sky-fold > .sky-fold__summary:hover,
+    details.sky-fold > summary.sky-fold__summary:hover {
+      background: rgba(168, 176, 188, 0.04);
+    }
+    .sky-fold__summary--inset {
+      padding-left: calc((100% - 900px) / 2 + 1.5rem);
+      padding-right: calc((100% - 900px) / 2 + 1.5rem);
+    }
+    @media (max-width: 960px) {
+      .sky-fold__summary--inset { padding-left: 1.5rem; padding-right: 1.5rem; }
+    }
+    .sky-fold__title {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      color: var(--white);
+    }
+    .sky-fold__hint {
+      font-size: 0.72rem;
+      color: var(--silver-dim);
+      flex: 1 1 100%;
+      padding-left: 1.1rem;
+    }
+    .sky-fold__body.instrument-section,
+    .sky-fold .sky-fold__body {
+      padding-top: 0;
+      border-bottom: none;
+    }
+    #sec-clock-wrap.sky-fold { border-bottom: 1px solid rgba(168, 158, 136, 0.07); }
+    #sec-clock-wrap .instrument-eyebrow { margin: 0; }
+
+    .sky-explore .instrument-wrap:first-child {
+      padding-bottom: 0.5rem;
+    }
+    .sky-explore > .sky-fold:last-of-type {
+      border-bottom: none;
+    }
+
+    #sky-your[hidden],
+    #sky-your-deep[hidden] { display: none !important; }
+
+    #sky-tonight,
+    #sky-your,
+    #sky-explore,
+    #ev-personalize-toggle {
+      scroll-margin-top: calc(var(--nav-height, 72px) + 3rem);
+    }
+    @media (max-width: 1023px) {
+      .instrument-section[id] {
+        scroll-margin-bottom: calc(var(--bottom-nav-h, 72px) + env(safe-area-inset-bottom, 0px) + 12px);
+      }
+    }
+
+/* First-viewport simplify: tools behind disclosure */
+.sky-tools-details {
+  margin-top: 1rem;
+  border: 1px solid rgba(168, 176, 188, 0.18);
+  border-radius: 12px;
+  background: rgba(12, 16, 22, 0.35);
+  padding: 0.35rem 0.75rem 0.55rem;
+}
+.sky-tools-details__sum {
+  cursor: pointer;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #A8B0BC;
+  list-style: none;
+  padding: 0.45rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.sky-tools-details__sum::-webkit-details-marker { display: none; }
+.sky-tools-details[open] .sky-tools-details__sum { margin-bottom: 0.35rem; }
+.sky-tools-details .sky-tools-row {
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding-bottom: 0.35rem;
+}
+.sky-tools-row__btn {
+  appearance: none;
+  background: transparent;
+  border: 1px solid rgba(168, 176, 188, 0.28);
+  border-radius: 999px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.35rem 0.75rem;
+  min-height: 36px;
+}
+.sky-tools-row__btn:hover,
+.sky-tools-row__btn:focus-visible {
+  border-color: rgba(168, 176, 188, 0.55);
+  color: #C8CDD6;
+  outline: none;
+}
+.glow-btn--quiet { opacity: 0.85; font-weight: 500; }
+
+/* Tonight first content = strip only; table/mood behind disclosure */
+.sky-tonight-more {
+  margin-top: 1.15rem;
+  border: 1px solid rgba(168, 176, 188, 0.18);
+  border-radius: 14px;
+  background: rgba(12, 16, 22, 0.28);
+  padding: 0.25rem 0.85rem 0.65rem;
+}
+.sky-tonight-more__sum {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #A8B0BC;
+  padding: 0.55rem 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.sky-tonight-more__sum::-webkit-details-marker { display: none; }
+.sky-tonight-more[open] .sky-tonight-more__sum {
+  border-bottom: 1px solid rgba(168, 176, 188, 0.12);
+  margin-bottom: 0.75rem;
+}
+.sky-tonight-more .sky-planets-panel,
+.sky-tonight-more .sky-weather-summary {
+  margin-top: 0.75rem;
+}
+
+/* Sky hero: one lede + one primary CTA */
+.instrument-hero .instrument-lede--short {
+  margin-bottom: 0.75rem;
+  max-width: 46ch;
+}
+.instrument-hero .sky-hero-actions {
+  margin-top: 1rem;
+}
+.instrument-hero .badge-row {
+  margin-top: 0.65rem;
+}
+.sky-jump-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(12, 16, 22, 0.78);
+  border-bottom: 1px solid rgba(168, 176, 188, 0.12);
+}

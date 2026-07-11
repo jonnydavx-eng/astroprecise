@@ -18,8 +18,8 @@
       left: var(--space-4, 1rem);
       z-index: 10001;
       padding: 0.65rem 1.1rem;
-      background: var(--gold, #C2A05E);
-      color: var(--void, #0C1016);
+      background: var(--gold, #A8B0BC);
+      color: var(--void, #07070A);
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
       font-size: 0.875rem;
       font-weight: 600;
@@ -64,14 +64,14 @@
 
     /* ---- Compatibility-page design variables ---- */
     :root {
-      --bg: #0C1016;
-      --gold: #C2A05E;
+      --bg: #07070A;
+      --gold: #A8B0BC;
       --gold-pale: #E8E0D0;
       --white: #E8E0D0;
       --silver: #A89E88;
       --silver-dim: #9A9084;
       --surface: rgba(22, 28, 42,0.68);
-      --border: rgba(194, 160, 94,0.10);
+      --border: rgba(168, 176, 188,0.10);
       --radius-xl: 20px;
       --radius-2xl: 28px;
       --lapis: #6e1a26;
@@ -186,8 +186,8 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--gold-pale);
-      background: linear-gradient(145deg, rgba(194, 160, 94,0.1) 0%, rgba(16, 21, 32,0.6) 100%);
-      border: 1px solid rgba(194, 160, 94,0.3);
+      background: linear-gradient(145deg, rgba(168, 176, 188,0.1) 0%, rgba(16, 21, 32,0.6) 100%);
+      border: 1px solid rgba(168, 176, 188,0.3);
       border-radius: 999px;
       padding: 4px 12px;
       white-space: normal;
@@ -260,6 +260,46 @@
       width: 2.5rem;
       height: 2.88rem;
     }
+
+    /* ---- Enlarged A/B seal pairing — the hero's focal image ----
+       Page-scoped (0,2,0) so it beats the 80/64px defaults in main-lite.css
+       regardless of load order. Mirrors the inline <style> + critical sizes
+       to avoid any CLS flash. The person label is lifted out of the orb's flex
+       row (absolute, below) so the core stays a true circle at the larger size. */
+    .page-compat .compat-orbs { max-width: 560px; min-height: 220px; }
+    .page-compat .compat-orb {
+      width: 148px;
+      height: 148px;
+      flex-direction: column;
+    }
+    .page-compat .compat-orb__core {
+      width: 124px;
+      height: 124px;
+      font-size: 3.1rem;
+      flex-shrink: 0;
+    }
+    .page-compat .compat-orb__core .ap-seal--lg { width: 4.4rem; height: 5.06rem; }
+    .page-compat .compat-orbs__arc { min-width: 72px; margin-top: -1.6rem; }
+    .page-compat .compat-orbs__arc-label { font-size: 1.6rem; }
+    .page-compat .compat-person-label {
+      position: absolute;
+      bottom: -1.7rem;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 0;
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      white-space: nowrap;
+    }
+    .page-compat .hero--small .compat-orbs { min-height: 220px; }
+    @media (max-width: 560px) {
+      .page-compat .compat-orbs { max-width: 100%; min-height: 188px; }
+      .page-compat .compat-orb { width: 116px; height: 116px; }
+      .page-compat .compat-orb__core { width: 96px; height: 96px; font-size: 2.5rem; }
+      .page-compat .compat-orb__core .ap-seal--lg { width: 3.5rem; height: 4.03rem; }
+      .page-compat .compat-orbs__arc { min-width: 40px; }
+      .page-compat .hero--small .compat-orbs { min-height: 188px; }
+    }
     .hero--small .compat-orbs { min-height: 120px; }
     @media (max-width: 1023px) {
       body.page-compat {
@@ -328,10 +368,10 @@
       border-radius: var(--radius-xl) var(--radius-xl) 0 0;
     }
     .compat-person-card--p1::before {
-      background: linear-gradient(90deg, #8b5a3c 0%, #C2A05E 60%, transparent 100%);
+      background: linear-gradient(90deg, #8b5a3c 0%, #A8B0BC 60%, transparent 100%);
     }
     .compat-person-card--p2::before {
-      background: linear-gradient(90deg, #C2A05E 0%, #e8c96a 60%, transparent 100%);
+      background: linear-gradient(90deg, #A8B0BC 0%, #e8c96a 60%, transparent 100%);
     }
     @media (max-width: 700px) { .compat-person-card { padding: var(--space-5) var(--space-4); } }
 
@@ -542,7 +582,7 @@
     }
     .score-bar__fill {
       height: 100%;
-      background: linear-gradient(90deg, #5c4a6e 0%, #C2A05E 100%);
+      background: linear-gradient(90deg, #5c4a6e 0%, #A8B0BC 100%);
       border-radius: 999px;
       transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -701,9 +741,22 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
+    /* Key Synastry Aspects card: its 5-column reference table is ~500px at
+       min-content — scroll inside the card, never side-scroll the page
+       (compat body scrollWidth measured 516 at 390 before this). */
+    .synastry-sidebar-card {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* Contain the decorative .orb blurs (right:-60px) before main.css lands:
+       main-lite has .hero{position:relative} but not main.css's
+       overflow:hidden, so the gold orb widened the page to x=450 on phones. */
+    .hero--small {
+      overflow: hidden;
+    }
     .compat-matrix-scroll:focus,
     .compat-matrix-scroll:focus-visible {
-      outline: 2px solid var(--color-gold, #C2A05E);
+      outline: 2px solid var(--color-gold, #A8B0BC);
       outline-offset: 2px;
     }
 

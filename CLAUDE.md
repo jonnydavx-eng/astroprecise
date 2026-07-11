@@ -109,13 +109,17 @@ attached to `window`, one stylesheet, hand-written HTML pages.
 ## Branches & Deployment
 
 - **Development**: `main` (or feature branches); site source lives in `website/`
-- **Deploy (current reality)**: GitHub Pages serves the **`gh-pages` branch from the
-  repo root** (verified 2026-06-12: live site 404s files that exist only under
-  `main:website/`). To deploy: mirror `website/` onto `gh-pages` root, commit, push.
-- `.github/workflows/deploy-pages.yml` is currently **inert** — it only takes effect
-  if the repo's Pages source is switched to "GitHub Actions" (Settings → Pages).
-  Doing that would retire the manual gh-pages copy entirely (recommended).
-- Live URL: `https://jonnydavx-eng.github.io/astroprecise/`
+- **Deploy (migrated 2026-07-04)**: fully automated via `.github/workflows/deploy-pages.yml` —
+  every push to `main` touching `website/**` runs the test gates (engine, horoscope,
+  compat, art themes, weekly sky, profile-save e2e), builds a minified `dist/` with
+  `tools/build.mjs`, and deploys it via the **official GitHub Actions Pages path**
+  (`actions/upload-pages-artifact` → `actions/deploy-pages`; jobs `test → build → deploy`;
+  Pages `build_type=workflow`). There is **no `gh-pages` branch** and **no manual
+  `POST /pages/builds` kick** — the flaky legacy branch builder (which failed with a
+  bare "Page build failed." at v566/v568/v574/v590) was retired. Custom domain
+  (`astroprecise.app`) + HTTPS persist at the Pages level; `dist/` ships CNAME +
+  `.nojekyll` every build. Rollback recipe is in the workflow's header comment.
+- Live URL: `https://astroprecise.app` (apex canonical, www 301s; CNAME in `website/`)
 - Local preview: `./launch.sh` (or `launch.bat` on Windows) from repo root — serves
   `website/` on http://localhost:8790, `PORT` env overrides; `--install` adds a
   Linux desktop launcher
@@ -162,10 +166,15 @@ attached to `window`, one stylesheet, hand-written HTML pages.
   Open-Meteo place-search query (typed place text only — never the birth moment).
 - **Time zones**: convert local→UT via `Intl.DateTimeFormat` two-iteration refinement
   (see `localToUT` in `chart-page.js`) — never hardcode offsets.
-- **Palette (WARM "observatory" — engraved gold on warm void; the live `:root`)**: gold
-  `#C9A227`, gold-light `#EFE3C0`, parchment `#E8E0D0`, silver `#A89E88`, oxblood `#6e1a26`,
-  warm voids `#050406`/`#0D0A07`/`#13100C` (defined in `css/main.css` `:root`). The old COOL
-  values (lapis `#2a4a94`, electric violet `rgba(123,44,191)`, cyan, `#D4AF37`, void `#090b16`)
-  are RETIRED — do not reintroduce them; per-page `:root` overrides + share-card/chart renderers
-  were all unified to warm (2026-06-14).
+- **Palette (COOL VOID + ENGRAVED BRASS — the live tokens, verified 2026-07-02)**:
+  token source of truth is `css/ap-palette-2026.css`; `css/main.css` `:root` maps all
+  legacy vars onto it. Voids `#0C1016` (deep/base) / `#121826` (mid) / `#1A2230` (raised);
+  brass core `#C2A05E`, bright `#CDAE6A`, vivid `#D8B978`, parchment `#ECE6D8`;
+  theme-color `#0C1016` on all indexed pages + manifest. Both earlier palettes are
+  RETIRED from the token system: the original COOL set (lapis `#2a4a94`, violet, cyan,
+  `#D4AF37`) and the 2026-06-14 WARM set (`#C9A227` on `#050406`). Caveat (verified
+  2026-07-02): warm hexes still survive as hardcoded canvas/WebGL/SVG paint colors
+  outside CSS — e.g. `chart-render.js`, `instrument.js`, `orrery-webgl.js`,
+  `tool-cards.js` — so grep before assuming a page is token-pure. Never hardcode hex
+  in new code — use the `--ap-*` tokens; see DESIGN.md.
 - Service worker `sw.js` precaches the shell; bump cache version `V` when changing cached assets.

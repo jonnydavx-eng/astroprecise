@@ -1,5 +1,7 @@
 # AstroPrecise — Legal & Compliance Launch Pack
 
+> **⚠ 2026-07-02 — payment provider changed:** Lemon Squeezy is DROPPED (would not onboard the store). Checkout is now **PayPal direct** — hosted payment links pasted per-SKU into AP_MON (see **PAYPAL-SETUP.md** for setup, VAT notes and guardrails). References to Lemon Squeezy below are historical.
+
 _2026-06-13. The compliance companion to `MONETIZATION.md` (routes), `GROWTH.md` (pricing/GTM) and `LAUNCH.md` (technical push). UK-based operator selling internationally. **Not legal advice** — it's an ordered checklist of what to set up and where the real risk sits; two items (trademark filing, any future paid-advice framing) are worth a solicitor's eye._
 
 ## TL;DR — AstroPrecise is the most launch-ready of the portfolio

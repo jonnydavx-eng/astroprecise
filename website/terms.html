@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="color-scheme" content="dark">
+  <style>html{background:#07070A}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terms of Use | Astro Precise</title>
   <meta name="description" content="Terms of Use for Astro Precise — an informational astronomy/astrology tool. Includes the digital-goods purchase and refund policy." />
@@ -11,16 +13,30 @@
   <meta property="og:title" content="Terms of Use | Astro Precise" />
   <meta property="og:description" content="Terms of Use for Astro Precise — an informational astronomy/astrology tool. Includes the digital-goods purchase and refund policy." />
   <meta property="og:url" content="https://astroprecise.app/terms.html" />
-  <meta property="og:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta property="og:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Photoreal Earth from the AstroPrecise live solar-system model with the line 'You're not one of twelve.'" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Terms of Use | Astro Precise" />
   <meta name="twitter:description" content="Terms of Use for Astro Precise — an informational astronomy/astrology tool. Includes the digital-goods purchase and refund policy." />
-  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-improved.jpg" />
+  <meta name="twitter:image" content="https://astroprecise.app/img/og-banner-silver.jpg" />
   <link rel="preload" href="fonts/cormorant-garamond-normal-400.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/cinzel-normal-600.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fonts/inter-normal-400.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
-  <meta name="theme-color" content="#0C1016" />
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <meta name="theme-color" content="#07070A" />
+  <!-- Standard tier-C chrome (masthead + footer system), mirroring why.html.
+       Links sit BEFORE the page's own <style> so the bespoke legal look wins. -->
+  <link rel="stylesheet" href="css/ap-palette-2026.css" />
+  <link rel="stylesheet" href="css/main-lite.css" />
+  <link rel="stylesheet" href="css/ap-page-bridge.css" />
+  <script src="js/defer-page-css.js" defer></script>
+  <script defer>document.addEventListener('DOMContentLoaded',function(){deferMainCss();});</script>
   <style>
     /* Critical fonts — block display prevents lede/h1 reflow CLS */
     @font-face{font-family:'Cinzel';font-style:normal;font-weight:400;font-display:block;src:url(fonts/cinzel-normal-400.woff2) format('woff2');}
@@ -29,30 +45,31 @@
     @font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;font-display:block;src:url(fonts/cormorant-garamond-normal-600.woff2) format('woff2');}
     @font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400;font-display:block;src:url(fonts/cormorant-garamond-italic-400.woff2) format('woff2');}
     @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:block;src:url(fonts/inter-normal-400.woff2) format('woff2');}
-    :root{ --gold:#C2A05E; --gold-light:#EFE3C0; --ink:#E8E0D0; --dim:#A89E88; --void:#070608; }
+    :root{ --gold:#A8B0BC; --gold-light:#E8EBF0; --ink:#E8E0D0; --dim:#A89E88; --void:#070608; }
     *{box-sizing:border-box;}
-    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#121826 0%,#0C1016 55%,#0C1016 100%);
+    body{margin:0;background:radial-gradient(ellipse 120% 90% at 50% 0%,#121826 0%,#07070A 55%,#07070A 100%);
       color:var(--ink);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.12rem;line-height:1.8;
-      -webkit-font-smoothing:antialiased;padding:0 24px 80px;}
+      -webkit-font-smoothing:antialiased;padding:calc(var(--nav-height,72px) + 12px) 24px 80px;}
     .legal-doc{max-width:720px;margin:0 auto;}
-    .legal-top{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-bottom:1px solid rgba(194, 160, 94,.18);margin-bottom:40px;}
+    .legal-top{display:flex;justify-content:space-between;align-items:center;padding:26px 0;border-bottom:1px solid rgba(168, 176, 188,.18);margin-bottom:40px;}
     .legal-top a{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
     .legal-top a:hover{color:var(--gold-light);}
     .legal-brand{display:flex;align-items:center;gap:9px;}
     .legal-brand span{font-family:'Cinzel',serif;letter-spacing:.28em;color:var(--gold-light);font-size:.9rem;}
-    h1{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light);font-size:clamp(1.6rem,4vw,2.3rem);
-      text-shadow:0 0 34px rgba(194, 160, 94,.18);margin:0 0 6px;min-height:1.2em;contain:layout style;}
+    /* Scoped to .legal-doc so the injected masthead/footer keep site styling */
+    .legal-doc h1{font-family:'Cormorant Garamond',serif;font-weight:600;letter-spacing:.08em;color:var(--gold-light);font-size:clamp(1.6rem,4vw,2.3rem);
+      text-shadow:0 0 34px rgba(168, 176, 188,.18);margin:0 0 6px;min-height:1.2em;contain:layout style;}
     .legal-sub{font-style:italic;color:var(--dim);margin:0 0 36px;min-height:1.5em;}
-    h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;
+    .legal-doc h2{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;
       color:var(--gold);margin:38px 0 12px;display:flex;align-items:center;gap:12px;}
-    h2::before{content:'';flex:0 0 18px;height:1px;background:var(--gold);opacity:.5;}
-    p,li{color:var(--ink);}
-    a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(194, 160, 94,.45);}
-    a:hover{text-decoration-color:var(--gold);}
-    strong{color:var(--gold-light);font-weight:600;}
+    .legal-doc h2::before{content:'';flex:0 0 18px;height:1px;background:var(--gold);opacity:.5;}
+    .legal-doc p,.legal-doc li{color:var(--ink);}
+    .legal-doc a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(168, 176, 188,.45);}
+    .legal-doc a:hover{text-decoration-color:var(--gold);}
+    .legal-doc strong{color:var(--gold-light);font-weight:600;}
     .placeholder{color:#c98e6a;font-family:'Inter',sans-serif;font-size:.85em;}
-    .lede{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(194, 160, 94,.4);padding-left:18px;min-height:12em;contain:layout style;}
-    .callout{border:1px solid rgba(194, 160, 94,.3);background:linear-gradient(135deg,rgba(194, 160, 94,.06),transparent);
+    .lede{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--ink);border-left:2px solid rgba(168, 176, 188,.4);padding-left:18px;min-height:12em;contain:layout style;}
+    .callout{border:1px solid rgba(168, 176, 188,.3);background:linear-gradient(135deg,rgba(168, 176, 188,.06),transparent);
       border-radius:12px;padding:16px 20px;margin:18px 0;}
     .legal-footer,.ap-legal-footer{max-width:720px;margin:0 auto;padding:0 0 48px;text-align:center;min-height:168px;contain:layout style;}
     .ap-social-row{padding:1.25rem 0 0;}
@@ -62,8 +79,8 @@
     .ap-social-row__icons{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;align-items:center;}
     .ap-social-icon{min-width:44px;min-height:44px;width:44px;height:44px;border-radius:10px;background:rgba(14,11,8,0.72);border:1px solid rgba(168,158,136,0.18);display:inline-flex;align-items:center;justify-content:center;color:#9A9084;padding:0;box-sizing:border-box;}
     .ap-social-icon--soon{opacity:0.42;cursor:default;}
-    ul{padding-left:22px;} li{margin-bottom:8px;}
-    .legal-foot{margin-top:54px;padding-top:22px;border-top:1px solid rgba(194, 160, 94,.18);font-size:.92rem;color:var(--dim);}
+    .legal-doc ul{padding-left:22px;} .legal-doc li{margin-bottom:8px;}
+    .legal-foot{margin-top:54px;padding-top:22px;border-top:1px solid rgba(168, 176, 188,.18);font-size:.92rem;color:var(--dim);}
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Terms of Use","description":"Terms of Use for Astro Precise — an informational astronomy/astrology tool. Includes the digital-goods purchase and refund policy.","url":"https://astroprecise.app/terms.html","isPartOf":{"@type":"WebSite","name":"Astro Precise","url":"https://astroprecise.app"},"publisher":{"@type":"Organization","name":"Astro Precise","url":"https://astroprecise.app"}}</script>
@@ -73,6 +90,27 @@
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
     <symbol id="ei-star4" viewBox="0 0 24 24"><path d="M12 3.5 13.7 10l6.5 2-6.5 2L12 20.5 10.3 14l-6.5-2 6.5-2L12 3.5Z"/></symbol>
   </svg>
+
+  <header class="site-header" role="banner">
+    <nav class="navbar" aria-label="Main navigation">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo" aria-label="Astro Precise home">
+          <div class="navbar__logo-icon" aria-hidden="true"><img src="img/logo-mark.svg" alt="" width="32" height="32" /></div>
+          <span class="logo-text">Astro <i class="logo-text__precise">Precise</i></span>
+        </a>
+        <div class="navbar__nav" role="group" aria-label="Primary">
+          <noscript><a href="index.html" class="navbar__link">Home</a><a href="chart.html" class="navbar__link">Chart</a><a href="horoscope.html" class="navbar__link">Daily</a><a href="compatibility.html" class="navbar__link">Match</a><a href="ephemeris.html" class="navbar__link">Sky</a></noscript>
+        </div>
+        <div class="navbar__end">
+          <button class="navbar__toggle" id="nav-toggle" aria-controls="nav-mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <div class="navbar__mobile-menu" id="nav-mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true"></div>
+    </nav>
+  </header>
+
   <main id="main-content" class="legal-doc">
     <div class="legal-top">
       <a class="legal-brand" href="index.html"><span><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> ASTROPRECISE</span></a>
@@ -150,7 +188,13 @@
     <p class="legal-foot">Astro Precise &middot; the sky, read honestly.
       &nbsp;<a href="index.html">Return to the sky</a> &middot; <a href="privacy.html">Privacy Policy</a></p>
   </main>
-  <footer class="legal-footer" role="contentinfo"></footer>
+  <!-- Standard footer system: ap-footer-inject fills .container with the
+       unified footer-nav model; footer-chrome appends the social row. -->
+  <footer class="footer" role="contentinfo">
+    <div class="container"></div>
+  </footer>
   <script src="js/footer-chrome.js" defer></script>
+  <script src="js/ap-page-boot.js" defer></script>
+  <script src="js/ap-footer-inject.js" defer></script>
 </body>
 </html>

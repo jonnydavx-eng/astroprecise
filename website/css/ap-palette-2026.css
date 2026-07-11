@@ -1,185 +1,194 @@
 /* ==========================================================================
-   AstroPrecise — Observatory Palette 2026
-   Canonical color token layer for lite + critical CSS paths.
-   Import first (main-lite.css @import). Legacy --gold / --void alias here.
+   AstroPrecise — Jet · Silver · Aurora (site rebuild 2026-07-09)
+   Research: NASA Eyes · our engine Earth limb · Imagine jet-aurora targets
+   Stage = jet black · metal = silver chrome · life = aurora limb glow
+   Legacy aliases remap gold/brass → silver so old rules recolour sitewide.
    ========================================================================== */
 
 :root {
-  /* ── Void depths (3 tiers) — EPHEMERIS cool blue-black (was warm black) ── */
-  --ap-void-deep:   #0C1016; /* deep blue-black — page canvas (Ephemeris void) */
-  --ap-void-base:   #0C1016; /* base substrate */
-  --ap-void-mid:    #121826; /* night — bands/sections (Ephemeris night) */
-  --ap-void-raised: #1A2230; /* raised plate (Ephemeris night-raised) */
+  /* ── Jet void ── */
+  --ap-jet:           #000000;
+  --ap-jet-soft:      #07070A;
+  --ap-jet-base:      #0A0A0C;
+  --ap-jet-mid:       #101014;
+  --ap-jet-raised:    #18181E;
+  --ap-jet-elevated:  #22222A;
 
-  /* ── Engraved BRASS spectrum (5 stops) — EPHEMERIS brass (was bright gold) ── */
-  --ap-gold-ink:       #6B5836; /* engraved shadow / stroke depth */
-  --ap-gold-shadow:    #8C7544; /* recessed rim */
-  --ap-gold-core:      #C2A05E; /* canonical engraved brass (single hex source) */
-  --ap-gold-bright:    #CDAE6A; /* small UI on void — WCAG AA brass */
-  --ap-gold-vivid:     #D8B978; /* vivid brass — modern punch, AA on void */
-  --ap-gold-parchment: #ECE6D8; /* pale inscription / hero titles — cream */
+  --ap-void-deep:     var(--ap-jet-soft);
+  --ap-void-base:     var(--ap-jet-base);
+  --ap-void-mid:      var(--ap-jet-mid);
+  --ap-void-raised:   var(--ap-jet-raised);
 
-  /* Brass alpha ramps (derived from core 194,160,94) */
-  --ap-gold-a06: rgba(194, 160, 94, 0.06);
-  --ap-gold-a08: rgba(194, 160, 94, 0.08);
-  --ap-gold-a12: rgba(194, 160, 94, 0.12);
-  --ap-gold-a16: rgba(194, 160, 94, 0.16);
-  --ap-gold-a22: rgba(194, 160, 94, 0.22);
-  --ap-gold-a28: rgba(194, 160, 94, 0.28);
-  --ap-gold-a40: rgba(194, 160, 94, 0.40);
-  --ap-gold-a55: rgba(194, 160, 94, 0.55);
+  /* ── Silver metal ── */
+  --ap-silver-bright: #E8EBF0; /* primary text */
+  --ap-silver:        #C8CDD6; /* secondary / metal */
+  --ap-silver-dim:    #8B919C; /* muted UI */
+  --ap-silver-faint:  #5C616A; /* captions */
+  --ap-chrome:        #A8B0BC; /* icons / hairlines */
 
-  /* ── Element accents — muted observatory (not neon seal clash) ── */
-  --ap-element-fire:       #B85A42;
-  --ap-element-fire-glow:  rgba(184, 90, 66, 0.10);
-  --ap-element-earth:      #5A7A48;
-  --ap-element-earth-glow: rgba(90, 122, 72, 0.10);
-  --ap-element-air:        #8A7A6A;
-  --ap-element-air-glow:   rgba(138, 122, 106, 0.09);
-  --ap-element-water:      #4A7580;
-  --ap-element-water-glow: rgba(74, 117, 128, 0.10);
+  --ap-silver-a08: rgba(200, 205, 214, 0.08);
+  --ap-silver-a12: rgba(200, 205, 214, 0.12);
+  --ap-silver-a18: rgba(200, 205, 214, 0.18);
+  --ap-silver-a28: rgba(200, 205, 214, 0.28);
+  --ap-silver-a40: rgba(200, 205, 214, 0.40);
+  --ap-silver-a55: rgba(200, 205, 214, 0.55);
 
-  /* ── Unified observatory atmosphere (shop / chart / horoscope heroes) ── */
-  --ap-obs-violet:   rgba(92, 74, 110, 0.14);
-  --ap-obs-burgundy: rgba(110, 26, 38, 0.12);
-  --ap-obs-violet-strong: rgba(92, 74, 110, 0.22);
+  /* ── Aurora — Earth limb ice (primary accent) ── */
+  --ap-aurora:        #7EC8E8;
+  --ap-aurora-bright: #A8DCF2;
+  --ap-aurora-deep:   #4A9FD4;
+  --ap-aurora-violet: #8B7CE0;
+  --ap-aurora-a10:    rgba(126, 200, 232, 0.10);
+  --ap-aurora-a16:    rgba(126, 200, 232, 0.16);
+  --ap-aurora-a28:    rgba(126, 200, 232, 0.28);
+  --ap-aurora-a40:    rgba(126, 200, 232, 0.40);
 
-  /* ── Instrument panel surfaces ── */
-  --ap-ip-void:         var(--ap-void-deep);
-  --ap-ip-surface:      rgba(22, 28, 42, 0.58);
-  --ap-ip-surface-deep: rgba(16, 21, 32, 0.72);
-  --ap-ip-border:       var(--ap-gold-a12);
-  --ap-ip-border-rim:   var(--ap-gold-a22);
-  --ap-ip-engrave-line: rgba(168, 158, 136, 0.14);
-  --ap-ip-gold:         var(--ap-gold-core);
-  --ap-ip-gold-pale:    #E8E0D0;
-  --ap-ip-silver:       #A89E88;
-  --ap-ip-silver-dim:   #9A9084;
+  /* Cyan alias → aurora (keeps existing --ap-cyan rules) */
+  --ap-cyan:          var(--ap-aurora);
+  --ap-cyan-bright:   var(--ap-aurora-bright);
+  --ap-cyan-dim:      var(--ap-aurora-deep);
+  --ap-cyan-a10:      var(--ap-aurora-a10);
+  --ap-cyan-a16:      var(--ap-aurora-a16);
+  --ap-cyan-a28:      var(--ap-aurora-a28);
+  --ap-cyan-a40:      var(--ap-aurora-a40);
 
-  /* ── Text on void — contrast-tuned (warm parchment, not grey) ── */
-  --ap-text-primary:   #ECE6D8; /* warm cream — Ephemeris ink */
-  --ap-text-secondary: #BEB298; /* warm dim parchment (was greyish #A7A395) */
-  --ap-text-muted:     #A89C84; /* warm muted parchment ≥4.5:1 on void */
-  --ap-text-faint:     #968B74; /* warm faint ≥4.5:1 small caps on void */
+  /* ── Gold tokens REMAPPED → silver/aurora (sitewide recolour) ── */
+  --ap-gold-ink:       #4A5058;
+  --ap-gold-shadow:    #6A7078;
+  --ap-gold-core:      var(--ap-chrome);       /* was brass UI → chrome */
+  --ap-gold-bright:    var(--ap-silver);
+  --ap-gold-vivid:     var(--ap-silver-bright);
+  --ap-gold-parchment: var(--ap-silver-bright);
 
-  /* ── Link & focus — WCAG AA on void-deep ── */
-  --ap-link:         var(--ap-gold-vivid);
-  --ap-link-hover:   var(--ap-gold-parchment);
-  --ap-link-active:  var(--ap-gold-core);
-  --ap-focus-ring:   var(--ap-gold-core);
-  --ap-focus-shadow: 0 0 0 3px var(--ap-gold-a22);
+  --ap-gold-a06: var(--ap-silver-a08);
+  --ap-gold-a08: var(--ap-silver-a08);
+  --ap-gold-a12: var(--ap-silver-a12);
+  --ap-gold-a16: var(--ap-silver-a18);
+  --ap-gold-a22: var(--ap-silver-a28);
+  --ap-gold-a28: var(--ap-silver-a28);
+  --ap-gold-a40: var(--ap-silver-a40);
+  --ap-gold-a55: var(--ap-silver-a55);
 
-  /* ── Primary CTA — terracotta, shared by homepage + inner pages ── */
-  --ap-cta:       #D97B52; /* terracotta fill (matches homepage btn-press) */
-  --ap-cta-hover: #E2895F;
-  --ap-cta-ink:   #1F1206; /* dark espresso text on terracotta — AA ~6:1 */
+  /* Rare sun glint (Sun body / prices only — not chrome) */
+  --ap-sun-glint:      #E8DCC8;
 
-  /* ── Parchment hairlines ── */
-  --ap-hairline: rgba(232, 224, 208, 0.08);
-  --ap-rim-light: rgba(232, 224, 208, 0.16);
+  /* ── Element accents (cool-shifted) ── */
+  --ap-element-fire:       #E07070;
+  --ap-element-fire-glow:  rgba(224, 112, 112, 0.12);
+  --ap-element-earth:      #6A9A70;
+  --ap-element-earth-glow: rgba(106, 154, 112, 0.10);
+  --ap-element-air:        var(--ap-silver);
+  --ap-element-air-glow:   var(--ap-silver-a12);
+  --ap-element-water:      var(--ap-aurora);
+  --ap-element-water-glow: var(--ap-aurora-a16);
 
-  /* ── Living Observatory 2026 — cool-silver accent + depth/light system ── */
-  --ap-silver-cool:     #A6AEB8; /* cool UI accent — warm gold pops against it (AA 9.0:1) */
-  --ap-silver-cool-dim: #8A93A0;
-  --ap-glow-gold:    radial-gradient(ellipse 160% 130% at 50% 22%, rgba(194, 160, 94, 0.10) 0%, transparent 68%);
-  --ap-rim-shadow:   inset 0 1px 0 rgba(239, 227, 192, 0.06);
-  --ap-card-surface: linear-gradient(165deg, rgba(22, 28, 42, 0.62) 0%, rgba(7, 5, 9, 0.40) 100%);
-  --ap-card-border:        rgba(194, 160, 94, 0.16);
-  --ap-card-border-strong: rgba(194, 160, 94, 0.28);
-  --ap-shadow-card:   0 10px 36px rgba(0, 0, 0, 0.32);
-  --ap-shadow-raised: 0 16px 52px rgba(0, 0, 0, 0.40);
-  --gold-vivid:       var(--ap-gold-vivid);
-  --silver-cool:      var(--ap-silver-cool);
+  /* ── Atmosphere ── */
+  --ap-obs-violet:   rgba(100, 90, 180, 0.10);
+  --ap-obs-burgundy: rgba(60, 40, 80, 0.08);
+  --ap-obs-violet-strong: rgba(100, 90, 180, 0.16);
 
-  /* ── Legacy design-system aliases (one gold hex, one void stack) ── */
-  --void:  var(--ap-void-deep);
-  --bg:    var(--ap-void-deep);
-  --bg-2:  var(--ap-void-mid);
-  --bg-3:  var(--ap-void-raised);
+  /* ── Instrument panels (glass on jet) ── */
+  --ap-ip-void:         var(--ap-jet);
+  --ap-ip-surface:      rgba(18, 18, 24, 0.72);
+  --ap-ip-surface-deep: rgba(8, 8, 12, 0.82);
+  --ap-ip-border:       var(--ap-silver-a18);
+  --ap-ip-border-rim:   var(--ap-aurora-a28);
+  --ap-ip-engrave-line: var(--ap-silver-a18);
+  --ap-ip-gold:         var(--ap-chrome);
+  --ap-ip-gold-pale:    var(--ap-silver-bright);
+  --ap-ip-silver:       var(--ap-silver);
+  --ap-ip-silver-dim:   var(--ap-silver-dim);
 
-  --gold:        var(--ap-gold-core);
-  --gold-light:  var(--ap-gold-parchment);
-  --gold-pale:   var(--ap-text-primary);
-  --gold-dim:    var(--ap-gold-a16);
-  --gold-hero:   var(--ap-gold-core);
-  --gold-hero-light: var(--ap-gold-parchment);
-  --gold-bright: var(--ap-gold-bright);
-  --hermetic-gold: var(--ap-gold-core);
+  /* ── Text ── */
+  --ap-text-primary:   var(--ap-silver-bright);
+  --ap-text-secondary: var(--ap-silver);
+  --ap-text-muted:     var(--ap-silver-dim);
+  --ap-text-faint:     var(--ap-silver-faint);
 
-  --white:       var(--ap-text-primary);
-  --silver:      var(--ap-text-secondary);
-  --silver-dim:  var(--ap-text-muted);
-  --silver-dark: var(--ap-text-faint);
+  /* ── Link & focus ── */
+  --ap-link:         var(--ap-aurora);
+  --ap-link-hover:   var(--ap-aurora-bright);
+  --ap-link-active:  var(--ap-silver-bright);
+  --ap-focus-ring:   var(--ap-aurora);
+  --ap-focus-shadow: 0 0 0 3px var(--ap-aurora-a28);
 
-  --border:        var(--ap-gold-a16);
-  --border-2:      var(--ap-gold-a28);
-  --border-glow:   var(--ap-gold-a55);
-  --glass-border:  var(--ap-gold-a16);
+  /* ── CTA — silver aurora gradient ── */
+  --ap-cta:       #6AB0FF;
+  --ap-cta-hover: #8FC4FF;
+  --ap-cta-ink:   #050508;
+  --ap-cta-grad:  linear-gradient(135deg, #4A90E0 0%, #7EC8E8 45%, #C8D8E8 100%);
+
+  /* ── Hairlines ── */
+  --ap-hairline: rgba(232, 235, 240, 0.08);
+  --ap-rim-light: rgba(232, 235, 240, 0.14);
+
+  /* ── Depth / glass ── */
+  --ap-silver-cool:     var(--ap-silver);
+  --ap-silver-cool-dim: var(--ap-silver-dim);
+  --ap-glow-gold:    radial-gradient(ellipse 160% 130% at 50% 22%, var(--ap-aurora-a16) 0%, transparent 68%);
+  --ap-glow-stage:   radial-gradient(ellipse 90% 60% at 70% 40%, var(--ap-aurora-a10) 0%, transparent 55%),
+                     radial-gradient(ellipse 50% 40% at 20% 80%, rgba(139, 124, 224, 0.05) 0%, transparent 50%);
+  --ap-rim-shadow:   inset 0 1px 0 rgba(232, 235, 240, 0.07);
+  --ap-card-surface: linear-gradient(165deg, rgba(24, 24, 32, 0.82) 0%, rgba(8, 8, 12, 0.65) 100%);
+  --ap-card-border:        var(--ap-silver-a18);
+  --ap-card-border-strong: var(--ap-aurora-a28);
+  --ap-shadow-card:   0 12px 40px rgba(0, 0, 0, 0.55);
+  --ap-shadow-raised: 0 20px 60px rgba(0, 0, 0, 0.65);
+  --gold-vivid:       var(--ap-silver-bright);
+  --silver-cool:      var(--ap-silver);
+
+  /* ── Legacy aliases — force jet/silver system ── */
+  --void:  var(--ap-jet-soft);
+  --bg:    var(--ap-jet-soft);
+  --bg-2:  var(--ap-jet-mid);
+  --bg-3:  var(--ap-jet-raised);
+
+  --gold:        var(--ap-chrome);
+  --gold-light:  var(--ap-silver-bright);
+  --gold-pale:   var(--ap-silver-bright);
+  --gold-dim:    var(--ap-silver-a18);
+  --gold-hero:   var(--ap-aurora);
+  --gold-hero-light: var(--ap-silver-bright);
+  --gold-bright: var(--ap-silver);
+  --hermetic-gold: var(--ap-chrome);
+  --brass:       var(--ap-chrome);
+  --brass-bright: var(--ap-silver);
+  --brass-vivid: var(--ap-silver-bright);
+
+  --white:       var(--ap-silver-bright);
+  --silver:      var(--ap-silver);
+  --silver-dim:  var(--ap-silver-dim);
+  --silver-dark: var(--ap-silver-faint);
+
+  --border:        var(--ap-silver-a18);
+  --border-2:      var(--ap-aurora-a28);
+  --border-glow:   var(--ap-aurora-a40);
+  --glass-border:  var(--ap-silver-a18);
 
   --surface:       var(--ap-ip-surface);
   --glass:         var(--ap-ip-surface);
   --glass-bg:      var(--ap-ip-surface);
 
-  --purple: #5C4A6E;
+  --purple: #6A6090;
+  --terracotta: var(--ap-cta);
+  --ink: var(--ap-silver-bright);
+  --ink-faded: var(--ap-silver);
 
-  --color-gold:      var(--ap-gold-core);
-  --color-gold-pale: var(--ap-gold-parchment);
-  --color-gold-light: var(--ap-gold-parchment);
-  --color-silver:    var(--ap-text-secondary);
-  --color-silver-dim: var(--ap-text-muted);
-  --color-white:     var(--ap-text-primary);
+  --color-gold:      var(--ap-chrome);
+  --color-gold-pale: var(--ap-silver-bright);
+  --color-gold-light: var(--ap-silver-bright);
+  --color-silver:    var(--ap-silver);
+  --color-silver-dim: var(--ap-silver-dim);
+  --color-white:     var(--ap-silver-bright);
 
-  /* ══════════════════════════════════════════════════════════════════════
-     DESIGN SYSTEM 2026 — one type / motion / depth / rhythm language.
-     Added in the foundations wave so every page lifts at once; consumed by
-     the shop, charts and instrument overhauls. Pure additions (no existing
-     rule references these), so they change nothing until applied.
-     ══════════════════════════════════════════════════════════════════════ */
+  /* ── Fluid display ── */
+  --display-1: clamp(2.4rem, 1.5rem + 4vw, 4.2rem);
+  --display-2: clamp(1.8rem, 1.3rem + 2.2vw, 2.8rem);
+  --display-3: clamp(1.35rem, 1.15rem + 1vw, 1.9rem);
+  --text-data: clamp(0.85rem, 0.8rem + 0.2vw, 0.95rem);
 
-  /* ── Fluid display scale (Cinzel) + data floor ── */
-  --display-1: clamp(2.6rem, 1.55rem + 4.7vw, 4.6rem);  /* hero titles */
-  --display-2: clamp(1.95rem, 1.35rem + 2.7vw, 3.1rem); /* section heads */
-  --display-3: clamp(1.45rem, 1.18rem + 1.25vw, 2.05rem); /* card / sub heads */
-  --text-data: clamp(0.82rem, 0.78rem + 0.2vw, 0.95rem); /* min legible data/labels */
-
-  /* ── Weight scale (prices & key figures never below semibold) ── */
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
-
-  /* ── Tracking scale ── */
-  --tracking-tight:  -0.012em;
-  --tracking-normal: 0;
-  --tracking-wide:   0.08em;
-  --tracking-caps:   0.22em; /* eyebrows / small-caps */
-
-  /* ── Motion grammar — one easing language (promotes the recurring curve) ── */
-  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-enter:    cubic-bezier(0.16, 1, 0.30, 1);
-  --ease-exit:     cubic-bezier(0.40, 0, 1, 1);
-  --dur-fast: 0.18s;
-  --dur-base: 0.32s;
-  --dur-slow: 0.60s;
-  --reveal-stagger: 70ms;
-
-  /* ── Z-index bands — documented, replaces the literal sprawl (500…99999) ── */
-  --z-base:    0;
-  --z-canvas:  1;
-  --z-grain:   2;
-  --z-content: 10;
-  --z-nav:     100;
-  --z-overlay: 1000;
-  --z-modal:   2000;
-  --z-popover: 3000;
-  --z-toast:   4000;
-
-  /* ── Branded scrim — one intentional overlay recipe (cart / modal / lightbox) ── */
-  --scrim: radial-gradient(125% 125% at 50% 0%, rgba(16, 20, 30, 0.70), rgba(5, 4, 6, 0.84));
-  --scrim-blur: blur(7px);
-
-  /* ── Section rhythm — single vertical-rhythm source ── */
-  --section-pad-y:       clamp(3.5rem, 2.4rem + 5vw, 7rem);
-  --section-pad-y-tight: clamp(2.25rem, 1.8rem + 2.2vw, 4rem);
 }
-

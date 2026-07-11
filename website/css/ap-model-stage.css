@@ -1,0 +1,705 @@
+/**
+ * Astro Precise — Model-first Jet · Silver · Aurora stage
+ * Research: NASA Eyes · engine Earth · target-jet-aurora-*.jpg
+ * 3D owns the stage; UI is silver glass on jet black.
+ */
+
+html {
+  background: var(--ap-jet, #000) !important;
+  color-scheme: dark;
+}
+body,
+body.ap-enchanted,
+body.page-chart,
+body.page-horoscope,
+body.page-shop,
+body.page-instrument,
+body.page-compat,
+body.ap-moment-page,
+body.ap-mysky-page,
+body.ap-no-nav-enter,
+body.ap-award-511,
+body.page-explore {
+  background-color: var(--ap-jet-soft, #07070A) !important;
+  background-image:
+    radial-gradient(ellipse 85% 55% at 72% 42%, rgba(126, 200, 232, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 15% 80%, rgba(139, 124, 224, 0.04) 0%, transparent 50%) !important;
+  background-attachment: fixed;
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+}
+
+/* True jet behind home/explore orrery */
+body.ap-award-511,
+body.page-explore {
+  background-color: #000 !important;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 58% 48%, rgba(126, 200, 232, 0.05) 0%, transparent 50%) !important;
+}
+
+body.ap-award-511::after,
+body.page-explore::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse 75% 70% at 55% 48%, transparent 30%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* ── Glass chrome — jet frost + silver hairline ── */
+body .site-header,
+body.ap-award-511 .masthead,
+body .masthead {
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(18px) saturate(1.15) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.15) !important;
+  border-bottom: 1px solid rgba(200, 205, 214, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+body .navbar__link,
+body .contents-nav a {
+  color: var(--ap-silver-dim, #8B919C) !important;
+}
+body .navbar__link:hover,
+body .navbar__link.is-active,
+body .navbar__link[aria-current="page"],
+body .contents-nav a:hover,
+body .contents-nav a[aria-current="page"] {
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+body .logo-text,
+body .masthead-logo .logo-text {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+}
+
+body .site-footer,
+body footer.site-footer,
+body .ap-footer {
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.95) 28%) !important;
+  border-top: 1px solid rgba(200, 205, 214, 0.1) !important;
+  color: var(--ap-silver, #C8CDD6) !important;
+}
+body .site-footer a,
+body footer.site-footer a {
+  color: var(--ap-silver-dim, #8B919C) !important;
+}
+body .site-footer a:hover {
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+
+/* ── HOME stacked: [model bay] then [cast form] — never overlap (user shots) ──
+   DOM: .page-wrap > .hero-copy + .hero-solar-stage  → reorder with flex order */
+body.ap-award-511 #heroChapter {
+  min-height: auto !important;
+  height: auto !important;
+  position: relative !important;
+  overflow: visible !important;
+  background: #000 !important;
+  display: block !important;
+  padding: 0 !important;
+  align-items: stretch !important;
+}
+body.ap-award-511 #heroChapter .page-wrap.hero-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  position: relative !important;
+  z-index: 2 !important;
+  pointer-events: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+/* Model bay first — v683: short enough that cast dock PEEKS first viewport
+   (expert audit: formTop was 961@900 → fully below fold). */
+body.ap-award-511 #heroChapter .hero-solar-stage {
+  order: 1 !important;
+  position: relative !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: min(48vh, 480px) !important;
+  min-height: 300px !important;
+  max-height: 520px !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  margin: 0 !important;
+}
+body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  position: absolute !important;
+  left: 50% !important;
+  top: 46% !important; /* slight lift so Earth sits above the dock peek */
+  transform: translate(-50%, -50%) !important;
+  width: min(52vh, 520px) !important;
+  max-width: min(86vw, 560px) !important;
+  z-index: 2 !important;
+  filter:
+    drop-shadow(0 0 100px rgba(126, 200, 232, 0.2))
+    drop-shadow(0 28px 70px rgba(0, 0, 0, 0.75));
+}
+body.ap-award-511 #heroChapter .ap-award-orrery-frame {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+/* Form dock second — compact peek under model (never covers Earth centre) */
+body.ap-award-511 #heroChapter .hero-copy {
+  order: 2 !important;
+  position: relative !important;
+  max-width: min(480px, 94vw) !important;
+  width: calc(100% - 2rem) !important;
+  margin: 0.35rem auto 1rem !important;
+  z-index: 6 !important;
+  pointer-events: auto !important;
+  padding: 0.75rem 1.05rem 0.85rem !important;
+  border-radius: 16px !important;
+  text-align: center !important;
+  background: linear-gradient(165deg, rgba(16,16,22,0.95), rgba(0,0,0,0.88)) !important;
+  border: 1px solid rgba(200, 205, 214, 0.22) !important;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(232, 235, 240, 0.06) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+body.ap-award-511 #heroChapter .hero-copy h1,
+body.ap-award-511 #heroChapter .hero-copy .display {
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem) !important;
+  line-height: 1.12 !important;
+  margin: 0.15rem 0 0.3rem !important;
+}
+body.ap-award-511 #heroChapter .hero-copy .standfirst,
+body.ap-award-511 #heroChapter .hero-copy .hero-why-lead {
+  font-size: 0.88rem !important;
+  line-height: 1.4 !important;
+  margin: 0.25rem auto 0.5rem !important;
+  max-width: 36ch !important;
+}
+/* Hide long secondary chrome in the dock so date + CTA fit the peek */
+body.ap-award-511 #heroChapter .hero-copy .hero-form-note,
+body.ap-award-511 #heroChapter .hero-copy .hero-action-chips {
+  display: none !important;
+}
+body.ap-award-511 #heroChapter .hero-copy .hero-solar-trust {
+  margin-top: 0.35rem !important;
+  font-size: 0.72rem !important;
+  gap: 0.35rem !important;
+}
+body.ap-award-511 #heroChapter .hero-copy .hero-form-row,
+body.ap-award-511 #heroChapter .hero-action-chips,
+body.ap-award-511 #heroChapter .hero-solar-trust {
+  justify-content: center !important;
+}
+body.ap-award-511 #heroChapter .hero-copy .ui-label,
+body.ap-award-511 #heroChapter .hero-copy label {
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+}
+body.ap-award-511 #heroChapter .ap-orrery-deck,
+body.ap-award-511 #heroChapter .orrery-deck {
+  order: 3 !important;
+  position: relative !important;
+  z-index: 4 !important;
+  width: 100% !important;
+}
+body.ap-award-511 #heroChapter h1 {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.7);
+}
+body.ap-award-511 #heroChapter .hero-copy p {
+  color: var(--ap-silver, #C8CDD6) !important;
+}
+body.ap-award-511 #heroChapter .hero-copy em,
+body.ap-award-511 #heroChapter .hero-copy i,
+body.ap-award-511 #heroChapter .hero-copy .accent,
+body.ap-award-511 .display-accent,
+body.ap-award-511 #heroChapter .display-accent {
+  color: var(--ap-aurora, #7EC8E8) !important;
+  font-style: italic;
+}
+body.ap-award-511 .hero-live-pill {
+  border-color: rgba(126, 200, 232, 0.35) !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+body.ap-award-511 .hero-live-pill__dot {
+  background: var(--ap-aurora, #7EC8E8) !important;
+  box-shadow: 0 0 10px rgba(126, 200, 232, 0.65) !important;
+}
+body.ap-award-511 .ap-orrery-deck,
+body.ap-award-511 .orrery-deck,
+body.ap-award-511 [class*="orrery-deck"] {
+  background: rgba(0, 0, 0, 0.82) !important;
+  border: 1px solid rgba(200, 205, 214, 0.14) !important;
+  backdrop-filter: blur(14px) !important;
+  box-shadow: 0 -10px 48px rgba(0, 0, 0, 0.55) !important;
+  border-radius: 14px 14px 0 0;
+}
+body.ap-award-511 #heroChapter input,
+body.ap-award-511 #heroChapter select {
+  background: rgba(0, 0, 0, 0.75) !important;
+  border-color: rgba(200, 205, 214, 0.22) !important;
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+}
+body.ap-award-511 #heroChapter label {
+  color: var(--ap-silver-dim, #8B919C) !important;
+}
+
+/* Masthead dateline / rules — silver */
+body.ap-award-511 .masthead-rule,
+body.ap-award-511 .dateline {
+  color: var(--ap-silver-dim, #8B919C) !important;
+  border-color: rgba(200, 205, 214, 0.15) !important;
+}
+body.ap-award-511 .dateline {
+  color: var(--ap-silver-dim, #8B919C) !important;
+}
+
+/* ── CTAs — silver aurora ── */
+body .btn-press,
+body.ap-award-511 .btn-press,
+body.ap-award-511 #heroChapter .btn-press,
+body .btn--primary,
+body a.btn-primary {
+  background: linear-gradient(135deg, #4A90E0 0%, #7EC8E8 48%, #C8D8E8 100%) !important;
+  color: #050508 !important;
+  box-shadow: 0 6px 28px rgba(126, 200, 232, 0.28) !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+/* ── Inner tools ── */
+body.page-chart .chart-form-card,
+body .mysky-card,
+body .ap-ev,
+body.page-shop .shopc-card,
+body.page-horoscope .sign-card {
+  border-color: rgba(200, 205, 214, 0.16) !important;
+}
+
+body.page-chart .chart-hero,
+body.page-shop .shop-hero,
+body.page-horoscope .horoscope-hero,
+body.ap-moment-page .mom-hero {
+  position: relative;
+  isolation: isolate;
+}
+body.page-chart .chart-hero::before,
+body.page-shop .shop-hero::before,
+body.page-horoscope .horoscope-hero::before,
+body.ap-moment-page .mom-hero::before {
+  content: "";
+  position: absolute;
+  /* No horizontal bleed: -5% side inset pushed body scrollWidth to ~105vw on
+     phones (moment measured 410 at 390). Glow ellipses sit inside anyway. */
+  inset: -10% 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 50% 65% at 88% 35%, rgba(126, 200, 232, 0.1), transparent 58%),
+    radial-gradient(ellipse 40% 50% at 8% 75%, rgba(139, 124, 224, 0.06), transparent 55%);
+  pointer-events: none;
+}
+
+body.page-chart .chart-form-card {
+  background: linear-gradient(165deg, rgba(18, 18, 26, 0.9), rgba(0, 0, 0, 0.78)) !important;
+  border: 1px solid rgba(200, 205, 214, 0.18) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(14px);
+  border-radius: 16px !important;
+}
+body.page-chart .chart-form-card a,
+body.page-chart .form-hint a,
+body.page-chart .chart-form__optional-sum,
+body.page-chart summary {
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+body.page-chart h1,
+body.page-shop h1,
+body.page-horoscope h1 {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+}
+
+/* Engine strip */
+body .ap-ev__eyebrow { color: var(--ap-aurora, #7EC8E8) !important; }
+body .ap-ev__title { color: var(--ap-silver-bright, #E8EBF0) !important; }
+body .ap-ev-card {
+  border-color: rgba(200, 205, 214, 0.16) !important;
+  background: rgba(8, 8, 12, 0.92) !important;
+  border-radius: 12px !important;
+}
+body .ap-ev-card:hover {
+  border-color: rgba(126, 200, 232, 0.45) !important;
+  box-shadow: 0 8px 28px rgba(126, 200, 232, 0.1) !important;
+}
+body .ap-ev__btn--primary {
+  background: linear-gradient(135deg, #4A90E0, #7EC8E8) !important;
+  color: #050508 !important;
+}
+body .ap-ev__btn--ghost {
+  border-color: rgba(126, 200, 232, 0.4) !important;
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+body .ap-ev-cinema {
+  border-radius: 16px !important;
+  border: 1px solid rgba(200, 205, 214, 0.16) !important;
+}
+
+/* My Sky */
+body.ap-mysky-page .mysky-card {
+  background: linear-gradient(165deg, rgba(18, 18, 26, 0.88), rgba(0, 0, 0, 0.72)) !important;
+  border-color: rgba(200, 205, 214, 0.18) !important;
+  border-radius: 16px !important;
+}
+body.ap-mysky-page .mysky-hero h1 {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+}
+body.ap-mysky-page .mysky-cta--primary {
+  background: linear-gradient(135deg, #4A90E0, #A8DCF2) !important;
+  color: #050508 !important;
+}
+body.ap-mysky-page .mysky-cta--ghost {
+  border-color: rgba(126, 200, 232, 0.4) !important;
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+
+body .ap-float-nav,
+body .tools-chip,
+body #tools-fab,
+body .ap-bottom-tabs,
+body .bottom-nav {
+  border-color: rgba(200, 205, 214, 0.18) !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(14px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  color: var(--ap-silver, #C8CDD6) !important;
+}
+
+body.ap-award-511 .instruments-card,
+body.ap-award-511 .dept-list-item,
+body.ap-award-511 .ap-spine-card {
+  background: linear-gradient(165deg, rgba(18, 18, 26, 0.8), rgba(0, 0, 0, 0.6)) !important;
+  border: 1px solid rgba(200, 205, 214, 0.14) !important;
+  border-radius: 14px !important;
+}
+
+body .price,
+body .shop-price {
+  color: var(--ap-sun-glint, #E8DCC8) !important;
+}
+
+body :focus-visible {
+  outline: 2px solid var(--ap-aurora, #7EC8E8) !important;
+  outline-offset: 2px;
+}
+
+/* ── Sign pages · daily · sky · guides — jet stage language ── */
+body.page-sign,
+body.page-ephemeris,
+body.page-guides,
+body.page-compat,
+body.page-quiz,
+body.page-explore {
+  background-color: var(--ap-jet-soft, #07070A) !important;
+}
+body.page-sign .sign-hero,
+body.page-ephemeris .ephemeris-hero,
+body .sign-hero {
+  position: relative;
+  isolation: isolate;
+}
+body.page-sign .sign-hero::before,
+body .sign-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 55% 60% at 80% 30%, rgba(126, 200, 232, 0.1), transparent 55%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(139, 124, 224, 0.05), transparent 50%);
+  pointer-events: none;
+}
+
+/* Chart precision bar → aurora */
+body.page-chart .precision-bar,
+body.page-chart [class*="precision"] meter,
+body.page-chart progress,
+body.page-chart .chart-precision__fill,
+body.page-chart .precision-track > span,
+body.page-chart .precision-fill {
+  background: linear-gradient(90deg, #4A90E0, #7EC8E8) !important;
+  border-color: rgba(126, 200, 232, 0.35) !important;
+  accent-color: #7EC8E8 !important;
+}
+
+/* Shop product cards silver frame */
+body.page-shop .shopc-card,
+body.page-shop .shop-card {
+  border-color: rgba(200, 205, 214, 0.16) !important;
+  background: linear-gradient(165deg, rgba(18, 18, 26, 0.88), rgba(0, 0, 0, 0.7)) !important;
+}
+body.page-shop .shop-hero h1,
+body.page-shop .shopc-section-title {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+}
+
+/* Navbar sitewide glass jet */
+body .navbar,
+body header.site-header,
+body .site-header .navbar {
+  background: rgba(0, 0, 0, 0.78) !important;
+  border-bottom-color: rgba(200, 205, 214, 0.12) !important;
+}
+
+/* Compatibility / forms */
+body.page-compat .card,
+body.page-compat .compat-card {
+  border-color: rgba(200, 205, 214, 0.16) !important;
+  background: linear-gradient(165deg, rgba(18, 18, 26, 0.85), rgba(0, 0, 0, 0.65)) !important;
+}
+
+/* Hard-hex brass leftovers → silver (common inline/old rules) */
+body [style*="#A8B0BC"],
+body [style*="#7EC8E8"] {
+  /* can't fix inline easily; covered by SVG CSS above */
+}
+
+@media (max-width: 900px) {
+  body.ap-award-511 #heroChapter .hero-solar-stage {
+    height: min(44vh, 400px) !important;
+    min-height: 260px !important;
+  }
+  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+    width: min(58vw, 320px) !important;
+    top: 44% !important;
+  }
+  body.ap-award-511 #heroChapter .hero-copy {
+    width: calc(100% - 1.25rem) !important;
+    margin: 0.25rem auto 0.85rem !important;
+    padding: 0.7rem 0.9rem !important;
+  }
+  body.ap-award-511 #heroChapter .hero-copy .standfirst {
+    font-size: 0.84rem !important;
+  }
+}
+
+/* ── Home body: kill black voids (user full-page shots) ── */
+body.ap-award-511 .ap-chapter,
+body.ap-award-511 .department.ap-chapter {
+  background-color: #07070A !important;
+  color: #E8EBF0 !important;
+  padding-block: clamp(2.5rem, 5vw, 4rem) !important;
+  min-height: 0 !important;
+}
+body.ap-award-511 .ap-chapter-title,
+body.ap-award-511 .ap-chapter h2 {
+  color: #E8EBF0 !important;
+  opacity: 1 !important;
+}
+/* Library / sign tiles — never empty black discs (bug shot full-page voids) */
+body.ap-award-511 #libraryChapter .sign-index-entry,
+body.ap-award-511 #libraryChapter .sign-tile,
+body.ap-award-511 .sign-index-entry {
+  background: linear-gradient(165deg, rgba(18, 18, 26, 0.9), rgba(8, 8, 12, 0.85)) !important;
+  border: 1px solid rgba(200, 205, 214, 0.16) !important;
+  color: #E8EBF0 !important;
+  min-height: 4.5rem !important;
+}
+body.ap-award-511 #libraryChapter .sign-glyph,
+body.ap-award-511 #libraryChapter [data-celestial-seal],
+body.ap-award-511 #libraryChapter img {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+body.ap-award-511 #libraryChapter .sign-index-entry span,
+body.ap-award-511 #libraryChapter .sign-name {
+  color: #C8CDD6 !important;
+  opacity: 1 !important;
+}
+body.ap-award-511 .dept-list-item,
+body.ap-award-511 .instruments-card {
+  background: linear-gradient(165deg, rgba(18, 18, 26, 0.85), rgba(0, 0, 0, 0.65)) !important;
+  border: 1px solid rgba(200, 205, 214, 0.14) !important;
+  color: #E8EBF0 !important;
+}
+body.ap-award-511 .ap-chapter-lead,
+body.ap-award-511 .ap-chapter p {
+  color: #C8CDD6 !important;
+  opacity: 1 !important;
+}
+body.ap-award-511 .ap-display-kicker {
+  color: #7EC8E8 !important;
+  opacity: 1 !important;
+}
+body.ap-award-511 .dept-list-item,
+body.ap-award-511 .dept-list > li {
+  background: linear-gradient(165deg, rgba(20, 20, 28, 0.9), rgba(0, 0, 0, 0.7)) !important;
+  border: 1px solid rgba(200, 205, 214, 0.16) !important;
+  border-radius: 14px !important;
+  margin-bottom: 0.65rem !important;
+}
+body.ap-award-511 .dept-title,
+body.ap-award-511 .dept-list-dek {
+  color: #E8EBF0 !important;
+  opacity: 1 !important;
+}
+body.ap-award-511 .dept-list-dek {
+  color: #C8CDD6 !important;
+}
+body.ap-award-511 .dept-number {
+  color: #7EC8E8 !important;
+}
+/* Kill mid-page / sticky email on model + tool pages (user screenshot audit) */
+body.ap-award-511 .ap-email-cta--sticky,
+body.page-home .ap-email-cta--sticky,
+body.page-explore .ap-email-cta--sticky,
+body.page-chart .ap-email-cta--sticky,
+body.page-horoscope .ap-email-cta--sticky,
+body.page-instrument .ap-email-cta--sticky,
+body.page-shop .ap-email-cta--sticky,
+body.ap-mysky-page .ap-email-cta--sticky,
+body.ap-moment-page .ap-email-cta--sticky,
+body.has-email-sticky .ap-email-cta--sticky {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(120%) !important;
+}
+/* Explore: never let a banner sit under the live stage */
+body.page-explore .explore-stage ~ .ap-email-cta,
+body.page-explore main > .ap-email-cta--banner,
+body.page-explore main .ap-email-cta--banner {
+  display: none !important;
+}
+/* Daily: no email bar through the sign grid — keep only collapsed details + footer */
+body.page-horoscope main > .ap-email-cta--banner,
+body.page-horoscope .sphere-hero ~ .ap-email-cta--sticky {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .ap-ev-card:hover { transform: none; }
+}
+
+
+/* ── Expert polish pass: residual warm accents ── */
+body.ap-award-511 #heroChapter .hero-copy h1 em,
+body.ap-award-511 #heroChapter .hero-copy h1 i,
+body.ap-award-511 #heroChapter .hero-copy h1 span[style],
+body.ap-award-511 #heroChapter .hero-copy .display-line--accent,
+body.ap-award-511 #heroChapter .hero-copy .lede em {
+  color: var(--ap-aurora, #7EC8E8) !important;
+  -webkit-text-fill-color: var(--ap-aurora, #7EC8E8) !important;
+  background: none !important;
+  font-style: italic;
+}
+
+/* Sign seals + motto: silver/aurora chrome (not museum gold) */
+body .sign-astro__seal,
+body .sign-hero__seal,
+body .sign-hero__glyph,
+body .sign-seal,
+body [class*="sign-seal"] {
+  color: var(--ap-aurora, #7EC8E8) !important;
+  filter: drop-shadow(0 0 12px rgba(126, 200, 232, 0.25));
+}
+body .sign-hero__motto,
+body .sign-hero__quote,
+body .sign-hero em {
+  color: var(--ap-silver, #C8CDD6) !important;
+}
+body .sign-hero__dates {
+  color: var(--ap-silver-dim, #8B919C) !important;
+}
+body .sign-hero__constellation svg [stroke] {
+  stroke: var(--ap-chrome, #A8B0BC) !important;
+}
+
+/* Chart accuracy callouts */
+body.page-chart .ap-time-accuracy,
+body.page-chart .ap-time-accuracy strong {
+  color: var(--ap-silver, #C8CDD6) !important;
+  border-color: rgba(126, 200, 232, 0.25) !important;
+}
+body.page-chart .ap-time-accuracy strong:first-child {
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+
+/* Explore legend jet glass */
+body.page-explore .explore-legend {
+  background: rgba(0, 0, 0, 0.82) !important;
+  border-color: rgba(200, 205, 214, 0.18) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+/* Shop product chrome jet (UI only — art files may still show gold frames) */
+body.page-shop .shopc-card__name,
+body.page-shop .shopc-card__price,
+body.page-shop .shop-hero-lede,
+body.page-shop .shop-section-title {
+  color: var(--ap-silver-bright, #E8EBF0) !important;
+}
+body.page-shop .shopc-card__art {
+  border-color: rgba(200, 205, 214, 0.14) !important;
+  box-shadow: inset 0 0 0 1px rgba(126, 200, 232, 0.06) !important;
+}
+body.page-shop .disclosure-banner,
+body.page-shop .shop-path {
+  border-color: rgba(200, 205, 214, 0.16) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Sign hero motto + dates silver system */
+body .sign-hero__motto,
+body .sign-hero__keyword,
+body .sign-hero [class*="motto"] {
+  color: var(--ap-silver, #C8CDD6) !important;
+}
+body .sign-hero__dates {
+  color: var(--ap-silver-dim, #8B919C) !important;
+  letter-spacing: 0.14em;
+}
+/* Seal plate on jet */
+body .ap-seal__plate {
+  background:
+    radial-gradient(ellipse 80% 70% at 35% 28%, rgba(255,255,255,0.08), transparent 50%),
+    radial-gradient(ellipse 100% 100% at 50% 100%, #0a0a0c, #000) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(168, 176, 188, 0.35),
+    inset 0 -3px 8px rgba(0,0,0,0.55),
+    0 2px 8px rgba(0,0,0,0.5),
+    0 0 16px -4px rgba(126, 200, 232, 0.12) !important;
+}
+
+/* Seal SVGs recolored silver; element glow only (no hue distortion) */
+body .sign-hero__glyph .ap-seal,
+body .sign-hero__seal .ap-seal,
+body .home-sign-card__seal .ap-seal {
+  filter: drop-shadow(0 0 12px rgba(168, 176, 188, 0.35)) !important;
+}
+body[data-element="fire"] .sign-hero__glyph .ap-seal,
+body[data-element="fire"] .sign-hero__seal .ap-seal {
+  filter: drop-shadow(0 0 14px rgba(224, 112, 112, 0.4)) !important;
+}
+body[data-element="water"] .sign-hero__glyph .ap-seal,
+body[data-element="water"] .sign-hero__seal .ap-seal {
+  filter: drop-shadow(0 0 14px rgba(126, 200, 232, 0.4)) !important;
+}
+body[data-element="air"] .sign-hero__glyph .ap-seal,
+body[data-element="air"] .sign-hero__seal .ap-seal {
+  filter: drop-shadow(0 0 12px rgba(200, 205, 214, 0.4)) !important;
+}
+body[data-element="earth"] .sign-hero__glyph .ap-seal,
+body[data-element="earth"] .sign-hero__seal .ap-seal {
+  filter: drop-shadow(0 0 12px rgba(106, 154, 112, 0.35)) !important;
+}
+body .sign-hero__keyword {
+  color: var(--ap-silver, #C8CDD6) !important;
+  font-style: italic;
+}
