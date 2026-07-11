@@ -1,6 +1,6 @@
 # STATUS — AstroPrecise · 2026-07-11
 
-**State:** **LIVE public site** https://astroprecise.app · local preview :8790. Shell now at **ap-v706** (2026-07-11 audit: observatory lens UTC/square/reduced-motion/keyboard fixes, honesty fallback, a11y de-nesting, SW dead-backup precache trim). Prior tip ap-v702→v705 (structure clean, Earth rest frame, True-Time engine sync from OrbitLab, bottom nav / daily slim, 3D disc sizing). Narrative spine + first-paint fixes from early July still in the base. Checkout for paid Deep Reading remains **dormant** until owner sets real purchase URLs.
+**State:** **LIVE public site** https://astroprecise.app · local preview :8790. Shell now at **ap-v707** (2026-07-11: recovered the lost "look through the lens" observatory plan, retired the wrong lighthouse overture, elevated `observatory.html` to the masterclass — iris/portal threshold + dive hand-off — and wired it in as the standalone Enter-the-Observatory page; plan durably recorded in `docs/OBSERVATORY-LOOK-THROUGH-2026-07-11.md`. Earlier: v706 audit — observatory lens UTC/square/reduced-motion/keyboard fixes, honesty fallback, a11y de-nesting, SW dead-backup precache trim). Prior tip ap-v702→v705 (structure clean, Earth rest frame, True-Time engine sync from OrbitLab, bottom nav / daily slim, 3D disc sizing). Narrative spine + first-paint fixes from early July still in the base. Checkout for paid Deep Reading remains **dormant** until owner sets real purchase URLs.
 
 ## Stack / agents
 - Canonical: `C:\Users\jonny\OneDrive\astroprecise` · site in `website/`

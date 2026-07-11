@@ -37,7 +37,8 @@
     body{ overflow:hidden; }
 
     /* ── The vista (fixed full-viewport, warm twilight) ─────────── */
-    .obs-scene{ position:fixed; inset:0; z-index:1; overflow:hidden; }
+    .obs-scene{ position:fixed; inset:0; z-index:1; overflow:hidden;
+      animation:obs-arrive var(--obs-arrive) cubic-bezier(.2,.7,.2,1) both; will-change:transform,opacity; }
     .obs-sky{ position:absolute; inset:0; width:100%; height:100%; display:block; }
     /* decorative star canvas over the sky gradient, below the ridges */
     #obs-stars{ position:absolute; inset:0; width:100%; height:100%; z-index:2;
@@ -72,10 +73,24 @@
     .obs-lens-clip{ position:absolute; inset:11px; border-radius:50%; overflow:hidden;
       background:radial-gradient(circle at 50% 44%, #101a2e 0%, #0a0f1c 55%, #05060a 100%); }
     #obs-lens{ position:absolute; inset:0; width:100%; height:100%; display:block;
-      opacity:0; transition:opacity 700ms ease; }
+      opacity:0; clip-path:circle(9% at 50% 50%);
+      transition:opacity 520ms ease, clip-path var(--obs-iris) var(--obs-iris-ease); }
+    /* the aperture ring that blooms outward as the lens opens (the threshold flash) */
+    .obs-iris{ position:absolute; inset:11px; z-index:4; border-radius:50%; pointer-events:none;
+      border:1.5px solid rgba(233,200,120,0.0); opacity:0; }
+    body.obs-open .obs-iris{ animation:obs-iris-bloom var(--obs-iris) var(--obs-iris-ease); }
+    /* engraved corner ticks — the Model-Window museum-plate language around the lens */
+    .obs-tick{ position:absolute; width:13px; height:13px; z-index:5; pointer-events:none;
+      border:0 solid var(--obs-hair); opacity:0.7; }
+    .obs-tick--tl{ left:-7px;  top:-7px;    border-left-width:1.5px;  border-top-width:1.5px; }
+    .obs-tick--tr{ right:-7px; top:-7px;    border-right-width:1.5px; border-top-width:1.5px; }
+    .obs-tick--bl{ left:-7px;  bottom:-7px; border-left-width:1.5px;  border-bottom-width:1.5px; }
+    .obs-tick--br{ right:-7px; bottom:-7px; border-right-width:1.5px; border-bottom-width:1.5px; }
+    body.obs-open .obs-tick{ opacity:0.95; border-color:rgba(233,200,120,0.6); transition:opacity .6s ease, border-color .6s ease; }
     /* faint crosshair reticle before you look through */
     .obs-reticle{ position:absolute; inset:0; z-index:2; pointer-events:none;
-      opacity:0.5; transition:opacity 600ms ease; }
+      opacity:0.5; transform-origin:50% 50%;
+      transition:opacity 600ms ease, transform var(--obs-iris) var(--obs-iris-ease); }
     .obs-reticle::before,.obs-reticle::after{ content:""; position:absolute; background:var(--obs-hair); }
     .obs-reticle::before{ left:50%; top:14%; bottom:14%; width:1px; transform:translateX(-.5px); }
     .obs-reticle::after{ top:50%; left:14%; right:14%; height:1px; transform:translateY(-.5px); }
@@ -83,15 +98,20 @@
     .obs-eyepiece::after{ content:""; position:absolute; inset:11px; border-radius:50%; z-index:3;
       pointer-events:none; background:radial-gradient(circle at 36% 30%, rgba(255,240,210,0.10), transparent 42%);
       mix-blend-mode:screen; }
+    /* breathing brass halo — draws the eye to the lens before you look through */
+    .obs-eyepiece::before{ content:""; position:absolute; inset:-4px; border-radius:50%; z-index:-1;
+      pointer-events:none; box-shadow:0 0 34px 5px rgba(201,162,74,0.10);
+      animation:obs-breathe 5.2s ease-in-out infinite; }
 
     /* looked-through state */
     body.obs-open .obs-eyepiece{ transform:scale(1.06); cursor:default;
       box-shadow:0 0 0 2px rgba(10,9,12,0.9),0 0 0 3px var(--obs-hair),0 0 0 12px #141013,
         0 0 0 13px rgba(201,162,74,0.4),0 0 0 22px #0d0a0e,0 0 90px 8px rgba(201,162,74,0.10),
         0 26px 70px -18px rgba(0,0,0,0.85),inset 0 0 60px 8px rgba(0,0,0,0.85); }
-    body.obs-open #obs-lens{ opacity:1; }
-    body.obs-open .obs-reticle{ opacity:0; }
-    body.obs-open .obs-scene{ filter:blur(2px) brightness(0.72); transition:filter 900ms ease; }
+    body.obs-open #obs-lens{ opacity:1; clip-path:circle(72% at 50% 50%); }
+    body.obs-open .obs-reticle{ opacity:0; transform:rotate(45deg) scale(1.3); }
+    body.obs-open .obs-scene{ filter:blur(2px) brightness(0.62) saturate(0.9); transition:filter 900ms ease; }
+    body.obs-open .obs-eyepiece::before{ opacity:0; animation:none; }
 
     /* ── Caption plate (IBM Plex Mono, museum language) ─────────── */
     .obs-plate{ font-family:var(--obs-mono); font-size:11px; letter-spacing:0.12em;
@@ -144,13 +164,45 @@
     .obs-copy--through{ display:none; flex-direction:column; align-items:center; gap:clamp(10px,2vh,16px); }
     body.obs-open .obs-copy--through{ display:flex; }
 
+    /* ── cinematic keyframes ─────────────────────────────────────── */
+    @keyframes obs-arrive{
+      0%{ transform:scale(1.06) translateY(1.2%); opacity:0; filter:brightness(0.6); }
+      100%{ transform:none; opacity:1; filter:none; }
+    }
+    @keyframes obs-breathe{ 0%,100%{ opacity:0.55; } 50%{ opacity:1; } }
+    @keyframes obs-iris-bloom{
+      0%{ transform:scale(0.24); opacity:0; border-color:rgba(233,200,120,0.9); }
+      55%{ opacity:0.85; }
+      100%{ transform:scale(1.06); opacity:0; border-color:rgba(233,200,120,0); }
+    }
+    @keyframes obs-dome-lamp{ 0%,100%{ opacity:0.42; } 50%{ opacity:0.9; } }
+    .obs-dome-lamp{ animation:obs-dome-lamp 3.4s ease-in-out infinite; transform-origin:center; }
+
+    /* ── the dive: step THROUGH the lens into the live model ──────── */
+    .obs-warp{ position:fixed; inset:0; z-index:8; pointer-events:none; opacity:0;
+      background:radial-gradient(circle at 50% 46%, transparent 0%, transparent 30%, #05040a 72%);
+      transition:opacity var(--obs-dive) ease-in; }
+    body.is-entering .obs-warp{ opacity:1; }
+    body.is-entering .obs-eyepiece{ transform:scale(7) !important;
+      transition:transform var(--obs-dive) cubic-bezier(.6,0,.9,.25) !important; }
+    body.is-entering #obs-lens{ clip-path:circle(125% at 50% 50%) !important; }
+    body.is-entering .obs-plate,
+    body.is-entering .obs-copy--through,
+    body.is-entering .obs-copy--intro,
+    body.is-entering .obs-mark,
+    body.is-entering .obs-skip{ opacity:0; transition:opacity 260ms ease; }
+
     @media (max-width:640px){
       .obs-eyepiece{ width:min(82vw,54vh); }
       .obs-plate{ font-size:10px; }
     }
     @media (prefers-reduced-motion: reduce){
-      .obs-eyepiece,#obs-lens,.obs-reticle,.obs-scene{ transition:none !important; }
+      .obs-eyepiece,#obs-lens,.obs-reticle,.obs-scene,.obs-iris,.obs-dome-lamp,.obs-warp,
+      .obs-eyepiece::before{ animation:none !important; transition:none !important; }
+      .obs-scene{ opacity:1 !important; transform:none !important; filter:none; }
       body.obs-open .obs-scene{ filter:brightness(0.72); }
+      body.is-entering .obs-eyepiece{ transform:none !important; }   /* dive = calm veil only */
+      body.obs-open .obs-reticle{ transform:none; }
     }
     /* no-JS: show the sky + a plain enter link, never a blank page */
     .obs-nojs{ position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; }
@@ -193,7 +245,7 @@
       <g transform="translate(870,556)">
         <path d="M0,0 a30,30 0 0 1 60,0 Z" fill="#0e0a10"/>
         <rect x="26" y="-30" width="8" height="24" rx="3" fill="#1b1420"/>
-        <rect x="27.5" y="-28" width="5" height="20" rx="2.5" fill="#e9c07a" opacity="0.5"/>
+        <rect class="obs-dome-lamp" x="27.5" y="-28" width="5" height="20" rx="2.5" fill="#e9c07a" opacity="0.5"/>
         <rect x="-8" y="-1" width="76" height="6" rx="2" fill="#0b070d"/>
       </g>
       <!-- near ridge (foreground, darkest) -->
@@ -202,6 +254,9 @@
       </g>
     </svg>
   </div>
+
+  <!-- dive veil — fades in as you step through the lens into the model -->
+  <div class="obs-warp" aria-hidden="true"></div>
 
   <a class="obs-mark" href="index.html">Astro <b>Precise</b></a>
   <a class="obs-skip" href="index.html" data-obs-skip>Skip &rsaquo;</a>
@@ -214,7 +269,10 @@
          "Look through the lens" button below — the canvas is then the sole control. -->
     <div class="obs-eyepiece" id="obs-eyepiece">
       <span class="obs-lens-clip"><canvas id="obs-lens"></canvas></span>
+      <span class="obs-iris"></span>
       <span class="obs-reticle"></span>
+      <i class="obs-tick obs-tick--tl"></i><i class="obs-tick obs-tick--tr"></i>
+      <i class="obs-tick obs-tick--bl"></i><i class="obs-tick obs-tick--br"></i>
     </div>
 
     <div class="obs-plate"><span class="dot"></span><span id="obs-plate-text">The Observatory · loading the sky…</span></div>

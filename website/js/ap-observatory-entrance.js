@@ -129,6 +129,20 @@
     });
   }
 
+  // ── The dive: step THROUGH the lens into the live model ─────────────────
+  function wireEnter() {
+    var enter = document.getElementById('obs-enter');
+    if (!enter) return;
+    enter.addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // let power-users open in a tab
+      e.preventDefault();
+      var href = enter.getAttribute('href') || 'index.html';
+      document.body.classList.add('is-entering');
+      var dur = reduce ? 320 : 820;
+      setTimeout(function () { window.location.href = href; }, dur);
+    });
+  }
+
   // ── Wire up ─────────────────────────────────────────────────────────────
   function ready() {
     starfield();
@@ -139,6 +153,7 @@
     var eye = document.getElementById('obs-eyepiece');
     if (look) look.addEventListener('click', open);
     if (eye) eye.addEventListener('click', open);
+    wireEnter();
 
     // Reduced motion: no ritual — open the lens straight away.
     if (reduce) open();
