@@ -84,7 +84,7 @@
 }
 
 .orrery-dom-label--hero {
-  color: #f0e8d8;
+  color: var(--ap-silver-bright);
   letter-spacing: 0.26em;
   text-shadow:
     0 1px 10px rgba(0, 0, 0, 0.9),
@@ -252,7 +252,7 @@
 }
 
 .apl-brand__wordmark {
-  background: linear-gradient(160deg, #F0E8D8 18%, #E6C24A 50%, #F0E8D8 82%);
+  background: linear-gradient(160deg, var(--ap-silver-bright) 18%, var(--ap-silver) 50%, var(--ap-silver-bright) 82%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -306,7 +306,7 @@
   height: 100%;
   transform-origin: left center;
   transform: scaleX(0);
-  background: linear-gradient(90deg, rgba(168, 176, 188, 0.5), #e6c24a, rgba(240, 232, 216, 0.9));
+  background: linear-gradient(90deg, rgba(168, 176, 188, 0.5), var(--ap-aurora), rgba(232, 235, 240, 0.9));
   box-shadow: 0 0 12px rgba(168, 176, 188, 0.45);
   transition: transform 0.12s linear;
 }
@@ -911,7 +911,7 @@ body.landing-gate-open .hero__orrery-ring #orrery-canvas {
   pointer-events: none;
   overflow: hidden;
   /* Canvas paints the sky; CSS is only a void fallback */
-  background: radial-gradient(circle at 50% 48%, #14304a 0%, #080f18 72%);
+  background: radial-gradient(circle at 50% 48%, var(--ap-jet-mid) 0%, var(--ap-jet-soft) 72%);
   box-shadow:
     0 0 0 1px rgba(168, 176, 188, 0.18),
     0 0 58px rgba(80, 150, 230, 0.32),
@@ -1074,7 +1074,7 @@ html.ap-await-webgl:not(.orrery-full) .orrery-lite-poster {
   font-family: 'Cormorant Garamond', serif;
   font-size: 0.78rem;
   font-style: italic;
-  color: #e8e0d0;
+  color: var(--ap-silver-bright);
   margin-top: 2px;
 }
 
@@ -1122,7 +1122,7 @@ html.lite-entry-active .lite-poster-logo {
   border-radius: 999px;
   border: 1px solid rgba(168, 176, 188, 0.55);
   background: linear-gradient(rgba(26, 34, 48, 0.92), rgba(12, 16, 22, 0.96));
-  color: #f0e8d8;
+  color: var(--ap-silver-bright);
   font-family: 'Cinzel', serif;
   font-size: 0.72rem;
   letter-spacing: 0.14em;
@@ -1249,7 +1249,7 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-deck {
   border-radius: 999px;
   border: 1px solid rgba(168, 176, 188, 0.4);
   background: rgba(12, 16, 22, 0.85);
-  color: #f0e8d8;
+  color: var(--ap-silver-bright);
   font-family: 'Cinzel', serif;
   font-size: 0.62rem;
   letter-spacing: 0.12em;
@@ -1290,7 +1290,7 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-deck {
   width: min(22rem, 88vw);
   z-index: 4;
   text-align: center;
-  color: #E8E0D0;
+  color: var(--ap-silver-bright);
   font-family: 'Cormorant Garamond', serif;
   pointer-events: none;
 }
@@ -1305,7 +1305,7 @@ html.ap-lite-hero:not(.orrery-full) .orrery-lite-deck {
   font-size: clamp(0.92rem, 2.6vw, 1.08rem);
   letter-spacing: 0.22em;
   font-weight: 600;
-  color: rgba(240, 232, 216, 0.92);
+  color: rgba(232, 235, 240,0.92);
   margin-bottom: 14px;
   opacity: 0;
   transform: translateY(8px);
@@ -1390,7 +1390,7 @@ body.preloader-intro-playing #preloader.preloader--cosmic .apl-intro-phase-sub {
 }
 
 body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase {
-  color: rgba(240, 232, 216, 0.96);
+  color: rgba(232, 235, 240,0.96);
   text-shadow: 0 0 18px rgba(168, 176, 188, 0.35);
 }
 
@@ -1439,7 +1439,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
   border-radius: 999px;
   border: 1px solid rgba(168, 176, 188, 0.38);
   background: rgba(12, 16, 24, 0.55);
-  color: rgba(240, 232, 216, 0.88);
+  color: rgba(232, 235, 240,0.88);
   font-family: Inter, system-ui, sans-serif;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
@@ -1522,7 +1522,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
   padding: 11px 26px;
   background: rgba(12, 16, 24, 0.42);
   border: 1px solid rgba(168, 176, 188, 0.38);
-  color: #f0e8d8;
+  color: var(--ap-silver-bright);
   font-family: 'Cinzel', serif;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1634,7 +1634,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
   border-radius: 999px;
   border: 1px solid rgba(168, 176, 188, 0.30);
   background: rgba(12, 16, 24, 0.55);
-  color: rgba(240, 232, 216, 0.78);
+  color: rgba(232, 235, 240,0.78);
   font-family: Inter, system-ui, sans-serif;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
@@ -1689,7 +1689,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
 .preloader-skip-intro:hover,
 .preloader-skip-intro:focus-visible {
   border-color: rgba(168, 176, 188, 0.55);
-  color: #f0e8d8;
+  color: var(--ap-silver-bright);
   background: rgba(18, 14, 10, 0.72);
   outline: none;
 }
@@ -1711,7 +1711,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
 
 .hero__h1 em.hero-gold-shimmer {
   font-style: italic;
-  background: linear-gradient(120deg, #f0e8d8 0%, #e6c24a 38%, #fff4dc 62%, #A8B0BC 100%);
+  background: linear-gradient(120deg, var(--ap-silver-bright) 0%, var(--ap-aurora) 38%, var(--ap-silver-bright) 62%, var(--ap-chrome) 100%);
   background-size: 220% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1930,7 +1930,7 @@ body.preloader-intro-playing #preloader.preloader--earth-land .apl-intro-phase-s
 
 .journey-hud__more:hover {
   background: rgba(168, 176, 188, 0.16);
-  color: #f0e8d8;
+  color: var(--ap-silver-bright);
 }
 
 .journey-hud__detail {
