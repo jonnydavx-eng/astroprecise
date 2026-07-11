@@ -25,6 +25,11 @@
       --obs-hair:     rgba(201,162,74,0.55);
       --obs-mono:     'IBM Plex Mono', ui-monospace, monospace;
       --obs-serif:    'Cormorant Garamond', 'Georgia', serif;
+      /* ── masterclass tuning knobs (retune the cinematic here) ── */
+      --obs-arrive:   1800ms;  /* on-load arrival settle */
+      --obs-iris:     1150ms;  /* the lens iris opening */
+      --obs-iris-ease: cubic-bezier(.16,.84,.24,1);
+      --obs-dive:     760ms;   /* the dive-through-the-lens hand-off */
     }
     *{ box-sizing:border-box; }
     html,body{ margin:0; height:100%; background:#100b12; color:var(--obs-ink);
