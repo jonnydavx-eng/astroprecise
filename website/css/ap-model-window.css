@@ -259,17 +259,15 @@ html.ap-model-revealed .page-explore .ap-mw-plate {
      stage; top 47% lifts it clear of the tray shelf (the wrap's bbox sags
      ~16px below the visual disc — labels layer). Measured at 390x844:
      disc bottom → tray top clearance ≈ +18px, plaque ≈ +22px. */
-  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter .hero-solar-stage {
+  /* Stamp only when NOT full observatory home — observatory owns full-room stage */
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
     height: clamp(150px, 26vh, 210px) !important;
     min-height: 150px !important;
     max-height: 210px !important;
-    /* The plaque (in the stage's window overlay) juts into the tray band below;
-       the stage context must paint above the tray's jet background (deck z4)
-       and must not clip it (the stage ships overflow:hidden). */
     z-index: 5 !important;
     overflow: visible !important;
   }
-  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-award-511:not(.ap-observatory-home) #heroChapter .ap-award-orrery-wrap {
     width: clamp(120px, 19vh, 164px) !important;
     top: 47% !important;
   }

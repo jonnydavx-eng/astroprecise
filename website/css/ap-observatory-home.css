@@ -21,6 +21,145 @@
  * LIVE lamp uses --ap-live-dot (defaults to --ap-aurora).
  */
 
+/* ═══ §0 · OBSERVATORY PORTAL + FOLLOW ORRERY (model is the room) ═══════ */
+/* Portal sits top-left in starfield — clear of disc (disc is centre). */
+body.ap-observatory-home .ap-obs-portal {
+  position: absolute;
+  z-index: 9;
+  top: calc(56px + 10px);
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: min(46vw, 220px);
+  padding: 0.4rem 0.7rem 0.4rem 0.4rem;
+  text-decoration: none;
+  color: var(--ap-silver-bright, #E8EBF0);
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid rgba(200, 205, 214, 0.32);
+  border-radius: 999px;
+  pointer-events: auto;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+body.ap-observatory-home .ap-obs-portal:hover,
+body.ap-observatory-home .ap-obs-portal:focus-visible {
+  border-color: rgba(126, 200, 232, 0.55);
+  box-shadow: 0 0 0 3px rgba(126, 200, 232, 0.2), 0 8px 28px rgba(0, 0, 0, 0.45);
+  outline: none;
+}
+body.ap-observatory-home .ap-obs-portal__ring {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(200, 205, 214, 0.55);
+  box-shadow:
+    inset 0 0 0 4px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 5px rgba(126, 200, 232, 0.25),
+    0 0 16px rgba(126, 200, 232, 0.18);
+  background:
+    radial-gradient(circle at 50% 45%, rgba(126, 200, 232, 0.22) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, #0a1018 0%, #000 70%);
+  position: relative;
+}
+body.ap-observatory-home .ap-obs-portal__eye {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--ap-aurora, #7EC8E8);
+  box-shadow: 0 0 10px rgba(126, 200, 232, 0.7);
+  pointer-events: none;
+  animation: apObsPortalPulse 2.4s ease-in-out infinite;
+}
+@keyframes apObsPortalPulse {
+  0%, 100% { opacity: 0.55; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1); }
+}
+body.ap-observatory-home .ap-obs-portal__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+body.ap-observatory-home .ap-obs-portal__kicker {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ap-aurora, #7EC8E8);
+}
+body.ap-observatory-home .ap-obs-portal__title {
+  font-family: var(--font-ui, Inter, system-ui, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.ap-observatory-home .ap-follow-orrery {
+  position: absolute;
+  z-index: 9;
+  right: 12px;
+  bottom: 14px;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 205, 214, 0.35);
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--ap-silver-bright, #E8EBF0);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+}
+body.ap-observatory-home .ap-follow-orrery:hover,
+body.ap-observatory-home .ap-follow-orrery:focus-visible {
+  border-color: rgba(126, 200, 232, 0.55);
+  color: var(--ap-aurora-bright, #A8DCF2);
+  outline: none;
+  box-shadow: var(--ap-focus-shadow, 0 0 0 3px rgba(126, 200, 232, 0.28));
+}
+body.ap-observatory-home .ap-follow-orrery[hidden] { display: none !important; }
+body.ap-observatory-home .ap-inline-lens {
+  color: var(--ap-aurora, #7EC8E8);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+body.ap-observatory-home .contents-nav__lens {
+  color: var(--ap-aurora, #7EC8E8) !important;
+}
+@media (max-width: 640px) {
+  body.ap-observatory-home .ap-obs-portal {
+    top: calc(48px + 6px);
+    left: 8px;
+    max-width: calc(100vw - 100px);
+    padding: 0.3rem 0.55rem 0.3rem 0.3rem;
+  }
+  body.ap-observatory-home .ap-obs-portal__ring { width: 36px; height: 36px; }
+  body.ap-observatory-home .ap-obs-portal__eye { width: 8px; height: 8px; margin: -4px 0 0 -4px; }
+  body.ap-observatory-home .ap-obs-portal__title { font-size: 0.7rem; }
+  body.ap-observatory-home .ap-follow-orrery {
+    right: 8px;
+    bottom: 8px;
+    font-size: 0.55rem;
+    min-height: 40px;
+    padding: 0 0.75rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.ap-observatory-home .ap-obs-portal__eye { animation: none; opacity: 1; }
+}
+
 /* ═══ §1 · STAGE — full-bleed observatory =============================== */
 /* index never loads main.css — the UA's 8px body margin was live. Kill it
    (margin only: structure-clean's body padding-bottom for the tab bar stays). */
@@ -46,12 +185,14 @@ html body.ap-observatory-home #heroChapter .page-wrap.hero-grid {
   gap: 0 !important;
 }
 html body.ap-observatory-home #heroChapter .hero-solar-stage,
-html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage {
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage,
+html body.ap-award-511.ap-observatory-home #heroChapter .hero-solar-stage {
   order: 1 !important;
   position: relative !important;
   width: 100% !important;
-  height: calc(100svh - var(--ap-tray-h-m, 168px) - var(--bottom-nav-h, 0px)) !important;
-  min-height: 420px !important;
+  /* Full first viewport for the model room — tray + bottom-nav only below */
+  height: calc(100svh - var(--ap-tray-h-m, 148px) - var(--bottom-nav-h, 0px)) !important;
+  min-height: 480px !important;
   max-height: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -59,23 +200,61 @@ html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .h
   overflow: hidden !important;
   isolation: isolate;
   z-index: auto !important;
-  background: radial-gradient(120% 90% at 50% 8%, #101014 0%, #000000 55%, #000000 100%) !important;
+  /* Dome observatory void — jet + subtle rim light (not a tiny hero bay) */
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 42%, rgba(16, 20, 28, 0.9) 0%, transparent 62%),
+    radial-gradient(120% 90% at 50% 8%, #12141c 0%, #000000 52%, #000000 100%) !important;
   background-color: var(--ap-jet, #000) !important;
 }
 /* Make the reused orrery wrap fill the stage (kills structure-clean's
    width:min() sizing AND slice-1's mobile clamp via later cascade). */
-html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+/* Kill ap-horizon-2026 postage-stamp framing (left:78% / min(56vh)) — model fills the room */
+html.ap-lite-hero body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+html.orrery-full body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+html body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
   position: absolute !important;
   inset: 0 !important;
   left: 0 !important;
+  right: 0 !important;
   top: 0 !important;
+  bottom: 0 !important;
   transform: none !important;
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
+  max-height: none !important;
   margin: 0 !important;
   z-index: 1 !important;
+}
+/* Horizon also stamps the engraved-wheel fallback to left:78% — re-centre full stage */
+html body.ap-observatory-home #heroChapter .ap-hero-wheel-fallback {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+/* Ultra-wide horizon rules (left:52%/76%) must not shrink the observatory stage */
+@media (min-width: 1500px) {
+  html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+    left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+@media (min-width: 2200px) {
+  html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+    left: 0 !important;
+    width: 100% !important;
+  }
 }
 html body.ap-observatory-home #heroChapter .ap-award-orrery-frame {
   position: absolute !important;
@@ -104,18 +283,28 @@ html body.ap-observatory-home #heroChapter .orrery-viewport #orrery-canvas {
   height: 100% !important;
   aspect-ratio: auto !important;
   display: block;
+  /* Kill horizon soft-mask that shrinks the *visible* globe into a postage stamp */
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
 }
-/* ≤640 — MEASURED correction (2026-07-11): the engine's Earth-rest disc tops
-   out ~63px from the stage top on phones (the design assumed ≥175px). The
-   canvas therefore starts BELOW the plate/legend row: bar 48 + chrome row
-   ~52 → wrap top 108. Canvas pixels physically cannot reach the top chrome —
-   zero overlap BY CONSTRUCTION, and the disc still renders ~min(76vw, 300px+). */
+/* ≤640 — model fills the stage; portal/legend occupy starfield corners only.
+   Do NOT inset the wrap 108px — that was shrinking Earth into a postage stamp. */
 @media (max-width: 640px) {
+  html body.ap-observatory-home #heroChapter .hero-solar-stage,
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage,
+  html body.ap-award-511.ap-observatory-home #heroChapter .hero-solar-stage {
+    height: calc(100svh - var(--ap-tray-h-m, 156px) - var(--bottom-nav-h, 65px)) !important;
+    min-height: 360px !important;
+  }
   html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
-    inset: 108px 0 6px 0 !important;
-    top: 108px !important;
-    height: auto !important;
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+  html body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
   }
 }
 /* Engraved wheel (no-JS / PRM path) centres in the stage. */

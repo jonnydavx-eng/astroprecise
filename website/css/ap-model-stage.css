@@ -116,7 +116,8 @@ body.ap-award-511 #heroChapter .page-wrap.hero-grid {
 }
 /* Model bay first — v683: short enough that cast dock PEEKS first viewport
    (expert audit: formTop was 961@900 → fully below fold). */
-body.ap-award-511 #heroChapter .hero-solar-stage {
+/* Postage bay — NEVER on the full observatory home (body.ap-observatory-home) */
+body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
   order: 1 !important;
   position: relative !important;
   inset: auto !important;
@@ -130,7 +131,7 @@ body.ap-award-511 #heroChapter .hero-solar-stage {
   border: 0 !important;
   margin: 0 !important;
 }
-body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+body.ap-award-511:not(.ap-observatory-home) #heroChapter .ap-award-orrery-wrap {
   position: absolute !important;
   left: 50% !important;
   top: 46% !important; /* slight lift so Earth sits above the dock peek */
@@ -470,11 +471,11 @@ body [style*="#7EC8E8"] {
 }
 
 @media (max-width: 900px) {
-  body.ap-award-511 #heroChapter .hero-solar-stage {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
     height: min(44vh, 400px) !important;
     min-height: 260px !important;
   }
-  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .ap-award-orrery-wrap {
     width: min(58vw, 320px) !important;
     top: 44% !important;
   }

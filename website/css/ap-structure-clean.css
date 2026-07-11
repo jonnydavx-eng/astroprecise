@@ -126,24 +126,26 @@ body.ap-award-511 #heroChapter {
   overflow: visible !important;
 }
 
-/* Model bay — short enough for first-viewport cast, large enough for sharp Earth */
-body.ap-award-511 #heroChapter .hero-solar-stage {
+/* Model bay — SHORT only when NOT the observatory-home full stage.
+   body.ap-observatory-home must own full-viewport model (see ap-observatory-home.css).
+   These clamps were shrinking Earth to a postage stamp and killing the observatory feel. */
+body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
   height: min(42vh, 420px) !important;
   min-height: 240px !important;
   max-height: 460px !important;
 }
-body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+body.ap-award-511:not(.ap-observatory-home) #heroChapter .ap-award-orrery-wrap {
   width: min(46vh, 440px) !important;
   max-width: min(82vw, 480px) !important;
   top: 48% !important;
 }
-/* Desktop: prefer a larger Earth disc (structure clean still keeps cast on-screen) */
+/* Desktop stamp — never on full observatory home */
 @media (min-width: 1024px) and (min-height: 820px) {
-  body.ap-award-511 #heroChapter .hero-solar-stage {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
     height: min(46vh, 480px) !important;
     max-height: 520px !important;
   }
-  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .ap-award-orrery-wrap {
     width: min(50vh, 500px) !important;
     max-width: min(56vw, 540px) !important;
   }
@@ -252,12 +254,12 @@ body.ap-award-511 .ap-float-nav {
     font-size: 0.6rem !important;
     padding: 0.28rem 0.35rem !important;
   }
-  body.ap-award-511 #heroChapter .hero-solar-stage {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
     height: min(28vh, 230px) !important;
     min-height: 180px !important;
     max-height: 240px !important;
   }
-  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .ap-award-orrery-wrap {
     width: min(58vw, 210px) !important;
     top: 50% !important;
   }
@@ -292,13 +294,13 @@ body.ap-award-511 .ap-float-nav {
   }
 }
 
-/* Desktop short viewports */
+/* Desktop short viewports — never on full observatory home */
 @media (max-height: 820px) and (min-width: 900px) {
-  body.ap-award-511 #heroChapter .hero-solar-stage {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
     height: min(32vh, 300px) !important;
     min-height: 200px !important;
   }
-  body.ap-award-511 #heroChapter .ap-award-orrery-wrap {
+  body.ap-award-511:not(.ap-observatory-home) #heroChapter .ap-award-orrery-wrap {
     width: min(36vh, 320px) !important;
   }
 }

@@ -2,7 +2,7 @@
 /* Award homepage — lazy ephemeris + hero instrument bundle (perf) */
 
 (function () {
-  var V = "710";
+  var V = "715";
 
   window.__loadEphemeris = function (cb) {
     if (window.AstroEphemeris) {
@@ -321,5 +321,43 @@
       ladder.defer = true;
       document.body.appendChild(ladder);
     }
+
+    /* ── Follow the orrery — surface Cosmic journey as observatory verb ── */
+    (function followOrrery() {
+      var btn = document.getElementById("apFollowOrrery");
+      var journey = document.getElementById("ap-cosmic-journey");
+      if (!btn) return;
+      function revealFollow() {
+        var O = window.Orrery3D;
+        if (O && typeof O.startScaleJourney === "function" &&
+            document.documentElement.classList.contains("orrery-full")) {
+          btn.hidden = false;
+        }
+      }
+      document.addEventListener("ap-orrery-ready", revealFollow);
+      document.addEventListener("orrery-scale-change", revealFollow);
+      setTimeout(revealFollow, 1200);
+      setTimeout(revealFollow, 3200);
+      btn.addEventListener("click", function () {
+        var O = window.Orrery3D;
+        if (O && typeof O.startScaleJourney === "function") {
+          try {
+            if (typeof O.isJourneyActive === "function" && O.isJourneyActive() &&
+                typeof O.cancelScaleJourney === "function") {
+              O.cancelScaleJourney(false);
+              btn.textContent = "Follow the orrery";
+              return;
+            }
+            O.startScaleJourney(6, { fullTour: true, direction: "out" });
+            btn.textContent = "End journey";
+          } catch (e) { /* optional */ }
+          return;
+        }
+        if (journey) journey.click();
+      });
+      document.addEventListener("orrery-journey-end", function () {
+        btn.textContent = "Follow the orrery";
+      });
+    }());
   });
 })();

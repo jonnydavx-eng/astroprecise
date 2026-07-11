@@ -21,6 +21,8 @@
 'use strict';
 
 (function () {
+  // Observatory = living model home. Lens entrance is first in More (badge Enter)
+  // and also surfaced as a portal on the homepage stage (not buried).
   var NAV_PRIMARY = [
     ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
@@ -29,7 +31,7 @@
     ['shop.html', 'Shop'],
   ];
 
-  // Hub + keep + story + library first in More
+  // Hub + keep + story + library first in More — Lens FIRST so Enter is one tap
   var NAV_MORE_EXPLORE = [
     ['observatory.html', 'Look Through the Lens', { badge: 'Enter' }],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],

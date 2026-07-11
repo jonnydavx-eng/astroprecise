@@ -145,9 +145,9 @@ html.ap-await-webgl #apAwardOrreryWrap[hidden]{display:block}
    full-viewport stage, in-flow plinth tray, cast band/rail. */
 .ap-award-511.ap-observatory-home #heroChapter{position:relative;overflow:visible;display:block;min-height:0;padding:0;background:#000}
 .ap-observatory-home #heroChapter .page-wrap.hero-grid{display:flex;flex-direction:column;width:100%;max-width:none;position:relative;z-index:2;min-height:0;padding:0;margin:0;gap:0}
-.ap-observatory-home #heroChapter .hero-solar-stage{order:1;position:relative;inset:auto;width:100%;height:calc(100svh - 168px - var(--bottom-nav-h,0px));min-height:420px;z-index:1;padding:0;border:0;pointer-events:auto;overflow:hidden;background:#000}
+.ap-observatory-home #heroChapter .hero-solar-stage{order:1;position:relative;inset:auto;width:100%;height:calc(100svh - 148px - var(--bottom-nav-h,0px));min-height:480px;z-index:1;padding:0;border:0;pointer-events:auto;overflow:hidden;background:#000}
 .ap-observatory-home #heroChapter .ap-award-orrery-wrap{position:absolute;inset:0;left:0;top:0;transform:none;width:100%;height:100%;max-width:none;display:block;z-index:1}
-@media (max-width:640px){.ap-observatory-home #heroChapter .ap-award-orrery-wrap{inset:108px 0 6px 0;top:108px;height:auto}}
+@media (max-width:640px){.ap-observatory-home #heroChapter .hero-solar-stage{min-height:360px;height:calc(100svh - 156px - var(--bottom-nav-h,65px))}.ap-observatory-home #heroChapter .ap-award-orrery-wrap{inset:0;top:0;height:100%}}
 .ap-observatory-home #heroChapter .hero-copy{order:2;position:relative;z-index:6;width:100%;max-width:none;pointer-events:auto;margin:0;padding:8px 12px 6px;border-radius:0;background:#000;border:0;border-top:1px solid rgba(200,205,214,.22);text-align:left}
 .ap-observatory-home #heroChapter #orrery-lite-deck{order:3;min-height:96px;background:#000}
 @media (min-width:1280px){
@@ -175,10 +175,10 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-logo-aurora.css?v=703" id="ap-css-logo-aurora" />
   <link rel="stylesheet" href="css/ap-site-polish.css?v=703" />
   <link rel="stylesheet" href="css/ap-visual-clarity.css?v=703" id="ap-css-visual-clarity" />
-  <link rel="stylesheet" href="css/ap-model-stage.css?v=703" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=715" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
   <!-- Structure clean LAST — wins CSS wars; collapses bloat; first-viewport cast -->
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=711" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=715" id="ap-css-structure-clean" />
 
   <!-- Intro gate — runs before first paint so the hero never flashes the
        engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
@@ -211,15 +211,15 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=703">
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css
        (and the other !important sheets above); cascade position is load-bearing. -->
-  <link rel="stylesheet" href="css/ap-model-window.css?v=708" id="ap-css-model-window">
+  <link rel="stylesheet" href="css/ap-model-window.css?v=715" id="ap-css-model-window">
   <!-- OBSERVATORY HOMEPAGE — LOAD ORDER LAW: ap-observatory-home.css MUST stay
        the LAST stylesheet (after ap-model-window.css). It out-cascades the
        !important sheets above; any sheet appended after it silently reverts
        the observatory layout (visual-check asserts deck position:static). -->
-  <link rel="stylesheet" href="css/ap-observatory-home.css?v=711" id="ap-css-observatory-home">
+  <link rel="stylesheet" href="css/ap-observatory-home.css?v=715" id="ap-css-observatory-home">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=703">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=715">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
@@ -304,11 +304,11 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 
     <nav aria-label="Around the living sky">
       <ul class="contents-nav">
+        <li><a href="observatory.html" class="contents-nav__lens">Through the Lens</a></li>
         <li><a href="chart.html">Chart</a></li>
         <li><a href="ephemeris.html">The Sky</a></li>
         <li><a href="#today">Daily</a></li>
         <li><a href="shop.html">Shop</a></li>
-        <li><a href="mysky.html">My Sky</a></li>
       </ul>
     </nav>
   </div>
@@ -331,12 +331,12 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <div class="page-wrap hero-grid hero-showstopper">
 
       <div class="hero-copy fade-in" id="castDock" tabindex="-1">
-        <em class="eyebrow-rose">Free birth chart</em>
+        <em class="eyebrow-rose">Inside the Observatory</em>
         <h1 class="display" style="margin-top: var(--sp-2);">
-          You're not one of twelve. <br><span class="display-accent">This chart is yours alone.</span>
+          The sky is live. <br><span class="display-accent">Your chart is exact.</span>
         </h1>
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
-          Enter your date. We compute <em>your</em> sky &mdash; free, private, to about an arcminute.
+          The 3D model is the instrument. Cast free &mdash; or <a href="observatory.html" class="ap-inline-lens">look through the lens</a> to enter from the mountain.
         </p>
         <form id="hero-chart-form" class="hero-form hero-form--primary" action="chart.html" method="get" novalidate aria-label="Cast your natal chart">
           <label for="hero-birthdate" class="ui-label">Your date of birth</label>
@@ -800,9 +800,22 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
           <span class="ap-mw-corners ap-mw-corners--bottom"></span>
           <div class="ap-mw-plate">
             <span class="ap-mw-live"><span class="ap-mw-dot"></span>LIVE</span>
-            <span class="ap-mw-caption" id="apModelCaption">VSOP87 &middot; EARTH</span>
+            <span class="ap-mw-caption" id="apModelCaption">VSOP87 &middot; EARTH · INSIDE THE OBSERVATORY</span>
           </div>
         </div>
+
+        <!-- Observatory entrance portal — Look Through the Lens (owner vision).
+             Does NOT cover the disc: top-left starfield corner, clear of Earth. -->
+        <a class="ap-obs-portal" id="apObsPortal" href="observatory.html" aria-label="Look through the lens — mountain observatory entrance">
+          <span class="ap-obs-portal__ring" aria-hidden="true"><span class="ap-obs-portal__eye"></span></span>
+          <span class="ap-obs-portal__label">
+            <span class="ap-obs-portal__kicker">Enter</span>
+            <span class="ap-obs-portal__title">Look through the lens</span>
+          </span>
+        </a>
+        <button type="button" class="ap-follow-orrery" id="apFollowOrrery" hidden aria-label="Follow the orrery — Earth to the deep field">
+          Follow the orrery
+        </button>
 
         <!-- ── Honest-model legend (ported from explore.html) — collapsible,
              starts collapsed (ap-home-bootstrap), top-right starfield corner.
@@ -1815,7 +1828,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
      Scripts — minimal, end of body
      ============================================================ -->
 <script defer src="js/raf-core.js?v=705"></script>
-<script defer src="js/ap-home-bootstrap.js?v=710"></script>
+<script defer src="js/ap-home-bootstrap.js?v=715"></script>
 <script defer src="js/ap-nav-interplay.js?v=705"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=703"></script>

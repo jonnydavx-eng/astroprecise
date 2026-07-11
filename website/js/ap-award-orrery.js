@@ -75,7 +75,7 @@
   function queueWebGL() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=703", function () {
+    inject("js/orrery-loader.js?v=715", function () {
       setTimeout(promoteToWebGL, 500);
     });
   }
@@ -138,6 +138,12 @@
     // fail-open path (class-add is idempotent; the inline caption snippet's
     // observer is the explore.html twin of this line).
     document.documentElement.classList.add("ap-model-revealed");
+    // Expert Day-1: poster→live camera dolly (engine) when HD canvas is visible
+    try {
+      if (window.Orrery3D && typeof window.Orrery3D.playHomeRevealDolly === "function") {
+        window.Orrery3D.playHomeRevealDolly();
+      }
+    } catch (e) { /* optional */ }
   }
   document.addEventListener("ap-orrery-ready", function () { hideFallback(true); });
   var liveObs = new MutationObserver(function () {
