@@ -1,6 +1,6 @@
-# STATUS — AstroPrecise · 2026-07-10
+# STATUS — AstroPrecise · 2026-07-11
 
-**State:** **LIVE public site** https://astroprecise.app · local preview :8790. Recent agent work through **ap-v702** (structure clean, Earth rest frame, True-Time engine sync from OrbitLab, bottom nav / daily slim, 3D disc sizing). Narrative spine + first-paint fixes from early July still in the base. Checkout for paid Deep Reading remains **dormant** until owner sets real purchase URLs.
+**State:** **LIVE public site** https://astroprecise.app · local preview :8790. Shell now at **ap-v706** (2026-07-11 audit: observatory lens UTC/square/reduced-motion/keyboard fixes, honesty fallback, a11y de-nesting, SW dead-backup precache trim). Prior tip ap-v702→v705 (structure clean, Earth rest frame, True-Time engine sync from OrbitLab, bottom nav / daily slim, 3D disc sizing). Narrative spine + first-paint fixes from early July still in the base. Checkout for paid Deep Reading remains **dormant** until owner sets real purchase URLs.
 
 ## Stack / agents
 - Canonical: `C:\Users\jonny\OneDrive\astroprecise` · site in `website/`
@@ -11,7 +11,7 @@
 ## Open / ongoing
 - **Owner:** set `deepReadingUrl` / checkout when products go live
 - **Owner:** phone eye-check structure + 3D after big waves; merge branches only when OK
-- STATUS must stay in sync with SW version in handoff (currently track **ap-v702** area)
+- STATUS must stay in sync with SW version in handoff (currently track **ap-v706**)
 - OrbitLab free-explore galaxy is **not** auto-ported here unless Jonny asks
 
 ## Suggested next steps
