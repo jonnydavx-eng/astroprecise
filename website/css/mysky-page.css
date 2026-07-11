@@ -3,9 +3,11 @@
  * Uses site tokens; does not invent a second design system for the whole site.
  */
 body.ap-mysky-page {
-  --mysky-brass: var(--brass, #A8B0BC);
-  --mysky-ink: var(--text, #e8e2d4);
-  --mysky-muted: var(--text-muted, #9a927f);
+  --mysky-brass: var(--ap-chrome, var(--brass, #A8B0BC));
+  --mysky-ink: var(--ap-silver-bright, var(--text, #E8EBF0));
+  --mysky-muted: var(--ap-silver-dim, var(--text-muted, #8B919C));
+  --mysky-aurora: var(--ap-aurora, #7EC8E8);
+  background: var(--ap-jet-soft, #07070A);
 }
 
 .mysky-hero {
@@ -76,13 +78,13 @@ body.ap-mysky-page {
   gap: 0.5rem;
 }
 
-/* Cinema plate — production art, no second WebGL stack */
+/* Cinema plate — production art, no second WebGL stack (honesty: not LIVE) */
 .mysky-cinema {
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(201, 162, 74, 0.28);
-  background: #07070A;
+  border: 1px solid var(--ap-silver-a18, rgba(200, 205, 214, 0.18));
+  background: var(--ap-jet, #000);
   aspect-ratio: 16 / 10;
   min-height: 220px;
 }
@@ -101,8 +103,9 @@ body.ap-mysky-page {
   font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(232, 226, 212, 0.7);
-  background: linear-gradient(transparent, rgba(12, 16, 22, 0.92));
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ap-silver-dim, #8B919C);
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.92));
 }
 
 .mysky-engine-grid {
@@ -154,14 +157,18 @@ body.ap-mysky-page {
   text-decoration: none;
 }
 .mysky-cta--primary {
-  background: linear-gradient(135deg, #6A7078, #C8CDD6);
-  color: #1a1408;
-  border: none;
+  color: var(--ap-cta-ink, #050508);
+  background: var(--ap-cta-grad, linear-gradient(135deg, #4A90E0 0%, #7EC8E8 45%, #C8D8E8 100%));
+  border: 0;
 }
 .mysky-cta--ghost {
-  border: 1px solid rgba(201, 162, 74, 0.4);
-  color: var(--mysky-brass);
+  border: 1px solid var(--ap-silver-a28, rgba(200, 205, 214, 0.28));
+  color: var(--ap-silver, var(--mysky-brass));
   background: transparent;
+}
+.mysky-cta--ghost:hover {
+  border-color: var(--ap-aurora-a40, rgba(126, 200, 232, 0.4));
+  color: var(--ap-aurora-bright, #A8DCF2);
 }
 .mysky-cta:hover {
   filter: brightness(1.06);

@@ -138,6 +138,7 @@
     });
   }
 
+  /** Masterpiece porthole: circular engine still + engraved double rings + hairline. */
   function drawEngineWindow(x, img, cx, cy, r) {
     if (!img || !img.naturalWidth) return;
     x.save();
@@ -149,16 +150,51 @@
     var iw = img.naturalWidth, ih = img.naturalHeight;
     var scale = Math.max((r * 2) / iw, (r * 2) / ih);
     var dw = iw * scale, dh = ih * scale;
-    x.globalAlpha = 0.42;
+    x.globalAlpha = 0.48;
     x.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
     x.globalAlpha = 1;
     // Soft void vignette so stars stay readable
     var vg = x.createRadialGradient(cx, cy, r * 0.35, cx, cy, r);
-    vg.addColorStop(0, 'rgba(12,16,22,0)');
-    vg.addColorStop(1, 'rgba(12,16,22,0.55)');
+    vg.addColorStop(0, 'rgba(7,7,10,0)');
+    vg.addColorStop(1, 'rgba(7,7,10,0.58)');
     x.fillStyle = vg;
     x.fillRect(cx - r, cy - r, r * 2, r * 2);
     x.restore();
+
+    // Engraved porthole rings (matches chart export + marketing masterpiece plate)
+    x.beginPath();
+    x.arc(cx, cy, r, 0, Math.PI * 2);
+    x.strokeStyle = 'rgba(200, 205, 214, 0.48)';
+    x.lineWidth = 2.2;
+    x.stroke();
+    x.beginPath();
+    x.arc(cx, cy, r + 6, 0, Math.PI * 2);
+    x.strokeStyle = 'rgba(168, 176, 188, 0.22)';
+    x.lineWidth = 1.4;
+    x.stroke();
+    // Aurora limb whisper (outer hairline)
+    x.beginPath();
+    x.arc(cx, cy, r + 11, 0, Math.PI * 2);
+    x.strokeStyle = 'rgba(126, 200, 232, 0.16)';
+    x.lineWidth = 1;
+    x.stroke();
+    // Corner registration ticks (4) on the outer ring — museum plate language
+    var tickR = r + 11;
+    var tickLen = 10;
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (dir) {
+      var ang = Math.atan2(dir[1], dir[0]);
+      var cos = Math.cos(ang), sin = Math.sin(ang);
+      var x0 = cx + cos * (tickR - 2);
+      var y0 = cy + sin * (tickR - 2);
+      x.beginPath();
+      x.moveTo(x0, y0);
+      x.lineTo(x0 + cos * tickLen * 0.15 - sin * tickLen, y0 + sin * tickLen * 0.15 + cos * tickLen);
+      x.moveTo(x0, y0);
+      x.lineTo(x0 + cos * tickLen * 0.15 + sin * tickLen, y0 + sin * tickLen * 0.15 - cos * tickLen);
+      x.strokeStyle = 'rgba(232, 235, 240, 0.42)';
+      x.lineWidth = 1.2;
+      x.stroke();
+    });
   }
 
   /**
@@ -308,10 +344,13 @@
     }
     wrapText(x, story, cx, 840, CARD_BASE - 200, 34);
 
-    honestyBadge(x, cx, 960, 'computed · J2000 catalogue + LST · VSOP87');
+    honestyBadge(x, cx, 948, 'computed · J2000 catalogue + LST · VSOP87');
+    x.fillStyle = PARCH_MUTED;
+    x.font = '18px "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace';
+    x.fillText('stars = catalogue · plate = 3D orrery still · free PNG ≠ paid pack', cx, 992);
     x.fillStyle = BRASS;
     x.font = '20px Georgia, "Times New Roman", serif';
-    x.fillText('astroprecise · moment', cx, 1015);
+    x.fillText('astroprecise · moment', cx, 1024);
 
     return base.cv;
   }

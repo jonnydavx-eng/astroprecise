@@ -44,9 +44,26 @@ body.ap-award-511 #instrumentsChapter .dept-list {
   margin-inline: auto !important;
 }
 body.ap-award-511 #instrumentsChapter .dept-list-item {
+  display: flex !important;
+  align-items: center !important;
   padding: 0.7rem 0.95rem !important;
   min-height: 0 !important;
   gap: 0.65rem !important;
+}
+body.ap-award-511 #instrumentsChapter .dept-list-item .dept-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: 0 0 auto;
+  border: 1px solid rgba(200, 205, 214, 0.28);
+  box-shadow: 0 0 0 2px rgba(126, 200, 232, 0.1);
+  background: #000;
+  align-self: center;
+}
+body.ap-award-511 #instrumentsChapter .dept-list-item > div {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 body.ap-award-511 #instrumentsChapter .dept-list-dek {
   display: none !important; /* title + next only — kill essay per row */

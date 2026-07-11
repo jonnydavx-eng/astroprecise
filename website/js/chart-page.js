@@ -2039,8 +2039,8 @@ host.classList.add('is-done');
       const dw2 = eng.naturalWidth * s2, dh2 = eng.naturalHeight * s2;
       x.drawImage(eng, wx - dw2 / 2, wy - dh2 / 2, dw2, dh2);
       x.restore();
-      // Brass double-ring window (matches marketing plate language)
-      x.strokeStyle = 'rgba(168,176,188,0.48)';
+      // Engraved porthole rings (masterpiece plate · silver + aurora limb)
+      x.strokeStyle = 'rgba(200,205,214,0.48)';
       x.lineWidth = Math.max(2.5, 2.5 * S);
       x.beginPath();
       x.arc(wx, wy, wr, 0, Math.PI * 2);
@@ -2049,6 +2049,11 @@ host.classList.add('is-done');
       x.lineWidth = Math.max(1, 1.2 * S);
       x.beginPath();
       x.arc(wx, wy, wr + 6 * S, 0, Math.PI * 2);
+      x.stroke();
+      x.strokeStyle = 'rgba(126,200,232,0.16)';
+      x.lineWidth = Math.max(1, 1 * S);
+      x.beginPath();
+      x.arc(wx, wy, wr + 11 * S, 0, Math.PI * 2);
       x.stroke();
     }
 
@@ -2067,8 +2072,8 @@ host.classList.add('is-done');
     x.strokeStyle = 'rgba(168,176,188,0.3)';
     x.lineWidth = Math.max(1, outerInset * 0.025);
     x.strokeRect(innerInset, innerInset, W - innerInset * 2, H - innerInset * 2);
-    // Corner ticks
-    x.strokeStyle = 'rgba(205,174,106,0.55)';
+    // Corner ticks (silver chrome — not gold debt)
+    x.strokeStyle = 'rgba(232,235,240,0.45)';
     x.lineWidth = Math.max(1.5, outerInset * 0.04);
     const t = (outerInset + innerInset) / 2;
     const len = (innerInset - outerInset) * 1.4;

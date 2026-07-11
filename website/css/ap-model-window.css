@@ -139,9 +139,12 @@ html.orrery-full .ap-mw-live { opacity: 1; }
   width: 6px !important;
   height: 6px !important;
   border-radius: 50% !important;
-  background: var(--ap-aurora, #7EC8E8) !important;
+  background: var(--ap-live-dot, var(--ap-aurora, #7EC8E8)) !important;
   box-shadow: 0 0 8px rgba(126, 200, 232, 0.7) !important;
   animation: apMwPulse 2.4s ease-in-out infinite; /* ~0.4Hz — calm, ≤2Hz */
+}
+@media (prefers-reduced-motion: reduce) {
+  .ap-mw-dot { animation: none !important; opacity: 1 !important; }
 }
 @keyframes apMwPulse {
   0%, 100% { opacity: 0.5; transform: scale(0.9); }

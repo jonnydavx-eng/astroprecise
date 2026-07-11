@@ -99,7 +99,7 @@ a{color:var(--meridian);text-decoration:underline;text-underline-offset:3px;text
 a:hover,a:focus-visible{color:#A8DCF2;}
 .fig-num,figcaption{font-family:var(--font-mono);font-size:max(13px,0.76rem);letter-spacing:0.03em;color:var(--brass-bright);}
 .plate .fig-num{color:var(--brass-vivid);text-transform:uppercase;}
-.btn-press{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#E8C872,#C9A227);color:#0B0906;border:none;font-family:var(--font-ui);font-weight:600;text-decoration:none;}
+.btn-press{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4A90E0 0%,#7EC8E8 45%,#C8D8E8 100%);color:#050508;border:none;font-family:var(--font-ui);font-weight:600;text-decoration:none;}
 .btn-quiet{display:inline-flex;align-items:center;justify-content:center;background:transparent;color:var(--ink);border:1px solid var(--brass);font-family:var(--font-ui);font-weight:600;text-decoration:none;}
 .qa-q{color:var(--ink);font-family:var(--font-serif);font-weight:500;}
 .qa-a{color:var(--ink-faded);}
@@ -171,14 +171,14 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 .hero-explore-chip:hover{border-color:var(--ap-aurora,#7EC8E8);background:var(--ap-aurora-a10,rgba(126,200,232,.12))}
 @media (prefers-reduced-motion:reduce){.hero-live-pill__dot{animation:none;opacity:.85}}
   </style>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=703" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=708" id="ap-css-palette-2026" />
   <link rel="stylesheet" href="css/ap-logo-aurora.css?v=703" id="ap-css-logo-aurora" />
   <link rel="stylesheet" href="css/ap-site-polish.css?v=703" />
   <link rel="stylesheet" href="css/ap-visual-clarity.css?v=703" id="ap-css-visual-clarity" />
   <link rel="stylesheet" href="css/ap-model-stage.css?v=703" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
   <!-- Structure clean LAST — wins CSS wars; collapses bloat; first-viewport cast -->
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=711" id="ap-css-structure-clean" />
 
   <!-- Intro gate — runs before first paint so the hero never flashes the
        engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
@@ -211,12 +211,12 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=703">
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css
        (and the other !important sheets above); cascade position is load-bearing. -->
-  <link rel="stylesheet" href="css/ap-model-window.css?v=704" id="ap-css-model-window">
+  <link rel="stylesheet" href="css/ap-model-window.css?v=708" id="ap-css-model-window">
   <!-- OBSERVATORY HOMEPAGE — LOAD ORDER LAW: ap-observatory-home.css MUST stay
        the LAST stylesheet (after ap-model-window.css). It out-cascades the
        !important sheets above; any sheet appended after it silently reverts
        the observatory layout (visual-check asserts deck position:static). -->
-  <link rel="stylesheet" href="css/ap-observatory-home.css?v=705" id="ap-css-observatory-home">
+  <link rel="stylesheet" href="css/ap-observatory-home.css?v=711" id="ap-css-observatory-home">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
   <link rel="modulepreload" href="js/orrery-webgl.js?v=703">
@@ -315,7 +315,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 </header>
 
 <nav class="ap-float-nav" id="apFloatNav" aria-label="Around the living sky" hidden>
-  <a class="ap-float-nav__link" href="explore.html" data-short="Explore" title="Full 3D orrery">Explore</a>
+  <a class="ap-float-nav__link" href="index.html#heroChapter" data-short="Model" title="Living Observatory model">Model</a>
   <a class="ap-float-nav__link" href="#heroChapter" data-ap-jump="heroChapter" data-short="Cast">Cast</a>
   <a class="ap-float-nav__link" href="ephemeris.html" data-short="Sky">Sky</a>
   <a class="ap-float-nav__link" href="horoscope.html" data-short="Daily">Daily</a>
@@ -943,91 +943,6 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
      bookmarkable anchor the masthead Daily link + hero chip jump to).
      ============================================================ -->
 <span id="site-below" aria-hidden="true" tabindex="-1"></span>
-<section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" data-ap-beat="system" aria-labelledby="contents-heading">
-  <div class="page-wrap">
-    <header class="ap-chapter-head ap-reveal">
-      <p class="ap-display-kicker">Next steps</p>
-      <h2 id="contents-heading" class="ap-chapter-title">Where to go from here</h2>
-      <p class="ap-chapter-lead" style="max-width:48ch;">
-        Cast in the observatory above, then open The Sky, keep a Moment, or return Daily.
-      </p>
-    </header>
-
-    <ol class="dept-list" role="list">
-      <li class="ap-reveal" style="--ap-reveal-i: 0">
-        <a href="explore.html" class="dept-list-item" aria-label="Step 00 — Explore the live 3D sky">
-          <span class="dept-number">00</span>
-          <div>
-            <span class="dept-title">Explore the 3D sky</span>
-            <span class="dept-list-dek">Full-viewport orrery &mdash; drag, zoom, Earth to Cosmos. Same engine as the hero above.</span>
-            <span class="dept-list-next">Open Explore &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free · 3D</span>
-        </a>
-      </li>
-      <li class="ap-reveal" style="--ap-reveal-i: 1">
-        <a href="chart.html" class="dept-list-item" aria-label="Step 01 — Cast your chart, free">
-          <span class="dept-number">01</span>
-          <div>
-            <span class="dept-title">Cast your chart</span>
-            <span class="dept-list-dek">Your whole sky at birth &mdash; ten planets, <abbr class="ap-gloss" title="Rising sign (ascendant) — the sign on the eastern horizon at your birth">Rising</abbr>, and houses. Not one of twelve; yours alone. Use the form above or open Chart.</span>
-            <span class="dept-list-next">Cast free &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
-        </a>
-      </li>
-      <li class="ap-reveal" style="--ap-reveal-i: 2">
-        <a href="ephemeris.html" class="dept-list-item" aria-label="Step 02 — Tonight's sky, free">
-          <span class="dept-number">02</span>
-          <div>
-            <span class="dept-title">See the live sky</span>
-            <span class="dept-list-dek">Trust the engine &mdash; Moon, planets, and mood recomputed on your device. Same math as your chart, for tonight.</span>
-            <span class="dept-list-next">Open Sky &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
-        </a>
-      </li>
-      <li class="ap-reveal" style="--ap-reveal-i: 3">
-        <a href="moment.html" class="dept-list-item" aria-label="Step 03 — Moment keepsake, free card">
-          <span class="dept-number">03</span>
-          <div>
-            <span class="dept-title">Keep a night (Moment)</span>
-            <span class="dept-list-dek">Freeze birth, first date, wedding, memorial &mdash; free private card with zenith star and light-cone story.</span>
-            <span class="dept-list-next">Freeze a sky &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
-        </a>
-      </li>
-      <li class="ap-reveal" style="--ap-reveal-i: 4">
-        <a href="horoscope.html" class="dept-list-item" aria-label="Step 04 — Daily sky, free">
-          <span class="dept-number">04</span>
-          <div>
-            <span class="dept-title">Come back daily</span>
-            <span class="dept-list-dek">Today&rsquo;s sky against <em>your</em> placements &mdash; not a generic forecast for a twelfth of the world.</span>
-            <span class="dept-list-next">Open Daily &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
-        </a>
-      </li>
-      <li class="ap-reveal" style="--ap-reveal-i: 5">
-        <a href="cosmic-story.html" class="dept-list-item" aria-label="Step 05 — Free reading sample, then shop">
-          <span class="dept-number">05</span>
-          <div>
-            <span class="dept-title">Reading &amp; shop</span>
-            <span class="dept-list-dek">Free Cosmic Story sample first. Deep Reading PDF and poster in Shop when you want a lasting keepsake.</span>
-            <span class="dept-list-next">Free sample &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free + paid</span>
-        </a>
-      </li>
-    </ol>
-    <p class="ap-spine-bridge ap-spine-bridge--center" style="margin-top:1.25rem;">
-      Signs live in the <a href="horoscope.html">signs library</a> &mdash; they explain the language, not the path.
-    </p>
-  </div>
-</section>
-
-
 <section class="department section-bleed ap-chapter" id="dailyChapter" data-ap-beat="today" aria-labelledby="daily-heading">
   <span id="today" aria-hidden="true"></span>
   <div class="page-wrap">
@@ -1042,6 +957,96 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       <p class="home-daily__prompt" style="text-align:center;color:rgba(236,230,216,.6)">Loading today&rsquo;s sky&hellip;</p>
     </div>
     <p class="ap-spine-bridge ap-spine-bridge--center">The daily reading shows what the sky is doing today; the <a href="shop.html#deep-reading">Deep Reading</a> traces the whole pattern behind every day. <a href="chart.html">Cast your free chart &rarr;</a></p>
+  </div>
+</section>
+
+<section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" data-ap-beat="system" aria-labelledby="contents-heading">
+  <div class="page-wrap">
+    <header class="ap-chapter-head ap-reveal">
+      <p class="ap-display-kicker">Next steps</p>
+      <h2 id="contents-heading" class="ap-chapter-title">Where to go from here</h2>
+      <p class="ap-chapter-lead" style="max-width:48ch;">
+        Cast in the observatory above, then open The Sky, keep a Moment, or return Daily.
+      </p>
+    </header>
+
+    <ol class="dept-list" role="list">
+      <li class="ap-reveal" style="--ap-reveal-i: 0">
+        <a href="index.html#heroChapter" class="dept-list-item" aria-label="Step 00 — The Observatory living model">
+          <span class="dept-number">00</span>
+          <img class="dept-thumb" src="img/engine/earth.webp" width="48" height="48" alt="" loading="lazy" decoding="async" />
+          <div>
+            <span class="dept-title">The Observatory</span>
+            <span class="dept-list-dek">Living 3D sky above &mdash; drag, scrub, Earth to Cosmos. The model is the product.</span>
+            <span class="dept-list-next">Back to the model &rarr;</span>
+          </div>
+          <span class="dept-badge free">Free · 3D</span>
+        </a>
+      </li>
+      <li class="ap-reveal" style="--ap-reveal-i: 1">
+        <a href="chart.html" class="dept-list-item" aria-label="Step 01 — Cast your chart, free">
+          <span class="dept-number">01</span>
+          <img class="dept-thumb" src="img/engine/sun.webp" width="48" height="48" alt="" loading="lazy" decoding="async" />
+          <div>
+            <span class="dept-title">Cast your chart</span>
+            <span class="dept-list-dek">Your whole sky at birth &mdash; ten planets, <abbr class="ap-gloss" title="Rising sign (ascendant) — the sign on the eastern horizon at your birth">Rising</abbr>, and houses. Not one of twelve; yours alone. Use the form above or open Chart.</span>
+            <span class="dept-list-next">Cast free &rarr;</span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+      <li class="ap-reveal" style="--ap-reveal-i: 2">
+        <a href="ephemeris.html" class="dept-list-item" aria-label="Step 02 — The Sky instrument, free">
+          <span class="dept-number">02</span>
+          <img class="dept-thumb" src="img/engine/moon.webp" width="48" height="48" alt="" loading="lazy" decoding="async" />
+          <div>
+            <span class="dept-title">The Sky</span>
+            <span class="dept-list-dek">Trust the engine &mdash; Moon, planets, and mood recomputed on your device. Same math as your chart, for tonight.</span>
+            <span class="dept-list-next">Open Sky &rarr;</span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+      <li class="ap-reveal" style="--ap-reveal-i: 3">
+        <a href="moment.html" class="dept-list-item" aria-label="Step 03 — Moment keepsake, free card">
+          <span class="dept-number">03</span>
+          <img class="dept-thumb" src="img/engine/earth-moon.webp" width="48" height="48" alt="" loading="lazy" decoding="async" />
+          <div>
+            <span class="dept-title">Keep a night (Moment)</span>
+            <span class="dept-list-dek">Freeze birth, first date, wedding, memorial &mdash; free private card with zenith star and light-cone story.</span>
+            <span class="dept-list-next">Freeze a sky &rarr;</span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+      <li class="ap-reveal" style="--ap-reveal-i: 4">
+        <a href="horoscope.html" class="dept-list-item" aria-label="Step 04 — Daily sky, free">
+          <span class="dept-number">04</span>
+          <img class="dept-thumb" src="img/engine/jupiter.webp" width="48" height="48" alt="" loading="lazy" decoding="async" />
+          <div>
+            <span class="dept-title">Daily</span>
+            <span class="dept-list-dek">Today&rsquo;s sky against <em>your</em> placements &mdash; not a generic forecast for a twelfth of the world.</span>
+            <span class="dept-list-next">Open Daily &rarr;</span>
+          </div>
+          <span class="dept-badge free">Free</span>
+        </a>
+      </li>
+      <li class="ap-reveal" style="--ap-reveal-i: 5">
+        <a href="shop.html" class="dept-list-item" aria-label="Step 05 — Shop keepsakes">
+          <span class="dept-number">05</span>
+          <img class="dept-thumb" src="img/engine/saturn.webp" width="48" height="48" alt="" loading="lazy" decoding="async" />
+          <div>
+            <span class="dept-title">Shop keepsakes</span>
+            <span class="dept-list-dek">Deep Reading PDF and poster plates when checkout is live. Free Moment card first &mdash; cast above if you haven&rsquo;t.</span>
+            <span class="dept-list-next">Browse Shop &rarr;</span>
+          </div>
+          <span class="dept-badge free">Free + paid</span>
+        </a>
+      </li>
+    </ol>
+    <p class="ap-spine-bridge ap-spine-bridge--center" style="margin-top:1.25rem;">
+      Signs live in the <a href="horoscope.html">signs library</a> &mdash; they explain the language, not the path.
+    </p>
   </div>
 </section>
 
@@ -1089,7 +1094,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 
     </ul><!-- /cs-chip-row -->
 
-    <p class="cs-footer">Computed now &middot; geocentric &middot; VSOP87 &middot; <a href="explore.html" class="cs-footer__explore">Explore the full model &rarr;</a></p>
+    <p class="cs-footer">Computed now &middot; geocentric &middot; VSOP87 &middot; <a href="index.html#heroChapter" class="cs-footer__explore">Back to the Observatory &rarr;</a></p>
 
     <hr class="sky-chapter-rule" aria-hidden="true">
 
@@ -1678,7 +1683,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
         </a>
         <div class="ap-shop-featured__copy">
           <h3 class="ap-shop-featured__name"><a href="shop.html">Natal Sky Poster</a></h3>
-          <p class="ap-shop-featured__hook">Your sky at birth as a print-ready plate &mdash; private math, museum void-and-brass language.</p>
+          <p class="ap-shop-featured__hook">Your sky at birth as a print-ready plate &mdash; private math, museum void-and-silver language.</p>
           <span class="ap-shop-featured__price">From £6 &middot; opening soon</span>
         </div>
       </article>
@@ -1810,7 +1815,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
      Scripts — minimal, end of body
      ============================================================ -->
 <script defer src="js/raf-core.js?v=705"></script>
-<script defer src="js/ap-home-bootstrap.js?v=705"></script>
+<script defer src="js/ap-home-bootstrap.js?v=710"></script>
 <script defer src="js/ap-nav-interplay.js?v=705"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=703"></script>

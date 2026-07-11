@@ -194,8 +194,12 @@ body.ap-moment-page {
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid var(--mom-rim);
+  border: 1px solid rgba(200, 205, 214, 0.45);
+  box-shadow:
+    0 0 0 3px rgba(168, 176, 188, 0.14),
+    0 0 0 5px rgba(126, 200, 232, 0.10);
   flex-shrink: 0;
+  background: #000;
 }
 .mom-engine-window__cap {
   margin: 0;

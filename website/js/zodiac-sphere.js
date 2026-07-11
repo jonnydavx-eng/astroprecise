@@ -136,12 +136,57 @@
   }
 
   // ── Background stars ──────────────────────────────────────────────────────
+  // Random engraved field by default (schematic). In squareLens (observatory
+  // eyepiece) prefer real catalog stars projected on the ecliptic when
+  // StarCatalog is loaded — honest VSOP-adjacent sky behind the zodiac ring.
+
+  const EPS_ECL = 23.4392911 * Math.PI / 180; // mean obliquity J2000
+
+  function eqToEcliptic(raDeg, decDeg) {
+    const a = raDeg * Math.PI / 180;
+    const d = decDeg * Math.PI / 180;
+    const sinB = Math.sin(d) * Math.cos(EPS_ECL) - Math.cos(d) * Math.sin(EPS_ECL) * Math.sin(a);
+    const beta = Math.asin(Math.min(1, Math.max(-1, sinB)));
+    const y = Math.sin(a) * Math.cos(EPS_ECL) + Math.tan(d) * Math.sin(EPS_ECL);
+    const x = Math.cos(a);
+    let lambda = Math.atan2(y, x) * 180 / Math.PI;
+    if (lambda < 0) lambda += 360;
+    return { lon: lambda, lat: beta * 180 / Math.PI };
+  }
 
   function initStars() {
     stars = [];
+    // Real catalog path — observatory lens only (shared sphere stays schematic).
+    if (squareLens && window.StarCatalog && Array.isArray(StarCatalog.STARS) && StarCatalog.STARS.length) {
+      const cat = StarCatalog.STARS;
+      for (let i = 0; i < cat.length; i++) {
+        const s = cat[i];
+        if (s.mag == null || s.mag > 4.6) continue; // naked-eye-ish field; keeps draw cheap
+        if (s.ra == null || s.dec == null) continue;
+        const ecl = eqToEcliptic(s.ra, s.dec);
+        // Skip deep south/north extremes that sit outside the ring framing
+        if (Math.abs(ecl.lat) > 55) continue;
+        const mag = typeof s.mag === 'number' ? s.mag : 4;
+        stars.push({
+          real: true,
+          name: s.name || '',
+          lon: ecl.lon,
+          lat: ecl.lat,
+          r: Math.max(0.35, 1.85 - mag * 0.28),
+          a: Math.max(0.22, Math.min(0.95, 0.95 - mag * 0.12)),
+          tw: (i * 0.37) % (Math.PI * 2),
+          sp: 0.004 + (i % 7) * 0.0012,
+          brass: mag < 1.5,
+        });
+      }
+      if (stars.length >= 12) return; // enough catalog field
+      stars = []; // too thin — fall through to schematic
+    }
+    // Schematic engraved field (non-lens pages, or catalog missing/thin)
     const n = Math.floor(W * H / 2200);
     for (let i = 0; i < n; i++) {
       stars.push({
+        real: false,
         x: Math.random() * W,
         y: Math.random() * H,
         r: Math.random() * 1.3 + 0.2,
@@ -190,15 +235,52 @@
     ctx.fillRect(0, 0, W, H);
   }
 
+  function projectCatalogStar(s) {
+    // Project real star at ecliptic lon/lat with the same ring rotation + tilt.
+    const R = ringRadius();
+    const lat = (s.lat || 0) * Math.PI / 180;
+    const rLat = R * (0.55 + 0.45 * Math.cos(lat)); // compress high latitude slightly
+    const theta = ((s.lon || 0) * Math.PI / 180) + rotation;
+    const x3 = rLat * Math.cos(theta) * Math.cos(lat);
+    const y3d = rLat * Math.sin(theta) * Math.cos(lat);
+    const yOff = R * Math.sin(lat) * 0.72; // latitude offset on plate
+    const y3 = y3d * Math.cos(TILT) - yOff * Math.sin(TILT * 0.35);
+    const z3 = y3d * Math.sin(TILT);
+    const sc = FOCAL / (FOCAL + z3);
+    return {
+      x: cx + x3 * sc,
+      y: cy + y3 * sc,
+      s: sc,
+      depth: (z3 / R + 1) / 2,
+    };
+  }
+
   function drawStars(t) {
+    const reduce = prefersReduce;
     for (const s of stars) {
-      const alpha = s.a * (0.68 + 0.32 * Math.sin(s.tw + t * s.sp));
+      const tw = reduce ? 1 : (0.68 + 0.32 * Math.sin(s.tw + t * s.sp));
+      let alpha = s.a * tw;
+      let x = s.x;
+      let y = s.y;
+      let r = s.r;
+      if (s.real) {
+        const p = projectCatalogStar(s);
+        // Fade stars that sit behind the far side of the ring
+        const depthFade = 0.45 + 0.55 * (p.depth != null ? p.depth : 0.5);
+        alpha *= depthFade;
+        x = p.x;
+        y = p.y;
+        r = s.r * (0.75 + 0.35 * p.s);
+      }
+      if (alpha < 0.02) continue;
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.arc(x, y, r, 0, Math.PI * 2);
       if (s.brass) {
-        ctx.fillStyle = `rgba(168, 176, 188, ${alpha * 0.95})`;
+        ctx.fillStyle = 'rgba(168, 176, 188, ' + (alpha * 0.95).toFixed(3) + ')';
+      } else if (s.real) {
+        ctx.fillStyle = 'rgba(232, 235, 240, ' + alpha.toFixed(3) + ')';
       } else {
-        ctx.fillStyle = `rgba(236, 230, 216, ${alpha})`;
+        ctx.fillStyle = 'rgba(236, 230, 216, ' + alpha.toFixed(3) + ')';
       }
       ctx.fill();
     }

@@ -118,6 +118,9 @@
   --ap-cta-ink:   #050508;
   --ap-cta-grad:  linear-gradient(135deg, #4A90E0 0%, #7EC8E8 45%, #C8D8E8 100%);
 
+  /* LIVE status lamp (Model Window dot) — not a CTA */
+  --ap-live-dot:  var(--ap-aurora);
+
   /* ── Hairlines ── */
   --ap-hairline: rgba(232, 235, 240, 0.08);
   --ap-rim-light: rgba(232, 235, 240, 0.14);
