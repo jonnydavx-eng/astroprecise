@@ -1,0 +1,180 @@
+/* ============================================================================
+   Astro Precise — LIGHTHOUSE OVERTURE (homepage opening ceremony, 2026-07-11)
+   "Land on the lighthouse, pull back through it, follow the orrery into space."
+
+   A transient, once-per-session entrance overlay that plays OVER the booting
+   orrery and dissolves to reveal it. Pure CSS transforms/opacity — never touches
+   the WebGL engine. Warm-twilight ground (eye-comfort "walls") pulls back into a
+   cool cosmos (the "window"), handing the eye to the live model.
+
+   Everything is tunable from the vars on #ap-overture. Degrades: no-JS = never
+   injected; reduced-motion = a calm cross-dissolve; skippable; hard-capped.
+   ========================================================================== */
+
+#ap-overture {
+  /* ── tunable knobs (owner can retune the feel here) ── */
+  --ov-dur: 2600ms;              /* pull-back duration */
+  --ov-hold: 300ms;             /* initial arrival hold before launch */
+  --ov-ease: cubic-bezier(0.55, 0, 0.30, 1);
+  --ov-fly-scale: 0.13;         /* how small the ground shrinks to before dissolve */
+  --ov-reveal: 720ms;           /* final dissolve to the orrery */
+
+  /* warm-twilight ground palette (the "walls") */
+  --ov-sky-top: #140f1e;
+  --ov-sky-mid: #3a2331;
+  --ov-sky-warm: #8a4d38;
+  --ov-glow: #e9a86a;
+  --ov-brass: #E8C872;
+  --ov-ink: #ECE3D2;
+
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  overflow: hidden;
+  background: #05040a;
+  color: var(--ov-ink);
+  perspective: 1400px;
+  perspective-origin: 50% 46%;
+  contain: strict;
+  cursor: pointer;              /* click anywhere to skip */
+  opacity: 1;
+  transition: opacity var(--ov-reveal) ease;
+}
+#ap-overture[hidden] { display: none; }
+
+/* The parallax world that the "camera" pulls back from. */
+#ap-overture .ov-world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  transform: scale(1.06);
+}
+
+/* ── Sky + stars (recede slowest — the deep backdrop) ── */
+#ap-overture .ov-sky {
+  position: absolute; inset: -8%;
+  background:
+    radial-gradient(120% 90% at 50% 96%, rgba(233,168,106,0.42) 0%, rgba(192,122,72,0.14) 34%, transparent 66%),
+    linear-gradient(to bottom,
+      var(--ov-sky-top) 0%, #241a2c 42%, var(--ov-sky-mid) 66%,
+      var(--ov-sky-warm) 86%, #9c5f3d 100%);
+  transform: translateZ(-600px) scale(1.7);
+}
+#ap-overture .ov-stars {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  transform: translateZ(-560px) scale(1.66);
+  opacity: 0.9; pointer-events: none;
+}
+
+/* ── The cool cosmos that closes in as we rise off the ground ── */
+#ap-overture .ov-space {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(140% 120% at 50% 44%, transparent 30%, rgba(6,8,14,0.72) 62%, #05070c 100%),
+    radial-gradient(60% 44% at 70% 34%, rgba(126,200,232,0.10) 0%, transparent 60%);
+}
+
+/* ── Mountain ridges (parallax depth) ── */
+#ap-overture .ov-ridge { position: absolute; left: -6%; right: -6%; bottom: 0; display: block; }
+#ap-overture .ov-ridge--far  { transform: translateZ(-360px) scale(1.42); }
+#ap-overture .ov-ridge--mid  { transform: translateZ(-120px) scale(1.14); }
+#ap-overture .ov-ridge--near { transform: translateZ(120px)  scale(0.9); }
+
+/* ── The lighthouse on the mid peak: tower + lamp + sweeping beam ── */
+#ap-overture .ov-lighthouse {
+  position: absolute;
+  left: 50%; top: 42%;
+  transform: translate(-50%, -50%) translateZ(-40px);
+  width: clamp(52px, 7vw, 92px);
+  aspect-ratio: 1;
+}
+#ap-overture .ov-beam {
+  position: absolute; left: 50%; top: 50%;
+  width: 300%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(from 0deg,
+    transparent 0 20deg, rgba(233,192,122,0.32) 32deg, rgba(233,192,122,0.02) 46deg, transparent 60deg 360deg);
+  mix-blend-mode: screen;
+  filter: blur(2px);
+  animation: ov-sweep 5.5s linear infinite;
+  pointer-events: none;
+}
+#ap-overture .ov-lamp {
+  position: absolute; left: 50%; top: 50%;
+  width: 42%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,241,214,0.95) 0%, rgba(233,192,122,0.55) 38%, transparent 72%);
+  animation: ov-pulse 2.6s ease-in-out infinite;
+}
+
+/* ── Copy (brand + a single quiet caption; fades as we launch) ── */
+#ap-overture .ov-mark {
+  position: absolute; top: max(18px, env(safe-area-inset-top)); left: 20px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(236,227,210,0.62);
+}
+#ap-overture .ov-mark b { color: var(--ov-ink); font-weight: 600; }
+#ap-overture .ov-caption {
+  position: absolute; left: 0; right: 0; bottom: clamp(48px, 12vh, 120px);
+  text-align: center;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(236,227,210,0.66);
+}
+#ap-overture .ov-skip {
+  position: absolute; top: max(16px, env(safe-area-inset-top)); right: 18px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(236,227,210,0.55);
+  background: rgba(10,8,12,0.35); border: 1px solid rgba(236,227,210,0.16);
+  border-radius: 999px; padding: 7px 13px; cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+#ap-overture .ov-skip:hover { color: var(--ov-ink); border-color: rgba(233,200,120,0.5); }
+#ap-overture .ov-copy { transition: opacity 600ms ease; }
+
+/* ── PLAYING: the camera pulls back through the lighthouse into space ── */
+#ap-overture.is-playing .ov-world {
+  animation: ov-pullback var(--ov-dur) var(--ov-ease) var(--ov-hold) forwards;
+}
+#ap-overture.is-playing .ov-space {
+  animation: ov-space-in var(--ov-dur) ease-in var(--ov-hold) forwards;
+}
+#ap-overture.is-playing .ov-ridge--near { animation: ov-near-out var(--ov-dur) var(--ov-ease) var(--ov-hold) forwards; }
+#ap-overture.is-playing .ov-copy { opacity: 0; transition-delay: 200ms; }
+
+#ap-overture.is-revealing { opacity: 0; }
+
+@keyframes ov-pullback {
+  0%   { transform: scale(1.06); filter: blur(0px); }
+  62%  { filter: blur(0px); }
+  100% { transform: scale(var(--ov-fly-scale)) translateY(-3%); filter: blur(3px); opacity: 0.28; }
+}
+@keyframes ov-space-in {
+  0%   { opacity: 0; }
+  55%  { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+@keyframes ov-near-out {
+  0%   { transform: translateZ(120px) scale(0.9) translateY(0); }
+  100% { transform: translateZ(360px) scale(1.25) translateY(34%); opacity: 0; }
+}
+@keyframes ov-sweep { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes ov-pulse { 0%, 100% { opacity: 0.72; } 50% { opacity: 1; } }
+
+/* ── Reduced motion / low-tier: no camera move — a calm cross-dissolve only ── */
+#ap-overture.is-reduced .ov-world,
+#ap-overture.is-reduced .ov-ridge--near,
+#ap-overture.is-reduced .ov-space { animation: none !important; }
+#ap-overture.is-reduced .ov-space { opacity: 0.55; }
+#ap-overture.is-reduced .ov-beam,
+#ap-overture.is-reduced .ov-lamp { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  #ap-overture .ov-beam, #ap-overture .ov-lamp { animation: none !important; }
+}

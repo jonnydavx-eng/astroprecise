@@ -217,6 +217,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
        !important sheets above; any sheet appended after it silently reverts
        the observatory layout (visual-check asserts deck position:static). -->
   <link rel="stylesheet" href="css/ap-observatory-home.css?v=705" id="ap-css-observatory-home">
+  <link rel="stylesheet" href="css/ap-lighthouse-overture.css?v=706" id="ap-css-lighthouse-overture">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
   <link rel="modulepreload" href="js/orrery-webgl.js?v=703">
@@ -1809,6 +1810,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
+<script defer src="js/ap-lighthouse-overture.js?v=706"></script>
 <script defer src="js/raf-core.js?v=705"></script>
 <script defer src="js/ap-home-bootstrap.js?v=705"></script>
 <script defer src="js/ap-nav-interplay.js?v=705"></script>
