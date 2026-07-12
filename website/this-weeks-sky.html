@@ -290,6 +290,7 @@
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Page controller -->
+  <script src="js/ap-deep-link.js?v=718" defer></script>
   <script>
   (function () {
     'use strict';
@@ -389,9 +390,10 @@
               var modelHref = '';
               try {
                 if (!isNaN(t.getTime())) {
-                  var iso = t.toISOString();
-                  modelHref = 'explore.html#m=' + encodeURIComponent(iso) +
-                    (bodyId ? ('&focus=' + encodeURIComponent(bodyId)) : '');
+                  modelHref = (window.APDeepLink && APDeepLink.buildSkyLink)
+                    ? APDeepLink.buildSkyLink({ m: t, focus: bodyId || undefined })
+                    : 'explore.html#m=' + encodeURIComponent(t.toISOString()) +
+                      (bodyId ? ('&focus=' + encodeURIComponent(bodyId)) : '');
                 }
               } catch (eM) { modelHref = ''; }
               var modelBit = modelHref

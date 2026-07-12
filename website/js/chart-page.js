@@ -639,6 +639,9 @@
     renderTabs(chart);
     initTabs();
     renderWhatsNext(chart);
+    if (window.APSkyBridge && typeof APSkyBridge.mountChartModelCta === 'function') {
+      APSkyBridge.mountChartModelCta(chart);
+    }
     renderDeepTeaser(chart);
     initWallpaperLead(chart);
     initEmailCapture(chart);
@@ -676,14 +679,18 @@
     const name = firstNameOf(chart.name) || 'your';
     const bundle = bundleUpsellProduct();
 
-    // Site spine after cast: Sky → Keep → Daily → Reading (Match/Transits secondary)
+    const modelHref = (window.APSkyBridge && APSkyBridge.buildLinkFromChart)
+      ? APSkyBridge.buildLinkFromChart(chart, { focus: 'earth' })
+      : 'explore.html#m=now&focus=earth';
+
+    // Site spine after cast: Model → Keep → Daily → Reading (ephemeris secondary)
     const steps = [
       {
-        tag: '02 · Sky',
-        title: "Tonight's living sky",
-        desc: 'Same engine as this chart — Moon, planets, and mood computed live on your device.',
-        href: 'ephemeris.html',
-        cta: 'Open Sky →',
+        tag: '02 · Model',
+        title: 'See your sky in the 3D model',
+        desc: 'Fly to your birth moment in the full orrery — same VSOP87 engine, Earth rest frame.',
+        href: modelHref,
+        cta: 'Open model →',
       },
       {
         tag: '03 · Keep',
@@ -744,7 +751,7 @@
 
     host.innerHTML = `
       <div class="chart-whats-next__head">
-        <p class="chart-whats-next__eyebrow">Your path · Cast → Sky → Keep → Daily → Reading</p>
+        <p class="chart-whats-next__eyebrow">Your path · Cast → Model → Keep → Daily → Reading</p>
         <h3 class="chart-whats-next__title">Chart cast — next steps in order</h3>
         <p class="chart-whats-next__sub">One spine, free first. Everything still runs in your browser.</p>
       </div>

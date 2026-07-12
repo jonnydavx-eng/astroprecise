@@ -46,6 +46,10 @@
 
   function loadSavedChartPlace() {
     try {
+      if (window.AstroProfile && typeof AstroProfile.getActiveChart === 'function') {
+        var active = AstroProfile.getActiveChart();
+        if (active && active.lat != null) return active;
+      }
       if (window.AstroProfile && AstroProfile.getCharts) {
         var charts = AstroProfile.getCharts();
         if (charts && charts[0] && charts[0].lat != null) {
@@ -68,7 +72,13 @@
     if (!c) return;
     if (c.birthDate && $('mom-date') && !$('mom-date').value) $('mom-date').value = c.birthDate;
     if (c.birthTime && $('mom-time') && !$('mom-time').value) $('mom-time').value = String(c.birthTime).slice(0, 5);
-    if (c.city && $('mom-place') && !$('mom-place').value) $('mom-place').value = c.city;
+    if ((c.city || c.birthCity) && $('mom-place') && !$('mom-place').value) {
+      $('mom-place').value = c.city || c.birthCity;
+    }
+    if (c.name && $('mom-title') && !$('mom-title').value) {
+      $('mom-title').value = OCCASIONS.birth.titleDefault;
+      $('mom-title').dataset.autoKind = 'birth';
+    }
     if (c.lat != null) {
       state.lat = Number(c.lat);
       state.lon = Number(c.lon);
@@ -332,11 +342,15 @@
     var modelLink = $('mom-model-link');
     if (modelLink && moment.utc) {
       try {
-        var iso = moment.utc instanceof Date ? moment.utc.toISOString() : String(moment.utc);
-        modelLink.href = 'explore.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+        var linkOpts = { m: moment.utc, focus: 'earth' };
+        modelLink.href = (window.APDeepLink && APDeepLink.buildSkyLink)
+          ? APDeepLink.buildSkyLink(linkOpts)
+          : 'explore.html#m=now&focus=earth';
         modelLink.hidden = false;
       } catch (eLink) {
-        modelLink.href = 'explore.html#m=now&focus=earth';
+        modelLink.href = (window.APDeepLink && APDeepLink.buildSkyLink)
+          ? APDeepLink.buildSkyLink({ m: 'now', focus: 'earth' })
+          : 'explore.html#m=now&focus=earth';
         modelLink.hidden = false;
       }
     }

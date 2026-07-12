@@ -129,12 +129,8 @@
   function wire() {
     build();
     onboard();
-    // PRIMARY: a single tap/click on a planet fires `orrery-planet-click` (see the
-    // engine's pick()). This is the natural gesture — it must open the launchpad.
+    // Click-only: engine boot / focusPlanet('earth') must NOT auto-open the panel.
     document.addEventListener('orrery-planet-click', function (e) { var id = idFrom(e); if (id) show(id); });
-    // Also: double-click / deck focus (orrery-planet-focus) and select/deselect.
-    document.addEventListener('orrery-planet-focus', function (e) { var id = idFrom(e); if (id) show(id); });
-    document.addEventListener('orrery-planet-select', function (e) { var id = idFrom(e); if (id) show(id); else hide(); });
     // The deck's own focus pills should also open the launchpad (belt + braces).
     var pills = document.querySelectorAll('[data-lite-planet]');
     for (var i = 0; i < pills.length; i++) {

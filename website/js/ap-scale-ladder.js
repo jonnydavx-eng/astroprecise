@@ -250,6 +250,9 @@
         chip.hidden = true;
       }
     }
+    if (window.APSkyBridge && typeof APSkyBridge.mountHomeSkyLink === 'function' && val) {
+      APSkyBridge.mountHomeSkyLink(val);
+    }
   }
 
   function driveBirthDate(val) {
@@ -258,9 +261,12 @@
     if (!dt) {
       birthActive = false;
       lastBirthKey = '';
-      if (chip) { chip.hidden = true; chip.textContent = ''; }
-      if (currentBeat === 'earth') setCaption(BEAT_CAPTION.earth);
-      return;
+    if (chip) { chip.hidden = true; chip.textContent = ''; }
+    if (window.APSkyBridge && typeof APSkyBridge.mountHomeSkyLink === 'function') {
+      APSkyBridge.mountHomeSkyLink('');
+    }
+    if (currentBeat === 'earth') setCaption(BEAT_CAPTION.earth);
+    return;
     }
     var key = val;
     if (key === lastBirthKey) return;
@@ -281,6 +287,9 @@
     lastBirthKey = '';
     var chip = document.getElementById('ap-birth-sky-chip');
     if (chip) { chip.hidden = true; chip.textContent = ''; }
+    if (window.APSkyBridge && typeof APSkyBridge.mountHomeSkyLink === 'function') {
+      APSkyBridge.mountHomeSkyLink('');
+    }
     var eng = O();
     if (eng && typeof eng.snapToNow === 'function' && isLive()) {
       try { eng.snapToNow(); } catch (e) { /* optional */ }

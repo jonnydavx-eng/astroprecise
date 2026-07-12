@@ -624,8 +624,15 @@
       var dialModel = document.getElementById('dial-model-link');
       if (dialModel) {
         try {
-          dialModel.href = 'explore.html#m=now&focus=' + encodeURIComponent(RULER_ENGINE_STILL[signKey] || 'earth');
-        } catch (eDial) { dialModel.href = 'explore.html#m=now'; }
+          var focusBody = RULER_ENGINE_STILL[signKey] || 'earth';
+          dialModel.href = (window.APDeepLink && APDeepLink.buildSkyLink)
+            ? APDeepLink.buildSkyLink({ m: 'now', focus: focusBody })
+            : 'explore.html#m=now&focus=' + encodeURIComponent(focusBody);
+        } catch (eDial) {
+          dialModel.href = (window.APDeepLink && APDeepLink.buildSkyLink)
+            ? APDeepLink.buildSkyLink({ m: 'now' })
+            : 'explore.html#m=now';
+        }
       }
       var guide = document.getElementById('srp-guide-link');
       if (guide) {

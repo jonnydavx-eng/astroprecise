@@ -297,11 +297,16 @@
           try {
             var p = phase.parts;
             if (!p) return '';
-            var iso = new Date(Date.UTC(p.y, p.m - 1, p.d, 12, 0, 0)).toISOString();
-            return '<a class="btn btn--outline" href="explore.html#m=' +
-              encodeURIComponent(iso) + '&focus=moon">See this Moon in the 3D model &rarr;</a>';
+            var utc = new Date(Date.UTC(p.y, p.m - 1, p.d, 12, 0, 0));
+            var href = (window.APDeepLink && APDeepLink.buildSkyLink)
+              ? APDeepLink.buildSkyLink({ m: utc, focus: 'moon' })
+              : 'explore.html#m=now&focus=moon';
+            return '<a class="btn btn--outline" href="' + href + '">See this Moon in the 3D model &rarr;</a>';
           } catch (e) {
-            return '<a class="btn btn--outline" href="explore.html#m=now&focus=moon">See the Moon in the 3D model &rarr;</a>';
+            var fallback = (window.APDeepLink && APDeepLink.buildSkyLink)
+              ? APDeepLink.buildSkyLink({ m: 'now', focus: 'moon' })
+              : 'explore.html#m=now&focus=moon';
+            return '<a class="btn btn--outline" href="' + fallback + '">See the Moon in the 3D model &rarr;</a>';
           }
         })() +
       '</div>';
