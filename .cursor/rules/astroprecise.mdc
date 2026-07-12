@@ -1,0 +1,17 @@
+---
+description: AstroPrecise website laws — MODEL-SURFACE, SW bump, WebGL diag, no force-push
+globs: website/**/*
+alwaysApply: true
+---
+
+# AstroPrecise (website/)
+
+- Canonical: `C:\Users\jonny\OneDrive\astroprecise`. Preview **:8790** only.
+- Honesty: never fake astronomy, LIVE badges, or stats; label sources or admit unavailable.
+- Surfaces A/B/C: follow `docs/MODEL-SURFACE-CONTRACT.md`. One WebGL context per page. Emitters use `APDeepLink` / `APSkyBridge`; receiver is `explore.html#m=`.
+- Cache bust: bump `website/sw.js` `const V` and matching `?v=` on edited assets. Localhost / `?nosw=1` skips SW (see `app.js`).
+- 3D testing: `npm run test:ui` or `node tools/_diag-click.mjs` — Cursor’s browser cannot validate WebGL. Do not trust `focusPlanet()` alone.
+- Sign pages: generate via `tools/generate-sign-pages.mjs` only.
+- Git: never force-push. If local is ahead of `origin/main`, say so — live will not update until intentional push.
+- Overlay trap: `.orrery-dom-labels` must not steal pointer events from the canvas.
+- After UI: visual-check when possible + `after_project_edit.ps1 -Project "AstroPrecise"` + handoff line when deploy/agents affected.

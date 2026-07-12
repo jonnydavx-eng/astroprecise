@@ -33,8 +33,8 @@ Most chat about “AstroPrecise” means **`website/`**. See `website/AGENTS.md`
 - Site preview: repo `launch.bat` / serve `website` on **:8790**.
 - After **any** `website/` UI change: run visual-check skill / `tools/visual-check` (`npm run all` minimum for orrery/CSS).
 - Bump cache-bust (`?v=` / SW `ap-v###`) when shipping asset changes.
-- Tests before push: root `npm test` (engine gates) when touching JS engines.
-- Deploy: push `website/**` to `main` (Actions build `dist/` + Pages). No manual gh-pages.
+- Tests before push: root `npm test` (engine gates) when touching JS engines; `npm run test:ui` for WebGL click + deeplink spine.
+- Deploy: push `website/**` to `main` (Actions build `dist/` + Pages). No manual gh-pages. **Never force-push.** If ahead of origin, warn — live will not update until push.
 - After served edits:  
   `after_project_edit.ps1 -Project "AstroPrecise"`
 

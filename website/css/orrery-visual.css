@@ -1185,13 +1185,18 @@ html.ap-lite-hero.orrery-full .orrery-lite-poster {
 }
 
 html.ap-lite-hero.orrery-full #orrery-canvas,
-html.ap-lite-hero.orrery-full .orrery-viewport-controls,
+html.ap-lite-hero.orrery-full .orrery-viewport-controls {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Labels / HUD / film overlays must NEVER steal canvas drags/clicks (P0). */
 html.ap-lite-hero.orrery-full .orrery-dom-labels,
 html.ap-lite-hero.orrery-full .journey-hud,
 html.ap-lite-hero.orrery-full .orrery-cine-vignette,
 html.ap-lite-hero.orrery-full .orrery-cine-grain {
   visibility: visible;
-  pointer-events: auto;
+  pointer-events: none !important;
 }
 
 html.ap-lite-hero.orrery-full .orrery-console__deck .orrery-scale-block,

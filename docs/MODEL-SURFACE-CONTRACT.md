@@ -1,6 +1,6 @@
 # Model Surface Contract
 
-**Tip:** ap-v720 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
+**Tip:** ap-v721 · **Scope:** website/ only · **Owner law:** honesty over spectacle, one WebGL context per page.
 
 Three surfaces — never mix their honesty labels.
 
