@@ -1,0 +1,96 @@
+/* ============================================================================
+   THE LIVING OBSERVATORY — Phase 1: actionable-planet launchpad
+   A small DOM panel that appears when a planet is focused in the 3D model and
+   turns it into navigation. Lives in the plinth band (never over the disc),
+   styled in the Jet · Silver · Aurora language, slides up, degrades gracefully.
+   ============================================================================ */
+
+#ap-planet-actions.ap-pa {
+  position: fixed;
+  left: 50%;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  transform: translate(-50%, 12px);
+  z-index: 40;                         /* above the canvas, below modals */
+  width: min(560px, calc(100vw - 24px));
+  padding: 12px 14px 13px;
+  border-radius: 16px;
+  background: linear-gradient(165deg, rgba(24, 24, 32, 0.92), rgba(8, 8, 12, 0.82));
+  border: 1px solid var(--ap-silver-a18, rgba(200, 205, 214, 0.18));
+  box-shadow: 0 -2px 0 0 var(--ap-aurora-a16, rgba(126, 200, 232, 0.16)) inset,
+              0 18px 50px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  color: var(--ap-silver-bright, #E8EBF0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease, transform 380ms cubic-bezier(.2, .7, .2, 1);
+}
+#ap-planet-actions.ap-pa.is-open { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+
+#ap-planet-actions .ap-pa__head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 6px 10px;
+  margin-bottom: 10px;
+}
+#ap-planet-actions .ap-pa__eyebrow {
+  grid-column: 1 / -1;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ap-aurora, #7EC8E8);
+}
+#ap-planet-actions .ap-pa__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.35rem; font-weight: 600; line-height: 1;
+  color: var(--ap-silver-bright, #E8EBF0);
+}
+#ap-planet-actions .ap-pa__sub {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px; letter-spacing: 0.06em;
+  color: var(--ap-silver-dim, #8B919C);
+  align-self: center;
+}
+#ap-planet-actions .ap-pa__close {
+  grid-row: 1 / 3; grid-column: 3;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--ap-silver-a18, rgba(200, 205, 214, 0.18));
+  background: transparent; color: var(--ap-silver-dim, #8B919C);
+  font-size: 18px; line-height: 1; cursor: pointer;
+  transition: color .15s ease, border-color .15s ease;
+}
+#ap-planet-actions .ap-pa__close:hover { color: var(--ap-silver-bright, #E8EBF0); border-color: var(--ap-aurora-a40, rgba(126, 200, 232, 0.4)); }
+
+#ap-planet-actions .ap-pa__acts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 8px;
+}
+#ap-planet-actions .ap-pa__act {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 9px 12px; border-radius: 11px; text-decoration: none;
+  background: var(--ap-jet-raised, #18181E);
+  border: 1px solid var(--ap-silver-a12, rgba(200, 205, 214, 0.12));
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+#ap-planet-actions .ap-pa__act:hover,
+#ap-planet-actions .ap-pa__act:focus-visible {
+  border-color: var(--ap-aurora-a40, rgba(126, 200, 232, 0.4));
+  background: var(--ap-jet-elevated, #22222A);
+  transform: translateY(-1px);
+  outline: none;
+}
+#ap-planet-actions .ap-pa__act-label {
+  font-size: 0.92rem; font-weight: 600; color: var(--ap-silver-bright, #E8EBF0);
+}
+#ap-planet-actions .ap-pa__act-hint {
+  font-size: 0.72rem; color: var(--ap-silver-dim, #8B919C);
+}
+
+@media (max-width: 520px) {
+  #ap-planet-actions.ap-pa { border-radius: 16px 16px 0 0; bottom: 0; width: 100vw; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+  #ap-planet-actions .ap-pa__acts { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #ap-planet-actions.ap-pa { transition: opacity 200ms ease; transform: translate(-50%, 0); }
+  #ap-planet-actions.ap-pa:not(.is-open) { transform: translate(-50%, 0); }
+}
