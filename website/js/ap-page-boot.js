@@ -8,6 +8,15 @@
 
   document.documentElement.classList.add('ap-enchanted');
 
+  // Client error beacon (session buffer; optional future Sentry DSN via meta)
+  if (!document.getElementById('ap-error-beacon')) {
+    var _eb = document.createElement('script');
+    _eb.id = 'ap-error-beacon';
+    _eb.src = 'js/ap-error-beacon.js?v=1';
+    _eb.defer = true;
+    document.head.appendChild(_eb);
+  }
+
   function ensureSitePolishCss() {
     if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
     var l = document.createElement('link');
