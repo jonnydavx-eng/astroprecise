@@ -86,9 +86,44 @@
   font-size: 0.72rem; color: var(--ap-silver-dim, #8B919C);
 }
 
+/* ── First-visit discoverability hint (floating; auto-dismisses on engage) ── */
+#ap-planet-hint.ap-planet-hint {
+  position: fixed; left: 50%; bottom: max(90px, 16vh);
+  transform: translate(-50%, 8px);
+  z-index: 38;                         /* below the launchpad (40) */
+  display: inline-flex; align-items: center; gap: 9px;
+  max-width: calc(100vw - 28px);
+  padding: 8px 8px 8px 13px; border-radius: 999px;
+  background: rgba(16, 16, 20, 0.84);
+  border: 1px solid var(--ap-aurora-a28, rgba(126, 200, 232, 0.28));
+  color: var(--ap-silver-bright, #E8EBF0);
+  backdrop-filter: blur(8px);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.03em;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s ease, transform .4s ease;
+}
+#ap-planet-hint.ap-planet-hint.is-on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+#ap-planet-hint .ap-planet-hint__dot {
+  width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto;
+  background: var(--ap-aurora, #7EC8E8); box-shadow: 0 0 8px 1px var(--ap-aurora, #7EC8E8);
+  animation: ap-ph-pulse 2s ease-in-out infinite;
+}
+#ap-planet-hint .ap-planet-hint__text { min-width: 0; }
+#ap-planet-hint .ap-planet-hint__close {
+  flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; border: 0;
+  background: transparent; color: var(--ap-silver-dim, #8B919C); font-size: 15px; line-height: 1; cursor: pointer;
+}
+#ap-planet-hint .ap-planet-hint__close:hover { color: var(--ap-silver-bright, #E8EBF0); }
+@keyframes ap-ph-pulse { 0%, 100% { opacity: .5; transform: scale(.82); } 50% { opacity: 1; transform: scale(1); } }
+
 @media (max-width: 520px) {
   #ap-planet-actions.ap-pa { border-radius: 16px 16px 0 0; bottom: 0; width: 100vw; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
   #ap-planet-actions .ap-pa__acts { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #ap-planet-hint.ap-planet-hint { transition: opacity .2s ease; transform: translate(-50%, 0); }
+  #ap-planet-hint .ap-planet-hint__dot { animation: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   #ap-planet-actions.ap-pa { transition: opacity 200ms ease; transform: translate(-50%, 0); }

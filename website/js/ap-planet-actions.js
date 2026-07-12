@@ -49,6 +49,7 @@
 
   function show(id) {
     if (!panel || !id) return;
+    dismissHint();            // they've engaged a planet — the hint has done its job
     lastId = id;
     var r = readout(id);
     var name = (r && r.name) || cap(id);
@@ -73,6 +74,31 @@
     if (!panel) return;
     panel.classList.remove('is-open');
     lastId = null;
+  }
+
+  // ── Discoverability: planets aren't obviously clickable. A first-visit hint +
+  //    a "tap a planet" caption on the control deck (the reliable click surface). ──
+  var HINT_KEY = 'ap_planet_hint_seen';
+  var hintEl = null;
+  function dismissHint() {
+    if (hintEl) { hintEl.classList.remove('is-on'); }
+    try { localStorage.setItem(HINT_KEY, '1'); } catch (e) {}
+  }
+  function onboard() {
+    // A dismissible first-visit hint (floating — never touches the deck layout).
+    var seen = false;
+    try { seen = localStorage.getItem(HINT_KEY) === '1'; } catch (e) {}
+    if (seen) return;
+    hintEl = document.createElement('div');
+    hintEl.id = 'ap-planet-hint';
+    hintEl.className = 'ap-planet-hint';
+    hintEl.innerHTML = '<span class="ap-planet-hint__dot" aria-hidden="true"></span>' +
+      '<span class="ap-planet-hint__text">Tap a planet — or a pill below — to read its live sky</span>' +
+      '<button type="button" class="ap-planet-hint__close" aria-label="Dismiss">×</button>';
+    document.body.appendChild(hintEl);
+    hintEl.querySelector('.ap-planet-hint__close').addEventListener('click', dismissHint);
+    // reveal after the model has settled
+    setTimeout(function () { if (hintEl) hintEl.classList.add('is-on'); }, 1600);
   }
 
   function build() {
@@ -102,6 +128,7 @@
 
   function wire() {
     build();
+    onboard();
     // PRIMARY: a single tap/click on a planet fires `orrery-planet-click` (see the
     // engine's pick()). This is the natural gesture — it must open the launchpad.
     document.addEventListener('orrery-planet-click', function (e) { var id = idFrom(e); if (id) show(id); });
