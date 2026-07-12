@@ -2,7 +2,7 @@
 /* Award homepage — lazy ephemeris + hero instrument bundle (perf) */
 
 (function () {
-  var V = "715";
+  var V = "717";
 
   window.__loadEphemeris = function (cb) {
     if (window.AstroEphemeris) {

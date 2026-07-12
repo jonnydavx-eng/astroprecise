@@ -1194,6 +1194,13 @@ html.ap-lite-hero.orrery-full .orrery-cine-grain {
   pointer-events: auto;
 }
 
+/* FIX (2026-07-11): in orrery-full the full-canvas .orrery-dom-labels overlay was
+   set pointer-events:auto (rule above), so it swallowed EVERY click + drag and the
+   3D model felt dead/"fixed" — you literally could not click or turn it. The overlay
+   must be click-through; only the individual planet-name chips stay interactive. */
+html.ap-lite-hero.orrery-full .orrery-dom-labels { pointer-events: none !important; }
+html.ap-lite-hero.orrery-full .orrery-dom-labels .orrery-dom-label { pointer-events: auto !important; }
+
 html.ap-lite-hero.orrery-full .orrery-console__deck .orrery-scale-block,
 html.ap-lite-hero.orrery-full .orrery-console__deck .orrery-aux-row,
 html.ap-lite-hero.orrery-full .orrery-console__deck .orrery-controls,
