@@ -2,7 +2,7 @@
 /* Award homepage — lazy ephemeris + hero instrument bundle (perf) */
 
 (function () {
-  var V = "717";
+  var V = "720";
 
   window.__loadEphemeris = function (cb) {
     if (window.AstroEphemeris) {
@@ -315,6 +315,18 @@
     }
 
     /* ── Scale Ladder + birth-date sky caption (WOW slices 3–4) ── */
+    if (!document.querySelector('script[src*="ap-deep-link"]')) {
+      var dl = document.createElement("script");
+      dl.src = "js/ap-deep-link.js?v=" + V;
+      dl.defer = true;
+      document.body.appendChild(dl);
+    }
+    if (!document.querySelector('script[src*="ap-sky-bridge"]')) {
+      var bridge = document.createElement("script");
+      bridge.src = "js/ap-sky-bridge.js?v=" + V;
+      bridge.defer = true;
+      document.body.appendChild(bridge);
+    }
     if (!document.querySelector('script[src*="ap-scale-ladder"]')) {
       var ladder = document.createElement("script");
       ladder.src = "js/ap-scale-ladder.js?v=" + V;

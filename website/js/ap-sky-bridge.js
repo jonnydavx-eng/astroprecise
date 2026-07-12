@@ -1,10 +1,16 @@
 /**
- * Astro Precise — Personal Sky bridge (Stage 2).
+ * Astro Precise — Personal Sky bridge (Stage 2–3).
  * Chart/moment → explore.html deep link + optional home orrery handoff.
  * Uses APDeepLink.buildSkyLink() for the H1 #m= contract.
  */
 (function () {
   'use strict';
+
+  var PLANET_FOCUS = {
+    Sun: 'sun', Moon: 'moon', Mercury: 'mercury', Venus: 'venus',
+    Mars: 'mars', Jupiter: 'jupiter', Saturn: 'saturn',
+    Uranus: 'uranus', Neptune: 'neptune', Pluto: 'pluto'
+  };
 
   function esc(s) {
     return String(s == null ? '' : s)
@@ -80,8 +86,8 @@
   function buildLinkFromChart(chart, opts) {
     opts = opts || {};
     var m = chartMomentIso(chart) || 'now';
-    if (window.APDeepLink && APDeepLink.buildSkyLink) {
-      return APDeepLink.buildSkyLink({
+    if (window.APDeepLink && window.APDeepLink.buildSkyLink) {
+      return window.APDeepLink.buildSkyLink({
         m: m,
         focus: opts.focus || 'earth',
         scale: opts.scale,
@@ -99,8 +105,8 @@
   function buildLinkFromDate(dateVal, opts) {
     opts = opts || {};
     var m = dateOnlyMomentIso(dateVal) || 'now';
-    if (window.APDeepLink && APDeepLink.buildSkyLink) {
-      return APDeepLink.buildSkyLink({ m: m, focus: opts.focus || 'earth' });
+    if (window.APDeepLink && window.APDeepLink.buildSkyLink) {
+      return window.APDeepLink.buildSkyLink({ m: m, focus: opts.focus || 'earth' });
     }
     return 'explore.html#m=' + encodeURIComponent(m) + '&focus=earth';
   }
@@ -191,6 +197,94 @@
    * Home hero birth-date → optional explore deep link (non-blocking, mobile-safe).
    * @param {string} dateVal YYYY-MM-DD
    */
+  /** @param {string} planetName e.g. "Venus" */
+  function planetFocusSlug(planetName) {
+    return PLANET_FOCUS[planetName] || null;
+  }
+
+  /**
+   * Emit ap-sky-ready for moment freeze / share closure (no home orrery drive).
+   * @param {object} moment from moment-page computeMoment()
+   * @returns {{ m: string, link: string }|null}
+   */
+  function emitMomentSkyReady(moment) {
+    if (!moment || !moment.utc) return null;
+    var iso = moment.utc.toISOString ? moment.utc.toISOString() : String(moment.utc);
+    var link = (window.APDeepLink && window.APDeepLink.buildSkyLink)
+      ? window.APDeepLink.buildSkyLink({ m: iso, focus: 'earth' })
+      : 'explore.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+    try {
+      document.dispatchEvent(new CustomEvent('ap-sky-ready', {
+        bubbles: true,
+        detail: {
+          moment: moment,
+          m: iso,
+          link: link,
+          focus: 'earth',
+          source: 'moment-freeze'
+        }
+      }));
+    } catch (e) { /* optional */ }
+    return { m: iso, link: link };
+  }
+
+  /**
+   * Chart wheel planet tap → explore with birth m + body focus.
+   * @param {object} chart
+   * @param {Element|string} wheelContainer
+   */
+  function mountChartPlanetDoorway(chart, wheelContainer) {
+    if (!chart) return;
+    var wheel = typeof wheelContainer === 'string'
+      ? document.getElementById(wheelContainer) : wheelContainer;
+    if (!wheel) return;
+    var svg = wheel.querySelector('svg.ap-chart-svg') || wheel.querySelector('svg');
+    if (!svg) return;
+
+    svg.querySelectorAll('.planet-glyph').forEach(function (g) {
+      var name = g.getAttribute('data-planet');
+      var focus = planetFocusSlug(name);
+      if (!focus) return;
+
+      g.classList.add('planet-glyph--doorway');
+      g.setAttribute('data-sky-doorway', focus);
+      g.setAttribute('role', 'link');
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('aria-label', 'See ' + name + ' in the 3D model at your birth sky');
+
+      if (g._apDoorwayGo) {
+        g.removeEventListener('click', g._apDoorwayGo);
+        g.removeEventListener('keydown', g._apDoorwayGo);
+      }
+      g._apDoorwayGo = function (e) {
+        if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        if (e.type === 'keydown') e.preventDefault();
+        var link = buildLinkFromChart(chart, { focus: focus });
+        try {
+          document.dispatchEvent(new CustomEvent('ap-sky-ready', {
+            bubbles: true,
+            detail: {
+              chart: chart,
+              m: chartMomentIso(chart),
+              link: link,
+              focus: focus,
+              source: 'chart-wheel'
+            }
+          }));
+        } catch (e2) { /* optional */ }
+        window.location.href = link;
+      };
+      g.addEventListener('click', g._apDoorwayGo);
+      g.addEventListener('keydown', g._apDoorwayGo);
+    });
+
+    var sub = document.querySelector('.chart-wheel-sublabel');
+    if (sub && !sub.dataset.doorwayHint) {
+      sub.dataset.doorwayHint = '1';
+      sub.textContent = sub.textContent + ' · Tap a planet for the 3D model';
+    }
+  }
+
   function mountHomeSkyLink(dateVal) {
     var form = document.getElementById('hero-chart-form');
     if (!form) return;
@@ -219,10 +313,13 @@
   window.APSkyBridge = {
     chartMomentIso: chartMomentIso,
     dateOnlyMomentIso: dateOnlyMomentIso,
+    planetFocusSlug: planetFocusSlug,
     buildLinkFromChart: buildLinkFromChart,
     buildLinkFromDate: buildLinkFromDate,
     showPersonalSky: showPersonalSky,
+    emitMomentSkyReady: emitMomentSkyReady,
     mountChartModelCta: mountChartModelCta,
+    mountChartPlanetDoorway: mountChartPlanetDoorway,
     mountHomeSkyLink: mountHomeSkyLink
   };
 })();

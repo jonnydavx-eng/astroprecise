@@ -159,6 +159,13 @@
 .ap-chart-render .planet-glyph {
   transition: opacity var(--dur-fast, 0.18s) var(--ease-standard, ease);
 }
+.ap-chart-render .planet-glyph--doorway {
+  cursor: pointer;
+}
+.ap-chart-render .planet-glyph--doorway:focus-visible {
+  outline: 2px solid rgba(168, 176, 188, 0.55);
+  outline-offset: 2px;
+}
 .ap-chart-render .planet-glyph.is-dimmed {
   opacity: 0.28;
 }

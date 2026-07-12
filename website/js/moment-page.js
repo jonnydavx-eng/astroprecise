@@ -31,7 +31,8 @@
     placeLabel: '',
     tz: '',
     lastCanvas: null,
-    lastMoment: null
+    lastMoment: null,
+    lastSkyLink: null
   };
 
   function $(id) { return document.getElementById(id); }
@@ -327,7 +328,11 @@
         cv.setAttribute('aria-label', 'Moment card: ' + star.name + ' for ' + (moment.dateLabel || 'this date'));
         preview.appendChild(cv);
       }
-      setStatus('Free card ready — save it now. Pack is optional in Shop.', 'ok');
+      setStatus('Free card ready — share or download below.', 'ok');
+      var shareBtn = $('mom-share');
+      if (shareBtn && typeof shareBtn.focus === 'function') {
+        try { shareBtn.focus({ preventScroll: true }); } catch (eF) { shareBtn.focus(); }
+      }
     }
 
     if (window.APMomentShare && APMomentShare.paintMomentCardAsync) {
@@ -338,22 +343,41 @@
       mountCard(APMomentShare.paintMomentCard(moment));
     }
 
-    // Model deep-link: open this exact night in explore (receiver: #m=<ISO>&focus=).
-    var modelLink = $('mom-model-link');
-    if (modelLink && moment.utc) {
+    // Model deep-link + ap-sky-ready for share/export closure.
+    state.lastSkyLink = null;
+    if (window.APSkyBridge && typeof APSkyBridge.emitMomentSkyReady === 'function') {
+      var sky = APSkyBridge.emitMomentSkyReady(moment);
+      if (sky) state.lastSkyLink = sky.link;
+    } else if (moment.utc) {
       try {
-        var linkOpts = { m: moment.utc, focus: 'earth' };
-        modelLink.href = (window.APDeepLink && APDeepLink.buildSkyLink)
-          ? APDeepLink.buildSkyLink(linkOpts)
-          : 'explore.html#m=now&focus=earth';
-        modelLink.hidden = false;
-      } catch (eLink) {
-        modelLink.href = (window.APDeepLink && APDeepLink.buildSkyLink)
-          ? APDeepLink.buildSkyLink({ m: 'now', focus: 'earth' })
-          : 'explore.html#m=now&focus=earth';
-        modelLink.hidden = false;
-      }
+        var iso = moment.utc.toISOString ? moment.utc.toISOString() : String(moment.utc);
+        state.lastSkyLink = (window.APDeepLink && APDeepLink.buildSkyLink)
+          ? APDeepLink.buildSkyLink({ m: iso, focus: 'earth' })
+          : 'explore.html#m=' + encodeURIComponent(iso) + '&focus=earth';
+        document.dispatchEvent(new CustomEvent('ap-sky-ready', {
+          bubbles: true,
+          detail: { moment: moment, m: iso, link: state.lastSkyLink, focus: 'earth', source: 'moment-freeze' }
+        }));
+      } catch (eSky) { /* optional */ }
     }
+
+    var modelLink = $('mom-model-link');
+    if (modelLink) {
+      modelLink.href = state.lastSkyLink || 'explore.html#m=now&focus=earth';
+      modelLink.hidden = !state.lastSkyLink;
+    }
+
+    var dailyReturn = $('mom-daily-return');
+    if (dailyReturn) dailyReturn.hidden = false;
+
+    try {
+      localStorage.setItem('ap_moment_return', JSON.stringify({
+        ts: Date.now(),
+        title: moment.title,
+        dateLabel: moment.dateLabel,
+        m: moment.utc && moment.utc.toISOString ? moment.utc.toISOString() : null
+      }));
+    } catch (eStore) { /* optional */ }
 
     try {
       reveal.scrollIntoView({ behavior: (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'), block: 'start' });
@@ -368,6 +392,26 @@
     renderReveal(moment);
   }
 
+  function onShare() {
+    if (!state.lastCanvas || !window.APMomentShare) {
+      setStatus('Freeze a moment first.', 'err');
+      return;
+    }
+    var name = 'moment-' + (state.lastMoment && state.lastMoment.zenith.star.name || 'sky')
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+    var shareOpts = {
+      title: (state.lastMoment && state.lastMoment.title) || 'My Astro Precise Moment',
+      text: 'The sky on a night that mattered — computed privately.',
+      url: state.lastSkyLink || undefined
+    };
+    APMomentShare.shareOrDownload(state.lastCanvas, name, shareOpts).then(function (shared) {
+      setStatus(shared ? 'Card shared.' : 'Card saved to your device.', 'ok');
+    }).catch(function () {
+      APMomentShare.downloadCanvas(state.lastCanvas, name);
+      setStatus('Card downloaded.', 'ok');
+    });
+  }
+
   function onSave() {
     if (!state.lastCanvas || !window.APMomentShare) {
       setStatus('Freeze a moment first.', 'err');
@@ -375,17 +419,15 @@
     }
     var name = 'moment-' + (state.lastMoment && state.lastMoment.zenith.star.name || 'sky')
       .toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
-    APMomentShare.shareOrDownload(state.lastCanvas, name).then(function () {
-      setStatus('Card saved.', 'ok');
-    }).catch(function () {
-      APMomentShare.downloadCanvas(state.lastCanvas, name);
-      setStatus('Card downloaded.', 'ok');
-    });
+    APMomentShare.downloadCanvas(state.lastCanvas, name);
+    setStatus('Card downloaded.', 'ok');
   }
 
   function wireForm() {
     var form = $('mom-form');
     if (form) form.addEventListener('submit', onFreeze);
+    var share = $('mom-share');
+    if (share) share.addEventListener('click', onShare);
     var save = $('mom-save');
     if (save) save.addEventListener('click', onSave);
     var useChart = $('mom-use-chart');

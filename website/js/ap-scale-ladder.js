@@ -261,12 +261,12 @@
     if (!dt) {
       birthActive = false;
       lastBirthKey = '';
-    if (chip) { chip.hidden = true; chip.textContent = ''; }
-    if (window.APSkyBridge && typeof APSkyBridge.mountHomeSkyLink === 'function') {
-      APSkyBridge.mountHomeSkyLink('');
-    }
-    if (currentBeat === 'earth') setCaption(BEAT_CAPTION.earth);
-    return;
+      if (chip) { chip.hidden = true; chip.textContent = ''; }
+      if (window.APSkyBridge && typeof APSkyBridge.mountHomeSkyLink === 'function') {
+        APSkyBridge.mountHomeSkyLink('');
+      }
+      if (currentBeat === 'earth') setCaption(BEAT_CAPTION.earth);
+      return;
     }
     var key = val;
     if (key === lastBirthKey) return;

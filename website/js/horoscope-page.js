@@ -138,6 +138,43 @@
       return null;
     }
 
+    /** Daily return hook when visitor recently froze a Moment (Stage 3 closure). */
+    function mountMomentReturnHook() {
+      var hook = document.getElementById('ap-moment-return-hook');
+      if (!hook) {
+        var anchor = document.getElementById('srp-personal-note')
+          || document.querySelector('.sign-reading-panel')
+          || document.getElementById('sign-reading-panel');
+        if (!anchor || !anchor.parentNode) return;
+        hook = document.createElement('p');
+        hook.id = 'ap-moment-return-hook';
+        hook.className = 'srp-moment-return';
+        hook.setAttribute('aria-live', 'polite');
+        hook.hidden = true;
+        anchor.parentNode.insertBefore(hook, anchor.nextSibling);
+      }
+      try {
+        var raw = localStorage.getItem('ap_moment_return');
+        if (!raw) { hook.hidden = true; return; }
+        var data = JSON.parse(raw);
+        if (!data || !data.ts || Date.now() - data.ts > 7 * 86400000) {
+          localStorage.removeItem('ap_moment_return');
+          hook.hidden = true;
+          return;
+        }
+        var label = data.title || data.dateLabel || 'a night you kept';
+        var explore = (window.APDeepLink && data.m && APDeepLink.buildSkyLink)
+          ? APDeepLink.buildSkyLink({ m: data.m, focus: 'earth' })
+          : (data.m ? 'explore.html#m=' + encodeURIComponent(data.m) + '&focus=earth' : 'explore.html#m=now');
+        hook.innerHTML = 'You froze a Moment — <em>' + String(label).replace(/</g, '&lt;') +
+          '</em>. Compare with today\'s collective sky below, or ' +
+          '<a href="moment.html">open Moment</a> · <a href="' + explore + '">see that night in 3D</a>.';
+        hook.hidden = false;
+      } catch (e) {
+        hook.hidden = true;
+      }
+    }
+
     function getUserNatalMarkers() {
       try {
         if (!window.AstroProfile || typeof AstroProfile.getCharts !== 'function') {
@@ -699,6 +736,8 @@
         }
       }
 
+      mountMomentReturnHook();
+
       // Planetary ruler badge
       var rulerEl = document.getElementById('srp-ruler-badge');
       if (rulerEl) rulerEl.textContent = (PLANETARY_RULERS[signKey] || '') + ' Ruler';
@@ -905,6 +944,7 @@
       // Personalised "Today, for you" reading (injected on demand, below the
       // hero, only for visitors with a saved chart — zero cost otherwise).
       bootPersonalToday();
+      mountMomentReturnHook();
 
       function scheduleEngines() {
         if (auditPath) return;

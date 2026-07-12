@@ -364,9 +364,16 @@
     return true;
   }
 
-  async function shareOrDownload(cv, filename) {
+  async function shareOrDownload(cv, filename, opts) {
     if (!cv) return false;
     filename = filename || 'astroprecise-moment.png';
+    opts = opts || {};
+    var shareText = opts.text || 'The sky on a night that mattered — computed privately.';
+    if (opts.url && !/\bhttps?:\/\//.test(shareText)) {
+      try {
+        shareText += ' ' + new URL(opts.url, (typeof location !== 'undefined' ? location.href : 'https://astroprecise.app/')).href;
+      } catch (eUrl) { /* optional */ }
+    }
     try {
       if (navigator.share && navigator.canShare && cv.toBlob) {
         var blob = await new Promise(function (res) { cv.toBlob(res, 'image/png'); });
@@ -375,8 +382,8 @@
           if (navigator.canShare({ files: [file] })) {
             await navigator.share({
               files: [file],
-              title: 'My Astro Precise Moment',
-              text: 'The sky on a night that mattered — computed privately.'
+              title: opts.title || 'My Astro Precise Moment',
+              text: shareText
             });
             return true;
           }

@@ -1025,6 +1025,23 @@ body.ap-observatory-home .ap-mw-chip.is-on { opacity: 1; transition: opacity 0.2
 }
 .ap-birth-sky-chip[hidden] { display: none !important; }
 
+.ap-home-sky-link {
+  display: inline-block;
+  margin: 0.5rem 0 0;
+  font-family: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--gold, #C9A84C);
+  text-decoration: none;
+  line-height: 1.4;
+}
+.ap-home-sky-link:hover,
+.ap-home-sky-link:focus-visible {
+  color: var(--ap-aurora, #7EC8E8);
+  text-decoration: underline;
+}
+.ap-home-sky-link[hidden] { display: none !important; }
+
 /* Fixed scale cue — mobile has no sticky stage; still show honest beat label */
 .ap-ladder-cue {
   position: fixed;

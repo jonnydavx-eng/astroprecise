@@ -832,6 +832,9 @@
     const wrap = document.getElementById('natal-wheel-wrap');
     if (wrap) wrap.removeAttribute('aria-busy');
     paintWheelSky(chart);
+    if (window.APSkyBridge && typeof APSkyBridge.mountChartPlanetDoorway === 'function') {
+      APSkyBridge.mountChartPlanetDoorway(chart, el);
+    }
   }
 
   // ── "Your sky" backdrop behind the wheel (ART-DIRECTION-2026 motif #3) ──────
