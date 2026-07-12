@@ -822,3 +822,36 @@ html:not(.ap-await-webgl):not(.ap-lite-hero) body.ap-observatory-home #heroChapt
   html.ap-chrome-idle body.ap-observatory-home .bottom-nav,
   body.ap-observatory-home .explore-legend__chev { transition: none !important; }
 }
+
+/* ═══ §11 · Explore cockpit toggle (ap-v721) ============================ */
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.15rem 0 0.25rem;
+  padding: 0.35rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ECE6D8;
+  background: transparent;
+  border: 1px solid rgba(200, 205, 214, 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle.is-open,
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-toggle[aria-expanded="true"] {
+  border-color: rgba(200, 174, 106, 0.55);
+  color: #E8C872;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-panel[hidden] {
+  display: none !important;
+}
+html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-explore-panel:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}

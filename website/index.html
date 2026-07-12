@@ -216,7 +216,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
        the LAST stylesheet (after ap-model-window.css). It out-cascades the
        !important sheets above; any sheet appended after it silently reverts
        the observatory layout (visual-check asserts deck position:static). -->
-  <link rel="stylesheet" href="css/ap-observatory-home.css?v=705" id="ap-css-observatory-home">
+  <link rel="stylesheet" href="css/ap-observatory-home.css?v=721" id="ap-css-observatory-home">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
   <link rel="modulepreload" href="js/orrery-webgl.js?v=703">
@@ -835,6 +835,8 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
              :has(.ap-award-orrery-wrap[hidden]) rule in the v575 CSS layer. -->
         <div class="ap-orrery-deck" id="orrery-lite-deck" aria-label="Sky time controls">
           <p class="ap-orrery-chip">Living sky &middot; drag to turn &middot; ctrl+scroll to zoom</p>
+          <button type="button" class="ap-explore-toggle" id="ap-explore-toggle" aria-expanded="false" aria-controls="ap-explore-panel">Explore</button>
+          <div class="ap-explore-panel" id="ap-explore-panel" hidden>
           <!-- v575 · scale strip — EARTH→COSMOS presets on the WebGL engine.
                [hidden] until orrery-loader feature-detects Orrery3D.setScaleLevel;
                the 2D-canvas fallback engine has no scale presets, so it never shows.
@@ -868,6 +870,11 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
             <span class="ap-orrery-readout__sign" id="ap-orrery-readout-sign"></span>
             <span class="ap-orrery-readout__note">geocentric &middot; live</span>
           </div>
+          <!-- v575 · narrated tour through all seven scale levels; [hidden] until
+               orrery-loader feature-detects Orrery3D.startScaleJourney (WebGL only) -->
+          <button type="button" class="ap-orrery-cosmic-journey" id="ap-cosmic-journey" hidden aria-label="Cosmic journey — narrated tour from Earth to the deep field" aria-pressed="false" title="Narrated tour">✦ Cosmic journey</button>
+          <button type="button" class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" aria-label="Launch fullscreen cosmic flight — zoom from the cosmos to Earth">✦ Cosmic flight</button>
+          </div><!-- /ap-explore-panel -->
           <div class="lite-vp-controls" role="toolbar" aria-label="Focus planets on the model">
             <button type="button" class="lite-vp-btn active" data-lite-planet="earth" aria-label="Focus Earth"><span class="lite-vp-btn__seal" data-celestial-seal="planet:earth" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--earth ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/earth.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span><span class="lite-vp-glyph" aria-hidden="true">♁&#xFE0E;</span><span class="lite-vp-btn__label">Earth</span></button>
             <button type="button" class="lite-vp-btn" data-lite-planet="sun" aria-label="Focus Sun"><span class="lite-vp-btn__seal" data-celestial-seal="planet:sun" data-seal-sm aria-hidden="true"><span class="ap-seal ap-seal--planet ap-seal--sun ap-seal--sm"><span class="ap-seal__plate"><img class="ap-seal__art" src="assets/images/seals/planets/sun.svg" alt="" width="96" height="112" loading="eager" decoding="async"></span></span></span><span class="lite-vp-glyph" aria-hidden="true">☉&#xFE0E;</span><span class="lite-vp-btn__label">Sun</span></button>
@@ -884,10 +891,6 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
             <span class="ap-orrery-date" id="lite-date-display" aria-live="polite">Computing…</span>
             <button type="button" class="ap-orrery-now" id="lite-now-btn" aria-label="Reset sky to now">Now</button>
           </div>
-          <!-- v575 · narrated tour through all seven scale levels; [hidden] until
-               orrery-loader feature-detects Orrery3D.startScaleJourney (WebGL only) -->
-          <button type="button" class="ap-orrery-cosmic-journey" id="ap-cosmic-journey" hidden aria-label="Cosmic journey — narrated tour from Earth to the deep field" aria-pressed="false" title="Narrated tour">✦ Cosmic journey</button>
-          <button type="button" class="ap-orrery-cosmic-flight" id="ap-cosmic-flight-launch" aria-label="Launch fullscreen cosmic flight — zoom from the cosmos to Earth">✦ Cosmic flight</button>
           <label class="sr-only" for="lite-scrub">Scrub through time</label>
           <input type="range" id="lite-scrub" class="ap-orrery-scrub" min="-2000" max="2000" step="1" value="0" aria-label="Scrub through time — watch planets move in their real paths" />
           <!-- Scroll affordance — museum-plate language, seated in the plinth
@@ -1811,7 +1814,12 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
      ============================================================ -->
 <script defer src="js/ap-error-beacon.js?v=1"></script>
 <script defer src="js/raf-core.js?v=705"></script>
-<script defer src="js/ap-home-bootstrap.js?v=705"></script>
+<script defer src="js/ap-home-bootstrap.js?v=721"></script>
+<script defer src="js/ap-deep-link.js?v=721"></script>
+<script defer src="js/ap-sky-bridge.js?v=721"></script>
+<script defer src="js/ap-scale-ladder.js?v=721"></script>
+<script defer src="js/ap-planet-actions.js?v=721"></script>
+<link rel="stylesheet" href="css/ap-planet-actions.css?v=721" id="ap-css-planet-actions" />
 <script defer src="js/ap-nav-interplay.js?v=705"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=703"></script>

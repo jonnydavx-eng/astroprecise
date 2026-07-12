@@ -1803,9 +1803,24 @@ window.AP_MON = Object.assign({
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => AstroApp.init());
 else AstroApp.init();
 
-if ('serviceWorker' in navigator && !navigator.webdriver) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+/* SW register — skip on webdriver, localhost, or ?nosw=1 so :8790 / agent
+   checks never lie with a stale precache. Production keeps normal register. */
+(function () {
+  if (!('serviceWorker' in navigator) || navigator.webdriver) return;
+  var host = '';
+  try { host = (location.hostname || '').toLowerCase(); } catch (_) {}
+  var qs = '';
+  try { qs = location.search || ''; } catch (_) {}
+  var local = host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.local');
+  var nosw = /(?:^|[?&])nosw=1(?:&|$)/.test(qs);
+  if (local || nosw) {
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      regs.forEach(function (r) { try { r.unregister(); } catch (_) {} });
+    }).catch(function () {});
+    return;
+  }
+  navigator.serviceWorker.register('sw.js').catch(function () {});
+})();
 
 /* One-time gentle reload when an UPDATED service worker takes control
    mid-session (sw.js uses skipWaiting + clients.claim): without this, the

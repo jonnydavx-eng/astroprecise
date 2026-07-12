@@ -1,26 +1,32 @@
-# STATUS — AstroPrecise · 2026-07-11
+# STATUS — AstroPrecise · 2026-07-12
 
-**State:** **LIVE public site** https://astroprecise.app · local preview :8790. Shell tip **ap-v717**. **P0 FIX (2026-07-11): the 3D model was UNCLICKABLE** — `.orrery-dom-labels` overlay had `pointer-events:auto` swallowing all clicks/drags (fixed in `css/orrery-visual.css` just after :1195; VERIFIED with real mouse events — drag turns the model, dblclick focuses a planet). **KEY UNBLOCK: a headless render + real-mouse-click test harness** — `tools/_diag-click.mjs` / `tools/_diag-engine.mjs` (Playwright + `--enable-unsafe-swiftshader`; node_modules ARE hydrated) — USE IT to actually see/click-test the WebGL engine; the in-app CDP browser renders `hidden` and cannot. Renders in `_engine-render/`. **⚠️ NOTHING DEPLOYED — local `main` diverged from `origin/main`; a service worker cached a STALE homepage for the owner all session (hard-refresh/incognito to see anything).** Prior **ap-v715** (Scale Ladder + birth-sky caption + Moment/chart porthole finish; v708 aurora CTA + StarCatalog lens). Prior **ap-v707** (2026-07-11: recovered the lost "look through the lens" observatory plan, retired the wrong lighthouse overture, elevated `observatory.html` to the masterclass — iris/portal threshold + dive hand-off — and wired it in as the standalone Enter-the-Observatory page; plan durably recorded in `docs/OBSERVATORY-LOOK-THROUGH-2026-07-11.md`. Earlier: v706 audit — observatory lens UTC/square/reduced-motion/keyboard fixes, honesty fallback, a11y de-nesting, SW dead-backup precache trim). Prior tip ap-v702→v705 (structure clean, Earth rest frame, True-Time engine sync from OrbitLab, bottom nav / daily slim, 3D disc sizing). Narrative spine + first-paint fixes from early July still in the base. Checkout for paid Deep Reading remains **dormant** until owner sets real purchase URLs.
+**State:** Local tip **ap-v721** (Personal Sky Moment Stages 0–4 + ship-harden). Live https://astroprecise.app still **ap-v705** until push. Local preview :8790. Git: `main` **26↑ / 0↓** vs `origin/main` (merge already done at `a92352a` — **no force-push**). Checkout Deep Reading URLs remain **dormant**.
+
+**Product spine:** Personal Sky Moment — chart/moment/horoscope emitters → `explore.html#m=` (Surface A) → live WebGL (Surface C). Contract: `docs/MODEL-SURFACE-CONTRACT.md`.
+
+**Ship-harden (this tip):** localhost / `?nosw=1` SW bypass; `npm run test:ui` (`_diag-click` + `_wave2-deeplink`); CI gates for sky-bridge + engine splits; agent skill + Cursor rules; home loads scale-ladder / sky-bridge / planet-actions; Explore cockpit toggle; larger planet pick zones + pointer cursor.
+
+**Verify:** `npm test` · `npm run test:ui` · hard-refresh / `?nosw=1` on :8790 · never trust Cursor’s in-app browser for WebGL.
 
 ## Stack / agents
 - Canonical: `C:\Users\jonny\OneDrive\astroprecise` · site in `website/`
 - AGENTS.md + `website/AGENTS.md` · visual-check: `tools/visual-check`
 - PROJECT-FIRST: `project_first.ps1 -Name AstroPrecise`
 - After UI: visual-check + `after_project_edit.ps1 -Project "AstroPrecise"`
+- Skill: `~/.claude/skills/astroprecise-website` · rule: `.cursor/rules/astroprecise.mdc`
 
 ## Open / ongoing
+- **Owner:** 8-item eye-check (handoff) then intentional `git push origin main`
 - **Owner:** set `deepReadingUrl` / checkout when products go live
-- **Owner:** phone eye-check structure + 3D after big waves; merge branches only when OK
-- STATUS must stay in sync with SW version in handoff (currently track **ap-v715**)
-- OrbitLab free-explore galaxy is **not** auto-ported here unless Jonny asks
+- OrbitLab free-explore galaxy is **not** auto-ported unless Jonny asks
+- Warm hex hardcodes in WebGL/canvas — owner aesthetic tension (later)
 
 ## Suggested next steps
-1. Owner phone/desktop pass: Scale Ladder scroll beats, birth-date caption, Moment freeze rings (ap-v715)
-2. When selling: wire real checkout URLs sitewide
-3. Optional later: continuous scale scrub (engine API), Scale Ladder mobile pin test
-4. Agents: no sign-page hand-edits; visual-check when OneDrive unblocks
+1. Owner eye-check ap-v721 → push `main` (never force)
+2. Confirm Actions deploy-pages green + live SW tip in incognito
+3. When selling: wire real checkout URLs sitewide
 
 ## Older STATUS blocks
-Earlier July STATUS entries (spine ap-v582, first-paint v579, masterpiece v577, etc.) remain valid as history of those ships but are **not** the current tip — see AGENT-HANDOFF.md for newest SW versions.
+Prior tips: ap-v720 Personal Sky Moment Stage 4; ap-v715 Scale Ladder; ap-v707 observatory look-through; ap-v705 homepage-is-the-model. See AGENT-HANDOFF.md for full history.
 
 *Full history: AGENT-HANDOFF.md (+ ARCHIVE) · board: OneDrive\WHERE-IM-UP-TO.md*

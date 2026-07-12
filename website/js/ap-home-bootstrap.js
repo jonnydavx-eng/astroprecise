@@ -2,7 +2,7 @@
 /* Award homepage — lazy ephemeris + hero instrument bundle (perf) */
 
 (function () {
-  var V = "705";
+  var V = "721";
 
   window.__loadEphemeris = function (cb) {
     if (window.AstroEphemeris) {
@@ -251,6 +251,23 @@
     document.addEventListener("ap-orrery-ready", function () { setTimeout(syncTrayHeight, 80); });
     setTimeout(syncTrayHeight, 700);
     setTimeout(syncTrayHeight, 1600);
+
+    /* ── Explore toggle — collapse scale / journey / flight behind one control ── */
+    (function exploreToggle() {
+      var btn = document.getElementById("ap-explore-toggle");
+      var panel = document.getElementById("ap-explore-panel");
+      if (!btn || !panel) return;
+      function setOpen(on) {
+        panel.hidden = !on;
+        btn.setAttribute("aria-expanded", on ? "true" : "false");
+        btn.classList.toggle("is-open", on);
+        setTimeout(syncTrayHeight, 40);
+      }
+      setOpen(false);
+      btn.addEventListener("click", function () {
+        setOpen(panel.hidden);
+      });
+    }());
 
     /* ── honest-model legend — starts collapsed (explore-boot twin) ── */
     (function legend() {

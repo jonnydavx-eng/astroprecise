@@ -7544,9 +7544,18 @@ const FinishShader = {
     canvas.addEventListener('dblclick', onDbl);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas.addEventListener('contextmenu', onCtx);
+    const onHover = (e) => {
+      if (dragging || activePointers.size) return;
+      try {
+        const id = resolvePickId(pt(e));
+        canvas.style.cursor = id ? 'pointer' : 'grab';
+      } catch (_) {}
+    };
+    canvas.addEventListener('pointermove', onHover);
     canvas._orreryHandlers = { onMove, onUp };
     canvas._orreryDblHandler = onDbl;
     canvas._orreryCtxHandler = onCtx;
+    canvas._orreryHoverHandler = onHover;
   }
 
   function setDetailLighting(mode) {
@@ -7579,17 +7588,39 @@ const FinishShader = {
   }
   function resolvePickId(p) {
     const r = canvas.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
     ndc.x = (p.x / r.width) * 2 - 1; ndc.y = -(p.y / r.height) * 2 + 1;
     raycaster.setFromCamera(ndc, camera);
     const targets = BODIES.map((b) => meshes[b.id] && meshes[b.id].userData.mesh).filter(Boolean);
     if (sunMesh) targets.push(sunMesh);
     if (moonMesh) targets.push(moonMesh);
     const hit = raycaster.intersectObjects(targets, false)[0];
-    if (!hit) return null;
-    if (hit.object === sunMesh) return 'sun';
-    if (hit.object === moonMesh) return 'moon';
-    const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object);
-    return b ? b.id : null;
+    if (hit) {
+      if (hit.object === sunMesh) return 'sun';
+      if (hit.object === moonMesh) return 'moon';
+      const b = BODIES.find((x) => meshes[x.id] && meshes[x.id].userData.mesh === hit.object);
+      if (b) return b.id;
+    }
+    // Screen-space fallback — outer planets are tiny; ~28px hit radius feels tappable.
+    const PICK_PX = 28;
+    let bestId = null;
+    let bestD = PICK_PX;
+    const probe = (id, obj) => {
+      if (!obj || !obj.visible) return;
+      const sp = obj.getWorldPosition(new THREE.Vector3()).project(camera);
+      if (sp.z < -1 || sp.z > 1) return;
+      const sx = (sp.x * 0.5 + 0.5) * r.width;
+      const sy = (-sp.y * 0.5 + 0.5) * r.height;
+      const d = Math.hypot(sx - p.x, sy - p.y);
+      if (d < bestD) { bestD = d; bestId = id; }
+    };
+    BODIES.forEach((b) => {
+      const m = meshes[b.id] && meshes[b.id].userData.mesh;
+      probe(b.id, m);
+    });
+    probe('sun', sunMesh);
+    probe('moon', moonMesh);
+    return bestId;
   }
   function pick(p) {
     const id = resolvePickId(p);
@@ -9046,6 +9077,7 @@ const FinishShader = {
       delete canvas._orreryVV;
     }
     if (canvas && canvas._orreryHandlers) { window.removeEventListener('pointermove', canvas._orreryHandlers.onMove); window.removeEventListener('pointerup', canvas._orreryHandlers.onUp); }
+    if (canvas && canvas._orreryHoverHandler) canvas.removeEventListener('pointermove', canvas._orreryHoverHandler);
     if (canvas && canvas._orreryKeyHandler) canvas.removeEventListener('keydown', canvas._orreryKeyHandler);
     if (canvas && canvas._orreryDblHandler) canvas.removeEventListener('dblclick', canvas._orreryDblHandler);
     if (canvas && canvas._orreryCtxHandler) canvas.removeEventListener('contextmenu', canvas._orreryCtxHandler);

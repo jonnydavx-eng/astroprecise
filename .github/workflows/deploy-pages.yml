@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-horoscope.mjs, test-compat.mjs, test-art-themes.mjs, test-weekly-sky.mjs, tools/e2e-profile-save-audit.mjs]
+    paths: [website/**, .github/workflows/deploy-pages.yml, tools/ping-indexnow.mjs, tools/build.mjs, package.json, package-lock.json, test-engine.mjs, test-engine-solar-lunar.mjs, test-engine-planets.mjs, test-engine-houses.mjs, test-engine-edge.mjs, test-horoscope.mjs, test-compat.mjs, test-content-bank.mjs, test-art-themes.mjs, test-weekly-sky.mjs, test-ap-sky-bridge.mjs, tools/e2e-profile-save-audit.mjs]
   workflow_dispatch:
 
 # 2026-07-04: migrated OFF the legacy gh-pages branch builder onto the official
@@ -38,17 +38,35 @@ jobs:
       - name: Ephemeris engine regression
         run: node test-engine.mjs
 
+      - name: Engine solar / lunar
+        run: node test-engine-solar-lunar.mjs
+
+      - name: Engine planets
+        run: node test-engine-planets.mjs
+
+      - name: Engine houses
+        run: node test-engine-houses.mjs
+
+      - name: Engine edge cases
+        run: node test-engine-edge.mjs
+
       - name: Horoscope determinism
         run: node test-horoscope.mjs
 
       - name: Synastry compatibility
         run: node test-compat.mjs
 
+      - name: Content bank
+        run: node test-content-bank.mjs
+
       - name: Art theme library
         run: node test-art-themes.mjs
 
       - name: Weekly sky determinism
         run: node test-weekly-sky.mjs
+
+      - name: Personal Sky Moment / sky-bridge
+        run: node test-ap-sky-bridge.mjs
 
       - name: Profile save e2e audit
         run: |
