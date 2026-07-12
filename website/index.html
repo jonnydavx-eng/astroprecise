@@ -216,7 +216,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
        the LAST stylesheet (after ap-model-window.css). It out-cascades the
        !important sheets above; any sheet appended after it silently reverts
        the observatory layout (visual-check asserts deck position:static). -->
-  <link rel="stylesheet" href="css/ap-observatory-home.css?v=715" id="ap-css-observatory-home">
+  <link rel="stylesheet" href="css/ap-observatory-home.css?v=716" id="ap-css-observatory-home">
   <link rel="stylesheet" href="css/ap-planet-actions.css?v=716" id="ap-css-planet-actions">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
@@ -305,10 +305,10 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 
     <nav aria-label="Around the living sky">
       <ul class="contents-nav">
-        <li><a href="observatory.html" class="contents-nav__lens">Through the Lens</a></li>
         <li><a href="chart.html">Chart</a></li>
-        <li><a href="ephemeris.html">The Sky</a></li>
-        <li><a href="#today">Daily</a></li>
+        <li><a href="compatibility.html">Compatibility</a></li>
+        <li><a href="horoscope.html">Daily</a></li>
+        <li><a href="ephemeris.html">Live Sky</a></li>
         <li><a href="shop.html">Shop</a></li>
       </ul>
     </nav>
@@ -332,12 +332,12 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <div class="page-wrap hero-grid hero-showstopper">
 
       <div class="hero-copy fade-in" id="castDock" tabindex="-1">
-        <em class="eyebrow-rose">Inside the Observatory</em>
+        <em class="eyebrow-rose">Free birth chart</em>
         <h1 class="display" style="margin-top: var(--sp-2);">
           The sky is live. <br><span class="display-accent">Your chart is exact.</span>
         </h1>
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
-          The 3D model is the instrument. Cast free &mdash; or <a href="observatory.html" class="ap-inline-lens">look through the lens</a> to enter from the mountain.
+          Your real birth chart &mdash; computed live and privately on your device. Free, no account.
         </p>
         <form id="hero-chart-form" class="hero-form hero-form--primary" action="chart.html" method="get" novalidate aria-label="Cast your natal chart">
           <label for="hero-birthdate" class="ui-label">Your date of birth</label>

@@ -23,11 +23,13 @@
 (function () {
   // Observatory = living model home. Lens entrance is first in More (badge Enter)
   // and also surfaced as a portal on the homepage stage (not buried).
+  // Plain, business-tuned, IDENTICAL to the homepage masthead — one vocabulary
+  // everywhere (2026-07-11 clarity overhaul). Home = the wordmark on every page.
   var NAV_PRIMARY = [
-    ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['ephemeris.html', 'The Sky'],
+    ['compatibility.html', 'Compatibility'],
     ['horoscope.html', 'Daily'],
+    ['ephemeris.html', 'Live Sky'],
     ['shop.html', 'Shop'],
   ];
 
@@ -46,9 +48,9 @@
 
   // Four tabs only — model + cast + sky + daily (distinct icons)
   var NAV_BOTTOM_TABS = [
-    ['index.html', 'Observatory', 'star4'],
+    ['index.html', 'Home', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
-    ['ephemeris.html', 'The Sky', 'telescope'],
+    ['ephemeris.html', 'Live Sky', 'telescope'],
     ['horoscope.html', 'Daily', 'crescent'],
   ];
 
