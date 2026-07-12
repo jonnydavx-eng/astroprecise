@@ -190,11 +190,12 @@ html body.ap-award-511.ap-observatory-home #heroChapter .hero-solar-stage {
   order: 1 !important;
   position: relative !important;
   width: 100% !important;
-  /* CLARITY OVERHAUL (2026-07-11): the model is a bounded HERO band BELOW the
-     chart form — no longer the full first viewport that buried the CTA. */
-  height: clamp(240px, 44svh, 380px) !important;
-  min-height: 240px !important;
-  max-height: 380px !important;
+  /* Desktop/tablet keep the full-viewport model room (overlaid copy card). The
+     PHONE task-first cap lives ONLY in the @media (max-width:640px) block below —
+     it must NOT leak here or the desktop model collapses to a strip. */
+  height: calc(100svh - var(--ap-tray-h-m, 148px) - var(--bottom-nav-h, 0px)) !important;
+  min-height: 480px !important;
+  max-height: none !important;
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
