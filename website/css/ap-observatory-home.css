@@ -14,151 +14,12 @@
  *
  * Scope: body.ap-observatory-home (co-exists with ap-award-511 — every
  * existing sheet/boot keys off ap-award-511 and must keep working).
- * Palette: jet interior, silver hairlines rgba(200,205,214,x).
- * CTA = sitewide cool aurora gradient (--ap-cta-grad) on --ap-cta-ink
- * (UI system brief 2026-07-11 · Jet · Silver · Aurora). Warm brass is
- * reserved for the mountain arrival page only — not homepage chrome.
- * LIVE lamp uses --ap-live-dot (defaults to --ap-aurora).
+ * Palette: jet interior, silver hairlines rgba(200,205,214,x), parchment ink,
+ * brass CTA = dark ink #0B0906 on linear-gradient(160deg,#E8C872,#C9A227)
+ * (the verified 8.2:1 treatment). NO cyan/aurora on anything in this sheet.
+ * The .ap-mw-dot aurora LIVE lamp is owner-owned; flip via --ap-live-dot in
+ * ap-palette-2026.css (hook below) — do not swap unilaterally.
  */
-
-/* ═══ §0 · OBSERVATORY PORTAL + FOLLOW ORRERY (model is the room) ═══════ */
-/* Portal sits top-left in starfield — clear of disc (disc is centre). */
-body.ap-observatory-home .ap-obs-portal {
-  position: absolute;
-  z-index: 9;
-  top: calc(56px + 10px);
-  left: 12px;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  max-width: min(46vw, 220px);
-  padding: 0.4rem 0.7rem 0.4rem 0.4rem;
-  text-decoration: none;
-  color: var(--ap-silver-bright, #E8EBF0);
-  background: rgba(0, 0, 0, 0.72);
-  border: 1px solid rgba(200, 205, 214, 0.32);
-  border-radius: 999px;
-  pointer-events: auto;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-body.ap-observatory-home .ap-obs-portal:hover,
-body.ap-observatory-home .ap-obs-portal:focus-visible {
-  border-color: rgba(126, 200, 232, 0.55);
-  box-shadow: 0 0 0 3px rgba(126, 200, 232, 0.2), 0 8px 28px rgba(0, 0, 0, 0.45);
-  outline: none;
-}
-body.ap-observatory-home .ap-obs-portal__ring {
-  flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(200, 205, 214, 0.55);
-  box-shadow:
-    inset 0 0 0 4px rgba(0, 0, 0, 0.55),
-    inset 0 0 0 5px rgba(126, 200, 232, 0.25),
-    0 0 16px rgba(126, 200, 232, 0.18);
-  background:
-    radial-gradient(circle at 50% 45%, rgba(126, 200, 232, 0.22) 0%, transparent 55%),
-    radial-gradient(circle at 50% 50%, #0a1018 0%, #000 70%);
-  position: relative;
-}
-body.ap-observatory-home .ap-obs-portal__eye {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
-  border-radius: 50%;
-  background: var(--ap-aurora, #7EC8E8);
-  box-shadow: 0 0 10px rgba(126, 200, 232, 0.7);
-  pointer-events: none;
-  animation: apObsPortalPulse 2.4s ease-in-out infinite;
-}
-@keyframes apObsPortalPulse {
-  0%, 100% { opacity: 0.55; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1); }
-}
-body.ap-observatory-home .ap-obs-portal__label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  min-width: 0;
-}
-body.ap-observatory-home .ap-obs-portal__kicker {
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ap-aurora, #7EC8E8);
-}
-body.ap-observatory-home .ap-obs-portal__title {
-  font-family: var(--font-ui, Inter, system-ui, sans-serif);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-body.ap-observatory-home .ap-follow-orrery {
-  position: absolute;
-  z-index: 9;
-  right: 12px;
-  bottom: 14px;
-  min-height: 44px;
-  padding: 0 1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(200, 205, 214, 0.35);
-  background: rgba(0, 0, 0, 0.75);
-  color: var(--ap-silver-bright, #E8EBF0);
-  font-family: 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-  pointer-events: auto;
-}
-body.ap-observatory-home .ap-follow-orrery:hover,
-body.ap-observatory-home .ap-follow-orrery:focus-visible {
-  border-color: rgba(126, 200, 232, 0.55);
-  color: var(--ap-aurora-bright, #A8DCF2);
-  outline: none;
-  box-shadow: var(--ap-focus-shadow, 0 0 0 3px rgba(126, 200, 232, 0.28));
-}
-body.ap-observatory-home .ap-follow-orrery[hidden] { display: none !important; }
-body.ap-observatory-home .ap-inline-lens {
-  color: var(--ap-aurora, #7EC8E8);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-body.ap-observatory-home .contents-nav__lens {
-  color: var(--ap-aurora, #7EC8E8) !important;
-}
-@media (max-width: 640px) {
-  body.ap-observatory-home .ap-obs-portal {
-    top: calc(48px + 6px);
-    left: 8px;
-    max-width: calc(100vw - 100px);
-    padding: 0.3rem 0.55rem 0.3rem 0.3rem;
-  }
-  body.ap-observatory-home .ap-obs-portal__ring { width: 36px; height: 36px; }
-  body.ap-observatory-home .ap-obs-portal__eye { width: 8px; height: 8px; margin: -4px 0 0 -4px; }
-  body.ap-observatory-home .ap-obs-portal__title { font-size: 0.7rem; }
-  body.ap-observatory-home .ap-follow-orrery {
-    right: 8px;
-    bottom: 8px;
-    font-size: 0.55rem;
-    min-height: 40px;
-    padding: 0 0.75rem;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  body.ap-observatory-home .ap-obs-portal__eye { animation: none; opacity: 1; }
-}
 
 /* ═══ §1 · STAGE — full-bleed observatory =============================== */
 /* index never loads main.css — the UA's 8px body margin was live. Kill it
@@ -185,16 +46,12 @@ html body.ap-observatory-home #heroChapter .page-wrap.hero-grid {
   gap: 0 !important;
 }
 html body.ap-observatory-home #heroChapter .hero-solar-stage,
-html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage,
-html body.ap-award-511.ap-observatory-home #heroChapter .hero-solar-stage {
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage {
   order: 1 !important;
   position: relative !important;
   width: 100% !important;
-  /* Desktop/tablet keep the full-viewport model room (overlaid copy card). The
-     PHONE task-first cap lives ONLY in the @media (max-width:640px) block below —
-     it must NOT leak here or the desktop model collapses to a strip. */
-  height: calc(100svh - var(--ap-tray-h-m, 148px) - var(--bottom-nav-h, 0px)) !important;
-  min-height: 480px !important;
+  height: calc(100svh - var(--ap-tray-h-m, 168px) - var(--bottom-nav-h, 0px)) !important;
+  min-height: 420px !important;
   max-height: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -202,61 +59,23 @@ html body.ap-award-511.ap-observatory-home #heroChapter .hero-solar-stage {
   overflow: hidden !important;
   isolation: isolate;
   z-index: auto !important;
-  /* Dome observatory void — jet + subtle rim light (not a tiny hero bay) */
-  background:
-    radial-gradient(ellipse 90% 70% at 50% 42%, rgba(16, 20, 28, 0.9) 0%, transparent 62%),
-    radial-gradient(120% 90% at 50% 8%, #12141c 0%, #000000 52%, #000000 100%) !important;
+  background: radial-gradient(120% 90% at 50% 8%, #101014 0%, #000000 55%, #000000 100%) !important;
   background-color: var(--ap-jet, #000) !important;
 }
 /* Make the reused orrery wrap fill the stage (kills structure-clean's
    width:min() sizing AND slice-1's mobile clamp via later cascade). */
-/* Kill ap-horizon-2026 postage-stamp framing (left:78% / min(56vh)) — model fills the room */
-html.ap-lite-hero body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-html.orrery-full body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-html body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
+html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
   position: absolute !important;
   inset: 0 !important;
   left: 0 !important;
-  right: 0 !important;
   top: 0 !important;
-  bottom: 0 !important;
   transform: none !important;
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
-  max-height: none !important;
   margin: 0 !important;
   z-index: 1 !important;
-}
-/* Horizon also stamps the engraved-wheel fallback to left:78% — re-centre full stage */
-html body.ap-observatory-home #heroChapter .ap-hero-wheel-fallback {
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  transform: none !important;
-  width: 100% !important;
-  max-width: none !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-/* Ultra-wide horizon rules (left:52%/76%) must not shrink the observatory stage */
-@media (min-width: 1500px) {
-  html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
-    left: 0 !important;
-    width: 100% !important;
-    max-width: none !important;
-  }
-}
-@media (min-width: 2200px) {
-  html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
-    left: 0 !important;
-    width: 100% !important;
-  }
 }
 html body.ap-observatory-home #heroChapter .ap-award-orrery-frame {
   position: absolute !important;
@@ -285,28 +104,18 @@ html body.ap-observatory-home #heroChapter .orrery-viewport #orrery-canvas {
   height: 100% !important;
   aspect-ratio: auto !important;
   display: block;
-  /* Kill horizon soft-mask that shrinks the *visible* globe into a postage stamp */
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
 }
-/* ≤640 — model fills the stage; portal/legend occupy starfield corners only.
-   Do NOT inset the wrap 108px — that was shrinking Earth into a postage stamp. */
+/* ≤640 — MEASURED correction (2026-07-11): the engine's Earth-rest disc tops
+   out ~63px from the stage top on phones (the design assumed ≥175px). The
+   canvas therefore starts BELOW the plate/legend row: bar 48 + chrome row
+   ~52 → wrap top 108. Canvas pixels physically cannot reach the top chrome —
+   zero overlap BY CONSTRUCTION, and the disc still renders ~min(76vw, 300px+). */
 @media (max-width: 640px) {
-  html body.ap-observatory-home #heroChapter .hero-solar-stage,
-  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .hero-solar-stage,
-  html body.ap-award-511.ap-observatory-home #heroChapter .hero-solar-stage {
-    height: clamp(220px, 42svh, 340px) !important;
-    min-height: 220px !important;
-  }
   html body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap,
-  html body.ap-award-511.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
-    inset: 0 !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-width: none !important;
+  html:is(.ap-await-webgl, .ap-lite-hero) body.ap-observatory-home #heroChapter .ap-award-orrery-wrap {
+    inset: 108px 0 6px 0 !important;
+    top: 108px !important;
+    height: auto !important;
   }
 }
 /* Engraved wheel (no-JS / PRM path) centres in the stage. */
@@ -388,38 +197,9 @@ html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn {
   min-height: 44px !important;
   justify-content: center !important;
 }
-/* Seals: heavy plates only earn their keep on the wide desktop tray.
-   Mobile/tablet: show compact engine stills (3D sitewide law) instead of empty glyph-only pills. */
+/* Seals: heavy plates only earn their keep on the wide desktop tray. */
 @media (max-width: 1023px) {
   html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn .lite-vp-btn__seal { display: none !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn {
-    flex-direction: column !important;
-    gap: 2px !important;
-    padding: 4px 6px !important;
-  }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn::before {
-    content: "" !important;
-    display: block !important;
-    width: 22px !important;
-    height: 22px !important;
-    border-radius: 50% !important;
-    background-color: var(--ap-jet-raised, #18181E) !important;
-    background-size: cover !important;
-    background-position: center !important;
-    box-shadow: 0 0 0 1px var(--ap-silver-a18, rgba(200, 205, 214, 0.18)) !important;
-    flex: 0 0 auto !important;
-  }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="sun"]::before { background-image: url("../img/engine/sun.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="moon"]::before { background-image: url("../img/engine/moon.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="mercury"]::before { background-image: url("../img/engine/mercury.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="venus"]::before { background-image: url("../img/engine/venus.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="earth"]::before { background-image: url("../img/engine/earth.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="mars"]::before { background-image: url("../img/engine/mars.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="jupiter"]::before { background-image: url("../img/engine/jupiter.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="saturn"]::before { background-image: url("../img/engine/saturn.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="uranus"]::before { background-image: url("../img/engine/uranus.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="neptune"]::before { background-image: url("../img/engine/neptune.webp") !important; }
-  html body.ap-observatory-home #heroChapter #orrery-lite-deck .lite-vp-btn[data-lite-planet="pluto"]::before { background-image: url("../img/engine/pluto.webp") !important; }
 }
 /* Row 2 (<1024): ‹ scale stepper › + scrub + (date · Now).
    .ap-scale-strip stays [hidden] until orrery-loader detects the engine —
@@ -595,7 +375,7 @@ html body.ap-observatory-home #heroChapter #orrery-lite-deck .ap-orrery-now {
 html body.ap-observatory-home #heroChapter .hero-copy {
   display: block !important; /* horizon-2026 sets display:contents ≤900 — the band must be a real box */
   box-sizing: border-box !important;
-  order: 0 !important;  /* CLARITY: the chart form leads, ABOVE the model band */
+  order: 2 !important;
   position: relative !important;
   left: auto !important;
   top: auto !important;
@@ -613,23 +393,18 @@ html body.ap-observatory-home #heroChapter .hero-copy {
 }
 html body.ap-observatory-home #heroChapter .hero-copy h1,
 html body.ap-observatory-home #heroChapter .hero-copy .display {
-  font-size: 1.35rem !important;
-  line-height: 1.18 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.25 !important;
   margin: 0 0 6px !important;
-  white-space: normal !important;   /* CLARITY: the promise wraps, never ellipsised */
-  overflow: visible !important;
-  text-overflow: clip !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
-body.ap-observatory-home #heroChapter .hero-copy h1 br { display: inline; }
-body.ap-observatory-home #heroChapter .hero-copy .eyebrow-rose {
-  display: block !important; font-size: 0.62rem !important; letter-spacing: 0.16em !important;
-  text-transform: uppercase !important; margin: 0 0 4px !important;
-}
+body.ap-observatory-home #heroChapter .hero-copy h1 br { display: none; }
+body.ap-observatory-home #heroChapter .hero-copy .eyebrow-rose,
 body.ap-observatory-home #heroChapter .hero-copy .standfirst,
-body.ap-observatory-home #heroChapter .hero-copy .hero-why-lead {
-  display: block !important; font-size: 0.84rem !important; line-height: 1.35 !important; margin: 0 0 9px !important;
-}
-body.ap-observatory-home #heroChapter .hero-copy .ui-label { display: block !important; }
+body.ap-observatory-home #heroChapter .hero-copy .hero-why-lead,
+body.ap-observatory-home #heroChapter .hero-copy .ui-label { display: none !important; }
 html body.ap-observatory-home #heroChapter .hero-form { margin-top: 0 !important; gap: 4px !important; }
 html body.ap-observatory-home #heroChapter .hero-form-row {
   display: flex !important;
@@ -643,7 +418,7 @@ html body.ap-observatory-home #heroChapter .hero-form-row input[type="date"] {
   max-width: none !important;
   min-height: 48px !important;
 }
-/* CTA law: cool aurora primary (Jet · Silver · Aurora). One primary per fold. */
+/* CTA law: dark ink on brass — the verified 8.2:1 pill. NO cyan. */
 html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"],
 html body.ap-observatory-home #heroChapter .hero-form-row .btn-press {
   flex: 0 0 auto !important;
@@ -652,21 +427,16 @@ html body.ap-observatory-home #heroChapter .hero-form-row .btn-press {
   white-space: nowrap !important;
   min-height: 48px !important;
   padding: 0 1.05rem !important;
-  color: var(--ap-cta-ink, #050508) !important;
-  background: var(--ap-cta-grad, linear-gradient(135deg, #4A90E0 0%, #7EC8E8 45%, #C8D8E8 100%)) !important;
+  color: #0B0906 !important;
+  background: linear-gradient(160deg, #E8C872, #C9A227) !important;
   border: 0 !important;
   border-radius: 10px !important;
   font-weight: 600 !important;
 }
 html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"]:hover,
 html body.ap-observatory-home #heroChapter .hero-form-row .btn-press:hover {
-  color: var(--ap-cta-ink, #050508) !important;
-  filter: brightness(1.06);
-}
-html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"]:focus-visible,
-html body.ap-observatory-home #heroChapter .hero-form-row .btn-press:focus-visible {
-  outline: none;
-  box-shadow: var(--ap-focus-shadow, 0 0 0 3px rgba(126, 200, 232, 0.28));
+  color: #0B0906 !important;
+  filter: brightness(1.05);
 }
 /* Returning-user chip (re-parented above the form by ap-home-bootstrap). */
 html body.ap-observatory-home #heroChapter .hero-copy .hero-today-chip {
@@ -740,18 +510,14 @@ body.ap-observatory-home #heroChapter.ap-cast-compressed .ap-cast-pill {
   justify-content: center;
   min-height: 48px;
   padding: 0 1.1rem;
-  color: var(--ap-cta-ink, #050508);
-  background: var(--ap-cta-grad, linear-gradient(135deg, #4A90E0 0%, #7EC8E8 45%, #C8D8E8 100%));
+  color: #0B0906;
+  background: linear-gradient(160deg, #E8C872, #C9A227);
   border: 0;
   border-radius: 999px;
   font-weight: 600;
   font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
   font-size: 0.85rem;
   cursor: pointer;
-}
-body.ap-observatory-home #heroChapter.ap-cast-compressed .ap-cast-pill:focus-visible {
-  outline: none;
-  box-shadow: var(--ap-focus-shadow, 0 0 0 3px rgba(126, 200, 232, 0.28));
 }
 @media (min-width: 1280px) {
   html body.ap-observatory-home #heroChapter.ap-cast-compressed .hero-copy {
@@ -935,10 +701,10 @@ body.ap-observatory-home .ap-mw-scrollcue {
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 0.6rem;
   letter-spacing: 0.18em;
-  color: rgba(200, 205, 214, 0.72) !important; /* silver — raised from .55 for AA at 0.6rem (~6:1 on jet). The critical a{} meridian rule must never win here */
+  color: rgba(200, 205, 214, 0.55) !important; /* silver — the critical a{} meridian rule must never win here */
   transition: opacity 0.4s ease;
 }
-body.ap-observatory-home .ap-mw-scrollcue .ap-mw-scrollcue__label { color: rgba(200, 205, 214, 0.72) !important; }
+body.ap-observatory-home .ap-mw-scrollcue .ap-mw-scrollcue__label { color: rgba(200, 205, 214, 0.55) !important; }
 body.ap-observatory-home .ap-mw-scrollcue:hover,
 body.ap-observatory-home .ap-mw-scrollcue:focus-visible { color: rgba(232, 235, 240, 0.85) !important; }
 body.ap-observatory-home .ap-mw-scrollcue__line {
@@ -991,88 +757,6 @@ body.ap-observatory-home .ap-mw-chip {
 body.ap-observatory-home .ap-mw-chip.is-on { opacity: 1; transition: opacity 0.2s ease; }
 @media (max-width: 640px) {
   body.ap-observatory-home .ap-mw-chip { display: none; }
-}
-
-/* ═══ §7b · SCALE LADDER — sticky stage + birth-sky chip (WOW slices 3–4) ═══
-   Desktop: stage sticks so IO beat→setScaleLevel remains visible.
-   Mobile: no sticky pin (S24 scroll jank + bottom-nav); beats still fire. */
-@media (min-width: 1024px) {
-  body.ap-observatory-home.ap-scale-ladder #heroChapter .hero-solar-stage {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 4 !important;
-  }
-  /* When scrolled past earth beat, dock the stage to a shorter strip so path/daily/shop
-     content can scroll under a still-live model (one WebGL, disc law preserved). */
-  body.ap-observatory-home.ap-scale-ladder.ap-ladder-away #heroChapter .hero-solar-stage {
-    height: min(42vh, 440px) !important;
-    min-height: 300px !important;
-  }
-  body.ap-observatory-home.ap-scale-ladder.ap-ladder-away #heroChapter .hero-copy {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    visibility: hidden !important;
-  }
-}
-.ap-birth-sky-chip {
-  margin: 0.35rem 0 0 !important;
-  padding: 0 !important;
-  font-family: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace !important;
-  font-size: 0.66rem !important;
-  letter-spacing: 0.08em !important;
-  color: var(--ap-aurora, #7EC8E8) !important;
-  line-height: 1.3 !important;
-}
-.ap-birth-sky-chip[hidden] { display: none !important; }
-
-.ap-home-sky-link {
-  display: inline-block;
-  margin: 0.5rem 0 0;
-  font-family: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  color: var(--gold, #C9A84C);
-  text-decoration: none;
-  line-height: 1.4;
-}
-.ap-home-sky-link:hover,
-.ap-home-sky-link:focus-visible {
-  color: var(--ap-aurora, #7EC8E8);
-  text-decoration: underline;
-}
-.ap-home-sky-link[hidden] { display: none !important; }
-
-/* Fixed scale cue — mobile has no sticky stage; still show honest beat label */
-.ap-ladder-cue {
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--bottom-nav-h, 65px) + 10px);
-  transform: translateX(-50%);
-  z-index: 28;
-  max-width: min(92vw, 360px);
-  padding: 0.32rem 0.75rem;
-  border-radius: 2px;
-  border: 1px solid rgba(200, 205, 214, 0.28);
-  background: rgba(0, 0, 0, 0.82);
-  color: var(--ap-silver, #C8CDD6);
-  font-family: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: center;
-  pointer-events: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ap-ladder-cue[hidden] { display: none !important; }
-@media (min-width: 1024px) {
-  .ap-ladder-cue { bottom: 16px; } /* desktop sticky model; cue still useful */
-}
-@media (prefers-reduced-motion: reduce) {
-  body.ap-observatory-home.ap-scale-ladder #heroChapter .hero-solar-stage {
-    position: relative !important; /* no sticky thrash under PRM */
-  }
 }
 
 /* ═══ §8 · CHROME RECESSION — html.ap-chrome-idle (opacity ONLY) ========= */

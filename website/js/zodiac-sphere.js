@@ -79,8 +79,6 @@
   let rotation = -Math.PI / 2;   // Aries at the top initially
   let rotVel   = 0;
   let autoSpin = true;
-  let prefersReduce = false;     // OS reduced-motion → hold a static frame (set in init)
-  let squareLens = false;        // observatory eyepiece → 1:1 canvas fills the circular lens
   const SPIN_SPEED = 0.0018;     // rad/frame at 60fps → ~1 full revolution per ~6 min
   let spinAnim = null;
   let spinDoneCb = null;
@@ -136,57 +134,12 @@
   }
 
   // ── Background stars ──────────────────────────────────────────────────────
-  // Random engraved field by default (schematic). In squareLens (observatory
-  // eyepiece) prefer real catalog stars projected on the ecliptic when
-  // StarCatalog is loaded — honest VSOP-adjacent sky behind the zodiac ring.
-
-  const EPS_ECL = 23.4392911 * Math.PI / 180; // mean obliquity J2000
-
-  function eqToEcliptic(raDeg, decDeg) {
-    const a = raDeg * Math.PI / 180;
-    const d = decDeg * Math.PI / 180;
-    const sinB = Math.sin(d) * Math.cos(EPS_ECL) - Math.cos(d) * Math.sin(EPS_ECL) * Math.sin(a);
-    const beta = Math.asin(Math.min(1, Math.max(-1, sinB)));
-    const y = Math.sin(a) * Math.cos(EPS_ECL) + Math.tan(d) * Math.sin(EPS_ECL);
-    const x = Math.cos(a);
-    let lambda = Math.atan2(y, x) * 180 / Math.PI;
-    if (lambda < 0) lambda += 360;
-    return { lon: lambda, lat: beta * 180 / Math.PI };
-  }
 
   function initStars() {
     stars = [];
-    // Real catalog path — observatory lens only (shared sphere stays schematic).
-    if (squareLens && window.StarCatalog && Array.isArray(StarCatalog.STARS) && StarCatalog.STARS.length) {
-      const cat = StarCatalog.STARS;
-      for (let i = 0; i < cat.length; i++) {
-        const s = cat[i];
-        if (s.mag == null || s.mag > 4.6) continue; // naked-eye-ish field; keeps draw cheap
-        if (s.ra == null || s.dec == null) continue;
-        const ecl = eqToEcliptic(s.ra, s.dec);
-        // Skip deep south/north extremes that sit outside the ring framing
-        if (Math.abs(ecl.lat) > 55) continue;
-        const mag = typeof s.mag === 'number' ? s.mag : 4;
-        stars.push({
-          real: true,
-          name: s.name || '',
-          lon: ecl.lon,
-          lat: ecl.lat,
-          r: Math.max(0.35, 1.85 - mag * 0.28),
-          a: Math.max(0.22, Math.min(0.95, 0.95 - mag * 0.12)),
-          tw: (i * 0.37) % (Math.PI * 2),
-          sp: 0.004 + (i % 7) * 0.0012,
-          brass: mag < 1.5,
-        });
-      }
-      if (stars.length >= 12) return; // enough catalog field
-      stars = []; // too thin — fall through to schematic
-    }
-    // Schematic engraved field (non-lens pages, or catalog missing/thin)
     const n = Math.floor(W * H / 2200);
     for (let i = 0; i < n; i++) {
       stars.push({
-        real: false,
         x: Math.random() * W,
         y: Math.random() * H,
         r: Math.random() * 1.3 + 0.2,
@@ -235,52 +188,15 @@
     ctx.fillRect(0, 0, W, H);
   }
 
-  function projectCatalogStar(s) {
-    // Project real star at ecliptic lon/lat with the same ring rotation + tilt.
-    const R = ringRadius();
-    const lat = (s.lat || 0) * Math.PI / 180;
-    const rLat = R * (0.55 + 0.45 * Math.cos(lat)); // compress high latitude slightly
-    const theta = ((s.lon || 0) * Math.PI / 180) + rotation;
-    const x3 = rLat * Math.cos(theta) * Math.cos(lat);
-    const y3d = rLat * Math.sin(theta) * Math.cos(lat);
-    const yOff = R * Math.sin(lat) * 0.72; // latitude offset on plate
-    const y3 = y3d * Math.cos(TILT) - yOff * Math.sin(TILT * 0.35);
-    const z3 = y3d * Math.sin(TILT);
-    const sc = FOCAL / (FOCAL + z3);
-    return {
-      x: cx + x3 * sc,
-      y: cy + y3 * sc,
-      s: sc,
-      depth: (z3 / R + 1) / 2,
-    };
-  }
-
   function drawStars(t) {
-    const reduce = prefersReduce;
     for (const s of stars) {
-      const tw = reduce ? 1 : (0.68 + 0.32 * Math.sin(s.tw + t * s.sp));
-      let alpha = s.a * tw;
-      let x = s.x;
-      let y = s.y;
-      let r = s.r;
-      if (s.real) {
-        const p = projectCatalogStar(s);
-        // Fade stars that sit behind the far side of the ring
-        const depthFade = 0.45 + 0.55 * (p.depth != null ? p.depth : 0.5);
-        alpha *= depthFade;
-        x = p.x;
-        y = p.y;
-        r = s.r * (0.75 + 0.35 * p.s);
-      }
-      if (alpha < 0.02) continue;
+      const alpha = s.a * (0.68 + 0.32 * Math.sin(s.tw + t * s.sp));
       ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       if (s.brass) {
-        ctx.fillStyle = 'rgba(168, 176, 188, ' + (alpha * 0.95).toFixed(3) + ')';
-      } else if (s.real) {
-        ctx.fillStyle = 'rgba(232, 235, 240, ' + alpha.toFixed(3) + ')';
+        ctx.fillStyle = `rgba(168, 176, 188, ${alpha * 0.95})`;
       } else {
-        ctx.fillStyle = 'rgba(236, 230, 216, ' + alpha.toFixed(3) + ')';
+        ctx.fillStyle = `rgba(236, 230, 216, ${alpha})`;
       }
       ctx.fill();
     }
@@ -862,17 +778,6 @@
     return dx * dx + dy * dy < r * r;
   }
 
-  // Sign currently at the front of the ring (largest projected scale). This is the
-  // keyboard-selected sign, so Enter matches the canvas's "Enter to select a sign".
-  function frontmostSignKey() {
-    let best = null, bestS = -Infinity;
-    for (let i = 0; i < cachedPositions.length; i++) {
-      const p = cachedPositions[i];
-      if (p && p.s > bestS) { bestS = p.s; best = p.key; }
-    }
-    return best;
-  }
-
   // ── Animation loop ────────────────────────────────────────────────────────
 
   let lastT = 0;
@@ -914,7 +819,7 @@
         spinAnim = null;
         if (spinDoneCb) { const f = spinDoneCb; spinDoneCb = null; f(); }
       }
-    } else if (autoSpin && !prefersReduce) {
+    } else if (autoSpin) {
       rotation += SPIN_SPEED;
     } else if (Math.abs(rotVel) > 0.0001) {
       rotation += rotVel;
@@ -1049,12 +954,7 @@
     const wrap = cvs.parentElement;
     const cssW = wrap.clientWidth;
     const maxH = (window.RafCore && window.RafCore.tier === 'high') ? 520 : 460;
-    // Observatory eyepiece (squareLens): the lens sits in a 1:1 circular clip, so
-    // size the canvas square — the dial fills the whole lens instead of leaving the
-    // lower third as empty black. Banner pages keep the wide 0.65 aspect.
-    const cssH = squareLens
-      ? Math.min(cssW, Math.round(window.innerHeight * 0.9))
-      : Math.min(Math.round(cssW * 0.65), Math.round(window.innerHeight * 0.52), maxH);
+    const cssH = Math.min(Math.round(cssW * 0.65), Math.round(window.innerHeight * 0.52), maxH);
 
     if (window.RafCore && window.RafCore.setupCanvas2D) {
       const setup = window.RafCore.setupCanvas2D(cvs, cssW, cssH, 2.5);
@@ -1072,7 +972,7 @@
     }
 
     W = cssW; H = cssH;
-    cx = W / 2; cy = H / 2 + (squareLens ? 0 : 10);
+    cx = W / 2; cy = H / 2 + 10;
     initStars();
   }
 
@@ -1083,10 +983,7 @@
     if (!E) { setTimeout(fetchPlanets, 350); return; }
     try {
       const now = new Date();
-      // All components in UTC — julianDay() expects one coherent UT instant. Mixing a
-      // LOCAL date with UTC time offset positions by up to a full day (Moon → wrong sign)
-      // for any viewer whose local date differs from the UTC date.
-      const jd  = E.julianDay(now.getUTCFullYear(), now.getUTCMonth() + 1, now.getUTCDate(),
+      const jd  = E.julianDay(now.getFullYear(), now.getMonth() + 1, now.getDate(),
                                now.getUTCHours(), now.getUTCMinutes(), 0);
       const mod = l => ((l % 360) + 360) % 360;
       for (const pl of PLANETS) {
@@ -1117,11 +1014,11 @@
       rotVel = 0;
     } else if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      // Keyboard has no pointer `hovered`, so fall back to the frontmost sign — this
-      // makes Enter actually select a sign, as the canvas aria-label promises.
-      const target = hovered || frontmostSignKey();
-      if (target) {
-        spinToSign(target, { duration: 520, onDone: () => { if (selectCb) selectCb(target); } });
+      if (hovered) {
+        spinToSign(hovered, { duration: 520, onDone: () => { if (selectCb) selectCb(hovered); } });
+      } else if (hitCentre(cx, cy)) {
+        try { document.dispatchEvent(new CustomEvent('ap-horoscope-centre-tap')); } catch (e) { /* */ }
+        window.location.href = 'chart.html';
       }
     }
   }
@@ -1134,24 +1031,12 @@
 
   function getRotation() { return rotation; }
 
-  function init(canvasEl, cb, opts) {
+  function init(canvasEl, cb) {
     cvs      = canvasEl;
     if (!cvs) return;
     ctx      = cvs.getContext('2d');
     if (!ctx) return;
     selectCb = cb;
-    opts = opts || {};
-    squareLens = !!opts.square;
-    // Honour OS reduced-motion on the headline live dial: hold a static frame
-    // instead of perpetual autospin; user drag/arrow keys still turn it.
-    prefersReduce = !!(window.RafCore && window.RafCore.reducedMotion);
-    if (prefersReduce) autoSpin = false;
-    if (window.RafCore && typeof window.RafCore.onReducedMotionChange === 'function') {
-      window.RafCore.onReducedMotionChange(function (on) {
-        prefersReduce = !!on;
-        if (prefersReduce) { autoSpin = false; rotVel = 0; }
-      });
-    }
 
     cvs.setAttribute('tabindex', '0');
     cvs.setAttribute('role', 'application');

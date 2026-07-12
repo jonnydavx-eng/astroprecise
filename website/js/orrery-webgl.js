@@ -316,33 +316,6 @@ const FinishShader = {
   let orbitVelAz = 0;
   let orbitVelEl = 0;
 
-  // ── Camera craft (expert Day-1 · home observatory) ───────────────────────
-  // Reveal dolly: poster→live wake-up (far → settle). Pointer parallax: ±~2° damped.
-  // Idle breathe already exists at scale 0; dolly owns the camera until complete.
-  let homeRevealPending = false;
-  let homeRevealConsumed = false; // one-shot — never re-arm after first play
-  let homeRevealSettle = null; // { r, fov, az, el }
-  let revealDollyActive = false;
-  let revealDollyStart = 0;
-  let revealFromRadius = 0, revealToRadius = 0, revealFromFov = 0, revealToFov = 0;
-  const REVEAL_DOLLY_MS = 1550;
-  let ptrNdcX = 0, ptrNdcY = 0;     // raw -1..1 over canvas
-  let ptrParAz = 0, ptrParEl = 0;   // damped rad offsets applied in applyCamera
-
-  function isHomeObservatoryRoom() {
-    return typeof document !== 'undefined' && document.body
-      && document.body.classList.contains('ap-observatory-home');
-  }
-  function homeEarthSettleR() { return 3.15; }
-  function homeEarthSettleEl() { return 7 * D2R; }
-  function homeEarthSettleFov() { return 34; }
-
-  /** Cancel craft ownership when user/scale systems take the camera. */
-  function abortHomeRevealCraft() {
-    revealDollyActive = false;
-    homeRevealPending = false;
-  }
-
   function isInstrumentZoomBusy() {
     return scaleAnimActive
       || camRadiusTarget != null
@@ -1107,14 +1080,8 @@ const FinishShader = {
     updateScaleHUD();
     needRecompute = true;
     updatePositions();
-    // Home observatory room: closer terminator + tighter FOV so Earth fills the stage
-    // (was 3.8 / 38° — read as a postage globe). Explore / other embeds keep prior craft.
-    var homeRoom = isHomeObservatoryRoom();
-    setEarthTerminatorCamera(
-      homeRoom ? homeEarthSettleR() : 3.8,
-      homeRoom ? homeEarthSettleEl() : 9 * D2R
-    );
-    camera.fov = homeRoom ? homeEarthSettleFov() : CAM_FOV_MID;
+    setEarthTerminatorCamera(3.8, 9 * D2R);
+    camera.fov = CAM_FOV_MID;
     camera.updateProjectionMatrix();
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
     if (bloomPass && composer) {
@@ -1125,90 +1092,8 @@ const FinishShader = {
     tunePreloaderSunGlow(true);
     orbitLines.forEach((o) => { o.visible = showOrbits && scaleLevel <= 3; });
     syncSceneStarfield(0);
-    // Arm reveal dolly ONCE: start farther out; playHomeRevealDolly() eases in on orrery-full.
-    // Never re-arm after first play (finishIntro/skipIntro re-call this and would stuck far).
-    if (homeRoom && !PRM && !homeRevealConsumed) {
-      homeRevealSettle = { r: camRadius, fov: camera.fov, az: camAz, el: camEl };
-      homeRevealPending = true;
-      revealDollyActive = false;
-      camRadius = homeRevealSettle.r * 1.58;
-      camera.fov = Math.min(44, homeRevealSettle.fov + 6);
-      camera.updateProjectionMatrix();
-    } else if (homeRoom && homeRevealConsumed) {
-      // Already played — stay on close settle, do not push far again
-      homeRevealPending = false;
-      revealDollyActive = false;
-      setEarthTerminatorCamera(homeEarthSettleR(), homeEarthSettleEl());
-      camera.fov = homeEarthSettleFov();
-      camera.updateProjectionMatrix();
-    } else {
-      homeRevealPending = false;
-      homeRevealSettle = null;
-      revealDollyActive = false;
-    }
     applyCamera();
     updateDomLabels(0);
-  }
-
-  /**
-   * Poster→live dolly-in (expert Day-1). Call once when HD canvas is visible
-   * (html.orrery-full / markLive). Idempotent; no-ops if PRM or not armed.
-   */
-  function playHomeRevealDolly() {
-    if (PRM || destroyed || !camera) return false;
-    if (revealDollyActive) return true;
-    if (!homeRevealPending || !homeRevealSettle) return false;
-    // Kill any competing scale anim (e.g. late focusPlanet)
-    scaleAnimActive = false;
-    camRadiusTarget = null;
-    homeRevealPending = false;
-    homeRevealConsumed = true;
-    revealFromRadius = camRadius;
-    revealToRadius = homeRevealSettle.r;
-    revealFromFov = camera.fov;
-    revealToFov = homeRevealSettle.fov;
-    if (homeRevealSettle.az != null) camAz = homeRevealSettle.az;
-    if (homeRevealSettle.el != null) camEl = homeRevealSettle.el;
-    revealDollyActive = true;
-    revealDollyStart = performance.now();
-    return true;
-  }
-
-  function tickRevealDolly(t) {
-    if (!revealDollyActive || !camera) return false;
-    // If a scale anim somehow started, yield — caller should abort craft first
-    if (scaleAnimActive) {
-      abortHomeRevealCraft();
-      return false;
-    }
-    const p = Math.min(1, (t - revealDollyStart) / REVEAL_DOLLY_MS);
-    const e = easeOutCubic(p);
-    camRadius = revealFromRadius + (revealToRadius - revealFromRadius) * e;
-    camera.fov = revealFromFov + (revealToFov - revealFromFov) * e;
-    camera.updateProjectionMatrix();
-    if (p >= 1) {
-      revealDollyActive = false;
-      camRadius = revealToRadius;
-      camera.fov = revealToFov;
-      camera.updateProjectionMatrix();
-    }
-    return true;
-  }
-
-  function tickPointerParallax(dt) {
-    // Fine-pointer only; skip when user is driving or dolly owns the frame
-    if (PRM || dragging || freeExploreMode || revealDollyActive) {
-      const k0 = Math.min(1, dt * 8);
-      ptrParAz += (0 - ptrParAz) * k0;
-      ptrParEl += (0 - ptrParEl) * k0;
-      return;
-    }
-    // ~2.0° az / ~1.4° el max (radians)
-    const wantAz = ptrNdcX * 0.035;
-    const wantEl = -ptrNdcY * 0.024;
-    const k = Math.min(1, dt * 6); // damper k≈6
-    ptrParAz += (wantAz - ptrParAz) * k;
-    ptrParEl += (wantEl - ptrParEl) * k;
   }
 
   function recoverPreloaderIntro() {
@@ -2104,18 +1989,6 @@ const FinishShader = {
   }
 
   function applyScalePreset(preset, animate) {
-    // User/scale ownership cancels one-shot reveal craft (don't leave camera far)
-    if (revealDollyActive || homeRevealPending) {
-      abortHomeRevealCraft();
-      homeRevealConsumed = true;
-      if (isHomeObservatoryRoom() && homeRevealSettle) {
-        camRadius = homeRevealSettle.r;
-        camera.fov = homeRevealSettle.fov;
-        if (homeRevealSettle.az != null) camAz = homeRevealSettle.az;
-        if (homeRevealSettle.el != null) camEl = homeRevealSettle.el;
-        camera.updateProjectionMatrix();
-      }
-    }
     const p = scalePreset(typeof preset === 'number' ? preset : (preset.id != null ? preset.id : preset));
     focusFrameId = null;      // v576: any scale change releases camera framing ownership
     moonFrameActive = false;
@@ -2157,20 +2030,15 @@ const FinishShader = {
       scaleAnimSpiralEl = 0;
       if (p.targetEarth) {
         earthTargetVec(camTarget);
-        const home0 = isHomeObservatoryRoom() && p.id === 0;
-        setEarthTerminatorCamera(
-          home0 ? homeEarthSettleR() : p.camRadius,
-          home0 ? homeEarthSettleEl() : p.camEl
-        );
-        camera.fov = home0 ? homeEarthSettleFov() : CAM_FOV_MID;
+        setEarthTerminatorCamera(p.camRadius, p.camEl);
       } else {
         camRadius = p.camRadius;
         camEl = p.camEl;
         camAz = p.camAz;
         camTarget.set(0, 0, 0);
-        camera.fov = p.id <= 2 ? CAM_FOV_WIDE : CAM_FOV_WIDE;
       }
       scaleAnimActive = false;
+      camera.fov = p.targetEarth ? CAM_FOV_MID : (p.id <= 2 ? CAM_FOV_WIDE : CAM_FOV_WIDE);
       camera.updateProjectionMatrix();
       applyCamera();
     }
@@ -6488,15 +6356,11 @@ const FinishShader = {
 
   // ── Camera ─────────────────────────────────────────────────────────────────
   function applyCamera() {
-    // Parallax offsets are presentation-only — never write back into camAz/camEl
-    // so idle breathe / scale anim remain the source of truth for orbit state.
-    const az = camAz + ptrParAz;
-    const el = Math.max(-1.2, Math.min(1.2, camEl + ptrParEl));
-    const ce = Math.cos(el), se = Math.sin(el);
+    const ce = Math.cos(camEl), se = Math.sin(camEl);
     camera.position.set(
-      camTarget.x + camRadius * ce * Math.cos(az),
+      camTarget.x + camRadius * ce * Math.cos(camAz),
       camTarget.y + camRadius * se,
-      camTarget.z + camRadius * ce * Math.sin(az)
+      camTarget.z + camRadius * ce * Math.sin(camAz)
     );
     camera.lookAt(camTarget);
   }
@@ -6886,8 +6750,7 @@ const FinishShader = {
     }
 
     // scale-level camera transition (zoom dial) — cinematic crossfade + warp blur
-    // Never fight home reveal dolly (auto focusPlanet race used to start scaleAnim mid-dolly)
-    if (scaleAnimActive && !revealDollyActive) {
+    if (scaleAnimActive) {
       const p = Math.min(1, (t - scaleAnimStart) / scaleAnimDurationMs);
       const e = (journeyActive || instrumentMode) ? easeJourney(p) : easeInOut(p);
       camRadius = scaleAnimFrom.radius + (scaleAnimTo.radius - scaleAnimFrom.radius) * e;
@@ -6946,14 +6809,7 @@ const FinishShader = {
           updateScaleVisuals(scaleLevel);
         } else if (!freeExploreMode && scalePreset(scaleLevel).targetEarth) {
           const ep = scalePreset(scaleLevel);
-          const homeRoom = isHomeObservatoryRoom();
-          if (homeRoom && scaleLevel === 0) {
-            setEarthTerminatorCamera(homeEarthSettleR(), homeEarthSettleEl());
-            camera.fov = homeEarthSettleFov();
-            camera.updateProjectionMatrix();
-          } else {
-            setEarthTerminatorCamera(ep.camRadius, ep.camEl);
-          }
+          setEarthTerminatorCamera(ep.camRadius, ep.camEl);
         } else {
           // v576: any focused planet lands on the portrait FOV, not the wide system FOV
           // Free-explore: never hard-snap terminator after a scale anim (kills free look).
@@ -7066,15 +6922,7 @@ const FinishShader = {
         updateDomLabels(p);
         if (elapsed >= introMs) finishIntro();
       }
-    }
-
-    // Camera craft: reveal dolly + pointer parallax (before idle so they own the frame)
-    const dollying = tickRevealDolly(t);
-    tickPointerParallax(dt);
-
-    if (!introActive && !portraitMode && !dragging && !scaleAnimActive && !dollying
-        && !homeRevealPending && !PRM && !onPreloaderStage() && !masterclassIntroActive
-        && (t - userTouched) > 1200) {
+    } else if (!portraitMode && !dragging && !scaleAnimActive && !PRM && !onPreloaderStage() && !masterclassIntroActive && (t - userTouched) > 1200) {
       if (freeExploreMode) {
         // Free explore: whisper of spin only — never snap radius/target back to presets.
         camAz += 0.010 * dt;
@@ -7090,17 +6938,12 @@ const FinishShader = {
       } else if (scaleLevel === 0 && !moonFrameActive && scalePreset(0).targetEarth && meshes.earth && sunMesh) {
         // v576: bounded idle — breathe around the terminator money-shot instead of
         // orbiting off it into the dark hemisphere. Eases back after user drags.
-        // Home observatory uses closer settle (3.15 / 7°) — do not snap to SCALE_LEVELS[0] 4.5.
         const prevAz = camAz, prevEl = camEl, keepRadius = camRadius;
-        const homeRoom = isHomeObservatoryRoom();
-        const settleR = homeRoom ? homeEarthSettleR() : scalePreset(0).camRadius;
-        const settleEl = homeRoom ? homeEarthSettleEl() : scalePreset(0).camEl;
-        setEarthTerminatorCamera(settleR, settleEl);
+        setEarthTerminatorCamera(scalePreset(0).camRadius, scalePreset(0).camEl);
         const azTerm = camAz, elTerm = camEl;
-        camRadius = keepRadius; // never fight user zoom / dolly settle
-        // Idle drift ~0.02 rad/s class amplitude on az (reads alive without orbiting off-terminator)
-        const wantAz = azTerm + Math.sin(t * 0.00018) * 0.34;
-        const wantEl = elTerm + Math.cos(t * 0.00014) * 0.035;
+        camRadius = keepRadius; // never fight user zoom
+        const wantAz = azTerm + Math.sin(t * 0.00016) * 0.22;
+        const wantEl = elTerm + Math.cos(t * 0.00013) * 0.02;
         const k = Math.min(1, dt * 1.6);
         let dAz = wantAz - prevAz;
         dAz = Math.atan2(Math.sin(dAz), Math.cos(dAz));
@@ -7163,7 +7006,7 @@ const FinishShader = {
         camAz += 0.05 * dt; // gentle auto-orbit kicks in fast so the model is never visually frozen
       }
     }
-    if (!portraitMode && !introActive && !scaleAnimActive && !dollying && !masterclassMode && !masterclassIntroActive
+    if (!portraitMode && !introActive && !scaleAnimActive && !masterclassMode && !masterclassIntroActive
         && !(focusFrameId === 'aspect' && aspectActive)) clampCamToLevel();
     // Free explore: keep continuous scale layers honest while the user coasts zoom.
     // While free-zooming (or coasting camRadiusTarget), keep layers in sync.
@@ -7522,28 +7365,6 @@ const FinishShader = {
     };
     canvas.addEventListener('keydown', onKey);
     canvas._orreryKeyHandler = onKey;
-
-    // Pointer parallax (fine pointer only) — feeds applyCamera offsets
-    const finePointer = (() => {
-      try {
-        return !!(window.matchMedia && matchMedia('(pointer: fine)').matches
-          && !matchMedia('(prefers-reduced-motion: reduce)').matches);
-      } catch (_) { return false; }
-    })();
-    if (finePointer) {
-      const onParallaxMove = (e) => {
-        if (!canvas || destroyed) return;
-        const r = canvas.getBoundingClientRect();
-        if (r.width < 1 || r.height < 1) return;
-        ptrNdcX = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width) * 2 - 1));
-        ptrNdcY = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
-      };
-      const onParallaxLeave = () => { ptrNdcX = 0; ptrNdcY = 0; };
-      canvas.addEventListener('pointermove', onParallaxMove, { passive: true });
-      canvas.addEventListener('pointerleave', onParallaxLeave, { passive: true });
-      canvas._orreryParallax = { onParallaxMove, onParallaxLeave };
-    }
-
     const onDown = (e) => {
       if (onPreloaderStage() && introActive) return;
       // Aspect view auto-retires on the next user pointer interaction (like the
@@ -9225,11 +9046,6 @@ const FinishShader = {
       delete canvas._orreryVV;
     }
     if (canvas && canvas._orreryHandlers) { window.removeEventListener('pointermove', canvas._orreryHandlers.onMove); window.removeEventListener('pointerup', canvas._orreryHandlers.onUp); }
-    if (canvas && canvas._orreryParallax) {
-      canvas.removeEventListener('pointermove', canvas._orreryParallax.onParallaxMove);
-      canvas.removeEventListener('pointerleave', canvas._orreryParallax.onParallaxLeave);
-      delete canvas._orreryParallax;
-    }
     if (canvas && canvas._orreryKeyHandler) canvas.removeEventListener('keydown', canvas._orreryKeyHandler);
     if (canvas && canvas._orreryDblHandler) canvas.removeEventListener('dblclick', canvas._orreryDblHandler);
     if (canvas && canvas._orreryCtxHandler) canvas.removeEventListener('contextmenu', canvas._orreryCtxHandler);
@@ -9240,7 +9056,6 @@ const FinishShader = {
 
   window.Orrery3D = {
     init, destroy, setSpeed, getDate, setDate, jumpTo, scrubDays, getDayOffset, setTimelineDays, snapToNow,
-    playHomeRevealDolly,
     goTo: setDate,
     get onScrub() { return onScrub; },
     set onScrub(fn) { onScrub = (typeof fn === 'function') ? fn : null; },

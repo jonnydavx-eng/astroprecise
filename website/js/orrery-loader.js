@@ -11,8 +11,8 @@
   var booting = false;
   var scriptEl = document.currentScript;
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
-    ? new URL('orrery-webgl.js?v=715', scriptEl.src).href
-    : 'js/orrery-webgl.js?v=715';
+    ? new URL('orrery-webgl.js?v=703', scriptEl.src).href
+    : 'js/orrery-webgl.js?v=703';
 
   function isLiteHero() {
     return !!(window.__apLiteHero ||
@@ -218,12 +218,6 @@
         }
         if (viewport) viewport.classList.remove('orrery-viewport--handoff');
         if (canvas) { canvas.style.transition = ''; canvas.style.opacity = ''; }
-        // Expert Day-1: start reveal dolly when live canvas is shown
-        try {
-          if (window.Orrery3D && typeof window.Orrery3D.playHomeRevealDolly === 'function') {
-            window.Orrery3D.playHomeRevealDolly();
-          }
-        } catch (e) { /* optional */ }
       }, 520);
     });
   }
@@ -446,15 +440,8 @@
       markActive(document.querySelector('.lite-vp-btn[data-lite-planet="' + id + '"]'));
     });
 
-    // Home observatory already settles via setDefaultEarthFrame + reveal dolly.
-    // Auto focusPlanet('earth') at 1.1s starts scaleAnim toward radius 4.5 and
-    // races/cancels Day-1 camera craft — skip on ap-observatory-home.
     setTimeout(function () {
       if (touched) return;
-      if (document.body && document.body.classList.contains('ap-observatory-home')) {
-        markActive(document.querySelector('.lite-vp-btn[data-lite-planet="earth"]'));
-        return;
-      }
       try { O.focusPlanet('earth'); } catch (e) { return; }
       markActive(document.querySelector('.lite-vp-btn[data-lite-planet="earth"]'));
     }, 1100);
@@ -547,15 +534,12 @@
     var hasReadout = typeof O.getBodyReadout === 'function';
     var hasScale = typeof O.getScaleLevel === 'function';
 
-    // --- Orbits: ON at Earth rest too on the observatory home (prove "this is an orrery")
-    //     Classic progressive reveal still applies elsewhere. ---
+    // --- Orbits: default ON at System/Inner (>=1), OFF in the Earth rest frame (0) ---
     var orbitsBtn = document.getElementById('ap-orbits-toggle');
     var userOrbitPref = null; // null = follow scale; true/false = explicit user choice
-    var homeObs = document.body && document.body.classList.contains('ap-observatory-home');
     function orbitsWantedAtLevel(lv) {
       if (userOrbitPref !== null) return userOrbitPref;
-      if (homeObs && lv === 0) return true; // visible orrery cue at first paint
-      return lv >= 1 && lv <= 3; // Inner / System / Oort
+      return lv >= 1 && lv <= 3; // Inner / System / Oort read as an orrery
     }
     function applyOrbits(lv) {
       if (!hasOrbits) return;

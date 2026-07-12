@@ -190,8 +190,8 @@ body.page-horoscope .ap-ev--tools-only {
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* Home: cast dock peeks first viewport — NOT full observatory room */
-body.ap-award-511:not(.ap-observatory-home) #heroChapter .hero-solar-stage {
+/* Home: cast dock peeks first viewport (v683 expert audit) */
+body.ap-award-511 #heroChapter .hero-solar-stage {
   height: min(48vh, 480px) !important;
   min-height: 300px !important;
   max-height: 520px !important;

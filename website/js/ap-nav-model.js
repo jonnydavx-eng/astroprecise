@@ -21,21 +21,16 @@
 'use strict';
 
 (function () {
-  // Observatory = living model home. Lens entrance is first in More (badge Enter)
-  // and also surfaced as a portal on the homepage stage (not buried).
-  // Plain, business-tuned, IDENTICAL to the homepage masthead — one vocabulary
-  // everywhere (2026-07-11 clarity overhaul). Home = the wordmark on every page.
   var NAV_PRIMARY = [
+    ['index.html', 'Observatory'],
     ['chart.html', 'Chart'],
-    ['compatibility.html', 'Compatibility'],
+    ['ephemeris.html', 'The Sky'],
     ['horoscope.html', 'Daily'],
-    ['ephemeris.html', 'Live Sky'],
     ['shop.html', 'Shop'],
   ];
 
-  // Hub + keep + story + library first in More — Lens FIRST so Enter is one tap
+  // Hub + keep + story + library first in More
   var NAV_MORE_EXPLORE = [
-    ['observatory.html', 'Look Through the Lens', { badge: 'Enter' }],
     ['mysky.html', 'My Sky', { badge: 'Hub' }],
     ['moment.html', 'Moment', { badge: 'Keep' }],
     ['cosmic-story.html', 'Cosmic Story'],
@@ -48,9 +43,9 @@
 
   // Four tabs only — model + cast + sky + daily (distinct icons)
   var NAV_BOTTOM_TABS = [
-    ['index.html', 'Home', 'star4'],
+    ['index.html', 'Observatory', 'star4'],
     ['chart.html', 'Chart', 'spiral'],
-    ['ephemeris.html', 'Live Sky', 'telescope'],
+    ['ephemeris.html', 'The Sky', 'telescope'],
     ['horoscope.html', 'Daily', 'crescent'],
   ];
 
