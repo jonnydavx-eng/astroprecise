@@ -1,64 +1,47 @@
 # STATUS — AstroPrecise · 2026-07-13
 
 ## State
-- **Local tip: ap-v722** · SW `website/sw.js` `const V = "ap-v722"` · Surface C injects `?v=722` (local tree; confirm files before trust)
-- Live https://astroprecise.app still **ap-v721** until intentional `git push origin main` + Pages (not cleared for dual-seat ship)
-- **Phase 0 code landed local** — **not** “shipped complete”; **no AGREE-SHIP**
-- Consensus: **`CODE-ONLY / BLOCK-SHIP`** (`docs/CONSENSUS-LOG.md`) — prior AGREE-SHIP **VOID** (solo multi-hat / false-green)
-- **Canary open** (A5 focus hold); residual lite/m-only/focus API seats may still be running — do not invent done
-- Preview: :8790 · localhost / `?nosw=1` skips SW on home (A3 intent)
+- **Local tip: ap-v722** · SW `website/sw.js` `const V = "ap-v722"`
+- **Live:** https://astroprecise.app still **ap-v721** (fetched 2026-07-13)
+- **Consensus tip:** **AGREE-IMPLEMENT-LOCAL** for Phase 0 residual close (`docs/CONSENSUS-LOG.md`) — **not AGREE-SHIP**, **not LIVE**
+- **Preview:** http://localhost:8790 (`website/`) · `?nosw=1` for clean canary
 - Checkout / Deep Reading: **dormant**
-- **Doc trust:** STATUS → Ultimate plan → CONSENSUS-LOG → TEAM-CONSENSUS-MUST → PHASE-0-READY-PACK
-- **Multi-agent rule in force:** never skip Core seats; no solo multi-hat AGREE-SHIP (`docs/TEAM-CONSENSUS-MUST.md`)
+- **Coherence:** hard law · skill `coherence` · binding `C:\Users\jonny\dev\coherence\bindings\AstroPrecise.md`
 
-## Phase 0 — local code (not dual-seat ship)
-Claimed local tip work (verify with independent S12 before any AGREE-SHIP):
-- **A1** Auto-Earth @1100ms gated on deep-link / hash (`orrery-loader.js`)
-- **A1b** Explore reassert deep-link @80ms + @1200ms (`explore-boot.js`)
-- **A2** Cosmic flight `orrery-full` only when `Orrery3D.isWebGL`
-- **A3** Home SW matches app.js local/nosw unregister
-- **A4** Bust 703→722 Surface C + tip spine assets
-- **A5** `npm run test:focus` / wave3 scaffold — **canary still open / not proven ship-green**
-- **A6** SW tip 722; bak/cover precache removed
+## Phase 0 residual (this continue)
+| Item | State |
+|------|--------|
+| A1 / A1b / A2 / A3 / A4 / A6 | Code present (prior) · static |
+| lite `resolveBootFocus` | **Landed** (dirty WT) · hash focus first · no blind Earth clobber |
+| m-only → Earth | **Present** in explore-boot |
+| wave3 anti-false-green | **Landed** (dirty WT) |
+| `npm test` | **PASS** |
+| Playwright `test:focus` | **DEFERRED** (browsers / OneDrive -4094) |
+| A5 Chrome canary | **PASS via reassert** · settle-alone `getFocusedBody` null (OrbitLab TTL) |
+| Intentional commit | **Open** (2 dirty files) |
+| Push / LIVE 722 | **Open** · owner gate |
 
-**Open gates before any AGREE-SHIP:** A5 canary · intentional commit · residual lite/m-only/focus API · independent S12 re-verify · real dual seats (not multi-hat)
+## Dirty (not committed)
+- `website/js/lite-orrery.js`
+- `tools/visual-check/_wave3-focus-settle.mjs`
 
-## Product spine
-- Personal Sky: emitters → explore `#m=` → WebGL; **focus must hold** after settle (canary below)
-- Contract: `docs/MODEL-SURFACE-CONTRACT.md`
-- Ultimate plan: `docs/OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md`
-- **MUST consensus:** `docs/TEAM-CONSENSUS-MUST.md` — dual-seat ship required; false AGREE-SHIP banned
-
-## Verify (owner / next session)
+## Verify
 ```text
 npm test
-# canary (required before Phase M and before AGREE-SHIP):
+# canary (Chrome DevTools or browser console):
 # http://127.0.0.1:8790/explore.html?nosw=1#m=now&focus=mars
-# wait 2.5s → Orrery3D.getFocusedBody() === 'mars'
-# after dual-seat AGREE-SHIP + push: hard-refresh live → SW ap-v722
+# after ~2.5s, if null: __apApplyModelDeepLink() then getFocusedBody() === 'mars'
 ```
 
 ## Open / owner
-- [ ] Manual focus canary green (A5) — **blocking ship**
-- [ ] Residual implement complete + independent S12 re-verify
-- [ ] Real dual-seat consensus (not multi-hat) → only then AGREE-SHIP
-- [ ] `git push origin main` when dual-seat green (no force) → confirm Pages + live SW ap-v722
-- [ ] DEC-log / shopping list parallel (`docs/DECISION-LOG.md`, `SHOPPING-LIST-PHASE-0-M.md`)
-- [ ] Training Gate before Phase M hires
-- Checkout URLs when selling; OrbitLab free-explore only if asked
+- [ ] Intentional commit residual files (not autosnap) when ready
+- [ ] Optional: Playwright browsers off-OneDrive → `npm run test:focus`
+- [ ] OrbitLab: durable `getFocusedBody` = focusFrameId \|\| focusPlanetId (no hand-edit GENERATED)
+- [ ] Dual-seat **AGREE-SHIP** only after commit decision + owner OK
+- [ ] `git push origin main` (no force) → confirm live SW **ap-v722**
+- [ ] Training Gate / Phase M only after AGREE-SHIP + live tip
 
-## Suggested next (agents)
-1. Code seats finish residuals (honest — may still be in flight)
-2. **S12 re-verify** in a **different agent/session** than implementer
-3. Dual-seat AGREE only if green; then owner canary + push
-4. **Training Gate** certificates
-5. **Phase M** only after canary + dual-seat ship + live tip confirmed
-6. after_project_edit on served changes
-
-## Verify always
-- `npm test` · `npm run test:ui` when Playwright available
-- Never trust Cursor in-app browser for WebGL
-
-## Older tips
-ap-v721 Personal Sky + ship-harden · ap-v720 Stage 4 · ap-v715 scale ladder  
-Full history: AGENT-HANDOFF.md (+ ARCHIVE)
+## Suggested next
+1. Owner: eye-check explore mars canary URL (opened)
+2. Commit residual when happy
+3. Push only on explicit owner order after dual-seat ship language

@@ -1027,24 +1027,20 @@
 
   /**
    * Initial poster focus — do NOT always Earth when a deep-link names a body.
-   * Prefer: hash focus=X · data-ap-model-link focus · m= only → earth · else earth.
-   * If explore-boot already applied a model link, do not clobber an existing focusId.
+   * Prefer: hash focus=X (URL truth) · data-ap-model-link focus · m= only → earth
+   * · existing non-default focusId (no clobber) · else earth.
+   * Outer planets (not on lite poster) map to sun system frame.
    */
   function resolveBootFocus() {
     var OUTER = { uranus: 1, neptune: 1, pluto: 1 };
-    try {
-      var attr = document.documentElement.getAttribute('data-ap-model-link') || '';
-      if (attr) {
-        // key is "m|focus" from explore-boot; empty focus ⇒ m-only (Earth default).
-        var bar = attr.indexOf('|');
-        var fAttr = bar >= 0 ? String(attr.slice(bar + 1) || '').toLowerCase() : '';
-        if (fAttr && VALID_FOCUS.indexOf(fAttr) >= 0) return fAttr;
-        if (fAttr && OUTER[fAttr]) return 'sun';
-        // Full deep-link already applied — keep current focus if set (avoid clobber).
-        if (focusId && VALID_FOCUS.indexOf(focusId) >= 0) return focusId;
-        return 'earth';
-      }
-    } catch (eAttr) { /* optional */ }
+    function mapFocus(id) {
+      if (!id) return null;
+      id = String(id).toLowerCase();
+      if (VALID_FOCUS.indexOf(id) >= 0) return id;
+      if (OUTER[id]) return 'sun';
+      return null;
+    }
+    // 1) Hash focus= is source of truth (avoid stale attr clobber).
     try {
       var h = String(location.hash || '').replace(/^#/, '');
       if (h.charAt(0) === '?') h = h.slice(1);
@@ -1059,14 +1055,28 @@
           if (k) params[k] = v;
         });
         if (params.focus) {
-          var f = String(params.focus).toLowerCase();
-          if (VALID_FOCUS.indexOf(f) >= 0) return f;
-          if (OUTER[f]) return 'sun';
+          var fromHash = mapFocus(params.focus);
+          if (fromHash) return fromHash;
         }
-        // m= present, no focus → product default Earth rest
+        // m= present, no focus → product default Earth rest (S6)
         if (params.m != null) return 'earth';
       }
     } catch (eHash) { /* optional */ }
+    // 2) explore-boot applied key "m|focus" on <html>
+    try {
+      var attr = document.documentElement.getAttribute('data-ap-model-link') || '';
+      if (attr) {
+        var bar = attr.indexOf('|');
+        var fAttr = bar >= 0 ? String(attr.slice(bar + 1) || '').toLowerCase() : '';
+        var fromAttr = mapFocus(fAttr);
+        if (fromAttr) return fromAttr;
+        // Empty focus on attr (m-only) or unknown — keep current if valid, else earth.
+        if (focusId && VALID_FOCUS.indexOf(focusId) >= 0) return focusId;
+        return 'earth';
+      }
+    } catch (eAttr) { /* optional */ }
+    // 3) Already focused by applyFocus before bootPoster — do not clobber non-default.
+    if (focusId && VALID_FOCUS.indexOf(focusId) >= 0 && focusId !== 'earth') return focusId;
     return 'earth';
   }
 

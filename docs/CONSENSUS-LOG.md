@@ -4,7 +4,32 @@ See **`docs/TEAM-CONSENSUS-MUST.md`** for the permanent must-rule.
 
 ---
 
-## CONSENSUS · ap-v722 · 2026-07-13 · **CODE-ONLY / BLOCK-SHIP**
+## CONSENSUS · ap-v722 residual · 2026-07-13 · **AGREE-IMPLEMENT-LOCAL**
+
+| Field | Value |
+|-------|--------|
+| **Tip** | **ap-v722** (local dirty + prior WT; live **ap-v721**) |
+| **Phase** | 0 residual close (lite boot + wave3 honesty + m-only) |
+| **Status** | **AGREE-IMPLEMENT-LOCAL** — not AGREE-SHIP · not LIVE |
+| **Implementer** | S8 · Grok subagent · lite-orrery resolveBootFocus + wave3 anti-false-green |
+| **Verifier** | S12 static · Grok subagent · **AGREE** (residual CODE quality) |
+| **A5 proof** | Chrome DevTools canary 2026-07-13: `#m=now&focus=mars` · attr `now\|mars` · WebGL true · settle `getFocusedBody` **null** (TTL) · reassert → **`mars` PASS** |
+| **Playwright** | **DEFERRED** — browsers missing; OneDrive errno -4094 on visual-check node_modules read; install blocked off-path |
+| **npm test** | **PASS** (exit 0) |
+| **Preview** | :8790 HTTP 200 |
+| **Live SW** | **ap-v721** (fetched) |
+| **Open before AGREE-SHIP** | intentional commit of residual files · owner OK to push · optional Playwright green · MUST-FIX-ORBITLAB durable `getFocusedBody` |
+| **Decision** | **AGREE-IMPLEMENT-LOCAL** · dual-seat for residual code · canary reassert path proven · **no push claimed** |
+
+### Signatures
+- S8 implement · residual · **CODE landed**
+- S12 static · **AGREE** residual quality
+- A5 runtime · Chrome DevTools (orchestrator evidence) · **PASS reassert** · settle-alone fragile
+- Honesty · still **no AGREE-SHIP / no LIVE claim**
+
+---
+
+## CONSENSUS · ap-v722 · 2026-07-13 · **CODE-ONLY / BLOCK-SHIP** (superseded for residual scope by AGREE-IMPLEMENT-LOCAL above; ship/push still blocked)
 
 | Field | Value |
 |-------|--------|
