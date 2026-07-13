@@ -29,3 +29,19 @@ Parent repo rules: `../AGENTS.md` and `../CLAUDE.md`.
 1. Hard-refresh preview :8790 (and SW update).
 2. `tools/visual-check` → `npm run all` (or full `audit` before big merges).
 3. `after_project_edit.ps1 -Project "AstroPrecise"`.
+
+
+## Coherence FAIL-CLOSED (auto · 2026-07-13)
+
+**No product edits** until Coherence seats are spawned for **this tip / vertical**.
+
+- Kit: `C:\Users\jonny\dev\coherence` · Skill: `coherence` · Site: http://localhost:8785/website/
+- Min: S8 implement · S12 verify (**different run**) · S5 honesty · S4 if CSS/perf · S6 if layout · S9 if visual
+- Non-trivial by default (UI/CSS/polish/colour/features/multi-file/`?v=`)
+- Banned: solo implement · path obvious · just CSS · prior fleet free-pass · multi-hat AGREE-SHIP
+- Handoff: `C:\Users\jonny\dev\coherence\docs\ALL-AGENTS-HANDOFF.md`
+
+```text
+Load Coherence. PROJECT-FIRST this project. Mode: IMPLEMENT. Vertical: <surface>.
+Spawn seats. No product edits until fleet returns.
+```

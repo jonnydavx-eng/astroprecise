@@ -75,3 +75,33 @@ Non-trivial work uses **Coherence** (`C:\Users\jonny\dev\coherence`):
 Load Coherence. PROJECT-FIRST AstroPrecise. Mode: <AUDIT|IMPLEMENT|SHIP-GATE>.
 Spawn seats. Do not skip multi-agent.
 ```
+
+<!-- Coherence bind — paste into product AGENTS.md -->
+
+## Coherence (multi-agent OS)
+
+Non-trivial work uses **Coherence** (`C:\Users\jonny\dev\coherence`):
+
+- Load `docs/EXPERT-WORKFORCE-OS.md` or skill `coherence`
+- Binding: `C:\Users\jonny\dev\coherence\bindings\AstroPrecise.md`
+- Spawn Core seats; **dual-seat ship**; **no multi-hat AGREE-SHIP**
+- Status: `CODE-ONLY` until proven; never false-green
+- All-agents handoff: `docs/ALL-AGENTS-HANDOFF.md`
+
+### FAIL-CLOSED edit gate (2026-07-13)
+
+**No product file edits** until real seats are spawned for **this tip / vertical** (not roleplay).
+
+| | |
+|--|--|
+| **Before edit** | PROJECT-FIRST → load Coherence → **spawn seats** → wait for returns → then implement |
+| **Non-trivial** | UI, CSS, layout, colour, graphics, polish, features, multi-file, shell `?v=`, IA/copy — **default YES** |
+| **Banned** | faster solo · path obvious · just CSS · prior fleet free-pass · multi-hat S8+S12 one chat |
+| **S12** | Verify in a **different run** than implementer |
+| **Status** | CODE-ONLY until dual-seat · max AGREE-IMPLEMENT-LOCAL for local tip · LIVE only S1 public |
+
+```text
+Load Coherence. PROJECT-FIRST AstroPrecise. Mode: <AUDIT|IMPLEMENT|SHIP-GATE>.
+Vertical: <this tip surface>. Spawn seats. No multi-hat.
+No product edits until fleet returns. CODE-ONLY until S12.
+```
