@@ -17,15 +17,38 @@
 
 One agent’s confidence ≠ consensus. Majority of one chat ≠ skip Phase 0.
 
+## PERMANENT — Never skip multi-agent Core seats (2026-07-13 owner order)
+
+**Orchestrator MUST spawn real Core seats** for non-trivial Phase work:
+
+| Seat | Role in ship |
+|------|----------------|
+| **S8** | Implement (code) |
+| **S12** | Verify in a **different agent/session** than the implementer |
+| **S5** | Honesty — **not** the implementer |
+| **S4** | Perf (may veto alone) |
+| **S2** | Process / docs / repo gates |
+
+**Forbidden:**
+
+- One agent signing multiple seats as **AGREE-SHIP** (solo multi-hat)
+- Orchestrator wearing implementer + verifier + honesty alone
+- False-green checklists (“all PASS”) without independent seat proof
+- Declaring **AGREE-SHIP** while A5 canary / residual implement is still open
+
+**Dual-seat ship required.** False AGREE-SHIP is banned.  
+Prior ap-v722 AGREE-SHIP log entry is **VOID** — see `docs/CONSENSUS-LOG.md` (**CODE-ONLY / BLOCK-SHIP**).
+
 ## Consensus log (append per tip)
 
 ```markdown
 ## Tip ap-vNNN · YYYY-MM-DD
 - Implementer: <seat/agent>
-- Verifier: <seat/agent>
+- Verifier: <seat/agent>   <!-- MUST be different agent/session than implementer -->
+- Honesty: <seat/agent>    <!-- MUST NOT be implementer alone -->
 - Checks: [ ] npm test  [ ] focus settle / manual canary  [ ] SW tip  [ ] honesty  [ ] no dual WebGL
 - Dissent / vetoes: none | …
-- Status: **AGREED** | **BLOCKED**
+- Status: **AGREED** | **BLOCKED** | **CODE-ONLY**
 ```
 
 ## Phase 0 ap-v722 acceptance (all required)
@@ -38,7 +61,12 @@ One agent’s confidence ≠ consensus. Majority of one chat ≠ skip Phase 0.
 - [ ] A5 wave3 / manual `getFocusedBody()==='mars'` after 2.5s
 - [ ] A6 SW tip ap-v722; bak precache removed
 - [ ] `npm test` green
-- [ ] Implementer + verifier **AGREED**
+- [ ] Implementer + **independent** verifier **AGREED** (no multi-hat)
+- [ ] Residuals (lite / m-only / focus API) closed or explicitly deferred by dual seats
+
+**A5 checkbox stays unchecked until proven** (canary or automated focus hold). Do not check it for scaffold-only or “browser blocked” excuses.
+
+Current tip status: **CODE-ONLY / BLOCK-SHIP** — not AGREE-SHIP.
 
 ## Speed + surgical precision
 
@@ -49,4 +77,4 @@ One agent’s confidence ≠ consensus. Majority of one chat ≠ skip Phase 0.
 
 ---
 
-*Must-rule · stick forever · 2026-07-13*
+*Must-rule · stick forever · 2026-07-13 · multi-agent never-skip same day*

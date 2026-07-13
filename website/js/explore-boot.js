@@ -174,7 +174,12 @@
       var resolved = resolveMomentDate(parsed.m);
       if (resolved) applyTime(resolved);
     }
-    if (parsed.focus) applyFocus(parsed.focus);
+    if (parsed.focus) {
+      applyFocus(parsed.focus);
+    } else if (parsed.m != null) {
+      // S6 product default: #m=… with no focus= → Earth rest frame.
+      applyFocus('earth');
+    }
     lastAppliedKey = key;
     try {
       document.documentElement.setAttribute("data-ap-model-link", key);

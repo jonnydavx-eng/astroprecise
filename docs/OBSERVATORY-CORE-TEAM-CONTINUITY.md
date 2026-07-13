@@ -40,7 +40,7 @@ Then read:
 2. `docs/OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md`  
 3. Your seat section only for deep detail  
 
-**Current motion:** **Phase 0 / Track A** (focus clobber → ap-v722).
+**Current motion:** **Phase 0 / Track A** local tip ap-v722 · **CODE-ONLY / BLOCK-SHIP** (dual-seat + A5 canary open).
 
 ---
 
@@ -76,6 +76,12 @@ Seats may **hire missing experts under their seat** and **recommend paid tools**
 | **Vetoes stand** | S4 perf · S5/S7 honesty · S3+S8 dual WebGL / disc |
 | **Speed + precision** | Max parallel on non-overlapping files; surgical diffs only |
 
+## PERMANENT — Never skip multi-agent / no multi-hat (2026-07-13)
+
+**Never skip multi-agent Core seats.** For non-trivial Phase work the orchestrator **must spawn real seats**: **S8** implement, **S12** verify in a **different agent/session**, **S5** honesty (not the implementer), **S4** perf, **S2** process.  
+**Forbidden:** one agent signing multiple seats as **AGREE-SHIP** (solo multi-hat). Dual-seat ship required; false AGREE-SHIP banned.  
+Active ap-v722 log status: **CODE-ONLY / BLOCK-SHIP** until independent re-verify.
+
 ## Forbidden
 
 - New “dream team” that replaces S1–S12 mid-program  
@@ -88,7 +94,8 @@ Seats may **hire missing experts under their seat** and **recommend paid tools**
 - Session-replay tools on birth forms (FullStory/LogRocket default veto)  
 - Re-planning Ultimate instead of executing Phase 0  
 - Shipping tip on implementer-only LGTM without verifier  
+- Solo orchestrator multi-hat **AGREE-SHIP** (false dual-seat)  
 
 ---
 
-*Continuity lock · Observatory Core · 2026-07-13 · Consensus must-rule same day*
+*Continuity lock · Observatory Core · 2026-07-13 · multi-agent never-skip same day*

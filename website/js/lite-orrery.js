@@ -1025,6 +1025,51 @@
     else window.addEventListener('load', go, { once: true });
   }
 
+  /**
+   * Initial poster focus — do NOT always Earth when a deep-link names a body.
+   * Prefer: hash focus=X · data-ap-model-link focus · m= only → earth · else earth.
+   * If explore-boot already applied a model link, do not clobber an existing focusId.
+   */
+  function resolveBootFocus() {
+    var OUTER = { uranus: 1, neptune: 1, pluto: 1 };
+    try {
+      var attr = document.documentElement.getAttribute('data-ap-model-link') || '';
+      if (attr) {
+        // key is "m|focus" from explore-boot; empty focus ⇒ m-only (Earth default).
+        var bar = attr.indexOf('|');
+        var fAttr = bar >= 0 ? String(attr.slice(bar + 1) || '').toLowerCase() : '';
+        if (fAttr && VALID_FOCUS.indexOf(fAttr) >= 0) return fAttr;
+        if (fAttr && OUTER[fAttr]) return 'sun';
+        // Full deep-link already applied — keep current focus if set (avoid clobber).
+        if (focusId && VALID_FOCUS.indexOf(focusId) >= 0) return focusId;
+        return 'earth';
+      }
+    } catch (eAttr) { /* optional */ }
+    try {
+      var h = String(location.hash || '').replace(/^#/, '');
+      if (h.charAt(0) === '?') h = h.slice(1);
+      if (h) {
+        var params = {};
+        h.split(/[&;]/).forEach(function (part) {
+          if (!part) return;
+          var i = part.indexOf('=');
+          if (i < 0) return;
+          var k = decodeURIComponent(part.slice(0, i).trim()).toLowerCase();
+          var v = decodeURIComponent(part.slice(i + 1).trim());
+          if (k) params[k] = v;
+        });
+        if (params.focus) {
+          var f = String(params.focus).toLowerCase();
+          if (VALID_FOCUS.indexOf(f) >= 0) return f;
+          if (OUTER[f]) return 'sun';
+        }
+        // m= present, no focus → product default Earth rest
+        if (params.m != null) return 'earth';
+      }
+    } catch (eHash) { /* optional */ }
+    return 'earth';
+  }
+
   function bootPoster() {
     if (!bindDom()) return;
     var now = new Date();
@@ -1039,7 +1084,7 @@
     setupPosterObserver();
     zoom = 1.58;
     targetZoom = 1.58;
-    focusPlanet('earth');
+    focusPlanet(resolveBootFocus());
     nextMeteorAt = performance.now() + 1800;
     if (!raf) raf = requestAnimationFrame(tick);
     schedulePrefetch();
