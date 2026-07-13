@@ -1,39 +1,32 @@
 # STATUS — AstroPrecise · 2026-07-13
 
 ## State
-- **Local tip: ap-v730** · SW `website/sw.js` `const V = "ap-v730"`
-- **Live:** https://astroprecise.app — **ap-v730 LIVE** (SW confirmed post-Actions, 2026-07-13)
-- **Track:** Nebula Observatory brand refresh (visual product reset)
-- **Preview:** http://localhost:8790/?nosw=1
+- **Local tip: ap-v740** · SW `website/sw.js` `const V = "ap-v740"`
+- **Live:** https://astroprecise.app — **ap-v730** until ap-v740 deploy lands
+- **Track:** Cinematic engine camera pack (OrbitLab → AP sync)
+- **Preview:** http://localhost:8790/?nosw=1 · Explore free-explore ON
 - Checkout / Deep Reading: **dormant**
-- **Verify:** `npm test` · `npm run test:ui`
+- **Verify:** `npm test` · Explore pinch/wheel · double-click planet fly-to
 
-## ap-v730 — Nebula brand (LIVE)
+## ap-v740 — Engine feel + visuals (ship pending)
 | Item | State |
 |------|--------|
-| `css/ap-brand-nebula.css` | Nebula void, glass masthead, aurora CTAs, glass nav/cards |
-| `js/ap-page-boot.js` | `ap-brand-nebula` class + brand CSS on all boot pages |
-| `js/ap-asset-v.js` | `AP_ASSET_V = 730` |
-| Homepage hero | "The sky is live. Your chart is exact." |
-| Key pages | index, explore, chart, horoscope wired + `?v=730` |
-| SW tip | **ap-v730** |
+| OrbitLab → AP sync | cinematic FOV, zoom lerp, bloom, vignette, fly-to spiral |
+| Durable `getFocusedBody` | `focusFrameId \|\| focusPlanetId` (synced) |
+| Explore free-explore | `setFreeExplore(true)` on ready — continuous Earth→Galaxy zoom |
+| Lite poster zoom | snappier lerp + wheel |
+| `?v=` / SW | **740** / **ap-v740** |
 
-## Prior (ap-v722) — live
-- Focus clobber fix, SW localhost bypass, asset bust 722 — on origin
+## Prior
+- **ap-v730** Nebula brand LIVE
+- **ap-v722** Track A stabilize LIVE
 
 ## Git
-- **Pushed:** `origin/main` + `mirror` @ **b02e43b** (ap-v730 Nebula brand)
-- **Sync:** live SW **ap-v730** confirmed
+- **Pending push:** ap-v740 engine camera pack
 
 ## Open / next
-- [x] Push origin — live SW **ap-v730**
-- [ ] Owner: incognito verify nebula glass + aurora CTAs
-- [ ] Track B: Personal Sky doorway UX (`docs/FORWARD-PLAN.md`)
-- [ ] OrbitLab: durable `getFocusedBody` (engine seat)
-
-## Suggested next
-1. Ship ap-v730 → owner visual pass on phone + desktop
-2. Track B close Personal Sky emitters
-3. Phase M masterclass (engine materials) after brand stable
+- [ ] Push origin — live SW **ap-v740**
+- [ ] Owner: Explore free zoom + planet fly-to eye-check
+- [ ] Track B: Personal Sky doorway UX
 
 *History: AGENT-HANDOFF.md · board: OneDrive\WHERE-IM-UP-TO.md*

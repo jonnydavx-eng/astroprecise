@@ -764,7 +764,7 @@
         userPanX += velX; userPanY += velY;
         velX *= 0.90; velY *= 0.90;
       } else if (!dragActive) { velX = 0; velY = 0; }
-      zoom += (targetZoom - zoom) * 0.038;
+      zoom += (targetZoom - zoom) * 0.085;
       if (Math.abs(targetZoom - zoom) < 0.001) zoom = targetZoom;
       // Track the cursor 1:1 while dragging/gliding; settle gently otherwise.
       var panLerp = (dragActive || inertia) ? 0.45 : 0.038;
@@ -960,8 +960,8 @@
       // wheel (and trackpad pinch, which reports ctrlKey) zooms the model
       if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
-      var f = 1 - clampN(e.deltaY, -120, 120) * 0.0014;
-      targetZoom = clampN(targetZoom * f, 0.7, 3.4);
+      var f = 1 - clampN(e.deltaY, -160, 160) * 0.0018;
+      targetZoom = clampN(targetZoom * f, 0.65, 3.6);
       kickRaf();
     }, { passive: false });
 

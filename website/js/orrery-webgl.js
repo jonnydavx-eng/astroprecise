@@ -86,7 +86,7 @@ const FinishShader = {
   name: 'FinishShader',
   uniforms: {
     tDiffuse: { value: null },
-    uVignette: { value: 0.15 },
+    uVignette: { value: 0.24 },
     uGrade: { value: 1.0 },
   },
   vertexShader: `
@@ -445,9 +445,11 @@ const FinishShader = {
       if (pre) pre.classList.toggle('preloader--system-view', !!active);
     } catch (_) {}
   }
-  const CAM_FOV_CLOSE = 33;
-  const CAM_FOV_MID = 38;
-  const CAM_FOV_WIDE = 45;
+  /* Cinematic FOV pack (ap-v740 / orbitlab feel upgrade): tighter telephoto
+     close-ups, mid for body portraits, wide for system without fisheye. */
+  const CAM_FOV_CLOSE = 30;
+  const CAM_FOV_MID = 36;
+  const CAM_FOV_WIDE = 44;
   let texturesReady = false;
   let texturesReadyResolve = null;
   const texturesReadyPromise = new Promise((res) => { texturesReadyResolve = res; });
@@ -545,7 +547,7 @@ const FinishShader = {
   let scaleAnimActive = false, scaleAnimStart = 0;
   const scaleAnimFrom = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
   const scaleAnimTo = { radius: 48, el: 26 * D2R, az: -0.6, tx: 0, ty: 0, tz: 0 };
-  const SCALE_ANIM_MS = PRM ? 1200 : 1800;
+  const SCALE_ANIM_MS = PRM ? 1100 : 2100;
   const JOURNEY_ANIM_MS = PRM ? 1600 : 5200;
   const JOURNEY_HOLD_MS = PRM ? 1200 : 4800;
   scaleAnimDurationMs = SCALE_ANIM_MS;
@@ -1733,9 +1735,9 @@ const FinishShader = {
     try {
       composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
-      const bloomStrength = perfTier === 'mid' ? 0.22 : 0.34;
-      const bloomRadius = perfTier === 'mid' ? 0.38 : 0.46;
-      const bloomThreshold = perfTier === 'mid' ? 0.90 : 0.86;
+      const bloomStrength = perfTier === 'mid' ? 0.30 : 0.44;
+      const bloomRadius = perfTier === 'mid' ? 0.42 : 0.55;
+      const bloomThreshold = perfTier === 'mid' ? 0.86 : 0.80;
       bloomPass = new UnrealBloomPass(
         new THREE.Vector2(renderer.domElement.width, renderer.domElement.height),
         bloomStrength, bloomRadius, bloomThreshold
@@ -6384,12 +6386,13 @@ const FinishShader = {
 
     if (camRadiusTarget != null) {
       const diff = camRadiusTarget - camRadius;
-      const snapEps = freeExploreMode ? 0.12 : 0.06;
-      const lerpK = freeExploreMode ? 14 : 9.5;
+      const snapEps = freeExploreMode ? 0.08 : 0.04;
+      // Snappier coast — rubber-band lag was the #1 "cheap zoom" complaint
+      const lerpK = freeExploreMode ? 18 : 13.5;
       if (Math.abs(diff) < snapEps) {
         camRadius = camRadiusTarget;
         camRadiusTarget = null;
-        zoomSettleUntil = Math.max(zoomSettleUntil, performance.now() + 280);
+        zoomSettleUntil = Math.max(zoomSettleUntil, performance.now() + 220);
       } else {
         camRadius += diff * Math.min(1, dt * lerpK);
       }
@@ -6400,19 +6403,19 @@ const FinishShader = {
         camAz += orbitVelAz * dt;
         camEl += orbitVelEl * dt;
         camEl = Math.max(-1.35, Math.min(1.48, camEl));
-        orbitVelAz *= Math.pow(0.12, dt); // ~smooth decay
-        orbitVelEl *= Math.pow(0.14, dt);
+        orbitVelAz *= Math.pow(0.08, dt); // longer cinematic coast
+        orbitVelEl *= Math.pow(0.10, dt);
         if (Math.abs(orbitVelAz) < 1e-4) orbitVelAz = 0;
         if (Math.abs(orbitVelEl) < 1e-4) orbitVelEl = 0;
       }
-      // Continuous FOV: closer = tighter, galaxy/cosmos = wider but not fish-eyed
+      // Continuous FOV: telephoto close · cinematic mid · restrained wide (no fisheye)
       const contZ = radiusToContinuousZoom(camRadius);
-      const wantFov = contZ < 1.2 ? 34
-        : contZ < 2.5 ? 38
-        : contZ < 4 ? 42
-        : contZ < 5.2 ? 46
-        : 48;
-      camera.fov += (wantFov - camera.fov) * Math.min(1, dt * 4);
+      const wantFov = contZ < 1.0 ? CAM_FOV_CLOSE
+        : contZ < 2.2 ? CAM_FOV_CLOSE + (CAM_FOV_MID - CAM_FOV_CLOSE) * ((contZ - 1.0) / 1.2)
+        : contZ < 3.8 ? CAM_FOV_MID
+        : contZ < 5.0 ? CAM_FOV_MID + (CAM_FOV_WIDE - CAM_FOV_MID) * ((contZ - 3.8) / 1.2)
+        : CAM_FOV_WIDE + 2;
+      camera.fov += (wantFov - camera.fov) * Math.min(1, dt * 5.5);
       camera.updateProjectionMatrix();
     }
     // Phase 4: galactic (l,b) of camera look for HUD (throttled via lastGalacticLB)
@@ -6752,7 +6755,10 @@ const FinishShader = {
     // scale-level camera transition (zoom dial) — cinematic crossfade + warp blur
     if (scaleAnimActive) {
       const p = Math.min(1, (t - scaleAnimStart) / scaleAnimDurationMs);
-      const e = (journeyActive || instrumentMode) ? easeJourney(p) : easeInOut(p);
+      // Focus fly-tos + journeys use slow-in/out; dial steps stay punchier easeInOut
+      const e = (journeyActive || instrumentMode || focusFrameId)
+        ? easeJourney(p)
+        : easeInOut(p);
       camRadius = scaleAnimFrom.radius + (scaleAnimTo.radius - scaleAnimFrom.radius) * e;
       const baseEl = scaleAnimFrom.el + (scaleAnimTo.el - scaleAnimFrom.el) * e;
       const elArc = scaleAnimSpiralEl ? Math.sin(p * Math.PI) * scaleAnimSpiralEl : 0;
@@ -7258,20 +7264,25 @@ const FinishShader = {
     if (freeExploreMode) {
       // Continuous zoom across Earth → Cosmos — no per-level camMin/camMax trap.
       releaseCameraFraming({ keepAspect: false });
-      // Use geometric steps that stay meaningful near the free envelope.
-      const f = Math.max(0.55, Math.min(1.8, factor));
+      // Geometric steps that stay meaningful near the free envelope.
+      const f = Math.max(0.52, Math.min(1.95, factor));
       const next = Math.max(FREE_CAM_MIN, Math.min(FREE_CAM_MAX, cur * f));
       camRadiusTarget = next;
-      // Snappier free zoom (less “rubber band” lag that reads as a glitch)
+      // Aggressive catch-up so free zoom feels like flying, not rubber-banding
       if (Math.abs(next - camRadius) > 0.01) {
-        camRadius += (next - camRadius) * 0.35;
+        camRadius += (next - camRadius) * 0.48;
       }
       syncFreeExploreScaleFromRadius(next, { force: true, dispatch: true });
     } else {
       const p = scalePreset(scaleLevel);
-      camRadiusTarget = Math.max(p.camMin, Math.min(p.camMax, cur * factor));
+      // Log-space bias: wheel feels even across the band (near min vs mid)
+      const f = Math.max(0.72, Math.min(1.32, factor));
+      camRadiusTarget = Math.max(p.camMin, Math.min(p.camMax, cur * f));
+      if (Math.abs(camRadiusTarget - camRadius) > 0.01) {
+        camRadius += (camRadiusTarget - camRadius) * 0.28;
+      }
     }
-    zoomSettleUntil = performance.now() + 680;
+    zoomSettleUntil = performance.now() + 520;
     userTouched = performance.now();
     introActive = false;
     syncPreloaderIntroClass(false);
@@ -7513,11 +7524,15 @@ const FinishShader = {
       e.preventDefault();
       if (onPreloaderStage() && introActive) return;
       if (freeExploreMode) {
-        // Proportional to wheel delta so trackpads fly smoothly Earth → Galaxy
-        const mag = Math.min(0.42, Math.max(0.06, Math.abs(e.deltaY) * 0.00135));
+        // Proportional wheel — trackpads fly Earth→Galaxy; mice still punchy
+        const raw = Math.abs(e.deltaY) * (e.deltaMode === 1 ? 16 : 1);
+        const mag = Math.min(0.48, Math.max(0.05, Math.pow(raw * 0.0011, 0.92)));
         zoomCamRadius(1 + Math.sign(e.deltaY || 1) * mag);
       } else {
-        zoomCamRadius(1 + Math.sign(e.deltaY) * 0.08);
+        // Classic band: proportional too (was fixed 8% — felt sticky on trackpads)
+        const raw = Math.abs(e.deltaY) * (e.deltaMode === 1 ? 16 : 1);
+        const mag = Math.min(0.18, Math.max(0.055, raw * 0.00095));
+        zoomCamRadius(1 + Math.sign(e.deltaY || 1) * mag);
       }
     };
     const onDbl = (e) => {
@@ -7544,18 +7559,9 @@ const FinishShader = {
     canvas.addEventListener('dblclick', onDbl);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas.addEventListener('contextmenu', onCtx);
-    const onHover = (e) => {
-      if (dragging || activePointers.size) return;
-      try {
-        const id = resolvePickId(pt(e));
-        canvas.style.cursor = id ? 'pointer' : 'grab';
-      } catch (_) {}
-    };
-    canvas.addEventListener('pointermove', onHover);
     canvas._orreryHandlers = { onMove, onUp };
     canvas._orreryDblHandler = onDbl;
     canvas._orreryCtxHandler = onCtx;
-    canvas._orreryHoverHandler = onHover;
   }
 
   function setDetailLighting(mode) {
@@ -7588,39 +7594,17 @@ const FinishShader = {
   }
   function resolvePickId(p) {
     const r = canvas.getBoundingClientRect();
-    if (!r.width || !r.height) return null;
     ndc.x = (p.x / r.width) * 2 - 1; ndc.y = -(p.y / r.height) * 2 + 1;
     raycaster.setFromCamera(ndc, camera);
     const targets = BODIES.map((b) => meshes[b.id] && meshes[b.id].userData.mesh).filter(Boolean);
     if (sunMesh) targets.push(sunMesh);
     if (moonMesh) targets.push(moonMesh);
     const hit = raycaster.intersectObjects(targets, false)[0];
-    if (hit) {
-      if (hit.object === sunMesh) return 'sun';
-      if (hit.object === moonMesh) return 'moon';
-      const b = BODIES.find((x) => meshes[x.id] && meshes[x.id].userData.mesh === hit.object);
-      if (b) return b.id;
-    }
-    // Screen-space fallback — outer planets are tiny; ~28px hit radius feels tappable.
-    const PICK_PX = 28;
-    let bestId = null;
-    let bestD = PICK_PX;
-    const probe = (id, obj) => {
-      if (!obj || !obj.visible) return;
-      const sp = obj.getWorldPosition(new THREE.Vector3()).project(camera);
-      if (sp.z < -1 || sp.z > 1) return;
-      const sx = (sp.x * 0.5 + 0.5) * r.width;
-      const sy = (-sp.y * 0.5 + 0.5) * r.height;
-      const d = Math.hypot(sx - p.x, sy - p.y);
-      if (d < bestD) { bestD = d; bestId = id; }
-    };
-    BODIES.forEach((b) => {
-      const m = meshes[b.id] && meshes[b.id].userData.mesh;
-      probe(b.id, m);
-    });
-    probe('sun', sunMesh);
-    probe('moon', moonMesh);
-    return bestId;
+    if (!hit) return null;
+    if (hit.object === sunMesh) return 'sun';
+    if (hit.object === moonMesh) return 'moon';
+    const b = BODIES.find((x) => meshes[x.id].userData.mesh === hit.object);
+    return b ? b.id : null;
   }
   function pick(p) {
     const id = resolvePickId(p);
@@ -8453,7 +8437,9 @@ const FinishShader = {
         scaleLevel = 0;
         scaleAnimActive = true;
         scaleAnimStart = performance.now();
-        scaleAnimDurationMs = PRM ? 900 : 1400;
+        scaleAnimDurationMs = PRM ? 900 : 1900;
+        scaleAnimSpiralAz = PRM ? 0 : 0.18;
+        scaleAnimSpiralEl = PRM ? 0 : 0.04;
         focusFrameId = 'earth';
         updateScaleHUD();
       } else {
@@ -8480,7 +8466,9 @@ const FinishShader = {
       scaleLevel = 2;
       scaleAnimActive = true;
       scaleAnimStart = performance.now();
-      scaleAnimDurationMs = PRM ? 900 : 1400;
+      scaleAnimDurationMs = PRM ? 900 : 1900;
+      scaleAnimSpiralAz = PRM ? 0 : 0.22;
+      scaleAnimSpiralEl = PRM ? 0 : 0.035;
       focusFrameId = 'sun';
       updateScaleHUD();
       return;
@@ -8514,7 +8502,9 @@ const FinishShader = {
         scaleLevel = 0;
         scaleAnimActive = true;
         scaleAnimStart = performance.now();
-        scaleAnimDurationMs = PRM ? 900 : 1400;
+        scaleAnimDurationMs = PRM ? 900 : 1900;
+        scaleAnimSpiralAz = PRM ? 0 : 0.16;
+        scaleAnimSpiralEl = PRM ? 0 : 0.03;
         focusFrameId = 'earth';
         updateScaleHUD();
         return;
@@ -8542,7 +8532,9 @@ const FinishShader = {
       scaleLevel = 0;
       scaleAnimActive = true;
       scaleAnimStart = performance.now();
-      scaleAnimDurationMs = PRM ? 900 : 1400;
+      scaleAnimDurationMs = PRM ? 900 : 1900;
+      scaleAnimSpiralAz = PRM ? 0 : 0.14;
+      scaleAnimSpiralEl = PRM ? 0 : 0.03;
       camera.fov = CAM_FOV_CLOSE;
       camera.updateProjectionMatrix();
       updateScaleHUD();
@@ -8565,9 +8557,9 @@ const FinishShader = {
     scaleAnimFrom.tx = camTarget.x;
     scaleAnimFrom.ty = camTarget.y;
     scaleAnimFrom.tz = camTarget.z;
-    scaleAnimTo.radius = inner ? Math.max(body.size * 8, 11) : Math.max(body.size * 10, 9);
-    scaleAnimTo.el = inner ? 16 * D2R : 14 * D2R;
-    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
+    scaleAnimTo.radius = inner ? Math.max(body.size * 6.8, 10) : Math.max(body.size * 8.2, 7.5);
+    scaleAnimTo.el = inner ? 14 * D2R : 12 * D2R;
+    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.28;
     let azD = azWant - camAz;
     azD = Math.atan2(Math.sin(azD), Math.cos(azD));
     scaleAnimTo.az = camAz + azD;
@@ -8580,8 +8572,10 @@ const FinishShader = {
     scaleLevel = wantLv;
     scaleAnimActive = true;
     scaleAnimStart = performance.now();
-    scaleAnimDurationMs = PRM ? 900 : 1500;
-    camera.fov = CAM_FOV_MID;
+    scaleAnimDurationMs = PRM ? 950 : 2200;
+    scaleAnimSpiralAz = PRM ? 0 : (inner ? 0.20 : 0.28);
+    scaleAnimSpiralEl = PRM ? 0 : 0.045;
+    camera.fov = CAM_FOV_CLOSE;
     camera.updateProjectionMatrix();
     updateScaleHUD();
     try {
@@ -8688,9 +8682,10 @@ const FinishShader = {
     // not a distant speck framed against the sun glare (was orbitR * 0.44).
     // Camera sits SUNWARD of the planet (az + π, nudged off-axis for modelling
     // shadow) so the lit hemisphere faces the lens and the sun stays behind it.
-    scaleAnimTo.radius = inner ? Math.max(body.size * 7.5, 12) : Math.max(body.size * 9, 8);
-    scaleAnimTo.el = inner ? 16 * D2R : 14 * D2R;
-    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.35;
+    // Closer portraits — fill the frame with lit hemisphere texture
+    scaleAnimTo.radius = inner ? Math.max(body.size * 6.5, 10) : Math.max(body.size * 7.8, 7);
+    scaleAnimTo.el = inner ? 14 * D2R : 12 * D2R;
+    const azWant = inner ? Math.atan2(pos.z, pos.x) : Math.atan2(pos.z, pos.x) + Math.PI - 0.28;
     let azD = azWant - camAz;
     azD = Math.atan2(Math.sin(azD), Math.cos(azD));
     scaleAnimTo.az = camAz + azD; // shortest swing
@@ -8702,7 +8697,10 @@ const FinishShader = {
     focusFrameId = id;
     scaleAnimActive = true;
     scaleAnimStart = performance.now();
-    camera.fov = CAM_FOV_MID;
+    scaleAnimDurationMs = PRM ? 950 : 2100;
+    scaleAnimSpiralAz = PRM ? 0 : (inner ? 0.18 : 0.26);
+    scaleAnimSpiralEl = PRM ? 0 : 0.04;
+    camera.fov = CAM_FOV_CLOSE;
     camera.updateProjectionMatrix();
   }
 
@@ -9077,7 +9075,6 @@ const FinishShader = {
       delete canvas._orreryVV;
     }
     if (canvas && canvas._orreryHandlers) { window.removeEventListener('pointermove', canvas._orreryHandlers.onMove); window.removeEventListener('pointerup', canvas._orreryHandlers.onUp); }
-    if (canvas && canvas._orreryHoverHandler) canvas.removeEventListener('pointermove', canvas._orreryHoverHandler);
     if (canvas && canvas._orreryKeyHandler) canvas.removeEventListener('keydown', canvas._orreryKeyHandler);
     if (canvas && canvas._orreryDblHandler) canvas.removeEventListener('dblclick', canvas._orreryDblHandler);
     if (canvas && canvas._orreryCtxHandler) canvas.removeEventListener('contextmenu', canvas._orreryCtxHandler);
@@ -9126,7 +9123,14 @@ const FinishShader = {
     getBodyReadout(id) {
       try { return bodyReadout(id, baseJd + dayOffset); } catch (e) { return null; }
     },
-    getFocusedBody: () => focusPlanetId,
+    // Durable camera framing first (focusFrameId), then 2.8s highlight ring.
+    // Phase 0 A5 / wave3 canaries need hold after settle — not ring TTL alone.
+    // 'aspect' is not a planet body for deep-link / product focus.
+    getFocusedBody: () => {
+      if (focusFrameId && focusFrameId !== 'aspect') return focusFrameId;
+      return focusPlanetId;
+    },
+    getFocusFrameId: () => focusFrameId,
     getExtraBodies: () => EXTRA_BODIES.map((x) => x.id),
     __trailDebug: () => ({
       active: trailsActive,
