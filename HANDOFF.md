@@ -1,6 +1,6 @@
 # AstroPrecise — HANDOFF (start here) · 2026-07-13
 
-**Canonical:** `C:\Users\jonny\OneDrive\astroprecise` · site in `website/` · preview `http://localhost:8790` · live https://astroprecise.app · SW tip **ap-v721** (tip SHA `6fed17d`).
+**Canonical:** `C:\Users\jonny\OneDrive\astroprecise` · site in `website/` · preview `http://localhost:8790/?nosw=1` · live https://astroprecise.app · SW tip **ap-v722** (Track A stabilize — shipping).
 
 Ground first:
 ```powershell
@@ -20,24 +20,24 @@ powershell -NoProfile -File "C:\Users\jonny\OneDrive\control-panel\project_first
 ## Render / real-click harness
 
 ```
-node tools/_diag-click.mjs    # real drag/click/dblclick + overlay checks
-node tools/_diag-engine.mjs   # scale journey / focus + console capture
 npm test
-npm run test:ui               # click + deeplink spine
+npm run test:ui               # _diag-click + _wave2-deeplink
+node tools/_diag-click.mjs
+node tools/_diag-engine.mjs
 ```
 
-## Current tip (ap-v721) — SHIPPED
+## Current tip (ap-v722) — Track A stabilize
 
-- **LIVE:** Personal Sky Moment (Stages 0–3 in code; Stage 4 deploy done) + ship-harden (SW bypass, Explore toggle, CI sky-bridge gates, skills/rules).
+- **Fixes:** deep-link focus no longer clobbered by auto-Earth @1.1s; home SW bypass on localhost/`?nosw=1`; Surface C assets bust `?v=722`; lite/explore-boot focus residual.
+- **Canary:** `http://127.0.0.1:8790/explore.html?nosw=1#m=now&focus=mars`
 - Contract: `docs/MODEL-SURFACE-CONTRACT.md`.
-- Deep Reading checkout URLs: **still dormant** until owner wires them.
-- Git is **pushed** to origin + mirror. Do **not** treat older “NOTHING IS DEPLOYED / NOT pushed” notes as current.
+- Checkout URLs: **still dormant**.
+- **Next after ship:** Track B (Personal Sky doorway/return polish) per `docs/FORWARD-PLAN.md`.
 
 ## Next (short)
 
-1. **Owner:** hard-refresh live → confirm SW **ap-v721** + phone Personal Sky Moment pass.
-2. **Owner:** when selling — wire real checkout URLs sitewide.
-3. **Agents:** no force-push; ranked options in `docs/FORWARD-PLAN.md`; OrbitLab free-explore only if Jonny asks.
+1. **Owner:** incognito live → confirm SW **ap-v722** + mars canary on explore.
+2. **Agents:** Track B from FORWARD-PLAN; no force-push; Phase M only after Training Gate.
 
 ## Owner context
 
