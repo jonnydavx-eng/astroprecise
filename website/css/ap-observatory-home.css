@@ -418,25 +418,28 @@ html body.ap-observatory-home #heroChapter .hero-form-row input[type="date"] {
   max-width: none !important;
   min-height: 48px !important;
 }
-/* CTA law: dark ink on brass — the verified 8.2:1 pill. NO cyan. */
+/* CTA law — ap-v750 PRODUCT RESET: electric aurora (kills brass forever) */
 html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"],
 html body.ap-observatory-home #heroChapter .hero-form-row .btn-press {
   flex: 0 0 auto !important;
-  width: auto !important; /* horizon-2026 ≤mobile forces width:100% — inflates the layout viewport */
+  width: auto !important;
   min-width: 0 !important;
   white-space: nowrap !important;
-  min-height: 48px !important;
-  padding: 0 1.05rem !important;
-  color: #0B0906 !important;
-  background: linear-gradient(160deg, #E8C872, #C9A227) !important;
+  min-height: 52px !important;
+  padding: 0 1.35rem !important;
+  color: #04060c !important;
+  background: linear-gradient(135deg, #2ee6ff 0%, #7a5cff 55%, #ff4fd8 120%) !important;
   border: 0 !important;
-  border-radius: 10px !important;
-  font-weight: 600 !important;
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 0 28px rgba(46, 230, 255, 0.45), 0 12px 40px rgba(122, 92, 255, 0.35) !important;
 }
 html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"]:hover,
 html body.ap-observatory-home #heroChapter .hero-form-row .btn-press:hover {
-  color: #0B0906 !important;
-  filter: brightness(1.05);
+  color: #04060c !important;
+  filter: brightness(1.1);
 }
 /* Returning-user chip (re-parented above the form by ap-home-bootstrap). */
 html body.ap-observatory-home #heroChapter .hero-copy .hero-today-chip {
@@ -447,46 +450,66 @@ html body.ap-observatory-home #heroChapter .hero-copy .hero-today-chip {
 }
 
 @media (min-width: 1280px) {
-  /* Side rail — vertically centred on the stage, clear of the disc
-     (clearance is MEASURED by the gate at every sweep width, not assumed).
-     border-box + 340px: at 1280x800 the measured disc left edge is ~404px —
-     the rail's outer edge must stay ≤380 for the 24px law margin. */
+  /* ap-v750: full-bleed model — cast dock becomes a bottom glass strip, not a side panel */
+  html body.ap-observatory-home #heroChapter .hero-solar-stage {
+    height: calc(100svh - var(--bottom-nav-h, 0px)) !important;
+    min-height: 560px !important;
+  }
   html body.ap-observatory-home #heroChapter .hero-copy {
     box-sizing: border-box !important;
     position: absolute !important;
-    left: 24px !important;
-    top: calc((100svh - var(--ap-tray-h, 128px)) / 2) !important;
-    transform: translateY(-50%) !important;
-    width: 340px !important;
-    max-width: 340px !important;
-    max-height: 440px;
-    overflow: auto;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: calc(var(--ap-tray-h, 128px) + 18px) !important;
+    transform: translateX(-50%) !important;
+    width: min(520px, calc(100% - 48px)) !important;
+    max-width: min(520px, calc(100% - 48px)) !important;
+    max-height: none !important;
+    overflow: visible !important;
     margin: 0 !important;
-    padding: 1.1rem 1.15rem 1.2rem !important;
-    background: rgba(10, 10, 14, 0.88) !important;
-    border: 1px solid rgba(200, 205, 214, 0.24) !important;
-    border-radius: 16px !important;
+    padding: 1.25rem 1.4rem 1.35rem !important;
+    text-align: center !important;
+    background: rgba(4, 8, 18, 0.72) !important;
+    border: 1px solid rgba(46, 230, 255, 0.22) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(46, 230, 255, 0.12) !important;
+    backdrop-filter: blur(20px) saturate(1.25);
+    -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  }
+  html body.ap-observatory-home #heroChapter .hero-form-row {
+    justify-content: center !important;
+  }
+  html body.ap-observatory-home #heroChapter .hero-solar-trust {
+    justify-content: center !important;
+  }
+  html body.ap-observatory-home #heroChapter .hero-action-chips {
+    justify-content: center !important;
   }
   html body.ap-observatory-home #heroChapter .hero-copy h1,
   html body.ap-observatory-home #heroChapter .hero-copy .display {
-    font-size: clamp(1.3rem, 1.8vw, 1.6rem) !important;
-    line-height: 1.25 !important;
+    font-size: clamp(1.55rem, 2.4vw, 2.15rem) !important;
+    line-height: 1.12 !important;
     white-space: normal !important;
     overflow: visible !important;
-    margin: 0.2rem 0 0.35rem !important;
+    margin: 0.25rem 0 0.45rem !important;
   }
   body.ap-observatory-home #heroChapter .hero-copy h1 br { display: inline; }
   html body.ap-observatory-home #heroChapter .hero-copy .eyebrow-rose { display: block !important; }
   html body.ap-observatory-home #heroChapter .hero-copy .standfirst,
   html body.ap-observatory-home #heroChapter .hero-copy .hero-why-lead {
     display: block !important;
-    font-size: 0.85rem !important;
-    max-width: 34ch !important;
-    margin: 0 0 0.5rem !important;
+    font-size: 0.92rem !important;
+    max-width: 42ch !important;
+    margin: 0 auto 0.65rem !important;
   }
-  html body.ap-observatory-home #heroChapter .hero-form-row { flex-direction: column !important; }
-  html body.ap-observatory-home #heroChapter .hero-form-row input[type="date"],
-  html body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"] { width: 100% !important; }
+  html body.ap-observatory-home #heroChapter .hero-form-row {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+  }
+  html body.ap-observatory-home #heroChapter .hero-form-row input[type="date"] {
+    flex: 1 1 160px !important;
+  }
   html body.ap-observatory-home #heroChapter .hero-copy .hero-form-note {
     display: block !important;
     font-size: 0.72rem !important;

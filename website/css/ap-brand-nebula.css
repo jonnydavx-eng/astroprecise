@@ -155,17 +155,19 @@ html.ap-brand-nebula .hero-why-lead {
 html.ap-brand-nebula .btn-press,
 html.ap-brand-nebula button.btn-press,
 html.ap-brand-nebula input[type="submit"].btn-press,
-html.ap-brand-nebula a.btn-press {
-  background: var(--ap-cta-grad, linear-gradient(135deg, #4a90e0 0%, #7ec8e8 45%, #c8d8e8 100%)) !important;
-  color: var(--ap-cta-ink, #050508) !important;
+html.ap-brand-nebula a.btn-press,
+html.ap-brand-nebula body.ap-observatory-home #heroChapter .hero-form-row .btn-press,
+html.ap-brand-nebula body.ap-observatory-home #heroChapter .hero-form-row button[type="submit"] {
+  background: linear-gradient(135deg, #2ee6ff 0%, #7a5cff 55%, #ff4fd8 120%) !important;
+  color: #04060c !important;
   border: none !important;
   border-radius: var(--ap-radius-pill) !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.06em !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
   font-size: 0.78rem !important;
   padding: 0.85rem 1.35rem !important;
-  box-shadow: 0 8px 28px rgba(61, 214, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 0 28px rgba(46, 230, 255, 0.45), 0 12px 40px rgba(122, 92, 255, 0.35) !important;
   transition: transform 0.15s, box-shadow 0.2s, filter 0.2s !important;
 }
 
@@ -321,6 +323,50 @@ html.ap-brand-nebula .night-watch,
 html.ap-brand-nebula footer {
   background: rgba(4, 4, 8, 0.92) !important;
   border-top: 1px solid var(--ap-glass-border) !important;
+}
+
+/* ── ap-v750 PRODUCT RESET — hide educational clutter on first paint ── */
+html.ap-brand-nebula #explore-legend .explore-legend__body {
+  display: none !important;
+}
+html.ap-brand-nebula #explore-legend[data-collapsed="false"] .explore-legend__body,
+html.ap-brand-nebula #explore-legend:not([data-collapsed]) .explore-legend__body {
+  display: none !important;
+}
+html.ap-brand-nebula #explore-legend.is-open .explore-legend__body,
+html.ap-brand-nebula #explore-legend[data-collapsed="false"].is-open .explore-legend__body {
+  display: block !important;
+}
+html.ap-brand-nebula #explore-legend {
+  top: 72px !important;
+  right: 16px !important;
+  max-width: 220px !important;
+  background: rgba(6, 10, 18, 0.55) !important;
+  border: 1px solid rgba(46, 230, 255, 0.2) !important;
+  border-radius: 14px !important;
+  backdrop-filter: blur(14px);
+}
+html.ap-brand-nebula #explore-legend .explore-legend__toggle {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: #7ee9ff !important;
+}
+/* Full-bleed stage — model owns the viewport */
+html.ap-brand-nebula.ap-observatory-home #heroChapter .hero-solar-stage {
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 42%, rgba(46, 230, 255, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, rgba(122, 92, 255, 0.18) 0%, transparent 50%),
+    #000 !important;
+}
+html.ap-brand-nebula.ap-observatory-home .display {
+  font-size: clamp(2.15rem, 6vw, 3.6rem) !important;
+}
+html.ap-brand-nebula.ap-observatory-home .display-accent {
+  background: linear-gradient(120deg, #ffffff 0%, #2ee6ff 40%, #ff4fd8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
 }
 
 @media (max-width: 640px) {
