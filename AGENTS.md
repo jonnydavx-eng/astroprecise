@@ -59,3 +59,19 @@ npm run all   # after UI work
 
 Newest notes: `AGENT-HANDOFF.md` (archive older history if file is huge).  
 Sign rows with your agent name. Carry out flags for you before new work.
+
+<!-- Coherence bind — paste into product AGENTS.md -->
+
+## Coherence (multi-agent OS)
+
+Non-trivial work uses **Coherence** (`C:\Users\jonny\dev\coherence`):
+
+- Load `docs/EXPERT-WORKFORCE-OS.md` or skill `coherence`
+- Binding: `C:\Users\jonny\dev\coherence\bindings\AstroPrecise.md`
+- Spawn Core seats; **dual-seat ship**; **no multi-hat AGREE-SHIP**
+- Status: `CODE-ONLY` until proven; never false-green
+
+```text
+Load Coherence. PROJECT-FIRST AstroPrecise. Mode: <AUDIT|IMPLEMENT|SHIP-GATE>.
+Spawn seats. Do not skip multi-agent.
+```
