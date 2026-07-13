@@ -533,14 +533,15 @@ body.ap-observatory-home #heroChapter.ap-cast-compressed .ap-cast-pill {
   justify-content: center;
   min-height: 48px;
   padding: 0 1.1rem;
-  color: #0B0906;
-  background: linear-gradient(160deg, #E8C872, #C9A227);
+  color: #04060c;
+  background: linear-gradient(135deg, #2ee6ff 0%, #7a5cff 55%, #ff4fd8 120%);
   border: 0;
   border-radius: 999px;
-  font-weight: 600;
+  font-weight: 700;
   font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
   font-size: 0.85rem;
   cursor: pointer;
+  box-shadow: 0 0 24px rgba(46, 230, 255, 0.4);
 }
 @media (min-width: 1280px) {
   html body.ap-observatory-home #heroChapter.ap-cast-compressed .hero-copy {
