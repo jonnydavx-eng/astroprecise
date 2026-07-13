@@ -1,40 +1,39 @@
 # STATUS — AstroPrecise · 2026-07-13
 
 ## State
-- **Local tip: ap-v722** · SW `website/sw.js` `const V = "ap-v722"`
-- **Live:** https://astroprecise.app — **ap-v722 LIVE** (SW confirmed post-Actions, 2026-07-13)
-- **Track:** A stabilize (FORWARD-PLAN) — focus clobber, SW localhost, asset bust
+- **Local tip: ap-v730** · SW `website/sw.js` `const V = "ap-v730"`
+- **Live:** https://astroprecise.app — **ap-v722** until ap-v730 deploy lands
+- **Track:** Nebula Observatory brand refresh (visual product reset)
 - **Preview:** http://localhost:8790/?nosw=1
 - Checkout / Deep Reading: **dormant**
 - **Verify:** `npm test` · `npm run test:ui`
 
-## Track A (ap-v722) — landed
+## ap-v730 — Nebula brand (local, ship pending)
 | Item | State |
 |------|--------|
-| A1 focus clobber fix | `orrery-loader.js` — reassert deep-link, skip blind Earth |
-| A2 cosmic-flight LIVE gate | `ap-cosmic-flight-tool.js` — orrery-full only if WebGL |
-| A3 index SW localhost/nosw | `index.html` matches `app.js` bypass |
-| A4 asset bust 722 | spine `?v=722` on index/chart/explore/horoscope |
-| A6 SW tip | **ap-v722** |
-| lite resolveBootFocus | hash focus first |
-| wave3 anti-false-green | `_wave3-focus-settle.mjs` in test:ui |
-| `npm test` | **PASS** |
-| `npm run test:ui` | run at ship gate |
+| `css/ap-brand-nebula.css` | Nebula void, glass masthead, aurora CTAs, glass nav/cards |
+| `js/ap-page-boot.js` | `ap-brand-nebula` class + brand CSS on all boot pages |
+| `js/ap-asset-v.js` | `AP_ASSET_V = 730` |
+| Homepage hero | "The sky is live. Your chart is exact." |
+| Key pages | index, explore, chart, horoscope wired + `?v=730` |
+| SW tip | **ap-v730** |
+
+## Prior (ap-v722) — live
+- Focus clobber fix, SW localhost bypass, asset bust 722 — on origin
 
 ## Git
-- **Pushed:** `origin/main` + `mirror` @ **fba9e1c** (ap-v722 Track A + content-bank merge)
-- **Sync:** `0↑ / 0↓` with origin after push
+- **Pending push:** ap-v730 brand refresh
+- Last live: `origin/main` @ ap-v722
 
 ## Open / next
-- [x] Push origin — live SW **ap-v722** confirmed
-- [ ] Owner: incognito hard-refresh + mars canary on live
-- [ ] Track B: doorway UX, moment return, remaining emitters (`docs/FORWARD-PLAN.md`)
-- [ ] OrbitLab: durable `getFocusedBody` (engine seat — no hand-edit GENERATED)
-- [ ] Training Gate / Phase M — after live tip stable
+- [ ] Push origin — live SW **ap-v730**
+- [ ] Owner: incognito verify nebula glass + aurora CTAs
+- [ ] Track B: Personal Sky doorway UX (`docs/FORWARD-PLAN.md`)
+- [ ] OrbitLab: durable `getFocusedBody` (engine seat)
 
 ## Suggested next
-1. Owner phone pass: explore `#m=now&focus=mars` holds focus
+1. Ship ap-v730 → owner visual pass on phone + desktop
 2. Track B close Personal Sky emitters
-3. Commerce URLs when selling
+3. Phase M masterclass (engine materials) after brand stable
 
 *History: AGENT-HANDOFF.md · board: OneDrive\WHERE-IM-UP-TO.md*

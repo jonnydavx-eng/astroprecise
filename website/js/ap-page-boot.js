@@ -6,7 +6,10 @@
 (function () {
   'use strict';
 
-  document.documentElement.classList.add('ap-enchanted');
+  document.documentElement.classList.add('ap-enchanted', 'ap-brand-nebula');
+
+  if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '730';
+  var AV = window.AP_ASSET_V;
 
   // Client error beacon (session buffer; optional future Sentry DSN via meta)
   if (!document.getElementById('ap-error-beacon')) {
@@ -21,7 +24,7 @@
     if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-site-polish.css?v=722';
+    l.href = 'css/ap-site-polish.css?v=' + AV;
     l.id = 'ap-css-site-polish';
     document.head.appendChild(l);
   }
@@ -31,7 +34,7 @@
     if (document.getElementById('ap-css-palette-2026') || document.querySelector('link[href*="ap-palette-2026"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-palette-2026.css?v=722';
+    l.href = 'css/ap-palette-2026.css?v=' + AV;
     l.id = 'ap-css-palette-2026';
     document.head.appendChild(l);
   }
@@ -41,7 +44,7 @@
     if (document.getElementById('ap-css-logo-aurora')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-logo-aurora.css?v=722';
+    l.href = 'css/ap-logo-aurora.css?v=' + AV;
     l.id = 'ap-css-logo-aurora';
     document.head.appendChild(l);
   }
@@ -51,7 +54,7 @@
     if (document.getElementById('ap-css-visual-clarity')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-visual-clarity.css?v=722';
+    l.href = 'css/ap-visual-clarity.css?v=' + AV;
     l.id = 'ap-css-visual-clarity';
     document.head.appendChild(l);
   }
@@ -61,7 +64,7 @@
     if (document.getElementById('ap-css-model-stage')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-model-stage.css?v=722';
+    l.href = 'css/ap-model-stage.css?v=' + AV;
     l.id = 'ap-css-model-stage';
     document.head.appendChild(l);
   }
@@ -76,6 +79,16 @@
     document.head.appendChild(l);
   }
   ensurePageStructureCss();
+
+  function ensureBrandNebulaCss() {
+    if (document.getElementById('ap-css-brand-nebula')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'css/ap-brand-nebula.css?v=' + AV;
+    l.id = 'ap-css-brand-nebula';
+    document.head.appendChild(l);
+  }
+  ensureBrandNebulaCss();
 
   var CHAIN = [
     'js/ap-zodiac-constants.js',
