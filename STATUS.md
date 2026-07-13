@@ -13,7 +13,7 @@
 - Personal Sky Moment Stages 0–3 **in code on live**; Stage 4 = deploy **done** + **owner eye-check OPEN**
 - Emitters → explore.html#m= → WebGL Surface C (**focus can be overwritten ~1.1s by loader auto-Earth — P0**)
 - Contract: docs/MODEL-SURFACE-CONTRACT.md
-- Plans: docs/FORWARD-PLAN.md · **docs/UPGRADE-REFINE-PLAN-2026-07-13.md** (Tracks A–D)
+- Plans: docs/FORWARD-PLAN.md · **docs/UPGRADE-REFINE-PLAN-2026-07-13.md** (Tracks A–D) · **docs/WORLD-SQUAD-MODEL-FIRST-PLAN-2026-07-13.md** (squad + model-first)
 
 ## Ship-harden already on tip (do not re-do)
 - SW bypass in app.js (localhost + ?nosw=1) — **not yet on index.html**
