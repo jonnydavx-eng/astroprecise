@@ -14,35 +14,30 @@ update it whenever a wiki page is added, renamed, or retired.
 
 | Page | Covers | Last updated |
 |---|---|---|
-| [mission-plan.md](wiki/mission-plan.md) | **Active mission plan** — current missions, status, standing orders | 2026-07-02 |
+| [mission-plan.md](wiki/mission-plan.md) | **Active mission plan** — current missions, status, standing orders | 2026-07-13 |
 | [operations.md](wiki/operations.md) | How the Cortex system works: environment reality, delegation policy, goals/loops rules, ingest/query/lint procedures | 2026-07-02 |
-| [astroprecise-state.md](wiki/astroprecise-state.md) | Current technical state of the AstroPrecise site + app: deployment truth, palette, versioning, known doc contradictions | 2026-07-02 |
+| [astroprecise-state.md](wiki/astroprecise-state.md) | Current technical state of the AstroPrecise site + app: tip, deploy, known historical notes | 2026-07-13 |
 | [astroprecise-business.md](wiki/astroprecise-business.md) | Launch/monetization strategy synthesized from the 21 root planning docs, with phase gates and doc map | 2026-07-02 |
 | [davit-sat-dashboard.md](wiki/davit-sat-dashboard.md) | Satellite dashboard repo — currently an untouched Streamlit blank template | 2026-07-02 |
 
 ## Open lint findings
 
-1. **STATUS.md behind git history** — snapshot says ap-v563; `main` history shows
-   ap-v566 (PayPal direct replaced Lemon Squeezy, e2e PayPal gate, LS tooling archived).
-   Fix tracked as Mission 3 in [mission-plan.md](wiki/mission-plan.md).
-2. **AGENT-HANDOFF.md referenced but missing** — STATUS.md points to "AGENT-HANDOFF.md"
-   for full history and a prioritized roadmap, but no such file exists in the repo.
-   Its role is now covered by `cortex/` (state.js + log.md + agents.md); either restore
-   the file or update STATUS.md's pointer when doing Mission 3.
-2. **Warm hexes still hardcoded outside the token system** (verifier, 2026-07-02) —
-   `#050406`/`#C9A227` live on as literal canvas/WebGL/SVG paint colors in
-   `js/chart-render.js:64,320`, `js/chart-page.js:1488`, `js/instrument.js:238,358`,
-   `js/orrery-webgl.js:2415,4673`, `js/compatibility-page.js:109`,
-   `js/tool-cards.js` (6 spots), `css/main.css:5825` (SVG data-URI),
-   `saturn-return.html:282`, plus inert `var(--gold,#C9A227)` fallbacks in `js/app.js`.
-   Also: 7 utility/dev pages carry no theme-color meta. Tracked as Mission 6.
+1. **Warm hexes still hardcoded outside the token system** (verifier, 2026-07-02) —
+   `#050406`/`#C9A227` may still live as literal canvas/WebGL/SVG paint colors in
+   shipped JS (chart-render, instrument, orrery-webgl, tool-cards, etc.). Tracked as
+   Mission 6 in [mission-plan.md](wiki/mission-plan.md). Re-verify before sweeping.
 
 ### Resolved
 
+- ~~STATUS.md / cortex snapshot stuck at ap-v563~~ — cortex tip refreshed **2026-07-13**
+  to **ap-v721** LIVE (`6fed17d`, Personal Sky Moment + ship-harden, checkout dormant).
+  Old 563→566 narrative is historical only.
+- ~~AGENT-HANDOFF.md referenced but missing~~ — file exists at repo root; role also
+  covered by `cortex/` (state.js + log.md + agents.md).
 - ~~CLAUDE.md palette contradiction~~ — fixed 2026-07-02: section rewritten to the live
   `ap-palette-2026.css` cool-void + brass tokens (verified against `css/main.css` `:root`).
 - ~~CLAUDE.md deployment section stale~~ — fixed 2026-07-02: rewritten to the automated
-  gh-pages Actions pipeline + `astroprecise.app` (verified against
+  Pages Actions pipeline + `astroprecise.app` (verified against
   `.github/workflows/deploy-pages.yml` and `website/CNAME`).
 
 ## Conventions

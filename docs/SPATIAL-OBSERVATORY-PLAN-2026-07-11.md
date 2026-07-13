@@ -1,5 +1,7 @@
 # The Living Observatory — spatial-navigation site (hybrid) — BUILD PLAN
 
+> **Snapshot only (as of file date).** Deploy / tip claims here may be stale. **Current LIVE tip:** see `STATUS.md` and `website/sw.js` (ap-v721 as of 2026-07-13). Do not plan from this file's "not deployed / diverged" language.
+
 **Date:** 2026-07-11 · **Author:** Claude · **Owner decision:** *hybrid* (the 3D model IS the primary navigation, with a real DOM nav + crawlable content underneath) · "plan the build now."
 **Inputs:** owner vision (below) · owner's Grok research thread (3D-as-main-nav, per-planet, reading formats, 12 side features, engagement/turnover) · direct engine audit of `orrery-webgl.js` · the failed feasibility workflow (rerun-able after session reset).
 

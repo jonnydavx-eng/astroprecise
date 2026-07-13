@@ -1,5 +1,7 @@
 # The Observatory — Look Through the Lens (recovered + elevated)
 
+> **Snapshot only (as of file date).** Deploy / tip claims here may be stale. **Current LIVE tip:** see `STATUS.md` and `website/sw.js` (ap-v721 as of 2026-07-13). Do not plan from this file's "not deployed / diverged" language.
+
 **Date:** 2026-07-11 · **Author:** Claude (recovery workflow `recover-nightsky-plan` + design-panel recovery `mountain-observatory-entrance` wf_0b0aac05-4d5)
 **Status:** BUILT on `website/observatory.html` (masterclass elevation shipped locally, ap-v707). Standalone entrance, wired into nav (More → "Look Through the Lens"), sitemap, SW precache. NOT deployed (branch diverged from origin/main — see AGENT-HANDOFF).
 

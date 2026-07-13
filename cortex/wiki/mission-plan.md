@@ -1,37 +1,42 @@
 # Cortex Mission Plan — Active
 
-*Last updated: 2026-07-02. This is the standing plan the Cortex works from; update it
-as missions complete (move them to log.md with proof) or priorities change.*
+*Last updated: 2026-07-13. Standing plan the Cortex works from; update as missions
+complete (log.md with proof) or priorities change.*
+
+## Current tip (authoritative)
+
+- **ap-v721** LIVE — tip SHA `6fed17d`
+- Focus: Personal Sky Moment + ship-harden
+- Checkout: dormant
+- Site: https://astroprecise.app · local :8790
+
+Older mission text that says “main is at ap-v566” or “STATUS at 563” is **historical**
+only — see Mission 3 below.
 
 ## Mission 1 — Hub bootstrap ✅ (this PR, #6)
 
 Hub created (`cortex/` + workers), first lint pass done. Remaining step is owner-side:
-**merge PR #6** so every future session inherits the hub from `main`.
+**merge PR #6** so every future session inherits the hub from `main` (if not already merged).
 
 ## Mission 2 — Repair the instruction layer ✅ (this PR, #6)
 
-CLAUDE.md is the first file every session reads; two of its sections were actively
-wrong. Fixed in this PR, facts verified against the repo:
-- Deployment section rewritten: automated gh-pages Actions pipeline (test gates →
-  minified `dist/` → publish), live at `https://astroprecise.app`. Manual mirroring
-  is retired — the old instructions would have caused a hand-push over the built site.
-- Palette section rewritten: live tokens are `ap-palette-2026.css` cool-void + brass
-  (`#0C1016` / `#C2A05E`); both the original cool set AND the 2026-06-14 warm set are
-  retired. Rule added: use `--ap-*` tokens, never hardcode hex; DESIGN.md is normative.
+CLAUDE.md deployment + palette sections rewritten to Actions Pages deploy and cool-void
++ brass tokens. Normative: use `--ap-*`; DESIGN.md for palette.
 
-## Mission 3 — STATUS.md refresh (open, small)
+## Mission 3 — STATUS / tip refresh ✅ (historical → current)
 
-STATUS.md says ap-v563; `main` is at ap-v566 (v564 Weekly Sky + minified deploys,
-v565 PayPal direct, v566 PayPal e2e gate + honest shop copy). Refresh the snapshot on
-the next mission that touches the site, or as a standalone quick fix. Owner tasks
-listed in STATUS.md §Open still stand (GSC/Bing, social + Postiz, PayPal smoke-test).
+**Historical (2026-07-02):** STATUS/cortex said ap-v563 while main was at ap-v566
+(v564 Weekly Sky + minified deploys, v565 PayPal direct, v566 PayPal e2e + honest shop).
+
+**Current (2026-07-13):** cortex snapshots updated to **ap-v721** (`6fed17d`). Keep
+STATUS.md / handoff / cortex aligned on the next site-touching mission if any still lag.
 
 ## Mission 4 — Phase-1 traction support (open, owner-gated)
 
 The business plan (see [astroprecise-business.md](astroprecise-business.md)) is
-blocked on owner actions, not code: PayPal links pasted into `app.js AP_MON`, social
-accounts + Postiz. Cortex can prepare but not complete these. When unblocked, likely
-work: launch-week content support from CONTENT-CALENDAR.md, conversion checks.
+blocked on owner actions, not code: PayPal links / shop re-arm when desired, social
+accounts + Postiz. Checkout remains **dormant** until owner re-arms. Cortex can prepare
+but not complete these.
 
 ## Mission 5 — Satellite dashboard (open, undefined)
 
@@ -40,21 +45,14 @@ the owner; treat as greenfield. See [davit-sat-dashboard.md](davit-sat-dashboard
 
 ## Mission 6 — Palette token hygiene sweep (open, small-medium)
 
-The verifier found warm hexes (`#050406`, `#C9A227`) hardcoded as canvas/WebGL/SVG
-paint colors in shipped JS on chart, ephemeris, and compatibility pages (full list in
-[index.md](../index.md) lint finding 2). Decide with owner whether these are
-intentional render aesthetics or leftovers; if leftovers, sweep them to `--ap-*`
-token reads (canvas can read tokens via `getComputedStyle`). Visual QA required —
-these change pixels on flagship pages. Bump `sw.js` cache if shipped.
+Warm hexes (`#050406`, `#C9A227`) may still be hardcoded as canvas/WebGL/SVG paint
+in shipped JS (see [index.md](../index.md) lint finding). Owner call: intentional
+aesthetics or leftovers? Visual QA required if sweeping. Bump `sw.js` cache if shipped.
 
 ## Mission 7 — Mission Control v2 ✅ (2026-07-03)
 
-Upgraded the hub from prose-only to a live board: `cortex/state.js` is the shared
-machine-readable brain (missions, projects, agents, activity, "running now");
-`cortex/mission-control.html` renders it graphically (open in any browser, no server);
-`cortex/agents.md` wires external agents (Grok, Hermes) in via the state protocol with
-a paste-ready bootstrap prompt. Keep `state.js` in sync with this page — this page is
-the narrative detail, `state.js` is what the dashboard shows.
+`cortex/state.js` shared brain; `mission-control.html` dashboard; `agents.md` wiring.
+Keep `state.js` in sync with this page — narrative here, dashboard from state.js.
 
 ## Standing orders
 
@@ -62,3 +60,4 @@ the narrative detail, `state.js` is what the dashboard shows.
 - Delegate catalog/verify work to `scout`/`verifier`; leader owns synthesis and edits
   to instruction-layer files (CLAUDE.md, DESIGN.md).
 - Every completed mission gets a log.md entry with a proof artifact.
+- Do not claim tip versions older than **ap-v721** without re-verifying git/live.

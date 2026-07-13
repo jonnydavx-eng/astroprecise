@@ -5,7 +5,7 @@ and **The Instrument** (light-cone, zenith star, echo dates, daimon, quantum dra
 field weather). Every number is computed from the real sky, in the browser, with
 sources labelled and unavailable feeds honestly marked.
 
-**Live site:** https://jonnydavx-eng.github.io/astroprecise/
+**Live:** https://astroprecise.app · tip **ap-v721** · deploy is push `website/**` to `main` → GitHub Actions Pages (not manual gh-pages). See `STATUS.md`.
 
 ## Repository layout
 
@@ -28,19 +28,7 @@ There is no build step — edit files in `website/`, refresh the browser.
 ./launch.sh        # or launch.bat on Windows → http://localhost:8790
 ```
 
-**Deploying:** GitHub Pages currently serves the **`gh-pages` branch from its root**.
-To publish, copy the changed files from `website/` onto `gh-pages` and push:
-
-```sh
-git worktree add /tmp/gh gh-pages
-rsync -a --delete --exclude .git website/ /tmp/gh/
-cd /tmp/gh && git add -A && git commit -m "Publish website" && git push origin gh-pages
-```
-
-> ⚠ `.github/workflows/deploy-pages.yml` exists but does nothing while the Pages
-> source is set to "branch". Switching the repo's Pages source to **GitHub Actions**
-> (Settings → Pages) would make every push of `website/**` to `main` deploy
-> automatically and retire the manual copy above.
+**Deploying:** push `website/**` to `main` → GitHub Actions Pages (`.github/workflows/deploy-pages.yml`). Not manual `gh-pages`. Live: https://astroprecise.app · tip ap-v721. See `STATUS.md`.
 
 When you change any precached asset, bump `const V` in `website/sw.js` or returning
 visitors keep the old files.

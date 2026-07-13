@@ -81,7 +81,7 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 
 ---
 
-## Personal Sky Moment spine (Stages 0–3)
+## Personal Sky Moment spine (Stages 0–4)
 
 | Step | Surface | Mechanism |
 |---|---|---|
@@ -89,6 +89,8 @@ explore.html#m=<UTC-ISO|now>&focus=<body>[&scale=N]
 | Wheel tap | A → C | Planet glyph doorway → `#m=` + `focus=<body>` |
 | Moment freeze | A | Share card + explore link; `ap_moment_return` → horoscope return hook |
 | Daily return | A | Horoscope `mountMomentReturnHook` (7-day window) |
+
+**Stage 4** = deploy / ship-harden / owner eye-check (not new emitters). Tip remains ap-v721.
 
 **Event bus:** `ap-sky-ready` — `{ m, link, focus, chart|moment, source }` for share/telemetry hooks.
 

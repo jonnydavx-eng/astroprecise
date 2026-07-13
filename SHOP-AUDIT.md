@@ -1,5 +1,7 @@
 # AstroPrecise — Shop Audit & Product Lineup
 
+> **2026-07-13:** Lemon Squeezy path is dead. Paid products use Payhip/PayPal when owner pastes URLs into AP_MON (see PAYPAL-SETUP.md). Checkout currently **dormant**. Current product tip: STATUS.md (ap-v721).
+
 > **⚠ 2026-07-02 — payment provider changed:** Lemon Squeezy is DROPPED (would not onboard the store). Checkout is now **PayPal direct** — hosted payment links pasted per-SKU into AP_MON (see **PAYPAL-SETUP.md** for setup, VAT notes and guardrails). References to Lemon Squeezy below are historical.
 
 _2026-06-13 (base). Wave 21 closure: 2026-06-17 — `shop.html`, `js/shop-commerce.js`, `AP_MON.commerce` (app.js), `POD-PLAYBOOK.md`. Pairs with `GTM-LADDER.md`, `INSTANT-MONETIZATION.md`._

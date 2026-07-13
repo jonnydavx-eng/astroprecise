@@ -1,5 +1,7 @@
 # Expert team audit — 3D model: where did the improvements go?
 
+> **Snapshot only (as of file date).** Deploy / tip claims here may be stale. **Current LIVE tip:** see `STATUS.md` and `website/sw.js` (ap-v721 as of 2026-07-13). Do not plan from this file's "not deployed / diverged" language.
+
 **Date:** 2026-07-11 · **Panel:** WebGL engineer · CSS architect · Deploy engineer · Product design director · Grok synthesis  
 **Owner complaint:** “Experts keep promising 3D model improvements; every update I see none.”
 
