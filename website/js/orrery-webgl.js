@@ -1082,15 +1082,23 @@ const FinishShader = {
     updateScaleHUD();
     needRecompute = true;
     updatePositions();
-    setEarthTerminatorCamera(3.8, 9 * D2R);
-    camera.fov = CAM_FOV_MID;
+    // ap-v750: closer, telephoto portrait — fills the viewport with atmosphere rim
+    setEarthTerminatorCamera(2.85, 7 * D2R);
+    camera.fov = CAM_FOV_CLOSE;
     camera.updateProjectionMatrix();
     if (radialBlurPass) radialBlurPass.uniforms.uStrength.value = 0;
     if (bloomPass && composer) {
-      bloomPass.strength = perfTier === 'mid' ? 0.18 : 0.23;
-      bloomPass.threshold = perfTier === 'mid' ? 0.86 : 0.82;
+      bloomPass.strength = perfTier === 'mid' ? 0.36 : 0.52;
+      bloomPass.threshold = perfTier === 'mid' ? 0.78 : 0.72;
+      bloomPass.radius = perfTier === 'mid' ? 0.48 : 0.62;
     }
-    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.14 : 1.10;
+    if (renderer) renderer.toneMappingExposure = perfTier === 'high' ? 1.32 : 1.22;
+    if (earthAtmoMat && earthAtmoMat.uniforms && earthAtmoMat.uniforms.uIntensity) {
+      earthAtmoMat.uniforms.uIntensity.value = 1.45;
+    }
+    if (earthAtmoMatOuter && earthAtmoMatOuter.uniforms && earthAtmoMatOuter.uniforms.uIntensity) {
+      earthAtmoMatOuter.uniforms.uIntensity.value = 0.42;
+    }
     tunePreloaderSunGlow(true);
     orbitLines.forEach((o) => { o.visible = showOrbits && scaleLevel <= 3; });
     syncSceneStarfield(0);

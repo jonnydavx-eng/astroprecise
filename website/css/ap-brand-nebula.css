@@ -326,15 +326,10 @@ html.ap-brand-nebula footer {
 }
 
 /* ── ap-v750 PRODUCT RESET — hide educational clutter on first paint ── */
-html.ap-brand-nebula #explore-legend .explore-legend__body {
+html.ap-brand-nebula #explore-legend[data-collapsed="true"] .explore-legend__body {
   display: none !important;
 }
-html.ap-brand-nebula #explore-legend[data-collapsed="false"] .explore-legend__body,
-html.ap-brand-nebula #explore-legend:not([data-collapsed]) .explore-legend__body {
-  display: none !important;
-}
-html.ap-brand-nebula #explore-legend.is-open .explore-legend__body,
-html.ap-brand-nebula #explore-legend[data-collapsed="false"].is-open .explore-legend__body {
+html.ap-brand-nebula #explore-legend[data-collapsed="false"] .explore-legend__body {
   display: block !important;
 }
 html.ap-brand-nebula #explore-legend {

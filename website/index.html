@@ -171,11 +171,11 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 .hero-explore-chip:hover{border-color:rgba(111,160,216,.75);background:rgba(111,160,216,.12)}
 @media (prefers-reduced-motion:reduce){.hero-live-pill__dot{animation:none;opacity:.85}}
   </style>
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=740" id="ap-css-palette-2026" />
-  <link rel="stylesheet" href="css/ap-logo-aurora.css?v=740" id="ap-css-logo-aurora" />
-  <link rel="stylesheet" href="css/ap-site-polish.css?v=740" />
-  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=740" id="ap-css-visual-clarity" />
-  <link rel="stylesheet" href="css/ap-model-stage.css?v=740" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=750" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-logo-aurora.css?v=750" id="ap-css-logo-aurora" />
+  <link rel="stylesheet" href="css/ap-site-polish.css?v=750" />
+  <link rel="stylesheet" href="css/ap-visual-clarity.css?v=750" id="ap-css-visual-clarity" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=750" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
   <!-- Structure clean LAST — wins CSS wars; collapses bloat; first-viewport cast -->
   <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
@@ -208,7 +208,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-horizon-2026.css?v=680" />
   <link rel="stylesheet" href="css/ap-motion.css?v=680">
   <link rel="stylesheet" href="css/ap-micro-2026.css?v=680">
-  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=740">
+  <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=750">
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css
        (and the other !important sheets above); cascade position is load-bearing. -->
   <link rel="stylesheet" href="css/ap-model-window.css?v=704" id="ap-css-model-window">
@@ -216,12 +216,12 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
        the LAST stylesheet (after ap-model-window.css). It out-cascades the
        !important sheets above; any sheet appended after it silently reverts
        the observatory layout (visual-check asserts deck position:static). -->
-  <link rel="stylesheet" href="css/ap-observatory-home.css?v=740" id="ap-css-observatory-home">
+  <link rel="stylesheet" href="css/ap-observatory-home.css?v=750" id="ap-css-observatory-home">
   <!-- Nebula brand — MUST stay after observatory-home (decorative cascade layer) -->
-  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=740" id="ap-css-brand-nebula">
+  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=750" id="ap-css-brand-nebula">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=740">
+  <link rel="modulepreload" href="js/orrery-webgl.js?v=750">
   <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
@@ -333,12 +333,12 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <div class="page-wrap hero-grid hero-showstopper">
 
       <div class="hero-copy fade-in" id="castDock" tabindex="-1">
-        <em class="eyebrow-rose">Nebula Observatory</em>
+        <em class="eyebrow-rose">New · Live Observatory</em>
         <h1 class="display" style="margin-top: var(--sp-2);">
-          The sky is live. <br><span class="display-accent">Your chart is exact.</span>
+          Meet the sky. <br><span class="display-accent">Own your chart.</span>
         </h1>
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
-          Step into a photoreal model of the solar system, then cast <em>your</em> natal chart &mdash; free, private, accurate to about an arcminute.
+          A photoreal solar system computed in your browser &mdash; then one free natal chart, private to the arcminute.
         </p>
         <form id="hero-chart-form" class="hero-form hero-form--primary" action="chart.html" method="get" novalidate aria-label="Cast your natal chart">
           <label for="hero-birthdate" class="ui-label">Your date of birth</label>
@@ -809,9 +809,9 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
         <!-- ── Honest-model legend (ported from explore.html) — collapsible,
              starts collapsed (ap-home-bootstrap), top-right starfield corner.
              Honesty labels are crawlable DOM text — they survive structurally. ── -->
-        <aside class="explore-legend" id="explore-legend" aria-label="About this model">
-          <button type="button" class="explore-legend__toggle" id="explore-legend-toggle" aria-expanded="true" aria-controls="explore-legend-body">
-            <span class="explore-legend__title">The honest model</span>
+        <aside class="explore-legend" id="explore-legend" aria-label="About this model" data-collapsed="true">
+          <button type="button" class="explore-legend__toggle" id="explore-legend-toggle" aria-expanded="false" aria-controls="explore-legend-body" data-collapsed="true">
+            <span class="explore-legend__title">About this model</span>
             <span class="explore-legend__chev" aria-hidden="true">&#9662;</span>
           </button>
           <div class="explore-legend__body" id="explore-legend-body">
@@ -1816,16 +1816,16 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
      ============================================================ -->
 <script defer src="js/ap-error-beacon.js?v=1"></script>
 <script defer src="js/raf-core.js?v=705"></script>
-<script defer src="js/ap-home-bootstrap.js?v=740"></script>
-<script defer src="js/ap-deep-link.js?v=740"></script>
-<script defer src="js/ap-sky-bridge.js?v=740"></script>
-<script defer src="js/ap-scale-ladder.js?v=740"></script>
-<script defer src="js/ap-planet-actions.js?v=740"></script>
-<link rel="stylesheet" href="css/ap-planet-actions.css?v=740" id="ap-css-planet-actions" />
+<script defer src="js/ap-home-bootstrap.js?v=750"></script>
+<script defer src="js/ap-deep-link.js?v=750"></script>
+<script defer src="js/ap-sky-bridge.js?v=750"></script>
+<script defer src="js/ap-scale-ladder.js?v=750"></script>
+<script defer src="js/ap-planet-actions.js?v=750"></script>
+<link rel="stylesheet" href="css/ap-planet-actions.css?v=750" id="ap-css-planet-actions" />
 <script defer src="js/ap-nav-interplay.js?v=705"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
-<script defer src="js/home-daily.js?v=740"></script>
-<script defer src="js/home-match.js?v=740"></script>
+<script defer src="js/home-daily.js?v=750"></script>
+<script defer src="js/home-match.js?v=750"></script>
 <script defer>
 (function () {
   'use strict';

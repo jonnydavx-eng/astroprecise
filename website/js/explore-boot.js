@@ -19,7 +19,7 @@
  */
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var V = "740";
+  var V = "750";
 
   var wrap = document.getElementById("apAwardOrreryWrap");
   var fallback = document.getElementById("apHeroWheelFallback");
@@ -219,7 +219,7 @@
   function queueLoader() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=740", function () {
+    inject("js/orrery-loader.js?v=750", function () {
       setTimeout(promoteToWebGL, 300);
     });
   }
@@ -233,8 +233,8 @@
 
   // Poster + time-row wiring (date display, Now, scrub → Orrery3D.setTimelineDays).
   waitEphemeris(function () {
-    injectCss("css/orrery-visual.css?v=740", "ap-orrery-visual-css");
-    inject("js/lite-orrery.js?v=740", function () {
+    injectCss("css/orrery-visual.css?v=750", "ap-orrery-visual-css");
+    inject("js/lite-orrery.js?v=750", function () {
       document.documentElement.classList.add("orrery-poster-ready");
       queueLoader();
       scheduleDeepLink();
@@ -242,8 +242,8 @@
   });
 
   // Cosmic-flight tool (wires #ap-cosmic-flight-launch → fullscreen overlay).
-  injectCss("css/ap-cosmic-flight.css?v=740", "ap-cf-css");
-  inject("js/ap-cosmic-flight-tool.js?v=740");
+  injectCss("css/ap-cosmic-flight.css?v=750", "ap-cf-css");
+  inject("js/ap-cosmic-flight-tool.js?v=750");
 
   // Retire the loading placeholder once any engine is live.
   document.addEventListener("ap-orrery-ready", function () {

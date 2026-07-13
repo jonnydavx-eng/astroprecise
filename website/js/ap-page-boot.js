@@ -8,7 +8,7 @@
 
   document.documentElement.classList.add('ap-enchanted', 'ap-brand-nebula');
 
-  if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '740';
+  if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '750';
   var AV = window.AP_ASSET_V;
 
   // Client error beacon (session buffer; optional future Sentry DSN via meta)
