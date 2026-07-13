@@ -1,8 +1,9 @@
 # Phase 0 — Ready pack (pre-execute)
 
-**Prepared:** 2026-07-13  
-**Status:** **GREEN to start Phase 0** — baseline proven, tickets pinned, owner shopping/DEC stubs ready.  
-**Do not** start Phase M beauty until A1–A6 ship as **ap-v722**.
+**Prepared:** 2026-07-13 · **EXECUTED same day**  
+**Status:** **Local tip ap-v722 SHIP (consensus AGREE)** — A1–A6 implemented; dual-seat verified.  
+**Do not** start Phase M beauty until owner canary green + optional push live.  
+**MUST forever:** `docs/TEAM-CONSENSUS-MUST.md`
 
 ---
 

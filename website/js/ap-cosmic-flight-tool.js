@@ -321,7 +321,12 @@
     homeParent = frame.parentElement;
     homeNext = frame.nextSibling;
     stage.appendChild(frame);
-    document.documentElement.classList.add("orrery-full");
+    // ap-v722 · A2 honesty: never claim LIVE (orrery-full) until WebGL owns the canvas.
+    try {
+      if (window.Orrery3D && window.Orrery3D.isWebGL) {
+        document.documentElement.classList.add("orrery-full");
+      }
+    } catch (eFull) { /* optional */ }
   }
 
   function restoreInstrument() {
@@ -384,6 +389,12 @@
           if ($("ap-cf-replay")) $("ap-cf-replay").disabled = false;
           return;
         }
+        // A2: LIVE chrome only after WebGL confirmed (mount may have skipped orrery-full).
+        try {
+          if (window.Orrery3D.isWebGL) {
+            document.documentElement.classList.add("orrery-full");
+          }
+        } catch (eFull2) { /* optional */ }
         if (window.ScaleJourney && typeof window.ScaleJourney.rebind === "function") {
           window.ScaleJourney.rebind();
         }

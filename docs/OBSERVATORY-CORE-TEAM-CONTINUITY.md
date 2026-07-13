@@ -65,6 +65,17 @@ Seats may **hire missing experts under their seat** and **recommend paid tools**
 | **Hire S13+** | S1 DEC only after memo + Training Gate |
 | **Buy tools** | Prefer devices, Journey, Resolve, Live cloud, Linear — see hire-tools doc |
 
+## MUST — Team consensus (going forward, forever)
+
+→ **`docs/TEAM-CONSENSUS-MUST.md`** + live log **`docs/CONSENSUS-LOG.md`**
+
+| Law | Detail |
+|-----|--------|
+| **Dual seat ship** | Implementer **+** different verifier **AGREE** before tip ship |
+| **Phase order** | No skip Phase 0 / Gate M by single-agent “majority” |
+| **Vetoes stand** | S4 perf · S5/S7 honesty · S3+S8 dual WebGL / disc |
+| **Speed + precision** | Max parallel on non-overlapping files; surgical diffs only |
+
 ## Forbidden
 
 - New “dream team” that replaces S1–S12 mid-program  
@@ -76,7 +87,8 @@ Seats may **hire missing experts under their seat** and **recommend paid tools**
 - Force-push  
 - Session-replay tools on birth forms (FullStory/LogRocket default veto)  
 - Re-planning Ultimate instead of executing Phase 0  
+- Shipping tip on implementer-only LGTM without verifier  
 
 ---
 
-*Continuity lock · Observatory Core · 2026-07-13 · Hire/tools addendum same day*
+*Continuity lock · Observatory Core · 2026-07-13 · Consensus must-rule same day*

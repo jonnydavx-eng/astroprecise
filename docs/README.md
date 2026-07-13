@@ -10,7 +10,9 @@ Agent-facing map of this folder. Prefer tip-of-tree truth over dated snapshots.
 | [`OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md`](OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md) | **★ Ultimate continuous plan** — all seats, every planet/dust/horoscope, phases 0→E |
 | [`OBSERVATORY-CORE-TEAM-CONTINUITY.md`](OBSERVATORY-CORE-TEAM-CONTINUITY.md) | **Team lock** — same seats through whole program |
 | [`OBSERVATORY-CORE-HIRE-TOOLS-SPAWN-2026-07-13.md`](OBSERVATORY-CORE-HIRE-TOOLS-SPAWN-2026-07-13.md) | **Hire missing experts · paid tools · when to spawn fleets** |
-| [`PHASE-0-READY-PACK.md`](PHASE-0-READY-PACK.md) | **Pre-execute Phase 0** — tickets, baselines, bust list |
+| [`TEAM-CONSENSUS-MUST.md`](TEAM-CONSENSUS-MUST.md) | **MUST forever** — dual-seat agree before every tip |
+| [`CONSENSUS-LOG.md`](CONSENSUS-LOG.md) | Live tip consensus (ap-v722 first entry) |
+| [`PHASE-0-READY-PACK.md`](PHASE-0-READY-PACK.md) | Phase 0 tickets + baselines (executed ap-v722) |
 | [`DECISION-LOG.md`](DECISION-LOG.md) | Owner DECs open/resolved |
 | [`SHOPPING-LIST-PHASE-0-M.md`](SHOPPING-LIST-PHASE-0-M.md) | Phones / Journey / Resolve PO list |
 | [`training/TRAINING-GATE-CHECKLIST.md`](training/TRAINING-GATE-CHECKLIST.md) | Human certificates before Phase M |

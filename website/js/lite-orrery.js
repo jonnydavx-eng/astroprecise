@@ -1009,7 +1009,7 @@
       var loader = document.querySelector('script[src*="orrery-loader"]');
       if (loader && loader.src) base = new URL('./', loader.src).href;
     } catch (e) {}
-    addPreload(base + 'orrery-webgl.js?v=703');
+    addPreload(base + 'orrery-webgl.js?v=722');
     addPreload(base + 'vendor/three/three.module.min.js');
   }
 

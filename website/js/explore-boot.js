@@ -214,7 +214,7 @@
   function queueLoader() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=703", function () {
+    inject("js/orrery-loader.js?v=722", function () {
       setTimeout(promoteToWebGL, 300);
     });
   }
@@ -228,8 +228,8 @@
 
   // Poster + time-row wiring (date display, Now, scrub → Orrery3D.setTimelineDays).
   waitEphemeris(function () {
-    injectCss("css/orrery-visual.css?v=703", "ap-orrery-visual-css");
-    inject("js/lite-orrery.js?v=703", function () {
+    injectCss("css/orrery-visual.css?v=722", "ap-orrery-visual-css");
+    inject("js/lite-orrery.js?v=722", function () {
       document.documentElement.classList.add("orrery-poster-ready");
       queueLoader();
       scheduleDeepLink();
@@ -237,8 +237,8 @@
   });
 
   // Cosmic-flight tool (wires #ap-cosmic-flight-launch → fullscreen overlay).
-  injectCss("css/ap-cosmic-flight.css?v=703", "ap-cf-css");
-  inject("js/ap-cosmic-flight-tool.js?v=567");
+  injectCss("css/ap-cosmic-flight.css?v=722", "ap-cf-css");
+  inject("js/ap-cosmic-flight-tool.js?v=722");
 
   // Retire the loading placeholder once any engine is live.
   document.addEventListener("ap-orrery-ready", function () {
@@ -246,6 +246,8 @@
     document.documentElement.classList.add("orrery-live");
     // Re-apply once WebGL owns time/focus (setDate path is richer than dayOffset).
     setTimeout(function () { applyModelDeepLink(true); }, 80);
+    // ap-v722 · A1b: past loader auto-Earth timer (~1100ms) — belt-and-suspenders reassert.
+    setTimeout(function () { applyModelDeepLink(true); }, 1200);
   });
   document.addEventListener("orrery-scale-change", hideFallback, { once: true });
   window.addEventListener("hashchange", function () {

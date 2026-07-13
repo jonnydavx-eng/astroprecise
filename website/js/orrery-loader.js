@@ -11,8 +11,8 @@
   var booting = false;
   var scriptEl = document.currentScript;
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
-    ? new URL('orrery-webgl.js?v=703', scriptEl.src).href
-    : 'js/orrery-webgl.js?v=703';
+    ? new URL('orrery-webgl.js?v=722', scriptEl.src).href
+    : 'js/orrery-webgl.js?v=722';
 
   function isLiteHero() {
     return !!(window.__apLiteHero ||
@@ -440,8 +440,26 @@
       markActive(document.querySelector('.lite-vp-btn[data-lite-planet="' + id + '"]'));
     });
 
+    // ap-v722 · A1: hero auto-Earth must not clobber Personal Sky deep-links.
+    // Explore/chart emitters set data-ap-model-link + #m=/#focus=; re-assert instead of Earth.
     setTimeout(function () {
       if (touched) return;
+      try {
+        if (document.documentElement.hasAttribute('data-ap-model-link')) {
+          if (typeof window.__apApplyModelDeepLink === 'function') {
+            try { window.__apApplyModelDeepLink(); } catch (eRe) { /* optional */ }
+          }
+          return;
+        }
+        var h = String(location.hash || '').replace(/^#/, '');
+        if (h.charAt(0) === '?') h = h.slice(1);
+        if (/(?:^|[&;])focus=/i.test(h) || /(?:^|[&;])m=/i.test(h)) {
+          if (typeof window.__apApplyModelDeepLink === 'function') {
+            try { window.__apApplyModelDeepLink(); } catch (eRe2) { /* optional */ }
+          }
+          return;
+        }
+      } catch (eGate) { /* optional */ }
       try { O.focusPlanet('earth'); } catch (e) { return; }
       markActive(document.querySelector('.lite-vp-btn[data-lite-planet="earth"]'));
     }, 1100);
