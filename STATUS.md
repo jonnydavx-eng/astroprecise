@@ -21,9 +21,10 @@
 | Intentional commit | **Open** (2 dirty files) |
 | Push / LIVE 722 | **Open** · owner gate |
 
-## Dirty (not committed)
-- `website/js/lite-orrery.js`
-- `tools/visual-check/_wave3-focus-settle.mjs`
+## Git
+- **Intentional residual commit:** `b3d5578` — Phase 0 residual lite + wave3 + STATUS/CONSENSUS
+- **Pushed:** `mirror` only (not origin / not LIVE)
+- **main vs origin:** still **ahead** (do not treat as live deploy)
 
 ## Verify
 ```text
