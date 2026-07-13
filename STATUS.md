@@ -22,11 +22,11 @@
 - Focus clobber fix, SW localhost bypass, asset bust 722 — on origin
 
 ## Git
-- **Pending push:** ap-v730 brand refresh
-- Last live: `origin/main` @ ap-v722
+- **Pushed:** `origin/main` + `mirror` @ **b02e43b** (ap-v730 Nebula brand)
+- **Sync:** live SW **ap-v730** confirmed
 
 ## Open / next
-- [ ] Push origin — live SW **ap-v730**
+- [x] Push origin — live SW **ap-v730**
 - [ ] Owner: incognito verify nebula glass + aurora CTAs
 - [ ] Track B: Personal Sky doorway UX (`docs/FORWARD-PLAN.md`)
 - [ ] OrbitLab: durable `getFocusedBody` (engine seat)
