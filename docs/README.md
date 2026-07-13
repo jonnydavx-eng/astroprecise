@@ -7,7 +7,9 @@ Agent-facing map of this folder. Prefer tip-of-tree truth over dated snapshots.
 | Doc | Role |
 |---|---|
 | [`../STATUS.md`](../STATUS.md) | **Tip truth** — live ship state, cache tip (`ap-v###`), what is deployed |
-| [`FORWARD-PLAN.md`](FORWARD-PLAN.md) | Forward plan / next work |
+| [`UPGRADE-REFINE-PLAN-2026-07-13.md`](UPGRADE-REFINE-PLAN-2026-07-13.md) | **Extensive upgrade program** — Tracks A–D (start here for next work) |
+| [`REGRESSION-AUDIT-2026-07-13.md`](REGRESSION-AUDIT-2026-07-13.md) | 20-agent regression scoreboard + P0/P1 list |
+| [`FORWARD-PLAN.md`](FORWARD-PLAN.md) | Short forward options (links to extensive plan) |
 | [`MODEL-SURFACE-CONTRACT.md`](MODEL-SURFACE-CONTRACT.md) | 3D model surface contract (binding UX/engine rules) |
 | [`../HANDOFF.md`](../HANDOFF.md) | Project handoff summary |
 | [`UI-UX-SYSTEM-BRIEF-2026-07-11.md`](UI-UX-SYSTEM-BRIEF-2026-07-11.md) | UI/UX system brief (current design system snapshot) |

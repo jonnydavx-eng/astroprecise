@@ -3,13 +3,23 @@
 ## Purpose
 Single planning surface so agents stop inventing parallel spines from old docs.
 
+## Extensive program (2026-07-13)
+
+After a 20-agent regression pass, the full multi-track program lives in:
+
+- **`docs/UPGRADE-REFINE-PLAN-2026-07-13.md`** — Tracks A–D (stabilize → close PSM → harmonize → elevate)
+- **`docs/REGRESSION-AUDIT-2026-07-13.md`** — P0/P1 evidence
+
+**Start at Track A** (focus clobber, SW localhost, asset bust). Do not begin token/OrbitLab waves until A ships.
+
 ## Authority (read order)
 1. STATUS.md
-2. This file
-3. docs/MODEL-SURFACE-CONTRACT.md
-4. docs/UI-UX-SYSTEM-BRIEF-2026-07-11.md
-5. HANDOFF.md (short start-here)
-6. AGENT-HANDOFF freeze block only for open flags
+2. docs/UPGRADE-REFINE-PLAN-2026-07-13.md
+3. This file
+4. docs/MODEL-SURFACE-CONTRACT.md
+5. docs/UI-UX-SYSTEM-BRIEF-2026-07-11.md
+6. HANDOFF.md (short start-here)
+7. AGENT-HANDOFF freeze block only for open flags
 Everything else under docs/ dated Jul 8–11 is **backlog evidence**, not competing law.
 
 ## Frozen done (do not re-litigate)
@@ -27,8 +37,9 @@ Everything else under docs/ dated Jul 8–11 is **backlog evidence**, not compet
 - Warm-hex aesthetic later
 
 ## Next technical options (ranked)
-1. **Recommended:** Finish remaining Personal Sky emitters sitewide (APDeepLink/bridge only) — daily-transit, sign heroes via generator, etc. Completes spine without OrbitLab risk.
-2. True-Time Earth / birth-hemisphere payoff (honesty-aligned “wow of truth”)
+0. **Now (Track A):** Fix explore focus clobber + index SW bypass + unify orrery `?v=` → ap-v722 — see UPGRADE-REFINE plan
+1. **Then (Track B):** Close Personal Sky (doorway UX, return hook, remaining emitters via APDeepLink only)
+2. True-Time Earth / birth-hemisphere payoff (honesty-aligned “wow of truth”) — OrbitLab first
 3. Living Observatory polish: onboarding drag/zoom/click, cast always reachable, a11y
 4. OrbitLab reunification — only after owner re-ask
 5. Commerce enablement + art/token debt when URLs ready
@@ -42,17 +53,18 @@ Everything else under docs/ dated Jul 8–11 is **backlog evidence**, not compet
 - STATUS open items updated
 
 ## Working order
-1. Owner eye-check
-2. Agents: remaining #m= mounts
-3. Optional True-Time Earth if owner prioritizes
-4. Planet-action onboarding polish
-5. Owner: OrbitLab OR commerce
+1. **Track A** stabilize (focus + SW + bust → ap-v722)
+2. Owner eye-check (after A, focus landings work)
+3. **Track B** close Personal Sky emitters / doorway / return
+4. **Track C** harmonize tokens / ladder / a11y
+5. Owner: OrbitLab OR commerce (Track D)
 
 ## Risks
-- Invisible improvements (SW cache) → hard-refresh / ?nosw=1
+- Invisible improvements (SW cache) → hard-refresh / ?nosw=1; fix index SW (A3)
+- Focus false-green tests → assert getFocusedBody after settle (A5)
 - Honesty violations → contract checklist
 - OrbitLab fork overwrite → engine only on canonical + sync
-- Plan thrash → STATUS + this file + contract only
+- Plan thrash → STATUS + UPGRADE-REFINE plan + contract only
 
 ## Out of scope until asked
 Full galaxy free-explore, Spatial Phase 2 dome, Wave 4 page retirements, Android, full warm-hex purge.
