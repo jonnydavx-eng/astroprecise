@@ -2,7 +2,7 @@
 
 ## State
 - **Local tip: ap-v722** · SW `website/sw.js` `const V = "ap-v722"`
-- **Live:** https://astroprecise.app — **PUSHED** `origin/main` @ `fba9e1c` (2026-07-13) — confirm SW in incognito after Actions
+- **Live:** https://astroprecise.app — **ap-v722 LIVE** (SW confirmed post-Actions, 2026-07-13)
 - **Track:** A stabilize (FORWARD-PLAN) — focus clobber, SW localhost, asset bust
 - **Preview:** http://localhost:8790/?nosw=1
 - Checkout / Deep Reading: **dormant**
@@ -26,7 +26,8 @@
 - **Sync:** `0↑ / 0↓` with origin after push
 
 ## Open / next
-- [ ] Owner: incognito confirm live SW **ap-v722**
+- [x] Push origin — live SW **ap-v722** confirmed
+- [ ] Owner: incognito hard-refresh + mars canary on live
 - [ ] Track B: doorway UX, moment return, remaining emitters (`docs/FORWARD-PLAN.md`)
 - [ ] OrbitLab: durable `getFocusedBody` (engine seat — no hand-edit GENERATED)
 - [ ] Training Gate / Phase M — after live tip stable
