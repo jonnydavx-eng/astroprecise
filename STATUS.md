@@ -2,13 +2,13 @@
 
 ## State
 - **Local tip: ap-v730** · SW `website/sw.js` `const V = "ap-v730"`
-- **Live:** https://astroprecise.app — **ap-v722** until ap-v730 deploy lands
+- **Live:** https://astroprecise.app — **ap-v730 LIVE** (SW confirmed post-Actions, 2026-07-13)
 - **Track:** Nebula Observatory brand refresh (visual product reset)
 - **Preview:** http://localhost:8790/?nosw=1
 - Checkout / Deep Reading: **dormant**
 - **Verify:** `npm test` · `npm run test:ui`
 
-## ap-v730 — Nebula brand (local, ship pending)
+## ap-v730 — Nebula brand (LIVE)
 | Item | State |
 |------|--------|
 | `css/ap-brand-nebula.css` | Nebula void, glass masthead, aurora CTAs, glass nav/cards |
