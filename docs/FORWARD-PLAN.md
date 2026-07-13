@@ -14,6 +14,9 @@ After a 20-agent regression pass, the full multi-track program lives in:
 
 **Model-first world program:** `docs/WORLD-SQUAD-MODEL-FIRST-PLAN-2026-07-13.md` — permanent Observatory Core seats, training gate, then 3D model masterpiece before site expansion.
 
+**★ Ultimate continuous plan (all seat research synthesized):** `docs/OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md`  
+**Team lock:** `docs/OBSERVATORY-CORE-TEAM-CONTINUITY.md`
+
 ## Authority (read order)
 1. STATUS.md
 2. docs/UPGRADE-REFINE-PLAN-2026-07-13.md

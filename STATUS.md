@@ -13,7 +13,7 @@
 - Personal Sky Moment Stages 0–3 **in code on live**; Stage 4 = deploy **done** + **owner eye-check OPEN**
 - Emitters → explore.html#m= → WebGL Surface C (**focus can be overwritten ~1.1s by loader auto-Earth — P0**)
 - Contract: docs/MODEL-SURFACE-CONTRACT.md
-- Plans: docs/FORWARD-PLAN.md · **docs/UPGRADE-REFINE-PLAN-2026-07-13.md** (Tracks A–D) · **docs/WORLD-SQUAD-MODEL-FIRST-PLAN-2026-07-13.md** (squad + model-first)
+- Plans: **docs/OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md** (★ continuous law) · team lock `docs/OBSERVATORY-CORE-TEAM-CONTINUITY.md` · UPGRADE-REFINE · WORLD-SQUAD · REGRESSION-AUDIT
 
 ## Ship-harden already on tip (do not re-do)
 - SW bypass in app.js (localhost + ?nosw=1) — **not yet on index.html**
@@ -36,10 +36,11 @@
 - Warm hex hardcodes: later (Track C)
 
 ## Suggested next (agents)
-1. **Track A stabilize** — `docs/UPGRADE-REFINE-PLAN-2026-07-13.md` (A1 focus clobber first → A3 index SW → A4 bust → ap-v722)
-2. Do **not** start token/OrbitLab waves before Track A
-3. Evidence: `docs/REGRESSION-AUDIT-2026-07-13.md`
-4. On website change: bump ?v= + sw V + tests + after_project_edit
+1. **Phase 0 READY** — pack `docs/PHASE-0-READY-PACK.md` (baselines green, tickets pinned, wave3 gate scaffolded). **Next: EXECUTE A1–A6 → ap-v722**
+2. Owner parallel: `docs/DECISION-LOG.md` + `docs/SHOPPING-LIST-PHASE-0-M.md` (does not block A1)
+3. Ultimate plan: `docs/OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md` · hire/tools: `OBSERVATORY-CORE-HIRE-TOOLS-SPAWN`
+4. After 722: Training Gate → Phase M → Gate M → Phase S
+5. On website change: bump ?v= + sw V + tests + after_project_edit
 
 ## Verify
 - npm test · npm run test:ui

@@ -10,7 +10,8 @@
   "scripts": {
     "test": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs && node test-horoscope.mjs && node test-compat.mjs && node test-content-bank.mjs && node test-art-themes.mjs && node test-weekly-sky.mjs && node test-ap-sky-bridge.mjs && npm --prefix ephemeris-package test",
     "test:engine": "node test-engine.mjs && node test-engine-solar-lunar.mjs && node test-engine-planets.mjs && node test-engine-houses.mjs && node test-engine-edge.mjs",
-    "test:ui": "node tools/_diag-click.mjs && node tools/visual-check/_wave2-deeplink.mjs",
+    "test:ui": "node tools/_diag-click.mjs && node tools/visual-check/_wave2-deeplink.mjs && node tools/visual-check/_wave3-focus-settle.mjs",
+    "test:focus": "node tools/visual-check/_wave3-focus-settle.mjs",
     "build": "node tools/build.mjs",
     "serve:dist": "node tools/serve-dist.mjs",
     "check:syntax": "node tools/check-syntax.mjs",

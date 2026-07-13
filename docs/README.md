@@ -7,7 +7,14 @@ Agent-facing map of this folder. Prefer tip-of-tree truth over dated snapshots.
 | Doc | Role |
 |---|---|
 | [`../STATUS.md`](../STATUS.md) | **Tip truth** — live ship state, cache tip (`ap-v###`), what is deployed |
-| [`WORLD-SQUAD-MODEL-FIRST-PLAN-2026-07-13.md`](WORLD-SQUAD-MODEL-FIRST-PLAN-2026-07-13.md) | **World squad + training + model-first program** (permanent Observatory Core) |
+| [`OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md`](OBSERVATORY-CORE-ULTIMATE-MASTER-PLAN-2026-07-13.md) | **★ Ultimate continuous plan** — all seats, every planet/dust/horoscope, phases 0→E |
+| [`OBSERVATORY-CORE-TEAM-CONTINUITY.md`](OBSERVATORY-CORE-TEAM-CONTINUITY.md) | **Team lock** — same seats through whole program |
+| [`OBSERVATORY-CORE-HIRE-TOOLS-SPAWN-2026-07-13.md`](OBSERVATORY-CORE-HIRE-TOOLS-SPAWN-2026-07-13.md) | **Hire missing experts · paid tools · when to spawn fleets** |
+| [`PHASE-0-READY-PACK.md`](PHASE-0-READY-PACK.md) | **Pre-execute Phase 0** — tickets, baselines, bust list |
+| [`DECISION-LOG.md`](DECISION-LOG.md) | Owner DECs open/resolved |
+| [`SHOPPING-LIST-PHASE-0-M.md`](SHOPPING-LIST-PHASE-0-M.md) | Phones / Journey / Resolve PO list |
+| [`training/TRAINING-GATE-CHECKLIST.md`](training/TRAINING-GATE-CHECKLIST.md) | Human certificates before Phase M |
+| [`WORLD-SQUAD-MODEL-FIRST-PLAN-2026-07-13.md`](WORLD-SQUAD-MODEL-FIRST-PLAN-2026-07-13.md) | Squad charter + training + model-first (foundation) |
 | [`UPGRADE-REFINE-PLAN-2026-07-13.md`](UPGRADE-REFINE-PLAN-2026-07-13.md) | Stabilize/refine Tracks A–D (P0s before movie work) |
 | [`REGRESSION-AUDIT-2026-07-13.md`](REGRESSION-AUDIT-2026-07-13.md) | 20-agent regression scoreboard + P0/P1 list |
 | [`FORWARD-PLAN.md`](FORWARD-PLAN.md) | Short forward options (links to extensive plan) |
