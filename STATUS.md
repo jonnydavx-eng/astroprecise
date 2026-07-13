@@ -2,7 +2,7 @@
 
 ## State
 - **Local tip: ap-v722** · SW `website/sw.js` `const V = "ap-v722"`
-- **Live:** https://astroprecise.app — **shipping ap-v722** (was ap-v721)
+- **Live:** https://astroprecise.app — **PUSHED** `origin/main` @ `fba9e1c` (2026-07-13) — confirm SW in incognito after Actions
 - **Track:** A stabilize (FORWARD-PLAN) — focus clobber, SW localhost, asset bust
 - **Preview:** http://localhost:8790/?nosw=1
 - Checkout / Deep Reading: **dormant**
@@ -22,8 +22,8 @@
 | `npm run test:ui` | run at ship gate |
 
 ## Git
-- **Ahead of origin:** ap-v722 stack + Phase 0 residual (`b3d5578`)
-- **Ship:** pull origin (content-bank bot) → push origin main (no force)
+- **Pushed:** `origin/main` + `mirror` @ **fba9e1c** (ap-v722 Track A + content-bank merge)
+- **Sync:** `0↑ / 0↓` with origin after push
 
 ## Open / next
 - [ ] Owner: incognito confirm live SW **ap-v722**
