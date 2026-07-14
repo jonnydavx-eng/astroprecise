@@ -240,7 +240,7 @@ window.AstroProfile = (() => {
       ascendant:   timeKnown ? raw.ascendant : null,
       mc:          timeKnown ? raw.midheaven : null,
       houses:      timeKnown ? raw.houses : null,
-      aspects:     timeKnown ? raw.aspects : (raw.aspects || []).filter(a => !['asc', 'mc'].includes(String(a.planet1 || '').toLowerCase()) && !['asc', 'mc'].includes(String(a.planet2 || '').toLowerCase())),
+      aspects:     timeKnown ? raw.aspects : (raw.aspects || []).filter(a => !['asc', 'mc', 'ascendant', 'midheaven'].includes(String(a.planet1 || '').toLowerCase()) && !['asc', 'mc', 'ascendant', 'midheaven'].includes(String(a.planet2 || '').toLowerCase())),
       sunSign:     E.signOf(raw.positions.sun.longitude),
       moonSign:    E.signOf(raw.positions.moon.longitude),
       risingSign:  timeKnown ? E.signOf(raw.ascendant) : null,
@@ -443,7 +443,7 @@ window.AstroProfile = (() => {
       delete base.positions.Ascendant;
       delete base.positions.Midheaven;
       base.risingSign = null;
-      base.aspects = base.aspects.filter(a => !['asc', 'mc'].includes(String(a.planet1 || '').toLowerCase()) && !['asc', 'mc'].includes(String(a.planet2 || '').toLowerCase()));
+      base.aspects = base.aspects.filter(a => !['asc', 'mc', 'ascendant', 'midheaven'].includes(String(a.planet1 || '').toLowerCase()) && !['asc', 'mc', 'ascendant', 'midheaven'].includes(String(a.planet2 || '').toLowerCase()));
     }
     if (base.positions.Sun && !base.positions.Sun.sign && row.sunSign) {
       base.positions.Sun.sign = row.sunSign;
