@@ -211,7 +211,7 @@ window.AstroProfile = (() => {
     if (!date || !isFinite(parseFloat(lat)) || !isFinite(parseFloat(lon))) return null;
     const timezoneKnown = birthInfo.timezoneKnown === true || isValidTimeZone(tz);
     if (!timezoneKnown) return null;
-    const timeKnown = birthInfo.timeKnown === true || !!(time && time !== '12:00');
+    const timeKnown = birthInfo.timeKnown != null ? birthInfo.timeKnown === true : !!time;
     const [y, m, d] = date.split('-').map(Number);
     const [hh, mm]  = (timeKnown ? time : '12:00').split(':').map(Number);
     let utY = y, utM = m, utD = d, utH = hh, utMin = mm;

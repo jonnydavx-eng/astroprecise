@@ -198,7 +198,7 @@
       '<div class="ap-reading-card__head-row">' +
       '<span class="ap-reading-card__aspect-glyph" aria-hidden="true">' + esc(d.glyph || '·') + '</span>' +
       '<div><h4 class="ap-reading-card__title">' + esc(title.trim()) + '</h4>' +
-      '<p class="ap-reading-card__meta">' + esc((opts.applying ? 'Applying' : 'Separating') + ' · ' + (opts.orb != null ? opts.orb.toFixed(1) + '° orb' : '')) + '</p></div>' +
+'<p class="ap-reading-card__meta">' + esc('Computed aspect' + (opts.orb != null ? ' · ' + opts.orb.toFixed(1) + '° orb' : '')) + '</p></div>' +
       '</div>' + body +
       '</div></article>'
     );

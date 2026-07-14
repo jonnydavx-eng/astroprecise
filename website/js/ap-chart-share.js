@@ -18,6 +18,12 @@ window.APChartShare = (function () {
     return (name || 'chart').replace(/[^\w]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'chart';
   }
 
+  function isValidTimeZone(tz) {
+    if (typeof tz !== 'string' || !tz.trim()) return false;
+    try { new Intl.DateTimeFormat('en-US', { timeZone: tz }).format(); return true; }
+    catch (e) { return false; }
+  }
+
   function buildParams(chart, input) {
     var src = chart || {};
     var inp = input || {};
@@ -32,13 +38,14 @@ window.APChartShare = (function () {
       lon: src.lon != null ? String(src.lon) : (inp.lon != null ? String(inp.lon) : ''),
       tz: src.tz || inp.tz || '',
       hs: src.houseSystem || 'equal',
+      a: src.timeAccuracy || inp.timeAccuracy || (src.timeKnown === true || inp.timeKnown ? 'exact' : 'unknown'),
     };
   }
 
   function buildShareUrl(chart, input, opts) {
     opts = opts || {};
     var p = buildParams(chart, input);
-    if (!p.d || !p.lat) return null;
+    if (!p.d || !p.lat || !isValidTimeZone(p.tz)) return null;
     var q = new URLSearchParams();
     Object.keys(p).forEach(function (k) {
       if (p[k] !== '' && p[k] != null) q.set(k, p[k]);
@@ -65,7 +72,7 @@ window.APChartShare = (function () {
     if (!chart) return '';
     var sun = planetSign(chart, 'Sun');
     var moon = planetSign(chart, 'Moon');
-    var rising = chart.risingSign || '—';
+    var rising = chart.risingSign || (chart.timeKnown === false || !chart.birthTime ? 'withheld · exact time needed' : '—');
     return (chart.name || 'Chart') + ': Sun ' + (sun || '—') + ' · Moon ' + (moon || '—') + ' · Rising ' + rising;
   }
 
@@ -219,12 +226,15 @@ window.APChartShare = (function () {
     if (name) name.value = q.get('n') || 'Shared Chart';
     if (date) date.value = q.get('d');
     if (time && q.get('t')) time.value = q.get('t');
+    else if (time) time.value = '';
     if (city) city.value = q.get('c') || '';
     if (lat) lat.value = q.get('lat');
     if (lon) lon.value = q.get('lon');
     if (tz) tz.value = q.get('tz') || '';
     var hs = document.getElementById('house-system');
     if (hs && q.get('hs')) hs.value = q.get('hs');
+    var accuracy = document.getElementById('time-accuracy-input');
+    if (accuracy && /^(exact|approximate|unknown)$/.test(q.get('a') || '')) accuracy.value = q.get('a');
     if (typeof onReady === 'function') onReady(q);
     return true;
   }

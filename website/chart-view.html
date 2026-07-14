@@ -69,7 +69,7 @@
         <a href="chart.html" class="btn btn--outline">Cast your own free chart</a>
       </div>
       <p style="margin-top:1rem;font-size:0.78rem;color:var(--ap-text-faint);">
-        Computed on your device · VSOP87 · accurate to roughly an arcminute (1800–2200 CE)
+        Computed on your device · VSOP87/ELP2000 · Western tropical/geocentric. Positions are calculated; interpretations and schematic rings are presentation layers (not measured photographs).
       </p>
     </section>
   </main>
@@ -102,6 +102,8 @@
 
     var meta = q.get('c') || 'Birth place';
     if (q.get('d')) meta += ' · ' + q.get('d');
+    meta += q.get('t') ? ' · time known' : ' · time unknown — angles withheld';
+    meta += ' · ' + (q.get('hs') || 'equal') + ' house system';
     document.getElementById('view-meta').textContent = meta;
 
     var fullLink = 'chart.html?' + q.toString();
@@ -131,6 +133,14 @@
       }
       var parts = q.get('d').split('-').map(Number);
       var y = parts[0], m = parts[1], d = parts[2];
+      var timeKnown = !!q.get('t');
+      var timezoneKnown = false;
+      var zoneParam = q.get('tz') || '';
+      try { if (zoneParam) { new Intl.DateTimeFormat('en-US', { timeZone: zoneParam }).format(); timezoneKnown = true; } } catch (e) { timezoneKnown = false; }
+      if (!timezoneKnown) {
+        document.getElementById('view-loading').textContent = 'This link has no recognised timezone. Recast the chart from the calculator to share a precise view.';
+        return;
+      }
       var hh = 12, mm = 0;
       if (q.get('t')) {
         var t = q.get('t').split(':').map(Number);
@@ -138,7 +148,7 @@
       }
       var lat = parseFloat(q.get('lat'));
       var lon = parseFloat(q.get('lon'));
-      var tz = q.get('tz') || 'UTC';
+      var tz = zoneParam;
       var hs = q.get('hs') || 'equal';
       var utY = y, utM = m, utD = d, utH = hh, utMin = mm;
       if (tz) {
@@ -153,6 +163,12 @@
         document.getElementById('view-loading').textContent = 'Could not compute this chart.';
         return;
       }
+      var angleKeys = { asc: true, mc: true, ascendant: true, midheaven: true };
+      var cleanAspects = (raw.aspects || []).filter(function (a) {
+        var p1 = String(a.planet1 || a.p1 || '').toLowerCase();
+        var p2 = String(a.planet2 || a.p2 || '').toLowerCase();
+        return timeKnown || (!angleKeys[p1] && !angleKeys[p2]);
+      });
       var chart = {
         name: name,
         birthDate: q.get('d'),
@@ -161,21 +177,30 @@
         lat: lat, lon: lon, tz: tz,
         houseSystem: hs,
         positions: raw.positions,
-        houses: raw.houses,
-        planetHouses: raw.planetHouses,
-        aspects: raw.aspects,
-        ascendant: raw.ascendant,
-        risingSign: raw.ascendant != null && window.AstroEphemeris
+        houses: timeKnown ? raw.houses : null,
+        planetHouses: timeKnown ? raw.planetHouses : null,
+        aspects: cleanAspects,
+        ascendant: timeKnown ? raw.ascendant : null,
+        risingSign: timeKnown && raw.ascendant != null && window.AstroEphemeris
           ? AstroEphemeris.signOf(raw.ascendant) : null,
+        timeKnown: timeKnown,
+        timeAccuracy: q.get('a') || (timeKnown ? 'exact' : 'unknown'),
+        timezoneKnown: timezoneKnown,
+        houseSystem: hs,
       };
       var loading = document.getElementById('view-loading');
-      if (window.AstroChartRender && window.AstroChartRender.renderNatalChart) {
+      if (!timeKnown) {
+        loading.hidden = true;
+        var withheld = document.getElementById('natal-wheel');
+        withheld.hidden = false;
+        withheld.innerHTML = '<div class="ap-withheld-card" role="status"><strong>Natal wheel angles withheld</strong><span>Birth time is unknown. Planetary signs remain available, but Ascendant, MC, houses and angle aspects are intentionally omitted.</span></div>';
+      } else if (window.AstroChartRender && window.AstroChartRender.renderNatalChart) {
         loading.hidden = true;
         var mount = document.getElementById('natal-wheel');
         mount.hidden = false;
         window.AstroChartRender.renderNatalChart(
           { positions: chart.positions, houses: chart.houses, aspects: chart.aspects,
-            name: chart.name, risingSign: chart.risingSign },
+            name: chart.name, risingSign: chart.risingSign, ascendant: chart.ascendant },
           'natal-wheel',
           { title: null, wheelOnly: true, showTable: false, showLegend: false });
       } else {
@@ -184,7 +209,7 @@
       }
       var sun = (raw.positions.sun && raw.positions.sun.sign) || '—';
       var moon = (raw.positions.moon && raw.positions.moon.sign) || '—';
-      var rising = chart.risingSign || '—';
+      var rising = chart.risingSign || 'withheld · exact time needed';
       document.getElementById('view-summary').textContent =
         'Sun in ' + sun + ' · Moon in ' + moon + ' · Rising ' + rising;
       document.getElementById('view-big-three').hidden = false;

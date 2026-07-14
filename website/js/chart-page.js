@@ -690,7 +690,9 @@
         unknown: 'Time unknown · Rising, MC and houses withheld',
       };
       precisionLabel.dataset.level = level;
-      precisionLabel.textContent = labels[level] || labels.unknown;
+      const houseName = HOUSE_SYSTEM_NAMES[chart.houseSystem] || chart.houseSystem || 'Equal';
+      precisionLabel.textContent = (labels[level] || labels.unknown) +
+        (chart.houses ? ` · ${houseName} houses` : ` · ${houseName} selected; angles withheld until time is known`);
     }
     renderBigThree(chart);
     renderWheel(chart);

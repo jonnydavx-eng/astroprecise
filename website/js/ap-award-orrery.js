@@ -75,7 +75,7 @@
   function queueWebGL() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=750", function () {
+    inject("js/orrery-loader.js?v=752", function () {
       setTimeout(promoteToWebGL, 500);
     });
   }
@@ -94,7 +94,7 @@
   }
 
   waitEphemeris(function () {
-    inject("js/lite-orrery.js?v=750", function () {
+    inject("js/lite-orrery.js?v=752", function () {
       document.documentElement.classList.add("orrery-poster-ready");
       if (isCapableDevice()) setTimeout(queueWebGL, 400);
     });

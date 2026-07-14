@@ -203,6 +203,17 @@
   wrap.hidden = false;
 
   var loaderQueued = false;
+  var webglIntent = /(?:^|[#&])m=/.test(location.hash || '');
+  function armWebglIntent() {
+    if (webglIntent) return;
+    webglIntent = true;
+    queueLoader();
+  }
+  // Loading the lite poster is safe on first paint; WebGL/Three is a user
+  // intent upgrade. A tap, keyboard action, or explicit model deep-link arms it.
+  ['pointerdown', 'touchstart', 'keydown'].forEach(function (eventName) {
+    window.addEventListener(eventName, armWebglIntent, { once: true, passive: eventName !== 'keydown' });
+  });
   function promoteToWebGL() {
     if (!isCapableDevice()) return;
     var tries = 0;
@@ -217,9 +228,9 @@
   }
 
   function queueLoader() {
-    if (loaderQueued) return;
+    if (loaderQueued || !webglIntent) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=750", function () {
+    inject("js/orrery-loader.js?v=752", function () {
       setTimeout(promoteToWebGL, 300);
     });
   }
@@ -228,13 +239,13 @@
   // Earth loader instead, and the photoreal Earth fades in over it.
   if (isCapableDevice() && !PRM) {
     document.documentElement.classList.add("ap-await-webgl");
-    queueLoader();
+    if (webglIntent) queueLoader();
   }
 
   // Poster + time-row wiring (date display, Now, scrub → Orrery3D.setTimelineDays).
   waitEphemeris(function () {
-    injectCss("css/orrery-visual.css?v=750", "ap-orrery-visual-css");
-    inject("js/lite-orrery.js?v=750", function () {
+    injectCss("css/orrery-visual.css?v=752", "ap-orrery-visual-css");
+    inject("js/lite-orrery.js?v=752", function () {
       document.documentElement.classList.add("orrery-poster-ready");
       queueLoader();
       scheduleDeepLink();
@@ -242,8 +253,8 @@
   });
 
   // Cosmic-flight tool (wires #ap-cosmic-flight-launch → fullscreen overlay).
-  injectCss("css/ap-cosmic-flight.css?v=750", "ap-cf-css");
-  inject("js/ap-cosmic-flight-tool.js?v=750");
+  injectCss("css/ap-cosmic-flight.css?v=752", "ap-cf-css");
+  inject("js/ap-cosmic-flight-tool.js?v=752");
 
   // Retire the loading placeholder once any engine is live.
   document.addEventListener("ap-orrery-ready", function () {
@@ -267,7 +278,7 @@
   });
 
   // Safety nets so the loader can never sit forever over a dead boot.
-  setTimeout(queueLoader, 4000);
+  setTimeout(function () { if (webglIntent) queueLoader(); }, 4000);
   setTimeout(hideFallback, 6000);
   // Late catch if lite boot was slow.
   setTimeout(scheduleDeepLink, 2500);

@@ -117,7 +117,7 @@ function collectCanonical() {
   //    (the engine loads .webp; the .jpg/.png stay on disk only as a runtime
   //    fallback). Precaching both formats would double the texture payload.
   // These lazy-cache at runtime instead.
-  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets)\/|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$/i;
+  const PRECACHE_EXCLUDE = /(^|\/)img\/(engine|design-targets)\/|(^|\/)assets\/textures\/[^/]+\.(jpe?g|png)$|(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i;
 
   // Content-bank windowing (2026-07-10): the bank is now a rolling ~188-day
   // set (today−7 … today+180, refreshed weekly by
@@ -160,6 +160,7 @@ function collectCanonical() {
   /** Skip legacy raster when WebP (or SVG for shop products) is the shipped format. */
   function skipLegacyRaster(absPath) {
     const rel = toPrecachePath(absPath);
+    if (/(^|\/)\.[^/]*\.bak(?:[-.][^/]*)?\.(?:jpe?g|png|webp|gif)$/i.test(rel) || /(^|\/)[^/]*\.bak(?:[-.][^/]*)?$/i.test(rel)) return true;
     if (RETIRED_OG.has(rel)) return true;
     if (!/\.(jpe?g|png)$/i.test(rel)) return false;
     const base = absPath.replace(/\.(jpe?g|png)$/i, '');
@@ -213,11 +214,19 @@ function main() {
   const entries = collectCanonical();
   let sw = readFileSync(SW_PATH, 'utf8');
   sw = bumpVersion(sw);
+  const ver = sw.match(/const V = ["']ap-v(\d+)["']/)?.[1];
+  if (ver) {
+    const assetPath = join(ROOT, 'js', 'ap-asset-v.js');
+    if (existsSync(assetPath)) {
+      const asset = readFileSync(assetPath, 'utf8');
+      writeFileSync(assetPath, asset.replace(/AP_ASSET_V\s*=\s*['"]\d+['"]/, `AP_ASSET_V = '${ver}'`), 'utf8');
+    }
+  }
   sw = replacePrecache(sw, formatPrecache(entries));
   writeFileSync(SW_PATH, sw, 'utf8');
 
-  const ver = sw.match(/const V = ["'](ap-v\d+)["']/)?.[1] ?? '?';
-  console.log(`sw.js updated — ${ver}, ${entries.length} precache entries`);
+  const versionLabel = sw.match(/const V = ["'](ap-v\d+)["']/)?.[1] ?? '?';
+  console.log(`sw.js updated — ${versionLabel}, ${entries.length} precache entries`);
 }
 
 main();

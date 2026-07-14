@@ -2411,7 +2411,7 @@ function getTransitAspects(natalChart, transitPositions) {
         if (orbActual <= orb) {
           const interpKey = `${tp}_${np}`;
           const baseInterp = TRANSIT_INTERPRETATIONS[interpKey] ||
-            `Transiting ${tp} forms a ${name} to your natal ${np}, activating themes of ${np}-related life areas with ${tp}'s particular quality of transformation. This ${orbActual < 2 ? 'exact' : orbActual < 4 ? 'close' : 'applying'} aspect carries ${name === 'conjunction' ? 'intensified focus and new beginnings' : name === 'trine' ? 'harmonious flow and natural opportunity' : name === 'sextile' ? 'cooperative potential awaiting your engagement' : name === 'square' ? 'productive friction demanding growth and adjustment' : 'awareness through polarity and the integration of opposites'} in its energy.`;
+`Transiting ${tp} forms a ${name} to your natal ${np}, activating themes of ${np}-related life areas with ${tp}'s particular quality of transformation. This ${orbActual < 2 ? 'exact' : orbActual < 4 ? 'close' : 'within-orb'} aspect carries ${name === 'conjunction' ? 'intensified focus and new beginnings' : name === 'trine' ? 'harmonious flow and natural opportunity' : name === 'sextile' ? 'cooperative potential awaiting your engagement' : name === 'square' ? 'productive friction demanding adjustment' : 'awareness through polarity and the integration of opposites'} in its energy.`;
 
           const aspectQuality = name === 'trine' || name === 'sextile' ? 'harmonious' : name === 'conjunction' ? 'intensifying' : 'dynamic';
 

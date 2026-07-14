@@ -68,15 +68,15 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="css/chart-critical.css?v=750" />
+  <link rel="stylesheet" href="css/chart-critical.css?v=752" />
   <link rel="stylesheet" href="css/ap-forms.css" />
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
-  <link rel="stylesheet" href="css/ap-model-stage.css?v=750" id="ap-css-model-stage" />
+  <link rel="stylesheet" href="css/ap-model-stage.css?v=752" id="ap-css-model-stage" />
   <link rel="stylesheet" href="css/ap-page-bridge.css" id="ap-css-bridge" />
   <link rel="stylesheet" href="css/instrument-panel.css" />
-  <link rel="stylesheet" href="css/ap-micro-delight.css?v=750" />
-  <link rel="stylesheet" href="css/ap-ai-panel.css?v=750" />
+  <link rel="stylesheet" href="css/ap-micro-delight.css?v=752" />
+  <link rel="stylesheet" href="css/ap-ai-panel.css?v=752" />
   <style>
     /* LCP shell — system fonts paint before deferred webfonts (subtitle is LCP element) */
     .chart-hero__title {
@@ -222,8 +222,8 @@
   <!-- Corrective wave: load the shared nav/precision layer after structure-clean
        so its non-overflow mobile grid is the final cascade on chart. -->
   <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=752" id="ap-css-overhaul-s8" />
-  <link rel="stylesheet" href="css/ap-palette-2026.css?v=750" id="ap-css-palette-2026" />
-  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=750" id="ap-css-brand-nebula" />
+  <link rel="stylesheet" href="css/ap-palette-2026.css?v=752" id="ap-css-palette-2026" />
+  <link rel="stylesheet" href="css/ap-brand-nebula.css?v=752" id="ap-css-brand-nebula" />
   <script src="js/defer-page-css.js" defer></script>
   <script defer>document.addEventListener('DOMContentLoaded',function(){function deferChartFonts(){if(navigator.webdriver||/\bHeadlessChrome\b/i.test(navigator.userAgent||''))return;var done=false;function load(){if(done||document.getElementById('ap-css-fonts'))return;done=true;var l=document.createElement('link');l.rel='stylesheet';l.href='css/fonts.css';l.id='ap-css-fonts';l.onload=function(){document.documentElement.classList.add('ap-fonts-ready');};document.head.appendChild(l);}window.addEventListener('scroll',load,{once:true,passive:true});window.addEventListener('pointerdown',load,{once:true,passive:true});window.addEventListener('load',function(){setTimeout(load,25000);},{once:true});}deferChartFonts();deferPageCss('css/ap-motion.css','ap-css-motion');deferPageCss('css/ap-cinematic-2026.css','ap-css-cinematic');deferPageCss('css/ap-micro-2026.css','ap-css-micro');deferMainCss();deferPageCss('css/ap-page-bridge.css','ap-css-bridge');deferPageCss('css/chart.css','ap-css-chart');deferPageCss('css/chart-page-deferred.css','ap-css-chart-deferred');deferPageCss('css/ap-reading.css','ap-css-reading');deferPageCss('css/celestial-seals.css','ap-css-seals');});</script>
 </head>
@@ -536,7 +536,8 @@
             <div class="result-header-meta">
               <h2 id="result-name" aria-hidden="true"></h2>
               <p id="result-date"></p>
-              <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000</span>
+              <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000 · Western tropical / geocentric</span>
+              <small class="result-method-note">Numbers are computed positions; interpretations are editorial. Ecliptic rings and export artwork are schematic, not measured sky photographs. Live feeds are labelled separately.</small>
               <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Time unknown · angles and houses withheld</span>
             </div>
             <div class="result-actions" id="result-actions-row">
@@ -876,7 +877,7 @@
           <h3 class="card__title" style="margin-bottom:var(--space-3);">Calculation Accuracy</h3>
           <p style="margin-bottom:var(--space-3);"><span class="ap-badge">Accurate to a few arcminutes · 1800–2200 CE</span></p>
           <p class="card__text">
-            Astro Precise uses VSOP87-derived mean orbital elements for the outer planets and
+            Astro Precise uses the Western tropical zodiac with geocentric ecliptic longitudes. VSOP87-derived mean orbital elements for the outer planets and
             a full perturbation series for the Sun and Moon, giving positional accuracy typically
             within a few arcminutes for dates between 1800–2200 CE. The Ascendant is computed from Local
             Sidereal Time derived from your exact latitude, longitude, and birth time. House
@@ -1003,8 +1004,8 @@
   <script src="js/app.js" defer></script>
   <script src="js/ap-page-bridge.js" defer></script>
   <script src="js/ap-canvas-seals.js" defer></script>
-  <script src="js/ap-deep-link.js?v=750" defer></script>
-  <script src="js/ap-sky-bridge.js?v=750" defer></script>
+  <script src="js/ap-deep-link.js?v=752" defer></script>
+  <script src="js/ap-sky-bridge.js?v=752" defer></script>
   <script src="js/chart-page.js" defer></script>
   <script>
   (function () {

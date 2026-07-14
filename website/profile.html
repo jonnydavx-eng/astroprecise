@@ -1075,6 +1075,8 @@
         if (c.lat) params.set('lat', c.lat);
         if (c.lon) params.set('lon', c.lon);
         if (c.tz) params.set('tz', c.tz);
+        params.set('a', c.timeAccuracy || (c.timeKnown ? 'exact' : 'unknown'));
+        if (c.houseSystem) params.set('hs', c.houseSystem);
         const chartUrl = 'chart.html?' + params.toString();
         const dateDisplay = c.date ? new Date(c.date + 'T12:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '';
 
@@ -1085,6 +1087,7 @@
             ${c.sun ? `<span class="big-three-badge big-three-badge--sun">☉ ${signSealHtml(c.sun, 'sm')} ${c.sun}</span>` : ''}
             ${c.moon ? `<span class="big-three-badge big-three-badge--moon">☽ ${signSealHtml(c.moon, 'sm')} ${c.moon}</span>` : ''}
             ${(c.asc||c.ascendant) ? `<span class="big-three-badge big-three-badge--asc">↑ ${signSealHtml(c.asc||c.ascendant, 'sm')} ${c.asc||c.ascendant}</span>` : ''}
+            ${!(c.asc||c.ascendant) ? '<span class="big-three-badge big-three-badge--asc" title="Add an exact or approximate birth time to calculate angles">↑ Rising withheld · time needed</span>' : ''}
           </div>
           <div class="chart-gallery-item__actions">
             <a href="${chartUrl}" class="btn-chart-link" aria-label="Open chart for ${c.name || 'Unnamed'}">Open Chart →</a>

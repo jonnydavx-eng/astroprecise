@@ -13,6 +13,7 @@
     "lighthouse:production": "node lighthouse-production.mjs",
     "lighthouse:production:ci": "node lighthouse-production.mjs --ci",
     "perf": "node audit-perf.mjs",
+    "wave3:proof": "node wave3-proof.mjs",
     "baseline:save": "node save-baseline.mjs",
     "baseline:diff": "node diff-baseline.mjs",
     "audit": "node run-audit.mjs",
