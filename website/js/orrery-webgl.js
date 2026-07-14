@@ -9172,6 +9172,9 @@ const FinishShader = {
   function destroy() {
     destroyed = true;
     if (raf) { cancelAnimationFrame(raf); raf = null; }
+    activePointers.clear();
+    dragging = false;
+    pinchStartDist = 0;
     clearLifecycleBindings();
     window.removeEventListener('resize', resize);
     if (canvas?._orreryVV && window.visualViewport) {
