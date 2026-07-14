@@ -105,3 +105,20 @@ Load Coherence. PROJECT-FIRST AstroPrecise. Mode: <AUDIT|IMPLEMENT|SHIP-GATE>.
 Vertical: <this tip surface>. Spawn seats. No multi-hat.
 No product edits until fleet returns. CODE-ONLY until S12.
 ```
+
+<!-- coherence:managed:start id=coherence-policy-v2 schema=2 -->
+## Coherence v2 managed policy
+
+<!-- coherence:supersedes id=coherence-policy-v1 -->
+- **Supersession:** For Coherence process and status only, this managed v2 block supersedes earlier unmanaged Coherence v1, “permanent law”, “FAIL-CLOSED edit gate” and legacy status text in this file. Older text is retained as history; project-specific safety and owner restrictions remain in force.
+- Do not merge v1 and v2 status vocabularies; only the v2 validator statuses below apply to new waves.
+- Authority: `C:\Users\jonny\dev\coherence\policy\coherence-policy.json`
+- Run PROJECT-FIRST for a named project and use only its canonical path.
+- Classify the vertical L0-L3; ambiguity rounds up.
+- L0 is read-only. For L1-L3, register a fresh wave and S8 before mutation.
+- L1: S8 plus scripted proof. L2: S8 implements, then a different-run S12 verifies the frozen candidate. L3: L2 plus S5, relevant veto seats and S1 authority where required.
+- S12 preflight advice is not verification. Prior-wave proof does not transfer to a new tip or vertical.
+- Agents record evidence; only the validator emits `CODE-ONLY`, `BLOCK-SHIP`, `VERIFIED-LOCAL`, `READY-SHIP` or `LIVE`.
+- Deferred proof is not pass. Local, HEAD, origin and live identities remain separate.
+- Board-wide installation is plan-only by default and may alter only exact allowlisted managed regions.
+<!-- coherence:managed:end id=coherence-policy-v2 -->
