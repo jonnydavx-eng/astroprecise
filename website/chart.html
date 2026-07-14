@@ -77,6 +77,7 @@
   <link rel="stylesheet" href="css/instrument-panel.css" />
   <link rel="stylesheet" href="css/ap-micro-delight.css?v=750" />
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=750" />
+  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=751" id="ap-css-overhaul-s8" />
   <style>
     /* LCP shell — system fonts paint before deferred webfonts (subtitle is LCP element) */
     .chart-hero__title {
@@ -305,6 +306,7 @@
           <div class="form-glass__icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></div>
           <h2 class="form-glass__title">Cast your chart</h2>
           <p class="form-glass__sub">Instant on your device. <strong class="form-glass__privacy">Private</strong> — only the place name leaves the browser (for coordinates). No account.</p>
+          <p class="chart-form__progress" id="chart-form-progress">Step 1 of 2 · date, place, then time</p>
         </div>
 
         <form id="chart-form" novalidate aria-label="Birth chart calculation form">
@@ -362,7 +364,7 @@
               hidden
             ></div>
             <p class="form-error-msg" role="alert">Please select a city from the dropdown.</p>
-            <p class="form-hint" id="city-hint">Pick a result for precise coordinates.
+            <p class="form-hint" id="city-hint">Pick a result for precise coordinates — a typed city name alone is not enough.
               <button type="button" id="geo-btn" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 6px;">◉ or use my current location</button>
             </p>
           </div>
@@ -379,9 +381,11 @@
               class="form-input"
               aria-describedby="time-hint"
             />
-            <p class="form-hint" id="time-hint">Needed for Ascendant &amp; houses. Blank = noon (Rising approximate).
-              <button type="button" id="time-unknown-btn" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 2px;">Don't know it?</button>
+            <input type="hidden" id="time-accuracy-input" name="time-accuracy" value="unknown" />
+            <p class="form-hint" id="time-hint">Exact time unlocks Rising, MC and houses. Leave blank if unknown — planetary signs remain precise.
+              <button type="button" id="time-unknown-btn" aria-pressed="true" style="background:none;border:none;color:var(--gold);font-size:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0 0 0 2px;">Keep time unknown</button>
             </p>
+            <p class="form-hint ap-time-status" id="time-accuracy-status" role="status" aria-live="polite">Time unknown · Rising, MC and houses will be withheld.</p>
             <div id="time-accuracy-guide" hidden></div>
           </div>
 
@@ -531,6 +535,7 @@
               <h2 id="result-name" aria-hidden="true"></h2>
               <p id="result-date"></p>
               <span class="result-badge"><span class="eng-star-mark" style="color:var(--gold);margin-right:0.35em;"></span>Computed locally · VSOP87 + ELP2000</span>
+              <span class="ap-result-precision" id="result-precision-label" data-level="unknown" role="status" aria-live="polite">Time unknown · angles and houses withheld</span>
             </div>
             <div class="result-actions" id="result-actions-row">
               <button id="poster-btn" class="action-btn action-btn--primary" aria-label="Download your masterpiece chart plate — print, square, story or wallpaper">
@@ -578,7 +583,7 @@
 
         <!-- Big Three -->
         <section class="big-three-section animate-in animate-in--delay-1" role="group" aria-labelledby="big-three-heading">
-          <h2 id="big-three-heading" class="sr-only">Sun, Moon and Rising signs</h2>
+          <h2 id="big-three-heading" class="sr-only">Core placements and time-dependent angles</h2>
           <div id="big-three" class="big-three-grid">
             <article class="big-three-card big-three-card--skeleton" aria-hidden="true">
               <p class="big-three-card__planet">Sun · Core Identity</p>
@@ -1029,15 +1034,39 @@
     // "Don't know your birth time?" → open Advanced options and jump to the
     // time-of-day approximations (they're the graceful fallback for the most
     // common real-world data gap, otherwise buried in the accordion).
+    var accuracyInput = document.getElementById('time-accuracy-input');
+    var accuracyStatus = document.getElementById('time-accuracy-status');
+    function setTimeAccuracy(level) {
+      level = /^(exact|approximate|unknown)$/.test(level) ? level : 'unknown';
+      if (accuracyInput) accuracyInput.value = level;
+      if (accuracyStatus) {
+        accuracyStatus.dataset.level = level;
+        accuracyStatus.textContent = level === 'exact'
+          ? 'Exact time · Rising, MC and houses will be calculated.'
+          : level === 'approximate'
+            ? 'Approximate time · Rising, MC and houses are provisional.'
+            : 'Time unknown · Rising, MC and houses will be withheld.';
+      }
+      if (timeUnknownBtn) {
+        timeUnknownBtn.setAttribute('aria-pressed', level === 'unknown' ? 'true' : 'false');
+        timeUnknownBtn.textContent = level === 'unknown' ? 'Choose an approximate time' : 'Mark time unknown';
+      }
+    }
+    document.addEventListener('ap-time-accuracy', function (ev) {
+      setTimeAccuracy(ev && ev.detail);
+    });
     var timeUnknownBtn = document.getElementById('time-unknown-btn');
     if (timeUnknownBtn) {
       timeUnknownBtn.addEventListener('click', function () {
+        if (document.getElementById('time-input')) document.getElementById('time-input').value = '';
+        setTimeAccuracy('unknown');
         var item = document.getElementById('chart-advanced-item');
         var trig = document.getElementById('chart-advanced-trigger');
         if (item && trig && !item.classList.contains('is-open')) trig.click();
         var picks = document.querySelector('.chart-form__time-picks') || document.querySelector('.time-selector');
         if (picks) {
-          picks.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          picks.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
           var firstBtn = picks.querySelector('.time-btn');
           if (firstBtn) setTimeout(function () { try { firstBtn.focus({ preventScroll: true }); } catch (e) { firstBtn.focus(); } }, 400);
         }
@@ -1052,6 +1081,7 @@
         const timeInput = document.getElementById('time-input');
         if (timeInput) {
           timeInput.value = btn.dataset.time;
+          setTimeAccuracy('approximate');
           timeInput.dispatchEvent(new Event('input'));
         }
       });
@@ -1064,8 +1094,12 @@
         const val = timeInput.value;
         const matched = [...document.querySelectorAll('.time-btn')].some(b => b.dataset.time === val);
         if (!matched) document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        var preset = document.querySelector('.time-btn.active');
+        setTimeAccuracy(val ? (preset && preset.dataset.time === val ? 'approximate' : 'exact') : 'unknown');
       });
+      timeInput.addEventListener('change', () => setTimeAccuracy(timeInput.value ? 'exact' : 'unknown'));
     }
+    setTimeAccuracy((accuracyInput && accuracyInput.value) || (timeInput && timeInput.value ? 'exact' : 'unknown'));
 
     // House system card selector
     const houseInput = document.getElementById('house-system');

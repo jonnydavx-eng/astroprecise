@@ -132,11 +132,17 @@
 
   function pickCity(c) {
     cityInput.value = c.admin ? `${c.name}, ${c.admin}, ${c.country}` : `${c.name}, ${c.country}`;
+    cityInput.dataset.coordinatesLocked = 'true';
     latInput.value  = c.lat;
     lonInput.value  = c.lon;
     tzInput.value   = c.tz || '';
     dropdown.innerHTML = '';
     dropdown.hidden = true;
+    const cityHint = document.getElementById('city-hint');
+    if (cityHint) {
+      cityHint.dataset.state = 'selected';
+      cityHint.firstChild.textContent = 'Coordinates locked for ' + c.name + '. ';
+    }
     document.dispatchEvent(new CustomEvent('astro:city-selected'));
   }
 
@@ -150,6 +156,9 @@
       });
     }, 250);
     cityInput.addEventListener('input', () => {
+      cityInput.dataset.coordinatesLocked = 'false';
+      const cityHint = document.getElementById('city-hint');
+      if (cityHint && cityHint.firstChild) cityHint.firstChild.textContent = 'Pick a result for precise coordinates. ';
       latInput.value = ''; lonInput.value = ''; tzInput.value = '';
       const q = cityInput.value.trim();
       if (q.length < 2) { searchSeq++; renderDropdown([], 'live', 'idle'); return; }
@@ -224,42 +233,51 @@
   }
 
   function adaptChart(raw, meta) {
+    const timeKnown = meta.timeKnown === true;
     const positions = {};
     const planetHouses = {};
     for (const [k, cap] of Object.entries(KEY_MAP)) {
+      // A neutral noon is used internally when time is unknown so the
+      // planetary engine can still run. Never expose its time-dependent
+      // angles as if they were a real birth-time result.
+      if (!timeKnown && (cap === 'Ascendant' || cap === 'Midheaven')) continue;
       const p = raw.positions[k];
       if (!p) continue;
       positions[cap] = { lon: p.longitude, sign: p.sign, degree: p.degree, retrograde: p.retrograde };
-      if (!['Ascendant', 'Midheaven'].includes(cap)) {
+      if (timeKnown && !['Ascendant', 'Midheaven'].includes(cap)) {
         planetHouses[cap] = houseOf(p.longitude, raw.houses);
       }
     }
     positions.NNode = positions.NorthNode;
-    positions.MC    = positions.Midheaven;
+    if (timeKnown) positions.MC = positions.Midheaven;
 
     const capAspect = s => {
       const d = ASPECT_DISPLAY[s];
       return d ? d.name : s.charAt(0).toUpperCase() + s.slice(1);
     };
     const MAJOR = ['conjunction', 'opposition', 'trine', 'square', 'sextile'];
+    const angleKeys = ['asc', 'mc'];
+    const usableAspect = a => KEY_MAP[a.planet1] && KEY_MAP[a.planet2]
+      && (timeKnown || (!angleKeys.includes(a.planet1) && !angleKeys.includes(a.planet2)));
     const renderAspects = raw.aspects
-      .filter(a => KEY_MAP[a.planet1] && KEY_MAP[a.planet2] && MAJOR.includes(a.aspect))
+      .filter(a => usableAspect(a) && MAJOR.includes(a.aspect))
       .map(a => ({ planet1: KEY_MAP[a.planet1], planet2: KEY_MAP[a.planet2], aspect: capAspect(a.aspect), orb: a.orb, applying: a.applying }));
     const interpAspects = raw.aspects
-      .filter(a => KEY_MAP[a.planet1] && KEY_MAP[a.planet2])
+      .filter(usableAspect)
       .map(a => ({ planet1: KEY_MAP[a.planet1], planet2: KEY_MAP[a.planet2], aspect: a.aspect, orb: a.orb, applying: a.applying }));
 
     return {
       ...meta,
       positions,
-      houses: raw.houses,
+      houses: timeKnown ? raw.houses : null,
       renderAspects,
       aspects: interpAspects,
       planetHouses,
-      asc: raw.ascendant,
-      mc: raw.midheaven,
-      risingSign: E().signOf(raw.ascendant),
-      chartRuler: raw.chartRuler,
+      asc: timeKnown ? raw.ascendant : null,
+      mc: timeKnown ? raw.midheaven : null,
+      risingSign: timeKnown ? E().signOf(raw.ascendant) : null,
+      chartRuler: timeKnown ? raw.chartRuler : null,
+      timeAccuracy: meta.timeAccuracy || (timeKnown ? 'exact' : 'unknown'),
       dominant: { element: raw.dominantElement, modality: raw.dominantModality },
       dominantElement: raw.dominantElement,
       dominantModality: raw.dominantModality,
@@ -294,7 +312,8 @@
     const el = document.getElementById(focusId);
     if (el) {
       el.focus();
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
     }
   }
 
@@ -324,6 +343,8 @@
       name, y, m, d, hh, mm, lat, lon, tz,
       city: cityInput.value,
       timeKnown: !!document.getElementById('time-input').value,
+      timeAccuracy: (document.getElementById('time-accuracy-input')?.value || '').trim() ||
+        (document.getElementById('time-input').value ? 'exact' : 'unknown'),
       houseSystem: document.getElementById('house-system').value,
       nodeMode: getNodeMode(),
     };
@@ -371,6 +392,8 @@
       name: input.name,
       birthDate: `${input.y}-${String(input.m).padStart(2,'0')}-${String(input.d).padStart(2,'0')}`,
       birthTime: input.timeKnown ? `${String(input.hh).padStart(2,'0')}:${String(input.mm).padStart(2,'0')}` : null,
+      timeKnown: input.timeKnown === true,
+      timeAccuracy: input.timeAccuracy || (input.timeKnown ? 'exact' : 'unknown'),
       city: input.city, lat: input.lat, lon: input.lon, tz: input.tz,
     });
   }
@@ -500,6 +523,7 @@
     const q = new URLSearchParams({
       n: input.name, d: `${input.y}-${input.m}-${input.d}`,
       t: input.timeKnown ? `${input.hh}:${input.mm}` : '',
+      a: input.timeAccuracy || (input.timeKnown ? 'exact' : 'unknown'),
       c: input.city, lat: input.lat, lon: input.lon, tz: input.tz,
     });
     history.replaceState(null, '', '?' + q.toString());
@@ -518,6 +542,9 @@
       document.getElementById('time-input').value =
         `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
     }
+    const accuracy = q.get('a');
+    const accuracyInput = document.getElementById('time-accuracy-input');
+    if (accuracyInput && /^(exact|approximate|unknown)$/.test(accuracy || '')) accuracyInput.value = accuracy;
     cityInput.value = q.get('c') || '';
     latInput.value  = q.get('lat'); lonInput.value = q.get('lon'); tzInput.value = q.get('tz') || '';
     var hs = q.get('hs');
@@ -533,6 +560,7 @@
     document.dispatchEvent(new CustomEvent('astro:city-selected'));
     ['name-input', 'date-input', 'time-input'].forEach(id =>
       document.getElementById(id).dispatchEvent(new Event('input')));
+    if (accuracy) document.dispatchEvent(new CustomEvent('ap-time-accuracy', { detail: accuracy }));
     form.requestSubmit();
   }
 
@@ -632,8 +660,18 @@
       resultNameEl.removeAttribute('aria-hidden');
     }
     document.getElementById('result-date').textContent =
-      `${chart.birthDate}${chart.birthTime ? ' at ' + chart.birthTime : ' (time unknown — houses approximate)'} · ${chart.city}`;
-
+      `${chart.birthDate}${chart.birthTime ? ' at ' + chart.birthTime : ' · time unknown'} · ${chart.city}`;
+    const precisionLabel = document.getElementById('result-precision-label');
+    if (precisionLabel) {
+      const level = chart.timeAccuracy || (chart.birthTime ? 'exact' : 'unknown');
+      const labels = {
+        exact: 'Exact time · Rising, MC and houses included',
+        approximate: 'Approximate time · Rising, MC and houses are provisional',
+        unknown: 'Time unknown · Rising, MC and houses withheld',
+      };
+      precisionLabel.dataset.level = level;
+      precisionLabel.textContent = labels[level] || labels.unknown;
+    }
     renderBigThree(chart);
     renderWheel(chart);
     renderTabs(chart);
@@ -788,9 +826,18 @@
     const items = [
       { key: 'Sun', label: 'Sun', sub: 'Core Identity', sign: chart.positions.Sun.sign, deg: fmtDeg(chart.positions.Sun), seal: 'planet:sun' },
       { key: 'Moon', label: 'Moon', sub: 'Inner World', sign: chart.positions.Moon.sign, deg: fmtDeg(chart.positions.Moon), seal: 'planet:moon' },
-      { key: 'Rising', label: 'Rising', sub: 'Outward Self', sign: chart.risingSign, deg: (typeof chart.asc === 'number') ? fmtDeg({ degree: chart.asc % 30 }) : '', seal: chart.risingSign ? ('zodiac:' + String(chart.risingSign).toLowerCase()) : '' },
+      chart.risingSign
+        ? { key: 'Rising', label: 'Rising', sub: 'Outward Self', sign: chart.risingSign, deg: (typeof chart.asc === 'number') ? fmtDeg({ degree: chart.asc % 30 }) : '', seal: 'zodiac:' + String(chart.risingSign).toLowerCase() }
+        : { key: 'Rising', label: 'Rising withheld', sub: 'Exact time needed', sign: '—', deg: '', seal: '' },
     ];
     el.innerHTML = items.map(it => {
+      if (it.key === 'Rising' && !chart.risingSign) {
+        return `<article class="big-three-card big-three-card--withheld" aria-label="Rising sign withheld because birth time is unknown">
+          <p class="big-three-card__planet">Rising · Outward Self</p>
+          <h3 class="big-three-card__sign">Withheld</h3>
+          <p class="big-three-card__desc">Add an exact or approximate birth time to calculate angles.</p>
+        </article>`;
+      }
       const sealHtml = it.seal
         ? `<span class="big-three-card__seal" data-celestial-seal="${esc(it.seal)}" data-seal-lg aria-hidden="true"></span>`
         : '';
@@ -816,6 +863,13 @@
   function renderWheel(chart) {
     const el = document.getElementById('natal-wheel');
     if (!el) return;
+    if (!chart.houses) {
+      el.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Natal wheel angles withheld</strong><span>Birth time is unknown, so the wheel cannot claim an Ascendant, MC or house cusps. Planetary signs remain available below.</span></div></div>';
+      el.classList.remove('natal-wheel--loading', 'natal-wheel--loaded');
+      const wrap = document.getElementById('natal-wheel-wrap');
+      if (wrap) wrap.removeAttribute('aria-busy');
+      return;
+    }
     if (!window.AstroChartRender) {
       // Renderer missing (failed to load/parse) — say so instead of a silent blank wheel.
       el.innerHTML = '<p style="text-align:center;color:var(--silver-dim,#8F8579);padding:2rem;">The chart renderer didn\'t load — please refresh the page.</p>';
@@ -1052,6 +1106,7 @@
     }
     return {
       y: parts[0], m: parts[1], d: parts[2], hh, mm, timeKnown,
+      timeAccuracy: chart.timeAccuracy || (timeKnown ? 'exact' : 'unknown'),
       lat: chart.lat, lon: chart.lon, tz: chart.tz,
       houseSystem, nodeMode: chart.nodeMode || 'mean',
       name: chart.name, city: chart.city,
@@ -1106,7 +1161,10 @@
     const ov = document.getElementById('analysis-content');
     if (ov) {
       let a = null;
-      try { a = I && I.analyzeChartDetailed ? I.analyzeChartDetailed(chart) : null; } catch (e) { a = null; }
+      // The interpretation library has a historical noon fallback for ASC/MC.
+      // Do not call it when the visitor deliberately left time unknown: a
+      // polished Aries/MC paragraph would be an angle claim, not a result.
+      try { a = chart.risingSign && I && I.analyzeChartDetailed ? I.analyzeChartDetailed(chart) : null; } catch (e) { a = null; }
       const blocks = [];
       const tocItems = [];
       let readText = '';
@@ -1129,11 +1187,19 @@
         }));
       }
 
-      const dominantText =
-        `Your chart leads with ${chart.dominantElement} energy in a ${chart.dominantModality} mode. ` +
-        `Chart ruler ${cap(chart.chartRuler || '—')} steers your ${chart.risingSign} Ascendant — the lens others meet first.`;
+      const dominantText = chart.risingSign
+        ? `Your chart leads with ${chart.dominantElement} energy in a ${chart.dominantModality} mode. ` +
+          `Chart ruler ${cap(chart.chartRuler || '—')} steers your ${chart.risingSign} Ascendant — the lens others meet first.`
+        : `Your chart leads with ${chart.dominantElement} energy in a ${chart.dominantModality} mode. ` +
+          `Birth time is unknown, so time-dependent angles and houses are withheld; the planetary signs above remain calculated from your date and place.`;
       blocks.push(analysisSection('Dominant Energy', dominantText, { featured: true, eyebrow: 'Start here' }));
       tocItems.push({ title: 'Dominant Energy' });
+      if (!chart.risingSign) {
+        blocks.push(analysisSection('Time-dependent angles withheld',
+          'Birth time is unknown. Rising, Ascendant, Midheaven, houses and angle interpretations are intentionally omitted; add a time and recast when you want that layer.',
+          { eyebrow: 'Honest precision' }));
+        tocItems.push({ title: 'Time-dependent angles withheld' });
+      }
 
       if (a) {
         const sections = [
@@ -1270,7 +1336,9 @@
 
     // Houses
     const ht = document.getElementById('houses-table');
-    if (ht && fmt) {
+    if (ht && fmt && !chart.houses) {
+      ht.innerHTML = '<div class="ap-withheld-card" role="status"><div><strong>Houses withheld</strong><span>An exact birth time is needed for Ascendant-based houses and angle interpretations. Your planetary signs are still shown in the Planets tab.</span></div></div>';
+    } else if (ht && fmt) {
       const planetsByHouse = {};
       Object.keys(chart.positions || {}).forEach(function (k) {
         const hh = chart.planetHouses && chart.planetHouses[k];

@@ -1,0 +1,192 @@
+/* Astro Precise S8 slice — shared Jet / Silver / Aurora language.
+   Loaded last on Observatory + Chart so the two entry points share the same
+   geometry, focus treatment, and honest precision labels. */
+:root {
+  --ap-jet: #07070a;
+  --ap-jet-raised: #111117;
+  --ap-silver: #e8ebf0;
+  --ap-silver-soft: #c8cdd6;
+  --ap-silver-dim: #929aa8;
+  --ap-aurora: #7ec8e8;
+  --ap-aurora-violet: #8a78ff;
+  --ap-focus-ring: #9fe3ff;
+  --ap-nav-height: 56px;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  background: var(--ap-jet);
+}
+
+/* One primary vocabulary on both the custom Observatory masthead and the
+   standard internal-page navbar. */
+.masthead .contents-nav,
+.navbar__nav {
+  min-width: 0;
+}
+
+.masthead .contents-nav a,
+.navbar__nav .navbar__link,
+.navbar__more-btn {
+  color: var(--ap-silver-soft);
+  border-radius: 999px;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.masthead .contents-nav a:hover,
+.masthead .contents-nav a:focus-visible,
+.masthead .contents-nav a[aria-current="page"],
+.navbar__nav .navbar__link:hover,
+.navbar__nav .navbar__link:focus-visible,
+.navbar__nav .navbar__link[aria-current="page"],
+.navbar__more-btn:focus-visible {
+  color: var(--ap-silver);
+  background: rgba(126, 200, 232, 0.1);
+}
+
+.masthead a:focus-visible,
+.navbar a:focus-visible,
+.navbar button:focus-visible,
+.bottom-nav a:focus-visible,
+.bottom-nav button:focus-visible {
+  outline: 2px solid var(--ap-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Fixed mobile tabs are four equal, non-scrolling targets. The desktop More
+   and email affordances remain available in the drawer, so no fifth item can
+   force a horizontal overflow on 320–390px devices. */
+.bottom-nav__shell {
+  width: 100%;
+  min-width: 0;
+}
+.bottom-nav__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+  width: 100%;
+  min-width: 0;
+  padding-inline: 4px;
+}
+.bottom-nav__pinned {
+  display: none;
+}
+.bottom-nav__item {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 2px;
+  overflow: hidden;
+}
+.bottom-nav__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Hero promise → action: the date is the only first-viewport form control. */
+.hero-form-progress,
+.chart-form__progress {
+  margin: 0.7rem 0 0.4rem;
+  color: var(--ap-aurora);
+  font: 600 0.66rem/1.4 var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero-form-note,
+.form-hint,
+.ap-time-status {
+  color: var(--ap-silver-dim);
+}
+.hero-form-note {
+  max-width: 46ch;
+}
+
+/* The five-step spine replaces the old six-choice launcher list. */
+.ap-spine-list {
+  counter-reset: ap-spine;
+  display: grid;
+  gap: 0.7rem;
+  margin: 1.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ap-spine-list .dept-list-item {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+.ap-spine-list .dept-number {
+  color: var(--ap-aurora);
+}
+.ap-spine-list .dept-list-item:focus-visible {
+  outline: 2px solid var(--ap-focus-ring);
+  outline-offset: 4px;
+}
+
+/* Results: put the method/time truth directly beside the name. */
+.result-badge,
+.ap-result-precision {
+  border-color: rgba(126, 200, 232, 0.28);
+  color: var(--ap-silver-soft);
+}
+.ap-result-precision {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  font: 600 0.65rem/1.4 var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.04em;
+}
+.ap-result-precision[data-level="unknown"] {
+  color: #f0c58a;
+}
+.ap-result-precision[data-level="approximate"] {
+  color: #e5d698;
+}
+.ap-time-status {
+  margin-top: 0.45rem;
+  font-size: 0.76rem;
+}
+.ap-time-status[data-level="exact"] { color: var(--ap-aurora); }
+.ap-time-status[data-level="approximate"] { color: #e5d698; }
+.ap-time-status[data-level="unknown"] { color: #f0c58a; }
+
+.ap-withheld-card {
+  display: grid;
+  place-items: center;
+  min-height: 9rem;
+  padding: 1.2rem;
+  border: 1px dashed rgba(240, 197, 138, 0.35);
+  border-radius: 1rem;
+  color: var(--ap-silver-soft);
+  text-align: center;
+  background: rgba(240, 197, 138, 0.04);
+}
+.ap-withheld-card strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #f0c58a;
+}
+
+@media (max-width: 640px) {
+  .masthead .contents-nav { display: none; }
+  .masthead { min-height: 48px; }
+  .ap-spine-list .dept-list-item {
+    grid-template-columns: 2rem minmax(0, 1fr);
+  }
+  .ap-spine-list .dept-badge { grid-column: 2; justify-self: start; }
+  .hero-form-row { grid-template-columns: 1fr; }
+  .hero-form-row .btn-press { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

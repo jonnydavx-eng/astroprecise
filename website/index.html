@@ -219,6 +219,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-observatory-home.css?v=750" id="ap-css-observatory-home">
   <!-- Nebula brand — MUST stay after observatory-home (decorative cascade layer) -->
   <link rel="stylesheet" href="css/ap-brand-nebula.css?v=750" id="ap-css-brand-nebula">
+  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=751" id="ap-css-overhaul-s8">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
   <link rel="modulepreload" href="js/orrery-webgl.js?v=750">
@@ -304,13 +305,13 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       </svg>
     </p>
 
-    <nav aria-label="Around the living sky">
+    <nav aria-label="Primary navigation">
       <ul class="contents-nav">
+        <li><a href="index.html" aria-current="page">Observatory</a></li>
         <li><a href="chart.html">Chart</a></li>
         <li><a href="ephemeris.html">The Sky</a></li>
-        <li><a href="#today">Daily</a></li>
+        <li><a href="horoscope.html">Daily</a></li>
         <li><a href="shop.html">Shop</a></li>
-        <li><a href="mysky.html">My Sky</a></li>
       </ul>
     </nav>
   </div>
@@ -333,21 +334,22 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <div class="page-wrap hero-grid hero-showstopper">
 
       <div class="hero-copy fade-in" id="castDock" tabindex="-1">
-        <em class="eyebrow-rose">New · Live Observatory</em>
+        <em class="eyebrow-rose">01 · Observatory · Live now</em>
         <h1 class="display" style="margin-top: var(--sp-2);">
           Meet the sky. <br><span class="display-accent">Own your chart.</span>
         </h1>
         <p class="standfirst hero-why-lead" style="margin-top: var(--sp-2);">
-          A photoreal solar system computed in your browser &mdash; then one free natal chart, private to the arcminute.
+          Start with your birth date. We&rsquo;ll carry it into a private chart where place and time sharpen the reading.
         </p>
+        <p class="hero-form-progress" id="hero-form-progress">Step 1 of 2 · date first, details next</p>
         <form id="hero-chart-form" class="hero-form hero-form--primary" action="chart.html" method="get" novalidate aria-label="Cast your natal chart">
-          <label for="hero-birthdate" class="ui-label">Your date of birth</label>
+          <label for="hero-birthdate" class="ui-label">Date of birth</label>
           <div class="hero-form-row">
-            <input type="date" id="hero-birthdate" name="date" aria-label="Date of birth" min="1900-01-01" max="2099-12-31" required>
-            <button type="submit" class="btn-press">Calculate my chart</button>
+            <input type="date" id="hero-birthdate" name="date" aria-label="Date of birth" aria-describedby="hero-form-progress hero-form-note" min="1800-01-01" max="2200-12-31" required>
+            <button type="submit" class="btn-press">Continue to chart</button>
           </div>
           <p id="hero-form-error" role="alert" class="hero-form-error" hidden></p>
-          <p class="hero-form-note">Time and place on the next step sharpen Rising &amp; houses.</p>
+          <p class="hero-form-note" id="hero-form-note">Add birthplace and time next. If time is unknown, Rising, MC and houses stay hidden.</p>
         </form>
         <ul class="hero-solar-trust" aria-label="Why you can trust this">
           <li><span aria-hidden="true">&#10003;</span> Free · no account</li>
@@ -951,78 +953,47 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <section class="department section-bleed ap-chapter ap-chapter--tier2" id="instrumentsChapter" data-ap-beat="system" aria-labelledby="contents-heading">
   <div class="page-wrap">
     <header class="ap-chapter-head ap-reveal">
-      <p class="ap-display-kicker">Next steps</p>
-      <h2 id="contents-heading" class="ap-chapter-title">Where to go from here</h2>
+      <p class="ap-display-kicker">The short way in</p>
+      <h2 id="contents-heading" class="ap-chapter-title">Promise → precision → payoff</h2>
       <p class="ap-chapter-lead" style="max-width:48ch;">
-        Cast in the observatory above, then open The Sky, keep a Moment, or return Daily.
+        One chart first. The rest of the observatory earns its place after you know what the sky is doing for you.
       </p>
     </header>
 
-    <ol class="dept-list" role="list">
+    <ol class="dept-list ap-spine-list" role="list" aria-label="Astro Precise product path">
       <li class="ap-reveal" style="--ap-reveal-i: 0">
-        <a href="explore.html" class="dept-list-item" aria-label="Step 00 — Explore the live 3D sky">
-          <span class="dept-number">00</span>
-          <div>
-            <span class="dept-title">Explore the 3D sky</span>
-            <span class="dept-list-dek">Full-viewport orrery &mdash; drag, zoom, Earth to Cosmos. Same engine as the hero above.</span>
-            <span class="dept-list-next">Open Explore &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free · 3D</span>
+        <a href="chart.html" class="dept-list-item" aria-label="Promise — a private chart on your device">
+          <span class="dept-number">01</span>
+          <div><span class="dept-title">Promise · private by default</span><span class="dept-list-dek">Your birth details stay on this device while the chart is calculated.</span><span class="dept-list-next">Start with a date &rarr;</span></div>
+          <span class="dept-badge free">On-device</span>
         </a>
       </li>
       <li class="ap-reveal" style="--ap-reveal-i: 1">
-        <a href="chart.html" class="dept-list-item" aria-label="Step 01 — Cast your chart, free">
-          <span class="dept-number">01</span>
-          <div>
-            <span class="dept-title">Cast your chart</span>
-            <span class="dept-list-dek">Your whole sky at birth &mdash; ten planets, <abbr class="ap-gloss" title="Rising sign (ascendant) — the sign on the eastern horizon at your birth">Rising</abbr>, and houses. Not one of twelve; yours alone. Use the form above or open Chart.</span>
-            <span class="dept-list-next">Cast free &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
+        <a href="chart.html" class="dept-list-item" aria-label="Precision — place and time sharpen the chart">
+          <span class="dept-number">02</span>
+          <div><span class="dept-title">Precision · place, then time</span><span class="dept-list-dek">VSOP87 positions are precise; an unknown time keeps Rising, MC and houses withheld.</span><span class="dept-list-next">Add your details &rarr;</span></div>
+          <span class="dept-badge free">VSOP87</span>
         </a>
       </li>
       <li class="ap-reveal" style="--ap-reveal-i: 2">
-        <a href="ephemeris.html" class="dept-list-item" aria-label="Step 02 — Tonight's sky, free">
-          <span class="dept-number">02</span>
-          <div>
-            <span class="dept-title">See the live sky</span>
-            <span class="dept-list-dek">Trust the engine &mdash; Moon, planets, and mood recomputed on your device. Same math as your chart, for tonight.</span>
-            <span class="dept-list-next">Open Sky &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
+        <a href="explore.html" class="dept-list-item" aria-label="Payoff — see your sky in the model">
+          <span class="dept-number">03</span>
+          <div><span class="dept-title">Payoff · see your sky</span><span class="dept-list-dek">Open the same live engine at your birth moment, then keep a Moment if you want it.</span><span class="dept-list-next">Open the model &rarr;</span></div>
+          <span class="dept-badge free">Live</span>
         </a>
       </li>
       <li class="ap-reveal" style="--ap-reveal-i: 3">
-        <a href="moment.html" class="dept-list-item" aria-label="Step 03 — Moment keepsake, free card">
-          <span class="dept-number">03</span>
-          <div>
-            <span class="dept-title">Keep a night (Moment)</span>
-            <span class="dept-list-dek">Freeze birth, first date, wedding, memorial &mdash; free private card with zenith star and light-cone story.</span>
-            <span class="dept-list-next">Freeze a sky &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
+        <a href="horoscope.html" class="dept-list-item" aria-label="Daily — today's sky against your chart">
+          <span class="dept-number">04</span>
+          <div><span class="dept-title">Daily · come back to the motion</span><span class="dept-list-dek">Today&rsquo;s transits meet your placements — never a generic paragraph for a twelfth of the world.</span><span class="dept-list-next">Open Daily &rarr;</span></div>
+          <span class="dept-badge free">Today</span>
         </a>
       </li>
       <li class="ap-reveal" style="--ap-reveal-i: 4">
-        <a href="horoscope.html" class="dept-list-item" aria-label="Step 04 — Daily sky, free">
-          <span class="dept-number">04</span>
-          <div>
-            <span class="dept-title">Come back daily</span>
-            <span class="dept-list-dek">Today&rsquo;s sky against <em>your</em> placements &mdash; not a generic forecast for a twelfth of the world.</span>
-            <span class="dept-list-next">Open Daily &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free</span>
-        </a>
-      </li>
-      <li class="ap-reveal" style="--ap-reveal-i: 5">
-        <a href="cosmic-story.html" class="dept-list-item" aria-label="Step 05 — Free reading sample, then shop">
+        <a href="accuracy.html" class="dept-list-item" aria-label="Trust — read the method and limits">
           <span class="dept-number">05</span>
-          <div>
-            <span class="dept-title">Reading &amp; shop</span>
-            <span class="dept-list-dek">Free Cosmic Story sample first. Deep Reading PDF and poster in Shop when you want a lasting keepsake.</span>
-            <span class="dept-list-next">Free sample &rarr;</span>
-          </div>
-          <span class="dept-badge free">Free + paid</span>
+          <div><span class="dept-title">Trust · method and limits</span><span class="dept-list-dek">Read the algorithms, coordinate semantics and the exact / approximate / unknown labels.</span><span class="dept-list-next">See the method &rarr;</span></div>
+          <span class="dept-badge free">Transparent</span>
         </a>
       </li>
     </ol>
@@ -1823,6 +1794,8 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <script defer src="js/ap-planet-actions.js?v=750"></script>
 <link rel="stylesheet" href="css/ap-planet-actions.css?v=750" id="ap-css-planet-actions" />
 <script defer src="js/ap-nav-interplay.js?v=705"></script>
+<script src="js/ap-nav-model.js?v=751"></script>
+<script defer src="js/ap-responsive-nav.js?v=751"></script>
 <script defer src="js/weekly-sky.js?v=628"></script>
 <script defer src="js/home-daily.js?v=750"></script>
 <script defer src="js/home-match.js?v=750"></script>
