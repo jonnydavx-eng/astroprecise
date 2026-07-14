@@ -190,3 +190,45 @@ body {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Corrective wave: this file is intentionally last on chart/home. Keep the
+   phone chrome fixed and mathematically bounded even when legacy main.css or
+   structure-clean rules have already declared a flex/scroller shell. */
+@media (max-width: 900px) {
+  .bottom-nav {
+    display: block !important;
+    position: fixed !important;
+    inset-inline: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
+  }
+  .bottom-nav__shell {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .bottom-nav__tabs {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 2px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: 4px !important;
+    overflow: hidden !important;
+  }
+  .bottom-nav__pinned { display: none !important; }
+  .bottom-nav__item {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-inline: 2px !important;
+    overflow: hidden !important;
+  }
+  .masthead,
+  .masthead .page-wrap,
+  .masthead .contents-nav { min-width: 0 !important; max-width: 100vw !important; overflow-x: clip; }
+}

@@ -77,7 +77,6 @@
   <link rel="stylesheet" href="css/instrument-panel.css" />
   <link rel="stylesheet" href="css/ap-micro-delight.css?v=750" />
   <link rel="stylesheet" href="css/ap-ai-panel.css?v=750" />
-  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=751" id="ap-css-overhaul-s8" />
   <style>
     /* LCP shell — system fonts paint before deferred webfonts (subtitle is LCP element) */
     .chart-hero__title {
@@ -220,6 +219,9 @@
     }
   </style>
   <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
+  <!-- Corrective wave: load the shared nav/precision layer after structure-clean
+       so its non-overflow mobile grid is the final cascade on chart. -->
+  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=752" id="ap-css-overhaul-s8" />
   <link rel="stylesheet" href="css/ap-palette-2026.css?v=750" id="ap-css-palette-2026" />
   <link rel="stylesheet" href="css/ap-brand-nebula.css?v=750" id="ap-css-brand-nebula" />
   <script src="js/defer-page-css.js" defer></script>
