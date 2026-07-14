@@ -12,7 +12,10 @@
   var scheduleToken = 0;
   var booting = false;
   var scriptEl = document.currentScript;
-  var ASSET_V = String(window.AP_ASSET_V || '752');
+  var ASSET_V = String(window.AP_ASSET_V || '753');
+  var fallbackScriptSeq = 0;
+  var fallbackHandoffTimer = null;
+  var fallbackHandoffToken = 0;
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
     ? new URL('orrery-webgl.js?v=' + ASSET_V, scriptEl.src).href
     : 'js/orrery-webgl.js?v=' + ASSET_V;
@@ -20,6 +23,89 @@
   function engineModuleUrl() {
     return ORRERY_MODULE + (engineAttempt ? '&retry=' + engineAttempt : '');
   }
+
+  function canvasFallbackUrl() {
+    var base = (scriptEl && scriptEl.src)
+      ? new URL('orrery3d.js', scriptEl.src).href
+      : new URL('js/orrery3d.js', document.baseURI).href;
+    var u = new URL(base, document.baseURI);
+    u.search = '';
+    u.searchParams.set('v', ASSET_V);
+    u.searchParams.set('fallback', 'canvas');
+    return u.href;
+  }
+
+  /**
+   * Load one owned/versioned canvas fallback script. The token is checked by
+   * orrery3d.js before it publishes window.Orrery3D, so a cancelled request
+   * cannot clobber a newer retry after it eventually executes.
+   */
+  function loadCanvasFallbackScript() {
+    if (window.__apOrreryFallbackScriptPromise) return window.__apOrreryFallbackScriptPromise;
+    var src = canvasFallbackUrl();
+    var existing = document.querySelector('script[data-ap-orrery-canvas-fallback][data-ap-asset-v="' + ASSET_V + '"]');
+    if (existing && existing.dataset.apState === 'loaded' && window.Orrery3D) {
+      return Promise.resolve(window.Orrery3D);
+    }
+    document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) {
+      if (el !== existing) {
+        el.dataset.apState = 'cancelled';
+        el.remove();
+      }
+    });
+    var token = 'ap-fallback-' + ASSET_V + '-' + (++fallbackScriptSeq);
+    var s = existing || document.createElement('script');
+    s.dataset.apOrreryCanvasFallback = 'true';
+    s.dataset.apAssetV = ASSET_V;
+    s.dataset.apOrreryFallbackToken = token;
+    s.dataset.apState = 'loading';
+    s.src = src;
+    s.async = false;
+    window.__apOrreryFallbackOwner = token;
+    var p = new Promise(function (resolve, reject) {
+      s.onload = function () {
+        if (s.dataset.apState === 'cancelled' || window.__apOrreryFallbackOwner !== token) {
+          reject(new Error('stale canvas fallback load'));
+          return;
+        }
+        if (!window.Orrery3D || typeof window.Orrery3D.init !== 'function') {
+          reject(new Error('canvas fallback unavailable'));
+          return;
+        }
+        s.dataset.apState = 'loaded';
+        resolve(window.Orrery3D);
+      };
+      s.onerror = function () {
+        s.dataset.apState = 'failed';
+        try { s.remove(); } catch (e) {}
+        reject(new Error('orrery3d.js failed'));
+      };
+      if (!existing) document.head.appendChild(s);
+    });
+    var tracked = p.catch(function (err) {
+      if (window.__apOrreryFallbackOwner === token) {
+        try { delete window.__apOrreryFallbackOwner; } catch (e) { window.__apOrreryFallbackOwner = null; }
+      }
+      if (window.__apOrreryFallbackScriptPromise === tracked) window.__apOrreryFallbackScriptPromise = null;
+      throw err;
+    });
+    window.__apOrreryFallbackScriptPromise = tracked;
+    return tracked;
+  }
+
+  window.__loadCanvasOrreryScript = loadCanvasFallbackScript;
+  window.__cancelCanvasOrreryScript = function () {
+    fallbackScriptSeq += 1;
+    var owner = window.__apOrreryFallbackOwner;
+    document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) {
+      el.dataset.apState = 'cancelled';
+      try { el.remove(); } catch (e) {}
+    });
+    window.__apOrreryFallbackScriptPromise = null;
+    if (owner && window.__apOrreryFallbackOwner === owner) {
+      try { delete window.__apOrreryFallbackOwner; } catch (e) { window.__apOrreryFallbackOwner = null; }
+    }
+  };
 
   function isLiteHero() {
     return !!(window.__apLiteHero ||
@@ -156,9 +242,36 @@
     document.documentElement.classList.add('orrery-canvas');
     var poster = document.getElementById('orrery-lite-poster');
     if (poster) poster.setAttribute('aria-hidden', 'true');
-    window.setTimeout(function () {
+    var token = ++fallbackHandoffToken;
+    if (fallbackHandoffTimer) window.clearTimeout(fallbackHandoffTimer);
+    fallbackHandoffTimer = window.setTimeout(function () {
+      if (token !== fallbackHandoffToken) return;
       if (viewport) viewport.classList.remove('orrery-viewport--handoff');
+      fallbackHandoffTimer = null;
     }, 520);
+  }
+
+  function cancelPendingHandoff() {
+    fallbackHandoffToken += 1;
+    if (fallbackHandoffTimer) {
+      window.clearTimeout(fallbackHandoffTimer);
+      fallbackHandoffTimer = null;
+    }
+    var root = document.documentElement;
+    if (root) root.classList.remove('orrery-full', 'orrery-canvas', 'ap-model-revealed');
+    var viewport = document.getElementById('orrery-viewport');
+    if (viewport) viewport.classList.remove('orrery-viewport--handoff');
+    var poster = document.getElementById('orrery-lite-poster');
+    if (poster) poster.setAttribute('aria-hidden', 'false');
+    var canvas = document.getElementById('orrery-canvas');
+    if (canvas) { canvas.style.transition = ''; canvas.style.opacity = ''; }
+    deckHudRevealed = false;
+    var deck = document.getElementById('orrery-lite-deck');
+    if (deck) deck.classList.remove('ap-deck--time-restored');
+    ['ap-scale-strip', 'ap-orbits-toggle', 'ap-cosmic-journey'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
   }
 
   function waitFirstOrreryFrame() {
@@ -216,7 +329,10 @@
         void canvas.offsetWidth;
         canvas.style.opacity = '1'; // fades in OVER the still-visible poster
       }
-      window.setTimeout(function () {
+      var token = ++fallbackHandoffToken;
+      if (fallbackHandoffTimer) window.clearTimeout(fallbackHandoffTimer);
+      fallbackHandoffTimer = window.setTimeout(function () {
+        if (token !== fallbackHandoffToken || !window.__orreryReady || window.__apOrreryCanvasFallback) return;
         document.documentElement.classList.add('orrery-full');
         revealHeroDeckHud();
         var poster = document.getElementById('orrery-lite-poster');
@@ -226,6 +342,7 @@
         }
         if (viewport) viewport.classList.remove('orrery-viewport--handoff');
         if (canvas) { canvas.style.transition = ''; canvas.style.opacity = ''; }
+        fallbackHandoffTimer = null;
       }, 520);
     });
   }
@@ -270,52 +387,49 @@
     fallbackPromise = waitFor(function () {
       return window.AstroEphemeris && window.AstroEphemeris.julianDay;
     }, 12000).then(function () {
-      return new Promise(function (resolve, reject) {
-        var canvas = document.getElementById('orrery-canvas');
-        if (!canvas) return reject(new Error('no canvas'));
-        try {
-          document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) { el.remove(); });
-          if (canvas.parentNode) canvas.parentNode.querySelectorAll('.orrery-controls').forEach(function (el) { el.remove(); });
-        } catch (e) {}
-        var s = document.createElement('script');
-        s.dataset.apOrreryCanvasFallback = 'true';
-        s.src = 'js/orrery3d.js';
-        s.onload = function () {
-          try {
-            if (window.Orrery3D && !window.__orreryReady) {
-              var viewport = beginCanvasHandoff();
-              var dayOff = (window.LiteOrrery && window.LiteOrrery.getDayOffset)
-                ? window.LiteOrrery.getDayOffset() : 0;
-              window.Orrery3D.init(canvas, { skipIntro: true, fromLite: true });
-              window.__orreryReady = false;
-              if (typeof window.Orrery3D.setSpeed === 'function') {
-                window.Orrery3D.setSpeed(0);
-              }
-              if (typeof window.Orrery3D.setTimelineDays === 'function') {
-                window.Orrery3D.setTimelineDays(dayOff);
-              }
-              waitFirstOrreryFrame().then(function () {
-                finishCanvasHandoff(viewport);
-                window.__orreryReady = true;
-                window.__apOrreryCanvasFallback = true;
-                document.dispatchEvent(new Event('ap-orrery-ready'));
-                resolve(window.Orrery3D);
-              });
-            } else {
-              reject(new Error('canvas fallback unavailable'));
-            }
-          } catch (e) {
-            reject(e);
-          }
-        };
-        s.onerror = function () { reject(new Error('orrery3d.js failed')); };
-        document.head.appendChild(s);
+      var canvas = document.getElementById('orrery-canvas');
+      if (!canvas) return Promise.reject(new Error('no canvas'));
+      try {
+        if (canvas.parentNode) canvas.parentNode.querySelectorAll('.orrery-controls').forEach(function (el) { el.remove(); });
+        if (window.Orrery3D && typeof window.Orrery3D.destroy === 'function' && !window.__apOrreryCanvasFallback) {
+          window.Orrery3D.destroy();
+        }
+        if (window.Orrery3D && !window.__apOrreryCanvasFallback) {
+          try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
+        }
+      } catch (e) {}
+      cancelPendingHandoff();
+      window.__orreryReady = false;
+      window.__apOrreryCanvasFallback = false;
+      return loadCanvasFallbackScript().then(function () {
+        if (!window.Orrery3D || typeof window.Orrery3D.init !== 'function') {
+          throw new Error('canvas fallback unavailable');
+        }
+        var viewport = beginCanvasHandoff();
+        var dayOff = (window.LiteOrrery && window.LiteOrrery.getDayOffset)
+          ? window.LiteOrrery.getDayOffset() : 0;
+        window.Orrery3D.init(canvas, { skipIntro: true, fromLite: true });
+        window.__orreryReady = false;
+        if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
+        if (typeof window.Orrery3D.setTimelineDays === 'function') window.Orrery3D.setTimelineDays(dayOff);
+        return waitFirstOrreryFrame().then(function () {
+          finishCanvasHandoff(viewport);
+          window.__orreryReady = true;
+          window.__apOrreryCanvasFallback = true;
+          document.dispatchEvent(new Event('ap-orrery-ready'));
+          return window.Orrery3D;
+        });
       });
     }).then(function (O) {
       fallbackPromise = null;
       return O;
     }).catch(function (err) {
       fallbackPromise = null;
+      cancelPendingHandoff();
+      try {
+        if (window.Orrery3D && typeof window.Orrery3D.destroy === 'function') window.Orrery3D.destroy();
+      } catch (e) {}
+      if (typeof window.__cancelCanvasOrreryScript === 'function') window.__cancelCanvasOrreryScript();
       window.__orreryReady = false;
       window.__apOrreryCanvasFallback = false;
       throw err;
@@ -339,7 +453,8 @@
         parent.replaceChild(fresh, oldCanvas);
         parent.querySelectorAll('.orrery-controls').forEach(function (el) { el.remove(); });
       }
-      document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) { el.remove(); });
+      if (typeof window.__cancelCanvasOrreryScript === 'function') window.__cancelCanvasOrreryScript();
+      else document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) { el.remove(); });
     } catch (e) {}
     window.__orreryReady = false;
     window.__apOrreryCanvasFallback = false;
@@ -718,9 +833,7 @@
       return initOrreryIfNeeded(true).then(function (O) {
         if (document.documentElement.classList.contains('orrery-canvas')) {
           // 2D fallback won inside initOrreryIfNeeded — its own handoff choreography ran
-          window.setTimeout(function () {
-            if (viewport) viewport.classList.remove('orrery-viewport--handoff');
-          }, 560);
+          // finishCanvasHandoff owns the single tracked 520ms cleanup timer.
         } else {
           finishLiteToFullHandoff(viewport);
         }
@@ -731,8 +844,8 @@
     }).catch(function (err) {
       booting = false;
       window.__orreryBootPromise = null;
-      var vp = document.getElementById('orrery-viewport');
-      if (vp) vp.classList.remove('orrery-viewport--handoff');
+      cancelPendingHandoff();
+      if (typeof window.__cancelCanvasOrreryScript === 'function') window.__cancelCanvasOrreryScript();
       setLaunchButtonState('error', 'Tap to retry 3D orrery');
       throw err;
     });

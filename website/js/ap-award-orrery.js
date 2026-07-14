@@ -3,7 +3,7 @@
 
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var V = String(window.AP_ASSET_V || "752");
+  var V = String(window.AP_ASSET_V || "753");
 
   var wrap = document.getElementById("apAwardOrreryWrap");
   var fallback = document.getElementById("apHeroWheelFallback");

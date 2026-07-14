@@ -38,7 +38,25 @@
   function loadOrrery3D() {
     if (window.Orrery3D) return Promise.resolve(window.Orrery3D);
     if (!orreryPromise) {
-      orreryPromise = injectScript('js/orrery3d.js').then(function () {
+      var request = (typeof window.__loadCanvasOrreryScript === 'function')
+        ? window.__loadCanvasOrreryScript()
+        : (function () {
+          var v = String(window.AP_ASSET_V || '753');
+          var token = 'ap-fallback-' + v + '-' + Date.now();
+          var s = document.createElement('script');
+          s.dataset.apOrreryCanvasFallback = 'true';
+          s.dataset.apAssetV = v;
+          s.dataset.apOrreryFallbackToken = token;
+          s.dataset.apState = 'loading';
+          s.src = 'js/orrery3d.js?v=' + v + '&fallback=canvas';
+          window.__apOrreryFallbackOwner = token;
+          return new Promise(function (resolve, reject) {
+            s.onload = function () { s.dataset.apState = 'loaded'; resolve(); };
+            s.onerror = function () { s.dataset.apState = 'failed'; try { s.remove(); } catch (e) {} reject(new Error('orrery3d.js failed to load')); };
+            document.body.appendChild(s);
+          });
+        })();
+      orreryPromise = request.then(function () {
         if (!window.Orrery3D) throw new Error('orrery3d.js did not register Orrery3D');
         document.dispatchEvent(new CustomEvent('ap:orrery3d-ready'));
         return window.Orrery3D;

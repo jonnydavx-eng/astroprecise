@@ -7,7 +7,7 @@
 
 // Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
 // do not load ap-asset-v.js still fall back to the current canonical tip.
-const AP_ASSET_V = String(window.AP_ASSET_V || '752');
+const AP_ASSET_V = String(window.AP_ASSET_V || '753');
 
 const AstroApp = (() => {
 

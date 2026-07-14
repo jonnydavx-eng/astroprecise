@@ -132,11 +132,50 @@ const FinishShader = {
     } catch (e) { return false; }
   }
 
+  function requestCanvasFallbackScript() {
+    if (typeof window.__loadCanvasOrreryScript === 'function') {
+      return window.__loadCanvasOrreryScript();
+    }
+    if (window.__apOrreryFallbackScriptPromise) return window.__apOrreryFallbackScriptPromise;
+    const version = String(window.AP_ASSET_V || '753');
+    const base = new URL('js/orrery3d.js', document.baseURI);
+    base.searchParams.set('v', version);
+    base.searchParams.set('fallback', 'canvas');
+    const token = 'ap-fallback-' + version + '-' + Date.now();
+    const script = document.createElement('script');
+    script.dataset.apOrreryCanvasFallback = 'true';
+    script.dataset.apAssetV = version;
+    script.dataset.apOrreryFallbackToken = token;
+    script.dataset.apState = 'loading';
+    script.src = base.href;
+    script.async = false;
+    window.__apOrreryFallbackOwner = token;
+    const promise = new Promise((resolve, reject) => {
+      script.onload = () => {
+        if (script.dataset.apState === 'cancelled' || window.__apOrreryFallbackOwner !== token) {
+          reject(new Error('stale canvas fallback load')); return;
+        }
+        if (!window.Orrery3D || typeof window.Orrery3D.init !== 'function') {
+          reject(new Error('canvas fallback unavailable')); return;
+        }
+        script.dataset.apState = 'loaded';
+        resolve(window.Orrery3D);
+      };
+      script.onerror = () => { script.dataset.apState = 'failed'; try { script.remove(); } catch (e) {} reject(new Error('orrery3d.js failed')); };
+      document.head.appendChild(script);
+    });
+    window.__apOrreryFallbackScriptPromise = promise.catch((err) => {
+      if (window.__apOrreryFallbackOwner === token) window.__apOrreryFallbackOwner = null;
+      if (window.__apOrreryFallbackScriptPromise === tracked) window.__apOrreryFallbackScriptPromise = null;
+      throw err;
+    });
+    const tracked = window.__apOrreryFallbackScriptPromise;
+    return tracked;
+  }
+
   if (!webglOK()) {
     // Fall back to the lightweight canvas version (it defines window.Orrery3D itself)
-    const s = document.createElement('script');
-    s.src = 'js/orrery3d.js';
-    document.head.appendChild(s);
+    requestCanvasFallbackScript().catch(() => {});
     return;
   }
 
@@ -7714,7 +7753,7 @@ const FinishShader = {
       fallbackWasCanvas = !!(root && root.classList.contains('orrery-canvas'));
       try {
         parent.querySelectorAll('.orrery-controls').forEach((el) => el.remove());
-        document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach((el) => el.remove());
+        if (typeof window.__cancelCanvasOrreryScript === 'function') window.__cancelCanvasOrreryScript();
         if (window.__apOrreryCanvasFallback && window.Orrery3D && typeof window.Orrery3D.destroy === 'function') {
           window.Orrery3D.destroy();
         }
@@ -7732,14 +7771,7 @@ const FinishShader = {
       window.__orreryReady = false;
       window.__apOrreryCanvasFallback = false;
       try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
-      const script = document.createElement('script');
-      script.dataset.apOrreryCanvasFallback = 'true';
-      script.src = 'js/orrery3d.js?v=' + String(window.AP_ASSET_V || '752');
-      await new Promise((resolve, reject) => {
-        script.onload = resolve;
-        script.onerror = () => reject(new Error('orrery3d.js failed'));
-        document.head.appendChild(script);
-      });
+      await requestCanvasFallbackScript();
       if (!window.Orrery3D || typeof window.Orrery3D.init !== 'function') {
         throw new Error('canvas fallback unavailable');
       }
@@ -7762,10 +7794,12 @@ const FinishShader = {
       fellBack = false;
       window.__orreryReady = false;
       window.__apOrreryCanvasFallback = false;
+      try {
+        if (window.Orrery3D && typeof window.Orrery3D.destroy === 'function') window.Orrery3D.destroy();
+      } catch (e) {}
+      if (typeof window.__cancelCanvasOrreryScript === 'function') window.__cancelCanvasOrreryScript();
       if (fallbackRoot) {
-        fallbackRoot.classList.remove('orrery-canvas');
-        if (fallbackWasFull) fallbackRoot.classList.add('orrery-full');
-        if (fallbackWasCanvas) fallbackRoot.classList.add('orrery-canvas');
+        fallbackRoot.classList.remove('orrery-canvas', 'orrery-full', 'ap-model-revealed');
       }
       fallbackRoot = null;
       fallbackWasFull = false;

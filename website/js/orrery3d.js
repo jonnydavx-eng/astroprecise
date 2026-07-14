@@ -24,7 +24,12 @@
  *   - Reduced-motion support
  */
 
-window.Orrery3D = (() => {
+// Fallback scripts are injected on demand.  Keep a token on the script so a
+// cancelled/late load cannot overwrite the active API with a stale instance.
+var __apFallbackScript = document.currentScript;
+var __apFallbackToken = __apFallbackScript && __apFallbackScript.dataset
+  ? String(__apFallbackScript.dataset.apOrreryFallbackToken || '') : '';
+var __apFallbackApi = (() => {
   'use strict';
 
   // Debug load message (remove after testing)
@@ -103,8 +108,28 @@ window.Orrery3D = (() => {
       natalPins = (np && np.points) ? np : null;
     } catch (e) { natalPins = null; }
   }
-  loadNatalPins();
-  window.addEventListener('storage', e => { if (e.key === 'ap_natal_pins') loadNatalPins(); });
+  let storageListener = null;
+  function bindStorageListener() {
+    if (storageListener) return;
+    storageListener = e => { if (e.key === 'ap_natal_pins') loadNatalPins(); };
+    // A retry can evaluate a fresh fallback module before the old module has
+    // been torn down. Remove the previous instance's listener first so one
+    // storage event never fans out across retired engines.
+    const previous = window.__apOrreryCanvasStorageListener;
+    if (previous && previous !== storageListener) {
+      try { window.removeEventListener('storage', previous); } catch (e) { /* best effort */ }
+    }
+    window.__apOrreryCanvasStorageListener = storageListener;
+    window.addEventListener('storage', storageListener);
+  }
+  function unbindStorageListener() {
+    if (!storageListener) return;
+    try { window.removeEventListener('storage', storageListener); } catch (e) { /* best effort */ }
+    if (window.__apOrreryCanvasStorageListener === storageListener) {
+      try { delete window.__apOrreryCanvasStorageListener; } catch (e) { window.__apOrreryCanvasStorageListener = null; }
+    }
+    storageListener = null;
+  }
   let ui = {};
   const trails = new Map();
 
@@ -596,6 +621,9 @@ window.Orrery3D = (() => {
     options = options || {};
     canvas = canvasEl;
     if (!canvas || !window.AstroEphemeris) return;
+    destroyed = false;
+    loadNatalPins();
+    bindStorageListener();
     ctx = canvas.getContext('2d');
     wrap = canvas.parentElement;
     fromLiteHandoff = !!options.fromLite;
@@ -1413,6 +1441,7 @@ window.Orrery3D = (() => {
     destroyed = true;
     if (raf) cancelAnimationFrame(raf);
     window.removeEventListener('resize', resize);
+    unbindStorageListener();
   }
 
   function setBodies(arr) {
@@ -1523,3 +1552,11 @@ window.Orrery3D = (() => {
   };
 
 })();
+
+// Only the active fallback owner may publish the global API. A script that was
+// cancelled while loading can still execute later; quarantine that late module
+// instead of clobbering the currently running engine.
+if (!__apFallbackToken || !window.__apOrreryFallbackOwner ||
+    window.__apOrreryFallbackOwner === __apFallbackToken) {
+  window.Orrery3D = __apFallbackApi;
+}

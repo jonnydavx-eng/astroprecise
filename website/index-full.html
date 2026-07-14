@@ -1535,9 +1535,7 @@
           // CSS-mock. Self-arm the canvas fallback (orrery3d.js) here so the hero still
           // shows a live model. Only fires on the genuine import-failure path.
           if (!window.Orrery3D && !window.__orreryReady && !window.__orreryPreloaderOwns) {
-            var _fb = document.createElement('script');
-            _fb.src = 'js/orrery3d.js';
-            _fb.onload = function () {
+            var _finishFallback = function () {
               try {
                 var _c = document.getElementById('orrery-canvas');
                 if (window.Orrery3D && _c && !window.__orreryReady && !window.__orreryPreloaderOwns) {
@@ -1547,7 +1545,22 @@
                 }
               } catch (e2) {}
             };
-            document.head.appendChild(_fb);
+            if (typeof window.__loadCanvasOrreryScript === 'function') {
+              window.__loadCanvasOrreryScript().then(_finishFallback).catch(function () {});
+            } else {
+              var _fb = document.createElement('script');
+              var _v = String(window.AP_ASSET_V || '753');
+              var _token = 'ap-fallback-' + _v + '-' + Date.now();
+              _fb.dataset.apOrreryCanvasFallback = 'true';
+              _fb.dataset.apAssetV = _v;
+              _fb.dataset.apOrreryFallbackToken = _token;
+              _fb.dataset.apState = 'loading';
+              _fb.src = 'js/orrery3d.js?v=' + _v + '&fallback=canvas';
+              window.__apOrreryFallbackOwner = _token;
+              _fb.onload = function () { _fb.dataset.apState = 'loaded'; _finishFallback(); };
+              _fb.onerror = function () { _fb.dataset.apState = 'failed'; try { _fb.remove(); } catch (e3) {} };
+              document.head.appendChild(_fb);
+            }
           }
         }
       } else {
