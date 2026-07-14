@@ -7680,6 +7680,8 @@ const FinishShader = {
   // ── Fallback: drop to the canvas orrery if anything goes wrong at runtime ──
   let fellBack = false;
   let fallbackPromise = null;
+  let fallbackRoot = null;
+  let fallbackWasFull = false;
   function waitForFallbackFrame() {
     return new Promise((resolve) => {
       let done = false;
@@ -7705,12 +7707,19 @@ const FinishShader = {
       const source = canvasEl || canvas;
       if (!source || !source.parentNode) throw new Error('canvas fallback unavailable');
       const parent = source.parentNode;
+      const root = document.documentElement;
+      fallbackRoot = root;
+      fallbackWasFull = !!(root && root.classList.contains('orrery-full'));
       // A canvas that has held a WebGL context cannot return a 2D context. Fully
       // retire the renderer/listeners/resources before replacing it with a fresh node.
       try { destroy(); } catch (e) { console.warn('[orrery] WebGL cleanup before canvas fallback failed:', e); }
       const fresh = source.cloneNode(false);
       parent.replaceChild(fresh, source);
       fellBack = true;
+      if (root) {
+        root.classList.remove('orrery-full');
+        root.classList.add('orrery-canvas');
+      }
       window.__orreryReady = false;
       window.__apOrreryCanvasFallback = true;
       try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
@@ -7730,6 +7739,8 @@ const FinishShader = {
       await waitForFallbackFrame();
       window.__orreryReady = true;
       document.dispatchEvent(new Event('ap-orrery-ready'));
+      fallbackRoot = null;
+      fallbackWasFull = false;
       return window.Orrery3D;
     })().catch((err) => {
       fallbackPromise = null;
@@ -7737,6 +7748,12 @@ const FinishShader = {
       fellBack = false;
       window.__orreryReady = false;
       window.__apOrreryCanvasFallback = false;
+      if (fallbackRoot) {
+        fallbackRoot.classList.remove('orrery-canvas');
+        if (fallbackWasFull) fallbackRoot.classList.add('orrery-full');
+      }
+      fallbackRoot = null;
+      fallbackWasFull = false;
       throw err;
     });
     window.__apOrreryFallbackPromise = fallbackPromise;
