@@ -7,6 +7,8 @@
   'use strict';
 
   var loadPromise = null;
+  var fallbackPromise = null;
+  var engineAttempt = 0;
   var scheduleToken = 0;
   var booting = false;
   var scriptEl = document.currentScript;
@@ -14,6 +16,10 @@
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
     ? new URL('orrery-webgl.js?v=' + ASSET_V, scriptEl.src).href
     : 'js/orrery-webgl.js?v=' + ASSET_V;
+
+  function engineModuleUrl() {
+    return ORRERY_MODULE + (engineAttempt ? '&retry=' + engineAttempt : '');
+  }
 
   function isLiteHero() {
     return !!(window.__apLiteHero ||
@@ -47,7 +53,7 @@
       return Promise.resolve(window.Orrery3D);
     }
     if (loadPromise) return loadPromise;
-    loadPromise = import(ORRERY_MODULE).then(function () {
+    loadPromise = import(engineModuleUrl()).then(function () {
       if (!window.Orrery3D) throw new Error('orrery-webgl did not register Orrery3D');
       return window.Orrery3D;
     }).catch(function (err) {
@@ -257,10 +263,11 @@
     if (window.__orreryPreloaderOwns && !window.__apHeroEntered) {
       return Promise.reject(new Error('canvas fallback blocked during preloader'));
     }
-    if (window.__orreryReady && window.Orrery3D) {
+    if (fallbackPromise) return fallbackPromise;
+    if (window.__orreryReady && window.Orrery3D && window.__apOrreryCanvasFallback) {
       return Promise.resolve(window.Orrery3D);
     }
-    return waitFor(function () {
+    fallbackPromise = waitFor(function () {
       return window.AstroEphemeris && window.AstroEphemeris.julianDay;
     }, 12000).then(function () {
       return new Promise(function (resolve, reject) {
@@ -275,7 +282,7 @@
               var dayOff = (window.LiteOrrery && window.LiteOrrery.getDayOffset)
                 ? window.LiteOrrery.getDayOffset() : 0;
               window.Orrery3D.init(canvas, { skipIntro: true, fromLite: true });
-              window.__orreryReady = true;
+              window.__orreryReady = false;
               if (typeof window.Orrery3D.setSpeed === 'function') {
                 window.Orrery3D.setSpeed(0);
               }
@@ -284,6 +291,8 @@
               }
               waitFirstOrreryFrame().then(function () {
                 finishCanvasHandoff(viewport);
+                window.__orreryReady = true;
+                window.__apOrreryCanvasFallback = true;
                 document.dispatchEvent(new Event('ap-orrery-ready'));
                 resolve(window.Orrery3D);
               });
@@ -297,7 +306,16 @@
         s.onerror = function () { reject(new Error('orrery3d.js failed')); };
         document.head.appendChild(s);
       });
+    }).then(function (O) {
+      fallbackPromise = null;
+      return O;
+    }).catch(function (err) {
+      fallbackPromise = null;
+      window.__orreryReady = false;
+      window.__apOrreryCanvasFallback = false;
+      throw err;
     });
+    return fallbackPromise;
   }
 
   function teardownCanvasEngine() {
@@ -307,7 +325,11 @@
       }
     } catch (e) {}
     window.__orreryReady = false;
+    window.__apOrreryCanvasFallback = false;
+    window.__apOrreryFallbackPromise = null;
     loadPromise = null;
+    fallbackPromise = null;
+    engineAttempt += 1;
   }
 
   function initOrreryIfNeeded(forceWebGL) {
@@ -331,28 +353,35 @@
       return loadEngine();
     }).then(function () {
       if (!window.Orrery3D) throw new Error('Orrery3D missing after load');
+      var initResult;
       try {
-        if (!window.__orreryReady) window.Orrery3D.init(canvas);
+        if (!window.__orreryReady) initResult = window.Orrery3D.init(canvas);
       } catch (e) {
         if (window.__orreryPreloaderOwns && !window.__apHeroEntered) throw e;
         return tryCanvasFallback();
       }
-      window.__orreryReady = true;
-      if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
-      if (window.LiteOrrery && typeof window.LiteOrrery.getDayOffset === 'function') {
-        if (typeof window.Orrery3D.setTimelineDays === 'function') {
-          window.Orrery3D.setTimelineDays(window.LiteOrrery.getDayOffset());
+      return Promise.resolve(initResult).then(function (result) {
+        // WebGL's runtime failure path returns an awaitable canvas fallback. It
+        // owns readiness/event choreography; do not stamp the retired WebGL
+        // instance back onto the global flags here.
+        if (window.__apOrreryCanvasFallback) return result || window.Orrery3D;
+        window.__orreryReady = true;
+        if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
+        if (window.LiteOrrery && typeof window.LiteOrrery.getDayOffset === 'function') {
+          if (typeof window.Orrery3D.setTimelineDays === 'function') {
+            window.Orrery3D.setTimelineDays(window.LiteOrrery.getDayOffset());
+          }
         }
-      }
-      if (typeof window.Orrery3D.forceResize === 'function') {
-        requestAnimationFrame(function () {
-          window.Orrery3D.forceResize();
-          setTimeout(function () { window.Orrery3D.forceResize(); }, 200);
-        });
-      }
-      document.dispatchEvent(new Event('ap-orrery-ready'));
-      setupHeroPhotorealFrame();
-      return window.Orrery3D;
+        if (typeof window.Orrery3D.forceResize === 'function') {
+          requestAnimationFrame(function () {
+            window.Orrery3D.forceResize();
+            setTimeout(function () { window.Orrery3D.forceResize(); }, 200);
+          });
+        }
+        document.dispatchEvent(new Event('ap-orrery-ready'));
+        setupHeroPhotorealFrame();
+        return window.Orrery3D;
+      });
     }).catch(function (err) {
       if (window.__orreryPreloaderOwns && !window.__apHeroEntered) throw err;
       return tryCanvasFallback();

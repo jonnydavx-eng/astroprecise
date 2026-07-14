@@ -7679,23 +7679,68 @@ const FinishShader = {
 
   // ── Fallback: drop to the canvas orrery if anything goes wrong at runtime ──
   let fellBack = false;
+  let fallbackPromise = null;
+  function waitForFallbackFrame() {
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        document.removeEventListener('ap-orrery-first-frame', finish);
+        resolve();
+      };
+      document.addEventListener('ap-orrery-first-frame', finish, { once: true });
+      requestAnimationFrame(() => requestAnimationFrame(finish));
+      setTimeout(finish, 900);
+    });
+  }
   function fallbackToCanvas(canvasEl) {
     if (window.__orreryPreloaderOwns && !window.__apHeroEntered) {
       console.warn('[orrery] preloader owns canvas — skipping canvas fallback');
-      return;
+      return Promise.reject(new Error('canvas fallback blocked during preloader'));
     }
-    if (fellBack) return; fellBack = true;
-    try { destroyed = true; if (raf) cancelAnimationFrame(raf); } catch (e) {}
-    try {
-      // A canvas that has held a WebGL context can't return a 2D context — swap in a fresh one
-      const fresh = canvasEl.cloneNode(false);
-      if (canvasEl.parentNode) canvasEl.parentNode.replaceChild(fresh, canvasEl);
+    if (fallbackPromise) return fallbackPromise;
+    if (fellBack && window.__orreryReady && window.Orrery3D) return Promise.resolve(window.Orrery3D);
+    fallbackPromise = (async () => {
+      const source = canvasEl || canvas;
+      if (!source || !source.parentNode) throw new Error('canvas fallback unavailable');
+      const parent = source.parentNode;
+      // A canvas that has held a WebGL context cannot return a 2D context. Fully
+      // retire the renderer/listeners/resources before replacing it with a fresh node.
+      try { destroy(); } catch (e) { console.warn('[orrery] WebGL cleanup before canvas fallback failed:', e); }
+      const fresh = source.cloneNode(false);
+      parent.replaceChild(fresh, source);
+      fellBack = true;
+      window.__orreryReady = false;
+      window.__apOrreryCanvasFallback = true;
       try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
-      const s = document.createElement('script');
-      s.src = 'js/orrery3d.js';
-      s.onload = () => { try { window.Orrery3D.init(fresh); if (window.Orrery3D.setSpeed) window.Orrery3D.setSpeed(0); } catch (e) {} };
-      document.head.appendChild(s);
-    } catch (e) { /* nothing more we can do */ }
+      const script = document.createElement('script');
+      script.src = 'js/orrery3d.js?v=' + String(window.AP_ASSET_V || '752');
+      await new Promise((resolve, reject) => {
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('orrery3d.js failed'));
+        document.head.appendChild(script);
+      });
+      if (!window.Orrery3D || typeof window.Orrery3D.init !== 'function') {
+        throw new Error('canvas fallback unavailable');
+      }
+      window.Orrery3D.init(fresh, { skipIntro: true, fromLite: true });
+      if (typeof window.Orrery3D.setSpeed === 'function') window.Orrery3D.setSpeed(0);
+      if (typeof window.Orrery3D.whenReady === 'function') await window.Orrery3D.whenReady();
+      await waitForFallbackFrame();
+      window.__orreryReady = true;
+      document.dispatchEvent(new Event('ap-orrery-ready'));
+      return window.Orrery3D;
+    })().catch((err) => {
+      fallbackPromise = null;
+      window.__apOrreryFallbackPromise = null;
+      fellBack = false;
+      window.__orreryReady = false;
+      window.__apOrreryCanvasFallback = false;
+      throw err;
+    });
+    window.__apOrreryFallbackPromise = fallbackPromise;
+    return fallbackPromise;
   }
 
   // ── Public API (matches orrery3d.js) ───────────────────────────────────────
@@ -7741,7 +7786,7 @@ const FinishShader = {
       else if (options.showOrbits != null) updateScaleVisuals(scaleLevel);
       if (options.date) setDate(options.date instanceof Date ? options.date : new Date(options.date));
     }
-    catch (err) { console.warn('[orrery] WebGL init failed — falling back to canvas orrery:', err); fallbackToCanvas(canvasEl); }
+    catch (err) { console.warn('[orrery] WebGL init failed — falling back to canvas orrery:', err); return fallbackToCanvas(canvasEl); }
   }
   let webglBooted = false;
   function _initWebGL(canvasEl) {
