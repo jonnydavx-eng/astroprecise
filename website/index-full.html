@@ -1557,8 +1557,21 @@
               _fb.dataset.apState = 'loading';
               _fb.src = 'js/orrery3d.js?v=' + _v + '&fallback=canvas';
               window.__apOrreryFallbackOwner = _token;
-              _fb.onload = function () { _fb.dataset.apState = 'loaded'; _finishFallback(); };
-              _fb.onerror = function () { _fb.dataset.apState = 'failed'; try { _fb.remove(); } catch (e3) {} };
+              _fb.onload = function () {
+                if (!window.__apOrreryFallbackOwner || window.__apOrreryFallbackOwner !== _token) {
+                  _fb.dataset.apState = 'cancelled';
+                  return;
+                }
+                _fb.dataset.apState = 'loaded';
+                _finishFallback();
+              };
+              _fb.onerror = function () {
+                _fb.dataset.apState = 'failed';
+                if (window.__apOrreryFallbackOwner === _token) {
+                  try { delete window.__apOrreryFallbackOwner; } catch (e3) { window.__apOrreryFallbackOwner = null; }
+                }
+                try { _fb.remove(); } catch (e4) {}
+              };
               document.head.appendChild(_fb);
             }
           }

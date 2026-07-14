@@ -16,6 +16,7 @@
   var fallbackScriptSeq = 0;
   var fallbackHandoffTimer = null;
   var fallbackHandoffToken = 0;
+  var pendingFirstFrameWaits = new Set();
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
     ? new URL('orrery-webgl.js?v=' + ASSET_V, scriptEl.src).href
     : 'js/orrery-webgl.js?v=' + ASSET_V;
@@ -44,7 +45,9 @@
     if (window.__apOrreryFallbackScriptPromise) return window.__apOrreryFallbackScriptPromise;
     var src = canvasFallbackUrl();
     var existing = document.querySelector('script[data-ap-orrery-canvas-fallback][data-ap-asset-v="' + ASSET_V + '"]');
-    if (existing && existing.dataset.apState === 'loaded' && window.Orrery3D) {
+    if (existing && existing.dataset.apState === 'loaded' && window.Orrery3D &&
+        existing.dataset.apOrreryFallbackToken &&
+        window.__apOrreryFallbackOwner === existing.dataset.apOrreryFallbackToken) {
       return Promise.resolve(window.Orrery3D);
     }
     document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) {
@@ -105,6 +108,12 @@
     if (owner && window.__apOrreryFallbackOwner === owner) {
       try { delete window.__apOrreryFallbackOwner; } catch (e) { window.__apOrreryFallbackOwner = null; }
     }
+    if (window.__apOrreryCanvasFallback && window.Orrery3D &&
+        typeof window.Orrery3D.destroy === 'function') {
+      try { window.Orrery3D.destroy(); } catch (e) {}
+      try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
+    }
+    window.__apOrreryCanvasFallback = false;
   };
 
   function isLiteHero() {
@@ -240,6 +249,7 @@
 
   function finishCanvasHandoff(viewport) {
     document.documentElement.classList.add('orrery-canvas');
+    setFallbackDisclosure(true);
     var poster = document.getElementById('orrery-lite-poster');
     if (poster) poster.setAttribute('aria-hidden', 'true');
     var token = ++fallbackHandoffToken;
@@ -252,6 +262,7 @@
   }
 
   function cancelPendingHandoff() {
+    cancelPendingFirstFrameWaits();
     fallbackHandoffToken += 1;
     if (fallbackHandoffTimer) {
       window.clearTimeout(fallbackHandoffTimer);
@@ -272,24 +283,51 @@
       var el = document.getElementById(id);
       if (el) el.hidden = true;
     });
+    setFallbackDisclosure(false);
   }
 
   function waitFirstOrreryFrame() {
-    return new Promise(function (resolve) {
+    var cancelWait;
+    var promise = new Promise(function (resolve, reject) {
       var done = false;
+      var raf1 = 0;
+      var raf2 = 0;
+      var timeout = 0;
       function finish() {
         if (done) return;
         done = true;
+        if (raf1) cancelAnimationFrame(raf1);
+        if (raf2) cancelAnimationFrame(raf2);
+        if (timeout) clearTimeout(timeout);
         document.removeEventListener('ap-orrery-first-frame', finish);
+        pendingFirstFrameWaits.delete(cancelWait);
         resolve();
       }
+      cancelWait = function () {
+        if (done) return;
+        done = true;
+        if (raf1) cancelAnimationFrame(raf1);
+        if (raf2) cancelAnimationFrame(raf2);
+        if (timeout) clearTimeout(timeout);
+        document.removeEventListener('ap-orrery-first-frame', finish);
+        pendingFirstFrameWaits.delete(cancelWait);
+        reject(new Error('orrery first frame wait cancelled'));
+      };
+      pendingFirstFrameWaits.add(cancelWait);
       document.addEventListener('ap-orrery-first-frame', finish);
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
+      raf1 = requestAnimationFrame(function () {
+        raf2 = requestAnimationFrame(function () {
           if (!done) finish();
         });
       });
-      window.setTimeout(finish, 900);
+      timeout = window.setTimeout(finish, 900);
+    });
+    return promise;
+  }
+
+  function cancelPendingFirstFrameWaits() {
+    Array.from(pendingFirstFrameWaits).forEach(function (cancel) {
+      try { cancel(); } catch (e) {}
     });
   }
 
@@ -334,6 +372,7 @@
       fallbackHandoffTimer = window.setTimeout(function () {
         if (token !== fallbackHandoffToken || !window.__orreryReady || window.__apOrreryCanvasFallback) return;
         document.documentElement.classList.add('orrery-full');
+        setFallbackDisclosure(false);
         revealHeroDeckHud();
         var poster = document.getElementById('orrery-lite-poster');
         if (poster) poster.setAttribute('aria-hidden', 'true');
@@ -376,6 +415,15 @@
     }
   }
 
+  function setFallbackDisclosure(on) {
+    var el = document.getElementById('ap-orrery-fallback-disclosure');
+    if (!el) return;
+    el.hidden = !on;
+    if (on) {
+      el.textContent = 'Canvas fallback · planetary positions are live and recomputed on your device from VSOP87; distances remain schematic and photoreal 3D is unavailable.';
+    }
+  }
+
   function tryCanvasFallback() {
     if (window.__orreryPreloaderOwns && !window.__apHeroEntered) {
       return Promise.reject(new Error('canvas fallback blocked during preloader'));
@@ -390,6 +438,7 @@
       var canvas = document.getElementById('orrery-canvas');
       if (!canvas) return Promise.reject(new Error('no canvas'));
       try {
+        teardownHeroEnhancements();
         if (canvas.parentNode) canvas.parentNode.querySelectorAll('.orrery-controls').forEach(function (el) { el.remove(); });
         if (window.Orrery3D && typeof window.Orrery3D.destroy === 'function' && !window.__apOrreryCanvasFallback) {
           window.Orrery3D.destroy();
@@ -439,6 +488,7 @@
 
   function teardownCanvasEngine() {
     var oldCanvas = document.getElementById('orrery-canvas');
+    teardownHeroEnhancements();
     try {
       if (window.Orrery3D && typeof window.Orrery3D.destroy === 'function') {
         window.Orrery3D.destroy();
@@ -535,6 +585,20 @@
      (no scale API) keeps strip + journey hidden. */
   var heroFrameDone = false;
   var deckHudRevealed = false;
+  var heroFrameCleanup = null;
+  var enrichedCleanup = null;
+
+  function teardownHeroEnhancements() {
+    if (typeof enrichedCleanup === 'function') {
+      try { enrichedCleanup(); } catch (e) {}
+    }
+    if (typeof heroFrameCleanup === 'function') {
+      try { heroFrameCleanup(); } catch (e) {}
+    }
+    enrichedCleanup = null;
+    heroFrameCleanup = null;
+    heroFrameDone = false;
+  }
 
   /* Layout-affecting HUD chrome (scale strip, orbits, journey, time row) must
      land in the same turn as html.orrery-full — revealing them at ap-orrery-ready
@@ -563,7 +627,13 @@
     heroFrameDone = true;
 
     var touched = false;
-    wrap.addEventListener('pointerdown', function () { touched = true; }, { passive: true });
+    var listeners = [];
+    var autoEarthTimer = null;
+    function listen(target, type, fn, options) {
+      target.addEventListener(type, fn, options);
+      listeners.push({ target: target, type: type, fn: fn, options: options });
+    }
+    listen(wrap, 'pointerdown', function () { touched = true; }, { passive: true });
 
     /* v576: resurrect planet-name typography — engraved DOM labels (Cinzel, brass
        under-shadow, styled by .orrery-dom-label) at INNER/SYSTEM scales; the engine
@@ -588,7 +658,7 @@
     }
 
     document.querySelectorAll('.lite-vp-btn[data-lite-planet]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      listen(btn, 'click', function () {
         touched = true;
         var pid = (btn.getAttribute('data-lite-planet') || '').toLowerCase();
         cancelJourneyIfActive(false);
@@ -598,15 +668,16 @@
     });
 
     // Engine-initiated focus (canvas dblclick, journey legs) keeps pills honest.
-    document.addEventListener('orrery-planet-focus', function (e) {
+    var onPlanetFocus = function (e) {
       var id = e && e.detail && e.detail.id;
       if (!id) return;
       markActive(document.querySelector('.lite-vp-btn[data-lite-planet="' + id + '"]'));
-    });
+    };
+    listen(document, 'orrery-planet-focus', onPlanetFocus);
 
     // ap-v722 · A1: hero auto-Earth must not clobber Personal Sky deep-links.
     // Explore/chart emitters set data-ap-model-link + #m=/#focus=; re-assert instead of Earth.
-    setTimeout(function () {
+    autoEarthTimer = setTimeout(function () {
       if (touched) return;
       try {
         if (document.documentElement.hasAttribute('data-ap-model-link')) {
@@ -652,20 +723,20 @@
 
     if (strip && hasScaleApi) {
       strip.querySelectorAll('.orrery-scale-btn[data-scale]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
+        listen(btn, 'click', function () {
           goToLevel(parseInt(btn.getAttribute('data-scale'), 10));
         });
       });
       [['ap-scale-prev', -1], ['ap-scale-next', 1]].forEach(function (pair) {
         var btn = document.getElementById(pair[0]);
         if (!btn) return;
-        btn.addEventListener('click', function () {
+        listen(btn, 'click', function () {
           var lv = 2;
           try { lv = O.getScaleLevel() | 0; } catch (e) {}
           goToLevel(Math.max(0, Math.min(6, lv + pair[1])));
         });
       });
-      document.addEventListener('orrery-scale-change', function (e) {
+      listen(document, 'orrery-scale-change', function (e) {
         var d = e && e.detail;
         if (!d || d.level == null) return;
         syncScaleUi(d.level, d.preset);
@@ -682,7 +753,7 @@
         journeyBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
         journeyBtn.textContent = on ? '◼ End journey' : journeyIdleText;
       };
-      journeyBtn.addEventListener('click', function () {
+      listen(journeyBtn, 'click', function () {
         touched = true;
         var active = false;
         try { active = typeof O.isJourneyActive === 'function' && O.isJourneyActive(); } catch (e) {}
@@ -695,7 +766,7 @@
         markActive(null);
         setJourneyRunning(true);
       });
-      document.addEventListener('orrery-journey-end', function () {
+      listen(document, 'orrery-journey-end', function () {
         setJourneyRunning(false);
       });
     }
@@ -705,8 +776,17 @@
        as the visitor engages: orbit rings fade in at System/Inner scale, the live
        readout appears on planet focus, trails appear when time is scrubbed. All
        feature-detected — the 2D fallback (no setShowOrbits/getBodyReadout) skips it. */
-    setupEnrichedOrrery(O);
+    enrichedCleanup = setupEnrichedOrrery(O);
     if (document.documentElement.classList.contains('orrery-full')) revealHeroDeckHud();
+    heroFrameCleanup = function () {
+      if (autoEarthTimer) { clearTimeout(autoEarthTimer); autoEarthTimer = null; }
+      listeners.forEach(function (entry) {
+        try { entry.target.removeEventListener(entry.type, entry.fn, entry.options); } catch (e) {}
+      });
+      listeners.length = 0;
+      try { cancelJourneyIfActive(false); } catch (e) {}
+      heroFrameDone = false;
+    };
   }
 
   /* Orbits toggle + live readout + scale-driven reveal. Split out for clarity;
@@ -729,14 +809,13 @@
       try { O.setShowOrbits(on); } catch (e) {}
       if (orbitsBtn) orbitsBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
-    if (orbitsBtn && hasOrbits) {
-      orbitsBtn.addEventListener('click', function () {
+    var onOrbitsClick = function () {
         var next = !(orbitsBtn.getAttribute('aria-pressed') === 'true');
         userOrbitPref = next;
         try { O.setShowOrbits(next); } catch (e) {}
         orbitsBtn.setAttribute('aria-pressed', next ? 'true' : 'false');
-      });
-    }
+    };
+    if (orbitsBtn && hasOrbits) orbitsBtn.addEventListener('click', onOrbitsClick);
 
     // --- Live readout — compact panel; true geocentric sign+degree from the ephemeris ---
     var readoutEl = document.getElementById('ap-orrery-readout');
@@ -744,6 +823,7 @@
     var readoutSign = document.getElementById('ap-orrery-readout-sign');
     var readoutId = 'earth';
     var readoutTimer = null;
+    var nowPaintTimer = null;
     function paintReadout() {
       if (!readoutEl || !hasReadout) return;
       var r;
@@ -768,13 +848,14 @@
 
     // Planet focus → readout tracks the focused body. Earth rest frame stays
     // clean — the hero live pill already shows Sun/Moon (v641 overlap fix).
-    document.addEventListener('orrery-planet-focus', function (e) {
+    var onPlanetFocus = function (e) {
       var id = e && e.detail && e.detail.id;
       if (!id) return;
       var lv = 0; try { lv = O.getScaleLevel() | 0; } catch (err) {}
       if (lv === 0 && id === 'earth') { if (readoutEl) readoutEl.hidden = true; return; }
       showReadoutFor(id);
-    });
+    };
+    document.addEventListener('orrery-planet-focus', onPlanetFocus);
 
     // Scale change → drive orbit reveal + readout visibility policy.
     function onLevel(lv) {
@@ -788,18 +869,34 @@
         }
       }
     }
-    document.addEventListener('orrery-scale-change', function (e) {
+    var onScaleChange = function (e) {
       var d = e && e.detail; if (!d || d.level == null) return;
       onLevel(d.level);
-    });
+    };
+    document.addEventListener('orrery-scale-change', onScaleChange);
 
     // Now button also resets trails (engine clears on snapToNow via idle-fade, but reset
     // the readout time immediately).
     var nowBtn = document.getElementById('lite-now-btn');
-    if (nowBtn) nowBtn.addEventListener('click', function () { setTimeout(paintReadout, 60); });
+    var onNowClick = function () {
+      if (nowPaintTimer) clearTimeout(nowPaintTimer);
+      nowPaintTimer = setTimeout(function () { nowPaintTimer = null; paintReadout(); }, 60);
+    };
+    if (nowBtn) nowBtn.addEventListener('click', onNowClick);
 
     // Initial sync to current level.
     if (hasScale) { try { onLevel(O.getScaleLevel() | 0); } catch (e) {} }
+    return function () {
+      if (readoutTimer) { clearInterval(readoutTimer); readoutTimer = null; }
+      if (nowPaintTimer) { clearTimeout(nowPaintTimer); nowPaintTimer = null; }
+      if (orbitsBtn && hasOrbits) {
+        try { orbitsBtn.removeEventListener('click', onOrbitsClick); } catch (e) {}
+      }
+      try { document.removeEventListener('orrery-planet-focus', onPlanetFocus); } catch (e) {}
+      try { document.removeEventListener('orrery-scale-change', onScaleChange); } catch (e) {}
+      if (nowBtn) { try { nowBtn.removeEventListener('click', onNowClick); } catch (e) {} }
+      if (readoutEl) readoutEl.hidden = true;
+    };
   }
 
   /**

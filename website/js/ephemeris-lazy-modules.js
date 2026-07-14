@@ -9,6 +9,11 @@
 
   var daimonPromise = null;
   var orreryPromise = null;
+  var fallbackSeq = 0;
+
+  function hasFallbackOwner(token) {
+    return !!token && window.__apOrreryFallbackOwner === token;
+  }
 
   function injectScript(src) {
     return new Promise(function (resolve, reject) {
@@ -36,13 +41,21 @@
   }
 
   function loadOrrery3D() {
-    if (window.Orrery3D) return Promise.resolve(window.Orrery3D);
+    if (window.Orrery3D) {
+      if (window.Orrery3D.isWebGL !== false) return Promise.resolve(window.Orrery3D);
+      var activeFallback = document.querySelector('script[data-ap-orrery-canvas-fallback][data-ap-orrery-fallback-token]');
+      var activeToken = activeFallback && activeFallback.dataset.apOrreryFallbackToken;
+      if (hasFallbackOwner(activeToken)) return Promise.resolve(window.Orrery3D);
+      try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
+    }
     if (!orreryPromise) {
+      var requestToken = '';
       var request = (typeof window.__loadCanvasOrreryScript === 'function')
         ? window.__loadCanvasOrreryScript()
         : (function () {
           var v = String(window.AP_ASSET_V || '753');
-          var token = 'ap-fallback-' + v + '-' + Date.now();
+          var token = 'ap-fallback-' + v + '-' + (++fallbackSeq) + '-' + Date.now();
+          requestToken = token;
           var s = document.createElement('script');
           s.dataset.apOrreryCanvasFallback = 'true';
           s.dataset.apAssetV = v;
@@ -50,17 +63,38 @@
           s.dataset.apState = 'loading';
           s.src = 'js/orrery3d.js?v=' + v + '&fallback=canvas';
           window.__apOrreryFallbackOwner = token;
+          window.__apOrreryCanvasFallback = true;
           return new Promise(function (resolve, reject) {
-            s.onload = function () { s.dataset.apState = 'loaded'; resolve(); };
-            s.onerror = function () { s.dataset.apState = 'failed'; try { s.remove(); } catch (e) {} reject(new Error('orrery3d.js failed to load')); };
+            s.onload = function () {
+              if (!hasFallbackOwner(token)) {
+                s.dataset.apState = 'cancelled';
+                reject(new Error('stale canvas fallback load'));
+                return;
+              }
+              s.dataset.apState = 'loaded';
+              resolve();
+            };
+            s.onerror = function () {
+              s.dataset.apState = 'failed';
+              try { s.remove(); } catch (e) {}
+              reject(new Error('orrery3d.js failed to load'));
+            };
             document.body.appendChild(s);
           });
         })();
       orreryPromise = request.then(function () {
         if (!window.Orrery3D) throw new Error('orrery3d.js did not register Orrery3D');
+        if (requestToken && !hasFallbackOwner(requestToken)) throw new Error('canvas fallback owner missing or stale');
+        if (window.Orrery3D.isWebGL === false && !window.__apOrreryFallbackOwner) {
+          throw new Error('canvas fallback owner missing');
+        }
         document.dispatchEvent(new CustomEvent('ap:orrery3d-ready'));
         return window.Orrery3D;
       }).catch(function (err) {
+        if (requestToken && hasFallbackOwner(requestToken)) {
+          try { delete window.__apOrreryFallbackOwner; } catch (e) { window.__apOrreryFallbackOwner = null; }
+        }
+        if (requestToken) window.__apOrreryCanvasFallback = false;
         orreryPromise = null;
         throw err;
       });

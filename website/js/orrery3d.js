@@ -85,6 +85,18 @@ var __apFallbackApi = (() => {
 
   let canvas, ctx, wrap, W, H, cx, cy, dpr, scale;
   let raf = null, destroyed = false;
+  const boundEvents = [];
+  let resizeRaf = null;
+  function listen(target, type, handler, options) {
+    target.addEventListener(type, handler, options);
+    boundEvents.push({ target, type, handler, options });
+  }
+  function unbindAll() {
+    while (boundEvents.length) {
+      const entry = boundEvents.pop();
+      try { entry.target.removeEventListener(entry.type, entry.handler, entry.options); } catch (e) { /* best effort */ }
+    }
+  }
   let yaw = -0.35, pitch = 1.05;
   let autoSpin = true, lastInteract = 0;
   let dragging = false, lastX = 0, lastY = 0;
@@ -456,13 +468,13 @@ var __apFallbackApi = (() => {
   const ZOOM_MAX = 3.5;
 
   function bindZoom() {
-    canvas.addEventListener('wheel', e => {
+    listen(canvas, 'wheel', e => {
       e.preventDefault();
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       targetZoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, targetZoomScale + delta));
     }, { passive: false });
 
-    canvas.addEventListener('touchstart', e => {
+    listen(canvas, 'touchstart', e => {
       if (e.touches.length === 2) {
         pinchStartDist = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
@@ -472,7 +484,7 @@ var __apFallbackApi = (() => {
       }
     }, { passive: true });
 
-    canvas.addEventListener('touchmove', e => {
+    listen(canvas, 'touchmove', e => {
       if (e.touches.length === 2 && pinchStartDist !== null) {
         const d = Math.hypot(
           e.touches[0].clientX - e.touches[1].clientX,
@@ -483,7 +495,7 @@ var __apFallbackApi = (() => {
       }
     }, { passive: true });
 
-    canvas.addEventListener('touchend', e => {
+    listen(canvas, 'touchend', e => {
       if (e.touches.length < 2) pinchStartDist = null;
     }, { passive: true });
   }
@@ -499,7 +511,7 @@ var __apFallbackApi = (() => {
     canvas.style.touchAction = 'pan-y';
     canvas.style.cursor = 'grab';
 
-    canvas.addEventListener('pointerdown', e => {
+    listen(canvas, 'pointerdown', e => {
       dragging = true;
       lastX = e.clientX; lastY = e.clientY;
       mouseDownX = e.clientX; mouseDownY = e.clientY;
@@ -508,7 +520,7 @@ var __apFallbackApi = (() => {
       canvas.style.cursor = 'grabbing';
     });
 
-    canvas.addEventListener('pointermove', e => {
+    listen(canvas, 'pointermove', e => {
       if (!dragging) {
         updateCursorForHover(e);
         return;
@@ -534,8 +546,8 @@ var __apFallbackApi = (() => {
       dragging = false;
       canvas.style.cursor = 'grab';
     };
-    canvas.addEventListener('pointerup', up);
-    canvas.addEventListener('pointercancel', () => { dragging = false; canvas.style.cursor = 'grab'; });
+    listen(canvas, 'pointerup', up);
+    listen(canvas, 'pointercancel', () => { dragging = false; canvas.style.cursor = 'grab'; });
   }
 
   function canvasLocalPos(e) {
@@ -635,7 +647,7 @@ var __apFallbackApi = (() => {
       now.getHours(), now.getMinutes(), now.getSeconds());
 
     resize();
-    window.addEventListener('resize', resize);
+    listen(window, 'resize', resize);
     bindPointer();
     bindZoom();
     buildControls();
@@ -704,7 +716,11 @@ var __apFallbackApi = (() => {
     // a tiny orrery on a desktop hero. Arm a one-shot refit on the next frame instead.
     if (rect.width < 40 && !resize._armed) {
       resize._armed = true;
-      requestAnimationFrame(function () { resize._armed = false; resize(); });
+      resizeRaf = requestAnimationFrame(function () {
+        resizeRaf = null;
+        resize._armed = false;
+        if (!destroyed) resize();
+      });
     }
     // Match intended hero presence. The unboxed full-viewport hero wrap runs
     // ~774-940px logical, so let capable tiers fill it; keep low tiers cheap.
@@ -746,12 +762,12 @@ var __apFallbackApi = (() => {
     ui.date = bar.querySelector('.orrery-date');
     ui.speedBtns = [...bar.querySelectorAll('[data-speed]')];
 
-    ui.play.addEventListener('click', () => {
+    listen(ui.play, 'click', () => {
       if (speed === 0) setSpeed(ui._lastSpeed || 7);
       else setSpeed(0);
     });
-    ui.speedBtns.forEach(b => b.addEventListener('click', () => setSpeed(+b.dataset.speed)));
-    bar.querySelector('[data-act="now"]').addEventListener('click', () => {
+    ui.speedBtns.forEach(b => listen(b, 'click', () => setSpeed(+b.dataset.speed)));
+    listen(bar.querySelector('[data-act="now"]'), 'click', () => {
       dayOffset = 0; setSpeed(0); computeBodies();
     });
   }
@@ -1439,9 +1455,17 @@ var __apFallbackApi = (() => {
 
   function destroy() {
     destroyed = true;
-    if (raf) cancelAnimationFrame(raf);
-    window.removeEventListener('resize', resize);
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+    if (resizeRaf) { cancelAnimationFrame(resizeRaf); resizeRaf = null; }
+    resize._armed = false;
+    unbindAll();
     unbindStorageListener();
+    dragging = false;
+    pinchStartDist = null;
+    if (canvas) {
+      try { canvas.style.cursor = ''; canvas.style.touchAction = ''; } catch (e) {}
+    }
+    ui = {};
   }
 
   function setBodies(arr) {
@@ -1556,7 +1580,7 @@ var __apFallbackApi = (() => {
 // Only the active fallback owner may publish the global API. A script that was
 // cancelled while loading can still execute later; quarantine that late module
 // instead of clobbering the currently running engine.
-if (!__apFallbackToken || !window.__apOrreryFallbackOwner ||
+if (__apFallbackToken && window.__apOrreryFallbackOwner &&
     window.__apOrreryFallbackOwner === __apFallbackToken) {
   window.Orrery3D = __apFallbackApi;
 }
