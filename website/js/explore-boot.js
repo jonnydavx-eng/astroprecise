@@ -235,9 +235,10 @@
     });
   }
 
-  // Suppress the 2D dot orrery flash on capable devices — CSS shows the calm
-  // Earth loader instead, and the photoreal Earth fades in over it.
-  if (isCapableDevice() && !PRM) {
+  // Suppress the poster only after an explicit deep-link/gesture has armed the
+  // HD path. Capability alone must never hide the honest fallback or imply that
+  // WebGL is already loading.
+  if (isCapableDevice() && !PRM && webglIntent) {
     document.documentElement.classList.add("ap-await-webgl");
     if (webglIntent) queueLoader();
   }

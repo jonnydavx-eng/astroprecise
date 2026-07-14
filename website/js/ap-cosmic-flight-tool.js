@@ -46,7 +46,7 @@
 
   function preloadEngine() {
     if (window.__scheduleOrreryEngineLoad) {
-      window.__scheduleOrreryEngineLoad({ urgent: true });
+      window.__scheduleOrreryEngineLoad({ urgent: true, intent: true });
     } else if (window.__requestFullOrrery) {
       window.__requestFullOrrery({ urgent: true, showLoading: false, mode: "webgl" }).catch(function () {});
     }

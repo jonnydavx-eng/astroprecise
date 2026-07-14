@@ -153,6 +153,58 @@ const FinishShader = {
   // ── Module state ───────────────────────────────────────────────────────────
   let renderer, scene, camera, canvas, wrap;
   let raf = null, destroyed = false, running = true, inView = true;
+  let lifecycleListeners = [];
+  let lifecycleObservers = [];
+  let lifecycleTimers = [];
+  let lifecycleIdle = [];
+
+  function listen(target, type, handler, options) {
+    if (!target || typeof target.addEventListener !== 'function') return handler;
+    target.addEventListener(type, handler, options);
+    lifecycleListeners.push({ target, type, handler, options });
+    return handler;
+  }
+
+  function trackObserver(observer, target) {
+    if (!observer) return observer;
+    lifecycleObservers.push(observer);
+    if (target) observer.observe(target);
+    return observer;
+  }
+
+  function later(fn, ms) {
+    const id = setTimeout(() => {
+      lifecycleTimers = lifecycleTimers.filter((value) => value !== id);
+      fn();
+    }, ms);
+    lifecycleTimers.push(id);
+    return id;
+  }
+
+  function idle(fn, options) {
+    if (window.requestIdleCallback) {
+      const id = requestIdleCallback(() => {
+        lifecycleIdle = lifecycleIdle.filter((value) => value !== id);
+        fn();
+      }, options);
+      lifecycleIdle.push(id);
+      return id;
+    }
+    return later(fn, (options && options.timeout) || 60);
+  }
+
+  function clearLifecycleBindings() {
+    lifecycleTimers.forEach((id) => { try { clearTimeout(id); } catch (e) {} });
+    lifecycleTimers = [];
+    lifecycleIdle.forEach((id) => { try { cancelIdleCallback(id); } catch (e) {} });
+    lifecycleIdle = [];
+    lifecycleObservers.forEach((observer) => { try { observer.disconnect(); } catch (e) {} });
+    lifecycleObservers = [];
+    lifecycleListeners.forEach(({ target, type, handler, options }) => {
+      try { target.removeEventListener(type, handler, options); } catch (e) {}
+    });
+    lifecycleListeners = [];
+  }
 
   let texLoader;
   const meshes = {};          // id → THREE.Object3D (planet group)
@@ -1140,8 +1192,8 @@ const FinishShader = {
       if (phaseSub) phaseSub.textContent = 'Eastern sky, precise coordinates — your rising sign waits below.';
     } catch (_) {}
     requestAnimationFrame(forceResize);
-    setTimeout(forceResize, 120);
-    setTimeout(forceResize, 400);
+    later(forceResize, 120);
+    later(forceResize, 400);
     updateIntroProgress(1);
     try {
       document.dispatchEvent(new CustomEvent('ap-preloader-ready'));
@@ -1344,7 +1396,7 @@ const FinishShader = {
     if (journeyActive) cancelScaleJourney(false);
     if (preloaderIntroWatchdog) clearTimeout(preloaderIntroWatchdog);
     const watchdogMs = preloaderCosmicDurationMs() + 3000;
-    preloaderIntroWatchdog = setTimeout(() => {
+    preloaderIntroWatchdog = later(() => {
       preloaderIntroWatchdog = null;
       if (!destroyed && preloaderCosmicJourney) {
         if (opts.tool) cancelCosmicFlight(true);
@@ -1388,12 +1440,12 @@ const FinishShader = {
 
     updateIntroProgress(0);
     requestAnimationFrame(forceResize);
-    setTimeout(forceResize, 80);
-    setTimeout(forceResize, 160);
-    setTimeout(forceResize, 320);
-    setTimeout(forceResize, 640);
+    later(forceResize, 80);
+    later(forceResize, 160);
+    later(forceResize, 320);
+    later(forceResize, 640);
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', forceResize, { passive: true, once: true });
+      listen(window.visualViewport, 'resize', forceResize, { passive: true, once: true });
     }
   }
 
@@ -1719,7 +1771,7 @@ const FinishShader = {
       if (earthMapReady) { beginCosmic(); return; }
       needRecompute = true;
       earthMapReadyPromise.then(beginCosmic);
-      introBeginTimer = setTimeout(beginCosmic, 800);
+      introBeginTimer = later(beginCosmic, 800);
       return;
     }
     const begin = () => {
@@ -1735,7 +1787,7 @@ const FinishShader = {
     if (earthMapReady) { begin(); return; }
     needRecompute = true;
     earthMapReadyPromise.then(begin);
-    introBeginTimer = setTimeout(begin, 1200);
+    introBeginTimer = later(begin, 1200);
   }
 
   function ensureComposer() {
@@ -1830,9 +1882,9 @@ const FinishShader = {
       requestAnimationFrame(() => { if (!destroyed) resize(); });
     });
     if (window.requestIdleCallback) {
-      requestIdleCallback(settleHeavyWork, { timeout: 2400 });
+      idle(settleHeavyWork, { timeout: 2400 });
     } else {
-      setTimeout(settleHeavyWork, 160);
+      later(settleHeavyWork, 160);
     }
   }
 
@@ -1885,7 +1937,7 @@ const FinishShader = {
       chain = chain.then(() => {
         if (destroyed) return;
         return loadTex(f);
-      }).then(() => new Promise((res) => setTimeout(res, gap)));
+      }).then(() => new Promise((res) => later(res, gap)));
     });
     return chain.then(() => { if (!destroyed) refreshTextures(); }).catch(() => {});
   }
@@ -1948,7 +2000,7 @@ const FinishShader = {
         detail: { level, remaining: journeySteps.length, target: journeyTarget },
       }));
     } catch (e) { /* optional */ }
-    journeyHoldTimer = setTimeout(runJourneyLeg, JOURNEY_ANIM_MS + JOURNEY_HOLD_MS);
+    journeyHoldTimer = later(runJourneyLeg, JOURNEY_ANIM_MS + JOURNEY_HOLD_MS);
   }
 
   function dispatchJourneyProgress(legIndex, legT) {
@@ -1978,7 +2030,7 @@ const FinishShader = {
         applyScalePreset(to, true);
         try {
           document.dispatchEvent(new CustomEvent('orrery-journey-step', { detail: { level: to, remaining: 0, target: to } }));
-          setTimeout(function () {
+          later(function () {
             document.dispatchEvent(new CustomEvent('orrery-journey-end', { detail: { level: to } }));
           }, SCALE_ANIM_MS + 400);
         } catch (e) { /* optional */ }
@@ -3401,7 +3453,6 @@ const FinishShader = {
       milkySpiralBuilt = true;
       try { buildMilkyWaySpiral(); } catch (e) { console.warn('[orrery] milky spiral deferred build failed:', e); }
     };
-    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 60));
     idle(run, { timeout: 1200 });
   }
 
@@ -3413,7 +3464,6 @@ const FinishShader = {
         console.warn('[orrery] Gaia sample build failed:', e);
       }
     };
-    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 80));
     idle(run, { timeout: 1800 });
   }
 
@@ -3556,7 +3606,7 @@ const FinishShader = {
 
         gaiaWorker = new Worker(workerUrl);
         usedWorker = true;
-        const failSafe = setTimeout(() => {
+        const failSafe = later(() => {
           if (!gaiaSamplePoints) attachMain();
           try { gaiaWorker.terminate(); } catch (e) { /* */ }
           gaiaWorker = null;
@@ -7300,11 +7350,8 @@ const FinishShader = {
 
   // ── Pointer controls ───────────────────────────────────────────────────────
   function bindControls() {
-    if (!window.__orreryPosterHandoffBound) {
-      window.__orreryPosterHandoffBound = true;
-      document.addEventListener('ol-earth-poster-handoff', () => { revealInstrumentSun(); });
-      document.addEventListener('ol-earth-poster-done', () => { stabilizeInstrumentSunFrame(); });
-    }
+    listen(document, 'ol-earth-poster-handoff', () => { revealInstrumentSun(); });
+    listen(document, 'ol-earth-poster-done', () => { stabilizeInstrumentSunFrame(); });
     try {
       canvas.setAttribute('tabindex', '0');
       // The canvas ships aria-hidden="true" as a decorative fallback; once this
@@ -7382,7 +7429,7 @@ const FinishShader = {
         e.preventDefault();
       }
     };
-    canvas.addEventListener('keydown', onKey);
+    listen(canvas, 'keydown', onKey);
     canvas._orreryKeyHandler = onKey;
     const onDown = (e) => {
       if (onPreloaderStage() && introActive) return;
@@ -7560,13 +7607,13 @@ const FinishShader = {
       e.preventDefault();
       dragMode = 'orbit';
     };
-    canvas.addEventListener('pointerdown', onDown);
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    canvas.addEventListener('pointercancel', onUp);
-    canvas.addEventListener('dblclick', onDbl);
-    canvas.addEventListener('wheel', onWheel, { passive: false });
-    canvas.addEventListener('contextmenu', onCtx);
+    listen(canvas, 'pointerdown', onDown);
+    listen(window, 'pointermove', onMove);
+    listen(window, 'pointerup', onUp);
+    listen(canvas, 'pointercancel', onUp);
+    listen(canvas, 'dblclick', onDbl);
+    listen(canvas, 'wheel', onWheel, { passive: false });
+    listen(canvas, 'contextmenu', onCtx);
     canvas._orreryHandlers = { onMove, onUp };
     canvas._orreryDblHandler = onDbl;
     canvas._orreryCtxHandler = onCtx;
@@ -7700,6 +7747,15 @@ const FinishShader = {
   function _initWebGL(canvasEl) {
     if (!canvasEl) return;
     if (webglBooted && canvas === canvasEl) return;
+    // A destroyed engine may be re-created on the same canvas. Reset the
+    // lifecycle guard before any frame/listener work so the new instance is
+    // live immediately and never inherits the retired instance's state.
+    clearLifecycleBindings();
+    destroyed = false;
+    running = true;
+    inView = true;
+    fellBack = false;
+    webglBooted = false;
     if (!window.AstroEphemeris) throw new Error('AstroEphemeris not loaded');
     canvas = canvasEl; wrap = canvas.parentElement;
 
@@ -7805,15 +7861,16 @@ const FinishShader = {
     bindControls();
     if ('ResizeObserver' in window) {
       const ro = new ResizeObserver(resize);
+      lifecycleObservers.push(ro);
       ro.observe(canvas);
       if (wrap) ro.observe(wrap);
       canvas._orreryRO = ro;
     }
-    window.addEventListener('resize', resize);
+    listen(window, 'resize', resize);
     if (window.visualViewport) {
       const vvRefit = () => requestAnimationFrame(resize);
-      window.visualViewport.addEventListener('resize', vvRefit, { passive: true });
-      window.visualViewport.addEventListener('scroll', vvRefit, { passive: true });
+      listen(window.visualViewport, 'resize', vvRefit, { passive: true });
+      listen(window.visualViewport, 'scroll', vvRefit, { passive: true });
       canvas._orreryVV = vvRefit;
     }
     if ('IntersectionObserver' in window && !window.__orreryPreloaderOwns) {
@@ -7822,15 +7879,15 @@ const FinishShader = {
         inView = ents[0].isIntersecting;
         if (!was && inView && !destroyed && running && !raf) raf = requestAnimationFrame(frame);
       }, { threshold: 0.01 });
-      io.observe(canvas); canvas._orreryIO = io;
+      trackObserver(io, canvas); canvas._orreryIO = io;
     } else {
       inView = true;
     }
-    document.addEventListener('visibilitychange', () => {
+    listen(document, 'visibilitychange', () => {
       running = !document.hidden;
       if (running && inView && !destroyed && !raf) raf = requestAnimationFrame(frame);
     });
-    canvas.addEventListener('webglcontextlost', (e) => {
+    listen(canvas, 'webglcontextlost', (e) => {
       try { e.preventDefault(); } catch (_) {}
       console.warn('[orrery] WebGL context lost — falling back to canvas orrery');
       fallbackToCanvas(canvas);
@@ -9115,6 +9172,7 @@ const FinishShader = {
   function destroy() {
     destroyed = true;
     if (raf) { cancelAnimationFrame(raf); raf = null; }
+    clearLifecycleBindings();
     window.removeEventListener('resize', resize);
     if (canvas?._orreryVV && window.visualViewport) {
       window.visualViewport.removeEventListener('resize', canvas._orreryVV);
@@ -9127,6 +9185,15 @@ const FinishShader = {
     if (canvas && canvas._orreryCtxHandler) canvas.removeEventListener('contextmenu', canvas._orreryCtxHandler);
     if (canvas && canvas._orreryRO) canvas._orreryRO.disconnect();
     if (canvas && canvas._orreryIO) canvas._orreryIO.disconnect();
+    if (canvas) {
+      delete canvas._orreryHandlers;
+      delete canvas._orreryKeyHandler;
+      delete canvas._orreryDblHandler;
+      delete canvas._orreryCtxHandler;
+      delete canvas._orreryRO;
+      delete canvas._orreryIO;
+      delete canvas._orreryVV;
+    }
     try { disposeAspectView(); } catch (e) {}
     try { disposeHelioAspectLines(); } catch (e) {}
     try { disposePreloaderComets(); } catch (e) {}
@@ -9141,6 +9208,10 @@ const FinishShader = {
     finishPass = null;
     try { renderer && renderer.dispose(); } catch (e) {}
     try { renderer && renderer.forceContextLoss && renderer.forceContextLoss(); } catch (e) {}
+    if (gaiaWorker) {
+      try { gaiaWorker.terminate(); } catch (e) {}
+      gaiaWorker = null;
+    }
     Object.keys(meshes).forEach((id) => { delete meshes[id]; });
     orbitLines.length = 0;
     eccentricGuides.length = 0;
@@ -9153,6 +9224,10 @@ const FinishShader = {
     renderer = null;
     canvas = null;
     wrap = null;
+    webglBooted = false;
+    running = false;
+    inView = false;
+    fellBack = false;
   }
 
   window.Orrery3D = {
@@ -9613,7 +9688,7 @@ const FinishShader = {
           }));
         } catch (e) { /* optional */ }
         galaxyTourStep += 1;
-        galaxyTourTimer = setTimeout(run, PRM ? 1200 : step.hold);
+        galaxyTourTimer = later(run, PRM ? 1200 : step.hold);
       };
       // Ensure full MW visible for tour
       if (galaxyViewMode !== 'full') this.setGalaxyViewMode('full');

@@ -119,6 +119,7 @@
    */
   function scheduleEngineLoad(opts) {
     opts = opts || {};
+    if (opts.intent !== true) return;
     if (loadPromise || (window.Orrery3D && document.documentElement.classList.contains('orrery-full'))) {
       return;
     }
@@ -666,7 +667,7 @@
       }
 
       var viewport = promoteLiteToFull();
-      scheduleEngineLoad({ urgent: !!opts.urgent });
+      scheduleEngineLoad({ urgent: !!opts.urgent, intent: true });
       return initOrreryIfNeeded(true).then(function (O) {
         if (document.documentElement.classList.contains('orrery-canvas')) {
           // 2D fallback won inside initOrreryIfNeeded — its own handoff choreography ran
@@ -701,16 +702,6 @@
   window.__bootLiteCanvas = function (opts) {
     return bootOrrery(Object.assign({ mode: 'canvas', urgent: true }, opts || {}));
   };
-
-  function scheduleLiteAutoBoot() {
-    if (!liteAutoLoadAllowed() || window.__orreryReady) return;
-    afterFirstPaint(function () {
-      scheduleViaIntersection(function () {
-        if (window.__orreryReady || booting) return;
-        bootOrrery({ urgent: true, showLoading: false, mode: 'tier' }).catch(function () {});
-      });
-    });
-  }
 
   function localPerfTier() {
     try {
@@ -775,7 +766,6 @@
     if (isLiteHero()) {
       var onReady = function () {
         wireLiteLaunch();
-        scheduleLiteAutoBoot();
       };
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', onReady);
@@ -784,16 +774,9 @@
       }
       return;
     }
-    if (window.__orreryPreloaderOwns) {
-      scheduleEngineLoad({ urgent: true });
-      return;
-    }
-    try {
-      var introSeen = sessionStorage.getItem('ap_intro_complete') === '1';
-      if (introSeen) {
-        scheduleEngineLoad({ urgent: false });
-      }
-    } catch (e) { /* preloader handles first visit */ }
+    // WebGL is never capability/idle booted. Deep-link receivers and explicit
+    // launch/tool gestures call __requestFullOrrery themselves, which supplies
+    // the user-intent boundary before this loader is asked to import Three.
   }
 
   window.__orreryEngineIsWebGL = isWebGLEngine;

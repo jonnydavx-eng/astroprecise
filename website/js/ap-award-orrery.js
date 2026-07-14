@@ -76,6 +76,9 @@
   function queueWebGL() {
     if (loaderQueued) return;
     loaderQueued = true;
+    // The HD engine is an explicit user action. Keep the honest poster visible
+    // until this point; if the import fails the fail-open timer restores it.
+    document.documentElement.classList.add("ap-await-webgl");
     inject("js/orrery-loader.js?v=" + V, function () {
       setTimeout(promoteToWebGL, 500);
     });
@@ -83,21 +86,9 @@
 
   showInstrument();
 
-  // Capable devices start the HD chain immediately, in parallel with the
-  // ephemeris wait — orrery-loader has its own AstroEphemeris waitFor, so
-  // this only removes dead time before the photoreal engine appears.
-  if (isCapableDevice()) {
-    // Suppress the engraved wheel + 2D dot-orrery so the intro never flashes
-    // the "old model" — CSS shows the calm Earth loader instead, and the
-    // photoreal Earth fades in over it. Set synchronously = no wheel on frame 1.
-    document.documentElement.classList.add("ap-await-webgl");
-    queueWebGL();
-  }
-
   waitEphemeris(function () {
     inject("js/lite-orrery.js?v=" + V, function () {
       document.documentElement.classList.add("orrery-poster-ready");
-      if (isCapableDevice()) setTimeout(queueWebGL, 400);
     });
   });
 
@@ -105,18 +96,6 @@
 
   var launch = document.getElementById("orrery-lite-launch");
   if (launch) launch.addEventListener("click", queueWebGL, { once: true });
-
-  if (typeof IntersectionObserver !== "undefined") {
-    var io = new IntersectionObserver(function (entries) {
-      if (entries[0] && entries[0].isIntersecting) {
-        queueWebGL();
-        io.disconnect();
-      }
-    }, { rootMargin: "160px 0px" });
-    io.observe(wrap);
-  }
-
-  setTimeout(queueWebGL, 8000);
 
   var poster = document.getElementById("orrery-lite-poster");
   if (poster) {

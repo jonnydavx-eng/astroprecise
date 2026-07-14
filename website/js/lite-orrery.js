@@ -57,6 +57,43 @@
   var meteors = [];
   var nextMeteorAt = 0;
   var stars = [];
+  var listeners = [];
+  var observers = [];
+  var timers = [];
+
+  function listen(target, type, handler, options) {
+    if (!target || typeof target.addEventListener !== 'function') return handler;
+    target.addEventListener(type, handler, options);
+    listeners.push({ target: target, type: type, handler: handler, options: options });
+    return handler;
+  }
+
+  function trackObserver(observer, target) {
+    if (!observer) return observer;
+    observers.push(observer);
+    if (target) observer.observe(target);
+    return observer;
+  }
+
+  function later(fn, ms) {
+    var id = setTimeout(function () {
+      timers = timers.filter(function (value) { return value !== id; });
+      fn();
+    }, ms);
+    timers.push(id);
+    return id;
+  }
+
+  function clearLifecycle() {
+    timers.forEach(function (id) { try { clearTimeout(id); } catch (e) {} });
+    timers = [];
+    observers.forEach(function (observer) { try { observer.disconnect(); } catch (e) {} });
+    observers = [];
+    listeners.forEach(function (entry) {
+      try { entry.target.removeEventListener(entry.type, entry.handler, entry.options); } catch (e) {}
+    });
+    listeners = [];
+  }
 
   // Interactive instrument state (drag-explore / zoom / hover-illuminate).
   var userPanX = 0;     // user's drag offset, layered on top of focus-centering
@@ -130,7 +167,7 @@
       (function poll() {
         try { if (test()) return resolve(true); } catch (e) {}
         if (Date.now() - t0 > ms) return reject(new Error('lite deps timeout'));
-        setTimeout(poll, 40);
+        later(poll, 40);
       })();
     });
   }
@@ -790,7 +827,7 @@
         }
       });
     }, { root: null, threshold: 0.08 });
-    io.observe(poster);
+    trackObserver(io, poster);
   }
 
   var awakeningT0 = 0;
@@ -799,7 +836,7 @@
     awakeningT0 = performance.now();
     poster.classList.add('lite-awakening');
     document.documentElement.classList.add('lite-entry-active');
-    setTimeout(function () {
+    later(function () {
       poster.classList.remove('lite-awakening');
       poster.classList.add('lite-poster-ready');
       document.documentElement.classList.remove('lite-entry-active');
@@ -823,7 +860,7 @@
       if (microTitle) microTitle.textContent = ch.title;
       targetZoom = ch.zoom;
       poster.setAttribute('data-lite-scale', String(i));
-      setTimeout(function () { step(i + 1); }, i === MICRO.length - 1 ? 3200 : 2600);
+      later(function () { step(i + 1); }, i === MICRO.length - 1 ? 3200 : 2600);
     }
     step(0);
   }
@@ -832,12 +869,12 @@
     if (vpWired) return;
     vpWired = true;
     document.querySelectorAll('.lite-vp-btn[data-lite-planet]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      listen(btn, 'click', function () {
         var pid = (btn.getAttribute('data-lite-planet') || '').toLowerCase();
         focusPlanet(pid);
       });
     });
-    document.addEventListener('orrery-planet-click', function (e) {
+    listen(document, 'orrery-planet-click', function (e) {
       var detail = e && e.detail ? e.detail : {};
       var pid = (detail.id || detail.name || '').toLowerCase();
       if (VALID_FOCUS.indexOf(pid) >= 0) focusPlanet(pid);
@@ -883,7 +920,7 @@
         '.lite-vp-btn, .orrery-lite-launch, button, a, input, label, [role="toolbar"]'));
     }
 
-    vp.addEventListener('pointerdown', function (e) {
+    listen(vp, 'pointerdown', function (e) {
       if (handedOff() || isControl(e.target)) return;
       if (!pointers[e.pointerId]) pointerCount++;
       pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
@@ -904,7 +941,7 @@
       kickRaf();
     });
 
-    vp.addEventListener('pointermove', function (e) {
+    listen(vp, 'pointermove', function (e) {
       if (handedOff()) return;
       if (pointers[e.pointerId]) pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
       var ks = Object.keys(pointers);
@@ -948,13 +985,13 @@
         kickRaf();
       }
     }
-    vp.addEventListener('pointerup', endPointer);
-    vp.addEventListener('pointercancel', endPointer);
-    vp.addEventListener('pointerleave', function () {
+    listen(vp, 'pointerup', endPointer);
+    listen(vp, 'pointercancel', endPointer);
+    listen(vp, 'pointerleave', function () {
       if (!dragActive && hoverId) { hoverId = null; vp.classList.remove('orrery-hovering'); kickRaf(); }
     });
 
-    vp.addEventListener('wheel', function (e) {
+    listen(vp, 'wheel', function (e) {
       if (handedOff()) return;
       // plain wheel scrolls the page past the full-viewport hero; ctrl/cmd+
       // wheel (and trackpad pinch, which reports ctrlKey) zooms the model
@@ -965,7 +1002,7 @@
       kickRaf();
     }, { passive: false });
 
-    vp.addEventListener('dblclick', function (e) {
+    listen(vp, 'dblclick', function (e) {
       if (handedOff() || isControl(e.target)) return;
       userPanX = 0; userPanY = 0; velX = 0; velY = 0;
       if (FOCUS_ZOOM[focusId] != null) targetZoom = FOCUS_ZOOM[focusId];
@@ -978,12 +1015,12 @@
     if (deckWired) return;
     deckWired = true;
     if (liteScrub) {
-      liteScrub.addEventListener('input', function () {
+      listen(liteScrub, 'input', function () {
         setDayOffset(parseInt(liteScrub.value, 10) || 0);
       });
     }
     if (liteNow) {
-      liteNow.addEventListener('click', function () {
+      listen(liteNow, 'click', function () {
         setDayOffset(0);
         if (window.Orrery3D && typeof window.Orrery3D.snapToNow === 'function') {
           window.Orrery3D.snapToNow();
@@ -1064,7 +1101,7 @@
     focusPlanet(resolveBootFocus());
     nextMeteorAt = performance.now() + 1800;
     if (!raf) raf = requestAnimationFrame(tick);
-    setTimeout(runAwakening, 400);
+    later(runAwakening, 400);
   }
 
   window.LiteOrrery = {
@@ -1081,7 +1118,20 @@
     tier: tier,
     destroy: function () {
       destroyed = true;
+      microToken += 1;
       if (raf) cancelAnimationFrame(raf);
+      raf = null;
+      clearLifecycle();
+      ptrWired = false;
+      vpWired = false;
+      deckWired = false;
+      domBound = false;
+      var vp = document.getElementById('orrery-viewport');
+      if (vp) {
+        vp.classList.remove('orrery-grabbable', 'orrery-grabbing', 'orrery-hovering');
+        vp.style.touchAction = '';
+      }
+      if (document.documentElement) document.documentElement.classList.remove('lite-entry-active');
     },
   };
 
@@ -1092,18 +1142,18 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { waitForBoot().catch(function () {}); });
+    listen(document, 'DOMContentLoaded', function () { waitForBoot().catch(function () {}); });
   } else {
     waitForBoot().catch(function () {});
   }
 
-  window.addEventListener('resize', function () {
+  listen(window, 'resize', function () {
     canvasCache = { w: 0, h: 0, dpr: 0 };
     stars = [];
     if (!destroyed) drawPoster(performance.now());
   }, { passive: true });
 
-  document.addEventListener('ap-orrery-ready', function () {
+  listen(document, 'ap-orrery-ready', function () {
     if (window.Orrery3D && typeof window.Orrery3D.getDayOffset === 'function') {
       setDayOffset(window.Orrery3D.getDayOffset());
     }
