@@ -5,6 +5,10 @@
 
 'use strict';
 
+// Keep runtime-injected assets on the same cache-bust tip as sw.js. Pages that
+// do not load ap-asset-v.js still fall back to the current canonical tip.
+const AP_ASSET_V = String(window.AP_ASSET_V || '752');
+
 const AstroApp = (() => {
 
   // ── State ─────────────────────────────────────────────────────────────────
@@ -80,7 +84,7 @@ const AstroApp = (() => {
     if (document.getElementById("ap-css-palette-2026") || document.querySelector('link[href*="ap-palette-2026"]')) return;
     var l = document.createElement("link");
     l.rel = "stylesheet";
-    l.href = "css/ap-palette-2026.css?v=722";
+    l.href = "css/ap-palette-2026.css?v=" + AP_ASSET_V;
     l.id = "ap-css-palette-2026";
     document.head.appendChild(l);
   }
@@ -90,7 +94,7 @@ const AstroApp = (() => {
     if (document.getElementById("ap-css-logo-aurora")) return;
     var l = document.createElement("link");
     l.rel = "stylesheet";
-    l.href = "css/ap-logo-aurora.css?v=722";
+    l.href = "css/ap-logo-aurora.css?v=" + AP_ASSET_V;
     l.id = "ap-css-logo-aurora";
     document.head.appendChild(l);
   }
@@ -100,7 +104,7 @@ const AstroApp = (() => {
     if (document.getElementById('ap-css-visual-clarity')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-visual-clarity.css?v=722';
+    l.href = 'css/ap-visual-clarity.css?v=' + AP_ASSET_V;
     l.id = 'ap-css-visual-clarity';
     document.head.appendChild(l);
   }
@@ -110,7 +114,7 @@ const AstroApp = (() => {
     if (document.getElementById('ap-css-page-structure')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-page-structure.css?v=683';
+    l.href = 'css/ap-page-structure.css?v=' + AP_ASSET_V;
     l.id = 'ap-css-page-structure';
     document.head.appendChild(l);
   }
@@ -119,7 +123,7 @@ const AstroApp = (() => {
     if (document.getElementById("ap-css-model-stage")) return;
     var l = document.createElement("link");
     l.rel = "stylesheet";
-    l.href = "css/ap-model-stage.css?v=722";
+    l.href = "css/ap-model-stage.css?v=" + AP_ASSET_V;
     l.id = "ap-css-model-stage";
     document.head.appendChild(l);
   }
@@ -2310,7 +2314,7 @@ else AstroApp.init();
     if (document.getElementById('ap-css-site-polish') || document.querySelector('link[href*="ap-site-polish"]')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-site-polish.css?v=722';
+    l.href = 'css/ap-site-polish.css?v=' + AP_ASSET_V;
     l.id = 'ap-css-site-polish';
     document.head.appendChild(l);
   }

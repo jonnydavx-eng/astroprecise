@@ -3,6 +3,7 @@
 
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var V = String(window.AP_ASSET_V || "752");
 
   var wrap = document.getElementById("apAwardOrreryWrap");
   var fallback = document.getElementById("apHeroWheelFallback");
@@ -75,7 +76,7 @@
   function queueWebGL() {
     if (loaderQueued) return;
     loaderQueued = true;
-    inject("js/orrery-loader.js?v=752", function () {
+    inject("js/orrery-loader.js?v=" + V, function () {
       setTimeout(promoteToWebGL, 500);
     });
   }
@@ -94,7 +95,7 @@
   }
 
   waitEphemeris(function () {
-    inject("js/lite-orrery.js?v=752", function () {
+    inject("js/lite-orrery.js?v=" + V, function () {
       document.documentElement.classList.add("orrery-poster-ready");
       if (isCapableDevice()) setTimeout(queueWebGL, 400);
     });

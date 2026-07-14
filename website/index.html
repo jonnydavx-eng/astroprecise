@@ -176,9 +176,9 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-site-polish.css?v=752" />
   <link rel="stylesheet" href="css/ap-visual-clarity.css?v=752" id="ap-css-visual-clarity" />
   <link rel="stylesheet" href="css/ap-model-stage.css?v=752" id="ap-css-model-stage" />
-  <link rel="stylesheet" href="css/ap-page-structure.css?v=683" id="ap-css-page-structure" />
+  <link rel="stylesheet" href="css/ap-page-structure.css?v=752" id="ap-css-page-structure" />
   <!-- Structure clean LAST — wins CSS wars; collapses bloat; first-viewport cast -->
-  <link rel="stylesheet" href="css/ap-structure-clean.css?v=704" id="ap-css-structure-clean" />
+  <link rel="stylesheet" href="css/ap-structure-clean.css?v=752" id="ap-css-structure-clean" />
 
   <!-- Intro gate — runs before first paint so the hero never flashes the
        engraved no-JS wheel (a sibling of the orrery wrap, so it paints from
@@ -205,13 +205,13 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   </script>
   <link rel="preload" href="css/fonts.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="css/fonts.css"></noscript>
-  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=680" />
-  <link rel="stylesheet" href="css/ap-motion.css?v=680">
-  <link rel="stylesheet" href="css/ap-micro-2026.css?v=680">
+  <link rel="stylesheet" href="css/ap-horizon-2026.css?v=752" />
+  <link rel="stylesheet" href="css/ap-motion.css?v=752">
+  <link rel="stylesheet" href="css/ap-micro-2026.css?v=752">
   <link rel="stylesheet" href="css/ap-observatory-enchanted.css?v=752">
   <!-- Model Window frame — LOAD ORDER LAW: must stay AFTER ap-structure-clean.css
        (and the other !important sheets above); cascade position is load-bearing. -->
-  <link rel="stylesheet" href="css/ap-model-window.css?v=704" id="ap-css-model-window">
+  <link rel="stylesheet" href="css/ap-model-window.css?v=752" id="ap-css-model-window">
   <!-- OBSERVATORY HOMEPAGE — LOAD ORDER LAW: ap-observatory-home.css MUST stay
        the LAST stylesheet (after ap-model-window.css). It out-cascades the
        !important sheets above; any sheet appended after it silently reverts
@@ -222,8 +222,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
   <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=752" id="ap-css-overhaul-s8">
   <!-- LCP: the poster Earth is only discovered via CSS without this preload. -->
   <link rel="preload" as="image" href="img/engine/earth.webp" fetchpriority="high">
-  <link rel="modulepreload" href="js/orrery-webgl.js?v=752">
-  <link rel="modulepreload" href="js/vendor/three/three.module.min.js">
+  <!-- WebGL modules load only after an explicit model intent (launch/deep-link). -->
   <link rel="prefetch" href="js/ephemeris.js" as="script">
   <link rel="prefetch" href="data/sky_guides.json" as="fetch">
 </head>
@@ -1633,8 +1632,8 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       <article class="ap-shop-featured__card ap-reveal" style="--ap-reveal-i: 1">
         <a href="shop.html#deep-reading" class="ap-shop-featured__visual">
           <picture>
-            <source type="image/webp" srcset="img/shop/product-deep-reading.webp?v=656" />
-            <img src="img/shop/product-deep-reading.jpg?v=656" alt="Deep Natal Reading — full delineation PDF" width="960" height="540" loading="lazy" decoding="async" />
+            <source type="image/webp" srcset="img/shop/product-deep-reading.webp?v=752" />
+            <img src="img/shop/product-deep-reading.jpg?v=752" alt="Deep Natal Reading — full delineation PDF" width="960" height="540" loading="lazy" decoding="async" />
           </picture>
           <span class="ap-shop-featured__badge">The full sky</span>
         </a>
@@ -1647,8 +1646,8 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       <article class="ap-shop-featured__card ap-reveal" style="--ap-reveal-i: 2">
         <a href="shop.html" class="ap-shop-featured__visual">
           <picture>
-            <source type="image/webp" srcset="img/shop/product-poster-pdf.webp?v=656" />
-            <img src="img/shop/product-poster-pdf.jpg?v=656" alt="Natal Sky Poster — print-ready PDF" width="960" height="540" loading="lazy" decoding="async" />
+            <source type="image/webp" srcset="img/shop/product-poster-pdf.webp?v=752" />
+            <img src="img/shop/product-poster-pdf.jpg?v=752" alt="Natal Sky Poster — print-ready PDF" width="960" height="540" loading="lazy" decoding="async" />
           </picture>
           <span class="ap-shop-featured__badge">Print PDF</span>
         </a>
@@ -1661,8 +1660,8 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
       <article class="ap-shop-featured__card ap-shop-featured__card--free ap-reveal" style="--ap-reveal-i: 3">
         <a href="moment.html" class="ap-shop-featured__visual">
           <picture>
-            <source type="image/webp" srcset="img/shop/product-moment-pack.webp?v=656" />
-            <img src="img/shop/product-moment-pack.jpg?v=656" alt="Moment Pack — freeze any date's sky" width="960" height="540" loading="lazy" decoding="async" />
+            <source type="image/webp" srcset="img/shop/product-moment-pack.webp?v=752" />
+            <img src="img/shop/product-moment-pack.jpg?v=752" alt="Moment Pack — freeze any date's sky" width="960" height="540" loading="lazy" decoding="async" />
           </picture>
           <span class="ap-shop-featured__badge">Keepsake</span>
         </a>
@@ -1785,18 +1784,18 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 <!-- ============================================================
      Scripts — minimal, end of body
      ============================================================ -->
-<script defer src="js/ap-error-beacon.js?v=1"></script>
-<script defer src="js/raf-core.js?v=705"></script>
+<script defer src="js/ap-error-beacon.js?v=752"></script>
+<script defer src="js/raf-core.js?v=752"></script>
 <script defer src="js/ap-home-bootstrap.js?v=752"></script>
 <script defer src="js/ap-deep-link.js?v=752"></script>
 <script defer src="js/ap-sky-bridge.js?v=752"></script>
 <script defer src="js/ap-scale-ladder.js?v=752"></script>
 <script defer src="js/ap-planet-actions.js?v=752"></script>
 <link rel="stylesheet" href="css/ap-planet-actions.css?v=752" id="ap-css-planet-actions" />
-<script defer src="js/ap-nav-interplay.js?v=705"></script>
+<script defer src="js/ap-nav-interplay.js?v=752"></script>
 <script src="js/ap-nav-model.js?v=752"></script>
 <script defer src="js/ap-responsive-nav.js?v=752"></script>
-<script defer src="js/weekly-sky.js?v=628"></script>
+<script defer src="js/weekly-sky.js?v=752"></script>
 <script defer src="js/home-daily.js?v=752"></script>
 <script defer src="js/home-match.js?v=752"></script>
 <script defer>
@@ -2137,7 +2136,7 @@ html.orrery-full .orrery-earth-loader{display:none!important;opacity:0!important
 
 <script>
 (function () {
-  var V = "562";
+  var V = String(window.AP_ASSET_V || "752");
   function prefetchGuidesData() {
     if (prefetchGuidesData.done) return;
     prefetchGuidesData.done = true;

@@ -3,6 +3,7 @@
 
 (function () {
   var PRM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var AV = String(window.AP_ASSET_V || '752');
   var open = false;
   var booting = false;
   var homeParent = null;
@@ -38,8 +39,8 @@
       return;
     }
     scriptsQueued = true;
-    inject("js/scale-journey-chapters.js?v=562", function () {
-      inject("js/scale-journey.js?v=562", function () { if (fn) fn(); });
+    inject("js/scale-journey-chapters.js?v=" + AV, function () {
+      inject("js/scale-journey.js?v=" + AV, function () { if (fn) fn(); });
     });
   }
 

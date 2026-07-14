@@ -992,39 +992,6 @@
     }
   }
 
-  function prefetchWebGL() {
-    if (AUDIT || window.__orreryPrefetchDone) return;
-    window.__orreryPrefetchDone = true;
-    function addPreload(href) {
-      if (document.querySelector('link[data-ap-prefetch="' + href + '"]')) return;
-      var l = document.createElement('link');
-      l.rel = 'modulepreload';
-      l.href = href;
-      l.setAttribute('data-ap-prefetch', href);
-      l.crossOrigin = 'anonymous';
-      document.head.appendChild(l);
-    }
-    var base = 'js/';
-    try {
-      var loader = document.querySelector('script[src*="orrery-loader"]');
-      if (loader && loader.src) base = new URL('./', loader.src).href;
-    } catch (e) {}
-    addPreload(base + 'orrery-webgl.js?v=722');
-    addPreload(base + 'vendor/three/three.module.min.js');
-  }
-
-  function schedulePrefetch() {
-    function go() {
-      if (window.requestIdleCallback) {
-        requestIdleCallback(prefetchWebGL, { timeout: 3500 });
-      } else {
-        setTimeout(prefetchWebGL, 1200);
-      }
-    }
-    if (document.readyState === 'complete') go();
-    else window.addEventListener('load', go, { once: true });
-  }
-
   /**
    * Initial poster focus — do NOT always Earth when a deep-link names a body.
    * Prefer: hash focus=X (URL truth) · data-ap-model-link focus · m= only → earth
@@ -1097,7 +1064,6 @@
     focusPlanet(resolveBootFocus());
     nextMeteorAt = performance.now() + 1800;
     if (!raf) raf = requestAnimationFrame(tick);
-    schedulePrefetch();
     setTimeout(runAwakening, 400);
   }
 

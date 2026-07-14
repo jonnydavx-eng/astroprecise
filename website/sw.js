@@ -518,8 +518,8 @@ self.addEventListener('fetch', e => {
   // (the v453-v463 deploy-mismatch that broke the loading sequence / 3D model / layout).
   const isCritical = /\/(js\/app\.js|js\/horoscope-page\.js|js\/cosmos\.js|js\/orrery-loader\.js|js\/orrery-webgl\.js|js\/ap-award-orrery\.js|js\/ap-home-bootstrap\.js|js\/hero-instrument\.js|js\/effects\.js|js\/ephemeris\.js|js\/lite-orrery\.js|js\/lite-shell-boot\.js|css\/main\.css|css\/ap-observatory-home\.css|css\/ap-brand-nebula\.css)$/.test(path);
 
+  const cacheKey = isNav ? e.request : canonicalAssetKey(e.request);
   e.respondWith(
-    const cacheKey = isNav ? e.request : canonicalAssetKey(e.request);
     caches.match(cacheKey).then(cached => {
       /* Navigations + critical assets revalidate past the HTTP cache: GitHub
          Pages serves everything with max-age=600, so a plain fetch() here could

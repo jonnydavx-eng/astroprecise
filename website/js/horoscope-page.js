@@ -1,5 +1,6 @@
 (function () {
     'use strict';
+    var AV = String(window.AP_ASSET_V || '752');
 
     var SIGNS = (function () {
       var Z = window.AP_ZODIAC;
@@ -1047,7 +1048,7 @@
         if (!sphereWrap || auditPath || sphereWrap.classList.contains('is-canvas-ready')) return;
         sphereWrap.classList.remove('is-canvas-primary');
         sphereWrap.classList.add('is-canvas-fallback');
-        loadScript('js/horoscope-wheel-poster.js?v=722').then(function () {
+        loadScript('js/horoscope-wheel-poster.js?v=' + AV).then(function () {
           if (window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.enableVisual === 'function') {
             HoroscopeWheelPoster.enableVisual();
           } else if (window.HoroscopeWheelPoster && typeof HoroscopeWheelPoster.init === 'function') {
@@ -1218,7 +1219,7 @@
           return;
         }
         function loadSphere() {
-          injectScript('js/zodiac-sphere.js?v=722', initZodiacSphereUI);
+          injectScript('js/zodiac-sphere.js?v=' + AV, initZodiacSphereUI);
         }
         if (window.APCanvasSeals) {
           loadSphere();

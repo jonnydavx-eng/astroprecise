@@ -15,7 +15,7 @@ if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '752';
   if (!document.getElementById('ap-error-beacon')) {
     var _eb = document.createElement('script');
     _eb.id = 'ap-error-beacon';
-    _eb.src = 'js/ap-error-beacon.js?v=1';
+    _eb.src = 'js/ap-error-beacon.js?v=' + AV;
     _eb.defer = true;
     document.head.appendChild(_eb);
   }
@@ -74,7 +74,7 @@ if (typeof window.AP_ASSET_V === 'undefined') window.AP_ASSET_V = '752';
     if (document.getElementById('ap-css-page-structure')) return;
     var l = document.createElement('link');
     l.rel = 'stylesheet';
-    l.href = 'css/ap-page-structure.css?v=683';
+    l.href = 'css/ap-page-structure.css?v=' + AV;
     l.id = 'ap-css-page-structure';
     document.head.appendChild(l);
   }

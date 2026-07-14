@@ -787,7 +787,7 @@ window.AstroShop = (() => {
   function cardArt(p) {
     const src = p.previewImage || PREVIEW_FALLBACK[p.type] || '';
     if (src) {
-      const bust = src.includes('?') ? src : `${src}?v=151`;
+      const bust = src.includes('?') ? src : `${src}?v=${String(window.AP_ASSET_V || '752')}`;
       return `<img class="shopc-card__preview" src="${esc(bust)}" alt="" width="1600" height="900" loading="lazy" decoding="async" />`;
     }
     return `<span class="shopc-card__glyph">${icon(p.icon)}</span>`;

@@ -10,9 +10,10 @@
   var scheduleToken = 0;
   var booting = false;
   var scriptEl = document.currentScript;
+  var ASSET_V = String(window.AP_ASSET_V || '752');
   var ORRERY_MODULE = (scriptEl && scriptEl.src)
-    ? new URL('orrery-webgl.js?v=752', scriptEl.src).href
-    : 'js/orrery-webgl.js?v=752';
+    ? new URL('orrery-webgl.js?v=' + ASSET_V, scriptEl.src).href
+    : 'js/orrery-webgl.js?v=' + ASSET_V;
 
   function isLiteHero() {
     return !!(window.__apLiteHero ||

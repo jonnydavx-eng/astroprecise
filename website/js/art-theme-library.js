@@ -5,6 +5,7 @@
 'use strict';
 
 (function initArtThemeLibrary() {
+  const AP_ASSET_V = String(window.AP_ASSET_V || '752');
   const STORAGE_KEY = 'ap_art_theme';
   const SIGN_TO_THEME = {
     Aries: 'sign-aries', Taurus: 'sign-taurus', Gemini: 'sign-gemini', Cancer: 'sign-cancer',
@@ -31,7 +32,7 @@
 
   function load() {
     if (ready) return ready;
-    ready = fetch('data/art-themes.json?v=186')
+    ready = fetch('data/art-themes.json?v=' + AP_ASSET_V)
       .then(r => { if (!r.ok) throw new Error('art-themes.json ' + r.status); return r.json(); })
       .then(json => {
         data = json;

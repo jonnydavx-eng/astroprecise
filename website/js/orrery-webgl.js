@@ -9073,6 +9073,45 @@ const FinishShader = {
     delete window.__apLastAspect;
   }
 
+  // Release every GPU-owned resource when the engine is retired. Renderer.dispose()
+  // only drops renderer bookkeeping; scene graphs, post-processing targets, and
+  // material-owned textures otherwise survive a lite→WebGL retry/context teardown.
+  function disposeSceneResources(root) {
+    if (!root) return;
+    const disposedTextures = new Set();
+    const disposeTexture = (texture) => {
+      if (!texture || disposedTextures.has(texture) || typeof texture.dispose !== 'function') return;
+      disposedTextures.add(texture);
+      try { texture.dispose(); } catch (e) {}
+    };
+    const disposeMaterial = (material) => {
+      if (!material) return;
+      const list = Array.isArray(material) ? material : [material];
+      list.forEach((mat) => {
+        if (!mat) return;
+        // Standard + shader materials keep textures in named slots or uniforms.
+        Object.keys(mat).forEach((key) => {
+          const value = mat[key];
+          if (value && value.isTexture) disposeTexture(value);
+        });
+        if (mat.uniforms) Object.keys(mat.uniforms).forEach((key) => {
+          const value = mat.uniforms[key] && mat.uniforms[key].value;
+          if (value && value.isTexture) disposeTexture(value);
+        });
+        try { mat.dispose(); } catch (e) {}
+      });
+    };
+    try {
+      root.traverse((object) => {
+        if (object.geometry && typeof object.geometry.dispose === 'function') {
+          try { object.geometry.dispose(); } catch (e) {}
+        }
+        disposeMaterial(object.material);
+      });
+      if (root.parent) root.parent.remove(root);
+    } catch (e) {}
+  }
+
   function destroy() {
     destroyed = true;
     if (raf) { cancelAnimationFrame(raf); raf = null; }
@@ -9088,7 +9127,32 @@ const FinishShader = {
     if (canvas && canvas._orreryCtxHandler) canvas.removeEventListener('contextmenu', canvas._orreryCtxHandler);
     if (canvas && canvas._orreryRO) canvas._orreryRO.disconnect();
     if (canvas && canvas._orreryIO) canvas._orreryIO.disconnect();
+    try { disposeAspectView(); } catch (e) {}
+    try { disposeHelioAspectLines(); } catch (e) {}
+    try { disposePreloaderComets(); } catch (e) {}
+    try { disposeSceneResources(scene); } catch (e) {}
+    if (composer) {
+      try { composer.passes && composer.passes.forEach((pass) => pass && pass.dispose && pass.dispose()); } catch (e) {}
+      try { composer.dispose && composer.dispose(); } catch (e) {}
+    }
+    composer = null;
+    bloomPass = null;
+    radialBlurPass = null;
+    finishPass = null;
     try { renderer && renderer.dispose(); } catch (e) {}
+    try { renderer && renderer.forceContextLoss && renderer.forceContextLoss(); } catch (e) {}
+    Object.keys(meshes).forEach((id) => { delete meshes[id]; });
+    orbitLines.length = 0;
+    eccentricGuides.length = 0;
+    leoCraft.length = 0;
+    Object.keys(velocityArrows).forEach((id) => { delete velocityArrows[id]; });
+    Object.keys(labels).forEach((id) => { delete labels[id]; });
+    scene = null;
+    camera = null;
+    texLoader = null;
+    renderer = null;
+    canvas = null;
+    wrap = null;
   }
 
   window.Orrery3D = {
