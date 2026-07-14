@@ -200,6 +200,14 @@
     } catch (e) { return 0; }
   }
 
+  function isValidTimeZone(tz) {
+    if (typeof tz !== 'string' || !tz.trim()) return false;
+    try {
+      new Intl.DateTimeFormat('en-US', { timeZone: tz }).format();
+      return true;
+    } catch (e) { return false; }
+  }
+
   function localToUT(y, m, d, hh, mm, tz) {
     let utc = new Date(Date.UTC(y, m - 1, d, hh, mm, 0));
     for (let i = 0; i < 2; i++) {
@@ -278,6 +286,9 @@
       risingSign: timeKnown ? E().signOf(raw.ascendant) : null,
       chartRuler: timeKnown ? raw.chartRuler : null,
       timeAccuracy: meta.timeAccuracy || (timeKnown ? 'exact' : 'unknown'),
+      timezoneKnown: meta.timezoneKnown === true,
+      houseSystem: meta.houseSystem || raw.houseSystem || 'equal',
+      angleStatus: timeKnown ? 'computed' : 'withheld_time_unknown',
       dominant: { element: raw.dominantElement, modality: raw.dominantModality },
       dominantElement: raw.dominantElement,
       dominantModality: raw.dominantModality,
@@ -320,13 +331,20 @@
   function readForm() {
     const name = document.getElementById('name-input').value.trim() || 'Birth Chart';
     const date = document.getElementById('date-input').value;
-    const time = document.getElementById('time-input').value || '12:00';
+    const timeField = document.getElementById('time-input');
+    const timeKnown = !!(timeField && timeField.value);
+    // Noon is an internal neutral epoch only; never persist or present it as
+    // the visitor's birth time. The result carries timeKnown/timeAccuracy.
+    const time = timeKnown ? timeField.value : '12:00';
     const lat  = parseFloat(latInput.value);
     const lon  = parseFloat(lonInput.value);
-    const tz   = tzInput.value;
+    const tz   = (tzInput.value || '').trim();
     // Name is optional label — defaults to "Birth Chart" for exports
     if (!date) return { error: 'Please enter your birth date.', focus: 'date-input' };
     if (isNaN(lat) || isNaN(lon)) return { error: 'Please pick your birth city from the dropdown.', focus: 'city-input' };
+    if (!isValidTimeZone(tz)) {
+      return { error: 'Please pick a city with a recognised timezone before calculating.', focus: 'city-input' };
+    }
     const [y, m, d]  = date.split('-').map(Number);
     const [hh, mm]   = time.split(':').map(Number);
     // Guard against malformed date/time (e.g. a hand-edited share URL): NaN
@@ -342,7 +360,8 @@
     return {
       name, y, m, d, hh, mm, lat, lon, tz,
       city: cityInput.value,
-      timeKnown: !!document.getElementById('time-input').value,
+      timeKnown,
+      timezoneKnown: true,
       timeAccuracy: (document.getElementById('time-accuracy-input')?.value || '').trim() ||
         (document.getElementById('time-input').value ? 'exact' : 'unknown'),
       houseSystem: document.getElementById('house-system').value,
@@ -395,6 +414,7 @@
       timeKnown: input.timeKnown === true,
       timeAccuracy: input.timeAccuracy || (input.timeKnown ? 'exact' : 'unknown'),
       city: input.city, lat: input.lat, lon: input.lon, tz: input.tz,
+      timezoneKnown: input.timezoneKnown === true,
     });
   }
 
@@ -1845,6 +1865,9 @@ host.classList.add('is-done');
         lon: currentChart.lon,
         tz: currentChart.tz,
         houseSystem: currentChart.houseSystem || 'equal',
+        timeKnown: currentChart.timeKnown === true,
+        timeAccuracy: currentChart.timeAccuracy || 'unknown',
+        timezoneKnown: currentChart.timezoneKnown === true,
         sunSign: currentChart.positions.Sun.sign,
         moonSign: currentChart.positions.Moon.sign,
         risingSign: currentChart.risingSign,
@@ -1864,6 +1887,9 @@ host.classList.add('is-done');
         lon: currentChart.lon,
         tz: currentChart.tz,
         houseSystem: currentChart.houseSystem || 'equal',
+        timeKnown: currentChart.timeKnown === true,
+        timeAccuracy: currentChart.timeAccuracy || 'unknown',
+        timezoneKnown: currentChart.timezoneKnown === true,
         sunSign: currentChart.positions.Sun.sign,
         moonSign: currentChart.positions.Moon.sign,
         risingSign: currentChart.risingSign,
@@ -1952,7 +1978,10 @@ host.classList.add('is-done');
       birthDate: currentChart.birthDate,
       birthTime: currentChart.birthTime || null,
       place: { city: currentChart.city, lat: currentChart.lat, lon: currentChart.lon, tz: currentChart.tz },
-      risingSign: currentChart.risingSign,
+      timeKnown: currentChart.timeKnown === true,
+      timeAccuracy: currentChart.timeAccuracy || 'unknown',
+      timezoneKnown: currentChart.timezoneKnown === true,
+      risingSign: currentChart.timeKnown ? currentChart.risingSign : null,
       houseSystem: currentChart.houseSystem || 'equal',
       positions: currentChart.positions,
       houses: currentChart.houses,
@@ -2237,7 +2266,8 @@ host.classList.add('is-done');
     const rInner     = R * 0.475;
     const lw = R / 410;
 
-    const ascLon = chart.asc || 0;
+    const hasAngles = chart.timeKnown === true && Array.isArray(chart.houses) && typeof chart.asc === 'number';
+    const ascLon = hasAngles ? chart.asc : 0;
     const ang = lon => Math.PI - ((lon - ascLon) * Math.PI / 180);
 
     // Schematic orbital tracks (decorative — matches SVG chart-render layer)
@@ -2313,24 +2343,28 @@ host.classList.add('is-done');
     });
 
     // House spokes
-    (chart.houses || []).forEach(cusp => {
-      const a = ang(cusp);
-      x.strokeStyle = 'rgba(168, 158, 136,0.2)'; x.lineWidth = 1 * lw;
-      x.beginPath(); x.moveTo(cx, cy);
-      x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner); x.stroke();
-    });
+    if (hasAngles) {
+      chart.houses.forEach(cusp => {
+        const a = ang(cusp);
+        x.strokeStyle = 'rgba(168, 158, 136,0.2)'; x.lineWidth = 1 * lw;
+        x.beginPath(); x.moveTo(cx, cy);
+        x.lineTo(cx + Math.cos(a) * rInner, cy + Math.sin(a) * rInner); x.stroke();
+      });
+    }
 
     // Ascendant axis
-    const aAsc = ang(ascLon);
-    x.strokeStyle = 'rgba(176,74,82,0.9)'; x.lineWidth = 2.5 * lw;
-    x.beginPath();
-    x.moveTo(cx + Math.cos(aAsc) * rInner,     cy + Math.sin(aAsc) * rInner);
-    x.lineTo(cx + Math.cos(aAsc) * rSignInner, cy + Math.sin(aAsc) * rSignInner);
-    x.stroke();
-    x.fillStyle = '#c97a82';
-    x.font = `bold ${R * 0.05}px ${FONT_SANS}`;
-    x.textBaseline = 'middle'; x.textAlign = 'center';
-    x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 32 * lw), cy + Math.sin(aAsc) * (rInner - 32 * lw));
+    if (hasAngles) {
+      const aAsc = ang(ascLon);
+      x.strokeStyle = 'rgba(176,74,82,0.9)'; x.lineWidth = 2.5 * lw;
+      x.beginPath();
+      x.moveTo(cx + Math.cos(aAsc) * rInner,     cy + Math.sin(aAsc) * rInner);
+      x.lineTo(cx + Math.cos(aAsc) * rSignInner, cy + Math.sin(aAsc) * rSignInner);
+      x.stroke();
+      x.fillStyle = '#c97a82';
+      x.font = `bold ${R * 0.05}px ${FONT_SANS}`;
+      x.textBaseline = 'middle'; x.textAlign = 'center';
+      x.fillText('ASC', cx + Math.cos(aAsc) * (rInner - 32 * lw), cy + Math.sin(aAsc) * (rInner - 32 * lw));
+    }
 
     // Planet glyphs with halo + collision offset
     const PLANET_ORDER_WHEEL = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];

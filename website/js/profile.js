@@ -125,11 +125,15 @@ window.AstroProfile = (() => {
   // Map an `ap_charts` row to the cosmic-dashboard (`ap_profile_v2`) shape.
   function chartToDashboardRow(c) {
     if (!c) return null;
+    const timeKnown = c.timeKnown === true || !!((c.birthTime || c.time) && (c.birthTime || c.time) !== '12:00');
     return {
       id:      c.id,
       name:    c.name || 'Untitled Chart',
       date:    c.birthDate || c.date || '',
-      time:    c.birthTime || c.time || '12:00',
+      time:    timeKnown ? (c.birthTime || c.time || '') : '',
+      timeKnown,
+      timeAccuracy: c.timeAccuracy || (timeKnown ? 'exact' : 'unknown'),
+      timezoneKnown: c.timezoneKnown === true || isValidTimeZone(c.tz),
       city:    c.birthCity || c.city || '',
       lat:     c.lat,
       lon:     c.lon,
@@ -139,6 +143,12 @@ window.AstroProfile = (() => {
       asc:     c.risingSign || c.asc || c.ascendant || null,
       savedAt: c.updatedAt || c.createdAt || c.savedAt || Date.now(),
     };
+  }
+
+  function isValidTimeZone(tz) {
+    if (typeof tz !== 'string' || !tz.trim()) return false;
+    try { new Intl.DateTimeFormat('en-US', { timeZone: tz }).format(); return true; }
+    catch (e) { return false; }
   }
 
   // Keep profile.html's cosmic dashboard in sync when charts are saved from chart.html.
@@ -199,8 +209,11 @@ window.AstroProfile = (() => {
     if (!E || !E.calculateNatalChart) return null;
     const { name, date, time, lat, lon, city, tz, houseSystem } = birthInfo;
     if (!date || !isFinite(parseFloat(lat)) || !isFinite(parseFloat(lon))) return null;
+    const timezoneKnown = birthInfo.timezoneKnown === true || isValidTimeZone(tz);
+    if (!timezoneKnown) return null;
+    const timeKnown = birthInfo.timeKnown === true || !!(time && time !== '12:00');
     const [y, m, d] = date.split('-').map(Number);
-    const [hh, mm]  = (time || '12:00').split(':').map(Number);
+    const [hh, mm]  = (timeKnown ? time : '12:00').split(':').map(Number);
     let utY = y, utM = m, utD = d, utH = hh, utMin = mm;
     if (tz) {
       const u = civilToUT(y, m, d, hh, mm, tz);
@@ -213,7 +226,10 @@ window.AstroProfile = (() => {
     return {
       name,
       birthDate:   date,
-      birthTime:   time || null,
+      birthTime:   timeKnown ? time : null,
+      timeKnown,
+      timeAccuracy: birthInfo.timeAccuracy || (timeKnown ? 'exact' : 'unknown'),
+      timezoneKnown,
       birthCity:   city,
       lat:         parseFloat(lat),
       lon:         parseFloat(lon),
@@ -221,13 +237,13 @@ window.AstroProfile = (() => {
       houseSystem: houseSystem || 'placidus',
       jd:          raw.jd,
       positions:   raw.positions,
-      ascendant:   raw.ascendant,
-      mc:          raw.midheaven,
-      houses:      raw.houses,
-      aspects:     raw.aspects,
+      ascendant:   timeKnown ? raw.ascendant : null,
+      mc:          timeKnown ? raw.midheaven : null,
+      houses:      timeKnown ? raw.houses : null,
+      aspects:     timeKnown ? raw.aspects : (raw.aspects || []).filter(a => !['asc', 'mc'].includes(String(a.planet1 || '').toLowerCase()) && !['asc', 'mc'].includes(String(a.planet2 || '').toLowerCase())),
       sunSign:     E.signOf(raw.positions.sun.longitude),
       moonSign:    E.signOf(raw.positions.moon.longitude),
-      risingSign:  E.signOf(raw.ascendant),
+      risingSign:  timeKnown ? E.signOf(raw.ascendant) : null,
       engineV:     2,
     };
   }
@@ -235,7 +251,7 @@ window.AstroProfile = (() => {
   // One-time re-derivation after the 2026-06-12 ascendant fix: charts saved
   // before it carry the DESCENDANT as risingSign. Birth data is stored, so we
   // recompute quietly instead of asking anyone to re-enter anything.
-  const ENGINE_V = 2;
+  const ENGINE_V = 3;
   function migrateCharts() {
     const E = window.AstroEphemeris;
     if (!E || !E.calculateNatalChart) { setTimeout(migrateCharts, 300); return; }
@@ -246,16 +262,24 @@ window.AstroProfile = (() => {
       const rebuilt = buildChartData({
         name: c.name, date: c.birthDate, time: c.birthTime,
         lat: c.lat, lon: c.lon, city: c.birthCity || c.city, tz: c.tz, houseSystem: c.houseSystem,
+        timeKnown: c.timeKnown === true || !!(c.birthTime && c.birthTime !== '12:00'),
+        timeAccuracy: c.timeAccuracy,
+        timezoneKnown: isValidTimeZone(c.tz),
       });
       if (rebuilt) {
         c.risingSign = rebuilt.risingSign;
         c.sunSign    = rebuilt.sunSign  || c.sunSign;
         c.moonSign   = rebuilt.moonSign || c.moonSign;
+        c.timeKnown = rebuilt.timeKnown;
+        c.timeAccuracy = rebuilt.timeAccuracy;
+        c.timezoneKnown = rebuilt.timezoneKnown;
         if (c.ascendant != null) c.ascendant = rebuilt.ascendant;
         if (c.houses) c.houses = rebuilt.houses;
       }
-      c.engineV = ENGINE_V;
-      changed = true;
+      if (rebuilt) {
+        c.engineV = ENGINE_V;
+        changed = true;
+      }
     });
     if (changed) localStorage.setItem(STORAGE_KEY_CHARTS, JSON.stringify(charts));
   }
@@ -404,6 +428,9 @@ window.AstroProfile = (() => {
       lon: row.lon,
       tz: row.tz,
       houseSystem: row.houseSystem,
+      timeKnown: row.timeKnown === true || !!(row.birthTime && row.birthTime !== '12:00'),
+      timeAccuracy: row.timeAccuracy || ((row.timeKnown === true || row.birthTime) ? 'exact' : 'unknown'),
+      timezoneKnown: row.timezoneKnown === true || isValidTimeZone(row.tz),
       sunSign: row.sunSign,
       moonSign: row.moonSign,
       risingSign: row.risingSign,
@@ -412,6 +439,12 @@ window.AstroProfile = (() => {
     base.positions = (row.positions && Object.keys(row.positions).length)
       ? { ...row.positions }
       : {};
+    if (!base.timeKnown) {
+      delete base.positions.Ascendant;
+      delete base.positions.Midheaven;
+      base.risingSign = null;
+      base.aspects = base.aspects.filter(a => !['asc', 'mc'].includes(String(a.planet1 || '').toLowerCase()) && !['asc', 'mc'].includes(String(a.planet2 || '').toLowerCase()));
+    }
     if (base.positions.Sun && !base.positions.Sun.sign && row.sunSign) {
       base.positions.Sun.sign = row.sunSign;
     }

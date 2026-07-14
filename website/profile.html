@@ -33,6 +33,9 @@
   <noscript><link rel="stylesheet" href="css/fonts.css" /><link rel="stylesheet" href="css/ap-page-bridge.css" /><link rel="stylesheet" href="css/celestial-seals.css" /></noscript>
   <link rel="stylesheet" href="css/main-lite.css" />
   <link rel="stylesheet" href="css/profile-page.css" id="ap-css-profile" />
+  <!-- Fixed mobile tabs: keep this corrective layer after page CSS so the
+       AP_NAV four-tab contract wins over legacy flex/pinned rules. -->
+  <link rel="stylesheet" href="css/ap-overhaul-s8.css?v=752" id="ap-css-overhaul-s8" />
   <style>
     body:has(#setup-section){--font-display:'Cormorant Garamond',Georgia,'Times New Roman',serif;--font-body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;}
     body:has(#setup-section) .site-header,body:has(#dashboard-section) .site-header{min-height:var(--nav-height,72px);contain:layout style;}
@@ -306,9 +309,9 @@
                     </div>
                     <div class="form-group">
                       <label for="ac-time" class="form-label">Birth Time</label>
-                      <input type="time" id="ac-time" class="form-input" value="12:00"
+                      <input type="time" id="ac-time" class="form-input" value=""
                              aria-describedby="ac-time-hint" />
-                      <p class="form-hint" id="ac-time-hint">Affects Rising sign and houses.</p>
+                      <p class="form-hint" id="ac-time-hint">Optional. Unknown time keeps Rising, MC and houses withheld.</p>
                     </div>
                   </div>
                   <div class="form-group" style="position:relative;margin-top:var(--space-3);">
@@ -626,7 +629,11 @@
       const mapAp = (window.AstroProfile && AstroProfile.chartToDashboardRow)
         ? c => AstroProfile.chartToDashboardRow(c)
         : c => ({
-            id: c.id, name: c.name, date: c.birthDate, time: c.birthTime || '12:00',
+            id: c.id, name: c.name, date: c.birthDate,
+            time: (c.timeKnown === true || (c.birthTime && c.birthTime !== '12:00')) ? (c.birthTime || '') : '',
+            timeKnown: c.timeKnown === true || (c.birthTime && c.birthTime !== '12:00'),
+            timeAccuracy: c.timeAccuracy || ((c.timeKnown === true || c.birthTime) ? 'exact' : 'unknown'),
+            timezoneKnown: c.timezoneKnown === true || !!c.tz,
             city: c.birthCity || c.city || '', lat: c.lat, lon: c.lon, tz: c.tz || '',
             sun: c.sunSign, moon: c.moonSign, asc: c.risingSign,
             savedAt: c.updatedAt || c.createdAt,
@@ -751,7 +758,7 @@
       const steps = [
         { key:'name',       label:'Name',       done: !!(profile.name && profile.name !== 'Stargazer') },
         { key:'birthdate',  label:'Birth Date',  done: !!first.date },
-        { key:'birthtime',  label:'Birth Time',  done: !!(first.time && first.time !== '12:00') },
+        { key:'birthtime',  label:'Birth Time',  done: first.timeKnown === true || !!(first.time && first.time !== '12:00') },
         { key:'birthcity',  label:'Birth City',  done: !!(first.city) },
         { key:'lifepath',   label:'Life Path',   done: !!(profile.history && profile.history.includes('lifepath')) },
         { key:'chart',      label:'First Chart', done: (profile.charts||[]).length > 0 },
@@ -1243,7 +1250,9 @@
           e.preventDefault();
           const nameVal = document.getElementById('ac-name').value.trim() || 'My Chart';
           const dateVal = document.getElementById('ac-date').value;
-          const timeVal = document.getElementById('ac-time').value || '12:00';
+          const rawTimeVal = document.getElementById('ac-time').value;
+          const timeKnown = !!rawTimeVal;
+          const timeVal = timeKnown ? rawTimeVal : '12:00'; // neutral engine epoch; never persisted
           const cityVal = document.getElementById('ac-city').value.trim();
           const latVal = document.getElementById('ac-lat').value;
           const lonVal = document.getElementById('ac-lon').value;
@@ -1251,6 +1260,9 @@
 
           if (!dateVal) { toast('Please enter a birth date.', 'error'); return; }
           if (!latVal || !lonVal) { toast('Please select a city from the suggestions.', 'error'); return; }
+          let timezoneKnown = false;
+          try { new Intl.DateTimeFormat('en-US', { timeZone: tzVal }).format(); timezoneKnown = !!tzVal; } catch (err) { timezoneKnown = false; }
+          if (!timezoneKnown) { toast('Please select a city with a recognised timezone.', 'error'); return; }
 
           const profile = getProfile();
           if (!profile) return;
@@ -1273,7 +1285,7 @@
                   if (positions.sun != null) sunSign = SIGNS[Math.floor(((positions.sun % 360) + 360) % 360 / 30)];
                   if (positions.moon != null) moonSign = SIGNS[Math.floor(((positions.moon % 360) + 360) % 360 / 30)];
                 }
-                if (asc != null) {
+                if (timeKnown && asc != null) {
                   const SIGNS = ['Aries','Taurus','Gemini','Cancer','Leo','Virgo','Libra','Scorpio','Sagittarius','Capricorn','Aquarius','Pisces'];
                   ascSign = SIGNS[Math.floor(((asc % 360) + 360) % 360 / 30)];
                 }
@@ -1285,14 +1297,17 @@
             id: (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)),
             name: nameVal,
             date: dateVal,
-            time: timeVal,
+            time: timeKnown ? rawTimeVal : '',
+            timeKnown,
+            timeAccuracy: timeKnown ? 'exact' : 'unknown',
+            timezoneKnown,
             city: cityVal,
             lat: latVal,
             lon: lonVal,
             tz: tzVal,
             sun: sunSign,
             moon: moonSign,
-            asc: ascSign,
+            asc: timeKnown ? ascSign : null,
             savedAt: Date.now()
           };
 
