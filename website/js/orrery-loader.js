@@ -273,7 +273,12 @@
       return new Promise(function (resolve, reject) {
         var canvas = document.getElementById('orrery-canvas');
         if (!canvas) return reject(new Error('no canvas'));
+        try {
+          document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) { el.remove(); });
+          if (canvas.parentNode) canvas.parentNode.querySelectorAll('.orrery-controls').forEach(function (el) { el.remove(); });
+        } catch (e) {}
         var s = document.createElement('script');
+        s.dataset.apOrreryCanvasFallback = 'true';
         s.src = 'js/orrery3d.js';
         s.onload = function () {
           try {
@@ -319,10 +324,22 @@
   }
 
   function teardownCanvasEngine() {
+    var oldCanvas = document.getElementById('orrery-canvas');
     try {
       if (window.Orrery3D && typeof window.Orrery3D.destroy === 'function') {
         window.Orrery3D.destroy();
       }
+    } catch (e) {}
+    // A 2D context cannot be upgraded to WebGL. Retire the old node and its
+    // generated controls so an explicit HD retry gets a clean surface.
+    try {
+      if (oldCanvas && oldCanvas.parentNode) {
+        var parent = oldCanvas.parentNode;
+        var fresh = oldCanvas.cloneNode(false);
+        parent.replaceChild(fresh, oldCanvas);
+        parent.querySelectorAll('.orrery-controls').forEach(function (el) { el.remove(); });
+      }
+      document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach(function (el) { el.remove(); });
     } catch (e) {}
     window.__orreryReady = false;
     window.__apOrreryCanvasFallback = false;
@@ -345,6 +362,7 @@
 
     if (forceWebGL && document.documentElement.classList.contains('orrery-canvas') && window.__orreryReady) {
       teardownCanvasEngine();
+      canvas = document.getElementById('orrery-canvas');
     }
 
     return waitFor(function () {

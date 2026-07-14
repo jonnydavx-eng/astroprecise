@@ -7682,6 +7682,7 @@ const FinishShader = {
   let fallbackPromise = null;
   let fallbackRoot = null;
   let fallbackWasFull = false;
+  let fallbackWasCanvas = false;
   function waitForFallbackFrame() {
     return new Promise((resolve) => {
       let done = false;
@@ -7710,6 +7711,14 @@ const FinishShader = {
       const root = document.documentElement;
       fallbackRoot = root;
       fallbackWasFull = !!(root && root.classList.contains('orrery-full'));
+      fallbackWasCanvas = !!(root && root.classList.contains('orrery-canvas'));
+      try {
+        parent.querySelectorAll('.orrery-controls').forEach((el) => el.remove());
+        document.querySelectorAll('script[data-ap-orrery-canvas-fallback]').forEach((el) => el.remove());
+        if (window.__apOrreryCanvasFallback && window.Orrery3D && typeof window.Orrery3D.destroy === 'function') {
+          window.Orrery3D.destroy();
+        }
+      } catch (e) { /* stale fallback cleanup is best effort */ }
       // A canvas that has held a WebGL context cannot return a 2D context. Fully
       // retire the renderer/listeners/resources before replacing it with a fresh node.
       try { destroy(); } catch (e) { console.warn('[orrery] WebGL cleanup before canvas fallback failed:', e); }
@@ -7721,9 +7730,10 @@ const FinishShader = {
         root.classList.add('orrery-canvas');
       }
       window.__orreryReady = false;
-      window.__apOrreryCanvasFallback = true;
+      window.__apOrreryCanvasFallback = false;
       try { delete window.Orrery3D; } catch (e) { window.Orrery3D = undefined; }
       const script = document.createElement('script');
+      script.dataset.apOrreryCanvasFallback = 'true';
       script.src = 'js/orrery3d.js?v=' + String(window.AP_ASSET_V || '752');
       await new Promise((resolve, reject) => {
         script.onload = resolve;
@@ -7738,9 +7748,13 @@ const FinishShader = {
       if (typeof window.Orrery3D.whenReady === 'function') await window.Orrery3D.whenReady();
       await waitForFallbackFrame();
       window.__orreryReady = true;
+      window.__apOrreryCanvasFallback = true;
       document.dispatchEvent(new Event('ap-orrery-ready'));
+      fallbackPromise = null;
+      window.__apOrreryFallbackPromise = null;
       fallbackRoot = null;
       fallbackWasFull = false;
+      fallbackWasCanvas = false;
       return window.Orrery3D;
     })().catch((err) => {
       fallbackPromise = null;
@@ -7751,9 +7765,11 @@ const FinishShader = {
       if (fallbackRoot) {
         fallbackRoot.classList.remove('orrery-canvas');
         if (fallbackWasFull) fallbackRoot.classList.add('orrery-full');
+        if (fallbackWasCanvas) fallbackRoot.classList.add('orrery-canvas');
       }
       fallbackRoot = null;
       fallbackWasFull = false;
+      fallbackWasCanvas = false;
       throw err;
     });
     window.__apOrreryFallbackPromise = fallbackPromise;
