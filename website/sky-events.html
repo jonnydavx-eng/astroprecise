@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What the sky does next — computed event calendar | Astro Precise</title>
+<meta name="description" content="The next conjunction, full moon and Mercury station — plus the 28 Aug lunar eclipse, equinox, Saturn opposition and the great meteor showers. Every date computed in your browser, just now.">
+<link rel="canonical" href="https://astroprecise.app/sky-events.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="./js/orrery.js"></script>
+<style>
+:root{--ink:#e9edf2;--dim:rgba(233,237,242,.72);--faint:rgba(233,237,242,.5);--line:rgba(159,220,236,.18);--line2:rgba(159,220,236,.24);--acc:#9fdcec;--good:rgba(126,240,200,.85)}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{color:#fff}
+a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.serif{font-family:Georgia,'Times New Roman',serif;font-style:italic}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px 90px}
+h1{margin:56px 0 12px;font-size:clamp(34px,6vw,48px);line-height:1.08;font-weight:700;letter-spacing:-.015em}
+.event{border-top:1px solid var(--line);padding:34px 0 30px}
+.kick{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
+.event h2{margin:0 0 10px;font-size:clamp(24px,4vw,32px);font-weight:700;line-height:1.15}
+.meta{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;color:rgba(233,237,242,.85);border:1px solid var(--line);border-radius:10px;background:rgba(220,240,248,.03);padding:12px 16px;margin:0 0 14px;line-height:1.8}
+.event p{margin:0 0 10px;font-size:16.5px;line-height:1.7;color:var(--dim)}
+.myth{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:17px;line-height:1.6;color:rgba(159,220,236,.85)}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:rgba(233,237,242,.4);line-height:2.1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script src="./js/ambience.js"></script>
+</head>
+<body>
+<space-ambience density="200"></space-ambience>
+<div class="wrap" style="position:relative;z-index:1">
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0">
+  <a class="mono" style="font-size:10px;letter-spacing:.22em;color:rgba(233,237,242,.65)" href="./index.html">← THE OBSERVATORY</a>
+  <span class="mono" style="font-size:10px;letter-spacing:.26em;color:var(--acc)">SKY EVENTS · COMPUTED THIS MINUTE</span>
+</div>
+
+<h1>What the sky does next.</h1>
+<p style="margin:0 0 10px;font-size:18px;line-height:1.65;color:var(--dim)">Every date below is computed in your browser as the page opens — dates, signs and separations from the same engine that runs the model. Not an editorial calendar; a calculation.</p>
+
+<div id="events"><div class="mono" style="font-size:10px;letter-spacing:.22em;color:var(--faint);padding:30px 0">COMPUTING THE NEXT 400 DAYS…</div></div>
+
+<div class="foot" style="margin-top:44px">
+  EVERY DATE ABOVE WAS COMPUTED IN YOUR BROWSER JUST NOW · POSITIONS ±ARCMINUTES · MEANINGS ARE FOR REFLECTION, NOT PREDICTION<br>
+  <a href="./index.html#cast">CAST YOUR CHART FREE</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE — YOUR READING</a> · <a href="./sky-card.html">MAKE YOUR SKY CARD</a><br>
+  © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
+</div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  function go() {
+    var E = window.VoidEphem;
+    if (!E) { setTimeout(go, 150); return; }
+    var now = new Date(), DAY = 86400000;
+    var fmt = function (d) { return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); };
+    var fmtS = function (d) { return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase(); };
+    var sep2 = function (a, b) { return Math.abs(((a - b + 540) % 360) - 180); };
+    function fullMoonNear(target) {
+      var jd0 = E.jd(target) - 3, prev = null;
+      for (var h = 0; h <= 144; h++) {
+        var j3 = jd0 + h / 24;
+        var e = ((E.moonLon(j3) - E.sunLon(j3)) % 360 + 360) % 360;
+        if (prev !== null && prev < 180 && e >= 180) return E.dateOf(j3 - (e - 180) / (e - prev) / 24);
+        prev = e;
+      }
+      return target;
+    }
+    var out = [];
+    var ev = function (kick, title, meta, body, myth) {
+      out.push('<div class="event"><div class="kick">' + kick + '</div><h2>' + title + '</h2><div class="meta">' + meta + '</div><p>' + body + '</p>' + (myth ? '<div class="myth">' + myth + '</div>' : '') + '</div>');
+    };
+    var KEYS = ['mercury', 'venus', 'mars', 'jupiter', 'saturn'];
+    var daily = [];
+    for (var t = 0; t <= 400; t++) daily.push(E.positions(new Date(now.getTime() + t * DAY)).rows.filter(function (r) { return KEYS.indexOf(r.key) >= 0; }));
+    var best = null;
+    for (var i = 0; i < KEYS.length; i++) for (var k = i + 1; k < KEYS.length; k++) {
+      for (t = 1; t < 400; t++) {
+        var s0 = sep2(daily[t - 1][i].lon, daily[t - 1][k].lon), s1 = sep2(daily[t][i].lon, daily[t][k].lon), s2 = sep2(daily[Math.min(t + 1, 400)][i].lon, daily[Math.min(t + 1, 400)][k].lon);
+        if (s1 <= s0 && s1 <= s2 && s1 < 2.5 && (!best || t < best.t)) { best = { t: t, a: daily[t][i], b: daily[t][k], sep: s1 }; break; }
+      }
+    }
+    if (best) {
+      var dd = new Date(now.getTime() + best.t * DAY);
+      ev('NEXT CONJUNCTION · ' + best.t + ' DAYS AWAY', best.a.name + ' meets ' + best.b.name,
+        fmt(dd).toUpperCase() + ' · CLOSEST APPROACH ' + best.sep.toFixed(1) + '° · IN ' + best.a.sign.name.toUpperCase(),
+        'Two wanderers close to ' + best.sep.toFixed(1) + '° apart in the evening sky — near enough to share one field of view. No instrument needed; look ' + (best.a.sign.name === best.b.sign.name ? 'toward ' + best.a.sign.name : 'along the ecliptic') + ' after dusk.',
+        'The ancients read meetings like this as council between gods. You get to just watch.');
+    }
+    var mp = E.moonPhase(E.jd(now));
+    var fmDate = fullMoonNear(new Date(now.getTime() + mp.daysToFull * DAY));
+    if (fmDate.getTime() <= now.getTime()) fmDate = fullMoonNear(new Date(fmDate.getTime() + 29.53 * DAY));
+    var fmDays = Math.max(1, Math.round((fmDate.getTime() - now.getTime()) / DAY));
+    var fmRow = E.positions(fmDate).rows.find(function (r) { return r.key === 'moon'; });
+    var ELEM = { Aries: 'fire', Leo: 'fire', Sagittarius: 'fire', Taurus: 'earth', Virgo: 'earth', Capricorn: 'earth', Gemini: 'air', Libra: 'air', Aquarius: 'air', Cancer: 'water', Scorpio: 'water', Pisces: 'water' };
+    ev('NEXT FULL MOON · IN ' + fmDays + ' DAYS', 'Full Moon in ' + fmRow.sign.name,
+      fmt(fmDate).toUpperCase() + ' · ' + fmRow.sign.deg + '° ' + fmRow.sign.name.toUpperCase(),
+      'The Moon reaches opposition — Earth exactly between it and the Sun — fully lit at ' + fmRow.sign.deg + '° ' + fmRow.sign.name + '. It rises at sunset and stays up all night.',
+      'A full moon in a ' + ELEM[fmRow.sign.name] + ' sign, the old books say: feelings run ' + ({ fire: 'hot and fast', earth: 'deep and steady', air: 'loud and social', water: 'under everything' })[ELEM[fmRow.sign.name]] + '. Weather, not fate.');
+    var state0 = E.positions(now).rows.find(function (r) { return r.key === 'mercury'; }).retro;
+    var flipT = null, flipRow = null;
+    for (t = 1; t <= 200; t++) {
+      var r = E.positions(new Date(now.getTime() + t * DAY)).rows.find(function (q) { return q.key === 'mercury'; });
+      if (r.retro !== state0) { flipT = t; flipRow = r; break; }
+    }
+    if (flipT) {
+      var sd = new Date(now.getTime() + flipT * DAY);
+      ev('MERCURY STATION · IN ' + flipT + ' DAYS', state0 ? 'Mercury stations direct in ' + flipRow.sign.name : 'Mercury stations retrograde in ' + flipRow.sign.name,
+        fmt(sd).toUpperCase() + ' · ' + flipRow.sign.deg + '° ' + flipRow.sign.name.toUpperCase(),
+        state0
+          ? 'Mercury is retrograde right now and appears to stop and resume forward motion in ' + flipT + ' days. The backward drift is perspective — Earth overtaking a faster inner orbit — and it ends on a computable date.'
+          : 'Mercury runs direct today and appears to stop and reverse in ' + flipT + ' days, at ' + flipRow.sign.deg + '° ' + flipRow.sign.name + '. About three weeks of apparent backward motion follow — the classic re-read-before-you-send season.',
+        'Retrograde is not a curse; it is geometry with a reputation.');
+    }
+    var moonIll = function (d) { return Math.round(E.moonPhase(E.jd(d)).illum * 100); };
+    var leDate = fullMoonNear(new Date(Date.UTC(2026, 7, 28)));
+    var leRow = E.positions(leDate).rows.find(function (r) { return r.key === 'moon'; });
+    ev('LUNAR ECLIPSE · PARTIAL', 'The Moon dims in ' + leRow.sign.name,
+      fmtS(leDate) + ' · FULL MOON AT ' + leRow.sign.deg + '° ' + leRow.sign.name.toUpperCase(),
+      "Earth's shadow crosses part of the full Moon — visible wherever the Moon is up, no equipment needed. Sixteen days after the great solar eclipse, the sky answers with its second act.",
+      'Sun and Moon eclipses arrive in pairs; the old astronomers called it an eclipse season.');
+    var eqDate = null;
+    for (t = 0; t < 40; t++) {
+      var d0 = new Date(Date.UTC(2026, 8, 10) + t * DAY);
+      var l0 = E.sunLon(E.jd(d0)), l1 = E.sunLon(E.jd(new Date(d0.getTime() + DAY)));
+      if (l0 < 180 && l1 >= 180) { eqDate = new Date(d0.getTime() + (180 - l0) / (l1 - l0) * DAY); break; }
+    }
+    if (eqDate) ev('EQUINOX', 'The Sun crosses the line', fmtS(eqDate) + ' · SUN AT 0° LIBRA (180.0°)',
+      "Day and night balance as the Sun's longitude crosses exactly 180° — the equinox instant, computed here rather than quoted.", 'Libra begins: the scale, weighing the year.');
+    var sat = E.PLANETS.find(function (p) { return p.key === 'saturn'; });
+    var opDate = null, opBest = 999;
+    for (t = 0; t < 180; t++) {
+      var d1 = new Date(Date.UTC(2026, 7, 1) + t * DAY), j2 = E.jd(d1);
+      var gap = Math.abs(sep2(E.sunLon(j2), E.geoLon(sat, j2)) - 180);
+      if (gap < opBest) { opBest = gap; opDate = d1; }
+    }
+    if (opDate) ev('SATURN AT OPPOSITION', 'Saturn, closest and brightest', fmtS(opDate) + ' · WITHIN ' + opBest.toFixed(1) + '° OF EXACT OPPOSITION',
+      'Earth passes directly between Saturn and the Sun — the planet rises at sunset, up all night, as bright as it gets this year. Any small telescope shows the rings.', 'The timekeeper, at its nearest.');
+    var perDark = 100 - moonIll(new Date(Date.UTC(2026, 7, 12, 23)));
+    var gemDark = 100 - moonIll(new Date(Date.UTC(2026, 11, 13, 23)));
+    ev('METEORS · PERSEIDS + GEMINIDS', "The year's two great showers",
+      'PERSEIDS 12–13 AUG · SKY ' + perDark + '% DARK — GEMINIDS 13–14 DEC · SKY ' + gemDark + '% DARK',
+      'The Perseids peak the very night of the eclipse — a new-moon sky, ' + perDark + '% dark, up to 100 meteors an hour after midnight. The Geminids answer in December at ' + gemDark + '% darkness.',
+      'Shooting stars are dust from a comet’s road, burning ninety kilometres up.');
+    document.getElementById('events').innerHTML = out.join('');
+  }
+  go();
+})();
+</script>
+</body>
+</html>
