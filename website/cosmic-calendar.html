@@ -7,7 +7,7 @@
 <meta name="description" content="Compress all of cosmic history into one year. Computed live from the age of the universe (Planck 2018), with every date checkable — and the honest line where real data ends and cited cosmology begins. See how small, and how late, we are.">
 <link rel="canonical" href="https://astroprecise.app/cosmic-calendar.html">
 <meta property="og:title" content="The whole universe in one year — where do you fall?">
-<meta property="og:description" content="13.8 billion years compressed to a calendar. Recorded history is the last ~14 seconds. Your life is a few milliseconds. Computed, checkable, honest.">
+<meta property="og:description" content="13.8 billion years compressed to a calendar. All of recorded history is the last ~11 seconds of the year. Your whole life is a fraction of a second. Computed, checkable, honest.">
 <meta property="og:url" content="https://astroprecise.app/cosmic-calendar.html">
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -114,7 +114,7 @@ input{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radi
 <!-- the first-second fact -->
 <div class="card">
   <div class="lbl">AND YET — THE FIRST SECOND IS THE BIGGEST</div>
-  <p style="font-size:15.5px;line-height:1.7;color:var(--dim);margin:0 0 10px">A calendar hides something. Stretch time by powers of ten instead, and the very first second of the universe — from the Planck time (10⁻⁴³ s) to one second — spans about <b style="color:var(--ink)">43 factors of ten</b>. Everything since, all 13.8 billion years, spans only about <b style="color:var(--ink)">18</b>. On a logarithmic clock, <b style="color:var(--acc)">the first second contains more distinct eras than the entire age of the universe that follows it.</b> Both statements are true; they are just two honest ways to look at the same history.</p>
+  <p style="font-size:15.5px;line-height:1.7;color:var(--dim);margin:0 0 10px">A calendar hides something. Stretch time by powers of ten instead, and the very first second of the universe — from about the Planck time (~10⁻⁴³ s; more precisely 5.4×10⁻⁴⁴ s) to one second — spans about <b style="color:var(--ink)">43 factors of ten</b>. Everything since, all 13.8 billion years, spans only about <b style="color:var(--ink)">18</b>. On a logarithmic clock, <b style="color:var(--acc)">the first second contains more distinct eras than the entire age of the universe that follows it.</b> Both statements are true; they are just two honest ways to look at the same history.</p>
   <div class="receipt"><div id="logFact">10⁻⁴³ s → 1 s ≈ 43 orders of magnitude · 1 s → 13.787 Gyr ≈ 17.6 orders · RATIO ≈ 2.4×</div></div>
 </div>
 
@@ -155,10 +155,10 @@ const EVENTS = [
   { name:'The Big Bang', t:0, src:'unknown', note:'the beginning — not a photograph' },
   { name:'First atoms · the CMB (oldest real image)', t:380000, src:'real', note:'the light we can still measure' },
   { name:'First stars (Cosmic Dawn)', t:200e6, src:'model', note:'JWST is mapping this now' },
-  { name:'The Milky Way forms', t:1.0e9, src:'model', note:'our galaxy assembles' },
+  { name:'The Milky Way’s disk assembles', t:1.0e9, src:'model', note:'its oldest stars are older still (~13.5 Gya)' },
   { name:'The Sun & Solar System', t:AGE-4.57e9, src:'real', note:'where our engine’s real domain begins' },
   { name:'Earth forms', t:AGE-4.54e9, src:'real', note:'home' },
-  { name:'First life on Earth', t:AGE-3.7e9, src:'real', note:'single cells' },
+  { name:'First life on Earth', t:AGE-3.7e9, src:'model', note:'earliest evidence, debated (~3.5–4.3 Gya)' },
   { name:'Oxygen fills the air', t:AGE-2.4e9, src:'real', note:'the Great Oxidation' },
   { name:'Complex animals', t:AGE-0.54e9, src:'real', note:'the Cambrian' },
   { name:'Dinosaurs', t:AGE-0.23e9, src:'real', note:'and gone by 66 Mya' },
