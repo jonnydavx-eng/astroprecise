@@ -170,7 +170,13 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
     : t.anchor.computedNoPlace.replace('{date}', L.date || '12 August 2026'))
     .replace('{eclipseDeg}', eclipseDeg).replace(/\s+,/g, ',').replace(/,\s*,/g, ',').replace(/\s{2,}/g, ' ');
 
-  const contacts = allContacts(eclipseLon, natal, t);
+  // Birth time known? (asc present, or told explicitly). Without it the Moon is
+  // only placeable to ±7°, so — exactly as the Deep Reading does — we bar the
+  // untimed Moon from headlining, from secondaries, and from any tight-orb claim.
+  const timed = opts.timed != null ? opts.timed : (natal.asc != null && !Number.isNaN(natal.asc));
+  const allC = allContacts(eclipseLon, natal, t);
+  const moonExcluded = !timed && allC.some((c) => c.target === 'moon');
+  const contacts = timed ? allC : allC.filter((c) => c.target !== 'moon');
   // Primary = tightest HARD contact within its per-aspect sale gate.
   const hardContacts = contacts.filter((c) => HARD[c.aspect] != null && c.orbDeg <= Math.min(HARD[c.aspect], gate + (c.aspect === 'conjunction' ? 1 : 0)));
   const closest = hardContacts[0] || null;
@@ -192,10 +198,13 @@ export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
           ? ` The nearest touch is a gentle ${t.aspects[nearestAny.aspect].label.toLowerCase()} to your ${t.targets[nearestAny.target].label} (${fmtOrb(nearestAny.orbDeg)}) — background light, not a headline, and we won't dress it up as one.`
           : ` The nearest touch is a wide ${fmtOrb(nearestAny.orbDeg)} to your ${t.targets[nearestAny.target].label}.`)
       : '';
+    const moonNote = moonExcluded
+      ? ' (Your Moon needs a birth time we don’t have to place exactly, so we’ve left it out rather than quote it falsely.)'
+      : '';
     const reading = {
       quiet: true, gateSale: true,
       anchor: { mono: anchorMono, serif: t.anchor.serif },
-      contact: { mono: t.emptyState.computed.replace('{maxOrb}', String(gate)) + nearest, serif: t.emptyState.reflection },
+      contact: { mono: t.emptyState.computed.replace('{maxOrb}', String(gate)) + nearest + moonNote, serif: t.emptyState.reflection },
       governs: null, question: null, close,
       legal: t.legalLine,
     };
