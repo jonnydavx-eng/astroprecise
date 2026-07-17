@@ -60,6 +60,7 @@ input{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radi
 </style>
 </head>
 <body>
+<canvas id="stars" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;z-index:-1;display:block"></canvas>
 <div class="wrap">
 
 <div class="top">
@@ -77,6 +78,10 @@ input{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radi
 </div>
 
 <!-- the year strip -->
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:6px">
+  <button class="btn" id="playBtn" type="button" style="padding:9px 18px;font-size:9px">▶ PLAY 13.8 BILLION YEARS</button>
+  <span class="mono" id="playEra" style="font-size:9.5px;letter-spacing:.12em;color:var(--acc);text-align:right;flex:1"></span>
+</div>
 <div class="year" id="yearStrip" aria-hidden="true"></div>
 <div class="evwrap" id="evWrap"></div>
 
@@ -223,6 +228,75 @@ EVENTS.forEach((e,i)=>{
   l.textContent=txt; ev.appendChild(l);
 });
 
+// ——— living starfield: the site alive in space (reduced-motion aware) ———
+(function starfield(){
+  const c = $('stars'), x = c.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let W, H, stars;
+  function seed(){
+    W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio;
+    const n = Math.min(220, Math.floor(innerWidth*innerHeight/9000));
+    stars = Array.from({length:n}, (_,i) => ({
+      x: (Math.sin(i*12.9898)*43758.5453 % 1 + 1)%1 * W,
+      y: (Math.sin(i*78.233)*43758.5453 % 1 + 1)%1 * H,
+      z: 0.3 + ((Math.sin(i*3.17)*1000)%1+1)%1 * 0.7,      // depth → size/speed
+      p: ((Math.sin(i*5.51)*1000)%1+1)%1 * 6.28             // twinkle phase
+    }));
+  }
+  seed(); addEventListener('resize', seed);
+  let t = 0;
+  function frame(){
+    x.clearRect(0,0,W,H);
+    for(const s of stars){
+      const tw = reduce ? 0.8 : 0.55 + 0.45*Math.sin(t*0.9 + s.p);
+      const r = s.z * 1.5 * devicePixelRatio;
+      x.beginPath(); x.arc(s.x, s.y, r, 0, 6.28);
+      x.fillStyle = `rgba(${180+Math.floor(s.z*40)},${210+Math.floor(s.z*30)},245,${(0.25+0.6*s.z)*tw})`;
+      x.fill();
+      if(!reduce){ s.y += s.z*0.06*devicePixelRatio; if(s.y > H) s.y = 0; }   // slow drift — a sky in motion
+    }
+    t += 0.016;
+    if(!reduce) requestAnimationFrame(frame); else { /* one static paint */ }
+  }
+  frame(); if(reduce){ /* already painted once */ }
+})();
+
+// ——— PLAY the eon: sweep a marker across the year, lighting each era ———
+(function player(){
+  const btn = $('playBtn'), era = $('playEra'), strip = $('yearStrip');
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let marker = null, raf = null;
+  const ERAS = [
+    {f:0.0,   t:'THE BIG BANG — no light yet, no atoms'},
+    {f:0.00003,t:'RECOMBINATION — the first light, the CMB, released'},
+    {f:0.014, t:'COSMIC DAWN — the first stars ignite'},
+    {f:0.07,  t:'GALAXIES ASSEMBLE — the Milky Way takes shape'},
+    {f:0.668, t:'THE SUN & PLANETS FORM — our engine’s real domain begins'},
+    {f:0.67,  t:'EARTH — and soon, the first life'},
+    {f:0.96,  t:'COMPLEX LIFE — oceans full, then land'},
+    {f:0.983, t:'DINOSAURS rise and fall'},
+    {f:0.99998,t:'HUMANS — everything you know, in the final seconds'},
+    {f:1.0,   t:'NOW — 31 December, midnight. You are here.'}
+  ];
+  function eraFor(f){ let e=ERAS[0]; for(const x of ERAS){ if(f>=x.f) e=x; } return e.t; }
+  function ensureMarker(){ if(!marker){ marker=document.createElement('div'); marker.style.cssText='position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 10px #9fdcec;z-index:3'; strip.appendChild(marker);} }
+  btn.addEventListener('click', ()=>{
+    if(raf){ cancelAnimationFrame(raf); raf=null; btn.textContent='▶ PLAY 13.8 BILLION YEARS'; return; }
+    ensureMarker(); btn.textContent='⏸ PAUSE';
+    const DUR = reduce ? 0 : 14000; const start = performance.now();
+    function step(now){
+      // ease so the crowded final day lingers
+      let p = DUR ? Math.min(1,(now-start)/DUR) : 1;
+      const f = Math.pow(p, 1.9);                       // spend more time early, then the last day rushes — invert for drama
+      const frac = 1 - Math.pow(1-p, 2.2);              // ease-out: dwell on the sparse eons, sweep the busy end
+      marker.style.left = (frac*100)+'%';
+      era.textContent = eraFor(frac);
+      if(p<1){ raf=requestAnimationFrame(step); } else { raf=null; btn.textContent='▶ REPLAY'; }
+    }
+    raf=requestAnimationFrame(step);
+  });
+})();
+
 // YOU
 $('go').addEventListener('click', ()=>{
   const v = $('dob').value; if(!v){ $('dob').focus(); return; }
@@ -237,7 +311,7 @@ $('go').addEventListener('click', ()=>{
   const lifeStr = calSeconds < 1 ? `${calMs.toFixed(1)} milliseconds` : `${calSeconds.toFixed(2)} seconds`;
   $('lifeMs').textContent = lifeStr;
   $('youOut').hidden = false;
-  $('youNarr').innerHTML = `On this scale a single year of your life is about <b style="color:var(--ink)">${oneYearMs.toFixed(2)} milliseconds</b> — the blink between two frames of a film. You were born inside the last <b style="color:var(--ink)">${histSeconds.toFixed(1)} seconds</b> of 31 December, the tiny window that also holds every empire, every song, and everyone you have ever known. It is almost nothing. It is also the only part that ever wondered about the rest.`;
+  $('youNarr').innerHTML = `On this scale a single year of your life is about <b style="color:var(--ink)">${oneYearMs.toFixed(2)} milliseconds</b> — the blink between two frames of a film. You were born inside the last <b style="color:var(--ink)">${histSeconds.toFixed(1)} seconds</b> of 31 December, the tiny window that also holds every empire, every song, and everyone you have ever known. It is almost nothing. It is also the only part that ever wondered about the rest.<br><br>And yet you are not late to everything. Almost every atom in you heavier than helium — the calcium in your bones, the iron in your blood — was forged inside earlier stars and flung out when they died, long before the Sun was lit on <b style="color:var(--ink)">September 2nd</b>. You spend your milliseconds made from the ash of suns that burned out billions of years before you.`;
   $('youReceipt').innerHTML = `<div>YOUR AGE: ${ageYears.toFixed(2)} YEARS · ÷ ${perCalSecond.toFixed(0)} YR/CAL-SEC = ${calSeconds.toExponential(2)} CAL-SECONDS<br>RECORDED HISTORY (5,000 YR) = ${histSeconds.toFixed(1)} CAL-SECONDS · ALL OF IT INSIDE DEC 31'S FINAL ${Math.ceil(histSeconds)} SECONDS</div>`;
 });
 </script>
