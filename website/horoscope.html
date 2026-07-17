@@ -82,6 +82,18 @@
     .sphere-selected-label {
       font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
     }
+    /* Entertainment / tradition caveat — keeps the astrology "sky" legally
+       separate from the computed astronomy "sky". Glacial palette. */
+    .ap-entertainment-note{
+      margin:var(--space-3,0.75rem) 0 0;
+      padding:0.6rem 0.85rem;
+      border-left:2px solid #9fdcec;
+      background:rgba(159,220,236,0.06);
+      border-radius:6px;
+      font-size:0.72rem;
+      line-height:1.6;
+      color:var(--color-silver-dim,#A8B0BC);
+    }
   </style>
   <script>
   (function () {
@@ -170,7 +182,7 @@
           <p class="hero__eyebrow" id="today-date-display" aria-live="polite">Updated Daily at Midnight UTC</p>
           <h1 id="page-title">Your horoscope today</h1>
           <p class="sphere-hero__sub">Pick your sign &mdash; live sky, not a canned column.</p>
-          <p style="margin-top:var(--space-2);"><a href="why.html" class="sphere-hero__badge-link"><span class="ap-badge">Real transits — not generic filler</span></a></p>
+          <p style="margin-top:var(--space-2);"><a href="why.html" class="sphere-hero__badge-link"><span class="ap-badge">Real planet positions, computed live on your device</span></a></p>
         </div>
 
         <!-- ============================================================
@@ -287,9 +299,9 @@
                   <stop offset="100%" stop-color="rgba(168, 176, 188,0)"/>
                 </radialGradient>
                 <radialGradient id="sphere-poster-star" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="#F0D868"/>
+                  <stop offset="0%" stop-color="#9fdcec"/>
                   <stop offset="55%" stop-color="#A8B0BC"/>
-                  <stop offset="100%" stop-color="#B8962E"/>
+                  <stop offset="100%" stop-color="#4A5462"/>
                 </radialGradient>
               </defs>
               <rect width="600" height="420" fill="url(#sphere-poster-bg)"/>
@@ -315,7 +327,7 @@
             We need your birth chart first to find your sign.
             <a href="chart.html" class="ap-inline-link">Calculate your chart →</a>
           </p>
-          <button type="button" class="btn btn--gold btn--sm" id="sphere-spin-mine">Go to my sign</button>
+          <button type="button" class="btn btn--primary btn--sm" id="sphere-spin-mine">Go to my sign</button>
           <button type="button" class="btn btn--outline btn--sm" id="sphere-spin-random">Explore a sign</button>
         </div>
 
@@ -334,7 +346,7 @@
               </div>
               <div class="srp-moon-wrap">
                 <canvas id="srp-moon-canvas" width="72" height="72" aria-hidden="true" style="border-radius:50%;"></canvas>
-                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-gold);border:1px solid rgba(168, 176, 188,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
+                <span id="srp-ruler-badge" style="font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:#9fdcec;border:1px solid rgba(168, 176, 188,0.3);border-radius:99px;padding:2px 7px;white-space:nowrap;"></span>
                 <div id="srp-lunar-cycle" class="lunar-cycle-strip" aria-hidden="true">
                   <span class="lunar-cycle-strip__phase" data-phase-idx="0" title="New Moon"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon0"/></svg></span>
                   <span class="lunar-cycle-strip__phase" data-phase-idx="1" title="Waxing Crescent"><svg class="eng-i" aria-hidden="true"><use href="#ei-moon1"/></svg></span>
@@ -347,16 +359,17 @@
                 </div>
               </div>
               <div class="sign-reading-panel__actions">
-                <button class="btn btn--gold btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">↓ Download Card</button>
+                <button class="btn btn--primary btn--sm" id="srp-card-btn" aria-label="Download this reading as an image card">↓ Download Card</button>
                 <button class="btn btn--outline btn--sm" id="srp-share-btn" aria-label="Share this horoscope">Share ↗</button>
                 <button class="btn btn--ghost btn--sm" id="srp-close-btn" aria-label="Close reading">✕</button>
               </div>
               <a href="chart.html" class="srp-personalise-chip" id="srp-personalise-chip" hidden>Personalise with your birth chart →</a>
               <div class="srp-chart-cta" id="srp-chart-cta" hidden>
-                <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. Your personal birth chart reveals how this energy plays out <em>for you specifically</em>.</p>
+                <p class="srp-chart-cta__lead">This is the collective <strong id="srp-chart-sign-name"></strong> reading for today. In the astrological tradition, your personal birth chart is read as showing how this theme might apply <em>to you specifically</em>.</p>
                 <a id="srp-chart-link" href="chart.html" class="srp-chart-cta__btn"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Get Your Personal Birth Chart →</a>
               </div>
             </div>
+            <p class="ap-entertainment-note">Astrological meaning is tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.</p>
             <p class="sign-reading-panel__overview" id="srp-overview"></p>
             <p class="srp-sky-facts" id="srp-sky-facts" style="font-size:0.72rem;color:var(--color-silver-dim);line-height:1.55;margin:0 0 var(--space-3);"></p>
             <div class="srp-transit-chords" id="srp-transit-chords" hidden>
@@ -365,10 +378,11 @@
             </div>
             <div class="srp-energy" id="srp-energy-wrap">
               <div class="srp-energy__label">
-                <span id="srp-energy-name">Cosmic Energy Today</span>
+                <span id="srp-energy-name">Cosmic Energy Today (just for fun)</span>
                 <span class="srp-energy__value" id="srp-energy-pct" aria-hidden="true">—</span>
               </div>
               <div class="srp-energy__track" id="srp-energy-track" role="progressbar" aria-labelledby="srp-energy-name" aria-valuemin="0" aria-valuemax="100"><div class="srp-energy__fill" id="srp-energy-fill"></div></div>
+              <p class="srp-energy__note" style="margin:0.4rem 0 0;font-size:0.62rem;line-height:1.55;color:var(--color-silver-dim,#A8B0BC);">A playful gauge in the astrological tradition, offered for entertainment — not a measured or computed value.</p>
             </div>
             <div class="sign-reading-panel__grid">
               <div class="reading-card">
@@ -408,7 +422,7 @@
             </div>
             <p class="srp-personal-note" id="srp-personal-note" hidden></p>
             <p style="margin-top:var(--space-4);">
-              <span class="ap-badge ap-badge--deterministic">Solar-chart reading — <abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> sky at local noon</span>
+              <span class="ap-badge ap-badge--deterministic"><abbr class="ap-gloss" title="VSOP87 — a published planetary theory, computed privately on your device">VSOP87</abbr> sky positions — computed on your device at local noon</span>
             </p>
             <p id="srp-method-note" style="margin-top:var(--space-2);font-size:0.62rem;color:var(--color-silver-dim);line-height:1.6;"></p>
             <p style="margin-top:var(--space-3);font-size:0.65rem;color:var(--color-silver-dim);">
@@ -504,6 +518,7 @@
             <p class="section-subtitle" style="margin-bottom:0;">
               Daily or monthly in your inbox. Only email is sent; birth data stays on your device.
             </p>
+            <p class="ap-entertainment-note" style="margin:var(--space-3) auto 0;max-width:54ch;">Astrological meaning is tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.</p>
           </header>
           <div class="horoscope-subscribe__grid">
             <div class="horoscope-subscribe__preview" id="hs-preview" aria-live="polite">
@@ -553,7 +568,7 @@
     <section class="section section--alt" aria-labelledby="sky-heading">
       <div class="container">
         <h2 class="section__title" id="sky-heading">Today's Planetary Weather</h2>
-        <p class="section__subtitle">Current positions of all planets and their influences on collective energy</p>
+        <p class="section__subtitle">Current positions of all planets — and the influence on collective energy the astrological tradition reads into them</p>
         <p style="margin-top:var(--space-3);text-align:center;"><span class="ap-badge">Positions computed in your browser from VSOP87 — recalculated, never canned</span></p>
 
         <!-- Live cosmic status bar -->
@@ -563,9 +578,9 @@
             <span>Void of Course Moon</span>
             <span id="void-moon-sign" style="color:var(--silver-dim);"></span>
           </div>
-          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(168, 176, 188,0.08);border:1px solid rgba(168, 176, 188,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--gold);">
+          <div id="planetary-hour-badge" style="display:flex;align-items:center;gap:6px;background:rgba(168, 176, 188,0.08);border:1px solid rgba(168, 176, 188,0.25);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:#9fdcec;">
             <span id="ph-glyph" style="font-size:1rem;"><svg class="eng-i" aria-hidden="true"><use href="#ei-crescent"/></svg></span>
-            <span>Planetary Hour: </span><strong id="ph-name" style="color:var(--gold-light);">loading…</strong>
+            <span>Planetary Hour: </span><strong id="ph-name" style="color:#cdeef7;">loading…</strong>
           </div>
           <div id="retrogrades-badge" style="display:flex;align-items:center;gap:6px;background:rgba(92, 74, 110,0.08);border:1px solid rgba(92, 74, 110,0.2);border-radius:var(--radius-full);padding:6px 14px;font-size:0.72rem;letter-spacing:0.08em;color:var(--violet-bright);">
             <span>Rx</span> <span id="retrogrades-list" style="color:var(--silver);">loading…</span>
@@ -756,6 +771,7 @@
           <svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cast your free chart
         </a>
         <div class="sign-cta-row" style="display:flex;gap:var(--space-3);flex-wrap:wrap;justify-content:center;margin-top:var(--space-5);">
+          <a href="eclipse.html" class="btn btn--outline">Total Eclipse · 12 Aug 2026</a>
           <a href="index.html" class="btn btn--primary">Observatory</a>
           <a href="moment.html" class="btn btn--outline">Keep a Moment</a>
           <a href="ephemeris.html" class="btn btn--ghost">Sky instrument</a>

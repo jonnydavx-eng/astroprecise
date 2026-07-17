@@ -144,7 +144,7 @@
     ============================================================ -->
     <section class="hero hero--small" style="padding:calc(72px + 4rem) 0 3rem;min-height:603px" aria-labelledby="page-title">
       <div class="orb orb--purple" style="top:-60px;left:-80px;" aria-hidden="true"></div>
-      <div class="orb orb--gold" style="top:80px;right:-60px;" aria-hidden="true"></div>
+      <div class="orb orb--purple" style="top:80px;right:-60px;" aria-hidden="true"></div>
       <div class="container">
         <p class="hero__eyebrow">Synastry Analysis</p>
         <h1 id="page-title"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg> Cosmic Compatibility</h1>
@@ -162,7 +162,7 @@
               <path d="M 2 28 Q 50 4 98 28" stroke="url(#arc-g)" stroke-width="1.2" fill="none" stroke-dasharray="3 3" opacity="0.7"/>
               <defs>
                 <linearGradient id="arc-g" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0%" stop-color="#9db36a"/>
+                  <stop offset="0%" stop-color="#9fdcec"/>
                   <stop offset="50%" stop-color="#A8B0BC" stop-opacity="0.6"/>
                   <stop offset="100%" stop-color="#A8B0BC"/>
                 </linearGradient>
@@ -290,7 +290,7 @@
             <div class="spinner__center"></div>
           </div>
           <p style="margin-top:var(--space-6);color:var(--color-silver-dim);">Comparing charts and finding aspects…</p>
-          <p style="margin-top:var(--space-4);"><span class="ap-badge ap-badge--deterministic">Same two charts → the same compatibility reading, always</span></p>
+          <p style="margin-top:var(--space-4);"><span class="ap-badge ap-badge--deterministic">Same two charts → the same measured aspects, always</span></p>
         </div>
 
         <!-- ============================================================
@@ -303,6 +303,11 @@
             <h2 id="compat-result-title" class="section-header__title" style="margin-bottom:var(--space-2);font-size:var(--text-2xl);"></h2>
             <p id="compat-result-subtitle" style="color:var(--color-silver-dim);font-size:var(--text-sm);"></p>
           </div>
+
+          <!-- Entertainment / tradition disclaimer — sits above all interpreted output -->
+          <p class="compat-entertainment-note" style="text-align:center;max-width:62ch;margin:0 auto var(--space-6);font-size:0.72rem;line-height:1.7;letter-spacing:0.02em;color:#A8B0BC;border:1px solid rgba(159,220,236,0.22);border-radius:12px;padding:var(--space-3) var(--space-5);background:rgba(159,220,236,0.05);">
+            Astrological meaning is tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.
+          </p>
 
           <!-- Method tabs: Synastry / Composite / Davison -->
           <div class="compat-tabs animate-in" role="tablist" aria-label="Compatibility chart methods">
@@ -380,6 +385,11 @@
             </div>
           </div>
 
+          <!-- Fabrication label: the harmony ring + these bars are an interpretive tradition, not a measurement -->
+          <p class="form-hint" style="text-align:center;max-width:58ch;margin:var(--space-4) auto 0;">
+            The harmony ring and these category bars are a traditional interpretive reading, offered for entertainment and reflection on the aspects below — not a measurement or score of your relationship.
+          </p>
+
           <!-- Synastry aspects (card-style, JS populates) -->
           <div id="synastry-aspects" class="synastry-aspects animate-in animate-in--delay-3">
           </div>
@@ -390,8 +400,12 @@
 
           <!-- Download card row -->
           <div class="compat-download-row">
-            <button id="compat-download-btn" class="btn btn--gold" style="display:none;">&#8659; Download Compatibility Card</button>
+            <button id="compat-download-btn" class="btn btn--primary" style="display:none;">&#8659; Download Compatibility Card</button>
           </div>
+
+          <p class="form-hint" style="text-align:center;margin-top:var(--space-3);">
+            Any keepsake or reading here is astrological tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.
+          </p>
 
           <div id="compat-upsell" class="compat-upsell chart-whats-next" hidden aria-label="Keepsake and next steps"></div>
 
@@ -452,8 +466,9 @@
       <div class="container">
         <h2 class="section__title" id="element-compat-heading">Sign Compatibility by Element</h2>
         <p class="section__subtitle">
-          Understanding how the four elements interact is the foundation of astrological compatibility.
-          Full synastry goes far deeper — use the calculator above for a complete picture.
+          In the astrological tradition, the four elements are read as interacting in the patterns below —
+          offered for reflection and entertainment, not fact or prediction.
+          Full synastry goes far deeper — use the calculator above for a fuller picture.
         </p>
 
         <div class="element-compat-grid">
@@ -500,14 +515,15 @@
       <div class="container">
         <h2 class="section__title" id="matrix-heading">Sun Sign Compatibility Grid</h2>
         <p class="section__subtitle">
-          A quick elemental overview of Sun sign compatibility, read as an engraved brass plate —
+          A quick elemental overview of Sun sign compatibility, read as an etched frost panel —
           the brighter the mark, the higher the natural harmony; the fainter, the more the full chart decides.
+          In the astrological tradition this is a starting point for reflection and entertainment, not a verdict.
         </p>
 
         <div class="card compat-matrix-scroll" tabindex="0" aria-label="12-by-12 zodiac sign compatibility matrix">
           <div style="min-width:600px;">
             <table class="compat-matrix" aria-label="Sun sign compatibility overview">
-              <caption class="sr-only">Sun sign compatibility, shown as a brass luminance ramp: High (brightest), Medium, Low (faintest), Neutral (depends on the full chart).</caption>
+              <caption class="sr-only">Sun sign compatibility, shown as a cool luminance ramp: High (brightest), Medium, Low (faintest), Neutral (depends on the full chart).</caption>
               <thead>
                 <tr>
                   <th scope="col" aria-label="Sign" style="background:transparent;border:none;"><span class="compat-sign-abbr">Sign</span></th>
@@ -603,16 +619,16 @@
           </div>
           <div style="display:flex;gap:var(--space-6);margin-top:var(--space-5);flex-wrap:wrap;" aria-label="Legend">
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(216,185,120,0.55);box-shadow:inset 0 0 0 1px rgba(216,185,120,0.6);display:inline-block;" aria-hidden="true"></span>High Compatibility
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(159,220,236,0.55);box-shadow:inset 0 0 0 1px rgba(159,220,236,0.6);display:inline-block;" aria-hidden="true"></span>High Compatibility
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
               <span style="width:14px;height:14px;border-radius:50%;background:rgba(168,176,188,0.34);display:inline-block;" aria-hidden="true"></span>Medium Compatibility
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.22);display:inline-block;" aria-hidden="true"></span>Challenging
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(168,176,188,0.16);display:inline-block;" aria-hidden="true"></span>Challenging
             </span>
             <span style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);">
-              <span style="width:14px;height:14px;border-radius:50%;background:rgba(140,117,68,0.08);box-shadow:inset 0 0 0 1px rgba(140,117,68,0.2);display:inline-block;" aria-hidden="true"></span>Neutral / Depends
+              <span style="width:14px;height:14px;border-radius:50%;background:rgba(168,176,188,0.06);box-shadow:inset 0 0 0 1px rgba(168,176,188,0.18);display:inline-block;" aria-hidden="true"></span>Neutral / Depends
             </span>
           </div>
           <p class="form-hint" style="margin-top:var(--space-3);">
@@ -637,14 +653,14 @@
               Synastry is the branch of astrology that compares two birth charts to analyse the
               relational dynamics between two people. By overlaying Person A's chart onto Person B's,
               we reveal every cross-chart planetary aspect — Venus conjunct Mars, Sun trine Moon,
-              Saturn square Mercury — each carrying its own signature of attraction, challenge, or harmony.
+              Saturn square Mercury — each read in the astrological tradition as a signature of attraction, challenge, or harmony.
             </p>
             <p style="color:var(--color-silver-dim);line-height:1.8;margin-bottom:var(--space-5);">
-              Harmonious aspects such as trines (120°) and sextiles (60°) indicate areas of natural
-              flow and mutual support — where each person brings out the best in the other.
-              Dynamic aspects like squares (90°) and oppositions (180°) show points of tension that,
-              when understood, can become powerful engines of growth. Conjunctions (0°) intensify
-              and merge the energies of the planets involved.
+              In the astrological tradition, harmonious aspects such as trines (120°) and sextiles (60°)
+              are read as areas of natural flow and mutual support — where each person is said to bring
+              out the best in the other. Dynamic aspects like squares (90°) and oppositions (180°) are
+              read as points of tension that, when understood, can become engines of growth. Conjunctions
+              (0°) are traditionally read as merging the energies of the planets involved.
             </p>
             <p style="color:var(--color-silver-dim);line-height:1.8;">
               Astro Precise calculates all Ptolemaic aspects with standard orbs — 8° for major aspects,
@@ -657,7 +673,7 @@
           <div>
             <!-- Premium aspect reference card -->
             <div class="synastry-sidebar-card" style="margin-bottom:var(--space-6);">
-              <h3 style="font-family:var(--font-display);color:var(--gold-pale);font-size:var(--text-lg);font-weight:600;margin-bottom:var(--space-5);">Key Synastry Aspects</h3>
+              <h3 style="font-family:var(--font-display);color:#9fdcec;font-size:var(--text-lg);font-weight:600;margin-bottom:var(--space-5);">Key Synastry Aspects</h3>
               <table class="synastry-aspect-table" aria-label="Key synastry aspects and their meaning">
                 <thead>
                   <tr>
@@ -708,7 +724,7 @@
               </table>
             </div>
             <div class="synastry-sidebar-card">
-              <h4 style="font-family:var(--font-display);color:var(--gold-pale);font-size:var(--text-base);font-weight:600;margin-bottom:var(--space-4);">Most Significant Synastry Connections</h4>
+              <h4 style="font-family:var(--font-display);color:#9fdcec;font-size:var(--text-base);font-weight:600;margin-bottom:var(--space-4);">Most Significant Synastry Connections</h4>
               <ul style="color:var(--color-silver-dim);font-size:var(--text-sm);line-height:2.1;padding-left:var(--space-5);margin:0;">
                 <li><strong style="color:var(--white);">Sun–Moon contacts</strong> — core identity meets emotional need</li>
                 <li><strong style="color:var(--white);">Venus–Mars contacts</strong> — romantic and physical attraction</li>
@@ -718,6 +734,22 @@
               </ul>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         NEXT STEPS — free birth chart + eclipse hub (funnel routes)
+    ============================================================ -->
+    <section class="section" aria-labelledby="compat-next-heading">
+      <div class="container" style="text-align:center;max-width:760px;">
+        <h2 class="section__title" id="compat-next-heading">Keep Exploring the Real Sky</h2>
+        <p class="section__subtitle">
+          Astrological meaning is tradition, offered for reflection and entertainment — not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.
+        </p>
+        <div style="display:flex;gap:var(--space-4);justify-content:center;flex-wrap:wrap;margin-top:var(--space-6);">
+          <a href="chart.html" class="btn btn--primary btn--lg">Cast your free birth chart</a>
+          <a href="eclipse.html" class="btn btn--outline btn--lg">The 12 Aug 2026 total eclipse →</a>
         </div>
       </div>
     </section>

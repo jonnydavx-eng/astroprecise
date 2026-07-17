@@ -3,7 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="color-scheme" content="dark">
-  <style>html{background:#07070A}</style>
+  <style>html{background:#07070A}
+  /* Entertainment / tradition caveat — keeps the astrology "sky" legally
+     separate from the computed astronomy "sky". Glacial palette. */
+  .ap-entertainment-note{
+    margin:var(--space-3,0.75rem) 0 0;
+    padding:0.6rem 0.85rem;
+    border-left:2px solid #9fdcec;
+    background:rgba(159,220,236,0.06);
+    border-radius:6px;
+    font-size:0.72rem;
+    line-height:1.6;
+    color:var(--color-silver-dim,#A8B0BC);
+  }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="How Astro Precise is accurate: real VSOP87 and ELP2000 astronomy, a true Ascendant, authentic house systems — computed entirely in your browser." />
   <title>How Astro Precise Stays Accurate &amp; Private</title>
@@ -186,13 +198,18 @@
       <div class="container">
         <div class="acc-section__header">
           <p class="acc-section__label">What "Accurate" Means Here</p>
-          <h2 class="acc-section__title" id="precision-heading">Arcminute Precision, Not Vague Generalities</h2>
+          <h2 class="acc-section__title" id="precision-heading">Arcminute Precision in the Computed Positions</h2>
           <p class="acc-section__subtitle">
             The combination of VSOP87, ELP2000, and Meeus algorithms places the Sun
             through Pluto to roughly arcminute-to-degree precision, and Chiron &mdash;
-            on a Kepler orbit from JPL elements &mdash; to the degree. The difference
-            between a chart you can trust and a one-size-fits-all Sun-sign blurb.
+            on a Kepler orbit from JPL elements &mdash; to the degree. Read that as an
+            uncertainty band on the <em>coordinates</em>: typically within about an
+            arcminute for the Sun and planets, widening toward a degree for the slowest
+            and most distant bodies. It measures where each body sits, not how accurate
+            any interpretation is &mdash; the difference between positions you can check
+            against an ephemeris and a one-size-fits-all Sun-sign blurb.
           </p>
+          <p class="ap-entertainment-note" style="max-width:60ch;margin-left:auto;margin-right:auto;">Astrological meaning is tradition, offered for reflection and entertainment &mdash; not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.</p>
         </div>
 
         <div class="acc-rows">
@@ -224,11 +241,13 @@
           <div class="glass-card acc-row">
             <span class="acc-row__mark" aria-hidden="true">&#10003;</span>
             <div class="acc-row__body">
-              <h3>Deterministic, reproducible readings</h3>
+              <h3>Deterministic, reproducible mapping</h3>
               <p>
                 The same chart on the same day produces the same reading every time,
-                everywhere. Nothing is randomised behind your back &mdash; the words follow
-                the math.
+                everywhere. Nothing is randomised behind your back &mdash; each traditional
+                interpretation is mapped to the computed positions by a fixed rule. The math
+                fixes <em>which</em> passage of tradition you are shown; it does not make that
+                meaning a measured or scientific fact.
               </p>
             </div>
           </div>
@@ -307,7 +326,7 @@
       <div class="container">
         <div class="acc-ethos">
           <p class="acc-section__label" id="why-heading">Why It Matters</p>
-          <p style="font-size:1.02rem;color:var(--silver,#A89E88);line-height:1.85;">
+          <p style="font-size:1.02rem;color:var(--silver,#A8B0BC);line-height:1.85;">
             Sun-sign astrology asks one question &mdash; the month you were born &mdash; and
             gives everyone born in that month the same answer. A real chart asks for the
             full picture: the precise time, the place, and the whole sky overhead. The
@@ -330,8 +349,12 @@
             Cast a complete natal chart from real planetary positions &mdash; free, in your
             browser, with nothing to sign up for.
           </p>
-          <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Free Birth Chart &rarr;</a>
+          <div class="acc-cta__actions" style="display:flex;gap:var(--space-4,1rem);justify-content:center;flex-wrap:wrap;">
+            <a href="chart.html" class="btn btn--primary btn--lg">Calculate Your Free Birth Chart &rarr;</a>
+            <a href="eclipse.html" class="btn btn--outline btn--lg">The 12 Aug 2026 total eclipse &rarr;</a>
+          </div>
           <p class="acc-cta__note">No account &middot; No tracking &middot; Computed on your device</p>
+          <p class="ap-entertainment-note" style="max-width:60ch;margin-left:auto;margin-right:auto;">Astrological meaning is tradition, offered for reflection and entertainment &mdash; not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.</p>
         </div>
       </div>
     </section>

@@ -53,6 +53,14 @@
     html:not(.has-profile) #dashboard-section{display:none!important;}
     .footer-zodiac-strip{min-height:2.75rem;}
     .eng-i{width:1em;height:1em;display:inline-block;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+    /* Two-skies: interpretation is tradition/entertainment; astronomy is computed and checkable */
+    .ap-tradition-note{font-size:0.72rem;line-height:1.55;color:#A8B0BC;border-left:2px solid rgba(159,220,236,0.55);background:rgba(159,220,236,0.05);padding:0.55rem 0.75rem;margin:0 0 1rem;border-radius:0 5px 5px 0;}
+    .ap-tradition-note b{color:#9fdcec;font-weight:600;}
+    .ap-tradition-note a{color:#9fdcec;text-decoration:underline;text-underline-offset:2px;}
+    .ap-sky-routes{font-size:0.74rem;line-height:1.5;color:#A8B0BC;margin:0 0 1rem;}
+    .ap-sky-routes a{color:#9fdcec;text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+    .rec-icon--frost{color:#9fdcec;background:rgba(159,220,236,0.10);border-color:rgba(159,220,236,0.32);}
+    .season-badge--frost{color:#9fdcec;background:rgba(159,220,236,0.08);border:1px solid rgba(159,220,236,0.28);}
   </style>
   <script>try{if(localStorage.getItem('ap_profile_v2'))document.documentElement.classList.add('has-profile');}catch(e){}</script>
   <script>!function(){var u=navigator.userAgent||'';if(navigator.webdriver||/\bHeadlessChrome\b/i.test(u))document.documentElement.classList.add('ap-audit-path')}();</script>
@@ -119,7 +127,7 @@
 
           <form id="setup-form" class="setup-form" novalidate aria-label="Create profile">
             <div class="form-group">
-              <label for="setup-name" class="form-label">Your Name <span aria-hidden="true" style="color:var(--gold)">*</span></label>
+              <label for="setup-name" class="form-label">Your Name <span aria-hidden="true" style="color:#9fdcec">*</span></label>
               <input type="text" id="setup-name" name="setup-name" class="form-input"
                      placeholder="How shall the cosmos address you?"
                      required aria-required="true" autocomplete="name" />
@@ -162,7 +170,7 @@
           <div class="profile-hero reveal-init">
             <div class="avatar-wrap">
               <div class="avatar-pulse" aria-hidden="true"></div>
-              <div class="avatar-circle" id="profile-avatar" aria-hidden="true"><span class="eng-star-mark" style="color:var(--gold);"></span></div>
+              <div class="avatar-circle" id="profile-avatar" aria-hidden="true"><span class="eng-star-mark" style="color:#9fdcec;"></span></div>
             </div>
             <div class="profile-hero__info">
               <p class="profile-hero__label">Cosmic Profile</p>
@@ -174,7 +182,7 @@
                 <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
                   <circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
                   <circle id="completeness-arc" cx="28" cy="28" r="22" fill="none"
-                          stroke="var(--gold)" stroke-width="4"
+                          stroke="#9fdcec" stroke-width="4"
                           stroke-linecap="round"
                           stroke-dasharray="138.2"
                           stroke-dashoffset="138.2"
@@ -211,9 +219,11 @@
 
           <!-- ── 3. Cosmic Season ── -->
           <div class="cosmic-season-card reveal-init" id="cosmic-season-card" aria-labelledby="season-heading">
-            <div class="glass-panel__title" id="season-heading" style="border-bottom:1px solid rgba(196,146,10,0.15);margin-bottom:var(--space-5);padding-bottom:var(--space-3);font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--white);display:flex;align-items:center;gap:var(--space-3);">
+            <div class="glass-panel__title" id="season-heading" style="border-bottom:1px solid rgba(159,220,236,0.15);margin-bottom:var(--space-5);padding-bottom:var(--space-3);font-family:var(--font-display);font-size:var(--text-lg);font-weight:700;color:var(--white);display:flex;align-items:center;gap:var(--space-3);">
               <span aria-hidden="true">☿</span> Current Cosmic Season
             </div>
+            <p class="ap-tradition-note"><b>For reflection &amp; entertainment.</b> Astrological and numerological meaning &mdash; Personal Year, life chapters, milestone cycles &mdash; is tradition offered for reflection and entertainment, not advice, prediction, or scientific fact. The astronomy underneath (dates, positions, cycles) is computed and checkable.</p>
+            <p class="ap-sky-routes">Prefer the computed sky? <a href="chart.html">Cast your free birth chart</a> &middot; <a href="eclipse.html">See the 12 Aug 2026 solar eclipse</a></p>
             <div class="season-grid" id="season-grid">
               <!-- Populated by JS if birth date available -->
               <div style="grid-column:1/-1;text-align:center;padding:var(--space-8) 0;">
@@ -246,6 +256,7 @@
               <span class="panel-icon" aria-hidden="true"><svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg></span>
               Explore Next
             </h3>
+            <p class="ap-tradition-note"><b>For reflection &amp; entertainment.</b> These suggestions draw on astrological tradition &mdash; offered for reflection and entertainment, not advice, prediction, or scientific fact. The astronomy underneath is computed and checkable.</p>
             <div class="recommendations-grid" id="recommendations-grid" aria-live="polite">
               <article class="recommendation-card recommendation-card--skeleton" aria-hidden="true">
                 <div class="rec-header"><div class="rec-icon" aria-hidden="true"></div><h4 class="rec-title">&nbsp;</h4></div>
@@ -304,7 +315,7 @@
                              placeholder="e.g. My Chart, Mom" autocomplete="off" />
                     </div>
                     <div class="form-group">
-                      <label for="ac-date" class="form-label">Birth Date <span aria-hidden="true" style="color:var(--gold)">*</span></label>
+                      <label for="ac-date" class="form-label">Birth Date <span aria-hidden="true" style="color:#9fdcec">*</span></label>
                       <input type="date" id="ac-date" class="form-input" required aria-required="true" />
                     </div>
                     <div class="form-group">
@@ -315,7 +326,7 @@
                     </div>
                   </div>
                   <div class="form-group" style="position:relative;margin-top:var(--space-3);">
-                    <label for="ac-city" class="form-label">Birth City <span aria-hidden="true" style="color:var(--gold)">*</span></label>
+                    <label for="ac-city" class="form-label">Birth City <span aria-hidden="true" style="color:#9fdcec">*</span></label>
                     <input type="text" id="ac-city" class="form-input"
                            placeholder="Start typing a city…"
                            autocomplete="off"
@@ -341,11 +352,11 @@
             </div>
             <div id="charts-empty" class="charts-empty-state" hidden>
               <svg class="charts-empty-wheel" viewBox="0 0 96 96" fill="none" aria-hidden="true">
-                <circle cx="48" cy="48" r="44" stroke="rgba(196,146,10,0.3)" stroke-width="1.5"/>
+                <circle cx="48" cy="48" r="44" stroke="rgba(159,220,236,0.3)" stroke-width="1.5"/>
                 <circle cx="48" cy="48" r="32" stroke="rgba(91,127,199,0.3)" stroke-width="1"/>
-                <circle cx="48" cy="48" r="18" stroke="rgba(196,146,10,0.2)" stroke-width="1"/>
-                <circle cx="48" cy="48" r="4" fill="rgba(196,146,10,0.5)"/>
-                <g stroke="rgba(196,146,10,0.25)" stroke-width="1">
+                <circle cx="48" cy="48" r="18" stroke="rgba(159,220,236,0.2)" stroke-width="1"/>
+                <circle cx="48" cy="48" r="4" fill="rgba(159,220,236,0.5)"/>
+                <g stroke="rgba(159,220,236,0.25)" stroke-width="1">
                   <line x1="48" y1="4" x2="48" y2="14"/>
                   <line x1="48" y1="82" x2="48" y2="92"/>
                   <line x1="4" y1="48" x2="14" y2="48"/>
@@ -443,6 +454,7 @@
           <li>Shop early access &mdash; wear-your-sky prints, posters &amp; gift readings first</li>
           <li>New tools first &mdash; retrograde alerts, synastry unlocks &amp; more as we build them</li>
         </ul>
+        <p class="ap-tradition-note"><b>For reflection &amp; entertainment.</b> Readings and horoscopes are astrological tradition &mdash; offered for reflection and entertainment, not advice, prediction, or scientific fact. The sky data underneath is computed and checkable.</p>
       </div>
       <form class="ap-email-cta__form" novalidate aria-label="Join the Astro Precise update list">
         <div class="ap-email-cta__fields">
@@ -463,7 +475,7 @@
 
       <div class="ap-footer-signup ap-footer-signup--compact">
         <p style="font-size:0.72rem;color:var(--silver-dim,#8891AA);margin:0;">
-          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:var(--gold,#A8B0BC);text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
+          <a href="#ap-email-banner" class="ap-footer-signup__link" style="color:#A8B0BC;text-decoration:none;font-weight:600;">&#10022; Join the update list</a>
           &mdash; cosmic weather &amp; new features coming soon.
         </p>
       </div>
@@ -503,6 +515,7 @@
         <div class="footer-nav-col" role="group" aria-label="Around the living model">
           <h2 class="footer-nav-col__title">Around the model</h2>
           <ul>
+            <li><a href="eclipse.html"><span aria-hidden="true">◐</span> Eclipse &middot; 12 Aug 2026</a></li>
             <li><a href="chart.html"><span aria-hidden="true">⊙</span> Birth Chart</a></li>
             <li><a href="horoscope.html"><span aria-hidden="true">☽</span> Daily</a></li>
             <li><a href="lifepath.html"><svg class="eng-i" aria-hidden="true"><use href="#ei-gem"/></svg> Life Path</a></li>
@@ -793,7 +806,7 @@
 
       if (charts.length === 0) {
         recs.push({
-          icon:'<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>', iconClass:'rec-icon--gold', urgent:true,
+          icon:'<svg class="eng-i" aria-hidden="true"><use href="#ei-star4"/></svg>', iconClass:'rec-icon--frost', urgent:true,
           title:'Calculate Your Birth Chart',
           body:'Your natal chart is the foundation of everything — it reveals your Sun, Moon, Rising, and the placement of every planet at the moment of your birth.',
           cta:'Open Chart Calculator', href:'chart.html'
@@ -814,9 +827,9 @@
         const age = nowYear - byear;
         if (age >= 26 && age <= 34) {
           recs.push({
-            icon:'♄', iconClass:'rec-icon--gold', urgent:true,
+            icon:'♄', iconClass:'rec-icon--frost', urgent:true,
             title:'Your Saturn Return Window',
-            body:`You're in or near your Saturn Return (ages 28–30). This pivotal cycle reshapes identity, career, and relationships. Understanding it changes everything.`,
+            body:`Saturn is near the ecliptic longitude it held at your birth — a computed return that recurs about every 29 years (ages 28–30). In the astrological tradition this window is read as a reshaping of identity, career and relationships.`,
             cta:'Explore Life Path', href:'lifepath.html'
           });
         }
@@ -824,7 +837,7 @@
           recs.push({
             icon:'♅', iconClass:'', urgent:true,
             title:'Uranus Opposition',
-            body:`The mid-life Uranus Opposition (around age 42) shakes loose whatever no longer serves your authentic self. The disruption is purposeful.`,
+            body:`Around age 42 Uranus reaches the point opposite where it sat at your birth — the computed midpoint of its roughly 84-year orbit. In the astrological tradition this is read as a time that shakes loose whatever no longer fits.`,
             cta:'Explore Life Path', href:'lifepath.html'
           });
         }
@@ -920,7 +933,7 @@
       if (avatarEl) {
         avatarEl.innerHTML = sunSign
           ? signSealHtml(sunSign)
-          : '<span class="eng-star-mark" style="color:var(--gold);"></span>';
+          : '<span class="eng-star-mark" style="color:#9fdcec;"></span>';
       }
 
       let tagline = 'Your cosmic journey begins here';
@@ -991,9 +1004,9 @@
         </div>
         <div class="season-details">
           <h3>${pyName}</h3>
-          <p class="season-theme">${pyTheme}</p>
+          <p class="season-theme"><b style="color:#9fdcec;font-weight:600;">In the numerology tradition —</b> ${pyTheme}</p>
           <div class="season-meta">
-            <span class="season-badge season-badge--gold">Personal Month ${pmNum}</span>
+            <span class="season-badge season-badge--frost" title="A simplified numerology construct offered for fun — not a computed astronomical value">Personal Month ${pmNum} · playful numerology</span>
             ${nextMs ? `<span class="season-badge">${nextMs}</span>` : ''}
           </div>
         </div>
@@ -1001,7 +1014,7 @@
           <div class="chapter-planet-symbol">${chapterSym}</div>
           <div class="chapter-info">
             <strong>${chapter}</strong>
-            <p>Current life chapter — astrological age cycle</p>
+            <p>A reflective life-chapter framing, read in the astrological tradition — offered for reflection, not a measurement.</p>
           </div>
         </div>`;
     }
