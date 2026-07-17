@@ -1,0 +1,18 @@
+{
+    "schemaVersion":  2,
+    "waveId":  "ap-shop-cowork-wire-20260717",
+    "seat":  "S8",
+    "actorId":  "cursor-s8-shop-wire",
+    "runId":  "shop-wire-01-preflight",
+    "phase":  "PREFLIGHT",
+    "vote":  "AGREE",
+    "veto":  false,
+    "startedAt":  "2026-07-17T15:22:00.4801959+00:00",
+    "finishedAt":  "2026-07-17T15:22:00.4824630+00:00",
+    "findings":  [
+                     "Exact vertical: place Cowork ladder SKUs on shop; wire eclipse/verify pages to engines; Gumroad permalinks stay empty (honest dormant)",
+                     "Risk: do not invent checkout URLs; do not fake LIVE/sales; keep quiet-chart gateSale path",
+                     "Rollback: git checkout -- declared paths; remove only files added in this wave if needed"
+                 ],
+    "result":  "PASS"
+}
