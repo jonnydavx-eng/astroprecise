@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Cosmic Calendar — 13.8 billion years, and where you fall | Astro Precise</title>
+<meta name="description" content="Compress all of cosmic history into one year. Computed live from the age of the universe (Planck 2018), with every date checkable — and the honest line where real data ends and cited cosmology begins. See how small, and how late, we are.">
+<link rel="canonical" href="https://astroprecise.app/cosmic-calendar.html">
+<meta property="og:title" content="The whole universe in one year — where do you fall?">
+<meta property="og:description" content="13.8 billion years compressed to a calendar. Recorded history is the last ~14 seconds. Your life is a few milliseconds. Computed, checkable, honest.">
+<meta property="og:url" content="https://astroprecise.app/cosmic-calendar.html">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#e9edf2;--dim:rgba(233,237,242,.72);--faint:rgba(233,237,242,.5);--line:rgba(159,220,236,.18);--line2:rgba(159,220,236,.26);--acc:#9fdcec;--good:#7ef0c8;--warn:#e8b57d;--card:rgba(220,240,248,.04)}
+*{box-sizing:border-box}
+body{margin:0;background:#000;color:var(--ink);font-family:'Schibsted Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{color:#fff}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px 90px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 0 0}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--acc)}
+.navlink{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:rgba(233,237,242,.65)}
+h1{margin:52px 0 12px;font-size:clamp(34px,7vw,52px);line-height:1.06;font-weight:700;letter-spacing:-.015em}
+.lede{margin:0 0 24px;font-size:18px;line-height:1.65;color:var(--dim)}
+.card{border:1px solid var(--line2);border-radius:14px;background:var(--card);padding:24px 26px;margin:22px 0}
+.lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:12px}
+.receipt{border:1px solid var(--line);border-radius:10px;background:rgba(220,240,248,.03);padding:13px 16px}
+.receipt div{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;line-height:1.8;color:rgba(233,237,242,.85)}
+/* the calendar strip */
+.year{position:relative;height:56px;border-radius:10px;overflow:hidden;border:1px solid var(--line2);margin:8px 0 6px;
+  background:linear-gradient(90deg,#0a0f18 0%,#0d1420 26%,#101a28 50%,#152234 82%,#1a2b40 100%)}
+.mtick{position:absolute;top:0;bottom:0;width:1px;background:rgba(159,220,236,.16)}
+.mlab{position:absolute;bottom:3px;font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.1em;color:rgba(233,237,242,.4);transform:translateX(-50%)}
+.ev{position:absolute;top:0;width:2px;background:var(--acc);height:100%}
+.evdot{position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.evwrap{position:relative;height:34px;margin-top:2px}
+.evlab{position:absolute;font-size:11px;color:var(--dim);white-space:nowrap;transform:translateX(-50%);top:0}
+.you{background:var(--good)!important}
+table{width:100%;border-collapse:collapse;margin-top:6px}
+th,td{text-align:left;padding:9px 8px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.45;vertical-align:top}
+th{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:var(--acc);font-weight:500}
+td.d{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink);white-space:nowrap}
+td.src{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.06em}
+.s-real{color:var(--good)}.s-model{color:var(--warn)}.s-unknown{color:#c98b9a}
+.field{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.field label{display:flex;flex-direction:column;gap:6px}
+.field span{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.2em;color:var(--faint)}
+input{background:rgba(220,240,248,.05);border:1px solid var(--line2);border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:15px;padding:11px 12px;color-scheme:dark}
+.btn{background:var(--ink);color:#000;border:0;border-radius:100px;padding:13px 26px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;cursor:pointer}
+.big{font-size:clamp(26px,5vw,38px);font-weight:700;line-height:1.15;letter-spacing:-.01em;margin:2px 0}
+.big .acc{color:var(--acc)}.big .good{color:var(--good)}
+.rule{border-top:1px solid var(--line);margin:32px 0}
+.foot{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:rgba(233,237,242,.4);line-height:2.1}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;padding:2px 7px;border-radius:100px;border:1px solid currentColor;vertical-align:middle}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <a class="navlink" href="./index.html">← ASTRO PRECISE</a>
+  <span class="kicker">THE COSMIC CALENDAR · DEEP TIME, COMPUTED</span>
+</div>
+
+<h1>13.8 billion years,<br>squeezed into <em style="color:var(--acc);font-style:normal">one year</em>.</h1>
+<p class="lede">If the whole history of the universe were a single calendar year — the Big Bang at midnight on 1 January, this moment at midnight on 31 December — everything you have ever heard of happens in the last few seconds. Every date below is computed live from the measured age of the universe. You can check the arithmetic.</p>
+
+<div class="receipt" role="status" style="margin-bottom:8px">
+  <div id="const">AGE OF THE UNIVERSE: 13.787 ± 0.020 BILLION YEARS · SOURCE: PLANCK 2018 (ESA)</div>
+  <div id="rate">SCALE: COMPUTING…</div>
+  <div style="color:var(--faint)">ONE CALENDAR SECOND = <span id="perSec">…</span> REAL YEARS · PURE ARITHMETIC, NOTHING INVENTED</div>
+</div>
+
+<!-- the year strip -->
+<div class="year" id="yearStrip" aria-hidden="true"></div>
+<div class="evwrap" id="evWrap"></div>
+
+<!-- events table -->
+<div class="card">
+  <div class="lbl">WHEN THINGS HAPPENED — ON THE COSMIC YEAR</div>
+  <table id="evTable">
+    <tr><th>EVENT</th><th>REAL TIME</th><th>ON THE CALENDAR</th><th>THIS IS…</th></tr>
+  </table>
+  <div class="mono" style="font-size:8.5px;letter-spacing:.12em;color:var(--faint);margin-top:12px;line-height:2">
+    <span class="s-real">● MEASURED / COMPUTED</span> &nbsp; <span class="s-model">● MODELLED (SOUND PHYSICS)</span> &nbsp; <span class="s-unknown">● SCIENCE IS UNSURE — WE SAY SO</span>
+  </div>
+</div>
+
+<!-- YOU are here -->
+<div class="card" style="border-color:rgba(126,240,200,.35)">
+  <div class="lbl" style="color:var(--good)">WHERE YOU FALL</div>
+  <p style="font-size:15px;line-height:1.6;color:var(--dim);margin:0 0 14px">Enter your date of birth. Nothing is uploaded — this is arithmetic in your browser.</p>
+  <div class="field">
+    <label><span>DATE OF BIRTH</span><input type="date" id="dob" min="1900-01-01" max="2026-12-31"></label>
+    <button class="btn" id="go" type="button">PLACE ME ON THE COSMIC YEAR</button>
+  </div>
+  <div id="youOut" hidden style="margin-top:18px">
+    <div class="big">Your whole life so far is <span class="good" id="lifeMs">…</span> of the cosmic year.</div>
+    <p style="font-size:15px;line-height:1.65;color:var(--dim);margin:12px 0 0" id="youNarr"></p>
+    <div class="receipt" style="margin-top:14px"><div id="youReceipt"></div></div>
+  </div>
+</div>
+
+<!-- the first-second fact -->
+<div class="card">
+  <div class="lbl">AND YET — THE FIRST SECOND IS THE BIGGEST</div>
+  <p style="font-size:15.5px;line-height:1.7;color:var(--dim);margin:0 0 10px">A calendar hides something. Stretch time by powers of ten instead, and the very first second of the universe — from the Planck time (10⁻⁴³ s) to one second — spans about <b style="color:var(--ink)">43 factors of ten</b>. Everything since, all 13.8 billion years, spans only about <b style="color:var(--ink)">18</b>. On a logarithmic clock, <b style="color:var(--acc)">the first second contains more distinct eras than the entire age of the universe that follows it.</b> Both statements are true; they are just two honest ways to look at the same history.</p>
+  <div class="receipt"><div id="logFact">10⁻⁴³ s → 1 s ≈ 43 orders of magnitude · 1 s → 13.787 Gyr ≈ 17.6 orders · RATIO ≈ 2.4×</div></div>
+</div>
+
+<!-- honesty panel -->
+<div class="card" style="border-color:rgba(232,181,125,.32);background:rgba(232,181,125,.05)">
+  <div class="lbl" style="color:var(--warn)">WHAT'S REAL / WHAT ISN'T — THE HONEST SEAM</div>
+  <p style="font-size:15px;line-height:1.7;color:var(--dim);margin:0 0 8px">There is <b style="color:var(--ink)">no photograph of the Big Bang</b>. The oldest real image of the universe is the <b style="color:var(--ink)">Cosmic Microwave Background</b> — the light released ~380,000 years after the beginning, mapped by ESA's Planck and NASA's WMAP. That is a genuine measurement: the actual oldest light in existence.</p>
+  <p style="font-size:15px;line-height:1.7;color:var(--dim);margin:0">Everything <em>earlier</em> than that — inflation, the first instant, the birth of matter — cannot be pictured, only modelled, and the very first slivers (before ~10⁻⁴³ s) are genuinely unknown, because the physics itself runs out. Where this page shows one of those, it is labelled <span class="pill s-model">MODELLED</span> or <span class="pill s-unknown">UNSURE</span>, never dressed up as a snapshot. That seam is the whole point.</p>
+</div>
+
+<div class="rule"></div>
+<p style="font-size:15px;color:var(--dim);line-height:1.6">This is the near end of a longer instrument. From here the plan is a corridor you can drag from tonight's real, computed sky all the way back — the planets and eclipses genuinely computed near the present, the deep past honestly modelled and cited. <a href="./chart.html">Start with your own sky →</a></p>
+
+<div class="rule"></div>
+<div class="foot">
+  COSMIC-CALENDAR DATES ARE COMPUTED LIVE FROM THE PLANCK-2018 AGE (13.787 GYR) BY PURE PROPORTION. EVENT EPOCHS ARE STANDARD SCIENTIFIC CONSENSUS VALUES (WIKIPEDIA "CHRONOLOGY OF THE UNIVERSE" / ESA COSMIC ERAS); WHERE VALUES ARE UNCERTAIN OR MODELLED WE SAY SO IN THE TABLE.<br>
+  <a href="./index.html">THE OBSERVATORY</a> · <a href="./eclipse.html">THE 12 AUG ECLIPSE</a> · <a href="./why.html">WHY WE NEVER MAKE THINGS UP</a><br>
+  © MMXXVI ASTRO PRECISE · COMPUTED, NEVER FABRICATED
+</div>
+
+</div>
+
+<script>
+// ——— cited constant ———
+const AGE = 13.787e9;                     // years, Planck 2018 (ESA)
+const DAYS = 365;                          // model the cosmic year on a 365-day (non-leap) calendar; base year 2026 is non-leap so months align
+const YEAR_SECONDS = DAYS * 24 * 3600;     // seconds in the cosmic year
+const perCalSecond = AGE / YEAR_SECONDS;  // real years per calendar second
+const $ = (id) => document.getElementById(id);
+
+$('rate').textContent = `SCALE: 1 CALENDAR DAY = ${(AGE/DAYS/1e6).toFixed(1)} MILLION YEARS · 1 HOUR = ${(AGE/DAYS/24/1e6).toFixed(2)} MILLION YEARS`;
+$('perSec').textContent = perCalSecond.toFixed(0);
+
+// events: {name, tAfterBB (yr) OR yearsAgo, source: real|model|unknown, note}
+const NOW = AGE;
+const evYearsAgo = (ya) => AGE - ya;
+const EVENTS = [
+  { name:'The Big Bang', t:0, src:'unknown', note:'the beginning — not a photograph' },
+  { name:'First atoms · the CMB (oldest real image)', t:380000, src:'real', note:'the light we can still measure' },
+  { name:'First stars (Cosmic Dawn)', t:200e6, src:'model', note:'JWST is mapping this now' },
+  { name:'The Milky Way forms', t:1.0e9, src:'model', note:'our galaxy assembles' },
+  { name:'The Sun & Solar System', t:AGE-4.57e9, src:'real', note:'where our engine’s real domain begins' },
+  { name:'Earth forms', t:AGE-4.54e9, src:'real', note:'home' },
+  { name:'First life on Earth', t:AGE-3.7e9, src:'real', note:'single cells' },
+  { name:'Oxygen fills the air', t:AGE-2.4e9, src:'real', note:'the Great Oxidation' },
+  { name:'Complex animals', t:AGE-0.54e9, src:'real', note:'the Cambrian' },
+  { name:'Dinosaurs', t:AGE-0.23e9, src:'real', note:'and gone by 66 Mya' },
+  { name:'First humans (Homo sapiens)', t:AGE-3.0e5, src:'real', note:'us, ~300,000 years ago' },
+  { name:'All recorded history', t:AGE-5.0e3, src:'real', note:'every word ever written' },
+];
+
+// map t (years after BB) -> fraction of year -> {month day, cal seconds from Jan1}
+function calFromT(t){
+  const frac = t / AGE;                    // 0..1 across the year
+  const ms = frac * YEAR_SECONDS * 1000;   // ms into the calendar year
+  const date = new Date(Date.UTC(2026,0,1) + ms);
+  return { frac, date, ms };
+}
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function calLabel(t){
+  if (t >= AGE - 1) return 'Dec 31, 24:00:00 (now)';
+  const {date} = calFromT(t);
+  const M = MON[date.getUTCMonth()], D = date.getUTCDate();
+  // for the final day, show the time too
+  if (date.getUTCMonth()===11 && D===31){
+    const hh=String(date.getUTCHours()).padStart(2,'0'), mm=String(date.getUTCMinutes()).padStart(2,'0'), ss=String(date.getUTCSeconds()).padStart(2,'0');
+    return `Dec 31, ${hh}:${mm}:${ss}`;
+  }
+  return `${M} ${D}`;
+}
+function realLabel(t){
+  const ya = AGE - t;
+  if (t===0) return '13.787 Gyr ago';
+  if (ya >= 1e9) return `${(ya/1e9).toFixed(2)} billion yr ago`;
+  if (ya >= 1e6) return `${(ya/1e6).toFixed(0)} million yr ago`;
+  if (ya >= 1e3) return `${(ya/1e3).toFixed(0)},000 yr ago`;
+  return `${Math.round(ya)} yr ago`;
+}
+const SRC_CLASS = { real:'s-real', model:'s-model', unknown:'s-unknown' };
+const SRC_TXT = { real:'measured', model:'modelled', unknown:'unknown' };
+
+// build table
+const tbl = $('evTable');
+for (const e of EVENTS){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${e.name}</td><td class="d">${realLabel(e.t)}</td><td class="d">${calLabel(e.t)}</td>`+
+    `<td class="src ${SRC_CLASS[e.src]}">● ${SRC_TXT[e.src].toUpperCase()}<br><span style="color:var(--faint)">${e.note}</span></td>`;
+  tbl.appendChild(tr);
+}
+
+// month ticks on the strip
+const strip = $('yearStrip');
+for (let m=0;m<12;m++){
+  const x = (m/12)*100;
+  const t = document.createElement('div'); t.className='mtick'; t.style.left=x+'%'; strip.appendChild(t);
+  const l = document.createElement('div'); l.className='mlab'; l.style.left=(x+ (100/24))+'%'; l.textContent=MON[m]; strip.appendChild(l);
+}
+// plot the big events as ticks on the strip + labels below
+const ev = $('evWrap');
+const KEY = [1,4,5,10,11]; // CMB, Solar System, Earth, first humans, recorded history (indices)
+EVENTS.forEach((e,i)=>{
+  const {frac} = calFromT(e.t);
+  const tick = document.createElement('div'); tick.className='ev'; tick.style.left=(frac*100)+'%';
+  tick.innerHTML='<div class="evdot"></div>'; strip.appendChild(tick);
+});
+// only 3 well-separated labels so they never overlap (table carries the full detail)
+[[EVENTS[1],'The CMB','left'],[EVENTS[4],'Solar System','mid'],[EVENTS[11],'You + all history','right']].forEach(([e,txt,align])=>{
+  const {frac}=calFromT(e.t); const l=document.createElement('div'); l.className='evlab';
+  const x=frac*100; l.style.left=Math.min(88,Math.max(12,x))+'%';
+  if(align==='left'){l.style.transform='none';l.style.left='0';} if(align==='right'){l.style.transform='translateX(-100%)';l.style.left='100%';}
+  l.textContent=txt; ev.appendChild(l);
+});
+
+// YOU
+$('go').addEventListener('click', ()=>{
+  const v = $('dob').value; if(!v){ $('dob').focus(); return; }
+  const born = new Date(v+'T00:00:00Z'); const now = new Date();
+  const ageYears = (now - born)/ (365.25*24*3600*1000);
+  if (ageYears<0 || ageYears>200){ return; }
+  // your life length in cosmic-calendar time
+  const calSeconds = ageYears / perCalSecond;          // seconds of the cosmic year
+  const calMs = calSeconds*1000;
+  const oneYearMs = (1/perCalSecond)*1000;             // one of your years, in cosmic-cal ms
+  const histSeconds = 5000 / perCalSecond;             // recorded history length
+  const lifeStr = calSeconds < 1 ? `${calMs.toFixed(1)} milliseconds` : `${calSeconds.toFixed(2)} seconds`;
+  $('lifeMs').textContent = lifeStr;
+  $('youOut').hidden = false;
+  $('youNarr').innerHTML = `On this scale a single year of your life is about <b style="color:var(--ink)">${oneYearMs.toFixed(2)} milliseconds</b> — the blink between two frames of a film. You were born inside the last <b style="color:var(--ink)">${histSeconds.toFixed(1)} seconds</b> of 31 December, the tiny window that also holds every empire, every song, and everyone you have ever known. It is almost nothing. It is also the only part that ever wondered about the rest.`;
+  $('youReceipt').innerHTML = `<div>YOUR AGE: ${ageYears.toFixed(2)} YEARS · ÷ ${perCalSecond.toFixed(0)} YR/CAL-SEC = ${calSeconds.toExponential(2)} CAL-SECONDS<br>RECORDED HISTORY (5,000 YR) = ${histSeconds.toFixed(1)} CAL-SECONDS · ALL OF IT INSIDE DEC 31'S FINAL ${Math.ceil(histSeconds)} SECONDS</div>`;
+});
+</script>
+</body>
+</html>
