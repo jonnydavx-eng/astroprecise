@@ -1,0 +1,71 @@
+{
+  "_about": "Astro Precise — the £12 Deep Reading (seven chapters). Companion to reading-templates.json. Every chapter opens with mono receipts, then serif meaning the receipts earn. Whole-sign houses only when birth time known. Tradition framed for reflection, never prediction.",
+  "version": "AP-DEEP-1",
+  "signThemes": {
+    "Aries": "direct, first-moving, brave by reflex",
+    "Taurus": "steady, sensual, loyal to what lasts",
+    "Gemini": "quick, curious, fluent in almost everything",
+    "Cancer": "protective, tidal, memory-keeping",
+    "Leo": "warm, expressive, made to be seen",
+    "Virgo": "precise, useful, quietly devoted",
+    "Libra": "balancing, relational, allergic to ugliness",
+    "Scorpio": "deep, private, all-or-nothing",
+    "Sagittarius": "far-seeking, honest, hungry for meaning",
+    "Capricorn": "patient, structural, built for the long climb",
+    "Aquarius": "independent, systemic, loyal to ideas",
+    "Pisces": "porous, imaginative, tuned to the unseen"
+  },
+  "elements": {
+    "fire": "Fire runs on ignition — you move when something lights.",
+    "earth": "Earth runs on substance — you trust what can be touched and kept.",
+    "air": "Air runs on connection — you think by talking and link by nature.",
+    "water": "Water runs on feeling — you know things before you can say them."
+  },
+  "modalities": {
+    "cardinal": "You are built to begin; starting is the muscle you trained.",
+    "fixed": "You are built to hold; finishing and keeping are your gifts.",
+    "mutable": "You are built to adapt; you bend where others break."
+  },
+  "chapters": {
+    "ch1": {
+      "title": "The sky at your first breath",
+      "serif": "Everything in this reading is built from the positions above — computed from raw astronomy for your exact moment, not looked up, not invented. Where the words go further than the numbers, they say so. That is the whole contract."
+    },
+    "ch2": {
+      "title": "The three lights",
+      "sun": "Your Sun is the running engine — {theme}.",
+      "moon": "Your Moon is what you need before you can explain why — {theme}.",
+      "asc": "Your Ascendant is the door you meet the world through — {theme}.",
+      "noAsc": "Your rising sign needs a birth time we don't have — so this reading stays honestly with the two lights we can fix exactly. If you ever find your birth time, the third light is waiting."
+    },
+    "ch3": { "title": "The shape of you" },
+    "ch4": {
+      "title": "Where the weight falls",
+      "intro": "Of every pair of planets in your chart, these sit closest — the contacts tradition reads as the standing conversations of a life:",
+      "pairFrame": "{a} and {b} in {aspect} ({orb}) — {aTheme} {verb} {bTheme}. Neither wins; the conversation is the point."
+    },
+    "ch5": {
+      "title": "The long arcs",
+      "saturn": "Saturn in {sign}{house} — your patience and your load: where you were given less for free, and built more that lasts.",
+      "uranus": "Uranus in {sign}{house} — where you refuse the given order and keep a window open.",
+      "neptune": "Neptune in {sign}{house} — where the edges soften: your longing, your imagination, your sea.",
+      "pluto": "Pluto in {sign}{house} — the slow engine room: what transforms across decades, not days."
+    },
+    "ch6": {
+      "title": "This season's sky",
+      "intro": "Where the sky right now touches the sky you were born under — the living, checkable part of this reading:",
+      "noTransits": "The live edition of this chapter is computed on the day you read it — open your chart on the site and this page fills with today's true contacts, dated to the minute."
+    },
+    "ch7": {
+      "title": "A letter to keep",
+      "body": "If you reread nothing else, reread this. The closest conversation in your chart — {tightPair} — is not a flaw to fix; it is the friction that makes you specific. Your {domElement} nature will keep doing what it does: {domElementLine} Let it. Nothing in your sky needs repairing. It needs living — openly, and in your own order. The sky above tonight is already different from the one on page one; you are allowed to be, too."
+    }
+  },
+  "aspectVerbs": {
+    "conjunction": "fused with",
+    "opposition": "facing",
+    "square": "pressing against",
+    "trine": "flowing with",
+    "sextile": "opening doors for"
+  }
+}

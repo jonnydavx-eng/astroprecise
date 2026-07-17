@@ -378,6 +378,15 @@ window.AstroShop = (() => {
   // link in paypalUrl/fulfilUrl). Returns '' when no real URL is configured
   // yet — callers MUST treat '' as "pending", never as a buyable link. Dead
   // Lemon Squeezy URLs are deliberately ignored wherever they resurface.
+  function gumroadCheckoutUrl(p) {
+    if (!p || !window.APGumroad || typeof APGumroad.isReady !== 'function') return '';
+    const slug = p.gumroadSlug || p.id;
+    if (!APGumroad.isReady(slug)) return '';
+    const prod = APGumroad.products && APGumroad.products[slug];
+    if (!prod || !prod.permalink) return '';
+    return `https://gumroad.com/l/${prod.permalink}?wanted=true`;
+  }
+
   function payhipUrl(p) {
     if (!p) return '';
     const notLS = (u) => isUrl(u) && !/lemonsqueezy\.com/i.test(u) && u;
@@ -385,6 +394,7 @@ window.AstroShop = (() => {
       || (isUrl(PAYHIP_URLS[p.id]) && PAYHIP_URLS[p.id])
       || notLS(p.paypalUrl)
       || notLS(p.fulfilUrl)
+      || gumroadCheckoutUrl(p)
       || '';
     if (!raw) return '';
     let url = raw;
@@ -857,8 +867,8 @@ window.AstroShop = (() => {
 
   function featuredOrder() {
     return isPdfOnly()
-      ? ['deep-reading', 'natal-poster-pdf']
-      : ['deep-reading', 'reading-poster-bundle', 'natal-poster-pdf'];
+      ? ['eclipse-reading', 'deep-reading', 'eclipse-set', 'plate']
+      : ['eclipse-reading', 'deep-reading', 'reading-poster-bundle', 'natal-poster-pdf', 'plate'];
   }
 
   function renderFeatured() {

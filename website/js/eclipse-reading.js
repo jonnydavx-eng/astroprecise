@@ -1,0 +1,236 @@
+/*
+ * Astro Precise — the £2.99 Eclipse Night Reading engine  (reference drop-in)
+ * --------------------------------------------------------------------------
+ * Pure logic. Give it the computed eclipse longitude + the person's real natal
+ * longitudes (from the on-device VSOP87 engine) + the templates JSON, and it
+ * returns an honest reading: the closest real contact, its exact orb, a computed
+ * line (mono) and a reflection line (warm serif). If the eclipse touches nothing,
+ * it says so plainly — that empty-state is a feature, not a failure ("computed,
+ * never fabricated").
+ *
+ * No dependencies. Works in the browser and in Node (tests).
+ */
+
+const ASPECT_ANGLE = { conjunction: 0, sextile: 60, square: 90, trine: 120, opposition: 180 };
+
+/** Angular separation in [0,180]. */
+export function separation(a, b) {
+  let d = Math.abs(((a - b) % 360 + 360) % 360);
+  return d > 180 ? 360 - d : d;
+}
+
+/** Format a decimal-degree orb as   d°mm′ . */
+export function fmtOrb(orbDeg) {
+  const total = Math.round(orbDeg * 60);      // arcminutes
+  const d = Math.trunc(total / 60);
+  const m = Math.abs(total % 60);
+  return `${d}°${String(m).padStart(2, '0')}′`;
+}
+
+/**
+ * Find the single closest aspect contact between the eclipse point and the chart.
+ * @param {number} eclipseLon  ecliptic longitude of the eclipse (deg)
+ * @param {object} natal       { sun, moon, ..., asc, mc } longitudes (deg)
+ * @param {object} templates   the reading-templates.json object
+ * @returns {null | {target, aspect, orbDeg}}  null = no contact within orb
+ */
+export function closestContact(eclipseLon, natal, templates) {
+  const orbs = templates.orbsDeg;
+  let best = null;
+  for (const target of Object.keys(templates.targets)) {
+    const lon = natal[target];
+    if (lon == null || Number.isNaN(lon)) continue;      // e.g. no birth time -> no asc/mc
+    const sep = separation(eclipseLon, lon);
+    for (const [aspect, angle] of Object.entries(ASPECT_ANGLE)) {
+      const orb = Math.abs(sep - angle);
+      if (orb <= orbs[aspect] && (!best || orb < best.orbDeg)) {
+        best = { target, aspect, orbDeg: orb };
+      }
+    }
+  }
+  return best;
+}
+
+/** Assemble the full reading object from a computed contact (or empty-state). */
+export function buildReading(eclipseLon, natal, templates, opts = {}) {
+  const t = templates;
+  const contact = closestContact(eclipseLon, natal, t);
+
+  const perseid = opts.dark
+    ? {
+        computed: t.perseid.computed
+          .replace('{darkStart}', opts.dark.start).replace('{darkEnd}', opts.dark.end),
+        reflection: t.perseid.reflection,
+      }
+    : null;
+
+  if (!contact) {
+    const maxOrb = Math.max(...Object.values(t.orbsDeg));
+    return {
+      contact: null,
+      computedLine: t.emptyState.computed.replace('{maxOrb}', maxOrb),
+      reflection: t.emptyState.reflection,
+      perseid, legal: t.legalLine, quiet: true,
+    };
+  }
+
+  const tg = t.targets[contact.target];
+  const asp = t.aspects[contact.aspect];
+  const orbText = fmtOrb(contact.orbDeg);
+  const key = `${contact.target}|${contact.aspect}`;
+  const reflection = t.overrides[key]
+    || t.reflectionFrames[contact.aspect].replace('{theme}', tg.theme);
+
+  return {
+    contact,
+    computedLine: `The eclipse point sits ${orbText} from your ${tg.label} (${asp.label}).`,
+    reflection,
+    perseid,
+    legal: t.legalLine,
+    shareLine: t.shareLine.replace('{orbText}', orbText).replace('{targetLabel}', tg.label),
+    quiet: false,
+  };
+}
+
+/* ============================================================================
+ * v2 — THE FULL FIVE-BEAT READING (bench order: Astrologer-Writer, 17 Jul)
+ * Beat 1 anchor · Beat 2 contact(+house, +secondaries) · Beat 3 governs ·
+ * Beat 4 the question · Beat 5 honest close. Quiet orb-gate GATES THE SALE.
+ * Houses: whole-sign from the Ascendant (honest, stated), only when asc known.
+ * ==========================================================================*/
+
+/** 139.84 -> "19°50′ Leo" */
+export function fmtDeg(lon, signs) {
+  const norm = ((lon % 360) + 360) % 360;
+  const si = Math.floor(norm / 30);
+  const within = norm - si * 30;
+  const d = Math.floor(within);
+  const m = Math.round((within - d) * 60);
+  const dd = m === 60 ? d + 1 : d;
+  const mm = m === 60 ? 0 : m;
+  return `${dd}°${String(mm).padStart(2, '0')}′ ${signs[si]}`;
+}
+
+/** Whole-sign house of a point given the Ascendant longitude (1..12), or null. */
+export function wholeSignHouse(pointLon, ascLon) {
+  if (ascLon == null || Number.isNaN(ascLon)) return null;
+  const ps = Math.floor((((pointLon % 360) + 360) % 360) / 30);
+  const as = Math.floor((((ascLon % 360) + 360) % 360) / 30);
+  return ((ps - as + 12) % 12) + 1;
+}
+
+/** All aspect contacts within orb, sorted tightest first. */
+export function allContacts(eclipseLon, natal, templates) {
+  const ASPECTS = { conjunction: 0, sextile: 60, square: 90, trine: 120, opposition: 180 };
+  const out = [];
+  for (const target of Object.keys(templates.targets)) {
+    const lon = natal[target];
+    if (lon == null || Number.isNaN(lon)) continue;
+    const sep = separation(eclipseLon, lon);
+    for (const [aspect, angle] of Object.entries(ASPECTS)) {
+      const orb = Math.abs(sep - angle);
+      if (orb <= t_orb(templates, aspect)) out.push({ target, aspect, orbDeg: orb, lon });
+    }
+  }
+  return out.sort((a, b) => a.orbDeg - b.orbDeg);
+}
+const t_orb = (t, aspect) => t.orbsDeg[aspect];
+
+/**
+ * The full five-beat £2.99 reading.
+ * @param {number} eclipseLon  ecliptic longitude of the eclipse
+ * @param {object} natal       longitudes {sun..pluto, asc?, mc?}
+ * @param {object} templates   reading-templates.json (v2)
+ * @param {object} opts        { local: {date, place, coveragePct, peakLocal},
+ *                               dark: {start,end,rate}, quietGateDeg (default 5) }
+ * @returns beats {anchor, contact, governs, question, close} each {mono?, serif?},
+ *          plus {quiet, gateSale, share, legal, houseNote?, wordCount}
+ */
+export function buildEclipseReading5(eclipseLon, natal, templates, opts = {}) {
+  const t = templates;
+  const signs = t.signs;
+  const L = opts.local || {};
+  const gate = opts.quietGateDeg ?? 5;
+
+  // BEAT 1 — the anchor (always renders; the receipt for the whole piece)
+  const eclipseDeg = fmtDeg(eclipseLon, signs);
+  const anchorMono = (L.place
+    ? t.anchor.computed.replace('{date}', L.date || '12 August 2026').replace('{peakLocal}', L.peakLocal || '')
+        .replace('{place}', L.place).replace('{coveragePct}', L.coveragePct || '')
+    : t.anchor.computedNoPlace.replace('{date}', L.date || '12 August 2026'))
+    .replace('{eclipseDeg}', eclipseDeg).replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ');
+
+  const contacts = allContacts(eclipseLon, natal, t);
+  const closest = contacts[0] || null;
+
+  // BEAT 5 — honest close (always renders)
+  const closeMono = opts.dark
+    ? t.close.computedPerseids.replace('{rate}', String(opts.dark.rate ?? 100))
+        .replace('{darkStart}', opts.dark.start).replace('{darkEnd}', opts.dark.end)
+    : t.close.computedNoPerseids;
+  const close = { mono: closeMono, serif: t.close.serif };
+
+  // QUIET GATE — the empty state that GATES THE SALE (Skeptic rule)
+  if (!closest || closest.orbDeg > gate) {
+    const nearest = closest
+      ? ` The nearest touch is a wide ${fmtOrb(closest.orbDeg)} to your ${t.targets[closest.target].label}.`
+      : '';
+    const reading = {
+      quiet: true, gateSale: true,
+      anchor: { mono: anchorMono, serif: t.anchor.serif },
+      contact: { mono: t.emptyState.computed.replace('{maxOrb}', String(gate)) + nearest, serif: t.emptyState.reflection },
+      governs: null, question: null, close,
+      legal: t.legalLine,
+    };
+    reading.wordCount = countWords(reading);
+    return reading;
+  }
+
+  // BEAT 2 — the closest contact (+ house, + up to 2 secondaries within 3°)
+  const tg = t.targets[closest.target];
+  const asp = t.aspects[closest.aspect];
+  const orbText = fmtOrb(closest.orbDeg);
+  const house = wholeSignHouse(closest.lon, natal.asc);
+  let contactMono = `This eclipse falls ${orbText} from your natal ${tg.label} (${fmtDeg(closest.lon, signs)}) — ${asp.label}.`;
+  if (house) contactMono += ` ${tg.label} sits in your ${house}ℓ`.replace('ℓ', house === 1 ? 'st' : house === 2 ? 'nd' : house === 3 ? 'rd' : 'th') + ' house (whole-sign).';
+  const secondaries = contacts.slice(1).filter((c) => c.orbDeg <= 3).slice(0, 2);
+  const secondary = secondaries.length
+    ? { mono: t.secondary.computed.replace('{list}', secondaries.map((c) =>
+        t.secondary.item.replace('{aspectLabel}', t.aspects[c.aspect].label)
+          .replace('{targetLabel}', t.targets[c.target].label).replace('{orbText}', fmtOrb(c.orbDeg))).join('; ')),
+        serif: t.secondary.serif }
+    : null;
+
+  // BEAT 3 — what that place governs
+  const key = `${closest.target}|${closest.aspect}`;
+  let governsSerif = t.overrides[key] || t.reflectionFrames[closest.aspect].replace('{theme}', tg.theme);
+  if (house && t.houseMeanings[String(house)]) {
+    governsSerif += t.governsHouse.replace('{houseNum}', String(house)).replace('{houseMeaning}', t.houseMeanings[String(house)]);
+  }
+
+  // BEAT 4 — the question
+  const question = { serif: t.questions[closest.target] || t.questions.sun };
+
+  const reading = {
+    quiet: false, gateSale: false,
+    anchor: { mono: anchorMono, serif: t.anchor.serif },
+    contact: { mono: contactMono, serif: null, secondary },
+    governs: { serif: governsSerif },
+    question, close,
+    share: t.shareLine.replace('{orbText}', orbText).replace('{targetLabel}', tg.label),
+    legal: t.legalLine,
+    houseNote: house ? t.houseSystemNote : null,
+  };
+  reading.wordCount = countWords(reading);
+  return reading;
+}
+
+function countWords(r) {
+  let s = '';
+  for (const k of ['anchor', 'contact', 'governs', 'question', 'close']) {
+    const b = r[k]; if (!b) continue;
+    s += ' ' + (b.mono || '') + ' ' + (b.serif || '');
+    if (b.secondary) s += ' ' + (b.secondary.mono || '') + ' ' + (b.secondary.serif || '');
+  }
+  return s.trim().split(/\s+/).filter(Boolean).length;
+}

@@ -1,23 +1,24 @@
-# STATUS — AstroPrecise · 2026-07-13
+# STATUS — AstroPrecise · 2026-07-17
 
 ## State
-- **Local tip: ap-v750** · SW `website/sw.js` `const V = "ap-v750"`
-- **Live:** pushing — PRODUCT RESET (kill brass CTA, full-bleed Earth, punchy atmosphere)
-- **Preview:** http://localhost:8790/?nosw=1
-- **Verify:** `npm test` green · owner must use **incognito + ?nosw=1**
+- **Local tip: ap-v755** · SW `website/sw.js` `const V = "ap-v755"`
+- **Live:** may lag — push only when owner orders
+- **Preview:** http://localhost:8790/eclipse.html?nosw=1 · http://localhost:8790/shop.html?nosw=1
+- **Wave:** `ap-eclipse-wire-frontier-pe-20260717` (CODE-ONLY until S12)
 
-## ap-v750 — why prior tips looked "the same"
-- Brass CTA law in `ap-observatory-home.css` had higher specificity than brand layer → gold button stayed
-- Layout was still side-rail observatory (Earth + education panel) — felt unchanged
-- Engine zoom/Bloom tweaks were too subtle on a mid-distance Earth rest frame
+## ap-v755 — eclipse engine live on hub + FRONTIER PE
+| Piece | Status |
+|---|---|
+| `eclipse.html` form → `buildEclipseReading5` | Wired (`ap-eclipse-page.js`) |
+| Quiet chart `gateSale` | Hides primary £2.99; points to Set |
+| Shop ladder (754) | Still placed; PE CSS linked |
+| FRONTIER PE | `ap-frontier-pe.css` — text-wrap + view() reveals |
+| Feature probes | `ap-feature-probes.js` on eclipse hub |
+| Gumroad | Still `REPLACE_ME` / Notify me |
 
-## Fixes in 750
-| Change | Effect |
-|--------|--------|
-| Kill brass CTA | Electric cyan→violet→magenta pill |
-| Full-bleed cast dock | Bottom glass strip, model owns viewport |
-| Collapse honest-model panel | Educational wall of text off first paint |
-| Closer Earth + thick atmosphere | cam 2.85, FOV 30°, atmo 1.45, punch bloom |
-| Copy | "Meet the sky. Own your chart." |
+## Owner next
+1. Eye-check eclipse compute + quiet gate
+2. Paste Gumroad permalinks when products exist
+3. Commit/push when ready (local may be ahead of origin)
 
-*History: AGENT-HANDOFF.md*
+*History: AGENT-HANDOFF.md · docs/FRONTIER26-TRANSFER-NOTES.md*

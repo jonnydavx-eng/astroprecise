@@ -1402,11 +1402,19 @@ window.AP_MON = Object.assign({
     },
 
     // ── CATALOGUE PHASE — which SKUs surface on shop.html ────────────────
-    // 'pdf-only' = Deep Reading + print-at-home poster PDF for now.
+    // 'pdf-only' = Cowork launch ladder (eclipse → deep → plate) + Moment free rail.
     // Flip to 'full' when prints, apparel, gifts & jewellery return.
+    // Checkout: Gumroad permalinks in js/gumroad-unlock.js (REPLACE_ME = dormant).
     cataloguePhase: 'pdf-only',
-    // Moment pack is digital keepsake; listed when available + fulfilUrl set.
-    catalogueSkus:  ['deep-reading', 'natal-poster-pdf', 'moment-pack'],
+    catalogueSkus:  [
+      'eclipse-reading',
+      'eclipse-set',
+      'deep-reading',
+      'plate',
+      'sky-pass',
+      'natal-poster-pdf',
+      'moment-pack',
+    ],
 
     // ── COLLECTIONS — the architecture of the sky ─────────────────────────
     // Every piece belongs to one collection. Re-themed from TBP's tree to
@@ -1536,6 +1544,44 @@ window.AP_MON = Object.assign({
         icon:         'book',
       },
       {
+        id:           'eclipse-reading',
+        available:    true,
+        featured:     true,
+        name:         'Eclipse Night Reading — Digital',
+        type:         'digital',
+        collection:   'theReading',
+        price:        2.99,
+        personalized: true,
+        badge:        '12 Aug 2026',
+        marketingLine:'Where the eclipse touches your chart — or we say it doesn’t, before you pay.',
+        previewImage: 'img/shop/product-solar-return.jpg',
+        sampleUrl:    'eclipse.html',
+        blurb:        'Five computed beats for the 12 August 2026 solar eclipse at 20°08′ Leo: anchor, closest contact, what it governs, the question, and an honest close. Quiet charts gate the sale — we never charge for a shrug. Gumroad unlock when checkout opens.',
+        icon:         'sunhigh',
+        fulfilUrl:    '',   // Gumroad permalink via js/gumroad-unlock.js (eclipse-reading); '' = dormant
+        gumroadSlug:  'eclipse-reading',
+        detailsForm:  '',
+      },
+      {
+        id:           'eclipse-set',
+        available:    true,
+        featured:     true,
+        name:         'Eclipse Set — Reading + Keepsake',
+        type:         'digital',
+        collection:   'theReading',
+        price:        6.00,
+        personalized: true,
+        badge:        'Order bump',
+        marketingLine:'The Night Reading plus a keepsake plate of the eclipse sky.',
+        previewImage: 'img/shop/product-bundle.jpg',
+        sampleUrl:    'eclipse.html',
+        blurb:        'Everything in the £2.99 Eclipse Night Reading, plus a print-ready eclipse keepsake for the same night (Perseids included in the story). The honest path when the chart is quiet — or when you want both the words and the plate.',
+        icon:         'star4',
+        fulfilUrl:    '',
+        gumroadSlug:  'eclipse-set',
+        detailsForm:  '',
+      },
+      {
         id:           'deep-reading',
         available:    true,
         featured:     true,
@@ -1548,10 +1594,48 @@ window.AP_MON = Object.assign({
         marketingLine:'The words your chart has been waiting for — written for you alone.',
         previewImage: 'img/shop/product-deep-reading.jpg',
         sampleUrl:    'sample-reading.html',
-        blurb:        'Thirteen pages from the same engine as your free chart — every planet, all twelve houses, love/career/wellbeing chapters, chart patterns, and ten tightest aspects. Typeset as a beautifully set PDF, yours to keep forever.',
+        blurb:        'Seven chapters from the same engine as your free chart — frame, three lights, shape, tightest aspects, long arcs, this season’s sky, and a letter to keep. Honest fallbacks when birth time or live transits are missing. Gumroad unlock when checkout opens.',
         icon:         'book',
-        fulfilUrl:    '',   // ← paste this SKU's PayPal payment link (PAYPAL-SETUP.md); '' = honest "coming soon"
-        detailsForm:  'JVU3Atfm',   // Typeform for post-payment birth details (tools/typeform-catalog.json)
+        fulfilUrl:    '',   // Gumroad slug full-reading in gumroad-unlock.js; '' = dormant
+        gumroadSlug:  'full-reading',
+        detailsForm:  'JVU3Atfm',
+      },
+      {
+        id:           'plate',
+        available:    true,
+        featured:     true,
+        name:         'Numbered Sky Plate',
+        type:         'digital',
+        collection:   'onYourWall',
+        price:        14.00,
+        personalized: true,
+        badge:        'Provenance',
+        marketingLine:'A sealed fingerprint of your sky — verify on-device, never fabricated.',
+        previewImage: 'img/shop/product-natal-poster.jpg',
+        sampleUrl:    'verify.html',
+        blurb:        'A numbered plate with a locked AP-FP-1 fingerprint of the sky at your moment. Recompute and match on /verify — no blockchain theatre. Launch price £14 (rises to £19 by dated edition). Gumroad when checkout opens.',
+        icon:         'map',
+        fulfilUrl:    '',
+        gumroadSlug:  'plate',
+        detailsForm:  '',
+      },
+      {
+        id:           'sky-pass',
+        available:    true,
+        featured:     false,
+        name:         'Sky Pass',
+        type:         'digital',
+        collection:   'theReading',
+        price:        5.00,
+        personalized: false,
+        badge:        null,
+        marketingLine:'Optional credit toward a future reading unlock.',
+        previewImage: 'img/shop/product-gift-reading.jpg',
+        blurb:        'A small credit pack for future Astro Precise unlocks. Optional — never required to use the free chart tools.',
+        icon:         'orb',
+        fulfilUrl:    '',
+        gumroadSlug:  'sky-pass',
+        detailsForm:  '',
       },
       {
         id:           'year-ahead',

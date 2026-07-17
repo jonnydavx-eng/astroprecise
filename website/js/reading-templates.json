@@ -1,0 +1,174 @@
+{
+  "_about": "Astro Precise — the £2.99 Eclipse Night Reading. Honest template library. The engine computes WHERE the 12 Aug 2026 eclipse degree falls against a person's real natal chart; these templates turn that computed contact into words. TYPE LAW: the 'computed' line is fact (render in mono); the 'reflection' line is human meaning (render in warm serif). Everything traditional is framed as reflection, never prediction. Nothing here is fabricated — every number the engine drops in is real; the words only interpret it. Legal 'for reflection/entertainment' line ships with every reading.",
+  "version": "AP-READING-2",
+  "voice": "Calm, specific, grown-up. Fact first, then a gentle traditional meaning offered for reflection. No promises about health, money or love. No 'you will'. No fear.",
+  "legalLine": "Astronomy is exact; the meaning is tradition, offered for reflection and entertainment — not advice or prediction.",
+  "orbsDeg": {
+    "conjunction": 6,
+    "opposition": 6,
+    "square": 5,
+    "trine": 5,
+    "sextile": 4
+  },
+  "aspects": {
+    "conjunction": {
+      "label": "conjunction",
+      "frame": "lands right on",
+      "note": "a meeting — the eclipse sits on this point"
+    },
+    "opposition": {
+      "label": "opposition",
+      "frame": "sits opposite",
+      "note": "a facing — the eclipse mirrors this point from across the chart"
+    },
+    "square": {
+      "label": "square",
+      "frame": "presses on",
+      "note": "a friction — the eclipse challenges this point"
+    },
+    "trine": {
+      "label": "trine",
+      "frame": "flows with",
+      "note": "an ease — the eclipse supports this point"
+    },
+    "sextile": {
+      "label": "sextile",
+      "frame": "gently opens",
+      "note": "an opening — a small door offered to this point"
+    }
+  },
+  "targets": {
+    "sun": {
+      "label": "Sun",
+      "theme": "your core sense of self and vitality"
+    },
+    "moon": {
+      "label": "Moon",
+      "theme": "your inner life — moods, memory, and what makes you feel safe"
+    },
+    "mercury": {
+      "label": "Mercury",
+      "theme": "how you think, talk and make sense of things"
+    },
+    "venus": {
+      "label": "Venus",
+      "theme": "what you love, value and find beautiful"
+    },
+    "mars": {
+      "label": "Mars",
+      "theme": "your drive, courage and how you act"
+    },
+    "jupiter": {
+      "label": "Jupiter",
+      "theme": "where you look for growth, meaning and room to expand"
+    },
+    "saturn": {
+      "label": "Saturn",
+      "theme": "your responsibilities, limits and long patience"
+    },
+    "uranus": {
+      "label": "Uranus",
+      "theme": "where you want freedom and the unexpected"
+    },
+    "neptune": {
+      "label": "Neptune",
+      "theme": "your dreams, imagination and what you long for"
+    },
+    "pluto": {
+      "label": "Pluto",
+      "theme": "what in you is quietly transforming"
+    },
+    "asc": {
+      "label": "Ascendant",
+      "theme": "how you meet the world and begin things"
+    },
+    "mc": {
+      "label": "Midheaven",
+      "theme": "your direction, work and public path"
+    }
+  },
+  "reflectionFrames": {
+    "conjunction": "This eclipse falls right on {theme}. Eclipses have long been read as endings that clear a little space for a beginning — so this is a moment to notice what here feels ready to turn over.",
+    "opposition": "This eclipse sits directly opposite {theme}. Tradition reads a facing like this as a call for balance — a nudge to see this part of you from the other side.",
+    "square": "This eclipse presses on {theme}. A square is old shorthand for useful friction — the kind of tension that, handled gently, tends to move something that was stuck.",
+    "trine": "This eclipse flows easily with {theme}. A trine is the kind, unforced contact — a good moment to lean on this strength rather than force anything.",
+    "sextile": "This eclipse gently opens {theme}. A sextile is a small door, not a shove — an invitation you can take or leave."
+  },
+  "overrides": {
+    "sun|conjunction": "This eclipse falls right on your Sun — your core sense of who you are. Of all the contacts, this is the personal one: a traditional marker of a chapter quietly closing so a truer one can begin. Held lightly, it's an invitation to ask what you've outgrown.",
+    "moon|conjunction": "This eclipse falls right on your Moon — your inner tides and what makes you feel safe. Tradition treats this as a tender, emotional reset; be a little gentler with yourself around it than you'd think to be.",
+    "asc|conjunction": "This eclipse falls right on your Ascendant — the face you meet the world with. It's read, traditionally, as a moment when how you show up is ready to shift; nobody else has to notice for it to be real.",
+    "saturn|conjunction": "This eclipse meets your Saturn — your patience and your load. The old reading isn't heavy: it's a moment to set down one thing you've been carrying out of habit rather than need."
+  },
+  "emptyState": {
+    "computed": "The eclipse point sits more than {maxOrb}° from every placement in your chart — no close contact tonight.",
+    "reflection": "For you, this is a quiet one — and that's an honest answer, not a smaller one. The sky doesn't touch everyone the same way on the same night. You still get the eclipse over your own town, and the Perseids after dark; sometimes the kindest thing a real chart can do is tell you to simply watch."
+  },
+  "perseid": {
+    "computed": "After the eclipse, the Perseids peak overnight — your darkest window is roughly {darkStart}–{darkEnd}, radiant climbing in the north-east.",
+    "reflection": "An old, unserious tradition worth keeping: the first shooting star you catch is yours to make a wish on."
+  },
+  "shareLine": "The eclipse landed {orbText} from my {targetLabel}. Check where it falls in yours →",
+  "signs": [
+    "Aries",
+    "Taurus",
+    "Gemini",
+    "Cancer",
+    "Leo",
+    "Virgo",
+    "Libra",
+    "Scorpio",
+    "Sagittarius",
+    "Capricorn",
+    "Aquarius",
+    "Pisces"
+  ],
+  "houseSystemNote": "Houses are whole-sign (each house = one full sign counted from your rising sign) — stated honestly wherever a house is shown; houses appear only when a birth time is known.",
+  "houseMeanings": {
+    "1": "the house of how you meet the world",
+    "2": "the house of what you own and value",
+    "3": "the house of words, siblings and short roads",
+    "4": "the house of home and where you come from",
+    "5": "the house of what you make, play at and love out loud",
+    "6": "the house of work, habits and health",
+    "7": "the house of partners and one-to-one bonds",
+    "8": "the house of what is shared, owed and transformed",
+    "9": "the house of belief, study and long roads",
+    "10": "the house of work in the world and reputation",
+    "11": "the house of friends, allies and the future",
+    "12": "the house of rest, retreat and the unseen"
+  },
+  "anchor": {
+    "computed": "{date}, {peakLocal}, from {place} — the Moon covers {coveragePct} of the Sun at {eclipseDeg}.",
+    "computedNoPlace": "{date} — a total solar eclipse; the Moon crosses the Sun at {eclipseDeg}.",
+    "serif": "Everything below is computed from that exact moment against the sky you were born under — nothing is invented, and you can check every number."
+  },
+  "governsHouse": " It sits in your {houseNum}th house — {houseMeaning} (houses counted whole-sign from your rising).",
+  "questions": {
+    "sun": "So the question tonight is a quiet one: which version of you is asking to be lived openly now — and what have you outgrown?",
+    "moon": "So the question the sky hands you is not 'what should you want?' but the quieter one underneath: what do you actually need, before anyone told you what you were supposed to?",
+    "mercury": "So the question tonight: what is waiting to be said plainly — and to whom?",
+    "venus": "So the question tonight: what do you love that you have been treating as optional?",
+    "mars": "So the question tonight: where is your effort going out of habit rather than choice?",
+    "jupiter": "So the question tonight: where are you being invited to grow — and what small door have you not opened?",
+    "saturn": "So the question tonight: which load are you carrying out of habit that was never yours to keep?",
+    "uranus": "So the question tonight: where does your life ask for more room than you have given it?",
+    "neptune": "So the question tonight: which dream have you been calling unrealistic mainly because it matters?",
+    "pluto": "So the question tonight: what is quietly ending so something truer can take its place?",
+    "asc": "So the question tonight: does the way you meet the world still fit the person doing the meeting?",
+    "mc": "So the question tonight: is the direction you are walking still the one you would choose today?"
+  },
+  "close": {
+    "computedPerseids": "The same night, the Perseids peak — up to {rate} meteors an hour after midnight, the radiant climbing in the north-east; your darkest window is roughly {darkStart}–{darkEnd}.",
+    "computedNoPerseids": "After the eclipse the sky stays busy — step outside and let it be enough.",
+    "serif": "You don't have to answer any of this tonight. A page is turning; you're allowed to simply go and watch it turn."
+  },
+  "secondary": {
+    "computed": "Also within reach tonight: {list}.",
+    "item": "{aspectLabel} to your {targetLabel} ({orbText})",
+    "serif": "Quieter touches, worth a glance — the closest contact above is the one that carries the night."
+  },
+  "quietGate": {
+    "note": "UI RULE (binding): when quiet:true, the buyer must SEE the quiet verdict before paying — the empty state gates the sale, never surprises after it."
+  }
+}
